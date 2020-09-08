@@ -11,7 +11,7 @@ import {
   hasContent,
   isAString,
   isPlainObject,
-  assertAllValuesAreNumbers,
+  allValuesAreNumbers,
   constructIsEmptyOr,
 } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
@@ -53,7 +53,7 @@ const configValidators = {
   aggregation: [hasContent, isPlainObject, assertAggregationIsDefinedForCodesInFormula],
   defaultValues: [
     constructIsEmptyOr(assertAllDefaultsAreCodesInFormula),
-    constructIsEmptyOr(assertAllValuesAreNumbers),
+    constructIsEmptyOr(allValuesAreNumbers),
   ],
 };
 
