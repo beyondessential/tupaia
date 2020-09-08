@@ -50,7 +50,7 @@ const fetchAnalyticClusters = async (
     allElements.every(member => member in cluster.dataValues);
 
   const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster) => {
-    const returnDataValues = cluster.dataValues;
+    const returnDataValues = {...cluster.dataValues};
     Object.keys(defaultValues).forEach(code => {
       returnDataValues[code] = returnDataValues[code] || defaultValues[code];
     });
