@@ -17,9 +17,7 @@ class SumByOrgUnitBuilder extends DataBuilder {
     results.forEach(({ organisationUnit, value }) => {
       dataByOrgUnit[organisationUnit] = (dataByOrgUnit[organisationUnit] || 0) + value;
     });
-    const labels = !labelsConfig
-      ? await this.mapOrgUnitCodesToNames(Object.keys(dataByOrgUnit))
-      : labelsConfig;
+    const labels = labelsConfig || (await this.mapOrgUnitCodesToNames(Object.keys(dataByOrgUnit)));
 
     const returnData = Object.keys(dataByOrgUnit)
       .sort()

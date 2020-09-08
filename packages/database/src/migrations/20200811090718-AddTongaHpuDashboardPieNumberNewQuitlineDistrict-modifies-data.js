@@ -27,7 +27,7 @@ exports.setup = function(options, seedLink) {
 // or put this one on hold until this data coming in.
 
 const dashboardGroup = 'TO_Health_Promotion_Unit_Country';
-const reportId = 'Tonga_HPU_Number_New_Quitline_Calls_District';
+const reportId = 'TO_HPU_Number_New_Quitline_Calls_District';
 const dataBuilder = 'sumByOrgUnit';
 const dataBuilderConfig = {
   aggregationType: 'SUM_PER_ORG_GROUP',
@@ -41,7 +41,7 @@ const viewJson = {
   name: 'Number of New Quitline Calls',
   type: 'chart',
   chartType: 'pie',
-  valueType: 'Percentage',
+  valueType: 'number',
   periodGranularity: 'one_year_at_a_time',
 };
 
