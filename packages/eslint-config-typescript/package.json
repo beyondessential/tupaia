@@ -3,7 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "main": "index.js",
-  "private": true,
   "scripts": {
     "test": "echo \"No tests specified\" && exit 0"
   },
