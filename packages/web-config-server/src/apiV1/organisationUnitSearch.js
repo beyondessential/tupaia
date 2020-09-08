@@ -4,7 +4,7 @@
  */
 
 import keyBy from 'lodash.keyby';
-import { Entity, EntityRelation } from '/models';
+import { Entity } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
@@ -46,7 +46,7 @@ export default class extends RouteHandler {
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
     const matchingEntities = await this.getMatchingEntities(searchString, allEntities, limit);
 
-    const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
+    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentIdMap(
       project.entity_hierarchy_id,
     );
     const entityById = keyBy(allEntities, 'id');

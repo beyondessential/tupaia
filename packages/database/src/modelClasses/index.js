@@ -6,6 +6,7 @@
 import { AccessRequestModel } from './AccessRequest';
 import { AlertCommentModel } from './AlertComment';
 import { AlertModel } from './Alert';
+import { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
 import { AnswerModel } from './Answer';
 import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
@@ -41,6 +42,7 @@ export const modelClasses = {
   AccessRequest: AccessRequestModel,
   Alert: AlertModel,
   AlertComment: AlertCommentModel,
+  AncestorDescendantRelation: AncestorDescendantRelationModel,
   Answer: AnswerModel,
   Comment: CommentModel,
   Country: CountryModel,

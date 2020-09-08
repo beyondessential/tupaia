@@ -1,11 +1,10 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { ProjectModel } from './Project';
 import { DashboardGroupModel } from './DashboardGroup';
-export { EntityRelation } from './EntityRelation';
 export { Entity } from './Entity';
 export { AncestorDescendantRelation } from './AncestorDescendantRelation';
 

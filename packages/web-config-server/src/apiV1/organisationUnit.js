@@ -4,7 +4,7 @@
  */
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { Entity, EntityRelation } from '/models';
+import { Entity } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 
@@ -36,16 +36,9 @@ export default class extends RouteHandler {
       ...countryDescendants,
     ]);
 
-    // todo replace with AncestorDescendantRelation, then remove EntityRelation model
-    const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
+    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentIdMap(
       project.entity_hierarchy_id,
     );
-    // Fill in childIdToParentId with missing org units
-    orgUnitHierarchy.forEach(({ id, parent_id: parentId }) => {
-      if (!childIdToParentId[id]) {
-        childIdToParentId[id] = parentId;
-      }
-    });
 
     const entityIdToCode = reduceToDictionary(orgUnitHierarchy, 'id', 'code');
     return {
