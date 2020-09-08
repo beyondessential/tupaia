@@ -38,7 +38,7 @@ describe('buildArithmetic', () => {
       [
         'a default value must be a number',
         { formula: 'A + 1', aggregation: { A: 'SUM' }, defaultValues: { A: '10' } },
-        /Value for 'A' is not a number: '10'/,
+        /Value 'A' is not a number: '10'/,
       ],
     ];
 
