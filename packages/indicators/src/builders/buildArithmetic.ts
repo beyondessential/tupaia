@@ -38,6 +38,7 @@ const configValidators = {
 const fetchAnalyticClusters = async (
   aggregator: Aggregator,
   aggregationSpecs: AggregationSpecs,
+  defaultValues: DefaultSpecs,
   fetchOptions: FetchOptions,
 ) => {
   const aggregationsByCode = getAggregationsByCode(aggregationSpecs);
@@ -49,8 +50,21 @@ const fetchAnalyticClusters = async (
   const checkClusterIncludesAllElements = (cluster: AnalyticCluster) =>
     allElements.every(member => member in cluster.dataValues);
 
+  const replaceEmptyElementsWithDefault = (cluster: AnalyticCluster) => ({
+    ...cluster,
+    dataValues: allElements.reduce((acc, dataElementCode) => {
+      if (defaultValues[dataElementCode] || cluster.dataValues[dataElementCode]) {
+        return {
+          ...acc,
+          [dataElementCode]: cluster.dataValues[dataElementCode] || defaultValues[dataElementCode],
+        };
+      }
+      return acc;
+    }, {}),
+  });
+
   // Remove clusters that do not include all elements referenced in the specs
-  return clusters.filter(checkClusterIncludesAllElements);
+  return clusters.map(replaceEmptyElementsWithDefault).filter(checkClusterIncludesAllElements);
 };
 
 const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) =>
@@ -67,8 +81,13 @@ export const buildArithmetic: Builder = async input => {
   const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
   console.log(input);
 
-  const { formula, aggregation: aggregationSpecs } = config;
-  const clusters = await fetchAnalyticClusters(aggregator, aggregationSpecs, fetchOptions);
+  const { formula, aggregation: aggregationSpecs, defaultValues = {} } = config;
+  const clusters = await fetchAnalyticClusters(
+    aggregator,
+    aggregationSpecs,
+    defaultValues,
+    fetchOptions,
+  );
   console.log(clusters);
   return buildAnalyticValues(clusters, formula);
 };
