@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { TextField } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import { JsonEditor as Editor } from 'jsoneditor-react';
 import 'jsoneditor-react/es/editor.min.css';
@@ -43,7 +42,7 @@ export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange })
     <Container>
       <Label gutterBottom>{label}</Label>
       <Editor
-        mode={Editor.modes.form}
+        history
         value={editorValue}
         onChange={json => onChange(inputKey, JSON.stringify(json))}
       />
