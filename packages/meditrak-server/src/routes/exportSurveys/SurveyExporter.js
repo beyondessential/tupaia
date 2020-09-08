@@ -25,34 +25,41 @@ export class SurveyExporter {
     return Object.entries(config).length ? { type: 'SurveyMetadata', config } : null;
   }
 
-  async exportToFile(surveyId, surveyCode) {
-    // Create empty workbook to contain survey response export
-    const workbook = { SheetNames: [], Sheets: {} };
-
-    let surveys = [];
-    if (surveyId) {
-      surveys = [await this.models.survey.findById(surveyId)];
-    } else {
-      const criteria = surveyCode ? { code: surveyCode } : {};
-      surveys = await this.models.survey.find(criteria);
-    }
-
-    let permissionError;
+  async checkPermissionsError(surveys) {
+    let permissionsError;
 
     try {
       const exportSurveysChecker = async accessPolicy =>
         assertCanExportSurveys(accessPolicy, this.models, surveys);
       await this.assertPermissions(exportSurveysChecker);
     } catch (error) {
-      permissionError = [[error.message]];
+      permissionsError = error.message;
     }
 
-    if (permissionError) {
-      const sheetName = 'Error';
-      workbook.SheetNames.push(sheetName);
-      workbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet(permissionError);
-    } else {
-      try {
+    return permissionsError;
+  }
+
+  async exportToFile(surveyId, surveyCode) {
+    // Create empty workbook to contain survey response export
+    const workbook = { SheetNames: [], Sheets: {} };
+
+    try {
+      let surveys = [];
+      if (surveyId) {
+        surveys = [await this.models.survey.findById(surveyId)];
+      } else {
+        const criteria = surveyCode ? { code: surveyCode } : {};
+        surveys = await this.models.survey.find(criteria);
+      }
+
+      const permissionsError = await this.checkPermissionsError(surveys);
+
+      //If there is permission error, export an empty excel sheet with the error message
+      if (permissionsError) {
+        const sheetName = 'Error';
+        workbook.SheetNames.push(sheetName);
+        workbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet([[permissionsError]]);
+      } else {
         for (let i = 0; i < surveys.length; i += 1) {
           const currentSurvey = surveys[i];
           const rows = await findQuestionsInSurvey(this.models, currentSurvey.id);
@@ -66,10 +73,10 @@ export class SurveyExporter {
           workbook.SheetNames.push(sheetName);
           workbook.Sheets[sheetName] = xlsx.utils.json_to_sheet(rowsForExport);
         }
-      } catch (error) {
-        console.log(error);
-        throw new DatabaseError('exporting survey', error);
       }
+    } catch (error) {
+      console.log(error);
+      throw new DatabaseError('exporting survey', error);
     }
 
     const filePath = `${FILE_TITLE}_${Date.now()}.xlsx`;

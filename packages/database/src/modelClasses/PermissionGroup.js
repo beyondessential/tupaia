@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
-
+import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -38,5 +38,10 @@ class PermissionGroupType extends DatabaseType {
 export class PermissionGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return PermissionGroupType;
+  }
+
+  async getPermissionGroupNameById(allPermissionGroupIds) {
+    const allPermissionGroups = await this.findManyById(allPermissionGroupIds);
+    return reduceToDictionary(allPermissionGroups, 'id', 'name');
   }
 }
