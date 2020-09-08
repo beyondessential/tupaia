@@ -36,7 +36,7 @@ const checkAllowedUnauthRoutes = req =>
 const getUserAccessPolicyFromSession = async req => {
   if (!req.accessPolicy) {
     const { userName } = req.session.userJson;
-    req.accessPolicy = getAccessPolicyForUser(userName);
+    req.accessPolicy = getAccessPolicyForUser(req.models, userName);
   }
   return req.accessPolicy;
 };

@@ -33,6 +33,7 @@ import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
+import { UserSessionModel } from './UserSession';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -66,6 +67,7 @@ export const modelClasses = {
   SurveyScreenComponent: SurveyScreenComponentModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
+  UserSession: UserSessionModel,
 };
 
 // export any models and types that are extended in other packages

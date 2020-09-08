@@ -34,6 +34,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
     let response;
     try {
       response = await fetchFromMeditrakServerUsingTokens(
+        this.models,
         meditrakServerEndpoint,
         null,
         queryParameters,

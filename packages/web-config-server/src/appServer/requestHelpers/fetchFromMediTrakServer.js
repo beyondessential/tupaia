@@ -1,5 +1,4 @@
 import { CustomError, fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
-import { UserSession } from '/models';
 import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
 
 /**
@@ -57,6 +56,7 @@ export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters
 
 // Send request to the Tupaia App server using access/refresh tokens
 export const fetchFromMeditrakServerUsingTokens = async (
+  models,
   endpoint,
   payload,
   queryParameters,
@@ -71,11 +71,11 @@ export const fetchFromMeditrakServerUsingTokens = async (
     });
 
   const refreshAccessAndFetch = async refreshToken => {
-    const newAccessToken = await refreshAndSaveAccessToken(refreshToken, userName);
+    const newAccessToken = await refreshAndSaveAccessToken(models, refreshToken, userName);
     return fetchWithAccessToken(newAccessToken);
   };
 
-  const { accessToken, refreshToken } = await UserSession.findOne({ userName });
+  const { accessToken, refreshToken } = await models.userSession.findOne({ userName });
   if (!accessToken) {
     return refreshAccessAndFetch(refreshToken);
   }
