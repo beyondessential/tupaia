@@ -52,8 +52,6 @@ describe('Permissions checker for Exporting Surveys', async () => {
         },
       ],
     );
-
-    console.log('survey1', survey1);
   });
 
   describe('Sufficient permissions when exporting existing surveys', async () => {
