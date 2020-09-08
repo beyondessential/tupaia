@@ -239,7 +239,7 @@ export default class extends DataAggregatingRouteHandler {
       presentationOptions,
       measureBuilderConfig,
       ...restOfMapOverlay
-    } = mapOverlay;
+    } = await mapOverlay.getData();
 
     const {
       displayType,
