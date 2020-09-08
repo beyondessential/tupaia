@@ -25,7 +25,7 @@ export default class extends RouteHandler {
       hierarchyId,
     );
 
-    const allDashboardGroups = await this.models.dashboardGroup..getAllDashboardGroups(
+    const allDashboardGroups = await this.models.dashboardGroup.getAllDashboardGroups(
       organisationLevel,
       entity,
       query.projectCode,
