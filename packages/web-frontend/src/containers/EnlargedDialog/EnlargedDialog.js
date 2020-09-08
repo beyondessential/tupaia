@@ -6,6 +6,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import Dialog from '@material-ui/core/Dialog';
 import {
   attemptDrillDown,
@@ -18,6 +19,7 @@ import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { isMobile } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
+import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 
 class EnlargedDialogComponent extends PureComponent {
   render() {
@@ -138,7 +140,6 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
       organisationUnitCode,
       viewId,
       startDate,
-      endDate,
     } = viewContent;
 
     if (!drillDown) {
@@ -162,7 +163,12 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
     // constrain the fetch by 1st layer date range
     if (periodGranularity) {
       defaultStartDate = startDate;
-      defaultEndDate = endDate;
+
+      // set the endDate to be end of the startDate period
+      const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+      defaultEndDate = moment(startDate)
+        .clone()
+        .endOf(momentUnit);
     }
 
     dispatch(
