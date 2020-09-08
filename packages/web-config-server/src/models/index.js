@@ -5,9 +5,10 @@
 
 import { ProjectModel } from './Project';
 import { DashboardGroupModel } from './DashboardGroup';
-export { Entity } from './Entity';
+import { EntityModel } from './Entity';
 
 export const modelClasses = {
   DashboardGroup: DashboardGroupModel,
+  Entity: EntityModel,
   Project: ProjectModel,
 };

@@ -4,18 +4,15 @@
  **/
 
 import { pascal } from 'case';
+import { EntityModel as CommonEntityModel } from '@tupaia/database';
 
-import { TYPES } from '@tupaia/database';
 import {
   translateBoundsForFrontend,
   translatePointForFrontend,
   translateRegionForFrontend,
 } from '/utils/geoJson';
-import { BaseModel } from './BaseModel';
 
-export class Entity extends BaseModel {
-  static databaseType = TYPES.ENTITY;
-
+export class EntityModel extends CommonEntityModel {
   // a set of basic fields so that entities used for search etc. can be as light as possible
   static minimalFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
 
@@ -23,11 +20,9 @@ export class Entity extends BaseModel {
     return pascal(this.type); // sub_district -> SubDistrict
   }
 
-  static translateTypeForFrontend = type => pascal(type);
-
   translateForFrontend() {
     return {
-      type: Entity.translateTypeForFrontend(this.type),
+      type: pascal(this.type),
       organisationUnitCode: this.code,
       countryCode: this.country_code,
       name: this.name,
