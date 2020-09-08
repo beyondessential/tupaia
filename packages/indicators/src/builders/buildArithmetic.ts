@@ -30,9 +30,30 @@ const assertAggregationIsDefinedForCodesInFormula = (
   });
 };
 
+const assertAllDefaultsAreCodesInFormula = (
+  defaultValues: DefaultValuesSpecs = {},
+  { formula }: { formula: ArithmeticConfig['formula'] },
+) => {
+  const variables = getVariables(formula);
+  Object.keys(defaultValues).forEach(code => {
+    if (!variables.includes(code)) {
+      throw new Error(`'${code}' is in defaultValues but not referenced in the formula`);
+    }
+  });
+};
+
+const assertAllValuesAreNumbers = (defaultValues: DefaultValuesSpecs = {}) => {
+  Object.entries(defaultValues).forEach(([key, value]) => {
+    if (typeof value !== 'number') {
+      throw new Error(`Default value for '${key}' is not a number: '${value}'`);
+    }
+  });
+};
+
 const configValidators = {
   formula: [hasContent, isAString],
   aggregation: [hasContent, isPlainObject, assertAggregationIsDefinedForCodesInFormula],
+  defaultValues: [assertAllDefaultsAreCodesInFormula, assertAllValuesAreNumbers],
 };
 
 const fetchAnalyticClusters = async (
@@ -50,9 +71,9 @@ const fetchAnalyticClusters = async (
     allElements.every(member => member in cluster.dataValues);
 
   const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster) => {
-    const returnDataValues = {...cluster.dataValues};
+    const returnDataValues = { ...cluster.dataValues };
     Object.keys(defaultValues).forEach(code => {
-      returnDataValues[code] = returnDataValues[code] || defaultValues[code];
+      returnDataValues[code] = returnDataValues[code] ?? defaultValues[code];
     });
 
     return {
