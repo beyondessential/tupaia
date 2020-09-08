@@ -100,7 +100,7 @@ export class Entity extends BaseModel {
     return Entity.find({ id: descendantIds, ...criteria });
   }
 
-  async getAncestorOfType(entityType, hierarchyId) {
+  async getAncestorOfType(hierarchyId, entityType) {
     if (this.type === entityType) return this;
     const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });
     return ancestor;

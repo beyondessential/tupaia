@@ -12,7 +12,7 @@ import { buildAggregationOptions } from '/aggregator/buildAggregationOptions';
 
 const createDataSourceEntity = (code, name, type, ancestors) => {
   const dataSourceEntity = sinon.createStubInstance(EntityType);
-  dataSourceEntity.getAncestorOfType.callsFake((ancestorType, hierarchyId) => {
+  dataSourceEntity.getAncestorOfType.callsFake((hierarchyId, ancestorType) => {
     return ancestors[`${ancestorType}_${hierarchyId}`];
   });
   dataSourceEntity.code = code;
