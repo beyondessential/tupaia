@@ -7,7 +7,13 @@ import { getVariables, runArithmetic } from '@beyondessential/arithmetic';
 
 import { Aggregator } from '@tupaia/aggregator';
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
-import { hasContent, isAString, isPlainObject } from '@tupaia/utils';
+import {
+  hasContent,
+  isAString,
+  isPlainObject,
+  assertAllValuesAreNumbers,
+  constructIsEmptyOr,
+} from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
 import { AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
 
@@ -31,7 +37,7 @@ const assertAggregationIsDefinedForCodesInFormula = (
 };
 
 const assertAllDefaultsAreCodesInFormula = (
-  defaultValues: DefaultValuesSpecs = {},
+  defaultValues: DefaultValuesSpecs,
   { formula }: { formula: ArithmeticConfig['formula'] },
 ) => {
   const variables = getVariables(formula);
@@ -42,18 +48,13 @@ const assertAllDefaultsAreCodesInFormula = (
   });
 };
 
-const assertAllValuesAreNumbers = (defaultValues: DefaultValuesSpecs = {}) => {
-  Object.entries(defaultValues).forEach(([key, value]) => {
-    if (typeof value !== 'number') {
-      throw new Error(`Default value for '${key}' is not a number: '${value}'`);
-    }
-  });
-};
-
 const configValidators = {
   formula: [hasContent, isAString],
   aggregation: [hasContent, isPlainObject, assertAggregationIsDefinedForCodesInFormula],
-  defaultValues: [assertAllDefaultsAreCodesInFormula, assertAllValuesAreNumbers],
+  defaultValues: [
+    constructIsEmptyOr(assertAllDefaultsAreCodesInFormula),
+    constructIsEmptyOr(assertAllValuesAreNumbers),
+  ],
 };
 
 const fetchAnalyticClusters = async (

@@ -87,6 +87,14 @@ export const isPlainObject = value => {
   }
 };
 
+export const assertAllValuesAreNumbers = object => {
+  Object.entries(object).forEach(([key, value]) => {
+    if (typeof value !== 'number') {
+      throw new Error(`Value '${key}' is not a number: '${value}'`);
+    }
+  });
+};
+
 export const fieldHasContent = value => {
   if (value === undefined || value === null || value.length === 0) {
     throw new ValidationError('Please complete all fields.');
@@ -150,9 +158,9 @@ export const constructRecordExistsWithId = (modelOrDatabase, recordType) => asyn
   }
 };
 
-export const constructIsEmptyOr = validatorFunction => value => {
+export const constructIsEmptyOr = validatorFunction => (value, ...args) => {
   if (value !== undefined && value !== null && value !== '') {
-    return validatorFunction(value);
+    return validatorFunction(value, ...args);
   }
   return true;
 };
