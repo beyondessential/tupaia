@@ -35,12 +35,13 @@ class CountByDataValueBuilder extends DataBuilder {
 }
 
 function countByDataValue(
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
   aggregationType,
 ) {
   const builder = new CountByDataValueBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

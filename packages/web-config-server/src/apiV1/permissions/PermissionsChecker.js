@@ -6,7 +6,8 @@ import { PermissionsError } from '@tupaia/utils';
 import { ENTITY_TYPES } from '/models/Entity';
 
 export class PermissionsChecker {
-  constructor(query, userHasAccess, entity) {
+  constructor(models, query, userHasAccess, entity) {
+    this.models = models;
     this.query = query;
     this.userHasAccess = userHasAccess;
     this.entity = entity;
