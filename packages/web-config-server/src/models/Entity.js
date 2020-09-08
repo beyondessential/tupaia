@@ -13,76 +13,12 @@ import {
 } from '/utils/geoJson';
 import { BaseModel } from './BaseModel';
 
-const CASE = 'case';
-const CASE_CONTACT = 'case_contact';
-const COUNTRY = 'country';
-const DISASTER = 'disaster';
-const DISTRICT = 'district';
-const FACILITY = 'facility';
-const SCHOOL = 'school';
-const SUB_DISTRICT = 'sub_district';
-const CATCHMENT = 'catchment';
-const SUB_CATCHMENT = 'sub_catchment';
-const VILLAGE = 'village';
-const WORLD = 'world';
-const PROJECT = 'project';
-
-export const ENTITY_TYPES = {
-  CASE,
-  CASE_CONTACT,
-  COUNTRY,
-  DISASTER,
-  DISTRICT,
-  FACILITY,
-  SCHOOL,
-  SUB_DISTRICT,
-  CATCHMENT,
-  SUB_CATCHMENT,
-  VILLAGE,
-  WORLD,
-  PROJECT,
-};
-
 export class Entity extends BaseModel {
   static databaseType = TYPES.ENTITY;
-
-  static fields = [
-    'id',
-    'code',
-    'type',
-    'parent_id',
-    'country_code',
-    'name',
-    'point',
-    'region',
-    'bounds',
-    'image_url',
-    'attributes',
-  ];
 
   // a set of basic fields so that entities used for search etc. can be as light as possible
   static minimalFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
 
-  static FACILITY = FACILITY;
-
-  static COUNTRY = COUNTRY;
-
-  static DISTRICT = DISTRICT;
-
-  static SUB_DISTRICT = SUB_DISTRICT;
-
-  static DISASTER = DISASTER;
-
-  static WORLD = WORLD;
-
-  static orgUnitEntityTypes = {
-    WORLD,
-    COUNTRY,
-    DISTRICT,
-    SUB_DISTRICT,
-    FACILITY,
-    VILLAGE,
-  };
   getOrganisationLevel() {
     return pascal(this.type); // sub_district -> SubDistrict
   }
