@@ -6,38 +6,49 @@
 import React from 'react';
 import { TextField } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
+import { JsonEditor as Editor } from 'jsoneditor-react';
+import 'jsoneditor-react/es/editor.min.css';
+import Typography from '@material-ui/core/Typography';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  margin-bottom: 20px;
+`;
+
+const Label = styled(Typography)`
+  color: ${props => props.theme.palette.text.secondary};
+  font-size: 0.9rem;
+  line-height: 1.1rem;
+`;
+
+const HelperText = styled(Typography)`
+  color: ${props => props.theme.palette.text.secondary};
+  font-size: 0.75rem;
+  margin-top: 3px;
+  line-height: 1.66;
+`;
 
 export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange }) => {
-  let editorValue;
-
-  switch (typeof value) {
-    case 'object':
-      editorValue = JSON.stringify(value, null, 2);
-      break;
-    case 'string':
-      try {
-        const object = JSON.parse(value);
-        editorValue = JSON.stringify(object, null, 2);
-      } catch (e) {
-        editorValue = value;
-      }
-      break;
-    default:
-      editorValue = value.toString();
+  if (!value) {
+    return null;
   }
 
-  const rows = editorValue.split('\n').length;
+  let editorValue = value;
+
+  if (typeof value === 'string') {
+    editorValue = JSON.parse(value);
+  }
 
   return (
-    <TextField
-      label={label}
-      helperText={secondaryLabel}
-      rows={rows < 8 ? rows : 8}
-      type="textarea"
-      multiline
-      value={editorValue}
-      onChange={event => onChange(inputKey, event.target.value)}
-    />
+    <Container>
+      <Label gutterBottom>{label}</Label>
+      <Editor
+        mode={Editor.modes.form}
+        value={editorValue}
+        onChange={json => onChange(inputKey, JSON.stringify(json))}
+      />
+      {secondaryLabel && <HelperText>{secondaryLabel}</HelperText>}
+    </Container>
   );
 };
 
