@@ -35,9 +35,6 @@
     "styled-components": "^5.1.0",
     "uuid": "^3.2.1"
   },
-  "devDependencies": {
-    "react-scripts": "3.4.1"
-  },
   "scripts": {
     "start": "react-scripts start",
     "start-dev": "npm run start",
