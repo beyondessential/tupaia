@@ -170,7 +170,7 @@ export const InputField = ({
           value={value || ''}
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
-          helperText={'secondaryLabel'}
+          helperText={secondaryLabel}
           type={type}
         />
       );
