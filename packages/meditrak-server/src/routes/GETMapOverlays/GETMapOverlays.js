@@ -16,14 +16,14 @@ import {
  */
 export class GETMapOverlays extends GETHandler {
   async assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
+    return true; // all users can request, but results will be filtered according to access
   }
 
   async findSingleRecord(mapOverlayId, options) {
     const mapOverlay = await super.findSingleRecord(mapOverlayId, options);
 
     const mapOverlayChecker = accessPolicy =>
-      assertMapOverlaysPermissions(accessPolicy, this.models, mapOverlay);
+      assertMapOverlaysPermissions(accessPolicy, this.models, [mapOverlay]);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
 
@@ -31,8 +31,8 @@ export class GETMapOverlays extends GETHandler {
   }
 
   async findRecords(criteria, options) {
+    this.assertPermissions(allowNoPermissions);
     const mapOverlays = await this.database.find(this.recordType, criteria, options);
-
     return filterMapOverlaysByPermissions(this.accessPolicy, this.models, mapOverlays);
   }
 }

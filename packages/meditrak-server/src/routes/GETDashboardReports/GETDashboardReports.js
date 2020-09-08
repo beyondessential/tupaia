@@ -16,14 +16,14 @@ import {
  */
 export class GETDashboardReports extends GETHandler {
   async assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
+    return true; // all users can request, but results will be filtered according to access
   }
 
   async findSingleRecord(dashboardReportId, options) {
     const dashboardReport = await super.findSingleRecord(dashboardReportId, options);
 
     const dashboardReportChecker = accessPolicy =>
-      assertDashboardReportsPermissions(accessPolicy, this.models, dashboardReport);
+      assertDashboardReportsPermissions(accessPolicy, this.models, [dashboardReport]);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, dashboardReportChecker]),
@@ -33,8 +33,8 @@ export class GETDashboardReports extends GETHandler {
   }
 
   async findRecords(criteria, options) {
+    this.assertPermissions(allowNoPermissions);
     const dashboardReports = await this.database.find(this.recordType, criteria, options);
-
     return filterDashboardReportsByPermissions(this.accessPolicy, this.models, dashboardReports);
   }
 }

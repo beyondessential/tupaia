@@ -47,6 +47,7 @@ const ENTITY_TYPES = {
   SUB_CATCHMENT,
   VILLAGE,
   WORLD,
+  PROJECT,
 };
 
 const ORG_UNIT_ENTITY_TYPES = {
@@ -138,7 +139,7 @@ class EntityType extends DatabaseType {
     throw new Error(`Maximum of (${MAX_ENTITY_HIERARCHY_LEVELS}) entity hierarchy levels reached`);
   }
 
-  async getChildren(hierarchyId) {
+  async getChildrenViaHierarchy(hierarchyId) {
     //Raw sql:
     //     SELECT entity.*
     //     FROM entity

@@ -2,8 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import keyBy from 'lodash.keyby';
-
+import { keyBy } from 'lodash';
 import { hasAccessToEntityForVisualisation } from '../utilities';
 import { hasBESAdminAccess } from '../../permissions';
 
@@ -25,7 +24,8 @@ export const filterDashboardGroupsByPermissions = async (accessPolicy, models, d
 
     //permissionGroup and organisationUnitCode are the 2 values for checking access for a dashboard group
     //If there are multiple dashboardGroups having the same permissionGroup and organisationUnitCode, we can reuse the same access value.
-    let hasAccessToDashboardGroup = accessCache[`${permissionGroup}|${organisationUnitCode}`];
+    const cacheKey = `${permissionGroup}/${organisationUnitCode}`;
+    let hasAccessToDashboardGroup = accessCache[cacheKey];
 
     if (hasAccessToDashboardGroup === undefined) {
       hasAccessToDashboardGroup = await hasAccessToEntityForVisualisation(
@@ -34,7 +34,7 @@ export const filterDashboardGroupsByPermissions = async (accessPolicy, models, d
         entity,
         permissionGroup,
       );
-      accessCache[`${permissionGroup}|${organisationUnitCode}`] = hasAccessToDashboardGroup;
+      accessCache[cacheKey] = hasAccessToDashboardGroup;
     }
 
     if (hasAccessToDashboardGroup) {
@@ -45,13 +45,15 @@ export const filterDashboardGroupsByPermissions = async (accessPolicy, models, d
   return filteredDashboardGroups;
 };
 
-export const assertDashboardGroupsPermissions = async (accessPolicy, models, dashboardGroup) => {
-  const filteredDashboardGroups = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-    dashboardGroup,
-  ]);
+export const assertDashboardGroupsPermissions = async (accessPolicy, models, dashboardGroups) => {
+  const filteredDashboardGroups = await filterDashboardGroupsByPermissions(
+    accessPolicy,
+    models,
+    dashboardGroups,
+  );
 
-  if (!filteredDashboardGroups.length) {
-    throw new Error('You do not have permissions for this dashboard group');
+  if (filteredDashboardGroups.length !== dashboardGroups.length) {
+    throw new Error('You do not have permissions for the requested dashboard group(s)');
   }
 
   return true;

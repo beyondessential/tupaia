@@ -18,7 +18,7 @@ export class DashboardGroupModel extends DatabaseModel {
     return DashboardGroupType;
   }
 
-  async findDashboardGroupsGroupedByReportId(dashboardReportIds) {
+  async findDashboardGroupsByReportId(dashboardReportIds) {
     const dashboardGroupsContainingReports = await this.find({
       [RAW]: {
         sql: ':dashboardReportIds && "dashboardReports"',
@@ -33,18 +33,11 @@ export class DashboardGroupModel extends DatabaseModel {
     dashboardReportIds.forEach(dashboardReportId => {
       dashboardGroupsGroupedByReportId[
         dashboardReportId
-      ] = this.findDashboardGroupsContainingReport(
-        dashboardReportId,
-        dashboardGroupsContainingReports,
+      ] = dashboardGroupsContainingReports.filter(dashboardGroup =>
+        dashboardGroup.dashboardReports.includes(dashboardReportId),
       );
     });
 
     return dashboardGroupsGroupedByReportId;
-  }
-
-  findDashboardGroupsContainingReport(dashboardReportId, dashboardGroups) {
-    return dashboardGroups.filter(dashboardGroup =>
-      dashboardGroup.dashboardReports.includes(dashboardReportId),
-    );
   }
 }

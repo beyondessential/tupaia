@@ -2,11 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import flattenDeep from 'lodash.flattendeep';
-import keyBy from 'lodash.keyby';
-
-import { hasAccessToEntityForVisualisation } from '../utilities';
+import { flattenDeep } from 'lodash';
 import { hasBESAdminAccess } from '../../permissions';
+import { filterDashboardGroupsByPermissions } from '../GETDashboardGroups/assertDashboardGroupsPermissions';
 
 export const filterDashboardReportsByPermissions = async (
   accessPolicy,
@@ -18,61 +16,32 @@ export const filterDashboardReportsByPermissions = async (
   }
 
   const dashboardReportIds = dashboardReports.map(d => d.id);
-  const dashboardGroupsGroupedByReportId = await models.dashboardGroup.findDashboardGroupsGroupedByReportId(
+  const dashboardGroupsByReportId = await models.dashboardGroup.findDashboardGroupsByReportId(
     dashboardReportIds,
   );
-  const allDashboardGroups = flattenDeep(Object.values(dashboardGroupsGroupedByReportId));
-  const allEntityCodes = [...new Set(allDashboardGroups.map(dg => dg.organisationUnitCode))];
-  const entities = await models.entity.find({ code: allEntityCodes });
-  const entityByCode = keyBy(entities, 'code');
-  const dashboardReportById = keyBy(dashboardReports, 'id');
-  const accessCache = {}; //Cache the access so that we don't have to recheck for some dashboard reports
-  const filteredDashboardReports = [];
-
-  for (let i = 0; i < Object.entries(dashboardGroupsGroupedByReportId).length; i++) {
-    const entry = Object.entries(dashboardGroupsGroupedByReportId)[i];
-    const [dashboardReportId, dashboardGroups] = entry;
-    let hasAccessToDashboardGroup = false;
-
-    for (let j = 0; j < dashboardGroups.length; j++) {
-      const dashboardGroup = dashboardGroups[j];
-      const { userGroup: permissionGroup, organisationUnitCode } = dashboardGroup;
-      const entity = entityByCode[organisationUnitCode];
-
-      //permissionGroup and organisationUnitCode are the 2 values for checking access for a dashboard group
-      //If there are multiple dashboardGroups having the same permissionGroup and organisationUnitCode, we can reuse the same access value.
-      hasAccessToDashboardGroup = accessCache[`${permissionGroup}|${organisationUnitCode}`];
-
-      if (hasAccessToDashboardGroup === undefined) {
-        hasAccessToDashboardGroup = await hasAccessToEntityForVisualisation(
-          accessPolicy,
-          models,
-          entity,
-          permissionGroup,
-        );
-        accessCache[`${permissionGroup}|${organisationUnitCode}`] = hasAccessToDashboardGroup;
-      }
-
-      //If a user has access to 1 dashboard group of a report => the user is allowed to see the report.
-      if (hasAccessToDashboardGroup) {
-        break;
-      }
-    }
-
-    if (hasAccessToDashboardGroup) {
-      filteredDashboardReports.push(dashboardReportById[dashboardReportId]);
-    }
-  }
-  return filteredDashboardReports;
+  //Remove any duplicated dashboard groups because a report can belong to multiple dashboard groups
+  const allDashboardGroups = [...new Set(flattenDeep(Object.values(dashboardGroupsByReportId)))];
+  const permittedDashboardGroups = await filterDashboardGroupsByPermissions(
+    accessPolicy,
+    models,
+    allDashboardGroups,
+  );
+  const permittedDashboardGroupIds = permittedDashboardGroups.map(dg => dg.id);
+  return dashboardReports.filter(dr => {
+    const dashboardGroupsForReport = dashboardGroupsByReportId[dr.id];
+    return dashboardGroupsForReport.some(dg => permittedDashboardGroupIds.includes(dg.id));
+  });
 };
 
-export const assertDashboardReportsPermissions = async (accessPolicy, models, dashboardReport) => {
-  const filteredDashboardReports = await filterDashboardReportsByPermissions(accessPolicy, models, [
-    dashboardReport,
-  ]);
+export const assertDashboardReportsPermissions = async (accessPolicy, models, dashboardReports) => {
+  const filteredDashboardReports = await filterDashboardReportsByPermissions(
+    accessPolicy,
+    models,
+    dashboardReports,
+  );
 
-  if (!filteredDashboardReports.length) {
-    throw new Error('You do not have permissions for this dashboard report');
+  if (filteredDashboardReports.length !== dashboardReports.length) {
+    throw new Error('You do not have permissions for the requested dashboard report(s)');
   }
 
   return true;

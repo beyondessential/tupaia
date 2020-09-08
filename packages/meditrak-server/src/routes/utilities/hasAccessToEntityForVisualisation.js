@@ -10,7 +10,7 @@ export const hasAccessToEntityForVisualisation = async (
 ) => {
   if (entity.isProject()) {
     const project = await models.project.findOne({ code: entity.code });
-    const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
+    const projectChildren = await entity.getChildrenViaHierarchy(project.entity_hierarchy_id);
     return accessPolicy.allowsSome(
       projectChildren.map(c => c.country_code),
       permissionGroup,
