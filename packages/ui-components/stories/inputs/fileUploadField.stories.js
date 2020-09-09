@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { FileUploadField as FileUploadFieldComponent } from '../../src';
+import { FileUploadField } from '../../src';
 
 export default {
-  title: 'FileUploadField',
-  component: FileUploadFieldComponent,
+  title: 'Inputs/FileUploadField',
+  component: FileUploadField,
 };
 
 const Container = styled(MuiBox)`
@@ -18,16 +18,14 @@ const Container = styled(MuiBox)`
   padding: 1rem;
 `;
 
-export const FileUploadField = () => {
-  const [value, setValue] = useState(null);
+export const Simple = () => (
+  <Container>
+    <FileUploadField name="file-upload" />
+  </Container>
+);
 
-  const handleChange = event => {
-    console.log('on change', event.target.value);
-  };
-
-  return (
-    <Container>
-      <FileUploadFieldComponent onChange={handleChange} value={value} name="file-upload" />
-    </Container>
-  );
-};
+export const Multiple = () => (
+  <Container>
+    <FileUploadField name="file-upload" multiple />
+  </Container>
+);

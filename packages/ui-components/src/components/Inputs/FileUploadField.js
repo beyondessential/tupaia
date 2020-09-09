@@ -6,7 +6,6 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import { GreyButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { SaveAlt } from '../Icons';
@@ -20,13 +19,13 @@ const HiddenFileInput = styled.input`
   z-index: -1;
 `;
 
-const FileName = styled(Typography)`
+const FileName = styled.span`
   font-size: 1rem;
-  color: ${props => props.theme.palette.text.tertiary};
-  margin-left: 1rem;
+  color: ${props => props.theme.palette.text.secondary};
+  margin-left: 0.8rem;
 `;
 
-export const FileUploadField = ({ onChange, value, name }) => {
+export const FileUploadField = ({ onChange, name }) => {
   const inputEl = useRef(null);
   const [fileName, setFileName] = useState(null);
 
@@ -41,33 +40,25 @@ export const FileUploadField = ({ onChange, value, name }) => {
     }
 
     setFileName(newName);
+    onChange(event);
   };
 
   return (
     <FlexStart as="label" htmlFor={name}>
-      <HiddenFileInput
-        ref={inputEl}
-        id={name}
-        name={name}
-        type="file"
-        onChange={handleChange}
-        value={value}
-        multiple
-      />
+      <HiddenFileInput ref={inputEl} id={name} name={name} type="file" onChange={handleChange} />
       <GreyButton component="span" startIcon={<SaveAlt />}>
         Choose file
       </GreyButton>
-      <FileName>{fileName}</FileName>
+      {fileName && <FileName>{fileName}</FileName>}
     </FlexStart>
   );
 };
 
 FileUploadField.propTypes = {
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
-  value: PropTypes.string,
 };
 
 FileUploadField.defaultProps = {
-  value: null,
+  onChange: () => {},
 };
