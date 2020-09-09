@@ -5,13 +5,11 @@
 
 import { AsyncTaskQueue } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../modelClasses/Entity';
-import { TYPES } from '../types';
-const { PROJECT, ENTITY, ENTITY_RELATION, ANCESTOR_DESCENDANT_RELATION } = TYPES;
 const BATCH_SIZE = 5;
 
 export class EntityHierarchyCacher {
-  constructor(database) {
-    this.database = database;
+  constructor(models) {
+    this.models = models;
     this.generationsVisited = new Set();
   }
 
@@ -20,7 +18,7 @@ export class EntityHierarchyCacher {
 
   async buildAndCacheAll() {
     // projects are the root entities of every full tree, so start with them
-    const projects = await this.database.find(PROJECT);
+    const projects = await this.models.project.all();
     // iterate through projects in serial, as each one is quite resource intensive
     for (let i = 0; i < projects.length; i++) {
       const project = projects[i];
@@ -45,7 +43,7 @@ export class EntityHierarchyCacher {
     // check whether this generation/hierarchy combo has already been cached to avoid doing it again
     // on startup, or when two projects share a hierarchy (at time of writing none do, but db schema
     // makes it possible)
-    const alreadyCached = !!(await this.database.findOne(ANCESTOR_DESCENDANT_RELATION, {
+    const alreadyCached = !!(await this.models.ancestorDescendantRelation.findOne({
       entity_hierarchy_id: hierarchyId,
       ancestor_id: parentId,
     }));
@@ -77,7 +75,7 @@ export class EntityHierarchyCacher {
 
   async getNextGeneration(hierarchyId, entityId) {
     // get any matching alternative hierarchy relationships leading out of these parents
-    const hierarchyLinks = await this.database.find(ENTITY_RELATION, {
+    const hierarchyLinks = await this.models.entityRelation.find({
       parent_id: entityId,
       entity_hierarchy_id: hierarchyId,
     });
@@ -89,8 +87,7 @@ export class EntityHierarchyCacher {
 
     // no hierarchy specific relations, get next generation following canonical relationships
     const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
-    const children = await this.database.find(
-      ENTITY,
+    const children = await this.models.entity.find(
       { parent_id: entityId, type: canonicalTypes },
       { columns: ['id'] },
     );
@@ -115,6 +112,6 @@ export class EntityHierarchyCacher {
         });
       }),
     );
-    await this.database.createMany(ANCESTOR_DESCENDANT_RELATION, records);
+    await this.models.ancestorDescendantRelation.createMany(records);
   }
 }

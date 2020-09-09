@@ -48,10 +48,6 @@ export async function createApp() {
   // Connect to db
   const database = new TupaiaDatabase();
 
-  // Pre-cache entity hierarchy details
-  const entityHierarchyCacher = new EntityHierarchyCacher(database);
-  await entityHierarchyCacher.buildAndCacheAll();
-
   // Attach model registry to req, along with the authenticator
   const modelRegistry = new ModelRegistry(database, modelClasses);
   const authenticator = new Authenticator(modelRegistry);
@@ -60,6 +56,10 @@ export async function createApp() {
     req.authenticator = authenticator;
     next();
   });
+
+  // Pre-cache entity hierarchy details
+  const entityHierarchyCacher = new EntityHierarchyCacher(modelRegistry);
+  await entityHierarchyCacher.buildAndCacheAll();
 
   // Initialise sessions
   bindUserSessions(app);
