@@ -1,5 +1,6 @@
 {
   "name": "@tupaia/admin-panel",
+  "private": true,
   "version": "1.0.0",
   "dependencies": {
     "@material-ui/core": "^4.9.11",

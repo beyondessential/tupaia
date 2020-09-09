@@ -1,5 +1,6 @@
 {
   "name": "@tupaia/web-frontend",
+  "private": true,
   "version": "1.0.0",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
