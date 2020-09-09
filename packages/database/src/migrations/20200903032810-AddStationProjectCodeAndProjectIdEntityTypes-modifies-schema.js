@@ -18,9 +18,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = async function() {
   const db = new TupaiaDatabase();
-  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'station';`);
-  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'project_code';`);
-  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'project_id';`);
+  await db.executeSql(`ALTER TYPE public.entity_type ADD VALUE IF NOT EXISTS 'field_station';`);
   db.closeConnections();
   return null;
 };
