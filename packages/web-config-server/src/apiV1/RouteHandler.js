@@ -52,11 +52,9 @@ export class RouteHandler {
     }
   }
 
-  async fetchProject() {
-    return this.models.project.findOne({ code: this.query.projectCode || 'explore' });
-  }
+  // arrow functions to avoid binding issues by callers e.g. via this.routeHandler.fetchProject
+  fetchProject = async () =>
+    this.models.project.findOne({ code: this.query.projectCode || 'explore' });
 
-  async fetchHierarchyId() {
-    return (await this.fetchProject()).entity_hierarchy_id;
-  }
+  fetchHierarchyId = async () => (await this.fetchProject()).entity_hierarchy_id;
 }
