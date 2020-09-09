@@ -9,5 +9,6 @@
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
+    "@tupaia/utils": "1.0.0"
   }
 }
