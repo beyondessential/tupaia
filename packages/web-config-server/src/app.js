@@ -48,10 +48,6 @@ export async function createApp() {
   // Connect to db
   const database = new TupaiaDatabase();
 
-  // Pre-cache entity hierarchy details
-  const entityHierarchyCacher = new EntityHierarchyCacher(database);
-  await entityHierarchyCacher.buildAndCacheAll();
-
   // Attach database to legacy singleton models
   BaseModel.database = database;
 
@@ -63,6 +59,10 @@ export async function createApp() {
     req.authenticator = authenticator;
     next();
   });
+
+  // Pre-cache entity hierarchy details
+  const entityHierarchyCacher = new EntityHierarchyCacher(modelRegistry);
+  await entityHierarchyCacher.buildAndCacheAll();
 
   // Initialise sessions
   bindUserSessions(app);
