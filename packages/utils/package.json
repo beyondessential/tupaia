@@ -1,5 +1,6 @@
 {
   "name": "@tupaia/utils",
+  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
