@@ -91,7 +91,7 @@ const constructAllValuesAreOfType = type => object => {
   Object.entries(object).forEach(([key, value]) => {
     // eslint-disable-next-line valid-typeof
     if (typeof value !== type) {
-      throw new ValidationError(`Value '${key}' is not a number: '${value}'`);
+      throw new ValidationError(`Value '${key}' is not a ${type}: '${value}'`);
     }
   });
 };
