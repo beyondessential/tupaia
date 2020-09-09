@@ -87,13 +87,16 @@ export const isPlainObject = value => {
   }
 };
 
-export const allValuesAreNumbers = object => {
+const constructAllValuesAreOfType = type => object => {
   Object.entries(object).forEach(([key, value]) => {
-    if (typeof value !== 'number') {
+    // eslint-disable-next-line valid-typeof
+    if (typeof value !== type) {
       throw new ValidationError(`Value '${key}' is not a number: '${value}'`);
     }
   });
 };
+
+export const allValuesAreNumbers = constructAllValuesAreOfType('number');
 
 export const fieldHasContent = value => {
   if (value === undefined || value === null || value.length === 0) {
