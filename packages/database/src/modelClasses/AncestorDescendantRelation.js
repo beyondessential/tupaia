@@ -17,14 +17,11 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
     return AncestorDescendantRelationType;
   }
 
-  async getChildIdToParentIdMap(hierarchyId) {
-    return reduceToDictionary(
-      await this.find(
-        { entity_hierarchy_id: hierarchyId, generational_distance: 1 },
-        { columns: [{ child_id: 'descendant_id', parent_id: 'ancestor_id' }] },
-      ),
-      'child_id',
-      'parent_id',
-    );
+  async getChildIdToParentId(hierarchyId) {
+    const relationRecords = await this.find({
+      entity_hierarchy_id: hierarchyId,
+      generational_distance: 1,
+    });
+    return reduceToDictionary(relationRecords, 'descendant_id', 'ancestor_id');
   }
 }

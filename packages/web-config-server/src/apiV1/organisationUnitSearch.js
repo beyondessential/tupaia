@@ -45,7 +45,7 @@ export default class extends RouteHandler {
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
     const matchingEntities = await this.getMatchingEntities(searchString, allEntities, limit);
 
-    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentIdMap(
+    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentId(
       project.entity_hierarchy_id,
     );
     const entityById = keyBy(allEntities, 'id');

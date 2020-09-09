@@ -35,7 +35,7 @@ export default class extends RouteHandler {
       ...countryDescendants,
     ]);
 
-    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentIdMap(
+    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentId(
       project.entity_hierarchy_id,
     );
 
