@@ -9,6 +9,11 @@ export const indicators = {
         SSWT1022: 'FINAL_EACH_WEEK',
         SSWT1023: 'FINAL_EACH_WEEK',
       },
+      defaultValues: {
+        SSWT1021: 0,
+        SSWT1022: 0,
+        SSWT1023: 0,
+      },
     },
   },
   mrdtPositiveConsultationsAgainstTests: {
