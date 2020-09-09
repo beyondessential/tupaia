@@ -6,6 +6,7 @@
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
     "test": "mocha",
+    "test-debug": "mocha --inspect-brk",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",

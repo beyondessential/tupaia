@@ -6,12 +6,14 @@
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "test": "mocha",
+    "test-debug": "mocha --inspect-brk",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
     "@tupaia/data-api": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
+    "@tupaia/weather-api": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "case": "^1.5.5",
     "lodash.flatten": "^4.4.0",
