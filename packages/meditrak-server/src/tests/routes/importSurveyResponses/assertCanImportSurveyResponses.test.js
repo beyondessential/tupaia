@@ -5,10 +5,9 @@
 
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../getModels';
-import { upsertEntity } from '../../testUtilities';
-
 import { assertCanImportSurveyResponses } from '../../../routes/importSurveyResponses/assertCanImportSurveyResponses';
 
 const DEFAULT_POLICY = {
@@ -20,26 +19,26 @@ const DEFAULT_POLICY = {
 };
 
 describe('Permissions checker for Importing Survey Responses', async () => {
-  before(async () => {
-    await upsertEntity({ id: 'KI_1_test', code: 'KI_1_test', country_code: 'KI' });
-    await upsertEntity({ id: 'KI_2_test', code: 'KI_2_test', country_code: 'KI' });
-    await upsertEntity({ id: 'KI_3_test', code: 'KI_3_test', country_code: 'KI' });
-
-    await upsertEntity({ id: 'VU_1_test', code: 'VU_1_test', country_code: 'VU' });
-    await upsertEntity({ id: 'VU_2_test', code: 'VU_2_test', country_code: 'VU' });
-    await upsertEntity({ id: 'VU_3_test', code: 'VU_3_test', country_code: 'VU' });
-
-    await upsertEntity({ id: 'SB_1_test', code: 'SB_1_test', country_code: 'SB' });
-    await upsertEntity({ id: 'SB_2_test', code: 'SB_2_test', country_code: 'SB' });
-    await upsertEntity({ id: 'SB_3_test', code: 'SB_3_test', country_code: 'SB' });
-
-    await upsertEntity({ id: 'LA_1_test', code: 'LA_1_test', country_code: 'LA' });
-    await upsertEntity({ id: 'LA_2_test', code: 'LA_2_test', country_code: 'LA' });
-    await upsertEntity({ id: 'LA_3_test', code: 'LA_3_test', country_code: 'LA' });
-  });
-
   const models = getModels();
   const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
+
+  before(async () => {
+    await findOrCreateDummyRecord(models.entity, { code: 'KI_1_test', country_code: 'KI' });
+    await findOrCreateDummyRecord(models.entity, { code: 'KI_2_test', country_code: 'KI' });
+    await findOrCreateDummyRecord(models.entity, { code: 'KI_3_test', country_code: 'KI' });
+
+    await findOrCreateDummyRecord(models.entity, { code: 'VU_1_test', country_code: 'VU' });
+    await findOrCreateDummyRecord(models.entity, { code: 'VU_2_test', country_code: 'VU' });
+    await findOrCreateDummyRecord(models.entity, { code: 'VU_3_test', country_code: 'VU' });
+
+    await findOrCreateDummyRecord(models.entity, { code: 'SB_1_test', country_code: 'SB' });
+    await findOrCreateDummyRecord(models.entity, { code: 'SB_2_test', country_code: 'SB' });
+    await findOrCreateDummyRecord(models.entity, { code: 'SB_3_test', country_code: 'SB' });
+
+    await findOrCreateDummyRecord(models.entity, { code: 'LA_1_test', country_code: 'LA' });
+    await findOrCreateDummyRecord(models.entity, { code: 'LA_2_test', country_code: 'LA' });
+    await findOrCreateDummyRecord(models.entity, { code: 'LA_3_test', country_code: 'LA' });
+  });
 
   it('Sufficient permissions: Should allow importing survey responses when users have permission group access to the countries of all the entities (of the survey responses). All survey responses only has 1 permission group', async () => {
     //Has Admin access to KI.

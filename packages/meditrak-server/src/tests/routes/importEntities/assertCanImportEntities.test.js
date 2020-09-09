@@ -6,7 +6,6 @@
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-
 import { assertCanImportEntities } from '../../../routes/importEntities/assertCanImportEntities';
 
 const DEFAULT_POLICY = {
@@ -17,7 +16,7 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-describe('Permissions checker for Importing Entities', async () => {
+describe('assertCanImportEntities(): Permissions checker for Importing Entities', async () => {
   const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 
   it('Sufficient permissions: Should allow importing entities within 1 country if users have access to the country that the entities are within', async () => {

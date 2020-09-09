@@ -8,7 +8,6 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { buildAndInsertSurveys } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../getModels';
-
 import { assertCanImportSurveys } from '../../../routes/importSurveys/assertCanImportSurveys';
 
 const DEFAULT_POLICY = {
@@ -19,7 +18,7 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-describe('Permissions checker for Importing Surveys', async () => {
+describe('assertCanImportSurveys(): Permissions checker for Importing Surveys', async () => {
   const models = getModels();
 
   before(async () => {
