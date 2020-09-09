@@ -15,6 +15,7 @@ type ArrayDataElement = [string, string, string, number]; // dataElement, orgUni
  * 20192020 => analytics exist for periods: 2019, 2020
  */
 const ARRAY_DATA_ELEMENTS: ArrayDataElement[] = [
+  ['Z_To_2019', 'TO', '2019', 0],
   ['A_To_2019', 'TO', '2019', 1],
   ['B_To_2019', 'TO', '2019', 2],
   ['C_To_2019', 'TO', '2019', 3],

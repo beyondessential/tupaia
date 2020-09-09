@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -28,6 +29,16 @@ describe('buildArithmetic', () => {
         'a data element referenced in the formula has no defined aggregation',
         { formula: 'A + B', aggregation: { A: 'MOST_RECENT' } },
         /B.* has no aggregation defined/,
+      ],
+      [
+        'a data element not referenced in the formula but has a default',
+        { formula: 'A + B', aggregation: { A: 'MOST_RECENT', B: 'SUM' }, defaultValues: { C: 10 } },
+        /C.* is in defaultValues but not referenced in the formula/,
+      ],
+      [
+        'a default value must be a number',
+        { formula: 'A + 1', aggregation: { A: 'SUM' }, defaultValues: { A: '10' } },
+        /Value 'A' is not a number: '10'/,
       ],
     ];
 
@@ -162,6 +173,47 @@ describe('buildArithmetic', () => {
           aggregation: getAggregationForCodes(['C_ToPg_2019', 'D_To_20192020', 'E_Pg_20192020']),
         },
         [],
+      ],
+      [
+        'some combos include an undefined data element, but all defaults defined',
+        {
+          formula: 'C_ToPg_2019 + E_Pg_20192020',
+          aggregation: getAggregationForCodes(['C_ToPg_2019', 'E_Pg_20192020']),
+          defaultValues: {
+            C_ToPg_2019: 10,
+            E_Pg_20192020: 100,
+          },
+        },
+        [
+          { organisationUnit: 'TO', period: '2019', value: 103 },
+          { organisationUnit: 'PG', period: '2019', value: 8.8 },
+          { organisationUnit: 'PG', period: '2020', value: 65 },
+        ],
+      ],
+      [
+        'some combos include an undefined data element, but not all defaults defined',
+        {
+          formula: 'C_ToPg_2019 + E_Pg_20192020',
+          aggregation: getAggregationForCodes(['C_ToPg_2019', 'E_Pg_20192020']),
+          defaultValues: {
+            C_ToPg_2019: 10,
+          },
+        },
+        [
+          { organisationUnit: 'PG', period: '2019', value: 8.8 },
+          { organisationUnit: 'PG', period: '2020', value: 65 },
+        ],
+      ],
+      [
+        "defaults don't replace 0s",
+        {
+          formula: 'Z_To_2019 * 2',
+          aggregation: getAggregationForCodes(['Z_To_2019']),
+          defaultValues: {
+            Z_To_2019: 10,
+          },
+        },
+        [{ organisationUnit: 'TO', period: '2019', value: 0 }],
       ],
     ];
 
