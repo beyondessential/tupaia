@@ -27,7 +27,7 @@ const FileName = styled.span`
 
 export const FileUploadField = ({ onChange, name }) => {
   const inputEl = useRef(null);
-  const [fileName, setFileName] = useState(null);
+  const [fileName, setFileName] = useState('No File chosen');
 
   const handleChange = event => {
     let newName;
