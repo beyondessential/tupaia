@@ -88,6 +88,9 @@ const number = (value, { presentationOptions = {} }) => {
 const defaultFormatter = input =>
   Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(2)(input);
 
+const oneDecimalPlace = input =>
+  Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(1)(input);
+
 const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.TEXT]: text,
   [VALUE_TYPES.PERCENTAGE]: percentage,
@@ -96,6 +99,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.CURRENCY]: currency,
   [VALUE_TYPES.BOOLEAN]: boolean,
   [VALUE_TYPES.NUMBER]: number,
+  [VALUE_TYPES.ONE_DECIMAL_PLACE]: oneDecimalPlace,
 };
 
 export const formatDataValue = (value, valueType, metadata = {}) => {
