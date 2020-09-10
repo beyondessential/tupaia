@@ -45,8 +45,18 @@ describe('composePercentagesPerPeriod', () => {
     stubComposeDataPerPeriod({ data });
 
     return expect(composePercentagesPerPeriod(config)).to.eventually.have.deep.property('data', [
-      { timestamp: 1569888000000, name: 'Oct 2019', result: 0.5 },
-      { timestamp: 1572566400000, name: 'Nov 2019', result: 0.75 },
+      {
+        timestamp: 1569888000000,
+        name: 'Oct 2019',
+        result: 0.5,
+        result_metadata: { numerator: 1, denominator: 2 },
+      },
+      {
+        timestamp: 1572566400000,
+        name: 'Nov 2019',
+        result: 0.75,
+        result_metadata: { numerator: 3, denominator: 4 },
+      },
     ]);
   });
 
@@ -84,13 +94,17 @@ describe('composePercentagesPerPeriod', () => {
         timestamp: 1569888000000,
         name: 'Oct 2019',
         positivePercentage: 0.5,
+        positivePercentage_metadata: { numerator: 1, denominator: 2 },
         femalePercentage: 0.25,
+        femalePercentage_metadata: { numerator: 150, denominator: 600 },
       },
       {
         timestamp: 1572566400000,
         name: 'Nov 2019',
         positivePercentage: 0.75,
+        positivePercentage_metadata: { numerator: 3, denominator: 4 },
         femalePercentage: 0.5,
+        femalePercentage_metadata: { numerator: 300, denominator: 600 },
       },
     ]);
   });
@@ -110,7 +124,12 @@ describe('composePercentagesPerPeriod', () => {
     stubComposeDataPerPeriod({ data });
 
     return expect(composePercentagesPerPeriod(config)).to.eventually.have.deep.property('data', [
-      { timestamp: 1572566400000, name: 'Nov 2019', result: 0.75 },
+      {
+        timestamp: 1572566400000,
+        name: 'Nov 2019',
+        result: 0.75,
+        result_metadata: { numerator: 3, denominator: 4 },
+      },
     ]);
   });
 });

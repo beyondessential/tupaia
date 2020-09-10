@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const id = {
@@ -21,6 +22,7 @@ const type = {
 const description = {
   Header: 'Description',
   source: 'description',
+  type: 'tooltip',
 };
 
 const name = {
@@ -37,12 +39,14 @@ const point = {
   Header: 'Point',
   source: 'point',
   filterable: false,
+  type: 'tooltip',
 };
 
 const bounds = {
   Header: 'Bounds',
   source: 'bounds',
   filterable: false,
+  type: 'tooltip',
 };
 
 const DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds];
@@ -54,11 +58,16 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const DisasterResponsePage = () => (
+export const DisasterResponsePage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Disasters"
     endpoint="disaster"
     columns={DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+DisasterResponsePage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

@@ -12,7 +12,6 @@ export { fetchComposedData } from './fetchComposedData';
 export { addMetadataToEvents, isMetadataKey, metadataKeysToDataElementMap } from './eventMetadata';
 export { composeDataByDataClass } from './composeDataByDataClass';
 export {
-  checkValueSatisfiesCondition,
   getEventsThatSatisfyConditions,
   getAnalyticsThatSatisfyConditions,
   countAnalyticsThatSatisfyConditions,

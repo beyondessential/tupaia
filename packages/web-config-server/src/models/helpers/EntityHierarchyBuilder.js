@@ -2,7 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { AsyncTaskQueue } from '@tupaia/utils';
 
+const BATCH_SIZE = 20; // tuned to have optimal performance
 export class EntityHierarchyBuilder {
   constructor(entityModel, entityRelationModel) {
     this.models = {
@@ -11,6 +13,7 @@ export class EntityHierarchyBuilder {
     };
     this.cachedAncestorPromises = {};
     this.cachedDescendantPromises = {};
+    this.taskQueue = new AsyncTaskQueue(BATCH_SIZE);
     entityModel.addChangeHandler(this.invalidateCaches);
     entityRelationModel.addChangeHandler(this.invalidateCaches);
   }
@@ -25,16 +28,14 @@ export class EntityHierarchyBuilder {
   async getDescendants(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
     if (!this.cachedDescendantPromises[cacheKey]) {
-      if (hierarchyId) {
-        const rootEntity = { id: entityId };
-        this.cachedDescendantPromises[cacheKey] = this.recursivelyFetchDescendants(
-          [rootEntity],
-          hierarchyId,
-        );
-      } else {
+      this.cachedDescendantPromises[cacheKey] = this.taskQueue.add(async () => {
+        if (hierarchyId) {
+          const rootEntity = { id: entityId };
+          return this.recursivelyFetchDescendants([rootEntity], hierarchyId);
+        }
         // no alternative hierarchy prescribed, use the faster all-in-one sql query
-        this.cachedDescendantPromises[cacheKey] = this.getDescendantsCanonically(entityId);
-      }
+        return this.getDescendantsCanonically(entityId);
+      });
     }
     return this.cachedDescendantPromises[cacheKey];
   }
@@ -42,12 +43,14 @@ export class EntityHierarchyBuilder {
   async getAncestors(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
     if (!this.cachedAncestorPromises[cacheKey]) {
-      const entity = await this.models.entity.findOne(
-        { id: entityId },
-        {},
-        { columns: this.models.entity.minimalFields },
-      );
-      this.cachedAncestorPromises[cacheKey] = this.recursivelyFetchAncestors(entity, hierarchyId);
+      this.cachedAncestorPromises[cacheKey] = this.taskQueue.add(async () => {
+        const entity = await this.models.entity.findOne(
+          { id: entityId },
+          {},
+          { columns: this.models.entity.minimalFields },
+        );
+        return this.recursivelyFetchAncestors(entity, hierarchyId);
+      });
     }
     return this.cachedAncestorPromises[cacheKey];
   }
