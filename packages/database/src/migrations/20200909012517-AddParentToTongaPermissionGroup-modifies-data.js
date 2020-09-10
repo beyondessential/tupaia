@@ -14,7 +14,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 const PERMISSION_GROUP_NAME = 'Tonga Screening Forms CH11/HP02';
-const PARENT_NAME = 'Tonga Public Health Heads';
+const PARENT_NAME = 'Tonga Health Promotion Unit';
 
 exports.up = async function(db) {
   const parentId = (
