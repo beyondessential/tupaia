@@ -1,5 +1,6 @@
 {
   "name": "@tupaia/ui-components",
+  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
   "description": "A library of user interface components for the Tupaia project.",

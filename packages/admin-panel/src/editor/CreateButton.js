@@ -19,7 +19,10 @@ export const CreateButtonComponent = ({ dispatch, label, actionConfig }) => (
 );
 
 CreateButtonComponent.propTypes = {
-  actionConfig: PropTypes.object.isRequired,
+  actionConfig: PropTypes.PropTypes.shape({
+    editEndpoint: PropTypes.string,
+    fields: PropTypes.array,
+  }).isRequired,
   dispatch: PropTypes.func.isRequired,
   label: PropTypes.string,
 };
