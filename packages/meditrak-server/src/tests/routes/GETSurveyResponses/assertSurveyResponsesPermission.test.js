@@ -17,7 +17,7 @@ import {
   assertSurveyResponsePermissions,
 } from '../../../routes/GETSurveyResponses/assertSurveyResponsePermissions';
 
-describe.only('Permissions checker for GETSurveyResponses', async () => {
+describe('Permissions checker for GETSurveyResponses', async () => {
   const DEFAULT_POLICY = {
     VU: ['Admin', 'Donor'],
     LA: ['Admin'],
