@@ -109,7 +109,6 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
   app.get('(/v[0-9]+)/options/:recordId?', getOptions);
   app.get('(/v[0-9]+)/optionSets/:recordId?', getOptionSets);
-  app.get('(/v[0-9]+)/surveys/:recordId?', getOptionSets);
 
   /**
    * POST routes
