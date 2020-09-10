@@ -40,8 +40,8 @@ export class PermissionGroupModel extends DatabaseModel {
     return PermissionGroupType;
   }
 
-  async getPermissionGroupNameById(allPermissionGroupIds) {
-    const allPermissionGroups = await this.findManyById(allPermissionGroupIds);
-    return reduceToDictionary(allPermissionGroups, 'id', 'name');
+  async getPermissionGroupNameById(permissionGroupIds) {
+    const permissionGroups = await this.findManyById(permissionGroupIds);
+    return reduceToDictionary(permissionGroups, 'id', 'name');
   }
 }

@@ -38,13 +38,15 @@ export const filterSurveyGroupsByPermissions = async (accessPolicy, models, surv
   return filteredSurveyGroups;
 };
 
-export const assertSurveyGroupsPermissions = async (accessPolicy, models, surveyGroup) => {
-  const filteredSurveyGroups = await filterSurveyGroupsByPermissions(accessPolicy, models, [
-    surveyGroup,
-  ]);
+export const assertSurveyGroupsPermissions = async (accessPolicy, models, surveyGroups) => {
+  const filteredSurveyGroups = await filterSurveyGroupsByPermissions(
+    accessPolicy,
+    models,
+    surveyGroups,
+  );
 
-  if (!filteredSurveyGroups.length) {
-    throw new Error('You do not have permissions to access this survey group');
+  if (filteredSurveyGroups.length !== surveyGroups.length) {
+    throw new Error('You do not have permissions to access the requested survey group(s)');
   }
 
   return true;

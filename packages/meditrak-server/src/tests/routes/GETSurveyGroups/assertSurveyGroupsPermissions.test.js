@@ -30,12 +30,10 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   before(async () => {
     //Set up the survey groups and their surveys
     surveyGroup1 = await findOrCreateDummyRecord(models.surveyGroup, {
-      id: 'survey_group_1_test',
-      name: `Test survey group 1`,
+      name: 'Test survey group 1',
     });
     surveyGroup2 = await findOrCreateDummyRecord(models.surveyGroup, {
-      id: 'survey_group_2_test',
-      name: `Test survey group 2`,
+      name: 'Test survey group 2',
     });
     surveyGroups = [surveyGroup1, surveyGroup2];
 
@@ -54,28 +52,28 @@ describe('Permissions checker for GETSurveyGroups', async () => {
         name: 'Test Survey 1',
         permission_group_id: adminPermissionGroup.id,
         country_ids: [vanuatuCountry.id],
-        survey_group_id: 'survey_group_1_test',
+        survey_group_id: surveyGroup1.id,
       },
       {
         code: 'TEST_SURVEY_2',
         name: 'Test Survey 2',
         permission_group_id: adminPermissionGroup.id,
         country_ids: [vanuatuCountry.id],
-        survey_group_id: 'survey_group_1_test',
+        survey_group_id: surveyGroup1.id,
       },
       {
         code: 'TEST_SURVEY_3',
         name: 'Test Survey 3',
         permission_group_id: donorPermissionGroup.id,
         country_ids: [vanuatuCountry.id],
-        survey_group_id: 'survey_group_1_test',
+        survey_group_id: surveyGroup1.id,
       },
       {
         code: 'TEST_SURVEY_4',
         name: 'Test Survey 4',
         permission_group_id: adminPermissionGroup.id,
         country_ids: [laosCountry.id],
-        survey_group_id: 'survey_group_2_test',
+        survey_group_id: surveyGroup2.id,
       },
     ]);
   });
@@ -83,49 +81,54 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   describe('filterSurveyGroupsByPermissions()', async () => {
     it('Sufficient permissions: Should filter any survey groups that users do not have access to any of the surveys within the group', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
+      const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
 
-      expect(result.length).to.equal(2);
-      expect(result[0]).to.equal(surveyGroup1);
-      expect(result[1]).to.equal(surveyGroup2);
+      expect(results.length).to.equal(2);
+      expect(results[0]).to.equal(surveyGroup1);
+      expect(results[1]).to.equal(surveyGroup2);
     });
 
     it('Insufficient permissions: Should filter any survey groups that users do not have access to any of the surveys within the group', async () => {
-      //Remove the permission of VU to have insufficient permissions to some surveys.
+      //Remove Admin permission of VU to have insufficient permissions to surveyGroup1.
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        // VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/],
         LA: ['Admin'],
       };
       const accessPolicy = new AccessPolicy(policy);
-      const result = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
+      const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
 
-      expect(result[0]).to.equal(surveyGroup2); //Should have access to only TEST_SURVEY_GROUP_2 survey group
+      expect(results[0]).to.equal(surveyGroup2); //Should have access to only surveyGroup2
     });
   });
 
   describe('assertSurveyGroupsPermissions()', async () => {
     it('Sufficient permissions: Should return true if users have access to any of the surveys within the survey group', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await assertSurveyGroupsPermissions(accessPolicy, models, surveyGroup1);
+      const result = await assertSurveyGroupsPermissions(accessPolicy, models, [
+        surveyGroup1,
+        surveyGroup2,
+      ]);
 
       expect(result).to.true;
     });
 
     it('Insufficient permissions: Should throw an exception if users do not have access to any of the surveys within the survey group', async () => {
-      //Remove the permission of VU to have insufficient permissions to some surveys.
+      //Remove Admin permission of VU to have insufficient permissions to surveyGroup1.
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        // VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/],
         LA: ['Admin'],
       };
       const accessPolicy = new AccessPolicy(policy);
 
-      expect(() => assertSurveyGroupsPermissions(accessPolicy, models, surveyGroup1)).to.throw; //Should have access to only TEST_SURVEY_GROUP_2
+      expect(() =>
+        assertSurveyGroupsPermissions(accessPolicy, models, [surveyGroup1, surveyGroup2]),
+      ).to.throw; //Should have access to only surveyGroup2
     });
   });
 });

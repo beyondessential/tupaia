@@ -23,7 +23,7 @@ export class GETSurveyGroups extends GETHandler {
     const surveyGroup = await super.findSingleRecord(surveyGroupId, options);
 
     const surveyGroupChecker = accessPolicy =>
-      assertSurveyGroupPermissions(accessPolicy, this.models, surveyGroup);
+      assertSurveyGroupPermissions(accessPolicy, this.models, [surveyGroup]);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyGroupChecker]));
 
