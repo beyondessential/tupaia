@@ -120,7 +120,7 @@ export class DataBuilder {
   /**
    * Fetch ancestor of type for each organisationUnit in event
    */
-  async mapAncestorOfTypeToEvents(events, ancestorType) {
+  async addAncestorsToEvents(events, ancestorType) {
     const hierarchyId = await this.fetchEntityHierarchyId();
     const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
     const ancestorDetailsByDescendantCode = await this.models.entity.fetchAncestorDetailsByDescendantCode(
@@ -128,14 +128,13 @@ export class DataBuilder {
       hierarchyId,
       ancestorType,
     );
-    const eventsWithAncestors = events.map(event => {
+    return events.map(event => {
       const { name: ancestorName } = ancestorDetailsByDescendantCode[event.orgUnit];
       return {
         ...event,
         orgUnitAncestor: ancestorName,
       };
     });
-    return eventsWithAncestors;
   }
 
   sortEventsByAncestor = events => events.sort(getSortByKey('orgUnitAncestor'));
