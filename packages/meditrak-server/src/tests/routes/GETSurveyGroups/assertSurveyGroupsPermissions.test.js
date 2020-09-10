@@ -83,9 +83,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
       const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
 
-      expect(results.length).to.equal(2);
-      expect(results[0]).to.equal(surveyGroup1);
-      expect(results[1]).to.equal(surveyGroup2);
+      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
     });
 
     it('Insufficient permissions: Should filter any survey groups that users do not have access to any of the surveys within the group', async () => {
@@ -100,7 +98,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       const accessPolicy = new AccessPolicy(policy);
       const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
 
-      expect(results[0]).to.equal(surveyGroup2); //Should have access to only surveyGroup2
+      expect(results.map(r => r.id)).to.deep.equal([surveyGroup2.id]); //Should have access to only surveyGroup2
     });
   });
 
