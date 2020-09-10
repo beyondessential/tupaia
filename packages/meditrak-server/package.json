@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "REST API for Meditrak",
   "main": "handler.js",
-  "private": true,
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
@@ -58,7 +57,7 @@
     "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha",
-    "build": "rm -rf dist && babel src -s --out-dir dist --ignore '**src/database/migrations','src/tests/**' --copy-files --no-copy-ignored --config-file '../../babel.config.json'",
+    "build": "rm -rf dist && babel src -s --out-dir dist --source-maps --ignore '**src/database/migrations','src/tests/**' --copy-files --no-copy-ignored --config-file '../../babel.config.json'",
     "prestart": "npm run -s build",
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9999",

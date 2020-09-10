@@ -1,7 +1,7 @@
 {
   "name": "@tupaia/web-frontend",
-  "version": "1.0.0",
   "private": true,
+  "version": "1.0.0",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@mapbox/polyline": "^0.2.0",
@@ -24,9 +24,9 @@
     "query-string": "^5.0.1",
     "radium": "^0.19.5",
     "re-reselect": "^3.4.0",
-    "react": "^16.10.2",
+    "react": "^16.13.1",
     "react-animations": "^1.0.0",
-    "react-dom": "^16.10.2",
+    "react-dom": "^16.13.1",
     "react-leaflet": "^1.4.0",
     "react-redux": "^5.0.5",
     "react-svg-loader": "^2.1.0",
@@ -44,6 +44,11 @@
   "devDependencies": {
     "@cypress/snapshot": "^2.1.7",
     "@testing-library/cypress": "^6.0.0",
+    "@storybook/addon-essentials": "^6.0.10",
+    "@storybook/react": "^6.0.10",
+    "@testing-library/jest-dom": "^5.9.0",
+    "@testing-library/react": "^10.0.6",
+    "@testing-library/user-event": "^12.0.11",
     "autoprefixer": "7.1.0",
     "babel-preset-react-app": "^9.1.2",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
@@ -85,6 +90,7 @@
     "build-exporter": "REACT_APP_APP_TYPE=exporter node scripts/build.js && rm -rf builds/exporter && mv build builds/exporter",
     "test": "node scripts/test.js --env=jsdom",
     "cypress:run": "cypress run",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "storybook": "start-storybook -s ./public -p 6006"
   }
 }

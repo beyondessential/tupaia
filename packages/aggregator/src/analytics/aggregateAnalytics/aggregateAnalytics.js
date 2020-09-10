@@ -88,6 +88,8 @@ export const aggregateAnalytics = (
         },
         YEAR,
       );
+    case AGGREGATION_TYPES.SUM_EACH_YEAR:
+      return getSumValuePerPeriod(analytics, aggregationConfig, YEAR);
     case AGGREGATION_TYPES.SUM_PREVIOUS_EACH_DAY:
       return sumPreviousPerPeriod(analytics, aggregationConfig, DAY);
     case AGGREGATION_TYPES.SUM_PER_ORG_GROUP:

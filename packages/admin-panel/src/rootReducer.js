@@ -4,7 +4,6 @@
  */
 
 import { combineReducers } from 'redux';
-import { routerReducer as routing } from 'react-router-redux';
 import { persistReducer } from 'redux-persist';
 import localforage from 'localforage';
 import { reducer as authentication } from './authentication';
@@ -25,7 +24,6 @@ const persistedAuthenticationReducer = persistReducer(
 
 export const rootReducer = combineReducers({
   authentication: persistedAuthenticationReducer,
-  routing,
   tables,
   importExport,
   autocomplete,

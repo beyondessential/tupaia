@@ -1,10 +1,10 @@
 {
   "name": "@tupaia/data-broker",
+  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },

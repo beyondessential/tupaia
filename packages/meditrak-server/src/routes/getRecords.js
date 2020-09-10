@@ -59,9 +59,7 @@ const CUSTOM_FINDERS = {
   [createMultiResourceKey(TYPES.DATA_SOURCE, TYPES.DATA_SOURCE)]: findDataElementsInDataGroup,
 };
 const CUSTOM_FOREIGN_KEYS = {
-  [createMultiResourceKey(TYPES.USER_COUNTRY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
-  [createMultiResourceKey(TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
-  [createMultiResourceKey(TYPES.USER_FACILITY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
+  [createMultiResourceKey(TYPES.USER_ENTITY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
 };
 const getForeignKeyColumn = (recordType, parentRecordType) => {
   const key = createMultiResourceKey(recordType, parentRecordType);

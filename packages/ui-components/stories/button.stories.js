@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import MuiBox from '@material-ui/core/Box';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import styled from 'styled-components';
@@ -17,6 +16,7 @@ import {
   SuccessButton,
   WarningButton,
   LightOutlinedButton,
+  ErrorOutlinedButton,
   GreyOutlinedButton,
 } from '../src';
 import * as COLORS from './story-utils/theme/colors';
@@ -33,9 +33,7 @@ const Container = styled(MuiBox)`
 
 export const primary = () => (
   <Container>
-    <Button onClick={action('Primary button clicked')}>
-      Button
-    </Button>
+    <Button>Button</Button>
   </Container>
 );
 
@@ -66,6 +64,12 @@ export const success = () => (
 export const outlined = () => (
   <Container>
     <Button variant="outlined">Outlined</Button>
+  </Container>
+);
+
+export const errorOutlined = () => (
+  <Container>
+    <ErrorOutlinedButton>Outlined</ErrorOutlinedButton>
   </Container>
 );
 

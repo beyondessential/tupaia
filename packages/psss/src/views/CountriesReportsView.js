@@ -19,6 +19,7 @@ import {
   Virus,
 } from '@tupaia/ui-components';
 import {
+  DateToolbar,
   Container,
   Main,
   Sidebar,
@@ -69,7 +70,7 @@ export const CountriesReportsViewComponent = ({ isRegionalUser, activeEntity }) 
   return (
     <>
       <Header Title={<HeaderTitle title="Countries" />} ExportModal={WeeklyReportsExportModal} />
-      <BaseToolbar />
+      <DateToolbar />
       <Container>
         <Main data-testid="countries-table">
           <CountriesTable />

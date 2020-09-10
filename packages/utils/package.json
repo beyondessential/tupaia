@@ -1,10 +1,10 @@
 {
   "name": "@tupaia/utils",
+  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
@@ -19,5 +19,16 @@
     "validator": "^8.2.0",
     "winston": "^3.1.0",
     "xlsx": "^0.10.9"
+  },
+  "eslintConfig": {
+    "extends": "../../.eslintrc",
+    "overrides": [
+      {
+        "files": "**/src/testUtilities/**",
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@tupaia/meditrak-app",
-  "version": "1.8.107",
   "private": true,
+  "version": "1.8.107",
   "workspaces": {
     "nohoist": [
       "@react-native-community/async-storage",
