@@ -47,10 +47,6 @@ export const filterMapOverlaysByPermissions = async (accessPolicy, models, mapOv
         }
       }
 
-      if (hasAccessToMapOverlay === undefined) {
-        hasAccessToMapOverlay = accessPolicy.allowsSome(null, permissionGroup);
-      }
-
       accessCache[cacheKey] = hasAccessToMapOverlay;
     }
 

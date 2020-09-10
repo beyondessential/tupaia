@@ -31,6 +31,7 @@ export class GETMapOverlays extends GETHandler {
   }
 
   async findRecords(criteria, options) {
+    // ensure the permissions gate check is triggered, actual permissions will be assessed during filtering
     this.assertPermissions(allowNoPermissions);
     const mapOverlays = await this.database.find(this.recordType, criteria, options);
     return filterMapOverlaysByPermissions(this.accessPolicy, this.models, mapOverlays);

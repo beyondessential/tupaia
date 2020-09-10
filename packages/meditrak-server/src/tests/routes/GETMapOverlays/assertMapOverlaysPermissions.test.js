@@ -61,26 +61,28 @@ describe('Permissions checker for GETMapOverlays', async () => {
   describe('filterMapOverlaysByPermissions()', async () => {
     it('Sufficient permissions: Should return all the map overlays that users do not have access to their countries', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await filterMapOverlaysByPermissions(accessPolicy, models, [
+      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
         nationalMapOverlay1,
         nationalMapOverlay2,
       ]);
 
-      expect(result.length).to.equal(2);
-      expect(result[0]).to.equal(nationalMapOverlay1);
-      expect(result[1]).to.equal(nationalMapOverlay2);
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalMapOverlay1.id,
+        nationalMapOverlay2.id,
+      ]);
     });
 
     it('Sufficient permissions: Should return all the project level map overlays that users have access to any of their child countries', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await filterMapOverlaysByPermissions(accessPolicy, models, [
+      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
         nationalMapOverlay2,
         projectLevelMapOverlay,
       ]);
 
-      expect(result.length).to.equal(2);
-      expect(result[0]).to.equal(nationalMapOverlay2);
-      expect(result[1]).to.equal(projectLevelMapOverlay);
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalMapOverlay2.id,
+        projectLevelMapOverlay.id,
+      ]);
     });
 
     it('Insufficient permissions: Should filter out any map overlays that users do not have access to their countries', async () => {
@@ -90,58 +92,56 @@ describe('Permissions checker for GETMapOverlays', async () => {
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        // LA: ['Admin'],
+        LA: [/*'Admin'*/ 'Public'],
       };
       const accessPolicy = new AccessPolicy(policy);
-      const result = await filterMapOverlaysByPermissions(accessPolicy, models, [
+      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
         nationalMapOverlay1,
         nationalMapOverlay2,
       ]);
 
-      expect(result.length).to.equal(1);
-      expect(result[0]).to.equal(nationalMapOverlay1);
+      expect(results.map(r => r.id)).to.deep.equal([nationalMapOverlay1.id]);
     });
 
     it('Insufficient permissions: Should filter out any project level map overlays that users do not have access to any of their child countries', async () => {
       //Remove Admin permission of TO, KI, SB, VU to have insufficient permissions to access the project level map overlay.
       const policy = {
         DL: ['Public'],
-        // KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        // VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
         LA: ['Admin'],
-        // TO: ['Admin'],
+        TO: [/*'Admin'*/ 'Public'],
       };
       const accessPolicy = new AccessPolicy(policy);
-      const result = await filterMapOverlaysByPermissions(accessPolicy, models, [
+      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
         nationalMapOverlay2,
         projectLevelMapOverlay,
       ]);
 
-      expect(result.length).to.equal(1);
-      expect(result[0]).to.equal(nationalMapOverlay2);
+      expect(results.map(r => r.id)).to.deep.equal([nationalMapOverlay2.id]);
     });
   });
 
   describe('assertMapOverlaysPermissions()', async () => {
     it('Sufficient permissions: Should return true if users have access to all the map overlays', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await assertMapOverlaysPermissions(accessPolicy, models, [
+      const results = await assertMapOverlaysPermissions(accessPolicy, models, [
         nationalMapOverlay1,
         nationalMapOverlay2,
       ]);
 
-      expect(result).to.true;
+      expect(results).to.true;
     });
 
     it('Sufficient permissions: Should return true if the map overlays are project level and users have access to any of their child countries', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await assertMapOverlaysPermissions(accessPolicy, models, [
+      const results = await assertMapOverlaysPermissions(accessPolicy, models, [
         nationalMapOverlay2,
         projectLevelMapOverlay,
       ]);
 
-      expect(result).to.true;
+      expect(results).to.true;
     });
 
     it('Insufficient permissions: Should throw an exception if users do not have access to any of the countries of the map overlays', async () => {
@@ -151,7 +151,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        // LA: ['Admin'],
+        LA: [/*'Admin'*/ 'Public'],
       };
       const accessPolicy = new AccessPolicy(policy);
 
@@ -164,14 +164,14 @@ describe('Permissions checker for GETMapOverlays', async () => {
     });
 
     it('Insufficient permissions: Should throw an exception if the map overlays are project level and users do not have access to any of their child countries', async () => {
-      //Remove Admin permission of TO to have insufficient permissions to access the project level map overlay.
+      //Remove Admin permission of TO, KI, SB, VU to have insufficient permissions to access the project level map overlay.
       const policy = {
         DL: ['Public'],
-        // KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        // VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
         LA: ['Admin'],
-        //   TO: ['Admin'],
+        TO: [/*'Admin'*/ 'Public'],
       };
       const accessPolicy = new AccessPolicy(policy);
 

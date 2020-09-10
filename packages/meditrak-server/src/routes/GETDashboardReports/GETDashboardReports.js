@@ -33,6 +33,7 @@ export class GETDashboardReports extends GETHandler {
   }
 
   async findRecords(criteria, options) {
+    // ensure the permissions gate check is triggered, actual permissions will be assessed during filtering
     this.assertPermissions(allowNoPermissions);
     const dashboardReports = await this.database.find(this.recordType, criteria, options);
     return filterDashboardReportsByPermissions(this.accessPolicy, this.models, dashboardReports);

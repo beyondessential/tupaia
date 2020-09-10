@@ -6,9 +6,8 @@
 import moment from 'moment';
 
 const COMPARISON = `LIKE '%_test%'`;
-const getDeleteStatement = (table, mainConditions, extraConditions = []) => {
-  const defaultConditions = mainConditions || [`id ${COMPARISON}`];
-  const conditions = [...defaultConditions, ...extraConditions];
+const getDeleteStatement = (table, mainCondition = `id ${COMPARISON}`, extraConditions = []) => {
+  const conditions = [mainCondition, ...extraConditions];
   return `DELETE FROM "${table}" WHERE ${conditions.join(' OR ')};`;
 };
 
@@ -57,7 +56,7 @@ const TABLES_TO_CLEAR = [
 
 export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
   const mainConditions = {
-    dashboardGroup: [`code LIKE 'test%'`], //id of dashboard group is still Integer, so have this mainConditions to overwrite default comparison "id like '%test'"
+    dashboardGroup: `code ${COMPARISON}`, // id of dashboard group is still Integer, so have the mainCondition test on code rather than id
   };
 
   const extraConditions = {
