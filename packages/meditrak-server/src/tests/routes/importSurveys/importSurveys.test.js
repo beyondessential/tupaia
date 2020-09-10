@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
-import { buildAndInsertSurveys } from '@tupaia/database';
+import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
@@ -24,14 +24,14 @@ const BES_ADMIN_POLICY = {
 };
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
-const EXISTING_TEST_SURVEY_CODE = 'TEST_EXISTING_SURVEY_IMPORT';
-const EXISTING_TEST_SURVEY_NAME = 'Test Existing Survey Import';
-const EXISTING_TEST_SURVEY_CODE_2 = 'TEST_EXISTING_SURVEY_IMPORT_2';
-const EXISTING_TEST_SURVEY_NAME_2 = 'Test Existing Survey Import 2';
-const NEW_TEST_SURVEY_NAME = 'Test New Survey Import';
-const NEW_TEST_SURVEY_NAME_2 = 'Test New Survey Import 2';
-const NEW_TEST_SURVEY_NAME_3 = 'Test New Survey Import 3';
-const NEW_TEST_SURVEY_NAME_4 = 'Test New Survey Import 4';
+const SERVICE_TYPE = 'tupaia';
+const EXISTING_TEST_SURVEY_CODE_1 = 'test_existing_survey_import_1';
+const EXISTING_TEST_SURVEY_NAME_1 = 'test_existing_survey_import 1';
+const EXISTING_TEST_SURVEY_CODE_2 = 'test_existing_survey_import_2';
+const EXISTING_TEST_SURVEY_NAME_2 = 'test_existing_survey_import 2';
+const NEW_TEST_SURVEY_NAME_1 = 'test_new_survey_import 1';
+const NEW_TEST_SURVEY_NAME_2 = 'test_new_survey_import 2';
+const NEW_TEST_SURVEY_NAME_3 = 'test_new_survey_import 3';
 
 const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
   sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').returns(policy);
@@ -50,18 +50,42 @@ describe('importSurveys(): POST import/surveys', () => {
       vanuatuCountry = await models.country.findOne({ code: 'VU' });
       kiribatiCountry = await models.country.findOne({ code: 'KI' });
 
+      const addQuestion = (id, type) =>
+        findOrCreateDummyRecord(
+          models.question,
+          {
+            code: id,
+          },
+          {
+            id,
+            text: `Test question ${id}`,
+            name: `Test question ${id}`,
+            type,
+          },
+        );
+
+      //Questions used for all the surveys
+      await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
+      await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
+
       await buildAndInsertSurveys(models, [
         {
-          code: EXISTING_TEST_SURVEY_CODE,
-          name: EXISTING_TEST_SURVEY_NAME,
+          code: EXISTING_TEST_SURVEY_CODE_1,
+          name: EXISTING_TEST_SURVEY_NAME_1,
           permission_group_id: adminPermissionGroup.id,
           country_ids: [vanuatuCountry.id],
+          dataGroup: {
+            service_type: 'tupaia',
+          },
         },
         {
           code: EXISTING_TEST_SURVEY_CODE_2,
           name: EXISTING_TEST_SURVEY_NAME_2,
           permission_group_id: adminPermissionGroup.id,
           country_ids: [kiribatiCountry.id],
+          dataGroup: {
+            service_type: 'tupaia',
+          },
         },
       ]);
     });
@@ -77,7 +101,9 @@ describe('importSurveys(): POST import/surveys', () => {
         await prepareStubAndAuthenticate(app);
 
         const response = await app
-          .post(`import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}`)
+          .post(
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&serviceType=${SERVICE_TYPE}`,
+          )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
         const { statusCode } = response;
 
@@ -91,13 +117,13 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}&countryIds=${kiribatiCountry.id}`,
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&countryIds=${kiribatiCountry.id}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 
         //Revert the countryIds back to Vanuatu for other test cases
         await models.survey.update(
-          { code: EXISTING_TEST_SURVEY_CODE },
+          { code: EXISTING_TEST_SURVEY_CODE_1 },
           { country_ids: [vanuatuCountry.id] },
         );
 
@@ -112,7 +138,9 @@ describe('importSurveys(): POST import/surveys', () => {
         await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
 
         const response = await app
-          .post(`import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}`)
+          .post(
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&serviceType=${SERVICE_TYPE}`,
+          )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
         const { statusCode } = response;
 
@@ -126,7 +154,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}`,
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
         const { statusCode } = response;
@@ -141,7 +169,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}`,
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
         const { statusCode } = response;
@@ -162,7 +190,9 @@ describe('importSurveys(): POST import/surveys', () => {
         await prepareStubAndAuthenticate(app, policy);
 
         const response = await app
-          .post(`import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}`)
+          .post(
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&serviceType=${SERVICE_TYPE}`,
+          )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 
         expectPermissionError(response, /Need Admin access to Vanuatu/);
@@ -182,7 +212,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}&countryIds=${kiribatiCountry.id}`,
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&countryIds=${kiribatiCountry.id}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 
@@ -203,7 +233,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}`,
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 
@@ -224,7 +254,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}`,
+            `import/surveys?surveyNames=${EXISTING_TEST_SURVEY_NAME_1}&surveyNames=${EXISTING_TEST_SURVEY_NAME_2}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 
@@ -240,7 +270,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME}&countryIds=${kiribatiCountry.id}`,
+            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_1}&countryIds=${kiribatiCountry.id}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
         const { statusCode } = response;
@@ -255,7 +285,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_3}&surveyNames=${NEW_TEST_SURVEY_NAME_4}&countryIds=${kiribatiCountry.id}`,
+            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_2}&surveyNames=${NEW_TEST_SURVEY_NAME_3}&countryIds=${kiribatiCountry.id}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
         const { statusCode } = response;
@@ -270,7 +300,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_3}&surveyNames=${NEW_TEST_SURVEY_NAME_4}&countryIds=${kiribatiCountry.id}`,
+            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_2}&surveyNames=${NEW_TEST_SURVEY_NAME_3}&countryIds=${kiribatiCountry.id}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
         const { statusCode } = response;
@@ -292,7 +322,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         const response = await app
           .post(
-            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_3}&surveyNames=${NEW_TEST_SURVEY_NAME_4}&countryIds=${kiribatiCountry.id}`,
+            `import/surveys?surveyNames=${NEW_TEST_SURVEY_NAME_2}&surveyNames=${NEW_TEST_SURVEY_NAME_3}&countryIds=${kiribatiCountry.id}&serviceType=${SERVICE_TYPE}`,
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 

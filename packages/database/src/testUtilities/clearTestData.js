@@ -56,7 +56,8 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
     api_request_log: [`request_time >= '${testStartTime}'`],
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
-    survey: [`code LIKE 'test%'`, `code LIKE '%test'`],
+    survey_screen_component: [`question_id ${COMPARISON}`],
+    survey: [`name LIKE 'test_%'`], //For testing importing new surveys
     user_entity_permission: [`permission_group_id ${COMPARISON}`],
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],

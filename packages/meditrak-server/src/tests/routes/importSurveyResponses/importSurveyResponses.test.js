@@ -42,9 +42,8 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
       const adminPermissionGroup = await models.permissionGroup.findOne({ name: 'Admin' });
       const demoLand = await models.country.findOne({ code: 'DL' });
 
-      await buildAndInsertSurveys(models, [
+      const [{ survey: survey1 }, { survey: survey2 }] = await buildAndInsertSurveys(models, [
         {
-          id: 'TEST_IMPORT_SURVEY_RESPONSES_1_test',
           code: 'TEST_IMPORT_SURVEY_RESPONSES_1_test',
           permission_group_id: adminPermissionGroup.id,
           country_ids: [demoLand.id],
@@ -64,7 +63,6 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
           ],
         },
         {
-          id: 'TEST_IMPORT_SURVEY_RESPONSES_2_test',
           code: 'TEST_IMPORT_SURVEY_RESPONSES_2_test',
           permission_group_id: adminPermissionGroup.id,
           country_ids: [demoLand.id],
@@ -122,8 +120,8 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
           },
         );
 
-      await createSurveyResponse('fdfcc42a44705c123a8_test', 'TEST_IMPORT_SURVEY_RESPONSES_1_test');
-      await createSurveyResponse('fdfcc42a44705c123e2_test', 'TEST_IMPORT_SURVEY_RESPONSES_2_test');
+      await createSurveyResponse('fdfcc42a44705c123a8_test', survey1.id);
+      await createSurveyResponse('fdfcc42a44705c123e2_test', survey2.id);
     });
 
     afterEach(() => {
