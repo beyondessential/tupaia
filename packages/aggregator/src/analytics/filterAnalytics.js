@@ -47,7 +47,7 @@ export const filterAnalytics = (analytics, filter = {}) => {
         );
       });
     } else {
-      //Asume that the value is raw data (eg: value: 20). Apply '=' filter.
+      //Assume that the value is raw data (eg: value: 20). Apply '=' filter.
       const operator = '=';
 
       filteredAnalytics = applyFilter(filteredAnalytics, filterProperty, operator, value);

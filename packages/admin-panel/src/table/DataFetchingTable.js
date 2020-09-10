@@ -174,9 +174,9 @@ class DataFetchingTableComponent extends React.Component {
 }
 
 DataFetchingTableComponent.propTypes = {
-  columns: PropTypes.array.isRequired,
+  columns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   confirmActionMessage: PropTypes.string,
-  data: PropTypes.array,
+  data: PropTypes.arrayOf(PropTypes.shape({})),
   errorMessage: PropTypes.string,
   expansionTabs: PropTypes.arrayOf(
     PropTypes.shape({
@@ -187,7 +187,7 @@ DataFetchingTableComponent.propTypes = {
     }),
   ),
   expansions: PropTypes.object.isRequired,
-  filters: PropTypes.array.isRequired,
+  filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number,
@@ -203,7 +203,7 @@ DataFetchingTableComponent.propTypes = {
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   reduxId: PropTypes.string.isRequired,
-  resizedColumns: PropTypes.array.isRequired,
+  resizedColumns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sorting: PropTypes.array.isRequired,
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,

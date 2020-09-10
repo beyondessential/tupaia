@@ -1,5 +1,5 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { checkValueSatisfiesCondition } from '/apiV1/dataBuilders/helpers';
+import { checkValueSatisfiesCondition } from '@tupaia/utils';
 import { analyticsToMeasureData } from 'apiV1/measureBuilders/helpers';
 
 class CheckConditionsBuilder extends DataBuilder {

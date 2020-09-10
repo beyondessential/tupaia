@@ -1,12 +1,13 @@
 {
   "name": "@tupaia/web-config-server",
+  "private": true,
   "version": "0.0.0",
   "description": "Config server for tupaia.org",
   "main": "dist",
   "scripts": {
     "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",
     "lint:all": "yarn run lint \"src/**/*.{js,jsx}\"",
-    "build": "babel src --out-dir dist --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
