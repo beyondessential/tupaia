@@ -81,7 +81,8 @@ CREATE TYPE public.entity_type AS ENUM (
     'disaster',
     'school',
     'catchment',
-    'sub_catchment'
+    'sub_catchment',
+    'city'
 );
 
 
@@ -91,7 +92,8 @@ CREATE TYPE public.entity_type AS ENUM (
 
 CREATE TYPE public.service_type AS ENUM (
     'dhis',
-    'tupaia'
+    'tupaia',
+    'weather'
 );
 
 
@@ -535,7 +537,8 @@ CREATE TABLE public.entity (
     country_code character varying(6),
     bounds public.geography(Polygon,4326),
     metadata jsonb,
-    attributes jsonb DEFAULT '{}'::jsonb
+    attributes jsonb DEFAULT '{}'::jsonb,
+    timezone character varying(255) DEFAULT NULL
 );
 
 
@@ -3561,19 +3564,62 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 824	/20200625011337-AddUNFPARegionalLevelPercentageFacilitiesOfferingServicesDashboards	2020-07-28 22:33:32.881
 825	/20200713235756-AddUnfpaRegionalLevelAtLest1StaffTrained-modifies-data	2020-07-28 22:33:33.259
 826	/20200727002031-ChangeUNFPAProjectPermissionGroup-modifies-data	2020-07-28 22:33:33.291
-827	/20200723044326-UpdateLaosSchoolsAccessToCleanWaterMapOverlay-modifies-data	2020-08-06 22:02:00.975
-828	/20200724235329-MoveFrontEndMapOverlayInfoToPresentationOptionsColumn-modifies-data	2020-08-06 22:02:01.857
-829	/20200724235629-DropFrontEndMapOverlayInfoColumns-modifies-schema	2020-08-06 22:02:02.07
-830	/20200725050059-CreateMapOverlayGroupTables-modifies-schema	2020-08-06 22:02:02.225
-831	/20200725050217-MigrateMapOverlayGroupData-modifies-data	2020-08-06 22:02:03.693
-832	/20200725080640-DropMapOverlayGroupNameColumn-modifies-schema	2020-08-06 22:02:03.817
-833	/20200726010801-CategoriseLaosSchoolsDropOutRatesMapOverlays-modifies-data	2020-08-06 22:02:04.263
-834	/20200726031440-AddFluTrackingLandingPage-modifies-data	2020-08-06 22:02:04.3
-835	/20200726083032-CategoriseLaosSchoolsRepetitionRatesMapOverlays-modifies-data	2020-08-06 22:02:04.61
-836	/20200727071629-RemoveSchoolLevelBinaryIndicatorTable-modifies-data	2020-08-06 22:02:04.68
-837	/20200804010531-ChangeStriveProjectDefaultMapOverlay-modifies-data	2020-08-06 22:02:04.721
-838	/20200804021343-UpdateCOVIDAUProjectBackgroundUrl-modifies-data	2020-08-06 22:02:04.747
+827	/20200723044326-UpdateLaosSchoolsAccessToCleanWaterMapOverlay-modifies-data	2020-08-04 15:07:03.366
+828	/20200727071629-RemoveSchoolLevelBinaryIndicatorTable-modifies-data	2020-08-04 15:07:03.9
+829	/20200724235329-MoveFrontEndMapOverlayInfoToPresentationOptionsColumn-modifies-data	2020-08-07 13:36:09.063
+830	/20200724235629-DropFrontEndMapOverlayInfoColumns-modifies-schema	2020-08-07 13:36:09.129
+831	/20200725050059-CreateMapOverlayGroupTables-modifies-schema	2020-08-07 13:36:09.175
+832	/20200725050217-MigrateMapOverlayGroupData-modifies-data	2020-08-07 13:36:09.809
+833	/20200725080640-DropMapOverlayGroupNameColumn-modifies-schema	2020-08-07 13:36:09.851
+834	/20200726010801-CategoriseLaosSchoolsDropOutRatesMapOverlays-modifies-data	2020-08-07 13:36:09.951
+835	/20200726031440-AddFluTrackingLandingPage-modifies-data	2020-08-07 13:36:09.989
+836	/20200726083032-CategoriseLaosSchoolsRepetitionRatesMapOverlays-modifies-data	2020-08-07 13:36:10.069
+837	/20200804010531-ChangeStriveProjectDefaultMapOverlay-modifies-data	2020-08-07 13:36:10.08
+838	/20200804021343-UpdateCOVIDAUProjectBackgroundUrl-modifies-data	2020-08-07 13:36:10.091
+841	/20200710035752-AddUnfpaRawDataDownloadReproductiveHealthFacility-modifies-data	2020-08-13 13:25:16.947
+842	/20200723070535-AddLaosSchoolsPrimarySchoolLevelTextbookShortageByKeySubjectsAndGradesMatrix-modifies-data	2020-08-13 13:25:17.03
+843	/20200726053205-AddLaosSchoolsLowerSecondarySchoolLevelTextbookShortageByKeySubjectsAndGradesMatrix-modifies-data	2020-08-13 13:25:17.115
+844	/20200726053306-AddLaosSchoolsUpperSecondarySchoolLevelTextbookShortageByKeySubjectsAndGradesMatrix-modifies-data	2020-08-13 13:25:17.149
+845	/20200727001331-AddLaosSchoolsPrimarySchoolLevelTextbookShortageBarGraph-modifies-data	2020-08-13 13:25:17.196
+846	/20200727013315-AddLaosSchoolsLowerSecondarySchoolLevelTextbookShortageBarGraph-modifies-data	2020-08-13 13:25:17.268
+847	/20200727013444-AddLaosSchoolsUpperSecondarySchoolLevelTextbookShortageBarGraph-modifies-data	2020-08-13 13:25:17.301
+848	/20200730073820-AddLaosSchoolsMapOverlayPopulationDistrictAndProvinceLevel-modifies-data	2020-08-13 13:25:17.373
+849	/20200803045941-AddUnfpaCountriesBackForSurveyRHFSC-modifies-data	2020-08-13 13:25:17.405
+850	/20200803070231-AddLaosSchoolsFunctioningComputerOverlay-modifies-data	2020-08-13 13:25:17.437
+851	/20200803233956-AddTongaHpuReportNutritionTotalSessionsConducted-modifies-data	2020-08-13 13:25:17.462
+852	/20200804100254-AddReportTongaHpuHealthTalksSettingsTypePie-modifies-data	2020-08-13 13:25:17.483
+853	/20200807061202-AddTotalScreenedForNCDRiskFactors-modifies-data	2020-08-13 13:29:07.854
+854	/20200617043305-AddWishCustomDataDownloadReport	2020-08-17 10:12:50.143
+855	/20200623224901-RestrictWishRawDataDownloadAccess-modifies-data	2020-08-17 10:12:50.21
+856	/20200720095953-AddWishExportSurveyTestsByCode-modifies-data	2020-08-17 10:12:50.254
+857	/20200817000740-AddTongaHpuReportNcdRiskFactorsByAgeAndGender-modifies-data	2020-08-17 10:12:50.301
+858	/20200723055523-MigrateSpectrumScaleToNewFormat-modifies-data	2020-08-21 14:14:53.519
+859	/20200723232942-FixFlutrackingOverlaysToHardLimitScale-modifies-data	2020-08-21 14:14:53.622
+860	/20200729042609-AddLaosSchoolsTextbookToStudentRatioOverlay-modifies-data	2020-08-21 14:14:53.853
+861	/20200803061954-RemoveLaosSchoolsStudentResourcesMapOverlays-modifies-data	2020-08-21 14:14:53.892
+864	/20200803073517-AddNewLaosSchoolsElectricityAvailableOverlay-modifies-data	2020-08-27 09:49:58.834
+865	/20200805072741-RemoveSomeLaosSchoolsSchoolIndicatorsEIEOverlays-modifies-data	2020-08-27 09:49:58.879
+866	/20200805073136-UpdateLaosSchoolsOverlaysUsingSchCVD002-modifies-data	2020-08-27 09:49:58.912
+867	/20200807115047-AddTongaHpuTobaccoWarningsFinesLocation-modifies-data	2020-08-27 09:49:58.945
+868	/20200812034926-UpdateHP02NCDRiskFactorsScreeningEventsDashboard-modifies-data	2020-08-27 09:49:58.959
+869	/20200814011117-FixUNFPAReportShowingOver100Percent-modifies-data	2020-08-27 09:49:59.053
+870	/20200817073430-ChangeFlutrackingOverlaysScaleBounds-modifies-data	2020-08-27 09:49:59.073
+871	/20200825113028-AddLaosEocProject-modifies-data	2020-08-27 09:49:59.157
+872	/20200527025956-FixupsToMissingDataElementInPLSMDashboards	2020-09-02 11:26:55.788
+873	/20200806062829-AddEmptyAndNoAccessDashboardReports-modifies-data	2020-09-02 11:26:57.368
+874	/20200810005228-AddTongaHpuRateOfTobaccoNonComplianceDashboard-modifies-data	2020-09-02 11:26:57.893
+875	/20200814062713-DeprecateSpecificSumPerPeriodDatabuildersAndReplaceWithGeneric-modifies-data	2020-09-02 11:26:58.268
+876	/20200817045557-AddTongaHpuNumberOfInspectedAreasForTobaccoComplianceDashboard-modifies-data	2020-09-02 11:26:58.372
+877	/20200820071030-FixIHRMapOverlaysMissingOrganisationUnitType-modifies-data	2020-09-02 11:26:58.419
+878	/20200820022356-AddEntityTypeCity-modifies-schema	2020-09-10 10:27:52.379
+879	/20200831024802-UpdateUNFPAReportToAddFPData-modifies-data	2020-09-10 10:27:52.455
+880	/20200904032606-FixOldMeasureBuildersWithNewEntityAggregation-modifies-data	2020-09-10 10:27:52.628
+881	/20200904053631-FixUnfpaRegionalTrainingData-modifies-data	2020-09-10 10:27:52.662
+882	/20200820022356-AddEntityTimezone-modifies-schema	2020-09-10 10:32:51.252
+883	/20200820022356-AddServiceTypeWeather-modifies-schema	2020-09-10 10:32:51.42
+884	/20200910004911-AddWeatherDataElements-modifies-data	2020-09-10 10:53:16.695
 \.
+
 
 
 --
