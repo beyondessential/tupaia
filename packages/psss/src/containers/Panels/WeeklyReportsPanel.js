@@ -147,7 +147,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       }
     }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
 
-    if (countryData.length === 0 || sitesData.length === 0) {
+    if (countryData.syndromes.length === 0 || sitesData.length === 0) {
       return null;
     }
 
@@ -176,12 +176,13 @@ export const WeeklyReportsPanelComponent = React.memo(
         <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
             columns={columns}
-            data={countryData}
+            data={countryData.syndromes}
             tableStatus={countryTableStatus}
           >
             <CountryReportTable
               tableStatus={countryTableStatus}
               setTableStatus={setCountryTableStatus}
+              sitesReported={countryData.sitesReported}
             />
           </EditableTableProvider>
         </GreySection>
@@ -237,7 +238,7 @@ export const WeeklyReportsPanelComponent = React.memo(
 
 WeeklyReportsPanelComponent.propTypes = {
   handleConfirm: PropTypes.func.isRequired,
-  countryData: PropTypes.array.isRequired,
+  countryData: PropTypes.object.isRequired,
   sitesData: PropTypes.array.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,

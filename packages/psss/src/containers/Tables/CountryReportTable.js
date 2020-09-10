@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -15,9 +15,16 @@ import {
   TableBody,
   GreyOutlinedButton,
   Button,
+  TextField,
   FakeHeader,
+  SmallAlert,
 } from '@tupaia/ui-components';
-import { BorderlessTableRow, VerifiableTableRow } from '../../components';
+import {
+  FlexStart,
+  BorderlessTableRow,
+  VerifiableTableRow,
+  FlexSpaceBetween,
+} from '../../components';
 import { updateWeeklyReportsData } from '../../store';
 
 const VerifiableBody = props => {
@@ -26,15 +33,35 @@ const VerifiableBody = props => {
   return <TableBody TableRow={Row} {...props} />;
 };
 
-const LayoutRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const LayoutRow = styled(FlexSpaceBetween)`
   padding: 1rem 0;
+`;
+
+const FormRow = styled(FlexStart)`
+  flex: 1;
 `;
 
 const GreyHeader = styled(FakeHeader)`
   border: none;
+`;
+
+const ReportedSites = styled(Typography)`
+  font-size: 1.125rem;
+  line-height: 1.3rem;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+const StyledTextField = styled(TextField)`
+  width: 2.4rem;
+  margin: 0 0.6rem;
+
+  .MuiInputBase-input {
+    font-size: 15px;
+    line-height: 18px;
+    padding: 0.5rem 0;
+    text-align: center;
+  }
 `;
 
 const TABLE_STATUSES = {
@@ -45,8 +72,9 @@ const TABLE_STATUSES = {
 };
 
 export const CountryReportTableComponent = React.memo(
-  ({ tableStatus, setTableStatus, onSubmit }) => {
+  ({ tableStatus, setTableStatus, onSubmit, sitesReported }) => {
     const { fields } = useContext(EditableTableContext);
+    const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
 
     const handleEdit = useCallback(() => {
       setTableStatus(TABLE_STATUSES.EDITABLE);
@@ -58,14 +86,35 @@ export const CountryReportTableComponent = React.memo(
 
     const handleSubmit = async () => {
       setTableStatus(TABLE_STATUSES.SAVING);
-      await onSubmit(fields);
+      await onSubmit({
+        ...fields,
+        sitesReported: parseInt(sitesReportedValue, 10),
+      });
       setTableStatus(TABLE_STATUSES.STATIC);
     };
 
     return (
       <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
         <LayoutRow>
-          <Typography variant="h5">7/10 Sites Reported</Typography>
+          {tableStatus === TABLE_STATUSES.EDITABLE ? (
+            <div>
+              <FormRow>
+                <ReportedSites variant="h6">Reported Sites:</ReportedSites>
+                <StyledTextField
+                  value={sitesReportedValue}
+                  onChange={event => setSitesReportedValue(event.target.value)}
+                  name="sites-reported"
+                />
+                <ReportedSites variant="h6"> / Total Sites: 10</ReportedSites>
+              </FormRow>
+              <SmallAlert severity="error" variant="standard">
+                Updating aggregated data will be the source of truth. All individual Sentinel data
+                will be ignored
+              </SmallAlert>
+            </div>
+          ) : (
+            <Typography variant="h5">7/{sitesReportedValue} Sites Reported</Typography>
+          )}
           <GreyOutlinedButton
             onClick={handleEdit}
             disabled={tableStatus === TABLE_STATUSES.EDITABLE}
@@ -103,6 +152,7 @@ CountryReportTableComponent.propTypes = {
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  sitesReported: PropTypes.number.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
