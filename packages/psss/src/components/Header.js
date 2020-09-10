@@ -143,7 +143,7 @@ export const Header = ({ Title, back, ExportModal }) => {
             {Title}
           </div>
           <div>
-            <TupaiaButton href="https://tupaia.org" startIcon={<TupaiaIcon />}>
+            <TupaiaButton href="https://tupaia.org" startIcon={<TupaiaIcon />} target="_blank">
               Preview Tupaia
             </TupaiaButton>
             {ExportModal && (
