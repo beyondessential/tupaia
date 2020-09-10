@@ -22,6 +22,7 @@ const type = {
 const description = {
   Header: 'Description',
   source: 'description',
+  type: 'tooltip',
 };
 
 const name = {
@@ -38,12 +39,14 @@ const point = {
   Header: 'Point',
   source: 'point',
   filterable: false,
+  type: 'tooltip',
 };
 
 const bounds = {
   Header: 'Bounds',
   source: 'bounds',
   filterable: false,
+  type: 'tooltip',
 };
 
 const DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds];

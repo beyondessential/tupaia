@@ -54,12 +54,14 @@ function* loadProject(action) {
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
 
   const project = selectProjectByCode(state, action.projectCode);
+
+  if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
+    yield put(setDashboardGroup(project.dashboardGroupName));
+  }
+
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   if (!organisationUnitCode || forceUpdate) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
-  }
-  if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
-    yield put(setDashboardGroup(project.dashboardGroupName));
   }
 }
 
