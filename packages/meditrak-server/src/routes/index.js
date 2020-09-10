@@ -12,6 +12,7 @@ import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
 import { GETAnswers } from './GETAnswers';
 import { GETDisasters } from './GETDisasters';
+import { GETSurveyResponses } from './GETSurveyResponses';
 import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
@@ -65,6 +66,7 @@ export default {
   getChanges: catchAsyncErrors(getChanges),
   getAnswers: useRouteHandler(GETAnswers),
   getDisasters: useRouteHandler(GETDisasters),
+  getSurveyResponses: useRouteHandler(GETSurveyResponses),
   getQuestions: useRouteHandler(GETQuestions),
   getPermissionGroups: useRouteHandler(GETPermissionGroups),
   getOptions: useRouteHandler(GETOptions),
