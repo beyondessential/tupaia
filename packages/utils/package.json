@@ -15,7 +15,7 @@
     "lodash.pickby": "^4.6.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.6.1",
     "validator": "^8.2.0",
     "winston": "^3.1.0",
     "xlsx": "^0.10.9"
