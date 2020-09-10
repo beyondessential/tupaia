@@ -52,8 +52,10 @@ export const ORG_UNIT_ENTITY_TYPES = {
   VILLAGE,
 };
 
-const ANCESTORS = 'ancestors';
-const DESCENDANTS = 'descendants';
+const ENTITY_RELATION_TYPE = {
+  ANCESTORS: 'ancestors',
+  DESCENDANTS: 'descendants',
+};
 
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
@@ -284,7 +286,7 @@ export class EntityModel extends DatabaseModel {
   ) {
     const cacheKey = this.getCacheKey('getRelationsOfEntity', arguments);
     const [joinTablesOn, filterByEntityId] =
-      ancestorsOrDescendants === ANCESTORS
+      ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
         ? ['ancestor_id', 'descendant_id']
         : ['descendant_id', 'ancestor_id'];
     return this.runCachedFunction(cacheKey, async () =>
@@ -328,7 +330,7 @@ export class EntityModel extends DatabaseModel {
     return this.getRelationsOfEntity(
       entityId,
       hierarchyId,
-      ANCESTORS,
+      ENTITY_RELATION_TYPE.ANCESTORS,
       ancestorEntityType,
       parentOnly,
     );
@@ -338,7 +340,7 @@ export class EntityModel extends DatabaseModel {
     return this.getRelationsOfEntity(
       entityId,
       hierarchyId,
-      DESCENDANTS,
+      ENTITY_RELATION_TYPE.DESCENDANTS,
       descendantEntityType,
       childrenOnly,
     );
