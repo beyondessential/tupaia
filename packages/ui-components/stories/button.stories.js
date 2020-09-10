@@ -83,6 +83,7 @@ export const lightOutlined = () => (
 export const greyOutlined = () => (
   <Container bgcolor={COLORS.LIGHTGREY}>
     <GreyOutlinedButton>Edit</GreyOutlinedButton>
+    <GreyOutlinedButton disabled>Disabled</GreyOutlinedButton>
   </Container>
 );
 

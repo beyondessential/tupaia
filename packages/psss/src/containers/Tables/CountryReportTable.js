@@ -33,16 +33,17 @@ const VerifiableBody = props => {
   return <TableBody TableRow={Row} {...props} />;
 };
 
-const LayoutRow = styled(FlexSpaceBetween)`
-  padding: 1rem 0;
-`;
-
 const FormRow = styled(FlexStart)`
   flex: 1;
+  padding-left: 1rem;
 `;
 
 const GreyHeader = styled(FakeHeader)`
   border: none;
+`;
+
+const Alert = styled(SmallAlert)`
+  margin-bottom: 1.2rem;
 `;
 
 const ReportedSites = styled(Typography)`
@@ -95,23 +96,17 @@ export const CountryReportTableComponent = React.memo(
 
     return (
       <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
-        <LayoutRow>
+        <FlexSpaceBetween pb={2}>
           {tableStatus === TABLE_STATUSES.EDITABLE ? (
-            <div>
-              <FormRow>
-                <ReportedSites variant="h6">Reported Sites:</ReportedSites>
-                <StyledTextField
-                  value={sitesReportedValue}
-                  onChange={event => setSitesReportedValue(event.target.value)}
-                  name="sites-reported"
-                />
-                <ReportedSites variant="h6"> / Total Sites: 10</ReportedSites>
-              </FormRow>
-              <SmallAlert severity="error" variant="standard">
-                Updating aggregated data will be the source of truth. All individual Sentinel data
-                will be ignored
-              </SmallAlert>
-            </div>
+            <FormRow>
+              <ReportedSites variant="h6">Reported Sites:</ReportedSites>
+              <StyledTextField
+                value={sitesReportedValue}
+                onChange={event => setSitesReportedValue(event.target.value)}
+                name="sites-reported"
+              />
+              <ReportedSites variant="h6"> / Total Sites: 10</ReportedSites>
+            </FormRow>
           ) : (
             <Typography variant="h5">7/{sitesReportedValue} Sites Reported</Typography>
           )}
@@ -121,14 +116,20 @@ export const CountryReportTableComponent = React.memo(
           >
             Edit
           </GreyOutlinedButton>
-        </LayoutRow>
+        </FlexSpaceBetween>
+        {tableStatus === TABLE_STATUSES.EDITABLE && (
+          <Alert severity="error" variant="standard">
+            Updating aggregated data will be the source of truth. All individual Sentinel data will
+            be ignored
+          </Alert>
+        )}
         <GreyHeader>
           <span>SYNDROMES</span>
           <span>TOTAL CASES</span>
         </GreyHeader>
         <EditableTable Header={false} Body={VerifiableBody} />
         {tableStatus === TABLE_STATUSES.EDITABLE && (
-          <LayoutRow>
+          <FlexSpaceBetween pt={3}>
             <MuiLink>Reset and use Sentinel data</MuiLink>
             <div>
               <Button variant="outlined" onClick={handleCancel}>
@@ -136,7 +137,7 @@ export const CountryReportTableComponent = React.memo(
               </Button>
               <Button onClick={handleSubmit}>Save</Button>
             </div>
-          </LayoutRow>
+          </FlexSpaceBetween>
         )}
       </LoadingContainer>
     );
