@@ -495,8 +495,8 @@ function dashboard(
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
     case SET_MOBILE_DASHBOARD_EXPAND:
       return { ...state, isMobileDashboardExpanded: action.shouldExpand };
-    case SELECT_PROJECT:
-      return { ...state, currentDashboardKey: null, viewResponses: {} };
+    case SET_PROJECT:
+      return { ...state, viewResponses: {} };
     default:
       return state;
   }
@@ -631,8 +631,8 @@ function global(
       return state;
     case SET_OVERLAY_COMPONENT:
       return { ...state, overlay: action.component };
-    case SELECT_PROJECT:
-      return { ...state, currentOrganisationUnitCode: null, dashboardConfig: {}, viewConfigs: {} };
+    case SET_PROJECT:
+      return { ...state, dashboardConfig: {}, viewConfigs: {} };
     default:
       return state;
   }
