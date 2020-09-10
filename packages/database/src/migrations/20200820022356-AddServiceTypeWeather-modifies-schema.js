@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  await db.executeSql(`ALTER TYPE public.service_type ADD VALUE IF NOT EXISTS 'weather';`);
+  await db.runSql(`ALTER TYPE public.service_type ADD VALUE IF NOT EXISTS 'weather';`);
   return null;
 };
 
