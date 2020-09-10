@@ -47,7 +47,7 @@ Alert.defaultProps = {
 };
 
 const StyledSmallAlert = styled(StyledAlert)`
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   border-radius: 3px;
   padding: 0.5rem 1.25rem 0.5rem 1rem;
   box-shadow: none;

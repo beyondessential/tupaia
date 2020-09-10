@@ -4,6 +4,7 @@
  */
 
 export { min, max } from './array';
+export { AsyncTaskQueue } from './AsyncTaskQueue';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';
@@ -28,3 +29,4 @@ export { respond } from './respond';
 export { singularise, stripFromString } from './string';
 export * from './validation';
 export { WorkBookParser } from './WorkBookParser';
+export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';

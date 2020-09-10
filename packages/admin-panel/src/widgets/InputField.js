@@ -5,13 +5,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, Input } from 'reactstrap';
-import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import 'react-datepicker/dist/react-datepicker.css';
+import { TextField, DatePicker, DateTimePicker, RadioGroup, Select } from '@tupaia/ui-components';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
-import { DropDownInputField } from './DropDownInputField';
 import { JsonEditor } from './JsonEditor';
 
 const getInputType = ({ options, optionsEndpoint, type }) => {
@@ -41,16 +38,18 @@ export const InputField = ({
   disabled,
   getJsonFieldSchema,
   parentRecord,
-  maxHeight,
+  variant,
 }) => {
   const inputType = getInputType({ options, optionsEndpoint, type });
-  let inputComponent = null;
+  let inputComponent;
 
   switch (inputType) {
     case 'autocomplete':
       inputComponent = (
         <Autocomplete
           placeholder={value}
+          label={label}
+          helperText={secondaryLabel}
           endpoint={optionsEndpoint}
           optionLabelKey={optionLabelKey}
           optionValueKey={optionValueKey}
@@ -66,33 +65,45 @@ export const InputField = ({
     case 'json':
       inputComponent = (
         <JsonInputField
+          label={label}
+          helperText={secondaryLabel}
           value={value}
           recordData={recordData}
           onChange={inputValue => onChange(inputKey, inputValue)}
           disabled={disabled}
           getJsonFieldSchema={getJsonFieldSchema}
+          variant={variant}
         />
       );
       break;
     case 'enum':
       inputComponent = (
-        <DropDownInputField
-          value={value}
-          options={options.map(option => ({ label: option, value: option }))}
-          onChange={selectedOption => onChange(inputKey, selectedOption)}
+        <Select
+          label={label}
+          helperText={secondaryLabel}
+          value={value || ''}
+          options={options}
+          onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
         />
       );
       break;
     case 'jsonEditor':
       inputComponent = (
-        <JsonEditor {...{ inputKey, label, value, maxHeight: maxHeight || 100, onChange }} />
+        <JsonEditor
+          label={label}
+          inputKey={inputKey}
+          value={value}
+          onChange={onChange}
+          helperText={secondaryLabel}
+        />
       );
       break;
     case 'boolean':
       inputComponent = (
-        <DropDownInputField
-          value={value}
+        <RadioGroup
+          label={label}
+          onChange={event => onChange(inputKey, event.target.value === 'true')} // convert to boolean value
           options={[
             {
               label: 'Yes',
@@ -103,53 +114,70 @@ export const InputField = ({
               value: false,
             },
           ]}
-          onChange={selectedOption => onChange(inputKey, selectedOption)}
+          value={value}
           disabled={disabled}
+          helperText={secondaryLabel}
         />
       );
       break;
     case 'date':
       inputComponent = (
         <DatePicker
-          selected={moment(value).isValid() ? moment(value) : null}
+          label={label}
+          helperText={secondaryLabel}
+          value={moment(value).isValid() ? moment(value) : null}
           onChange={date => onChange(inputKey, date.toISOString())}
           disabled={disabled}
         />
       );
       break;
-    default:
+    case 'datetime-local':
       inputComponent = (
-        <Input
-          value={processValue(value, type) || ''}
+        <DateTimePicker
+          label={label}
+          helperText={secondaryLabel}
+          format="yyyy-MM-dd HH:mm"
+          value={
+            value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : new Date()
+          }
+          onChange={date => {
+            if (date && moment(date).isValid()) {
+              onChange(inputKey, moment(date).toISOString());
+            }
+          }}
+          disabled={disabled}
+        />
+      );
+      break;
+    case 'textarea':
+      inputComponent = (
+        <TextField
+          label={label}
+          value={value || ''}
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
+          helperText={secondaryLabel}
+          multiline
+          type="textarea"
+          rows="4"
+        />
+      );
+      break;
+    default:
+      inputComponent = (
+        <TextField
+          label={label}
+          value={value || ''}
+          onChange={event => onChange(inputKey, event.target.value)}
+          disabled={disabled}
+          helperText={secondaryLabel}
           type={type}
         />
       );
       break;
   }
 
-  return (
-    <FormGroup>
-      <p>{label}</p>
-      {secondaryLabel && (
-        <p>
-          <i>{secondaryLabel}</i>
-        </p>
-      )}
-      {inputComponent}
-    </FormGroup>
-  );
-};
-
-const processValue = (value, type) => {
-  if (type === 'datetime-local') {
-    const formattedDateString =
-      value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : '';
-    return formattedDateString;
-  }
-
-  return value;
+  return inputComponent;
 };
 
 InputField.propTypes = {
@@ -164,7 +192,7 @@ InputField.propTypes = {
     PropTypes.number,
   ]),
   inputKey: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string),
+  options: PropTypes.arrayOf(PropTypes.object),
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string,
@@ -175,7 +203,7 @@ InputField.propTypes = {
   getJsonFieldSchema: PropTypes.func,
   parentRecord: PropTypes.object,
   secondaryLabel: PropTypes.string,
-  maxHeight: PropTypes.number,
+  variant: PropTypes.string,
 };
 
 InputField.defaultProps = {
@@ -192,5 +220,5 @@ InputField.defaultProps = {
   getJsonFieldSchema: () => [],
   parentRecord: {},
   secondaryLabel: null,
-  maxHeight: undefined,
+  variant: null,
 };

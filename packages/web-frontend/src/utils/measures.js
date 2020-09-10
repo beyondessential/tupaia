@@ -18,15 +18,6 @@ import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
 import { SCALE_TYPES } from '../constants';
 
-// At a few places throughout this module we're iterating over a collection
-// while modifying an object, which trips up the eslint rule that expects inline
-// functions to return a value.
-// We could re-write them as reducers, but in this case it splits up the logic
-// in a way that is more difficult to follow.
-//
-// So, just disable this rule for this file.
-/* eslint-disable array-callback-return */
-
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';
 export const MEASURE_TYPE_RADIUS = 'radius';
@@ -67,11 +58,11 @@ export function autoAssignColors(values) {
 export function createValueMapping(valueObjects, type) {
   const mapping = {};
 
-  valueObjects.map(valueObject => {
+  valueObjects.forEach(valueObject => {
     const { value } = valueObject;
 
     if (Array.isArray(value)) {
-      value.map(v => {
+      value.forEach(v => {
         mapping[v] = valueObject;
       });
     } else {

@@ -7,10 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { InputField } from '../widgets';
 
-export class Editor extends React.PureComponent {
-  onInputChange(inputKey, inputValue, editConfig = {}) {
-    const { recordData, onEditField } = this.props;
-
+export const Editor = ({ fields, recordData, onEditField }) => {
+  const onInputChange = (inputKey, inputValue, editConfig = {}) => {
     const { setFieldsOnChange } = editConfig;
     if (setFieldsOnChange) {
       const newFields = setFieldsOnChange(inputValue, recordData);
@@ -20,36 +18,30 @@ export class Editor extends React.PureComponent {
     }
 
     onEditField(inputKey, inputValue);
-  }
+  };
 
-  render() {
-    const { fields, recordData } = this.props;
-
-    return (
-      <div>
-        {fields
-          .filter(({ show = true }) => show)
-          .map(({ editable = true, editConfig = {}, source, Header, accessor }) => (
-            <InputField
-              key={source}
-              inputKey={source}
-              label={Header}
-              onChange={(inputKey, inputValue) =>
-                this.onInputChange(inputKey, inputValue, editConfig)
-              }
-              value={accessor ? accessor(recordData) : recordData[source]}
-              recordData={recordData}
-              disabled={!editable}
-              {...editConfig}
-            />
-          ))}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {fields
+        .filter(({ show = true }) => show)
+        .map(({ editable = true, editConfig = {}, source, Header, accessor }) => (
+          <InputField
+            key={source}
+            inputKey={source}
+            label={Header}
+            onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
+            value={accessor ? accessor(recordData) : recordData[source]}
+            disabled={!editable}
+            recordData={recordData}
+            {...editConfig}
+          />
+        ))}
+    </div>
+  );
+};
 
 Editor.propTypes = {
-  fields: PropTypes.array.isRequired,
+  fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recordData: PropTypes.object.isRequired,
   onEditField: PropTypes.func.isRequired,
 };
