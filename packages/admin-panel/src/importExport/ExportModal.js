@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { exportData } from './actions';
 import { ImportExportModal } from './ImportExportModal';
-import { ImportModalComponent } from './ImportModal';
 
 const ExportModalComponent = ({ onExport, isOpen, errorMessage, ...restOfProps }) => (
   <ImportExportModal

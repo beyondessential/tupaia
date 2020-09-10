@@ -6,8 +6,8 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { ResourcePage } from './ResourcePage';
 import moment from 'moment';
+import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
   {

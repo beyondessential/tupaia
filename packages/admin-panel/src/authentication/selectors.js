@@ -9,7 +9,6 @@ const getAuthenticationState = ({ authentication = {} }) => authentication;
 export const getEmailAddress = state => getAuthenticationState(state).emailAddress;
 export const getPassword = state => getAuthenticationState(state).password;
 export const getErrorMessage = state => getAuthenticationState(state).errorMessage;
-export const getIsLoginModalOpen = state => !getIsUserAuthenticated(state);
 
 // Authentication details
 export const getIsUserAuthenticated = state => !!getAuthenticationState(state).user;
@@ -18,4 +17,3 @@ export const getRefreshToken = state => getAuthenticationState(state).refreshTok
 
 // User details
 export const getUser = state => getAuthenticationState(state).user || {}; // If null, return empty object
-export const getUserFullName = state => getUser(state).name;
