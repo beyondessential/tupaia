@@ -39,6 +39,10 @@ export class DatabaseModel {
     }
   }
 
+  // functionArguments should receive the 'arguments' object
+  getCacheKey = (functionName, functionArguments) =>
+    `${functionName}:${JSON.stringify(Object.values(functionArguments))}`;
+
   addChangeHandler = handler =>
     this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, handler);
 
