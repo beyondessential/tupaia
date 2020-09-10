@@ -21,7 +21,7 @@ export class CountryModel extends DatabaseModel {
   }
 
   async getCountryCodeById(countryIds) {
-    const allCountries = await this.findManyById(countryIds);
-    return reduceToDictionary(allCountries, 'id', 'code');
+    const countries = await this.findManyById(countryIds);
+    return reduceToDictionary(countries, 'id', 'code');
   }
 }
