@@ -187,7 +187,10 @@ export class EntityModel extends DatabaseModel {
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
 
   async updatePointCoordinates(code, { longitude, latitude }) {
-    const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
+    const point = JSON.stringify({
+      coordinates: [longitude, latitude],
+      type: 'Point',
+    });
     await this.updatePointCoordinatesFormatted(code, point);
   }
 
@@ -217,12 +220,10 @@ export class EntityModel extends DatabaseModel {
 
   async updateRegionCoordinates(code, geojson) {
     const shouldSetBounds =
-      (
-        await this.find({
-          code,
-          bounds: null,
-        })
-      ).length > 0;
+      (await this.find({
+        code,
+        bounds: null,
+      })).length > 0;
     const boundsString = shouldSetBounds
       ? ', "bounds" =  ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)'
       : '';
@@ -237,9 +238,8 @@ export class EntityModel extends DatabaseModel {
     );
   }
 
-  async fetchAncestorDetailsByDescendantCode(...args) {
-    const cacheKey = `fetchAncestorDetailsByDescendantCode:${JSON.stringify(args)}`;
-    const [descendantCodes, hierarchyId, ancestorType] = args;
+  async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
+    const cacheKey = this.getCacheKey('fetchAncestorDetailsByDescendantCode', arguments);
     return this.runCachedFunction(cacheKey, async () => {
       const ancestorDescendantRelations = await this.database.executeSqlInBatches(
         descendantCodes,
@@ -275,15 +275,14 @@ export class EntityModel extends DatabaseModel {
     });
   }
 
-  async getRelationsOfEntity(...args) {
-    const cacheKey = `getRelationsOfEntity:${JSON.stringify(args)}`;
-    const [
-      entityId,
-      hierarchyId,
-      ancestorsOrDescendants,
-      entityTypeOfRelations,
-      immediateRelativesOnly,
-    ] = args;
+  async getRelationsOfEntity(
+    entityId,
+    hierarchyId,
+    ancestorsOrDescendants,
+    entityTypeOfRelations,
+    immediateRelativesOnly,
+  ) {
+    const cacheKey = this.getCacheKey('getRelationsOfEntity', arguments);
     const [joinTablesOn, filterByEntityId] =
       ancestorsOrDescendants === ANCESTORS
         ? ['ancestor_id', 'descendant_id']
