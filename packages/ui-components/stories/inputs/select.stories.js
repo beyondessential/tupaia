@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Select, NativeSelect } from '../../src';
 
@@ -47,3 +47,27 @@ export const select = () => (
     />
   </Container>
 );
+
+export const Controlled = () => {
+  const [value, setValue] = useState('AF');
+
+  return (
+    <Container>
+      <Select
+        label="Controlled select"
+        id="controlled"
+        options={options}
+        value={value}
+        onChange={event => setValue(event.target.value)}
+      />
+      <NativeSelect
+        label="Controlled native select"
+        id="controlled-native"
+        options={options}
+        value={value}
+        onChange={event => setValue(event.target.value)}
+      />
+      <div>Selected Value: {value}</div>
+    </Container>
+  );
+};

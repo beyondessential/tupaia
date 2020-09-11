@@ -4,6 +4,9 @@
  */
 
 import React from 'react';
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
@@ -24,6 +27,11 @@ const FIELDS = [
   {
     Header: 'Creation date',
     source: 'creation_date',
+    type: 'tooltip',
+    accessor: row =>
+      moment(row.creation_date)
+        .local()
+        .toString(),
     editConfig: {
       type: 'datetime-local',
     },
@@ -45,6 +53,7 @@ const FIELDS = [
         {
           label: 'Body (accepts basic markdown)',
           fieldName: 'body',
+          type: 'textarea',
         },
         {
           label: 'Link',
@@ -56,7 +65,7 @@ const FIELDS = [
       if (row.value && row.value.title) {
         return (
           <div>
-            <h4>{row.value.title}</h4>
+            <Typography variant="h3">{row.value.title}</Typography>
             <img src={row.value.image} alt={row.value.title} />
             <div>{row.value.body}</div>
           </div>
@@ -101,7 +110,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SocialFeedPage = () => (
+export const SocialFeedPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Social Feed"
     endpoint="feedItems"
@@ -112,5 +121,10 @@ export const SocialFeedPage = () => (
     onProcessDataForSave={data => {
       data.type = 'markdown'; // eslint-disable-line no-param-reassign
     }}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+SocialFeedPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

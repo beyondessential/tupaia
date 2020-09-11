@@ -1,11 +1,18 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { prettyArray } from '../../utilities/pretty';
+import { prettyArray } from '../../utilities';
 
 const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    type: 'tooltip',
   },
   {
     Header: 'Name',
@@ -34,6 +41,7 @@ const FIELDS = [
   {
     Header: 'Permission Group',
     source: 'userGroup',
+    type: 'tooltip',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
@@ -79,7 +87,7 @@ const COLUMNS = [
   },
 ];
 
-export const DashboardGroupsPage = () => (
+export const DashboardGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Dashboard Groups"
     endpoint="dashboardGroups"
@@ -87,5 +95,10 @@ export const DashboardGroupsPage = () => (
     editConfig={{
       title: 'Edit Dashboard Group',
     }}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+DashboardGroupsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

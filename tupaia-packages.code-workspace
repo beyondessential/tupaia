@@ -80,11 +80,13 @@
   "settings": {
     "cSpell.language": "en-GB",
     "cSpell.words": [
+      "Codeship",
       "DHIS",
       "MediTrak",
       "Tongatapu",
       "Tupaia",
       "analytics",
+      "beyondessential",
       "cacheable",
       "cleanup",
       "deleters",
@@ -108,10 +110,10 @@
       "preaggregators",
       "promisify",
       "singularise",
-      "Tongatapu",
-      "Tupaia",
-      "updaters",
+      "spec",
+      "specs",
       "testid",
+      "updaters",
       "upsert"
     ],
     "eslint.validate": ["typescript", "typescriptreact"],

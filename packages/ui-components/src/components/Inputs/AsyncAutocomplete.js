@@ -45,7 +45,8 @@ export const AsyncAutocomplete = ({
   label,
   value,
   onChange,
-  labelKey,
+  getOptionSelected,
+  getOptionLabel,
   placeholder,
   error,
   disabled,
@@ -56,19 +57,13 @@ export const AsyncAutocomplete = ({
   const [query, setQuery] = useState('');
   const [options, loading] = useOptions(fetchOptions, query);
 
-  const handleInputChange = useCallback(
-    throttle((event, newValue) => {
-      setQuery(newValue);
-    }, 200),
-    [setQuery],
-  );
-
   return (
     <Autocomplete
       id={id}
       options={options}
       label={label}
-      labelKey={labelKey}
+      getOptionSelected={getOptionSelected}
+      getOptionLabel={getOptionLabel}
       value={value}
       disabled={disabled}
       onChange={onChange}
@@ -77,7 +72,9 @@ export const AsyncAutocomplete = ({
       required={required}
       helperText={helperText}
       loading={loading}
-      onInputChange={handleInputChange}
+      onInputChange={throttle((event, newValue) => {
+        setQuery(newValue);
+      }, 200)}
       muiProps={muiProps}
     />
   );
@@ -93,14 +90,16 @@ AsyncAutocomplete.propTypes = {
   disabled: PropTypes.bool,
   helperText: PropTypes.string,
   onChange: PropTypes.func,
-  labelKey: PropTypes.string,
+  getOptionSelected: PropTypes.func,
+  getOptionLabel: PropTypes.func,
   placeholder: PropTypes.string,
   muiProps: PropTypes.object,
 };
 
 AsyncAutocomplete.defaultProps = {
   label: '',
-  labelKey: 'name',
+  getOptionSelected: undefined,
+  getOptionLabel: undefined,
   placeholder: '',
   required: false,
   disabled: false,

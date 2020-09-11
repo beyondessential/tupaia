@@ -148,7 +148,7 @@ export const confirmAction = reduxId => (dispatch, getState) => {
 export const requestDeleteRecord = (reduxId, endpoint, id) => ({
   type: ACTION_REQUEST,
   reduxId,
-  confirmMessage: "Are you sure you want to delete this record? It can't be undone!",
+  confirmMessage: 'Are you sure you want to delete this record?',
   actionCreator: () => deleteRecordFromTable(reduxId, endpoint, id),
 });
 

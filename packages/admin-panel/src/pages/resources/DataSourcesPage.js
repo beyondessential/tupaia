@@ -4,9 +4,8 @@
  */
 
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { TabsPage } from '../TabsPage';
 
 const localStyles = {
   config: {
@@ -51,8 +50,6 @@ const getButtonsConfig = fields => [
   },
 ];
 
-const DATA_ELEMENTS = 'DATA_ELEMENTS';
-const DATA_GROUPS = 'DATA_GROUPS';
 const DATA_SOURCE_FIELDS = [
   {
     Header: 'Code',
@@ -111,34 +108,21 @@ const DATA_GROUP_FIELDS = [
   },
 ];
 
-const TABS = {
-  [DATA_ELEMENTS]: {
-    title: 'Data Elements',
-    endpoint: 'dataSources',
-    baseFilter: { type: { comparisonValue: 'dataElement' } },
-    fields: DATA_ELEMENT_FIELDS,
-    createConfig: {
-      title: 'New Data Element',
-      actionConfig: {
-        editEndpoint: 'dataSource',
-        fields: [
-          ...DATA_ELEMENT_FIELDS,
-          {
-            Header: 'Type',
-            source: 'type',
-            editConfig: { default: 'dataElement' },
-            show: false,
-          },
-        ],
+export const DataGroupsPage = ({ getHeaderEl }) => (
+  <ResourcePage
+    title="Data Groups"
+    endpoint="dataSources"
+    columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS)]}
+    expansionTabs={[
+      {
+        title: 'Data Elements',
+        endpoint: 'data_source/{id}/data_source',
+        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
       },
-    },
-  },
-  [DATA_GROUPS]: {
-    title: 'Data Groups',
-    endpoint: 'dataSources',
-    baseFilter: { type: { comparisonValue: 'dataGroup' } },
-    fields: DATA_GROUP_FIELDS,
-    createConfig: {
+    ]}
+    editConfig={{ title: 'Edit Data Source' }}
+    baseFilter={{ type: { comparisonValue: 'dataGroup' } }}
+    createConfig={{
       title: 'New Data Group',
       actionConfig: {
         editEndpoint: 'dataSource',
@@ -152,40 +136,41 @@ const TABS = {
           },
         ],
       },
-    },
-    expansionTabs: [
-      {
-        title: 'Data Elements',
-        endpoint: 'data_source/{id}/data_source',
-        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
-      },
-    ],
-  },
-};
-
-const getTabPage = tabName => {
-  const { title, endpoint, fields, baseFilter, expansionTabs, createConfig } = TABS[tabName];
-  if (!TABS[tabName]) {
-    console.warn(`No tab with name '${tabName}' found.`); // eslint-disable-line no-console
-  }
-
-  return {
-    title,
-    component: (
-      <ResourcePage
-        key={tabName}
-        title={title}
-        endpoint={endpoint}
-        columns={[...fields, ...getButtonsConfig(fields)]}
-        expansionTabs={expansionTabs}
-        editConfig={{ title: 'Edit Data Source' }}
-        baseFilter={baseFilter}
-        createConfig={createConfig}
-      />
-    ),
-  };
-};
-
-export const DataSourcesPage = () => (
-  <TabsPage tabs={[getTabPage(DATA_ELEMENTS), getTabPage(DATA_GROUPS)]} />
+    }}
+    getHeaderEl={getHeaderEl}
+  />
 );
+
+DataGroupsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};
+
+export const DataElementsPage = ({ getHeaderEl }) => (
+  <ResourcePage
+    title="Data Elements"
+    endpoint="dataSources"
+    columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)]}
+    editConfig={{ title: 'Edit Data Source' }}
+    baseFilter={{ type: { comparisonValue: 'dataElement' } }}
+    createConfig={{
+      title: 'New Data Element',
+      actionConfig: {
+        editEndpoint: 'dataSource',
+        fields: [
+          ...DATA_ELEMENT_FIELDS,
+          {
+            Header: 'Type',
+            source: 'type',
+            editConfig: { default: 'dataElement' },
+            show: false,
+          },
+        ],
+      },
+    }}
+    getHeaderEl={getHeaderEl}
+  />
+);
+
+DataElementsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

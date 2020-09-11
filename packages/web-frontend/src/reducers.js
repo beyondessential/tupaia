@@ -109,6 +109,7 @@ import {
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
   SELECT_PROJECT,
+  FETCH_RESET_TOKEN_LOGIN_ERROR,
 } from './actions';
 
 function authentication(
@@ -120,6 +121,7 @@ function authentication(
     currentUserEmail: '',
     isRequestingLogin: false,
     loginFailedMessage: null,
+    oneTimeLoginFailedMessage: null,
     showSessionExpireDialog: false,
     successMessage: '',
     emailVerified: EMAIL_VERIFIED_STATUS.VERIFIED,
@@ -175,6 +177,14 @@ function authentication(
         isUserLoggedIn: false,
         isRequestingLogin: false,
         loginFailedMessage: 'Wrong e-mail or password',
+        errors: action.errors,
+      };
+    case FETCH_RESET_TOKEN_LOGIN_ERROR:
+      return {
+        ...state,
+        isUserLoggedIn: false,
+        isRequestingLogin: false,
+        oneTimeLoginFailedMessage: 'Reset token is invalid or already used',
         errors: action.errors,
       };
     case FETCH_EMAIL_VERIFY_SUCCESS:
@@ -489,6 +499,8 @@ function dashboard(
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
     case SET_MOBILE_DASHBOARD_EXPAND:
       return { ...state, isMobileDashboardExpanded: action.shouldExpand };
+    case SELECT_PROJECT:
+      return { ...state, currentDashboardKey: null, viewResponses: {} };
     default:
       return state;
   }
@@ -637,6 +649,8 @@ function global(
       return state;
     case SET_OVERLAY_COMPONENT:
       return { ...state, overlay: action.component };
+    case SELECT_PROJECT:
+      return { ...state, currentOrganisationUnitCode: null, dashboardConfig: {}, viewConfigs: {} };
     default:
       return state;
   }
@@ -648,7 +662,7 @@ function chartExport(
     isLoading: false,
     isComplete: false,
     errorMessage: '',
-    formats: ['png', 'pdf'],
+    formats: ['png'],
     organisationUnitCode: '',
     organisationUnitName: '',
     viewId: '',

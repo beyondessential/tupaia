@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
@@ -11,6 +12,7 @@ export const ENTITIES_COLUMNS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Code',
@@ -65,12 +67,17 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const EntitiesPage = () => (
+export const EntitiesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Entities"
     endpoint="entities"
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+EntitiesPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};
