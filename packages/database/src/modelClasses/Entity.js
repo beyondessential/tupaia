@@ -133,28 +133,29 @@ export class EntityType extends DatabaseType {
     return parent.type === COUNTRY;
   }
 
-  async getAncestors(hierarchyId, ancestorEntityType, parentOnly) {
-    return this.model.getAncestorsOfEntity(this.id, hierarchyId, ancestorEntityType, parentOnly);
+  async getAncestors(hierarchyId, criteria) {
+    return this.model.getRelationsOfEntity(ENTITY_RELATION_TYPE.ANCESTORS, this.id, {
+      entity_hierarchy_id: hierarchyId,
+      ...criteria,
+    });
   }
 
-  async getDescendants(hierarchyId, descendantEntityType, childrenOnly) {
-    return this.model.getDescendantsOfEntity(
-      this.id,
-      hierarchyId,
-      descendantEntityType,
-      childrenOnly,
-    );
+  async getDescendants(hierarchyId, criteria) {
+    return this.model.getRelationsOfEntity(ENTITY_RELATION_TYPE.DESCENDANTS, this.id, {
+      entity_hierarchy_id: hierarchyId,
+      ...criteria,
+    });
   }
 
   async getAncestorOfType(hierarchyId, entityType) {
     if (this.type === entityType) return this;
-    const [ancestor] = await this.getAncestors(hierarchyId, entityType);
+    const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });
     return ancestor;
   }
 
   async getDescendantsOfType(hierarchyId, entityType) {
     if (this.type === entityType) return [this];
-    return this.getDescendants(hierarchyId, entityType);
+    return this.getDescendants(hierarchyId, { type: entityType });
   }
 
   async getNearestOrgUnitDescendants(hierarchyId) {
@@ -202,11 +203,11 @@ export class EntityType extends DatabaseType {
   }
 
   async getChildren(hierarchyId) {
-    return this.getDescendants(hierarchyId, undefined, true);
+    return this.getDescendants(hierarchyId, { generational_distance: 1 });
   }
 
   async getFacilityDescendants(hierarchyId) {
-    return this.getDescendantsOfType(FACILITY, hierarchyId);
+    return this.getDescendantsOfType(hierarchyId, FACILITY);
   }
 }
 
@@ -316,69 +317,24 @@ export class EntityModel extends DatabaseModel {
     });
   }
 
-  async getRelationsOfEntity(
-    entityId,
-    hierarchyId,
-    ancestorsOrDescendants,
-    entityTypeOfRelations,
-    immediateRelativesOnly,
-  ) {
+  async getRelationsOfEntity(ancestorsOrDescendants, entityId, criteria) {
     const cacheKey = this.getCacheKey('getRelationsOfEntity', arguments);
     const [joinTablesOn, filterByEntityId] =
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
         ? ['ancestor_id', 'descendant_id']
         : ['descendant_id', 'ancestor_id'];
     return this.runCachedFunction(cacheKey, async () =>
-      this.selectFromModelWithExtraSql(
-        `
-        JOIN
-          ancestor_descendant_relation ON entity.id = ${joinTablesOn}
-        WHERE
-          ${filterByEntityId} = ?
-        AND
-          entity_hierarchy_id = ?
-        ${
-          entityTypeOfRelations
-            ? `
-        AND
-          entity.type = ?
-        `
-            : ''
-        }
-        ${
-          immediateRelativesOnly
-            ? `
-        AND
-          generational_distance = 1
-        `
-            : ''
-        }
-        ORDER BY
-          generational_distance ASC
-        ;
-      `,
-        [entityId, hierarchyId, entityTypeOfRelations].filter(p => !!p),
+      this.find(
+        {
+          ...criteria,
+          [filterByEntityId]: entityId,
+        },
+        {
+          joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+          joinCondition: ['entity.id', joinTablesOn],
+          sort: ['generational_distance ASC'],
+        },
       ),
-    );
-  }
-
-  async getAncestorsOfEntity(entityId, hierarchyId, ancestorEntityType, parentOnly) {
-    return this.getRelationsOfEntity(
-      entityId,
-      hierarchyId,
-      ENTITY_RELATION_TYPE.ANCESTORS,
-      ancestorEntityType,
-      parentOnly,
-    );
-  }
-
-  async getDescendantsOfEntity(entityId, hierarchyId, descendantEntityType, childrenOnly) {
-    return this.getRelationsOfEntity(
-      entityId,
-      hierarchyId,
-      ENTITY_RELATION_TYPE.DESCENDANTS,
-      descendantEntityType,
-      childrenOnly,
     );
   }
 

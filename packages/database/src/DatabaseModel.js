@@ -165,28 +165,6 @@ export class DatabaseModel {
     return this.find({}, queryOptions);
   }
 
-  /**
-   * Run some custom sql that returns records of the correct database type, and generate
-   * DatabaseType instances for each record. Handy if filtering by a join table etc.
-   * @param {string}      sql               The sql to append to the select statement
-   * @param {[string[]]}  parametersToBind  Parameters to safely substitute for `?` in the sql string
-   */
-  async selectFromModelWithExtraSql(sql, parametersToBind) {
-    const columns = await this.getColumnsForQuery();
-    const selectStatement = `
-      SELECT ${columns
-        .map(c => {
-          if (typeof c === 'string') return c;
-          const [alias, selector] = Object.entries(c)[0];
-          return `${selector} as ${alias}`;
-        })
-        .join(', ')}
-      FROM ${this.databaseType}
-    `;
-    const records = await this.database.executeSql(`${selectStatement} ${sql}`, parametersToBind);
-    return Promise.all(records.map(this.generateInstance));
-  }
-
   generateInstance = async (fields = {}) => {
     const data = await this.getDatabaseSafeData(fields);
     this.joins.forEach(({ fields: joinFields }) => {
