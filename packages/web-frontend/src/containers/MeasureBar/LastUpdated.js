@@ -36,7 +36,11 @@ class LastUpdated extends Component {
 }
 
 LastUpdated.propTypes = {
-  latestAvailable: PropTypes.string.isRequired,
+  latestAvailable: PropTypes.string,
+};
+
+LastUpdated.defaultProps = {
+  latestAvailable: null,
 };
 
 const mapStateToProps = state => {

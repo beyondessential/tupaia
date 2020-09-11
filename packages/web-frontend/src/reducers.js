@@ -799,7 +799,12 @@ function drillDown(
       return {
         ...state,
         isLoading: false,
-        levelContents: { ...state.levelContents, [action.drillDownLevel]: action.viewContent },
+        levelContents: {
+          ...state.levelContents,
+          [action.drillDownLevel]: {
+            viewContent: action.viewContent,
+          },
+        },
       };
 
     case FETCH_DRILL_DOWN_ERROR:
@@ -850,7 +855,7 @@ function extractViewsFromAllDashboards(dashboardConfig) {
         const uniqueViewId = getUniqueViewId({
           dashboardGroupId,
           organisationUnitCode,
-          viewId: view.viewId,
+          viewId: view.drillDownLevel ? `${view.viewId}_${view.drillDownLevel}` : view.viewId,
         });
         viewConfigs[uniqueViewId] = view;
       });
