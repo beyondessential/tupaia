@@ -6,9 +6,9 @@
 import moment from 'moment';
 
 const COMPARISON = `LIKE '%_test%'`;
-const getDeleteStatement = (table, extraConditions = []) => {
-  const conditions = [`id ${COMPARISON}`, ...extraConditions];
-  return `DELETE FROM ${table} WHERE ${conditions.join(' OR ')};`;
+const getDeleteStatement = (table, mainCondition = `id ${COMPARISON}`, extraConditions = []) => {
+  const conditions = [mainCondition, ...extraConditions];
+  return `DELETE FROM "${table}" WHERE ${conditions.join(' OR ')};`;
 };
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
@@ -49,9 +49,16 @@ const TABLES_TO_CLEAR = [
   'user_reward',
   'api_client',
   'user_account',
+  'dashboardGroup',
+  'dashboardReport',
+  'mapOverlay',
 ];
 
 export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
+  const mainConditions = {
+    dashboardGroup: `code ${COMPARISON}`, // id of dashboard group is still Integer, so have the mainCondition test on code rather than id
+  };
+
   const extraConditions = {
     api_request_log: [`request_time >= '${testStartTime}'`],
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
@@ -64,7 +71,8 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
     meditrak_sync_queue: [`record_id ${COMPARISON}`],
   };
   const sql = TABLES_TO_CLEAR.reduce(
-    (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
+    (acc, table) =>
+      `${acc}\n${getDeleteStatement(table, mainConditions[table], extraConditions[table])}`,
     '',
   );
   return db.executeSql(sql);

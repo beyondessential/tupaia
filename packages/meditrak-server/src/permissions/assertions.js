@@ -58,15 +58,22 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
 ////
 // specific permissions assertions
 ////
+
+export const hasBESAdminAccess = accessPolicy =>
+  accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP);
+
+export const hasTupaiaAdminPanelAccess = accessPolicy =>
+  accessPolicy.allowsSome(null, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+
 export const assertBESAdminAccess = accessPolicy => {
-  if (accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP)) {
+  if (hasBESAdminAccess(accessPolicy)) {
     return true;
   }
 
   throw new Error(`Need ${BES_ADMIN_PERMISSION_GROUP} access`);
 };
 export const assertTupaiaAdminPanelAccess = accessPolicy => {
-  if (accessPolicy.allowsSome(null, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
+  if (hasTupaiaAdminPanelAccess(accessPolicy)) {
     return true;
   }
 
