@@ -16,7 +16,7 @@ import {
  */
 export class GETSurveyGroups extends GETHandler {
   async assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
+    return true; // all users can request, but results will be filtered according to access
   }
 
   async findSingleRecord(surveyGroupId, options) {
@@ -31,8 +31,9 @@ export class GETSurveyGroups extends GETHandler {
   }
 
   async findRecords(criteria, options) {
+    // ensure the permissions gate check is triggered, actual permissions will be assessed during filtering
+    this.assertPermissions(allowNoPermissions);
     const surveyGroups = await this.database.find(this.recordType, criteria, options);
-
     return filterSurveyGroupsByPermissions(this.accessPolicy, this.models, surveyGroups);
   }
 }
