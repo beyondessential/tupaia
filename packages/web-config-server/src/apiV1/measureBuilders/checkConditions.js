@@ -24,8 +24,15 @@ class CheckConditionsBuilder extends DataBuilder {
   }
 }
 
-export const checkConditions = async (aggregator, dhisApi, query, measureBuilderConfig = {}) => {
+export const checkConditions = async (
+  models,
+  aggregator,
+  dhisApi,
+  query,
+  measureBuilderConfig = {},
+) => {
   const builder = new CheckConditionsBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

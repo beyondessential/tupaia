@@ -10,10 +10,9 @@ import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';
-import { Facility, Entity } from '/models';
 
-const filterFacility = async (filterCriteria, analytics) => {
-  const facilities = await Facility.find({
+const filterFacility = async (models, filterCriteria, analytics) => {
+  const facilities = await models.facility.find({
     type: {
       comparator: filterCriteria.comparator,
       comparisonValue: '1',
@@ -68,6 +67,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
 
     if (this.config.customFilter) {
       filteredData = await FILTERS[this.config.customFilter.name](
+        this.models,
         this.config.customFilter,
         analytics,
       );
@@ -86,15 +86,14 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
 
   getDataClassesWithAnalytics = async analytics => {
     if (this.config.isProjectReport) {
-      const dataWithCountries = await mapAnalyticsToCountries(analytics);
+      const dataWithCountries = await mapAnalyticsToCountries(this.models, analytics);
       const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
       // Only one data class is supported for country data classes
       const baseDataClass = Object.values(this.config.dataClasses)[0];
       const countryCodesToName = {};
       const countryCodesToNamePromises = Object.entries(dataByCountry).map(
         async ([countryCode]) => {
-          const countryEntity = await Entity.findOne({ code: countryCode });
-          const country = await countryEntity.getCountry();
+          const country = await this.models.entity.findOne({ code: countryCode });
           return { [countryCode]: country.name };
         },
         {},
@@ -137,11 +136,12 @@ class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
 }
 
 export const percentagesOfValueCountsPerPeriod = async (
-  { dataBuilderConfig, query, organisationUnitInfo },
+  { models, dataBuilderConfig, query, organisationUnitInfo },
   aggregator,
   dhisApi,
 ) => {
   const builder = new PercentagesOfValueCountsPerPeriodBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

@@ -82,9 +82,14 @@ class SumPerPeriodBuilder extends DataBuilder {
   }
 }
 
-export const sumPerPeriod = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const sumPerPeriod = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const { aggregationType } = dataBuilderConfig;
   const builder = new SumPerPeriodBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

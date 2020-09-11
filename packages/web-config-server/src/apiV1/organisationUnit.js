@@ -4,7 +4,6 @@
  */
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { Project, Entity, EntityRelation } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 
@@ -17,15 +16,15 @@ export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
 
   async buildResponse() {
-    const { includeCountryData, projectCode = 'explore' } = this.query;
+    const { includeCountryData } = this.query;
+    const project = await this.fetchProject();
     return includeCountryData === 'true'
-      ? this.getEntityAndCountryDataByCode(projectCode)
-      : this.getEntityAndChildrenByCode(projectCode);
+      ? this.getEntityAndCountryDataByCode(project)
+      : this.getEntityAndChildrenByCode(project);
   }
 
-  async getEntityAndCountryDataByCode(projectCode) {
-    const project = await Project.findOne({ code: projectCode });
-    const projectEntity = await Entity.findOne({ id: project.entity_id });
+  async getEntityAndCountryDataByCode(project) {
+    const projectEntity = await project.entity();
     const country = await this.entity.countryEntity();
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id)
@@ -36,16 +35,9 @@ export default class extends RouteHandler {
       ...countryDescendants,
     ]);
 
-    // todo replace with AncestorDescendantRelation, then remove EntityRelation model
-    const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
+    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentId(
       project.entity_hierarchy_id,
     );
-    // Fill in childIdToParentId with missing org units
-    orgUnitHierarchy.forEach(({ id, parent_id: parentId }) => {
-      if (!childIdToParentId[id]) {
-        childIdToParentId[id] = parentId;
-      }
-    });
 
     const entityIdToCode = reduceToDictionary(orgUnitHierarchy, 'id', 'code');
     return {
@@ -56,9 +48,7 @@ export default class extends RouteHandler {
     };
   }
 
-  async getEntityAndChildrenByCode(projectCode) {
-    const project = await Project.findOne({ code: projectCode });
-
+  async getEntityAndChildrenByCode(project) {
     // Don't check parent permission (as we already know we have permission for at least one of its children)
     const parent = await this.entity.parent();
     const allChildren = await this.entity.getChildren(project.entity_hierarchy_id);
@@ -73,13 +63,11 @@ export default class extends RouteHandler {
   }
 
   async filterForAccess(entities) {
-    return (
-      await Promise.all(
-        entities
-          .filter(entity => entity)
-          .map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
-      )
-    ).filter(entity => entity);
+    return (await Promise.all(
+      entities
+        .filter(entity => entity)
+        .map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
+    )).filter(entity => entity);
   }
 
   checkUserHasEntityAccess = async entity => {

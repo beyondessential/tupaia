@@ -1,5 +1,4 @@
 import { respond, PermissionsError } from '@tupaia/utils';
-import { Entity, Project } from '/models';
 
 import { ValidationError } from '@tupaia/utils/dist/errors';
 
@@ -25,6 +24,7 @@ export class RouteHandler {
       );
     }
     this.permissionsChecker = new PermissionsChecker(
+      this.models,
       this.query,
       this.req.userHasAccess,
       this.entity,
@@ -39,7 +39,7 @@ export class RouteHandler {
   async handleRequest() {
     // Fetch permissions
     const { organisationUnitCode: entityCode } = this.query;
-    this.entity = await Entity.findOne({ code: entityCode });
+    this.entity = await this.models.entity.findOne({ code: entityCode });
     if (!this.entity) {
       throw new ValidationError(`Entity ${entityCode} could not be found`);
     }
@@ -52,7 +52,9 @@ export class RouteHandler {
     }
   }
 
-  async fetchHierarchyId() {
-    return (await Project.findOne({ code: this.query.projectCode })).entity_hierarchy_id;
-  }
+  // arrow functions to avoid binding issues by callers e.g. via this.routeHandler.fetchProject
+  fetchProject = async () =>
+    this.models.project.findOne({ code: this.query.projectCode || 'explore' });
+
+  fetchHierarchyId = async () => (await this.fetchProject()).entity_hierarchy_id;
 }

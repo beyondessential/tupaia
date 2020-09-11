@@ -13,8 +13,6 @@ export { CountryModel as Country } from './Country';
 export { DataSourceModel as DataSource } from './DataSource';
 export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as DhisSyncQueue } from './DhisSyncQueue';
-export { DisasterEventModel as DisasterEvent } from './DisasterEvent';
-export { DisasterModel as Disaster } from './Disaster';
 export { EntityModel as Entity } from './Entity';
 export { FacilityModel as Facility } from './Facility';
 export { FeedItemModel as FeedItem } from './FeedItem';

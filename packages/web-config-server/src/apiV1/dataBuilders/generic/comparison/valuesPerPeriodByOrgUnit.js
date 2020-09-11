@@ -43,8 +43,9 @@ class ValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
 }
 
 function valuesPerPeriodByOrgUnit(queryConfig, aggregator, dhisApi, aggregationType) {
-  const { dataBuilderConfig, query, entity } = queryConfig;
+  const { models, dataBuilderConfig, query, entity } = queryConfig;
   const builder = new ValuesPerPeriodByOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

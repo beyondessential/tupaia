@@ -9,7 +9,7 @@ import flattenDeep from 'lodash.flattendeep';
 import { getCalculatedValuesByCell } from './getValuesByCell';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-class TableOfCalculatedValues extends TableOfDataValuesBuilder {
+class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
       this.config.cells.map(row =>
@@ -29,11 +29,12 @@ class TableOfCalculatedValues extends TableOfDataValuesBuilder {
 }
 
 export const tableOfCalculatedValues = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
-  const builder = new TableOfCalculatedValues(
+  const builder = new TableOfCalculatedValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

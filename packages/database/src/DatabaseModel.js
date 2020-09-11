@@ -82,15 +82,24 @@ export class DatabaseModel {
     };
   }
 
-  async getQueryOptions(customQueryOptions = {}) {
-    const options = {};
-
+  async getColumnsForQuery() {
     // Alias field names to the table to prevent errors when joining other tables
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
-    options.columns = fieldNames.map(fieldName => {
-      return `${this.databaseType}.${fieldName}`;
+    return fieldNames.map(fieldName => {
+      const qualifiedName = `${this.databaseType}.${fieldName}`;
+      const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
+      if (customSelector) {
+        return { [fieldName]: customSelector(qualifiedName) };
+      }
+      return qualifiedName;
     });
+  }
+
+  async getQueryOptions(customQueryOptions = {}) {
+    const options = {};
+
+    options.columns = await this.getColumnsForQuery();
 
     if (this.joins.length > 0) {
       options.multiJoin = this.joins;
@@ -154,17 +163,6 @@ export class DatabaseModel {
   async all(customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     return this.find({}, queryOptions);
-  }
-
-  /**
-   * Run some custom sql that returns records of the correct database type, and generate
-   * DatabaseType instances for each record. Handy if filtering by a join table etc.
-   * @param {string}      sql               Must return records with all the expected fields, e.g. SELECT entity.* FROM entity ...
-   * @param {[string[]]}  parametersToBind  Parameters to safely substitute for `?` in the sql string
-   */
-  async findWithSql(sql, parametersToBind) {
-    const records = await this.database.executeSql(sql, parametersToBind);
-    return Promise.all(records.map(this.generateInstance));
   }
 
   generateInstance = async (fields = {}) => {

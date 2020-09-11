@@ -236,8 +236,13 @@ class RawDataValuesBuilder extends DataBuilder {
   };
 }
 
-export const rawDataValues = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const rawDataValues = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new RawDataValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

@@ -27,7 +27,7 @@ class SurveyResponseType extends DatabaseType {
 
   async country() {
     const entity = await this.entity();
-    return entity.country();
+    return this.otherModels.country.findOne({ code: entity.country_code });
   }
 
   async fetchOrganisationUnit() {

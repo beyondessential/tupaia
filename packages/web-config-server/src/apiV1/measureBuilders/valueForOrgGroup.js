@@ -1,7 +1,5 @@
-import { Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { analyticsToMeasureData } from './helpers';
-import { ENTITY_TYPES } from '/models/Entity';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
 const SCHOOL_TYPE_CODE = 'schoolTypeCode';
@@ -19,9 +17,9 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {
       // create index of all facilities
-      const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
+      const facilityEntities = await this.fetchDescendantsOfType(this.models.entity.types.FACILITY);
       const facilityCodes = facilityEntities.map(facility => facility.code);
-      const facilityMetaDatas = await Facility.find({ code: facilityCodes });
+      const facilityMetaDatas = await this.models.facility.find({ code: facilityCodes });
       const facilitiesByCode = facilityMetaDatas.reduce(
         (array, metadata) => [
           ...array,
@@ -37,7 +35,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
         data: facilitiesByCode,
       };
     } else if (dataElementCode === SCHOOL_TYPE_CODE) {
-      const schools = await this.fetchDescendantsOfType(ENTITY_TYPES.SCHOOL);
+      const schools = await this.fetchDescendantsOfType(this.models.entity.types.SCHOOL);
       const facilitiesByCode = schools.map(school => ({
         organisationUnitCode: school.code,
         schoolTypeName: school.attributes.type,
@@ -68,6 +66,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
 }
 
 export const valueForOrgGroup = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -75,6 +74,7 @@ export const valueForOrgGroup = async (
   entity,
 ) => {
   const builder = new ValueForOrgGroupMeasureBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

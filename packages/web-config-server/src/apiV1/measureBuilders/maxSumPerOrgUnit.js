@@ -27,6 +27,7 @@ export class MaxSumBuilder extends DataBuilder {
 }
 
 export const maxSumPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -34,6 +35,7 @@ export const maxSumPerOrgUnit = async (
   entity,
 ) => {
   const builder = new MaxSumPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

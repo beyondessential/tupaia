@@ -7,7 +7,9 @@ import { createAssertTableResults } from './helpers';
 import { DATA_VALUES } from './tableOfPercentagesOfValueCounts.fixtures';
 import { tableOfPercentagesOfValueCounts } from '/apiV1/dataBuilders';
 
+const models = {};
 const assertTableResults = createAssertTableResults(
+  models,
   tableOfPercentagesOfValueCounts,
   DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_Nukuhc'),
 );

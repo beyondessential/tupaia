@@ -221,11 +221,12 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 }
 
 export const percentagesOfValueCounts = async (
-  { dataBuilderConfig, query, organisationUnitInfo },
+  { models, dataBuilderConfig, query, organisationUnitInfo },
   aggregator,
   dhisApi,
 ) => {
   const builder = new PercentagesOfValueCountsBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

@@ -11,8 +11,7 @@ import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '@tupaia/da
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
-import { BaseModel } from './models/BaseModel';
-import { setSingletonModelRegistry } from './models/modelRegistry';
+import { modelClasses } from './models';
 import { handleError } from './utils';
 
 import './log';
@@ -49,12 +48,8 @@ export async function createApp() {
   // Connect to db
   const database = new TupaiaDatabase();
 
-  // Attach database to legacy singleton models
-  BaseModel.database = database;
-
-  // Attach newer model registry to req, along with the authenticator
-  const modelRegistry = new ModelRegistry(database);
-  setSingletonModelRegistry(modelRegistry);
+  // Attach model registry to req, along with the authenticator
+  const modelRegistry = new ModelRegistry(database, modelClasses);
   const authenticator = new Authenticator(modelRegistry);
   app.use((req, res, next) => {
     req.models = modelRegistry;

@@ -2,10 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
-import { Project, getModelRegistry } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -19,14 +17,14 @@ export class DataBuilder {
    * @param {Entity} [entity]
    * @param {string} [aggregationType]
    */
-  constructor(aggregator, dhisApi, config, query, entity, aggregationType) {
+  constructor(models, aggregator, dhisApi, config, query, entity, aggregationType) {
+    this.models = models;
     this.aggregator = aggregator;
     this.dhisApi = dhisApi;
     this.config = config || {};
     this.query = query;
     this.entity = entity;
     this.aggregationType = aggregationType;
-    this.models = getModelRegistry();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -108,13 +106,13 @@ export class DataBuilder {
 
   async fetchEntityHierarchyId() {
     const { projectCode } = this.query;
-    const project = await Project.findOne({ code: projectCode });
+    const project = await this.models.project.findOne({ code: projectCode });
     return project.entity_hierarchy_id;
   }
 
   async fetchDescendantsOfType(type) {
     const entityHierarchyId = await this.fetchEntityHierarchyId();
-    return this.entity.getDescendantsOfType(type, entityHierarchyId);
+    return this.entity.getDescendantsOfType(entityHierarchyId, type);
   }
 
   /**
