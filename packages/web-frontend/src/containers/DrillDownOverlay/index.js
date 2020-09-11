@@ -120,7 +120,7 @@ const mapStateToProps = state => {
   const { currentLevel, isLoading, levelContents } = drillDown;
 
   return {
-    viewContent: levelContents[currentLevel] && levelContents[currentLevel],
+    viewContent: levelContents[currentLevel] && levelContents[currentLevel].viewContent,
     currentLevel,
     isLoading,
     infoViewKey: selectCurrentInfoViewKey(state),
