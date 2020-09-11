@@ -7,7 +7,7 @@ const DATA_ELEMENT_CODES = {
 };
 
 export const disasterAffectedOrganisationOperationalData = async (
-  { dataBuilderConfig, query, entity, fetchHierarchyId },
+  { models, dataBuilderConfig, query, entity, fetchHierarchyId },
   aggregator,
 ) => {
   const { organisationUnitCode, disasterStartDate } = query;
@@ -16,7 +16,7 @@ export const disasterAffectedOrganisationOperationalData = async (
   if (!disasterStartDate) return { data: [] };
 
   const hierarchyId = await fetchHierarchyId();
-  const facilities = await entity.getFacilityDescendants(hierarchyId);
+  const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
   const { results: facilityStatusResults } = await aggregator.fetchAnalytics(
     DATA_ELEMENT_CODES.facilityAffectedStatus,
     {

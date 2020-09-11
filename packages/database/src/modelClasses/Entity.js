@@ -205,10 +205,6 @@ export class EntityType extends DatabaseType {
   async getChildren(hierarchyId) {
     return this.getDescendants(hierarchyId, { generational_distance: 1 });
   }
-
-  async getFacilityDescendants(hierarchyId) {
-    return this.getDescendantsOfType(hierarchyId, FACILITY);
-  }
 }
 
 export class EntityModel extends DatabaseModel {

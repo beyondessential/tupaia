@@ -23,7 +23,7 @@ export const countDisasterAffectedFacilitiesByType = async (
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
   const hierarchyId = await fetchHierarchyId();
-  const facilities = await entity.getFacilityDescendants(hierarchyId);
+  const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
   const facilityMetadatas = await models.facility.find({
     code: facilities.map(facility => facility.code),
   });

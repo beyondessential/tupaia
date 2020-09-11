@@ -6,7 +6,7 @@ const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 const TO_BE_COMPLETED = 'To be completed';
 
 export const countDisasterAffectedFacilitiesByStatus = async (
-  { entity, dataBuilderConfig, query, fetchHierarchyId },
+  { models, entity, dataBuilderConfig, query, fetchHierarchyId },
   aggregator,
   dhisApi,
 ) => {
@@ -17,7 +17,7 @@ export const countDisasterAffectedFacilitiesByStatus = async (
 
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
   const hierarchyId = await fetchHierarchyId();
-  const facilities = await entity.getFacilityDescendants(hierarchyId);
+  const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
     dataServices,
