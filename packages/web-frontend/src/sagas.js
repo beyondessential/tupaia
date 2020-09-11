@@ -99,6 +99,7 @@ import {
   FETCH_RESET_TOKEN_LOGIN_SUCCESS,
   DIALOG_PAGE_RESET_PASSWORD,
   UPDATE_MEASURE_CONFIG,
+  SET_DRILL_DOWN_DATE_RANGE,
 } from './actions';
 import {
   isMobile,
@@ -973,7 +974,9 @@ function* fetchDrillDownData(action) {
     fetchDrillDownError,
   );
   if (drillDownData) {
-    yield put(fetchDrillDownSuccess(drillDownLevel, drillDownData));
+    yield put(
+      fetchDrillDownSuccess(drillDownLevel, { ...drillDownData, parameterLink, parameterValue }),
+    );
   }
 }
 
@@ -1006,11 +1009,13 @@ function* watchGoHomeAndResetToExplore() {
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
   const state = yield select();
+  const { startDate, endDate } = action;
   const { viewContent, infoViewKey } = state.enlargedDialog;
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
 
   const parameters = {
-    ...action,
+    startDate,
+    endDate,
     viewId,
     organisationUnitCode,
     dashboardGroupId,
@@ -1024,8 +1029,44 @@ function* fetchEnlargedDialogViewContentForPeriod(action) {
   }
 }
 
+function* fetchDrillDownViewContentForPeriod(action) {
+  const state = yield select();
+  const { startDate, endDate, drillDownLevel } = action;
+  const { viewContent } = state.drillDown.levelContents[drillDownLevel];
+  const { enlargedDialog } = state;
+  const { infoViewKey } = enlargedDialog;
+  const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
+
+  const {
+    viewId,
+    organisationUnitCode,
+    dashboardGroupId,
+    parameterLink,
+    parameterValue,
+  } = viewContent;
+
+  const parameters = {
+    startDate,
+    endDate,
+    viewId,
+    drillDownLevel,
+    organisationUnitCode,
+    dashboardGroupId,
+    isExpanded: true,
+    parameterLink,
+    parameterValue,
+    infoViewKey: drillDownConfigKey,
+  };
+
+  yield call(fetchDrillDownData, parameters);
+}
+
 function* watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent() {
   yield takeLatest(SET_ENLARGED_DIALOG_DATE_RANGE, fetchEnlargedDialogViewContentForPeriod);
+}
+
+function* watchSetDrillDownDateRange() {
+  yield takeLatest(SET_DRILL_DOWN_DATE_RANGE, fetchDrillDownViewContentForPeriod);
 }
 
 function* refreshBrowserWhenFinishingUserSession() {
@@ -1056,6 +1097,7 @@ export default [
   watchAttemptAttemptDrillDown,
   watchUserChangesAndUpdatePermissions,
   watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
+  watchSetDrillDownDateRange,
   watchAttemptTokenLogin,
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,

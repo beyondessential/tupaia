@@ -3,41 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import { Link as RouterLink } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
-import { SaveAlt, LightOutlinedButton } from '@tupaia/ui-components';
+import { SaveAlt, LightOutlinedButton, TupaiaIcon } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
 import { FlexSpaceBetween, FlexStart } from './Layout';
 import * as COLORS from '../constants/colors';
-
-const HeaderMain = styled.header`
-  background-color: ${COLORS.BLUE};
-  color: ${COLORS.WHITE};
-`;
-
-const HeaderInner = styled(FlexSpaceBetween)`
-  height: 190px;
-  padding-bottom: 1.25rem;
-`;
-
-const HeaderBack = styled(MuiLink)`
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-  color: ${COLORS.WHITE};
-  font-weight: 500;
-  font-size: 0.875rem;
-  line-height: 1rem;
-
-  svg {
-    margin-right: 0.5rem;
-  }
-`;
 
 const Avatar = styled(MuiAvatar)`
   height: 5rem;
@@ -113,6 +89,43 @@ HeaderTitleWithSubHeading.defaultProps = {
   avatarUrl: null,
 };
 
+const HeaderMain = styled.header`
+  background-color: ${COLORS.BLUE};
+  color: ${COLORS.WHITE};
+`;
+
+const HeaderInner = styled(FlexSpaceBetween)`
+  height: 190px;
+  padding-bottom: 1.25rem;
+`;
+
+const HeaderBack = styled(MuiLink)`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: ${COLORS.WHITE};
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1rem;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+const TupaiaButton = styled(LightOutlinedButton)`
+  .MuiButton-startIcon {
+    height: 1rem;
+    top: -2px;
+    position: relative;
+    width: 1.1rem;
+
+    svg {
+      font-size: 1.3rem;
+    }
+  }
+`;
+
 export const Header = ({ Title, back, ExportModal }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -129,14 +142,19 @@ export const Header = ({ Title, back, ExportModal }) => {
             )}
             {Title}
           </div>
-          {ExportModal && (
-            <>
-              <LightOutlinedButton onClick={() => setIsModalOpen(true)} startIcon={<SaveAlt />}>
-                Export Data
-              </LightOutlinedButton>
-              <ExportModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
-            </>
-          )}
+          <div>
+            <TupaiaButton href="https://tupaia.org" startIcon={<TupaiaIcon />} target="_blank">
+              View Tupaia
+            </TupaiaButton>
+            {ExportModal && (
+              <>
+                <LightOutlinedButton onClick={() => setIsModalOpen(true)} startIcon={<SaveAlt />}>
+                  Export Data
+                </LightOutlinedButton>
+                <ExportModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+              </>
+            )}
+          </div>
         </HeaderInner>
       </MuiContainer>
     </HeaderMain>
