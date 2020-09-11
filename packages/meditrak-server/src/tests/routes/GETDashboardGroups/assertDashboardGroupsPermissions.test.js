@@ -6,7 +6,10 @@
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  BES_ADMIN_PERMISSION_GROUP,
+} from '../../../permissions';
 import { getModels } from '../../getModels';
 import {
   filterDashboardGroupsByPermissions,
@@ -24,7 +27,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
   };
 
   const BES_ADMIN_POLICY = {
-    LA: ['BES Admin'],
+    LA: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const models = getModels();
