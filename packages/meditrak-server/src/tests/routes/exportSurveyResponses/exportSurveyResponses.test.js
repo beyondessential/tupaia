@@ -40,11 +40,11 @@ const expectAccessibleExportDataHeaderRow = aoaExportData => {
   }
 };
 
-describe.only('exportSurveys(): GET export/surveysResponses', () => {
+describe('exportSurveys(): GET export/surveysResponses', () => {
   const app = new TestableApp();
   const models = app.models;
 
-  describe('Test permissions when exporting surveys', async () => {
+  describe('Test permissions when exporting survey responses', async () => {
     let vanuatuCountry;
     let survey1;
     let survey2;
