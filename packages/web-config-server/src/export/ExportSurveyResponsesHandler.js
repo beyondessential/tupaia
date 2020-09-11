@@ -38,7 +38,6 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
         meditrakServerEndpoint,
         null,
         queryParameters,
-        {},
         this.req.session.userJson.userName,
       );
     } catch (error) {

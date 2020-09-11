@@ -8,5 +8,5 @@ export const requestCountryAccess = async req => {
   const { session, models, body } = req;
   const userName = session.userJson.userName;
   const endpoint = 'me/requestCountryAccess';
-  return fetchFromMeditrakServerUsingTokens(models, endpoint, body, null, {}, userName);
+  return fetchFromMeditrakServerUsingTokens(models, endpoint, body, null, userName);
 };

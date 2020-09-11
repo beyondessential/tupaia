@@ -9,5 +9,5 @@ export const changePassword = async req => {
   const userName = session.userJson.userName;
   const endpoint = 'me/changePassword';
 
-  return fetchFromMeditrakServerUsingTokens(models, endpoint, body, null, {}, userName);
+  return fetchFromMeditrakServerUsingTokens(models, endpoint, body, null, userName);
 };

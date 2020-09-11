@@ -1,6 +1,8 @@
 import { CustomError, fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
 
+const DEFAULT_AUTH_HEADER = `Basic ${process.env.TUPAIA_APP_SERVER_AUTH}`;
+
 /**
  * Send request to Meditrak server and handle responses.
  *
@@ -10,17 +12,21 @@ import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
  *   The JSON object to send in the body of the POST (will be GET if null)
  * @param {object} queryParameters
  *   Any parameters to append after the ? in the url query
- * @param {object} headers
- *   Any additional headers to send with the http request, e.g. can overwrite default Authorization
+ * @param {object} authHeader
+ *   To overwrite the default Authorization header, e.g. if using an access token
  */
-export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters, headers = {}) => {
+export const fetchFromMediTrakServer = async (
+  endpoint,
+  payload,
+  queryParameters,
+  authHeader = DEFAULT_AUTH_HEADER,
+) => {
   const url = stringifyQuery(process.env.TUPAIA_APP_SERVER_URL, endpoint, queryParameters);
   const config = {
     method: payload ? 'POST' : 'GET',
     headers: {
-      Authorization: `Basic ${process.env.TUPAIA_APP_SERVER_AUTH}`,
+      Authorization: authHeader,
       'Content-Type': 'application/json',
-      ...headers,
     },
   };
 
@@ -60,15 +66,11 @@ export const fetchFromMeditrakServerUsingTokens = async (
   endpoint,
   payload,
   queryParameters,
-  headers = {},
   userName,
 ) => {
   const UNAUTHORIZED_STATUS_CODE = 401;
   const fetchWithAccessToken = async token =>
-    fetchFromMediTrakServer(endpoint, payload, queryParameters, {
-      ...headers,
-      Authorization: `Bearer ${token}`,
-    });
+    fetchFromMediTrakServer(endpoint, payload, queryParameters, `Bearer ${token}`);
 
   const refreshAccessAndFetch = async refreshToken => {
     const newAccessToken = await refreshAndSaveAccessToken(models, refreshToken, userName);
