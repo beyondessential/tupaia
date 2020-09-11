@@ -37,10 +37,11 @@ const MAX_RECORDS_PER_PAGE = 100;
 export class GETHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    const { database, query, endpoint, models } = req;
+    const { database, query, endpoint, models, accessPolicy } = req;
     this.database = database;
     this.query = query;
     this.models = models;
+    this.accessPolicy = accessPolicy;
     this.resource = extractResourceFromEndpoint(endpoint);
     this.recordType = resourceToRecordType(this.resource);
   }
