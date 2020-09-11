@@ -100,13 +100,20 @@ const TOTAL_MAP_OVERLAY = {
       {
         name: '0',
         value: '0',
+        icon: 'circle',
         hideFromPopup: true,
         hideFromLegend: true,
       },
       {
         name: 'No data',
-        color: 'Grey',
         value: 'null',
+        color: 'Grey',
+        icon: 'circle',
+        hideFromLegend: true,
+      },
+      {
+        value: 'other',
+        icon: 'circle',
         hideFromLegend: true,
       },
     ],
@@ -162,7 +169,7 @@ exports.down = function(db) {
       DELETE FROM map_overlay_group
       WHERE code = '${MAP_OVERLAY_GROUP.code}';
       DELETE FROM "mapOverlay"
-      WHERE id LIKE '%TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Type_%';
+      WHERE id LIKE '%TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_%';
   `);
 };
 
