@@ -907,6 +907,7 @@ function* exportChart(action) {
   const timeZone = getTimeZone();
 
   const exportUrl = createUrlString({
+    // Note that dashboard means dashboardId here rather than dashboardCode, e.g. 301 not General
     [URL_COMPONENTS.DASHBOARD]: dashboardGroupId,
     [URL_COMPONENTS.REPORT]: viewId,
     [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
@@ -920,6 +921,7 @@ function* exportChart(action) {
     [URL_COMPONENTS.PROJECT]: projectCode,
     [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
   });
+  console.log(exportUrl);
 
   const fetchOptions = {
     method: 'POST',
