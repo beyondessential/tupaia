@@ -8,7 +8,7 @@ import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
 import { Aggregator } from '/aggregator';
-import { DATA_ELEMENTS } from './tableOfDataValues.fixtures';
+import { DATA_ELEMENTS, ORG_UNITS } from './tableOfDataValues.fixtures';
 
 const query = { organisationUnitCode: 'TO' };
 const dataServices = [{ isDataRegional: false }];
@@ -46,7 +46,15 @@ const createAggregatorStub = dataValues => {
   return sinon.createStubInstance(Aggregator, { fetchAnalytics, fetchDataElements });
 };
 
-export const createAssertTableResults = (models, table, availableDataValues) => {
+const models = {
+  entity: {
+    find: sinon
+      .stub()
+      .callsFake(({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code))),
+  },
+};
+
+export const createAssertTableResults = (table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
@@ -58,7 +66,7 @@ export const createAssertTableResults = (models, table, availableDataValues) => 
   };
 };
 
-export const createAssertErrorIsThrown = (models, table, availableDataValues) => {
+export const createAssertErrorIsThrown = (table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
