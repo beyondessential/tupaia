@@ -10,7 +10,7 @@ const getOrgUnits = async (models, { parentCode, type, hierarchyId }) => {
   return parentOrgUnit.getDescendantsOfType(hierarchyId, type);
 };
 
-const groupByAllOrgUnitNames = async (events, options, models) => {
+const groupByAllOrgUnitNames = async (models, events, options) => {
   const eventsByOrgUnitName = (await getOrgUnits(models, options)).reduce(
     (results, { name }) => ({ ...results, [name]: [] }),
     {},
@@ -25,7 +25,7 @@ const groupByAllOrgUnitNames = async (events, options, models) => {
   return eventsByOrgUnitName;
 };
 
-const groupByAllOrgUnitParentNames = async (events, options, models) => {
+const groupByAllOrgUnitParentNames = async (models, events, options) => {
   const { aggregationLevel, hierarchyId } = options;
   const orgUnits = await getOrgUnits(models, options);
   const eventsByOrgUnitName = orgUnits.reduce(
@@ -63,7 +63,7 @@ const groupByAllOrgUnitParentNames = async (events, options, models) => {
   return eventsByOrgUnitName;
 };
 
-const groupByDataValues = (events, options) => {
+const groupByDataValues = (_, events, options) => {
   const groupedEvents = {};
   for (const groupingName of Object.keys(options)) {
     groupedEvents[groupingName] = getEventsThatSatisfyConditions(events, options[groupingName]);
@@ -74,7 +74,7 @@ const groupByDataValues = (events, options) => {
 const GROUP_BY_VALUE_TO_METHOD = {
   allOrgUnitNames: groupByAllOrgUnitNames,
   allOrgUnitParentNames: groupByAllOrgUnitParentNames,
-  nothing: events => {
+  nothing: (_, events) => {
     return { all: events };
   }, // used for testing
   dataValues: groupByDataValues,
@@ -92,7 +92,7 @@ export const groupEvents = async (models, events, groupBySpecs = {}) => {
     throw new Error(`'${type}' is not a supported groupBy type`);
   }
 
-  return groupByMethod(events, options, models);
+  return groupByMethod(models, events, options);
 };
 
 /**
