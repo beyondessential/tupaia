@@ -61,11 +61,11 @@ const tabData = [
 ];
 
 export const CountriesReportsViewComponent = ({ isRegionalUser, activeEntity }) => {
-  if (!isRegionalUser) {
-    // Todo: get slug from active entity
-    const slug = activeEntity.toLowerCase();
-    return <Redirect to={`/weekly-reports/${slug}`} />;
-  }
+  // if (!isRegionalUser) {
+  //   // Todo: get slug from active entity
+  //   const slug = activeEntity.toLowerCase();
+  //   return <Redirect to={`/weekly-reports/${slug}`} />;
+  // }
 
   return (
     <>

@@ -11,9 +11,10 @@ import { UnAuthorisedView } from '../views/UnauthorisedView';
 
 export const PrivateRouteComponent = ({
   isLoggedIn,
-  accessPolicy,
+  checkIsAuthorised,
   currentUser,
   children,
+  UnAuthorisedViewComponent,
   ...props
 }) => (
   <Route
@@ -30,11 +31,11 @@ export const PrivateRouteComponent = ({
         );
       }
 
-      if (accessPolicy) {
-        const isAuthorised = accessPolicy(match, currentUser);
+      if (checkIsAuthorised) {
+        const isAuthorised = checkIsAuthorised(match, currentUser);
 
         if (!isAuthorised) {
-          return <UnAuthorisedView />;
+          return <UnAuthorisedViewComponent />;
         }
       }
 
@@ -47,13 +48,15 @@ PrivateRouteComponent.propTypes = {
   children: PropTypes.any.isRequired,
   isLoggedIn: PropTypes.bool,
   currentUser: PropTypes.object,
-  accessPolicy: PropTypes.func,
+  checkIsAuthorised: PropTypes.func,
+  UnAuthorisedViewComponent: PropTypes.elementType,
 };
 
 PrivateRouteComponent.defaultProps = {
   isLoggedIn: false,
-  accessPolicy: null,
+  checkIsAuthorised: null,
   currentUser: null,
+  UnAuthorisedViewComponent: UnAuthorisedView,
 };
 
 const mapStateToProps = state => ({

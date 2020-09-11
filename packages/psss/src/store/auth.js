@@ -58,6 +58,8 @@ export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSucces
 const getActiveEntityByUser = user => {
   const accessPolicy = new AccessPolicy(user.accessPolicy);
   // Todo: Update with the correct access policy check
+
+  // To Test switch between Admin and Public
   const worldPermission = accessPolicy.allows('DL', 'Admin');
   if (worldPermission) {
     return 'World';
