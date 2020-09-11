@@ -1,9 +1,8 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import keyBy from 'lodash.keyby';
 import xlsx from 'xlsx';
 import moment from 'moment';
 import fs from 'fs';
@@ -11,7 +10,6 @@ import { truncateString } from 'sussol-utilities';
 import { DatabaseError, ValidationError } from '@tupaia/utils';
 
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../dataAccessors';
-import { canExportSurveyResponses } from './assertCanExportSurveyResponses';
 import { allowNoPermissions } from '../../permissions';
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
@@ -159,19 +157,10 @@ export async function exportSurveyResponses(req, res) {
       workbook.Sheets[sheetName] = xlsx.utils.aoa_to_sheet(exportData);
       workbook.SheetNames.push(sheetName);
     };
-
-    const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
-    const permissionGroups = await models.permissionGroup.findManyById(surveyPermissionGroupIds);
-    const permissionGroupById = keyBy(permissionGroups, 'id');
-
     for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
       const currentSurvey = surveys[surveyIndex];
-      const permissionGroup = permissionGroupById[currentSurvey.permission_group_id];
-      const hasSurveyAccess = canExportSurveyResponses(
-        accessPolicy,
-        country.code,
-        permissionGroup.name,
-      );
+      const permissionGroup = await currentSurvey.getPermissionGroup();
+      const hasSurveyAccess = accessPolicy.allows(country.code, permissionGroup.name);
       if (!hasSurveyAccess) {
         exportData = [[`You do not have export access to ${currentSurvey.name}`]];
         addDataToSheet(currentSurvey.name, exportData);
