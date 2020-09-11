@@ -922,7 +922,6 @@ function* exportChart(action) {
     [URL_COMPONENTS.PROJECT]: projectCode,
     [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
   });
-  console.log(exportUrl);
 
   const fetchOptions = {
     method: 'POST',
