@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { FileUploadField } from '@tupaia/ui-components';
 import { importData } from './actions';
 import { ImportExportModal } from './ImportExportModal';
 
@@ -48,7 +49,7 @@ export const ImportModalComponent = ({ onImport, isOpen, errorMessage, ...props 
       errorMessage={fileErrorMessage}
       {...props}
     >
-      <input type="file" onChange={event => handleFiles(event)} value={value} />
+      <FileUploadField onChange={event => handleFiles(event)} name="file-upload" />
     </ImportExportModal>
   );
 };
