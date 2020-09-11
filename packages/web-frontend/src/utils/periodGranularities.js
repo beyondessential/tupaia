@@ -228,6 +228,12 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
 
 export function getDefaultDates(state) {
   const { periodGranularity, defaultTimePeriod } = state;
+
+  // we need a valid granularity to proceed
+  if (!periodGranularity) {
+    return {};
+  }
+
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
 
   if (isSingleDate) {

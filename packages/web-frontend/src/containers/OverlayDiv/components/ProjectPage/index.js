@@ -102,7 +102,7 @@ const ProjectPageComponent = ({
 ProjectPageComponent.propTypes = {
   onSelectProject: PropTypes.func.isRequired,
   openLoginDialog: PropTypes.func.isRequired,
-  isUserLoggedIn: PropTypes.func.isRequired,
+  isUserLoggedIn: PropTypes.bool.isRequired,
   onRequestProjectAccess: PropTypes.func.isRequired,
   projects: PropTypes.arrayOf(PropTypes.shape({})),
 };
