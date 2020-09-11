@@ -241,7 +241,7 @@ export class EntityModel extends DatabaseModel {
   }
 
   async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
-    const cacheKey = this.getCacheKey('fetchAncestorDetailsByDescendantCode', arguments);
+    const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
     return this.runCachedFunction(cacheKey, async () => {
       const ancestorDescendantRelations = await this.database.executeSqlInBatches(
         descendantCodes,
@@ -284,7 +284,7 @@ export class EntityModel extends DatabaseModel {
     entityTypeOfRelations,
     immediateRelativesOnly,
   ) {
-    const cacheKey = this.getCacheKey('getRelationsOfEntity', arguments);
+    const cacheKey = this.getCacheKey(this.getRelationsOfEntity.name, arguments);
     const [joinTablesOn, filterByEntityId] =
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
         ? ['ancestor_id', 'descendant_id']
