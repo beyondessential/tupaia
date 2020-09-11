@@ -40,9 +40,8 @@ export class QueryBuilder {
 
   async getDataSourceEntities() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
-    const entity = await Entity.findOne({ code: organisationUnitCode });
     const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
-      entity,
+      organisationUnitCode,
       (this.getQueryParameter('entityAggregation') || {}).dataSourceEntityType,
       this.getQueryParameter('dataSourceEntityFilter'),
     );

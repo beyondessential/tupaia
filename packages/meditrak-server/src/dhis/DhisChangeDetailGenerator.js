@@ -41,7 +41,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
     const orgUnitByEntityId = {};
     await Promise.all(
       entities.map(async entity => {
-        orgUnitByEntityId[entity.id] = await entity.fetchClosestOrganisationUnit();
+        orgUnitByEntityId[entity.id] = await entity.fetchNearestOrgUnitAncestor();
       }),
     );
     const changeDetailsById = {};

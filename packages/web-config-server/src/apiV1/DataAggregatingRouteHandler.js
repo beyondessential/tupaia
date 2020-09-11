@@ -15,7 +15,7 @@ import { filterEntities } from './utils';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.aggregator = createAggregator(Aggregator, this);
+    this.aggregator = createAggregator(Aggregator, this.models, this);
   }
 
   findAllDataSourceEntities = async (entity, entityType, hierarchyId) => {
@@ -50,9 +50,10 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
   // Builds the list of entities data should be fetched from, using org unit descendants of the
   // selected entity (optionally of a specific entity type)
-  fetchDataSourceEntities = async (entity, dataSourceEntityType, dataSourceEntityFilter) => {
+  fetchDataSourceEntities = async (entityCode, dataSourceEntityType, dataSourceEntityFilter) => {
     const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
     const hierarchyId = await this.fetchHierarchyId();
+    const entity = await this.models.entity.findOne({ code: entityCode });
     const allDataSourceEntities = await this.findAllDataSourceEntities(
       entity,
       entityType,

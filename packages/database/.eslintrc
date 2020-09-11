@@ -13,7 +13,8 @@
     {
       "files": "src/modelClasses/**",
       "rules": {
-        "class-methods-use-this": ["off"]
+        "class-methods-use-this": ["off"],
+        "prefer-rest-params": ["off"]
       }
     }
   ]

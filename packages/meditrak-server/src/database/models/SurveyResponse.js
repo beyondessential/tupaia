@@ -32,7 +32,7 @@ class SurveyResponseType extends DatabaseType {
 
   async fetchOrganisationUnit() {
     const entity = await this.entity();
-    return entity.fetchClosestOrganisationUnit();
+    return entity.fetchNearestOrgUnitAncestor();
   }
 
   async isForTrackedEntity() {

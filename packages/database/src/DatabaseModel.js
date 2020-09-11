@@ -39,6 +39,10 @@ export class DatabaseModel {
     }
   }
 
+  // functionArguments should receive the 'arguments' object
+  getCacheKey = (functionName, functionArguments) =>
+    `${functionName}:${JSON.stringify(Object.values(functionArguments))}`;
+
   addChangeHandler = handler =>
     this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, handler);
 
@@ -115,7 +119,7 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
-  async findManyById(ids) {
+  async findManyById(ids, criteria = {}) {
     if (!ids) {
       throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
     }
@@ -123,7 +127,7 @@ export class DatabaseModel {
     const batchSize = this.database.maxBindingsPerQuery;
     for (let i = 0; i < ids.length; i += batchSize) {
       const batchOfIds = ids.slice(i, i + batchSize);
-      const batchOfRecords = await this.find({ id: batchOfIds });
+      const batchOfRecords = await this.find({ id: batchOfIds, ...criteria });
       records.push(...batchOfRecords);
     }
     return records;
@@ -150,6 +154,17 @@ export class DatabaseModel {
   async all(customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     return this.find({}, queryOptions);
+  }
+
+  /**
+   * Run some custom sql that returns records of the correct database type, and generate
+   * DatabaseType instances for each record. Handy if filtering by a join table etc.
+   * @param {string}      sql               Must return records with all the expected fields, e.g. SELECT entity.* FROM entity ...
+   * @param {[string[]]}  parametersToBind  Parameters to safely substitute for `?` in the sql string
+   */
+  async findWithSql(sql, parametersToBind) {
+    const records = await this.database.executeSql(sql, parametersToBind);
+    return Promise.all(records.map(this.generateInstance));
   }
 
   generateInstance = async (fields = {}) => {

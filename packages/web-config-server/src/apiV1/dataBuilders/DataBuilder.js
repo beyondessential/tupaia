@@ -5,7 +5,7 @@
 
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
-import { Project, Entity } from '/models';
+import { Project, getModelRegistry } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -26,6 +26,7 @@ export class DataBuilder {
     this.query = query;
     this.entity = entity;
     this.aggregationType = aggregationType;
+    this.models = getModelRegistry();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -119,25 +120,21 @@ export class DataBuilder {
   /**
    * Fetch ancestor of type for each organisationUnit in event
    */
-  async mapAncestorOfTypeToEvents(events, ancestorType) {
+  async addAncestorsToEvents(events, ancestorType) {
     const hierarchyId = await this.fetchEntityHierarchyId();
     const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
-    const allEntities = await Entity.find({ code: allEntityCodes });
-    const allAncestors = await Promise.all(
-      await allEntities.map(entity => entity.getAncestorOfType(ancestorType, hierarchyId)),
+    const ancestorDetailsByDescendantCode = await this.models.entity.fetchAncestorDetailsByDescendantCode(
+      allEntityCodes,
+      hierarchyId,
+      ancestorType,
     );
-    const entityCodeToAncestor = {};
-    allEntities.forEach((entity, index) => {
-      entityCodeToAncestor[entity.code] = allAncestors[index].name;
-    });
-    const mappedEvents = events.map(event => {
-      const ancestor = entityCodeToAncestor[event.orgUnit];
+    return events.map(event => {
+      const { name: ancestorName } = ancestorDetailsByDescendantCode[event.orgUnit];
       return {
         ...event,
-        orgUnitAncestor: ancestor,
+        orgUnitAncestor: ancestorName,
       };
     });
-    return mappedEvents;
   }
 
   sortEventsByAncestor = events => events.sort(getSortByKey('orgUnitAncestor'));

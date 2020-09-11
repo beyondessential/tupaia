@@ -69,12 +69,13 @@ describe('EntityModel', () => {
     });
   });
 
-  describe('fetchClosestOrganisationUnit()', () => {
+  // todo update these tests to handle traversing alternative hierarchies
+  describe('fetchNearestOrgUnitAncestor()', () => {
     it('should return itself if it is an organisation unit', async () => {
       const parentEntity = await upsertOrgUnitEntity();
       const entity = await upsertOrgUnitEntity({ parent_id: parentEntity.id });
 
-      const result = await entity.fetchClosestOrganisationUnit();
+      const result = await entity.fetchNearestOrgUnitAncestor();
       assertHaveEqualIds(entity, result);
     });
 
@@ -82,7 +83,7 @@ describe('EntityModel', () => {
       const parentEntity = await upsertOrgUnitEntity();
       const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
 
-      const result = await entity.fetchClosestOrganisationUnit();
+      const result = await entity.fetchNearestOrgUnitAncestor();
       assertHaveEqualIds(parentEntity, result);
     });
 
@@ -91,7 +92,7 @@ describe('EntityModel', () => {
       const parentEntity = await upsertNonOrgUnitEntity({ parent_id: grandParentEntity.id });
       const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
 
-      const result = await entity.fetchClosestOrganisationUnit();
+      const result = await entity.fetchNearestOrgUnitAncestor();
       assertHaveEqualIds(grandParentEntity, result);
     });
   });

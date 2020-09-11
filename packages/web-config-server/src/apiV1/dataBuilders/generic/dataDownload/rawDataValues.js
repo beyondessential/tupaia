@@ -94,7 +94,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const mappedEvents =
         ancestorMappingConfig && ancestorMappingConfig.ancestorType
-          ? await this.mapAncestorOfTypeToEvents(rawEvents, ancestorMappingConfig.ancestorType)
+          ? await this.addAncestorsToEvents(rawEvents, ancestorMappingConfig.ancestorType)
           : rawEvents;
 
       // Optional sorting config bit of performance hacking here
