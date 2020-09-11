@@ -90,13 +90,13 @@ import {
   updateEnlargedDialogError,
   updateMeasureConfig,
   UPDATE_MEASURE_CONFIG,
-  UPDATE_MEASURE_CONFIG_ONCE_HIERARCHY_LOADS,
+  UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { DEFAULT_PROJECT_CODE } from './defaults';
 import {
-  convertUrlPeriodStringToObject,
+  convertUrlPeriodStringToDateRange,
   createUrlString,
   URL_COMPONENTS,
 } from './historyNavigation';
@@ -753,16 +753,16 @@ function* watchMeasurePeriodChange() {
 
 function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
   yield takeLatest(
-    UPDATE_MEASURE_CONFIG_ONCE_HIERARCHY_LOADS,
-    updateMeasureConfigOnceHierarchyLoads,
+    UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+    updateMeasureDateRangeOnceHierarchyLoads,
   );
 }
 
-function* updateMeasureConfigOnceHierarchyLoads(action) {
+function* updateMeasureDateRangeOnceHierarchyLoads(action) {
   yield take(FETCH_MEASURES_SUCCESS);
   const state = yield select();
   const periodGranularity = selectCurrentPeriodGranularity(state);
-  const { startDate, endDate } = convertUrlPeriodStringToObject(
+  const { startDate, endDate } = convertUrlPeriodStringToDateRange(
     action.periodString,
     periodGranularity,
   );

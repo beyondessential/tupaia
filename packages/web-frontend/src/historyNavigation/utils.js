@@ -92,7 +92,7 @@ export const isLocationEqual = (a, b) => {
   return true;
 };
 
-export const convertUrlPeriodStringToObject = (
+export const convertUrlPeriodStringToDateRange = (
   periodString,
   periodGranularity = GRANULARITIES.DAY,
 ) => {
@@ -104,7 +104,7 @@ export const convertUrlPeriodStringToObject = (
   };
 };
 
-export const convertObjectToUrlPeriodString = (
+export const convertDateRangeToUrlPeriodString = (
   { startDate, endDate },
   periodGranularity = GRANULARITIES.DAY,
 ) => {
@@ -112,15 +112,9 @@ export const convertObjectToUrlPeriodString = (
 
   const format = GRANULARITY_CONFIG[periodGranularity].urlFormat;
 
-  if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
-    if (!startDate.isSame(endDate)) {
-      console.error(
-        `Caution: periodGranularity of ${periodGranularity} has different startDate and endDate`,
-      );
-    }
-    return startDate.format(format);
-  }
-  return `${startDate.format(format)}-${endDate.format(format)}`;
+  return GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)
+    ? startDate.format(format)
+    : `${startDate.format(format)}-${endDate.format(format)}`;
 };
 
 const parseSearch = search => {

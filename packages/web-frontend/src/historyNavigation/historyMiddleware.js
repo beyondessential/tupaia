@@ -41,8 +41,8 @@ import {
   getInitialLocation,
   setLocationComponent,
 } from './historyNavigation';
-import { decodeLocation, convertObjectToUrlPeriodString } from './utils';
 import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
+import { convertDateRangeToUrlPeriodString, decodeLocation } from './utils';
 
 export const reactToInitialState = store => {
   reactToLocationChange(store, getInitialLocation(), clearLocation());
@@ -135,7 +135,7 @@ export const historyMiddleware = store => next => action => {
       dispatchLocationUpdate(
         store,
         URL_COMPONENTS.MEASURE_PERIOD,
-        convertObjectToUrlPeriodString({ startDate, endDate }, periodGranularity),
+        convertDateRangeToUrlPeriodString({ startDate, endDate }, periodGranularity),
       );
       break;
     }
@@ -147,7 +147,10 @@ export const historyMiddleware = store => next => action => {
       dispatchLocationUpdate(
         store,
         URL_COMPONENTS.MEASURE_PERIOD,
-        convertObjectToUrlPeriodString(action.measureConfig, selectCurrentPeriodGranularity(state)),
+        convertDateRangeToUrlPeriodString(
+          action.measureConfig,
+          selectCurrentPeriodGranularity(state),
+        ),
       );
       break;
     default:
