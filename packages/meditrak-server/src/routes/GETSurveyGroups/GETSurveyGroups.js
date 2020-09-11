@@ -6,7 +6,7 @@
 import { GETHandler } from '../GETHandler';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
-  assertSurveyGroupPermissions,
+  assertSurveyGroupsPermissions,
   filterSurveyGroupsByPermissions,
 } from './assertSurveyGroupsPermissions';
 /**
@@ -23,7 +23,7 @@ export class GETSurveyGroups extends GETHandler {
     const surveyGroup = await super.findSingleRecord(surveyGroupId, options);
 
     const surveyGroupChecker = accessPolicy =>
-      assertSurveyGroupPermissions(accessPolicy, this.models, [surveyGroup]);
+      assertSurveyGroupsPermissions(accessPolicy, this.models, [surveyGroup]);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyGroupChecker]));
 
