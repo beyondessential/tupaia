@@ -5,6 +5,7 @@
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
+import { JOIN_TYPES } from '../TupaiaDatabase';
 import { TYPES } from '../types';
 
 /**
@@ -31,6 +32,7 @@ const CATCHMENT = 'catchment';
 const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
+const PROJECT = 'project';
 
 const ENTITY_TYPES = {
   CASE,
@@ -45,6 +47,7 @@ const ENTITY_TYPES = {
   SUB_CATCHMENT,
   VILLAGE,
   WORLD,
+  PROJECT,
 };
 
 const ORG_UNIT_ENTITY_TYPES = {
@@ -74,6 +77,10 @@ class EntityType extends DatabaseType {
 
   isWorld() {
     return this.type === WORLD;
+  }
+
+  isProject() {
+    return this.type === PROJECT;
   }
 
   isOrganisationUnit() {
@@ -130,6 +137,26 @@ class EntityType extends DatabaseType {
     }
 
     throw new Error(`Maximum of (${MAX_ENTITY_HIERARCHY_LEVELS}) entity hierarchy levels reached`);
+  }
+
+  async getChildrenViaHierarchy(hierarchyId) {
+    //Raw sql:
+    //     SELECT entity.*
+    //     FROM entity
+    //     INNER JOIN entity_relation on entity.id = entity_relation.child_id
+    //     WHERE entity_relation.parent_id = `'${this.id}'`
+    //     AND entity_relation.entity_hierarchy_id = `'${hierarchyId}'`;
+    return this.model.find(
+      {
+        [`${TYPES.ENTITY_RELATION}.parent_id`]: this.id,
+        [`${TYPES.ENTITY_RELATION}.entity_hierarchy_id`]: hierarchyId,
+      },
+      {
+        joinWith: TYPES.ENTITY_RELATION,
+        joinType: JOIN_TYPES.INNER,
+        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.ENTITY_RELATION}.child_id`],
+      },
+    );
   }
 }
 
