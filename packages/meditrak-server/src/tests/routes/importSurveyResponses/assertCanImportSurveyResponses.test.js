@@ -18,7 +18,7 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-describe('Permissions checker for Importing Survey Responses', async () => {
+describe('assertCanImportSurveyResponses(): Permissions checker for Importing Survey Responses', async () => {
   const models = getModels();
   const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 

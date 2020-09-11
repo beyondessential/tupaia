@@ -57,11 +57,11 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
     survey_screen_component: [`question_id ${COMPARISON}`],
-    survey: [`name LIKE 'test_%'`], //For testing importing new surveys
+    survey: [`code LIKE 'test%'`, `name ${COMPARISON}`], //Name comparison is for clearing test data when importing new surveys using excel files,
     user_entity_permission: [`permission_group_id ${COMPARISON}`],
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
-    entity: [`code LIKE 'test%'`, `code LIKE '%test'`],
+    entity: [`code LIKE 'test%'`, `code ${COMPARISON}`],
     meditrak_sync_queue: [`record_id ${COMPARISON}`],
   };
   const sql = TABLES_TO_CLEAR.reduce(

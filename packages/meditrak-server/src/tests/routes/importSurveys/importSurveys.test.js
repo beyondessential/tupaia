@@ -28,13 +28,11 @@ const BES_ADMIN_POLICY = {
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 const SERVICE_TYPE = 'tupaia';
-const EXISTING_TEST_SURVEY_CODE_1 = 'test_existing_survey_import_1';
-const EXISTING_TEST_SURVEY_NAME_1 = 'test_existing_survey_import 1';
-const EXISTING_TEST_SURVEY_CODE_2 = 'test_existing_survey_import_2';
-const EXISTING_TEST_SURVEY_NAME_2 = 'test_existing_survey_import 2';
-const NEW_TEST_SURVEY_NAME_1 = 'test_new_survey_import 1';
-const NEW_TEST_SURVEY_NAME_2 = 'test_new_survey_import 2';
-const NEW_TEST_SURVEY_NAME_3 = 'test_new_survey_import 3';
+const EXISTING_TEST_SURVEY_NAME_1 = 'existing_survey_import_1_test';
+const EXISTING_TEST_SURVEY_NAME_2 = 'existing_survey_import_2_test';
+const NEW_TEST_SURVEY_NAME_1 = 'new_survey_import_1_test';
+const NEW_TEST_SURVEY_NAME_2 = 'new_survey_import_2_test';
+const NEW_TEST_SURVEY_NAME_3 = 'new_survey_import_3_test';
 
 const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
   sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').returns(policy);
@@ -73,7 +71,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
       await buildAndInsertSurveys(models, [
         {
-          code: EXISTING_TEST_SURVEY_CODE_1,
+          code: EXISTING_TEST_SURVEY_NAME_1,
           name: EXISTING_TEST_SURVEY_NAME_1,
           permission_group_id: adminPermissionGroup.id,
           country_ids: [vanuatuCountry.id],
@@ -82,7 +80,7 @@ describe('importSurveys(): POST import/surveys', () => {
           },
         },
         {
-          code: EXISTING_TEST_SURVEY_CODE_2,
+          code: EXISTING_TEST_SURVEY_NAME_2,
           name: EXISTING_TEST_SURVEY_NAME_2,
           permission_group_id: adminPermissionGroup.id,
           country_ids: [kiribatiCountry.id],
@@ -126,7 +124,7 @@ describe('importSurveys(): POST import/surveys', () => {
 
         //Revert the countryIds back to Vanuatu for other test cases
         await models.survey.update(
-          { code: EXISTING_TEST_SURVEY_CODE_1 },
+          { code: EXISTING_TEST_SURVEY_NAME_1 },
           { country_ids: [vanuatuCountry.id] },
         );
 
