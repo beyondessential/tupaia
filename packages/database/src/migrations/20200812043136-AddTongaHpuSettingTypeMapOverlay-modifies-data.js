@@ -19,7 +19,7 @@ exports.setup = function(options, seedLink) {
 
 const COLOUR_MAP_OVERLAY = {
   id: 'TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Unique',
-  name: 'NCD Risk Factor Screenings by Setting Type',
+  name: 'NCD Risk Factor Screening: Setting Type',
   userGroup: 'Tonga Health Promotion Unit',
   dataElementCode: 'value',
   isDataRegional: false,
