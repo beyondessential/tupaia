@@ -12,14 +12,19 @@ import CircularProgress from 'material-ui/CircularProgress';
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
 import { TRANS_BLACK, DIALOG_Z_INDEX, WHITE } from '../../styles';
-import { attemptDrillDown, closeDrillDown, goToDrillDownLevel } from '../../actions';
+import {
+  attemptDrillDown,
+  closeDrillDown,
+  goToDrillDownLevel,
+  setDrillDownDateRange,
+} from '../../actions';
 import { VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from '../EnlargedDialog';
 import { selectCurrentInfoViewKey } from '../../selectors';
 
 class DrillDownOverlayComponent extends PureComponent {
   renderContent() {
-    const { viewContent, onDrillDown, onBack, ...restOfProps } = this.props;
+    const { viewContent, onDrillDown, onBack, onSetDateRange, ...restOfProps } = this.props;
     return (
       <EnlargedDialogContent
         onCloseOverlay={onBack}
@@ -29,6 +34,7 @@ class DrillDownOverlayComponent extends PureComponent {
         viewContent={viewContent}
         onDrillDown={onDrillDown}
         isVisible
+        onSetDateRange={onSetDateRange}
         {...restOfProps}
       />
     );
@@ -101,6 +107,7 @@ DrillDownOverlayComponent.propTypes = {
   onBack: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onDrillDown: PropTypes.func.isRequired,
+  onSetDateRange: PropTypes.func.isRequired,
 };
 
 DrillDownOverlayComponent.defaultProps = {
@@ -113,7 +120,7 @@ const mapStateToProps = state => {
   const { currentLevel, isLoading, levelContents } = drillDown;
 
   return {
-    viewContent: levelContents[currentLevel],
+    viewContent: levelContents[currentLevel] && levelContents[currentLevel],
     currentLevel,
     isLoading,
     infoViewKey: selectCurrentInfoViewKey(state),
@@ -124,6 +131,10 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
+    onSetDateRange: (startDate, endDate) => {
+      const { currentLevel } = stateProps;
+      dispatch(setDrillDownDateRange(startDate, endDate, currentLevel));
+    },
     onDrillDown: chartItem => {
       const { viewContent, currentLevel, infoViewKey } = stateProps;
       const { drillDown } = viewContent;
@@ -131,16 +142,20 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
         return;
       }
       const { parameterLink, keyLink } = drillDown;
+
+      const newDrillDownLevel = currentLevel + 1;
+      const drillDownConfigKey = `${infoViewKey}_${newDrillDownLevel}`;
+
       dispatch(
-        attemptDrillDown(
-          {
-            infoViewKey,
+        attemptDrillDown({
+          viewContent: {
+            infoViewKey: drillDownConfigKey,
             ...viewContent,
           },
           parameterLink,
-          chartItem[keyLink],
-          currentLevel + 1,
-        ),
+          parameterValue: chartItem[keyLink],
+          drillDownLevel: newDrillDownLevel,
+        }),
       );
     },
     onBack: () => {
