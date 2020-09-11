@@ -1,10 +1,10 @@
 // get all Children on a particular level from a parent organisation unit
-export default async (models, entity, childType, dhisApi) => {
+export default async (dhisApi, entity, dhisLevel) => {
   const jsonQueryOrgUnits = {
     filter: {
       'ancestors.code': entity.code,
     },
-    level: models.entity.getDhisLevel(childType),
+    level: dhisLevel,
     fields: [
       'id',
       'organisationUnitCode',

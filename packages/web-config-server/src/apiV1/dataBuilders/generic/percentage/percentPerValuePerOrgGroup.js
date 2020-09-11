@@ -24,10 +24,9 @@ export const percentPerValuePerOrgGroup = async (
   } = dataBuilderConfig;
 
   const organisationUnits = await getChildOrganisationUnits(
-    models,
-    entity,
-    organisationUnitType,
     dhisApi,
+    entity,
+    models.entity.getDhisLevel(organisationUnitType),
   );
 
   const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);

@@ -22,7 +22,7 @@ export const matrixMostRecentFromChildren = async (
 
   const fetchedData = await asynchronouslyFetchValuesForObject({
     organisationUnits: () =>
-      getChildOrganisationUnits(models, entity, organisationUnitType, dhisApi),
+      getChildOrganisationUnits(dhisApi, entity, models.entity.getDhisLevel(organisationUnitType)),
     dataElementsInfo: () => getDataElementsInGroup(dhisApi, dataElementGroup, true),
     categoryMapping: () => getDataElementsInGroupSet(dhisApi, dataElementGroupSet, true),
     optionSetOptions: () => dhisApi.getOptionSetOptions({ code: optionSetCode }),
