@@ -6,7 +6,10 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  BES_ADMIN_PERMISSION_GROUP,
+} from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
 
@@ -19,7 +22,7 @@ const DEFAULT_POLICY = {
 };
 
 const BES_ADMIN_POLICY = {
-  LA: ['BES Admin'],
+  LA: [BES_ADMIN_PERMISSION_GROUP],
 };
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
