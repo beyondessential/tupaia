@@ -10,10 +10,7 @@ import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
-const binaryOptionSet = [
-  { name: 'Yes', value: 1 },
-  { name: 'No', value: 0 },
-];
+const binaryOptionSet = [{ name: 'Yes', value: 1 }, { name: 'No', value: 0 }];
 
 const cannotFindCountryLevelInHierarchy = {
   type: 'Permission Error',
@@ -162,9 +159,9 @@ export default class extends DataAggregatingRouteHandler {
 
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
-    const measureDataResponsesByMeasureId = (
-      await Promise.all(dataTasks)
-    ).reduce((dataResponse, current) => ({ ...dataResponse, ...current }));
+    const measureDataResponsesByMeasureId = (await Promise.all(dataTasks)).reduce(
+      (dataResponse, current) => ({ ...dataResponse, ...current }),
+    );
 
     /* Data arrives as an array of responses (one for each measure) containing an array of org
      * units. We need to rearrange it so that it's a 1D array of objects with the values
@@ -297,7 +294,7 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   async getCountryLevelOrgUnitCode() {
-    const country = await this.entity.country();
+    const country = await this.entity.countryEntity();
 
     if (!country) {
       throw new CustomError(cannotFindCountryLevelInHierarchy);

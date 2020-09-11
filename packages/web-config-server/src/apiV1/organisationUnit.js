@@ -25,7 +25,7 @@ export default class extends RouteHandler {
 
   async getEntityAndCountryDataByCode(project) {
     const projectEntity = await project.entity();
-    const country = await this.entity.country();
+    const country = await this.entity.countryEntity();
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id)
       : [];
@@ -63,13 +63,11 @@ export default class extends RouteHandler {
   }
 
   async filterForAccess(entities) {
-    return (
-      await Promise.all(
-        entities
-          .filter(entity => entity)
-          .map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
-      )
-    ).filter(entity => entity);
+    return (await Promise.all(
+      entities
+        .filter(entity => entity)
+        .map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
+    )).filter(entity => entity);
   }
 
   checkUserHasEntityAccess = async entity => {

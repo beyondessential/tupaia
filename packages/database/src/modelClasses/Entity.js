@@ -120,7 +120,7 @@ export class EntityType extends DatabaseType {
     return !!this.getDhisId();
   }
 
-  async country() {
+  async countryEntity() {
     return this.model.findOne({ code: this.country_code });
   }
 
