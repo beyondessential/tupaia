@@ -1,5 +1,6 @@
 {
   "name": "@tupaia/meditrak-server",
+  "private": true,
   "version": "1.0.0",
   "description": "REST API for Meditrak",
   "main": "handler.js",
