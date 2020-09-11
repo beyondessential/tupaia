@@ -266,14 +266,14 @@ export class TupaiaDatabase {
   }
 
   async createMany(recordType, records) {
-    // TODO could be more efficient to create all records in one query
-    const recordsCreated = [];
-    for (let i = 0; i < records.length; i++) {
-      const record = records[i];
-      const recordCreated = await this.create(recordType, record);
-      recordsCreated.push(recordCreated);
-    }
-    return recordsCreated;
+    // generate ids for any records that don't have them
+    const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
+    await this.query({
+      recordType,
+      queryMethod: QUERY_METHODS.INSERT,
+      queryMethodParameter: sanitizedRecords,
+    });
+    return sanitizedRecords;
   }
 
   /**
@@ -443,6 +443,18 @@ export class TupaiaDatabase {
 
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
+  }
+
+  async executeSqlInBatches(arrayToBeBatched, generateSql) {
+    const records = [];
+    const batchSize = MAX_BINDINGS_PER_QUERY;
+    for (let i = 0; i < arrayToBeBatched.length; i += batchSize) {
+      const batch = arrayToBeBatched.slice(i, i + batchSize);
+      const [sql, substitutions] = generateSql(batch);
+      const batchOfRecords = await this.executeSql(sql, substitutions);
+      records.push(...batchOfRecords);
+    }
+    return records;
   }
 }
 

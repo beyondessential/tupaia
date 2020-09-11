@@ -6,6 +6,7 @@
 export const TYPES = {
   ALERT: 'alert',
   ALERT_COMMENT: 'alert_comment',
+  ANCESTOR_DESCENDANT_RELATION: 'ancestor_descendant_relation',
   ANSWER: 'answer',
   ACCESS_REQUEST: 'access_request',
   API_CLIENT: 'api_client',
