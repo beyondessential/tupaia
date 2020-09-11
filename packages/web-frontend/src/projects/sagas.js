@@ -41,10 +41,9 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
 function* loadProject(action) {
   const state = yield select();
   const project = selectProjectByCode(state, action.projectCode);
-
+  yield put(changeDashboardGroup(project.dashboardGroupName));
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
   yield put(requestOrgUnit(action.projectCode));
-  yield put(changeDashboardGroup(project.dashboardGroupName));
 }
 
 function* watchSelectProjectAndLoadProjectState() {

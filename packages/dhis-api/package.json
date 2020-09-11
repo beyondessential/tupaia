@@ -1,9 +1,10 @@
 {
   "name": "@tupaia/dhis-api",
+  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "test": "nyc --reporter=lcov mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },

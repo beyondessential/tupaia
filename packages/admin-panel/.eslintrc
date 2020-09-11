@@ -1,4 +1,12 @@
 {
+  "extends": [
+    "@beyondessential/eslint-config-beyondessential",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-one-expression-per-line": "off"
+  },
   "env": {
     "browser": true
   }

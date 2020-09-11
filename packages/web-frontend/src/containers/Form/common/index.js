@@ -10,3 +10,4 @@ export { LoadingIndicator } from './LoadingIndicator';
 export { FormError } from './FormError';
 export { FormSuccess } from './FormSuccess';
 export { FormLink } from './FormLink';
+export { SubmitButton } from './SubmitButton';
