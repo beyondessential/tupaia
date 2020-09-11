@@ -48,6 +48,10 @@ export function autoAssignColors(values) {
 
   let autoIndex = 0;
   const getColor = valueObject => {
+    if (!valueObject.name) {
+      return BREWER_AUTO[autoIndex++];
+    }
+
     switch (valueObject.name.toLowerCase()) {
       case 'yes':
         return YES_COLOR;

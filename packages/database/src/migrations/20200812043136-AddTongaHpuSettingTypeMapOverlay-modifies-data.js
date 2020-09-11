@@ -100,13 +100,20 @@ const TOTAL_MAP_OVERLAY = {
       {
         name: '0',
         value: '0',
+        icon: 'circle',
         hideFromPopup: true,
         hideFromLegend: true,
       },
       {
         name: 'No data',
-        color: 'Grey',
         value: 'null',
+        color: 'Grey',
+        icon: 'circle',
+        hideFromLegend: true,
+      },
+      {
+        value: 'other',
+        icon: 'circle',
         hideFromLegend: true,
       },
     ],
