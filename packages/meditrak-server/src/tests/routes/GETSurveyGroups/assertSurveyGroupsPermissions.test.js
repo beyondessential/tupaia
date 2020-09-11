@@ -22,6 +22,10 @@ describe('Permissions checker for GETSurveyGroups', async () => {
     LA: ['Admin'],
   };
 
+  const BES_ADMIN_POLICY = {
+    LA: ['BES Admin'],
+  };
+
   const models = getModels();
   let surveyGroups = [];
   let surveyGroup1;
@@ -79,15 +83,22 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   });
 
   describe('filterSurveyGroupsByPermissions()', async () => {
-    it('Sufficient permissions: Should filter any survey groups that users do not have access to any of the surveys within the group', async () => {
+    it('Sufficient permissions: Should return survey groups that users have access to any of the surveys within the groups', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
       const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
 
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
     });
 
-    it('Insufficient permissions: Should filter any survey groups that users do not have access to any of the surveys within the group', async () => {
-      //Remove Admin permission of VU to have insufficient permissions to surveyGroup1.
+    it('Sufficient permissions: Should always return all the survey groups if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
+
+      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
+    });
+
+    it('Insufficient permissions: Should filter out any survey groups that users do not have access to any of the surveys within the group', async () => {
+      //Remove Admin permission of VU to have insufficient permissions to access surveyGroup1.
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -113,8 +124,15 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       expect(result).to.true;
     });
 
+    it('Sufficient permissions: Should always return true for any survey groups if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await assertSurveyGroupsPermissions(accessPolicy, models, surveyGroups);
+
+      expect(results).to.true;
+    });
+
     it('Insufficient permissions: Should throw an exception if users do not have access to any of the surveys within the survey group', async () => {
-      //Remove Admin permission of VU to have insufficient permissions to surveyGroup1.
+      //Remove Admin permission of VU to have insufficient permissions to access surveyGroup1.
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],

@@ -22,6 +22,10 @@ describe('Permissions checker for GETMapOverlays', async () => {
     LA: ['Admin'],
   };
 
+  const BES_ADMIN_POLICY = {
+    LA: ['BES Admin'],
+  };
+
   const models = getModels();
   let nationalMapOverlay1;
   let nationalMapOverlay2;
@@ -59,7 +63,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
   });
 
   describe('filterMapOverlaysByPermissions()', async () => {
-    it('Sufficient permissions: Should return all the map overlays that users do not have access to their countries', async () => {
+    it('Sufficient permissions: Should return all the map overlays that users have access to their countries', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
       const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
         nationalMapOverlay1,
@@ -80,6 +84,21 @@ describe('Permissions checker for GETMapOverlays', async () => {
       ]);
 
       expect(results.map(r => r.id)).to.deep.equal([
+        nationalMapOverlay2.id,
+        projectLevelMapOverlay.id,
+      ]);
+    });
+
+    it('Sufficient permissions: Should always return all map overlays if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
+        nationalMapOverlay1,
+        nationalMapOverlay2,
+        projectLevelMapOverlay,
+      ]);
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalMapOverlay1.id,
         nationalMapOverlay2.id,
         projectLevelMapOverlay.id,
       ]);
@@ -137,6 +156,17 @@ describe('Permissions checker for GETMapOverlays', async () => {
     it('Sufficient permissions: Should return true if the map overlays are project level and users have access to any of their child countries', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
       const results = await assertMapOverlaysPermissions(accessPolicy, models, [
+        nationalMapOverlay2,
+        projectLevelMapOverlay,
+      ]);
+
+      expect(results).to.true;
+    });
+
+    it('Sufficient permissions: Should always return true if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await assertMapOverlaysPermissions(accessPolicy, models, [
+        nationalMapOverlay1,
         nationalMapOverlay2,
         projectLevelMapOverlay,
       ]);

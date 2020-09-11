@@ -23,6 +23,10 @@ describe('Permissions checker for GETDashboardReports', async () => {
     TO: ['Admin'],
   };
 
+  const BES_ADMIN_POLICY = {
+    LA: ['BES Admin'],
+  };
+
   const models = getModels();
   let districtReport1;
   let nationalReport1;
@@ -182,6 +186,25 @@ describe('Permissions checker for GETDashboardReports', async () => {
       expect(results.map(r => r.id)).to.deep.equal([nationalReport3.id, projectLevelDashboard.id]);
     });
 
+    it('Sufficient permissions: Should always return all dashboard reports if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await filterDashboardReportsByPermissions(accessPolicy, models, [
+        districtReport1,
+        nationalReport1,
+        nationalReport2,
+        nationalReport3,
+        projectLevelDashboard,
+      ]);
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        districtReport1.id,
+        nationalReport1.id,
+        nationalReport2.id,
+        nationalReport3.id,
+        projectLevelDashboard.id,
+      ]);
+    });
+
     it('Insufficient permissions: Should filter out any dashboard reports contained in SUB NATIONAL dashboard groups that users do not have access', async () => {
       //Remove Admin permission of KI to have insufficient permissions to access districtReport1.
       const policy = {
@@ -270,6 +293,19 @@ describe('Permissions checker for GETDashboardReports', async () => {
         nationalReport3,
         projectLevelDashboard,
       ]);
+      expect(results).to.true;
+    });
+
+    it('Sufficient permissions: Should always return true for any dashboard reports if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await assertDashboardReportsPermissions(accessPolicy, models, [
+        districtReport1,
+        nationalReport1,
+        nationalReport2,
+        nationalReport3,
+        projectLevelDashboard,
+      ]);
+
       expect(results).to.true;
     });
 

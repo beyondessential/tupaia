@@ -23,6 +23,10 @@ describe('Permissions checker for GETDashboardGroups', async () => {
     TO: ['Admin'],
   };
 
+  const BES_ADMIN_POLICY = {
+    LA: ['BES Admin'],
+  };
+
   const models = getModels();
   let facilityDashboardGroup1;
   let districtDashboardGroup1;
@@ -139,6 +143,25 @@ describe('Permissions checker for GETDashboardGroups', async () => {
       ]);
     });
 
+    it('Sufficient permissions: Should always return all dashboard groups if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
+        facilityDashboardGroup1,
+        districtDashboardGroup1,
+        nationalDashboardGroup1,
+        nationalDashboardGroup2,
+        projectLevelDashboardGroup,
+      ]);
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        facilityDashboardGroup1.id,
+        districtDashboardGroup1.id,
+        nationalDashboardGroup1.id,
+        nationalDashboardGroup2.id,
+        projectLevelDashboardGroup.id,
+      ]);
+    });
+
     it('Insufficient permissions: Should filter out any sub national dashboard groups that users do not have access to their entities', async () => {
       //Remove Admin permission of KI to have insufficient permissions to access facilityDashboardGroup1.
       const policy = {
@@ -215,6 +238,19 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         projectLevelDashboardGroup,
       ]);
       expect(result).to.true;
+    });
+
+    it('Sufficient permissions: Should always return true for any dashboard groups if users have BES Admin access to any countries', async () => {
+      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
+      const results = await assertDashboardGroupsPermissions(accessPolicy, models, [
+        facilityDashboardGroup1,
+        districtDashboardGroup1,
+        nationalDashboardGroup1,
+        nationalDashboardGroup2,
+        projectLevelDashboardGroup,
+      ]);
+
+      expect(results).to.true;
     });
 
     it("Insufficient permissions: Should filter out any sub national dashboard groups that users do not have access to their entities' countries", async () => {
