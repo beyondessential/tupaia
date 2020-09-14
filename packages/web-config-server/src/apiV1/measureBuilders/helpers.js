@@ -74,3 +74,17 @@ export const analyticsToMeasureData = (analytics, customDataKey) =>
     [customDataKey || dataElement]: value,
     submissionDate: periodToMoment(period.toString()).format('YYYY-MM-DD'),
   }));
+
+export const groupAnalyticsByOrgUnit = analytics => {
+  const analyticsByOrgUnit = {};
+
+  analytics.forEach(analytic => {
+    if (!analyticsByOrgUnit[analytic.organisationUnit]) {
+      analyticsByOrgUnit[analytic.organisationUnit] = [];
+    }
+
+    analyticsByOrgUnit[analytic.organisationUnit].push(analytic);
+  });
+
+  return analyticsByOrgUnit;
+}
