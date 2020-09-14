@@ -4,7 +4,7 @@
  */
 
 import { createReducer } from '../utils/createReducer';
-import { getActiveEntityByUser } from '../utils/auth';
+import { getActiveEntityByUser, checkIsAuthorisedForMultiCountry } from '../utils/auth';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -57,18 +57,16 @@ export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSucces
 
 export const getActiveEntity = state => {
   const user = getCurrentUser(state);
-  return user ? getActiveEntityByUser(user).toLowerCase() : null;
-};
-
-export const getActiveEntitySlug = state => {
-  const activeEntity = getActiveEntity(state);
-  return activeEntity === 'world' ? '' : activeEntity;
+  return getActiveEntityByUser(user);
 };
 
 export const checkIsMultiCountryUser = state => {
-  const activeEntity = getActiveEntity(state);
-  return activeEntity === 'world';
+  const user = getCurrentUser(state);
+  return checkIsAuthorisedForMultiCountry(user);
 };
+
+export const getActiveEntitySlug = state =>
+  checkIsMultiCountryUser(state) ? '' : getActiveEntity(state);
 
 export const getHomeUrl = state => {
   const activeEntity = getActiveEntity(state);
@@ -77,7 +75,7 @@ export const getHomeUrl = state => {
     return '/';
   }
 
-  return activeEntity === 'world' ? '/' : `/weekly-reports/${activeEntity}`;
+  return checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${activeEntity}`;
 };
 
 // reducer

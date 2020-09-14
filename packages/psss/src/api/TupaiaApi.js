@@ -56,6 +56,7 @@ export class TupaiaApi {
       throw new Error('Invalid response from auth server');
     }
     // Todo: Update with correct access policy check
+    // @see: https://github.com/beyondessential/tupaia-backlog/issues/1268
     const hasPsssAccess = new AccessPolicy(user.accessPolicy).allowsSome(null, 'Public');
     if (!hasPsssAccess) {
       throw new Error(

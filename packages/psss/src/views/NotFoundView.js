@@ -12,19 +12,15 @@ import { getHomeUrl } from '../store';
 
 // Todo: Improve the layout of this view
 // @see https://github.com/beyondessential/tupaia-backlog/issues/421
-export const UnAuthorisedViewComponent = ({ homeUrl }) => (
+export const NotFoundViewComponent = ({ homeUrl }) => (
   <>
-    <Header Title={<HeaderTitle title="Authorisation Required" />} />
+    <Header Title={<HeaderTitle title="404 Page Not Found" />} />
     <Container>
       <Main>
         <br />
         <br />
         <Typography variant="h2" gutterBottom>
-          You are not authorised to view this page
-        </Typography>
-        <Typography gutterBottom>
-          If you would like to request access please contact a Tupaia administrator at{' '}
-          <a href="https://info.tupaia.org/contact">https://info.tupaia.org/contact</a>
+          The page you are looking for does not exist.
         </Typography>
         <br />
         <OutlinedButton component="a" href={homeUrl}>
@@ -35,7 +31,7 @@ export const UnAuthorisedViewComponent = ({ homeUrl }) => (
   </>
 );
 
-UnAuthorisedViewComponent.propTypes = {
+NotFoundViewComponent.propTypes = {
   homeUrl: PropTypes.string.isRequired,
 };
 
@@ -43,4 +39,4 @@ const mapStateToProps = state => ({
   homeUrl: getHomeUrl(state),
 });
 
-export const UnAuthorisedView = connect(mapStateToProps)(UnAuthorisedViewComponent);
+export const NotFoundView = connect(mapStateToProps)(NotFoundViewComponent);

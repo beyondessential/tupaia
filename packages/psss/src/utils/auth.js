@@ -5,31 +5,34 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 
-export const checkIsAuthorisedForCountry = (match, user) => {
+export const checkIsAuthorisedForMultiCountry = user => {
   const activeEntity = getActiveEntityByUser(user);
+  return Array.isArray(activeEntity);
+};
 
-  if (activeEntity === 'World') {
+export const checkIsAuthorisedForCountry = (user, match) => {
+  if (checkIsAuthorisedForMultiCountry(user)) {
     return true;
   }
 
-  return activeEntity === match.params.countryCode;
-};
-
-export const checkIsAuthorisedForMultiCountry = (match, user) => {
-  const activeEntity = getActiveEntityByUser(user);
-  return activeEntity === 'world';
+  return getActiveEntityByUser(user) === match.params.countryCode;
 };
 
 export const getActiveEntityByUser = user => {
+  if (!user) {
+    return null;
+  }
+
   const accessPolicy = new AccessPolicy(user.accessPolicy);
   // Todo: Update with the correct access policy check
+  // @see: https://github.com/beyondessential/tupaia-backlog/issues/1268
 
   // To Test switch between Admin and Public
-  const worldPermission = accessPolicy.allows('DL', 'Admin');
-  if (worldPermission) {
-    return 'world';
+  const psssPermissions = accessPolicy.allows('DL', 'Admin');
+  if (psssPermissions) {
+    return ['as', 'to'];
   }
-  // console.log('access policy', user.accessPolicy);
   // Todo: Return the correct activeCountry
+  // return as lower case for consistency
   return 'as';
 };

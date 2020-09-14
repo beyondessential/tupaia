@@ -31,7 +31,7 @@ export const PrivateRouteComponent = ({
       }
 
       if (authCheck) {
-        const isAuthorised = authCheck(match, currentUser);
+        const isAuthorised = authCheck(currentUser, match);
         if (!isAuthorised) {
           return (
             <Redirect
