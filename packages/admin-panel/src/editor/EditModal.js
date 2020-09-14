@@ -76,7 +76,7 @@ EditModalComponent.propTypes = {
   onSave: PropTypes.func.isRequired,
   recordData: PropTypes.object,
   title: PropTypes.string,
-  fields: PropTypes.array,
+  fields: PropTypes.arrayOf(PropTypes.shape({})),
   isUnchanged: PropTypes.bool,
 };
 

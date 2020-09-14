@@ -1,11 +1,12 @@
 {
   "name": "@tupaia/access-policy",
+  "private": true,
   "version": "3.0.0",
   "description": "Methods for parsing Tupaia access policy",
   "main": "dist/index.js",
   "dependencies": {},
   "scripts": {
-    "build": "babel src --out-dir dist --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
     "test": "mocha"
   },
   "repository": {
