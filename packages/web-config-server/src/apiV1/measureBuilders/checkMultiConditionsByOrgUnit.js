@@ -2,6 +2,37 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 import { groupAnalyticsByOrgUnit } from './helpers';
 
+/**
+ * Example use case: If yes to SchCVD012 but no to SchCVD012a display 'Yes', if yes to SchCVD012 and yes to SchCVD012a display 'Yes, smart TV'
+ * Example orgUnitConditions config:
+ * orgUnitConditions: {
+    Yes: {
+      SchCVD012: {
+        value: 'Yes',
+        operator: '=',
+      },
+      SchCVD012a: {
+        value: 'No',
+        operator: '=',
+      },
+    },
+    'Yes, smart TV': {
+      SchCVD012: {
+        value: 'Yes',
+        operator: '=',
+      },
+      SchCVD012a: {
+        value: 'Yes',
+        operator: '=',
+      },
+    },
+    No: {
+      SchCVD012: {
+        value: 'No',
+        operator: '=',
+      },
+    },
+ */
 class CheckMultiConditionsByOrgUnit extends DataBuilder {
   async build() {
     const { dataElementCode: queryDataCode } = this.query;
