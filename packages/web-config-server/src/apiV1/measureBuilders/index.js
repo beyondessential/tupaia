@@ -9,3 +9,4 @@ export { valueForOrgGroup } from './valueForOrgGroup';
 export { groupSumDataPerOrgUnit } from './groupDataPerOrgUnit';
 export { groupData } from './groupData';
 export { getStringsFromBinaryData } from './getStringsFromBinaryData';
+export { selectUniqueValueFromEventsPerOrgUnit } from './selectUniqueValueFromEventsPerOrgUnit';
