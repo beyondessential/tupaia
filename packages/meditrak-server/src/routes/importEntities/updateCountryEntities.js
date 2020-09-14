@@ -79,6 +79,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       category_code: categoryCode,
       facility_type: facilityType,
       attributes = {},
+      timezone,
     } = entityObject;
     if (codes.includes(code)) {
       throw new ImportValidationError(
@@ -103,6 +104,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         code,
         name,
         geographical_area_id: parentGeographicalArea.id,
+        timezone,
       };
       const newFacility = await transactingModels.facility.updateOrCreate(
         { code },
@@ -128,6 +130,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
           dhis: { isDataRegional: true },
         },
         attributes,
+        timezone,
       },
     );
     if (longitude && latitude) {

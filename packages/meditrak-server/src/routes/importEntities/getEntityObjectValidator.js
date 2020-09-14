@@ -10,6 +10,7 @@ import {
   constructIsOneOf,
   constructThisOrThatHasContent,
   isPlainObject,
+  isValidTz,
 } from '@tupaia/utils';
 
 const constructEntityFieldValidators = models => ({
@@ -26,6 +27,7 @@ const constructEntityFieldValidators = models => ({
     },
   ],
   attributes: [constructIsEmptyOr(isPlainObject)],
+  timezone: [constructIsEmptyOr(isValidTz)],
 });
 
 const constructSpecificEntityTypeValidators = (entityType, models) => {

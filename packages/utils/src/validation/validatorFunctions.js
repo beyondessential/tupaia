@@ -211,3 +211,10 @@ export const constructThisOrThatHasContent = otherFieldKey => (value, object) =>
   }
   return true;
 };
+
+export const isValidTz = value => {
+  if (moment.tz.names().indexOf(value) === -1) {
+    throw new Error(`Invalid timezone ${value}`);
+  }
+  return true;
+};
