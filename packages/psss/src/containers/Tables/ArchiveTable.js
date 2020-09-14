@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   ConnectedTable,
   SyndromeCell,
@@ -12,14 +13,18 @@ import {
   StartDateCell,
 } from '../../components';
 
-const columns = [
-  {
-    title: 'Country',
-    key: 'name',
-    width: '22%',
-    align: 'left',
-    CellComponent: CountryNameCell,
-  },
+const createColumns = isMultiCountryUser => [
+  ...(isMultiCountryUser
+    ? [
+        {
+          title: 'Country',
+          key: 'name',
+          width: '22%',
+          align: 'left',
+          CellComponent: CountryNameCell,
+        },
+      ]
+    : []),
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -67,6 +72,14 @@ const columns = [
   },
 ];
 
-export const ArchiveTable = React.memo(() => (
-  <ConnectedTable endpoint="archive" columns={columns} />
+export const ArchiveTable = React.memo(({ countryCode }) => (
+  <ConnectedTable endpoint="archive" columns={createColumns(!countryCode)} />
 ));
+
+ArchiveTable.propTypes = {
+  countryCode: PropTypes.string,
+};
+
+ArchiveTable.defaultProps = {
+  countryCode: null,
+};

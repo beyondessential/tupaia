@@ -12,14 +12,18 @@ import {
   WeekAndDateCell,
 } from '../../components';
 
-const createColumns = handlePanelOpen => [
-  {
-    title: 'Country',
-    key: 'name',
-    width: '26%',
-    align: 'left',
-    CellComponent: CountryNameButtonCreator(handlePanelOpen),
-  },
+const createColumns = (isMultiCountryUser, handlePanelOpen) => [
+  ...(isMultiCountryUser
+    ? [
+        {
+          title: 'Country',
+          key: 'name',
+          width: '26%',
+          align: 'left',
+          CellComponent: CountryNameButtonCreator(handlePanelOpen),
+        },
+      ]
+    : []),
   {
     title: 'Diagnosis',
     key: 'diagnosis',
@@ -59,10 +63,17 @@ const createColumns = handlePanelOpen => [
   },
 ];
 
-export const OutbreaksTable = React.memo(({ handlePanelOpen }) => {
-  return <ConnectedTable endpoint="outbreaks" columns={createColumns(handlePanelOpen)} />;
+export const OutbreaksTable = React.memo(({ handlePanelOpen, countryCode }) => {
+  return (
+    <ConnectedTable endpoint="outbreaks" columns={createColumns(!countryCode, handlePanelOpen)} />
+  );
 });
 
 OutbreaksTable.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,
+  countryCode: PropTypes.string,
+};
+
+OutbreaksTable.defaultProps = {
+  countryCode: null,
 };

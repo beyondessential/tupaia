@@ -19,9 +19,7 @@ const DateSubtitle = styled(Typography)`
 
 export const AlertsTabView = React.memo(() => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-
-  const { countryCode, ...rest } = useParams();
-  console.log({ countryCode }, { rest });
+  const { countryCode } = useParams();
 
   const handlePanelOpen = useCallback(() => {
     setIsPanelOpen(true);
