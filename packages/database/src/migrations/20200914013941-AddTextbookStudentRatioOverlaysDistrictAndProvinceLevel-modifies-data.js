@@ -342,7 +342,7 @@ const GROUP_CODE_TO_NAME = {
   Laos_Schools_Textbook_student_Ratio_District_Level_Group: 'District Level',
   Laos_Schools_Textbook_student_Ratio_District_Level_Primary_Group: 'Primary',
   Laos_Schools_Textbook_student_Ratio_District_Level_Secondary_Group: 'Secondary',
-  Laos_Schools_Textbook_student_Ratio_Province_Level_Group: 'Province Level',
+  Laos_Schools_Textbook_student_Ratio_Province_Level_Group: 'Provincial Level',
   Laos_Schools_Textbook_student_Ratio_Province_Level_Primary_Group: 'Primary',
   Laos_Schools_Textbook_student_Ratio_Province_Level_Secondary_Group: 'Secondary',
 };
