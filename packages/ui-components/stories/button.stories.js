@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import MuiBox from '@material-ui/core/Box';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import styled from 'styled-components';
@@ -34,7 +33,7 @@ const Container = styled(MuiBox)`
 
 export const primary = () => (
   <Container>
-    <Button onClick={action('Primary button clicked')}>Button</Button>
+    <Button>Button</Button>
   </Container>
 );
 
