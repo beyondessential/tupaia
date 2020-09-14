@@ -12,7 +12,7 @@ import {
   CountryNameButtonCreator,
   WeekAndDateCell,
 } from '../../components';
-import { checkIsRegionalUser, getActiveEntity } from '../../store';
+import { checkIsMultiCountryUser, getActiveEntity } from '../../store';
 
 const createColumns = (isRegionalUser, handlePanelOpen) => [
   ...(isRegionalUser
@@ -73,7 +73,7 @@ AlertsTableComponent.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  isRegionalUser: checkIsRegionalUser(state),
+  isRegionalUser: checkIsMultiCountryUser(state),
   activeEntity: getActiveEntity(state),
 });
 

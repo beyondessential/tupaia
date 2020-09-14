@@ -11,7 +11,7 @@ import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header, HeaderAvatarTitle, WeeklyReportsExportModal } from '../components';
 import { CountryRoutes } from '../routes/CountryRoutes';
 import { countryFlagImage } from '../utils';
-import { checkIsRegionalUser } from '../store';
+import { checkIsMultiCountryUser } from '../store';
 
 const links = [
   {
@@ -56,7 +56,7 @@ CountryReportsViewComponent.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  isRegionalUser: checkIsRegionalUser(state),
+  isRegionalUser: checkIsMultiCountryUser(state),
 });
 
 export const CountryReportsView = connect(mapStateToProps)(CountryReportsViewComponent);

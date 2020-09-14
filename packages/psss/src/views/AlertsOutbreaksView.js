@@ -17,7 +17,7 @@ import {
 } from '../components';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
 import { countryFlagImage } from '../utils';
-import { checkIsRegionalUser } from '../store';
+import { checkIsMultiCountryUser } from '../store';
 
 const links = [
   {
@@ -69,7 +69,7 @@ AlertsOutbreaksViewComponent.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  isRegionalUser: checkIsRegionalUser(state),
+  isRegionalUser: checkIsMultiCountryUser(state),
 });
 
 export const AlertsOutbreaksView = connect(mapStateToProps)(AlertsOutbreaksViewComponent);

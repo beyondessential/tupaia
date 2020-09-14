@@ -7,14 +7,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import { checkIsLoggedIn, getCurrentUser } from '../store';
-import { UnAuthorisedView } from '../views/UnauthorisedView';
 
 export const PrivateRouteComponent = ({
   isLoggedIn,
-  checkIsAuthorised,
+  authCheck,
   currentUser,
   children,
-  UnAuthorisedViewComponent,
+  redirectTo,
   ...props
 }) => (
   <Route
@@ -31,11 +30,20 @@ export const PrivateRouteComponent = ({
         );
       }
 
-      if (checkIsAuthorised) {
-        const isAuthorised = checkIsAuthorised(match, currentUser);
+      if (authCheck) {
+        const isAuthorised = authCheck(match, currentUser);
+
+        console.log({ isAuthorised }, { redirectTo });
 
         if (!isAuthorised) {
-          return <UnAuthorisedViewComponent />;
+          return (
+            <Redirect
+              to={{
+                pathname: redirectTo,
+                state: { from: location },
+              }}
+            />
+          );
         }
       }
 
@@ -48,15 +56,15 @@ PrivateRouteComponent.propTypes = {
   children: PropTypes.any.isRequired,
   isLoggedIn: PropTypes.bool,
   currentUser: PropTypes.object,
-  checkIsAuthorised: PropTypes.func,
-  UnAuthorisedViewComponent: PropTypes.elementType,
+  authCheck: PropTypes.func,
+  redirectTo: PropTypes.string,
 };
 
 PrivateRouteComponent.defaultProps = {
   isLoggedIn: false,
-  checkIsAuthorised: null,
+  authCheck: null,
   currentUser: null,
-  UnAuthorisedViewComponent: UnAuthorisedView,
+  redirectTo: '/unauthorised',
 };
 
 const mapStateToProps = state => ({

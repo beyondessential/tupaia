@@ -9,18 +9,22 @@ import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
-import { checkIsAuthorisedForCountry } from '../store';
+import { UnAuthorisedView } from '../views/UnauthorisedView';
+import { checkIsAuthorisedForCountry, checkIsAuthorisedForMultiCountry } from '../utils/auth';
 
 export const PageRoutes = React.memo(() => (
   <Switch>
-    <PrivateRoute exact path="/">
+    <PrivateRoute exact path="/" authCheck={checkIsAuthorisedForMultiCountry}>
       <CountriesReportsView />
     </PrivateRoute>
-    <PrivateRoute path="/weekly-reports/:countryName" accessPolicy={checkIsAuthorisedForCountry}>
+    <PrivateRoute path="/weekly-reports/:countryName" authCheck={checkIsAuthorisedForCountry}>
       <CountryReportsView />
     </PrivateRoute>
     <PrivateRoute path="/alerts">
       <AlertsOutbreaksView />
+    </PrivateRoute>
+    <PrivateRoute path="/unauthorised">
+      <UnAuthorisedView />
     </PrivateRoute>
     <Redirect to="/" />
   </Switch>

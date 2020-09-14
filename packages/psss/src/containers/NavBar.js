@@ -3,8 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
-import { ProfileButton } from './ProfileButton';
+import { ProfileButton } from '../components/ProfileButton';
+import { getHomeUrl } from '../store';
 
 const links = [
   {
@@ -18,8 +21,6 @@ const links = [
     icon: <WarningCloud />,
   },
 ];
-
-const Home = () => <HomeButton source="/psss-logo-white.svg" />;
 
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
@@ -39,6 +40,21 @@ const isTabActive = (match, location) => {
   return location.pathname.indexOf(match.url) !== -1;
 };
 
-export const NavBar = () => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={ProfileButton} isTabActive={isTabActive} />
+export const NavBarComponent = ({ homeUrl }) => (
+  <BaseNavBar
+    HomeButton={<HomeButton homeUrl={homeUrl} source="/psss-logo-white.svg" />}
+    links={links}
+    Profile={ProfileButton}
+    isTabActive={isTabActive}
+  />
 );
+
+NavBarComponent.propTypes = {
+  homeUrl: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = state => ({
+  homeUrl: getHomeUrl(state),
+});
+
+export const NavBar = connect(mapStateToProps)(NavBarComponent);
