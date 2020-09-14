@@ -28,7 +28,7 @@ export const getActiveEntityByUser = user => {
   // @see: https://github.com/beyondessential/tupaia-backlog/issues/1268
 
   // To Test switch between Admin and Public
-  const psssPermissions = accessPolicy.allows('DL', 'Admin');
+  const psssPermissions = accessPolicy.allows('DL', 'Public');
   if (psssPermissions) {
     return ['as', 'to'];
   }
