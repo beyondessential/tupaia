@@ -6,6 +6,7 @@
 import React from 'react';
 import { Redirect, Switch } from 'react-router-dom';
 import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
+import { AlertsOutbreaksSummaryView } from '../views/AlertsOutbreaksSummaryView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
@@ -17,8 +18,11 @@ export const PageRoutes = React.memo(() => (
     <PrivateRoute exact path="/" authCheck={checkIsAuthorisedForMultiCountry}>
       <CountriesReportsView />
     </PrivateRoute>
-    <PrivateRoute path="/weekly-reports/:countryName" authCheck={checkIsAuthorisedForCountry}>
+    <PrivateRoute path="/weekly-reports/:countryCode" authCheck={checkIsAuthorisedForCountry}>
       <CountryReportsView />
+    </PrivateRoute>
+    <PrivateRoute path="/alerts/:countryCode">
+      <AlertsOutbreaksSummaryView />
     </PrivateRoute>
     <PrivateRoute path="/alerts">
       <AlertsOutbreaksView />

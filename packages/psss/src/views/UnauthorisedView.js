@@ -12,7 +12,7 @@ import { getHomeUrl } from '../store';
 
 export const UnAuthorisedViewComponent = ({ homeUrl }) => (
   <>
-    <Header Title={<HeaderTitle title="401 UnAuthorised" />} />
+    <Header Title={<HeaderTitle title="Authorisation Required" />} />
     <Container>
       <Main>
         <br />

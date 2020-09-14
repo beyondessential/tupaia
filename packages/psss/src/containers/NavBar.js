@@ -7,17 +7,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
 import { ProfileButton } from '../components/ProfileButton';
-import { getHomeUrl } from '../store';
+import { getActiveEntitySlug, getHomeUrl } from '../store';
 
-const links = [
+const makeLinks = slug => [
   {
     label: 'Weekly Reports',
-    to: '/',
+    to: slug ? `/weekly-reports/${slug}` : '/',
     icon: <Dashboard />,
   },
   {
     label: 'Alerts & Outbreaks',
-    to: '/alerts',
+    to: slug ? `/alerts/${slug}` : '/alerts',
     icon: <WarningCloud />,
   },
 ];
@@ -40,10 +40,10 @@ const isTabActive = (match, location) => {
   return location.pathname.indexOf(match.url) !== -1;
 };
 
-export const NavBarComponent = ({ homeUrl }) => (
+export const NavBarComponent = ({ homeUrl, activeEntitySlug }) => (
   <BaseNavBar
     HomeButton={<HomeButton homeUrl={homeUrl} source="/psss-logo-white.svg" />}
-    links={links}
+    links={makeLinks(activeEntitySlug)}
     Profile={ProfileButton}
     isTabActive={isTabActive}
   />
@@ -51,10 +51,16 @@ export const NavBarComponent = ({ homeUrl }) => (
 
 NavBarComponent.propTypes = {
   homeUrl: PropTypes.string.isRequired,
+  activeEntitySlug: PropTypes.string,
+};
+
+NavBarComponent.defaultProps = {
+  activeEntitySlug: '',
 };
 
 const mapStateToProps = state => ({
   homeUrl: getHomeUrl(state),
+  activeEntitySlug: getActiveEntitySlug(state),
 });
 
 export const NavBar = connect(mapStateToProps)(NavBarComponent);

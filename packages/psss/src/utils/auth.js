@@ -12,12 +12,12 @@ export const checkIsAuthorisedForCountry = (match, user) => {
     return true;
   }
 
-  return activeEntity.toLowerCase() === match.params.countryName;
+  return activeEntity === match.params.countryCode;
 };
 
 export const checkIsAuthorisedForMultiCountry = (match, user) => {
   const activeEntity = getActiveEntityByUser(user);
-  return activeEntity === 'World';
+  return activeEntity === 'world';
 };
 
 export const getActiveEntityByUser = user => {
@@ -27,9 +27,9 @@ export const getActiveEntityByUser = user => {
   // To Test switch between Admin and Public
   const worldPermission = accessPolicy.allows('DL', 'Admin');
   if (worldPermission) {
-    return 'World';
+    return 'world';
   }
   // console.log('access policy', user.accessPolicy);
   // Todo: Return the correct activeCountry
-  return 'AS';
+  return 'as';
 };

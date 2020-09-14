@@ -57,12 +57,17 @@ export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSucces
 
 export const getActiveEntity = state => {
   const user = getCurrentUser(state);
-  return user ? getActiveEntityByUser(user) : null;
+  return user ? getActiveEntityByUser(user).toLowerCase() : null;
+};
+
+export const getActiveEntitySlug = state => {
+  const activeEntity = getActiveEntity(state);
+  return activeEntity === 'world' ? '' : activeEntity;
 };
 
 export const checkIsMultiCountryUser = state => {
   const activeEntity = getActiveEntity(state);
-  return activeEntity === 'World';
+  return activeEntity === 'world';
 };
 
 export const getHomeUrl = state => {
@@ -72,7 +77,7 @@ export const getHomeUrl = state => {
     return '/';
   }
 
-  return activeEntity === 'World' ? '/' : `/weekly-reports/${activeEntity.toLowerCase()}`;
+  return activeEntity === 'world' ? '/' : `/weekly-reports/${activeEntity}`;
 };
 
 // reducer

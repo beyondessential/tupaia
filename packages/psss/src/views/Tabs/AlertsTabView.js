@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useState, useCallback } from 'react';
-import Typography from '@material-ui/core/Typography';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import { CalendarToday } from '@material-ui/icons';
 import { CardContent, CardHeader, Card } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
@@ -19,6 +20,9 @@ const DateSubtitle = styled(Typography)`
 export const AlertsTabView = React.memo(() => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
+  const { countryCode, ...rest } = useParams();
+  console.log({ countryCode }, { rest });
+
   const handlePanelOpen = useCallback(() => {
     setIsPanelOpen(true);
   }, [setIsPanelOpen]);
@@ -30,7 +34,7 @@ export const AlertsTabView = React.memo(() => {
   return (
     <Container>
       <Main>
-        <AlertsTable handlePanelOpen={handlePanelOpen} />
+        <AlertsTable handlePanelOpen={handlePanelOpen} countryCode={countryCode} />
         <AlertsPanel isOpen={isPanelOpen} handleClose={handlePanelClose} />
       </Main>
       <Sidebar>

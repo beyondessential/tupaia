@@ -6,8 +6,14 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { WarningCloud, TabsToolbar, Virus } from '@tupaia/ui-components';
 import { Archive } from '@material-ui/icons';
-import { Header, HeaderTitle, OutbreaksExportModal, AlertsExportModal } from '../components';
+import {
+  Header,
+  HeaderTitleWithSubHeading,
+  OutbreaksExportModal,
+  AlertsExportModal,
+} from '../components';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
+import { countryFlagImage } from '../utils';
 
 const links = [
   {
@@ -27,13 +33,19 @@ const links = [
   },
 ];
 
-export const AlertsOutbreaksView = () => {
+export const AlertsOutbreaksSummaryView = () => {
   const location = useLocation();
   const ExportModal = location.pathname.includes('outbreak')
     ? OutbreaksExportModal
     : AlertsExportModal;
 
-  const Title = <HeaderTitle title="Alerts & Outbreaks" />;
+  const Title = (
+    <HeaderTitleWithSubHeading
+      title="Alerts & Outbreaks"
+      subHeading="American Samoa"
+      avatarUrl={countryFlagImage('as')}
+    />
+  );
 
   return (
     <>

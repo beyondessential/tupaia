@@ -26,12 +26,13 @@ const links = [
   },
 ];
 
-export const CountryReportsViewComponent = ({ isRegionalUser }) => {
-  const { countryName } = useParams();
+export const CountryReportsViewComponent = ({ isMultiCountryUser }) => {
+  const { countryCode } = useParams();
 
   let back = null;
 
-  if (isRegionalUser) {
+  // can this be improved
+  if (isMultiCountryUser) {
     back = {
       url: '/',
       title: 'Countries',
@@ -41,7 +42,7 @@ export const CountryReportsViewComponent = ({ isRegionalUser }) => {
   return (
     <>
       <Header
-        Title={<HeaderAvatarTitle title={countryName} avatarUrl={countryFlagImage('as')} />}
+        Title={<HeaderAvatarTitle title={countryCode} avatarUrl={countryFlagImage(countryCode)} />}
         back={back}
         ExportModal={WeeklyReportsExportModal}
       />
@@ -52,11 +53,11 @@ export const CountryReportsViewComponent = ({ isRegionalUser }) => {
 };
 
 CountryReportsViewComponent.propTypes = {
-  isRegionalUser: PropTypes.bool.isRequired,
+  isMultiCountryUser: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  isRegionalUser: checkIsMultiCountryUser(state),
+  isMultiCountryUser: checkIsMultiCountryUser(state),
 });
 
 export const CountryReportsView = connect(mapStateToProps)(CountryReportsViewComponent);
