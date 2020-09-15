@@ -39,6 +39,7 @@ import {
 } from './historyNavigation';
 import { decodeLocation } from './utils';
 import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
+import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
 
 export const reactToInitialState = store => {
   reactToLocationChange(store, getInitialLocation(), clearLocation());
@@ -62,14 +63,15 @@ const reactToLocationChange = (store, location, previousLocation) => {
 
   const previousComponents = decodeLocation(previousLocation);
 
-  dispatch(setOverlayComponent(null));
-
   const setComponentIfUpdated = (componentKey, setComponent) => {
     const component = otherComponents[componentKey];
     if (component && component !== previousComponents[componentKey])
       dispatch(setComponent(component));
   };
 
+  const isLandingPageProject = PROJECTS_WITH_LANDING_PAGES[otherComponents[URL_COMPONENTS.PROJECT]];
+  const overlayComponent = isLandingPageProject ? PROJECT_LANDING : null;
+  dispatch(setOverlayComponent(overlayComponent));
   setComponentIfUpdated(URL_COMPONENTS.PROJECT, setProject);
   setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
   setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);

@@ -842,8 +842,10 @@ function* fetchMeasures(action) {
   const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
-    const measures = yield call(request, requestResourceUrl);
-    yield put(fetchMeasuresSuccess(measures));
+    const response = yield call(request, requestResourceUrl);
+
+    if (response.measures.length === 0) yield put(clearMeasure());
+    yield put(fetchMeasuresSuccess(response));
   } catch (error) {
     yield put(fetchMeasuresError(error));
   }
@@ -908,6 +910,7 @@ function* exportChart(action) {
   const timeZone = getTimeZone();
 
   const exportUrl = createUrlString({
+    // Note that dashboard means dashboardId here rather than dashboardCode, e.g. 301 not General
     [URL_COMPONENTS.DASHBOARD]: dashboardGroupId,
     [URL_COMPONENTS.REPORT]: viewId,
     [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,

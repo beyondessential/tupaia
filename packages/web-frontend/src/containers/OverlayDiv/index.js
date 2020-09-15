@@ -64,7 +64,6 @@ export class OverlayDiv extends PureComponent {
       closeOverlay,
       isUserLoggedIn,
       selectExploreProject,
-      selectProjectOrgUnit,
       viewProjectList,
       activeProject,
     } = this.props;
@@ -80,7 +79,7 @@ export class OverlayDiv extends PureComponent {
           selectExplore={selectExploreProject}
           viewProjects={viewProjectList}
           project={activeProject}
-          viewProjectOrgUnit={selectProjectOrgUnit}
+          closeOverlay={closeOverlay}
           scrollToTop={scrollToTop}
         />
       ),
@@ -113,7 +112,6 @@ OverlayDiv.propTypes = {
   viewProjectList: PropTypes.func.isRequired,
   activeProject: PropTypes.shape({}),
   selectExploreProject: PropTypes.func.isRequired,
-  selectProjectOrgUnit: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
@@ -140,10 +138,6 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   selectExploreProject: () => {
     dispatch(setProject(stateProps.exploreProject.code));
     dispatch(setOverlayComponent(null));
-  },
-  selectProjectOrgUnit: () => {
-    dispatch(setOverlayComponent(null));
-    dispatch(setOrgUnit(stateProps.activeProject.homeEntityCode, false));
   },
   viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
   closeOverlay: () => {

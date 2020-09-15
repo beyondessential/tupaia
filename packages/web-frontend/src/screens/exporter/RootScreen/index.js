@@ -22,9 +22,10 @@ import { DARK_BLUE, WHITE } from '../../../styles';
 import { getInitialLocationComponents, URL_COMPONENTS } from '../../../historyNavigation';
 
 const {
+  // Note that dashboard means dashboardId here rather than dashboardCode, e.g. 301 not General
+  [URL_COMPONENTS.DASHBOARD]: dashboardId,
   [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
   [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
-  [URL_COMPONENTS.DASHBOARD]: dashboardId,
   [URL_COMPONENTS.REPORT]: reportId,
   [URL_COMPONENTS.TIMEZONE]: timeZone,
   [URL_COMPONENTS.START_DATE]: startDate,
