@@ -29,10 +29,12 @@ const TABLES_TO_CLEAR = [
   'data_element_data_group',
   'data_source',
   'clinic',
+  'project',
+  'entity_relation',
+  'entity_hierarchy',
   'entity',
   'data_source',
   'comment',
-  'entity_relation',
   'geographical_area',
   'country',
   'feed_item',
@@ -68,7 +70,8 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
     user_entity_permission: [`permission_group_id ${COMPARISON}`],
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
-    entity: [`code LIKE 'test%'`, `code ${COMPARISON}`],
+    entity: [`code LIKE 'test%'`, `code ${COMPARISON}`, `parent_id ${COMPARISON}`],
+    entity_relation: [`child_id ${COMPARISON}`, `parent_id ${COMPARISON}`],
     meditrak_sync_queue: [`record_id ${COMPARISON}`],
   };
   const sql = TABLES_TO_CLEAR.reduce(

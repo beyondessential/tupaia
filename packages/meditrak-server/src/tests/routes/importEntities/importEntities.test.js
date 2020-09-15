@@ -6,10 +6,13 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
+import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
+import * as PopulateCoordinatesForCountry from '../../../routes/importEntities/populateCoordinatesForCountry';
+import * as UpdateCountryEntities from '../../../routes/importEntities/updateCountryEntities';
 import { TestableApp } from '../../TestableApp';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
 
@@ -34,10 +37,45 @@ const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
 
 describe('importEntities(): POST import/entities', () => {
   const app = new TestableApp();
+  const models = app.models;
 
+  before(async () => {
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'World',
+      name: 'World',
+      type: 'world',
+      country_code: 'wo',
+    });
+
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'KI',
+      name: 'Kiribati',
+    });
+
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'LA',
+      name: 'Laos',
+    });
+
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'SB',
+      name: 'Solomon Islands',
+    });
+
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'VU',
+      name: 'Vanuatu',
+    });
+  });
   describe('Test permissions when importing entities', async () => {
     const importFile = filename =>
       app.post('import/entities').attach('entities', `${TEST_DATA_FOLDER}/entities/${filename}`);
+
+    before(async () => {
+      //Only test permissions part so stub these methods to ignore them
+      sinon.stub(UpdateCountryEntities, 'updateCountryEntities').returns({ code: 'DL' });
+      sinon.stub(PopulateCoordinatesForCountry, 'populateCoordinatesForCountry');
+    });
 
     afterEach(() => {
       Authenticator.prototype.getAccessPolicyForUser.restore();

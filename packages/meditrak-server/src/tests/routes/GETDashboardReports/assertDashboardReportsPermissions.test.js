@@ -5,7 +5,11 @@
 
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { findOrCreateDummyRecord } from '@tupaia/database';
+import {
+  findOrCreateDummyRecord,
+  findOrCreateDummyCountryEntity,
+  buildAndInsertProjectsAndHierarchies,
+} from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../getModels';
 import {
@@ -31,6 +35,46 @@ describe('Permissions checker for GETDashboardReports', async () => {
   let projectLevelDashboard;
 
   before(async () => {
+    //Still create these existing entities just in case test database for some reasons do not have these records.
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'KI_BIKUC04',
+      type: 'facility',
+      country_code: 'KI',
+    });
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'KI_Phoenix Islands',
+      type: 'district',
+      country_code: 'KI',
+    });
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'KI',
+      name: 'Kiribati',
+    });
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'LA',
+      name: 'Laos',
+    });
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'SB',
+      name: 'Solomon Islands',
+    });
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'VU',
+      name: 'Vanuatu',
+    });
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'TO',
+      name: 'Tonga',
+    });
+    await buildAndInsertProjectsAndHierarchies(models, [
+      {
+        code: 'test_project',
+        name: 'Test Project',
+        entities: [{ code: 'KI' }, { code: 'VU' }, { code: 'TO' }, { code: 'SB' }],
+      },
+    ]);
+
+    //Set up dashboard reports
     districtReport1 = await findOrCreateDummyRecord(
       models.dashboardReport,
       { id: 'district_dashboard_report_1_test' },
@@ -133,9 +177,9 @@ describe('Permissions checker for GETDashboardReports', async () => {
         id: 2323232,
         name: 'Test project level dashboard group 3',
         userGroup: 'Admin',
-        organisationUnitCode: 'unfpa',
+        organisationUnitCode: 'test_project',
         organisationLevel: 'Project',
-        projectCodes: ['unfpa'],
+        projectCodes: ['test_project'],
         dashboardReports: [projectLevelDashboard.id],
       },
     );
