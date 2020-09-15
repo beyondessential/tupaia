@@ -6,6 +6,7 @@ import React, { useContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
+import InfoIcon from '@material-ui/icons/Info';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
 import {
@@ -46,6 +47,13 @@ const Alert = styled(SmallAlert)`
   margin-bottom: 1.2rem;
 `;
 
+const GreyAlert = styled(SmallAlert)`
+  background: ${props => props.theme.palette.text.secondary};
+  font-weight: 500;
+  color: white;
+  margin-bottom: 1.2rem;
+`;
+
 const ReportedSites = styled(Typography)`
   font-size: 1.125rem;
   line-height: 1.3rem;
@@ -73,7 +81,7 @@ const TABLE_STATUSES = {
 };
 
 export const CountryReportTableComponent = React.memo(
-  ({ tableStatus, setTableStatus, onSubmit, sitesReported }) => {
+  ({ tableStatus, setTableStatus, onSubmit, sitesReported, totalSites }) => {
     const { fields } = useContext(EditableTableContext);
     const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
 
@@ -105,10 +113,12 @@ export const CountryReportTableComponent = React.memo(
                 onChange={event => setSitesReportedValue(event.target.value)}
                 name="sites-reported"
               />
-              <ReportedSites variant="h6"> / Total Sites: 10</ReportedSites>
+              <ReportedSites variant="h6"> / Total Sites: {totalSites}</ReportedSites>
             </FormRow>
           ) : (
-            <Typography variant="h5">7/{sitesReportedValue} Sites Reported</Typography>
+            <Typography variant="h5">
+              {sitesReportedValue}/{totalSites} Sites Reported
+            </Typography>
           )}
           <GreyOutlinedButton
             onClick={handleEdit}
@@ -117,11 +127,14 @@ export const CountryReportTableComponent = React.memo(
             Edit
           </GreyOutlinedButton>
         </FlexSpaceBetween>
-        {tableStatus === TABLE_STATUSES.EDITABLE && (
+        {tableStatus === TABLE_STATUSES.EDITABLE ? (
           <Alert severity="error" variant="standard">
-            Updating country level data manually: all individual sentinel site data will
-            be ignored
+            Updating country level data manually: all individual sentinel site data will be ignored
           </Alert>
+        ) : (
+          <GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>
+            Country level data has been manually edited, sentinel data will not be used.
+          </GreyAlert>
         )}
         <GreyHeader>
           <span>SYNDROMES</span>
@@ -154,6 +167,7 @@ CountryReportTableComponent.propTypes = {
   setTableStatus: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   sitesReported: PropTypes.number.isRequired,
+  totalSites: PropTypes.number.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({

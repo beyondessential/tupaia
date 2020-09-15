@@ -147,7 +147,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       }
     }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
 
-    if (countryData.syndromes.length === 0 || sitesData.length === 0) {
+    if (!countryData.syndromes || countryData.syndromes.length === 0 || sitesData.length === 0) {
       return null;
     }
 
@@ -183,6 +183,7 @@ export const WeeklyReportsPanelComponent = React.memo(
               tableStatus={countryTableStatus}
               setTableStatus={setCountryTableStatus}
               sitesReported={countryData.sitesReported}
+              totalSites={countryData.totalSites}
             />
           </EditableTableProvider>
         </GreySection>
