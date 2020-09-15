@@ -19,7 +19,6 @@ import { DIALOG_Z_INDEX, WHITE } from '../../styles';
 
 const formatLabels = {
   png: 'PNG',
-  pdf: 'PDF',
   xlsx: 'Excel (Raw Data)',
 };
 

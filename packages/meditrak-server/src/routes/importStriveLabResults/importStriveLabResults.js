@@ -1,10 +1,10 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyBy';
- import xlsx from 'xlsx';
+import { keyBy } from 'lodash';
+import xlsx from 'xlsx';
 
 import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
