@@ -55,14 +55,14 @@ describe('calculateOperationForAnalytics', () => {
           dataElement: 'uniqueCode',
           condition: { value: 'Yes', operator: 'regex' },
         }),
-      ).to.equal(true);
+      ).to.equal('Yes');
       expect(
         calculateOperationForAnalytics(analytics, {
           operator: 'CHECK_CONDITION',
           dataElement: 'uniqueCode',
           condition: { value: 'No', operator: 'regex' },
         }),
-      ).to.equal(false);
+      ).to.equal('No');
     });
   });
 
