@@ -18,3 +18,4 @@ export {
   countAnalyticsGroupsThatSatisfyConditions,
   countEventsThatSatisfyConditions,
 } from './checkAgainstConditions';
+export { uniqueValueFromEvents } from './uniqueValues';
