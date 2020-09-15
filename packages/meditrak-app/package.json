@@ -1,5 +1,6 @@
 {
   "name": "@tupaia/meditrak-app",
+  "private": true,
   "version": "1.8.107",
   "workspaces": {
     "nohoist": [

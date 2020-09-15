@@ -12,6 +12,7 @@ const surveyName = {
   Header: 'Survey',
   source: 'survey.name',
   editable: false,
+  type: 'tooltip',
 };
 
 const assessorName = {
@@ -23,6 +24,7 @@ const assessorName = {
 const date = {
   Header: 'Date of Survey',
   source: 'end_time',
+  type: 'tooltip',
   accessor: row =>
     moment(row.end_time)
       .local()
@@ -34,6 +36,7 @@ const date = {
 const dateOfData = {
   Header: 'Date of Data',
   source: 'submission_time',
+  type: 'tooltip',
   accessor: row =>
     moment(row.submission_time || row.end_time)
       .local()
@@ -99,10 +102,12 @@ const ANSWER_FIELDS = [
     Header: 'Question',
     source: 'question.text',
     editable: false,
+    type: 'tooltip',
   },
   {
     Header: 'Answer',
     source: 'text',
+    type: 'tooltip',
   },
 ];
 

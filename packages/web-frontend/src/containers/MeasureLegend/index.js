@@ -286,7 +286,7 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
   let nullKey = null;
   const nullItem = valueMapping.null;
 
-  if (!hasGroupedLegendIncludingNull && nullItem) {
+  if (!hasGroupedLegendIncludingNull && nullItem && !nullItem.hideFromLegend) {
     nullKey = (
       <LegendEntry
         marker={getLegendMarkerForValue(

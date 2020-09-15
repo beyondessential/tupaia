@@ -5,8 +5,8 @@
 
 import { inspect } from 'util';
 import { periodToMoment } from '@tupaia/utils/dist/period/period';
+import { checkValueSatisfiesCondition } from '@tupaia/utils';
 import { getMeasureBuilder } from './getMeasureBuilder';
-import { checkValueSatisfiesCondition } from '../dataBuilders/helpers/checkAgainstConditions';
 import { Entity } from '../../models';
 
 export const fetchComposedData = async (aggregator, dhisApi, query, config, entity) => {
