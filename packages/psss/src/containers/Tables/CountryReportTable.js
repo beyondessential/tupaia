@@ -119,7 +119,7 @@ export const CountryReportTableComponent = React.memo(
         </FlexSpaceBetween>
         {tableStatus === TABLE_STATUSES.EDITABLE && (
           <Alert severity="error" variant="standard">
-            Updating aggregated data will be the source of truth. All individual Sentinel data will
+            Updating country level data manually: all individual sentinel site data will
             be ignored
           </Alert>
         )}
