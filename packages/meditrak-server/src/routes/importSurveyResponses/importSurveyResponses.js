@@ -197,7 +197,6 @@ export async function importSurveyResponses(req, res) {
     });
     respond(res, { message: 'Imported survey responses' });
   } catch (error) {
-    console.log('error', error.message);
     if (error.respond) {
       throw error; // Already a custom error with a responder
     } else {
