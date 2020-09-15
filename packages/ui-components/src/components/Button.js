@@ -174,8 +174,8 @@ export const GreyOutlinedButton = styled(OutlinedButton)`
 
   &.Mui-disabled {
     color: ${props => props.theme.palette.text.secondary};
-    background: #f1f1f1;
-    border: 1px solid #f1f1f1;
+    background: ${props => props.theme.palette.grey['200']};
+    border: 1px solid ${props => props.theme.palette.grey['200']};
   }
 
   &:hover {
