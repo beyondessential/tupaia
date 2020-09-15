@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { TextField, Button, Checkbox } from '@tupaia/ui-components';
+import { TextField, Button } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';

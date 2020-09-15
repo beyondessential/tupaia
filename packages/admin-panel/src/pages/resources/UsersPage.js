@@ -12,6 +12,7 @@ const FIELDS = [
   {
     Header: 'Email Address',
     source: 'email',
+    type: 'tooltip',
   },
   {
     Header: 'Phone Number',
@@ -24,6 +25,7 @@ const FIELDS = [
   {
     Header: 'Employer',
     source: 'employer',
+    type: 'tooltip',
   },
 ];
 
@@ -76,7 +78,7 @@ const COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Permissions',
-    endpoint: PERMISSIONS_ENDPOINT,
+    endpoint: `user/{id}/${PERMISSIONS_ENDPOINT}`,
     columns: PERMISSIONS_COLUMNS,
     joinFrom: 'id',
     joinTo: 'user_id',
