@@ -4,20 +4,20 @@ import {
   convertDateRangeToUrlPeriodString,
 } from '../../historyNavigation/utils';
 
-const SINGLE_PERIOD_STRING = moment('2020-01-02').format('Do_MMM_YYYY');
+const SINGLE_PERIOD_STRING = '2nd_Jan_2020'; // = moment('2020-01-02').format('Do_MMM_YYYY');
 const SINGLE_DATE_RANGE = {
   startDate: moment('2020-01-02'),
   endDate: moment('2020-01-02'),
 };
 
-const RANGE_PERIOD_STRING = `${moment('2020-01-02').format('Do_MMM_YYYY')}-${moment(
-  '2020-01-10',
-).format('Do_MMM_YYYY')}`;
+const RANGE_PERIOD_STRING = '2nd_Jan_2020-10th_Jan_2020';
 
 const RANGE_DATE_RANGE = {
   startDate: moment('2020-01-02'),
   endDate: moment('2020-01-10'),
 };
+
+const assertMomentDatesAreEqual = (moment1, moment2) => expect(moment1.isSame(moment2)).toBe(true);
 
 describe('convertUrlPeriodStringToDateRange', () => {
   it('should decode strings with only one date', () => {
@@ -26,15 +26,15 @@ describe('convertUrlPeriodStringToDateRange', () => {
       'one_day_at_a_time',
     );
     const { startDate: expectedStartDate, endDate: expectedEndDate } = SINGLE_DATE_RANGE;
-    expect(startDate.isSame(expectedStartDate)).toBe(true);
-    expect(endDate.isSame(expectedEndDate)).toBe(true);
+    assertMomentDatesAreEqual(startDate, expectedStartDate);
+    assertMomentDatesAreEqual(endDate, expectedEndDate);
   });
 
   it('should decode strings with multiple dates', () => {
     const { startDate, endDate } = convertUrlPeriodStringToDateRange(RANGE_PERIOD_STRING, 'day');
     const { startDate: expectedStartDate, endDate: expectedEndDate } = RANGE_DATE_RANGE;
-    expect(startDate.isSame(expectedStartDate)).toBe(true);
-    expect(endDate.isSame(expectedEndDate)).toBe(true);
+    assertMomentDatesAreEqual(startDate, expectedStartDate);
+    assertMomentDatesAreEqual(endDate, expectedEndDate);
   });
 });
 
