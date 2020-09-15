@@ -774,6 +774,7 @@ function* fetchCurrentMeasureInfo() {
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { measureHierarchy } = state.measureBar;
   const selectedMeasureId = selectCurrentMeasureId(state);
+  console.log(measureHierarchy, selectedMeasureId, currentOrganisationUnitCode);
 
   if (currentOrganisationUnitCode) {
     const isHierarchyPopulated = measureHierarchy.length;
@@ -842,8 +843,10 @@ function* fetchMeasures(action) {
   const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
-    const measures = yield call(request, requestResourceUrl);
-    yield put(fetchMeasuresSuccess(measures));
+    const response = yield call(request, requestResourceUrl);
+
+    if (response.measures.length === 0) yield put(clearMeasure());
+    yield put(fetchMeasuresSuccess(response));
   } catch (error) {
     yield put(fetchMeasuresError(error));
   }
