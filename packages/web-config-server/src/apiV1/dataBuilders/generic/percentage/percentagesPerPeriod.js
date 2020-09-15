@@ -57,19 +57,27 @@ const percentagesPerPeriod = async (
   const aggregationTypes = getAggregationTypes(aggregator, periodType, fillEmptyDenominatorValues);
 
   const fetchAnalytics = async metric => {
+    const denominatorCodes = metric.denominator.dataElementCodes || metric.denominator;
+    const denominatorFetchOptions = fillEmptyDenominatorValues
+      ? { ...query, period: undefined }
+      : query;
+    denominatorFetchOptions.organisationUnitCode =
+      metric.denominator.organisationUnitCode || query.organisationUnitCode;
     const { results: denominatorResults } = await aggregator.fetchAnalytics(
-      metric.denominator,
+      denominatorCodes,
       { dataServices },
-      fillEmptyDenominatorValues ? { ...query, period: undefined } : query,
+      denominatorFetchOptions,
       { aggregationType: aggregationTypes.denominator },
     );
-
+    console.log('denominatorResults', denominatorResults);
+    const numeratorCodes = metric.numerator.dataElementCodes || metric.numerator;
     const { results: numeratorResults } = await aggregator.fetchAnalytics(
-      metric.numerator,
+      numeratorCodes,
       { dataServices },
       query,
       { aggregationType: aggregationTypes.numerator },
     );
+    console.log('numeratorResults', numeratorResults);
     return { denominatorResults, numeratorResults };
   };
 
@@ -114,11 +122,13 @@ const percentagesPerPeriod = async (
   for (let i = 0; i < metrics.length; i++) {
     const metric = metrics[i];
     const { numeratorResults, denominatorResults } = await fetchAnalytics(metric);
+    const includeAllDenominatorValues = metric.denominator.includeAllResults || false;
 
     const matchedData = getMatchedNumeratorsAndDenominators(
       numeratorResults,
       denominatorResults,
       periodType,
+      includeAllDenominatorValues,
     );
     const incrementMetric = result => incrementMetricByPeriod(result, metric.key);
 
@@ -140,6 +150,7 @@ const percentagesPerPeriod = async (
   Object.entries(metricDataByPeriod).forEach(([periodTimestamp, metricData]) => {
     percentagesByPeriod[periodTimestamp] = {};
     Object.entries(metricData).forEach(([metricKey, { numerator, denominator }]) => {
+      // console.log(`${metricKey}: ${numerator} / ${denominator}`);
       if (denominator && (numerator || numerator === 0)) {
         percentagesByPeriod[periodTimestamp][metricKey] = calculatePercentage(
           numerator,

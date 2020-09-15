@@ -7,6 +7,7 @@ export const getMatchedNumeratorsAndDenominators = (
   numeratorResults,
   denominatorResults,
   periodType,
+  includeAllDenominatorValues = false,
 ) => {
   // Store the numerator and denominator results accessible by a key made up of period and organisation unit
   const getResultKey = ({ period, organisationUnit }) => {
@@ -23,10 +24,31 @@ export const getMatchedNumeratorsAndDenominators = (
     }
   };
 
+  const sumValueByPeriod = results => {
+    const periodValues = {};
+    Object.keys(results).forEach(resultKey => {
+      const resultPeriod = results[resultKey].period;
+      if (!periodValues[resultPeriod]) {
+        periodValues[resultPeriod] = results[resultKey].value;
+      } else {
+        periodValues[resultPeriod] += results[resultKey].value;
+      }
+    });
+    return periodValues;
+  };
+
   const numeratorResultsByKey = {};
   numeratorResults.forEach(result => storeResultByKey(numeratorResultsByKey, result));
   const denominatorResultsByKey = {};
   denominatorResults.forEach(result => storeResultByKey(denominatorResultsByKey, result, true));
+
+  if (includeAllDenominatorValues) {
+    const denominatorPeriodValues = sumValueByPeriod(denominatorResultsByKey);
+    Object.keys(denominatorResultsByKey).forEach(resultKey => {
+      const resultPeriod = denominatorResultsByKey[resultKey].period;
+      denominatorResultsByKey[resultKey].value = denominatorPeriodValues[resultPeriod] || 0;
+    });
+  }
 
   return Object.keys(numeratorResultsByKey)
     .filter(
