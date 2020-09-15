@@ -113,7 +113,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       expect(result.map(r => r.id)).to.deep.equal([laosAdminResponseId]);
     });
 
-    if('Should not filter survey responses if user has access to the country permission group', async () => {
+    it('Should not filter survey responses if user has access to the country permission group', async () => {
       const policy = {
         VU: ['Admin', 'Donor'],
         LA: ['Admin', 'Donor'],
