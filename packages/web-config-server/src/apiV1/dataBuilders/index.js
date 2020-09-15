@@ -15,6 +15,7 @@ export * from './generic/percentage';
 export * from './generic/sum';
 export * from './generic/calc';
 export * from './generic/table';
+export * from './generic/unique';
 
 /** Modules */
 export * from './modules/disaster';

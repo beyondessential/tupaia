@@ -1,5 +1,6 @@
 {
   "name": "@tupaia/utils",
+  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
@@ -17,7 +18,7 @@
     "moment-timezone": "^0.5.25",
     "node-fetch": "^1.7.3",
     "validator": "^8.2.0",
-    "winston": "^3.1.0",
+    "winston": "^3.3.3",
     "xlsx": "^0.10.9"
   },
   "eslintConfig": {
