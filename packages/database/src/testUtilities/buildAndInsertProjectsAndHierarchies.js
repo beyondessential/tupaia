@@ -64,7 +64,7 @@ const buildAndInsertProjectAndHierarchy = async (
  *      { code: 'VU', type: 'country', country_code: 'Vanuatu' },
  *     ],
  *   },
- *   ..., // can handle more than one survey
+ *   ..., // can handle more than one project
  * ]);
  * ```
  */
