@@ -141,10 +141,12 @@ const NEW_MEASURE_BUILDER_CONFIG = {
       value: 'UNICEF',
       operator: '=',
     },
+    /*--- Add 'Other' response ---*/
     SchCVD022l: {
       value: 'Other',
       operator: '=',
     },
+    /*----------------------------*/
   },
   measureBuilder: 'getStringsFromBinaryData',
   measureBuilderConfig: {
@@ -163,7 +165,9 @@ const NEW_MEASURE_BUILDER_CONFIG = {
       SchDP_AEAL: 'Aide et Action Laos (AEAL)',
       SchDP_Plan: 'Plan International',
       SchDP_UNICEF: 'UNICEF',
+      /*--- Add 'Other' response ---*/
       SchCVD022l: 'Other',
+      /*----------------------------*/
     },
   },
 };
@@ -301,11 +305,13 @@ const NEW_PRESENTATION_OPTIONS = {
       color: 'saddleBrown',
       value: 'SchDP_WV',
     },
+    /*--- Add 'Other' response ---*/
     {
       name: 'Other',
       color: 'navy',
       value: 'SchCVD022l',
     },
+    /*----------------------------*/
     {
       name: 'Multiple',
       color: 'purple',
