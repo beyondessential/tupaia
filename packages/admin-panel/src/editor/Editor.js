@@ -41,7 +41,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
 };
 
 Editor.propTypes = {
-  fields: PropTypes.array.isRequired,
+  fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recordData: PropTypes.object.isRequired,
   onEditField: PropTypes.func.isRequired,
 };

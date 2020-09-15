@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { checkValueSatisfiesCondition } from '@tupaia/utils';
+
 /**
  * Combines analytics together across org units
  *
@@ -11,9 +13,9 @@
  * @param {Function} baseValueMapper
  * @param {Function} keyMapper
  */
-const valuePerOrgGroup = (analytics, aggregationConfig, baseValueMapper, keyMapper) => {
-  const { orgUnitMap = {}, valueToMatch } = aggregationConfig;
-  const valueMapper = valueToMatch ? createConfiguredValueMapper(valueToMatch) : baseValueMapper;
+const valuePerOrgGroup = (analytics, aggregationConfig, valueMapper, keyMapper) => {
+  const { orgUnitMap = {}, condition } = aggregationConfig;
+  const filterValueMapper = condition ? createFilterValueMapper(condition) : () => true;
 
   const analyticsByKey = {};
   analytics.forEach(analytic => {
@@ -21,7 +23,7 @@ const valuePerOrgGroup = (analytics, aggregationConfig, baseValueMapper, keyMapp
       (orgUnitMap[analytic.organisationUnit] && orgUnitMap[analytic.organisationUnit].code) ||
       analytic.organisationUnit;
     const key = keyMapper(analytic, organisationUnit);
-    const value = valueMapper(analytic.value);
+    const value = filterValueMapper(analytic.value) ? valueMapper(analytic.value) : 0;
 
     // If there are no matching response elements already being returned, add it
     if (!analyticsByKey[key]) {
@@ -70,8 +72,7 @@ export const countPerOrgGroup = (analytics, aggregationConfig) =>
 export const countPerPeriodPerOrgGroup = (analytics, aggregationConfig) =>
   valuePerOrgGroup(analytics, aggregationConfig, countValueMapper, perPeriodPerOrgGroupKey);
 
-const createConfiguredValueMapper = valueToMatch =>
-  valueToMatch === '*' ? () => 1 : value => (value === valueToMatch ? 1 : 0);
+const createFilterValueMapper = condition => val => checkValueSatisfiesCondition(val, condition);
 
 const sumValueMapper = value => value;
 

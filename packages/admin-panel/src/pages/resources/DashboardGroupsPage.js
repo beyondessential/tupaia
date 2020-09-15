@@ -6,12 +6,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { prettyArray } from '../../utilities/pretty';
+import { prettyArray } from '../../utilities';
 
 const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    type: 'tooltip',
   },
   {
     Header: 'Name',
@@ -40,6 +41,7 @@ const FIELDS = [
   {
     Header: 'Permission Group',
     source: 'userGroup',
+    type: 'tooltip',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
