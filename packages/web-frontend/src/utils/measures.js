@@ -39,6 +39,10 @@ export function autoAssignColors(values) {
 
   let autoIndex = 0;
   const getColor = valueObject => {
+    if (!valueObject.name) {
+      return BREWER_AUTO[autoIndex++];
+    }
+
     switch (valueObject.name.toLowerCase()) {
       case 'yes':
         return YES_COLOR;
@@ -262,23 +266,30 @@ export function getValueInfo(value, valueMapping, hiddenValues = {}) {
 export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
+  const value = orgUnitData[key];
+  const valueInfo = getValueInfo(value, valueMapping);
+
   if (
     displayedValueKey &&
     (orgUnitData[displayedValueKey] || orgUnitData[displayedValueKey] === 0)
   ) {
     return {
-      value: formatDataValue(orgUnitData[displayedValueKey], valueType, orgUnitData.metadata),
+      formattedValue: formatDataValue(
+        orgUnitData[displayedValueKey],
+        valueType,
+        orgUnitData.metadata,
+      ),
+      valueInfo,
     };
   }
 
-  const value = orgUnitData[key];
-  const valueInfo = getValueInfo(value, valueMapping);
-
   // note: dont use !value here, as 0 is a valid value.
-  if (value === null || value === undefined) return { value: valueInfo.name || 'No data' };
+  if (value === null || value === undefined) {
+    return { formattedValue: valueInfo.name || 'No data', valueInfo };
+  }
 
   return {
-    value: getFormattedValue(
+    formattedValue: getFormattedValue(
       value,
       type,
       valueInfo,
@@ -286,13 +297,14 @@ export function getFormattedInfo(orgUnitData, measureOption) {
       valueType,
       orgUnitData.submissionDate,
     ),
+    valueInfo,
   };
 }
 
 export function getSingleFormattedValue(orgUnitData, measureOptions) {
   // For situations where we can only show one value, just show the value
   // of the first measure.
-  return getFormattedInfo(orgUnitData, measureOptions[0]).value;
+  return getFormattedInfo(orgUnitData, measureOptions[0]).formattedValue;
 }
 
 export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
