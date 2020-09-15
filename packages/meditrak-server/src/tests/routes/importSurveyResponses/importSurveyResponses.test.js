@@ -6,7 +6,11 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
-import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
+import {
+  buildAndInsertSurveys,
+  findOrCreateDummyRecord,
+  findOrCreateDummyCountryEntity,
+} from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { upsertEntity } from '../../testUtilities';
 import { TestableApp } from '../../TestableApp';
@@ -39,9 +43,17 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
         .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
 
     before(async () => {
-      const adminPermissionGroup = await models.permissionGroup.findOne({ name: 'Admin' });
-      const demoLand = await models.country.findOne({ code: 'DL' });
-
+      const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+        name: 'Admin',
+      });
+      const { country: demoLand } = await findOrCreateDummyCountryEntity(models, {
+        code: 'DL',
+        name: 'Demo Land',
+      });
+      const { country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
+        code: 'KI',
+        name: 'Kiribati',
+      });
       const [{ survey: survey1 }, { survey: survey2 }] = await buildAndInsertSurveys(models, [
         {
           code: 'TEST_IMPORT_SURVEY_RESPONSES_1_test',
@@ -83,11 +95,14 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
         },
       ]);
 
-      const entity = await models.entity.findOne({ code: 'DL_7' });
-      await upsertEntity({ code: 'KI_111_test', country_code: 'KI' });
-      await upsertEntity({ code: 'KI_222_test', country_code: 'KI' });
-      await upsertEntity({ code: 'KI_333_test', country_code: 'KI' });
-      await upsertEntity({ code: 'KI_444_test', country_code: 'KI' });
+      const entity = await upsertEntity({ code: 'DL_7', country_code: demoLand.code });
+      await upsertEntity({ code: 'DL_9', country_code: demoLand.code });
+      await upsertEntity({ code: 'DL_10', country_code: demoLand.code });
+      await upsertEntity({ code: 'DL_11', country_code: demoLand.code });
+      await upsertEntity({ code: 'KI_111_test', country_code: kiribatiCountry.code });
+      await upsertEntity({ code: 'KI_222_test', country_code: kiribatiCountry.code });
+      await upsertEntity({ code: 'KI_333_test', country_code: kiribatiCountry.code });
+      await upsertEntity({ code: 'KI_444_test', country_code: kiribatiCountry.code });
 
       const userId = 'user_00000000000000_test';
       await models.user.updateOrCreate(
@@ -176,7 +191,7 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
 
       expectPermissionError(
         response,
-        /Need Admin access to Demo Land,Kiribati to import the survey responses/,
+        /Need Admin access to Kiribati,Demo Land to import the survey responses/,
       );
     });
   });

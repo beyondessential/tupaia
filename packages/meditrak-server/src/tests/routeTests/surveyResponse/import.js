@@ -4,7 +4,11 @@
  */
 
 import { expect } from 'chai';
-import { buildAndInsertSurveys } from '@tupaia/database';
+import {
+  findOrCreateDummyRecord,
+  findOrCreateDummyCountryEntity,
+  buildAndInsertSurveys,
+} from '@tupaia/database';
 import { oneSecondSleep, upsertEntity } from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
@@ -134,7 +138,17 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           addQuestion('faccc42a44705c02b9e_test', 'FreeText'),
         ]);
 
-        const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
+        const { country: demoLand } = await findOrCreateDummyCountryEntity(models, {
+          code: 'DL',
+          name: 'Demo Land',
+        });
+        await upsertEntity({ code: 'DL_7', country_code: 'DL' });
+        await upsertEntity({ code: 'DL_9', country_code: demoLand.code });
+        await upsertEntity({ code: 'DL_10', country_code: demoLand.code });
+        await upsertEntity({ code: 'DL_11', country_code: demoLand.code });
+        const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+          name: 'Public',
+        });
         const [{ survey }] = await buildAndInsertSurveys(models, [
           { code: 'TEST_IMPORT_SURVEY', permission_group_id: publicPermissionGroup.id },
         ]);

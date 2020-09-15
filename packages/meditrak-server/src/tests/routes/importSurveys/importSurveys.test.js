@@ -6,7 +6,11 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
-import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
+import {
+  buildAndInsertSurveys,
+  findOrCreateDummyRecord,
+  findOrCreateDummyCountryEntity,
+} from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
@@ -47,9 +51,19 @@ describe('importSurveys(): POST import/surveys', () => {
 
   describe('Test permissions when importing surveys', async () => {
     before(async () => {
-      const adminPermissionGroup = await models.permissionGroup.findOne({ name: 'Admin' });
-      vanuatuCountry = await models.country.findOne({ code: 'VU' });
-      kiribatiCountry = await models.country.findOne({ code: 'KI' });
+      const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+        name: 'Admin',
+      });
+
+      ({ country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
+        code: 'KI',
+        name: 'Kiribati',
+      }));
+
+      ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
+        code: 'VU',
+        name: 'Vanuatu',
+      }));
 
       const addQuestion = (id, type) =>
         findOrCreateDummyRecord(
