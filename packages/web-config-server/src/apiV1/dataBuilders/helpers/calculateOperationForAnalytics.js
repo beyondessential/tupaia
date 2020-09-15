@@ -11,7 +11,7 @@ const checkCondition = (analytics, config) => {
   } else if (filteredAnalytics.length === 0) {
     return NO_DATA_AVAILABLE;
   }
-  return checkValueSatisfiesCondition(filteredAnalytics[0].value, condition);
+  return checkValueSatisfiesCondition(filteredAnalytics[0].value, condition) ? 'Yes' : 'No';
 };
 
 const sumDataValues = (analytics, dataValues) => {
@@ -60,7 +60,6 @@ const OTHER_OPERATORS = {
 export const calculateOperationForAnalytics = (analytics, config) => {
   const { operator } = config;
   if (operator in OTHER_OPERATORS) {
-    console.log(operator, 'CHECK_CONDITION', OTHER_OPERATORS, OTHER_OPERATORS.CHECK_CONDITION, OTHER_OPERATORS[operator]);
     return OTHER_OPERATORS[operator](analytics, config);
   } else if (operator in ARITHMETIC_OPERATORS) {
     return performArithmeticOperation(analytics, config);
