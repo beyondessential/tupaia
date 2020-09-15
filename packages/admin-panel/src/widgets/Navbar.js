@@ -21,5 +21,5 @@ export const Navbar = ({ links }) => (
 );
 
 Navbar.propTypes = {
-  links: PropTypes.array.isRequired,
+  links: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };

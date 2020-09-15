@@ -30,3 +30,4 @@ export { respond } from './respond';
 export { singularise, stripFromString } from './string';
 export * from './validation';
 export { WorkBookParser } from './WorkBookParser';
+export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
