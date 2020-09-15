@@ -110,8 +110,38 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       );
 
       // Should have dropped all but [laos/Admin] survey response
-      expect(result.length).to.equal(1);
-      expect(result[0].id).to.equal(laosAdminResponseId);
+      expect(result.map(r => r.id)).to.deep.equal([laosAdminResponseId]);
+    });
+
+    if('Should not filter survey responses if user has access to the country permission group', async () => {
+      const policy = {
+        VU: ['Admin', 'Donor'],
+        LA: ['Admin', 'Donor'],
+      };
+      const accessPolicy = new AccessPolicy(policy);
+      const result = await filterSurveyResponsesByPermissions(
+        accessPolicy,
+        surveyResponses,
+        models,
+      );
+
+      // Should have returned identical array
+      expect(result).to.deep.equal(surveyResponses);
+    });
+
+    it('Should allow BES Admin access to all survey responses', async () => {
+      const policy = {
+        VU: ['BES Admin'],
+      };
+      const accessPolicy = new AccessPolicy(policy);
+      const result = await filterSurveyResponsesByPermissions(
+        accessPolicy,
+        surveyResponses,
+        models,
+      );
+
+      // Should have returned identical array
+      expect(result).to.deep.equal(surveyResponses);
     });
   });
 
@@ -120,8 +150,8 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
       const result = await assertSurveyResponsePermissions(
         accessPolicy,
-        surveyResponses[0],
         models,
+        surveyResponses[0],
       );
 
       expect(result).to.true;
@@ -137,7 +167,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const accessPolicy = new AccessPolicy(policy);
 
       // Should only have permission for [Laos/Admin]
-      expect(() => assertSurveyResponsePermissions(accessPolicy, surveyResponses[0], models)).to
+      expect(() => assertSurveyResponsePermissions(accessPolicy, models, surveyResponses[0])).to
         .throw;
     });
   });
