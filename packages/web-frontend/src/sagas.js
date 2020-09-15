@@ -774,7 +774,6 @@ function* fetchCurrentMeasureInfo() {
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { measureHierarchy } = state.measureBar;
   const selectedMeasureId = selectCurrentMeasureId(state);
-  console.log(measureHierarchy, selectedMeasureId, currentOrganisationUnitCode);
 
   if (currentOrganisationUnitCode) {
     const isHierarchyPopulated = measureHierarchy.length;
