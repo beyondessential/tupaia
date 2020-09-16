@@ -52,8 +52,9 @@ export class WeatherApi {
    * @private
    */
   async _fetch(endpoint, params) {
-    params.key = this.apiKey;
-    const url = stringifyQuery('https://api.weatherbit.io', endpoint, params);
+    const queryParams = { ...params, key: this.apiKey };
+
+    const url = stringifyQuery('https://api.weatherbit.io', endpoint, queryParams);
 
     const result = await fetchWithTimeout(url, {}, MAX_FETCH_WAIT_TIME);
 
