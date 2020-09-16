@@ -184,6 +184,11 @@ export class WeatherService extends Service {
   }
 
   /**
+   * Fetch data from the API
+   *
+   * Note: we pass in individual start/end dates because each entity may have a different local-time start/end
+   * date if they are in different timezones.
+   *
    * @param EntityType[] entities
    * @param Object.<entityCode: string: Object.<startDate: string, endDate: string> dateRangeByEntityCode
    * @returns {Promise<Object.<entityCode: string: apiResult: Object>>}
