@@ -61,6 +61,10 @@
       "path": "packages/meditrak-server"
     },
     {
+      "name": "reports-lambda",
+      "path": "packages/reports-lambda"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },
