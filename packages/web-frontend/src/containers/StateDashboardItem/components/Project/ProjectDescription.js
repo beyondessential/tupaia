@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { WHITE } from '../../../../styles';
-import { selectActiveProjectCode, selectProjectByCode } from '../../../../selectors';
+import { selectCurrentProject } from '../../../../selectors';
 
 const Grid = styled.div`
   display: grid;
@@ -40,23 +40,25 @@ const Footer = styled(FullWidthRow)`
 `;
 
 function ProjectDescription({ project }) {
-  return (
+  const { description, names } = project;
+  return description && names ? (
     <Grid>
-      <FullWidthRow>{project.description}</FullWidthRow>
+      <FullWidthRow>{description}</FullWidthRow>
       <Footer>
-        <Countries>{project.names.join(', ')}</Countries>
+        <Countries>{names.join(', ')}</Countries>
       </Footer>
     </Grid>
+  ) : (
+    'No project selected'
   );
 }
 
 ProjectDescription.propTypes = {
-  project: PropTypes.shape({}).isRequired,
+  project: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => {
-  const activeProjectCode = selectActiveProjectCode(state);
-  const project = selectProjectByCode(state, activeProjectCode);
+  const project = selectCurrentProject(state);
 
   return {
     project,

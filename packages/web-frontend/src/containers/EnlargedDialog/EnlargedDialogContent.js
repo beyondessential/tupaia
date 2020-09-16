@@ -16,6 +16,7 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 
 import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE } from '../../styles';
 import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
+import { LoadingIndicator } from '../Form/common';
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
@@ -188,6 +189,7 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   render() {
+    if (!this.props.viewContent) return <LoadingIndicator />;
     const isMatrix = getIsMatrix(this.props.viewContent);
     const contentStyle = {
       ...styles.body,

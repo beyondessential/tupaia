@@ -22,7 +22,6 @@ import {
   attemptUserLogout,
   closeDropdownOverlays,
   openUserPage,
-  findLoggedIn,
   DIALOG_PAGE_LOGIN,
   DIALOG_PAGE_CHANGE_PASSWORD,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
@@ -43,10 +42,6 @@ class UserMenu extends Component {
       menuOpen: false,
       anchorEl: null,
     };
-  }
-
-  componentDidMount() {
-    this.props.onRefreshCurrentUser();
   }
 
   toggleUserMenu(e, isMenuOpen) {
@@ -162,7 +157,6 @@ UserMenu.propTypes = {
   onToggleProjectsPanel: PropTypes.func.isRequired,
   onToggleChangePasswordPanel: PropTypes.func.isRequired,
   onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
-  onRefreshCurrentUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -193,7 +187,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(closeDropdownOverlays()) &&
       dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
     onAttemptUserLogout: () => dispatch(attemptUserLogout()),
-    onRefreshCurrentUser: () => dispatch(findLoggedIn()),
   };
 };
 
