@@ -14,7 +14,7 @@ import {
   CardTabPanel,
   Toast,
 } from '@tupaia/ui-components';
-import { FetchLoader } from './FetchLoader';
+import { FetchLoader } from '../components/FetchLoader';
 import { connectApi } from '../api';
 import * as COLORS from '../constants/colors';
 

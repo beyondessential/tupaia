@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
-import { ProfileButton } from './ProfileButton';
+import { ProfileButton } from '../containers/ProfileButton';
 
 const links = [
   {

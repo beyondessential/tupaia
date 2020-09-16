@@ -5,12 +5,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  ConnectedTable,
   SyndromeCell,
   AlertMenuCell,
   CountryNameButtonCreator,
   WeekAndDateCell,
 } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
 const createColumns = handlePanelOpen => [
   {

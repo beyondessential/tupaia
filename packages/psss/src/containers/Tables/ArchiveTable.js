@@ -4,13 +4,13 @@
  */
 import React from 'react';
 import {
-  ConnectedTable,
   SyndromeCell,
   AlertMenuCell,
   CountryNameCell,
   WeekAndDateCell,
   StartDateCell,
 } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
 const columns = [
   {

@@ -6,7 +6,8 @@ import React from 'react';
 import { PhotoAlbum } from '@material-ui/icons';
 import { useParams } from 'react-router-dom';
 import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
-import { Header, HeaderAvatarTitle, WeeklyReportsExportModal } from '../components';
+import { Header, HeaderAvatarTitle } from '../components';
+import { WeeklyReportsExportModal } from '../containers/Modals';
 import { CountryRoutes } from '../routes/CountryRoutes';
 import { countryFlagImage } from '../utils';
 
