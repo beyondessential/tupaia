@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  await db.runSql(`ALTER TABLE entity ADD COLUMN timezone VARCHAR(255) DEFAULT NULL;`);
+  await db.runSql(`ALTER TABLE entity ADD COLUMN timezone TEXT DEFAULT NULL;`);
   return null;
 };
 
