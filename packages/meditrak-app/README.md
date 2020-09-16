@@ -51,7 +51,7 @@ For more, see the react-native guides
   - Configure git so it stops converting LF endings to CRLF: `git config --global core.autocrlf input`
   - Change the defaults in your IDE (VS Code etc) from CRLF to LF
 
-- It's advisable to get nvm, node (version 10.15.1), yarn and react-native running on the Windows subsystem for linux
+- It's advisable to get nvm, node (version 12.18.3), yarn and react-native running on the Windows subsystem for linux
 
 When simulating a device on windows, there are a couple of options you can use:
 
