@@ -26,24 +26,13 @@ const links = [
   },
 ];
 
-export const CountryReportsViewComponent = ({ isMultiCountryUser }) => {
+export const CountryReportsViewComponent = ({ backButtonConfig }) => {
   const { countryCode } = useParams();
-
-  let back = null;
-
-  // can this be improved
-  if (isMultiCountryUser) {
-    back = {
-      url: '/',
-      title: 'Countries',
-    };
-  }
-
   return (
     <>
       <Header
         Title={<HeaderAvatarTitle title={countryCode} avatarUrl={countryFlagImage(countryCode)} />}
-        back={back}
+        back={backButtonConfig}
         ExportModal={WeeklyReportsExportModal}
       />
       <TabsToolbar links={links} />
@@ -53,11 +42,20 @@ export const CountryReportsViewComponent = ({ isMultiCountryUser }) => {
 };
 
 CountryReportsViewComponent.propTypes = {
-  isMultiCountryUser: PropTypes.bool.isRequired,
+  backButtonConfig: PropTypes.object,
+};
+
+CountryReportsViewComponent.defaultProps = {
+  backButtonConfig: null,
 };
 
 const mapStateToProps = state => ({
-  isMultiCountryUser: checkIsMultiCountryUser(state),
+  backButtonConfig: checkIsMultiCountryUser(state)
+    ? {
+        url: '/',
+        title: 'Countries',
+      }
+    : null,
 });
 
 export const CountryReportsView = connect(mapStateToProps)(CountryReportsViewComponent);

@@ -12,7 +12,7 @@ import { getHomeUrl } from '../store';
 
 // Todo: Improve the layout of this view
 // @see https://github.com/beyondessential/tupaia-backlog/issues/421
-export const UnAuthorisedViewComponent = ({ homeUrl }) => (
+export const UnauthorisedViewComponent = ({ homeUrl }) => (
   <>
     <Header Title={<HeaderTitle title="Authorisation Required" />} />
     <Container>
@@ -35,7 +35,7 @@ export const UnAuthorisedViewComponent = ({ homeUrl }) => (
   </>
 );
 
-UnAuthorisedViewComponent.propTypes = {
+UnauthorisedViewComponent.propTypes = {
   homeUrl: PropTypes.string.isRequired,
 };
 
@@ -43,4 +43,4 @@ const mapStateToProps = state => ({
   homeUrl: getHomeUrl(state),
 });
 
-export const UnAuthorisedView = connect(mapStateToProps)(UnAuthorisedViewComponent);
+export const UnauthorisedView = connect(mapStateToProps)(UnauthorisedViewComponent);

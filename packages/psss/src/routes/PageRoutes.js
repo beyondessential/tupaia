@@ -10,7 +10,7 @@ import { AlertsOutbreaksSummaryView } from '../views/AlertsOutbreaksSummaryView'
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
-import { UnAuthorisedView } from '../views/UnauthorisedView';
+import { UnauthorisedView } from '../views/UnauthorisedView';
 import { NotFoundView } from '../views/NotFoundView';
 import { checkIsAuthorisedForCountry, checkIsAuthorisedForMultiCountry } from '../utils/auth';
 
@@ -29,7 +29,7 @@ export const PageRoutes = React.memo(() => (
       <AlertsOutbreaksView />
     </PrivateRoute>
     <PrivateRoute path="/unauthorised">
-      <UnAuthorisedView />
+      <UnauthorisedView />
     </PrivateRoute>
     <Route>
       <NotFoundView />

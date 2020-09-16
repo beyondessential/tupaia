@@ -12,8 +12,8 @@ import {
   WeekAndDateCell,
 } from '../../components';
 
-const createColumns = (isMultiCountryUser, handlePanelOpen) => [
-  ...(isMultiCountryUser
+const createColumns = (isForMultipleCountries, handlePanelOpen) => [
+  ...(isForMultipleCountries
     ? [
         {
           title: 'Country',

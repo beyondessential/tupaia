@@ -9,19 +9,6 @@ import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupa
 import { ProfileButton } from '../components/ProfileButton';
 import { getActiveEntitySlug, getHomeUrl } from '../store';
 
-const makeLinks = slug => [
-  {
-    label: 'Weekly Reports',
-    to: slug ? `/weekly-reports/${slug}` : '/',
-    icon: <Dashboard />,
-  },
-  {
-    label: 'Alerts & Outbreaks',
-    to: slug ? `/alerts/${slug}` : '/alerts',
-    icon: <WarningCloud />,
-  },
-];
-
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
  */
@@ -40,10 +27,10 @@ const isTabActive = (match, location) => {
   return location.pathname.indexOf(match.url) !== -1;
 };
 
-export const NavBarComponent = ({ homeUrl, activeEntitySlug }) => (
+export const NavBarComponent = ({ homeUrl, links }) => (
   <BaseNavBar
     HomeButton={<HomeButton homeUrl={homeUrl} source="/psss-logo-white.svg" />}
-    links={makeLinks(activeEntitySlug)}
+    links={links}
     Profile={ProfileButton}
     isTabActive={isTabActive}
   />
@@ -51,16 +38,29 @@ export const NavBarComponent = ({ homeUrl, activeEntitySlug }) => (
 
 NavBarComponent.propTypes = {
   homeUrl: PropTypes.string.isRequired,
-  activeEntitySlug: PropTypes.string,
+  links: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 NavBarComponent.defaultProps = {
-  activeEntitySlug: '',
+  links: [],
 };
+
+const makeLinks = slug => [
+  {
+    label: 'Weekly Reports',
+    to: slug ? `/weekly-reports/${slug}` : '/',
+    icon: <Dashboard />,
+  },
+  {
+    label: 'Alerts & Outbreaks',
+    to: slug ? `/alerts/${slug}` : '/alerts',
+    icon: <WarningCloud />,
+  },
+];
 
 const mapStateToProps = state => ({
   homeUrl: getHomeUrl(state),
-  activeEntitySlug: getActiveEntitySlug(state),
+  links: makeLinks(getActiveEntitySlug(state)),
 });
 
 export const NavBar = connect(mapStateToProps)(NavBarComponent);

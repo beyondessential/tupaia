@@ -13,8 +13,8 @@ import {
   StartDateCell,
 } from '../../components';
 
-const createColumns = isMultiCountryUser => [
-  ...(isMultiCountryUser
+const createColumns = isForMultipleCountries => [
+  ...(isForMultipleCountries
     ? [
         {
           title: 'Country',
