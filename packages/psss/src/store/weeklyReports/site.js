@@ -67,7 +67,7 @@ const actionHandlers = {
   }),
   [SITES_FOR_WEEK_LOAD_FINISH]: ({ data }) => ({
     status: STATUSES.SUCCESS,
-    data: data,
+    data,
   }),
   [SITES_FOR_WEEK_LOAD_ERROR]: ({ error }) => ({
     status: STATUSES.ERROR,

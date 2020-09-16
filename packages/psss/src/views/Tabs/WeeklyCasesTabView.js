@@ -28,17 +28,17 @@ const ExampleContent = styled.div`
 const tabData = [
   {
     label: (
-      <React.Fragment>
+      <>
         <WarningCloud /> 3 Active Alerts
-      </React.Fragment>
+      </>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
   },
   {
     label: (
-      <React.Fragment>
+      <>
         <Virus /> 1 Active Outbreak
-      </React.Fragment>
+      </>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
   },
