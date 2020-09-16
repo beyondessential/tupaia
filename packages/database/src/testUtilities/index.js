@@ -11,3 +11,4 @@ export { generateValueOfType } from './generateValueOfType';
 export { getTestDatabase } from './getTestDatabase';
 export { populateTestData } from './populateTestData';
 export { upsertDummyRecord, findOrCreateDummyRecord } from './upsertDummyRecord';
+export { findOrCreateDummyCountryEntity } from './findOrCreateDummyCountryEntity';
