@@ -5,7 +5,7 @@
 
 import { AnalyticResponseFixture } from '../stubs';
 
-type ArrayDataElement = [string, string, string, number]; // dataElement, orgUnit, period, value
+type ArrayAnalytic = [string, string, string, number]; // dataElement, orgUnit, period, value
 
 /**
  * Code format: `valueHint_orgUnits_periods`
@@ -14,7 +14,7 @@ type ArrayDataElement = [string, string, string, number]; // dataElement, orgUni
  * ToPg => analytics exist for orgUnits: TO, PG
  * 20192020 => analytics exist for periods: 2019, 2020
  */
-const ARRAY_DATA_ELEMENTS: ArrayDataElement[] = [
+const ARRAY_ANALYTICS: ArrayAnalytic[] = [
   ['Z_To_2019', 'TO', '2019', 0],
   ['A_To_2019', 'TO', '2019', 1],
   ['B_To_2019', 'TO', '2019', 2],
@@ -42,7 +42,7 @@ const ARRAY_DATA_ELEMENTS: ArrayDataElement[] = [
   ['E_Pg_20192020', 'PG', '2020', 55],
 ];
 
-export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = ARRAY_DATA_ELEMENTS.map(
+export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = ARRAY_ANALYTICS.map(
   ([dataElement, organisationUnit, period, value]) => ({
     code: dataElement,
     aggregations: [{ type: 'FINAL_EACH_YEAR' }],

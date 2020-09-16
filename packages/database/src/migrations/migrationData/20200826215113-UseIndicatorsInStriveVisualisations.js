@@ -22,8 +22,8 @@ export const indicators = {
     config: {
       formula: 'MRDT_POS_CONSULT_WEEKLY / SSWT1072',
       aggregation: {
-        MRDT_POS_CONSULT_WEEKLY: 'SUM',
-        SSWT1072: ['FINAL_EACH_WEEK', 'SUM'],
+        MRDT_POS_CONSULT_WEEKLY: 'SUM_UNTIL_CURRENT_DAY',
+        SSWT1072: ['FINAL_EACH_WEEK', 'SUM_UNTIL_CURRENT_DAY'],
       },
     },
   },
