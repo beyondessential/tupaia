@@ -47,7 +47,7 @@ describe('WeatherService', () => {
           {
             model: {},
             id: '12345_PRECIP',
-            code: 'PRECIP',
+            code: 'WTHR_PRECIP',
             type: 'dataElement',
             service_type: 'weather',
             config: {},
@@ -58,8 +58,8 @@ describe('WeatherService', () => {
       );
 
       expect(actual.results).to.deep.equal([
-        { dataElement: 'PRECIP', value: 23.6, organisationUnit: 'MELB', period: '20200820' },
-        { dataElement: 'PRECIP', value: 5, organisationUnit: 'MELB', period: '20200821' },
+        { dataElement: 'WTHR_PRECIP', value: 23.6, organisationUnit: 'MELB', period: '20200820' },
+        { dataElement: 'WTHR_PRECIP', value: 5, organisationUnit: 'MELB', period: '20200821' },
       ]);
     });
 
@@ -106,16 +106,16 @@ describe('WeatherService', () => {
       expect(actual.results).to.deep.equal([
         {
           organisationUnit: 'MELB',
-          PRECIP: 23.6,
-          MAX_TEMP: 29.8,
-          MIN_TEMP: 24,
+          WTHR_PRECIP: 23.6,
+          WTHR_MAX_TEMP: 29.8,
+          WTHR_MIN_TEMP: 24,
           period: '20200820',
         },
         {
           organisationUnit: 'MELB',
-          PRECIP: 5,
-          MAX_TEMP: 6,
-          MIN_TEMP: 7,
+          WTHR_PRECIP: 5,
+          WTHR_MAX_TEMP: 6,
+          WTHR_MIN_TEMP: 7,
           period: '20200821',
         },
       ]);

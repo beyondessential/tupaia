@@ -3,7 +3,7 @@ import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
 
-const SUPPORTED_DATA_ELEMENT_CODES = ['MIN_TEMP', 'MAX_TEMP', 'PRECIP'];
+const SUPPORTED_DATA_ELEMENT_CODES = ['WTHR_MIN_TEMP', 'WTHR_MAX_TEMP', 'WTHR_PRECIP'];
 
 export class WeatherService extends Service {
   /**

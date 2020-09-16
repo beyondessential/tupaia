@@ -26,8 +26,8 @@ describe('ApiResultTranslator', () => {
 
   it('translates event results', () => {
     const translator = new ApiResultTranslator([{ code: 'MELB' }], 'events', [
-      'PRECIP',
-      'MAX_TEMP',
+      'WTHR_PRECIP',
+      'WTHR_MAX_TEMP',
     ]);
 
     const actual = translator.translate(mockApiResponse());
@@ -36,47 +36,47 @@ describe('ApiResultTranslator', () => {
       {
         organisationUnit: 'MELB',
         period: '20200820',
-        PRECIP: 23.6,
-        MAX_TEMP: 29.8,
+        WTHR_PRECIP: 23.6,
+        WTHR_MAX_TEMP: 29.8,
       },
       {
         organisationUnit: 'MELB',
         period: '20200821',
-        PRECIP: 5,
-        MAX_TEMP: 6,
+        WTHR_PRECIP: 5,
+        WTHR_MAX_TEMP: 6,
       },
     ]);
   });
 
   it('translates analytics results', () => {
     const translator = new ApiResultTranslator([{ code: 'MELB' }], 'analytics', [
-      'PRECIP',
-      'MAX_TEMP',
+      'WTHR_PRECIP',
+      'WTHR_MAX_TEMP',
     ]);
 
     const actual = translator.translate(mockApiResponse());
 
     expect(actual.results).to.deep.equal([
       {
-        dataElement: 'PRECIP',
+        dataElement: 'WTHR_PRECIP',
         value: 23.6,
         organisationUnit: 'MELB',
         period: '20200820',
       },
       {
-        dataElement: 'MAX_TEMP',
+        dataElement: 'WTHR_MAX_TEMP',
         value: 29.8,
         organisationUnit: 'MELB',
         period: '20200820',
       },
       {
-        dataElement: 'PRECIP',
+        dataElement: 'WTHR_PRECIP',
         value: 5,
         organisationUnit: 'MELB',
         period: '20200821',
       },
       {
-        dataElement: 'MAX_TEMP',
+        dataElement: 'WTHR_MAX_TEMP',
         value: 6,
         organisationUnit: 'MELB',
         period: '20200821',

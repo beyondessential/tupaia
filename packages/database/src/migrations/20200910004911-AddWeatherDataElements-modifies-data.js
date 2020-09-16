@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  for (const code of ['PRECIP', 'MAX_TEMP', 'MIN_TEMP']) {
+  for (const code of ['WTHR_PRECIP', 'WTHR_MAX_TEMP', 'WTHR_MIN_TEMP']) {
     await db.runSql(
       `INSERT INTO data_source (id, code, type, service_type, config) VALUES ('${generateId()}', '${code}', 'dataElement', 'weather', '{}');`,
     );

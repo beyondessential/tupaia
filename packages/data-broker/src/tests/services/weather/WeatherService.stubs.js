@@ -71,7 +71,7 @@ export const getMockDataSourcesArg = () => {
     {
       model: {},
       id: '123_PRECIP',
-      code: 'PRECIP',
+      code: 'WTHR_PRECIP',
       type: 'dataElement',
       service_type: 'weather',
       config: {},
