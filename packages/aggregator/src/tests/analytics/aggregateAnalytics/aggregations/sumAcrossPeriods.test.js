@@ -111,7 +111,7 @@ describe('sumAcrossPeriods', () => {
         );
       });
 
-      it('defaults DAY period type by default', () => {
+      it('uses DAY period type by default', () => {
         expect(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: true } }),
         ).to.have.same.deep.members(
