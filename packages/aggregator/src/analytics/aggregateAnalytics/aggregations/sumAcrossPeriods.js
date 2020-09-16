@@ -27,7 +27,6 @@ export const sumAcrossPeriods = (analytics, { periodOptions } = {}) => {
 
   if (periodOptions) {
     const transformPeriod = getPeriodTransformer(periodOptions);
-    // console.log(summedAnalytics);
     return summedAnalytics.map(analytic => ({
       ...analytic,
       period: transformPeriod(analytic.period),
