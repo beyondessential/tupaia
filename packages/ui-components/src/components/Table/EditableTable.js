@@ -22,7 +22,7 @@ const EditableTextField = styled(TextField)`
   .MuiInputBase-input {
     font-size: 15px;
     line-height: 18px;
-    padding: 0.5rem 0;
+    padding: 0.5rem;
   }
 `;
 
@@ -55,7 +55,7 @@ const EditableCell = React.memo(({ id, columnKey }) => {
   const key = `${id}-${columnKey}`;
   const value = fields[key];
 
-  if (!value) {
+  if (value === undefined) {
     return null;
   }
 
