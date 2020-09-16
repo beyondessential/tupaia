@@ -23,7 +23,7 @@ export class WeatherService extends Service {
   async pull(dataSources, type, options = {}) {
     const dataElementCodes = this.extractDataElementCodes(type, dataSources);
 
-    const entities = await this._getWeatherEntitiesByCode(options.organisationUnitCodes);
+    const entities = await this.fetchEntitiesMatchingCodes(options.organisationUnitCodes);
 
     const requestType = this._getRequestType(type);
 
@@ -84,12 +84,12 @@ export class WeatherService extends Service {
   /**
    * Get the entities we want weather information about.
    *
-   * @param string[] code
+   * @param string[] codes
    * @returns {EntityType[]}
    * @private
    */
-  async _getWeatherEntitiesByCode(code) {
-    const entities = await this.models.entity.find({ code: code });
+  async fetchEntitiesMatchingCodes(codes) {
+    const entities = await this.models.entity.find({ code: codes });
 
     if (entities.length === 0) {
       throw new Error('No entities selected');
