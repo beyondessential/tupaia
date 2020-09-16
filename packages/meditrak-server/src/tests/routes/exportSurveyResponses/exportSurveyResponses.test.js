@@ -45,7 +45,7 @@ const expectAccessibleExportDataHeaderRow = exportData => {
   }
 };
 
-describe.only('exportSurveyResponses(): GET export/surveysResponses', () => {
+describe('exportSurveyResponses(): GET export/surveysResponses', () => {
   const app = new TestableApp();
   const models = app.models;
 
