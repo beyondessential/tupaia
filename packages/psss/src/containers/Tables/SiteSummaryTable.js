@@ -97,7 +97,7 @@ export const SiteSummaryTableComponent = React.memo(
     }, [fetchData]);
 
     return (
-      <React.Fragment>
+      <>
         <TableHeader />
         <Table
           isLoading={isLoading}
@@ -112,7 +112,7 @@ export const SiteSummaryTableComponent = React.memo(
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
           <Button onClick={handleOpen}>Review and Confirm Now</Button>
         </StyledDiv>
-      </React.Fragment>
+      </>
     );
   },
 );
