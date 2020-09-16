@@ -17,8 +17,8 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import BackButton from '../../../components/mobile/BackButton';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getFacilityThumbnailUrl, getMapUrl } from '../../../utils';
-import { toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
-import { selectCurrentDashboardKey, selectCurrentOrgUnit } from '../../../selectors';
+import { toggleDashboardSelectExpand, setDashboardGroup } from '../../../actions';
+import { selectCurrentDashboardGroupCode, selectCurrentOrgUnit } from '../../../selectors';
 
 class FacilityScreen extends PureComponent {
   componentWillMount() {
@@ -88,7 +88,7 @@ class FacilityScreen extends PureComponent {
     const {
       dashboardConfig,
       orgUnit,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       onToggleDashboardSelectExpand,
       dashboardFilterIsExpanded,
       onChangeDashboardGroup,
@@ -104,7 +104,7 @@ class FacilityScreen extends PureComponent {
         <Dashboard
           orgUnit={orgUnit}
           dashboardConfig={dashboardConfig}
-          currentDashboardKey={currentDashboardKey}
+          currentDashboardGroupCode={currentDashboardGroupCode}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={onChangeDashboardGroup}
@@ -197,13 +197,13 @@ const mapStateToProps = state => {
     orgUnit: selectCurrentOrgUnit(state),
     isLoading: isLoadingOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
-    currentDashboardKey: selectCurrentDashboardKey(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-  onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+  onChangeDashboardGroup: name => dispatch(setDashboardGroup(name)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FacilityScreen);
