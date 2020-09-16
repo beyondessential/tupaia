@@ -31,7 +31,7 @@ describe('sumAcrossPeriods', () => {
     ['BCD02', 'TO', '202001', 0.44],
   ]);
 
-  const CURRENT_DATE_STUB = new Date(2020, 1, 1);
+  const CURRENT_DATE_STUB = '2020-01-31T00:00:00Z';
   const CURRENT_PERIOD_STUBS = {
     DAY: '20200131',
     YEAR: '2020',
@@ -40,7 +40,7 @@ describe('sumAcrossPeriods', () => {
   let clock;
 
   before(() => {
-    clock = sinon.useFakeTimers({ now: CURRENT_DATE_STUB });
+    clock = sinon.useFakeTimers({ now: new Date(CURRENT_DATE_STUB) });
   });
 
   after(() => {
