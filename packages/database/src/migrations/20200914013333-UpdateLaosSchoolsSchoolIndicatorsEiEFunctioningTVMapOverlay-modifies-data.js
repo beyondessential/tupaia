@@ -35,32 +35,17 @@ const NEW_MEASURE_BUILDER_CONFIG = {
     dataSourceEntityType: 'school',
   },
   dataElementCodes: ['SchCVD012', 'SchCVD012a'],
-  orgUnitConditions: {
+  conditions: {
     Yes: {
-      SchCVD012: {
-        value: 'Yes',
-        operator: '=',
-      },
-      SchCVD012a: {
-        value: 'No',
-        operator: '=',
-      },
+      SchCVD012: 'Yes',
+      SchCVD012a: 'No',
     },
     'Yes, smart TV': {
-      SchCVD012: {
-        value: 'Yes',
-        operator: '=',
-      },
-      SchCVD012a: {
-        value: 'Yes',
-        operator: '=',
-      },
+      SchCVD012: 'Yes',
+      SchCVD012a: 'Yes',
     },
     No: {
-      SchCVD012: {
-        value: 'No',
-        operator: '=',
-      },
+      SchCVD012: 'No',
     },
   },
 };
