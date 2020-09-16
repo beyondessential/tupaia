@@ -20,7 +20,7 @@ import {
 describe('Permissions checker for GETSurveyResponses', async () => {
   const DEFAULT_POLICY = {
     VU: ['Admin', 'Donor'],
-    LA: ['Admin'],
+    LA: ['Admin', 'Donor'],
   };
 
   const models = getModels();
@@ -100,7 +100,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       //Remove the permission of VU to have insufficient permissions to some surveys
       const policy = {
         // VU: ['Admin', 'Donor'],
-        LA: ['Admin'],
+        LA: ['Admin', /*'Donor'*/],
       };
       const accessPolicy = new AccessPolicy(policy);
       const result = await filterSurveyResponsesByPermissions(
@@ -114,11 +114,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     });
 
     it('Should not filter survey responses if user has access to the country permission group', async () => {
-      const policy = {
-        VU: ['Admin', 'Donor'],
-        LA: ['Admin', 'Donor'],
-      };
-      const accessPolicy = new AccessPolicy(policy);
+      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
       const result = await filterSurveyResponsesByPermissions(
         accessPolicy,
         surveyResponses,
