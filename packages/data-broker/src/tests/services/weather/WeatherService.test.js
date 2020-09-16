@@ -227,7 +227,7 @@ describe('WeatherService', () => {
         sinon.match.any,
         sinon.match.any,
         '2019-01-07',
-        '2019-01-10',
+        '2019-01-11', // (same as input, changed to be exclusive end date)
       );
     });
   });

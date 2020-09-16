@@ -13,6 +13,21 @@ export class DateSanitiser {
       throw new Error('Start date must be before (or equal to) end date');
     }
 
+    /*
+     * Inclusive/exclusive date conversion:
+     *
+     * WeatherBit dates are exclusive on the tail end. Requesting Tuesday - Thursday will request
+     * Tuesday 00:01am to Thursday 00:01am, so we need to push out the end date by 1 day.
+     */
+    endDate = moment(endDate)
+      .add(1, 'day')
+      .format(DATE_FORMAT);
+
+    // Prevent limits from being hit, which prevents API from returning error response
+    return this.checkLimits(startDate, endDate);
+  }
+
+  checkLimits(startDate, endDate) {
     const earliestStartDate = moment()
       .subtract(1, 'year') // max historical is 1 year
       .format(DATE_FORMAT);
@@ -45,21 +60,6 @@ export class DateSanitiser {
       };
     } else if (endDate > latestEndDate) {
       endDate = latestEndDate;
-    }
-
-    // single day requested
-    if (startDate === endDate) {
-      if (startDate <= latestStartDate) {
-        // happy path, push end date out
-        endDate = moment(startDate)
-          .add(1, 'day')
-          .format(DATE_FORMAT);
-      } else {
-        // edge case, on the limit, can't go beyond it
-        startDate = moment(endDate)
-          .subtract(1, 'day')
-          .format(DATE_FORMAT);
-      }
     }
 
     return {
