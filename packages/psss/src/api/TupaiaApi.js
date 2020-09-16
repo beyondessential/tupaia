@@ -42,27 +42,23 @@ export class TupaiaApi {
   }
 
   async reauthenticate(loginCredentials) {
-    try {
-      const response = await this.post(
-        AUTH_API_ENDPOINT,
-        null,
-        loginCredentials,
-        CLIENT_BASIC_AUTH_HEADER,
-        false,
-      );
-      const { body: authenticationDetails } = response;
-      const { accessToken, refreshToken, user } = authenticationDetails;
-      if (!accessToken || !refreshToken || !user) {
-        throw new Error('Invalid response from auth server');
-      }
-      // Todo: determine what account type auth is needed
-      // if (!validateUserIsAuthenticated(user)) {
-      //   throw new Error('Your permissions for Tupaia do not allow you to view the admin panel');
-      // }
-      return authenticationDetails;
-    } catch (error) {
-      throw error; // Throw error up
+    const response = await this.post(
+      AUTH_API_ENDPOINT,
+      null,
+      loginCredentials,
+      CLIENT_BASIC_AUTH_HEADER,
+      false,
+    );
+    const { body: authenticationDetails } = response;
+    const { accessToken, refreshToken, user } = authenticationDetails;
+    if (!accessToken || !refreshToken || !user) {
+      throw new Error('Invalid response from auth server');
     }
+    // Todo: determine what account type auth is needed
+    // if (!validateUserIsAuthenticated(user)) {
+    //   throw new Error('Your permissions for Tupaia do not allow you to view the admin panel');
+    // }
+    return authenticationDetails;
   }
 
   async refreshAccessToken() {
@@ -136,45 +132,41 @@ export class TupaiaApi {
   async request(endpoint, queryParameters, fetchConfig, shouldReauthenticateIfUnauthorized = true) {
     const queryUrl = stringifyQuery(PSSS_API_URL, endpoint, queryParameters);
 
-    try {
-      const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
-      // If server responded with 401, i.e. not authenticated, refresh token and try once more
-      if (
-        shouldReauthenticateIfUnauthorized &&
-        response.status === 401 &&
-        this.getRefreshToken() !== null
-      ) {
-        try {
-          await this.refreshAccessToken();
-          const newFetchConfig = fetchConfig;
-          newFetchConfig.headers.Authorization = this.getBearerAuthHeader();
-          return this.request(endpoint, queryParameters, newFetchConfig, false);
-        } catch (error) {
-          throw error;
-        }
+    const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
+    // If server responded with 401, i.e. not authenticated, refresh token and try once more
+    if (
+      shouldReauthenticateIfUnauthorized &&
+      response.status === 401 &&
+      this.getRefreshToken() !== null
+    ) {
+      try {
+        await this.refreshAccessToken();
+        const newFetchConfig = fetchConfig;
+        newFetchConfig.headers.Authorization = this.getBearerAuthHeader();
+        return this.request(endpoint, queryParameters, newFetchConfig, false);
+      } catch (error) {
+        throw error;
       }
-      if (!response.ok) {
-        let responseJson;
-        try {
-          responseJson = await response.json();
-        } catch (error) {
-          throw new Error(`Network error ${response.status}`);
-        }
-        if (
-          responseJson.status &&
-          (responseJson.status < 200 || responseJson.status >= 300) &&
-          !responseJson.error
-        ) {
-          throw new Error(responseJson.message);
-        }
-        if (responseJson.error) {
-          throw new Error(responseJson.error);
-        }
-      }
-      return response;
-    } catch (error) {
-      throw error;
     }
+    if (!response.ok) {
+      let responseJson;
+      try {
+        responseJson = await response.json();
+      } catch (error) {
+        throw new Error(`Network error ${response.status}`);
+      }
+      if (
+        responseJson.status &&
+        (responseJson.status < 200 || responseJson.status >= 300) &&
+        !responseJson.error
+      ) {
+        throw new Error(responseJson.message);
+      }
+      if (responseJson.error) {
+        throw new Error(responseJson.error);
+      }
+    }
+    return response;
   }
 
   buildFetchConfig(requestMethod, authHeader, body, isJson = true) {

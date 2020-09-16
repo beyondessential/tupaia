@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import DashboardItem from '../DashboardItem';
 import StateDashboardItem from '../StateDashboardItem';
 import { DASHBOARD_VIEW_MARGIN } from '../../styles';
-import { getUniqueViewId } from '../../utils/getUniqueViewId';
+import { getUniqueViewId } from '../../utils';
 
 const Grid = styled.div`
   display: flex;

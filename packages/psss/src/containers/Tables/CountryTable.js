@@ -39,10 +39,10 @@ const NameCell = ({ weekNumber, startDate, endDate }) => {
   const start = `${format(new Date(startDate), 'LLL d')}`;
   const end = `${format(new Date(endDate), 'LLL d, yyyy')}`;
   return (
-    <React.Fragment>
+    <>
       <CountryWeekTitle>{`Week ${weekNumber}`}</CountryWeekTitle>
       <CountryWeekSubTitle>{`${start} - ${end}`}</CountryWeekSubTitle>
-    </React.Fragment>
+    </>
   );
 };
 
