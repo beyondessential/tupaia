@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
+import { findOrCreateDummyRecord, addBaselineTestCountries } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../getModels';
 import { assertCanImportSurveyResponses } from '../../../routes/importSurveyResponses/assertCanImportSurveyResponses';
@@ -23,25 +23,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
   const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 
   before(async () => {
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'KI',
-      name: 'Kiribati',
-    });
-
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'LA',
-      name: 'Laos',
-    });
-
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'SB',
-      name: 'Solomon Islands',
-    });
-
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'VU',
-      name: 'Vanuatu',
-    });
+    await addBaselineTestCountries(models);
 
     await findOrCreateDummyRecord(models.entity, { code: 'KI_1_test', country_code: 'KI' });
     await findOrCreateDummyRecord(models.entity, { code: 'KI_2_test', country_code: 'KI' });

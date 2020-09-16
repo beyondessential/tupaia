@@ -13,3 +13,4 @@ export { getTestDatabase } from './getTestDatabase';
 export { populateTestData } from './populateTestData';
 export { upsertDummyRecord, findOrCreateDummyRecord } from './upsertDummyRecord';
 export { findOrCreateDummyCountryEntity } from './findOrCreateDummyCountryEntity';
+export { addBaselineTestCountries } from './addBaselineTestCountries';

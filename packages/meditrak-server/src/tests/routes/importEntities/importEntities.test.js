@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
-import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
+import { findOrCreateDummyRecord, addBaselineTestCountries } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
@@ -31,7 +31,7 @@ const BES_ADMIN_POLICY = {
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
 const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').returns(policy);
+  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
   await app.authenticate();
 };
 
@@ -47,34 +47,21 @@ describe('importEntities(): POST import/entities', () => {
       country_code: 'wo',
     });
 
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'KI',
-      name: 'Kiribati',
-    });
-
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'LA',
-      name: 'Laos',
-    });
-
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'SB',
-      name: 'Solomon Islands',
-    });
-
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'VU',
-      name: 'Vanuatu',
-    });
+    await addBaselineTestCountries(models);
   });
   describe('Test permissions when importing entities', async () => {
     const importFile = filename =>
       app.post('import/entities').attach('entities', `${TEST_DATA_FOLDER}/entities/${filename}`);
 
-    before(async () => {
-      //Only test permissions part so stub these methods to ignore them
-      sinon.stub(UpdateCountryEntities, 'updateCountryEntities').returns({ code: 'DL' });
+    before(() => {
+      //Only test permissions part so stub these methods to avoid them being called
+      sinon.stub(UpdateCountryEntities, 'updateCountryEntities').resolves({ code: 'DL' });
       sinon.stub(PopulateCoordinatesForCountry, 'populateCoordinatesForCountry');
+    });
+
+    after(() => {
+      UpdateCountryEntities.updateCountryEntities.restore();
+      PopulateCoordinatesForCountry.populateCoordinatesForCountry.restore();
     });
 
     afterEach(() => {

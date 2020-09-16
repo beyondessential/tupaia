@@ -28,7 +28,7 @@ const DEFAULT_POLICY = {
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
 const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').returns(policy);
+  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
   await app.authenticate();
 };
 

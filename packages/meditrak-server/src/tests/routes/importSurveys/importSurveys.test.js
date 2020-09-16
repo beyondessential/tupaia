@@ -39,7 +39,7 @@ const NEW_TEST_SURVEY_NAME_2 = 'new_survey_import_2_test';
 const NEW_TEST_SURVEY_NAME_3 = 'new_survey_import_3_test';
 
 const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').returns(policy);
+  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
   await app.authenticate();
 };
 

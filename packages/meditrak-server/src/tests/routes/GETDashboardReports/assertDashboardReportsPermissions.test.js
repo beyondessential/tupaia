@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   findOrCreateDummyRecord,
-  findOrCreateDummyCountryEntity,
+  addBaselineTestCountries,
   buildAndInsertProjectsAndHierarchies,
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
@@ -46,26 +46,9 @@ describe('Permissions checker for GETDashboardReports', async () => {
       type: 'district',
       country_code: 'KI',
     });
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'KI',
-      name: 'Kiribati',
-    });
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'LA',
-      name: 'Laos',
-    });
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'SB',
-      name: 'Solomon Islands',
-    });
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'VU',
-      name: 'Vanuatu',
-    });
-    await findOrCreateDummyCountryEntity(models, {
-      code: 'TO',
-      name: 'Tonga',
-    });
+
+    addBaselineTestCountries(models);
+
     await buildAndInsertProjectsAndHierarchies(models, [
       {
         code: 'test_project',
