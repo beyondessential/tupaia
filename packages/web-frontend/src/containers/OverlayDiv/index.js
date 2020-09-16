@@ -111,7 +111,7 @@ OverlayDiv.propTypes = {
   overlay: PropTypes.node,
   closeOverlay: PropTypes.func.isRequired,
   viewProjectList: PropTypes.func.isRequired,
-  activeProject: PropTypes.shape({}).isRequired,
+  activeProject: PropTypes.shape({}),
   selectExploreProject: PropTypes.func.isRequired,
   selectProjectOrgUnit: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
@@ -119,6 +119,7 @@ OverlayDiv.propTypes = {
 
 OverlayDiv.defaultProps = {
   overlay: null,
+  activeProject: null,
 };
 
 const mapStateToProps = state => {
