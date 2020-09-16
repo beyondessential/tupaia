@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
-import { ProfileButton } from '../components/ProfileButton';
+import { ProfileButton } from './ProfileButton';
 import { getPermittedEntitySlug, getHomeUrl } from '../store';
 
 /*
