@@ -65,16 +65,12 @@ const SmallAvatar = styled(MuiAvatar)`
   margin-right: 0.8rem;
 `;
 
-const SubHeadingContainer = styled(FlexStart)`
-  margin-bottom: 0.8rem;
-`;
-
 export const HeaderTitleWithSubHeading = ({ title, subHeading, avatarUrl }) => (
   <>
-    <SubHeadingContainer>
+    <FlexStart mb={2}>
       <SmallAvatar src={avatarUrl} />
       <SubHeading variant="h3">{subHeading}</SubHeading>
-    </SubHeadingContainer>
+    </FlexStart>
     <HeaderTitle title={title} />
   </>
 );
