@@ -25,9 +25,9 @@ export class WeatherService extends Service {
 
     const entities = await this.fetchEntitiesMatchingCodes(options.organisationUnitCodes);
 
-    const requestType = this._getRequestType(type);
+    const resultFormat = this.getResultFormat(type);
 
-    const apiResultTranslator = new ApiResultTranslator(entities, requestType, dataElementCodes);
+    const apiResultTranslator = new ApiResultTranslator(entities, resultFormat, dataElementCodes);
 
     if (this._isRequestForCurrentWeather(options)) {
       return this._getCurrentWeather(entities, apiResultTranslator);
@@ -222,7 +222,7 @@ export class WeatherService extends Service {
    * @returns {string}
    * @private
    */
-  _getRequestType(type) {
+  getResultFormat(type) {
     switch (type) {
       case this.dataSourceTypes.DATA_ELEMENT:
         return 'analytics';
@@ -231,6 +231,6 @@ export class WeatherService extends Service {
         return 'events';
         break;
     }
-    throw new Error('Unknown request type');
+    throw new Error('Unknown format');
   }
 }
