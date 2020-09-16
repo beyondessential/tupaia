@@ -6,15 +6,14 @@
  */
 
 import {
-  SELECT_PROJECT,
+  SET_PROJECT,
   SET_PROJECT_DATA,
   FETCH_PROJECTS_ERROR,
   REQUEST_PROJECT_ACCESS,
 } from '../actions';
-import { INITIAL_PROJECT_CODE } from '../defaults';
 
-export function selectProject(projectCode = INITIAL_PROJECT_CODE) {
-  return { type: SELECT_PROJECT, projectCode };
+export function setProject(projectCode) {
+  return { type: SET_PROJECT, projectCode };
 }
 
 export function setProjects(data) {

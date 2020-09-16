@@ -35,7 +35,7 @@ export const testFetchEvents = () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
   const assertCorrectResponse = async (options, responses) =>
-    expect(api.fetchEvents(options)).to.eventually.deep.equalInAnyOrder(
+    expect(api.fetchEvents(options)).to.eventually.deep.equal(
       getEventsFromResponses(responses, options.dataElementCodes),
     );
 
@@ -79,7 +79,7 @@ export const testFetchEvents = () => {
     ).to.be.rejectedWith(/Invalid content.*startDate/);
   });
 
-  it('returns results in the correct format', async () => {
+  it('returns results in the correct format, sorted by event date', async () => {
     await assertCorrectResponse(
       {
         surveyCode: 'BCD',
@@ -94,7 +94,7 @@ export const testFetchEvents = () => {
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
         dataElementCodes: ['CROP_1', 'CROP_2'],
       },
-      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
+      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
     );
   });
 
@@ -113,7 +113,7 @@ export const testFetchEvents = () => {
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
         dataElementCodes: ['CROP_2'],
       },
-      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
+      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
     );
   });
 
