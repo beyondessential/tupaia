@@ -8,7 +8,7 @@ import moment from 'moment';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
 import { DatabaseError, ValidationError } from '@tupaia/utils';
-
+import { ANSWER_TYPES } from '../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
@@ -257,21 +257,31 @@ export async function exportSurveyResponses(req, res) {
           questions.push(...extraQuestions);
         }
 
-        // Add the answers to be exported
+        // Add the questions info and answers to be exported
+        let exportRow = INFO_ROW_HEADERS.length + 1; // The starting row pointer
         for (let questionIndex = 0; questionIndex < questions.length; questionIndex++) {
           // Set up the left columns with info about the questions
           const question = questions[questionIndex];
-          const exportRow = INFO_ROW_HEADERS.length + questionIndex + 1; // Add one to make up for header row
           const questionInfo = infoColumnKeys.map(columnKey => question[columnKey]);
-          exportData[exportRow] = questionInfo;
-          for (
-            let surveyResponseIndex = 0;
-            surveyResponseIndex < surveyResponseAnswers.length;
-            surveyResponseIndex++
+          const questionType = questionInfo[1];
+          // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
+          if (
+            questionType !== ANSWER_TYPES.SUBMISSION_DATE &&
+            questionType !== ANSWER_TYPES.PRIMARY_ENTITY
           ) {
-            const answer = surveyResponseAnswers[surveyResponseIndex][question.id];
-            const exportColumn = infoColumnKeys.length + surveyResponseIndex;
-            exportData[exportRow][exportColumn] = answer || '';
+            exportData[exportRow] = questionInfo;
+
+            // Add the answers on the right columns to the exportData
+            for (
+              let surveyResponseIndex = 0;
+              surveyResponseIndex < surveyResponseAnswers.length;
+              surveyResponseIndex++
+            ) {
+              const answer = surveyResponseAnswers[surveyResponseIndex][question.id];
+              const exportColumn = infoColumnKeys.length + surveyResponseIndex;
+              exportData[exportRow][exportColumn] = answer || '';
+            }
+            exportRow++; // Add one to make up for header row
           }
         }
       }
