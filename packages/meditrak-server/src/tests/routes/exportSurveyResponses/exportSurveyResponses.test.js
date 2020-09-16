@@ -139,7 +139,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     });
 
     describe('Should allow exporting a survey if users have Tupaia Admin Panel and survey permission group access to the corresponding countries', () => {
-      it('one country', async () => {
+      it('one survey', async () => {
         await prepareStubAndAuthenticate(app);
         await app.get(
           `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
@@ -151,7 +151,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         expectAccessibleExportDataHeaderRow(exportData);
       });
 
-      it('multiple countries', async () => {
+      it('multiple surveys', async () => {
         await prepareStubAndAuthenticate(app);
         await app.get(
           `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
@@ -168,7 +168,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     });
 
     describe('Should not allow exporting a survey if users do not have Tupaia Admin Panel and survey permission group access to the corresponding countries', () => {
-      it('one country', async () => {
+      it('one survey', async () => {
         const policy = {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
@@ -189,7 +189,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         expect(exportData).to.be.deep.equal([[`You do not have export access to ${survey1.name}`]]);
       });
 
-      it('multiple countries', async () => {
+      it('multiple surveys', async () => {
         const policy = {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
