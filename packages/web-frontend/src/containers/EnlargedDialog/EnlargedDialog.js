@@ -19,6 +19,11 @@ import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { isMobile } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
+import {
+  selectCurrentInfoViewKey,
+  selectCurrentExpandedViewContent,
+  selectCurrentOrgUnit,
+} from '../../selectors';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 
 class EnlargedDialogComponent extends PureComponent {
@@ -34,7 +39,6 @@ class EnlargedDialogComponent extends PureComponent {
       isLoading,
       isVisible,
     } = this.props;
-
     if (!isVisible) {
       return null;
     }
@@ -113,10 +117,13 @@ const styles = {
   },
 };
 
-const mapStateToProps = ({ global, drillDown, enlargedDialog }) => ({
-  ...enlargedDialog,
-  viewConfigs: global.viewConfigs,
-  isDrillDownVisible: drillDown.isVisible,
+const mapStateToProps = state => ({
+  ...state.enlargedDialog,
+  viewConfigs: state.global.viewConfigs,
+  isDrillDownVisible: state.drillDown.isVisible,
+  infoViewKey: selectCurrentInfoViewKey(state),
+  viewContent: selectCurrentExpandedViewContent(state),
+  organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 
 const mapDispatchToProps = dispatch => ({

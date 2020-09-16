@@ -18,11 +18,11 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import StaticMap from '../../../components/StaticMap';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
-  changeOrgUnit,
-  changeMeasure,
+  setOrgUnit,
+  setMeasure,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
-  changeDashboardGroup,
+  setDashboardGroup,
   clearMeasure,
 } from '../../../actions';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
@@ -30,9 +30,10 @@ import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
 import {
-  selectCurrentDashboardKey,
+  selectCurrentDashboardGroupCode,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
+  selectCurrentMeasure,
 } from '../../../selectors';
 
 const MAP_WIDTH = 420;
@@ -113,7 +114,7 @@ class RegionScreen extends PureComponent {
       onChangeOrgUnit,
       isLoading,
       isMeasureLoading,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       onChangeDashboardGroup,
       title,
     } = this.props;
@@ -124,7 +125,7 @@ class RegionScreen extends PureComponent {
         <Dashboard
           orgUnit={orgUnit}
           dashboardConfig={dashboardConfig}
-          currentDashboardKey={currentDashboardKey}
+          currentDashboardGroupCode={currentDashboardGroupCode}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={onChangeDashboardGroup}
@@ -272,14 +273,15 @@ const getMeasureFiltersForHierarchy = measureHierarchy => {
 };
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
-  const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
+  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const hasSelectedMeasureId = currentMeasure !== undefined;
+  const currentMeasure = selectCurrentMeasure(state);
+  const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
-    selectOrgUnitChildren(state, currentOrganisationUnitCode),
+    selectOrgUnitChildren(state, orgUnit.code),
     isMeasureLoading,
     measureInfo,
   );
@@ -290,14 +292,14 @@ const mapStateToProps = state => {
 
   const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
 
-  const selectedFilter = hasSelectedMeasureId
+  const selectedFilter = currentMeasure.measureId
     ? { label: currentMeasure.name, id: `${currentMeasure.measureId}` }
     : { label: '' };
 
   return {
     dashboardConfig,
-    currentDashboardKey: selectCurrentDashboardKey(state),
-    orgUnit: selectCurrentOrgUnit(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
+    orgUnit,
     mobileListItems,
     measureFilters,
     selectedFilter,
@@ -310,24 +312,22 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMeasure: (measureId, orgUnit) => dispatch(changeMeasure(measureId, orgUnit)),
+  onChangeMeasure: measureId => dispatch(setMeasure(measureId)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-  onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
-  onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+  onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
+  onChangeDashboardGroup: name => dispatch(setDashboardGroup(name)),
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { orgUnit } = stateProps;
   const { onChangeMeasure, onClearMeasure } = dispatchProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    onChangeMeasure: measure =>
-      measure ? onChangeMeasure(measure.measureId, orgUnit.organisationUnitCode) : onClearMeasure(),
+    onChangeMeasure: measure => (measure ? onChangeMeasure(measure.measureId) : onClearMeasure()),
   };
 };
 

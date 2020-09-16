@@ -138,6 +138,7 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
+      totalSites: 30,
       totalCases: faker.random.number({
         min: 1000,
         max: 2000,
