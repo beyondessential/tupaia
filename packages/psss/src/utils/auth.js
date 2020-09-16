@@ -19,8 +19,8 @@ export const getPermittedEntitiesForUser = user => {
   // Todo: Update with the correct access policy check
   // @see: https://github.com/beyondessential/tupaia-backlog/issues/1268
   const accessPolicy = new AccessPolicy(user.accessPolicy);
-  const psssPermissions = ['as', 'to'];
+
   // For testing...
-  // const psssPermissions = ['as'];
-  return psssPermissions;
+  // return ['as', 'to'];
+  return ['to'];
 };

@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
-import { AlertsOutbreaksSummaryView } from '../views/AlertsOutbreaksSummaryView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
@@ -31,12 +30,12 @@ export const PageRoutesComponent = React.memo(({ canViewMultipleCountries }) => 
       </PrivateRoute>
     ) : (
       <PrivateRoute path="/alerts/:countryCode" authCheck={checkIsAuthorisedForCountry}>
-        <AlertsOutbreaksSummaryView />
+        <AlertsOutbreaksView />
       </PrivateRoute>
     )}
-    <PrivateRoute path="/unauthorised">
+    <Route path="/unauthorised">
       <UnauthorisedView />
-    </PrivateRoute>
+    </Route>
     <Route>
       <NotFoundView />
     </Route>
