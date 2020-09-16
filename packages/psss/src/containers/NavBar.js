@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
 import { ProfileButton } from '../components/ProfileButton';
-import { getActiveEntitySlug, getHomeUrl } from '../store';
+import { getPermittedEntitySlug, getHomeUrl } from '../store';
 
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
@@ -60,7 +60,7 @@ const makeLinks = slug => [
 
 const mapStateToProps = state => ({
   homeUrl: getHomeUrl(state),
-  links: makeLinks(getActiveEntitySlug(state)),
+  links: makeLinks(getPermittedEntitySlug(state)),
 });
 
 export const NavBar = connect(mapStateToProps)(NavBarComponent);
