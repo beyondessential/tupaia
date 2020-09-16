@@ -21,7 +21,7 @@ export class WeatherService extends Service {
    * @inheritDoc
    */
   async pull(dataSources, type, options = {}) {
-    const dataElementCodes = this._dataElementCodes(type, dataSources);
+    const dataElementCodes = this.extractDataElementCodes(type, dataSources);
 
     const entities = await this._getWeatherEntitiesByCode(options.organisationUnitCodes);
 
@@ -69,7 +69,7 @@ export class WeatherService extends Service {
    * @returns {string[]}
    * @private
    */
-  _dataElementCodes(type, dataSources) {
+  extractDataElementCodes(type, dataSources) {
     let dataElementCodes = null;
     if (type === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
