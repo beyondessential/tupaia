@@ -32,7 +32,7 @@ export const aggregateAnalytics = (
       return filterLatest(analytics, aggregationConfig);
     case AGGREGATION_TYPES.SUM:
       return sumAcrossPeriods(analytics);
-    case AGGREGATION_TYPES.SUM_UNTIL_THIS_DAY:
+    case AGGREGATION_TYPES.SUM_UNTIL_CURRENT_DAY:
       return sumAcrossPeriods(analytics, { periodOptions: { periodType: DAY, useCurrent: true } });
     case AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY:
       return sumEachDataElement(filterLatest(analytics, aggregationConfig));
