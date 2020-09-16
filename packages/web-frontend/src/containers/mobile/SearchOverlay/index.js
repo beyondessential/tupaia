@@ -15,7 +15,7 @@ import Overlay from '../../../components/mobile/Overlay';
 import {
   changeSearch,
   toggleSearchExpand,
-  changeOrgUnit,
+  setOrgUnit,
   setOverlayComponent,
 } from '../../../actions';
 import { DARK_BLUE, WHITE } from '../../../styles';
@@ -143,7 +143,7 @@ const mergeProps = (
   ...dispatchProps,
   ...ownProps,
   onChangeOrgUnit: organisationUnitCode => {
-    dispatch(changeOrgUnit(organisationUnitCode));
+    dispatch(setOrgUnit(organisationUnitCode));
 
     // Close any pages that are open.
     if (isOverlayOpen) {

@@ -14,11 +14,13 @@ import styled from 'styled-components';
 import { getSingleFormattedValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
-import { changeOrgUnit } from '../../actions';
+import { setOrgUnit } from '../../actions';
 import {
   selectOrgUnit,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
+  selectCurrentMeasureId,
+  selectOrgUnitChildren,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
 
@@ -50,9 +52,10 @@ export const ShadedPolygon = styled(Polygon)`
  */
 class ConnectedPolygon extends Component {
   shouldComponentUpdate(nextProps) {
-    const { measureId, coordinates } = this.props;
+    const { measureId, coordinates, orgUnitMeasureData } = this.props;
     if (nextProps.measureId !== measureId) return true;
-    if (coordinates !== nextProps.coordinates) return true;
+    if (nextProps.coordinates !== coordinates) return true;
+    if (nextProps.orgUnitMeasureData !== orgUnitMeasureData) return true;
     return false;
   }
 
@@ -161,8 +164,10 @@ ConnectedPolygon.defaultProps = {
 };
 
 const mapStateToProps = (state, givenProps) => {
-  const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData, measureOptions } = state.map.measureInfo;
+  const { organisationUnitCode } = givenProps.area;
+  const { measureData, measureOptions } = state.map.measureInfo;
+  const measureId = selectCurrentMeasureId(state);
+  const organisationUnitChildren = selectOrgUnitChildren(state, organisationUnitCode);
 
   let shade;
   let orgUnitMeasureData;
@@ -203,7 +208,7 @@ const mapStateToProps = (state, givenProps) => {
 
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
 });
 
