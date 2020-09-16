@@ -197,15 +197,12 @@ export class WeatherService extends Service {
   async _getHistoricWeatherDataForEntities(entities, dateRangeByEntityCode) {
     // Run requests in parallel for performance
     const getDataForEntity = async entity => {
-      const apiResult = await this.api.historicDaily(
-        entity.pointLatLon().lat,
-        entity.pointLatLon().lon,
-        dateRangeByEntityCode[entity.code].startDate,
-        dateRangeByEntityCode[entity.code].endDate,
-      );
+      const { lat, lon } = entity.pointLatLon();
+      const { startDate, endDate } = dateRangeByEntityCode[entity.code];
+      const apiResult = await this.api.historicDaily(lat, lon, startDate, endDate);
       return {
         entityCode: entity.code,
-        apiResult: apiResult,
+        apiResult,
       };
     };
 
