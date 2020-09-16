@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { buildAndInsertSurveys } from '@tupaia/database';
+import { findOrCreateDummyRecord, buildAndInsertSurveys } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../getModels';
 import { assertCanExportSurveys } from '../../../routes/exportSurveys/assertCanExportSurveys';
@@ -25,9 +25,11 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
   let survey3;
 
   before(async () => {
-    const adminPermissionGroup = await models.permissionGroup.findOne({ name: 'Admin' });
-    const vanuatuCountry = await models.country.findOne({ code: 'VU' });
-    const kiribatiCountry = await models.country.findOne({ code: 'KI' });
+    const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Admin',
+    });
+    const vanuatuCountry = await findOrCreateDummyRecord(models.country, { code: 'VU' });
+    const kiribatiCountry = await findOrCreateDummyRecord(models.country, { code: 'KI' });
 
     [{ survey: survey1 }, { survey: survey2 }, { survey: survey3 }] = await buildAndInsertSurveys(
       models,

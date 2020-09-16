@@ -37,8 +37,10 @@ describe('exportSurveys(): GET export/surveys, GET export/survey/:surveyId', () 
       sinon.stub(xlsx.utils, 'json_to_sheet');
       sinon.stub(xlsx.utils, 'aoa_to_sheet');
 
-      adminPermissionGroup = await models.permissionGroup.findOne({ name: 'Admin' });
-      vanuatuCountry = await models.country.findOne({ code: 'VU' });
+      adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+        name: 'Admin',
+      });
+      vanuatuCountry = await findOrCreateDummyRecord(models.country, { code: 'VU' });
 
       [{ survey: survey1 }] = await buildAndInsertSurveys(models, [
         {
