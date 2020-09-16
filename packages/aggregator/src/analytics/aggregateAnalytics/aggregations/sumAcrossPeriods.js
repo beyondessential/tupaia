@@ -3,27 +3,46 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { convertToPeriod, getCurrentPeriod, PERIOD_TYPES } from '@tupaia/utils';
+
 /**
  * Add the analytics together across the periods listed in the analytic response, and return an array
  * with just one analytic per data element/organisation unit pair
- *
- * @param {Array} analytics
- * @param {Array}
  */
-export const sumAcrossPeriods = analytics => {
+export const sumAcrossPeriods = (analytics, { periodOptions } = {}) => {
   const summedAnalytics = [];
-  analytics.forEach(responseElement => {
-    const indexOfEquivalentResponseElement = summedAnalytics.findIndex(
-      otherResponseElement =>
-        responseElement.dataElement === otherResponseElement.dataElement &&
-        responseElement.organisationUnit === otherResponseElement.organisationUnit,
+  analytics.forEach(analytic => {
+    const i = summedAnalytics.findIndex(
+      otherAnalytic =>
+        analytic.dataElement === otherAnalytic.dataElement &&
+        analytic.organisationUnit === otherAnalytic.organisationUnit,
     );
     // If there are no matching response elements already being returned, add it
-    if (indexOfEquivalentResponseElement < 0) {
-      summedAnalytics.push(responseElement);
+    if (i < 0) {
+      summedAnalytics.push({ ...analytic });
     } else {
-      summedAnalytics[indexOfEquivalentResponseElement].value += responseElement.value;
+      summedAnalytics[i].value += analytic.value;
     }
   });
+
+  if (periodOptions) {
+    const transformPeriod = getPeriodTransformer(periodOptions);
+    // console.log(summedAnalytics);
+    return summedAnalytics.map(analytic => ({
+      ...analytic,
+      period: transformPeriod(analytic.period),
+    }));
+  }
   return summedAnalytics;
+};
+
+const getPeriodTransformer = ({ periodType, useCurrent }) => {
+  if (useCurrent) {
+    const currentPeriod = getCurrentPeriod(periodType || PERIOD_TYPES.DAY);
+    return () => currentPeriod;
+  }
+  if (periodType) {
+    return period => convertToPeriod(period, periodType);
+  }
+  return period => period;
 };
