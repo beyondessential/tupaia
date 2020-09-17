@@ -65,7 +65,7 @@ const TableHeader = () => {
 };
 
 export const CountrySummaryTable = React.memo(() => (
-  <React.Fragment>
+  <>
     <TableHeader />
     <ConnectedTable
       endpoint="country-weeks"
@@ -73,5 +73,5 @@ export const CountrySummaryTable = React.memo(() => (
       Header={false}
       Body={CondensedTableBody}
     />
-  </React.Fragment>
+  </>
 ));

@@ -34,6 +34,7 @@ import {
 import { SignupOverlay } from '../SignupOverlay';
 import { OneTimeLoginForm } from '../../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../../styles/LightThemeProvider';
+import { LOGIN_TYPES } from '../../../constants';
 
 const Container = styled.div`
   display: grid;
@@ -196,7 +197,7 @@ const mapDispatchToProps = dispatch => ({
   onToggleUserMenuExpand: () =>
     delayMobileTapCallback(() => dispatch(openUserPage(DIALOG_PAGE_USER_MENU))),
   onUserMenuCollapse: () => dispatch(closeUserPage()),
-  onRefreshCurrentUser: () => dispatch(findLoggedIn()),
+  onRefreshCurrentUser: () => dispatch(findLoggedIn(LOGIN_TYPES.MANUAL)),
   dispatch,
 });
 
