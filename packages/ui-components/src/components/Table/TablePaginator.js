@@ -21,7 +21,21 @@ const TableFooter = styled(MuiTableFooter)`
 
 const TablePagination = styled(MuiTablePagination)`
   .MuiTablePagination-toolbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
     color: ${props => props.theme.palette.text.secondary};
+  }
+
+  .MuiTablePagination-spacer {
+    display: none;
+  }
+
+  .MuiTablePagination-input {
+    justify-self: start;
+  }
+
+  .MuiTablePagination-actions {
+    justify-self: end;
   }
 
   .MuiButtonBase-root {
@@ -42,10 +56,6 @@ const TablePagination = styled(MuiTablePagination)`
 
 export const TablePaginator = React.memo(
   ({ columns, page, count, rowsPerPage, onChangePage, onChangeRowsPerPage }) => {
-    if (count <= rowsPerPage) {
-      return null;
-    }
-
     const handleChangePage = useCallback(
       (event, newPage) => {
         if (onChangePage) onChangePage(newPage);
@@ -60,6 +70,10 @@ export const TablePaginator = React.memo(
       },
       [onChangeRowsPerPage],
     );
+
+    if (count <= rowsPerPage) {
+      return null;
+    }
 
     return (
       <TableFooter>
