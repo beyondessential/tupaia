@@ -60,7 +60,7 @@ Button.defaultProps = {
 };
 
 export const LightPrimaryButton = styled(Button)`
-  background-color: ${props => props.theme.palette.primary.light};
+  background-color: #dceffb;
   color: ${props => props.theme.palette.primary.main};
 
   &:hover,
