@@ -199,6 +199,14 @@ export class WeatherService extends Service {
     const getDataForEntity = async entity => {
       const { lat, lon } = entity.pointLatLon();
       const { startDate, endDate } = dateRangeByEntityCode[entity.code];
+
+      if (startDate === null || endDate === null) {
+        return {
+          entityCode: entity.code,
+          apiResult: null,
+        };
+      }
+
       const apiResult = await this.api.historicDaily(lat, lon, startDate, endDate);
       return {
         entityCode: entity.code,

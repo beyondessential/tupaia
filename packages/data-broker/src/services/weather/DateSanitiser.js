@@ -6,7 +6,7 @@ export class DateSanitiser {
   /**
    * @param string startDate
    * @param string endDate
-   * @returns Object.<startDate: string, endDate: string>
+   * @returns {{endDate: string|null, startDate: string|null}}
    */
   sanitise(startDate, endDate) {
     if (startDate > endDate) {
@@ -23,11 +23,71 @@ export class DateSanitiser {
       .add(1, 'day')
       .format(DATE_FORMAT);
 
-    // Prevent limits from being hit, which prevents API from returning error response
-    return this.checkLimits(startDate, endDate);
+    return this.restrictDatesWithinLimits(startDate, endDate);
   }
 
-  checkLimits(startDate, endDate) {
+  /**
+   * Moves start/end date when they poke off to the side of the available data date range
+   *
+   * This prevents the API from returning an error response.
+   *
+   * @param startDate
+   * @param endDate
+   * @returns {{endDate: string|null, startDate: string|null}}
+   * @private
+   */
+  restrictDatesWithinLimits(startDate, endDate) {
+    const { earliestStartDate, earliestEndDate, latestStartDate, latestEndDate } = this.getLimits();
+
+    console.log({ earliestStartDate, earliestEndDate, latestStartDate, latestEndDate });
+
+    console.log(startDate, endDate);
+
+    // request for today, change to yesterday
+    const startDateLess1day = moment(startDate)
+      .subtract(1, 'day')
+      .format(DATE_FORMAT);
+    const endDateLess1day = moment(endDate)
+      .subtract(1, 'day')
+      .format(DATE_FORMAT);
+
+    if (startDateLess1day === latestStartDate && endDateLess1day === latestEndDate) {
+      startDate = startDateLess1day;
+      endDate = endDateLess1day;
+    }
+
+    // completely off to the side, return null
+    if (
+      (startDate < earliestStartDate && endDate < earliestEndDate) ||
+      (startDate > latestStartDate && endDate > latestEndDate)
+    ) {
+      return {
+        startDate: null,
+        endDate: null,
+      };
+    }
+
+    // earliest date limits
+    if (startDate < earliestStartDate) {
+      startDate = earliestStartDate;
+    }
+
+    // latest date limits
+    if (endDate > latestEndDate) {
+      endDate = latestEndDate;
+    }
+
+    return {
+      startDate,
+      endDate,
+    };
+  }
+
+  /**
+   * @returns {{earliestStartDate: string, latestStartDate: string, earliestEndDate: string, latestEndDate: string}}
+   * @private
+   */
+  getLimits() {
     const earliestStartDate = moment()
       .subtract(1, 'year') // max historical is 1 year
       .format(DATE_FORMAT);
@@ -42,29 +102,11 @@ export class DateSanitiser {
       .subtract(1, 'day')
       .format(DATE_FORMAT);
 
-    // earliest date limits
-    if (startDate < earliestStartDate && endDate < earliestEndDate) {
-      return {
-        startDate: earliestStartDate,
-        endDate: earliestEndDate,
-      };
-    } else if (startDate < earliestStartDate) {
-      startDate = earliestStartDate;
-    }
-
-    // latest date limits
-    if (startDate > latestStartDate && endDate > latestEndDate) {
-      return {
-        startDate: latestStartDate,
-        endDate: latestEndDate,
-      };
-    } else if (endDate > latestEndDate) {
-      endDate = latestEndDate;
-    }
-
     return {
-      startDate,
-      endDate,
+      earliestStartDate,
+      earliestEndDate,
+      latestStartDate,
+      latestEndDate,
     };
   }
 }

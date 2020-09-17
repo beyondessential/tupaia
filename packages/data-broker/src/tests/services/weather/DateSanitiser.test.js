@@ -15,25 +15,17 @@ describe('DateSanitiser', () => {
     resetMocks();
   });
 
-  it('throws when start > end', () => {
-    const functionCall = () => new DateSanitiser().sanitise('2019-01-20', '2019-01-10');
-    expect(functionCall).to.throw('Start date must be before (or equal to) end date');
+  describe('invalid dates', () => {
+    it('throws when start > end', () => {
+      const functionCall = () => new DateSanitiser().sanitise('2019-01-20', '2019-01-10');
+      expect(functionCall).to.throw('Start date must be before (or equal to) end date');
+    });
   });
 
   describe('limits on earliest data', () => {
     /*
      * This is a limitation of the WeatherBit plan we use, if we request further back it falls over
      */
-
-    it('both start and end dates are before the earliest available data', () => {
-      const { startDate: actualStartDate, endDate: actualEndDate } = new DateSanitiser().sanitise(
-        '2017-02-10',
-        '2017-02-20',
-      );
-
-      expect(actualStartDate).to.equal('2018-02-05'); // earliest date
-      expect(actualEndDate).to.equal('2018-02-06'); // earliest + 1 day
-    });
 
     it('only start date is before the earliest available data', () => {
       const { startDate: actualStartDate, endDate: actualEndDate } = new DateSanitiser().sanitise(
@@ -45,14 +37,14 @@ describe('DateSanitiser', () => {
       expect(actualEndDate).to.equal('2019-01-02'); // (same as input, changed to be exclusive end date)
     });
 
-    it('only start date is before earliest, end date is already earliest', () => {
+    it('returns null when both start and end dates are before the earliest available data', () => {
       const { startDate: actualStartDate, endDate: actualEndDate } = new DateSanitiser().sanitise(
         '2017-02-10',
-        '2018-02-06',
+        '2017-02-20',
       );
 
-      expect(actualStartDate).to.equal('2018-02-05'); // earliest date
-      expect(actualEndDate).to.equal('2018-02-07'); // (same as input, changed to be exclusive end date)
+      expect(actualStartDate).to.be.null;
+      expect(actualEndDate).to.be.null;
     });
   });
 
@@ -64,16 +56,6 @@ describe('DateSanitiser', () => {
      * There may be a possibility of using the forecast API to get today's forecast max temp / precip,
      * but this will be covered by #1250
      */
-
-    it('both start and end dates are after the latest available data', () => {
-      const { startDate: actualStartDate, endDate: actualEndDate } = new DateSanitiser().sanitise(
-        '2019-07-10',
-        '2019-07-20',
-      );
-
-      expect(actualStartDate).to.equal('2019-02-04'); // latest - 1 day
-      expect(actualEndDate).to.equal('2019-02-05'); // latest date
-    });
 
     it('only end date is after the latest available data', () => {
       const { startDate: actualStartDate, endDate: actualEndDate } = new DateSanitiser().sanitise(
@@ -93,6 +75,16 @@ describe('DateSanitiser', () => {
 
       expect(actualStartDate).to.equal('2019-02-04'); // (same as input) latest - 1 day
       expect(actualEndDate).to.equal('2019-02-05'); // latest date
+    });
+
+    it('returns null when both start and end dates are after the latest available data', () => {
+      const { startDate: actualStartDate, endDate: actualEndDate } = new DateSanitiser().sanitise(
+        '2019-07-10',
+        '2019-07-20',
+      );
+
+      expect(actualStartDate).to.be.null;
+      expect(actualEndDate).to.be.null;
     });
   });
 
