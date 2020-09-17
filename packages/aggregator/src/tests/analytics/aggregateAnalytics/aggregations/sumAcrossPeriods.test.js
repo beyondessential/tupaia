@@ -134,16 +134,14 @@ describe('sumAcrossPeriods', () => {
     describe('excludeFuture', () => {
       it('defaults to `false`', () => {
         expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).to.deep.equal(
-          sumAcrossPeriods(ANALYTICS, {
-            periodOptions: { periodOptions: { excludeFuture: false } },
-          }),
+          sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: false } }),
         );
       });
 
       it('does nothing if not set', () => {
         expect(
           sumAcrossPeriods(ANALYTICS, {
-            periodOptions: { periodOptions: { excludeFuture: false } },
+            periodOptions: { excludeFuture: false },
           }),
         ).to.have.same.deep.members(
           arrayToAnalytics([
