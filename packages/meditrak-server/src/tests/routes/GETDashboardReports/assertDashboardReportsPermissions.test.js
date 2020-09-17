@@ -47,7 +47,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
       country_code: 'KI',
     });
 
-    addBaselineTestCountries(models);
+    await addBaselineTestCountries(models);
 
     await buildAndInsertProjectsAndHierarchies(models, [
       {
