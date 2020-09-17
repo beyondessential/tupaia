@@ -6,11 +6,12 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
+import MuiLink from '@material-ui/core/Link';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor, AlertCell, FlexSpaceBetween } from '../../components';
+import { createTotalCasesAccessor, AlertCell } from '../../components';
 import {
   openWeeklyReportsPanel,
   getSitesForWeekError,
@@ -18,7 +19,6 @@ import {
   reloadSitesForWeek,
   checkSitesForWeekIsLoading,
 } from '../../store';
-import MuiLink from '@material-ui/core/Link';
 
 // Todo: update placeholder
 const NameCell = data => {
@@ -90,6 +90,10 @@ const Text = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
+const Link = styled(MuiLink)`
+  font-size: 0.68rem;
+`;
+
 export const SiteSummaryTableComponent = React.memo(
   ({ fetchData, data, handleOpen, isLoading, errorMessage }) => {
     useEffect(() => {
@@ -102,9 +106,9 @@ export const SiteSummaryTableComponent = React.memo(
       <>
         <FakeHeader>
           <div>10/30 Sentinel Sites Reported</div>
-          <MuiLink component="button" onClick={handleOpen}>
-            Review and Submit Now
-          </MuiLink>
+          <Link component="button" onClick={handleOpen} underline="always">
+            Review and Confirm Now
+          </Link>
         </FakeHeader>
         <Table
           isLoading={isLoading}

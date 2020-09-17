@@ -108,7 +108,7 @@ export const WeeklyCasesTabViewComponent = React.memo(
               </DateSubtitle>
               {/* Todo: update with id when there is real data */}
               <StyledButton fullWidth onClick={() => handleOpen(latestWeek.index)}>
-                Review and Submit now
+                Review and Confirm now
               </StyledButton>
             </CardContent>
             <CardFooter>

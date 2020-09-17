@@ -138,8 +138,8 @@ export const CountryReportTableComponent = React.memo(
         </GreyHeader>
         <EditableTable Header={false} Body={VerifiableBody} />
         {tableStatus === TABLE_STATUSES.EDITABLE && (
-          <FlexSpaceBetween pt={3}>
-            <MuiLink>Reset and use Sentinel data</MuiLink>
+          <FlexSpaceBetween pt={3} mt={3} borderTop={1} borderColor="grey.400">
+            <MuiLink underline="always">Reset and use Sentinel data</MuiLink>
             <div>
               <Button variant="outlined" onClick={handleCancel}>
                 Cancel
