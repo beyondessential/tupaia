@@ -18,7 +18,7 @@ export const assertCanImportEntities = async (accessPolicy, entitiesByCountryNam
     if (!accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
       const countryName = Object.keys(entitiesByCountryName)[i];
       throw new Error(
-        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} acccess to country ${countryName}`,
+        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to country ${countryName}`,
       );
     }
   }
