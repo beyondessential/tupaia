@@ -97,8 +97,14 @@ describe('POST /import/striveLabResults', async () => {
   let response;
 
   before(async () => {
+    const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
+    const survey = {
+      ...SURVEY,
+      permission_group_id: publicPermissionGroup.id,
+    };
+
     await app.authenticate();
-    await buildAndInsertSurveys(models, [SURVEY]);
+    await buildAndInsertSurveys(models, [survey]);
     await createEntities(models);
 
     response = await importLabResults(app);

@@ -5,7 +5,11 @@
 
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { findOrCreateDummyRecord } from '@tupaia/database';
+import {
+  findOrCreateDummyRecord,
+  buildAndInsertProjectsAndHierarchies,
+  addBaselineTestCountries,
+} from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
@@ -38,6 +42,28 @@ describe('Permissions checker for GETDashboardGroups', async () => {
   let projectLevelDashboardGroup;
 
   before(async () => {
+    //Still create these existing entities just in case test database for some reasons do not have these records.
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'KI_BIKUC04',
+      type: 'facility',
+      country_code: 'KI',
+    });
+    await findOrCreateDummyRecord(models.entity, {
+      code: 'KI_Phoenix Islands',
+      type: 'district',
+      country_code: 'KI',
+    });
+
+    await addBaselineTestCountries(models);
+
+    await buildAndInsertProjectsAndHierarchies(models, [
+      {
+        code: 'test_project',
+        name: 'Test Project',
+        entities: [{ code: 'KI' }, { code: 'VU' }, { code: 'TO' }, { code: 'SB' }],
+      },
+    ]);
+
     //Set up the dashboard groups
     facilityDashboardGroup1 = await findOrCreateDummyRecord(
       models.dashboardGroup,
@@ -98,9 +124,9 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         id: 5555555,
         name: 'Test project level dashboard group 3',
         userGroup: 'Admin',
-        organisationUnitCode: 'unfpa',
+        organisationUnitCode: 'test_project',
         organisationLevel: 'Project',
-        projectCodes: ['unfpa'],
+        projectCodes: ['test_project'],
         dashboardReports: [],
       },
     );

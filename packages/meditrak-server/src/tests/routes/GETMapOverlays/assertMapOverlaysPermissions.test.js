@@ -5,7 +5,11 @@
 
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { findOrCreateDummyRecord } from '@tupaia/database';
+import {
+  findOrCreateDummyRecord,
+  addBaselineTestCountries,
+  buildAndInsertProjectsAndHierarchies,
+} from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
@@ -35,6 +39,16 @@ describe('Permissions checker for GETMapOverlays', async () => {
   let projectLevelMapOverlay;
 
   before(async () => {
+    //Still create these existing entities just in case test database for some reasons do not have these records.
+    await addBaselineTestCountries(models);
+
+    await buildAndInsertProjectsAndHierarchies(models, [
+      {
+        code: 'test_project',
+        name: 'Test Project',
+        entities: [{ code: 'KI' }, { code: 'VU' }, { code: 'TO' }, { code: 'SB' }],
+      },
+    ]);
     //Set up the map overlays
     nationalMapOverlay1 = await findOrCreateDummyRecord(
       models.mapOverlay,
@@ -60,7 +74,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
       {
         name: `Test project level map overlay 3`,
         userGroup: 'Admin',
-        countryCodes: ['unfpa'],
+        countryCodes: ['test_project'],
       },
     );
   });
