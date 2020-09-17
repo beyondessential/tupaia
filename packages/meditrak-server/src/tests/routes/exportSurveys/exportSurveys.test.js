@@ -7,7 +7,11 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import xlsx from 'xlsx';
 import { Authenticator } from '@tupaia/auth';
-import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
+import {
+  buildAndInsertSurveys,
+  findOrCreateDummyRecord,
+  findOrCreateDummyCountryEntity,
+} from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
 
@@ -40,7 +44,10 @@ describe('exportSurveys(): GET export/surveys, GET export/survey/:surveyId', () 
       adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
         name: 'Admin',
       });
-      vanuatuCountry = await findOrCreateDummyRecord(models.country, { code: 'VU' });
+      ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
+        code: 'VU',
+        name: 'Vanuatu',
+      }));
 
       [{ survey: survey1 }] = await buildAndInsertSurveys(models, [
         {

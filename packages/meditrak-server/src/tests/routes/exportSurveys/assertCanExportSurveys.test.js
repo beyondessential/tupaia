@@ -5,7 +5,11 @@
 
 import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { findOrCreateDummyRecord, buildAndInsertSurveys } from '@tupaia/database';
+import {
+  findOrCreateDummyRecord,
+  findOrCreateDummyCountryEntity,
+  buildAndInsertSurveys,
+} from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { getModels } from '../../getModels';
 import { assertCanExportSurveys } from '../../../routes/exportSurveys/assertCanExportSurveys';
@@ -28,8 +32,14 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
-    const vanuatuCountry = await findOrCreateDummyRecord(models.country, { code: 'VU' });
-    const kiribatiCountry = await findOrCreateDummyRecord(models.country, { code: 'KI' });
+    const { country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'VU',
+      name: 'Vanuatu',
+    });
+    const { country: kiribatiCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'KI',
+      name: 'Kiribati',
+    });
 
     [{ survey: survey1 }, { survey: survey2 }, { survey: survey3 }] = await buildAndInsertSurveys(
       models,
