@@ -89,7 +89,7 @@ describe('assertCanImportSurveys(): Permissions checker for Importing Surveys', 
         policyWithAllCountries[c.code] = [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP];
       });
       const allCountriesAccessPolicy = new AccessPolicy(policyWithAllCountries);
-      const surveyNames = ['Test Survey 3']; //New survey
+      const surveyNames = ['Test New Survey 3']; //New survey
       const result = await assertCanImportSurveys(allCountriesAccessPolicy, models, surveyNames);
 
       expect(result).to.true;
@@ -153,7 +153,6 @@ describe('assertCanImportSurveys(): Permissions checker for Importing Surveys', 
       };
       const accessPolicy = new AccessPolicy(policy);
       const surveyNames = ['Test Survey 2']; //New survey
-      const vanuatuCountry = await models.country.findOne({ code: 'VU' });
       const newCountryIds = [vanuatuCountry.id];
 
       expect(() => assertCanImportSurveys(accessPolicy, models, surveyNames, newCountryIds)).to
