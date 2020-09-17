@@ -35,7 +35,7 @@ export const updateVerifiedStatus = id => ({ type: VERIFY_SYNDROME, id });
 
 export const setDefaultVerifiedStatuses = () => (dispatch, getState) => {
   const state = getState();
-  const activeCountryWeekData = getActiveWeekCountryData(state);
+  const activeCountryWeekData = getActiveWeekCountryData(state).syndromes;
   const verifiedStatuses = activeCountryWeekData.reduce(
     (statuses, syndrome) => ({ ...statuses, [syndrome.id]: syndrome.isAlert ? false : null }),
     {},
@@ -53,20 +53,22 @@ export const getActiveWeekId = ({ weeklyReports }) => weeklyReports.activeWeek.i
 export const getActiveWeekCountryData = ({ weeklyReports }) => {
   if (weeklyReports.activeWeek.id !== null) {
     // Todo: refactor to find by id when there is real data
-    const activeCountryWeek = weeklyReports.country.data.find(
-      item => item.index === weeklyReports.activeWeek.id,
-    );
-    return activeCountryWeek.syndromes;
+    return weeklyReports.country.data.find(item => item.index === weeklyReports.activeWeek.id);
   }
 
-  return [];
+  return {};
 };
 
-export const getSyndromeAlerts = state =>
-  getActiveWeekCountryData(state).reduce(
+export const getSyndromeAlerts = state => {
+  const data = getActiveWeekCountryData(state);
+  if (!data.syndromes) {
+    return [];
+  }
+  return data.syndromes.reduce(
     (statuses, syndrome) => (syndrome.isAlert ? [...statuses, syndrome] : statuses),
     [],
   );
+};
 
 export const checkHasAlerts = state => getSyndromeAlerts(state).length > 0;
 
