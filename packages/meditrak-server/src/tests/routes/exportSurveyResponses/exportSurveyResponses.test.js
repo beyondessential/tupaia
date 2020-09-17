@@ -15,7 +15,7 @@ import {
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
-import { INFO_COLUMN_HEADERS } from '../../../routes/exportSurveyResponses/exportSurveyResponses';
+import { INFO_COLUMN_HEADERS } from '../../../routes/exportSurveyResponses';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

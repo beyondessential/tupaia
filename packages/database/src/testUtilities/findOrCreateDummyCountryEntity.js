@@ -12,9 +12,8 @@ export const findOrCreateDummyCountryEntity = async (
     models.entity,
     {
       code,
-      country_code: code,
     },
-    { name, type: 'country', ...countryEntityProps },
+    { name, country_code: code, type: 'country', ...countryEntityProps },
   );
   const country = await findOrCreateDummyRecord(
     models.country,

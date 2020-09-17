@@ -12,6 +12,8 @@ import { CommentModel } from './Comment';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
 import { EntityModel } from './Entity';
+import { EntityHierarchyModel } from './EntityHierarchy';
+import { EntityRelationModel } from './EntityRelation';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { MeditrakDeviceModel } from './MeditrakDevice';
 import { RefreshTokenModel } from './RefreshToken';
@@ -42,6 +44,8 @@ export const modelClasses = {
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
   Entity: EntityModel,
+  EntityHierarchy: EntityHierarchyModel,
+  EntityRelation: EntityRelationModel,
   GeographicalArea: GeographicalAreaModel,
   MeditrakDevice: MeditrakDeviceModel,
   OneTimeLogin: OneTimeLoginModel,
@@ -67,6 +71,8 @@ export { AccessRequestModel } from './AccessRequest';
 export { CountryModel } from './Country';
 export { DataSourceModel } from './DataSource';
 export { EntityModel } from './Entity';
+export { EntityHierarchyModel } from './EntityHierarchy';
+export { EntityRelationModel } from './EntityRelation';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { AlertModel } from './Alert';
