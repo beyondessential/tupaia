@@ -49,12 +49,6 @@ const createColumns = (isForMultipleCountries, handlePanelOpen) => [
     width: '125px',
   },
   {
-    title: 'Total Lab Confirmed Cases',
-    key: 'totalLabCases',
-    align: 'left',
-    width: '140px',
-  },
-  {
     title: '',
     key: 'id',
     sortable: false,
