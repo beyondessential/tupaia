@@ -29,7 +29,7 @@ const createColumns = isForMultipleCountries => [
     title: 'Alert Start Date',
     key: 'weekNumber',
     align: 'left',
-    width: '180px',
+    width: '200px',
     CellComponent: WeekAndDateCell,
   },
   {
@@ -48,7 +48,7 @@ const createColumns = isForMultipleCountries => [
     key: 'id',
     sortable: false,
     CellComponent: AlertMenuCell,
-    width: '50px',
+    width: '45px',
   },
 ];
 

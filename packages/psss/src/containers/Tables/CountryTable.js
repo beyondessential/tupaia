@@ -90,7 +90,7 @@ const countryColumns = [
   {
     title: 'Date ',
     key: 'weekNumber',
-    width: COLUMN_WIDTHS.FIRST,
+    width: '190px',
     align: 'left',
     CellComponent: NameCell,
   },
