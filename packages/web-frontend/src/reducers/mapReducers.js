@@ -8,8 +8,8 @@
 import { combineReducers } from 'redux';
 
 import {
-  CHANGE_MEASURE,
-  CHANGE_ORG_UNIT,
+  SET_MEASURE,
+  SET_ORG_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
@@ -28,11 +28,9 @@ import {
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
-import { initialOrgUnit } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 
-const defaultBounds = initialOrgUnit.location.bounds;
-
-function position(state = { bounds: defaultBounds }, action) {
+function position(state = { bounds: DEFAULT_BOUNDS }, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
@@ -129,7 +127,7 @@ function measureInfo(state = {}, action) {
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
     case UPDATE_MEASURE_CONFIG:
-    case CHANGE_MEASURE:
+    case SET_MEASURE:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
     case FETCH_MEASURE_DATA_SUCCESS:
@@ -179,7 +177,7 @@ function shouldSnapToPosition(state = true, action) {
     case CHANGE_BOUNDS:
       return true;
 
-    case CHANGE_ORG_UNIT:
+    case SET_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
 
