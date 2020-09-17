@@ -15,7 +15,7 @@ const desktopWidth = '768px';
 export const Container = styled(MuiContainer)`
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-gap: 55px;
+  grid-gap: 40px;
 
   @media (max-width: ${desktopWidth}) {
     grid-template-columns: 1fr;

@@ -85,6 +85,7 @@ export const CondensedTableRow = styled(TableRow)`
   }
 
   .MuiTableCell-root {
+    height: 60px;
     border: none;
   }
 `;
