@@ -142,7 +142,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           code: 'DL',
           name: 'Demo Land',
         });
-        await upsertEntity({ code: 'DL_7', country_code: 'DL' });
+        await upsertEntity({ code: 'DL_7', country_code: demoLand.code });
         await upsertEntity({ code: 'DL_9', country_code: demoLand.code });
         await upsertEntity({ code: 'DL_10', country_code: demoLand.code });
         await upsertEntity({ code: 'DL_11', country_code: demoLand.code });
