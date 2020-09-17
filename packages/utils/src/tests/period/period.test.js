@@ -7,19 +7,21 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import moment from 'moment';
 import {
-  PERIOD_TYPES,
+  comparePeriods,
   convertToPeriod,
+  dateStringToPeriod,
   findCoarsestPeriodType,
   getCurrentPeriod,
   getPeriodsInRange,
-  periodToType,
-  dateStringToPeriod,
-  momentToPeriod,
-  periodToDisplayString,
-  parsePeriodType,
-  periodToTimestamp,
-  isValidPeriod,
   isCoarserPeriod,
+  isFuturePeriod,
+  isValidPeriod,
+  momentToPeriod,
+  parsePeriodType,
+  PERIOD_TYPES,
+  periodToDisplayString,
+  periodToTimestamp,
+  periodToType,
 } from '../../period/period';
 
 const { DAY, WEEK, MONTH, QUARTER, YEAR } = PERIOD_TYPES;
@@ -29,12 +31,10 @@ const MONTHS_IN_YEAR = 12;
 const indexToString = index => `${index + 1}`.padStart(2, '0');
 
 const getMonthPeriodsInYear = year =>
-  [...new Array(MONTHS_IN_YEAR)].map((value, monthIndex) => `${year}${indexToString(monthIndex)}`);
+  [...new Array(MONTHS_IN_YEAR)].map((_, monthIndex) => `${year}${indexToString(monthIndex)}`);
 
 const getDayPeriodsInMonth = (monthPeriod, dayCountForMonth) =>
-  [...new Array(dayCountForMonth)].map(
-    (value, dayIndex) => `${monthPeriod}${indexToString(dayIndex)}`,
-  );
+  [...new Array(dayCountForMonth)].map((_, dayIndex) => `${monthPeriod}${indexToString(dayIndex)}`);
 
 const createWeekPeriods = (year, startWeekIndex, endWeekIndex) => {
   const weeks = [];
@@ -46,7 +46,7 @@ const createWeekPeriods = (year, startWeekIndex, endWeekIndex) => {
   return weeks;
 };
 
-context('periodTypes', () => {
+describe('period utilities', () => {
   describe('periodToType', () => {
     it('should return undefined for empty input', () => {
       expect(periodToType()).to.equal(undefined);
@@ -105,6 +105,177 @@ context('periodTypes', () => {
       expect(isValidPeriod('2016W12')).to.equal(true);
       expect(isValidPeriod('2016Q2')).to.equal(true);
       expect(isValidPeriod('20160502')).to.equal(true);
+    });
+  });
+
+  describe('comparePeriods', () => {
+    describe('year', () => {
+      it('>', () => {
+        expect(comparePeriods('2020', '2019')).to.be.greaterThan(0);
+        expect(comparePeriods('2020', '2020Q3')).to.be.greaterThan(0);
+        expect(comparePeriods('2020', '202011')).to.be.greaterThan(0);
+        expect(comparePeriods('2020', '2020W52')).to.be.greaterThan(0);
+        expect(comparePeriods('2020', '20201230')).to.be.greaterThan(0);
+      });
+
+      it('=', () => {
+        expect(comparePeriods('2020', '2020')).to.equal(0);
+        expect(comparePeriods('2020', '2020Q4')).to.equal(0);
+        expect(comparePeriods('2020', '202012')).to.equal(0);
+        expect(comparePeriods('2020', '20201231')).to.equal(0);
+      });
+
+      it('<', () => {
+        expect(comparePeriods('2020', '2021')).to.be.lessThan(0);
+        expect(comparePeriods('2020', '2021Q1')).to.be.lessThan(0);
+        expect(comparePeriods('2020', '202101')).to.be.lessThan(0);
+        expect(comparePeriods('2020', '2021W01')).to.be.lessThan(0);
+        expect(comparePeriods('2020', '20210101')).to.be.lessThan(0);
+      });
+    });
+
+    describe('quarter', () => {
+      it('>', () => {
+        expect(comparePeriods('2020Q1', '2019')).to.be.greaterThan(0);
+        expect(comparePeriods('2020Q1', '2019Q4')).to.be.greaterThan(0);
+        expect(comparePeriods('2020Q1', '201912')).to.be.greaterThan(0);
+        expect(comparePeriods('2020Q1', '2019W52')).to.be.greaterThan(0);
+        expect(comparePeriods('2020Q1', '20191231')).to.be.greaterThan(0);
+      });
+
+      it('=', () => {
+        expect(comparePeriods('2020Q4', '2020')).to.equal(0);
+        expect(comparePeriods('2020Q4', '2020Q4')).to.equal(0);
+        expect(comparePeriods('2020Q4', '202012')).to.equal(0);
+        expect(comparePeriods('2020Q4', '20201231')).to.equal(0);
+      });
+
+      it('<', () => {
+        expect(comparePeriods('2020Q4', '2021')).to.be.lessThan(0);
+        expect(comparePeriods('2020Q4', '2021Q1')).to.be.lessThan(0);
+        expect(comparePeriods('2020Q4', '202101')).to.be.lessThan(0);
+        expect(comparePeriods('2020Q4', '2021W01')).to.be.lessThan(0);
+        expect(comparePeriods('2020Q4', '20210101')).to.be.lessThan(0);
+      });
+    });
+
+    describe('month', () => {
+      it('>', () => {
+        expect(comparePeriods('202001', '2019')).to.be.greaterThan(0);
+        expect(comparePeriods('202001', '2019Q4')).to.be.greaterThan(0);
+        expect(comparePeriods('202001', '201912')).to.be.greaterThan(0);
+        expect(comparePeriods('202001', '2019W52')).to.be.greaterThan(0);
+        expect(comparePeriods('202001', '20191231')).to.be.greaterThan(0);
+      });
+
+      it('=', () => {
+        expect(comparePeriods('202012', '2020')).to.equal(0);
+        expect(comparePeriods('202012', '2020Q4')).to.equal(0);
+        expect(comparePeriods('202012', '202012')).to.equal(0);
+        expect(comparePeriods('202012', '20201231')).to.equal(0);
+      });
+
+      it('<', () => {
+        expect(comparePeriods('202012', '2021')).to.be.lessThan(0);
+        expect(comparePeriods('202012', '2021Q1')).to.be.lessThan(0);
+        expect(comparePeriods('202012', '202101')).to.be.lessThan(0);
+        expect(comparePeriods('202012', '2021W01')).to.be.lessThan(0);
+        expect(comparePeriods('202012', '20210101')).to.be.lessThan(0);
+      });
+    });
+
+    describe('week', () => {
+      it('>', () => {
+        expect(comparePeriods('2020W01', '2019')).to.be.greaterThan(0);
+        expect(comparePeriods('2020W01', '2019Q4')).to.be.greaterThan(0);
+        expect(comparePeriods('2020W01', '201912')).to.be.greaterThan(0);
+        expect(comparePeriods('2020W01', '2019W52')).to.be.greaterThan(0);
+        expect(comparePeriods('2020W01', '20191231')).to.be.greaterThan(0);
+      });
+
+      it('=', () => {
+        expect(comparePeriods('2020W53', '2020W53')).to.equal(0);
+        expect(comparePeriods('2020W52', '20201227')).to.equal(0);
+        expect(comparePeriods('2020W53', '20210103')).to.equal(0);
+      });
+
+      it('<', () => {
+        expect(comparePeriods('2020W52', '2021')).to.be.lessThan(0);
+        expect(comparePeriods('2020W52', '2021Q1')).to.be.lessThan(0);
+        expect(comparePeriods('2020W52', '202101')).to.be.lessThan(0);
+        expect(comparePeriods('2020W52', '2021W01')).to.be.lessThan(0);
+        expect(comparePeriods('2020W52', '20201228')).to.be.lessThan(0);
+        expect(comparePeriods('2020W53', '20210301')).to.be.lessThan(0);
+      });
+    });
+
+    describe('day', () => {
+      it('>', () => {
+        expect(comparePeriods('20200101', '2019')).to.be.greaterThan(0);
+        expect(comparePeriods('20200101', '2019Q4')).to.be.greaterThan(0);
+        expect(comparePeriods('20200101', '201912')).to.be.greaterThan(0);
+        expect(comparePeriods('20191230', '2019W52')).to.be.greaterThan(0);
+        expect(comparePeriods('20200101', '20191231')).to.be.greaterThan(0);
+      });
+
+      it('=', () => {
+        expect(comparePeriods('20201231', '2020')).to.equal(0);
+        expect(comparePeriods('20201231', '202012')).to.equal(0);
+        expect(comparePeriods('20201231', '2020Q4')).to.equal(0);
+        expect(comparePeriods('20201227', '2020W52')).to.equal(0);
+        expect(comparePeriods('20210103', '2020W53')).to.equal(0);
+      });
+
+      it('<', () => {
+        expect(comparePeriods('20201231', '2021')).to.be.lessThan(0);
+        expect(comparePeriods('20201231', '2021Q1')).to.be.lessThan(0);
+        expect(comparePeriods('20201231', '202101')).to.be.lessThan(0);
+        expect(comparePeriods('20201231', '2021W01')).to.be.lessThan(0);
+        expect(comparePeriods('20201231', '20210101')).to.be.lessThan(0);
+      });
+    });
+  });
+
+  describe('isFuturePeriod', () => {
+    const currentDateStub = '2020-12-31T00:00:00Z';
+    let clock;
+
+    beforeEach(() => {
+      clock = sinon.useFakeTimers({ now: new Date(currentDateStub) });
+    });
+
+    after(() => {
+      clock.restore();
+    });
+
+    it('past', () => {
+      expect(isFuturePeriod('2019')).to.be.false;
+      expect(isFuturePeriod('2020Q3')).to.be.false;
+      expect(isFuturePeriod('202011')).to.be.false;
+      expect(isFuturePeriod('2020W52')).to.be.false;
+      expect(isFuturePeriod('20201230')).to.be.false;
+    });
+
+    it('present', () => {
+      expect(isFuturePeriod('2020')).to.be.false;
+      expect(isFuturePeriod('2020Q4')).to.be.false;
+      expect(isFuturePeriod('202012')).to.be.false;
+      expect(isFuturePeriod('20201231')).to.be.false;
+    });
+
+    it('present - week period type', () => {
+      // We need to match the last date of a week
+      clock = sinon.useFakeTimers({ now: new Date('2020-12-27T00:00:00Z') });
+      expect(isFuturePeriod('2020W52')).to.be.false;
+    });
+
+    it('future', () => {
+      expect(isFuturePeriod('2021')).to.be.true;
+      expect(isFuturePeriod('2021Q1')).to.be.true;
+      expect(isFuturePeriod('202101')).to.be.true;
+      expect(isFuturePeriod('2021W01')).to.be.true;
+      expect(isFuturePeriod('2020W53')).to.be.true;
+      expect(isFuturePeriod('20210101')).to.be.true;
     });
   });
 

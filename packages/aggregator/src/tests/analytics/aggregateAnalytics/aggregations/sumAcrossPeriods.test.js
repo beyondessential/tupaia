@@ -19,16 +19,17 @@ describe('sumAcrossPeriods', () => {
 
   const ANALYTICS = arrayToAnalytics([
     // BCD01 - TO
-    ['BCD01', 'TO', '201601', 1],
+    ['BCD01', 'TO', '201601', 0.01],
     ['BCD01', 'TO', '201801', 0.1],
-    ['BCD01', 'TO', '201901', 0.01],
+    ['BCD01', 'TO', '201901', 1],
     // BCD01 - PG
-    ['BCD01', 'PG', '201601', 2],
+    ['BCD01', 'PG', '201601', 0.02],
     ['BCD01', 'PG', '201801', 0.2],
-    ['BCD01', 'PG', '201901', 0.02],
+    ['BCD01', 'PG', '201901', 2],
     // BCD02 - TO
-    ['BCD02', 'TO', '201801', 4],
-    ['BCD02', 'TO', '202001', 0.44],
+    ['BCD02', 'TO', '201801', 0.04],
+    ['BCD02', 'TO', '202001', 0.4],
+    ['BCD02', 'TO', '210001', 4.0],
   ]);
 
   const CURRENT_DATE_STUB = '2020-01-31T00:00:00Z';
@@ -87,6 +88,12 @@ describe('sumAcrossPeriods', () => {
     });
 
     describe('useCurrent', () => {
+      it('defaults to `false`', () => {
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).to.deep.equal(
+          sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } }),
+        );
+      });
+
       it('does nothing if not set', () => {
         expect(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } }),
@@ -119,6 +126,42 @@ describe('sumAcrossPeriods', () => {
             ['BCD01', 'TO', CURRENT_PERIOD_STUBS.DAY, 1.11],
             ['BCD01', 'PG', CURRENT_PERIOD_STUBS.DAY, 2.22],
             ['BCD02', 'TO', CURRENT_PERIOD_STUBS.DAY, 4.44],
+          ]),
+        );
+      });
+    });
+
+    describe('excludeFuture', () => {
+      it('defaults to `false`', () => {
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { periodOptions: {} } })).to.deep.equal(
+          sumAcrossPeriods(ANALYTICS, {
+            periodOptions: { periodOptions: { excludeFuture: false } },
+          }),
+        );
+      });
+
+      it('does nothing if not set', () => {
+        expect(
+          sumAcrossPeriods(ANALYTICS, {
+            periodOptions: { periodOptions: { excludeFuture: false } },
+          }),
+        ).to.have.same.deep.members(
+          arrayToAnalytics([
+            ['BCD01', 'TO', '201601', 1.11],
+            ['BCD01', 'PG', '201601', 2.22],
+            ['BCD02', 'TO', '201801', 4.44],
+          ]),
+        );
+      });
+
+      it('filters future periods', () => {
+        expect(
+          sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: true } }),
+        ).to.have.same.deep.members(
+          arrayToAnalytics([
+            ['BCD01', 'TO', '201601', 1.11],
+            ['BCD01', 'PG', '201601', 2.22],
+            ['BCD02', 'TO', '201801', 0.44],
           ]),
         );
       });
