@@ -118,7 +118,7 @@ describe('weekly reports panel', () => {
 
   it('displays un-verified alerts', () => {
     const { inCountryReports } = renderWeeklyReportsPanel();
-    expect(inCountryReports.getByRole('button', { name: /please verify*/i })).toBeInTheDocument();
+    expect(inCountryReports.getByRole('button', { name: /click to verify*/i })).toBeInTheDocument();
   });
 
   it('validates un-verified alerts', () => {

@@ -18,6 +18,7 @@ const CountryTitle = styled(MuiLink)`
   font-weight: 400;
   font-size: 1.125rem;
   color: ${COLORS.BLUE};
+  line-height: 1.2;
 
   .MuiAvatar-root {
     margin-right: 0.6rem;

@@ -95,7 +95,7 @@ export const VerifiableTableRowComponent = React.memo(props => {
     return (
       <WarningWrapper>
         <WarningButton fullWidth onClick={handleVerify}>
-          Please Verify Now
+          Click to verify
         </WarningButton>
       </WarningWrapper>
     );

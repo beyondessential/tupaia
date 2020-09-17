@@ -77,7 +77,7 @@ export const CondensedTableRow = styled(TableRow)`
   &:nth-of-type(even) {
     background: ${condensedRowBackgroundColor};
 
-    &:hover {
+    &.MuiTableRow-root:hover {
       background: ${condensedRowBackgroundColor};
     }
   }
