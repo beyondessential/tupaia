@@ -7,8 +7,6 @@ import PropTypes from 'prop-types';
 import { HomeButton, NavBar as BaseNavBar } from '@tupaia/ui-components';
 import { ProfileButton } from '../authentication';
 
-const Home = () => <HomeButton source="/admin-panel-logo-white.svg" />;
-
 const isTabActive = (match, location) => {
   if (!match) {
     return false;
@@ -17,7 +15,12 @@ const isTabActive = (match, location) => {
 };
 
 export const Navbar = ({ links }) => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={ProfileButton} isTabActive={isTabActive} />
+  <BaseNavBar
+    HomeButton={<HomeButton source="/admin-panel-logo-white.svg" />}
+    links={links}
+    Profile={ProfileButton}
+    isTabActive={isTabActive}
+  />
 );
 
 Navbar.propTypes = {
