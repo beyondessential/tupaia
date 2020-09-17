@@ -5,29 +5,14 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-/**
- * Initial states for app
- * initialOrgUnit as world.
- * initial project as explore.
- */
+export const DEFAULT_BOUNDS = [
+  // Note: There's a little bit of a hack going on here, the bounds[0] for explore are actually [6.5, 110]
+  // However in order to trigger the map to re-render we set them slightly adjusted as [6.5001, 110]
+  // See: https://github.com/beyondessential/tupaia-backlog/issues/540#issuecomment-631314721
+  [6.5001, 110],
+  [-40, 204.5],
+];
 
-export const initialOrgUnit = {
-  type: 'Project',
-  organisationUnitCode: 'explore',
-  name: 'Explore',
-  parent: {},
-  location: {
-    type: 'no-coordinates',
-    coordinates: '',
-    bounds: [
-      // Note: There's a little bit of a hack going on here, the bounds[0] are actually [6.5, 110]
-      // However in order to trigger the map to re-render we set them slightly adjusted as [6.5001, 110]
-      // See: https://github.com/beyondessential/tupaia-backlog/issues/540#issuecomment-631314721
-      [6.5001, 110],
-      [-40, 204.5],
-    ],
-  },
-};
+export const DEFAULT_PROJECT_CODE = 'explore';
 
-export const INITIAL_PROJECT_CODE = 'explore';
-export const INITIAL_MEASURE_ID = '126,171'; // 'Operational Facilities'
+export const DEFAULT_MEASURE_ID = '126,171'; // 'Operational Facilities'

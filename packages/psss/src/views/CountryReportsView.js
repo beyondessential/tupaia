@@ -4,11 +4,14 @@
  */
 import React from 'react';
 import { PhotoAlbum } from '@material-ui/icons';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header, HeaderAvatarTitle, WeeklyReportsExportModal } from '../components';
 import { CountryRoutes } from '../routes/CountryRoutes';
 import { countryFlagImage } from '../utils';
+import { checkIsMultiCountryUser } from '../store';
 
 const links = [
   {
@@ -23,17 +26,13 @@ const links = [
   },
 ];
 
-export const CountryReportsView = () => {
-  const { countryName } = useParams();
-  const back = {
-    url: '/',
-    title: 'Countries',
-  };
+export const CountryReportsViewComponent = ({ backButtonConfig }) => {
+  const { countryCode } = useParams();
   return (
     <>
       <Header
-        Title={<HeaderAvatarTitle title={countryName} avatarUrl={countryFlagImage('as')} />}
-        back={back}
+        Title={<HeaderAvatarTitle title={countryCode} avatarUrl={countryFlagImage(countryCode)} />}
+        back={backButtonConfig}
         ExportModal={WeeklyReportsExportModal}
       />
       <TabsToolbar links={links} />
@@ -41,3 +40,22 @@ export const CountryReportsView = () => {
     </>
   );
 };
+
+CountryReportsViewComponent.propTypes = {
+  backButtonConfig: PropTypes.object,
+};
+
+CountryReportsViewComponent.defaultProps = {
+  backButtonConfig: null,
+};
+
+const mapStateToProps = state => ({
+  backButtonConfig: checkIsMultiCountryUser(state)
+    ? {
+        url: '/',
+        title: 'Countries',
+      }
+    : null,
+});
+
+export const CountryReportsView = connect(mapStateToProps)(CountryReportsViewComponent);
