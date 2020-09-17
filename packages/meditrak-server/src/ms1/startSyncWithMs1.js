@@ -113,8 +113,16 @@ export async function pushChange(models, change, ms1Api) {
     questionIdToMs1Variable[question.id] = generateMs1VariableName(question.name);
   });
 
+  const questionIds = questions.map(question => question.id);
   let body = { distributionId };
   answers.forEach(answer => {
+    if (!questionIds.includes(answer.question_id)) {
+      console.log(
+        `Skipping answer:${answer.id} as question_id:${answer.question_id} is not in survey:${surveyResponse.survey_id}`,
+      );
+      return;
+    }
+
     body = {
       ...body,
       ...findParam(answer, questionIdToMs1Variable),
@@ -141,7 +149,7 @@ export async function pushChange(models, change, ms1Api) {
 function findParam(answer, questions) {
   const questionVariableName = questions[answer.question_id];
   if (!questionVariableName)
-    throw new Error(`Question for ${fieldName} does not map to a variable name`);
+    throw new Error(`Question for ${answer.question_id} does not map to a variable name`);
   const fieldName = questionVariableName;
 
   return { [fieldName]: answer.text };
