@@ -12,7 +12,10 @@ const VERIFY_SYNDROME = 'VERIFY_SYNDROME';
 const SET_VERIFIED_STATUSES = 'SET_DEFAULT_VERIFIED_STATUSES';
 
 // action creators
-export const openWeeklyReportsPanel = () => dispatch => {
+export const openWeeklyReportsPanel = id => dispatch => {
+  if (id !== null) {
+    dispatch(setActiveWeek(id));
+  }
   dispatch(setDefaultVerifiedStatuses());
   dispatch({ type: TOGGLE_PANEL, panelIsOpen: true });
 };
