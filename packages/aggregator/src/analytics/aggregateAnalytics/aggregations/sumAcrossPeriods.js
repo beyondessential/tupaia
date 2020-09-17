@@ -3,15 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { convertToPeriod, getCurrentPeriod, PERIOD_TYPES } from '@tupaia/utils';
+import { convertToPeriod, isFuturePeriod, getCurrentPeriod, PERIOD_TYPES } from '@tupaia/utils';
 
 /**
  * Add the analytics together across the periods listed in the analytic response, and return an array
  * with just one analytic per data element/organisation unit pair
  */
 export const sumAcrossPeriods = (analytics, { periodOptions } = {}) => {
+  const filteredAnalytics = filterAnalytics(analytics, periodOptions);
+
   const summedAnalytics = [];
-  analytics.forEach(analytic => {
+  filteredAnalytics.forEach(analytic => {
     const i = summedAnalytics.findIndex(
       otherAnalytic =>
         analytic.dataElement === otherAnalytic.dataElement &&
@@ -34,6 +36,11 @@ export const sumAcrossPeriods = (analytics, { periodOptions } = {}) => {
   }
   return summedAnalytics;
 };
+
+const filterAnalytics = (analytics, periodOptions = {}) =>
+  periodOptions.excludeFuture
+    ? analytics.filter(({ period }) => !isFuturePeriod(period))
+    : analytics;
 
 const getPeriodTransformer = ({ periodType, useCurrent }) => {
   if (useCurrent) {

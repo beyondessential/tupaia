@@ -125,12 +125,18 @@ const checkNonNumericPeriod = (period, potentialType) => {
   return isValidFormat;
 };
 
-/**
- *
- * @param {any} period
- * @returns {boolean}
- */
 export const isValidPeriod = period => typeof period === 'string' && !!periodToType(period);
+
+/**
+ * @returns {number} > 0 if periodA > periodB, 0 if periodA = periodB, < 0 if periodA < periodB
+ */
+export const comparePeriods = (periodA, periodB) => {
+  const dayPeriodA = convertToPeriod(periodA, DAY);
+  const dayPeriodB = convertToPeriod(periodB, DAY);
+  return parseInt(dayPeriodA, 10) - parseInt(dayPeriodB, 10);
+};
+
+export const isFuturePeriod = period => comparePeriods(period, getCurrentPeriod(DAY)) > 0;
 
 export const parsePeriodType = periodTypeString => {
   const error = new Error(`Period type must be one of ${Object.values(PERIOD_TYPES)}`);
