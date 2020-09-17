@@ -265,7 +265,12 @@ export async function exportSurveyResponses(req, res) {
           const questionInfo = infoColumnKeys.map(columnKey => question[columnKey]);
           const questionType = questionInfo[1];
           // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
-          if (NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType)) continue;
+          if (
+            NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType) &&
+            questionType !== ANSWER_TYPES.INSTRUCTION
+          ) {
+            continue;
+          }
           exportData[exportRow] = questionInfo;
 
           // Add the answers on the right columns to the exportData
