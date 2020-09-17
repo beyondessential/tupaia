@@ -27,6 +27,7 @@ import {
   getCountryWeeksError,
   openWeeklyReportsPanel,
   reloadCountryWeeks,
+  setActiveWeek,
 } from '../../store';
 
 const ExampleContent = styled.div`
@@ -75,6 +76,9 @@ export const WeeklyCasesTabViewComponent = React.memo(
       })();
     }, [fetchData, page]);
 
+    // Todo: Get the latest week data when there is real data
+    const latestWeek = data[0];
+
     return (
       <Container>
         <Main data-testid="country-table">
@@ -103,7 +107,7 @@ export const WeeklyCasesTabViewComponent = React.memo(
                 Feb 25, 2020 - Mar 1, 2020
               </DateSubtitle>
               {/* Todo: update with id when there is real data */}
-              <StyledButton fullWidth onClick={() => handleOpen(data[0].index)}>
+              <StyledButton fullWidth onClick={() => handleOpen(latestWeek.index)}>
                 Review and Submit now
               </StyledButton>
             </CardContent>
@@ -140,7 +144,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleOpen: id => dispatch(openWeeklyReportsPanel(id)),
+  handleOpen: id => {
+    dispatch(setActiveWeek(id));
+    dispatch(openWeeklyReportsPanel());
+  },
   fetchData: () => dispatch(reloadCountryWeeks({})),
 });
 

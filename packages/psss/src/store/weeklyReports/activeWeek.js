@@ -12,10 +12,7 @@ const VERIFY_SYNDROME = 'VERIFY_SYNDROME';
 const SET_VERIFIED_STATUSES = 'SET_DEFAULT_VERIFIED_STATUSES';
 
 // action creators
-export const openWeeklyReportsPanel = id => dispatch => {
-  if (id !== null) {
-    dispatch(setActiveWeek(id));
-  }
+export const openWeeklyReportsPanel = () => dispatch => {
   dispatch(setDefaultVerifiedStatuses());
   dispatch({ type: TOGGLE_PANEL, panelIsOpen: true });
 };
@@ -64,7 +61,7 @@ export const getActiveWeekCountryData = ({ weeklyReports }) => {
 
 export const getSyndromeAlerts = state => {
   const data = getActiveWeekCountryData(state);
-  if (!data.syndromes) {
+  if (!data || !data.syndromes) {
     return [];
   }
   return data.syndromes.reduce(

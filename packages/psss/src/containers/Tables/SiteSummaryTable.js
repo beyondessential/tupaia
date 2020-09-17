@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor, AlertCell } from '../../components';
+import { createTotalCasesAccessor, AlertCell, FlexSpaceBetween } from '../../components';
 import {
   openWeeklyReportsPanel,
   getSitesForWeekError,
@@ -18,6 +18,7 @@ import {
   reloadSitesForWeek,
   checkSitesForWeekIsLoading,
 } from '../../store';
+import MuiLink from '@material-ui/core/Link';
 
 // Todo: update placeholder
 const NameCell = data => {
@@ -76,16 +77,17 @@ const siteWeekColumns = [
   },
 ];
 
-// Todo: update placeholder
-const TableHeader = () => {
-  return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
-};
-
-const StyledDiv = styled.div`
+const TableFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
+  padding: 1.25rem 1.3rem 1.3rem;
+  border-top: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+const Text = styled(Typography)`
+  font-size: 0.8rem;
+  color: ${props => props.theme.palette.text.secondary};
 `;
 
 export const SiteSummaryTableComponent = React.memo(
@@ -98,7 +100,12 @@ export const SiteSummaryTableComponent = React.memo(
 
     return (
       <>
-        <TableHeader />
+        <FakeHeader>
+          <div>10/30 Sentinel Sites Reported</div>
+          <MuiLink component="button" onClick={handleOpen}>
+            Review and Submit Now
+          </MuiLink>
+        </FakeHeader>
         <Table
           isLoading={isLoading}
           errorMessage={errorMessage}
@@ -108,10 +115,10 @@ export const SiteSummaryTableComponent = React.memo(
           Header={false}
           Body={CondensedTableBody}
         />
-        <StyledDiv>
-          <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
+        <TableFooter>
+          <Text>Verify data to submit Weekly report to Regional</Text>
           <Button onClick={handleOpen}>Review and Confirm Now</Button>
-        </StyledDiv>
+        </TableFooter>
       </>
     );
   },
