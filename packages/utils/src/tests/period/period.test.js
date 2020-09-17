@@ -241,7 +241,7 @@ describe('period utilities', () => {
     let clock;
 
     beforeEach(() => {
-      clock = sinon.useFakeTimers({ now: new Date(currentDateStub) });
+      clock = sinon.useFakeTimers(new Date(currentDateStub));
     });
 
     after(() => {
