@@ -33,6 +33,7 @@ export const createMockEntity = async fieldValues => {
 
   return mockModels.entity.createTypeInstance({
     code: 'MELB',
+    name: 'Melbourne',
     point: JSON.stringify({ type: 'Point', coordinates: [144.986, -37.915] }),
     timezone: 'Australia/Melbourne',
     ...fieldValues,
@@ -51,6 +52,12 @@ export const createMockModelsStub = responseMap => {
     mockModels.entity.find = sinon.stub().resolves(responseMap.entity.find);
   }
 
+  if (responseMap && responseMap.entity && responseMap.dataSource.getDataElementsInGroup) {
+    mockModels.dataSource.getDataElementsInGroup = sinon
+      .stub()
+      .resolves(responseMap.dataSource.getDataElementsInGroup);
+  }
+
   return mockModels;
 };
 
@@ -60,6 +67,9 @@ export const createMockModelsStubWithMockEntity = async fieldValues => {
   const mockModels = createMockModelsStub({
     entity: {
       find: [mockEntity],
+    },
+    dataSource: {
+      getDataElementsInGroup: [{ code: 'WTHR_PRECIP' }], // the mock data group has element PRECIP
     },
   });
 

@@ -2,6 +2,7 @@ import moment from 'moment';
 import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
+import { DataElementFetcher } from './DataElementFetcher';
 
 const SUPPORTED_DATA_ELEMENT_CODES = ['WTHR_MIN_TEMP', 'WTHR_MAX_TEMP', 'WTHR_PRECIP'];
 
@@ -14,6 +15,7 @@ export class WeatherService extends Service {
     super(models);
     this.api = api;
     this.dateSanitiser = new DateSanitiser();
+    this.dataElementFetcher = new DataElementFetcher(models);
   }
 
   /**
@@ -21,7 +23,7 @@ export class WeatherService extends Service {
    * @inheritDoc
    */
   async pull(dataSources, type, options = {}) {
-    const dataElementCodes = this.extractDataElementCodes(type, dataSources);
+    const dataElementCodes = await this.extractDataElementCodes(type, dataSources);
 
     const entities = await this.fetchEntitiesMatchingCodes(options.organisationUnitCodes);
 
@@ -69,14 +71,16 @@ export class WeatherService extends Service {
    * @returns {string[]}
    * @private
    */
-  extractDataElementCodes(type, dataSources) {
+  async extractDataElementCodes(type, dataSources) {
     let dataElementCodes = null;
     if (type === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
       dataElementCodes = [dataSources[0].code]; // FIXME: bad
     } else if (type === this.dataSourceTypes.DATA_GROUP) {
-      // all data elements requested
-      dataElementCodes = SUPPORTED_DATA_ELEMENT_CODES;
+      // data group requested
+      const dataGroupCode = dataSources[0].code;
+      const dataElements = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
+      dataElementCodes = dataElements.map(element => element.code);
     }
     return dataElementCodes;
   }

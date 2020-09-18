@@ -92,7 +92,7 @@ describe('WeatherService', () => {
         [
           {
             model: {},
-            id: 'SOME_DATA_GROUP_ID', // data group doesn't matter, it will return the data elements it knows about
+            id: 'SOME_DATA_GROUP_ID', // mock data has the data group lookup return element codes [WTHR_PRECIP], data group id/code/name doesnt matter
             code: 'SOME_DATA_GROUP_CODE',
             type: 'dataGroup',
             service_type: 'weather',
@@ -103,20 +103,24 @@ describe('WeatherService', () => {
         getMockOptionsArg(),
       );
 
-      expect(actual.results).to.deep.equal([
+      expect(actual).to.deep.equal([
         {
-          organisationUnit: 'MELB',
-          WTHR_PRECIP: 23.6,
-          WTHR_MAX_TEMP: 29.8,
-          WTHR_MIN_TEMP: 24,
-          period: '20200820',
+          event: 'weather_MELB_2020-08-20',
+          orgUnit: 'MELB',
+          orgUnitName: 'Melbourne',
+          eventDate: '2020-08-20',
+          dataValues: {
+            WTHR_PRECIP: 23.6,
+          },
         },
         {
-          organisationUnit: 'MELB',
-          WTHR_PRECIP: 5,
-          WTHR_MAX_TEMP: 6,
-          WTHR_MIN_TEMP: 7,
-          period: '20200821',
+          event: 'weather_MELB_2020-08-21',
+          orgUnit: 'MELB',
+          orgUnitName: 'Melbourne',
+          eventDate: '2020-08-21',
+          dataValues: {
+            WTHR_PRECIP: 5,
+          },
         },
       ]);
     });

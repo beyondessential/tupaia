@@ -51,10 +51,15 @@ export class ApiResultTranslator {
       combinedData = [...combinedData, ...translatedByEntityCode[entity.code]];
     }
 
-    return {
-      results: combinedData,
-      metadata: {},
-    };
+    switch (this.resultFormat) {
+      case 'analytics':
+        return {
+          results: combinedData,
+          metadata: {},
+        };
+      case 'events':
+        return combinedData;
+    }
   }
 
   _apiResultToEvents(apiResult, entity) {
@@ -62,13 +67,16 @@ export class ApiResultTranslator {
 
     for (const entry of apiResult.data) {
       const event = {
-        organisationUnit: entity.code,
-        period: entry.datetime.replace('-', '').replace('-', ''),
+        event: `weather_${entity.code}_${entry.datetime}`,
+        orgUnit: entity.code,
+        orgUnitName: entity.name,
+        eventDate: entry.datetime,
+        dataValues: {},
       };
 
       for (const dataElementCode of this.dataElementCodes) {
         const apiProperty = DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP[dataElementCode];
-        event[dataElementCode] = entry[apiProperty];
+        event.dataValues[dataElementCode] = entry[apiProperty];
       }
 
       events.push(event);

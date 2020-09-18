@@ -25,25 +25,33 @@ describe('ApiResultTranslator', () => {
   };
 
   it('translates event results', () => {
-    const translator = new ApiResultTranslator([{ code: 'MELB' }], 'events', [
+    const translator = new ApiResultTranslator([{ code: 'MELB', name: 'Melbourne' }], 'events', [
       'WTHR_PRECIP',
       'WTHR_MAX_TEMP',
     ]);
 
     const actual = translator.translate(mockApiResponse());
 
-    expect(actual.results).to.deep.equal([
+    expect(actual).to.deep.equal([
       {
-        organisationUnit: 'MELB',
-        period: '20200820',
-        WTHR_PRECIP: 23.6,
-        WTHR_MAX_TEMP: 29.8,
+        event: 'weather_MELB_2020-08-20',
+        orgUnit: 'MELB',
+        orgUnitName: 'Melbourne',
+        eventDate: '2020-08-20',
+        dataValues: {
+          WTHR_PRECIP: 23.6,
+          WTHR_MAX_TEMP: 29.8,
+        },
       },
       {
-        organisationUnit: 'MELB',
-        period: '20200821',
-        WTHR_PRECIP: 5,
-        WTHR_MAX_TEMP: 6,
+        event: 'weather_MELB_2020-08-21',
+        orgUnit: 'MELB',
+        orgUnitName: 'Melbourne',
+        eventDate: '2020-08-21',
+        dataValues: {
+          WTHR_PRECIP: 5,
+          WTHR_MAX_TEMP: 6,
+        },
       },
     ]);
   });
