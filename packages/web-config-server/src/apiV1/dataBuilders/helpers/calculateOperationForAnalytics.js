@@ -66,7 +66,6 @@ const combineBinaryIndicatorsToString = (analytics, config) => {
       stringArray.push(stringValue);
     }
   });
-  console.log(analytics, filteredAnalytics, dataElementToString);
   return stringArray.length === 0 ? 'None' : stringArray.join(', ');
 };
 
