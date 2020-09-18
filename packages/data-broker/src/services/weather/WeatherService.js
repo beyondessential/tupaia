@@ -2,9 +2,6 @@ import moment from 'moment';
 import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
-import { DataElementFetcher } from './DataElementFetcher';
-
-const SUPPORTED_DATA_ELEMENT_CODES = ['WTHR_MIN_TEMP', 'WTHR_MAX_TEMP', 'WTHR_PRECIP'];
 
 export class WeatherService extends Service {
   /**
@@ -15,7 +12,6 @@ export class WeatherService extends Service {
     super(models);
     this.api = api;
     this.dateSanitiser = new DateSanitiser();
-    this.dataElementFetcher = new DataElementFetcher(models);
   }
 
   /**
@@ -40,12 +36,17 @@ export class WeatherService extends Service {
   /**
    * @inheritDoc
    */
-  pullMetadata(dataSources, type) {
+  async pullMetadata(dataSources, type) {
+    const dataElements = await this.models.dataSource.find({
+      type: 'dataElement',
+      service_type: 'weather',
+    });
+
     const metadata = [];
-    for (const dataElementCode of SUPPORTED_DATA_ELEMENT_CODES) {
+    for (const dataElement of dataElements) {
       metadata.push({
-        code: dataElementCode,
-        name: dataElementCode,
+        code: dataElement.code,
+        name: dataElement.name,
       });
     }
     return Promise.resolve(metadata);

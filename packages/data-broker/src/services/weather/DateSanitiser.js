@@ -39,10 +39,6 @@ export class DateSanitiser {
   restrictDatesWithinLimits(startDate, endDate) {
     const { earliestStartDate, earliestEndDate, latestStartDate, latestEndDate } = this.getLimits();
 
-    console.log({ earliestStartDate, earliestEndDate, latestStartDate, latestEndDate });
-
-    console.log(startDate, endDate);
-
     // request for today, change to yesterday
     const startDateLess1day = moment(startDate)
       .subtract(1, 'day')
