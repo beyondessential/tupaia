@@ -2,7 +2,7 @@
 
 DIR=`dirname "$0"`
 
-CONCURRENT_BUILD_BATCH_SIZE=5
+CONCURRENT_BUILD_BATCH_SIZE=2
 
 USAGE="Usage: buildInternalDependencies.sh [--watch] [--withTypes]"
 
@@ -58,4 +58,3 @@ else
     eval "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
   done
 fi
-

@@ -1,10 +1,10 @@
 {
   "name": "@tupaia/database",
+  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha",
@@ -26,6 +26,6 @@
     "pg-pubsub": "0.3.0",
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
-    "winston": "3.2.1"
+    "winston": "3.3.3"
   }
 }

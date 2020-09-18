@@ -1,5 +1,7 @@
 # Tupaia
 
+[![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
+
 > This is a [mono-repo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md)
 
 It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can
@@ -16,6 +18,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
 - [meditrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-server/README.md)
+- [psss](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
 - [web-frontend](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md)
 
@@ -26,8 +29,6 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 
 ### Internal dependencies
 
-See also https://docs.beyondessential.com.au/books/software-development/page/internal-dependencies
-
 - [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
 - [aggregator](https://github.com/beyondessential/tupaia/blob/dev/packages/aggregator/README.md)
 - [auth](https://github.com/beyondessential/tupaia/blob/dev/packages/auth/README.md)
@@ -36,14 +37,14 @@ See also https://docs.beyondessential.com.au/books/software-development/page/int
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
+- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
 ## Getting started
 
 ### Secrets
 
-Most packages will require a .env file, which can usually be found in lastpass. Use the LOCAL entry
-if one exists for the package, otherwise use the DEV entry.
+Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
 ### Dependencies
 
@@ -76,5 +77,3 @@ Most of the packages support the following scripts for testing:
 yarn test # runs the tests
 yarn test-coverage # runs the tests and displays code coverage
 ```
-
-See also the docs page on [Test setup (mocha)](https://docs.beyondessential.com.au/books/software-development/page/test-setup-%28mocha%29)
