@@ -16,7 +16,9 @@ class TableOfCalculatedValues extends TableOfDataValuesBuilder {
         row.map(cell =>
           typeof cell === 'string'
             ? cell
-            : cell.dataElement || cell.operands.map(operand => operand.dataValues),
+            : cell.dataElement ||
+              (cell.operands && cell.operands.map(operand => operand.dataValues)) ||
+              (cell.dataElementToString && Object.keys(cell.dataElementToString)),
         ),
       ),
     );

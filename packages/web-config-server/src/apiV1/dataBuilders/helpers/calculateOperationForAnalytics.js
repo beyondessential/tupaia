@@ -1,17 +1,22 @@
-import { checkValueSatisfiesCondition } from '@tupaia/utils';
+import { checkValueSatisfiesCondition, replaceValues } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
 
-const checkCondition = (analytics, config) => {
-  const { dataElement, condition } = config;
+const checkCondition = (value, config) =>
+  checkValueSatisfiesCondition(value, config.condition) ? 'Yes' : 'No';
+
+const formatString = (value, config) => replaceValues(config.format, { value });
+
+const performSingleAnalyticOperation = (analytics, config) => {
+  const { operator, dataElement } = config;
   const filteredAnalytics = analytics.filter(({ dataElement: de }) => de === dataElement);
   if (filteredAnalytics.length > 1) {
     throw new Error(`Too many results passed to checkConditions (calculateOperationForAnalytics)`);
   } else if (filteredAnalytics.length === 0) {
     return NO_DATA_AVAILABLE;
   }
-  return checkValueSatisfiesCondition(filteredAnalytics[0].value, condition) ? 'Yes' : 'No';
+  return OPERATORS[operator](filteredAnalytics[0].value, config);
 };
 
 const sumDataValues = (analytics, dataValues) => {
@@ -26,11 +31,6 @@ const sumDataValues = (analytics, dataValues) => {
   return sum;
 };
 
-const ARITHMETIC_OPERATORS = {
-  DIVIDE: divideValues,
-  SUBTRACT: subtractValues,
-};
-
 const performArithmeticOperation = (analytics, arithmeticConfig) => {
   const { operator, operands: operandConfigs } = arithmeticConfig;
 
@@ -43,7 +43,7 @@ const performArithmeticOperation = (analytics, arithmeticConfig) => {
   );
 
   let result = operands[0];
-  const operationMethod = ARITHMETIC_OPERATORS[operator];
+  const operationMethod = OPERATORS[operator];
 
   for (let i = 1; i < operands.length; i++) {
     const currentOperand = operands[i];
@@ -53,16 +53,43 @@ const performArithmeticOperation = (analytics, arithmeticConfig) => {
   return result;
 };
 
-const OTHER_OPERATORS = {
-  CHECK_CONDITION: checkCondition,
+const combineBinaryIndicatorsToString = (analytics, config) => {
+  const { dataElementToString } = config;
+  const filteredAnalytics = analytics.filter(({ dataElement: de }) =>
+    Object.keys(dataElementToString).includes(de),
+  );
+  const stringArray = [];
+  filteredAnalytics.forEach(({ dataElement, value }) => {
+    const stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+
+    if (stringValue) {
+      stringArray.push(stringValue);
+    }
+  });
+  console.log(analytics, filteredAnalytics, dataElementToString);
+  return stringArray.length === 0 ? 'None' : stringArray.join(', ');
 };
+
+const OPERATORS = {
+  DIVIDE: divideValues,
+  SUBTRACT: subtractValues,
+  CHECK_CONDITION: checkCondition,
+  FORMAT: formatString,
+  COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
+};
+
+const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT'];
+
+const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT'];
 
 export const calculateOperationForAnalytics = (analytics, config) => {
   const { operator } = config;
-  if (operator in OTHER_OPERATORS) {
-    return OTHER_OPERATORS[operator](analytics, config);
-  } else if (operator in ARITHMETIC_OPERATORS) {
+  if (SINGLE_ANALYTIC_OPERATORS.includes(operator)) {
+    return performSingleAnalyticOperation(analytics, config);
+  } else if (ARITHMETIC_OPERATORS.includes(operator)) {
     return performArithmeticOperation(analytics, config);
+  } else if (Object.keys(OPERATORS).includes(operator)) {
+    return OPERATORS[operator](analytics, config);
   }
   throw new Error(`Cannot find operator: ${operator}`);
 };
