@@ -6,9 +6,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
-import { Navbar, Footer } from './widgets';
+import { Navbar, Footer, Header } from './widgets';
 import { ROUTES } from './routes';
-import { PrivateRoute, LoginView } from './authentication';
+import { PrivateRoute, LoginView, ProfileView, ChangePasswordView } from './authentication';
+import { QuestionsPage, SurveysPage } from './pages/resources';
+
+const PROFILE_LINKS = [
+  {
+    label: 'Profile',
+    to: '',
+    component: SurveysPage,
+  },
+  {
+    label: 'Change Password',
+    to: '/change-password',
+    component: QuestionsPage,
+  },
+];
 
 export const App = () => {
   const headerEl = React.useRef(null);
@@ -40,6 +54,17 @@ export const App = () => {
                 </Switch>
               </Route>
             ))}
+            <Route path="/profile">
+              <TabsToolbar links={PROFILE_LINKS} />
+              <Switch>
+                <Route path="/profile/change-password">
+                  <ChangePasswordView getHeaderEl={getHeaderEl} />
+                </Route>
+                <Route path="" exact>
+                  <ProfileView getHeaderEl={getHeaderEl} />
+                </Route>
+              </Switch>
+            </Route>
             <Redirect to="surveys" />
           </Switch>
         </PrivateRoute>
