@@ -15,7 +15,6 @@ import {
   LOGIN_ERROR,
   LOGOUT,
 } from './constants';
-import { changeRememberMe } from './actions';
 
 const defaultState = {
   emailAddress: '',
