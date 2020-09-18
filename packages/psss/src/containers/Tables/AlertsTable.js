@@ -12,14 +12,18 @@ import {
   WeekAndDateCell,
 } from '../../components';
 
-const createColumns = handlePanelOpen => [
-  {
-    title: 'Country',
-    key: 'name',
-    width: '28%',
-    align: 'left',
-    CellComponent: CountryNameButtonCreator(handlePanelOpen),
-  },
+const createColumns = (isForMultipleCountries, handlePanelOpen) => [
+  ...(isForMultipleCountries
+    ? [
+        {
+          title: 'Country',
+          key: 'name',
+          width: '28%',
+          align: 'left',
+          CellComponent: CountryNameButtonCreator(handlePanelOpen),
+        },
+      ]
+    : []),
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -53,10 +57,15 @@ const createColumns = handlePanelOpen => [
   },
 ];
 
-export const AlertsTable = React.memo(({ handlePanelOpen }) => (
-  <ConnectedTable endpoint="alerts" columns={createColumns(handlePanelOpen)} />
+export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => (
+  <ConnectedTable endpoint="alerts" columns={createColumns(!countryCode, handlePanelOpen)} />
 ));
 
 AlertsTable.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,
+  countryCode: PropTypes.string,
+};
+
+AlertsTable.defaultProps = {
+  countryCode: null,
 };

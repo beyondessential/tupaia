@@ -67,7 +67,7 @@ const actionHandlers = {
   }),
   [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => ({
     status: STATUSES.SUCCESS,
-    data: data,
+    data,
   }),
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({
     status: STATUSES.ERROR,

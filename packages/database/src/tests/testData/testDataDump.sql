@@ -91,7 +91,8 @@ CREATE TYPE public.entity_type AS ENUM (
 
 CREATE TYPE public.service_type AS ENUM (
     'dhis',
-    'tupaia'
+    'tupaia',
+    'indicator'
 );
 
 
@@ -603,6 +604,18 @@ CREATE TABLE public.geographical_area (
     country_id text NOT NULL,
     parent_id text,
     code text
+);
+
+
+--
+-- Name: indicator; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.indicator (
+    id text NOT NULL,
+    code text NOT NULL,
+    builder text NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -1294,6 +1307,22 @@ ALTER TABLE ONLY public.feed_item
 
 ALTER TABLE ONLY public.geographical_area
     ADD CONSTRAINT geographical_area_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: indicator indicator_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.indicator
+    ADD CONSTRAINT indicator_code_key UNIQUE (code);
+
+
+--
+-- Name: indicator indicator_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.indicator
+    ADD CONSTRAINT indicator_pkey PRIMARY KEY (id);
 
 
 --
@@ -2064,6 +2093,13 @@ CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity 
 --
 
 CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: indicator indicator_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER indicator_trigger AFTER INSERT OR DELETE OR UPDATE ON public.indicator FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -3573,6 +3609,45 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 836	/20200727071629-RemoveSchoolLevelBinaryIndicatorTable-modifies-data	2020-08-06 22:02:04.68
 837	/20200804010531-ChangeStriveProjectDefaultMapOverlay-modifies-data	2020-08-06 22:02:04.721
 838	/20200804021343-UpdateCOVIDAUProjectBackgroundUrl-modifies-data	2020-08-06 22:02:04.747
+839	/20200617043305-AddWishCustomDataDownloadReport	2020-08-13 22:55:25.603
+840	/20200623224901-RestrictWishRawDataDownloadAccess-modifies-data	2020-08-13 22:55:26.176
+841	/20200710035752-AddUnfpaRawDataDownloadReproductiveHealthFacility-modifies-data	2020-08-13 22:55:26.379
+842	/20200720095953-AddWishExportSurveyTestsByCode-modifies-data	2020-08-13 22:55:26.454
+843	/20200723070535-AddLaosSchoolsPrimarySchoolLevelTextbookShortageByKeySubjectsAndGradesMatrix-modifies-data	2020-08-13 22:55:26.587
+844	/20200726053205-AddLaosSchoolsLowerSecondarySchoolLevelTextbookShortageByKeySubjectsAndGradesMatrix-modifies-data	2020-08-13 22:55:26.84
+845	/20200726053306-AddLaosSchoolsUpperSecondarySchoolLevelTextbookShortageByKeySubjectsAndGradesMatrix-modifies-data	2020-08-13 22:55:26.953
+846	/20200727001331-AddLaosSchoolsPrimarySchoolLevelTextbookShortageBarGraph-modifies-data	2020-08-13 22:55:27.226
+847	/20200727013315-AddLaosSchoolsLowerSecondarySchoolLevelTextbookShortageBarGraph-modifies-data	2020-08-13 22:55:27.579
+848	/20200727013444-AddLaosSchoolsUpperSecondarySchoolLevelTextbookShortageBarGraph-modifies-data	2020-08-13 22:55:27.671
+849	/20200730073820-AddLaosSchoolsMapOverlayPopulationDistrictAndProvinceLevel-modifies-data	2020-08-13 22:55:27.816
+850	/20200803045941-AddUnfpaCountriesBackForSurveyRHFSC-modifies-data	2020-08-13 22:55:27.874
+851	/20200803070231-AddLaosSchoolsFunctioningComputerOverlay-modifies-data	2020-08-13 22:55:28.004
+852	/20200803233956-AddTongaHpuReportNutritionTotalSessionsConducted-modifies-data	2020-08-13 22:55:28.049
+853	/20200804100254-AddReportTongaHpuHealthTalksSettingsTypePie-modifies-data	2020-08-13 22:55:28.126
+854	/20200723055523-MigrateSpectrumScaleToNewFormat-modifies-data	2020-08-20 22:52:31.687
+855	/20200723232942-FixFlutrackingOverlaysToHardLimitScale-modifies-data	2020-08-20 22:52:31.929
+856	/20200729042609-AddLaosSchoolsTextbookToStudentRatioOverlay-modifies-data	2020-08-20 22:52:32.756
+857	/20200803061954-RemoveLaosSchoolsStudentResourcesMapOverlays-modifies-data	2020-08-20 22:52:32.998
+858	/20200803073517-AddNewLaosSchoolsElectricityAvailableOverlay-modifies-data	2020-08-20 22:52:33.19
+859	/20200805072741-RemoveSomeLaosSchoolsSchoolIndicatorsEIEOverlays-modifies-data	2020-08-20 22:52:33.248
+860	/20200805073136-UpdateLaosSchoolsOverlaysUsingSchCVD002-modifies-data	2020-08-20 22:52:33.301
+861	/20200807115047-AddTongaHpuTobaccoWarningsFinesLocation-modifies-data	2020-08-20 22:52:33.427
+862	/20200807061202-AddTotalScreenedForNCDRiskFactors-modifies-data	2020-08-27 22:13:12.29
+863	/20200810005228-AddTongaHpuRateOfTobaccoNonComplianceDashboard-modifies-data	2020-08-27 22:13:12.399
+864	/20200812034926-UpdateHP02NCDRiskFactorsScreeningEventsDashboard-modifies-data	2020-08-27 22:13:12.462
+865	/20200814011117-FixUNFPAReportShowingOver100Percent-modifies-data	2020-08-27 22:13:12.724
+866	/20200814062713-DeprecateSpecificSumPerPeriodDatabuildersAndReplaceWithGeneric-modifies-data	2020-08-27 22:13:13.055
+867	/20200817000740-AddTongaHpuReportNcdRiskFactorsByAgeAndGender-modifies-data	2020-08-27 22:13:13.183
+868	/20200817045557-AddTongaHpuNumberOfInspectedAreasForTobaccoComplianceDashboard-modifies-data	2020-08-27 22:13:13.272
+869	/20200817073430-ChangeFlutrackingOverlaysScaleBounds-modifies-data	2020-08-27 22:13:13.339
+870	/20200820071030-FixIHRMapOverlaysMissingOrganisationUnitType-modifies-data	2020-08-27 22:13:13.404
+871	/20200825113028-AddLaosEocProject-modifies-data	2020-08-27 22:13:13.673
+872	/20200527025956-FixupsToMissingDataElementInPLSMDashboards	2020-09-01 15:08:19.605
+873	/20200806062829-AddEmptyAndNoAccessDashboardReports-modifies-data	2020-09-01 15:08:20.277
+874	/20200720231712-AddIndicatorDataSourceType-modifies-schema	2020-09-02 11:30:47.281
+875	/20200804033230-AddIndicatorTable-modifies-schema	2020-09-02 11:30:47.317
+884	/20200826215112-UseAnalyticsPerPerPeriodBuilder-modifies-data	2020-09-04 11:27:39.35
+886	/20200826215113-UseIndicatorsInStriveVisualisations-modifies-data	2020-09-04 11:39:44.361
 \.
 
 
@@ -3580,7 +3655,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 838, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 886, true);
 
 
 --
