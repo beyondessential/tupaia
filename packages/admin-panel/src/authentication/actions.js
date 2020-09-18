@@ -6,6 +6,7 @@
 import {
   EMAIL_ADDRESS_CHANGE,
   PASSWORD_CHANGE,
+  REMEMBER_ME_CHANGE,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_ERROR,
@@ -20,6 +21,11 @@ export const changeEmailAddress = emailAddress => ({
 export const changePassword = password => ({
   type: PASSWORD_CHANGE,
   password,
+});
+
+export const changeRememberMe = rememberMe => ({
+  type: REMEMBER_ME_CHANGE,
+  rememberMe,
 });
 
 export const login = (emailAddress, password) => async (dispatch, getState, { api }) => {

@@ -24093,20 +24093,15 @@ redux-persist-error-handler@^0.1.1:
   dependencies:
     prop-types "^15.6.0"
 
-redux-persist@5.0.0-beta.7:
-  version "5.0.0-beta.7"
-  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-5.0.0-beta.7.tgz#51d2d3293be489df4398d5210fc88ae94ce382e0"
-  integrity sha512-I8mCUZh3H3racUwUyFHcFdlfFszu4x2/OiBpgGDSV2wB6afk3HqbazaRc6EzWFVekdFkuW4WsmOW/hwAxD7LBw==
+redux-persist@6.0.0, redux-persist@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
+  integrity sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==
 
 redux-persist@^5.9.1:
   version "5.9.1"
   resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-5.9.1.tgz#83bd4abd526ef768f63fceee338fa9d8ed6552d6"
   integrity sha512-WIaLCd975R16W7nD1wqUPLcqeLztIRvsSSNZdblEjtihL1wz+NSOq9nYUSvsdoWJOtfm9RbDF4IVd0a3VOtZcw==
-
-redux-persist@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
-  integrity sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==
 
 redux-saga@^1.0.0-beta.2:
   version "1.1.3"
