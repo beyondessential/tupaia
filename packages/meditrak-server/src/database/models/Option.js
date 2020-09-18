@@ -4,14 +4,23 @@
  **/
 
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
-import { hasContent } from '@tupaia/utils';
 
 class OptionType extends DatabaseType {
   static databaseType = TYPES.OPTION;
 
   static fieldValidators = new Map()
     .set('value', [
-      hasContent,
+       async (value) => {
+     //  console.log('In fieldvalidators, the value is ' + value);
+    //   console.log('hasContent: ' + hasContent(value));
+        const checkIsEmpty = value => value === undefined || value === null || value.length === 0;
+          if (checkIsEmpty(value)) {
+            return 'Value cannot be empty'; 
+          }
+          else {           
+           return null;
+          };
+      },
       async (value, model) => {
         const foundConflict = await findFieldConflict('value', value, model);
         if (foundConflict) return 'Found duplicate values in option set';
