@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import {
   flattenToObject,
   getKeysSortedByValues,
@@ -31,7 +29,7 @@ const object3 = {
 const assertSortingCorrectness = (sortingMethod, input, expectedValue) => {
   const arrayToSort = [...input];
   arrayToSort.sort(sortingMethod);
-  expect(arrayToSort).to.deep.equal(expectedValue);
+  expect(arrayToSort).toEqual(expectedValue);
 };
 
 describe('object', () => {
@@ -39,17 +37,17 @@ describe('object', () => {
     it('should sort the keys of an object containing string values', () => {
       expect(
         getKeysSortedByValues({ fourth: 'd', third: 'c', second: 'b' }, { asc: true }),
-      ).to.deep.equal(['second', 'third', 'fourth']);
+      ).toEqual(['second', 'third', 'fourth']);
     });
 
     it('should sort the keys of an object containing numeric string values', () => {
       expect(
         getKeysSortedByValues({ ten: '10', one: '1', two: '2' }, { asc: true }),
-      ).to.deep.equal(['one', 'two', 'ten']);
+      ).toEqual(['one', 'two', 'ten']);
     });
 
     it('should sort the keys of an object containing number values', () => {
-      expect(getKeysSortedByValues({ five: 5, four: 4, one: 1 }, { asc: true })).to.deep.equal([
+      expect(getKeysSortedByValues({ five: 5, four: 4, one: 1 }, { asc: true })).toEqual([
         'one',
         'four',
         'five',
@@ -57,7 +55,7 @@ describe('object', () => {
     });
 
     it('should use DESC direction if configured accordingly', () => {
-      expect(getKeysSortedByValues({ one: 1, five: 5, four: 4 }, { asc: false })).to.deep.equal([
+      expect(getKeysSortedByValues({ one: 1, five: 5, four: 4 }, { asc: false })).toEqual([
         'five',
         'four',
         'one',
@@ -65,15 +63,16 @@ describe('object', () => {
     });
 
     it('should default to ASC direction for empty options', () => {
-      expect(getKeysSortedByValues({ five: 5, one: 1 }, {})).to.deep.equal(['one', 'five']);
+      expect(getKeysSortedByValues({ five: 5, one: 1 }, {})).toEqual(['one', 'five']);
     });
 
     it('should default to ASC direction for `undefined` options', () => {
-      expect(getKeysSortedByValues({ five: 5, one: 1 })).to.deep.equal(['one', 'five']);
+      expect(getKeysSortedByValues({ five: 5, one: 1 })).toEqual(['one', 'five']);
     });
 
     it('should default to ASC direction for `null` options', () => {
-      expect(getKeysSortedByValues({ five: 5, one: 1 }), null).to.deep.equal(['one', 'five']);
+      // null
+      expect(getKeysSortedByValues({ five: 5, one: 1 })).toEqual(['one', 'five']);
     });
   });
 
@@ -146,37 +145,35 @@ describe('object', () => {
 
   describe('reduceToDictionary()', () => {
     it('should accept either an array or a dictionary of objects as input', () => {
-      expect(reduceToDictionary([object1, object2], 'id', 'value')).to.deep.equal(
-        reduceToDictionary({ id1: object1, id2: object2 }, 'id', 'value'),
-      );
+      expect(reduceToDictionary([object1, object2], 'id', 'value')).toEqual(reduceToDictionary({ id1: object1, id2: object2 }, 'id', 'value'));
     });
 
     describe('key mappers', () => {
       it('string', () => {
         const result = reduceToDictionary([object1, object2], 'id', 'value');
-        expect(Object.keys(result)).to.deep.equal(['id1', 'id2']);
+        expect(Object.keys(result)).toEqual(['id1', 'id2']);
       });
 
       it('function', () => {
         const result = reduceToDictionary([object1, object2], object => object.value / 100, 'id');
-        expect(Object.keys(result)).to.deep.equal(['0.1', '0.2']);
+        expect(Object.keys(result)).toEqual(['0.1', '0.2']);
       });
     });
 
     describe('value mappers', () => {
       it('string', () => {
         const result = reduceToDictionary([object1, object2], 'id', 'value');
-        expect(Object.values(result)).to.deep.equal([10, 20]);
+        expect(Object.values(result)).toEqual([10, 20]);
       });
 
       it('function', () => {
         const result = reduceToDictionary([object1, object2], 'id', object => object.value / 100);
-        expect(Object.values(result)).to.deep.equal([0.1, 0.2]);
+        expect(Object.values(result)).toEqual([0.1, 0.2]);
       });
     });
 
     it('should combine key and value mappers into an object', () => {
-      expect(reduceToDictionary([object1, object2], 'id', 'value')).to.deep.equal({
+      expect(reduceToDictionary([object1, object2], 'id', 'value')).toEqual({
         id1: 10,
         id2: 20,
       });
@@ -192,16 +189,16 @@ describe('object', () => {
     };
 
     it('should create an object out of an array of objects', () => {
-      expect(flattenToObject([object1, object3])).to.deep.equal(expectedResult);
+      expect(flattenToObject([object1, object3])).toEqual(expectedResult);
     });
 
     it('should create an object out of an object dictionary', () => {
-      expect(flattenToObject({ object1, object3 })).to.deep.equal(expectedResult);
+      expect(flattenToObject({ object1, object3 })).toEqual(expectedResult);
     });
 
     it('should use the last value for key conflicts', () => {
-      expect(flattenToObject({ object2, object1, object3 })).to.deep.equal(expectedResult);
-      expect(flattenToObject({ object1, object2, object3 })).to.deep.equal({
+      expect(flattenToObject({ object2, object1, object3 })).toEqual(expectedResult);
+      expect(flattenToObject({ object1, object2, object3 })).toEqual({
         id: 'id2',
         value: 20,
         name: 'Fiji',
@@ -214,24 +211,24 @@ describe('object', () => {
     const expectedResult = new Set(['id1', 'id2']);
 
     it('should create a set out of an array of objects', () => {
-      expect(reduceToSet([object1, object2], 'id')).to.deep.equal(expectedResult);
+      expect(reduceToSet([object1, object2], 'id')).toEqual(expectedResult);
     });
 
     it('should create a set out of an object dictionary', () => {
-      expect(reduceToSet({ id1: object1, id2: object2 }, 'id')).to.deep.equal(expectedResult);
+      expect(reduceToSet({ id1: object1, id2: object2 }, 'id')).toEqual(expectedResult);
     });
   });
 
   describe('mapKeys', () => {
     it('options parameter should be optional', () => {
-      expect(mapKeys({}, {})).to.be.an('object');
+      expect(mapKeys({}, {})).toBeInstanceOf(Object);
     });
 
     it('should return a new object with mapped keys', () => {
       const object = { a: 1, b: 2 };
       const mapping = { a: 'alpha', b: 'beta' };
 
-      expect(mapKeys(object, mapping)).to.deep.equal({
+      expect(mapKeys(object, mapping)).toEqual({
         alpha: 1,
         beta: 2,
       });
@@ -242,16 +239,16 @@ describe('object', () => {
       const mapping = { a: 'alpha', c: 'gamma' };
       const expectedResults = { alpha: 1, gamma: 3 };
 
-      expect(mapKeys(object, mapping)).to.deep.equal(expectedResults);
-      expect(mapKeys(object, mapping, undefined)).to.deep.equal(expectedResults);
-      expect(mapKeys(object, mapping, {})).to.deep.equal(expectedResults);
+      expect(mapKeys(object, mapping)).toEqual(expectedResults);
+      expect(mapKeys(object, mapping, undefined)).toEqual(expectedResults);
+      expect(mapKeys(object, mapping, {})).toEqual(expectedResults);
     });
 
     it('should support an option to default to existing keys', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { a: 'alpha', c: 'gamma' };
 
-      expect(mapKeys(object, mapping, { defaultToExistingKeys: true })).to.deep.equal({
+      expect(mapKeys(object, mapping, { defaultToExistingKeys: true })).toEqual({
         alpha: 1,
         b: 2,
         gamma: 3,
@@ -262,7 +259,7 @@ describe('object', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { a: 'alpha', c: 'gamma' };
 
-      expect(mapKeys(object, mapping, { defaultToExistingKeys: false })).to.deep.equal({
+      expect(mapKeys(object, mapping, { defaultToExistingKeys: false })).toEqual({
         alpha: 1,
         gamma: 3,
       });
@@ -271,14 +268,14 @@ describe('object', () => {
 
   describe('mapValues', () => {
     it('options parameter should be optional', () => {
-      expect(mapKeys({}, {})).to.be.an('object');
+      expect(mapKeys({}, {})).toBeInstanceOf(Object);
     });
 
     it('should return a new object with mapped values', () => {
       const object = { a: 1, b: 2 };
       const mapping = { 1: 'alpha', 2: 'beta' };
 
-      expect(mapValues(object, mapping)).to.deep.equal({
+      expect(mapValues(object, mapping)).toEqual({
         a: 'alpha',
         b: 'beta',
       });
@@ -289,15 +286,15 @@ describe('object', () => {
       const mapping = { 1: 'alpha', 3: 'gamma' };
       const expectedResults = { a: 'alpha', c: 'gamma' };
 
-      expect(mapValues(object, mapping)).to.deep.equal(expectedResults);
-      expect(mapValues(object, mapping, {})).to.deep.equal(expectedResults);
+      expect(mapValues(object, mapping)).toEqual(expectedResults);
+      expect(mapValues(object, mapping, {})).toEqual(expectedResults);
     });
 
     it('should support an option to default to existing values', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { 1: 'alpha', 3: 'gamma' };
 
-      expect(mapValues(object, mapping, { defaultToExistingValues: true })).to.deep.equal({
+      expect(mapValues(object, mapping, { defaultToExistingValues: true })).toEqual({
         a: 'alpha',
         b: 2,
         c: 'gamma',
@@ -308,7 +305,7 @@ describe('object', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { 1: 'alpha', 3: 'gamma' };
 
-      expect(mapValues(object, mapping, { defaultToExistingValues: false })).to.deep.equal({
+      expect(mapValues(object, mapping, { defaultToExistingValues: false })).toEqual({
         a: 'alpha',
         c: 'gamma',
       });

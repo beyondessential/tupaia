@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { stringifyQuery } from '../request';
 
 describe('request', () => {
@@ -11,14 +10,14 @@ describe('request', () => {
   const ENDPOINT = 'reports';
 
   const assertUrlIsCorrect = (queryParams, expectedUrl) => {
-    expect(stringifyQuery(BASE_URL, ENDPOINT, queryParams)).to.equal(expectedUrl);
+    expect(stringifyQuery(BASE_URL, ENDPOINT, queryParams)).toBe(expectedUrl);
   };
 
   describe('stringifyQuery()', () => {
     it('no query params', () => {
       const expectedUrl = 'https://test-api.org/reports';
 
-      expect(stringifyQuery(BASE_URL, ENDPOINT)).to.equal(expectedUrl);
+      expect(stringifyQuery(BASE_URL, ENDPOINT)).toBe(expectedUrl);
       [undefined, null, {}].forEach(queryParams => assertUrlIsCorrect(queryParams, expectedUrl));
     });
 

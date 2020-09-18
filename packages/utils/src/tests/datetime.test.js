@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import moment from 'moment';
 
 import { getTimezoneNameFromTimestamp } from '../datetime';
@@ -21,7 +20,8 @@ describe('DateTime', () => {
       'Antarctica/McMurdo', // +13 while in DST time.
     ];
 
-    expect(moment.parseZone(timestamp).format('Z')).to.equal(utcOffset);
-    expect(getTimezoneNameFromTimestamp(timestamp)).to.be.oneOf(timezones);
+    expect(moment.parseZone(timestamp).format('Z')).toBe(utcOffset);
+    // expect(getTimezoneNameFromTimestamp(timestamp)).to.be.oneOf(timezones);
+    expect(timezones).toContain(getTimezoneNameFromTimestamp(timestamp));
   });
 });
