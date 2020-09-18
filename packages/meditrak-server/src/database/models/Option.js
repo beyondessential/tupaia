@@ -11,8 +11,6 @@ class OptionType extends DatabaseType {
   static fieldValidators = new Map()
     .set('value', [
        async (value) => {
-     //  console.log('In fieldvalidators, the value is ' + value);
-    //   console.log('hasContent: ' + hasContent(value));
         const checkIsEmpty = value => value === undefined || value === null || value.length === 0;
           if (checkIsEmpty(value)) {
             return 'Value cannot be empty'; 
