@@ -9,5 +9,5 @@ export function addRoutesToApp(app) {
   /**
    * GET routes
    **/
-  app.get('(/v[0-9]+)?/fetchReport', fetchReport);
+  app.get('(/v[0-9]+)?/fetchReport/:reportId', fetchReport);
 }
