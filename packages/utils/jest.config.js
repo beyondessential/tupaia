@@ -4,5 +4,5 @@ module.exports = {
   testMatch: ['<rootDir>/src/__tests__/period/period.test.js'],
   transformIgnorePatterns: ['/node_modules/'],
   testEnvironment: 'node',
-  testURL: 'http://localhost',
+  setupFilesAfterEnv: ['../../jestScaffolding.js'],
 };
