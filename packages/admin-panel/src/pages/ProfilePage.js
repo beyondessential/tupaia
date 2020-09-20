@@ -31,7 +31,7 @@ const ErrorMessage = styled.p`
 
 export const ProfilePageComponent = ({ user, errorMessage, onUpdateProfile, getHeaderEl }) => {
   const HeaderPortal = usePortalWithCallback(<Header title="Profile" />, getHeaderEl);
-
+  const { firstName, lastName, position, employer } = user;
   console.log('user', user);
   return (
     <>
@@ -39,10 +39,10 @@ export const ProfilePageComponent = ({ user, errorMessage, onUpdateProfile, getH
       <Container>
         <form onSubmit={onUpdateProfile} noValidate>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          <TextField label="First Name" name="firstName" />
-          <TextField label="Last Name" name="lastName" />
-          <TextField label="Employer" name="employer" />
-          <TextField label="Role" name="role" />
+          <TextField label="First Name" name="firstName" defaultValue={firstName} />
+          <TextField label="Last Name" name="lastName" defaultValue={lastName} />
+          <TextField label="Employer" name="employer" defaultValue={employer} />
+          <TextField label="Role" name="role" defaultValue={position} />
           <StyledButton type="submit" fullWidth>
             Update Profile
           </StyledButton>
