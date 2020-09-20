@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import xlsx from 'xlsx';
 import sinon from 'sinon';
 
@@ -29,9 +27,7 @@ const WORK_BOOK = {
 describe('WorkBookParser', () => {
   beforeAll(() => {
     // sinon.stub(xlsx.utils, 'sheet_to_json').callsFake(sheet => sheet);
-    xlsx.utils.sheet_to_json = jest.fn();
-   ;
-    xlsx.utils.sheet_to_json.mockImplementation(sheet => sheet);
+    xlsx.utils.sheet_to_json = jest.fn().mockImplementation(sheet => sheet);
   });
 
   describe('parse()', () => {
@@ -59,12 +55,13 @@ describe('WorkBookParser', () => {
       });
     });
 
-    // it('should map the input to itself if no mapper is provided', () => {
-    //   const parser = new WorkBookParser();
-    //   return expect(parser.parse(WORK_BOOK)).to.eventually.deep.equal(SHEETS);
-    // });
+    it('should map the input to itself if no mapper is provided', async () => {
+      const parser = new WorkBookParser();
+      const result = await parser.parse(WORK_BOOK);
+      return expect(result).toEqual(SHEETS);
+    });
 
-    describe.skip('should use the provided validators to validate a spreadsheet', () => {
+    describe('should use the provided validators to validate a spreadsheet', () => {
       const errorMessage = 'Invalid value for Header C';
       const constructValidators = invalidHeaderCValue => ({
         Sheet2: row => {
@@ -74,32 +71,31 @@ describe('WorkBookParser', () => {
         },
       });
 
-      it('validator is triggered correctly', () => {
+      it('validator is triggered correctly', async () => {
         const triggeringValue = 'Value7';
         const validators = constructValidators(triggeringValue);
         const parser = new WorkBookParser({}, validators);
-
-        return expect(parser.parse(WORK_BOOK)).to.be.rejectedWith(errorMessage);
+        await expect(parser.parse(WORK_BOOK)).rejects.toThrow(errorMessage);
       });
 
-      it("validator is not triggered when it shouldn't", () => {
+      it("validator is not triggered when it shouldn't", async () => {
         const nonTriggeringValue = 'Value6';
         const validators = constructValidators(nonTriggeringValue);
         const parser = new WorkBookParser({}, validators);
-
-        return expect(parser.parse(WORK_BOOK)).to.eventually.deep.equal(SHEETS);
+        const result = await parser.parse(WORK_BOOK);
+        return expect(result).toEqual(SHEETS);
       });
     });
   });
 
-  describe.skip('setSheetNameFilter()', () => {
+  describe('setSheetNameFilter()', () => {
     it('should use the provided sheet name filter to filter out specific tabs', async () => {
       const parser = new WorkBookParser();
       parser.setSheetNameFilter(['Sheet1']);
 
       const parsedWorkBook = await parser.parse(WORK_BOOK);
-      expect(parsedWorkBook).to.have.property('Sheet1');
-      expect(parsedWorkBook).to.not.have.property('Sheet2');
+      expect(parsedWorkBook).toHaveProperty('Sheet1');
+      expect(parsedWorkBook).not.toHaveProperty('Sheet2');
     });
   });
 
