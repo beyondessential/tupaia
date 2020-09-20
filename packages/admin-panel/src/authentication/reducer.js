@@ -14,6 +14,9 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT,
+  PROFILE_UPDATE_ERROR,
+  PROFILE_UPDATE_REQUEST,
+  PROFILE_UPDATE_SUCCESS,
 } from './constants';
 
 const defaultState = {
@@ -57,6 +60,16 @@ const stateChanges = {
   [LOGIN_REQUEST]: () => ({ isLoggingIn: true }),
   [LOGIN_ERROR]: logoutStateUpdater,
   [LOGOUT]: logoutStateUpdater,
+  // Profile
+  [PROFILE_UPDATE_SUCCESS]: (payload, currentState) => ({
+    ...defaultState,
+    ...payload,
+    rememberMe: currentState.rememberMe,
+    emailAddress: currentState.emailAddress,
+    password: currentState.password,
+  }),
+  [PROFILE_UPDATE_REQUEST]: () => ({ isLoggingIn: true }),
+  [PROFILE_UPDATE_ERROR]: payload => ({ errorMessage: payload }),
 };
 
 export const reducer = createReducer(defaultState, stateChanges);

@@ -11,6 +11,9 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT,
+  PROFILE_UPDATE_ERROR,
+  PROFILE_UPDATE_REQUEST,
+  PROFILE_UPDATE_SUCCESS,
 } from './constants';
 
 export const changeEmailAddress = emailAddress => ({
@@ -62,4 +65,32 @@ export const loginError = errorMessage => ({
 
 export const logout = () => ({
   type: LOGOUT,
+});
+
+// Profile
+export const updateProfile = (emailAddress, password) => async (dispatch, getState, { api }) => {
+  const deviceName = window.navigator.userAgent;
+  dispatch({
+    type: PROFILE_UPDATE_REQUEST,
+  });
+  try {
+    const userDetails = await api.reauthenticate({
+      emailAddress,
+      password,
+      deviceName,
+    });
+    dispatch(updateProfileSuccess(userDetails));
+  } catch (error) {
+    dispatch(updateProfileError(error.message));
+  }
+};
+
+export const updateProfileSuccess = ({ user }) => ({
+  type: PROFILE_UPDATE_SUCCESS,
+  user,
+});
+
+export const updateProfileError = errorMessage => ({
+  type: PROFILE_UPDATE_ERROR,
+  errorMessage,
 });

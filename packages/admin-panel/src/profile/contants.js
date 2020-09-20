@@ -1,9 +1,0 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-export const PROFILE_FIELD_CHANGE = 'PROFILE_FIELD_CHANGE';
-export const PROFILE_UPDATE_SUCCESS = 'PROFILE_UPDATE_SUCCESS';
-export const PROFILE_UPDATE_REQUEST = 'PROFILE_UPDATE_REQUEST';
-export const PROFILE_UPDATE_ERROR = 'PROFILE_UPDATE_ERROR';
