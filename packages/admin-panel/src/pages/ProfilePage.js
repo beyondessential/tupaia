@@ -10,7 +10,12 @@ import { connect } from 'react-redux';
 import { Button, TextField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
-import { getErrorMessage, updateProfile, getUser } from '../authentication';
+import {
+  getProfileErrorMessage,
+  getProfileLoading,
+  updateProfile,
+  getUser,
+} from '../authentication';
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -29,21 +34,38 @@ const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
 `;
 
-export const ProfilePageComponent = ({ user, errorMessage, onUpdateProfile, getHeaderEl }) => {
+export const ProfilePageComponent = ({
+  user,
+  errorMessage,
+  isLoading,
+  onUpdateProfile,
+  getHeaderEl,
+}) => {
   const HeaderPortal = usePortalWithCallback(<Header title="Profile" />, getHeaderEl);
-  const { firstName, lastName, position, employer } = user;
-  console.log('user', user);
+  const { id, firstName, lastName, position, employer } = user;
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    const fields = event.target.elements;
+    onUpdateProfile(id, {
+      first_name: fields.firstName.value,
+      last_name: fields.lastName.value,
+      position: fields.role.value,
+      employer: fields.employer.value,
+    });
+  };
+
   return (
     <>
       {HeaderPortal}
       <Container>
-        <form onSubmit={onUpdateProfile} noValidate>
+        <form onSubmit={handleSubmit} noValidate>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <TextField label="First Name" name="firstName" defaultValue={firstName} />
           <TextField label="Last Name" name="lastName" defaultValue={lastName} />
           <TextField label="Employer" name="employer" defaultValue={employer} />
           <TextField label="Role" name="role" defaultValue={position} />
-          <StyledButton type="submit" fullWidth>
+          <StyledButton type="submit" fullWidth isLoading={isLoading}>
             Update Profile
           </StyledButton>
         </form>
@@ -56,7 +78,9 @@ ProfilePageComponent.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   onUpdateProfile: PropTypes.func.isRequired,
   errorMessage: PropTypes.string,
+  isLoading: PropTypes.bool,
   user: PropTypes.PropTypes.shape({
+    id: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     employer: PropTypes.string,
@@ -67,15 +91,17 @@ ProfilePageComponent.propTypes = {
 ProfilePageComponent.defaultProps = {
   errorMessage: null,
   user: null,
+  isLoading: false,
 };
 
 const mapStateToProps = state => ({
   user: getUser(state),
-  errorMessage: getErrorMessage(state),
+  errorMessage: getProfileErrorMessage(state),
+  isLoading: getProfileLoading(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  onUpdateProfile: () => dispatch(updateProfile()),
+  onUpdateProfile: (id, payload) => dispatch(updateProfile(id, payload)),
 });
 
 export const ProfilePage = connect(mapStateToProps, mapDispatchToProps)(ProfilePageComponent);

@@ -14,9 +14,9 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT,
-  PROFILE_UPDATE_ERROR,
-  PROFILE_UPDATE_REQUEST,
-  PROFILE_UPDATE_SUCCESS,
+  PROFILE_ERROR,
+  PROFILE_REQUEST,
+  PROFILE_SUCCESS,
 } from './constants';
 
 const defaultState = {
@@ -28,6 +28,8 @@ const defaultState = {
   isLoggingIn: false,
   rememberMe: false,
   errorMessage: null,
+  profileErrorMessage: null,
+  profileLoading: false,
 };
 
 export const RememberMeTransform = createTransform(
@@ -61,15 +63,23 @@ const stateChanges = {
   [LOGIN_ERROR]: logoutStateUpdater,
   [LOGOUT]: logoutStateUpdater,
   // Profile
-  [PROFILE_UPDATE_SUCCESS]: (payload, currentState) => ({
-    ...defaultState,
-    ...payload,
-    rememberMe: currentState.rememberMe,
-    emailAddress: currentState.emailAddress,
-    password: currentState.password,
+  [PROFILE_SUCCESS]: (user, currentState) => ({
+    profileLoading: false,
+    profileErrorMessage: null,
+    user: {
+      ...currentState.user,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      name: `${user.first_name} ${user.last_name}`,
+      position: user.position,
+      employer: user.employer,
+    },
   }),
-  [PROFILE_UPDATE_REQUEST]: () => ({ isLoggingIn: true }),
-  [PROFILE_UPDATE_ERROR]: payload => ({ errorMessage: payload }),
+  [PROFILE_REQUEST]: () => ({ profileLoading: true }),
+  [PROFILE_ERROR]: payload => ({
+    profileLoading: false,
+    ...payload,
+  }),
 };
 
 export const reducer = createReducer(defaultState, stateChanges);
