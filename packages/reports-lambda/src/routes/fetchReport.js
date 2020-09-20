@@ -6,20 +6,22 @@
 import { respond } from '@tupaia/utils';
 import { createAggregator } from '@tupaia/aggregator';
 import { Aggregator } from '../aggregator';
-import { transform } from '../reportBuilder/transform';
+import { fetch, transform } from '../reportBuilder';
 
 const reports = [
   {
     id: 'TO_HPU_Nutrition_Counselling_Total_Sessions_Conducted',
     config: {
       fetch: [
-        { fetchAnalytics: { codes: ['HP299a', 'HP323a'], aggregationType: 'FINAL_EACH_MONTH' } },
+        {
+          fetchAnalytics: {
+            dataElementCodes: ['HP299a', 'HP323a'],
+            aggregationType: 'FINAL_EACH_MONTH',
+          },
+        },
       ],
       filter: [],
       transform: [
-        { select: { value: '<value>', as: '<dataElement>' } },
-        { drop: 'dataElement' },
-        { drop: 'value' },
         // Main config
         { select: { convertToPeriod: { period: '<period>', targetType: 'MONTH' }, as: 'period' } },
         { mergeRows: { group: ['period'], sum: ['HP299a'], count: ['HP323a'] } },
@@ -41,13 +43,13 @@ const reports = [
         { drop: 'period' },
 
         //Test config
-        { select: { value: '<Total Nutritional Counselling Sessions Conducted>', as: '<name>' } },
-        {
-          mergeRows: {
-            group: ['organisationUnit'],
-            drop: ['Total Nutritional Counselling Sessions Conducted', 'name'],
-          },
-        },
+        // { select: { value: '<Total Nutritional Counselling Sessions Conducted>', as: '<name>' } },
+        // {
+        //   mergeRows: {
+        //     group: ['organisationUnit'],
+        //     drop: ['Total Nutritional Counselling Sessions Conducted', 'name'],
+        //   },
+        // },
       ],
       output: [
         {
@@ -67,14 +69,13 @@ const reports = [
       fetch: [
         {
           fetchAnalytics: {
-            codes: ['CH324', 'CH325', 'CH326', 'CH327', 'CH328', 'CH329'],
+            dataElementCodes: ['CH324', 'CH325', 'CH326', 'CH327', 'CH328', 'CH329'],
             aggregationType: 'RAW',
           },
         },
       ],
       filter: [],
       transform: [
-        { select: { value: '<value>', as: '<dataElement>' } },
         // {
         //   mergeRows: {
         //     sum: ['CH324', 'CH325', 'CH326', 'CH327', 'CH328', 'CH329'],
@@ -107,8 +108,54 @@ const reports = [
     },
   },
   {
-    id: 'TO_HPU_NCD_Risk_Factory_Screening_Type_Setting_Unique',
-    config: {},
+    id: 'TO_HPU_NCD_Risk_Factory_Screening_Type_Setting',
+    config: {
+      fetch: [
+        {
+          fetchEvents: {
+            programCode: 'HP02',
+            dataElementCodes: ['HP31n'],
+            entityAggregation: {
+              aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
+              dataSourceEntityType: 'village',
+              aggregationEntityType: 'facility',
+            },
+            dataServices: [
+              {
+                isDataRegional: false,
+              },
+            ],
+          },
+        },
+      ],
+      filter: [],
+      transform: [
+        { drop: 'event' },
+        { drop: 'eventDate' },
+        { drop: 'orgUnitName' },
+        { select: { value: 1, as: '<HP31n>' } },
+        { mergeRows: { group: ['orgUnit'], sum: ['<HP31n>'], unique: ['HP31n'] } },
+        { select: { value: '<HP31n>', as: 'uniqueSite' } },
+        { drop: 'HP3n1' },
+        { select: { add: ['<Workplace>', '<Church>', '<Community>', '<School>'], as: 'Total' } },
+      ],
+      output: [],
+    },
+  },
+  {
+    id: 'PG_Strive_PNG_Weekly_Reported_Cases',
+    config: {
+      fetch: [
+        {
+          fetchEvents: {
+            programCode: 'SCRF',
+          },
+        },
+      ],
+      filter: [],
+      transform: [],
+      output: [],
+    },
   },
 ];
 
@@ -118,29 +165,12 @@ class FetchReportRouteHandler {
   }
 
   fetchReport = async (req, res) => {
-    const { models, params, query } = req;
+    const { params, query } = req;
     const { reportId } = params;
-    const { organisationUnitCode, dashboardId, period, projectCode } = query;
-    const report = reports.find(report => report.id === reportId);
-    const { codes: dataElementCodes, aggregationType } = report.config.fetch[0].fetchAnalytics;
-    console.log(dataElementCodes, aggregationType);
-    const data = await this.aggregator.fetchAnalytics(
-      dataElementCodes,
-      {
-        dataServices: [
-          {
-            isDataRegional: false,
-          },
-        ],
-        organisationUnitCodes: [organisationUnitCode],
-      },
-      {},
-      {
-        aggregationType,
-      },
-    );
+    const report = reports.find(reportFromList => reportFromList.id === reportId);
+    const data = await fetch(report.config.fetch, this.aggregator, query);
     data.results = transform(data.results, report.config.transform);
-    respond(res, data.results);
+    respond(res, data);
   };
 }
 

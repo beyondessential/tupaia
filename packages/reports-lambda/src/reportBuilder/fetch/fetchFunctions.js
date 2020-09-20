@@ -1,8 +1,8 @@
-const fetchAnalytics = (aggregator, query, params) => {
+const fetchAnalytics = async (aggregator, query, params) => {
   const { organisationUnitCode } = query;
-  const { codes: dataElementCodes, aggregationType } = params;
+  const { dataElementCodes, aggregationType } = params;
   console.log(dataElementCodes, aggregationType);
-  return aggregator.fetchAnalytics(
+  const response = await aggregator.fetchAnalytics(
     dataElementCodes,
     {
       dataServices: [
@@ -17,21 +17,47 @@ const fetchAnalytics = (aggregator, query, params) => {
       aggregationType,
     },
   );
+  response.results.forEach(row => {
+    row[row.dataElement] = row.value;
+    delete row.dataElement;
+    delete row.value;
+  });
+  return response;
 };
 
-const fetchEvents = (aggregator, query, params) => {
-  const { programCode, dataServices, entityAggregation, dataSourceEntityFilter } = this.config;
-  const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
-
-  return aggregator.fetchEvents(eventsProgramCode, {
+const fetchEvents = async (aggregator, query, params) => {
+  const {
+    programCode,
+    dataElementCodes,
     dataServices,
     entityAggregation,
     dataSourceEntityFilter,
-    organisationUnitCode,
+  } = params;
+  const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = query;
+  const response = await aggregator.fetchEvents(programCode, {
+    useDeprecatedApi: false,
+    dataServices,
+    entityAggregation,
+    dataSourceEntityFilter,
+    organisationUnitCodes: [organisationUnitCode],
     startDate,
     endDate,
     trackedEntityInstance,
     eventId,
-    ...additionalQueryConfig,
+    dataElementCodes,
   });
+  response.forEach(row => {
+    Object.entries(row.dataValues).forEach(([key, value]) => {
+      row[key] = value;
+    });
+    delete row.dataValues;
+  });
+  return {
+    results: response,
+  };
+};
+
+export const fetchFunctions = {
+  fetchAnalytics,
+  fetchEvents,
 };

@@ -16,8 +16,9 @@ export class QueryBuilder {
   }
 
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
-  async build() {
+  async build(dataSourceEntities) {
     this.makePeriodReplacements();
+    // this.replaceOrgUnitCodes(dataSourceEntities);
     this.makeEventReplacements();
     return this.query;
   }
@@ -34,6 +35,17 @@ export class QueryBuilder {
   replaceOrgUnitCodes(dataSourceEntities) {
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
+  }
+
+  async getDataSourceEntities() {
+    const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
+    const entity = await this.models.entity.findOne({ code: organisationUnitCode });
+    const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
+      entity,
+      (this.getQueryParameter('entityAggregation') || {}).dataSourceEntityType,
+      this.getQueryParameter('dataSourceEntityFilter'),
+    );
+    return dataSourceEntities;
   }
 
   getEntityAggregationOptions() {

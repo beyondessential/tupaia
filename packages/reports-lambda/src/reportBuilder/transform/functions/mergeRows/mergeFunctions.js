@@ -22,6 +22,14 @@ const min = (existingRow, field, value) => {
   }
 };
 
+const unique = (existingRow, field, value) => {
+  if (existingRow[field] !== undefined && existingRow[field] !== value) {
+    existingRow[field] = 'NO_UNIQUE_VALUE';
+  } else {
+    existingRow[field] = value;
+  }
+};
+
 const drop = (existingRow, field, value) => {
   // Do nothing, don't add the field to the existing row
 };
@@ -36,6 +44,7 @@ export const mergeFunctions = {
   count,
   max,
   min,
+  unique,
   drop,
   latest,
   default: latest,

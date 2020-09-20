@@ -15,6 +15,8 @@ export class Aggregator extends BaseAggregator {
     initialAggregationOptions = {},
   ) {
     const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
+    // const dataSourceEntities = await queryBuilder.getDataSourceEntities();
+    const hierarchyId = await fetchHierarchyId(this.dataBroker.models, originalQuery);
 
     const fetchOptions = await queryBuilder.build();
 
@@ -23,6 +25,7 @@ export class Aggregator extends BaseAggregator {
       initialAggregationOptions,
       [],
       entityAggregationOptions,
+      hierarchyId,
     );
 
     return super.fetchAnalytics(dataElementCodes, fetchOptions, aggregationOptions);
@@ -30,17 +33,24 @@ export class Aggregator extends BaseAggregator {
 
   async fetchEvents(programCode, originalQuery, replacementValues) {
     const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
+    // const dataSourceEntities = await queryBuilder.getDataSourceEntities();
+    const hierarchyId = await fetchHierarchyId(this.dataBroker.models, originalQuery);
 
-    queryBuilder.replaceOrgUnitCodes();
+    // queryBuilder.replaceOrgUnitCodes(dataSourceEntities);
     queryBuilder.makeEventReplacements();
 
     const entityAggregationOptions = queryBuilder.getEntityAggregationOptions();
     const aggregationOptions = await buildAggregationOptions(
       {}, // No input aggregation for events (yet)
-      [],
+      // dataSourceEntities,
       entityAggregationOptions,
+      hierarchyId,
     );
 
     return super.fetchEvents(programCode, queryBuilder.getQuery(), aggregationOptions);
   }
 }
+
+const fetchHierarchyId = async (models, query) => {
+  return (await models.project.findOne({ code: query.projectCode })).entity_hierarchy_id;
+};
