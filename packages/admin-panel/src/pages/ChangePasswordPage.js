@@ -8,16 +8,16 @@ import PropTypes from 'prop-types';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 
-export const ProfileView = ({ getHeaderEl }) => {
-  const HeaderPortal = usePortalWithCallback(<Header title="Profile" />, getHeaderEl);
+export const ChangePasswordPage = ({ getHeaderEl }) => {
+  const HeaderPortal = usePortalWithCallback(<Header title="Change password" />, getHeaderEl);
   return (
     <div>
       {HeaderPortal}
-      <h2>User Profile</h2>
+      <h2>Change Password</h2>
     </div>
   );
 };
 
-ProfileView.propTypes = {
+ChangePasswordPage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
 };

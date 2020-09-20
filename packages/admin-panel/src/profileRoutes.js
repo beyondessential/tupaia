@@ -1,4 +1,10 @@
-import { ChangePasswordView, ProfileView } from './authentication';
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { ChangePasswordPage } from './pages/ChangePasswordPage';
+import { ProfilePage } from './pages/ProfilePage';
 
 export const PROFILE_ROUTES = [
   {
@@ -7,12 +13,12 @@ export const PROFILE_ROUTES = [
       {
         label: 'Profile',
         to: '',
-        component: ProfileView,
+        component: ProfilePage,
       },
       {
         label: 'Change Password',
         to: '/change-password',
-        component: ChangePasswordView,
+        component: ChangePasswordPage,
       },
     ],
   },

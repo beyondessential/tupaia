@@ -9,7 +9,8 @@ import { TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { PrivateRoute, LoginView } from './authentication';
+import { PrivateRoute } from './authentication';
+import { LoginPage } from './pages/LoginPage';
 
 export const App = () => {
   const headerEl = React.useRef(null);
@@ -22,7 +23,7 @@ export const App = () => {
     <Router>
       <Switch>
         <Route path="/login" exact>
-          <LoginView />
+          <LoginPage />
         </Route>
         <PrivateRoute path="/">
           <Navbar links={ROUTES} />
