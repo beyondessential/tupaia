@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import { TableRowExpansionContainer, WarningButton } from '@tupaia/ui-components';
-import { BorderlessTableRow } from '../../components/Table/TableRow';
+import { BorderlessTableRow } from '../../components/Table';
 import * as COLORS from '../../constants/colors';
 import { getVerifiedStatus, updateVerifiedStatus } from '../../store';
 
@@ -95,7 +95,7 @@ export const VerifiableTableRowComponent = React.memo(props => {
     return (
       <WarningWrapper>
         <WarningButton fullWidth onClick={handleVerify}>
-          Please Verify Now
+          Click to verify
         </WarningButton>
       </WarningWrapper>
     );
