@@ -1,15 +1,21 @@
 import { parseParams } from '../../../functions';
 import { mergeFunctions } from './mergeFunctions';
+import { where } from '../where';
 
 export const mergeRows = (rows, params) => {
   const groupedRows = {};
+  const otherRows = [];
   rows.forEach(row => {
+    if (!where(row, params)) {
+      otherRows.push(row);
+      return;
+    }
     const parsedParams = parseParams(row, params);
     const { group } = parsedParams;
     const groupKey = createGroupKey(row, group);
     groupedRows[groupKey] = merge(groupedRows[groupKey] || {}, row, parsedParams);
   });
-  return Object.values(groupedRows);
+  return Object.values(groupedRows).concat(otherRows);
 };
 
 const createGroupKey = (row, groupByFields) => {

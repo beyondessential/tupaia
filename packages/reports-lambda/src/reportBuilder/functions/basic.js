@@ -9,3 +9,15 @@ export const add = valuesToAdd => {
   });
   return total;
 };
+
+export const gt = valuesToCompare => {
+  return valuesToCompare[0] > valuesToCompare[1];
+};
+
+export const eq = valuesToCompare => {
+  return valuesToCompare[0] === valuesToCompare[1];
+};
+
+export const neq = valuesToCompare => {
+  return valuesToCompare[0] !== valuesToCompare[1];
+};
