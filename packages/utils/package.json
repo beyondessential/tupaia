@@ -6,7 +6,7 @@
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
-    "test": "mocha",
+    "test": "jest",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {

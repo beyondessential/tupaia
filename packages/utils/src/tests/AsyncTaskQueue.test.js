@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { AsyncTaskQueue } from '../AsyncTaskQueue';
@@ -36,7 +35,7 @@ describe.skip('AsyncTaskQueue', () => {
     const task = createAsyncTask('Success!');
     const result = await queue.add(task);
     expect(task).to.have.been.calledOnceWithExactly();
-    expect(result).to.equal('Success!');
+    expect(result).toBe('Success!');
   });
 
   it('should process more than one task, in batches', async () => {
@@ -59,7 +58,7 @@ describe.skip('AsyncTaskQueue', () => {
     // wait for all of the tasks to be processed, and check they returned the correct results
     const results = await Promise.all(promises);
     tasks.forEach(t => expect(t).to.have.been.calledOnceWithExactly());
-    results.forEach((p, i) => expect(p).to.equal(i));
+    results.forEach((p, i) => expect(p).toBe(i));
   });
 
   it('should process additional tasks added during processing', async () => {
@@ -95,9 +94,9 @@ describe.skip('AsyncTaskQueue', () => {
 
     // check all results were correct
     const halfBatchResults = await Promise.all(halfBatchPromises);
-    halfBatchResults.forEach((p, i) => expect(p).to.equal(i));
+    halfBatchResults.forEach((p, i) => expect(p).toBe(i));
     const batchAndAHalfResults = await Promise.all(batchAndAHalfPromises);
-    batchAndAHalfResults.forEach((p, i) => expect(p).to.equal(i));
+    batchAndAHalfResults.forEach((p, i) => expect(p).toBe(i));
   });
 
   it('should process additional tasks added after queue is idle', async () => {
@@ -124,8 +123,8 @@ describe.skip('AsyncTaskQueue', () => {
 
     // check all results were correct
     const halfBatchResults = await Promise.all(halfBatchPromises);
-    halfBatchResults.forEach((p, i) => expect(p).to.equal(i));
+    halfBatchResults.forEach((p, i) => expect(p).toBe(i));
     const batchAndAHalfResults = await Promise.all(batchAndAHalfPromises);
-    batchAndAHalfResults.forEach((p, i) => expect(p).to.equal(i));
+    batchAndAHalfResults.forEach((p, i) => expect(p).toBe(i));
   });
 });

@@ -3,13 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { convertPeriodStringToDateRange } from '../../period/convertPeriodStringToDateRange';
 
 describe('convertPeriodStringToDateRange', () => {
   const assertCorrectConversion = (periodString, dateRange) =>
-    expect(convertPeriodStringToDateRange(periodString)).to.deep.equal(dateRange);
+    expect(convertPeriodStringToDateRange(periodString)).toEqual(dateRange);
 
   it('should convert a period string with a single period', () => {
     assertCorrectConversion('20200126', ['2020-01-26', '2020-01-26']); // day
