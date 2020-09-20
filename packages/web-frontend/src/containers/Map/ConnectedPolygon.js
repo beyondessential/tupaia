@@ -52,10 +52,11 @@ export const ShadedPolygon = styled(Polygon)`
  */
 class ConnectedPolygon extends Component {
   shouldComponentUpdate(nextProps) {
-    const { measureId, coordinates, orgUnitMeasureData } = this.props;
+    const { measureId, coordinates, orgUnitMeasureData, isHidden } = this.props;
     if (nextProps.measureId !== measureId) return true;
     if (nextProps.coordinates !== coordinates) return true;
     if (nextProps.orgUnitMeasureData !== orgUnitMeasureData) return true;
+    if (isHidden !== nextProps.isHidden) return true;
     return false;
   }
 
@@ -81,9 +82,12 @@ class ConnectedPolygon extends Component {
       isActive,
       coordinates,
       shade,
+      isHidden,
       hasChildren,
       hasShadedChildren,
     } = this.props;
+    if (isHidden) return null;
+
     const { organisationUnitCode } = area;
     const tooltip = this.getTooltip(area.name);
 
@@ -130,6 +134,7 @@ ConnectedPolygon.propTypes = {
   area: PropTypes.shape({
     name: PropTypes.string,
     type: PropTypes.string,
+    organisationUnitCode: PropTypes.string,
   }).isRequired,
   measureId: PropTypes.string,
   isActive: PropTypes.bool,
@@ -143,6 +148,7 @@ ConnectedPolygon.propTypes = {
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
+  isHidden: PropTypes.bool,
   orgUnitMeasureData: PropTypes.shape({
     value: PropTypes.any,
     originalValue: PropTypes.any,
@@ -160,6 +166,7 @@ ConnectedPolygon.defaultProps = {
   hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
+  isHidden: false,
   orgUnitMeasureData: undefined,
 };
 
@@ -170,6 +177,7 @@ const mapStateToProps = (state, givenProps) => {
   const organisationUnitChildren = selectOrgUnitChildren(state, organisationUnitCode);
 
   let shade;
+  let isHidden;
   let orgUnitMeasureData;
   let hasShadedChildren = false;
   if (selectHasPolygonMeasure(state)) {
@@ -186,9 +194,11 @@ const mapStateToProps = (state, givenProps) => {
       orgUnitMeasureData = measureOrgUnits.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
+      if (orgUnitMeasureData) {
+        shade = orgUnitMeasureData.color;
+        isHidden = orgUnitMeasureData.isHidden;
+      }
     }
-
-    shade = (orgUnitMeasureData || {}).color;
   }
 
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
@@ -200,6 +210,7 @@ const mapStateToProps = (state, givenProps) => {
     hasShadedChildren,
     orgUnitMeasureData,
     shade,
+    isHidden,
     measureOptions,
     hasChildren: organisationUnitChildren && organisationUnitChildren.length > 0,
     hasMeasureData: measureData && measureData.length > 0,
