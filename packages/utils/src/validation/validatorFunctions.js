@@ -87,6 +87,17 @@ export const isPlainObject = value => {
   }
 };
 
+const constructAllValuesAreOfType = type => object => {
+  Object.entries(object).forEach(([key, value]) => {
+    // eslint-disable-next-line valid-typeof
+    if (typeof value !== type) {
+      throw new ValidationError(`Value '${key}' is not a ${type}: '${value}'`);
+    }
+  });
+};
+
+export const allValuesAreNumbers = constructAllValuesAreOfType('number');
+
 export const fieldHasContent = value => {
   if (value === undefined || value === null || value.length === 0) {
     throw new ValidationError('Please complete all fields.');
@@ -150,9 +161,9 @@ export const constructRecordExistsWithId = (modelOrDatabase, recordType) => asyn
   }
 };
 
-export const constructIsEmptyOr = validatorFunction => value => {
+export const constructIsEmptyOr = validatorFunction => (value, object, key) => {
   if (value !== undefined && value !== null && value !== '') {
-    return validatorFunction(value);
+    return validatorFunction(value, object, key);
   }
   return true;
 };
