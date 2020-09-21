@@ -12,9 +12,9 @@ import { Button, TextField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import {
-  getProfileErrorMessage,
-  getProfileLoading,
-  updateProfile,
+  getPasswordErrorMessage,
+  getPasswordLoading,
+  updatePassword,
   getUser,
 } from '../authentication';
 
@@ -35,13 +35,21 @@ const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
 `;
 
-const ChangePasswordPageComponent = ({ user, errorMessage, isLoading, getHeaderEl }) => {
+const ChangePasswordPageComponent = ({
+  user,
+  errorMessage,
+  isLoading,
+  onUpdatePassword,
+  getHeaderEl,
+}) => {
   const { handleSubmit, register, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
-  const onSubmit = data => {
-    console.log('data', data);
-  };
+  const onSubmit = handleSubmit(data => {
+    const { oldPassword, password, passwordConfirm } = data;
+    console.log('data', data, oldPassword, password, passwordConfirm);
+    onUpdatePassword(data);
+  });
 
   return (
     <Container>
@@ -50,33 +58,33 @@ const ChangePasswordPageComponent = ({ user, errorMessage, isLoading, getHeaderE
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <TextField
           label="Current Password"
-          name="currentPassword"
+          name="oldPassword"
           placeholder="Enter your current password"
           required
-          error={!!errors.currentPassword}
-          helperText={errors.currentPassword && errors.currentPassword.message}
+          error={!!errors.oldPassword}
+          helperText={errors.oldPassword && errors.oldPassword.message}
           inputRef={register({
             required: 'Required',
           })}
         />
         <TextField
           label="New Password"
-          name="newPassword"
+          name="password"
           placeholder="Enter your password"
           required
-          error={!!errors.newPassword}
-          helperText={errors.newPassword && errors.newPassword.message}
+          error={!!errors.password}
+          helperText={errors.password && errors.password.message}
           inputRef={register({
             required: 'Required',
           })}
         />
         <TextField
           label="Confirm Password"
-          name="confirmPassword"
+          name="passwordConfirm"
           placeholder="Enter your password"
           required
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword && errors.confirmPassword.message}
+          error={!!errors.passwordConfirm}
+          helperText={errors.passwordConfirm && errors.passwordConfirm.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -91,6 +99,7 @@ const ChangePasswordPageComponent = ({ user, errorMessage, isLoading, getHeaderE
 
 ChangePasswordPageComponent.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
+  onUpdatePassword: PropTypes.func.isRequired,
   errorMessage: PropTypes.string,
   isLoading: PropTypes.bool,
   user: PropTypes.PropTypes.shape({
@@ -107,12 +116,12 @@ ChangePasswordPageComponent.defaultProps = {
 
 const mapStateToProps = state => ({
   user: getUser(state),
-  errorMessage: getProfileErrorMessage(state),
-  isLoading: getProfileLoading(state),
+  errorMessage: getPasswordErrorMessage(state),
+  isLoading: getPasswordLoading(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  onUpdateProfile: (id, payload) => dispatch(updateProfile(id, payload)),
+  onUpdatePassword: payload => dispatch(updatePassword(payload)),
 });
 
 export const ChangePasswordPage = connect(

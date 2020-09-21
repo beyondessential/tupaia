@@ -15,6 +15,10 @@ export const getErrorMessage = state => getAuthenticationState(state).errorMessa
 export const getProfileErrorMessage = state => getAuthenticationState(state).profileErrorMessage;
 export const getProfileLoading = state => getAuthenticationState(state).profileLoading;
 
+// Password
+export const getPasswordErrorMessage = state => getAuthenticationState(state).passwordErrorMessage;
+export const getPasswordLoading = state => getAuthenticationState(state).passwordLoading;
+
 // Authentication details
 export const getIsUserAuthenticated = state => !!getAuthenticationState(state).user;
 export const getAccessToken = state => getAuthenticationState(state).accessToken;

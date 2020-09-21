@@ -14,6 +14,9 @@ import {
   PROFILE_SUCCESS,
   PROFILE_REQUEST,
   PROFILE_ERROR,
+  PASSWORD_SUCCESS,
+  PASSWORD_REQUEST,
+  PASSWORD_ERROR,
 } from './constants';
 
 export const changeEmailAddress = emailAddress => ({
@@ -85,6 +88,27 @@ export const updateProfile = (id, payload) => async (dispatch, getState, { api }
     dispatch({
       type: PROFILE_ERROR,
       profileErrorMessage: error.message,
+    });
+  }
+};
+
+// Password
+export const updatePassword = payload => async (dispatch, getState, { api }) => {
+  dispatch({
+    type: PASSWORD_REQUEST,
+  });
+  try {
+    console.log('update', payload);
+    await api.post(`me/changePassword`, null, payload);
+
+    dispatch({
+      type: PASSWORD_SUCCESS,
+    });
+  } catch (error) {
+    console.log('error', error.message);
+    dispatch({
+      type: PASSWORD_ERROR,
+      passwordErrorMessage: error.message,
     });
   }
 };
