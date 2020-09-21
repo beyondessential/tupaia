@@ -7,7 +7,7 @@
     "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
     "test": "jest",
-    "test-coverage": "yarn test --coverage",
+    "test:coverage": "yarn test --coverage",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix ."
   },
