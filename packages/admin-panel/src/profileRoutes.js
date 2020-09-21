@@ -19,13 +19,12 @@ export const PROFILE_ROUTES = [
         icon: <AccountCircleIcon />,
         component: ProfilePage,
       },
-      // Todo: @see: https://github.com/beyondessential/tupaia-backlog/issues/1218
-      // {
-      //   label: 'Change Password',
-      //   to: '/change-password',
-      //   icon: <LockIcon />,
-      //   component: ChangePasswordPage,
-      // },
+      {
+        label: 'Change Password',
+        to: '/change-password',
+        icon: <LockIcon />,
+        component: ChangePasswordPage,
+      },
     ],
   },
 ];
