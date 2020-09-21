@@ -3,109 +3,126 @@ import { checkValueSatisfiesCondition } from '../checkValueSatisfiesCondition';
 describe('checkAgainstConditions', () => {
   describe('checkValueSatisfiesCondition()', () => {
     it('should throw an error if given an unknown operator', () => {
-      expect(() => checkValueSatisfiesCondition('hello', { operator: 'NOT_VALID' })).toThrowError("Unknown operator: 'NOT_VALID'");
+      expect(() => checkValueSatisfiesCondition('hello', { operator: 'NOT_VALID' })).toThrowError(
+        "Unknown operator: 'NOT_VALID'",
+      );
     });
 
-    it('should correctly check if a value satisfies a plain condition', () => {
-      expect(checkValueSatisfiesCondition('hello', 'hello')).toBe(true);
-      expect(checkValueSatisfiesCondition(0, 0)).toBe(true);
-      expect(checkValueSatisfiesCondition(true, true)).toBe(true);
-      expect(checkValueSatisfiesCondition(false, false)).toBe(true);
-      expect(checkValueSatisfiesCondition(null, null)).toBe(true);
-
-      expect(checkValueSatisfiesCondition('hello', 'hi')).toBe(false);
-      expect(checkValueSatisfiesCondition(0, '')).toBe(false);
-      expect(checkValueSatisfiesCondition(true, 1)).toBe(false);
-
+    it.each([
+      ['hello', 'hello', true],
+      [0, 0, true],
+      [true, true, true],
+      [false, false, true],
+      [null, null, true],
+      ['hello', 'hi', false],
+      [0, '', false],
+      [true, 1, false],
       // Undefined value never satisfies any condition
-      expect(checkValueSatisfiesCondition(undefined, undefined)).toBe(false);
+      [undefined, undefined, false],
+    ])(
+      'should correctly check if a value satisfies a plain condition',
+      (value, condition, expected) => {
+        expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
+      },
+    );
+
+    it.each([
+      ['hello', '*', true],
+      [0, '*', true],
+      [false, '*', true],
+      [null, '*', true],
+      ['', '*', false],
+      [undefined, '*', false],
+    ])(
+      'should return true if the condition is "*" unless the value is undefined or ""',
+      (value, condition, expected) => {
+        expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
+      },
+    );
+
+    it.each([
+      [1, { operator: '=', value: 1 }, true],
+      [2, { operator: '=', value: 1 }, false],
+      [1, { operator: '<', value: 2 }, true],
+      [2, { operator: '<', value: 2 }, false],
+      [2, { operator: '>', value: 1 }, true],
+      [1, { operator: '>', value: 1 }, false],
+      [1, { operator: '>=', value: 1 }, true],
+      [0, { operator: '>=', value: 1 }, false],
+      [1, { operator: '<=', value: 1 }, true],
+      [2, { operator: '<=', value: 1 }, false],
+      [1, { operator: '<=', value: 1 }, true],
+      [2, { operator: '<=', value: 1 }, false],
+    ])('should work with basic mathematical conditions', (value, condition, expected) => {
+      expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
     });
 
-    it('should return true if the condition is "*" unless the value is undefined or ""', () => {
-      expect(checkValueSatisfiesCondition('hello', '*')).toBe(true);
-      expect(checkValueSatisfiesCondition(0, '*')).toBe(true);
-      expect(checkValueSatisfiesCondition(false, '*')).toBe(true);
-      expect(checkValueSatisfiesCondition(null, '*')).toBe(true);
-
-      expect(checkValueSatisfiesCondition('', '*')).toBe(false);
-      expect(checkValueSatisfiesCondition(undefined, '*')).toBe(false);
+    it.each([
+      [-1, { operator: 'range', value: [1, 2] }, false],
+      [1, { operator: 'range', value: [1, 2] }, true],
+      [1.5, { operator: 'range', value: [1, 2] }, true],
+      [2, { operator: 'range', value: [1, 2] }, true],
+      [3, { operator: 'range', value: [1, 2] }, false],
+      [-1, { operator: 'rangeExclusive', value: [1, 2] }, false],
+      [1, { operator: 'rangeExclusive', value: [1, 2] }, false],
+      [1.5, { operator: 'rangeExclusive', value: [1, 2] }, true],
+      [2, { operator: 'rangeExclusive', value: [1, 2] }, false],
+      [3, { operator: 'rangeExclusive', value: [1, 2] }, false],
+    ])('should work with range mathematical conditions', (value, condition, expected) => {
+      expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
     });
 
-    it('should work with basic mathematical conditions', () => {
-      expect(checkValueSatisfiesCondition(1, { operator: '=', value: 1 })).toBe(true);
-      expect(checkValueSatisfiesCondition(2, { operator: '=', value: 1 })).toBe(false);
+    it.each([
+      ['', { operator: '=', value: 1 }, false],
+      ['', { operator: '<', value: 2 }, false],
+      ['', { operator: '>', value: 1 }, false],
+      ['', { operator: '>=', value: 1 }, false],
+      ['', { operator: '<=', value: 1 }, false],
+      ['', { operator: '<=', value: 1 }, false],
+      ['', { operator: 'range', value: [1, 2] }, false],
+      ['', { operator: 'rangeExclusive', value: [1, 2] }, false],
+    ])(
+      'should return false with mathematical conditions if the value is ""',
+      (value, condition, expected) => {
+        expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
+      },
+    );
 
-      expect(checkValueSatisfiesCondition(1, { operator: '<', value: 2 })).toBe(true);
-      expect(checkValueSatisfiesCondition(2, { operator: '<', value: 2 })).toBe(false);
-
-      expect(checkValueSatisfiesCondition(2, { operator: '>', value: 1 })).toBe(true);
-      expect(checkValueSatisfiesCondition(1, { operator: '>', value: 1 })).toBe(false);
-
-      expect(checkValueSatisfiesCondition(1, { operator: '>=', value: 1 })).toBe(true);
-      expect(checkValueSatisfiesCondition(0, { operator: '>=', value: 1 })).toBe(false);
-
-      expect(checkValueSatisfiesCondition(1, { operator: '<=', value: 1 })).toBe(true);
-      expect(checkValueSatisfiesCondition(2, { operator: '<=', value: 1 })).toBe(false);
-
-      expect(checkValueSatisfiesCondition(1, { operator: '<=', value: 1 })).toBe(true);
-      expect(checkValueSatisfiesCondition(2, { operator: '<=', value: 1 })).toBe(false);
+    const commonConfig = { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] };
+    it.each([
+      ['', commonConfig, true],
+      [null, commonConfig, true],
+      ['hi', commonConfig, true],
+      [1, commonConfig, true],
+      [3, commonConfig, false],
+      [undefined, commonConfig, false],
+      ['hello', commonConfig, false],
+    ])('should check "in" correctly', (value, condition, expected) => {
+      expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
     });
 
-    it('should work with range mathematical conditions', () => {
-      expect(checkValueSatisfiesCondition(-1, { operator: 'range', value: [1, 2] })).toBe(false);
-      expect(checkValueSatisfiesCondition(1, { operator: 'range', value: [1, 2] })).toBe(true);
-      expect(checkValueSatisfiesCondition(1.5, { operator: 'range', value: [1, 2] })).toBe(true);
-      expect(checkValueSatisfiesCondition(2, { operator: 'range', value: [1, 2] })).toBe(true);
-      expect(checkValueSatisfiesCondition(3, { operator: 'range', value: [1, 2] })).toBe(false);
-
-      expect(checkValueSatisfiesCondition(-1, { operator: 'rangeExclusive', value: [1, 2] })).toBe(false);
-      expect(checkValueSatisfiesCondition(1, { operator: 'rangeExclusive', value: [1, 2] })).toBe(false);
-      expect(checkValueSatisfiesCondition(1.5, { operator: 'rangeExclusive', value: [1, 2] })).toBe(true);
-      expect(checkValueSatisfiesCondition(2, { operator: 'rangeExclusive', value: [1, 2] })).toBe(false);
-      expect(checkValueSatisfiesCondition(3, { operator: 'rangeExclusive', value: [1, 2] })).toBe(false);
+    const myStringConfig = { operator: 'in', value: 'This is my string' };
+    it.each([
+      ['', myStringConfig, true],
+      ['string', myStringConfig, true],
+      [0, myStringConfig, false],
+      [undefined, myStringConfig, false],
+      ['hello', myStringConfig, false],
+    ])('operator "in" works with strings correctly', (value, condition, expected) => {
+      expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
     });
 
-    it('should return false with mathematical conditions if the value is ""', () => {
-      expect(checkValueSatisfiesCondition('', { operator: '=', value: 1 })).toBe(false);
-      expect(checkValueSatisfiesCondition('', { operator: '<', value: 2 })).toBe(false);
-      expect(checkValueSatisfiesCondition('', { operator: '>', value: 1 })).toBe(false);
-      expect(checkValueSatisfiesCondition('', { operator: '>=', value: 1 })).toBe(false);
-      expect(checkValueSatisfiesCondition('', { operator: '<=', value: 1 })).toBe(false);
-      expect(checkValueSatisfiesCondition('', { operator: '<=', value: 1 })).toBe(false);
-      expect(checkValueSatisfiesCondition('', { operator: 'range', value: [1, 2] })).toBe(false);
-      expect(checkValueSatisfiesCondition('', { operator: 'rangeExclusive', value: [1, 2] })).toBe(false);
-    });
-
-    it('should check "in" correctly', () => {
-      const commonConfig = { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] };
-      expect(checkValueSatisfiesCondition('', commonConfig)).toBe(true);
-      expect(checkValueSatisfiesCondition(null, commonConfig)).toBe(true);
-      expect(checkValueSatisfiesCondition('hi', commonConfig)).toBe(true);
-      expect(checkValueSatisfiesCondition(1, commonConfig)).toBe(true);
-      expect(checkValueSatisfiesCondition(3, commonConfig)).toBe(false);
-      expect(checkValueSatisfiesCondition(undefined, commonConfig)).toBe(false);
-      expect(checkValueSatisfiesCondition('hello', commonConfig)).toBe(false);
-    });
-
-    it('operator "in" works with strings correctly', () => {
-      const commonConfig = { operator: 'in', value: 'This is my string' };
-      expect(checkValueSatisfiesCondition('', commonConfig)).toBe(true);
-      expect(checkValueSatisfiesCondition('string', commonConfig)).toBe(true);
-      expect(checkValueSatisfiesCondition(0, commonConfig)).toBe(false);
-      expect(checkValueSatisfiesCondition(undefined, commonConfig)).toBe(false);
-      expect(checkValueSatisfiesCondition('hello', commonConfig)).toBe(false);
-    });
-
-    it('operator "regex" works correctly', () => {
-      expect(checkValueSatisfiesCondition('hi five!', { operator: 'regex', value: 'hi' })).toBe(true);
-      expect(checkValueSatisfiesCondition('hi five!', { operator: 'regex', value: /hi/ })).toBe(true);
-      expect(checkValueSatisfiesCondition('hi five!', { operator: 'regex', value: '[hgf]i' })).toBe(true);
-      expect(checkValueSatisfiesCondition('hi five!', { operator: 'regex', value: /[hgf]i/ })).toBe(true);
-      expect(checkValueSatisfiesCondition('', { operator: 'regex', value: '' })).toBe(true);
-
-      expect(checkValueSatisfiesCondition('hi five!', { operator: 'regex', value: 'Hello' })).toBe(false);
-      expect(checkValueSatisfiesCondition('hi five!', { operator: 'regex', value: 'Hi' })).toBe(false);
-      expect(checkValueSatisfiesCondition(undefined, { operator: 'regex', value: '' })).toBe(false);
+    it.each([
+      ['hi five!', { operator: 'regex', value: 'hi' }, true],
+      ['hi five!', { operator: 'regex', value: /hi/ }, true],
+      ['hi five!', { operator: 'regex', value: '[hgf]i' }, true],
+      ['hi five!', { operator: 'regex', value: /[hgf]i/ }, true],
+      ['', { operator: 'regex', value: '' }, true],
+      ['hi five!', { operator: 'regex', value: 'Hello' }, false],
+      ['hi five!', { operator: 'regex', value: 'Hi' }, false],
+      [undefined, { operator: 'regex', value: '' }, false],
+    ])('operator "regex" works correctly', (value, condition, expected) => {
+      expect(checkValueSatisfiesCondition(value, condition)).toBe(expected);
     });
   });
 });
