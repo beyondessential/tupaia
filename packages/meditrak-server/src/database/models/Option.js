@@ -4,20 +4,19 @@
  **/
 
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { hasContent } from '@tupaia/utils';
 
 class OptionType extends DatabaseType {
   static databaseType = TYPES.OPTION;
 
   static fieldValidators = new Map()
     .set('value', [
-       async (value) => {
-        const checkIsEmpty = value => value === undefined || value === null || value.length === 0;
-          if (checkIsEmpty(value)) {
-            return 'Value cannot be empty'; 
-          }
-          else {           
-           return null;
-          };
+      value => {
+        try {
+          return hasContent(value) && null;
+        } catch (error) {
+          return error.message;
+        }
       },
       async (value, model) => {
         const foundConflict = await findFieldConflict('value', value, model);
