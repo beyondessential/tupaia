@@ -1024,7 +1024,11 @@ function* fetchEnlargedDialogViewContentForPeriod(action) {
   };
 
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
-  if (viewData) {
+
+  const newState = yield select();
+  const newViewId = selectCurrentExpandedViewId(newState);
+  // If the expanded view has changed, don't update the enlargedDialog's viewContent
+  if (viewData && newViewId === viewId) {
     yield put(updateEnlargedDialog(viewData));
   }
 }
