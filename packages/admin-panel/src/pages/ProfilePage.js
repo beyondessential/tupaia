@@ -37,7 +37,7 @@ const ErrorMessage = styled.p`
 
 const ProfilePageComponent = ({ user, errorMessage, isLoading, onUpdateProfile, getHeaderEl }) => {
   const { handleSubmit, register, errors } = useForm();
-  const HeaderPortal = usePortalWithCallback(<Header title="Profile" />, getHeaderEl);
+  const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(({ firstName, lastName, role, employer }) => {
     onUpdateProfile(user.id, {
@@ -116,6 +116,7 @@ ProfilePageComponent.propTypes = {
   isLoading: PropTypes.bool,
   user: PropTypes.PropTypes.shape({
     id: PropTypes.string,
+    name: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     employer: PropTypes.string,
