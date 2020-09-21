@@ -23126,6 +23126,11 @@ react-hook-form@^6.0.0, react-hook-form@^6.0.6:
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-6.0.6.tgz#72ac1668aeaddfd642bcfb324cebe1ba237fb13e"
   integrity sha512-qxWhV++1V7SKKlr2hHFsessGwATCdexgVsByxOHltDyO9F0VWB1WN4ZvxnKuHTVGwjj6CLZo0mL+Hgy0QH1sAw==
 
+react-hook-form@^6.8.3:
+  version "6.8.3"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-6.8.3.tgz#208f46b96ced2859e2a3465eef8125751e99e4ee"
+  integrity sha512-IsYcATD4fodv9BiwWBwiBHE50+IyvhpPTi+jIab4fQZLbDPJnN7YXnJ+/2oMXDJ94n+PnUs4wklr9pg8TNdOrQ==
+
 react-hotkeys@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-hotkeys/-/react-hotkeys-2.0.0.tgz#a7719c7340cbba888b0e9184f806a9ec0ac2c53f"

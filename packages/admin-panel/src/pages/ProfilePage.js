@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import { Button, TextField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
@@ -34,37 +35,71 @@ const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
 `;
 
-export const ProfilePageComponent = ({
-  user,
-  errorMessage,
-  isLoading,
-  onUpdateProfile,
-  getHeaderEl,
-}) => {
+const ProfilePageComponent = ({ user, errorMessage, isLoading, onUpdateProfile, getHeaderEl }) => {
+  const { handleSubmit, register, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title="Profile" />, getHeaderEl);
-  const { id, firstName, lastName, position, employer } = user;
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    const fields = event.target.elements;
-    onUpdateProfile(id, {
-      first_name: fields.firstName.value,
-      last_name: fields.lastName.value,
-      position: fields.role.value,
-      employer: fields.employer.value,
+  const onSubmit = handleSubmit(({ firstName, lastName, role, employer }) => {
+    onUpdateProfile(user.id, {
+      first_name: firstName,
+      last_name: lastName,
+      position: role,
+      employer: employer,
     });
-  };
+  });
+
+  const { firstName, lastName, position, employer } = user;
 
   return (
     <>
       {HeaderPortal}
       <Container>
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={onSubmit} noValidate>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          <TextField label="First Name" name="firstName" defaultValue={firstName} />
-          <TextField label="Last Name" name="lastName" defaultValue={lastName} />
-          <TextField label="Employer" name="employer" defaultValue={employer} />
-          <TextField label="Role" name="role" defaultValue={position} />
+          <TextField
+            label="First Name"
+            name="firstName"
+            required
+            error={!!errors.firstName}
+            helperText={errors.firstName && errors.firstName.message}
+            defaultValue={firstName}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <TextField
+            label="Last Name"
+            name="lastName"
+            required
+            error={!!errors.lastName}
+            helperText={errors.lastName && errors.lastName.message}
+            defaultValue={lastName}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <TextField
+            label="Employer"
+            name="employer"
+            required
+            error={!!errors.employer}
+            helperText={errors.employer && errors.employer.message}
+            defaultValue={employer}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <TextField
+            label="Role"
+            name="role"
+            required
+            error={!!errors.role}
+            helperText={errors.role && errors.role.message}
+            defaultValue={position}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
           <StyledButton type="submit" fullWidth isLoading={isLoading}>
             Update Profile
           </StyledButton>
