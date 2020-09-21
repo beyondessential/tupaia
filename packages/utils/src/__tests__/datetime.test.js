@@ -21,7 +21,6 @@ describe('DateTime', () => {
     ];
 
     expect(moment.parseZone(timestamp).format('Z')).toBe(utcOffset);
-    // expect(getTimezoneNameFromTimestamp(timestamp)).to.be.oneOf(timezones);
     expect(timezones).toContain(getTimezoneNameFromTimestamp(timestamp));
   });
 });

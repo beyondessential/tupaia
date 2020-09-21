@@ -29,7 +29,7 @@ const object3 = {
 const assertSortingCorrectness = (sortingMethod, input, expectedValue) => {
   const arrayToSort = [...input];
   arrayToSort.sort(sortingMethod);
-  expect(arrayToSort).toEqual(expectedValue);
+  expect(arrayToSort).toStrictEqual(expectedValue);
 };
 
 describe('object', () => {

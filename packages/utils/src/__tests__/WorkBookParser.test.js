@@ -8,7 +8,6 @@ import sinon from 'sinon';
 
 import { WorkBookParser } from '../WorkBookParser';
 
-// chai.use(chaiAsPromised);
 
 const SHEETS = {
   Sheet1: [
@@ -60,8 +59,7 @@ describe('WorkBookParser', () => {
 
     it('should map the input to itself if no mapper is provided', async () => {
       const parser = new WorkBookParser();
-      const result = await parser.parse(WORK_BOOK);
-      return expect(result).toEqual(SHEETS);
+      return expect(parser.parse(WORK_BOOK)).resolves.toStictEqual(SHEETS);
     });
 
     describe('should use the provided validators to validate a spreadsheet', () => {

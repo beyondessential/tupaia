@@ -7,7 +7,7 @@ import { countDistinct, min, max } from '../array';
 
 describe('array', () => {
   const testData = [
-    ['countDistinct', [], 0],
+    ['empty array', [], 0],
     ['single item ', [0], 1],
     ['multiple items, same value', [0], 1],
     ['multiple items, different values', [0, 1], 2],
