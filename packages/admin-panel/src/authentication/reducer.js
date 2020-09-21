@@ -14,8 +14,6 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT,
-  PROFILE_ERROR,
-  PROFILE_REQUEST,
   PROFILE_SUCCESS,
 } from './constants';
 
@@ -28,8 +26,6 @@ const defaultState = {
   isLoggingIn: false,
   rememberMe: false,
   errorMessage: null,
-  profileErrorMessage: null,
-  profileLoading: false,
 };
 
 export const RememberMeTransform = createTransform(
@@ -62,10 +58,7 @@ const stateChanges = {
   [LOGIN_REQUEST]: () => ({ isLoggingIn: true }),
   [LOGIN_ERROR]: logoutStateUpdater,
   [LOGOUT]: logoutStateUpdater,
-  // Profile
   [PROFILE_SUCCESS]: (user, currentState) => ({
-    profileLoading: false,
-    profileErrorMessage: null,
     user: {
       ...currentState.user,
       firstName: user.first_name,
@@ -74,11 +67,6 @@ const stateChanges = {
       position: user.position,
       employer: user.employer,
     },
-  }),
-  [PROFILE_REQUEST]: () => ({ profileLoading: true }),
-  [PROFILE_ERROR]: payload => ({
-    profileLoading: false,
-    ...payload,
   }),
 };
 

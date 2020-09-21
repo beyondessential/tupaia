@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -11,12 +11,7 @@ import { useForm } from 'react-hook-form';
 import { Button, TextField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
-import {
-  getProfileErrorMessage,
-  getProfileLoading,
-  updateProfile,
-  getUser,
-} from '../authentication';
+import { updateProfile, getUser } from '../authentication';
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -35,17 +30,33 @@ const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
 `;
 
-const ProfilePageComponent = ({ user, errorMessage, isLoading, onUpdateProfile, getHeaderEl }) => {
+const SuccessMessage = styled.p`
+  color: ${props => props.theme.palette.success.main};
+`;
+
+const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, register, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
-  const onSubmit = handleSubmit(({ firstName, lastName, role, employer }) => {
-    onUpdateProfile(user.id, {
-      first_name: firstName,
-      last_name: lastName,
-      position: role,
-      employer: employer,
-    });
+  const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      await onUpdateProfile(user.id, {
+        first_name: firstName,
+        last_name: lastName,
+        position: role,
+        employer: employer,
+      });
+      setIsLoading(false);
+      setSuccessMessage('Profile successfully updated.');
+    } catch (error) {
+      setErrorMessage(error.message);
+      setIsLoading(false);
+    }
   });
 
   const { firstName, lastName, position, employer } = user;
@@ -56,6 +67,7 @@ const ProfilePageComponent = ({ user, errorMessage, isLoading, onUpdateProfile, 
       <Container>
         <form onSubmit={onSubmit} noValidate>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
           <TextField
             label="First Name"
             name="firstName"
@@ -107,13 +119,11 @@ const ProfilePageComponent = ({ user, errorMessage, isLoading, onUpdateProfile, 
       </Container>
     </>
   );
-};
+});
 
 ProfilePageComponent.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   onUpdateProfile: PropTypes.func.isRequired,
-  errorMessage: PropTypes.string,
-  isLoading: PropTypes.bool,
   user: PropTypes.PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,
@@ -132,8 +142,6 @@ ProfilePageComponent.defaultProps = {
 
 const mapStateToProps = state => ({
   user: getUser(state),
-  errorMessage: getProfileErrorMessage(state),
-  isLoading: getProfileLoading(state),
 });
 
 const mapDispatchToProps = dispatch => ({

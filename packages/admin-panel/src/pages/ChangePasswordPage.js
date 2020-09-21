@@ -34,7 +34,7 @@ const SuccessMessage = styled.p`
   color: ${props => props.theme.palette.success.main};
 `;
 
-const ChangePasswordPageComponent = ({ user, onUpdatePassword, getHeaderEl }) => {
+const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHeaderEl }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,12 +46,10 @@ const ChangePasswordPageComponent = ({ user, onUpdatePassword, getHeaderEl }) =>
     setErrorMessage(null);
     try {
       await onUpdatePassword(data);
-      console.log('success');
       setIsLoading(false);
       setSuccessMessage('Password successfully updated.');
       event.target.reset();
     } catch (error) {
-      console.log('error', error.message);
       setErrorMessage(error.message);
       setIsLoading(false);
     }
@@ -108,7 +106,7 @@ const ChangePasswordPageComponent = ({ user, onUpdatePassword, getHeaderEl }) =>
       </form>
     </Container>
   );
-};
+});
 
 ChangePasswordPageComponent.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
