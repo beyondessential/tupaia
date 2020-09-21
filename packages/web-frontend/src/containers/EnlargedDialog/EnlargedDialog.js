@@ -6,6 +6,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import Dialog from '@material-ui/core/Dialog';
 import {
   attemptDrillDown,
@@ -18,6 +19,13 @@ import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { isMobile } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
+import {
+  selectCurrentInfoViewKey,
+  selectCurrentExpandedViewContent,
+  selectCurrentOrgUnit,
+} from '../../selectors';
+import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
+
 class EnlargedDialogComponent extends PureComponent {
   render() {
     const {
@@ -31,7 +39,6 @@ class EnlargedDialogComponent extends PureComponent {
       isLoading,
       isVisible,
     } = this.props;
-
     if (!isVisible) {
       return null;
     }
@@ -46,10 +53,7 @@ class EnlargedDialogComponent extends PureComponent {
     };
 
     const drillDownOverlay = isDrillDownVisible ? (
-      <DrillDownOverlay
-        onSetDateRange={onSetDateRange}
-        organisationUnitName={organisationUnitName}
-      />
+      <DrillDownOverlay organisationUnitName={organisationUnitName} />
     ) : null;
     return (
       <Dialog
@@ -113,9 +117,13 @@ const styles = {
   },
 };
 
-const mapStateToProps = ({ drillDown, enlargedDialog }) => ({
-  ...enlargedDialog,
-  isDrillDownVisible: drillDown.isVisible,
+const mapStateToProps = state => ({
+  ...state.enlargedDialog,
+  viewConfigs: state.global.viewConfigs,
+  isDrillDownVisible: state.drillDown.isVisible,
+  infoViewKey: selectCurrentInfoViewKey(state),
+  viewContent: selectCurrentExpandedViewContent(state),
+  organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -130,23 +138,61 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...dispatchProps,
   ...ownProps,
   onDrillDown: chartItem => {
-    const { viewContent, infoViewKey } = stateProps;
-    const { drillDown } = viewContent;
+    const { viewContent, infoViewKey, viewConfigs } = stateProps;
+    // Get first layer config
+    const {
+      drillDown,
+      drillDownLevel: currentDrillDownLevel,
+      dashboardGroupId,
+      organisationUnitCode,
+      viewId,
+      startDate,
+    } = viewContent;
+
     if (!drillDown) {
       return;
     }
+
+    const newDrillDownLevel = currentDrillDownLevel + 1;
+
+    // Get second layer config
+    // A special key signature is set up for drill down report configs
+    // @see extractViewsFromAllDashboards in reducers.js
+    const drillDownConfigKey = `${infoViewKey}_${newDrillDownLevel}`;
+    const drillDownConfig = viewConfigs[drillDownConfigKey];
     const { parameterLink, keyLink } = drillDown;
+    const { periodGranularity } = drillDownConfig;
+
+    let defaultStartDate = null;
+    let defaultEndDate = null;
+
+    // If the second layer has periodGranularity set,
+    // constrain the fetch by 1st layer date range
+    if (periodGranularity) {
+      defaultStartDate = startDate;
+
+      // set the endDate to be end of the startDate period
+      const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+      defaultEndDate = moment(startDate)
+        .clone()
+        .endOf(momentUnit);
+    }
 
     dispatch(
-      attemptDrillDown(
-        {
-          infoViewKey,
-          ...viewContent,
+      attemptDrillDown({
+        viewContent: {
+          dashboardGroupId,
+          organisationUnitCode,
+          ...drillDownConfig,
+          infoViewKey: drillDownConfigKey,
+          viewId,
         },
+        startDate: defaultStartDate,
+        endDate: defaultEndDate,
         parameterLink,
-        chartItem[keyLink],
-        1,
-      ),
+        parameterValue: chartItem[keyLink],
+        drillDownLevel: newDrillDownLevel,
+      }),
     );
   },
   onExport: extraConfig => {

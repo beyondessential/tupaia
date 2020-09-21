@@ -10,9 +10,9 @@ import MuiLink from '@material-ui/core/Link';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;
-  line-height: 1;
+  line-height: 1.75;
   letter-spacing: 0;
-  padding: 1em 1.75em;
+  padding: 0.5em 1.75em;
   box-shadow: none;
   min-width: 3rem;
 
@@ -65,6 +65,11 @@ export const LightPrimaryButton = styled(Button)`
     background-color: ${props => props.theme.palette.primary.light};
     color: ${props => props.theme.palette.primary.main};
   }
+`;
+
+export const GreyButton = styled(Button)`
+  background-color: #6f7b82;
+  color: ${props => props.theme.palette.common.white};
 `;
 
 /*
@@ -134,7 +139,7 @@ export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.common.white};
   border-color: ${props => props.theme.palette.common.white};
   justify-content: space-between;
-  padding: 0.8rem 2rem;
+  padding: 0.5rem 2rem;
 
   .MuiButton-startIcon {
     margin-right: 0.5rem;
@@ -165,11 +170,12 @@ export const GreyOutlinedButton = styled(OutlinedButton)`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   background: none;
   font-size: 0.75rem;
-  padding: 0.8em 1.5em;
+  padding: 0.5em 1.5em;
 
   &.Mui-disabled {
-    background: ${props => props.theme.palette.grey['100']};
-    border: none;
+    color: ${props => props.theme.palette.text.secondary};
+    background: ${props => props.theme.palette.grey['200']};
+    border: 1px solid ${props => props.theme.palette.grey['200']};
   }
 
   &:hover {

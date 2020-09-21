@@ -5,11 +5,11 @@
 
 import React from 'react';
 import { render } from '../../utils/test-utils';
-import { Header } from '../Header';
+import { Header, HeaderTitle } from '../Header';
 
 describe('header', () => {
   it('renders title', async () => {
-    const { findByText } = render(<Header title="Title" />);
+    const { findByText } = render(<Header Title={<HeaderTitle title="Title" />} />);
     expect(await findByText('Title')).toBeInTheDocument();
   });
 });

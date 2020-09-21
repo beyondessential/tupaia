@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 
 import { WHITE } from '../../../../styles';
-import { selectCurrentOrgUnit, selectActiveProject } from '../../../../selectors';
+import { selectCurrentOrgUnit, selectCurrentProject } from '../../../../selectors';
 
 import { REQUEST_PROJECT_ACCESS } from '../../../OverlayDiv/constants';
 import { setRequestingAccess } from '../../../../projects/actions';
@@ -67,7 +67,7 @@ const mapStateToProps = state => {
   const currentOrgUnit = selectCurrentOrgUnit(state);
 
   return {
-    project: selectActiveProject(state),
+    project: selectCurrentProject(state),
     currentOrgUnitType: currentOrgUnit.type,
   };
 };

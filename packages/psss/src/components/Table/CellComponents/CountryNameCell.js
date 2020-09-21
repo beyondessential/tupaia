@@ -32,7 +32,7 @@ const CountryTitle = styled(MuiLink)`
 
 export const CountryNameCell = ({ handleClick, name, countryCode }) => {
   const isButton = handleClick;
-  const to = isButton ? null : 'weekly-reports/samoa';
+  const to = isButton ? null : 'weekly-reports/as';
   const component = isButton ? 'button' : RouterLink;
 
   return (

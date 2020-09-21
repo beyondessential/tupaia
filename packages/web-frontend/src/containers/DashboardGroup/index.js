@@ -19,7 +19,7 @@ import styled from 'styled-components';
 import DashboardItem from '../DashboardItem';
 import StateDashboardItem from '../StateDashboardItem';
 import { DASHBOARD_VIEW_MARGIN } from '../../styles';
-import { getUniqueViewId } from '../../utils/getUniqueViewId';
+import { getUniqueViewId } from '../../utils';
 
 const Grid = styled.div`
   display: flex;
@@ -51,9 +51,10 @@ export default class DashboardGroup extends Component {
     }, []);
     // Filter out views that have the same viewId (removes duplicates across subTabs)
     // Note this is really inefficient, effectively a loop within a loop. O(n^2).
-    const uniqueViews = allViews.filter(
-      (view, index, arr) => arr.findIndex(v => v.viewId === view.viewId) === index,
-    );
+    const uniqueViews = allViews
+      .filter(view => !view.drillDownLevel)
+      .filter((view, index, arr) => arr.indexOf(view) === index);
+
     // Map views to DashboardItem containers
     const infoViews = uniqueViews.map(view => {
       const uniqueViewId = getUniqueViewId(view);
