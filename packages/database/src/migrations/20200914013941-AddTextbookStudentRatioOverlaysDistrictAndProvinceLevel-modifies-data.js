@@ -393,6 +393,16 @@ const PRESENTATION_OPTIONS = {
   hideByDefault: {
     null: true,
   },
+  scaleBounds: {
+    left: {
+      max: 0,
+      min: 0,
+    },
+    right: {
+      max: 2,
+      min: 2,
+    },
+  },
   // measureLevel: DYNAMIC,
 };
 
