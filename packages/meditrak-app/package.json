@@ -63,9 +63,10 @@
     ]
   },
   "scripts": {
-    "lint": "eslint --ext .js --ignore-pattern __tests__/ .",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "echo \"No tests specified\" && exit 0",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .",
     "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop",
     "bump-patch": "npm-bump patch; ios/version-sync.sh",
