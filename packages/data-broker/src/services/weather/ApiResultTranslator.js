@@ -66,11 +66,12 @@ export class ApiResultTranslator {
     const events = [];
 
     for (const entry of apiResult.data) {
+      const eventDate = `${entry.datetime}T23:59:59`; // time is 23:59:59 to represent the complete day
       const event = {
         event: `weather_${entity.code}_${entry.datetime}`,
         orgUnit: entity.code,
         orgUnitName: entity.name,
-        eventDate: entry.datetime,
+        eventDate: eventDate,
         dataValues: {},
       };
 

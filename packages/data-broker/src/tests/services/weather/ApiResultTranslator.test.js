@@ -37,7 +37,7 @@ describe('ApiResultTranslator', () => {
         event: 'weather_MELB_2020-08-20',
         orgUnit: 'MELB',
         orgUnitName: 'Melbourne',
-        eventDate: '2020-08-20',
+        eventDate: '2020-08-20T23:59:59',
         dataValues: {
           WTHR_PRECIP: 23.6,
           WTHR_MAX_TEMP: 29.8,
@@ -47,7 +47,7 @@ describe('ApiResultTranslator', () => {
         event: 'weather_MELB_2020-08-21',
         orgUnit: 'MELB',
         orgUnitName: 'Melbourne',
-        eventDate: '2020-08-21',
+        eventDate: '2020-08-21T23:59:59',
         dataValues: {
           WTHR_PRECIP: 5,
           WTHR_MAX_TEMP: 6,
