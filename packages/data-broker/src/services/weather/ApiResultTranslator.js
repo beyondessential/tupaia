@@ -33,13 +33,17 @@ export class ApiResultTranslator {
 
       const apiResult = apiResultByEntityCode[entity.code];
 
-      switch (this.resultFormat) {
-        case 'analytics':
-          translated = this.apiResultToAnalytics(apiResult, entity);
-          break;
-        case 'events':
-          translated = this.apiResultToEvents(apiResult, entity);
-          break;
+      if (apiResult === null) {
+        translated = [];
+      } else {
+        switch (this.resultFormat) {
+          case 'analytics':
+            translated = this.apiResultToAnalytics(apiResult, entity);
+            break;
+          case 'events':
+            translated = this.apiResultToEvents(apiResult, entity);
+            break;
+        }
       }
 
       translatedByEntityCode[entity.code] = translated;

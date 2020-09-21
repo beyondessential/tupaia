@@ -75,10 +75,7 @@ describe('DateSanitiser', () => {
     describe('limits on latest data', () => {
       /*
        * Today's data is incomplete, e.g. we don't know the total rainfall for the day until
-       * the day is over. So we cannot return data for today, instead we return data for yesterday.
-       *
-       * There may be a possibility of using the forecast API to get today's forecast max temp / precip,
-       * but this will be covered by #1250
+       * the day is over. So we cannot return data for today. For today's data we need to use the forecast API.
        */
 
       it('only end date is after the latest available data', () => {
@@ -111,14 +108,14 @@ describe('DateSanitiser', () => {
         expect(actualEndDate).to.be.null;
       });
 
-      it('does not push end date beyond the latest available data limit', () => {
+      it("request for today's data returns null", () => {
         const {
           startDate: actualStartDate,
           endDate: actualEndDate,
         } = new DateSanitiser().sanitiseHistoricDateRange('2019-02-05', '2019-02-05');
 
-        expect(actualStartDate).to.equal('2019-02-04'); // pushed back
-        expect(actualEndDate).to.equal('2019-02-05'); // latest date
+        expect(actualStartDate).to.be.null;
+        expect(actualEndDate).to.be.null;
       });
     });
   });

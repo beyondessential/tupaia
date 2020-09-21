@@ -204,7 +204,7 @@ export class WeatherService extends Service {
    *
    * @param EntityType[] entities
    * @param Object.<entityCode: string: Object.<startDate: string, endDate: string> dateRangeByEntityCode
-   * @returns {Promise<Object.<entityCode: string: apiResult: Object>>}
+   * @returns {Promise<Object.<entityCode: string: apiResult: Object|null>>}
    * @private
    */
   async getHistoricWeatherDataForEntities(entities, dateRangeByEntityCode) {

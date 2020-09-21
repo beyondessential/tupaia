@@ -91,4 +91,33 @@ describe('ApiResultTranslator', () => {
       },
     ]);
   });
+
+  it('handles null API result input', () => {
+    const translatorEvents = new ApiResultTranslator(
+      [{ code: 'MELB', name: 'Melbourne' }],
+      'events',
+      [],
+    );
+
+    const translatorAnalytics = new ApiResultTranslator(
+      [{ code: 'MELB', name: 'Melbourne' }],
+      'analytics',
+      [],
+    );
+
+    const actualEvents = translatorEvents.translate({
+      MELB: null,
+    });
+
+    const actualAnalytics = translatorAnalytics.translate({
+      MELB: null,
+    });
+
+    expect(actualEvents).to.deep.equal([]);
+
+    expect(actualAnalytics).to.deep.equal({
+      results: [],
+      metadata: {},
+    });
+  });
 });

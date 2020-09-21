@@ -48,19 +48,6 @@ export class DateSanitiser {
       latestEndDate,
     } = this.getHistoricLimits();
 
-    // request for today, change to yesterday
-    const startDateLess1day = moment(startDate)
-      .subtract(1, 'day')
-      .format(DATE_FORMAT);
-    const endDateLess1day = moment(endDate)
-      .subtract(1, 'day')
-      .format(DATE_FORMAT);
-
-    if (startDateLess1day === latestStartDate && endDateLess1day === latestEndDate) {
-      startDate = startDateLess1day;
-      endDate = endDateLess1day;
-    }
-
     // completely off to the side, return null
     if (
       (startDate < earliestStartDate && endDate < earliestEndDate) ||
