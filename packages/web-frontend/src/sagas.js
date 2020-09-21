@@ -20,6 +20,7 @@ import {
   selectMeasureBarItemById,
   selectCurrentInfoViewKey,
   selectCurrentExpandedViewContent,
+  selectCurrentExpandedViewId,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
