@@ -12,8 +12,6 @@ import {
   LOGIN_ERROR,
   LOGOUT,
   PROFILE_SUCCESS,
-  PROFILE_REQUEST,
-  PROFILE_ERROR,
 } from './constants';
 
 export const changeEmailAddress = emailAddress => ({
@@ -69,22 +67,14 @@ export const logout = () => ({
 
 // Profile
 export const updateProfile = (id, payload) => async (dispatch, getState, { api }) => {
-  dispatch({
-    type: PROFILE_REQUEST,
-  });
   try {
     await api.put(`user/${id}`, null, payload);
     const { body: user } = await api.get(`user/${id}`);
-
     dispatch({
       type: PROFILE_SUCCESS,
       ...user,
     });
   } catch (error) {
-    console.log('error', error.message);
-    dispatch({
-      type: PROFILE_ERROR,
-      profileErrorMessage: error.message,
-    });
+    throw new Error(error);
   }
 };
