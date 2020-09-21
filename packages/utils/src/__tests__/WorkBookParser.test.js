@@ -26,8 +26,11 @@ const WORK_BOOK = {
 
 describe('WorkBookParser', () => {
   beforeAll(() => {
-    // sinon.stub(xlsx.utils, 'sheet_to_json').callsFake(sheet => sheet);
     xlsx.utils.sheet_to_json = jest.fn().mockImplementation(sheet => sheet);
+  });
+
+  afterAll(() => {
+    xlsx.utils.sheet_to_json.mockReset();
   });
 
   describe('parse()', () => {
@@ -98,8 +101,4 @@ describe('WorkBookParser', () => {
       expect(parsedWorkBook).not.toHaveProperty('Sheet2');
     });
   });
-
-  // after(() => {
-  //   xlsx.utils.sheet_to_json.restore();
-  // });
 });
