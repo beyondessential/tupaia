@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Button, TextField } from '@tupaia/ui-components';
+import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { updatePassword, getUser } from '../authentication';
@@ -17,7 +17,7 @@ const Container = styled.section`
   padding-top: 1rem;
   padding-bottom: 1rem;
   max-width: 460px;
-  margin: 3rem auto;
+  margin: 2rem auto 3rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -30,8 +30,9 @@ const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
 `;
 
-const SuccessMessage = styled.p`
-  color: ${props => props.theme.palette.success.main};
+const SuccessMessage = styled(SmallAlert)`
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
 `;
 
 const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHeaderEl }) => {
