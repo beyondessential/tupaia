@@ -5,12 +5,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  ConnectedTable,
   AlertMenuCell,
   CountryNameButtonCreator,
   StartDateCell,
   WeekAndDateCell,
 } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
 const createColumns = (isForMultipleCountries, handlePanelOpen) => [
   ...(isForMultipleCountries

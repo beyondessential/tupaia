@@ -7,12 +7,12 @@ import { ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import {
-  ConnectedTable,
   createTotalCasesAccessor,
   AlertCell,
   SitesReportedCell,
   CountryNameCell,
 } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
 const countriesTableColumns = [
   {
