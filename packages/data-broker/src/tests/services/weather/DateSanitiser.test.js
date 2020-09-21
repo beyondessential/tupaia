@@ -46,6 +46,18 @@ describe('DateSanitiser', () => {
   });
 
   describe('historic', () => {
+    describe('default date range', () => {
+      it('defaults to full range', () => {
+        const {
+          startDate: actualStartDate,
+          endDate: actualEndDate,
+        } = new DateSanitiser().sanitiseHistoricDateRange(undefined, undefined);
+
+        expect(actualStartDate).to.equal('2018-02-05');
+        expect(actualEndDate).to.equal('2019-02-05');
+      });
+    });
+
     describe('limits on earliest data', () => {
       /*
        * This is a limitation of the WeatherBit plan we use, if we request further back it falls over

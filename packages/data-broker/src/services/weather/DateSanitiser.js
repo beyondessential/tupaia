@@ -17,6 +17,18 @@ export class DateSanitiser {
       throw new Error('Start date must be before (or equal to) end date');
     }
 
+    const {
+      earliestStartDate: defaultStartDate,
+      latestEndDate: defaultEndDate,
+    } = this.getHistoricLimits();
+
+    if (!startDate) {
+      startDate = defaultStartDate;
+    }
+    if (!endDate) {
+      endDate = defaultEndDate;
+    }
+
     /*
      * Inclusive/exclusive date conversion:
      *
