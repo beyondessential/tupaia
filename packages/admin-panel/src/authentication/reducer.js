@@ -17,9 +17,6 @@ import {
   PROFILE_ERROR,
   PROFILE_REQUEST,
   PROFILE_SUCCESS,
-  PASSWORD_SUCCESS,
-  PASSWORD_REQUEST,
-  PASSWORD_ERROR,
 } from './constants';
 
 const defaultState = {
@@ -33,8 +30,6 @@ const defaultState = {
   errorMessage: null,
   profileErrorMessage: null,
   profileLoading: false,
-  passwordErrorMessage: null,
-  passwordLoading: false,
 };
 
 export const RememberMeTransform = createTransform(
@@ -83,12 +78,6 @@ const stateChanges = {
   [PROFILE_REQUEST]: () => ({ profileLoading: true }),
   [PROFILE_ERROR]: payload => ({
     profileLoading: false,
-    ...payload,
-  }),
-  [PASSWORD_REQUEST]: () => ({ passwordLoading: true }),
-  [PASSWORD_SUCCESS]: () => ({ passwordLoading: false }),
-  [PASSWORD_ERROR]: payload => ({
-    passwordLoading: false,
     ...payload,
   }),
 };

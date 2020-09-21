@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -11,12 +11,7 @@ import { useForm } from 'react-hook-form';
 import { Button, TextField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
-import {
-  getPasswordErrorMessage,
-  getPasswordLoading,
-  updatePassword,
-  getUser,
-} from '../authentication';
+import { updatePassword, getUser } from '../authentication';
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -35,27 +30,39 @@ const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
 `;
 
-const ChangePasswordPageComponent = ({
-  user,
-  errorMessage,
-  isLoading,
-  onUpdatePassword,
-  getHeaderEl,
-}) => {
+const SuccessMessage = styled.p`
+  color: ${props => props.theme.palette.success.main};
+`;
+
+const ChangePasswordPageComponent = ({ user, onUpdatePassword, getHeaderEl }) => {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, register, getValues, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
-  console.log('errors', errors);
+
+  const onSubmit = handleSubmit(async (data, event) => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      await onUpdatePassword(data);
+      console.log('success');
+      setIsLoading(false);
+      setSuccessMessage('Password successfully updated.');
+      event.target.reset();
+    } catch (error) {
+      console.log('error', error.message);
+      setErrorMessage(error.message);
+      setIsLoading(false);
+    }
+  });
 
   return (
     <Container>
       {HeaderPortal}
-      <form
-        onSubmit={handleSubmit(data => {
-          onUpdatePassword(data);
-        })}
-        noValidate
-      >
+      <form onSubmit={onSubmit} noValidate>
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+        {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
         <TextField
           label="Current Password"
           name="oldPassword"
@@ -106,8 +113,6 @@ const ChangePasswordPageComponent = ({
 ChangePasswordPageComponent.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   onUpdatePassword: PropTypes.func.isRequired,
-  errorMessage: PropTypes.string,
-  isLoading: PropTypes.bool,
   user: PropTypes.PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,
@@ -115,15 +120,11 @@ ChangePasswordPageComponent.propTypes = {
 };
 
 ChangePasswordPageComponent.defaultProps = {
-  errorMessage: null,
   user: null,
-  isLoading: false,
 };
 
 const mapStateToProps = state => ({
   user: getUser(state),
-  errorMessage: getPasswordErrorMessage(state),
-  isLoading: getPasswordLoading(state),
 });
 
 const mapDispatchToProps = dispatch => ({
