@@ -20,12 +20,8 @@ import {
   FakeHeader,
   SmallAlert,
 } from '@tupaia/ui-components';
-import {
-  FlexStart,
-  BorderlessTableRow,
-  VerifiableTableRow,
-  FlexSpaceBetween,
-} from '../../components';
+import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
+import { VerifiableTableRow } from './VerifiableTableRow';
 import { updateWeeklyReportsData } from '../../store';
 
 const VerifiableBody = props => {
