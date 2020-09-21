@@ -27,10 +27,10 @@ export class WeatherService extends Service {
 
     const apiResultTranslator = new ApiResultTranslator(entities, resultFormat, dataElementCodes);
 
-    if (this._isRequestForCurrentWeather(options)) {
-      return this._getCurrentWeather(entities, apiResultTranslator);
+    if (this.isRequestForCurrentWeather(options)) {
+      return this.getCurrentWeather(entities, apiResultTranslator);
     }
-    return this._getHistoricWeather(entities, options, apiResultTranslator);
+    return this.getHistoricWeather(entities, options, apiResultTranslator);
   }
 
   /**
@@ -108,7 +108,7 @@ export class WeatherService extends Service {
    * @returns {boolean}
    * @private
    */
-  _isRequestForCurrentWeather(options) {
+  isRequestForCurrentWeather(options) {
     return !options.startDate && !options.endDate;
   }
 
@@ -121,7 +121,7 @@ export class WeatherService extends Service {
    * @returns {Promise<Object.<results: Object[], metadata: Object>>}
    * @private
    */
-  async _getCurrentWeather(entities, apiResultTranslator) {
+  async getCurrentWeather(entities, apiResultTranslator) {
     /*
      * Current weather uses the historic weather API instead of the current weather API
      * because we want complete data on what happened yesterday (e.g. total rainfall), rather than
@@ -150,7 +150,7 @@ export class WeatherService extends Service {
       };
     }
 
-    const apiResultByEntityCode = await this._getHistoricWeatherDataForEntities(
+    const apiResultByEntityCode = await this.getHistoricWeatherDataForEntities(
       entities,
       dateRangeByEntityCode,
     );
@@ -168,7 +168,7 @@ export class WeatherService extends Service {
    * @returns {Promise<Object.<results: Object[], metadata: Object>>}
    * @private
    */
-  async _getHistoricWeather(entities, options, apiResultTranslator) {
+  async getHistoricWeather(entities, options, apiResultTranslator) {
     const { startDate, endDate } = this.dateSanitiser.sanitise(options.startDate, options.endDate);
 
     const dateRangeByEntityCode = {};
@@ -180,7 +180,7 @@ export class WeatherService extends Service {
       };
     }
 
-    const apiResultByEntityCode = await this._getHistoricWeatherDataForEntities(
+    const apiResultByEntityCode = await this.getHistoricWeatherDataForEntities(
       entities,
       dateRangeByEntityCode,
     );
@@ -199,7 +199,7 @@ export class WeatherService extends Service {
    * @returns {Promise<Object.<entityCode: string: apiResult: Object>>}
    * @private
    */
-  async _getHistoricWeatherDataForEntities(entities, dateRangeByEntityCode) {
+  async getHistoricWeatherDataForEntities(entities, dateRangeByEntityCode) {
     // Run requests in parallel for performance
     const getDataForEntity = async entity => {
       const { lat, lon } = entity.pointLatLon();

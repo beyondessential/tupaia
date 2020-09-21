@@ -35,10 +35,10 @@ export class ApiResultTranslator {
 
       switch (this.resultFormat) {
         case 'analytics':
-          translated = this._apiResultToAnalytics(apiResult, entity);
+          translated = this.apiResultToAnalytics(apiResult, entity);
           break;
         case 'events':
-          translated = this._apiResultToEvents(apiResult, entity);
+          translated = this.apiResultToEvents(apiResult, entity);
           break;
       }
 
@@ -62,7 +62,7 @@ export class ApiResultTranslator {
     }
   }
 
-  _apiResultToEvents(apiResult, entity) {
+  apiResultToEvents(apiResult, entity) {
     const events = [];
 
     for (const entry of apiResult.data) {
@@ -86,7 +86,7 @@ export class ApiResultTranslator {
     return events;
   }
 
-  _apiResultToAnalytics(apiResult, entity, dataElementCodes) {
+  apiResultToAnalytics(apiResult, entity, dataElementCodes) {
     const analytics = [];
 
     for (const entry of apiResult.data) {
