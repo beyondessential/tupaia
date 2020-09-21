@@ -7,7 +7,7 @@
     "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
     "test": "jest",
-    "test-coverage": "cross-env NODE_ENV=test nyc mocha",
+    "test-coverage": "yarn test --coverage",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix ."
   },
@@ -26,7 +26,10 @@
   "eslintConfig": {
     "overrides": [
       {
-        "files": "**/src/testUtilities/**",
+        "files": [
+          "**/src/testUtilities/**",
+          "**/__tests__/**"
+        ],
         "env": {
           "jest": true
         }
