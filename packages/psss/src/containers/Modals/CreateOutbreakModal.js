@@ -22,7 +22,7 @@ import {
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import { useForm, Controller } from 'react-hook-form';
 import Typography from '@material-ui/core/Typography';
-import { FlexSpaceBetween } from '../Layout';
+import { FlexSpaceBetween } from '../../components/Layout';
 import { connectApi } from '../../api';
 
 const Content = styled(DialogContent)`
