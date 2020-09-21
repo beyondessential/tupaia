@@ -42,25 +42,26 @@ const ChangePasswordPageComponent = ({
   onUpdatePassword,
   getHeaderEl,
 }) => {
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, getValues, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
-
-  const onSubmit = handleSubmit(data => {
-    const { oldPassword, password, passwordConfirm } = data;
-    console.log('data', data, oldPassword, password, passwordConfirm);
-    onUpdatePassword(data);
-  });
+  console.log('errors', errors);
 
   return (
     <Container>
       {HeaderPortal}
-      <form onSubmit={onSubmit} noValidate>
+      <form
+        onSubmit={handleSubmit(data => {
+          onUpdatePassword(data);
+        })}
+        noValidate
+      >
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <TextField
           label="Current Password"
           name="oldPassword"
           placeholder="Enter your current password"
           required
+          type="password"
           error={!!errors.oldPassword}
           helperText={errors.oldPassword && errors.oldPassword.message}
           inputRef={register({
@@ -72,10 +73,12 @@ const ChangePasswordPageComponent = ({
           name="password"
           placeholder="Enter your password"
           required
+          type="password"
           error={!!errors.password}
           helperText={errors.password && errors.password.message}
           inputRef={register({
             required: 'Required',
+            minLength: { value: 9, message: 'Password must be over 8 characters long.' },
           })}
         />
         <TextField
@@ -83,10 +86,13 @@ const ChangePasswordPageComponent = ({
           name="passwordConfirm"
           placeholder="Enter your password"
           required
+          type="password"
           error={!!errors.passwordConfirm}
           helperText={errors.passwordConfirm && errors.passwordConfirm.message}
           inputRef={register({
             required: 'Required',
+            minLength: { value: 9, message: 'Password must be over 8 characters long.' },
+            validate: value => value === getValues('password') || 'Passwords do not match.',
           })}
         />
         <StyledButton type="submit" fullWidth isLoading={isLoading}>

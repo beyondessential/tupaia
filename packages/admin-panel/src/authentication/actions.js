@@ -84,7 +84,6 @@ export const updateProfile = (id, payload) => async (dispatch, getState, { api }
       ...user,
     });
   } catch (error) {
-    console.log('error', error.message);
     dispatch({
       type: PROFILE_ERROR,
       profileErrorMessage: error.message,
@@ -105,7 +104,6 @@ export const updatePassword = payload => async (dispatch, getState, { api }) => 
       type: PASSWORD_SUCCESS,
     });
   } catch (error) {
-    console.log('error', error.message);
     dispatch({
       type: PASSWORD_ERROR,
       passwordErrorMessage: error.message,
