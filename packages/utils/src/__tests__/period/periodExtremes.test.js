@@ -5,7 +5,7 @@
 
 import { getMostAncientPeriod, getMostRecentPeriod } from '../../period/periodExtremes';
 
-context('periodExtremes', () => {
+describe('periodExtremes', () => {
   describe('getMostRecentPeriod()', () => {
     it('should return null for empty input', () => {
       expect(getMostRecentPeriod()).toBeNull();
