@@ -73,14 +73,19 @@ export class WeatherService extends Service {
    * @private
    */
   async extractDataElementCodes(type, dataSources) {
+    if (dataSources.length !== 1) {
+      throw new Error('Weather service only supports pulling one data source at a time');
+    }
+    const [dataSource] = dataSources;
+    const { code } = dataSource;
+
     let dataElementCodes = null;
     if (type === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
-      dataElementCodes = [dataSources[0].code]; // FIXME: bad
+      return [code];
     } else if (type === this.dataSourceTypes.DATA_GROUP) {
       // data group requested
-      const dataGroupCode = dataSources[0].code;
-      const dataElements = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
+      const dataElements = await this.models.dataSource.getDataElementsInGroup(code);
       dataElementCodes = dataElements.map(element => element.code);
     }
     return dataElementCodes;
