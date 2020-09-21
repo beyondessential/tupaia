@@ -22,12 +22,19 @@ export const selectCurrentDashboardGroupCode = createSelector(
       : Object.keys(dashboardConfig)[0],
 );
 
-export const selectCurrentDashboardGroupId = createSelector(
-  [state => state.global.dashboardConfig, selectCurrentDashboardGroupCode],
-  (dashboardConfig, currentDashboardGroupCode) => {
+const selectCurrentDashboardGroupIdForExpandedReport = createSelector(
+  [
+    state => state.global.dashboardConfig,
+    selectCurrentDashboardGroupCode,
+    selectCurrentExpandedViewId,
+  ],
+  (dashboardConfig, currentDashboardGroupCode, currentViewId) => {
     const dashboardGroup = dashboardConfig[currentDashboardGroupCode];
     if (!dashboardGroup) return null;
-    return Object.values(dashboardGroup)[0].dashboardGroupId;
+    const dashboardGroupIncludingReport = Object.values(dashboardGroup).find(({ views }) =>
+      views.some(({ viewId }) => viewId === currentViewId),
+    );
+    return dashboardGroupIncludingReport ? dashboardGroupIncludingReport.dashboardGroupId : null;
   },
 );
 
@@ -37,7 +44,11 @@ export const selectIsDashboardGroupCodeDefined = createSelector(
 );
 
 export const selectCurrentInfoViewKey = createSelector(
-  [selectCurrentDashboardGroupId, selectCurrentOrgUnitCode, selectCurrentExpandedViewId],
+  [
+    selectCurrentDashboardGroupIdForExpandedReport,
+    selectCurrentOrgUnitCode,
+    selectCurrentExpandedViewId,
+  ],
   (dashboardGroupId, organisationUnitCode, viewId) =>
     getUniqueViewId({
       organisationUnitCode,

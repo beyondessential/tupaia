@@ -34,6 +34,10 @@ RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
 RUN mkdir -p ./packages/dhis-api
 COPY packages/dhis-api/package.json ./packages/dhis-api
+RUN mkdir -p ./packages/eslint-config-typescript
+COPY packages/eslint-config-typescript/package.json ./packages/eslint-config-typescript
+RUN mkdir -p ./packages/indicators
+COPY packages/indicators/package.json ./packages/indicators
 RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
 RUN mkdir -p ./packages/utils
@@ -57,6 +61,8 @@ COPY packages/data-broker/. ./packages/data-broker
 COPY packages/devops/. ./packages/devops
 COPY packages/database/. ./packages/database
 COPY packages/dhis-api/. ./packages/dhis-api
+COPY packages/eslint-config-typescript/. ./packages/eslint-config-typescript
+COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
 COPY packages/ui-components/. ./packages/ui-components
 

@@ -11,7 +11,7 @@ import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { LoginForm } from '../containers';
-import { checkIsLoggedIn } from '../store';
+import { checkIsLoggedIn, getHomeUrl } from '../store';
 
 export const Main = styled.main`
   height: 100vh;
@@ -64,9 +64,9 @@ const StyledLink = styled(MuiLink)`
 
 const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 
-export const LoginViewComponent = ({ isLoggedIn }) => {
+export const LoginViewComponent = ({ isLoggedIn, homeUrl }) => {
   if (isLoggedIn) {
-    return <Redirect to="/" />;
+    return <Redirect to={homeUrl} />;
   }
 
   return (
@@ -87,6 +87,7 @@ export const LoginViewComponent = ({ isLoggedIn }) => {
 
 LoginViewComponent.propTypes = {
   isLoggedIn: PropTypes.bool,
+  homeUrl: PropTypes.string.isRequired,
 };
 
 LoginViewComponent.defaultProps = {
@@ -95,6 +96,7 @@ LoginViewComponent.defaultProps = {
 
 const mapStateToProps = state => ({
   isLoggedIn: checkIsLoggedIn(state),
+  homeUrl: getHomeUrl(state),
 });
 
 export const LoginView = connect(mapStateToProps)(LoginViewComponent);

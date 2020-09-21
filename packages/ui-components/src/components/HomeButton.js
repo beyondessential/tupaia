@@ -21,12 +21,17 @@ const StyledImg = styled.img`
 
 const Link = props => <StyledLink color="inherit" {...props} component={RouterLink} />;
 
-export const HomeButton = ({ source, ...props }) => (
-  <Link to="/">
+export const HomeButton = ({ source, homeUrl, ...props }) => (
+  <Link to={homeUrl}>
     <StyledImg src={source} alt="logo" {...props} />
   </Link>
 );
 
 HomeButton.propTypes = {
   source: PropTypes.string.isRequired,
+  homeUrl: PropTypes.string,
+};
+
+HomeButton.defaultProps = {
+  homeUrl: '/',
 };
