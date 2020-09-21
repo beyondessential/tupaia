@@ -13,3 +13,5 @@ export * from './CountryTable';
 export * from './SiteSummaryTable';
 export * from './SiteReportTable';
 export * from './OutbreaksTable';
+export * from './ConnectedTable';
+export * from './VerifiableTableRow';

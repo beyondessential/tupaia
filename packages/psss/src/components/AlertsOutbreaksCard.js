@@ -156,10 +156,6 @@ const Text = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const PrevWeek = styled(FlexEnd)`
-  margin-bottom: 0.5rem;
-`;
-
 const SuperText = styled(Typography)`
   font-weight: 600;
   font-size: 0.6875rem;
@@ -204,10 +200,10 @@ export const AlertsOutbreaksCardHeader = ({
           <Subheading>{subheading}</Subheading>
         </div>
         <div>
-          <PrevWeek>
+          <FlexEnd mb={1}>
             <SuperText>Prev. Week</SuperText>
             <HighlightText percentageChange={percentageChange} />
-          </PrevWeek>
+          </FlexEnd>
           <Text>{detailText}</Text>
         </div>
       </HeaderDetails>
