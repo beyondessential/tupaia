@@ -4,11 +4,15 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 
 export class DateSanitiser {
   /**
+   * Sanitises a date range before it is passed on to the API.
+   *
+   * This is for observed weather data (i.e. historic)
+   *
    * @param string startDate
    * @param string endDate
    * @returns {{endDate: string|null, startDate: string|null}}
    */
-  sanitise(startDate, endDate) {
+  sanitiseHistoricDateRange(startDate, endDate) {
     if (startDate > endDate) {
       throw new Error('Start date must be before (or equal to) end date');
     }
@@ -23,7 +27,7 @@ export class DateSanitiser {
       .add(1, 'day')
       .format(DATE_FORMAT);
 
-    return this.restrictDatesWithinLimits(startDate, endDate);
+    return this.restrictHistoricDatesWithinLimits(startDate, endDate);
   }
 
   /**
@@ -36,8 +40,13 @@ export class DateSanitiser {
    * @returns {{endDate: string|null, startDate: string|null}}
    * @private
    */
-  restrictDatesWithinLimits(startDate, endDate) {
-    const { earliestStartDate, earliestEndDate, latestStartDate, latestEndDate } = this.getLimits();
+  restrictHistoricDatesWithinLimits(startDate, endDate) {
+    const {
+      earliestStartDate,
+      earliestEndDate,
+      latestStartDate,
+      latestEndDate,
+    } = this.getHistoricLimits();
 
     // request for today, change to yesterday
     const startDateLess1day = moment(startDate)
@@ -83,7 +92,7 @@ export class DateSanitiser {
    * @returns {{earliestStartDate: string, latestStartDate: string, earliestEndDate: string, latestEndDate: string}}
    * @private
    */
-  getLimits() {
+  getHistoricLimits() {
     const earliestStartDate = moment()
       .subtract(1, 'year') // max historical is 1 year
       .format(DATE_FORMAT);

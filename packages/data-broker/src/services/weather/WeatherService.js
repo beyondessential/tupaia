@@ -174,7 +174,10 @@ export class WeatherService extends Service {
    * @private
    */
   async getHistoricWeather(entities, options, apiResultTranslator) {
-    const { startDate, endDate } = this.dateSanitiser.sanitise(options.startDate, options.endDate);
+    const { startDate, endDate } = this.dateSanitiser.sanitiseHistoricDateRange(
+      options.startDate,
+      options.endDate,
+    );
 
     const dateRangeByEntityCode = {};
 
