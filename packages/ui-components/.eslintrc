@@ -1,8 +1,7 @@
 {
   "extends": [
     "@beyondessential/eslint-config-beyondessential",
-    "plugin:prettier/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:prettier/recommended"
   ],
   "parser": "babel-eslint",
   "env": {

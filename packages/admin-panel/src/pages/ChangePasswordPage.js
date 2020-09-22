@@ -6,14 +6,17 @@
 import React, { useState, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import MuiDivider from '@material-ui/core/Divider';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
+import { Button, TextField, SmallAlert, PasswordStrengthBarFallback } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { updatePassword, getUser } from '../authentication';
 
-const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
+// Lazy load the component as it uses zxcvbn which is a large library.
+// For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
+const PasswordStrengthBar = lazy(() => import('../widgets/PasswordStrengthBar'));
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -35,6 +38,10 @@ const ErrorMessage = styled.p`
 const SuccessMessage = styled(SmallAlert)`
   margin-top: -1rem;
   margin-bottom: 1.5rem;
+`;
+
+const Divider = styled(MuiDivider)`
+  margin: 0.5rem 0 1.8rem;
 `;
 
 const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHeaderEl }) => {
@@ -78,6 +85,7 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
             required: 'Required',
           })}
         />
+        <Divider />
         <TextField
           label="New Password"
           name="password"
@@ -105,11 +113,12 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
             validate: value => value === getValues('password') || 'Passwords do not match.',
           })}
         />
-        <Suspense fallback={<div>loading...</div>}>
+        <Suspense fallback={<PasswordStrengthBarFallback />}>
           <PasswordStrengthBar
             password={password}
-            minLength={9}
-            scoreWords={['weak', 'okay', 'good', 'strong', 'very strong']}
+            helperText="New password must be over 8 characters long."
+            pt={1}
+            pb={4}
           />
         </Suspense>
         <StyledButton type="submit" fullWidth isLoading={isLoading}>
