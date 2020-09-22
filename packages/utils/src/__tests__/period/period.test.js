@@ -51,33 +51,21 @@ describe('period utilities', () => {
       expect(periodToType()).toBeUndefined();
     });
 
-    it('should return undefined for invalid input', () => {
-      expect(periodToType('20165')).toBeUndefined();
-      expect(periodToType('2016W5')).toBeUndefined();
-      expect(periodToType('!VALID')).toBeUndefined();
-      expect(periodToType('!VALID_WITH_W')).toBeUndefined();
-      expect(periodToType('W122020')).toBeUndefined();
-      expect(periodToType('2021Q10')).toBeUndefined();
-    });
+    it.each([['20165'], ['2016W5'], ['!VALID'], ['!VALID_WITH_W'], ['W122020'], ['2021Q10']])(
+      'should return undefined for invalid input',
+      period => {
+        expect(periodToType(period)).toBeUndefined();
+      },
+    );
 
-    it('year', () => {
-      expect(periodToType('2016')).toBe(YEAR);
-    });
-
-    it('quarter', () => {
-      expect(periodToType('2016Q1')).toBe(QUARTER);
-    });
-
-    it('month', () => {
-      expect(periodToType('201605')).toBe(MONTH);
-    });
-
-    it('week', () => {
-      expect(periodToType('2016W05')).toBe(WEEK);
-    });
-
-    it('day', () => {
-      expect(periodToType('20160501')).toBe(DAY);
+    it.each([
+      ['year', '2016', YEAR],
+      ['quarter', '2016Q1', QUARTER],
+      ['month', '201605', MONTH],
+      ['week', '2016W05', WEEK],
+      ['day', '20160501', DAY],
+    ])('%s', (name, period, expected) => {
+      expect(periodToType(period)).toBe(expected);
     });
   });
 
@@ -90,147 +78,180 @@ describe('period utilities', () => {
       expect(isValidPeriod('20165')).toBe(false);
     });
 
-    it('should return false for non-strings', () => {
-      expect(isValidPeriod(2016)).toBe(false);
-      expect(isValidPeriod(['2', '0', '2', '0', '0', '2'])).toBe(false);
-      expect(isValidPeriod({ period: '202002' })).toBe(false);
-      expect(isValidPeriod(true)).toBe(false);
-      expect(isValidPeriod(moment())).toBe(false);
+    it.each([
+      [2016, false],
+      [['2', '0', '2', '0', '0', '2'], false],
+      [{ period: '202002' }, false],
+      [true, false],
+      [moment(), false],
+    ])('should return false for non-strings', (period, expected) => {
+      expect(isValidPeriod(period)).toBe(expected);
     });
 
-    it('should return true for valid periods', () => {
-      expect(isValidPeriod('2016')).toBe(true);
-      expect(isValidPeriod('201605')).toBe(true);
-      expect(isValidPeriod('2016W12')).toBe(true);
-      expect(isValidPeriod('2016Q2')).toBe(true);
-      expect(isValidPeriod('20160502')).toBe(true);
+    it.each([
+      ['2016', true],
+      ['201605', true],
+      ['2016W12', true],
+      ['2016Q2', true],
+      ['20160502', true],
+    ])('should return true for valid periods', (period, expected) => {
+      expect(isValidPeriod(period)).toBe(expected);
     });
   });
 
   describe('comparePeriods', () => {
     describe('year', () => {
-      it('>', () => {
-        expect(comparePeriods('2020', '2019')).toBeGreaterThan(0);
-        expect(comparePeriods('2020', '2020Q3')).toBeGreaterThan(0);
-        expect(comparePeriods('2020', '202011')).toBeGreaterThan(0);
-        expect(comparePeriods('2020', '2020W52')).toBeGreaterThan(0);
-        expect(comparePeriods('2020', '20201230')).toBeGreaterThan(0);
+      it.each([
+        ['2020', '2019', 0],
+        ['2020', '2020Q3', 0],
+        ['2020', '202011', 0],
+        ['2020', '2020W52', 0],
+        ['2020', '20201230', 0],
+      ])('>', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeGreaterThan(expected);
       });
 
-      it('=', () => {
-        expect(comparePeriods('2020', '2020')).toBe(0);
-        expect(comparePeriods('2020', '2020Q4')).toBe(0);
-        expect(comparePeriods('2020', '202012')).toBe(0);
-        expect(comparePeriods('2020', '20201231')).toBe(0);
+      it.each([
+        ['2020', '2020', 0],
+        ['2020', '2020Q4', 0],
+        ['2020', '202012', 0],
+        ['2020', '20201231', 0],
+      ])('=', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBe(expected);
       });
 
-      it('<', () => {
-        expect(comparePeriods('2020', '2021')).toBeLessThan(0);
-        expect(comparePeriods('2020', '2021Q1')).toBeLessThan(0);
-        expect(comparePeriods('2020', '202101')).toBeLessThan(0);
-        expect(comparePeriods('2020', '2021W01')).toBeLessThan(0);
-        expect(comparePeriods('2020', '20210101')).toBeLessThan(0);
+      it.each([
+        ['2020', '2021', 0],
+        ['2020', '2021Q1', 0],
+        ['2020', '202101', 0],
+        ['2020', '2021W01', 0],
+        ['2020', '20210101', 0],
+      ])('<', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeLessThan(expected);
       });
     });
 
     describe('quarter', () => {
-      it('>', () => {
-        expect(comparePeriods('2020Q1', '2019')).toBeGreaterThan(0);
-        expect(comparePeriods('2020Q1', '2019Q4')).toBeGreaterThan(0);
-        expect(comparePeriods('2020Q1', '201912')).toBeGreaterThan(0);
-        expect(comparePeriods('2020Q1', '2019W52')).toBeGreaterThan(0);
-        expect(comparePeriods('2020Q1', '20191231')).toBeGreaterThan(0);
+      it.each([
+        ['2020Q1', '2019', 0],
+        ['2020Q1', '2019Q4', 0],
+        ['2020Q1', '201912', 0],
+        ['2020Q1', '2019W52', 0],
+        ['2020Q1', '20191231', 0],
+      ])('>', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeGreaterThan(expected);
       });
 
-      it('=', () => {
-        expect(comparePeriods('2020Q4', '2020')).toBe(0);
-        expect(comparePeriods('2020Q4', '2020Q4')).toBe(0);
-        expect(comparePeriods('2020Q4', '202012')).toBe(0);
-        expect(comparePeriods('2020Q4', '20201231')).toBe(0);
+      it.each([
+        ['2020Q4', '2020', 0],
+        ['2020Q4', '2020Q4', 0],
+        ['2020Q4', '202012', 0],
+        ['2020Q4', '20201231', 0],
+      ])('=', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBe(expected);
       });
 
-      it('<', () => {
-        expect(comparePeriods('2020Q4', '2021')).toBeLessThan(0);
-        expect(comparePeriods('2020Q4', '2021Q1')).toBeLessThan(0);
-        expect(comparePeriods('2020Q4', '202101')).toBeLessThan(0);
-        expect(comparePeriods('2020Q4', '2021W01')).toBeLessThan(0);
-        expect(comparePeriods('2020Q4', '20210101')).toBeLessThan(0);
+      it.each([
+        ['2020Q4', '2021', 0],
+        ['2020Q4', '2021Q1', 0],
+        ['2020Q4', '202101', 0],
+        ['2020Q4', '2021W01', 0],
+        ['2020Q4', '20210101', 0],
+      ])('<', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeLessThan(expected);
       });
     });
 
     describe('month', () => {
-      it('>', () => {
-        expect(comparePeriods('202001', '2019')).toBeGreaterThan(0);
-        expect(comparePeriods('202001', '2019Q4')).toBeGreaterThan(0);
-        expect(comparePeriods('202001', '201912')).toBeGreaterThan(0);
-        expect(comparePeriods('202001', '2019W52')).toBeGreaterThan(0);
-        expect(comparePeriods('202001', '20191231')).toBeGreaterThan(0);
+      it.each([
+        ['202001', '2019', 0],
+        ['202001', '2019Q4', 0],
+        ['202001', '201912', 0],
+        ['202001', '2019W52', 0],
+        ['202001', '20191231', 0],
+      ])('>', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeGreaterThan(expected);
       });
 
-      it('=', () => {
-        expect(comparePeriods('202012', '2020')).toBe(0);
-        expect(comparePeriods('202012', '2020Q4')).toBe(0);
-        expect(comparePeriods('202012', '202012')).toBe(0);
-        expect(comparePeriods('202012', '20201231')).toBe(0);
+      it.each([
+        ['202012', '2020', 0],
+        ['202012', '2020Q4', 0],
+        ['202012', '202012', 0],
+        ['202012', '20201231', 0],
+      ])('=', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBe(expected);
       });
 
-      it('<', () => {
-        expect(comparePeriods('202012', '2021')).toBeLessThan(0);
-        expect(comparePeriods('202012', '2021Q1')).toBeLessThan(0);
-        expect(comparePeriods('202012', '202101')).toBeLessThan(0);
-        expect(comparePeriods('202012', '2021W01')).toBeLessThan(0);
-        expect(comparePeriods('202012', '20210101')).toBeLessThan(0);
+      it.each([
+        ['202012', '2021', 0],
+        ['202012', '2021Q1', 0],
+        ['202012', '202101', 0],
+        ['202012', '2021W01', 0],
+        ['202012', '20210101', 0],
+      ])('<', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeLessThan(expected);
       });
     });
 
     describe('week', () => {
-      it('>', () => {
-        expect(comparePeriods('2020W01', '2019')).toBeGreaterThan(0);
-        expect(comparePeriods('2020W01', '2019Q4')).toBeGreaterThan(0);
-        expect(comparePeriods('2020W01', '201912')).toBeGreaterThan(0);
-        expect(comparePeriods('2020W01', '2019W52')).toBeGreaterThan(0);
-        expect(comparePeriods('2020W01', '20191231')).toBeGreaterThan(0);
+      it.each([
+        ['2020W01', '2019', 0],
+        ['2020W01', '2019Q4', 0],
+        ['2020W01', '201912', 0],
+        ['2020W01', '2019W52', 0],
+        ['2020W01', '20191231', 0],
+      ])('>', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeGreaterThan(expected);
+      });
+      it.each([
+        ['2020W53', '2020W53', 0],
+        ['2020W52', '20201227', 0],
+        ['2020W53', '20210103', 0],
+      ])('=', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBe(expected);
       });
 
-      it('=', () => {
-        expect(comparePeriods('2020W53', '2020W53')).toBe(0);
-        expect(comparePeriods('2020W52', '20201227')).toBe(0);
-        expect(comparePeriods('2020W53', '20210103')).toBe(0);
-      });
-
-      it('<', () => {
-        expect(comparePeriods('2020W52', '2021')).toBeLessThan(0);
-        expect(comparePeriods('2020W52', '2021Q1')).toBeLessThan(0);
-        expect(comparePeriods('2020W52', '202101')).toBeLessThan(0);
-        expect(comparePeriods('2020W52', '2021W01')).toBeLessThan(0);
-        expect(comparePeriods('2020W52', '20201228')).toBeLessThan(0);
-        expect(comparePeriods('2020W53', '20210301')).toBeLessThan(0);
+      it.each([
+        ['2020W52', '2021', 0],
+        ['2020W52', '2021Q1', 0],
+        ['2020W52', '202101', 0],
+        ['2020W52', '2021W01', 0],
+        ['2020W52', '20201228', 0],
+        ['2020W53', '20210301', 0],
+      ])('<', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeLessThan(expected);
       });
     });
 
     describe('day', () => {
-      it('>', () => {
-        expect(comparePeriods('20200101', '2019')).toBeGreaterThan(0);
-        expect(comparePeriods('20200101', '2019Q4')).toBeGreaterThan(0);
-        expect(comparePeriods('20200101', '201912')).toBeGreaterThan(0);
-        expect(comparePeriods('20191230', '2019W52')).toBeGreaterThan(0);
-        expect(comparePeriods('20200101', '20191231')).toBeGreaterThan(0);
+      it.each([
+        ['20200101', '2019', 0],
+        ['20200101', '2019Q4', 0],
+        ['20200101', '201912', 0],
+        ['20191230', '2019W52', 0],
+        ['20200101', '20191231', 0],
+      ])('>', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeGreaterThan(expected);
       });
 
-      it('=', () => {
-        expect(comparePeriods('20201231', '2020')).toBe(0);
-        expect(comparePeriods('20201231', '202012')).toBe(0);
-        expect(comparePeriods('20201231', '2020Q4')).toBe(0);
-        expect(comparePeriods('20201227', '2020W52')).toBe(0);
-        expect(comparePeriods('20210103', '2020W53')).toBe(0);
+      it.each([
+        ['20201231', '2020', 0],
+        ['20201231', '202012', 0],
+        ['20201231', '2020Q4', 0],
+        ['20201227', '2020W52', 0],
+        ['20210103', '2020W53', 0],
+      ])('=', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBe(expected);
       });
 
-      it('<', () => {
-        expect(comparePeriods('20201231', '2021')).toBeLessThan(0);
-        expect(comparePeriods('20201231', '2021Q1')).toBeLessThan(0);
-        expect(comparePeriods('20201231', '202101')).toBeLessThan(0);
-        expect(comparePeriods('20201231', '2021W01')).toBeLessThan(0);
-        expect(comparePeriods('20201231', '20210101')).toBeLessThan(0);
+      it.each([
+        ['20201231', '2021', 0],
+        ['20201231', '2021Q1', 0],
+        ['20201231', '202101', 0],
+        ['20201231', '2021W01', 0],
+        ['20201231', '20210101', 0],
+      ])('<', (periodA, periodB, expected) => {
+        expect(comparePeriods(periodA, periodB)).toBeLessThan(expected);
       });
     });
   });
@@ -280,12 +301,14 @@ describe('period utilities', () => {
   });
 
   describe('parsePeriodType', () => {
-    it('should return the period type regardless of case', () => {
-      expect(parsePeriodType('YEAR')).toBe(YEAR);
-      expect(parsePeriodType('quaRter')).toBe(QUARTER);
-      expect(parsePeriodType('mOnTh')).toBe(MONTH);
-      expect(parsePeriodType('wEEk')).toBe(WEEK);
-      expect(parsePeriodType('day')).toBe(DAY);
+    it.each([
+      ['YEAR', YEAR],
+      ['quaRter', QUARTER],
+      ['mOnTh', MONTH],
+      ['wEEk', WEEK],
+      ['day', DAY],
+    ])('should return the period type regardless of case', (periodType, expected) => {
+      expect(parsePeriodType(periodType)).toBe(expected);
     });
 
     it('should throw an error for a wrong input', () => {
@@ -298,25 +321,14 @@ describe('period utilities', () => {
 
   describe('momentToPeriod', () => {
     const momentStub = { format: args => args };
-
-    it('year', () => {
-      expect(momentToPeriod(momentStub, YEAR)).toBe('YYYY');
-    });
-
-    it('quarter', () => {
-      expect(momentToPeriod(momentStub, QUARTER)).toBe('YYYY[Q]Q');
-    });
-
-    it('month', () => {
-      expect(momentToPeriod(momentStub, MONTH)).toBe('YYYYMM');
-    });
-
-    it('week', () => {
-      expect(momentToPeriod(momentStub, WEEK)).toBe('GGGG[W]WW');
-    });
-
-    it('day', () => {
-      expect(momentToPeriod(momentStub, DAY)).toBe('YYYYMMDD');
+    it.each([
+      ['year', YEAR, 'YYYY'],
+      ['quarter', QUARTER, 'YYYY[Q]Q'],
+      ['month', MONTH, 'YYYYMM'],
+      ['week', WEEK, 'GGGG[W]WW'],
+      ['day', DAY, 'YYYYMMDD'],
+    ])('%s', (name, periodType, expected) => {
+      expect(momentToPeriod(momentStub, periodType)).toBe(expected);
     });
   });
 
@@ -325,52 +337,34 @@ describe('period utilities', () => {
       expect(dateStringToPeriod('2020-02-15')).toBe(dateStringToPeriod('2020-02-15', DAY));
     });
 
-    it('should convert compatible date formats', () => {
-      expect(dateStringToPeriod('2020-02-15')).toBe('20200215');
-      expect(dateStringToPeriod('2020-02-15 10:18:00')).toBe('20200215');
+    it.each([
+      ['2020-02-15', '20200215'],
+      ['2020-02-15 10:18:00', '20200215'],
+    ])('should convert compatible date formats', (date, expected) => {
+      expect(dateStringToPeriod(date)).toBe(expected);
     });
 
-    it('year', () => {
-      expect(dateStringToPeriod('2020-02-15', YEAR)).toBe('2020');
-    });
-
-    it('quarter', () => {
-      expect(dateStringToPeriod('2020-02-15', QUARTER)).toBe('2020Q1');
-      expect(dateStringToPeriod('2020-04-01', QUARTER)).toBe('2020Q2');
-    });
-
-    it('month', () => {
-      expect(dateStringToPeriod('2020-02-15', MONTH)).toBe('202002');
-    });
-
-    it('week', () => {
-      expect(dateStringToPeriod('2020-02-15', WEEK)).toBe('2020W07');
-    });
-
-    it('day', () => {
-      expect(dateStringToPeriod('2020-02-15', DAY)).toBe('20200215');
+    it.each([
+      ['year', '2020-02-15', YEAR, '2020'],
+      ['quarter', '2020-02-15', QUARTER, '2020Q1'],
+      ['quarter', '2020-04-01', QUARTER, '2020Q2'],
+      ['month', '2020-02-15', MONTH, '202002'],
+      ['week', '2020-02-15', WEEK, '2020W07'],
+      ['day', '2020-02-15', DAY, '20200215'],
+    ])('%s', (name, date, periodType, expected) => {
+      expect(dateStringToPeriod(date, periodType)).toBe(expected);
     });
   });
 
   describe('periodToTimestamp', () => {
-    it('year', () => {
-      expect(periodToTimestamp('2016')).toBe(1451606400000);
-    });
-
-    it('quarter', () => {
-      expect(periodToTimestamp('2016Q1')).toBe(1451606400000);
-    });
-
-    it('month', () => {
-      expect(periodToTimestamp('201602')).toBe(1454284800000);
-    });
-
-    it('week', () => {
-      expect(periodToTimestamp('2016W06')).toBe(1454889600000);
-    });
-
-    it('day', () => {
-      expect(periodToTimestamp('20160229')).toBe(1456704000000);
+    it.each([
+      ['year', '2016', 1451606400000],
+      ['quarter', '2016Q1', 1451606400000],
+      ['month', '201602', 1454284800000],
+      ['week', '2016W06', 1454889600000],
+      ['day', '20160229', 1456704000000],
+    ])('%s', (name, period, expected) => {
+      expect(periodToTimestamp(period)).toBe(expected);
     });
   });
 
@@ -403,52 +397,59 @@ describe('period utilities', () => {
   });
 
   describe('periodToDisplayString', () => {
-    it('year', () => {
-      expect(periodToDisplayString('2019', YEAR)).toBe('2019');
-      expect(periodToDisplayString('201912', YEAR)).toBe('2019');
-      expect(periodToDisplayString('2019W12', YEAR)).toBe('2019');
-      expect(periodToDisplayString('20191202', YEAR)).toBe('2019');
-      expect(periodToDisplayString('2019Q3', YEAR)).toBe('2019');
+    it.each([
+      ['2019', YEAR, '2019'],
+      ['201912', YEAR, '2019'],
+      ['2019W12', YEAR, '2019'],
+      ['20191202', YEAR, '2019'],
+      ['2019Q3', YEAR, '2019'],
+    ])('year', (period, periodType, expected) => {
+      expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
-
-    it('quarter', () => {
-      expect(periodToDisplayString('2019', QUARTER)).toBe('Q1 2019');
-      expect(periodToDisplayString('201912', QUARTER)).toBe('Q4 2019');
-      expect(periodToDisplayString('2019W49', QUARTER)).toBe('Q4 2019');
-      expect(periodToDisplayString('20191202', QUARTER)).toBe('Q4 2019');
-      expect(periodToDisplayString('2019Q3', QUARTER)).toBe('Q3 2019');
+    it.each([
+      ['2019', QUARTER, 'Q1 2019'],
+      ['201912', QUARTER, 'Q4 2019'],
+      ['2019W49', QUARTER, 'Q4 2019'],
+      ['20191202', QUARTER, 'Q4 2019'],
+      ['2019Q3', QUARTER, 'Q3 2019'],
+    ])('quarter', (period, periodType, expected) => {
+      expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
-
-    it('month', () => {
-      expect(periodToDisplayString('2019', MONTH)).toBe('Jan 2019');
-      expect(periodToDisplayString('201912', MONTH)).toBe('Dec 2019');
-      expect(periodToDisplayString('2019W49', MONTH)).toBe('Dec 2019');
-      expect(periodToDisplayString('20191202', MONTH)).toBe('Dec 2019');
-      expect(periodToDisplayString('2019Q3', MONTH)).toBe('Jul 2019');
+    it.each([
+      ['2019', MONTH, 'Jan 2019'],
+      ['201912', MONTH, 'Dec 2019'],
+      ['2019W49', MONTH, 'Dec 2019'],
+      ['20191202', MONTH, 'Dec 2019'],
+      ['2019Q3', MONTH, 'Jul 2019'],
+    ])('month', (period, periodType, expected) => {
+      expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
-
-    it('week', () => {
-      expect(periodToDisplayString('2019', WEEK)).toBe('1st Jan 2019');
-      expect(periodToDisplayString('201912', WEEK)).toBe('1st Dec 2019');
-      expect(periodToDisplayString('2019W49', WEEK)).toBe('2nd Dec 2019');
-      expect(periodToDisplayString('20191202', WEEK)).toBe('2nd Dec 2019');
-      expect(periodToDisplayString('2019Q3', WEEK)).toBe('1st Jul 2019');
+    it.each([
+      ['2019', WEEK, '1st Jan 2019'],
+      ['201912', WEEK, '1st Dec 2019'],
+      ['2019W49', WEEK, '2nd Dec 2019'],
+      ['20191202', WEEK, '2nd Dec 2019'],
+      ['2019Q3', WEEK, '1st Jul 2019'],
+    ])('week', (period, periodType, expected) => {
+      expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
-
-    it('day', () => {
-      expect(periodToDisplayString('2019', DAY)).toBe('1st Jan 2019');
-      expect(periodToDisplayString('201912', DAY)).toBe('1st Dec 2019');
-      expect(periodToDisplayString('2019W48', DAY)).toBe('25th Nov 2019');
-      expect(periodToDisplayString('2019W49', DAY)).toBe('2nd Dec 2019');
-      expect(periodToDisplayString('20191202', DAY)).toBe('2nd Dec 2019');
-      expect(periodToDisplayString('2019Q3', DAY)).toBe('1st Jul 2019');
+    it.each([
+      ['2019', DAY, '1st Jan 2019'],
+      ['201912', DAY, '1st Dec 2019'],
+      ['2019W48', DAY, '25th Nov 2019'],
+      ['2019W49', DAY, '2nd Dec 2019'],
+      ['20191202', DAY, '2nd Dec 2019'],
+      ['2019Q3', DAY, '1st Jul 2019'],
+    ])('day', (period, periodType, expected) => {
+      expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
-
-    it('should default to the period type of the input', () => {
-      expect(periodToDisplayString('2019')).toBe('2019');
-      expect(periodToDisplayString('201912')).toBe('Dec 2019');
-      expect(periodToDisplayString('20191202')).toBe('2nd Dec 2019');
-      expect(periodToDisplayString('2019Q3')).toBe('Q3 2019');
+    it.each([
+      ['2019', '2019'],
+      ['201912', 'Dec 2019'],
+      ['20191202', '2nd Dec 2019'],
+      ['2019Q3', 'Q3 2019'],
+    ])('should default to the period type of the input', (period, expected) => {
+      expect(periodToDisplayString(period)).toBe(expected);
     });
   });
 
@@ -456,350 +457,334 @@ describe('period utilities', () => {
     it('should convert to end periods by default', () => {
       expect(convertToPeriod('2016', MONTH)).toBe(convertToPeriod('2016', MONTH, true));
     });
-
-    it('target type should be case insensitive', () => {
-      expect(convertToPeriod('2016', MONTH)).toBe(convertToPeriod('2016', 'month'));
-      expect(convertToPeriod('2016', MONTH)).toBe(convertToPeriod('2016', 'MONTH'));
-      expect(convertToPeriod('2016', MONTH)).toBe(convertToPeriod('2016', 'mOnTh'));
+    it.each([
+      ['2016', MONTH, convertToPeriod('2016', 'month')],
+      ['2016', MONTH, convertToPeriod('2016', 'MONTH')],
+      ['2016', MONTH, convertToPeriod('2016', 'mOnTh')],
+    ])('target type should be case insensitive', (period, periodType, expected) => {
+      expect(convertToPeriod(period, periodType)).toBe(expected);
     });
 
     it('should throw an error if target type is not valid', () => {
       expect(() => convertToPeriod('2016', 'RANDOM')).toThrowError('not a valid period type');
     });
 
-    it('year', () => {
-      expect(convertToPeriod('2016', YEAR, true)).toBe('2016');
-      expect(convertToPeriod('2016', YEAR, false)).toBe('2016');
-      expect(convertToPeriod('201602', YEAR, true)).toBe('2016');
-      expect(convertToPeriod('201602', YEAR, false)).toBe('2016');
-      expect(convertToPeriod('2016W10', YEAR, true)).toBe('2016');
-      expect(convertToPeriod('2016W10', YEAR, false)).toBe('2016');
-      expect(convertToPeriod('20160229', YEAR, true)).toBe('2016');
-      expect(convertToPeriod('20160229', YEAR, false)).toBe('2016');
-      expect(convertToPeriod('2016Q2', YEAR, true)).toBe('2016');
-      expect(convertToPeriod('2016Q2', YEAR, false)).toBe('2016');
+    it.each([
+      ['2016', YEAR, true, '2016'],
+      ['2016', YEAR, false, '2016'],
+      ['201602', YEAR, true, '2016'],
+      ['201602', YEAR, false, '2016'],
+      ['2016W10', YEAR, true, '2016'],
+      ['2016W10', YEAR, false, '2016'],
+      ['20160229', YEAR, true, '2016'],
+      ['20160229', YEAR, false, '2016'],
+      ['2016Q2', YEAR, true, '2016'],
+      ['2016Q2', YEAR, false, '2016'],
+    ])('year', (period, periodType, isEndPeriod, expected) => {
+      expect(convertToPeriod(period, periodType, isEndPeriod)).toBe(expected);
     });
-
-    it('month', () => {
-      expect(convertToPeriod('2016', MONTH, true)).toBe('201612');
-      expect(convertToPeriod('2016', MONTH, false)).toBe('201601');
-      expect(convertToPeriod('201602', MONTH, true)).toBe('201602');
-      expect(convertToPeriod('201602', MONTH, false)).toBe('201602');
-      expect(convertToPeriod('2016W09', MONTH, true)).toBe('201603');
-      expect(convertToPeriod('2016W09', MONTH, false)).toBe('201602');
-      expect(convertToPeriod('20160229', MONTH, true)).toBe('201602');
-      expect(convertToPeriod('20160229', MONTH, false)).toBe('201602');
-      expect(convertToPeriod('2016Q2', MONTH, true)).toBe('201606');
-      expect(convertToPeriod('2016Q2', MONTH, false)).toBe('201604');
+    it.each([
+      ['2016', MONTH, true, '201612'],
+      ['2016', MONTH, false, '201601'],
+      ['201602', MONTH, true, '201602'],
+      ['201602', MONTH, false, '201602'],
+      ['2016W09', MONTH, true, '201603'],
+      ['2016W09', MONTH, false, '201602'],
+      ['20160229', MONTH, true, '201602'],
+      ['20160229', MONTH, false, '201602'],
+      ['2016Q2', MONTH, true, '201606'],
+      ['2016Q2', MONTH, false, '201604'],
+    ])('month', (period, periodType, isEndPeriod, expected) => {
+      expect(convertToPeriod(period, periodType, isEndPeriod)).toBe(expected);
     });
-
-    it('week', () => {
-      expect(convertToPeriod('2016', WEEK, true)).toBe('2016W52');
-      expect(convertToPeriod('2016', WEEK, false)).toBe('2015W53');
-      expect(convertToPeriod('201602', WEEK, true)).toBe('2016W09');
-      expect(convertToPeriod('201602', WEEK, false)).toBe('2016W05');
-      expect(convertToPeriod('2016W10', WEEK, true)).toBe('2016W10');
-      expect(convertToPeriod('2016W10', WEEK, false)).toBe('2016W10');
-      expect(convertToPeriod('20160229', WEEK, true)).toBe('2016W09');
-      expect(convertToPeriod('20160229', WEEK, false)).toBe('2016W09');
-      expect(convertToPeriod('201606', WEEK, true)).toBe('2016W26');
-      expect(convertToPeriod('2016Q2', WEEK, true)).toBe('2016W26');
-      expect(convertToPeriod('2016Q2', WEEK, false)).toBe('2016W13');
+    it.each([
+      ['2016', WEEK, true, '2016W52'],
+      ['2016', WEEK, false, '2015W53'],
+      ['201602', WEEK, true, '2016W09'],
+      ['201602', WEEK, false, '2016W05'],
+      ['2016W10', WEEK, true, '2016W10'],
+      ['2016W10', WEEK, false, '2016W10'],
+      ['20160229', WEEK, true, '2016W09'],
+      ['20160229', WEEK, false, '2016W09'],
+      ['201606', WEEK, true, '2016W26'],
+      ['2016Q2', WEEK, true, '2016W26'],
+      ['2016Q2', WEEK, false, '2016W13'],
+    ])('week', (period, periodType, isEndPeriod, expected) => {
+      expect(convertToPeriod(period, periodType, isEndPeriod)).toBe(expected);
     });
-
-    it('day', () => {
-      expect(convertToPeriod('2016', DAY, true)).toBe('20161231');
-      expect(convertToPeriod('2016', DAY, false)).toBe('20160101');
-      expect(convertToPeriod('201602', DAY, true)).toBe('20160229');
-      expect(convertToPeriod('201602', DAY, false)).toBe('20160201');
-      expect(convertToPeriod('2016W09', DAY, true)).toBe('20160306');
-      expect(convertToPeriod('2016W09', DAY, false)).toBe('20160229');
-      expect(convertToPeriod('20160229', DAY, true)).toBe('20160229');
-      expect(convertToPeriod('20160229', DAY, false)).toBe('20160229');
-      expect(convertToPeriod('201606', DAY, true)).toBe('20160630');
-      expect(convertToPeriod('2016Q2', DAY, true)).toBe('20160630');
-      expect(convertToPeriod('2016Q2', DAY, false)).toBe('20160401');
+    it.each([
+      ['2016', DAY, true, '20161231'],
+      ['2016', DAY, false, '20160101'],
+      ['201602', DAY, true, '20160229'],
+      ['201602', DAY, false, '20160201'],
+      ['2016W09', DAY, true, '20160306'],
+      ['2016W09', DAY, false, '20160229'],
+      ['20160229', DAY, true, '20160229'],
+      ['20160229', DAY, false, '20160229'],
+      ['201606', DAY, true, '20160630'],
+      ['2016Q2', DAY, true, '20160630'],
+      ['2016Q2', DAY, false, '20160401'],
+    ])('day', (period, periodType, isEndPeriod, expected) => {
+      expect(convertToPeriod(period, periodType, isEndPeriod)).toBe(expected);
     });
   });
 
   describe('findCoarsestPeriodType', () => {
-    it('should return undefined if the input is empty', () => {
-      expect(findCoarsestPeriodType([])).toBeUndefined();
+    it.each([
+      ['should return undefined if the input is empty', [], undefined],
+      [
+        'should return undefined if no valid period type exists in the input',
+        ['RANDOM', 'INPUT'],
+        undefined,
+      ],
+      [
+        'should work with invalid period types in the input',
+        [DAY, undefined, MONTH, 'RANDOM', DAY],
+        MONTH,
+      ],
+    ])('%s', (name, periodTypes, expected) => {
+      expect(findCoarsestPeriodType(periodTypes)).toBe(expected);
     });
 
-    it('should return undefined if no valid period type exists in the input', () => {
-      expect(findCoarsestPeriodType(['RANDOM', 'INPUT'])).toBeUndefined();
+    it.each([
+      [[YEAR], YEAR],
+      [[DAY, YEAR, WEEK, QUARTER, MONTH, DAY, MONTH], YEAR],
+    ])('should detect an annual period', (periodType, expected) => {
+      expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
-
-    it('should work with invalid period types in the input', () => {
-      expect(findCoarsestPeriodType([DAY, undefined, MONTH, 'RANDOM', DAY])).toBe(MONTH);
+    it.each([
+      [[QUARTER], QUARTER],
+      [[DAY, DAY, QUARTER, MONTH], QUARTER],
+    ])('should detect a quarterly period', (periodType, expected) => {
+      expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
-
-    it('should detect an annual period', () => {
-      expect(findCoarsestPeriodType([YEAR])).toBe(YEAR);
-      expect(findCoarsestPeriodType([DAY, YEAR, WEEK, QUARTER, MONTH, DAY, MONTH])).toBe(YEAR);
+    it.each([
+      [[MONTH], MONTH],
+      [[DAY, MONTH, WEEK, DAY], MONTH],
+    ])('should detect a monthly period', (periodType, expected) => {
+      expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
-
-    it('should detect a quarterly period', () => {
-      expect(findCoarsestPeriodType([QUARTER])).toBe(QUARTER);
-      expect(findCoarsestPeriodType([DAY, DAY, QUARTER, MONTH])).toBe(QUARTER);
+    it.each([
+      [[WEEK], WEEK],
+      [[DAY, WEEK, DAY], WEEK],
+    ])('should detect a weekly period', (periodType, expected) => {
+      expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
-
-    it('should detect a monthly period', () => {
-      expect(findCoarsestPeriodType([MONTH])).toBe(MONTH);
-      expect(findCoarsestPeriodType([DAY, MONTH, WEEK, DAY])).toBe(MONTH);
-    });
-
-    it('should detect a weekly period', () => {
-      expect(findCoarsestPeriodType([WEEK])).toBe(WEEK);
-      expect(findCoarsestPeriodType([DAY, WEEK, DAY])).toBe(WEEK);
-    });
-
-    it('should detect a daily period', () => {
-      expect(findCoarsestPeriodType([DAY])).toBe(DAY);
-      expect(findCoarsestPeriodType([DAY, DAY])).toBe(DAY);
+    it.each([
+      [[DAY], DAY],
+      [[DAY, DAY], DAY],
+    ])('should detect a daily period', (periodType, expected) => {
+      expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
   });
 
   describe('isCoarserPeriod', () => {
+    it.each([
+      ['NOT_A_PERIOD', '2016W22', false],
+      ['2016Q1', 'NOT_A_PERIOD', false],
+      ['NOT_A_PERIOD', 'NEITHER_IS_THIS', false],
+    ])(
+      'should return false if either of the periods are not valid',
+      (period1, period2, expected) => {
+        expect(isCoarserPeriod(period1, period2)).toBe(expected);
+      },
+    );
+
+    it.each([
+      ['2016', '2016Q2', true],
+      ['201605', '2016Q2', false],
+      ['2016W08', '20101010', true],
+      ['2016Q2', '2013W02', true],
+      ['20160502', '2010', false],
+    ])('should detect if the first period is more coarse', (period1, period2, expected) => {
+      expect(isCoarserPeriod(period1, period2)).toBe(expected);
+    });
+
+    it.each([
+      ['2012', '2016', false],
+      ['201405', '201601', false],
+      ['2016W08', '2016W22', false],
+      ['2016Q1', '2016Q2', false],
+      ['20160505', '20111202', false],
+    ])('should return false if the period types are the same', (period1, period2, expected) => {
+      expect(isCoarserPeriod(period1, period2)).toBe(expected);
+    });
+
     it('should return false if either of the periods are not valid', () => {
       expect(isCoarserPeriod('2012')).toBe(false);
       expect(isCoarserPeriod()).toBe(false);
-      expect(isCoarserPeriod('NOT_A_PERIOD', '2016W22')).toBe(false);
-      expect(isCoarserPeriod('2016Q1', 'NOT_A_PERIOD')).toBe(false);
-      expect(isCoarserPeriod('NOT_A_PERIOD', 'NEITHER_IS_THIS')).toBe(false);
-    });
-    it('should detect if the first period is more coarse', () => {
-      expect(isCoarserPeriod('2016', '2016Q2')).toBe(true);
-      expect(isCoarserPeriod('201605', '2016Q2')).toBe(false);
-      expect(isCoarserPeriod('2016W08', '20101010')).toBe(true);
-      expect(isCoarserPeriod('2016Q2', '2013W02')).toBe(true);
-      expect(isCoarserPeriod('20160502', '2010')).toBe(false);
-    });
-    it('should return false if the period types are the same', () => {
-      expect(isCoarserPeriod('2012', '2016')).toBe(false);
-      expect(isCoarserPeriod('201405', '201601')).toBe(false);
-      expect(isCoarserPeriod('2016W08', '2016W22')).toBe(false);
-      expect(isCoarserPeriod('2016Q1', '2016Q2')).toBe(false);
-      expect(isCoarserPeriod('20160505', '20111202')).toBe(false);
     });
   });
 
   describe('getPeriodsInRange', () => {
-    it('should throw an error if the start period is later than the end period', () => {
-      expect(() => getPeriodsInRange('20160115', '20160114')).toThrowError(
+    it.each([
+      [
+        'should throw an error if the start period is later than the end period',
+        '20160115',
+        '20160114',
         'must be earlier than or equal',
-      );
+      ],
+      [
+        'should throw an error for periods of different types and no target type specified',
+        '2016',
+        '201602',
+        'different period types',
+      ],
+    ])('%s', (name, start, end, expected) => {
+      expect(() => getPeriodsInRange(start, end)).toThrowError(expected);
     });
 
-    it('should throw an error for periods of different types and no target type specified', () => {
-      expect(() => getPeriodsInRange('2016', '201602')).toThrowError('different period types');
-    });
+    it.each([
+      ['2016', '2017', getPeriodsInRange('2016', '2017', YEAR)],
+      ['2016Q1', '2017Q4', getPeriodsInRange('2016Q1', '2017Q4', QUARTER)],
+      ['201601', '201603', getPeriodsInRange('201601', '201603', MONTH)],
+      ['2016W01', '2016W03', getPeriodsInRange('2016W01', '2016W03', WEEK)],
+      ['20160301', '20160305', getPeriodsInRange('20160301', '20160305', DAY)],
+    ])(
+      'should default to the period type of the inputs if no target type specified',
+      (start, end, expected) => {
+        expect(getPeriodsInRange(start, end)).toStrictEqual(expected);
+      },
+    );
 
-    it('should default to the period type of the inputs if no target type specified', () => {
-      expect(getPeriodsInRange('2016', '2017')).toEqual(getPeriodsInRange('2016', '2017', YEAR));
-      expect(getPeriodsInRange('2016Q1', '2017Q4')).toEqual(
-        getPeriodsInRange('2016Q1', '2017Q4', QUARTER),
-      );
-      expect(getPeriodsInRange('201601', '201603')).toEqual(
-        getPeriodsInRange('201601', '201603', MONTH),
-      );
-      expect(getPeriodsInRange('2016W01', '2016W03')).toEqual(
-        getPeriodsInRange('2016W01', '2016W03', WEEK),
-      );
-      expect(getPeriodsInRange('20160301', '20160305')).toEqual(
-        getPeriodsInRange('20160301', '20160305', DAY),
-      );
-    });
-
-    it('should handle inputs of mixed types when target type is specified', () => {
-      expect(getPeriodsInRange('201603', '20180403', YEAR)).toEqual(
-        getPeriodsInRange('2016', '2018', YEAR),
-      );
-      expect(getPeriodsInRange('2016', '201804', QUARTER)).toEqual(
-        getPeriodsInRange('2016Q1', '2018Q2', QUARTER),
-      );
-      expect(getPeriodsInRange('2016', '20180403', MONTH)).toEqual(
-        getPeriodsInRange('201601', '201804', MONTH),
-      );
-      expect(getPeriodsInRange('2016', '20180403', WEEK)).toEqual(
-        getPeriodsInRange('2015W53', '2018W14', WEEK),
-      );
-      expect(getPeriodsInRange('2016', '201804', DAY)).toEqual(
-        getPeriodsInRange('20160101', '20180430', DAY),
-      );
-    });
+    it.each([
+      ['201603', '20180403', YEAR, getPeriodsInRange('2016', '2018', YEAR)],
+      ['2016', '201804', QUARTER, getPeriodsInRange('2016Q1', '2018Q2', QUARTER)],
+    ])(
+      'should handle inputs of mixed types when target type is specified',
+      (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
+      },
+    );
 
     it('should return an array with a single item if period limits are identical', () => {
-      expect(getPeriodsInRange('2016', '2016')).toEqual(['2016']);
+      expect(getPeriodsInRange('2016', '2016')).toStrictEqual(['2016']);
     });
 
     describe('year', () => {
-      it('should return the years in range', () => {
-        expect(getPeriodsInRange('2016', '2018', YEAR)).toEqual(['2016', '2017', '2018']);
-        expect(getPeriodsInRange('2016Q1', '2018Q4', YEAR)).toEqual(['2016', '2017', '2018']);
-        expect(getPeriodsInRange('2016Q4', '2018Q1', YEAR)).toEqual(['2016', '2017', '2018']);
-        expect(getPeriodsInRange('201612', '201801', YEAR)).toEqual(['2016', '2017', '2018']);
-        expect(getPeriodsInRange('2016W52', '2018W01', YEAR)).toEqual(['2016', '2017', '2018']);
-        expect(getPeriodsInRange('20161231', '20180101', YEAR)).toEqual(['2016', '2017', '2018']);
+      it.each([
+        ['2016', '2018', YEAR, ['2016', '2017', '2018']],
+        ['2016Q1', '2018Q4', YEAR, ['2016', '2017', '2018']],
+        ['2016Q4', '2018Q1', YEAR, ['2016', '2017', '2018']],
+        ['201612', '201801', YEAR, ['2016', '2017', '2018']],
+        ['2016W52', '2018W01', YEAR, ['2016', '2017', '2018']],
+        ['20161231', '20180101', YEAR, ['2016', '2017', '2018']],
+      ])('should return the years in range', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
     });
 
     describe('quarter', () => {
-      it('should return the quarters in range', () => {
-        expect(getPeriodsInRange('2016', '2017', QUARTER)).toEqual([
-          '2016Q1',
-          '2016Q2',
-          '2016Q3',
-          '2016Q4',
-          '2017Q1',
-          '2017Q2',
-          '2017Q3',
-          '2017Q4',
-        ]);
-        expect(getPeriodsInRange('2016Q1', '2016Q3', QUARTER)).toEqual([
-          '2016Q1',
-          '2016Q2',
-          '2016Q3',
-        ]);
-        expect(getPeriodsInRange('201612', '201701', QUARTER)).toEqual(['2016Q4', '2017Q1']);
-        expect(getPeriodsInRange('2016W52', '2017W15', QUARTER)).toEqual([
-          '2016Q4',
-          '2017Q1',
-          '2017Q2',
-        ]);
-        expect(getPeriodsInRange('20161231', '20170401', QUARTER)).toEqual([
-          '2016Q4',
-          '2017Q1',
-          '2017Q2',
-        ]);
+      it.each([
+        [
+          '2016',
+          '2017',
+          QUARTER,
+          ['2016Q1', '2016Q2', '2016Q3', '2016Q4', '2017Q1', '2017Q2', '2017Q3', '2017Q4'],
+        ],
+        ['2016Q1', '2016Q3', QUARTER, ['2016Q1', '2016Q2', '2016Q3']],
+        ['201612', '201701', QUARTER, ['2016Q4', '2017Q1']],
+        ['2016W52', '2017W15', QUARTER, ['2016Q4', '2017Q1', '2017Q2']],
+        ['20161231', '20170401', QUARTER, ['2016Q4', '2017Q1', '2017Q2']],
+      ])('should return the quarters in range', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
     });
 
     describe('month', () => {
-      it('should return the months in range', () => {
-        expect(getPeriodsInRange('2016', '2017', MONTH)).toEqual([
-          ...getMonthPeriodsInYear('2016'),
-          ...getMonthPeriodsInYear('2017'),
-        ]);
-        expect(getPeriodsInRange('2016Q3', '2016Q4', MONTH)).toEqual([
-          '201607',
-          '201608',
-          '201609',
-          '201610',
-          '201611',
-          '201612',
-        ]);
-        expect(getPeriodsInRange('201601', '201603', MONTH)).toEqual([
-          '201601',
-          '201602',
-          '201603',
-        ]);
-        expect(getPeriodsInRange('2016W01', '2016W09', MONTH)).toEqual([
-          '201601',
-          '201602',
-          '201603',
-        ]);
-        expect(getPeriodsInRange('20160112', '20160304', MONTH)).toEqual([
-          '201601',
-          '201602',
-          '201603',
-        ]);
+      it.each([
+        [
+          '2016',
+          '2017',
+          MONTH,
+          [...getMonthPeriodsInYear('2016'), ...getMonthPeriodsInYear('2017')],
+        ],
+        ['2016Q3', '2016Q4', MONTH, ['201607', '201608', '201609', '201610', '201611', '201612']],
+        ['201601', '201603', MONTH, ['201601', '201602', '201603']],
+        ['2016W01', '2016W09', MONTH, ['201601', '201602', '201603']],
+        ['20160112', '20160304', MONTH, ['201601', '201602', '201603']],
+      ])('should return the months in range', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
 
-      it('should handle crossing year boundary', () => {
-        expect(getPeriodsInRange('201612', '201701', MONTH)).toEqual(['201612', '201701']);
-        expect(getPeriodsInRange('201611', '201702', MONTH)).toEqual([
-          '201611',
-          '201612',
-          '201701',
-          '201702',
-        ]);
+      it.each([
+        ['201612', '201701', MONTH, ['201612', '201701']],
+        ['201611', '201702', MONTH, ['201611', '201612', '201701', '201702']],
+      ])('should handle crossing year boundary', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
 
-      it('should handle crossing year boundary with quarters', () => {
-        expect(getPeriodsInRange('2016Q4', '2017Q1', MONTH)).toEqual([
-          '201610',
-          '201611',
-          '201612',
-          '201701',
-          '201702',
-          '201703',
-        ]);
-      });
+      it.each([
+        ['2016Q4', '2017Q1', MONTH, ['201610', '201611', '201612', '201701', '201702', '201703']],
+      ])(
+        'should handle crossing year boundary with quarters',
+        (start, end, targetType, expected) => {
+          expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
+        },
+      );
     });
 
     describe('week', () => {
-      it('should return the weeks in range', () => {
-        expect(getPeriodsInRange('2016', '2017', WEEK)).toEqual([
-          '2015W53',
-          ...createWeekPeriods('2016', 1, 52),
-          ...createWeekPeriods('2017', 1, 52),
-        ]);
-        expect(getPeriodsInRange('201601', '201603', WEEK)).toEqual([
-          '2015W53',
-          ...createWeekPeriods('2016', 1, 13),
-        ]);
-        expect(getPeriodsInRange('2016W01', '2016W14', WEEK)).toEqual(
-          createWeekPeriods('2016', 1, 14),
-        );
-        expect(getPeriodsInRange('20160111', '20160117', WEEK)).toEqual(['2016W02']);
-        expect(getPeriodsInRange('20160110', '20160116', WEEK)).toEqual(['2016W01', '2016W02']);
+      it.each([
+        [
+          '2016',
+          '2017',
+          WEEK,
+          ['2015W53', ...createWeekPeriods('2016', 1, 52), ...createWeekPeriods('2017', 1, 52)],
+        ],
+        ['201601', '201603', WEEK, ['2015W53', ...createWeekPeriods('2016', 1, 13)]],
+        ['2016W01', '2016W14', WEEK, createWeekPeriods('2016', 1, 14)],
+        ['20160111', '20160117', WEEK, ['2016W02']],
+        ['20160110', '20160116', WEEK, ['2016W01', '2016W02']],
+      ])('should return the weeks in range', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
 
-      it('should handle crossing year boundary', () => {
-        expect(getPeriodsInRange('20151227', '20160101', WEEK)).toEqual(['2015W52', '2015W53']);
-        expect(getPeriodsInRange('20161231', '20170102', WEEK)).toEqual(['2016W52', '2017W01']);
+      it.each([
+        ['20151227', '20160101', WEEK, ['2015W52', '2015W53']],
+        ['20161231', '20170102', WEEK, ['2016W52', '2017W01']],
+      ])('should handle crossing year boundary', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
     });
 
     describe('day', () => {
-      it('should return the days in range', () => {
-        expect(getPeriodsInRange('20160101', '20160103', DAY)).toEqual([
-          '20160101',
-          '20160102',
-          '20160103',
-        ]);
-        expect(getPeriodsInRange('201601', '201601', DAY)).toEqual(
-          getDayPeriodsInMonth('201601', 31),
-        );
+      it.each([
+        ['20160101', '20160103', DAY, ['20160101', '20160102', '20160103']],
+        ['201601', '201601', DAY, getDayPeriodsInMonth('201601', 31)],
+      ])('should return the days in range', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
 
-      it('should handle crossing year boundary', () => {
-        expect(getPeriodsInRange('20161231', '20170101', DAY)).toEqual(['20161231', '20170101']);
-        expect(getPeriodsInRange('20161230', '20170102', DAY)).toEqual([
-          '20161230',
-          '20161231',
-          '20170101',
-          '20170102',
-        ]);
+      it.each([
+        ['20161231', '20170101', DAY, ['20161231', '20170101']],
+        ['20161230', '20170102', DAY, ['20161230', '20161231', '20170101', '20170102']],
+      ])('should handle crossing year boundary', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
 
-      it('should handle crossing month boundary', () => {
-        expect(getPeriodsInRange('20160731', '20160801', DAY)).toEqual(['20160731', '20160801']);
-        expect(getPeriodsInRange('20160730', '20160802', DAY)).toEqual([
-          '20160730',
-          '20160731',
-          '20160801',
-          '20160802',
-        ]);
+      it.each([
+        ['20160731', '20160801', DAY, ['20160731', '20160801']],
+        ['20160730', '20160802', DAY, ['20160730', '20160731', '20160801', '20160802']],
+      ])('should handle crossing month boundary', (start, end, targetType, expected) => {
+        expect(getPeriodsInRange(start, end, targetType)).toStrictEqual(expected);
       });
 
-      it('should handle February days in a non leap year', () => {
-        expect(getPeriodsInRange('20170227', '20170301')).toEqual([
+      it.each([
+        [
+          'should handle February days in a non leap year',
           '20170227',
-          '20170228',
           '20170301',
-        ]);
-      });
-
-      it('should handle February days in a leap year', () => {
-        expect(getPeriodsInRange('20160227', '20160301')).toEqual([
+          ['20170227', '20170228', '20170301'],
+        ],
+        [
+          'should handle February days in a leap year',
           '20160227',
-          '20160228',
-          '20160229',
           '20160301',
-        ]);
+          ['20160227', '20160228', '20160229', '20160301'],
+        ],
+      ])('%s', (name, start, end, expected) => {
+        expect(getPeriodsInRange(start, end)).toStrictEqual(expected);
       });
     });
   });
