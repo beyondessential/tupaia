@@ -34,141 +34,198 @@ const assertSortingCorrectness = (sortingMethod, input, expectedValue) => {
 
 describe('object', () => {
   describe('getKeysSortedByValues', () => {
-    it('should sort the keys of an object containing string values', () => {
-      expect(
-        getKeysSortedByValues({ fourth: 'd', third: 'c', second: 'b' }, { asc: true }),
-      ).toEqual(['second', 'third', 'fourth']);
+    it.each([
+      [
+        'should sort the keys of an object containing string values',
+        { fourth: 'd', third: 'c', second: 'b' },
+        { asc: true },
+        ['second', 'third', 'fourth'],
+      ],
+      [
+        'should sort the keys of an object containing numeric string values',
+        { ten: '10', one: '1', two: '2' },
+        { asc: true },
+        ['one', 'two', 'ten'],
+      ],
+      [
+        'should sort the keys of an object containing number values',
+        { five: 5, four: 4, one: 1 },
+        { asc: true },
+        ['one', 'four', 'five'],
+      ],
+      [
+        'should use DESC direction if configured accordingly',
+        { one: 1, five: 5, four: 4 },
+        { asc: false },
+        ['five', 'four', 'one'],
+      ],
+      [
+        'should default to ASC direction for empty options',
+        { five: 5, one: 1 },
+        {},
+        ['one', 'five'],
+      ],
+    ])('%s', (name, object, options, expected) => {
+      expect(getKeysSortedByValues(object, options)).toEqual(expected);
     });
 
-    it('should sort the keys of an object containing numeric string values', () => {
-      expect(
-        getKeysSortedByValues({ ten: '10', one: '1', two: '2' }, { asc: true }),
-      ).toEqual(['one', 'two', 'ten']);
-    });
-
-    it('should sort the keys of an object containing number values', () => {
-      expect(getKeysSortedByValues({ five: 5, four: 4, one: 1 }, { asc: true })).toEqual([
-        'one',
-        'four',
-        'five',
-      ]);
-    });
-
-    it('should use DESC direction if configured accordingly', () => {
-      expect(getKeysSortedByValues({ one: 1, five: 5, four: 4 }, { asc: false })).toEqual([
-        'five',
-        'four',
-        'one',
-      ]);
-    });
-
-    it('should default to ASC direction for empty options', () => {
-      expect(getKeysSortedByValues({ five: 5, one: 1 }, {})).toEqual(['one', 'five']);
-    });
-
-    it('should default to ASC direction for `undefined` options', () => {
-      expect(getKeysSortedByValues({ five: 5, one: 1 })).toEqual(['one', 'five']);
-    });
-
-    it('should default to ASC direction for `null` options', () => {
-      // null
-      expect(getKeysSortedByValues({ five: 5, one: 1 })).toEqual(['one', 'five']);
+    it.each([
+      [
+        'should default to ASC direction for `undefined` options',
+        { five: 5, one: 1 },
+        ['one', 'five'],
+      ],
+      ['should default to ASC direction for `null` options', { five: 5, one: 1 }, ['one', 'five']],
+    ])('%s', (name, object, expected) => {
+      expect(getKeysSortedByValues(object)).toEqual(expected);
     });
   });
 
   describe('getSortByKey()', () => {
-    it('should return a method that sorts string values', () => {
+    describe('should return a method that sorts string values', () => {
       const alpha = { name: 'alpha' };
       const beta = { name: 'beta' };
       const alphabet = { name: 'alphabet' };
-
       const sortByName = getSortByKey('name', { ascending: true });
-      assertSortingCorrectness(sortByName, [alpha, alpha], [alpha, alpha]);
-      assertSortingCorrectness(sortByName, [alpha, beta], [alpha, beta]);
-      assertSortingCorrectness(sortByName, [beta, alpha], [alpha, beta]);
-      assertSortingCorrectness(sortByName, [alphabet, alpha], [alpha, alphabet]);
-      assertSortingCorrectness(
-        sortByName,
-        [beta, alpha, alphabet, alpha],
-        [alpha, alpha, alphabet, beta],
-      );
+
+      it.each([
+        [
+          [alpha, alpha],
+          [alpha, alpha],
+        ],
+        [
+          [alpha, beta],
+          [alpha, beta],
+        ],
+        [
+          [beta, alpha],
+          [alpha, beta],
+        ],
+        [
+          [alphabet, alpha],
+          [alpha, alphabet],
+        ],
+        [
+          [beta, alpha, alphabet, alpha],
+          [alpha, alpha, alphabet, beta],
+        ],
+      ])('check sorted string values', (input, expected) => {
+        assertSortingCorrectness(sortByName, input, expected);
+      });
     });
 
-    it('should return a method that sorts numeric string values', () => {
+    describe('should return a method that sorts numeric string values', () => {
       const ten = { value: 'a10b' };
       const eleven = { value: 'a11b' };
       const thousand = { value: 'a1000b' };
-
       const sortByValue = getSortByKey('value', { ascending: true });
-      assertSortingCorrectness(sortByValue, [thousand, ten], [ten, thousand]);
-      assertSortingCorrectness(sortByValue, [thousand, eleven], [eleven, thousand]);
-      assertSortingCorrectness(sortByValue, [thousand, ten, eleven], [ten, eleven, thousand]);
+
+      it.each([
+        [
+          [thousand, ten],
+          [ten, thousand],
+        ],
+        [
+          [thousand, eleven],
+          [eleven, thousand],
+        ],
+        [
+          [thousand, ten, eleven],
+          [ten, eleven, thousand],
+        ],
+      ])('check sorted numeric values', (input, expected) => {
+        assertSortingCorrectness(sortByValue, input, expected);
+      });
     });
 
-    it('should return a method that sorts number values', () => {
+    describe('should return a method that sorts number values', () => {
       const one = { value: 1 };
       const two = { value: 2 };
       const ten = { value: 10 };
-
       const sortByValue = getSortByKey('value', { ascending: true });
-      assertSortingCorrectness(sortByValue, [one, one], [one, one]);
-      assertSortingCorrectness(sortByValue, [one, two], [one, two]);
-      assertSortingCorrectness(sortByValue, [two, one], [one, two]);
-      assertSortingCorrectness(sortByValue, [ten, one], [one, ten]);
-      assertSortingCorrectness(sortByValue, [ten, one, two, one], [one, one, two, ten]);
+
+      it.each([
+        [
+          [one, one],
+          [one, one],
+        ],
+        [
+          [one, two],
+          [one, two],
+        ],
+        [
+          [two, one],
+          [one, two],
+        ],
+        [
+          [ten, one],
+          [one, ten],
+        ],
+        [
+          [ten, one, two, one],
+          [one, one, two, ten],
+        ],
+      ])('check sorted number values', (input, expected) => {
+        assertSortingCorrectness(sortByValue, input, expected);
+      });
     });
 
-    it('should return a method that sorts values in DESC order, if configured accordingly', () => {
+    describe('should return a method that sorts numbers values with descending orders ', () => {
       const one = { value: 1 };
       const two = { value: 2 };
-
-      const sortByValue = getSortByKey('value', { ascending: false });
-      assertSortingCorrectness(sortByValue, [one, two], [two, one]);
-    });
-
-    it('should default to ASC direction for `undefined` options', () => {
-      const one = { value: 1 };
-      const two = { value: 2 };
-
-      const sortByValue = getSortByKey('value');
-      assertSortingCorrectness(sortByValue, [two, one], [one, two]);
-    });
-
-    it('should default to ASC direction for `null` options', () => {
-      const one = { value: 1 };
-      const two = { value: 2 };
-
-      const sortByValue = getSortByKey('value', null);
-      assertSortingCorrectness(sortByValue, [two, one], [one, two]);
+      it.each(
+        [
+          [
+            'should return a method that sorts values in DESC order, if configured accordingly',
+            getSortByKey('value', { ascending: false }),
+            [one, two],
+            [two, one],
+          ],
+          [
+            'should default to ASC direction for `undefined` options',
+            getSortByKey('value'),
+            [two, one],
+            [one, two],
+          ],
+          [
+            'should default to ASC direction for `null` options',
+            getSortByKey('value', null),
+            [two, one],
+            [one, two],
+          ],
+        ],
+        ('%s',
+        (name, sortByValue, input, expected) => {
+          assertSortingCorrectness(sortByValue, input, expected);
+        }),
+      );
     });
   });
 
   describe('reduceToDictionary()', () => {
     it('should accept either an array or a dictionary of objects as input', () => {
-      expect(reduceToDictionary([object1, object2], 'id', 'value')).toEqual(reduceToDictionary({ id1: object1, id2: object2 }, 'id', 'value'));
+      expect(reduceToDictionary([object1, object2], 'id', 'value')).toEqual(
+        reduceToDictionary({ id1: object1, id2: object2 }, 'id', 'value'),
+      );
     });
 
     describe('key mappers', () => {
-      it('string', () => {
-        const result = reduceToDictionary([object1, object2], 'id', 'value');
-        expect(Object.keys(result)).toEqual(['id1', 'id2']);
-      });
-
-      it('function', () => {
-        const result = reduceToDictionary([object1, object2], object => object.value / 100, 'id');
-        expect(Object.keys(result)).toEqual(['0.1', '0.2']);
+      it.each([
+        ['string', [object1, object2], 'id', 'value', ['id1', 'id2']],
+        ['function', [object1, object2], object => object.value / 100, 'id', ['0.1', '0.2']],
+      ])('%s', (name, objectCollection, keyMapper, valueMapper, expected) => {
+        const result = reduceToDictionary(objectCollection, keyMapper, valueMapper);
+        expect(Object.keys(result)).toEqual(expected);
       });
     });
 
     describe('value mappers', () => {
-      it('string', () => {
-        const result = reduceToDictionary([object1, object2], 'id', 'value');
-        expect(Object.values(result)).toEqual([10, 20]);
-      });
-
-      it('function', () => {
-        const result = reduceToDictionary([object1, object2], 'id', object => object.value / 100);
-        expect(Object.values(result)).toEqual([0.1, 0.2]);
+      it.each([
+        ['string', [object1, object2], 'id', 'value', [10, 20]],
+        ['function', [object1, object2], 'id', object => object.value / 100, [0.1, 0.2]],
+      ])('%s', (name, objectCollection, keyMapper, valueMapper, expected) => {
+        const result = reduceToDictionary(objectCollection, keyMapper, valueMapper);
+        expect(Object.values(result)).toEqual(expected);
       });
     });
 
@@ -188,34 +245,41 @@ describe('object', () => {
       code: 'FJ',
     };
 
-    it('should create an object out of an array of objects', () => {
-      expect(flattenToObject([object1, object3])).toEqual(expectedResult);
-    });
-
-    it('should create an object out of an object dictionary', () => {
-      expect(flattenToObject({ object1, object3 })).toEqual(expectedResult);
-    });
-
-    it('should use the last value for key conflicts', () => {
-      expect(flattenToObject({ object2, object1, object3 })).toEqual(expectedResult);
-      expect(flattenToObject({ object1, object2, object3 })).toEqual({
-        id: 'id2',
-        value: 20,
-        name: 'Fiji',
-        code: 'FJ',
-      });
+    it.each([
+      ['should create an object out of an array of objects', [object1, object3], expectedResult],
+      ['should create an object out of an object dictionary', { object1, object3 }, expectedResult],
+      [
+        'should use the last value for key conflicts',
+        { object2, object1, object3 },
+        expectedResult,
+      ],
+      [
+        'should use the last value for key conflicts',
+        { object1, object2, object3 },
+        {
+          id: 'id2',
+          value: 20,
+          name: 'Fiji',
+          code: 'FJ',
+        },
+      ],
+    ])('%s', (name, objectCollection, expected) => {
+      expect(flattenToObject(objectCollection)).toEqual(expected);
     });
   });
 
   describe('reduceToSet()', () => {
     const expectedResult = new Set(['id1', 'id2']);
-
-    it('should create a set out of an array of objects', () => {
-      expect(reduceToSet([object1, object2], 'id')).toEqual(expectedResult);
-    });
-
-    it('should create a set out of an object dictionary', () => {
-      expect(reduceToSet({ id1: object1, id2: object2 }, 'id')).toEqual(expectedResult);
+    it.each([
+      ['should create a set out of an array of objects', [object1, object2], 'id', expectedResult],
+      [
+        'should create a set out of an object dictionary',
+        { id1: object1, id2: object2 },
+        'id',
+        expectedResult,
+      ],
+    ])('%s', (name, objectCollection, property, expected) => {
+      expect(reduceToSet(objectCollection, property)).toEqual(expected);
     });
   });
 
@@ -234,34 +298,44 @@ describe('object', () => {
       });
     });
 
-    it('should not default to existing keys by default', () => {
+    describe('check option and default to existing keys', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { a: 'alpha', c: 'gamma' };
-      const expectedResults = { alpha: 1, gamma: 3 };
-
-      expect(mapKeys(object, mapping)).toEqual(expectedResults);
-      expect(mapKeys(object, mapping, undefined)).toEqual(expectedResults);
-      expect(mapKeys(object, mapping, {})).toEqual(expectedResults);
-    });
-
-    it('should support an option to default to existing keys', () => {
-      const object = { a: 1, b: 2, c: 3 };
-      const mapping = { a: 'alpha', c: 'gamma' };
-
-      expect(mapKeys(object, mapping, { defaultToExistingKeys: true })).toEqual({
-        alpha: 1,
-        b: 2,
-        gamma: 3,
+      it.each([
+        [
+          'should support an option to default to existing keys',
+          object,
+          mapping,
+          { defaultToExistingKeys: true },
+          { alpha: 1, b: 2, gamma: 3 },
+        ],
+        [
+          'should support an option to not default to existing keys',
+          object,
+          mapping,
+          { defaultToExistingKeys: false },
+          { alpha: 1, gamma: 3 },
+        ],
+        [
+          'should not default to existing keys by default',
+          object,
+          mapping,
+          undefined,
+          { alpha: 1, gamma: 3 },
+        ],
+        [
+          'should not default to existing keys by default',
+          object,
+          mapping,
+          {},
+          { alpha: 1, gamma: 3 },
+        ],
+      ])('%s', (name, objectInput, mappingInput, option, expected) => {
+        expect(mapKeys(objectInput, mappingInput, option)).toEqual(expected);
       });
-    });
 
-    it('should support an option to not default to existing keys', () => {
-      const object = { a: 1, b: 2, c: 3 };
-      const mapping = { a: 'alpha', c: 'gamma' };
-
-      expect(mapKeys(object, mapping, { defaultToExistingKeys: false })).toEqual({
-        alpha: 1,
-        gamma: 3,
+      it('should not default to existing keys by default', () => {
+        expect(mapKeys(object, mapping)).toEqual({ alpha: 1, gamma: 3 });
       });
     });
   });
@@ -281,6 +355,41 @@ describe('object', () => {
       });
     });
 
+    describe('check default and option', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { 1: 'alpha', 3: 'gamma' };
+
+      it('should not default to existing values by default', () => {
+        expect(mapValues(object, mapping)).toEqual({ a: 'alpha', c: 'gamma' });
+      });
+
+      it.each([
+        [
+          'should not default to existing values by default',
+          object,
+          mapping,
+          {},
+          { a: 'alpha', c: 'gamma' },
+        ],
+        [
+          'should support an option to default to existing values',
+          object,
+          mapping,
+          { defaultToExistingValues: true },
+          { a: 'alpha', b: 2, c: 'gamma' },
+        ],
+        [
+          'should support an option to not default to existing values',
+          object,
+          mapping,
+          { defaultToExistingValues: false },
+          { a: 'alpha', c: 'gamma' },
+        ],
+      ])('%s', (name, objectInput, mappingInput, option, expected) => {
+        expect(mapValues(objectInput, mappingInput, option)).toEqual(expected);
+      });
+    });
+    //////
     it('should not default to existing values by default', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { 1: 'alpha', 3: 'gamma' };

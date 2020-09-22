@@ -8,7 +8,6 @@ import sinon from 'sinon';
 
 import { WorkBookParser } from '../WorkBookParser';
 
-
 const SHEETS = {
   Sheet1: [
     { HeaderA: 'Value1', HeaderB: 'Value2' },
@@ -59,7 +58,7 @@ describe('WorkBookParser', () => {
 
     it('should map the input to itself if no mapper is provided', async () => {
       const parser = new WorkBookParser();
-      return expect(parser.parse(WORK_BOOK)).resolves.toStictEqual(SHEETS);
+      await expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual(SHEETS);
     });
 
     describe('should use the provided validators to validate a spreadsheet', () => {

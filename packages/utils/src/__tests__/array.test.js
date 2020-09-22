@@ -6,20 +6,19 @@
 import { countDistinct, min, max } from '../array';
 
 describe('array', () => {
-  const testData = [
-    ['empty array', [], 0],
-    ['single item ', [0], 1],
-    ['multiple items, same value', [0], 1],
-    ['multiple items, different values', [0, 1], 2],
-    ['multiple items, mixed same & different values', [0, 1, 0, 1, 1, 2], 3],
-  ];
   describe('countDistinct', () => {
-    it.each(testData)('%s', (string, input, expected) => {
+    it.each([
+      ['countDistinct', [], 0],
+      ['single item ', [0], 1],
+      ['multiple items, same value', [0], 1],
+      ['multiple items, different values', [0, 1], 2],
+      ['multiple items, mixed same & different values', [0, 1, 0, 1, 1, 2], 3],
+    ])('%s', (string, input, expected) => {
       expect(countDistinct(input)).toBe(expected);
     });
 
     describe('custom mappers', () => {
-      const customMappersTestData = [
+      it.each([
         ['function', [1.1, 2, 1.3], Math.floor, 2],
         [
           'string',
@@ -32,41 +31,31 @@ describe('array', () => {
           'gender',
           2,
         ],
-      ];
-
-      it.each(customMappersTestData)('%s', (string, array, mapperInput, expected)=>{
+      ])('%s', (string, array, mapperInput, expected) => {
         expect(countDistinct(array, mapperInput)).toBe(expected);
       });
     });
   });
 
   describe('min', () => {
-    const testData = [
+    it.each([
       [[2, 3, 10], 2],
       [[-2, 1, 3, 10], -2],
-    ];
-    it.each(testData)(
-      'should return the minimum against the provided values',
-      (input, expected) => {
-        expect(min(input)).toBe(expected);
-      },
-    );
+    ])('should return the minimum against the provided values', (input, expected) => {
+      expect(min(input)).toBe(expected);
+    });
     it('should return `undefined` for a non compatible input', () => {
       [undefined, null, []].forEach(input => expect(min(input)).toBeUndefined());
     });
   });
 
   describe('max', () => {
-    const testData = [
+    it.each([
       [[2, 3, 10], 10],
       [[-20, 1, 3, 10], 10],
-    ];
-    it.each(testData)(
-      'should return the maximum against the provided values',
-      (input, expected) => {
-        expect(max(input)).toBe(expected);
-      },
-    );
+    ])('should return the maximum against the provided values', (input, expected) => {
+      expect(max(input)).toBe(expected);
+    });
 
     it('should return `undefined` for a non compatible input', () => {
       [undefined, null, []].forEach(input => expect(max(input)).toBeUndefined());
