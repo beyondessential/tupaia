@@ -2,6 +2,9 @@ const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP = {
   WTHR_MIN_TEMP: 'min_temp',
   WTHR_MAX_TEMP: 'max_temp',
   WTHR_PRECIP: 'precip',
+  WTHR_FORECAST_MIN_TEMP: 'min_temp',
+  WTHR_FORECAST_MAX_TEMP: 'max_temp',
+  WTHR_FORECAST_PRECIP: 'precip',
 };
 
 /**

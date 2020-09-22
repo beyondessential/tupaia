@@ -2,6 +2,8 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { WeatherService } from '../../../services/weather';
 import {
+  createMockEntity,
+  createMockModelsStub,
   createMockModelsStubWithMockEntity,
   createWeatherApiStub,
   createWeatherApiStubWithMockResponse,
@@ -9,7 +11,7 @@ import {
   getMockOptionsArg,
   getMockTypeArg,
 } from './WeatherService.stubs';
-import { mockNow, resetMocks } from './testutil';
+import { expectThrowsAsync, mockNow, resetMocks } from './testutil';
 
 describe('WeatherService', () => {
   afterEach(() => {
@@ -20,27 +22,29 @@ describe('WeatherService', () => {
     it('returns analytics data when requesting data for dataElements', async () => {
       const mockModels = await createMockModelsStubWithMockEntity();
 
-      const mockApiResponse = {
+      const mockHistoricDailyApiResponse = {
         data: [
           {
             precip: 23.6,
             max_temp: 29.8,
             min_temp: 24,
-            datetime: '2020-08-20',
+            datetime: '2019-01-20',
           },
           {
             precip: 5,
             max_temp: 6,
             min_temp: 7,
-            datetime: '2020-08-21',
+            datetime: '2019-01-21',
           },
         ],
         sources: [],
       };
 
-      const mockApi = createWeatherApiStub(mockApiResponse);
+      const mockApi = createWeatherApiStub(mockHistoricDailyApiResponse);
 
       const service = new WeatherService(mockModels, mockApi);
+
+      mockNow(1549342800 * 1000); // 2019-02-05 05:00 UTC
 
       const actual = await service.pull(
         [
@@ -54,39 +58,44 @@ describe('WeatherService', () => {
           },
         ],
         'dataElement',
-        getMockOptionsArg(),
+        getMockOptionsArg({
+          startDate: '2019-01-01', // historic data request requires these, but api is mocked so these are ignored
+          endDate: '2019-01-02',
+        }),
       );
 
       expect(actual.results).to.deep.equal([
-        { dataElement: 'WTHR_PRECIP', value: 23.6, organisationUnit: 'MELB', period: '20200820' },
-        { dataElement: 'WTHR_PRECIP', value: 5, organisationUnit: 'MELB', period: '20200821' },
+        { dataElement: 'WTHR_PRECIP', value: 23.6, organisationUnit: 'MELB', period: '20190120' },
+        { dataElement: 'WTHR_PRECIP', value: 5, organisationUnit: 'MELB', period: '20190121' },
       ]);
     });
 
     it('returns events data when requesting data for a dataGroup', async () => {
       const mockModels = await createMockModelsStubWithMockEntity();
 
-      const mockApiResponse = {
+      const mockHistoricDailyApiResponse = {
         data: [
           {
             precip: 23.6,
             max_temp: 29.8,
             min_temp: 24,
-            datetime: '2020-08-20',
+            datetime: '2019-01-20',
           },
           {
             precip: 5,
             max_temp: 6,
             min_temp: 7,
-            datetime: '2020-08-21',
+            datetime: '2019-01-21',
           },
         ],
         sources: [],
       };
 
-      const mockApi = createWeatherApiStub(mockApiResponse);
+      const mockApi = createWeatherApiStub(mockHistoricDailyApiResponse);
 
       const service = new WeatherService(mockModels, mockApi);
+
+      mockNow(1549342800 * 1000); // 2019-02-05 05:00 UTC
 
       const actual = await service.pull(
         [
@@ -100,24 +109,27 @@ describe('WeatherService', () => {
           },
         ],
         'dataGroup',
-        getMockOptionsArg(),
+        getMockOptionsArg({
+          startDate: '2019-01-01', // historic data request requires these, but api is mocked so these are ignored
+          endDate: '2019-01-02',
+        }),
       );
 
       expect(actual).to.deep.equal([
         {
-          event: 'weather_MELB_2020-08-20',
+          event: 'weather_MELB_2019-01-20',
           orgUnit: 'MELB',
           orgUnitName: 'Melbourne',
-          eventDate: '2020-08-20T23:59:59',
+          eventDate: '2019-01-20T23:59:59',
           dataValues: {
             WTHR_PRECIP: 23.6,
           },
         },
         {
-          event: 'weather_MELB_2020-08-21',
+          event: 'weather_MELB_2019-01-21',
           orgUnit: 'MELB',
           orgUnitName: 'Melbourne',
-          eventDate: '2020-08-21T23:59:59',
+          eventDate: '2019-01-21T23:59:59',
           dataValues: {
             WTHR_PRECIP: 5,
           },
@@ -126,27 +138,35 @@ describe('WeatherService', () => {
     });
   });
 
-  describe('gets current weather', () => {
-    it("calls the api with yesterday's date when no dates are provided (simple)", async () => {
-      /*
-       * Simple case: UTC and local time are the same date
-       */
-      const mockModels = await createMockModelsStubWithMockEntity({
-        timezone: 'Australia/Melbourne',
+  describe('gets todays weather', () => {
+    it('calls the forecast api with 1 day requested when no dates are provided', async () => {
+      const mockEntity = await createMockEntity({
+        point: JSON.stringify({ type: 'Point', coordinates: [55, -111] }),
+      });
+
+      const mockModels = createMockModelsStub({
+        entity: {
+          find: [mockEntity],
+        },
+        dataSource: {
+          find: [
+            {
+              code: 'WTHR_FORECAST_PRECIP',
+              type: 'dataElement',
+              config: { weatherForecastData: true },
+            },
+          ],
+        },
       });
 
       const mockApi = createWeatherApiStubWithMockResponse();
 
       const service = new WeatherService(mockModels, mockApi);
 
-      // Set current server time to:
-      // 1549342800
-      // 2019-02-05 05:00 UTC
-      // 2019-02-05 16:00 Australia/Melbourne
-      mockNow(1549342800 * 1000);
-
       await service.pull(
-        getMockDataSourcesArg(),
+        getMockDataSourcesArg({
+          code: 'WTHR_FORECAST_PRECIP',
+        }),
         getMockTypeArg(),
         getMockOptionsArg({
           startDate: undefined,
@@ -154,67 +174,64 @@ describe('WeatherService', () => {
         }),
       );
 
-      expect(mockApi.historicDaily).to.have.callCount(1);
-
-      // Yesterday in Australia/Melbourne (midnight to midnight):
-      // 2019-02-04 00:00 to 2019-02-05 00:00
-      expect(mockApi.historicDaily.firstCall).to.have.been.calledWith(
-        sinon.match.any,
-        sinon.match.any,
-        '2019-02-04',
-        '2019-02-05',
+      expect(mockApi.forecastDaily).to.have.callCount(1);
+      expect(mockApi.forecastDaily.firstCall).to.have.been.calledWith(
+        -111,
+        55,
+        1, // 1 day requested
       );
     });
 
-    it("calls the api with yesterday's date when no dates are provided (timezones are fun)", async () => {
-      /*
-       * Tricky case: UTC and local time are the different dates
-       */
-      const mockModels = await createMockModelsStubWithMockEntity({
-        timezone: 'Australia/Melbourne',
+    it('throws when dates are provided for forecast data', async () => {
+      const mockEntity = await createMockEntity({
+        point: JSON.stringify({ type: 'Point', coordinates: [55, -111] }),
+      });
+
+      const mockModels = createMockModelsStub({
+        entity: {
+          find: [mockEntity],
+        },
+        dataSource: {
+          find: [
+            {
+              code: 'WTHR_FORECAST_PRECIP',
+              type: 'dataElement',
+              config: { weatherForecastData: true },
+            },
+          ],
+        },
       });
 
       const mockApi = createWeatherApiStubWithMockResponse();
 
       const service = new WeatherService(mockModels, mockApi);
 
-      // Set current server time to:
-      // 1549382400
-      // 2019-02-05 16:00 UTC
-      // 2019-02-06 03:00 Australia/Melbourne (note: different date)
-      mockNow(1549382400 * 1000);
+      const functionCall = async () =>
+        await service.pull(
+          getMockDataSourcesArg({
+            code: 'WTHR_FORECAST_PRECIP',
+          }),
+          getMockTypeArg(),
+          getMockOptionsArg({
+            startDate: '2055-03-01',
+            endDate: '2055-03-02',
+          }),
+        );
 
-      await service.pull(
-        getMockDataSourcesArg(),
-        getMockTypeArg(),
-        getMockOptionsArg({
-          startDate: undefined,
-          endDate: undefined,
-        }),
-      );
-
-      expect(mockApi.historicDaily).to.have.callCount(1);
-
-      // Yesterday in Australia/Melbourne (midnight to midnight):
-      // 2019-02-05 00:00 to 2019-02-06 00:00
-      expect(mockApi.historicDaily.firstCall).to.have.been.calledWith(
-        sinon.match.any,
-        sinon.match.any,
-        '2019-02-05',
-        '2019-02-06',
-      );
+      await expectThrowsAsync(functionCall, 'Date range not supported with forecast weather');
+      expect(mockApi.forecastDaily).to.have.callCount(0);
     });
   });
 
   describe('gets historic weather', () => {
-    it('calls the api with specific dates when provided', async () => {
+    it('calls the historic api with specific dates when provided', async () => {
       const mockModels = await createMockModelsStubWithMockEntity();
 
       const mockApi = createWeatherApiStubWithMockResponse();
 
       const service = new WeatherService(mockModels, mockApi);
 
-      mockNow();
+      mockNow(1549342800 * 1000); // 2019-02-05 05:00 UTC
 
       await service.pull(
         getMockDataSourcesArg(),
@@ -233,6 +250,28 @@ describe('WeatherService', () => {
         '2019-01-07',
         '2019-01-11', // (same as input, changed to be exclusive end date)
       );
+    });
+
+    it('throws when no dates are provided', async () => {
+      const mockModels = await createMockModelsStubWithMockEntity();
+
+      const mockApi = createWeatherApiStubWithMockResponse();
+
+      const service = new WeatherService(mockModels, mockApi);
+
+      const functionCall = async () =>
+        await service.pull(
+          getMockDataSourcesArg(),
+          getMockTypeArg(),
+          getMockOptionsArg({
+            startDate: undefined,
+            endDate: undefined,
+          }),
+        );
+
+      await expectThrowsAsync(functionCall, 'Empty date range not supported with historic weather');
+
+      expect(mockApi.historicDaily).to.have.callCount(0);
     });
   });
 });

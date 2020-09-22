@@ -2,30 +2,43 @@ import sinon from 'sinon';
 import { WeatherApi } from '@tupaia/weather-api';
 import { EntityModel, ModelRegistry } from '@tupaia/database';
 
-export const createWeatherApiStub = historicDailyResponse => {
+export const createWeatherApiStub = (historicDailyResponse, forecastDailyResponse) => {
   return sinon.createStubInstance(WeatherApi, {
     historicDaily: sinon.stub().resolves(historicDailyResponse),
+    forecastDaily: sinon.stub().resolves(forecastDailyResponse),
   });
 };
 
 export const createWeatherApiStubWithMockResponse = () => {
-  return createWeatherApiStub({
-    data: [
-      {
-        precip: 23.6,
-        max_temp: 29.8,
-        min_temp: 24,
-        datetime: '2020-08-20',
-      },
-      {
-        precip: 5,
-        max_temp: 6,
-        min_temp: 7,
-        datetime: '2020-08-21',
-      },
-    ],
-    sources: [],
-  });
+  return createWeatherApiStub(
+    {
+      data: [
+        {
+          precip: 23.6,
+          max_temp: 29.8,
+          min_temp: 24,
+          datetime: '2020-08-20',
+        },
+        {
+          precip: 5,
+          max_temp: 6,
+          min_temp: 7,
+          datetime: '2020-08-21',
+        },
+      ],
+      sources: [],
+    },
+    {
+      data: [
+        {
+          precip: 100,
+          max_temp: 112,
+          min_temp: 111,
+          datetime: '2020-08-22',
+        },
+      ],
+    },
+  );
 };
 
 export const createMockEntity = async fieldValues => {
@@ -52,7 +65,11 @@ export const createMockModelsStub = responseMap => {
     mockModels.entity.find = sinon.stub().resolves(responseMap.entity.find);
   }
 
-  if (responseMap && responseMap.entity && responseMap.dataSource.getDataElementsInGroup) {
+  if (responseMap && responseMap.dataSource && responseMap.dataSource.find) {
+    mockModels.dataSource.find = sinon.stub().resolves(responseMap.dataSource.find);
+  }
+
+  if (responseMap && responseMap.dataSource && responseMap.dataSource.getDataElementsInGroup) {
     mockModels.dataSource.getDataElementsInGroup = sinon
       .stub()
       .resolves(responseMap.dataSource.getDataElementsInGroup);
@@ -69,14 +86,15 @@ export const createMockModelsStubWithMockEntity = async fieldValues => {
       find: [mockEntity],
     },
     dataSource: {
-      getDataElementsInGroup: [{ code: 'WTHR_PRECIP' }], // the mock data group has element PRECIP
+      find: [{ code: 'WTHR_PRECIP', type: 'dataElement', config: {} }],
+      getDataElementsInGroup: [{ code: 'WTHR_PRECIP', type: 'dataElement', config: {} }], // the mock data group has element PRECIP
     },
   });
 
   return mockModels;
 };
 
-export const getMockDataSourcesArg = () => {
+export const getMockDataSourcesArg = overrides => {
   return [
     {
       model: {},
@@ -85,6 +103,7 @@ export const getMockDataSourcesArg = () => {
       type: 'dataElement',
       service_type: 'weather',
       config: {},
+      ...overrides,
     },
   ];
 };

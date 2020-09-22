@@ -37,11 +37,13 @@ export class WeatherApi {
    * Get forecast weather data for the next 16 days
    * @param string lat
    * @param string lon
+   * @param number days
    */
-  async forecastDaily(lat, lon) {
+  async forecastDaily(lat, lon, days = 16) {
     return await this._fetch('/v2.0/forecast/daily', {
       lat,
       lon,
+      days,
     });
   }
 

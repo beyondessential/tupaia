@@ -19,18 +19,55 @@ export class WeatherService extends Service {
    * @inheritDoc
    */
   async pull(dataSources, type, options = {}) {
-    const dataElementCodes = await this.extractDataElementCodes(type, dataSources);
-
-    const entities = await this.fetchEntitiesMatchingCodes(options.organisationUnitCodes);
+    const { startDate, endDate } = options;
 
     const resultFormat = this.getResultFormat(type);
 
-    const apiResultTranslator = new ApiResultTranslator(entities, resultFormat, dataElementCodes);
+    const entities = await this.fetchEntitiesMatchingCodes(options.organisationUnitCodes);
 
-    if (this.isRequestForCurrentWeather(options)) {
-      return this.getCurrentWeather(entities, apiResultTranslator);
+    const dataElementTypeDataSources = await this.extractDataSources(type, dataSources);
+
+    const forecastDataElementCodes = dataElementTypeDataSources
+      .filter(dataSource => dataSource.config.weatherForecastData === true)
+      .map(dataSource => dataSource.code);
+
+    const historicDataElementCodes = dataElementTypeDataSources
+      .filter(dataSource => !dataSource.config.weatherForecastData)
+      .map(dataSource => dataSource.code);
+
+    if (forecastDataElementCodes.length > 0 && historicDataElementCodes.length > 0) {
+      // no technical limitation, just not supported yet
+      throw new Error(
+        'Requesting both historic and forecast weather data in single call not supported',
+      );
     }
-    return this.getHistoricWeather(entities, options, apiResultTranslator);
+
+    if (forecastDataElementCodes.length > 0) {
+      const apiResultTranslator = new ApiResultTranslator(
+        entities,
+        resultFormat,
+        forecastDataElementCodes,
+      );
+
+      if (!this.isRequestForCurrentWeather(startDate, endDate)) {
+        // no technical reason, just not implemented yet
+        throw new Error('Date range not supported with forecast weather');
+      }
+
+      return this.getForecastWeatherForToday(entities, apiResultTranslator);
+    } else if (historicDataElementCodes.length > 0) {
+      const apiResultTranslator = new ApiResultTranslator(
+        entities,
+        resultFormat,
+        historicDataElementCodes,
+      );
+
+      if (this.isRequestForCurrentWeather(startDate, endDate)) {
+        throw new Error('Empty date range not supported with historic weather');
+      }
+
+      return this.getHistoricWeather(entities, startDate, endDate, apiResultTranslator);
+    }
   }
 
   /**
@@ -67,28 +104,30 @@ export class WeatherService extends Service {
   }
 
   /**
-   * @param string type see pull()
-   * @param {} dataSources see pull()
-   * @returns {string[]}
+   * @param string requestType see pull()
+   * @param {} requestDataSources see pull()
+   * @returns {DataSourceType[]} array of DataSource with type dataElement
    * @private
    */
-  async extractDataElementCodes(type, dataSources) {
-    if (dataSources.length !== 1) {
+  async extractDataSources(requestType, requestDataSources) {
+    if (requestDataSources.length !== 1) {
       throw new Error('Weather service only supports pulling one data source at a time');
     }
-    const [dataSource] = dataSources;
-    const { code } = dataSource;
+    const [requestDataSource] = requestDataSources;
+    const requestDataSourceCode = requestDataSource.code;
 
-    let dataElementCodes = null;
-    if (type === this.dataSourceTypes.DATA_ELEMENT) {
+    let dataSources = null;
+    if (requestType === this.dataSourceTypes.DATA_ELEMENT) {
       // single data element requested
-      return [code];
-    } else if (type === this.dataSourceTypes.DATA_GROUP) {
+      dataSources = await this.models.dataSource.find({
+        type: 'dataElement',
+        code: requestDataSourceCode,
+      });
+    } else if (requestType === this.dataSourceTypes.DATA_GROUP) {
       // data group requested
-      const dataElements = await this.models.dataSource.getDataElementsInGroup(code);
-      dataElementCodes = dataElements.map(element => element.code);
+      dataSources = await this.models.dataSource.getDataElementsInGroup(requestDataSourceCode);
     }
-    return dataElementCodes;
+    return dataSources;
   }
 
   /**
@@ -109,118 +148,35 @@ export class WeatherService extends Service {
   }
 
   /**
-   * @param options
+   * @param string? startDate
+   * @param string? endDate
    * @returns {boolean}
    * @private
    */
-  isRequestForCurrentWeather(options) {
-    return !options.startDate && !options.endDate;
+  isRequestForCurrentWeather(startDate, endDate) {
+    return !startDate && !endDate;
   }
 
   /**
    * Fetch API data and return in format of events/analytics
    *
    * @param EntityType[] entities
-   * @param string type
-   * @param string[] dataElementCodes
    * @returns {Promise<Object.<results: Object[], metadata: Object>>}
    * @private
    */
-  async getCurrentWeather(entities, apiResultTranslator) {
+  async getForecastWeatherForToday(entities, apiResultTranslator) {
     /*
-     * Current weather uses the historic weather API instead of the current weather API
-     * because we want complete data on what happened yesterday (e.g. total rainfall), rather than
+     * Current weather uses the forecast weather API instead of the current weather API
+     * because we want complete data on what will happen today (e.g. total rainfall), rather than
      * live data of what the weather is like at the moment.
-     *
-     * We also need to take into account the Entity's timezone, because Tupaia's server's yesterday
-     * is different from the Entity's yesterday.
      */
-    const dateRangeByEntityCode = {};
-
-    for (const entity of entities) {
-      const startDate = moment
-        .tz(entity.timezone)
-        .startOf('day')
-        .subtract(1, 'day')
-        .format('YYYY-MM-DD');
-
-      const endDate = moment
-        .tz(entity.timezone)
-        .startOf('day')
-        .format('YYYY-MM-DD');
-
-      dateRangeByEntityCode[entity.code] = {
-        startDate: startDate,
-        endDate: endDate,
-      };
-    }
-
-    const apiResultByEntityCode = await this.getHistoricWeatherDataForEntities(
-      entities,
-      dateRangeByEntityCode,
-    );
-
-    return apiResultTranslator.translate(apiResultByEntityCode);
-  }
-
-  /**
-   * Fetch API data and return in format of events/analytics
-   *
-   * @param EntityType[] entities
-   * @param string type
-   * @param string[] dataElementCodes
-   * @param options
-   * @returns {Promise<Object.<results: Object[], metadata: Object>>}
-   * @private
-   */
-  async getHistoricWeather(entities, options, apiResultTranslator) {
-    const { startDate, endDate } = this.dateSanitiser.sanitiseHistoricDateRange(
-      options.startDate,
-      options.endDate,
-    );
-
-    const dateRangeByEntityCode = {};
-
-    for (const entity of entities) {
-      dateRangeByEntityCode[entity.code] = {
-        startDate: startDate,
-        endDate: endDate,
-      };
-    }
-
-    const apiResultByEntityCode = await this.getHistoricWeatherDataForEntities(
-      entities,
-      dateRangeByEntityCode,
-    );
-
-    return apiResultTranslator.translate(apiResultByEntityCode);
-  }
-
-  /**
-   * Fetch data from the API
-   *
-   * Note: we pass in individual start/end dates because each entity may have a different local-time start/end
-   * date if they are in different timezones.
-   *
-   * @param EntityType[] entities
-   * @param Object.<entityCode: string: Object.<startDate: string, endDate: string> dateRangeByEntityCode
-   * @returns {Promise<Object.<entityCode: string: apiResult: Object|null>>}
-   * @private
-   */
-  async getHistoricWeatherDataForEntities(entities, dateRangeByEntityCode) {
     // Run requests in parallel for performance
     const getDataForEntity = async entity => {
       const { lat, lon } = entity.pointLatLon();
-      const { startDate, endDate } = dateRangeByEntityCode[entity.code];
 
-      if (startDate === null || endDate === null) {
-        return {
-          entityCode: entity.code,
-          apiResult: null,
-        };
-      }
+      const days = 1; // just need today
 
-      const apiResult = await this.api.historicDaily(lat, lon, startDate, endDate);
+      const apiResult = await this.api.forecastDaily(lat, lon, days);
       return {
         entityCode: entity.code,
         apiResult,
@@ -237,7 +193,59 @@ export class WeatherService extends Service {
       apiResultByEntityCode[wrappedApiResult.entityCode] = wrappedApiResult.apiResult;
     }
 
-    return apiResultByEntityCode;
+    return apiResultTranslator.translate(apiResultByEntityCode);
+  }
+
+  /**
+   * Fetch API data and return in format of events/analytics
+   *
+   * @param EntityType[] entities
+   * @param string type
+   * @param string[] dataElementCodes
+   * @param options
+   * @returns {Promise<Object.<results: Object[], metadata: Object>>}
+   * @private
+   */
+  async getHistoricWeather(entities, startDate, endDate, apiResultTranslator) {
+    const {
+      startDate: sanitisedStartDate,
+      endDate: sanitisedEndDate,
+    } = this.dateSanitiser.sanitiseHistoricDateRange(startDate, endDate);
+
+    // Run requests in parallel for performance
+    const getDataForEntity = async entity => {
+      const { lat, lon } = entity.pointLatLon();
+
+      if (sanitisedStartDate === null || sanitisedEndDate === null) {
+        return {
+          entityCode: entity.code,
+          apiResult: null,
+        };
+      }
+
+      const apiResult = await this.api.historicDaily(
+        lat,
+        lon,
+        sanitisedStartDate,
+        sanitisedEndDate,
+      );
+      return {
+        entityCode: entity.code,
+        apiResult,
+      };
+    };
+
+    const apiRequests = entities.map(entity => getDataForEntity(entity));
+
+    const wrappedApiResults = await Promise.all(apiRequests);
+
+    const apiResultByEntityCode = {};
+
+    for (const wrappedApiResult of wrappedApiResults) {
+      apiResultByEntityCode[wrappedApiResult.entityCode] = wrappedApiResult.apiResult;
+    }
+
+    return apiResultTranslator.translate(apiResultByEntityCode);
   }
 
   /**
