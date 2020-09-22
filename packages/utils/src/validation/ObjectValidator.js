@@ -12,6 +12,10 @@ import { ValidationError } from '../errors';
  * if it is not valid
  */
 export class ObjectValidator {
+  /**
+   * @param {Object<string, Function>} fieldValidators
+   * @param {Object<string, Function>} [defaultValidators]
+   */
   constructor(fieldValidators, defaultValidators) {
     this.fieldValidators = fieldValidators;
     this.defaultValidators = defaultValidators;
@@ -20,7 +24,7 @@ export class ObjectValidator {
   /**
    *
    * @param {object}    object          The object to be validated
-   * @param {function}  constructError  An optional function to construct a custom error
+   * @param {function}  [constructError]  An optional function to construct a custom error
    */
   async validate(object, constructError) {
     // Go through each of the fields we have explicit validators for, and run the validators

@@ -38,17 +38,15 @@
     "styled-components": "^5.1.0",
     "uuid": "^3.2.1"
   },
-  "devDependencies": {
-    "react-scripts": "3.4.1"
-  },
   "scripts": {
     "start": "react-scripts start",
     "start-dev": "npm run start",
     "build": "react-scripts build",
     "postbuild": "rm -rf served_build && mv build served_build",
     "test": "react-scripts test --env=jsdom --passWithNoTests",
-    "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .", 
+    "eject": "react-scripts eject" 
   },
   "browserslist": {
     "production": [

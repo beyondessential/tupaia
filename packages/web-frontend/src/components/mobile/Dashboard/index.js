@@ -18,14 +18,14 @@ class DashboardView extends Component {
   shouldComponentUpdate(nextProps) {
     const {
       orgUnit,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       filterIsExpanded,
       dashboardConfig,
       isDashboardExpanded,
     } = this.props;
     if (
       orgUnit !== nextProps.orgUnit ||
-      currentDashboardKey !== nextProps.currentDashboardKey ||
+      currentDashboardGroupCode !== nextProps.currentDashboardGroupCode ||
       filterIsExpanded !== nextProps.filterIsExpanded ||
       dashboardConfig !== nextProps.dashboardConfig ||
       isDashboardExpanded !== nextProps.isDashboardExpanded
@@ -41,20 +41,20 @@ class DashboardView extends Component {
       orgUnit,
       toggleFilter,
       filterIsExpanded,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       handleFilterChange,
       isDashboardExpanded,
       setDashboardExpanded,
     } = this.props;
     const dashboardTitle = `${orgUnit.name} Dashboard`;
-    const filterItems = Object.keys(dashboardConfig).map(dashboardKey => {
+    const filterItems = Object.keys(dashboardConfig).map(dashboardGroupCode => {
       return {
-        label: dashboardKey,
-        id: dashboardKey,
-        value: dashboardKey,
+        label: dashboardGroupCode,
+        id: dashboardGroupCode,
+        value: dashboardGroupCode,
       };
     });
-    const currentFilter = filterItems.find(item => item.id === currentDashboardKey) || {
+    const currentFilter = filterItems.find(item => item.id === currentDashboardGroupCode) || {
       label: 'General',
       id: 'General',
     };

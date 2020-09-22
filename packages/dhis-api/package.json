@@ -6,7 +6,9 @@
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "test": "nyc --reporter=lcov mocha",
-    "test-coverage": "cross-env NODE_ENV=test nyc mocha"
+    "test-coverage": "cross-env NODE_ENV=test nyc mocha",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix ."
   },
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",
@@ -17,6 +19,6 @@
     "moment": "^2.22.2",
     "simple-oauth2": "^1.5.0",
     "urlencode": "^1.1.0",
-    "winston": "^3.1.0"
+    "winston": "^3.3.3"
   }
 }
