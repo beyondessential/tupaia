@@ -264,38 +264,26 @@ describe('period utilities', () => {
       MockDate.set(currentDateStub);
     });
 
-    it('past', () => {
-      expect(isFuturePeriod('2019')).toBe(false);
-      expect(isFuturePeriod('2020Q3')).toBe(false);
-      expect(isFuturePeriod('202011')).toBe(false);
-      expect(isFuturePeriod('2020W52')).toBe(false);
-      expect(isFuturePeriod('20201230')).toBe(false);
+    afterEach(() => {
+      MockDate.reset();
     });
 
-    it('present', () => {
-      expect(isFuturePeriod('2020')).toBe(false);
-      expect(isFuturePeriod('2020Q4')).toBe(false);
-      expect(isFuturePeriod('202012')).toBe(false);
-      expect(isFuturePeriod('20201231')).toBe(false);
+    const testData = [
+      ['past', ['2019', '2020Q3', '202011', '2020W52', '20201230'], false],
+      ['present', ['2020', '2020Q4', '202012', '20201231'], false],
+      ['future', ['2021', '2021Q1', '202101', '2021W01', '2020W53', '20210101'], true],
+    ];
+
+    it.each(testData)('%s', (_, testCaseData, expected) => {
+      testCaseData.forEach(date => {
+        expect(isFuturePeriod(date)).toBe(expected);
+      });
     });
 
     it('present - week period type', () => {
       // We need to match the last day of a week
       MockDate.set('2020-12-27');
       expect(isFuturePeriod('2020W52')).toBe(false);
-    });
-
-    it('future', () => {
-      expect(isFuturePeriod('2021')).toBe(true);
-      expect(isFuturePeriod('2021Q1')).toBe(true);
-      expect(isFuturePeriod('202101')).toBe(true);
-      expect(isFuturePeriod('2021W01')).toBe(true);
-      expect(isFuturePeriod('2020W53')).toBe(true);
-      expect(isFuturePeriod('20210101')).toBe(true);
-    });
-
-    afterEach(() => {
-      MockDate.reset();
     });
   });
 
