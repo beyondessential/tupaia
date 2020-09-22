@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import MockDate from 'mockdate';
 import moment from 'moment';
 
 import {
@@ -256,13 +257,11 @@ describe('period utilities', () => {
     });
   });
 
-  // TODO: Having trouble converting to jest
-  // TypeError: Cannot read property 'useFakeTimers' of undefined
-  describe.skip('isFuturePeriod', () => {
-    const currentDateStub = '2020-12-31T00:00:00Z';
+  describe('isFuturePeriod', () => {
+    const currentDateStub = '2020-12-31';
 
     beforeEach(() => {
-      jest.useFakeTimers('modern').setSystemTime(new Date(currentDateStub).getTime());
+      MockDate.set(currentDateStub);
     });
 
     it('past', () => {
@@ -281,8 +280,8 @@ describe('period utilities', () => {
     });
 
     it('present - week period type', () => {
-      // We need to match the last date of a week
-      jest.setSystemTime(new Date('2020-12-27T00:00:00Z').getTime());
+      // We need to match the last day of a week
+      MockDate.set('2020-12-27');
       expect(isFuturePeriod('2020W52')).toBe(false);
     });
 
@@ -296,7 +295,7 @@ describe('period utilities', () => {
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      MockDate.reset();
     });
   });
 
@@ -368,31 +367,25 @@ describe('period utilities', () => {
     });
   });
 
-  // TODO: Not sure how to convert.
-  describe.skip('getCurrentPeriod', () => {
-    const assertCorrectMethodInvocations = (periodType, format) => {
-      const formatMethodStub = sinon.stub();
-      const momentStub = sinon.stub(moment, 'utc').returns({
-        format: formatMethodStub,
-      });
-      expect(momentStub).to.have.been.calledOnceWithExactly();
-      expect(formatMethodStub).to.have.been.calledOnceWith(format);
-    };
+  describe('getCurrentPeriod', () => {
+    const currentDateStub = '2020-12-27';
 
-    it('year', () => {
-      assertCorrectMethodInvocations(YEAR, 'YYYY');
+    beforeAll(() => {
+      MockDate.set(currentDateStub);
     });
 
-    it('month', () => {
-      assertCorrectMethodInvocations(MONTH, 'YYYYMM');
+    afterAll(() => {
+      MockDate.reset();
     });
 
-    it('week', () => {
-      assertCorrectMethodInvocations(WEEK, 'GGGG[W]WW');
-    });
-
-    it('day', () => {
-      assertCorrectMethodInvocations(DAY, 'YYYYMMDD');
+    it.each([
+      ['year', YEAR, '2020'],
+      ['quarter', QUARTER, '2020Q4'],
+      ['month', MONTH, '202012'],
+      ['week', WEEK, '2020W52'],
+      ['day', DAY, '20201227'],
+    ])('%s', (_, periodType, expected) => {
+      expect(getCurrentPeriod(periodType)).toBe(expected);
     });
   });
 
