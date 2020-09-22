@@ -127,10 +127,9 @@ export const historyMiddleware = store => next => action => {
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
       break;
     case SET_MEASURE: {
-      const { startDate, endDate, periodGranularity } = selectMeasureBarItemById(
-        state,
-        action.measureId,
-      );
+      const { startDate, endDate, periodGranularity } =
+        selectMeasureBarItemById(state, action.measureId) || {};
+
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, action.measureId);
       dispatchLocationUpdate(
         store,
