@@ -18,49 +18,42 @@ describe('object', () => {
     const testData = [
       [
         'should sort the keys of an object containing string values',
-        { fourth: 'd', third: 'c', second: 'b' },
-        { asc: true },
+        [{ fourth: 'd', third: 'c', second: 'b' }, { asc: true }],
         ['second', 'third', 'fourth'],
       ],
       [
         'should sort the keys of an object containing numeric string values',
-        { ten: '10', one: '1', two: '2' },
-        { asc: true },
+        [{ ten: '10', one: '1', two: '2' }, { asc: true }],
         ['one', 'two', 'ten'],
       ],
       [
         'should sort the keys of an object containing number values',
-        { five: 5, four: 4, one: 1 },
-        { asc: true },
+        [{ five: 5, four: 4, one: 1 }, { asc: true }],
         ['one', 'four', 'five'],
       ],
       [
         'should use DESC direction if configured accordingly',
-        { one: 1, five: 5, four: 4 },
-        { asc: false },
+        [{ one: 1, five: 5, four: 4 }, { asc: false }],
         ['five', 'four', 'one'],
       ],
       [
         'should default to ASC direction for empty options',
-        { five: 5, one: 1 },
-        {},
+        [{ five: 5, one: 1 }, {}],
         ['one', 'five'],
       ],
       [
         'should default to ASC direction for `undefined` options',
-        { five: 5, one: 1 },
-        undefined,
+        [{ five: 5, one: 1 }, undefined],
         ['one', 'five'],
       ],
       [
         'should default to ASC direction for `null` options',
-        { five: 5, one: 1 },
-        null,
+        [{ five: 5, one: 1 }, null],
         ['one', 'five'],
       ],
     ];
 
-    it.each(testData)('%s', (_, object, options, expected) => {
+    it.each(testData)('%s', (_, [object, options], expected) => {
       expect(getKeysSortedByValues(object, options)).toStrictEqual(expected);
     });
   });
@@ -208,26 +201,26 @@ describe('object', () => {
     });
 
     describe('key mappers', () => {
-      const testData = [
-        ['string', [object1, object2], 'id', 'value', ['id1', 'id2']],
-        ['function', [object1, object2], object => object.value / 100, 'id', ['0.1', '0.2']],
-      ];
+      it('string', () => {
+        const result = reduceToDictionary([object1, object2], 'id', 'value');
+        expect(Object.keys(result)).toStrictEqual(['id1', 'id2']);
+      });
 
-      it.each(testData)('%s', (_, objectCollection, keyMapper, valueMapper, expected) => {
-        const result = reduceToDictionary(objectCollection, keyMapper, valueMapper);
-        expect(Object.keys(result)).toStrictEqual(expected);
+      it('function', () => {
+        const result = reduceToDictionary([object1, object2], object => object.value / 100, 'id');
+        expect(Object.keys(result)).toStrictEqual(['0.1', '0.2']);
       });
     });
 
     describe('value mappers', () => {
-      const testData = [
-        ['string', [object1, object2], 'id', 'value', [10, 20]],
-        ['function', [object1, object2], 'id', object => object.value / 100, [0.1, 0.2]],
-      ];
+      it('string', () => {
+        const result = reduceToDictionary([object1, object2], 'id', 'value');
+        expect(Object.values(result)).toStrictEqual([10, 20]);
+      });
 
-      it.each(testData)('%s', (_, objectCollection, keyMapper, valueMapper, expected) => {
-        const result = reduceToDictionary(objectCollection, keyMapper, valueMapper);
-        expect(Object.values(result)).toStrictEqual(expected);
+      it('function', () => {
+        const result = reduceToDictionary([object1, object2], 'id', object => object.value / 100);
+        expect(Object.values(result)).toStrictEqual([0.1, 0.2]);
       });
     });
 
@@ -280,14 +273,14 @@ describe('object', () => {
   describe('reduceToSet()', () => {
     const object1 = { id: 'id1', value: 10 };
     const object2 = { id: 'id2', value: 20 };
+    const expectedResult = new Set(['id1', 'id2']);
 
-    const testData = [
-      ['should create a set out of an array of objects', [object1, object2], 'id'],
-      ['should create a set out of an object dictionary', { id1: object1, id2: object2 }, 'id'],
-    ];
+    it('should create a set out of an array of objects', () => {
+      expect(reduceToSet([object1, object2], 'id')).toStrictEqual(expectedResult);
+    });
 
-    it.each(testData)('%s', (_, objectCollection, property) => {
-      expect(reduceToSet(objectCollection, property)).toStrictEqual(new Set(['id1', 'id2']));
+    it('should create a set out of an object dictionary', () => {
+      expect(reduceToSet({ id1: object1, id2: object2 }, 'id')).toStrictEqual(expectedResult);
     });
   });
 
@@ -306,7 +299,7 @@ describe('object', () => {
       });
     });
 
-    describe('check option and default to existing keys', () => {
+    describe('`defaultToExistingKeys` option', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { a: 'alpha', c: 'gamma' };
 
@@ -350,17 +343,11 @@ describe('object', () => {
       });
     });
 
-    describe('default values', () => {
+    describe('`defaultToExistingKeys` option', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { 1: 'alpha', 3: 'gamma' };
 
       const testData = [
-        [
-          'should not default to existing values for undefined options',
-          undefined,
-          { a: 'alpha', c: 'gamma' },
-        ],
-        ['should not default to existing values for empty options', {}, { a: 'alpha', c: 'gamma' }],
         [
           'should support an option to default to existing values',
           { defaultToExistingValues: true },
@@ -371,6 +358,12 @@ describe('object', () => {
           { defaultToExistingValues: false },
           { a: 'alpha', c: 'gamma' },
         ],
+        [
+          'should not default to existing values for undefined options',
+          undefined,
+          { a: 'alpha', c: 'gamma' },
+        ],
+        ['should not default to existing values for empty options', {}, { a: 'alpha', c: 'gamma' }],
       ];
 
       it.each(testData)('%s', (_, options, expected) => {
