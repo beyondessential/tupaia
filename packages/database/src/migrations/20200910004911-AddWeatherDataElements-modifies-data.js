@@ -23,6 +23,12 @@ exports.up = async function(db) {
     );
   }
 
+  for (const code of ['WTHR_FORECAST_PRECIP', 'WTHR_FORECAST_MAX_TEMP', 'WTHR_FORECAST_MIN_TEMP']) {
+    await db.runSql(
+      `INSERT INTO data_source (id, code, type, service_type, config) VALUES ('${generateId()}', '${code}', 'dataElement', 'weather', '{"weatherForecastData": true}');`,
+    );
+  }
+
   return null;
 };
 
