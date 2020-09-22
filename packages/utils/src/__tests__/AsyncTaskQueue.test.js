@@ -24,7 +24,7 @@ const createXTasks = numberOfTasks =>
  *
  * Reason: If using jest only, the @param TASK_TIME couldn't pass in (line 16),
  *
- * since jest.spyOn is writting in this way:
+ * since jest.spyOn is writing in this way:
  *
  * const spy = jest.spyOn(video, 'play');
  *
