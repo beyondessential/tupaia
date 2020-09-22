@@ -171,16 +171,6 @@ describe('calculateOperationForAnalytics', () => {
   });
 
   describe('COMBINE_BINARY_AS_STRING', () => {
-    // it('should throw an error when passed too many analytics', () => {
-    //   expect(() =>
-    //     calculateOperationForAnalytics(analytics, {
-    //       operator: 'COMBINE_BINARY_AS_STRING',
-    //       dataElement: 'result',
-    //       COMBINE_BINARY_AS_STRING: 'Hello: {value}',
-    //     }),
-    //   ).to.throw('Too many results passed to checkConditions (calculateOperationForAnalytics)');
-    // });
-
     it('should return the string "None" if no analytics match the dataElement', () => {
       expect(
         calculateOperationForAnalytics(analytics, {
