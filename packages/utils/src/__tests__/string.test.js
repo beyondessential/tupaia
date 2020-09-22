@@ -7,16 +7,12 @@ import { upperFirst } from '../string';
 
 describe('string utilities', () => {
   describe('upperFirst', () => {
-    it('all lowercase', () => {
-      expect(upperFirst('lowercase words')).toBe('Lowercase words');
-    });
-
-    it('all uppercase', () => {
-      expect(upperFirst('UPPERCASE WORDS')).toBe('UPPERCASE WORDS');
-    });
-
-    it('mixed case - lowercase first', () => {
-      expect(upperFirst('mIXed WOrdS')).toBe('MIXed WOrdS');
+    it.each([
+      ['all lowercase', 'lowercase words', 'Lowercase words'],
+      ['all uppercase', 'UPPERCASE WORDS', 'UPPERCASE WORDS'],
+      ['mixed case - lowercase first', 'mIXed WOrdS', 'MIXed WOrdS'],
+    ])('%s', (name, text, expected) => {
+      expect(upperFirst(text)).toBe(expected);
     });
   });
 });

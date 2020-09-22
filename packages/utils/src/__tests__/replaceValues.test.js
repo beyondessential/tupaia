@@ -36,7 +36,7 @@ describe('replaceValues()', () => {
         { replacedKey: 'replacedValue' },
       ],
     ])('%s', (name, target, replacements, expected) => {
-      expect(replaceValues(target, replacements)).toEqual(expected);
+      expect(replaceValues(target, replacements)).toStrictEqual(expected);
     });
   });
 });
