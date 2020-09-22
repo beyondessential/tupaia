@@ -12,9 +12,11 @@ import { invert } from 'lodash';
 import moment from 'moment';
 import queryString from 'query-string';
 import {
+  formatMomentAsString,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
+  roundStartEndDates,
 } from '../utils/periodGranularities';
 import {
   PATH_COMPONENTS,
@@ -94,27 +96,31 @@ export const isLocationEqual = (a, b) => {
 
 export const convertUrlPeriodStringToDateRange = (
   periodString,
-  periodGranularity = GRANULARITIES.DAY,
+  granularity = GRANULARITIES.DAY,
 ) => {
   const [startDate, endDate] = periodString.split('-');
-  const format = GRANULARITY_CONFIG[periodGranularity].urlFormat;
-  return {
-    startDate: moment(startDate, format),
-    endDate: moment(endDate || startDate, format),
-  };
+  const { urlFormat } = GRANULARITY_CONFIG[granularity];
+
+  const momentStartDate = moment(startDate, urlFormat);
+  const momentEndDate = moment(endDate || startDate, urlFormat);
+  // We rely on dates being rounded in state
+  return roundStartEndDates(granularity, momentStartDate, momentEndDate);
 };
 
 export const convertDateRangeToUrlPeriodString = (
   { startDate, endDate },
-  periodGranularity = GRANULARITIES.DAY,
+  granularity = GRANULARITIES.DAY,
 ) => {
   if (!(startDate || endDate)) return null;
 
-  const format = GRANULARITY_CONFIG[periodGranularity].urlFormat;
+  const { urlFormat } = GRANULARITY_CONFIG[granularity];
 
-  return GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)
-    ? startDate.format(format)
-    : `${startDate.format(format)}-${endDate.format(format)}`;
+  const formattedStartDate = formatMomentAsString(startDate, granularity, urlFormat);
+  const formattedEndDate = formatMomentAsString(endDate, granularity, urlFormat);
+
+  return GRANULARITIES_WITH_ONE_DATE.includes(granularity)
+    ? formattedEndDate
+    : `${formattedStartDate}-${formattedEndDate}`;
 };
 
 const parseSearch = search => {

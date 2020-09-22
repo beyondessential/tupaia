@@ -16,6 +16,8 @@ import styled from 'styled-components';
 import { Error } from '../Error';
 import { DatePickerDialog } from './DatePickerDialog';
 import {
+  formatMomentAsString,
+  getStartOfWeek,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
@@ -92,9 +94,10 @@ const ResetLabel = styled(Link)`
 const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];
 
 const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
-  const { momentUnit, rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
-  const formattedStartDate = startDate.format(rangeFormat);
-  const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
+  const { rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
+
+  const formattedStartDate = formatMomentAsString(startDate, granularity, rangeFormat);
+  const formattedEndDate = formatMomentAsString(endDate, granularity, rangeFormat);
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };

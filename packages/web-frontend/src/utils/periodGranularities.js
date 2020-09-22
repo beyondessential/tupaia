@@ -120,6 +120,11 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
   };
 }
 
+export const formatMomentAsString = (date, granularity, format) =>
+  granularity === 'week' || granularity === 'one_week_at_a_time'
+    ? date.startOf('W').format(format)
+    : date.format(format);
+
 const getDefaultDate = (offset, unit, modifier) => {
   //We need a valid unit to proceed.
   if (!CONFIG[unit]) {
