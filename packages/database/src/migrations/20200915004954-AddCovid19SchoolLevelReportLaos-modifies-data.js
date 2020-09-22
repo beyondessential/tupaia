@@ -68,6 +68,11 @@ const VIEW_JSON = {
       label: '',
       description: "**Grey** indicates 'No data' for the corresponding indicator.\n",
     },
+    'No data': {
+      color: 'grey',
+      label: '',
+      description: "**Grey** indicates 'No data' for the corresponding indicator.\n",
+    },
     applyLocation: {
       columnIndexes: [0],
     },
