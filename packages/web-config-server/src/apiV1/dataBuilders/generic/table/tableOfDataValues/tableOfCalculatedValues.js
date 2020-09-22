@@ -13,14 +13,21 @@ class TableOfCalculatedValues extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
       this.config.cells.map(row =>
-        row.map(cell => cell.operands.map(operand => operand.dataValues)),
+        row.map(cell =>
+          typeof cell === 'string'
+            ? cell
+            : cell.dataElement || cell.operands.map(operand => operand.dataValues),
+        ),
       ),
     );
     return [...new Set(dataElementCodes)];
   }
 
   getCellKey(rowIndex, columnIndex) {
-    return this.tableConfig.cells[rowIndex][columnIndex].key;
+    return (
+      this.tableConfig.cells[rowIndex][columnIndex].key ||
+      this.tableConfig.cells[rowIndex][columnIndex]
+    );
   }
 
   buildValuesByCell() {
