@@ -1,4 +1,4 @@
-FROM node:10.18.0-alpine3.11
+FROM node:12.18.3-alpine3.11
 
 # install features not available in base alpine distro
 RUN apk --no-cache add \
