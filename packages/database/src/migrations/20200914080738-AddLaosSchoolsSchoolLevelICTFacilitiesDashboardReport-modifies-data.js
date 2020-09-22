@@ -52,17 +52,17 @@ const VIEW_JSON = {
     Yes: {
       color: 'green',
       label: '',
-      description: "**Green** indicates 'Yes' to the corresponding indicator.\n",
+      description: "**Green** indicates 'Yes' for the corresponding indicator.\n",
     },
     No: {
       color: 'red',
       label: '',
-      description: "**Red** indicates 'No' to the corresponding indicator.\n",
+      description: "**Red** indicates 'No' for the corresponding indicator.\n",
     },
     '': {
       color: 'grey',
       label: '',
-      description: "**Grey** indicates 'No data' to the corresponding indicator.\n",
+      description: "**Grey** indicates 'No data' for the corresponding indicator.\n",
     },
     applyLocation: {
       columnIndexes: [0],
