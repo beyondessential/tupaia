@@ -133,6 +133,22 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 5. Do a build (see above)
 6. Open the build on an Android device and make sure there is a semi-transparent orange banner on the bottom of the screen that says 'BETA' or the equivalent name of the branch it is building off.
 
+#### iOS
+
+Can only be done on mac, with Xcode installed
+
+- Open the `TupaiaMediTrak.xcworkspace` file within `meditrak-app/ios`
+- Set up signing:
+  - Get the provisioning profile, certificate, and private key from LastPass
+  - Double click the certificate and private key to add each to your keychain (the private key will require a password, also in LastPass)
+  - In XCode, click the "folder" icon underneath the play/stop buttons
+  - Select the first entry (with the workspace icon)
+  - Go into Signing and Capabilities
+  - Under Signing (Release), select "Import Profile" next to Provisioning Profile, and select the profile from LastPass
+- Build the archive file (iOS equivalent of apk):
+  - To the right of play/stop buttons, select the device as "Generic iOS Device"
+  - From the "Product" menu, select "Archive"
+
 ### Testing
 
 A manual test plan for the Meditrak app is located [here](__tests__/ManualTests.md)
