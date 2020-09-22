@@ -20,12 +20,15 @@ const localStyles = {
 };
 
 const DataSourceConfigView = row => {
-  const entries = Object.entries(row.value).map(([key, value]) => (
-    <React.Fragment key={key}>
-      <dt style={localStyles.config.dt}>{key}:</dt>
-      <dd>{value.toString()}</dd>
-    </React.Fragment>
-  ));
+  const blankString = '';
+  const entries = Object.entries(row.value)
+    .filter(([key, value]) => value !== blankString)
+    .map(([key, value]) => (
+      <React.Fragment key={key}>
+        <dt style={localStyles.config.dt}>{key}:</dt>
+        <dd>{value.toString()}</dd>
+      </React.Fragment>
+    ));
 
   return <dl>{entries}</dl>;
 };
