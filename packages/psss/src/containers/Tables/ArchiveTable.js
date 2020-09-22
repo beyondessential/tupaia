@@ -5,13 +5,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  ConnectedTable,
   SyndromeCell,
   AlertMenuCell,
   CountryNameCell,
   WeekAndDateCell,
   StartDateCell,
 } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
 const createColumns = isForMultipleCountries => [
   ...(isForMultipleCountries

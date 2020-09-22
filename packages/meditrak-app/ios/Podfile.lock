@@ -37,8 +37,8 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - React (0.59.2):
-    - React/Core (= 0.59.2)
+  - React (0.59.10):
+    - React/Core (= 0.59.10)
   - react-native-async-storage (1.2.2):
     - React
   - react-native-geolocation (1.1.0):
@@ -47,52 +47,52 @@ PODS:
     - React
   - react-native-webview (5.6.2):
     - React
-  - React/Core (0.59.2):
-    - yoga (= 0.59.2.React)
-  - React/CxxBridge (0.59.2):
+  - React/Core (0.59.10):
+    - yoga (= 0.59.10.React)
+  - React/CxxBridge (0.59.10):
     - Folly (= 2018.10.22.00)
     - React/Core
     - React/cxxreact
     - React/jsiexecutor
-  - React/cxxreact (0.59.2):
+  - React/cxxreact (0.59.10):
     - boost-for-react-native (= 1.63.0)
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
     - React/jsinspector
-  - React/DevSupport (0.59.2):
+  - React/DevSupport (0.59.10):
     - React/Core
     - React/RCTWebSocket
-  - React/fishhook (0.59.2)
-  - React/jsi (0.59.2):
+  - React/fishhook (0.59.10)
+  - React/jsi (0.59.10):
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
-  - React/jsiexecutor (0.59.2):
+  - React/jsiexecutor (0.59.10):
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
     - React/cxxreact
     - React/jsi
-  - React/jsinspector (0.59.2)
-  - React/RCTAnimation (0.59.2):
+  - React/jsinspector (0.59.10)
+  - React/RCTAnimation (0.59.10):
     - React/Core
-  - React/RCTBlob (0.59.2):
+  - React/RCTBlob (0.59.10):
     - React/Core
-  - React/RCTGeolocation (0.59.2):
+  - React/RCTGeolocation (0.59.10):
     - React/Core
-  - React/RCTImage (0.59.2):
+  - React/RCTImage (0.59.10):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.59.2):
+  - React/RCTLinkingIOS (0.59.10):
     - React/Core
-  - React/RCTNetwork (0.59.2):
+  - React/RCTNetwork (0.59.10):
     - React/Core
-  - React/RCTSettings (0.59.2):
+  - React/RCTSettings (0.59.10):
     - React/Core
-  - React/RCTText (0.59.2):
+  - React/RCTText (0.59.10):
     - React/Core
-  - React/RCTWebSocket (0.59.2):
+  - React/RCTWebSocket (0.59.10):
     - React/Core
     - React/fishhook
     - React/RCTBlob
@@ -102,7 +102,7 @@ PODS:
     - React
   - RNSVG (9.3.7):
     - React
-  - yoga (0.59.2.React)
+  - yoga (0.59.10.React)
 
 DEPENDENCIES:
   - appcenter (from `../node_modules/appcenter/ios`)
