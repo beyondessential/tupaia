@@ -19,7 +19,7 @@ class TableOfCalculatedValues extends TableOfDataValuesBuilder {
 
   getCellKey(rowIndex, columnIndex) {
     return (
-      this.tableConfig.cells[rowIndex][columnIndex].key ||
+      this.tableConfig.cells[rowIndex][columnIndex].key ??
       this.tableConfig.cells[rowIndex][columnIndex]
     );
   }
