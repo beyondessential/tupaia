@@ -4,7 +4,7 @@
  **/
 
 import { respond, DatabaseError, UnauthenticatedError } from '@tupaia/utils';
-import { getChangesFilter } from '../utilities';
+import { getChangesFilter } from '../helpers';
 import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
 
 const handleNonLegacyRequest = async (req, res) => {

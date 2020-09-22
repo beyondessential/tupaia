@@ -5,24 +5,9 @@
 
 import { respond, DatabaseError } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
-import { getChangesFilter, getColumnsForMeditrakApp } from './utilities';
+import { getChangesFilter, getRecordForMeditrakApp } from './helpers';
 
 const MAX_CHANGES_RETURNED = 100;
-
-/**
- * Gets the record ready to sync down to a sync client, transforming any properties as required
- **/
-async function getRecordForSync(record) {
-  const recordWithoutNulls = {};
-  // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
-  // which simply had no key for undefined properties, whereas postgres uses null
-  Object.entries(record).forEach(([key, value]) => {
-    if (value !== null) {
-      recordWithoutNulls[key] = value;
-    }
-  });
-  return recordWithoutNulls;
-}
 
 /**
  * Responds to GET requests to the /changes endpoint by returning changes in oldest -> newest order,
@@ -50,7 +35,6 @@ export async function getChanges(req, res) {
           record_id: recordId,
           change_time: timestamp,
         } = change;
-        const columns = await getColumnsForMeditrakApp(models.getModelForDatabaseType(recordType));
         const changeObject = { action, recordType, timestamp };
         if (action === 'delete') {
           changeObject.record = { id: recordId };
@@ -59,12 +43,13 @@ export async function getChanges(req, res) {
             changeObject.recordType = 'area';
           }
         } else {
-          const record = await database.findById(recordType, recordId, { lean: true, columns });
+          const model = models.getModelForDatabaseType(recordType);
+          const record = await getRecordForMeditrakApp(model, recordId);
           if (!record) {
             const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
             changeObject.error = { error: errorMessage };
           } else {
-            changeObject.record = await getRecordForSync(record);
+            changeObject.record = record;
           }
         }
         return changeObject;

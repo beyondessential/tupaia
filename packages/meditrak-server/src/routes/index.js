@@ -4,20 +4,17 @@
  */
 
 import { authenticate } from './authenticate';
-import { countChanges } from './countChanges';
+import { countChanges, getChanges, postChanges, pruneChanges } from './changes';
 import { deleteRecord } from './deleteRecord';
 import { editRecord } from './editRecord';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
-import { getChanges } from './getChanges';
 import { getRecords } from './getRecords';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
 import { importUsers } from './importUsers';
 import { importOptionSets } from './importOptionSets';
-import { postChanges } from './postChanges';
-import { pruneChanges } from './pruneChanges';
 import { addRecord } from './addRecord';
 import { updateSurveyResponses } from './updateSurveyResponses';
 import { createUser } from './createUser';

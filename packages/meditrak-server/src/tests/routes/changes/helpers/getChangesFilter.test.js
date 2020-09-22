@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { getChangesFilter } from '../../../routes/utilities/getChangesFilter';
+import { getChangesFilter } from '../../../../routes/changes/helpers/getChangesFilter';
 
 const models = {
   getMinAppVersionByType: () => ({
