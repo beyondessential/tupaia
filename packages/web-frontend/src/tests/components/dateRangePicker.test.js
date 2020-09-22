@@ -9,7 +9,11 @@ import userEvent from '@testing-library/user-event';
 import moment from 'moment';
 import { render } from '../testableRender';
 import { DateRangePicker } from '../../components/DateRangePicker';
-import { GRANULARITY_CONFIG, GRANULARITIES_WITH_ONE_DATE } from '../../utils/periodGranularities';
+import {
+  GRANULARITY_CONFIG,
+  GRANULARITIES_WITH_ONE_DATE,
+  formatMomentAsString,
+} from '../../utils/periodGranularities';
 import { MIN_DATE_PICKER_DATE } from '../../components/DateRangePicker/constants';
 
 const MIN_MOMENT_DATE = moment(MIN_DATE_PICKER_DATE);
@@ -23,8 +27,8 @@ describe('dateRangePicker', () => {
       render(<DateRangePicker granularity={key} />);
 
       const labelText = screen.getByLabelText('active-date');
-      const startDate = MIN_MOMENT_DATE.format(value.rangeFormat);
-      const endDate = MAX_MOMENT_DATE.startOf(value.momentUnit).format(value.rangeFormat);
+      const startDate = formatMomentAsString(MIN_MOMENT_DATE, key, value.rangeFormat);
+      const endDate = formatMomentAsString(MAX_MOMENT_DATE, key, value.rangeFormat);
 
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
         expect(labelText).toHaveTextContent(endDate);
@@ -39,10 +43,8 @@ describe('dateRangePicker', () => {
       render(<DateRangePicker startDate={START_DATE} endDate={END_DATE} granularity={key} />);
 
       const labelText = screen.getByLabelText('active-date');
-      const startDate = moment(START_DATE).format(value.rangeFormat);
-      const endDate = moment(END_DATE)
-        .startOf(value.momentUnit)
-        .format(value.rangeFormat);
+      const startDate = formatMomentAsString(moment(START_DATE), key, value.rangeFormat);
+      const endDate = formatMomentAsString(moment(END_DATE), key, value.rangeFormat);
 
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
         expect(labelText).toHaveTextContent(endDate);

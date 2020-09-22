@@ -13,8 +13,8 @@ const SINGLE_DATE_RANGE = {
 const RANGE_PERIOD_STRING = '2nd_Jan_2020-10th_Jan_2020';
 
 const RANGE_DATE_RANGE = {
-  startDate: moment('2020-01-02'),
-  endDate: moment('2020-01-10'),
+  startDate: moment('2020-01-02').startOf('D'),
+  endDate: moment('2020-01-10').endOf('D'),
 };
 
 const assertMomentDatesAreEqual = (moment1, moment2) => expect(moment1.isSame(moment2)).toBe(true);

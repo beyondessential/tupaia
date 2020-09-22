@@ -102,8 +102,14 @@ export const convertUrlPeriodStringToDateRange = (
   const { urlFormat } = GRANULARITY_CONFIG[granularity];
 
   const momentStartDate = moment(startDate, urlFormat);
-  const momentEndDate = moment(endDate || startDate, urlFormat);
-  // We rely on dates being rounded in state
+  if (GRANULARITIES_WITH_ONE_DATE.includes(granularity)) {
+    return {
+      startDate: momentStartDate,
+      endDate: momentStartDate,
+    };
+  }
+  // We rely on dates being rounded in state for range formats
+  const momentEndDate = moment(endDate, urlFormat);
   return roundStartEndDates(granularity, momentStartDate, momentEndDate);
 };
 

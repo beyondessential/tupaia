@@ -17,7 +17,6 @@ import { Error } from '../Error';
 import { DatePickerDialog } from './DatePickerDialog';
 import {
   formatMomentAsString,
-  getStartOfWeek,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
