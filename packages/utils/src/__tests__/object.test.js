@@ -159,34 +159,22 @@ describe('object', () => {
       });
     });
 
-    describe('should return a method that sorts numbers values with descending orders ', () => {
-      const one = { value: 1 };
-      const two = { value: 2 };
+    const one = { value: 1 };
+    const two = { value: 2 };
 
-      const testData = [
-        [
-          'should return a method that sorts values in DESC order, if configured accordingly',
-          getSortByKey('value', { ascending: false }),
-          [one, two],
-          [two, one],
-        ],
-        [
-          'should default to ASC direction for `undefined` options',
-          getSortByKey('value'),
-          [two, one],
-          [one, two],
-        ],
-        [
-          'should default to ASC direction for `null` options',
-          getSortByKey('value', null),
-          [two, one],
-          [one, two],
-        ],
-      ];
+    it('should return a method that sorts values in DESC order, if configured accordingly', () => {
+      const sortByValue = getSortByKey('value', { ascending: false });
+      assertSortingCorrectness(sortByValue, [one, two], [two, one]);
+    });
 
-      it.each(testData)('%s', (_, sortByValue, input, expected) => {
-        assertSortingCorrectness(sortByValue, input, expected);
-      });
+    it('should default to ASC direction for `undefined` options', () => {
+      const sortByValue = getSortByKey('value');
+      assertSortingCorrectness(sortByValue, [two, one], [one, two]);
+    });
+
+    it('should default to ASC direction for `null` options', () => {
+      const sortByValue = getSortByKey('value', null);
+      assertSortingCorrectness(sortByValue, [two, one], [one, two]);
     });
   });
 
