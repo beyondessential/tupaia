@@ -6,21 +6,13 @@
 import flatten from 'lodash.flatten';
 import flattenDeep from 'lodash.flattendeep';
 
-import { getCalculatedValuesByCell } from './getValuesByCell';
+import { getCalculatedValuesByCell, getDataElementsFromCell } from './getValuesByCell';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfCalculatedValues extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
-      this.config.cells.map(row =>
-        row.map(cell =>
-          typeof cell === 'string'
-            ? cell
-            : cell.dataElement ||
-              (cell.operands && cell.operands.map(operand => operand.dataValues)) ||
-              (cell.dataElementToString && Object.keys(cell.dataElementToString)),
-        ),
-      ),
+      this.config.cells.map(row => row.map(getDataElementsFromCell)),
     );
     return [...new Set(dataElementCodes)];
   }
