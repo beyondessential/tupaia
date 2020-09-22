@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -12,6 +12,8 @@ import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { updatePassword, getUser } from '../authentication';
+
+const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -39,7 +41,7 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { handleSubmit, register, getValues, errors } = useForm();
+  const { handleSubmit, register, getValues, errors, watch } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(async (data, event) => {
@@ -55,6 +57,8 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
       setIsLoading(false);
     }
   });
+
+  const password = watch('password');
 
   return (
     <Container>
@@ -101,6 +105,13 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
             validate: value => value === getValues('password') || 'Passwords do not match.',
           })}
         />
+        <Suspense fallback={<div>loading...</div>}>
+          <PasswordStrengthBar
+            password={password}
+            minLength={9}
+            scoreWords={['weak', 'okay', 'good', 'strong', 'very strong']}
+          />
+        </Suspense>
         <StyledButton type="submit" fullWidth isLoading={isLoading}>
           Save Password
         </StyledButton>
