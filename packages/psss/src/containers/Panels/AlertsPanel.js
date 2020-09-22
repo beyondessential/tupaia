@@ -22,10 +22,10 @@ import {
   AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
-  NotesTab,
   DrawerTray,
-  CreateOutbreakModal,
 } from '../../components';
+import { CreateOutbreakModal } from '../Modals';
+import { NotesTab } from '../NotesTab';
 import { countryFlagImage } from '../../utils';
 import { useFetch } from '../../hooks';
 

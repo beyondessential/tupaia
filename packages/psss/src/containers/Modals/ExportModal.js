@@ -20,7 +20,7 @@ import {
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import { useForm, Controller } from 'react-hook-form';
-import { FlexSpaceBetween } from '../Layout';
+import { FlexSpaceBetween } from '../../components/Layout';
 import { connectApi } from '../../api';
 
 // Todo replace with data from api
