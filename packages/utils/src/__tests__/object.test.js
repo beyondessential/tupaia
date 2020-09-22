@@ -65,7 +65,7 @@ describe('object', () => {
         {},
         ['one', 'five'],
       ],
-    ])('%s', (name, object, options, expected) => {
+    ])('%s', (_, object, options, expected) => {
       expect(getKeysSortedByValues(object, options)).toStrictEqual(expected);
     });
 
@@ -76,7 +76,7 @@ describe('object', () => {
         ['one', 'five'],
       ],
       ['should default to ASC direction for `null` options', { five: 5, one: 1 }, ['one', 'five']],
-    ])('%s', (name, object, expected) => {
+    ])('%s', (_, object, expected) => {
       expect(getKeysSortedByValues(object)).toStrictEqual(expected);
     });
   });
@@ -195,7 +195,7 @@ describe('object', () => {
           ],
         ],
         ('%s',
-        (name, sortByValue, input, expected) => {
+        (_, sortByValue, input, expected) => {
           assertSortingCorrectness(sortByValue, input, expected);
         }),
       );
@@ -213,7 +213,7 @@ describe('object', () => {
       it.each([
         ['string', [object1, object2], 'id', 'value', ['id1', 'id2']],
         ['function', [object1, object2], object => object.value / 100, 'id', ['0.1', '0.2']],
-      ])('%s', (name, objectCollection, keyMapper, valueMapper, expected) => {
+      ])('%s', (_, objectCollection, keyMapper, valueMapper, expected) => {
         const result = reduceToDictionary(objectCollection, keyMapper, valueMapper);
         expect(Object.keys(result)).toStrictEqual(expected);
       });
@@ -223,7 +223,7 @@ describe('object', () => {
       it.each([
         ['string', [object1, object2], 'id', 'value', [10, 20]],
         ['function', [object1, object2], 'id', object => object.value / 100, [0.1, 0.2]],
-      ])('%s', (name, objectCollection, keyMapper, valueMapper, expected) => {
+      ])('%s', (_, objectCollection, keyMapper, valueMapper, expected) => {
         const result = reduceToDictionary(objectCollection, keyMapper, valueMapper);
         expect(Object.values(result)).toStrictEqual(expected);
       });
@@ -263,7 +263,7 @@ describe('object', () => {
           code: 'FJ',
         },
       ],
-    ])('%s', (name, objectCollection, expected) => {
+    ])('%s', (_, objectCollection, expected) => {
       expect(flattenToObject(objectCollection)).toStrictEqual(expected);
     });
   });
@@ -278,7 +278,7 @@ describe('object', () => {
         'id',
         expectedResult,
       ],
-    ])('%s', (name, objectCollection, property, expected) => {
+    ])('%s', (_, objectCollection, property, expected) => {
       expect(reduceToSet(objectCollection, property)).toStrictEqual(expected);
     });
   });
@@ -330,7 +330,7 @@ describe('object', () => {
           {},
           { alpha: 1, gamma: 3 },
         ],
-      ])('%s', (name, objectInput, mappingInput, option, expected) => {
+      ])('%s', (_, objectInput, mappingInput, option, expected) => {
         expect(mapKeys(objectInput, mappingInput, option)).toStrictEqual(expected);
       });
 
@@ -385,7 +385,7 @@ describe('object', () => {
           { defaultToExistingValues: false },
           { a: 'alpha', c: 'gamma' },
         ],
-      ])('%s', (name, objectInput, mappingInput, option, expected) => {
+      ])('%s', (_, objectInput, mappingInput, option, expected) => {
         expect(mapValues(objectInput, mappingInput, option)).toStrictEqual(expected);
       });
     });

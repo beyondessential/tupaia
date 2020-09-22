@@ -65,7 +65,7 @@ describe('period utilities', () => {
       ['month', '201605', MONTH],
       ['week', '2016W05', WEEK],
       ['day', '20160501', DAY],
-    ])('%s', (name, period, expected) => {
+    ])('%s', (_, period, expected) => {
       expect(periodToType(period)).toBe(expected);
     });
   });
@@ -326,7 +326,7 @@ describe('period utilities', () => {
       ['month', MONTH, 'YYYYMM'],
       ['week', WEEK, 'GGGG[W]WW'],
       ['day', DAY, 'YYYYMMDD'],
-    ])('%s', (name, periodType, expected) => {
+    ])('%s', (_, periodType, expected) => {
       expect(momentToPeriod(momentStub, periodType)).toBe(expected);
     });
   });
@@ -350,7 +350,7 @@ describe('period utilities', () => {
       ['month', '2020-02-15', MONTH, '202002'],
       ['week', '2020-02-15', WEEK, '2020W07'],
       ['day', '2020-02-15', DAY, '20200215'],
-    ])('%s', (name, date, periodType, expected) => {
+    ])('%s', (_, date, periodType, expected) => {
       expect(dateStringToPeriod(date, periodType)).toBe(expected);
     });
   });
@@ -362,7 +362,7 @@ describe('period utilities', () => {
       ['month', '201602', 1454284800000],
       ['week', '2016W06', 1454889600000],
       ['day', '20160229', 1456704000000],
-    ])('%s', (name, period, expected) => {
+    ])('%s', (_, period, expected) => {
       expect(periodToTimestamp(period)).toBe(expected);
     });
   });
@@ -535,7 +535,7 @@ describe('period utilities', () => {
         [DAY, undefined, MONTH, 'RANDOM', DAY],
         MONTH,
       ],
-    ])('%s', (name, periodTypes, expected) => {
+    ])('%s', (_, periodTypes, expected) => {
       expect(findCoarsestPeriodType(periodTypes)).toBe(expected);
     });
 
@@ -623,7 +623,7 @@ describe('period utilities', () => {
         '201602',
         'different period types',
       ],
-    ])('%s', (name, start, end, expected) => {
+    ])('%s', (_, start, end, expected) => {
       expect(() => getPeriodsInRange(start, end)).toThrowError(expected);
     });
 
@@ -776,7 +776,7 @@ describe('period utilities', () => {
           '20160301',
           ['20160227', '20160228', '20160229', '20160301'],
         ],
-      ])('%s', (name, start, end, expected) => {
+      ])('%s', (_, start, end, expected) => {
         expect(getPeriodsInRange(start, end)).toStrictEqual(expected);
       });
     });

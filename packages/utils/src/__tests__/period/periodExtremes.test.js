@@ -29,7 +29,7 @@ describe('periodExtremes', () => {
         ['2020', '2020W01', '20200101'],
         '20200101',
       ],
-    ])('%s', (name, periods, expected) => {
+    ])('%s', (_, periods, expected) => {
       expect(getMostRecentPeriod(periods)).toBe(expected);
     });
 
@@ -70,7 +70,7 @@ describe('periodExtremes', () => {
         ['2020', '2020Q1', '20200101'],
         '20200101',
       ],
-    ])('%s', (name, periods, expected) => {
+    ])('%s', (_, periods, expected) => {
       expect(getMostAncientPeriod(periods)).toBe(expected);
     });
   });

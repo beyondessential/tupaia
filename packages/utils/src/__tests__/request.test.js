@@ -50,7 +50,7 @@ describe('request', () => {
         { '%value': [0.63, 1] },
         'https://test-api.org/reports?%25value=0.63&%25value=1',
       ],
-    ])('%s', (name, queryParams, expected) => {
+    ])('%s', (_, queryParams, expected) => {
       assertUrlIsCorrect(queryParams, expected);
     });
   });

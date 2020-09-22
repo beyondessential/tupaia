@@ -49,7 +49,7 @@ describe('convertPeriodStringToDateRange', () => {
       ['2019-11-01', '2020-12-31'],
     ],
     ['should handle February 29 in a leap year', '201511;201602', ['2015-11-01', '2016-02-29']],
-  ])('%s', (name, periodString, expected) => {
+  ])('%s', (_, periodString, expected) => {
     assertCorrectConversion(periodString, expected);
   });
 });

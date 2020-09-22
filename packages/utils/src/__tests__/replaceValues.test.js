@@ -21,7 +21,7 @@ describe('replaceValues()', () => {
   it.each([
     ['no matching replacement value', '{target}', { other: 'replaced' }, '{target}'],
     ['string input', '{target}', { target: 'replaced' }, 'replaced'],
-  ])('%s', (name, target, replacements, expected) => {
+  ])('%s', (_, target, replacements, expected) => {
     expect(replaceValues(target, replacements)).toBe(expected);
   });
 
@@ -35,7 +35,7 @@ describe('replaceValues()', () => {
         { targetKey: 'replacedKey', targetValue: 'replacedValue' },
         { replacedKey: 'replacedValue' },
       ],
-    ])('%s', (name, target, replacements, expected) => {
+    ])('%s', (_, target, replacements, expected) => {
       expect(replaceValues(target, replacements)).toStrictEqual(expected);
     });
   });
