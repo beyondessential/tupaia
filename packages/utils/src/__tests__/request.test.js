@@ -21,47 +21,37 @@ describe('request', () => {
       [undefined, null, {}].forEach(queryParams => assertUrlIsCorrect(queryParams, expectedUrl));
     });
 
-    it('`undefined` params', () => {
-      assertUrlIsCorrect({ a: undefined }, 'https://test-api.org/reports');
-      assertUrlIsCorrect({ a: 1, b: undefined }, 'https://test-api.org/reports?a=1');
-      assertUrlIsCorrect({ a: undefined, b: 2 }, 'https://test-api.org/reports?b=2');
-    });
-
-    it('`null` params', () => {
-      assertUrlIsCorrect({ a: null }, 'https://test-api.org/reports');
-      assertUrlIsCorrect({ a: 1, b: null }, 'https://test-api.org/reports?a=1');
-      assertUrlIsCorrect({ a: null, b: 2 }, 'https://test-api.org/reports?b=2');
-    });
-
-    it('one query param', () => {
-      assertUrlIsCorrect({ a: 1 }, 'https://test-api.org/reports?a=1');
-    });
-
-    it('two query params', () => {
-      assertUrlIsCorrect({ a: 1, b: 2 }, 'https://test-api.org/reports?a=1&b=2');
-    });
-
-    it('special characters', () => {
-      assertUrlIsCorrect({ a: '=test' }, 'https://test-api.org/reports?a=%3Dtest');
-      assertUrlIsCorrect({ '%value': 0.3 }, 'https://test-api.org/reports?%25value=0.3');
-      assertUrlIsCorrect({ '%value': '=test' }, 'https://test-api.org/reports?%25value=%3Dtest');
-    });
-
-    it('array query param', () => {
-      assertUrlIsCorrect({ a: [1] }, 'https://test-api.org/reports?a=1');
-      assertUrlIsCorrect({ a: [1, 2] }, 'https://test-api.org/reports?a=1&a=2');
-    });
-
-    it('array query param with special characters', () => {
-      assertUrlIsCorrect({ a: [1, '=test'] }, 'https://test-api.org/reports?a=1&a=%3Dtest');
-      assertUrlIsCorrect(
+    it.each([
+      ['`undefined` params', { a: undefined }, 'https://test-api.org/reports'],
+      ['`undefined` params', { a: undefined }, 'https://test-api.org/reports'],
+      ['`undefined` params', { a: 1, b: undefined }, 'https://test-api.org/reports?a=1'],
+      ['`null` params', { a: undefined, b: 2 }, 'https://test-api.org/reports?b=2'],
+      ['`null` params', { a: null }, 'https://test-api.org/reports'],
+      ['`null` params', { a: 1, b: null }, 'https://test-api.org/reports?a=1'],
+      ['one query param', { a: null, b: 2 }, 'https://test-api.org/reports?b=2'],
+      ['two query params', { a: 1 }, 'https://test-api.org/reports?a=1'],
+      ['special characters', { a: 1, b: 2 }, 'https://test-api.org/reports?a=1&b=2'],
+      ['special characters', { a: '=test' }, 'https://test-api.org/reports?a=%3Dtest'],
+      ['special characters', { '%value': 0.3 }, 'https://test-api.org/reports?%25value=0.3'],
+      ['array query param', { '%value': '=test' }, 'https://test-api.org/reports?%25value=%3Dtest'],
+      ['array query param', { a: [1] }, 'https://test-api.org/reports?a=1'],
+      [
+        'array query param with special characters',
+        { a: [1, 2] },
+        'https://test-api.org/reports?a=1&a=2',
+      ],
+      [
+        'array query param with special characters',
+        { a: [1, '=test'] },
+        'https://test-api.org/reports?a=1&a=%3Dtest',
+      ],
+      [
+        'array query param with special characters',
         { '%value': [0.63, 1] },
         'https://test-api.org/reports?%25value=0.63&%25value=1',
-      );
-      assertUrlIsCorrect(
-        { '%value': [1, '=test'] },
-        'https://test-api.org/reports?%25value=1&%25value=%3Dtest',
-      );
+      ],
+    ])('%s', (name, queryParams, expected) => {
+      assertUrlIsCorrect(queryParams, expected);
     });
   });
 });
