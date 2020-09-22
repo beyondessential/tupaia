@@ -119,7 +119,6 @@ export default async function request(
     if (shouldRetryOnFail) {
       return request(resourceUrl, errorFunction, options, requestContext, false);
     }
-
     throw assignErrorAction(
       error,
       errorFunction,
