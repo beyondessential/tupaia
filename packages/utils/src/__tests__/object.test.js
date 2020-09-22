@@ -389,7 +389,7 @@ describe('object', () => {
         expect(mapValues(objectInput, mappingInput, option)).toEqual(expected);
       });
     });
-    //////
+
     it('should not default to existing values by default', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { 1: 'alpha', 3: 'gamma' };
