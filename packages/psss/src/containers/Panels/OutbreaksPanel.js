@@ -20,10 +20,10 @@ import {
   AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
-  NotesTab,
   DrawerTray,
   DropdownMenu,
 } from '../../components';
+import { NotesTab } from '../NotesTab';
 import * as COLORS from '../../constants/colors';
 import { countryFlagImage } from '../../utils';
 import { connectApi } from '../../api';
