@@ -11,7 +11,13 @@ class OptionType extends DatabaseType {
 
   static fieldValidators = new Map()
     .set('value', [
-      hasContent,
+      value => {
+        try {
+          return hasContent(value) && null;
+        } catch (error) {
+          return error.message;
+        }
+      },
       async (value, model) => {
         const foundConflict = await findFieldConflict('value', value, model);
         if (foundConflict) return 'Found duplicate values in option set';
