@@ -1,4 +1,5 @@
 {
+  "clearMocks": true,
   "collectCoverageFrom": ["<rootDir>/src/**/*.js"],
   "setupFilesAfterEnv": ["../../jestScaffolding.js"],
   "testMatch": ["<rootDir>/src/__tests__/**/**.test.js"],
