@@ -204,6 +204,7 @@ describe('period utilities', () => {
       ])('>', (periodA, periodB, expected) => {
         expect(comparePeriods(periodA, periodB)).toBeGreaterThan(expected);
       });
+
       it.each([
         ['2020W53', '2020W53', 0],
         ['2020W52', '20201227', 0],
@@ -387,6 +388,7 @@ describe('period utilities', () => {
     ])('year', (period, periodType, expected) => {
       expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
+
     it.each([
       ['2019', QUARTER, 'Q1 2019'],
       ['201912', QUARTER, 'Q4 2019'],
@@ -396,6 +398,7 @@ describe('period utilities', () => {
     ])('quarter', (period, periodType, expected) => {
       expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
+
     it.each([
       ['2019', MONTH, 'Jan 2019'],
       ['201912', MONTH, 'Dec 2019'],
@@ -405,6 +408,7 @@ describe('period utilities', () => {
     ])('month', (period, periodType, expected) => {
       expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
+
     it.each([
       ['2019', WEEK, '1st Jan 2019'],
       ['201912', WEEK, '1st Dec 2019'],
@@ -414,6 +418,7 @@ describe('period utilities', () => {
     ])('week', (period, periodType, expected) => {
       expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
+
     it.each([
       ['2019', DAY, '1st Jan 2019'],
       ['201912', DAY, '1st Dec 2019'],
@@ -424,6 +429,7 @@ describe('period utilities', () => {
     ])('day', (period, periodType, expected) => {
       expect(periodToDisplayString(period, periodType)).toBe(expected);
     });
+
     it.each([
       ['2019', '2019'],
       ['201912', 'Dec 2019'],
@@ -438,6 +444,7 @@ describe('period utilities', () => {
     it('should convert to end periods by default', () => {
       expect(convertToPeriod('2016', MONTH)).toBe(convertToPeriod('2016', MONTH, true));
     });
+
     it.each([
       ['2016', MONTH, convertToPeriod('2016', 'month')],
       ['2016', MONTH, convertToPeriod('2016', 'MONTH')],
@@ -464,6 +471,7 @@ describe('period utilities', () => {
     ])('year', (period, periodType, isEndPeriod, expected) => {
       expect(convertToPeriod(period, periodType, isEndPeriod)).toBe(expected);
     });
+
     it.each([
       ['2016', MONTH, true, '201612'],
       ['2016', MONTH, false, '201601'],
@@ -478,6 +486,7 @@ describe('period utilities', () => {
     ])('month', (period, periodType, isEndPeriod, expected) => {
       expect(convertToPeriod(period, periodType, isEndPeriod)).toBe(expected);
     });
+
     it.each([
       ['2016', WEEK, true, '2016W52'],
       ['2016', WEEK, false, '2015W53'],
@@ -493,6 +502,7 @@ describe('period utilities', () => {
     ])('week', (period, periodType, isEndPeriod, expected) => {
       expect(convertToPeriod(period, periodType, isEndPeriod)).toBe(expected);
     });
+
     it.each([
       ['2016', DAY, true, '20161231'],
       ['2016', DAY, false, '20160101'],
@@ -533,24 +543,28 @@ describe('period utilities', () => {
     ])('should detect an annual period', (periodType, expected) => {
       expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
+
     it.each([
       [[QUARTER], QUARTER],
       [[DAY, DAY, QUARTER, MONTH], QUARTER],
     ])('should detect a quarterly period', (periodType, expected) => {
       expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
+
     it.each([
       [[MONTH], MONTH],
       [[DAY, MONTH, WEEK, DAY], MONTH],
     ])('should detect a monthly period', (periodType, expected) => {
       expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
+
     it.each([
       [[WEEK], WEEK],
       [[DAY, WEEK, DAY], WEEK],
     ])('should detect a weekly period', (periodType, expected) => {
       expect(findCoarsestPeriodType(periodType)).toBe(expected);
     });
+
     it.each([
       [[DAY], DAY],
       [[DAY, DAY], DAY],
