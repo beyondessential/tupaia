@@ -120,7 +120,8 @@
       "specs",
       "testid",
       "updaters",
-      "upsert"
+      "upsert",
+      "vars"
     ],
     "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {
