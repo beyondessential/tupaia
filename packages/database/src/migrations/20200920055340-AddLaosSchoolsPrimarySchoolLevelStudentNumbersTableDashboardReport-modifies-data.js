@@ -23,11 +23,27 @@ const REPORT_ID = 'Laos_Schools_Number_Of_Students_Primary_School';
 const DATA_BUILDER_CONFIG = {
   rows: ['Girls', 'Boys', 'Total'],
   cells: [
-    ['SchPop011', 'SchPop013', 'SchPop015', 'SchPop017', 'SchPop019', '$rowTotal'],
-    ['SchPop012', 'SchPop014', 'SchPop016', 'SchPop018', 'SchPop020', '$rowTotal'],
-    ['$columnTotal', '$columnTotal', '$columnTotal', '$columnTotal', '$columnTotal', '$total'],
+    ['SchPop009', 'SchPop011', 'SchPop013', 'SchPop015', 'SchPop017', 'SchPop019', '$rowTotal'],
+    ['SchPop010', 'SchPop012', 'SchPop014', 'SchPop016', 'SchPop018', 'SchPop020', '$rowTotal'],
+    [
+      '$columnTotal',
+      '$columnTotal',
+      '$columnTotal',
+      '$columnTotal',
+      '$columnTotal',
+      '$columnTotal',
+      '$total',
+    ],
   ],
-  columns: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Total'],
+  columns: [
+    'Pre-Primary (Grade 0)',
+    'Grade 1',
+    'Grade 2',
+    'Grade 3',
+    'Grade 4',
+    'Grade 5',
+    'Total',
+  ],
   entityAggregation: {
     dataSourceEntityType: 'school',
   },
