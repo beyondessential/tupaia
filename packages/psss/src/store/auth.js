@@ -114,6 +114,16 @@ const actionHandlers = {
     error: action.error,
   }),
   [LOGOUT]: () => defaultState,
+  [PROFILE_SUCCESS]: (user, currentState) => ({
+    user: {
+      ...currentState.user,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      name: `${user.first_name} ${user.last_name}`,
+      position: user.position,
+      employer: user.employer,
+    },
+  }),
 };
 
 export const auth = createReducer(defaultState, actionHandlers);
