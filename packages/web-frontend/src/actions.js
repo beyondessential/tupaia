@@ -139,6 +139,8 @@ export const SET_PROJECT = 'SET_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
 export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
+export const UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS =
+  'UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS';
 
 export function fetchInitialData() {
   return {
@@ -552,6 +554,18 @@ export function updateMeasureConfig(measureId, measureConfig) {
     type: UPDATE_MEASURE_CONFIG,
     measureId,
     measureConfig,
+  };
+}
+
+/**
+ * Updates measure config for current measure in measureBar once the hierarchy is populated
+ *
+ * @param {object} measureConfig
+ */
+export function updateCurrentMeasureConfigOnceHierarchyLoads(periodString) {
+  return {
+    type: UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+    periodString,
   };
 }
 
