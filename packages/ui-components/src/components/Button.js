@@ -16,6 +16,10 @@ const StyledButton = styled(MuiButton)`
   box-shadow: none;
   min-width: 3rem;
 
+  &:hover {
+    box-shadow: none;
+  }
+
   &.Mui-disabled {
     opacity: 0.8;
     background-color: ${props => props.theme.palette.primary.main};
@@ -56,7 +60,7 @@ Button.defaultProps = {
 };
 
 export const LightPrimaryButton = styled(Button)`
-  background-color: ${props => props.theme.palette.primary.light};
+  background-color: #dceffb;
   color: ${props => props.theme.palette.primary.main};
 
   &:hover,

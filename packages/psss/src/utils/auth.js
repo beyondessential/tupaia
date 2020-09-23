@@ -21,6 +21,6 @@ export const getPermittedEntitiesForUser = user => {
   const accessPolicy = new AccessPolicy(user.accessPolicy);
 
   // For testing...
-  // return ['as', 'to'];
-  return ['to'];
+  return ['as', 'to'];
+  // return ['to'];
 };
