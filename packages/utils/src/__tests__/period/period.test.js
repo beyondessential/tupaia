@@ -438,7 +438,7 @@ describe('period utilities', () => {
     });
   });
 
-  describe.only('convertToPeriod', () => {
+  describe('convertToPeriod', () => {
     it('should convert to end periods by default', () => {
       expect(convertToPeriod('2016', MONTH)).toBe(convertToPeriod('2016', MONTH, true));
     });
