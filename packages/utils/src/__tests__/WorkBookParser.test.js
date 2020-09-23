@@ -4,7 +4,6 @@
  */
 
 import xlsx from 'xlsx';
-import sinon from 'sinon';
 
 import { WorkBookParser } from '../WorkBookParser';
 
