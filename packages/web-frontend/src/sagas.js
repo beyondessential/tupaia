@@ -68,7 +68,6 @@ import {
   FETCH_MEASURES_SUCCESS,
   FETCH_RESEND_VERIFICATION_EMAIL,
   FETCH_RESET_TOKEN_LOGIN_SUCCESS,
-  SET_DRILL_DOWN_DATE_RANGE,
   findLoggedIn,
   findUserLoginFailed,
   FIND_USER_LOGGEDIN,
@@ -82,6 +81,7 @@ import {
   REQUEST_PROJECT_ACCESS,
   setMeasure,
   setOverlayComponent,
+  SET_DRILL_DOWN_DATE_RANGE,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   SET_MEASURE,
   SET_ORG_UNIT,
@@ -103,6 +103,7 @@ import {
 import { setProject } from './projects/actions';
 import {
   selectCurrentExpandedViewContent,
+  selectCurrentExpandedViewId,
   selectCurrentInfoViewKey,
   selectCurrentMeasureId,
   selectCurrentOrgUnitCode,
@@ -1017,7 +1018,11 @@ function* fetchEnlargedDialogViewContentForPeriod(action) {
   };
 
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
-  if (viewData) {
+
+  const newState = yield select();
+  const newViewId = selectCurrentExpandedViewId(newState);
+  // If the expanded view has changed, don't update the enlargedDialog's viewContent
+  if (viewData && newViewId === viewId) {
     yield put(updateEnlargedDialog(viewData));
   }
 }
