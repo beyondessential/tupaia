@@ -1,9 +1,6 @@
 {
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
+  "extends": "@beyondessential/js",
   "parser": "babel-eslint",
-  "env": {
-    "mocha": true
-  },
   "rules": {
     "import/no-extraneous-dependencies": [
       "error",
@@ -26,13 +23,14 @@
           "^@tupaia/utils$"
         ]
       }
-    ],
-    "max-classes-per-file": ["error", 2],
-    "react/forbid-prop-types": "off"
+    ]
   },
   "overrides": [
     {
       "files": "**/src/tests/**",
+      "env": {
+        "mocha": true
+      },
       "rules": {
         "func-names": "off",
         "no-unused-expressions": "off"
