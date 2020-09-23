@@ -1,7 +1,7 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
 import xlsx from 'xlsx';
 import moment from 'moment';
@@ -9,7 +9,8 @@ import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
 import { DatabaseError, ValidationError } from '@tupaia/utils';
 
-import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
+import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../dataAccessors';
+import { allowNoPermissions } from '../../permissions';
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
@@ -82,6 +83,9 @@ export async function exportSurveyResponses(req, res) {
   try {
     let country;
     let entities;
+
+    req.assertPermissions(allowNoPermissions);
+
     if (countryCode) {
       country = await models.country.findOne({ code: countryCode });
       countryId = country.id;
