@@ -67,7 +67,7 @@ const DATA_BUILDER_CONFIG = {
 };
 
 const VIEW_JSON = {
-  name: 'WASH',
+  name: 'Water, Sanitation and Hygiene (WASH)',
   type: 'matrix',
   placeholder: '/static/media/PEHSMatrixPlaceholder.png',
   hideColumnTitles: true,
