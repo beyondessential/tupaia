@@ -8,15 +8,22 @@
 /**
  * History utils. These are helper functions that aren't used outside of historyNavigation.
  */
-import queryString from 'query-string';
 import { invert } from 'lodash';
-
+import moment from 'moment';
+import queryString from 'query-string';
+import {
+  momentToDateString,
+  GRANULARITIES,
+  GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_CONFIG,
+  roundStartEndDates,
+} from '../utils/periodGranularities';
 import {
   PATH_COMPONENTS,
   SEARCH_COMPONENTS,
   SEARCH_PARAM_KEY_MAP,
-  USER_PAGE_PREFIXES,
   URL_COMPONENTS,
+  USER_PAGE_PREFIXES,
 } from './constants';
 
 export const createLocation = params => {
@@ -85,6 +92,41 @@ export const isLocationEqual = (a, b) => {
   }
 
   return true;
+};
+
+export const convertUrlPeriodStringToDateRange = (
+  periodString,
+  granularity = GRANULARITIES.DAY,
+) => {
+  const [startDate, endDate] = periodString.split('-');
+  const { urlFormat } = GRANULARITY_CONFIG[granularity];
+
+  const momentStartDate = moment(startDate, urlFormat);
+  if (GRANULARITIES_WITH_ONE_DATE.includes(granularity)) {
+    return {
+      startDate: momentStartDate,
+      endDate: momentStartDate,
+    };
+  }
+  // We rely on dates being rounded in state for range formats
+  const momentEndDate = moment(endDate, urlFormat);
+  return roundStartEndDates(granularity, momentStartDate, momentEndDate);
+};
+
+export const convertDateRangeToUrlPeriodString = (
+  { startDate, endDate },
+  granularity = GRANULARITIES.DAY,
+) => {
+  if (!(startDate || endDate)) return null;
+
+  const { urlFormat } = GRANULARITY_CONFIG[granularity];
+
+  const formattedStartDate = momentToDateString(startDate, granularity, urlFormat);
+  const formattedEndDate = momentToDateString(endDate, granularity, urlFormat);
+
+  return GRANULARITIES_WITH_ONE_DATE.includes(granularity)
+    ? formattedEndDate
+    : `${formattedStartDate}-${formattedEndDate}`;
 };
 
 const parseSearch = search => {
