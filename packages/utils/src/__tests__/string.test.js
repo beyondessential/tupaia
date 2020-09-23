@@ -11,7 +11,7 @@ describe('string utilities', () => {
       ['all lowercase', 'lowercase words', 'Lowercase words'],
       ['all uppercase', 'UPPERCASE WORDS', 'UPPERCASE WORDS'],
       ['mixed case - lowercase first', 'mIXed WOrdS', 'MIXed WOrdS'],
-    ])('%s', (name, text, expected) => {
+    ])('%s', (_, text, expected) => {
       expect(upperFirst(text)).toBe(expected);
     });
   });

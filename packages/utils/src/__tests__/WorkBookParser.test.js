@@ -4,7 +4,6 @@
  */
 
 import xlsx from 'xlsx';
-import sinon from 'sinon';
 
 import { WorkBookParser } from '../WorkBookParser';
 
@@ -42,9 +41,8 @@ describe('WorkBookParser', () => {
         },
       };
       const parser = new WorkBookParser(mappers);
-      expect.assertions(1);
-      const result = await parser.parse(WORK_BOOK);
-      expect(result).toEqual({
+
+      return expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual({
         Sheet1: [
           { Value1: 'HeaderA', Value2: 'HeaderB' },
           { Value3: 'HeaderA', Value4: 'HeaderB' },
@@ -58,7 +56,7 @@ describe('WorkBookParser', () => {
 
     it('should map the input to itself if no mapper is provided', async () => {
       const parser = new WorkBookParser();
-      await expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual(SHEETS);
+      return expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual(SHEETS);
     });
 
     describe('should use the provided validators to validate a spreadsheet', () => {
@@ -75,15 +73,16 @@ describe('WorkBookParser', () => {
         const triggeringValue = 'Value7';
         const validators = constructValidators(triggeringValue);
         const parser = new WorkBookParser({}, validators);
-        await expect(parser.parse(WORK_BOOK)).rejects.toThrow(errorMessage);
+
+        return expect(parser.parse(WORK_BOOK)).rejects.toThrow(errorMessage);
       });
 
       it("validator is not triggered when it shouldn't", async () => {
         const nonTriggeringValue = 'Value6';
         const validators = constructValidators(nonTriggeringValue);
         const parser = new WorkBookParser({}, validators);
-        const result = await parser.parse(WORK_BOOK);
-        return expect(result).toEqual(SHEETS);
+
+        return expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual(SHEETS);
       });
     });
   });

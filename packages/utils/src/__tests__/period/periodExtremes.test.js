@@ -7,7 +7,8 @@ import { getMostAncientPeriod, getMostRecentPeriod } from '../../period/periodEx
 
 describe('periodExtremes', () => {
   describe('getMostRecentPeriod()', () => {
-    it.each([
+    const testData = [
+      ['should return null for empty input', undefined, null],
       [
         'should return null if there are no valid periods in the input',
         ['NOT_A_PERIOD', 'NOT_ONE_EITHER'],
@@ -29,21 +30,16 @@ describe('periodExtremes', () => {
         ['2020', '2020W01', '20200101'],
         '20200101',
       ],
-    ])('%s', (name, periods, expected) => {
-      expect(getMostRecentPeriod(periods)).toBe(expected);
-    });
+    ];
 
-    it('should return null for empty input', () => {
-      expect(getMostRecentPeriod()).toBeNull();
+    it.each(testData)('%s', (_, periods, expected) => {
+      expect(getMostRecentPeriod(periods)).toBe(expected);
     });
   });
 
   describe('getMostAncientPeriod()', () => {
-    it('should return null for empty input', () => {
-      expect(getMostAncientPeriod()).toBeNull();
-    });
-
-    it.each([
+    const testData = [
+      ['should return null for empty input', undefined, null],
       [
         'should return null if there are no valid periods in the input',
         ['NOT_A_PERIOD', 'NOT_ONE_EITHER'],
@@ -70,7 +66,9 @@ describe('periodExtremes', () => {
         ['2020', '2020Q1', '20200101'],
         '20200101',
       ],
-    ])('%s', (name, periods, expected) => {
+    ];
+
+    it.each(testData)('%s', (_, periods, expected) => {
       expect(getMostAncientPeriod(periods)).toBe(expected);
     });
   });

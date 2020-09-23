@@ -93,6 +93,7 @@
       "beyondessential",
       "cacheable",
       "cleanup",
+      "debouncing",
       "deleters",
       "dialogs",
       "enroll",
