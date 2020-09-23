@@ -33,6 +33,7 @@ export const Table = React.memo(
     onChangePage,
     onChangeRowsPerPage,
     onChangeOrderBy,
+    onRowClick,
     orderBy,
     order,
     page,
@@ -58,6 +59,7 @@ export const Table = React.memo(
             noDataMessage,
             SubComponent,
             rowIdKey,
+            onRowClick,
           }}
         />
       </TableMessageProvider>
@@ -89,6 +91,7 @@ Table.propTypes = {
   isLoading: PropTypes.bool,
   count: PropTypes.number,
   onChangePage: PropTypes.func,
+  onRowClick: PropTypes.func,
   onChangeRowsPerPage: PropTypes.func,
   onChangeOrderBy: PropTypes.func,
   orderBy: PropTypes.string,
@@ -111,6 +114,7 @@ Table.defaultProps = {
   onChangePage: null,
   onChangeRowsPerPage: null,
   onChangeOrderBy: null,
+  onRowClick: null,
   orderBy: null,
   order: 'asc',
   page: null,

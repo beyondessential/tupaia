@@ -16,7 +16,7 @@
 
 - `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash`
 - Close and reopen terminal session
-- `nvm install 10.15.1`
+- `nvm install 12.18.3`
 
 # ssl
 

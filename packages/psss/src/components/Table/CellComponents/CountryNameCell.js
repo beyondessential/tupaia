@@ -18,6 +18,7 @@ const CountryTitle = styled(MuiLink)`
   font-weight: 400;
   font-size: 1.125rem;
   color: ${COLORS.BLUE};
+  line-height: 1.2;
 
   .MuiAvatar-root {
     margin-right: 0.6rem;
@@ -30,17 +31,11 @@ const CountryTitle = styled(MuiLink)`
   }
 `;
 
-export const CountryNameCell = ({ handleClick, name, countryCode }) => {
-  const isButton = handleClick;
-  const to = isButton ? null : 'weekly-reports/as';
-  const component = isButton ? 'button' : RouterLink;
-
-  return (
-    <CountryTitle to={to} onClick={handleClick} component={component}>
-      <Avatar src={countryFlagImage(countryCode)} /> {name}
-    </CountryTitle>
-  );
-};
+export const CountryNameCell = ({ handleClick, name, countryCode }) => (
+  <CountryTitle onClick={handleClick} component="button">
+    <Avatar src={countryFlagImage(countryCode)} /> {name}
+  </CountryTitle>
+);
 
 CountryNameCell.propTypes = {
   handleClick: PropTypes.func,
@@ -53,6 +48,21 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
-export const CountryNameButtonCreator = handleClick => props => (
-  <CountryNameCell handleClick={handleClick} {...props} />
-);
+export const CountryNameLinkCell = ({ name, countryCode }) => {
+  // Todo: replace with real country code
+  const testCountryCode = 'as';
+  return (
+    <CountryTitle to={`weekly-reports/${testCountryCode}`} component={RouterLink}>
+      <Avatar src={countryFlagImage(countryCode)} /> {name}
+    </CountryTitle>
+  );
+};
+
+CountryNameLinkCell.propTypes = {
+  name: PropTypes.string.isRequired,
+  countryCode: PropTypes.string,
+};
+
+CountryNameLinkCell.defaultProps = {
+  countryCode: null,
+};

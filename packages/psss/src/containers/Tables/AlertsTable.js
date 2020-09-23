@@ -4,15 +4,10 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  ConnectedTable,
-  SyndromeCell,
-  AlertMenuCell,
-  CountryNameButtonCreator,
-  WeekAndDateCell,
-} from '../../components';
+import { SyndromeCell, AlertMenuCell, WeekAndDateCell, CountryNameCell } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
-const createColumns = (isForMultipleCountries, handlePanelOpen) => [
+const createColumns = isForMultipleCountries => [
   ...(isForMultipleCountries
     ? [
         {
@@ -20,7 +15,7 @@ const createColumns = (isForMultipleCountries, handlePanelOpen) => [
           key: 'name',
           width: '28%',
           align: 'left',
-          CellComponent: CountryNameButtonCreator(handlePanelOpen),
+          CellComponent: CountryNameCell,
         },
       ]
     : []),
@@ -34,7 +29,7 @@ const createColumns = (isForMultipleCountries, handlePanelOpen) => [
     title: 'Alert Start Date',
     key: 'weekNumber',
     align: 'left',
-    width: '180px',
+    width: '200px',
     CellComponent: WeekAndDateCell,
   },
   {
@@ -53,12 +48,16 @@ const createColumns = (isForMultipleCountries, handlePanelOpen) => [
     key: 'id',
     sortable: false,
     CellComponent: AlertMenuCell,
-    width: '50px',
+    width: '45px',
   },
 ];
 
 export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => (
-  <ConnectedTable endpoint="alerts" columns={createColumns(!countryCode, handlePanelOpen)} />
+  <ConnectedTable
+    endpoint="alerts"
+    columns={createColumns(!countryCode)}
+    onRowClick={handlePanelOpen}
+  />
 ));
 
 AlertsTable.propTypes = {
