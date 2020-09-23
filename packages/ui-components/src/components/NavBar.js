@@ -48,7 +48,7 @@ export const NavBar = ({ HomeButton, Profile, links, isTabActive }) => (
     <MuiContainer>
       <Inner>
         <NavLinks>
-          <HomeButton />
+          {HomeButton}
           {links.map(({ label, to, icon }) => (
             <StyledTab
               isActive={isTabActive}

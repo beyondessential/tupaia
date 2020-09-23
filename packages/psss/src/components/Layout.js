@@ -5,6 +5,7 @@
 
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
+import MuiBox from '@material-ui/core/Box';
 
 const desktopWidth = '768px';
 
@@ -14,7 +15,7 @@ const desktopWidth = '768px';
 export const Container = styled(MuiContainer)`
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-gap: 60px;
+  grid-gap: 40px;
 
   @media (max-width: ${desktopWidth}) {
     grid-template-columns: 1fr;
@@ -48,19 +49,19 @@ export const Sidebar = styled.aside`
   }
 `;
 
-export const FlexStart = styled.div`
+export const FlexStart = styled(MuiBox)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
 `;
 
-export const FlexEnd = styled.div`
+export const FlexEnd = styled(MuiBox)`
   display: flex;
   align-items: center;
   justify-content: flex-end;
 `;
 
-export const FlexSpaceBetween = styled.div`
+export const FlexSpaceBetween = styled(MuiBox)`
   display: flex;
   align-items: center;
   justify-content: space-between;

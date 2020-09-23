@@ -9,12 +9,12 @@ import {
   ATTEMPT_LOGOUT,
   ATTEMPT_LOGIN,
   FETCH_LOGIN_SUCCESS,
-  CHANGE_ORG_UNIT,
-  CHANGE_MEASURE,
+  SET_ORG_UNIT,
+  SET_MEASURE,
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
   SET_OVERLAY_COMPONENT,
-  CHANGE_DASHBOARD_GROUP,
+  SET_DASHBOARD_GROUP,
   CHANGE_SEARCH,
   TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
@@ -23,7 +23,7 @@ import {
   OPEN_USER_DIALOG,
   CLOSE_USER_DIALOG,
 } from '../actions';
-import { initialOrgUnit } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 
 const ga = window.ga || (() => {});
 
@@ -51,13 +51,11 @@ export const gaMiddleware = () => next => action => {
         gaEvent('User', 'Log out');
         break;
 
-      case CHANGE_ORG_UNIT:
-        if (action.organisationUnitCode !== initialOrgUnit.organisationUnitCode) {
-          gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
-        }
+      case SET_ORG_UNIT:
+        gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
         break;
 
-      case CHANGE_MEASURE:
+      case SET_MEASURE:
         gaEvent('Measure', 'Change', action.measureId);
         break;
 
@@ -81,7 +79,7 @@ export const gaMiddleware = () => next => action => {
         gaEvent('Pages', 'Open Overlay Component', action.component);
         break;
 
-      case CHANGE_DASHBOARD_GROUP:
+      case SET_DASHBOARD_GROUP:
         gaEvent('Dashboard', 'Change Tab', action.name);
         break;
 

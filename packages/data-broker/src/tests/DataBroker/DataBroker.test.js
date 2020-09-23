@@ -4,96 +4,255 @@
  */
 
 import { expect } from 'chai';
+import sinon from 'sinon';
 
 import { DataBroker } from '../../DataBroker';
-import { DATA_SOURCE_SPECS, DATA_SOURCES } from './fixtures';
-import { stubs } from './helpers';
-
-const dataSources = Object.values(DATA_SOURCES);
-
-const options = { ignoreErrors: true, organisationUnitCode: 'TO' };
+import * as GetModels from '../../getModels';
+import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS } from './DataBroker.fixtures';
+import { stubCreateService, createModelsStub, createServiceStub } from './DataBroker.stubs';
 
 describe('DataBroker', () => {
-  let createServiceStub;
-  let serviceStub;
-  let modelsStub;
-
-  const assertCreateServiceWasInvokedCorrectly = () => {
-    expect(createServiceStub).to.have.been.calledOnceWithExactly(modelsStub, 'testServiceType');
+  let createService;
+  const dataSources = Object.values(DATA_ELEMENTS).concat(Object.values(DATA_GROUPS));
+  const models = createModelsStub(dataSources);
+  const SERVICES = {
+    test: createServiceStub(DATA_BY_SERVICE.test),
+    other: createServiceStub(DATA_BY_SERVICE.other),
   };
 
+  const options = { ignoreErrors: true, organisationUnitCode: 'TO' };
+
   before(() => {
-    modelsStub = stubs.models.getStub({ dataSources });
-    stubs.getModels.stub(modelsStub);
+    createService = stubCreateService(SERVICES);
+    sinon.stub(GetModels, 'getModels').returns(models);
   });
 
   beforeEach(() => {
-    serviceStub = stubs.service.getStub();
-    createServiceStub = stubs.createService.stub(serviceStub);
-  });
-
-  afterEach(() => {
-    stubs.createService.restore();
+    createService.resetHistory();
+    Object.values(SERVICES).forEach(service => {
+      service.push.resetHistory();
+      service.delete.resetHistory();
+      service.pull.resetHistory();
+      service.pullMetadata.resetHistory();
+    });
   });
 
   after(() => {
-    stubs.getModels.restore();
+    createService.restore();
+    GetModels.getModels.restore();
   });
 
   it('getDataSourceTypes()', () => {
-    expect(new DataBroker().getDataSourceTypes()).to.deep.equal(modelsStub.dataSource.getTypes());
+    expect(new DataBroker().getDataSourceTypes()).to.deep.equal(models.dataSource.getTypes());
   });
 
-  it('push()', async () => {
-    const data = { value: 2 };
+  describe('push()', () => {
+    it('throws if the data sources belong to multiple services', async () => {
+      const data = [{ value: 1 }, { value: 2 }];
+      const dataBroker = new DataBroker();
+      return expect(
+        dataBroker.push({ code: ['TEST_01', 'OTHER_01'], type: 'dataElement' }),
+        data,
+      ).to.be.rejectedWith('Cannot push data belonging to different services');
+    });
 
-    await new DataBroker().push(DATA_SOURCE_SPECS.POP01, data);
-    assertCreateServiceWasInvokedCorrectly();
-    expect(serviceStub.push).to.have.been.calledOnceWithExactly([DATA_SOURCES.POP01], data);
+    it('single code', async () => {
+      const data = [{ value: 2 }];
+      const dataBroker = new DataBroker();
+      await dataBroker.push({ code: 'TEST_01', type: 'dataElement' }, data);
+      expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+      expect(SERVICES.test.push).to.have.been.calledOnceWithExactly([DATA_ELEMENTS.TEST_01], data);
+    });
+
+    it('multiple codes', async () => {
+      const data = [{ value: 1 }, { value: 2 }];
+      const dataBroker = new DataBroker();
+      await dataBroker.push({ code: ['TEST_01', 'TEST_02'], type: 'dataElement' }, data);
+      expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+      expect(SERVICES.test.push).to.have.been.calledOnceWithExactly(
+        [DATA_ELEMENTS.TEST_01, DATA_ELEMENTS.TEST_02],
+        data,
+      );
+    });
   });
 
   it('delete()', async () => {
     const data = { value: 2 };
-
-    await new DataBroker().delete(DATA_SOURCE_SPECS.POP01, data, options);
-    assertCreateServiceWasInvokedCorrectly();
-    expect(serviceStub.delete).to.have.been.calledOnceWithExactly(
-      DATA_SOURCES.POP01,
+    const dataBroker = new DataBroker();
+    await dataBroker.delete({ code: 'TEST_01', type: 'dataElement' }, data, options);
+    expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+    expect(SERVICES.test.delete).to.have.been.calledOnceWithExactly(
+      DATA_ELEMENTS.TEST_01,
       data,
       options,
     );
   });
 
   describe('pull()', () => {
-    it('should throw an error if no code is provided', async () =>
+    it('should throw an error if no existing code is provided', async () =>
       Promise.all(
-        [{}, { type: 'dataElement' }, { code: '' }, { code: [] }].map(dataSourceSpec =>
+        [
+          {},
+          { type: 'dataElement' },
+          { code: '' },
+          { code: [] },
+          { code: 'NON_EXISTING' },
+          { code: ['NON_EXISTING1', 'NON_EXISTING2'] },
+        ].map(dataSourceSpec =>
           expect(new DataBroker().pull(dataSourceSpec, options)).to.be.rejectedWith(
-            /Please provide.*data source/,
+            /Please provide .*data source/,
           ),
         ),
       ));
 
-    it('single code', async () => {
-      await new DataBroker().pull(DATA_SOURCE_SPECS.POP01, options);
+    describe('analytics', () => {
+      const assertServicePulledDataElementsOnce = (service, dataElements) =>
+        expect(service.pull).to.have.been.calledOnceWithExactly(
+          dataElements,
+          'dataElement',
+          options,
+        );
 
-      assertCreateServiceWasInvokedCorrectly();
-      expect(serviceStub.pull).to.have.been.calledOnceWithExactly(
-        [DATA_SOURCES.POP01],
+      it('single code', async () => {
+        const dataBroker = new DataBroker();
+        const data = await dataBroker.pull({ code: 'TEST_01', type: 'dataElement' }, options);
+
+        expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+        assertServicePulledDataElementsOnce(SERVICES.test, [DATA_ELEMENTS.TEST_01]);
+        expect(data).to.deep.equal({
+          results: [{ value: 1 }],
+          metadata: { dataElementCodeToName: { TEST_01: 'Test element 1' } },
+        });
+      });
+
+      it('multiple codes', async () => {
+        const dataBroker = new DataBroker();
+        const data = await dataBroker.pull(
+          { code: ['TEST_01', 'TEST_02'], type: 'dataElement' },
+          options,
+        );
+
+        expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+        assertServicePulledDataElementsOnce(SERVICES.test, [
+          DATA_ELEMENTS.TEST_01,
+          DATA_ELEMENTS.TEST_02,
+        ]);
+        expect(data).to.deep.equal({
+          results: [{ value: 1 }, { value: 2 }],
+          metadata: {
+            dataElementCodeToName: { TEST_01: 'Test element 1', TEST_02: 'Test element 2' },
+          },
+        });
+      });
+
+      it('multiple services', async () => {
+        const dataBroker = new DataBroker();
+        const data = await dataBroker.pull(
+          { code: ['TEST_01', 'OTHER_01', 'TEST_02'], type: 'dataElement' },
+          options,
+        );
+
+        expect(createService).to.have.been.calledTwice;
+        expect(createService).to.have.been.calledWithExactly(models, 'test', dataBroker);
+        expect(createService).to.have.been.calledWithExactly(models, 'other', dataBroker);
+        assertServicePulledDataElementsOnce(SERVICES.test, [
+          DATA_ELEMENTS.TEST_01,
+          DATA_ELEMENTS.TEST_02,
+        ]);
+        assertServicePulledDataElementsOnce(SERVICES.other, [DATA_ELEMENTS.OTHER_01]);
+        expect(data).to.deep.equal({
+          results: [{ value: 1 }, { value: 2 }, { value: 3 }],
+          metadata: {
+            dataElementCodeToName: {
+              TEST_01: 'Test element 1',
+              TEST_02: 'Test element 2',
+              OTHER_01: 'Other element 1',
+            },
+          },
+        });
+      });
+    });
+
+    describe('events', () => {
+      const assertServicePulledEventsOnce = (service, dataElements) =>
+        expect(service.pull).to.have.been.calledOnceWithExactly(dataElements, 'dataGroup', options);
+
+      it('single code', async () => {
+        const dataBroker = new DataBroker();
+        const data = await dataBroker.pull({ code: 'TEST_01', type: 'dataGroup' }, options);
+
+        expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+        assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01]);
+        expect(data).to.deep.equal([{ dataValues: { TEST_01: 10 } }]);
+      });
+
+      it('multiple codes', async () => {
+        const dataBroker = new DataBroker();
+        const data = await dataBroker.pull(
+          { code: ['TEST_01', 'TEST_02'], type: 'dataGroup' },
+          options,
+        );
+
+        expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+        assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02]);
+        expect(data).to.deep.equal([
+          { dataValues: { TEST_01: 10 } },
+          { dataValues: { TEST_02: 20 } },
+        ]);
+      });
+
+      it('multiple services', async () => {
+        const dataBroker = new DataBroker();
+        const data = await dataBroker.pull(
+          { code: ['TEST_01', 'OTHER_01', 'TEST_02'], type: 'dataGroup' },
+          options,
+        );
+
+        expect(createService).to.have.been.calledTwice;
+        expect(createService).to.have.been.calledWithExactly(models, 'test', dataBroker);
+        expect(createService).to.have.been.calledWithExactly(models, 'other', dataBroker);
+        assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02]);
+        assertServicePulledEventsOnce(SERVICES.other, [DATA_GROUPS.OTHER_01]);
+        expect(data).to.deep.equal([
+          { dataValues: { TEST_01: 10 } },
+          { dataValues: { TEST_02: 20 } },
+          { dataValues: { OTHER_01: 30 } },
+        ]);
+      });
+    });
+  });
+
+  describe('pullMetadata()', () => {
+    const assertServicePulledDataElementMetadataOnce = (service, dataElements) =>
+      expect(service.pullMetadata).to.have.been.calledOnceWithExactly(
+        dataElements,
         'dataElement',
         options,
       );
+
+    it('throws if the data sources belong to multiple services', async () => {
+      const dataBroker = new DataBroker();
+      return expect(
+        dataBroker.pullMetadata({ code: ['TEST_01', 'OTHER_01'], type: 'dataElement' }),
+        options,
+      ).to.be.rejectedWith('Cannot pull metadata for data sources belonging to different services');
+    });
+
+    it('single code', async () => {
+      const dataBroker = new DataBroker();
+      await dataBroker.pullMetadata({ code: 'TEST_01', type: 'dataElement' }, options);
+      expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+      assertServicePulledDataElementMetadataOnce(SERVICES.test, [DATA_ELEMENTS.TEST_01]);
     });
 
     it('multiple codes', async () => {
-      await new DataBroker().pull({ code: ['POP01', 'POP02'], type: 'dataElement' }, options);
-
-      assertCreateServiceWasInvokedCorrectly();
-      expect(serviceStub.pull).to.have.been.calledOnceWithExactly(
-        dataSources,
-        'dataElement',
-        options,
-      );
+      const dataBroker = new DataBroker();
+      await dataBroker.pullMetadata({ code: ['TEST_01', 'TEST_02'], type: 'dataElement' }, options);
+      expect(createService).to.have.been.calledOnceWithExactly(models, 'test', dataBroker);
+      assertServicePulledDataElementMetadataOnce(SERVICES.test, [
+        DATA_ELEMENTS.TEST_01,
+        DATA_ELEMENTS.TEST_02,
+      ]);
     });
   });
 });

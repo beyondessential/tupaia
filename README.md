@@ -36,6 +36,7 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 - [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
+- [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
@@ -74,5 +75,5 @@ Most of the packages support the following scripts for testing:
 
 ```
 yarn test # runs the tests
-yarn test-coverage # runs the tests and displays code coverage
+yarn test:coverage # runs the tests and displays code coverage
 ```
