@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import { Multilock } from '../Multilock';
 
 describe('Multilock', () => {
@@ -8,12 +6,12 @@ describe('Multilock', () => {
 
     const unlock = m.createLock('a');
 
-    expect(m.isLocked()).to.be.true;
+    expect(m.isLocked()).toBe(true);
 
     setTimeout(unlock, 10);
     await m.wait();
 
-    expect(m.isLocked()).to.be.false;
+    expect(m.isLocked()).toBe(false);
   });
 
   it('Should wait for two locks', async () => {
@@ -22,23 +20,23 @@ describe('Multilock', () => {
     const unlockA = m.createLock('a');
     const unlockB = m.createLock('b');
 
-    expect(m.isLocked()).to.be.true;
+    expect(m.isLocked()).toBe(true);
 
     setTimeout(unlockA, 22);
     setTimeout(unlockB, 30);
     await m.wait();
 
-    expect(m.isLocked()).to.be.false;
+    expect(m.isLocked()).toBe(false);
   });
 
   it('Should wait for zero locks', async () => {
     const m = new Multilock();
 
-    expect(m.isLocked()).to.be.false;
+    expect(m.isLocked()).toBe(false);
 
     await m.wait();
 
-    expect(m.isLocked()).to.be.false;
+    expect(m.isLocked()).toBe(false);
   });
 
   it('Should wait for two locks with the same friendly name', async () => {
@@ -47,15 +45,15 @@ describe('Multilock', () => {
     const unlockA = m.createLock('a');
     const unlockB = m.createLock('a');
 
-    expect(m.isLocked()).to.be.true;
+    expect(m.isLocked()).toBe(true);
 
     unlockA();
 
-    expect(m.isLocked()).to.be.true;
+    expect(m.isLocked()).toBe(true);
 
     unlockB();
 
-    expect(m.isLocked()).to.be.false;
+    expect(m.isLocked()).toBe(false);
   });
 
   it('Should be fine with multiple waits', async () => {
@@ -96,6 +94,6 @@ describe('Multilock', () => {
       }, 15);
     });
 
-    expect(valAfterLock).to.equal('after');
+    expect(valAfterLock).toBe('after');
   });
 });

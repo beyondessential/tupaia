@@ -1,6 +1,3 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
-
 import { AsyncTaskQueue } from '../AsyncTaskQueue';
 
 const sleep = milliseconds => {
@@ -13,7 +10,7 @@ const BATCH_SIZE = 4; // must be even, as we halve it in some tests
 const DEBOUNCE_TIME = 10;
 const TASK_TIME = 100;
 const createAsyncTask = result =>
-  sinon.spy(() => new Promise(resolve => setTimeout(() => resolve(result), TASK_TIME)));
+  jest.fn(() => new Promise(resolve => setTimeout(() => resolve(result), TASK_TIME)));
 const createXTasks = numberOfTasks =>
   Array(numberOfTasks)
     .fill(1)
@@ -24,8 +21,8 @@ describe('AsyncTaskQueue', () => {
     const queue = new AsyncTaskQueue(BATCH_SIZE, DEBOUNCE_TIME);
     const task = createAsyncTask('Success!');
     const result = await queue.add(task);
-    expect(task).to.have.been.calledOnceWithExactly();
-    expect(result).to.equal('Success!');
+    expect(task).toHaveBeenCalledOnceWith();
+    expect(result).toBe('Success!');
   });
 
   it('should process more than one task, in batches', async () => {
@@ -38,17 +35,17 @@ describe('AsyncTaskQueue', () => {
     // wait for a little bit, so the first batch of tasks should have been started
     await sleep(DEBOUNCE_TIME * 2);
     tasks.slice(0, BATCH_SIZE).forEach(t => {
-      expect(t).to.have.been.calledOnceWithExactly();
+      expect(t).toHaveBeenCalledOnceWith();
     });
 
     // the second and third batches of tasks shouldn't have started yet, as it should still be
     // processing the first batch
-    tasks.slice(BATCH_SIZE).forEach(t => expect(t).not.to.have.been.called);
+    tasks.slice(BATCH_SIZE).forEach(t => expect(t).not.toHaveBeenCalled());
 
     // wait for all of the tasks to be processed, and check they returned the correct results
     const results = await Promise.all(promises);
-    tasks.forEach(t => expect(t).to.have.been.calledOnceWithExactly());
-    results.forEach((p, i) => expect(p).to.equal(i));
+    tasks.forEach(t => expect(t).toHaveBeenCalledOnceWith());
+    results.forEach((p, i) => expect(p).toBe(i));
   });
 
   it('should process additional tasks added during processing', async () => {
@@ -68,9 +65,9 @@ describe('AsyncTaskQueue', () => {
 
     // the first half batch should still be processing, with the rest waiting until that's done
     halfBatch.forEach(t => {
-      expect(t).to.have.been.calledOnceWithExactly();
+      expect(t).toHaveBeenCalledOnceWith();
     });
-    batchAndAHalf.forEach(t => expect(t).not.to.have.been.called);
+    batchAndAHalf.forEach(t => expect(t).not.toHaveBeenCalled());
 
     // wait for the first half batch of the tasks to be processed, plus a little bit
     await Promise.all(halfBatchPromises);
@@ -78,15 +75,15 @@ describe('AsyncTaskQueue', () => {
 
     // the first batch of the batch and a half should now have been kicked off
     batchAndAHalf.slice(0, BATCH_SIZE).forEach(t => {
-      expect(t).to.have.been.calledOnceWithExactly();
+      expect(t).toHaveBeenCalledOnceWith();
     });
-    batchAndAHalf.slice(BATCH_SIZE).forEach(t => expect(t).not.to.have.been.called);
+    batchAndAHalf.slice(BATCH_SIZE).forEach(t => expect(t).not.toHaveBeenCalled());
 
     // check all results were correct
     const halfBatchResults = await Promise.all(halfBatchPromises);
-    halfBatchResults.forEach((p, i) => expect(p).to.equal(i));
+    halfBatchResults.forEach((p, i) => expect(p).toBe(i));
     const batchAndAHalfResults = await Promise.all(batchAndAHalfPromises);
-    batchAndAHalfResults.forEach((p, i) => expect(p).to.equal(i));
+    batchAndAHalfResults.forEach((p, i) => expect(p).toBe(i));
   });
 
   it('should process additional tasks added after queue is idle', async () => {
@@ -107,14 +104,14 @@ describe('AsyncTaskQueue', () => {
 
     // the queue should have been idle, so the first batch should have been kicked off
     batchAndAHalf.slice(0, BATCH_SIZE).forEach(t => {
-      expect(t).to.have.been.calledOnceWithExactly();
+      expect(t).toHaveBeenCalledOnceWith();
     });
-    batchAndAHalf.slice(BATCH_SIZE).forEach(t => expect(t).not.to.have.been.called);
+    batchAndAHalf.slice(BATCH_SIZE).forEach(t => expect(t).not.toHaveBeenCalled());
 
     // check all results were correct
     const halfBatchResults = await Promise.all(halfBatchPromises);
-    halfBatchResults.forEach((p, i) => expect(p).to.equal(i));
+    halfBatchResults.forEach((p, i) => expect(p).toBe(i));
     const batchAndAHalfResults = await Promise.all(batchAndAHalfPromises);
-    batchAndAHalfResults.forEach((p, i) => expect(p).to.equal(i));
+    batchAndAHalfResults.forEach((p, i) => expect(p).toBe(i));
   });
 });

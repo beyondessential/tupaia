@@ -3,14 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import xlsx from 'xlsx';
-import sinon from 'sinon';
 
 import { WorkBookParser } from '../WorkBookParser';
-
-chai.use(chaiAsPromised);
 
 const SHEETS = {
   Sheet1: [
@@ -27,8 +22,12 @@ const WORK_BOOK = {
 };
 
 describe('WorkBookParser', () => {
-  before(() => {
-    sinon.stub(xlsx.utils, 'sheet_to_json').callsFake(sheet => sheet);
+  beforeAll(() => {
+    xlsx.utils.sheet_to_json = jest.fn().mockImplementation(sheet => sheet);
+  });
+
+  afterAll(() => {
+    xlsx.utils.sheet_to_json.mockReset();
   });
 
   describe('parse()', () => {
@@ -43,7 +42,7 @@ describe('WorkBookParser', () => {
       };
       const parser = new WorkBookParser(mappers);
 
-      return expect(parser.parse(WORK_BOOK)).to.eventually.deep.equal({
+      return expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual({
         Sheet1: [
           { Value1: 'HeaderA', Value2: 'HeaderB' },
           { Value3: 'HeaderA', Value4: 'HeaderB' },
@@ -55,9 +54,9 @@ describe('WorkBookParser', () => {
       });
     });
 
-    it('should map the input to itself if no mapper is provided', () => {
+    it('should map the input to itself if no mapper is provided', async () => {
       const parser = new WorkBookParser();
-      return expect(parser.parse(WORK_BOOK)).to.eventually.deep.equal(SHEETS);
+      return expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual(SHEETS);
     });
 
     describe('should use the provided validators to validate a spreadsheet', () => {
@@ -70,20 +69,20 @@ describe('WorkBookParser', () => {
         },
       });
 
-      it('validator is triggered correctly', () => {
+      it('validator is triggered correctly', async () => {
         const triggeringValue = 'Value7';
         const validators = constructValidators(triggeringValue);
         const parser = new WorkBookParser({}, validators);
 
-        return expect(parser.parse(WORK_BOOK)).to.be.rejectedWith(errorMessage);
+        return expect(parser.parse(WORK_BOOK)).rejects.toThrow(errorMessage);
       });
 
-      it("validator is not triggered when it shouldn't", () => {
+      it("validator is not triggered when it shouldn't", async () => {
         const nonTriggeringValue = 'Value6';
         const validators = constructValidators(nonTriggeringValue);
         const parser = new WorkBookParser({}, validators);
 
-        return expect(parser.parse(WORK_BOOK)).to.eventually.deep.equal(SHEETS);
+        return expect(parser.parse(WORK_BOOK)).resolves.toStrictEqual(SHEETS);
       });
     });
   });
@@ -94,12 +93,8 @@ describe('WorkBookParser', () => {
       parser.setSheetNameFilter(['Sheet1']);
 
       const parsedWorkBook = await parser.parse(WORK_BOOK);
-      expect(parsedWorkBook).to.have.property('Sheet1');
-      expect(parsedWorkBook).to.not.have.property('Sheet2');
+      expect(parsedWorkBook).toHaveProperty('Sheet1');
+      expect(parsedWorkBook).not.toHaveProperty('Sheet2');
     });
-  });
-
-  after(() => {
-    xlsx.utils.sheet_to_json.restore();
   });
 });

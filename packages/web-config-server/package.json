@@ -11,7 +11,7 @@
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "prestart": "npm run -s build",
     "test": "mocha",
-    "test-coverage": "cross-env NODE_ENV=test nyc mocha",
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix .",
     "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
