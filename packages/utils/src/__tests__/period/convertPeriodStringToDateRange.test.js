@@ -6,10 +6,7 @@
 import { convertPeriodStringToDateRange } from '../../period/convertPeriodStringToDateRange';
 
 describe('convertPeriodStringToDateRange', () => {
-  const assertCorrectConversion = (periodString, dateRange) =>
-    expect(convertPeriodStringToDateRange(periodString)).toStrictEqual(dateRange);
-
-  it.each([
+  const testData = [
     ['single period - day', '20200126', ['2020-01-26', '2020-01-26']],
     ['single period - week', '2020W03', ['2020-01-13', '2020-01-19']],
     ['single period - month', '202001', ['2020-01-01', '2020-01-31']],
@@ -37,7 +34,9 @@ describe('convertPeriodStringToDateRange', () => {
     ],
     ['mix of types (months and years)', '201911;201912;2020', ['2019-11-01', '2020-12-31']],
     ['should handle February 29 in a leap year', '201511;201602', ['2015-11-01', '2016-02-29']],
-  ])('%s', (_, periodString, expected) => {
-    assertCorrectConversion(periodString, expected);
+  ];
+
+  it.each(testData)('%s', (_, periodString, expected) => {
+    expect(convertPeriodStringToDateRange(periodString)).toStrictEqual(expected);
   });
 });
