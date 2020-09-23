@@ -51,7 +51,15 @@ For more, see the react-native guides
   - Configure git so it stops converting LF endings to CRLF: `git config --global core.autocrlf input`
   - Change the defaults in your IDE (VS Code etc) from CRLF to LF
 
-- It's advisable to get nvm, node (version 10.15.1), yarn and react-native running on the Windows subsystem for linux
+- It's advisable to get nvm, node (version 12.18.3), yarn and react-native running on the Windows Subsystem for Linux. If not, you may encounter the following issue:
+
+  ```
+  error Invalid regular expression: /(.*\\__fixtures__\\.*|node_modules[\\\]react[\\\]dist[\
+  \\].*|website\\node_modules\\.*|heapCapture\\bundle\.js|.*\\__tests__\\.*)$/: Unterminated
+  character class. Run CLI with --verbose flag for more details.
+  ```
+
+  This is a [documented issue](https://github.com/expo/expo-cli/issues/1074#issuecomment-559220752) with `node ^12.10` and `metro-config < 0.56.4` - see the issue link for a solution.
 
 When simulating a device on windows, there are a couple of options you can use:
 
@@ -124,6 +132,22 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 4. Change the Android application id com.tupaiameditrak name in android/app/build.gradle to com.tupaiameditrak.beta
 5. Do a build (see above)
 6. Open the build on an Android device and make sure there is a semi-transparent orange banner on the bottom of the screen that says 'BETA' or the equivalent name of the branch it is building off.
+
+#### iOS
+
+Can only be done on mac, with Xcode installed
+
+- Open the `TupaiaMediTrak.xcworkspace` file within `meditrak-app/ios`
+- Set up signing:
+  - Get the provisioning profile, certificate, and private key from LastPass
+  - Double click the certificate and private key to add each to your keychain (the private key will require a password, also in LastPass)
+  - In XCode, click the "folder" icon underneath the play/stop buttons
+  - Select the first entry (with the workspace icon)
+  - Go into Signing and Capabilities
+  - Under Signing (Release), select "Import Profile" next to Provisioning Profile, and select the profile from LastPass
+- Build the archive file (iOS equivalent of apk):
+  - To the right of play/stop buttons, select the device as "Generic iOS Device"
+  - From the "Product" menu, select "Archive"
 
 ### Testing
 

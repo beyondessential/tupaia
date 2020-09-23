@@ -6,8 +6,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
+import MuiLink from '@material-ui/core/Link';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { createTotalCasesAccessor, AlertCell } from '../../components';
@@ -76,16 +77,21 @@ const siteWeekColumns = [
   },
 ];
 
-// Todo: update placeholder
-const TableHeader = () => {
-  return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
-};
-
-const StyledDiv = styled.div`
+const TableFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
+  padding: 1.25rem 1.3rem 1.3rem;
+  border-top: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+const Text = styled(Typography)`
+  font-size: 0.8rem;
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
+const Link = styled(MuiLink)`
+  font-size: 0.68rem;
 `;
 
 export const SiteSummaryTableComponent = React.memo(
@@ -98,7 +104,12 @@ export const SiteSummaryTableComponent = React.memo(
 
     return (
       <>
-        <TableHeader />
+        <FakeHeader>
+          <div>10/30 Sentinel Sites Reported</div>
+          <Link component="button" onClick={handleOpen} underline="always">
+            Review and Confirm Now
+          </Link>
+        </FakeHeader>
         <Table
           isLoading={isLoading}
           errorMessage={errorMessage}
@@ -108,10 +119,10 @@ export const SiteSummaryTableComponent = React.memo(
           Header={false}
           Body={CondensedTableBody}
         />
-        <StyledDiv>
-          <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
+        <TableFooter>
+          <Text>Verify data to submit Weekly report to Regional</Text>
           <Button onClick={handleOpen}>Review and Confirm Now</Button>
-        </StyledDiv>
+        </TableFooter>
       </>
     );
   },
