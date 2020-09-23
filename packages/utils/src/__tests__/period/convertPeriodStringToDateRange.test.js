@@ -31,11 +31,11 @@ describe('convertPeriodStringToDateRange', () => {
       ['2020-05-01', '2020-09-30'],
     ],
     [
-      'mix of types (i)',
+      'mix of types (days and months)',
       '20180227;20180228;201803;201804;201805;201806',
       ['2018-02-27', '2018-06-30'],
     ],
-    ['mix of types (ii)', '201911;201912;2020', ['2019-11-01', '2020-12-31']],
+    ['mix of types (months and years)', '201911;201912;2020', ['2019-11-01', '2020-12-31']],
     ['should handle February 29 in a leap year', '201511;201602', ['2015-11-01', '2016-02-29']],
   ])('%s', (_, periodString, expected) => {
     assertCorrectConversion(periodString, expected);
