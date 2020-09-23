@@ -22,7 +22,7 @@ const localStyles = {
 const DataSourceConfigView = row => {
   const blankString = '';
   const entries = Object.entries(row.value)
-    .filter(([key, value]) => value !== blankString)
+    .filter(([, value]) => value !== blankString)
     .map(([key, value]) => (
       <React.Fragment key={key}>
         <dt style={localStyles.config.dt}>{key}:</dt>
