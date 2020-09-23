@@ -22,17 +22,14 @@ exports.setup = function(options, seedLink) {
 
 //Below are the ids of all the entities being deleted/updated in various tables
 
-const ttmHospitalId = '5df1b88c61f76a485c18baa0';
 const motootuaDistrictEntityId = '5eba39e161f76a3da3000011';
 const tuamasagaDistrictEntityId = '5eba39e161f76a3da3000010';
 const motootuaHospitalClinicId = '5a7bda413ec0d460d2b06d08';
 const motootuaGeoAreaId = '5a7bda413ec0d460d2ac6024';
 const tuamasagaGeoAreaId = '5a7bda413ec0d460d2a77ef8';
 
- exports.up = function(db) {
+exports.up = function(db) {
   return db.runSql(`
-      update survey_response set entity_id='${ttmHospitalId}' where entity_id='${motootuaDistrictEntityId}';
-
       delete from clinic where id='${motootuaHospitalClinicId}';
 
       delete from entity where id in ('${motootuaDistrictEntityId}', '${tuamasagaDistrictEntityId}');
