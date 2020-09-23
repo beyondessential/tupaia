@@ -5,8 +5,6 @@
   "description": "Config server for tupaia.org",
   "main": "dist",
   "scripts": {
-    "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",
-    "lint:all": "yarn run lint \"src/**/*.{js,jsx}\"",
     "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
@@ -14,6 +12,8 @@
     "prestart": "npm run -s build",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .",
     "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
   },
   "repository": {
