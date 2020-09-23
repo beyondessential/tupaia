@@ -40,7 +40,7 @@ const getButtonsConfig = fields => [
     source: 'id',
     actionConfig: {
       editEndpoint: 'dataSource',
-      fields: fields,
+      fields,
     },
   },
   {
