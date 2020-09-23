@@ -8,14 +8,9 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../permissions/constants';
 
-export const hasAccessRequestPermissions = async (accessPolicy, models, accessRequest) => {
-  const entity = await models.entity.findById(accessRequest.entity_id);
-  return accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
-};
-
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequest) => {
-  const hasPermission = await hasAccessRequestPermissions(accessPolicy, models, accessRequest);
-  if (!hasPermission) {
+  const results = await filterAccessRequestsByPermissions(accessPolicy, [accessRequest], models);
+  if (results === 0) {
     throw new Error('Need Admin Panel access to the country this access request is for');
   }
   return true;
@@ -26,12 +21,14 @@ export const filterAccessRequestsByPermissions = async (accessPolicy, accessRequ
     return accessRequests;
   }
 
-  const entities = await models.entity.findManyById(accessRequests.map(ar => ar.entity_id));
-  const entitiesById = keyBy(entities, 'id');
+  const countryCodesByEntityId = await models.entity.getEntityCountryCodeById(
+    accessRequests.map(ar => ar.entity_id),
+  );
 
-  const filteredAccessRequests = accessRequests.filter(accessRequest => {
-    const entity = entitiesById[accessRequest.entity_id];
-    return accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+  return accessRequests.filter(accessRequest => {
+    return accessPolicy.allows(
+      countryCodesByEntityId[accessRequest.entity_id],
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+    );
   });
-  return filteredAccessRequests;
 };
