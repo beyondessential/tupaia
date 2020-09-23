@@ -96,6 +96,11 @@ export const constructForSingle = (models, recordType) => {
         data_element_id: [constructRecordExistsWithId(models.dataSource)],
         start_time: [hasContent, takesDateForm],
       };
+    case TYPES.INDICATOR:
+      return {
+        code: [hasContent],
+        builder: [hasContent],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }
