@@ -12,7 +12,7 @@ import { invert } from 'lodash';
 import moment from 'moment';
 import queryString from 'query-string';
 import {
-  formatMomentAsString,
+  momentToDateString,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
@@ -121,8 +121,8 @@ export const convertDateRangeToUrlPeriodString = (
 
   const { urlFormat } = GRANULARITY_CONFIG[granularity];
 
-  const formattedStartDate = formatMomentAsString(startDate, granularity, urlFormat);
-  const formattedEndDate = formatMomentAsString(endDate, granularity, urlFormat);
+  const formattedStartDate = momentToDateString(startDate, granularity, urlFormat);
+  const formattedEndDate = momentToDateString(endDate, granularity, urlFormat);
 
   return GRANULARITIES_WITH_ONE_DATE.includes(granularity)
     ? formattedEndDate
