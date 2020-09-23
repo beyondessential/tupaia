@@ -4,10 +4,5 @@
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-export-default-from"
   ],
-  "presets": ["@babel/preset-env"],
-  "env": {
-    "test": {
-      "plugins": ["istanbul"]
-    }
-  }
+  "presets": ["@babel/preset-env"]
 }

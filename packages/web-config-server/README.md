@@ -153,7 +153,7 @@ In order to use Prettier in **Visual Studio Code**:
 ```bash
   yarn test               # Runs all tests
   yarn test -g ${pattern} # Runs tests filtering their file names by ${pattern}
-  yarn test-coverage      # Runs tests and displays project test coverage
+  yarn test:coverage      # Runs tests and displays project test coverage
 ```
 
 ### Filtering describe/it blocks
