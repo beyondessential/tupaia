@@ -162,7 +162,6 @@ export class EntityModel extends DatabaseModel {
     'metadata',
     'image_url',
     'attributes',
-    'timezone',
   ];
 
   static geoFields = ['point', 'region', 'bounds'];

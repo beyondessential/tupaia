@@ -48,7 +48,6 @@ export const createMockEntity = async fieldValues => {
     code: 'MELB',
     name: 'Melbourne',
     point: JSON.stringify({ type: 'Point', coordinates: [144.986, -37.915] }),
-    timezone: 'Australia/Melbourne',
     ...fieldValues,
   });
 };
