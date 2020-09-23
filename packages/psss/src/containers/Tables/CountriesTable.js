@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
@@ -10,7 +11,7 @@ import {
   createTotalCasesAccessor,
   AlertCell,
   SitesReportedCell,
-  CountryNameCell,
+  CountryNameLinkCell,
 } from '../../components';
 import { ConnectedTable } from './ConnectedTable';
 
@@ -20,7 +21,7 @@ const countriesTableColumns = [
     key: 'name',
     width: COLUMN_WIDTHS.FIRST,
     align: 'left',
-    CellComponent: CountryNameCell,
+    CellComponent: CountryNameLinkCell,
   },
   {
     title: 'Site Reported',
