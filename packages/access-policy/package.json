@@ -7,7 +7,7 @@
   "dependencies": {},
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
-    "test": "mocha",
+    "test": "jest",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix ."
   },

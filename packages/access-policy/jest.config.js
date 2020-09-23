@@ -1,0 +1,6 @@
+module.exports = {
+  transform: { '^.+\\.jsx?$': './scripts/JestTransformer.js' },
+  testMatch: ['<rootDir>/src/__tests__/**/**.test.js'],
+  transformIgnorePatterns: ['/node_modules/'],
+  testEnvironment: 'node',
+};
