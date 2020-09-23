@@ -136,9 +136,7 @@ ProfilePageComponent.propTypes = {
 };
 
 ProfilePageComponent.defaultProps = {
-  errorMessage: null,
   user: null,
-  isLoading: false,
 };
 
 const mapStateToProps = state => ({

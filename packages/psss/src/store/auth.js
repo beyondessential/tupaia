@@ -11,6 +11,7 @@ const LOGIN_START = 'LOGIN_START';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGIN_ERROR = 'LOGIN_ERROR';
 const LOGOUT = 'LOGOUT';
+export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
 export const login = (emailAddress, password) => async (dispatch, getState, { api }) => {
@@ -44,6 +45,22 @@ export const loginError = errorMessage => ({
 export const logout = () => ({
   type: LOGOUT,
 });
+
+export const updateProfile = (id, payload) => async (dispatch, getState, { api }) => {
+  try {
+    await api.put(`user/${id}`, null, payload);
+    const { body: user } = await api.get(`user/${id}`);
+    dispatch({
+      type: PROFILE_SUCCESS,
+      ...user,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const updatePassword = payload => async (dispatch, getState, { api }) =>
+  api.post(`me/changePassword`, null, payload);
 
 // selectors
 export const getAccessToken = ({ auth }) => auth.accessToken;
