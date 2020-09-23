@@ -7,7 +7,9 @@
   "scripts": {
     "package": "rm -f package.zip && yarn babel && cp -r package.json dist && cd dist && yarn --production && zip -rq ../package.zip . && cd .. && rm -rf dist",
     "babel": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src --out-dir dist --source-maps",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix ."
   },
   "dependencies": {
     "core-worker": "^0.3.5",
