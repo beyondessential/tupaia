@@ -10,36 +10,39 @@
  */
 
 import {
-  SET_PROJECT,
-  SET_ORG_UNIT,
-  SET_DASHBOARD_GROUP,
-  OPEN_ENLARGED_DIALOG,
-  CLOSE_ENLARGED_DIALOG,
-  SET_MEASURE,
   CLEAR_MEASURE,
-  GO_HOME,
-  updateHistoryLocation,
-  setOrgUnit,
-  setMeasure,
-  setOverlayComponent,
-  setVerifyEmailToken,
-  setPasswordResetToken,
-  openUserPage,
+  CLOSE_ENLARGED_DIALOG,
   DIALOG_PAGE_ONE_TIME_LOGIN,
+  GO_HOME,
   openEnlargedDialog,
+  openUserPage,
+  OPEN_ENLARGED_DIALOG,
+  setMeasure,
+  setOrgUnit,
+  setOverlayComponent,
+  setPasswordResetToken,
+  setVerifyEmailToken,
+  SET_DASHBOARD_GROUP,
+  SET_MEASURE,
+  SET_ORG_UNIT,
+  SET_PROJECT,
+  updateCurrentMeasureConfigOnceHierarchyLoads,
+  updateHistoryLocation,
+  UPDATE_MEASURE_CONFIG,
 } from '../actions';
-import { setProject } from '../projects/actions';
 import { DEFAULT_PROJECT_CODE } from '../defaults';
+import { setProject } from '../projects/actions';
+import { selectCurrentPeriodGranularity, selectMeasureBarItemById } from '../selectors';
+import { PASSWORD_RESET_PREFIX, URL_COMPONENTS, VERIFY_EMAIL_PREFIX } from './constants';
 import {
-  setLocationComponent,
-  clearLocation,
-  attemptPushHistory,
-  getInitialLocation,
   addPopStateListener,
+  attemptPushHistory,
+  clearLocation,
+  getInitialLocation,
+  setLocationComponent,
 } from './historyNavigation';
-import { decodeLocation } from './utils';
-import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
 import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
+import { convertDateRangeToUrlPeriodString, decodeLocation } from './utils';
 
 export const reactToInitialState = store => {
   reactToLocationChange(store, getInitialLocation(), clearLocation());
@@ -76,6 +79,10 @@ const reactToLocationChange = (store, location, previousLocation) => {
   setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
   setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
   setComponentIfUpdated(URL_COMPONENTS.REPORT, openEnlargedDialog);
+  setComponentIfUpdated(
+    URL_COMPONENTS.MEASURE_PERIOD,
+    updateCurrentMeasureConfigOnceHierarchyLoads,
+  );
 };
 
 const reactToUserPage = (userPage, initialComponents, dispatch) => {
@@ -95,6 +102,7 @@ const reactToUserPage = (userPage, initialComponents, dispatch) => {
 export const historyMiddleware = store => next => action => {
   if (action.meta && action.meta.preventHistoryUpdate) return next(action);
 
+  const state = store.getState();
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
@@ -118,11 +126,31 @@ export const historyMiddleware = store => next => action => {
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
       break;
-    case SET_MEASURE:
+    case SET_MEASURE: {
+      const { startDate, endDate, periodGranularity } =
+        selectMeasureBarItemById(state, action.measureId) || {};
+
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, action.measureId);
+      dispatchLocationUpdate(
+        store,
+        URL_COMPONENTS.MEASURE_PERIOD,
+        convertDateRangeToUrlPeriodString({ startDate, endDate }, periodGranularity),
+      );
       break;
+    }
     case CLEAR_MEASURE:
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, null);
+      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE_PERIOD, null);
+      break;
+    case UPDATE_MEASURE_CONFIG:
+      dispatchLocationUpdate(
+        store,
+        URL_COMPONENTS.MEASURE_PERIOD,
+        convertDateRangeToUrlPeriodString(
+          action.measureConfig,
+          selectCurrentPeriodGranularity(state),
+        ),
+      );
       break;
     default:
   }

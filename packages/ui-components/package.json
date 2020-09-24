@@ -18,7 +18,9 @@
     "build": "cross-env NODE_ENV=production webpack",
     "test": "jest --env=jest-environment-jsdom-sixteen",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch"
+    "test:watch": "yarn test --watch",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix ."
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
