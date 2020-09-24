@@ -434,7 +434,7 @@ export class Matrix extends PureComponent {
 
   renderHeaderRow() {
     const styles = this.props.calculatedStyles;
-    const { columns, title, renderPeriodSelector } = this.props;
+    const { columns, title, hideColumnTitles, renderPeriodSelector } = this.props;
     const { startColumn, searchTerm } = this.state;
     const { numberOfColumnsPerPage } = this.props;
     const searchPlaceholder =
@@ -449,6 +449,7 @@ export class Matrix extends PureComponent {
         numberOfColumnsPerPage={numberOfColumnsPerPage}
         onMoveColumnPress={this.onMoveColumnPress}
         onMoveColumnRelease={this.onMoveColumnRelease}
+        hideColumnTitles={hideColumnTitles}
         styles={styles}
         onSearchTermChange={this.onSearchTermChange}
         searchTerm={searchTerm}
@@ -550,6 +551,7 @@ Matrix.propTypes = {
   rows: PropTypes.arrayOf(rowShape),
   title: PropTypes.string,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE).isRequired,
+  hideColumnTitles: PropTypes.bool,
   isExporting: PropTypes.bool,
   onSearch: PropTypes.func,
   numberOfColumnsPerPage: PropTypes.number.isRequired,
@@ -563,6 +565,7 @@ Matrix.defaultProps = {
   columns: [],
   rows: [],
   title: '',
+  hideColumnTitles: false,
   isExporting: false,
   onSearch: () => {},
   renderPeriodSelector: () => null,

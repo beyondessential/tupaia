@@ -45,8 +45,9 @@
     "build": "react-scripts build",
     "postbuild": "rm -rf served_build && mv build served_build",
     "test": "react-scripts test --env=jsdom --passWithNoTests",
-    "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .", 
+    "eject": "react-scripts eject" 
   },
   "browserslist": {
     "production": [

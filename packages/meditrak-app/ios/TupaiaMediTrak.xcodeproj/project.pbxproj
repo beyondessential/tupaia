@@ -1091,6 +1091,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1833,7 +1834,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tupaia.meditrak;
 				PRODUCT_NAME = TupaiaMediTrak;
 				PROVISIONING_PROFILE = "75127d56-33b6-49a5-9318-47d4bb76efdf";
-				PROVISIONING_PROFILE_SPECIFIER = "Tupaia Distribution Profile 2019 - 2020";
+				PROVISIONING_PROFILE_SPECIFIER = "Tupaia Distribution Profile 2020 - 2021";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1872,7 +1873,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tupaia.meditrak;
 				PRODUCT_NAME = TupaiaMediTrak;
-				PROVISIONING_PROFILE_SPECIFIER = "Tupaia Distribution Profile 2019 - 2020";
+				PROVISIONING_PROFILE_SPECIFIER = "Tupaia Distribution Profile 2020 - 2021";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

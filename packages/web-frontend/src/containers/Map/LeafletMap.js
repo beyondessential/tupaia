@@ -201,7 +201,7 @@ export class LeafletMap extends Component {
     return (
       <Map
         style={{ height: window.innerHeight, width: '100%' }}
-        zoomControl
+        zoomControl={false}
         onZoomend={this.onZoomEnd}
         onZoomstart={() => {
           this.zooming = true;
