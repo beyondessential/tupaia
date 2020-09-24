@@ -73,7 +73,6 @@ export class Entity extends BaseModel {
     'bounds',
     'image_url',
     'attributes',
-    'timezone',
   ];
 
   // a set of basic fields so that entities used for search etc. can be as light as possible
