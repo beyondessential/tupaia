@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { AccessPolicy as AccessPolicyParser } from '@tupaia/access-policy';
 import {
   clearTestData,
@@ -20,7 +19,7 @@ describe('buildAccessPolicy', () => {
   let adminPermission;
   let publicPermission;
 
-  before(async () => {
+  beforeAll(async () => {
     await clearTestData(getTestDatabase());
 
     demoLand = await findOrCreateDummyRecord(models.entity, { code: 'DL' }, { name: 'Demo Land' });
@@ -51,7 +50,7 @@ describe('buildAccessPolicy', () => {
   describe('Demo Land public user', () => {
     let accessPolicy;
 
-    before(async () => {
+    beforeAll(async () => {
       const user = await upsertDummyRecord(models.user);
       await upsertDummyRecord(models.userEntityPermission, {
         entity_id: demoLand.id,
@@ -62,15 +61,15 @@ describe('buildAccessPolicy', () => {
     });
 
     it('should only have access to demo land', () => {
-      expect(accessPolicy.DL).to.deep.equal(['Public']);
-      expect(Object.keys(accessPolicy).length).to.equal(1);
+      expect(accessPolicy.DL).toStrictEqual(['Public']);
+      expect(Object.keys(accessPolicy).length).toBe(1);
     });
   });
 
   describe('Tonga admin user', () => {
     let accessPolicy;
 
-    before(async () => {
+    beforeAll(async () => {
       const user = await upsertDummyRecord(models.user);
       const tonga = await findOrCreateDummyRecord(models.entity, { code: 'TO' }, { name: 'Tonga' });
 
@@ -89,22 +88,22 @@ describe('buildAccessPolicy', () => {
     });
 
     it('should have Demo Land public access', () => {
-      expect(accessPolicy.DL).to.deep.equal(['Public']);
+      expect(accessPolicy.DL).toStrictEqual(['Public']);
     });
 
     it('should have Tonga admin, donor, and public access', () => {
-      expect(accessPolicy.TO).to.include.members(['Public', 'Donor', 'Admin']);
+      expect(accessPolicy.TO).toStrictEqual(expect.arrayContaining(['Public', 'Donor', 'Admin']));
     });
 
     it('should have no access to other entities', () => {
-      expect(Object.values(accessPolicy).length).to.equal(2); // DL and TO only
+      expect(Object.values(accessPolicy).length).toBe(2); // DL and TO only
     });
   });
 
   describe('Handles entities of all types/nesting agnostically', () => {
     let accessPolicy;
 
-    before(async () => {
+    beforeAll(async () => {
       const user = await upsertDummyRecord(models.user);
 
       // Create a facility nested deep within a new country
@@ -188,22 +187,22 @@ describe('buildAccessPolicy', () => {
 
     it('should have Mount Sinai admin permissions', () => {
       const mountSinaiPermissions = accessPolicy.CA_OT_TO_MS;
-      expect(mountSinaiPermissions).to.deep.equal(['Public']);
+      expect(mountSinaiPermissions).toEqual(['Public']);
     });
 
     it('should have Ottawa admin permissions', () => {
       const ottawaPermissions = accessPolicy.CA_OT_OT;
-      expect(ottawaPermissions).to.deep.equal(['Public']);
+      expect(ottawaPermissions).toEqual(['Public']);
     });
 
     it('should not have Toronto permissions', () => {
       const torontoPermissions = accessPolicy.CA_OT_TO;
-      expect(torontoPermissions).to.be.undefined;
+      expect(torontoPermissions).toBeUndefined();
     });
 
     it('should not have Canada country level permissions', () => {
       const canadaPermissions = accessPolicy.CA;
-      expect(canadaPermissions).to.be.undefined;
+      expect(canadaPermissions).toBeUndefined();
     });
 
     // integration test
@@ -211,17 +210,17 @@ describe('buildAccessPolicy', () => {
       const parser = new AccessPolicyParser(accessPolicy);
 
       // individual checks
-      expect(parser.allows('CA_OT_TO_MS')).to.be.true;
-      expect(parser.allows('CA_OT_TO_MS', 'Public')).to.be.true;
-      expect(parser.allows('CA_OT_OT', 'Public')).to.be.true;
-      expect(parser.allows('CA_OT_TO', 'Public')).to.be.false;
-      expect(parser.allows('CA', 'Public')).to.be.false;
+      expect(parser.allows('CA_OT_TO_MS')).toBe(true);
+      expect(parser.allows('CA_OT_TO_MS', 'Public')).toBe(true);
+      expect(parser.allows('CA_OT_OT', 'Public')).toBe(true);
+      expect(parser.allows('CA_OT_TO', 'Public')).toBe(false);
+      expect(parser.allows('CA', 'Public')).toBe(false);
 
       // groups of entities
-      expect(parser.allowsSome(['CA_OT_TO', 'CA_OT_TO_MS', 'CA'])).to.be.true;
-      expect(parser.allowsSome(['CA_OT_TO', 'CA_OT_TO_MS', 'CA'], 'Public')).to.be.true;
-      expect(parser.allowsSome(['CA_OT_TO', 'CA'])).to.be.false;
-      expect(parser.allowsSome(['CA_OT_TO', 'CA'], 'Public')).to.be.false;
+      expect(parser.allowsSome(['CA_OT_TO', 'CA_OT_TO_MS', 'CA'])).toBe(true);
+      expect(parser.allowsSome(['CA_OT_TO', 'CA_OT_TO_MS', 'CA'], 'Public')).toBe(true);
+      expect(parser.allowsSome(['CA_OT_TO', 'CA'])).toBe(false);
+      expect(parser.allowsSome(['CA_OT_TO', 'CA'], 'Public')).toBe(false);
     });
   });
 });
