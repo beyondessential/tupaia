@@ -23,7 +23,8 @@
           "^@tupaia/utils$"
         ]
       }
-    ]
+    ],
+    "jsx-a11y/href-no-hash": "off"
   },
   "overrides": [
     {

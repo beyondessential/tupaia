@@ -1,10 +1,7 @@
 {
-  "extends": ["@beyondessential/jest"],
+  "extends": "@beyondessential/jest",
   "env": {
     "browser": true
-  },
-  "rules": {
-    "jsx-a11y/href-no-hash": "off"
   },
   "settings": {
     "import/resolver": {
