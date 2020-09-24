@@ -3810,10 +3810,10 @@
   resolved "https://registry.yarnpkg.com/@beyondessential/arithmetic/-/arithmetic-2.0.0.tgz#1ed86d636e9c3813fc0582461024ee2986f93d53"
   integrity sha512-CUd47jKj4PotkOzZbdiZg02hmGkPRnYKT8B4jK6oZE6Y7aBVHudkq43gtU9th8u7mjfV9o3TQKfGUab4+p7EJA==
 
-"@beyondessential/eslint-config-jest@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-jest/-/eslint-config-jest-0.1.0.tgz#9147f701843484dc834e3fcdc81b95e9a34f25cb"
-  integrity sha512-q/4LM7U0vEOsmoVG1Ja9aSf5UYD/SO1UV03Uk6t7wgw2Uw3FwnMM4NvDvY8voJkqwYH0KXxb9FzFm8KFmJl2kA==
+"@beyondessential/eslint-config-jest@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-jest/-/eslint-config-jest-0.1.1.tgz#eb34c971d2761636e778c9b6fd5a21e999721a1e"
+  integrity sha512-5IQg0V+7SqZE9ybzGR5sg6VgtSQ3A1gjEXCAOzI983/SzWsJd8oJoZBOa61ZrsMRxHlZk74+ryEv/YWE5Gg7DQ==
   dependencies:
     eslint-plugin-jest "^24.0.1"
     eslint-plugin-jest-formatting "^2.0.0"
