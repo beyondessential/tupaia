@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import randomToken from 'rand-token';
 import moment from 'moment';
 import { DatabaseError, UnauthenticatedError } from '@tupaia/utils';
@@ -14,9 +14,7 @@ class OneTimeLoginType extends DatabaseType {
   static databaseType = TYPES.ONE_TIME_LOGIN;
 
   isExpired() {
-    return moment()
-      .subtract(1, 'h')
-      .isAfter(moment(this.creation_date));
+    return moment().subtract(1, 'h').isAfter(moment(this.creation_date));
   }
 
   isUsed() {

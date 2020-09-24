@@ -27,6 +27,16 @@
   },
   "overrides": [
     {
+      "files": ["**/src/migrations/**", "**/src/database/migrations/**"],
+      "rules": {
+        "func-names": "off",
+        "no-underscore-dangle": "off",
+        "no-var": "off",
+        "strict": "off",
+        "no-unused-vars": "off"
+      }
+    },
+    {
       "files": "**/src/tests/**",
       "env": {
         "mocha": true
@@ -34,6 +44,13 @@
       "rules": {
         "func-names": "off",
         "no-unused-expressions": "off"
+      }
+    },
+    {
+      "files": ["**/src/migrations/**", "**/src/database/migrations/**"],
+      "rules": {
+        "prettier/prettier": "off",
+        "spaced-comment": "off"
       }
     }
   ]

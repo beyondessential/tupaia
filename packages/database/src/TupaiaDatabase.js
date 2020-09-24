@@ -1,7 +1,7 @@
 /**
  * Tupaia
  * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import autobind from 'react-autobind';
 import knex from 'knex';
@@ -303,10 +303,7 @@ export class TupaiaDatabase {
     const updatedFieldsWithoutUndefined = JSON.parse(JSON.stringify(updatedFields));
     const newRecord = { id: newId, ...identifiers, ...updatedFieldsWithoutUndefined };
 
-    const buildQueryList = (object, formatter) =>
-      Object.keys(object)
-        .map(formatter)
-        .join(',');
+    const buildQueryList = (object, formatter) => Object.keys(object).map(formatter).join(',');
 
     // Build string of all column names to be inserted on new record creation
     const columns = buildQueryList(newRecord, columnName => `:old_column_${columnName}:`);
@@ -380,7 +377,7 @@ export class TupaiaDatabase {
   }
 
   async getSetting(key) {
-    const setting = await this.findOne('setting', { key: key });
+    const setting = await this.findOne('setting', { key });
     return setting ? setting.value : null;
   }
 
@@ -529,14 +526,16 @@ function addWhereClause(baseQuery, where) {
     // Providing the _and_ or the _or_ keys will use the contained criteria as a bracket wrapped
     // subsection of the broader WHERE clause
     if (key === QUERY_CONJUNCTIONS.AND) {
-      return querySoFar.andWhere(function() {
+      return querySoFar.andWhere(function () {
         addWhereClause(this, value); // Within the function, 'this' refers to the query so far
       });
-    } else if (key === QUERY_CONJUNCTIONS.OR) {
-      return querySoFar.orWhere(function() {
+    }
+    if (key === QUERY_CONJUNCTIONS.OR) {
+      return querySoFar.orWhere(function () {
         addWhereClause(this, value); // Within the function, 'this' refers to the query so far
       });
-    } else if (key === QUERY_CONJUNCTIONS.RAW) {
+    }
+    if (key === QUERY_CONJUNCTIONS.RAW) {
       const { sql = value, parameters } = value;
       return querySoFar.whereRaw(sql, parameters);
     }
@@ -566,7 +565,7 @@ function addJoin(baseQuery, recordType, joinOptions) {
     joinConditions = [joinCondition],
   } = joinOptions;
   const joinMethod = joinType ? `${joinType}Join` : 'join';
-  return baseQuery[joinMethod](joinWith, function() {
+  return baseQuery[joinMethod](joinWith, function () {
     const joining = this.on(...joinConditions[0]);
     for (
       let joinConditionIndex = 1;
