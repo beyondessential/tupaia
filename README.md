@@ -84,7 +84,7 @@ We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/conf
 
 - [@beyondessential/eslint-config-js](https://www.npmjs.com/package/@beyondessential/eslint-config-js) for JavaScript packages
 - [@beyondessential/eslint-config-ts](https://www.npmjs.com/package/@beyondessential/eslint-config-ts) for TypeScript packages
-- [@beyondessential/eslint-config-jest](https://www.npmjs.com/package/@beyondessential/eslint-config-ts) for packages using `Jest`
+- [@beyondessential/eslint-config-jest](https://www.npmjs.com/package/@beyondessential/eslint-config-jest) for packages using `Jest`
 
 The main config for the monorepo is defined in `.eslintrc` under the root folder. Additional rules may be specified in each package.
 
