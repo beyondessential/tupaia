@@ -61,20 +61,22 @@ const findNestedGroupedMapOverlays = async (
       );
 
       mapOverlayGroupResults.push({
+        id: mapOverlayGroupRelation.child_id,
         name,
         children,
       });
     }
   }
 
-  //Sort the groups by names.
-  if (mapOverlayGroupResults.length) {
-    mapOverlayGroupResults.sort(getSortByKey('name'));
-  }
-
-  //Concat the groups and the overlays so that Groups are always on top of Overlays.
-  //Overlays are already sorted by sortOrder at this stage
-  return mapOverlayGroupResults.concat(mapOverlayResults);
+  const sortFunction = getSortFunction(mapOverlayItemRelations);
+  return mapOverlayGroupResults
+    .concat(mapOverlayResults)
+    .sort(sortFunction)
+    .map(item => {
+      //id was added only for sorting purpose, remove it because it is not required for the front end
+      const { id, ...itemToReturn } = item;
+      return itemToReturn;
+    });
 };
 
 const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
@@ -91,14 +93,24 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
   });
 };
 
+const allRelationsHaveSortOrder = relations => relations.every(m => m.sort_order !== undefined);
+
+const getSortFunction = relations => {
+  const childIdToSortOrder = reduceToDictionary(relations, 'child_id', 'sort_order');
+  const sortBySortOrder = (m1, m2) => childIdToSortOrder[m1.id] - childIdToSortOrder[m2.id];
+
+  //If all the relations have sort_order, sort by the sort_order. Otherwise by default sort by name.
+  return allRelationsHaveSortOrder(relations) ? sortBySortOrder : getSortByKey('name');
+};
+
 const translateOverlaysForResponse = mapOverlays =>
   mapOverlays
     .filter(({ presentationOptions: { hideFromMenu } }) => !hideFromMenu)
-    .sort((a, b) => a.sortOrder - b.sortOrder)
     .map(({ id, name, linkedMeasures, presentationOptions }) => {
       const idString = [id, ...(linkedMeasures || [])].sort().join(',');
 
       return {
+        id,
         measureId: idString,
         name,
         ...presentationOptions,

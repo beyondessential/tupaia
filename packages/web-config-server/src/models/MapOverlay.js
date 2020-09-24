@@ -16,7 +16,6 @@ export class MapOverlay extends BaseModel {
     'dataElementCode',
     'isDataRegional',
     'linkedMeasures',
-    'sortOrder',
     'presentationOptions',
     'measureBuilderConfig',
     'measureBuilder',

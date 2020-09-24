@@ -6,14 +6,15 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-import { QUERY_CONJUNCTIONS, JOIN_TYPES } from '../TupaiaDatabase';
-const { AND, RAW } = QUERY_CONJUNCTIONS;
+import { JOIN_TYPES } from '../TupaiaDatabase';
 
 class MapOverlayGroupType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP;
 }
 
 export class MapOverlayGroupModel extends DatabaseModel {
+  notifiers = [onChangeDeleteRelation];
+
   get DatabaseTypeClass() {
     return MapOverlayGroupType;
   }
@@ -32,3 +33,15 @@ export class MapOverlayGroupModel extends DatabaseModel {
     );
   }
 }
+
+const onChangeDeleteRelation = async ({ type: changeType, record }, models) => {
+  const { id } = record; //map_overlay_group id
+
+  switch (changeType) {
+    case 'delete':
+      await models.mapOverlayGroupRelation.delete({ child_id: id, child_type: 'mapOverlayGroup' });
+      return models.mapOverlayGroupRelation.delete({ map_overlay_group_id: id });
+    default:
+      return true;
+  }
+};
