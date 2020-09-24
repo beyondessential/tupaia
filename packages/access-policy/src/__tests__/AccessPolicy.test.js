@@ -110,7 +110,7 @@ describe('AccessPolicy', () => {
   });
 
   describe('getPermissionGroups', () => {
-    const testDatas = [
+    const testData = [
       [
         'should return all permission groups when no entities are specified',
         [[undefined, ['Public', 'Admin', 'Royal Australasian College of Surgeons']]],
@@ -131,8 +131,8 @@ describe('AccessPolicy', () => {
       ],
     ];
 
-    it.each(testDatas)('%s', (_, testData) => {
-      testData.forEach(([entities, expected]) => {
+    it.each(testData)('%s', (_, testCaseData) => {
+      testCaseData.forEach(([entities, expected]) => {
         expect(accessPolicy.getPermissionGroups(entities)).toStrictEqual(
           expect.arrayContaining(expected),
         );
