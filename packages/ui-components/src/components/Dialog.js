@@ -17,7 +17,7 @@ const StyledDialog = styled(MuiDialog)`
   .MuiBackdrop-root {
     background: ${BACKDROP_COLOUR};
   }
-  
+
   .MuiDialog-paper {
     display: block;
   }
