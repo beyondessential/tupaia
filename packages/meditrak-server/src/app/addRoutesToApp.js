@@ -34,6 +34,9 @@ const {
   getOptions,
   getOptionSets,
   getSocialFeed,
+  getAccessRequests,
+  getUserAccounts,
+  getUserEntityPermissions,
   importEntities,
   importStriveLabResults,
   importSurveys,
@@ -119,6 +122,9 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
   app.get('(/v[0-9]+)/options/:recordId?', getOptions);
   app.get('(/v[0-9]+)/optionSets/:recordId?', getOptionSets);
+  app.get('(/v[0-9]+)/users/:recordId?', getUserAccounts);
+  app.get('(/v[0-9]+)/userEntityPermissions/:recordId?', getUserEntityPermissions);
+  app.get('(/v[0-9]+)/accessRequests/:recordId?', getAccessRequests);
 
   /**
    * POST routes

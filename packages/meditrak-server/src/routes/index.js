@@ -21,6 +21,9 @@ import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
+import { GETUserAccounts } from './GETUserAccounts';
+import { GETUserEntityPermissions } from './GETUserEntityPermissions';
+import { GETAccessRequests } from './GETAccessRequests';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
@@ -79,6 +82,9 @@ export default {
   getPermissionGroups: useRouteHandler(GETPermissionGroups),
   getOptions: useRouteHandler(GETOptions),
   getOptionSets: useRouteHandler(GETOptionSets),
+  getUserAccounts: useRouteHandler(GETUserAccounts),
+  getUserEntityPermissions: useRouteHandler(GETUserEntityPermissions),
+  getAccessRequests: useRouteHandler(GETAccessRequests),
   importEntities: catchAsyncErrors(importEntities),
   importStriveLabResults: catchAsyncErrors(importStriveLabResults),
   importSurveys: catchAsyncErrors(importSurveys),

@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { JOIN_TYPES } from '../TupaiaDatabase';
@@ -222,5 +223,10 @@ export class EntityModel extends DatabaseModel {
       `,
       shouldSetBounds ? [geojson, geojson, code] : [geojson, code],
     );
+  }
+
+  async getEntityCountryCodeById(entityIds) {
+    const entities = await this.findManyById(entityIds);
+    return reduceToDictionary(entities, 'id', 'country_code');
   }
 }
