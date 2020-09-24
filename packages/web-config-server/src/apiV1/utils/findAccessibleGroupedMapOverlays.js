@@ -61,7 +61,7 @@ const findNestedGroupedMapOverlays = async (
       );
 
       mapOverlayGroupResults.push({
-        id: mapOverlayGroupRelation.child_id,
+        id: mapOverlayGroupRelation.child_id, //just for sorting purpose, will be removed later
         name,
         children,
       });
@@ -110,7 +110,7 @@ const translateOverlaysForResponse = mapOverlays =>
       const idString = [id, ...(linkedMeasures || [])].sort().join(',');
 
       return {
-        id,
+        id, //just for sorting purpose, will be removed later
         measureId: idString,
         name,
         ...presentationOptions,
