@@ -120,7 +120,7 @@ import {
 import { setProject } from './projects/actions';
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
-import request from './utils/request';
+
 /**
  * attemptChangePassword
  *
