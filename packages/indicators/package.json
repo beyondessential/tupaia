@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --ignore 'src/__tests__/**' --extensions '.ts' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --ignore 'src/__tests__/**' --extensions '.ts' --config-file '../../.babelrc-ts.js'",
     "lint": "tsc; eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "test": "jest",

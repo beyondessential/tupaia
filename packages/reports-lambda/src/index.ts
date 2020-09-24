@@ -9,6 +9,7 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 
 import http from 'http';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+// import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from './types';
 import { createApp } from './app';
 
 import winston from './log';

@@ -1,7 +1,9 @@
-const fetchAnalytics = async (aggregator, query, params) => {
-  const { organisationUnitCode } = query;
-  const { dataElementCodes, aggregationType } = params;
-  console.log(dataElementCodes, aggregationType);
+const fetchAnalytics = async (aggregator, query: object, params: object) => {
+  const { organisationUnitCode }: { organisationUnitCode: string } = query;
+  const {
+    dataElementCodes,
+    aggregationType,
+  }: { dataElementCodes: string[]; aggregationType: string } = params;
   const response = await aggregator.fetchAnalytics(
     dataElementCodes,
     {

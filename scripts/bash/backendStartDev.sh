@@ -11,7 +11,7 @@ set -e
 
 DIR=`dirname "$0"`
 watch_flags=""
-start_server="nodemon -w src --exec \"babel-node src --inspect=${1} --config-file '../../babel.config.json'\""
+start_server="nodemon -w src --exec \"babel-node src/index.ts --inspect=${1} --config-file '../../.babelrc-ts.js'\""
 
 echo "Starting server"
 if [[ ${2} == '--skip-internal' || ${2} == '-s' ]]; then

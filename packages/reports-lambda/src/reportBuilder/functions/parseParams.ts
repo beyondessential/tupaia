@@ -1,4 +1,4 @@
-export const parseParams = (row, params) => {
+export function parseParams(row: object, params: string | [] | object): any {
   if (typeof params === 'string') {
     if (!params.match(/^<.*>$/i)) {
       return params;
@@ -21,4 +21,4 @@ export const parseParams = (row, params) => {
   }
 
   return params;
-};
+}
