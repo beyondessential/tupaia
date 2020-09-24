@@ -204,6 +204,18 @@ export class EntityModel extends DatabaseModel {
     });
   }
 
+  async update(whereCondition, fieldsToUpdate) {
+    return super.update(whereCondition, this.removeUnUpdatableFields(fieldsToUpdate));
+  }
+
+  async updateOrCreate(whereCondition, fieldsToUpsert) {
+    return super.updateOrCreate(whereCondition, this.removeUnUpdatableFields(fieldsToUpsert));
+  }
+
+  async updateById(id, fieldsToUpdate) {
+    return super.updateById(id, this.removeUnUpdatableFields(fieldsToUpdate));
+  }
+
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
     await this.updatePointCoordinatesFormatted(code, point);
@@ -253,5 +265,19 @@ export class EntityModel extends DatabaseModel {
       `,
       shouldSetBounds ? [geojson, geojson, code] : [geojson, code],
     );
+  }
+
+  /**
+   * @private
+   */
+  removeUnUpdatableFields(fields) {
+    const filteredFields = {};
+    for (const key of Object.keys(fields)) {
+      if (EntityModel.geoFields.indexOf(key) !== -1) {
+        continue;
+      }
+      filteredFields[key] = fields[key];
+    }
+    return filteredFields;
   }
 }
