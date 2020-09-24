@@ -3,37 +3,31 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 const path = require('path');
+const glob = require('glob');
 
 module.exports = {
   mode: 'production',
-  entry: {
-    Icons: './src/components/Icons',
-    Inputs: './src/components/Inputs',
-    Layout: './src/components/Layout',
-    Table: './src/components/Table',
-    UserMessage: './src/components/UserMessage',
-    ActionsMenu: './src/components/ActionsMenu.js',
-    Alert: './src/components/Alert.js',
-    BarMeter: './src/components/BarMeter.js',
-    Breadcrumbs: './src/components/Breadcrumbs.js',
-    Button: './src/components/Button.js',
-    Card: './src/components/Card.js',
-    CardTabs: './src/components/CardTabs.js',
-    CircleMeter: './src/components/CircleMeter.js',
-    Dialog: './src/components/Dialog.js',
-    HomeButton: './src/components/HomeButton.js',
-    IconButton: './src/components/IconButton.js',
-    LoadingContainer: './src/components/LoadingContainer.js',
-    NavBar: './src/components/NavBar.js',
-    PasswordStrengthBar: './src/components/PasswordStrengthBar.js',
-    ProfileButton: './src/components/ProfileButton.js',
-    Tabs: './src/components/Tabs.js',
-    Toast: './src/components/Toast.js',
-    Tooltip: './src/components/Tooltip.js',
-  },
+  /**
+   * The "[name]" placeholder in the "output" property will be replaced
+   * with each key name in our "entry" object.
+   */
+  entry: glob.sync('./src/components/**/*.js').reduce((entryConfig, match) => {
+    const fileName = match.split('/').pop();
+
+    if (fileName === 'index.js') {
+      return entryConfig;
+    }
+
+    const entryName = fileName.replace('.js', '');
+
+    return {
+      ...entryConfig,
+      [entryName]: match,
+    };
+  }, {}),
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'lib'),
     library: '@tupaia/ui-components',
     libraryTarget: 'umd',
   },

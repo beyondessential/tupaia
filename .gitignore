@@ -18,3 +18,4 @@ dump.sql
 **/cypress/videos
 /snapshots.js
 .idea
+**/lib
