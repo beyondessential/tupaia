@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
+
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
