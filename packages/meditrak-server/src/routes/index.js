@@ -22,6 +22,7 @@ import { addRecord } from './addRecord';
 import { updateSurveyResponses } from './updateSurveyResponses';
 import { createUser } from './createUser';
 import { changePassword } from './changePassword';
+import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { getSocialFeed } from './getSocialFeed';
 import { getUserRewards } from './getUserRewards';
@@ -64,6 +65,7 @@ export default {
   updateSurveyResponses: catchAsyncErrors(updateSurveyResponses),
   createUser: catchAsyncErrors(createUser),
   changePassword: catchAsyncErrors(changePassword),
+  editUser: catchAsyncErrors(editUser),
   requestCountryAccess: catchAsyncErrors(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
   getUserRewards: catchAsyncErrors(getUserRewards),
