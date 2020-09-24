@@ -46,13 +46,6 @@
         "func-names": "off",
         "no-unused-expressions": "off"
       }
-    },
-    {
-      "files": ["**/src/migrations/**", "**/src/database/migrations/**"],
-      "rules": {
-        "prettier/prettier": "off",
-        "spaced-comment": "off"
-      }
     }
   ]
 }
