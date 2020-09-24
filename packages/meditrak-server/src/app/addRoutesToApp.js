@@ -30,6 +30,7 @@ const {
   pruneChanges,
   updateSurveyResponses,
   createUser,
+  editUser,
   changePassword,
   requestCountryAccess,
   addRecord,
@@ -128,6 +129,7 @@ export function addRoutesToApp(app) {
    */
   app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:id', editRecord);
   app.put('(/v[0-9]+)/:resource/:id', editRecord);
+  app.put('(/v[0-9]+)/me', editUser);
 
   /**
    * DELETE routes

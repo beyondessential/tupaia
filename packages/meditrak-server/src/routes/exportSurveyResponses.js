@@ -8,7 +8,7 @@ import moment from 'moment';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
 import { DatabaseError, ValidationError } from '@tupaia/utils';
-
+import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
@@ -158,7 +158,7 @@ export async function exportSurveyResponses(req, res) {
       const permissionGroup = await currentSurvey.getPermissionGroup();
       const hasSurveyAccess = accessPolicy.allows(country.code, permissionGroup.name);
       if (!hasSurveyAccess) {
-        exportData = [[`You do not have export access to ${currentSurvey.name}`]];
+        const exportData = [[`You do not have export access to ${currentSurvey.name}`]];
         addDataToSheet(currentSurvey.name, exportData);
         continue;
       }
@@ -257,13 +257,23 @@ export async function exportSurveyResponses(req, res) {
           questions.push(...extraQuestions);
         }
 
-        // Add the answers to be exported
+        // Add the questions info and answers to be exported
+        let exportRow = INFO_ROW_HEADERS.length + 1; // Add one to make up for header row
         for (let questionIndex = 0; questionIndex < questions.length; questionIndex++) {
           // Set up the left columns with info about the questions
           const question = questions[questionIndex];
-          const exportRow = INFO_ROW_HEADERS.length + questionIndex + 1; // Add one to make up for header row
           const questionInfo = infoColumnKeys.map(columnKey => question[columnKey]);
+          const questionType = questionInfo[1];
+          // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
+          if (
+            NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType) &&
+            questionType !== ANSWER_TYPES.INSTRUCTION
+          ) {
+            continue;
+          }
           exportData[exportRow] = questionInfo;
+
+          // Add the answers on the right columns to the exportData
           for (
             let surveyResponseIndex = 0;
             surveyResponseIndex < surveyResponseAnswers.length;
@@ -273,6 +283,7 @@ export async function exportSurveyResponses(req, res) {
             const exportColumn = infoColumnKeys.length + surveyResponseIndex;
             exportData[exportRow][exportColumn] = answer || '';
           }
+          exportRow++;
         }
       }
       addDataToSheet(currentSurvey.name, exportData);

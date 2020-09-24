@@ -10,3 +10,4 @@ export { groupSumDataPerOrgUnit } from './groupDataPerOrgUnit';
 export { groupData } from './groupData';
 export { getStringsFromBinaryData } from './getStringsFromBinaryData';
 export { selectUniqueValueFromEventsPerOrgUnit } from './selectUniqueValueFromEventsPerOrgUnit';
+export { checkMultiConditionsByOrgUnit } from './checkMultiConditionsByOrgUnit';

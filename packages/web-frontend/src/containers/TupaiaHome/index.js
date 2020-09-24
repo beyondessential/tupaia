@@ -15,7 +15,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { goHome } from '../../actions';
-import logo from '../../images/tupaia-logo-white.png';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../constants';
 
 const styles = {
   logo: {
@@ -33,7 +33,7 @@ const styles = {
 export const TupaiaHomeComponent = ({ goHome }) => {
   return (
     <div style={styles.logo}>
-      <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={goHome} />
+      <img src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" style={styles.logoImage} onClick={goHome} />
     </div>
   );
 };

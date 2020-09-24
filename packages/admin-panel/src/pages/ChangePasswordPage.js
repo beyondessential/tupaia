@@ -3,20 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import React, { useState } from 'react';
 import React, { useState, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiDivider from '@material-ui/core/Divider';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Button, TextField, SmallAlert, PasswordStrengthBarFallback } from '@tupaia/ui-components';
+import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { updatePassword, getUser } from '../authentication';
-
-// Lazy load the component as it uses zxcvbn which is a large library.
-// For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
-const PasswordStrengthBar = lazy(() => import('../widgets/PasswordStrengthBar'));
+import { PasswordStrengthBar } from '../widgets/PasswordStrengthBar';
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -48,11 +46,12 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { handleSubmit, register, getValues, errors, watch } = useForm();
+  const { handleSubmit, register, errors, watch } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(async (data, event) => {
     setIsLoading(true);
+    setErrorMessage(null);
     setErrorMessage(null);
     try {
       await onUpdatePassword(data);
@@ -110,17 +109,15 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
           inputRef={register({
             required: 'Required',
             minLength: { value: 9, message: 'Password must be over 8 characters long.' },
-            validate: value => value === getValues('password') || 'Passwords do not match.',
+            validate: value => value === password || 'Passwords do not match.',
           })}
         />
-        <Suspense fallback={<PasswordStrengthBarFallback />}>
-          <PasswordStrengthBar
-            password={password}
-            helperText="New password must be over 8 characters long."
-            pt={1}
-            pb={4}
-          />
-        </Suspense>
+        <PasswordStrengthBar
+          password={password}
+          helperText="New password must be over 8 characters long."
+          pt={1}
+          pb={4}
+        />
         <StyledButton type="submit" fullWidth isLoading={isLoading}>
           Save Password
         </StyledButton>

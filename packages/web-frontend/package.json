@@ -70,7 +70,6 @@
     "jss": "10.0.0"
   },
   "scripts": {
-    "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",
     "analyze": "source-map-explorer build/static/js/main.*",
     "start": "PORT=8088 node scripts/start.js",
     "start-dev": "npm run start",
@@ -81,6 +80,8 @@
     "build-mobile": "REACT_APP_APP_TYPE=mobile node scripts/build.js && rm -rf builds/mobile && mv build builds/mobile",
     "build-exporter": "REACT_APP_APP_TYPE=exporter node scripts/build.js && rm -rf builds/exporter && mv build builds/exporter",
     "test": "node scripts/test.js --env=jsdom",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "storybook": "start-storybook -s ./public -p 6006"

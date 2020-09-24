@@ -7,7 +7,7 @@ import LeftArrow from '@material-ui/icons/KeyboardBackspace';
 import { FluTrackingAustralia } from './ProjectContents';
 import { LoadingIndicator } from '../../../Form/common';
 
-import logo from '../../../../images/tupaia-logo-white.png';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../../../constants';
 
 const Header = styled.div`
   display: flex;
@@ -122,7 +122,7 @@ export const ProjectLandingPage = ({
     <>
       <Header>
         <div>
-          <Logo src={logo} alt="Tupaia logo" />
+          <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
           <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
         </div>
         <ExploreButton onClick={selectExplore} variant="outlined">

@@ -40,7 +40,7 @@ psql tupaia -U tupaia < tupaia_dump.sql
 ```bash
   yarn test               # Runs all tests
   yarn test -g ${pattern} # Runs tests filtering their file names by ${pattern}
-  yarn test-coverage      # Runs tests and displays project test coverage
+  yarn test:coverage      # Runs tests and displays project test coverage
 ```
 
 ### Filtering describe/it blocks
