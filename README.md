@@ -75,5 +75,5 @@ Most of the packages support the following scripts for testing:
 
 ```
 yarn test # runs the tests
-yarn test-coverage # runs the tests and displays code coverage
+yarn test:coverage # runs the tests and displays code coverage
 ```
