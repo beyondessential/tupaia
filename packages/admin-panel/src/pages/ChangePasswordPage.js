@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import React, { useState, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiDivider from '@material-ui/core/Divider';

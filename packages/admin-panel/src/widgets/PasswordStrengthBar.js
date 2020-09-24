@@ -71,7 +71,7 @@ export const PasswordStrengthBar = ({
 );
 
 PasswordStrengthBar.propTypes = {
-  password: PropTypes.string.isRequired,
+  password: PropTypes.string,
   helperText: PropTypes.string,
   minLength: PropTypes.number,
   barColors: PropTypes.arrayOf(PropTypes.string),
@@ -79,6 +79,7 @@ PasswordStrengthBar.propTypes = {
 };
 
 PasswordStrengthBar.defaultProps = {
+  password: '',
   minLength: 9,
   helperText: null,
   barColors: ['#deded0', '#f6b44d', '#f6b44d', '#2b90ef', '#25c281'],
