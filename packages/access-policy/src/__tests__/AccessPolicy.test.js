@@ -18,10 +18,14 @@ describe('AccessPolicy', () => {
     const testData = [
       [
         'should allow access to an entity that has at least one permission group, when no permission group is specified',
-        ['DL', ''],
+        ['DL', undefined],
         true,
       ],
-      ['should not allow access to an entity that has no permission groups', ['VU', ''], false],
+      [
+        'should not allow access to an entity that has no permission groups',
+        ['VU', undefined],
+        false,
+      ],
       [
         'should allow access to a permission group when a matching entity is specified',
         ['DL', 'Public'],
@@ -32,8 +36,8 @@ describe('AccessPolicy', () => {
         ['DL', 'Admin'],
         false,
       ],
-      ['should not allow access with no entity', ['', ''], false],
-      ['should not allow access with null', [null, ''], false],
+      ['should not allow access with no entity', [undefined, undefined], false],
+      ['should not allow access with null', [null, undefined], false],
     ];
 
     it.each(testData)('%s', (_, [entity, permissionGroup], expected) => {
@@ -52,7 +56,7 @@ describe('AccessPolicy', () => {
         ['should not allow access to an entity that has no permission groups', ['VU'], false],
         ['should not allow access with no entity', [], false],
         ['should not allow access with null', null, false],
-        ["should not allow access with ''", '', false],
+        ['should not allow access with undefined', undefined, false],
       ];
 
       it.each(testData)('%s', (_, entities, expected) => {
