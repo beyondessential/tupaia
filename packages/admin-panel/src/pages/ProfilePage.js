@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Button, TextField } from '@tupaia/ui-components';
+import { Button, SmallAlert, TextField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { updateProfile, getUser } from '../authentication';
@@ -30,8 +30,9 @@ const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
 `;
 
-const SuccessMessage = styled.p`
-  color: ${props => props.theme.palette.success.main};
+const SuccessMessage = styled(SmallAlert)`
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
 `;
 
 const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {

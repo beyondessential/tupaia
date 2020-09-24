@@ -78,3 +78,7 @@ export const updateProfile = (id, payload) => async (dispatch, getState, { api }
     throw new Error(error);
   }
 };
+
+// Password
+export const updatePassword = payload => async (dispatch, getState, { api }) =>
+  api.post(`me/changePassword`, null, payload);
