@@ -44,6 +44,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
   const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
     setIsLoading(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
     try {
       await onUpdateProfile(user.id, {
         first_name: firstName,
@@ -54,8 +55,8 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
       setIsLoading(false);
       setSuccessMessage('Profile successfully updated.');
     } catch (error) {
-      setErrorMessage(error.message);
       setIsLoading(false);
+      setErrorMessage(error.message);
     }
   });
 
