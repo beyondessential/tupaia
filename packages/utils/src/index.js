@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export { min, max } from './array';
+export { countDistinct, min, max } from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
@@ -27,7 +27,7 @@ export {
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { replaceValues } from './replaceValues';
 export { respond } from './respond';
-export { singularise, stripFromString } from './string';
+export { singularise, stripFromString, upperFirst } from './string';
 export * from './validation';
 export { WorkBookParser } from './WorkBookParser';
 export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';

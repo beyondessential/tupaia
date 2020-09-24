@@ -21,6 +21,7 @@ export const DataFetchingTable = memo(
     noDataMessage,
     fetchOptions,
     initialSort,
+    onRowClick,
   }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
@@ -79,6 +80,7 @@ export const DataFetchingTable = memo(
         onChangePage={setPage}
         onChangeRowsPerPage={setRowsPerPage}
         onChangeOrderBy={handleChangeOrderBy}
+        onRowClick={onRowClick}
         order={order}
         orderBy={orderBy}
         noDataMessage={noDataMessage}
@@ -104,6 +106,7 @@ DataFetchingTable.propTypes = {
   ).isRequired,
   fetchData: PropTypes.func.isRequired,
   noDataMessage: PropTypes.string,
+  onRowClick: PropTypes.func,
   fetchOptions: PropTypes.object,
   initialSort: PropTypes.shape({
     order: PropTypes.string.isRequired,
@@ -115,6 +118,7 @@ DataFetchingTable.defaultProps = {
   Header: undefined, // these values need to default to undefined so they don't override the Table defaults
   Body: undefined,
   Paginator: undefined,
+  onRowClick: undefined,
   SubComponent: undefined,
   noDataMessage: undefined,
   fetchOptions: undefined,

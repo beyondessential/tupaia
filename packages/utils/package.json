@@ -4,9 +4,12 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "mocha",
-    "test-coverage": "cross-env NODE_ENV=test nyc mocha"
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",
+    "build:ts": "tsc",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix ."
   },
   "dependencies": {
     "case": "^1.5.5",
@@ -17,14 +20,16 @@
     "moment-timezone": "^0.5.25",
     "node-fetch": "^1.7.3",
     "validator": "^8.2.0",
-    "winston": "^3.1.0",
+    "winston": "^3.3.3",
     "xlsx": "^0.10.9"
   },
   "eslintConfig": {
-    "extends": "../../.eslintrc",
     "overrides": [
       {
-        "files": "**/src/testUtilities/**",
+        "files": [
+          "**/src/testUtilities/**",
+          "**/__tests__/**"
+        ],
         "env": {
           "jest": true
         }

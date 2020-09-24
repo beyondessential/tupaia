@@ -19,7 +19,6 @@ export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
 export { mapBoxToken } from './mapbox';
 export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
-export { initHistoryDispatcher, historyMiddleware } from './historyNavigation';
 export { OverlayContainer, OverlayView } from './overlayContainer';
 export {
   processMeasureInfo,
@@ -36,3 +35,4 @@ export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
 export { areStringsEqual } from './string';
 export { hexToRgba, getPresentationOption, getInactiveColor } from './color';
+export { getUniqueViewId, getViewIdFromInfoViewKey } from './getUniqueViewId';

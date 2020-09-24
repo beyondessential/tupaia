@@ -15,6 +15,7 @@ import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
 import { GeographicalAreaModel } from './GeographicalArea';
+import { IndicatorModel } from './Indicator';
 import { MeditrakDeviceModel } from './MeditrakDevice';
 import { RefreshTokenModel } from './RefreshToken';
 import { OneTimeLoginModel } from './OneTimeLogin';
@@ -47,6 +48,7 @@ export const modelClasses = {
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
   GeographicalArea: GeographicalAreaModel,
+  Indicator: IndicatorModel,
   MeditrakDevice: MeditrakDeviceModel,
   OneTimeLogin: OneTimeLoginModel,
   PermissionGroup: PermissionGroupModel,
