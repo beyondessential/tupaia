@@ -47,22 +47,14 @@ export const watchUserLocation = () => async (dispatch, getState) => {
   });
 };
 
-export const refreshWatchingUserLocation = () => (dispatch, getState) => {
-  // const { locationWatchId } = getState();
+export const refreshWatchingUserLocation = () => dispatch => {
+  dispatch({ type: CLEAR_LOCATION_DATA });
 
-  // if (locationWatchId) {
-  //   Geolocation.clearWatch(locationWatchId);
-  // }
-
-  dispatch({
-    type: CLEAR_LOCATION_DATA,
-  });
   Geolocation.getCurrentPosition(
     position => dispatch(onGeolocationPosition(position.coords)),
     error => dispatch(onGeolocationError(error.message)),
     GEOLOCATION_OPTIONS,
   );
-  // dispatch(watchUserLocation(dispatch, getState));
 };
 
 export const stopWatchingUserLocation = () => (dispatch, getState) => {
