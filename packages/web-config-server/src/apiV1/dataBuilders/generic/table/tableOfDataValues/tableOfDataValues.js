@@ -70,7 +70,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   buildDataElementCodes() {
-    return [...new Set(flatten(this.config.cells))];
+    return [...new Set(flatten(this.config.cells))].filter(
+      cell => !TotalCalculator.isTotalKey(cell),
+    );
   }
 
   buildValuesByCell() {
@@ -228,7 +230,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) {
       this.buildOrgsFromResults();
     }
-    
+
     if (this.tableConfig.columns === ORG_UNIT_WITH_TYPE_COL_KEY) {
       this.buildOrgsFromResultsWithCategories();
     }
