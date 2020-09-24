@@ -25,4 +25,3 @@ export * from './components/Toast';
 export * from './components/UserMessage';
 export * from './components/ActionsMenu';
 export * from './components/Layout';
-export * from './components/PasswordStrengthBar';
