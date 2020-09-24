@@ -36,6 +36,11 @@ describe('AccessPolicy', () => {
         ['DL', 'Admin'],
         false,
       ],
+      [
+        'should allow access to a permission group that includes spaces',
+        ['SB', 'Royal Australasian College of Surgeons'],
+        true,
+      ],
       ['should not allow access with no entity', [undefined, undefined], false],
       ['should not allow access with null', [null, undefined], false],
     ];
