@@ -20,10 +20,10 @@ import {
   AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
-  NotesTab,
   DrawerTray,
   DropdownMenu,
 } from '../../components';
+import { NotesTab } from '../NotesTab';
 import * as COLORS from '../../constants/colors';
 import { countryFlagImage } from '../../utils';
 import { connectApi } from '../../api';
@@ -40,10 +40,10 @@ const Option = styled.span`
 
 const menuOptions = [
   {
-    value: 'Alert',
+    value: 'Outbreak',
     label: (
       <Option>
-        <WarningCloud /> Alert
+        <Virus /> Outbreak
       </Option>
     ),
   },
@@ -51,15 +51,7 @@ const menuOptions = [
     value: 'Archive',
     label: (
       <Option>
-        <MoveToInbox /> Archive Alert
-      </Option>
-    ),
-  },
-  {
-    value: 'Outbreak',
-    label: (
-      <Option>
-        <Virus /> Create Outbreak
+        <MoveToInbox /> End and Archive
       </Option>
     ),
   },

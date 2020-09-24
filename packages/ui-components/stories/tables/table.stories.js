@@ -45,7 +45,14 @@ export const SimpleTable = () => {
 
   return (
     <Container>
-      <Table columns={columns} data={data} loading={loading} />
+      <Table
+        columns={columns}
+        data={data}
+        loading={loading}
+        onRowClick={() => {
+          console.log('click on row...');
+        }}
+      />
     </Container>
   );
 };

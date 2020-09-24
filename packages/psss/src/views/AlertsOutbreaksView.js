@@ -6,13 +6,8 @@ import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { WarningCloud, TabsToolbar, Virus } from '@tupaia/ui-components';
 import { Archive } from '@material-ui/icons';
-import {
-  Header,
-  HeaderTitle,
-  OutbreaksExportModal,
-  AlertsExportModal,
-  HeaderTitleWithSubHeading,
-} from '../components';
+import { Header, HeaderTitle, HeaderTitleWithSubHeading } from '../components';
+import { AlertsExportModal, OutbreaksExportModal } from '../containers/Modals';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
 import { countryFlagImage } from '../utils';
 

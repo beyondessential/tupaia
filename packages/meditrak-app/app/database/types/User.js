@@ -7,9 +7,13 @@ import { Object as RealmObject } from 'realm';
 import { AccessPolicy } from '@tupaia/access-policy';
 
 export class User extends RealmObject {
-  constructor(...args) {
-    super(...args);
-    this.accessPolicy = new AccessPolicy(this.accessPolicyData);
+  accessPolicySingleton = null;
+
+  get accessPolicy() {
+    if (!this.accessPolicySingleton) {
+      this.accessPolicySingleton = new AccessPolicy(this.accessPolicyData);
+    }
+    return this.accessPolicySingleton;
   }
 
   hasAccessToSomeEntity(entities) {

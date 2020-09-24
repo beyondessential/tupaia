@@ -9,18 +9,19 @@ import { Error } from '@material-ui/icons';
 const StyledAlert = styled.div`
   display: inline-flex;
   align-items: center;
-  padding: 0.375rem 0.625rem;
+  padding: 0.45rem 0.45rem 0.35rem 0.55rem;
   background: ${props => props.theme.palette.warning.light};
   border-radius: 0.3125rem;
   color: ${props => props.theme.palette.warning.main};
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.93rem;
   line-height: 1.2rem;
 
   .MuiSvgIcon-root {
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-left: 0.3125rem;
+    position: relative;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-left: 0.2rem;
   }
 `;
 

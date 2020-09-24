@@ -61,7 +61,7 @@ export const getActiveWeekCountryData = ({ weeklyReports }) => {
 
 export const getSyndromeAlerts = state => {
   const data = getActiveWeekCountryData(state);
-  if (!data.syndromes) {
+  if (!data || !data.syndromes) {
     return [];
   }
   return data.syndromes.reduce(
