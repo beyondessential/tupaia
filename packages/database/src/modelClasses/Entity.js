@@ -21,6 +21,7 @@ const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
+const FIELD_STATION = 'field_station';
 const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
 const CATCHMENT = 'catchment';
@@ -36,6 +37,7 @@ const ENTITY_TYPES = {
   DISASTER,
   DISTRICT,
   FACILITY,
+  FIELD_STATION,
   SCHOOL,
   SUB_DISTRICT,
   CATCHMENT,

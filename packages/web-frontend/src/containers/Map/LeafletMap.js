@@ -25,7 +25,7 @@ import { Map } from 'react-leaflet';
 
 import './styles/leaflet-overrides.css';
 
-import { initialOrgUnit } from '../../defaults';
+import { DEFAULT_BOUNDS } from '../../defaults';
 import { arePositionsEqual, areBoundsEqual, areBoundsValid } from '../../utils/geometry';
 
 export class LeafletMap extends Component {
@@ -62,9 +62,7 @@ export class LeafletMap extends Component {
     // instead)
     const { position } = this.props;
     this.initialCenter = position.center;
-    this.initialBounds = areBoundsValid(position.bounds)
-      ? position.bounds
-      : initialOrgUnit.location.bounds;
+    this.initialBounds = areBoundsValid(position.bounds) ? position.bounds : DEFAULT_BOUNDS;
     this.initialZoom = position.zoom || 0;
   }
 
@@ -203,7 +201,7 @@ export class LeafletMap extends Component {
     return (
       <Map
         style={{ height: window.innerHeight, width: '100%' }}
-        zoomControl
+        zoomControl={false}
         onZoomend={this.onZoomEnd}
         onZoomstart={() => {
           this.zooming = true;

@@ -46,9 +46,11 @@ const PopupDataItemList = ({ measureOptions, data }) =>
     .filter(measureOption => !measureOption.hideFromPopup)
     .map(measureOption => {
       const { key, name } = measureOption;
-      const formattedInfo = getFormattedInfo(data, measureOption);
+      const { formattedValue, valueInfo } = getFormattedInfo(data, measureOption);
 
-      return <PopupDataItem key={key} measureName={name} value={formattedInfo.value} />;
+      return valueInfo.hideFromPopup ? null : (
+        <PopupDataItem key={key} measureName={name} value={formattedValue} />
+      );
     });
 
 PopupDataItemList.propTypes = {
@@ -101,7 +103,10 @@ const buildHeaderText = (data, popupHeaderFormat) => {
     code: organisationUnitCode,
     name: name,
   };
-  return Object.entries(replacements).reduce((text, [key, value]) => text.replace(`{${key}}`, value), popupHeaderFormat);
+  return Object.entries(replacements).reduce(
+    (text, [key, value]) => text.replace(`{${key}}`, value),
+    popupHeaderFormat,
+  );
 };
 
 export const MeasurePopup = ({ data, measureOptions, onOrgUnitClick }) => {

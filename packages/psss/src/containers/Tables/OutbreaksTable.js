@@ -4,22 +4,21 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  ConnectedTable,
-  AlertMenuCell,
-  CountryNameButtonCreator,
-  StartDateCell,
-  WeekAndDateCell,
-} from '../../components';
+import { AlertMenuCell, CountryNameCell, StartDateCell, WeekAndDateCell } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
-const createColumns = handlePanelOpen => [
-  {
-    title: 'Country',
-    key: 'name',
-    width: '26%',
-    align: 'left',
-    CellComponent: CountryNameButtonCreator(handlePanelOpen),
-  },
+const createColumns = isForMultipleCountries => [
+  ...(isForMultipleCountries
+    ? [
+        {
+          title: 'Country',
+          key: 'name',
+          width: '26%',
+          align: 'left',
+          CellComponent: CountryNameCell,
+        },
+      ]
+    : []),
   {
     title: 'Diagnosis',
     key: 'diagnosis',
@@ -45,12 +44,6 @@ const createColumns = handlePanelOpen => [
     width: '125px',
   },
   {
-    title: 'Total Lab Confirmed Cases',
-    key: 'totalLabCases',
-    align: 'left',
-    width: '140px',
-  },
-  {
     title: '',
     key: 'id',
     sortable: false,
@@ -59,10 +52,21 @@ const createColumns = handlePanelOpen => [
   },
 ];
 
-export const OutbreaksTable = React.memo(({ handlePanelOpen }) => {
-  return <ConnectedTable endpoint="outbreaks" columns={createColumns(handlePanelOpen)} />;
+export const OutbreaksTable = React.memo(({ handlePanelOpen, countryCode }) => {
+  return (
+    <ConnectedTable
+      endpoint="outbreaks"
+      columns={createColumns(!countryCode)}
+      onRowClick={handlePanelOpen}
+    />
+  );
 });
 
 OutbreaksTable.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,
+  countryCode: PropTypes.string,
+};
+
+OutbreaksTable.defaultProps = {
+  countryCode: null,
 };

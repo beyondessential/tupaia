@@ -20,10 +20,10 @@ import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
-import { getMeasureFromHierarchy, isMobile } from './utils';
+import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
-import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
+import { getInitialLocation } from './historyNavigation';
 import { selectMeasureBarItemCategoryById } from './selectors';
 
 // Import Action Types
@@ -32,17 +32,15 @@ import {
   ATTEMPT_LOGIN,
   ATTEMPT_SIGNUP,
   ATTEMPT_LOGOUT,
-  CHANGE_DASHBOARD_GROUP,
   ATTEMPT_RESET_PASSWORD,
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  CHANGE_MEASURE,
+  SET_MEASURE,
   UPDATE_MEASURE_CONFIG,
   CLEAR_MEASURE_HIERARCHY,
-  CHANGE_ORG_UNIT,
+  SET_ORG_UNIT,
   CHANGE_SEARCH,
-  CLEAR_MEASURE,
   FETCH_CHANGE_PASSWORD_ERROR,
   FETCH_CHANGE_PASSWORD_SUCCESS,
   FETCH_COUNTRY_ACCESS_DATA_SUCCESS,
@@ -108,9 +106,10 @@ import {
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
-  SELECT_PROJECT,
+  SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
 } from './actions';
+import { LOGIN_TYPES } from './constants';
 
 function authentication(
   state = {
@@ -161,7 +160,7 @@ function authentication(
         currentUserEmail: action.email,
         isUserLoggedIn: true,
         isRequestingLogin: false,
-        isDialogVisible: action.shouldCloseDialog ? false : state.isDialogVisible,
+        isDialogVisible: action.loginType === LOGIN_TYPES.MANUAL ? false : state.isDialogVisible,
         emailVerified: state.emailVerified,
       };
     case SHOW_UNVERIFIED_LOGIN:
@@ -457,7 +456,6 @@ function requestCountryAccess(
 
 function dashboard(
   state = {
-    currentDashboardKey: 'General',
     viewResponses: {},
     contractedWidth: 300, // Set dynamically based on window size.
     expandedWidth: 300, // Overridden by info div.
@@ -467,8 +465,6 @@ function dashboard(
   action,
 ) {
   switch (action.type) {
-    case CHANGE_DASHBOARD_GROUP:
-      return { ...state, currentDashboardKey: action.name };
     case FETCH_INFO_VIEW_DATA:
       return state;
     case FETCH_INFO_VIEW_DATA_SUCCESS: {
@@ -499,6 +495,8 @@ function dashboard(
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
     case SET_MOBILE_DASHBOARD_EXPAND:
       return { ...state, isMobileDashboardExpanded: action.shouldExpand };
+    case SET_PROJECT:
+      return { ...state, viewResponses: {} };
     default:
       return state;
   }
@@ -529,7 +527,7 @@ function searchBar(
     case FETCH_LOGOUT_SUCCESS:
       // Clear search results on logout incase of permission change
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
-    case SELECT_PROJECT:
+    case SET_PROJECT:
       // Clear search results on project change to fetch alternative hierarchy
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
     default:
@@ -540,10 +538,7 @@ function searchBar(
 function measureBar(
   state = {
     isExpanded: false,
-    selectedMeasureId: null,
-    currentMeasure: {},
     measureHierarchy: [],
-    currentMeasureOrganisationUnitCode: null,
     error: null,
   },
   action,
@@ -551,20 +546,15 @@ function measureBar(
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
       return { ...state, measureHierarchy: [] };
-    case CLEAR_MEASURE:
-      return { ...state, currentMeasure: {}, selectedMeasureId: null };
-    case CHANGE_MEASURE:
+    case SET_MEASURE:
       return {
         ...state,
         hiddenMeasures: {},
-        currentMeasure: getMeasureFromHierarchy(state.measureHierarchy, action.measureId) || {},
-        selectedMeasureId: action.measureId,
-        currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
     case UPDATE_MEASURE_CONFIG: {
       const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
         { measureBar: state },
-        state.currentMeasure.measureId,
+        action.measureId,
       );
 
       const measureHierarchy = [...state.measureHierarchy];
@@ -585,10 +575,6 @@ function measureBar(
       return {
         ...state,
         measureHierarchy: action.response.measures,
-        // If a new set of measures has come through, refresh the currentMeasure using the currently
-        // selected measure id.
-        currentMeasure:
-          getMeasureFromHierarchy(action.response.measures, state.selectedMeasureId) || {},
         error: null,
       };
     case FETCH_MEASURES_ERROR:
@@ -602,7 +588,6 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: !isMobile() && LANDING,
-    currentOrganisationUnitCode: null,
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -623,7 +608,7 @@ function global(
         ...state,
         isSidePanelExpanded: true,
       };
-    case CHANGE_ORG_UNIT:
+    case SET_ORG_UNIT:
       return {
         ...state,
         isLoadingOrganisationUnit: true,
@@ -632,7 +617,6 @@ function global(
       return {
         ...state,
         isLoadingOrganisationUnit: false,
-        currentOrganisationUnitCode: action.organisationUnit.organisationUnitCode,
       };
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };
@@ -647,6 +631,8 @@ function global(
       return state;
     case SET_OVERLAY_COMPONENT:
       return { ...state, overlay: action.component };
+    case SET_PROJECT:
+      return { ...state, dashboardConfig: {}, viewConfigs: {} };
     default:
       return state;
   }
@@ -734,8 +720,7 @@ function enlargedDialog(
   state = {
     isVisible: false,
     isLoading: false,
-    viewContent: { type: '', data: [] },
-    infoViewKey: '',
+    viewContent: null,
     organisationUnitName: '',
     errorMessage: '',
     startDate: null,
@@ -749,9 +734,6 @@ function enlargedDialog(
         ...state,
         isVisible: true,
         isLoading: false,
-        viewContent: action.viewContent,
-        infoViewKey: action.infoViewKey,
-        organisationUnitName: action.organisationUnitName,
         errorMessage: '',
         startDate: null,
         endDate: null,
@@ -761,8 +743,7 @@ function enlargedDialog(
       return {
         ...state,
         isVisible: false,
-        viewContent: {},
-        infoViewKey: '',
+        viewContent: null,
         organisationUnitName: '',
       };
 
@@ -818,7 +799,12 @@ function drillDown(
       return {
         ...state,
         isLoading: false,
-        levelContents: { ...state.levelContents, [action.drillDownLevel]: action.viewContent },
+        levelContents: {
+          ...state.levelContents,
+          [action.drillDownLevel]: {
+            viewContent: action.viewContent,
+          },
+        },
       };
 
     case FETCH_DRILL_DOWN_ERROR:
@@ -848,6 +834,13 @@ function drillDown(
   }
 }
 
+function routing(state = getInitialLocation(), action) {
+  if (action.type === 'UPDATE_HISTORY_LOCATION') {
+    return action.location;
+  }
+  return state;
+}
+
 /**
  * Reach into the dashboard config, and pull out all views from every dashboard group/permission
  * level, then return them keyed by unique view id
@@ -862,7 +855,7 @@ function extractViewsFromAllDashboards(dashboardConfig) {
         const uniqueViewId = getUniqueViewId({
           dashboardGroupId,
           organisationUnitCode,
-          viewId: view.viewId,
+          viewId: view.drillDownLevel ? `${view.viewId}_${view.drillDownLevel}` : view.viewId,
         });
         viewConfigs[uniqueViewId] = view;
       });
@@ -889,4 +882,5 @@ export default combineReducers({
   disaster,
   project,
   orgUnits,
+  routing,
 });

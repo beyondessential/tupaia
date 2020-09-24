@@ -47,7 +47,7 @@ export const TableHeadCell = ({ toggleSort, className, children, ...props }) => 
 
 TableHeadCell.propTypes = {
   toggleSort: PropTypes.func,
-  children: PropTypes.any,
+  children: PropTypes.node,
   className: PropTypes.string,
 };
 

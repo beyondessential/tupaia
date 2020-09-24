@@ -91,18 +91,24 @@ export default class extends RouteHandler {
     const views = [];
     for (let i = 0; i < dashboardReportIds.length; i++) {
       const viewId = dashboardReportIds[i];
-      const report = await this.models.dashboardReport.findOne({
+      const reports = await this.models.dashboardReport.find({
         id: viewId,
-        drillDownLevel: null, //drillDownLevel = null so that only the parent reports are selected, we don't want drill down reports at this level.
       });
 
-      const { viewJson, dataBuilder } = report;
-      const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
-      const view = { viewId, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
+      reports.forEach(report => {
+        const { viewJson, dataBuilder, drillDownLevel } = report;
+        const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
+        const view = {
+          viewId,
+          drillDownLevel,
+          ...restOfViewJson,
+          requiresDataFetch: !!dataBuilder,
+        };
 
-      if (checkEntityAgainstConditions(entity, displayOnEntityConditions)) {
-        views.push(view);
-      }
+        if (checkEntityAgainstConditions(entity, displayOnEntityConditions)) {
+          views.push(view);
+        }
+      });
     }
     return views;
   };

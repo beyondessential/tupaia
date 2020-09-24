@@ -52,6 +52,7 @@ export default class HeaderRow extends PureComponent {
       columns,
       startColumn,
       numberOfColumnsPerPage,
+      hideColumnTitles,
       onMoveColumnPress,
       onMoveColumnRelease,
       isPreviousEnabled,
@@ -88,7 +89,11 @@ export default class HeaderRow extends PureComponent {
         {columns.slice(startColumn, displayedColumnCount).map(column => (
           <div key={column.key} style={styles.headerCell}>
             <div style={styles.clinicLabel}>
-              <div style={column.isGroupHeader ? styles.facilityTypeLabel : {}}>{column.title}</div>
+              {hideColumnTitles ? null : (
+                <div style={column.isGroupHeader ? styles.facilityTypeLabel : {}}>
+                  {column.title}
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -120,6 +125,7 @@ HeaderRow.propTypes = {
   numberOfColumnsPerPage: PropTypes.number,
   onMoveColumnPress: PropTypes.func,
   onMoveColumnRelease: PropTypes.func,
+  hideColumnTitles: PropTypes.bool,
   searchTerm: PropTypes.string,
   onSearchTermChange: PropTypes.func,
   isSearchActive: PropTypes.bool,

@@ -69,7 +69,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   buildDataElementCodes() {
-    return [...new Set(flatten(this.config.cells))];
+    return [...new Set(flatten(this.config.cells))].filter(
+      cell => !TotalCalculator.isTotalKey(cell),
+    );
   }
 
   buildValuesByCell() {

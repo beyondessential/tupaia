@@ -1,5 +1,5 @@
 import flattenDeep from 'lodash.flattendeep';
-import { checkValueSatisfiesCondition } from '/apiV1/dataBuilders/helpers/checkAgainstConditions';
+import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 export const composePercentageInGroupByDataClass = async (
   { dataBuilderConfig, query },

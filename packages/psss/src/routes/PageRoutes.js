@@ -4,23 +4,54 @@
  */
 
 import React from 'react';
-import { Redirect, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Switch, Route } from 'react-router-dom';
 import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
+import { UnauthorisedView } from '../views/UnauthorisedView';
+import { NotFoundView } from '../views/NotFoundView';
+import { checkIsAuthorisedForCountry, checkIsAuthorisedForMultiCountry } from '../utils/auth';
+import { checkIsMultiCountryUser } from '../store';
 
-export const PageRoutes = React.memo(() => (
+export const PageRoutesComponent = React.memo(({ canViewMultipleCountries }) => (
   <Switch>
-    <PrivateRoute exact path="/">
+    <PrivateRoute exact path="/" authCheck={checkIsAuthorisedForMultiCountry}>
       <CountriesReportsView />
     </PrivateRoute>
-    <PrivateRoute path="/weekly-reports/:countryName">
+    <PrivateRoute path="/weekly-reports/:countryCode" authCheck={checkIsAuthorisedForCountry}>
       <CountryReportsView />
     </PrivateRoute>
-    <PrivateRoute path="/alerts">
-      <AlertsOutbreaksView />
-    </PrivateRoute>
-    <Redirect to="/" />
+    {canViewMultipleCountries ? (
+      <PrivateRoute path="/alerts" authCheck={checkIsAuthorisedForMultiCountry}>
+        <AlertsOutbreaksView />
+      </PrivateRoute>
+    ) : (
+      <PrivateRoute path="/alerts/:countryCode" authCheck={checkIsAuthorisedForCountry}>
+        <AlertsOutbreaksView />
+      </PrivateRoute>
+    )}
+    <Route path="/unauthorised">
+      <UnauthorisedView />
+    </Route>
+    <Route>
+      <NotFoundView />
+    </Route>
   </Switch>
 ));
+
+PageRoutesComponent.propTypes = {
+  canViewMultipleCountries: PropTypes.bool,
+};
+
+PageRoutesComponent.defaultProps = {
+  canViewMultipleCountries: false,
+};
+
+const mapStateToProps = state => ({
+  canViewMultipleCountries: checkIsMultiCountryUser(state),
+});
+
+export const PageRoutes = connect(mapStateToProps)(PageRoutesComponent);

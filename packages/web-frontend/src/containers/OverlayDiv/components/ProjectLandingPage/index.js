@@ -5,8 +5,9 @@ import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import LeftArrow from '@material-ui/icons/KeyboardBackspace';
 import { FluTrackingAustralia } from './ProjectContents';
+import { LoadingIndicator } from '../../../Form/common';
 
-import logo from '../../../../images/tupaia-logo-white.png';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../../../constants';
 
 const Header = styled.div`
   display: flex;
@@ -102,12 +103,14 @@ const LogoImage = styled.div`
 `;
 
 export const ProjectLandingPage = ({
+  closeOverlay,
   selectExplore,
-  viewProjectOrgUnit,
   viewProjects,
   project,
   scrollToTop,
 }) => {
+  if (!project.code) return <LoadingIndicator />;
+
   const components = {
     covidau: () => <FluTrackingAustralia />,
   };
@@ -119,7 +122,7 @@ export const ProjectLandingPage = ({
     <>
       <Header>
         <div>
-          <Logo src={logo} alt="Tupaia logo" />
+          <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
           <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
         </div>
         <ExploreButton onClick={selectExplore} variant="outlined">
@@ -140,7 +143,7 @@ export const ProjectLandingPage = ({
           <h2>{project.name}</h2>
           <Countries>{project.names.join(', ')}</Countries>
         </div>
-        <ViewProjectButton onClick={viewProjectOrgUnit} color="primary" variant="contained">
+        <ViewProjectButton onClick={closeOverlay} color="primary" variant="contained">
           View project
         </ViewProjectButton>
       </ProjectHeader>
@@ -155,7 +158,7 @@ ProjectLandingPage.propTypes = {
   selectExplore: PropTypes.func.isRequired,
   viewProjects: PropTypes.func.isRequired,
   scrollToTop: PropTypes.func.isRequired,
-  viewProjectOrgUnit: PropTypes.func.isRequired,
+  closeOverlay: PropTypes.func.isRequired,
   project: PropTypes.shape({
     name: PropTypes.string,
     longDescription: PropTypes.string,

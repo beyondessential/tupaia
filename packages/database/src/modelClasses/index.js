@@ -20,6 +20,7 @@ import { EntityModel } from './Entity';
 import { EntityRelationModel } from './EntityRelation';
 import { FacilityModel } from './Facility';
 import { GeographicalAreaModel } from './GeographicalArea';
+import { IndicatorModel } from './Indicator';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
 import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 import { MapOverlayModel } from './MapOverlay';
@@ -56,6 +57,7 @@ export const modelClasses = {
   EntityRelation: EntityRelationModel,
   Facility: FacilityModel,
   GeographicalArea: GeographicalAreaModel,
+  Indicator: IndicatorModel,
   MapOverlay: MapOverlayModel,
   MapOverlayGroup: MapOverlayGroupModel,
   MapOverlayGroupRelation: MapOverlayGroupRelationModel,

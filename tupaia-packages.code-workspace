@@ -49,6 +49,10 @@
       "path": "packages/export-chart-lambda"
     },
     {
+      "name": "indicators",
+      "path": "packages/indicators"
+    },
+    {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
     },
@@ -89,6 +93,7 @@
       "beyondessential",
       "cacheable",
       "cleanup",
+      "debouncing",
       "deleters",
       "dialogs",
       "enroll",

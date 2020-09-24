@@ -27,6 +27,7 @@ const CONFIG = {
     chartFormat: 'Do MMMM YYYY',
     rangeFormat: 'Do MMMM YYYY',
     pickerFormat: 'D',
+    urlFormat: 'Do_MMM_YYYY',
     momentShorthand: 'd',
     momentUnit: 'day',
   },
@@ -34,6 +35,7 @@ const CONFIG = {
     chartFormat: 'D MMM YYYY',
     rangeFormat: '[W/C] D MMM YYYY',
     pickerFormat: '[W/C] D MMM YYYY',
+    urlFormat: '[Week_Starting]_D_MMM_YYYY',
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
   },
@@ -41,6 +43,7 @@ const CONFIG = {
     chartFormat: 'MMM YYYY',
     rangeFormat: 'MMM YYYY',
     pickerFormat: 'MMMM',
+    urlFormat: 'MMM_YYYY',
     momentShorthand: 'M',
     momentUnit: 'month',
   },
@@ -48,6 +51,7 @@ const CONFIG = {
     chartFormat: '[Q]Q YYYY',
     rangeFormat: '[Q]Q YYYY',
     pickerFormat: '[Q]Q',
+    urlFormat: '[Q]Q_YYYY',
     momentShorthand: 'Q',
     momentUnit: 'quarter',
   },
@@ -55,6 +59,7 @@ const CONFIG = {
     chartFormat: 'YYYY',
     rangeFormat: 'YYYY',
     pickerFormat: 'YYYY',
+    urlFormat: 'YYYY',
     momentShorthand: 'Y',
     momentUnit: 'year',
   },
@@ -114,6 +119,14 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
     endDate: endDate.clone().endOf(momentUnit),
   };
 }
+
+export const momentToDateString = (date, granularity, format) =>
+  granularity === WEEK || granularity === SINGLE_WEEK
+    ? date
+        .clone()
+        .startOf('W')
+        .format(format)
+    : date.clone().format(format);
 
 const getDefaultDate = (offset, unit, modifier) => {
   //We need a valid unit to proceed.
@@ -228,6 +241,12 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
 
 export function getDefaultDates(state) {
   const { periodGranularity, defaultTimePeriod } = state;
+
+  // we need a valid granularity to proceed
+  if (!periodGranularity) {
+    return {};
+  }
+
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
 
   if (isSingleDate) {

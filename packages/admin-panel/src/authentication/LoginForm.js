@@ -8,8 +8,8 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getEmailAddress, getErrorMessage, getPassword } from './selectors';
-import { changeEmailAddress, changePassword, login } from './actions';
+import { getEmailAddress, getErrorMessage, getPassword, getRememberMe } from './selectors';
+import { changeEmailAddress, changePassword, login, changeRememberMe } from './actions';
 
 const ErrorMessage = styled.p`
   color: ${props => props.theme.palette.error.main};
@@ -32,9 +32,11 @@ const StyledButton = styled(Button)`
 const LoginFormComponent = ({
   emailAddress,
   password,
+  rememberMe,
   errorMessage,
   onChangeEmailAddress,
   onChangePassword,
+  onChangeRememberMe,
   onLogin,
 }) => {
   return (
@@ -55,7 +57,13 @@ const LoginFormComponent = ({
         placeholder="Password"
         onChange={onChangePassword}
       />
-      {/* Todo: <Checkbox name="remember" color="primary" label="Remember me" defaultValue={false} />*/}
+      <Checkbox
+        name="remember"
+        color="primary"
+        label="Remember me"
+        checked={rememberMe}
+        onChange={onChangeRememberMe}
+      />
       <StyledButton type="submit" fullWidth>
         Login to your account
       </StyledButton>
@@ -66,19 +74,23 @@ const LoginFormComponent = ({
 LoginFormComponent.propTypes = {
   emailAddress: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
+  rememberMe: PropTypes.bool,
   errorMessage: PropTypes.string,
   onChangeEmailAddress: PropTypes.func.isRequired,
   onChangePassword: PropTypes.func.isRequired,
+  onChangeRememberMe: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
 };
 
 LoginFormComponent.defaultProps = {
   errorMessage: null,
+  rememberMe: false,
 };
 
 const mapStateToProps = state => ({
   emailAddress: getEmailAddress(state),
   password: getPassword(state),
+  rememberMe: getRememberMe(state),
   errorMessage: getErrorMessage(state),
 });
 
@@ -87,6 +99,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   ...stateProps,
   onChangeEmailAddress: event => dispatch(changeEmailAddress(event.target.value)),
   onChangePassword: event => dispatch(changePassword(event.target.value)),
+  onChangeRememberMe: event => dispatch(changeRememberMe(event.target.checked)),
   onLogin: event => {
     event.preventDefault();
     dispatch(login(stateProps.emailAddress, stateProps.password));

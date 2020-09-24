@@ -26,7 +26,7 @@ import {
 } from '../../selectors';
 
 import {
-  changeOrgUnit,
+  setOrgUnit,
   changePosition,
   closeDropdownOverlays,
   setMapIsAnimating,
@@ -75,8 +75,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  changeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  setOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
   changePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
   closeDropdownOverlays: () => dispatch(closeDropdownOverlays()),

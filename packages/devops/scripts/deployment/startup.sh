@@ -2,7 +2,7 @@
 # This script deploys the repositories on startup
 
 # Set PATH to include depencencies
-export PATH=/home/ubuntu/.local/bin:/home/ubuntu/.yarn/bin:/home/ubuntu/.config/yarn/global/node_modules/.bin:/home/ubuntu/.nvm/versions/node/v10.15.1/bin:/usr/local/bin:$PATH
+export PATH=/home/ubuntu/.local/bin:/home/ubuntu/.yarn/bin:/home/ubuntu/.config/yarn/global/node_modules/.bin:/home/ubuntu/.nvm/versions/node/v12.18.3/bin:/usr/local/bin:$PATH
 
 # Set the home directory of the user
 export HOME_DIRECTORY="/home/ubuntu/tupaia"

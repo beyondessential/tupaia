@@ -1,12 +1,12 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { inspect } from 'util';
 import { periodToMoment } from '@tupaia/utils/dist/period/period';
+import { checkValueSatisfiesCondition } from '@tupaia/utils';
 import { getMeasureBuilder } from './getMeasureBuilder';
-import { checkValueSatisfiesCondition } from '../dataBuilders/helpers/checkAgainstConditions';
 
 export const fetchComposedData = async (models, aggregator, dhisApi, query, config, entity) => {
   const { measureBuilders, dataServices } = config || {};

@@ -3,18 +3,16 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-import flatten from 'lodash.flatten';
 import { getPercentageCountOfValuesByCell } from './getValuesByCell';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfPercentagesOfValueCountsBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
-    const dataElementCodes = flatten(
-      flatten(this.config.cells).map(cell =>
-        cell.numerator.dataValues.concat(cell.denominator.dataValues),
-      ),
-    );
+    const dataElementCodes = this.config.cells
+      .flat()
+      .map(cell => cell.numerator.dataValues.concat(cell.denominator.dataValues))
+      .flat();
     return [...new Set(dataElementCodes)];
   }
 
@@ -23,7 +21,7 @@ class TableOfPercentagesOfValueCountsBuilder extends TableOfDataValuesBuilder {
   }
 
   buildValuesByCell() {
-    return getPercentageCountOfValuesByCell(flatten(this.tableConfig.cells), this.results);
+    return getPercentageCountOfValuesByCell(this.tableConfig.cells.flat(), this.results);
   }
 }
 
