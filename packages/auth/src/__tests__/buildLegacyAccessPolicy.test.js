@@ -5,7 +5,6 @@
 
 /* eslint-disable no-underscore-dangle */
 
-import { expect } from 'chai';
 import { hasAccess } from '@beyondessential/tupaia-access-policy';
 import {
   clearTestData,
@@ -16,13 +15,13 @@ import {
 } from '@tupaia/database';
 import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
-describe('buildLegacyAccessPolicy', () => {
+describe('buildLegacyAccessPolicy', async () => {
   const models = new ModelRegistry(getTestDatabase());
   let demoLand;
   let adminPermission;
   let publicPermission;
 
-  before(async () => {
+  beforeAll(async () => {
     await clearTestData(getTestDatabase());
 
     demoLand = await findOrCreateDummyRecord(
@@ -54,10 +53,10 @@ describe('buildLegacyAccessPolicy', () => {
     );
   });
 
-  describe('Demo Land public user', () => {
+  describe('Demo Land public user', async () => {
     let accessPolicy;
 
-    before(async () => {
+    beforeAll(async () => {
       const user = await upsertDummyRecord(models.user);
       await upsertDummyRecord(models.userEntityPermission, {
         entity_id: demoLand.id,
@@ -69,20 +68,20 @@ describe('buildLegacyAccessPolicy', () => {
 
     it('should only have access to demo land', () => {
       const surveyPermissionItems = accessPolicy.permissions.surveys._items;
-      expect(surveyPermissionItems.DL._access.Public).to.equal(true);
-      expect(Object.values(surveyPermissionItems).length).to.equal(1);
+      expect(surveyPermissionItems.DL._access.Public).toBe(true);
+      expect(Object.values(surveyPermissionItems).length).toBe(1);
     });
 
     it('should be interpreted correctly by the legacy parser', () => {
       const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['DL'], 'Public');
-      expect(hasAccessPolicyAccess).to.equal(true);
+      expect(hasAccessPolicyAccess).toBe(true);
     });
   });
 
-  describe('Tonga admin user', () => {
+  describe('Tonga admin user', async () => {
     let accessPolicy;
 
-    before(async () => {
+    beforeAll(async () => {
       const user = await upsertDummyRecord(models.user);
       const tonga = await findOrCreateDummyRecord(
         models.entity,
@@ -105,27 +104,27 @@ describe('buildLegacyAccessPolicy', () => {
     });
 
     it('should have Demo Land public access, as interpreted by legacy parser', () => {
-      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Public')).to.equal(true);
-      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Donor')).to.equal(false);
-      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Admin')).to.equal(false);
+      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Public')).toBe(true);
+      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Donor')).toBe(false);
+      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Admin')).toBe(false);
     });
 
     it('should have Tonga admin, donor, and public access, as interpreted by legacy parser', () => {
-      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Public')).to.equal(true);
-      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Donor')).to.equal(true);
-      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Admin')).to.equal(true);
+      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Public')).toBe(true);
+      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Donor')).toBe(true);
+      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Admin')).toBe(true);
     });
 
     it('should have no access to other entities', () => {
       const surveyPermissionItems = accessPolicy.permissions.surveys._items;
-      expect(Object.values(surveyPermissionItems).length).to.equal(2); // DL and TO only
+      expect(Object.values(surveyPermissionItems).length).toBe(2); // DL and TO only
     });
   });
 
-  describe('Ignores any permissions lower than country level', () => {
+  describe('Ignores any permissions lower than country level', async () => {
     let accessPolicy;
 
-    before(async () => {
+    beforeAll(async () => {
       const user = await upsertDummyRecord(models.user);
 
       // Create a facility nested deep within a new country
@@ -209,27 +208,27 @@ describe('buildLegacyAccessPolicy', () => {
 
     it('should not have any permissions', () => {
       const surveyPermissionItems = accessPolicy.permissions.surveys._items;
-      expect(Object.values(surveyPermissionItems).length).to.equal(0);
+      expect(Object.values(surveyPermissionItems).length).toBe(0);
     });
 
     it('should not have Mount Sinai admin permissions', () => {
       const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA_OT_TO_MS'], 'Public');
-      expect(hasAccessPolicyAccess).to.equal(false);
+      expect(hasAccessPolicyAccess).toBe(false);
     });
 
     it('should not have Ottawa admin permissions', () => {
       const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA_OT_OT'], 'Public');
-      expect(hasAccessPolicyAccess).to.equal(false);
+      expect(hasAccessPolicyAccess).toBe(false);
     });
 
     it('should not have Toronto permissions', () => {
       const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA_OT_TO'], 'Public');
-      expect(hasAccessPolicyAccess).to.equal(false);
+      expect(hasAccessPolicyAccess).toBe(false);
     });
 
     it('should not have Canada country level permissions', () => {
       const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA'], 'Public');
-      expect(hasAccessPolicyAccess).to.equal(false);
+      expect(hasAccessPolicyAccess).toBe(false);
     });
   });
 });
