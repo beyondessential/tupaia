@@ -15,7 +15,7 @@ import {
 } from '@tupaia/database';
 import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
-describe('buildLegacyAccessPolicy', async () => {
+describe('buildLegacyAccessPolicy', () => {
   const models = new ModelRegistry(getTestDatabase());
   let demoLand;
   let adminPermission;
@@ -53,7 +53,11 @@ describe('buildLegacyAccessPolicy', async () => {
     );
   });
 
-  describe('Demo Land public user', async () => {
+  afterAll(async () => {
+    await clearTestData(getTestDatabase());
+  });
+
+  describe('Demo Land public user', () => {
     let accessPolicy;
 
     beforeAll(async () => {
@@ -78,7 +82,7 @@ describe('buildLegacyAccessPolicy', async () => {
     });
   });
 
-  describe('Tonga admin user', async () => {
+  describe('Tonga admin user', () => {
     let accessPolicy;
 
     beforeAll(async () => {
@@ -103,16 +107,31 @@ describe('buildLegacyAccessPolicy', async () => {
       accessPolicy = await buildLegacyAccessPolicy(models, user.id);
     });
 
-    it('should have Demo Land public access, as interpreted by legacy parser', () => {
-      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Public')).toBe(true);
-      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Donor')).toBe(false);
-      expect(hasAccess(accessPolicy, 'surveys', ['DL'], 'Admin')).toBe(false);
-    });
+    const testData = [
+      [
+        'should have Demo Land public access, as interpreted by legacy parser',
+        [
+          [['surveys', ['DL'], 'Public'], true],
+          [['surveys', ['DL'], 'Donor'], false],
+          [['surveys', ['DL'], 'Admin'], false],
+        ],
+      ],
+      [
+        'should have Tonga admin, donor, and public access, as interpreted by legacy parser',
+        [
+          [['surveys', ['TO'], 'Public'], true],
+          [['surveys', ['TO'], 'Donor'], true],
+          [['surveys', ['TO'], 'Admin'], true],
+        ],
+      ],
+    ];
 
-    it('should have Tonga admin, donor, and public access, as interpreted by legacy parser', () => {
-      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Public')).toBe(true);
-      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Donor')).toBe(true);
-      expect(hasAccess(accessPolicy, 'surveys', ['TO'], 'Admin')).toBe(true);
+    it.each(testData)('%s', (_, testCaseData) => {
+      testCaseData.forEach(([[organisationUnitPath, userGroup, readWriteLevel], expected]) => {
+        expect(hasAccess(accessPolicy, organisationUnitPath, userGroup, readWriteLevel)).toBe(
+          expected,
+        );
+      });
     });
 
     it('should have no access to other entities', () => {
@@ -121,7 +140,7 @@ describe('buildLegacyAccessPolicy', async () => {
     });
   });
 
-  describe('Ignores any permissions lower than country level', async () => {
+  describe('Ignores any permissions lower than country level', () => {
     let accessPolicy;
 
     beforeAll(async () => {
@@ -206,29 +225,26 @@ describe('buildLegacyAccessPolicy', async () => {
       accessPolicy = await buildLegacyAccessPolicy(models, user.id);
     });
 
+    const testData = [
+      [
+        'should not have Mount Sinai admin permissions',
+        ['surveys', ['CA_OT_TO_MS'], 'Public'],
+        false,
+      ],
+      ['should not have Ottawa admin permissions', ['surveys', ['CA_OT_OT'], 'Public'], false],
+      ['should not have Toronto permissions', ['surveys', ['CA_OT_TO'], 'Public'], false],
+      ['should not have Canada country level permissions', ['surveys', ['CA'], 'Public'], false],
+    ];
+
+    it.each(testData)('%s', (_, [organisationUnitPath, userGroup, readWriteLevel], expected) => {
+      expect(hasAccess(accessPolicy, organisationUnitPath, userGroup, readWriteLevel)).toBe(
+        expected,
+      );
+    });
+
     it('should not have any permissions', () => {
       const surveyPermissionItems = accessPolicy.permissions.surveys._items;
       expect(Object.values(surveyPermissionItems).length).toBe(0);
-    });
-
-    it('should not have Mount Sinai admin permissions', () => {
-      const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA_OT_TO_MS'], 'Public');
-      expect(hasAccessPolicyAccess).toBe(false);
-    });
-
-    it('should not have Ottawa admin permissions', () => {
-      const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA_OT_OT'], 'Public');
-      expect(hasAccessPolicyAccess).toBe(false);
-    });
-
-    it('should not have Toronto permissions', () => {
-      const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA_OT_TO'], 'Public');
-      expect(hasAccessPolicyAccess).toBe(false);
-    });
-
-    it('should not have Canada country level permissions', () => {
-      const hasAccessPolicyAccess = hasAccess(accessPolicy, 'surveys', ['CA'], 'Public');
-      expect(hasAccessPolicyAccess).toBe(false);
     });
   });
 });
