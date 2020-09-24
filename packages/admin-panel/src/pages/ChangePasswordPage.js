@@ -48,11 +48,12 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { handleSubmit, register, getValues, errors, watch } = useForm();
+  const { handleSubmit, register, errors, watch } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(async (data, event) => {
     setIsLoading(true);
+    setErrorMessage(null);
     setErrorMessage(null);
     try {
       await onUpdatePassword(data);
@@ -110,7 +111,7 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
           inputRef={register({
             required: 'Required',
             minLength: { value: 9, message: 'Password must be over 8 characters long.' },
-            validate: value => value === getValues('password') || 'Passwords do not match.',
+            validate: value => value === password || 'Passwords do not match.',
           })}
         />
         <Suspense fallback={<PasswordStrengthBarFallback />}>
