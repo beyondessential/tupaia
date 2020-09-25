@@ -4,10 +4,8 @@
  */
 
 import { respond } from '@tupaia/utils';
-import { RouteHandler } from '../RouteHandler';
-import { resourceToRecordType } from '../../utilities';
+import { CRUDHandler } from '../CRUDHandler';
 import {
-  extractResourceFromEndpoint,
   getQueryOptionsForColumns,
   processColumns,
   processColumnSelector,
@@ -34,18 +32,7 @@ const MAX_RECORDS_PER_PAGE = 100;
  *     https://api.tupaia.org/v2/answers?pageSize=100&page=3&filter={"survey_response_id":"5a5d1c66ae07fb3fb025c3a3"}
  *       Get the fourth page of 100 answers for a given survey response
  */
-export class GETHandler extends RouteHandler {
-  constructor(req, res) {
-    super(req, res);
-    const { database, query, endpoint, models, accessPolicy } = req;
-    this.database = database;
-    this.query = query;
-    this.models = models;
-    this.accessPolicy = accessPolicy;
-    this.resource = extractResourceFromEndpoint(endpoint);
-    this.recordType = resourceToRecordType(this.resource);
-  }
-
+export class GETHandler extends CRUDHandler {
   async handleRequest() {
     const { headers = {}, body } = await this.buildResponse();
     Object.entries(headers).forEach(([key, value]) => this.res.set(key, value));
@@ -87,10 +74,6 @@ export class GETHandler extends RouteHandler {
     return dbQueryOptions;
   }
 
-  getRecordId() {
-    return this.req.params.recordId;
-  }
-
   getDbQueryCriteria() {
     const { filter: filterString } = this.req.query;
     const filter = filterString ? JSON.parse(filterString) : {};
@@ -101,7 +84,7 @@ export class GETHandler extends RouteHandler {
     const options = this.getDbQueryOptions();
 
     // handle request for a single record
-    const recordId = this.getRecordId();
+    const recordId = this.recordId;
     if (recordId) {
       const record = await this.findSingleRecord(recordId, options);
       return { body: record };
