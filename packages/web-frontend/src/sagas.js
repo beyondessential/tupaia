@@ -102,22 +102,6 @@ import {
   URL_COMPONENTS,
 } from './historyNavigation';
 import { setProject } from './projects/actions';
-import {
-  selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
-  selectCurrentInfoViewKey,
-  selectCurrentMeasureId,
-  selectCurrentOrgUnitCode,
-  selectCurrentPeriodGranularity,
-  selectCurrentProjectCode,
-  selectDefaultMeasureId,
-  selectIsMeasureInHierarchy,
-  selectIsProject,
-  selectMeasureBarItemById,
-  selectOrgUnit,
-  selectOrgUnitChildren,
-  selectOrgUnitCountry,
-} from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
 
