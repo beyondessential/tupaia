@@ -7,7 +7,7 @@ const ARITHMETIC_OPERATOR = {
 };
 
 const sumDataValues = (analytics, dataValues) => {
-  let sum; //Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
+  let sum; // Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
 
   analytics.forEach(({ dataElement, value }) => {
     if (dataValues.includes(dataElement)) {

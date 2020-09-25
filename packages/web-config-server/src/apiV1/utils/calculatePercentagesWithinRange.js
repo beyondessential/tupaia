@@ -1,4 +1,5 @@
 import { limitRange } from './limitRange';
+
 export const calculatePercentagesWithinRange = (countsByGroup, range) =>
   Object.values(countsByGroup).map(({ name, total, ...counts }) => {
     const percentages = {};
