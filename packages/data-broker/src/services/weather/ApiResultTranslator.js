@@ -12,9 +12,9 @@ const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP = {
  */
 export class ApiResultTranslator {
   /**
-   * @param entities
-   * @param string resultFormat - one of 'events' | 'analytics'
-   * @param dataElementCodes
+   * @param {EntityType[]} entities
+   * @param {string} resultFormat - one of 'events' | 'analytics'
+   * @param {string[]} dataElementCodes
    */
   constructor(entities, resultFormat, dataElementCodes) {
     this.entities = entities;
@@ -26,7 +26,7 @@ export class ApiResultTranslator {
    * Translates api result sets to analytics/events format data
    *
    * @param {Object.<entityCode: string: Object.<data: Object[]>>} apiResultByEntityCode
-   * @returns {{metadata: {}, results: []}|*}
+   * @returns {{}} - either `{ results: [], metadata: {}}` or `[]`, depending on resultFormat
    */
   translate(apiResultByEntityCode) {
     const translatedByEntityCode = {};
@@ -69,6 +69,9 @@ export class ApiResultTranslator {
     }
   }
 
+  /**
+   * @private
+   */
   apiResultToEvents(apiResult, entity) {
     const events = [];
 
@@ -93,7 +96,10 @@ export class ApiResultTranslator {
     return events;
   }
 
-  apiResultToAnalytics(apiResult, entity, dataElementCodes) {
+  /**
+   * @private
+   */
+  apiResultToAnalytics(apiResult, entity) {
     const analytics = [];
 
     for (const entry of apiResult.data) {

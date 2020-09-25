@@ -5,8 +5,8 @@ import { DateSanitiser } from './DateSanitiser';
 
 export class WeatherService extends Service {
   /**
-   * @param Object.<key: string, value: DatabaseModel> models
-   * @param WeatherApi api
+   * @param {Object.<string, DatabaseModel>} models
+   * @param {WeatherApi} api
    */
   constructor(models, api) {
     super(models);
@@ -73,7 +73,8 @@ export class WeatherService extends Service {
   /**
    * @inheritDoc
    */
-  async pullMetadata(dataSources, type) {
+  // eslint-disable-next-line no-unused-vars
+  async pullMetadata(dataSources, type, options) {
     const dataElements = await this.models.dataSource.find({
       type: 'dataElement',
       service_type: 'weather',
@@ -104,8 +105,8 @@ export class WeatherService extends Service {
   }
 
   /**
-   * @param string requestType see pull()
-   * @param {} requestDataSources see pull()
+   * @param {string} requestType see pull()
+   * @param {{}} requestDataSources see pull()
    * @returns {DataSourceType[]} array of DataSource with type dataElement
    * @private
    */
@@ -133,7 +134,7 @@ export class WeatherService extends Service {
   /**
    * Get the entities we want weather information about.
    *
-   * @param string[] codes
+   * @param {string[]} codes
    * @returns {EntityType[]}
    * @private
    */
@@ -148,8 +149,8 @@ export class WeatherService extends Service {
   }
 
   /**
-   * @param string? startDate
-   * @param string? endDate
+   * @param {string?} startDate
+   * @param {string?} endDate
    * @returns {boolean}
    * @private
    */
@@ -160,8 +161,9 @@ export class WeatherService extends Service {
   /**
    * Fetch API data and return in format of events/analytics
    *
-   * @param EntityType[] entities
-   * @returns {Promise<Object.<results: Object[], metadata: Object>>}
+   * @param {EntityType[]} entities
+   * @param {ApiResultTranslator} apiResultTranslator
+   * @returns {Promise<Object.<results: {Object[]}, metadata: {}>>}
    * @private
    */
   async getForecastWeatherForToday(entities, apiResultTranslator) {
@@ -199,10 +201,10 @@ export class WeatherService extends Service {
   /**
    * Fetch API data and return in format of events/analytics
    *
-   * @param EntityType[] entities
-   * @param string type
-   * @param string[] dataElementCodes
-   * @param options
+   * @param {EntityType[]} entities
+   * @param {string} startDate
+   * @param {string} endDate
+   * @param {ApiResultTranslator} apiResultTranslator
    * @returns {Promise<Object.<results: Object[], metadata: Object>>}
    * @private
    */
@@ -249,7 +251,7 @@ export class WeatherService extends Service {
   }
 
   /**
-   * @param type
+   * @param {string} type - one of DataSource.DATA_SOURCE_TYPES
    * @returns {string}
    * @private
    */
@@ -257,11 +259,10 @@ export class WeatherService extends Service {
     switch (type) {
       case this.dataSourceTypes.DATA_ELEMENT:
         return 'analytics';
-        break;
       case this.dataSourceTypes.DATA_GROUP:
         return 'events';
-        break;
+      default:
+        throw new Error('Unknown format');
     }
-    throw new Error('Unknown format');
   }
 }
