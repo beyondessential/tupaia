@@ -26,6 +26,7 @@ import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { getSocialFeed } from './getSocialFeed';
 import { getUserRewards } from './getUserRewards';
+import { getUser } from './getUser';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
@@ -69,6 +70,7 @@ export default {
   requestCountryAccess: catchAsyncErrors(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
   getUserRewards: catchAsyncErrors(getUserRewards),
+  getUser: catchAsyncErrors(getUser),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
   getCountryAccessList: catchAsyncErrors(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),

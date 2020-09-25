@@ -51,15 +51,15 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
   const onSubmit = handleSubmit(async (data, event) => {
     setIsLoading(true);
     setErrorMessage(null);
-    setErrorMessage(null);
+    setSuccessMessage(null);
     try {
       await onUpdatePassword(data);
       setIsLoading(false);
       setSuccessMessage('Password successfully updated.');
       event.target.reset();
     } catch (error) {
-      setErrorMessage(error.message);
       setIsLoading(false);
+      setErrorMessage(error.message);
     }
   });
 

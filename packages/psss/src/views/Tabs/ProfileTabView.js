@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -9,9 +9,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Button, SmallAlert, TextField } from '@tupaia/ui-components';
-import { usePortalWithCallback } from '../utilities';
-import { Header } from '../widgets';
-import { updateProfile, getUser } from '../authentication';
+import { Main } from '../../components';
+import { updateProfile, getCurrentUser } from '../../store';
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -35,23 +34,21 @@ const SuccessMessage = styled(SmallAlert)`
   margin-bottom: 1.5rem;
 `;
 
-const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
+const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, register, errors } = useForm();
-  const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
     setIsLoading(true);
     setErrorMessage(null);
-    setSuccessMessage(null);
     try {
       await onUpdateProfile({
         first_name: firstName,
         last_name: lastName,
         position: role,
-        employer: employer,
+        employer,
       });
       setIsLoading(false);
       setSuccessMessage('Profile successfully updated.');
@@ -64,8 +61,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
   const { firstName, lastName, position, employer } = user;
 
   return (
-    <>
-      {HeaderPortal}
+    <Main>
       <Container>
         <form onSubmit={onSubmit} noValidate>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
@@ -119,12 +115,11 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
           </StyledButton>
         </form>
       </Container>
-    </>
+    </Main>
   );
 });
 
-ProfilePageComponent.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
+ProfileTabViewComponent.propTypes = {
   onUpdateProfile: PropTypes.func.isRequired,
   user: PropTypes.PropTypes.shape({
     id: PropTypes.string,
@@ -136,16 +131,16 @@ ProfilePageComponent.propTypes = {
   }),
 };
 
-ProfilePageComponent.defaultProps = {
+ProfileTabViewComponent.defaultProps = {
   user: null,
 };
 
 const mapStateToProps = state => ({
-  user: getUser(state),
+  user: getCurrentUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   onUpdateProfile: payload => dispatch(updateProfile(payload)),
 });
 
-export const ProfilePage = connect(mapStateToProps, mapDispatchToProps)(ProfilePageComponent);
+export const ProfileTabView = connect(mapStateToProps, mapDispatchToProps)(ProfileTabViewComponent);
