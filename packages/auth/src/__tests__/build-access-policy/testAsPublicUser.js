@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { upsertDummyRecord } from '@tupaia/database';
 import { Demo } from './setup';
 import { buildAccessPolicy } from '../../buildAccessPolicy';
