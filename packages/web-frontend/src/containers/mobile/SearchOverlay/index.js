@@ -121,7 +121,7 @@ const mapStateToProps = state => {
   const { isOverlayOpen } = state.global;
 
   return {
-    isLoading: isLoading,
+    isLoading,
     searchString,
     searchResponse: searchResponse || [],
     isOverlayOpen,

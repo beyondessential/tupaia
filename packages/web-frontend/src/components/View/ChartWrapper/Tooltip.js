@@ -97,9 +97,6 @@ function Tooltip(props) {
   return null;
 }
 
-/* eslint-disable */
-// disable eslint on these as we don't have a lot of control over
-// what kind of props recharts uses
 Tooltip.propTypes = {
   valueType: PropTypes.oneOf(Object.values(VALUE_TYPES)),
   payload: PropTypes.any,
@@ -108,6 +105,5 @@ Tooltip.propTypes = {
 
 SingleValueTooltip.propTypes = Tooltip.propTypes;
 MultiValueTooltip.propTypes = Tooltip.propTypes;
-/* eslint-enable */
 
 export default Tooltip;

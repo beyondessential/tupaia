@@ -13,7 +13,8 @@ function ensureSlash(pathToCheck, needsSlash) {
   const hasSlash = pathToCheck.endsWith('/');
   if (hasSlash && !needsSlash) {
     return path.substr(pathToCheck, pathToCheck.length - 1);
-  } else if (!hasSlash && needsSlash) {
+  }
+  if (!hasSlash && needsSlash) {
     return `${pathToCheck}/`;
   }
   return pathToCheck;

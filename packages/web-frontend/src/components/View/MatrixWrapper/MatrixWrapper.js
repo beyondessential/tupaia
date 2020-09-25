@@ -239,7 +239,11 @@ export class MatrixWrapper extends Component {
     const PeriodSelectorComponent = this.renderPeriodSelector();
 
     if (!columns) {
-      return <div style={styles.loadingWrapper}>{<CircularProgress />}</div>;
+      return (
+        <div style={styles.loadingWrapper}>
+          <CircularProgress />
+        </div>
+      );
     }
 
     let numberOfColumnsPerPage = 0;
@@ -288,7 +292,7 @@ export class MatrixWrapper extends Component {
       <div style={VIEW_STYLES.chartViewContainer}>
         <div style={VIEW_STYLES.chartContainer}>
           {isMobile() ? (
-            <React.Fragment>
+            <>
               <img
                 src={matrixPlaceholder}
                 alt="Matrix chart placeholder"
@@ -300,7 +304,7 @@ export class MatrixWrapper extends Component {
                   screens.
                 </div>
               </div>
-            </React.Fragment>
+            </>
           ) : (
             <div>
               <img

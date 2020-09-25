@@ -70,7 +70,7 @@ class HomeScreen extends PureComponent {
 }
 
 const sortOrgUnitsAlphabeticallyByName = orgUnits => {
-  //Sort countries alphabetically, this may not be the case if one country was loaded first
+  // Sort countries alphabetically, this may not be the case if one country was loaded first
   return orgUnits.concat().sort((data1, data2) => {
     if (data1.name > data2.name) return 1;
     if (data1.name < data2.name) return -1;

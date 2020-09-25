@@ -114,7 +114,7 @@ class ConnectedPolygon extends Component {
     };
 
     if (shade) {
-      //To match with the color in markerIcon.js which uses BREWER_PALETTE
+      // To match with the color in markerIcon.js which uses BREWER_PALETTE
       const color = BREWER_PALETTE[shade] || shade;
 
       // Work around: color should go through the styled components

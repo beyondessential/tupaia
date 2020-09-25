@@ -66,7 +66,7 @@ module.exports = (proxy, allowedHost) => {
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
-    host: host,
+    host,
     overlay: false,
     historyApiFallback: {
       // Paths with dots should still use the history fallback.

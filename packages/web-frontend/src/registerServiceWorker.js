@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.

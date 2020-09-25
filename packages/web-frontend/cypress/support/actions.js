@@ -18,9 +18,7 @@ export const submitLoginForm = () => {
     .findByLabelText(/password/i)
     .type(Cypress.env('USER_PASSWORD'), { log: false });
 
-  cy.get('@loginForm')
-    .findByTextI('Sign in')
-    .click();
+  cy.get('@loginForm').findByTextI('Sign in').click();
   closeOverlay();
 };
 
@@ -55,10 +53,7 @@ export const selectProject = name => {
     return;
   }
 
-  cy.findByTextI(name)
-    .closestByTestId('project-card')
-    .findByTextI('View Project')
-    .click();
+  cy.findByTextI(name).closestByTestId('project-card').findByTextI('View Project').click();
 
   waitForProjectDashboardGroupsBecauseOfBug();
 };
@@ -72,16 +67,12 @@ export const selectDashboardGroup = name => {
       }
 
       toggleDropdownMenu();
-      cy.findByTestId('dropdown-menu-items')
-        .findByTextI(name)
-        .click();
+      cy.findByTestId('dropdown-menu-items').findByTextI(name).click();
     });
 };
 
 const toggleDropdownMenu = () => {
-  cy.findByTestId('dropdown-menu')
-    .findByRole('button')
-    .click();
+  cy.findByTestId('dropdown-menu').findByRole('button').click();
 };
 
 export const expandDashboardItem = name => {
