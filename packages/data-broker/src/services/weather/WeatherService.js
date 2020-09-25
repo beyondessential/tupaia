@@ -87,7 +87,7 @@ export class WeatherService extends Service {
         name: dataElement.name,
       });
     }
-    return Promise.resolve(metadata);
+    return metadata;
   }
 
   /**
