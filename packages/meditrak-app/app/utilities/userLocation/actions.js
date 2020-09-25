@@ -49,12 +49,6 @@ export const watchUserLocation = () => async (dispatch, getState) => {
 
 export const refreshWatchingUserLocation = () => dispatch => {
   dispatch({ type: CLEAR_LOCATION_DATA });
-
-  Geolocation.getCurrentPosition(
-    position => dispatch(onGeolocationPosition(position.coords)),
-    error => dispatch(onGeolocationError(error.message)),
-    GEOLOCATION_OPTIONS,
-  );
 };
 
 export const stopWatchingUserLocation = () => (dispatch, getState) => {
