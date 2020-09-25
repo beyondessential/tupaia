@@ -22,9 +22,11 @@ const FlexRow = styled.div`
 const getSortIcon = className => {
   if (className.includes('-sort-asc')) {
     return ExpandMoreIcon;
-  } else if (className.includes('-sort-desc')) {
+  }
+  if (className.includes('-sort-desc')) {
     return ExpandLessIcon;
-  } else if (className.includes('-cursor-pointer')) {
+  }
+  if (className.includes('-cursor-pointer')) {
     return UnfoldMoreIcon;
   }
 

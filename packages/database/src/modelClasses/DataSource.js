@@ -78,7 +78,6 @@ export class DataSourceModel extends DatabaseModel {
 
   SERVICE_TYPES = SERVICE_TYPES;
 
-  // eslint-disable-next-line class-methods-use-this
   get DatabaseTypeClass() {
     return DataSourceType;
   }
