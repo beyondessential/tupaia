@@ -20,6 +20,9 @@ const analytics = [
   { dataElement: 'Flower_found_Tulip', value: 'No' },
   { dataElement: 'Flower_found_Orchid', value: 'Yes' },
   { dataElement: 'Flower_found_Orchid', value: 'Yes' },
+  { dataElement: 'Best_Superhero1', value: 'SuperGirl' },
+  { dataElement: 'Best_Superhero2', value: 'Black Widow' },
+  { dataElement: 'Best_Superhero3', value: 'My Sister' },
 ];
 
 describe('calculateOperationForAnalytics', () => {
@@ -216,6 +219,76 @@ describe('calculateOperationForAnalytics', () => {
       });
       // This does assert that there is a duplicate 'Orchid' entry
       expect(flowerList.split(', ')).to.have.members(['Orchid', 'Orchid', 'Daisy']);
+    });
+  });
+
+  describe('GROUP', () => {
+    it('should throw an error when passed too many analytics', () => {
+      expect(() =>
+        calculateOperationForAnalytics(analytics, {
+          operator: 'GROUP',
+          dataElement: 'result',
+          groups: {
+            Marvel: { value: '(Black Widow)|(Iron Man)', operator: 'regex' },
+            DC: { value: '(SuperGirl)|(Batman)', operator: 'regex' },
+          },
+          defaultValue: 'Not a superhero',
+        }),
+      ).to.throw('Too many results passed to checkConditions (calculateOperationForAnalytics)');
+    });
+
+    it('should return no data if no analytics match the dataElement', () => {
+      expect(
+        calculateOperationForAnalytics(analytics, {
+          operator: 'GROUP',
+          dataElement: 'NON_EXISTENT',
+          groups: {
+            Marvel: { value: '(Black Widow)|(Iron Man)', operator: 'regex' },
+            DC: { value: '(SuperGirl)|(Batman)', operator: 'regex' },
+          },
+          defaultValue: 'Not a superhero',
+        }),
+      ).to.equal(NO_DATA_AVAILABLE);
+    });
+
+    it('should return correctly for valid cases', () => {
+      expect(
+        calculateOperationForAnalytics(analytics, {
+          operator: 'GROUP',
+          dataElement: 'Best_Superhero1',
+          groups: {
+            Marvel: { value: '(Black Widow)|(Iron Man)', operator: 'regex' },
+            DC: { value: '(SuperGirl)|(Batman)', operator: 'regex' },
+          },
+          defaultValue: 'Not a superhero',
+        }),
+      ).to.equal('DC');
+
+      expect(
+        calculateOperationForAnalytics(analytics, {
+          operator: 'GROUP',
+          dataElement: 'Best_Superhero2',
+          groups: {
+            Marvel: { value: '(Black Widow)|(Iron Man)', operator: 'regex' },
+            DC: { value: '(SuperGirl)|(Batman)', operator: 'regex' },
+          },
+          defaultValue: 'Not a superhero',
+        }),
+      ).to.equal('Marvel');
+    });
+
+    it('should return the default value correctly', () => {
+      expect(
+        calculateOperationForAnalytics(analytics, {
+          operator: 'GROUP',
+          dataElement: 'Best_Superhero3',
+          groups: {
+            Marvel: { value: '(Black Widow)|(Iron Man)', operator: 'regex' },
+            DC: { value: '(SuperGirl)|(Batman)', operator: 'regex' },
+          },
+          defaultValue: 'Not a superhero',
+        }),
+      ).to.equal('Not a superhero');
     });
   });
 });

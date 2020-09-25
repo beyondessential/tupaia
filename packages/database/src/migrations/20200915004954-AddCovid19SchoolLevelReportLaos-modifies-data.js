@@ -45,6 +45,17 @@ const DATA_BUILDER_CONFIG = {
         condition: { operator: 'regex', value: 'Yes' },
         dataElement: 'SchCVD027',
       },
+      {
+        key: 'School_implementing_MoES_safe_school_protocols_detail',
+        operator: 'GROUP',
+        groups: {
+          'Yes, fully': { value: 'Yes, fully', operator: 'regex' },
+          'Yes, partially': { value: 'Yes, partially', operator: 'regex' },
+          No: { value: 'No', operator: 'regex' },
+        },
+        defaultValue: 'Error while building answer',
+        dataElement: 'SchCVD027',
+      },
     ],
     ['SchCVD024'],
   ],

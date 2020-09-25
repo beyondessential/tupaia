@@ -4,9 +4,19 @@ import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
 
 const checkCondition = (value, config) =>
-  checkValueSatisfiesCondition(value, config.condition) ? 'Yes' : 'No';
+  valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
 
 const formatString = (value, config) => replaceValues(config.format, { value });
+
+const valueToGroup = (value, config) => {
+  const { groups, defaultValue } = config;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [groupName, groupCondition] of Object.entries(groups)) {
+    console.log([groupName, groupCondition]);
+    if (checkValueSatisfiesCondition(value, groupCondition)) return groupName;
+  }
+  return defaultValue;
+};
 
 const performSingleAnalyticOperation = (analytics, config) => {
   const { operator, dataElement } = config;
@@ -73,11 +83,12 @@ const OPERATORS = {
   DIVIDE: divideValues,
   SUBTRACT: subtractValues,
   CHECK_CONDITION: checkCondition,
+  GROUP: valueToGroup,
   FORMAT: formatString,
   COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
 };
 
-const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT'];
+const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
 
 const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT'];
 
