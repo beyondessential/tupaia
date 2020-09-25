@@ -66,7 +66,7 @@ const SubComponent = React.memo(() => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>
       <Table
         columns={subColumns}
@@ -81,7 +81,7 @@ const SubComponent = React.memo(() => {
         </Typography>
         <Button onClick={customAction}>Save and Submit</Button>
       </StyledDiv>
-    </React.Fragment>
+    </>
   );
 });
 

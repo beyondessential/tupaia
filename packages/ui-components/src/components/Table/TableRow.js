@@ -28,7 +28,7 @@ export const TableRowCells = React.memo(({ columns, rowData }) =>
     const displayValue = value === 0 ? '0' : value;
     const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
-      <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
+      <TableCell background={backgroundColor} key={key} style={{ width }} align={align}>
         {CellComponent ? (
           <CellComponent {...rowData} displayValue={value} columnKey={key} />
         ) : (

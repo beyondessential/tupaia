@@ -35,7 +35,7 @@ describe('user message', () => {
     expect(screen.getByText(/sarah de jones/i)).toBeInTheDocument();
   });
 
-  it('it is editable', async () => {
+  it('is editable', async () => {
     renderUserMessage();
 
     const newMessage =

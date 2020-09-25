@@ -87,7 +87,7 @@ describe('TupaiaService', () => {
 
           return assertAnalyticsApiWasInvokedCorrectly({
             dataSources: [DATA_SOURCES.POP01],
-            options: options,
+            options,
             invocationArgs: sinon.match(options),
           });
         });

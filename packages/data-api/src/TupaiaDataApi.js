@@ -92,7 +92,7 @@ export class TupaiaDataApi {
       ...dataGroup,
     };
 
-    //dataElementCodes metadata can be optional
+    // dataElementCodes metadata can be optional
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
       const sqlQuery = await new SqlQuery(
         `
