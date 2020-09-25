@@ -157,8 +157,11 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
     mapOverlayGroupIds,
   );
   const relationsByGroupId = groupBy(mapOverlayGroupRelations, 'map_overlay_group_id');
+  const worldToTopLevelGroupRelations = await models.mapOverlayGroupRelation.findTopLevelMapOverlayGroupRelations();
+  const worldRelationById = keyBy(worldToTopLevelGroupRelations, 'child_id'); //child_id should be unique because these are top level overlay groups
   const groupIds = Object.keys(relationsByGroupId);
-  const result = [];
+  const accessibleOverlayGroups = [];
+  const accessibleRelations = [];
 
   for (let i = 0; i < groupIds.length; i++) {
     const groupId = groupIds[i];
@@ -173,12 +176,18 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
     const isNonEmptyMapOverlayGroup = checkIfGroupedMapOverlaysAreEmpty(nestedMapOverlayGroups);
 
     if (isNonEmptyMapOverlayGroup) {
-      result.push({
+      accessibleRelations.push(worldRelationById[groupId]);
+      accessibleOverlayGroups.push({
+        id: groupId,
         name,
         children: nestedMapOverlayGroups,
       });
     }
   }
 
-  return result;
+  const sortFunction = getSortFunction(accessibleRelations);
+  return accessibleOverlayGroups.sort(sortFunction).map(og => {
+    const { id, ...restOfOverlayGroup } = og;
+    return restOfOverlayGroup;
+  });
 };
