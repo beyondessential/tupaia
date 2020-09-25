@@ -35,6 +35,7 @@ const {
   requestCountryAccess,
   addRecord,
   getUserRewards,
+  getUser,
   requestPasswordReset,
   requestResendEmail,
   getCountryAccessList,
@@ -89,6 +90,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/export/survey/:surveyId', exportSurveys);
   app.get('(/v[0-9]+)?/changes', getChanges);
   app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
+  app.get('(/v[0-9]+)/me', getUser);
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
   app.get('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId?', getRecords);

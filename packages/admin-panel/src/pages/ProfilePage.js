@@ -47,7 +47,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
     setErrorMessage(null);
     setSuccessMessage(null);
     try {
-      await onUpdateProfile(user.id, {
+      await onUpdateProfile({
         first_name: firstName,
         last_name: lastName,
         position: role,
@@ -145,7 +145,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onUpdateProfile: (id, payload) => dispatch(updateProfile(id, payload)),
+  onUpdateProfile: payload => dispatch(updateProfile(payload)),
 });
 
 export const ProfilePage = connect(mapStateToProps, mapDispatchToProps)(ProfilePageComponent);

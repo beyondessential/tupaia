@@ -56,8 +56,8 @@ const ChangePasswordTabViewComponent = React.memo(({ onUpdatePassword }) => {
       setSuccessMessage('Password successfully updated.');
       event.target.reset();
     } catch (error) {
-      setErrorMessage(error.message);
       setIsLoading(false);
+      setErrorMessage(error.message);
     }
   });
 

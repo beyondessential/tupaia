@@ -44,7 +44,7 @@ const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      await onUpdateProfile(user.id, {
+      await onUpdateProfile({
         first_name: firstName,
         last_name: lastName,
         position: role,
@@ -53,8 +53,8 @@ const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
       setIsLoading(false);
       setSuccessMessage('Profile successfully updated.');
     } catch (error) {
-      setErrorMessage(error.message);
       setIsLoading(false);
+      setErrorMessage(error.message);
     }
   });
 
@@ -140,10 +140,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onUpdateProfile: (id, payload) => dispatch(updateProfile(id, payload)),
+  onUpdateProfile: payload => dispatch(updateProfile(payload)),
 });
 
-export const ProfileTabView = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ProfileTabViewComponent);
+export const ProfileTabView = connect(mapStateToProps, mapDispatchToProps)(ProfileTabViewComponent);

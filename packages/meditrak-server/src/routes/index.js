@@ -69,6 +69,7 @@ export default {
   requestCountryAccess: catchAsyncErrors(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
   getUserRewards: catchAsyncErrors(getUserRewards),
+  getUser: catchAsyncErrors(getUser),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
   getCountryAccessList: catchAsyncErrors(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),

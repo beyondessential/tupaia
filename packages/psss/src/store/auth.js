@@ -46,17 +46,13 @@ export const logout = () => ({
   type: LOGOUT,
 });
 
-export const updateProfile = (id, payload) => async (dispatch, getState, { api }) => {
-  try {
-    await api.put(`user/${id}`, null, payload);
-    const { body: user } = await api.get(`user/${id}`);
-    dispatch({
-      type: PROFILE_SUCCESS,
-      ...user,
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
+export const updateProfile = payload => async (dispatch, getState, { api }) => {
+  await api.put(`me`, null, payload);
+  const { body: user } = await api.get(`me`);
+  dispatch({
+    type: PROFILE_SUCCESS,
+    ...user,
+  });
 };
 
 export const updatePassword = payload => async (dispatch, getState, { api }) =>
