@@ -38,7 +38,14 @@ const DATA_BUILDER_CONFIG = {
       'SchCVD002',
     ],
     ['SchCVD006'],
-    ['SchCVD027'],
+    [
+      {
+        key: 'School_implementing_MoES_safe_school_protocols',
+        operator: 'CHECK_CONDITION',
+        condition: { operator: 'regex', value: 'Yes' },
+        dataElement: 'SchCVD027',
+      },
+    ],
     ['SchCVD024'],
   ],
   columns: ['Main', 'Extra'],
