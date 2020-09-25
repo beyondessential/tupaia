@@ -8,8 +8,8 @@ export class DateSanitiser {
    *
    * This is for observed weather data (i.e. historic)
    *
-   * @param string startDate
-   * @param string endDate
+   * @param {string} startDate
+   * @param {string} endDate
    * @returns {{endDate: string|null, startDate: string|null}}
    */
   sanitiseHistoricDateRange(startDate, endDate) {
@@ -22,11 +22,14 @@ export class DateSanitiser {
       latestEndDate: defaultEndDate,
     } = this.getHistoricLimits();
 
+    let sanitisedStartDate = startDate;
+    let sanitisedEndDate = endDate;
+
     if (!startDate) {
-      startDate = defaultStartDate;
+      sanitisedStartDate = defaultStartDate;
     }
     if (!endDate) {
-      endDate = defaultEndDate;
+      sanitisedEndDate = defaultEndDate;
     }
 
     /*
@@ -35,11 +38,11 @@ export class DateSanitiser {
      * WeatherBit dates are exclusive on the tail end. Requesting Tuesday - Thursday will request
      * Tuesday 00:01am to Thursday 00:01am, so we need to push out the end date by 1 day.
      */
-    endDate = moment(endDate)
+    sanitisedEndDate = moment(sanitisedEndDate)
       .add(1, 'day')
       .format(DATE_FORMAT);
 
-    return this.restrictHistoricDatesWithinLimits(startDate, endDate);
+    return this.restrictHistoricDatesWithinLimits(sanitisedStartDate, sanitisedEndDate);
   }
 
   /**
@@ -47,8 +50,8 @@ export class DateSanitiser {
    *
    * This prevents the API from returning an error response.
    *
-   * @param startDate
-   * @param endDate
+   * @param {string} startDate
+   * @param {string} endDate
    * @returns {{endDate: string|null, startDate: string|null}}
    * @private
    */
@@ -71,19 +74,22 @@ export class DateSanitiser {
       };
     }
 
+    let restrictedStartDate = startDate;
+    let restrictedEndDate = endDate;
+
     // earliest date limits
     if (startDate < earliestStartDate) {
-      startDate = earliestStartDate;
+      restrictedStartDate = earliestStartDate;
     }
 
     // latest date limits
     if (endDate > latestEndDate) {
-      endDate = latestEndDate;
+      restrictedEndDate = latestEndDate;
     }
 
     return {
-      startDate,
-      endDate,
+      startDate: restrictedStartDate,
+      endDate: restrictedEndDate,
     };
   }
 
