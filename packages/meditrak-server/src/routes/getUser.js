@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseError, respond } from '@tupaia/utils';
+import { DatabaseError } from '@tupaia/utils';
+import { getRecords } from './getRecords';
 
-export const getUser = async (req, res) => {
+export const getUser = async (req, res, next) => {
   const { models, userId } = req;
 
   const user = await models.user.findById(userId);
@@ -13,5 +14,13 @@ export const getUser = async (req, res) => {
     throw new DatabaseError('User not found');
   }
 
-  respond(res, user);
+  try {
+    req.params = {
+      recordId: userId,
+      resource: 'user',
+    };
+    await getRecords(req, res);
+  } catch (error) {
+    next(error);
+  }
 };

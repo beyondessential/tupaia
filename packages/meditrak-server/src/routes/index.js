@@ -26,6 +26,7 @@ import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { getSocialFeed } from './getSocialFeed';
 import { getUserRewards } from './getUserRewards';
+import { getUser } from './getUser';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
