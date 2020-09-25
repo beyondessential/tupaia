@@ -11,7 +11,7 @@ import {
   getMockOptionsArg,
   getMockTypeArg,
 } from './WeatherService.stubs';
-import { expectThrowsAsync, mockNow, resetMocks } from './testutil';
+import { mockNow, resetMocks } from './testutil';
 
 describe('WeatherService', () => {
   afterEach(() => {
@@ -207,7 +207,7 @@ describe('WeatherService', () => {
       const service = new WeatherService(mockModels, mockApi);
 
       const functionCall = async () =>
-        await service.pull(
+        service.pull(
           getMockDataSourcesArg({
             code: 'WTHR_FORECAST_PRECIP',
           }),
@@ -218,7 +218,10 @@ describe('WeatherService', () => {
           }),
         );
 
-      await expectThrowsAsync(functionCall, 'Date range not supported with forecast weather');
+      await expect(functionCall()).to.be.rejectedWith(
+        'Date range not supported with forecast weather',
+      );
+
       expect(mockApi.forecastDaily).to.have.callCount(0);
     });
   });
@@ -269,7 +272,9 @@ describe('WeatherService', () => {
           }),
         );
 
-      await expectThrowsAsync(functionCall, 'Empty date range not supported with historic weather');
+      await expect(functionCall()).to.be.rejectedWith(
+        'Empty date range not supported with historic weather',
+      );
 
       expect(mockApi.historicDaily).to.have.callCount(0);
     });

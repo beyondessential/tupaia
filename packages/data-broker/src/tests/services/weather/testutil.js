@@ -10,16 +10,3 @@ export const mockNow = (whenIsNow = DEFAULT_NOW_TIMESTAMP) => {
 export const resetMocks = () => {
   sinon.restore();
 };
-
-export const expectThrowsAsync = async (method, errorMessage) => {
-  let error = null;
-  try {
-    await method();
-  } catch (err) {
-    error = err;
-  }
-  expect(error).to.be.an('Error');
-  if (errorMessage) {
-    expect(error.message).to.equal(errorMessage);
-  }
-};
