@@ -162,9 +162,9 @@ export function addRoutesToApp(app) {
   /**
    * PUT routes
    */
-  app.put('(/v[0-9]+)/users/:recordId?', editUserAccounts);
-  app.put('(/v[0-9]+)/userEntityPermissions/:recordId?', editUserEntityPermissions);
-  app.put('(/v[0-9]+)/accessRequests/:recordId?', editAccessRequests);
+  app.put('(/v[0-9]+)/users/:recordId', editUserAccounts);
+  app.put('(/v[0-9]+)/userEntityPermissions/:recordId', editUserEntityPermissions);
+  app.put('(/v[0-9]+)/accessRequests/:recordId', editAccessRequests);
   app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:id', editRecord);
   app.put('(/v[0-9]+)/:resource/:id', editRecord);
 
