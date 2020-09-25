@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Button, SmallAlert, TextField } from '@tupaia/ui-components';
+import { Main } from '../../components';
 import { updateProfile, getCurrentUser } from '../../store';
 
 const Container = styled.section`
@@ -60,59 +61,61 @@ const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
   const { firstName, lastName, position, employer } = user;
 
   return (
-    <Container>
-      <form onSubmit={onSubmit} noValidate>
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-        {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
-        <TextField
-          label="First Name"
-          name="firstName"
-          required
-          error={!!errors.firstName}
-          helperText={errors.firstName && errors.firstName.message}
-          defaultValue={firstName}
-          inputRef={register({
-            required: 'Required',
-          })}
-        />
-        <TextField
-          label="Last Name"
-          name="lastName"
-          required
-          error={!!errors.lastName}
-          helperText={errors.lastName && errors.lastName.message}
-          defaultValue={lastName}
-          inputRef={register({
-            required: 'Required',
-          })}
-        />
-        <TextField
-          label="Employer"
-          name="employer"
-          required
-          error={!!errors.employer}
-          helperText={errors.employer && errors.employer.message}
-          defaultValue={employer}
-          inputRef={register({
-            required: 'Required',
-          })}
-        />
-        <TextField
-          label="Role"
-          name="role"
-          required
-          error={!!errors.role}
-          helperText={errors.role && errors.role.message}
-          defaultValue={position}
-          inputRef={register({
-            required: 'Required',
-          })}
-        />
-        <StyledButton type="submit" fullWidth isLoading={isLoading}>
-          Update Profile
-        </StyledButton>
-      </form>
-    </Container>
+    <Main>
+      <Container>
+        <form onSubmit={onSubmit} noValidate>
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+          <TextField
+            label="First Name"
+            name="firstName"
+            required
+            error={!!errors.firstName}
+            helperText={errors.firstName && errors.firstName.message}
+            defaultValue={firstName}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <TextField
+            label="Last Name"
+            name="lastName"
+            required
+            error={!!errors.lastName}
+            helperText={errors.lastName && errors.lastName.message}
+            defaultValue={lastName}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <TextField
+            label="Employer"
+            name="employer"
+            required
+            error={!!errors.employer}
+            helperText={errors.employer && errors.employer.message}
+            defaultValue={employer}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <TextField
+            label="Role"
+            name="role"
+            required
+            error={!!errors.role}
+            helperText={errors.role && errors.role.message}
+            defaultValue={position}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <StyledButton type="submit" fullWidth isLoading={isLoading}>
+            Update Profile
+          </StyledButton>
+        </form>
+      </Container>
+    </Main>
   );
 });
 
@@ -140,4 +143,7 @@ const mapDispatchToProps = dispatch => ({
   onUpdateProfile: (id, payload) => dispatch(updateProfile(id, payload)),
 });
 
-export const ProfileTabView = connect(mapStateToProps, mapDispatchToProps)(ProfileTabViewComponent);
+export const ProfileTabView = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ProfileTabViewComponent);

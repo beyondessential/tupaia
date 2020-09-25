@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
 import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
 import { PasswordStrengthBar } from '../../components/PasswordStrengthBar';
+import { Main } from '../../components';
 import { updatePassword } from '../../store';
 
 const Container = styled.section`
@@ -63,61 +64,63 @@ const ChangePasswordTabViewComponent = React.memo(({ onUpdatePassword }) => {
   const password = watch('password');
 
   return (
-    <Container>
-      <form onSubmit={onSubmit} noValidate>
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-        {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
-        <TextField
-          label="Current Password"
-          name="oldPassword"
-          placeholder="Enter your current password"
-          required
-          type="password"
-          error={!!errors.oldPassword}
-          helperText={errors.oldPassword && errors.oldPassword.message}
-          inputRef={register({
-            required: 'Required',
-          })}
-        />
-        <Divider />
-        <TextField
-          label="New Password"
-          name="password"
-          placeholder="Enter your password"
-          required
-          type="password"
-          error={!!errors.password}
-          helperText={errors.password && errors.password.message}
-          inputRef={register({
-            required: 'Required',
-            minLength: { value: 9, message: 'Password must be over 8 characters long.' },
-          })}
-        />
-        <TextField
-          label="Confirm Password"
-          name="passwordConfirm"
-          placeholder="Enter your password"
-          required
-          type="password"
-          error={!!errors.passwordConfirm}
-          helperText={errors.passwordConfirm && errors.passwordConfirm.message}
-          inputRef={register({
-            required: 'Required',
-            minLength: { value: 9, message: 'Password must be over 8 characters long.' },
-            validate: value => value === getValues('password') || 'Passwords do not match.',
-          })}
-        />
-        <PasswordStrengthBar
-          password={password}
-          helperText="New password must be over 8 characters long."
-          pt={1}
-          pb={4}
-        />
-        <StyledButton type="submit" fullWidth isLoading={isLoading}>
-          Save Password
-        </StyledButton>
-      </form>
-    </Container>
+    <Main>
+      <Container>
+        <form onSubmit={onSubmit} noValidate>
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+          <TextField
+            label="Current Password"
+            name="oldPassword"
+            placeholder="Enter your current password"
+            required
+            type="password"
+            error={!!errors.oldPassword}
+            helperText={errors.oldPassword && errors.oldPassword.message}
+            inputRef={register({
+              required: 'Required',
+            })}
+          />
+          <Divider />
+          <TextField
+            label="New Password"
+            name="password"
+            placeholder="Enter your password"
+            required
+            type="password"
+            error={!!errors.password}
+            helperText={errors.password && errors.password.message}
+            inputRef={register({
+              required: 'Required',
+              minLength: { value: 9, message: 'Password must be over 8 characters long.' },
+            })}
+          />
+          <TextField
+            label="Confirm Password"
+            name="passwordConfirm"
+            placeholder="Enter your password"
+            required
+            type="password"
+            error={!!errors.passwordConfirm}
+            helperText={errors.passwordConfirm && errors.passwordConfirm.message}
+            inputRef={register({
+              required: 'Required',
+              minLength: { value: 9, message: 'Password must be over 8 characters long.' },
+              validate: value => value === getValues('password') || 'Passwords do not match.',
+            })}
+          />
+          <PasswordStrengthBar
+            password={password}
+            helperText="New password must be over 8 characters long."
+            pt={1}
+            pb={4}
+          />
+          <StyledButton type="submit" fullWidth isLoading={isLoading}>
+            Save Password
+          </StyledButton>
+        </form>
+      </Container>
+    </Main>
   );
 });
 
