@@ -17,11 +17,7 @@
  * @property {Function} [negationDiff]
  */
 
-const removeLinesFromTextStart = (text, lineCount) =>
-  text
-    .split('\n')
-    .slice(lineCount)
-    .join('\n');
+const removeLinesFromTextStart = (text, lineCount) => text.split('\n').slice(lineCount).join('\n');
 
 class JestMatcherFactory {
   constructor(expect, extendApi) {

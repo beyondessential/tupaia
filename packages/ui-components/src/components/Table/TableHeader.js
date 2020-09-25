@@ -70,7 +70,7 @@ export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderB
     <MuiTableHead className={className}>
       <MuiTableRow>
         {columns.map(({ key, title, width = null, align = 'center', sortable = true }) => (
-          <TableHeaderCell key={key} style={{ width: width }} align={align}>
+          <TableHeaderCell key={key} style={{ width }} align={align}>
             {getContent(key, sortable, title)}
           </TableHeaderCell>
         ))}

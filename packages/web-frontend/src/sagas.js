@@ -7,6 +7,7 @@
 
 import queryString from 'query-string';
 import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import request from './utils/request';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_CHART_EXPORT,
@@ -119,7 +120,7 @@ import {
 } from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
-import request from './utils/request';
+
 /**
  * attemptChangePassword
  *

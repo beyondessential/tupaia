@@ -1,29 +1,8 @@
 {
-  "extends": [
-    "@beyondessential/eslint-config-beyondessential",
-    "plugin:prettier/recommended",
-    "plugin:react-hooks/recommended"
-  ],
-  "parser": "babel-eslint",
+  "extends": "@beyondessential/jest",
   "env": {
-    "browser": true,
-    "mocha": true,
-    "jest/globals": true
+    "browser": true
   },
-  "rules": {
-    "react/jsx-props-no-spreading": "off",
-    "object-shorthand": ["error", "always"],
-    "react/jsx-one-expression-per-line": "off",
-    "react/jsx-filename-extension": "off",
-    "react/forbid-prop-types": "off",
-    "jsx-a11y/href-no-hash": "off",
-    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
-    "import/no-extraneous-dependencies": [
-      "error",
-      { "devDependencies": true, "optionalDependencies": true, "peerDependencies": true }
-    ]
-  },
-  "plugins": ["jest"],
   "settings": {
     "import/resolver": {
       "alias": [
@@ -31,5 +10,19 @@
         ["utils", "./src/utils"]
       ]
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["src/api/FakeApi.js", "./src/utils/test-utils.js"],
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true,
+            "packageDir": ["../../", "."]
+          }
+        ]
+      }
+    }
+  ]
 }

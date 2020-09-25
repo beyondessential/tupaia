@@ -89,6 +89,7 @@ describe('checkAgainstConditions', () => {
     );
 
     const commonConfig = { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] };
+
     it.each([
       ['', commonConfig, true],
       [null, commonConfig, true],
@@ -102,6 +103,7 @@ describe('checkAgainstConditions', () => {
     });
 
     const myStringConfig = { operator: 'in', value: 'This is my string' };
+
     it.each([
       ['', myStringConfig, true],
       ['string', myStringConfig, true],

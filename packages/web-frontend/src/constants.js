@@ -27,6 +27,8 @@ export const MARKER_TYPES = {
   SQUARE: 'square',
 };
 
+export const TUPAIA_LIGHT_LOGO_SRC = '/images/tupaia-logo-light.svg';
+
 export const LOGIN_TYPES = {
   AUTO: 'auto',
   TOKEN: 'token',
