@@ -9,22 +9,6 @@ import queryString from 'query-string';
 import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import request from './utils/request';
 import {
-  selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
-  selectCurrentInfoViewKey,
-  selectCurrentMeasureId,
-  selectCurrentOrgUnitCode,
-  selectCurrentPeriodGranularity,
-  selectCurrentProjectCode,
-  selectDefaultMeasureId,
-  selectIsMeasureInHierarchy,
-  selectIsProject,
-  selectMeasureBarItemById,
-  selectOrgUnit,
-  selectOrgUnitChildren,
-  selectOrgUnitCountry,
-} from './selectors';
-import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
@@ -118,9 +102,25 @@ import {
   URL_COMPONENTS,
 } from './historyNavigation';
 import { setProject } from './projects/actions';
+import {
+  selectCurrentExpandedViewContent,
+  selectCurrentExpandedViewId,
+  selectCurrentInfoViewKey,
+  selectCurrentMeasureId,
+  selectCurrentOrgUnitCode,
+  selectCurrentPeriodGranularity,
+  selectCurrentProjectCode,
+  selectDefaultMeasureId,
+  selectIsMeasureInHierarchy,
+  selectIsProject,
+  selectMeasureBarItemById,
+  selectOrgUnit,
+  selectOrgUnitChildren,
+  selectOrgUnitCountry,
+} from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
-import request from './utils/request';
+
 /**
  * attemptChangePassword
  *
