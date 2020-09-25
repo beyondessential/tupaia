@@ -31,11 +31,11 @@ export class EditUserEntityPermissions extends EditHandler {
     const userEntityPermission = await this.models.userEntityPermission.findById(this.recordId);
     const userEntityPermissionChecker = accessPolicy =>
       assertUserEntityPermissionPermissions(accessPolicy, this.models, userEntityPermission);
-    this.assertPermissions(
+    await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, userEntityPermissionChecker]),
     );
 
     // Update Record
-    this.updateRecord();
+    return this.updateRecord();
   }
 }

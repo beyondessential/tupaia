@@ -32,7 +32,7 @@ export class EditUserAccounts extends EditHandler {
     const userAccount = await this.models.user.findById(this.recordId);
     const userAccountChecker = accessPolicy =>
       assertUserAccountPermissions(accessPolicy, this.models, userAccount);
-    this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
 
     // Update Record
     const { password, ...restOfUpdatedFields } = this.updatedFields;

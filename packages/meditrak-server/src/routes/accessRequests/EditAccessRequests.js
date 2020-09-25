@@ -32,7 +32,9 @@ export class EditAccessRequests extends EditHandler {
     const accessRequest = await this.models.accessRequest.findById(this.recordId);
     const accessRequestChecker = accessPolicy =>
       assertAccessRequestPermissions(accessPolicy, this.models, accessRequest);
-    this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),
+    );
 
     // Update Record
     const { approved } = accessRequest;

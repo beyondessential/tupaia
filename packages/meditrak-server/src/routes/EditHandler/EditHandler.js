@@ -26,11 +26,11 @@ export class EditHandler extends CRUDHandler {
     // dashboardReport, mapOverlay and dashboardGroup use different id formats and are the only endpoints
     // which need to overwrite the validation functionality
     // TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
-    this.validateRecordExists();
+    return this.validateRecordExists();
   }
 
   async editRecord() {
-    throw new Error('Any editHandler must implement editRecord()');
+    throw new Error('Any EditHandler must implement editRecord()');
   }
 
   async updateRecord() {
@@ -45,6 +45,6 @@ export class EditHandler extends CRUDHandler {
     };
 
     const validator = new ObjectValidator(validationCriteria);
-    await validator.validate({ id: this.recordId }); // Will throw an error if not valid
+    return validator.validate({ id: this.recordId }); // Will throw an error if not valid
   }
 }
