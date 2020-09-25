@@ -1,11 +1,11 @@
-/* eslint-disable no-console */
-
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
  * This source code is licensed under the AGPL-3.0 license
  * found in the LICENSE file in the root directory of this source tree.
  */
+
+/* eslint-disable no-console */
 
 // In production, we register a service worker to serve assets from local cache.
 
