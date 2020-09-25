@@ -5,7 +5,13 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": ["**/tests/**", "**/__tests__/**", "**/stories/**"],
+        "devDependencies": [
+          "**/cypress/**",
+          "**/migrations/**",
+          "**/stories/**",
+          "**/tests/**",
+          "**/__tests__/**"
+        ],
         "packageDir": ["../../", "."]
       }
     ],
@@ -28,13 +34,14 @@
   },
   "overrides": [
     {
-      "files": ["**/src/migrations/**", "**/src/database/migrations/**"],
+      "files": ["**/src/migrations/**"],
       "rules": {
         "func-names": "off",
         "no-underscore-dangle": "off",
+        "no-unused-vars": "off",
         "no-var": "off",
         "strict": "off",
-        "no-unused-vars": "off"
+        "prettier/prettier": "off"
       }
     },
     {
