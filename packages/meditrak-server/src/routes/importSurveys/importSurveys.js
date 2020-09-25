@@ -1,7 +1,9 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
+
+/* eslint no-underscore-dangle: ['error', { 'allow': ['_conjunction'] }] */
 
 import xlsx from 'xlsx';
 

@@ -1,13 +1,13 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { TYPES, JOIN_TYPES } from '@tupaia/database';
 
 /**
  * Delete all questions that aren't included in any survey
- **/
+ */
 export async function deleteOrphanQuestions(models) {
   const subQueryName = 'unusedQuestion';
   const orphanQuestions = await models.database.find(

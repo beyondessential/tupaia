@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import { isNotPresent, ObjectValidator } from '@tupaia/utils';
 import { convertCellToJson } from '../utilities';
 import { BaseValidator } from './BaseValidator';
@@ -23,7 +21,7 @@ export class JsonFieldValidator extends BaseValidator {
   }
 
   getFieldName() {
-    const fieldName = this.constructor.fieldName;
+    const { fieldName } = this.constructor;
     if (!fieldName) {
       throw new Error('Any subclass of JsonFieldValidator must define a "fieldName" property');
     }

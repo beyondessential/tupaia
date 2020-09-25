@@ -71,5 +71,8 @@
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"
   },
-  "homepage": "https://github.com/beyondessential/tupaia"
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "eslintConfig": {
+    "ignorePatterns": "src/database/**"
+  }
 }

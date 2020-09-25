@@ -1,7 +1,10 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
+
+/* eslint no-underscore-dangle: ['error', { 'allow': ['_or_'] }] */
+
 import { respond } from '@tupaia/utils';
 import { getLeaderboard } from '../social';
 
