@@ -93,7 +93,8 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
   });
 };
 
-const allRelationsHaveSortOrder = relations => relations.every(m => m.sort_order !== undefined);
+const allRelationsHaveSortOrder = relations =>
+  relations.every(m => m.sort_order !== undefined && m.sort_order !== null);
 
 const getSortFunction = relations => {
   const childIdToSortOrder = reduceToDictionary(relations, 'child_id', 'sort_order');
