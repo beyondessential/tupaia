@@ -7,9 +7,6 @@ import { JOIN_TYPES } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
 import { getApiUrl, resourceToRecordType } from '../../utilities';
 
-// if the endpoint is /survey/5a5d1c66ae07fb3fb025c3a3/answer, the resource is 'survey'
-export const extractResourceFromEndpoint = endpoint => endpoint.split('/')[1];
-
 export const generateLinkHeader = (resource, pageString, lastPage, originalQueryParameters) => {
   const currentPage = parseInt(pageString, 10);
 

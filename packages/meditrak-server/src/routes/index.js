@@ -21,9 +21,9 @@ import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
-import { GETUserAccounts } from './GETUserAccounts';
-import { GETUserEntityPermissions } from './GETUserEntityPermissions';
-import { GETAccessRequests } from './GETAccessRequests';
+import { EditUserAccounts, GETUserAccounts } from './UserAccounts';
+import { EditUserEntityPermissions, GETUserEntityPermissions } from './UserEntityPermissions';
+import { EditAccessRequests, GETAccessRequests } from './AccessRequests';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
@@ -68,6 +68,9 @@ export default {
   countChanges: catchAsyncErrors(countChanges),
   deleteRecord: catchAsyncErrors(deleteRecord),
   editRecord: catchAsyncErrors(editRecord),
+  editAccessRequests: useRouteHandler(EditAccessRequests),
+  editUserAccounts: useRouteHandler(EditUserAccounts),
+  editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
   exportSurveyResponses: catchAsyncErrors(exportSurveyResponses),
   exportSurveys: catchAsyncErrors(exportSurveys),
   getChanges: catchAsyncErrors(getChanges),

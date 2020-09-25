@@ -10,7 +10,7 @@ import {
 
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequest) => {
   const results = await filterAccessRequestsByPermissions(accessPolicy, [accessRequest], models);
-  if (results.length === 0) {
+  if (results === 0) {
     throw new Error('Need Admin Panel access to the country this access request is for');
   }
   return true;

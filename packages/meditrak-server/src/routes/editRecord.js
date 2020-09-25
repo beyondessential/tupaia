@@ -18,6 +18,7 @@ import {
   editOptionSet,
   editSurvey,
   editSurveyScreenComponent,
+  editUserEntityPermission,
 } from '../dataAccessors';
 
 const EDITABLE_RECORD_TYPES = [
@@ -47,6 +48,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.SURVEY]: editSurvey,
   [TYPES.SURVEY_SCREEN_COMPONENT]: editSurveyScreenComponent,
   [TYPES.ACCESS_REQUEST]: editAccessRequest,
+  [TYPES.USER_ENTITY_PERMISSION]: editUserEntityPermission,
 };
 
 // TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
