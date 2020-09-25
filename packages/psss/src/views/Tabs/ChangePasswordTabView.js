@@ -48,6 +48,7 @@ const ChangePasswordTabViewComponent = React.memo(({ onUpdatePassword }) => {
   const onSubmit = handleSubmit(async (data, event) => {
     setIsLoading(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
     try {
       await onUpdatePassword(data);
       setIsLoading(false);
