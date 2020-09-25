@@ -11,7 +11,7 @@ import { getIsUserAuthenticated } from './selectors';
 /*
  * A wrapper for <Route> that redirects to the login
  * screen if you're not yet authenticated.
- * */
+ */
 export const PrivateRouteComponent = ({ isLoggedIn, children, ...props }) => {
   return (
     <Route

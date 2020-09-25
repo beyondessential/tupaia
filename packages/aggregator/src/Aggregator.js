@@ -23,7 +23,6 @@ export class Aggregator {
     return this.dataBroker.close();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   get aggregationTypes() {
     return Aggregator.aggregationTypes;
   }
