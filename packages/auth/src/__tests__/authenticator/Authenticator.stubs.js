@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import sinon from 'sinon';
 
 import {
   accessPolicy,
@@ -11,7 +10,8 @@ import {
   MEDITRAK_DEVICE_BY_REFRESH_TOKEN,
 } from './Authenticator.fixtures';
 
-export const getPolicyForUserStub = sinon.stub().resolves(accessPolicy);
+// export const getPolicyForUserStub = sinon.stub().resolves(accessPolicy);
+export const getPolicyForUserStub = jest.fn(() => Promise.resolve(accessPolicy));
 export class AccessPolicyBuilderStub {
   getPolicyForUser = getPolicyForUserStub;
 }
@@ -47,11 +47,12 @@ const findRefreshTokenStub = ({ token }) => {
 };
 
 const createUpsertStub = idField =>
-  sinon.stub().callsFake(async (criteria, upsertedFields) => ({
+  jest.fn(async (criteria, upsertedFields) => ({
     ...criteria,
     ...upsertedFields,
     id: upsertedFields[idField],
   }));
+
 export const models = {
   user: {
     findOne: findUserStub,
