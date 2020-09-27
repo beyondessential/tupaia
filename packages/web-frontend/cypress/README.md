@@ -5,7 +5,8 @@
 ### Installation
 
 - Add a `cypress.env.json` file under the root folder of `web-frontend` (see [cypress.env.example.json](https://github.com/beyondessential/tupaia/tree/dev/packages/web-frontend/cypress.env.example.json) for a template)
-- You must also have `web-config-server` correctly set up.
+- You must also have `web-config-server` correctly set up locally
+- `web-frontend` should point to the local `web-config-server` (and not a remote one)
 
 ### Running the tests
 
