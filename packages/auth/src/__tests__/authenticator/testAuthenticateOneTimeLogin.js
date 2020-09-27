@@ -10,7 +10,7 @@ import { verifiedUser, refreshToken, accessPolicy } from './Authenticator.fixtur
 export const testAuthenticateOneTimeLogin = () => {
   const authenticator = new Authenticator(models, AccessPolicyBuilderStub);
 
-  describe('throws an error with invalid arguments', () => {
+  describe.only('throws an error with invalid arguments', () => {
     const testData = [
       ['null argument', [undefined, '']],
       ['empty argument', [{}, 'token not provided']],
@@ -30,6 +30,8 @@ export const testAuthenticateOneTimeLogin = () => {
     ];
 
     it.each(testData)('%s', async (_, [entities, expectedError]) => {
+      await expect(authenticator.authenticateOneTimeLogin(entities)).rejects.toThrow(expectedError);
+
       authenticator.authenticateOneTimeLogin(entities).catch(e => {
         expect(e.message).toEqual(expectedError);
       });

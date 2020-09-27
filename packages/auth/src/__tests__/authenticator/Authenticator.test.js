@@ -8,10 +8,12 @@ import { testAuthenticatePassword } from './testAuthenticatePassword';
 import { testAuthenticateOneTimeLogin } from './testAuthenticateOneTimeLogin';
 import { testAuthenticateRefreshToken } from './testAuthenticateRefreshToken';
 
+jest.mock('rand-token');
+
 describe('Authenticator', () => {
   beforeAll(() => {
     // sinon.stub(randomToken, 'generate').returns(refreshToken);
-    randomToken.generate = jest.fn().mockReturnValue(refreshToken);
+    randomToken.generate.mockReturnValue(refreshToken);
   });
 
   afterAll(() => {
