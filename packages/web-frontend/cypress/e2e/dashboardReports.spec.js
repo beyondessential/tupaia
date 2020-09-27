@@ -29,8 +29,12 @@ describe('Dashboard reports', () => {
       const reportsByGroup = Cypress._.groupBy(reports, 'dashboardGroup');
 
       before(() => {
+        cy.server();
+        cy.route(/\/dashboard/).as('dashboard');
+
         closeDialogsBecauseOfCypressBug();
         selectProject(project);
+        cy.wait('@dashboard');
       });
 
       Object.entries(reportsByGroup).forEach(([groupName, reportsForGroup]) =>
