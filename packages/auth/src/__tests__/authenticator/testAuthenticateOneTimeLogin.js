@@ -12,7 +12,8 @@ export const testAuthenticateOneTimeLogin = () => {
 
   describe('throws an error with invalid arguments', () => {
     const testData = [
-      ['null argument', [{}, 'token not provided']],
+      ['null argument', [undefined, '']],
+      ['empty argument', [{}, 'token not provided']],
       [
         'no token',
         [
