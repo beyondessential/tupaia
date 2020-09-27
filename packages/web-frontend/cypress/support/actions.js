@@ -19,7 +19,6 @@ export const submitLoginForm = () => {
     .type(Cypress.env('USER_PASSWORD'), { log: false });
 
   cy.get('@loginForm').findByTextI('Sign in').click();
-  closeOverlay();
 };
 
 export const closeOverlay = () => {

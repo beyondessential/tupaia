@@ -31,6 +31,9 @@ Cypress.Commands.add('login', () => {
   cy.wait('@getUser').then(({ response }) => {
     if (response.body.name === PUBLIC_USER) {
       submitLoginForm();
+      cy.wait('@getUser').then(() => {
+        closeOverlay();
+      });
     } else {
       closeOverlay();
     }
