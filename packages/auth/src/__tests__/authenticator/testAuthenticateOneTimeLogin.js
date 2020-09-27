@@ -29,6 +29,7 @@ export const testAuthenticateOneTimeLogin = () => {
       ],
     ];
 
+    // TODO: Test failure
     it.each(testData)('%s', async (_, [entities, expectedError]) => {
       await expect(authenticator.authenticateOneTimeLogin(entities)).rejects.toThrow(expectedError);
 
