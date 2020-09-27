@@ -13,7 +13,7 @@ import App from './App';
 import { API, FakeAPI } from './api';
 import { AppProviders } from './AppProviders';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 function initStore() {
   const persistConfig = { key: 'psss', storage };

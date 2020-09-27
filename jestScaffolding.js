@@ -8,6 +8,8 @@
 
 require('jest-extended');
 
+const winston = require('winston');
+
 const { addCustomJestMatchers } = require('@tupaia/utils');
 
 const customMatchers = [
@@ -41,3 +43,8 @@ const customMatchers = [
 ];
 
 addCustomJestMatchers(expect, customMatchers);
+
+// Silence winston logs
+winston.configure({
+  transports: [new winston.transports.Console({ silent: true })],
+});

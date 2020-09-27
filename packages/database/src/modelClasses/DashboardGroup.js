@@ -15,5 +15,4 @@ export class DashboardGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return DashboardGroupType;
   }
-
 }

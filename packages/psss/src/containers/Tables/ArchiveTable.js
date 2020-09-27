@@ -19,7 +19,7 @@ const createColumns = isForMultipleCountries => [
         {
           title: 'Country',
           key: 'name',
-          width: '22%',
+          width: '25%',
           align: 'left',
           CellComponent: CountryNameCell,
         },
@@ -43,25 +43,17 @@ const createColumns = isForMultipleCountries => [
     title: 'Cases Since Alert Began',
     key: 'totalCases',
     align: 'left',
-    width: '125px',
   },
   {
     title: 'Outbreak Start Date',
     key: 'outbreakStartDate',
     align: 'left',
-    width: '120px',
     CellComponent: StartDateCell,
   },
   {
     title: 'Diagnosis',
     key: 'diagnosis',
     align: 'left',
-  },
-  {
-    title: 'Total Lab Confirmed Cases',
-    key: 'totalLabCases',
-    align: 'left',
-    width: '140px',
   },
   {
     title: '',

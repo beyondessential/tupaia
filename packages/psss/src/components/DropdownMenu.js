@@ -63,7 +63,7 @@ const ValueSpan = styled.span`
 `;
 
 const IconSpan = styled.span`
-  padding: 0.5rem 0.5rem 0.4rem;
+  padding: 0.5rem 0.5rem 0;
   border-left: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
@@ -92,13 +92,7 @@ const MenuItem = styled(MuiMenuItem)`
   padding-bottom: 0.875rem;
 
   &:hover {
-    background-color: ${props => props.theme.palette.error.main};
-
-    span,
-    svg {
-      font-weight: 500;
-      color: white;
-    }
+    color: ${props => props.theme.palette.text.secondary};
   }
 `;
 

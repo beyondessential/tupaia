@@ -70,7 +70,7 @@ function renderWeeklyReportsPanel() {
 describe('weekly reports panel', () => {
   it('renders country syndromes data', () => {
     const { inCountryReports } = renderWeeklyReportsPanel();
-    const syndromes = countryData[ACTIVE_ID].syndromes;
+    const { syndromes } = countryData[ACTIVE_ID];
 
     syndromes.forEach(({ title, totalCases }) => {
       const row = inCountryReports.getByText(title).closest('tr');
@@ -84,7 +84,7 @@ describe('weekly reports panel', () => {
     const FIRST_SITE_INDEX = 0;
     const { inSiteReports } = renderWeeklyReportsPanel();
 
-    const syndromes = sitesData[FIRST_SITE_INDEX].syndromes;
+    const { syndromes } = sitesData[FIRST_SITE_INDEX];
     syndromes.forEach(({ title, totalCases }) => {
       const row = inSiteReports.getByText(title).closest('tr');
       const inRow = within(row);
@@ -107,7 +107,7 @@ describe('weekly reports panel', () => {
     });
 
     expect(screen.getByText(secondSite.address.name)).toBeInTheDocument();
-    const syndromes = sitesData[SECOND_SITE_INDEX].syndromes;
+    const { syndromes } = sitesData[SECOND_SITE_INDEX];
     syndromes.forEach(({ title, totalCases }) => {
       const row = inSiteReports.getByText(title).closest('tr');
       const inRow = within(row);
@@ -118,7 +118,7 @@ describe('weekly reports panel', () => {
 
   it('displays un-verified alerts', () => {
     const { inCountryReports } = renderWeeklyReportsPanel();
-    expect(inCountryReports.getByRole('button', { name: /please verify*/i })).toBeInTheDocument();
+    expect(inCountryReports.getByRole('button', { name: /click to verify*/i })).toBeInTheDocument();
   });
 
   it('validates un-verified alerts', () => {

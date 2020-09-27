@@ -7,7 +7,7 @@
     "build": "babel src --out-dir dist --source-maps --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
     "test": "mocha",
-    "test-coverage": "cross-env NODE_ENV=test nyc mocha",
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix .",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
@@ -29,5 +29,18 @@
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
     "winston": "3.3.3"
+  },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": "src/modelClasses/**",
+        "rules": {
+          "max-classes-per-file": [
+            "error",
+            2
+          ]
+        }
+      }
+    ]
   }
 }

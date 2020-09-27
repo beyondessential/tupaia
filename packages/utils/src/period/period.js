@@ -101,9 +101,9 @@ export const periodToType = (period = '') => {
 
   if (period.includes('Q') && checkNonNumericPeriod(period, PERIOD_TYPES.QUARTER))
     return PERIOD_TYPES.QUARTER;
-  else if (period.includes('W') && checkNonNumericPeriod(period, PERIOD_TYPES.WEEK))
+  if (period.includes('W') && checkNonNumericPeriod(period, PERIOD_TYPES.WEEK))
     return PERIOD_TYPES.WEEK;
-  else if (Number.isNaN(Number(period))) return undefined;
+  if (Number.isNaN(Number(period))) return undefined;
 
   return LENGTH_TO_NUMERIC_PERIOD_TYPE[period.length];
 };
@@ -230,9 +230,7 @@ const convertToNumericPeriod = (period, targetType, isEndPeriod) => {
         result += isEndPeriod ? '1231' : '0101';
       } else if (inputType === MONTH) {
         result += isEndPeriod
-          ? periodToMoment(period)
-              .endOf(periodTypeToMomentUnit(MONTH))
-              .date()
+          ? periodToMoment(period).endOf(periodTypeToMomentUnit(MONTH)).date()
           : '01';
       }
       break;

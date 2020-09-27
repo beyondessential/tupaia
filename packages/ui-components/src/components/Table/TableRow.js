@@ -28,7 +28,7 @@ export const TableRowCells = React.memo(({ columns, rowData }) =>
     const displayValue = value === 0 ? '0' : value;
     const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
-      <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
+      <TableCell background={backgroundColor} key={key} style={{ width }} align={align}>
         {CellComponent ? (
           <CellComponent {...rowData} displayValue={value} columnKey={key} />
         ) : (
@@ -55,8 +55,8 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = React.memo(({ columns, rowData, className }) => (
-  <StyledTableRow className={className}>
+export const TableRow = React.memo(({ columns, rowData, className, onRowClick }) => (
+  <StyledTableRow className={className} onClick={onRowClick}>
     <TableRowCells columns={columns} rowData={rowData} />
   </StyledTableRow>
 ));
@@ -65,10 +65,12 @@ TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   rowData: PropTypes.object.isRequired,
   className: PropTypes.string,
+  onRowClick: PropTypes.func,
 };
 
 TableRow.defaultProps = {
   className: '',
+  onRowClick: null,
 };
 
 const condensedRowBackgroundColor = '#EFEFEF';
@@ -77,12 +79,13 @@ export const CondensedTableRow = styled(TableRow)`
   &:nth-of-type(even) {
     background: ${condensedRowBackgroundColor};
 
-    &:hover {
+    &.MuiTableRow-root:hover {
       background: ${condensedRowBackgroundColor};
     }
   }
 
   .MuiTableCell-root {
+    height: 60px;
     border: none;
   }
 `;
