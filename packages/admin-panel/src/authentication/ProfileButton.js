@@ -13,7 +13,7 @@ import { getUser } from './selectors';
 // https://github.com/beyondessential/tupaia-backlog/issues/1118
 const ProfileLinksComponent = ({ onLogout }) => (
   <>
-    {/*<ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>*/}
+    {/* <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem> */}
     <ProfileButtonItem button onClick={onLogout}>
       Logout
     </ProfileButtonItem>

@@ -61,23 +61,6 @@ Remember to **remove** `.only`/`.skip` calls before you commit the test files.
 
 To display line coverage in code, you can use [Coverage Gutters](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) for `Visual Studio Code`
 
-## Code Style
-
-We use [Eslint](https://eslint.org/) to indicate quality and formatting errors in the codebase.
-
-### Code quality
-
-The [Airbnb Style Guide](https://github.com/airbnb/javascript) is used for code quality, other than formatting which is handled by Prettier. Modifications to the default rules are defined in our custom `@beyondessential/eslint-config-beyondessential` package.
-
-### Formatting style
-
-[Prettier](https://prettier.io/) is used for formatting style. `.prettierrc` defines modification to the default rules.
-In order to use Prettier in **Visual Studio Code**:
-
-1. Install the `Prettier` plugin
-2. Enable the `Editor: Format on Save` setting.
-3. You can now format a file either by saving it, or by using the `Format Document` command
-
 ### Importing geojson
 
 Documentation for importing geojson can be found [here](src/documentation/importingNewGeojson.md)

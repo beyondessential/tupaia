@@ -1,7 +1,7 @@
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- **/
+ */
 import { DatabaseError } from '@tupaia/utils';
 
 export class DatabaseModel {
@@ -10,7 +10,7 @@ export class DatabaseModel {
   constructor(database) {
     this.database = database;
     // Add change handler to database if defined, and this is the singleton instance of the model
-    const onChange = this.constructor.onChange;
+    const { onChange } = this.constructor;
     if (this.database.isSingleton && onChange) {
       this.addChangeHandler(change => onChange(change, this));
     }

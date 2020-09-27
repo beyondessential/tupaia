@@ -66,7 +66,7 @@ describe('editable table', () => {
     expect(rows.length).toEqual(31);
   });
 
-  it('it is editable', async () => {
+  it('is editable', async () => {
     render(<EditableTableComponent />);
     const emailAddress = 'hello-world@gmail.com';
 

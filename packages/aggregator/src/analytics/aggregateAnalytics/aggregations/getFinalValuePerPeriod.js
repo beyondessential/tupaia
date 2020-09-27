@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable max-classes-per-file */
+
 import { PERIOD_TYPES, convertToPeriod, findCoarsestPeriodType, periodToType } from '@tupaia/utils';
 import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
 

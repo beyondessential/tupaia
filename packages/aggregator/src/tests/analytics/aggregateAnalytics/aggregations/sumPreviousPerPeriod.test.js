@@ -7,8 +7,8 @@ import { expect } from 'chai';
 import { PERIOD_TYPES } from '@tupaia/utils';
 import { sumPreviousPerPeriod } from '../../../../analytics/aggregateAnalytics/aggregations';
 
-const DAY = PERIOD_TYPES.DAY;
-const YEAR = PERIOD_TYPES.YEAR;
+const { DAY } = PERIOD_TYPES;
+const { YEAR } = PERIOD_TYPES;
 
 describe('sumPreviousPerPeriod()', () => {
   it('should sum across periods', () => {
@@ -52,7 +52,7 @@ describe('sumPreviousPerPeriod()', () => {
   it('should sum with missing analytics', () => {
     const testAnalytics = [
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
-      //{ dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
+      // { dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
     expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([
@@ -98,7 +98,7 @@ describe('sumPreviousPerPeriod()', () => {
   it('should work if there is no data for the first period', () => {
     const testAnalytics = [
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
-      //{ dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
+      // { dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
     expect(
