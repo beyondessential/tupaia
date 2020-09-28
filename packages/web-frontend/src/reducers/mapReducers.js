@@ -217,13 +217,13 @@ const dummyState = [
   {
     key: 'satellite',
     label: 'Satellite',
-    thumbnail: '/images/tile1.png',
+    thumbnail: '/images/satellite.png',
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mapBoxToken}`,
   },
   {
     key: 'osm',
     label: 'Open Street',
-    thumbnail: '/images/tile2.png',
+    thumbnail: '/images/osm.png',
     url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
   },
 ];

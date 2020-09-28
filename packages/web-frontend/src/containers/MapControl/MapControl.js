@@ -11,9 +11,10 @@ import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ZoomControl } from './ZoomControl';
-import { OFF_WHITE, TRANS_BLACK_LESS } from '../../styles';
+import { OFF_WHITE, TRANS_BLACK_LESS, PRIMARY_BLUE } from '../../styles';
 import { changeTileSet } from '../../actions';
 import { getActiveTileSet } from '../../selectors';
+import { Tile } from './Tile';
 
 const Container = styled.div`
   height: 100%;
@@ -67,38 +68,6 @@ const TileControl = styled(Button)`
   }
 `;
 
-const Tile = styled(Button)`
-  position: relative;
-  border-radius: 3px;
-  margin-bottom: 1rem;
-  font-size: 0;
-  overflow: hidden;
-  padding: 0;
-
-  img {
-    border-radius: 3px;
-  }
-`;
-
-const TileFooter = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  background: #2b2d38;
-  padding: 8px 12px;
-  opacity: 0.9;
-  border-radius: 0 0 3px 3px;
-`;
-
-const TileLabel = styled(Typography)`
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 19px;
-  color: white;
-`;
-
 const Divider = styled.span`
   opacity: 0.2;
   border-right: 1px solid #ffffff;
@@ -107,13 +76,7 @@ const Divider = styled.span`
 `;
 
 export const MapControlComponent = ({ tileSets, activeTileSet, onChange }) => {
-  const [mapLayer, setMapLayer] = React.useState('osm');
-  const [open, toggle] = React.useState(false);
-
-  const handleChange = () => {
-    setMapLayer(current => (current === 'osm' ? 'satellite' : 'osm'));
-  };
-
+  const [open, toggle] = React.useState(true);
   return (
     <Container>
       <Controls>
@@ -129,12 +92,12 @@ export const MapControlComponent = ({ tileSets, activeTileSet, onChange }) => {
       {open && (
         <TileList>
           {tileSets.map(tile => (
-            <Tile key={tile.label}>
-              <img src={tile.thumbnail} alt="tile" />
-              <TileFooter>
-                <TileLabel>{tile.label}</TileLabel>
-              </TileFooter>
-            </Tile>
+            <Tile
+              key={tile.key}
+              tile={tile}
+              onChange={onChange}
+              isActive={activeTileSet.key === tile.key}
+            />
           ))}
         </TileList>
       )}
