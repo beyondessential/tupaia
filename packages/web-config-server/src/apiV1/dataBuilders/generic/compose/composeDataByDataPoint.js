@@ -35,7 +35,7 @@ import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
  *     }
  * }
  * 
- * Will be converted and returned:
+ * The above will then be converted to the below and returned:
  * { 
  *    data: 
  *        [
