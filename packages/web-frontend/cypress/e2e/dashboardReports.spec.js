@@ -24,6 +24,30 @@ const closeDialogsBecauseOfCypressBug = () => {
 };
 
 describe('Dashboard reports', () => {
+  const testReport = report => {
+    describe(report.name, () => {
+      before(() => {
+        closeDialogsBecauseOfCypressBug();
+        expandDashboardItem(report.name);
+      });
+
+      it('enlarged dialog', () => {
+        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
+      });
+    });
+  };
+
+  const testReportsForGroup = (groupName, reports) => {
+    describe(`Group: ${groupName}`, () => {
+      before(() => {
+        closeDialogsBecauseOfCypressBug();
+        selectDashboardGroup(groupName);
+      });
+
+      reports.forEach(testReport);
+    });
+  };
+
   const testReportsForProject = (project, reports) => {
     describe(`Project: ${project}`, () => {
       const reportsByGroup = Cypress._.groupBy(reports, 'dashboardGroup');
@@ -40,30 +64,6 @@ describe('Dashboard reports', () => {
       Object.entries(reportsByGroup).forEach(([groupName, reportsForGroup]) =>
         testReportsForGroup(groupName, reportsForGroup),
       );
-    });
-  };
-
-  const testReportsForGroup = (groupName, reports) => {
-    describe(`Group: ${groupName}`, () => {
-      before(() => {
-        closeDialogsBecauseOfCypressBug();
-        selectDashboardGroup(groupName);
-      });
-
-      reports.forEach(testReport);
-    });
-  };
-
-  const testReport = report => {
-    describe(report.name, () => {
-      before(() => {
-        closeDialogsBecauseOfCypressBug();
-        expandDashboardItem(report.name);
-      });
-
-      it('enlarged dialog', () => {
-        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
-      });
     });
   };
 
