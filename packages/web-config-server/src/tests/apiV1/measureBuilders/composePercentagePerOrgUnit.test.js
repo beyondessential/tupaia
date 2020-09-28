@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import { composePercentagePerOrgUnit } from '/apiV1/measureBuilders/composePercentagePerOrgUnit';
 import * as FetchComposedData from '/apiV1/measureBuilders/helpers';
 
+const models = {};
 const aggregator = {};
 const dhisApi = {};
 const config = {};
@@ -44,7 +45,7 @@ describe('composePercentagePerOrgUnit', () => {
     });
 
     return expect(
-      composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
+      composePercentagePerOrgUnit(models, aggregator, dhisApi, query, config),
     ).to.eventually.deep.equal({
       data: [
         {
@@ -81,7 +82,7 @@ describe('composePercentagePerOrgUnit', () => {
     });
 
     return expect(
-      composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
+      composePercentagePerOrgUnit(models, aggregator, dhisApi, query, config),
     ).to.eventually.deep.equal({
       data: [
         {
@@ -122,7 +123,7 @@ describe('composePercentagePerOrgUnit', () => {
     });
 
     return expect(
-      composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
+      composePercentagePerOrgUnit(models, aggregator, dhisApi, query, config),
     ).to.eventually.deep.equal({
       data: [
         {
