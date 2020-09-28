@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import flatten from 'lodash.flatten';
-import isEqual from 'lodash.isequal';
 import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
@@ -136,7 +135,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       denominatorAggregationType,
     );
 
-    const getResultMapKey = ({organisationUnit, dataElement, value, period}) => `${organisationUnit}|${dataElement}|${value}|${period}`;
+    const getResultMapKey = ({ organisationUnit, dataElement, value, period }) =>
+      `${organisationUnit}|${dataElement}|${value}|${period}`;
 
     const allResults = numeratorResults;
 
@@ -158,7 +158,12 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
   buildData(analytics) {
     const dataClasses = [];
-    Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
+    const getSortOrder = ({ sortOrder }) => sortOrder || 0;
+
+      
+    Object.entries(this.config.dataClasses)
+      .sort(([key1, config1], [key2, config2]) => getSortOrder(config1) - getSortOrder(config2))
+      .forEach(([name, dataClass]) => {
       const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
       const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
 
