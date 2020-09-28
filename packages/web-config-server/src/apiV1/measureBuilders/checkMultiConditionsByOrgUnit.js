@@ -51,6 +51,7 @@ class CheckMultiConditionsByOrgUnit extends DataBuilder {
 }
 
 export const checkMultiConditionsByOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -58,6 +59,7 @@ export const checkMultiConditionsByOrgUnit = async (
   entity,
 ) => {
   const builder = new CheckMultiConditionsByOrgUnit(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,
