@@ -7,9 +7,7 @@ import { createAssertTableResults } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';
 import { tableOfDataValues } from '/apiV1/dataBuilders';
 
-const models = {};
 const assertTableResults = createAssertTableResults(
-  models,
   tableOfDataValues,
   DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_HvlMCH'),
 );

@@ -9,10 +9,9 @@ import { tableOfDataValues } from '/apiV1/dataBuilders';
 
 const dataValues = DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_Nukuhc');
 
-const models = {};
-const assertTableResults = createAssertTableResults(models, tableOfDataValues, dataValues);
+const assertTableResults = createAssertTableResults(tableOfDataValues, dataValues);
 
-const assertErrorIsThrown = createAssertErrorIsThrown(models, tableOfDataValues, dataValues);
+const assertErrorIsThrown = createAssertErrorIsThrown(tableOfDataValues, dataValues);
 
 export const testTotals = () => {
   it('table total', () =>
