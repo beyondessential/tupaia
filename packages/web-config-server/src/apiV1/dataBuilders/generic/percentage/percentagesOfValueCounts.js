@@ -160,7 +160,6 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     const dataClasses = [];
     const getSortOrder = ({ sortOrder }) => sortOrder || 0;
 
-      
     Object.entries(this.config.dataClasses)
       .sort(([key1, config1], [key2, config2]) => getSortOrder(config1) - getSortOrder(config2))
       .forEach(([name, dataClass]) => {
