@@ -34,7 +34,7 @@ export const closeEnlargedDialog = () => {
 };
 
 export const selectProject = name => {
-  cy.findByTextI(Cypress.env('USER_NAME')).click({ force: true });
+  cy.findByTextI(Cypress.env('USER_NAME')).click();
   cy.findByTextI('View projects').click();
 
   if (equalStringsI(name, EXPLORE_PROJECT)) {
