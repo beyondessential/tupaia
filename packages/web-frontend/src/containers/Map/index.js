@@ -23,6 +23,7 @@ import {
   selectOrgUnitChildren,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
+  getActiveTileSet,
 } from '../../selectors';
 
 import {
@@ -38,7 +39,7 @@ const mapStateToProps = state => {
     shouldSnapToPosition,
     position,
     measureInfo,
-    activeTileSet,
+    activeTileSetKey,
     tileSets,
   } = state.map;
   const { isSidePanelExpanded } = state.global;
@@ -74,7 +75,7 @@ const mapStateToProps = state => {
       currentOrganisationUnit.organisationUnitCode,
     ),
     measureInfo,
-    tileSetUrl: tileSets[activeTileSet],
+    tileSetUrl: getActiveTileSet(state).url,
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,

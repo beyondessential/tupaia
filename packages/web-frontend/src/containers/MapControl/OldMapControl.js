@@ -92,7 +92,7 @@ MapControlComponent.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const currentSetKey = state.map.activeTileSet;
+  const currentSetKey = state.map.activeTileSetKey;
   return { currentSetKey };
 };
 

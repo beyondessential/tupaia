@@ -4,15 +4,16 @@
  */
 
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import SatelliteOnIcon from '@material-ui/icons/Visibility';
-import SatelliteOffIcon from '@material-ui/icons/VisibilityOff';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ZoomControl } from './ZoomControl';
 import { OFF_WHITE, TRANS_BLACK_LESS } from '../../styles';
+import { changeTileSet } from '../../actions';
+import { getActiveTileSet } from '../../selectors';
 
 const Container = styled.div`
   height: 100%;
@@ -105,7 +106,7 @@ const Divider = styled.span`
   margin-left: 10px;
 `;
 
-export const MapControlComponent = ({ tiles }) => {
+export const MapControlComponent = ({ tileSets, activeTileSet, onChange }) => {
   const [mapLayer, setMapLayer] = React.useState('osm');
   const [open, toggle] = React.useState(false);
 
@@ -113,14 +114,12 @@ export const MapControlComponent = ({ tiles }) => {
     setMapLayer(current => (current === 'osm' ? 'satellite' : 'osm'));
   };
 
-  const visibilityIcon = mapLayer === 'osm' ? <SatelliteOffIcon /> : <SatelliteOnIcon />;
-
   return (
     <Container>
       <Controls>
         <ZoomControl />
         <TileControl variant="contained" onClick={() => toggle(current => !current)}>
-          <img src={tiles[0].thumbnail} alt="tile" />
+          <img src={activeTileSet.thumbnail} alt="tile" />
           Terrain
           <Divider />
           <RightIcon />
@@ -129,7 +128,7 @@ export const MapControlComponent = ({ tiles }) => {
       </Controls>
       {open && (
         <TileList>
-          {tiles.map(tile => (
+          {tileSets.map(tile => (
             <Tile key={tile.label}>
               <img src={tile.thumbnail} alt="tile" />
               <TileFooter>
@@ -143,24 +142,25 @@ export const MapControlComponent = ({ tiles }) => {
   );
 };
 
+const tileSetShape = PropTypes.shape({
+  key: PropTypes.string,
+  label: PropTypes.string,
+  thumbnail: PropTypes.string,
+});
+
 MapControlComponent.propTypes = {
-  tiles: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string,
-      thumbnail: PropTypes.string,
-    }),
-  ).isRequired,
+  activeTileSet: PropTypes.object.isRequired,
+  tileSets: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
-const TILES = [
-  {
-    label: 'Roads',
-    thumbnail: '/images/tile1.png',
-  },
-  {
-    label: 'Waterways',
-    thumbnail: '/images/tile2.png',
-  },
-];
+const mapStateToProps = state => ({
+  tileSets: state.map.tileSets,
+  activeTileSet: getActiveTileSet(state),
+});
 
-export const MapControl = props => <MapControlComponent tiles={TILES} {...props} />;
+const mapDispatchToProps = dispatch => ({
+  onChange: setKey => dispatch(changeTileSet(setKey)),
+});
+
+export const MapControl = connect(mapStateToProps, mapDispatchToProps)(MapControlComponent);

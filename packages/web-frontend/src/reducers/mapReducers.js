@@ -204,7 +204,7 @@ function getAutoTileset() {
 /**
  * Which tileset to use for the map.
  */
-function activeTileSet(state, action) {
+function activeTileSetKey(state, action) {
   switch (action.type) {
     case CHANGE_TILE_SET:
       return action.setKey;
@@ -213,10 +213,20 @@ function activeTileSet(state, action) {
   }
 }
 
-const dummyState = {
-  satellite: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mapBoxToken}`,
-  osm: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-};
+const dummyState = [
+  {
+    key: 'satellite',
+    label: 'Satellite',
+    thumbnail: '/images/tile1.png',
+    url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mapBoxToken}`,
+  },
+  {
+    key: 'osm',
+    label: 'Open Street',
+    thumbnail: '/images/tile2.png',
+    url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+  },
+];
 
 function tileSets(state = dummyState, action) {
   switch (action.type) {
@@ -228,7 +238,7 @@ function tileSets(state = dummyState, action) {
 export default combineReducers({
   position,
   measureInfo,
-  activeTileSet,
+  activeTileSetKey,
   tileSets,
   isAnimating,
   popup,
