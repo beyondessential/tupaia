@@ -10,12 +10,12 @@ import {
   getTestDatabase,
   upsertDummyRecord,
   findOrCreateDummyRecord,
-  ModelRegistry,
+  getTestModels,
 } from '@tupaia/database';
 import { buildAccessPolicy } from '../buildAccessPolicy';
 
 describe('buildAccessPolicy', () => {
-  const models = new ModelRegistry(getTestDatabase());
+  const models = getTestModels();
   let demoLand;
   let adminPermission;
   let publicPermission;
