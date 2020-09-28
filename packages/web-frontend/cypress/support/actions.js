@@ -4,7 +4,7 @@
  */
 
 import { EXPLORE_PROJECT } from '../constants';
-import { equalCaseInsensitive } from './utilities';
+import { equalStringsI } from './utilities';
 
 export const submitLoginForm = () => {
   cy.findAllByText(/Sign in/)
@@ -37,7 +37,7 @@ export const selectProject = name => {
   cy.findByTextI(Cypress.env('USER_NAME')).click({ force: true });
   cy.findByTextI('View projects').click();
 
-  if (equalCaseInsensitive(name, EXPLORE_PROJECT)) {
+  if (equalStringsI(name, EXPLORE_PROJECT)) {
     cy.findByTextI('I just want to explore').click();
     return;
   }
@@ -49,7 +49,7 @@ export const selectDashboardGroup = name => {
   cy.findByTestId('dropdown-menu')
     .invoke('text')
     .then(selectedName => {
-      if (equalCaseInsensitive(selectedName, name)) {
+      if (equalStringsI(selectedName, name)) {
         return;
       }
 
