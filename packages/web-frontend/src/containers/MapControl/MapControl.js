@@ -12,37 +12,44 @@ import SatelliteOnIcon from '@material-ui/icons/Visibility';
 import SatelliteOffIcon from '@material-ui/icons/VisibilityOff';
 import RightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { ZoomControl } from './ZoomControl';
+import { OFF_WHITE, TRANS_BLACK_LESS } from '../../styles';
 
 const Container = styled.div`
   height: 100%;
+  display: flex;
 `;
 
-const Tiles = styled.div`
+const Controls = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-right: 12px;
+`;
+
+const TileList = styled.div`
   display: flex;
   box-sizing: border-box;
   height: 100%;
   flex-direction: column;
   background: #16161c;
+  // background: ${TRANS_BLACK_LESS};
   padding: 1rem;
+  z-index: 1;
 `;
 
-const TileControl = styled.div`
-  position: absolute;
-  bottom: 0;
-  right: 100%;
-  padding-right: 12px;
-`;
-
-const TileControlButton = styled(Button)`
+const TileControl = styled(Button)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   background: #2b2d38;
+  background: ${TRANS_BLACK_LESS};
+  color: white;
+  color: ${OFF_WHITE};
+
   margin-top: 1rem;
   margin-bottom: 1rem;
   border-radius: 3px;
   padding: 5px 15px 5px 5px;
-  color: white;
   font-weight: 500;
   font-size: 12px;
   line-height: 14px;
@@ -100,6 +107,7 @@ const Divider = styled.span`
 
 export const MapControlComponent = ({ tiles }) => {
   const [mapLayer, setMapLayer] = React.useState('osm');
+  const [open, toggle] = React.useState(false);
 
   const handleChange = () => {
     setMapLayer(current => (current === 'osm' ? 'satellite' : 'osm'));
@@ -109,26 +117,28 @@ export const MapControlComponent = ({ tiles }) => {
 
   return (
     <Container>
-      <TileControl>
+      <Controls>
         <ZoomControl />
-        <TileControlButton>
+        <TileControl variant="contained" onClick={() => toggle(current => !current)}>
           <img src={tiles[0].thumbnail} alt="tile" />
           Terrain
           <Divider />
           <RightIcon />
           <RightIcon />
-        </TileControlButton>
-      </TileControl>
-      <Tiles>
-        {tiles.map(tile => (
-          <Tile key={tile.label}>
-            <img src={tile.thumbnail} alt="tile" />
-            <TileFooter>
-              <TileLabel>{tile.label}</TileLabel>
-            </TileFooter>
-          </Tile>
-        ))}
-      </Tiles>
+        </TileControl>
+      </Controls>
+      {open && (
+        <TileList>
+          {tiles.map(tile => (
+            <Tile key={tile.label}>
+              <img src={tile.thumbnail} alt="tile" />
+              <TileFooter>
+                <TileLabel>{tile.label}</TileLabel>
+              </TileFooter>
+            </Tile>
+          ))}
+        </TileList>
+      )}
     </Container>
   );
 };
@@ -141,3 +151,16 @@ MapControlComponent.propTypes = {
     }),
   ).isRequired,
 };
+
+const TILES = [
+  {
+    label: 'Roads',
+    thumbnail: '/images/tile1.png',
+  },
+  {
+    label: 'Waterways',
+    thumbnail: '/images/tile2.png',
+  },
+];
+
+export const MapControl = props => <MapControlComponent tiles={TILES} {...props} />;
