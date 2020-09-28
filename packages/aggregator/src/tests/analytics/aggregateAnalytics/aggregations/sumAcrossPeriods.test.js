@@ -2,9 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import { expect } from 'chai';
-import sinon from 'sinon';
+import MockDate from 'mockdate';
 
 import { sumAcrossPeriods } from '../../../../analytics/aggregateAnalytics/aggregations/sumAcrossPeriods';
 
@@ -38,22 +36,20 @@ describe('sumAcrossPeriods', () => {
     YEAR: '2020',
   };
 
-  let clock;
-
-  before(() => {
-    clock = sinon.useFakeTimers({ now: new Date(CURRENT_DATE_STUB) });
+  beforeAll(() => {
+    MockDate.set(CURRENT_DATE_STUB);
   });
 
-  after(() => {
-    clock.restore();
+  afterAll(() => {
+    MockDate.reset();
   });
 
   it('single analytic', () => {
-    expect(sumAcrossPeriods([ANALYTICS[0]])).to.have.same.deep.members([ANALYTICS[0]]);
+    expect(sumAcrossPeriods([ANALYTICS[0]])).toEqual(expect.arrayContaining([ANALYTICS[0]]));
   });
 
   it('multiple analytics', () => {
-    expect(sumAcrossPeriods(ANALYTICS)).to.have.same.deep.members(
+    expect(sumAcrossPeriods(ANALYTICS)).toEqual(
       arrayToAnalytics([
         ['BCD01', 'TO', '201601', 1.11],
         ['BCD01', 'PG', '201601', 2.22],
@@ -65,7 +61,7 @@ describe('sumAcrossPeriods', () => {
   describe('periodOptions', () => {
     describe('periodType', () => {
       it('does nothing if not set', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).to.have.same.deep.members(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
@@ -75,9 +71,7 @@ describe('sumAcrossPeriods', () => {
       });
 
       it('converts periods to the specified type', () => {
-        expect(
-          sumAcrossPeriods(ANALYTICS, { periodOptions: { periodType: 'YEAR' } }),
-        ).to.have.same.deep.members(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { periodType: 'YEAR' } })).toEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '2016', 1.11],
             ['BCD01', 'PG', '2016', 2.22],
@@ -89,15 +83,13 @@ describe('sumAcrossPeriods', () => {
 
     describe('useCurrent', () => {
       it('defaults to `false`', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).to.deep.equal(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toEqual(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } }),
         );
       });
 
       it('does nothing if not set', () => {
-        expect(
-          sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } }),
-        ).to.have.same.deep.members(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } })).toEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
@@ -109,7 +101,7 @@ describe('sumAcrossPeriods', () => {
       it('uses the current period of the specified type', () => {
         expect(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: true, periodType: 'YEAR' } }),
-        ).to.have.same.deep.members(
+        ).toEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', CURRENT_PERIOD_STUBS.YEAR, 1.11],
             ['BCD01', 'PG', CURRENT_PERIOD_STUBS.YEAR, 2.22],
@@ -119,9 +111,7 @@ describe('sumAcrossPeriods', () => {
       });
 
       it('uses DAY period type by default', () => {
-        expect(
-          sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: true } }),
-        ).to.have.same.deep.members(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: true } })).toEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', CURRENT_PERIOD_STUBS.DAY, 1.11],
             ['BCD01', 'PG', CURRENT_PERIOD_STUBS.DAY, 2.22],
@@ -133,7 +123,7 @@ describe('sumAcrossPeriods', () => {
 
     describe('excludeFuture', () => {
       it('defaults to `false`', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).to.deep.equal(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toEqual(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: false } }),
         );
       });
@@ -143,7 +133,7 @@ describe('sumAcrossPeriods', () => {
           sumAcrossPeriods(ANALYTICS, {
             periodOptions: { excludeFuture: false },
           }),
-        ).to.have.same.deep.members(
+        ).toEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
@@ -153,9 +143,7 @@ describe('sumAcrossPeriods', () => {
       });
 
       it('filters future periods', () => {
-        expect(
-          sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: true } }),
-        ).to.have.same.deep.members(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: true } })).toEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
