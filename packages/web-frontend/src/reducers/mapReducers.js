@@ -29,6 +29,7 @@ import {
 
 import { MARKER_TYPES } from '../constants';
 import { DEFAULT_BOUNDS } from '../defaults';
+import { mapBoxToken } from '../utils';
 
 function position(state = { bounds: DEFAULT_BOUNDS }, action) {
   switch (action.type) {
@@ -203,7 +204,7 @@ function getAutoTileset() {
 /**
  * Which tileset to use for the map.
  */
-function tileSet(state, action) {
+function activeTileSet(state, action) {
   switch (action.type) {
     case CHANGE_TILE_SET:
       return action.setKey;
@@ -212,10 +213,23 @@ function tileSet(state, action) {
   }
 }
 
+const dummyState = {
+  satellite: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${mapBoxToken}`,
+  osm: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+};
+
+function tileSets(state = dummyState, action) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   position,
   measureInfo,
-  tileSet,
+  activeTileSet,
+  tileSets,
   isAnimating,
   popup,
   shouldSnapToPosition,

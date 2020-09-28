@@ -33,7 +33,14 @@ import {
 } from '../../actions';
 
 const mapStateToProps = state => {
-  const { isAnimating, shouldSnapToPosition, position, measureInfo, tileSet } = state.map;
+  const {
+    isAnimating,
+    shouldSnapToPosition,
+    position,
+    measureInfo,
+    activeTileSet,
+    tileSets,
+  } = state.map;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -67,7 +74,7 @@ const mapStateToProps = state => {
       currentOrganisationUnit.organisationUnitCode,
     ),
     measureInfo,
-    tileSet,
+    tileSetUrl: tileSets[activeTileSet],
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
