@@ -39,8 +39,8 @@ import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
  * { 
  *    data: 
  *        [
- *          { name: dataPoint1, builder1: 'ABC', builder2: 'GHI' }, 
- *          { name: dataPoint2, builder1: 'DEF', builder2: 'JKL' }, 
+ *          { name: dataPoint1, builder1: '111', builder2: '333' }, 
+ *          { name: dataPoint2, builder1: '222', builder2: '444' }, 
  *        ]
  *    }
  */
