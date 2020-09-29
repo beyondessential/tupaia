@@ -53,6 +53,12 @@
         "func-names": "off",
         "no-unused-expressions": "off"
       }
+    },
+    {
+      "files": ["**/webpack.config.js", "**/webpack.config*[!babel].js"],
+      "rules": {
+        "prefer-object-spread": "off"
+      }
     }
   ]
 }
