@@ -7,7 +7,6 @@
 
 import { hasAccess } from '@beyondessential/tupaia-access-policy';
 import {
-  clearTestData,
   getTestDatabase,
   upsertDummyRecord,
   findOrCreateDummyRecord,
@@ -22,8 +21,6 @@ describe('buildLegacyAccessPolicy', () => {
   let publicPermission;
 
   beforeAll(async () => {
-    await clearTestData(getTestDatabase());
-
     demoLand = await findOrCreateDummyRecord(
       models.entity,
       { code: 'DL' },
@@ -51,10 +48,6 @@ describe('buildLegacyAccessPolicy', () => {
         parent_id: donorPermission.id,
       },
     );
-  });
-
-  afterAll(async () => {
-    await clearTestData(getTestDatabase());
   });
 
   describe('Demo Land public user', () => {
