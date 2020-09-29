@@ -190,7 +190,7 @@ export class EntityType extends DatabaseType {
   async fetchNearestOrgUnitAncestor(hierarchyId) {
     const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
     // if this is an org unit, don't worry about going deeper
-    if (orgUnitEntityTypes.has(this.type)) return [this];
+    if (orgUnitEntityTypes.has(this.type)) return this;
     // if no hierarchy id was passed in, use the default hierarchy
     const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyId());
     // get ancestors and return the first that is an org unit type
