@@ -2,6 +2,7 @@ import { checkValueSatisfiesCondition, replaceValues } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
+import { translateBoundsForFrontend, translatePointForFrontend } from '/utils/geoJson';
 import { Entity } from '/models';
 
 const checkCondition = (value, config) =>
@@ -99,8 +100,17 @@ const getMetaDataFromOrgUnit = async (_, config) => {
   const entity = ancestorType
     ? await baseEntity.getAncestorOfType(ancestorType, hierarchyId)
     : baseEntity;
-  const fieldValue = entity[field];
-  return jsonPath ? jsonPath.reduce((acc, attr) => acc[attr], fieldValue) : fieldValue;
+
+  switch (field) {
+    case 'type':
+      return entity.attributes.type;
+    case 'coordinates': {
+      const [lat, long] = translatePointForFrontend(entity.point);
+      return `${lat}, ${long}`;
+    }
+    default:
+      return entity[field];
+  }
 };
 
 const OPERATORS = {

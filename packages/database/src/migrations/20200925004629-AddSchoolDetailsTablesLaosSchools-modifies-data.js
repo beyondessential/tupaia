@@ -113,12 +113,25 @@ const REPORT_PART_2 = {
           key: 'Type_of_school',
           operator: 'ORG_UNIT_METADATA',
           orgUnitCode: '{organisationUnitCode}',
-          field: 'attributes',
-          jsonPath: ['type'],
+          field: 'type',
         },
       ],
-      ['SchFDgps'],
-      ['SchDISmr'],
+      [
+        {
+          key: 'School_Location',
+          operator: 'ORG_UNIT_METADATA',
+          orgUnitCode: '{organisationUnitCode}',
+          field: 'coordinates',
+        },
+      ],
+      [
+        {
+          key: 'Distance_To_Main_Road',
+          operator: 'FORMAT',
+          dataElement: 'SchDISmr',
+          format: '{value}km',
+        },
+      ],
       ['SchCVD026b'],
       [
         {
