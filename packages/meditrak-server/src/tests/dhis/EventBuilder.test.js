@@ -49,12 +49,6 @@ describe('EventBuilder', () => {
     for (let i = 0; i < entities.length; i++) {
       // Upsert entities in order for correct parent/child relationships
       const entity = await upsertEntity(entities[i]);
-      console.log(await exploreHierarchy.getData(), {
-          ancestor_id: entity.parent_id,
-          descendant_id: entity.id,
-          entity_hierarchy_id: exploreHierarchy.id,
-          generational_distance: 1,
-        });
       if (entity.parent_id) {
         await upsertDummyRecord(models.ancestorDescendantRelation, {
           ancestor_id: entity.parent_id,
