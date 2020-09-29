@@ -161,7 +161,7 @@ const VIEW_JSON = {
 
 const REPORT = {
   id: REPORT_ID,
-  dataBuilder: 'composeDataByDataPoint',
+  dataBuilder: 'composeDataPerDataClass',
   dataBuilderConfig: DATA_BUILDER_CONFIG,
   viewJson: VIEW_JSON,
 };
