@@ -15,7 +15,6 @@ export class DashboardGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return DashboardGroupType;
   }
-
   // Return all dashboardGroups with matching organisationLevel and organisationUnits
   async getAllDashboardGroups(organisationLevel, entity, projectCode, hierarchyId) {
     return this.fetchDashboardGroups(

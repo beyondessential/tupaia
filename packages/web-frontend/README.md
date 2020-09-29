@@ -26,8 +26,6 @@ Targeted browsers are:
 
 - Visual Studio Code: Our preferred text/code editor. Good extensions as follows
 - - Yarn: Basically does the job of 'npm' in terminal but faster and smarter
-- - Prettier: Use this to format your code according (currently optional, but not for long!(?))
-- - ESLint
 - - Reactjs code snippets
 - - React-Native/React/Redux snippets for es6/es7
 - - JavaScript (ES6) code snippets
@@ -56,20 +54,3 @@ The default is http://localhost:8080/api/v1/.
 #### Host the backend locally
 
 [Instructions are here](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md) for running config server and a docker instance of the DHIS2 aggregation server. You shouldn't need to change LOCAL_URL as above, as the existing localhost address and port should be the default local/dev address for web-config-server.
-
-## Code Style
-
-We use [Eslint](https://eslint.org/) to indicate quality and formatting errors in the codebase.
-
-### Code quality
-
-The [Airbnb Style Guide](https://github.com/airbnb/javascript) is used for code quality, other than formatting which is handled by Prettier. Modifications to the default rules are defined in our custom `@beyondessential/eslint-config-beyondessential` package.
-
-### Formatting style
-
-[Prettier](https://prettier.io/) is used for formatting style. `.prettierrc` defines modification to the default rules.
-In order to use Prettier in **Visual Studio Code**:
-
-1. Install the `Prettier` plugin
-2. Enable the `Editor: Format on Save` setting.
-3. You can now format a file either by saving it, or by using the `Format Document` command

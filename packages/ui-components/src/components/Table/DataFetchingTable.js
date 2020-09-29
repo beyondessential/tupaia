@@ -48,7 +48,7 @@ export const DataFetchingTable = memo(
           const { data, count } = await fetchData({ page, rowsPerPage, ...sorting });
           updateFetchState({
             ...DEFAULT_FETCH_STATE,
-            data: data,
+            data,
             count,
             isLoading: false,
           });
