@@ -5,11 +5,11 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { getTestModels } from '@tupaia/database';
 
 import { composePercentagePerOrgUnit } from '/apiV1/measureBuilders/composePercentagePerOrgUnit';
 import * as FetchComposedData from '/apiV1/measureBuilders/helpers';
 
+const models = {};
 const aggregator = {};
 const dhisApi = {};
 const config = {};
@@ -24,8 +24,6 @@ const stubFetchComposedData = expectedResults => {
 };
 
 describe('composePercentagePerOrgUnit', () => {
-  const models = getTestModels();
-
   afterEach(() => {
     FetchComposedData.fetchComposedData.restore();
   });
