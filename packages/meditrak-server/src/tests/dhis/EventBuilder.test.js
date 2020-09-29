@@ -35,7 +35,7 @@ const createDhisApiStub = () => {
   });
 };
 
-describe.only('EventBuilder', () => {
+describe('EventBuilder', () => {
   let enrollmentSpy;
   const dhisApi = createDhisApiStub();
 
