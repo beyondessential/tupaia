@@ -127,7 +127,7 @@ export class EntityType extends DatabaseType {
   }
 
   async parent() {
-    return this.parentId ? this.model.findById(this.parent_id) : undefined;
+    return this.parent_id ? this.model.findById(this.parent_id) : undefined;
   }
 
   async hasCountryParent() {
