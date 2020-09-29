@@ -5,20 +5,26 @@
 
 const winston = require('winston');
 
-winston.configure({
-  transports: [
-    new winston.transports.Console({
-      level: 'verbose',
-      format: winston.format.combine(
-        winston.format.colorize({
-          all: true,
-        }),
-        winston.format.printf(({ message }) => message),
-      ),
-    }),
-  ],
-});
+const configureWinston = () =>
+  winston.configure({
+    transports: [
+      new winston.transports.Console({
+        level: 'verbose',
+        format: winston.format.combine(
+          winston.format.colorize({ all: true }),
+          winston.format.printf(({ message }) => message),
+        ),
+      }),
+    ],
+  });
 
-module.exports = {
-  logger: winston,
+const isWinstonConfigured = false;
+
+const getLoggerInstance = () => {
+  if (!isWinstonConfigured) {
+    configureWinston();
+  }
+  return winston;
 };
+
+module.exports = { getLoggerInstance };
