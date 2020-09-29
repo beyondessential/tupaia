@@ -6,36 +6,35 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Aggregator } from '@tupaia/aggregator';
-import { EntityType } from '@tupaia/database';
 
 import { buildAggregationOptions } from '/aggregator/buildAggregationOptions';
-
-const createDataSourceEntity = (code, name, type, ancestors) => {
-  const dataSourceEntity = sinon.createStubInstance(EntityType);
-  dataSourceEntity.getAncestorOfType.callsFake((hierarchyId, ancestorType) => {
-    return ancestors[`${ancestorType}_${hierarchyId}`];
-  });
-  dataSourceEntity.code = code;
-  dataSourceEntity.name = name;
-  dataSourceEntity.type = type;
-  return dataSourceEntity;
-};
 
 const HIERARCHY_ID = '5e9d06e261f76a30c400001b';
 const BASIC_AGGREGATION_OPTIONS = { aggregationType: 'SUM_MOST_RECENT_PER_FACILITY', filter: {} };
 const BASIC_ENTITY_AGGREGATION_OPTIONS = {
   dataSourceEntityType: 'facility',
 };
-const BASIC_DATA_SOURCE_ENTITIES = [
-  createDataSourceEntity('f1', 'Facility 1', 'facility', {
-    [`district_${HIERARCHY_ID}`]: createDataSourceEntity('d9', 'District 9', 'district'),
-  }),
-];
+const BASIC_DATA_SOURCE_ENTITIES = [{ code: 'f1', name: 'Facility 1', type: 'facility' }];
+
+const models = {
+  entity: {
+    fetchAncestorDetailsByDescendantCode: sinon
+      .stub()
+      .withArgs(['f1'], HIERARCHY_ID, 'district')
+      .callsFake(async () => ({
+        f1: {
+          code: 'd9',
+          name: 'District 9',
+        },
+      })),
+  },
+};
 
 describe('buildAggregationOptions', () => {
   it('should build basic aggregation options', async () => {
     return expect(
       buildAggregationOptions(
+        models,
         BASIC_AGGREGATION_OPTIONS,
         BASIC_DATA_SOURCE_ENTITIES,
         BASIC_ENTITY_AGGREGATION_OPTIONS,
@@ -50,6 +49,7 @@ describe('buildAggregationOptions', () => {
   it('should build basic aggregation options and entity aggregation options', async () => {
     return expect(
       buildAggregationOptions(
+        models,
         BASIC_AGGREGATION_OPTIONS,
         BASIC_DATA_SOURCE_ENTITIES,
         { ...BASIC_ENTITY_AGGREGATION_OPTIONS, aggregationEntityType: 'district' },
@@ -72,6 +72,7 @@ describe('buildAggregationOptions', () => {
   it('should build basic aggregation options without redundant entity aggregation options', async () => {
     return expect(
       buildAggregationOptions(
+        models,
         BASIC_AGGREGATION_OPTIONS,
         BASIC_DATA_SOURCE_ENTITIES,
         { ...BASIC_ENTITY_AGGREGATION_OPTIONS, aggregationEntityType: 'facility' },
@@ -86,6 +87,7 @@ describe('buildAggregationOptions', () => {
   it('should build entity aggregation options before basic aggregation options if configured', async () => {
     return expect(
       buildAggregationOptions(
+        models,
         BASIC_AGGREGATION_OPTIONS,
         BASIC_DATA_SOURCE_ENTITIES,
         {
