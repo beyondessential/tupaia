@@ -16,5 +16,15 @@
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0",
     "winston": "^3.3.3"
+  },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": "**/__tests__/**",
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   }
 }
