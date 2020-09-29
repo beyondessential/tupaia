@@ -24,18 +24,16 @@ const closeDialogsBecauseOfCypressBug = () => {
 };
 
 describe('Dashboard reports', () => {
-  const testReportsForProject = (project, reports) => {
-    describe(`Project: ${project}`, () => {
-      const reportsByGroup = Cypress._.groupBy(reports, 'dashboardGroup');
-
+  const testReport = report => {
+    describe(report.name, () => {
       before(() => {
         closeDialogsBecauseOfCypressBug();
-        selectProject(project);
+        expandDashboardItem(report.name);
       });
 
-      Object.entries(reportsByGroup).forEach(([groupName, reportsForGroup]) =>
-        testReportsForGroup(groupName, reportsForGroup),
-      );
+      it('enlarged dialog', () => {
+        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
+      });
     });
   };
 
@@ -50,16 +48,22 @@ describe('Dashboard reports', () => {
     });
   };
 
-  const testReport = report => {
-    describe(report.name, () => {
+  const testReportsForProject = (project, reports) => {
+    describe(`Project: ${project}`, () => {
+      const reportsByGroup = Cypress._.groupBy(reports, 'dashboardGroup');
+
       before(() => {
+        cy.server();
+        cy.route(/\/dashboard/).as('dashboard');
+
         closeDialogsBecauseOfCypressBug();
-        expandDashboardItem(report.name);
+        selectProject(project);
+        cy.wait('@dashboard');
       });
 
-      it('enlarged dialog', () => {
-        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
-      });
+      Object.entries(reportsByGroup).forEach(([groupName, reportsForGroup]) =>
+        testReportsForGroup(groupName, reportsForGroup),
+      );
     });
   };
 
