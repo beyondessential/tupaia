@@ -17,6 +17,7 @@ import { DataSourceModel } from './DataSource';
 import { DisasterModel } from './Disaster';
 import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
+import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
 import { FacilityModel } from './Facility';
 import { GeographicalAreaModel } from './GeographicalArea';
@@ -54,6 +55,7 @@ export const modelClasses = {
   Disaster: DisasterModel,
   DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
+  EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
   Facility: FacilityModel,
   GeographicalArea: GeographicalAreaModel,
