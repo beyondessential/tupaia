@@ -4,8 +4,8 @@
  */
 
 import groupBy from 'lodash.groupby';
-import { utcMoment } from '@tupaia/utils';
 
+import { getSortByKey, utcMoment } from '@tupaia/utils';
 import { fetchEventData, fetchAnalyticData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
@@ -41,7 +41,7 @@ export class TupaiaDataApi {
           dataValues,
         };
       })
-      .sort((a, b) => a.eventDate > b.eventDate);
+      .sort(getSortByKey('eventDate'));
   }
 
   async fetchAnalytics(options) {
@@ -92,7 +92,7 @@ export class TupaiaDataApi {
       ...dataGroup,
     };
 
-    //dataElementCodes metadata can be optional
+    // dataElementCodes metadata can be optional
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
       const sqlQuery = await new SqlQuery(
         `

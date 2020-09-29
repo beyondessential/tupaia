@@ -36,6 +36,7 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 - [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
+- [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
@@ -74,5 +75,23 @@ Most of the packages support the following scripts for testing:
 
 ```
 yarn test # runs the tests
-yarn test-coverage # runs the tests and displays code coverage
+yarn test:coverage # runs the tests and displays code coverage
 ```
+
+## Style Guide
+
+We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/configuring) to detect quality and formatting issues in code:
+
+- [@beyondessential/eslint-config-js](https://www.npmjs.com/package/@beyondessential/eslint-config-js) for JavaScript packages
+- [@beyondessential/eslint-config-ts](https://www.npmjs.com/package/@beyondessential/eslint-config-ts) for TypeScript packages
+- [@beyondessential/eslint-config-jest](https://www.npmjs.com/package/@beyondessential/eslint-config-jest) for packages using `Jest`
+
+The main config for the monorepo is defined in `.eslintrc` under the root folder. Additional rules may be specified in each package.
+
+### Auto-formatting in Visual Studio Code
+
+In order to automatically format code in VSCode according to our style guide:
+
+1. Install [Prettier for VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+2. Enable the `Editor: Format on Save` setting
+3. Your files will now be formatted automatically when you save them

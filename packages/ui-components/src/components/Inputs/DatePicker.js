@@ -30,7 +30,7 @@ const StyledDatePicker = styled(MuiDatePicker)`
   }
 `;
 
-export const DatePicker = ({ label, value, onChange, className, format }) => (
+export const DatePicker = ({ label, value, onChange, className, format, ...props }) => (
   <MuiPickersUtilsProvider utils={DateFnsUtils} locale={auLocale}>
     <StyledDatePicker
       label={label}
@@ -42,6 +42,7 @@ export const DatePicker = ({ label, value, onChange, className, format }) => (
       animateYearScrolling
       TextFieldComponent={TextField}
       className={className}
+      {...props}
     />
   </MuiPickersUtilsProvider>
 );
@@ -61,7 +62,7 @@ DatePicker.defaultProps = {
   format: DAY_MONTH_YEAR_DATE_FORMAT,
 };
 
-export const DateTimePicker = ({ label, value, onChange, className, format }) => (
+export const DateTimePicker = ({ label, value, onChange, className, format, ...props }) => (
   <MuiPickersUtilsProvider utils={DateFnsUtils}>
     <StyledDatePicker
       as={MuiDateTimePicker}
@@ -74,6 +75,7 @@ export const DateTimePicker = ({ label, value, onChange, className, format }) =>
       animateYearScrolling
       TextFieldComponent={TextField}
       className={className}
+      {...props}
     />
   </MuiPickersUtilsProvider>
 );

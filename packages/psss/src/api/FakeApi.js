@@ -5,7 +5,6 @@
 import faker from 'faker';
 
 export class FakeAPI {
-  // eslint-disable-next-line class-methods-use-this
   sleep(delay = 0) {
     return new Promise(resolve => {
       setTimeout(resolve, delay);
@@ -80,7 +79,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   makeSyndrome(code, name) {
     const percentageChange = faker.random.number({
       min: -15,
@@ -99,7 +97,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   syndromes() {
     return [
       this.makeSyndrome('afr', 'Acute Fever and Rash (AFR)'),
@@ -123,7 +120,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   countryWeek(index) {
     return {
       id: faker.random.uuid(),
@@ -138,6 +134,7 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
+      totalSites: 30,
       totalCases: faker.random.number({
         min: 1000,
         max: 2000,
@@ -151,7 +148,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   message() {
     const user = this.user();
     return {
@@ -165,7 +161,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   update() {
     const user = this.user();
     return {
@@ -176,7 +171,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   activity() {
     const update1 = this.update();
     const update2 = this.update();
@@ -191,7 +185,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   siteWeek() {
     const city = faker.address.city();
     return {
@@ -215,7 +208,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   country() {
     return {
       id: faker.random.uuid(),
@@ -229,7 +221,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   alert() {
     return {
       id: faker.random.uuid(),
@@ -260,7 +251,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   outbreak() {
     const alert = this.alert();
     return {
@@ -274,7 +264,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   user() {
     return {
       id: faker.random.uuid(),

@@ -21,13 +21,13 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { setOverlayComponent, changeOrgUnit } from '../../actions';
-import { selectProject } from '../../projects/actions';
+import { setOverlayComponent, setOrgUnit } from '../../actions';
+import { setProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { ProjectLandingPage } from './components/ProjectLandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
-import { selectProjectByCode } from '../../selectors';
+import { selectProjectByCode, selectCurrentProject } from '../../selectors';
 import { LANDING, PROJECT_LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const styles = {
@@ -64,7 +64,6 @@ export class OverlayDiv extends PureComponent {
       closeOverlay,
       isUserLoggedIn,
       selectExploreProject,
-      selectProjectOrgUnit,
       viewProjectList,
       activeProject,
     } = this.props;
@@ -80,7 +79,7 @@ export class OverlayDiv extends PureComponent {
           selectExplore={selectExploreProject}
           viewProjects={viewProjectList}
           project={activeProject}
-          viewProjectOrgUnit={selectProjectOrgUnit}
+          closeOverlay={closeOverlay}
           scrollToTop={scrollToTop}
         />
       ),
@@ -111,19 +110,19 @@ OverlayDiv.propTypes = {
   overlay: PropTypes.node,
   closeOverlay: PropTypes.func.isRequired,
   viewProjectList: PropTypes.func.isRequired,
-  activeProject: PropTypes.shape({}).isRequired,
+  activeProject: PropTypes.shape({}),
   selectExploreProject: PropTypes.func.isRequired,
-  selectProjectOrgUnit: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
 OverlayDiv.defaultProps = {
   overlay: null,
+  activeProject: null,
 };
 
 const mapStateToProps = state => {
   const exploreProject = selectProjectByCode(state, 'explore');
-  const activeProject = selectProjectByCode(state, state.project.activeProjectCode);
+  const activeProject = selectCurrentProject(state);
 
   return {
     overlay: state.global.overlay,
@@ -137,12 +136,8 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   ...ownProps,
   ...stateProps,
   selectExploreProject: () => {
-    dispatch(selectProject(stateProps.exploreProject.code));
+    dispatch(setProject(stateProps.exploreProject.code));
     dispatch(setOverlayComponent(null));
-  },
-  selectProjectOrgUnit: () => {
-    dispatch(setOverlayComponent(null));
-    dispatch(changeOrgUnit(stateProps.activeProject.homeEntityCode, false));
   },
   viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
   closeOverlay: () => {

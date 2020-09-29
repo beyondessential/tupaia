@@ -25,5 +25,5 @@ else
   # add the watch flags to the server start process, as well as a 1 second delay to debounce the
   # many restarts that otherwise happen during the initial build of internal dependencies
   start_server="${start_server} --delay 1 ${watch_flags}"
-  yarn concurrently "${DIR}/buildInternalDependencies.sh --watch" "eval ${start_server}"
+  yarn concurrently "${DIR}/buildInternalDependencies.sh --watch --withTypes" "eval ${start_server}"
 fi

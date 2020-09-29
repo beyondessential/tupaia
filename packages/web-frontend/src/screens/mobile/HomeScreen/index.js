@@ -13,12 +13,13 @@ import { connect } from 'react-redux';
 import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
-import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
+import { setOrgUnit, toggleDashboardSelectExpand, setDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
 import {
-  selectCurrentDashboardKey,
+  selectCurrentDashboardGroupCode,
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
+  selectCurrentProjectCode,
 } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
@@ -32,7 +33,7 @@ class HomeScreen extends PureComponent {
       onChangeOrgUnit,
       currentOrganisationUnit,
       dashboardConfig,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       onToggleDashboardSelectExpand,
       dashboardFilterIsExpanded,
       onChangeDashboardGroup,
@@ -43,7 +44,7 @@ class HomeScreen extends PureComponent {
         <Dashboard
           orgUnit={currentOrganisationUnit}
           dashboardConfig={dashboardConfig}
-          currentDashboardKey={currentDashboardKey}
+          currentDashboardGroupCode={currentDashboardGroupCode}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={name => onChangeDashboardGroup(name)}
@@ -89,22 +90,22 @@ const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, state.project.activeProjectCode);
+  const organisationUnits = selectOrgUnitChildren(state, selectCurrentProjectCode(state));
 
   return {
     organisationUnits,
     currentOrganisationUnit: selectCurrentOrgUnit(state),
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
-    currentDashboardKey: selectCurrentDashboardKey(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
+    onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-    onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+    onChangeDashboardGroup: name => dispatch(setDashboardGroup(name)),
   };
 };
 

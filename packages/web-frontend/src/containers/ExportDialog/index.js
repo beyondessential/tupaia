@@ -16,6 +16,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { Error } from '../../components/Error';
 import { closeExportDialog, attemptChartExport, selectChartExportFormat } from '../../actions';
 import { DIALOG_Z_INDEX, WHITE } from '../../styles';
+import { selectCurrentProjectCode } from '../../selectors';
 
 const formatLabels = {
   png: 'PNG',
@@ -164,16 +165,14 @@ ExportDialog.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { chartExport, authentication, disaster, project: projectObject } = state;
+  const { chartExport, authentication, disaster } = state;
   const { currentUserEmail } = authentication;
   const { selectedDisaster } = disaster;
-
-  const projectCode = projectObject ? projectObject.activeProjectCode : null;
 
   return {
     emailAddress: currentUserEmail,
     selectedDisaster,
-    projectCode,
+    projectCode: selectCurrentProjectCode(state),
     ...chartExport,
   };
 };

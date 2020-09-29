@@ -118,24 +118,6 @@ Note: The `EXPORT_COOKIE_URL` should not contain a http or https prefix.
 
 There's one exception however, authentication cookies will not work so you'll only be able to export publicly accessible charts (though you'll still need to log in in order for the config server to know which email address to send the export to).
 
-## Code Style
-
-We use [Eslint](https://eslint.org/) to indicate quality and formatting errors in the codebase.
-
-### Code quality
-
-The [Airbnb Style Guide](https://github.com/airbnb/javascript) is used for code quality, other than formatting which is handled by Prettier. Modifications to the default rules are defined in our custom `@beyondessential/eslint-config-beyondessential` package.
-
-### Formatting style
-
-[Prettier](https://prettier.io/) is used for formatting style. `.prettierrc` defines modification to the default rules. \
-\
-In order to use Prettier in **Visual Studio Code**:
-
-1. Install the `Prettier` plugin
-2. Enable the `Editor: Format on Save` setting.
-3. You can now format a file either by saving it, or by using the `Format Document` command
-
 ## Debugging
 
 ### Visual Studio Code
@@ -153,7 +135,7 @@ In order to use Prettier in **Visual Studio Code**:
 ```bash
   yarn test               # Runs all tests
   yarn test -g ${pattern} # Runs tests filtering their file names by ${pattern}
-  yarn test-coverage      # Runs tests and displays project test coverage
+  yarn test:coverage      # Runs tests and displays project test coverage
 ```
 
 ### Filtering describe/it blocks

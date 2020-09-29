@@ -8,11 +8,19 @@ import PropTypes from 'prop-types';
 import { CondensedTableRow, TableRow as TableRowComponent } from './TableRow';
 import { tableColumnShape } from './tableColumnShape';
 
-export const TableBody = React.memo(({ data, columns, rowIdKey, TableRow }) => (
+export const TableBody = React.memo(({ data, columns, rowIdKey, TableRow, onRowClick }) => (
   <MuiTableBody>
     {data.map((rowData, rowIndex) => {
       const key = rowData[rowIdKey] || rowData[columns[0].key];
-      return <TableRow rowData={rowData} rowIndex={rowIndex} key={key} columns={columns} />;
+      return (
+        <TableRow
+          rowData={rowData}
+          rowIndex={rowIndex}
+          key={key}
+          columns={columns}
+          onRowClick={onRowClick}
+        />
+      );
     })}
   </MuiTableBody>
 ));
@@ -22,10 +30,12 @@ TableBody.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   TableRow: PropTypes.any,
   rowIdKey: PropTypes.string.isRequired,
+  onRowClick: PropTypes.func,
 };
 
 TableBody.defaultProps = {
   TableRow: TableRowComponent,
+  onRowClick: null,
 };
 
 export const CondensedTableBody = React.memo(({ data, rowIdKey, columns }) => (

@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint no-unused-vars: ["error", { "args": "none" }] */
+
 /**
  * @abstract
  */
@@ -18,24 +20,28 @@ export class Service {
   /**
    * @abstract
    */
-  // eslint-disable-next-line class-methods-use-this
-  async push() {
+  async push(dataSources, data) {
     throw new Error('Any subclass of Service must implement the "push" method');
   }
 
   /**
    * @abstract
    */
-  // eslint-disable-next-line class-methods-use-this
-  async delete() {
+  async delete(dataSource, data, options) {
     throw new Error('Any subclass of Service must implement the "delete" method');
   }
 
   /**
    * @abstract
    */
-  // eslint-disable-next-line class-methods-use-this
-  async pull() {
+  async pull(dataSources, type, options) {
     throw new Error('Any subclass of Service must implement the "pull" method');
+  }
+
+  /**
+   * @abstract
+   */
+  async pullMetadata(dataSources, type, options) {
+    throw new Error('Any subclass of Service must implement the "pullMetadata" method');
   }
 }

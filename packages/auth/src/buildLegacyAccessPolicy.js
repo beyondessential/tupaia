@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable no-underscore-dangle, camelcase */
+/* eslint-disable no-underscore-dangle */
 
 /**
  * Builds a user's country level permissions in the legacy access policy format (see example at

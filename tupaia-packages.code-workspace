@@ -49,6 +49,10 @@
       "path": "packages/export-chart-lambda"
     },
     {
+      "name": "indicators",
+      "path": "packages/indicators"
+    },
+    {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
     },
@@ -89,11 +93,13 @@
       "beyondessential",
       "cacheable",
       "cleanup",
+      "debouncing",
       "deleters",
       "dialogs",
       "enroll",
       "enrollment",
       "enrollments",
+      "eqeqeq",
       "eventdate",
       "geojson",
       "groupby",
@@ -114,7 +120,8 @@
       "specs",
       "testid",
       "updaters",
-      "upsert"
+      "upsert",
+      "vars"
     ],
     "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {
