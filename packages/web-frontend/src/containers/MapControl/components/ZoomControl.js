@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import ZoomIn from '@material-ui/icons/Add';
 import ZoomOut from '@material-ui/icons/Remove';
 import Button from '@material-ui/core/Button';
-import { OFF_WHITE, TRANS_BLACK_LESS } from '../../../styles';
+import { WHITE, TRANS_BLACK, TRANS_BLACK_LESS } from '../../../styles';
 
 const ZoomContainer = styled.div`
   display: flex;
@@ -21,9 +21,14 @@ const ZoomContainer = styled.div`
 const StyledButton = styled(Button)`
   max-width: 30px;
   min-width: 30px;
-  color: ${OFF_WHITE};
-  background: ${TRANS_BLACK_LESS};
+  color: ${WHITE};
+  background: ${TRANS_BLACK};
   box-shadow: none;
+
+  &:hover {
+    background: ${TRANS_BLACK_LESS};
+    box-shadow: none;
+  }
 `;
 
 const ZoomInButton = styled(StyledButton)`

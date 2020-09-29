@@ -26,14 +26,86 @@ const Controls = styled.div`
   padding-right: 12px;
 `;
 
+function ease(v, pow = 4) {
+  return 1 - Math.pow(1 - v, pow);
+}
+
+function createKeyframeAnimation() {
+  // Figure out the size of the element when collapsed.
+  const x = 0.5;
+  const y = 0;
+  let animation = '';
+  let inverseAnimation = '';
+
+  for (let step = 0; step <= 100; step++) {
+    // Remap the step value to an eased one.
+    const easedStep = ease(step / 100, 3);
+
+    // Calculate the scale of the element.
+    const xScale = x + (1 - x) * easedStep;
+    const yScale = y + (1 - y) * easedStep;
+
+    animation += `${step}% {
+      transform: scale(${xScale}, ${yScale});
+    }`;
+
+    // And now the inverse for the contents.
+    const invXScale = 1 - xScale;
+    const invYScale = 1 - yScale;
+    inverseAnimation += `${step}% {
+      transform: scale(${invXScale}, ${invYScale});
+    }`;
+  }
+
+  return `
+  @keyframes openAnimation {
+    ${animation}
+  }
+
+  @keyframes closeAnimation {
+    ${inverseAnimation}
+  }`;
+}
+
 const TileList = styled.div`
   display: flex;
   flex-direction: column;
   background: #16161c;
-  padding: 1rem;
   z-index: 1;
   overflow: auto;
   pointer-events: auto;
+  transform-origin: bottom right;
+  transition: width 0.3s ease;
+
+  ${createKeyframeAnimation()};
+
+  > button {
+    transition: transform 0.5s ease-out;
+  }
+
+  // animations
+  &.expanded {
+    width: 192px;
+    animation-name: openAnimation;
+    animation-duration: 0.4s;
+    animation-timing-function: linear;
+
+    > button {
+      transform: translate(0, 0);
+    }
+  }
+
+  &.closed {
+    width: 0;
+    animation-name: closeAnimation;
+    transform: scale(0, 0);
+    animation-duration: 0.6s;
+    animation-timing-function: linear;
+
+    > button {
+      transform: translate(10px, 100px);
+    }
+  }
 `;
 
 export const MapControlComponent = ({
@@ -43,31 +115,29 @@ export const MapControlComponent = ({
   onZoomInClick,
   onZoomOutClick,
 }) => {
-  const [open, toggle] = React.useState(true);
+  const [open, toggle] = React.useState(false);
   return (
     <Container>
       <Controls>
         <ZoomControl onZoomInClick={onZoomInClick} onZoomOutClick={onZoomOutClick} />
         <TileControl tileSet={activeTileSet} onClick={() => toggle(current => !current)} />
       </Controls>
-      {open && (
-        <TileList>
-          {tileSets.map(tileSet => (
-            <TileButton
-              key={tileSet.key}
-              tileSet={tileSet}
-              onChange={onChange}
-              isActive={activeTileSet.key === tileSet.key}
-            />
-          ))}
-        </TileList>
-      )}
+      <TileList className={open ? 'expanded' : 'closed'}>
+        {tileSets.map(tileSet => (
+          <TileButton
+            key={tileSet.key}
+            tileSet={tileSet}
+            onChange={onChange}
+            isActive={activeTileSet.key === tileSet.key}
+          />
+        ))}
+      </TileList>
     </Container>
   );
 };
 
 MapControlComponent.propTypes = {
-  activeTileSet: PropTypes.object.isRequired,
+  activeTileSet: PropTypes.shape(tileSetShape).isRequired,
   tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
   onChange: PropTypes.func.isRequired,
   onZoomInClick: PropTypes.func.isRequired,

@@ -224,7 +224,7 @@ const makeStyleUrl = ({ styleId, accessKey = GERRY_ACCESS_KEY, username = GERRY_
 const dummyState = [
   {
     key: 'osm',
-    label: 'Open Street',
+    label: 'Open Streets',
     thumbnail: '/images/osm.png',
     url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
   },
@@ -245,6 +245,28 @@ const dummyState = [
     label: 'Roads',
     thumbnail: '/images/roads.png',
     url: makeStyleUrl({ styleId: 'ckenp4uq10dfq1anzert7iot7' }),
+    legendItems: [
+      {
+        color: '#D13333',
+        label: 'Ethnic group one',
+      },
+      {
+        color: '#E37F49',
+        label: 'Ethnic group two',
+      },
+      {
+        color: '#E12EC5',
+        label: 'Ethnic group three',
+      },
+      {
+        color: '#22D489',
+        label: 'Ethnic group four',
+      },
+      {
+        color: '#2196F3',
+        label: 'Ethnic group five',
+      },
+    ],
   },
   {
     key: 'terrain',

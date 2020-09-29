@@ -14,7 +14,7 @@ import { tileSetShape } from '../contants';
 const StyledButton = styled(Button)`
   position: relative;
   border-radius: 3px;
-  margin-bottom: 1rem;
+  margin: 1rem;
   font-size: 0;
   overflow: hidden;
   padding: 0;
@@ -23,13 +23,18 @@ const StyledButton = styled(Button)`
   height: 140px;
   min-height: 140px;
   background-size: cover;
-
   transition: none;
+
+  &:hover {
+    div {
+      opacity: 1;
+    }
+  }
 
   &.active {
     border: 2px solid ${PRIMARY_BLUE};
 
-    > div {
+    div {
       opacity: 1;
     }
 
@@ -50,8 +55,9 @@ const Thumbnail = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  opacity: 0.9;
+  opacity: 0.6;
   background-size: cover;
+  transition: opacity 0.3s ease;
 `;
 
 const TileLabel = styled(Typography)`
