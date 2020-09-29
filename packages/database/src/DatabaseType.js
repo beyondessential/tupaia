@@ -134,6 +134,19 @@ export class DatabaseType {
   async save() {
     const data = await this.getData();
     if (this.id) {
+      // if any columns used custom selectors, updating is not supported via save()
+      if (this.model.customColumnSelectors) {
+        const existing = await this.model.findById(this.id);
+        Object.keys(this.model.customColumnSelectors).forEach(customField => {
+          if (this[customField] !== existing[customField]) {
+            throw new Error(
+              `Cannot update ${customField} via save(), as it uses a custom selector`,
+            );
+          }
+          // we know it doesn't need updating, so just remove it from the data being sent to the db
+          delete data[customField];
+        });
+      }
       await this.model.updateById(this.id, data);
     } else {
       const record = await this.model.create(data);
