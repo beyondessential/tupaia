@@ -20,8 +20,8 @@ const { createJestMockInstance } = require('@tupaia/utils');
 const { DATA_ELEMENT, DATA_GROUP } = DATA_SOURCE_TYPES;
 
 const dataBroker = createJestMockInstance('@tupaia/data-broker', 'DataBroker', {
-  getDataSourceTypes: DATA_SOURCE_TYPES,
-  pull: jest.fn(({ type }) => RESPONSE_BY_SOURCE_TYPE[type]),
+  getDataSourceTypes: () => DATA_SOURCE_TYPES,
+  pull: ({ type }) => RESPONSE_BY_SOURCE_TYPE[type],
 });
 
 let aggregator;
@@ -41,20 +41,12 @@ const aggregationOptions = {
   ],
   filter: { value: 3 },
 };
-
 jest.mock('../../analytics/aggregateAnalytics/aggregateAnalytics');
 AggregateAnalytics.aggregateAnalytics.mockReturnValue(AGGREGATED_ANALYTICS);
 jest.mock('../../analytics/filterAnalytics');
 FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 
 describe('Aggregator', () => {
-  // beforeAll(() => {
-  //   jest.mock('../../analytics/aggregateAnalytics/aggregateAnalytics');
-  //   AggregateAnalytics.aggregateAnalytics.mockReturnValue(AGGREGATED_ANALYTICS);
-  //   jest.mock('../../analytics/filterAnalytics');
-  //   FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
-  // });
-
   beforeEach(() => {
     aggregator = new Aggregator(dataBroker);
     dataBroker.pull.mockClear();
@@ -62,17 +54,11 @@ describe('Aggregator', () => {
     FilterAnalytics.filterAnalytics.mockClear();
   });
 
-  afterAll(() => {
-    AggregateAnalytics.aggregateAnalytics.mockRestore();
-    FilterAnalytics.filterAnalytics.mockRestore();
-  });
-
   it('aggregationTypes getter', () => {
     expect(aggregator.aggregationTypes).toStrictEqual(AGGREGATION_TYPES);
   });
 
-  // TODO: Async function
-  describe.skip('fetchAnalytics()', () => {
+  describe('fetchAnalytics()', () => {
     const assertDataBrokerPullIsInvokedCorrectly = ({ codeInput }, additionalOptions) => {
       expect(dataBroker.pull).toHaveBeenCalledOnceWith(
         { code: codeInput, type: DATA_ELEMENT },
@@ -88,7 +74,9 @@ describe('Aggregator', () => {
 
     it('`aggregationOptions` parameter is optional', async () => {
       const assertErrorIsNotThrown = async emptyAggregationOptions =>
-        expect(aggregator.fetchAnalytics('POP01', fetchOptions, emptyAggregationOptions)).resolves;
+        expect(
+          aggregator.fetchAnalytics('POP01', fetchOptions, emptyAggregationOptions),
+        ).toResolve();
 
       return Promise.all([undefined, {}].map(assertErrorIsNotThrown));
     });
@@ -175,7 +163,7 @@ describe('Aggregator', () => {
           { ...fetchOptions, period },
           aggregationOptions,
         ),
-      ).to.eventually.deep.equal({
+      ).resolves.toStrictEqual({
         results: FILTERED_ANALYTICS,
         metadata,
         period: {
@@ -187,8 +175,7 @@ describe('Aggregator', () => {
     });
   });
 
-  // TODO: Async function
-  describe.skip('fetch events', () => {
+  describe('fetch events', () => {
     it('fetches events', async () => {
       const code = 'PROGRAM_1';
 
