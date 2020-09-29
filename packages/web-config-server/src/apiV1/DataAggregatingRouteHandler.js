@@ -19,13 +19,25 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     this.aggregator = createAggregator(Aggregator, this);
   }
 
-  // Builds the list of entities data should be fetched from, using org unit descendents of the
+  // Builds the list of entities data should be fetched from, using org unit descendants of the
   // selected entity (optionally of a specific entity type)
   fetchDataSourceEntities = async (entity, dataSourceEntityType, dataSourceEntityFilter) => {
+    if (Array.isArray(dataSourceEntityType)) {
+      return (
+        await Promise.all(
+          dataSourceEntityType.map(entityType =>
+            this.fetchDataSourceEntitiesOfType(entity, entityType, dataSourceEntityFilter),
+          ),
+        )
+      ).flat();
+    }
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
-
     const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
+    return this.fetchDataSourceEntitiesOfType(entity, entityType, dataSourceEntityFilter);
+  };
+
+  fetchDataSourceEntitiesOfType = async (entity, entityType, dataSourceEntityFilter) => {
     const hierarchyId = await this.fetchHierarchyId();
 
     let dataSourceEntities = [];
