@@ -80,6 +80,18 @@ const combineBinaryIndicatorsToString = (analytics, config) => {
   return stringArray.length === 0 ? 'None' : stringArray.join(', ');
 };
 
+const combineTextIndicators = (analytics, config) => {
+  const { dataElements } = config;
+  const filteredAnalytics = analytics.filter(({ dataElement: de }) => dataElements.includes(de));
+  const stringArray = [];
+  filteredAnalytics.forEach(({ dataElement, value }) => {
+    if (value) {
+      stringArray.push(value);
+    }
+  });
+  return stringArray.length === 0 ? 'None' : stringArray.join(', ');
+};
+
 const getMetaDataFromOrgUnit = async (_, config) => {
   const { orgUnitCode, ancestorType, field, jsonPath, hierarchyId } = config;
   const baseEntity = await Entity.findOne({ code: orgUnitCode });
@@ -98,6 +110,7 @@ const OPERATORS = {
   GROUP: valueToGroup,
   FORMAT: formatString,
   COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
+  COMBINE_TEXT: combineTextIndicators,
   ORG_UNIT_METADATA: getMetaDataFromOrgUnit,
 };
 
