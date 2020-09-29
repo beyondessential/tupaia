@@ -2,6 +2,7 @@ import { checkValueSatisfiesCondition, replaceValues } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
+import { Entity } from '/models';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
@@ -79,6 +80,17 @@ const combineBinaryIndicatorsToString = (analytics, config) => {
   return stringArray.length === 0 ? 'None' : stringArray.join(', ');
 };
 
+const getMetaDataFromOrgUnit = async (_, config) => {
+  const { orgUnitCode, ancestorType, field, jsonPath, hierarchyId } = config;
+  const baseEntity = await Entity.findOne({ code: orgUnitCode });
+  if (!baseEntity) return 'Entity not found';
+  const entity = ancestorType
+    ? await baseEntity.getAncestorOfType(ancestorType, hierarchyId)
+    : baseEntity;
+  const fieldValue = entity[field];
+  return jsonPath ? jsonPath.reduce((acc, attr) => acc[attr], fieldValue) : fieldValue;
+};
+
 const OPERATORS = {
   DIVIDE: divideValues,
   SUBTRACT: subtractValues,
@@ -86,6 +98,7 @@ const OPERATORS = {
   GROUP: valueToGroup,
   FORMAT: formatString,
   COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
+  ORG_UNIT_METADATA: getMetaDataFromOrgUnit,
 };
 
 const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
