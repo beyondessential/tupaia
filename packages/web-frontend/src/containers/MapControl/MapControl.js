@@ -7,14 +7,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import RightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { ZoomControl } from './ZoomControl';
-import { OFF_WHITE, TRANS_BLACK_LESS, PRIMARY_BLUE } from '../../styles';
-import { changeTileSet } from '../../actions';
+import { ZoomControl } from './components/ZoomControl';
+import { changeTileSet, changeZoom } from '../../actions';
 import { getActiveTileSet } from '../../selectors';
-import { Tile } from './Tile';
+import { TileButton } from './components/TileButton';
+import { TileControl } from './components/TileControl';
+import { tileSetShape } from './contants';
 
 const Container = styled.div`
   height: 100%;
@@ -30,73 +28,36 @@ const Controls = styled.div`
 
 const TileList = styled.div`
   display: flex;
-  box-sizing: border-box;
-  height: 100%;
   flex-direction: column;
   background: #16161c;
-  // background: ${TRANS_BLACK_LESS};
   padding: 1rem;
   z-index: 1;
+  overflow: auto;
+  pointer-events: auto;
 `;
 
-const TileControl = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background: #2b2d38;
-  background: ${TRANS_BLACK_LESS};
-  color: white;
-  color: ${OFF_WHITE};
-
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 3px;
-  padding: 5px 15px 5px 5px;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 14px;
-  border: none;
-
-  img {
-    height: 25px;
-    margin-right: 8px;
-  }
-
-  .MuiSvgIcon-root {
-    margin-right: -15px;
-    color: #2196f3;
-  }
-`;
-
-const Divider = styled.span`
-  opacity: 0.2;
-  border-right: 1px solid #ffffff;
-  height: 25px;
-  margin-left: 10px;
-`;
-
-export const MapControlComponent = ({ tileSets, activeTileSet, onChange }) => {
+export const MapControlComponent = ({
+  tileSets,
+  activeTileSet,
+  onChange,
+  onZoomInClick,
+  onZoomOutClick,
+}) => {
   const [open, toggle] = React.useState(true);
   return (
     <Container>
       <Controls>
-        <ZoomControl />
-        <TileControl variant="contained" onClick={() => toggle(current => !current)}>
-          <img src={activeTileSet.thumbnail} alt="tile" />
-          Terrain
-          <Divider />
-          <RightIcon />
-          <RightIcon />
-        </TileControl>
+        <ZoomControl onZoomInClick={onZoomInClick} onZoomOutClick={onZoomOutClick} />
+        <TileControl tileSet={activeTileSet} onClick={() => toggle(current => !current)} />
       </Controls>
       {open && (
         <TileList>
-          {tileSets.map(tile => (
-            <Tile
-              key={tile.key}
-              tile={tile}
+          {tileSets.map(tileSet => (
+            <TileButton
+              key={tileSet.key}
+              tileSet={tileSet}
               onChange={onChange}
-              isActive={activeTileSet.key === tile.key}
+              isActive={activeTileSet.key === tileSet.key}
             />
           ))}
         </TileList>
@@ -105,16 +66,12 @@ export const MapControlComponent = ({ tileSets, activeTileSet, onChange }) => {
   );
 };
 
-const tileSetShape = PropTypes.shape({
-  key: PropTypes.string,
-  label: PropTypes.string,
-  thumbnail: PropTypes.string,
-});
-
 MapControlComponent.propTypes = {
   activeTileSet: PropTypes.object.isRequired,
-  tileSets: PropTypes.array.isRequired,
+  tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
   onChange: PropTypes.func.isRequired,
+  onZoomInClick: PropTypes.func.isRequired,
+  onZoomOutClick: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -124,6 +81,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   onChange: setKey => dispatch(changeTileSet(setKey)),
+  onZoomInClick: () => dispatch(changeZoom(1)),
+  onZoomOutClick: () => dispatch(changeZoom(-1)),
 });
 
 export const MapControl = connect(mapStateToProps, mapDispatchToProps)(MapControlComponent);

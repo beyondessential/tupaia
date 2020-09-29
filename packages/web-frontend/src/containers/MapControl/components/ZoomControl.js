@@ -4,16 +4,18 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ZoomIn from '@material-ui/icons/Add';
 import ZoomOut from '@material-ui/icons/Remove';
 import Button from '@material-ui/core/Button';
-import { OFF_WHITE, TRANS_BLACK_LESS } from '../../styles';
+import { OFF_WHITE, TRANS_BLACK_LESS } from '../../../styles';
 
 const ZoomContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  pointer-events: auto;
 `;
 
 const StyledButton = styled(Button)`
@@ -36,23 +38,18 @@ const ZoomOutButton = styled(StyledButton)`
   border-top: none;
 `;
 
-export const ZoomControl = () => (
+export const ZoomControl = ({ onZoomInClick, onZoomOutClick }) => (
   <ZoomContainer>
-    <ZoomInButton
-      variant="contained"
-      onClick={() => {
-        console.log('zoom in...');
-      }}
-    >
+    <ZoomInButton variant="contained" onClick={onZoomInClick}>
       <ZoomIn />
     </ZoomInButton>
-    <ZoomOutButton
-      variant="contained"
-      onClick={() => {
-        console.log('zoom out...');
-      }}
-    >
+    <ZoomOutButton variant="contained" onClick={onZoomOutClick}>
       <ZoomOut />
     </ZoomOutButton>
   </ZoomContainer>
 );
+
+ZoomControl.propTypes = {
+  onZoomInClick: PropTypes.func.isRequired,
+  onZoomOutClick: PropTypes.func.isRequired,
+};

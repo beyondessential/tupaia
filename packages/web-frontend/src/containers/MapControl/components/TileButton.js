@@ -8,7 +8,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import { PRIMARY_BLUE } from '../../styles';
+import { PRIMARY_BLUE } from '../../../styles';
+import { tileSetShape } from '../contants';
 
 const StyledButton = styled(Button)`
   position: relative;
@@ -20,6 +21,7 @@ const StyledButton = styled(Button)`
   text-transform: none;
   width: 160px;
   height: 140px;
+  min-height: 140px;
   background-size: cover;
 
   transition: none;
@@ -67,19 +69,19 @@ const TileLabel = styled(Typography)`
   opacity: 0.9;
 `;
 
-export const Tile = ({ tile, isActive, onChange }) => (
-  <StyledButton onClick={() => onChange(tile.key)} className={isActive ? 'active' : ''}>
-    <Thumbnail style={{ backgroundImage: `url(${tile.thumbnail})` }} />
-    <TileLabel>{tile.label}</TileLabel>
+export const TileButton = ({ tileSet, isActive, onChange }) => (
+  <StyledButton onClick={() => onChange(tileSet.key)} className={isActive ? 'active' : ''}>
+    <Thumbnail style={{ backgroundImage: `url(${tileSet.thumbnail})` }} />
+    <TileLabel>{tileSet.label}</TileLabel>
   </StyledButton>
 );
 
-Tile.propTypes = {
-  tile: PropTypes.object.isRequired,
+TileButton.propTypes = {
+  tileSet: PropTypes.shape(tileSetShape).isRequired,
   isActive: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
 };
 
-Tile.defaultProps = {
+TileButton.defaultProps = {
   isActive: false,
 };

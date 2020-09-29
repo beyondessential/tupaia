@@ -29,11 +29,6 @@ const LeftCol = styled.div`
   flex: 1;
 `;
 
-const RightCol = styled.div`
-  position: relative;
-  pointer-events: auto;
-`;
-
 const TopRow = styled.div`
   display: flex;
   flex: 1;
@@ -60,9 +55,7 @@ export const MapDiv = () => {
           <MeasureLegend />
         </BottomRow>
       </LeftCol>
-      <RightCol>
-        <MapControl />
-      </RightCol>
+      <MapControl />
     </FlexDiv>
   );
 };
