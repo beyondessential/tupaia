@@ -16,11 +16,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const PROJECT_CODE = 'explore';
-const DASHBOARD_GROUP_NAME = 'COVID-19';
 const DASHBOARD_GROUP_CODE = 'WS_Covid_Country';
-const NEW_USER_GROUP = 'Donor';
-const OLD_USER_GROUP = 'COVID-19';
 
 const DASHBOARD_REPORT = 'TO_COVID_Percent_IPC_Commodity_Availability';
 
@@ -36,13 +32,14 @@ const getOverlaysForGroup = (db, groupCode) => {
 };
 
 exports.up = async function(db) {
-  // 1. Add new overlay to Samoa
+  // 1. Add existing dashboard report to Samoa
   await db.runSql(`
     update "dashboardGroup" 
     set 
       "dashboardReports" = "dashboardReports" || '{${DASHBOARD_REPORT}}'
     where code = '${DASHBOARD_GROUP_CODE}';
   `);
+
   // 2. Add overlays to Samoa.
   const overlayResponse1 = await getOverlaysForGroup(db, 'COVID19_Commodity_Availability');
   const overlayResponse2 = await getOverlaysForGroup(db, 'COVID19_Facility_Commodities');
@@ -56,7 +53,7 @@ exports.up = async function(db) {
     `);
   });
 
-  // 3. Copy overlays so that the group name can be changed to Samoa (because permissions are overlay based).
+  // 3. Copy overlays so that the group name can be changed to Samoa without having duplicate groups
   const overlaysToCopy = (await getOverlaysForGroup(db, 'COVID19_Tonga')).rows;
 
   const mapOverlayGroupId = generateId();
@@ -73,7 +70,7 @@ exports.up = async function(db) {
     delete overlayObject.linkedMeasures;
     insertObject(db, 'mapOverlay', {
       ...overlayObject,
-      projectCodes: '{fanafana,explore}',
+      projectCodes: '{fanafana,explore}', // Adding the new overlays to fanafana for consistency.
       id,
       countryCodes: '{WS}',
     });
@@ -87,6 +84,7 @@ exports.up = async function(db) {
 };
 
 exports.down = async function(db) {
+  // 1. Delete existing dashboard report from Samoa
   await db.runSql(`
     update "dashboardGroup" 
     set 
@@ -94,6 +92,7 @@ exports.down = async function(db) {
     where code = '${DASHBOARD_GROUP_CODE}';
   `);
 
+  // 2. Remove 'WS' from COVID-19 overlays
   const overlayResponse1 = await getOverlaysForGroup(db, 'COVID19_Commodity_Availability');
   const overlayResponse2 = await getOverlaysForGroup(db, 'COVID19_Facility_Commodities');
   const overlays = [...overlayResponse1.rows, ...overlayResponse2.rows];
@@ -106,6 +105,7 @@ exports.down = async function(db) {
     `);
   });
 
+  // 3. Delete duplicated map overlays and new overlay group
   const overlaysToDelete = (await getOverlaysForGroup(db, 'COVID19_Tonga')).rows;
 
   overlaysToDelete.forEach(overlayObject => {
