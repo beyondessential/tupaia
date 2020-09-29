@@ -19,7 +19,7 @@
     "@tupaia/auth": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "db-migrate": "^0.11.5",
-    "db-migrate-pg": "^0.4.0",
+    "db-migrate-pg": "^1.2.2",
     "dotenv": "^8.2.0",
     "knex": "0.14.6",
     "moment": "^2.24.0",
