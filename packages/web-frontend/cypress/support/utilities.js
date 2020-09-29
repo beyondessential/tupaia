@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const equalCaseInsensitive = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) === 0;
+export const equalStringsI = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) === 0;
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
