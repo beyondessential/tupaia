@@ -3,16 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertTupaiaAdminPanelAccess,
+  hasBESAdminAccess,
 } from '../../permissions';
-import {
-  assertUserAccountPermissions,
-  filterUserAccountsByPermissions,
-} from './assertUserAccountPermissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions/constants';
+import { assertUserAccountPermissions } from './assertUserAccountPermissions';
+
+const { RAW } = QUERY_CONJUNCTIONS;
 
 /**
  * Handles endpoints:
@@ -42,18 +44,29 @@ export class GETUserAccounts extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    const userAccounts = await super.findRecords(criteria, options);
+    const dbConditions = criteria;
+    if (!hasBESAdminAccess(this.accessPolicy)) {
+      // If we don't have BES Admin access, add a filter to the SQL query
+      const entities = await this.models.entity.find({
+        code: Object.keys(this.accessPolicy.policy),
+      });
+      const filteredEntities = entities.filter(e => {
+        return this.accessPolicy.allows(e.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+      });
+      const entityIds = filteredEntities.map(e => e.id);
+      dbConditions[RAW] = {
+        sql: `array(select entity_id from user_entity_permission uep where uep.user_id = user_account.id) <@ array[${entityIds
+          .map(() => '?')
+          .join(',')}]`,
+        parameters: entityIds,
+      };
+    }
+    const userAccounts = await super.findRecords(dbConditions, options);
 
-    const filteredUserAccounts = await filterUserAccountsByPermissions(
-      this.req.accessPolicy,
-      userAccounts,
-      this.models,
-    );
-
-    if (!filteredUserAccounts.length) {
+    if (!userAccounts.length) {
       throw new Error('Your permissions do not allow access to any of the requested resources');
     }
 
-    return filteredUserAccounts;
+    return userAccounts;
   }
 }

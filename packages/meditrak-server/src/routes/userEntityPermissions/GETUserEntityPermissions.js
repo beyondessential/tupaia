@@ -3,16 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertTupaiaAdminPanelAccess,
+  hasBESAdminAccess,
 } from '../../permissions';
-import {
-  assertUserEntityPermissionPermissions,
-  filterUserEntityPermissionsByPermissions,
-} from './assertUserEntityPermissionPermissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions/constants';
+import { assertUserEntityPermissionPermissions } from './assertUserEntityPermissionPermissions';
+
+const { RAW } = QUERY_CONJUNCTIONS;
 
 /**
  * Handles endpoints:
@@ -44,15 +46,21 @@ export class GETUserEntityPermissions extends GETHandler {
   }
 
   async findRecords(criteria, options) {
+    const dbConditions = criteria;
+    if (!hasBESAdminAccess(this.accessPolicy)) {
+      // If we don't have BES Admin access, add a filter to the SQL query
+      const entities = await this.models.entity.find({
+        code: Object.keys(this.accessPolicy.policy),
+      });
+      const filteredEntities = entities.filter(e => {
+        return this.accessPolicy.allows(e.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+      });
+      const entityIds = filteredEntities.map(e => e.id);
+      dbConditions.entity_id = entityIds;
+    }
     const userEntityPermissions = await super.findRecords(criteria, options);
 
-    const filteredUserEntityPermissions = await filterUserEntityPermissionsByPermissions(
-      this.req.accessPolicy,
-      userEntityPermissions,
-      this.models,
-    );
-
-    if (!filteredUserEntityPermissions.length) {
+    if (!userEntityPermissions.length) {
       throw new Error('Your permissions do not allow access to any of the requested resources');
     }
 
