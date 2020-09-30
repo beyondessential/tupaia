@@ -26,10 +26,10 @@ export const testAuthenticateRefreshToken = () => {
       ['invalid refresh token', [{ refreshToken: 'invalidToken' }, 'Refresh token not valid']],
       ['expired refresh token', [{ refreshToken: 'expiredToken' }, 'Refresh token has expired']],
     ];
-    it.each(testData)('%s', (_, [entities, expectedError]) => {
-      authenticator.authenticateRefreshToken(entities).catch(e => {
-        expect(e).toEqual(expectedError);
-      });
+    it.each(testData)('%s', async (_, [entities, expectedError]) => {
+      await expect(authenticator.authenticateRefreshToken(entities)).toBeRejectedWith(
+        expectedError,
+      );
     });
   });
 
@@ -37,23 +37,37 @@ export const testAuthenticateRefreshToken = () => {
     return expect(authenticator.authenticateRefreshToken({ refreshToken: 'validToken' })).resolves;
   });
 
-  it('should build the correct access policy for the meditrak device', async () => {
-    const assertCorrectAccessPolicyWasBuilt = async (refreshToken, useLegacyFormat) => {
-      getPolicyForUserStub.mockReset(); // ensure history is reset between tests
-      authenticator.authenticateRefreshToken({ refreshToken }).then(r => {
-        expect(r).toStrictEqual({
-          accessPolicy,
-          refreshToken,
-          user: verifiedUser,
+  describe('should build the correct access policy for the meditrak device', () => {
+    const testData = [
+      [
+        'modern meditrak device',
+        [
+          ['i', ['modern', false]],
+          ['ii', ['ultraModern', false]],
+        ],
+      ],
+      [
+        'legacy meditrak device',
+        [
+          ['i', ['legacy', true]],
+          ['ii', ['ultraLegacy', true]],
+        ],
+      ],
+    ];
+    testData.forEach(([testCaseName, testCaseData]) => {
+      describe(testCaseName, () => {
+        it.each(testCaseData)('%s', async (_, [refreshToken, useLegacyFormat]) => {
+          getPolicyForUserStub.mockClear(); // ensure history is reset between tests
+          await expect(
+            authenticator.authenticateRefreshToken({ refreshToken }),
+          ).resolves.toStrictEqual({
+            accessPolicy,
+            refreshToken,
+            user: verifiedUser,
+          });
+          expect(getPolicyForUserStub).toHaveBeenCalledOnceWith(verifiedUser.id, useLegacyFormat);
         });
-        expect(getPolicyForUserStub).toHaveBeenCalledOnceWith(verifiedUser.id, useLegacyFormat);
       });
-    };
-    // modern
-    await assertCorrectAccessPolicyWasBuilt('modern', false);
-    await assertCorrectAccessPolicyWasBuilt('ultraModern', false);
-    // legacy
-    await assertCorrectAccessPolicyWasBuilt('legacy', true);
-    await assertCorrectAccessPolicyWasBuilt('ultraLegacy', true);
+    });
   });
 };
