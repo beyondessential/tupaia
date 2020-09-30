@@ -23,8 +23,9 @@ import {
   selectOrgUnitChildren,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
-  getActiveTileSet,
 } from '../../selectors';
+
+import { selectActiveTileSet } from '../../selectors/projectSelectors';
 
 import {
   setOrgUnit,
@@ -34,14 +35,7 @@ import {
 } from '../../actions';
 
 const mapStateToProps = state => {
-  const {
-    isAnimating,
-    shouldSnapToPosition,
-    position,
-    measureInfo,
-    activeTileSetKey,
-    tileSets,
-  } = state.map;
+  const { isAnimating, shouldSnapToPosition, position, measureInfo } = state.map;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -75,7 +69,7 @@ const mapStateToProps = state => {
       currentOrganisationUnit.organisationUnitCode,
     ),
     measureInfo,
-    tileSetUrl: getActiveTileSet(state).url,
+    tileSetUrl: selectActiveTileSet(state).url,
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,

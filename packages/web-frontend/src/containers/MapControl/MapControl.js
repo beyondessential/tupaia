@@ -9,10 +9,10 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { ZoomControl } from './components/ZoomControl';
 import { changeTileSet, changeZoom } from '../../actions';
-import { getActiveTileSet } from '../../selectors';
 import { TileButton } from './components/TileButton';
 import { TileControl } from './components/TileControl';
 import { tileSetShape } from './contants';
+import { selectTileSets, selectActiveTileSet } from '../../selectors/projectSelectors';
 
 const Container = styled.div`
   height: 100%;
@@ -145,8 +145,8 @@ MapControlComponent.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  tileSets: state.map.tileSets,
-  activeTileSet: getActiveTileSet(state),
+  tileSets: selectTileSets(state),
+  activeTileSet: selectActiveTileSet(state),
 });
 
 const mapDispatchToProps = dispatch => ({

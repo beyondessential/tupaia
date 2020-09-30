@@ -60,6 +60,3 @@ export {
   selectDefaultMeasureId,
   selectCurrentPeriodGranularity,
 } from './measureSelectors';
-
-export const getActiveTileSet = ({ map }) =>
-  map.tileSets.find(tileSet => tileSet.key === map.activeTileSetKey);
