@@ -10,14 +10,14 @@ import { hasAccess } from '@beyondessential/tupaia-access-policy';
 import {
   clearTestData,
   getTestDatabase,
+  getTestModels,
   upsertDummyRecord,
   findOrCreateDummyRecord,
-  ModelRegistry,
 } from '@tupaia/database';
 import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
 describe('buildLegacyAccessPolicy', () => {
-  const models = new ModelRegistry(getTestDatabase());
+  const models = getTestModels();
   let demoLand;
   let adminPermission;
   let publicPermission;

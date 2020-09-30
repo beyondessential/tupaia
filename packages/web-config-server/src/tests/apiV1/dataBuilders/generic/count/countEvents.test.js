@@ -27,10 +27,12 @@ const MOCK_EVENTS = [
 const dataServices = [{ isDataRegional: true }];
 const entity = {};
 const query = { organisationUnitCode: 'PG' };
+const models = {
+  project: { findOne: sinon.stub().resolves({ entity_hierarchy_id: 'xxx' }) },
+};
 
 const fetchEvents = sinon.stub().returns(MOCK_EVENTS);
 const aggregator = sinon.createStubInstance(Aggregator, { fetchEvents });
-const models = {};
 const dhisApi = {};
 
 describe('CountEventsBuilder', () => {

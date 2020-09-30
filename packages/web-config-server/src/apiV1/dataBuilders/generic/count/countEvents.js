@@ -69,7 +69,7 @@ export class CountEventsBuilder extends DataBuilder {
     const { groupBy } = this.config;
     if (groupBy) {
       const hierarchyId = await this.fetchEntityHierarchyId();
-      groupEvents(this.models, events, { ...groupBy, hierarchyId });
+      return groupEvents(this.models, events, { ...groupBy, hierarchyId });
     }
     return { value: events };
   }

@@ -22,6 +22,7 @@ export {
   mapValues,
   reduceToDictionary,
   reduceToSet,
+  stripFields,
 } from './object';
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { replaceValues } from './replaceValues';

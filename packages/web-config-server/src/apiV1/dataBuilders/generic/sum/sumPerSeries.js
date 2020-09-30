@@ -118,11 +118,12 @@ export const sumPerMonthPerSeries = async (
 };
 
 export const sumPerYearPerSeries = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new SumPerSeriesDataBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

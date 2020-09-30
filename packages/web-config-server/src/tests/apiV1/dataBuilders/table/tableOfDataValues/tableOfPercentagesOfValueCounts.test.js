@@ -9,7 +9,6 @@ import { tableOfPercentagesOfValueCounts } from '/apiV1/dataBuilders';
 
 const models = {};
 const assertTableResults = createAssertTableResults(
-  models,
   tableOfPercentagesOfValueCounts,
   DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_Nukuhc'),
 );

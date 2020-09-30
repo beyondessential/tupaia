@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { TypeValidationError } from '@tupaia/utils';
+import { TypeValidationError, stripFields } from '@tupaia/utils';
 
 export class DatabaseType {
   static databaseType = null; // The database table name
@@ -90,6 +90,10 @@ export class DatabaseType {
     return this.model.otherModels;
   }
 
+  get customSelectedFields() {
+    return Object.keys(this.model.customColumnSelectors);
+  }
+
   // Return an object representing just the data for returning through http requests etc.
   async getData() {
     const data = {};
@@ -129,12 +133,35 @@ export class DatabaseType {
     }
   }
 
+  async assertCustomSelectedFieldsUnchanged() {
+    if (!this.model.customColumnSelectors) {
+      return true; // no custom selected fields
+    }
+
+    const existing = await this.model.findById(this.id);
+    Object.keys(this.model.customColumnSelectors).forEach(customField => {
+      if (this[customField] !== existing[customField]) {
+        throw new Error(
+          `${customField} has been updated since this model was loaded from the database`,
+        );
+      }
+    });
+    return true;
+  }
+
   // Save the current state of this instance into the database. Creates a new
   // database entry if no id exists.
   async save() {
     const data = await this.getData();
     if (this.id) {
-      await this.model.updateById(this.id, data);
+      // if any columns used custom selectors, updating is not supported via save()
+      if (this.customSelectedFields) {
+        await this.assertCustomSelectedFieldsUnchanged();
+        const safeData = stripFields(data, this.customSelectedFields);
+        await this.model.updateById(this.id, safeData);
+      } else {
+        await this.model.updateById(this.id, data);
+      }
     } else {
       const record = await this.model.create(data);
       this.id = record.id;

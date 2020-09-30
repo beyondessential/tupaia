@@ -4,8 +4,7 @@
  */
 
 import {
-  ModelRegistry,
-  getTestDatabase,
+  getTestModels,
   buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
@@ -17,7 +16,7 @@ import { testFetchDataElements } from './testFetchDataElements';
 
 describe('TupaiaDataApi', () => {
   before(async () => {
-    const models = new ModelRegistry(getTestDatabase());
+    const models = getTestModels();
     await buildAndInsertSurveys(models, SURVEYS);
     await Promise.all(
       ENTITIES.map(e => findOrCreateDummyRecord(models.entity, { code: e.code }, e)),

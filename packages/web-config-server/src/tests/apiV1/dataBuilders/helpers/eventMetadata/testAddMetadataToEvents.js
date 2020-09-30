@@ -5,12 +5,13 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { getTestModels } from '@tupaia/database';
 
 import { addMetadataToEvents } from '/apiV1/dataBuilders/helpers/eventMetadata';
 import { EVENTS, ORG_UNITS } from './eventMetadata.fixtures';
 
 export const testAddMetadataToEvents = () => {
-  const models = {};
+  const models = getTestModels();
   it('should throw an error if an invalid key has been provided', async () => {
     const assertErrorIsThrownForKeys = async keys =>
       expect(addMetadataToEvents(models, [EVENTS.objectDataValue], keys)).to.be.rejectedWith(

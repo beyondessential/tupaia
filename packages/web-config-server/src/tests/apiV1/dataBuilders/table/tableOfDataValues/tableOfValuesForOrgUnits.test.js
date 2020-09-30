@@ -3,19 +3,11 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-import sinon from 'sinon';
 import { createAssertTableResults } from './helpers';
-import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
+import { DATA_VALUES } from './tableOfDataValues.fixtures';
 import { tableOfValuesForOrgUnits } from '/apiV1/dataBuilders/generic/table';
 
-const models = {
-  entity: {
-    find: sinon
-      .stub()
-      .callsFake(({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code))),
-  },
-};
-const assertTableResults = createAssertTableResults(models, tableOfValuesForOrgUnits, DATA_VALUES);
+const assertTableResults = createAssertTableResults(tableOfValuesForOrgUnits, DATA_VALUES);
 
 describe('tableOfValuesForOrgUnits', () => {
   describe('basic', () => {
