@@ -69,7 +69,6 @@ const percentagesPerPeriod = async (
       denominatorFetchOptions,
       { aggregationType: aggregationTypes.denominator },
     );
-    console.log('denominatorResults', denominatorResults);
     const numeratorCodes = metric.numerator.dataElementCodes || metric.numerator;
     const { results: numeratorResults } = await aggregator.fetchAnalytics(
       numeratorCodes,
@@ -77,7 +76,6 @@ const percentagesPerPeriod = async (
       query,
       { aggregationType: aggregationTypes.numerator },
     );
-    console.log('numeratorResults', numeratorResults);
     return { denominatorResults, numeratorResults };
   };
 
@@ -150,7 +148,6 @@ const percentagesPerPeriod = async (
   Object.entries(metricDataByPeriod).forEach(([periodTimestamp, metricData]) => {
     percentagesByPeriod[periodTimestamp] = {};
     Object.entries(metricData).forEach(([metricKey, { numerator, denominator }]) => {
-      // console.log(`${metricKey}: ${numerator} / ${denominator}`);
       if (denominator && (numerator || numerator === 0)) {
         percentagesByPeriod[periodTimestamp][metricKey] = calculatePercentage(
           numerator,
