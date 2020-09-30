@@ -1,30 +1,38 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { DatabaseError } from '@tupaia/utils';
 import { hashAndSaltPassword, encryptPassword } from '@tupaia/auth';
-import { generateSecretKey } from '../utilities';
+import { generateSecretKey } from '@tupaia/utils';
+import { CreateHandler } from '../CreateHandler';
+import { assertBESAdminAccess } from '../../permissions';
 
-export const createUser = async (
-  models,
-  {
-    firstName,
-    lastName,
-    emailAddress,
-    contactNumber,
-    password,
-    countryName,
-    permissionGroupName,
-    is_api_client: isApiClient,
-    verifiedEmail,
-    ...restOfUser
-  },
-) => {
-  try {
-    console.log('yeyeye');
-    return await models.wrapInTransaction(async transactingModels => {
+/**
+ * Handles POST endpoints:
+ * - /userAccount
+ */
+
+export class CreateUserAccounts extends CreateHandler {
+  async assertUserHasAccess() {
+    await this.assertPermissions(assertBESAdminAccess);
+  }
+
+  async createRecord() {
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      contactNumber,
+      password,
+      countryName,
+      permissionGroupName,
+      is_api_client: isApiClient,
+      verifiedEmail,
+      ...restOfUser
+    } = this.newRecordData;
+
+    return this.models.wrapInTransaction(async transactingModels => {
       const permissionGroup = await transactingModels.permissionGroup.findOne({
         name: permissionGroupName,
       });
@@ -69,7 +77,5 @@ export const createUser = async (
 
       return { userId: user.id, secretKey };
     });
-  } catch (error) {
-    throw new DatabaseError('creating user', error);
   }
-};
+}

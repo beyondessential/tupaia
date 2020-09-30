@@ -21,7 +21,7 @@ import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
-import { EditUserAccounts, GETUserAccounts } from './userAccounts';
+import { CreateUserAccounts, EditUserAccounts, GETUserAccounts } from './userAccounts';
 import { EditUserEntityPermissions, GETUserEntityPermissions } from './userEntityPermissions';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { importEntities } from './importEntities';
@@ -68,6 +68,7 @@ export default {
   countChanges: catchAsyncErrors(countChanges),
   deleteRecord: catchAsyncErrors(deleteRecord),
   editRecord: catchAsyncErrors(editRecord),
+  createUserAccount: useRouteHandler(CreateUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
