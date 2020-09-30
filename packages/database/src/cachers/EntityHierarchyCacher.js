@@ -30,7 +30,7 @@ export class EntityHierarchyCacher {
   }
 
   /**
-   * Traverse the alternative hierarchy that begins with the specified parent.
+   * Recursively traverse the alternative hierarchy that begins with the specified parents.
    * At each generation, choose children via 'entity_relation' if any exist, or the canonical
    * entity.parent_id if none do
    * @param {string} hierarchyId             The specific hierarchy to follow through entity_relation
