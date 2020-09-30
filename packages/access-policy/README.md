@@ -18,6 +18,9 @@ accessPolicy.allowsSome(['DL', 'DL_North'], 'Donor');
 
 // Returns whether or not the access policy grants any access to Demo Land
 accessPolicy.allows('DL');
+
+// Returns the list of countries the policy has access to the 'Donor' permissionGroup for
+acessPolicy.getEntitiesAllowed('Donor');
 ```
 
 ## JSON Structure
