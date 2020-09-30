@@ -33,7 +33,7 @@
     "reactstrap": "^5.0.0",
     "redux": "^3.7.2",
     "redux-auth-wrapper": "^2.0.1",
-    "redux-persist": "5.0.0-beta.7",
+    "redux-persist": "6.0.0",
     "redux-thunk": "^2.2.0",
     "styled-components": "^5.1.0",
     "uuid": "^3.2.1"
@@ -44,8 +44,9 @@
     "build": "react-scripts build",
     "postbuild": "rm -rf served_build && mv build served_build",
     "test": "react-scripts test --env=jsdom --passWithNoTests",
-    "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .",
+    "eject": "react-scripts eject"
   },
   "browserslist": {
     "production": [
@@ -58,5 +59,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    }
   }
 }

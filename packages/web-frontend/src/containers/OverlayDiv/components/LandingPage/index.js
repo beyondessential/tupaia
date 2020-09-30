@@ -12,10 +12,10 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
-import logo from '../../../../images/tupaia-logo-white.png';
 import { LoginPage } from './LoginPage';
 import { ProjectPage } from '../ProjectPage';
 import { OVERLAY_PADDING } from '../../constants';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../../../constants';
 
 const Container = styled.div`
   display: grid;
@@ -55,7 +55,7 @@ export const LandingPage = ({ isUserLoggedIn }) => {
   return (
     <Container>
       <div>
-        <Logo src={logo} alt="Tupaia logo" />
+        <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
         <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
         {isLoginPageVisible && (
           <ViewProjectsButton onClick={showProjects} variant="outlined">

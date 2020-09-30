@@ -41,7 +41,6 @@ export class DhisApi {
     this.deleteEvent = this.deleteEvent.bind(this);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getResourceTypes() {
     return DHIS2_RESOURCE_TYPES;
   }

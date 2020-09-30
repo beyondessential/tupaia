@@ -101,7 +101,7 @@ export const testPullAnalytics = () => {
 
         return assertAnalyticsApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.POP01],
-          options: options,
+          options,
           invocationArgs: {
             dataElementCodes: ['POP01'],
             ...options,

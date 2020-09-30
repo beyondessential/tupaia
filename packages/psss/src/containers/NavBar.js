@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
-import { ProfileButton } from '../components/ProfileButton';
+import { ProfileButton } from './ProfileButton';
 import { getPermittedEntitySlug, getHomeUrl } from '../store';
 
 /*
@@ -20,7 +20,8 @@ const HOME_ALIAS = 'weekly-reports';
 const isTabActive = (match, location) => {
   if (!match) {
     return false;
-  } else if (match.url === '') {
+  }
+  if (match.url === '') {
     const pathSegments = location.pathname.split('/').filter(x => x);
     return pathSegments[0] === HOME_ALIAS;
   }

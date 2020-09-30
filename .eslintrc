@@ -1,13 +1,13 @@
 {
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
+  "extends": "@beyondessential/js",
   "parser": "babel-eslint",
-  "env": {
-    "mocha": true
-  },
   "rules": {
     "import/no-extraneous-dependencies": [
       "error",
-      { "devDependencies": ["**/src/tests/**"], "packageDir": ["../../", "."] }
+      {
+        "devDependencies": ["**/tests/**", "**/__tests__/**", "**/stories/**"],
+        "packageDir": ["../../", "."]
+      }
     ],
     "import/no-unresolved": [
       "error",
@@ -24,12 +24,24 @@
         ]
       }
     ],
-    "max-classes-per-file": ["error", 2],
-    "react/forbid-prop-types": "off"
+    "jsx-a11y/href-no-hash": "off"
   },
   "overrides": [
     {
+      "files": ["**/src/migrations/**", "**/src/database/migrations/**"],
+      "rules": {
+        "func-names": "off",
+        "no-underscore-dangle": "off",
+        "no-var": "off",
+        "strict": "off",
+        "no-unused-vars": "off"
+      }
+    },
+    {
       "files": "**/src/tests/**",
+      "env": {
+        "mocha": true
+      },
       "rules": {
         "func-names": "off",
         "no-unused-expressions": "off"

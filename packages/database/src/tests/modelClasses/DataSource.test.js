@@ -13,9 +13,9 @@ describe('DataSource', () => {
 
     const createDataSource = ({ type = 'dataElement', serviceType = 'tupaia', config }) =>
       new DataSourceType(new DataSourceModel(database), {
-        type: type,
+        type,
         service_type: serviceType,
-        config: config,
+        config,
       });
 
     const assertConfigIsSanitized = ({ type, serviceType }, config, expectedConfig) => {

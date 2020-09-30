@@ -24,7 +24,9 @@
     "test": "npm run test:jest",
     "test:jest": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "test:cypress:open": "start-server-and-test start-dev 3000 cypress:open",
-    "test:cypress:run": "start-server-and-test start-dev 3000 cypress:run"
+    "test:cypress:run": "start-server-and-test start-dev 3000 cypress:run",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix ."
   },
   "dependencies": {
     "@material-ui/core": "^4.9.11",
@@ -57,8 +59,6 @@
   ],
   "devDependencies": {
     "eslint-import-resolver-alias": "^1.1.2",
-    "faker": "^4.1.0",
-    "npm-run-all": "^4.1.5",
-    "start-server-and-test": "^1.11.0"
+    "faker": "^4.1.0"
   }
 }

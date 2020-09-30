@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 11.8
+-- Dumped by pg_dump version 11.8
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -81,7 +81,8 @@ CREATE TYPE public.entity_type AS ENUM (
     'disaster',
     'school',
     'catchment',
-    'sub_catchment'
+    'sub_catchment',
+    'field_station'
 );
 
 
@@ -92,7 +93,8 @@ CREATE TYPE public.entity_type AS ENUM (
 CREATE TYPE public.service_type AS ENUM (
     'dhis',
     'tupaia',
-    'indicator'
+    'indicator',
+    'weather'
 );
 
 
@@ -2710,8 +2712,8 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 11.8
+-- Dumped by pg_dump version 11.8
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -3642,12 +3644,40 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 869	/20200817073430-ChangeFlutrackingOverlaysScaleBounds-modifies-data	2020-08-27 22:13:13.339
 870	/20200820071030-FixIHRMapOverlaysMissingOrganisationUnitType-modifies-data	2020-08-27 22:13:13.404
 871	/20200825113028-AddLaosEocProject-modifies-data	2020-08-27 22:13:13.673
-872	/20200527025956-FixupsToMissingDataElementInPLSMDashboards	2020-09-01 15:08:19.605
-873	/20200806062829-AddEmptyAndNoAccessDashboardReports-modifies-data	2020-09-01 15:08:20.277
-874	/20200720231712-AddIndicatorDataSourceType-modifies-schema	2020-09-02 11:30:47.281
-875	/20200804033230-AddIndicatorTable-modifies-schema	2020-09-02 11:30:47.317
-884	/20200826215112-UseAnalyticsPerPerPeriodBuilder-modifies-data	2020-09-04 11:27:39.35
-886	/20200826215113-UseIndicatorsInStriveVisualisations-modifies-data	2020-09-04 11:39:44.361
+872	/20200527025956-FixupsToMissingDataElementInPLSMDashboards	2020-09-03 23:25:54.617
+873	/20200806062829-AddEmptyAndNoAccessDashboardReports-modifies-data	2020-09-03 23:25:55.75
+874	/20200804082610-AddTongaHpuReportNutritionClientsByAgeGender-modifies-data	2020-09-10 22:49:47.74
+875	/20200811090718-AddTongaHpuDashboardPieNumberNewQuitlineDistrict-modifies-data	2020-09-10 22:49:47.832
+876	/20200831024802-UpdateUNFPAReportToAddFPData-modifies-data	2020-09-10 22:49:47.927
+877	/20200903032810-AddStationProjectCodeAndProjectIdEntityTypes-modifies-schema	2020-09-10 22:49:54.539
+878	/20200904032606-FixOldMeasureBuildersWithNewEntityAggregation-modifies-data	2020-09-10 22:49:54.79
+879	/20200904053631-FixUnfpaRegionalTrainingData-modifies-data	2020-09-10 22:49:54.889
+880	/20200909012517-AddParentToTongaPermissionGroup-modifies-data	2020-09-10 22:49:54.943
+881	/20200805065956-DeleteSomeLaosSchoolsSchoolIndicatorsMapOverlays-modifies-data	2020-09-17 22:49:01.493
+882	/20200805070112-CategoriseLaosSchoolsSchoolIndicatorsDistrictAndProvinceOverlays-modifies-data	2020-09-17 22:49:01.687
+883	/20200805070208-AddOtherResponseToLaosSchoolsDevelopmentPartnerSupportOverlay-modifies-data	2020-09-17 22:49:01.945
+884	/20200812043136-AddTongaHpuSettingTypeMapOverlay-modifies-data	2020-09-17 22:49:02.081
+885	/20200828013343-AddMoreLaosSchoolsSchoolIndicatorsSubNationalLevelsMapOverlays-modifies-data	2020-09-17 22:49:02.558
+886	/20200901150309-AddTongaHpuHealthTalksSettingTypeOverlay-modifies-data	2020-09-17 22:49:02.956
+887	/20200901162829-AddTongaHpuPhysicalActivitySettingTypeOverlay-modifies-data	2020-09-17 22:49:03.14
+888	/20200901175734-WishCustomSurveyExportSortByHouseholdId-modifies-data	2020-09-17 22:49:03.214
+889	/20200910043451-AddCovidResultsToCD3bValidationReport-modifies-data	2020-09-17 22:49:03.269
+890	/20200911061955-ClampLaosSchoolTextbookRatioOverlayScale-modifies-data	2020-09-17 22:49:03.335
+891	/20200911065646-AddLaosSchoolsPolygonOverlaysStudentNumbers-modifies-data	2020-09-17 22:49:04.121
+892	/20200921010041-FixLaosSchoolsSchoolIndicatorsEiESubNationalLevelsMapOverlaysEntityAggregation-modifies-data	2020-09-22 04:16:40.457
+893	/20200720231712-AddIndicatorDataSourceType-modifies-schema	2020-09-22 15:05:07.979
+894	/20200804033230-AddIndicatorTable-modifies-schema	2020-09-22 15:05:09.05
+895	/20200826215112-UseAnalyticsPerPerPeriodBuilder-modifies-data	2020-09-22 15:05:09.61
+896	/20200826215113-UseIndicatorsInStriveVisualisations-modifies-data	2020-09-22 15:05:15.74
+897	/20200912130823-AddMoreLaosSchoolsSchoolIndicatorsEiEMapOverlays-modifies-data	2020-09-22 15:05:16.241
+898	/20200914013333-UpdateLaosSchoolsSchoolIndicatorsEiEFunctioningTVMapOverlay-modifies-data	2020-09-22 15:05:16.327
+899	/20200914025424-UpdateLaosSchoolsSchoolIndicatorsEiEMapOverlaysWithMultipleValues-modifies-data	2020-09-22 15:05:16.436
+900	/20200914043218-AddLaosSchoolsSchoolIndicatorsEiEDevelopmentPartnerSupportMapOverlayOtherResponse-modifies-data	2020-09-22 15:05:16.521
+901	/20200914045259-RemoveSomeLaosSchoolsSchoolIndicatorsEiEMapOverlays-modifies-data	2020-09-22 15:05:16.569
+902	/20200916082733-UpdateLaosSchoolsSchoolIndicatorsEiEUpdateAccessToWaterSupplyMapOverlay-modifies-data	2020-09-22 15:05:16.644
+903	/20200914013941-AddTextbookStudentRatioOverlaysDistrictAndProvinceLevel-modifies-data	2020-09-22 23:42:57.868
+904	/20200820022356-AddServiceTypeWeather-modifies-schema	2020-09-24 10:47:49.681
+905	/20200910004911-AddWeatherDataElements-modifies-data	2020-09-24 10:47:49.77
 \.
 
 
@@ -3655,7 +3685,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 886, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 905, true);
 
 
 --
