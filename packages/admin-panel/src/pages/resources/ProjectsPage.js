@@ -52,11 +52,6 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Tile Sets',
-    source: 'tile_sets',
-    type: 'tooltip',
-  },
-  {
     Header: 'Sort',
     source: 'sort_order',
     width: 80,
