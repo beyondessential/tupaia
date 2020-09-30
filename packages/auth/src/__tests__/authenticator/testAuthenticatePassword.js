@@ -17,76 +17,70 @@ export const testAuthenticatePassword = () => {
 
   describe('throws an error with invalid arguments', () => {
     const testData = [
-      ['null', [undefined, "Cannot read property 'emailAddress' of undefined"]],
-      ['empty', [{}, 'Please supply emailAddress, password and deviceName in the request body']],
+      ['null', undefined, "Cannot read property 'emailAddress' of undefined"],
+      ['empty', {}, 'Please supply emailAddress, password and deviceName in the request body'],
       [
         'no emailAddress',
-        [
-          {
-            password: 'validPassword',
-            deviceName: 'validDevice',
-          },
-          'Please supply emailAddress, password and deviceName in the request body',
-        ],
+
+        {
+          password: 'validPassword',
+          deviceName: 'validDevice',
+        },
+        'Please supply emailAddress, password and deviceName in the request body',
       ],
       [
         'no password',
-        [
-          {
-            emailAddress: 'verified@test.com',
-            deviceName: 'validDevice',
-          },
-          'Please supply emailAddress, password and deviceName in the request body',
-        ],
+
+        {
+          emailAddress: 'verified@test.com',
+          deviceName: 'validDevice',
+        },
+        'Please supply emailAddress, password and deviceName in the request body',
       ],
       [
         'no deviceName',
-        [
-          {
-            emailAddress: 'verified@test.com',
-            password: 'validPassword',
-          },
-          'Please supply emailAddress, password and deviceName in the request body',
-        ],
+
+        {
+          emailAddress: 'verified@test.com',
+          password: 'validPassword',
+        },
+        'Please supply emailAddress, password and deviceName in the request body',
       ],
       [
         'invalid email address',
-        [
-          {
-            emailAddress: 'invalid@test.com',
-            password: 'validPassword',
-            deviceName: 'validDevice',
-          },
-          'Email address or password not found',
-        ],
+
+        {
+          emailAddress: 'invalid@test.com',
+          password: 'validPassword',
+          deviceName: 'validDevice',
+        },
+        'Email address or password not found',
       ],
       [
         'invalid password',
-        [
-          {
-            emailAddress: 'verified@test.com',
-            password: 'invalidPassword',
-            deviceName: 'validDevice',
-          },
-          'Incorrect email or password',
-        ],
+
+        {
+          emailAddress: 'verified@test.com',
+          password: 'invalidPassword',
+          deviceName: 'validDevice',
+        },
+        'Incorrect email or password',
       ],
       [
         'unverified email address',
-        [
-          {
-            emailAddress: 'unverified@test.com',
-            password: 'validPassword',
-            deviceName: 'validDevice',
-          },
-          'Email address not yet verified',
-        ],
+
+        {
+          emailAddress: 'unverified@test.com',
+          password: 'validPassword',
+          deviceName: 'validDevice',
+        },
+        'Email address not yet verified',
       ],
     ];
 
-    it.each(testData)('%s', async (_, [arg, expectedError]) => {
+    it.each(testData)('%s', async (_, input, expectedError) => {
       await authenticator
-        .authenticatePassword(arg)
+        .authenticatePassword(input)
         .catch(e => expect(e.message).toBe(expectedError));
     });
   });

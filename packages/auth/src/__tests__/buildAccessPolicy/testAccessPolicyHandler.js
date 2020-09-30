@@ -7,6 +7,7 @@ import { AccessPolicy as AccessPolicyParser } from '@tupaia/access-policy';
 import { upsertDummyRecord, findOrCreateDummyRecord } from '@tupaia/database';
 import { buildAccessPolicy } from '../../buildAccessPolicy';
 import { Demo } from './setup';
+
 export const testAccessPolicyHandler = () => {
   let accessPolicy;
 
@@ -94,13 +95,13 @@ export const testAccessPolicyHandler = () => {
 
   describe('check permissions', () => {
     const testData = [
-      ['should have Mount Sinai admin permissions', ['CA_OT_TO_MS', ['Public']]],
-      ['should have Ottawa admin permissions', ['CA_OT_OT', ['Public']]],
-      ['should not have Toronto permissions', ['CA_OT_TO', undefined]],
-      ['should not have Canada country level permissions', ['CA', undefined]],
+      ['should have Mount Sinai admin permissions', 'CA_OT_TO_MS', ['Public']],
+      ['should have Ottawa admin permissions', 'CA_OT_OT', ['Public']],
+      ['should not have Toronto permissions', 'CA_OT_TO', undefined],
+      ['should not have Canada country level permissions', 'CA', undefined],
     ];
 
-    it.each(testData)('%s', (_, [entity, expected]) => {
+    it.each(testData)('%s', (_, entity, expected) => {
       expect(accessPolicy[entity]).toEqual(expected);
     });
   });
@@ -113,27 +114,27 @@ export const testAccessPolicyHandler = () => {
       parser = new AccessPolicyParser(accessPolicy);
     });
 
-    describe('individual checks', () => {
+    it('individual checks', () => {
       const testData = [
-        ['i', [['CA_OT_TO_MS', undefined], true]],
-        ['ii', [['CA_OT_TO_MS', 'Public'], true]],
-        ['iii', [['CA_OT_OT', 'Public'], true]],
-        ['iv', [['CA_OT_TO', 'Public'], false]],
-        ['v', [['CA', 'Public'], false]],
+        [['CA_OT_TO_MS', undefined], true],
+        [['CA_OT_TO_MS', 'Public'], true],
+        [['CA_OT_OT', 'Public'], true],
+        [['CA_OT_TO', 'Public'], false],
+        [['CA', 'Public'], false],
       ];
-      it.each(testData)('%s', (_, [[entity, permissionGroup], expected]) => {
+      testData.forEach(([[entity, permissionGroup], expected]) => {
         expect(parser.allows(entity, permissionGroup)).toBe(expected);
       });
     });
 
-    describe('groups of entities', () => {
+    it('groups of entities', () => {
       const testData = [
-        ['i', [[['CA_OT_TO', 'CA_OT_TO_MS', 'CA'], undefined], true]],
-        ['ii', [[['CA_OT_TO', 'CA_OT_TO_MS', 'CA'], 'Public'], true]],
-        ['iii', [[['CA_OT_TO', 'CA'], undefined], false]],
-        ['iv', [[['CA_OT_TO', 'CA'], 'Public'], false]],
+        [[['CA_OT_TO', 'CA_OT_TO_MS', 'CA'], undefined], true],
+        [[['CA_OT_TO', 'CA_OT_TO_MS', 'CA'], 'Public'], true],
+        [[['CA_OT_TO', 'CA'], undefined], false],
+        [[['CA_OT_TO', 'CA'], 'Public'], false],
       ];
-      it.each(testData)('%s', (_, [[entity, permissionGroup], expected]) => {
+      testData.forEach(([[entity, permissionGroup], expected]) => {
         expect(parser.allowsSome(entity, permissionGroup)).toBe(expected);
       });
     });
