@@ -120,8 +120,8 @@ describe('buildLegacyAccessPolicy', () => {
     ];
 
     it.each(testData)('%s', (_, testCaseData) => {
-      testCaseData.forEach(([[userGroup, readWriteLevel], expected]) => {
-        expect(hasAccess(accessPolicy, 'surveys', userGroup, readWriteLevel)).toBe(expected);
+      testCaseData.forEach(([[organisationUnitPath, userGroup], expected]) => {
+        expect(hasAccess(accessPolicy, 'surveys', organisationUnitPath, userGroup)).toBe(expected);
       });
     });
 
@@ -223,8 +223,8 @@ describe('buildLegacyAccessPolicy', () => {
       ['should not have Canada country level permissions', [['CA'], 'Public'], false],
     ];
 
-    it.each(testData)('%s', (_, [userGroup, readWriteLevel], expected) => {
-      expect(hasAccess(accessPolicy, 'surveys', userGroup, readWriteLevel)).toBe(expected);
+    it.each(testData)('%s', (_, [organisationUnitPath, userGroup], expected) => {
+      expect(hasAccess(accessPolicy, 'surveys', organisationUnitPath, userGroup)).toBe(expected);
     });
 
     it('should not have any permissions', () => {
