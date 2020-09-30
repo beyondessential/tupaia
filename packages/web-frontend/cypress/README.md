@@ -7,6 +7,7 @@
 - Add a `cypress.env.json` file under the root folder of `web-frontend` (see [cypress.env.example.json](https://github.com/beyondessential/tupaia/tree/dev/packages/web-frontend/cypress.env.example.json) for a template)
 - You must also have `web-config-server` correctly set up locally
 - `web-frontend` should point to the local `web-config-server` (and not a remote one)
+- The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config, run `yarn cypress:generate-config`. You can also use custom config by manually populating those files, see the `.example.jsonc` files for more information.
 
 ### Running the tests
 
