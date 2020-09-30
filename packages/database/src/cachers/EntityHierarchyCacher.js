@@ -32,7 +32,6 @@ export class EntityHierarchyCacher {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
     return this.fetchAndCacheDescendants(hierarchyId, { [projectEntityId]: [] });
   }
-  }
 
   /**
    * Traverse the alternative hierarchy that begins with the specified parent.
