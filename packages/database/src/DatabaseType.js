@@ -91,7 +91,7 @@ export class DatabaseType {
   }
 
   get customSelectedFields() {
-    return Object.keys(this.model.customColumnSelectors);
+    return this.model.customColumnSelectors && Object.keys(this.model.customColumnSelectors);
   }
 
   // Return an object representing just the data for returning through http requests etc.
