@@ -10,7 +10,7 @@ import { verifiedUser, refreshToken, accessPolicy } from './Authenticator.fixtur
 export const testAuthenticateOneTimeLogin = () => {
   const authenticator = new Authenticator(models, AccessPolicyBuilderStub);
 
-  describe.only('throws an error with invalid arguments', () => {
+  describe('throws an error with invalid arguments', () => {
     const testData = [
       ['null argument', [undefined, '']],
       ['empty argument', [{}, 'token not provided']],
@@ -29,30 +29,25 @@ export const testAuthenticateOneTimeLogin = () => {
       ],
     ];
 
-    // TODO: Test failure
     it.each(testData)('%s', async (_, [entities, expectedError]) => {
-      await expect(authenticator.authenticateOneTimeLogin(entities)).rejects.toThrow(expectedError);
-
-      authenticator.authenticateOneTimeLogin(entities).catch(e => {
-        expect(e.message).toEqual(expectedError);
-      });
+      await expect(authenticator.authenticateOneTimeLogin(entities)).toBeRejectedWith(
+        expectedError,
+      );
     });
   });
 
   it('should respond correctly with a valid one time login token', async () => {
-    authenticator
-      .authenticateOneTimeLogin({ token: 'validToken', deviceName: 'validDevice' })
-      .then(r => {
-        expect(r).toEqual({
-          user: verifiedUser,
-          refreshToken,
-          accessPolicy,
-        });
+    await expect(
+      authenticator.authenticateOneTimeLogin({ token: 'validToken', deviceName: 'validDevice' }),
+    ).resolves.toStrictEqual({
+      user: verifiedUser,
+      refreshToken,
+      accessPolicy,
+    });
 
-        expect(models.refreshToken.updateOrCreate).toHaveBeenCalledOnceWith(
-          { device: 'validDevice', user_id: verifiedUser.id },
-          { token: refreshToken, meditrak_device_id: null },
-        );
-      });
+    expect(models.refreshToken.updateOrCreate).toHaveBeenCalledOnceWith(
+      { device: 'validDevice', user_id: verifiedUser.id },
+      { token: refreshToken, meditrak_device_id: null },
+    );
   });
 };
