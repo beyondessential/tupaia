@@ -26,10 +26,8 @@ export const testAuthenticateRefreshToken = () => {
       ['invalid refresh token', [{ refreshToken: 'invalidToken' }, 'Refresh token not valid']],
       ['expired refresh token', [{ refreshToken: 'expiredToken' }, 'Refresh token has expired']],
     ];
-    it.each(testData)('%s', async (_, [entities, expectedError]) => {
-      await expect(authenticator.authenticateRefreshToken(entities)).toBeRejectedWith(
-        expectedError,
-      );
+    it.each(testData)('%s', async (_, [input, expectedError]) => {
+      await expect(authenticator.authenticateRefreshToken(input)).toBeRejectedWith(expectedError);
     });
   });
 
