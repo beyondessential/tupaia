@@ -21,12 +21,12 @@ const models = {
     fetchAncestorDetailsByDescendantCode: sinon
       .stub()
       .withArgs(['f1'], HIERARCHY_ID, 'district')
-      .callsFake(async () => ({
+      .resolves({
         f1: {
           code: 'd9',
           name: 'District 9',
         },
-      })),
+      }),
   },
 };
 

@@ -28,7 +28,7 @@ const dataServices = [{ isDataRegional: true }];
 const entity = {};
 const query = { organisationUnitCode: 'PG' };
 const models = {
-  project: { findOne: sinon.stub().callsFake(async () => ({ entity_hierarchy_id: 'xxx' })) },
+  project: { findOne: sinon.stub().resolves({ entity_hierarchy_id: 'xxx' }) },
 };
 
 const fetchEvents = sinon.stub().returns(MOCK_EVENTS);
