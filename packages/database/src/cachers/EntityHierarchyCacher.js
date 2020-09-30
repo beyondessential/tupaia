@@ -95,12 +95,12 @@ export class EntityHierarchyCacher {
   }
 
   async checkIfNextGenerationIsCanonical(hierarchyId, entityIds) {
-    const hierarchyLinks = await this.models.entityRelation.find({
+    const hierarchyLinkCount = await this.models.entityRelation.count({
       parent_id: entityIds,
       entity_hierarchy_id: hierarchyId,
     });
     // if no entity relation links, the next gen must use the canonical "parent_id" links
-    return hierarchyLinks.length === 0;
+    return hierarchyLinkCount === 0;
   }
 
   async getNextGenerationCanonically(entityId) {
