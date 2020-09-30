@@ -122,7 +122,11 @@ export const MapControlComponent = ({
       <Container>
         <Controls>
           <ZoomControl onZoomInClick={onZoomInClick} onZoomOutClick={onZoomOutClick} />
-          <TileControl tileSet={activeTileSet} onClick={() => setOpen(current => !current)} />
+          <TileControl
+            isActive={open}
+            tileSet={activeTileSet}
+            onClick={() => setOpen(current => !current)}
+          />
         </Controls>
         <TileList className={open ? 'expanded' : 'closed'}>
           {tileSets.map(tileSet => (

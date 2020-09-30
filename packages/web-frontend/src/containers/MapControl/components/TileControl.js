@@ -17,7 +17,7 @@ const StyledButton = styled(Button)`
   display: block;
   pointer-events: auto;
   background: #2b2d38;
-  background: ${TRANS_BLACK};
+  background: ${props => (props.active === 'true' ? TRANS_BLACK : TRANS_BLACK_LESS)};
   color: ${WHITE};
   margin-top: 10px;
   margin-bottom: 1rem;
@@ -40,7 +40,7 @@ const StyledButton = styled(Button)`
   }
 
   &:hover {
-    background: ${TRANS_BLACK_LESS};
+    background: ${TRANS_BLACK};
     box-shadow: none;
 
     .MuiSvgIcon-root {
@@ -82,8 +82,8 @@ const LegendLabel = styled(Typography)`
   margin-bottom: 5px;
 `;
 
-export const TileControl = ({ tileSet, ...props }) => (
-  <StyledButton variant="contained" {...props}>
+export const TileControl = ({ tileSet, isActive, ...props }) => (
+  <StyledButton variant="contained" active={isActive.toString()} {...props}>
     <Box display="flex" alignItems="center">
       <img src={tileSet.thumbnail} alt="tile" />
       <Label>{tileSet.label}</Label>
@@ -106,4 +106,9 @@ export const TileControl = ({ tileSet, ...props }) => (
 
 TileControl.propTypes = {
   tileSet: PropTypes.shape(tileSetShape).isRequired,
+  isActive: PropTypes.bool,
+};
+
+TileControl.defaultProps = {
+  isActive: false,
 };

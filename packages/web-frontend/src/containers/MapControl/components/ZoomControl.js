@@ -22,11 +22,11 @@ const StyledButton = styled(Button)`
   max-width: 30px;
   min-width: 30px;
   color: ${WHITE};
-  background: ${TRANS_BLACK};
+  background: ${TRANS_BLACK_LESS};
   box-shadow: none;
 
   &:hover {
-    background: ${TRANS_BLACK_LESS};
+    background: ${TRANS_BLACK};
     box-shadow: none;
   }
 `;
