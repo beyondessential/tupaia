@@ -25,12 +25,10 @@ import {
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
   UPDATE_MEASURE_CONFIG,
-  SET_PROJECT,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
 import { DEFAULT_BOUNDS } from '../defaults';
-import { mapBoxToken } from '../utils';
 
 function position(state = { bounds: DEFAULT_BOUNDS }, action) {
   switch (action.type) {

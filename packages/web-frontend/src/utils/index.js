@@ -16,7 +16,6 @@ export { default as checkBoundsDifference } from './checkBoundsDifference';
 export { organisationUnitIsArea } from './organisation';
 export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
-export { mapBoxToken } from './mapbox';
 export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
 export { OverlayContainer, OverlayView } from './overlayContainer';
