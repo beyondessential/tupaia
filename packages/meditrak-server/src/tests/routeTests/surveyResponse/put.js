@@ -24,8 +24,8 @@ const getRandomNewEntityForSurveyResponse = async (models, surveyResponse) => {
 };
 
 export const testPutSurveyResponses = (app, models, syncQueue) =>
-  function() {
-    describe('Update entity for existing survey response', function() {
+  function () {
+    describe('Update entity for existing survey response', function () {
       let surveyResponseId;
       let previousNumberOfSurveyResponses = 0;
       let previousNumberOfAnswers = 0;
@@ -33,7 +33,7 @@ export const testPutSurveyResponses = (app, models, syncQueue) =>
       let newEntityId;
       let numberOfAnswersInSurveyResponse;
 
-      before(async function() {
+      before(async function () {
         syncQueue.clear();
         previousNumberOfSurveyResponses = await models.surveyResponse.count();
         previousNumberOfAnswers = await models.answer.count();
@@ -51,26 +51,26 @@ export const testPutSurveyResponses = (app, models, syncQueue) =>
         });
       });
 
-      it('should respond with a successful http status', function() {
+      it('should respond with a successful http status', function () {
         expect(response.statusCode).to.equal(200);
       });
 
-      it('should have the same number of survey responses', async function() {
+      it('should have the same number of survey responses', async function () {
         const postNumberOfSurveyResponses = await models.surveyResponse.count();
         expect(postNumberOfSurveyResponses).to.equal(previousNumberOfSurveyResponses);
       });
 
-      it('should have the same number of answers', async function() {
+      it('should have the same number of answers', async function () {
         const postNumberOfAnswers = await models.answer.count();
         expect(postNumberOfAnswers).to.equal(previousNumberOfAnswers);
       });
 
-      it('should have changed the entity associated with the survey response to the new entity', async function() {
+      it('should have changed the entity associated with the survey response to the new entity', async function () {
         const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
         expect(surveyResponse.entity_id).to.equal(newEntityId);
       });
 
-      it('should add the survey response and all answers to the sync queue after it is submitted', async function() {
+      it('should add the survey response and all answers to the sync queue after it is submitted', async function () {
         this.retries(10);
         await oneSecondSleep(1000);
         expect(syncQueue.count(models.surveyResponse.databaseType)).to.equal(1);

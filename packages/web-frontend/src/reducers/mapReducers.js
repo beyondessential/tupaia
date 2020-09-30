@@ -80,7 +80,7 @@ function measureInfo(state = {}, action) {
     case FETCH_MEASURE_DATA_SUCCESS: {
       const currentCountry = action.countryCode;
       // remove measure units with no coordinates
-      let measureData = action.response.measureData;
+      let { measureData } = action.response;
       // for circle heatmap remove empty values or values that are not of positive float type
       if (action.response.displayType === MARKER_TYPES.CIRCLE_HEATMAP) {
         measureData = measureData.filter(({ value }) => {
@@ -92,8 +92,8 @@ function measureInfo(state = {}, action) {
 
       return {
         ...action.response,
-        //Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
-        //If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
+        // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
+        // If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
         hiddenMeasures: {
           ...action.response.hiddenMeasures,
           ...state.hiddenMeasures,

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import autobind from 'react-autobind';
 import { getIsProductionEnvironment } from '../devops';
 
@@ -107,7 +107,7 @@ export class ExternalApiSyncQueue {
   /**
    * Returns the oldest changes on the sync queue, up to numberToGet. Returns a promise, which can be
    * awaited by the calling function.
-   **/
+   */
   async get(numberToGet) {
     const criteria = {
       is_dead_letter: false,
@@ -142,7 +142,7 @@ export class ExternalApiSyncQueue {
   /**
    * Removes the given change from the sync queue, i.e. marks it as 'used'. Returns a promise, which
    * can be awaited by the calling function.
-   **/
+   */
   use(change) {
     return this.syncQueueModel.updateById(change.id, { is_deleted: true });
   }

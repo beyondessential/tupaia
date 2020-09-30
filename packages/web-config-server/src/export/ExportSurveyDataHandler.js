@@ -62,12 +62,12 @@ export class ExportSurveyDataHandler extends RouteHandler {
         ? formatMatrixDataForExcel(surveyData.data)
         : [];
 
-      //Header
+      // Header
       let sheet = xlsx.utils.aoa_to_sheet(headerData);
 
       const { skipHeader = true } = surveyData;
 
-      //Formatted data using array of arrays input
+      // Formatted data using array of arrays input
       sheet = xlsx.utils.sheet_add_aoa(sheet, formattedData, {
         skipHeader,
         origin: 'A2',

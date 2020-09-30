@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { models } from '../migrate';
 
@@ -9,7 +9,7 @@ var dbm;
 var type;
 var seed;
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -27,7 +27,7 @@ exports.up = async db => {
   );
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

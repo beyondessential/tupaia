@@ -122,14 +122,11 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
 
 export const momentToDateString = (date, granularity, format) =>
   granularity === WEEK || granularity === SINGLE_WEEK
-    ? date
-        .clone()
-        .startOf('W')
-        .format(format)
+    ? date.clone().startOf('W').format(format)
     : date.clone().format(format);
 
 const getDefaultDate = (offset, unit, modifier) => {
-  //We need a valid unit to proceed.
+  // We need a valid unit to proceed.
   if (!CONFIG[unit]) {
     return moment();
   }
@@ -142,8 +139,8 @@ const getDefaultDate = (offset, unit, modifier) => {
     defaultDate = defaultDate.add(offset, momentUnit);
   }
 
-  //If modifier is set (eg: 'start_of', 'end_of'),
-  //switch the default date to either start or end of the year
+  // If modifier is set (eg: 'start_of', 'end_of'),
+  // switch the default date to either start or end of the year
   if (modifier) {
     switch (modifier) {
       case START_OF_PERIOD:
@@ -186,17 +183,17 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
   if (defaultTimePeriod) {
     let singleDateConfig;
 
-    //If defaultTimePeriod has either start or end,
-    //pick either one of them because we only want a single date for both start and end period.
-    //Eg: {defaultTimePeriod: {start: {unit: 'month', offset: -1}, end: {unit: 'month', offset: -1}}}
+    // If defaultTimePeriod has either start or end,
+    // pick either one of them because we only want a single date for both start and end period.
+    // Eg: {defaultTimePeriod: {start: {unit: 'month', offset: -1}, end: {unit: 'month', offset: -1}}}
     if (defaultTimePeriod.start || defaultTimePeriod.end) {
       singleDateConfig = defaultTimePeriod.start || defaultTimePeriod.end;
     } else {
-      //else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
+      // else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
       singleDateConfig = defaultTimePeriod;
     }
 
-    //Grab all the details and get a single default date used for both start/end period.
+    // Grab all the details and get a single default date used for both start/end period.
     const { offset, unit, modifier } = singleDateConfig;
     startDate = getDefaultDate(offset, unit, modifier);
     endDate = startDate;

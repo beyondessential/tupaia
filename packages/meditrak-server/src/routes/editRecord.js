@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import {
   respond,
@@ -38,6 +38,7 @@ const EDITABLE_RECORD_TYPES = [
   TYPES.DASHBOARD_REPORT,
   TYPES.MAP_OVERLAY,
   TYPES.DASHBOARD_GROUP,
+  TYPES.PROJECT,
 ];
 
 const CUSTOM_RECORD_UPDATERS = {
@@ -54,7 +55,7 @@ const SKIP_ID_VALIDATION = [TYPES.DASHBOARD_REPORT, TYPES.MAP_OVERLAY, TYPES.DAS
 
 /**
  * Responds to PUT requests by editing a record
- **/
+ */
 export async function editRecord(req, res) {
   const { database, params, body: updatedFields, models } = req;
   const { resource, id } = params;

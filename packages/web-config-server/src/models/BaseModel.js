@@ -1,8 +1,10 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
-/* eslint-disable no-underscore-dangle */
+ */
+
+/* eslint no-underscore-dangle: ['error', { 'allow': ['_database'] }] */
+
 import { DatabaseError } from '@tupaia/utils';
 
 export class BaseModel {
@@ -245,5 +247,3 @@ export class BaseModel {
     return model;
   }
 }
-
-/* eslint-enable no-underscore-dangle */

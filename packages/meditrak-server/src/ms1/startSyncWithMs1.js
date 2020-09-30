@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- **/
+ */
 import { get } from 'lodash';
 import { HttpError } from '@tupaia/utils';
 
@@ -117,6 +117,7 @@ export async function pushChange(models, change, ms1Api) {
   let body = { distributionId };
   answers.forEach(answer => {
     if (!questionIds.includes(answer.question_id)) {
+      // eslint-disable-next-line no-console
       console.log(
         `Skipping answer:${answer.id} as question_id:${answer.question_id} is not in survey:${surveyResponse.survey_id}`,
       );

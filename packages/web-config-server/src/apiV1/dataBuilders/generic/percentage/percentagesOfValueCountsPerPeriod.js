@@ -2,6 +2,9 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+
+/* eslint-disable max-classes-per-file */
+
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 

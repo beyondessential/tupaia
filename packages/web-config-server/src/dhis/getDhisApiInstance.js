@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DhisApi } from './DhisApi';
 import { getDhisConfig } from '@tupaia/utils';
+import { DhisApi } from './DhisApi';
 
 const instances = {};
 
