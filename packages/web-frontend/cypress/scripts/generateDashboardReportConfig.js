@@ -27,7 +27,7 @@ const getDashboardReportIdToGroup = async database => {
 
 /**
  * We generate the least amount of config required to test each report once.
- * 1. For each report, use the first dashboard group that includes it
+ * 1. For each report, use the last dashboard group that includes it
  * 2. For each dashboard group, use the first project that includes it
  */
 export const generateDashboardReportConfig = async database => {

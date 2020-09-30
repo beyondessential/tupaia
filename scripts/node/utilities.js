@@ -18,11 +18,12 @@ const configureWinston = () =>
     ],
   });
 
-const isWinstonConfigured = false;
+let isWinstonConfigured = false;
 
 const getLoggerInstance = () => {
   if (!isWinstonConfigured) {
     configureWinston();
+    isWinstonConfigured = true;
   }
   return winston;
 };
