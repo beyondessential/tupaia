@@ -372,10 +372,23 @@ describe('object', () => {
         ['d', 'e'],
         { a: 1, b: 2, c: 3 },
       ],
+      ['should make no changes when fields to strip is undefined', undefined, { a: 1, b: 2, c: 3 }],
     ];
 
     it.each(testData)('%s', (_, fieldsToStrip, expected) => {
       expect(stripFields(object, fieldsToStrip)).toStrictEqual(expected);
     });
+
+    const undefinedParamPermutations = [
+      [undefined, ['a']],
+      [undefined, undefined],
+    ];
+
+    it.each(undefinedParamPermutations)(
+      'should return an empty object when object is undefined',
+      (obj, fieldsToStrip) => {
+        expect(stripFields(obj, fieldsToStrip)).toStrictEqual({});
+      },
+    );
   });
 });
