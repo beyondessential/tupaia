@@ -37,6 +37,7 @@ import { assertCanAddDataElementInGroup } from '../../database';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
+const VIS_CRITERIA_CONJUNCTION = '_conjunction';
 
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
@@ -302,10 +303,11 @@ export async function importSurveys(req, res) {
           const processedVisibilityCriteria = {};
           await Promise.all(
             Object.entries(visibilityCriteriaObject).map(async ([questionCode, answers]) => {
-              if (questionCode === '_conjunction') {
+              if (questionCode === VIS_CRITERIA_CONJUNCTION) {
                 // This is the special _conjunction key, extract the 'and' or the 'or' from answers,
                 // i.e. { conjunction: ['and'] } -> { conjunction: 'and' }
-                processedVisibilityCriteria._conjunction = answers[0];
+                const [conjunctionType] = answers;
+                processedVisibilityCriteria[VIS_CRITERIA_CONJUNCTION] = conjunctionType;
               } else if (questionCode === 'hidden') {
                 processedVisibilityCriteria.hidden = answers[0] === 'true';
               } else {
