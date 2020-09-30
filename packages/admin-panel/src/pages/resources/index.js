@@ -19,3 +19,4 @@ export { AccessRequestsPage } from './AccessRequestsPage';
 export { DashboardReportsPage } from './DashboardReportsPage';
 export { MapOverlaysPage } from './MapOverlaysPage';
 export { DashboardGroupsPage } from './DashboardGroupsPage';
+export { ProjectsPage } from './ProjectsPage';
