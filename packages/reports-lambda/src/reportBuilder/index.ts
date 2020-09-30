@@ -1,2 +1,1 @@
-export { fetch } from './fetch';
-export { transform } from './transform';
+export { ReportBuilder, BuildReport } from './reportBuilder';

@@ -1,37 +1,67 @@
-import { parseParams } from '../../../functions';
 import { mergeFunctions } from './mergeFunctions';
-import { where } from '../where';
+import { buildWhere } from '../where';
+import { Row } from '../../../reportBuilder';
+import { buildCreateGroupKey } from './createGroupKey';
+import { buildGetFieldMergeFunction } from './getFieldMergeFunction';
 
-export const mergeRows = (rows, params) => {
-  const groupedRows = {};
-  const otherRows = [];
-  rows.forEach(row => {
-    if (!where(row, params)) {
-      otherRows.push(row);
-      return;
-    }
-    const parsedParams = parseParams(row, params);
-    const { group } = parsedParams;
-    const groupKey = createGroupKey(row, group);
-    groupedRows[groupKey] = merge(groupedRows[groupKey] || {}, row, parsedParams);
-  });
-  return Object.values(groupedRows).concat(otherRows);
+export type MergeParams = {
+  createGroupKey: (row: Row) => string;
+  getFieldMergeFunction: (row: Row, field: string) => keyof typeof mergeFunctions;
+  where: (row: Row) => boolean;
 };
 
-const createGroupKey = (row, groupByFields) => {
-  return groupByFields ? groupByFields.map(field => `${row[field]}`).join('|') : '*';
-};
-
-const merge = (mergedRow, newRow, params) => {
-  Object.entries(newRow).forEach(([field, value]) => {
-    getFieldMergeFunction(field, params)(mergedRow, field, value);
+const merge = (mergedRow: Row, newRow: Row, params: MergeParams): Row => {
+  Object.keys(newRow).forEach((field: string) => {
+    const mergeFunction = params.getFieldMergeFunction(newRow, field);
+    mergeFunctions[mergeFunction](mergedRow, field, newRow[field]);
   });
   return mergedRow;
 };
 
-const getFieldMergeFunction = (field, params) => {
-  const mergeFunctionName = Object.keys(mergeFunctions).find(
-    mergeFunction => params[mergeFunction] && params[mergeFunction].includes(field),
-  );
-  return mergeFunctionName ? mergeFunctions[mergeFunctionName] : mergeFunctions.default;
+export const mergeRows = (rows: Row[], params: MergeParams): Row[] => {
+  const groupedRows: { [groupKey: string]: Row } = {};
+  const otherRows: Row[] = [];
+
+  rows.forEach((row: Row) => {
+    if (!params.where(row)) {
+      otherRows.push(row);
+      return;
+    }
+    const groupKey = params.createGroupKey(row);
+    groupedRows[groupKey] = merge(groupedRows[groupKey] || {}, row, params);
+  });
+  return Object.values(groupedRows).concat(otherRows);
+};
+
+export const buildMergeParams = (params: unknown): MergeParams => {
+  if (typeof params !== 'object' || params === null) {
+    throw new Error(`Expected params object but got ${params}`);
+  }
+
+  const { where, ...restOfParams } = params;
+
+  Object.values(restOfParams).forEach(paramValue => {
+    if (!Array.isArray(paramValue)) {
+      throw new Error(
+        `Expected all merge function parameters to be an array of strings but got ${paramValue}`,
+      );
+    }
+    if (!paramValue.every(paramValueItem => typeof paramValueItem === 'string')) {
+      throw new Error(
+        `Expected all merge function parameters items to be strings but got ${paramValue}`,
+      );
+    }
+  });
+
+  const { group } = restOfParams;
+  return {
+    createGroupKey: buildCreateGroupKey(group as string[] | undefined),
+    getFieldMergeFunction: buildGetFieldMergeFunction(restOfParams as { [key: string]: string[] }),
+    where: buildWhere(params),
+  };
+};
+
+export const buildMergeRows = (params: unknown) => {
+  const builtParams = buildMergeParams(params);
+  return (rows: Row[]) => mergeRows(rows, builtParams);
 };

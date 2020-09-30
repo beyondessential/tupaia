@@ -1,4 +1,6 @@
-export const value = (valueGiven: any): any => {
+import { FieldValue } from '../reportBuilder';
+
+export const value = (valueGiven: FieldValue): FieldValue => {
   return valueGiven;
 };
 
@@ -10,14 +12,14 @@ export const add = (valuesToAdd: number[]): number => {
   return total;
 };
 
-export const gt = (valuesToCompare: any[]): boolean => {
-  return valuesToCompare[0] > valuesToCompare[1];
-};
-
-export const eq = (valuesToCompare: any[]): boolean => {
+export const eq = (valuesToCompare: FieldValue[]): boolean => {
   return valuesToCompare[0] === valuesToCompare[1];
 };
 
-export const neq = (valuesToCompare: any[]): boolean => {
+export const neq = (valuesToCompare: FieldValue[]): boolean => {
   return valuesToCompare[0] !== valuesToCompare[1];
+};
+
+export const exists = (value: FieldValue): boolean => {
+  return value !== undefined;
 };

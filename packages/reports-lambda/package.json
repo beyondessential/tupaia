@@ -24,6 +24,7 @@
     "@tupaia/aggregator": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
+    "@types/hjson": "^2.4.2",
     "hjson": "^3.2.1",
     "winston": "^3.2.1"
   },

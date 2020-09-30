@@ -1,8 +1,8 @@
-import { select } from './select';
-import { drop } from './drop';
-import { mergeRows } from './mergeRows';
-import { sort } from './sort';
-import { filter } from './filter';
+import { select, buildSelect } from './select';
+import { drop, buildDrop } from './drop';
+import { mergeRows, buildMergeRows } from './mergeRows';
+import { sort, buildSort } from './sort';
+import { filter, buildFilter } from './filter';
 
 export const transformFunctions = {
   select,
@@ -10,4 +10,12 @@ export const transformFunctions = {
   mergeRows,
   sort,
   filter,
+};
+
+export const transformFunctionBuilders = {
+  select: buildSelect,
+  drop: buildDrop,
+  mergeRows: buildMergeRows,
+  sort: buildSort,
+  filter: buildFilter,
 };

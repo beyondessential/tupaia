@@ -14,27 +14,27 @@
         "filter": [],
         "transform": [
           //Test Config
-          {
-            "select": {
-              "convertToPeriod": { "period": "<period>", "targetType": "YEAR" },
-              "as": "year"
-            }
-          },
-          {
-            "mergeRows": {
-              "group": ["year"],
-              "sum": ["HP299a"],
-              "where": { "gt": [3, "<HP299a>"] }
-            }
-          },
-          {
-            "mergeRows": {
-              "group": ["year"],
-              "sum": ["HP323a"],
-              "where": { "gt": [3, "<HP323a>"] }
-            }
-          },
-          { "sort": { "value": "<period>", "descending": false } }
+          // {
+          //   "select": {
+          //     "convertToPeriod": { "period": "<period>", "targetType": "YEAR" },
+          //     "as": "year"
+          //   }
+          // },
+          // {
+          //   "mergeRows": {
+          //     "group": ["year"],
+          //     "sum": ["HP299a"],
+          //     "where": { "gt": [3, "<HP299a>"] }
+          //   }
+          // },
+          // {
+          //   "mergeRows": {
+          //     "group": ["year"],
+          //     "sum": ["HP323a"],
+          //     "where": { "gt": [3, "<HP323a>"] }
+          //   }
+          // },
+          // { "sort": { "convertToPeriod": { "period": "<period>", "targetType": "YEAR" }, "descending": false } }
           // {
           //   select: {
           //     value: 'HP299a is bigger than HP323a',
@@ -46,21 +46,27 @@
 
           // Main config
           // { mergeRows: { group: ['period'], sum: ['HP299a', 'HP323a'] } },
-          // {
-          //   select: {
-          //     add: ['<HP299a>', '<HP323a>'],
-          //     as: 'Total Nutritional Counselling Sessions Conducted',
-          //   },
-          // },
+          {
+            select: {
+              value: 1,
+              as: 'Total Nutritional Counselling Sessions Conducted',
+            },
+          },
+          {
+            select: {
+              add: [1, 7],
+              as: 'Testerio',
+            },
+          },
           // { drop: 'HP299a' },
           // { drop: 'HP323a' },
-          // // { select: { periodToTimestamp: { period: '<period>' }, as: 'timestamp' } },
-          // {
-          //   select: {
-          //     periodToDisplayString: { period: '<period>', targetType: 'MONTH' },
-          //     as: 'name',
-          //   },
-          // },
+          { select: { periodToTimestamp: { period: '<period>' }, as: 'timestamp' } },
+          {
+            select: {
+              periodToDisplayString: { period: '<period>', targetType: 'MONTH' },
+              as: 'name',
+            },
+          },
           // { drop: 'period' },
 
           //Test config
@@ -154,7 +160,7 @@
           { "drop": "event" },
           { "drop": "eventDate" },
           { "drop": "orgUnitName" },
-          { "select": { "value": 1, "as": "<HP31n>" } },
+          { "select": { "value": 1, "as": "<HP31n>", where: { exists: '<HP31n>' } }},
           { "select": { "value": 1, "as": "Total" } },
           {
             "mergeRows": {
