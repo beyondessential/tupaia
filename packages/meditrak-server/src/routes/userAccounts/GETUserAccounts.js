@@ -47,13 +47,14 @@ export class GETUserAccounts extends GETHandler {
     const dbConditions = criteria;
     if (!hasBESAdminAccess(this.accessPolicy)) {
       // If we don't have BES Admin access, add a filter to the SQL query
+      const countryList = this.accessPolicy.getEntitiesByPermission(
+        TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+      );
+      countryList.push('DL'); // If we have admin panel anywhere, we can also view Demo Land
       const entities = await this.models.entity.find({
-        code: Object.keys(this.accessPolicy.policy),
+        code: countryList,
       });
-      const filteredEntities = entities.filter(e => {
-        return this.accessPolicy.allows(e.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
-      });
-      const entityIds = filteredEntities.map(e => e.id);
+      const entityIds = entities.map(e => e.id);
       dbConditions[RAW] = {
         sql: `array(select entity_id from user_entity_permission uep where uep.user_id = user_account.id) <@ array[${entityIds
           .map(() => '?')
