@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { DhisApi } from '@tupaia/dhis-api';
 import { models } from '../migrate';
@@ -14,7 +14,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -50,10 +50,10 @@ exports.up = async db => {
 
       if (!organisationUnits || organisationUnits.length === 0) {
         console.warn(`Could not find matching DHIS entry for ${facility.name}(${facility.code})`);
-        continue; // eslint-disable-line no-continue
+        continue;
       } else if (organisationUnits.length > 1) {
         console.warn(`More than one DHIS entry for ${facility.name}(${facility.code})`);
-        continue; // eslint-disable-line no-continue
+        continue;
       }
 
       // Create a name:code map for DHIS org units in the tree.
@@ -72,13 +72,13 @@ exports.up = async db => {
           console.warn(
             `No DHIS match for geographical area with name '${geographicalArea.name}' in ancestor tree.`,
           );
-          continue; // eslint-disable-line no-continue
+          continue;
         }
 
         if (geographicalArea.organisation_unit_code === matchingDhisAncestorCode) {
           // Skip if the entry in the database is already correct.
           console.info(`Skipped '${matchingDhisAncestorCode}', already in database.`);
-          continue; // eslint-disable-line no-continue
+          continue;
         }
 
         geographicalArea.organisation_unit_code = matchingDhisAncestorCode;
@@ -91,7 +91,7 @@ exports.up = async db => {
   }
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

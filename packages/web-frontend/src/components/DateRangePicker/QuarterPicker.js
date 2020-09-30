@@ -48,11 +48,7 @@ export class QuarterPicker extends PureComponent {
         selectedValue={momentDateValue.quarter()}
         menuItems={menuItems}
         onChange={e => onChange(moment(momentDateValue).quarter(e.target.value))}
-        getFormattedValue={quarterNumber =>
-          moment()
-            .quarter(quarterNumber)
-            .format(FORMAT)
-        }
+        getFormattedValue={quarterNumber => moment().quarter(quarterNumber).format(FORMAT)}
       />
     );
   }

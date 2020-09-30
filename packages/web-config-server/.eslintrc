@@ -1,5 +1,6 @@
 {
   "plugins": ["module-resolver"],
+  "ignorePatterns": "src/database/**",
   "rules": {
     "import/no-absolute-path": "off",
     "module-resolver/use-alias": "warn"
