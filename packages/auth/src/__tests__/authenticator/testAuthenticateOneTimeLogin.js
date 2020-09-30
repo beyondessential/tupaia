@@ -9,31 +9,18 @@ import { verifiedUser, refreshToken, accessPolicy } from './Authenticator.fixtur
 
 export const testAuthenticateOneTimeLogin = () => {
   const authenticator = new Authenticator(models, AccessPolicyBuilderStub);
+  it('throws an error with invalid arguments', async () => {
+    await expect(authenticator.authenticateOneTimeLogin()).toReject();
 
-  describe('throws an error with invalid arguments', () => {
-    const testData = [
-      ['null argument', [undefined, '']],
-      ['empty argument', [{}, 'token not provided']],
-      [
-        'no token',
-        [
-          {
-            deviceName: 'validDevice',
-          },
-          'token not provided',
-        ],
-      ],
-      [
-        'invalid one time login token',
-        [{ token: 'invalidToken', deviceName: 'validDevice' }, 'Error thrown by stub'],
-      ],
-    ];
-
-    it.each(testData)('%s', async (_, [entities, expectedError]) => {
-      await expect(authenticator.authenticateOneTimeLogin(entities)).toBeRejectedWith(
-        expectedError,
+    const assertThrowsWithArg = async arg => {
+      return expect(authenticator.authenticateOneTimeLogin(arg)).toBeRejectedWith(
+        'token not provided',
       );
-    });
+    };
+    await assertThrowsWithArg({});
+    await assertThrowsWithArg({
+      deviceName: 'validDevice',
+    }); // no token
   });
 
   it('should respond correctly with a valid one time login token', async () => {
