@@ -12,27 +12,27 @@ export const testAuthenticateRefreshToken = () => {
 
   describe('throws an error with invalid arguments', () => {
     const testData = [
-      ['null', [undefined, "Cannot read property 'emailAddress' of undefined"]],
-      ['empty', [{}, 'Please supply refreshToken']],
+      ['null', undefined, "Cannot read property 'emailAddress' of undefined"],
+      ['empty', {}, 'Please supply refreshToken'],
       [
         'no fresh token',
-        [
-          {
-            password: 'validPassword',
-          },
-          'Please supply refreshToken',
-        ],
+        {
+          password: 'validPassword',
+        },
+        'Please supply refreshToken',
       ],
-      ['invalid refresh token', [{ refreshToken: 'invalidToken' }, 'Refresh token not valid']],
-      ['expired refresh token', [{ refreshToken: 'expiredToken' }, 'Refresh token has expired']],
+      ['invalid refresh token', { refreshToken: 'invalidToken' }, 'Refresh token not valid'],
+      ['expired refresh token', { refreshToken: 'expiredToken' }, 'Refresh token has expired'],
     ];
-    it.each(testData)('%s', async (_, [input, expectedError]) => {
+    it.each(testData)('%s', async (_, input, expectedError) => {
       await expect(authenticator.authenticateRefreshToken(input)).toBeRejectedWith(expectedError);
     });
   });
 
   it('should respond correctly with a valid refresh token', async () => {
-    return expect(authenticator.authenticateRefreshToken({ refreshToken: 'validToken' })).resolves;
+    return expect(
+      authenticator.authenticateRefreshToken({ refreshToken: 'validToken' }),
+    ).toResolve();
   });
 
   describe('should build the correct access policy for the meditrak device', () => {
@@ -40,21 +40,21 @@ export const testAuthenticateRefreshToken = () => {
       [
         'modern meditrak device',
         [
-          ['i', ['modern', false]],
-          ['ii', ['ultraModern', false]],
+          ['i', 'modern', false],
+          ['ii', 'ultraModern', false],
         ],
       ],
       [
         'legacy meditrak device',
         [
-          ['i', ['legacy', true]],
-          ['ii', ['ultraLegacy', true]],
+          ['i', 'legacy', true],
+          ['ii', 'ultraLegacy', true],
         ],
       ],
     ];
     testData.forEach(([testCaseName, testCaseData]) => {
       describe(testCaseName, () => {
-        it.each(testCaseData)('%s', async (_, [refreshToken, useLegacyFormat]) => {
+        it.each(testCaseData)('%s', async (_, refreshToken, useLegacyFormat) => {
           getPolicyForUserStub.mockClear(); // ensure history is reset between tests
           await expect(
             authenticator.authenticateRefreshToken({ refreshToken }),

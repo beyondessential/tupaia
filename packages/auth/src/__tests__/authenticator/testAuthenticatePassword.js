@@ -127,22 +127,22 @@ export const testAuthenticatePassword = () => {
       [
         'modern meditrakDeviceDetails',
         [
-          ['i', [MEDITRAK_DEVICE_DETAILS.modern, false]],
-          ['ii', [MEDITRAK_DEVICE_DETAILS.ultraModern, false]],
+          ['i', MEDITRAK_DEVICE_DETAILS.modern, false],
+          ['ii', MEDITRAK_DEVICE_DETAILS.ultraModern, false],
         ],
       ],
       [
         'legacy meditrakDeviceDetails',
         [
-          ['i', [MEDITRAK_DEVICE_DETAILS.legacy, true]],
-          ['ii', [MEDITRAK_DEVICE_DETAILS.ultraLegacy, true]],
+          ['i', MEDITRAK_DEVICE_DETAILS.legacy, true],
+          ['ii', MEDITRAK_DEVICE_DETAILS.ultraLegacy, true],
         ],
       ],
     ];
 
     testData.forEach(([testCaseName, testCaseData]) => {
       describe(testCaseName, () => {
-        it.each(testCaseData)('%s', async (_, [meditrakDeviceDetails, useLegacyFormat]) => {
+        it.each(testCaseData)('%s', async (_, meditrakDeviceDetails, useLegacyFormat) => {
           // ensure history is reset between tests
           getPolicyForUserStub.mockClear();
           models.meditrakDevice.updateOrCreate.mockClear();
