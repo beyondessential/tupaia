@@ -7,6 +7,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { ZoomControl } from './components/ZoomControl';
 import { changeTileSet, changeZoom } from '../../actions';
 import { TileButton } from './components/TileButton';
@@ -115,24 +116,26 @@ export const MapControlComponent = ({
   onZoomInClick,
   onZoomOutClick,
 }) => {
-  const [open, toggle] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   return (
-    <Container>
-      <Controls>
-        <ZoomControl onZoomInClick={onZoomInClick} onZoomOutClick={onZoomOutClick} />
-        <TileControl tileSet={activeTileSet} onClick={() => toggle(current => !current)} />
-      </Controls>
-      <TileList className={open ? 'expanded' : 'closed'}>
-        {tileSets.map(tileSet => (
-          <TileButton
-            key={tileSet.key}
-            tileSet={tileSet}
-            onChange={onChange}
-            isActive={activeTileSet.key === tileSet.key}
-          />
-        ))}
-      </TileList>
-    </Container>
+    <ClickAwayListener onClickAway={() => setOpen(false)}>
+      <Container>
+        <Controls>
+          <ZoomControl onZoomInClick={onZoomInClick} onZoomOutClick={onZoomOutClick} />
+          <TileControl tileSet={activeTileSet} onClick={() => setOpen(current => !current)} />
+        </Controls>
+        <TileList className={open ? 'expanded' : 'closed'}>
+          {tileSets.map(tileSet => (
+            <TileButton
+              key={tileSet.key}
+              tileSet={tileSet}
+              onChange={onChange}
+              isActive={activeTileSet.key === tileSet.key}
+            />
+          ))}
+        </TileList>
+      </Container>
+    </ClickAwayListener>
   );
 };
 
