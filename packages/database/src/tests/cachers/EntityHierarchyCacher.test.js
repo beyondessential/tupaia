@@ -9,7 +9,7 @@ import { getTestModels, populateTestData } from '../../testUtilities';
 import { EntityHierarchyCacher } from '../../cachers/EntityHierarchyCacher';
 
 import {
-  getTestData,
+  TEST_DATA,
   EXPECTED_INITIAL_ANCESTOR_DESCENDANT_RELATIONS,
 } from './EntityHierarchyCacher.fixtures';
 
@@ -18,8 +18,7 @@ describe('EntityHierarchyCacher', () => {
   const hierarchyCacher = new EntityHierarchyCacher(models);
 
   before(async () => {
-    const testData = await getTestData(models);
-    await populateTestData(models, testData);
+    await populateTestData(models, TEST_DATA);
   });
 
   describe('buildAndCacheProject', async () => {

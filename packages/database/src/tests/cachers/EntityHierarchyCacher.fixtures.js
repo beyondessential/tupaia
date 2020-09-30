@@ -3,80 +3,81 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { findOrCreateDummyRecord } from '../../testUtilities';
+// canonical hierarchy is a - k, with each entity having the previous letter as its parent
+const ENTITIES = [
+  { id: 'entity_a_test', name: 'Entity A', parent_id: null },
+  { id: 'entity_b_test', name: 'Entity B', parent_id: 'entity_a_test' },
+  { id: 'entity_c_test', name: 'Entity C', parent_id: 'entity_b_test' },
+  { id: 'entity_d_test', name: 'Entity D', parent_id: 'entity_c_test' },
+  { id: 'entity_e_test', name: 'Entity E', parent_id: 'entity_d_test' },
+  { id: 'entity_f_test', name: 'Entity F', parent_id: 'entity_e_test' },
+  { id: 'entity_g_test', name: 'Entity G', parent_id: 'entity_f_test' },
+  { id: 'entity_h_test', name: 'Entity H', parent_id: 'entity_g_test' },
+  { id: 'entity_i_test', name: 'Entity I', parent_id: 'entity_h_test' },
+  { id: 'entity_j_test', name: 'Entity J', parent_id: 'entity_i_test' },
+  { id: 'entity_k_test', name: 'Entity K', parent_id: 'entity_j_test' },
+];
 
-export const getTestData = async models => {
-  return {
-    entity: [
-      // canonical hierarchy is a - k, with each entity having the previous letter as its parent
-      { id: 'entity_a_test', name: 'Entity A', parent_id: null },
-      { id: 'entity_b_test', name: 'Entity B', parent_id: 'entity_a_test' },
-      { id: 'entity_c_test', name: 'Entity C', parent_id: 'entity_b_test' },
-      { id: 'entity_d_test', name: 'Entity D', parent_id: 'entity_c_test' },
-      { id: 'entity_e_test', name: 'Entity E', parent_id: 'entity_d_test' },
-      { id: 'entity_f_test', name: 'Entity F', parent_id: 'entity_e_test' },
-      { id: 'entity_g_test', name: 'Entity G', parent_id: 'entity_f_test' },
-      { id: 'entity_h_test', name: 'Entity H', parent_id: 'entity_g_test' },
-      { id: 'entity_i_test', name: 'Entity I', parent_id: 'entity_h_test' },
-      { id: 'entity_j_test', name: 'Entity J', parent_id: 'entity_i_test' },
-      { id: 'entity_k_test', name: 'Entity K', parent_id: 'entity_j_test' },
-    ],
-    entityHierarchy: [
-      // two hierarchies to play with
-      { id: 'hierarchy_a_test' },
-      { id: 'hierarchy_b_test' },
-    ],
-    project: [
-      // a project for each of the two hierarchies
-      {
-        code: 'project_a_test',
-        name: 'Project A',
-        entity_id: 'entity_a_test',
-        entity_hierarchy_id: 'hierarchy_a_test',
-      },
-      {
-        code: 'project_b_test',
-        name: 'Project B',
-        entity_id: 'entity_a_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-    ],
-    entityRelation: [
-      // - project a follows the canonical hierarchy exactly
-      // - project b lifts all entities from c to g (inclusive) up to a single generation below b,
-      //   then from h as a child of c, with the canonical hierarchy continuing the chain below that
-      {
-        parent_id: 'entity_b_test',
-        child_id: 'entity_c_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-      {
-        parent_id: 'entity_b_test',
-        child_id: 'entity_d_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-      {
-        parent_id: 'entity_b_test',
-        child_id: 'entity_e_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-      {
-        parent_id: 'entity_b_test',
-        child_id: 'entity_f_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-      {
-        parent_id: 'entity_b_test',
-        child_id: 'entity_g_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-      {
-        parent_id: 'entity_c_test',
-        child_id: 'entity_h_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-    ],
-  };
+// two hierarchies to play with
+const ENTITY_HIERARCHIES = [{ id: 'hierarchy_a_test' }, { id: 'hierarchy_b_test' }];
+
+// a project for each of the two hierarchies
+const PROJECTS = [
+  {
+    code: 'project_a_test',
+    name: 'Project A',
+    entity_id: 'entity_a_test',
+    entity_hierarchy_id: 'hierarchy_a_test',
+  },
+  {
+    code: 'project_b_test',
+    name: 'Project B',
+    entity_id: 'entity_a_test',
+    entity_hierarchy_id: 'hierarchy_b_test',
+  },
+];
+
+// - project a follows the canonical hierarchy exactly
+// - project b lifts all entities from c to g (inclusive) up to a single generation below b,
+//   then from h as a child of c, with the canonical hierarchy continuing the chain below that
+const ENTITY_RELATIONS = [
+  {
+    parent_id: 'entity_b_test',
+    child_id: 'entity_c_test',
+    entity_hierarchy_id: 'hierarchy_b_test',
+  },
+  {
+    parent_id: 'entity_b_test',
+    child_id: 'entity_d_test',
+    entity_hierarchy_id: 'hierarchy_b_test',
+  },
+  {
+    parent_id: 'entity_b_test',
+    child_id: 'entity_e_test',
+    entity_hierarchy_id: 'hierarchy_b_test',
+  },
+  {
+    parent_id: 'entity_b_test',
+    child_id: 'entity_f_test',
+    entity_hierarchy_id: 'hierarchy_b_test',
+  },
+  {
+    parent_id: 'entity_b_test',
+    child_id: 'entity_g_test',
+    entity_hierarchy_id: 'hierarchy_b_test',
+  },
+  {
+    parent_id: 'entity_c_test',
+    child_id: 'entity_h_test',
+    entity_hierarchy_id: 'hierarchy_b_test',
+  },
+];
+
+export const TEST_DATA = {
+  entity: ENTITIES,
+  entityHierarchy: ENTITY_HIERARCHIES,
+  project: PROJECTS,
+  entityRelation: ENTITY_RELATIONS,
 };
 
 export const EXPECTED_INITIAL_ANCESTOR_DESCENDANT_RELATIONS = {
