@@ -98,49 +98,66 @@ export const testAuthenticatePassword = () => {
         password: 'validPassword',
         deviceName: 'validDevice',
       }),
-    ).resolves;
+    ).toResolve();
   });
 
   it('should respond with the expected values when the credentials are correct', async () => {
-    authenticator
-      .authenticatePassword({
+    await expect(
+      authenticator.authenticatePassword({
         emailAddress: 'verified@test.com',
         password: 'validPassword',
         deviceName: 'validDevice',
-      })
-      .then(r => {
-        expect(r).toEqual({
-          accessPolicy,
-          refreshToken,
-          user: verifiedUser,
-        });
+      }),
+    ).resolves.toStrictEqual({
+      accessPolicy,
+      refreshToken,
+      user: verifiedUser,
+    });
 
-        expect(getPolicyForUserStub).toHaveBeenCalledOnceWith(verifiedUser.id);
+    expect(getPolicyForUserStub).toHaveBeenCalledOnceWith(verifiedUser.id);
 
-        expect(models.refreshToken.updateOrCreate).toHaveBeenCalledOnceWith(
-          { device: 'validDevice', user_id: verifiedUser.id },
-          { token: refreshToken, meditrak_device_id: null },
-        );
-      });
+    expect(models.refreshToken.updateOrCreate).toHaveBeenCalledOnceWith(
+      { device: 'validDevice', user_id: verifiedUser.id },
+      { token: refreshToken, meditrak_device_id: null },
+    );
   });
 
-  it('should build the correct access policy for the meditrak device', async () => {
-    const assertCorrectAccessPolicyWasBuilt = async (meditrakDeviceDetails, useLegacyFormat) => {
-      // ensure history is reset between tests
-      getPolicyForUserStub.mockReset();
-      models.meditrakDevice.updateOrCreate.mockReset();
-      models.refreshToken.updateOrCreate.mockReset();
-      authenticator
-        .authenticatePassword(
-          {
-            emailAddress: 'verified@test.com',
-            password: 'validPassword',
-            deviceName: 'validDevice',
-          },
-          meditrakDeviceDetails,
-        )
-        .then(r => {
-          expect(r).toStrictEqual({
+  describe('should build the correct access policy for the meditrak device', () => {
+    const testData = [
+      [
+        'modern meditrakDeviceDetails',
+        [
+          ['i', [MEDITRAK_DEVICE_DETAILS.modern, false]],
+          ['ii', [MEDITRAK_DEVICE_DETAILS.ultraModern, false]],
+        ],
+      ],
+      [
+        'legacy meditrakDeviceDetails',
+        [
+          ['i', [MEDITRAK_DEVICE_DETAILS.legacy, true]],
+          ['ii', [MEDITRAK_DEVICE_DETAILS.ultraLegacy, true]],
+        ],
+      ],
+    ];
+
+    testData.forEach(([testCaseName, testCaseData]) => {
+      describe(testCaseName, () => {
+        it.each(testCaseData)('%s', async (_, [meditrakDeviceDetails, useLegacyFormat]) => {
+          // ensure history is reset between tests
+          getPolicyForUserStub.mockClear();
+          models.meditrakDevice.updateOrCreate.mockClear();
+          models.refreshToken.updateOrCreate.mockClear();
+
+          await expect(
+            authenticator.authenticatePassword(
+              {
+                emailAddress: 'verified@test.com',
+                password: 'validPassword',
+                deviceName: 'validDevice',
+              },
+              meditrakDeviceDetails,
+            ),
+          ).resolves.toStrictEqual({
             accessPolicy,
             refreshToken,
             user: verifiedUser,
@@ -170,12 +187,7 @@ export const testAuthenticatePassword = () => {
             },
           );
         });
-    };
-    // modern
-    await assertCorrectAccessPolicyWasBuilt(MEDITRAK_DEVICE_DETAILS.modern, false);
-    await assertCorrectAccessPolicyWasBuilt(MEDITRAK_DEVICE_DETAILS.ultraModern, false);
-    // legacy
-    await assertCorrectAccessPolicyWasBuilt(MEDITRAK_DEVICE_DETAILS.legacy, true);
-    await assertCorrectAccessPolicyWasBuilt(MEDITRAK_DEVICE_DETAILS.ultraLegacy, true);
+      });
+    });
   });
 };
