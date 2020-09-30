@@ -23,31 +23,34 @@ export const TILE_SETS = [
   {
     key: 'osm',
     label: 'Open Streets',
-    thumbnail: '/images/osm.png',
+    thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/osm-tile-thumbnail.png',
     url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
   },
   {
     key: 'satellite',
     label: 'Satellite',
-    thumbnail: '/images/satellite.png',
+    thumbnail:
+      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/satellite-tile-thumbnail.png',
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,
   },
   {
     key: 'waterways',
     label: 'Waterways',
-    thumbnail: '/images/waterways.png',
+    thumbnail:
+      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/waterways-tile-thumbnail.png',
     url: makeMapboxStyleUrl({ styleId: 'ckemdct811px619qklzgvvg53' }),
   },
   {
     key: 'roads',
     label: 'Roads',
-    thumbnail: '/images/roads.png',
+    thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/roads-tile-thumbnail.png',
     url: makeMapboxStyleUrl({ styleId: 'ckenp4uq10dfq1anzert7iot7' }),
   },
   {
     key: 'ethnicity',
     label: 'Ethnicity',
-    thumbnail: '/images/ethnicity.png',
+    thumbnail:
+      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/ethnicity-tile-thumbnail.png',
     url: makeMapboxStyleUrl({
       styleId: 'ckexmd0e30lm619lxeu6za5yt',
       accessKey: TOM_ACCESS_KEY,
@@ -135,7 +138,7 @@ export const TILE_SETS = [
   {
     key: 'terrain',
     label: 'Terrain',
-    thumbnail: '/images/terrain.png',
+    thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/terrain-tile-thumbnail.png',
     url: makeMapboxStyleUrl({ styleId: 'ckenu2thw0ibl1anzk5aarzu6' }),
   },
 ];

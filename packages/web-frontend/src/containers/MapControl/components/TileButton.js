@@ -55,7 +55,7 @@ const Thumbnail = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  opacity: 0.6;
+  opacity: 0.85;
   background-size: cover;
   transition: opacity 0.3s ease;
 `;
