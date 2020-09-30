@@ -22,15 +22,6 @@
     "@tupaia/database": "1.0.0"
   },
   "eslintConfig": {
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/**"
-        ],
-        "env": {
-          "jest": true
-        }
-      }
-    ]
+    "extends": "@beyondessential/jest"
   }
 }
