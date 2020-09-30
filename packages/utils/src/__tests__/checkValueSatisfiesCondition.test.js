@@ -118,14 +118,14 @@ describe('checkAgainstConditions', () => {
     });
 
     it('operator "in" works with strings correctly', () => {
-      const myStringConfig = { operator: 'in', value: 'This is my string' };
+      const commonConfig = { operator: 'in', value: 'This is my string' };
 
       const testData = [
-        ['', myStringConfig, true],
-        ['string', myStringConfig, true],
-        [0, myStringConfig, false],
-        [undefined, myStringConfig, false],
-        ['hello', myStringConfig, false],
+        ['', commonConfig, true],
+        ['string', commonConfig, true],
+        [0, commonConfig, false],
+        [undefined, commonConfig, false],
+        ['hello', commonConfig, false],
       ];
 
       testData.forEach(([value, condition, expected]) => {
