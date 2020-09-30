@@ -40,6 +40,9 @@
             - name: test-internal-dependencies
               service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
+            - name: test-web-frontend
+              service: testing
+              command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
 
 - type: serial
   name: pull latest into ec2

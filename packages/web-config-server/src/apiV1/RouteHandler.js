@@ -17,7 +17,7 @@ export class RouteHandler {
 
   // can be overridden by subclasses with specific permissions checks
   async checkPermissions() {
-    const PermissionsChecker = this.constructor.PermissionsChecker;
+    const { PermissionsChecker } = this.constructor;
     if (!PermissionsChecker) {
       throw new Error(
         'Each RouteHandler must explicitly specify a permissions checker to ensure permissions have been considered',

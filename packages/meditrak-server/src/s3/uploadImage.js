@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { getS3Client } from './index';
 import { BUCKET_NAME, getImageFilePath } from './constants';

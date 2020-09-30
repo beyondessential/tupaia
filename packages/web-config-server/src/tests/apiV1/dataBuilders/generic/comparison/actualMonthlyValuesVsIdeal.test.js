@@ -140,7 +140,6 @@ const idealMetadata = {
 
 const query = {
   viewId: 'TO_VHP_Descriptive_Consumables',
-  organisationUnitCode: 'TO_VHP',
   dashboardGroupId: '26',
   cacheBreaker: 'pe8rac324243',
   organisationUnitCode: 'TO_VHP',

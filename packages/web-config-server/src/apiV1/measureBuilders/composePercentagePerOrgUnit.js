@@ -59,7 +59,6 @@ export const composePercentagePerOrgUnit = async (
 
     const fraction = divideValues(numeratorValue, denominatorValue, fractionType);
 
-    // eslint-disable-next-line no-restricted-globals
     if (!isNaN(fraction)) {
       fractionsByOrgUnit[orgUnit] = {
         ...denominatorsByOrgUnit[orgUnit],

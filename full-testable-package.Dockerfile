@@ -44,8 +44,12 @@ RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
+RUN mkdir -p ./packages/weather-api
+COPY packages/weather-api/package.json ./packages/weather-api
 RUN mkdir -p ./packages/web-config-server
 COPY packages/web-config-server/package.json ./packages/web-config-server
+RUN mkdir -p ./packages/web-frontend
+COPY packages/web-frontend/package.json ./packages/web-frontend
 
 
 ## run yarn without building internal dependencies, so we can cache that layer without code changes
@@ -65,6 +69,8 @@ COPY packages/eslint-config-typescript/. ./packages/eslint-config-typescript
 COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
 COPY packages/ui-components/. ./packages/ui-components
+COPY packages/weather-api/. ./packages/weather-api
+COPY packages/web-frontend/. ./packages/web-frontend
 
 ## build internal dependencies
 RUN yarn build-internal-dependencies

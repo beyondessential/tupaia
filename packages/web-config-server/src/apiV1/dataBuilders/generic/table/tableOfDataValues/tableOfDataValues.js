@@ -325,7 +325,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   calculateCategoryTotals = rows => {
     const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
     return rows.reduce((columnAggregates, row) => {
-      const categoryId = row.categoryId;
+      const { categoryId } = row;
       const categoryTotals = columnAggregates[categoryId] || {};
       Object.keys(row).forEach(key => {
         if (!rowKeysToIgnore.has(key)) {

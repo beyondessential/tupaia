@@ -96,8 +96,8 @@ const createAggregator = () => {
     .withArgs(programCode, {
       dataServices,
       entityAggregation: config.entityAggregation,
-      dataSourceEntityFilter: dataSourceEntityFilter,
-      organisationUnitCode: organisationUnitCode,
+      dataSourceEntityFilter,
+      organisationUnitCode,
       startDate: undefined,
       endDate: undefined,
       trackedEntityInstance: undefined,

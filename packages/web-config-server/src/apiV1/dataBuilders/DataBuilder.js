@@ -28,7 +28,6 @@ export class DataBuilder {
     this.aggregationType = aggregationType;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   build() {
     throw new Error('Any subclass of DataBuilder must implement the "build" method');
   }

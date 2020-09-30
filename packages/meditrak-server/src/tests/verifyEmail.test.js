@@ -12,7 +12,7 @@ import { randomEmail } from './testUtilities';
 
 describe('Verify Email', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
   const { VERIFIED, NEW_USER, UNVERIFIED } = models.user.emailVerifiedStatuses;
 
   const dummyFields = {
@@ -55,7 +55,7 @@ describe('Verify Email', () => {
 
   const login = async emailAddress => {
     const body = {
-      emailAddress: emailAddress,
+      emailAddress,
       password: dummyFields.password,
       deviceName: 'Test Device',
     };

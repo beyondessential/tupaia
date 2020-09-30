@@ -88,7 +88,7 @@ export class SidePanel extends PureComponent {
         ref={panel => {
           this.panel = panel;
         }}
-        style={{ width: width }}
+        style={{ width }}
       >
         <ExpandButton />
         <Dashboard />

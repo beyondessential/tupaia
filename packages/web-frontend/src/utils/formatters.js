@@ -29,7 +29,6 @@ const fraction = (value, { total }) => {
   return `${String(value)}/${String(total)}`;
 };
 const fractionAndPercentage = (value, { numerator, denominator }) => {
-  // eslint-disable-next-line no-restricted-globals
   if (isNaN(value)) return value;
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
@@ -54,7 +53,6 @@ const boolean = (value, { presentationOptions = {} }) => {
 };
 
 const percentage = value => {
-  // eslint-disable-next-line no-restricted-globals
   if (isNaN(value)) {
     return value;
   }

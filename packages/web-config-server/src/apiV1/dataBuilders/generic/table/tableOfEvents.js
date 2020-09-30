@@ -111,7 +111,7 @@ class TableOfEventsBuilder extends DataBuilder {
     const processColumn = async ([key, { additionalData = [], shouldNumberLines }]) => {
       const cellValues = await this.buildCellValues(event, key, additionalData);
 
-      //Avoid sending no data
+      // Avoid sending no data
       if (Object.keys(cellValues).length) {
         rowValues[key] = this.valuesToString(cellValues, shouldNumberLines);
       }

@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export default function(orgUnitBounds, currentBounds) {
+export default function (orgUnitBounds, currentBounds) {
   const orgUnitLatDifference = orgUnitBounds[1][0] - orgUnitBounds[0][0];
   const orgUnitLonDifference = orgUnitBounds[1][1] - orgUnitBounds[0][1];
   const currentLatDifference = currentBounds.getNorthEast().lat - currentBounds.getSouthWest().lat;

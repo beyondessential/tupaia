@@ -67,7 +67,8 @@ export class PieChart extends PureComponent {
       return {
         wrapperStyle: VIEW_STYLES.legendExporting,
       };
-    } else if (isEnlarged && !isMobile()) {
+    }
+    if (isEnlarged && !isMobile()) {
       return {
         wrapperStyle: {
           paddingTop: '20px',
