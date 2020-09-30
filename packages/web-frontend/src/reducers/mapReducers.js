@@ -25,6 +25,7 @@ import {
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
   UPDATE_MEASURE_CONFIG,
+  SET_PROJECT,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
@@ -207,6 +208,8 @@ function activeTileSetKey(state, action) {
   switch (action.type) {
     case CHANGE_TILE_SET:
       return action.setKey;
+    case SET_PROJECT:
+      return getAutoTileset();
     default:
       return state || getAutoTileset();
   }

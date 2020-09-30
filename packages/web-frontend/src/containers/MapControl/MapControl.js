@@ -14,6 +14,7 @@ import { TileButton } from './components/TileButton';
 import { TileControl } from './components/TileControl';
 import { tileSetShape } from './contants';
 import { selectTileSets, selectActiveTileSet } from '../../selectors/projectSelectors';
+import { createScaleKeyFrameAnimation } from '../../utils/keyFrames';
 
 const Container = styled.div`
   height: 100%;
@@ -27,47 +28,6 @@ const Controls = styled.div`
   padding-right: 12px;
 `;
 
-function ease(v, pow = 4) {
-  return 1 - Math.pow(1 - v, pow);
-}
-
-function createKeyframeAnimation() {
-  // Figure out the size of the element when collapsed.
-  const x = 0.5;
-  const y = 0;
-  let animation = '';
-  let inverseAnimation = '';
-
-  for (let step = 0; step <= 100; step++) {
-    // Remap the step value to an eased one.
-    const easedStep = ease(step / 100, 3);
-
-    // Calculate the scale of the element.
-    const xScale = x + (1 - x) * easedStep;
-    const yScale = y + (1 - y) * easedStep;
-
-    animation += `${step}% {
-      transform: scale(${xScale}, ${yScale});
-    }`;
-
-    // And now the inverse for the contents.
-    const invXScale = 1 - xScale;
-    const invYScale = 1 - yScale;
-    inverseAnimation += `${step}% {
-      transform: scale(${invXScale}, ${invYScale});
-    }`;
-  }
-
-  return `
-  @keyframes openAnimation {
-    ${animation}
-  }
-
-  @keyframes closeAnimation {
-    ${inverseAnimation}
-  }`;
-}
-
 const TileList = styled.div`
   display: flex;
   flex-direction: column;
@@ -78,7 +38,7 @@ const TileList = styled.div`
   transform-origin: bottom right;
   transition: width 0.3s ease;
 
-  ${createKeyframeAnimation()};
+  ${createScaleKeyFrameAnimation({})};
 
   > button {
     transition: transform 0.5s ease-out;
