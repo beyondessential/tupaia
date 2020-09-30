@@ -8,9 +8,6 @@ describe('checkAgainstConditions', () => {
       );
     });
 
-    const commonConfig = { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] };
-    const commonStringConfig = { operator: 'in', value: 'This is my string' };
-
     const testData = [
       [
         'should correctly check if a value satisfies a plain condition',
@@ -86,23 +83,23 @@ describe('checkAgainstConditions', () => {
       [
         'should check "in" correctly',
         [
-          [['', commonConfig], true],
-          [[null, commonConfig], true],
-          [['hi', commonConfig], true],
-          [[1, commonConfig], true],
-          [[3, commonConfig], false],
-          [[undefined, commonConfig], false],
-          [['hello', commonConfig], false],
+          [['', { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] }], true],
+          [[null, { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] }], true],
+          [['hi', { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] }], true],
+          [[1, { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] }], true],
+          [[3, { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] }], false],
+          [[undefined, { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] }], false],
+          [['hello', { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] }], false],
         ],
       ],
       [
         'operator "in" works with strings correctly',
         [
-          [['', commonStringConfig], true],
-          [['string', commonStringConfig], true],
-          [[0, commonStringConfig], false],
-          [[undefined, commonStringConfig], false],
-          [['hello', commonStringConfig], false],
+          [['', { operator: 'in', value: 'This is my string' }], true],
+          [['string', { operator: 'in', value: 'This is my string' }], true],
+          [[0, { operator: 'in', value: 'This is my string' }], false],
+          [[undefined, { operator: 'in', value: 'This is my string' }], false],
+          [['hello', { operator: 'in', value: 'This is my string' }], false],
         ],
       ],
       [
