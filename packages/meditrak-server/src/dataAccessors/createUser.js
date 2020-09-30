@@ -23,7 +23,6 @@ export const createUser = async (
   },
 ) => {
   try {
-    console.log('yeyeye');
     return await models.wrapInTransaction(async transactingModels => {
       const permissionGroup = await transactingModels.permissionGroup.findOne({
         name: permissionGroupName,

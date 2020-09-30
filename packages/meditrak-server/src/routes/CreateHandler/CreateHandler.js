@@ -28,9 +28,6 @@ export class CreateHandler extends CRUDHandler {
   }
 
   async validate() {
-    // dashboardReport, mapOverlay and dashboardGroup use different id formats and are the only endpoints
-    // which need to overwrite the validation functionality
-    // TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
     return this.validateNewRecord();
   }
 
