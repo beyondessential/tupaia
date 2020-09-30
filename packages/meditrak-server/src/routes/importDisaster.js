@@ -111,7 +111,7 @@ export async function importDisaster(req, res) {
             break;
           }
           default:
-          //just ignore any tabs we're not interested in
+          // just ignore any tabs we're not interested in
         }
       }
     });

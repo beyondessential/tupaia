@@ -105,9 +105,7 @@ export async function replaceArrayValue(db, table, column, oldValue, newValueInp
   );
 
   const newValues = Array.isArray(newValueInput) ? newValueInput : [newValueInput];
-  const newValuesPlaceholder = Array(newValues.length)
-    .fill('?')
-    .join(',');
+  const newValuesPlaceholder = Array(newValues.length).fill('?').join(',');
 
   // Use `ARRAY[?,...]` syntax instead of `'{?...}'` because db-migrate treats the
   // second syntax as a string literal

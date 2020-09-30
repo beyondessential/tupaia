@@ -5,120 +5,122 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
+import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import request from './utils/request';
 import {
+  ATTEMPT_CHANGE_PASSWORD,
+  ATTEMPT_CHART_EXPORT,
+  ATTEMPT_DRILL_DOWN,
+  ATTEMPT_LOGIN,
+  ATTEMPT_LOGOUT,
+  ATTEMPT_REQUEST_COUNTRY_ACCESS,
+  ATTEMPT_RESET_PASSWORD,
+  ATTEMPT_RESET_TOKEN_LOGIN,
+  ATTEMPT_SIGNUP,
+  cancelFetchMeasureData,
+  changeOrgUnitError,
+  changeOrgUnitSuccess,
+  CHANGE_ORG_UNIT_SUCCESS,
+  CHANGE_SEARCH,
+  clearMeasure,
+  clearMeasureHierarchy,
+  DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  DIALOG_PAGE_RESET_PASSWORD,
+  displayUnverified,
+  fetchChangePasswordError,
+  fetchChangePasswordSuccess,
+  fetchChartExportError,
+  fetchChartExportSuccess,
+  fetchCountryAccessDataError,
+  fetchCountryAccessDataSuccess,
+  fetchDashboardError,
+  fetchDashboardItemDataError,
+  fetchDashboardItemDataSuccess,
+  fetchDashboardSuccess,
+  fetchDrillDownError,
+  fetchDrillDownSuccess,
+  fetchEmailVerifyError,
+  fetchMeasureInfoError,
+  fetchMeasureInfoSuccess,
+  fetchMeasuresError,
+  fetchMeasuresSuccess,
+  fetchOrgUnit,
+  fetchOrgUnitError,
+  fetchOrgUnitSuccess,
+  fetchRequestCountryAccessError,
+  fetchRequestCountryAccessSuccess,
+  fetchResendEmailError,
+  fetchResetPasswordError,
+  fetchResetPasswordSuccess,
+  fetchResetTokenLoginError,
+  fetchResetTokenLoginSuccess,
+  fetchSearchError,
+  fetchSearchSuccess,
+  fetchUserLoginError,
+  fetchUserLoginSuccess,
+  fetchUserLogoutError,
+  fetchUserLogoutSuccess,
+  fetchUserSignupError,
+  fetchUserSignupSuccess,
+  FETCH_INFO_VIEW_DATA,
+  FETCH_LOGIN_SUCCESS,
+  FETCH_LOGOUT_SUCCESS,
+  FETCH_MEASURES_SUCCESS,
+  FETCH_RESEND_VERIFICATION_EMAIL,
+  FETCH_RESET_TOKEN_LOGIN_SUCCESS,
+  findLoggedIn,
+  findUserLoginFailed,
+  FIND_USER_LOGGEDIN,
+  FINISH_USER_SESSION,
+  GO_HOME,
+  openEmailVerifiedPage,
+  openResendEmailSuccess,
+  openUserPage,
+  OPEN_USER_DIALOG,
+  REQUEST_ORG_UNIT,
+  REQUEST_PROJECT_ACCESS,
+  setMeasure,
+  setOverlayComponent,
+  SET_DRILL_DOWN_DATE_RANGE,
+  SET_ENLARGED_DIALOG_DATE_RANGE,
+  SET_MEASURE,
+  SET_ORG_UNIT,
+  SET_VERIFY_EMAIL_TOKEN,
+  updateEnlargedDialog,
+  updateEnlargedDialogError,
+  updateMeasureConfig,
+  UPDATE_MEASURE_CONFIG,
+  UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+} from './actions';
+import { LOGIN_TYPES } from './constants';
+import { LANDING } from './containers/OverlayDiv/constants';
+import { DEFAULT_PROJECT_CODE } from './defaults';
+import {
+  convertUrlPeriodStringToDateRange,
+  createUrlString,
+  URL_COMPONENTS,
+} from './historyNavigation';
+import { setProject } from './projects/actions';
+import {
+  selectCurrentExpandedViewContent,
+  selectCurrentExpandedViewId,
+  selectCurrentInfoViewKey,
+  selectCurrentMeasureId,
   selectCurrentOrgUnitCode,
+  selectCurrentPeriodGranularity,
+  selectCurrentProjectCode,
+  selectDefaultMeasureId,
+  selectIsMeasureInHierarchy,
+  selectIsProject,
+  selectMeasureBarItemById,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectCurrentProjectCode,
-  selectCurrentProject,
-  selectCurrentMeasureId,
-  selectIsProject,
-  selectMeasureBarItemById,
-  selectCurrentInfoViewKey,
-  selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
 } from './selectors';
-import {
-  ATTEMPT_CHANGE_PASSWORD,
-  ATTEMPT_LOGIN,
-  ATTEMPT_LOGOUT,
-  ATTEMPT_RESET_PASSWORD,
-  ATTEMPT_REQUEST_COUNTRY_ACCESS,
-  ATTEMPT_SIGNUP,
-  ATTEMPT_CHART_EXPORT,
-  ATTEMPT_DRILL_DOWN,
-  SET_ORG_UNIT,
-  FETCH_INFO_VIEW_DATA,
-  CHANGE_SEARCH,
-  SET_MEASURE,
-  FIND_USER_LOGGEDIN,
-  FETCH_LOGOUT_SUCCESS,
-  FETCH_LOGIN_SUCCESS,
-  GO_HOME,
-  OPEN_USER_DIALOG,
-  DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
-  FINISH_USER_SESSION,
-  SET_VERIFY_EMAIL_TOKEN,
-  setMeasure,
-  clearMeasure,
-  clearMeasureHierarchy,
-  findLoggedIn,
-  fetchChangePasswordSuccess,
-  fetchChangePasswordError,
-  fetchResetPasswordSuccess,
-  fetchResetPasswordError,
-  fetchCountryAccessDataSuccess,
-  fetchCountryAccessDataError,
-  fetchUserLoginSuccess,
-  fetchUserLoginError,
-  fetchUserLogoutSuccess,
-  fetchUserLogoutError,
-  fetchUserSignupSuccess,
-  displayUnverified,
-  fetchUserSignupError,
-  fetchOrgUnitSuccess,
-  changeOrgUnitSuccess,
-  changeOrgUnitError,
-  fetchDashboardSuccess,
-  fetchDashboardError,
-  fetchDashboardItemDataSuccess,
-  fetchDashboardItemDataError,
-  fetchSearchSuccess,
-  fetchSearchError,
-  fetchMeasureInfoSuccess,
-  fetchMeasureInfoError,
-  cancelFetchMeasureData,
-  fetchMeasuresSuccess,
-  fetchMeasuresError,
-  fetchRequestCountryAccessError,
-  fetchRequestCountryAccessSuccess,
-  fetchChartExportSuccess,
-  fetchChartExportError,
-  fetchDrillDownSuccess,
-  fetchDrillDownError,
-  SET_ENLARGED_DIALOG_DATE_RANGE,
-  updateEnlargedDialog,
-  updateEnlargedDialogError,
-  FETCH_MEASURES_SUCCESS,
-  CHANGE_ORG_UNIT_SUCCESS,
-  openEmailVerifiedPage,
-  fetchEmailVerifyError,
-  openResendEmailSuccess,
-  fetchResendEmailError,
-  setOverlayComponent,
-  FETCH_RESEND_VERIFICATION_EMAIL,
-  findUserLoginFailed,
-  REQUEST_PROJECT_ACCESS,
-  fetchOrgUnitError,
-  fetchOrgUnit,
-  REQUEST_ORG_UNIT,
-  ATTEMPT_RESET_TOKEN_LOGIN,
-  fetchResetTokenLoginError,
-  fetchResetTokenLoginSuccess,
-  openUserPage,
-  FETCH_RESET_TOKEN_LOGIN_SUCCESS,
-  DIALOG_PAGE_RESET_PASSWORD,
-  UPDATE_MEASURE_CONFIG,
-  SET_DRILL_DOWN_DATE_RANGE,
-} from './actions';
-import {
-  isMobile,
-  processMeasureInfo,
-  formatDateForApi,
-  flattenMeasureHierarchy,
-  getMeasureFromHierarchy,
-  isMeasureHierarchyEmpty,
-} from './utils';
-import { createUrlString, URL_COMPONENTS } from './historyNavigation';
+import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
-import { DEFAULT_MEASURE_ID, DEFAULT_PROJECT_CODE } from './defaults';
-import { setProject } from './projects/actions';
-import { LANDING } from './containers/OverlayDiv/constants';
-import { LOGIN_TYPES } from './constants';
+
 /**
  * attemptChangePassword
  *
@@ -359,7 +361,7 @@ function* attemptTokenLogin(action) {
       false,
     );
 
-    yield put(findLoggedIn(LOGIN_TYPES.TOKEN, true)); //default to email verified for one time login to prevent a nag screen
+    yield put(findLoggedIn(LOGIN_TYPES.TOKEN, true)); // default to email verified for one time login to prevent a nag screen
     yield put(fetchResetTokenLoginSuccess());
   } catch (error) {
     yield put(error.errorFunction(error));
@@ -747,27 +749,26 @@ function* watchMeasureChange() {
   yield takeLatest(SET_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
-function* fetchMeasureInfoForMeasurePeriodChange() {
-  const state = yield select();
-  const currentMeasureId = selectCurrentMeasureId(state);
-
-  yield fetchMeasureInfo(currentMeasureId);
-}
-
 function* watchMeasurePeriodChange() {
-  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasurePeriodChange);
+  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasureChange);
 }
 
-function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
-  const projectMeasureId = project.defaultMeasure;
-  if (getMeasureFromHierarchy(measureHierarchy, selectedMeasureId)) return selectedMeasureId;
-  else if (getMeasureFromHierarchy(measureHierarchy, projectMeasureId)) return projectMeasureId;
-  else if (getMeasureFromHierarchy(measureHierarchy, DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
-  else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
-    return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
-  }
+function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
+  yield takeLatest(
+    UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+    updateMeasureDateRangeOnceHierarchyLoads,
+  );
+}
 
-  return DEFAULT_MEASURE_ID;
+function* updateMeasureDateRangeOnceHierarchyLoads(action) {
+  yield take(FETCH_MEASURES_SUCCESS);
+  const state = yield select();
+  const periodGranularity = selectCurrentPeriodGranularity(state);
+  const { startDate, endDate } = convertUrlPeriodStringToDateRange(
+    action.periodString,
+    periodGranularity,
+  );
+  yield put(updateMeasureConfig(selectCurrentMeasureId(state), { startDate, endDate }));
 }
 
 function* fetchCurrentMeasureInfo() {
@@ -777,25 +778,18 @@ function* fetchCurrentMeasureInfo() {
   const selectedMeasureId = selectCurrentMeasureId(state);
 
   if (currentOrganisationUnitCode) {
-    const isHierarchyPopulated = measureHierarchy.length;
+    const isHierarchyPopulated = !!measureHierarchy.length;
 
-    // Update the default measure ID
-    if (isHierarchyPopulated) {
-      const newMeasure = getSelectedMeasureFromHierarchy(
-        measureHierarchy,
-        selectedMeasureId,
-        selectCurrentProject(state),
-      );
-
-      if (newMeasure !== selectedMeasureId) {
-        yield put(setMeasure(newMeasure));
-      }
-    } else {
+    if (!isHierarchyPopulated) {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
       yield put(setMeasure(selectedMeasureId));
+    } else if (!selectIsMeasureInHierarchy(state, selectedMeasureId)) {
+      // Update to the default measure ID if the current measure id isn't in the hierarchy
+      const newMeasureId = selectDefaultMeasureId(state);
+      yield put(setMeasure(newMeasureId));
     }
   }
 }
@@ -1113,4 +1107,5 @@ export default [
   watchGoHomeAndResetToProjectSplash,
   watchFetchResetTokenLoginSuccess,
   watchMeasurePeriodChange,
+  watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
 ];

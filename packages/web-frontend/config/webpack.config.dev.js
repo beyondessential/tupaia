@@ -63,7 +63,7 @@ module.exports = {
     // There are also additional JS chunk files if you use code splitting.
     chunkFilename: 'static/js/[name].chunk.js',
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath,
+    publicPath,
     // Point sourcemap entries to original disk location
     devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath),
   },
@@ -161,6 +161,7 @@ module.exports = {
           // It enables caching results in ./node_modules/.cache/babel-loader/
           // directory for faster rebuilds.
           cacheDirectory: true,
+          presets: ['react-app'],
         },
       },
       // "postcss" loader applies autoprefixer to our CSS.

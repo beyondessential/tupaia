@@ -77,7 +77,7 @@ export const SiteAddress = ({ address, contact }) => {
         <ContactSection>
           <ContactHeading>{contact.name}</ContactHeading>
           <ContactText>{contact.department}</ContactText>
-          <ContactLink component={MuiLink} href={`mailto:${contact.email}`}>
+          <ContactLink component={MuiLink} href={`mailto:${contact.email}`} underline="always">
             {contact.email}
           </ContactLink>
         </ContactSection>

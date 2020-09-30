@@ -70,7 +70,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   buildDataElementCodes() {
-    return [...new Set(flatten(this.config.cells))];
+    return [...new Set(flatten(this.config.cells))].filter(
+      cell => !TotalCalculator.isTotalKey(cell),
+    );
   }
 
   buildValuesByCell() {
@@ -228,7 +230,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) {
       this.buildOrgsFromResults();
     }
-    
+
     if (this.tableConfig.columns === ORG_UNIT_WITH_TYPE_COL_KEY) {
       this.buildOrgsFromResultsWithCategories();
     }
@@ -324,7 +326,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   calculateCategoryTotals = rows => {
     const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
     return rows.reduce((columnAggregates, row) => {
-      const categoryId = row.categoryId;
+      const { categoryId } = row;
       const categoryTotals = columnAggregates[categoryId] || {};
       Object.keys(row).forEach(key => {
         if (!rowKeysToIgnore.has(key)) {

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 function getGeographicalAreaCode(name, country, district) {
   return `${district ? district.code : country.code}_${name.replace("'", '')}`;
