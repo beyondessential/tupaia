@@ -39,19 +39,10 @@ export class EntityHierarchyCacher {
    */
   async fetchAndCacheDescendants(hierarchyId, parentIdsToAncestorIds) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
-    if (parentIds.length === 0) {
-      return; // base case of recursion, we must have reached the leaf nodes
-    }
 
-    // check whether this generation/hierarchy combo has already been cached to avoid doing it again
-    // on startup, or when two projects share a hierarchy (at time of writing none do, but db schema
-    // makes it possible)
-    const numberAlreadyCached = await this.models.ancestorDescendantRelation.count({
-      entity_hierarchy_id: hierarchyId,
-      ancestor_id: parentIds,
-      generational_distance: 1,
-    });
-    if (numberAlreadyCached === parentIds.length) {
+    // check if we've reached the leaf nodes or this is already cached
+    const shouldFetchAndCache = await this.checkShouldFetchAndCache(hierarchyId, parentIds);
+    if (!shouldFetchAndCache) {
       return;
     }
 
@@ -85,6 +76,22 @@ export class EntityHierarchyCacher {
 
     // keep recursing through the hierarchy
     await this.fetchAndCacheDescendants(hierarchyId, childIdsToAncestorIds);
+  }
+
+  async checkShouldFetchAndCache(hierarchyId, parentIds) {
+    if (parentIds.length === 0) {
+      return false; // base case of recursion, we must have reached the leaf nodes
+    }
+
+    // check whether this generation/hierarchy combo has already been cached to avoid doing it again
+    // on startup, or when two projects share a hierarchy (at time of writing none do, but db schema
+    // makes it possible)
+    const numberAlreadyCached = await this.models.ancestorDescendantRelation.count({
+      entity_hierarchy_id: hierarchyId,
+      ancestor_id: parentIds,
+      generational_distance: 1,
+    });
+    return numberAlreadyCached !== parentIds.length;
   }
 
   async checkIfNextGenerationIsCanonical(hierarchyId, entityIds) {
