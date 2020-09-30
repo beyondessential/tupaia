@@ -12,7 +12,7 @@ export const testAuthenticateRefreshToken = () => {
 
   describe('throws an error with invalid arguments', () => {
     const testData = [
-      ['null', undefined, "Cannot read property 'emailAddress' of undefined"],
+      ['undefined', undefined, "Cannot read property 'emailAddress' of undefined"],
       ['empty', {}, 'Please supply refreshToken'],
       [
         'no fresh token',
