@@ -27,6 +27,7 @@ const StyledButton = styled(Button)`
   font-size: 12px;
   line-height: 14px;
   border: none;
+  text-transform: none;
 
   img {
     height: 25px;
@@ -50,7 +51,7 @@ const StyledButton = styled(Button)`
 `;
 
 const Label = styled.span`
-  width: 90px;
+  width: 75px;
   text-align: left;
 `;
 
