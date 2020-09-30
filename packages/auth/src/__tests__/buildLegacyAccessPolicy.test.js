@@ -104,26 +104,24 @@ describe('buildLegacyAccessPolicy', () => {
       [
         'should have Demo Land public access, as interpreted by legacy parser',
         [
-          [['surveys', ['DL'], 'Public'], true],
-          [['surveys', ['DL'], 'Donor'], false],
-          [['surveys', ['DL'], 'Admin'], false],
+          [[['DL'], 'Public'], true],
+          [[['DL'], 'Donor'], false],
+          [[['DL'], 'Admin'], false],
         ],
       ],
       [
         'should have Tonga admin, donor, and public access, as interpreted by legacy parser',
         [
-          [['surveys', ['TO'], 'Public'], true],
-          [['surveys', ['TO'], 'Donor'], true],
-          [['surveys', ['TO'], 'Admin'], true],
+          [[['TO'], 'Public'], true],
+          [[['TO'], 'Donor'], true],
+          [[['TO'], 'Admin'], true],
         ],
       ],
     ];
 
     it.each(testData)('%s', (_, testCaseData) => {
-      testCaseData.forEach(([[organisationUnitPath, userGroup, readWriteLevel], expected]) => {
-        expect(hasAccess(accessPolicy, organisationUnitPath, userGroup, readWriteLevel)).toBe(
-          expected,
-        );
+      testCaseData.forEach(([[userGroup, readWriteLevel], expected]) => {
+        expect(hasAccess(accessPolicy, 'surveys', userGroup, readWriteLevel)).toBe(expected);
       });
     });
 
@@ -219,20 +217,14 @@ describe('buildLegacyAccessPolicy', () => {
     });
 
     const testData = [
-      [
-        'should not have Mount Sinai admin permissions',
-        ['surveys', ['CA_OT_TO_MS'], 'Public'],
-        false,
-      ],
-      ['should not have Ottawa admin permissions', ['surveys', ['CA_OT_OT'], 'Public'], false],
-      ['should not have Toronto permissions', ['surveys', ['CA_OT_TO'], 'Public'], false],
-      ['should not have Canada country level permissions', ['surveys', ['CA'], 'Public'], false],
+      ['should not have Mount Sinai admin permissions', [['CA_OT_TO_MS'], 'Public'], false],
+      ['should not have Ottawa admin permissions', [['CA_OT_OT'], 'Public'], false],
+      ['should not have Toronto permissions', [['CA_OT_TO'], 'Public'], false],
+      ['should not have Canada country level permissions', [['CA'], 'Public'], false],
     ];
 
-    it.each(testData)('%s', (_, [organisationUnitPath, userGroup, readWriteLevel], expected) => {
-      expect(hasAccess(accessPolicy, organisationUnitPath, userGroup, readWriteLevel)).toBe(
-        expected,
-      );
+    it.each(testData)('%s', (_, [userGroup, readWriteLevel], expected) => {
+      expect(hasAccess(accessPolicy, 'surveys', userGroup, readWriteLevel)).toBe(expected);
     });
 
     it('should not have any permissions', () => {
