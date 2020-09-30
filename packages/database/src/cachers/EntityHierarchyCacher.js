@@ -3,11 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import groupBy from 'lodash.groupby';
-import { AsyncTaskQueue, getSortByKey } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../modelClasses/Entity';
-
-const BATCH_SIZE = 5;
 
 export class EntityHierarchyCacher {
   constructor(models) {
