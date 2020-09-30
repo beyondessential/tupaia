@@ -10,8 +10,11 @@ import {
   MEDITRAK_DEVICE_BY_REFRESH_TOKEN,
 } from './Authenticator.fixtures';
 
-// export const getPolicyForUserStub = sinon.stub().resolves(accessPolicy);
-export const getPolicyForUserStub = jest.fn(() => Promise.resolve(accessPolicy));
+export const getPolicyForUserStub = jest
+  .fn()
+  .mockResolvedValue(accessPolicy)
+  .mockName('getPolicyForUserStub');
+
 export class AccessPolicyBuilderStub {
   getPolicyForUser = getPolicyForUserStub;
 }
