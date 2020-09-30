@@ -2,8 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { stripFields } from '@tupaia/utils';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -228,50 +226,6 @@ export class EntityModel extends DatabaseModel {
   types = ENTITY_TYPES;
 
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
-
-  getColumnSpecs = tableAlias => {
-    return this.buildColumnSpecs(tableAlias, false);
-  };
-
-  buildColumnSpecs = tableAlias => {
-    const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
-    return EntityModel.fields.map(field => {
-      if (EntityModel.geoFields.includes(field)) {
-        return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
-      }
-      return { [field]: `${tableAliasPrefix}${field}` };
-    });
-  };
-
-  async findOne(conditions) {
-    return super.findOne(conditions, {
-      columns: this.getColumnSpecs(),
-    });
-  }
-
-  async find(conditions) {
-    return super.find(conditions, {
-      columns: this.getColumnSpecs(),
-    });
-  }
-
-  async findById(id) {
-    return super.findById(id, {
-      columns: this.getColumnSpecs(),
-    });
-  }
-
-  async update(whereCondition, fieldsToUpdate) {
-    return super.update(whereCondition, this.removeUnUpdatableFields(fieldsToUpdate));
-  }
-
-  async updateOrCreate(whereCondition, fieldsToUpsert) {
-    return super.updateOrCreate(whereCondition, this.removeUnUpdatableFields(fieldsToUpsert));
-  }
-
-  async updateById(id, fieldsToUpdate) {
-    return super.updateById(id, this.removeUnUpdatableFields(fieldsToUpdate));
-  }
 
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({
