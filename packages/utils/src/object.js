@@ -179,3 +179,8 @@ export const mapValues = (object, mapping, { defaultToExistingValues = false } =
 
   return result;
 };
+
+export const stripFields = (object, fieldsToExclude) =>
+  Object.entries(object)
+    .filter(([key]) => !fieldsToExclude.includes(key))
+    .reduce((strippedObject, [key, value]) => ({ ...strippedObject, [key]: value }), {});

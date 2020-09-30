@@ -11,6 +11,7 @@ import {
   reduceToDictionary,
   reduceToSet,
   getSortByKey,
+  stripFields,
 } from '../object';
 
 describe('object', () => {
@@ -357,6 +358,24 @@ describe('object', () => {
       it.each(testData)('%s', (_, options, expected) => {
         expect(mapValues(object, mapping, options)).toStrictEqual(expected);
       });
+    });
+  });
+
+  describe('stripFields', () => {
+    const object = { a: 1, b: 2, c: 3 };
+    const testData = [
+      ['should remove a single field, and retain the others', ['b'], { a: 1, c: 3 }],
+      ['should remove multiple fields, and retain others', ['a', 'b'], { c: 3 }],
+      ['should remove all fields', ['a', 'b', 'c'], {}],
+      [
+        'should make no changes when the fields to strip are not present',
+        ['d', 'e'],
+        { a: 1, b: 2, c: 3 },
+      ],
+    ];
+
+    it.each(testData)('%s', (_, fieldsToStrip, expected) => {
+      expect(stripFields(object, fieldsToStrip)).toStrictEqual(expected);
     });
   });
 });
