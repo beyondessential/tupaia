@@ -9,21 +9,9 @@ import { testAuthenticateOneTimeLogin } from './testAuthenticateOneTimeLogin';
 import { testAuthenticateRefreshToken } from './testAuthenticateRefreshToken';
 
 jest.mock('rand-token');
+randomToken.generate.mockReturnValue(refreshToken);
 
 describe('Authenticator', () => {
-  beforeAll(() => {
-    // sinon.stub(randomToken, 'generate').returns(refreshToken);
-    randomToken.generate.mockReturnValue(refreshToken);
-  });
-
-  afterAll(() => {
-    jest.restoreAllMocks();
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   describe('authenticatePassword', testAuthenticatePassword);
   describe('authenticateRefreshToken', testAuthenticateRefreshToken);
   describe('authenticateOneTimeLogin', testAuthenticateOneTimeLogin);
