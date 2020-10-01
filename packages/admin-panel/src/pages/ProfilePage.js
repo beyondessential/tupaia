@@ -11,6 +11,8 @@ import { useForm } from 'react-hook-form';
 import MuiAvatar from '@material-ui/core/Avatar';
 import MuiDivider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
+import Fab from '@material-ui/core/Fab';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { Button, SmallAlert, TextField, FileUploadField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
@@ -35,6 +37,7 @@ const StyledButton = styled(Button)`
 `;
 
 const Avatar = styled(MuiAvatar)`
+  position: relative;
   color: white;
   background: ${props => props.theme.palette.success.main};
   font-weight: 600;
@@ -42,6 +45,24 @@ const Avatar = styled(MuiAvatar)`
   height: 85px;
   font-size: 45px;
   margin-right: 1rem;
+`;
+
+const DeleteButton = styled(Fab)`
+  position: absolute;
+  right: 5px;
+  bottom: 0;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  box-shadow: none;
+  min-height: 30px;
+  background: white;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  color: ${props => props.theme.palette.text.secondary};
+
+  .MuiSvgIcon-root {
+    font-size: 18px;
+  }
 `;
 
 const ErrorMessage = styled.p`
@@ -77,7 +98,7 @@ const STATUS = {
 };
 
 const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
-  const [fileUpload, setFileUpload] = useState(null);
+  const [fileUpload, setFileUpload] = useState(user.profileImage);
   const [fileUploadName, setFileUploadName] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -97,7 +118,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
       employer,
     };
 
-    if (fileUpload) {
+    if (setFileUploadName) {
       updatedFields = {
         ...updatedFields,
         profileImage: {
@@ -127,7 +148,14 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
     setStatus(STATUS.IDLE);
   };
 
-  const { firstName, lastName, position, employer, profileImage } = user;
+  const handleDelete = () => {
+    console.log('delete...');
+    setFileUpload(null);
+    setFileUploadName(null);
+  };
+
+  const { firstName, lastName, position, employer } = user;
+  const userInitial = user.name.substring(0, 1);
 
   return (
     <>
@@ -137,7 +165,12 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
           {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
           {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
           <Box display="flex" mb={2} alignItems="center">
-            <Avatar src={fileUpload || profileImage}>T</Avatar>
+            <Box position="relative">
+              <Avatar src={fileUpload}>{userInitial}</Avatar>
+              <DeleteButton onClick={handleDelete}>
+                <DeleteIcon />
+              </DeleteButton>
+            </Box>
             {/*<div>{fileUpload}</div>*/}
             <input type="file" name="profileImage" ref={register} onChange={handleFileChange} />
             <div>{fileUploadName}</div>
