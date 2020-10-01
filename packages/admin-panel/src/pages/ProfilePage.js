@@ -8,7 +8,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Button, SmallAlert, TextField } from '@tupaia/ui-components';
+import MuiAvatar from '@material-ui/core/Avatar';
+import MuiDivider from '@material-ui/core/Divider';
+import Box from '@material-ui/core/Box';
+import { Button, SmallAlert, TextField, FileUploadField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { updateProfile, getUser } from '../authentication';
@@ -17,13 +20,28 @@ const Container = styled.section`
   padding-top: 1rem;
   padding-bottom: 1rem;
   max-width: 460px;
-  margin: 3rem auto;
+  margin: 2.5rem auto;
+  min-height: calc(100vh - 445px);
+`;
+
+const Divider = styled(MuiDivider)`
+  margin: 0.5rem 0 1.8rem;
 `;
 
 const StyledButton = styled(Button)`
   margin-top: 1rem;
   padding-top: 0.8rem;
   padding-bottom: 0.8rem;
+`;
+
+const Avatar = styled(MuiAvatar)`
+  color: white;
+  background: ${props => props.theme.palette.success.main};
+  font-weight: 600;
+  width: 85px;
+  height: 85px;
+  font-size: 45px;
+  margin-right: 1rem;
 `;
 
 const ErrorMessage = styled.p`
@@ -51,7 +69,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
         first_name: firstName,
         last_name: lastName,
         position: role,
-        employer: employer,
+        employer,
       });
       setIsLoading(false);
       setSuccessMessage('Profile successfully updated.');
@@ -70,6 +88,15 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
         <form onSubmit={onSubmit} noValidate>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+          <Box display="flex" mb={2} alignItems="center">
+            <Avatar>T</Avatar>
+            <FileUploadField
+              onChange={() => console.log('change...')}
+              name="profile-photo"
+              label="Your avatar"
+            />
+          </Box>
+          <Divider />
           <TextField
             label="First Name"
             name="firstName"
