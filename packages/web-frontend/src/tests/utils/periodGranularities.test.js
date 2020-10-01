@@ -63,6 +63,20 @@ describe('periodGranularities', () => {
         expect(endDate.format()).toEqual('2019-02-04T23:59:59+11:00');
       });
 
+      it('throws if unit does not match period granularity', () => {
+        // The reason for this limitation is to prevent devs from confusing themselves.
+        // E.g. if periodGranularity is one_month_at_a_time, and offset is +5 days, it will not take
+        // effect, the start date will be rounded to the start of the month.
+        const functionCall = () =>
+          getDefaultDates({
+            periodGranularity: 'one_month_at_a_time',
+            defaultTimePeriod: {
+              start: { unit: 'day', offset: -3 },
+            },
+          });
+        expect(functionCall).toThrow('defaultTimePeriod unit must match periodGranularity');
+      });
+
       it('ignores end offset if both provided', () => {
         // Because we are one_day_at_a_time, end date is restricted to the end of that period (in this case, the day),
         // so is ignored when specified alongside start.

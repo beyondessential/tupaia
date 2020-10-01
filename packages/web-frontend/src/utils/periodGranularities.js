@@ -114,6 +114,14 @@ export const GRANULARITY_SHAPE = PropTypes.oneOf([
   SINGLE_YEAR,
 ]);
 
+export const GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT = {
+  [SINGLE_DAY]: DAY,
+  [SINGLE_WEEK]: WEEK,
+  [SINGLE_MONTH]: MONTH,
+  [SINGLE_QUARTER]: QUARTER,
+  [SINGLE_YEAR]: YEAR,
+};
+
 export function roundStartEndDates(granularity, startDate = moment(), endDate = moment()) {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   return {
@@ -193,6 +201,13 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     } else {
       // else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
       singleDateConfig = defaultTimePeriod;
+    }
+
+    const validDateOffsetUnit = GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT[periodGranularity];
+    if (singleDateConfig.unit !== validDateOffsetUnit) {
+      throw new Error(
+        `defaultTimePeriod unit must match periodGranularity (periodGranularity: ${periodGranularity}, valid unit: ${validDateOffsetUnit})`,
+      );
     }
 
     // Grab all the details and get a single default date used for both start/end period.
