@@ -101,7 +101,7 @@ const run = async () => {
 
   Promise.all(PACKAGES.map(runForPackage)).then(() => {
     if (exclusiveTests.length > 0) {
-      logger.error('❌ Exclusive tests found in the following locations:');
+      logger.error('❌ Exclusive tests found:');
       logger.error(formatExclusiveTests(exclusiveTests).join('\n'));
       process.exit(1);
     } else {
