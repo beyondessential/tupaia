@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const LAOS_SCHOOLS_OVERLAY_GROUP_ORDERS = [
+const LAOS_SCHOOLS_OVERLAY_GROUPS_ORDERED = [
   'School_Indicators_EiE',
   'Laos_Schools_School_Indicators_EiE_Sub_National_Group',
   'Laos_Schools_Textbook_student_Ratio_Group',
@@ -27,13 +27,13 @@ const LAOS_SCHOOLS_OVERLAY_GROUP_ORDERS = [
   'Development_Partner',
 ];
 
-const WORLD_MAP_OVERLAY_GROUP_CODE = 'World_Group';
+const ROOT_MAP_OVERLAY_GROUP_CODE = 'Root';
 
-const reorderGroupOverlays = async (db, groupCodeOrders) => {
-  const worldOverlayGroupId = await codeToId(db, 'map_overlay_group', WORLD_MAP_OVERLAY_GROUP_CODE);
+const reorderGroupOverlays = async (db, groupCodesOrdered) => {
+  const worldOverlayGroupId = await codeToId(db, 'map_overlay_group', ROOT_MAP_OVERLAY_GROUP_CODE);
 
-  for (let index = 0; index < groupCodeOrders.length; index++) {
-    const groupCode = groupCodeOrders[index];
+  for (let index = 0; index < groupCodesOrdered.length; index++) {
+    const groupCode = groupCodesOrdered[index];
     const groupId = await codeToId(db, 'map_overlay_group', groupCode);
     await db.runSql(`
       UPDATE map_overlay_group_relation
@@ -45,11 +45,11 @@ const reorderGroupOverlays = async (db, groupCodeOrders) => {
 };
 
 exports.up = async function(db) {
-  await reorderGroupOverlays(db, LAOS_SCHOOLS_OVERLAY_GROUP_ORDERS);
+  await reorderGroupOverlays(db, LAOS_SCHOOLS_OVERLAY_GROUPS_ORDERED);
 };
 
 exports.down = function(db) {
-  return null; //No migration down
+  return null;
 };
 
 exports._meta = {
