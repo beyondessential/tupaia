@@ -78,9 +78,3 @@ export const getCalculatedValuesByCell = (cells, results) => {
   return calculatedValuesByCell;
 };
 
-export const getDataElementsFromCell = cell =>
-  typeof cell === 'string'
-    ? cell
-    : cell.dataElement || // Single dataElement
-      (cell.operands && cell.operands.map(operand => operand.dataValues)) || // Arithmetic operators
-      (cell.dataElementToString && Object.keys(cell.dataElementToString)); // COMBINE_BINARY_AS_STRING

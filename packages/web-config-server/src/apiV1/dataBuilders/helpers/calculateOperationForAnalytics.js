@@ -30,7 +30,7 @@ const performSingleAnalyticOperation = (analytics, config) => {
 };
 
 const sumDataValues = (analytics, dataValues) => {
-  let sum; //Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
+  let sum; // Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
 
   analytics.forEach(({ dataElement, value }) => {
     if (dataValues.includes(dataElement)) {
@@ -70,7 +70,16 @@ const combineBinaryIndicatorsToString = (analytics, config) => {
   );
   const stringArray = [];
   filteredAnalytics.forEach(({ dataElement, value }) => {
-    const stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+    let stringValue;
+
+    if (typeof dataElementToString[dataElement] === 'object') {
+      const { valueOfInterest, displayString } = dataElementToString[dataElement];
+      if (valueOfInterest === value) {
+        stringValue = displayString;
+      }
+    } else {
+      stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+    }
 
     if (stringValue) {
       stringArray.push(stringValue);
@@ -91,6 +100,13 @@ const OPERATORS = {
 const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
 
 const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT'];
+
+export const getDataElementsFromCalculateOperationConfig = config =>
+  typeof config === 'string'
+    ? config
+    : config.dataElement || // Single dataElement
+      (config.operands && config.operands.map(operand => operand.dataValues)) || // Arithmetic operators
+      (config.dataElementToString && Object.keys(config.dataElementToString)); // COMBINE_BINARY_AS_STRING
 
 export const calculateOperationForAnalytics = (analytics, config) => {
   const { operator } = config;
