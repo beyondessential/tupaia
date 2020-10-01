@@ -3,19 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-// canonical hierarchy is a - k, with each entity having the previous letter as its parent
+// canonical hierarchy splits into two children at each of two generations
+//          a
+//    aa         ab
+// aaa  aab   aba  abb
 const ENTITIES = [
   { id: 'entity_a_test', name: 'Entity A', parent_id: null },
-  { id: 'entity_b_test', name: 'Entity B', parent_id: 'entity_a_test' },
-  { id: 'entity_c_test', name: 'Entity C', parent_id: 'entity_b_test' },
-  { id: 'entity_d_test', name: 'Entity D', parent_id: 'entity_c_test' },
-  { id: 'entity_e_test', name: 'Entity E', parent_id: 'entity_d_test' },
-  { id: 'entity_f_test', name: 'Entity F', parent_id: 'entity_e_test' },
-  { id: 'entity_g_test', name: 'Entity G', parent_id: 'entity_f_test' },
-  { id: 'entity_h_test', name: 'Entity H', parent_id: 'entity_g_test' },
-  { id: 'entity_i_test', name: 'Entity I', parent_id: 'entity_h_test' },
-  { id: 'entity_j_test', name: 'Entity J', parent_id: 'entity_i_test' },
-  { id: 'entity_k_test', name: 'Entity K', parent_id: 'entity_j_test' },
+  { id: 'entity_aa_test', name: 'Entity AA', parent_id: 'entity_a_test' },
+  { id: 'entity_ab_test', name: 'Entity AB', parent_id: 'entity_a_test' },
+  { id: 'entity_aaa_test', name: 'Entity AAA', parent_id: 'entity_aa_test' },
+  { id: 'entity_aab_test', name: 'Entity AAB', parent_id: 'entity_aa_test' },
+  { id: 'entity_aba_test', name: 'Entity ABA', parent_id: 'entity_ab_test' },
+  { id: 'entity_abb_test', name: 'Entity ABB', parent_id: 'entity_ab_test' },
 ];
 
 // two hierarchies to play with
@@ -38,37 +37,32 @@ const PROJECTS = [
 ];
 
 // - project a follows the canonical hierarchy exactly
-// - project b lifts all entities from c to g (inclusive) up to a single generation below b,
-//   then from h as a child of c, with the canonical hierarchy continuing the chain below that
+// - project b moves the ab subtree to live below aa, to replace aaa and aab, and then aaa below
+//   aba, and aab below abb
+//      a
+//      aa
+//      ab
+//   aba  abb
+//   aaa  aab
 const ENTITY_RELATIONS = [
   {
-    parent_id: 'entity_b_test',
-    child_id: 'entity_c_test',
+    parent_id: 'entity_a_test',
+    child_id: 'entity_aa_test',
     entity_hierarchy_id: 'hierarchy_b_test',
   },
   {
-    parent_id: 'entity_b_test',
-    child_id: 'entity_d_test',
+    parent_id: 'entity_aa_test',
+    child_id: 'entity_ab_test',
     entity_hierarchy_id: 'hierarchy_b_test',
   },
   {
-    parent_id: 'entity_b_test',
-    child_id: 'entity_e_test',
+    parent_id: 'entity_aba_test',
+    child_id: 'entity_aaa_test',
     entity_hierarchy_id: 'hierarchy_b_test',
   },
   {
-    parent_id: 'entity_b_test',
-    child_id: 'entity_f_test',
-    entity_hierarchy_id: 'hierarchy_b_test',
-  },
-  {
-    parent_id: 'entity_b_test',
-    child_id: 'entity_g_test',
-    entity_hierarchy_id: 'hierarchy_b_test',
-  },
-  {
-    parent_id: 'entity_c_test',
-    child_id: 'entity_h_test',
+    parent_id: 'entity_abb_test',
+    child_id: 'entity_aab_test',
     entity_hierarchy_id: 'hierarchy_b_test',
   },
 ];
@@ -82,108 +76,42 @@ export const TEST_DATA = {
 
 export const EXPECTED_INITIAL_ANCESTOR_DESCENDANT_RELATIONS = {
   project_a_test: [
-    // ancestor entity a (all other entities are descendants)
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_b_test', generational_distance: 1 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_c_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_d_test', generational_distance: 3 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_e_test', generational_distance: 4 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_f_test', generational_distance: 5 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_g_test', generational_distance: 6 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_h_test', generational_distance: 7 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_i_test', generational_distance: 8 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_j_test', generational_distance: 9 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_k_test', generational_distance: 10 },
-    // ancestor entity b (the nine entities below b)
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_c_test', generational_distance: 1 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_d_test', generational_distance: 2 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_e_test', generational_distance: 3 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_f_test', generational_distance: 4 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_g_test', generational_distance: 5 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_h_test', generational_distance: 6 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_i_test', generational_distance: 7 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_j_test', generational_distance: 8 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_k_test', generational_distance: 9 },
-    // ancestor entity c (the eight entities below c)
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_d_test', generational_distance: 1 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_e_test', generational_distance: 2 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_f_test', generational_distance: 3 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_g_test', generational_distance: 4 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_h_test', generational_distance: 5 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_i_test', generational_distance: 6 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_j_test', generational_distance: 7 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_k_test', generational_distance: 8 },
-    // ancestor entity d (the seven entities below d)
-    { ancestor_id: 'entity_d_test', descendant_id: 'entity_e_test', generational_distance: 1 },
-    { ancestor_id: 'entity_d_test', descendant_id: 'entity_f_test', generational_distance: 2 },
-    { ancestor_id: 'entity_d_test', descendant_id: 'entity_g_test', generational_distance: 3 },
-    { ancestor_id: 'entity_d_test', descendant_id: 'entity_h_test', generational_distance: 4 },
-    { ancestor_id: 'entity_d_test', descendant_id: 'entity_i_test', generational_distance: 5 },
-    { ancestor_id: 'entity_d_test', descendant_id: 'entity_j_test', generational_distance: 6 },
-    { ancestor_id: 'entity_d_test', descendant_id: 'entity_k_test', generational_distance: 7 },
-    // ancestor entity e (the six entities below e)
-    { ancestor_id: 'entity_e_test', descendant_id: 'entity_f_test', generational_distance: 1 },
-    { ancestor_id: 'entity_e_test', descendant_id: 'entity_g_test', generational_distance: 2 },
-    { ancestor_id: 'entity_e_test', descendant_id: 'entity_h_test', generational_distance: 3 },
-    { ancestor_id: 'entity_e_test', descendant_id: 'entity_i_test', generational_distance: 4 },
-    { ancestor_id: 'entity_e_test', descendant_id: 'entity_j_test', generational_distance: 5 },
-    { ancestor_id: 'entity_e_test', descendant_id: 'entity_k_test', generational_distance: 6 },
-    // ancestor entity f (the five entities below f)
-    { ancestor_id: 'entity_f_test', descendant_id: 'entity_g_test', generational_distance: 1 },
-    { ancestor_id: 'entity_f_test', descendant_id: 'entity_h_test', generational_distance: 2 },
-    { ancestor_id: 'entity_f_test', descendant_id: 'entity_i_test', generational_distance: 3 },
-    { ancestor_id: 'entity_f_test', descendant_id: 'entity_j_test', generational_distance: 4 },
-    { ancestor_id: 'entity_f_test', descendant_id: 'entity_k_test', generational_distance: 5 },
-    // ancestor entity g (the four entities below g)
-    { ancestor_id: 'entity_g_test', descendant_id: 'entity_h_test', generational_distance: 1 },
-    { ancestor_id: 'entity_g_test', descendant_id: 'entity_i_test', generational_distance: 2 },
-    { ancestor_id: 'entity_g_test', descendant_id: 'entity_j_test', generational_distance: 3 },
-    { ancestor_id: 'entity_g_test', descendant_id: 'entity_k_test', generational_distance: 4 },
-    // ancestor entity h (the three entities below h)
-    { ancestor_id: 'entity_h_test', descendant_id: 'entity_i_test', generational_distance: 1 },
-    { ancestor_id: 'entity_h_test', descendant_id: 'entity_j_test', generational_distance: 2 },
-    { ancestor_id: 'entity_h_test', descendant_id: 'entity_k_test', generational_distance: 3 },
-    // ancestor entity i ("j" and "k")
-    { ancestor_id: 'entity_i_test', descendant_id: 'entity_j_test', generational_distance: 1 },
-    { ancestor_id: 'entity_i_test', descendant_id: 'entity_k_test', generational_distance: 2 },
-    // ancestor entity j (just "k")
-    { ancestor_id: 'entity_j_test', descendant_id: 'entity_k_test', generational_distance: 1 },
+    // ancestor entity a
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
+    // ancestor entity aa
+    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
+    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
+    // ancestor entity ab
+    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
+    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
   ],
   project_b_test: [
-    // ancestor entity a (all other entities are descendants through some tree)
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_b_test', generational_distance: 1 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_c_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_d_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_e_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_f_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_g_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_h_test', generational_distance: 3 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_i_test', generational_distance: 4 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_j_test', generational_distance: 5 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_k_test', generational_distance: 6 },
-    // ancestor entity b (all entities other than a are below b through some tree)
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_c_test', generational_distance: 1 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_d_test', generational_distance: 1 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_e_test', generational_distance: 1 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_f_test', generational_distance: 1 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_g_test', generational_distance: 1 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_h_test', generational_distance: 2 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_i_test', generational_distance: 3 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_j_test', generational_distance: 4 },
-    { ancestor_id: 'entity_b_test', descendant_id: 'entity_k_test', generational_distance: 5 },
-    // entities d, e, f, and g have no descendants in this hierarchy, but c has h attached via entity relation,
-    // and all of h's descendants below that)
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_h_test', generational_distance: 1 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_i_test', generational_distance: 2 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_j_test', generational_distance: 3 },
-    { ancestor_id: 'entity_c_test', descendant_id: 'entity_k_test', generational_distance: 4 },
-    // ancestor entity h (the three entities below h)
-    { ancestor_id: 'entity_h_test', descendant_id: 'entity_i_test', generational_distance: 1 },
-    { ancestor_id: 'entity_h_test', descendant_id: 'entity_j_test', generational_distance: 2 },
-    { ancestor_id: 'entity_h_test', descendant_id: 'entity_k_test', generational_distance: 3 },
-    // ancestor entity i ("j" and "k")
-    { ancestor_id: 'entity_i_test', descendant_id: 'entity_j_test', generational_distance: 1 },
-    { ancestor_id: 'entity_i_test', descendant_id: 'entity_k_test', generational_distance: 2 },
-    // ancestor entity j (just "k")
-    { ancestor_id: 'entity_j_test', descendant_id: 'entity_k_test', generational_distance: 1 },
+    // ancestor entity a
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 2 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 3 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 3 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 4 },
+    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 4 },
+    // ancestor entity aa
+    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
+    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
+    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
+    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 3 },
+    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 3 },
+    // ancestor entity ab
+    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
+    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
+    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
+    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
+    // ancestor entity aba
+    { ancestor_id: 'entity_aba_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
+    // ancestor entity abb
+    { ancestor_id: 'entity_abb_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
   ],
 };
