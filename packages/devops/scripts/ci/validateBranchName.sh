@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 DIR=`dirname "$0"`
 . ${DIR}/utils.sh
 

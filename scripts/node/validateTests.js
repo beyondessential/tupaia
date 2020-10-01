@@ -89,7 +89,6 @@ const logger = getLoggerInstance();
 const run = async () => {
   const exclusiveTests = [];
 
-  logger.verbose('Validating tests...');
   const runForPackage = packageName =>
     findExclusiveTests(packageName)
       .then(results => {

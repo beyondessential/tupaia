@@ -1,6 +1,7 @@
 ANSI_COLOR_GREEN="\e[32m"
 ANSI_COLOR_RED="\e[31m"
 ANSI_COLOR_RESET="\e[0m"
+ANSI_COLOR_YELLOW="\e[33m"
 
 function log_with_color() {
   text=$1
@@ -10,6 +11,10 @@ function log_with_color() {
 
 function log_error() {
   log_with_color "$1" $ANSI_COLOR_RED
+}
+
+function log_warn() {
+  log_with_color "$1" $ANSI_COLOR_YELLOW
 }
 
 function log_success() {
