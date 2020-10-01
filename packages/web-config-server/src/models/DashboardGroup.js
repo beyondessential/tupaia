@@ -1,7 +1,7 @@
 /**
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { TYPES } from '@tupaia/database';
 import { BaseModel } from './BaseModel';
@@ -81,7 +81,6 @@ export class DashboardGroup extends BaseModel {
       },
     };
   }
-  /* eslint-disable */
   /*
   sample query for getUserGroupConfig:
   SELECT userGroup, organisationLevel,
@@ -136,5 +135,4 @@ export class DashboardGroup extends BaseModel {
        name: 'General' } }
 
   */
-  /* eslint-enable */
 }

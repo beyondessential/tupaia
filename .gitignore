@@ -1,5 +1,5 @@
 *.env*
-!.env.example
+!*.env.example*
 .DS_Store
 **/node_modules
 **/coverage

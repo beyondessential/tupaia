@@ -10,13 +10,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-const WORLD_MAP_OVERLAY_GROUP_CODE = 'World_Group';
+const ROOT_MAP_OVERLAY_GROUP = 'Root';
 
 const findTopLevelMapOverlayGroups = db =>
   db.runSql(`
@@ -24,12 +24,12 @@ const findTopLevelMapOverlayGroups = db =>
     LEFT OUTER JOIN map_overlay_group_relation
     ON map_overlay_group.id = map_overlay_group_relation.child_id
     WHERE map_overlay_group_relation.child_id IS NULL
-    AND map_overlay_group.code != '${WORLD_MAP_OVERLAY_GROUP_CODE}';
+    AND map_overlay_group.code != '${ROOT_MAP_OVERLAY_GROUP}';
 `);
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const topLevelOverlayGroups = (await findTopLevelMapOverlayGroups(db)).rows;
-  const worldOverlayGroupId = await codeToId(db, 'map_overlay_group', WORLD_MAP_OVERLAY_GROUP_CODE);
+  const worldOverlayGroupId = await codeToId(db, 'map_overlay_group', ROOT_MAP_OVERLAY_GROUP);
 
   for (let i = 0; i < topLevelOverlayGroups.length; i++) {
     const overlayGroup = topLevelOverlayGroups[i];
@@ -43,8 +43,8 @@ exports.up = async function(db) {
   }
 };
 
-exports.down = async function(db) {
-  const worldOverlayGroupId = await codeToId(db, 'map_overlay_group', WORLD_MAP_OVERLAY_GROUP_CODE);
+exports.down = async function (db) {
+  const worldOverlayGroupId = await codeToId(db, 'map_overlay_group', ROOT_MAP_OVERLAY_GROUP);
 
   await db.runSql(`
     DELETE FROM map_overlay_group_relation
