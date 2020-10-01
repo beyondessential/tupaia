@@ -268,11 +268,15 @@ export class TupaiaDatabase {
   async createMany(recordType, records) {
     // generate ids for any records that don't have them
     const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
-    await this.query({
-      recordType,
-      queryMethod: QUERY_METHODS.INSERT,
-      queryMethodParameter: sanitizedRecords,
-    });
+    const batchSize = this.maxBindingsPerQuery;
+    for (let i = 0; i < sanitizedRecords.length; i += batchSize) {
+      const batchOfRecords = sanitizedRecords.slice(i, i + batchSize);
+      await this.query({
+        recordType,
+        queryMethod: QUERY_METHODS.INSERT,
+        queryMethodParameter: batchOfRecords,
+      });
+    }
     return sanitizedRecords;
   }
 
