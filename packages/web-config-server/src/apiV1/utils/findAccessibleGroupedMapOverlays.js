@@ -23,7 +23,7 @@ const findNestedGroupedMapOverlays = async (
 
   const mapOverlayRelations = mapOverlayItemRelations.filter(m => m.child_type === 'mapOverlay');
 
-  //If there are map overlay relations, add them to the results
+  // If there are map overlay relations, add them to the results
   if (mapOverlayRelations.length) {
     const mapOverlayIds = mapOverlayRelations.map(m => m.child_id);
 
@@ -38,18 +38,18 @@ const findNestedGroupedMapOverlays = async (
     m => m.child_type === 'mapOverlayGroup',
   );
 
-  //If there are map overlay group relations, recursively find the nested groups
+  // If there are map overlay group relations, recursively find the nested groups
   if (mapOverlayGroupRelations.length) {
     const mapOverlayGroupIds = mapOverlayGroupRelations.map(m => m.child_id);
 
-    //Find all the child MapOverlayGroups
+    // Find all the child MapOverlayGroups
     const mapOverlayGroups = await models.mapOverlayGroup.find({
       id: mapOverlayGroupIds,
     });
 
     const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
 
-    //Recursively find the children of the current MapOverlayGroups
+    // Recursively find the children of the current MapOverlayGroups
     for (let i = 0; i < mapOverlayGroupRelations.length; i++) {
       const mapOverlayGroupRelation = mapOverlayGroupRelations[i];
       const name = mapOverlayGroupIdToName[mapOverlayGroupRelation.child_id];
@@ -149,7 +149,7 @@ export const findAccessibleMapOverlays = async (models, overlayCode, projectCode
  * Find accessible grouped MapOverlays, starting from the top level MapOverlayGroups
  */
 export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOverlays) => {
-  //Find all the top level Map Overlay Groups
+  // Find all the top level Map Overlay Groups
   const mapOverlayGroups = await models.mapOverlayGroup.findTopLevelMapOverlayGroups();
   const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
   const mapOverlayGroupIds = mapOverlayGroups.map(mapOverlayGroup => mapOverlayGroup.id);

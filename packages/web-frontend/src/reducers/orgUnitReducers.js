@@ -81,7 +81,7 @@ const normaliseForMap = (
 ) => ({
   ...restOfOrgUnit,
   parent: parentOrganisationUnitCode,
-  isComplete: isComplete,
+  isComplete,
 });
 
 const addOrgUnitToMap = (state, orgUnit) => {

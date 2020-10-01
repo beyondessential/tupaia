@@ -16,8 +16,6 @@ export class KeyValueCellBuilder {
     return question.code;
   };
 
-  // disable class-methods-use-this for functions that are candidates for subclass overriding
-  /*eslint-disable class-methods-use-this */
   async processKey(key) {
     return key;
   }
@@ -29,7 +27,6 @@ export class KeyValueCellBuilder {
   extractRelevantObject(object) {
     return object;
   }
-  /*eslint-enable class-methods-use-this */
 
   async build(jsonStringOrObject) {
     if (!jsonStringOrObject) {

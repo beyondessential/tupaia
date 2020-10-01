@@ -11,7 +11,6 @@ export class BaseValidator {
    *
    * @throws {Error}
    */
-  // eslint-disable-next-line class-methods-use-this
   validate() {
     throw new Error('Any subclass of BaseValidator must implement the "validate" method');
   }

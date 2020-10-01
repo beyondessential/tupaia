@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import '@babel/polyfill';
 
@@ -37,19 +37,19 @@ const app = createApp(database, models);
 
 /**
  * Start the server
- **/
+ */
 const port = 8090;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
 
 /**
  * Regularly sync data to the aggregation servers
- **/
+ */
 startSyncWithDhis(models);
 
 /**
  * Regularly sync data to MS1
- **/
+ */
 startSyncWithMs1(models);
 
 /**
@@ -59,7 +59,7 @@ startFeedScraper(models);
 
 /**
  * Notify PM2 that we are ready
- * */
+ */
 if (process.send) {
   (async () => {
     try {

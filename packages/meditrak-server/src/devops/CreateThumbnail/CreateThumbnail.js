@@ -1,3 +1,8 @@
+/* eslint-disable no-console */
+/* eslint-disable no-var */
+/* eslint-disable prefer-template */
+/* eslint-disable vars-on-top */
+
 // dependencies
 var async = require('async');
 var AWS = require('aws-sdk');

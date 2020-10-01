@@ -29,9 +29,7 @@ const immsBreachExistenceWithinPeriod = async (
 
   const periodFetchConfig = {
     organisationUnitCode: orgUnitGroupCode,
-    startDate: utcMoment()
-      .subtract(numberOfDays, 'days')
-      .format(),
+    startDate: utcMoment().subtract(numberOfDays, 'days').format(),
     endDate: utcMoment().format(),
   };
 

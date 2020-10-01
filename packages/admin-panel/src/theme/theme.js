@@ -7,6 +7,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
 const themeName = 'Tupaia';
+
 const palette = {
   primary: {
     main: COLORS.BLUE,
@@ -46,6 +47,7 @@ const palette = {
     paper: COLORS.WHITE,
   },
 };
+
 const typography = {
   h1: {
     fontSize: '3.125rem',
@@ -112,6 +114,20 @@ const typography = {
     letterSpacing: '0.035em',
   },
 };
+
 const shape = { borderRadius: 3 };
 
-export const theme = createMuiTheme({ palette, themeName, typography, shape });
+const overrides = {
+  MuiCard: {
+    root: {
+      borderColor: COLORS.GREY_DE,
+    },
+  },
+  MuiDivider: {
+    root: {
+      backgroundColor: COLORS.GREY_DE,
+    },
+  },
+};
+
+export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
