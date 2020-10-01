@@ -12,10 +12,7 @@ export class VisibilityCriteriaCellBuilder extends KeyValueCellBuilder {
     return question ? question.code : criterionKey;
   }
 
-  // disable class-methods-use-this for functions that are overriding parent methods
-  /*eslint-disable class-methods-use-this */
   async processValue(value) {
     return Array.isArray(value) ? value.join(', ') : value;
   }
-  /*eslint-enable class-methods-use-this */
 }

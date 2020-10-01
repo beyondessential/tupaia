@@ -13,7 +13,7 @@ import { addRoutesToApp } from './addRoutesToApp';
 
 /**
  * Set up express server with middleware,
- **/
+ */
 export function createApp(database, models) {
   const app = express();
 
@@ -26,7 +26,7 @@ export function createApp(database, models) {
 
   /**
    * Add singletons to be attached to req for every route
-   **/
+   */
   const authenticator = new Authenticator(models);
   app.use((req, res, next) => {
     req.database = database;

@@ -21,7 +21,8 @@ export const basicDataFacility = async ({ dataBuilderConfig, query }, aggregator
     if (openingDays[0] === 1) {
       if (openingDays[2] === 1) {
         return 'Mon - Sun';
-      } else if (openingDays[1] === 1) {
+      }
+      if (openingDays[1] === 1) {
         return 'Mon - Sat';
       }
       return 'Mon - Fri';

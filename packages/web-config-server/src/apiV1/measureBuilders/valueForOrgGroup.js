@@ -34,7 +34,8 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       return {
         data: facilitiesByCode,
       };
-    } else if (dataElementCode === SCHOOL_TYPE_CODE) {
+    }
+    if (dataElementCode === SCHOOL_TYPE_CODE) {
       const schools = await this.fetchDescendantsOfType(this.models.entity.types.SCHOOL);
       const facilitiesByCode = schools.map(school => ({
         organisationUnitCode: school.code,
@@ -46,7 +47,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       };
     }
 
-    //There are cases that we want to group more than 1 data element codes.
+    // There are cases that we want to group more than 1 data element codes.
     const dataElementCodes = this.config.dataElementCodes || [dataElementCode];
 
     const { results, period } = await this.fetchAnalytics(dataElementCodes, {
@@ -58,7 +59,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       value: result.value === undefined ? '' : result.value.toString(),
     }));
 
-    //If we group multiple data element codes, dataElementCode is usually 'value'
+    // If we group multiple data element codes, dataElementCode is usually 'value'
     const customDataKey = this.config.dataElementCodes ? dataElementCode : null;
 
     return { data: analyticsToMeasureData(analytics, customDataKey), period };

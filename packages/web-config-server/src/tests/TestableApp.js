@@ -1,5 +1,5 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import supertest from 'supertest'; // eslint-disable-line import/no-extraneous-dependencies
+import supertest from 'supertest';
 import { util } from 'client-sessions';
 import { createApp } from '/app';
 import { USER_SESSION_CONFIG } from '/authSession';

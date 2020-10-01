@@ -2,16 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-
-/**
- * TODO: This version of Entity.js comes from meditrak-server, which does not include any of the
- * a) alternative hierarchy logic, or b) optimisations that are in the version in web-config-server
- * https://github.com/beyondessential/tupaia-backlog/issues/427
- */
 
 const DEFAULT_ENTITY_HIERARCHY = 'explore';
 
@@ -206,6 +199,14 @@ export class EntityType extends DatabaseType {
 
   async getChildren(hierarchyId) {
     return this.getDescendants(hierarchyId, { generational_distance: 1 });
+  }
+
+  pointLatLon() {
+    const pointJson = JSON.parse(this.point);
+    return {
+      lat: pointJson.coordinates[1],
+      lon: pointJson.coordinates[0],
+    };
   }
 }
 

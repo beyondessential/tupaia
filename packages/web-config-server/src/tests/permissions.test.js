@@ -6,9 +6,6 @@
 import { expect } from 'chai';
 import { TestableApp } from './TestableApp';
 
-/* eslint-disable quote-props */
-/* eslint-disable quotes */
-/* eslint-disable comma-dangle */
 const accessPolicy = {
   permissions: {
     reports: {
@@ -72,11 +69,8 @@ const accessPolicy = {
     },
   },
 };
-/* eslint-enable quote-props */
-/* eslint-enable quotes */
-/* eslint-enable comma-dangle */
 
-describe('UserHasAccess', function() {
+describe('UserHasAccess', function () {
   const app = new TestableApp();
   app.mockSessionUserJson('Test user', 'testuser@test.com', accessPolicy);
 

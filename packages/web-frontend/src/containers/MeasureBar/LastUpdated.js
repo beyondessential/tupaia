@@ -47,9 +47,7 @@ const mapStateToProps = state => {
   const { measureInfo = {} } = state.map;
 
   const latestAvailable = measureInfo.period && measureInfo.period.latestAvailable;
-  return {
-    latestAvailable: latestAvailable,
-  };
+  return { latestAvailable };
 };
 
 export default connect(mapStateToProps)(LastUpdated);

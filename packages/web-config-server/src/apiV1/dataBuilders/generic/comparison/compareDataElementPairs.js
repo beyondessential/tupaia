@@ -38,7 +38,6 @@ export const compareDataElementPairs = async (
     resultsByCode[dataElementCode] = value;
   });
 
-  /* eslint-disable no-param-reassign */
   const data = dataElementPairs.reduce((returnData, pair, i) => {
     const row = {
       name: dataPairNames[i],
@@ -49,7 +48,6 @@ export const compareDataElementPairs = async (
     returnData.push(row);
     return returnData;
   }, []);
-  /* eslint-enable no-param-reassign */
 
   return { data };
 };

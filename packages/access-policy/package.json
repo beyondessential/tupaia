@@ -22,13 +22,6 @@
   },
   "homepage": "https://github.com/beyondessential/tupaia",
   "eslintConfig": {
-    "overrides": [
-      {
-        "files": "**/__tests__/**",
-        "env": {
-          "jest": true
-        }
-      }
-    ]
+    "extends": "@beyondessential/jest"
   }
 }

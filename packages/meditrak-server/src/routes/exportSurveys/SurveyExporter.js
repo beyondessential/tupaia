@@ -50,6 +50,7 @@ export class SurveyExporter {
         workbook.Sheets[sheetName] = xlsx.utils.json_to_sheet(rowsForExport);
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error);
       throw new DatabaseError('exporting survey', error);
     }
