@@ -85,120 +85,136 @@ export const testFetchEvents = () => {
   });
 
   it('returns results in the correct format, sorted by event date', async () => {
-    await assertCorrectResponse(
-      {
-        surveyCode: 'BCD',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['BCD1', 'BCD325'],
-      },
-      [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
-    );
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['CROP_1', 'CROP_2'],
-      },
-      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
-    );
+    const testData = [
+      [
+        {
+          surveyCode: 'BCD',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1', 'BCD325'],
+        },
+        [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
+      ],
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+        },
+        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
+      ],
+    ];
+    for (const [options, responses] of testData) {
+      await assertCorrectResponse(options, responses);
+    }
   });
 
   it('should limit results by data element codes', async () => {
-    await assertCorrectResponse(
-      {
-        surveyCode: 'BCD',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['BCD1'],
-      },
-      [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
-    );
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['CROP_2'],
-      },
-      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
-    );
+    const testData = [
+      [
+        {
+          surveyCode: 'BCD',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1'],
+        },
+        [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
+      ],
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_2'],
+        },
+        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
+      ],
+    ];
+    for (const [options, responses] of testData) {
+      await assertCorrectResponse(options, responses);
+    }
   });
 
   it('should limit results by organisation unit codes', async () => {
-    await assertCorrectResponse(
-      {
-        surveyCode: 'BCD',
-        organisationUnitCodes: ['NZ_AK'],
-        dataElementCodes: ['BCD1', 'BCD325'],
-      },
-      [BCD_RESPONSE_AUCKLAND],
-    );
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_WG'],
-        dataElementCodes: ['CROP_1', 'CROP_2'],
-      },
-      [CROP_RESPONSE_WELLINGTON_2019],
-    );
+    const testData = [
+      [
+        {
+          surveyCode: 'BCD',
+          organisationUnitCodes: ['NZ_AK'],
+          dataElementCodes: ['BCD1', 'BCD325'],
+        },
+        [BCD_RESPONSE_AUCKLAND],
+      ],
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+        },
+        [CROP_RESPONSE_WELLINGTON_2019],
+      ],
+    ];
+    for (const [options, responses] of testData) {
+      await assertCorrectResponse(options, responses);
+    }
   });
 
   it('should limit results by start and end dates', async () => {
-    // start date only
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['CROP_1', 'CROP_2'],
-        startDate: '2020-01-01',
-      },
-      [CROP_RESPONSE_AUCKLAND_2020],
-    );
-
-    // end date only
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['CROP_1', 'CROP_2'],
-        endDate: '2019-12-31',
-      },
-      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
-    );
-
-    // start and end dates
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['CROP_1', 'CROP_2'],
-        startDate: '2019-12-01',
-        endDate: '2019-12-31',
-      },
-      [CROP_RESPONSE_WELLINGTON_2019],
-    );
-
-    // start and end dates, check inclusivity of start date
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['CROP_1', 'CROP_2'],
-        startDate: '2019-11-21',
-        endDate: '2019-12-31',
-      },
-      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
-    );
-
-    // start and end dates, check inclusivity of end date
-    await assertCorrectResponse(
-      {
-        surveyCode: 'CROP',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['CROP_1', 'CROP_2'],
-        startDate: '2019-12-01',
-        endDate: '2020-11-21',
-      },
-      [CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
-    );
+    const testData = [
+      // start date only
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+          startDate: '2020-01-01',
+        },
+        [CROP_RESPONSE_AUCKLAND_2020],
+      ],
+      // end date only
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+          endDate: '2019-12-31',
+        },
+        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
+      ],
+      // start and end dates
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+          startDate: '2019-12-01',
+          endDate: '2019-12-31',
+        },
+        [CROP_RESPONSE_WELLINGTON_2019],
+      ],
+      // start and end dates, check inclusivity of start date
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+          startDate: '2019-11-21',
+          endDate: '2019-12-31',
+        },
+        [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
+      ],
+      // start and end dates, check inclusivity of end date
+      [
+        {
+          surveyCode: 'CROP',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['CROP_1', 'CROP_2'],
+          startDate: '2019-12-01',
+          endDate: '2020-11-21',
+        },
+        [CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
+      ],
+    ];
+    for (const [options, responses] of testData) {
+      await assertCorrectResponse(options, responses);
+    }
   });
 
   it('should limit results when an event id is passed in', async () => {
