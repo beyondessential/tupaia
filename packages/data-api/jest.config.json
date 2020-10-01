@@ -1,7 +1,7 @@
 {
   "clearMocks": true,
   "collectCoverageFrom": ["<rootDir>/src/**/*.js"],
-  "setupFilesAfterEnv": ["../../jestScaffolding.js"],
+  "setupFilesAfterEnv": ["../../jestScaffolding.js", "./src/__tests__/jestScaffolding.js"],
   "testMatch": ["<rootDir>/src/__tests__/**/**.test.js"],
   "transform": { "^.+\\.jsx?$": "../../jestTransformer.js" },
   "transformIgnorePatterns": ["/node_modules/"]
