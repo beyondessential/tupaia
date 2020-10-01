@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.

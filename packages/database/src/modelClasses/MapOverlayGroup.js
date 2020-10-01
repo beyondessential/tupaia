@@ -8,7 +8,7 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
-export const WORLD_MAP_OVERLAY_GROUP_CODE = 'World_Group';
+const ROOT_MAP_OVERLAY_GROUP_CODE = 'Root';
 
 class MapOverlayGroupType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP;
@@ -21,11 +21,15 @@ export class MapOverlayGroupModel extends DatabaseModel {
     return MapOverlayGroupType;
   }
 
+  async findRootMapOverlayGroup() {
+    return this.findOne({ code: ROOT_MAP_OVERLAY_GROUP_CODE });
+  }
+
   async findTopLevelMapOverlayGroups() {
-    const worldMapOverlayGroup = await this.findOne({ code: WORLD_MAP_OVERLAY_GROUP_CODE });
+    const rootMapOverlayGroup = await this.findRootMapOverlayGroup();
 
     return this.find(
-      { map_overlay_group_id: worldMapOverlayGroup.id, child_type: 'mapOverlayGroup' },
+      { map_overlay_group_id: rootMapOverlayGroup.id, child_type: 'mapOverlayGroup' },
       {
         joinWith: TYPES.MAP_OVERLAY_GROUP_RELATION,
         joinType: JOIN_TYPES.INNER,
@@ -39,7 +43,7 @@ export class MapOverlayGroupModel extends DatabaseModel {
 }
 
 const onChangeDeleteRelation = async ({ type: changeType, record }, models) => {
-  const { id } = record; //map_overlay_group id
+  const { id } = record; // map_overlay_group id
 
   switch (changeType) {
     case 'delete':

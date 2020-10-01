@@ -6,7 +6,6 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-import { WORLD_MAP_OVERLAY_GROUP_CODE } from './MapOverlayGroup';
 
 class MapOverlayGroupRelationType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP_RELATION;
@@ -22,12 +21,10 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
   }
 
   async findTopLevelMapOverlayGroupRelations() {
-    const worldMapOverlayGroup = await this.otherModels.mapOverlayGroup.findOne({
-      code: WORLD_MAP_OVERLAY_GROUP_CODE,
-    });
+    const rootMapOverlayGroup = await this.otherModels.mapOverlayGroup.findRootMapOverlayGroup();
 
     return this.find({
-      map_overlay_group_id: worldMapOverlayGroup.id,
+      map_overlay_group_id: rootMapOverlayGroup.id,
       child_type: 'mapOverlayGroup',
     });
   }

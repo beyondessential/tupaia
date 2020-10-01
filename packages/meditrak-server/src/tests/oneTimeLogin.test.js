@@ -10,9 +10,9 @@ import moment from 'moment';
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
 import { randomEmail } from './testUtilities';
 
-describe('One Time Login', function() {
+describe('One Time Login', function () {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 
   const dummyFields = {
@@ -28,8 +28,8 @@ describe('One Time Login', function() {
 
   const headers = { authorization: getAuthorizationHeader() };
 
-  describe('One Time Login tokens', function() {
-    it('should only be able to login once with a one time login token', async function() {
+  describe('One Time Login tokens', function () {
+    it('should only be able to login once with a one time login token', async function () {
       const emailAddress = randomEmail();
 
       const userResponse = await app.post('user', {
@@ -71,7 +71,7 @@ describe('One Time Login', function() {
     });
   });
 
-  it('should not be able to login using an expired token', async function() {
+  it('should not be able to login using an expired token', async function () {
     const emailAddress = randomEmail();
 
     const userResponse = await app.post('user', {

@@ -7,6 +7,7 @@
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
     "test": "mocha",
+    "test:debug": "mocha --inspect-brk",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix ."
@@ -16,6 +17,7 @@
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
     "@tupaia/indicators": "1.0.0",
+    "@tupaia/weather-api": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "case": "^1.5.5",
     "lodash.flatten": "^4.4.0",

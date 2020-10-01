@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+
 const { RAW } = QUERY_CONJUNCTIONS;
 
 export const findEntitiesInCountry = async (

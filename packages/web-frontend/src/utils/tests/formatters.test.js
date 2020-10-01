@@ -21,6 +21,7 @@ describe('formatters', () => {
         expect(formatDataValue(1.001, PERCENTAGE)).toEqual('100%');
         expect(formatDataValue(1, PERCENTAGE)).toEqual('100%');
       });
+
       it('should use one decimal digit, rounded off for percentages in [1%, 100%)', () => {
         expect(formatDataValue(0.9995, PERCENTAGE)).toEqual('100%');
         expect(formatDataValue(0.9991, PERCENTAGE)).toEqual('99.9%');
@@ -30,6 +31,7 @@ describe('formatters', () => {
         expect(formatDataValue(0.0101, PERCENTAGE)).toEqual('1%');
         expect(formatDataValue(0.01, PERCENTAGE)).toEqual('1%');
       });
+
       it('should use the first two non zero decimal digits, rounded off, for percentages < 1%', () => {
         expect(formatDataValue(0.00995, PERCENTAGE)).toEqual('1%');
         expect(formatDataValue(0.00991, PERCENTAGE)).toEqual('0.99%');

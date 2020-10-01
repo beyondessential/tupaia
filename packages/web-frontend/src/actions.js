@@ -237,7 +237,7 @@ export function fetchUserLoginError(errors) {
 export function attemptResetTokenLogin(passwordResetToken) {
   return {
     type: ATTEMPT_RESET_TOKEN_LOGIN,
-    passwordResetToken: passwordResetToken,
+    passwordResetToken,
   };
 }
 

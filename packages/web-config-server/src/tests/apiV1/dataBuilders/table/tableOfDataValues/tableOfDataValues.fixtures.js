@@ -22,7 +22,6 @@ export const DATA_ELEMENTS = {
   CD5: { code: 'CD5', name: 'CVD Risk: Green Female' },
   CD6: { code: 'CD6', name: 'CVD Risk: Green Male' },
   CD7: { code: 'CD7', name: 'CVD Risk: Red Female' },
-  CD8: { code: 'CD8', name: 'CVD Risk: Red Male' },
   CD8: { code: 'CD_Description', name: 'CD Description' },
   HP1: { code: 'HP1', name: 'Fitness: 10-19 years - female', options: OPTIONS },
   HP2: { code: 'HP2', name: 'Fitness: 10-19 years - male', options: OPTIONS },

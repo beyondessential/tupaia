@@ -160,6 +160,10 @@ export class DatabaseModel {
       });
     });
 
+    return this.createTypeInstance(data);
+  };
+
+  createTypeInstance = (data = {}) => {
     return new this.DatabaseTypeClass(this, data);
   };
 

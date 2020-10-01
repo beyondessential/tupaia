@@ -5,12 +5,13 @@
 
 import {
   closeOpenDialogs,
+  EmptyConfigError,
   expandDashboardItem,
   preserveUserSession,
   selectDashboardGroup,
   selectProject,
 } from '../support';
-import { REPORTS } from '../fixtures/reports';
+import config from '../config/dashboardReports.json';
 
 /**
  * This is a workaround in case a dashboard is left open due to a previous test failing
@@ -23,19 +24,23 @@ const closeDialogsBecauseOfCypressBug = () => {
   closeOpenDialogs();
 };
 
-describe('Dashboard reports', () => {
-  const testReportsForProject = (project, reports) => {
-    describe(`Project: ${project}`, () => {
-      const reportsByGroup = Cypress._.groupBy(reports, 'dashboardGroup');
+const validateConfig = () => {
+  if (config.length === 0) {
+    throw new EmptyConfigError('dashboardReports');
+  }
+};
 
+describe('Dashboard reports', () => {
+  const testReport = report => {
+    describe(report.name, () => {
       before(() => {
         closeDialogsBecauseOfCypressBug();
-        selectProject(project);
+        expandDashboardItem(report.name);
       });
 
-      Object.entries(reportsByGroup).forEach(([groupName, reportsForGroup]) =>
-        testReportsForGroup(groupName, reportsForGroup),
-      );
+      it('enlarged dialog', () => {
+        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
+      });
     });
   };
 
@@ -50,20 +55,27 @@ describe('Dashboard reports', () => {
     });
   };
 
-  const testReport = report => {
-    describe(report.name, () => {
+  const testReportsForProject = (project, reports) => {
+    describe(`Project: ${project}`, () => {
+      const reportsByGroup = Cypress._.groupBy(reports, 'dashboardGroup');
+
       before(() => {
+        cy.server();
+        cy.route(/\/dashboard/).as('dashboard');
+
         closeDialogsBecauseOfCypressBug();
-        expandDashboardItem(report.name);
+        selectProject(project);
+        cy.wait('@dashboard');
       });
 
-      it('enlarged dialog', () => {
-        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
-      });
+      Object.entries(reportsByGroup).forEach(([groupName, reportsForGroup]) =>
+        testReportsForGroup(groupName, reportsForGroup),
+      );
     });
   };
 
-  const reportsByProject = Cypress._.groupBy(REPORTS, 'project');
+  validateConfig();
+  const reportsByProject = Cypress._.groupBy(config, 'project');
 
   before(() => {
     cy.login();
@@ -73,7 +85,7 @@ describe('Dashboard reports', () => {
     preserveUserSession();
   });
 
-  Object.entries(reportsByProject).forEach(([project, reports]) => {
-    testReportsForProject(project, reports);
+  Object.entries(reportsByProject).forEach(([project, reportsForProject]) => {
+    testReportsForProject(project, reportsForProject);
   });
 });
