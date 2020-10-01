@@ -13,8 +13,7 @@
     "test": "mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
-    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
+    "lint:fix": "yarn lint --fix ."
   },
   "repository": {
     "type": "git",

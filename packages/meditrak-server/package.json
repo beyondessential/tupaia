@@ -60,8 +60,7 @@
     "prestart": "npm run -s build",
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9999",
-    "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
+    "start-verbose": "LOG_LEVEL=debug npm run start-dev"
   },
   "repository": {
     "type": "git",

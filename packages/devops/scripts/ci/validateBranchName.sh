@@ -10,7 +10,7 @@ RESERVED_ENDINGS=(api config export mobile admin www)
 branch_name="$CI_BRANCH"
 if [[ $branch_name == "" ]];then
     # Get currently checked out branch
-    branch_name=$(git rev-parse --abbrev-ref HEAD)
+    branch_name=`git rev-parse --abbrev-ref HEAD`
 fi
 
 for reserved_ending in ${RESERVED_ENDINGS[@]}
