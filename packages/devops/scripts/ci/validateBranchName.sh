@@ -1,11 +1,25 @@
 #!/bin/bash
 
-reserved_endings=(api config export mobile admin www)
+#!/bin/bash
 
-for reserved_ending in ${reserved_endings[@]}
+DIR=`dirname "$0"`
+. ${DIR}/utils.sh
+
+RESERVED_ENDINGS=(api config export mobile admin www)
+
+branch_name="$CI_BRANCH"
+if [[ $branch_name == "" ]];then
+    # Get currently checked out branch
+    branch_name=$(git rev-parse --abbrev-ref HEAD)
+fi
+
+for reserved_ending in ${RESERVED_ENDINGS[@]}
 do
-    if [[ "$CI_BRANCH" == *$reserved_ending ]]; then
-        echo "Invalid branch name, must not end in '$reserved_ending'"
+    if [[ "$branch_name" == *$reserved_ending ]]; then
+        log_error "❌ Invalid branch name ending: '$reserved_ending'"
         exit 1;
     fi
 done
+
+log_success "✔ Branch name is valid!"
+exit 0;
