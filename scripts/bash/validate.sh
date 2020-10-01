@@ -10,5 +10,5 @@ yarn -s workspace @tupaia/devops -s validate-branch-name
 if yarn -s workspace @tupaia/devops -s validate-tests ; then
     :
 else
-    log_warn "The CI/CD build will fail. Please come back and remove any .only blocks in tests"
+    log_warn "Exclusive (.only) tests found in your code. The CI/CD build will fail if you push those"
 fi
