@@ -66,6 +66,7 @@ const stateChanges = {
       name: `${user.first_name} ${user.last_name}`,
       position: user.position,
       employer: user.employer,
+      profileImage: user.profile_image,
     },
   }),
 };

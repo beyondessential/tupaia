@@ -53,48 +53,95 @@ const SuccessMessage = styled(SmallAlert)`
   margin-bottom: 1.5rem;
 `;
 
+// add to utils
+function createBase64Image(fileObject) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(fileObject);
+  });
+}
+
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  ERROR: 'error',
+  DISABLED: 'disabled',
+};
+
 const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
+  const [fileUpload, setFileUpload] = useState(null);
+  const [fileUploadName, setFileUploadName] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState(STATUS.IDLE);
   const { handleSubmit, register, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
-    setIsLoading(true);
+    setStatus(STATUS.LOADING);
     setErrorMessage(null);
     setSuccessMessage(null);
+
+    let updatedFields = {
+      first_name: firstName,
+      last_name: lastName,
+      position: role,
+      employer,
+    };
+
+    if (fileUpload) {
+      updatedFields = {
+        ...updatedFields,
+        profileImage: {
+          fileId: fileUploadName,
+          data: fileUpload,
+        },
+      };
+    }
+
     try {
-      await onUpdateProfile({
-        first_name: firstName,
-        last_name: lastName,
-        position: role,
-        employer,
-      });
-      setIsLoading(false);
+      await onUpdateProfile(updatedFields);
+      setStatus(STATUS.SUCCESS);
       setSuccessMessage('Profile successfully updated.');
     } catch (error) {
-      setIsLoading(false);
+      setStatus(STATUS.ERROR);
       setErrorMessage(error.message);
     }
   });
 
-  const { firstName, lastName, position, employer } = user;
+  const handleFileChange = async event => {
+    setStatus(STATUS.DISABLED);
+    const fileObject = event.target.files[0];
+    const Base64 = await createBase64Image(fileObject);
+    const fileName = fileObject.name.replace(/\.[^/.]+$/, '');
+    setFileUpload(Base64);
+    setFileUploadName(fileName);
+    setStatus(STATUS.IDLE);
+  };
+
+  const { firstName, lastName, position, employer, profileImage } = user;
 
   return (
     <>
       {HeaderPortal}
       <Container>
         <form onSubmit={onSubmit} noValidate>
-          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+          {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
           <Box display="flex" mb={2} alignItems="center">
-            <Avatar>T</Avatar>
-            <FileUploadField
-              onChange={() => console.log('change...')}
-              name="profile-photo"
-              label="Your avatar"
-            />
+            <Avatar src={fileUpload || profileImage}>T</Avatar>
+            {/*<div>{fileUpload}</div>*/}
+            <input type="file" name="profileImage" ref={register} onChange={handleFileChange} />
+            <div>{fileUploadName}</div>
+            {/*<FileUploadField name="avatarUpload" label="Your avatar" />*/}
           </Box>
           <Divider />
           <TextField
@@ -141,7 +188,12 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
               required: 'Required',
             })}
           />
-          <StyledButton type="submit" fullWidth isLoading={isLoading}>
+          <StyledButton
+            type="submit"
+            fullWidth
+            isLoading={status === STATUS.LOADING}
+            disabled={status === STATUS.DISABLED}
+          >
             Update Profile
           </StyledButton>
         </form>
@@ -160,6 +212,7 @@ ProfilePageComponent.propTypes = {
     lastName: PropTypes.string,
     employer: PropTypes.string,
     position: PropTypes.string,
+    profileImage: PropTypes.string,
   }),
 };
 

@@ -7,20 +7,23 @@ import { getS3Client } from './index';
 import { BUCKET_NAME, getImageFilePath } from './constants';
 
 export const uploadImage = (base64EncodedImage, fileId) => {
-  const buffer = Buffer.from(base64EncodedImage, 'base64');
+  const buffer = Buffer.from(base64EncodedImage.replace(/^data:image\/\w+;base64,/, ''), 'base64');
   const filePath = getImageFilePath();
   const fileName = fileId
-    ? `${filePath}${fileId}.png`
+    ? `${filePath}${fileId}`
     : `${filePath}${getCurrentTime()}_${getRandomInteger()}.png`;
+
+  const type = fileId ? base64EncodedImage.split(';')[0].split('/')[1] : 'png';
+
   return new Promise((resolve, reject) => {
     const s3Client = getS3Client();
     s3Client.upload(
       {
         Bucket: BUCKET_NAME,
-        Key: fileName,
+        Key: `${fileName}.${type}`,
         Body: buffer,
         ACL: 'public-read',
-        ContentType: 'image/png',
+        ContentType: `image/${type}`,
         ContentEncoding: 'base64',
       },
       (error, data) => {
