@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { expect } from 'chai';
 import { getTestDatabase } from '@tupaia/database';
 
 import { TupaiaDataApi } from '../TupaiaDataApi';
@@ -35,48 +34,54 @@ export const testFetchEvents = () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
   const assertCorrectResponse = async (options, responses) =>
-    expect(api.fetchEvents(options)).to.eventually.deep.equal(
+    expect(api.fetchEvents(options)).resolves.toStrictEqual(
       getEventsFromResponses(responses, options.dataElementCodes),
     );
 
   it('throws an error with invalid parameters', async () => {
-    await expect(api.fetchEvents()).to.be.rejectedWith(/provide options/);
-    await expect(api.fetchEvents(null)).to.be.rejectedWith(/provide options/);
-    await expect(api.fetchEvents({})).to.be.rejectedWith(/Invalid content/);
+    const testData = [
+      [undefined, /provide options/],
+      [null, /provide options/],
+      [{}, /Invalid content/],
+      [
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1', 'BCD325'],
+        },
+        /Invalid content.*surveyCode/,
+      ], // no surveyCode
+      [
+        {
+          surveyCode: 'BCD',
+          dataElementCodes: ['BCD1', 'BCD325'],
+        },
+        /Invalid content.*organisationUnitCodes/,
+      ], // no organisationUnitCodes
+      [
+        {
+          surveyCode: 'BCD',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        },
+        /Invalid content.*dataElementCodes/,
+      ], // no dataElementCodes
+      [
+        {
+          surveyCode: 'BCD',
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1', 'BCD325'],
+          startDate: 'January first, 2020',
+        },
+        /Invalid content.*startDate/,
+      ], // invalid startDate format
+    ];
 
-    // no surveyCode
-    await expect(
-      api.fetchEvents({
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['BCD1', 'BCD325'],
-      }),
-    ).to.be.rejectedWith(/Invalid content.*surveyCode/);
-
-    // no organisationUnitCodes
-    await expect(
-      api.fetchEvents({
-        surveyCode: 'BCD',
-        dataElementCodes: ['BCD1', 'BCD325'],
-      }),
-    ).to.be.rejectedWith(/Invalid content.*organisationUnitCodes/);
-
-    // no dataElementCodes
-    await expect(
-      api.fetchEvents({
-        surveyCode: 'BCD',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-      }),
-    ).to.be.rejectedWith(/Invalid content.*dataElementCodes/);
-
-    // invalid startDate format
-    await expect(
-      api.fetchEvents({
-        surveyCode: 'BCD',
-        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-        dataElementCodes: ['BCD1', 'BCD325'],
-        startDate: 'January first, 2020',
-      }),
-    ).to.be.rejectedWith(/Invalid content.*startDate/);
+    for (const [options, expectedRegexp] of testData) {
+      try {
+        await api.fetchEvents(options);
+      } catch (e) {
+        expect(e.message).toEqual(expect.stringMatching(expectedRegexp));
+      }
+    }
   });
 
   it('returns results in the correct format, sorted by event date', async () => {
