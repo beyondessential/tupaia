@@ -1,11 +1,11 @@
 import { Row } from '../reportBuilder';
-import { transformFunctions, transformFunctionBuilders } from './functions';
+import { transformBuilders } from './functions';
 
-export type TransformParams = {
+type TransformParams = {
   apply: (rows: Row[]) => Row[];
 };
 
-export const transform = (rows: Row[], transforms: TransformParams[]): Row[] => {
+const transform = (rows: Row[], transforms: TransformParams[]): Row[] => {
   let transformedRows: Row[] = rows;
   transforms.forEach((transform: TransformParams) => {
     transformedRows = transform.apply(transformedRows);
@@ -13,7 +13,7 @@ export const transform = (rows: Row[], transforms: TransformParams[]): Row[] => 
   return transformedRows;
 };
 
-export const buildTransformParams = (params: unknown): TransformParams => {
+const buildParams = (params: unknown): TransformParams => {
   if (typeof params !== 'object' || params === null) {
     throw new Error(`Expected object but got ${params}`);
   }
@@ -23,18 +23,16 @@ export const buildTransformParams = (params: unknown): TransformParams => {
     throw new Error(`Expected a single transform defined but got ${transformList.length}`);
   }
 
-  const transformFunction = transformList[0][0] as keyof typeof transformFunctions;
+  const transform = transformList[0][0] as keyof typeof transformBuilders;
   const transformParams = transformList[0][1] as unknown;
-  if (!(transformFunction in transformFunctions)) {
+  if (!(transform in transformBuilders)) {
     throw new Error(
-      `Expected a transform to be one of ${Object.keys(
-        transformFunctions,
-      )} but got ${transformFunction}`,
+      `Expected a transform to be one of ${Object.keys(transformBuilders)} but got ${transform}`,
     );
   }
 
   return {
-    apply: transformFunctionBuilders[transformFunction](transformParams),
+    apply: transformBuilders[transform](transformParams),
   };
 };
 
@@ -43,6 +41,6 @@ export const buildTransform = (params: unknown) => {
     throw new Error(`Expected array of transform configs, but got ${params}`);
   }
 
-  const builtParams = params.map(param => buildTransformParams(param));
+  const builtParams = params.map(param => buildParams(param));
   return (rows: Row[]) => transform(rows, builtParams);
 };

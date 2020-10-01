@@ -1,1 +1,1 @@
-export { mergeRows, buildMergeRows } from './mergeRows';
+export { buildMergeRows } from './mergeRows';

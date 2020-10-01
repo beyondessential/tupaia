@@ -1,15 +1,15 @@
 import { FieldValue, Row } from '../../reportBuilder';
-import { functions, functionBuilders } from '../../functions';
+import { functionBuilders } from '../../functions';
 
-export type WhereClaus = {
+type WhereClaus = {
   check: (row: Row) => FieldValue;
 };
 
-export type WhereParams = {
+type WhereParams = {
   where?: WhereClaus;
 };
 
-export const where = (row: Row, params: WhereParams): boolean => {
+const where = (row: Row, params: WhereParams): boolean => {
   if (params.where === undefined) {
     return true;
   }
@@ -21,7 +21,7 @@ export const where = (row: Row, params: WhereParams): boolean => {
   throw new Error(`Expected truthy result but got ${whereResult}`);
 };
 
-export const buildWhereParams = (params: unknown): WhereParams => {
+const buildParams = (params: unknown): WhereParams => {
   if (typeof params !== 'object' || params === null) {
     throw new Error(`Expected params object but got ${params}`);
   }
@@ -41,22 +41,22 @@ export const buildWhereParams = (params: unknown): WhereParams => {
     throw new Error(`Expected a single transform defined but got ${whereFunctionList.length}`);
   }
 
-  const whereFunction = whereFunctionList[0][0] as keyof typeof functions;
+  const where = whereFunctionList[0][0] as keyof typeof functionBuilders;
   const whereParams = whereFunctionList[0][1] as unknown;
-  if (!(whereFunction in functions)) {
+  if (!(where in functionBuilders)) {
     throw new Error(
-      `Expected a transform to be one of ${Object.keys(functions)} but got ${whereFunction}`,
+      `Expected a transform to be one of ${Object.keys(functionBuilders)} but got ${where}`,
     );
   }
 
   return {
     where: {
-      check: functionBuilders[whereFunction](whereParams),
+      check: functionBuilders[where](whereParams),
     },
   };
 };
 
 export const buildWhere = (params: unknown) => {
-  const builtParams = buildWhereParams(params);
+  const builtParams = buildParams(params);
   return (row: Row) => where(row, builtParams);
 };

@@ -6,7 +6,7 @@ type WhereDropParams = { field: string; where: (row: Row) => boolean };
 type BasicDropParams = string;
 type DropParams = WhereDropParams | BasicDropParams;
 
-export const drop = (rows: Row[], params: DropParams): Row[] => {
+const drop = (rows: Row[], params: DropParams): Row[] => {
   return rows.map(row => {
     if (typeof params === 'string') {
       const parsedParams = parseToken(row, params);
@@ -32,7 +32,7 @@ export const drop = (rows: Row[], params: DropParams): Row[] => {
   });
 };
 
-export const buildDropParams = (params: unknown): DropParams => {
+const buildParams = (params: unknown): DropParams => {
   if (typeof params === 'string') {
     return params;
   } else if (typeof params === 'object' && params !== null) {
@@ -50,6 +50,6 @@ export const buildDropParams = (params: unknown): DropParams => {
 };
 
 export const buildDrop = (params: unknown) => {
-  const builtParams = buildDropParams(params);
+  const builtParams = buildParams(params);
   return (rows: Row[]) => drop(rows, builtParams);
 };

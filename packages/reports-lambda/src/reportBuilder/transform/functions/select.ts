@@ -1,14 +1,14 @@
-import { functions, functionBuilders, parseToken } from '../../functions';
+import { functionBuilders, parseToken } from '../../functions';
 import { buildWhere } from './where';
 import { FieldValue, Row } from '../../reportBuilder';
 
-export type SelectParams = {
-  selectFunction: (row: Row) => FieldValue;
+type SelectParams = {
+  select: (row: Row) => FieldValue;
   where: (row: Row) => boolean;
   as: string;
 };
 
-export const select = (rows: Row[], params: SelectParams): Row[] => {
+const select = (rows: Row[], params: SelectParams): Row[] => {
   return rows.map(row => {
     if (!params.where(row)) {
       return { ...row };
@@ -19,7 +19,7 @@ export const select = (rows: Row[], params: SelectParams): Row[] => {
       throw new Error(`Expected select 'as' to be string, but got ${as}`);
     }
 
-    const selectionResult = params.selectFunction(row);
+    const selectionResult = params.select(row);
     const rowWithSelection = { ...row };
     if (selectionResult !== undefined || selectionResult !== null) {
       rowWithSelection[as] = selectionResult;
@@ -28,7 +28,7 @@ export const select = (rows: Row[], params: SelectParams): Row[] => {
   });
 };
 
-export const buildSelectParams = (params: unknown): SelectParams => {
+const buildParams = (params: unknown): SelectParams => {
   if (typeof params !== 'object' || params === null) {
     throw new Error(`Expected params object but got ${params}`);
   }
@@ -43,22 +43,22 @@ export const buildSelectParams = (params: unknown): SelectParams => {
     throw new Error(`Expected a single transform defined but got ${selectFunctionList.length}`);
   }
 
-  const selectFunction = selectFunctionList[0][0] as keyof typeof functions;
+  const select = selectFunctionList[0][0] as keyof typeof functionBuilders;
   const selectParams = selectFunctionList[0][1] as unknown;
-  if (!(selectFunction in functions)) {
+  if (!(select in functionBuilders)) {
     throw new Error(
-      `Expected a transform to be one of ${Object.keys(functions)} but got ${selectFunction}`,
+      `Expected a transform to be one of ${Object.keys(functionBuilders)} but got ${select}`,
     );
   }
 
   return {
-    selectFunction: functionBuilders[selectFunction](selectParams),
+    select: functionBuilders[select](selectParams),
     where: buildWhere(params),
     as,
   };
 };
 
 export const buildSelect = (params: unknown) => {
-  const builtParams = buildSelectParams(params);
+  const builtParams = buildParams(params);
   return (rows: Row[]) => select(rows, builtParams);
 };

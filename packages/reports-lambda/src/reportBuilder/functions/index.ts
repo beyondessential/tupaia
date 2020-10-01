@@ -1,24 +1,11 @@
-import { FieldValue, Row } from '../reportBuilder';
+import { Row } from '../reportBuilder';
 import { value, add, eq, neq, exists } from './basic';
 import { convertToPeriod, periodToTimestamp, periodToDisplayString } from './utils';
 import { parseToken } from './parseToken';
 
-export const functions = {
-  value,
-  add,
-  eq,
-  neq,
-  exists,
-  convertToPeriod,
-  periodToTimestamp,
-  periodToDisplayString,
-};
-
-export { parseToken } from './parseToken';
-
-const mapFunctionToBuiltFunction = (func: (...args: any) => FieldValue) => {
+const createFunctionBuilder = <F extends (...args: any) => any>(func: F) => {
   return (params: unknown) => {
-    return (row: Row) => {
+    return (row: Row): ReturnType<F> => {
       let parsedParams = params;
       if (typeof params === 'string') {
         parsedParams = parseToken(row, params);
@@ -42,12 +29,14 @@ const mapFunctionToBuiltFunction = (func: (...args: any) => FieldValue) => {
 };
 
 export const functionBuilders = {
-  value: mapFunctionToBuiltFunction(value),
-  add: mapFunctionToBuiltFunction(add),
-  eq: mapFunctionToBuiltFunction(eq),
-  neq: mapFunctionToBuiltFunction(neq),
-  exists: mapFunctionToBuiltFunction(exists),
-  convertToPeriod: mapFunctionToBuiltFunction(convertToPeriod),
-  periodToTimestamp: mapFunctionToBuiltFunction(periodToTimestamp),
-  periodToDisplayString: mapFunctionToBuiltFunction(periodToDisplayString),
+  value: createFunctionBuilder(value),
+  add: createFunctionBuilder(add),
+  eq: createFunctionBuilder(eq),
+  neq: createFunctionBuilder(neq),
+  exists: createFunctionBuilder(exists),
+  convertToPeriod: createFunctionBuilder(convertToPeriod),
+  periodToTimestamp: createFunctionBuilder(periodToTimestamp),
+  periodToDisplayString: createFunctionBuilder(periodToDisplayString),
 };
+
+export { parseToken } from './parseToken';

@@ -4,7 +4,7 @@ import { Row } from '../../../reportBuilder';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetFieldMergeFunction } from './getFieldMergeFunction';
 
-export type MergeParams = {
+type MergeParams = {
   createGroupKey: (row: Row) => string;
   getFieldMergeFunction: (row: Row, field: string) => keyof typeof mergeFunctions;
   where: (row: Row) => boolean;
@@ -18,7 +18,7 @@ const merge = (mergedRow: Row, newRow: Row, params: MergeParams): Row => {
   return mergedRow;
 };
 
-export const mergeRows = (rows: Row[], params: MergeParams): Row[] => {
+const mergeRows = (rows: Row[], params: MergeParams): Row[] => {
   const groupedRows: { [groupKey: string]: Row } = {};
   const otherRows: Row[] = [];
 
@@ -33,7 +33,7 @@ export const mergeRows = (rows: Row[], params: MergeParams): Row[] => {
   return Object.values(groupedRows).concat(otherRows);
 };
 
-export const buildMergeParams = (params: unknown): MergeParams => {
+const buildParams = (params: unknown): MergeParams => {
   if (typeof params !== 'object' || params === null) {
     throw new Error(`Expected params object but got ${params}`);
   }
@@ -62,6 +62,6 @@ export const buildMergeParams = (params: unknown): MergeParams => {
 };
 
 export const buildMergeRows = (params: unknown) => {
-  const builtParams = buildMergeParams(params);
+  const builtParams = buildParams(params);
   return (rows: Row[]) => mergeRows(rows, builtParams);
 };
