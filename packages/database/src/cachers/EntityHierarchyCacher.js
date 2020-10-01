@@ -83,7 +83,7 @@ export class EntityHierarchyCacher {
     }
 
     // check whether this generation/hierarchy combo has already been cached to avoid doing it again
-    // on startup, or when two projects share a hierarchy (at time of writing none do, but db schema
+    // on start up, or when two projects share a hierarchy (at time of writing none do, but db schema
     // makes it possible)
     const numberAlreadyCached = await this.models.ancestorDescendantRelation.count({
       entity_hierarchy_id: hierarchyId,
