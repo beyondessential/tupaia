@@ -61,7 +61,7 @@ const findNestedGroupedMapOverlays = async (
       );
 
       mapOverlayGroupResults.push({
-        id: mapOverlayGroupRelation.child_id, //just for sorting purpose, will be removed later
+        id: mapOverlayGroupRelation.child_id,
         name,
         children,
       });
@@ -73,7 +73,7 @@ const findNestedGroupedMapOverlays = async (
     .concat(mapOverlayResults)
     .sort(sortFunction)
     .map(item => {
-      //id was added only for sorting purpose, remove it because it is not required for the front end
+      //id was added only for sorting purposes, remove it because it is not required in the front end
       const { id, ...itemToReturn } = item;
       return itemToReturn;
     });
@@ -93,8 +93,7 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
   });
 };
 
-const allRelationsHaveSortOrder = relations =>
-  relations.every(m => m.sort_order !== undefined && m.sort_order !== null);
+const allRelationsHaveSortOrder = relations => relations.every(m => m.sort_order !== null);
 
 const getSortFunction = relations => {
   const childIdToSortOrder = reduceToDictionary(relations, 'child_id', 'sort_order');
