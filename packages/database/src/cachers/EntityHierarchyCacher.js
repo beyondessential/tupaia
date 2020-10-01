@@ -18,8 +18,7 @@ export class EntityHierarchyCacher {
     // projects are the root entities of every full tree, so start with them
     const projects = await this.models.project.all();
     // iterate through projects in serial, as each one is quite resource intensive
-    for (let i = 0; i < projects.length; i++) {
-      const project = projects[i];
+    for (const project of projects) {
       await this.buildAndCacheProject(project);
     }
   }
