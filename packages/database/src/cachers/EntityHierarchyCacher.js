@@ -2,8 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+import { AsyncTaskQueue } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../modelClasses/Entity';
+
+const BATCH_SIZE = 5;
 
 export class EntityHierarchyCacher {
   constructor(models) {
@@ -39,67 +41,75 @@ export class EntityHierarchyCacher {
   async fetchAndCacheDescendants(hierarchyId, parentIdsToAncestorIds) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
 
-    // check if we've reached the leaf nodes or this is already cached
-    const shouldFetchAndCache = await this.checkShouldFetchAndCache(hierarchyId, parentIds);
-    if (!shouldFetchAndCache) {
+    // check whether this generation/hierarchy combo has already been cached to avoid doing it again
+    // todo not working
+    const generationAlreadyCached = await this.checkGenerationAlreadyCached(hierarchyId, parentIds);
+    if (generationAlreadyCached) {
       return;
     }
 
     // check whether next generation uses entity relation links, or should fall back to parent_id
-    const nextGenerationIsCanonical = await this.checkIfNextGenerationIsCanonical(
-      hierarchyId,
-      parentIds,
-    );
+    const hasNonCanonicalChildren = await this.checkForNonCanonicalChildren(hierarchyId, parentIds);
+    const hasAnyChildren =
+      hasNonCanonicalChildren || (await this.checkForCanonicalChildren(parentIds));
+
+    if (!hasAnyChildren) {
+      return; // at a leaf node generation, no need to go any further
+    }
 
     const childIdsToAncestorIds = {};
-    for (const parentId of parentIds) {
-      const ancestorIds = parentIdsToAncestorIds[parentId];
-      const childIds = nextGenerationIsCanonical
-        ? await this.getNextGenerationCanonically(parentId)
-        : await this.getNextGenerationViaEntityRelation(hierarchyId, parentId);
+    const taskQueue = new AsyncTaskQueue(BATCH_SIZE);
+    const tasks = parentIds.map(parentId =>
+      taskQueue.add(async () => {
+        const ancestorIds = parentIdsToAncestorIds[parentId];
+        const childIds = hasNonCanonicalChildren
+          ? await this.getNextGenerationViaEntityRelation(hierarchyId, parentId)
+          : await this.getNextGenerationCanonically(parentId);
 
-      // if childIds is empty, we've made it to the leaf nodes
-      if (childIds.length === 0) {
-        continue;
-      }
+        // if childIds is empty, this is a leaf node
+        if (childIds.length === 0) {
+          return;
+        }
 
-      // cache this generation
-      const parentAndAncestorIds = [parentId, ...ancestorIds];
-      await this.cacheGeneration(hierarchyId, childIds, parentAndAncestorIds);
+        // add this generation to the object for caching
+        const parentAndAncestorIds = [parentId, ...ancestorIds];
+        childIds.forEach(childId => {
+          childIdsToAncestorIds[childId] = parentAndAncestorIds;
+        });
+      }),
+    );
+    await Promise.all(tasks);
 
-      // add this generation to the object for caching in the next recursion
-      childIds.forEach(childId => {
-        childIdsToAncestorIds[childId] = parentAndAncestorIds;
-      });
-    }
+    await this.cacheGeneration(hierarchyId, childIdsToAncestorIds);
 
     // keep recursing through the hierarchy
     await this.fetchAndCacheDescendants(hierarchyId, childIdsToAncestorIds);
   }
 
-  async checkShouldFetchAndCache(hierarchyId, parentIds) {
-    if (parentIds.length === 0) {
-      return false; // base case of recursion, we must have reached the leaf nodes
-    }
-
-    // check whether this generation/hierarchy combo has already been cached to avoid doing it again
-    // on start up, or when two projects share a hierarchy (at time of writing none do, but db schema
-    // makes it possible)
+  async checkGenerationAlreadyCached(hierarchyId, parentIds) {
     const numberAlreadyCached = await this.models.ancestorDescendantRelation.count({
       entity_hierarchy_id: hierarchyId,
       ancestor_id: parentIds,
       generational_distance: 1,
     });
-    return numberAlreadyCached !== parentIds.length;
+    return numberAlreadyCached > 0;
   }
 
-  async checkIfNextGenerationIsCanonical(hierarchyId, entityIds) {
+  async checkForNonCanonicalChildren(hierarchyId, entityIds) {
     const hierarchyLinkCount = await this.models.entityRelation.count({
       parent_id: entityIds,
       entity_hierarchy_id: hierarchyId,
     });
-    // if no entity relation links, the next gen must use the canonical "parent_id" links
-    return hierarchyLinkCount === 0;
+    return hierarchyLinkCount > 0;
+  }
+
+  async checkForCanonicalChildren(entityIds) {
+    const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
+    const childCount = await this.models.entity.count({
+      parent_id: entityIds,
+      type: canonicalTypes,
+    });
+    return childCount > 0;
   }
 
   async getNextGenerationCanonically(entityId) {
@@ -123,21 +133,22 @@ export class EntityHierarchyCacher {
   /**
    * Stores the generation of ancestor/descendant info in the database
    * @param {string} hierarchyId
-   * @param {Entity[]} entityIds
-   * @param {Entity[]} ancestorIds In order of generational distance, with immediate parent at index 0
+   * @param {Entity[]} childIdsToAncestorIds  Ids of the child entities as keys, with the ids of their
+   *                                          ancestors in order of generational distance, with immediate
+   *                                          parent at index 0
    */
-  async cacheGeneration(hierarchyId, entityIds, ancestorIds) {
+  async cacheGeneration(hierarchyId, childIdsToAncestorIds) {
     const records = [];
-    ancestorIds.forEach((ancestorId, ancestorIndex) =>
-      entityIds.forEach(entityId => {
+    Object.entries(childIdsToAncestorIds).forEach(([childId, ancestorIds]) => {
+      ancestorIds.forEach((ancestorId, ancestorIndex) =>
         records.push({
           entity_hierarchy_id: hierarchyId,
           ancestor_id: ancestorId,
-          descendant_id: entityId,
+          descendant_id: childId,
           generational_distance: ancestorIndex + 1,
-        });
-      }),
-    );
+        }),
+      );
+    });
     await this.models.ancestorDescendantRelation.createMany(records);
   }
 }
