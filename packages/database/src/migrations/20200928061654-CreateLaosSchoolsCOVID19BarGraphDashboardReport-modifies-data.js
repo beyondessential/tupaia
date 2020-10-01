@@ -41,7 +41,10 @@ const BASE_SUB_BUILDER_CONFIG = {
     },
     'School implementing MoES safe school protocols/guidelines': {
       numerator: {
-        valueOfInterest: 'Yes',
+        valueOfInterest: {
+          value: 'Yes',
+          operator: 'regex',
+        },
         dataValues: ['SchCVD027'],
       },
       denominator: {
