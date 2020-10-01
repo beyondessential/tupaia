@@ -5,6 +5,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+const fs = require('fs');
 const path = require('path');
 
 const { executeCommand, getLoggerInstance } = require('./utilities');
@@ -13,16 +14,27 @@ const { executeCommand, getLoggerInstance } = require('./utilities');
  * @typedef {Array<{ fileName, text }>} ExclusiveTest
  */
 
-const PACKAGES = ['meditrak-server', 'web-config-server'];
+const PACKAGE_ROOT = path.resolve(`${__dirname}/../../packages`);
+const TEST_PATHS_RELATIVE_TO_PACKAGE = ['src/tests', 'src/__tests__', 'tests', '__tests__'];
 const MOCHA_TEST_BLOCKS = ['it', 'describe', 'context', 'specify'];
 const STD_ERROR_CODE = 1;
 
-const getTestDirectory = packageName =>
-  path.resolve(`${__dirname}/../../packages/${packageName}/src/tests`);
+const findTestDirs = () => {
+  const packageNames = fs.readdirSync(`${PACKAGE_ROOT}`);
+  return packageNames
+    .map(packageName => findPossibleTestDirsForPackage(packageName))
+    .flat()
+    .filter(fs.existsSync);
+};
 
-const findExclusiveTests = async packageName => {
+const findPossibleTestDirsForPackage = packageName =>
+  TEST_PATHS_RELATIVE_TO_PACKAGE.map(
+    relativeTestPath => `${PACKAGE_ROOT}/${packageName}/${relativeTestPath}`,
+  );
+
+const findExclusiveTests = async testDirectory => {
   const regexp = MOCHA_TEST_BLOCKS.map(testBlock => `${testBlock}.only`).join('\\|');
-  const grepOutput = await grep(regexp, getTestDirectory(packageName));
+  const grepOutput = await grep(regexp, testDirectory);
   return parseGrepOutput(grepOutput);
 };
 
@@ -89,8 +101,8 @@ const logger = getLoggerInstance();
 const run = async () => {
   const exclusiveTests = [];
 
-  const runForPackage = packageName =>
-    findExclusiveTests(packageName)
+  const runForTestDir = testDir =>
+    findExclusiveTests(testDir)
       .then(results => {
         exclusiveTests.push(...results);
       })
@@ -99,7 +111,7 @@ const run = async () => {
         process.exit(1);
       });
 
-  Promise.all(PACKAGES.map(runForPackage)).then(() => {
+  Promise.all(findTestDirs().map(runForTestDir)).then(() => {
     if (exclusiveTests.length > 0) {
       logger.error('❌ Exclusive tests found:');
       logger.error(formatExclusiveTests(exclusiveTests).join('\n'));
