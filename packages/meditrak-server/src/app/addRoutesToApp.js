@@ -48,7 +48,7 @@ const {
   postChanges,
   pruneChanges,
   importSurveyResponses,
-  createUser,
+  registerUserAccount,
   createUserAccount,
   changePassword,
   requestCountryAccess,
@@ -153,7 +153,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
   app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
-  app.post('(/v[0-9]+)?/user', createUser);
+  app.post('(/v[0-9]+)?/user', registerUserAccount);
   app.post('(/v[0-9]+)?/userAccount', createUserAccount);
   app.post('(/v[0-9]+)/me/requestCountryAccess', requestCountryAccess);
   app.post('(/v[0-9]+)/me/changePassword', changePassword);

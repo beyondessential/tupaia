@@ -19,18 +19,21 @@ export class CreateUserAccounts extends CreateHandler {
   }
 
   async createRecord() {
-    const {
-      firstName,
-      lastName,
-      emailAddress,
-      contactNumber,
-      password,
-      countryName,
-      permissionGroupName,
-      is_api_client: isApiClient,
-      verifiedEmail,
-      ...restOfUser
-    } = this.newRecordData;
+    return createUserRecord(this.newRecordData);
+  }
+
+  async createUserRecord({
+    firstName,
+    lastName,
+    emailAddress,
+    contactNumber,
+    password,
+    countryName,
+    permissionGroupName,
+    is_api_client: isApiClient,
+    verifiedEmail,
+    ...restOfUser
+  }) {
 
     return this.models.wrapInTransaction(async transactingModels => {
       const permissionGroup = await transactingModels.permissionGroup.findOne({

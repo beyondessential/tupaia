@@ -44,7 +44,7 @@ export async function verifyEmail(req, res) {
     await models.user.updateById(verifiedUser.id, verifiedUser);
 
     respond(res, { emailVerified: 'true' });
-  } else throw UnverifiedError('Email address could not be verified');
+  } else throw new UnverifiedError('Email address could not be verified');
 }
 
 async function verifyEmailHelper(models, searchCondition, token) {

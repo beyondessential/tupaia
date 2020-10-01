@@ -19,12 +19,13 @@ export class CreateHandler extends CRUDHandler {
 
   async handleRequest() {
     await this.validate();
+    let customResponseDetails = {};
     try {
-      await this.createRecord();
+      customResponseDetails = await this.createRecord();
     } catch (error) {
       throw new DatabaseError('Creating record', error);
     }
-    respond(this.res, { message: `Successfully created ${this.resource}` });
+    respond(this.res, { message: `Successfully created ${this.resource}`, ...customResponseDetails });
   }
 
   async validate() {

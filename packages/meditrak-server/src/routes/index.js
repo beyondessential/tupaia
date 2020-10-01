@@ -21,7 +21,7 @@ import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
-import { CreateUserAccounts, EditUserAccounts, GETUserAccounts } from './userAccounts';
+import { CreateUserAccounts, RegisterUserAccounts, EditUserAccounts, GETUserAccounts } from './userAccounts';
 import { EditUserEntityPermissions, GETUserEntityPermissions } from './userEntityPermissions';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { importEntities } from './importEntities';
@@ -33,7 +33,6 @@ import { postChanges } from './postChanges';
 import { pruneChanges } from './pruneChanges';
 import { addRecord } from './addRecord';
 import { importSurveyResponses } from './importSurveyResponses';
-import { createUser } from './createUser';
 import { changePassword } from './changePassword';
 import { requestCountryAccess } from './requestCountryAccess';
 import { getSocialFeed } from './getSocialFeed';
@@ -69,6 +68,7 @@ export default {
   deleteRecord: catchAsyncErrors(deleteRecord),
   editRecord: catchAsyncErrors(editRecord),
   createUserAccount: useRouteHandler(CreateUserAccounts),
+  registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
@@ -98,7 +98,6 @@ export default {
   pruneChanges: catchAsyncErrors(pruneChanges),
   addRecord: catchAsyncErrors(addRecord),
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
-  createUser: catchAsyncErrors(createUser),
   changePassword: catchAsyncErrors(changePassword),
   requestCountryAccess: catchAsyncErrors(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
