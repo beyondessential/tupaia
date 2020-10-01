@@ -4,6 +4,7 @@
  */
 
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
+import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 /**
  * Configuration schema
@@ -24,23 +25,23 @@ import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
  *        }
  *    }
  * }
- * 
+ *
  * Data returned from fetchComposedData():
  * {
- *     builder1: { 
+ *     builder1: {
  *        data: [{name: dataClass1: value: '111'}, {name: dataClass2: value: '222'}]
  *     },
  *     builder2: {
  *        data: [{name: dataClass1: value: '333'}, {name: dataClass2: value: '444'}],
  *     }
  * }
- * 
+ *
  * The above will then be converted to the below and returned:
- * { 
- *    data: 
+ * {
+ *    data:
  *        [
- *          { name: dataClass1, builder1: '111', builder2: '333' }, 
- *          { name: dataClass2, builder1: '222', builder2: '444' }, 
+ *          { name: dataClass1, builder1: '111', builder2: '333' },
+ *          { name: dataClass2, builder1: '222', builder2: '444' },
  *        ]
  * }
  */
@@ -60,12 +61,28 @@ export const composeDataPerDataClass = async (config, aggregator, dhisApi) => {
       }
 
       if (responseObject[`${dataClassName}_metadata`]) {
-        dataObject[dataClassName][`${responseName}_metadata`] = responseObject[`${dataClassName}_metadata`];
+        dataObject[dataClassName][`${responseName}_metadata`] =
+          responseObject[`${dataClassName}_metadata`];
       }
 
       dataObject[dataClassName][responseName] = value;
     });
   });
 
-  return { data: Object.values(dataObject) };
+  // Fill 'No Data' value for any response with no data
+  const data = Object.values(dataObject).map(dataClassObject => {
+    let newDataClassObject = dataClassObject;
+    Object.keys(responses).forEach(responseName => {
+      if (newDataClassObject[responseName] === undefined) {
+        newDataClassObject = {
+          ...newDataClassObject,
+          [responseName]: NO_DATA_AVAILABLE,
+        };
+      }
+    });
+
+    return newDataClassObject;
+  });
+
+  return { data };
 };
