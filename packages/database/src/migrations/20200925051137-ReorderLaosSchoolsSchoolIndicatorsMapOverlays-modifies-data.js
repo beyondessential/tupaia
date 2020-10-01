@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 };
 
 const SCHOOL_INDICATORS_EIE_GROUP_CODE = 'School_Indicators_EiE';
-const SCHOOL_INDICATORS_EIE_OVERLAY_ORDERS = [
+const SCHOOL_INDICATORS_EIE_OVERLAYS_ORDERED = [
   'Laos_Schools_School_Type',
   'Laos_Schools_School_Indicators_Distance_From_Main_Road',
   'Laos_Schools_Used_As_Quarantine_Centre',
@@ -44,7 +44,7 @@ const SCHOOL_INDICATORS_EIE_OVERLAY_ORDERS = [
 ];
 
 const SCHOOL_INDICATORS_EIE_SUB_NATIONAL_DISTRICT_GROUP_CODE = 'School_Indicators_by_District';
-const SCHOOL_INDICATORS_EIE_SUB_NATIONAL_DISTRICT_OVERLAY_ORDERS = [
+const SCHOOL_INDICATORS_EIE_SUB_NATIONAL_DISTRICT_OVERLAYS_ORDERED = [
   'Laos_Schools_Major_Dev_Partner_District',
   'Laos_Schools_School_Indicators_Sub_National_Addtional_Learning_Reading_Materials_Since_June_2020_District',
   'Laos_Schools_Covid_Posters_And_Materials_District',
@@ -67,7 +67,7 @@ const SCHOOL_INDICATORS_EIE_SUB_NATIONAL_DISTRICT_OVERLAY_ORDERS = [
 ];
 
 const SCHOOL_INDICATORS_EIE_SUB_NATIONAL_PROVINCE_GROUP_CODE = 'School_Indicators_by_Province';
-const SCHOOL_INDICATORS_EIE_SUB_NATIONAL_PROVINCE_OVERLAY_ORDERS = [
+const SCHOOL_INDICATORS_EIE_SUB_NATIONAL_PROVINCE_OVERLAYS_ORDERED = [
   'Laos_Schools_Major_Dev_Partner_Province',
   'Laos_Schools_School_Indicators_Sub_National_Addtional_Learning_Reading_Materials_Since_June_2020_Province',
   'Laos_Schools_Covid_Posters_And_Materials_Province',
@@ -106,19 +106,19 @@ const reorderGroupOverlays = async (db, overlayOrders, groupCode) => {
 exports.up = async function(db) {
   await reorderGroupOverlays(
     db,
-    SCHOOL_INDICATORS_EIE_OVERLAY_ORDERS,
+    SCHOOL_INDICATORS_EIE_OVERLAYS_ORDERED,
     SCHOOL_INDICATORS_EIE_GROUP_CODE,
   );
 
   await reorderGroupOverlays(
     db,
-    SCHOOL_INDICATORS_EIE_SUB_NATIONAL_DISTRICT_OVERLAY_ORDERS,
+    SCHOOL_INDICATORS_EIE_SUB_NATIONAL_DISTRICT_OVERLAYS_ORDERED,
     SCHOOL_INDICATORS_EIE_SUB_NATIONAL_DISTRICT_GROUP_CODE,
   );
 
   await reorderGroupOverlays(
     db,
-    SCHOOL_INDICATORS_EIE_SUB_NATIONAL_PROVINCE_OVERLAY_ORDERS,
+    SCHOOL_INDICATORS_EIE_SUB_NATIONAL_PROVINCE_OVERLAYS_ORDERED,
     SCHOOL_INDICATORS_EIE_SUB_NATIONAL_PROVINCE_GROUP_CODE,
   );
 };
