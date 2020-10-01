@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { createTransform } from 'redux-persist';
 import { createReducer } from '../utilities';
@@ -14,6 +14,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT,
+  PROFILE_SUCCESS,
 } from './constants';
 
 const defaultState = {
@@ -57,6 +58,16 @@ const stateChanges = {
   [LOGIN_REQUEST]: () => ({ isLoggingIn: true }),
   [LOGIN_ERROR]: logoutStateUpdater,
   [LOGOUT]: logoutStateUpdater,
+  [PROFILE_SUCCESS]: (user, currentState) => ({
+    user: {
+      ...currentState.user,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      name: `${user.first_name} ${user.last_name}`,
+      position: user.position,
+      employer: user.employer,
+    },
+  }),
 };
 
 export const reducer = createReducer(defaultState, stateChanges);

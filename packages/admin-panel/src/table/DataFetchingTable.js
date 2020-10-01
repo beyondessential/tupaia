@@ -127,7 +127,6 @@ class DataFetchingTableComponent extends React.Component {
         SubComponent={
           expansionTabs &&
           (({ original: rowData, index }) => {
-            // eslint-disable-line react/prop-types
             const { id } = rowData;
             const expansionTab = expansionTabStates[id] || 0;
             const expansionItem = expansionTabs[expansionTab];

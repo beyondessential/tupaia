@@ -13,6 +13,7 @@ import InfoIcon from 'material-ui/svg-icons/action/info';
 
 import { isMobile } from '../utils';
 import { WHITE } from '../styles';
+
 const shouldDisplayForMobile = isMobile();
 
 const InfoButton = styled.div`

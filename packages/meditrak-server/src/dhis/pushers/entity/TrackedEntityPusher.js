@@ -63,7 +63,7 @@ export class TrackedEntityPusher extends EntityPusher {
   }
 
   async fetchTrackedEntityTypeId(entity) {
-    const type = entity.type;
+    const { type } = entity;
     if (!type) {
       throw new Error('Tracked entity type is required');
     }

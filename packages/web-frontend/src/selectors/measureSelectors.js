@@ -217,8 +217,8 @@ export const selectDefaultMeasureId = createSelector(
     const measureIsDefined = id => !!getMeasureFromHierarchy(measureHierarchy, id);
 
     if (measureIsDefined(projectMeasureId)) return projectMeasureId;
-    else if (measureIsDefined(DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
-    else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
+    if (measureIsDefined(DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
+    if (!isMeasureHierarchyEmpty(measureHierarchy)) {
       return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
     }
 

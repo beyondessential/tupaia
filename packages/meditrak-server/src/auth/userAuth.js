@@ -10,7 +10,7 @@ import { getJwtToken } from '../utilities';
 /**
  * Custom authenticator to check user has a valid and current JWT token, i.e. they have previously
  * authenticated as someone with permission to access this resource
- **/
+ */
 export function getUserIDFromToken(authHeader) {
   let jwtToken;
 

@@ -12,12 +12,10 @@ export class IndicatorService extends Service {
     this.api = api;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async push() {
     throw new Error('Data push is not supported in IndicatorService');
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async delete() {
     throw new Error('Data deletion is not supported in IndicatorService');
   }
@@ -40,7 +38,6 @@ export class IndicatorService extends Service {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async pullMetadata() {
     throw new Error('Metadata pulling is not supported in IndicatorService');
   }

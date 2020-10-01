@@ -27,7 +27,7 @@ const enhancers = [];
 const middleware = [thunk.withExtraArgument({ api })];
 
 if (process.env.NODE_ENV === 'development') {
-  const devToolsExtension = window.devToolsExtension;
+  const { devToolsExtension } = window;
   if (typeof devToolsExtension === 'function') {
     enhancers.push(devToolsExtension());
   }
