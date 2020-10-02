@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -97,61 +97,89 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
-const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
-  const [fileUpload, setFileUpload] = useState(user.profileImage);
-  const [fileUploadName, setFileUploadName] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [status, setStatus] = useState(STATUS.IDLE);
-  const { handleSubmit, register, errors } = useForm();
-  const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
+const initialState = {
+  status: STATUS.IDLE,
+  errorMessage: null,
+  successMessage: null,
+  profileImage: {
+    fileId: null,
+    data: null,
+  },
+};
 
-  const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
-    setStatus(STATUS.LOADING);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    let updatedFields = {
-      first_name: firstName,
-      last_name: lastName,
-      position: role,
-      employer,
-    };
-
-    if (setFileUploadName) {
-      updatedFields = {
-        ...updatedFields,
-        profileImage: {
-          fileId: fileUploadName,
-          data: fileUpload,
-        },
+function reducer(state, action) {
+  switch (action.type) {
+    case 'loading': {
+      return {
+        ...state,
+        status: STATUS.LOADING,
+        errorMessage: null,
+        successMessage: null,
       };
     }
+    case 'fileChange': {
+      return {
+        ...state,
+        profileImage: action.payload,
+        status: STATUS.IDLE,
+      };
+    }
+    case 'disable':
+      return { ...state, status: STATUS.DISABLED };
+    case 'success':
+      return { ...state, status: STATUS.SUCCESS, successMessage: action.payload };
+    case 'error':
+      return { ...state, status: STATUS.ERROR, errorMessage: action.payload };
+    default:
+      throw new Error('type does not exist');
+  }
+}
 
+const initReducer = user => {
+  return { ...initialState, profileImage: { data: user.profileImage, fileId: null } };
+};
+
+const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
+  const { handleSubmit, register, errors } = useForm();
+  const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
+  const [{ status, successMessage, errorMessage, profileImage }, dispatch] = React.useReducer(
+    reducer,
+    user,
+    initReducer,
+  );
+
+  const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
+    dispatch({ type: 'loading' });
     try {
-      await onUpdateProfile(updatedFields);
-      setStatus(STATUS.SUCCESS);
-      setSuccessMessage('Profile successfully updated.');
+      await onUpdateProfile({
+        first_name: firstName,
+        last_name: lastName,
+        position: role,
+        employer,
+        profileImage: profileImage.fileId && profileImage,
+      });
+      dispatch({ type: 'success', payload: 'Profile successfully updated.' });
     } catch (error) {
-      setStatus(STATUS.ERROR);
-      setErrorMessage(error.message);
+      dispatch({ type: 'error', payload: error.message });
     }
   });
 
   const handleFileChange = async event => {
-    setStatus(STATUS.DISABLED);
+    dispatch({ type: 'disable' });
     const fileObject = event.target.files[0];
     const Base64 = await createBase64Image(fileObject);
     const fileName = fileObject.name.replace(/\.[^/.]+$/, '');
-    setFileUpload(Base64);
-    setFileUploadName(fileName);
-    setStatus(STATUS.IDLE);
+    dispatch({
+      type: 'fileChange',
+      payload: {
+        fileId: `${user.id}-${fileName}`,
+        data: Base64,
+      },
+    });
   };
 
   const handleDelete = () => {
-    console.log('delete...');
-    setFileUpload(null);
-    setFileUploadName(null);
+    dispatch({ type: 'fileChange', payload: { fileId: '-', data: null } });
   };
 
   const { firstName, lastName, position, employer } = user;
@@ -166,14 +194,16 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
           {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
           <Box display="flex" mb={2} alignItems="center">
             <Box position="relative">
-              <Avatar src={fileUpload}>{userInitial}</Avatar>
+              <Avatar src={profileImage && profileImage.data && profileImage.data}>
+                {userInitial}
+              </Avatar>
               <DeleteButton onClick={handleDelete}>
                 <DeleteIcon />
               </DeleteButton>
             </Box>
             {/*<div>{fileUpload}</div>*/}
             <input type="file" name="profileImage" ref={register} onChange={handleFileChange} />
-            <div>{fileUploadName}</div>
+            {/*<div>{updatedProfileImage.fileName}</div>*/}
             {/*<FileUploadField name="avatarUpload" label="Your avatar" />*/}
           </Box>
           <Divider />
@@ -246,11 +276,7 @@ ProfilePageComponent.propTypes = {
     employer: PropTypes.string,
     position: PropTypes.string,
     profileImage: PropTypes.string,
-  }),
-};
-
-ProfilePageComponent.defaultProps = {
-  user: null,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({

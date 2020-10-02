@@ -18,12 +18,21 @@ export const editUserAccount = async (
       ...hashAndSaltPassword(password),
     };
   }
+
   if (profileImage) {
-    const profileImagePath = await uploadImage(profileImage.data, profileImage.fileId);
-    updatedFields = {
-      ...updatedFields,
-      profile_image: profileImagePath,
-    };
+    if (profileImage.data && profileImage.fileId) {
+      const profileImagePath = await uploadImage(profileImage.data, profileImage.fileId);
+      updatedFields = {
+        ...updatedFields,
+        profile_image: profileImagePath,
+      };
+    } else {
+      updatedFields = {
+        ...updatedFields,
+        profile_image: null,
+      };
+    }
   }
+
   return models.user.updateById(id, updatedFields);
 };
