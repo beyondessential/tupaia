@@ -1,7 +1,9 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
+
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
 import { getLeaderboard } from '../social';
 import { allowNoPermissions } from '../permissions';
@@ -25,7 +27,7 @@ export const getSocialFeed = async (req, res) => {
   if (countryId) {
     // Include only feeds with the set country or an empty country.
     conditions.country_id = countryId;
-    conditions._or_ = {
+    conditions[QUERY_CONJUNCTIONS.OR] = {
       country_id: {
         comparisonType: 'where',
         comparator: 'IS',

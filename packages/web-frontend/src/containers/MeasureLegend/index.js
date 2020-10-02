@@ -186,7 +186,8 @@ function getLegendColor(value, type, hasColorLayer) {
   if (coloredMeasureTypes.includes(type)) {
     // if this layer is providing color, of course show the color
     return value.color;
-  } else if (hasColorLayer) {
+  }
+  if (hasColorLayer) {
     // if a different layer is providing color, always show legend icons in white
     return WHITE;
   }
@@ -204,19 +205,23 @@ function getLegendMarkerForValue(value, type, hasIconLayer, hasRadiusLayer, hasC
     if (hasRadiusLayer && isHiddenOtherIcon(value)) {
       // this is a radius/icon combo measure -- show a ring for the 'no icon' option
       return getMarkerForOption(LEGEND_RADIUS_ICON, color);
-    } else if (hasColorLayer) {
+    }
+    if (hasColorLayer) {
       // color info is from another layer, so show the icons all in white
       return getMarkerForOption(icon, color);
     }
     // straight up icons! just show them
     return getMarkerForOption(icon, color);
-  } else if (type === MEASURE_TYPE_SHADING) {
+  }
+  if (type === MEASURE_TYPE_SHADING) {
     // show squares; icons will be displayed in another legend
     return getMarkerForOption(LEGEND_SHADING_ICON, color);
-  } else if (hasIconLayer) {
+  }
+  if (hasIconLayer) {
     // show circles; icons will be displayed in another legend
     return getMarkerForOption(LEGEND_COLOR_ICON, color);
-  } else if (hasRadiusLayer) {
+  }
+  if (hasRadiusLayer) {
     // show rings, as we are indicating radius colors
     return getMarkerForOption(LEGEND_RADIUS_ICON, color);
   }
@@ -273,8 +278,8 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
       );
     });
 
-  //Sometimes we want to group Null + No = No.
-  //So we dont wan't to render 'No data' legend if that's the case
+  // Sometimes we want to group Null + No = No.
+  // So we dont wan't to render 'No data' legend if that's the case
   const hasGroupedLegendIncludingNull = values.some(({ value }) => {
     if (Array.isArray(value)) {
       return value.some(innerValue => innerValue === MEASURE_VALUE_NULL);

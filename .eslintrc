@@ -1,14 +1,17 @@
 {
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
+  "extends": "@beyondessential/js",
   "parser": "babel-eslint",
-  "env": {
-    "mocha": true
-  },
   "rules": {
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": ["**/src/tests/**", "**/src/__tests__/**"],
+        "devDependencies": [
+          "**/cypress/**",
+          "**/migrations/**",
+          "**/stories/**",
+          "**/tests/**",
+          "**/__tests__/**"
+        ],
         "packageDir": ["../../", "."]
       }
     ],
@@ -27,15 +30,34 @@
         ]
       }
     ],
-    "max-classes-per-file": ["error", 2],
-    "react/forbid-prop-types": "off"
+    "jsx-a11y/href-no-hash": "off"
   },
   "overrides": [
     {
+      "files": ["**/src/migrations/**"],
+      "rules": {
+        "func-names": "off",
+        "no-underscore-dangle": "off",
+        "no-unused-vars": "off",
+        "no-var": "off",
+        "strict": "off",
+        "prettier/prettier": "off"
+      }
+    },
+    {
       "files": "**/src/tests/**",
+      "env": {
+        "mocha": true
+      },
       "rules": {
         "func-names": "off",
         "no-unused-expressions": "off"
+      }
+    },
+    {
+      "files": ["**/webpack.config.js", "**/webpack.config*[!babel].js"],
+      "rules": {
+        "prefer-object-spread": "off"
       }
     }
   ]

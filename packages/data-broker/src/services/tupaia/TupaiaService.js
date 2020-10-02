@@ -24,12 +24,10 @@ export class TupaiaService extends Service {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async push() {
     throw new Error('Data push is not supported in TupaiaService');
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async delete() {
     throw new Error('Data deletion is not supported in TupaiaService');
   }

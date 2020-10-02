@@ -150,7 +150,6 @@ export class Matrix extends PureComponent {
   }
 
   setExportHandlers() {
-    /* eslint-disable no-param-reassign */
     if (!window) {
       return;
     }
@@ -164,7 +163,6 @@ export class Matrix extends PureComponent {
       presentationOptions: Object.keys(presentationOptions),
       rowElements: [],
       initExporter: extraConfig => {
-        /* eslint-disable-line */ // Used by aws lambda
         if (extraConfig.search) {
           this.search(extraConfig.search);
         }
@@ -177,7 +175,6 @@ export class Matrix extends PureComponent {
         this.fitToViewport();
       },
       moveToNextExportPage: () => {
-        /* eslint-disable-line */ // Used by aws lambda, needs es5
         const totalXPages = window.tupaiaExportProps.getXPageCount();
         this.currentExportXPage++;
 
@@ -395,7 +392,7 @@ export class Matrix extends PureComponent {
         }
 
         const rowData = columns.map(({ key, isGroupHeader }) => ({
-          value: isNaN(cellData[key]) ? cellData[key] : Math.round(cellData[key] * 1000) / 1000, //round the numeric values UP TO 3 decimal places
+          value: isNaN(cellData[key]) ? cellData[key] : Math.round(cellData[key] * 1000) / 1000, // round the numeric values UP TO 3 decimal places
           isGroupBoundary: isGroupHeader,
         }));
 

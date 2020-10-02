@@ -63,7 +63,7 @@ const mergeInData = (currentData, newData, comparator) => {
   const mergedColumns = [];
 
   const compareColumns = (currentCols, newCols) => {
-    //Assume out of loop if both lengths = 0;
+    // Assume out of loop if both lengths = 0;
     if (newCols.length < 1) return -1;
     if (currentCols.length < 1) return 1;
     return comparator(currentCols[0], newCols[0]);

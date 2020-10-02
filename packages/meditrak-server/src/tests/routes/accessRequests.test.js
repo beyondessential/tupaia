@@ -9,7 +9,7 @@ import { TestableApp } from '../TestableApp';
 
 describe('Access Requests', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   const createData = async (email, countryCode, projectCode, permissionGroupName) => {
     const { id: userId } = await findOrCreateDummyRecord(models.user, { email });

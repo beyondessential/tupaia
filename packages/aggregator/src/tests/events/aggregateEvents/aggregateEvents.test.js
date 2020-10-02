@@ -57,7 +57,7 @@ const aggregationConfig = {
     Org_Unit_1: { code: 'Parent_1', name: 'Parent 1' },
     Org_Unit_2: { code: 'Parent_1', name: 'Parent 1' },
     Org_Unit_3: { code: 'Parent_2', name: 'Parent 2' },
-    //Org_Unit_4: Not defined
+    // Org_Unit_4: Not defined
   },
 };
 

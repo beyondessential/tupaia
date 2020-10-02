@@ -25,10 +25,7 @@ const date = {
   Header: 'Date of Survey',
   source: 'end_time',
   type: 'tooltip',
-  accessor: row =>
-    moment(row.end_time)
-      .local()
-      .toString(),
+  accessor: row => moment(row.end_time).local().toString(),
   filterable: false,
   editable: false,
 };

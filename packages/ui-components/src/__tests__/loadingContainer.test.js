@@ -13,7 +13,7 @@ const loadingMessage = 'Loading please wait...';
 const content = 'Loaded Content';
 
 describe('loading container', () => {
-  it('renders loader',() => {
+  it('renders loader', () => {
     const isLoading = true;
 
     render(
@@ -24,7 +24,7 @@ describe('loading container', () => {
     expect(screen.getByText(loadingMessage)).toBeInTheDocument();
   });
 
-  it('displays loaded content',() => {
+  it('displays loaded content', () => {
     const isLoading = false;
 
     render(

@@ -11,7 +11,7 @@ import { randomEmail, randomString } from './testUtilities';
 
 describe('Reset Password', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 
   const emailAddress = randomEmail();

@@ -52,7 +52,6 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
 
     const fraction = divideValues(numeratorValue, denominatorValue, fractionType);
 
-    // eslint-disable-next-line no-restricted-globals
     if (!isNaN(fraction)) {
       fractionsByOrgUnit[orgUnit] = {
         ...denominatorsByOrgUnit[orgUnit],

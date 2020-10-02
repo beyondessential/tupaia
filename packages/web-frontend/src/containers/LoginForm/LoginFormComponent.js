@@ -75,7 +75,7 @@ export const LoginFormComponent = React.memo(
     );
 
     if (shouldShowVerifyForm) return <EmailVerification />;
-    else if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER) {
+    if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER) {
       return <SignupComplete onClickResend={showVerifyForm} />;
     }
 

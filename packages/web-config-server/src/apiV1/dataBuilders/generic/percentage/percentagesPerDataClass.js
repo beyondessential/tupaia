@@ -56,7 +56,7 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
 
       return {
         name: dataClassKey,
-        value: value,
+        value,
         [`${dataClassKey}_metadata`]: {
           numerator,
           denominator,
