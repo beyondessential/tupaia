@@ -156,7 +156,7 @@ export class MarkerLayer extends Component {
       .filter(data => data.coordinates && data.coordinates.length === 2)
       .filter(displayInfo => !displayInfo.isHidden);
 
-    //for radius overlay sort desc radius to place smaller circles over larger circles
+    // for radius overlay sort desc radius to place smaller circles over larger circles
     if (hasRadiusLayer(measureOptions)) {
       processedData.sort((a, b) => {
         return Number(b.radius) - Number(a.radius);

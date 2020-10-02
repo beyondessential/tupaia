@@ -30,6 +30,7 @@ import {
   selectAdjustedProjectBounds,
 } from '../../selectors';
 import { DEFAULT_BOUNDS } from '../../defaults';
+
 const IMAGE_HEIGHT_RATIO = 0.5;
 
 export class Dashboard extends Component {

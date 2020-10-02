@@ -85,7 +85,6 @@ function getMostCommon(elements) {
   const counts = {};
   let candidate = null;
 
-  // eslint-disable-next-line array-callback-return
   elements.forEach(element => {
     const freq = (counts[element] || 0) + 1;
     counts[element] = freq;
@@ -135,7 +134,7 @@ export default class extends DataAggregatingRouteHandler {
     const measureIds = measureId.split(',');
     const overlayResults = await MapOverlay.find({ id: measureIds });
 
-    //Re-order the overlays array to follow the order in measureIds
+    // Re-order the overlays array to follow the order in measureIds
     const overlaysById = keyBy(overlayResults, 'id');
     const overlays = [];
 
@@ -252,7 +251,7 @@ export default class extends DataAggregatingRouteHandler {
     } = presentationOptions;
 
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
-    measureBuilderConfig || {};
+      measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -23,7 +22,7 @@ export const LabelRight = styled.div`
 `;
 
 const NoDataLabel = ({ noDataColour, handleClick, valueMapping, hiddenMeasures, dataKey }) => {
-  const value = valueMapping.null.value;
+  const { value } = valueMapping.null;
   const hidden = hiddenMeasures[dataKey] && hiddenMeasures[dataKey][value];
   const noDataLegendColour = hidden ? GREY : noDataColour;
 

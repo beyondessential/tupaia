@@ -9,7 +9,7 @@ import { randomEmail } from '../testUtilities';
 
 describe('/user', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
   const { VERIFIED } = models.user.emailVerifiedStatuses;
 
   const dummyFields = {

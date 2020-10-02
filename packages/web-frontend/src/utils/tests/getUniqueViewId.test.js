@@ -20,6 +20,7 @@ describe('getUniqueViewId', () => {
     it('should return null for undefined infoViewKey', () => {
       expect(getViewIdFromInfoViewKey(undefined)).toEqual(null);
     });
+
     it('should be able to select viewId from valid infoViewKey', () => {
       expect(getViewIdFromInfoViewKey('code_1___21___hello')).toEqual('hello');
     });

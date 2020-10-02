@@ -9,11 +9,9 @@ import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/u
 import { logout } from './actions';
 import { getUser } from './selectors';
 
-// Todo: add profile section and active this link
-// https://github.com/beyondessential/tupaia-backlog/issues/1118
 const ProfileLinksComponent = ({ onLogout }) => (
   <>
-    {/* <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem> */}
+    <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
     <ProfileButtonItem button onClick={onLogout}>
       Logout
     </ProfileButtonItem>
