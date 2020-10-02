@@ -4,14 +4,14 @@
  */
 
 import {
-    FormValidationError,
-    UnauthenticatedError,
-    ObjectValidator,
-    hasNoAlphaLetters,
-    fieldHasContent,
-    isEmail,
-    isValidPassword,
-  } from '@tupaia/utils';
+  FormValidationError,
+  UnauthenticatedError,
+  ObjectValidator,
+  hasNoAlphaLetters,
+  fieldHasContent,
+  isEmail,
+  isValidPassword,
+} from '@tupaia/utils';
 import { CreateUserAccounts } from './CreateUserAccounts';
 import { sendVerifyEmail } from '../verifyEmail';
 import { allowNoPermissions } from '../../permissions';
@@ -27,12 +27,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
   }
 
   async validate() {
-    const {
-      emailAddress,
-      password,
-      passwordConfirm,
-      contactNumber,
-    } = this.newRecordData;
+    const { emailAddress, password, passwordConfirm, contactNumber } = this.newRecordData;
 
     const fieldValidators = {
       firstName: [fieldHasContent],
