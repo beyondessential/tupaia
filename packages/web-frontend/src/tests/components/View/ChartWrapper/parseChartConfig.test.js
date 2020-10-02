@@ -22,6 +22,7 @@ const testConfig = {
   metric1: { stackId: 1 },
   metric2: { stackId: 2 },
 };
+
 describe('parseChartConfig', () => {
   it('should add correct colors based on default color palette', () => {
     expect(parseChartConfig({ ...testViewJson, chartConfig: testConfig })).toEqual({
@@ -29,6 +30,7 @@ describe('parseChartConfig', () => {
       metric2: { stackId: 2, color: CHART_COLOR_PALETTE.red },
     });
   });
+
   it('should add any config in the dynamic key', () => {
     const chartConfig = {
       $all: { test: 'hi' },
@@ -41,6 +43,7 @@ describe('parseChartConfig', () => {
     };
     expect(parseChartConfig({ ...testViewJson, chartConfig })).toEqual(expected);
   });
+
   // Bad practice to rely on object ordering: https://stackoverflow.com/questions/9179680/is-it-acceptable-style-for-node-js-libraries-to-rely-on-object-key-order
   // As such this test only checks for color assignment
   it('should sort by legend order to assign colors (actual sort not tested)', () => {
@@ -54,6 +57,7 @@ describe('parseChartConfig', () => {
     };
     expect(parseChartConfig({ ...testViewJson, chartConfig })).toEqual(expected);
   });
+
   it('should use a specified palette', () => {
     const chartConfig = {
       metric1: { stackId: 1 },

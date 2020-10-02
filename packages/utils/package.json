@@ -24,12 +24,10 @@
     "xlsx": "^0.10.9"
   },
   "eslintConfig": {
+    "extends": "@beyondessential/jest",
     "overrides": [
       {
-        "files": [
-          "**/src/testUtilities/**",
-          "**/__tests__/**"
-        ],
+        "files": "**/src/testUtilities/**",
         "env": {
           "jest": true
         }

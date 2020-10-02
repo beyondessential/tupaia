@@ -16,7 +16,7 @@ import { TestableApp } from '../TestableApp';
 const test = sinonTest(sinon);
 
 const app = new TestableApp();
-const models = app.models;
+const { models } = app;
 
 const ANSWER = models.answer.databaseType;
 const ENTITY = models.entity.databaseType;
@@ -38,7 +38,7 @@ describe('pushChange()', () => {
 
     it(
       'should use an event push handler for an event based survey response',
-      test(async function() {
+      test(async function () {
         this.stub(models.surveyResponse, 'checkIsEventBased').returns(true);
 
         await pushChange(models, { record_type: SURVEY_RESPONSE });
@@ -53,7 +53,7 @@ describe('pushChange()', () => {
 
     it(
       'should use a data value push handler for a non event based survey response',
-      test(async function() {
+      test(async function () {
         this.stub(models.surveyResponse, 'checkIsEventBased').returns(false);
 
         await pushChange(models, { record_type: SURVEY_RESPONSE });
@@ -68,7 +68,7 @@ describe('pushChange()', () => {
 
     it(
       'should return false and log an error if the record type is invalid',
-      test(async function() {
+      test(async function () {
         this.stub(winston, 'error').callsFake(error => error);
 
         const result = await pushChange(models, { record_type: 'otherType' });

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { EntityPusher } from './EntityPusher';

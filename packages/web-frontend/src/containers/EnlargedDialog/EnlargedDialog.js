@@ -173,9 +173,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
 
       // set the endDate to be end of the startDate period
       const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
-      defaultEndDate = moment(startDate)
-        .clone()
-        .endOf(momentUnit);
+      defaultEndDate = moment(startDate).clone().endOf(momentUnit);
     }
 
     dispatch(

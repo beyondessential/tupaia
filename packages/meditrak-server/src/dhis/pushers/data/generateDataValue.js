@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 export const generateDataValue = async (models, answer) => {
   const { question_id: questionId, text: answerText } = answer;

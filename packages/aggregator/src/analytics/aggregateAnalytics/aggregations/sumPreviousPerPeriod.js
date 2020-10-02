@@ -32,7 +32,7 @@ export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPe
     return [...summedAnalytics, sumByAnalytic(previousPeriodAnalytics, analyticsForPeriod, period)];
   }, []);
 
-  return [].concat(...summedAnalyticsInPeriods); //Flatten array
+  return [].concat(...summedAnalyticsInPeriods); // Flatten array
 };
 
 /**

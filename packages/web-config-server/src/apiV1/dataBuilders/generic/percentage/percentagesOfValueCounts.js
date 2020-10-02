@@ -18,6 +18,7 @@ const COMPARISON_TYPES = {
 };
 const OPERATION_TYPES = {
   GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
+  // eslint-disable-next-line eqeqeq
   EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
   IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
 };
@@ -107,7 +108,6 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return { data: this.areDataAvailable(data) ? data : [] };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getAggregationType() {
     // Can be overwritten in child class
     return {};
@@ -136,7 +136,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       denominatorAggregationType,
     );
 
-    const getResultMapKey = ({organisationUnit, dataElement, value, period}) => `${organisationUnit}|${dataElement}|${value}|${period}`;
+    const getResultMapKey = ({ organisationUnit, dataElement, value, period }) =>
+      `${organisationUnit}|${dataElement}|${value}|${period}`;
 
     const allResults = numeratorResults;
 
@@ -189,10 +190,12 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         filterAnalyticsFunction,
         fraction.groupBy,
       );
-    } else if (fraction.groupBeforeCounting) {
+    }
+    if (fraction.groupBeforeCounting) {
       const groupedAnalytics = groupBy(analytics, fraction.groupBy);
       return countAnalyticsGroupsThatSatisfyConditions(groupedAnalytics, fraction);
-    } else if (fraction === ORG_UNIT_COUNT) {
+    }
+    if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
 
@@ -202,8 +205,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   countAnalyticsUsingFilterFunction = (analytics, filterAnalyticsFunction, fractionGroupBy) => {
     let result = 0;
 
-    //If there's groupBy set for analytics, try group the analytics before applying filterAnalyticsFunction.
-    //If not, apply filterAnalyticsFunction to the raw analytics.
+    // If there's groupBy set for analytics, try group the analytics before applying filterAnalyticsFunction.
+    // If not, apply filterAnalyticsFunction to the raw analytics.
     if (fractionGroupBy) {
       const groupedAnalytics = groupBy(analytics, fractionGroupBy);
 

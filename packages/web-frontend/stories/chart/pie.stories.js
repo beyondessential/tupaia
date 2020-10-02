@@ -32,7 +32,7 @@ export const SimplePie = Template.bind({});
 SimplePie.args = {
   isEnlarged: true,
   viewContent: {
-    data: data,
+    data,
     viewId: '28',
     organisationUnitCode: 'explore',
     dashboardGroupId: '301',

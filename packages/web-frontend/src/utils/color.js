@@ -35,7 +35,7 @@ const getPresentationOptionFromKey = (options, value) => findByKey(options, valu
 const getPresentationOptionFromCondition = (options, value) => {
   const option = Object.values(options).find(({ condition }) => {
     if (typeof condition === 'object') {
-      //Check if the value satisfies all the conditions if condition is an object
+      // Check if the value satisfies all the conditions if condition is an object
       return Object.entries(condition).every(([operator, conditionalValue]) => {
         const checkConditionMethod = CONDITION_TYPE[operator];
 
@@ -43,7 +43,7 @@ const getPresentationOptionFromCondition = (options, value) => {
       });
     }
 
-    //If condition is not an object, assume its the value we want to check (with '=' operator)
+    // If condition is not an object, assume its the value we want to check (with '=' operator)
     const checkConditionMethod = CONDITION_TYPE['='];
     return checkConditionMethod(value, condition);
   });

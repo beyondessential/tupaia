@@ -9,7 +9,6 @@ These are very brief setup instructions with the intention that you either are a
 To work on Tupaia MediTrak, first you'll need to install the following
 
 - VS Code, or your favourite code editor
-  - Also install the eslint extension
 - npm
 - yarn
   - `npm install -g yarn`

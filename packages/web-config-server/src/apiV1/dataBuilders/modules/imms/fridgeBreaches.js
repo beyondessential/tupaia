@@ -41,7 +41,7 @@ export const fridgeBreaches = async (queryConfig, aggregator, dhisApi) => {
     const resultRow = {
       dataElement: eventDate,
       categoryId: organisationUnitName,
-      temperature: temperature,
+      temperature,
       duration: getBreachDurationString(parseFloat(durationInMinutes)),
       sohValue: `$${sohValue}`,
     };

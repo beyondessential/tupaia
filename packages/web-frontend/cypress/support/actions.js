@@ -4,7 +4,7 @@
  */
 
 import { EXPLORE_PROJECT } from '../constants';
-import { equalCaseInsensitive } from './utilities';
+import { equalStringsI } from './utilities';
 
 export const submitLoginForm = () => {
   cy.findAllByText(/Sign in/)
@@ -18,10 +18,7 @@ export const submitLoginForm = () => {
     .findByLabelText(/password/i)
     .type(Cypress.env('USER_PASSWORD'), { log: false });
 
-  cy.get('@loginForm')
-    .findByTextI('Sign in')
-    .click();
-  closeOverlay();
+  cy.get('@loginForm').findByTextI('Sign in').click();
 };
 
 export const closeOverlay = () => {
@@ -36,52 +33,33 @@ export const closeEnlargedDialog = () => {
   cy.findByTestId('enlarged-dialog-close-btn').click();
 };
 
-/**
- * TODO Remove this method after the bug is fixed
- *
- * @see https://github.com/beyondessential/tupaia-backlog/issues/802
- */
-const waitForProjectDashboardGroupsBecauseOfBug = () => {
-  cy.wait(4000);
-};
-
 export const selectProject = name => {
   cy.findByTextI(Cypress.env('USER_NAME')).click();
   cy.findByTextI('View projects').click();
 
-  if (equalCaseInsensitive(name, EXPLORE_PROJECT)) {
+  if (equalStringsI(name, EXPLORE_PROJECT)) {
     cy.findByTextI('I just want to explore').click();
-    waitForProjectDashboardGroupsBecauseOfBug();
     return;
   }
 
-  cy.findByTextI(name)
-    .closestByTestId('project-card')
-    .findByTextI('View Project')
-    .click();
-
-  waitForProjectDashboardGroupsBecauseOfBug();
+  cy.findByTextI(name).closestByTestId('project-card').findByTextI('View Project').click();
 };
 
 export const selectDashboardGroup = name => {
   cy.findByTestId('dropdown-menu')
     .invoke('text')
     .then(selectedName => {
-      if (equalCaseInsensitive(selectedName, name)) {
+      if (equalStringsI(selectedName, name)) {
         return;
       }
 
       toggleDropdownMenu();
-      cy.findByTestId('dropdown-menu-items')
-        .findByTextI(name)
-        .click();
+      cy.findByTestId('dropdown-menu-items').findByTextI(name).click();
     });
 };
 
 const toggleDropdownMenu = () => {
-  cy.findByTestId('dropdown-menu')
-    .findByRole('button')
-    .click();
+  cy.findByTestId('dropdown-menu').findByRole('button').click();
 };
 
 export const expandDashboardItem = name => {

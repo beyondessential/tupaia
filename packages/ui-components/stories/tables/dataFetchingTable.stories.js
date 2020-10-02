@@ -44,11 +44,11 @@ const CountryWeekNameCell = React.memo(({ week, startDate, endDate }) => {
   const end = `${format(endDate, 'LLL d')}`;
   const year = `${format(endDate, 'yyyy')}`;
   return (
-    <React.Fragment>
+    <>
       <CountryWeekTitle>
         <strong>W{week}</strong> {`${start} - ${end}, ${year}`}
       </CountryWeekTitle>
-    </React.Fragment>
+    </>
   );
 });
 
@@ -111,7 +111,7 @@ const ConnectedTable = connectApi(mapApiToDataFetchingTable)(DataFetchingTable);
  * CountryTable Component
  */
 const CountryTable = React.memo(props => (
-  <React.Fragment>
+  <>
     <CountryTableHeader />
     <ConnectedTable
       endpoint="country-weeks"
@@ -120,7 +120,7 @@ const CountryTable = React.memo(props => (
       Header={false}
       Body={CondensedTableBody}
     />
-  </React.Fragment>
+  </>
 ));
 
 /*
