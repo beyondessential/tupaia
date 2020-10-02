@@ -19,7 +19,7 @@ export class CreateUserAccounts extends CreateHandler {
   }
 
   async createRecord() {
-    return createUserRecord(this.newRecordData);
+    return this.createUserRecord(this.newRecordData);
   }
 
   async createUserRecord({
@@ -34,7 +34,6 @@ export class CreateUserAccounts extends CreateHandler {
     verifiedEmail,
     ...restOfUser
   }) {
-
     return this.models.wrapInTransaction(async transactingModels => {
       const permissionGroup = await transactingModels.permissionGroup.findOne({
         name: permissionGroupName,
