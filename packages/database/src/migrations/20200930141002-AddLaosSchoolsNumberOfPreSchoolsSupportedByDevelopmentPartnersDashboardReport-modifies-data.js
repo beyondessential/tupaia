@@ -95,12 +95,12 @@ const DATA_BUILDER_CONFIG = {
       value: 'Other',
     },
     'No support': {
-      operator: '=',
+      operator: 'regex',
       value: 'No support',
     },
     Multiple: {
       operator: 'regex',
-      value: ', ',
+      value: '^(?=.*,)(?!.*No support).*', // multiple indicators except No support
     },
   },
   entityAggregation: {
