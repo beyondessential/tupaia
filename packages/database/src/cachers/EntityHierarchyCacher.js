@@ -2,10 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { AsyncTaskQueue } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../modelClasses/Entity';
-
-const BATCH_SIZE = 5;
 
 export class EntityHierarchyCacher {
   constructor(models) {
@@ -86,30 +84,16 @@ export class EntityHierarchyCacher {
 
   async fetchChildIdsToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
-
-    const childIdsToAncestorIds = {};
-    const taskQueue = new AsyncTaskQueue(BATCH_SIZE);
-    const tasks = parentIds.map(parentId =>
-      taskQueue.add(async () => {
-        const ancestorIds = parentIdsToAncestorIds[parentId];
-        const childIds = useEntityRelationLinks
-          ? await this.getNextGenerationViaEntityRelation(hierarchyId, parentId)
-          : await this.getNextGenerationCanonically(parentId);
-
-        // if childIds is empty, this is a leaf node
-        if (childIds.length === 0) {
-          return;
-        }
-
-        // add this generation to the object for caching
-        const parentAndAncestorIds = [parentId, ...ancestorIds];
-        childIds.forEach(childId => {
-          childIdsToAncestorIds[childId] = parentAndAncestorIds;
-        });
-      }),
+    const relations = useEntityRelationLinks
+      ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds)
+      : await this.getRelationsCanonically(parentIds);
+    const childIdToParentId = reduceToDictionary(relations, 'child_id', 'parent_id');
+    const childIdsToAncestorIds = Object.fromEntries(
+      Object.entries(childIdToParentId).map(([childId, parentId]) => [
+        childId,
+        [parentId, ...parentIdsToAncestorIds[parentId]],
+      ]),
     );
-    await Promise.all(tasks);
-
     return childIdsToAncestorIds;
   }
 
@@ -128,22 +112,21 @@ export class EntityHierarchyCacher {
     });
   }
 
-  async getNextGenerationCanonically(entityId) {
+  async getRelationsViaEntityRelation(hierarchyId, parentIds) {
+    // get any matching alternative hierarchy relationships leading out of these parents
+    return this.models.entityRelation.find({
+      parent_id: parentIds,
+      entity_hierarchy_id: hierarchyId,
+    });
+  }
+
+  async getRelationsCanonically(entityId) {
     const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
     const children = await this.models.entity.find(
       { parent_id: entityId, type: canonicalTypes },
-      { columns: ['id'] },
+      { columns: ['id', 'parent_id'] },
     );
-    return children.map(c => c.id);
-  }
-
-  async getNextGenerationViaEntityRelation(hierarchyId, entityId) {
-    // get any matching alternative hierarchy relationships leading out of these parents
-    const hierarchyLinks = await this.models.entityRelation.find({
-      parent_id: entityId,
-      entity_hierarchy_id: hierarchyId,
-    });
-    return hierarchyLinks.map(l => l.child_id);
+    return children.map(c => ({ child_id: c.id, parent_id: c.parent_id }));
   }
 
   /**
