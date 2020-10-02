@@ -41,28 +41,58 @@ export class EntityHierarchyCacher {
   async fetchAndCacheDescendants(hierarchyId, parentIdsToAncestorIds) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
 
-    // check whether this generation/hierarchy combo has already been cached to avoid doing it again
-    // todo not working
-    const generationAlreadyCached = await this.checkGenerationAlreadyCached(hierarchyId, parentIds);
-    if (generationAlreadyCached) {
-      return;
-    }
-
     // check whether next generation uses entity relation links, or should fall back to parent_id
-    const hasNonCanonicalChildren = await this.checkForNonCanonicalChildren(hierarchyId, parentIds);
-    const hasAnyChildren =
-      hasNonCanonicalChildren || (await this.checkForCanonicalChildren(parentIds));
+    const entityRelationChildCount = await this.countEntityRelationChildren(hierarchyId, parentIds);
+    const useEntityRelationLinks = entityRelationChildCount > 0;
+    const childCount = useEntityRelationLinks
+      ? entityRelationChildCount
+      : await this.countCanonicalChildren(parentIds);
 
-    if (!hasAnyChildren) {
+    if (childCount === 0) {
       return; // at a leaf node generation, no need to go any further
     }
+
+    const childIdsToAncestorIds = await this.fetchChildIdsToAncestorIds(
+      hierarchyId,
+      parentIdsToAncestorIds,
+      useEntityRelationLinks,
+    );
+
+    const childrenAlreadyCached = await this.checkChildrenAlreadyCached(
+      hierarchyId,
+      parentIds,
+      childCount,
+    );
+    if (!childrenAlreadyCached) {
+      await this.cacheGeneration(hierarchyId, childIdsToAncestorIds);
+    }
+
+    // if there is another generation, keep recursing through the hierarchy
+    await this.fetchAndCacheDescendants(
+      hierarchyId,
+      childIdsToAncestorIds,
+      entityRelationChildCount === 0,
+    );
+  }
+
+  async checkChildrenAlreadyCached(hierarchyId, parentIds, childCount) {
+    const numberChildrenCached = await this.models.ancestorDescendantRelation.count({
+      entity_hierarchy_id: hierarchyId,
+      ancestor_id: parentIds,
+      generational_distance: 1,
+    });
+    return numberChildrenCached === childCount;
+  }
+
+  async fetchChildIdsToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
+    const parentIds = Object.keys(parentIdsToAncestorIds);
 
     const childIdsToAncestorIds = {};
     const taskQueue = new AsyncTaskQueue(BATCH_SIZE);
     const tasks = parentIds.map(parentId =>
       taskQueue.add(async () => {
         const ancestorIds = parentIdsToAncestorIds[parentId];
-        const childIds = hasNonCanonicalChildren
+        const childIds = useEntityRelationLinks
           ? await this.getNextGenerationViaEntityRelation(hierarchyId, parentId)
           : await this.getNextGenerationCanonically(parentId);
 
@@ -80,36 +110,22 @@ export class EntityHierarchyCacher {
     );
     await Promise.all(tasks);
 
-    await this.cacheGeneration(hierarchyId, childIdsToAncestorIds);
-
-    // keep recursing through the hierarchy
-    await this.fetchAndCacheDescendants(hierarchyId, childIdsToAncestorIds);
+    return childIdsToAncestorIds;
   }
 
-  async checkGenerationAlreadyCached(hierarchyId, parentIds) {
-    const numberAlreadyCached = await this.models.ancestorDescendantRelation.count({
-      entity_hierarchy_id: hierarchyId,
-      ancestor_id: parentIds,
-      generational_distance: 1,
-    });
-    return numberAlreadyCached > 0;
-  }
-
-  async checkForNonCanonicalChildren(hierarchyId, entityIds) {
-    const hierarchyLinkCount = await this.models.entityRelation.count({
+  async countEntityRelationChildren(hierarchyId, entityIds) {
+    return this.models.entityRelation.count({
       parent_id: entityIds,
       entity_hierarchy_id: hierarchyId,
     });
-    return hierarchyLinkCount > 0;
   }
 
-  async checkForCanonicalChildren(entityIds) {
+  async countCanonicalChildren(entityIds) {
     const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
-    const childCount = await this.models.entity.count({
+    return this.models.entity.count({
       parent_id: entityIds,
       type: canonicalTypes,
     });
-    return childCount > 0;
   }
 
   async getNextGenerationCanonically(entityId) {
