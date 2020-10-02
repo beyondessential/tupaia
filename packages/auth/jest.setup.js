@@ -5,11 +5,8 @@
 
 import { getTestDatabase, clearTestData } from '@tupaia/database';
 
-beforeAll(done => {
-  done();
-});
-
-afterAll(async done => {
+afterAll(async () => {
+  const database = getTestDatabase();
   await clearTestData(getTestDatabase());
-  done();
+  database.closeConnections();
 });
