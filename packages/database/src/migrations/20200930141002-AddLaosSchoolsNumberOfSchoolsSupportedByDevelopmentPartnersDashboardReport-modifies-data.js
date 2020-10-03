@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -21,9 +21,26 @@ const DASHBOARD_GROUP_CODES = [
   'LA_Laos_Schools_Province_Laos_Schools_User',
   'LA_Laos_Schools_District_Laos_Schools_User',
 ];
-const REPORT_ID = 'Laos_Schools_Number_Of_Pre_Schools_Supported_Development_Partners';
 
-const DATA_BUILDER_CONFIG = {
+const REPORTS = [
+  {
+    id: 'Laos_Schools_Number_Of_Pre_Schools_Supported_Development_Partners',
+    name: 'Number of Pre-primary Schools Supported by Development Partners',
+    schoolType: 'Pre-School',
+  },
+  {
+    id: 'Laos_Schools_Number_Of_Primary_Schools_Supported_Development_Partners',
+    name: 'Number of Primary Schools Supported by Development Partners',
+    schoolType: 'Primary',
+  },
+  {
+    id: 'Laos_Schools_Number_Of_Secondary_Schools_Supported_Development_Partners',
+    name: 'Number of Secondary Schools Supported by Development Partners',
+    schoolType: 'Secondary',
+  },
+];
+
+const BASE_DATA_BUILDER_CONFIG = {
   operation: {
     operator: 'COMBINE_BINARY_AS_STRING',
     dataElementToString: {
@@ -108,86 +125,113 @@ const DATA_BUILDER_CONFIG = {
   },
 };
 
-const VIEW_JSON = {
-  name: 'Number of Pre-schools Supported by Development Partners',
+const BASE_VIEW_JSON = {
   type: 'chart',
   chartType: 'pie',
   valueType: 'number',
   periodGranularity: 'month',
   presentationOptions: {
     'World Bank': {
-      color: '#FC1D26'
+      color: '#FC1D26',
     },
     'World Concern Laos': {
-      color: '#FD9155'
+      color: '#FD9155',
     },
     'World Renew': {
-      color: '#C9811C'
+      color: '#C9811C',
     },
     'World Vision': {
-      color: '#FEDD64'
+      color: '#FEDD64',
     },
     'Catholic Relief Services (CRS)': {
-      color: '#81D75E'
+      color: '#81D75E',
     },
     'Humanity & Inclusion - Handicap International': {
-      color: '#0F7F3B'
+      color: '#0F7F3B',
     },
     'Room to Read': {
-      color: '#20C2CA'
+      color: '#20C2CA',
     },
     'World Food Programme (WFP)': {
-      color: '#40B7FC'
+      color: '#40B7FC',
     },
     'Aide et Action Laos (AEAL)': {
-      color: '#0A4EAB'
+      color: '#0A4EAB',
     },
     'Plan International': {
-      color: '#8C5AFB'
+      color: '#8C5AFB',
     },
     UNICEF: {
-      color: '#FD6AC4'
+      color: '#FD6AC4',
     },
     Other: {
-      color: '#D9D9D9'
+      color: '#D9D9D9',
     },
     Multiple: {
-      color: '#7B6AFD'
-    }
-  }
+      color: '#7B6AFD',
+    },
+    'No support': {
+      color: '#BC6DCB',
+    },
+  },
 };
 
-const REPORT = {
-  id: REPORT_ID,
-  dataBuilder: 'countCalculatedValuesPerOrgUnit',
-  dataBuilderConfig: DATA_BUILDER_CONFIG,
-  viewJson: VIEW_JSON,
-};
+const addReport = async (db, { id, name, schoolType }) => {
+  const report = {
+    id,
+    dataBuilder: 'countCalculatedValuesPerOrgUnit',
+    dataBuilderConfig: {
+      ...BASE_DATA_BUILDER_CONFIG,
+      dataSourceEntityFilter: {
+        attributes: {
+          type: schoolType,
+        },
+      },
+    },
+    viewJson: {
+      ...BASE_VIEW_JSON,
+      name,
+    },
+  };
 
-exports.up = async function(db) {
-  await insertObject(db, 'dashboardReport', REPORT);
+  await insertObject(db, 'dashboardReport', report);
 
   return db.runSql(`
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = "dashboardReports" || '{ ${REPORT.id} }'
+      "dashboardReports" = "dashboardReports" || '{ ${report.id} }'
     WHERE
     "code" IN (${arrayToDbString(DASHBOARD_GROUP_CODES)});
   `);
 };
 
-exports.down = function(db) {
+const removeReport = async (db, id) => {
   return db.runSql(`
-    DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
+    DELETE FROM "dashboardReport" WHERE id = '${id}';
 
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = array_remove("dashboardReports", '${REPORT.id}')
+      "dashboardReports" = array_remove("dashboardReports", '${id}')
     WHERE
     "code" IN (${arrayToDbString(DASHBOARD_GROUP_CODES)});
   `);
+};
+exports.up = async function (db) {
+  await Promise.all(
+    REPORTS.map(report => {
+      return addReport(db, report);
+    }),
+  );
+};
+
+exports.down = async function (db) {
+  await Promise.all(
+    REPORTS.map(report => {
+      return removeReport(db, report.id);
+    }),
+  );
 };
 
 exports._meta = {
