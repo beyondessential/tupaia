@@ -1,12 +1,11 @@
-import sinon from 'sinon';
-import { expect } from 'chai';
+import MockDate from 'mockdate';
 
 const DEFAULT_NOW_TIMESTAMP = 1549360800000; // 2019-02-05T10:00:00.000Z
 
 export const mockNow = (whenIsNow = DEFAULT_NOW_TIMESTAMP) => {
-  sinon.useFakeTimers(whenIsNow);
+  MockDate.set(whenIsNow);
 };
 
 export const resetMocks = () => {
-  sinon.restore();
+  MockDate.reset();
 };

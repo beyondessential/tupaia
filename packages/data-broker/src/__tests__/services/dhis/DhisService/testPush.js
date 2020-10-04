@@ -2,15 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import { expect } from 'chai';
-
 import { DhisService } from '../../../../services/dhis/DhisService';
 import { DATA_SOURCES, DATA_VALUES } from './DhisService.fixtures';
 import { createModelsStub, stubDhisApi } from './DhisService.stubs';
 
 const dhisService = new DhisService(createModelsStub());
-let dhisApi;
+let dhisApi = stubDhisApi();
 
 export const testPush = () => {
   beforeEach(() => {
@@ -21,14 +18,14 @@ export const testPush = () => {
   describe('data element', () => {
     it('basic aggregate data element', async () => {
       await dhisService.push([DATA_SOURCES.POP01], DATA_VALUES.POP01);
-      expect(dhisApi.postDataValueSets).to.have.been.calledOnceWithExactly([
+      expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
         { dataElement: 'POP01', value: '1' },
       ]);
     });
 
     it('aggregate data element with a different dhis code', async () => {
       await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.POP01);
-      expect(dhisApi.postDataValueSets).to.have.been.calledOnceWithExactly([
+      expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
         { dataElement: 'DIF01_DHIS', value: '1' },
       ]);
     });
@@ -42,7 +39,7 @@ export const testPush = () => {
       };
 
       await dhisService.push([DATA_SOURCES.POP01_GROUP], event);
-      expect(dhisApi.postEvents).to.have.been.calledOnceWithExactly([
+      expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
         {
           ...event,
           dataValues: [
@@ -60,7 +57,7 @@ export const testPush = () => {
       };
 
       await dhisService.push([DATA_SOURCES.POP01_GROUP], event);
-      expect(dhisApi.postEvents).to.have.been.calledOnceWithExactly([
+      expect(dhisApi.postEvents).toHaveBeenCalledOnceWith([
         {
           ...event,
           dataValues: [

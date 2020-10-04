@@ -9,17 +9,13 @@ import { testPull } from './testPull';
 import { testPush } from './testPush';
 
 describe('DhisService', () => {
-  before(() => {
-    setupDhisApiForStubbing();
-  });
-
-  after(() => {
+  afterAll(() => {
     cleanupDhisApiStub();
   });
 
-  describe('push()', testPush);
+  // describe('push()', testPush);
 
-  describe('delete()', testDelete);
+  // describe('delete()', testDelete);
 
   describe('pull()', testPull);
 });

@@ -1,12 +1,12 @@
-import sinon from 'sinon';
 import { WeatherApi } from '@tupaia/weather-api';
-import { EntityModel, ModelRegistry } from '@tupaia/database';
+import { EntityModel } from '@tupaia/database';
+
+jest.mock('@tupaia/weather-api');
 
 export const createWeatherApiStub = (historicDailyResponse, forecastDailyResponse) => {
-  return sinon.createStubInstance(WeatherApi, {
-    historicDaily: sinon.stub().resolves(historicDailyResponse),
-    forecastDaily: sinon.stub().resolves(forecastDailyResponse),
-  });
+  WeatherApi.historicDaily = jest.fn().mockResolvedValue(historicDailyResponse);
+  WeatherApi.forecastDaily = jest.fn().mockResolvedValue(forecastDailyResponse);
+  return WeatherApi;
 };
 
 export const createWeatherApiStubWithMockResponse = () => {
@@ -61,17 +61,17 @@ export const createMockModelsStub = responseMap => {
   };
 
   if (responseMap && responseMap.entity && responseMap.entity.find) {
-    mockModels.entity.find = sinon.stub().resolves(responseMap.entity.find);
+    mockModels.entity.find = jest.fn().mockResolvedValue(responseMap.entity.find);
   }
 
   if (responseMap && responseMap.dataSource && responseMap.dataSource.find) {
-    mockModels.dataSource.find = sinon.stub().resolves(responseMap.dataSource.find);
+    mockModels.dataSource.find = jest.fn().mockResolvedValue(responseMap.dataSource.find);
   }
 
   if (responseMap && responseMap.dataSource && responseMap.dataSource.getDataElementsInGroup) {
-    mockModels.dataSource.getDataElementsInGroup = sinon
-      .stub()
-      .resolves(responseMap.dataSource.getDataElementsInGroup);
+    mockModels.dataSource.getDataElementsInGroup = jest
+      .fn()
+      .mockResolvedValue(responseMap.dataSource.getDataElementsInGroup);
   }
 
   return mockModels;

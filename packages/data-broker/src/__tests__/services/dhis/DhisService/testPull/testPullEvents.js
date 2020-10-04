@@ -3,9 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
-
 import * as BuildEvents from '../../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
 import { DATA_SOURCES } from '../DhisService.fixtures';
@@ -22,17 +19,18 @@ export const testPullEvents = () => {
   it('throws an error if multiple data groups are provided', async () =>
     expect(
       dhisService.pull([DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], 'dataGroup', {}),
-    ).to.be.rejectedWith(/Cannot .*multiple programs/));
+    ).toBeRejectedWith(/Cannot .*multiple programs/));
 
   it('invokes the deprecated event api by default', async () => {
-    const eventApiSpy = sinon.spy(dhisService, 'pullEventsForApi');
-    const deprecatedEventApiSpy = sinon.spy(dhisService, 'pullEventsForApi_Deprecated');
+    const eventApiSpy = jest.spyOn(dhisService, 'pullEventsForApi');
+    const deprecatedEventApiSpy = jest.spyOn(dhisService, 'pullEventsForApi_Deprecated');
 
     await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {});
-    expect(eventApiSpy).to.have.callCount(0);
-    expect(deprecatedEventApiSpy).to.have.callCount(1);
+    expect(eventApiSpy).not.toHaveBeenCalled();
+    expect(deprecatedEventApiSpy).toHaveBeenCalledTimes(1);
   });
 
+  // TODO: fail tests
   describe('DHIS API invocation', () => {
     const assertEventAnalyticsApiWasInvokedCorrectly = async ({
       dataSources,
@@ -43,20 +41,20 @@ export const testPullEvents = () => {
         ...options,
         useDeprecatedApi: false,
       });
-      expect(dhisApi.getEventAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
+      expect(dhisApi.getEventAnalytics).toHaveBeenCalledOnceWith(invocationArgs);
     };
 
     it('correctly invokes the event analytics api in DHIS', () =>
       assertEventAnalyticsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
-        invocationArgs: sinon.match({ programCode: 'POP01' }),
+        invocationArgs: expect.objectContaining({ programCode: 'POP01' }),
       }));
 
     it('forces `dataElementIdScheme` option to `code`', async () =>
       assertEventAnalyticsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
         options: { dataElementIdScheme: 'id' },
-        invocationArgs: sinon.match({ dataElementIdScheme: 'code' }),
+        invocationArgs: expect.objectContaining({ dataElementIdScheme: 'code' }),
       }));
 
     it('`dataElementCodes` can be empty', async () => {
@@ -66,7 +64,7 @@ export const testPullEvents = () => {
             dataElementCodes,
             useDeprecatedApi: false,
           }),
-        ).to.not.be.rejected;
+        ).toResolve();
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
     });
@@ -82,7 +80,7 @@ export const testPullEvents = () => {
       return assertEventAnalyticsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
         options,
-        invocationArgs: sinon.match(options),
+        invocationArgs: expect.objectContaining(options),
       });
     });
 
@@ -90,7 +88,7 @@ export const testPullEvents = () => {
       assertEventAnalyticsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
         options: { dataElementCodes: ['POP01', 'DIF01'] },
-        invocationArgs: sinon.match({ dataElementCodes: ['POP01', 'DIF01_DHIS'] }),
+        invocationArgs: expect.objectContaining({ dataElementCodes: ['POP01', 'DIF01_DHIS'] }),
       }));
   });
 
@@ -100,17 +98,13 @@ export const testPullEvents = () => {
     };
     let buildEventsStub;
 
-    before(() => {
-      buildEventsStub = sinon.stub(BuildEvents, 'buildEventsFromDhisEventAnalytics');
+    beforeAll(() => {
+      buildEventsStub = jest.spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics');
     });
 
     beforeEach(() => {
-      buildEventsStub.returns([]);
-      buildEventsStub.resetHistory();
-    });
-
-    after(() => {
-      buildEventsStub.restore();
+      buildEventsStub.mockReturnValue([]);
+      buildEventsStub.mockClear();
     });
 
     describe('buildEventsFromDhisEventAnalytics() invocation', () => {
@@ -136,7 +130,7 @@ export const testPullEvents = () => {
           ...basicOptions,
           dataElementCodes,
         });
-        expect(BuildEvents.buildEventsFromDhisEventAnalytics).to.have.been.calledOnceWithExactly(
+        expect(BuildEvents.buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
           getEventAnalyticsResponse,
           dataElementCodes,
         );
@@ -172,7 +166,7 @@ export const testPullEvents = () => {
           ...basicOptions,
           dataElementCodes,
         });
-        expect(BuildEvents.buildEventsFromDhisEventAnalytics).to.have.been.calledOnceWith(
+        expect(BuildEvents.buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
           translatedEventAnalyticsResponse,
           dataElementCodes,
         );
@@ -192,11 +186,11 @@ export const testPullEvents = () => {
           },
         },
       ];
-      buildEventsStub.returns(events);
+      buildEventsStub.mockReturnValue(events);
 
       return expect(
         dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', basicOptions),
-      ).to.eventually.deep.equal(events);
+      ).resolves.toStrictEqual(events);
     });
   });
 };

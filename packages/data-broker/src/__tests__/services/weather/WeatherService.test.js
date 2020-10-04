@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { WeatherService } from '../../../services/weather';
 import {
   createMockEntity,
@@ -64,7 +62,7 @@ describe('WeatherService', () => {
         }),
       );
 
-      expect(actual.results).to.deep.equal([
+      expect(actual.results).toStrictEqual([
         { dataElement: 'WTHR_PRECIP', value: 23.6, organisationUnit: 'MELB', period: '20190120' },
         { dataElement: 'WTHR_PRECIP', value: 5, organisationUnit: 'MELB', period: '20190121' },
       ]);
@@ -115,7 +113,7 @@ describe('WeatherService', () => {
         }),
       );
 
-      expect(actual).to.deep.equal([
+      expect(actual).toStrictEqual([
         {
           event: 'weather_MELB_2019-01-20',
           orgUnit: 'MELB',
@@ -174,8 +172,8 @@ describe('WeatherService', () => {
         }),
       );
 
-      expect(mockApi.forecastDaily).to.have.callCount(1);
-      expect(mockApi.forecastDaily.firstCall).to.have.been.calledWith(
+      expect(mockApi.forecastDaily).toHaveBeenCalledTimes(1);
+      expect(mockApi.forecastDaily).toHaveBeenCalledWith(
         -111,
         55,
         1, // 1 day requested
@@ -218,11 +216,11 @@ describe('WeatherService', () => {
           }),
         );
 
-      await expect(functionCall()).to.be.rejectedWith(
+      await expect(functionCall()).toBeRejectedWith(
         'Date range not supported with forecast weather',
       );
 
-      expect(mockApi.forecastDaily).to.have.callCount(0);
+      expect(mockApi.forecastDaily).not.toHaveBeenCalled();
     });
   });
 
@@ -245,11 +243,11 @@ describe('WeatherService', () => {
         }),
       );
 
-      expect(mockApi.historicDaily).to.have.callCount(1);
+      expect(mockApi.historicDaily).toHaveBeenCalledTimes(1);
 
-      expect(mockApi.historicDaily.firstCall).to.have.been.calledWith(
-        sinon.match.any,
-        sinon.match.any,
+      expect(mockApi.historicDaily).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
         '2019-01-07',
         '2019-01-11', // (same as input, changed to be exclusive end date)
       );
@@ -272,11 +270,11 @@ describe('WeatherService', () => {
           }),
         );
 
-      await expect(functionCall()).to.be.rejectedWith(
+      await expect(functionCall()).toBeRejectedWith(
         'Empty date range not supported with historic weather',
       );
 
-      expect(mockApi.historicDaily).to.have.callCount(0);
+      expect(mockApi.historicDaily).not.toHaveBeenCalled();
     });
   });
 });

@@ -3,9 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
-
 import { DhisService } from '../../../../../services/dhis/DhisService';
 import { DATA_SOURCES } from '../DhisService.fixtures';
 import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
@@ -26,26 +23,27 @@ export const testPullEvents_Deprecated = () => {
       invocationArgs,
     }) => {
       await dhisService.pull(dataSources, 'dataGroup', options);
-      expect(dhisApi.getEvents).to.have.been.calledOnceWithExactly(invocationArgs);
+      expect(dhisApi.getEvents).toHaveBeenCalledOnceWith(invocationArgs);
     };
 
     it('uses the provided data source as `programCode` option', async () =>
       assertEventsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
-        invocationArgs: sinon.match({ programCode: 'POP01' }),
+        invocationArgs: expect.objectContaining({ programCode: 'POP01' }),
       }));
 
     it('forces `dataElementIdScheme` option to `code`', async () =>
       assertEventsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
         options: { dataElementIdScheme: 'id' },
-        invocationArgs: sinon.match({ dataElementIdScheme: 'code' }),
+        invocationArgs: expect.objectContaining({ dataElementIdScheme: 'code' }),
       }));
 
     it('`organisationUnitCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async organisationUnitCodes =>
-        expect(dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { organisationUnitCodes }))
-          .to.not.be.rejected;
+        expect(
+          dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { organisationUnitCodes }),
+        ).toResolve();
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
     });
@@ -54,7 +52,7 @@ export const testPullEvents_Deprecated = () => {
       assertEventsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
         options: { organisationUnitCodes: ['TO', 'PG'] },
-        invocationArgs: sinon.match({ organisationUnitCode: 'TO' }),
+        invocationArgs: expect.objectContaining({ organisationUnitCode: 'TO' }),
       }));
 
     it('supports various API options', async () => {
@@ -70,7 +68,7 @@ export const testPullEvents_Deprecated = () => {
       return assertEventsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
         options,
-        invocationArgs: sinon.match(options),
+        invocationArgs: expect.objectContaining(options),
       });
     });
   });
@@ -83,7 +81,7 @@ export const testPullEvents_Deprecated = () => {
       getEventsResponse,
     }) => {
       dhisApi = stubDhisApi({ getEventsResponse });
-      return expect(dhisService.pull(dataSources, 'dataGroup', options)).to.eventually.deep.equal(
+      return expect(dhisService.pull(dataSources, 'dataGroup', options)).resolves.toStrictEqual(
         expectedResults,
       );
     };

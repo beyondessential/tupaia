@@ -3,21 +3,21 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { EVENT_ANALYTICS } from './buildAnalytics.fixtures';
 
 describe('buildEventsFromDhisEventAnalytics()', () => {
   it('allows empty data element codes', () => {
-    expect(() => buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues)).to.not.throw();
+    expect(() =>
+      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues),
+    ).not.toThrowError();
     expect(() =>
       buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, []),
-    ).to.not.throw();
+    ).not.toThrowError();
   });
 
   it('builds events containing no data values', () => {
-    expect(buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.noDataValues)).to.deep.equal([
+    expect(buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.noDataValues)).toStrictEqual([
       {
         event: 'event1_dhisId',
         orgUnit: 'TO_Nukuhc',
@@ -38,7 +38,7 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
   it('builds events from DHIS2 event analytics and sorts them by period', () => {
     expect(
       buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, ['BCD1', 'BCD2']),
-    ).to.deep.equal([
+    ).toStrictEqual([
       {
         event: 'event1_dhisId',
         orgUnit: 'TO_Nukuhc',

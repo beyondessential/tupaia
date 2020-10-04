@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { DhisService } from '../../../../services/dhis/DhisService';
 import { DATA_SOURCES, DATA_VALUES, DHIS_REFERENCE, SERVER_NAME } from './DhisService.fixtures';
 import { createModelsStub, stubDhisApi } from './DhisService.stubs';
@@ -23,7 +21,7 @@ export const testDelete = () => {
       await dhisService.delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
         serverName: SERVER_NAME,
       });
-      expect(dhisApi.deleteDataValue).to.have.been.calledOnceWithExactly({
+      expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
         dataElement: 'POP01',
         value: '1',
       });
@@ -33,7 +31,7 @@ export const testDelete = () => {
       await dhisService.delete(DATA_SOURCES.DIF01, DATA_VALUES.POP01, {
         serverName: SERVER_NAME,
       });
-      expect(dhisApi.deleteDataValue).to.have.been.calledOnceWithExactly({
+      expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
         dataElement: 'DIF01_DHIS',
         value: '1',
       });
@@ -49,7 +47,7 @@ export const testDelete = () => {
       await dhisService.delete(DATA_SOURCES.POP01_GROUP, eventData, {
         serverName: SERVER_NAME,
       });
-      expect(dhisApi.deleteEvent).to.have.been.calledOnceWithExactly(DHIS_REFERENCE);
+      expect(dhisApi.deleteEvent).toHaveBeenCalledOnceWith(DHIS_REFERENCE);
     });
   });
 };

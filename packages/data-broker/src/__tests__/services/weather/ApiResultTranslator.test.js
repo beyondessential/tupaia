@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { ApiResultTranslator } from '../../../services/weather/ApiResultTranslator';
 
 describe('ApiResultTranslator', () => {
@@ -32,7 +31,7 @@ describe('ApiResultTranslator', () => {
 
     const actual = translator.translate(mockApiResponse());
 
-    expect(actual).to.deep.equal([
+    expect(actual).toStrictEqual([
       {
         event: 'weather_MELB_2020-08-20',
         orgUnit: 'MELB',
@@ -64,7 +63,7 @@ describe('ApiResultTranslator', () => {
 
     const actual = translator.translate(mockApiResponse());
 
-    expect(actual.results).to.deep.equal([
+    expect(actual.results).toStrictEqual([
       {
         dataElement: 'WTHR_PRECIP',
         value: 23.6,
@@ -113,9 +112,9 @@ describe('ApiResultTranslator', () => {
       MELB: null,
     });
 
-    expect(actualEvents).to.deep.equal([]);
+    expect(actualEvents).toStrictEqual([]);
 
-    expect(actualAnalytics).to.deep.equal({
+    expect(actualAnalytics).toStrictEqual({
       results: [],
       metadata: {},
     });
