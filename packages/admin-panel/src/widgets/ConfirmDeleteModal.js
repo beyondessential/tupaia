@@ -31,9 +31,9 @@ const Heading = styled(Typography)`
   margin-bottom: 0.8rem;
 `;
 
-export const ConfirmDeleteModal = ({ message, onConfirm, onCancel }) => (
-  <Dialog onClose={onCancel} open={!!message}>
-    <DialogHeader onClose={onCancel} title="Delete Record" color="error" />
+export const ConfirmDeleteModal = React.memo(({ isOpen, title, message, onConfirm, onCancel }) => (
+  <Dialog onClose={onCancel} open={isOpen}>
+    <DialogHeader onClose={onCancel} title={title} color="error" />
     <DialogContent>
       <Container>
         <Icon />
@@ -46,14 +46,18 @@ export const ConfirmDeleteModal = ({ message, onConfirm, onCancel }) => (
       <WarningButton onClick={onConfirm}>Yes, Delete</WarningButton>
     </DialogFooter>
   </Dialog>
-);
+));
 
 ConfirmDeleteModal.propTypes = {
-  message: PropTypes.string,
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
+  title: PropTypes.string,
+  message: PropTypes.string,
 };
 
 ConfirmDeleteModal.defaultProps = {
+  isOpen: false,
+  title: 'Delete Record',
   message: '',
 };

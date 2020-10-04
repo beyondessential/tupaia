@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
 import { Button, SmallAlert, TextField, ProfileImageField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
-import { Header } from '../widgets';
+import { Header, ConfirmDeleteModal } from '../widgets';
 import { createBase64Image } from '../utilities/createBase64Image';
 import { updateProfile, getUser } from '../authentication';
 
@@ -54,6 +54,7 @@ const initialState = {
   status: STATUS.IDLE,
   errorMessage: null,
   successMessage: null,
+  confirmModalIsOpen: false,
   profileImage: {
     fileId: null,
     data: null,
@@ -81,12 +82,17 @@ function reducer(state, action) {
         status: STATUS.IDLE,
       };
     }
+    case 'deleteProfile': {
+      return { ...state, profileImage: { fileId: '-', data: null }, confirmModalIsOpen: false };
+    }
     case 'disable':
       return { ...state, status: STATUS.DISABLED };
     case 'success':
       return { ...state, status: STATUS.SUCCESS, successMessage: action.payload };
     case 'error':
       return { ...state, status: STATUS.ERROR, errorMessage: action.payload };
+    case 'toggleModal':
+      return { ...state, confirmModalIsOpen: action.payload };
     default:
       throw new Error('type does not exist');
   }
@@ -95,11 +101,10 @@ function reducer(state, action) {
 const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
   const { handleSubmit, register, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
-  const [{ status, successMessage, errorMessage, profileImage }, dispatch] = React.useReducer(
-    reducer,
-    user,
-    initReducer,
-  );
+  const [
+    { status, successMessage, errorMessage, profileImage, confirmModalIsOpen },
+    dispatch,
+  ] = React.useReducer(reducer, user, initReducer);
 
   const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
     dispatch({ type: 'loading' });
@@ -131,10 +136,6 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
     });
   };
 
-  const handleDelete = () => {
-    dispatch({ type: 'fileChange', payload: { fileId: '-', data: null } });
-  };
-
   const { firstName, lastName, position, employer } = user;
   const userInitial = user.name.substring(0, 1);
 
@@ -150,7 +151,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
             profileImage={profileImage && profileImage.data}
             userInitial={userInitial}
             onChange={handleFileChange}
-            onDelete={handleDelete}
+            onDelete={() => dispatch({ type: 'toggleModal', payload: true })}
           />
           <Divider />
           <TextField
@@ -206,6 +207,15 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
             Update Profile
           </StyledButton>
         </form>
+        <ConfirmDeleteModal
+          isOpen={confirmModalIsOpen}
+          title="Remove Photo"
+          message="Are you sure you want to remove your photo?"
+          onConfirm={() => {
+            dispatch({ type: 'deleteProfile' });
+          }}
+          onCancel={() => dispatch({ type: 'toggleModal', payload: false })}
+        />
       </Container>
     </>
   );

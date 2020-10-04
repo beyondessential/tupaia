@@ -65,6 +65,7 @@ class DataFetchingTableComponent extends React.Component {
     const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
     return (
       <ConfirmDeleteModal
+        isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}

@@ -76,9 +76,11 @@ export const ProfileImageField = React.memo(
         <HiddenFileInput ref={inputEl} id={name} name={name} type="file" onChange={handleChange} />
         <Box position="relative">
           <Avatar src={profileImage}>{userInitial}</Avatar>
-          <DeleteButton onClick={onDelete}>
-            <DeleteIcon />
-          </DeleteButton>
+          {profileImage && (
+            <DeleteButton onClick={onDelete}>
+              <DeleteIcon />
+            </DeleteButton>
+          )}
         </Box>
         <Box>
           <TextLabel>Your Avatar</TextLabel>
