@@ -13,5 +13,7 @@ winston.configure({
 });
 
 afterAll(async () => {
-  await clearTestData(getTestDatabase());
+  const database = getTestDatabase();
+  await clearTestData(database);
+  await database.closeConnections();
 });
