@@ -18,6 +18,13 @@
     "winston": "^3.3.3"
   },
   "eslintConfig": {
-    "extends": "@beyondessential/jest"
+    "overrides": [	    "extends": "@beyondessential/jest"
+      {
+        "files": "**/__tests__/**",
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   }
 }
