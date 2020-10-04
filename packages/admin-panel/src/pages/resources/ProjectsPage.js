@@ -53,6 +53,7 @@ const FIELDS = [
   {
     Header: 'Tile Sets',
     source: 'tile_sets',
+    secondaryLabel: 'Comma separated list (eg. osm,satellite,terrain).',
     type: 'tooltip',
   },
   {
