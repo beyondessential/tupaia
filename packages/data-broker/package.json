@@ -6,9 +6,9 @@
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
-    "test": "mocha",
-    "test:debug": "mocha --inspect-brk",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage",
+    "test:debug": "yarn test --debug",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix ."
   },
