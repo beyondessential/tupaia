@@ -11,9 +11,6 @@ export class EntityHierarchyCacher {
     this.generationsVisited = new Set();
   }
 
-  getGenerationKey = (entities, hierarchyId) =>
-    `${entities.map(e => e.code).join('-')}/${hierarchyId}`;
-
   async buildAndCacheAll() {
     // projects are the root entities of every full tree, so start with them
     const projects = await this.models.project.all();
