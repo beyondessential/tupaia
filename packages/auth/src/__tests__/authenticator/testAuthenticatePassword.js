@@ -79,9 +79,7 @@ export const testAuthenticatePassword = () => {
     ];
 
     it.each(testData)('%s', async (_, input, expectedError) => {
-      await authenticator
-        .authenticatePassword(input)
-        .catch(e => expect(e.message).toBe(expectedError));
+      await expect(authenticator.authenticatePassword(input)).toBeRejectedWith(expectedError);
     });
   });
 
