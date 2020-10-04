@@ -6,7 +6,6 @@
 import { createAggregator } from '@tupaia/aggregator';
 import { RouteHandler } from './RouteHandler';
 import { Aggregator } from '/aggregator';
-import { Project } from '/models';
 import { filterEntities } from './utils';
 
 /**

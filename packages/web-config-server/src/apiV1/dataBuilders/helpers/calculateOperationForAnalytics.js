@@ -2,7 +2,7 @@ import { checkValueSatisfiesCondition, replaceValues } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
-import { translateBoundsForFrontend, translatePointForFrontend } from '/utils/geoJson';
+import { translatePointForFrontend } from '/utils/geoJson';
 import { Entity } from '/models';
 
 const checkCondition = (value, config) =>
@@ -14,7 +14,6 @@ const valueToGroup = (value, config) => {
   const { groups, defaultValue } = config;
   // eslint-disable-next-line no-restricted-syntax
   for (const [groupName, groupCondition] of Object.entries(groups)) {
-    console.log([groupName, groupCondition]);
     if (checkValueSatisfiesCondition(value, groupCondition)) return groupName;
   }
   return defaultValue;
@@ -32,7 +31,7 @@ const performSingleAnalyticOperation = (analytics, config) => {
 };
 
 const sumDataValues = (analytics, dataValues) => {
-  let sum; //Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
+  let sum; // Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
 
   analytics.forEach(({ dataElement, value }) => {
     if (dataValues.includes(dataElement)) {
@@ -85,7 +84,7 @@ const combineTextIndicators = (analytics, config) => {
   const { dataElements } = config;
   const filteredAnalytics = analytics.filter(({ dataElement: de }) => dataElements.includes(de));
   const stringArray = [];
-  filteredAnalytics.forEach(({ dataElement, value }) => {
+  filteredAnalytics.forEach(({ value }) => {
     if (value) {
       stringArray.push(value);
     }
@@ -94,7 +93,7 @@ const combineTextIndicators = (analytics, config) => {
 };
 
 const getMetaDataFromOrgUnit = async (_, config) => {
-  const { orgUnitCode, ancestorType, field, jsonPath, hierarchyId } = config;
+  const { orgUnitCode, ancestorType, field, hierarchyId } = config;
   const baseEntity = await Entity.findOne({ code: orgUnitCode });
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
@@ -132,9 +131,11 @@ export const calculateOperationForAnalytics = (analytics, config) => {
   const { operator } = config;
   if (SINGLE_ANALYTIC_OPERATORS.includes(operator)) {
     return performSingleAnalyticOperation(analytics, config);
-  } else if (ARITHMETIC_OPERATORS.includes(operator)) {
+  }
+  if (ARITHMETIC_OPERATORS.includes(operator)) {
     return performArithmeticOperation(analytics, config);
-  } else if (Object.keys(OPERATORS).includes(operator)) {
+  }
+  if (Object.keys(OPERATORS).includes(operator)) {
     return OPERATORS[operator](analytics, config);
   }
   throw new Error(`Cannot find operator: ${operator}`);
