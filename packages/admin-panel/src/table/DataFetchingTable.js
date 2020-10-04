@@ -6,10 +6,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { SmallAlert } from '@tupaia/ui-components';
+import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
-import { Tabs, ConfirmDeleteModal } from '../widgets';
+import { Tabs } from '../widgets';
 import { TableHeadCell } from './TableHeadCell';
 import { ColumnFilter } from './ColumnFilter';
 import {

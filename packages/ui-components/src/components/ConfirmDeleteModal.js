@@ -5,17 +5,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  ErrorOutlinedButton,
-  WarningButton,
-} from '@tupaia/ui-components';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
+import { Dialog, DialogFooter, DialogHeader, DialogContent } from './Dialog';
+import { ErrorOutlinedButton, WarningButton } from './Button';
 
 const Container = styled.div`
   margin: 1rem 0 3rem;

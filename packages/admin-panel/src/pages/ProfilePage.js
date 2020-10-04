@@ -9,9 +9,15 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
-import { Button, SmallAlert, TextField, ProfileImageField } from '@tupaia/ui-components';
+import {
+  Button,
+  SmallAlert,
+  TextField,
+  ProfileImageField,
+  ConfirmDeleteModal,
+} from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
-import { Header, ConfirmDeleteModal } from '../widgets';
+import { Header } from '../widgets';
 import { createBase64Image } from '../utilities/createBase64Image';
 import { updateProfile, getUser } from '../authentication';
 
