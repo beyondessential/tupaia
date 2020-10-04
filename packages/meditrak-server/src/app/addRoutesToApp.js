@@ -30,10 +30,12 @@ const {
   pruneChanges,
   updateSurveyResponses,
   createUser,
+  editUser,
   changePassword,
   requestCountryAccess,
   addRecord,
   getUserRewards,
+  getUser,
   requestPasswordReset,
   requestResendEmail,
   getCountryAccessList,
@@ -47,7 +49,7 @@ const MINIMUM_API_VERSION = 2;
 export function addRoutesToApp(app) {
   /**
    * Create upload handler
-   **/
+   */
   const upload = multer({
     storage: multer.diskStorage({
       destination: './uploads/',
@@ -61,12 +63,12 @@ export function addRoutesToApp(app) {
 
   /**
    * Attach authentication to each endpoint
-   **/
+   */
   app.use(authenticationMiddleware);
 
   /**
    * Log every request in the api hit table
-   **/
+   */
   app.use(logApiRequest);
 
   /**
@@ -80,7 +82,7 @@ export function addRoutesToApp(app) {
 
   /**
    * GET routes
-   **/
+   */
   app.get('(/v[0-9]+)?/changes/count', countChanges);
   app.get('(/v[0-9]+)/export/surveyResponses', exportSurveyResponses);
   app.get('(/v[0-9]+)/export/surveyResponse/:surveyResponseId', exportSurveyResponses);
@@ -88,6 +90,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/export/survey/:surveyId', exportSurveys);
   app.get('(/v[0-9]+)?/changes', getChanges);
   app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
+  app.get('(/v[0-9]+)/me', getUser);
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
   app.get('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId?', getRecords);
@@ -95,7 +98,7 @@ export function addRoutesToApp(app) {
 
   /**
    * POST routes
-   **/
+   */
   app.post('(/v[0-9]+)?/auth', authenticate);
   app.post('(/v[0-9]+)?/auth/resetPassword', requestPasswordReset);
   app.post('(/v[0-9]+)?/auth/resendEmail', requestResendEmail);
@@ -128,10 +131,11 @@ export function addRoutesToApp(app) {
    */
   app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:id', editRecord);
   app.put('(/v[0-9]+)/:resource/:id', editRecord);
+  app.put('(/v[0-9]+)/me', editUser);
 
   /**
    * DELETE routes
-   **/
+   */
   app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
 
@@ -158,7 +162,6 @@ const extractApiVersion = (req, res, next) => {
 };
 
 const handleError = (err, req, res, next) => {
-  // eslint-disable-line no-unused-vars
   const { database, apiRequestLogId } = req;
   let error = err;
   if (!error.respond) {

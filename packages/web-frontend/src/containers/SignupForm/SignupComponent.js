@@ -28,7 +28,7 @@ export const SignupComponent = ({
   const showVerifyForm = React.useCallback(() => setVerifyForm(true), []);
 
   if (shouldShowVerifyForm) return <EmailVerification />;
-  else if (signupComplete) return <SignupComplete onClickResend={showVerifyForm} />;
+  if (signupComplete) return <SignupComplete onClickResend={showVerifyForm} />;
 
   return (
     <div className={className}>

@@ -5,9 +5,14 @@
 
 import { expect, assert } from 'chai';
 import { fetchWithTimeout } from '@tupaia/utils';
-import { generateId, generateTestId, generateValueOfType, TYPES } from '@tupaia/database';
+import {
+  generateId,
+  generateTestId,
+  generateValueOfType,
+  TYPES,
+  buildAndInsertSurveys,
+} from '@tupaia/database';
 
-import { buildAndInsertSurveys } from '@tupaia/database';
 import { TEST_IMAGE_DATA } from '../../testData';
 import {
   insertEntityAndFacility,
@@ -70,7 +75,7 @@ function expectEqualStrings(a, b) {
 }
 
 export const testPostChanges = (app, models, syncQueue) =>
-  function() {
+  function () {
     describe('SubmitSurveyResponse', () => {
       before(async () => {
         for (let i = 0; i < 20; i++) {
@@ -163,7 +168,7 @@ export const testPostChanges = (app, models, syncQueue) =>
           expectEqualStrings(firstAnswer.survey_response_id, firstSurveyResponseObject.id);
         });
 
-        it('adds the survey response to the sync queue after it is submitted', async function() {
+        it('adds the survey response to the sync queue after it is submitted', async function () {
           this.retries(10);
           await oneSecondSleep(1000);
           expect(syncQueue.count(TYPES.SURVEY_RESPONSE), 'survey responses added').to.equal(
@@ -374,8 +379,8 @@ export const testPostChanges = (app, models, syncQueue) =>
       });
     });
 
-    describe('Unsupported change actions', function() {
-      it('returns an error for unsupported change actions', async function() {
+    describe('Unsupported change actions', function () {
+      it('returns an error for unsupported change actions', async function () {
         const unsupportedChangeAction = {
           action: 'UnsupportedAction',
           payload: { some: 'data' },

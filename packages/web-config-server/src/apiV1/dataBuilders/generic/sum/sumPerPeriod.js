@@ -41,7 +41,7 @@ class SumPerPeriodBuilder extends DataBuilder {
 
     results.forEach(({ period: dataPeriod, value, dataElement }) => {
       const dataClass = dataElementToDataClass[dataElement];
-      const convertPeriod = configPeriodType //Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
+      const convertPeriod = configPeriodType // Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
         ? convertToPeriod(dataPeriod, configPeriodType)
         : dataPeriod;
 

@@ -163,9 +163,7 @@ describe('controlled dateRangePicker', () => {
         userEvent.click(prev);
         userEvent.click(reset);
 
-        const endDate = moment(END_DATE)
-          .startOf(value.momentUnit)
-          .format(value.rangeFormat);
+        const endDate = moment(END_DATE).startOf(value.momentUnit).format(value.rangeFormat);
         expect(labelText).toHaveTextContent(endDate);
       });
     }

@@ -5,8 +5,8 @@
 
 import { createAggregator } from '@tupaia/aggregator';
 import { getDhisApiInstance } from '/dhis';
-import * as preaggregators from './preaggregators';
 import winston from 'winston';
+import * as preaggregators from './preaggregators';
 
 const getPreaggregators = preaggregationName =>
   preaggregationName.toLowerCase() === 'all'

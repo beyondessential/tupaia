@@ -159,6 +159,7 @@ describe('projectSelectors', () => {
           state.project.projects[1].bounds,
         );
       });
+
       it('can select bounds for the `explore` and `disaster` projects', () => {
         expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(DEFAULT_BOUNDS);
 

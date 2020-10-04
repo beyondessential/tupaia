@@ -86,7 +86,7 @@ const formatDate = value => {
 };
 
 const formatPeriodRange = period => {
-  //TODO: add range if applicable
+  // TODO: add range if applicable
   return formatDate(period.latestAvailable);
 };
 

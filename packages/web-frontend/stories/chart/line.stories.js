@@ -32,7 +32,7 @@ export const SimpleLine = Template.bind({});
 SimpleLine.args = {
   isEnlarged: true,
   viewContent: {
-    data: data,
+    data,
     viewId: '13',
     organisationUnitCode: 'DL',
     dashboardGroupId: '108',

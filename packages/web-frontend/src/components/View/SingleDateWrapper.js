@@ -25,7 +25,6 @@ import { VIEW_STYLES } from '../../styles';
 
 const formatDate = value => {
   const date = new Date(value);
-  // eslint-disable-next-line no-restricted-globals
   if (!value || isNaN(date.getTime())) return 'Not yet assessed';
   return date.toDateString();
 };
