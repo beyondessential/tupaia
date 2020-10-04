@@ -101,7 +101,7 @@ const getMetaDataFromOrgUnit = async (_, config) => {
     : baseEntity;
 
   switch (field) {
-    case 'type':
+    case 'subType':
       return entity.attributes.type;
     case 'coordinates': {
       const [lat, long] = translatePointForFrontend(entity.point);

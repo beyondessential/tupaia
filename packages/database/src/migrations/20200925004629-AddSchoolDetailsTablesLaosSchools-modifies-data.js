@@ -113,7 +113,7 @@ const REPORT_PART_2 = {
           key: 'Type_of_school',
           operator: 'ORG_UNIT_METADATA',
           orgUnitCode: '{organisationUnitCode}',
-          field: 'type',
+          field: 'subType',
         },
       ],
       [
@@ -168,13 +168,13 @@ const REPORT_PART_2 = {
 
 const DASHBOARD_GROUP_CODE = 'LA_Laos_Schools_School_Laos_Schools_User';
 
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT_PART_1);
   await insertObject(db, 'dashboardReport', REPORT_PART_2);
 
@@ -195,7 +195,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = '${REPORT_PART_1.id}';
     UPDATE
