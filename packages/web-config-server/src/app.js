@@ -59,7 +59,7 @@ export async function createApp() {
 
   // Pre-cache entity hierarchy details
   const entityHierarchyCacher = new EntityHierarchyCacher(modelRegistry);
-  await entityHierarchyCacher.buildAndCacheAll();
+  await entityHierarchyCacher.buildAndCacheHierarchies();
 
   // Initialise sessions
   bindUserSessions(app);

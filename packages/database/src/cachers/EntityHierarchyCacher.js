@@ -11,9 +11,13 @@ export class EntityHierarchyCacher {
     this.generationsVisited = new Set();
   }
 
-  async buildAndCacheAll() {
+  /**
+   * @param {[string[]]} hierarchyIds The specific hierarchies to cache (defaults to all)
+   */
+  async buildAndCacheHierarchies(hierarchyIds) {
     // projects are the root entities of every full tree, so start with them
-    const projects = await this.models.project.all();
+    const projectCriteria = hierarchyIds ? { entity_hierarchy_id: hierarchyIds } : {};
+    const projects = await this.models.project.find(projectCriteria);
     const projectTasks = projects.map(async project => this.buildAndCacheProject(project));
     await Promise.all(projectTasks);
   }
