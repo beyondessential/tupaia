@@ -67,51 +67,57 @@ const ENTITY_RELATIONS = [
   },
 ];
 
-export const TEST_DATA = {
+export const TEST_DATA_TO_POPULATE = {
   entity: ENTITIES,
   entityHierarchy: ENTITY_HIERARCHIES,
   project: PROJECTS,
   entityRelation: ENTITY_RELATIONS,
 };
 
-export const EXPECTED_INITIAL_ANCESTOR_DESCENDANT_RELATIONS = {
-  project_a_test: [
-    // ancestor entity a
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
-    // ancestor entity aa
-    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
-    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
-    // ancestor entity ab
-    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
-    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
-  ],
-  project_b_test: [
-    // ancestor entity a
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 2 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 3 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 3 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 4 },
-    { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 4 },
-    // ancestor entity aa
-    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
-    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
-    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
-    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 3 },
-    { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 3 },
-    // ancestor entity ab
-    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
-    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
-    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
-    { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
-    // ancestor entity aba
-    { ancestor_id: 'entity_aba_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
-    // ancestor entity abb
-    { ancestor_id: 'entity_abb_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
-  ],
+export const TEST_DATA_TO_DEPOPULATE = {
+  entityRelation: ENTITY_RELATIONS,
+  project: PROJECTS,
+  entity: ENTITIES,
+  entityHierarchy: ENTITY_HIERARCHIES,
 };
+
+export const INITIAL_HIERARCHY_A = [
+  // ancestor entity a
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
+  // ancestor entity aa
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
+  // ancestor entity ab
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
+];
+
+export const INITIAL_HIERARCHY_B = [
+  // ancestor entity a
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 3 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 3 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 4 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 4 },
+  // ancestor entity aa
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 3 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 3 },
+  // ancestor entity ab
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
+  // ancestor entity aba
+  { ancestor_id: 'entity_aba_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
+  // ancestor entity abb
+  { ancestor_id: 'entity_abb_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
+];

@@ -5,12 +5,14 @@
 
 import { expect } from 'chai';
 
-import { getTestModels, populateTestData } from '../../testUtilities';
+import { getTestModels, populateTestData, depopulateTestData } from '../../testUtilities';
 import { EntityHierarchyCacher } from '../../cachers/EntityHierarchyCacher';
 
 import {
-  TEST_DATA,
-  EXPECTED_INITIAL_ANCESTOR_DESCENDANT_RELATIONS,
+  TEST_DATA_TO_POPULATE,
+  TEST_DATA_TO_DEPOPULATE,
+  INITIAL_HIERARCHY_A,
+  INITIAL_HIERARCHY_B,
 } from './EntityHierarchyCacher.fixtures';
 
 describe('EntityHierarchyCacher', () => {
@@ -36,23 +38,21 @@ describe('EntityHierarchyCacher', () => {
     ).to.deep.equalInAnyOrder(relations);
   };
 
-  before(async () => {
-    await populateTestData(models, TEST_DATA);
+  beforeEach(async () => {
+    await depopulateTestData(models, TEST_DATA_TO_DEPOPULATE);
+    await populateTestData(models, TEST_DATA_TO_POPULATE);
   });
 
   describe('buildAndCacheProject', async () => {
-    const assertProjectRelationsCorrectlyBuilt = async projectCode => {
+    const assertProjectRelationsCorrectlyBuilt = async (projectCode, expected) => {
       await buildAndCacheProject(projectCode);
-      await assertRelationsMatch(
-        projectCode,
-        EXPECTED_INITIAL_ANCESTOR_DESCENDANT_RELATIONS[projectCode],
-      );
+      await assertRelationsMatch(projectCode, expected);
     };
     it('handles a hierarchy that is fully canonical', async () => {
-      await assertProjectRelationsCorrectlyBuilt('project_a_test');
+      await assertProjectRelationsCorrectlyBuilt('project_a_test', INITIAL_HIERARCHY_A);
     });
     it('handles a hierarchy that has entity relation links', async () => {
-      await assertProjectRelationsCorrectlyBuilt('project_b_test');
+      await assertProjectRelationsCorrectlyBuilt('project_b_test', INITIAL_HIERARCHY_B);
     });
   });
 });
