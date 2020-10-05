@@ -95,16 +95,16 @@ export class EntityHierarchyCacher {
     });
   }
 
-  getCanonicalChildrenCriteria(entityIds) {
+  getCanonicalChildrenCriteria(parentIds) {
     const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
     return {
-      parent_id: entityIds,
+      parent_id: parentIds,
       type: canonicalTypes,
     };
   }
 
-  async countCanonicalChildren(entityIds) {
-    const criteria = this.getCanonicalChildrenCriteria(entityIds);
+  async countCanonicalChildren(parentIds) {
+    const criteria = this.getCanonicalChildrenCriteria(parentIds);
     return this.models.entity.count(criteria);
   }
 
