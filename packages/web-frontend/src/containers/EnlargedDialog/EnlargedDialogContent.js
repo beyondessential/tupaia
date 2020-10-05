@@ -88,7 +88,8 @@ export class EnlargedDialogContent extends PureComponent {
         {viewContent.data && viewContent.data.length === 0 ? (
           <div style={{ color: OFF_WHITE }}>No data found for this time period</div>
         ) : (
-          this.renderBodyContent()
+          <div>error!</div>
+          // this.renderBodyContent()
         )}
         {drillDownOverlay}
       </div>
