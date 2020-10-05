@@ -17,16 +17,6 @@ function get_branch_name() {
     echo $branch_name
 }
 
-function validate_name_length() {
-    local branch_name=$1
-    local name_length=${#branch_name}
-
-    if [[ $name_length -gt MAX_LENGTH ]]; then
-        log_error "❌ Branch name is too long, must be $MAX_LENGTH characters max"
-        exit 1;
-    fi
-}
-
 function validate_name_ending() {
     local branch_name=$1
 
@@ -39,10 +29,29 @@ function validate_name_ending() {
     done
 }
 
+function validate_name_length() {
+    local branch_name=$1
+    local name_length=${#branch_name}
+
+    if [[ $name_length -gt MAX_LENGTH ]]; then
+        log_error "❌ Branch name is too long, must be $MAX_LENGTH characters max"
+        exit 1;
+    fi
+}
+
+function validate_name_case() {
+    local branch_name=$1
+
+    if [[ $branch_name =~ [A-Z] ]]; then
+        log_error "❌ Branch name cannot contain uppercase characters"
+        exit 1;
+    fi
+}
 
 branch_name=$(get_branch_name)
-validate_name_length $branch_name
 validate_name_ending $branch_name
+validate_name_length $branch_name
+validate_name_case $branch_name
 
 log_success "✔ Branch name is valid!"
 exit 0;
