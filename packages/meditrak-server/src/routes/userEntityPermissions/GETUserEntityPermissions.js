@@ -34,7 +34,7 @@ export class GETUserEntityPermissions extends GETHandler {
     const userEntityPermission = await super.findSingleRecord(userEntityPermissionId, options);
 
     const userEntityPermissionChecker = accessPolicy =>
-      assertUserEntityPermissionPermissions(accessPolicy, this.models, userEntityPermission);
+      assertUserEntityPermissionPermissions(accessPolicy, this.models, userEntityPermissionId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, userEntityPermissionChecker]),

@@ -4,12 +4,14 @@
  */
 
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import { createAdminPanelDBFilter } from '../utilities';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
   models,
-  userEntityPermission,
+  userEntityPermissionId,
 ) => {
+  const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
   const entity = await models.entity.findById(userEntityPermission.entity_id);
   if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     throw new Error('Need Admin Panel access to the country this entity is in');
@@ -22,16 +24,5 @@ export const createUserEntityPermissionDBFilter = async (accessPolicy, models, c
     return criteria;
   }
   // If we don't have BES Admin access, add a filter to the SQL query
-  const dbConditions = criteria;
-  const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
-    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  );
-  accessibleCountryCodes.push('DL'); // If we have admin panel anywhere, we can also view Demo Land
-  const entities = await models.entity.find({
-    code: accessibleCountryCodes,
-  });
-  const entityIds = entities.map(e => e.id);
-  dbConditions.entity_id = entityIds;
-
-  return dbConditions;
+  return createAdminPanelDBFilter(accessPolicy, models, criteria);
 };

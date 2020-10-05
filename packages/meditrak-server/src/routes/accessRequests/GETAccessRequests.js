@@ -34,7 +34,7 @@ export class GETAccessRequests extends GETHandler {
     const accessRequest = await super.findSingleRecord(accessRequestId, options);
 
     const accessRequestChecker = accessPolicy =>
-      assertAccessRequestPermissions(accessPolicy, this.models, accessRequest);
+      assertAccessRequestPermissions(accessPolicy, this.models, accessRequestId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),

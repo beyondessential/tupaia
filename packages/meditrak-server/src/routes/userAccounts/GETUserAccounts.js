@@ -34,7 +34,7 @@ export class GETUserAccounts extends GETHandler {
     const userAccount = await super.findSingleRecord(userAccountId, options);
 
     const userAccountChecker = accessPolicy =>
-      assertUserAccountPermissions(accessPolicy, this.models, userAccount);
+      assertUserAccountPermissions(accessPolicy, this.models, userAccountId);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
 
