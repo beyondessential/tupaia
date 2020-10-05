@@ -77,4 +77,3 @@ export const getCalculatedValuesByCell = (cells, results) => {
   });
   return calculatedValuesByCell;
 };
-

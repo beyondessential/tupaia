@@ -102,11 +102,9 @@ const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
 const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT'];
 
 export const getDataElementsFromCalculateOperationConfig = config =>
-  typeof config === 'string'
-    ? config
-    : config.dataElement || // Single dataElement
-      (config.operands && config.operands.map(operand => operand.dataValues)) || // Arithmetic operators
-      (config.dataElementToString && Object.keys(config.dataElementToString)); // COMBINE_BINARY_AS_STRING
+  config.dataElement || // Single dataElement
+  (config.operands && config.operands.map(operand => operand.dataValues)) || // Arithmetic operators
+  (config.dataElementToString && Object.keys(config.dataElementToString)); // COMBINE_BINARY_AS_STRING
 
 export const calculateOperationForAnalytics = (analytics, config) => {
   const { operator } = config;

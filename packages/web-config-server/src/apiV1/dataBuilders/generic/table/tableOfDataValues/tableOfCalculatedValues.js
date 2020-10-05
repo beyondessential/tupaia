@@ -7,16 +7,18 @@ import flatten from 'lodash.flatten';
 import flattenDeep from 'lodash.flattendeep';
 
 import { getCalculatedValuesByCell } from './getValuesByCell';
-import {
-  getDataElementsFromCalculateOperationConfig,
-} from '/apiV1/dataBuilders/helpers';
+import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfCalculatedValues extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
-      this.config.cells.map(row => row.map(getDataElementsFromCalculateOperationConfig)),
+      this.config.cells.map(row =>
+        row.map(cell =>
+          typeof cell === 'string' ? cell : getDataElementsFromCalculateOperationConfig(cell),
+        ),
+      ),
     );
     return [...new Set(dataElementCodes)];
   }

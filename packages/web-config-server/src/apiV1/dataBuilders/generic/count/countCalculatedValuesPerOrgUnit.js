@@ -17,12 +17,8 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
     );
 
     const data = Object.entries(dataClasses).map(([dataClass, condition]) => {
-      let count = 0;
-      calculatedValues.forEach(value => {
-        if (checkValueSatisfiesCondition(value, condition)) {
-          count++;
-        }
-      });
+      const count = calculatedValues.filter(value => checkValueSatisfiesCondition(value, condition))
+        .length;
 
       return {
         name: dataClass,
