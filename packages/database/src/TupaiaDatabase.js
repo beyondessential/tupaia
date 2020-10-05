@@ -11,6 +11,10 @@ import { Multilock } from '@tupaia/utils';
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { generateId } from './utilities/generateId';
+import {
+  runDatabaseFunctionInBatches,
+  MAX_BINDINGS_PER_QUERY,
+} from './utilities/runDatabaseFunctionInBatches';
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -42,9 +46,6 @@ export const JOIN_TYPES = {
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
-
-// some part of knex or node-pg struggles with too many bindings, so we batch them in some places
-const MAX_BINDINGS_PER_QUERY = 2500; // errors occurred at around 5000 bindings in testing
 
 export class TupaiaDatabase {
   constructor(transactingConnection) {
@@ -268,15 +269,13 @@ export class TupaiaDatabase {
   async createMany(recordType, records) {
     // generate ids for any records that don't have them
     const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
-    const batchSize = this.maxBindingsPerQuery;
-    for (let i = 0; i < sanitizedRecords.length; i += batchSize) {
-      const batchOfRecords = sanitizedRecords.slice(i, i + batchSize);
-      await this.query({
+    await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
+      this.query({
         recordType,
         queryMethod: QUERY_METHODS.INSERT,
         queryMethodParameter: batchOfRecords,
-      });
-    }
+      }),
+    );
     return sanitizedRecords;
   }
 
@@ -447,15 +446,10 @@ export class TupaiaDatabase {
   }
 
   async executeSqlInBatches(arrayToBeBatched, generateSql) {
-    const records = [];
-    const batchSize = MAX_BINDINGS_PER_QUERY;
-    for (let i = 0; i < arrayToBeBatched.length; i += batchSize) {
-      const batch = arrayToBeBatched.slice(i, i + batchSize);
+    return runDatabaseFunctionInBatches(arrayToBeBatched, async batch => {
       const [sql, substitutions] = generateSql(batch);
-      const batchOfRecords = await this.executeSql(sql, substitutions);
-      records.push(...batchOfRecords);
-    }
-    return records;
+      return this.executeSql(sql, substitutions);
+    });
   }
 }
 

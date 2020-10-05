@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { DatabaseError } from '@tupaia/utils';
+import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
   otherModels = {};
@@ -132,14 +133,9 @@ export class DatabaseModel {
     if (!ids) {
       throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
     }
-    const records = [];
-    const batchSize = this.database.maxBindingsPerQuery;
-    for (let i = 0; i < ids.length; i += batchSize) {
-      const batchOfIds = ids.slice(i, i + batchSize);
-      const batchOfRecords = await this.find({ id: batchOfIds, ...criteria });
-      records.push(...batchOfRecords);
-    }
-    return records;
+    return runDatabaseFunctionInBatches(ids, async batchOfIds =>
+      this.find({ id: batchOfIds, ...criteria }),
+    );
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {
