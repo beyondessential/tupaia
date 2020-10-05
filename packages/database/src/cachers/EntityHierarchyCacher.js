@@ -95,12 +95,17 @@ export class EntityHierarchyCacher {
     });
   }
 
-  async countCanonicalChildren(entityIds) {
+  getCanonicalChildrenCriteria(entityId) {
     const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
-    return this.models.entity.count({
-      parent_id: entityIds,
+    return {
+      parent_id: entityId,
       type: canonicalTypes,
-    });
+    };
+  }
+
+  async countCanonicalChildren(entityIds) {
+    const criteria = this.getCanonicalChildrenCriteria(entityIds);
+    return this.models.entity.count(criteria);
   }
 
   async getRelationsViaEntityRelation(hierarchyId, parentIds) {
@@ -112,11 +117,8 @@ export class EntityHierarchyCacher {
   }
 
   async getRelationsCanonically(entityId) {
-    const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
-    const children = await this.models.entity.find(
-      { parent_id: entityId, type: canonicalTypes },
-      { columns: ['id', 'parent_id'] },
-    );
+    const criteria = this.getCanonicalChildrenCriteria(entityId);
+    const children = await this.models.entity.find(criteria, { columns: ['id', 'parent_id'] });
     return children.map(c => ({ child_id: c.id, parent_id: c.parent_id }));
   }
 
