@@ -15,5 +15,8 @@
     "@tupaia/utils": "1.0.0",
     "deep-equal-in-any-order": "^1.0.27",
     "lodash.groupby": "^4.6.0"
-  }
+  },
+  "eslintConfig": {
+    "extends": "@beyondessential/jest"
+  }	  }
 }
