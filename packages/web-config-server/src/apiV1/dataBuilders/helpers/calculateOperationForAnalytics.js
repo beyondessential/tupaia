@@ -1,4 +1,9 @@
-import { checkValueSatisfiesCondition, replaceValues } from '@tupaia/utils';
+import {
+  checkValueSatisfiesCondition,
+  replaceValues,
+  asyncFilter,
+  asyncEvery,
+} from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
@@ -93,12 +98,18 @@ const combineTextIndicators = (analytics, config) => {
 };
 
 const getMetaDataFromOrgUnit = async (_, config) => {
-  const { orgUnitCode, ancestorType, field, hierarchyId } = config;
+  const { orgUnitCode, ancestorType, hierarchyId } = config;
   const baseEntity = await Entity.findOne({ code: orgUnitCode });
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
     ? await baseEntity.getAncestorOfType(ancestorType, hierarchyId)
     : baseEntity;
+
+  return getValueFromEntity(entity, config);
+};
+
+const getValueFromEntity = async (entity, config) => {
+  const { field, conditions, hierarchyId } = config;
 
   switch (field) {
     case 'subType':
@@ -106,6 +117,16 @@ const getMetaDataFromOrgUnit = async (_, config) => {
     case 'coordinates': {
       const [lat, long] = translatePointForFrontend(entity.point);
       return `${lat}, ${long}`;
+    }
+    case '$countDescendantsMatchingConditions': {
+      const allDescendants = await entity.getDescendants(hierarchyId);
+      const descendantsMatchingConditions = await asyncFilter(allDescendants, descendant =>
+        asyncEvery(
+          conditions,
+          async condition => (await getValueFromEntity(descendant, condition)) === condition.value,
+        ),
+      );
+      return descendantsMatchingConditions.length;
     }
     default:
       return entity[field];
