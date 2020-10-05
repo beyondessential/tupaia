@@ -6,17 +6,17 @@
 import { AccessPolicy as AccessPolicyParser } from '@tupaia/access-policy';
 import { upsertDummyRecord, findOrCreateDummyRecord } from '@tupaia/database';
 import { buildAccessPolicy } from '../../buildAccessPolicy';
-import { Demo } from './setup';
+import { setUp } from './helpers';
 
 export const testAccessPolicyHandler = () => {
   let accessPolicy;
 
   beforeAll(async () => {
-    const user = await upsertDummyRecord(Demo.models.user);
+    const { models, user, permissionGroups } = await setUp();
 
     // Create a facility nested deep within a new country
     const canada = await findOrCreateDummyRecord(
-      Demo.models.entity,
+      models.entity,
       {
         code: 'CA',
       },
@@ -27,7 +27,7 @@ export const testAccessPolicyHandler = () => {
     );
 
     const ontario = await findOrCreateDummyRecord(
-      Demo.models.entity,
+      models.entity,
       {
         code: 'CA_OT',
       },
@@ -40,7 +40,7 @@ export const testAccessPolicyHandler = () => {
     );
 
     const ottawa = await findOrCreateDummyRecord(
-      Demo.models.entity,
+      models.entity,
       {
         code: 'CA_OT_OT',
       },
@@ -53,7 +53,7 @@ export const testAccessPolicyHandler = () => {
     );
 
     const toronto = await findOrCreateDummyRecord(
-      Demo.models.entity,
+      models.entity,
       {
         name: 'Toronto',
       },
@@ -66,7 +66,7 @@ export const testAccessPolicyHandler = () => {
     );
 
     const mountSinai = await findOrCreateDummyRecord(
-      Demo.models.entity,
+      models.entity,
       {
         code: 'CA_OT_TO_MS',
       },
@@ -78,19 +78,19 @@ export const testAccessPolicyHandler = () => {
       },
     );
 
-    await upsertDummyRecord(Demo.models.userEntityPermission, {
+    await upsertDummyRecord(models.userEntityPermission, {
       user_id: user.id,
       entity_id: mountSinai.id,
-      permission_group_id: Demo.publicPermission.id,
+      permission_group_id: permissionGroups.public.id,
     });
 
-    await upsertDummyRecord(Demo.models.userEntityPermission, {
+    await upsertDummyRecord(models.userEntityPermission, {
       user_id: user.id,
       entity_id: ottawa.id,
-      permission_group_id: Demo.publicPermission.id,
+      permission_group_id: permissionGroups.public.id,
     });
 
-    accessPolicy = await buildAccessPolicy(Demo.models, user.id);
+    accessPolicy = await buildAccessPolicy(models, user.id);
   });
 
   describe('check permissions', () => {
