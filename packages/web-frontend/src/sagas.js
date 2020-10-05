@@ -606,11 +606,10 @@ function* fetchViewData(parameters, errorHandler) {
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
 
   try {
-    const viewData = yield call(request, requestResourceUrl, errorHandler);
-    return viewData;
+    return yield call(request, requestResourceUrl, errorHandler);
   } catch (error) {
     if (error.errorFunction) {
-      yield put(error.errorFunction(error, infoViewKey));
+      yield put(error.errorFunction(error.message, infoViewKey));
     } else {
       console.log(`Failed to handle error: ${error.message}`);
     }

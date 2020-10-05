@@ -12,6 +12,7 @@ import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import IconButton from 'material-ui/IconButton';
 import moment from 'moment';
+import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
 import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE } from '../../styles';
@@ -77,23 +78,17 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderBody() {
-    const { viewContent, drillDownOverlay } = this.props;
-    const getStyle = () => {
-      if (getIsMatrix(viewContent)) return styles.matrixContent;
-      if (viewContent.chartType) return styles.chartContent;
-      return {}; // No custom styling for other types of dialog content
-    };
-    return (
-      <div style={getStyle()}>
-        {viewContent.data && viewContent.data.length === 0 ? (
-          <div style={{ color: OFF_WHITE }}>No data found for this time period</div>
-        ) : (
-          <div>error!</div>
-          // this.renderBodyContent()
-        )}
-        {drillDownOverlay}
-      </div>
-    );
+    const { viewContent, errorMessage } = this.props;
+    const noData = viewContent.data && viewContent.data.length === 0;
+
+    if (noData) {
+      return <Alert severity="info">No data found for this time period</Alert>;
+    }
+
+    if (errorMessage) {
+      return <Alert severity="error">Error</Alert>;
+    }
+    return this.renderBodyContent();
   }
 
   renderBodyContent() {
@@ -191,10 +186,19 @@ export class EnlargedDialogContent extends PureComponent {
 
   render() {
     if (!this.props.viewContent) return <LoadingIndicator />;
-    const isMatrix = getIsMatrix(this.props.viewContent);
+
+    const { viewContent, drillDownOverlay } = this.props;
+    const isMatrix = getIsMatrix(viewContent);
+
     const contentStyle = {
       ...styles.body,
       padding: isMatrix ? 0 : 20,
+    };
+
+    const getBodyStyle = () => {
+      if (isMatrix) return styles.matrixContent;
+      if (viewContent.chartType) return styles.chartContent;
+      return {}; // No custom styling for other types of dialog content
     };
 
     return (
@@ -203,7 +207,10 @@ export class EnlargedDialogContent extends PureComponent {
         <DialogContent style={contentStyle}>
           {this.renderToolbar()}
           {this.renderDescription()}
-          {this.renderBody()}
+          <div style={getBodyStyle()}>
+            {this.renderBody()}
+            {drillDownOverlay}
+          </div>
           {this.renderPeriodRange()}
         </DialogContent>
       </div>
@@ -289,6 +296,7 @@ EnlargedDialogContent.propTypes = {
   onSetDateRange: PropTypes.func,
   isDrilledDown: PropTypes.bool,
   isLoading: PropTypes.bool,
+  errorMessage: PropTypes.string,
   isVisible: PropTypes.bool,
   drillDownOverlay: PropTypes.element,
   CloseIcon: PropTypes.func,
@@ -300,6 +308,7 @@ EnlargedDialogContent.defaultProps = {
   onSetDateRange: () => {},
   isDrilledDown: false,
   isLoading: false,
+  errorMessage: null,
   isVisible: false,
   drillDownOverlay: null,
   organisationUnitName: '',
