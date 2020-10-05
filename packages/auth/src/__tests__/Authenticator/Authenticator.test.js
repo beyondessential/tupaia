@@ -13,6 +13,8 @@ randomToken.generate.mockReturnValue(refreshToken);
 
 describe('Authenticator', () => {
   describe('authenticatePassword', testAuthenticatePassword);
+
   describe('authenticateRefreshToken', testAuthenticateRefreshToken);
+
   describe('authenticateOneTimeLogin', testAuthenticateOneTimeLogin);
 });

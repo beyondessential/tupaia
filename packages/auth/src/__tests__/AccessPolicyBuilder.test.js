@@ -9,8 +9,8 @@ import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
 jest.mock('../buildAccessPolicy');
 jest.mock('../buildLegacyAccessPolicy');
-const buildAccessPolicySpy = buildAccessPolicy.mockResolvedValue({});
-const buildLegacyAccessPolicySpy = buildLegacyAccessPolicy.mockResolvedValue({});
+const buildAccessPolicyMock = buildAccessPolicy.mockResolvedValue({});
+const buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({});
 
 describe('AccessPolicyBuilder', () => {
   let notifyPermissionsChange;
@@ -27,15 +27,15 @@ describe('AccessPolicyBuilder', () => {
     const testData = [
       [
         'builds a modern access policy by default',
-        [undefined, [buildAccessPolicySpy, buildLegacyAccessPolicySpy]],
+        [undefined, [buildAccessPolicyMock, buildLegacyAccessPolicyMock]],
       ],
       [
         'builds a modern access policy when useLegacyFormat is set to false',
-        [false, [buildAccessPolicySpy, buildLegacyAccessPolicySpy]],
+        [false, [buildAccessPolicyMock, buildLegacyAccessPolicyMock]],
       ],
       [
         'builds a legacy access policy when useLegacyFormat is set to true',
-        [true, [buildLegacyAccessPolicySpy, buildAccessPolicySpy]],
+        [true, [buildLegacyAccessPolicyMock, buildAccessPolicyMock]],
       ],
     ];
 
@@ -55,7 +55,7 @@ describe('AccessPolicyBuilder', () => {
       const builder = new AccessPolicyBuilder(models);
       await builder.getPolicyForUser(userId);
       await builder.getPolicyForUser(userId);
-      expect(buildAccessPolicySpy).toHaveBeenCalledTimes(1);
+      expect(buildAccessPolicyMock).toHaveBeenCalledTimes(1);
     });
 
     it('avoids rebuilding the policy for multiple users', async () => {
@@ -72,7 +72,7 @@ describe('AccessPolicyBuilder', () => {
       // finally, a couple of extra fetches for luck
       await builder.getPolicyForUser(userIds[2]);
       await builder.getPolicyForUser(userIds[0]);
-      expect(buildAccessPolicySpy).toHaveBeenCalledTimes(3);
+      expect(buildAccessPolicyMock).toHaveBeenCalledTimes(3);
     });
 
     it('does rebuild if there is a change to user entity permissions', async () => {
@@ -81,7 +81,7 @@ describe('AccessPolicyBuilder', () => {
       await builder.getPolicyForUser(userId); // just fetched
       notifyPermissionsChange(userId); // cache invalidated
       await builder.getPolicyForUser(userId); // built a second time
-      expect(buildAccessPolicySpy).toHaveBeenCalledTimes(2);
+      expect(buildAccessPolicyMock).toHaveBeenCalledTimes(2);
     });
   });
 });
