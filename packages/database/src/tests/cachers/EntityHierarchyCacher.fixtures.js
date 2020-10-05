@@ -24,13 +24,11 @@ const ENTITY_HIERARCHIES = [{ id: 'hierarchy_a_test' }, { id: 'hierarchy_b_test'
 const PROJECTS = [
   {
     code: 'project_a_test',
-    name: 'Project A',
     entity_id: 'entity_a_test',
     entity_hierarchy_id: 'hierarchy_a_test',
   },
   {
     code: 'project_b_test',
-    name: 'Project B',
     entity_id: 'entity_a_test',
     entity_hierarchy_id: 'hierarchy_b_test',
   },
