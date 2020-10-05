@@ -4,11 +4,12 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
   calculateOperationForAnalytics,
   getDataElementsFromCalculateOperationConfig,
+  divideValues,
 } from '/apiV1/dataBuilders/helpers';
 
 class CountCalculatedValuesPerOrgUnit extends DataBuilder {
   async build() {
-    const { operation, dataClasses } = this.config;
+    const { operation, dataClasses, convertToPercentage } = this.config;
     const dataElementCodes = getDataElementsFromCalculateOperationConfig(operation);
     const { results } = await this.fetchAnalytics(dataElementCodes);
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
@@ -16,6 +17,7 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
       calculateOperationForAnalytics(analytics, operation),
     );
 
+    let sum = 0;
     const data = Object.entries(dataClasses).map(([dataClass, condition]) => {
       let count = 0;
       calculatedValues.forEach(value => {
@@ -24,11 +26,18 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
         }
       });
 
+      sum += count;
       return {
         name: dataClass,
         value: count,
       };
     });
+
+    if (convertToPercentage) {
+      data.forEach(({ value }, index) => {
+        data[index].value = divideValues(value, sum);
+      });
+    }
 
     return { data };
   }

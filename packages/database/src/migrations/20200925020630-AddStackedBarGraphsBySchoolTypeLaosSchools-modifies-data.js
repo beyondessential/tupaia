@@ -51,15 +51,15 @@ const REPORTS = [
     id: 'Laos_Schools_Water_Supply_Source_By_School_Type',
     name: 'Water Supply Source, % of Schools',
     dataElementToString: {
-      SchCVD010a: { valueOfInterest: 'Yes', displayString: 'Tap water' },
-      SchCVD010b: { valueOfInterest: 'Yes', displayString: 'Borehole' },
-      SchCVD010c: { valueOfInterest: 'Yes', displayString: 'Well' },
-      SchCVD010d: { valueOfInterest: 'Yes', displayString: 'Spring water (gravity-fed system)' },
-      SchCVD010e: { valueOfInterest: 'Yes', displayString: 'River/stream' },
-      SchCVD010f: { valueOfInterest: 'Yes', displayString: 'Pond' },
-      SchCVD010g: { valueOfInterest: 'Yes', displayString: 'Reservoir' },
-      SchCVD010i: { valueOfInterest: 'Yes', displayString: 'Rainwater harvesting' },
-      SchCVD010h: { valueOfInterest: 'Yes', displayString: 'Other' },
+      SchCVD010a: 'Tap water',
+      SchCVD010b: 'Borehole',
+      SchCVD010c: 'Well',
+      SchCVD010d: 'Spring water (gravity-fed system)',
+      SchCVD010e: 'River/stream',
+      SchCVD010f: 'Pond',
+      SchCVD010g: 'Reservoir',
+      SchCVD010i: 'Rainwater harvesting',
+      SchCVD010h: 'Other',
     },
   },
   {
@@ -67,9 +67,9 @@ const REPORTS = [
     id: 'Laos_Schools_Teachers_Following_MoES_By_School_Type',
     name: 'Teachers Following MoES Programmes at Home, % of Schools',
     dataElementToString: {
-      SchCVD016a: { valueOfInterest: 'Yes', displayString: 'TV' },
-      SchCVD016b: { valueOfInterest: 'Yes', displayString: 'Radio' },
-      SchCVD016c: { valueOfInterest: 'Yes', displayString: 'Online (Facebook, YouTube, etc.)' },
+      SchCVD016a: 'TV',
+      SchCVD016b: 'Radio',
+      SchCVD016c: 'Online (Facebook, YouTube, etc.)',
     },
   },
   {
@@ -77,12 +77,23 @@ const REPORTS = [
     id: 'Laos_Schools_Students_Following_MoES_By_School_Type',
     name: 'Students Following MoES Programmes at Home, % of Schools',
     dataElementToString: {
-      SchCVD017a: { valueOfInterest: 'Yes', displayString: 'TV' },
-      SchCVD017b: { valueOfInterest: 'Yes', displayString: 'Radio' },
-      SchCVD017c: { valueOfInterest: 'Yes', displayString: 'Online (Facebook, YouTube, etc.)' },
+      SchCVD017a: 'TV',
+      SchCVD017b: 'Radio',
+      SchCVD017c: 'Online (Facebook, YouTube, etc.)',
     },
   },
 ];
+
+const createDataClassesFromDataElementToString = dataElementToString => {
+  const dataClasses = {};
+  Object.values(dataElementToString).forEach(string => {
+    dataClasses[string] = {
+      value: string,
+      operator: '=',
+    };
+  });
+  return dataClasses;
+};
 
 const createSingleElementSubDataBuilderConfig = (dataElement, schoolType) => ({
   dataBuilder: 'countByAllDataValues',
@@ -101,29 +112,26 @@ const createSingleElementSubDataBuilderConfig = (dataElement, schoolType) => ({
 });
 
 const createMultipleElementSubDataBuilderConfig = (dataElementToString, schoolType) => ({
-  dataBuilder: 'countMeasureValues',
+  dataBuilder: 'countCalculatedValuesPerOrgUnit',
   dataBuilderConfig: {
-    measureBuilder: 'groupData',
-    measureBuilderConfig: {
-      groups: {
-        Multiple: {
-          value: '__',
-          operator: 'regex',
-        },
-        // if it doesn't match one of the groups, it will default to the original value
+    operation: {
+      operator: 'COMBINE_BINARY_AS_STRING',
+      delimiter: '__', // Because there is a ', ' in 'Online (Facebook, YouTube, etc.)'
+      dataElementToString,
+    },
+    dataClasses: {
+      Multiple: {
+        value: '__', // multiple indicators
+        operator: 'regex',
       },
-      measureBuilder: 'getStringsFromBinaryData',
-      measureBuilderConfig: {
-        entityAggregation: {
-          dataSourceEntityType: 'school',
-        },
-        dataSourceEntityFilter: {
-          attributes: {
-            type: schoolType,
-          },
-        },
-        delimiter: '__', // Because there is a ', ' in 'Online (Facebook, YouTube, etc.)'
-        dataElementToString,
+      ...createDataClassesFromDataElementToString(dataElementToString),
+    },
+    entityAggregation: {
+      dataSourceEntityType: 'school',
+    },
+    dataSourceEntityFilter: {
+      attributes: {
+        type: schoolType,
       },
     },
     convertToPercentage: true,

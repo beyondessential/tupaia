@@ -12,7 +12,6 @@ const valueToGroup = (value, config) => {
   const { groups, defaultValue } = config;
   // eslint-disable-next-line no-restricted-syntax
   for (const [groupName, groupCondition] of Object.entries(groups)) {
-    console.log([groupName, groupCondition]);
     if (checkValueSatisfiesCondition(value, groupCondition)) return groupName;
   }
   return defaultValue;
@@ -64,7 +63,7 @@ const performArithmeticOperation = (analytics, arithmeticConfig) => {
 };
 
 const combineBinaryIndicatorsToString = (analytics, config) => {
-  const { dataElementToString } = config;
+  const { dataElementToString, delimiter = ', ' } = config;
   const filteredAnalytics = analytics.filter(({ dataElement: de }) =>
     Object.keys(dataElementToString).includes(de),
   );
@@ -85,7 +84,7 @@ const combineBinaryIndicatorsToString = (analytics, config) => {
       stringArray.push(stringValue);
     }
   });
-  return stringArray.length === 0 ? 'None' : stringArray.join(', ');
+  return stringArray.length === 0 ? 'None' : stringArray.join(delimiter);
 };
 
 const OPERATORS = {
@@ -112,9 +111,11 @@ export const calculateOperationForAnalytics = (analytics, config) => {
   const { operator } = config;
   if (SINGLE_ANALYTIC_OPERATORS.includes(operator)) {
     return performSingleAnalyticOperation(analytics, config);
-  } else if (ARITHMETIC_OPERATORS.includes(operator)) {
+  }
+  if (ARITHMETIC_OPERATORS.includes(operator)) {
     return performArithmeticOperation(analytics, config);
-  } else if (Object.keys(OPERATORS).includes(operator)) {
+  }
+  if (Object.keys(OPERATORS).includes(operator)) {
     return OPERATORS[operator](analytics, config);
   }
   throw new Error(`Cannot find operator: ${operator}`);
