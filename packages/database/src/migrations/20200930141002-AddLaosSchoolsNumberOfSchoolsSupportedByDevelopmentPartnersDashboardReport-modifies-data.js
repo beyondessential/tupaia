@@ -25,7 +25,7 @@ const DASHBOARD_GROUP_CODES = [
 const REPORTS = [
   {
     id: 'Laos_Schools_Number_Of_Pre_Schools_Supported_Development_Partners',
-    name: 'Number of Pre-primary Schools Supported by Development Partners',
+    name: 'Number of Pre-Schools Supported by Development Partners',
     schoolType: 'Pre-School',
   },
   {
