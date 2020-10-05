@@ -15,6 +15,7 @@ export { PhotoQuestion } from './PhotoQuestion';
 export { RadioQuestion } from './RadioQuestion';
 export { CodeGeneratorQuestion } from './CodeGeneratorQuestion';
 export { EntityQuestion, PrimaryEntityQuestion } from './EntityQuestion';
+export { SelectionQuestion } from './SelectionQuestion';
 export { UnsupportedQuestion } from './UnsupportedQuestion';
 
 export { DaysSinceQuestion } from './TimeSinceQuestion';

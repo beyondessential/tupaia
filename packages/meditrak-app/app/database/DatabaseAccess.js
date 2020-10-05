@@ -21,10 +21,16 @@ export class DatabaseAccess extends SyncingDatabase {
       filters.push(`name CONTAINS[c] "${searchTerm}" || parent.name CONTAINS[c] "${searchTerm}"`);
     }
 
+    console.log('entities filters', filters);
+
     let query = this.objects('Entity').sorted('name');
+    console.log('query1', query);
+
     if (filters) {
       query = query.filtered(combineClauses(filters, 'AND'));
     }
+    console.log('query2', query);
+    console.log('=========');
 
     return query;
   }

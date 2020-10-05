@@ -42,6 +42,7 @@ Entity.schema = {
     parent: { type: 'Entity', optional: true },
     code: { type: 'string', optional: true },
     type: { type: 'string', default: 'Entity not properly synchronised' },
+    attributes: { type: 'object', default: {} },
   },
 };
 
