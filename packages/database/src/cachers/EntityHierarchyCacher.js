@@ -45,7 +45,7 @@ export class EntityHierarchyCacher {
       return; // at a leaf node generation, no need to go any further
     }
 
-    const childIdsToAncestorIds = await this.fetchChildIdsToAncestorIds(
+    const childIdToAncestorIds = await this.fetchChildIdToAncestorIds(
       hierarchyId,
       parentIdsToAncestorIds,
       useEntityRelationLinks,
@@ -57,11 +57,11 @@ export class EntityHierarchyCacher {
       childCount,
     );
     if (!childrenAlreadyCached) {
-      await this.cacheGeneration(hierarchyId, childIdsToAncestorIds);
+      await this.cacheGeneration(hierarchyId, childIdToAncestorIds);
     }
 
     // if there is another generation, keep recursing through the hierarchy
-    await this.fetchAndCacheDescendants(hierarchyId, childIdsToAncestorIds);
+    await this.fetchAndCacheDescendants(hierarchyId, childIdToAncestorIds);
   }
 
   async checkChildrenAlreadyCached(hierarchyId, parentIds, childCount) {
@@ -73,19 +73,19 @@ export class EntityHierarchyCacher {
     return numberChildrenCached === childCount;
   }
 
-  async fetchChildIdsToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
+  async fetchChildIdToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
     const parentIds = Object.keys(parentIdsToAncestorIds);
     const relations = useEntityRelationLinks
       ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds)
       : await this.getRelationsCanonically(parentIds);
     const childIdToParentId = reduceToDictionary(relations, 'child_id', 'parent_id');
-    const childIdsToAncestorIds = Object.fromEntries(
+    const childIdToAncestorIds = Object.fromEntries(
       Object.entries(childIdToParentId).map(([childId, parentId]) => [
         childId,
         [parentId, ...parentIdsToAncestorIds[parentId]],
       ]),
     );
-    return childIdsToAncestorIds;
+    return childIdToAncestorIds;
   }
 
   async countEntityRelationChildren(hierarchyId, entityIds) {
@@ -95,10 +95,10 @@ export class EntityHierarchyCacher {
     });
   }
 
-  getCanonicalChildrenCriteria(entityId) {
+  getCanonicalChildrenCriteria(entityIds) {
     const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
     return {
-      parent_id: entityId,
+      parent_id: entityIds,
       type: canonicalTypes,
     };
   }
@@ -116,8 +116,8 @@ export class EntityHierarchyCacher {
     });
   }
 
-  async getRelationsCanonically(entityId) {
-    const criteria = this.getCanonicalChildrenCriteria(entityId);
+  async getRelationsCanonically(parentIds) {
+    const criteria = this.getCanonicalChildrenCriteria(parentIds);
     const children = await this.models.entity.find(criteria, { columns: ['id', 'parent_id'] });
     return children.map(c => ({ child_id: c.id, parent_id: c.parent_id }));
   }
@@ -125,13 +125,13 @@ export class EntityHierarchyCacher {
   /**
    * Stores the generation of ancestor/descendant info in the database
    * @param {string} hierarchyId
-   * @param {Entity[]} childIdsToAncestorIds  Ids of the child entities as keys, with the ids of their
+   * @param {Entity[]} childIdToAncestorIds   Ids of the child entities as keys, with the ids of their
    *                                          ancestors in order of generational distance, with immediate
    *                                          parent at index 0
    */
-  async cacheGeneration(hierarchyId, childIdsToAncestorIds) {
+  async cacheGeneration(hierarchyId, childIdToAncestorIds) {
     const records = [];
-    Object.entries(childIdsToAncestorIds).forEach(([childId, ancestorIds]) => {
+    Object.entries(childIdToAncestorIds).forEach(([childId, ancestorIds]) => {
       ancestorIds.forEach((ancestorId, ancestorIndex) =>
         records.push({
           entity_hierarchy_id: hierarchyId,
