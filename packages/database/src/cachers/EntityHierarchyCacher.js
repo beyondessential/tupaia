@@ -5,10 +5,108 @@
 import { reduceToDictionary } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../modelClasses/Entity';
 
+const REBUILD_DEBOUNCE_TIME = 1000; // wait 1 second after changes before rebuilding, to avoid double-up
+
 export class EntityHierarchyCacher {
   constructor(models) {
     this.models = models;
-    this.generationsVisited = new Set();
+    this.changeHandlerCancellers = [];
+    this.resetScheduledHierarchyRebuild();
+  }
+
+  listenForChanges() {
+    this.changeHandlerCancellers[0] = this.models.entity.addChangeHandler(this.handleEntityChange);
+    this.changeHandlerCancellers[1] = this.models.entityRelation.addChangeHandler(
+      this.handleEntityRelationChange,
+    );
+  }
+
+  stopListeningForChanges() {
+    this.changeHandlerCancellers.forEach(c => c());
+    this.changeHandlerCancellers = [];
+  }
+
+  handleEntityChange = async ({ record_id: entityId }) => {
+    // if entity was deleted or created, or parent_id has changed, delete subtrees
+    // across all hierarchies that involve the entity
+    const hierarchies = await this.models.entityHierarchy.all();
+    const hierarchyTasks = hierarchies.map(async ({ id: hierarchyId }) => {
+      await this.deleteSubtree(hierarchyId, entityId);
+      return this.scheduleHierarchyForRebuild(hierarchyId);
+    });
+    await Promise.all(hierarchyTasks);
+  };
+
+  handleEntityRelationChange = async ({ record }) => {
+    // delete subtree from child_id onwards within the associated hierarchy
+    // after debouncing to wait for other changes, kick off a new build of
+    // any projects associated with changed hierarchies
+    const { entity_hierarchy_id: hierarchyId, child_id: childId } = record;
+    await this.deleteSubtree(hierarchyId, childId);
+    return this.scheduleHierarchyForRebuild(hierarchyId);
+  };
+
+  resetScheduledHierarchyRebuild() {
+    this.hierarchiesForRebuild = new Set();
+    this.scheduledRebuildPromise = null;
+    this.resolveScheduledRebuild = null;
+    this.scheduledRebuildTimeout = null;
+  }
+
+  // add the hierarchy to the list to be rebuilt, with a debounce so that we don't rebuild
+  // many times for a bulk lot of changes
+  scheduleHierarchyForRebuild(hierarchyId) {
+    this.hierarchiesForRebuild.add(hierarchyId);
+
+    // clear any previous scheduled rebuild, so that we debounce all changes in the same time period
+    if (this.scheduledRebuildTimeout) {
+      clearTimeout(this.scheduledRebuildTimeout);
+    }
+
+    // set up a promise that will complete when the rebuild has happened, even if that is after
+    // several other changes have been added after debouncing
+    if (!this.scheduledRebuildPromise) {
+      this.scheduledRebuildPromise = new Promise(resolve => {
+        this.resolveScheduledRebuild = () => {
+          this.resetScheduledHierarchyRebuild();
+          resolve();
+        };
+      });
+    }
+
+    // schedule the rebuild to happen after an adequate period of debouncing
+    this.scheduledRebuildTimeout = setTimeout(async () => {
+      await this.buildAndCacheHierarchies([...this.hierarchiesForRebuild]);
+      this.resolveScheduledRebuild();
+    }, REBUILD_DEBOUNCE_TIME);
+
+    // return the promise for the caller to await
+    return this.scheduledRebuildPromise;
+  }
+
+  async deleteSubtree(hierarchyId, rootEntityId) {
+    const descendantRelations = await this.models.ancestorDescendantRelation.find({
+      ancestor_id: rootEntityId,
+      entity_hierarchy_id: hierarchyId,
+    });
+    const entityIdsForDelete = [rootEntityId, ...descendantRelations.map(r => r.descendant_id)];
+    await this.models.database.executeSqlInBatches(entityIdsForDelete, batchOfEntityIds => [
+      `
+        DELETE FROM ancestor_descendant_relation
+        WHERE
+          entity_hierarchy_id = ?
+        AND (
+            ancestor_id IN (${batchOfEntityIds.map(() => '?').join(',')})
+          OR
+            descendant_id IN (${batchOfEntityIds.map(() => '?').join(',')})
+        );
+      `,
+      [hierarchyId, ...batchOfEntityIds, ...batchOfEntityIds],
+    ]);
+    await this.models.ancestorDescendantRelation.delete({
+      descendant_id: entityIdsForDelete,
+      entity_hierarchy_id: hierarchyId,
+    });
   }
 
   /**

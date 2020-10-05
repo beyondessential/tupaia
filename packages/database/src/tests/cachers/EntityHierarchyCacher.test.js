@@ -70,8 +70,7 @@ describe('EntityHierarchyCacher', () => {
 
     // delete an entity, and make sure its ancestor descendant relations are all deleted
     const entityToDelete = 'entity_aaa_test';
-    await models.entityRelation.delete({ parent_id: entityToDelete });
-    await models.entityRelation.delete({ child_id: entityToDelete });
+    await models.entityRelation.delete({ child_id: entityToDelete }); // can't delete entity until entity relation is gone
     await models.entity.delete({ id: entityToDelete });
     await models.database.waitForAllChangeHandlers();
     await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_ENTITY_AAA_DELETED);
@@ -98,7 +97,7 @@ describe('EntityHierarchyCacher', () => {
     await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED);
   });
 
-  it.only('deletes all ancestor descendant relations if an entity relation record is deleted', async () => {
+  it('deletes all ancestor descendant relations if an entity relation record is deleted', async () => {
     const projectCode = 'project_b_test';
     await buildAndCacheProject(projectCode);
 
