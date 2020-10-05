@@ -31,16 +31,6 @@
     "winston": "3.3.3"
   },
   "eslintConfig": {
-    "overrides": [
-      {
-        "files": "src/modelClasses/**",
-        "rules": {
-          "max-classes-per-file": [
-            "error",
-            2
-          ]
-        }
-      }
-    ]
+    "extends": "@beyondessential/jest"
   }
 }
