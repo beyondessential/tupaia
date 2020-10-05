@@ -11,21 +11,11 @@ var seed;
  * This enables us to not have to rely on NODE_PATH.
  */
 
-const REPORT = {
-  id: 'Laos_Schools_District_Details_Table',
+const REPORT_DISTRICT_INFO = {
+  id: 'Laos_Schools_District_Details_Table_District_Info',
   dataBuilder: 'nonMatrixTableFromCells',
   dataBuilderConfig: {
-    rows: [
-      'District code',
-      'District population',
-      'Priority district',
-      'Province',
-      'Province code',
-      'Province population',
-      'Number of Pre-schools',
-      'Number of Primary schools',
-      'Number of Secondary schools',
-    ],
+    rows: ['District code', 'District population', 'Priority district'],
     cells: [
       [
         {
@@ -37,6 +27,26 @@ const REPORT = {
       ],
       ['SDP001'],
       ['SPD001'],
+    ],
+    columns: ['main'],
+    entityAggregation: {
+      dataSourceEntityType: 'sub_district',
+    },
+  },
+  viewJson: {
+    name: 'District details table',
+    type: 'view',
+    viewType: 'multiValue',
+    valueType: 'text',
+  },
+};
+
+const REPORT_PROVINCE_INFO = {
+  id: 'Laos_Schools_District_Details_Table_Province_Info',
+  dataBuilder: 'nonMatrixTableFromCells',
+  dataBuilderConfig: {
+    rows: ['Province', 'Province code', 'Province population'],
+    cells: [
       [
         {
           key: 'Province_name',
@@ -56,6 +66,26 @@ const REPORT = {
         },
       ],
       ['SPP001'],
+    ],
+    columns: ['main'],
+    entityAggregation: {
+      dataSourceEntityType: 'district',
+    },
+  },
+  viewJson: {
+    name: 'Province details table',
+    type: 'view',
+    viewType: 'multiValue',
+    valueType: 'text',
+  },
+};
+
+const REPORT_NUMBER_OF_SCHOOLS_BY_TYPE = {
+  id: 'Laos_Schools_Number_Of_Schools_By_Type_Table',
+  dataBuilder: 'nonMatrixTableFromCells',
+  dataBuilderConfig: {
+    rows: ['Number of Pre-schools', 'Number of Primary schools', 'Number of Secondary schools'],
+    cells: [
       [
         {
           key: 'Pre_Primary_School_Count',
@@ -95,13 +125,11 @@ const REPORT = {
     ],
     columns: ['main'],
     entityAggregation: {
-      dataSourceEntityType: ['district', 'sub_district'],
-      aggregationEntityType: 'sub_district',
-      aggregationType: 'RAW',
+      dataSourceEntityType: 'school',
     },
   },
   viewJson: {
-    name: 'District details table',
+    name: 'Number of schools by type table',
     type: 'view',
     viewType: 'multiValue',
     valueType: 'text',
@@ -116,29 +144,41 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function (db) {
-  await insertObject(db, 'dashboardReport', REPORT);
+const addReport = async (db, report) => {
+  await insertObject(db, 'dashboardReport', report);
 
   await db.runSql(`
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = "dashboardReports" || '{ ${REPORT.id} }'
+      "dashboardReports" = "dashboardReports" || '{ ${report.id} }'
     WHERE
       "code" = '${DASHBOARD_GROUP_CODE}';
   `);
 };
 
-exports.down = async function (db) {
+const deleteReport = async (db, report) => {
   await db.runSql(`
-    DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
+    DELETE FROM "dashboardReport" WHERE id = '${report.id}';
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = array_remove("dashboardReports", '${REPORT.id}')
+      "dashboardReports" = array_remove("dashboardReports", '${report.id}')
     WHERE
       "code" = '${DASHBOARD_GROUP_CODE}';
   `);
+};
+
+exports.up = async function (db) {
+  await addReport(db, REPORT_DISTRICT_INFO);
+  await addReport(db, REPORT_PROVINCE_INFO);
+  await addReport(db, REPORT_NUMBER_OF_SCHOOLS_BY_TYPE);
+};
+
+exports.down = async function (db) {
+  await deleteReport(db, REPORT_DISTRICT_INFO);
+  await deleteReport(db, REPORT_PROVINCE_INFO);
+  await deleteReport(db, REPORT_NUMBER_OF_SCHOOLS_BY_TYPE);
 };
 
 exports._meta = {
