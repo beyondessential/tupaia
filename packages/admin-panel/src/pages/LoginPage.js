@@ -10,11 +10,12 @@ import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
+import { FlexCenter } from '@tupaia/ui-components';
 import MuiLink from '@material-ui/core/Link';
-import { getIsUserAuthenticated } from './selectors';
-import { LoginForm } from './LoginForm';
+import { getIsUserAuthenticated } from '../authentication';
+import { LoginForm } from '../authentication/LoginForm';
 
-export const Main = styled.main`
+const Main = styled.main`
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -22,13 +23,13 @@ export const Main = styled.main`
   padding-top: 5%;
 `;
 
-export const Container = styled.section`
+const Container = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
 `;
 
-export const StyledCard = styled(MuiCard)`
+const StyledCard = styled(MuiCard)`
   width: 28rem;
   padding: 2.5rem 3.5rem 3rem 3rem;
   margin: 0 auto 2rem;
@@ -38,13 +39,6 @@ export const StyledCard = styled(MuiCard)`
 const StyledImg = styled.img`
   height: 6rem;
   width: auto;
-  margin-bottom: 2.5rem;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-bottom: 2.5rem;
 `;
 
@@ -65,7 +59,7 @@ const StyledLink = styled(MuiLink)`
 
 const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 
-export const LoginViewComponent = ({ isLoggedIn }) => {
+const LoginPageComponent = ({ isLoggedIn }) => {
   if (isLoggedIn) {
     return <Redirect to="/" />;
   }
@@ -77,16 +71,16 @@ export const LoginViewComponent = ({ isLoggedIn }) => {
         <StyledCard>
           <LoginForm />
         </StyledCard>
-        <Wrapper>
+        <FlexCenter mb={4}>
           <StyledHelperText>Don&apos;t have access?</StyledHelperText>
           <StyledLink href={requestAnAccountUrl}>Request an account</StyledLink>
-        </Wrapper>
+        </FlexCenter>
       </Container>
     </Main>
   );
 };
 
-LoginViewComponent.propTypes = {
+LoginPageComponent.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
 };
 
@@ -94,4 +88,4 @@ const mapStateToProps = state => ({
   isLoggedIn: getIsUserAuthenticated(state),
 });
 
-export const LoginView = connect(mapStateToProps)(LoginViewComponent);
+export const LoginPage = connect(mapStateToProps)(LoginPageComponent);

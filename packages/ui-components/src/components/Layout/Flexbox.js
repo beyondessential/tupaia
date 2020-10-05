@@ -4,20 +4,27 @@
  */
 
 import styled from 'styled-components';
+import MuiBox from '@material-ui/core/Box';
 
-export const FlexSpaceBetween = styled.div`
+export const FlexSpaceBetween = styled(MuiBox)`
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-export const FlexStart = styled.div`
+export const FlexStart = styled(MuiBox)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
 `;
 
-export const FlexEnd = styled.div`
+export const FlexCenter = styled(MuiBox)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const FlexEnd = styled(MuiBox)`
   display: flex;
   justify-content: flex-end;
   align-items: center;
