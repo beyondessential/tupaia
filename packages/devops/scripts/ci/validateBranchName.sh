@@ -4,7 +4,8 @@ DIR=`dirname "$0"`
 . ${DIR}/utils.sh
 
 MAX_LENGTH=56
-RESERVED_ENDINGS=(api config export mobile admin www)
+RESERVED_CHARS=('/' '\' '.' '&' '?')
+RESERVED_ENDINGS=(admin aggregation api config export mobile tonga-aggregation www)
 
 branch_name="$CI_BRANCH"
 if [[ $branch_name == "" ]]; then
@@ -12,14 +13,24 @@ if [[ $branch_name == "" ]]; then
     branch_name=`git rev-parse --abbrev-ref HEAD`
 fi
 
-# Validate branch name length
+# Validate name length
 name_length=${#branch_name}
 if [[ $name_length -gt MAX_LENGTH ]]; then
     log_error "❌ Branch name is too long, must be $MAX_LENGTH characters max"
     exit 1;
 fi
 
-# Validate branch name ending
+# Validate characters in name
+for character in ${RESERVED_CHARS[@]}
+do
+    if [[ "$branch_name" == *"$character"* ]]; then
+        log_error "❌ Invalid character in branch name: '$character'"
+        exit 1;
+    fi
+done
+
+
+# Validate name ending
 for reserved_ending in ${RESERVED_ENDINGS[@]}
 do
     if [[ "$branch_name" == *$reserved_ending ]]; then
