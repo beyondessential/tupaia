@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { buildAccessPolicy } from '../../buildAccessPolicy';
 import { Demo } from './setup';
 import { testAccessPolicyHandler } from './testAccessPolicyHandler';
 import { testAsPublicUser } from './testAsPublicUser';
