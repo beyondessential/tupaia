@@ -108,6 +108,9 @@ export class TupaiaDatabase {
     // if a change handler is being added, this db needs a change channel - make sure it's instantiated
     this.getOrCreateChangeChannel();
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
+    return () => {
+      delete this.getChangeHandlersForCollection(collectionName)[key];
+    };
   }
 
   getHandlersForChange(change) {
