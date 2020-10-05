@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { DataSourceModel, DataSourceType } from '../../modelClasses/DataSource';
 
 describe('DataSource', () => {
@@ -21,20 +19,22 @@ describe('DataSource', () => {
     const assertConfigIsSanitized = ({ type, serviceType }, config, expectedConfig) => {
       const dataSource = createDataSource({ type, serviceType, config });
       dataSource.sanitizeConfig();
-      expect(dataSource.config).to.deep.equal(expectedConfig);
+      expect(dataSource.config).toEqual(expectedConfig);
     };
 
-    it('empty config', () => {
-      [undefined, null, {}].forEach(emptyConfig => {
-        const dataSource = createDataSource({ config: emptyConfig });
-        dataSource.sanitizeConfig();
-        expect(dataSource.config).be.an('object');
+    describe('handle invalid input', () => {
+      it('empty config', () => {
+        [undefined, null, {}].forEach(emptyConfig => {
+          const dataSource = createDataSource({ config: emptyConfig });
+          dataSource.sanitizeConfig();
+          expect(dataSource.config).toBeInstanceOf(Object);
+        });
       });
-    });
 
-    it('unknown service', () => {
-      const dataSource = createDataSource({ serviceType: 'random', config: {} });
-      expect(() => dataSource.sanitizeConfig()).to.throw(/config schema .*service/);
+      it('unknown service', () => {
+        const dataSource = createDataSource({ serviceType: 'random', config: {} });
+        expect(() => dataSource.sanitizeConfig()).toThrowError(/config schema .*service/);
+      });
     });
 
     describe('dhis service', () => {
