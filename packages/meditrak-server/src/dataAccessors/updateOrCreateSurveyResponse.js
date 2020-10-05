@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { DatabaseError, UploadError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
@@ -43,7 +43,7 @@ async function saveAnswer(models, answer, surveyResponseId) {
 
 /**
  * Creates or updates survey responses from passed changes
- **/
+ */
 export async function updateOrCreateSurveyResponse(models, surveyResponseObject) {
   try {
     const {

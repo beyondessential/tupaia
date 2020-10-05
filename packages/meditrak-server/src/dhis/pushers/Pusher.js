@@ -59,7 +59,6 @@ export class Pusher {
    *
    * @returns {Promise<PushResults>}
    */
-  // eslint-disable-next-line class-methods-use-this
   async createOrUpdate() {
     throw new Error('Any subclass of Pusher must implement the "createOrUpdate" method');
   }
@@ -70,7 +69,6 @@ export class Pusher {
    *
    * @returns {Promise<PushResults>}
    */
-  // eslint-disable-next-line class-methods-use-this
   async delete() {
     throw new Error('Any subclass of Pusher must implement the "delete" method');
   }

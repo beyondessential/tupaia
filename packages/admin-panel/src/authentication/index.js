@@ -7,5 +7,4 @@ export * from './actions';
 export * from './selectors';
 export { reducer } from './reducer';
 export { ProfileButton } from './ProfileButton';
-export { LoginView } from './LoginView';
 export { PrivateRoute } from './PrivateRoute';

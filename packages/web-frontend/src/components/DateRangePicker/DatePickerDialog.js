@@ -5,19 +5,19 @@
 
 import React, { useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import { DIALOG_Z_INDEX } from '../../styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import { Error } from '../Error';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
+import moment from 'moment';
+import styled from 'styled-components';
+import { DIALOG_Z_INDEX } from '../../styles';
+import { Error } from '../Error';
 import { DayPicker } from './DayPicker';
 import { MonthPicker } from './MonthPicker';
 import { YearPicker } from './YearPicker';
 import { WeekPicker } from './WeekPicker';
 import { QuarterPicker } from './QuarterPicker';
-import moment from 'moment';
-import styled from 'styled-components';
 import {
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,

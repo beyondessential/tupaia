@@ -98,7 +98,7 @@ export default class extends RouteHandler {
 
       reports.forEach(report => {
         const { viewJson, dataBuilder, drillDownLevel } = report;
-        const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
+        const { displayOnEntityConditions, ...restOfViewJson } = viewJson; // Avoid sending displayOnEntityConditions to the frontend
         const view = {
           viewId,
           drillDownLevel,

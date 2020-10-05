@@ -10,7 +10,7 @@ import { createEntity, createDataElement, createAlert, resetTestData } from '../
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   beforeEach(app.authenticate);
 

@@ -10,9 +10,7 @@ export const percentOperationalFacilitiesWithData = async (
   const { dataElementGroupCode, monthsOfData } = dataBuilderConfig;
   const dhisParameters = { dataElementGroupCode, idScheme: 'code' };
   if (monthsOfData && !(query.startDate || query.endDate)) {
-    dhisParameters.startDate = moment()
-      .subtract(monthsOfData, 'months')
-      .toISOString();
+    dhisParameters.startDate = moment().subtract(monthsOfData, 'months').toISOString();
     dhisParameters.endDate = moment().toISOString();
   }
 

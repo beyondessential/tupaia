@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { parse as parseAuthHeader } from 'basic-auth';
 import { UnauthenticatedError, DatabaseError } from '@tupaia/utils';
