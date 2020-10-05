@@ -61,11 +61,7 @@ export class EntityHierarchyCacher {
     }
 
     // if there is another generation, keep recursing through the hierarchy
-    await this.fetchAndCacheDescendants(
-      hierarchyId,
-      childIdsToAncestorIds,
-      entityRelationChildCount === 0,
-    );
+    await this.fetchAndCacheDescendants(hierarchyId, childIdsToAncestorIds);
   }
 
   async checkChildrenAlreadyCached(hierarchyId, parentIds, childCount) {
