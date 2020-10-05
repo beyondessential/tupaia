@@ -143,22 +143,15 @@ export class EntityType extends DatabaseType {
   }
 
   async getChildrenViaHierarchy(hierarchyId) {
-    //Raw sql:
-    //     SELECT entity.*
-    //     FROM entity
-    //     INNER JOIN entity_relation on entity.id = entity_relation.child_id
-    //     WHERE entity_relation.parent_id = `'${this.id}'`
-    //     AND entity_relation.entity_hierarchy_id = `'${hierarchyId}'`;
-    return this.model.find(
-      {
-        [`${TYPES.ENTITY_RELATION}.parent_id`]: this.id,
-        [`${TYPES.ENTITY_RELATION}.entity_hierarchy_id`]: hierarchyId,
-      },
-      {
-        joinWith: TYPES.ENTITY_RELATION,
-        joinType: JOIN_TYPES.INNER,
-        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.ENTITY_RELATION}.child_id`],
-      },
+    return this.database.executeSql(
+      `
+        SELECT entity.*
+        FROM entity
+        INNER JOIN entity_relation on entity.id = entity_relation.child_id
+        WHERE entity_relation.parent_id = ?
+        AND entity_relation.entity_hierarchy_id = ?;
+      `,
+      [this.id, hierarchyId],
     );
   }
 
