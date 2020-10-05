@@ -18,5 +18,8 @@ export class CRUDHandler extends RouteHandler {
     this.resource = extractResourceFromEndpoint(endpoint);
     this.recordType = resourceToRecordType(this.resource);
     this.recordId = params.recordId; // undefined for multi record requests
+    this.parentResource = params.parentResource;
+    this.parentRecordType = resourceToRecordType(this.parentResource);
+    this.parentRecordId = params.parentRecordId;
   }
 }
