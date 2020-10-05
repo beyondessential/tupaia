@@ -1,6 +1,6 @@
 'use strict';
 
-import { codeToId, insertObject, db, generateId } from '../utilities';
+import { generateId, insertObject } from '../utilities';
 
 var dbm;
 var type;
@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -31,7 +31,7 @@ const getOverlaysForGroup = (db, groupCode) => {
   `);
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   // 1. Add existing dashboard report to Samoa
   await db.runSql(`
     update "dashboardGroup" 
@@ -45,45 +45,45 @@ exports.up = async function(db) {
   const overlayResponse2 = await getOverlaysForGroup(db, 'COVID19_Facility_Commodities');
   const overlays = [...overlayResponse1.rows, ...overlayResponse2.rows];
 
-  overlays.forEach(({ id }) => {
-    db.runSql(`
+  for (const overlay of overlays) {
+    await db.runSql(`
       update "mapOverlay"
       set "countryCodes" = "countryCodes" || '{WS}'
-      where id = '${id}';
+      where id = '${overlay.id}';
     `);
-  });
+  }
 
   // 3. Copy overlays so that the group name can be changed to Samoa without having duplicate groups
   const overlaysToCopy = (await getOverlaysForGroup(db, 'COVID19_Tonga')).rows;
 
   const mapOverlayGroupId = generateId();
-  insertObject(db, 'map_overlay_group', {
+  await insertObject(db, 'map_overlay_group', {
     id: mapOverlayGroupId,
     name: 'COVID-19 Samoa',
     code: 'COVID19_Samoa',
   });
 
-  overlaysToCopy.forEach(overlayObject => {
+  for (const overlayObject of overlaysToCopy) {
     const id = `Samoa_${overlayObject.id}`;
 
     // eslint-disable-next-line no-param-reassign
     delete overlayObject.linkedMeasures;
-    insertObject(db, 'mapOverlay', {
+    await insertObject(db, 'mapOverlay', {
       ...overlayObject,
       projectCodes: '{fanafana,explore}', // Adding the new overlays to fanafana for consistency.
       id,
       countryCodes: '{WS}',
     });
-    insertObject(db, 'map_overlay_group_relation', {
+    await insertObject(db, 'map_overlay_group_relation', {
       id: generateId(),
       map_overlay_group_id: mapOverlayGroupId,
       child_id: id,
       child_type: 'mapOverlay',
     });
-  });
+  }
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   // 1. Delete existing dashboard report from Samoa
   await db.runSql(`
     update "dashboardGroup" 
@@ -97,25 +97,25 @@ exports.down = async function(db) {
   const overlayResponse2 = await getOverlaysForGroup(db, 'COVID19_Facility_Commodities');
   const overlays = [...overlayResponse1.rows, ...overlayResponse2.rows];
 
-  overlays.forEach(({ id }) => {
-    db.runSql(`
+  for (const overlay of overlays) {
+    await db.runSql(`
       update "mapOverlay"
       set "countryCodes" = array_remove("countryCodes", 'WS')
-      where id = '${id}';
+      where id = '${overlay.id}';
     `);
-  });
+  }
 
   // 3. Delete duplicated map overlays and new overlay group
   const overlaysToDelete = (await getOverlaysForGroup(db, 'COVID19_Tonga')).rows;
 
-  overlaysToDelete.forEach(overlayObject => {
+  for (const overlayObject of overlaysToDelete) {
     const id = `Samoa_${overlayObject.id}`;
 
-    db.runSql(`delete from "map_overlay_group_relation" where child_id = '${id}'`);
-    db.runSql(`delete from "mapOverlay" where id = '${id}'`);
-  });
+    await db.runSql(`delete from "map_overlay_group_relation" where child_id = '${id}'`);
+    await db.runSql(`delete from "mapOverlay" where id = '${id}'`);
+  }
 
-  db.runSql(`delete from "map_overlay_group" where code = 'COVID19_Samoa'`);
+  await db.runSql(`delete from "map_overlay_group" where code = 'COVID19_Samoa'`);
 };
 
 exports._meta = {
