@@ -4,32 +4,28 @@
  */
 
 import { upsertDummyRecord, findOrCreateDummyRecord } from '@tupaia/database';
-import { Demo } from './setup';
 import { buildAccessPolicy } from '../../buildAccessPolicy';
+import { setUp } from './helpers';
 
 export const testAsAdminUser = () => {
   let accessPolicy;
 
   beforeAll(async () => {
-    const user = await upsertDummyRecord(Demo.models.user);
-    const tonga = await findOrCreateDummyRecord(
-      Demo.models.entity,
-      { code: 'TO' },
-      { name: 'Tonga' },
-    );
+    const { models, user, entities, permissionGroups } = await setUp();
+    const tonga = await findOrCreateDummyRecord(models.entity, { code: 'TO' }, { name: 'Tonga' });
 
-    await upsertDummyRecord(Demo.models.userEntityPermission, {
+    await upsertDummyRecord(models.userEntityPermission, {
       user_id: user.id,
-      entity_id: Demo.demoLand.id,
-      permission_group_id: Demo.publicPermission.id,
+      entity_id: entities.demoLand.id,
+      permission_group_id: permissionGroups.public.id,
     });
-    await upsertDummyRecord(Demo.models.userEntityPermission, {
+    await upsertDummyRecord(models.userEntityPermission, {
       user_id: user.id,
       entity_id: tonga.id,
-      permission_group_id: Demo.adminPermission.id,
+      permission_group_id: permissionGroups.admin.id,
     });
 
-    accessPolicy = await buildAccessPolicy(Demo.models, user.id);
+    accessPolicy = await buildAccessPolicy(models, user.id);
   });
 
   it('should have Demo Land public access', () => {
