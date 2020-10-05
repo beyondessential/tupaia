@@ -43,6 +43,7 @@ describe('EntityHierarchyCacher', () => {
   };
 
   beforeEach(async () => {
+    hierarchyCacher.stopListeningForChanges();
     await depopulateTestData(models, TEST_DATA_TO_DEPOPULATE);
     await populateTestData(models, TEST_DATA_TO_POPULATE);
   });
