@@ -26,8 +26,6 @@ class JestMatcherFactory {
     this.extendApi = extendApi;
   }
 
-  isAsync = config => config.matcher.constructor.name === 'AsyncFunction';
-
   /**
    * @param {MatcherConfig} config
    */
