@@ -277,12 +277,19 @@ export class CartesianChart extends PureComponent {
     switch (config.type) {
       case 'scale':
         return dataExtreme => dataExtreme * config.value;
+      case 'clamp':
+        return dataExtreme => {
+          const maxClampedVal = config.max ? Math.min(dataExtreme, config.max) : dataExtreme;
+          return config.min ? Math.max(maxClampedVal, config.min) : maxClampedVal;
+        };
       case 'number':
       case 'string':
       default:
         return config.value;
     }
   };
+
+  containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
   renderVerticalTick = props => {
     const { viewContent } = this.props;
@@ -385,7 +392,7 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         orientation={orientation}
         domain={this.calculateYAxisDomain(yAxisDomain)}
-        allowDataOverflow={valueType === PERCENTAGE}
+        allowDataOverflow={valueType === PERCENTAGE || this.containsClamp(yAxisDomain)}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
         tickFormatter={value => formatDataValue(value, valueType || axisValueType)}
