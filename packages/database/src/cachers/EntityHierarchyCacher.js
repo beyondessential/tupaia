@@ -27,8 +27,8 @@ export class EntityHierarchyCacher {
   }
 
   handleEntityChange = async ({ record_id: entityId }) => {
-    // if entity was deleted or created, or parent_id has changed, delete subtrees
-    // across all hierarchies that involve the entity
+    // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
+    // rebuild all hierarchies
     const hierarchies = await this.models.entityHierarchy.all();
     const hierarchyTasks = hierarchies.map(async ({ id: hierarchyId }) => {
       await this.deleteSubtree(hierarchyId, entityId);
@@ -38,9 +38,8 @@ export class EntityHierarchyCacher {
   };
 
   handleEntityRelationChange = async ({ record }) => {
-    // delete subtree from child_id onwards within the associated hierarchy
-    // after debouncing to wait for other changes, kick off a new build of
-    // any projects associated with changed hierarchies
+    // delete subtree from child_id onwards within the associated hierarchy, and kick off a new build
+    // of any projects associated with changed hierarchies
     const { entity_hierarchy_id: hierarchyId, child_id: childId } = record;
     await this.deleteSubtree(hierarchyId, childId);
     return this.scheduleHierarchyForRebuild(hierarchyId);
