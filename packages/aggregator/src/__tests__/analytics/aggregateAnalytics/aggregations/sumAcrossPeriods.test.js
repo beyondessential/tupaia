@@ -40,10 +40,6 @@ describe('sumAcrossPeriods', () => {
     MockDate.set(CURRENT_DATE_STUB);
   });
 
-  afterAll(() => {
-    MockDate.reset();
-  });
-
   it('single analytic', () => {
     expect(sumAcrossPeriods([ANALYTICS[0]])).toStrictEqual(expect.arrayContaining([ANALYTICS[0]]));
   });
