@@ -3,19 +3,13 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
-import {
-  Button,
-  SmallAlert,
-  TextField,
-  ProfileImageField,
-  ConfirmDeleteModal,
-} from '@tupaia/ui-components';
+import { Button, SmallAlert, TextField, ProfileImageField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
 import { Header } from '../widgets';
 import { createBase64Image } from '../utilities/createBase64Image';
@@ -56,64 +50,20 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
-const initialState = {
-  status: STATUS.IDLE,
-  errorMessage: null,
-  successMessage: null,
-  confirmModalIsOpen: false,
-  profileImage: {
-    fileId: null,
-    data: null,
-  },
-};
-
-const initReducer = user => {
-  return { ...initialState, profileImage: { data: user.profileImage, fileId: null } };
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'loading': {
-      return {
-        ...state,
-        status: STATUS.LOADING,
-        errorMessage: null,
-        successMessage: null,
-      };
-    }
-    case 'fileChange': {
-      return {
-        ...state,
-        profileImage: action.payload,
-        status: STATUS.IDLE,
-      };
-    }
-    case 'deleteProfile': {
-      return { ...state, profileImage: { fileId: '-', data: null }, confirmModalIsOpen: false };
-    }
-    case 'disable':
-      return { ...state, status: STATUS.DISABLED };
-    case 'success':
-      return { ...state, status: STATUS.SUCCESS, successMessage: action.payload };
-    case 'error':
-      return { ...state, status: STATUS.ERROR, errorMessage: action.payload };
-    case 'toggleModal':
-      return { ...state, confirmModalIsOpen: action.payload };
-    default:
-      throw new Error('type does not exist');
-  }
-}
-
 const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
+  const [status, setStatus] = useState(STATUS.IDLE);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [profileImage, setProfileImage] = useState({
+    fileId: null,
+    data: user.profileImage,
+  });
   const { handleSubmit, register, errors } = useForm();
   const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
-  const [
-    { status, successMessage, errorMessage, profileImage, confirmModalIsOpen },
-    dispatch,
-  ] = React.useReducer(reducer, user, initReducer);
 
   const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
-    dispatch({ type: 'loading' });
+    setStatus(STATUS.LOADING);
+    setErrorMessage(null);
     try {
       await onUpdateProfile({
         first_name: firstName,
@@ -122,24 +72,30 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
         employer,
         profileImage: profileImage.fileId && profileImage,
       });
-      dispatch({ type: 'success', payload: 'Profile successfully updated.' });
+      setStatus(STATUS.SUCCESS);
+      setSuccessMessage('Profile successfully updated.');
     } catch (error) {
-      dispatch({ type: 'error', payload: error.message });
+      setStatus(STATUS.ERROR);
+      setErrorMessage(error.message);
     }
   });
 
   const handleFileChange = async event => {
-    dispatch({ type: 'disable' });
+    setStatus(STATUS.DISABLED);
     const fileObject = event.target.files[0];
     const Base64 = await createBase64Image(fileObject);
     const fileName = fileObject.name.replace(/\.[^/.]+$/, '');
-    dispatch({
-      type: 'fileChange',
-      payload: {
-        fileId: `${user.id}-${fileName}`,
-        data: Base64,
-      },
+    setProfileImage({
+      fileId: `${user.id}-${fileName}`,
+      data: Base64,
     });
+    setStatus(STATUS.IDLE);
+  };
+
+  const handleFileDelete = () => {
+    // We need to set a file id to something so that the backend will pick up the profileImage field
+    // as an updatedField and save the change.
+    setProfileImage({ fileId: '-', data: null });
   };
 
   const { firstName, lastName, position, employer } = user;
@@ -157,7 +113,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
             profileImage={profileImage && profileImage.data}
             userInitial={userInitial}
             onChange={handleFileChange}
-            onDelete={() => dispatch({ type: 'toggleModal', payload: true })}
+            onDelete={handleFileDelete}
           />
           <Divider />
           <TextField
@@ -213,15 +169,6 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
             Update Profile
           </StyledButton>
         </form>
-        <ConfirmDeleteModal
-          isOpen={confirmModalIsOpen}
-          title="Remove Photo"
-          message="Are you sure you want to remove your photo?"
-          onConfirm={() => {
-            dispatch({ type: 'deleteProfile' });
-          }}
-          onCancel={() => dispatch({ type: 'toggleModal', payload: false })}
-        />
       </Container>
     </>
   );

@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Box from '@material-ui/core/Box';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MuiAvatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
+import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
 
@@ -65,19 +66,21 @@ const TextLabel = styled.div`
 
 export const ProfileImageField = React.memo(
   ({ name, profileImage, userInitial, onDelete, onChange }) => {
+    const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const inputEl = useRef(null);
 
-    const handleChange = event => {
-      onChange(event);
+    const handleDelete = () => {
+      setConfirmModalIsOpen(false);
+      onDelete();
     };
 
     return (
       <Label as="label" htmlFor={name}>
-        <HiddenFileInput ref={inputEl} id={name} name={name} type="file" onChange={handleChange} />
+        <HiddenFileInput ref={inputEl} id={name} name={name} type="file" onChange={onChange} />
         <Box position="relative">
           <Avatar src={profileImage}>{userInitial}</Avatar>
           {profileImage && (
-            <DeleteButton onClick={onDelete}>
+            <DeleteButton onClick={() => setConfirmModalIsOpen(true)}>
               <DeleteIcon />
             </DeleteButton>
           )}
@@ -86,6 +89,13 @@ export const ProfileImageField = React.memo(
           <TextLabel>Your Avatar</TextLabel>
           <GreyOutlinedButton component="span">Upload photo</GreyOutlinedButton>
         </Box>
+        <ConfirmDeleteModal
+          isOpen={confirmModalIsOpen}
+          title="Remove Photo"
+          message="Are you sure you want to remove your photo?"
+          onConfirm={handleDelete}
+          onCancel={() => setConfirmModalIsOpen(false)}
+        />
       </Label>
     );
   },
