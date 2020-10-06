@@ -83,11 +83,11 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
   const handleFileChange = async event => {
     setStatus(STATUS.DISABLED);
     const fileObject = event.target.files[0];
-    const Base64 = await createBase64Image(fileObject);
+    const base64 = await createBase64Image(fileObject);
     const fileName = fileObject.name.replace(/\.[^/.]+$/, '');
     setProfileImage({
       fileId: `${user.id}-${fileName}`,
-      data: Base64,
+      data: base64,
     });
     setStatus(STATUS.IDLE);
   };
