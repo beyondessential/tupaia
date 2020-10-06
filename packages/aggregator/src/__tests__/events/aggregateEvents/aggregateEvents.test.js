@@ -65,10 +65,12 @@ describe('aggregateEvents()', () => {
     expect(() => aggregateEvents(EVENTS, 'NONEXISTANT')).toThrowError('Aggregation type not found');
     expect(() => aggregateEvents(EVENTS, null)).toThrowError('Aggregation type not found');
   });
+
   it('empty aggregation type', () => {
     expect(aggregateEvents(EVENTS)).toStrictEqual(EVENTS);
     expect(aggregateEvents(EVENTS, undefined)).toStrictEqual(EVENTS);
   });
+
   describe('REPLACE_ORG_UNIT_WITH_ORG_GROUP', () => {
     it('replaces org units correctly', () => {
       const expectedResponse = [
@@ -115,6 +117,7 @@ describe('aggregateEvents()', () => {
           orgUnit: 'Parent_1',
         },
       ];
+
       expect(
         aggregateEvents(
           EVENTS,
