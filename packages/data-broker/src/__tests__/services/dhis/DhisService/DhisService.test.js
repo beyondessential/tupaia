@@ -9,9 +9,9 @@ import { testPull } from './testPull';
 import { testPush } from './testPush';
 
 describe('DhisService', () => {
-  // describe('push()', testPush);
+  describe('push()', testPush);
 
-  // describe('delete()', testDelete);
+  describe('delete()', testDelete);
 
   describe('pull()', testPull);
 });

@@ -8,8 +8,7 @@ import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { testPullAnalyticsFromEvents_Deprecated } from './testPullAnalyticsFromEvents_Deprecated';
 
-const model = createModelsStub();
-const dhisService = new DhisService(model);
+const dhisService = new DhisService(createModelsStub());
 let dhisApi;
 const buildAnalyticsFromDhisEventAnalyticsSpy = jest.spyOn(
   BuildAnalyticsFromDhisEventAnalytics,
@@ -278,7 +277,6 @@ export const testPullAnalytics = () => {
       });
     });
 
-    // TODO: fail tests
     describe('data building', () => {
       describe('buildAnalyticsFromDhisEventAnalytics() invocation', () => {
         it('no program', async () => {
@@ -316,8 +314,7 @@ export const testPullAnalytics = () => {
           );
         });
 
-        // TODO fail tests
-        it.only('data elements with data source codes different than DHIS2 codes', async () => {
+        it('data elements with data source codes different than DHIS2 codes', async () => {
           const getEventAnalyticsResponse = EVENT_ANALYTICS.differentDhisElementCodes;
           const translatedEventAnalytics = {
             headers: [

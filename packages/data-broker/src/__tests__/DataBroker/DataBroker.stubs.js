@@ -3,14 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import sinon from 'sinon';
-
 import * as CreateService from '../../services/createService';
-import { Service } from '../../services/Service';
 
 export const stubCreateService = services => {
-  const stub = sinon.stub(CreateService, 'createService');
-  stub.callsFake((_, type) => {
+  const stub = jest.spyOn(CreateService, 'createService');
+  stub.mockImplementation((_, type) => {
     const service = services[type];
     if (!service) {
       throw new Error(`Invalid service type: ${type}`);
@@ -22,7 +19,7 @@ export const stubCreateService = services => {
 };
 
 export const createServiceStub = serviceData => {
-  const pull = sinon.stub().callsFake(dataSources => {
+  const pull = dataSources => {
     const dataSourceCodes = dataSources.map(({ code }) => code);
     // Service specs require that data must be pulled for a specific type each time
     const { type } = dataSources[0];
@@ -44,9 +41,10 @@ export const createServiceStub = serviceData => {
       default:
         throw new Error(`Invalid data source type: ${type}`);
     }
-  });
-
-  return sinon.createStubInstance(Service, { pull });
+  };
+  const { Service } = jest.createMockFromModule('../../services/Service');
+  Service.prototype.pull = pull;
+  return new Service();
 };
 
 export const createModelsStub = dataSources => ({

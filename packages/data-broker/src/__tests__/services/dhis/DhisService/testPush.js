@@ -7,7 +7,7 @@ import { DATA_SOURCES, DATA_VALUES } from './DhisService.fixtures';
 import { createModelsStub, stubDhisApi } from './DhisService.stubs';
 
 const dhisService = new DhisService(createModelsStub());
-let dhisApi = stubDhisApi();
+let dhisApi;
 
 export const testPush = () => {
   beforeEach(() => {

@@ -30,7 +30,6 @@ export const testPullEvents = () => {
     expect(deprecatedEventApiSpy).toHaveBeenCalledTimes(1);
   });
 
-  // TODO: fail tests
   describe('DHIS API invocation', () => {
     const assertEventAnalyticsApiWasInvokedCorrectly = async ({
       dataSources,
