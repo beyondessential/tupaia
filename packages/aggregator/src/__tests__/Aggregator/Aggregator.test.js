@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createJestMockInstance } from '@tupaia/utils';
 import { Aggregator } from '../../Aggregator';
 import * as AggregateAnalytics from '../../analytics/aggregateAnalytics/aggregateAnalytics';
 import * as FilterAnalytics from '../../analytics/filterAnalytics';
@@ -14,8 +15,6 @@ import {
   FILTERED_ANALYTICS,
 } from './fixtures';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
-
-const { createJestMockInstance } = require('@tupaia/utils');
 
 const { DATA_ELEMENT, DATA_GROUP } = DATA_SOURCE_TYPES;
 
@@ -49,9 +48,6 @@ FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 describe('Aggregator', () => {
   beforeEach(() => {
     aggregator = new Aggregator(dataBroker);
-    dataBroker.pull.mockClear();
-    AggregateAnalytics.aggregateAnalytics.mockClear();
-    FilterAnalytics.filterAnalytics.mockClear();
   });
 
   it('aggregationTypes getter', () => {
@@ -64,12 +60,10 @@ describe('Aggregator', () => {
         { code: codeInput, type: DATA_ELEMENT },
         { ...fetchOptions, ...additionalOptions },
       );
-      dataBroker.pull.mockClear();
     };
 
     const assertDataBrokerPullIsNotInvoked = () => {
       expect(dataBroker.pull).toHaveBeenCalledTimes(0);
-      dataBroker.pull.mockClear();
     };
 
     it('`aggregationOptions` parameter is optional', async () => {
