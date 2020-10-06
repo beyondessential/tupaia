@@ -259,3 +259,37 @@ export const HIERARCHY_B_AFTER_PARENT_ID_CHANGES = [
   // ancestor entity abb
   { ancestor_id: 'entity_abb_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
 ];
+
+// test moves aab to below aa, and ab to below aab, resulting in:
+//      a
+//      aa
+//      aab
+//      ab
+//   aba  abb
+//   aaa
+export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED = [
+  // ancestor entity a
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 3 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 4 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 4 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 5 },
+  // ancestor entity aa
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_ab_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aba_test', generational_distance: 3 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_abb_test', generational_distance: 3 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 4 },
+  // ancestor entity aab
+  { ancestor_id: 'entity_aab_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aab_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aab_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aab_test', descendant_id: 'entity_aaa_test', generational_distance: 3 },
+  // ancestor entity ab
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
+  // ancestor entity aba
+  { ancestor_id: 'entity_aba_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
+];
