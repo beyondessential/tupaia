@@ -9,5 +9,5 @@ export { clearTestData } from './clearTestData';
 export { generateTestId } from './generateTestId';
 export { generateValueOfType } from './generateValueOfType';
 export { getTestDatabase, getTestModels } from './getTestDatabase';
-export { populateTestData, depopulateTestData } from './populateTestData';
+export { populateTestData } from './populateTestData';
 export { upsertDummyRecord, findOrCreateDummyRecord } from './upsertDummyRecord';

@@ -8,14 +8,13 @@ import { expect } from 'chai';
 import {
   getTestModels,
   populateTestData,
-  depopulateTestData,
+  clearTestData,
   upsertDummyRecord,
 } from '../../testUtilities';
 import { EntityHierarchyCacher } from '../../cachers/EntityHierarchyCacher';
 
 import {
-  TEST_DATA_TO_POPULATE,
-  TEST_DATA_TO_DEPOPULATE,
+  TEST_DATA,
   INITIAL_HIERARCHY_A,
   INITIAL_HIERARCHY_B,
   HIERARCHY_B_AFTER_ENTITY_AAA_DELETED,
@@ -55,8 +54,11 @@ describe('EntityHierarchyCacher', () => {
 
   beforeEach(async () => {
     hierarchyCacher.stopListeningForChanges();
-    await depopulateTestData(models, TEST_DATA_TO_DEPOPULATE);
-    await populateTestData(models, TEST_DATA_TO_POPULATE);
+    await populateTestData(models, TEST_DATA);
+  });
+
+  afterEach(async () => {
+    await clearTestData(models.database);
   });
 
   describe('buildAndCacheProject', async () => {

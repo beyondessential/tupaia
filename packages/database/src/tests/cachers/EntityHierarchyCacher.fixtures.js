@@ -65,18 +65,11 @@ const ENTITY_RELATIONS = [
   },
 ];
 
-export const TEST_DATA_TO_POPULATE = {
+export const TEST_DATA = {
   entity: ENTITIES,
   entityHierarchy: ENTITY_HIERARCHIES,
   project: PROJECTS,
   entityRelation: ENTITY_RELATIONS,
-};
-
-export const TEST_DATA_TO_DEPOPULATE = {
-  entityRelation: ENTITY_RELATIONS,
-  project: PROJECTS,
-  entity: ENTITIES,
-  entityHierarchy: ENTITY_HIERARCHIES,
 };
 
 //          a
