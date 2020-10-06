@@ -28,7 +28,7 @@ export const createUserAccountDBFilter = async (accessPolicy, models, criteria) 
     return criteria;
   }
   // If we don't have BES Admin access, add a filter to the SQL query
-  const dbConditions = criteria;
+  const dbConditions = {...criteria};
   const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );

@@ -4,7 +4,7 @@
  */
 
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
-import { createAdminPanelDBFilter } from '../utilities';
+import { getAdminPanelAllowedEntityIds } from '../utilities';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
@@ -24,5 +24,8 @@ export const createUserEntityPermissionDBFilter = async (accessPolicy, models, c
     return criteria;
   }
   // If we don't have BES Admin access, add a filter to the SQL query
-  return createAdminPanelDBFilter(accessPolicy, models, criteria);
+  const dbConditions = { ...criteria };
+  dbConditions.entity_id = await getAdminPanelAllowedEntityIds(accessPolicy, models);
+
+  return dbConditions;
 };
