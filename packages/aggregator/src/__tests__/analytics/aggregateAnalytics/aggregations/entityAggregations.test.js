@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   sumPerOrgGroup,
   sumPerPeriodPerOrgGroup,
@@ -25,7 +24,7 @@ const BASE_TEST_ANALYTICS = [
 describe('entityAggregations', () => {
   describe('sumPerOrgGroup()', () => {
     it('should do nothing without orgUnitMap', () => {
-      expect(sumPerOrgGroup(BASE_TEST_ANALYTICS, {})).to.have.same.deep.members([
+      expect(sumPerOrgGroup(BASE_TEST_ANALYTICS, {})).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
         { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 2 },
         { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
@@ -33,7 +32,7 @@ describe('entityAggregations', () => {
     });
 
     it('should sum using orgUnitMap', () => {
-      expect(sumPerOrgGroup(BASE_TEST_ANALYTICS, { orgUnitMap })).to.have.same.deep.members([
+      expect(sumPerOrgGroup(BASE_TEST_ANALYTICS, { orgUnitMap })).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 4 },
         { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 2 },
       ]);
@@ -45,7 +44,7 @@ describe('entityAggregations', () => {
         { dataElement: 'element1', organisationUnit: 'org4', period: '20200103', value: 4 },
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200103', value: 5 },
       ];
-      expect(sumPerOrgGroup(testAnalytics, { orgUnitMap })).to.have.same.deep.members([
+      expect(sumPerOrgGroup(testAnalytics, { orgUnitMap })).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 9 },
         { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 2 },
         { dataElement: 'element1', organisationUnit: 'org4', period: '20200103', value: 4 },
@@ -60,7 +59,7 @@ describe('entityAggregations', () => {
         { dataElement: 'element2', organisationUnit: 'org3', period: '20200103', value: 4 },
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200103', value: 5 },
       ];
-      expect(sumPerOrgGroup(testAnalytics, { orgUnitMap })).to.have.same.deep.members([
+      expect(sumPerOrgGroup(testAnalytics, { orgUnitMap })).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 9 },
         { dataElement: 'element2', organisationUnit: 'parent1', period: '20200103', value: 4 },
         { dataElement: 'element2', organisationUnit: 'parent2', period: '20200102', value: 2 },
@@ -75,7 +74,7 @@ describe('entityAggregations', () => {
       ];
       expect(
         sumPerOrgGroup(testAnalytics, { orgUnitMap, condition: { operator: '=', value: 2 } }),
-      ).to.have.same.deep.members([
+      ).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 4 },
         { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 0 },
       ]);
@@ -84,7 +83,7 @@ describe('entityAggregations', () => {
 
   describe('sumPerPeriodPerOrgGroup()', () => {
     it('should do nothing without orgUnitMap', () => {
-      expect(sumPerPeriodPerOrgGroup(BASE_TEST_ANALYTICS, {})).to.have.same.deep.members([
+      expect(sumPerPeriodPerOrgGroup(BASE_TEST_ANALYTICS, {})).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
         { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 2 },
         { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
@@ -99,7 +98,7 @@ describe('entityAggregations', () => {
         { dataElement: 'element2', organisationUnit: 'org3', period: '20200103', value: 4 },
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200103', value: 5 },
       ];
-      expect(sumPerPeriodPerOrgGroup(testAnalytics, { orgUnitMap })).to.have.same.deep.members([
+      expect(sumPerPeriodPerOrgGroup(testAnalytics, { orgUnitMap })).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 1 },
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200103', value: 8 },
         { dataElement: 'element2', organisationUnit: 'parent1', period: '20200103', value: 4 },
@@ -120,7 +119,7 @@ describe('entityAggregations', () => {
           orgUnitMap,
           condition: { operator: '=', value: 'Yes' },
         }),
-      ).to.have.same.deep.members([
+      ).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 2 },
         { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 0 },
       ]);
@@ -134,7 +133,7 @@ describe('entityAggregations', () => {
       ];
       expect(
         countPerOrgGroup(testAnalytics, { orgUnitMap, condition: { operator: '>', value: 3 } }),
-      ).to.have.same.deep.members([
+      ).toIncludeSameMembers([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 2 },
         { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 0 },
       ]);

@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { PERIOD_TYPES } from '@tupaia/utils';
 import { sumPreviousPerPeriod } from '../../../../analytics/aggregateAnalytics/aggregations';
 
@@ -17,7 +16,7 @@ describe('sumPreviousPerPeriod()', () => {
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
-    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).toIncludeSameMembers([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 3 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 6 },
@@ -36,7 +35,7 @@ describe('sumPreviousPerPeriod()', () => {
       { dataElement: 1, organisationUnit: 2, period: '20200102', value: 7 },
       { dataElement: 2, organisationUnit: 2, period: '20200102', value: 8 },
     ];
-    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).toIncludeSameMembers([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 2, organisationUnit: 1, period: '20200101', value: 2 },
       { dataElement: 1, organisationUnit: 2, period: '20200101', value: 3 },
@@ -55,7 +54,7 @@ describe('sumPreviousPerPeriod()', () => {
       // { dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
-    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).toIncludeSameMembers([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 4 },
@@ -64,7 +63,7 @@ describe('sumPreviousPerPeriod()', () => {
 
   it('should sum with no analytics', () => {
     const testAnalytics = [];
-    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([]);
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).toIncludeSameMembers([]);
   });
 
   it('should only return results within requestedPeriod if oldest request period > oldest data', () => {
@@ -75,7 +74,7 @@ describe('sumPreviousPerPeriod()', () => {
     ];
     expect(
       sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '20200102;20200103;20200104' }, DAY),
-    ).to.have.same.deep.members([
+    ).toIncludeSameMembers([
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 3 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 6 },
     ]);
@@ -89,7 +88,7 @@ describe('sumPreviousPerPeriod()', () => {
     ];
     expect(
       sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '20191231;20200101;20200102' }, DAY),
-    ).to.have.same.deep.members([
+    ).toIncludeSameMembers([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 3 },
     ]);
@@ -103,7 +102,7 @@ describe('sumPreviousPerPeriod()', () => {
     ];
     expect(
       sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '20200102;20200103' }, DAY),
-    ).to.have.same.deep.members([
+    ).toIncludeSameMembers([
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 4 },
     ]);
@@ -126,7 +125,7 @@ describe('sumPreviousPerPeriod()', () => {
     ];
     expect(
       sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '2019;2020;2021;2022' }, YEAR),
-    ).to.have.same.deep.members([
+    ).toIncludeSameMembers([
       { dataElement: 1, organisationUnit: 1, period: '2019', value: 9 },
       { dataElement: 2, organisationUnit: 1, period: '2019', value: 2 },
       { dataElement: 1, organisationUnit: 2, period: '2019', value: 4 },
