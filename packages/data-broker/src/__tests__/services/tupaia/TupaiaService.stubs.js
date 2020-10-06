@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaDataApi } from '@tupaia/data-api';
 import { DATA_ELEMENTS } from './TupaiaService.fixtures';
+import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
 
 jest.mock('@tupaia/data-api');
 
@@ -18,12 +18,14 @@ export const createTupaiaDataApiStub = ({
   fetchAnalyticsResponse = [],
   fetchEventsResponse = [],
 } = {}) => {
-  TupaiaDataApi.fetchAnalytics = jest.fn().mockResolvedValue(fetchAnalyticsResponse);
-  TupaiaDataApi.fetchEvents = jest.fn().mockResolvedValue(fetchEventsResponse);
-  TupaiaDataApi.fetchDataElements = jest
-    .fn()
-    .mockImplementation(async dataElementCodes =>
-      dataElementCodes.map(code => DATA_ELEMENTS[code]).filter(de => de),
-    );
-  return TupaiaDataApi;
+  const tupaiaDataApi = createJestMockInstance('@tupaia/data-api', 'TupaiaDataApi', {
+    fetchAnalytics: jest.fn().mockResolvedValue(fetchAnalyticsResponse),
+    fetchEvents: jest.fn().mockResolvedValue(fetchEventsResponse),
+    fetchDataElements: jest
+      .fn()
+      .mockImplementation(async dataElementCodes =>
+        dataElementCodes.map(code => DATA_ELEMENTS[code]).filter(de => de),
+      ),
+  });
+  return tupaiaDataApi;
 };
