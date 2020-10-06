@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { getIsProductionEnvironment } from '../devops/';
+import { getIsProductionEnvironment } from '../devops';
 
 const API_VERSION = 2;
 const DOMAIN = 'tupaia.org';

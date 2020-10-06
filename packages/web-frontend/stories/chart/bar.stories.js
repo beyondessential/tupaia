@@ -32,7 +32,7 @@ export const SimpleBar = Template.bind({});
 SimpleBar.args = {
   isEnlarged: true,
   viewContent: {
-    data: data,
+    data,
     viewId: '13',
     organisationUnitCode: 'DL',
     dashboardGroupId: '108',

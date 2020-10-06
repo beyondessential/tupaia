@@ -12,8 +12,8 @@ import { SurveyResponseImporter } from '../../../routes/utilities';
 import * as SurveyResponse from '../../../routes/surveyResponse';
 
 const ENTITY_IDS = {
-  '1989': generateTestId(),
-  '1993': generateTestId(),
+  1989: generateTestId(),
+  1993: generateTestId(),
   September: generateTestId(),
   April: generateTestId(),
 };

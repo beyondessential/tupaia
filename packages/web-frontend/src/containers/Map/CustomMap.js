@@ -12,8 +12,8 @@ import { LayerGroup, Pane } from 'react-leaflet';
 
 import { LeafletMap } from './LeafletMap';
 
-import MarkerLayer from './MarkerLayer'; // eslint-disable-line import/no-named-as-default
-import DisasterLayer from './DisasterLayer'; // eslint-disable-line import/no-named-as-default
+import MarkerLayer from './MarkerLayer';
+import DisasterLayer from './DisasterLayer';
 import { DemoLand } from './DemoLand';
 import { TileLayer } from './TileLayer';
 
@@ -171,10 +171,8 @@ CustomMap.propTypes = {
   setOrgUnit: PropTypes.func.isRequired,
   changePosition: PropTypes.func.isRequired,
 
-  /* eslint-disable react/forbid-prop-types */
   currentOrganisationUnit: PropTypes.object.isRequired,
   measureInfo: PropTypes.object.isRequired,
-  /* eslint-enable react/forbid-prop-types */
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
 
   shouldSnapToPosition: PropTypes.bool.isRequired,

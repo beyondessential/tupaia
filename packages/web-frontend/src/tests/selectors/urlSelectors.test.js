@@ -41,6 +41,7 @@ describe('urlSelectors', () => {
     expect(selectCurrentExpandedViewId(testState)).toEqual('report1');
     expect(selectCurrentMeasureId(testState)).toEqual('2,3');
   });
+
   it('should select from a reset-password url', () => {
     const testState = {
       routing: {

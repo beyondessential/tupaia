@@ -400,7 +400,6 @@ export const calculateRadiusScaleFactor = measureData => {
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData, key) {
-  // eslint-disable-next-line no-restricted-globals
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
 
@@ -414,7 +413,7 @@ export const getMeasureFromHierarchy = (measureHierarchy, measureIdString) => {
 
   return flattenedMeasures.find(({ measureId }) => {
     const measureIds = measureId.split(',');
-    //check if all the measureIds match with the id we want to find (there can be more than 1 id in measureId if they are linked measures)
+    // check if all the measureIds match with the id we want to find (there can be more than 1 id in measureId if they are linked measures)
     return targetMeasureIds.every(targetMeasureId => measureIds.includes(targetMeasureId));
   });
 };

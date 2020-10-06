@@ -44,6 +44,8 @@
   },
   "devDependencies": {
     "@cypress/snapshot": "^2.1.7",
+    "@tupaia/database": "1.0.0",
+    "@tupaia/utils": "1.0.0",
     "autoprefixer": "7.1.0",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "1.1.3",
@@ -86,6 +88,7 @@
     "test:cypress:run": "start-server-and-test start-fullstack 8088 cypress:run",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix .",
+    "cypress:generate-config": "babel-node cypress/scripts/generateConfig --config-file '../../babel.config.json'",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "storybook": "start-storybook -s ./public -p 6006"
