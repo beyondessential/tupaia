@@ -189,11 +189,22 @@ export class EntityHierarchyCacher {
     return childIdToAncestorIds;
   }
 
-  async countEntityRelationChildren(hierarchyId, entityIds) {
-    return this.models.entityRelation.count({
-      parent_id: entityIds,
+  getEntityRelationChildrenCriteria(hierarchyId, parentIds) {
+    return {
+      parent_id: parentIds,
       entity_hierarchy_id: hierarchyId,
-    });
+    };
+  }
+
+  async countEntityRelationChildren(hierarchyId, parentIds) {
+    const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
+    return this.models.entityRelation.count(criteria);
+  }
+
+  async getRelationsViaEntityRelation(hierarchyId, parentIds) {
+    // get any matching alternative hierarchy relationships leading out of these parents
+    const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
+    return this.models.entityRelation.find(criteria);
   }
 
   getCanonicalChildrenCriteria(parentIds) {
@@ -207,14 +218,6 @@ export class EntityHierarchyCacher {
   async countCanonicalChildren(parentIds) {
     const criteria = this.getCanonicalChildrenCriteria(parentIds);
     return this.models.entity.count(criteria);
-  }
-
-  async getRelationsViaEntityRelation(hierarchyId, parentIds) {
-    // get any matching alternative hierarchy relationships leading out of these parents
-    return this.models.entityRelation.find({
-      parent_id: parentIds,
-      entity_hierarchy_id: hierarchyId,
-    });
   }
 
   async getRelationsCanonically(parentIds) {
