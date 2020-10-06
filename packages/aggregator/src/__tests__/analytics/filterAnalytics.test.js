@@ -10,10 +10,11 @@ const analytics = [{ value: 1 }, { value: 2 }, { value: 3 }];
 describe('filterAnalytics()', () => {
   describe('empty filter', () => {
     const testData = [
-      ['i', []],
-      ['ii', [undefined]],
-      ['iii', [{}]],
+      ['empty array', []],
+      ['undefined', [undefined]],
+      ['empty object', [{}]],
     ];
+
     it.each(testData)('%s', (_, [filter]) => {
       expect(() => filterAnalytics(analytics, filter)).not.toThrow();
     });
