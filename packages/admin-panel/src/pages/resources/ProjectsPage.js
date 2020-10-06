@@ -51,6 +51,12 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
+    Header: 'Tile Sets',
+    source: 'tile_sets',
+    secondaryLabel: 'Comma separated list (eg. osm,satellite,terrain).',
+    type: 'tooltip',
+  },
+  {
     Header: 'Sort',
     source: 'sort_order',
     width: 80,
