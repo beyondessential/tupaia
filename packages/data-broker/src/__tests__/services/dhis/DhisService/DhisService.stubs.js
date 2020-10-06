@@ -36,8 +36,8 @@ export const stubDhisApi = ({
       .mockImplementation(async codes =>
         codes.map(code => ({ code, id: DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }), {}),
       ),
-    getServerName: jest.fn().mockResolvedValue(SERVER_NAME),
-    getResourceTypes: jest.fn().mockResolvedValue({ DATA_ELEMENT: 'dataElement' }),
+    getServerName: jest.fn().mockReturnValue(SERVER_NAME),
+    getResourceTypes: jest.fn().mockReturnValue({ DATA_ELEMENT: 'dataElement' }),
   });
   getDhisApiInstanceSpy.mockReturnValue(dhisApi);
   return dhisApi;
