@@ -42,7 +42,7 @@ export const formatMatrixDataForExcel = (
       : // This table has no column categories, just one set of columns
         columns.map(col => addValueOrEmpty(row[col.key]));
 
-    //prepend dataElementHeader
+    // prepend dataElementHeader
     rowData.unshift(row.dataElement);
 
     return rowData;

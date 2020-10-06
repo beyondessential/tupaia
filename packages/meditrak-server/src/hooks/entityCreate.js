@@ -35,6 +35,7 @@ async function createNewEntity(answerValues, parent, models) {
       const coordinates = parseCoordinates(location);
       await models.entity.updatePointCoordinates(code, coordinates);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error(e);
     }
   }
@@ -47,7 +48,7 @@ export async function entityCreate({ surveyResponse, models }) {
   const parentEntity = await surveyResponse.entity();
 
   // check if we're creating or updating
-  const code = answerValues.code;
+  const { code } = answerValues;
   const existingEntity = await models.entity.findOne({ code });
 
   if (existingEntity) {
@@ -62,7 +63,7 @@ export async function entityCreate({ surveyResponse, models }) {
 function entityUpdater(func) {
   return async ({ answer, surveyResponse, models }) => {
     const answerValues = await getEntityInfoFromSurveyResponse(surveyResponse);
-    const code = answerValues.code;
+    const { code } = answerValues;
     const existingEntity = await models.entity.findOne({ code });
 
     // no entity exists - it will be created when the `code` survey answer

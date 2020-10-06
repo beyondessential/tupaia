@@ -22,7 +22,8 @@ export const Container = styled(MuiContainer)`
   }
 `;
 
-const headerHeight = '355px';
+const headerHeight = '315px';
+const footerHeight = '48px';
 
 /*
  * Main section that holds the data table
@@ -30,7 +31,7 @@ const headerHeight = '355px';
 export const Main = styled.main`
   padding-top: 1rem;
   padding-bottom: 5rem;
-  min-height: calc(100vh - ${headerHeight});
+  min-height: calc(100vh - ${headerHeight} - 1rem - 5rem + ${footerHeight});
 
   @media (max-width: ${desktopWidth}) {
     min-height: auto;

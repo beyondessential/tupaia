@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import {
@@ -11,6 +11,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT,
+  PROFILE_SUCCESS,
 } from './constants';
 
 export const changeEmailAddress = emailAddress => ({
@@ -63,3 +64,17 @@ export const loginError = errorMessage => ({
 export const logout = () => ({
   type: LOGOUT,
 });
+
+// Profile
+export const updateProfile = payload => async (dispatch, getState, { api }) => {
+  await api.put(`me`, null, payload);
+  const { body: user } = await api.get(`me`);
+  dispatch({
+    type: PROFILE_SUCCESS,
+    ...user,
+  });
+};
+
+// Password
+export const updatePassword = payload => async (dispatch, getState, { api }) =>
+  api.post(`me/changePassword`, null, payload);

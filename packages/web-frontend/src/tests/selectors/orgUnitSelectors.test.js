@@ -139,7 +139,7 @@ describe('orgUnitSelectors', () => {
         expect(selectOrgUnitChildren.recomputations()).toEqual(1);
 
         selectOrgUnitChildren(testState2, 'TO');
-        expect(selectOrgUnitChildren.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
+        expect(selectOrgUnitChildren.recomputations()).toEqual(2); // OrgUnitMap has changed, so recompute
       });
     });
 
@@ -149,7 +149,7 @@ describe('orgUnitSelectors', () => {
         expect(selectOrgUnitSiblings.recomputations()).toEqual(1);
 
         selectOrgUnitSiblings(testState2, 'TO');
-        expect(selectOrgUnitSiblings.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
+        expect(selectOrgUnitSiblings.recomputations()).toEqual(2); // OrgUnitMap has changed, so recompute
       });
     });
   });
@@ -159,12 +159,15 @@ describe('orgUnitSelectors', () => {
       it('can select world', () => {
         expect(selectOrgUnit(state, 'World')).toEqual(state.orgUnits.orgUnitMap.World.World);
       });
+
       it('can select country', () => {
         expect(selectOrgUnit(state, 'TO')).toEqual(state.orgUnits.orgUnitMap.TO.TO);
       });
+
       it('can select facility', () => {
         expect(selectOrgUnit(state, 'TO_HfevaHC')).toEqual(state.orgUnits.orgUnitMap.TO.TO_HfevaHC);
       });
+
       it('can select undefined', () => {
         expect(selectOrgUnit(state, undefined)).toEqual(undefined);
       });
@@ -174,11 +177,13 @@ describe('orgUnitSelectors', () => {
       it('can select from state', () => {
         expect(selectCurrentOrgUnit(state)).toEqual(state.orgUnits.orgUnitMap.TO.TO);
       });
+
       it('can select if the path is invalid', () => {
         expect(
           selectCurrentOrgUnit({ ...state, routing: { pathname: 'NOT_A_VALID_PATH' } }),
         ).toEqual({});
       });
+
       it('Empty org unit is always shallowly equal', () => {
         const orgUnit1 = selectCurrentOrgUnit({
           ...state,
@@ -196,19 +201,23 @@ describe('orgUnitSelectors', () => {
       it.skip('can select children of world', () => {
         expect(selectOrgUnitChildren(state, 'World')).toContain(state.orgUnits.orgUnitMap.TO.TO);
       });
+
       it.skip('can select children of a project', () => {
         expect(selectOrgUnitChildren(state, 'explore')).toContain(state.orgUnits.orgUnitMap.TO.TO);
       });
+
       it('can select children of country', () => {
         expect(selectOrgUnitChildren(state, 'TO')).toContain(
           state.orgUnits.orgUnitMap.TO.TO_Haapai,
         );
       });
+
       it('can select children of facility', () => {
         const children = selectOrgUnitChildren(state, 'TO_Haapai');
         expect(children).toContain(state.orgUnits.orgUnitMap.TO.TO_HfevaHC);
         expect(children).toContain(state.orgUnits.orgUnitMap.TO.TO_FoaMCH);
       });
+
       it('can select children of undefined', () => {
         expect(selectOrgUnitChildren(state, undefined)).toEqual(undefined);
       });
@@ -218,24 +227,29 @@ describe('orgUnitSelectors', () => {
       it('can select siblings of world', () => {
         expect(selectOrgUnitSiblings(state, 'World')).toEqual([]);
       });
+
       it.skip('can select siblings of country', () => {
         expect(selectOrgUnitSiblings(state, 'TO')).toEqual([state.orgUnits.orgUnitMap.PG.PG]);
       });
+
       it('can select siblings of district, including facility', () => {
         expect(selectOrgUnitSiblings(state, 'PG_district_1')).toEqual([
           state.orgUnits.orgUnitMap.PG.PG_district_2,
           state.orgUnits.orgUnitMap.PG.PG_facility_1,
         ]);
       });
+
       it('can select multiple siblings of facility', () => {
         expect(selectOrgUnitSiblings(state, 'PG_facility_2')).toEqual([
           state.orgUnits.orgUnitMap.PG.PG_facility_3,
           state.orgUnits.orgUnitMap.PG.PG_facility_5,
         ]);
       });
+
       it('can select siblings of facility with no siblings', () => {
         expect(selectOrgUnitSiblings(state, 'PG_facility_4')).toEqual([]);
       });
+
       it('can select siblings of undefined', () => {
         expect(selectOrgUnitSiblings(state, undefined)).toEqual([]);
       });

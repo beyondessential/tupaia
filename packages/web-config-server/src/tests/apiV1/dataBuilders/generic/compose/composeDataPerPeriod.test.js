@@ -15,10 +15,7 @@ const config = {};
 
 const stubFetchComposedData = expectedResults => {
   const fetchComposedDataStub = sinon.stub(FetchComposedData, 'fetchComposedData');
-  fetchComposedDataStub
-    .returns({})
-    .withArgs(config, aggregator, dhisApi)
-    .returns(expectedResults);
+  fetchComposedDataStub.returns({}).withArgs(config, aggregator, dhisApi).returns(expectedResults);
 };
 
 describe('composeDataPerPeriod', () => {
@@ -84,7 +81,7 @@ describe('composeDataPerPeriod', () => {
       { timestamp: 1569888000000, name: 'Oct 2019', value: 10 },
       { timestamp: 1572566400000, name: 'Nov 2019', value: 20 },
     ];
-    stubFetchComposedData({ results: { data: data } });
+    stubFetchComposedData({ results: { data } });
 
     return expect(
       composeDataPerPeriod(config, aggregator, dhisApi),

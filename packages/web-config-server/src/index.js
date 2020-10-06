@@ -5,7 +5,7 @@ import { runPreaggregation } from './preaggregation/runPreaggregation';
 if (process.env.RUN_PREAGGREGATION) {
   runPreaggregation(process.env.RUN_PREAGGREGATION);
 } else {
-  var app = createApp();
+  const app = createApp();
 
   // process.env.PORT as per run command PORT=XXXX npm run dev
   app.server.listen(process.env.PORT || 8080);

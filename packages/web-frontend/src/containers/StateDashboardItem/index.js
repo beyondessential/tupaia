@@ -24,9 +24,9 @@ export default function StateDashboardItem(props) {
   const { viewContent } = props;
   const components = {
     ActiveDisasters: DisasterList,
-    ProjectDescription: ProjectDescription,
-    NoAccessDashboard: NoAccessDashboard,
-    NoDataAtLevelDashboard: NoDataAtLevelDashboard,
+    ProjectDescription,
+    NoAccessDashboard,
+    NoDataAtLevelDashboard,
   };
   const Component = components[viewContent.componentName];
 
