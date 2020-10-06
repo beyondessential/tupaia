@@ -21,11 +21,6 @@ const tupaiaDataApi = createTupaiaDataApiStub({
 const tupaiaService = new TupaiaService(models, tupaiaDataApi);
 
 describe('TupaiaService', () => {
-  beforeEach(() => {
-    tupaiaDataApi.fetchAnalytics.mockClear();
-    tupaiaDataApi.fetchEvents.mockClear();
-  });
-
   describe('push()', () => {
     it('throws an error', () => expect(tupaiaService.push()).toBeRejectedWith('not supported'));
   });
