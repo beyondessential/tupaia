@@ -30,7 +30,7 @@ import {
   HIERARCHY_B_AFTER_ENTITIES_CREATED,
 } from './EntityHierarchyCacher.fixtures';
 
-describe.only('EntityHierarchyCacher', () => {
+describe('EntityHierarchyCacher', () => {
   const models = getTestModels();
   const hierarchyCacher = new EntityHierarchyCacher(models);
 
