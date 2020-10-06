@@ -42,7 +42,8 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
     let dataSourceEntities = [];
     if (entityType) {
-      /**   A
+      /**
+       *    A
        *   / \
        *  B   C
        * This is when we are at B and want to fetch data for both B and C
