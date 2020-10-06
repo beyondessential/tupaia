@@ -4,7 +4,7 @@
  */
 
 import { DhisApi } from '@tupaia/dhis-api';
-import { getDhisApiInstance } from '../../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApiInstance from '../../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,
@@ -12,9 +12,8 @@ import {
   SERVER_NAME,
 } from './DhisService.fixtures';
 
-jest.mock('../../../../services/dhis/getDhisApiInstance');
+const getDhisApiInstanceSpy = jest.spyOn(GetDhisApiInstance, 'getDhisApiInstance');
 jest.mock('@tupaia/dhis-api');
-// const originalDhisApiModule = jest.requireActual('@tupaia/dhis-api');
 
 // export const setupDhisApiForStubbing = () => {
 //   jest.doMock('../../../../services/dhis/getDhisApiInstance');
@@ -65,12 +64,8 @@ export const stubDhisApi = ({
   jest.spyOn(dhisApi, 'postDataValueSets');
   jest.spyOn(dhisApi, 'postEvents');
   jest.spyOn(dhisApi, 'getEvents');
-  getDhisApiInstance.mockReturnValue(dhisApi);
+  getDhisApiInstanceSpy.mockReturnValue(dhisApi);
   return dhisApi;
-};
-
-export const cleanupDhisApiStub = () => {
-  getDhisApiInstance.mockReset();
 };
 
 export const createModelsStub = () => ({

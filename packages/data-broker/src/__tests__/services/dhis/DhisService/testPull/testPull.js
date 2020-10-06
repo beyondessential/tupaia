@@ -12,5 +12,5 @@ export const testPull = () => {
 
   describe('events', testPullEvents);
 
-  describe.only('events - deprecated API', testPullEvents_Deprecated);
+  describe('events - deprecated API', testPullEvents_Deprecated);
 };

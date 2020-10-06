@@ -9,10 +9,6 @@ import { testPull } from './testPull';
 import { testPush } from './testPush';
 
 describe('DhisService', () => {
-  afterAll(() => {
-    cleanupDhisApiStub();
-  });
-
   // describe('push()', testPush);
 
   // describe('delete()', testDelete);
