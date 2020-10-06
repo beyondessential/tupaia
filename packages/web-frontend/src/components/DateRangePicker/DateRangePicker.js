@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import { Error } from '../Error';
@@ -179,7 +180,7 @@ export const DateRangePicker = ({
         )}
         <FlexRow>
           <IconButton onClick={() => setIsOpen(true)} aria-label="open">
-            <DateRangeIcon />
+            {isLoading ? <CircularProgress size={18} /> : <DateRangeIcon />}
           </IconButton>
           <LabelContainer>
             <Label aria-label="active-date">{labelText}</Label>
