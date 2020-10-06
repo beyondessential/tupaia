@@ -97,7 +97,7 @@ const REPORT_NUMBER_OF_SCHOOLS_BY_TYPE = {
           field: '$countDescendantsMatchingConditions',
           conditions: [
             { field: 'type', value: 'school' },
-            { field: 'subType', value: 'Pre-Primary' },
+            { field: 'subType', value: 'Pre-School' },
           ],
         },
       ],
@@ -127,9 +127,6 @@ const REPORT_NUMBER_OF_SCHOOLS_BY_TYPE = {
       ],
     ],
     columns: ['main'],
-    entityAggregation: {
-      dataSourceEntityType: 'school',
-    },
   },
   viewJson: {
     name: 'Number of schools by type table',
