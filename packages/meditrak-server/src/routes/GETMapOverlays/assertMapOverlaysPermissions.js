@@ -2,72 +2,37 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { flattenDeep, keyBy } from 'lodash';
-import { hasAccessToEntityForVisualisation } from '../utilities';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 import { hasBESAdminAccess } from '../../permissions';
 
-export const filterMapOverlaysByPermissions = async (accessPolicy, models, mapOverlays) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return mapOverlays;
+const { RAW } = QUERY_CONJUNCTIONS;
+
+export const assertMapOverlaysPermissions = async (accessPolicy, models, mapOverlayId) => {
+  const mapOverlay = await models.mapOverlay.findById(mapOverlayId);
+  if (accessPolicy.allowsSome(mapOverlay.countryCodes, mapOverlay.userGroup)) {
+    return true;
   }
-
-  const allEntityCodes = [...new Set(flattenDeep(mapOverlays.map(m => m.countryCodes)))];
-  const entities = await models.entity.find({ code: allEntityCodes });
-  const entityByCode = keyBy(entities, 'code');
-  const accessCache = {}; //Cache the access so that we dont have to recheck for some map overlays
-  const filteredMapOverlays = [];
-
-  for (let i = 0; i < mapOverlays.length; i++) {
-    const mapOverlay = mapOverlays[i];
-    const countryCodes = mapOverlay.countryCodes || [];
-    const mapOverlayEntities = countryCodes.map(c => entityByCode[c]);
-    const permissionGroup = mapOverlay.userGroup;
-    const countryCodesString = countryCodes.join(',');
-
-    //permissionGroup and countryCodes are the 2 values for checking access for a map overlay
-    const cacheKey = `${permissionGroup}/${countryCodesString}`;
-    let hasAccessToMapOverlay = accessCache[cacheKey];
-
-    //Perform access checking if its not in the cache, otherwise reuse the value
-    if (hasAccessToMapOverlay === undefined) {
-      for (let j = 0; j < mapOverlayEntities.length; j++) {
-        const mapOverlayEntity = mapOverlayEntities[j];
-        hasAccessToMapOverlay = await hasAccessToEntityForVisualisation(
-          accessPolicy,
-          models,
-          mapOverlayEntity,
-          permissionGroup,
-        );
-
-        //If users have access to any countries of the overlay,
-        //it should be enough to allow access the overlay
-        if (hasAccessToMapOverlay) {
-          break;
-        }
-      }
-
-      accessCache[cacheKey] = hasAccessToMapOverlay;
-    }
-
-    if (hasAccessToMapOverlay) {
-      filteredMapOverlays.push(mapOverlay);
-    }
-  }
-
-  return filteredMapOverlays;
+  throw new Error('You do not have permissions for the requested map overlay(s)');
 };
 
-export const assertMapOverlaysPermissions = async (accessPolicy, models, mapOverlays) => {
-  const filteredMapOverlays = await filterMapOverlaysByPermissions(
-    accessPolicy,
-    models,
-    mapOverlays,
-  );
-
-  if (filteredMapOverlays.length !== mapOverlays.length) {
-    throw new Error('You do not have permissions for the requested map overlay(s)');
+export const createMapOverlayDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
   }
+  const dbConditions = criteria;
+  const allPermissionGroups = accessPolicy.getPermissionGroups();
+  const countryCodesByPermissionGroup = {};
 
-  return true;
+  // Generate lists of country codes we have access to per permission group
+  allPermissionGroups.forEach(pg => {
+    countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
+  });
+
+  // Look up the json country codes by userGroup, compare them to the countryCodes from the mapOverlay
+  dbConditions[RAW] = {
+    sql: `"countryCodes" && array(select trim('"' from json_array_elements(?::json->"userGroup")::text))`,
+    parameters: JSON.stringify(countryCodesByPermissionGroup),
+  };
+  return dbConditions;
 };

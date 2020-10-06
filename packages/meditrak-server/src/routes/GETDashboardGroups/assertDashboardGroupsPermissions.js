@@ -2,59 +2,37 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { keyBy } from 'lodash';
-import { hasAccessToEntityForVisualisation } from '../utilities';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 
-export const filterDashboardGroupsByPermissions = async (accessPolicy, models, dashboardGroups) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return dashboardGroups;
+const { RAW } = QUERY_CONJUNCTIONS;
+
+export const assertDashboardGroupsPermissions = async (accessPolicy, models, dashboardGroupId) => {
+  const dashboardGroup = await models.dashboardGroup.findById(dashboardGroupId);
+  if (accessPolicy.allows(dashboardGroup.organisationUnitCode, dashboardGroup.userGroup)) {
+    return true;
   }
 
-  const allEntityCodes = [...new Set(dashboardGroups.map(dg => dg.organisationUnitCode))];
-  const entities = await models.entity.find({ code: allEntityCodes });
-  const entityByCode = keyBy(entities, 'code');
-  const accessCache = {}; //Cache the access so that we don't have to recheck for some dashboard groups
-  const filteredDashboardGroups = [];
-
-  for (let i = 0; i < dashboardGroups.length; i++) {
-    const dashboardGroup = dashboardGroups[i];
-    const { userGroup: permissionGroup, organisationUnitCode } = dashboardGroup;
-    const entity = entityByCode[dashboardGroup.organisationUnitCode];
-
-    //permissionGroup and organisationUnitCode are the 2 values for checking access for a dashboard group
-    //If there are multiple dashboardGroups having the same permissionGroup and organisationUnitCode, we can reuse the same access value.
-    const cacheKey = `${permissionGroup}/${organisationUnitCode}`;
-    let hasAccessToDashboardGroup = accessCache[cacheKey];
-
-    if (hasAccessToDashboardGroup === undefined) {
-      hasAccessToDashboardGroup = await hasAccessToEntityForVisualisation(
-        accessPolicy,
-        models,
-        entity,
-        permissionGroup,
-      );
-      accessCache[cacheKey] = hasAccessToDashboardGroup;
-    }
-
-    if (hasAccessToDashboardGroup) {
-      filteredDashboardGroups.push(dashboardGroup);
-    }
-  }
-
-  return filteredDashboardGroups;
+  throw new Error('Requires access to the user group for the country this dashboard group is in');
 };
 
-export const assertDashboardGroupsPermissions = async (accessPolicy, models, dashboardGroups) => {
-  const filteredDashboardGroups = await filterDashboardGroupsByPermissions(
-    accessPolicy,
-    models,
-    dashboardGroups,
-  );
-
-  if (filteredDashboardGroups.length !== dashboardGroups.length) {
-    throw new Error('You do not have permissions for the requested dashboard group(s)');
+export const createDashboardGroupDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
   }
+  const dbConditions = criteria;
+  const allPermissionGroups = accessPolicy.getPermissionGroups();
+  const countryCodesByPermissionGroup = {};
 
-  return true;
+  // Generate lists of country codes we have access to per permission group
+  allPermissionGroups.forEach(pg => {
+    countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
+  });
+
+  // Look up the country codes from the json object and compare to the organisationUnitCode
+  dbConditions[RAW] = {
+    sql: `array["organisationUnitCode"] <@ array(select trim('"' from json_array_elements(?::json->"userGroup")::text))`,
+    parameters: JSON.stringify(countryCodesByPermissionGroup),
+  };
+  return dbConditions;
 };

@@ -2,47 +2,48 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { flattenDeep } from 'lodash';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { filterDashboardGroupsByPermissions } from '../GETDashboardGroups/assertDashboardGroupsPermissions';
 
-export const filterDashboardReportsByPermissions = async (
+const { RAW } = QUERY_CONJUNCTIONS;
+
+export const assertDashboardReportsPermissions = async (
   accessPolicy,
   models,
-  dashboardReports,
+  dashboardReportId,
 ) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return dashboardReports;
-  }
+  const dashboardGroups = await models.dashboardGroup.findDashboardGroupsByReportId([
+    dashboardReportId,
+  ]);
 
-  const dashboardReportIds = dashboardReports.map(d => d.id);
-  const dashboardGroupsByReportId = await models.dashboardGroup.findDashboardGroupsByReportId(
-    dashboardReportIds,
-  );
-  //Remove any duplicated dashboard groups because a report can belong to multiple dashboard groups
-  const allDashboardGroups = [...new Set(flattenDeep(Object.values(dashboardGroupsByReportId)))];
-  const permittedDashboardGroups = await filterDashboardGroupsByPermissions(
-    accessPolicy,
-    models,
-    allDashboardGroups,
-  );
-  const permittedDashboardGroupIds = permittedDashboardGroups.map(dg => dg.id);
-  return dashboardReports.filter(dr => {
-    const dashboardGroupsForReport = dashboardGroupsByReportId[dr.id];
-    return dashboardGroupsForReport.some(dg => permittedDashboardGroupIds.includes(dg.id));
+  const dashboardGroupsFiltered = dashboardGroups[dashboardReportId].filter(dg => {
+    return accessPolicy.allows(dg.organisationUnitCode, dg.userGroup);
   });
-};
 
-export const assertDashboardReportsPermissions = async (accessPolicy, models, dashboardReports) => {
-  const filteredDashboardReports = await filterDashboardReportsByPermissions(
-    accessPolicy,
-    models,
-    dashboardReports,
-  );
-
-  if (filteredDashboardReports.length !== dashboardReports.length) {
-    throw new Error('You do not have permissions for the requested dashboard report(s)');
+  if (dashboardGroupsFiltered.length === 0) {
+    throw new Error('Requires access to one of the dashboard groups this report is in');
   }
 
   return true;
+};
+
+export const createDashboardReportDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
+  }
+  const dbConditions = criteria;
+  const allPermissionGroups = accessPolicy.getPermissionGroups();
+  const countryCodesByPermissionGroup = {};
+
+  // Generate lists of country codes we have access to per permission group
+  allPermissionGroups.forEach(pg => {
+    countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
+  });
+
+  // Select the dashboardGroups containing the report, check you have access to at least one of them
+  dbConditions[RAW] = {
+    sql: `(select count(*) from "dashboardGroup" where array["dashboardReport".id] <@ "dashboardReports" and array["organisationUnitCode"] <@ array(select trim('"' from json_array_elements(?::json->"userGroup")::text))) > 0`,
+    parameters: JSON.stringify(countryCodesByPermissionGroup),
+  };
+  return dbConditions;
 };

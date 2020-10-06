@@ -3,8 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { groupBy, flattenDeep } from 'lodash';
 import { hasBESAdminAccess } from '../../permissions';
+
+const { RAW } = QUERY_CONJUNCTIONS;
 
 export const filterSurveyGroupsByPermissions = async (accessPolicy, models, surveyGroups) => {
   if (hasBESAdminAccess(accessPolicy)) {
@@ -38,16 +41,41 @@ export const filterSurveyGroupsByPermissions = async (accessPolicy, models, surv
   return filteredSurveyGroups;
 };
 
-export const assertSurveyGroupsPermissions = async (accessPolicy, models, surveyGroups) => {
-  const filteredSurveyGroups = await filterSurveyGroupsByPermissions(
-    accessPolicy,
-    models,
-    surveyGroups,
-  );
+export const assertSurveyGroupsPermissions = async (accessPolicy, models, surveyGroupId) => {
+  const surveyGroup = await models.surveyGroup.findById(surveyGroupId);
+  const filteredSurveyGroups = await filterSurveyGroupsByPermissions(accessPolicy, models, [
+    surveyGroup,
+  ]);
 
-  if (filteredSurveyGroups.length !== surveyGroups.length) {
+  if (filteredSurveyGroups.length === 0) {
     throw new Error('You do not have permissions to access the requested survey group(s)');
   }
 
   return true;
+};
+
+export const createSurveyGroupDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
+  }
+  const dbConditions = criteria;
+  const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
+  console.log(allPermissionGroupsNames);
+  const countryIdsByPermissionGroupId = {};
+
+  // Generate lists of country ids we have access to per permission group id
+  for (const pg of allPermissionGroupsNames) {
+    const permissionGroup = await models.permissionGroup.findOne({ name: pg });
+    const countryList = accessPolicy.getEntitiesAllowed(pg);
+    const entityList = await models.entity.find({ code: countryList });
+    countryIdsByPermissionGroupId[permissionGroup.id] = entityList.map(e => e.id);
+  }
+
+  console.log(JSON.stringify(countryIdsByPermissionGroupId));
+  // Check we have permissions to at least one of the surveys in this group
+  dbConditions[RAW] = {
+    sql: `(select count(*) from survey where survey.survey_group_id = survey_group.id and country_ids && array(select trim('"' from json_array_elements(?::json->permission_group_id)::text))) > 0`,
+    parameters: JSON.stringify(countryIdsByPermissionGroupId),
+  };
+  return dbConditions;
 };

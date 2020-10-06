@@ -7,7 +7,7 @@ import { GETHandler } from '../GETHandler';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertSurveyGroupsPermissions,
-  filterSurveyGroupsByPermissions,
+  createSurveyGroupDBFilter,
 } from './assertSurveyGroupsPermissions';
 /**
  * Handles endpoints:
@@ -16,14 +16,14 @@ import {
  */
 export class GETSurveyGroups extends GETHandler {
   async assertUserHasAccess() {
-    return true; // all users can request, but results will be filtered according to access
+    await this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
   }
 
   async findSingleRecord(surveyGroupId, options) {
     const surveyGroup = await super.findSingleRecord(surveyGroupId, options);
 
     const surveyGroupChecker = accessPolicy =>
-      assertSurveyGroupsPermissions(accessPolicy, this.models, [surveyGroup]);
+      assertSurveyGroupsPermissions(accessPolicy, this.models, surveyGroupId);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyGroupChecker]));
 
@@ -31,9 +31,13 @@ export class GETSurveyGroups extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    // ensure the permissions gate check is triggered, actual permissions will be assessed during filtering
-    this.assertPermissions(allowNoPermissions);
-    const surveyGroups = await this.database.find(this.recordType, criteria, options);
-    return filterSurveyGroupsByPermissions(this.accessPolicy, this.models, surveyGroups);
+    const dbConditions = await createSurveyGroupDBFilter(this.accessPolicy, this.models, criteria);
+    const userAccounts = await super.findRecords(dbConditions, options);
+
+    if (!userAccounts.length) {
+      throw new Error('Your permissions do not allow access to any of the requested resources');
+    }
+
+    return userAccounts;
   }
 }

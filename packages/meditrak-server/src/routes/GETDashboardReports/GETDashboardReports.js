@@ -7,7 +7,7 @@ import { GETHandler } from '../GETHandler';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertDashboardReportsPermissions,
-  filterDashboardReportsByPermissions,
+  createDashboardReportDBFilter,
 } from './assertDashboardReportsPermissions';
 /**
  * Handles endpoints:
@@ -16,14 +16,14 @@ import {
  */
 export class GETDashboardReports extends GETHandler {
   async assertUserHasAccess() {
-    return true; // all users can request, but results will be filtered according to access
+    return this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
   }
 
   async findSingleRecord(dashboardReportId, options) {
     const dashboardReport = await super.findSingleRecord(dashboardReportId, options);
 
     const dashboardReportChecker = accessPolicy =>
-      assertDashboardReportsPermissions(accessPolicy, this.models, [dashboardReport]);
+      assertDashboardReportsPermissions(accessPolicy, this.models, dashboardReportId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, dashboardReportChecker]),
@@ -33,9 +33,17 @@ export class GETDashboardReports extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    // ensure the permissions gate check is triggered, actual permissions will be assessed during filtering
-    this.assertPermissions(allowNoPermissions);
-    const dashboardReports = await this.database.find(this.recordType, criteria, options);
-    return filterDashboardReportsByPermissions(this.accessPolicy, this.models, dashboardReports);
+    const dbConditions = await createDashboardReportDBFilter(
+      this.accessPolicy,
+      this.models,
+      criteria,
+    );
+    const dashboardReports = await super.findRecords(dbConditions, options);
+
+    if (!dashboardReports.length) {
+      throw new Error('Your permissions do not allow access to any of the requested resources');
+    }
+
+    return dashboardReports;
   }
 }

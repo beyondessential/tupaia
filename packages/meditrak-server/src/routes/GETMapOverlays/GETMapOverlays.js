@@ -7,7 +7,7 @@ import { GETHandler } from '../GETHandler';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertMapOverlaysPermissions,
-  filterMapOverlaysByPermissions,
+  createMapOverlayDBFilter,
 } from './assertMapOverlaysPermissions';
 /**
  * Handles endpoints:
@@ -16,14 +16,14 @@ import {
  */
 export class GETMapOverlays extends GETHandler {
   async assertUserHasAccess() {
-    return true; // all users can request, but results will be filtered according to access
+    await this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
   }
 
   async findSingleRecord(mapOverlayId, options) {
     const mapOverlay = await super.findSingleRecord(mapOverlayId, options);
 
     const mapOverlayChecker = accessPolicy =>
-      assertMapOverlaysPermissions(accessPolicy, this.models, [mapOverlay]);
+      assertMapOverlaysPermissions(accessPolicy, this.models, mapOverlayId);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
 
@@ -31,9 +31,13 @@ export class GETMapOverlays extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    // ensure the permissions gate check is triggered, actual permissions will be assessed during filtering
-    this.assertPermissions(allowNoPermissions);
-    const mapOverlays = await this.database.find(this.recordType, criteria, options);
-    return filterMapOverlaysByPermissions(this.accessPolicy, this.models, mapOverlays);
+    const dbConditions = await createMapOverlayDBFilter(this.accessPolicy, this.models, criteria);
+    const userAccounts = await super.findRecords(dbConditions, options);
+
+    if (!userAccounts.length) {
+      throw new Error('Your permissions do not allow access to any of the requested resources');
+    }
+
+    return userAccounts;
   }
 }
