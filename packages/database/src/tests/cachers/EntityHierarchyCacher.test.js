@@ -30,7 +30,7 @@ import {
   HIERARCHY_B_AFTER_ENTITIES_CREATED,
 } from './EntityHierarchyCacher.fixtures';
 
-describe('EntityHierarchyCacher', () => {
+describe.only('EntityHierarchyCacher', () => {
   const models = getTestModels();
   const hierarchyCacher = new EntityHierarchyCacher(models);
 
@@ -39,6 +39,7 @@ describe('EntityHierarchyCacher', () => {
     await hierarchyCacher.buildAndCacheProject(project);
   };
   const assertRelationsMatch = async (projectCode, relations) => {
+    await models.database.waitForAllChangeHandlers();
     const project = await models.project.findOne({ code: projectCode });
     const { entity_hierarchy_id: hierarchyId } = project;
     const relationsForProject = await models.ancestorDescendantRelation.find({
@@ -56,6 +57,11 @@ describe('EntityHierarchyCacher', () => {
   beforeEach(async () => {
     hierarchyCacher.stopListeningForChanges();
     await populateTestData(models, TEST_DATA);
+    await buildAndCacheProject('project_a_test');
+    await buildAndCacheProject('project_b_test');
+
+    // start listening for changes
+    hierarchyCacher.listenForChanges();
   });
 
   afterEach(async () => {
@@ -64,7 +70,6 @@ describe('EntityHierarchyCacher', () => {
 
   describe('buildAndCacheProject', async () => {
     const assertProjectRelationsCorrectlyBuilt = async (projectCode, expected) => {
-      await buildAndCacheProject(projectCode);
       await assertRelationsMatch(projectCode, expected);
     };
     it('handles a hierarchy that is fully canonical', async () => {
@@ -76,27 +81,14 @@ describe('EntityHierarchyCacher', () => {
   });
 
   it('deletes all ancestor descendant relations if an entity is deleted', async () => {
-    const projectCode = 'project_b_test';
-    await buildAndCacheProject(projectCode);
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // delete an entity, and make sure its ancestor descendant relations are all deleted
     const entityToDelete = 'entity_aaa_test';
     await models.entityRelation.delete({ child_id: entityToDelete }); // can't delete entity until entity relation is gone
     await models.entity.delete({ id: entityToDelete });
-    await models.database.waitForAllChangeHandlers();
-    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_ENTITY_AAA_DELETED);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_ENTITY_AAA_DELETED);
   });
 
   it('deletes all ancestor descendant relations if multiple entities are deleted', async () => {
-    const projectCode = 'project_b_test';
-    await buildAndCacheProject(projectCode);
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // delete a few entities, and make sure their relations are deleted
     const entitiesToDelete = [
       'entity_ab_test',
@@ -107,17 +99,10 @@ describe('EntityHierarchyCacher', () => {
     await models.entityRelation.delete({ parent_id: entitiesToDelete });
     await models.entityRelation.delete({ child_id: entitiesToDelete });
     await models.entity.delete({ id: entitiesToDelete });
-    await models.database.waitForAllChangeHandlers();
-    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED);
   });
 
   it('deletes all ancestor descendant relations if an entity relation record is deleted', async () => {
-    const projectCode = 'project_b_test';
-    await buildAndCacheProject(projectCode);
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // delete an entity relation, and make sure the relations in the cache are deleted
     const entityRelationToDelete = {
       parent_id: 'entity_aba_test',
@@ -125,17 +110,10 @@ describe('EntityHierarchyCacher', () => {
       entity_hierarchy_id: 'hierarchy_b_test',
     };
     await models.entityRelation.delete(entityRelationToDelete);
-    await models.database.waitForAllChangeHandlers();
-    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_RELATION_ABA_AAA_DELETED);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_RELATION_ABA_AAA_DELETED);
   });
 
   it('deletes all ancestor descendant relations if multiple entity relation records are deleted', async () => {
-    const projectCode = 'project_b_test';
-    await buildAndCacheProject(projectCode);
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // delete a few entity relations, and make sure the relations in the cache are deleted
     // strangely enough, after deleting a -> aa, it means the canonical structure takes back over
     const entityRelationsToDelete = [
@@ -155,32 +133,18 @@ describe('EntityHierarchyCacher', () => {
         models.entityRelation.delete(entityRelation),
       ),
     );
-    await models.database.waitForAllChangeHandlers();
-    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED);
   });
 
   it('deletes and rebuilds subtrees across all hierarchies if a parent_id is changed', async () => {
-    await buildAndCacheProject('project_a_test');
-    await buildAndCacheProject('project_b_test');
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // update the parent_id of an entity, and make sure the subtree in the database is rebuilt
     await models.entity.updateById('entity_aaa_test', { parent_id: 'entity_a_test' });
     await models.entity.updateById('entity_abb_test', { parent_id: 'entity_aaa_test' });
-    await models.database.waitForAllChangeHandlers();
     await assertRelationsMatch('project_a_test', HIERARCHY_A_AFTER_PARENT_ID_CHANGES);
     await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_PARENT_ID_CHANGES);
   });
 
   it('deletes and rebuilds a subtree if entity relation records are changed', async () => {
-    const projectCode = 'project_b_test';
-    await buildAndCacheProject(projectCode);
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // change ab to sit below aab instead of aa
     await models.entityRelation.update(
       {
@@ -199,34 +163,20 @@ describe('EntityHierarchyCacher', () => {
       },
       { parent_id: 'entity_aa_test' },
     );
-    await models.database.waitForAllChangeHandlers();
-    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED);
   });
 
   it('adds a new subtree if entity relation records are added', async () => {
-    const projectCode = 'project_b_test';
-    await buildAndCacheProject(projectCode);
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // change ab to sit below aab instead of aa
     await models.entityRelation.create({
       parent_id: 'entity_ab_test',
       child_id: 'entity_aba_test',
       entity_hierarchy_id: 'hierarchy_b_test',
     });
-    await models.database.waitForAllChangeHandlers();
-    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED);
   });
 
   it('adds new subtrees if an entities are created', async () => {
-    await buildAndCacheProject('project_a_test');
-    await buildAndCacheProject('project_b_test');
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
-
     // update the parent_id of an entity, and make sure the subtree in the database is rebuilt
     await upsertDummyRecord(models.entity, { id: 'entity_ac_test', parent_id: 'entity_a_test' });
     await upsertDummyRecord(models.entity, { id: 'entity_aca_test', parent_id: 'entity_ac_test' });
@@ -235,22 +185,15 @@ describe('EntityHierarchyCacher', () => {
       id: 'entity_aaaa_test',
       parent_id: 'entity_aaa_test',
     });
-    await models.database.waitForAllChangeHandlers();
     await assertRelationsMatch('project_a_test', HIERARCHY_A_AFTER_ENTITIES_CREATED);
     await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_ENTITIES_CREATED);
   });
 
   it('batches multiple changes', async () => {
     sinon.stub(EntityHierarchyCacher.prototype, 'buildAndCacheHierarchies');
-    const sleepTime = 250; // sleep for 250 ms between each change
-
-    await buildAndCacheProject('project_a_test');
-    await buildAndCacheProject('project_b_test');
-
-    // start listening for changes
-    hierarchyCacher.listenForChanges();
 
     // make a bunch of different changes, with small delays between each to model real life
+    const sleepTime = 250; // sleep for 250 ms between each change
 
     // create an entity
     await upsertDummyRecord(models.entity, { id: 'entity_ac_test', parent_id: 'entity_a_test' });
