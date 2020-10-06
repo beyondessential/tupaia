@@ -1,7 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '@tupaia/database';
-
 var dbm;
 var type;
 var seed;
@@ -16,11 +14,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function () {
-  const db = new TupaiaDatabase();
-  await db.executeSql(`ALTER TABLE user_account ADD COLUMN profile_image text`);
-  db.closeConnections();
-  return null;
+exports.up = async function (db) {
+  return db.runSql(`ALTER TABLE user_account ADD COLUMN profile_image text`);
 };
 
 exports.down = function () {
