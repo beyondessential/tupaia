@@ -20,6 +20,7 @@ import {
   HIERARCHY_A_AFTER_PARENT_ID_CHANGES,
   HIERARCHY_B_AFTER_PARENT_ID_CHANGES,
   HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED,
+  HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED,
 } from './EntityHierarchyCacher.fixtures';
 
 describe('EntityHierarchyCacher', () => {
@@ -191,4 +192,25 @@ describe('EntityHierarchyCacher', () => {
     await models.database.waitForAllChangeHandlers();
     await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED);
   });
+
+  it('adds a new subtree if entity relation records are added', async () => {
+    const projectCode = 'project_b_test';
+    await buildAndCacheProject(projectCode);
+
+    // start listening for changes
+    hierarchyCacher.listenForChanges();
+
+    // change ab to sit below aab instead of aa
+    await models.entityRelation.create({
+      parent_id: 'entity_ab_test',
+      child_id: 'entity_aba_test',
+      entity_hierarchy_id: 'hierarchy_b_test',
+    });
+    await models.database.waitForAllChangeHandlers();
+    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED);
+  });
+
+  it('adds a new subtree if an entity is created', () => {});
+
+  it('batches multiple changes', () => {});
 });

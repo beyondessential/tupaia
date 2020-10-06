@@ -293,3 +293,27 @@ export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED = [
   // ancestor entity aba
   { ancestor_id: 'entity_aba_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
 ];
+
+// adding a new entity relation record between aba and ab means that the canonical links will no
+// longer be used, so it will drop the abb subtree
+// a
+// aa
+// ab
+// aba
+// aaa
+export const HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED = [
+  // ancestor entity a
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 3 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 4 },
+  // ancestor entity aa
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 3 },
+  // ancestor entity ab
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
+  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
+  // ancestor entity aba
+  { ancestor_id: 'entity_aba_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
+];
