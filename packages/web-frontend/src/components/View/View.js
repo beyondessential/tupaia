@@ -14,6 +14,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 
@@ -25,6 +26,7 @@ import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
 import { CHART_TYPES } from './ChartWrapper/chartTypes';
 import { getViewWrapper, getIsSingleValue, getIsMatrix } from './utils';
+import { Alert } from '../Alert';
 
 const viewHasData = viewContent => {
   const { chartType, data, value } = viewContent;
@@ -90,6 +92,13 @@ const formatPeriodRange = period => {
   return formatDate(period.latestAvailable);
 };
 
+const StyledNoDataMessage = styled(NoDataMessage)`
+  &.MuiAlert-root {
+    margin: 25px auto 10px;
+    padding: 5px 16px 5px 13px;
+  }
+`;
+
 export class View extends Component {
   state = {
     isHovered: false,
@@ -147,7 +156,7 @@ export class View extends Component {
     if (viewContent.error) {
       return (
         <div data-testid="view" style={viewContainerStyle}>
-          <p style={VIEW_STYLES.text}>{`Error: ${viewContent.error.message}`}</p>
+          <Alert severity="error">{`Error: ${viewContent.error.message}`}</Alert>
         </div>
       );
     }
@@ -166,8 +175,7 @@ export class View extends Component {
         <div data-testid="view" style={viewContainerStyle}>
           <h2 style={VIEW_STYLES.title}>
             {viewContent.name}
-            <br />
-            <NoDataMessage viewContent={viewContent} />
+            <StyledNoDataMessage viewContent={viewContent} />
             {periodDependent && expandButton}
           </h2>
         </div>

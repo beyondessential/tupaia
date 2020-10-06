@@ -608,7 +608,13 @@ function* fetchViewData(parameters, errorHandler) {
   try {
     return yield call(request, requestResourceUrl, errorHandler);
   } catch (error) {
-    yield put(updateEnlargedDialogError(error.message));
+    if (error.errorFunction) {
+      console.log(error.errorFunction, errorHandler);
+      // yield put(error.errorFunction(error, infoViewKey));
+    } else {
+      // console.log(`Failed to handle error: ${error.message}`);
+    }
+    yield put(errorHandler(error.message, infoViewKey));
   }
   return null;
 }

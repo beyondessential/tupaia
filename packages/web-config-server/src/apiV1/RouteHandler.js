@@ -36,6 +36,8 @@ export class RouteHandler {
   }
 
   async handleRequest() {
+    throw new ValidationError(`Entity could not be found`);
+
     // Fetch permissions
     const { organisationUnitCode: entityCode } = this.query;
     this.entity = await Entity.findOne({ code: entityCode });

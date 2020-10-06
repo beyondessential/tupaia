@@ -7,23 +7,25 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BLUE, TUPAIA_ORANGE } from '../../styles';
+import { Alert } from '../Alert';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 
-export const NoDataMessage = ({ viewContent }) => {
-  const style = { color: BLUE };
+export const NoDataMessage = ({ viewContent, className }) => {
   let message = 'No data';
 
   if (viewContent.noDataMessage) {
     message = viewContent.noDataMessage;
   } else if (viewContent.source === 'mSupply') {
-    style.color = TUPAIA_ORANGE;
     message = 'Requires mSupply';
   } else if (viewContent.startDate && viewContent.endDate) {
     message = `No data for ${viewContent.startDate} to ${viewContent.endDate}`;
   }
 
-  return <span style={style}>{message}</span>;
+  return (
+    <Alert severity="info" className={className}>
+      {message}
+    </Alert>
+  );
 };
 
 NoDataMessage.propTypes = {
