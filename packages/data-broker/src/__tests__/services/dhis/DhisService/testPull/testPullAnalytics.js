@@ -29,12 +29,6 @@ export const testPullAnalytics = () => {
       'pullAnalyticsFromEventsForApi_Deprecated',
     );
 
-    beforeEach(() => {
-      analyticsSpy.mockClear();
-      analyticsFromEventsSpy.mockClear();
-      analyticsFromEvents_DeprecatedSpy.mockClear();
-    });
-
     it('pulls aggregate data by default', async () => {
       await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {});
       expect(analyticsSpy).toHaveBeenCalledTimes(1);
