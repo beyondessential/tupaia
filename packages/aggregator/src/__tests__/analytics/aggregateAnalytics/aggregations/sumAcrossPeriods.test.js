@@ -45,11 +45,11 @@ describe('sumAcrossPeriods', () => {
   });
 
   it('single analytic', () => {
-    expect(sumAcrossPeriods([ANALYTICS[0]])).toEqual(expect.arrayContaining([ANALYTICS[0]]));
+    expect(sumAcrossPeriods([ANALYTICS[0]])).toStrictEqual(expect.arrayContaining([ANALYTICS[0]]));
   });
 
   it('multiple analytics', () => {
-    expect(sumAcrossPeriods(ANALYTICS)).toEqual(
+    expect(sumAcrossPeriods(ANALYTICS)).toStrictEqual(
       arrayToAnalytics([
         ['BCD01', 'TO', '201601', 1.11],
         ['BCD01', 'PG', '201601', 2.22],
@@ -61,7 +61,7 @@ describe('sumAcrossPeriods', () => {
   describe('periodOptions', () => {
     describe('periodType', () => {
       it('does nothing if not set', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toEqual(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toStrictEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
@@ -71,7 +71,9 @@ describe('sumAcrossPeriods', () => {
       });
 
       it('converts periods to the specified type', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { periodType: 'YEAR' } })).toEqual(
+        expect(
+          sumAcrossPeriods(ANALYTICS, { periodOptions: { periodType: 'YEAR' } }),
+        ).toStrictEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '2016', 1.11],
             ['BCD01', 'PG', '2016', 2.22],
@@ -83,13 +85,13 @@ describe('sumAcrossPeriods', () => {
 
     describe('useCurrent', () => {
       it('defaults to `false`', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toEqual(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toStrictEqual(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } }),
         );
       });
 
       it('does nothing if not set', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } })).toEqual(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: false } })).toStrictEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
@@ -101,7 +103,7 @@ describe('sumAcrossPeriods', () => {
       it('uses the current period of the specified type', () => {
         expect(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: true, periodType: 'YEAR' } }),
-        ).toEqual(
+        ).toStrictEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', CURRENT_PERIOD_STUBS.YEAR, 1.11],
             ['BCD01', 'PG', CURRENT_PERIOD_STUBS.YEAR, 2.22],
@@ -111,7 +113,7 @@ describe('sumAcrossPeriods', () => {
       });
 
       it('uses DAY period type by default', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: true } })).toEqual(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { useCurrent: true } })).toStrictEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', CURRENT_PERIOD_STUBS.DAY, 1.11],
             ['BCD01', 'PG', CURRENT_PERIOD_STUBS.DAY, 2.22],
@@ -123,7 +125,7 @@ describe('sumAcrossPeriods', () => {
 
     describe('excludeFuture', () => {
       it('defaults to `false`', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toEqual(
+        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: {} })).toStrictEqual(
           sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: false } }),
         );
       });
@@ -133,7 +135,7 @@ describe('sumAcrossPeriods', () => {
           sumAcrossPeriods(ANALYTICS, {
             periodOptions: { excludeFuture: false },
           }),
-        ).toEqual(
+        ).toStrictEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
@@ -143,7 +145,9 @@ describe('sumAcrossPeriods', () => {
       });
 
       it('filters future periods', () => {
-        expect(sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: true } })).toEqual(
+        expect(
+          sumAcrossPeriods(ANALYTICS, { periodOptions: { excludeFuture: true } }),
+        ).toStrictEqual(
           arrayToAnalytics([
             ['BCD01', 'TO', '201601', 1.11],
             ['BCD01', 'PG', '201601', 2.22],
