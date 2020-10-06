@@ -87,7 +87,7 @@ const REPORT_NUMBER_OF_SCHOOLS_BY_TYPE = {
   id: 'Laos_Schools_Number_Of_Schools_By_Type_Table',
   dataBuilder: 'nonMatrixTableFromCells',
   dataBuilderConfig: {
-    rows: ['Number of Pre-schools', 'Number of Primary schools', 'Number of Secondary schools'],
+    rows: ['Number of pre-schools', 'Number of primary schools', 'Number of secondary schools'],
     cells: [
       [
         {
