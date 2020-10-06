@@ -5,6 +5,7 @@
 
 import React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
+import MuiButton from '@material-ui/core/Button';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
 import PropTypes from 'prop-types';
@@ -45,6 +46,32 @@ const StyledSmallAlert = styled(MuiAlert)`
     margin-right: 0.5rem;
     font-size: 1.5em;
   }
+`;
+
+export const AlertAction = styled.button`
+  font-family: Roboto, sans-serif;
+  background: none;
+  color: inherit;
+  font-weight: 500;
+  box-shadow: none;
+  border: none;
+  font-size: 14px;
+  text-decoration: underline;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const AlertLink = styled.a`
+  font-size: 14px;
+  text-decoration: underline;
+  color: inherit;
+  font-weight: 500;
 `;
 
 export const Alert = ({ variant, severity, iconMapping, ...props }) => (

@@ -17,7 +17,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
-import MuiButton from '@material-ui/core/Button';
 
 import { VIEW_STYLES } from '../../styles';
 import { OverlayView } from '../../utils';
@@ -27,7 +26,7 @@ import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
 import { CHART_TYPES } from './ChartWrapper/chartTypes';
 import { getViewWrapper, getIsSingleValue, getIsMatrix } from './utils';
-import { Alert } from '../Alert';
+import { Alert, AlertAction, AlertLink } from '../Alert';
 
 const viewHasData = viewContent => {
   const { chartType, data, value } = viewContent;
@@ -164,16 +163,11 @@ export class View extends Component {
     if (viewContent.error) {
       return (
         <div data-testid="view" style={viewContainerStyle}>
-          <StyledAlert
-            severity="error"
-            action={
-              retry ? (
-                <MuiButton color="inherit" size="small" onClick={retry}>
-                  Retry
-                </MuiButton>
-              ) : null
-            }
-          >{`Error: ${viewContent.error}`}</StyledAlert>
+          <StyledAlert severity="error">
+            {`Error: ${viewContent.error}:`}
+            <AlertAction onClick={retry}>Retry loading data</AlertAction>
+            or contact: <AlertLink href="mailto:support@tupaia.org">support@tupaia.org</AlertLink>
+          </StyledAlert>
         </div>
       );
     }
