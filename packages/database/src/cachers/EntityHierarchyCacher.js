@@ -152,26 +152,10 @@ export class EntityHierarchyCacher {
       useEntityRelationLinks,
     );
 
-    const childrenAlreadyCached = await this.checkChildrenAlreadyCached(
-      hierarchyId,
-      parentIds,
-      childCount,
-    );
-    if (!childrenAlreadyCached) {
-      await this.cacheGeneration(hierarchyId, childIdToAncestorIds);
-    }
+    await this.cacheGeneration(hierarchyId, childIdToAncestorIds);
 
     // if there is another generation, keep recursing through the hierarchy
     await this.fetchAndCacheDescendants(hierarchyId, childIdToAncestorIds);
-  }
-
-  async checkChildrenAlreadyCached(hierarchyId, parentIds, childCount) {
-    const numberChildrenCached = await this.models.ancestorDescendantRelation.count({
-      entity_hierarchy_id: hierarchyId,
-      ancestor_id: parentIds,
-      generational_distance: 1,
-    });
-    return numberChildrenCached === childCount;
   }
 
   async fetchChildIdToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
@@ -235,16 +219,25 @@ export class EntityHierarchyCacher {
    */
   async cacheGeneration(hierarchyId, childIdToAncestorIds) {
     const records = [];
-    Object.entries(childIdToAncestorIds).forEach(([childId, ancestorIds]) => {
-      ancestorIds.forEach((ancestorId, ancestorIndex) =>
-        records.push({
-          entity_hierarchy_id: hierarchyId,
-          ancestor_id: ancestorId,
-          descendant_id: childId,
-          generational_distance: ancestorIndex + 1,
-        }),
-      );
+    const childIds = Object.keys(childIdToAncestorIds);
+    const existingParentRelations = await this.models.ancestorDescendantRelation.find({
+      descendant_id: childIds,
+      entity_hierarchy_id: hierarchyId,
+      generational_distance: 1,
     });
+    const childrenAlreadyCached = new Set(existingParentRelations.map(r => r.descendant_id));
+    Object.entries(childIdToAncestorIds)
+      .filter(([childId]) => !childrenAlreadyCached.has(childId))
+      .forEach(([childId, ancestorIds]) => {
+        ancestorIds.forEach((ancestorId, ancestorIndex) =>
+          records.push({
+            entity_hierarchy_id: hierarchyId,
+            ancestor_id: ancestorId,
+            descendant_id: childId,
+            generational_distance: ancestorIndex + 1,
+          }),
+        );
+      });
     await this.models.ancestorDescendantRelation.createMany(records);
   }
 }
