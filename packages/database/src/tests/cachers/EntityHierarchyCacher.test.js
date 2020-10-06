@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import sinon from 'sinon';
 import { expect } from 'chai';
-
+import { sleep } from '@tupaia/utils';
 import {
   getTestModels,
   populateTestData,
@@ -239,5 +240,42 @@ describe('EntityHierarchyCacher', () => {
     await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_ENTITIES_CREATED);
   });
 
-  it('batches multiple changes', () => {});
+  it('batches multiple changes', async () => {
+    sinon.stub(EntityHierarchyCacher.prototype, 'buildAndCacheHierarchies');
+    const sleepTime = 250; // sleep for 250 ms between each change
+
+    await buildAndCacheProject('project_a_test');
+    await buildAndCacheProject('project_b_test');
+
+    // start listening for changes
+    hierarchyCacher.listenForChanges();
+
+    // make a bunch of different changes, with small delays between each to model real life
+
+    // create an entity
+    await upsertDummyRecord(models.entity, { id: 'entity_ac_test', parent_id: 'entity_a_test' });
+    await sleep(sleepTime);
+
+    // update an entity relation
+    await models.entityRelation.update(
+      {
+        parent_id: 'entity_aa_test',
+        child_id: 'entity_ab_test',
+        entity_hierarchy_id: 'hierarchy_b_test',
+      },
+      { parent_id: 'entity_aab_test' },
+    );
+    await sleep(sleepTime);
+
+    // delete an entity
+    const entityToDelete = 'entity_aaa_test';
+    await models.entityRelation.delete({ child_id: entityToDelete }); // can't delete entity until entity relation is gone
+    await models.entity.delete({ id: entityToDelete });
+    await sleep(sleepTime);
+
+    await models.database.waitForAllChangeHandlers();
+
+    expect(hierarchyCacher.buildAndCacheHierarchies).to.have.been.calledOnce;
+    EntityHierarchyCacher.prototype.buildAndCacheHierarchies.restore();
+  });
 });
