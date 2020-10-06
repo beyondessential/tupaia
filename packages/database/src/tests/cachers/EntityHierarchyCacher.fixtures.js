@@ -79,6 +79,9 @@ export const TEST_DATA_TO_DEPOPULATE = {
   entityHierarchy: ENTITY_HIERARCHIES,
 };
 
+//          a
+//    aa         ab
+// aaa  aab   aba  abb
 export const INITIAL_HIERARCHY_A = [
   // ancestor entity a
   { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
@@ -95,6 +98,11 @@ export const INITIAL_HIERARCHY_A = [
   { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
 ];
 
+//      a
+//      aa
+//      ab
+//   aba  abb
+//   aaa  aab
 export const INITIAL_HIERARCHY_B = [
   // ancestor entity a
   { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
@@ -148,40 +156,46 @@ export const HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED = [
   { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
 ];
 
-export const HIERARCHY_B_AFTER_RELATION_AA_AB_DELETED = [
+// after deleting aba -> aaa, it leaves the rest of the structure intact, and just the aaa leaf
+// node has been dropped
+//      a
+//      aa
+//      ab
+//   aba  abb
+//        aab
+export const HIERARCHY_B_AFTER_RELATION_ABA_AAA_DELETED = [
   // ancestor entity a
   { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 3 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 3 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 4 },
   // ancestor entity aa
-  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
-  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
-];
-
-// strangely enough, after deleting a -> aa, it means the canonical structure takes back over, but
-// with aaa and aab still _also_ attached to the end of aba and abb
-export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED = [
-  // ancestor entity a
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 3 },
-  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 3 },
-  // ancestor entity aa
-  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
-  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_ab_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aba_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_abb_test', generational_distance: 2 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 3 },
   // ancestor entity ab
   { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aba_test', generational_distance: 1 },
   { ancestor_id: 'entity_ab_test', descendant_id: 'entity_abb_test', generational_distance: 1 },
-  { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
   { ancestor_id: 'entity_ab_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
-  // ancestor entity aba
-  { ancestor_id: 'entity_aba_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
   // ancestor entity abb
   { ancestor_id: 'entity_abb_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
+];
+
+// after deleting aa -> ab, it means the canonical structure takes back over below aa, and the ab
+// subtree gets left out of the hierarchy altogether
+//     a
+//    aa
+// aaa  aab
+export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED = [
+  // ancestor entity a
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aa_test', generational_distance: 1 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aaa_test', generational_distance: 2 },
+  { ancestor_id: 'entity_a_test', descendant_id: 'entity_aab_test', generational_distance: 2 },
+  // ancestor entity aa
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aaa_test', generational_distance: 1 },
+  { ancestor_id: 'entity_aa_test', descendant_id: 'entity_aab_test', generational_distance: 1 },
 ];
 
 // within the canonical hierarchy, the parent_id changes move aaa up to directly below a, and abb

@@ -15,7 +15,7 @@ import {
   INITIAL_HIERARCHY_B,
   HIERARCHY_B_AFTER_ENTITY_AAA_DELETED,
   HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED,
-  HIERARCHY_B_AFTER_RELATION_AA_AB_DELETED,
+  HIERARCHY_B_AFTER_RELATION_ABA_AAA_DELETED,
   HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED,
   HIERARCHY_A_AFTER_PARENT_ID_CHANGES,
   HIERARCHY_B_AFTER_PARENT_ID_CHANGES,
@@ -108,13 +108,13 @@ describe('EntityHierarchyCacher', () => {
 
     // delete an entity relation, and make sure the relations in the cache are deleted
     const entityRelationToDelete = {
-      parent_id: 'entity_aa_test',
-      child_id: 'entity_ab_test',
+      parent_id: 'entity_aba_test',
+      child_id: 'entity_aaa_test',
       entity_hierarchy_id: 'hierarchy_b_test',
     };
     await models.entityRelation.delete(entityRelationToDelete);
     await models.database.waitForAllChangeHandlers();
-    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_RELATION_AA_AB_DELETED);
+    await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_RELATION_ABA_AAA_DELETED);
   });
 
   it('deletes all ancestor descendant relations if multiple entity relation records are deleted', async () => {
@@ -128,13 +128,13 @@ describe('EntityHierarchyCacher', () => {
     // strangely enough, after deleting a -> aa, it means the canonical structure takes back over
     const entityRelationsToDelete = [
       {
-        parent_id: 'entity_aa_test',
-        child_id: 'entity_ab_test',
+        parent_id: 'entity_aba_test',
+        child_id: 'entity_aaa_test',
         entity_hierarchy_id: 'hierarchy_b_test',
       },
       {
-        parent_id: 'entity_a_test',
-        child_id: 'entity_aa_test',
+        parent_id: 'entity_aa_test',
+        child_id: 'entity_ab_test',
         entity_hierarchy_id: 'hierarchy_b_test',
       },
     ];
