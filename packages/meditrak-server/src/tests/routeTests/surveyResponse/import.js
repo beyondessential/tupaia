@@ -5,7 +5,8 @@
 
 import { expect } from 'chai';
 import { buildAndInsertSurveys } from '@tupaia/database';
-import { oneSecondSleep, upsertEntity } from '../../testUtilities';
+import { oneSecondSleep } from '@tupaia/utils';
+import { upsertEntity } from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
