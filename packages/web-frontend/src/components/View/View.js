@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
+import MuiButton from '@material-ui/core/Button';
 
 import { VIEW_STYLES } from '../../styles';
 import { OverlayView } from '../../utils';
@@ -99,6 +100,13 @@ const StyledNoDataMessage = styled(NoDataMessage)`
   }
 `;
 
+const StyledAlert = styled(Alert)`
+  &.MuiAlert-root {
+    margin: 25px auto 10px;
+    padding: 5px 16px 5px 13px;
+  }
+`;
+
 export class View extends Component {
   state = {
     isHovered: false,
@@ -135,7 +143,7 @@ export class View extends Component {
   }
 
   render() {
-    const { viewContent, isSidePanelExpanded, onEnlarge } = this.props;
+    const { viewContent, isSidePanelExpanded, onEnlarge, retry } = this.props;
     const viewContainerStyle = isSidePanelExpanded
       ? { ...VIEW_STYLES.mainContainer, ...VIEW_STYLES.mainContainerExpanded }
       : VIEW_STYLES.mainContainer;
@@ -156,7 +164,16 @@ export class View extends Component {
     if (viewContent.error) {
       return (
         <div data-testid="view" style={viewContainerStyle}>
-          <Alert severity="error">{`Error: ${viewContent.error.message}`}</Alert>
+          <StyledAlert
+            severity="error"
+            action={
+              retry ? (
+                <MuiButton color="inherit" size="small" onClick={retry}>
+                  Retry
+                </MuiButton>
+              ) : null
+            }
+          >{`Error: ${viewContent.error}`}</StyledAlert>
         </div>
       );
     }
@@ -231,10 +248,12 @@ View.propTypes = {
   isSidePanelExpanded: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onEnlarge: PropTypes.func,
+  retry: PropTypes.func,
 };
 
 View.defaultProps = {
   isSidePanelExpanded: false,
   viewContent: null,
   onEnlarge: () => {},
+  retry: null,
 };
