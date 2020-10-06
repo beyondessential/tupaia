@@ -38,10 +38,10 @@ export class EntityHierarchyCacher {
   };
 
   handleEntityRelationChange = async ({ record }) => {
-    // delete subtree from child_id onwards within the associated hierarchy, and kick off a new build
+    // delete subtree from parent_id onwards within the associated hierarchy, and kick off a new build
     // of any projects associated with changed hierarchies
-    const { entity_hierarchy_id: hierarchyId, child_id: childId } = record;
-    await this.deleteSubtree(hierarchyId, childId);
+    const { entity_hierarchy_id: hierarchyId, parent_id: parentId } = record;
+    await this.deleteSubtree(hierarchyId, parentId);
     return this.scheduleHierarchyForRebuild(hierarchyId);
   };
 
