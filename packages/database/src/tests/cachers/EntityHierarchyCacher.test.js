@@ -5,7 +5,12 @@
 
 import { expect } from 'chai';
 
-import { getTestModels, populateTestData, depopulateTestData } from '../../testUtilities';
+import {
+  getTestModels,
+  populateTestData,
+  depopulateTestData,
+  upsertDummyRecord,
+} from '../../testUtilities';
 import { EntityHierarchyCacher } from '../../cachers/EntityHierarchyCacher';
 
 import {
@@ -21,6 +26,8 @@ import {
   HIERARCHY_B_AFTER_PARENT_ID_CHANGES,
   HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED,
   HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED,
+  HIERARCHY_A_AFTER_ENTITIES_CREATED,
+  HIERARCHY_B_AFTER_ENTITIES_CREATED,
 } from './EntityHierarchyCacher.fixtures';
 
 describe('EntityHierarchyCacher', () => {
@@ -210,7 +217,25 @@ describe('EntityHierarchyCacher', () => {
     await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED);
   });
 
-  it('adds a new subtree if an entity is created', () => {});
+  it('adds new subtrees if an entities are created', async () => {
+    await buildAndCacheProject('project_a_test');
+    await buildAndCacheProject('project_b_test');
+
+    // start listening for changes
+    hierarchyCacher.listenForChanges();
+
+    // update the parent_id of an entity, and make sure the subtree in the database is rebuilt
+    await upsertDummyRecord(models.entity, { id: 'entity_ac_test', parent_id: 'entity_a_test' });
+    await upsertDummyRecord(models.entity, { id: 'entity_aca_test', parent_id: 'entity_ac_test' });
+    await upsertDummyRecord(models.entity, { id: 'entity_abc_test', parent_id: 'entity_ab_test' });
+    await upsertDummyRecord(models.entity, {
+      id: 'entity_aaaa_test',
+      parent_id: 'entity_aaa_test',
+    });
+    await models.database.waitForAllChangeHandlers();
+    await assertRelationsMatch('project_a_test', HIERARCHY_A_AFTER_ENTITIES_CREATED);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_ENTITIES_CREATED);
+  });
 
   it('batches multiple changes', () => {});
 });
