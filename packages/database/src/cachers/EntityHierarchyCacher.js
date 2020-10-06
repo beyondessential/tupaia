@@ -112,11 +112,19 @@ export class EntityHierarchyCacher {
    * @param {[string[]]} hierarchyIds The specific hierarchies to cache (defaults to all)
    */
   async buildAndCacheHierarchies(hierarchyIds) {
+    // TODO remove temporary debug logs after smoke testing
+    const start = Date.now();
+    console.log(`Building ${hierarchyIds ? hierarchyIds.length : 'all'} hierarchies`);
     // projects are the root entities of every full tree, so start with them
     const projectCriteria = hierarchyIds ? { entity_hierarchy_id: hierarchyIds } : {};
     const projects = await this.models.project.find(projectCriteria);
     const projectTasks = projects.map(async project => this.buildAndCacheProject(project));
     await Promise.all(projectTasks);
+    console.log(
+      `Finished building ${hierarchyIds ? hierarchyIds.length : 'all'} hierarchies in ${
+        (Date.now() - start) / 1000
+      } seconds`,
+    );
   }
 
   async buildAndCacheProject(project) {
