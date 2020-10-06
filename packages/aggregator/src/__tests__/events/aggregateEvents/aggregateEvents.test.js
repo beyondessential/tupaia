@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { aggregateEvents } from '../../../events/aggregateEvents';
 import { AGGREGATION_TYPES } from '../../../aggregationTypes';
 
@@ -63,13 +62,15 @@ const aggregationConfig = {
 
 describe('aggregateEvents()', () => {
   it('invalid aggregation type', () => {
-    expect(() => aggregateEvents(EVENTS, 'NONEXISTANT')).to.throw('Aggregation type not found');
-    expect(() => aggregateEvents(EVENTS, null)).to.throw('Aggregation type not found');
+    expect(() => aggregateEvents(EVENTS, 'NONEXISTANT')).toThrowError('Aggregation type not found');
+    expect(() => aggregateEvents(EVENTS, null)).toThrowError('Aggregation type not found');
   });
+
   it('empty aggregation type', () => {
-    expect(aggregateEvents(EVENTS)).to.deep.equal(EVENTS);
-    expect(aggregateEvents(EVENTS, undefined)).to.deep.equal(EVENTS);
+    expect(aggregateEvents(EVENTS)).toStrictEqual(EVENTS);
+    expect(aggregateEvents(EVENTS, undefined)).toStrictEqual(EVENTS);
   });
+
   describe('REPLACE_ORG_UNIT_WITH_ORG_GROUP', () => {
     it('replaces org units correctly', () => {
       const expectedResponse = [
@@ -116,20 +117,21 @@ describe('aggregateEvents()', () => {
           orgUnit: 'Parent_1',
         },
       ];
+
       expect(
         aggregateEvents(
           EVENTS,
           AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP,
           aggregationConfig,
         ),
-      ).to.deep.equal(expectedResponse);
+      ).toStrictEqual(expectedResponse);
     });
 
     it('works with no events', () => {
       const expectedResponse = [];
       expect(
         aggregateEvents([], AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP, aggregationConfig),
-      ).to.deep.equal(expectedResponse);
+      ).toStrictEqual(expectedResponse);
     });
   });
 });
