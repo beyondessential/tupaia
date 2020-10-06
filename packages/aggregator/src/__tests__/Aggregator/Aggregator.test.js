@@ -7,14 +7,18 @@ import { createJestMockInstance } from '@tupaia/utils';
 import { Aggregator } from '../../Aggregator';
 import * as AggregateAnalytics from '../../analytics/aggregateAnalytics/aggregateAnalytics';
 import * as FilterAnalytics from '../../analytics/filterAnalytics';
-
+import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import {
   DATA_SOURCE_TYPES,
   RESPONSE_BY_SOURCE_TYPE,
   AGGREGATED_ANALYTICS,
   FILTERED_ANALYTICS,
 } from './fixtures';
-import { AGGREGATION_TYPES } from '../../aggregationTypes';
+
+jest.mock('../../analytics/aggregateAnalytics/aggregateAnalytics');
+AggregateAnalytics.aggregateAnalytics.mockReturnValue(AGGREGATED_ANALYTICS);
+jest.mock('../../analytics/filterAnalytics');
+FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 
 const { DATA_ELEMENT, DATA_GROUP } = DATA_SOURCE_TYPES;
 
@@ -40,10 +44,6 @@ const aggregationOptions = {
   ],
   filter: { value: 3 },
 };
-jest.mock('../../analytics/aggregateAnalytics/aggregateAnalytics');
-AggregateAnalytics.aggregateAnalytics.mockReturnValue(AGGREGATED_ANALYTICS);
-jest.mock('../../analytics/filterAnalytics');
-FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 
 describe('Aggregator', () => {
   beforeEach(() => {
