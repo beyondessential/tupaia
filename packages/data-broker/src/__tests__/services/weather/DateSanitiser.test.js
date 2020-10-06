@@ -1,5 +1,5 @@
 import { DateSanitiser } from '../../../services/weather/DateSanitiser';
-import { mockNow, resetMocks } from './testutil';
+import { mockNow } from './testutil';
 
 /*
  * Note 1:
@@ -23,10 +23,6 @@ describe('DateSanitiser', () => {
 
   beforeEach(() => {
     mockNow(1549360800 * 1000); // (2019-02-05 10:00 UTC)
-  });
-
-  afterEach(() => {
-    resetMocks();
   });
 
   describe('invalid dates', () => {

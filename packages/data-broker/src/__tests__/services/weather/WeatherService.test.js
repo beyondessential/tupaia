@@ -9,13 +9,9 @@ import {
   getMockOptionsArg,
   getMockTypeArg,
 } from './WeatherService.stubs';
-import { mockNow, resetMocks } from './testutil';
+import { mockNow } from './testutil';
 
 describe('WeatherService', () => {
-  afterEach(() => {
-    resetMocks();
-  });
-
   describe('basic operation', () => {
     it('returns analytics data when requesting data for dataElements', async () => {
       const mockModels = await createMockModelsStubWithMockEntity();
