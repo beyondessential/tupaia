@@ -65,11 +65,14 @@ const REPORT_PROVINCE_INFO = {
           field: 'code',
         },
       ],
-      ['SPP001'],
+      ['SDP001'],
     ],
     columns: ['main'],
     entityAggregation: {
-      dataSourceEntityType: 'district',
+      dataSourceEntityType: 'sub_district',
+      aggregationEntityType: 'district',
+      includeSiblingData: true,
+      aggregationType: 'SUM_PER_ORG_GROUP',
     },
   },
   viewJson: {
