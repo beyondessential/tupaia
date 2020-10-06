@@ -38,9 +38,31 @@ export class DataAggregatingRouteHandler extends RouteHandler {
   };
 
   fetchDataSourceEntitiesOfType = async (entity, entityType, options) => {
-    const { dataSourceEntityFilter } = options;
+    const { includeSiblingData, aggregationEntityType, dataSourceEntityFilter } = options;
+    const hierarchyId = await this.fetchHierarchyId();
 
-    const dataSourceEntities = await this.getBaseDataSourceEntities(entity, entityType, options);
+    let dataSourceEntities = [];
+    if (entityType) {
+      /**
+       *    A
+       *   / \
+       *  B   C
+       * This is when we are at B and want to fetch data for both B and C
+       */
+      if (includeSiblingData) {
+        const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
+        dataSourceEntities = await ancestor.getDescendantsOfType(entityType, hierarchyId);
+      } else {
+        const ancestor = await entity.getAncestorOfType(entityType, hierarchyId);
+        if (ancestor && ancestor.type !== entity.type) {
+          dataSourceEntities = [ancestor];
+        } else {
+          dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
+        }
+      }
+    } else {
+      dataSourceEntities = await entity.getNearestOrgUnitDescendants(hierarchyId);
+    }
 
     const countryCodes = [...new Set(dataSourceEntities.map(e => e.country_code))];
     const countryAccessList = await Promise.all(
@@ -50,36 +72,12 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       (obj, countryCode, i) => ({ ...obj, [countryCode]: countryAccessList[i] }),
       {},
     );
-    const permittedDataSourceEntities = dataSourceEntities.filter(
-      e => countryAccess[e.country_code],
-    );
+    dataSourceEntities = dataSourceEntities.filter(e => countryAccess[e.country_code]);
 
-    return dataSourceEntityFilter
-      ? filterEntities(permittedDataSourceEntities, dataSourceEntityFilter)
-      : permittedDataSourceEntities;
-  };
-
-  getBaseDataSourceEntities = async (entity, entityType, options) => {
-    const { includeSiblingData, aggregationEntityType } = options;
-    const hierarchyId = await this.fetchHierarchyId();
-    if (!entityType) return entity.getNearestOrgUnitDescendants(hierarchyId);
-
-    /**   A
-     *   / \
-     *  B   C
-     * This is when we are at B and want to fetch data for both B and C
-     */
-    if (includeSiblingData) {
-      const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
-      return ancestor.getDescendantsOfType(entityType, hierarchyId);
+    if (dataSourceEntityFilter) {
+      dataSourceEntities = filterEntities(dataSourceEntities, dataSourceEntityFilter);
     }
 
-    // If the entityType specifies an ancestor, return that
-    const dataSourceAncestor = await entity.getAncestorOfType(entityType, hierarchyId);
-    if (dataSourceAncestor && dataSourceAncestor.type !== entity.type) {
-      return [dataSourceAncestor];
-    }
-
-    return entity.getDescendantsOfType(entityType, hierarchyId);
+    return dataSourceEntities;
   };
 }
