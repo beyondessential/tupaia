@@ -17,6 +17,8 @@ import {
   HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED,
   HIERARCHY_B_AFTER_RELATION_AA_AB_DELETED,
   HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED,
+  HIERARCHY_A_AFTER_PARENT_ID_CHANGES,
+  HIERARCHY_B_AFTER_PARENT_ID_CHANGES,
 } from './EntityHierarchyCacher.fixtures';
 
 describe('EntityHierarchyCacher', () => {
@@ -143,5 +145,20 @@ describe('EntityHierarchyCacher', () => {
     );
     await models.database.waitForAllChangeHandlers();
     await assertRelationsMatch(projectCode, HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED);
+  });
+
+  it('deletes and rebuilds subtrees across all hierarchies if a parent_id is changed', async () => {
+    await buildAndCacheProject('project_a_test');
+    await buildAndCacheProject('project_b_test');
+
+    // start listening for changes
+    hierarchyCacher.listenForChanges();
+
+    // update the parent_id of an entity, and make sure the subtree in the database is rebuilt
+    await models.entity.updateById('entity_aaa_test', { parent_id: 'entity_a_test' });
+    await models.entity.updateById('entity_abb_test', { parent_id: 'entity_aaa_test' });
+    await models.database.waitForAllChangeHandlers();
+    await assertRelationsMatch('project_a_test', HIERARCHY_A_AFTER_PARENT_ID_CHANGES);
+    await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_PARENT_ID_CHANGES);
   });
 });
