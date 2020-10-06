@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix ."
   },
@@ -20,5 +20,8 @@
     "@beyondessential/tupaia-access-policy": "^2.5.0",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@beyondessential/jest"
   }
 }
