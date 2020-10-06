@@ -5,6 +5,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -15,9 +16,14 @@ import moment from 'moment';
 import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
-import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE } from '../../styles';
+import { DIALOG_Z_INDEX, DARK_BLUE } from '../../styles';
 import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { LoadingIndicator } from '../Form/common';
+
+const StyledAlert = styled(Alert)`
+  display: inline-flex;
+  min-width: 240px;
+`;
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
@@ -81,13 +87,14 @@ export class EnlargedDialogContent extends PureComponent {
     const { viewContent, errorMessage } = this.props;
     const noData = viewContent.data && viewContent.data.length === 0;
 
-    if (noData) {
-      return <Alert severity="info">No data found for this time period</Alert>;
+    if (errorMessage) {
+      return <StyledAlert severity="error">{errorMessage}</StyledAlert>;
     }
 
-    if (errorMessage) {
-      return <Alert severity="error">Error</Alert>;
+    if (noData) {
+      return <StyledAlert severity="info">No data found for this time period</StyledAlert>;
     }
+
     return this.renderBodyContent();
   }
 
@@ -234,6 +241,9 @@ const styles = {
     lineHeight: 1.15,
   },
   chartContent: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     height: 350,
   },
   matrixContent: {

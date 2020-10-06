@@ -180,7 +180,7 @@ export const DateRangePicker = ({
         )}
         <FlexRow>
           <IconButton onClick={() => setIsOpen(true)} aria-label="open">
-            {isLoading ? <CircularProgress size={18} /> : <DateRangeIcon />}
+            {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
           </IconButton>
           <LabelContainer>
             <Label aria-label="active-date">{labelText}</Label>
