@@ -10,6 +10,10 @@ const { RAW } = QUERY_CONJUNCTIONS;
 
 export const assertUserAccountPermissions = async (accessPolicy, models, userAccountId) => {
   const userAccount = await models.user.findById(userAccountId);
+  if (!userAccount) {
+    throw new Error(`No user account found with id ${userAccountId}`);
+  }
+
   const entityPermissions = await models.userEntityPermission.find({ user_id: userAccount.id });
   const entities = await models.entity.findManyById(entityPermissions.map(ep => ep.entity_id));
   const countryCodes = entities.map(e => e.country_code).filter(c => c !== 'DL');

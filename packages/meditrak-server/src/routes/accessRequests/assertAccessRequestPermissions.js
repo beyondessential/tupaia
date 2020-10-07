@@ -8,6 +8,10 @@ import { getAdminPanelAllowedEntityIds } from '../utilities';
 
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequestId) => {
   const accessRequest = await models.accessRequest.findById(accessRequestId);
+  if (!accessRequest) {
+    throw new Error(`No access request found with id ${accessRequestId}`);
+  }
+
   const entity = await models.entity.findById(accessRequest.entity_id);
   if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     throw new Error('Need Admin Panel access to the country this access request is for');
