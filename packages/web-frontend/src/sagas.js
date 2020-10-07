@@ -608,13 +608,14 @@ function* fetchViewData(parameters, errorHandler) {
   try {
     return yield call(request, requestResourceUrl, errorHandler);
   } catch (error) {
-    if (error.errorFunction) {
-      console.log(error.errorFunction, errorHandler);
-      // yield put(error.errorFunction(error, infoViewKey));
-    } else {
-      // console.log(`Failed to handle error: ${error.message}`);
+    let errorMessage = error.message;
+
+    if (error.response) {
+      const json = yield error.response.json();
+      errorMessage = json.error;
     }
-    yield put(errorHandler(error.message, infoViewKey));
+
+    yield put(errorHandler(errorMessage, infoViewKey));
   }
   return null;
 }

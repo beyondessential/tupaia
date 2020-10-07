@@ -17,7 +17,7 @@ const StyledSmallAlert = styled(MuiAlert)`
     font-weight: 400;
     font-size: 0.875rem;
     border-radius: 3px;
-    padding: 0.8rem 1.25rem;
+    padding: 0.5rem 1.25rem 0.8rem;
     box-shadow: none;
   }
 
@@ -42,8 +42,7 @@ const StyledSmallAlert = styled(MuiAlert)`
   }
 
   .MuiAlert-icon {
-    padding: 0.5rem 0;
-    margin-right: 0.5rem;
+    margin-right: 0.3rem;
     font-size: 1.5em;
   }
 `;
