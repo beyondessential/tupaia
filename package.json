@@ -47,6 +47,7 @@
     "@beyondessential/eslint-config-jest": "^0.1.2",
     "@beyondessential/eslint-config-js": "^0.1.4",
     "@beyondessential/eslint-config-ts": "^0.1.0",
+    "@sambego/storybook-state": "^2.0.1",
     "@storybook/addon-essentials": "^6.0.10",
     "@storybook/react": "^6.0.10",
     "@testing-library/cypress": "^7.0.0",
