@@ -12,6 +12,10 @@ export const assertUserEntityPermissionPermissions = async (
   userEntityPermissionId,
 ) => {
   const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
+  if (userEntityPermission === null) {
+    throw new Error(`No user entity permission found with id ${userEntityPermissionId}`);
+  }
+
   const entity = await models.entity.findById(userEntityPermission.entity_id);
   if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     throw new Error('Need Admin Panel access to the country this entity is in');

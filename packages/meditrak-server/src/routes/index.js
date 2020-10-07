@@ -22,7 +22,11 @@ import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
 import { CreateUserAccounts, RegisterUserAccounts, EditUserAccounts, GETUserAccounts } from './userAccounts';
-import { EditUserEntityPermissions, GETUserEntityPermissions } from './userEntityPermissions';
+import {
+  DeleteUserEntityPermissions,
+  EditUserEntityPermissions,
+  GETUserEntityPermissions,
+} from './userEntityPermissions';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
@@ -68,6 +72,7 @@ export default {
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
   deleteRecord: catchAsyncErrors(deleteRecord),
+  deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
   editRecord: catchAsyncErrors(editRecord),
   createUserAccount: useRouteHandler(CreateUserAccounts),
   registerUserAccount: useRouteHandler(RegisterUserAccounts),

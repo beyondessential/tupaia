@@ -18,6 +18,7 @@ const {
   authenticate,
   countChanges,
   deleteRecord,
+  deleteUserEntityPermissions,
   editRecord,
   editAccessRequests,
   editUserAccounts,
@@ -177,6 +178,7 @@ export function addRoutesToApp(app) {
   /**
    * DELETE routes
    */
+  app.delete('(/v[0-9]+)/userEntityPermissions/:recordId', deleteUserEntityPermissions);
   app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
 

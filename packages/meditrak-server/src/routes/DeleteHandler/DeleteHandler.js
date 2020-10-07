@@ -1,0 +1,52 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import {
+  constructRecordExistsWithId,
+  DatabaseError,
+  respond,
+  singularise,
+  ValidationError,
+} from '@tupaia/utils';
+import { CRUDHandler } from '../CRUDHandler';
+
+/**
+ * Responds to DELETE requests for a resource
+ */
+
+export class DeleteHandler extends CRUDHandler {
+  constructor(req, res) {
+    super(req, res);
+    this.model = this.models[singularise(this.resource)];
+  }
+
+  async handleRequest() {
+    await this.validate();
+    await this.deleteRecord();
+    respond(this.res, { message: `Successfully deleted ${this.resource}` });
+  }
+
+  async validate() {
+    if (!this.model.isDeletableViaApi) {
+      throw new ValidationError(`${this.resource} is not a valid DELETE endpoint`);
+    }
+
+    // Validate that the record to be deleted actually exists (will throw an error if not)
+    await constructRecordExistsWithId(this.model)(this.recordId);
+  }
+
+  async deleteRecord() {
+    try {
+      await this.model.deleteById(this.recordId);
+    } catch (error) {
+      if (error.constraint && error.constraint.endsWith('fkey')) {
+        throw new DatabaseError(
+          `Cannot delete ${this.resource} while there are still records in the ${error.table} table`,
+        );
+      }
+      throw error;
+    }
+  }
+}
