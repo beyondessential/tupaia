@@ -16,7 +16,7 @@ const StyledSmallAlert = styled(MuiAlert)`
     font-weight: 400;
     font-size: 0.875rem;
     border-radius: 3px;
-    padding: 0.5rem 1.25rem 0.8rem;
+    padding: 0.8rem 1.25rem;
     box-shadow: none;
   }
 
