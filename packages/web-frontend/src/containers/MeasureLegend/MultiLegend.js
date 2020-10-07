@@ -62,9 +62,12 @@ const getLegend = measureType => {
   }
 };
 
+// returning <LegendOuterFrame /> keeps the map control on the right hand side
+const renderEmptyMultiLegend = () => <LegendOuterFrame />;
+
 const MultiLegend = ({ measureOptions, isMeasureLoading }) => {
   if (isMeasureLoading) {
-    return null;
+    return renderEmptyMultiLegend();
   }
 
   const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
@@ -76,6 +79,7 @@ const MultiLegend = ({ measureOptions, isMeasureLoading }) => {
   const legends = displayedLegends.map(mo => {
     const { type } = mo;
     const Legend = getLegend(type);
+    console.log(type);
 
     return (
       <Legend
@@ -87,6 +91,9 @@ const MultiLegend = ({ measureOptions, isMeasureLoading }) => {
       />
     );
   });
+
+  // returning <LegendOuterFrame /> keeps the map control on the right hand side
+  if (legends.length === 0) return renderEmptyMultiLegend();
 
   return (
     <LegendOuterFrame>
