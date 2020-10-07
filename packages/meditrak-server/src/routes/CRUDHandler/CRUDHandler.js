@@ -22,6 +22,6 @@ export class CRUDHandler extends RouteHandler {
     this.parentResource = params.parentResource;
     this.parentRecordType = resourceToRecordType(this.parentResource);
     this.parentRecordId = params.parentRecordId;
-    this.model = this.models[singularise(this.resource)];
+    this.resourceModel = this.models[singularise(this.resource)];
   }
 }

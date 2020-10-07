@@ -23,12 +23,12 @@ export class DeleteHandler extends CRUDHandler {
 
   async validate() {
     // Validate that the record to be deleted actually exists (will throw an error if not)
-    await constructRecordExistsWithId(this.model)(this.recordId);
+    await constructRecordExistsWithId(this.resourceModel)(this.recordId);
   }
 
   async deleteRecord() {
     try {
-      await this.model.deleteById(this.recordId);
+      await this.resourceModel.deleteById(this.recordId);
     } catch (error) {
       if (error.constraint && error.constraint.endsWith('fkey')) {
         throw new DatabaseError(
