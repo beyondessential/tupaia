@@ -7,7 +7,7 @@ import { Object as RealmObject } from 'realm';
 
 export class Entity extends RealmObject {
   getReduxStoreData() {
-    const { name, code = '', id, countryCode, parent, type } = this;
+    const { name, code = '', id, countryCode, parent, type, attributesType } = this;
     const reduxStoreData = {
       name,
       code,
@@ -16,6 +16,7 @@ export class Entity extends RealmObject {
       parent: '',
       area: parent && parent.name,
       countryCode,
+      attributesType,
     };
     return reduxStoreData;
   }
@@ -28,6 +29,7 @@ export class Entity extends RealmObject {
       parent_id: this.parent.id,
       code: this.code,
       type: this.type,
+      attributesType: this.attributesType,
     };
   }
 }
@@ -42,14 +44,17 @@ Entity.schema = {
     parent: { type: 'Entity', optional: true },
     code: { type: 'string', optional: true },
     type: { type: 'string', default: 'Entity not properly synchronised' },
+    attributesType: { type: 'string', optional: true },
   },
 };
 
 Entity.requiredData = ['name', 'type'];
 
 Entity.construct = (database, data) => {
-  const { parentId, ...restOfData } = data;
+  const { parentId, attributes, ...restOfData } = data;
   const entityObject = restOfData;
   if (parentId) entityObject.parent = database.getOrCreate('Entity', parentId);
+  if (attributes) entityObject.attributesType = attributes.type;
+
   return database.update('Entity', entityObject);
 };

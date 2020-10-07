@@ -22,13 +22,16 @@ const getEntityFilters = (state, database, questionId) => {
   const filters = { countryCode };
 
   const question = getQuestion(state, questionId);
-  const { parentId, grandparentId, type } = question.config.entity;
+  const { parentId, grandparentId, attributesTypeId, type } = question.config.entity;
   filters.type = type;
   if (parentId && parentId.questionId) {
     filters['parent.id'] = getAnswerForQuestion(state, parentId.questionId);
   }
   if (grandparentId && grandparentId.questionId) {
     filters['parent.parent.id'] = getAnswerForQuestion(state, grandparentId.questionId);
+  }
+  if (attributesTypeId && attributesTypeId.questionId) {
+    filters['attributes.type'] = getAnswerForQuestion(state, attributesTypeId.questionId);
   }
 
   return filters;

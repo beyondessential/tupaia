@@ -12,6 +12,7 @@ const SPECIAL_VALUE_PROCESSORS = {
 const KEY_TRANSLATION = {
   parentId: 'parent',
   grandparentId: 'grandparent',
+  attributesTypeId: 'attributesType',
 };
 
 export class EntityConfigCellBuilder extends KeyValueCellBuilder {
