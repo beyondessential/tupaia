@@ -13,7 +13,7 @@ import { VIEW_CONTENT_SHAPE } from './propTypes';
 
 const StyledAlert = styled(Alert)`
   &.MuiAlert-root {
-    margin: 25px auto 10px;
+    margin: 20px auto 10px;
     padding: 5px 16px 5px 13px;
   }
 `;
