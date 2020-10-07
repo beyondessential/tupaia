@@ -6,11 +6,19 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Alert } from '../Alert';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 
-export const NoDataMessage = ({ viewContent, className }) => {
+const StyledAlert = styled(Alert)`
+  &.MuiAlert-root {
+    margin: 25px auto 10px;
+    padding: 5px 16px 5px 13px;
+  }
+`;
+
+export const NoDataMessage = ({ viewContent }) => {
   let message = 'No data';
 
   if (viewContent.noDataMessage) {
@@ -21,11 +29,7 @@ export const NoDataMessage = ({ viewContent, className }) => {
     message = `No data for ${viewContent.startDate} to ${viewContent.endDate}`;
   }
 
-  return (
-    <Alert severity="info" className={className}>
-      {message}
-    </Alert>
-  );
+  return <StyledAlert severity="info">{message}</StyledAlert>;
 };
 
 NoDataMessage.propTypes = {

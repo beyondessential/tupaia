@@ -5,7 +5,6 @@
 
 import React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
-import MuiButton from '@material-ui/core/Button';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
 import PropTypes from 'prop-types';
@@ -54,7 +53,7 @@ export const AlertAction = styled.button`
   font-weight: 500;
   box-shadow: none;
   border: none;
-  font-size: 14px;
+  font-size: 0.875rem;
   text-decoration: underline;
 
   &:hover {
@@ -67,7 +66,7 @@ export const AlertAction = styled.button`
 `;
 
 export const AlertLink = styled.a`
-  font-size: 14px;
+  font-size: 0.875rem;
   text-decoration: underline;
   color: inherit;
   font-weight: 500;
