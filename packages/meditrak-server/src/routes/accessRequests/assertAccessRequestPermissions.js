@@ -8,7 +8,7 @@ import { getAdminPanelAllowedEntityIds } from '../utilities';
 
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequestId) => {
   const accessRequest = await models.accessRequest.findById(accessRequestId);
-  if (accessRequest === null) {
+  if (!accessRequest) {
     throw new Error(`No access request found with id ${accessRequestId}`);
   }
 

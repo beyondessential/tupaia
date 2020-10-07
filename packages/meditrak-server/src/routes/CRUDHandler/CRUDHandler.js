@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { singularise } from '@tupaia/utils';
 import { RouteHandler } from '../RouteHandler';
 import { resourceToRecordType } from '../../utilities';
 import { extractResourceFromEndpoint } from './helpers';
@@ -21,5 +22,6 @@ export class CRUDHandler extends RouteHandler {
     this.parentResource = params.parentResource;
     this.parentRecordType = resourceToRecordType(this.parentResource);
     this.parentRecordId = params.parentRecordId;
+    this.model = this.models[singularise(this.resource)];
   }
 }

@@ -12,7 +12,7 @@ export const assertUserEntityPermissionPermissions = async (
   userEntityPermissionId,
 ) => {
   const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
-  if (userEntityPermission === null) {
+  if (!userEntityPermission) {
     throw new Error(`No user entity permission found with id ${userEntityPermissionId}`);
   }
 

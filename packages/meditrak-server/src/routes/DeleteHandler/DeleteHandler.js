@@ -7,8 +7,6 @@ import {
   constructRecordExistsWithId,
   DatabaseError,
   respond,
-  singularise,
-  ValidationError,
 } from '@tupaia/utils';
 import { CRUDHandler } from '../CRUDHandler';
 
@@ -17,11 +15,6 @@ import { CRUDHandler } from '../CRUDHandler';
  */
 
 export class DeleteHandler extends CRUDHandler {
-  constructor(req, res) {
-    super(req, res);
-    this.model = this.models[singularise(this.resource)];
-  }
-
   async handleRequest() {
     await this.validate();
     await this.deleteRecord();
@@ -29,10 +22,6 @@ export class DeleteHandler extends CRUDHandler {
   }
 
   async validate() {
-    if (!this.model.isDeletableViaApi) {
-      throw new ValidationError(`${this.resource} is not a valid DELETE endpoint`);
-    }
-
     // Validate that the record to be deleted actually exists (will throw an error if not)
     await constructRecordExistsWithId(this.model)(this.recordId);
   }

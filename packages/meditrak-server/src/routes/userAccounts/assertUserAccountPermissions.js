@@ -10,7 +10,7 @@ const { RAW } = QUERY_CONJUNCTIONS;
 
 export const assertUserAccountPermissions = async (accessPolicy, models, userAccountId) => {
   const userAccount = await models.user.findById(userAccountId);
-  if (userAccount === null) {
+  if (!userAccount) {
     throw new Error(`No user account found with id ${userAccountId}`);
   }
 

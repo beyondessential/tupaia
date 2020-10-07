@@ -179,6 +179,7 @@ export function addRoutesToApp(app) {
    * DELETE routes
    */
   app.delete('(/v[0-9]+)/userEntityPermissions/:recordId', deleteUserEntityPermissions);
+  // TODO: Remove the generic handlers once all DELETE endpoints have specific handlers
   app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
 
