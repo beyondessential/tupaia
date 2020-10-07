@@ -31,7 +31,7 @@ const getEntityFilters = (state, database, questionId) => {
     filters['parent.parent.id'] = getAnswerForQuestion(state, grandparentId.questionId);
   }
   if (attributesType && attributesType.questionId) {
-    filters['attributes.type'] = getAnswerForQuestion(state, attributesType.questionId);
+    filters.attributesType = getAnswerForQuestion(state, attributesType.questionId);
   }
 
   return filters;
