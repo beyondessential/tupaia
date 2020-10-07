@@ -9,17 +9,24 @@ import MuiBox from '@material-ui/core/Box';
 import { RouterProvider } from '../helpers/RouterProvider';
 import { ProfileButton, ProfileButtonItem } from '../src';
 
-export default {
-  title: 'ProfileButton',
-  decorators: [story => <RouterProvider>{story()}</RouterProvider>],
-};
-
 const Container = styled(MuiBox)`
   display: flex;
   justify-content: flex-end;
   max-width: 1200px;
   padding: 1rem;
 `;
+
+export default {
+  title: 'ProfileButton',
+  component: ProfileButton,
+  decorators: [
+    story => (
+      <RouterProvider>
+        <Container>{story()}</Container>
+      </RouterProvider>
+    ),
+  ],
+};
 
 const exampleUser = {
   name: 'Catherine Bell',
@@ -41,8 +48,9 @@ const ProfileLinks = () => (
   </>
 );
 
-export const Simple = () => (
-  <Container>
-    <ProfileButton user={exampleUser} MenuOptions={ProfileLinks} />
-  </Container>
-);
+const Template = args => <ProfileButton {...args} />;
+export const Simple = Template.bind({});
+Simple.args = {
+  user: exampleUser,
+  MenuOptions: ProfileLinks,
+};
