@@ -17,3 +17,4 @@ export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
+export { getAdminPanelAllowedEntityIds } from './getAdminPanelAllowedEntityIds';

@@ -3,45 +3,29 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  BES_ADMIN_PERMISSION_GROUP,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../permissions/constants';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import { getAdminPanelAllowedEntityIds } from '../utilities';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
   models,
-  userEntityPermission,
+  userEntityPermissionId,
 ) => {
-  const results = await filterUserEntityPermissionsByPermissions(
-    accessPolicy,
-    [userEntityPermission],
-    models,
-  );
-  if (results.length === 0) {
+  const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
+  const entity = await models.entity.findById(userEntityPermission.entity_id);
+  if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     throw new Error('Need Admin Panel access to the country this entity is in');
   }
   return true;
 };
 
-export const filterUserEntityPermissionsByPermissions = async (
-  accessPolicy,
-  userEntityPermissions,
-  models,
-) => {
-  if (accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP)) {
-    return userEntityPermissions;
+export const createUserEntityPermissionDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
   }
+  // If we don't have BES Admin access, add a filter to the SQL query
+  const dbConditions = { ...criteria };
+  dbConditions.entity_id = await getAdminPanelAllowedEntityIds(accessPolicy, models);
 
-  const countryCodesByEntityId = await models.entity.getEntityCountryCodeById(
-    userEntityPermissions.map(uep => uep.entity_id),
-  );
-
-  const filteredUserEntityPermissions = userEntityPermissions.filter(userEntityPermission => {
-    return accessPolicy.allows(
-      countryCodesByEntityId[userEntityPermission.entity_id],
-      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-    );
-  });
-  return filteredUserEntityPermissions;
+  return dbConditions;
 };

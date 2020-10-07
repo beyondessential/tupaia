@@ -3,32 +3,25 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  BES_ADMIN_PERMISSION_GROUP,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../permissions/constants';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import { getAdminPanelAllowedEntityIds } from '../utilities';
 
-export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequest) => {
-  const results = await filterAccessRequestsByPermissions(accessPolicy, [accessRequest], models);
-  if (results.length === 0) {
+export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequestId) => {
+  const accessRequest = await models.accessRequest.findById(accessRequestId);
+  const entity = await models.entity.findById(accessRequest.entity_id);
+  if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     throw new Error('Need Admin Panel access to the country this access request is for');
   }
   return true;
 };
 
-export const filterAccessRequestsByPermissions = async (accessPolicy, accessRequests, models) => {
-  if (accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP)) {
-    return accessRequests;
+export const createAccessRequestDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
   }
+  // If we don't have BES Admin access, add a filter to the SQL query
+  const dbConditions = { ...criteria };
+  dbConditions.entity_id = await getAdminPanelAllowedEntityIds(accessPolicy, models);
 
-  const countryCodesByEntityId = await models.entity.getEntityCountryCodeById(
-    accessRequests.map(ar => ar.entity_id),
-  );
-
-  return accessRequests.filter(accessRequest => {
-    return accessPolicy.allows(
-      countryCodesByEntityId[accessRequest.entity_id],
-      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-    );
-  });
+  return dbConditions;
 };

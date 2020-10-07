@@ -11,7 +11,7 @@ import {
 } from '../../permissions';
 import {
   assertAccessRequestPermissions,
-  filterAccessRequestsByPermissions,
+  createAccessRequestDBFilter,
 } from './assertAccessRequestPermissions';
 
 /**
@@ -34,7 +34,7 @@ export class GETAccessRequests extends GETHandler {
     const accessRequest = await super.findSingleRecord(accessRequestId, options);
 
     const accessRequestChecker = accessPolicy =>
-      assertAccessRequestPermissions(accessPolicy, this.models, accessRequest);
+      assertAccessRequestPermissions(accessPolicy, this.models, accessRequestId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),
@@ -44,15 +44,14 @@ export class GETAccessRequests extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    const accessRequests = await super.findRecords(criteria, options);
-
-    const filteredAccessRequests = await filterAccessRequestsByPermissions(
-      this.req.accessPolicy,
-      accessRequests,
+    const dbConditions = await createAccessRequestDBFilter(
+      this.accessPolicy,
       this.models,
+      criteria,
     );
+    const accessRequests = await super.findRecords(dbConditions, options);
 
-    if (!filteredAccessRequests.length) {
+    if (!accessRequests.length) {
       throw new Error('Your permissions do not allow access to any of the requested resources');
     }
 

@@ -3,45 +3,47 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { keyBy } from 'lodash';
-import {
-  BES_ADMIN_PERMISSION_GROUP,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../permissions/constants';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
-export const assertUserAccountPermissions = async (accessPolicy, models, userAccount) => {
-  const results = await filterUserAccountsByPermissions(accessPolicy, [userAccount], models);
-  if (results.length === 0) {
+const { RAW } = QUERY_CONJUNCTIONS;
+
+export const assertUserAccountPermissions = async (accessPolicy, models, userAccountId) => {
+  const userAccount = await models.user.findById(userAccountId);
+  const entityPermissions = await models.userEntityPermission.find({ user_id: userAccount.id });
+  const entities = await models.entity.findManyById(entityPermissions.map(ep => ep.entity_id));
+  const countryCodes = entities.map(e => e.country_code).filter(c => c !== 'DL');
+  if (countryCodes.length === 0) {
+    // User only has access to Demo Land, and it got filtered out
+    return true;
+  }
+  if (!accessPolicy.allowsAll(countryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     throw new Error('Need Admin Panel access to all countries this user has access to');
   }
   return true;
 };
 
-export const filterUserAccountsByPermissions = async (accessPolicy, userAccounts, models) => {
-  if (accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP)) {
-    return userAccounts;
+export const createUserAccountDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
   }
-  const userIds = userAccounts.map(ua => ua.id);
-  const entityPermissions = await models.userEntityPermission.find({ user_id: userIds });
-
-  const countryCodesByEntityId = await models.entity.getEntityCountryCodeById(
-    entityPermissions.map(ep => ep.entity_id),
+  // If we don't have BES Admin access, add a filter to the SQL query
+  const dbConditions = {...criteria};
+  const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
+    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
-
-  // Clear out all permissions we do have
-  const filteredEntityPermissions = entityPermissions.filter(entityPermission => {
-    const countryCode = countryCodesByEntityId[entityPermission.entity_id];
-    if (countryCode === 'DL') {
-      return false;
-    }
-    return !accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+  accessibleCountryCodes.push('DL'); // If we have admin panel anywhere, we can also view Demo Land
+  const entities = await models.entity.find({
+    code: accessibleCountryCodes,
   });
-
-  const entityPermissionsByUserId = keyBy(filteredEntityPermissions, 'user_id');
-
-  return userAccounts.filter(userAccount => {
-    // If user id still exists in the filtered list, we don't have
-    // access to all countries from that user
-    return !(userAccount.id in entityPermissionsByUserId);
-  });
+  const entityIds = entities.map(e => e.id);
+  // Checks list of entity ids the user has access to is contained within the list of entity ids
+  // the accessPolicy permits (plus Demo Land)
+  dbConditions[RAW] = {
+    sql: `array(select entity_id from user_entity_permission uep where uep.user_id = user_account.id) <@ array[${entityIds
+      .map(() => '?')
+      .join(',')}]`,
+    parameters: entityIds,
+  };
+  return dbConditions;
 };

@@ -11,7 +11,7 @@ import {
 } from '../../permissions';
 import {
   assertUserEntityPermissionPermissions,
-  filterUserEntityPermissionsByPermissions,
+  createUserEntityPermissionDBFilter,
 } from './assertUserEntityPermissionPermissions';
 
 /**
@@ -34,7 +34,7 @@ export class GETUserEntityPermissions extends GETHandler {
     const userEntityPermission = await super.findSingleRecord(userEntityPermissionId, options);
 
     const userEntityPermissionChecker = accessPolicy =>
-      assertUserEntityPermissionPermissions(accessPolicy, this.models, userEntityPermission);
+      assertUserEntityPermissionPermissions(accessPolicy, this.models, userEntityPermissionId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, userEntityPermissionChecker]),
@@ -44,15 +44,14 @@ export class GETUserEntityPermissions extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    const userEntityPermissions = await super.findRecords(criteria, options);
-
-    const filteredUserEntityPermissions = await filterUserEntityPermissionsByPermissions(
-      this.req.accessPolicy,
-      userEntityPermissions,
+    const dbConditions = await createUserEntityPermissionDBFilter(
+      this.accessPolicy,
       this.models,
+      criteria,
     );
+    const userEntityPermissions = await super.findRecords(dbConditions, options);
 
-    if (!filteredUserEntityPermissions.length) {
+    if (!userEntityPermissions.length) {
       throw new Error('Your permissions do not allow access to any of the requested resources');
     }
 

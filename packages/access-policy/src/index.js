@@ -107,4 +107,15 @@ export class AccessPolicy {
     }
     return this.cachedPermissionGroupSets[cacheKey];
   }
+
+  /**
+   * Return entities the user has access to the given permission group for
+   *
+   * @param {string} [permissionsGroup]
+   *
+   * @returns entities[] The entity objects
+   */
+  getEntitiesAllowed(permissionGroup) {
+    return Object.keys(this.policy).filter(e => this.allows(e, permissionGroup));
+  }
 }
