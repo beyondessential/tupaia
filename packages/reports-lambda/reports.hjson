@@ -177,17 +177,740 @@
       }
     },
     {
-      "id": "PG_Strive_PNG_Weekly_Reported_Cases",
+      "id": "UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix_National_Provincial",
       "config": {
         "fetch": [
           {
-            "fetchEvents": {
-              "programCode": "SCRF"
+            "fetchAnalytics": {
+              "dataElementCodes": ['RHS4UNFPA878','RHS3UNFPA636','RHS3UNFPA633','RHS3UNFPA644'],
+              "aggregationType": "RAW",
+              "dataServices": [
+                {
+                  "isDataRegional": true
+                }
+              ]
             }
           }
         ],
-        "filter": [],
-        "transform": [],
+        "transform": [
+          {
+            "select": {
+              "convertToPeriod": { "period": "<period>", "targetType": "QUARTER" },
+              "as": "period"
+            }
+          },
+          {
+            "mergeRows": {
+              "group": ["period", "organisationUnit"],
+              "sum": ["RHS3UNFPA633","RHS3UNFPA644","RHS4UNFPA878","RHS3UNFPA636"]
+            }
+          },
+          {
+            "mergeRows": {
+              "group": ["period"],
+              "sum": ["RHS3UNFPA633","RHS3UNFPA644","RHS4UNFPA878","RHS3UNFPA636"],
+              "count": ["organisationUnit"],
+            }
+          },
+          {
+            "select": {
+              "value": "<organisationUnit>",
+              "as": "Number of Facilities Surveyed"
+            }
+          },
+          {
+            drop: "organisationUnit"
+          }
+        ],
+        "output": []
+      }
+    },
+    {
+      "id": "TO_CD_Health_Certificates_Distributed",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": ['CD65','CD66','CD67','CD68'],
+              "aggregationType": "FINAL_EACH_MONTH",
+              "dataServices": [
+                {
+                  "isDataRegional": false
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+          {
+            "mergeRows": {
+              "group": ["organisationUnit"],
+              "drop": ["period"],
+              "default": "sum"
+            }
+          },
+          {
+            "select": {
+              add: ['<CD65>','<CD66>'],
+              "as": 'Shopkeeper'
+            }
+          },
+          {
+            "select": {
+              add: ['<CD67>','<CD68>'],
+              "as": 'Food Handler'
+            }
+          },
+          {
+            "select": {
+              add: ['<Shopkeeper>','<Food Handler>'],
+              "as": 'Total'
+            }
+          },
+          { 
+            drop: 'CD65'
+          },
+          { 
+            drop: 'CD66'
+          },
+          { 
+            drop: 'CD67'
+          },
+          { 
+            drop: 'CD68'
+          }
+        ],
+        "output": [
+          {
+            "ShopkeeperFraction": "(CD65 + CD66) / (CD65 + CD66 + CD67 + CD68)",
+            //"useFractionParts": true
+            "Shopkeeper": "(CD65 + CD66)",
+            "Food handler": "(CD67 + CD68)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "8",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": ["BCD46",
+                                   "BCD47",
+                                   "BCD48",
+                                   "BCD48a",
+                                   "BCD48b",
+                                   "BCD49",
+                                   "BCD50",
+                                   "BCD51",
+                                   "BCD52",
+                                   "BCD53",
+                                   "BCD54",
+                                   "BCD55"],
+              "aggregationType": "SUM",
+              "dataServices": [
+                {
+                  "isDataRegional": true
+                }
+              ]
+            }
+          }
+        ],
+        "transforms": [
+          {
+            transform: "mergeRows",
+            organisationUnit: "drop",
+            period: "latest",
+            default: "sum"
+          },
+          {
+            transform: "aggregate",
+            organisationUnit: "drop",
+            period: "latest",
+            default: "sum"
+          },
+          {
+            transform: 'defineCols',
+            Doctors: "BCD46",
+            Midwives: "BCD47",
+            Nurses: "arithmatic(BCD48 + BCD48a + BCD48b)",
+            Aides: "BCD49",
+            Others: "arithmatic(BCD50 + BCD51 + BCD52 + BCD53 + BCD54 + BCD55)"
+            // ...: "*" / "[BCD48, BCD48a, BCD48b]" / "* - [BCD48a, BCD48b]"
+          }
+        ],
+        "output": [
+        ]
+      }
+    },
+    {
+      "id": "TO_RH_Descriptive_FP01_02",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": [
+                "Family_Planning_Acceptors_Other",
+                "Family_Planning_Acceptors_Condom_Female",
+                "Family_Planning_Acceptors_Natural_Method",
+                "Family_Planning_Acceptors_Depo_Provera",
+                "Family_Planning_Acceptors_Jadelle",
+                "Family_Planning_Acceptors_Pill_Single",
+                "Family_Planning_Acceptors_Sterilization_Male",
+                "Family_Planning_Acceptors_Sterilization_Female",
+                "Family_Planning_Acceptors_Pill_Combined",
+                "Family_Planning_Acceptors_Condom_Male",
+                "Family_Planning_Acceptors_IUD",
+                "POP21AND23",
+                "POP15",
+                "POP17AND19",
+                "POP13",
+                "POP11"],
+              "aggregationType": "FINAL_EACH_MONTH_FILL_EMPTY_MONTHS",
+              "dataServices": [
+                {
+                  "isDataRegional": false
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+          {
+            "mergeRows": {
+              "group": ["period"],
+              "drop": ["organisationUnit"],
+              "default": "sum"
+            }
+          },
+        ],
+        "output": [
+          {
+            "ShopkeeperFraction": "(CD65 + CD66) / (CD65 + CD66 + CD67 + CD68)",
+            //"useFractionParts": true
+            "Shopkeeper": "(CD65 + CD66)",
+            "Food handler": "(CD67 + CD68)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "UNFPA_Region_Facilities_Offering_Services_At_Least_1_Family_Planning",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": [
+                "RHS1UNFPA03",
+              "RHS4UNFPA809"],
+              "aggregationType": "RAW",
+              "dataServices": [
+                {
+                  "isDataRegional": true
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+        ],
+        "output": [
+          {
+            "ShopkeeperFraction": "(CD65 + CD66) / (CD65 + CD66 + CD67 + CD68)",
+            //"useFractionParts": true
+            "Shopkeeper": "(CD65 + CD66)",
+            "Food handler": "(CD67 + CD68)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "TO_PEHS",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": ["PEHS_NEWCD004",
+    "PEHS833",
+    "PEHS805",
+    // "PEHS882",
+    // "PEHS875",
+    // "PEHS762",
+    // "PEHS812",
+    // "PEHS769",
+    // "PEHS776",
+    // "PEHS854",
+    // "PEHS_NEWCD001",
+    // "PEHS819",
+    // "PEHS847",
+    // "PEHS783",
+    // "PEHS861",
+    // "PEHS_NEWCD002",
+    // "PEHS_NEWCD005",
+    // "PEHS_NEWCD006",
+    // "PEHS868",
+    // "PEHS840",
+    // "PEHS_NEWCD003",
+    // "PEHS1310",
+    // "PEHS_NEWDS001",
+    // "PEHS1359",
+    // "PEHS_NEWDS002",
+    // "PEHS1331",
+    // "PEHS1324a",
+    // "PEHS_NEWDS006",
+    // "PEHS_NEWDS003",
+    // "PEHS1430",
+    // "PEHS_NEWDS008",
+    // "PEHS_NEWDS007",
+    // "PEHS1345",
+    // "PEHS_NEWDS004",
+    // "PEHS1380",
+    // "PEHS1366",
+    // "PEHS1317",
+    // "PEHS1373",
+    // "PEHS1437",
+    // "PEHS1423a",
+    // "PEHS1352",
+    // "PEHS_NEWDS005",
+    // "PEHS1387",
+    // "PEHS1230",
+    // "PEHS1273",
+    // "PEHS_NEWENT001",
+    // "PEHS_NEWENT003",
+    // "PEHS1237",
+    // "PEHS_NEWENT002",
+    // "PEHS1223",
+    // "PEHS1216",
+    // "PEHS_NEWENT004",
+    // "PEHS918",
+    // "PEHS911",
+    // "PEHS897",
+    // "PEHS1938",
+    // "PEHS1930",
+    // "PEHS890",
+    // "PEHS1906",
+    // "PEHS1890",
+    // "PEHS1922",
+    // "PEHS1898",
+    // "PEHS35",
+    // "PEHS126",
+    // "PEHS63",
+    // "PEHS119",
+    // "PEHS7",
+    // "PEHS_NEW025",
+    // "PEHS133",
+    // "PEHS42",
+    // "PEHS70",
+    // "PEHS_NEW001",
+    // "PEHS14",
+    // "PEHS_NEW057",
+    // "PEHS28",
+    // "PEHS_NEW049",
+    // "PEHS_NEW009",
+    // "PEHS_NEW065",
+    // "PEHS_NEW033",
+    // "PEHS_NEW017",
+    // "PEHS140",
+    // "PEHS112",
+    // "PEHS105",
+    // "PEHS56",
+    // "PEHS_NEW041",
+    // "PEHS49",
+    // "PEHS_NEW105",
+    // "PEHS_NEWMFP001",
+    // "PEHS156",
+    // "PEHS470",
+    // "PEHS525A",
+    // "PEHS314",
+    // "PEHS356",
+    // "PEHS164",
+    // "PEHS_NEW089",
+    // "PEHS328",
+    // "PEHS377",
+    // "PEHS498",
+    // "PEHS512",
+    // "PEHS363",
+    // "PEHS279",
+    // "PEHS_NEW097",
+    // "PEHS_NEW121",
+    // "PEHS228",
+    // "PEHS192",
+    // "PEHS235",
+    // "PEHS_NEW073",
+    // "PEHS463",
+    // "PEHS171",
+    // "PEHS399",
+    // "PEHS505",
+    // "PEHS178",
+    // "PEHS406",
+    // "PEHS293",
+    // "PEHS321",
+    // "PEHS149",
+    // "PEHS221",
+    // "PEHS392",
+    // "PEHS242",
+    // "PEHS420",
+    // "PEHS_NEW081",
+    // "PEHS435",
+    // "PEHS199",
+    // "PEHS206",
+    // "PEHS300",
+    // "PEHS370",
+    // "PEHS342",
+    // "PEHS249",
+    // "PEHS413",
+    // "PEHS484",
+    // "PEHS185",
+    // "PEHS286",
+    // "PEHS477",
+    // "PEHS270",
+    // "PEHS349",
+    // "PEHS221a",
+    // "PEHS491",
+    // "PEHS263",
+    // "PEHS427",
+    // "PEHS456",
+    // "PEHS_NEW113",
+    // "PEHS335",
+    // "PEHS384",
+    // "PEHS213",
+    // "PEHS662",
+    // "PEHS612",
+    // "PEHS570",
+    // "PEHS676",
+    // "PEHS655",
+    // "PEHS640",
+    // "PEHS556",
+    // "PEHS591",
+    // "PEHS563",
+    // "PEHS_NEWMH002",
+    // "PEHS549",
+    // "PEHS_NEWMH001",
+    // "PEHS535",
+    // "PEHS690",
+    // "PEHS626",
+    // "PEHS584",
+    // "PEHS648",
+    // "PEHS619",
+    // "PEHS542",
+    // "PEHS577",
+    // "PEHS_NEWMH003",
+    // "PEHS1158",
+    // "PEHS1172a",
+    // "PEHS1107",
+    // "PEHS1137",
+    // "PEHS1179a",
+    // "PEHS1005",
+    // "PEHS933",
+    // "PEHS1020",
+    // "PEHS_NEWNCD003",
+    // "PEHS1086",
+    // "PEHS1058",
+    // "PEHS1072",
+    // "PEHS1100a",
+    // "PEHS997",
+    // "PEHS969a",
+    // "PEHS1193",
+    // "PEHS1027",
+    // "PEHS940",
+    // "PEHS1200",
+    // "PEHS1114",
+    // "PEHS_NEWNCD001",
+    // "PEHS983",
+    // "PEHS1129",
+    // "PEHS1186a",
+    // "PEHS_NEWNCD002",
+    // "PEHS1207",
+    // "PEHS1050",
+    // "PEHS1042",
+    // "PEHS962",
+    // "PEHS990",
+    // "PEHS1065",
+    // "PEHS1151",
+    // "PEHS_NEWNCD007",
+    // "PEHS969",
+    // "PEHS1107a",
+    // "PEHS1034",
+    // "PEHS1093",
+    // "PEHS976",
+    // "PEHS926",
+    // "PEHS1079",
+    // "PEHS1122",
+    // "PEHS1100",
+    // "PEHS1012",
+    // "PEHS_NEWNCD005",
+    // "PEHS1165",
+    // "PEHS_NEWNCD004",
+    // "PEHS_NEWNCD006",
+    // "PEHS1473",
+    // "PEHS1445",
+    // "PEHS1466",
+    // "PEHS_NEWOHS002",
+    // "PEHS_NEWOHS003",
+    // "PEHS_NEWOHS001",
+    // "PEHS1480",
+    // "PEHS1459",
+    // "PEHS_NEWOHS005",
+    // "PEHS1487",
+    "PEHS1452"],
+              "aggregationType": "RAW",
+              "dataServices": [
+                {
+                  "isDataRegional": true
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+    //       { "drop": { "field": "PEHS_NEWCD004", "where": { "eq": ["<PEHS_NEWCD004>", 0]}}},
+    // { "drop": { "field": "PEHS805", "where": { "eq": ["<PEHS805>", 0]}}},
+    // { "drop": { "field": "PEHS833", "where": { "eq": ["<PEHS833>", 0]}}},
+    // { "drop": { "field": "PEHS875", "where": { "eq": ["<PEHS875>", 0]}}},
+    // { "drop": { "field": "PEHS882", "where": { "eq": ["<PEHS882>", 0]}}},
+    // { "drop": { "field": "PEHS762", "where": { "eq": ["<PEHS762>", 0]}}},
+    // { "drop": { "field": "PEHS812", "where": { "eq": ["<PEHS812>", 0]}}},
+    // { "drop": { "field": "PEHS769", "where": { "eq": ["<PEHS769>", 0]}}},
+    // { "drop": { "field": "PEHS776", "where": { "eq": ["<PEHS776>", 0]}}},
+    // { "drop": { "field": "PEHS854", "where": { "eq": ["<PEHS854>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWCD001", "where": { "eq": ["<PEHS_NEWCD001>", 0]}}},
+    // { "drop": { "field": "PEHS819", "where": { "eq": ["<PEHS819>", 0]}}},
+    // { "drop": { "field": "PEHS847", "where": { "eq": ["<PEHS847>", 0]}}},
+    // { "drop": { "field": "PEHS783", "where": { "eq": ["<PEHS783>", 0]}}},
+    // { "drop": { "field": "PEHS861", "where": { "eq": ["<PEHS861>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWCD002", "where": { "eq": ["<PEHS_NEWCD002>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWCD005", "where": { "eq": ["<PEHS_NEWCD005>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWCD006", "where": { "eq": ["<PEHS_NEWCD006>", 0]}}},
+    // { "drop": { "field": "PEHS868", "where": { "eq": ["<PEHS868>", 0]}}},
+    // { "drop": { "field": "PEHS840", "where": { "eq": ["<PEHS840>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWCD003", "where": { "eq": ["<PEHS_NEWCD003>", 0]}}},
+    // { "drop": { "field": "PEHS1310", "where": { "eq": ["<PEHS1310>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS001", "where": { "eq": ["<PEHS_NEWDS001>", 0]}}},
+    // { "drop": { "field": "PEHS1359", "where": { "eq": ["<PEHS1359>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS002", "where": { "eq": ["<PEHS_NEWDS002>", 0]}}},
+    // { "drop": { "field": "PEHS1331", "where": { "eq": ["<PEHS1331>", 0]}}},
+    // { "drop": { "field": "PEHS1324a", "where": { "eq": ["<PEHS1324a>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS006", "where": { "eq": ["<PEHS_NEWDS006>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS003", "where": { "eq": ["<PEHS_NEWDS003>", 0]}}},
+    // { "drop": { "field": "PEHS1430", "where": { "eq": ["<PEHS1430>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS008", "where": { "eq": ["<PEHS_NEWDS008>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS007", "where": { "eq": ["<PEHS_NEWDS007>", 0]}}},
+    // { "drop": { "field": "PEHS1345", "where": { "eq": ["<PEHS1345>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS004", "where": { "eq": ["<PEHS_NEWDS004>", 0]}}},
+    // { "drop": { "field": "PEHS1380", "where": { "eq": ["<PEHS1380>", 0]}}},
+    // { "drop": { "field": "PEHS1366", "where": { "eq": ["<PEHS1366>", 0]}}},
+    // { "drop": { "field": "PEHS1317", "where": { "eq": ["<PEHS1317>", 0]}}},
+    // { "drop": { "field": "PEHS1373", "where": { "eq": ["<PEHS1373>", 0]}}},
+    // { "drop": { "field": "PEHS1437", "where": { "eq": ["<PEHS1437>", 0]}}},
+    // { "drop": { "field": "PEHS1423a", "where": { "eq": ["<PEHS1423a>", 0]}}},
+    // { "drop": { "field": "PEHS1352", "where": { "eq": ["<PEHS1352>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWDS005", "where": { "eq": ["<PEHS_NEWDS005>", 0]}}},
+    // { "drop": { "field": "PEHS1387", "where": { "eq": ["<PEHS1387>", 0]}}},
+    // { "drop": { "field": "PEHS1230", "where": { "eq": ["<PEHS1230>", 0]}}},
+    // { "drop": { "field": "PEHS1273", "where": { "eq": ["<PEHS1273>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWENT001", "where": { "eq": ["<PEHS_NEWENT001>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWENT003", "where": { "eq": ["<PEHS_NEWENT003>", 0]}}},
+    // { "drop": { "field": "PEHS1237", "where": { "eq": ["<PEHS1237>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWENT002", "where": { "eq": ["<PEHS_NEWENT002>", 0]}}},
+    // { "drop": { "field": "PEHS1223", "where": { "eq": ["<PEHS1223>", 0]}}},
+    // { "drop": { "field": "PEHS1216", "where": { "eq": ["<PEHS1216>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWENT004", "where": { "eq": ["<PEHS_NEWENT004>", 0]}}},
+    // { "drop": { "field": "PEHS918", "where": { "eq": ["<PEHS918>", 0]}}},
+    // { "drop": { "field": "PEHS911", "where": { "eq": ["<PEHS911>", 0]}}},
+    // { "drop": { "field": "PEHS897", "where": { "eq": ["<PEHS897>", 0]}}},
+    // { "drop": { "field": "PEHS1938", "where": { "eq": ["<PEHS1938>", 0]}}},
+    // { "drop": { "field": "PEHS1930", "where": { "eq": ["<PEHS1930>", 0]}}},
+    // { "drop": { "field": "PEHS890", "where": { "eq": ["<PEHS890>", 0]}}},
+    // { "drop": { "field": "PEHS1906", "where": { "eq": ["<PEHS1906>", 0]}}},
+    // { "drop": { "field": "PEHS1890", "where": { "eq": ["<PEHS1890>", 0]}}},
+    // { "drop": { "field": "PEHS1922", "where": { "eq": ["<PEHS1922>", 0]}}},
+    // { "drop": { "field": "PEHS1898", "where": { "eq": ["<PEHS1898>", 0]}}},
+    // { "drop": { "field": "PEHS35", "where": { "eq": ["<PEHS35>", 0]}}},
+    // { "drop": { "field": "PEHS126", "where": { "eq": ["<PEHS126>", 0]}}},
+    // { "drop": { "field": "PEHS63", "where": { "eq": ["<PEHS63>", 0]}}},
+    // { "drop": { "field": "PEHS119", "where": { "eq": ["<PEHS119>", 0]}}},
+    // { "drop": { "field": "PEHS7", "where": { "eq": ["<PEHS7>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW025", "where": { "eq": ["<PEHS_NEW025>", 0]}}},
+    // { "drop": { "field": "PEHS133", "where": { "eq": ["<PEHS133>", 0]}}},
+    // { "drop": { "field": "PEHS42", "where": { "eq": ["<PEHS42>", 0]}}},
+    // { "drop": { "field": "PEHS70", "where": { "eq": ["<PEHS70>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW001", "where": { "eq": ["<PEHS_NEW001>", 0]}}},
+    // { "drop": { "field": "PEHS14", "where": { "eq": ["<PEHS14>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW057", "where": { "eq": ["<PEHS_NEW057>", 0]}}},
+    // { "drop": { "field": "PEHS28", "where": { "eq": ["<PEHS28>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW049", "where": { "eq": ["<PEHS_NEW049>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW009", "where": { "eq": ["<PEHS_NEW009>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW065", "where": { "eq": ["<PEHS_NEW065>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW033", "where": { "eq": ["<PEHS_NEW033>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW017", "where": { "eq": ["<PEHS_NEW017>", 0]}}},
+    // { "drop": { "field": "PEHS140", "where": { "eq": ["<PEHS140>", 0]}}},
+    // { "drop": { "field": "PEHS112", "where": { "eq": ["<PEHS112>", 0]}}},
+    // { "drop": { "field": "PEHS105", "where": { "eq": ["<PEHS105>", 0]}}},
+    // { "drop": { "field": "PEHS56", "where": { "eq": ["<PEHS56>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW041", "where": { "eq": ["<PEHS_NEW041>", 0]}}},
+    // { "drop": { "field": "PEHS49", "where": { "eq": ["<PEHS49>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW105", "where": { "eq": ["<PEHS_NEW105>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWMFP001", "where": { "eq": ["<PEHS_NEWMFP001>", 0]}}},
+    // { "drop": { "field": "PEHS156", "where": { "eq": ["<PEHS156>", 0]}}},
+    // { "drop": { "field": "PEHS470", "where": { "eq": ["<PEHS470>", 0]}}},
+    // { "drop": { "field": "PEHS525A", "where": { "eq": ["<PEHS525A>", 0]}}},
+    // { "drop": { "field": "PEHS314", "where": { "eq": ["<PEHS314>", 0]}}},
+    // { "drop": { "field": "PEHS356", "where": { "eq": ["<PEHS356>", 0]}}},
+    // { "drop": { "field": "PEHS164", "where": { "eq": ["<PEHS164>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW089", "where": { "eq": ["<PEHS_NEW089>", 0]}}},
+    // { "drop": { "field": "PEHS328", "where": { "eq": ["<PEHS328>", 0]}}},
+    // { "drop": { "field": "PEHS377", "where": { "eq": ["<PEHS377>", 0]}}},
+    // { "drop": { "field": "PEHS498", "where": { "eq": ["<PEHS498>", 0]}}},
+    // { "drop": { "field": "PEHS512", "where": { "eq": ["<PEHS512>", 0]}}},
+    // { "drop": { "field": "PEHS363", "where": { "eq": ["<PEHS363>", 0]}}},
+    // { "drop": { "field": "PEHS279", "where": { "eq": ["<PEHS279>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW097", "where": { "eq": ["<PEHS_NEW097>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW121", "where": { "eq": ["<PEHS_NEW121>", 0]}}},
+    // { "drop": { "field": "PEHS228", "where": { "eq": ["<PEHS228>", 0]}}},
+    // { "drop": { "field": "PEHS192", "where": { "eq": ["<PEHS192>", 0]}}},
+    // { "drop": { "field": "PEHS235", "where": { "eq": ["<PEHS235>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW073", "where": { "eq": ["<PEHS_NEW073>", 0]}}},
+    // { "drop": { "field": "PEHS463", "where": { "eq": ["<PEHS463>", 0]}}},
+    // { "drop": { "field": "PEHS171", "where": { "eq": ["<PEHS171>", 0]}}},
+    // { "drop": { "field": "PEHS399", "where": { "eq": ["<PEHS399>", 0]}}},
+    // { "drop": { "field": "PEHS505", "where": { "eq": ["<PEHS505>", 0]}}},
+    // { "drop": { "field": "PEHS178", "where": { "eq": ["<PEHS178>", 0]}}},
+    // { "drop": { "field": "PEHS406", "where": { "eq": ["<PEHS406>", 0]}}},
+    // { "drop": { "field": "PEHS293", "where": { "eq": ["<PEHS293>", 0]}}},
+    // { "drop": { "field": "PEHS321", "where": { "eq": ["<PEHS321>", 0]}}},
+    // { "drop": { "field": "PEHS149", "where": { "eq": ["<PEHS149>", 0]}}},
+    // { "drop": { "field": "PEHS221", "where": { "eq": ["<PEHS221>", 0]}}},
+    // { "drop": { "field": "PEHS392", "where": { "eq": ["<PEHS392>", 0]}}},
+    // { "drop": { "field": "PEHS242", "where": { "eq": ["<PEHS242>", 0]}}},
+    // { "drop": { "field": "PEHS420", "where": { "eq": ["<PEHS420>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW081", "where": { "eq": ["<PEHS_NEW081>", 0]}}},
+    // { "drop": { "field": "PEHS435", "where": { "eq": ["<PEHS435>", 0]}}},
+    // { "drop": { "field": "PEHS199", "where": { "eq": ["<PEHS199>", 0]}}},
+    // { "drop": { "field": "PEHS206", "where": { "eq": ["<PEHS206>", 0]}}},
+    // { "drop": { "field": "PEHS300", "where": { "eq": ["<PEHS300>", 0]}}},
+    // { "drop": { "field": "PEHS370", "where": { "eq": ["<PEHS370>", 0]}}},
+    // { "drop": { "field": "PEHS342", "where": { "eq": ["<PEHS342>", 0]}}},
+    // { "drop": { "field": "PEHS249", "where": { "eq": ["<PEHS249>", 0]}}},
+    // { "drop": { "field": "PEHS413", "where": { "eq": ["<PEHS413>", 0]}}},
+    // { "drop": { "field": "PEHS484", "where": { "eq": ["<PEHS484>", 0]}}},
+    // { "drop": { "field": "PEHS185", "where": { "eq": ["<PEHS185>", 0]}}},
+    // { "drop": { "field": "PEHS286", "where": { "eq": ["<PEHS286>", 0]}}},
+    // { "drop": { "field": "PEHS477", "where": { "eq": ["<PEHS477>", 0]}}},
+    // { "drop": { "field": "PEHS270", "where": { "eq": ["<PEHS270>", 0]}}},
+    // { "drop": { "field": "PEHS349", "where": { "eq": ["<PEHS349>", 0]}}},
+    // { "drop": { "field": "PEHS221a", "where": { "eq": ["<PEHS221a>", 0]}}},
+    // { "drop": { "field": "PEHS491", "where": { "eq": ["<PEHS491>", 0]}}},
+    // { "drop": { "field": "PEHS263", "where": { "eq": ["<PEHS263>", 0]}}},
+    // { "drop": { "field": "PEHS427", "where": { "eq": ["<PEHS427>", 0]}}},
+    // { "drop": { "field": "PEHS456", "where": { "eq": ["<PEHS456>", 0]}}},
+    // { "drop": { "field": "PEHS_NEW113", "where": { "eq": ["<PEHS_NEW113>", 0]}}},
+    // { "drop": { "field": "PEHS335", "where": { "eq": ["<PEHS335>", 0]}}},
+    // { "drop": { "field": "PEHS384", "where": { "eq": ["<PEHS384>", 0]}}},
+    // { "drop": { "field": "PEHS213", "where": { "eq": ["<PEHS213>", 0]}}},
+    // { "drop": { "field": "PEHS662", "where": { "eq": ["<PEHS662>", 0]}}},
+    // { "drop": { "field": "PEHS612", "where": { "eq": ["<PEHS612>", 0]}}},
+    // { "drop": { "field": "PEHS570", "where": { "eq": ["<PEHS570>", 0]}}},
+    // { "drop": { "field": "PEHS676", "where": { "eq": ["<PEHS676>", 0]}}},
+    // { "drop": { "field": "PEHS655", "where": { "eq": ["<PEHS655>", 0]}}},
+    // { "drop": { "field": "PEHS640", "where": { "eq": ["<PEHS640>", 0]}}},
+    // { "drop": { "field": "PEHS556", "where": { "eq": ["<PEHS556>", 0]}}},
+    // { "drop": { "field": "PEHS591", "where": { "eq": ["<PEHS591>", 0]}}},
+    // { "drop": { "field": "PEHS563", "where": { "eq": ["<PEHS563>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWMH002", "where": { "eq": ["<PEHS_NEWMH002>", 0]}}},
+    // { "drop": { "field": "PEHS549", "where": { "eq": ["<PEHS549>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWMH001", "where": { "eq": ["<PEHS_NEWMH001>", 0]}}},
+    // { "drop": { "field": "PEHS535", "where": { "eq": ["<PEHS535>", 0]}}},
+    // { "drop": { "field": "PEHS690", "where": { "eq": ["<PEHS690>", 0]}}},
+    // { "drop": { "field": "PEHS626", "where": { "eq": ["<PEHS626>", 0]}}},
+    // { "drop": { "field": "PEHS584", "where": { "eq": ["<PEHS584>", 0]}}},
+    // { "drop": { "field": "PEHS648", "where": { "eq": ["<PEHS648>", 0]}}},
+    // { "drop": { "field": "PEHS619", "where": { "eq": ["<PEHS619>", 0]}}},
+    // { "drop": { "field": "PEHS542", "where": { "eq": ["<PEHS542>", 0]}}},
+    // { "drop": { "field": "PEHS577", "where": { "eq": ["<PEHS577>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWMH003", "where": { "eq": ["<PEHS_NEWMH003>", 0]}}},
+    // { "drop": { "field": "PEHS1158", "where": { "eq": ["<PEHS1158>", 0]}}},
+    // { "drop": { "field": "PEHS1172a", "where": { "eq": ["<PEHS1172a>", 0]}}},
+    // { "drop": { "field": "PEHS1107", "where": { "eq": ["<PEHS1107>", 0]}}},
+    // { "drop": { "field": "PEHS1137", "where": { "eq": ["<PEHS1137>", 0]}}},
+    // { "drop": { "field": "PEHS1179a", "where": { "eq": ["<PEHS1179a>", 0]}}},
+    // { "drop": { "field": "PEHS1005", "where": { "eq": ["<PEHS1005>", 0]}}},
+    // { "drop": { "field": "PEHS933", "where": { "eq": ["<PEHS933>", 0]}}},
+    // { "drop": { "field": "PEHS1020", "where": { "eq": ["<PEHS1020>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWNCD003", "where": { "eq": ["<PEHS_NEWNCD003>", 0]}}},
+    // { "drop": { "field": "PEHS1086", "where": { "eq": ["<PEHS1086>", 0]}}},
+    // { "drop": { "field": "PEHS1058", "where": { "eq": ["<PEHS1058>", 0]}}},
+    // { "drop": { "field": "PEHS1072", "where": { "eq": ["<PEHS1072>", 0]}}},
+    // { "drop": { "field": "PEHS1100a", "where": { "eq": ["<PEHS1100a>", 0]}}},
+    // { "drop": { "field": "PEHS997", "where": { "eq": ["<PEHS997>", 0]}}},
+    // { "drop": { "field": "PEHS969a", "where": { "eq": ["<PEHS969a>", 0]}}},
+    // { "drop": { "field": "PEHS1193", "where": { "eq": ["<PEHS1193>", 0]}}},
+    // { "drop": { "field": "PEHS1027", "where": { "eq": ["<PEHS1027>", 0]}}},
+    // { "drop": { "field": "PEHS940", "where": { "eq": ["<PEHS940>", 0]}}},
+    // { "drop": { "field": "PEHS1200", "where": { "eq": ["<PEHS1200>", 0]}}},
+    // { "drop": { "field": "PEHS1114", "where": { "eq": ["<PEHS1114>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWNCD001", "where": { "eq": ["<PEHS_NEWNCD001>", 0]}}},
+    // { "drop": { "field": "PEHS983", "where": { "eq": ["<PEHS983>", 0]}}},
+    // { "drop": { "field": "PEHS1129", "where": { "eq": ["<PEHS1129>", 0]}}},
+    // { "drop": { "field": "PEHS1186a", "where": { "eq": ["<PEHS1186a>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWNCD002", "where": { "eq": ["<PEHS_NEWNCD002>", 0]}}},
+    // { "drop": { "field": "PEHS1207", "where": { "eq": ["<PEHS1207>", 0]}}},
+    // { "drop": { "field": "PEHS1050", "where": { "eq": ["<PEHS1050>", 0]}}},
+    // { "drop": { "field": "PEHS1042", "where": { "eq": ["<PEHS1042>", 0]}}},
+    // { "drop": { "field": "PEHS962", "where": { "eq": ["<PEHS962>", 0]}}},
+    // { "drop": { "field": "PEHS990", "where": { "eq": ["<PEHS990>", 0]}}},
+    // { "drop": { "field": "PEHS1065", "where": { "eq": ["<PEHS1065>", 0]}}},
+    // { "drop": { "field": "PEHS1151", "where": { "eq": ["<PEHS1151>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWNCD007", "where": { "eq": ["<PEHS_NEWNCD007>", 0]}}},
+    // { "drop": { "field": "PEHS969", "where": { "eq": ["<PEHS969>", 0]}}},
+    // { "drop": { "field": "PEHS1107a", "where": { "eq": ["<PEHS1107a>", 0]}}},
+    // { "drop": { "field": "PEHS1034", "where": { "eq": ["<PEHS1034>", 0]}}},
+    // { "drop": { "field": "PEHS1093", "where": { "eq": ["<PEHS1093>", 0]}}},
+    // { "drop": { "field": "PEHS976", "where": { "eq": ["<PEHS976>", 0]}}},
+    // { "drop": { "field": "PEHS926", "where": { "eq": ["<PEHS926>", 0]}}},
+    // { "drop": { "field": "PEHS1079", "where": { "eq": ["<PEHS1079>", 0]}}},
+    // { "drop": { "field": "PEHS1122", "where": { "eq": ["<PEHS1122>", 0]}}},
+    // { "drop": { "field": "PEHS1100", "where": { "eq": ["<PEHS1100>", 0]}}},
+    // { "drop": { "field": "PEHS1012", "where": { "eq": ["<PEHS1012>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWNCD005", "where": { "eq": ["<PEHS_NEWNCD005>", 0]}}},
+    // { "drop": { "field": "PEHS1165", "where": { "eq": ["<PEHS1165>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWNCD004", "where": { "eq": ["<PEHS_NEWNCD004>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWNCD006", "where": { "eq": ["<PEHS_NEWNCD006>", 0]}}},
+    // { "drop": { "field": "PEHS1473", "where": { "eq": ["<PEHS1473>", 0]}}},
+    // { "drop": { "field": "PEHS1445", "where": { "eq": ["<PEHS1445>", 0]}}},
+    // { "drop": { "field": "PEHS1466", "where": { "eq": ["<PEHS1466>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWOHS002", "where": { "eq": ["<PEHS_NEWOHS002>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWOHS003", "where": { "eq": ["<PEHS_NEWOHS003>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWOHS001", "where": { "eq": ["<PEHS_NEWOHS001>", 0]}}},
+    // { "drop": { "field": "PEHS1480", "where": { "eq": ["<PEHS1480>", 0]}}},
+    // { "drop": { "field": "PEHS1459", "where": { "eq": ["<PEHS1459>", 0]}}},
+    // { "drop": { "field": "PEHS_NEWOHS005", "where": { "eq": ["<PEHS_NEWOHS005>", 0]}}},
+    // { "drop": { "field": "PEHS1487", "where": { "eq": ["<PEHS1487>", 0]}}},
+    // { "drop": { "field": "PEHS1452", "where": { "eq": ["<PEHS1452>", 0]}}},
+          {
+            "mergeRows": {
+              "group": ["organisationUnit"],
+              "drop": ["period"],
+              "default": "sum"
+            }
+          },
+          // {
+          //   "mergeRows": {
+          //     "group": ["period"],
+          //     "sum": ["RHS3UNFPA633","RHS3UNFPA644","RHS4UNFPA878","RHS3UNFPA636"],
+          //     "count": ["organisationUnit"],
+          //   }
+          // },
+          // {
+          //   "select": {
+          //     "value": "<organisationUnit>",
+          //     "as": "Number of Facilities Surveyed"
+          //   }
+          // },
+          // {
+          //   drop: "organisationUnit"
+          // }
+        ],
         "output": []
       }
     }

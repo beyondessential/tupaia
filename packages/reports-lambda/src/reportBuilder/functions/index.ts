@@ -17,11 +17,13 @@ const createFunctionBuilder = <F extends (...args: any) => any>(func: F) => {
           return param;
         });
       } else if (typeof params === 'object' && params !== null) {
+        const newParsedParams = { ...params } as { [key: string]: any };
         Object.entries(params).forEach(([key, param]) => {
           if (typeof param === 'string') {
-            parsedParams[key] = parseToken(row, param);
+            newParsedParams[key] = parseToken(row, param);
           }
         });
+        parsedParams = newParsedParams;
       }
       return func(parsedParams);
     };

@@ -38,7 +38,7 @@ const buildParams = (params: unknown): MergeParams => {
     throw new Error(`Expected params object but got ${params}`);
   }
 
-  const { where, ...restOfParams } = params;
+  const { where, default: defaultMergeFunction, ...restOfParams } = params;
 
   Object.values(restOfParams).forEach(paramValue => {
     if (!Array.isArray(paramValue)) {
@@ -53,10 +53,17 @@ const buildParams = (params: unknown): MergeParams => {
     }
   });
 
+  if (defaultMergeFunction !== undefined && typeof defaultMergeFunction !== 'string') {
+    throw new Error(`Expected default to be a string but got ${defaultMergeFunction}`);
+  }
+
   const { group } = restOfParams;
   return {
     createGroupKey: buildCreateGroupKey(group as string[] | undefined),
-    getFieldMergeFunction: buildGetFieldMergeFunction(restOfParams as { [key: string]: string[] }),
+    getFieldMergeFunction: buildGetFieldMergeFunction(
+      restOfParams as { [key: string]: string[] },
+      defaultMergeFunction,
+    ),
     where: buildWhere(params),
   };
 };

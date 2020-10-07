@@ -16,15 +16,12 @@ const fetchAnalytics: FetchFunction = async (
   const {
     dataElementCodes,
     aggregationType,
+    dataServices,
   }: { dataElementCodes: string[]; aggregationType: string } = params;
   const response = (await aggregator.fetchAnalytics(
     dataElementCodes,
     {
-      dataServices: [
-        {
-          isDataRegional: false,
-        },
-      ],
+      dataServices,
       organisationUnitCodes: [organisationUnitCode],
     },
     {},
