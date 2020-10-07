@@ -68,7 +68,6 @@ export const composePercentagesPerPeriod = async (config, aggregator, dhisApi) =
 
     Object.entries(percentageParts).forEach(([dataKey, { numerator, denominator }]) => {
       const fraction = divideValues(numerator, denominator);
-      // eslint-disable-next-line no-restricted-globals
       if (!isNaN(fraction)) {
         newDataItem[dataKey] = fraction;
         newDataItem[`${dataKey}_metadata`] = { numerator, denominator };

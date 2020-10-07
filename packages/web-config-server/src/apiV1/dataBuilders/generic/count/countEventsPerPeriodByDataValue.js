@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable class-methods-use-this */
+/* eslint-disable max-classes-per-file */
 
 import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
@@ -13,7 +13,6 @@ import { groupEventsByPeriod } from '@tupaia/dhis-api';
 /**
  * @abstract
  */
-
 class DataByValueBuilder extends DataBuilder {
   async buildData(results, optionCodeToName) {
     const { dataElement, valuesOfInterest, isPercentage } = this.config;
@@ -27,7 +26,7 @@ class DataByValueBuilder extends DataBuilder {
         // not interested in this value, ignore it
         return;
       }
-      const value = dataValues[dataElement].value;
+      const { value } = dataValues[dataElement];
       const valueForMatching = optionCodeToName ? optionCodeToName[value] : value;
 
       if (!returnData[valueForMatching]) {

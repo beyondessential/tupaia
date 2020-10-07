@@ -24,3 +24,4 @@ export * from './components/Table';
 export * from './components/Toast';
 export * from './components/UserMessage';
 export * from './components/ActionsMenu';
+export * from './components/Layout';

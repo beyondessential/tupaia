@@ -361,7 +361,7 @@ function* attemptTokenLogin(action) {
       false,
     );
 
-    yield put(findLoggedIn(LOGIN_TYPES.TOKEN, true)); //default to email verified for one time login to prevent a nag screen
+    yield put(findLoggedIn(LOGIN_TYPES.TOKEN, true)); // default to email verified for one time login to prevent a nag screen
     yield put(fetchResetTokenLoginSuccess());
   } catch (error) {
     yield put(error.errorFunction(error));

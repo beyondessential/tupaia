@@ -6,25 +6,27 @@
 import flatten from 'lodash.flatten';
 import flattenDeep from 'lodash.flattendeep';
 
-import { getCalculatedValuesByCell } from './getValuesByCell';
+import { getCalculatedValuesByCell, getDataElementsFromCell } from './getValuesByCell';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfCalculatedValues extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
-      this.config.cells.map(row =>
-        row.map(cell => cell.operands.map(operand => operand.dataValues)),
-      ),
+      this.config.cells.map(row => row.map(getDataElementsFromCell)),
     );
     return [...new Set(dataElementCodes)];
   }
 
   getCellKey(rowIndex, columnIndex) {
-    return this.tableConfig.cells[rowIndex][columnIndex].key;
+    return (
+      this.tableConfig.cells[rowIndex][columnIndex].key ??
+      this.tableConfig.cells[rowIndex][columnIndex]
+    );
   }
 
-  buildValuesByCell() {
-    return getCalculatedValuesByCell(flatten(this.tableConfig.cells), this.results);
+  async buildValuesByCell() {
+    const hierarchyId = await this.fetchEntityHierarchyId();
+    return getCalculatedValuesByCell(flatten(this.tableConfig.cells), this.results, hierarchyId);
   }
 }
 

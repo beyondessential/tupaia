@@ -49,10 +49,6 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
           {oneTimeLoginFailedMessage && (
             <FormErrorMessage>
               <div>The email link has expired or already been used.</div>
-              {
-                // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
-                /* eslint-disable */
-              }
               <Link
                 href="#request-password-reset"
                 onClick={e => {
@@ -62,7 +58,6 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
               >
                 Click here to request a new password reset link
               </Link>
-              {/* eslint-enable */}
             </FormErrorMessage>
           )}
           <Text>Click the button below to set a new password.</Text>

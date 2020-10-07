@@ -102,14 +102,8 @@ export class AggregateDataPusher extends DataPusher {
     };
     const momentUnit = periodTypeToMomentUnit(periodType);
     const submissionTime = await getSubmissionTime();
-    const minimumTime = submissionTime
-      .clone()
-      .startOf(momentUnit)
-      .format();
-    const maximumTime = submissionTime
-      .clone()
-      .endOf(momentUnit)
-      .format();
+    const minimumTime = submissionTime.clone().startOf(momentUnit).format();
+    const maximumTime = submissionTime.clone().endOf(momentUnit).format();
     return [minimumTime, maximumTime];
   }
 
@@ -193,7 +187,7 @@ export class AggregateDataPusher extends DataPusher {
 
   /**
    * Will delete any redundant information from dhis2 if the org unit or period has changed
-   **/
+   */
   async deletePriorSyncIfSignificantChange({ orgUnit, period }) {
     const syncLogRecord = await this.fetchSyncLogRecord();
     if (!this.checkExistsOnDhis2(syncLogRecord)) {

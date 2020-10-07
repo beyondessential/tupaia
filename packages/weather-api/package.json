@@ -1,0 +1,14 @@
+{
+  "name": "@tupaia/weather-api",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "test": "nyc --reporter=lcov mocha",
+    "test-coverage": "cross-env NODE_ENV=test nyc mocha"
+  },
+  "dependencies": {
+    "@tupaia/utils": "1.0.0"
+  }
+}
