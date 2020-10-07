@@ -13,6 +13,7 @@
 4. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
 
    ```bash
+   # ⊞ Windows users should run this under WSL
    yarn workspace @tupaia/web-frontend cypress:generate-config
    ```
 
