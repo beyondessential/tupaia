@@ -12,6 +12,7 @@ import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
 import { UnauthorisedView } from '../views/UnauthorisedView';
+import { ProfileView } from '../views/ProfileView';
 import { NotFoundView } from '../views/NotFoundView';
 import { checkIsAuthorisedForCountry, checkIsAuthorisedForMultiCountry } from '../utils/auth';
 import { checkIsMultiCountryUser } from '../store';
@@ -21,6 +22,9 @@ export const PageRoutesComponent = React.memo(({ canViewMultipleCountries }) => 
     <PrivateRoute exact path="/" authCheck={checkIsAuthorisedForMultiCountry}>
       <CountriesReportsView />
     </PrivateRoute>
+    <Route path="/profile">
+      <ProfileView />
+    </Route>
     <PrivateRoute path="/weekly-reports/:countryCode" authCheck={checkIsAuthorisedForCountry}>
       <CountryReportsView />
     </PrivateRoute>

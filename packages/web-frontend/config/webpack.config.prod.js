@@ -7,6 +7,8 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+
+const babelConfig = require('../babel.config.js');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -152,6 +154,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
         loader: require.resolve('babel-loader'),
+        options: babelConfig,
       },
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.

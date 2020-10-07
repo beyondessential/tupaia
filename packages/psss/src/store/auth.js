@@ -11,6 +11,7 @@ const LOGIN_START = 'LOGIN_START';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGIN_ERROR = 'LOGIN_ERROR';
 const LOGOUT = 'LOGOUT';
+export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
 export const login = (emailAddress, password) => async (dispatch, getState, { api }) => {
@@ -44,6 +45,18 @@ export const loginError = errorMessage => ({
 export const logout = () => ({
   type: LOGOUT,
 });
+
+export const updateProfile = payload => async (dispatch, getState, { api }) => {
+  await api.put(`me`, null, payload);
+  const { body: user } = await api.get(`me`);
+  dispatch({
+    type: PROFILE_SUCCESS,
+    ...user,
+  });
+};
+
+export const updatePassword = payload => async (dispatch, getState, { api }) =>
+  api.post(`me/changePassword`, null, payload);
 
 // selectors
 export const getAccessToken = ({ auth }) => auth.accessToken;
@@ -97,6 +110,16 @@ const actionHandlers = {
     error: action.error,
   }),
   [LOGOUT]: () => defaultState,
+  [PROFILE_SUCCESS]: (user, currentState) => ({
+    user: {
+      ...currentState.user,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      name: `${user.first_name} ${user.last_name}`,
+      position: user.position,
+      employer: user.employer,
+    },
+  }),
 };
 
 export const auth = createReducer(defaultState, actionHandlers);
