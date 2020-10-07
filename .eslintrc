@@ -11,7 +11,8 @@
           "**/stories/**",
           "**/tests/**",
           "**/__tests__/**"
-        ]
+        ],
+        "packageDir": ["../../", "."]
       }
     ],
     "import/no-unresolved": [
