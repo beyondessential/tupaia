@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MuiButton from '@material-ui/core/Button';
-import MuiAvatar from '@material-ui/core/Avatar';
 import Popper from '@material-ui/core/Popper';
 import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
+import { Avatar } from './Avatar';
 import { FlexStart } from './Layout';
 
 const StyledListItem = styled(MuiListItem)`
@@ -47,9 +47,8 @@ const Paper = styled.div`
   min-width: 13rem;
 `;
 
-const Avatar = styled(MuiAvatar)`
+const StyledAvatar = styled(Avatar)`
   color: white;
-  background: ${props => props.color};
   font-weight: 600;
 `;
 
@@ -97,20 +96,16 @@ const StyledButton = styled(MuiButton)`
   }
 
   .MuiAvatar-root {
-    color: white;
-    background: ${props => props.color};
     font-size: 0.8rem;
-    font-weight: 600;
   }
 `;
 
-export const ProfileButton = React.memo(({ user, MenuOptions, avatarColors, className }) => {
+export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
   const userInitial = user.name.substring(0, 1);
   const userFirstName = user.firstName ? user.firstName : user.name.replace(/ .*/, '');
-  const avatarColor = avatarColors[userInitial.charCodeAt(0) % avatarColors.length];
 
   return (
     <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
@@ -118,16 +113,16 @@ export const ProfileButton = React.memo(({ user, MenuOptions, avatarColors, clas
         <StyledButton
           onClick={event => setAnchorEl(anchorEl ? null : event.currentTarget)}
           className={className}
-          endIcon={<Avatar color={avatarColor}>{userInitial}</Avatar>}
+          endIcon={<StyledAvatar initial={userInitial}>{userInitial}</StyledAvatar>}
         >
           {userFirstName}
         </StyledButton>
         <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
           <Paper>
             <Header>
-              <Avatar src={user.profileImage || null} color={avatarColor}>
+              <StyledAvatar src={user.profileImage || null} initial={userInitial}>
                 {userInitial}
-              </Avatar>
+              </StyledAvatar>
               <Details>
                 <NameText>{user.name}</NameText>
                 <EmailText>{user.email}</EmailText>
@@ -152,10 +147,8 @@ ProfileButton.propTypes = {
   }).isRequired,
   MenuOptions: PropTypes.element.isRequired,
   className: PropTypes.string,
-  avatarColors: PropTypes.array,
 };
 
 ProfileButton.defaultProps = {
   className: null,
-  avatarColors: ['#D13333', '#02B851', '#EF5A06', '#D434E2', '#856226'],
 };
