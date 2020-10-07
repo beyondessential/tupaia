@@ -615,7 +615,11 @@ function* fetchViewData(parameters, errorHandler) {
       errorMessage = json.error;
     }
 
-    yield put(errorHandler(errorMessage, infoViewKey));
+    if (error.errorFunction) {
+      yield put(error.errorFunction(errorMessage, infoViewKey));
+    } else {
+      console.log(`Failed to handle error: ${error.message}`);
+    }
   }
   return null;
 }
