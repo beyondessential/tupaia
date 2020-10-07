@@ -15,7 +15,7 @@ const ENTITY_CREATION_FIELD_TRANSLATION = {
   code: 'code',
   parent: 'parentId',
   grandparent: 'grandparentId',
-  attributesType: 'attributesTypeId',
+  attributesType: 'attributesType',
 };
 const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATION);
 
