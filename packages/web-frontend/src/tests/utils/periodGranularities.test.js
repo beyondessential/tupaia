@@ -7,7 +7,7 @@
 
 import moment from 'moment';
 import { mockNow, resetMocks } from '../testutil';
-import { roundStartEndDates, getDefaultDates } from '../../utils/periodGranularities';
+import { roundStartEndDates, getDefaultDates, getLimits } from '../../utils/periodGranularities';
 
 describe('periodGranularities', () => {
   beforeEach(() => {
@@ -141,6 +141,29 @@ describe('periodGranularities', () => {
         expect(startDate.format()).toEqual('2019-02-04T00:00:00+11:00');
         expect(endDate.format()).toEqual('2019-02-08T23:59:59+11:00');
       });
+    });
+  });
+
+  describe('getLimits', () => {
+    it('gives nothing if no config', () => {
+      const { startDate, endDate } = getLimits('day');
+      expect(startDate).toBeNull();
+      expect(endDate).toBeNull();
+    });
+
+    it('throws if either unit does not match period granularity', () => {
+      // The reason for this limitation is to prevent devs from confusing themselves.
+      // E.g. if periodGranularity is one_month_at_a_time, and offset is +5 days, it will not take
+      // effect, the start date will be rounded to the start of the month.
+      const functionCall = () =>
+        getLimits('one_month_at_a_time', { start: { unit: 'day', offset: -3 } });
+      expect(functionCall).toThrow('limit unit must match periodGranularity');
+    });
+
+    it('calculates limits', () => {
+      const { startDate, endDate } = getLimits('day', { start: { unit: 'day', offset: -3 } });
+      expect(startDate.format()).toEqual(moment('2019-02-02T00:00:00').format()); // rounded
+      expect(endDate.format()).toEqual(moment('2019-02-05T23:59:59').format()); // rounded
     });
   });
 });
