@@ -46,6 +46,25 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 
 Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
+### Local database
+
+Set up PostgreSQL on your machine and create the database 'tupaia', with credentials matching those in
+the .env file.
+
+The project requires importing an initial database dump. Grab the latest database dump from dev server using
+
+```bash
+yarn dump-database ~/path/to/key.pem
+```
+
+(pem key can be obtained in LastPass - Tupaia Main Server). This will create a db dump and pull it to your current directory. You also need to be added into the Security Groups of the server.
+
+After pulling the latest database dump from the `dev` server, run:
+
+```bash
+yarn refresh-database dump.sql
+```
+
 ### Dependencies
 
 We use yarn workspaces to manage our packages, which allows us to run `yarn` once at the project
@@ -74,8 +93,10 @@ so if you've updated the environment variables here, you probably also need to p
 Most of the packages support the following scripts for testing:
 
 ```
+
 yarn test # runs the tests
 yarn test:coverage # runs the tests and displays code coverage
+
 ```
 
 ## Style Guide
@@ -95,3 +116,7 @@ In order to automatically format code in VSCode according to our style guide:
 1. Install [Prettier for VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 2. Enable the `Editor: Format on Save` setting
 3. Your files will now be formatted automatically when you save them
+
+```
+
+```
