@@ -7,7 +7,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia"
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/ui-components"
   },
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"
@@ -44,5 +45,5 @@
   "devDependencies": {
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
-  }
+  },
 }

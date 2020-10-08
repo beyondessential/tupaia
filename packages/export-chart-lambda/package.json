@@ -15,5 +15,10 @@
     "core-worker": "^0.3.5",
     "nodemailer": "^4.4.2",
     "tar": "^4.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/export-chart-lambda"
   }
 }

@@ -21,6 +21,11 @@
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/auth"
+  },
   "eslintConfig": {
     "extends": "@beyondessential/jest"
   }

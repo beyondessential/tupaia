@@ -17,6 +17,11 @@
     "lodash.groupby": "^4.6.0",
     "winston": "^3.3.3"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/aggregator"
+  },
   "eslintConfig": {
     "extends": "@beyondessential/jest"
   }

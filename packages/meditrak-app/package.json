@@ -132,5 +132,10 @@
     "flow-bin": "0.38.0",
     "metro-react-native-babel-preset": "^0.53.1",
     "react-test-renderer": "16.8.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/meditrak-app"
   }
 }

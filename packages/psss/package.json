@@ -6,7 +6,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia"
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/psss"
   },
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"
@@ -61,5 +62,5 @@
   "devDependencies": {
     "eslint-import-resolver-alias": "^1.1.2",
     "faker": "^4.1.0"
-  }
+  },
 }

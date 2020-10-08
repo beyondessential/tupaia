@@ -50,6 +50,11 @@
     "lint:fix": "yarn lint --fix .",
     "eject": "react-scripts eject"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/admin-panel"
+  },
   "browserslist": {
     "production": [
       ">0.2%",

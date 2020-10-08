@@ -92,5 +92,10 @@
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "storybook": "start-storybook -s ./public -p 6006"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/web-frontend"
   }
 }

@@ -65,7 +65,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia.git"
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/meditrak-server"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "bugs": {

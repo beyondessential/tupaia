@@ -18,7 +18,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia"
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/web-config-server"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "dependencies": {
