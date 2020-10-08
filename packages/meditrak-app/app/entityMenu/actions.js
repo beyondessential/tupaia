@@ -38,13 +38,19 @@ const getEntityAttributeFilters = (state, questionId) => {
   const question = getQuestion(state, questionId);
   const { attributes } = question.config.entity;
 
-  return entity => {
-    return Object.entries(attributes).every(([key, config]) => {
-      const attribute = getAnswerForQuestion(state, config.questionId);
-      const { attributes: entityAttributes } = entity.toJson();
-      return entityAttributes[key] === attribute;
-    });
-  };
+  return entity =>
+    attributes
+      ? Object.entries(attributes).every(([key, config]) => {
+          const attributeValue = getAnswerForQuestion(state, config.questionId);
+
+          if (!attributeValue) {
+            return true;
+          }
+
+          const { attributes: entityAttributes } = entity.toJson();
+          return entityAttributes[key] === attributeValue;
+        })
+      : true;
 };
 
 export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (

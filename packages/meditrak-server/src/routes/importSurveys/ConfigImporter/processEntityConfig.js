@@ -31,7 +31,8 @@ export const processEntityConfig = async (models, config) => {
   return replaceQuestionCodesWithIds(models, processedConfig);
 };
 
-const containJsonField = fieldKey =>
+// JSON subfields will be in the format field.subfield, e.g. 'attributes.type'
+const isJsonSubfield = fieldKey =>
   ENTITY_CREATION_JSON_FIELD_LIST.find(field => fieldKey.startsWith(field));
 
 const translateEntityCreationFields = config => {
@@ -43,12 +44,12 @@ const translateEntityCreationFields = config => {
 
     if (resultKey) {
       resultConfig[resultKey] = questionCode;
-    } else if (containJsonField(fieldKey)) {
-      const [jsonKey, jsonFieldKey] = splitStringOn(fieldKey, '.');
-      if (!resultConfig[jsonKey]) {
-        resultConfig[jsonKey] = {};
+    } else if (isJsonSubfield(fieldKey)) {
+      const [primaryFieldKey, subfieldKey] = splitStringOn(fieldKey, '.');
+      if (!resultConfig[primaryFieldKey]) {
+        resultConfig[primaryFieldKey] = {};
       }
-      resultConfig[jsonKey][jsonFieldKey] = questionCode;
+      resultConfig[primaryFieldKey][subfieldKey] = questionCode;
     }
   });
 
@@ -64,11 +65,11 @@ const replaceQuestionCodesWithIds = async (models, config) => {
       newValue = { questionId };
     } else if (ENTITY_CREATION_JSON_FIELD_LIST.includes(fieldKey)) {
       for (let i = 0; i < Object.entries(value).length; i++) {
-        const [jsonFieldKey, jsonFieldValue] = Object.entries(value)[i];
-        const { id: questionId } = await models.question.findOne({ code: jsonFieldValue });
+        const [subfieldKey, questionCode] = Object.entries(value)[i];
+        const { id: questionId } = await models.question.findOne({ code: questionCode });
         newValue = {
           ...newValue,
-          [jsonFieldKey]: { questionId },
+          [subfieldKey]: { questionId },
         };
       }
     }
