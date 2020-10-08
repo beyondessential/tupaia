@@ -3,9 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
-
+import { when } from 'jest-when';
 import { createDhisApi } from './helpers';
 
 const DATA_ELEMENTS = [
@@ -19,7 +17,7 @@ export const testCodesToIds = () => {
 
     return Promise.all(
       [undefined, null, []].map(codes =>
-        expect(dhisApi.codesToIds('dataElements', codes)).to.eventually.deep.equal([]),
+        expect(dhisApi.codesToIds('dataElements', codes)).resolves.toStrictEqual([]),
       ),
     );
   });
@@ -27,16 +25,17 @@ export const testCodesToIds = () => {
   it('should translate codes to ids', async () => {
     const codes = DATA_ELEMENTS.map(({ code }) => code);
     const ids = DATA_ELEMENTS.map(({ id }) => id);
-    const fetchStub = sinon.stub();
-    fetchStub
-      .withArgs('dataElements', {
-        fields: sinon.match.array.contains(['id']),
-        filter: { comparator: 'in', code: sinon.match.in(['[POP01,POP02]', '[POP02,POP01]']) },
+    const fetchStub = jest.fn();
+
+    when(fetchStub)
+      .calledWith('dataElements', {
+        fields: expect.arrayContaining(['id']),
+        filter: { comparator: 'in', code: expect.toBeOneOf(['[POP01,POP02]', '[POP02,POP01]']) },
       })
-      .resolves({ dataElements: DATA_ELEMENTS.map(({ id, code }) => ({ id, code })) });
+      .mockResolvedValue({ dataElements: DATA_ELEMENTS.map(({ id, code }) => ({ id, code })) });
 
     const dhisApi = createDhisApi({ fetch: fetchStub });
     const results = await dhisApi.codesToIds('dataElements', codes);
-    expect(results).to.deep.equal(ids);
+    expect(results).toStrictEqual(ids);
   });
 };
