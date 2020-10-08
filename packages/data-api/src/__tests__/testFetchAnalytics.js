@@ -55,11 +55,7 @@ export const testFetchAnalytics = () => {
       ], // invalid startDate format
     ];
     for (const [options, expectedRegexp] of testData) {
-      try {
-        await api.fetchAnalytics(options);
-      } catch (e) {
-        expect(e.message).toEqual(expect.stringMatching(expectedRegexp));
-      }
+      await expect(api.fetchAnalytics(options)).toBeRejectedWith(expectedRegexp);
     }
   });
 

@@ -76,11 +76,7 @@ export const testFetchEvents = () => {
     ];
 
     for (const [options, expectedRegexp] of testData) {
-      try {
-        await api.fetchEvents(options);
-      } catch (e) {
-        expect(e.message).toEqual(expect.stringMatching(expectedRegexp));
-      }
+      await expect(api.fetchEvents(options)).toBeRejectedWith(expectedRegexp);
     }
   });
 
