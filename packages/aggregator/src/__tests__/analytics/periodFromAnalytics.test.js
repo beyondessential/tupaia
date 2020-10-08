@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { periodFromAnalytics } from '../../analytics/periodFromAnalytics';
 
 const analytics = [
@@ -22,25 +21,25 @@ describe('periodFromAnalytics()', () => {
       latestAvailable: null,
       requested: fetchOptions.period,
     };
-    expect(periodFromAnalytics([], fetchOptions)).to.deep.equal(expected);
+    expect(periodFromAnalytics([], fetchOptions)).toStrictEqual(expected);
   });
 
   it('should find the earliest period', () => {
-    expect(periodFromAnalytics(analytics, fetchOptions)).to.have.property(
+    expect(periodFromAnalytics(analytics, fetchOptions)).toHaveProperty(
       'earliestAvailable',
       '20200101',
     );
   });
 
   it('should find the latest period', () => {
-    expect(periodFromAnalytics(analytics, fetchOptions)).to.have.property(
+    expect(periodFromAnalytics(analytics, fetchOptions)).toHaveProperty(
       'latestAvailable',
       '20200106',
     );
   });
 
   it('should return the requested period', () => {
-    expect(periodFromAnalytics(analytics, fetchOptions)).to.have.property(
+    expect(periodFromAnalytics(analytics, fetchOptions)).toHaveProperty(
       'requested',
       fetchOptions.period,
     );
@@ -61,7 +60,7 @@ describe('periodFromAnalytics()', () => {
       latestAvailable: '2020',
       requested: fetchOptions.period,
     };
-    expect(periodFromAnalytics(yearAnalytics, fetchOptions)).to.deep.equal(expected);
+    expect(periodFromAnalytics(yearAnalytics, fetchOptions)).toStrictEqual(expected);
   });
 
   it('should prefer the correct period types amongst analytics', () => {
@@ -77,7 +76,7 @@ describe('periodFromAnalytics()', () => {
       requested: fetchOptions.period,
     };
 
-    expect(periodFromAnalytics(mixedAnalytics, fetchOptions)).to.deep.equal(expected);
+    expect(periodFromAnalytics(mixedAnalytics, fetchOptions)).toStrictEqual(expected);
   });
 
   it('should prefer the correct period types amongst analytics across years', () => {
@@ -96,6 +95,6 @@ describe('periodFromAnalytics()', () => {
       requested: fetchOptions.period,
     };
 
-    expect(periodFromAnalytics(mixedAnalytics, fetchOptions)).to.deep.equal(expected);
+    expect(periodFromAnalytics(mixedAnalytics, fetchOptions)).toStrictEqual(expected);
   });
 });
