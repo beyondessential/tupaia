@@ -11,7 +11,7 @@ jest.mock('../../DhisFetcher');
 export const createDhisApi = ({ fetch } = {}) => {
   DhisFetcher.mockImplementation(() => {
     return {
-      fetch,
+      fetch: fetch || jest.fn(async input => input),
     };
   });
   const dhisFetcher = new DhisFetcher();

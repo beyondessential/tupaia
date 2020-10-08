@@ -26,7 +26,6 @@ export const testCodesToIds = () => {
     const codes = DATA_ELEMENTS.map(({ code }) => code);
     const ids = DATA_ELEMENTS.map(({ id }) => id);
     const fetchStub = jest.fn();
-
     when(fetchStub)
       .calledWith('dataElements', {
         fields: expect.arrayContaining(['id']),

@@ -20,9 +20,8 @@ when(fetchStub)
 const dhisApi = createDhisApi({ fetch: fetchStub });
 
 export const testProgramCodeToId = () => {
-  it('non existing program', () => {
-    expect(dhisApi.programCodeToId('NON_EXISTING_CODE')).toBeRejectedWith('Program not found');
-  });
+  it('non existing program', () =>
+    expect(dhisApi.programCodeToId('NON_EXISTING_CODE')).toBeRejectedWith('Program not found'));
 
   it('existing program', () =>
     expect(dhisApi.programCodeToId(PROGRAM.code)).resolves.toStrictEqual(PROGRAM.id));
