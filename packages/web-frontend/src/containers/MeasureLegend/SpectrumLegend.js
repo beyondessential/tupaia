@@ -6,8 +6,9 @@ import NoDataLabel, { LabelLeft, LabelRight } from './labels';
 import { formatDataValue } from '../../utils/formatters';
 import { LegendContainer } from './utils';
 import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
-import { resolveSpectrumColour } from '../../components/Marker';
+import { getMarkerForOption, resolveSpectrumColour } from '../../components/Marker';
 import { SCALE_TYPES } from '../../constants';
+import { LEGEND_SHADING_ICON } from '../../components/Marker/markerIcons';
 
 const SpectrumSliver = styled.div`
   width: 2px;
@@ -32,6 +33,22 @@ const renderSpectrum = measureOptions => {
 
   if (min == null || max == null) return null;
   const spectrumDivs = [];
+  if (min === max) {
+    // There will only be a single value displayed, let's just default it to the lowest color (0 % of the way from 0 to 1):
+    for (let i = -1; i < 1; i += 0.02) {
+      const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, -1, 1);
+      spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
+    }
+    const labels = getSpectrumLabels(scaleType, -1, 1, valueType);
+
+    return (
+      <LegendContainer>
+        <LabelLeft>{labels.left}</LabelLeft>
+        {spectrumDivs}
+        <LabelRight>{labels.right}</LabelRight>
+      </LegendContainer>
+    );
+  }
 
   switch (scaleType) {
     case SCALE_TYPES.TIME:

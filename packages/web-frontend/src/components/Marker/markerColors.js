@@ -65,6 +65,7 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
 }
 
 const normaliseToPercentage = (value, min = 0, max = 1) => {
+  if (min === max) return 0.5;
   const normalisedValue = (value - min) / (max - min);
 
   // Always clamp the result between 0 and 1
