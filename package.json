@@ -29,7 +29,7 @@
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
     "dump-database": "./scripts/bash/dumpDb.sh",
-    "refresh-database": "./scripts/bash/refreshDb.sh",
+    "refresh-database": "node scripts/node/refreshDatabase.js",
     "test-all": "node ./scripts/node/testAll --silent"
   },
   "devDependencies": {
@@ -81,7 +81,8 @@
     "start-server-and-test": "^1.11.0",
     "supertest": "^3.1.0",
     "typescript": "^3.9.3",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "yargs": "^16.0.3"
   },
   "engines": {
     "node": "^12.18.3"
