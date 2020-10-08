@@ -54,8 +54,8 @@ export const testFetchAnalytics = () => {
         /Invalid content.*startDate/,
       ], // invalid startDate format
     ];
-    for (const [options, expectedRegexp] of testData) {
-      await expect(api.fetchAnalytics(options)).toBeRejectedWith(expectedRegexp);
+    for (const [options, expectedError] of testData) {
+      await expect(api.fetchAnalytics(options)).toBeRejectedWith(expectedError);
     }
   });
 
