@@ -145,15 +145,6 @@ describe('EntityHierarchyCacher', () => {
   });
 
   it('deletes and rebuilds a subtree if entity relation records are changed', async () => {
-    // change ab to sit below aab instead of aa
-    await models.entityRelation.update(
-      {
-        parent_id: 'entity_aa_test',
-        child_id: 'entity_ab_test',
-        entity_hierarchy_id: 'hierarchy_b_test',
-      },
-      { parent_id: 'entity_aab_test' },
-    );
     // change aab to sit below aa instead of abb
     await models.entityRelation.update(
       {
@@ -162,6 +153,15 @@ describe('EntityHierarchyCacher', () => {
         entity_hierarchy_id: 'hierarchy_b_test',
       },
       { parent_id: 'entity_aa_test' },
+    );
+    // change ab to sit below aab instead of aa
+    await models.entityRelation.update(
+      {
+        parent_id: 'entity_aa_test',
+        child_id: 'entity_ab_test',
+        entity_hierarchy_id: 'hierarchy_b_test',
+      },
+      { parent_id: 'entity_aab_test' },
     );
     await assertRelationsMatch('project_b_test', HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED);
   });
