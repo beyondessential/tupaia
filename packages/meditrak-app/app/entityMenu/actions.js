@@ -42,6 +42,12 @@ const getEntityAttributeFilters = (state, questionId) => {
     attributes
       ? Object.entries(attributes).every(([key, config]) => {
           const attributeValue = getAnswerForQuestion(state, config.questionId);
+
+          // No answer was selected for the question to filter, return all
+          if (attributeValue === undefined) {
+            return true;
+          }
+
           const { attributes: entityAttributes } = entity.toJson();
           return entityAttributes[key] === attributeValue;
         })
