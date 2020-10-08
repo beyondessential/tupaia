@@ -9,6 +9,7 @@
     "directory": "packages/psss"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
   "scripts": {
     "build": "react-scripts build",
     "postbuild": "rm -rf served_build && mv build served_build",

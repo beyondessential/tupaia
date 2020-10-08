@@ -3,10 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "description": "Config server for tupaia.org",
-  "homepage": "https://github.com/beyondessential/tupaia",
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia",
