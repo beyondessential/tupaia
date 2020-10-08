@@ -1,9 +1,31 @@
 {
   "name": "@tupaia/meditrak-server",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "description": "REST API for Meditrak",
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/meditrak-server"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "handler.js",
+  "scripts": {
+    "build": "rm -rf dist && babel src -s --out-dir dist --source-maps --ignore '**src/database/migrations','src/tests/**' --copy-files --no-copy-ignored --config-file '../../babel.config.json'",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .",
+    "prestart": "npm run -s build",
+    "start": "node dist",
+    "start-dev": "../../scripts/bash/backendStartDev.sh 9999",
+    "start-verbose": "LOG_LEVEL=debug npm run start-dev",
+    "test": "mocha",
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
+    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
+  },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
@@ -50,27 +72,5 @@
   "devDependencies": {
     "deep-equal-in-any-order": "^1.0.21",
     "sinon-test": "^3.0.0"
-  },
-  "scripts": {
-    "test": "mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
-    "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
-    "build": "rm -rf dist && babel src -s --out-dir dist --source-maps --ignore '**src/database/migrations','src/tests/**' --copy-files --no-copy-ignored --config-file '../../babel.config.json'",
-    "prestart": "npm run -s build",
-    "start": "node dist",
-    "start-dev": "../../scripts/bash/backendStartDev.sh 9999",
-    "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia.git",
-    "directory": "packages/meditrak-server"
-  },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
-  "homepage": "https://github.com/beyondessential/tupaia"
+  }
 }

@@ -1,8 +1,13 @@
 {
   "name": "@tupaia/indicators",
   "version": "1.0.0",
-  "main": "dist/index.js",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/indicators"
+  },
+  "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --ignore 'src/__tests__/**' --extensions '.ts' --config-file '../../babel.config.json'",
     "lint": "tsc; eslint . --ext .ts",
@@ -10,6 +15,9 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
+  },
+  "eslintConfig": {
+    "extends": "@tupaia/eslint-config-typescript"
   },
   "dependencies": {
     "@beyondessential/arithmetic": "^2.0.0",
@@ -21,13 +29,5 @@
   },
   "devDependencies": {
     "@tupaia/eslint-config-typescript": "1.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia.git",
-    "directory": "packages/indicators"
-  },
-  "eslintConfig": {
-    "extends": "@tupaia/eslint-config-typescript"
   }
 }

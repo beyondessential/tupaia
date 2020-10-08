@@ -1,24 +1,24 @@
 {
   "name": "@tupaia/data-api",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/data-api"
+  },
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix ."
+    "lint:fix": "yarn lint --fix .",
+    "test": "mocha",
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "deep-equal-in-any-order": "^1.0.27",
     "lodash.groupby": "^4.6.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia.git",
-    "directory": "packages/data-api"
   }
 }

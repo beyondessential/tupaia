@@ -1,14 +1,19 @@
 {
   "name": "@tupaia/dhis-api",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/dhis-api"
+  },
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "nyc --reporter=lcov mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix ."
+    "lint:fix": "yarn lint --fix .",
+    "test": "nyc --reporter=lcov mocha",
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",
@@ -20,10 +25,5 @@
     "simple-oauth2": "^1.5.0",
     "urlencode": "^1.1.0",
     "winston": "^3.3.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia.git",
-    "directory": "packages/dhis-api"
   }
 }

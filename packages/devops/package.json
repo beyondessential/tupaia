@@ -1,11 +1,11 @@
 {
   "name": "@tupaia/devops",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"No tests specified\" && exit 0"
+  "homepage": "https://github.com/beyondessential/tupaia#readme",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
   },
   "repository": {
     "type": "git",
@@ -13,8 +13,8 @@
     "directory": "packages/devops"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
-  "homepage": "https://github.com/beyondessential/tupaia#readme"
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  }
 }
