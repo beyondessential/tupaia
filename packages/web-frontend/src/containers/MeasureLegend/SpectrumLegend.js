@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import moment from 'moment';
 import NoDataLabel, { LabelLeft, LabelRight } from './labels';
@@ -29,7 +27,10 @@ const getSpectrumLabels = (scaleType, min, max, valueType) => {
   }
 };
 
-const getSpectrumDivs = ({ min, max, scaleType, scaleColorScheme, valueType }) => {
+const renderSpectrum = measureOptions => {
+  const { min, max, scaleType, scaleColorScheme, valueType } = measureOptions;
+
+  if (min == null || max == null) return null;
   const spectrumDivs = [];
 
   switch (scaleType) {
@@ -52,19 +53,22 @@ const getSpectrumDivs = ({ min, max, scaleType, scaleColorScheme, valueType }) =
     }
   }
 
-  return spectrumDivs;
-};
-
-export const SpectrumLegend = ({ measureOptions }) => {
-  const { scaleType, min, max, valueType, valueMapping, noDataColour } = measureOptions;
-  const spectrumDivs = getSpectrumDivs(measureOptions);
   const labels = getSpectrumLabels(scaleType, min, max, valueType);
-
   return (
     <LegendContainer>
       <LabelLeft>{labels.left}</LabelLeft>
       {spectrumDivs}
       <LabelRight>{labels.right}</LabelRight>
+    </LegendContainer>
+  );
+};
+
+export const SpectrumLegend = ({ measureOptions }) => {
+  const { valueMapping, noDataColour } = measureOptions;
+
+  return (
+    <LegendContainer>
+      {renderSpectrum(measureOptions)}
       {noDataColour && <NoDataLabel noDataColour={noDataColour} valueMapping={valueMapping} />}
     </LegendContainer>
   );
