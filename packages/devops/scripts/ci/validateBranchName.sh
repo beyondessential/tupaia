@@ -13,6 +13,8 @@ function get_branch_name() {
         # Get currently checked out branch
         branch_name=`git rev-parse --abbrev-ref HEAD`
     fi
+
+    echo $branch_name
 }
 
 function validate_name_ending() {
