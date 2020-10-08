@@ -94,18 +94,11 @@ export class EntityHierarchyCacher {
         DELETE FROM ancestor_descendant_relation
         WHERE
           entity_hierarchy_id = ?
-        AND (
-            ancestor_id IN (${batchOfEntityIds.map(() => '?').join(',')})
-          OR
-            descendant_id IN (${batchOfEntityIds.map(() => '?').join(',')})
-        );
+        AND
+          descendant_id IN (${batchOfEntityIds.map(() => '?').join(',')});
       `,
-      [hierarchyId, ...batchOfEntityIds, ...batchOfEntityIds],
+      [hierarchyId, ...batchOfEntityIds],
     ]);
-    await this.models.ancestorDescendantRelation.delete({
-      descendant_id: entityIdsForDelete,
-      entity_hierarchy_id: hierarchyId,
-    });
   }
 
   /**
