@@ -1,6 +1,0 @@
-{
-  "clearMocks": true,
-  "setupFilesAfterEnv": ["./jestScaffolding.js"],
-  "testMatch": ["<rootDir>/packages/dhis-api/src/__tests__/**/**.test.js"],
-  "transform": { "^.+\\.jsx?$": "./jestTransformer.js" }
-}
