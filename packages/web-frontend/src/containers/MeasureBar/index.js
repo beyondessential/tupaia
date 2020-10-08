@@ -144,14 +144,17 @@ export class MeasureBar extends Component {
 
     const defaultDates = getDefaultDates(currentMeasure);
 
-    const limits = getLimits(currentMeasure.periodGranularity, currentMeasure.limits);
+    const datePickerLimits = getLimits(
+      currentMeasure.periodGranularity,
+      currentMeasure.datePickerLimits,
+    );
 
     return (
       <Control
         emptyMessage={emptyMessage}
         selectedMeasure={currentMeasure}
         defaultDates={defaultDates}
-        limits={limits}
+        datePickerLimits={datePickerLimits}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >

@@ -110,7 +110,7 @@ export const Control = ({
   emptyMessage,
   selectedMeasure,
   defaultDates,
-  limits,
+  datePickerLimits,
   isMeasureLoading,
   onUpdateMeasurePeriod,
   children,
@@ -168,8 +168,8 @@ export const Control = ({
             granularity={selectedMeasure.periodGranularity}
             startDate={startDate}
             endDate={endDate}
-            min={limits.startDate}
-            max={limits.endDate}
+            min={datePickerLimits.startDate}
+            max={datePickerLimits.endDate}
             onSetDates={updateMeasurePeriod}
             isLoading={isMeasureLoading}
           />
@@ -197,7 +197,7 @@ Control.propTypes = {
     startDate: PropTypes.object,
     endDate: PropTypes.object,
   }).isRequired,
-  limits: PropTypes.shape({
+  datePickerLimits: PropTypes.shape({
     startDate: PropTypes.object,
     endDate: PropTypes.object,
   }),
@@ -210,7 +210,7 @@ Control.propTypes = {
 Control.defaultProps = {
   isMeasureLoading: false,
   selectedMeasure: {},
-  limits: {
+  datePickerLimits: {
     startDate: null,
     endDate: null,
   },
