@@ -1,5 +1,5 @@
 {
-  "name": "@tupaia/reports-lambda",
+  "name": "@tupaia/reports",
   "version": "0.0.0",
   "description": "Lambda Function for building report data",
   "main": "dist/index.js",
