@@ -1,27 +1,23 @@
 {
   "name": "@tupaia/ui-components",
-  "private": true,
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "description": "A library of user interface components for the Tupaia project.",
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "private": true,
+  "description": "A library of user interface components for the monorepo",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/ui-components"
   },
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
-  "homepage": "https://github.com/beyondessential/tupaia",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
   "scripts": {
-    "storybook": "start-storybook -s ./public -p 6006",
     "build": "cross-env NODE_ENV=production webpack",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .",
+    "storybook": "start-storybook -s ./public -p 6006",
     "test": "jest --env=jest-environment-jsdom-sixteen",
     "test:coverage": "yarn test --coverage",
-    "test:watch": "yarn test --watch",
-    "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix ."
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
@@ -45,5 +41,5 @@
   "devDependencies": {
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
-  },
+  }
 }

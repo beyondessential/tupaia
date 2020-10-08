@@ -2,11 +2,13 @@
   "name": "@tupaia/database",
   "version": "1.0.0",
   "private": true,
+  "description": "Common database code for use across other packages within this mono-repo",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/database"
   },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",

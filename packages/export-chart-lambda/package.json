@@ -8,6 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/export-chart-lambda"
   },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "index.js",
   "scripts": {
     "babel": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src --out-dir dist --source-maps",

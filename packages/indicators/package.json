@@ -2,11 +2,13 @@
   "name": "@tupaia/indicators",
   "version": "1.0.0",
   "private": true,
+  "description": "Shareable computations of derived data",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/indicators"
   },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --ignore 'src/__tests__/**' --extensions '.ts' --config-file '../../babel.config.json'",

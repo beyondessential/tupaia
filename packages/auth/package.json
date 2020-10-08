@@ -2,11 +2,13 @@
   "name": "@tupaia/auth",
   "version": "1.0.0",
   "private": true,
+  "description": "Back-end authentication used internally by web-config-server and meditrak-server to authenticate a user's credentials against the database, and build their access policy.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/auth"
   },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",

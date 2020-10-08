@@ -2,11 +2,14 @@
   "name": "@tupaia/meditrak-app",
   "version": "1.8.107",
   "private": true,
+  "description": "Android and iOS app for surveying medical facilities",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/meditrak-app"
   },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "app/main.js",
   "workspaces": {
     "nohoist": [
       "@react-native-community/async-storage",

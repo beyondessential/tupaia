@@ -2,11 +2,7 @@
   "name": "@tupaia/devops",
   "version": "1.0.0",
   "private": true,
-  "description": "",
-  "homepage": "https://github.com/beyondessential/tupaia#readme",
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
+  "description": "Dev ops for the monorepo",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
