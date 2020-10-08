@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { splitStringOnComma } from '../../utilities';
+import { splitStringOnComma, splitStringOn } from '../../utilities';
 import { isYes } from '../utilities';
 
 /**
@@ -15,9 +15,10 @@ const ENTITY_CREATION_FIELD_TRANSLATION = {
   code: 'code',
   parent: 'parentId',
   grandparent: 'grandparentId',
-  attributesType: 'attributesType',
 };
+
 const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATION);
+const ENTITY_CREATION_JSON_FIELD_LIST = ['attributes'];
 
 export const processEntityConfig = async (models, config) => {
   const entityCreationFields = translateEntityCreationFields(config);
@@ -30,14 +31,24 @@ export const processEntityConfig = async (models, config) => {
   return replaceQuestionCodesWithIds(models, processedConfig);
 };
 
+const containJsonField = fieldKey =>
+  ENTITY_CREATION_JSON_FIELD_LIST.find(field => fieldKey.startsWith(field));
+
 const translateEntityCreationFields = config => {
   const resultConfig = {};
 
   Object.keys(config).forEach(fieldKey => {
     const resultKey = ENTITY_CREATION_FIELD_TRANSLATION[fieldKey];
+    const questionCode = config[fieldKey];
+
     if (resultKey) {
-      const questionCode = config[fieldKey];
       resultConfig[resultKey] = questionCode;
+    } else if (containJsonField(fieldKey)) {
+      const [jsonKey, jsonFieldKey] = splitStringOn(fieldKey, '.');
+      if (!resultConfig[jsonKey]) {
+        resultConfig[jsonKey] = {};
+      }
+      resultConfig[jsonKey][jsonFieldKey] = questionCode;
     }
   });
 
@@ -51,6 +62,15 @@ const replaceQuestionCodesWithIds = async (models, config) => {
     if (ENTITY_CREATION_FIELD_LIST.includes(fieldKey)) {
       const { id: questionId } = await models.question.findOne({ code: value });
       newValue = { questionId };
+    } else if (ENTITY_CREATION_JSON_FIELD_LIST.includes(fieldKey)) {
+      for (let i = 0; i < Object.entries(value).length; i++) {
+        const [jsonFieldKey, jsonFieldValue] = Object.entries(value)[i];
+        const { id: questionId } = await models.question.findOne({ code: jsonFieldValue });
+        newValue = {
+          ...newValue,
+          [jsonFieldKey]: { questionId },
+        };
+      }
     }
 
     resultConfig[fieldKey] = newValue;

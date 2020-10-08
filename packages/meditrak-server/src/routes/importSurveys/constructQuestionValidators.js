@@ -11,7 +11,6 @@ import { convertCellToJson, isEmpty, isYesOrNo } from './utilities';
 const DHIS_MAX_NAME_LENGTH = 230; // In DHIS2, the field is capped at 230 characters
 const QUESTION_TYPES_WITH_OPTIONS = [
   ANSWER_TYPES.RADIO,
-  ANSWER_TYPES.SELECTION,
   ANSWER_TYPES.ENTITY,
   ANSWER_TYPES.PRIMARY_ENTITY,
 ];

@@ -51,7 +51,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       parent: [pointsToValidPrecedingEntityQuestion],
       grandparent: [pointsToValidPrecedingEntityQuestion],
-      attributesType: [constructIsNotPresentOr(pointsToAnotherQuestion)],
+      'attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }
 
