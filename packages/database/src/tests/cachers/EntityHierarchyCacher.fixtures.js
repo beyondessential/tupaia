@@ -173,7 +173,7 @@ export const HIERARCHY_B_AFTER_ENTITY_AAA_DELETED = expandEntityRelations([
   ['abb', 'aab', 1],
 ]);
 
-// when ab, aaa, aba, and abb are deleted, it just leaves
+// when ab, aba, aaa, and abb are deleted, it just leaves
 // a
 // aa
 // aab
