@@ -29,11 +29,6 @@ const fetchAnalytics: FetchFunction = async (
       aggregationType,
     },
   )) as FetchResponse;
-  response.results.forEach(row => {
-    row[row.dataElement] = row.value;
-    delete row.dataElement;
-    delete row.value;
-  });
   return response;
 };
 

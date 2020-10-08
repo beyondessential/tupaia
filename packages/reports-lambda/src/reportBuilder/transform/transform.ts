@@ -18,21 +18,19 @@ const buildParams = (params: unknown): TransformParams => {
     throw new Error(`Expected object but got ${params}`);
   }
 
-  const transformList = Object.entries(params) as [string, unknown];
-  if (transformList.length < 1 || transformList.length > 1) {
-    throw new Error(`Expected a single transform defined but got ${transformList.length}`);
+  if (!('transform' in params)) {
+    throw new Error(`Expected transform in params`);
   }
 
-  const transform = transformList[0][0] as keyof typeof transformBuilders;
-  const transformParams = transformList[0][1] as unknown;
-  if (!(transform in transformBuilders)) {
+  const { transform, ...restOfTransformParams } = params;
+  if (typeof transform !== 'string' || !(transform in transformBuilders)) {
     throw new Error(
-      `Expected a transform to be one of ${Object.keys(transformBuilders)} but got ${transform}`,
+      `Expected transform to be one of ${Object.keys(transformBuilders)} but got ${transform}`,
     );
   }
 
   return {
-    apply: transformBuilders[transform](transformParams),
+    apply: transformBuilders[transform as keyof typeof transformBuilders](restOfTransformParams),
   };
 };
 

@@ -1,15 +1,24 @@
-import { FieldValue, Row } from '../../reportBuilder';
-import { functionBuilders } from '../../functions';
+import { Row } from '../../reportBuilder';
+import { functions, parseExpression } from '../../functions';
+import { parser } from 'mathjs';
 
 type SortParams = {
-  sortOrder: (row: Row) => FieldValue;
-  descending: boolean;
+  by: string;
+  descending?: boolean;
 };
 
 const getRowSortFunction = (params: SortParams, descending = false) => {
   return (row1: Row, row2: Row) => {
-    const row1Value = params.sortOrder(row1);
-    const row2Value = params.sortOrder(row2);
+    const row1Parser = parser();
+    row1Parser.set('$', row1);
+    Object.entries(functions).forEach(([name, call]) => row1Parser.set(name, call));
+
+    const row2Parser = parser();
+    row2Parser.set('$', row2);
+    Object.entries(functions).forEach(([name, call]) => row2Parser.set(name, call));
+
+    const row1Value = parseExpression(row1Parser, params.by);
+    const row2Value = parseExpression(row2Parser, params.by);
 
     if (row1Value === undefined || row2Value === undefined) {
       throw new Error(`Unexpected undefined value when sorting rows: ${row1}, ${row2}`);
@@ -43,26 +52,17 @@ const buildParams = (params: unknown): SortParams => {
     throw new Error(`Expected params object but got ${params}`);
   }
 
-  const { descending, ...restOfParams } = params;
-  if (typeof descending !== 'boolean') {
-    throw new Error(`Expected string for 'as' parameter but got ${descending}`);
+  const { descending, by } = params;
+  if (descending !== undefined && typeof descending !== 'boolean') {
+    throw new Error(`Expected boolean for 'descending' parameter but got ${descending}`);
   }
 
-  const sortOrderFunctionList = Object.entries(restOfParams) as [string, unknown];
-  if (sortOrderFunctionList.length < 1 || sortOrderFunctionList.length > 1) {
-    throw new Error(`Expected a single transform defined but got ${sortOrderFunctionList.length}`);
-  }
-
-  const sortOrder = sortOrderFunctionList[0][0] as keyof typeof functionBuilders;
-  const sortOrderParams = sortOrderFunctionList[0][1] as unknown;
-  if (!(sortOrder in functionBuilders)) {
-    throw new Error(
-      `Expected a transform to be one of ${Object.keys(functionBuilders)} but got ${sortOrder}`,
-    );
+  if (typeof by !== 'string') {
+    throw new Error(`Expected string for 'by' parameter but got ${by}`);
   }
 
   return {
-    sortOrder: functionBuilders[sortOrder](sortOrderParams),
+    by,
     descending,
   };
 };

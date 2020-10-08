@@ -54,11 +54,11 @@ const drop = (existingRow: Row, field: string, value: FieldValue) => {
   // Do nothing, don't add the field to the existing row
 };
 
-const latest = (existingRow: Row, field: string, value: FieldValue) => {
+const last = (existingRow: Row, field: string, value: FieldValue) => {
   existingRow[field] = value;
 };
 
-export const mergeFunctions = {
+export const aggregations = {
   group,
   sum,
   count,
@@ -66,6 +66,6 @@ export const mergeFunctions = {
   min,
   unique,
   drop,
-  latest,
-  default: latest,
+  last,
+  default: last,
 };

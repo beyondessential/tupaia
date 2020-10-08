@@ -1,11 +1,12 @@
-import { functionBuilders, parseToken } from '../../functions';
+import { functions, parseExpression } from '../../functions';
 import { buildWhere } from './where';
-import { FieldValue, Row } from '../../reportBuilder';
+import { Row } from '../../reportBuilder';
+import { parser } from 'mathjs';
 
 type SelectParams = {
-  select: (row: Row) => FieldValue;
+  select: { [key: string]: string };
+  '...'?: '*' | string[];
   where: (row: Row) => boolean;
-  as: string;
 };
 
 const select = (rows: Row[], params: SelectParams): Row[] => {
@@ -14,17 +15,29 @@ const select = (rows: Row[], params: SelectParams): Row[] => {
       return { ...row };
     }
 
-    const as = parseToken(row, params.as);
-    if (typeof as !== 'string') {
-      throw new Error(`Expected select 'as' to be string, but got ${as}`);
-    }
+    const rowParser = parser();
+    rowParser.set('$', row);
+    Object.entries(functions).forEach(([name, call]) => rowParser.set(name, call));
+    // Object.entries(row).forEach(([field, value]) => rowParser.set(`$${field}`, value));
+    const newRow: Row = {};
+    Object.entries(params.select).forEach(
+      ([key, expression]) =>
+        (newRow[`${parseExpression(rowParser, key)}`] = parseExpression(rowParser, expression)),
+    );
 
-    const selectionResult = params.select(row);
-    const rowWithSelection = { ...row };
-    if (selectionResult !== undefined || selectionResult !== null) {
-      rowWithSelection[as] = selectionResult;
+    if (params['...'] !== undefined) {
+      Object.entries(row).forEach(([field, value]) => {
+        if (field in newRow) {
+          // Field already defined
+          return;
+        }
+
+        if (params['...'] === '*' || params['...']?.includes(field)) {
+          newRow[field] = value;
+        }
+      });
     }
-    return rowWithSelection;
+    return newRow;
   });
 };
 
@@ -33,28 +46,30 @@ const buildParams = (params: unknown): SelectParams => {
     throw new Error(`Expected params object but got ${params}`);
   }
 
-  const { as, where, ...restOfParams } = params;
-  if (typeof as !== 'string') {
-    throw new Error(`Expected string for 'as' parameter but got ${as}`);
+  const { where, '...': spreadFields, ...restOfParams } = params;
+
+  if (spreadFields !== undefined) {
+    if (typeof spreadFields === 'string') {
+      if (spreadFields !== '*') {
+        throw new Error(`'...' must be either an array of strings or '*'`);
+      }
+    } else if (!Array.isArray(spreadFields)) {
+      throw new Error(`'...' must be either an array of strings or '*'`);
+    }
   }
 
-  const selectFunctionList = Object.entries(restOfParams) as [string, unknown];
-  if (selectFunctionList.length < 1 || selectFunctionList.length > 1) {
-    throw new Error(`Expected a single transform defined but got ${selectFunctionList.length}`);
-  }
-
-  const select = selectFunctionList[0][0] as keyof typeof functionBuilders;
-  const selectParams = selectFunctionList[0][1] as unknown;
-  if (!(select in functionBuilders)) {
-    throw new Error(
-      `Expected a transform to be one of ${Object.keys(functionBuilders)} but got ${select}`,
-    );
+  if (
+    Object.entries(restOfParams).some(
+      ([field, value]) => typeof field !== 'string' || typeof value !== 'string',
+    )
+  ) {
+    throw new Error(`All other keys and values in select must be strings`);
   }
 
   return {
-    select: functionBuilders[select](selectParams),
+    select: restOfParams as { [key: string]: string },
+    '...': spreadFields,
     where: buildWhere(params),
-    as,
   };
 };
 

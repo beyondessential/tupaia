@@ -12,12 +12,16 @@ export const add = (valuesToAdd: number[]): number => {
   return total;
 };
 
-export const eq = (valuesToCompare: FieldValue[]): boolean => {
-  return valuesToCompare[0] === valuesToCompare[1];
+export const eq = (value1, value2): boolean => {
+  return value1 === value2;
 };
 
-export const neq = (valuesToCompare: FieldValue[]): boolean => {
-  return valuesToCompare[0] !== valuesToCompare[1];
+export const neq = (value1, value2): boolean => {
+  return value1 !== value2;
+};
+
+export const gt = (value1, value2): boolean => {
+  return value1 > value2;
 };
 
 export const exists = (value: FieldValue): boolean => {

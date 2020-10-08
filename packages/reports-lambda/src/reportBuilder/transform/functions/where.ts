@@ -1,12 +1,9 @@
-import { FieldValue, Row } from '../../reportBuilder';
-import { functionBuilders } from '../../functions';
-
-type WhereClaus = {
-  check: (row: Row) => FieldValue;
-};
+import { Row } from '../../reportBuilder';
+import { functions, parseExpression } from '../../functions';
+import { parser } from 'mathjs';
 
 type WhereParams = {
-  where?: WhereClaus;
+  where?: string;
 };
 
 const where = (row: Row, params: WhereParams): boolean => {
@@ -14,11 +11,15 @@ const where = (row: Row, params: WhereParams): boolean => {
     return true;
   }
 
-  const whereResult = params.where.check(row);
+  const rowParser = parser();
+  rowParser.set('$', row);
+  Object.entries(functions).forEach(([name, call]) => rowParser.set(name, call));
+  const whereResult = parseExpression(rowParser, params.where);
   if (typeof whereResult === 'boolean') {
     return whereResult;
   }
-  throw new Error(`Expected truthy result but got ${whereResult}`);
+  console.log(`Expected truthy result but got ${whereResult}`);
+  return true;
 };
 
 const buildParams = (params: unknown): WhereParams => {
@@ -32,27 +33,12 @@ const buildParams = (params: unknown): WhereParams => {
 
   const whereClaus: unknown = params.where;
 
-  if (typeof whereClaus !== 'object' || whereClaus === null) {
-    throw new Error(`Expected params object but got ${params}`);
-  }
-
-  const whereFunctionList = Object.entries(whereClaus) as [string, unknown];
-  if (whereFunctionList.length < 1 || whereFunctionList.length > 1) {
-    throw new Error(`Expected a single transform defined but got ${whereFunctionList.length}`);
-  }
-
-  const where = whereFunctionList[0][0] as keyof typeof functionBuilders;
-  const whereParams = whereFunctionList[0][1] as unknown;
-  if (!(where in functionBuilders)) {
-    throw new Error(
-      `Expected a transform to be one of ${Object.keys(functionBuilders)} but got ${where}`,
-    );
+  if (typeof whereClaus !== 'string') {
+    throw new Error(`Expected string but got ${params}`);
   }
 
   return {
-    where: {
-      check: functionBuilders[where](whereParams),
-    },
+    where: whereClaus,
   };
 };
 
