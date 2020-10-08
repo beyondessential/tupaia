@@ -18,24 +18,24 @@ const ENTITIES = [
 ];
 
 // two hierarchies to play with
-const ENTITY_HIERARCHIES = [{ id: 'hierarchy_a_test' }, { id: 'hierarchy_b_test' }];
+const ENTITY_HIERARCHIES = [{ id: 'hierarchy_ocean_test' }, { id: 'hierarchy_storm_test' }];
 
 // a project for each of the two hierarchies
 const PROJECTS = [
   {
-    code: 'project_a_test',
+    code: 'project_ocean_test',
     entity_id: 'entity_a_test',
-    entity_hierarchy_id: 'hierarchy_a_test',
+    entity_hierarchy_id: 'hierarchy_ocean_test',
   },
   {
-    code: 'project_b_test',
+    code: 'project_storm_test',
     entity_id: 'entity_a_test',
-    entity_hierarchy_id: 'hierarchy_b_test',
+    entity_hierarchy_id: 'hierarchy_storm_test',
   },
 ];
 
-// - project a follows the canonical hierarchy exactly
-// - project b moves the ab subtree to live below aa, to replace aaa and aab, and then aaa below
+// - project ocean follows the canonical hierarchy exactly
+// - project storm moves the ab subtree to live below aa, to replace aaa and aab, and then aaa below
 //   aba, and aab below abb
 //      a
 //      aa
@@ -46,22 +46,22 @@ const ENTITY_RELATIONS = [
   {
     parent_id: 'entity_a_test',
     child_id: 'entity_aa_test',
-    entity_hierarchy_id: 'hierarchy_b_test',
+    entity_hierarchy_id: 'hierarchy_storm_test',
   },
   {
     parent_id: 'entity_aa_test',
     child_id: 'entity_ab_test',
-    entity_hierarchy_id: 'hierarchy_b_test',
+    entity_hierarchy_id: 'hierarchy_storm_test',
   },
   {
     parent_id: 'entity_aba_test',
     child_id: 'entity_aaa_test',
-    entity_hierarchy_id: 'hierarchy_b_test',
+    entity_hierarchy_id: 'hierarchy_storm_test',
   },
   {
     parent_id: 'entity_abb_test',
     child_id: 'entity_aab_test',
-    entity_hierarchy_id: 'hierarchy_b_test',
+    entity_hierarchy_id: 'hierarchy_storm_test',
   },
 ];
 
@@ -101,7 +101,7 @@ const expandEntityRelations = relations =>
 //          a
 //    aa         ab
 // aaa  aab   aba  abb
-export const INITIAL_HIERARCHY_A = expandEntityRelations([
+export const INITIAL_HIERARCHY_OCEAN = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 1],
@@ -122,7 +122,7 @@ export const INITIAL_HIERARCHY_A = expandEntityRelations([
 //      ab
 //   aba  abb
 //   aaa  aab
-export const INITIAL_HIERARCHY_B = expandEntityRelations([
+export const INITIAL_HIERARCHY_STORM = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 2],
@@ -153,7 +153,7 @@ export const INITIAL_HIERARCHY_B = expandEntityRelations([
 //      ab
 //   aba  abb
 //        aab
-export const HIERARCHY_B_AFTER_ENTITY_AAA_DELETED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_ENTITY_AAA_DELETED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 2],
@@ -177,7 +177,7 @@ export const HIERARCHY_B_AFTER_ENTITY_AAA_DELETED = expandEntityRelations([
 // a
 // aa
 // aab
-export const HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_MULTIPLE_ENTITIES_DELETED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'aab', 2],
@@ -192,7 +192,7 @@ export const HIERARCHY_B_AFTER_MULTIPLE_ENTITIES_DELETED = expandEntityRelations
 //      ab
 //   aba  abb
 //        aab
-export const HIERARCHY_B_AFTER_RELATION_ABA_AAA_DELETED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_RELATION_ABA_AAA_DELETED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 2],
@@ -217,7 +217,7 @@ export const HIERARCHY_B_AFTER_RELATION_ABA_AAA_DELETED = expandEntityRelations(
 //     a
 //    aa
 // aaa  aab
-export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_MULTIPLE_RELATIONS_DELETED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'aaa', 2],
@@ -232,7 +232,7 @@ export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_DELETED = expandEntityRelation
 //       a
 //  aa  ab   aaa
 // aab  aba  abb
-export const HIERARCHY_A_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
+export const HIERARCHY_OCEAN_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 1],
@@ -259,7 +259,7 @@ export const HIERARCHY_A_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
 // aab
 // the update of the parent_id of aaa has no impact, as the entity relation link is used at that
 // generation
-export const HIERARCHY_B_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 2],
@@ -296,7 +296,7 @@ export const HIERARCHY_B_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
 //      ab
 //   aba  abb
 //   aaa
-export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_MULTIPLE_RELATIONS_CHANGED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'aab', 2],
@@ -330,7 +330,7 @@ export const HIERARCHY_B_AFTER_MULTIPLE_RELATIONS_CHANGED = expandEntityRelation
 // ab
 // aba
 // aaa
-export const HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_ENTITY_RELATION_ADDED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 2],
@@ -352,7 +352,7 @@ export const HIERARCHY_B_AFTER_ENTITY_RELATION_ADDED = expandEntityRelations([
 //    aa           ab           ac
 // aaa  aab   aba  abb  abc     aca
 // aaaa
-export const HIERARCHY_A_AFTER_ENTITIES_CREATED = expandEntityRelations([
+export const HIERARCHY_OCEAN_AFTER_ENTITIES_CREATED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 1],
@@ -379,14 +379,14 @@ export const HIERARCHY_A_AFTER_ENTITIES_CREATED = expandEntityRelations([
 ]);
 
 // entity abc is created below ab, entity aaaa below aaa, and ac below a, and aca below the new ac
-// in hierarchy b, the ac subtree is ignored as entity relation links are used at that generation
+// in hierarchy storm, the ac subtree is ignored as entity relation links are used at that generation
 //         a
 //        aa
 //        ab
 //   aba  abb  abc
 //   aaa  aab
 //  aaaa
-export const HIERARCHY_B_AFTER_ENTITIES_CREATED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_ENTITIES_CREATED = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 2],
