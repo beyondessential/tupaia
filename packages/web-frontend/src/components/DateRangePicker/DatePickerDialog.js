@@ -102,6 +102,8 @@ export const DatePickerDialog = ({
   granularity,
   startDate,
   endDate,
+  min,
+  max,
   onSetNewDates,
 }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
@@ -135,7 +137,8 @@ export const DatePickerDialog = ({
     return setErrorMessage('');
   };
 
-  const minMomentDate = moment(MIN_DATE_PICKER_DATE);
+  const minMomentDate = min ? moment(min) : moment(MIN_DATE_PICKER_DATE);
+  const maxMomentDate = max ? moment(max) : moment();
 
   return (
     <Dialog
@@ -152,7 +155,7 @@ export const DatePickerDialog = ({
               granularity={granularity}
               momentDateValue={selectedStartDate}
               minMomentDate={minMomentDate}
-              maxMomentDate={moment()}
+              maxMomentDate={maxMomentDate}
               onChange={setSelectedStartDate}
             />
           </StyledDateRow>
@@ -162,7 +165,7 @@ export const DatePickerDialog = ({
             granularity={granularity}
             momentDateValue={selectedEndDate}
             minMomentDate={minMomentDate}
-            maxMomentDate={moment()}
+            maxMomentDate={maxMomentDate}
             onChange={setSelectedEndDate}
           />
         </StyledDateRow>
