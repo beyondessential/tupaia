@@ -40,14 +40,14 @@ class Script {
   run() {
     this.parseConfig();
     this.runCommands();
-    this.logSuccess('Done!');
   }
 
   parseConfig() {
     const supportedConfigKeys = ['command', 'options', 'usage', 'version'];
 
+    yargs.strict();
     Object.entries(this.config).forEach(([key, value]) => {
-      if (key in supportedConfigKeys) {
+      if (supportedConfigKeys.includes(key)) {
         yargs[key](value);
       }
     });
