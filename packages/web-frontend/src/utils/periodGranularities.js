@@ -135,7 +135,7 @@ export const momentToDateString = (date, granularity, format) =>
     ? date.clone().startOf('W').format(format)
     : date.clone().format(format);
 
-const getDefaultDate = (offset, unit, modifier) => {
+const getOffsetDate = (offset, unit, modifier) => {
   // We need a valid unit to proceed.
   if (!CONFIG[unit]) {
     return moment();
@@ -206,13 +206,13 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
     const validDateOffsetUnit = GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT[periodGranularity];
     if (singleDateConfig.unit !== validDateOffsetUnit) {
       throw new Error(
-        `defaultTimePeriod unit must match periodGranularity (periodGranularity: ${periodGranularity}, valid unit: ${validDateOffsetUnit})`,
+        `defaultTimePeriod unit must match periodGranularity (periodGranularity: ${periodGranularity}, valid unit: ${validDateOffsetUnit}, given: ${singleDateConfig.unit})`,
       );
     }
 
     // Grab all the details and get a single default date used for both start/end period.
     const { offset, unit, modifier } = singleDateConfig;
-    startDate = getDefaultDate(offset, unit, modifier);
+    startDate = getOffsetDate(offset, unit, modifier);
     endDate = startDate;
   }
 
@@ -239,12 +239,12 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
 
     if (defaultTimePeriod.start) {
       const { offset, unit, modifier } = defaultTimePeriod.start;
-      startDate = getDefaultDate(offset, unit, modifier);
+      startDate = getOffsetDate(offset, unit, modifier);
     }
 
     if (defaultTimePeriod.end) {
       const { offset, unit, modifier } = defaultTimePeriod.end;
-      endDate = getDefaultDate(offset, unit, modifier);
+      endDate = getOffsetDate(offset, unit, modifier);
     }
 
     return roundStartEndDates(periodGranularity, startDate, endDate);
@@ -268,4 +268,44 @@ export function getDefaultDates(state) {
   }
 
   return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod);
+}
+
+/**
+ * @param {*} periodGranularity
+ * @param {*} limits - same as defaultTimePeriod
+ * @returns {{startDate, endDate}}
+ */
+export function getLimits(periodGranularity, limits) {
+  if (!limits) {
+    return { startDate: null, endDate: null };
+  }
+
+  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
+
+  let startDate = moment();
+  let endDate = moment();
+
+  for (const partKey of ['start', 'end']) {
+    if (!limits[partKey]) continue;
+
+    const partConfig = limits[partKey];
+
+    let validDateOffsetUnit = periodGranularity;
+    if (isSingleDate) {
+      validDateOffsetUnit = GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT[periodGranularity];
+    }
+
+    if (partConfig.unit !== validDateOffsetUnit) {
+      throw new Error(
+        `limit unit must match periodGranularity (periodGranularity: ${periodGranularity}, valid unit: ${validDateOffsetUnit}, given: ${partConfig.unit})`,
+      );
+    }
+
+    const { offset, unit, modifier } = partConfig;
+    const offsetDate = getOffsetDate(offset, unit, modifier);
+    if (partKey === 'start') startDate = offsetDate;
+    if (partKey === 'end') endDate = offsetDate;
+  }
+
+  return roundStartEndDates(periodGranularity, startDate, endDate);
 }
