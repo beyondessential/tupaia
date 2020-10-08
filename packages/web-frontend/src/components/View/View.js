@@ -157,9 +157,9 @@ export class View extends Component {
       return (
         <div data-testid="view" style={viewContainerStyle}>
           <StyledAlert severity="error">
-            {`Error: ${viewContent.error}:`}
-            <AlertAction onClick={retry}>Retry loading data</AlertAction>
-            or contact: <AlertLink href="mailto:support@tupaia.org">support@tupaia.org</AlertLink>
+            {`Error: ${viewContent.error} `}
+            <AlertAction onClick={retry}>Retry loading data</AlertAction> or contact{' '}
+            <AlertLink href="mailto:support@tupaia.org">support@tupaia.org</AlertLink>
           </StyledAlert>
         </div>
       );

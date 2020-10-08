@@ -51,6 +51,7 @@ export const AlertAction = styled.button`
   background: none;
   color: inherit;
   font-weight: 500;
+  padding: 0;
   box-shadow: none;
   border: none;
   font-size: 0.875rem;
