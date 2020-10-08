@@ -8,29 +8,16 @@ import styled from 'styled-components';
 import { State, Store } from '@sambego/storybook-state';
 import moment from 'moment';
 import { forceReRender } from '@storybook/react';
+import Grid from '@material-ui/core/Grid';
 import { DateRangePicker } from '../../src/components/DateRangePicker';
 import {
   GRANULARITIES_WITH_MULTIPLE_DATES,
   GRANULARITIES_WITH_ONE_DATE,
 } from '../../src/utils/periodGranularities';
 
-const Container = styled.div`
-  margin: 1rem auto;
-  width: 400px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.02);
-`;
-
 export default {
   title: 'FormControl/DateRangePicker',
   component: DateRangePicker,
-  decorators: [
-    Story => (
-      <Container>
-        <Story />
-      </Container>
-    ),
-  ],
 };
 
 const createDateRangePicker = state => {
@@ -47,7 +34,7 @@ const createDateRangePicker = state => {
     forceReRender();
   });
   const StateDebugPanel = () => (
-    <div style={{ backgroundColor: 'lightyellow', padding: '1rem', marginTop: '1rem' }}>
+    <div style={{ backgroundColor: 'lightyellow', padding: '1rem' }}>
       State for this story:
       <pre>
         <em>startDate: </em>
@@ -66,13 +53,19 @@ const createDateRangePicker = state => {
   );
   return args => (
     <>
-      <State store={store}>
-        <DateRangePicker
-          {...args}
-          onSetDates={(startDate, endDate) => store.set({ startDate, endDate })}
-        />
-        <StateDebugPanel />
-      </State>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <State store={store}>
+            <DateRangePicker
+              {...args}
+              onSetDates={(startDate, endDate) => store.set({ startDate, endDate })}
+            />
+          </State>
+        </Grid>
+        <Grid item xs={6}>
+          <StateDebugPanel />
+        </Grid>
+      </Grid>
     </>
   );
 };
