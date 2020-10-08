@@ -67,7 +67,6 @@
     "cypress": "^4.12.0",
     "eslint": "^7.8.1",
     "eslint-plugin-cypress": "^2.11.1",
-    "husky": "^4.3.0",
     "jest": "^26.1.0",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-extended": "^0.11.5",
