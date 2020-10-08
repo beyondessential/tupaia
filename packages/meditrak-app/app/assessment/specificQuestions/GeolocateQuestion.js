@@ -18,7 +18,7 @@ import {
   THEME_FONT_SIZE_ONE,
   THEME_COLOR_ONE,
 } from '../../globalStyles';
-import { watchUserLocation } from '../../utilities/userLocation';
+import { watchUserLocation, refreshWatchingUserLocation } from '../../utilities/userLocation';
 
 const RECOMMENDED_ACCURACY = 20;
 const MINIMUM_ACCURACY_LEVEL = 100;
@@ -27,7 +27,7 @@ const getMaterialIcon = (iconName, style = {}) => (
   <Icon
     name={iconName}
     size={14}
-    pointerEvents={'none'}
+    pointerEvents="none"
     color={THEME_COLOR_ONE}
     style={[localStyles.icon, style]}
   />
@@ -57,7 +57,10 @@ class GeolocateQuestionComponent extends React.Component {
     if (isFindingLocation) {
       this.updateAnswer();
 
-      if (userLocation.errorMessage) {
+      if (
+        userLocation.errorMessage &&
+        this.props.answer.errorMessage !== userLocation.errorMessage
+      ) {
         this.onGeolocationError(userLocation.errorMessage);
       }
     }
@@ -72,8 +75,8 @@ class GeolocateQuestionComponent extends React.Component {
       isFindingLocation: true,
       errorMessage: '',
     });
-
-    this.updateAnswer();
+    this.props.onRefresh();
+    this.props.onChangeAnswer({});
   }
 
   onGeolocationError(errorMessage) {
@@ -87,7 +90,10 @@ class GeolocateQuestionComponent extends React.Component {
     Alert.alert(
       'Remove tagged location',
       'Are you sure you want to remove the currently selected location for this question?',
-      [{ text: 'Cancel', style: 'cancel' }, { text: 'Yes', onPress: () => this.removeLocation() }],
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Yes', onPress: () => this.removeLocation() },
+      ],
       { cancelable: true },
     );
   }
@@ -129,12 +135,12 @@ class GeolocateQuestionComponent extends React.Component {
     const { onChangeAnswer, userLocation, answer } = this.props;
     const { latitude, longitude, accuracy, errorMessage } = userLocation;
 
-    if (
-      (latitude !== null || errorMessage) &&
-      latitude !== answer.latitude &&
-      longitude !== answer.longitude &&
-      accuracy !== answer.accuracy
-    ) {
+    const locationHasChanged =
+      latitude !== answer.latitude ||
+      longitude !== answer.longitude ||
+      accuracy !== answer.accuracy;
+
+    if ((latitude !== null || errorMessage) && locationHasChanged) {
       onChangeAnswer({
         latitude,
         longitude,
@@ -166,7 +172,7 @@ class GeolocateQuestionComponent extends React.Component {
   renderSaveLocationButton() {
     return (
       <TouchableOpacity
-        analyticsLabel={'Geolocate: Save'}
+        analyticsLabel="Geolocate: Save"
         onPress={() => this.onLockLocation()}
         style={localStyles.actionButton}
       >
@@ -179,7 +185,7 @@ class GeolocateQuestionComponent extends React.Component {
   renderRefreshButton() {
     return (
       <TouchableOpacity
-        analyticsLabel={'Geolocate: Retry'}
+        analyticsLabel="Geolocate: Retry"
         onPress={() => this.onPressFindLocation()}
         style={localStyles.actionButton}
       >
@@ -227,7 +233,7 @@ class GeolocateQuestionComponent extends React.Component {
           </TouchableOpacity>
           {hasAnswer && !errorMessage && (
             <TouchableOpacity
-              analyticsLabel={'Geolocate: Clear'}
+              analyticsLabel="Geolocate: Clear"
               style={localStyles.removeButton}
               onPress={() => this.onRemoveLocation()}
             >
@@ -246,11 +252,11 @@ GeolocateQuestionComponent.propTypes = {
   onChangeAnswer: PropTypes.func.isRequired,
   userLocation: PropTypes.object.isRequired,
   onWatchUserLocation: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
 };
 
 GeolocateQuestionComponent.defaultProps = {
   answer: {},
-  questionText: null,
 };
 
 const mapStateToProps = ({ userLocation }) => ({
@@ -259,6 +265,7 @@ const mapStateToProps = ({ userLocation }) => ({
 
 const mapDispatchToProps = dispatch => ({
   onWatchUserLocation: () => dispatch(watchUserLocation()),
+  onRefresh: () => dispatch(refreshWatchingUserLocation()),
 });
 
 export const GeolocateQuestion = connect(

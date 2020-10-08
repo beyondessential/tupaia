@@ -48,22 +48,30 @@ export async function importOptionSets(req, res) {
 
         const optionValues = new Set();
         const optionNames = new Set();
+        const optionSortOrders = new Set();
         for (let rowIndex = 0; rowIndex < options.length; rowIndex++) {
           const option = options[rowIndex];
           // optionName is what the frontend shows, and MUST be unique, or bad things will happen.
           const optionName = option.label || option.value;
           const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
+          // if no custom sort_order is supplied, use the excelRowNumber to sort the options
+          const sortOrder = option.sort_order || excelRowNumber.toString();
 
           // validate that there are no duplicate values or names within this option set sheet.
           if (optionValues.has(option.value) || optionNames.has(optionName)) {
             throw new ImportValidationError('Option value or label is not unique', excelRowNumber);
           }
+          // validate the sort_order is unique
+          if (optionSortOrders.has(sortOrder)) {
+            throw new ImportValidationError('Sort order is not unique', excelRowNumber);
+          }
           optionValues.add(option.value);
           optionNames.add(optionName);
+          optionSortOrders.add(sortOrder);
           const optionObject = {
             value: option.value,
             label: option.label,
-            sort_order: excelRowNumber, // options will be in the same order as in sheet
+            sort_order: sortOrder,
             option_set_id: optionSet.id,
           };
 
