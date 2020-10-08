@@ -5,17 +5,119 @@
 import { reduceToDictionary } from '@tupaia/utils';
 import { ORG_UNIT_ENTITY_TYPES } from '../modelClasses/Entity';
 
+const REBUILD_DEBOUNCE_TIME = 1000; // wait 1 second after changes before rebuilding, to avoid double-up
+
 export class EntityHierarchyCacher {
   constructor(models) {
     this.models = models;
-    this.generationsVisited = new Set();
+    this.changeHandlerCancellers = [];
+    this.resetScheduledHierarchyRebuild();
   }
 
-  async buildAndCacheAll() {
+  listenForChanges() {
+    this.changeHandlerCancellers[0] = this.models.entity.addChangeHandler(this.handleEntityChange);
+    this.changeHandlerCancellers[1] = this.models.entityRelation.addChangeHandler(
+      this.handleEntityRelationChange,
+    );
+  }
+
+  stopListeningForChanges() {
+    this.changeHandlerCancellers.forEach(c => c());
+    this.changeHandlerCancellers = [];
+  }
+
+  handleEntityChange = async ({ record_id: entityId }) => {
+    // if entity was deleted or created, or parent_id has changed, we need to delete subtrees and
+    // rebuild all hierarchies
+    const hierarchies = await this.models.entityHierarchy.all();
+    const hierarchyTasks = hierarchies.map(async ({ id: hierarchyId }) => {
+      await this.deleteSubtree(hierarchyId, entityId);
+      return this.scheduleHierarchyForRebuild(hierarchyId);
+    });
+    await Promise.all(hierarchyTasks);
+  };
+
+  handleEntityRelationChange = async ({ record }) => {
+    // delete subtree from parent_id onwards within the associated hierarchy, and kick off a new build
+    // of any projects associated with changed hierarchies
+    const { entity_hierarchy_id: hierarchyId, parent_id: parentId } = record;
+    await this.deleteSubtree(hierarchyId, parentId);
+    return this.scheduleHierarchyForRebuild(hierarchyId);
+  };
+
+  resetScheduledHierarchyRebuild() {
+    this.hierarchiesForRebuild = new Set();
+    this.scheduledRebuildPromise = null;
+    this.resolveScheduledRebuild = null;
+    this.scheduledRebuildTimeout = null;
+  }
+
+  // add the hierarchy to the list to be rebuilt, with a debounce so that we don't rebuild
+  // many times for a bulk lot of changes
+  scheduleHierarchyForRebuild(hierarchyId) {
+    this.hierarchiesForRebuild.add(hierarchyId);
+
+    // clear any previous scheduled rebuild, so that we debounce all changes in the same time period
+    if (this.scheduledRebuildTimeout) {
+      clearTimeout(this.scheduledRebuildTimeout);
+    }
+
+    // set up a promise that will complete when the rebuild has happened, even if that is after
+    // several other changes have been added after debouncing
+    if (!this.scheduledRebuildPromise) {
+      this.scheduledRebuildPromise = new Promise(resolve => {
+        this.resolveScheduledRebuild = () => {
+          this.resetScheduledHierarchyRebuild();
+          resolve();
+        };
+      });
+    }
+
+    // schedule the rebuild to happen after an adequate period of debouncing
+    this.scheduledRebuildTimeout = setTimeout(async () => {
+      await this.buildAndCacheHierarchies([...this.hierarchiesForRebuild]);
+      this.resolveScheduledRebuild();
+    }, REBUILD_DEBOUNCE_TIME);
+
+    // return the promise for the caller to await
+    return this.scheduledRebuildPromise;
+  }
+
+  async deleteSubtree(hierarchyId, rootEntityId) {
+    const descendantRelations = await this.models.ancestorDescendantRelation.find({
+      ancestor_id: rootEntityId,
+      entity_hierarchy_id: hierarchyId,
+    });
+    const entityIdsForDelete = [rootEntityId, ...descendantRelations.map(r => r.descendant_id)];
+    await this.models.database.executeSqlInBatches(entityIdsForDelete, batchOfEntityIds => [
+      `
+        DELETE FROM ancestor_descendant_relation
+        WHERE
+          entity_hierarchy_id = ?
+        AND
+          descendant_id IN (${batchOfEntityIds.map(() => '?').join(',')});
+      `,
+      [hierarchyId, ...batchOfEntityIds],
+    ]);
+  }
+
+  /**
+   * @param {[string[]]} hierarchyIds The specific hierarchies to cache (defaults to all)
+   */
+  async buildAndCacheHierarchies(hierarchyIds) {
+    // TODO remove temporary debug logs after smoke testing
+    const start = Date.now();
+    console.log(`Building ${hierarchyIds ? hierarchyIds.length : 'all'} hierarchies`);
     // projects are the root entities of every full tree, so start with them
-    const projects = await this.models.project.all();
+    const projectCriteria = hierarchyIds ? { entity_hierarchy_id: hierarchyIds } : {};
+    const projects = await this.models.project.find(projectCriteria);
     const projectTasks = projects.map(async project => this.buildAndCacheProject(project));
     await Promise.all(projectTasks);
+    console.log(
+      `Finished building ${hierarchyIds ? hierarchyIds.length : 'all'} hierarchies in ${
+        (Date.now() - start) / 1000
+      } seconds`,
+    );
   }
 
   async buildAndCacheProject(project) {
@@ -51,26 +153,10 @@ export class EntityHierarchyCacher {
       useEntityRelationLinks,
     );
 
-    const childrenAlreadyCached = await this.checkChildrenAlreadyCached(
-      hierarchyId,
-      parentIds,
-      childCount,
-    );
-    if (!childrenAlreadyCached) {
-      await this.cacheGeneration(hierarchyId, childIdToAncestorIds);
-    }
+    await this.cacheGeneration(hierarchyId, childIdToAncestorIds);
 
     // if there is another generation, keep recursing through the hierarchy
     await this.fetchAndCacheDescendants(hierarchyId, childIdToAncestorIds);
-  }
-
-  async checkChildrenAlreadyCached(hierarchyId, parentIds, childCount) {
-    const numberChildrenCached = await this.models.ancestorDescendantRelation.count({
-      entity_hierarchy_id: hierarchyId,
-      ancestor_id: parentIds,
-      generational_distance: 1,
-    });
-    return numberChildrenCached === childCount;
   }
 
   async fetchChildIdToAncestorIds(hierarchyId, parentIdsToAncestorIds, useEntityRelationLinks) {
@@ -88,11 +174,22 @@ export class EntityHierarchyCacher {
     return childIdToAncestorIds;
   }
 
-  async countEntityRelationChildren(hierarchyId, entityIds) {
-    return this.models.entityRelation.count({
-      parent_id: entityIds,
+  getEntityRelationChildrenCriteria(hierarchyId, parentIds) {
+    return {
+      parent_id: parentIds,
       entity_hierarchy_id: hierarchyId,
-    });
+    };
+  }
+
+  async countEntityRelationChildren(hierarchyId, parentIds) {
+    const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
+    return this.models.entityRelation.count(criteria);
+  }
+
+  async getRelationsViaEntityRelation(hierarchyId, parentIds) {
+    // get any matching alternative hierarchy relationships leading out of these parents
+    const criteria = this.getEntityRelationChildrenCriteria(hierarchyId, parentIds);
+    return this.models.entityRelation.find(criteria);
   }
 
   getCanonicalChildrenCriteria(parentIds) {
@@ -106,14 +203,6 @@ export class EntityHierarchyCacher {
   async countCanonicalChildren(parentIds) {
     const criteria = this.getCanonicalChildrenCriteria(parentIds);
     return this.models.entity.count(criteria);
-  }
-
-  async getRelationsViaEntityRelation(hierarchyId, parentIds) {
-    // get any matching alternative hierarchy relationships leading out of these parents
-    return this.models.entityRelation.find({
-      parent_id: parentIds,
-      entity_hierarchy_id: hierarchyId,
-    });
   }
 
   async getRelationsCanonically(parentIds) {
@@ -131,16 +220,25 @@ export class EntityHierarchyCacher {
    */
   async cacheGeneration(hierarchyId, childIdToAncestorIds) {
     const records = [];
-    Object.entries(childIdToAncestorIds).forEach(([childId, ancestorIds]) => {
-      ancestorIds.forEach((ancestorId, ancestorIndex) =>
-        records.push({
-          entity_hierarchy_id: hierarchyId,
-          ancestor_id: ancestorId,
-          descendant_id: childId,
-          generational_distance: ancestorIndex + 1,
-        }),
-      );
+    const childIds = Object.keys(childIdToAncestorIds);
+    const existingParentRelations = await this.models.ancestorDescendantRelation.find({
+      descendant_id: childIds,
+      entity_hierarchy_id: hierarchyId,
+      generational_distance: 1,
     });
+    const childrenAlreadyCached = new Set(existingParentRelations.map(r => r.descendant_id));
+    Object.entries(childIdToAncestorIds)
+      .filter(([childId]) => !childrenAlreadyCached.has(childId))
+      .forEach(([childId, ancestorIds]) => {
+        ancestorIds.forEach((ancestorId, ancestorIndex) =>
+          records.push({
+            entity_hierarchy_id: hierarchyId,
+            ancestor_id: ancestorId,
+            descendant_id: childId,
+            generational_distance: ancestorIndex + 1,
+          }),
+        );
+      });
     await this.models.ancestorDescendantRelation.createMany(records);
   }
 }

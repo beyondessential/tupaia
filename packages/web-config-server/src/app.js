@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '@tupaia/database';
+import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
@@ -56,10 +56,6 @@ export async function createApp() {
     req.authenticator = authenticator;
     next();
   });
-
-  // Pre-cache entity hierarchy details
-  const entityHierarchyCacher = new EntityHierarchyCacher(modelRegistry);
-  await entityHierarchyCacher.buildAndCacheAll();
 
   // Initialise sessions
   bindUserSessions(app);
