@@ -19,7 +19,6 @@ export const ANSWER_TYPES = {
   DATE_TIME: 'DateTime',
   DATE: 'Date',
   DAYS_SINCE: 'DaysSince',
-  SELECTION: 'Selection',
   ENTITY: 'Entity',
   FREE_TEXT: 'FreeText',
   GEOLOCATE: 'Geolocate',
