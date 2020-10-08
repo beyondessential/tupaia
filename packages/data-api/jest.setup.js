@@ -4,7 +4,6 @@
  */
 
 import { clearTestData, getTestDatabase } from '@tupaia/database';
-import winston from 'winston';
 
 afterAll(async () => {
   const database = getTestDatabase();
