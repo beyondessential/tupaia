@@ -237,6 +237,7 @@ const QUESTION_COLUMNS = [
                       {
                         label: 'Type',
                         fieldName: 'type',
+                        type: 'json',
                         getJsonFieldSchema: () => [
                           { label: 'Question Id', fieldName: 'questionId' },
                         ],

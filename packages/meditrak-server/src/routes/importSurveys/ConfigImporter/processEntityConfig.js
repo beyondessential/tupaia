@@ -63,12 +63,12 @@ const replaceQuestionCodesWithIds = async (models, config) => {
       const { id: questionId } = await models.question.findOne({ code: value });
       newValue = { questionId };
     } else if (ENTITY_CREATION_JSON_FIELD_LIST.includes(fieldKey)) {
-      for (let i = 0; i < Object.entries(value); i++) {
+      for (let i = 0; i < Object.entries(value).length; i++) {
         const [jsonFieldKey, jsonFieldValue] = Object.entries(value)[i];
         const { id: questionId } = await models.question.findOne({ code: jsonFieldValue });
         newValue = {
-          [jsonFieldKey]: { questionId },
           ...newValue,
+          [jsonFieldKey]: { questionId },
         };
       }
     }
