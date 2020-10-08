@@ -109,7 +109,6 @@ const ExpandedContent = styled.div`
 export const Control = ({
   emptyMessage,
   selectedMeasure,
-  defaultDates,
   isMeasureLoading,
   onUpdateMeasurePeriod,
   children,
@@ -129,12 +128,6 @@ export const Control = ({
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
     onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
   };
-
-  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
-  // and uses those rather than calculating it's own defaults
-  let { startDate, endDate } = selectedMeasure;
-  if (!startDate) startDate = defaultDates.startDate;
-  if (!endDate) endDate = defaultDates.endDate;
 
   return (
     <Container>
@@ -165,8 +158,8 @@ export const Control = ({
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
             granularity={selectedMeasure.periodGranularity}
-            startDate={startDate}
-            endDate={endDate}
+            startDate={selectedMeasure.startDate}
+            endDate={selectedMeasure.endDate}
             onSetDates={updateMeasurePeriod}
             isLoading={isMeasureLoading}
           />
@@ -190,10 +183,6 @@ Control.propTypes = {
     startDate: PropTypes.shape({}),
     endDate: PropTypes.shape({}),
   }),
-  defaultDates: PropTypes.shape({
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
-  }).isRequired,
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,

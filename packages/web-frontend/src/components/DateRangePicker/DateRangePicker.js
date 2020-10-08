@@ -132,10 +132,7 @@ export const DateRangePicker = ({
   );
 
   useEffect(() => {
-    // Prevent set dates to the same dates
-    if (!(initialStartDate && initialEndDate)) {
-      onSetDates(roundedCurrentStartDate, roundedCurrentEndDate);
-    }
+    onSetDates(roundedCurrentStartDate, roundedCurrentEndDate);
   }, []);
 
   // Number of periods to move may be negative if changing to the previous period
