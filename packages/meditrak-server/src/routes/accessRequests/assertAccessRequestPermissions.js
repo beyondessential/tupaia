@@ -4,10 +4,14 @@
  */
 
 import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
-import { createAdminPanelDBFilter } from '../utilities';
+import { getAdminPanelAllowedEntityIds } from '../utilities';
 
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequestId) => {
   const accessRequest = await models.accessRequest.findById(accessRequestId);
+  if (!accessRequest) {
+    throw new Error(`No access request found with id ${accessRequestId}`);
+  }
+
   const entity = await models.entity.findById(accessRequest.entity_id);
   if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     throw new Error('Need Admin Panel access to the country this access request is for');
@@ -20,5 +24,8 @@ export const createAccessRequestDBFilter = async (accessPolicy, models, criteria
     return criteria;
   }
   // If we don't have BES Admin access, add a filter to the SQL query
-  return createAdminPanelDBFilter(accessPolicy, models, criteria);
+  const dbConditions = { ...criteria };
+  dbConditions.entity_id = await getAdminPanelAllowedEntityIds(accessPolicy, models);
+
+  return dbConditions;
 };

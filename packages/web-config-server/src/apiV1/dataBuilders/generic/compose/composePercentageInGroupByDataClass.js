@@ -93,9 +93,7 @@ export const composePercentageInGroupByDataClass = async (
     };
   });
 
-  return {
-    data: data,
-  };
+  return { data };
 };
 
 const mapValueGroup = (value, groups) => {

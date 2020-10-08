@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { respond, ObjectValidator } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
@@ -21,7 +21,7 @@ const CUSTOM_RECORD_CREATORS = {
 
 /**
  * Responds to the POST requests by adding a record
- **/
+ */
 export async function addRecord(req, res) {
   const { database, models, params, body: recordData } = req;
   const { parentResource, parentRecordId, resource } = params;

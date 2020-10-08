@@ -7,6 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS, JOIN_TYPES } from '../TupaiaDatabase';
+
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 
 class MapOverlayGroupType extends DatabaseType {

@@ -62,7 +62,7 @@ const ORG_UNIT_ENTITY_TYPES = {
   VILLAGE,
 };
 
-class EntityType extends DatabaseType {
+export class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
   // Exposed for access policy creation.
@@ -143,23 +143,24 @@ class EntityType extends DatabaseType {
   }
 
   async getChildrenViaHierarchy(hierarchyId) {
-    //Raw sql:
-    //     SELECT entity.*
-    //     FROM entity
-    //     INNER JOIN entity_relation on entity.id = entity_relation.child_id
-    //     WHERE entity_relation.parent_id = `'${this.id}'`
-    //     AND entity_relation.entity_hierarchy_id = `'${hierarchyId}'`;
-    return this.model.find(
-      {
-        [`${TYPES.ENTITY_RELATION}.parent_id`]: this.id,
-        [`${TYPES.ENTITY_RELATION}.entity_hierarchy_id`]: hierarchyId,
-      },
-      {
-        joinWith: TYPES.ENTITY_RELATION,
-        joinType: JOIN_TYPES.INNER,
-        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.ENTITY_RELATION}.child_id`],
-      },
+    return this.database.executeSql(
+      `
+        SELECT entity.*
+        FROM entity
+        INNER JOIN entity_relation on entity.id = entity_relation.child_id
+        WHERE entity_relation.parent_id = ?
+        AND entity_relation.entity_hierarchy_id = ?;
+      `,
+      [this.id, hierarchyId],
     );
+  }
+
+  pointLatLon() {
+    const pointJson = JSON.parse(this.point);
+    return {
+      lat: pointJson.coordinates[1],
+      lon: pointJson.coordinates[0],
+    };
   }
 }
 
@@ -168,11 +169,73 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
+  static fields = [
+    'id',
+    'code',
+    'parent_id',
+    'name',
+    'type',
+    'point',
+    'region',
+    'image_url',
+    'country_code',
+    'bounds',
+    'metadata',
+    'image_url',
+    'attributes',
+  ];
+
+  static geoFields = ['point', 'region', 'bounds'];
+
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 
   types = ENTITY_TYPES;
 
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
+
+  getColumnSpecs = tableAlias => {
+    return this.buildColumnSpecs(tableAlias, false);
+  };
+
+  buildColumnSpecs = tableAlias => {
+    const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
+    return EntityModel.fields.map(field => {
+      if (EntityModel.geoFields.includes(field)) {
+        return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
+      }
+      return { [field]: `${tableAliasPrefix}${field}` };
+    });
+  };
+
+  async findOne(conditions) {
+    return super.findOne(conditions, {
+      columns: this.getColumnSpecs(),
+    });
+  }
+
+  async find(conditions) {
+    return super.find(conditions, {
+      columns: this.getColumnSpecs(),
+    });
+  }
+
+  async findById(id) {
+    return super.findById(id, {
+      columns: this.getColumnSpecs(),
+    });
+  }
+
+  async update(whereCondition, fieldsToUpdate) {
+    return super.update(whereCondition, this.removeUnUpdatableFields(fieldsToUpdate));
+  }
+
+  async updateOrCreate(whereCondition, fieldsToUpsert) {
+    return super.updateOrCreate(whereCondition, this.removeUnUpdatableFields(fieldsToUpsert));
+  }
+
+  async updateById(id, fieldsToUpdate) {
+    return super.updateById(id, this.removeUnUpdatableFields(fieldsToUpdate));
+  }
 
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
@@ -228,5 +291,19 @@ export class EntityModel extends DatabaseModel {
   async getEntityCountryCodeById(entityIds) {
     const entities = await this.findManyById(entityIds);
     return reduceToDictionary(entities, 'id', 'country_code');
+  }
+
+  /**
+   * @private
+   */
+  removeUnUpdatableFields(fields) {
+    const filteredFields = {};
+    for (const key of Object.keys(fields)) {
+      if (EntityModel.geoFields.indexOf(key) !== -1) {
+        continue;
+      }
+      filteredFields[key] = fields[key];
+    }
+    return filteredFields;
   }
 }

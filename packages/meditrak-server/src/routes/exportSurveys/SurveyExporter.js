@@ -75,6 +75,7 @@ export class SurveyExporter {
         }
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error);
       throw new DatabaseError('exporting survey', error);
     }

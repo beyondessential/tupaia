@@ -7,6 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+
 const { RAW } = QUERY_CONJUNCTIONS;
 
 class DashboardGroupType extends DatabaseType {

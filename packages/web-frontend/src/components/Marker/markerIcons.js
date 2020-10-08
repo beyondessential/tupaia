@@ -26,7 +26,6 @@ import Flood from '../../images/flood.svg';
 import { BREWER_PALETTE, WHITE } from '../../styles';
 
 // allows passing a color to a material icon & scales it down a bit
-/* eslint-disable-next-line react/prop-types */
 const wrapMaterialIcon = Base => ({ color }) => <Base htmlColor={color} viewBox="-3 -3 29 29" />;
 
 const StyledSvgWrapper = styled.span`
@@ -35,7 +34,6 @@ const StyledSvgWrapper = styled.span`
   }
 `;
 
-/* eslint-disable-next-line react/prop-types */
 const wrapSvgIcon = Base => ({ color }) => (
   <StyledSvgWrapper color={color}>
     <Base />

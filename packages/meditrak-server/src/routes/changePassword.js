@@ -45,7 +45,7 @@ export async function changePassword(req, res, next) {
       password,
     };
 
-    editRecord(req, res);
+    await editRecord(req, res);
   } catch (error) {
     next(error);
   }

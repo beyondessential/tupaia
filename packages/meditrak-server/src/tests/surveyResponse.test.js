@@ -32,7 +32,7 @@ let surveyId;
 
 describe('surveyResponse endpoint', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   before(async () => {
     await app.authenticate();

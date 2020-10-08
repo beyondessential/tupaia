@@ -6,7 +6,9 @@
 const { spawnSync } = require('child_process');
 const { existsSync, readdirSync } = require('fs');
 
-const { logger } = require('./utilities');
+const { getLoggerInstance } = require('./utilities');
+
+const logger = getLoggerInstance();
 
 /**
  * @abstract
@@ -32,6 +34,7 @@ class Script {
     throw new Error('Any subclass of Script must implement the "run" method');
   }
 
+  // eslint-disable-next-line no-unused-vars
   parseOptions(args) {
     return {};
   }

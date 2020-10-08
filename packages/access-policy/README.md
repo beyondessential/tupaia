@@ -45,8 +45,9 @@ to any entity further up the hierarchy, they will be granted access to Thornbury
 
 ## Running tests
 
-Use the command `npm run test`.
-
+yarn test               # Runs all tests
+yarn test:coverage      # Runs tests and displays project test coverage
+ 	 
 ## Editing, changing, building
 
 Edit files in src and run `npm run build` to create a new version that's able to be imported by other

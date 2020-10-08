@@ -20,7 +20,8 @@ const HOME_ALIAS = 'weekly-reports';
 const isTabActive = (match, location) => {
   if (!match) {
     return false;
-  } else if (match.url === '') {
+  }
+  if (match.url === '') {
     const pathSegments = location.pathname.split('/').filter(x => x);
     return pathSegments[0] === HOME_ALIAS;
   }

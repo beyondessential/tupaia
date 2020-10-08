@@ -29,7 +29,7 @@ export const tooltip = () => (
 );
 
 const tooltipHTML = (
-  <React.Fragment>
+  <>
     <Typography variant="body2">
       Click{' '}
       <MuiLink href="http://www.google.com" color="inherit">
@@ -37,7 +37,7 @@ const tooltipHTML = (
       </MuiLink>{' '}
       to find out more
     </Typography>
-  </React.Fragment>
+  </>
 );
 
 export const htmlTooltip = () => (

@@ -21,8 +21,12 @@ import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
-import { EditUserAccounts, GETUserAccounts } from './userAccounts';
-import { EditUserEntityPermissions, GETUserEntityPermissions } from './userEntityPermissions';
+import { CreateUserAccounts, RegisterUserAccounts, EditUserAccounts, GETUserAccounts } from './userAccounts';
+import {
+  DeleteUserEntityPermissions,
+  EditUserEntityPermissions,
+  GETUserEntityPermissions,
+} from './userEntityPermissions';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
@@ -33,11 +37,12 @@ import { postChanges } from './postChanges';
 import { pruneChanges } from './pruneChanges';
 import { addRecord } from './addRecord';
 import { importSurveyResponses } from './importSurveyResponses';
-import { createUser } from './createUser';
 import { changePassword } from './changePassword';
+import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { getSocialFeed } from './getSocialFeed';
 import { getUserRewards } from './getUserRewards';
+import { getUser } from './getUser';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
@@ -67,7 +72,10 @@ export default {
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
   deleteRecord: catchAsyncErrors(deleteRecord),
+  deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
   editRecord: catchAsyncErrors(editRecord),
+  createUserAccount: useRouteHandler(CreateUserAccounts),
+  registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
@@ -97,11 +105,12 @@ export default {
   pruneChanges: catchAsyncErrors(pruneChanges),
   addRecord: catchAsyncErrors(addRecord),
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
-  createUser: catchAsyncErrors(createUser),
   changePassword: catchAsyncErrors(changePassword),
+  editUser: catchAsyncErrors(editUser),
   requestCountryAccess: catchAsyncErrors(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
   getUserRewards: catchAsyncErrors(getUserRewards),
+  getUser: catchAsyncErrors(getUser),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
   getCountryAccessList: catchAsyncErrors(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),

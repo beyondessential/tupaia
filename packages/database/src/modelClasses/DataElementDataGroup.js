@@ -46,7 +46,6 @@ class DataElementDataGroupType extends DatabaseType {
 }
 
 export class DataElementDataGroupModel extends DatabaseModel {
-  // eslint-disable-next-line class-methods-use-this
   get DatabaseTypeClass() {
     return DataElementDataGroupType;
   }

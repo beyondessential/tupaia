@@ -297,7 +297,7 @@ const getStyles = (isPrintMode, cellCharacters) => {
     descriptionOverlayMainTitle: {
       position: 'absolute',
       top: 20,
-    }
+    },
   };
 
   const gridCellChanger = {

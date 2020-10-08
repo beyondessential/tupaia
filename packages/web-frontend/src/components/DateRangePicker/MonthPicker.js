@@ -42,11 +42,7 @@ export class MonthPicker extends PureComponent {
         selectedValue={momentDateValue.month()}
         menuItems={menuItems}
         onChange={e => onChange(moment(momentDateValue).month(e.target.value))}
-        getFormattedValue={monthIndex =>
-          moment()
-            .month(monthIndex)
-            .format(FORMAT)
-        }
+        getFormattedValue={monthIndex => moment().month(monthIndex).format(FORMAT)}
       />
     );
   }

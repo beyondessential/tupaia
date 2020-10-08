@@ -25,7 +25,9 @@
     "react-autobind": "^1.0.6",
     "react-datepicker": "^1.6.0",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.8.3",
     "react-icons": "^2.2.7",
+    "react-password-strength-bar": "^0.3.2",
     "react-redux": "^5.0.6",
     "react-router-dom": "^5.2.0",
     "react-select": "^1.2.1",
@@ -33,7 +35,7 @@
     "reactstrap": "^5.0.0",
     "redux": "^3.7.2",
     "redux-auth-wrapper": "^2.0.1",
-    "redux-persist": "5.0.0-beta.7",
+    "redux-persist": "6.0.0",
     "redux-thunk": "^2.2.0",
     "styled-components": "^5.1.0",
     "uuid": "^3.2.1"
@@ -45,8 +47,8 @@
     "postbuild": "rm -rf served_build && mv build served_build",
     "test": "react-scripts test --env=jsdom --passWithNoTests",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .", 
-    "eject": "react-scripts eject" 
+    "lint:fix": "yarn lint --fix .",
+    "eject": "react-scripts eject"
   },
   "browserslist": {
     "production": [
@@ -59,5 +61,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    }
   }
 }

@@ -21,7 +21,7 @@ function expectError(response, match) {
 }
 
 export const testImportSurveyResponses = (app, models, syncQueue) =>
-  function() {
+  function () {
     const importFile = filename =>
       app
         .post('import/surveyResponses')
@@ -29,6 +29,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
 
     const deletedSurveyResponseId = '1125f5e462d7a74a5a2_test';
     const changeAnswersResponseId = '69e05722883b0cb7f6d_test';
+    // eslint-disable-next-line camelcase
     const changeAnswersResponse_OtherTabId = '21113eb873529ced62b_test';
 
     describe('Valid survey response format causes appropriate changes', () => {

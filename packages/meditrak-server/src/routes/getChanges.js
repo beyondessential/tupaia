@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { respond, DatabaseError } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
@@ -12,7 +12,7 @@ const MAX_CHANGES_RETURNED = 100;
 
 /**
  * Gets the record ready to sync down to a sync client, transforming any properties as required
- **/
+ */
 async function getRecordForSync(record) {
   const recordWithoutNulls = {};
   // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db

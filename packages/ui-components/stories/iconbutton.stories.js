@@ -37,14 +37,14 @@ export const AutoRenew = () => (
 );
 
 export const LightArrows = () => (
-  <React.Fragment>
+  <>
     <LightIconButton>
       <ChevronLeft />
     </LightIconButton>
     <LightIconButton>
       <ChevronRight />
     </LightIconButton>
-  </React.Fragment>
+  </>
 );
 
 LightArrows.story = {

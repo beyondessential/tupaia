@@ -37,10 +37,10 @@ class ColorListItem extends React.PureComponent {
     const { name, value, presentationOptions } = this.props;
     const backgroundColor = presentationOptions[value] ? presentationOptions[value].color : 'grey';
     return (
-      <React.Fragment>
+      <>
         <div style={styles.nameColumn}>{name}</div>
         <div style={{ ...styles.indicator, backgroundColor }} />
-      </React.Fragment>
+      </>
     );
   }
 }

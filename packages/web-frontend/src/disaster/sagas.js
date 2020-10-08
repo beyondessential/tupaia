@@ -78,7 +78,7 @@ function* watchFetchInitialDataAndFetchDisasters() {
 }
 
 function* watchViewDisasterAndZoomToBounds() {
-  yield takeLatest(VIEW_DISASTER, function*(action) {
+  yield takeLatest(VIEW_DISASTER, function* (action) {
     const { disaster } = action;
     const { bounds } = disaster;
 
@@ -92,7 +92,7 @@ function* watchViewDisasterAndZoomToBounds() {
 }
 
 function* watchSelectDisasterAndOpenOverlay() {
-  yield takeLatest(SELECT_DISASTER, function*() {
+  yield takeLatest(SELECT_DISASTER, function* () {
     yield put(setOverlayComponent(DISASTER));
   });
 }

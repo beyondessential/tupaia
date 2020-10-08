@@ -9,8 +9,6 @@ import { sendEmail } from '../../utilities';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   notifiers = [onUpsertSendPermissionGrantEmail];
-
-  isDeletableViaApi = true;
 }
 
 /**

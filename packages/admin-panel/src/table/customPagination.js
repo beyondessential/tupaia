@@ -21,7 +21,6 @@ export const customPagination = () => ({
     </IconButton>
   ),
   // @see https://github.com/tannerlinsley/react-table/tree/v6 for documentation of props
-  // eslint-disable-next-line react/prop-types
   renderPageSizeOptions: ({ pageSize, pageSizeOptions, rowsSelectorText, onPageSizeChange }) => (
     <span className="select-wrap -pageSizeOptions">
       <Select

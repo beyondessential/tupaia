@@ -34,7 +34,7 @@ const groupByAllOrgUnitParentNames = async (events, options) => {
     {},
   );
   const allOrgUnitsByOrgUnitName = {};
-  /*format:
+  /* format:
    * {
    *  "village1": "facility1",
    *  "village2": "facility2",

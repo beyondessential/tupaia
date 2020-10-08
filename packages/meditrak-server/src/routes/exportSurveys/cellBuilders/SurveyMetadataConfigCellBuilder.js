@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable class-methods-use-this */
-
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
 
 export class SurveyMetadataConfigCellBuilder extends KeyValueCellBuilder {
