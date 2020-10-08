@@ -9,7 +9,6 @@ const Script = require('./Script');
 
 class RefreshDatabaseScript extends Script {
   config = {
-    args: [],
     command: '* <dumpPath>',
     options: {
       migrate: {
