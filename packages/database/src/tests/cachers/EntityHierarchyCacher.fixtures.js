@@ -257,8 +257,8 @@ export const HIERARCHY_OCEAN_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
 // aaa
 // abb
 // aab
-// the update of the parent_id of aaa has no impact, as the entity relation link is used at that
-// generation
+// the update of the canonical parent_id of aaa has no impact, as the alternative hierarchy is used
+// at that generation
 export const HIERARCHY_STORM_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
@@ -323,8 +323,10 @@ export const HIERARCHY_STORM_AFTER_MULTIPLE_RELATIONS_CHANGED = expandEntityRela
   ['aba', 'aaa', 1],
 ]);
 
-// adding a new entity relation record between aba and ab means that the canonical links will no
-// longer be used, so it will drop the abb subtree
+// adding a new entity relation record between aba and ab means that at the generation that was
+// previously canonically connecting ab to both aba and abb, it will instead treat it as an
+// alternative hierarchy generation, so only link aba via the entity relation, and drop the whole
+// abb subtree
 // a
 // aa
 // ab
@@ -347,7 +349,7 @@ export const HIERARCHY_STORM_AFTER_ENTITY_RELATION_ADDED = expandEntityRelations
   ['aba', 'aaa', 1],
 ]);
 
-// entity abc is created below ab, entity aaaa below aaa, and ac below a
+// entity abc is created below ab, entity aaaa below aaa, ac below a, and aca below ac
 //                 a
 //    aa           ab           ac
 // aaa  aab   aba  abb  abc     aca
@@ -379,7 +381,8 @@ export const HIERARCHY_OCEAN_AFTER_ENTITIES_CREATED = expandEntityRelations([
 ]);
 
 // entity abc is created below ab, entity aaaa below aaa, and ac below a, and aca below the new ac
-// in hierarchy storm, the ac subtree is ignored as entity relation links are used at that generation
+// in hierarchy storm, the ac subtree is ignored as the alternative hierarchy is used at that
+// generation, and ac is only linked to other entities canonically (i.e. via parent_id)
 //         a
 //        aa
 //        ab
