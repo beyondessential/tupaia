@@ -24,9 +24,6 @@ export const testFetchDataElements = () => {
   });
 
   it('returns multiple data elements in the correct format', async () => {
-    const result = await api.fetchDataElements(['BCD1', 'CROP_1', 'CROP_2']);
-    console.log(result);
-
     await expect(api.fetchDataElements(['BCD1', 'CROP_1', 'CROP_2'])).resolves.toIncludeSameMembers(
       [
         {
