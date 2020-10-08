@@ -23,7 +23,7 @@ import {
   GRANULARITIES_WITH_ONE_DATE,
   roundStartEndDates,
 } from '../../utils/periodGranularities';
-import { MIN_DATE_PICKER_DATE } from './constants';
+import { DEFAULT_MIN_DATE } from './constants';
 
 const {
   DAY,
@@ -137,7 +137,7 @@ export const DatePickerDialog = ({
     return setErrorMessage('');
   };
 
-  const minMomentDate = min ? moment(min) : moment(MIN_DATE_PICKER_DATE);
+  const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
   const maxMomentDate = max ? moment(max) : moment();
 
   return (

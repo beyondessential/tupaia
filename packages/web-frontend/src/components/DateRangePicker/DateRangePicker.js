@@ -24,7 +24,7 @@ import {
   GRANULARITY_SHAPE,
   roundStartEndDates,
 } from '../../utils/periodGranularities';
-import { MIN_DATE_PICKER_DATE } from './constants';
+import { DEFAULT_MIN_DATE } from './constants';
 
 const FlexRow = styled.div`
   display: flex;
@@ -119,7 +119,7 @@ export const DateRangePicker = ({
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
   const { momentShorthand } = GRANULARITY_CONFIG[granularity];
 
-  const minMomentDate = min ? moment(min) : moment(MIN_DATE_PICKER_DATE);
+  const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
   const maxMomentDate = max ? moment(max) : moment();
 
   let defaultStartDate;

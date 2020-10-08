@@ -15,7 +15,7 @@ import {
   momentToDateString,
   GRANULARITIES,
 } from '../../utils/periodGranularities';
-import { MIN_DATE_PICKER_DATE } from '../../components/DateRangePicker/constants';
+import { DEFAULT_MIN_DATE } from '../../components/DateRangePicker/constants';
 
 const MAX_MOMENT_DATE = moment();
 
@@ -62,8 +62,8 @@ const TEST_END_DATE_STRINGS = {
 };
 
 describe('dateRangePicker', () => {
-  it('Has a MIN_DATE_PICKER_DATE consistent with tests', () => {
-    expect(MIN_DATE_PICKER_DATE).toBe('20150101');
+  it('Has a DEFAULT_MIN_DATE consistent with tests', () => {
+    expect(DEFAULT_MIN_DATE).toBe('20150101');
   });
 
   Object.entries(GRANULARITY_CONFIG).forEach(([key, value]) => {
