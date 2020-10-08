@@ -31,7 +31,7 @@ class RefreshDatabaseScript extends Script {
   refreshDatabase() {
     this.logInfo('Refreshing the tupaia database...');
 
-    const [dumpPath] = this.args._;
+    const [dumpPath] = this.args._; // Relative to the repo root
     this.verifyPsql();
     this.exec('psql -U postgres -c "DROP DATABASE IF EXISTS tupaia"');
     this.exec('psql -U postgres -c "CREATE DATABASE tupaia WITH OWNER tupaia"');
