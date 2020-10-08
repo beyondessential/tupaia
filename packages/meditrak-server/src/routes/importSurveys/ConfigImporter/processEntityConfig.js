@@ -45,6 +45,9 @@ const translateEntityCreationFields = config => {
       resultConfig[resultKey] = questionCode;
     } else if (containJsonField(fieldKey)) {
       const [jsonKey, jsonFieldKey] = splitStringOn(fieldKey, '.');
+      if (!resultConfig[jsonKey]) {
+        resultConfig[jsonKey] = {};
+      }
       resultConfig[jsonKey][jsonFieldKey] = questionCode;
     }
   });
