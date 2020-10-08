@@ -309,3 +309,16 @@ export function getLimits(periodGranularity, limits) {
 
   return roundStartEndDates(periodGranularity, startDate, endDate);
 }
+
+/**
+ * @param {Moment} date
+ * @param {Moment} min
+ * @param {Moment} max
+ * @returns {Moment}
+ */
+export const constrainDate = (date, min, max) => {
+  let d = date.clone();
+  if (d < min) d = min;
+  if (d > max) d = max;
+  return d;
+};

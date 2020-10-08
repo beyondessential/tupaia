@@ -23,6 +23,7 @@ import {
   GRANULARITY_CONFIG,
   GRANULARITY_SHAPE,
   roundStartEndDates,
+  constrainDate,
 } from '../../utils/periodGranularities';
 import { DEFAULT_MIN_DATE } from './constants';
 
@@ -125,15 +126,11 @@ export const DateRangePicker = ({
   let defaultStartDate;
   let defaultEndDate;
   if (isSingleDate) {
-    defaultStartDate = moment();
-    if (defaultStartDate < minMomentDate) defaultStartDate = minMomentDate;
-    if (defaultStartDate > maxMomentDate) defaultStartDate = maxMomentDate;
+    defaultStartDate = constrainDate(moment(), minMomentDate, maxMomentDate);
     defaultEndDate = defaultStartDate; // end date is the same, but gets rounded to the period below
   } else {
     defaultStartDate = minMomentDate;
     defaultEndDate = maxMomentDate;
-    if (defaultStartDate < minMomentDate) defaultStartDate = minMomentDate;
-    if (defaultEndDate > maxMomentDate) defaultEndDate = maxMomentDate;
   }
   const roundedDefaults = roundStartEndDates(granularity, defaultStartDate, defaultEndDate);
   defaultStartDate = roundedDefaults.startDate;
