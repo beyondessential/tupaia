@@ -19,7 +19,7 @@
     "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "test": "mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
