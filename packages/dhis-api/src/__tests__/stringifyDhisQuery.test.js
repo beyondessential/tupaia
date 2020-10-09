@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as IsDimension from '../dimensions';
+import * as Dimension from '../dimensions';
 import { stringifyDhisQuery } from '../stringifyDhisQuery';
 
 const DIMENSION = 'dimension';
-const mock = jest.spyOn(IsDimension, 'isDimension');
-mock.mockImplementation(key => key === DIMENSION);
+const isDimensionMock = jest.spyOn(Dimension, 'isDimension');
+isDimensionMock.mockImplementation(key => key === DIMENSION);
 
 describe('stringifyDhisQuery', () => {
   describe('no filter', () => {
@@ -19,11 +19,6 @@ describe('stringifyDhisQuery', () => {
         { id: 1, code: 'test' },
         '?id=1&code=test',
       ],
-      [
-        'should do not use query continuation by default',
-        { code: 'test' },
-        stringifyDhisQuery({ code: 'test' }, false),
-      ],
       ['should ignore undefined value', { code: 'test', id: undefined }, '?code=test'],
       ['should ignore null value', { code: 'test', id: null }, '?code=test'],
       ['should stringify array values', { dataElements: [1, 2] }, '?dataElements=1&dataElements=2'],
@@ -33,6 +28,7 @@ describe('stringifyDhisQuery', () => {
         '?fields=id,code',
       ],
     ];
+
     it.each(testData)('%s', (_, query, expected) => {
       expect(stringifyDhisQuery(query)).toBe(expected);
     });
@@ -88,6 +84,7 @@ describe('stringifyDhisQuery', () => {
       ['should return an empty string for undefined values', { code: undefined }, ''],
       ['should return an empty string for null values', { code: null }, ''],
     ];
+
     it.each(testData)('%s', (_, query, expected) => {
       expect(stringifyDhisQuery(query)).toBe(expected);
     });
