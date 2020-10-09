@@ -8,6 +8,8 @@
 
 require('jest-extended');
 
+require('jest-expect-message');
+
 const winston = require('winston');
 
 const { addCustomJestMatchers } = require('@tupaia/utils');

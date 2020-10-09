@@ -10,11 +10,7 @@ const assertArrayHasDimensionWithMembers = (array, dimensionKey, members) => {
   const errorMessage = `Array does not include a '${dimensionKey}' dimension with the target members`;
 
   const dimensions = array.filter(item => item.startsWith(`${dimensionKey}:`));
-  try {
-    expect(dimensions.length).toBeGreaterThan(0);
-  } catch (e) {
-    throw new Error(errorMessage);
-  }
+  expect(dimensions.length, errorMessage).toBeGreaterThan(0);
 
   const results = dimensions.some(dimension => {
     try {

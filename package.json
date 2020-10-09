@@ -68,6 +68,7 @@
     "eslint-plugin-cypress": "^2.11.1",
     "jest": "^26.1.0",
     "jest-environment-jsdom-sixteen": "^1.0.3",
+    "jest-expect-message": "^1.0.2",
     "jest-extended": "^0.11.5",
     "jest-when": "^2.7.2",
     "mocha": "^8.1.3",
