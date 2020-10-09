@@ -175,7 +175,7 @@ function authentication(
         ...state,
         isUserLoggedIn: false,
         isRequestingLogin: false,
-        loginFailedMessage: action.errors.error,
+        loginFailedMessage: 'Wrong e-mail or password',
         errors: action.errors,
       };
     case FETCH_RESET_TOKEN_LOGIN_ERROR:

@@ -225,7 +225,6 @@ export function fetchUserLoginError(errors) {
   return {
     type: FETCH_LOGIN_ERROR,
     errors,
-    errorMessage: 'Wrong e-mail or password',
   };
 }
 

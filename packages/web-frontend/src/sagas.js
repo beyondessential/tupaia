@@ -243,7 +243,7 @@ function* attemptUserLogin(action) {
     yield put(findLoggedIn(LOGIN_TYPES.MANUAL, response.emailVerified));
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
-    if (errorMessage.details && errorMessage.details === 'Email address not yet verified') {
+    if (errorMessage.error && errorMessage.error === 'Email address not yet verified') {
       yield put(displayUnverified());
     } else yield put(error.errorFunction(errorMessage));
   }
