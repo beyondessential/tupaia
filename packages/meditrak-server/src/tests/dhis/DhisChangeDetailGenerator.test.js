@@ -13,10 +13,11 @@ import {
   TONGA_SURVEY_RESPONSE,
 } from './DhisChangeDetailGenerator.fixtures';
 
-const buildChange = (type, record) => {
-  const recordId = generateTestId();
+const buildChange = (type, { id, ...record }) => {
+  const recordId = id || generateTestId();
   return {
     record_type: type,
+    record_id: recordId,
     new_record: {
       id: recordId,
       ...record,
