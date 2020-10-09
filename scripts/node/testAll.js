@@ -35,7 +35,7 @@ class TestAllScript extends Script {
 
   printEnabledOptionsInfo() {
     if (this.options.bailMode) {
-      this.log('Eager mode is on');
+      this.log('Bail mode is on');
     }
     if (this.options.silentMode) {
       this.log('Silent mode is on');

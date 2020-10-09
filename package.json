@@ -30,7 +30,8 @@
     "refresh-database": "./scripts/bash/refreshDb.sh",
     "test-all": "node ./scripts/node/testAll --silent",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
-    "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh"
+    "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh",
+    "validate": "./scripts/bash/validate.sh"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
