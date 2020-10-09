@@ -37,12 +37,25 @@ export class EntityHierarchyCacher {
     await Promise.all(hierarchyTasks);
   };
 
-  handleEntityRelationChange = async ({ record }) => {
-    // delete subtree from parent_id onwards within the associated hierarchy, and kick off a new build
-    // of any projects associated with changed hierarchies
-    const { entity_hierarchy_id: hierarchyId, parent_id: parentId } = record;
-    await this.deleteSubtree(hierarchyId, parentId);
-    return this.scheduleHierarchyForRebuild(hierarchyId);
+  handleEntityRelationChange = async ({ old_record: oldRecord, new_record: newRecord }) => {
+    // oldRecord will exist for update or delete changes
+    // delete subtree from old parent_id onwards within the associated hierarchy
+    if (oldRecord) {
+      const { entity_hierarchy_id: oldHierarchyId, parent_id: oldParentId } = oldRecord;
+      await this.deleteSubtree(oldHierarchyId, oldParentId);
+      this.scheduleHierarchyForRebuild(oldHierarchyId);
+    }
+
+    // newRecord will exist for create or update changes
+    if (newRecord) {
+      const { entity_hierarchy_id: newHierarchyId, parent_id: newParentId } = newRecord;
+      await this.deleteSubtree(newHierarchyId, newParentId);
+      this.scheduleHierarchyForRebuild(newHierarchyId);
+    }
+
+    // at least one rebuild will have been scheduled
+    // return the promise for all currently scheduled rebuilds
+    return this.scheduledRebuildPromise;
   };
 
   resetScheduledHierarchyRebuild() {
