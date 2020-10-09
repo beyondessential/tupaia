@@ -1,5 +1,3 @@
-import winston from 'winston';
-
 import {
   getDiagnosticsFromResponse,
   checkIsImportResponse,
@@ -57,11 +55,6 @@ const createConflictsAndMessages = (count = 1) => {
 };
 
 describe('responseUtils', () => {
-  beforeAll(() => {
-    // Suppress logging while running the tests
-    jest.spyOn(winston, 'warn').mockImplementation(() => {});
-  });
-
   describe('getDiagnosticsFromResponse()', () => {
     describe('ObjectReport response', () => {
       it('should return diagnostics for a creating an item', () => {
