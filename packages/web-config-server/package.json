@@ -20,7 +20,6 @@
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "test": "mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha",
-    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
