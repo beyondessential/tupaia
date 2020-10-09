@@ -16,6 +16,24 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   "'ancestor_descendant_relation'",
 ];
 
+// tables that should only have records created and deleted, and will throw an error if an update is
+// attempted
+const IMMUTABLE_TABLES = ["'ancestor_descendant_relation'"];
+
+const SELECT_TABLES_WITHOUT_TRIGGERS = `
+  SELECT t.table_name
+    FROM information_schema.tables t
+    LEFT JOIN information_schema.table_privileges privileges
+      ON t.table_name = privileges.table_name
+    WHERE NOT EXISTS (
+      SELECT * from pg_trigger p
+      WHERE concat(lower(t.table_name), '_trigger') = p.tgname
+    )
+    AND privileges.privilege_type = 'TRIGGER'
+    AND t.table_schema = 'public'
+    AND t.table_type != 'VIEW'
+`;
+
 export const runPostMigration = async driver => {
   // ensure PostGIS is installed
   const { rows: postgisExtension } = await driver.runSql(`
@@ -27,37 +45,52 @@ export const runPostMigration = async driver => {
     );
   }
 
-  // Find any table in the database that doesn't have a corresponding trigger with
+  // Find any table in the database that doesn't have a corresponding notification trigger with
   // the name {TABLE_NAME}_trigger (eg survey_response_trigger).
-  const { rows: tablesWithoutTriggersResults } = await driver.runSql(`
-    SELECT t.table_name
-    FROM information_schema.tables t
-    LEFT JOIN information_schema.table_privileges privileges
-      ON t.table_name = privileges.table_name
-    WHERE NOT EXISTS (
-      SELECT * from pg_trigger p
-      WHERE concat(lower(t.table_name), '_trigger') = p.tgname
-    )
-    AND privileges.privilege_type = 'TRIGGER'
-    AND t.table_schema = 'public'
-    AND t.table_type != 'VIEW'
+  const { rows: tablesWithoutNotifierResults } = await driver.runSql(`
+    ${SELECT_TABLES_WITHOUT_TRIGGERS}
     AND t.table_name NOT IN (${EXCLUDED_TABLES_FROM_TRIGGER_CREATION.join(',')});
   `);
-  const tablesWithoutTriggers = tablesWithoutTriggersResults.map(row => row.table_name);
+  const tablesWithoutNotifier = tablesWithoutNotifierResults.map(row => row.table_name);
 
-  // Create triggers for all tables that don't currently have a matched trigger.
+  // Create notification triggers for all tables that don't currently have a matched trigger.
   await Promise.all(
-    tablesWithoutTriggers.map(tableName =>
+    tablesWithoutNotifier.map(tableName =>
       driver.runSql(`
-    CREATE TRIGGER ${tableName}_trigger AFTER INSERT OR UPDATE or DELETE ON "${tableName}"
-    FOR EACH ROW EXECUTE PROCEDURE notification();
-  `),
+        CREATE TRIGGER ${tableName}_trigger AFTER INSERT OR UPDATE OR DELETE ON "${tableName}"
+        FOR EACH ROW EXECUTE PROCEDURE notification();
+      `),
+    ),
+  );
+
+  // Find any table in the database that doesn't have a corresponding notification trigger with
+  // the name {TABLE_NAME}_immutable_trigger (eg survey_response_immutable_trigger).
+  const { rows: tablesWithoutImmutableTriggerResults } = await driver.runSql(`
+    ${SELECT_TABLES_WITHOUT_TRIGGERS}
+    AND t.table_name IN (${IMMUTABLE_TABLES.join(',')});
+  `);
+  const tablesWithoutImmutableTrigger = tablesWithoutImmutableTriggerResults.map(
+    row => row.table_name,
+  );
+
+  // Create immutable triggers for all tables that don't currently have a matched trigger.
+  await Promise.all(
+    tablesWithoutImmutableTrigger.map(tableName =>
+      driver.runSql(`
+        CREATE TRIGGER ${tableName}_immutable_trigger AFTER UPDATE ON "${tableName}"
+        FOR EACH ROW EXECUTE PROCEDURE immutable_table();
+      `),
     ),
   );
 
   driver.close(err => {
-    if (tablesWithoutTriggers.length > 0) {
-      console.log(`Created triggers for ${tablesWithoutTriggers.join(', ')}`);
+    if (tablesWithoutNotifier.length > 0) {
+      console.log(`Created change notification triggers for ${tablesWithoutNotifier.join(', ')}`);
+    }
+    if (tablesWithoutImmutableTrigger.length > 0) {
+      console.log(
+        `Created immutable warning triggers for ${tablesWithoutImmutableTrigger.join(', ')}`,
+      );
     }
     if (err) {
       throw err;
