@@ -1,21 +1,19 @@
 {
   "name": "@tupaia/devops",
-  "private": true,
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"No tests specified\" && exit 0",
     "validate-branch-name": "./scripts/ci/validateBranchName.sh",
     "validate-tests": "./scripts/ci/validateTests.sh"
   },
+  "private": true,
+  "description": "Dev ops for the monorepo",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia.git"
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/devops"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
-  "homepage": "https://github.com/beyondessential/tupaia#readme"
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)"
+
 }
