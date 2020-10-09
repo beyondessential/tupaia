@@ -32,6 +32,7 @@ const CATCHMENT = 'catchment';
 const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
+const CITY = 'city';
 
 const ENTITY_TYPES = {
   CASE,
@@ -47,6 +48,7 @@ const ENTITY_TYPES = {
   SUB_CATCHMENT,
   VILLAGE,
   WORLD,
+  CITY,
 };
 
 const ORG_UNIT_ENTITY_TYPES = {
