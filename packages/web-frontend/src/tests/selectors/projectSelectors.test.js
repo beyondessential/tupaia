@@ -10,9 +10,11 @@ import {
   selectCurrentProject,
   selectIsProject,
   selectAdjustedProjectBounds,
+  selectActiveTileSet,
 } from '../../selectors';
 import { DEFAULT_BOUNDS } from '../../defaults';
 import { state } from './selectors.test.fixtures';
+import { TILE_SETS } from '../../constants';
 
 const testState1 = {
   project: {
@@ -174,6 +176,75 @@ describe('projectSelectors', () => {
     describe('selectCurrentProject', () => {
       it('can select the current project', () => {
         expect(selectCurrentProject(state)).toEqual(state.project.projects[0]);
+      });
+    });
+
+    const tileState = {
+      project: {
+        projects: [
+          { code: 'explore' },
+          {
+            code: 'disaster',
+            project: { tileSets: 'osm,satellite,waterways,roads,ethnicity,terrain' },
+          },
+          { code: 'unfpa', project: { tileSets: 'roads,waterways,eth, terrain' } }, // testing typos in the config
+        ],
+      },
+      routing: {
+        pathname: '/disaster/disaster/',
+      },
+      map: { activeTileSetKey: 'osm' },
+    };
+
+    describe('tile sets', () => {
+      it('can select the correct tile set', () => {
+        expect(selectActiveTileSet(tileState)).toEqual(TILE_SETS[0]);
+
+        expect(
+          selectActiveTileSet({ ...tileState, map: { activeTileSetKey: 'satellite' } }),
+        ).toEqual(TILE_SETS[1]);
+
+        // test disaster project
+        const disasterState = { ...tileState, routing: { pathname: '/disaster/' } };
+
+        expect(selectActiveTileSet({ ...disasterState, map: { activeTileSetKey: 'osm' } })).toEqual(
+          TILE_SETS[0],
+        );
+
+        expect(
+          selectActiveTileSet({ ...disasterState, map: { activeTileSetKey: 'satellite' } }),
+        ).toEqual(TILE_SETS[1]);
+
+        expect(
+          selectActiveTileSet({ ...disasterState, map: { activeTileSetKey: 'waterways' } }),
+        ).toEqual(TILE_SETS[2]);
+
+        expect(
+          selectActiveTileSet({ ...disasterState, map: { activeTileSetKey: 'roads' } }),
+        ).toEqual(TILE_SETS[3]);
+
+        expect(
+          selectActiveTileSet({ ...disasterState, map: { activeTileSetKey: 'ethnicity' } }),
+        ).toEqual(TILE_SETS[4]);
+
+        expect(
+          selectActiveTileSet({ ...disasterState, map: { activeTileSetKey: 'terrain' } }),
+        ).toEqual(TILE_SETS[5]);
+
+        // test unfpa project
+        const unfpaState = { ...tileState, routing: { pathname: '/unfpa/' } };
+
+        expect(selectActiveTileSet({ ...unfpaState, map: { activeTileSetKey: 'osm' } })).toEqual(
+          TILE_SETS[0],
+        );
+
+        expect(
+          selectActiveTileSet({ ...unfpaState, map: { activeTileSetKey: 'satellite' } }),
+        ).toEqual(TILE_SETS[1]);
+
+        expect(
+          selectActiveTileSet({ ...unfpaState, map: { activeTileSetKey: 'terrain' } }), // todo: handle trimming whitespace
+        ).toEqual(TILE_SETS[2]);
       });
     });
   });

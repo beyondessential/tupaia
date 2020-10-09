@@ -44,13 +44,20 @@ export const selectAdjustedProjectBounds = createSelector(
 );
 
 export const selectTileSets = createSelector(selectCurrentProject, project => {
-  const tileSetKeys = project.tileSets ? project.tileSets.split(',') : ['osm', 'satellite'];
-  return TILE_SETS.filter(tileSet => tileSetKeys.includes(tileSet.key));
+  let tileSetKeys = ['osm', 'satellite'];
+
+  if (project.project.tileSets) {
+    tileSetKeys = [...tileSetKeys, ...project.project.tileSets.split(',')];
+  }
+
+  return TILE_SETS.filter(tileSet => tileSetKeys.includes(tileSet.key.trim()));
 });
 
 export const selectActiveTileSetKey = state => state.map.activeTileSetKey;
 
 export const selectActiveTileSet = createSelector(
   [selectTileSets, selectActiveTileSetKey],
-  (tileSets, activeTileSetKey) => tileSets.find(tileSet => tileSet.key === activeTileSetKey),
+  (tileSets, activeTileSetKey) => {
+    return tileSets.find(tileSet => tileSet.key === activeTileSetKey);
+  },
 );
