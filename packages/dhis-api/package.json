@@ -1,14 +1,21 @@
 {
   "name": "@tupaia/dhis-api",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "description": "Abstraction layer over the DHIS2 api",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/dhis-api"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "nyc --reporter=lcov mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix ."
+    "lint:fix": "yarn lint --fix .",
+    "test": "nyc --reporter=lcov mocha",
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",

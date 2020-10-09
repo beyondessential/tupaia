@@ -16,7 +16,7 @@ import { testFetchAnalytics } from './testFetchAnalytics';
 import { testFetchDataElements } from './testFetchDataElements';
 
 describe('TupaiaDataApi', () => {
-  before(async () => {
+  beforeAll(async () => {
     const models = new ModelRegistry(getTestDatabase());
     await buildAndInsertSurveys(models, SURVEYS);
     await Promise.all(

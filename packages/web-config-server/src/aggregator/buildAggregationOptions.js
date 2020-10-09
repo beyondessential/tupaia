@@ -31,7 +31,7 @@ export const buildAggregationOptions = async (
   // Note aggregationType and aggregationConfig might be undefined
   const inputAggregations = aggregations || [{ type: aggregationType, config: aggregationConfig }];
 
-  if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType)) {
+  if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType, entityAggregationType)) {
     return {
       aggregations: inputAggregations,
       ...restOfOptions,
@@ -75,10 +75,15 @@ const getEntityToAncestorMap = async (entities, aggregationEntityType, hierarchy
   return entityToAncestor;
 };
 
-const shouldAggregateEntities = (dataSourceEntities, aggregationEntityType) =>
+const shouldAggregateEntities = (
+  dataSourceEntities,
+  aggregationEntityType,
+  entityAggregationType,
+) =>
   aggregationEntityType &&
   !(dataSourceEntities.length === 0) &&
-  !dataSourceEntities.every(({ type }) => type === aggregationEntityType);
+  !dataSourceEntities.every(({ type }) => type === aggregationEntityType) &&
+  !(entityAggregationType === Aggregator.aggregationTypes.RAW);
 
 const fetchEntityAggregationConfig = async (
   dataSourceEntities,

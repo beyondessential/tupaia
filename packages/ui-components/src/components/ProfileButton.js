@@ -124,7 +124,7 @@ export const ProfileButton = ({ user, MenuOptions, className }) => {
         <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
           <Paper>
             <Header>
-              <Avatar>{userInitial}</Avatar>
+              <Avatar src={user.profileImage || null}>{userInitial}</Avatar>
               <Details>
                 <NameText>{user.name}</NameText>
                 <EmailText>{user.email}</EmailText>
@@ -145,8 +145,9 @@ ProfileButton.propTypes = {
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     firstName: PropTypes.string,
+    profileImage: PropTypes.string,
   }).isRequired,
-  MenuOptions: PropTypes.any.isRequired,
+  MenuOptions: PropTypes.element.isRequired,
   className: PropTypes.string,
 };
 
