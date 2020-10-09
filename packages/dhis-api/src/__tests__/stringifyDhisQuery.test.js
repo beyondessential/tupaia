@@ -32,6 +32,14 @@ describe('stringifyDhisQuery', () => {
     it.each(testData)('%s', (_, query, expected) => {
       expect(stringifyDhisQuery(query)).toBe(expected);
     });
+  });
+
+  describe('query continuation', () => {
+    it('should do not use query continuation by default', () => {
+      expect(stringifyDhisQuery({ code: 'test' })).toBe(
+        stringifyDhisQuery({ code: 'test' }, false),
+      );
+    });
 
     it('should support query continuation', () => {
       expect(stringifyDhisQuery({ code: 'test' }, true)).toBe('&code=test');
