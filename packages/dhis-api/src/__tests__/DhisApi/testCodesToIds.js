@@ -15,10 +15,8 @@ export const testCodesToIds = () => {
   it('should return an empty array if no codes are provided', async () => {
     const dhisApi = createDhisApi();
 
-    return Promise.all(
-      [undefined, null, []].map(codes =>
-        expect(dhisApi.codesToIds('dataElements', codes)).resolves.toStrictEqual([]),
-      ),
+    [undefined, null, []].forEach(codes =>
+      expect(dhisApi.codesToIds('dataElements', codes)).resolves.toStrictEqual([]),
     );
   });
 

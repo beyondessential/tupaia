@@ -40,7 +40,7 @@ describe('buildAnalyticsQuery', () => {
           buildEventAnalyticsQuery({ dataElementIds, organisationUnitIds: ['to_dhisId'] }),
         ).not.toThrowError();
 
-      [undefined, []].map(expectMethodToNotThrowError);
+      [undefined, []].forEach(expectMethodToNotThrowError);
     });
 
     it('single data element', () => {
