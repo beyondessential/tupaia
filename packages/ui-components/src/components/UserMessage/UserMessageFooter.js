@@ -51,7 +51,7 @@ export const UserMessageFooter = ({ dateTime, user }) => {
         </FooterText>
         <FlexSpaceBetween>
           <FooterUser>{user.name}</FooterUser>
-          <FooterAvatar initial={userInitial} src={user.avatar}>
+          <FooterAvatar initial={userInitial} src={user.profileImage}>
             {userInitial}
           </FooterAvatar>
         </FlexSpaceBetween>
@@ -61,6 +61,9 @@ export const UserMessageFooter = ({ dateTime, user }) => {
 };
 
 UserMessageFooter.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.PropTypes.shape({
+    name: PropTypes.string,
+    profileImage: PropTypes.string,
+  }).isRequired,
   dateTime: PropTypes.instanceOf(Date).isRequired,
 };

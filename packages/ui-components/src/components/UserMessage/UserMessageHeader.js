@@ -44,7 +44,7 @@ export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => {
   return (
     <Header>
       <FlexSpaceBetween>
-        <StyledAvatar initial={userInitial} src={user.avatar}>
+        <StyledAvatar initial={userInitial} src={user.profileImage}>
           {userInitial}
         </StyledAvatar>
         <Title>{user.name}</Title>
@@ -59,7 +59,10 @@ export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => {
 };
 
 UserMessageHeader.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.PropTypes.shape({
+    name: PropTypes.string,
+    profileImage: PropTypes.string,
+  }).isRequired,
   dateTime: PropTypes.object.isRequired,
   ActionsMenu: PropTypes.any,
 };

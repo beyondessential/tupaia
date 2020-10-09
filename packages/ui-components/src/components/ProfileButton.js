@@ -113,7 +113,11 @@ export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
         <StyledButton
           onClick={event => setAnchorEl(anchorEl ? null : event.currentTarget)}
           className={className}
-          endIcon={<StyledAvatar initial={userInitial}>{userInitial}</StyledAvatar>}
+          endIcon={
+            <StyledAvatar src={user.profileImage || null} initial={userInitial}>
+              {userInitial}
+            </StyledAvatar>
+          }
         >
           {userFirstName}
         </StyledButton>
