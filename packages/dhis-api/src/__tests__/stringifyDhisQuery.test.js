@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as Dimension from '../dimensions';
+import * as Dimensions from '../dimensions';
 import { stringifyDhisQuery } from '../stringifyDhisQuery';
 
 const DIMENSION = 'dimension';
-const isDimensionMock = jest.spyOn(Dimension, 'isDimension');
+const isDimensionMock = jest.spyOn(Dimensions, 'isDimension');
 isDimensionMock.mockImplementation(key => key === DIMENSION);
 
 describe('stringifyDhisQuery', () => {
