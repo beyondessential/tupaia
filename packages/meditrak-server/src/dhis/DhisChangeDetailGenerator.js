@@ -94,6 +94,6 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
       ...surveyResponseDetailsById,
     };
 
-    return updateChanges.map(c => JSON.stringify(detailsByChangeId[c.record.id]));
+    return updateChanges.map(c => JSON.stringify(detailsByChangeId[c.record_id]));
   };
 }

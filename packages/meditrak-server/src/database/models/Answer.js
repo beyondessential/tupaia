@@ -117,20 +117,22 @@ class AnswerType extends DatabaseType {
 }
 
 export class AnswerModel extends DatabaseModel {
+  notifiers = [onChangeRunQuestionHook];
+
   get DatabaseTypeClass() {
     return AnswerType;
   }
 
   types = ANSWER_TYPES;
-
-  static onChange = async ({ type: changeType, record }, model) => {
-    if (changeType === 'delete') return;
-
-    const answer = await model.generateInstance(record);
-    try {
-      await answer.runHook();
-    } catch (e) {
-      winston.error(e);
-    }
-  };
 }
+
+const onChangeRunQuestionHook = async ({ type: changeType, new_record: newRecord }, model) => {
+  if (changeType === 'delete') return;
+
+  const answer = await model.generateInstance(newRecord);
+  try {
+    await answer.runHook();
+  } catch (e) {
+    winston.error(e);
+  }
+};
