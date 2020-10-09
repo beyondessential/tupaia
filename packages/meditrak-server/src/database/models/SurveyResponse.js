@@ -109,7 +109,7 @@ export class SurveyResponseModel extends DatabaseModel {
 
 const onChangeUpdateUserReward = async (
   { type: changeType, record_id: recordId, new_record: newRecord },
-  model,
+  models,
 ) => {
   const modelDetails = {
     type: 'SurveyResponse',
@@ -117,9 +117,9 @@ const onChangeUpdateUserReward = async (
   };
 
   if (changeType === 'delete') {
-    model.otherModels.userReward.delete(modelDetails);
+    models.userReward.delete(modelDetails);
   } else {
-    model.otherModels.userReward.updateOrCreate(modelDetails, {
+    models.userReward.updateOrCreate(modelDetails, {
       ...modelDetails,
       coconuts: 1,
       user_id: newRecord.user_id,

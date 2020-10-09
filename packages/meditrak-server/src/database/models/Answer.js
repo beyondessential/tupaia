@@ -126,11 +126,10 @@ export class AnswerModel extends DatabaseModel {
   types = ANSWER_TYPES;
 }
 
-const onChangeRunQuestionHook = async ({ type: changeType, new_record: newRecord }, model) => {
+const onChangeRunQuestionHook = async ({ type: changeType, new_record: newRecord }, models) => {
   if (changeType === 'delete') return;
-
-  const answer = await model.generateInstance(newRecord);
   try {
+    const answer = await models.answer.generateInstance(newRecord);
     await answer.runHook();
   } catch (e) {
     winston.error(e);
