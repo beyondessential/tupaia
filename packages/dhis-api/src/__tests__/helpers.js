@@ -10,9 +10,7 @@
 export const assertDhisDimensionHasMembers = (dimensionString, targetMembers) => {
   const [, membersString = ''] = dimensionString.split(':');
   const foundMembers = membersString.split(';');
-  try {
-    expect(foundMembers).toIncludeAllMembers(targetMembers);
-  } catch (e) {
-    throw new Error('Dimension string does not include the target members');
-  }
+  expect(foundMembers, 'Dimension string does not include the target members').toIncludeAllMembers(
+    targetMembers,
+  );
 };

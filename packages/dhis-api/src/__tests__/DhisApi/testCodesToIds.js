@@ -15,9 +15,9 @@ export const testCodesToIds = () => {
   it('should return an empty array if no codes are provided', async () => {
     const dhisApi = createDhisApi();
 
-    [undefined, null, []].forEach(codes =>
-      expect(dhisApi.codesToIds('dataElements', codes)).resolves.toStrictEqual([]),
-    );
+    for (const codes of [undefined, null, []]) {
+      await expect(dhisApi.codesToIds('dataElements', codes)).resolves.toStrictEqual([]);
+    }
   });
 
   it('should translate codes to ids', async () => {

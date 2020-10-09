@@ -21,7 +21,7 @@ const assertArrayHasDimensionWithMembers = (array, dimensionKey, members) => {
 
     return true;
   });
-  expect(results).toBe(true);
+  expect(results, errorMessage).toBe(true);
 };
 
 describe('buildAnalyticsQuery', () => {
