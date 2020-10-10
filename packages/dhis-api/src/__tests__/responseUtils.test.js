@@ -1,7 +1,3 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
-import winston from 'winston';
-
 import {
   getDiagnosticsFromResponse,
   checkIsImportResponse,
@@ -59,21 +55,12 @@ const createConflictsAndMessages = (count = 1) => {
 };
 
 describe('responseUtils', () => {
-  before(() => {
-    // Suppress logging while running the tests
-    sinon.stub(winston, 'warn');
-  });
-
-  after(() => {
-    winston.warn.restore();
-  });
-
   describe('getDiagnosticsFromResponse()', () => {
     describe('ObjectReport response', () => {
       it('should return diagnostics for a creating an item', () => {
         const response = createObjectReportResponse({ httpStatus: 'Created' });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts: { imported: 1, updated: 0, deleted: 0, ignored: 0 },
           errors: [],
           wasSuccessful: true,
@@ -83,7 +70,7 @@ describe('responseUtils', () => {
       it('should return diagnostics for updating an item', () => {
         const response = createObjectReportResponse({ httpStatus: 'Ok' });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts: { imported: 0, updated: 1, deleted: 0, ignored: 0 },
           errors: [],
           wasSuccessful: true,
@@ -93,7 +80,7 @@ describe('responseUtils', () => {
       it('should return diagnostics for deleting an item', () => {
         const response = createObjectReportResponse({ httpStatus: 'Ok' });
 
-        expect(getDiagnosticsFromResponse(response, true)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response, true)).toStrictEqual({
           counts: { imported: 0, updated: 0, deleted: 1, ignored: 0 },
           errors: [],
           wasSuccessful: true,
@@ -106,7 +93,7 @@ describe('responseUtils', () => {
         const counts = { imported: 1, updated: 0, ignored: 0, deleted: 0 };
         const response = createImportSummaryResponse({ importCount: counts });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -117,7 +104,7 @@ describe('responseUtils', () => {
         const counts = { imported: 0, updated: 1, ignored: 0, deleted: 0 };
         const response = createImportSummaryResponse({ importCount: counts });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -130,14 +117,14 @@ describe('responseUtils', () => {
 
         const responseDiagnostics = getDiagnosticsFromResponse(response);
         const responseDetailsDiagnostics = getDiagnosticsFromResponse(response.response);
-        expect(responseDiagnostics).to.deep.equal(responseDetailsDiagnostics);
+        expect(responseDiagnostics).toStrictEqual(responseDetailsDiagnostics);
       });
 
       it('should return diagnostics for deleting an item', () => {
         const counts = { imported: 0, updated: 0, ignored: 0, deleted: 1 };
         const response = createImportSummaryResponse({ importCount: counts });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -149,7 +136,7 @@ describe('responseUtils', () => {
         const errors = ['Test error'];
         const response = createImportSummaryResponse({ importCount: counts, errors });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors,
           wasSuccessful: false,
@@ -164,7 +151,7 @@ describe('responseUtils', () => {
           conflicts: [conflicts[0]],
         });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors: [conflictMessages[0]],
           wasSuccessful: false,
@@ -180,7 +167,7 @@ describe('responseUtils', () => {
           importSummaries: [{ counts, reference: DHIS_REFERENCE }],
         });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -197,7 +184,7 @@ describe('responseUtils', () => {
 
         const responseDiagnostics = getDiagnosticsFromResponse(response);
         const responseDetailsDiagnostics = getDiagnosticsFromResponse(response.response);
-        expect(responseDiagnostics).to.deep.equal(responseDetailsDiagnostics);
+        expect(responseDiagnostics).toStrictEqual(responseDetailsDiagnostics);
       });
 
       it('should return diagnostics for creating multiple items', () => {
@@ -212,7 +199,7 @@ describe('responseUtils', () => {
           ],
         });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts: countsTotal,
           errors: [],
           wasSuccessful: true,
@@ -227,7 +214,7 @@ describe('responseUtils', () => {
           importSummaries: [{ counts, status: ERROR, description: ERROR_MESSAGE }],
         });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors: [ERROR_MESSAGE],
           wasSuccessful: false,
@@ -247,7 +234,7 @@ describe('responseUtils', () => {
           ],
         });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts: countsTotal,
           errors: [ERROR_MESSAGE, errorMessage2],
           wasSuccessful: false,
@@ -263,7 +250,7 @@ describe('responseUtils', () => {
           importSummaries: [{ counts, status: ERROR, conflicts: [conflicts[0]] }],
         });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts,
           errors: [conflictMessages[0]],
           wasSuccessful: false,
@@ -284,7 +271,7 @@ describe('responseUtils', () => {
           ],
         });
 
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts: countsTotal,
           errors: [conflictMessages[0], `${conflictMessages[1]}, ${conflictMessages[2]}`],
           wasSuccessful: false,
@@ -297,7 +284,7 @@ describe('responseUtils', () => {
       const response = { response: { responseType: 'Random type' } };
 
       it('should return diagnostics for an update change', () => {
-        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).toStrictEqual({
           counts: { imported: 0, updated: 1, ignored: 0, deleted: 0 },
           errors: [],
           wasSuccessful: true,
@@ -305,7 +292,7 @@ describe('responseUtils', () => {
       });
 
       it('should return diagnostics for a delete change', () => {
-        expect(getDiagnosticsFromResponse(response, true)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response, true)).toStrictEqual({
           counts: { imported: 0, updated: 0, ignored: 0, deleted: 1 },
           errors: [],
           wasSuccessful: true,
@@ -317,12 +304,12 @@ describe('responseUtils', () => {
   describe('checkIsImportResponse()', () => {
     it('should return true for an Import Summaries response', () => {
       const response = createImportSummariesResponse();
-      expect(checkIsImportResponse(response)).to.equal(true);
+      expect(checkIsImportResponse(response)).toBe(true);
     });
 
     it('should return true for an Import Summary response', () => {
       const response = createImportSummaryResponse();
-      expect(checkIsImportResponse(response)).to.equal(true);
+      expect(checkIsImportResponse(response)).toBe(true);
     });
 
     it('should accept both response and response details inputs', () => {
@@ -330,12 +317,12 @@ describe('responseUtils', () => {
 
       const responseResult = checkIsImportResponse(response);
       const responseDetailsResult = checkIsImportResponse(response.response);
-      expect(responseResult).to.deep.equal(responseDetailsResult);
+      expect(responseResult).toStrictEqual(responseDetailsResult);
     });
 
     it('should return false for other response types', () => {
       const response = { response: { responseType: 'randomType' } };
-      expect(checkIsImportResponse(response)).to.equal(false);
+      expect(checkIsImportResponse(response)).toBe(false);
     });
   });
 });

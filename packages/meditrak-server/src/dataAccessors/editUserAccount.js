@@ -4,8 +4,13 @@
  */
 
 import { hashAndSaltPassword } from '@tupaia/auth';
+import { uploadImage } from '../s3';
 
-export const editUserAccount = (models, id, { password, ...restOfUpdatedFields }) => {
+export const editUserAccount = async (
+  models,
+  id,
+  { password, profileImage, ...restOfUpdatedFields },
+) => {
   let updatedFields = restOfUpdatedFields;
   if (password) {
     updatedFields = {
@@ -13,5 +18,21 @@ export const editUserAccount = (models, id, { password, ...restOfUpdatedFields }
       ...hashAndSaltPassword(password),
     };
   }
+
+  if (profileImage) {
+    if (profileImage.data && profileImage.fileId) {
+      const profileImagePath = await uploadImage(profileImage.data, profileImage.fileId);
+      updatedFields = {
+        ...updatedFields,
+        profile_image: profileImagePath,
+      };
+    } else {
+      updatedFields = {
+        ...updatedFields,
+        profile_image: null,
+      };
+    }
+  }
+
   return models.user.updateById(id, updatedFields);
 };

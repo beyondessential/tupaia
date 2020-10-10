@@ -45,7 +45,7 @@ export class CountEventsBuilder extends DataBuilder {
 
   getDataElementCodes() {
     const { groupBy } = this.config;
-    if (groupBy) {
+    if (groupBy && groupBy.type === 'dataValues') {
       return getAllDataElementCodes(groupBy);
     }
     return Object.keys(this.config.dataValues || {});
