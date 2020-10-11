@@ -7,7 +7,7 @@ import '@testing-library/cypress/add-commands';
 
 import snapshot from '@cypress/snapshot';
 import { PUBLIC_USER } from '../constants';
-import { escapeRegex } from './utilities';
+import { escapeRegex, serializeReactToHTML } from './utilities';
 import { closeOverlay, submitLoginForm } from './actions';
 
 snapshot.register();
@@ -43,4 +43,11 @@ Cypress.Commands.add('login', () => {
       closeOverlay();
     }
   });
+});
+
+Cypress.Commands.add('snapshotHtml', { prevSubject: true }, (subject, snapshotOptions) => {
+  if (!Cypress.dom.isJquery(subject)) {
+    throw new Error('Subject must be a DOM element');
+  }
+  return cy.wrap(serializeReactToHTML(subject)).snapshot(snapshotOptions);
 });
