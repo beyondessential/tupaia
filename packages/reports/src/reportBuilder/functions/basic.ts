@@ -4,13 +4,9 @@ export const value = (valueGiven: FieldValue): FieldValue => {
   return valueGiven;
 };
 
-export const add = (valuesToAdd: number[]): number => {
-  let total = 0;
-  valuesToAdd.forEach((valueToAdd: number) => {
-    if (valueToAdd) total += valueToAdd;
-  });
-  return total;
-};
+export const last = (values: FieldValue[]): FieldValue => {
+  return values.reverse()[0];
+}
 
 export const eq = (value1, value2): boolean => {
   return value1 === value2;

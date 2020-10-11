@@ -1,19 +1,16 @@
 import { Row } from '../../reportBuilder';
-import { functions, parseExpression } from '../../functions';
-import { parser } from 'mathjs';
+import { parseExpression } from '../../functions';
+import { Parser } from 'mathjs';
 
 type WhereParams = {
   where?: string;
 };
 
-const where = (row: Row, params: WhereParams): boolean => {
+const where = (row: Row, rowParser: Parser, params: WhereParams): boolean => {
   if (params.where === undefined) {
     return true;
   }
 
-  const rowParser = parser();
-  rowParser.set('$', row);
-  Object.entries(functions).forEach(([name, call]) => rowParser.set(name, call));
   const whereResult = parseExpression(rowParser, params.where);
   if (typeof whereResult === 'boolean') {
     return whereResult;
@@ -44,5 +41,5 @@ const buildParams = (params: unknown): WhereParams => {
 
 export const buildWhere = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (row: Row) => where(row, builtParams);
+  return (row: Row, rowParser: Parser) => where(row, rowParser, builtParams);
 };

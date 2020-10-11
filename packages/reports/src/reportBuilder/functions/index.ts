@@ -1,9 +1,9 @@
-import { value, add, eq, neq, exists, gt } from './basic';
+import { value, last, eq, neq, exists, gt } from './basic';
 import { convertToPeriod, periodToTimestamp, periodToDisplayString } from './utils';
 
 export const functions = {
   value,
-  add,
+  last,
   eq,
   neq,
   gt,

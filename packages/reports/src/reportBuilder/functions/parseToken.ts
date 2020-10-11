@@ -15,7 +15,7 @@ export const parseExpression = (parser: Parser, expression: string): FieldValue 
   try {
     return parser.evaluate(expression);
   } catch (error) {
-    console.log(error);
-    return expression;
+    console.log(error.message);
+    return undefined;
   }
 };
