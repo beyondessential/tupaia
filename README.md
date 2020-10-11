@@ -48,22 +48,7 @@ Most packages will require a .env file. `.env.example` files indicate the requir
 
 ### Local database
 
-Set up PostgreSQL on your machine and create the database 'tupaia', with credentials matching those in
-the .env file.
-
-The project requires importing an initial database dump. Grab the latest database dump from dev server using
-
-```bash
-yarn dump-database ~/path/to/key.pem
-```
-
-(pem key can be obtained in LastPass - Tupaia Main Server). This will create a db dump and pull it to your current directory. You also need to be added into the Security Groups of the server.
-
-After pulling the latest database dump from the `dev` server, run:
-
-```bash
-yarn refresh-database dump.sql
-```
+🔑 **BES internal:** [Tupaia monorepo setup](https://docs.beyondessential.com.au/books/software-development/page/tupaia-monorepo-setup#bkmrk-step-4.-install-post) - steps 4 and 5
 
 ### Dependencies
 
