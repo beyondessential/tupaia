@@ -41,7 +41,7 @@ const REPORTS = [
   {
     // Primary school
     id: 'Laos_Schools_Textbook_student_Ratio_By_Grade_Primary_Bar',
-    name: 'Primary Textbook-Student ratio',
+    name: 'Primary Textbook-Student Ratio',
     populationCodes: {
       [GRADE_1]: ['SchPop011', 'SchPop012'],
       [GRADE_2]: ['SchPop013', 'SchPop014'],
@@ -76,7 +76,7 @@ const REPORTS = [
   {
     // Secondary (lower)
     id: 'Laos_Schools_Textbook_student_Ratio_By_Grade_Lower_Secondary_Bar',
-    name: 'Lower Secondary Textbook-Student ratio',
+    name: 'Lower Secondary Textbook-Student Ratio',
     populationCodes: {
       [GRADE_6]: ['SchPop021', 'SchPop022'],
       [GRADE_7]: ['SchPop023', 'SchPop024'],
@@ -136,7 +136,7 @@ const REPORTS = [
   },
   {
     id: 'Laos_Schools_Textbook_student_Ratio_By_Grade_Upper_Secondary_Bar',
-    name: 'Upper Secondary Textbook-Student ratio',
+    name: 'Upper Secondary Textbook-Student Ratio',
     populationCodes: {
       [GRADE_10]: ['SchPop029', 'SchPop030'],
       [GRADE_11]: ['SchPop031', 'SchPop032'],
