@@ -160,8 +160,8 @@ describe('periodGranularities', () => {
 
     it('calculates limits', () => {
       const { startDate, endDate } = getLimits('day', { start: { unit: 'day', offset: -3 } });
-      expect(startDate.format()).toEqual(moment('2019-02-02T00:00:00').format()); // rounded
-      expect(endDate.format()).toEqual(moment('2019-02-05T23:59:59').format()); // rounded
+      expect(startDate.format()).toEqual('2019-02-02T00:00:00+11:00'); // rounded
+      expect(endDate.format()).toEqual('2019-02-05T23:59:59+11:00'); // rounded
     });
   });
 });
