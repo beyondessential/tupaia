@@ -1,8 +1,15 @@
 {
   "name": "@tupaia/indicators",
   "version": "1.0.0",
-  "main": "dist/index.js",
   "private": true,
+  "description": "Shareable computations of derived data",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/indicators"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --ignore 'src/__tests__/**' --extensions '.ts' --config-file '../../.babelrc-ts.js'",
     "lint": "tsc; eslint . --ext .ts",
@@ -10,6 +17,9 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
+  },
+  "eslintConfig": {
+    "extends": "@tupaia/eslint-config-typescript"
   },
   "dependencies": {
     "@beyondessential/arithmetic": "^2.0.0",
@@ -21,8 +31,5 @@
   },
   "devDependencies": {
     "@tupaia/eslint-config-typescript": "1.0.0"
-  },
-  "eslintConfig": {
-    "extends": "@tupaia/eslint-config-typescript"
   }
 }

@@ -1,26 +1,22 @@
 {
   "name": "@tupaia/access-policy",
-  "private": true,
   "version": "3.0.0",
+  "private": true,
   "description": "Methods for parsing Tupaia access policy",
-  "main": "dist/index.js",
-  "dependencies": {},
-  "scripts": {
-    "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
-    "test": "jest",
-    "test:coverage": "yarn test --coverage",
-    "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix ."
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia.git"
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/access-policy"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix .",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage"
   },
-  "homepage": "https://github.com/beyondessential/tupaia",
   "eslintConfig": {
     "extends": "@beyondessential/jest"
   }
