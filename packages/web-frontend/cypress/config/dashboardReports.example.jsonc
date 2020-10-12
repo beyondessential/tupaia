@@ -1,5 +1,5 @@
 /**
- * An example for the `dashboardReports.json` config file
+ * Example for: `dashboardReports.json`
  *
  * Use `yarn cypress:generate-config` to generate this file and populate it with multiple
  * project/group/report combinations using the database. You can also populate it with manual data.
