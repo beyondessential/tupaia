@@ -30,6 +30,7 @@
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^8.2.0",
     "knex": "0.14.6",
+    "lodash.clonedeep": "^4.5.0",
     "moment": "^2.24.0",
     "os": "0.1.1",
     "pg": "7.10.0",
