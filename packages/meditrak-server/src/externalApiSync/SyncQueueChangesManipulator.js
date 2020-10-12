@@ -28,10 +28,7 @@ export class SyncQueueChangesManipulator {
   getRecords = changes =>
     changes.map(change => {
       const { old_record: oldRecord, new_record: newRecord, type } = change;
-      if (type === DELETE) {
-        return oldRecord;
-      }
-      return newRecord;
+      return type === DELETE ? oldRecord : newRecord;
     });
 
   getRecordsFromChangesForModel = (changes, model) =>
