@@ -39,13 +39,13 @@ exports.up = function (db) {
     END IF;
 
     -- set up the old and new records
-    IF OLD IS NOT NULL THEN
+    IF TG_OP <> 'INSERT' THEN
       old_json_record := public.scrub_geo_data(
         to_jsonb(OLD),
         TG_TABLE_NAME
       );
     END IF;
-    IF NEW IS NOT NULL THEN
+    IF TG_OP <> 'DELETE' THEN
       new_json_record := public.scrub_geo_data(
         to_jsonb(NEW),
         TG_TABLE_NAME
