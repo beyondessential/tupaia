@@ -13,7 +13,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { PrimaryButton } from '../../../../components/Buttons';
 import { Form } from '../../../Form';
 import { SubmitButton } from '../../../Form/common';
 import { TextField, CheckboxField } from '../../../Form/Fields';
@@ -24,7 +23,9 @@ import {
   closeUserPage,
 } from '../../../../actions';
 import { LANDING, OVERLAY_PADDING } from '../../constants';
+import { RequestPendingMessage } from './RequestPendingMessage';
 import { SuccessMessage } from './SuccessMessage';
+import { RequestedProjectCountryAccessList } from './RequestedProjectCountryAccessList';
 
 const Container = styled.div`
   padding: ${OVERLAY_PADDING};
@@ -45,12 +46,22 @@ export const RequestProjectAccessComponent = ({
   if (hasRequestCountryAccessCompleted)
     return <SuccessMessage handleClose={onBackToProjects} projectName={name} />;
 
+  const requestedCountries = countries.filter(c => c.accessRequests.includes(code));
+  const unrequestedCountries = countries.filter(c => !c.accessRequests.includes(code));
+
+  if (unrequestedCountries.length < 1)
+    return <RequestPendingMessage handleClose={onBackToProjects} projectName={name} />;
+
   return (
     <Container>
       <p>
         Requesting access for &nbsp;
         <b>{name}</b>
       </p>
+      <RequestedProjectCountryAccessList
+        countries={requestedCountries}
+        handleClose={onBackToProjects}
+      />
       <Form
         isLoading={isFetchingCountryAccessData || isRequestingCountryAccess}
         formError={errorMessage}
@@ -59,7 +70,7 @@ export const RequestProjectAccessComponent = ({
         }
         render={submitForm => (
           <>
-            {countries.map(country => (
+            {unrequestedCountries.map(country => (
               <CheckboxField
                 fullWidth
                 label={country.name}
