@@ -6,6 +6,8 @@
 import cheerio from 'cheerio';
 import { html as beautifyHtml } from 'js-beautify';
 
+const HTML_ATTRS_TO_STRIP_FROM_SNAPSHOTS = ['clip-path', 'id', 'data-reactid', 'data-testid'];
+
 export const equalStringsI = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) === 0;
 
 /**
@@ -32,7 +34,7 @@ export const stripHtmlAttributes = (html, attrs) => {
  */
 export const serializeReactToHTML = jQueryEl => {
   const html = jQueryEl[0].outerHTML;
-  const stripped = stripHtmlAttributes(html, ['clip-path', 'id', 'data-reactid', 'data-testid']);
+  const stripped = stripHtmlAttributes(html, HTML_ATTRS_TO_STRIP_FROM_SNAPSHOTS);
   const options = {
     wrap_line_length: 80,
     indent_inner_html: true,
