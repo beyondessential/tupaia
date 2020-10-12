@@ -21,12 +21,12 @@ export class DataAggregatingRouteHandler extends RouteHandler {
   // Builds the list of entities data should be fetched from, using org unit descendants of the
   // selected entity (optionally of a specific entity type)
   fetchDataSourceEntities = async (entity, options) => {
-    const { dataSourceEntityType } = options;
+    const { dataSourceEntityType, ...restOfOptions } = options;
     if (Array.isArray(dataSourceEntityType)) {
       return (
         await Promise.all(
           dataSourceEntityType.map(entityType =>
-            this.fetchDataSourceEntitiesOfType(entity, entityType, options),
+            this.fetchDataSourceEntitiesOfType(entity, entityType, restOfOptions),
           ),
         )
       ).flat();
@@ -34,7 +34,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
     const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
-    return this.fetchDataSourceEntitiesOfType(entity, entityType, options);
+    return this.fetchDataSourceEntitiesOfType(entity, entityType, restOfOptions);
   };
 
   fetchDataSourceEntitiesOfType = async (entity, entityType, options) => {
