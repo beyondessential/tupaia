@@ -3,22 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-// Note, keep single quotes in table names for sql query generation.
+import { arrayToDbString } from './utilities';
+
 const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
-  "'api_request_log'",
-  "'dhis_sync_log'",
-  "'error_log'",
-  "'migrations'",
-  "'feed_item'",
-  "'userSession'",
-  "'spatial_ref_sys'", // Reference table provided by postgis
-  "'dashboardReport'",
-  "'ancestor_descendant_relation'",
+  'api_request_log',
+  'dhis_sync_log',
+  'error_log',
+  'migrations',
+  'feed_item',
+  'userSession',
+  'spatial_ref_sys', // Reference table provided by postgis
+  'dashboardReport',
+  'ancestor_descendant_relation',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
 // attempted
-const IMMUTABLE_TABLES = ["'ancestor_descendant_relation'"];
+const IMMUTABLE_TABLES = ['ancestor_descendant_relation'];
 
 const SELECT_TABLES_WITHOUT_TRIGGERS = `
   SELECT t.table_name
@@ -49,7 +50,7 @@ export const runPostMigration = async driver => {
   // the name {TABLE_NAME}_trigger (eg survey_response_trigger).
   const { rows: tablesWithoutNotifierResults } = await driver.runSql(`
     ${SELECT_TABLES_WITHOUT_TRIGGERS}
-    AND t.table_name NOT IN (${EXCLUDED_TABLES_FROM_TRIGGER_CREATION.join(',')});
+    AND t.table_name NOT IN (${arrayToDbString(EXCLUDED_TABLES_FROM_TRIGGER_CREATION)});
   `);
   const tablesWithoutNotifier = tablesWithoutNotifierResults.map(row => row.table_name);
 
@@ -67,7 +68,7 @@ export const runPostMigration = async driver => {
   // the name {TABLE_NAME}_immutable_trigger (eg survey_response_immutable_trigger).
   const { rows: tablesWithoutImmutableTriggerResults } = await driver.runSql(`
     ${SELECT_TABLES_WITHOUT_TRIGGERS}
-    AND t.table_name IN (${IMMUTABLE_TABLES.join(',')});
+    AND t.table_name IN (${arrayToDbString(IMMUTABLE_TABLES)});
   `);
   const tablesWithoutImmutableTrigger = tablesWithoutImmutableTriggerResults.map(
     row => row.table_name,
