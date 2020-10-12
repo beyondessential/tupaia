@@ -27,7 +27,7 @@ exports.up = function (db) {
     BEGIN
 
     -- if nothing has changed, no need to trigger a notification
-    IF OLD = NEW THEN
+    IF TG_OP = 'UPDATE' AND OLD = NEW THEN
       RETURN NULL;
     END IF;
 
