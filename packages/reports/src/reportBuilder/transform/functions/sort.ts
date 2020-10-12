@@ -10,11 +10,13 @@ type SortParams = {
 const getRowSortFunction = (params: SortParams, descending = false) => {
   return (row1: Row, row2: Row) => {
     const row1Parser = parser();
-    row1Parser.set('$', row1);
+    const context1 = { row: row1 };
+    row1Parser.set('$', context1);
     Object.entries(functions).forEach(([name, call]) => row1Parser.set(name, call));
 
     const row2Parser = parser();
-    row2Parser.set('$', row2);
+    const context2 = { row: row2 };
+    row2Parser.set('$', context2);
     Object.entries(functions).forEach(([name, call]) => row2Parser.set(name, call));
 
     const row1Value = parseExpression(row1Parser, params.by);

@@ -25,10 +25,12 @@ const select = (rows: Row[], params: SelectParams): Row[] => {
     const filteredRows = rows.filter(rowInFilter => check(rowInFilter));
     filteredRows.forEach(row => {
       Object.entries(row).forEach(([field, value]) => {
-        if (!(field in whereData)) {
-          whereData[field] = [];
+        if (value !== undefined && value !== null) {
+          if (!(field in whereData)) {
+            whereData[field] = [];
+          }
+          whereData[field].push(value);
         }
-        whereData[field].push(value);
       });
     });
     return whereData;
@@ -36,10 +38,12 @@ const select = (rows: Row[], params: SelectParams): Row[] => {
   const context = { row: {}, all: {}, allPrevious: {}, where: whereFunction } as Context;
   rows.forEach(row => {
     Object.entries(row).forEach(([field, value]) => {
-      if (!(field in context.all)) {
-        context.all[field] = [];
+      if (value !== undefined && value !== null) {
+        if (!(field in context.all)) {
+          context.all[field] = [];
+        }
+        context.all[field].push(value);
       }
-      context.all[field].push(value);
     });
   });
   rowParser.set('$', context);
@@ -47,10 +51,12 @@ const select = (rows: Row[], params: SelectParams): Row[] => {
   return rows.map(row => {
     context.row = row;
     Object.entries(row).forEach(([field, value]) => {
-      if (!(field in context.allPrevious)) {
-        context.allPrevious[field] = [];
+      if (value !== undefined && value !== null) {
+        if (!(field in context.allPrevious)) {
+          context.allPrevious[field] = [];
+        }
+        context.allPrevious[field].push(value);
       }
-      context.allPrevious[field].push(value);
     });
 
     const returnNewRow = params.where(row, rowParser);

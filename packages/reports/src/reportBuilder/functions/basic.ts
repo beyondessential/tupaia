@@ -6,7 +6,7 @@ export const value = (valueGiven: FieldValue): FieldValue => {
 
 export const last = (values: FieldValue[]): FieldValue => {
   return values.reverse()[0];
-}
+};
 
 export const eq = (value1, value2): boolean => {
   return value1 === value2;
