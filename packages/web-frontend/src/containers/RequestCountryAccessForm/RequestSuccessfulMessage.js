@@ -10,11 +10,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { PrimaryButton } from '../../components/Buttons';
-import { WHITE } from '../../styles';
 
 const SuccessMessage = styled.p`
   text-align: center;
-  color: ${WHITE};
 `;
 
 export const RequestSuccessfulMessage = ({ onClose }) => (
