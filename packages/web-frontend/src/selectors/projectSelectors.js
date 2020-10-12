@@ -46,11 +46,12 @@ export const selectAdjustedProjectBounds = createSelector(
 export const selectTileSets = createSelector(selectCurrentProject, project => {
   let tileSetKeys = ['osm', 'satellite'];
 
-  if (project.project.tileSets) {
-    tileSetKeys = [...tileSetKeys, ...project.project.tileSets.split(',')];
+  if (project.tileSets) {
+    const customSetKeys = project.tileSets.split(',').map(item => item.trim());
+    tileSetKeys = [...tileSetKeys, ...customSetKeys];
   }
 
-  return TILE_SETS.filter(tileSet => tileSetKeys.includes(tileSet.key.trim()));
+  return TILE_SETS.filter(tileSet => tileSetKeys.includes(tileSet.key));
 });
 
 export const selectActiveTileSetKey = state => state.map.activeTileSetKey;

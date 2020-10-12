@@ -183,11 +183,8 @@ describe('projectSelectors', () => {
       project: {
         projects: [
           { code: 'explore' },
-          {
-            code: 'disaster',
-            project: { tileSets: 'osm,satellite,waterways,roads,ethnicity,terrain' },
-          },
-          { code: 'unfpa', project: { tileSets: 'roads,waterways,eth, terrain' } }, // testing typos in the config
+          { code: 'disaster', tileSets: 'osm,satellite,waterways,roads,ethnicity,terrain' },
+          { code: 'unfpa', tileSets: 'roads,waterways,eth, terrain' }, // testing typos in the config
         ],
       },
       routing: {
@@ -243,8 +240,8 @@ describe('projectSelectors', () => {
         ).toEqual(TILE_SETS[1]);
 
         expect(
-          selectActiveTileSet({ ...unfpaState, map: { activeTileSetKey: 'terrain' } }), // todo: handle trimming whitespace
-        ).toEqual(TILE_SETS[2]);
+          selectActiveTileSet({ ...unfpaState, map: { activeTileSetKey: 'terrain' } }),
+        ).toEqual(TILE_SETS[5]);
       });
     });
   });
