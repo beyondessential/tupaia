@@ -22,59 +22,66 @@ exports.up = function (db) {
     DECLARE
     new_json_record JSONB;
     old_json_record JSONB;
+    record_id TEXT;
+    change_type TEXT;
     BEGIN
-    IF TG_OP = 'UPDATE' AND OLD = NEW THEN
+
+    -- if nothing has changed, no need to trigger a notification
+    IF OLD = NEW THEN
       RETURN NULL;
     END IF;
-    IF TG_OP = 'UPDATE' THEN
+
+    -- set the change_type from the less readable TG_OP
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+      change_type := 'update';
+    ELSE
+      change_type := 'delete';
+    END IF;
+
+    -- set up the old and new records
+    IF OLD IS NOT NULL THEN
       old_json_record := public.scrub_geo_data(
         to_jsonb(OLD),
         TG_TABLE_NAME
       );
     END IF;
-    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+    IF NEW IS NOT NULL THEN
       new_json_record := public.scrub_geo_data(
         to_jsonb(NEW),
         TG_TABLE_NAME
       );
-      PERFORM pg_notify(
-        'change',
-        json_build_object(
-          'record_type',
-          TG_TABLE_NAME,
-          'record_id',
-          NEW.id,
-          'type',
-          'update',
-          'old_record',
-          old_json_record,
-          'new_record',
-          new_json_record
-        )::text
-    );
-      RETURN NEW;
     END IF;
-    IF TG_OP = 'DELETE' THEN
-      old_json_record := public.scrub_geo_data(
-        to_jsonb(OLD),
-        TG_TABLE_NAME
-      );
-      PERFORM pg_notify(
+
+    IF change_type = 'update' THEN
+      record_id := NEW.id;
+    ELSE
+      record_id := OLD.id;
+    END IF;
+
+    -- publish change notification
+    PERFORM pg_notify(
       'change',
       json_build_object(
         'record_type',
         TG_TABLE_NAME,
         'record_id',
-        OLD.id,
+        record_id,
         'type',
-        'delete',
+        change_type,
         'old_record',
         old_json_record,
         'new_record',
-        NULL
-    )::text);
+        new_json_record
+      )::text
+    );
+
+    -- return the appropriate record to allow the trigger to pass
+    IF change_type = 'update' THEN
+      RETURN NEW;
+    ELSE
       RETURN OLD;
     END IF;
+
     END;
     $$;
   `);
