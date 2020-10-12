@@ -8,9 +8,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Button, SmallAlert, TextField } from '@tupaia/ui-components';
+import MuiDivider from '@material-ui/core/Divider';
+import { Button, ProfileImageField, SmallAlert, TextField } from '@tupaia/ui-components';
 import { Main } from '../../components';
 import { updateProfile, getCurrentUser } from '../../store';
+import { createBase64Image } from '../../utils/createBase64Image';
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -34,14 +36,30 @@ const SuccessMessage = styled(SmallAlert)`
   margin-bottom: 1.5rem;
 `;
 
+const Divider = styled(MuiDivider)`
+  margin: 1.8rem 0;
+`;
+
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  ERROR: 'error',
+  DISABLED: 'disabled',
+};
+
 const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
+  const [status, setStatus] = useState(STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState({
+    fileId: null,
+    data: user.profileImage,
+  });
   const { handleSubmit, register, errors } = useForm();
 
   const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
-    setIsLoading(true);
+    setStatus(STATUS.LOADING);
     setErrorMessage(null);
     try {
       await onUpdateProfile({
@@ -49,23 +67,51 @@ const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
         last_name: lastName,
         position: role,
         employer,
+        profileImage: profileImage.fileId && profileImage,
       });
-      setIsLoading(false);
+      setStatus(STATUS.SUCCESS);
       setSuccessMessage('Profile successfully updated.');
     } catch (error) {
-      setIsLoading(false);
+      setStatus(STATUS.ERROR);
       setErrorMessage(error.message);
     }
   });
 
+  const handleFileChange = async event => {
+    setStatus(STATUS.DISABLED);
+    const fileObject = event.target.files[0];
+    const base64 = await createBase64Image(fileObject);
+    const fileName = fileObject.name.replace(/\.[^/.]+$/, '');
+    setProfileImage({
+      fileId: `${user.id}-${fileName}`,
+      data: base64,
+    });
+    setStatus(STATUS.IDLE);
+  };
+
+  const handleFileDelete = () => {
+    // We need to set a file id to something so that the backend will pick up the profileImage field
+    // as an updatedField and save the change.
+    setProfileImage({ fileId: '-', data: null });
+  };
+
   const { firstName, lastName, position, employer } = user;
+  const userInitial = user.name.substring(0, 1);
 
   return (
     <Main>
       <Container>
         <form onSubmit={onSubmit} noValidate>
-          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+          {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
+          <ProfileImageField
+            name="profileImage"
+            profileImage={profileImage && profileImage.data}
+            userInitial={userInitial}
+            onChange={handleFileChange}
+            onDelete={handleFileDelete}
+          />
+          <Divider />
           <TextField
             label="First Name"
             name="firstName"
@@ -110,7 +156,12 @@ const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
               required: 'Required',
             })}
           />
-          <StyledButton type="submit" fullWidth isLoading={isLoading}>
+          <StyledButton
+            type="submit"
+            fullWidth
+            isLoading={status === STATUS.LOADING}
+            disabled={status === STATUS.DISABLED}
+          >
             Update Profile
           </StyledButton>
         </form>
@@ -128,6 +179,7 @@ ProfileTabViewComponent.propTypes = {
     lastName: PropTypes.string,
     employer: PropTypes.string,
     position: PropTypes.string,
+    profileImage: PropTypes.string,
   }),
 };
 
