@@ -13,3 +13,4 @@ export * from './MultiSelect';
 export * from './DatePicker';
 export * from './RadioGroup';
 export * from './FileUploadField';
+export * from './ProfileImageField';
