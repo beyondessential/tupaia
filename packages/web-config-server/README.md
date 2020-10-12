@@ -10,29 +10,6 @@
 
 For contributor's code of conduct - see the [code-of-conduct.md](https://gitlab.com/beyond-essential/tupaia/blob/master/code-of-conduct.md) published in the repo.
 
-## Initial setup
-
-First, install project dependencies by running `yarn install`.
-
-Add a .env file to the root directory. The required variables are listed in `.env.example`.
-
-Set up postgres on your machine and create the database 'tupaia', with credentials matching those in
-the .env file.
-
-The project requires importing an initial database dump. Grab the latest database dump from dev server using `yarn dump-database ~/path/to/key.pem` (pem key can be obtained in LastPass - Tupaia Main Server). This will create a db dump and pull it to your current directory. You also need to be added into the Security Groups of the server.
-
-After pulling the latest database dump from dev server, run:
-
-```bash
-yarn refresh-database tupaia_dump.sql
-```
-
-or on windows, first DROP and recreate the tupaia database, then run:
-
-```bash
-psql -U tupaia < tupaia_dump.sql
-```
-
 ## Development
 
 Run `yarn start-dev` to start running on local machine.
