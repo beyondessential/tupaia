@@ -27,7 +27,7 @@ const SELECT_TABLES_WITHOUT_TRIGGERS = `
       ON t.table_name = privileges.table_name
     WHERE NOT EXISTS (
       SELECT * from pg_trigger p
-      WHERE concat(lower(t.table_name), '_trigger') = p.tgname
+      WHERE p.tgname LIKE concat(lower(t.table_name), '%', '_trigger')
     )
     AND privileges.privilege_type = 'TRIGGER'
     AND t.table_schema = 'public'
