@@ -289,6 +289,72 @@ export const HIERARCHY_STORM_AFTER_PARENT_ID_CHANGES = expandEntityRelations([
   ['abb', 'aab', 1],
 ]);
 
+// test moves the aba -> aaa entity relation over to hierarchy ocean, dropping aaa from hierarchy
+// storm
+//      a
+//      aa
+//      ab
+//   aba  abb
+//        aab
+export const HIERARCHY_STORM_AFTER_RELATION_HIERARCHY_CHANGED = expandEntityRelations([
+  // ancestor entity a
+  ['a', 'aa', 1],
+  ['a', 'ab', 2],
+  ['a', 'aba', 3],
+  ['a', 'abb', 3],
+  ['a', 'aab', 4],
+  // ancestor entity aa
+  ['aa', 'ab', 1],
+  ['aa', 'aba', 2],
+  ['aa', 'abb', 2],
+  ['aa', 'aab', 3],
+  // ancestor entity ab
+  ['ab', 'aba', 1],
+  ['ab', 'abb', 1],
+  ['ab', 'aab', 2],
+  // ancestor entity abb
+  ['abb', 'aab', 1],
+]);
+
+// test changes the parent_id of the aba -> aaa entity relation to abb
+//      a
+//      aa
+//      ab
+//   aba  abb
+//      aaa aab
+export const HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_1 = expandEntityRelations([
+  // ancestor entity a
+  ['a', 'aa', 1],
+  ['a', 'ab', 2],
+  ['a', 'aba', 3],
+  ['a', 'abb', 3],
+  ['a', 'aaa', 4],
+  ['a', 'aab', 4],
+  // ancestor entity aa
+  ['aa', 'ab', 1],
+  ['aa', 'aba', 2],
+  ['aa', 'abb', 2],
+  ['aa', 'aaa', 3],
+  ['aa', 'aab', 3],
+  // ancestor entity ab
+  ['ab', 'aba', 1],
+  ['ab', 'abb', 1],
+  ['ab', 'aaa', 2],
+  ['ab', 'aab', 2],
+  // ancestor entity abb
+  ['abb', 'aab', 1],
+  ['abb', 'aaa', 1],
+]);
+
+// test changes the parent_id of the ab -> aa entity relation to a
+// because this means aa now links to its canonical children again, the other entity relations
+// linking aaa to aba and aab to abb get ignored, as those entities have appeared earlier in the
+// hierarchy, so this ends up looking exactly like our full canonical hierarchy in the ocean project
+//          a
+//    aa         ab
+// aaa  aab   aba  abb
+export const HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_2 = [...INITIAL_HIERARCHY_OCEAN];
+
 // test moves aab to below aa, and ab to below aab, resulting in:
 //      a
 //      aa

@@ -24,6 +24,9 @@ import {
   HIERARCHY_STORM_AFTER_MULTIPLE_RELATIONS_DELETED,
   HIERARCHY_OCEAN_AFTER_PARENT_ID_CHANGES,
   HIERARCHY_STORM_AFTER_PARENT_ID_CHANGES,
+  HIERARCHY_STORM_AFTER_RELATION_HIERARCHY_CHANGED,
+  HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_1,
+  HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_2,
   HIERARCHY_STORM_AFTER_MULTIPLE_RELATIONS_CHANGED,
   HIERARCHY_STORM_AFTER_ENTITY_RELATION_ADDED,
   HIERARCHY_OCEAN_AFTER_ENTITIES_CREATED,
@@ -151,6 +154,56 @@ describe('EntityHierarchyCacher', () => {
     await models.entity.updateById('entity_abb_test', { parent_id: 'entity_aaa_test' });
     await assertRelationsMatch('project_ocean_test', HIERARCHY_OCEAN_AFTER_PARENT_ID_CHANGES);
     await assertRelationsMatch('project_storm_test', HIERARCHY_STORM_AFTER_PARENT_ID_CHANGES);
+  });
+
+  it('deletes a subtree when an entity relation record changes hierarchy', async () => {
+    // move aba -> aaa to be in the ocean hierarchy
+    await models.entityRelation.update(
+      {
+        parent_id: 'entity_aba_test',
+        child_id: 'entity_aaa_test',
+        entity_hierarchy_id: 'hierarchy_storm_test',
+      },
+      { entity_hierarchy_id: 'hierarchy_ocean_test' },
+    );
+    await assertRelationsMatch(
+      'project_storm_test',
+      HIERARCHY_STORM_AFTER_RELATION_HIERARCHY_CHANGED,
+    );
+  });
+
+  describe('deletes a subtree and rebuilds when an entity relation parent_id changes', async () => {
+    it('handles a change low down in the hierarchy', async () => {
+      // change the parent of the aba -> aaa entity to abb
+      await models.entityRelation.update(
+        {
+          parent_id: 'entity_aba_test',
+          child_id: 'entity_aaa_test',
+          entity_hierarchy_id: 'hierarchy_storm_test',
+        },
+        { parent_id: 'entity_abb_test' },
+      );
+      await assertRelationsMatch(
+        'project_storm_test',
+        HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_1,
+      );
+    });
+
+    it('handles a change higher up in the hierarchy', async () => {
+      // change the parent of the aa -> ab entity to a
+      await models.entityRelation.update(
+        {
+          parent_id: 'entity_aa_test',
+          child_id: 'entity_ab_test',
+          entity_hierarchy_id: 'hierarchy_storm_test',
+        },
+        { parent_id: 'entity_a_test' },
+      );
+      await assertRelationsMatch(
+        'project_storm_test',
+        HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_2,
+      );
+    });
   });
 
   it('deletes and rebuilds a subtree if entity relation records are changed', async () => {

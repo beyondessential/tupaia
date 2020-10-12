@@ -50,6 +50,8 @@ class SurveyResponseType extends DatabaseType {
 }
 
 export class SurveyResponseModel extends DatabaseModel {
+  notifiers = [onChangeUpdateUserReward];
+
   get DatabaseTypeClass() {
     return SurveyResponseType;
   }
@@ -103,22 +105,25 @@ export class SurveyResponseModel extends DatabaseModel {
     if (result.length === 0) return false;
     return result[0].count === '1';
   }
-
-  static onChange = async ({ type: changeType, record }, model) => {
-    const modelDetails = {
-      type: 'SurveyResponse',
-      record_id: record.id,
-    };
-
-    if (changeType === 'delete') {
-      model.otherModels.userReward.delete(modelDetails);
-    } else {
-      model.otherModels.userReward.updateOrCreate(modelDetails, {
-        ...modelDetails,
-        coconuts: 1,
-        user_id: record.user_id,
-        creation_date: record.end_time,
-      });
-    }
-  };
 }
+
+const onChangeUpdateUserReward = async (
+  { type: changeType, record_id: recordId, new_record: newRecord },
+  models,
+) => {
+  const modelDetails = {
+    type: 'SurveyResponse',
+    record_id: recordId,
+  };
+
+  if (changeType === 'delete') {
+    models.userReward.delete(modelDetails);
+  } else {
+    models.userReward.updateOrCreate(modelDetails, {
+      ...modelDetails,
+      coconuts: 1,
+      user_id: newRecord.user_id,
+      creation_date: newRecord.end_time,
+    });
+  }
+};

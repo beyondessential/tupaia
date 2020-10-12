@@ -10,11 +10,6 @@ export class DatabaseModel {
 
   constructor(database) {
     this.database = database;
-    // Add change handler to database if defined, and this is the singleton instance of the model
-    const { onChange } = this.constructor;
-    if (this.database.isSingleton && onChange) {
-      this.addChangeHandler(change => onChange(change, this));
-    }
 
     // this.schema contains information about the columns on the table in the database, e.g.:
     // { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
