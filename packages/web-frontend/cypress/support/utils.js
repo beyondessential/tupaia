@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import cheerio from 'cheerio';
 import { html as beautifyHtml } from 'js-beautify';
 
 export const equalStringsI = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) === 0;
@@ -15,7 +16,14 @@ export const escapeRegex = string => {
   return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
 };
 
-const stripReactIdAttributes = html => html.replace(/data-reactid="[.\d$\-abcdfef]+"/g, '');
+export const stripHtmlAttributes = (html, attrs) => {
+  const $ = cheerio.load(html);
+  attrs.forEach(attr => {
+    $('*').removeAttr(attr);
+  });
+
+  return $('body').html();
+};
 
 /**
  * Taken from @cypress/snapshot
@@ -24,7 +32,7 @@ const stripReactIdAttributes = html => html.replace(/data-reactid="[.\d$\-abcdfe
  */
 export const serializeReactToHTML = jQueryEl => {
   const html = jQueryEl[0].outerHTML;
-  const stripped = stripReactIdAttributes(html);
+  const stripped = stripHtmlAttributes(html, ['clip-path', 'id', 'data-reactid', 'data-testid']);
   const options = {
     wrap_line_length: 80,
     indent_inner_html: true,

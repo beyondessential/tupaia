@@ -7,7 +7,7 @@ import '@testing-library/cypress/add-commands';
 
 import snapshot from '@cypress/snapshot';
 import { PUBLIC_USER } from '../constants';
-import { escapeRegex, serializeReactToHTML } from './utilities';
+import { escapeRegex, serializeReactToHTML } from './utils';
 import { closeOverlay, submitLoginForm } from './actions';
 
 snapshot.register();
