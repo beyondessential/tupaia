@@ -17,6 +17,7 @@ import { TextField, CheckboxField } from '../Form/Fields';
 import { aggregateFields } from '../Form/utils';
 import { HasTotalAccessMessage } from './HasTotalAccessMessage';
 import { RequestSuccessfulMessage } from './RequestSuccessfulMessage';
+import { RequestedCountryAccessList } from './RequestedCountryAccessList';
 
 export const RequestCountryAccessFormComponent = ({
   countries,
@@ -32,6 +33,11 @@ export const RequestCountryAccessFormComponent = ({
 
   if (hasRequestCountryAccessCompleted) return <RequestSuccessfulMessage onClose={onClose} />;
 
+  const requestedCountries = countries.filter(c => c.accessRequests.includes('none'));
+  const unrequestedCountries = countries.filter(
+    c => !c.accessRequests.includes('none') && !c.hasAccess,
+  );
+
   return (
     <Form
       isLoading={isFetchingCountryAccessData || isRequestingCountryAccess}
@@ -39,7 +45,8 @@ export const RequestCountryAccessFormComponent = ({
       onSubmit={fieldValues => onAttemptRequestCountryAccess(aggregateFields(fieldValues))}
       render={submitForm => (
         <>
-          {countries.map(country => (
+          <RequestedCountryAccessList countries={requestedCountries} />
+          {unrequestedCountries.map(country => (
             <CheckboxField
               fullWidth
               label={country.name}
