@@ -316,14 +316,13 @@ export const HIERARCHY_STORM_AFTER_RELATION_HIERARCHY_CHANGED = expandEntityRela
   ['abb', 'aab', 1],
 ]);
 
-// test changes the parent_id of the aba -> aaa entity to abb
-// storm
+// test changes the parent_id of the aba -> aaa entity relation to abb
 //      a
 //      aa
 //      ab
 //   aba  abb
 //      aaa aab
-export const HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED = expandEntityRelations([
+export const HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_1 = expandEntityRelations([
   // ancestor entity a
   ['a', 'aa', 1],
   ['a', 'ab', 2],
@@ -346,6 +345,15 @@ export const HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED = expandEntityRela
   ['abb', 'aab', 1],
   ['abb', 'aaa', 1],
 ]);
+
+// test changes the parent_id of the ab -> aa entity relation to a
+// because this means aa now links to its canonical children again, the other entity relations
+// linking aaa to aba and aab to abb get ignored, as those entities have appeared earlier in the
+// hierarchy, so this ends up looking exactly like our full canonical hierarchy in the ocean project
+//          a
+//    aa         ab
+// aaa  aab   aba  abb
+export const HIERARCHY_STORM_AFTER_RELATION_PARENT_ID_CHANGED_2 = [...INITIAL_HIERARCHY_OCEAN];
 
 // test moves aab to below aa, and ab to below aab, resulting in:
 //      a
