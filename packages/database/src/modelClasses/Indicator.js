@@ -25,6 +25,12 @@ const onChangeUpdateDataElement = async (
 ) => {
   switch (changeType) {
     case 'update':
+      if (oldRecord && oldRecord.code !== newRecord.code) {
+        await models.dataSource.delete({
+          code: oldRecord.code,
+          type: models.dataSource.getTypes().DATA_ELEMENT,
+        });
+      }
       return models.dataSource.findOrCreate(
         {
           code: newRecord.code,
