@@ -172,7 +172,7 @@ describe('EntityHierarchyCacher', () => {
   });
 
   it('deletes a subtree and rebuilds when an entity relation parent_id changes', async () => {
-    // move aba -> aaa to be in the ocean hierarchy
+    // change the parent of the aba -> aaa entity to abb
     await models.entityRelation.update(
       {
         parent_id: 'entity_aba_test',
