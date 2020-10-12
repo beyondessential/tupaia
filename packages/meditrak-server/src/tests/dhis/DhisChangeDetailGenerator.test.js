@@ -22,10 +22,7 @@ const buildChange = (type, { id, ...record }) => {
       id: recordId,
       ...record,
     },
-    old_record: {
-      id: recordId,
-      ...record,
-    },
+    old_record: null,
   };
 };
 
