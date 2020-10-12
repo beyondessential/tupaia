@@ -7,6 +7,7 @@
 /* eslint-env jest */
 
 require('jest-extended');
+require('jest-expect-message');
 
 const winston = require('winston');
 
