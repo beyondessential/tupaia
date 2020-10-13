@@ -65,7 +65,7 @@ export class ConfigImporter {
         return { codeGenerator: codeGeneratorConfig };
       }
       case CALCULATED: {
-        const calculatedConfig = processCalculatedConfig(this.models, config);
+        const calculatedConfig = await processCalculatedConfig(this.models, config);
         return { calculated: calculatedConfig };
       }
       case ENTITY:

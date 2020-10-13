@@ -8,14 +8,14 @@ import { splitStringOn, splitStringOnComma } from '../../utilities';
 
 export const processCalculatedConfig = async (models, config) => {
   let translatedConfig = {
-    formula: translateFormula(models, config.formula),
-    defaultValues: translateDefaultValues(models, config.defaultValues),
+    formula: await translateFormula(models, config.formula),
+    defaultValues: await translateDefaultValues(models, config.defaultValues),
   };
 
   if (config.values) {
     translatedConfig = {
       ...translatedConfig,
-      values: translateValues(models, config.values),
+      values: await translateValues(models, config.values),
     };
   }
 
