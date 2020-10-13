@@ -383,7 +383,7 @@ export class CartesianChart extends PureComponent {
     valueType: axisValueType,
   } = {}) => {
     const { isExporting, viewContent } = this.props;
-    const { data, valueType } = viewContent;
+    const { data, valueType, presentationOptions } = viewContent;
 
     return (
       <YAxis
@@ -395,7 +395,9 @@ export class CartesianChart extends PureComponent {
         allowDataOverflow={valueType === PERCENTAGE || this.containsClamp(yAxisDomain)}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
-        tickFormatter={value => formatDataValue(value, valueType || axisValueType)}
+        tickFormatter={value =>
+          formatDataValue(value, valueType || axisValueType, { presentationOptions })
+        }
         interval={isExporting ? 0 : 'preserveStartEnd'}
         stroke={isExporting ? DARK_BLUE : 'white'}
       />
@@ -405,7 +407,7 @@ export class CartesianChart extends PureComponent {
   renderTooltip = () => {
     const { viewContent } = this.props;
     const { chartConfig = {} } = this.state;
-    const { chartType, valueType, labelType } = viewContent;
+    const { chartType, valueType, labelType, presentationOptions } = viewContent;
 
     return (
       <Tooltip
@@ -414,7 +416,8 @@ export class CartesianChart extends PureComponent {
             valueType={valueType}
             labelType={labelType}
             periodGranularity={viewContent.periodGranularity}
-            presentationOptions={chartConfig}
+            chartConfig={chartConfig}
+            presentationOptions={presentationOptions}
             chartType={chartType}
           />
         }
