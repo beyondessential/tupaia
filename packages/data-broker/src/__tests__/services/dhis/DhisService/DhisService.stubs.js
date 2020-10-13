@@ -12,8 +12,6 @@ import {
 } from './DhisService.fixtures';
 import { createJestMockInstance } from '../../../../../../utils/src/testUtilities';
 
-const getDhisApiInstanceSpy = jest.spyOn(GetDhisApiInstance, 'getDhisApiInstance');
-
 const defaultAnalytics = {
   headers: [],
   metaData: { items: {}, dimensions: [] },
@@ -39,7 +37,8 @@ export const stubDhisApi = ({
     getServerName: jest.fn().mockReturnValue(SERVER_NAME),
     getResourceTypes: jest.fn().mockReturnValue({ DATA_ELEMENT: 'dataElement' }),
   });
-  getDhisApiInstanceSpy.mockReturnValue(dhisApi);
+  jest.spyOn(GetDhisApiInstance, 'getDhisApiInstance').mockReturnValue(dhisApi);
+
   return dhisApi;
 };
 
