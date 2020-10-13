@@ -11,7 +11,8 @@ export class EntityHierarchyCacher {
   constructor(models) {
     this.models = models;
     this.changeHandlerCancellers = [];
-    this.resetScheduledHierarchyRebuild();
+    this.scheduledRebuildJobs = [];
+    this.scheduledRebuildTimeout = null;
   }
 
   listenForChanges() {
@@ -54,43 +55,42 @@ export class EntityHierarchyCacher {
     return this.scheduleHierarchyForRebuild(hierarchyId);
   };
 
-  resetScheduledHierarchyRebuild() {
-    this.hierarchiesForRebuild = new Set();
-    this.scheduledRebuildPromise = null;
-    this.resolveScheduledRebuild = null;
-    this.scheduledRebuildTimeout = null;
-  }
-
   // add the hierarchy to the list to be rebuilt, with a debounce so that we don't rebuild
   // many times for a bulk lot of changes
   scheduleHierarchyForRebuild(hierarchyId) {
-    this.hierarchiesForRebuild.add(hierarchyId);
+    const promiseForJob = new Promise(resolve => {
+      this.scheduledRebuildJobs.push({ hierarchyId, resolve });
+    });
 
     // clear any previous scheduled rebuild, so that we debounce all changes in the same time period
     if (this.scheduledRebuildTimeout) {
       clearTimeout(this.scheduledRebuildTimeout);
     }
 
-    // set up a promise that will complete when the rebuild has happened, even if that is after
-    // several other changes have been added after debouncing
-    if (!this.scheduledRebuildPromise) {
-      this.scheduledRebuildPromise = new Promise(resolve => {
-        this.resolveScheduledRebuild = () => {
-          this.resetScheduledHierarchyRebuild();
-          resolve();
-        };
-      });
-    }
-
     // schedule the rebuild to happen after an adequate period of debouncing
-    this.scheduledRebuildTimeout = setTimeout(async () => {
-      await this.buildAndCacheHierarchies([...this.hierarchiesForRebuild]);
-      this.resolveScheduledRebuild();
-    }, REBUILD_DEBOUNCE_TIME);
+    this.scheduledRebuildTimeout = setTimeout(this.runScheduledRebuild, REBUILD_DEBOUNCE_TIME);
 
     // return the promise for the caller to await
-    return this.scheduledRebuildPromise;
+    return promiseForJob;
   }
+
+  runScheduledRebuild = async () => {
+    // remove timeout so any jobs added now get scheduled anew
+    this.scheduledRebuildTimeout = null;
+
+    // retrieve the current set of jobs
+    const jobs = this.scheduledRebuildJobs;
+    this.scheduledRebuildJobs = [];
+
+    // get the unique set of hierarchies to be rebuilt
+    const hierarchiesForRebuild = [...new Set(jobs.map(j => j.hierarchyId))];
+
+    // run rebuild
+    await this.buildAndCacheHierarchies(hierarchiesForRebuild);
+
+    // resolve all jobs
+    jobs.forEach(j => j.resolve());
+  };
 
   async deleteSubtree(hierarchyId, rootEntityId) {
     const descendantRelations = await this.models.ancestorDescendantRelation.find({
