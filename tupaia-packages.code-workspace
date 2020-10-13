@@ -73,6 +73,10 @@
       "path": "packages/utils"
     },
     {
+      "name": "weather-api",
+      "path": "packages/weather-api"
+    },
+    {
       "name": "web-config-server",
       "path": "packages/web-config-server"
     },
