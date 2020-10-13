@@ -12,9 +12,11 @@ import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import IconButton from 'material-ui/IconButton';
 import moment from 'moment';
+import htmlToImage from 'html-to-image';
+import download from 'downloadjs';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
-import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE } from '../../styles';
+import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE, WHITE } from '../../styles';
 import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { LoadingIndicator } from '../Form/common';
 
@@ -22,7 +24,10 @@ export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
     super(props);
 
+    this.exportRef = React.createRef();
+
     this.state = {
+      isExporting: false,
       extraChartConfig: {}, // Bridge for connecting chart to exporter.
     };
 
@@ -68,10 +73,16 @@ export class EnlargedDialogContent extends PureComponent {
       titleText = `${viewContent.name}, ${viewContent.entityHeader}`;
     else titleText = `${name}${organisationUnitName ? `, ${organisationUnitName} ` : ''}`;
 
+    const style = {
+      textAlign: 'center',
+      backgroundColor: this.state.isExporting ? WHITE : DARK_BLUE,
+      color: this.state.isExporting ? DARK_BLUE : WHITE,
+    };
+
     return (
-      <DialogTitle style={styles.title}>
-        <p style={styles.titleText}>{titleText}</p>
-        {periodGranularity && this.renderPeriodSelector()}
+      <DialogTitle style={style}>
+        <span style={styles.titleText}>{titleText}</span>
+        {periodGranularity && !this.state.isExporting && this.renderPeriodSelector()}
       </DialogTitle>
     );
   }
@@ -110,7 +121,7 @@ export class EnlargedDialogContent extends PureComponent {
       viewProps.onChangeConfig = this.onChangeConfig;
     }
 
-    return <ViewWrapper {...viewProps} />;
+    return <ViewWrapper {...viewProps} isExporting={this.state.isExporting} />;
   }
 
   renderDescription() {
@@ -128,13 +139,33 @@ export class EnlargedDialogContent extends PureComponent {
     const { onCloseOverlay, onExport, CloseIcon, toolbarStyle } = this.props;
     const { extraChartConfig } = this.state;
 
+    // htmlToImage
+    const handleExport = () => {
+      this.setState({ isExporting: true });
+      const node = this.exportRef.current;
+      htmlToImage
+        .toPng(node, {
+          width: 900,
+          height: 900,
+          style: {
+            paddingTop: '100px',
+            maxWidth: '500px',
+            maxHeight: '500px',
+          },
+        })
+        .then(dataUrl => {
+          download(dataUrl, 'exported-chart.png');
+          this.setState({ isExporting: false });
+        });
+    };
+
     return (
       <div style={{ ...styles.toolbar, ...toolbarStyle }}>
         {this.isExportable() ? (
           <IconButton
             style={styles.toolbarButton}
             iconStyle={styles.toolbarButtonIcon}
-            onClick={() => onExport(extraChartConfig)}
+            onClick={handleExport}
           >
             <DownloadIcon />
           </IconButton>
@@ -192,12 +223,12 @@ export class EnlargedDialogContent extends PureComponent {
     if (!this.props.viewContent) return <LoadingIndicator />;
     const isMatrix = getIsMatrix(this.props.viewContent);
     const contentStyle = {
-      ...styles.body,
+      backgroundColor: this.state.isExporting ? WHITE : DARK_BLUE,
       padding: isMatrix ? 0 : 20,
     };
 
     return (
-      <div data-testid="enlarged-dialog">
+      <div data-testid="enlarged-dialog" ref={this.exportRef}>
         {this.renderTitle()}
         <DialogContent style={contentStyle}>
           {this.renderToolbar()}
@@ -211,14 +242,9 @@ export class EnlargedDialogContent extends PureComponent {
 }
 
 const styles = {
-  title: {
-    backgroundColor: DARK_BLUE,
-  },
   titleText: {
     textAlign: 'center',
-  },
-  body: {
-    backgroundColor: DARK_BLUE,
+    color: 'inherit',
   },
   description: {
     marginTop: 0,

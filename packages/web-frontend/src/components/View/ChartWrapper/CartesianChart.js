@@ -336,7 +336,6 @@ export class CartesianChart extends PureComponent {
         dataKey="name"
         label={data.xName}
         stroke={isExporting ? DARK_BLUE : 'white'}
-        height={isExporting ? this.state.xAxisHeight + EXPORT_CHART_PADDING : undefined}
         interval={this.getXAxisTickInterval()}
         tick={this.getXAxisTickMethod()}
         tickFormatter={this.formatXAxisTick}
@@ -602,10 +601,7 @@ export class CartesianChart extends PureComponent {
 
     return (
       <ResponsiveContainer width="100%" aspect={responsiveStyle}>
-        <Chart
-          data={this.filterDisabledData(data)}
-          margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
-        >
+        <Chart data={this.filterDisabledData(data)}>
           {this.renderReferenceAreas()}
           {this.renderXAxis()}
           {this.renderYAxes()}
