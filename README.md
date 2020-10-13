@@ -46,6 +46,10 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 
 Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
+### Local database
+
+🔑 **BES internal:** [Tupaia monorepo setup](https://docs.beyondessential.com.au/books/software-development/page/tupaia-monorepo-setup#bkmrk-step-4.-install-post) - steps 4 and 5
+
 ### Dependencies
 
 We use yarn workspaces to manage our packages, which allows us to run `yarn` once at the project
@@ -74,8 +78,10 @@ so if you've updated the environment variables here, you probably also need to p
 Most of the packages support the following scripts for testing:
 
 ```
+
 yarn test # runs the tests
 yarn test:coverage # runs the tests and displays code coverage
+
 ```
 
 ## Style Guide

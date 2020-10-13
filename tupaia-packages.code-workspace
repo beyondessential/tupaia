@@ -109,6 +109,7 @@
       "keyby",
       "migrator",
       "oucode",
+      "postgresql",
       "preaggregate",
       "preaggregated",
       "preaggregating",

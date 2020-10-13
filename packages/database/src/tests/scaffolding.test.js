@@ -19,4 +19,5 @@ const testStartTime = moment().format('YYYY-MM-DD HH:mm:ss');
 after(async () => {
   const database = getTestDatabase();
   await clearTestData(database, testStartTime);
+  await database.closeConnections();
 });

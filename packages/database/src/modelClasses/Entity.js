@@ -22,6 +22,7 @@ const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
+const CITY = 'city';
 
 const ENTITY_TYPES = {
   CASE,
@@ -38,6 +39,7 @@ const ENTITY_TYPES = {
   VILLAGE,
   WORLD,
   PROJECT,
+  CITY,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
@@ -261,10 +263,12 @@ export class EntityModel extends DatabaseModel {
 
   async updateRegionCoordinates(code, geojson) {
     const shouldSetBounds =
-      (await this.find({
-        code,
-        bounds: null,
-      })).length > 0;
+      (
+        await this.find({
+          code,
+          bounds: null,
+        })
+      ).length > 0;
     const boundsString = shouldSetBounds
       ? ', "bounds" =  ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)'
       : '';
