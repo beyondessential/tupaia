@@ -39,7 +39,7 @@ const translateDefaultValues = async (models, defaultValuesConfig) => {
   const defaultValues = splitStringOnComma(defaultValuesConfig);
   const translatedDefaultValues = {};
 
-  for (let i = 0; i < defaultValues; i++) {
+  for (let i = 0; i < defaultValues.length; i++) {
     const [code, defaultValue] = splitStringOn(defaultValues[i], '=');
     const { id: questionId } = await models.question.findOne({ code });
     translatedDefaultValues[questionId] = defaultValue;
@@ -52,7 +52,7 @@ const translateValues = async (models, valuesConfig) => {
   const values = splitStringOnComma(valuesConfig);
   const translatedValues = {};
 
-  for (let i = 0; i < values; i++) {
+  for (let i = 0; i < values.length; i++) {
     const [code, value] = splitStringOn(values[i], '=');
     const [questionCode, questionOption] = splitStringOn(code, '.');
     const { id: questionId } = await models.question.findOne({ code: questionCode });
