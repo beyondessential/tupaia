@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import * as BuildAnalyticsFromDhisEventAnalytics from '../../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
+import * as BuildAnalytics from '../../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
@@ -171,13 +171,10 @@ export const testPullAnalytics = () => {
       useDeprecatedApi: false,
     };
 
-    let buildAnalyticsFromDhisEventAnalyticsMock;
+    let buildAnalyticsMock;
 
     beforeAll(() => {
-      buildAnalyticsFromDhisEventAnalyticsMock = jest.spyOn(
-        BuildAnalyticsFromDhisEventAnalytics,
-        'buildAnalyticsFromDhisEventAnalytics',
-      );
+      buildAnalyticsMock = jest.spyOn(BuildAnalytics, 'buildAnalyticsFromDhisEventAnalytics');
     });
 
     describe('DHIS API invocation', () => {
@@ -270,8 +267,8 @@ export const testPullAnalytics = () => {
 
     describe('data building', () => {
       describe('buildAnalyticsFromDhisEventAnalytics() invocation', () => {
-        beforeEach(() => {
-          buildAnalyticsFromDhisEventAnalyticsMock.mockReturnValue({
+        beforeAll(() => {
+          buildAnalyticsMock.mockReturnValue({
             results: [],
             metadata: { dataElementCodeToName: {} },
           });
@@ -291,7 +288,7 @@ export const testPullAnalytics = () => {
             useDeprecatedApi: false,
             programCodes: [],
           });
-          expect(buildAnalyticsFromDhisEventAnalyticsMock).toHaveBeenCalledOnceWith(
+          expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
             expect.objectContaining(emptyEventAnalytics),
             dataElementCodes,
           );
@@ -306,7 +303,7 @@ export const testPullAnalytics = () => {
             ...basicOptions,
             dataElementCodes,
           });
-          expect(buildAnalyticsFromDhisEventAnalyticsMock).toHaveBeenCalledOnceWith(
+          expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
             getEventAnalyticsResponse,
             dataElementCodes,
           );
@@ -339,7 +336,7 @@ export const testPullAnalytics = () => {
             ...basicOptions,
             dataElementCodes,
           });
-          expect(buildAnalyticsFromDhisEventAnalyticsMock).toHaveBeenCalledOnceWith(
+          expect(buildAnalyticsMock).toHaveBeenCalledOnceWith(
             translatedEventAnalytics,
             dataElementCodes,
           );
@@ -353,7 +350,7 @@ export const testPullAnalytics = () => {
           ],
           metadata: { dataElementCodeToName: { POP01: 'Population 1' } },
         };
-        buildAnalyticsFromDhisEventAnalyticsMock.mockReturnValue(analyticsResponse);
+        buildAnalyticsMock.mockReturnValue(analyticsResponse);
 
         return expect(
           dhisService.pull([DATA_SOURCES.POP01], 'dataElement', basicOptions),
