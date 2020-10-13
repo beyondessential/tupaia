@@ -4,7 +4,7 @@
  */
 
 import { EXPLORE_PROJECT } from '../constants';
-import { equalStringsI } from './utilities';
+import { equalStringsI } from './utils';
 
 export const submitLoginForm = () => {
   cy.findAllByText(/Sign in/)
