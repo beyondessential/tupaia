@@ -30,6 +30,7 @@ const {
   getDisasters,
   getDashboardReports,
   getDashboardGroups,
+  getIndicators,
   getMapOverlays,
   getSurveyGroups,
   getSurveyResponses,
@@ -123,6 +124,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/disaster/:recordId?', getDisasters);
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
+  app.get('(/v[0-9]+)/indicators/:recordId?', getIndicators);
   app.get('(/v[0-9]+)/mapOverlays/:recordId?', getMapOverlays);
   app.get('(/v[0-9]+)/surveyGroups/:recordId?', getSurveyGroups);
   app.get('(/v[0-9]+)/surveyResponses/:recordId?', getSurveyResponses);
