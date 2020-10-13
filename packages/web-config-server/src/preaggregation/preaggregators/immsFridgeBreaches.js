@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable max-classes-per-file */
+
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import winston from 'winston';

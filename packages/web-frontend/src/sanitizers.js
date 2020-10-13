@@ -29,13 +29,13 @@ export const sanitizers = {
   stateSanitizer,
 };
 
-//---------  Sanitizer Utils ---------------
+// ---------  Sanitizer Utils ---------------
 
 const tooLargeForDevToolsSerializationWarning =
   "This object has been sanitized is too large for redux dev-tools serialization. To de-sanitize, see 'src/sanitizers.js'";
 const MAX_MEASURE_DATA_ITEMS = 1000;
 
-//---------  Action Sanitizers ---------------
+// ---------  Action Sanitizers ---------------
 
 const getSanitizedActionFetchOrgUnitSuccess = action => {
   if (!action.organisationUnit || !action.organisationUnit.countryHierarchy) {
@@ -68,7 +68,7 @@ const getSanitizedActionFetchMeasureDataSuccess = action => {
   };
 };
 
-//--------- State Sanitizers ---------------
+// --------- State Sanitizers ---------------
 
 const getSanitizedStateOrgUnits = ({ orgUnits }) => {
   if (!orgUnits) {

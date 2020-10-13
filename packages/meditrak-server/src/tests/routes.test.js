@@ -14,7 +14,7 @@ import {
 
 describe('Tupaia API', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   // Set up dummy sync queue to ensure that functionality is working correctly
   const syncQueue = new DummySyncQueue();

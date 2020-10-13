@@ -67,7 +67,7 @@ export const sortByColumns = ({ columns, rows }, columnsToSortBy = []) => {
     return recursivelyCompareValuesAscending;
   };
 
-  //sanitise the column list and find keys
+  // sanitise the column list and find keys
   const columnKeysToSortBy = columnsToSortBy
     .map(sortHeader => {
       const columnFound = columns.find(column => column.title === sortHeader[0]);

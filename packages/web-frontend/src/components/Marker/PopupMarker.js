@@ -101,7 +101,7 @@ const buildHeaderText = (data, popupHeaderFormat) => {
   const { organisationUnitCode, name } = data;
   const replacements = {
     code: organisationUnitCode,
-    name: name,
+    name,
   };
   return Object.entries(replacements).reduce(
     (text, [key, value]) => text.replace(`{${key}}`, value),

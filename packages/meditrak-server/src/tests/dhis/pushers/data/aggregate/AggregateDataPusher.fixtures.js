@@ -101,9 +101,7 @@ export const SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS = {
 export const SURVEY_RESPONSE_DATA_VALUE = {
   ...ANSWER_DATA_VALUE,
   ...SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
-  value: moment(SURVEY_RESPONSE.submission_time)
-    .utc()
-    .format(),
+  value: moment(SURVEY_RESPONSE.submission_time).utc().format(),
 };
 export const SURVEY_RESPONSE_SYNC_LOG_DATA = {
   ...ANSWER_SYNC_LOG_DATA,

@@ -30,7 +30,14 @@ export const percentInGroupByFacility = async (
         period.requested,
         range,
       )
-    : await buildData(aggregator, results, query.organisationUnitCode, period.requested, entity, range);
+    : await buildData(
+        aggregator,
+        results,
+        query.organisationUnitCode,
+        period.requested,
+        entity,
+        range,
+      );
 
   return returnJson;
 };
@@ -95,7 +102,11 @@ const buildData = async (aggregator, results, organisationUnitCode, period, enti
   };
 
   // Will count only operational facilities
-  const operationalFacilities = await getFacilityStatuses(aggregator, organisationUnitCode, period.requested);
+  const operationalFacilities = await getFacilityStatuses(
+    aggregator,
+    organisationUnitCode,
+    period.requested,
+  );
   aggregateOperationalFacilityValues(operationalFacilities, results, addToAveragedValues);
 
   // Return the result array sorted by name

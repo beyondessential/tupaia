@@ -57,7 +57,12 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permis
   const userDetails = {
     id: user.id,
     name: user.fullName,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    position: user.position,
+    employer: user.employer,
     email: user.email,
+    profileImage: user.profile_image,
     verifiedEmail: user.verified_email,
     accessPolicy,
   };
@@ -65,7 +70,7 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permis
     userDetails.permissionGroups = permissionGroups;
   }
   return {
-    accessToken: accessToken,
+    accessToken,
     refreshToken,
     user: userDetails,
   };
@@ -120,7 +125,7 @@ const checkAuthentication = async req => {
  * If URL parameters include grantType=refreshToken, will check the refreshToken against the database
  * and if valid, returns a new JWT token that can be used for accessing the API
  * Override grants to do recursive authentication, for example when creating a new user.
- **/
+ */
 export async function authenticate(req, res) {
   const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
   const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(

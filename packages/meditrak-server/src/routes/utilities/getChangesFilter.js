@@ -61,7 +61,6 @@ const getBaseFilter = since => {
 
 const extractSinceValue = req => {
   const { since = 0 } = req.query;
-  // eslint-disable-next-line no-restricted-globals
   if (isNaN(since)) {
     throw new ValidationError("The 'since' parameter must be a number.");
   }

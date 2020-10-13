@@ -29,7 +29,7 @@ export function translateBoundsForFrontend(bounds) {
   const box = data.coordinates[0];
   if (!box) return null;
 
-  const [topLeft, _, bottomRight] = box; // eslint-disable-line no-unused-vars
+  const [topLeft, _, bottomRight] = box;
   return [flipLatLng(topLeft), flipLatLng(bottomRight)];
 }
 
