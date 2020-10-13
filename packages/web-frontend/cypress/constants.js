@@ -4,5 +4,4 @@
  */
 
 export const CONFIG_ROOT = 'cypress/config';
-export const EXPLORE_PROJECT = 'explore';
 export const PUBLIC_USER = 'public';

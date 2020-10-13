@@ -140,7 +140,6 @@ export class EnlargedDialogContent extends PureComponent {
           </IconButton>
         ) : null}
         <IconButton
-          data-testid="enlarged-dialog-close-btn"
           style={styles.toolbarButton}
           iconStyle={styles.toolbarButtonIcon}
           onClick={onCloseOverlay}
