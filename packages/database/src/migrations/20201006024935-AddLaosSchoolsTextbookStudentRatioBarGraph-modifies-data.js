@@ -212,7 +212,6 @@ const createViewJson = (name, textbookCodes) => ({
   chartType: 'bar',
   presentationOptions: {
     valueFormat: '0.00',
-    displayTildeInTooltip: true,
   },
   valueType: 'number',
   chartConfig: createChartConfig(textbookCodes),

@@ -17,13 +17,7 @@ import { CHART_TYPES } from './chartTypes';
 import { formatTimestampForChart, getIsTimeSeries } from './helpers';
 
 function formatLabelledValue(label, value, valueType, metadata) {
-  const { presentationOptions } = metadata;
-  const { displayTildeInTooltip } = presentationOptions;
-
-  const valueText = displayTildeInTooltip
-    ? `~${formatDataValue(value, valueType, metadata)}`
-    : formatDataValue(value, valueType, metadata);
-
+  const valueText = formatDataValue(value, valueType, metadata);
   if (label) {
     return `${label}: ${valueText}`;
   }
