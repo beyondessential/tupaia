@@ -26,7 +26,12 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
 
   async buildValuesByCell() {
     const hierarchyId = await this.fetchEntityHierarchyId();
-    return getCalculatedValuesByCell(flatten(this.tableConfig.cells), this.results, hierarchyId);
+    return getCalculatedValuesByCell(
+      this.models,
+      flatten(this.tableConfig.cells),
+      this.results,
+      hierarchyId,
+    );
   }
 }
 

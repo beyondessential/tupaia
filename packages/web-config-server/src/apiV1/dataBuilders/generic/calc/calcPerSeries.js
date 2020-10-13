@@ -50,15 +50,19 @@ class CalcPerSeriesDataBuilder extends DataBuilder {
 
     const dataByClass = {};
 
-    Object.entries(this.config.series).forEach(([seriesKey, dataClasses]) => {
-      Object.entries(dataClasses).forEach(([classKey, seriesConfig]) => {
+    for (const [seriesKey, dataClasses] of Object.entries(this.config.series)) {
+      for (const [classKey, seriesConfig] of Object.entries(dataClasses)) {
         if (!dataByClass[classKey]) {
           dataByClass[classKey] = { name: classKey };
         }
 
-        dataByClass[classKey][seriesKey] = calculateOperationForAnalytics(results, seriesConfig);
-      });
-    });
+        dataByClass[classKey][seriesKey] = await calculateOperationForAnalytics(
+          this.models,
+          results,
+          seriesConfig,
+        );
+      }
+    }
 
     const data = this.sortDataByName(Object.values(dataByClass));
     return { data, period };
