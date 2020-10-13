@@ -55,7 +55,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       return (
         await Promise.all(
           dataSourceEntityType.map(entityType =>
-            this.fetchDataSourceEntitiesOfType(entity, entityType, dataSourceEntityFilter),
+            this.fetchDataSourceEntities(entityCode, entityType, dataSourceEntityFilter),
           ),
         )
       ).flat();
