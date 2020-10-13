@@ -25,6 +25,7 @@ import {
   YearsSinceQuestion,
   EntityQuestion,
   PrimaryEntityQuestion,
+  CalculatedQuestion,
   CodeGeneratorQuestion,
 } from './specificQuestions';
 
@@ -46,6 +47,7 @@ const QUESTION_TYPES = {
   Entity: EntityQuestion,
   PrimaryEntity: PrimaryEntityQuestion,
   CodeGenerator: CodeGeneratorQuestion,
+  CalculatedQuestion: CalculatedQuestion,
 };
 
 const TYPES_CONTROLLING_QUESTION_TEXT = ['Instruction', 'Checkbox'];
