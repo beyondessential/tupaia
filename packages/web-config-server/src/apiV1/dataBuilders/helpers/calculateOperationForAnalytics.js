@@ -96,7 +96,7 @@ const getMetaDataFromOrgUnit = async (_, config, models) => {
   const baseEntity = await models.entity.findOne({ code: orgUnitCode });
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
-    ? await baseEntity.getAncestorOfType(ancestorType, hierarchyId)
+    ? await baseEntity.getAncestorOfType(hierarchyId, ancestorType)
     : baseEntity;
 
   switch (field) {
