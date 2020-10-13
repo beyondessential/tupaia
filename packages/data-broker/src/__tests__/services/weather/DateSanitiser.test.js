@@ -6,19 +6,10 @@ import { mockNow } from './testutil';
  *  - for WeatherBit API, end date today means at 00:00:01 today, which does not cover any weather data for today
  */
 describe('DateSanitiser', () => {
-  const assertionSanitiseHistoricDateRange = (
-    startDate,
-    endDate,
-    expectedStartDate,
-    ExpectedEndDate,
-  ) => {
-    const {
-      startDate: actualStartDate,
-      endDate: actualEndDate,
-    } = new DateSanitiser().sanitiseHistoricDateRange(startDate, endDate);
-
-    expect(actualStartDate).toBe(expectedStartDate);
-    expect(actualEndDate).toBe(ExpectedEndDate);
+  const assertHistoricDateRangeIsCorrectlySanitised = (dateRange, expected) => {
+    expect(
+      new DateSanitiser().sanitiseHistoricDateRange(dateRange.startDate, dateRange.endDate),
+    ).toStrictEqual(expected);
   };
 
   beforeEach(() => {
@@ -39,17 +30,22 @@ describe('DateSanitiser', () => {
       [
         'gives a midnight-midnight range when a single date is provided',
         ['2019-01-05', '2019-01-05'],
+        // endDate same as input, changed to be exclusive (See note 1)
         ['2019-01-05', '2019-01-06'],
       ],
       [
         'considers end date as inclusive when given a date range',
         ['2019-01-03', '2019-01-05'],
+        // endDate same as input, changed to be exclusive (See note 1)
         ['2019-01-03', '2019-01-06'],
       ],
     ];
 
-    it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, ExpectedEndDate]) => {
-      assertionSanitiseHistoricDateRange(startDate, endDate, expectedStartDate, ExpectedEndDate);
+    it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, expectedEndDate]) => {
+      assertHistoricDateRangeIsCorrectlySanitised(
+        { startDate, endDate },
+        { startDate: expectedStartDate, endDate: expectedEndDate },
+      );
     });
   });
 
@@ -59,8 +55,11 @@ describe('DateSanitiser', () => {
         ['defaults to full range', [undefined, undefined], ['2018-02-05', '2019-02-05']],
       ];
 
-      it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, ExpectedEndDate]) => {
-        assertionSanitiseHistoricDateRange(startDate, endDate, expectedStartDate, ExpectedEndDate);
+      it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, expectedEndDate]) => {
+        assertHistoricDateRangeIsCorrectlySanitised(
+          { startDate, endDate },
+          { startDate: expectedStartDate, endDate: expectedEndDate },
+        );
       });
     });
 
@@ -72,7 +71,7 @@ describe('DateSanitiser', () => {
         [
           'only start date is before the earliest available data',
           ['2017-02-10', '2019-01-01'],
-          // Actual start date as earliest date. endDate is same as input, changed to be exclusive end date
+          // Start date is the earliest date. End date is same as input, changed to be exclusive
           ['2018-02-05', '2019-01-02'],
         ],
         [
@@ -82,8 +81,11 @@ describe('DateSanitiser', () => {
         ],
       ];
 
-      it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, ExpectedEndDate]) => {
-        assertionSanitiseHistoricDateRange(startDate, endDate, expectedStartDate, ExpectedEndDate);
+      it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, expectedEndDate]) => {
+        assertHistoricDateRangeIsCorrectlySanitised(
+          { startDate, endDate },
+          { startDate: expectedStartDate, endDate: expectedEndDate },
+        );
       });
     });
 
@@ -92,17 +94,18 @@ describe('DateSanitiser', () => {
        * Today's data is incomplete, e.g. we don't know the total rainfall for the day until
        * the day is over. So we cannot return data for today. For today's data we need to use the forecast API.
        */
-
       const testData = [
         [
           'only end date is after the latest available data',
           ['2019-01-02', '2019-07-20'],
+          // End date is the latest date
           ['2019-01-02', '2019-02-05'],
         ],
         [
           'only end date is after latest, start date is already latest',
           ['2019-02-04', '2019-07-20'],
-          ['2019-02-04', '2019-02-05'], // (same as input) latest - 1 day, latest endDate
+          // Start date is same as input, latest - 1 day. End date is the latest date
+          ['2019-02-04', '2019-02-05'],
         ],
         [
           'returns null when both start and end dates are after the latest available data',
@@ -112,8 +115,11 @@ describe('DateSanitiser', () => {
         ["request for today's data returns null", ['2019-02-05', '2019-02-05'], [null, null]],
       ];
 
-      it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, ExpectedEndDate]) => {
-        assertionSanitiseHistoricDateRange(startDate, endDate, expectedStartDate, ExpectedEndDate);
+      it.each(testData)('%s', (_, [startDate, endDate], [expectedStartDate, expectedEndDate]) => {
+        assertHistoricDateRangeIsCorrectlySanitised(
+          { startDate, endDate },
+          { startDate: expectedStartDate, endDate: expectedEndDate },
+        );
       });
     });
   });

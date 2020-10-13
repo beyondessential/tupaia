@@ -257,7 +257,7 @@ describe('WeatherService', () => {
       const service = new WeatherService(mockModels, mockApi);
 
       const functionCall = async () =>
-        await service.pull(
+        service.pull(
           getMockDataSourcesArg(),
           getMockTypeArg(),
           getMockOptionsArg({

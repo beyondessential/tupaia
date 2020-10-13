@@ -1,13 +1,11 @@
-import { WeatherApi } from '@tupaia/weather-api';
 import { EntityModel } from '@tupaia/database';
+import { createJestMockInstance } from '@tupaia/utils';
 
-jest.mock('@tupaia/weather-api');
-
-export const createWeatherApiStub = (historicDailyResponse, forecastDailyResponse) => {
-  WeatherApi.historicDaily = jest.fn().mockResolvedValue(historicDailyResponse);
-  WeatherApi.forecastDaily = jest.fn().mockResolvedValue(forecastDailyResponse);
-  return WeatherApi;
-};
+export const createWeatherApiStub = (historicDailyResponse, forecastDailyResponse) =>
+  createJestMockInstance('@tupaia/weather-api', 'WeatherApi', {
+    historicDaily: async () => historicDailyResponse,
+    forecastDaily: async () => forecastDailyResponse,
+  });
 
 export const createWeatherApiStubWithMockResponse = () => {
   return createWeatherApiStub(

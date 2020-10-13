@@ -6,8 +6,6 @@
 import { DATA_ELEMENTS } from './TupaiaService.fixtures';
 import { createJestMockInstance } from '../../../../../utils/src/testUtilities';
 
-jest.mock('@tupaia/data-api');
-
 export const createModelsStub = () => ({
   dataSource: {
     getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
@@ -17,8 +15,8 @@ export const createModelsStub = () => ({
 export const createTupaiaDataApiStub = ({
   fetchAnalyticsResponse = [],
   fetchEventsResponse = [],
-} = {}) => {
-  const tupaiaDataApi = createJestMockInstance('@tupaia/data-api', 'TupaiaDataApi', {
+} = {}) =>
+  createJestMockInstance('@tupaia/data-api', 'TupaiaDataApi', {
     fetchAnalytics: jest.fn().mockResolvedValue(fetchAnalyticsResponse),
     fetchEvents: jest.fn().mockResolvedValue(fetchEventsResponse),
     fetchDataElements: jest
@@ -27,5 +25,3 @@ export const createTupaiaDataApiStub = ({
         dataElementCodes.map(code => DATA_ELEMENTS[code]).filter(de => de),
       ),
   });
-  return tupaiaDataApi;
-};

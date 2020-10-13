@@ -95,15 +95,12 @@ export const testPullEvents = () => {
     const basicOptions = {
       useDeprecatedApi: false,
     };
-    let buildEventsStub;
+    let buildEventsMock;
 
     beforeAll(() => {
-      buildEventsStub = jest.spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics');
-    });
-
-    beforeEach(() => {
-      buildEventsStub.mockReturnValue([]);
-      buildEventsStub.mockClear();
+      buildEventsMock = jest
+        .spyOn(BuildEvents, 'buildEventsFromDhisEventAnalytics')
+        .mockReturnValue([]);
     });
 
     describe('buildEventsFromDhisEventAnalytics() invocation', () => {
@@ -129,7 +126,7 @@ export const testPullEvents = () => {
           ...basicOptions,
           dataElementCodes,
         });
-        expect(BuildEvents.buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
+        expect(buildEventsMock).toHaveBeenCalledOnceWith(
           getEventAnalyticsResponse,
           dataElementCodes,
         );
@@ -165,7 +162,7 @@ export const testPullEvents = () => {
           ...basicOptions,
           dataElementCodes,
         });
-        expect(BuildEvents.buildEventsFromDhisEventAnalytics).toHaveBeenCalledOnceWith(
+        expect(buildEventsMock).toHaveBeenCalledOnceWith(
           translatedEventAnalyticsResponse,
           dataElementCodes,
         );
@@ -185,7 +182,7 @@ export const testPullEvents = () => {
           },
         },
       ];
-      buildEventsStub.mockReturnValue(events);
+      buildEventsMock.mockReturnValue(events);
 
       return expect(
         dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', basicOptions),

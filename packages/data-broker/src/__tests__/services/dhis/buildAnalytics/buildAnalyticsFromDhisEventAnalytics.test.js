@@ -23,46 +23,44 @@ describe('buildAnalyticsFromDhisEventAnalytics', () => {
 
   describe('`results`', () => {
     const testData = [
-      ['empty data element codes', [EVENT_ANALYTICS.withDataValues, []], ['results', []]],
-      ['empty rows', [EVENT_ANALYTICS.noDataValues, ['BCD1', 'BCD2']], ['results', []]],
+      ['empty data element codes', [EVENT_ANALYTICS.withDataValues, []], []],
+      ['empty rows', [EVENT_ANALYTICS.noDataValues, ['BCD1', 'BCD2']], []],
       [
         'non empty rows - results should be sorted by period',
         [EVENT_ANALYTICS.withDataValues, ['BCD1', 'BCD2']],
         [
-          'results',
-          [
-            {
-              period: '20200206',
-              organisationUnit: 'TO_Nukuhc',
-              dataElement: 'BCD1',
-              value: 10,
-            },
-            {
-              period: '20200206',
-              organisationUnit: 'TO_Nukuhc',
-              dataElement: 'BCD2',
-              value: 'Comment 1',
-            },
-            {
-              period: '20200207',
-              organisationUnit: 'TO_HvlMCH',
-              dataElement: 'BCD1',
-              value: 20,
-            },
-            {
-              period: '20200207',
-              organisationUnit: 'TO_HvlMCH',
-              dataElement: 'BCD2',
-              value: 'Comment 2',
-            },
-          ],
+          {
+            period: '20200206',
+            organisationUnit: 'TO_Nukuhc',
+            dataElement: 'BCD1',
+            value: 10,
+          },
+          {
+            period: '20200206',
+            organisationUnit: 'TO_Nukuhc',
+            dataElement: 'BCD2',
+            value: 'Comment 1',
+          },
+          {
+            period: '20200207',
+            organisationUnit: 'TO_HvlMCH',
+            dataElement: 'BCD1',
+            value: 20,
+          },
+          {
+            period: '20200207',
+            organisationUnit: 'TO_HvlMCH',
+            dataElement: 'BCD2',
+            value: 'Comment 2',
+          },
         ],
       ],
-      ['empty rows', [EVENT_ANALYTICS.noDataValues, ['BCD1', 'BCD2']], ['results', []]],
+      ['empty rows', [EVENT_ANALYTICS.noDataValues, ['BCD1', 'BCD2']], []],
     ];
-    it.each(testData)('%s', (_, [eventAnalytics, dataElementCodes], [keyPath, value]) => {
+
+    it.each(testData)('%s', (_, [eventAnalytics, dataElementCodes], value) => {
       expect(buildAnalyticsFromDhisEventAnalytics(eventAnalytics, dataElementCodes)).toHaveProperty(
-        keyPath,
+        'results',
         value,
       );
     });
@@ -70,12 +68,9 @@ describe('buildAnalyticsFromDhisEventAnalytics', () => {
 
   describe('`metadata`', () => {
     it('empty data element codes', () => {
-      expect(buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues)).toHaveProperty(
-        'metadata',
-        {
-          dataElementCodeToName: {},
-        },
-      );
+      expect(
+        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues),
+      ).toHaveProperty('metadata', { dataElementCodeToName: {} });
     });
 
     it('non empty data element codes', () => {

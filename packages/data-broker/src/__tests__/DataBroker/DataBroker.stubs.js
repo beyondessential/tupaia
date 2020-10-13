@@ -3,20 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createJestMockInstance } from '@tupaia/utils';
 import * as CreateService from '../../services/createService';
 
-export const stubCreateService = services => {
-  const stub = jest.spyOn(CreateService, 'createService');
-  stub.mockImplementation((_, type) => {
+export const stubCreateService = services =>
+  jest.spyOn(CreateService, 'createService').mockImplementation((_, type) => {
     const service = services[type];
     if (!service) {
       throw new Error(`Invalid service type: ${type}`);
     }
     return service;
   });
-
-  return stub;
-};
 
 export const createServiceStub = serviceData => {
   const pull = dataSources => {
@@ -42,9 +39,8 @@ export const createServiceStub = serviceData => {
         throw new Error(`Invalid data source type: ${type}`);
     }
   };
-  const { Service } = jest.createMockFromModule('../../services/Service');
-  Service.prototype.pull = pull;
-  return new Service();
+
+  return createJestMockInstance('@tupaia/data-broker/src/services/Service', 'Service', { pull });
 };
 
 export const createModelsStub = dataSources => ({
