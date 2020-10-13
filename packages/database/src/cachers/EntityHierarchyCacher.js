@@ -32,8 +32,7 @@ export class EntityHierarchyCacher {
     // rebuild all hierarchies
     const hierarchies = await this.models.entityHierarchy.all();
     const hierarchyTasks = hierarchies.map(async ({ id: hierarchyId }) => {
-      await this.deleteSubtree(hierarchyId, entityId);
-      return this.scheduleHierarchyForRebuild(hierarchyId);
+      return this.scheduleRebuildOfSubtree(hierarchyId, entityId);
     });
     await Promise.all(hierarchyTasks);
   };
@@ -43,23 +42,15 @@ export class EntityHierarchyCacher {
     // have changed
     const tasks = [oldRecord, newRecord]
       .filter(r => r)
-      .map(r => this.deleteAndRebuildFromEntityRelation(r));
+      .map(r => this.scheduleRebuildOfSubtree(r.entity_hierarchy_id, r.parent_id));
     return Promise.all(tasks);
-  };
-
-  deleteAndRebuildFromEntityRelation = async ({
-    entity_hierarchy_id: hierarchyId,
-    parent_id: parentId,
-  }) => {
-    await this.deleteSubtree(hierarchyId, parentId);
-    return this.scheduleHierarchyForRebuild(hierarchyId);
   };
 
   // add the hierarchy to the list to be rebuilt, with a debounce so that we don't rebuild
   // many times for a bulk lot of changes
-  scheduleHierarchyForRebuild(hierarchyId) {
+  scheduleRebuildOfSubtree(hierarchyId, rootEntityId) {
     const promiseForJob = new Promise(resolve => {
-      this.scheduledRebuildJobs.push({ hierarchyId, resolve });
+      this.scheduledRebuildJobs.push({ hierarchyId, rootEntityId, resolve });
     });
 
     // clear any previous scheduled rebuild, so that we debounce all changes in the same time period
@@ -82,22 +73,35 @@ export class EntityHierarchyCacher {
     const jobs = this.scheduledRebuildJobs;
     this.scheduledRebuildJobs = [];
 
-    // get the unique set of hierarchies to be rebuilt
-    const hierarchiesForRebuild = [...new Set(jobs.map(j => j.hierarchyId))];
+    // get the subtrees to delete, then run the delete
+    const subtreesForDelete = {};
+    jobs.forEach(({ hierarchyId, rootEntityId }) => {
+      if (!subtreesForDelete[hierarchyId]) {
+        subtreesForDelete[hierarchyId] = new Set();
+      }
+      subtreesForDelete[hierarchyId].add(rootEntityId);
+    });
+    const deleteTasks = Object.entries(
+      subtreesForDelete,
+    ).map(async ([hierarchyId, rootEntityIds]) =>
+      this.deleteSubtrees(hierarchyId, [...rootEntityIds]),
+    );
+    await Promise.all(deleteTasks);
 
-    // run rebuild
+    // get the unique set of hierarchies to be rebuilt, then run the rebuild
+    const hierarchiesForRebuild = [...new Set(jobs.map(j => j.hierarchyId))];
     await this.buildAndCacheHierarchies(hierarchiesForRebuild);
 
     // resolve all jobs
     jobs.forEach(j => j.resolve());
   };
 
-  async deleteSubtree(hierarchyId, rootEntityId) {
+  async deleteSubtrees(hierarchyId, rootEntityIds) {
     const descendantRelations = await this.models.ancestorDescendantRelation.find({
-      ancestor_id: rootEntityId,
+      ancestor_id: rootEntityIds,
       entity_hierarchy_id: hierarchyId,
     });
-    const entityIdsForDelete = [rootEntityId, ...descendantRelations.map(r => r.descendant_id)];
+    const entityIdsForDelete = [...rootEntityIds, ...descendantRelations.map(r => r.descendant_id)];
     await this.models.database.executeSqlInBatches(entityIdsForDelete, batchOfEntityIds => [
       `
         DELETE FROM ancestor_descendant_relation
