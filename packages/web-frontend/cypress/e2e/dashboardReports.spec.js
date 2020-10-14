@@ -39,7 +39,7 @@ describe('Dashboard reports', () => {
       });
 
       it('enlarged dialog', () => {
-        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
+        cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
       });
     });
   };
