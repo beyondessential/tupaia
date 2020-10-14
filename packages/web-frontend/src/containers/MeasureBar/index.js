@@ -149,10 +149,16 @@ export class MeasureBar extends Component {
       currentMeasure.datePickerLimits,
     );
 
+    const timePeriodEditable =
+      currentMeasure.timePeriodEditable !== undefined ? currentMeasure.timePeriodEditable : true; // defaults to true
+
+    const showDatePicker = timePeriodEditable && currentMeasure.periodGranularity;
+
     return (
       <Control
         emptyMessage={emptyMessage}
         selectedMeasure={currentMeasure}
+        showDatePicker={showDatePicker}
         defaultDates={defaultDates}
         datePickerLimits={datePickerLimits}
         isMeasureLoading={isMeasureLoading}
