@@ -183,7 +183,7 @@ export class WeatherService extends Service {
     const getDataForEntity = async entity => {
       const { lat, lon } = entity.pointLatLon();
 
-      // Maximum forecast is 16 days, we request all of it and filter it dow to the dates we need.
+      // Maximum forecast is 16 days, we request all of it and filter it down to the dates we need.
       // Performance looks fine requesting 16 days.
       const days = 16;
 
