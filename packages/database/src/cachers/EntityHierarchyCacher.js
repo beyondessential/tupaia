@@ -89,7 +89,7 @@ export class EntityHierarchyCacher {
     await Promise.all(deleteTasks);
 
     // get the unique set of hierarchies to be rebuilt, then run the rebuild
-    const hierarchiesForRebuild = [...new Set(jobs.map(j => j.hierarchyId))];
+    const hierarchiesForRebuild = Object.keys(subtreesForDelete);
     await this.buildAndCacheHierarchies(hierarchiesForRebuild);
 
     // resolve all jobs
