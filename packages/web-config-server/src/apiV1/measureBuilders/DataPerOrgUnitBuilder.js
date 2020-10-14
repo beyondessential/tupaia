@@ -78,7 +78,10 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
         throw new Error('The base data builder should return a single element array');
       }
 
-      return { organisationUnitCode, [dataElementCode]: data[0][dataElementCode] };
+      const value =
+        data[0][dataElementCode] !== undefined ? data[0][dataElementCode] : data[0].value; // key is sometimes changed to "value" by aggregator
+
+      return { organisationUnitCode, [dataElementCode]: value };
     };
     return Promise.all(Object.entries(resultsByOrgUnit).map(processResultsForOrgUnit));
   }
