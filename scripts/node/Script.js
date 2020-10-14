@@ -70,11 +70,19 @@ class Script {
   };
 
   logSuccess = (message = '') => {
-    logger.info(message);
+    logger.success(message);
   };
 
   logInfo = (message = '') => {
     logger.info(message);
+  };
+
+  logVerbose = (message = '') => {
+    logger.verbose(message);
+  };
+
+  logDebug = (message = '') => {
+    logger.debug(message);
   };
 
   log = (message = '') => {
