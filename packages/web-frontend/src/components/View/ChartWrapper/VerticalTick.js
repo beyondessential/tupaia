@@ -18,31 +18,31 @@ export default class VerticalTick extends PureComponent {
   }
 
   getHeight() {
-    const rectangle = this.ref.getBoundingClientRect();
-
-    return rectangle.height;
+    return 80;
+    // const rectangle = this.ref.getBoundingClientRect();
+    //
+    // return rectangle.height;
   }
 
   render() {
     const { x, y, payload } = this.props;
 
     return (
-      <g transform={`translate(${x},${y})`}>
-        <text
-          x={0}
-          y={0}
-          dy={5}
-          textAnchor="end"
-          fill="#666"
-          ref={element => {
-            this.ref = element;
+      <foreignObject x={x} y={y} style={{ overflow: 'visible' }}>
+        <div
+          xmlns="http://www.w3.org/1999/xhtml"
+          style={{
+            color: 'black',
+            transform: 'rotate(90deg)',
+            transformOrigin: '3px 6px',
+            width: '120px',
+            fontSize: '14px',
+            lineHeight: '1',
           }}
-          className="chart-label-text"
-          transform="rotate(-90)"
         >
           {payload.value}
-        </text>
-      </g>
+        </div>
+      </foreignObject>
     );
   }
 }

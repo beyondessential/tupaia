@@ -336,6 +336,7 @@ export class CartesianChart extends PureComponent {
         dataKey="name"
         label={data.xName}
         stroke={isExporting ? DARK_BLUE : 'white'}
+        height={isExporting ? this.state.xAxisHeight + EXPORT_CHART_PADDING : undefined}
         interval={this.getXAxisTickInterval()}
         tick={this.getXAxisTickMethod()}
         tickFormatter={this.formatXAxisTick}
@@ -415,14 +416,21 @@ export class CartesianChart extends PureComponent {
   };
 
   renderLegend = () => {
-    const { isEnlarged, viewContent } = this.props;
+    const { isEnlarged, viewContent, isExporting } = this.props;
     const { renderLegendForOneItem } = viewContent;
     const { chartConfig } = this.state;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
     return (
       (hasDataSeries || renderLegendForOneItem) &&
-      isEnlarged && <Legend onClick={this.onLegendClick} formatter={this.formatLegend} />
+      isEnlarged && (
+        <Legend
+          onClick={this.onLegendClick}
+          formatter={this.formatLegend}
+          verticalAlign={isExporting ? 'top' : 'bottom'}
+          wrapperStyle={isExporting ? { top: '-20px' } : {}}
+        />
+      )
     );
   };
 
@@ -597,11 +605,20 @@ export class CartesianChart extends PureComponent {
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
 
-    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
+    let aspect;
+
+    if (!isEnlarged && !isMobile() && !isExporting) {
+      aspect = 1.6;
+    } else if (isExporting) {
+      // aspect = 2;
+    }
 
     return (
-      <ResponsiveContainer width="100%" aspect={responsiveStyle}>
-        <Chart data={this.filterDisabledData(data)}>
+      <ResponsiveContainer width="100%" height={320}>
+        <Chart
+          data={this.filterDisabledData(data)}
+          margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
+        >
           {this.renderReferenceAreas()}
           {this.renderXAxis()}
           {this.renderYAxes()}

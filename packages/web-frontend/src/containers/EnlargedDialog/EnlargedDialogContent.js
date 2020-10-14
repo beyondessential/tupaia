@@ -12,8 +12,8 @@ import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import IconButton from 'material-ui/IconButton';
 import moment from 'moment';
-import htmlToImage from 'html-to-image';
 import download from 'downloadjs';
+import domtoimage from '../../dom-to-image';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
 import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE, WHITE } from '../../styles';
@@ -27,7 +27,7 @@ export class EnlargedDialogContent extends PureComponent {
     this.exportRef = React.createRef();
 
     this.state = {
-      isExporting: false,
+      isExporting: true,
       extraChartConfig: {}, // Bridge for connecting chart to exporter.
     };
 
@@ -143,20 +143,11 @@ export class EnlargedDialogContent extends PureComponent {
     const handleExport = () => {
       this.setState({ isExporting: true });
       const node = this.exportRef.current;
-      htmlToImage
-        .toPng(node, {
-          width: 900,
-          height: 900,
-          style: {
-            paddingTop: '100px',
-            maxWidth: '500px',
-            maxHeight: '500px',
-          },
-        })
-        .then(dataUrl => {
-          download(dataUrl, 'exported-chart.png');
-          this.setState({ isExporting: false });
-        });
+
+      domtoimage.toPng(node).then(dataUrl => {
+        download(dataUrl, 'exported-chart.png');
+        // this.setState({ isExporting: false });
+      });
     };
 
     return (
@@ -224,6 +215,7 @@ export class EnlargedDialogContent extends PureComponent {
     const isMatrix = getIsMatrix(this.props.viewContent);
     const contentStyle = {
       backgroundColor: this.state.isExporting ? WHITE : DARK_BLUE,
+      overflowY: this.state.isExporting ? 'visible' : 'auto',
       padding: isMatrix ? 0 : 20,
     };
 
