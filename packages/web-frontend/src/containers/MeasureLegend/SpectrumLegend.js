@@ -11,8 +11,8 @@ import { LEGEND_SHADING_ICON } from '../../components/Marker/markerIcons';
 import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
 import { SCALE_TYPES } from '../../constants';
 import { formatDataValue } from '../../utils/formatters';
-import NoDataLabel, { LabelLeft, LabelRight } from './labels';
 import { LegendContainer } from './common';
+import NoDataLabel, { LabelLeft, LabelRight } from './labels';
 import LegendEntry from './LegendEntry';
 
 const SpectrumSliver = styled.div`
