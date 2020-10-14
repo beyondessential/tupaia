@@ -18,11 +18,11 @@ const Key = styled.div`
   ${p => (p.hidden ? 'opacity: 0.5;' : '')}
 `;
 
-const LegendEntry = ({ marker, label, value, dataKey, onClick, hiddenMeasures }) => {
+const LegendEntry = ({ marker, label, value, dataKey, onClick, hiddenMeasures, unClickable }) => {
   const hidden = (hiddenMeasures[dataKey] || {})[value];
 
   return (
-    <Key onClick={() => onClick(dataKey, value, !hidden)} hidden={hidden}>
+    <Key onClick={unClickable ? null : () => onClick(dataKey, value, !hidden)} hidden={hidden}>
       {marker}
       <div>{label}</div>
     </Key>
@@ -53,6 +53,11 @@ LegendEntry.propTypes = {
   dataKey: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   hiddenMeasures: PropTypes.object.isRequired,
+  unClickable: PropTypes.bool,
+};
+
+LegendEntry.defaultProps = {
+  unClickable: false,
 };
 
 export default connect(mapLegendStateToProps, mapLegendDispatchToProps)(LegendEntry);

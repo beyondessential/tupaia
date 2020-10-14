@@ -13,6 +13,7 @@ import { SCALE_TYPES } from '../../constants';
 import { formatDataValue } from '../../utils/formatters';
 import NoDataLabel, { LabelLeft, LabelRight } from './labels';
 import { LegendContainer } from './common';
+import LegendEntry from './LegendEntry';
 
 const SpectrumSliver = styled.div`
   width: 2px;
@@ -43,9 +44,13 @@ const renderSpectrum = measureOptions => {
     const { left: label } = getSpectrumLabels(scaleType, min, min, valueType);
 
     return (
-      <div>
-        {getMarkerForOption(LEGEND_SHADING_ICON, colour)} {label}
-      </div>
+      <LegendEntry
+        marker={getMarkerForOption(LEGEND_SHADING_ICON, colour)}
+        label={label}
+        value={min}
+        dataKey={null}
+        unClickable
+      />
     );
   }
 
