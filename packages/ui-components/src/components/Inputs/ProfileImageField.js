@@ -70,6 +70,7 @@ export const ProfileImageField = React.memo(
 
     const handleDelete = () => {
       setConfirmModalIsOpen(false);
+      inputEl.current.value = '';
       onDelete();
     };
 
@@ -111,7 +112,7 @@ ProfileImageField.propTypes = {
 };
 
 ProfileImageField.defaultProps = {
-  userInitial: null,
+  userInitial: undefined,
   profileImage: null,
   onChange: () => {},
   onDelete: () => {},
