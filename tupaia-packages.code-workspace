@@ -65,6 +65,10 @@
       "path": "packages/meditrak-server"
     },
     {
+      "name": "reports",
+      "path": "packages/reports"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },

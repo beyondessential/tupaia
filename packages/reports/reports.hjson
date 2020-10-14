@@ -1,0 +1,280 @@
+{
+  "reports": [
+    {
+      "id": "8",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": [
+                "BCD46",
+                "BCD47",
+                "BCD48",
+                "BCD48a",
+                "BCD48b",
+                "BCD49",
+                "BCD50",
+                "BCD51",
+                "BCD52",
+                "BCD53",
+                "BCD54",
+                "BCD55"
+              ],
+              "aggregationType": "RAW",
+              "dataServices": [
+                {
+                  "isDataRegional": true
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+          {
+            "transform": "select",
+            "$.row.dataElement": "$.row.value",
+            "...": ["period", "organisationUnit"]
+          },
+          {
+            "transform": "sort",
+            "by": "$.row.period"
+          },
+          {
+            "transform": "aggregate",
+            "organisationUnit": "group",
+            "...": "last"
+          },
+          {
+            "transform": "aggregate",
+            "organisationUnit": "drop",
+            "period": "drop",
+            "...": "sum"
+          },
+          {
+            "transform": "select",
+            "'Doctors'": "$.row.BCD46",
+            "'Midwives'": "$.row.BCD47",
+            "'Nurses'": "sum([$.row.BCD48, $.row.BCD48a, $.row.BCD48b])",
+            "'Aides'": "$.row.BCD49",
+            "'Others'": "sum([$.row.BCD50, $.row.BCD51, $.row.BCD52, $.row.BCD53, $.row.BCD54, $.row.BCD55])"
+          }
+        ],
+        "output": [
+          {
+            "Doctors": 58,
+            "Midwives": 21,
+            "Nurses": 379,
+            "Aides": 0,
+            "Others": 483
+          }
+        ]
+      }
+    },
+    {
+      "id": "TO_RH_Descriptive_FP01_02",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": [
+                "Family_Planning_Acceptors_Other",
+                "Family_Planning_Acceptors_Condom_Female",
+                "Family_Planning_Acceptors_Natural_Method",
+                "Family_Planning_Acceptors_Depo_Provera",
+                "Family_Planning_Acceptors_Jadelle",
+                "Family_Planning_Acceptors_Pill_Single",
+                "Family_Planning_Acceptors_Sterilization_Male",
+                "Family_Planning_Acceptors_Sterilization_Female",
+                "Family_Planning_Acceptors_Pill_Combined",
+                "Family_Planning_Acceptors_Condom_Male",
+                "Family_Planning_Acceptors_IUD",
+                "POP21AND23",
+                "POP15",
+                "POP17AND19",
+                "POP13",
+                "POP11"
+              ],
+              "aggregationType": "RAW",
+              "dataServices": [
+                {
+                  "isDataRegional": false
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+          {
+            "transform": "select",
+            "$.row.dataElement": "$.row.value",
+            "'period'": "$.row.period"
+          },
+          {
+            "transform": "aggregate",
+            "period": "group",
+            "...": "sum"
+          },
+          {
+            "transform": "select",
+            "'Total Population'": "sum([$.row.POP21AND23, $.row.POP15, $.row.POP17AND19, $.row.POP13, $.row.POP11])",
+            "'period'": "$.row.period",
+            "where": "exists($.row.POP21AND23) or exists($.row.POP15) or exists($.row.POP17AND19) or exists($.row.POP13) or exists($.row.POP11)"
+          },
+          {
+            "transform": "select",
+            "'Total Family Planning'": "sum([$.row.Family_Planning_Acceptors_Other, $.row.Family_Planning_Acceptors_Condom_Female, $.row.Family_Planning_Acceptors_Natural_Method, $.row.Family_Planning_Acceptors_Depo_Provera, $.row.Family_Planning_Acceptors_Jadelle, $.row.Family_Planning_Acceptors_Pill_Single, $.row.Family_Planning_Acceptors_Sterilization_Male, $.row.Family_Planning_Acceptors_Sterilization_Female, $.row.Family_Planning_Acceptors_Pill_Combined, $.row.Family_Planning_Acceptors_Condom_Male, $.row.Family_Planning_Acceptors_IUD])",
+            "'period'": "$.row.period",
+            "where": "exists($.row.Family_Planning_Acceptors_Other) or exists($.row.Family_Planning_Acceptors_Condom_Female) or exists($.row.Family_Planning_Acceptors_Natural_Method) or exists($.row.Family_Planning_Acceptors_Depo_Provera) or exists($.row.Family_Planning_Acceptors_Jadelle) or exists($.row.Family_Planning_Acceptors_Pill_Single) or exists($.row.Family_Planning_Acceptors_Sterilization_Male) or exists($.row.Family_Planning_Acceptors_Sterilization_Female) or exists($.row.Family_Planning_Acceptors_Pill_Combined) or exists($.row.Family_Planning_Acceptors_Condom_Male) or exists($.row.Family_Planning_Acceptors_IUD)"
+          },
+          {
+            "transform": "select",
+            "'Total Population'": "sum($.where(f(otherRow) = otherRow.period == convertToPeriod($.row.period, 'YEAR'))['Total Population'])",
+            "...": "*"
+          },
+          {
+            "transform": "filter",
+            "where": "exists($.row['Total Family Planning'])"
+          },
+          {
+            "transform": "select",
+            "'Total Population'": "last($.allPrevious['Total Population'])",
+            "...": "*",
+            "where": "not exists($.row['Total Population'])"
+          },
+          {
+            "transform": "select",
+            "'Contraceptive Prevalence Rate'": "$.row['Total Family Planning'] / $.row['Total Population']",
+            "'period'": "$.row.period"
+          }
+        ],
+        "output": []
+      }
+    },
+    {
+      "id": "UNFPA_Region_Facilities_Offering_Services_At_Least_1_Family_Planning",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": ["RHS4UNFPA809", "RHS1UNFPA03"],
+              "aggregationType": "RAW",
+              "dataServices": [
+                {
+                  "isDataRegional": true
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+          {
+            "transform": "select",
+            "$.row.dataElement": "$.row.value",
+            "'period'": "convertToPeriod($.period, 'QUARTER')",
+            "'organisationUnit'": "$.row.organisationUnit"
+          },
+          {
+            "transform": "filter",
+            "where": "not (exists($.row.RHS4UNFPA809) and gt(1, $.row.RHS4UNFPA809))"
+          },
+          {
+            "transform": "aggregate",
+            "organisationUnit": "group",
+            "period": "group",
+            "...": "last"
+          },
+          {
+            "transform": "select",
+            "'organisationUnit'": "'COUNTRY'",
+            "...": "*"
+          },
+          {
+            "transform": "aggregate",
+            "organisationUnit": "group",
+            "period": "group",
+            "...": "count"
+          },
+          {
+            "transform": "select",
+            "'Num of Facilities with at least 1 staff member trained in Family Planning'": "$.row.RHS4UNFPA809",
+            "'Num of Total Facilities'": "$.row.RHS1UNFPA03",
+            "'% of Facilities with at least 1 staff member trained in Family Planning'": "100 * $.row.RHS4UNFPA809 / $.row.RHS1UNFPA03"
+          }
+        ],
+        "output": [
+          {
+            "organisationUnit": "WS",
+            "period": "2018Q4",
+            "# of Facilities with at least 1 staff member trained in Family Planning": 14,
+            "# of Total Facilities": 14,
+            "% of Facilities with at least 1 staff member trained in Family Planning": 100
+          },
+          {
+            "organisationUnit": "TO",
+            "period": "2019Q3",
+            "# of Facilities with at least 1 staff member trained in Family Planning": 25,
+            "# of Total Facilities": 31,
+            "% of Facilities with at least 1 staff member trained in Family Planning": 80.6
+          },
+          {
+            "organisationUnit": "FJ",
+            "period": "2019Q3",
+            "# of Facilities with at least 1 staff member trained in Family Planning": 186,
+            "# of Total Facilities": 213,
+            "% of Facilities with at least 1 staff member trained in Family Planning": 87.3
+          },
+          {
+            "organisationUnit": "KI",
+            "period": "2019Q3",
+            "# of Facilities with at least 1 staff member trained in Family Planning": 92,
+            "# of Total Facilities": 113,
+            "% of Facilities with at least 1 staff member trained in Family Planning": 81.4
+          }
+        ]
+      }
+    },
+    {
+      "id": "COVID_AU_Total_Cases_Each_State_Per_Day",
+      "config": {
+        "fetch": [
+          {
+            "fetchAnalytics": {
+              "dataElementCodes": ["dailysurvey003"],
+              "aggregationType": "RAW",
+              "dataServices": [
+                {
+                  "isDataRegional": true
+                }
+              ]
+            }
+          }
+        ],
+        "transform": [
+          {
+            "transform": "select",
+            "$.row.organisationUnit": "$.row.value",
+            "...": ["period"]
+          },
+          {
+            "transform": "aggregate",
+            "period": "group",
+            "...": "sum"
+          },
+          {
+            "transform": "select",
+            "'AU_Victoria'": "sum($.allPrevious.AU_Victoria)",
+            "'AU_Tasmania'": "sum($.allPrevious.AU_Tasmania)",
+            "'AU_Queensland'": "sum($.allPrevious.AU_Queensland)",
+            "'AU_New South Wales'": "sum($.allPrevious['AU_New South Wales'])",
+            "'AU_South Australia'": "sum($.allPrevious['AU_South Australia'])",
+            "'AU_Western Australia'": "sum($.allPrevious['AU_Western Australia'])",
+            "'AU_Australian Capital Territory'": "sum($.allPrevious['AU_Australian Capital Territory'])",
+            "'AU_Northern Territory'": "sum($.allPrevious['AU_Northern Territory'])",
+            "...": "*"
+          }
+        ],
+        "output": []
+      }
+    }
+  ]
+}

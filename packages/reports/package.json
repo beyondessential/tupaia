@@ -1,0 +1,42 @@
+{
+  "name": "@tupaia/reports",
+  "version": "0.0.0",
+  "description": "Lambda Function for building report data",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "lint": "tsc; eslint . --ext .ts",
+    "lint:fix": "yarn lint --fix",
+    "lint:all": "yarn run lint \"src/**/*.{ts,jsx}\"",
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --extensions '.ts' --config-file '../../.babelrc-ts.js'",
+    "start": "node dist",
+    "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
+    "start-verbose": "LOG_LEVEL=debug npm run start-dev",
+    "prestart": "npm run -s build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "@tupaia/aggregator": "1.0.0",
+    "@tupaia/database": "1.0.0",
+    "@tupaia/utils": "1.0.0",
+    "@types/hjson": "^2.4.2",
+    "hjson": "^3.2.1",
+    "mathjs": "^7.3.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@tupaia/eslint-config-typescript": "1.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@tupaia/eslint-config-typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "homepage": "https://github.com/beyondessential/tupaia"
+}
