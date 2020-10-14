@@ -1,36 +1,29 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import moment from 'moment';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
+import PropTypes from 'prop-types';
+import React from 'react';
 import { getMarkerForOption, UNKNOWN_COLOR } from '../../components/Marker';
-import { WHITE } from '../../styles';
-import { LegendContainer } from './utils';
-import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
-import {
-  MEASURE_TYPE_ICON,
-  MEASURE_TYPE_SHADING,
-  MEASURE_VALUE_OTHER,
-  MEASURE_VALUE_NULL,
-  MEASURE_TYPE_SPECTRUM,
-  MEASURE_TYPE_COLOR,
-  MEASURE_TYPE_SHADED_SPECTRUM,
-} from '../../utils/measures';
 import {
   DEFAULT_ICON,
-  LEGEND_COLOR_ICON,
-  LEGEND_SHADING_ICON,
-  LEGEND_RADIUS_ICON,
   HIDDEN_ICON,
+  LEGEND_COLOR_ICON,
+  LEGEND_RADIUS_ICON,
+  LEGEND_SHADING_ICON,
 } from '../../components/Marker/markerIcons';
-import LegendEntry from './LegendEntry';
-
-const coloredMeasureTypes = [
+import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
+import { WHITE } from '../../styles';
+import {
   MEASURE_TYPE_COLOR,
-  MEASURE_TYPE_SPECTRUM,
-  MEASURE_TYPE_SHADED_SPECTRUM,
-];
+  MEASURE_TYPE_ICON,
+  MEASURE_TYPE_SHADING,
+  MEASURE_VALUE_NULL,
+  MEASURE_VALUE_OTHER,
+} from '../../utils/measures';
+import LegendEntry from './LegendEntry';
+import { LegendContainer } from './common';
 
 // Icon layers can be set to hide some values from the map entirely - but if we're showing
 // radius values for them, we should still put them in the legend!
@@ -42,7 +35,7 @@ function isHiddenOtherIcon({ value, icon }) {
 }
 
 function getMarkerColor(value, type, hasColorLayer) {
-  if (coloredMeasureTypes.includes(type)) {
+  if (type === MEASURE_TYPE_COLOR) {
     // if this layer is providing color, of course show the color
     return value.color;
   }

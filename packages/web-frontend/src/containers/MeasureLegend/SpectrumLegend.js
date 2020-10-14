@@ -1,15 +1,18 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
-import moment from 'moment';
-import NoDataLabel, { LabelLeft, LabelRight } from './labels';
-
-import { formatDataValue } from '../../utils/formatters';
-import { LegendContainer } from './utils';
-import { getFormattedInfo } from '../../utils/measures';
-import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
 import { getMarkerForOption, resolveSpectrumColour } from '../../components/Marker';
-import { SCALE_TYPES } from '../../constants';
 import { LEGEND_SHADING_ICON } from '../../components/Marker/markerIcons';
+import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
+import { SCALE_TYPES } from '../../constants';
+import { formatDataValue } from '../../utils/formatters';
+import NoDataLabel, { LabelLeft, LabelRight } from './labels';
+import { LegendContainer } from './common';
 
 const SpectrumSliver = styled.div`
   width: 2px;
