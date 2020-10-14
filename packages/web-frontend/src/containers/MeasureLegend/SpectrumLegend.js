@@ -5,6 +5,7 @@ import NoDataLabel, { LabelLeft, LabelRight } from './labels';
 
 import { formatDataValue } from '../../utils/formatters';
 import { LegendContainer } from './utils';
+import { getFormattedInfo } from '../../utils/measures';
 import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
 import { getMarkerForOption, resolveSpectrumColour } from '../../components/Marker';
 import { SCALE_TYPES } from '../../constants';
@@ -34,19 +35,14 @@ const renderSpectrum = measureOptions => {
   if (min == null || max == null) return null;
   const spectrumDivs = [];
   if (min === max) {
-    // There will only be a single value displayed, let's just default it to the lowest color (0 % of the way from 0 to 1):
-    for (let i = -1; i < 1; i += 0.02) {
-      const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, -1, 1);
-      spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
-    }
-    const labels = getSpectrumLabels(scaleType, -1, 1, valueType);
+    // There will only be a single value displayed, let's just default it to the middle color (50 % of the way from 0 to 1):
+    const colour = resolveSpectrumColour(scaleType, scaleColorScheme, 0.5, 0, 1);
+    const { left: label } = getSpectrumLabels(scaleType, min, min, valueType);
 
     return (
-      <LegendContainer>
-        <LabelLeft>{labels.left}</LabelLeft>
-        {spectrumDivs}
-        <LabelRight>{labels.right}</LabelRight>
-      </LegendContainer>
+      <div>
+        {getMarkerForOption(LEGEND_SHADING_ICON, colour)} {label}
+      </div>
     );
   }
 
