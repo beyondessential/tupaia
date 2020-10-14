@@ -17,13 +17,13 @@ import { TextField, CheckboxField } from '../../../Form/Fields';
 import { aggregateFields } from '../../../Form/utils';
 import {
   attemptRequestCountryAccess,
+  setRequestingAdditionalCountryAccess,
   setOverlayComponent,
   closeUserPage,
 } from '../../../../actions';
 import { LANDING, OVERLAY_PADDING } from '../../constants';
 import { RequestPendingMessage } from './RequestPendingMessage';
 import { SuccessMessage } from './SuccessMessage';
-import { RequestedProjectCountryAccessList } from './RequestedProjectCountryAccessList';
 
 const Container = styled.div`
   padding: ${OVERLAY_PADDING};
@@ -33,9 +33,11 @@ export const RequestProjectAccessComponent = ({
   project,
   countries,
   onBackToProjects,
+  onRequestProjectAdditionalAccess,
   onAttemptRequestProjectAccess,
   isFetchingCountryAccessData,
   isRequestingCountryAccess,
+  isRequestingAdditionalCountryAccess,
   hasRequestCountryAccessCompleted,
   errorMessage,
 }) => {
@@ -45,10 +47,18 @@ export const RequestProjectAccessComponent = ({
     return <SuccessMessage handleClose={onBackToProjects} projectName={name} />;
 
   const requestedCountries = countries.filter(c => c.accessRequests.includes(code));
-  const unrequestedCountries = countries.filter(c => !c.accessRequests.includes(code));
+  const availableCountries = countries.filter(c => !c.accessRequests.includes(code));
 
-  if (unrequestedCountries.length < 1)
-    return <RequestPendingMessage handleClose={onBackToProjects} projectName={name} />;
+  if (requestedCountries.length > 0 && !isRequestingAdditionalCountryAccess)
+    return (
+      <RequestPendingMessage
+        project={project}
+        requestedCountries={requestedCountries}
+        availableCountries={availableCountries}
+        handleClose={onBackToProjects}
+        handleRequest={onRequestProjectAdditionalAccess}
+      />
+    );
 
   return (
     <Container>
@@ -56,10 +66,6 @@ export const RequestProjectAccessComponent = ({
         Requesting access for &nbsp;
         <b>{name}</b>
       </p>
-      <RequestedProjectCountryAccessList
-        countries={requestedCountries}
-        handleClose={onBackToProjects}
-      />
       <Form
         isLoading={isFetchingCountryAccessData || isRequestingCountryAccess}
         formError={errorMessage}
@@ -68,7 +74,7 @@ export const RequestProjectAccessComponent = ({
         }
         render={submitForm => (
           <>
-            {unrequestedCountries.map(country => (
+            {availableCountries.map(country => (
               <CheckboxField
                 fullWidth
                 label={country.name}
@@ -101,9 +107,11 @@ RequestProjectAccessComponent.propTypes = {
   countries: PropTypes.arrayOf(PropTypes.object).isRequired,
   errorMessage: PropTypes.string.isRequired,
   onBackToProjects: PropTypes.func.isRequired,
+  onRequestProjectAdditionalAccess: PropTypes.func.isRequired,
   onAttemptRequestProjectAccess: PropTypes.func.isRequired,
   isFetchingCountryAccessData: PropTypes.bool.isRequired,
   isRequestingCountryAccess: PropTypes.bool.isRequired,
+  isRequestingAdditionalCountryAccess: PropTypes.bool.isRequired,
   hasRequestCountryAccessCompleted: PropTypes.bool.isRequired,
 };
 
@@ -114,6 +122,7 @@ const mapStateToProps = state => {
     isFetchingCountryAccessData,
     isRequestingCountryAccess,
     hasRequestCountryAccessCompleted,
+    isRequestingAdditionalCountryAccess,
     errorMessage,
   } = state.requestCountryAccess;
 
@@ -123,6 +132,7 @@ const mapStateToProps = state => {
     isFetchingCountryAccessData,
     isRequestingCountryAccess,
     hasRequestCountryAccessCompleted,
+    isRequestingAdditionalCountryAccess,
     errorMessage,
   };
 };
@@ -135,6 +145,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(setOverlayComponent(LANDING));
       dispatch(closeUserPage());
     },
+    onRequestProjectAdditionalAccess: () => dispatch(setRequestingAdditionalCountryAccess(true)),
   };
 };
 

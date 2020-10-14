@@ -138,6 +138,7 @@ export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
 export const SET_PROJECT = 'SET_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
+export const SET_PROJECT_ADDITIONAL_ACCESS = 'SET_PROJECT_ADDITIONAL_ACCESS';
 export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS =
   'UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS';
@@ -469,6 +470,15 @@ export function fetchRequestCountryAccessError(errorMessage) {
   return {
     type: FETCH_REQUEST_COUNTRY_ACCESS_ERROR,
     error: errorMessage,
+  };
+}
+
+/**
+ * Submits a country access request
+ */
+export function setRequestingAdditionalCountryAccess() {
+  return {
+    type: SET_PROJECT_ADDITIONAL_ACCESS,
   };
 }
 

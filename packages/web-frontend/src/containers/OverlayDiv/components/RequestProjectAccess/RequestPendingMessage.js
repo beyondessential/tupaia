@@ -9,14 +9,22 @@ import styled from 'styled-components';
 import { PrimaryButton } from '../../../../components/Buttons';
 import { OVERLAY_PADDING } from '../../constants';
 import { WHITE } from '../../../../styles';
+import { RequestedProjectCountryAccessList } from './RequestedProjectCountryAccessList';
 
 const BackButton = styled(PrimaryButton)`
   width: auto;
   padding: 5px 15px;
 `;
 
+const MessageHeader = styled.p`
+  text-align: left;
+  color: ${WHITE};
+  max-width: 430px;
+  font-size: larger;
+`;
+
 const Message = styled.p`
-  text-align: center;
+  text-align: left;
   color: ${WHITE};
   max-width: 430px;
 `;
@@ -34,15 +42,27 @@ const styles = {
   },
 };
 
-export const RequestPendingMessage = ({ projectName, handleClose }) => (
+export const RequestPendingMessage = ({
+  project,
+  requestedCountries,
+  availableCountries,
+  handleClose,
+  handleRequest,
+}) => (
   <Container>
+    <MessageHeader>
+      Requesting access for <strong>{project.name}</strong>
+    </MessageHeader>
     <Message>
-      {`Requesting access for `}
-      <b>{projectName}</b>
+      <b>You have already requested access to this project</b>
     </Message>
+    <RequestedProjectCountryAccessList
+      requestedCountries={requestedCountries}
+      availableCountries={availableCountries}
+      handleRequest={handleRequest}
+    />
     <Message>
-      {`You have already requested access to this project and this can take some time to process,
-            as requests require formal permission to be granted.`}
+      This can take some time to process, as requests require formal permission to be granted.
     </Message>
     <Message>
       {`If you have any questions, please email: `}
@@ -55,6 +75,12 @@ export const RequestPendingMessage = ({ projectName, handleClose }) => (
 );
 
 RequestPendingMessage.propTypes = {
-  projectName: PropTypes.string.isRequired,
+  project: PropTypes.shape({
+    name: PropTypes.string,
+    code: PropTypes.string,
+  }).isRequired,
+  requestedCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
+  availableCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
   handleClose: PropTypes.func.isRequired,
+  handleRequest: PropTypes.func.isRequired,
 };
