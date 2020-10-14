@@ -9,11 +9,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { PrimaryButton } from '../../../../components/Buttons';
-import { WHITE } from '../../../../styles';
+import { WHITE, GREY } from '../../../../styles';
+import { OVERLAY_PADDING } from '../../constants';
 
 const BackButton = styled(PrimaryButton)`
   width: auto;
   padding: 5px 15px;
+`;
+
+const MessageHeader = styled.p`
+  text-align: left;
+  color: ${WHITE};
+  max-width: 430px;
+  font-size: larger;
 `;
 
 const Message = styled.p`
@@ -22,16 +30,29 @@ const Message = styled.p`
   max-width: 430px;
 `;
 
+const Note = styled.p`
+  text-align: center;
+  color: ${GREY};
+  max-width: 430px;
+  font-size: small;
+  padding: 10px;
+`;
+
+const Container = styled.div`
+  padding: ${OVERLAY_PADDING};
+`;
+
 export const SuccessMessage = ({ projectName, handleClose }) => (
-  <div>
-    <Message>
-      {`
-        Thank you for your access request to ${projectName}.
-        We will review your application and respond by email shortly.
-      `}
-    </Message>
+  <Container>
+    <MessageHeader>
+      Thank you for requesting access to <strong>{projectName}</strong>.
+    </MessageHeader>
+    <Message>We will review your application and respond by email shortly.</Message>
+    <Note>
+      Note: This can take some time to process, as requests require formal permission to be granted.
+    </Note>
     <BackButton onClick={handleClose}>Back to projects</BackButton>
-  </div>
+  </Container>
 );
 
 SuccessMessage.propTypes = {
