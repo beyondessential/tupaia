@@ -38,10 +38,10 @@ class TestAllScript extends Script {
 
   printEnabledOptionsInfo() {
     if (this.args.bail) {
-      this.log('Bail mode is on');
+      this.logInfo('Bail mode is on');
     }
     if (this.args.silent) {
-      this.log('Silent mode is on');
+      this.logInfo('Silent mode is on');
     }
   }
 

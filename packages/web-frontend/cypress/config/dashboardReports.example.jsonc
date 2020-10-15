@@ -1,29 +1,14 @@
 /**
  * Example for: `dashboardReports.json`
  *
- * Use `yarn cypress:generate-config` to generate this file and populate it with multiple
- * project/group/report combinations using the database. You can also populate it with manual data.
+ * There are two ways to populate this file:
+ * 1. Using the default config generation script: `yarn workspace @tupaia/web-frontend cypress:generate-config`
+ * 2. Providing manual data as in this example
  */
 
 [
-  {
-    "project": "Explore",
-    "dashboardGroup": "General",
-    "name": "Medicines Availability by Country"
-  },
-  {
-    "project": "Explore",
-    "dashboardGroup": "General",
-    "name": "Number of Operational Facilities Surveyed by Country"
-  },
-  {
-    "project": "Strive PNG",
-    "dashboardGroup": "Strive PNG",
-    "name": "Weekly # of cases by health facility (all sites)"
-  },
-  {
-    "project": "COVID-19 Australia",
-    "dashboardGroup": "COVID-19",
-    "name": "COVID-19 Total tests per capita"
-  }
+  "/explore/explore/General?report=28",
+  "/explore/explore/General?report=29",
+  "/strive/PG/STRIVE PNG?report=PG_Strive_PNG_Weekly_Febrile_Illness_RDT_Positive_By_Facility_National",
+  "/covidau/AU/COVID-19?report=COVID_Tests_Per_Capita"
 ]
