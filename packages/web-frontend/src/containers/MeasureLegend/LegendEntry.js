@@ -29,22 +29,18 @@ const LegendEntry = ({ marker, label, value, dataKey, onClick, hiddenMeasures, u
   );
 };
 
-const mapLegendStateToProps = () => {
-  return state => ({
-    hiddenMeasures: state.map.measureInfo.hiddenMeasures,
-  });
-};
+const mapStateToProps = () => state => ({
+  hiddenMeasures: state.map.measureInfo.hiddenMeasures,
+});
 
-const mapLegendDispatchToProps = () => {
-  return dispatch => ({
-    onClick: (key, value, hide) =>
-      dispatch({
-        key,
-        value,
-        type: hide ? 'HIDE_MAP_MEASURE' : 'UNHIDE_MAP_MEASURE',
-      }),
-  });
-};
+const mapDispatchToProps = () => dispatch => ({
+  onClick: (key, value, hide) =>
+    dispatch({
+      key,
+      value,
+      type: hide ? 'HIDE_MAP_MEASURE' : 'UNHIDE_MAP_MEASURE',
+    }),
+});
 
 LegendEntry.propTypes = {
   marker: PropTypes.element.isRequired,
@@ -60,4 +56,4 @@ LegendEntry.defaultProps = {
   unClickable: false,
 };
 
-export default connect(mapLegendStateToProps, mapLegendDispatchToProps)(LegendEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(LegendEntry);
