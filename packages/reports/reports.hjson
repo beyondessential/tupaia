@@ -31,15 +31,7 @@
         ],
         "transform": [
           "keyValueByDataElementName",
-          {
-            "transform": "sort",
-            "by": "$.row.period"
-          },
-          {
-            "transform": "aggregate",
-            "organisationUnit": "group",
-            "...": "last"
-          },
+          "aggregateMostRecentValuePerOrgUnit"
           {
             "transform": "aggregate",
             "organisationUnit": "drop",
