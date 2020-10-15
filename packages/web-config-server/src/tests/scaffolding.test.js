@@ -35,4 +35,5 @@ after(async () => {
   const models = getTestModels();
 
   await clearTestData(models.database, testStartTime);
+  await models.database.closeConnections();
 });
