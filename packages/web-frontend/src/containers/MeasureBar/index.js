@@ -149,9 +149,9 @@ export class MeasureBar extends Component {
       currentMeasure.datePickerLimits,
     );
 
-    const { timePeriodEditable = true } = currentMeasure;
+    const { isTimePeriodEditable = true } = currentMeasure;
 
-    const showDatePicker = timePeriodEditable && currentMeasure.periodGranularity;
+    const showDatePicker = isTimePeriodEditable && currentMeasure.periodGranularity;
 
     return (
       <Control

@@ -35,7 +35,7 @@ const commonMapOverlayConfig = {
     displayType: 'spectrum',
     measureLevel: 'City',
     periodGranularity: 'day',
-    timePeriodEditable: false,
+    isTimePeriodEditable: false,
   },
   countryCodes: '{LA}',
   projectCodes: '{laos_eoc}',
