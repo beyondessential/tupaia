@@ -162,45 +162,6 @@ export class Matrix extends PureComponent {
       currentPresentationOption: 0,
       presentationOptions: Object.keys(presentationOptions),
       rowElements: [],
-      initExporter: extraConfig => {
-        if (extraConfig.search) {
-          this.search(extraConfig.search);
-        }
-
-        this.currentExportXPage = 0;
-        this.resetClipping();
-        this.changeXPage(0);
-        this.openAll();
-        this.rowElements = this.getOrderedRowElements();
-        this.fitToViewport();
-      },
-      moveToNextExportPage: () => {
-        const totalXPages = window.tupaiaExportProps.getXPageCount();
-        this.currentExportXPage++;
-
-        // Advance horizontally by default.
-        if (this.currentExportXPage < totalXPages) {
-          this.changeXPage(this.currentExportXPage);
-          return true;
-        }
-        // Reset column page and advance vertically.
-
-        this.changeXPage(0);
-
-        if (this.clipNext()) {
-          this.currentExportXPage = 0;
-          this.fitToViewport();
-
-          return true;
-        }
-
-        if (this.currentPresentationOption < this.presentationOptions.length) {
-          this.currentPresentationOption++;
-          return true;
-        }
-
-        return false;
-      },
       getXPageCount: () => {
         const { numberOfColumnsPerPage } = this.props;
         return Math.ceil(columnKeys.length / numberOfColumnsPerPage);

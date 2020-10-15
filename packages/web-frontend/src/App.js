@@ -22,10 +22,6 @@ switch (process.env.REACT_APP_APP_TYPE) {
     importRootScreen = async () => import('./screens/mobile/RootScreen');
     break;
 
-  case 'exporter':
-    importRootScreen = async () => import('./screens/exporter/RootScreen');
-    break;
-
   default:
     importRootScreen = async () => import('./screens/desktop/RootScreen');
     break;

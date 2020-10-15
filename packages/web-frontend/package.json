@@ -12,9 +12,8 @@
   "main": "dist/index.js",
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
-    "build": "mkdir -p builds && npm run build-desktop && npm run build-mobile && npm run build-exporter",
+    "build": "mkdir -p builds && npm run build-desktop && npm run build-mobile",
     "build-desktop": "node scripts/build.js && rm -rf builds/desktop && mv build builds/desktop",
-    "build-exporter": "REACT_APP_APP_TYPE=exporter node scripts/build.js && rm -rf builds/exporter && mv build builds/exporter",
     "build-mobile": "REACT_APP_APP_TYPE=mobile node scripts/build.js && rm -rf builds/mobile && mv build builds/mobile",
     "cypress:generate-config": "babel-node cypress/scripts/generateConfig --config-file '../../babel.config.json'",
     "cypress:open": "cypress open",
@@ -23,7 +22,6 @@
     "lint:fix": "yarn lint --fix .",
     "start": "PORT=8088 node scripts/start.js",
     "start-dev": "npm run start",
-    "start-exporter": "PORT=3001 REACT_APP_APP_TYPE=exporter node scripts/start.js",
     "start-fullstack": "npm-run-all -c -l -p start-server start",
     "start-mobile": "REACT_APP_APP_TYPE=mobile PORT=8089 node scripts/start.js",
     "start-server": "yarn workspace @tupaia/web-config-server start",

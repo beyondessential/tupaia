@@ -22,13 +22,8 @@ export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      extraChartConfig: {}, // Bridge for connecting chart to exporter.
-    };
-
     this.onItemClick = this.onItemClick.bind(this);
     this.renderPeriodSelector = this.renderPeriodSelector.bind(this);
-    this.onChangeConfig = this.onChangeConfig.bind(this);
     this.onSetDateRange = this.onSetDateRange.bind(this);
   }
 
@@ -40,13 +35,6 @@ export class EnlargedDialogContent extends PureComponent {
   onSetDateRange(startDate, endDate) {
     const { onSetDateRange } = this.props;
     onSetDateRange(startDate, endDate);
-    this.onChangeConfig({ startDate, endDate });
-  }
-
-  onChangeConfig(newConfigFields) {
-    this.setState(previousState => ({
-      extraChartConfig: { ...previousState.extraChartConfig, ...newConfigFields },
-    }));
   }
 
   isExportable() {
@@ -113,7 +101,6 @@ export class EnlargedDialogContent extends PureComponent {
     if (getIsMatrix(viewContent)) {
       viewProps.organisationUnitName = organisationUnitName;
       viewProps.onSetDateRange = this.onSetDateRange;
-      viewProps.onChangeConfig = this.onChangeConfig;
     }
 
     return <ViewWrapper {...viewProps} isExporting={isExporting} />;
