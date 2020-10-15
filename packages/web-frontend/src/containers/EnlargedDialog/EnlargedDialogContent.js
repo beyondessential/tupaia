@@ -12,8 +12,6 @@ import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import IconButton from 'material-ui/IconButton';
 import moment from 'moment';
-import download from 'downloadjs';
-import domtoimage from '../../dom-to-image';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
 import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE, WHITE } from '../../styles';
@@ -24,10 +22,7 @@ export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.exportRef = React.createRef();
-
     this.state = {
-      isExporting: true,
       extraChartConfig: {}, // Bridge for connecting chart to exporter.
     };
 
@@ -60,7 +55,7 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderTitle() {
-    const { viewContent, organisationUnitName } = this.props;
+    const { viewContent, organisationUnitName, isExporting } = this.props;
     let titleText;
     if (getIsMatrix(viewContent)) {
       return null;
@@ -75,14 +70,14 @@ export class EnlargedDialogContent extends PureComponent {
 
     const style = {
       textAlign: 'center',
-      backgroundColor: this.state.isExporting ? WHITE : DARK_BLUE,
-      color: this.state.isExporting ? DARK_BLUE : WHITE,
+      backgroundColor: isExporting ? WHITE : DARK_BLUE,
+      color: isExporting ? DARK_BLUE : WHITE,
     };
 
     return (
       <DialogTitle style={style}>
         <span style={styles.titleText}>{titleText}</span>
-        {periodGranularity && !this.state.isExporting && this.renderPeriodSelector()}
+        {periodGranularity && !isExporting && this.renderPeriodSelector()}
       </DialogTitle>
     );
   }
@@ -107,7 +102,7 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderBodyContent() {
-    const { viewContent, onCloseOverlay, organisationUnitName } = this.props;
+    const { viewContent, onCloseOverlay, organisationUnitName, isExporting } = this.props;
     const ViewWrapper = getViewWrapper(viewContent);
     const viewProps = {
       viewContent,
@@ -121,7 +116,7 @@ export class EnlargedDialogContent extends PureComponent {
       viewProps.onChangeConfig = this.onChangeConfig;
     }
 
-    return <ViewWrapper {...viewProps} isExporting={this.state.isExporting} />;
+    return <ViewWrapper {...viewProps} isExporting={isExporting} />;
   }
 
   renderDescription() {
@@ -136,19 +131,7 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderToolbar() {
-    const { onCloseOverlay, onExport, CloseIcon, toolbarStyle } = this.props;
-    const { extraChartConfig } = this.state;
-
-    // htmlToImage
-    const handleExport = () => {
-      this.setState({ isExporting: true });
-      const node = this.exportRef.current;
-
-      domtoimage.toPng(node).then(dataUrl => {
-        download(dataUrl, 'exported-chart.png');
-        // this.setState({ isExporting: false });
-      });
-    };
+    const { onCloseOverlay, onOpenExportDialog, CloseIcon, toolbarStyle } = this.props;
 
     return (
       <div style={{ ...styles.toolbar, ...toolbarStyle }}>
@@ -156,7 +139,7 @@ export class EnlargedDialogContent extends PureComponent {
           <IconButton
             style={styles.toolbarButton}
             iconStyle={styles.toolbarButtonIcon}
-            onClick={handleExport}
+            onClick={onOpenExportDialog}
           >
             <DownloadIcon />
           </IconButton>
@@ -213,14 +196,15 @@ export class EnlargedDialogContent extends PureComponent {
   render() {
     if (!this.props.viewContent) return <LoadingIndicator />;
     const isMatrix = getIsMatrix(this.props.viewContent);
+    const { isExporting, exportRef } = this.props;
     const contentStyle = {
-      backgroundColor: this.state.isExporting ? WHITE : DARK_BLUE,
-      overflowY: this.state.isExporting ? 'visible' : 'auto',
+      backgroundColor: isExporting ? WHITE : DARK_BLUE,
+      overflowY: isExporting ? 'visible' : 'auto',
       padding: isMatrix ? 0 : 20,
     };
 
     return (
-      <div data-testid="enlarged-dialog" ref={this.exportRef}>
+      <div data-testid="enlarged-dialog" ref={exportRef}>
         {this.renderTitle()}
         <DialogContent style={contentStyle}>
           {this.renderToolbar()}
@@ -300,15 +284,17 @@ const styles = {
 EnlargedDialogContent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
-  onExport: PropTypes.func,
+  onOpenExportDialog: PropTypes.func,
   organisationUnitName: PropTypes.string,
   onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
   isDrilledDown: PropTypes.bool,
   isLoading: PropTypes.bool,
   isVisible: PropTypes.bool,
+  isExporting: PropTypes.bool,
   drillDownOverlay: PropTypes.element,
   CloseIcon: PropTypes.func,
+  exportRef: PropTypes.object,
   toolbarStyle: PropTypes.shape({}),
 };
 
@@ -318,10 +304,12 @@ EnlargedDialogContent.defaultProps = {
   isDrilledDown: false,
   isLoading: false,
   isVisible: false,
+  isExporting: false,
   drillDownOverlay: null,
   organisationUnitName: '',
-  onExport: null,
+  onOpenExportDialog: null,
   CloseIcon: DefaultCloseIcon,
   toolbarStyle: {},
   viewContent: null,
+  exportRef: null,
 };

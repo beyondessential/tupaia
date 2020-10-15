@@ -3,15 +3,17 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Dialog from '@material-ui/core/Dialog';
+import download from 'downloadjs';
+import domtoimage from '../../dom-to-image';
+
 import {
   attemptDrillDown,
   closeEnlargedDialog,
-  openExportDialog,
   setEnlargedDashboardDateRange,
 } from '../../actions';
 import { DrillDownOverlay } from '../DrillDownOverlay';
@@ -25,37 +27,52 @@ import {
   selectCurrentOrgUnit,
 } from '../../selectors';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
+import { ExportDialog } from '../../components/ExportDialog';
 
-class EnlargedDialogComponent extends PureComponent {
-  render() {
-    const {
-      isDrillDownVisible,
-      onCloseOverlay,
-      viewContent,
-      onExport,
-      organisationUnitName,
-      onDrillDown,
-      onSetDateRange,
-      isLoading,
-      isVisible,
-    } = this.props;
-    if (!isVisible) {
-      return null;
-    }
+const EnlargedDialogComponent = ({
+  isDrillDownVisible,
+  onCloseOverlay,
+  viewContent,
+  organisationUnitName,
+  onDrillDown,
+  onSetDateRange,
+  isLoading,
+  isVisible,
+}) => {
+  const exportRef = React.useRef(null);
+  const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
+  const [isExporting, setIsExporting] = React.useState(false);
 
-    const hasBigData =
-      getIsMatrix(viewContent) || (viewContent && viewContent.data && viewContent.data.length) > 20;
+  if (!isVisible) {
+    return null;
+  }
 
-    const getDialogStyle = () => {
-      if (hasBigData) return styles.largeContainer;
-      if (getIsDataDownload(viewContent)) return styles.smallContainer;
-      return styles.container;
-    };
+  const isMatrix = getIsMatrix(viewContent);
+  const hasBigData = isMatrix || (viewContent && viewContent.data && viewContent.data.length) > 20;
+  const exportFormats = isMatrix ? ['xlsx'] : ['png'];
 
-    const drillDownOverlay = isDrillDownVisible ? (
-      <DrillDownOverlay organisationUnitName={organisationUnitName} />
-    ) : null;
-    return (
+  const getDialogStyle = () => {
+    if (hasBigData) return styles.largeContainer;
+    if (getIsDataDownload(viewContent)) return styles.smallContainer;
+    return styles.container;
+  };
+
+  const onExport = () => {
+    setIsExporting(true);
+    const node = exportRef.current;
+
+    domtoimage.toPng(node).then(dataUrl => {
+      download(dataUrl, 'exported-chart.png');
+      setIsExporting(false);
+    });
+  };
+
+  const drillDownOverlay = isDrillDownVisible ? (
+    <DrillDownOverlay organisationUnitName={organisationUnitName} />
+  ) : null;
+
+  return (
+    <>
       <Dialog
         open
         style={styles.dialog}
@@ -64,28 +81,35 @@ class EnlargedDialogComponent extends PureComponent {
         PaperProps={{ style: getDialogStyle() }}
       >
         <EnlargedDialogContent
+          exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
           viewContent={viewContent}
-          onExport={onExport}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
+          onOpenExportDialog={() => setExportDialogIsOpen(true)}
           onSetDateRange={onSetDateRange}
           isLoading={isLoading}
+          isExporting={isExporting} // Todo: set exporting theme here?
           isVisible={isVisible}
           drillDownOverlay={drillDownOverlay}
         />
       </Dialog>
-    );
-  }
-}
+      <ExportDialog
+        isOpen={exportDialogIsOpen}
+        onClose={() => setExportDialogIsOpen(false)}
+        formats={exportFormats}
+        onExport={onExport}
+      />
+    </>
+  );
+};
 
 EnlargedDialogComponent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  onExport: PropTypes.func.isRequired,
   organisationUnitName: PropTypes.string.isRequired,
-  onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
+  onDrillDown: PropTypes.func,
   isLoading: PropTypes.bool,
   isVisible: PropTypes.bool,
   isDrillDownVisible: PropTypes.bool,
@@ -190,26 +214,6 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
         parameterLink,
         parameterValue: chartItem[keyLink],
         drillDownLevel: newDrillDownLevel,
-      }),
-    );
-  },
-  onExport: extraConfig => {
-    const { viewContent, organisationUnitName, startDate, endDate } = stateProps;
-    const { viewId, organisationUnitCode, dashboardGroupId, chartType, exportConfig } = viewContent;
-
-    const formats = getIsMatrix(viewContent) ? ['xlsx'] : ['png'];
-
-    dispatch(
-      openExportDialog({
-        organisationUnitCode,
-        organisationUnitName,
-        viewId,
-        dashboardGroupId,
-        formats,
-        startDate,
-        endDate,
-        chartType,
-        extraConfig: { ...extraConfig, export: exportConfig },
       }),
     );
   },

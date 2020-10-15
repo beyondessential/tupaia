@@ -50,7 +50,7 @@ export default class VerticalTick extends PureComponent {
 VerticalTick.propTypes = {
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
-  payload: PropTypes.shape({ value: PropTypes.number }).isRequired,
+  payload: PropTypes.object.isRequired,
   onHeight: PropTypes.func,
 };
 
