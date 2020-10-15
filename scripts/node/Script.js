@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-const { spawnSync } = require('child_process');
+const { execSync } = require('child_process');
 const { existsSync, readdirSync } = require('fs');
+const yargs = require('yargs');
 
 const { getLoggerInstance } = require('./utilities');
 
@@ -19,24 +20,45 @@ class Script {
     ERROR: 1,
   };
 
-  options;
+  /**
+   * @protected Override in child class
+   *
+   * @property {string} [command] Use '*' or '$0' to refer to the default command
+   *   This field is useful for
+   *   1. Defining subcommands, eg 'push <branch_name>'
+   *   2. Defining positional arguments in the default command, eg '* <path>'
+   * @property {Object} [options]
+   * @property {string} [usage]
+   * @property {string} [version]
+   *
+   * @see https://github.com/yargs/yargs/blob/master/docs/api.md
+   */
+  config = {};
 
-  constructor() {
-    const [, , ...args] = process.argv;
-    this.options = this.parseOptions(args);
+  args;
+
+  run() {
+    this.parseConfig();
+    this.runCommands();
+  }
+
+  parseConfig() {
+    const supportedConfigKeys = ['command', 'options', 'usage', 'version'];
+
+    yargs.strict();
+    Object.entries(this.config).forEach(([key, value]) => {
+      if (supportedConfigKeys.includes(key)) {
+        yargs[key](value);
+      }
+    });
+    this.args = yargs.argv;
   }
 
   /**
    * @abstract
    */
-  // eslint-disable-next-line class-methods-use-this
-  run() {
-    throw new Error('Any subclass of Script must implement the "run" method');
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  parseOptions(args) {
-    return {};
+  runCommands() {
+    throw new Error('Any subclass of Script must implement the "runCommands" method');
   }
 
   logError = (message = '') => {
@@ -48,11 +70,19 @@ class Script {
   };
 
   logSuccess = (message = '') => {
-    logger.info(message);
+    logger.success(message);
   };
 
   logInfo = (message = '') => {
     logger.info(message);
+  };
+
+  logVerbose = (message = '') => {
+    logger.verbose(message);
+  };
+
+  logDebug = (message = '') => {
+    logger.debug(message);
   };
 
   log = (message = '') => {
@@ -62,13 +92,10 @@ class Script {
   /**
    * @returns {boolean} True if the command exited with a success status
    */
-  exec = (commandString, { printOutput = true }) => {
-    const [command, ...args] = commandString.split(' ');
-
-    const { stderr, status } = spawnSync(command, args, {
+  exec = (command, { printOutput = true } = {}) => {
+    execSync(command, {
       stdio: printOutput ? 'inherit' : 'ignore',
     });
-    return !stderr && status === this.STATUS_CODES.SUCCESS;
   };
 
   exit(success = true) {

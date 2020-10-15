@@ -39,4 +39,5 @@ after(async () => {
   const models = getModels();
   SendEmail.sendEmail.restore();
   await clearTestData(models.database, testStartTime);
+  await models.database.closeConnections();
 });

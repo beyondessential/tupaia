@@ -27,6 +27,7 @@ import {
   selectCurrentProject,
   selectMeasureBarItemById,
 } from '../../selectors';
+import { getDefaultDates } from '../../utils/periodGranularities';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -141,10 +142,13 @@ export class MeasureBar extends Component {
     const orgName = currentOrganisationUnitName || 'Your current selection';
     const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
+    const defaultDates = getDefaultDates(currentMeasure);
+
     return (
       <Control
         emptyMessage={emptyMessage}
         selectedMeasure={currentMeasure}
+        defaultDates={defaultDates}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
