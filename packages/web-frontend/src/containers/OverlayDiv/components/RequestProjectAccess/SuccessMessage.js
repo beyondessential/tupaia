@@ -13,27 +13,27 @@ import { WHITE, GREY } from '../../../../styles';
 import { OVERLAY_PADDING } from '../../constants';
 
 const BackButton = styled(PrimaryButton)`
-  width: auto;
-  padding: 5px 15px;
+  width: 100%;
+  padding: 5px 10px;
 `;
 
 const MessageHeader = styled.p`
-  text-align: left;
+  text-align: center;
   color: ${WHITE};
-  max-width: 430px;
+  max-width: 300px;
   font-size: larger;
 `;
 
 const Message = styled.p`
   text-align: center;
   color: ${WHITE};
-  max-width: 430px;
+  max-width: 300px;
 `;
 
 const Note = styled.p`
   text-align: center;
   color: ${GREY};
-  max-width: 430px;
+  max-width: 300px;
   font-size: small;
   padding: 10px;
 `;

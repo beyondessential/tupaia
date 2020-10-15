@@ -12,7 +12,7 @@ import { WHITE } from '../../../../styles';
 import { RequestedProjectCountryAccessList } from './RequestedProjectCountryAccessList';
 
 const BackButton = styled(PrimaryButton)`
-  width: auto;
+  width: 100%;
   padding: 5px 15px;
 `;
 
