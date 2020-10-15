@@ -84,7 +84,7 @@ const renderSpectrum = measureOptions => {
   );
 };
 
-export const SpectrumLegend = ({ measureOptions }) => {
+export const SpectrumLegend = React.memo(({ measureOptions }) => {
   const { valueMapping, noDataColour } = measureOptions;
 
   return (
@@ -93,7 +93,7 @@ export const SpectrumLegend = ({ measureOptions }) => {
       {noDataColour && <NoDataLabel noDataColour={noDataColour} valueMapping={valueMapping} />}
     </LegendContainer>
   );
-};
+});
 
 SpectrumLegend.propTypes = {
   measureOptions: MeasureOptionsPropType.isRequired,

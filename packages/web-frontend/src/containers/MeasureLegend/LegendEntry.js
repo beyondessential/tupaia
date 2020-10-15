@@ -18,16 +18,18 @@ const Key = styled.div`
   ${p => (p.hidden ? 'opacity: 0.5;' : '')}
 `;
 
-const LegendEntry = ({ marker, label, value, dataKey, onClick, hiddenMeasures, unClickable }) => {
-  const hidden = (hiddenMeasures[dataKey] || {})[value];
+const LegendEntry = React.memo(
+  ({ marker, label, value, dataKey, onClick, hiddenMeasures, unClickable }) => {
+    const hidden = (hiddenMeasures[dataKey] || {})[value];
 
-  return (
-    <Key onClick={unClickable ? null : () => onClick(dataKey, value, !hidden)} hidden={hidden}>
-      {marker}
-      <div>{label}</div>
-    </Key>
-  );
-};
+    return (
+      <Key onClick={unClickable ? null : () => onClick(dataKey, value, !hidden)} hidden={hidden}>
+        {marker}
+        <div>{label}</div>
+      </Key>
+    );
+  },
+);
 
 const mapLegendStateToProps = () => {
   return state => ({

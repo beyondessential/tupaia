@@ -57,7 +57,7 @@ const getLegend = measureType => {
 // returning <LegendOuterFrame /> keeps the map control on the right hand side
 const renderEmptyMultiLegend = () => <LegendOuterFrame />;
 
-const MultiLegend = ({ measureOptions, isMeasureLoading }) => {
+const MultiLegend = React.memo(({ measureOptions, isMeasureLoading }) => {
   if (isMeasureLoading) {
     return renderEmptyMultiLegend();
   }
@@ -91,7 +91,7 @@ const MultiLegend = ({ measureOptions, isMeasureLoading }) => {
       <LegendFrame>{legends}</LegendFrame>
     </LegendOuterFrame>
   );
-};
+});
 
 MultiLegend.propTypes = {
   measureOptions: MeasureOptionsGroupPropType.isRequired,
