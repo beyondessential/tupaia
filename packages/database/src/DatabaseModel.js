@@ -31,13 +31,11 @@ export class DatabaseModel {
       });
 
       // if this model has caching that depends on other models, also add invalidation for them
-      if (this.cacheDependencies) {
-        this.cacheDependencies.forEach(databaseType => {
-          this.database.addChangeHandlerForCollection(databaseType, () => {
-            this.cache = {};
-          });
+      this.cacheDependencies.forEach(databaseType => {
+        this.database.addChangeHandlerForCollection(databaseType, () => {
+          this.cache = {};
         });
-      }
+      });
 
       // invalidate cached schema for this model on any change to db schema
       this.database.addSchemaChangeHandler(() => {
@@ -45,6 +43,11 @@ export class DatabaseModel {
         this.fieldNames = null;
       });
     }
+  }
+
+  // can be overridden by any subclass that needs cache invalidation when a related table changes
+  get cacheDependencies() {
+    return [];
   }
 
   // functionArguments should receive the 'arguments' object
