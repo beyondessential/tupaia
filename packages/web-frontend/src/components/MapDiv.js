@@ -21,13 +21,17 @@ import { CONTROL_BAR_PADDING } from '../styles';
 const FlexDiv = styled.div`
   flex: 1;
   display: flex;
+`;
+
+const LeftCol = styled.div`
+  display: flex;
   flex-direction: column;
+  flex: 1;
 `;
 
 const TopRow = styled.div`
   display: flex;
   flex: 1;
-  flex-grow: 1;
   flex-direction: column;
   padding: ${CONTROL_BAR_PADDING}px;
 `;
@@ -37,19 +41,21 @@ const BottomRow = styled.div`
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  padding: 10px 10px 0px 10px;
+  padding: 10px 10px 0 10px;
 `;
 
 export const MapDiv = () => {
   return (
     <FlexDiv>
-      <TopRow>
-        <MeasureBar />
-      </TopRow>
-      <BottomRow>
-        <MeasureLegend />
-        <MapControl />
-      </BottomRow>
+      <LeftCol>
+        <TopRow>
+          <MeasureBar />
+        </TopRow>
+        <BottomRow>
+          <MeasureLegend />
+        </BottomRow>
+      </LeftCol>
+      <MapControl />
     </FlexDiv>
   );
 };
