@@ -1,14 +1,24 @@
 {
   "name": "@tupaia/auth",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "description": "Back-end authentication used internally by web-config-server and meditrak-server to authenticate a user's credentials against the database, and build their access policy.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/auth"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix ."
+    "lint:fix": "yarn lint --fix .",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage"
+  },
+  "eslintConfig": {
+    "extends": "@beyondessential/jest"
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",

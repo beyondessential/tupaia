@@ -5,12 +5,13 @@
 
 import {
   closeOpenDialogs,
+  EmptyConfigError,
   expandDashboardItem,
   preserveUserSession,
   selectDashboardGroup,
   selectProject,
 } from '../support';
-import { REPORTS } from '../fixtures/reports';
+import config from '../config/dashboardReports.json';
 
 /**
  * This is a workaround in case a dashboard is left open due to a previous test failing
@@ -23,6 +24,12 @@ const closeDialogsBecauseOfCypressBug = () => {
   closeOpenDialogs();
 };
 
+const validateConfig = () => {
+  if (config.length === 0) {
+    throw new EmptyConfigError('dashboardReports');
+  }
+};
+
 describe('Dashboard reports', () => {
   const testReport = report => {
     describe(report.name, () => {
@@ -32,7 +39,7 @@ describe('Dashboard reports', () => {
       });
 
       it('enlarged dialog', () => {
-        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
+        cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
       });
     });
   };
@@ -67,7 +74,8 @@ describe('Dashboard reports', () => {
     });
   };
 
-  const reportsByProject = Cypress._.groupBy(REPORTS, 'project');
+  validateConfig();
+  const reportsByProject = Cypress._.groupBy(config, 'project');
 
   before(() => {
     cy.login();
@@ -77,7 +85,7 @@ describe('Dashboard reports', () => {
     preserveUserSession();
   });
 
-  Object.entries(reportsByProject).forEach(([project, reports]) => {
-    testReportsForProject(project, reports);
+  Object.entries(reportsByProject).forEach(([project, reportsForProject]) => {
+    testReportsForProject(project, reportsForProject);
   });
 });

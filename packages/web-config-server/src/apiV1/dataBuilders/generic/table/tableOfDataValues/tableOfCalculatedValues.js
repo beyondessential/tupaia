@@ -30,8 +30,9 @@ class TableOfCalculatedValues extends TableOfDataValuesBuilder {
     );
   }
 
-  buildValuesByCell() {
-    return getCalculatedValuesByCell(flatten(this.tableConfig.cells), this.results);
+  async buildValuesByCell() {
+    const hierarchyId = await this.fetchEntityHierarchyId();
+    return getCalculatedValuesByCell(flatten(this.tableConfig.cells), this.results, hierarchyId);
   }
 }
 

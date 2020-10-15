@@ -2,6 +2,8 @@ import { checkValueSatisfiesCondition, replaceValues } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
+import { translatePointForFrontend } from '/utils/geoJson';
+import { Entity } from '/models';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
@@ -87,6 +89,38 @@ const combineBinaryIndicatorsToString = (analytics, config) => {
   return stringArray.length === 0 ? 'None' : stringArray.join(delimiter);
 };
 
+const combineTextIndicators = (analytics, config) => {
+  const { dataElements } = config;
+  const filteredAnalytics = analytics.filter(({ dataElement: de }) => dataElements.includes(de));
+  const stringArray = [];
+  filteredAnalytics.forEach(({ value }) => {
+    if (value) {
+      stringArray.push(value);
+    }
+  });
+  return stringArray.length === 0 ? 'None' : stringArray.join(', ');
+};
+
+const getMetaDataFromOrgUnit = async (_, config) => {
+  const { orgUnitCode, ancestorType, field, hierarchyId } = config;
+  const baseEntity = await Entity.findOne({ code: orgUnitCode });
+  if (!baseEntity) return 'Entity not found';
+  const entity = ancestorType
+    ? await baseEntity.getAncestorOfType(ancestorType, hierarchyId)
+    : baseEntity;
+
+  switch (field) {
+    case 'subType':
+      return entity.attributes.type;
+    case 'coordinates': {
+      const [lat, long] = translatePointForFrontend(entity.point);
+      return `${lat}, ${long}`;
+    }
+    default:
+      return entity[field];
+  }
+};
+
 const OPERATORS = {
   DIVIDE: divideValues,
   SUBTRACT: subtractValues,
@@ -94,6 +128,8 @@ const OPERATORS = {
   GROUP: valueToGroup,
   FORMAT: formatString,
   COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
+  COMBINE_TEXT: combineTextIndicators,
+  ORG_UNIT_METADATA: getMetaDataFromOrgUnit,
 };
 
 const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
