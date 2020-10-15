@@ -16,13 +16,19 @@ import { testFetchAnalytics } from './testFetchAnalytics';
 import { testFetchDataElements } from './testFetchDataElements';
 
 describe('TupaiaDataApi', () => {
+  const database = getTestDatabase();
+
   beforeAll(async () => {
-    const models = new ModelRegistry(getTestDatabase());
+    const models = new ModelRegistry(database);
     await buildAndInsertSurveys(models, SURVEYS);
     await Promise.all(
       ENTITIES.map(e => findOrCreateDummyRecord(models.entity, { code: e.code }, e)),
     );
     await buildAndInsertSurveyResponses(models, SURVEY_RESPONSES);
+  });
+
+  afterAll(async () => {
+    await database.closeConnections();
   });
 
   describe('fetchEvents()', testFetchEvents);

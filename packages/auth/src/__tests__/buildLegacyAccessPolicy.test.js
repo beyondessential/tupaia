@@ -15,7 +15,8 @@ import {
 import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
 describe('buildLegacyAccessPolicy', () => {
-  const models = new ModelRegistry(getTestDatabase());
+  const database = getTestDatabase();
+  const models = new ModelRegistry(database);
   let demoLand;
   let adminPermission;
   let publicPermission;
@@ -48,6 +49,10 @@ describe('buildLegacyAccessPolicy', () => {
         parent_id: donorPermission.id,
       },
     );
+  });
+
+  afterAll(async () => {
+    await database.closeConnections();
   });
 
   describe('Demo Land public user', () => {
