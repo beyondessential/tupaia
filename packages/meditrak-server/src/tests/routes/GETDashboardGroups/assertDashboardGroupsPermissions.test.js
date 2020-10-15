@@ -4,21 +4,18 @@
  */
 
 import { expect } from 'chai';
-import { AccessPolicy } from '@tupaia/access-policy';
 import {
   findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
   addBaselineTestCountries,
 } from '@tupaia/database';
+import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { getModels } from '../../getModels';
-import {
-  filterDashboardGroupsByPermissions,
-  assertDashboardGroupsPermissions,
-} from '../../../routes/GETDashboardGroups/assertDashboardGroupsPermissions';
+import { TestableApp } from '../../TestableApp';
+import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETDashboardGroups', async () => {
   const DEFAULT_POLICY = {
@@ -34,7 +31,8 @@ describe('Permissions checker for GETDashboardGroups', async () => {
     LA: [BES_ADMIN_PERMISSION_GROUP],
   };
 
-  const models = getModels();
+  const app = new TestableApp();
+  const { models } = app;
   let facilityDashboardGroup1;
   let districtDashboardGroup1;
   let nationalDashboardGroup1;
@@ -42,7 +40,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
   let projectLevelDashboardGroup;
 
   before(async () => {
-    //Still create these existing entities just in case test database for some reasons do not have these records.
+    // Still create these existing entities just in case test database for some reasons do not have these records.
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_BIKUC04',
       type: 'facility',
@@ -64,7 +62,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
       },
     ]);
 
-    //Set up the dashboard groups
+    // Set up the dashboard groups
     facilityDashboardGroup1 = await findOrCreateDummyRecord(
       models.dashboardGroup,
       { code: 'facility_dashboard_group_1_test' },
@@ -132,214 +130,98 @@ describe('Permissions checker for GETDashboardGroups', async () => {
     );
   });
 
-  describe('filterDashboardGroupsByPermissions()', async () => {
-    it("Sufficient permissions: Should return sub national level dashboard groups that users have access to their entities' countries", async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-        facilityDashboardGroup1,
-        districtDashboardGroup1,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([
-        facilityDashboardGroup1.id,
-        districtDashboardGroup1.id,
-      ]);
-    });
-
-    it('Sufficient permissions: Should return national dashboard groups that users have access to their countries', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-        nationalDashboardGroup1,
-        nationalDashboardGroup2,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([
-        nationalDashboardGroup1.id,
-        nationalDashboardGroup2.id,
-      ]);
-    });
-
-    it('Sufficient permissions: Should return project level dashboard groups that users have access to any of their child countries', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-        nationalDashboardGroup2,
-        projectLevelDashboardGroup,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([
-        nationalDashboardGroup2.id,
-        projectLevelDashboardGroup.id,
-      ]);
-    });
-
-    it('Sufficient permissions: Should always return all dashboard groups if users have BES Admin access to any countries', async () => {
-      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
-      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-        facilityDashboardGroup1,
-        districtDashboardGroup1,
-        nationalDashboardGroup1,
-        nationalDashboardGroup2,
-        projectLevelDashboardGroup,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([
-        facilityDashboardGroup1.id,
-        districtDashboardGroup1.id,
-        nationalDashboardGroup1.id,
-        nationalDashboardGroup2.id,
-        projectLevelDashboardGroup.id,
-      ]);
-    });
-
-    it('Insufficient permissions: Should filter out any sub national dashboard groups that users do not have access to their entities', async () => {
-      //Remove Admin permission of KI to have insufficient permissions to access facilityDashboardGroup1.
-      const policy = {
-        DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
-        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        LA: ['Admin', 'Public'],
-        TO: ['Admin'],
-      };
-      const accessPolicy = new AccessPolicy(policy);
-      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-        facilityDashboardGroup1,
-        nationalDashboardGroup2,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([nationalDashboardGroup2.id]);
-    });
-
-    it('Insufficient permissions: Should filter out any dashboard groups that users do not have access to their countries', async () => {
-      //Remove Admin permission of LA to have insufficient permissions to access nationalDashboardGroup2.
-      const policy = {
-        DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        LA: [/*'Admin'*/ 'Public'],
-        TO: ['Admin'],
-      };
-      const accessPolicy = new AccessPolicy(policy);
-      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-        nationalDashboardGroup1,
-        nationalDashboardGroup2,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([nationalDashboardGroup1.id]);
-    });
-
-    it('Insufficient permissions: Should filter out any project level dashboard groups that users have access to any of their child countries', async () => {
-      //Remove Admin permission of TO, KI, SB, VU to have insufficient permissions to access the project level dashboard group.
-      const policy = {
-        DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/, 'Public'],
-        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/, 'Public'],
-        LA: ['Admin', 'Public'],
-        TO: [/*'Admin'*/ 'Public'],
-      };
-      const accessPolicy = new AccessPolicy(policy);
-      const results = await filterDashboardGroupsByPermissions(accessPolicy, models, [
-        nationalDashboardGroup2,
-        projectLevelDashboardGroup,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([nationalDashboardGroup2.id]);
-    });
+  afterEach(() => {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
   });
 
-  describe('assertDashboardGroupsPermissions()', async () => {
-    it('Sufficient permissions: Should return true if users have access to all the countries of the dashboard groups', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await assertDashboardGroupsPermissions(accessPolicy, models, [
-        nationalDashboardGroup1,
-        nationalDashboardGroup2,
-      ]);
+  describe('GET /dashboardGroups/:id', async () => {
+    it('Sufficient permissions: Should return a requested dashboard group if users have access to the country of the dashboard group', async () => {
+      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      const { body: result } = await app.get(`dashboardGroups/${nationalDashboardGroup1.id}`);
 
-      expect(result).to.true;
+      expect(result.id).to.equal(nationalDashboardGroup1.id);
     });
 
-    it('Sufficient permissions: Should return true if dashboard groups are project level and users have access to any of their child countries', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await assertDashboardGroupsPermissions(accessPolicy, models, [
-        nationalDashboardGroup2,
-        projectLevelDashboardGroup,
-      ]);
-      expect(result).to.true;
+    it('Sufficient permissions: Should return a requested project level dashboard group if users have access to any of their child countries', async () => {
+      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      const { body: result } = await app.get(`dashboardGroups/${projectLevelDashboardGroup.id}`);
+
+      expect(result.id).to.equal(projectLevelDashboardGroup.id);
     });
 
-    it('Sufficient permissions: Should always return true for any dashboard groups if users have BES Admin access to any countries', async () => {
-      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
-      const results = await assertDashboardGroupsPermissions(accessPolicy, models, [
-        facilityDashboardGroup1,
-        districtDashboardGroup1,
-        nationalDashboardGroup1,
-        nationalDashboardGroup2,
-        projectLevelDashboardGroup,
-      ]);
-
-      expect(results).to.true;
-    });
-
-    it("Insufficient permissions: Should filter out any sub national dashboard groups that users do not have access to their entities' countries", async () => {
-      //Remove Admin permission of KI to have insufficient permissions to access facilityDashboardGroup1.
+    it('Insufficient permissions: Should throw an exception if users do not have access to the requested dashboard group', async () => {
+      // Remove Admin permission of KI to have insufficient permissions to access facilityDashboardGroup1.
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /* 'Admin' */ 'Public'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         LA: ['Admin', 'Public'],
         TO: ['Admin'],
       };
-      const accessPolicy = new AccessPolicy(policy);
+      await prepareStubAndAuthenticate(app, policy);
+      const { body: result } = await app.get(`dashboardGroups/${facilityDashboardGroup1.id}`);
 
-      expect(() =>
-        assertDashboardGroupsPermissions(accessPolicy, models, [
-          facilityDashboardGroup1,
-          nationalDashboardGroup2,
-        ]),
-      ).to.throw;
-    });
-
-    it('Insufficient permissions: Should throw an exception if users do not have access to any of the dashboard groups', async () => {
-      //Remove the Admin permission of LA to have insufficient permissions to access nationalDashboardGroup2.
-      const policy = {
-        DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        LA: [/*'Admin'*/ 'Public'],
-        TO: ['Admin'],
-      };
-      const accessPolicy = new AccessPolicy(policy);
-
-      expect(() =>
-        assertDashboardGroupsPermissions(accessPolicy, models, [
-          nationalDashboardGroup1,
-          nationalDashboardGroup2,
-        ]),
-      ).to.throw;
+      expect(result).to.have.keys('error');
     });
 
     it('Insufficient permissions: Should throw an exception if dashboard groups are project level and users do not have access to any of their child countries', async () => {
-      //Remove Admin permission of TO, SB, KI, VU to have insufficient permissions to access the project level dashboard groups.
+      // Remove Admin permission of TO, SB, KI, VU to have insufficient permissions to access the project level dashboard groups.
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/, 'Public'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */, 'Public'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/, 'Public'],
-        LA: [/*'Admin'*/ 'Public'],
-        TO: [/*'Admin'*/ 'Public'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */, 'Public'],
+        LA: [/* 'Admin' */ 'Public'],
+        TO: [/* 'Admin' */ 'Public'],
       };
-      const accessPolicy = new AccessPolicy(policy);
+      await prepareStubAndAuthenticate(app, policy);
+      const { body: result } = await app.get(`dashboardGroups/${projectLevelDashboardGroup.id}`);
 
-      expect(() =>
-        assertDashboardGroupsPermissions(accessPolicy, models, [
-          nationalDashboardGroup2,
-          projectLevelDashboardGroup,
-        ]),
-      ).to.throw;
+      expect(result).to.have.keys('error');
+    });
+  });
+
+  describe('GET /dashboardGroups', async () => {
+    it('Sufficient permissions: Return only the list of entries we have permissions for', async () => {
+      const policy = {
+        DL: ['Public'],
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /* 'Admin', */ 'Public'],
+        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+        LA: ['Admin'],
+        TO: ['Admin'],
+      };
+      await prepareStubAndAuthenticate(app, policy);
+      const { body: results } = await app.get(`dashboardGroups`);
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalDashboardGroup2.id,
+        projectLevelDashboardGroup.id,
+      ]);
+    });
+
+    it('Sufficient permissions: Should return the full list of dashboard groups if we have BES Admin access', async () => {
+      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      const { body: results } = await app.get(`dashboardGroups`);
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        facilityDashboardGroup1.id,
+        districtDashboardGroup1.id,
+        nationalDashboardGroup1.id,
+        nationalDashboardGroup2.id,
+        projectLevelDashboardGroup.id,
+      ]);
+    });
+
+    it('Insufficient permissions: Should throw an exception if we have permissions for no dashboard groups', async () => {
+      const policy = {
+        DL: ['Public'],
+      };
+      await prepareStubAndAuthenticate(app, policy);
+      const { body: results } = await app.get(`dashboardGroups`);
+
+      expect(results).to.have.keys('error');
     });
   });
 });

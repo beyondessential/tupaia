@@ -60,18 +60,18 @@ export const createSurveyGroupDBFilter = async (accessPolicy, models, criteria) 
   }
   const dbConditions = criteria;
   const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
-  console.log(allPermissionGroupsNames);
   const countryIdsByPermissionGroupId = {};
 
   // Generate lists of country ids we have access to per permission group id
   for (const pg of allPermissionGroupsNames) {
     const permissionGroup = await models.permissionGroup.findOne({ name: pg });
-    const countryList = accessPolicy.getEntitiesAllowed(pg);
-    const entityList = await models.entity.find({ code: countryList });
-    countryIdsByPermissionGroupId[permissionGroup.id] = entityList.map(e => e.id);
+    if (permissionGroup) {
+      const countryNames = accessPolicy.getEntitiesAllowed(pg);
+      const countryList = await models.country.find({ code: countryNames });
+      countryIdsByPermissionGroupId[permissionGroup.id] = countryList.map(e => e.id);
+    }
   }
 
-  console.log(JSON.stringify(countryIdsByPermissionGroupId));
   // Check we have permissions to at least one of the surveys in this group
   dbConditions[RAW] = {
     sql: `(select count(*) from survey where survey.survey_group_id = survey_group.id and country_ids && array(select trim('"' from json_array_elements(?::json->permission_group_id)::text))) > 0`,

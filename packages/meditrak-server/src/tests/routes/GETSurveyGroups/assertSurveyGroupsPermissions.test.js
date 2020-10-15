@@ -4,17 +4,14 @@
  */
 
 import { expect } from 'chai';
-import { AccessPolicy } from '@tupaia/access-policy';
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
+import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { getModels } from '../../getModels';
-import {
-  filterSurveyGroupsByPermissions,
-  assertSurveyGroupsPermissions,
-} from '../../../routes/GETSurveyGroups/assertSurveyGroupsPermissions';
+import { TestableApp } from '../../TestableApp';
+import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETSurveyGroups', async () => {
   const DEFAULT_POLICY = {
@@ -29,20 +26,19 @@ describe('Permissions checker for GETSurveyGroups', async () => {
     LA: [BES_ADMIN_PERMISSION_GROUP],
   };
 
-  const models = getModels();
-  let surveyGroups = [];
+  const app = new TestableApp();
+  const { models } = app;
   let surveyGroup1;
   let surveyGroup2;
 
   before(async () => {
-    //Set up the survey groups and their surveys
+    // Set up the survey groups and their surveys
     surveyGroup1 = await findOrCreateDummyRecord(models.surveyGroup, {
       name: 'Test survey group 1',
     });
     surveyGroup2 = await findOrCreateDummyRecord(models.surveyGroup, {
       name: 'Test survey group 2',
     });
-    surveyGroups = [surveyGroup1, surveyGroup2];
 
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
@@ -85,69 +81,72 @@ describe('Permissions checker for GETSurveyGroups', async () => {
     ]);
   });
 
-  describe('filterSurveyGroupsByPermissions()', async () => {
-    it('Sufficient permissions: Should return survey groups that users have access to any of the surveys within the groups', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
+  afterEach(() => {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
+  });
 
-      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
+  describe('GET /surveyGroups/:id', async () => {
+    it('Sufficient permissions: Should return a requested survey group that users have access to any of the surveys within the groups', async () => {
+      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      const { body: result } = await app.get(`surveyGroups/${surveyGroup1.id}`);
+
+      expect(result.id).to.equal(surveyGroup1.id);
     });
 
-    it('Sufficient permissions: Should always return all the survey groups if users have BES Admin access to any countries', async () => {
-      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
-      const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
-
-      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
-    });
-
-    it('Insufficient permissions: Should filter out any survey groups that users do not have access to any of the surveys within the group', async () => {
-      //Remove Admin permission of VU to have insufficient permissions to access surveyGroup1.
+    it('Insufficient permissions: Should throw an error if requesting survey group that users do not have access to any of the surveys within the group', async () => {
+      // Remove Admin permission of VU to have insufficient permissions to access surveyGroup1.
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         LA: ['Admin'],
       };
-      const accessPolicy = new AccessPolicy(policy);
-      const results = await filterSurveyGroupsByPermissions(accessPolicy, models, surveyGroups);
+      await prepareStubAndAuthenticate(app, policy);
+      const { body: result } = await app.get(`surveyGroups/${surveyGroup1.id}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([surveyGroup2.id]); //Should have access to only surveyGroup2
+      expect(result).to.have.keys('error');
     });
   });
 
-  describe('assertSurveyGroupsPermissions()', async () => {
-    it('Sufficient permissions: Should return true if users have access to any of the surveys within the survey group', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const result = await assertSurveyGroupsPermissions(accessPolicy, models, [
-        surveyGroup1,
-        surveyGroup2,
-      ]);
+  describe('GET /surveyGroups', async () => {
+    it('Sufficient permissions: Should return all survey groups the user has permission to', async () => {
+      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      const { body: results } = await app.get(`surveyGroups`);
 
-      expect(result).to.true;
+      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
     });
 
-    it('Sufficient permissions: Should always return true for any survey groups if users have BES Admin access to any countries', async () => {
-      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
-      const results = await assertSurveyGroupsPermissions(accessPolicy, models, surveyGroups);
-
-      expect(results).to.true;
-    });
-
-    it('Insufficient permissions: Should throw an exception if users do not have access to any of the surveys within the survey group', async () => {
-      //Remove Admin permission of VU to have insufficient permissions to access surveyGroup1.
+    it('Sufficient permissions: Should filter survey groups if user only has some permissions', async () => {
+      // Remove Admin permission of VU to have insufficient permissions to access surveyGroup1.
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         LA: ['Admin'],
       };
-      const accessPolicy = new AccessPolicy(policy);
+      await prepareStubAndAuthenticate(app, policy);
+      const { body: results } = await app.get(`surveyGroups`);
 
-      expect(() =>
-        assertSurveyGroupsPermissions(accessPolicy, models, [surveyGroup1, surveyGroup2]),
-      ).to.throw; //Should have access to only surveyGroup2
+      expect(results.map(r => r.id)).to.deep.equal([surveyGroup2.id]);
+    });
+
+    it('Sufficient permissions: Should return all survey groups if the user has BES admin access', async () => {
+      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      const { body: results } = await app.get(`surveyGroups`);
+
+      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
+    });
+
+    it('Insufficient permissions: Should throw an exception if users do not have access to any survey groups', async () => {
+      const policy = {
+        DL: ['Public'],
+      };
+      await prepareStubAndAuthenticate(app, policy);
+      const { body: results } = await app.get(`surveyGroups`);
+
+      expect(results).to.have.keys('error');
     });
   });
 });

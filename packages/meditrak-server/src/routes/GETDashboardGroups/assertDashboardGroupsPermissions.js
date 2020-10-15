@@ -4,15 +4,23 @@
  */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
+import { hasAccessToEntityForVisualisation } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
+export const hasDashboardGroupsPermissions = async (accessPolicy, models, dashboardGroup) => {
+  const entity = await models.entity.findOne({ code: dashboardGroup.organisationUnitCode });
+  return hasAccessToEntityForVisualisation(accessPolicy, models, entity, dashboardGroup.userGroup);
+};
+
 export const assertDashboardGroupsPermissions = async (accessPolicy, models, dashboardGroupId) => {
   const dashboardGroup = await models.dashboardGroup.findById(dashboardGroupId);
-  if (accessPolicy.allows(dashboardGroup.organisationUnitCode, dashboardGroup.userGroup)) {
+  if (!dashboardGroup) {
+    throw new Error(`No dashboard group exists with id ${dashboardGroupId}`);
+  }
+  if (await hasDashboardGroupsPermissions(accessPolicy, models, dashboardGroup)) {
     return true;
   }
-
   throw new Error('Requires access to the user group for the country this dashboard group is in');
 };
 
@@ -33,7 +41,7 @@ export const createDashboardGroupDBFilter = async (accessPolicy, models, criteri
   // OR
   // For Projects: Pull the country codes from the children entities and compare to the json permissions object
   dbConditions[RAW] = {
-    sql: `(ARRAY["organisationUnitCode"] <@ ARRAY(SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"userGroup")::TEXT)))
+    sql: `(ARRAY(SELECT entity.country_code FROM entity WHERE entity.code = "dashboardGroup"."organisationUnitCode")::TEXT[] <@ ARRAY(SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"userGroup")::TEXT)))
           OR
           (ARRAY(SELECT entity.country_code
                  FROM entity

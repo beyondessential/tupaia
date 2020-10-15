@@ -4,21 +4,18 @@
  */
 
 import { expect } from 'chai';
-import { AccessPolicy } from '@tupaia/access-policy';
 import {
   findOrCreateDummyRecord,
   addBaselineTestCountries,
   buildAndInsertProjectsAndHierarchies,
 } from '@tupaia/database';
+import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { getModels } from '../../getModels';
-import {
-  filterMapOverlaysByPermissions,
-  assertMapOverlaysPermissions,
-} from '../../../routes/GETMapOverlays/assertMapOverlaysPermissions';
+import { TestableApp } from '../../TestableApp';
+import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETMapOverlays', async () => {
   const DEFAULT_POLICY = {
@@ -33,13 +30,14 @@ describe('Permissions checker for GETMapOverlays', async () => {
     LA: [BES_ADMIN_PERMISSION_GROUP],
   };
 
-  const models = getModels();
+  const app = new TestableApp();
+  const { models } = app;
   let nationalMapOverlay1;
   let nationalMapOverlay2;
   let projectLevelMapOverlay;
 
   before(async () => {
-    //Still create these existing entities just in case test database for some reasons do not have these records.
+    // Still create these existing entities just in case test database for some reasons do not have these records.
     await addBaselineTestCountries(models);
 
     await buildAndInsertProjectsAndHierarchies(models, [
@@ -49,7 +47,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
         entities: [{ code: 'KI' }, { code: 'VU' }, { code: 'TO' }, { code: 'SB' }],
       },
     ]);
-    //Set up the map overlays
+    // Set up the map overlays
     nationalMapOverlay1 = await findOrCreateDummyRecord(
       models.mapOverlay,
       { id: 'national_map_overlay_1_test' },
@@ -79,155 +77,84 @@ describe('Permissions checker for GETMapOverlays', async () => {
     );
   });
 
-  describe('filterMapOverlaysByPermissions()', async () => {
-    it('Sufficient permissions: Should return all the map overlays that users have access to their countries', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
-        nationalMapOverlay1,
-        nationalMapOverlay2,
-      ]);
+  afterEach(() => {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
+  });
 
-      expect(results.map(r => r.id)).to.deep.equal([
-        nationalMapOverlay1.id,
-        nationalMapOverlay2.id,
-      ]);
+  describe('GET /mapOverlays/:id', async () => {
+    it('Sufficient permissions: Should return a requested map overlay that users have access to their countries', async () => {
+      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      const { body: result } = await app.get(`mapOverlays/${nationalMapOverlay1.id}`);
+
+      expect(result.id).to.equal(nationalMapOverlay1.id);
     });
 
-    it('Sufficient permissions: Should return all the project level map overlays that users have access to any of their child countries', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
-        nationalMapOverlay2,
-        projectLevelMapOverlay,
-      ]);
+    it('Sufficient permissions: Should return a requested project level map overlay that users have access to any of their child countries', async () => {
+      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay.id}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
-        nationalMapOverlay2.id,
-        projectLevelMapOverlay.id,
-      ]);
+      expect(result.id).to.equal(projectLevelMapOverlay.id);
     });
 
-    it('Sufficient permissions: Should always return all map overlays if users have BES Admin access to any countries', async () => {
-      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
-      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
-        nationalMapOverlay1,
-        nationalMapOverlay2,
-        projectLevelMapOverlay,
-      ]);
-
-      expect(results.map(r => r.id)).to.deep.equal([
-        nationalMapOverlay1.id,
-        nationalMapOverlay2.id,
-        projectLevelMapOverlay.id,
-      ]);
-    });
-
-    it('Insufficient permissions: Should filter out any map overlays that users do not have access to their countries', async () => {
-      //Remove the permission of VU to have insufficient permissions to access nationalMapOverlay2.
+    it('Insufficient permissions: Should throw an error if requesting map overlay that users do not have access to their countries', async () => {
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        LA: [/*'Admin'*/ 'Public'],
       };
-      const accessPolicy = new AccessPolicy(policy);
-      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
-        nationalMapOverlay1,
-        nationalMapOverlay2,
-      ]);
+      prepareStubAndAuthenticate(app, policy);
+      const { body: result } = await app.get(`mapOverlays/${nationalMapOverlay1.id}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([nationalMapOverlay1.id]);
+      expect(result).to.have.keys('error');
     });
 
-    it('Insufficient permissions: Should filter out any project level map overlays that users do not have access to any of their child countries', async () => {
-      //Remove Admin permission of TO, KI, SB, VU to have insufficient permissions to access the project level map overlay.
+    it('Insufficient permissions: Should throw an error if requesting project level map overlays that users do not have access to any of their child countries', async () => {
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
-        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
-        LA: ['Admin'],
-        TO: [/*'Admin'*/ 'Public'],
       };
-      const accessPolicy = new AccessPolicy(policy);
-      const results = await filterMapOverlaysByPermissions(accessPolicy, models, [
-        nationalMapOverlay2,
-        projectLevelMapOverlay,
-      ]);
+      prepareStubAndAuthenticate(app, policy);
+      const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay.id}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([nationalMapOverlay2.id]);
+      expect(result).to.have.keys('error');
     });
   });
 
-  describe('assertMapOverlaysPermissions()', async () => {
-    it('Sufficient permissions: Should return true if users have access to all the map overlays', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await assertMapOverlaysPermissions(accessPolicy, models, [
-        nationalMapOverlay1,
-        nationalMapOverlay2,
-      ]);
-
-      expect(results).to.true;
-    });
-
-    it('Sufficient permissions: Should return true if the map overlays are project level and users have access to any of their child countries', async () => {
-      const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      const results = await assertMapOverlaysPermissions(accessPolicy, models, [
-        nationalMapOverlay2,
-        projectLevelMapOverlay,
-      ]);
-
-      expect(results).to.true;
-    });
-
-    it('Sufficient permissions: Should always return true if users have BES Admin access to any countries', async () => {
-      const accessPolicy = new AccessPolicy(BES_ADMIN_POLICY);
-      const results = await assertMapOverlaysPermissions(accessPolicy, models, [
-        nationalMapOverlay1,
-        nationalMapOverlay2,
-        projectLevelMapOverlay,
-      ]);
-
-      expect(results).to.true;
-    });
-
-    it('Insufficient permissions: Should throw an exception if users do not have access to any of the countries of the map overlays', async () => {
-      //Remove the permission of LA to have insufficient permissions to access nationalMapOverlay2.
+  describe('GET /mapOverlays', async () => {
+    it('Sufficient permissions: Return only the list of entries we have permission for', async () => {
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        LA: [/*'Admin'*/ 'Public'],
+        /* LA: ['Admin'], */
+        TO: ['Admin'],
       };
-      const accessPolicy = new AccessPolicy(policy);
+      prepareStubAndAuthenticate(app, policy);
+      const { body: results } = await app.get('mapOverlays');
 
-      expect(() =>
-        assertMapOverlaysPermissions(accessPolicy, models, [
-          nationalMapOverlay1,
-          nationalMapOverlay2,
-        ]),
-      ).to.throw;
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalMapOverlay1.id,
+        projectLevelMapOverlay.id,
+      ]);
     });
 
-    it('Insufficient permissions: Should throw an exception if the map overlays are project level and users do not have access to any of their child countries', async () => {
-      //Remove Admin permission of TO, KI, SB, VU to have insufficient permissions to access the project level map overlay.
+    it('Sufficient permissions: Should return the full list of map overlays if we have BES admin access', async () => {
+      prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      const { body: results } = await app.get('mapOverlays');
+
+      expect(results.map(r => r.id)).to.deep.equal([
+        nationalMapOverlay1.id,
+        nationalMapOverlay2.id,
+        projectLevelMapOverlay.id,
+      ]);
+    });
+
+    it('Insufficient permissions: Should throw an exception if users do not have access to any of the countries of the map overlays', async () => {
       const policy = {
         DL: ['Public'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
-        SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
-        LA: ['Admin'],
-        TO: [/*'Admin'*/ 'Public'],
       };
-      const accessPolicy = new AccessPolicy(policy);
+      prepareStubAndAuthenticate(app, policy);
+      const { body: results } = await app.get('mapOverlays');
 
-      expect(() =>
-        assertMapOverlaysPermissions(accessPolicy, models, [
-          nationalMapOverlay2,
-          projectLevelMapOverlay,
-        ]),
-      ).to.throw;
+      expect(results).to.have.keys('error');
     });
   });
 });
