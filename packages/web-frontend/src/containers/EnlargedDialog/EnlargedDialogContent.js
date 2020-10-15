@@ -65,7 +65,7 @@ export class EnlargedDialogContent extends PureComponent {
     return (
       <DialogTitle style={style}>
         <span style={styles.titleText}>{titleText}</span>
-        {periodGranularity && !isExporting && this.renderPeriodSelector()}
+        {periodGranularity && this.renderPeriodSelector()}
       </DialogTitle>
     );
   }
@@ -144,14 +144,11 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderPeriodSelector() {
-    const { onSetDateRange, isLoading, viewContent } = this.props;
+    const { onSetDateRange, isLoading, viewContent, isExporting } = this.props;
     const { periodGranularity, startDate, endDate } = viewContent;
-    if (!periodGranularity) {
-      return null;
-    }
 
     return (
-      <div style={styles.periodSelector}>
+      <div style={styles.periodSelector(isExporting)}>
         <DateRangePicker
           align="center"
           granularity={periodGranularity}
@@ -228,12 +225,17 @@ const styles = {
     backgroundColor: 'rgba(255,255,255,0.2)',
     zIndex: DIALOG_Z_INDEX,
   },
-  periodSelector: {
-    fontSize: 14,
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: 5,
-    marginBottom: 5,
+  periodSelector: isExporting => {
+    return {
+      fontSize: 14,
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: 5,
+      marginBottom: 5,
+      overflow: 'hidden',
+      transition: isExporting ? '' : '0.5s height ease',
+      height: isExporting ? '0' : '46px',
+    };
   },
   periodSelectorMenu: {
     marginTop: 0,

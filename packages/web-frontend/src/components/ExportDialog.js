@@ -8,21 +8,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
+import Box from '@material-ui/core/Box';
 import FlatButton from 'material-ui/FlatButton';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import { Error } from './Error';
-import { DIALOG_Z_INDEX, WHITE } from '../styles';
+import { DIALOG_Z_INDEX } from '../styles';
 
 const formatLabels = {
   png: 'PNG',
   xlsx: 'Excel (Raw Data)',
 };
 
-export const ExportDialog = ({ isOpen, onClose, formats, onExport }) => {
-  const [status, setStatus] = React.useState('idle');
-  const [errorMessage, setErrorMessage] = React.useState(null);
-  const [successMessage, setSuccessMessage] = React.useState(null);
+const styles = {
+  dialog: {
+    zIndex: DIALOG_Z_INDEX + 1,
+  },
+  dialogContent: {
+    maxWidth: 450,
+  },
+  options: {
+    marginTop: 20,
+  },
+  option: {
+    marginTop: 5,
+  },
+};
+
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
+
+export const ExportDialog = ({ status, isOpen, onClose, formats, onExport }) => {
   const [selectedFormat, onSelectFormat] = React.useState(formats[0]);
 
   return (
@@ -40,14 +60,15 @@ export const ExportDialog = ({ isOpen, onClose, formats, onExport }) => {
       contentStyle={styles.dialogContent}
       autoScrollBodyContent
     >
-      {status === 'loading' ? (
-        <div style={styles.loadingWrapper}>
+      {status === STATUS.LOADING && (
+        <Box textAlign="center">
           <CircularProgress />
-        </div>
-      ) : (
+        </Box>
+      )}
+      {status === STATUS.ERROR && <Error>There was an error. Please try again.</Error>}
+      {status === STATUS.SUCCESS && <div>Export complete.</div>}
+      {status === STATUS.IDLE && (
         <div>
-          {errorMessage && <Error>{errorMessage}</Error>}
-          {successMessage && <Error>{successMessage}</Error>}
           The chart will be exported and downloaded to your browser:
           <RadioButtonGroup
             name="format"
@@ -70,30 +91,9 @@ export const ExportDialog = ({ isOpen, onClose, formats, onExport }) => {
   );
 };
 
-const styles = {
-  dialog: {
-    zIndex: DIALOG_Z_INDEX + 1,
-  },
-  dialogContent: {
-    maxWidth: 450,
-  },
-  emailAddress: {
-    fontSize: 18,
-    marginTop: 5,
-    color: WHITE,
-  },
-  options: {
-    marginTop: 20,
-  },
-  option: {
-    marginTop: 5,
-  },
-  loadingWrapper: {
-    textAlign: 'center',
-  },
-};
-
 ExportDialog.propTypes = {
+  status: PropTypes.PropTypes.oneOf([STATUS.IDLE, STATUS.LOADING, STATUS.SUCCESS, STATUS.ERROR])
+    .isRequired,
   onClose: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,

@@ -454,7 +454,7 @@ export class CartesianChart extends PureComponent {
   };
 
   renderReferenceLineForAverage = () => {
-    const { isEnlarged, viewContent } = this.props;
+    const { isEnlarged, viewContent, isExporting } = this.props;
     const { valueType, data, presentationOptions } = viewContent;
     // show reference line by default
     const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
@@ -469,7 +469,7 @@ export class CartesianChart extends PureComponent {
         y={average}
         stroke={TUPAIA_ORANGE}
         label={<ReferenceLabel value={formatDataValue(average, valueType)} fill={TUPAIA_ORANGE} />}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       />
     );
   };
@@ -529,7 +529,7 @@ export class CartesianChart extends PureComponent {
   };
 
   renderArea = ({ color = BLUE, dataKey, yAxisId }) => {
-    const { isEnlarged } = this.props;
+    const { isEnlarged, isExporting } = this.props;
 
     return (
       <Area
@@ -539,7 +539,7 @@ export class CartesianChart extends PureComponent {
         type="monotone"
         stroke={color}
         fill={color}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       />
     );
   };
@@ -556,7 +556,7 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         stackId={stackId}
         fill={color}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
         barSize={this.getBarSize()}
       >
         {isExporting && !stackId && (
@@ -585,7 +585,7 @@ export class CartesianChart extends PureComponent {
         stroke={color || defaultColor}
         strokeWidth={isEnlarged ? 3 : 1}
         fill={color || defaultColor}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       >
         {isExporting && (
           <LabelList
@@ -609,12 +609,10 @@ export class CartesianChart extends PureComponent {
 
     if (!isEnlarged && !isMobile() && !isExporting) {
       aspect = 1.6;
-    } else if (isExporting) {
-      // aspect = 2;
     }
 
     return (
-      <ResponsiveContainer width="100%" height={320}>
+      <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
         <Chart
           data={this.filterDisabledData(data)}
           margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}

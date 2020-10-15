@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import styled from 'styled-components';
 import Dialog from '@material-ui/core/Dialog';
 import download from 'downloadjs';
 import domtoimage from '../../dom-to-image';
@@ -29,6 +30,35 @@ import {
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { ExportDialog } from '../../components/ExportDialog';
 
+const sleep = (delay = 0) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+};
+
+const Loader = styled.div`
+  display: block;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 1);
+  color: white;
+  z-index: 100;
+  padding-top: 45px;
+  text-align: center;
+  font-size: 18px;
+`;
+const ExportLoader = () => <Loader>Exporting...</Loader>;
+
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
+
 const EnlargedDialogComponent = ({
   isDrillDownVisible,
   onCloseOverlay,
@@ -42,6 +72,7 @@ const EnlargedDialogComponent = ({
   const exportRef = React.useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
+  const [exportStatus, setExportStatus] = React.useState(STATUS.IDLE);
 
   if (!isVisible) {
     return null;
@@ -57,13 +88,17 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
-  const onExport = () => {
-    setIsExporting(true);
+  const onExport = async () => {
     const node = exportRef.current;
 
-    domtoimage.toPng(node).then(dataUrl => {
+    setExportStatus(STATUS.LOADING);
+    setIsExporting(true);
+
+    domtoimage.toPng(node).then(async dataUrl => {
       download(dataUrl, 'exported-chart.png');
       setIsExporting(false);
+      await sleep(1000);
+      setExportStatus(STATUS.SUCCESS);
     });
   };
 
@@ -80,6 +115,7 @@ const EnlargedDialogComponent = ({
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
+        {exportStatus === STATUS.LOADING && <ExportLoader />}
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
@@ -95,6 +131,7 @@ const EnlargedDialogComponent = ({
         />
       </Dialog>
       <ExportDialog
+        status={exportStatus}
         isOpen={exportDialogIsOpen}
         onClose={() => setExportDialogIsOpen(false)}
         formats={exportFormats}
