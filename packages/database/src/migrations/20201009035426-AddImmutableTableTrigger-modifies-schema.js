@@ -31,7 +31,7 @@ exports.up = function (db) {
 
 exports.down = function (db) {
   return db.runSql(`
-    DROP FUNCTION IF EXISTS immutable_table();
+    DROP FUNCTION IF EXISTS immutable_table() CASCADE;
   `);
 };
 

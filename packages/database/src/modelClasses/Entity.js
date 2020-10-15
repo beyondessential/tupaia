@@ -217,6 +217,14 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
+  // Some cached functions within Entity need to be invalidated if an entity relation is changed,
+  // and therefore the hierarchy cache has been rebuilt.
+  // Note: we don't use ancestor_descendant_relation as the dependency, as adding change triggers
+  // to that table slows down the rebuilds considerably (40s -> 200s for full initial build)
+  get cacheDependencies() {
+    return [TYPES.ENTITY_RELATION];
+  }
+
   customColumnSelectors = {
     region: fieldName => `ST_AsGeoJSON(${fieldName})`,
     point: fieldName => `ST_AsGeoJSON(${fieldName})`,

@@ -18,21 +18,36 @@ export class DatabaseModel {
     this.schema = null;
 
     this.cache = {};
+    this.cachedFunctionInvalidationCancellers = {};
 
     // If this model uses the singleton database, it is probably long running, so be sure to
     // invalidate the cache any time a change is detected. Non-singleton models are those created
     // during transactions, so are short lived and unlikely to need cache invalidation - thus we
     // avoid making an additional connection to pubsub and just leave their cache untouched
     if (this.database.isSingleton) {
+      // fully reset cache on any change to this model's records
       this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
-        this.cache = {}; // invalidate cache on any change
+        this.cache = {};
       });
+
+      // if this model has caching that depends on other models, also add invalidation for them
+      this.cacheDependencies.forEach(databaseType => {
+        this.database.addChangeHandlerForCollection(databaseType, () => {
+          this.cache = {};
+        });
+      });
+
+      // invalidate cached schema for this model on any change to db schema
       this.database.addSchemaChangeHandler(() => {
-        // invalidate cached schema for this model on any change to db schema
         this.schema = null;
         this.fieldNames = null;
       });
     }
+  }
+
+  // can be overridden by any subclass that needs cache invalidation when a related table changes
+  get cacheDependencies() {
+    return [];
   }
 
   // functionArguments should receive the 'arguments' object

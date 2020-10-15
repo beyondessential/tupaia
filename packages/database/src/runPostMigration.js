@@ -21,14 +21,14 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
 // attempted
 const IMMUTABLE_TABLES = ['ancestor_descendant_relation'];
 
-const SELECT_TABLES_WITHOUT_TRIGGERS = `
+const getSelectForTablesWithoutTriggers = triggerSuffix => `
   SELECT t.table_name
     FROM information_schema.tables t
     LEFT JOIN information_schema.table_privileges privileges
       ON t.table_name = privileges.table_name
     WHERE NOT EXISTS (
       SELECT * from pg_trigger p
-      WHERE p.tgname LIKE concat(lower(t.table_name), '%', '_trigger')
+      WHERE p.tgname = concat(lower(t.table_name), '${triggerSuffix}')
     )
     AND privileges.privilege_type = 'TRIGGER'
     AND t.table_schema = 'public'
@@ -49,7 +49,7 @@ export const runPostMigration = async driver => {
   // Find any table in the database that doesn't have a corresponding notification trigger with
   // the name {TABLE_NAME}_trigger (eg survey_response_trigger).
   const { rows: tablesWithoutNotifierResults } = await driver.runSql(`
-    ${SELECT_TABLES_WITHOUT_TRIGGERS}
+    ${getSelectForTablesWithoutTriggers('_trigger')}
     AND t.table_name NOT IN (${arrayToDbString(EXCLUDED_TABLES_FROM_TRIGGER_CREATION)});
   `);
   const tablesWithoutNotifier = tablesWithoutNotifierResults.map(row => row.table_name);
@@ -67,7 +67,7 @@ export const runPostMigration = async driver => {
   // Find any table in the database that doesn't have a corresponding notification trigger with
   // the name {TABLE_NAME}_immutable_trigger (eg survey_response_immutable_trigger).
   const { rows: tablesWithoutImmutableTriggerResults } = await driver.runSql(`
-    ${SELECT_TABLES_WITHOUT_TRIGGERS}
+    ${getSelectForTablesWithoutTriggers('_immutable_trigger')}
     AND t.table_name IN (${arrayToDbString(IMMUTABLE_TABLES)});
   `);
   const tablesWithoutImmutableTrigger = tablesWithoutImmutableTriggerResults.map(
