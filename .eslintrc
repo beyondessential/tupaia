@@ -7,7 +7,9 @@
       {
         "devDependencies": [
           "**/cypress/**",
+          "jest.setup.js",
           "**/migrations/**",
+          "**/scripts/**",
           "**/stories/**",
           "**/tests/**",
           "**/__tests__/**"
@@ -34,7 +36,7 @@
   },
   "overrides": [
     {
-      "files": ["**/src/migrations/**"],
+      "files": ["packages/database/src/migrations/**"],
       "rules": {
         "func-names": "off",
         "no-underscore-dangle": "off",
@@ -42,6 +44,12 @@
         "no-var": "off",
         "strict": "off",
         "prettier/prettier": "off"
+      }
+    },
+    {
+      "files": ["scripts/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }]
       }
     },
     {
