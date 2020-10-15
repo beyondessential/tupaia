@@ -54,19 +54,17 @@ const getLegend = measureType => {
   }
 };
 
-// returning <LegendOuterFrame /> keeps the map control on the right hand side
-const renderEmptyMultiLegend = () => <LegendOuterFrame />;
-
 const MultiLegend = React.memo(({ measureOptions, isMeasureLoading }) => {
-  if (isMeasureLoading) {
-    return renderEmptyMultiLegend();
+  const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+
+  // returning <LegendOuterFrame /> keeps the map control on the right hand side
+  if (isMeasureLoading || displayedLegends.length === 0) {
+    return <LegendOuterFrame />;
   }
 
   const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
   const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
   const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
-
-  const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
 
   const legends = displayedLegends.map(mo => {
     const { type } = mo;
@@ -82,9 +80,6 @@ const MultiLegend = React.memo(({ measureOptions, isMeasureLoading }) => {
       />
     );
   });
-
-  // returning <LegendOuterFrame /> keeps the map control on the right hand side
-  if (legends.length === 0) return renderEmptyMultiLegend();
 
   return (
     <LegendOuterFrame>
