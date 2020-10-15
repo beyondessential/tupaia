@@ -1,5 +1,6 @@
 import { Row } from '../reportBuilder';
 import { transformBuilders } from './functions';
+import { aliases } from './aliases';
 
 type TransformParams = {
   apply: (rows: Row[]) => Row[];
@@ -14,6 +15,18 @@ const transform = (rows: Row[], transforms: TransformParams[]): Row[] => {
 };
 
 const buildParams = (params: unknown): TransformParams => {
+  if (typeof params === 'string') {
+    if (!(params in aliases)) {
+      throw new Error(
+        `Expected transform alias to be one of ${Object.keys(aliases)}, but got: ${params}`,
+      );
+    }
+
+    return {
+      apply: aliases[params as keyof typeof aliases](),
+    };
+  }
+
   if (typeof params !== 'object' || params === null) {
     throw new Error(`Expected object but got ${params}`);
   }

@@ -30,11 +30,7 @@
           }
         ],
         "transform": [
-          {
-            "transform": "select",
-            "$.row.dataElement": "$.row.value",
-            "...": ["period", "organisationUnit"]
-          },
+          "keyValueByDataElementName",
           {
             "transform": "sort",
             "by": "$.row.period"
@@ -104,14 +100,11 @@
           }
         ],
         "transform": [
-          {
-            "transform": "select",
-            "$.row.dataElement": "$.row.value",
-            "'period'": "$.row.period"
-          },
+          "keyValueByDataElementName",
           {
             "transform": "aggregate",
             "period": "group",
+            "organisationUnit": "drop",
             "...": "sum"
           },
           {
@@ -170,7 +163,7 @@
           {
             "transform": "select",
             "$.row.dataElement": "$.row.value",
-            "'period'": "convertToPeriod($.period, 'QUARTER')",
+            "'period'": "convertToPeriod($.row.period, 'QUARTER')",
             "'organisationUnit'": "$.row.organisationUnit"
           },
           {
@@ -250,14 +243,11 @@
           }
         ],
         "transform": [
-          {
-            "transform": "select",
-            "$.row.organisationUnit": "$.row.value",
-            "...": ["period"]
-          },
+          "keyValueByOrgUnit",
           {
             "transform": "aggregate",
             "period": "group",
+            "dataElement": "drop",
             "...": "sum"
           },
           {
