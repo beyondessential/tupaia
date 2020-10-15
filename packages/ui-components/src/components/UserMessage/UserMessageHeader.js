@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import MuiAvatar from '@material-ui/core/Avatar';
+import { Avatar } from '../Avatar';
 import { FlexSpaceBetween } from '../Layout';
 import { AM_PM_DATE_FORMAT, DAY_MONTH_YEAR_DATE_FORMAT } from '../../constants';
 
@@ -17,7 +17,7 @@ const Header = styled(FlexSpaceBetween)`
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-const Avatar = styled(MuiAvatar)`
+const StyledAvatar = styled(Avatar)`
   width: 35px;
   height: 35px;
 `;
@@ -39,22 +39,30 @@ const Time = styled(Date)`
   margin-left: 0.6rem;
 `;
 
-export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => (
-  <Header>
-    <FlexSpaceBetween>
-      <Avatar src={user.avatar} />
-      <Title>{user.name}</Title>
-    </FlexSpaceBetween>
-    <FlexSpaceBetween>
-      <Date>{format(dateTime, DAY_MONTH_YEAR_DATE_FORMAT)}</Date>
-      <Time>{format(dateTime, AM_PM_DATE_FORMAT)}</Time>
-      {ActionsMenu}
-    </FlexSpaceBetween>
-  </Header>
-);
+export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => {
+  const userInitial = user.name.substring(0, 1);
+  return (
+    <Header>
+      <FlexSpaceBetween>
+        <StyledAvatar initial={userInitial} src={user.profileImage}>
+          {userInitial}
+        </StyledAvatar>
+        <Title>{user.name}</Title>
+      </FlexSpaceBetween>
+      <FlexSpaceBetween>
+        <Date>{format(dateTime, DAY_MONTH_YEAR_DATE_FORMAT)}</Date>
+        <Time>{format(dateTime, AM_PM_DATE_FORMAT)}</Time>
+        {ActionsMenu}
+      </FlexSpaceBetween>
+    </Header>
+  );
+};
 
 UserMessageHeader.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.PropTypes.shape({
+    name: PropTypes.string,
+    profileImage: PropTypes.string,
+  }).isRequired,
   dateTime: PropTypes.object.isRequired,
   ActionsMenu: PropTypes.any,
 };
