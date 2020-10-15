@@ -32,7 +32,8 @@ export const composeData = async (config, aggregator, dhisApi) => {
 
   const data = [];
   Object.entries(responses).forEach(([name, { data: responseData }]) => {
-    if (!responseData || responseData.length === 0) return;
+    if (containsNoData(responseData)) return;
+
     const responseObj = {};
     responseData.forEach(({ name: dataPointName, value }) => {
       if (!(value === NO_DATA_AVAILABLE)) {
@@ -48,3 +49,8 @@ export const composeData = async (config, aggregator, dhisApi) => {
 
   return { data };
 };
+
+const containsNoData = responseData =>
+  !responseData ||
+  responseData.length === 0 ||
+  responseData.every(({ value }) => value === NO_DATA_AVAILABLE);
