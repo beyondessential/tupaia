@@ -2,8 +2,6 @@ import { DataBroker } from '@tupaia/data-broker';
 import { Aggregator } from '../Aggregator';
 import { createAggregator } from '../createAggregator';
 
-jest.mock('@tupaia/data-broker');
-
 const CustomAggregatorClass = class CustomAggregator {
   constructor(dataBroker) {
     this.dataBroker = dataBroker;
