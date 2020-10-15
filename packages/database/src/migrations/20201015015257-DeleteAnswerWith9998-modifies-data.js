@@ -16,7 +16,12 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db.runSql(`
-    DELETE FROM "answer" WHERE text = '9998';
+    DELETE FROM "answer" a
+    using survey_response sr
+    join survey s on s.id = sr.survey_id 
+    where a.survey_response_id = sr.id 
+    and a.text = '9998'
+    and s.name = 'Reproductive Health Combined';
   `)
 };
 
