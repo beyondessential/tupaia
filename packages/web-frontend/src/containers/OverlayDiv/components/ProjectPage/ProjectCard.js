@@ -9,9 +9,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
+import Alarm from '@material-ui/icons/Alarm';
 import Button from '@material-ui/core/Button';
 
-import { BOX_SHADOW, WHITE, LIGHT_GREY } from '../../../../styles';
+import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, BREWER_PALETTE } from '../../../../styles';
 
 const Card = styled.div`
   display: grid;
@@ -88,6 +89,19 @@ const LockIcon = styled(Lock)`
   margin-right: 5px;
 `;
 
+const AlarmIcon = styled(Alarm)`
+  margin-right: 5px;
+`;
+
+const styles = {
+  pendingAccessButton: {
+    background: LIGHT_GREY,
+    color: FORM_BLUE,
+    padding: '5px',
+  },
+  accessButton: {},
+};
+
 export const ProjectCard = ({
   name,
   description,
@@ -97,6 +111,7 @@ export const ProjectCard = ({
   projectAction,
   actionText,
   accessType,
+  hasAccessPending,
 }) => {
   return (
     <Card data-testid="project-card">
@@ -115,9 +130,11 @@ export const ProjectCard = ({
         <Button
           onClick={projectAction}
           color="primary"
+          style={hasAccessPending ? styles.pendingAccessButton : styles.accessButton}
           variant={accessType ? 'contained' : 'outlined'}
         >
-          {!accessType && <LockIcon />}
+          {!accessType && !hasAccessPending && <LockIcon />}
+          {hasAccessPending && <AlarmIcon />}
           {actionText}
         </Button>
       </Footer>
@@ -134,6 +151,7 @@ ProjectCard.propTypes = {
   projectAction: PropTypes.func.isRequired,
   actionText: PropTypes.string.isRequired,
   accessType: PropTypes.bool.isRequired,
+  hasAccessPending: PropTypes.bool.isRequired,
 };
 
 ProjectCard.defaultProps = {

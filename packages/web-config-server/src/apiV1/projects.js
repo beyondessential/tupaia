@@ -1,5 +1,5 @@
 import { respond } from '@tupaia/utils';
-import { Project, Entity } from '/models';
+import { AccessRequest, Entity, Project } from '/models';
 import { calculateBoundsFromEntities } from '/utils/geoJson';
 
 async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
@@ -14,8 +14,20 @@ async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   );
 }
 
+const fetchHasPendingProjectAccess = async (projectId, userId) => {
+  if (!projectId || !userId) return false;
+
+  const accessRequests = await AccessRequest.find({
+    user_id: userId,
+    project_id: projectId,
+    processed_date: null,
+  });
+  return accessRequests.length > 0;
+};
+
 async function buildProjectDataForFrontend(project, req) {
   const {
+    id: projectId,
     name,
     code,
     description,
@@ -38,6 +50,12 @@ async function buildProjectDataForFrontend(project, req) {
   const hasAccess = entitiesWithAccess.length > 0;
   const homeEntityCode = entitiesWithAccess.length === 1 ? entitiesWithAccess[0].code : code;
 
+  // Only want to check pending if no access
+  const { userId } = req.session.userJson;
+  const hasPendingAccess = hasAccess
+    ? false
+    : await fetchHasPendingProjectAccess(projectId, userId);
+
   return {
     name,
     code,
@@ -49,6 +67,7 @@ async function buildProjectDataForFrontend(project, req) {
     names,
     bounds: calculateBoundsFromEntities(entitiesWithAccess),
     hasAccess,
+    hasPendingAccess,
     homeEntityCode,
     dashboardGroupName,
     defaultMeasure,
@@ -57,7 +76,6 @@ async function buildProjectDataForFrontend(project, req) {
 
 export async function getProjects(req, res) {
   const data = await Project.getProjectDetails();
-
   const promises = data.map(project => buildProjectDataForFrontend(project, req));
   const projects = await Promise.all(promises);
 

@@ -1,8 +1,6 @@
 /**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -43,19 +41,26 @@ const ExploreButton = styled(Button)`
   }
 `;
 
-const renderProjectsWithFilter = (projects, accessType, action, actionText) =>
-  projects
-    .filter(({ code, hasAccess }) => code !== EXPLORE_CODE && hasAccess === accessType)
+const renderProjectsWithFilter = (projects, accessType, action, actionText) => {
+  const hasAccessType = accessType === 'pending' ? false : accessType;
+  const hasPendingType = accessType === 'pending';
+  return projects
+    .filter(
+      ({ code, hasAccess, hasPendingAccess = false }) =>
+        code !== EXPLORE_CODE && hasAccess === hasAccessType && hasPendingAccess === hasPendingType,
+    )
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map(project => (
       <ProjectCard
         key={project.name}
         projectAction={() => action(project)}
         actionText={actionText}
-        accessType={accessType}
+        accessType={hasAccessType}
+        hasAccessPending={hasPendingType}
         {...project}
       />
     ));
+};
 
 const ProjectPageComponent = ({
   onSelectProject,
@@ -77,6 +82,13 @@ const ProjectPageComponent = ({
     'View project',
   );
 
+  const projectsPendingAccess = renderProjectsWithFilter(
+    projects,
+    'pending',
+    onRequestProjectAccess,
+    'Approval in progress',
+  );
+
   const noAccessAction = isUserLoggedIn ? onRequestProjectAccess : openLoginDialog;
   const noAccessText = isUserLoggedIn ? 'Request access' : 'Log in';
   const projectsWithoutAccess = renderProjectsWithFilter(
@@ -93,6 +105,7 @@ const ProjectPageComponent = ({
       </ExploreButton>
       <Container>
         {projectsWithAccess}
+        {projectsPendingAccess}
         {projectsWithoutAccess}
       </Container>
     </div>
