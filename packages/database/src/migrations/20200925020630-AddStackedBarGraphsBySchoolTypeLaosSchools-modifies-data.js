@@ -30,11 +30,24 @@ const REPORTS = [
     id: 'Laos_Schools_Distance_To_Grid_By_School_Type',
     name: 'Schools With No Electricity - Distance to Grid, % of Schools',
     dataElement: 'SchCVD011',
+    legendOrder: [
+      'Distance to grid under 0.5km',
+      'Distance to grid 0.5 to 1km',
+      'Distance to grid 1 to 2km',
+      'Distance to grid 2 to 4km',
+      'Distance to grid over 5km',
+    ],
   },
   {
     id: 'Laos_Schools_Age_Of_Computers_By_School_Type',
     name: 'Age of Functioning Computers, % of Schools',
     dataElement: 'SchCVD014',
+    legendOrder: [
+      'Provided less than 1 year ago',
+      'Provided less than 2 years ago',
+      'Provided less than 3 years ago',
+      'Provided over 4 years ago',
+    ],
   },
   {
     id: 'Laos_Schools_Used_as_Quarantine_Centre_By_School_Type',
@@ -161,33 +174,45 @@ const createDataBuilderConfig = (dataElement, dataElementToString) => ({
   },
 });
 
-const createViewJson = name => ({
+const createChartConfig = (legendOrder = []) => {
+  const chartConfig = {
+    $all: {
+      stackId: 1,
+    },
+  };
+
+  legendOrder.forEach((possibleValue, index) => {
+    chartConfig[possibleValue] = {
+      legendOrder: index,
+    };
+  });
+
+  return chartConfig;
+};
+
+const createViewJson = (name, legendOrder) => ({
   name,
   description:
     'This report is calculated based on the number of ‘School COVID-19 Response Laos’ survey responses',
   type: 'chart',
   chartType: 'bar',
   valueType: 'percentage',
-  chartConfig: {
-    $all: {
-      stackId: 1,
-    },
-  },
+  chartConfig: createChartConfig(legendOrder),
   renderLegendForOneItem: true,
   presentationOptions: { hideAverage: true },
 });
 
-const createReport = (id, name, dataElement, dataElementToString) => ({
+const createReport = ({ id, name, legendOrder, dataElement, dataElementToString }) => ({
   id,
   dataBuilder: 'composeData',
-  viewJson: createViewJson(name),
+  viewJson: createViewJson(name, legendOrder),
   dataBuilderConfig: createDataBuilderConfig(dataElement, dataElementToString),
 });
 
 exports.up = async function (db) {
   return Promise.all(
-    REPORTS.map(async ({ id, name, dataElement, dataElementToString }) => {
-      const report = createReport(id, name, dataElement, dataElementToString);
+    REPORTS.map(async reportConfig => {
+      const report = createReport(reportConfig);
       await insertObject(db, 'dashboardReport', report);
 
       return db.runSql(`
