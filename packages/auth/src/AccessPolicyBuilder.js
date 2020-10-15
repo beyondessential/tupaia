@@ -14,6 +14,10 @@ export class AccessPolicyBuilder {
     this.setupCacheInvalidation();
   }
 
+  resetCaches() {
+    this.cachedPolicyPromises = {};
+  }
+
   setupCacheInvalidation() {
     // if a user entity permission record is changed, make sure we rebuild the associated user's
     // access policy next time it is requested
@@ -22,6 +26,7 @@ export class AccessPolicyBuilder {
       this.cachedPolicyPromises[getCacheKey(userId, true)] = null; // legacy
       this.cachedPolicyPromises[getCacheKey(userId, false)] = null; // modern
     });
+    this.models.permissionGroup.addChangeHandler(() => this.resetCaches());
   }
 
   async getPolicyForUser(userId, useLegacyFormat = false) {
