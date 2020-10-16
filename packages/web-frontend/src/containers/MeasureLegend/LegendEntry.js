@@ -31,19 +31,6 @@ const LegendEntry = React.memo(
   },
 );
 
-const mapStateToProps = () => state => ({
-  hiddenMeasures: state.map.measureInfo.hiddenMeasures,
-});
-
-const mapDispatchToProps = () => dispatch => ({
-  onClick: (key, value, hide) =>
-    dispatch({
-      key,
-      value,
-      type: hide ? 'HIDE_MAP_MEASURE' : 'UNHIDE_MAP_MEASURE',
-    }),
-});
-
 LegendEntry.propTypes = {
   marker: PropTypes.element.isRequired,
   label: PropTypes.string.isRequired,
@@ -57,5 +44,18 @@ LegendEntry.propTypes = {
 LegendEntry.defaultProps = {
   unClickable: false,
 };
+
+const mapStateToProps = () => state => ({
+  hiddenMeasures: state.map.measureInfo.hiddenMeasures,
+});
+
+const mapDispatchToProps = () => dispatch => ({
+  onClick: (key, value, hide) =>
+    dispatch({
+      key,
+      value,
+      type: hide ? 'HIDE_MAP_MEASURE' : 'UNHIDE_MAP_MEASURE',
+    }),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(LegendEntry);

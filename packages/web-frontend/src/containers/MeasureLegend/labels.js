@@ -40,6 +40,14 @@ const NoDataLabel = ({ noDataColour, handleClick, valueMapping, hiddenMeasures, 
   );
 };
 
+NoDataLabel.propTypes = {
+  noDataColour: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  valueMapping: PropTypes.arrayOf(PropTypes.object).isRequired,
+  hiddenMeasures: PropTypes.shape({}).isRequired,
+  dataKey: PropTypes.string.isRequired,
+};
+
 const mapStateToProps = state => {
   return {
     hiddenMeasures: state.map.measureInfo.hiddenMeasures,
@@ -56,14 +64,6 @@ const mapDispatchToProps = dispatch => {
         type: hide ? 'HIDE_MAP_MEASURE' : 'UNHIDE_MAP_MEASURE',
       }),
   };
-};
-
-NoDataLabel.propTypes = {
-  noDataColour: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  valueMapping: PropTypes.arrayOf(PropTypes.object).isRequired,
-  hiddenMeasures: PropTypes.shape({}).isRequired,
-  dataKey: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoDataLabel);
