@@ -28,8 +28,4 @@ const mapStateToProps = state => ({
   dataKey: state.map.measureInfo.measureOptions['0'].key,
 });
 
-// const mapStateToProps = () => state => ({
-//   hiddenMeasures: state.map.measureInfo.hiddenMeasures,
-// });
-
 export default connect(mapStateToProps)(NoDataLabel);
