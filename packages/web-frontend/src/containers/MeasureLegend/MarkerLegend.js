@@ -83,7 +83,7 @@ function getLegendMarkerForValue(value, type, hasIconLayer, hasRadiusLayer, hasC
 
 export const MarkerLegend = React.memo(
   ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
-    const { type, values, dataKey, valueMapping } = measureOptions;
+    const { type, values, key: dataKey, valueMapping } = measureOptions;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
