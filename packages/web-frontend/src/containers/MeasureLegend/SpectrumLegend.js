@@ -12,12 +12,20 @@ import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
 import { SCALE_TYPES } from '../../constants';
 import { formatDataValue } from '../../utils/formatters';
 import { LegendContainer } from './common';
-import NoDataLabel, { LabelLeft, LabelRight } from './labels';
+import NoDataLabel from './NoDataLabel';
 import LegendEntry from './LegendEntry';
 
 const SpectrumSliver = styled.div`
   width: 2px;
   height: 15px;
+`;
+
+const LabelLeft = styled.div`
+  margin-right: 10px;
+`;
+
+const LabelRight = styled.div`
+  margin-left: 10px;
 `;
 
 const getSpectrumLabels = (scaleType, min, max, valueType) => {
