@@ -23,7 +23,7 @@ import {
   MEASURE_VALUE_OTHER,
 } from '../../utils/measures';
 import LegendEntry from './LegendEntry';
-import { LegendContainer } from './common';
+import { LegendContainer } from './LegendContainer';
 
 // Icon layers can be set to hide some values from the map entirely - but if we're showing
 // radius values for them, we should still put them in the legend!

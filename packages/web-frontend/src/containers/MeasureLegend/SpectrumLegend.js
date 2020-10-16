@@ -11,7 +11,7 @@ import { LEGEND_SHADING_ICON } from '../../components/Marker/markerIcons';
 import { MeasureOptionsPropType } from '../../components/Marker/propTypes';
 import { SCALE_TYPES } from '../../constants';
 import { formatDataValue } from '../../utils/formatters';
-import { LegendContainer } from './common';
+import { LegendContainer } from './LegendContainer';
 import NoDataLabel from './NoDataLabel';
 import LegendEntry from './LegendEntry';
 
