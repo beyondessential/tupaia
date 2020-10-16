@@ -4,6 +4,5 @@
   "testMatch": ["<rootDir>/src/__tests__/**/**.test.js"],
   "setupFilesAfterEnv": ["../../jestScaffolding.js", "./jest.setup.js"],
   "transformIgnorePatterns": ["/node_modules/"],
-  "testEnvironment": "node",
-  "testTimeout": 400000
+  "testEnvironment": "node"
 }
