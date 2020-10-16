@@ -6,24 +6,30 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { BLUE, TUPAIA_ORANGE } from '../../styles';
+import { Alert } from '../Alert';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 
+const StyledAlert = styled(Alert)`
+  &.MuiAlert-root {
+    margin: 20px auto 10px;
+    padding: 5px 16px 5px 13px;
+  }
+`;
+
 export const NoDataMessage = ({ viewContent }) => {
-  const style = { color: BLUE };
   let message = 'No data';
 
   if (viewContent.noDataMessage) {
     message = viewContent.noDataMessage;
   } else if (viewContent.source === 'mSupply') {
-    style.color = TUPAIA_ORANGE;
     message = 'Requires mSupply';
   } else if (viewContent.startDate && viewContent.endDate) {
     message = `No data for ${viewContent.startDate} to ${viewContent.endDate}`;
   }
 
-  return <span style={style}>{message}</span>;
+  return <StyledAlert severity="info">{message}</StyledAlert>;
 };
 
 NoDataMessage.propTypes = {
