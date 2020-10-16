@@ -28,7 +28,7 @@ describe('EntityModel', () => {
     upsertEntity({ ...data, type: NON_ORG_UNIT_ENTITY_TYPE });
 
   describe('isOrganisationUnit()', () => {
-    ORG_UNIT_ENTITY_TYPES.forEach(async type => {
+    ORG_UNIT_ENTITY_TYPES.forEach(type => {
       it(`should return true if its type is ${type}`, async () => {
         const entity = await upsertEntity({ type });
         expect(entity.isOrganisationUnit()).to.be.true;
@@ -42,7 +42,7 @@ describe('EntityModel', () => {
   });
 
   describe('isTrackedEntity()', () => {
-    ORG_UNIT_ENTITY_TYPES.forEach(async type => {
+    ORG_UNIT_ENTITY_TYPES.forEach(type => {
       it(`should return false if its type is ${type}`, async () => {
         const entity = await upsertEntity({ type });
         expect(entity.isTrackedEntity()).to.be.false;
