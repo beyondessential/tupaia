@@ -1,5 +1,5 @@
 #!/bin/bash
-DIR=`dirname "$0"`
+DIR=$(dirname "$0")
 for PACKAGE in $(${DIR}/../../../../scripts/bash/getInternalDependencies.sh); do
   # skip database, data-api and auth packages - they get tested separately as they require db access
   if [[ "$PACKAGE" == "database" || "$PACKAGE" == "data-api" || "$PACKAGE" == "auth" ]]; then

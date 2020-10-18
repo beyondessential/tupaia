@@ -10,21 +10,21 @@ while [[ $# -gt 0 ]]; do
   key="$1"
 
   case $key in
-      --package-name)
-      PACKAGE_NAME="$2"
-      shift # past argument
-      shift # past value
-      ;;
-      --environment)
-      ENVIRONMENT="$2"
-      shift # past argument
-      shift # past value
-      ;;
-      --path-to-package)
-      PATH_TO_PACKAGE="$2"
-      shift # past argument
-      shift # past value
-      ;;
+  --package-name)
+    PACKAGE_NAME="$2"
+    shift # past argument
+    shift # past value
+    ;;
+  --environment)
+    ENVIRONMENT="$2"
+    shift # past argument
+    shift # past value
+    ;;
+  --path-to-package)
+    PATH_TO_PACKAGE="$2"
+    shift # past argument
+    shift # past value
+    ;;
   esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
@@ -41,7 +41,7 @@ fi
 
 cd $PATH_TO_PACKAGE
 while read PARAMETER; do
-  IFS== read PARAMETER_NAME PARAMETER_VALUE <<< $PARAMETER
+  IFS== read PARAMETER_NAME PARAMETER_VALUE <<<$PARAMETER
   PARAMETER_VALUE="${PARAMETER_VALUE%\"}" # Remove leading quote
   PARAMETER_VALUE="${PARAMETER_VALUE#\"}" # Remove trailing quote
   PARAMETER_QUALIFIED_NAME="/$PACKAGE_NAME/$ENVIRONMENT/$PARAMETER_NAME"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=`dirname "$0"`
+DIR=$(dirname "$0")
 
 CONCURRENT_BUILD_BATCH_SIZE=2
 
@@ -10,22 +10,23 @@ watch=false
 with_types=false
 while [ "$1" != "" ]; do
   case $1 in
-      --watch)
-        shift
-        watch=true
-        ;;
-      --withTypes)
-        shift
-        with_types=true
-        shift
-        ;;
-      -h | --help )
-        echo -e "$USAGE\n";
-        exit
-        ;;
-      * )
-        echo -e "$USAGE\n"
-        exit 1
+  --watch)
+    shift
+    watch=true
+    ;;
+  --withTypes)
+    shift
+    with_types=true
+    shift
+    ;;
+  -h | --help)
+    echo -e "$USAGE\n"
+    exit
+    ;;
+  *)
+    echo -e "$USAGE\n"
+    exit 1
+    ;;
   esac
 done
 
@@ -53,7 +54,7 @@ if [[ $watch == "true" ]]; then
 else
   echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
   total_build_commands=${#build_commands[@]}
-  for ((start_index=0; start_index<${total_build_commands}; start_index+=${CONCURRENT_BUILD_BATCH_SIZE})); do
+  for ((start_index = 0; start_index < ${total_build_commands}; start_index += ${CONCURRENT_BUILD_BATCH_SIZE})); do
     echo "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
     eval "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
   done

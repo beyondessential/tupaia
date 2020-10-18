@@ -9,7 +9,7 @@ set -e
 # $2 - optionally provide '-s' or '--skip-internal' to skip the build and watch of internal dependencies
 ##
 
-DIR=`dirname "$0"`
+DIR=$(dirname "$0")
 watch_flags=""
 start_server="nodemon -w src --exec \"babel-node src --inspect=${1} --config-file '../../babel.config.json'\""
 
