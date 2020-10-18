@@ -166,8 +166,8 @@ const translateConditionalConfig = async (models, config) => {
  *	  Yes: {
  *			5ed7558b61f76a6ba5003114: {	operator: '>=',	operand: 5 }
  *		},
- *		No: { 
-        5ed7558b61f76a6ba5003114: { operator: '<', operand: 5 }
+ *		No: {
+ *      5ed7558b61f76a6ba5003114: { operator: '<', operand: 5 }
  *		},
  *	}
  * @param {*} models
