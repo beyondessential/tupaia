@@ -26,8 +26,8 @@ const processCalculatedConfigByType = async (models, config) => {
   switch (config.type) {
     case 'arithmetic':
       return translateArithmeticConfig(models, config);
-    case 'conditional':
-      return translateConditionalConfig(models, config);
+    case 'condition':
+      return translateConditionConfig(models, config);
     default:
       throw new Error(`Invalid calculated type: ${config.type}`);
   }
@@ -153,7 +153,7 @@ const translateText = async (models, text, codes) => {
   return translatedText;
 };
 
-const translateConditionalConfig = async (models, config) => {
+const translateConditionConfig = async (models, config) => {
   return {
     conditions: await translateConditions(models, config.conditions),
   };

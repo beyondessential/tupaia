@@ -267,8 +267,8 @@ const QUESTION_COLUMNS = [
                         value: 'arithmetic',
                       },
                       {
-                        label: 'Conditional',
-                        value: 'conditional',
+                        label: 'Condition',
+                        value: 'condition',
                       },
                     ],
                   },

@@ -120,7 +120,7 @@ export const getAnswers = state => state.assessment.answers;
 export const getAnswerForQuestion = (state, questionId) => getAnswers(state)[questionId];
 
 const getArithmeticResult = (state, config) => {
-  const { formula, valueTranslation, text = '' } = config.calculated;
+  const { formula, valueTranslation, defaultValues = {}, text = '' } = config.calculated;
   const values = {};
   const variables = getVariables(formula);
   let translatedText = text;
@@ -140,20 +140,16 @@ const getArithmeticResult = (state, config) => {
       answer = defaultValues[questionIdVariable];
     }
 
-    values[questionIdVariable] = answer;
+    values[questionIdVariable] = answer || 0;
 
-    if (translatedText) {
-      translatedText = translatedText.replace(questionIdVariable, answer);
-    }
+    translatedText = translatedText.replace(questionIdVariable, answer);
   });
 
   const calculatedResult = !isNaN(runArithmetic(formula, values))
     ? Math.round(runArithmetic(formula, values) * 1000) / 1000
     : 0;
 
-  if (translatedText) {
-    translatedText = translatedText.replace('$result', calculatedResult);
-  }
+  translatedText = translatedText.replace('$result', calculatedResult);
 
   return {
     translatedText,
@@ -161,7 +157,7 @@ const getArithmeticResult = (state, config) => {
   };
 };
 
-const getConditionalResult = (state, config) => {
+const getConditionResult = (state, config) => {
   const { conditions } = config.calculated;
   const result = Object.entries(conditions).find(([displayValue, valueConditions]) => {
     return Object.entries(valueConditions).every(([questionId, { operator, operand }]) => {
@@ -181,6 +177,7 @@ const getConditionalResult = (state, config) => {
   if (result) {
     [calculatedResult] = result;
   }
+
   return {
     calculatedResult,
   };
@@ -191,8 +188,8 @@ export const getCalculatedResult = (state, questionId) => {
   switch (config.calculated.type) {
     case 'arithmetic':
       return getArithmeticResult(state, config);
-    case 'conditional':
-      return getConditionalResult(state, config);
+    case 'condition':
+      return getConditionResult(state, config);
     default:
       throw new Error(`Invalid type: ${config.type}`);
   }

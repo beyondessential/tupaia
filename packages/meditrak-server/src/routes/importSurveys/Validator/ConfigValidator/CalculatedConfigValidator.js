@@ -21,17 +21,17 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
     const defaultValuesPointToOtherQuestions = this.constructDefaultValuesPointToOtherQuestions(
       rowIndex,
     );
-    const conditionsPointToOtherQuestions = this.constructConditionsPointToOtherQuestions(rowIndex);
     const valueTranslationPointToOtherQuestions = this.constructValueTranslationPointsToOtherQuestions(
       rowIndex,
     );
+    const conditionsPointToOtherQuestions = this.constructConditionsPointToOtherQuestions(rowIndex);
 
     return {
-      type: [hasContent, constructIsOneOf(['arithmetic', 'conditional'])],
+      type: [hasContent, constructIsOneOf(['arithmetic', 'condition'])],
       formula: [constructIsNotPresentOr(formulaPointsToOtherQuestions)],
       defaultValues: [constructIsNotPresentOr(defaultValuesPointToOtherQuestions)],
-      conditions: [constructIsNotPresentOr(conditionsPointToOtherQuestions)],
       valueTranslation: [constructIsNotPresentOr(valueTranslationPointToOtherQuestions)],
+      conditions: [constructIsNotPresentOr(conditionsPointToOtherQuestions)],
     };
   }
 
@@ -41,7 +41,11 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
 
       for (let i = 0; i < codes.length; i++) {
         const code = codes[i];
-        this.pointsToPrecedingQuestion(code, rowIndex);
+        this.assertPointingToPrecedingQuestion(
+          code,
+          rowIndex,
+          `Code '${code}' does not reference a preceding question`,
+        );
       }
 
       return true;
@@ -54,7 +58,11 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
 
       for (let i = 0; i < defaultValues.length; i++) {
         const [code] = splitStringOn(defaultValues[i], '=');
-        this.pointsToPrecedingQuestion(code, rowIndex);
+        this.assertPointingToPrecedingQuestion(
+          code,
+          rowIndex,
+          `Code '${code}' does not reference a preceding question`,
+        );
       }
 
       return true;
@@ -67,7 +75,12 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
 
       for (let i = 0; i < valueTranslation.length; i++) {
         const [code] = splitStringOn(valueTranslation[i], '=');
-        this.pointsToPrecedingQuestion(code, rowIndex);
+        const [questionCode] = splitStringOn(code, '.');
+        this.assertPointingToPrecedingQuestion(
+          questionCode,
+          rowIndex,
+          `Code '${questionCode}' does not reference a preceding question`,
+        );
       }
 
       return true;
@@ -81,7 +94,11 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
       for (let i = 0; i < conditions.length; i++) {
         const [key] = splitStringOn(conditions[i], '=');
         const [finalValue, code] = splitStringOn(key, '.');
-        this.pointsToPrecedingQuestion(code, rowIndex);
+        this.assertPointingToPrecedingQuestion(
+          code,
+          rowIndex,
+          `Code '${code}' does not reference a preceding question`,
+        );
       }
 
       return true;

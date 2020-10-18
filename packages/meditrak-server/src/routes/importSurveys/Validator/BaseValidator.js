@@ -46,11 +46,15 @@ export class BaseValidator {
     };
   }
 
-  pointsToPrecedingQuestion(questionCode, rowIndex) {
+  assertPointingToPrecedingQuestion(
+    questionCode,
+    rowIndex,
+    errorMessage = 'Should reference a preceding question',
+  ) {
     const question = this.findOtherQuestion(questionCode, rowIndex, rowIndex);
 
     if (!question) {
-      throw new ValidationError(`Should reference a preceding question`);
+      throw new ValidationError(errorMessage);
     }
 
     return true;
