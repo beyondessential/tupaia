@@ -253,6 +253,50 @@ const QUESTION_COLUMNS = [
                   { label: 'Length', fieldName: 'length' },
                 ],
               },
+              {
+                label: 'Calculated',
+                fieldName: 'calculated',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Calculated Type',
+                    fieldName: 'type',
+                    options: [
+                      {
+                        label: 'Arithmetic',
+                        value: 'arithmetic',
+                      },
+                      {
+                        label: 'Conditional',
+                        value: 'conditional',
+                      },
+                    ],
+                  },
+                  {
+                    label: 'Formula',
+                    fieldName: 'formula',
+                  },
+                  {
+                    label: 'Default Values',
+                    fieldName: 'defaultValues',
+                    type: 'jsonEditor',
+                  },
+                  {
+                    label: 'Value Translation',
+                    fieldName: 'valueTranslation',
+                    type: 'jsonEditor',
+                  },
+                  {
+                    label: 'Text',
+                    fieldName: 'text',
+                  },
+                  {
+                    label: 'Conditions',
+                    fieldName: 'conditions',
+                    type: 'jsonEditor',
+                  },
+                ],
+              },
             ],
           },
         },
