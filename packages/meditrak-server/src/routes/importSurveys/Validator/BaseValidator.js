@@ -45,4 +45,14 @@ export class BaseValidator {
       return true;
     };
   }
+
+  pointsToPrecedingQuestion(questionCode, rowIndex) {
+    const question = this.findOtherQuestion(questionCode, rowIndex, rowIndex);
+
+    if (!question) {
+      throw new ValidationError(`Should reference a preceding question`);
+    }
+
+    return true;
+  }
 }

@@ -7,9 +7,10 @@ import { ANSWER_TYPES } from '../../../database/models/Answer';
 import { convertCellToJson } from '../utilities';
 import { ConfigValidator } from '../Validator/ConfigValidator';
 import { processCodeGeneratorConfig } from './processCodeGeneratorConfig';
+import { processCalculatedConfig } from './processCalculatedConfig';
 import { processEntityConfig } from './processEntityConfig';
 
-const { CODE_GENERATOR, ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
+const { CODE_GENERATOR, CALCULATED, ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
 
 export class ConfigImporter {
   parse = convertCellToJson;
@@ -62,6 +63,10 @@ export class ConfigImporter {
       case CODE_GENERATOR: {
         const codeGeneratorConfig = processCodeGeneratorConfig(config);
         return { codeGenerator: codeGeneratorConfig };
+      }
+      case CALCULATED: {
+        const calculatedConfig = await processCalculatedConfig(this.models, config);
+        return { calculated: calculatedConfig };
       }
       case ENTITY:
       case PRIMARY_ENTITY: {

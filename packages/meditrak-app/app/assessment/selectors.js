@@ -3,7 +3,16 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
+import { getVariables, runArithmetic } from '@beyondessential/arithmetic';
 import { checkAnswerPreconditionsAreMet } from './helpers';
+
+const CONDITION_TYPE = {
+  '=': (value, filterValue) => value === filterValue,
+  '>': (value, filterValue) => value > filterValue,
+  '<': (value, filterValue) => value < filterValue,
+  '>=': (value, filterValue) => value >= filterValue,
+  '<=': (value, filterValue) => value <= filterValue,
+};
 
 export const getSurveyScreenIndex = state => state.assessment.currentScreenIndex;
 
@@ -109,3 +118,82 @@ export const getQuestion = (state, questionId) => state.assessment.questions[que
 export const getAnswers = state => state.assessment.answers;
 
 export const getAnswerForQuestion = (state, questionId) => getAnswers(state)[questionId];
+
+const getArithmeticResult = (state, config) => {
+  const { formula, valueTranslation, text = '' } = config.calculated;
+  const values = {};
+  const variables = getVariables(formula);
+  let translatedText = text;
+
+  variables.forEach(questionIdVariable => {
+    let answer = getAnswerForQuestion(state, questionIdVariable) || 0;
+
+    if (
+      valueTranslation &&
+      valueTranslation[questionIdVariable] &&
+      valueTranslation[questionIdVariable][answer] !== undefined
+    ) {
+      answer = valueTranslation[questionIdVariable][answer];
+    }
+
+    if (answer === undefined) {
+      answer = defaultValues[questionIdVariable];
+    }
+
+    values[questionIdVariable] = answer;
+
+    if (translatedText) {
+      translatedText = translatedText.replace(questionIdVariable, answer);
+    }
+  });
+
+  const calculatedResult = !isNaN(runArithmetic(formula, values))
+    ? Math.round(runArithmetic(formula, values) * 1000) / 1000
+    : 0;
+
+  if (translatedText) {
+    translatedText = translatedText.replace('$result', calculatedResult);
+  }
+
+  return {
+    translatedText,
+    calculatedResult,
+  };
+};
+
+const getConditionalResult = (state, config) => {
+  const { conditions } = config.calculated;
+  const result = Object.entries(conditions).find(([displayValue, valueConditions]) => {
+    return Object.entries(valueConditions).every(([questionId, { operator, operand }]) => {
+      const answer = getAnswerForQuestion(state, questionId);
+
+      if (answer === undefined) {
+        return false;
+      }
+
+      const checkConditionMethod = CONDITION_TYPE[operator];
+      return checkConditionMethod ? checkConditionMethod(answer, operand) : false;
+    });
+  });
+
+  let calculatedResult;
+
+  if (result) {
+    [calculatedResult] = result;
+  }
+  return {
+    calculatedResult,
+  };
+};
+
+export const getCalculatedResult = (state, questionId) => {
+  const { config } = getQuestion(state, questionId);
+  switch (config.calculated.type) {
+    case 'arithmetic':
+      return getArithmeticResult(state, config);
+    case 'conditional':
+      return getConditionalResult(state, config);
+    default:
+      throw new Error(`Invalid type: ${config.type}`);
+  }
+};
