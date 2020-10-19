@@ -13,8 +13,6 @@ export const exportChartHandler = async (req, res) => {
   const sessionCookieName = USER_SESSION_CONFIG.cookieName;
   const sessionCookie = req.cookies[sessionCookieName];
 
-  console.log('query params', req.query);
-
   const chartConfig = req.query;
 
   const {

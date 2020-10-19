@@ -146,7 +146,7 @@ export const download = async (resourceUrl, errorFunction, options, fileName) =>
 
     downloadJs(responseBlob, fileName);
 
-    return response.json();
+    return true;
   } catch (error) {
     throw assignErrorAction(
       error,

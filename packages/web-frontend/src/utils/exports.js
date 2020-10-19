@@ -2,23 +2,21 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import domtoimage from '../dom-to-image';
 import downloadJs from 'downloadjs';
+import domtoimage from 'dom-to-image';
 import { download } from './request';
 
-export const exportToPng = node => {
+export const exportToPng = (node, filename) => {
   return new Promise(resolve => {
     domtoimage.toPng(node).then(async dataUrl => {
-      downloadJs(dataUrl, 'exported-chart.png');
+      downloadJs(dataUrl, `${filename}.png`);
       resolve();
     });
   });
 };
 
-export const exportToExcel = async ({ projectCode, viewContent, startDate, endDate }) => {
-  const { viewId, organisationUnitCode, dashboardGroupId, chartType } = viewContent;
-
-  console.log('start...');
+export const exportToExcel = async ({ projectCode, viewContent, startDate, endDate, filename }) => {
+  const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
 
   const queryString = new URLSearchParams({
     dashboardGroupId,
@@ -29,7 +27,6 @@ export const exportToExcel = async ({ projectCode, viewContent, startDate, endDa
     endDate,
   });
 
-  const url = `export/chart?${queryString}`;
-  const exportFileName = chartType ? `tupaia-export-${chartType}.xlsx` : 'tupaia-export.xlsx';
-  await download(url, null, null, exportFileName);
+  await download(`export/chart?${queryString}`, null, null, `${filename}.xlsx`);
+  return true;
 };

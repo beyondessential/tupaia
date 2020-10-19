@@ -19,7 +19,7 @@ import {
 import { DrillDownOverlay } from '../DrillDownOverlay';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { isMobile } from '../../utils';
+import { isMobile, sleep, stringToFilename } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
 import {
   selectCurrentInfoViewKey,
@@ -29,12 +29,6 @@ import {
 } from '../../selectors';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { ExportDialog } from '../../components/ExportDialog';
-
-const sleep = (delay = 0) => {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay);
-  });
-};
 
 const Loader = styled.div`
   display: block;
@@ -50,7 +44,6 @@ const Loader = styled.div`
   text-align: center;
   font-size: 18px;
 `;
-const ExportLoader = () => <Loader>Exporting...</Loader>;
 
 const STATUS = {
   IDLE: 'idle',
@@ -62,7 +55,8 @@ const STATUS = {
 const EnlargedDialogComponent = ({
   isDrillDownVisible,
   onCloseOverlay,
-  viewContent, errorMessage,
+  viewContent,
+  errorMessage,
   organisationUnitName,
   onDrillDown,
   onSetDateRange,
@@ -71,7 +65,6 @@ const EnlargedDialogComponent = ({
   startDate,
   endDate,
   projectCode,
-  selectedDisaster,
 }) => {
   const exportRef = React.useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
@@ -92,9 +85,15 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
+  if (viewContent) {
+    console.log('name', viewContent.name, stringToFilename(viewContent.name));
+  }
+
   const onExport = async format => {
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
+
+    const filename = stringToFilename(`export-${organisationUnitName}-${viewContent.name}`);
 
     try {
       if (format === 'xlsx') {
@@ -104,15 +103,15 @@ const EnlargedDialogComponent = ({
           startDate,
           endDate,
           organisationUnitName,
-          selectedDisaster,
+          filename,
         });
       } else {
         const node = exportRef.current;
-        await exportToPng(node);
+        await exportToPng(node, filename);
       }
 
       setIsExporting(false);
-      await sleep(1000);
+      await sleep(1000); // allow some time for the chart transition to finish before hiding the loader
       setExportStatus(STATUS.SUCCESS);
     } catch (e) {
       setIsExporting(false);
@@ -138,7 +137,7 @@ const EnlargedDialogComponent = ({
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
-        {exportStatus === STATUS.LOADING && <ExportLoader />}
+        {exportStatus === STATUS.LOADING && <Loader>Exporting...</Loader>}
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
@@ -173,6 +172,9 @@ EnlargedDialogComponent.propTypes = {
   onDrillDown: PropTypes.func,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
+  projectCode: PropTypes.string,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
   isVisible: PropTypes.bool,
   isDrillDownVisible: PropTypes.bool,
 };
@@ -181,6 +183,9 @@ EnlargedDialogComponent.defaultProps = {
   onDrillDown: () => {},
   onSetDateRange: () => {},
   errorMessage: null,
+  startDate: null,
+  endDate: null,
+  projectCode: null,
   isLoading: false,
   isVisible: false,
   isDrillDownVisible: false,
@@ -206,7 +211,6 @@ const styles = {
 
 const mapStateToProps = state => ({
   ...state.enlargedDialog,
-  selectedDisaster: state.disaster.selectedDisaster,
   projectCode: selectCurrentProjectCode(state),
   viewConfigs: state.global.viewConfigs,
   isDrillDownVisible: state.drillDown.isVisible,
