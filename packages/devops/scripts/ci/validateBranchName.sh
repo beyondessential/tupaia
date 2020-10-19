@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=`dirname "$0"`
+DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
 MAX_LENGTH=56
@@ -11,7 +11,7 @@ function get_branch_name() {
     local branch_name="$CI_BRANCH"
     if [[ $branch_name == "" ]]; then
         # Get currently checked out branch
-        branch_name=`git rev-parse --abbrev-ref HEAD`
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
     fi
 
     echo $branch_name
@@ -20,11 +20,10 @@ function get_branch_name() {
 function validate_name_ending() {
     local branch_name=$1
 
-    for reserved_ending in ${RESERVED_ENDINGS[@]}
-    do
+    for reserved_ending in ${RESERVED_ENDINGS[@]}; do
         if [[ "$branch_name" == *$reserved_ending ]]; then
             log_error "❌ Invalid branch name ending: '$reserved_ending'"
-            exit 1;
+            exit 1
         fi
     done
 }
@@ -35,7 +34,7 @@ function validate_name_length() {
 
     if [[ $name_length -gt MAX_LENGTH ]]; then
         log_error "❌ Branch name is too long, must be $MAX_LENGTH characters max"
-        exit 1;
+        exit 1
     fi
 }
 
@@ -44,14 +43,13 @@ function validate_name_chars() {
 
     if [[ $branch_name =~ [A-Z] ]]; then
         log_error "❌ Branch name cannot contain uppercase characters"
-        exit 1;
+        exit 1
     fi
 
-    for character in ${INVALID_CHARS[@]}	
-    do	
-        if [[ "$branch_name" == *"$character"* ]]; then	
-            log_error "❌ Invalid character in branch name: '$character'"	
-            exit 1;	
+    for character in ${INVALID_CHARS[@]}; do
+        if [[ "$branch_name" == *"$character"* ]]; then
+            log_error "❌ Invalid character in branch name: '$character'"
+            exit 1
         fi
     done
 }
@@ -62,4 +60,4 @@ validate_name_length $branch_name
 validate_name_chars $branch_name
 
 log_success "✔ Branch name is valid!"
-exit 0;
+exit 0
