@@ -5,8 +5,7 @@
   },
   "rules": {
     "import/no-named-as-default": "off",
-    "react/destructuring-assignment": "off",
-    "react/jsx-wrap-multilines": ["error", { "prop": "ignore" }]
+    "react/destructuring-assignment": "off"
   },
   "overrides": [
     {
