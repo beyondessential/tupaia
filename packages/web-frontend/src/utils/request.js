@@ -6,7 +6,7 @@
  */
 
 import 'whatwg-fetch';
-import { saveAs } from 'file-saver';
+import downloadJs from 'downloadjs';
 import { showSessionExpiredError, showServerUnreachableError } from '../actions';
 
 /**
@@ -142,11 +142,9 @@ export const download = async (resourceUrl, errorFunction, options, fileName) =>
       throw error;
     }
 
-    console.log('response', response);
     const responseBlob = await response.blob();
-    console.log('blob', responseBlob);
 
-    saveAs(responseBlob, fileName);
+    downloadJs(responseBlob, fileName);
 
     return response.json();
   } catch (error) {

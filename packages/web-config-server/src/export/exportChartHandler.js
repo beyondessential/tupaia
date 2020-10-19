@@ -59,7 +59,6 @@ export const exportChartHandler = async (req, res) => {
 
   const filePath = `${EXPORT_DIRECTORY}/${EXPORT_FILE_TITLE}_${Date.now()}.xlsx`;
 
-  res.setHeader('Content-Disposition', 'attachment');
   xlsx.writeFile(workbook, filePath);
   res.download(filePath);
 };
