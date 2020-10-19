@@ -37,7 +37,7 @@
   },
   "overrides": [
     {
-      "files": ["packages/database/src/migrations/**"],
+      "files": "packages/database/src/migrations/**",
       "rules": {
         "func-names": "off",
         "no-underscore-dangle": "off",
@@ -48,7 +48,7 @@
       }
     },
     {
-      "files": ["scripts/**"],
+      "files": ["jestScaffolding.js", "scripts/**"],
       "rules": {
         "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }]
       }
