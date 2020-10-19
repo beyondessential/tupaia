@@ -120,7 +120,6 @@ export class LoginPage extends React.Component {
 
 LoginPage.propTypes = {
   screenProps: PropTypes.object.isRequired,
-  loginButtonText: PropTypes.string,
   errorMessage: PropTypes.string,
   fieldsAreEditable: PropTypes.bool,
   loginButtonIsEnabled: PropTypes.bool,
@@ -139,7 +138,6 @@ LoginPage.defaultProps = {
   loginButtonIsEnabled: true,
   password: '',
   emailAddress: '',
-  errorMessage: '',
   isLoggingIn: false,
 };
 

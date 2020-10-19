@@ -1,9 +1,11 @@
 {
+  "extends": "@beyondessential/jest",
   "plugins": ["react-native"],
   "env": {
-    "browser": true
+    "react-native/react-native": true
   },
   "rules": {
+    "react/destructuring-assignment": "off",
     "react/prop-types": ["error", { "ignore": ["navigation"] }]
   }
 }
