@@ -30,6 +30,9 @@ export const composeData = async (config, aggregator, dhisApi) => {
   const { dataBuilders, fillWithNoData } = config.dataBuilderConfig;
   const responses = await fetchComposedData(config, aggregator, dhisApi);
 
+  if (Object.values(responses).every(({ data: responseData }) => containsNoData(responseData)))
+    return [];
+
   const data = [];
   Object.entries(responses).forEach(([name, { data: responseData }]) => {
     if (containsNoData(responseData) && !fillWithNoData) return;
