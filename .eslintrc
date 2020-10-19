@@ -2,12 +2,13 @@
   "extends": "@beyondessential/js",
   "parser": "babel-eslint",
   "rules": {
+    "global-require": "off",
     "import/no-extraneous-dependencies": [
       "error",
       {
         "devDependencies": [
-          "**/cypress/**",
           "jest.setup.js",
+          "**/cypress/**",
           "**/migrations/**",
           "**/scripts/**",
           "**/stories/**",
@@ -53,7 +54,13 @@
       }
     },
     {
-      "files": "**/src/tests/**",
+      "files": "**/__tests__",
+      "rules": {
+        "jest/valid-expect": ["error", { "maxArgs": 2 }]
+      }
+    },
+    {
+      "files": "**/tests/**",
       "env": {
         "mocha": true
       },
