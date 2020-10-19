@@ -109,7 +109,7 @@ const createDataClassesFromDataElementToString = dataElementToString => {
 };
 
 const createSingleElementSubDataBuilderConfig = (dataElement, schoolType) => ({
-  dataBuilder: 'countByAllDataValues',
+  dataBuilder: 'countByLatestDataValues',
   dataBuilderConfig: {
     dataElementCodes: [dataElement],
     convertToPercentage: true,
