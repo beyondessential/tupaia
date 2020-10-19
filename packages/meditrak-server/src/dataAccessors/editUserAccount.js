@@ -9,7 +9,7 @@ import { uploadImage } from '../s3';
 export const editUserAccount = async (
   models,
   id,
-  { password, profileImage, ...restOfUpdatedFields },
+  { password, profile_image: profileImage, ...restOfUpdatedFields },
 ) => {
   let updatedFields = restOfUpdatedFields;
   if (password) {

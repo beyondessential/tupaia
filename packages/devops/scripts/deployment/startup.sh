@@ -7,7 +7,7 @@ export PATH=/home/ubuntu/.local/bin:/home/ubuntu/.yarn/bin:/home/ubuntu/.config/
 # Set the home directory of the user
 export HOME_DIRECTORY="/home/ubuntu/tupaia"
 
-DIR=`dirname "$0"`
+DIR=$(dirname "$0")
 export STAGE=$(${DIR}/../utility/detectStage.sh)
 echo "Starting up instance for ${STAGE}"
 
@@ -17,5 +17,3 @@ ${HOME_DIRECTORY}/packages/devops/scripts/deployment/deployLatestRepositories.sh
 
 # Set nginx config and start the service running
 ${HOME_DIRECTORY}/packages/devops/scripts/deployment/configureNginx.sh
-
-

@@ -81,8 +81,12 @@ export class DashboardItem extends Component {
       infoViewKey,
       organisationUnitName,
     } = this.props;
+
+    const { viewId, dashboardGroupId, organisationUnitCode } = viewConfig;
+
     return (
       <View
+        retry={() => this.updateCharts(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)}
         viewContent={viewContent}
         viewConfig={viewConfig}
         organisationUnitName={organisationUnitName}

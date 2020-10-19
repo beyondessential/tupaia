@@ -82,6 +82,9 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     extensions: ['.js', '.json', '.jsx'],
     alias: {
+      // This prevents the @material-ui/styles package being loaded more than once
+      // @see https://github.com/mui-org/material-ui/issues/15610
+      '@material-ui/styles': path.resolve(__dirname, '..', 'node_modules', '@material-ui/styles'),
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',

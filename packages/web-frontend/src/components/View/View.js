@@ -14,6 +14,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import CircularProgress from 'material-ui/CircularProgress';
 import moment from 'moment';
 
@@ -25,6 +26,7 @@ import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
 import { CHART_TYPES } from './ChartWrapper/chartTypes';
 import { getViewWrapper, getIsSingleValue, getIsMatrix } from './utils';
+import { Alert, AlertAction, AlertLink } from '../Alert';
 
 const viewHasData = viewContent => {
   const { chartType, data, value } = viewContent;
@@ -90,6 +92,13 @@ const formatPeriodRange = period => {
   return formatDate(period.latestAvailable);
 };
 
+const StyledAlert = styled(Alert)`
+  &.MuiAlert-root {
+    margin: 20px auto 10px;
+    padding: 5px 16px 5px 13px;
+  }
+`;
+
 export class View extends Component {
   state = {
     isHovered: false,
@@ -126,7 +135,7 @@ export class View extends Component {
   }
 
   render() {
-    const { viewContent, isSidePanelExpanded, onEnlarge } = this.props;
+    const { viewContent, isSidePanelExpanded, onEnlarge, retry } = this.props;
     const viewContainerStyle = isSidePanelExpanded
       ? { ...VIEW_STYLES.mainContainer, ...VIEW_STYLES.mainContainerExpanded }
       : VIEW_STYLES.mainContainer;
@@ -147,7 +156,11 @@ export class View extends Component {
     if (viewContent.error) {
       return (
         <div data-testid="view" style={viewContainerStyle}>
-          <p style={VIEW_STYLES.text}>{`Error: ${viewContent.error.message}`}</p>
+          <StyledAlert severity="error">
+            {`Error: ${viewContent.error} `}
+            <AlertAction onClick={retry}>Retry loading data</AlertAction> or contact{' '}
+            <AlertLink href="mailto:support@tupaia.org">support@tupaia.org</AlertLink>
+          </StyledAlert>
         </div>
       );
     }
@@ -166,7 +179,6 @@ export class View extends Component {
         <div data-testid="view" style={viewContainerStyle}>
           <h2 style={VIEW_STYLES.title}>
             {viewContent.name}
-            <br />
             <NoDataMessage viewContent={viewContent} />
             {periodDependent && expandButton}
           </h2>
@@ -223,10 +235,12 @@ View.propTypes = {
   isSidePanelExpanded: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onEnlarge: PropTypes.func,
+  retry: PropTypes.func,
 };
 
 View.defaultProps = {
   isSidePanelExpanded: false,
   viewContent: null,
   onEnlarge: () => {},
+  retry: null,
 };
