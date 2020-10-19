@@ -51,7 +51,7 @@ export const ExportDialog = ({ status, isOpen, onClose, formats, onExport }) => 
       actions={
         <>
           <FlatButton label="Cancel" primary onClick={onClose} />
-          <FlatButton label="Export chart" primary onClick={onExport} />
+          <FlatButton label="Export chart" primary onClick={() => onExport(selectedFormat)} />
         </>
       }
       open={isOpen}
@@ -65,7 +65,12 @@ export const ExportDialog = ({ status, isOpen, onClose, formats, onExport }) => 
           <CircularProgress />
         </Box>
       )}
-      {status === STATUS.ERROR && <Error>There was an error. Please try again.</Error>}
+      {status === STATUS.ERROR && (
+        <>
+          <button onClick={() => onExport(selectedFormat)}>Retry</button>
+          <Error>There was an error. Please try again.</Error>
+        </>
+      )}
       {status === STATUS.SUCCESS && <div>Export complete.</div>}
       {status === STATUS.IDLE && (
         <div>

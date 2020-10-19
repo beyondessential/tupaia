@@ -9,9 +9,8 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import styled from 'styled-components';
 import Dialog from '@material-ui/core/Dialog';
-import download from 'downloadjs';
-import domtoimage from '../../dom-to-image';
 
+import { exportToPng, exportToExcel } from '../../utils/exports';
 import {
   attemptDrillDown,
   closeEnlargedDialog,
@@ -26,6 +25,7 @@ import {
   selectCurrentInfoViewKey,
   selectCurrentExpandedViewContent,
   selectCurrentOrgUnit,
+  selectCurrentProjectCode,
 } from '../../selectors';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 import { ExportDialog } from '../../components/ExportDialog';
@@ -68,6 +68,10 @@ const EnlargedDialogComponent = ({
   onSetDateRange,
   isLoading,
   isVisible,
+  startDate,
+  endDate,
+  projectCode,
+  selectedDisaster,
 }) => {
   const exportRef = React.useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
@@ -88,18 +92,37 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
-  const onExport = async () => {
-    const node = exportRef.current;
-
+  const onExport = async format => {
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
 
-    domtoimage.toPng(node).then(async dataUrl => {
-      download(dataUrl, 'exported-chart.png');
+    try {
+      if (format === 'xlsx') {
+        await exportToExcel({
+          projectCode,
+          viewContent,
+          startDate,
+          endDate,
+          organisationUnitName,
+          selectedDisaster,
+        });
+      } else {
+        const node = exportRef.current;
+        await exportToPng(node);
+      }
+
       setIsExporting(false);
       await sleep(1000);
       setExportStatus(STATUS.SUCCESS);
-    });
+    } catch (e) {
+      setIsExporting(false);
+      setExportStatus(STATUS.ERROR);
+    }
+  };
+
+  const handleOpenExportDialog = () => {
+    setExportStatus(STATUS.IDLE);
+    setExportDialogIsOpen(true);
   };
 
   const drillDownOverlay = isDrillDownVisible ? (
@@ -122,7 +145,7 @@ const EnlargedDialogComponent = ({
           viewContent={viewContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
-          onOpenExportDialog={() => setExportDialogIsOpen(true)}
+          onOpenExportDialog={handleOpenExportDialog}
           onSetDateRange={onSetDateRange}
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
@@ -180,6 +203,8 @@ const styles = {
 
 const mapStateToProps = state => ({
   ...state.enlargedDialog,
+  selectedDisaster: state.disaster.selectedDisaster,
+  projectCode: selectCurrentProjectCode(state),
   viewConfigs: state.global.viewConfigs,
   isDrillDownVisible: state.drillDown.isVisible,
   infoViewKey: selectCurrentInfoViewKey(state),
