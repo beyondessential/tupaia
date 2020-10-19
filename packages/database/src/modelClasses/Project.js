@@ -32,7 +32,7 @@ export class ProjectModel extends DatabaseModel {
             p.sort_order, p.user_groups,
             p.entity_id, p.image_url,
             p.logo_url, p.dashboard_group_name,
-            p.default_measure
+            p.default_measure, p.tile_sets
       from project p
         left join entity e
           on p.entity_id = e.id
