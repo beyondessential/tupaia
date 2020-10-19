@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import Push from 'appcenter-push';
 import { addMessage } from '../messages/actions';

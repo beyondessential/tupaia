@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 
@@ -13,7 +13,7 @@ const { AUTHENTICATED, AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
 
 /**
  * Determines what label is displayed in the login button
- **/
+ */
 function getSyncMessage(
   authStatus,
   errorMessage,
@@ -61,9 +61,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const WelcomeContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(WelcomePage);
+const WelcomeContainer = connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
 
 export { WelcomeContainer };

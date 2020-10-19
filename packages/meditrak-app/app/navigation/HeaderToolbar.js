@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -87,9 +87,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const HeaderToolbar = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DumbHeaderToolbar);
+const HeaderToolbar = connect(mapStateToProps, mapDispatchToProps)(DumbHeaderToolbar);
 
 export { HeaderToolbar };

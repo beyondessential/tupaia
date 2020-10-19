@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { createReducer } from '../utilities';
 import { SOCIAL_FEED_REQUEST, SOCIAL_FEED_SUCCESS, SOCIAL_FEED_FAILURE } from './constants';
@@ -64,7 +64,7 @@ const onRehydrate = (incomingState, versionDidUpdate) => {
   if (!incomingState) return undefined;
   const incomingSocialState = incomingState.social;
 
-  if (versionDidUpdate || (!incomingSocialState || !incomingSocialState.feedItems)) {
+  if (versionDidUpdate || !incomingSocialState || !incomingSocialState.feedItems) {
     return defaultState;
   }
 

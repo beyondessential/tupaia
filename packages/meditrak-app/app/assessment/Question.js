@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 
@@ -89,8 +89,4 @@ const mergeProps = ({ hasValidationErrorMessage, ...restOfStateProps }, { dispat
   };
 };
 
-export const Question = connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(DumbQuestion);
+export const Question = connect(mapStateToProps, null, mergeProps)(DumbQuestion);

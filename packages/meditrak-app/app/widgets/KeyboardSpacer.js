@@ -3,7 +3,7 @@
 
 /**
  * Taken from https://github.com/facebook/react-native/blob/master/local-cli/templates/HelloNavigation/components/KeyboardSpacer.js
- **/
+ */
 
 import React from 'react';
 import { Platform, View, Keyboard, LayoutAnimation } from 'react-native';

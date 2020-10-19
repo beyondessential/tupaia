@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
@@ -128,10 +128,7 @@ const mapDispatchToProps = dispatch => ({
   releaseScrollControl: () => dispatch(releaseScrollControl()),
 });
 
-export const Autocomplete = connect(
-  null,
-  mapDispatchToProps,
-)(AutocompleteComponent);
+export const Autocomplete = connect(null, mapDispatchToProps)(AutocompleteComponent);
 
 Autocomplete.propTypes = {
   placeholder: PropTypes.string,

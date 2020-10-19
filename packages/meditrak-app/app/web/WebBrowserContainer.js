@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
@@ -227,7 +227,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const WebBrowserContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(WebBrowser);
+export const WebBrowserContainer = connect(mapStateToProps, mapDispatchToProps)(WebBrowser);

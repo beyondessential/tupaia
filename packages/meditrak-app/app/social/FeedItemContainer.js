@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { StyleSheet, Image, Text, View } from 'react-native';
@@ -202,7 +202,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const FeedItemContainer = connect(
-  null,
-  mapDispatchToProps,
-)(FeedItem);
+export const FeedItemContainer = connect(null, mapDispatchToProps)(FeedItem);

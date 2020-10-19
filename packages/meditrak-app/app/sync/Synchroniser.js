@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { Scheduler } from 'sussol-utilities';
 
@@ -58,7 +58,7 @@ export class Synchroniser {
   /**
    * Starts regular syncing
    * @param  {integer}   syncInterval   Optional - The number of milliseconds between syncs
-   **/
+   */
   enable(dispatch, syncInterval = DEFAULT_SYNC_INTERVAL) {
     if (this.isEnabled) return; // Cannot enable an already running synchroniser
     this.scheduler.schedule(() => this.synchronise(dispatch), syncInterval);
@@ -67,7 +67,7 @@ export class Synchroniser {
 
   /**
    * Stops regular syncing
-   **/
+   */
   disable() {
     this.scheduler.clearAll();
     this.isEnabled = false;

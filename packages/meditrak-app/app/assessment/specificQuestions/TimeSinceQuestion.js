@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
@@ -18,9 +18,7 @@ class TimeSinceQuestion extends PureComponent {
       <DateQuestion
         answer={rawAnswer}
         onChangeAnswer={answer => {
-          const numberOfUnitsSince = moment()
-            .diff(answer, unitOfTime)
-            .toString(); // Convert to number of days, months, or years
+          const numberOfUnitsSince = moment().diff(answer, unitOfTime).toString(); // Convert to number of days, months, or years
           onChangeAnswer({
             raw: answer, // Save the raw date answer to maintain an accurate answer to work off while the survey is in progress
             processed: numberOfUnitsSince, // Answers with a 'processed' key will have that processed value saved in the database

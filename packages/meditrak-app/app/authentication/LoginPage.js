@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, StatusBar, StyleSheet, View } from 'react-native';
@@ -43,7 +43,7 @@ const renderLoadingSpinner = () => <ActivityIndicator color={THEME_COLOR_ONE} si
 /**
  * Displays a page with a field for each emailAddress, and password, and allows users to log in to a
  * country chosen from a drop down list
- **/
+ */
 export class LoginPage extends React.Component {
   render() {
     const {
