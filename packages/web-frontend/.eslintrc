@@ -10,18 +10,8 @@
   },
   "overrides": [
     {
-      "files": ["cypress/**"],
-      "plugins": ["cypress"],
-      "env": {
-        "browser": true,
-        "cypress/globals": true
-      },
-      "rules": {
-        "jest/expect-expect": [
-          "warn",
-          { "assertFunctionNames": ["expect", "cy.*.snapshot", "cy.*.snapshotHtml"] }
-        ]
-      }
+      "files": "cypress/**",
+      "extends": "../../.eslintrc-cypress.json"
     },
     {
       "files": ["config/**", "scripts/**"],

@@ -13,6 +13,10 @@
   },
   "overrides": [
     {
+      "files": "cypress/**",
+      "extends": "../../.eslintrc-cypress.json"
+    },
+    {
       "files": ["src/api/FakeApi.js", "./src/utils/test-utils.js"],
       "rules": {
         "import/no-extraneous-dependencies": [

@@ -10,7 +10,6 @@
           "jest.setup.js",
           "**/cypress/**",
           "**/migrations/**",
-          "**/scripts/**",
           "**/stories/**",
           "**/tests/**",
           "**/__tests__/**"

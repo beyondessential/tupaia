@@ -1,0 +1,11 @@
+{
+  "extends": "plugin:cypress/recommended",
+  "env": {
+    "browser": true,
+    "cypress/globals": true
+  },
+  "rules": {
+    "cypress/no-force": "error",
+    "jest/expect-expect": "off"
+  }
+}
