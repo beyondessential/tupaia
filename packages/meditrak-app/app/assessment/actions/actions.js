@@ -3,9 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable no-restricted-syntax */ // Necessary for await's inside for loops.
-/* eslint-disable no-await-in-loop */
-
 import generateUUID from 'bson-objectid';
 import {
   getCurrentScreen,
@@ -115,6 +112,7 @@ const findPrimaryEntityComponent = (screens, primaryEntityQuestionId) => {
       }
     }
   }
+
   return null;
 };
 

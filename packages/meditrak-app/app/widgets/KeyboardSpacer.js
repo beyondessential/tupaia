@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable comma-dangle */
 
 /**
  * Taken from https://github.com/facebook/react-native/blob/master/local-cli/templates/HelloNavigation/components/KeyboardSpacer.js

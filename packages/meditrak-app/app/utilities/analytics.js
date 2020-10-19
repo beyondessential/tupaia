@@ -23,7 +23,7 @@ export const analytics = {
 
       // Safe to recast because eventProps is a clone not a direct
       // reference of the object passed.
-      eventProps[key] = String(eventProps[key]); // eslint-disable-line no-param-reassign
+      eventProps[key] = String(eventProps[key]);
     });
     Analytics.trackEvent(eventName, eventProps);
   },

@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable no-restricted-syntax */
-
 import generateUUID from 'bson-objectid';
 import moment from 'moment';
 import RNFS from 'react-native-fs';
