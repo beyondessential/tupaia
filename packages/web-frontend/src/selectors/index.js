@@ -36,6 +36,8 @@ export {
   selectIsProject,
   selectProjectByCode,
   selectAdjustedProjectBounds,
+  selectTileSets,
+  selectActiveTileSet,
 } from './projectSelectors';
 
 export {

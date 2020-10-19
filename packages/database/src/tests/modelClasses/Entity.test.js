@@ -28,14 +28,12 @@ describe('EntityModel', () => {
     upsertEntity({ ...data, type: NON_ORG_UNIT_ENTITY_TYPE });
 
   describe('isOrganisationUnit()', () => {
-    Promise.all(
-      ORG_UNIT_ENTITY_TYPES.map(async type =>
-        it(`should return true if its type is ${type}`, async () => {
-          const entity = await upsertEntity({ type });
-          expect(entity.isOrganisationUnit()).to.be.true;
-        }),
-      ),
-    );
+    ORG_UNIT_ENTITY_TYPES.forEach(type => {
+      it(`should return true if its type is ${type}`, async () => {
+        const entity = await upsertEntity({ type });
+        expect(entity.isOrganisationUnit()).to.be.true;
+      });
+    });
 
     it('should return false if its type is not an organisation unit type', async () => {
       const entity = await upsertEntity({ type: NON_ORG_UNIT_ENTITY_TYPE });
@@ -44,14 +42,12 @@ describe('EntityModel', () => {
   });
 
   describe('isTrackedEntity()', () => {
-    Promise.all(
-      ORG_UNIT_ENTITY_TYPES.map(async type =>
-        it(`should return false if its type is ${type}`, async () => {
-          const entity = await upsertEntity({ type });
-          expect(entity.isTrackedEntity()).to.be.false;
-        }),
-      ),
-    );
+    ORG_UNIT_ENTITY_TYPES.forEach(type => {
+      it(`should return false if its type is ${type}`, async () => {
+        const entity = await upsertEntity({ type });
+        expect(entity.isTrackedEntity()).to.be.false;
+      });
+    });
 
     it('should return true if its type is not an organisation unit type', async () => {
       const entity = await upsertEntity({ type: NON_ORG_UNIT_ENTITY_TYPE });
