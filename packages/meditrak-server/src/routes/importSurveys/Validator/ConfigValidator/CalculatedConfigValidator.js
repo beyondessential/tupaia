@@ -31,6 +31,7 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
       formula: [constructIsNotPresentOr(formulaPointsToOtherQuestions)],
       defaultValues: [constructIsNotPresentOr(defaultValuesPointToOtherQuestions)],
       valueTranslation: [constructIsNotPresentOr(valueTranslationPointToOtherQuestions)],
+      text: [constructIsNotPresentOr(hasContent)],
       conditions: [constructIsNotPresentOr(conditionsPointToOtherQuestions)],
     };
   }

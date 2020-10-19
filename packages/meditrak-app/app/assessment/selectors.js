@@ -185,12 +185,13 @@ const getConditionResult = (state, config) => {
 
 export const getCalculatedResult = (state, questionId) => {
   const { config } = getQuestion(state, questionId);
+
   switch (config.calculated.type) {
     case 'arithmetic':
       return getArithmeticResult(state, config);
     case 'condition':
       return getConditionResult(state, config);
     default:
-      throw new Error(`Invalid type: ${config.type}`);
+      throw new Error(`Invalid calculated type: ${config.calculated.type}`);
   }
 };
