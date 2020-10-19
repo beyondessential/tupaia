@@ -9,6 +9,7 @@ import { WelcomePage } from './WelcomePage';
 import { AUTH_STATUSES } from './constants';
 import { logout } from './actions';
 import { getIsSyncing, getSyncTotal, getSyncProgress } from '../sync/selectors';
+
 const { AUTHENTICATED, AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
 
 /**

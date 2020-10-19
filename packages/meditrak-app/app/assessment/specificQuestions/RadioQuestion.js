@@ -29,7 +29,7 @@ export const RadioQuestion = ({ answer, onChangeAnswer, options, style }) => (
           key={value}
           labelText={label}
           labelColor={labelColor}
-          type={'radio'}
+          type="radio"
           isChecked={isSelected}
           onToggle={() => onChangeAnswer(isSelected ? null : value)}
           style={checkboxStyle}

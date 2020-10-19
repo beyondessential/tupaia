@@ -63,6 +63,7 @@ class KeyboardSpacerIOS extends React.Component<Props, Props, State> {
   }
 
   _keyboardWillShowSubscription: { remove: Function };
+
   _keyboardWillHideSubscription: { remove: Function };
 
   _registerEvents = () => {

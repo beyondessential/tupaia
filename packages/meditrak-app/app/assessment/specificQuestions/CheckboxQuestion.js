@@ -11,7 +11,7 @@ import { Checkbox } from '../../widgets';
 export const CheckboxQuestion = ({ answer, onChangeAnswer, questionText }) => (
   <Checkbox
     key={questionText}
-    labelSide={'left'}
+    labelSide="left"
     labelText={questionText}
     isChecked={answer === 'Yes'}
     onToggle={() => onChangeAnswer(answer === 'Yes' ? 'No' : 'Yes')}

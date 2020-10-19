@@ -34,9 +34,9 @@ export const getCurrentUserLocation = async (state, timeout = GEOLOCATION_OPTION
     Geolocation.getCurrentPosition(
       ({ latitude, longitude, accuracy }) => {
         resolve({
-          latitude: latitude,
-          longitude: longitude,
-          accuracy: accuracy,
+          latitude,
+          longitude,
+          accuracy,
         });
       },
       error => {

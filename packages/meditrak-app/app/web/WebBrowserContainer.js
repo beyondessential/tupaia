@@ -67,19 +67,19 @@ class WebBrowser extends PureComponent {
     return (
       <View style={localStyles.navbar}>
         <TouchableOpacity
-          analyticsLabel={'Web Browser: Back'}
+          analyticsLabel="Web Browser: Back"
           disabled={!canGoBack}
           onPress={() => this.webView.goBack()}
           style={localStyles.navbarButton}
         >
           <Icon
-            name={'angle-left'}
+            name="angle-left"
             color={canGoBack ? THEME_COLOR_DARK : THEME_COLOR_FOUR}
             size={18}
           />
         </TouchableOpacity>
         <TouchableOpacity
-          analyticsLabel={'Web Browser: Reload'}
+          analyticsLabel="Web Browser: Reload"
           disabled={isLoading}
           onPress={() => this.webView.reload()}
           style={localStyles.navbarButton}
@@ -87,11 +87,11 @@ class WebBrowser extends PureComponent {
           {isLoading ? (
             <ActivityIndicator />
           ) : (
-            <Icon name={'refresh'} color={THEME_COLOR_DARK} size={14} />
+            <Icon name="refresh" color={THEME_COLOR_DARK} size={14} />
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          analyticsLabel={'Web Browser: Browser'}
+          analyticsLabel="Web Browser: Browser"
           onPress={() => Linking.openURL(currentUrl)}
           style={localStyles.navbarButton}
         >
@@ -102,13 +102,13 @@ class WebBrowser extends PureComponent {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          analyticsLabel={'Web Browser: Forward'}
+          analyticsLabel="Web Browser: Forward"
           disabled={!canGoForward}
           onPress={() => this.webView.goForward()}
           style={localStyles.navbarButton}
         >
           <Icon
-            name={'angle-right'}
+            name="angle-right"
             color={canGoForward ? THEME_COLOR_DARK : THEME_COLOR_FOUR}
             size={18}
           />
@@ -138,7 +138,7 @@ class WebBrowser extends PureComponent {
           style={localStyles.webView}
           onNavigationStateChange={this.onNavigationStateChange}
           automaticallyAdjustContentInsets={false}
-          startInLoadingState={true}
+          startInLoadingState
           ref={webView => {
             this.webView = webView;
           }}

@@ -24,7 +24,7 @@ const renderImage = imageData => (
     <Image
       style={localStyles.image}
       source={getImageSourceFromData(imageData)}
-      resizeMode={'cover'}
+      resizeMode="cover"
     />
   </View>
 );

@@ -71,9 +71,9 @@ export const stopWatchingUserLocation = () => (dispatch, getState) => {
 
 const onGeolocationPosition = ({ latitude, longitude, accuracy }) => ({
   type: USER_LOCATION_UPDATE,
-  latitude: latitude,
-  longitude: longitude,
-  accuracy: accuracy,
+  latitude,
+  longitude,
+  accuracy,
 });
 
 const onGeolocationError = errorMessage => ({

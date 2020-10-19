@@ -101,7 +101,7 @@ export const NavigationMenu = ({
     isOpen={isOpen}
     onChange={onToggleSideMenu}
     disableGestures={!isOpen}
-    menuPosition={'right'}
+    menuPosition="right"
   >
     {children}
     {isOpen ? <View style={localStyles.overlay} /> : null}

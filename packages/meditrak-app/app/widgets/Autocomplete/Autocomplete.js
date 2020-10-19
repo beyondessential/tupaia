@@ -5,9 +5,9 @@
 
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { takeScrollControl, releaseScrollControl } from '../../assessment/actions';
 import PropTypes from 'prop-types';
 import { View, StyleSheet, FlatList, TextInput, Platform, Text } from 'react-native';
+import { takeScrollControl, releaseScrollControl } from '../../assessment/actions';
 import {
   THEME_FONT_FAMILY,
   THEME_TEXT_COLOR_ONE,

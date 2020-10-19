@@ -13,6 +13,7 @@ import {
   LOGIN_FAILURE,
   LOGOUT,
 } from './constants';
+
 const { AUTHENTICATED, AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
 
 const defaultState = {

@@ -24,7 +24,7 @@ import { checkIfObjectsAreEqual } from '../utilities';
 
 const renderLoadingOverlay = () => (
   <View style={localStyles.loadingOverlay}>
-    <ActivityIndicator size={'large'} />
+    <ActivityIndicator size="large" />
   </View>
 );
 

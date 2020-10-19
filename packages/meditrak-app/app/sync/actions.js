@@ -16,7 +16,7 @@ import { getLatestUserRewardCount } from '../rewards';
 
 export const setSyncProgress = progress => ({
   type: SET_SYNC_PROGRESS,
-  progress: progress,
+  progress,
 });
 
 export const setSyncError = errorMessage => ({

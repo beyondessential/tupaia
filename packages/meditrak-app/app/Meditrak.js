@@ -43,7 +43,7 @@ class MeditrakContainer extends React.Component {
 
   renderBetaBanner() {
     return (
-      <View style={localStyles.betaBanner} pointerEvents={'none'}>
+      <View style={localStyles.betaBanner} pointerEvents="none">
         <Text style={localStyles.betaBannerText}>{betaBranch.toUpperCase()}</Text>
       </View>
     );

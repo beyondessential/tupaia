@@ -73,7 +73,7 @@ const renderMarkdownFeedItem = (templateVariables, onFeedItemPress) => {
     >
       {title ? <Text style={localStyles.feedItemTitle}>{title}</Text> : null}
       {image ? (
-        <Image source={{ uri: image }} style={localStyles.image} resizeMode={'cover'} />
+        <Image source={{ uri: image }} style={localStyles.image} resizeMode="cover" />
       ) : null}
       {body ? <Markdown>{body}</Markdown> : null}
     </TouchableOpacity>
@@ -91,7 +91,7 @@ const renderSurveyResponseFeedItem = (templateVariables, creationDate, onFeedIte
       disabled={!link}
     >
       {photos && photos.length > 0 ? (
-        <Image source={{ uri: photos[0] }} style={localStyles.image} resizeMode={'cover'} />
+        <Image source={{ uri: photos[0] }} style={localStyles.image} resizeMode="cover" />
       ) : null}
       <View style={localStyles.feedItemContent}>
         <Text style={[localStyles.feedText, localStyles.boldText]}>{authorName} </Text>

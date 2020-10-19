@@ -52,12 +52,12 @@ export class ChangeQueue {
     const allChanges = this.database.objects('Change').sorted('timestamp');
     const changesWithinThreshold = [];
     let size = 0;
-    for (let changeId in allChanges) {
+    for (const changeId in allChanges) {
       const change = allChanges[changeId];
       const record = change.generateSyncJson(this.database);
       const currentRecordSize = JSON.stringify(record).length;
       if (size + currentRecordSize > threshold && changesWithinThreshold.length > 0) {
-        //threshold is breached and at least one record
+        // threshold is breached and at least one record
         break;
       }
       size += currentRecordSize;

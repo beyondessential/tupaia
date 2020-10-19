@@ -82,7 +82,7 @@ class GeolocateQuestionComponent extends React.Component {
   onGeolocationError(errorMessage) {
     this.setState({
       isFindingLocation: false,
-      errorMessage: errorMessage,
+      errorMessage,
     });
   }
 

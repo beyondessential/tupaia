@@ -24,7 +24,7 @@ const stateChanges = {
     { feedItems: newFeedItems, currentPage, hasMorePages, shouldPrependItems },
     state,
   ) => {
-    let feedItems = state.feedItems;
+    let { feedItems } = state;
 
     // Currently cannot prepend more than 1 page into top of feed.
     const shouldReset = shouldPrependItems && hasMorePages;

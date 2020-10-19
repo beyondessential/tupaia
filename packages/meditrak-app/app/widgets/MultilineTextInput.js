@@ -28,7 +28,7 @@ const localStyles = StyleSheet.create({
     borderRadius: BORDER_RADIUS,
     paddingHorizontal: 6,
     paddingVertical: 3,
-    marginTop: 50, //this creates some padding between the label and the element above it
+    marginTop: 50, // this creates some padding between the label and the element above it
   },
   input: {
     height: 200,

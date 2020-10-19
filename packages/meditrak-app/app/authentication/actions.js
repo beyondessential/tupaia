@@ -18,6 +18,7 @@ import {
 } from './constants';
 
 import { resetToHome, resetToLogin, resetToWelcomeScreen } from '../navigation';
+
 const UNABLE_TO_CONNECT_MESSAGE = 'Unable to connect';
 
 export const changeEmailAddress = emailAddress => ({

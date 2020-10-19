@@ -44,6 +44,6 @@ TimeSinceQuestion.propTypes = {
   onChangeAnswer: PropTypes.func.isRequired,
   unitOfTime: PropTypes.string.isRequired,
 };
-export const DaysSinceQuestion = props => <TimeSinceQuestion unitOfTime={'days'} {...props} />;
-export const MonthsSinceQuestion = props => <TimeSinceQuestion unitOfTime={'months'} {...props} />;
-export const YearsSinceQuestion = props => <TimeSinceQuestion unitOfTime={'years'} {...props} />;
+export const DaysSinceQuestion = props => <TimeSinceQuestion unitOfTime="days" {...props} />;
+export const MonthsSinceQuestion = props => <TimeSinceQuestion unitOfTime="months" {...props} />;
+export const YearsSinceQuestion = props => <TimeSinceQuestion unitOfTime="years" {...props} />;

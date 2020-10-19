@@ -5,6 +5,7 @@
 
 import { Scheduler } from 'sussol-utilities';
 
+import { YellowBox } from 'react-native';
 import { ChangeQueue } from './ChangeQueue';
 import {
   setSyncProgress,
@@ -19,7 +20,6 @@ import { loadSocialFeedLatest } from '../social';
 import { getSyncMigrations } from './syncMigrations';
 import { Change } from '../database/types';
 
-import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Setting a timer']);
 
 const MEASURE_BATCH_IN_RECORDS = 'records';

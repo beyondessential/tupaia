@@ -12,11 +12,10 @@ import { getLineHeight, THEME_FONT_SIZE_ONE, THEME_FONT_SIZE_FOUR } from '../glo
 export const SubmitScreen = () => (
   <View style={{ flex: 1 }}>
     <TupaiaPin width={54} height={77} style={localStyles.logo} />
-    <Heading text={'Submit your survey'} style={localStyles.heading} />
+    <Heading text="Submit your survey" style={localStyles.heading} />
     <Text style={localStyles.text}>
-      {
-        'You are now ready to submit your answers to Tupaia. Once submitted, your survey answers will be uploaded on your next successful sync.'
-      }
+      You are now ready to submit your answers to Tupaia. Once submitted, your survey answers will
+      be uploaded on your next successful sync.
     </Text>
   </View>
 );

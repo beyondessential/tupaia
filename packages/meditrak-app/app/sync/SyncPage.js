@@ -53,7 +53,7 @@ const SyncPage = ({
         <Text style={localStyles.lastSyncText}>{getSyncDateLabel(lastSyncDate)}</Text>
       </View>
       <View style={localStyles.row}>
-        <Button title={'Manual Sync'} onPress={onPressManualSync} isDisabled={isSyncing} />
+        <Button title="Manual Sync" onPress={onPressManualSync} isDisabled={isSyncing} />
       </View>
     </View>
   </TupaiaBackground>

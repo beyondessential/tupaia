@@ -21,7 +21,7 @@ export const WelcomePage = ({ syncMessage, screenProps, total, progress, isSynci
         style={localStyles.progressBar}
       />
       <Text style={localStyles.syncMessageText}>{syncMessage}</Text>
-      <TouchableOpacity onPress={onCancel} analyticsLabel={'Welcome: Cancel'}>
+      <TouchableOpacity onPress={onCancel} analyticsLabel="Welcome: Cancel">
         <Text style={localStyles.cancelLink}>Cancel and logout</Text>
       </TouchableOpacity>
     </BackgroundComponent>

@@ -19,7 +19,7 @@ import {
 const renderCreateAccountLink = onCreateAccount => (
   <View style={localStyles.linkButton}>
     <Text>or </Text>
-    <TouchableOpacity onPress={onCreateAccount} analyticsLabel={'Login: Create an Account'}>
+    <TouchableOpacity onPress={onCreateAccount} analyticsLabel="Login: Create an Account">
       <Text style={localStyles.linkButtonEmphasis}>Create an account</Text>
     </TouchableOpacity>
   </View>
@@ -27,7 +27,7 @@ const renderCreateAccountLink = onCreateAccount => (
 
 const renderSubmitButton = (onLogin, isDisabled) => (
   <Button
-    title={'Log In'}
+    title="Log In"
     onPress={onLogin}
     isDisabled={isDisabled}
     style={localStyles.loginButton}
@@ -38,7 +38,7 @@ const renderErrorMessage = message => (
   <StatusMessage message={message} style={localStyles.errorMessage} />
 );
 
-const renderLoadingSpinner = () => <ActivityIndicator color={THEME_COLOR_ONE} size={'large'} />;
+const renderLoadingSpinner = () => <ActivityIndicator color={THEME_COLOR_ONE} size="large" />;
 
 /**
  * Displays a page with a field for each emailAddress, and password, and allows users to log in to a
@@ -63,7 +63,7 @@ export class LoginPage extends React.Component {
 
     return (
       <BackgroundComponent style={localStyles.container}>
-        <KeyboardAvoidingView behavior={'padding'} style={localStyles.container}>
+        <KeyboardAvoidingView behavior="padding" style={localStyles.container}>
           <StatusBar barStyle="light-content" />
           <TupaiaLogo style={localStyles.logo} white width={168} height={69} />
           <Text style={localStyles.intro}>
@@ -73,12 +73,12 @@ export class LoginPage extends React.Component {
           <View style={localStyles.horizontalContainer}>
             <TextInput
               style={[localStyles.textInput, localStyles.text]}
-              placeholder={'Email Address'}
+              placeholder="Email Address"
               placeholderTextColor={THEME_COLOR_ONE}
               value={emailAddress}
               editable={fieldsAreEditable}
-              returnKeyType={'next'}
-              keyboardType={'email-address'}
+              returnKeyType="next"
+              keyboardType="email-address"
               selectTextOnFocus
               onChangeText={onChangeEmailAddress}
               onSubmitEditing={() => {
@@ -92,12 +92,12 @@ export class LoginPage extends React.Component {
                 this.passwordInputRef = reference;
               }}
               style={[localStyles.textInput, localStyles.text]}
-              placeholder={'Password'}
+              placeholder="Password"
               placeholderTextColor={THEME_COLOR_ONE}
               value={password}
               secureTextEntry
               editable={fieldsAreEditable}
-              returnKeyType={'done'}
+              returnKeyType="done"
               selectTextOnFocus
               onChangeText={onChangePassword}
               onSubmitEditing={() => {

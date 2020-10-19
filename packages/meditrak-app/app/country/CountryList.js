@@ -36,7 +36,7 @@ export class CountryList extends PureComponent {
       <TouchableOpacity
         onPress={onRequestCountryAccess}
         style={localStyles.option}
-        analyticsLabel={'Clinic Country List: Request Access'}
+        analyticsLabel="Clinic Country List: Request Access"
       >
         <Text style={localStyles.requestAccessButtonText}>Request access to more countries</Text>
       </TouchableOpacity>

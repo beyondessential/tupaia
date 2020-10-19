@@ -49,7 +49,7 @@ export class FreeTextQuestion extends Component {
     return (
       <View style={[localStyles.wrapper, isFocused ? localStyles.wrapperFocussed : {}]}>
         <TextInput
-          placeholder={'Type your answer here'}
+          placeholder="Type your answer here"
           style={[localStyles.textInput, Platform.OS === 'ios' && localStyles.textInputFixedHeight]}
           value={answer}
           selectTextOnFocus
@@ -60,7 +60,7 @@ export class FreeTextQuestion extends Component {
           placeholderTextColor={getThemeColorOneFaded(0.7)}
           {...restOfTextInputProps}
         />
-        <Icon name={'pencil'} size={14} style={localStyles.icon} pointerEvents={'none'} />
+        <Icon name="pencil" size={14} style={localStyles.icon} pointerEvents="none" />
       </View>
     );
   }

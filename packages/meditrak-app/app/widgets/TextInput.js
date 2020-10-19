@@ -50,7 +50,7 @@ export const TextInput = ({
       <RNTextInput
         multiline={multiline}
         ref={inputRef}
-        autoCapitalize={'none'}
+        autoCapitalize="none"
         autoCorrect={false}
         onChange={onChange}
         style={style}
@@ -71,7 +71,7 @@ export const TextInput = ({
         <RNTextInput
           multiline={multiline}
           ref={inputRef}
-          autoCapitalize={'none'}
+          autoCapitalize="none"
           autoCorrect={false}
           onChangeText={onChange}
           value={value}
@@ -80,9 +80,9 @@ export const TextInput = ({
         />
       </View>
       {hasError ? (
-        <Icon name={'exclamation-triangle'} style={errorStyles} color={THEME_COLOR_ONE} />
+        <Icon name="exclamation-triangle" style={errorStyles} color={THEME_COLOR_ONE} />
       ) : null}
-      <View pointerEvents={'none'} style={getLabelStyle(value, multiline)}>
+      <View pointerEvents="none" style={getLabelStyle(value, multiline)}>
         <Text style={getLabelTextStyle(value, multiline)}>{label}</Text>
       </View>
     </View>

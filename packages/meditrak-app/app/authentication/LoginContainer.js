@@ -9,6 +9,7 @@ import { LoginPage } from './LoginPage';
 import { changeEmailAddress, changePassword, login } from './actions';
 import { goToCreateAccount } from '../navigation/actions';
 import { AUTH_STATUSES } from './constants';
+
 const { AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
 
 /**

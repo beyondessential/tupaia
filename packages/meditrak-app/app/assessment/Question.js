@@ -35,7 +35,7 @@ const QUESTION_TYPES = {
   FreeText: FreeTextQuestion,
   Geolocate: GeolocateQuestion,
   Autocomplete: AutocompleteQuestion,
-  Instruction: Instruction,
+  Instruction,
   Number: NumberQuestion,
   Photo: PhotoQuestion,
   Radio: RadioQuestion,

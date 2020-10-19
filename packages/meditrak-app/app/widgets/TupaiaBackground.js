@@ -21,7 +21,7 @@ export const TUPAIA_BACKGROUND_THEME = {
 };
 
 export const TupaiaBackground = ({ children, theme, style }) => (
-  <View behavior={'padding'} style={[localStyles.container, style]}>
+  <View behavior="padding" style={[localStyles.container, style]}>
     <LinearGradient
       colors={
         theme === TUPAIA_BACKGROUND_THEME.BLUE
