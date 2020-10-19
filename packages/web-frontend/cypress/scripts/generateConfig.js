@@ -14,12 +14,12 @@ const writeConfigFile = (fileName, contents) =>
   writeFileSync(getConfigPath(fileName), JSON.stringify(contents, null, 2));
 
 const generateConfig = async logger => {
-  logger.info('Generating e2e test config');
+  logger.verbose('Generating e2e test config...\n');
   const database = new TupaiaDatabase();
 
-  const dashboardReportConfig = await generateDashboardReportConfig(database);
+  const dashboardReportConfig = await generateDashboardReportConfig({ database, logger });
   writeConfigFile('dashboardReports', dashboardReportConfig);
-  logger.info('✔ Dashboard reports');
+  logger.success('✔ Dashboard reports\n');
 };
 
 const run = () => {
@@ -31,7 +31,6 @@ const run = () => {
       process.exit(1);
     })
     .then(() => {
-      logger.info('Done!');
       process.exit(0);
     });
 };

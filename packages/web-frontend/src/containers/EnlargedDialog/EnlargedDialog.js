@@ -62,7 +62,7 @@ const STATUS = {
 const EnlargedDialogComponent = ({
   isDrillDownVisible,
   onCloseOverlay,
-  viewContent,
+  viewContent, errorMessage,
   organisationUnitName,
   onDrillDown,
   onSetDateRange,
@@ -149,6 +149,7 @@ const EnlargedDialogComponent = ({
           onSetDateRange={onSetDateRange}
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
+          errorMessage={errorMessage}
           isVisible={isVisible}
           drillDownOverlay={drillDownOverlay}
         />
@@ -171,6 +172,7 @@ EnlargedDialogComponent.propTypes = {
   onSetDateRange: PropTypes.func,
   onDrillDown: PropTypes.func,
   isLoading: PropTypes.bool,
+  errorMessage: PropTypes.string,
   isVisible: PropTypes.bool,
   isDrillDownVisible: PropTypes.bool,
 };
@@ -178,6 +180,7 @@ EnlargedDialogComponent.propTypes = {
 EnlargedDialogComponent.defaultProps = {
   onDrillDown: () => {},
   onSetDateRange: () => {},
+  errorMessage: null,
   isLoading: false,
   isVisible: false,
   isDrillDownVisible: false,

@@ -5,6 +5,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -12,11 +13,17 @@ import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import IconButton from 'material-ui/IconButton';
 import moment from 'moment';
+import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
 import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE, WHITE } from '../../styles';
 import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { LoadingIndicator } from '../Form/common';
+
+const StyledAlert = styled(Alert)`
+  display: inline-flex;
+  min-width: 240px;
+`;
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
@@ -71,22 +78,18 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderBody() {
-    const { viewContent, drillDownOverlay } = this.props;
-    const getStyle = () => {
-      if (getIsMatrix(viewContent)) return styles.matrixContent;
-      if (viewContent.chartType) return styles.chartContent;
-      return {}; // No custom styling for other types of dialog content
-    };
-    return (
-      <div style={getStyle()}>
-        {viewContent.data && viewContent.data.length === 0 ? (
-          <div style={{ color: OFF_WHITE }}>No data found for this time period</div>
-        ) : (
-          this.renderBodyContent()
-        )}
-        {drillDownOverlay}
-      </div>
-    );
+    const { viewContent, errorMessage } = this.props;
+    const noData = viewContent.data && viewContent.data.length === 0;
+
+    if (errorMessage) {
+      return <StyledAlert severity="error">{errorMessage}</StyledAlert>;
+    }
+
+    if (noData) {
+      return <StyledAlert severity="info">No data found for this time period</StyledAlert>;
+    }
+
+    return this.renderBodyContent();
   }
 
   renderBodyContent() {
@@ -132,7 +135,6 @@ export class EnlargedDialogContent extends PureComponent {
           </IconButton>
         ) : null}
         <IconButton
-          data-testid="enlarged-dialog-close-btn"
           style={styles.toolbarButton}
           iconStyle={styles.toolbarButtonIcon}
           onClick={onCloseOverlay}
@@ -179,12 +181,20 @@ export class EnlargedDialogContent extends PureComponent {
 
   render() {
     if (!this.props.viewContent) return <LoadingIndicator />;
+
     const isMatrix = getIsMatrix(this.props.viewContent);
-    const { isExporting, exportRef } = this.props;
+    const { isExporting, exportRef, viewContent, drillDownOverlay  } = this.props;
+
     const contentStyle = {
       backgroundColor: isExporting ? WHITE : DARK_BLUE,
       overflowY: isExporting ? 'visible' : 'auto',
       padding: isMatrix ? 0 : 20,
+    };
+
+    const getBodyStyle = () => {
+      if (isMatrix) return styles.matrixContent;
+      if (viewContent.chartType) return styles.chartContent;
+      return {}; // No custom styling for other types of dialog content
     };
 
     return (
@@ -193,7 +203,10 @@ export class EnlargedDialogContent extends PureComponent {
         <DialogContent style={contentStyle}>
           {this.renderToolbar()}
           {this.renderDescription()}
-          {this.renderBody()}
+          <div style={getBodyStyle()}>
+            {this.renderBody()}
+            {drillDownOverlay}
+          </div>
           {this.renderPeriodRange()}
         </DialogContent>
       </div>
@@ -212,6 +225,9 @@ const styles = {
     lineHeight: 1.15,
   },
   chartContent: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     height: 350,
   },
   matrixContent: {
@@ -279,6 +295,7 @@ EnlargedDialogContent.propTypes = {
   onSetDateRange: PropTypes.func,
   isDrilledDown: PropTypes.bool,
   isLoading: PropTypes.bool,
+  errorMessage: PropTypes.string,
   isVisible: PropTypes.bool,
   isExporting: PropTypes.bool,
   drillDownOverlay: PropTypes.element,
@@ -292,6 +309,7 @@ EnlargedDialogContent.defaultProps = {
   onSetDateRange: () => {},
   isDrilledDown: false,
   isLoading: false,
+  errorMessage: null,
   isVisible: false,
   isExporting: false,
   drillDownOverlay: null,
