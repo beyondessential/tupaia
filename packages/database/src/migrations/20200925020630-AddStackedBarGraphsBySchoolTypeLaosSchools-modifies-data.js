@@ -217,6 +217,7 @@ const createDataBuilderConfig = (dataElement, dataElementToString) => ({
       sortOrder: 3,
     },
   },
+  fillWithNoData: true,
 });
 
 const createChartConfig = (chartConfigConfig = []) => {
