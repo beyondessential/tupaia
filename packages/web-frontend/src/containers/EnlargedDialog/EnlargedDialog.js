@@ -85,10 +85,6 @@ const EnlargedDialogComponent = ({
     return styles.container;
   };
 
-  if (viewContent) {
-    console.log('name', viewContent.name, stringToFilename(viewContent.name));
-  }
-
   const onExport = async format => {
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
@@ -100,9 +96,9 @@ const EnlargedDialogComponent = ({
         await exportToExcel({
           projectCode,
           viewContent,
+          organisationUnitName,
           startDate,
           endDate,
-          organisationUnitName,
           filename,
         });
       } else {

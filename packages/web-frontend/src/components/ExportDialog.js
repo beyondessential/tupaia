@@ -7,13 +7,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import Dialog from 'material-ui/Dialog';
 import Box from '@material-ui/core/Box';
 import FlatButton from 'material-ui/FlatButton';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import { Error } from './Error';
 import { DIALOG_Z_INDEX } from '../styles';
+import { Alert, AlertAction, AlertLink } from './Alert';
 
 const formatLabels = {
   png: 'PNG',
@@ -35,6 +36,13 @@ const styles = {
   },
 };
 
+const StyledAlert = styled(Alert)`
+  &.MuiAlert-root {
+    margin: 20px auto 10px;
+    padding: 5px 16px 5px 13px;
+  }
+`;
+
 const STATUS = {
   IDLE: 'idle',
   LOADING: 'loading',
@@ -43,7 +51,11 @@ const STATUS = {
 };
 
 export const ExportDialog = ({ status, isOpen, onClose, formats, onExport }) => {
-  const [selectedFormat, onSelectFormat] = React.useState(formats[0]);
+  const [selectedFormat, setSelectedFormat] = React.useState(formats[0]);
+
+  React.useEffect(() => {
+    setSelectedFormat(formats[0]);
+  }, [formats]);
 
   return (
     <Dialog
@@ -67,17 +79,20 @@ export const ExportDialog = ({ status, isOpen, onClose, formats, onExport }) => 
       )}
       {status === STATUS.ERROR && (
         <>
-          <button onClick={() => onExport(selectedFormat)}>Retry</button>
-          <Error>There was an error. Please try again.</Error>
+          <StyledAlert severity="error">
+            There was an error with the export. Please try again.
+            <AlertAction onClick={() => onExport(selectedFormat)}>Retry export</AlertAction> or
+            contact <AlertLink href="mailto:support@tupaia.org">support@tupaia.org</AlertLink>
+          </StyledAlert>
         </>
       )}
       {status === STATUS.SUCCESS && <div>Export complete.</div>}
       {status === STATUS.IDLE && (
         <div>
-          The chart will be exported and downloaded to your browser:
+          The chart will be exported and downloaded to your browser.
           <RadioButtonGroup
             name="format"
-            onChange={(e, value) => onSelectFormat(value)}
+            onChange={(e, value) => setSelectedFormat(value)}
             style={styles.options}
             valueSelected={selectedFormat}
           >

@@ -17,6 +17,7 @@ export const exportToPng = (node, filename) => {
 
 export const exportToExcel = async ({ projectCode, viewContent, startDate, endDate, filename }) => {
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
+  const dataElementHeader = viewContent?.exportConfig?.dataElementHeader;
 
   const queryString = new URLSearchParams({
     dashboardGroupId,
@@ -25,6 +26,7 @@ export const exportToExcel = async ({ projectCode, viewContent, startDate, endDa
     projectCode,
     startDate,
     endDate,
+    dataElementHeader,
   });
 
   await download(`export/chart?${queryString}`, null, null, `${filename}.xlsx`);

@@ -16,7 +16,7 @@ import moment from 'moment';
 import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
-import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE, WHITE } from '../../styles';
+import { DIALOG_Z_INDEX, DARK_BLUE, WHITE } from '../../styles';
 import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { LoadingIndicator } from '../Form/common';
 
@@ -24,6 +24,34 @@ const StyledAlert = styled(Alert)`
   display: inline-flex;
   min-width: 240px;
 `;
+
+const DateText = styled.div`
+  padding-bottom: 5px;
+  text-align: center;
+  font-size: 12px;
+  color: #333333;
+  background: white;
+`;
+
+const ExportDate = ({ startDate, endDate }) => {
+  const now = new Date();
+  return (
+    <DateText>
+      {startDate && endDate && `Includes data from ${startDate} to ${endDate}.`} Exported{' '}
+      {now.toDateString()}
+    </DateText>
+  );
+};
+
+ExportDate.propTypes = {
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+};
+
+ExportDate.defaultProps = {
+  startDate: null,
+  endDate: null,
+};
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
@@ -121,7 +149,11 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderToolbar() {
-    const { onCloseOverlay, onOpenExportDialog, CloseIcon, toolbarStyle } = this.props;
+    const { onCloseOverlay, onOpenExportDialog, CloseIcon, toolbarStyle, isExporting } = this.props;
+
+    if (isExporting) {
+      return null;
+    }
 
     return (
       <div style={{ ...styles.toolbar, ...toolbarStyle }}>
@@ -183,7 +215,7 @@ export class EnlargedDialogContent extends PureComponent {
     if (!this.props.viewContent) return <LoadingIndicator />;
 
     const isMatrix = getIsMatrix(this.props.viewContent);
-    const { isExporting, exportRef, viewContent, drillDownOverlay  } = this.props;
+    const { isExporting, exportRef, viewContent, drillDownOverlay } = this.props;
 
     const contentStyle = {
       backgroundColor: isExporting ? WHITE : DARK_BLUE,
@@ -209,6 +241,9 @@ export class EnlargedDialogContent extends PureComponent {
           </div>
           {this.renderPeriodRange()}
         </DialogContent>
+        {isExporting && (
+          <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
+        )}
       </div>
     );
   }
