@@ -78,6 +78,8 @@ const reactToLocationChange = (store, location, previousLocation) => {
   setComponentIfUpdated(URL_COMPONENTS.PROJECT, setProject);
   setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
   setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
+  // Note, the signature is openEnlargedDialog(viewId, startDate, endDate),
+  // so we only pass viewId for now and leave the others undefined
   setComponentIfUpdated(URL_COMPONENTS.REPORT, openEnlargedDialog);
   setComponentIfUpdated(
     URL_COMPONENTS.MEASURE_PERIOD,

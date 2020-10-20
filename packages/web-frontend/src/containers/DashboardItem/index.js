@@ -130,8 +130,19 @@ const mapStateToProps = (state, { infoViewKey }) => {
 const mapDispatchToProps = dispatch => ({
   fetchContent: (organisationUnitCode, dashboardGroupId, viewId, infoViewKey) =>
     dispatch(fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)),
-  onEnlarge: viewId => dispatch(openEnlargedDialog(viewId)),
   dispatch, // Necessary for merge props.
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardItem);
+const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    onEnlarge: viewId => {
+      const { startDate, endDate } = stateProps.viewContent;
+      dispatch(openEnlargedDialog(viewId, startDate, endDate));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(DashboardItem);

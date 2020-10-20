@@ -1139,10 +1139,12 @@ export function closeEnlargedDialog() {
   };
 }
 
-export function openEnlargedDialog(viewId) {
+export function openEnlargedDialog(viewId, startDate, endDate) {
   return {
     type: OPEN_ENLARGED_DIALOG,
     viewId,
+    startDate,
+    endDate,
   };
 }
 

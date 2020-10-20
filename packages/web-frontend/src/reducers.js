@@ -735,8 +735,8 @@ function enlargedDialog(
         isVisible: true,
         isLoading: false,
         errorMessage: '',
-        startDate: null,
-        endDate: null,
+        startDate: action.startDate,
+        endDate: action.endDate,
       };
 
     case CLOSE_ENLARGED_DIALOG:
@@ -745,6 +745,8 @@ function enlargedDialog(
         isVisible: false,
         viewContent: null,
         organisationUnitName: '',
+        startDate: null,
+        endDate: null,
       };
 
     case SET_ENLARGED_DIALOG_DATE_RANGE:
