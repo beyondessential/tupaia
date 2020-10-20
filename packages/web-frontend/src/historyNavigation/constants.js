@@ -23,6 +23,10 @@ const VERIFY_EMAIL_TOKEN = 'VERIFY_EMAIL_TOKEN';
 const ORG_UNIT_NAME = 'ORG_UNIT_NAME'; // Used for exporting charts
 const MEASURE_PERIOD = 'MEASURE_PERIOD';
 
+// Old version path components
+const COUNTRY = 'country';
+const FACILITY = 'facility';
+
 export const URL_COMPONENTS = {
   // Path components
   PROJECT,
@@ -57,6 +61,8 @@ export const SEARCH_COMPONENTS = [
   ORG_UNIT_NAME,
   MEASURE_PERIOD,
 ];
+
+export const OLD_VERSION_PATH_COMPONENTS = [COUNTRY, FACILITY];
 
 export const SEARCH_PARAM_KEY_MAP = {
   // Different to key

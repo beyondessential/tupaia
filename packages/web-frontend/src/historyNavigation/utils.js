@@ -19,6 +19,7 @@ import {
   roundStartEndDates,
 } from '../utils/periodGranularities';
 import {
+  OLD_VERSION_PATH_COMPONENTS,
   PATH_COMPONENTS,
   SEARCH_COMPONENTS,
   SEARCH_PARAM_KEY_MAP,
@@ -60,14 +61,23 @@ export const decodeLocation = ({ pathname, search }) => {
   }
 
   const [prefixOrProject, ...restOfPath] = cleanPathname.split('/');
-
   if (USER_PAGE_PREFIXES.includes(prefixOrProject)) {
     return { userPage: prefixOrProject, ...searchParams };
   }
 
   const [, ...restOfComponents] = PATH_COMPONENTS;
 
-  const pathParams = { PROJECT: prefixOrProject };
+  /**
+   * Support link form:
+   *    https://mobile.tupaia.org/facility/${facilityCode}
+   *    https://mobile.tupaia.org/country/${countryCode}
+   * Change to:
+   *    https://mobile.tupaia.org/explore/${facilityCode}
+   *    https://mobile.tupaia.org/explore/${countryCode}
+   */
+  const pathParams = {
+    PROJECT: OLD_VERSION_PATH_COMPONENTS.includes(prefixOrProject) ? 'explore' : prefixOrProject,
+  };
   restOfPath.forEach((value, i) => {
     pathParams[restOfComponents[i]] = value;
   });
