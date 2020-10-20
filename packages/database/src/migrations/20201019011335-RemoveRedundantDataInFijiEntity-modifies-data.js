@@ -20,12 +20,17 @@ exports.up = async function(db) {
        update survey_response 
        set entity_id = (select id from entity e
                             where e.name = '${mergeEntityName}')
-       where entity_id = (select id FROM "entity" e
+       where entity_id = (select id FROM entity e
                             where e.name = '${redundantEntityName}')
   `);
 
-  return db.runSql(`
+  await db.runSql(`
       delete from entity
+      where name = '${redundantEntityName}'
+  `);
+
+  return db.runSql(`
+      delete from clinic
       where name = '${redundantEntityName}'
   `);
 };
