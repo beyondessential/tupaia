@@ -53,9 +53,10 @@
       }
     },
     {
-      "files": "**/__tests__",
+      "files": "**/__tests__/**",
       "rules": {
-        "jest/valid-expect": ["error", { "maxArgs": 2 }]
+        "jest/valid-expect": ["error", { "maxArgs": 2 }],
+        "no-new": "off"
       }
     },
     {

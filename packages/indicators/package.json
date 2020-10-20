@@ -19,7 +19,13 @@
     "test:watch": "jest --watch"
   },
   "eslintConfig": {
-    "extends": "@tupaia/eslint-config-typescript"
+    "extends": [
+      "@beyondessential/ts",
+      "@beyondessential/jest"
+    ],
+    "parserOptions": {
+      "project": "tsconfig.json"
+    }
   },
   "dependencies": {
     "@beyondessential/arithmetic": "^2.0.0",
@@ -28,8 +34,5 @@
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0"
-  },
-  "devDependencies": {
-    "@tupaia/eslint-config-typescript": "1.0.0"
   }
 }

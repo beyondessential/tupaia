@@ -31,7 +31,7 @@ describe('helpers', () => {
 
     it('should throw if a field is invalid', async () =>
       expect(validateConfig({ countFemale: -1, countMale: 2 }, configValidators)).toBeRejectedWith(
-        `Error in field 'countFemale': Must be >= 0`,
+        "Error in field 'countFemale': Must be >= 0",
       ));
 
     it('should resolve if all fields are valid', () =>
@@ -86,7 +86,11 @@ describe('helpers', () => {
       const reverseAlphaJson = JSON.stringify(getReverseAlpha());
       const betaJson = JSON.stringify(getBeta());
 
-      const testData: [string, Record<string, {}>, Record<string, string[]>][] = [
+      const testData: [
+        string,
+        Record<string, Record<string, unknown>>,
+        Record<string, string[]>,
+      ][] = [
         [
           'different entries',
           { alpha: getAlpha(), beta: getBeta() },
