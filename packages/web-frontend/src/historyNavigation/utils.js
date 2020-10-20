@@ -19,7 +19,7 @@ import {
   roundStartEndDates,
 } from '../utils/periodGranularities';
 import {
-  OLD_VERSION_PATH_COMPONENTS,
+  LEGACY_PATH_PREFIXES,
   PATH_COMPONENTS,
   SEARCH_COMPONENTS,
   SEARCH_PARAM_KEY_MAP,
@@ -76,7 +76,7 @@ export const decodeLocation = ({ pathname, search }) => {
    *    https://mobile.tupaia.org/explore/${countryCode}
    */
   const pathParams = {
-    PROJECT: OLD_VERSION_PATH_COMPONENTS.includes(prefixOrProject) ? 'explore' : prefixOrProject,
+    PROJECT: LEGACY_PATH_PREFIXES.includes(prefixOrProject) ? 'explore' : prefixOrProject,
   };
   restOfPath.forEach((value, i) => {
     pathParams[restOfComponents[i]] = value;
