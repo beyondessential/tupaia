@@ -10,12 +10,9 @@ import {
   addBaselineTestCountries,
 } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
-import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  BES_ADMIN_PERMISSION_GROUP,
-} from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
-import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { TestableApp } from '../TestableApp';
+import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETDashboardGroups', async () => {
   const DEFAULT_POLICY = {

@@ -58,7 +58,7 @@ export const createSurveyGroupDBFilter = async (accessPolicy, models, criteria) 
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  const dbConditions = criteria;
+  const dbConditions = { ...criteria };
   const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
   const countryIdsByPermissionGroupId = {};
 

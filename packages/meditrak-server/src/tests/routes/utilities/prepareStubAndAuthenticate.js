@@ -7,6 +7,6 @@ import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
 
 export const prepareStubAndAuthenticate = async (app, policy) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').returns(policy);
+  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
   await app.authenticate();
 };

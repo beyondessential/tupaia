@@ -28,7 +28,7 @@ export const createDashboardGroupDBFilter = async (accessPolicy, models, criteri
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  const dbConditions = criteria;
+  const dbConditions = { ...criteria };
   const allPermissionGroups = accessPolicy.getPermissionGroups();
   const countryCodesByPermissionGroup = {};
 

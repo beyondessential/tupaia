@@ -34,7 +34,7 @@ export const createMapOverlayDBFilter = async (accessPolicy, models, criteria) =
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  const dbConditions = criteria;
+  const dbConditions = { ...criteria };
   const allPermissionGroups = accessPolicy.getPermissionGroups();
   const countryCodesByPermissionGroup = {};
 
