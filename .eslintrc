@@ -42,8 +42,7 @@
         "no-underscore-dangle": "off",
         "no-unused-vars": "off",
         "no-var": "off",
-        "strict": "off",
-        "prettier/prettier": "off"
+        "strict": "off"
       }
     },
     {
