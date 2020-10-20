@@ -20,7 +20,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
+    "lint:fix": "yarn lint --fix",
     "start": "PORT=8088 node scripts/start.js",
     "start-dev": "npm run start",
     "start-exporter": "PORT=3001 REACT_APP_APP_TYPE=exporter node scripts/start.js",
