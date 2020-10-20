@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { Provider } from 'react-redux';
 
 import configureStore from './configureStore';
@@ -14,54 +14,43 @@ import { reactToInitialState, initHistoryDispatcher } from './historyNavigation'
 import { fetchInitialData, findLoggedIn } from './actions';
 import { LOGIN_TYPES } from './constants';
 
-// Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
-// Based on https://serverless-stack.com/chapters/code-splitting-in-create-react-app.html
-let importRootScreen = () => null;
-switch (process.env.REACT_APP_APP_TYPE) {
-  case 'mobile':
-    importRootScreen = async () => import('./screens/mobile/RootScreen');
-    break;
-
-  case 'exporter':
-    importRootScreen = async () => import('./screens/exporter/RootScreen');
-    break;
-
-  default:
-    importRootScreen = async () => import('./screens/desktop/RootScreen');
-    break;
-}
+const DesktopApp = lazy(() => import('./screens/desktop/RootScreen'));
+const MobileApp = lazy(() => import('./screens/mobile/RootScreen'));
+const ExporterApp = lazy(() => import('./screens/exporter/RootScreen'));
 
 const store = configureStore();
+const { dispatch } = store;
 
 initHistoryDispatcher(store);
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      RootScreen: null,
-    };
+const appType = process.env.REACT_APP_APP_TYPE;
+
+const initApp = () => {
+  dispatch(fetchInitialData());
+  dispatch(findLoggedIn(LOGIN_TYPES.AUTO));
+  reactToInitialState(store);
+};
+
+const App = () => {
+  useEffect(initApp, []);
+
+  let RootScreen = DesktopApp;
+
+  if (appType === 'mobile') {
+    RootScreen = MobileApp;
+  } else if (appType === 'exporter') {
+    RootScreen = ExporterApp;
   }
 
-  async componentDidMount() {
-    const { default: RootScreen } = await importRootScreen();
-    this.setState({ RootScreen });
-
-    const { dispatch } = store;
-    dispatch(fetchInitialData());
-    dispatch(findLoggedIn(LOGIN_TYPES.AUTO));
-
-    reactToInitialState(store);
-  }
-
-  render() {
-    const { RootScreen } = this.state;
-    return (
-      <Provider store={store}>
-        <AppStyleProviders>{RootScreen ? <RootScreen /> : null}</AppStyleProviders>
-      </Provider>
-    );
-  }
-}
+  return (
+    <Provider store={store}>
+      <AppStyleProviders>
+        <Suspense fallback={<div>loading...</div>}>
+          <RootScreen />
+        </Suspense>
+      </AppStyleProviders>
+    </Provider>
+  );
+};
 
 export default App;
