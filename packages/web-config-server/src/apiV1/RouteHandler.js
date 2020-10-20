@@ -11,7 +11,6 @@ export class RouteHandler {
   constructor(req, res) {
     this.req = req;
 
-    this.body = req.body;
     this.query = req.query;
     this.res = res;
     this.entity = null;

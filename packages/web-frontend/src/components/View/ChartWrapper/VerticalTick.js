@@ -18,10 +18,7 @@ export default class VerticalTick extends PureComponent {
   }
 
   getHeight() {
-    return 80;
-    // const rectangle = this.ref.getBoundingClientRect();
-    //
-    // return rectangle.height;
+    return 80; // set a fixed height for consistent exporting
   }
 
   render() {
