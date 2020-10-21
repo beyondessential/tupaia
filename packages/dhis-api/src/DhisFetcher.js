@@ -70,6 +70,7 @@ export class DhisFetcher {
       const accessToken = await this.accessTokenPromise;
       return accessToken;
     } catch (e) {
+      console.log('this.accessTokenPromise', this.accessTokenPromise);
       this.clearAccessToken();
       throw this.constructError(`Authentication with DHIS2 failed: ${e.message}`);
     }
