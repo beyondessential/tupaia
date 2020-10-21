@@ -471,6 +471,9 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
+    // if it's a permission error then set the state that will show the login modal or access
+    yield put(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS));
+
     yield put(fetchOrgUnitError(organisationUnitCode, error.message));
     throw error;
   }
@@ -873,6 +876,7 @@ function* findUserLoggedIn(action) {
       yield put(fetchUserLoginSuccess(userData.name, userData.email, action.loginType));
     } else {
       yield put(findUserLoginFailed());
+      yield put(setOverlayComponent(LANDING));
     }
   } catch (error) {
     yield put(error.errorFunction(error));

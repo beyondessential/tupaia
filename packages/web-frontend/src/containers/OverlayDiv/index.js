@@ -64,10 +64,6 @@ export const OverlayDiv = ({
   viewProjectList,
   activeProject,
 }) => {
-  console.log('active project', activeProject);
-  console.log('is logged in', isUserLoggedIn);
-  console.log('overlay', overlay);
-
   const scrollToTop = () => {
     document.getElementById('overlay-wrapper').scrollTop = 0;
   };

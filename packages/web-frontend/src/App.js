@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { useEffect, lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Provider } from 'react-redux';
 
 import configureStore from './configureStore';
@@ -26,14 +26,14 @@ initHistoryDispatcher(store);
 const appType = process.env.REACT_APP_APP_TYPE;
 
 const initApp = () => {
-  dispatch(fetchInitialData());
-  dispatch(findLoggedIn(LOGIN_TYPES.AUTO));
-  reactToInitialState(store);
+  Promise.all([dispatch(fetchInitialData()), dispatch(findLoggedIn(LOGIN_TYPES.AUTO))]).then(() => {
+    reactToInitialState(store);
+  });
 };
 
-const App = () => {
-  useEffect(initApp, []);
+initApp();
 
+const App = () => {
   let RootScreen = DesktopApp;
 
   if (appType === 'mobile') {
@@ -45,7 +45,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <AppStyleProviders>
-        <Suspense fallback={<div>loading...</div>}>
+        <Suspense fallback={null}>
           <RootScreen />
         </Suspense>
       </AppStyleProviders>
