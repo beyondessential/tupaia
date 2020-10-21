@@ -118,16 +118,6 @@
     },
     // Package overrides
     {
-      "files": "packages/database/src/modelClasses/**",
-      "rules": {
-        "func-names": "off",
-        "no-underscore-dangle": "off",
-        "no-unused-vars": "off",
-        "no-var": "off",
-        "strict": "off"
-      }
-    },
-    {
       "files": "packages/database/src/migrations/**",
       "rules": {
         "func-names": "off",
