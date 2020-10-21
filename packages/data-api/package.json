@@ -17,9 +17,6 @@
     "test": "jest",
     "test:coverage": "yarn test --coverage"
   },
-  "eslintConfig": {
-    "extends": "@beyondessential/jest"
-  },
   "dependencies": {
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",

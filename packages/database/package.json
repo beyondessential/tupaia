@@ -23,19 +23,6 @@
     "test:debug": "mocha --inspect-brk",
     "update-test-data": ". .env && pg_dump -s -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -O $DB_NAME >> src/tests/testData/testDataDump.sql"
   },
-  "eslintConfig": {
-    "overrides": [
-      {
-        "files": "src/modelClasses/**",
-        "rules": {
-          "max-classes-per-file": [
-            "error",
-            2
-          ]
-        }
-      }
-    ]
-  },
   "dependencies": {
     "@tupaia/auth": "1.0.0",
     "@tupaia/utils": "1.0.0",

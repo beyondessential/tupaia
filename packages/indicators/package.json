@@ -18,15 +18,6 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },
-  "eslintConfig": {
-    "extends": [
-      "@beyondessential/ts",
-      "@beyondessential/jest"
-    ],
-    "parserOptions": {
-      "project": "tsconfig.json"
-    }
-  },
   "dependencies": {
     "@beyondessential/arithmetic": "^2.0.0",
     "@tupaia/aggregator": "1.0.0",
