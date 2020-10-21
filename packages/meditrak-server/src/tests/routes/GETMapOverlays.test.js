@@ -144,14 +144,14 @@ describe('Permissions checker for GETMapOverlays', async () => {
       ]);
     });
 
-    it('Insufficient permissions: Should throw an exception if users do not have access to any of the countries of the map overlays', async () => {
+    it('Insufficient permissions: Should return an empty array if users do not have access to any of the countries of the map overlays', async () => {
       const policy = {
         DL: ['Public'],
       };
       prepareStubAndAuthenticate(app, policy);
       const { body: results } = await app.get('mapOverlays');
 
-      expect(results).to.have.keys('error');
+      expect(results).to.be.empty;
     });
   });
 });

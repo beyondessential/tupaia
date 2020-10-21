@@ -136,14 +136,14 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
     });
 
-    it('Insufficient permissions: Should throw an exception if users do not have access to any survey groups', async () => {
+    it('Insufficient permissions: Should return an empty array if users do not have access to any survey groups', async () => {
       const policy = {
         DL: ['Public'],
       };
       await prepareStubAndAuthenticate(app, policy);
       const { body: results } = await app.get(`surveyGroups`);
 
-      expect(results).to.have.keys('error');
+      expect(results).to.be.empty;
     });
   });
 });

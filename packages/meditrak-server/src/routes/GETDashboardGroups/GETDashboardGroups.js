@@ -40,10 +40,6 @@ export class GETDashboardGroups extends GETHandler {
     );
     const dashboardGroups = await super.findRecords(dbConditions, options);
 
-    if (!dashboardGroups.length) {
-      throw new Error('Your permissions do not allow access to any of the requested resources');
-    }
-
     return dashboardGroups;
   }
 }

@@ -34,10 +34,6 @@ export class GETMapOverlays extends GETHandler {
     const dbConditions = await createMapOverlayDBFilter(this.accessPolicy, this.models, criteria);
     const userAccounts = await super.findRecords(dbConditions, options);
 
-    if (!userAccounts.length) {
-      throw new Error('Your permissions do not allow access to any of the requested resources');
-    }
-
     return userAccounts;
   }
 }

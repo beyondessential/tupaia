@@ -272,14 +272,14 @@ describe('Permissions checker for GETDashboardReports', async () => {
       ]);
     });
 
-    it('Insufficient permissions: Should throw an exception if the user has permissions for no dashboard reports', async () => {
+    it('Insufficient permissions: Should return an empty array if the user has permissions for no dashboard reports', async () => {
       const policy = {
         DL: ['Public'],
       };
       await prepareStubAndAuthenticate(app, policy);
       const { body: results } = await app.get(`dashboardReports`);
 
-      expect(results).to.have.keys('error');
+      expect(results).to.be.empty;
     });
   });
 });

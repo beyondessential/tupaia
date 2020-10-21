@@ -211,14 +211,14 @@ describe('Permissions checker for GETDashboardGroups', async () => {
       ]);
     });
 
-    it('Insufficient permissions: Should throw an exception if we have permissions for no dashboard groups', async () => {
+    it('Insufficient permissions: Should return an empty array if we have permissions for no dashboard groups', async () => {
       const policy = {
         DL: ['Public'],
       };
       await prepareStubAndAuthenticate(app, policy);
       const { body: results } = await app.get(`dashboardGroups`);
 
-      expect(results).to.have.keys('error');
+      expect(results).to.be.empty;
     });
   });
 });

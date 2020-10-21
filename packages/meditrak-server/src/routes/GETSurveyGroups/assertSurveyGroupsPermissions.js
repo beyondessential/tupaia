@@ -63,10 +63,10 @@ export const createSurveyGroupDBFilter = async (accessPolicy, models, criteria) 
   const countryIdsByPermissionGroupId = {};
 
   // Generate lists of country ids we have access to per permission group id
-  for (const pg of allPermissionGroupsNames) {
-    const permissionGroup = await models.permissionGroup.findOne({ name: pg });
+  for (const permissionGroupName of allPermissionGroupsNames) {
+    const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
     if (permissionGroup) {
-      const countryNames = accessPolicy.getEntitiesAllowed(pg);
+      const countryNames = accessPolicy.getEntitiesAllowed(permissionGroupName);
       const countryList = await models.country.find({ code: countryNames });
       countryIdsByPermissionGroupId[permissionGroup.id] = countryList.map(e => e.id);
     }

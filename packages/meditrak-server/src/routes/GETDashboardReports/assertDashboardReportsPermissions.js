@@ -17,8 +17,10 @@ export const assertDashboardReportsPermissions = async (
     dashboardReportId,
   ]);
 
-  for (const dg of dashboardGroups[dashboardReportId]) {
-    if (await hasDashboardGroupsPermissions(accessPolicy, models, dg)) {
+  // If the user has permission for any of the groups this report is in
+  // they have permission for the report
+  for (const dashboardGroup of dashboardGroups[dashboardReportId]) {
+    if (await hasDashboardGroupsPermissions(accessPolicy, models, dashboardGroup)) {
       return true;
     }
   }
