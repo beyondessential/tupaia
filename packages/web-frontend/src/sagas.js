@@ -458,6 +458,13 @@ function* watchRequestProjectAccess() {
  *
  */
 function* fetchOrgUnitData(organisationUnitCode, projectCode) {
+  const state = yield select();
+  const activeProjectCode = selectCurrentProjectCode(state);
+  const { isUserLoggedIn } = state.authentication;
+  if (!isUserLoggedIn && activeProjectCode !== 'explore') {
+    return false;
+  }
+
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     // Build the request url
@@ -471,10 +478,11 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
-    // if it's a permission error then set the state that will show the login modal or access
-    yield put(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS));
-
+    if (error.errorFunction) {
+      yield put(error.errorFunction(error));
+    }
     yield put(fetchOrgUnitError(organisationUnitCode, error.message));
+
     throw error;
   }
 }
@@ -876,7 +884,12 @@ function* findUserLoggedIn(action) {
       yield put(fetchUserLoginSuccess(userData.name, userData.email, action.loginType));
     } else {
       yield put(findUserLoginFailed());
-      yield put(setOverlayComponent(LANDING));
+
+      const state = yield select();
+      const activeProjectCode = selectCurrentProjectCode(state);
+      if (activeProjectCode !== 'explore') {
+        yield put(setOverlayComponent(LANDING));
+      }
     }
   } catch (error) {
     yield put(error.errorFunction(error));
