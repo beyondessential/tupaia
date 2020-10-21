@@ -9,10 +9,13 @@ import { gaEvent } from './ga';
 
 export const exportToPng = (node, filename) => {
   return new Promise(resolve => {
-    gaEvent('Export', 'png', 'Attempt');
+    const file = `${filename}.png`;
+
+    gaEvent('Export', file, 'Attempt');
+
     domtoimage.toPng(node).then(async dataUrl => {
-      downloadJs(dataUrl, `${filename}.png`);
-      gaEvent('Export', 'png', 'Success');
+      downloadJs(dataUrl, file);
+      gaEvent('Export', file, 'Success');
       resolve();
     });
   });
@@ -21,7 +24,9 @@ export const exportToPng = (node, filename) => {
 export const exportToExcel = async ({ projectCode, viewContent, startDate, endDate, filename }) => {
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
   const dataElementHeader = viewContent?.exportConfig?.dataElementHeader;
-  gaEvent('Export', 'xlsx', 'Success');
+  const file = `${filename}.xlsx`;
+
+  gaEvent('Export', file, 'Attempt');
 
   const queryString = new URLSearchParams({
     dashboardGroupId,
@@ -33,7 +38,7 @@ export const exportToExcel = async ({ projectCode, viewContent, startDate, endDa
     dataElementHeader,
   });
 
-  await download(`export/chart?${queryString}`, null, null, `${filename}.xlsx`);
-  gaEvent('Export', 'xlsx', 'Success');
+  await download(`export/chart?${queryString}`, null, null, file);
+  gaEvent('Export', file, 'Success');
   return true;
 };

@@ -25,7 +25,7 @@ const StyledAlert = styled(Alert)`
   min-width: 240px;
 `;
 
-const DateText = styled.div`
+const ExportDateText = styled.div`
   padding-bottom: 5px;
   text-align: center;
   font-size: 12px;
@@ -36,10 +36,10 @@ const DateText = styled.div`
 const ExportDate = ({ startDate, endDate }) => {
   const now = new Date();
   return (
-    <DateText>
+    <ExportDateText>
       {startDate && endDate && `Includes data from ${startDate} to ${endDate}.`} Exported{' '}
       {now.toDateString()}
-    </DateText>
+    </ExportDateText>
   );
 };
 
