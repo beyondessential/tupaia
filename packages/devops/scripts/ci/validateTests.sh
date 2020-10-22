@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=`dirname "$0"`
+DIR=$(dirname "$0")
 ROOT="${DIR}/../../../../"
 
 node ${ROOT}/scripts/node/validateTests

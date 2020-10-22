@@ -73,6 +73,10 @@
       "path": "packages/utils"
     },
     {
+      "name": "weather-api",
+      "path": "packages/weather-api"
+    },
+    {
       "name": "web-config-server",
       "path": "packages/web-config-server"
     },
@@ -108,6 +112,7 @@
       "keyby",
       "migrator",
       "oucode",
+      "postgresql",
       "preaggregate",
       "preaggregated",
       "preaggregating",
@@ -133,6 +138,7 @@
       "dbaeumer.vscode-eslint",
       "eamodio.gitlens",
       "esbenp.prettier-vscode",
+      "foxundermoon.shell-format",
       "streetsidesoftware.code-spell-checker",
       "visualstudioexptteam.vscodeintellicode",
       "wayou.vscode-todo-highlight"

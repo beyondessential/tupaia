@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MuiButton from '@material-ui/core/Button';
-import MuiAvatar from '@material-ui/core/Avatar';
 import Popper from '@material-ui/core/Popper';
 import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
+import { Avatar } from './Avatar';
 import { FlexStart } from './Layout';
 
 const StyledListItem = styled(MuiListItem)`
@@ -47,9 +47,8 @@ const Paper = styled.div`
   min-width: 13rem;
 `;
 
-const Avatar = styled(MuiAvatar)`
+const StyledAvatar = styled(Avatar)`
   color: white;
-  background: ${props => props.theme.palette.success.main};
   font-weight: 600;
 `;
 
@@ -97,14 +96,11 @@ const StyledButton = styled(MuiButton)`
   }
 
   .MuiAvatar-root {
-    color: white;
-    background: ${props => props.theme.palette.success.main};
     font-size: 0.8rem;
-    font-weight: 600;
   }
 `;
 
-export const ProfileButton = ({ user, MenuOptions, className }) => {
+export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
@@ -117,14 +113,20 @@ export const ProfileButton = ({ user, MenuOptions, className }) => {
         <StyledButton
           onClick={event => setAnchorEl(anchorEl ? null : event.currentTarget)}
           className={className}
-          endIcon={<Avatar>{userInitial}</Avatar>}
+          endIcon={
+            <StyledAvatar src={user.profileImage || null} initial={userInitial}>
+              {userInitial}
+            </StyledAvatar>
+          }
         >
           {userFirstName}
         </StyledButton>
         <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
           <Paper>
             <Header>
-              <Avatar src={user.profileImage || null}>{userInitial}</Avatar>
+              <StyledAvatar src={user.profileImage || null} initial={userInitial}>
+                {userInitial}
+              </StyledAvatar>
               <Details>
                 <NameText>{user.name}</NameText>
                 <EmailText>{user.email}</EmailText>
@@ -138,7 +140,7 @@ export const ProfileButton = ({ user, MenuOptions, className }) => {
       </div>
     </ClickAwayListener>
   );
-};
+});
 
 ProfileButton.propTypes = {
   user: PropTypes.shape({

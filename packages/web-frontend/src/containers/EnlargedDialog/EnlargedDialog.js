@@ -37,6 +37,7 @@ class EnlargedDialogComponent extends PureComponent {
       onDrillDown,
       onSetDateRange,
       isLoading,
+      errorMessage,
       isVisible,
     } = this.props;
     if (!isVisible) {
@@ -71,6 +72,7 @@ class EnlargedDialogComponent extends PureComponent {
           onDrillDown={onDrillDown}
           onSetDateRange={onSetDateRange}
           isLoading={isLoading}
+          errorMessage={errorMessage}
           isVisible={isVisible}
           drillDownOverlay={drillDownOverlay}
         />
@@ -87,6 +89,7 @@ EnlargedDialogComponent.propTypes = {
   onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
   isLoading: PropTypes.bool,
+  errorMessage: PropTypes.string,
   isVisible: PropTypes.bool,
   isDrillDownVisible: PropTypes.bool,
 };
@@ -94,6 +97,7 @@ EnlargedDialogComponent.propTypes = {
 EnlargedDialogComponent.defaultProps = {
   onDrillDown: () => {},
   onSetDateRange: () => {},
+  errorMessage: null,
   isLoading: false,
   isVisible: false,
   isDrillDownVisible: false,
