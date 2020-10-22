@@ -39,6 +39,8 @@ function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFu
     return modifiedError;
   }
 
+  console.log('assign error action', status);
+
   switch (status) {
     case 403:
       modifiedError.errorFunction = showCountryAccessDialog;
@@ -118,7 +120,6 @@ export default async function request(
 ) {
   const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
 
-  console.log(resourceUrl, options);
   try {
     return await performDeduplicatedRequest(baseUrl + resourceUrl, {
       ...options,

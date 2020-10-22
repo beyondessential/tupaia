@@ -458,13 +458,6 @@ function* watchRequestProjectAccess() {
  *
  */
 function* fetchOrgUnitData(organisationUnitCode, projectCode) {
-  const state = yield select();
-  const activeProjectCode = selectCurrentProjectCode(state);
-  const { isUserLoggedIn } = state.authentication;
-  if (!isUserLoggedIn && activeProjectCode !== 'explore') {
-    return false;
-  }
-
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     // Build the request url

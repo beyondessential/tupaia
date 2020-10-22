@@ -45,7 +45,14 @@ import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/Over
 import { convertDateRangeToUrlPeriodString, decodeLocation } from './utils';
 
 export const reactToInitialState = store => {
-  reactToLocationChange(store, getInitialLocation(), clearLocation());
+  const state = store.getState();
+  const { isUserLoggedIn } = state.authentication;
+  const location = getInitialLocation();
+  const { PROJECT } = decodeLocation(location);
+
+  reactToLocationChange(store, location, clearLocation());
+  // if (isUserLoggedIn || PROJECT === 'explore') {
+  // }
 };
 
 const reactToLocationChange = (store, location, previousLocation) => {
