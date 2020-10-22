@@ -20,7 +20,7 @@ export const countDisasterAffectedFacilitiesByType = async (
   const { organisationUnitCode, disasterStartDate, disasterEndDate } = query;
   const { dataServices, optionSetCode } = dataBuilderConfig;
 
-  if (!disasterStartDate) return { data: [] }; // show no data message in view.
+  if (!disasterStartDate) return { data: [] };
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
   const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
