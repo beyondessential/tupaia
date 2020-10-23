@@ -800,13 +800,6 @@ export function showServerUnreachableError(error) {
   };
 }
 
-export function showCountryAccessDialog() {
-  return {
-    type: OPEN_USER_DIALOG,
-    dialogPage: DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
-  };
-}
-
 /**
  * Stores measures available in measureBar
  *

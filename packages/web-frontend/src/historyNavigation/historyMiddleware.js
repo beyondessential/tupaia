@@ -31,8 +31,12 @@ import {
   UPDATE_MEASURE_CONFIG,
 } from '../actions';
 import { DEFAULT_PROJECT_CODE } from '../defaults';
-import { setProject } from '../projects/actions';
-import { selectCurrentPeriodGranularity, selectMeasureBarItemById } from '../selectors';
+import { setProject, setRequestingAccess } from '../projects/actions';
+import {
+  selectCurrentPeriodGranularity,
+  selectMeasureBarItemById,
+  selectProjectByCode,
+} from '../selectors';
 import { PASSWORD_RESET_PREFIX, URL_COMPONENTS, VERIFY_EMAIL_PREFIX } from './constants';
 import {
   addPopStateListener,
@@ -44,14 +48,49 @@ import {
   PROJECTS_WITH_LANDING_PAGES,
   PROJECT_LANDING,
   LANDING,
+  REQUEST_PROJECT_ACCESS,
 } from '../containers/OverlayDiv/constants';
 import { convertDateRangeToUrlPeriodString, decodeLocation } from './utils';
+
+const userHasAccess = (state, currentProject) =>
+  state.project.projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
+
+// Todo: move this to a saga
+const handleInvalidPermission = async (state, dispatch, projectCode) => {
+  const { isUserLoggedIn } = state.authentication;
+
+  if (isUserLoggedIn) {
+    // show project access dialog
+    const project = selectProjectByCode(state, projectCode);
+
+    if ('code' in project) {
+      await dispatch(setRequestingAccess(project));
+      await dispatch(setOverlayComponent(REQUEST_PROJECT_ACCESS));
+      return;
+    }
+
+    // handle 404s
+    console.log('project does not exist - 404'); // Todo: handle 404s
+    return;
+  }
+  // show login dialog
+  await dispatch(setOverlayComponent(LANDING));
+};
 
 export const reactToLocationChange = (store, location, previousLocation) => {
   const { dispatch: rawDispatch } = store;
   const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
 
   const { userPage, projectSelector, ...otherComponents } = decodeLocation(location);
+
+  const state = store.getState();
+  const hasAccess = userHasAccess(state, otherComponents.PROJECT);
+
+  if (!projectSelector && !hasAccess) {
+    handleInvalidPermission(state, dispatch, otherComponents.PROJECT);
+    return;
+  }
+
   if (userPage) {
     reactToUserPage(userPage, otherComponents, dispatch);
     return;

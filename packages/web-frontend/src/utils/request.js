@@ -6,11 +6,8 @@
  */
 
 import 'whatwg-fetch';
-import {
-  showSessionExpiredError,
-  showServerUnreachableError,
-  showCountryAccessDialog,
-} from '../actions';
+import { showSessionExpiredError, showServerUnreachableError } from '../actions';
+import { setRequestingAccess } from '../projects/actions';
 
 /**
  * Returns the HTTP status code off an error response.
@@ -40,9 +37,9 @@ function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFu
   }
 
   switch (status) {
-    case 403:
-      modifiedError.errorFunction = showCountryAccessDialog;
-      break;
+    // case 403:
+    //   modifiedError.errorFunction = () => setRequestingAccess();
+    //   break;
     case 440:
       modifiedError.errorFunction = showSessionExpiredError;
       break;

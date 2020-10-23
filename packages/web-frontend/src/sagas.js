@@ -123,26 +123,8 @@ import {
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
-import { decodeLocation } from './historyNavigation/utils';
 import { clearLocation } from './historyNavigation/historyNavigation';
 import { reactToLocationChange } from './historyNavigation/historyMiddleware';
-
-function* reactToInitialState(store) {
-  const state = store.getState();
-  const location = getInitialLocation();
-  const { projectSelector: isHome, PROJECT } = decodeLocation(location);
-  const { isUserLoggedIn } = state.authentication;
-
-  const userHasAccess = state.project.projects
-    .filter(p => p.hasAccess)
-    .find(p => p.code === PROJECT);
-
-  if (isUserLoggedIn || userHasAccess || isHome) {
-    reactToLocationChange(store, location, clearLocation());
-  } else {
-    yield put(setOverlayComponent(LANDING));
-  }
-}
 
 function* watchFetchInitialData() {
   const { store } = yield take(FETCH_INITIAL_DATA);
@@ -151,7 +133,7 @@ function* watchFetchInitialData() {
   yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
   yield call(fetchProjectData);
 
-  yield call(reactToInitialState, store);
+  reactToLocationChange(store, getInitialLocation(), clearLocation());
 }
 
 /**
@@ -516,7 +498,6 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
 function* requestOrgUnit(action) {
   const state = yield select();
   const activeProjectCode = selectCurrentProjectCode(state);
-  console.log('activeProjectCode', activeProjectCode);
   const { organisationUnitCode = activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
@@ -552,7 +533,6 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
       ),
     );
   } catch (error) {
-    console.log(error);
     yield put(changeOrgUnitError(error));
   }
 }
