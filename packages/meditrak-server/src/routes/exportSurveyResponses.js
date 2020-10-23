@@ -93,7 +93,7 @@ export async function exportSurveyResponses(req, res) {
       entities = [entity];
     } else if (countryId) {
       country = await models.country.findById(countryId);
-      entities = await models.entity.find({ country_code: country.code }, { sort: ['name'] });
+      entities = await models.entity.find({ country_code: country.code }, { sort: ['name ASC'] });
     } else if (entityIds) {
       entities = await Promise.all(
         entityIds.split(',').map(entityId => models.entity.findById(entityId)),
@@ -147,7 +147,7 @@ export async function exportSurveyResponses(req, res) {
       throw new ValidationError('Survey not found. Please check permissions');
     }
     const sortAndLimitSurveyResponses =
-      latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : {};
+      latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : { sort: ['end_time ASC'] };
 
     const addDataToSheet = (surveyName, exportData) => {
       const sheetName = truncateString(surveyName, 31);
