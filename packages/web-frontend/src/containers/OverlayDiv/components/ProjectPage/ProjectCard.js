@@ -12,7 +12,7 @@ import Lock from '@material-ui/icons/Lock';
 import Alarm from '@material-ui/icons/Alarm';
 import Button from '@material-ui/core/Button';
 
-import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, BREWER_PALETTE } from '../../../../styles';
+import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
 
 const Card = styled.div`
   display: grid;
@@ -95,7 +95,7 @@ const AlarmIcon = styled(Alarm)`
 
 const styles = {
   pendingAccessButton: {
-    background: LIGHT_GREY,
+    background: LIGHT_BLUE,
     color: FORM_BLUE,
     padding: '5px',
   },
@@ -131,7 +131,7 @@ export const ProjectCard = ({
           onClick={projectAction}
           color="primary"
           style={hasAccessPending ? styles.pendingAccessButton : styles.accessButton}
-          variant={accessType ? 'contained' : 'outlined'}
+          variant={accessType || hasAccessPending ? 'contained' : 'outlined'}
         >
           {!accessType && !hasAccessPending && <LockIcon />}
           {hasAccessPending && <AlarmIcon />}
