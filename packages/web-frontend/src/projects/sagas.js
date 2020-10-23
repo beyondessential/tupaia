@@ -1,11 +1,9 @@
 import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
-
 import { setProjects, fetchProjectsError } from './actions';
 
 import {
-  FETCH_INITIAL_DATA,
   SET_PROJECT,
   changeBounds,
   setDashboardGroup,
@@ -20,17 +18,13 @@ import {
   selectIsDashboardGroupCodeDefined,
 } from '../selectors';
 
-function* fetchProjectData() {
+export function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
   } catch (error) {
     console.error(error);
   }
-}
-
-function* watchFetchInitialDataAndFetchProjects() {
-  yield takeLatest(FETCH_INITIAL_DATA, fetchProjectData);
 }
 
 function* watchUserLoginSuccessAndRefetchProjectData() {
@@ -70,7 +64,6 @@ function* watchSelectProjectAndLoadProjectState() {
 }
 
 export default [
-  watchFetchInitialDataAndFetchProjects,
   watchSelectProjectAndLoadProjectState,
   watchUserLoginSuccessAndRefetchProjectData,
   watchUserLogoutSuccessAndRefetchProjectData,

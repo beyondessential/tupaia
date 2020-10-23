@@ -92,6 +92,7 @@ import {
   updateMeasureConfig,
   UPDATE_MEASURE_CONFIG,
   UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+  FETCH_INITIAL_DATA,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import { LANDING } from './containers/OverlayDiv/constants';
@@ -99,6 +100,7 @@ import { DEFAULT_PROJECT_CODE } from './defaults';
 import {
   convertUrlPeriodStringToDateRange,
   createUrlString,
+  getInitialLocation,
   URL_COMPONENTS,
 } from './historyNavigation';
 import { setProject } from './projects/actions';
@@ -120,6 +122,37 @@ import {
 } from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
+import { fetchProjectData } from './projects/sagas';
+import { decodeLocation } from './historyNavigation/utils';
+import { clearLocation } from './historyNavigation/historyNavigation';
+import { reactToLocationChange } from './historyNavigation/historyMiddleware';
+
+function* reactToInitialState(store) {
+  const state = store.getState();
+  const location = getInitialLocation();
+  const { projectSelector: isHome, PROJECT } = decodeLocation(location);
+  const { isUserLoggedIn } = state.authentication;
+
+  const userHasAccess = state.project.projects
+    .filter(p => p.hasAccess)
+    .find(p => p.code === PROJECT);
+
+  if (isUserLoggedIn || userHasAccess || isHome) {
+    reactToLocationChange(store, location, clearLocation());
+  } else {
+    yield put(setOverlayComponent(LANDING));
+  }
+}
+
+function* watchFetchInitialData() {
+  const { store } = yield take(FETCH_INITIAL_DATA);
+
+  // Login must happen first so that projects return the correct access flags
+  yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
+  yield call(fetchProjectData);
+
+  yield call(reactToInitialState, store);
+}
 
 /**
  * attemptChangePassword
@@ -483,6 +516,7 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
 function* requestOrgUnit(action) {
   const state = yield select();
   const activeProjectCode = selectCurrentProjectCode(state);
+  console.log('activeProjectCode', activeProjectCode);
   const { organisationUnitCode = activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
@@ -877,12 +911,6 @@ function* findUserLoggedIn(action) {
       yield put(fetchUserLoginSuccess(userData.name, userData.email, action.loginType));
     } else {
       yield put(findUserLoginFailed());
-
-      const state = yield select();
-      const activeProjectCode = selectCurrentProjectCode(state);
-      if (activeProjectCode !== 'explore') {
-        yield put(setOverlayComponent(LANDING));
-      }
     }
   } catch (error) {
     yield put(error.errorFunction(error));
@@ -1094,6 +1122,7 @@ function* refreshBrowserWhenFinishingUserSession() {
 
 // Add all sagas to be loaded
 export default [
+  watchFetchInitialData,
   watchAttemptChangePasswordAndFetchIt,
   watchAttemptResetPasswordAndFetchIt,
   watchAttemptRequestCountryAccessAndFetchIt,

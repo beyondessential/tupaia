@@ -39,8 +39,6 @@ function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFu
     return modifiedError;
   }
 
-  console.log('assign error action', status);
-
   switch (status) {
     case 403:
       modifiedError.errorFunction = showCountryAccessDialog;

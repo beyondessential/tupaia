@@ -38,24 +38,16 @@ import {
   addPopStateListener,
   attemptPushHistory,
   clearLocation,
-  getInitialLocation,
   setLocationComponent,
 } from './historyNavigation';
-import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
+import {
+  PROJECTS_WITH_LANDING_PAGES,
+  PROJECT_LANDING,
+  LANDING,
+} from '../containers/OverlayDiv/constants';
 import { convertDateRangeToUrlPeriodString, decodeLocation } from './utils';
 
-export const reactToInitialState = store => {
-  const state = store.getState();
-  const { isUserLoggedIn } = state.authentication;
-  const location = getInitialLocation();
-  const { PROJECT } = decodeLocation(location);
-
-  reactToLocationChange(store, location, clearLocation());
-  // if (isUserLoggedIn || PROJECT === 'explore') {
-  // }
-};
-
-const reactToLocationChange = (store, location, previousLocation) => {
+export const reactToLocationChange = (store, location, previousLocation) => {
   const { dispatch: rawDispatch } = store;
   const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
 
@@ -68,6 +60,7 @@ const reactToLocationChange = (store, location, previousLocation) => {
   if (projectSelector) {
     // Set project to explore, this is the default
     rawDispatch(setProject(DEFAULT_PROJECT_CODE));
+    rawDispatch(setOverlayComponent(LANDING));
     return;
   }
 

@@ -1,8 +1,6 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React, { lazy, Suspense } from 'react';
@@ -10,9 +8,8 @@ import { Provider } from 'react-redux';
 
 import configureStore from './configureStore';
 import { AppStyleProviders } from './AppStyleProviders';
-import { reactToInitialState, initHistoryDispatcher } from './historyNavigation';
-import { fetchInitialData, findLoggedIn } from './actions';
-import { LOGIN_TYPES } from './constants';
+import { initHistoryDispatcher } from './historyNavigation';
+import { FETCH_INITIAL_DATA } from './actions';
 
 const DesktopApp = lazy(() => import('./screens/desktop/RootScreen'));
 const MobileApp = lazy(() => import('./screens/mobile/RootScreen'));
@@ -26,8 +23,9 @@ initHistoryDispatcher(store);
 const appType = process.env.REACT_APP_APP_TYPE;
 
 const initApp = () => {
-  Promise.all([dispatch(fetchInitialData()), dispatch(findLoggedIn(LOGIN_TYPES.AUTO))]).then(() => {
-    reactToInitialState(store);
+  dispatch({
+    type: FETCH_INITIAL_DATA,
+    store,
   });
 };
 
