@@ -13,6 +13,7 @@ import {
   TypeValidationError,
 } from '@tupaia/utils';
 import { extractTabNameFromQuery, getArrayQueryParameter } from './utilities';
+import { convertCellToJson } from './importSurveys/utilities';
 
 /**
  * Responds to POST requests to the /import/optionSets endpoint
@@ -56,6 +57,7 @@ export async function importOptionSets(req, res) {
           const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
           // if no custom sort_order is supplied, use the excelRowNumber to sort the options
           const sortOrder = option.sort_order || excelRowNumber.toString();
+          const attributes = option.attributes ? convertCellToJson(option.attributes) : {};
 
           // validate that there are no duplicate values or names within this option set sheet.
           if (optionValues.has(option.value) || optionNames.has(optionName)) {
@@ -72,6 +74,7 @@ export async function importOptionSets(req, res) {
             value: option.value,
             label: option.label,
             sort_order: sortOrder,
+            attributes,
             option_set_id: optionSet.id,
           };
 

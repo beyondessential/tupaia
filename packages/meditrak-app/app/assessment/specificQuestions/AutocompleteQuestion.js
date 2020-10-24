@@ -4,22 +4,27 @@
  **/
 
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-
+import { getQuestion, getAnswerForQuestion } from '../selectors';
 import { Autocomplete } from '../../widgets/Autocomplete/Autocomplete';
+import { constructRecord } from '../../database/constructRecord';
 
 const OPTIONS_PER_PAGE = 6;
-export class AutocompleteQuestion extends React.Component {
+export class AutocompleteQuestionComponent extends React.Component {
   constructor(props) {
     super(props);
 
     this.optionSet = props.realmDatabase.getOptionSetById(props.optionSetId);
+    const checkMatchesAttributeFilters = this.getOptionAttributeFilters();
+    const filteredResults = this.optionSet.options
+      .sorted('sortOrder')
+      .filter(checkMatchesAttributeFilters);
+
     this.state = {
-      filteredResults: this.optionSet.options.sorted('sortOrder'),
-      optionList: this.buildOptionList(
-        this.optionSet.options.sorted('sortOrder').slice(0, OPTIONS_PER_PAGE),
-      ),
+      filteredResults,
+      optionList: this.buildOptionList(filteredResults.slice(0, OPTIONS_PER_PAGE)),
     };
   }
 
@@ -42,15 +47,29 @@ export class AutocompleteQuestion extends React.Component {
 
   buildOptionList = options => options.map(option => option.label || option.value);
 
+  getOptionAttributeFilters = () => {
+    const { attributeAnswers } = this.props;
+
+    return option =>
+      attributeAnswers
+        ? Object.entries(attributeAnswers).every(([key, answer]) => {
+            // No answer was selected for the question to filter, return all
+            const { attributes: optionAttributes } = option.toJson();
+            return optionAttributes[key] === answer;
+          })
+        : true;
+  };
+
   filterOptionList = searchTerm => {
+    const checkMatchesAttributeFilters = this.getOptionAttributeFilters();
     const filteredResults = this.optionSet.options
       .filtered(
         `((label != null && label CONTAINS[c] "${searchTerm}") || label == null && value CONTAINS[c] "${searchTerm}")`,
       )
-      .sorted('sortOrder');
-    const newList = this.buildOptionList(
-      filteredResults.sorted('sortOrder').slice(0, OPTIONS_PER_PAGE),
-    );
+      .sorted('sortOrder')
+      .filter(checkMatchesAttributeFilters);
+
+    const newList = this.buildOptionList(filteredResults.slice(0, OPTIONS_PER_PAGE));
     this.setState({ filteredResults, optionList: newList });
   };
 
@@ -82,13 +101,34 @@ export class AutocompleteQuestion extends React.Component {
   }
 }
 
-AutocompleteQuestion.propTypes = {
+AutocompleteQuestionComponent.propTypes = {
   answer: PropTypes.string,
+  attributeAnswers: PropTypes.object,
   onChangeAnswer: PropTypes.func.isRequired,
   optionSetId: PropTypes.string.isRequired,
   realmDatabase: PropTypes.any.isRequired,
 };
 
-AutocompleteQuestion.defaultProps = {
+AutocompleteQuestionComponent.defaultProps = {
   answer: '',
 };
+
+export const AutocompleteQuestion = connect((state, { id: questionId }) => {
+  const question = getQuestion(state, questionId);
+  const { autocomplete } = question.config;
+  const attributeAnswers = {};
+
+  if (autocomplete) {
+    const { attributes = {} } = autocomplete;
+    Object.entries(attributes).forEach(([key, config]) => {
+      const attributeValue = getAnswerForQuestion(state, config.questionId);
+      if (attributeValue !== undefined) {
+        attributeAnswers[key] = attributeValue;
+      }
+    });
+  }
+
+  return {
+    attributeAnswers,
+  };
+})(AutocompleteQuestionComponent);
