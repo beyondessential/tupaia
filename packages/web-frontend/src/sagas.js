@@ -96,7 +96,7 @@ import {
 import { LOGIN_TYPES } from './constants';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { DEFAULT_PROJECT_CODE } from './defaults';
-import { getDisasterDateRange } from './disaster/sagas';
+import { fetchDisasterDateRange } from './disaster/sagas';
 import {
   convertUrlPeriodStringToDateRange,
   createUrlString,
@@ -641,7 +641,7 @@ function* fetchDashboardItemData(action) {
   // Run preparation saga if it exists to collect module specific url parameters
   let extraUrlParameters = {};
   if (project === 'disaster') {
-    extraUrlParameters = yield call(getDisasterDateRange);
+    extraUrlParameters = yield call(fetchDisasterDateRange);
   }
 
   const viewData = yield call(

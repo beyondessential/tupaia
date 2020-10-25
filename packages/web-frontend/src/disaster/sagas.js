@@ -27,7 +27,7 @@ import { selectCurrentOrgUnit } from '../selectors';
 // As a module that requires extra data for its dashboard item data fetches, the 'disaster' sagas
 // file must export this generator function to allow the global fetchDashboardItemData saga to
 // call it and wait for it to finish during the fetch of 'disaster' project dashboard elements
-export function* getDisasterDateRange() {
+export function* fetchDisasterDateRange() {
   let state = yield select();
   if (!state.disaster.disasters) {
     yield take(SET_DISASTERS_DATA); // If disaster state is not yet initialised, wait until it is
