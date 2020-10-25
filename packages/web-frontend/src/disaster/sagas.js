@@ -24,9 +24,6 @@ import { DISASTER } from '../containers/OverlayDiv/constants';
 import { formatDateForApi } from '../utils';
 import { selectCurrentOrgUnit } from '../selectors';
 
-// As a module that requires extra data for its dashboard item data fetches, the 'disaster' sagas
-// file must export this generator function to allow the global fetchDashboardItemData saga to
-// call it and wait for it to finish during the fetch of 'disaster' project dashboard elements
 export function* fetchDisasterDateRange() {
   let state = yield select();
   if (!state.disaster.disasters) {
