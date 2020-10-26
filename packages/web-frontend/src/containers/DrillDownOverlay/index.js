@@ -11,14 +11,14 @@ import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
-import { TRANS_BLACK, DIALOG_Z_INDEX, WHITE, DARK_BLUE } from '../../styles';
+import { TRANS_BLACK, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import {
   attemptDrillDown,
   closeDrillDown,
   goToDrillDownLevel,
   setDrillDownDateRange,
 } from '../../actions';
-import { VIEW_CONTENT_SHAPE, getIsServiceSuggestions } from '../../components/View';
+import { VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from '../EnlargedDialog';
 import { selectCurrentInfoViewKey } from '../../selectors';
 
@@ -41,7 +41,8 @@ class DrillDownOverlayComponent extends PureComponent {
   }
 
   render() {
-    const { isLoading, errorMessage, viewContent } = this.props;
+    const { isLoading, errorMessage } = this.props;
+
     let content;
 
     if (isLoading) {
@@ -50,12 +51,8 @@ class DrillDownOverlayComponent extends PureComponent {
       content = this.renderContent();
     }
 
-    // if the PEHS Service Suggestions drilldown is selected, set the wrapper background colour to dark blue
-    // if not, use the default TRANS_BLACK as the wrapper background colour
-    const wrapperBackgroundColor = getIsServiceSuggestions(viewContent) ? DARK_BLUE : TRANS_BLACK;
-
     return (
-      <div style={{ ...styles.wrapper, backgroundColor: wrapperBackgroundColor }}>
+      <div style={styles.wrapper}>
         {errorMessage ? <p style={styles.error}>{errorMessage}</p> : null}
         {content}
       </div>
@@ -65,6 +62,7 @@ class DrillDownOverlayComponent extends PureComponent {
 
 const styles = {
   wrapper: {
+    backgroundColor: TRANS_BLACK,
     position: 'absolute',
     top: 0,
     left: 0,

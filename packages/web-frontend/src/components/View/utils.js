@@ -68,10 +68,6 @@ export const getIsMatrix = viewContent => {
   return viewContent && viewContent.type === 'matrix';
 };
 
-export const getIsServiceSuggestions = viewContent => {
-  return viewContent && viewContent.name === 'Service Suggestions';
-};
-
 export const getIsDataDownload = viewContent => {
   return viewContent && viewContent.viewType === 'dataDownload';
 };
