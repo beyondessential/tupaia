@@ -93,6 +93,7 @@ import {
   UPDATE_MEASURE_CONFIG,
   UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
   FETCH_INITIAL_DATA,
+  HANDLE_INVALID_PERMISSION,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import { LANDING } from './containers/OverlayDiv/constants';
@@ -103,7 +104,7 @@ import {
   getInitialLocation,
   URL_COMPONENTS,
 } from './historyNavigation';
-import { setProject } from './projects/actions';
+import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentExpandedViewContent,
   selectCurrentExpandedViewId,
@@ -119,6 +120,7 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
+  selectProjectByCode,
 } from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
@@ -134,6 +136,32 @@ function* watchFetchInitialData() {
   yield call(fetchProjectData);
 
   reactToLocationChange(store, getInitialLocation(), clearLocation());
+}
+
+function* handleInvalidPermission({ projectCode }) {
+  const state = yield select();
+  const { isUserLoggedIn } = state.authentication;
+
+  if (isUserLoggedIn) {
+    // show project access dialog
+    const project = selectProjectByCode(state, projectCode);
+
+    if ('code' in project) {
+      yield put(setRequestingAccess(project));
+      yield put(setOverlayComponent('requestProjectAccess'));
+      return;
+    }
+
+    // handle 404s
+    console.log('project does not exist - 404'); // Todo: handle 404s
+    return;
+  }
+  // show login dialog
+  yield put(setOverlayComponent(LANDING));
+}
+
+function* watchHandleInvalidPermission() {
+  yield takeLatest(HANDLE_INVALID_PERMISSION, handleInvalidPermission);
 }
 
 /**
@@ -1135,4 +1163,5 @@ export default [
   watchFetchResetTokenLoginSuccess,
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
+  watchHandleInvalidPermission,
 ];
