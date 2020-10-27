@@ -1,9 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable comma-dangle */
 
 /**
  * Taken from https://github.com/facebook/react-native/blob/master/local-cli/templates/HelloNavigation/components/KeyboardSpacer.js
- **/
+ */
 
 import React from 'react';
 import { Platform, View, Keyboard, LayoutAnimation } from 'react-native';
@@ -63,6 +62,7 @@ class KeyboardSpacerIOS extends React.Component<Props, Props, State> {
   }
 
   _keyboardWillShowSubscription: { remove: Function };
+
   _keyboardWillHideSubscription: { remove: Function };
 
   _registerEvents = () => {

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -28,7 +28,7 @@ const localStyles = StyleSheet.create({
     borderRadius: BORDER_RADIUS,
     paddingHorizontal: 6,
     paddingVertical: 3,
-    marginTop: 50, //this creates some padding between the label and the element above it
+    marginTop: 50, // this creates some padding between the label and the element above it
   },
   input: {
     height: 200,

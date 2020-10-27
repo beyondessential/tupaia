@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
@@ -187,7 +187,7 @@ const localStyles = StyleSheet.create({
     color: THEME_TEXT_COLOR_ONE,
     fontSize: 12,
     opacity: 0.8,
-    //This marginBottom is to prevent the bottom of text being clipped off by the row paddingVertical on Android.
+    // This marginBottom is to prevent the bottom of text being clipped off by the row paddingVertical on Android.
     marginBottom: -10,
   },
   row: {

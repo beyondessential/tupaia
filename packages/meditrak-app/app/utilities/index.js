@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 export { analytics } from './analytics';
 export { checkIfObjectsAreEqual } from './checkIfObjectsAreEqual';

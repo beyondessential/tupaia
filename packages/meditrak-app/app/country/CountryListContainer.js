@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 import { CountryList } from './CountryList';
@@ -30,7 +30,4 @@ const mapDispatchToProps = dispatch => ({
   onRequestCountryAccess: () => dispatch(navigateToRequestCountryAccess()),
 });
 
-export const CountryListContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CountryList);
+export const CountryListContainer = connect(mapStateToProps, mapDispatchToProps)(CountryList);
