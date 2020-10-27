@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 export const USER_LOCATION_UPDATE = 'USER_LOCATION_UPDATE';
 export const USER_LOCATION_ERROR = 'USER_LOCATION_ERROR';

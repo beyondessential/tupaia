@@ -243,7 +243,7 @@ function* attemptUserLogin(action) {
     yield put(findLoggedIn(LOGIN_TYPES.MANUAL, response.emailVerified));
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
-    if (errorMessage.details && errorMessage.details === 'Email address not yet verified') {
+    if (errorMessage?.error === 'Email address not yet verified') {
       yield put(displayUnverified());
     } else yield put(error.errorFunction(errorMessage));
   }
@@ -606,13 +606,21 @@ function* fetchViewData(parameters, errorHandler) {
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
 
   try {
-    const viewData = yield call(request, requestResourceUrl, errorHandler);
-    return viewData;
+    return yield call(request, requestResourceUrl, errorHandler);
   } catch (error) {
+    let errorMessage = error.message;
+
     if (error.errorFunction) {
-      yield put(error.errorFunction(error, infoViewKey));
-    } else {
-      console.log(`Failed to handle error: ${error.message}`);
+      yield put(error.errorFunction(error));
+    }
+
+    if (error.response) {
+      const json = yield error.response.json();
+      errorMessage = json.error;
+    }
+
+    if (errorHandler) {
+      yield put(errorHandler(errorMessage, infoViewKey));
     }
   }
   return null;

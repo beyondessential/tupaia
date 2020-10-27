@@ -41,10 +41,6 @@
       "path": "packages/dhis-api"
     },
     {
-      "name": "eslint-config-typescript",
-      "path": "packages/eslint-config-typescript"
-    },
-    {
       "name": "export-chart-lambda",
       "path": "packages/export-chart-lambda"
     },
@@ -71,6 +67,10 @@
     {
       "name": "utils",
       "path": "packages/utils"
+    },
+    {
+      "name": "weather-api",
+      "path": "packages/weather-api"
     },
     {
       "name": "web-config-server",
@@ -108,6 +108,7 @@
       "keyby",
       "migrator",
       "oucode",
+      "postgresql",
       "preaggregate",
       "preaggregated",
       "preaggregating",

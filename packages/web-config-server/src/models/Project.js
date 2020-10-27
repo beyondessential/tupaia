@@ -20,6 +20,7 @@ export class Project extends BaseModel {
     'dashboard_group_name',
     'default_measure',
     'entity_hierarchy_id',
+    'tile_sets',
   ];
 
   static async getProjectDetails() {
@@ -30,7 +31,7 @@ export class Project extends BaseModel {
             p.sort_order, p.user_groups,
             p.entity_id, p.image_url,
             p.logo_url, p.dashboard_group_name,
-            p.default_measure
+            p.default_measure, p.tile_sets
       from Project p
         left join Entity E
           on p.entity_id = e.id
