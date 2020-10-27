@@ -6,7 +6,7 @@
  */
 
 import { createSelector } from 'reselect';
-import { DEFAULT_BOUNDS, DEFAULT_PROJECT_CODE } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { selectLocation } from './utils';
 import { TILE_SETS } from '../constants';
