@@ -92,6 +92,10 @@ const ProjectBody = styled.div`
   padding: 36px 30px 40px ${leftPadding};
   text-align: left;
   max-width: 640px;
+
+  @media (min-width: 600px) {
+    min-width: 500px;
+  }
 `;
 
 const HeroImage = styled.div`
