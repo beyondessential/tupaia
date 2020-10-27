@@ -7,7 +7,6 @@
 
 import 'whatwg-fetch';
 import { showSessionExpiredError, showServerUnreachableError } from '../actions';
-import { setRequestingAccess } from '../projects/actions';
 
 /**
  * Returns the HTTP status code off an error response.
@@ -25,7 +24,7 @@ function getStatus(error, defaultStatus = 500) {
  * @param  {object} error   A error response from a network request
  * @param {function} defaultErrorFunction  Error function to be called
  *
- * @return {object} After asign the function throws an error
+ * @return {undefined} After asign the function throws an error
  */
 function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFunction = false) {
   const status = getStatus(error);
@@ -37,9 +36,6 @@ function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFu
   }
 
   switch (status) {
-    // case 403:
-    //   modifiedError.errorFunction = () => setRequestingAccess();
-    //   break;
     case 440:
       modifiedError.errorFunction = showSessionExpiredError;
       break;
@@ -114,7 +110,6 @@ export default async function request(
   shouldRetryOnFail = true,
 ) {
   const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
-
   try {
     return await performDeduplicatedRequest(baseUrl + resourceUrl, {
       ...options,

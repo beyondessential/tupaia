@@ -93,7 +93,6 @@ import {
   UPDATE_MEASURE_CONFIG,
   UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
   FETCH_INITIAL_DATA,
-  HANDLE_INVALID_PERMISSION,
   setPasswordResetToken,
   DIALOG_PAGE_ONE_TIME_LOGIN,
   setVerifyEmailToken,
@@ -172,10 +171,6 @@ function* handleInvalidPermission({ projectCode }) {
   }
   // show login dialog
   yield put(setOverlayComponent(LANDING));
-}
-
-function* watchHandleInvalidPermission() {
-  yield takeLatest(HANDLE_INVALID_PERMISSION, handleInvalidPermission);
 }
 
 function* setComponentsIfUpdated(components, previousComponents, otherComponents) {
@@ -1266,6 +1261,5 @@ export default [
   watchFetchResetTokenLoginSuccess,
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
-  watchHandleInvalidPermission,
   watchHandleLocationChange,
 ];
