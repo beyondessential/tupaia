@@ -32,8 +32,7 @@ export async function updateSurveyResponses(req, res) {
     if (!req.file) {
       throw new UploadError();
     }
-    const surveyNames =
-      req.query && req.query.surveyNames && getArrayQueryParameter(req.query.surveyNames);
+    const surveyNames = getArrayQueryParameter(req?.query?.surveyNames);
     const { models } = req;
     await models.wrapInTransaction(async transactingModels => {
       const workbook = xlsx.readFile(req.file.path);
