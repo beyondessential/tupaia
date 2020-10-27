@@ -7,7 +7,6 @@ import {
   SET_PROJECT,
   changeBounds,
   setDashboardGroup,
-  FETCH_LOGIN_SUCCESS,
   setOrgUnit,
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
@@ -25,10 +24,6 @@ export function* fetchProjectData() {
   } catch (error) {
     console.error(error);
   }
-}
-
-function* watchUserLoginSuccessAndRefetchProjectData() {
-  yield takeLatest(FETCH_LOGIN_SUCCESS, fetchProjectData);
 }
 
 function* watchUserLogoutSuccessAndRefetchProjectData() {
@@ -63,8 +58,4 @@ function* watchSelectProjectAndLoadProjectState() {
   yield takeLatest(SET_PROJECT, loadProject);
 }
 
-export default [
-  watchSelectProjectAndLoadProjectState,
-  watchUserLoginSuccessAndRefetchProjectData,
-  watchUserLogoutSuccessAndRefetchProjectData,
-];
+export default [watchSelectProjectAndLoadProjectState, watchUserLogoutSuccessAndRefetchProjectData];

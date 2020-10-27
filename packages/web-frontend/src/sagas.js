@@ -94,9 +94,20 @@ import {
   UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
   FETCH_INITIAL_DATA,
   HANDLE_INVALID_PERMISSION,
+  setPasswordResetToken,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
+  setVerifyEmailToken,
+  setOrgUnit,
+  openEnlargedDialog,
+  updateCurrentMeasureConfigOnceHierarchyLoads,
+  LOCATION_CHANGE,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
-import { LANDING } from './containers/OverlayDiv/constants';
+import {
+  LANDING,
+  PROJECT_LANDING,
+  PROJECTS_WITH_LANDING_PAGES,
+} from './containers/OverlayDiv/constants';
 import { DEFAULT_PROJECT_CODE } from './defaults';
 import {
   convertUrlPeriodStringToDateRange,
@@ -126,16 +137,19 @@ import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
-import { reactToLocationChange } from './historyNavigation/historyMiddleware';
+import { decodeLocation } from './historyNavigation/utils';
+import { PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './historyNavigation/constants';
 
 function* watchFetchInitialData() {
-  const { store } = yield take(FETCH_INITIAL_DATA);
+  yield take(FETCH_INITIAL_DATA);
 
   // Login must happen first so that projects return the correct access flags
   yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
   yield call(fetchProjectData);
-
-  reactToLocationChange(store, getInitialLocation(), clearLocation());
+  yield call(handleLocationChange, {
+    location: getInitialLocation(),
+    previousLocation: clearLocation(),
+  });
 }
 
 function* handleInvalidPermission({ projectCode }) {
@@ -162,6 +176,82 @@ function* handleInvalidPermission({ projectCode }) {
 
 function* watchHandleInvalidPermission() {
   yield takeLatest(HANDLE_INVALID_PERMISSION, handleInvalidPermission);
+}
+
+function* setComponentsIfUpdated(components, previousComponents, otherComponents) {
+  for (let i = 0; i < components.length; i++) {
+    const { key, setter } = components[i];
+    const component = otherComponents[key];
+    if (component && component !== previousComponents[key]) {
+      yield put({ ...setter(component), meta: { preventHistoryUpdate: true } });
+    }
+  }
+}
+
+function* handleUserPage(userPage, initialComponents) {
+  yield put(setOverlayComponent(LANDING));
+
+  switch (userPage) {
+    case PASSWORD_RESET_PREFIX:
+      yield put(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
+      yield put(openUserPage(DIALOG_PAGE_ONE_TIME_LOGIN));
+      break;
+    case VERIFY_EMAIL_PREFIX:
+      yield put(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
+      break;
+    default:
+      console.error('Unhandled user page', userPage);
+  }
+}
+
+const userHasAccess = (projects, currentProject) =>
+  projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
+
+function* handleLocationChange({ location, previousLocation }) {
+  const { project } = yield select();
+  const { userPage, projectSelector, ...otherComponents } = decodeLocation(location);
+
+  if (userPage) {
+    yield call(handleUserPage, userPage, otherComponents);
+    return;
+  }
+
+  if (projectSelector) {
+    // Set project to explore, this is the default
+    yield put(setOverlayComponent(LANDING));
+    yield put(setProject(DEFAULT_PROJECT_CODE));
+    return;
+  }
+
+  const hasAccess = userHasAccess(project.projects, otherComponents.PROJECT);
+  if (!hasAccess) {
+    yield call(handleInvalidPermission, { projectCode: otherComponents.PROJECT });
+    return;
+  }
+
+  const isLandingPageProject = PROJECTS_WITH_LANDING_PAGES[otherComponents[URL_COMPONENTS.PROJECT]];
+  if (isLandingPageProject) {
+    yield put(setOverlayComponent(PROJECT_LANDING));
+  }
+
+  // refresh data if the url has changed
+  const previousComponents = decodeLocation(previousLocation);
+  yield call(
+    setComponentsIfUpdated,
+    [
+      { key: URL_COMPONENTS.PROJECT, setter: setProject },
+      { key: URL_COMPONENTS.ORG_UNIT, setter: setOrgUnit },
+      { key: URL_COMPONENTS.URL_COMPONENTS, setter: setMeasure },
+      { key: URL_COMPONENTS.REPORT, setter: openEnlargedDialog },
+      { key: URL_COMPONENTS.MEASURE_PERIOD, setter: updateCurrentMeasureConfigOnceHierarchyLoads },
+    ],
+    previousComponents,
+    otherComponents,
+  );
+}
+
+function* watchHandleLocationChange() {
+  yield takeLatest(LOCATION_CHANGE, handleLocationChange);
 }
 
 /**
@@ -1035,10 +1125,7 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* resetToProjectSplash(action) {
-  // Only reset to project splash on manual login to avoid messing up routing
-  if (action.type === FETCH_LOGIN_SUCCESS && action.loginType !== LOGIN_TYPES.MANUAL) return;
-
+function* resetToProjectSplash() {
   yield put(clearMeasureHierarchy());
   yield put(setOverlayComponent(LANDING));
   yield put(setProject(DEFAULT_PROJECT_CODE));
@@ -1047,7 +1134,23 @@ function* resetToProjectSplash(action) {
 function* watchUserChangesAndUpdatePermissions() {
   // On user login/logout, we should just reset to the initial landing page
   yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToProjectSplash);
+
+  const action = yield take(FETCH_LOGIN_SUCCESS);
+
+  if (action.loginType === LOGIN_TYPES.MANUAL) {
+    const { routing: location } = yield select();
+    yield put(setOverlayComponent(null));
+    yield call(fetchProjectData);
+    yield call(handleLocationChange, {
+      location,
+      // Assume an empty location string so that the url will trigger fetching fresh data
+      previousLocation: {
+        pathname: '',
+        search: '',
+        hash: '',
+      },
+    });
+  }
 }
 
 function* watchGoHomeAndResetToProjectSplash() {
@@ -1164,4 +1267,5 @@ export default [
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
   watchHandleInvalidPermission,
+  watchHandleLocationChange,
 ];

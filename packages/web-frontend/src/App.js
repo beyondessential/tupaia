@@ -25,7 +25,6 @@ const appType = process.env.REACT_APP_APP_TYPE;
 const initApp = () => {
   dispatch({
     type: FETCH_INITIAL_DATA,
-    store,
   });
 };
 
