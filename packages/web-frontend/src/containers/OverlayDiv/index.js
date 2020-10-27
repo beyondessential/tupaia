@@ -18,7 +18,7 @@ import { setOverlayComponent } from '../../actions';
 import { setProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { ProjectLandingPage } from './components/ProjectLandingPage';
-import { RequestProjectAccess } from './components/RequestProjectAccess';
+import { RequestProjectAccessDialog } from './components/RequestProjectAccessDialog';
 import Disaster from './components/Disaster';
 import { selectProjectByCode, selectCurrentProject } from '../../selectors';
 import { LANDING, PROJECT_LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
@@ -80,7 +80,7 @@ export const OverlayDiv = ({
       />
     ),
     [DISASTER]: Disaster,
-    [REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
+    [REQUEST_PROJECT_ACCESS]: RequestProjectAccessDialog,
   };
   const OverlayComponent = components[overlay];
 
