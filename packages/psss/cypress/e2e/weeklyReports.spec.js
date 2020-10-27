@@ -13,18 +13,14 @@ describe('weekly reports', () => {
 
     // select country
     cy.findByTestId('countries-table').within(() => {
-      cy.findAllByRole('link')
-        .first()
-        .click();
+      cy.findAllByRole('link').first().click();
     });
 
     cy.assertWeeklyReportsPage();
 
     // expand table row
     cy.findByTestId('country-table').within(() => {
-      cy.findAllByRole('row', { name: /week*/i })
-        .first()
-        .click();
+      cy.findAllByRole('row', { name: /week*/i }).first().click();
     });
 
     // open panel
