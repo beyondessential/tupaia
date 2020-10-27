@@ -7,48 +7,83 @@
       "error",
       {
         "devDependencies": [
-          "jest.setup.js",
           "**/cypress/**",
           "**/migrations/**",
           "**/stories/**",
           "**/tests/**",
-          "**/__tests__/**"
+          "**/__tests__/**",
+          "jest.setup.js",
+          "**/packages/psss/src/api/FakeApi.js",
+          "**/packages/psss/src/utils/test-utils.js",
+          "**/packages/ui-components/helpers/testingRenderer.js",
+          "**/packages/web-frontend/config/**",
+          "**/packages/web-frontend/scripts/**"
         ],
         "packageDir": ["../../", "."]
-      }
-    ],
-    "import/no-unresolved": [
-      "error",
-      {
-        "ignore": [
-          "^@tupaia/access-policy$",
-          "^@tupaia/aggregator$",
-          "^@tupaia/auth$",
-          "^@tupaia/data-api$",
-          "^@tupaia/data-broker$",
-          "^@tupaia/database$",
-          "^@tupaia/dhis-api$",
-          "^@tupaia/utils$"
-        ]
       }
     ],
     "jsx-a11y/href-no-hash": "off"
   },
   "overrides": [
+    // TypeScript packages
     {
-      "files": "packages/database/src/migrations/**",
-      "rules": {
-        "func-names": "off",
-        "no-underscore-dangle": "off",
-        "no-unused-vars": "off",
-        "no-var": "off",
-        "strict": "off"
+      "files": ["packages/indicators/**"],
+      "extends": "@beyondessential/ts",
+      "parserOptions": {
+        "project": "tsconfig.json"
       }
     },
+    // Packages using jest
     {
-      "files": ["jestScaffolding.js", "scripts/**"],
+      "files": [
+        "packages/access-policy/**",
+        "packages/aggregator/**",
+        "packages/auth/**",
+        "packages/data-api/**",
+        "packages/data-broker/**",
+        "packages/dhis-api/**",
+        "packages/indicators/**",
+        "packages/meditrak-app/**",
+        "packages/psss/**",
+        "packages/ui-components/**",
+        "packages/utils/**",
+        "packages/web-frontend/**"
+      ],
+      "extends": "@beyondessential/jest"
+    },
+    // Frontend packages
+    {
+      "files": [
+        "packages/admin-panel/**",
+        "packages/psss/**",
+        "packages/ui-components/**",
+        "packages/web-frontend/**"
+      ],
+      "env": {
+        "browser": true
+      }
+    },
+    // Rule overrides
+    {
+      "files": [
+        "packages/database/src/modelClasses/**",
+        "packages/meditrak-server/src/database/models/**"
+      ],
       "rules": {
-        "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }]
+        "max-classes-per-file": ["error", 2]
+      }
+    },
+    // File pattern overrides
+    {
+      "files": "**/cypress/**",
+      "extends": "plugin:cypress/recommended",
+      "env": {
+        "browser": true,
+        "cypress/globals": true
+      },
+      "rules": {
+        "cypress/no-force": "error",
+        "jest/expect-expect": "off"
       }
     },
     {
@@ -72,6 +107,55 @@
       "files": ["**/webpack.config.js", "**/webpack.config*[!babel].js"],
       "rules": {
         "prefer-object-spread": "off"
+      }
+    },
+    // Root folder overrides
+    {
+      "files": ["jestScaffolding.js", "scripts/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }]
+      }
+    },
+    // Package overrides
+    {
+      "files": "packages/database/src/migrations/**",
+      "rules": {
+        "func-names": "off",
+        "no-underscore-dangle": "off",
+        "no-unused-vars": "off",
+        "no-var": "off",
+        "strict": "off"
+      }
+    },
+    {
+      "files": ["packages/meditrak-app/**"],
+      "plugins": ["react-native"],
+      "env": {
+        "react-native/react-native": true
+      },
+      "rules": {
+        "react/destructuring-assignment": "off",
+        "react/prop-types": ["error", { "ignore": ["navigation"] }]
+      }
+    },
+    {
+      "files": ["packages/web-config-server/**"],
+      "plugins": ["module-resolver"],
+      "rules": {
+        "import/no-absolute-path": "off",
+        "module-resolver/use-alias": "warn"
+      },
+      "settings": {
+        "import/resolver": {
+          "babel-module": {}
+        }
+      }
+    },
+    {
+      "files": ["packages/web-frontend/**"],
+      "rules": {
+        "import/no-named-as-default": "off",
+        "react/destructuring-assignment": "off"
       }
     }
   ]
