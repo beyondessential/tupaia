@@ -22,7 +22,7 @@ export interface AnalyticCluster {
   dataValues: Record<Analytic['dataElement'], Analytic['value']>;
 }
 
-type TypeFields = Record<string, string | number | {}>;
+type TypeFields = Record<string, string | number | Record<string, unknown>>;
 
 type DatabaseType<F extends TypeFields> = BaseDatabaseType & F;
 

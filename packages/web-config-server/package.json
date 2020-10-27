@@ -13,7 +13,7 @@
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
+    "lint:fix": "yarn lint --fix",
     "prestart": "npm run -s build",
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9997",

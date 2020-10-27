@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { Dimensions, Image, StyleSheet, View } from 'react-native';
@@ -35,7 +35,7 @@ export class DumbQuestion extends React.Component {
       <View
         style={{
           ...localStyles.container,
-          display: questionProps.isVisible ? 'flex' : 'none'
+          display: questionProps.isVisible ? 'flex' : 'none',
         }}
       >
         {imageData && imageData.length > 0 ? (

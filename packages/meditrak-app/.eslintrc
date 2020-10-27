@@ -1,9 +1,0 @@
-{
-  "plugins": ["react-native"],
-  "env": {
-    "browser": true
-  },
-  "rules": {
-    "react/prop-types": ["error", { "ignore": ["navigation"] }]
-  }
-}
