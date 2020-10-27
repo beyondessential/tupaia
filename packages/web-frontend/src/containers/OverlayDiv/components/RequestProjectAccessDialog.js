@@ -1,13 +1,8 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/**
- * Component for Project Access Form
- */
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -97,6 +92,10 @@ const ProjectBody = styled.div`
   padding: 36px 30px 40px ${leftPadding};
   text-align: left;
   max-width: 640px;
+
+  @media (min-width: 600px) {
+    min-width: 500px;
+  }
 `;
 
 const HeroImage = styled.div`
