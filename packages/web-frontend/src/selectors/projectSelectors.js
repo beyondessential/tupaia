@@ -13,9 +13,8 @@ import { TILE_SETS } from '../constants';
 
 const selectAllProjects = state => state.project.projects;
 
-export const selectCurrentProjectCode = createSelector(
-  [selectLocation],
-  location => getLocationComponentValue(location, URL_COMPONENTS.PROJECT) || DEFAULT_PROJECT_CODE,
+export const selectCurrentProjectCode = createSelector([selectLocation], location =>
+  getLocationComponentValue(location, URL_COMPONENTS.PROJECT),
 );
 
 export const selectIsProject = createSelector(
