@@ -47,21 +47,29 @@ export const ImportExportModalComponent = ({
       />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         <p>{subtitle}</p>
-        {queryParameters.map(queryParameter => {
-          const { parameterKey, label, secondaryLabel } = queryParameter;
-          return (
-            <InputField
-              key={parameterKey}
-              inputKey={parameterKey}
-              value={values[parameterKey]}
-              {...queryParameter}
-              onChange={handleValueChange}
-              label={label}
-              secondaryLabel={secondaryLabel}
-              parentRecord={parentRecord}
-            />
-          );
-        })}
+        {queryParameters
+          .filter(
+            ({ visibilityCriteria }) =>
+              !visibilityCriteria ||
+              Object.entries(visibilityCriteria).every(
+                ([parameterKey, requiredValue]) => values[parameterKey] === requiredValue,
+              ),
+          )
+          .map(queryParameter => {
+            const { parameterKey, label, secondaryLabel } = queryParameter;
+            return (
+              <InputField
+                key={parameterKey}
+                inputKey={parameterKey}
+                value={values[parameterKey]}
+                {...queryParameter}
+                onChange={handleValueChange}
+                label={label}
+                secondaryLabel={secondaryLabel}
+                parentRecord={parentRecord}
+              />
+            );
+          })}
         {children}
       </ModalContentProvider>
       <DialogFooter>
