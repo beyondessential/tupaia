@@ -22,7 +22,7 @@ exports.up = function(db) {
     update feed_item
     set template_variables = regexp_replace (
                       template_variables :: text,
-                      '(?<=https:\\/\\/mobile.tupaia.org\\/)(country|facility)',
+                      '(?<=https:\/\/mobile.tupaia.org\/)(country|facility)',
                       'explore')::json
   `);
 };
