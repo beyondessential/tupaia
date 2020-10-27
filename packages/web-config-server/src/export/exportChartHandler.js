@@ -45,7 +45,8 @@ export const exportChartHandler = async (req, res) => {
   // Use a custom formatter to turn it into json in the format expected by the xlsx library, i.e.
   // an array of objects, with each object in the array representing a row in the spreadsheet, and
   // each key value pair in that object representing a column (with the key as the column header)
-  const formattedData = formatMatrixDataForExcel(response, { dataElementHeader });
+  const extraConfig = dataElementHeader !== 'undefined' ? { dataElementHeader } : null;
+  const formattedData = formatMatrixDataForExcel(response, extraConfig);
 
   // Export out to an excel file
   const sheet = xlsx.utils.aoa_to_sheet(formattedData);
