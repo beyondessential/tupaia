@@ -33,12 +33,15 @@ const ExportDateText = styled.div`
   background: white;
 `;
 
+const formatDate = date => moment(date).format('DD/MM/YY');
+
 const ExportDate = ({ startDate, endDate }) => {
-  const now = new Date();
+  const date = String(moment());
   return (
     <ExportDateText>
-      {startDate && endDate && `Includes data from ${startDate} to ${endDate}.`} Exported{' '}
-      {now.toDateString()}
+      {startDate &&
+        endDate &&
+        `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. Exported ${date}`}
     </ExportDateText>
   );
 };
