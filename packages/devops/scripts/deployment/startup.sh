@@ -8,7 +8,8 @@ export PATH=/home/ubuntu/.local/bin:/home/ubuntu/.yarn/bin:/home/ubuntu/.config/
 export HOME_DIRECTORY="/home/ubuntu/tupaia"
 
 DIR=$(dirname "$0")
-export STAGE=$(${DIR}/../utility/detectStage.sh)
+export STAGE=$(${DIR}/../utility/getEC2TagValue.sh Stage)
+export IS_E2E=$(${DIR}/../utility/getEC2TagValue.sh IsE2E)
 echo "Starting up instance for ${STAGE}"
 
 # Fetch and deploy the latest for each package based on the stage, including injecting environment

@@ -127,6 +127,7 @@ def create_instance(account_ids, restore_code, stage):
     base_instance = get_instances(base_instance_filters)[0]
     domain = get_tag(base_instance, 'DomainName')
     subdomains_string = get_tag(base_instance, 'Subdomains')
+    is_e2e = get_tag(base_instance, 'IsE2E')
     print('Found instance to base the new one on')
 
     # Get the security group tagged with the key matching this restore code
@@ -156,7 +157,8 @@ def create_instance(account_ids, restore_code, stage):
         { 'Key': 'Stage', 'Value': stage },
         { 'Key': 'RestoreFrom', 'Value': restore_code },
         { 'Key': 'DomainName', 'Value': domain },
-        { 'Key': 'Subdomains', 'Value': subdomains_string }
+        { 'Key': 'Subdomains', 'Value': subdomains_string },
+        { 'Key': 'IsE2E', 'Value': is_e2e }
       ]}]
     }
     # Get details of IAM profile (e.g. role allowing access to lambda) if applicable

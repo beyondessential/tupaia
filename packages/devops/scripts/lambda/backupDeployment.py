@@ -9,7 +9,7 @@ def lambda_handler(event, context):
         {'Name': 'tag-key', 'Values': ['backup', 'Backup']},
     ]
     if 'InstanceName' in event:
-      print('Only restoring ' + event['InstanceName'])
+      print('Only backing up ' + event['InstanceName'])
       filters.append({'Name': 'tag:Name', 'Values': [event['InstanceName']]})
     reservations = ec.describe_instances(
         Filters=filters
