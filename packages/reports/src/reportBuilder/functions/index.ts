@@ -1,4 +1,4 @@
-import { value, last, eq, neq, exists, gt } from './basic';
+import { value, last, eq, exists, gt } from './basic';
 import { convertToPeriod, periodToTimestamp, periodToDisplayString } from './utils';
 import { sum } from './math';
 
@@ -7,7 +7,6 @@ export const functions = {
   last,
   sum,
   eq,
-  neq,
   gt,
   exists,
   convertToPeriod,

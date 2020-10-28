@@ -12,10 +12,6 @@ export const eq = (value1, value2): boolean => {
   return value1 === value2;
 };
 
-export const neq = (value1, value2): boolean => {
-  return value1 !== value2;
-};
-
 export const gt = (value1, value2): boolean => {
   return value1 > value2;
 };
