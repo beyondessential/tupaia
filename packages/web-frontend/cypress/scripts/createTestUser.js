@@ -5,18 +5,25 @@
 
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { TEST_USER } from '../constants';
+import { TestUserPasswordUndefinedError } from '../support/helpers';
 
-const upsertTestUserRecord = async ({ database }) =>
-  database.updateOrCreate(
+const upsertTestUserRecord = async ({ database }) => {
+  const password = process.env.CYPRESS_TEST_USER_PASSWORD;
+  if (!password) {
+    throw new TestUserPasswordUndefinedError();
+  }
+
+  return database.updateOrCreate(
     'user_account',
     { email: TEST_USER.email },
     {
       first_name: TEST_USER.firstName,
       last_name: TEST_USER.lastName,
       verified_email: 'verified',
-      ...hashAndSaltPassword(process.env.CYPRESS_TEST_USER_PASSWORD),
+      ...hashAndSaltPassword(password),
     },
   );
+};
 
 /**
  * Grants permissions for every country and top-level permission group

@@ -1,8 +1,8 @@
-## tupaia.org end-to-end tests
+# tupaia.org end-to-end tests
 
 [Cypress](https://www.cypress.io/) is used as the end-to-end test framework. This is the root folder of the test code and its configuration.
 
-### Installation
+## Installation
 
 1. If you haven't already, follow the instructions in [Tupaia Monorepo setup](https://docs.beyondessential.com.au/books/software-development/page/tupaia-monorepo-setup) to setup this project.
 
@@ -18,7 +18,7 @@
 
    You can also use custom config by manually populating those files, see the `\*.example.jsonc` files for more information.
 
-### Running the tests
+## Running the tests
 
 We first need to run the servers locally, then run the end-to-end tests. First, `cd` in the root folder of this project. You can run the tests in either UI or terminal mode.
 
@@ -61,3 +61,9 @@ yarn workspace @tupaia/web-frontend cypress:open
 ```bash
 yarn workspace @tupaia/web-frontend cypress:run
 ```
+
+## Limitations
+
+### Dashboard reports
+
+- Drill down levels are not tested

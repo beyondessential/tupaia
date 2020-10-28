@@ -17,6 +17,7 @@ const WARNING_TYPES = {
 };
 
 const WARNING_TYPE_TO_MESSAGE = {
+  [WARNING_TYPES.DRILL_DOWN]: `drill down levels are not supported`,
   [WARNING_TYPES.NO_GROUP]: 'not attached to any dashboard group',
   [WARNING_TYPES.NO_PROJECT]: 'not attached to any projects',
   [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `no valid org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
@@ -64,6 +65,7 @@ const selectUrlParams = dashboardGroups => {
 
 const getUrlsForReports = (reports, reportIdToGroups) => {
   const skippedReports = {
+    [WARNING_TYPES.DRILL_DOWN]: [],
     [WARNING_TYPES.NO_GROUP]: [],
     [WARNING_TYPES.NO_PROJECT]: [],
     [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: [],
@@ -71,6 +73,11 @@ const getUrlsForReports = (reports, reportIdToGroups) => {
 
   const urls = reports
     .map(report => {
+      const { drillDownLevel } = report;
+      if (drillDownLevel) {
+        skippedReports[WARNING_TYPES.DRILL_DOWN].push(`${report.id} - level ${drillDownLevel}`);
+        return null;
+      }
       const groupsForReport = reportIdToGroups[report.id];
       if (!groupsForReport) {
         skippedReports[WARNING_TYPES.NO_GROUP].push(report.id);
@@ -117,9 +124,7 @@ const getDashboardReportIdToGroups = async database => {
  * that matches the group's org unit code and level
  */
 export const generateDashboardReportConfig = async ({ database, logger }) => {
-  const reports = await database.executeSql(
-    `SELECT id, "viewJson"->>'name' as name from "dashboardReport"`,
-  );
+  const reports = await database.executeSql(`SELECT id, "drillDownLevel" from "dashboardReport"`);
   const reportIdToGroups = await getDashboardReportIdToGroups(database);
   const { urls, skippedReports } = getUrlsForReports(reports, reportIdToGroups);
   logWarningsForSkippedReports(logger, skippedReports);
