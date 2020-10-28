@@ -14,7 +14,7 @@ jest.mock('@tupaia/database', () => ({
   modelClasses: {
     DataSource: () => {},
   },
-  TupaiaDatabase: () => 'database',
+  TupaiaDatabase: () => {},
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
 }));
 
