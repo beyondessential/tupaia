@@ -4,13 +4,21 @@
  */
 
 import { DataBroker } from '../../DataBroker';
-import * as GetModels from '../../getModels';
 import { DATA_BY_SERVICE, DATA_ELEMENTS, DATA_GROUPS } from './DataBroker.fixtures';
 import { stubCreateService, createModelsStub, createServiceStub } from './DataBroker.stubs';
 
+const dataSources = Object.values(DATA_ELEMENTS).concat(Object.values(DATA_GROUPS));
+const mockModels = createModelsStub(dataSources);
+
+jest.mock('@tupaia/database', () => ({
+  modelClasses: {
+    DataSource: () => {},
+  },
+  TupaiaDatabase: () => 'database',
+  ModelRegistry: jest.fn().mockImplementation(() => mockModels),
+}));
+
 describe('DataBroker', () => {
-  const dataSources = Object.values(DATA_ELEMENTS).concat(Object.values(DATA_GROUPS));
-  const models = createModelsStub(dataSources);
   const SERVICES = {
     test: createServiceStub(DATA_BY_SERVICE.test),
     other: createServiceStub(DATA_BY_SERVICE.other),
@@ -18,12 +26,8 @@ describe('DataBroker', () => {
   const createServiceMock = stubCreateService(SERVICES);
   const options = { ignoreErrors: true, organisationUnitCode: 'TO' };
 
-  beforeAll(() => {
-    jest.spyOn(GetModels, 'getModels').mockReturnValue(models);
-  });
-
   it('getDataSourceTypes()', () => {
-    expect(new DataBroker().getDataSourceTypes()).toStrictEqual(models.dataSource.getTypes());
+    expect(new DataBroker().getDataSourceTypes()).toStrictEqual(mockModels.dataSource.getTypes());
   });
 
   describe('push()', () => {
@@ -39,7 +43,7 @@ describe('DataBroker', () => {
       const data = [{ value: 2 }];
       const dataBroker = new DataBroker();
       await dataBroker.push({ code: 'TEST_01', type: 'dataElement' }, data);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
       expect(SERVICES.test.push).toHaveBeenCalledOnceWith([DATA_ELEMENTS.TEST_01], data);
     });
 
@@ -47,7 +51,7 @@ describe('DataBroker', () => {
       const data = [{ value: 1 }, { value: 2 }];
       const dataBroker = new DataBroker();
       await dataBroker.push({ code: ['TEST_01', 'TEST_02'], type: 'dataElement' }, data);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
       expect(SERVICES.test.push).toHaveBeenCalledOnceWith(
         [DATA_ELEMENTS.TEST_01, DATA_ELEMENTS.TEST_02],
         data,
@@ -59,7 +63,7 @@ describe('DataBroker', () => {
     const data = { value: 2 };
     const dataBroker = new DataBroker();
     await dataBroker.delete({ code: 'TEST_01', type: 'dataElement' }, data, options);
-    expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+    expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
     expect(SERVICES.test.delete).toHaveBeenCalledOnceWith(DATA_ELEMENTS.TEST_01, data, options);
   });
 
@@ -88,7 +92,7 @@ describe('DataBroker', () => {
         const dataBroker = new DataBroker();
         const data = await dataBroker.pull({ code: 'TEST_01', type: 'dataElement' }, options);
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.test, [DATA_ELEMENTS.TEST_01]);
         expect(data).toStrictEqual({
           results: [{ value: 1 }],
@@ -103,7 +107,7 @@ describe('DataBroker', () => {
           options,
         );
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.test, [
           DATA_ELEMENTS.TEST_01,
           DATA_ELEMENTS.TEST_02,
@@ -124,8 +128,8 @@ describe('DataBroker', () => {
         );
 
         expect(createServiceMock).toHaveBeenCalledTimes(2);
-        expect(createServiceMock).toHaveBeenCalledWith(models, 'test', dataBroker);
-        expect(createServiceMock).toHaveBeenCalledWith(models, 'other', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'other', dataBroker);
         assertServicePulledDataElementsOnce(SERVICES.test, [
           DATA_ELEMENTS.TEST_01,
           DATA_ELEMENTS.TEST_02,
@@ -152,7 +156,7 @@ describe('DataBroker', () => {
         const dataBroker = new DataBroker();
         const data = await dataBroker.pull({ code: 'TEST_01', type: 'dataGroup' }, options);
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01]);
         expect(data).toStrictEqual([{ dataValues: { TEST_01: 10 } }]);
       });
@@ -164,7 +168,7 @@ describe('DataBroker', () => {
           options,
         );
 
-        expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
         assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02]);
         expect(data).toStrictEqual([
           { dataValues: { TEST_01: 10 } },
@@ -180,8 +184,8 @@ describe('DataBroker', () => {
         );
 
         expect(createServiceMock).toHaveBeenCalledTimes(2);
-        expect(createServiceMock).toHaveBeenCalledWith(models, 'test', dataBroker);
-        expect(createServiceMock).toHaveBeenCalledWith(models, 'other', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'test', dataBroker);
+        expect(createServiceMock).toHaveBeenCalledWith(mockModels, 'other', dataBroker);
         assertServicePulledEventsOnce(SERVICES.test, [DATA_GROUPS.TEST_01, DATA_GROUPS.TEST_02]);
         assertServicePulledEventsOnce(SERVICES.other, [DATA_GROUPS.OTHER_01]);
         expect(data).toStrictEqual([
@@ -207,14 +211,14 @@ describe('DataBroker', () => {
     it('single code', async () => {
       const dataBroker = new DataBroker();
       await dataBroker.pullMetadata({ code: 'TEST_01', type: 'dataElement' }, options);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
       assertServicePulledDataElementMetadataOnce(SERVICES.test, [DATA_ELEMENTS.TEST_01]);
     });
 
     it('multiple codes', async () => {
       const dataBroker = new DataBroker();
       await dataBroker.pullMetadata({ code: ['TEST_01', 'TEST_02'], type: 'dataElement' }, options);
-      expect(createServiceMock).toHaveBeenCalledOnceWith(models, 'test', dataBroker);
+      expect(createServiceMock).toHaveBeenCalledOnceWith(mockModels, 'test', dataBroker);
       assertServicePulledDataElementMetadataOnce(SERVICES.test, [
         DATA_ELEMENTS.TEST_01,
         DATA_ELEMENTS.TEST_02,
