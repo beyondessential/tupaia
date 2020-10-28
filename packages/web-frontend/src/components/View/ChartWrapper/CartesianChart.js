@@ -233,13 +233,19 @@ export class CartesianChart extends PureComponent {
     return isEnlarged || chartType === BAR ? undefined : this.renderTickFirstAndLastLabel;
   };
 
+  /*
+    If set 0, all the ticks will be shown.
+    If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
+    @see https://recharts.org/en-US/api/YAxis
+  */
   getXAxisTickInterval = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType } = viewContent;
 
-    if (chartType === BAR) {
-      return !isExporting ? 'preserveStartEnd' : 0;
+    if (chartType === BAR || chartType === COMPOSED) {
+      return isExporting ? 0 : 'preserveStartEnd';
     }
+
     return isEnlarged ? 'preserveStartEnd' : 0;
   };
 

@@ -32,6 +32,7 @@ export default class VerticalTick extends PureComponent {
           style={{
             position: 'relative',
             wordBreak: 'break-all',
+            textAlign: 'right',
             left: '-6px',
             top: '135px',
             width: '135px',
