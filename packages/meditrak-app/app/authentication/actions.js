@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -18,6 +18,7 @@ import {
 } from './constants';
 
 import { resetToHome, resetToLogin, resetToWelcomeScreen } from '../navigation';
+
 const UNABLE_TO_CONNECT_MESSAGE = 'Unable to connect';
 
 export const changeEmailAddress = emailAddress => ({
@@ -33,7 +34,7 @@ export const changePassword = password => ({
 /**
  * Attempts to log in to server using credentials entered by user. If successful, begins a sync to
  * get the latest data (which may be all data if this is the first time the user has logged in)
- **/
+ */
 export const login = (emailAddress, password) => async (
   dispatch,
   getState,

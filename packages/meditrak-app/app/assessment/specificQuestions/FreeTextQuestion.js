@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { Component } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -49,7 +49,7 @@ export class FreeTextQuestion extends Component {
     return (
       <View style={[localStyles.wrapper, isFocused ? localStyles.wrapperFocussed : {}]}>
         <TextInput
-          placeholder={'Type your answer here'}
+          placeholder="Type your answer here"
           style={[localStyles.textInput, Platform.OS === 'ios' && localStyles.textInputFixedHeight]}
           value={answer}
           selectTextOnFocus
@@ -60,7 +60,7 @@ export class FreeTextQuestion extends Component {
           placeholderTextColor={getThemeColorOneFaded(0.7)}
           {...restOfTextInputProps}
         />
-        <Icon name={'pencil'} size={14} style={localStyles.icon} pointerEvents={'none'} />
+        <Icon name="pencil" size={14} style={localStyles.icon} pointerEvents="none" />
       </View>
     );
   }
