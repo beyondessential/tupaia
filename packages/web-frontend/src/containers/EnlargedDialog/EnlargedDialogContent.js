@@ -33,6 +33,14 @@ const ExportDateText = styled.div`
   background: white;
 `;
 
+const Description = styled(DialogContentText)`
+  margin-top: 0;
+  margin-bottom: 20px;
+  line-height: 1.15;
+  padding: 0 30px;
+  text-align: center;
+`;
+
 const formatDate = date => moment(date).format('DD/MM/YY');
 
 const ExportDate = ({ startDate, endDate }) => {
@@ -41,7 +49,8 @@ const ExportDate = ({ startDate, endDate }) => {
     <ExportDateText>
       {startDate &&
         endDate &&
-        `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. Exported ${date}`}
+        `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
+      Exported {date}
     </ExportDateText>
   );
 };
@@ -96,7 +105,6 @@ export class EnlargedDialogContent extends PureComponent {
 
     const style = {
       textAlign: 'center',
-      backgroundColor: isExporting ? WHITE : DARK_BLUE,
       color: isExporting ? DARK_BLUE : WHITE,
     };
 
@@ -141,14 +149,14 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderDescription() {
-    const { viewContent } = this.props;
+    const { viewContent, isExporting } = this.props;
     const { description } = viewContent;
 
-    if (!description) {
+    if (isExporting || !description) {
       return null;
     }
 
-    return <DialogContentText style={styles.description}>{description}</DialogContentText>;
+    return <Description>{description}</Description>;
   }
 
   renderToolbar() {
@@ -221,7 +229,6 @@ export class EnlargedDialogContent extends PureComponent {
     const { isExporting, exportRef, viewContent, drillDownOverlay } = this.props;
 
     const contentStyle = {
-      backgroundColor: isExporting ? WHITE : DARK_BLUE,
       overflowY: isExporting ? 'visible' : 'auto',
       padding: isMatrix ? 0 : 20,
     };
@@ -233,11 +240,15 @@ export class EnlargedDialogContent extends PureComponent {
     };
 
     return (
-      <div data-testid="enlarged-dialog" ref={exportRef}>
+      <div
+        data-testid="enlarged-dialog"
+        ref={exportRef}
+        style={{ backgroundColor: isExporting ? WHITE : DARK_BLUE }}
+      >
+        {this.renderToolbar()}
         {this.renderTitle()}
+        {this.renderDescription()}
         <DialogContent style={contentStyle}>
-          {this.renderToolbar()}
-          {this.renderDescription()}
           <div style={getBodyStyle()}>
             {this.renderBody()}
             {drillDownOverlay}
@@ -259,11 +270,6 @@ const styles = {
     color: 'inherit',
     marginTop: '18px',
     marginBottom: '10px',
-  },
-  description: {
-    marginTop: 0,
-    marginBottom: 20,
-    lineHeight: 1.15,
   },
   chartContent: {
     display: 'flex',

@@ -11,6 +11,7 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { truncate } from '../../../utils/string';
 
 export default class VerticalTick extends PureComponent {
   componentDidMount() {
@@ -18,7 +19,7 @@ export default class VerticalTick extends PureComponent {
   }
 
   getHeight() {
-    return 80; // set a fixed height for consistent exporting
+    return 90; // set a fixed height for consistent exporting
   }
 
   render() {
@@ -30,17 +31,18 @@ export default class VerticalTick extends PureComponent {
           xmlns="http://www.w3.org/1999/xhtml"
           style={{
             position: 'relative',
-            textAlign: 'right',
+            wordBreak: 'break-all',
             left: '-6px',
+            top: '135px',
+            width: '135px',
             color: 'black',
             transform: 'rotate(-90deg)',
-            transformOrigin: '60px 60px',
-            width: '120px',
+            transformOrigin: '0 0',
             fontSize: '12px',
             lineHeight: '1',
           }}
         >
-          {payload.value}
+          {truncate(payload.value, 45, true)}
         </div>
       </foreignObject>
     );

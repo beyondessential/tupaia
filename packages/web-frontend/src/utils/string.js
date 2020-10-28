@@ -16,12 +16,12 @@ import sanitize from 'sanitize-filename';
 export const areStringsEqual = (a, b, caseSensitive = true) =>
   a.toString().localeCompare(b, undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
 
-function truncate(str, num) {
+export const truncate = (str, num, ellipsis = false) => {
   if (str.length <= num) {
     return str;
   }
-  return str.slice(0, num);
-}
+  return ellipsis ? `${str.slice(0, num)}...` : str.slice(0, num);
+};
 
 export const stringToFilename = string => {
   const sanitized = sanitize(string).replace(/\s+/g, '-').toLowerCase().toLowerCase();
