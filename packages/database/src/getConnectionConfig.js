@@ -16,12 +16,13 @@ const SERVER_CONNECTION_CONFIG = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: ['true', undefined].includes(process.env.DB_DISABLE_SSL)
-    ? null
-    : {
-        // Test server cannot turn on ssl, so sets the env to disable it
-        rejectUnauthorized: false,
-      },
+  ssl:
+    process.env.DB_ENABLE_SSL === 'true'
+      ? {
+          // Test server cannot turn on ssl, so sets the env to disable it
+          rejectUnauthorized: false,
+        }
+      : null,
 };
 
 const validateConfig = config => {
