@@ -32,7 +32,7 @@ const validateConfig = config => {
   ['DB_URL', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'].forEach(requiredField => {
     if (!process.env[requiredField]) {
       throw new Error(
-        `Cannot retrieve database configuration: please specify '${requiredField}' in a .env file`,
+        `Invalid database connection configuration: please specify '${requiredField}' in a .env file`,
       );
     }
   });
