@@ -11,7 +11,7 @@ const REGIONAL_SERVER_NAME = 'regional';
 const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, 'tonga']);
 
 const getServerUrlFromName = serverName => {
-  const { AGGREGATION_URL_PREFIX: urlPrefix } = process.env;
+  const { AGGREGATION_URL_PREFIX: urlPrefix = '' } = process.env;
   const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
   return `https://${urlPrefix}${specificServerPrefix}aggregation.tupaia.org`;
 };
