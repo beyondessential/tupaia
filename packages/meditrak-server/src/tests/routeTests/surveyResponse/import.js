@@ -136,7 +136,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
         ]);
 
         const [{ survey }] = await buildAndInsertSurveys(models, [
-          { code: 'TEST_SURVEY', name: 'Test Survey' },
+          { code: 'TEST_SURVEY_FOR_IMPORT_RESPONSES', name: 'Test Survey' },
         ]);
         const surveyId = survey.id;
 
