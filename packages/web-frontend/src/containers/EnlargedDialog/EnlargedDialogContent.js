@@ -254,8 +254,11 @@ export class EnlargedDialogContent extends PureComponent {
 
 const styles = {
   titleText: {
+    display: 'inline-block',
     textAlign: 'center',
     color: 'inherit',
+    marginTop: '18px',
+    marginBottom: '10px',
   },
   description: {
     marginTop: 0,
