@@ -4,13 +4,15 @@
  */
 
 import {
-  translateQuestionDependentJsonFields,
-  replaceQuestionCodesWithIdsInJson,
+  translateQuestionDependentNestedFields,
+  replaceNestedQuestionCodesWithIds,
 } from '../../utilities';
 
 const OPTION_JSON_FIELD_LIST = ['attributes'];
 
 /**
+ * Convert config of Autocomplete Questions.
+ *
  * Before:
  * attributes.parent_project: exodus
  *
@@ -20,6 +22,6 @@ const OPTION_JSON_FIELD_LIST = ['attributes'];
  * }
  */
 export const processAutocompleteConfig = async (models, config) => {
-  const optionJsonFields = translateQuestionDependentJsonFields(config, OPTION_JSON_FIELD_LIST);
-  return replaceQuestionCodesWithIdsInJson(models, optionJsonFields, OPTION_JSON_FIELD_LIST);
+  const optionJsonFields = translateQuestionDependentNestedFields(config, OPTION_JSON_FIELD_LIST);
+  return replaceNestedQuestionCodesWithIds(models, optionJsonFields, OPTION_JSON_FIELD_LIST);
 };

@@ -5,10 +5,10 @@
 
 import {
   splitStringOnComma,
-  translateQuestionDependentNonJsonFields,
-  translateQuestionDependentJsonFields,
-  replaceQuestionCodesWithIdsInNonJson,
-  replaceQuestionCodesWithIdsInJson,
+  translateQuestionDependentFields,
+  translateQuestionDependentNestedFields,
+  replaceQuestionCodesWithIds,
+  replaceNestedQuestionCodesWithIds,
 } from '../../utilities';
 import { isYes } from '../utilities';
 
@@ -27,11 +27,11 @@ const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATI
 const ENTITY_CREATION_JSON_FIELD_LIST = ['attributes'];
 
 export const processEntityConfig = async (models, config) => {
-  const entityCreationNonJsonFields = translateQuestionDependentNonJsonFields(
+  const entityCreationNonJsonFields = translateQuestionDependentFields(
     config,
     ENTITY_CREATION_FIELD_TRANSLATION,
   );
-  const entityCreationJsonFields = translateQuestionDependentJsonFields(
+  const entityCreationJsonFields = translateQuestionDependentNestedFields(
     config,
     ENTITY_CREATION_JSON_FIELD_LIST,
   );
@@ -43,12 +43,12 @@ export const processEntityConfig = async (models, config) => {
     ...entityCreationJsonFields,
   };
 
-  let resultConfig = await replaceQuestionCodesWithIdsInNonJson(
+  let resultConfig = await replaceQuestionCodesWithIds(
     models,
     processedConfig,
     ENTITY_CREATION_FIELD_LIST,
   );
-  resultConfig = await replaceQuestionCodesWithIdsInJson(
+  resultConfig = await replaceNestedQuestionCodesWithIds(
     models,
     resultConfig,
     ENTITY_CREATION_JSON_FIELD_LIST,

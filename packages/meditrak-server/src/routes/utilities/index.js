@@ -17,8 +17,8 @@ export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
 export {
-  translateQuestionDependentNonJsonFields,
-  translateQuestionDependentJsonFields,
-  replaceQuestionCodesWithIdsInNonJson,
-  replaceQuestionCodesWithIdsInJson,
+  translateQuestionDependentFields,
+  translateQuestionDependentNestedFields,
+  replaceQuestionCodesWithIds,
+  replaceNestedQuestionCodesWithIds,
 } from './translateQuestionDependentFields';

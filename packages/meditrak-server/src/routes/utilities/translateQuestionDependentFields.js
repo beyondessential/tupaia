@@ -1,28 +1,28 @@
 import { splitStringOn } from './split';
 
-// JSON subfields will be in the format field.subfield, e.g. 'attributes.type'
-const isJsonSubfield = (jsonFieldList, fieldKey) =>
-  jsonFieldList.find(field => fieldKey.startsWith(field));
+// Subfields will be in the format field.subfield, e.g. 'attributes.type'
+const isSubfield = (nestedFieldList, fieldKey) =>
+  nestedFieldList.find(field => fieldKey.startsWith(field));
 
-export const translateQuestionDependentNonJsonFields = (config, nonJsonFieldTranslation) => {
+export const translateQuestionDependentFields = (config, fieldTranslation) => {
   const resultConfig = {};
 
   Object.entries(config).forEach(([fieldKey, questionCode]) => {
-    const nonJsonFieldKey = nonJsonFieldTranslation[fieldKey];
+    const translatedFieldKey = fieldTranslation[fieldKey];
 
-    if (nonJsonFieldKey) {
-      resultConfig[nonJsonFieldKey] = questionCode;
+    if (translatedFieldKey) {
+      resultConfig[translatedFieldKey] = questionCode;
     }
   });
 
   return resultConfig;
 };
 
-export const translateQuestionDependentJsonFields = (config, jsonFieldList) => {
+export const translateQuestionDependentNestedFields = (config, nestedFieldList) => {
   const resultConfig = {};
 
   Object.entries(config).forEach(([fieldKey, questionCode]) => {
-    if (isJsonSubfield(jsonFieldList, fieldKey)) {
+    if (isSubfield(nestedFieldList, fieldKey)) {
       const [primaryFieldKey, subfieldKey] = splitStringOn(fieldKey, '.');
       if (!resultConfig[primaryFieldKey]) {
         resultConfig[primaryFieldKey] = {};
@@ -34,13 +34,13 @@ export const translateQuestionDependentJsonFields = (config, jsonFieldList) => {
   return resultConfig;
 };
 
-export const replaceQuestionCodesWithIdsInNonJson = async (models, config, nonJsonFieldList) => {
+export const replaceQuestionCodesWithIds = async (models, config, fieldList) => {
   const resultConfig = {};
 
   await Promise.all(
     Object.entries(config).map(async ([fieldKey, value]) => {
       let newValue = value;
-      if (nonJsonFieldList.includes(fieldKey)) {
+      if (fieldList.includes(fieldKey)) {
         const { id: questionId } = await models.question.findOne({ code: value });
         newValue = { questionId };
       }
@@ -51,13 +51,16 @@ export const replaceQuestionCodesWithIdsInNonJson = async (models, config, nonJs
   return resultConfig;
 };
 
-export const replaceQuestionCodesWithIdsInJson = async (models, config, jsonFieldList) => {
+/**
+ * Replace all question codes with question ids in nested config (eg: attributes.type)
+ */
+export const replaceNestedQuestionCodesWithIds = async (models, config, nestedFieldList) => {
   const resultConfig = {};
 
   await Promise.all(
     Object.entries(config).map(async ([fieldKey, value]) => {
       let newValue = value;
-      if (jsonFieldList.includes(fieldKey)) {
+      if (nestedFieldList.includes(fieldKey)) {
         for (let i = 0; i < Object.entries(value).length; i++) {
           const [subfieldKey, questionCode] = Object.entries(value)[i];
           const { id: questionId } = await models.question.findOne({ code: questionCode });
