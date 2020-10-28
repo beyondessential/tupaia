@@ -53,7 +53,6 @@ export class AutocompleteQuestionComponent extends React.Component {
     return option =>
       attributeAnswers
         ? Object.entries(attributeAnswers).every(([key, answer]) => {
-            // No answer was selected for the question to filter, return all
             const { attributes: optionAttributes } = option.toJson();
             return optionAttributes[key] === answer;
           })
