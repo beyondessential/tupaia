@@ -29,11 +29,14 @@ export default class VerticalTick extends PureComponent {
         <div
           xmlns="http://www.w3.org/1999/xhtml"
           style={{
+            position: 'relative',
+            textAlign: 'right',
+            left: '-6px',
             color: 'black',
-            transform: 'rotate(90deg)',
-            transformOrigin: '3px 6px',
+            transform: 'rotate(-90deg)',
+            transformOrigin: '60px 60px',
             width: '120px',
-            fontSize: '14px',
+            fontSize: '12px',
             lineHeight: '1',
           }}
         >
