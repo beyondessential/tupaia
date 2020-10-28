@@ -8,9 +8,8 @@
 
    ⚠️: In **Step 2. Install node dependencies** you need to run the commands under a Windows terminal, see the note in that section.
 
-2. Add a `cypress.env.json` file under the root folder of `web-frontend` (see [cypress.env.example.json](https://github.com/beyondessential/tupaia/tree/dev/packages/web-frontend/cypress.env.example.json) for a template)
-3. Use a **[LOCAL]** `.env` file for `web-frontend`, so that it points to a local `web-config-server`
-4. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
+2. Use a **[LOCAL]** `.env` file for `web-frontend`, so that it points to a local `web-config-server`
+3. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
 
    ```bash
    # ⊞ Windows users should run this under WSL

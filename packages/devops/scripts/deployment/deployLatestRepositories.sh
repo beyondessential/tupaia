@@ -7,12 +7,12 @@ echo "Deleting..."
 pm2 delete all
 
 # Set the branch to fetch and path of environment variables from parameter store
-if [[ $STAGE == "production" ]];then
-   BRANCH="master"
-   ENVIRONMENT="production"
+if [[ $STAGE == "production" ]]; then
+    BRANCH="master"
+    ENVIRONMENT="production"
 else
-   BRANCH="$STAGE"
-   ENVIRONMENT="$STAGE"
+    BRANCH="$STAGE"
+    ENVIRONMENT="$STAGE"
 fi
 
 # Get latest code and dependencies
@@ -32,44 +32,43 @@ for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel
     rm .env
     echo "Checking out ${ENVIRONMENT} environment variables for ${PACKAGE}"
     SSM_PATH="/${PACKAGE}/${ENVIRONMENT}"
-    $(aws ssm get-parameters-by-path --with-decryption  --path $SSM_PATH \
-    | jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  '  \
-    | sed -e "s~${SSM_PATH}/~~" > .env)
+    $(aws ssm get-parameters-by-path --with-decryption --path $SSM_PATH |
+        jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
+        sed -e "s~${SSM_PATH}/~~" >.env)
 
     # If there were no environment variables for the specified branch, default to dev
-    if [ ! -s .env ];then
-      echo "Checking out default dev environment variables"
-      SSM_PATH="/${PACKAGE}/dev"
-      $(aws ssm get-parameters-by-path --with-decryption  --path $SSM_PATH \
-      | jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  '  \
-      | sed -e "s~${SSM_PATH}/~~" > .env)
-      # Replace any instances of "dev" in the .env file (e.g. to point urls in the right place)
-      sed -i -e "s/dev/${STAGE}/g" .env
+    if [ ! -s .env ]; then
+        echo "Checking out default dev environment variables"
+        SSM_PATH="/${PACKAGE}/dev"
+        $(aws ssm get-parameters-by-path --with-decryption --path $SSM_PATH |
+            jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
+            sed -e "s~${SSM_PATH}/~~" >.env)
+        # Replace any instances of "dev" in the .env file (e.g. to point urls in the right place)
+        sed -i -e "s/dev/${STAGE}/g" .env
     fi
-
 
     # If it's a server, start it running on pm2, otherwise build it
     echo "Preparing to start or build ${PACKAGE}"
-    if [[ $PACKAGE == *server ]];then
-      # It's a server, start the pm2 process
-      echo "Starting ${PACKAGE}"
-      yarn build
-      pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time
+    if [[ $PACKAGE == *server ]]; then
+        # It's a server, start the pm2 process
+        echo "Starting ${PACKAGE}"
+        yarn build
+        pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time
     else
-      # It's a static site, build it
-      echo "Building ${PACKAGE}"
-      yarn build
+        # It's a static site, build it
+        echo "Building ${PACKAGE}"
+        yarn build
     fi
 
     # reset cwd back to `/tupaia`
     cd ${HOME_DIRECTORY}
 
-    if [[ $PACKAGE == 'meditrak-server' ]];then
-      # now that meditrak-server is up and listening for changes, we can run any migrations
-      # if run earlier when meditrak-server isn't listening, changes will be missed from the
-      # sync queues
-      echo "Migrating the database"
-      yarn migrate
+    if [[ $PACKAGE == 'meditrak-server' ]]; then
+        # now that meditrak-server is up and listening for changes, we can run any migrations
+        # if run earlier when meditrak-server isn't listening, changes will be missed from the
+        # sync queues
+        echo "Migrating the database"
+        yarn migrate
     fi
 done
 

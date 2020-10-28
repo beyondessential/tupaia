@@ -46,7 +46,7 @@ export class CustomMap extends Component {
     const {
       measureInfo,
       currentOrganisationUnit,
-      tileSet,
+      tileSetUrl,
       position,
       displayedChildren,
     } = this.props;
@@ -63,7 +63,7 @@ export class CustomMap extends Component {
       return true;
     }
 
-    if (nextProps.tileSet !== tileSet) return true;
+    if (nextProps.tileSetUrl !== tileSetUrl) return true;
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
     return false;
   }
@@ -131,7 +131,7 @@ export class CustomMap extends Component {
 
   render() {
     const {
-      tileSet,
+      tileSetUrl,
       closeDropdownOverlays,
       sidePanelWidth,
       position,
@@ -145,7 +145,7 @@ export class CustomMap extends Component {
         rightPadding={sidePanelWidth}
         onPositionChanged={this.onPositionChanged}
       >
-        <TileLayer tileSet={tileSet} />
+        <TileLayer tileSetUrl={tileSetUrl} />
         <MapPane name="demo-land" above="tilePane" aboveAmount={0}>
           <DemoLand />
         </MapPane>

@@ -87,8 +87,4 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
   };
 }
 
-export const SurveyScreen = connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(DumbSurveyScreen);
+export const SurveyScreen = connect(mapStateToProps, null, mergeProps)(DumbSurveyScreen);

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { Object as RealmObject } from 'realm';
 import RNFS from 'react-native-fs';
@@ -23,7 +23,7 @@ export class Survey extends RealmObject {
   /**
    * Whether this survey is available for the given country id. A survey is available to all
    * countries by default if there are none specified in countryIds.
-   **/
+   */
   isAvailableInCountry(countryId) {
     return this.countryIds.length === 0 || doesValueExist(this.countryIds, 'string', countryId);
   }

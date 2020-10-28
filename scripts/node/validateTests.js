@@ -117,7 +117,7 @@ const run = async () => {
       logger.error(formatExclusiveTests(exclusiveTests).join('\n'));
       process.exit(1);
     } else {
-      logger.info('✔ All tests are valid!');
+      logger.success('✔ All tests are valid!');
       process.exit(0);
     }
   });
