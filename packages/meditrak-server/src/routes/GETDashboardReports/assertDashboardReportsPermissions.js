@@ -2,11 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { flatten } from 'lodash';
 import { hasBESAdminAccess } from '../../permissions';
-import { hasDashboardGroupsPermissions } from '../GETDashboardGroups/assertDashboardGroupsPermissions';
-
-const { RAW } = QUERY_CONJUNCTIONS;
+import {
+  createDashboardGroupDBFilter,
+  hasDashboardGroupsPermissions,
+} from '../GETDashboardGroups/assertDashboardGroupsPermissions';
 
 export const assertDashboardReportsPermissions = async (
   accessPolicy,
@@ -32,36 +33,17 @@ export const createDashboardReportDBFilter = async (accessPolicy, models, criter
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  const dbConditions = {...criteria};
-  const allPermissionGroups = accessPolicy.getPermissionGroups();
-  const countryCodesByPermissionGroup = {};
+  const dbConditions = { ...criteria };
 
-  // Generate lists of country codes we have access to per permission group
-  allPermissionGroups.forEach(pg => {
-    countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
-  });
+  // Pull the list of dashboard groups we have access to, then pull the dashboard reports
+  // we have permission to from that
+  const dashboardGroupsConditions = await createDashboardGroupDBFilter(accessPolicy, models);
+  const permittedDashboardGroups = await models.dashboardGroup.find(dashboardGroupsConditions);
+  const permittedDashboardReportIds = flatten(
+    permittedDashboardGroups.map(dg => dg.dashboardReports),
+  );
 
-  // Select the dashboardGroups containing the report, check you have access to at least one of them
-  dbConditions[RAW] = {
-    sql: `(SELECT COUNT(*) FROM "dashboardGroup"
-           WHERE ARRAY["dashboardReport".id] <@ "dashboardReports"
-           AND
-           ((ARRAY(SELECT entity.country_code FROM entity WHERE entity.code = "dashboardGroup"."organisationUnitCode")::TEXT[] <@ ARRAY(SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"userGroup")::TEXT)))
-             OR
-            (ARRAY(SELECT entity.country_code
-                   FROM entity
-                   INNER JOIN entity_relation
-                         ON entity.id = entity_relation.child_id
-                   INNER JOIN project
-                         ON  entity_relation.parent_id = project.entity_id
-                         AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-                   WHERE project.code = "dashboardGroup"."organisationUnitCode")::TEXT[]
-          && ARRAY(SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"userGroup")::TEXT)))))
-          > 0`,
-    parameters: [
-      JSON.stringify(countryCodesByPermissionGroup),
-      JSON.stringify(countryCodesByPermissionGroup),
-    ],
-  };
+  dbConditions.id = permittedDashboardReportIds;
+
   return dbConditions;
 };

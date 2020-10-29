@@ -35,6 +35,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
   let nationalReport2;
   let nationalReport3;
   let projectLevelDashboard;
+  let filterString;
 
   before(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
@@ -168,6 +169,17 @@ describe('Permissions checker for GETDashboardReports', async () => {
         dashboardReports: [projectLevelDashboard.id],
       },
     );
+
+    const dashboardReportIds = [
+      districtReport1.id,
+      nationalReport1.id,
+      nationalReport2.id,
+      nationalReport3.id,
+      projectLevelDashboard.id,
+    ];
+    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardReportIds.join(
+      '","',
+    )}"]}}`;
   });
 
   afterEach(() => {
@@ -248,7 +260,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
   describe('GET /dashboardReports', async () => {
     it('Sufficient permissions: Should return all dashboard reports that users have access to', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: results } = await app.get(`dashboardReports`);
+      const { body: results } = await app.get(`dashboardReports?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
         districtReport1.id,
@@ -261,7 +273,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
 
     it('Sufficient permissions: Should return all dashboard reports if the user has BES Admin access', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
-      const { body: results } = await app.get(`dashboardReports`);
+      const { body: results } = await app.get(`dashboardReports?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
         districtReport1.id,
@@ -277,7 +289,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
         DL: ['Public'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get(`dashboardReports`);
+      const { body: results } = await app.get(`dashboardReports?${filterString}`);
 
       expect(results).to.be.empty;
     });

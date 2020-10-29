@@ -37,21 +37,41 @@ export const createDashboardGroupDBFilter = async (accessPolicy, models, criteri
     countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
   });
 
-  // Look up the country codes from the json permissions object and compare to the organisationUnitCode
-  // OR
-  // For Projects: Pull the country codes from the children entities and compare to the json permissions object
   dbConditions[RAW] = {
-    sql: `(ARRAY(SELECT entity.country_code FROM entity WHERE entity.code = "dashboardGroup"."organisationUnitCode")::TEXT[] <@ ARRAY(SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"userGroup")::TEXT)))
-          OR
-          (ARRAY(SELECT entity.country_code
-                 FROM entity
-                 INNER JOIN entity_relation
-                       ON entity.id = entity_relation.child_id
-                 INNER JOIN project
-                       ON  entity_relation.parent_id = project.entity_id
-                       AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-                 WHERE project.code = "dashboardGroup"."organisationUnitCode")::TEXT[]
-        && ARRAY(SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"userGroup")::TEXT)))`,
+    sql: `
+    (
+      -- look up the country code of the entity, and see whether it's in the user's list of countries
+      -- for the appropriate permission group
+      (
+        ARRAY(
+          SELECT entity.country_code FROM entity WHERE entity.code = "dashboardGroup"."organisationUnitCode"
+        )::TEXT[]
+        <@
+        ARRAY(
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"dashboardGroup"."userGroup")::TEXT)
+        )
+      )
+
+      -- for projects, pull the country codes from the child entities and check that there is overlap
+      -- with the user's list of countries for the appropriate permission group (i.e., they have
+      -- access to at least one country within the project)
+      OR (
+        ARRAY(
+          SELECT entity.country_code
+            FROM entity
+            INNER JOIN entity_relation
+              ON entity.id = entity_relation.child_id
+            INNER JOIN project
+              ON  entity_relation.parent_id = project.entity_id
+              AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
+            WHERE project.code = "dashboardGroup"."organisationUnitCode"
+        )::TEXT[]
+        &&
+        ARRAY(
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"dashboardGroup"."userGroup")::TEXT)
+        )
+      )
+    )`,
     parameters: [
       JSON.stringify(countryCodesByPermissionGroup),
       JSON.stringify(countryCodesByPermissionGroup),

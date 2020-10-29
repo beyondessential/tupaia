@@ -32,6 +32,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
   let nationalMapOverlay1;
   let nationalMapOverlay2;
   let projectLevelMapOverlay;
+  let filterString;
 
   before(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
@@ -72,6 +73,15 @@ describe('Permissions checker for GETMapOverlays', async () => {
         countryCodes: ['test_project'],
       },
     );
+
+    const mapOverlayIds = [
+      nationalMapOverlay1.id,
+      nationalMapOverlay2.id,
+      projectLevelMapOverlay.id,
+    ];
+    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${mapOverlayIds.join(
+      '","',
+    )}"]}}`;
   });
 
   afterEach(() => {
@@ -125,7 +135,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
         TO: ['Admin'],
       };
       prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get('mapOverlays');
+      const { body: results } = await app.get(`mapOverlays?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
         nationalMapOverlay1.id,
@@ -135,7 +145,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
 
     it('Sufficient permissions: Should return the full list of map overlays if we have BES admin access', async () => {
       prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
-      const { body: results } = await app.get('mapOverlays');
+      const { body: results } = await app.get(`mapOverlays?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
         nationalMapOverlay1.id,
@@ -149,7 +159,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
         DL: ['Public'],
       };
       prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get('mapOverlays');
+      const { body: results } = await app.get(`mapOverlays?${filterString}`);
 
       expect(results).to.be.empty;
     });

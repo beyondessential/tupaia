@@ -27,6 +27,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   const { models } = app;
   let surveyGroup1;
   let surveyGroup2;
+  let filterString;
 
   before(async () => {
     // Set up the survey groups and their surveys
@@ -76,6 +77,10 @@ describe('Permissions checker for GETSurveyGroups', async () => {
         survey_group_id: surveyGroup2.id,
       },
     ]);
+    const surveyGroupIds = [surveyGroup1.id, surveyGroup2.id];
+    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${surveyGroupIds.join(
+      '","',
+    )}"]}}`;
   });
 
   afterEach(() => {
@@ -109,7 +114,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   describe('GET /surveyGroups', async () => {
     it('Sufficient permissions: Should return all survey groups the user has permission to', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: results } = await app.get(`surveyGroups`);
+      const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
     });
@@ -124,14 +129,14 @@ describe('Permissions checker for GETSurveyGroups', async () => {
         LA: ['Admin'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get(`surveyGroups`);
+      const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup2.id]);
     });
 
     it('Sufficient permissions: Should return all survey groups if the user has BES admin access', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
-      const { body: results } = await app.get(`surveyGroups`);
+      const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
     });
@@ -141,7 +146,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
         DL: ['Public'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get(`surveyGroups`);
+      const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results).to.be.empty;
     });

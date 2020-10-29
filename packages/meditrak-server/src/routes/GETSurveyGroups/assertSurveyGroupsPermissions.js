@@ -72,9 +72,24 @@ export const createSurveyGroupDBFilter = async (accessPolicy, models, criteria) 
     }
   }
 
-  // Check we have permissions to at least one of the surveys in this group
   dbConditions[RAW] = {
-    sql: `(select count(*) from survey where survey.survey_group_id = survey_group.id and country_ids && array(select trim('"' from json_array_elements(?::json->permission_group_id)::text))) > 0`,
+    sql: `
+    (
+      -- Count the number of surveys in this survey group that we have permissions for
+      -- and check that number is at least one
+      (
+        SELECT COUNT(*)
+          FROM survey
+          WHERE
+            survey.survey_group_id = survey_group.id
+          AND
+            survey.country_ids
+            &&
+            ARRAY(
+              SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+            )
+      ) > 0
+    )`,
     parameters: JSON.stringify(countryIdsByPermissionGroupId),
   };
   return dbConditions;

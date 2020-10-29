@@ -43,19 +43,38 @@ export const createMapOverlayDBFilter = async (accessPolicy, models, criteria) =
     countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
   });
 
-  // Look up the json country codes by userGroup, compare them to the countryCodes from the mapOverlay
   dbConditions[RAW] = {
-    sql: `("countryCodes" && array(select trim('"' from json_array_elements(?::json->"userGroup")::text)))
-          OR
-          (ARRAY(SELECT entity.country_code
-                 FROM entity
-                 INNER JOIN entity_relation
-                       ON entity.id = entity_relation.child_id
-                 INNER JOIN project
-                       ON  entity_relation.parent_id = project.entity_id
-                       AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
-                 WHERE ARRAY[project.code] <@ "mapOverlay"."countryCodes")::TEXT[]
-        && ARRAY(SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"userGroup")::TEXT)))`,
+    sql: `
+    (
+      -- Look up the country codes list from the map overlay and check that the user has
+      -- access to at least one of the countries for the appropriate permissions group
+      (
+        "mapOverlay"."countryCodes"
+        &&
+        ARRAY(
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"mapOverlay"."userGroup")::TEXT)
+        )
+      )
+      -- For project level overlays, pull the country codes from the child entities and check that there is
+      -- overlap with the user's list of countries for the appropriate permission group (i.e., they have
+      -- access to at least one country within the project)
+      OR (
+        ARRAY(
+          SELECT entity.country_code
+            FROM entity
+            INNER JOIN entity_relation
+              ON entity.id = entity_relation.child_id
+            INNER JOIN project
+              ON  entity_relation.parent_id = project.entity_id
+              AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
+            WHERE ARRAY[project.code] <@ "mapOverlay"."countryCodes"
+        )::TEXT[]
+        &&
+        ARRAY(
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"mapOverlay"."userGroup")::TEXT)
+        )
+      )
+    )`,
     parameters: [
       JSON.stringify(countryCodesByPermissionGroup),
       JSON.stringify(countryCodesByPermissionGroup),

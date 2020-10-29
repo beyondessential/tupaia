@@ -35,6 +35,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
   let nationalDashboardGroup1;
   let nationalDashboardGroup2;
   let projectLevelDashboardGroup;
+  let filterString;
 
   before(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
@@ -125,6 +126,17 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         dashboardReports: [],
       },
     );
+
+    const dashboardGroupIds = [
+      facilityDashboardGroup1.id,
+      districtDashboardGroup1.id,
+      nationalDashboardGroup1.id,
+      nationalDashboardGroup2.id,
+      projectLevelDashboardGroup.id,
+    ];
+    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${dashboardGroupIds.join(
+      '","',
+    )}"]}}`;
   });
 
   afterEach(() => {
@@ -190,7 +202,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         TO: ['Admin'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get(`dashboardGroups`);
+      const { body: results } = await app.get(`dashboardGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
         nationalDashboardGroup2.id,
@@ -200,7 +212,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
 
     it('Sufficient permissions: Should return the full list of dashboard groups if we have BES Admin access', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
-      const { body: results } = await app.get(`dashboardGroups`);
+      const { body: results } = await app.get(`dashboardGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
         facilityDashboardGroup1.id,
@@ -216,7 +228,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         DL: ['Public'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get(`dashboardGroups`);
+      const { body: results } = await app.get(`dashboardGroups?${filterString}`);
 
       expect(results).to.be.empty;
     });
