@@ -8,18 +8,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Alert } from '../Alert';
 import { BLUE } from '../../styles';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 
-const StyledAlert = styled(Alert)`
-  &.MuiAlert-root {
-    margin: 20px auto 10px;
-    padding: 5px 16px 5px 13px;
-  }
-`;
-
-export const PlainNoDataMessage = styled.p`
+const NoDataMessageText = styled.p`
   color: ${BLUE};
   margin-top: 10px;
   font-size: 16px;
@@ -27,7 +19,7 @@ export const PlainNoDataMessage = styled.p`
   opacity: 0.8;
 `;
 
-export const NoDataMessage = ({ viewContent, severity, AlertComponent }) => {
+export const NoDataMessage = ({ viewContent }) => {
   let message = 'No data';
 
   if (viewContent.noDataMessage) {
@@ -38,16 +30,9 @@ export const NoDataMessage = ({ viewContent, severity, AlertComponent }) => {
     message = `No data for ${viewContent.startDate} to ${viewContent.endDate}`;
   }
 
-  return <AlertComponent severity={severity}>{message}</AlertComponent>;
+  return <NoDataMessageText>{message}</NoDataMessageText>;
 };
 
 NoDataMessage.propTypes = {
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  severity: PropTypes.string,
-  AlertComponent: PropTypes.elementType,
-};
-
-NoDataMessage.defaultProps = {
-  AlertComponent: StyledAlert,
-  severity: 'info',
 };
