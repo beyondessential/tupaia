@@ -70,7 +70,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
         last_name: lastName,
         position: role,
         employer,
-        profileImage: profileImage.fileId && profileImage,
+        profile_image: profileImage.data !== user.profileImage && profileImage,
       });
       setStatus(STATUS.SUCCESS);
       setSuccessMessage('Profile successfully updated.');
@@ -95,7 +95,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
   const handleFileDelete = () => {
     // We need to set a file id to something so that the backend will pick up the profileImage field
     // as an updatedField and save the change.
-    setProfileImage({ fileId: '-', data: null });
+    setProfileImage({ fileId: null, data: null });
   };
 
   const { firstName, lastName, position, employer } = user;

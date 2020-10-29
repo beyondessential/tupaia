@@ -24,7 +24,7 @@ const StyledAlert = styled(MuiAlert)`
 `;
 
 const exampleUser = {
-  avatar: 'https://www.gravatar.com/avatar/03d39b671d0f4fd5b3dcb28bf4676760',
+  profileImage: 'https://www.gravatar.com/avatar/03d39b671d0f4fd5b3dcb28bf4676760',
   name: 'Dr. Sarah De Jones',
 };
 

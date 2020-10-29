@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { BackHandler, StyleSheet, Text, View } from 'react-native';
@@ -43,7 +43,7 @@ class MeditrakContainer extends React.Component {
 
   renderBetaBanner() {
     return (
-      <View style={localStyles.betaBanner} pointerEvents={'none'}>
+      <View style={localStyles.betaBanner} pointerEvents="none">
         <Text style={localStyles.betaBannerText}>{betaBranch.toUpperCase()}</Text>
       </View>
     );
@@ -114,7 +114,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export const Meditrak = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MeditrakContainer);
+export const Meditrak = connect(mapStateToProps, mapDispatchToProps)(MeditrakContainer);

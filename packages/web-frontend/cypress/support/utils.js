@@ -8,8 +8,6 @@ import { html as beautifyHtml } from 'js-beautify';
 
 const HTML_ATTRS_TO_STRIP_FROM_SNAPSHOTS = ['clip-path', 'id', 'data-reactid', 'data-testid'];
 
-export const equalStringsI = (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()) === 0;
-
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
  */

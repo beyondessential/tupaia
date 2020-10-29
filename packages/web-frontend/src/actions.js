@@ -225,7 +225,6 @@ export function fetchUserLoginError(errors) {
   return {
     type: FETCH_LOGIN_ERROR,
     errors,
-    errorMessage: 'Wrong e-mail or password',
   };
 }
 
@@ -686,12 +685,12 @@ export function fetchDashboardSuccess(dashboardConfig) {
 /**
  * Changes state to communicate error to user appropriately.
  *
- * @param {object} error  response from saga on failed fetch
+ * @param {string} errorMessage  response from saga on failed fetch
  */
-export function fetchDashboardError(error) {
+export function fetchDashboardError(errorMessage) {
   return {
     type: FETCH_DASHBOARD_CONFIG_ERROR,
-    error,
+    errorMessage,
   };
 }
 

@@ -65,7 +65,4 @@ const mapDispatchToProps = dispatch => ({
   onNavigateToTupaiaWebsite: () => dispatch(navigateToTupaiaWebsite()),
 });
 
-export const HomeToolbarContainer = connect(
-  null,
-  mapDispatchToProps,
-)(HomeToolbar);
+export const HomeToolbarContainer = connect(null, mapDispatchToProps)(HomeToolbar);
