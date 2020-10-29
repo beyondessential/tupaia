@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import * as DataTypes from './types';
 
@@ -87,8 +87,8 @@ export const schema = {
       const countries = newRealm.objects('Country');
 
       countries.forEach(country => {
-        // eslint-disable-next-line no-param-reassign
         if (countryCodeMapping[country.name]) {
+          // eslint-disable-next-line no-param-reassign
           country.code = countryCodeMapping[country.name];
         }
       });

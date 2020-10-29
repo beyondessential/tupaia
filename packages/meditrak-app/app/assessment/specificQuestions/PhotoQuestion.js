@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { Dimensions, Image, StyleSheet, View } from 'react-native';
@@ -24,7 +24,7 @@ const renderImage = imageData => (
     <Image
       style={localStyles.image}
       source={getImageSourceFromData(imageData)}
-      resizeMode={'cover'}
+      resizeMode="cover"
     />
   </View>
 );
