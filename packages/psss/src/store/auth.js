@@ -4,7 +4,7 @@
  */
 
 import { createReducer } from '../utils/createReducer';
-import { getPermittedEntitiesForUser, checkIsAuthorisedForMultiCountry } from '../utils/auth';
+import { getEntitiesAllowed, checkIsAuthorisedForMultiCountry } from '../utils/auth';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -70,7 +70,7 @@ export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSucces
 
 export const getPermittedEntity = state => {
   const user = getCurrentUser(state);
-  return getPermittedEntitiesForUser(user);
+  return getEntitiesAllowed(user);
 };
 
 export const checkIsMultiCountryUser = state => {

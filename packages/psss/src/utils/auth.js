@@ -5,22 +5,15 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 
-export const checkIsAuthorisedForMultiCountry = user =>
-  getPermittedEntitiesForUser(user).length > 1;
+export const checkIsAuthorisedForMultiCountry = user => getEntitiesAllowed(user).length > 1;
 
 export const checkIsAuthorisedForCountry = (user, match) =>
-  getPermittedEntitiesForUser(user).some(entityCode => entityCode === match.params.countryCode);
+  getEntitiesAllowed(user).some(entityCode => entityCode === match.params.countryCode);
 
-export const getPermittedEntitiesForUser = user => {
+export const getEntitiesAllowed = user => {
   if (!user) {
     return [];
   }
 
-  // Todo: Update with the correct access policy check
-  // @see: https://github.com/beyondessential/tupaia-backlog/issues/1268
-  const accessPolicy = new AccessPolicy(user.accessPolicy);
-
-  // For testing...
-  return ['as', 'to'];
-  // return ['to'];
+  return new AccessPolicy(user.accessPolicy).getEntitiesAllowed('Admin');
 };
