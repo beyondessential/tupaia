@@ -7,7 +7,7 @@ import { GETHandler } from '../GETHandler';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertDashboardGroupsPermissions,
-  filterDashboardGroupsByPermissions,
+  createDashboardGroupDBFilter,
 } from './assertDashboardGroupsPermissions';
 /**
  * Handles endpoints:
@@ -16,14 +16,14 @@ import {
  */
 export class GETDashboardGroups extends GETHandler {
   async assertUserHasAccess() {
-    return true; // all users can request, but results will be filtered according to access
+    return this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
   }
 
   async findSingleRecord(dashboardGroupId, options) {
     const dashboardGroup = await super.findSingleRecord(dashboardGroupId, options);
 
     const dashboardGroupChecker = accessPolicy =>
-      assertDashboardGroupsPermissions(accessPolicy, this.models, [dashboardGroup]);
+      assertDashboardGroupsPermissions(accessPolicy, this.models, dashboardGroupId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, dashboardGroupChecker]),
@@ -33,9 +33,13 @@ export class GETDashboardGroups extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    // ensure the permissions gate check is triggered, actual permissions will be assessed during filtering
-    this.assertPermissions(allowNoPermissions);
-    const dashboardGroups = await this.database.find(this.recordType, criteria, options);
-    return filterDashboardGroupsByPermissions(this.accessPolicy, this.models, dashboardGroups);
+    const dbConditions = await createDashboardGroupDBFilter(
+      this.accessPolicy,
+      this.models,
+      criteria,
+    );
+    const dashboardGroups = await super.findRecords(dbConditions, options);
+
+    return dashboardGroups;
   }
 }

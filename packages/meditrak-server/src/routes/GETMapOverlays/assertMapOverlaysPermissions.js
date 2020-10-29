@@ -2,72 +2,83 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { flattenDeep, keyBy } from 'lodash';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { hasBESAdminAccess } from '../../permissions';
 import { hasAccessToEntityForVisualisation } from '../utilities';
 
-import { hasBESAdminAccess } from '../../permissions';
+const { RAW } = QUERY_CONJUNCTIONS;
 
-export const filterMapOverlaysByPermissions = async (accessPolicy, models, mapOverlays) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return mapOverlays;
-  }
+export const assertMapOverlaysPermissions = async (accessPolicy, models, mapOverlayId) => {
+  const mapOverlay = await models.mapOverlay.findById(mapOverlayId);
 
-  const allEntityCodes = [...new Set(flattenDeep(mapOverlays.map(m => m.countryCodes)))];
-  const entities = await models.entity.find({ code: allEntityCodes });
-  const entityByCode = keyBy(entities, 'code');
-  const accessCache = {}; //Cache the access so that we dont have to recheck for some map overlays
-  const filteredMapOverlays = [];
+  const countryCodes = mapOverlay.countryCodes || [];
+  const entities = await models.entity.find({ code: countryCodes });
 
-  for (let i = 0; i < mapOverlays.length; i++) {
-    const mapOverlay = mapOverlays[i];
-    const countryCodes = mapOverlay.countryCodes || [];
-    const mapOverlayEntities = countryCodes.map(c => entityByCode[c]);
-    const permissionGroup = mapOverlay.userGroup;
-    const countryCodesString = countryCodes.join(',');
-
-    //permissionGroup and countryCodes are the 2 values for checking access for a map overlay
-    const cacheKey = `${permissionGroup}/${countryCodesString}`;
-    let hasAccessToMapOverlay = accessCache[cacheKey];
-
-    //Perform access checking if its not in the cache, otherwise reuse the value
-    if (hasAccessToMapOverlay === undefined) {
-      for (let j = 0; j < mapOverlayEntities.length; j++) {
-        const mapOverlayEntity = mapOverlayEntities[j];
-        hasAccessToMapOverlay = await hasAccessToEntityForVisualisation(
-          accessPolicy,
-          models,
-          mapOverlayEntity,
-          permissionGroup,
-        );
-
-        //If users have access to any countries of the overlay,
-        //it should be enough to allow access the overlay
-        if (hasAccessToMapOverlay) {
-          break;
-        }
-      }
-
-      accessCache[cacheKey] = hasAccessToMapOverlay;
-    }
-
-    if (hasAccessToMapOverlay) {
-      filteredMapOverlays.push(mapOverlay);
+  for (let i = 0; i < entities.length; i++) {
+    if (
+      await hasAccessToEntityForVisualisation(
+        accessPolicy,
+        models,
+        entities[i],
+        mapOverlay.userGroup,
+      )
+    ) {
+      return true;
     }
   }
 
-  return filteredMapOverlays;
+  throw new Error('You do not have permissions for the requested map overlay(s)');
 };
 
-export const assertMapOverlaysPermissions = async (accessPolicy, models, mapOverlays) => {
-  const filteredMapOverlays = await filterMapOverlaysByPermissions(
-    accessPolicy,
-    models,
-    mapOverlays,
-  );
-
-  if (filteredMapOverlays.length !== mapOverlays.length) {
-    throw new Error('You do not have permissions for the requested map overlay(s)');
+export const createMapOverlayDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
   }
+  const dbConditions = { ...criteria };
+  const allPermissionGroups = accessPolicy.getPermissionGroups();
+  const countryCodesByPermissionGroup = {};
 
-  return true;
+  // Generate lists of country codes we have access to per permission group
+  allPermissionGroups.forEach(pg => {
+    countryCodesByPermissionGroup[pg] = accessPolicy.getEntitiesAllowed(pg);
+  });
+
+  dbConditions[RAW] = {
+    sql: `
+    (
+      -- Look up the country codes list from the map overlay and check that the user has
+      -- access to at least one of the countries for the appropriate permissions group
+      (
+        "mapOverlay"."countryCodes"
+        &&
+        ARRAY(
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"mapOverlay"."userGroup")::TEXT)
+        )
+      )
+      -- For project level overlays, pull the country codes from the child entities and check that there is
+      -- overlap with the user's list of countries for the appropriate permission group (i.e., they have
+      -- access to at least one country within the project)
+      OR (
+        ARRAY(
+          SELECT entity.country_code
+            FROM entity
+            INNER JOIN entity_relation
+              ON entity.id = entity_relation.child_id
+            INNER JOIN project
+              ON  entity_relation.parent_id = project.entity_id
+              AND entity_relation.entity_hierarchy_id = project.entity_hierarchy_id
+            WHERE ARRAY[project.code] <@ "mapOverlay"."countryCodes"
+        )::TEXT[]
+        &&
+        ARRAY(
+          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->"mapOverlay"."userGroup")::TEXT)
+        )
+      )
+    )`,
+    parameters: [
+      JSON.stringify(countryCodesByPermissionGroup),
+      JSON.stringify(countryCodesByPermissionGroup),
+    ],
+  };
+  return dbConditions;
 };
