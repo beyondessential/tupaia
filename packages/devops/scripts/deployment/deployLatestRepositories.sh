@@ -15,11 +15,6 @@ else
     ENVIRONMENT="$STAGE"
 fi
 
-# If this is an end to end test machine, check out the specific e2e environment variables
-if [[ $IS_E2E == "true" ]]; then
-    ENVIRONMENT="e2e"
-fi
-
 # Get latest code and dependencies
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
 cd ${HOME_DIRECTORY}
