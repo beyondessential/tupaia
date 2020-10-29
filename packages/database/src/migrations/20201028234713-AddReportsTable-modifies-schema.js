@@ -18,9 +18,10 @@ exports.up = function (db) {
   return db.runSql(`
     CREATE TABLE report (
       id TEXT PRIMARY KEY,
-      code TEXT NOT NULL,
+      code TEXT NOT NULL UNIQUE,
       config JSONB NOT NULL,
-      permission_group_id TEXT NOT NULL
+      permission_group_id TEXT NOT NULL,
+      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id) ON UPDATE CASCADE ON DELETE RESTRICT
     );
   `);
 };
