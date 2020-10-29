@@ -20,7 +20,7 @@ import moment from 'moment';
 
 import { VIEW_STYLES } from '../../styles';
 import { OverlayView } from '../../utils';
-import { NoDataMessage, PlainNoDataMessage } from './NoDataMessage';
+import { NoDataMessage } from './NoDataMessage';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
@@ -179,7 +179,7 @@ export class View extends Component {
         <div data-testid="view" style={viewContainerStyle}>
           <h2 style={VIEW_STYLES.title}>
             {viewContent.name}
-            <NoDataMessage viewContent={viewContent} AlertComponent={PlainNoDataMessage} />
+            <NoDataMessage viewContent={viewContent} />
             {periodDependent && expandButton}
           </h2>
         </div>
