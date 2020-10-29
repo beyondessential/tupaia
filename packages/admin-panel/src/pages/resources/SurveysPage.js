@@ -268,6 +268,28 @@ const QUESTION_COLUMNS = [
                   { label: 'Length', fieldName: 'length' },
                 ],
               },
+              {
+                label: 'Autocomplete',
+                fieldName: 'autocomplete',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Attributes',
+                    fieldName: 'attributes',
+                    type: 'json',
+                    getJsonFieldSchema: () => [
+                      {
+                        label: 'Parent Project',
+                        fieldName: 'parent_project',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
             ],
           },
         },
