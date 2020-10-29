@@ -6,6 +6,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SyndromeCell, AlertMenuCell, WeekAndDateCell, CountryNameCell } from '../../components';
 import { ConnectedTable } from './ConnectedTable';
+import { getEntitiesAllowed } from '../../store';
+import { connect } from 'react-redux';
 
 const createColumns = isForMultipleCountries => [
   ...(isForMultipleCountries
@@ -52,20 +54,28 @@ const createColumns = isForMultipleCountries => [
   },
 ];
 
-export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => (
+const AlertsTableComponent = React.memo(({ handlePanelOpen, countryCode, allowedEntities }) => (
   <ConnectedTable
     endpoint="alerts"
-    fetchOptions={{ countries: ['TO', 'WS'] }}
+    fetchOptions={{ countries: allowedEntities }} // this may not be needed when the api is complete but is needed for app testing in the meantime
     columns={createColumns(!countryCode)}
     onRowClick={handlePanelOpen}
   />
 ));
 
-AlertsTable.propTypes = {
+AlertsTableComponent.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,
   countryCode: PropTypes.string,
+  allowedEntities: PropTypes.array,
 };
 
-AlertsTable.defaultProps = {
+AlertsTableComponent.defaultProps = {
   countryCode: null,
+  allowedEntities: [],
 };
+
+const mapStateToProps = state => ({
+  allowedEntities: getEntitiesAllowed(state),
+});
+
+export const AlertsTable = connect(mapStateToProps)(AlertsTableComponent);

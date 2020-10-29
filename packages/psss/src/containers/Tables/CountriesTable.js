@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { connect } from 'react-redux';
 import { ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
@@ -13,6 +14,8 @@ import {
   CountryNameLinkCell,
 } from '../../components';
 import { ConnectedTable } from './ConnectedTable';
+import { getEntitiesAllowed } from '../../store';
+import PropTypes from 'prop-types';
 
 const countriesTableColumns = [
   {
@@ -60,12 +63,27 @@ const countriesTableColumns = [
   },
 ];
 
-export const CountriesTable = React.memo(() => (
+const CountriesTableComponent = React.memo(({ allowedEntities }) => (
   <ConnectedTable
     endpoint="countries"
-    fetchOptions={{ countries: ['TO', 'WS'] }}
+    // this may not be needed when the api is complete but is needed for app testing in the meantime
+    fetchOptions={{ countries: allowedEntities }}
     columns={countriesTableColumns}
     Body={ExpandableTableBody}
     SubComponent={CountrySummaryTable}
   />
 ));
+
+CountriesTableComponent.propTypes = {
+  allowedEntities: PropTypes.array,
+};
+
+CountriesTableComponent.defaultProps = {
+  allowedEntities: [],
+};
+
+const mapStateToProps = state => ({
+  allowedEntities: getEntitiesAllowed(state),
+});
+
+export const CountriesTable = connect(mapStateToProps)(CountriesTableComponent);

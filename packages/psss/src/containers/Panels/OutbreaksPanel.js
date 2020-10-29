@@ -25,9 +25,10 @@ import {
 } from '../../components';
 import { NotesTab } from '../NotesTab';
 import * as COLORS from '../../constants/colors';
-import { countryFlagImage } from '../../utils';
+import { countryFlagImage, getCountryName } from '../../utils';
 import { connectApi } from '../../api';
 import { useFetch } from '../../hooks';
+import { useParams } from 'react-router-dom';
 
 const Option = styled.span`
   display: flex;
@@ -70,6 +71,7 @@ export const OutbreaksPanelComponent = ({
   const sitesState = useFetch(fetchSitesData);
   const notesState = useFetch(fetchNotesData);
   const activityState = useFetch(fetchActivityData);
+  const { countryCode } = useParams();
 
   const handleChange = option => {
     console.log('handle change...', option);
@@ -89,7 +91,7 @@ export const OutbreaksPanelComponent = ({
           dateText="Outbreak Start Date:"
           date="Mar 6, 2020"
           avatarUrl={countryFlagImage('as')}
-          subheading="American Samoa"
+          subheading={getCountryName(countryCode)}
           heading="Measles"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />

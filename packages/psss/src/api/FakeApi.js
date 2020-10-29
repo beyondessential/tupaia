@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import faker from 'faker';
+import { getCountryName } from '../utils';
 
 export class FakeAPI {
   sleep(delay = 0) {
@@ -211,7 +212,7 @@ export class FakeAPI {
   country(countryCode) {
     return {
       id: faker.random.uuid(),
-      name: `Country Code: ${countryCode}`,
+      name: getCountryName(countryCode),
       countryCode: countryCode.toLowerCase(),
       sitesReported: faker.random.number({
         min: 0,
