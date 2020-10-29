@@ -41,10 +41,6 @@
       "path": "packages/dhis-api"
     },
     {
-      "name": "eslint-config-typescript",
-      "path": "packages/eslint-config-typescript"
-    },
-    {
       "name": "export-chart-lambda",
       "path": "packages/export-chart-lambda"
     },

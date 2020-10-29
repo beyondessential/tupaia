@@ -8,11 +8,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Box from '@material-ui/core/Box';
 import DeleteIcon from '@material-ui/icons/Delete';
-import MuiAvatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
 import { ConfirmDeleteModal } from '../ConfirmDeleteModal';
 import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
+import { Avatar } from '../Avatar';
 
 const HiddenFileInput = styled.input`
   width: 0.1px;
@@ -27,10 +27,9 @@ const Label = styled(FlexStart)`
   margin-bottom: 1.6rem;
 `;
 
-const Avatar = styled(MuiAvatar)`
+const StyledAvatar = styled(Avatar)`
   position: relative;
   color: white;
-  background: ${props => props.theme.palette.success.main};
   font-weight: 600;
   width: 5.3rem;
   height: 5.3rem;
@@ -71,6 +70,7 @@ export const ProfileImageField = React.memo(
 
     const handleDelete = () => {
       setConfirmModalIsOpen(false);
+      inputEl.current.value = '';
       onDelete();
     };
 
@@ -78,7 +78,9 @@ export const ProfileImageField = React.memo(
       <Label as="label" htmlFor={name}>
         <HiddenFileInput ref={inputEl} id={name} name={name} type="file" onChange={onChange} />
         <Box position="relative">
-          <Avatar src={profileImage}>{userInitial}</Avatar>
+          <StyledAvatar initial={userInitial} src={profileImage}>
+            {userInitial}
+          </StyledAvatar>
           {profileImage && (
             <DeleteButton onClick={() => setConfirmModalIsOpen(true)}>
               <DeleteIcon />
@@ -110,7 +112,7 @@ ProfileImageField.propTypes = {
 };
 
 ProfileImageField.defaultProps = {
-  userInitial: null,
+  userInitial: undefined,
   profileImage: null,
   onChange: () => {},
   onDelete: () => {},

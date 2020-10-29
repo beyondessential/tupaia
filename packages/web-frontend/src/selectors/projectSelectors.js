@@ -9,6 +9,7 @@ import { createSelector } from 'reselect';
 import { DEFAULT_BOUNDS } from '../defaults';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { selectLocation } from './utils';
+import { TILE_SETS } from '../constants';
 
 const selectAllProjects = state => state.project.projects;
 
@@ -39,5 +40,25 @@ export const selectAdjustedProjectBounds = createSelector(
       return DEFAULT_BOUNDS;
     }
     return project && project.bounds;
+  },
+);
+
+export const selectTileSets = createSelector(selectCurrentProject, project => {
+  let tileSetKeys = ['osm', 'satellite'];
+
+  if (project.tileSets) {
+    const customSetKeys = project.tileSets.split(',').map(item => item.trim());
+    tileSetKeys = [...tileSetKeys, ...customSetKeys];
+  }
+
+  return TILE_SETS.filter(tileSet => tileSetKeys.includes(tileSet.key));
+});
+
+export const selectActiveTileSetKey = state => state.map.activeTileSetKey;
+
+export const selectActiveTileSet = createSelector(
+  [selectTileSets, selectActiveTileSetKey],
+  (tileSets, activeTileSetKey) => {
+    return tileSets.find(tileSet => tileSet.key === activeTileSetKey);
   },
 );

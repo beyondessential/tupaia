@@ -71,7 +71,7 @@ export class DropDownMenu extends PureComponent {
         open={!!anchorEl}
         anchorEl={anchorEl}
         onClose={this.handleCloseMenu}
-        MenuListProps={{ 'data-testid': 'dropdown-menu-items', style: menuListStyle }}
+        MenuListProps={{ style: menuListStyle }}
       >
         {options.map(option => (
           <MenuItem
@@ -88,7 +88,7 @@ export class DropDownMenu extends PureComponent {
 
   render() {
     return (
-      <div data-testid="dropdown-menu">
+      <div>
         {this.renderListComponent()}
         {this.renderMenuComponent()}
       </div>
