@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import { Animated, Text, StyleSheet, Platform } from 'react-native';
 
 import { THEME_COLOR_TWO, THEME_TEXT_COLOR_ONE, THEME_COLOR_SIX } from '../../globalStyles';
 import { TouchableOpacity } from '../../widgets';
+
 const BANNER_HEIGHT = 45;
 
 export class MessageBanner extends PureComponent {
@@ -68,7 +69,7 @@ export class MessageBanner extends PureComponent {
         ]}
       >
         <TouchableOpacity
-          analyticsLabel={'Message Banner'}
+          analyticsLabel="Message Banner"
           style={localStyles.message}
           onPress={onDismiss}
         >

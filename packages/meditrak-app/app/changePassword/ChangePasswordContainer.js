@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 
@@ -40,9 +40,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ChangePasswordContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ChangePasswordPage);
+const ChangePasswordContainer = connect(mapStateToProps, mapDispatchToProps)(ChangePasswordPage);
 
 export { ChangePasswordContainer };

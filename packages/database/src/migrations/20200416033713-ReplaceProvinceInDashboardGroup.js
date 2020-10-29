@@ -10,14 +10,14 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
 const replaceOrganisationLevel = async (db, oldLevel, newLevel) =>
-  await db.runSql(`
+  db.runSql(`
     UPDATE
       "dashboardGroup"
     SET
@@ -30,7 +30,7 @@ const replaceOrganisationLevel = async (db, oldLevel, newLevel) =>
 const getCountriesWithSubDistricts = async db => {
   const { rows } = await db.runSql(`
     SELECT distinct(child.country_code) from entity child
-    JOIN entity parent on parent.id = child.parent_id 
+    JOIN entity parent on parent.id = child.parent_id
     WHERE child.type = 'region' and parent.type = 'region'
   `);
   return rows.map(({ country_code: countryCode }) => countryCode);
@@ -58,7 +58,7 @@ const addSubDistrictGroupsMatchingDistrict = async (db, dashboardGroups) =>
     ),
   );
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await replaceOrganisationLevel(db, 'Province', 'District');
   const countriesWithSubDistricts = await getCountriesWithSubDistricts(db);
   const dashboardGroups = await getDistrictGroupsForCountries(db, countriesWithSubDistricts);
@@ -71,7 +71,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   await db.runSql(`DELETE FROM "dashboardGroup" WHERE "organisationLevel" = 'SubDistrict';`);
   await replaceOrganisationLevel(db, 'District', 'Province');
 };

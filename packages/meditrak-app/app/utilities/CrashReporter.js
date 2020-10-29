@@ -12,7 +12,7 @@ export class CrashReporter {
   constructor(analytics) {
     const bugsnagConfig = new BugsnagConfig();
     bugsnagConfig.beforeSendCallbacks.push(this.addReduxStateToReport);
-    this.bugsnag = new BugsnagClient(bugsnagConfig); // eslint-disable-line no-unused-vars
+    this.bugsnag = new BugsnagClient(bugsnagConfig);
     this.reduxStore = null;
 
     // Record any prior crash in appcenter analytics
