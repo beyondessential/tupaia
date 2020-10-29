@@ -35,6 +35,7 @@ ProfileButtonComponent.propTypes = {
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     firstName: PropTypes.string,
+    profileImage: PropTypes.string,
   }).isRequired,
 };
 

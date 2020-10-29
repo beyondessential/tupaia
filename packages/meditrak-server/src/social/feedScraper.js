@@ -79,8 +79,8 @@ const addLatestSurveyFeedItems = async models => {
       );
       const imageUrl = photoAnswer ? photoAnswer.text : null;
       const link = facilityCode
-        ? `https://mobile.tupaia.org/facility/${facilityCode}`
-        : `https://mobile.tupaia.org/country/${countryCode}`;
+        ? `https://mobile.tupaia.org/explore/${facilityCode}`
+        : `https://mobile.tupaia.org/explore/${countryCode}`;
 
       await models.feedItem.create({
         type,

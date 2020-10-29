@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 import { SyncPage } from './SyncPage';
@@ -32,9 +32,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const SyncContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SyncPage);
+const SyncContainer = connect(mapStateToProps, mapDispatchToProps)(SyncPage);
 
 export { SyncContainer };

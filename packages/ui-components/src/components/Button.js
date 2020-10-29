@@ -89,6 +89,7 @@ export const TextButton = styled(MuiButton)`
  */
 export const WarningButton = styled(Button)`
   background-color: ${props => props.theme.palette.warning.main};
+  color: ${props => props.theme.palette.common.white};
 
   &:hover {
     background-color: ${props => props.theme.palette.warning.dark};
