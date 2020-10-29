@@ -63,7 +63,6 @@ const countriesTableColumns = [
 export const CountriesTable = React.memo(() => (
   <ConnectedTable
     endpoint="countries"
-    fetchOptions={{ countries: ['TO', 'WS'] }}
     columns={countriesTableColumns}
     Body={ExpandableTableBody}
     SubComponent={CountrySummaryTable}

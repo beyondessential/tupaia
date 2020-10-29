@@ -29,9 +29,9 @@ export class FakeAPI {
         data.push(this.user());
       }
     } else if (endpoint === 'countries') {
-      options.countries.forEach(countryCode => {
-        data.push(this.country(countryCode));
-      });
+      for (let i = 0; i < 20; i++) {
+        data.push(this.country());
+      }
     } else if (endpoint === 'country-weeks') {
       for (let i = 0; i < 10; i++) {
         data.push(this.countryWeek(i));
@@ -208,11 +208,11 @@ export class FakeAPI {
     };
   }
 
-  country(countryCode) {
+  country() {
     return {
       id: faker.random.uuid(),
-      name: `Country Code: ${countryCode}`,
-      countryCode: countryCode.toLowerCase(),
+      name: faker.address.country(),
+      countryCode: faker.address.countryCode().toLowerCase(),
       sitesReported: faker.random.number({
         min: 0,
         max: 30,
