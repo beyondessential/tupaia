@@ -141,12 +141,7 @@ export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
 export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS =
   'UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS';
-
-export function fetchInitialData() {
-  return {
-    type: FETCH_INITIAL_DATA,
-  };
-}
+export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 
 /**
  * Attempt password change using old password, new password and new password
