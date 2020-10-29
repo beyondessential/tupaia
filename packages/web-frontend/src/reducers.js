@@ -587,7 +587,7 @@ function measureBar(
 function global(
   state = {
     isSidePanelExpanded: false,
-    overlay: !isMobile() && LANDING,
+    overlay: null,
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
