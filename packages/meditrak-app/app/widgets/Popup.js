@@ -11,18 +11,14 @@ import {
 } from '../globalStyles';
 
 export const Popup = ({ children, title, visible, onDismiss }) => (
-  <Modal visible={visible} transparent={true} animationType={'fade'} onRequestClose={onDismiss}>
+  <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
     <TouchableOpacity
       analyticsLabel={`Popup: Dismiss ${title}`}
       style={styles.overlay}
       onPress={onDismiss}
       activeOpacity={0.9}
     />
-    <KeyboardAvoidingView
-      style={styles.popupWrapper}
-      pointerEvents={'box-none'}
-      behavior={'padding'}
-    >
+    <KeyboardAvoidingView style={styles.popupWrapper} pointerEvents="box-none" behavior="padding">
       <View style={styles.popup}>
         {title ? <Text style={styles.title}>{title}</Text> : null}
         <ScrollView contentContainerStyle={styles.content}>{children}</ScrollView>

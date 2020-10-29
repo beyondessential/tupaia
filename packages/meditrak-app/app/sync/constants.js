@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 export const SET_SYNC_ERROR = 'SET_SYNC_ERROR';
 export const SET_SYNC_PROGRESS = 'SET_SYNC_PROGRESS';

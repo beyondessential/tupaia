@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React from 'react';
 import {
   ActivityIndicator,
@@ -24,7 +24,7 @@ import { checkIfObjectsAreEqual } from '../utilities';
 
 const renderLoadingOverlay = () => (
   <View style={localStyles.loadingOverlay}>
-    <ActivityIndicator size={'large'} />
+    <ActivityIndicator size="large" />
   </View>
 );
 

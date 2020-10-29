@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 
@@ -9,11 +9,12 @@ import { LoginPage } from './LoginPage';
 import { changeEmailAddress, changePassword, login } from './actions';
 import { goToCreateAccount } from '../navigation/actions';
 import { AUTH_STATUSES } from './constants';
+
 const { AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
 
 /**
  * Determines whether user is able to press the log in button
- **/
+ */
 function getCanAttemptLogin(authStatus, emailAddress, password) {
   return (
     (authStatus === UNAUTHENTICATED || authStatus === ERROR) && // Not authenticating
@@ -24,7 +25,7 @@ function getCanAttemptLogin(authStatus, emailAddress, password) {
 
 /**
  * Determines what label is displayed in the login button
- **/
+ */
 function getLoginButtonText(authStatus) {
   switch (authStatus) {
     case AUTHENTICATING:
@@ -57,9 +58,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const LoginContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(LoginPage);
+const LoginContainer = connect(mapStateToProps, mapDispatchToProps)(LoginPage);
 
 export { LoginContainer };
