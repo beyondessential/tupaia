@@ -4,7 +4,7 @@
  */
 
 import { createReducer } from '../utils/createReducer';
-import { getEntitiesAllowed, checkIsAuthorisedForMultiCountry } from '../utils/auth';
+import { checkIsAuthorisedForMultiCountry, getEntitiesAllowedByUser } from '../utils/auth';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -68,21 +68,12 @@ export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
 
-export const getPermittedEntity = state => {
-  const user = getCurrentUser(state);
-  return getEntitiesAllowed(user);
-};
+export const getEntitiesAllowed = ({ auth }) => getEntitiesAllowedByUser(auth.user);
 
-export const checkIsMultiCountryUser = state => {
-  const user = getCurrentUser(state);
-  return checkIsAuthorisedForMultiCountry(user);
-};
-
-export const getPermittedEntitySlug = state =>
-  checkIsMultiCountryUser(state) ? '' : getPermittedEntity(state);
+export const checkIsMultiCountryUser = ({ auth }) => checkIsAuthorisedForMultiCountry(auth.user);
 
 export const getHomeUrl = state =>
-  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getPermittedEntity(state)}`;
+  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getEntitiesAllowed(state)[0]}`;
 
 // reducer
 const defaultState = {

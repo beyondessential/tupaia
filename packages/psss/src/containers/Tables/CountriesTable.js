@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
@@ -64,6 +63,7 @@ const countriesTableColumns = [
 export const CountriesTable = React.memo(() => (
   <ConnectedTable
     endpoint="countries"
+    fetchOptions={{ countries: ['TO', 'WS'] }}
     columns={countriesTableColumns}
     Body={ExpandableTableBody}
     SubComponent={CountrySummaryTable}

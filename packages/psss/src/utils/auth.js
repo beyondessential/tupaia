@@ -5,15 +5,19 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 
-export const checkIsAuthorisedForMultiCountry = user => getEntitiesAllowed(user).length > 1;
+export const checkIsAuthorisedForMultiCountry = user => getEntitiesAllowedByUser(user).length > 1;
 
 export const checkIsAuthorisedForCountry = (user, match) =>
-  getEntitiesAllowed(user).some(entityCode => entityCode === match.params.countryCode);
+  getEntitiesAllowedByUser(user).some(
+    entityCode => entityCode.toLowerCase() === match.params.countryCode,
+  );
 
-export const getEntitiesAllowed = user => {
+export const getEntitiesAllowedByUser = user => {
   if (!user) {
     return [];
   }
 
-  return new AccessPolicy(user.accessPolicy).getEntitiesAllowed('Admin');
+  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed('PSSS'); // Todo: update to psss
+  console.log('entities allowed', entities);
+  return entities;
 };

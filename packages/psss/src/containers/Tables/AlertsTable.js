@@ -55,6 +55,7 @@ const createColumns = isForMultipleCountries => [
 export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => (
   <ConnectedTable
     endpoint="alerts"
+    fetchOptions={{ countries: ['TO', 'WS'] }}
     columns={createColumns(!countryCode)}
     onRowClick={handlePanelOpen}
   />
