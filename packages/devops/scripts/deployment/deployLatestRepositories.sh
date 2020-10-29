@@ -14,11 +14,13 @@ else
 fi
 
 # Set the path of environment variables from parameter store
-if [[ $STAGE == "production" ]]; then
+if [[ $BRANCH == "master" ]]; then
     ENVIRONMENT="production"
-elif [[ "$STAGE" == *e2e ]]; then
-    ENVIRONMENT="e2e" # Check out e2e specific environment variables
+elif [[ "$BRANCH" == *e2e ]]; then
+    # The branch ends in "-e2e", use the e2e specific environment variables
+    ENVIRONMENT="e2e"
 else
+    # Any other branch uses the default dev environment variables
     ENVIRONMENT="dev"
 fi
 
@@ -43,20 +45,9 @@ for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel
         jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
         sed -e "s~${SSM_PATH}/~~" >.env)
 
-    # Replace any instances of the environment, e.g. "dev", in the .env file, to point urls in the
-    # right place (e.g. dev-api.tupaia.org -> specific-branch-api.tupaia.org)
-    sed -i -e "s/${ENVIRONMENT}/${BRANCH}/g" .env
-
-    # If there were no environment variables for the specified environment, default to dev
-    if [ ! -s .env ]; then
-        echo "Checking out default dev environment variables"
-        SSM_PATH="/${PACKAGE}/dev"
-        $(aws ssm get-parameters-by-path --with-decryption --path $SSM_PATH |
-            jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
-            sed -e "s~${SSM_PATH}/~~" >.env)
-        # Replace any instances of "dev" in the .env file (e.g. to point urls in the right place)
--       sed -i -e "s/dev/${BRANCH}/g" .env
-    fi
+    # Replace any instances of the placeholder [branch-name] in the .env file with the actual branch
+    # name (e.g. [branch-name]-api.tupaia.org -> specific-branch-api.tupaia.org)
+    sed -i -e "s/\[branch-name\]/${BRANCH}/g" .env
 
     # If it's a server, start it running on pm2, otherwise build it
     echo "Preparing to start or build ${PACKAGE}"
