@@ -43,7 +43,11 @@ for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel
         jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
         sed -e "s~${SSM_PATH}/~~" >.env)
 
-    # If there were no environment variables for the specified branch, default to dev
+    # Replace any instances of the environment, e.g. "dev", in the .env file, to point urls in the
+    # right place (e.g. dev-api.tupaia.org -> specific-branch-api.tupaia.org)
+    sed -i -e "s/${ENVIRONMENT}/${BRANCH}/g" .env
+
+    # If there were no environment variables for the specified environment, default to dev
     if [ ! -s .env ]; then
         echo "Checking out default dev environment variables"
         SSM_PATH="/${PACKAGE}/dev"
@@ -51,7 +55,7 @@ for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel
             jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
             sed -e "s~${SSM_PATH}/~~" >.env)
         # Replace any instances of "dev" in the .env file (e.g. to point urls in the right place)
-        sed -i -e "s/${ENVIRONMENT}/${BRANCH}/g" .env
+-       sed -i -e "s/dev/${BRANCH}/g" .env
     fi
 
     # If it's a server, start it running on pm2, otherwise build it
