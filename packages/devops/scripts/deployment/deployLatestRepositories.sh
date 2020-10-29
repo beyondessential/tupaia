@@ -16,7 +16,7 @@ fi
 # Set the path of environment variables from parameter store
 if [[ $STAGE == "production" ]]; then
     ENVIRONMENT="production"
-elif [[ "$ENVIRONMENT" == *e2e ]]; then
+elif [[ "$STAGE" == *e2e ]]; then
     ENVIRONMENT="e2e" # Check out e2e specific environment variables
 else
     ENVIRONMENT="dev"
