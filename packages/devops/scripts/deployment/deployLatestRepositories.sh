@@ -15,6 +15,10 @@ else
     ENVIRONMENT="$STAGE"
 fi
 
+if [[ "$ENVIRONMENT" == *e2e ]]; then
+    ENVIRONMENT="e2e" # Check out e2e specific environment variables
+fi
+
 # Get latest code and dependencies
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
 cd ${HOME_DIRECTORY}
