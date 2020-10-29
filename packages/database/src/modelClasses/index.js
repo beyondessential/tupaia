@@ -20,6 +20,7 @@ import { OneTimeLoginModel } from './OneTimeLogin';
 import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
 import { QuestionModel } from './Question';
+import { ReportModel } from './Report';
 import { SurveyModel } from './Survey';
 import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
@@ -51,6 +52,7 @@ export const modelClasses = {
   Project: ProjectModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
+  Report: ReportModel,
   Survey: SurveyModel,
   SurveyResponse: SurveyResponseModel,
   SurveyScreen: SurveyScreenModel,

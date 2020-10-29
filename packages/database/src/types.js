@@ -42,6 +42,7 @@ export const TYPES = {
   PROJECT: 'project',
   QUESTION: 'question',
   REFRESH_TOKEN: 'refresh_token',
+  REPORT: 'report',
   SETTING: 'setting',
   SURVEY_GROUP: 'survey_group',
   SURVEY_RESPONSE: 'survey_response',
