@@ -6,17 +6,20 @@ pm2 list
 echo "Deleting..."
 pm2 delete all
 
-# Set the branch to fetch and path of environment variables from parameter store
+# Set the branch to fetch
 if [[ $STAGE == "production" ]]; then
     BRANCH="master"
-    ENVIRONMENT="production"
 else
     BRANCH="$STAGE"
-    ENVIRONMENT="$STAGE"
 fi
 
-if [[ "$ENVIRONMENT" == *e2e ]]; then
+# Set the path of environment variables from parameter store
+if [[ $STAGE == "production" ]]; then
+    ENVIRONMENT="production"
+elif [[ "$ENVIRONMENT" == *e2e ]]; then
     ENVIRONMENT="e2e" # Check out e2e specific environment variables
+else
+    ENVIRONMENT="dev"
 fi
 
 # Get latest code and dependencies
@@ -48,7 +51,7 @@ for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel
             jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
             sed -e "s~${SSM_PATH}/~~" >.env)
         # Replace any instances of "dev" in the .env file (e.g. to point urls in the right place)
-        sed -i -e "s/dev/${STAGE}/g" .env
+        sed -i -e "s/${ENVIRONMENT}/${BRANCH}/g" .env
     fi
 
     # If it's a server, start it running on pm2, otherwise build it
