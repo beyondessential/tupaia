@@ -51,7 +51,7 @@ if [[ -z $PACKAGE_NAME || -z $ENVIRONMENT ]]; then
     echo "Please specify both --package-name and --environment (and optionally, --path-to-package, --upload, or --download)"
     exit 0
 fi
-PARAMETER_STORE_PATH_PREFIX="${PACKAGE_NAME}/${ENVIRONMENT}"
+PARAMETER_STORE_PATH_PREFIX="/${PACKAGE_NAME}/${ENVIRONMENT}"
 
 if [[ -z $PATH_TO_PACKAGE ]]; then
     # Use default path to package, based on ubuntu server setup
