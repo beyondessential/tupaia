@@ -173,16 +173,6 @@ function* handleInvalidPermission({ projectCode }) {
   yield put(setOverlayComponent(LANDING));
 }
 
-function* setComponentsIfUpdated(components, previousComponents, otherComponents) {
-  for (let i = 0; i < components.length; i++) {
-    const { key, setter } = components[i];
-    const component = otherComponents[key];
-    if (component && component !== previousComponents[key]) {
-      yield put({ ...setter(component), meta: { preventHistoryUpdate: true } });
-    }
-  }
-}
-
 function* handleUserPage(userPage, initialComponents) {
   yield put(setOverlayComponent(LANDING));
 
@@ -201,6 +191,14 @@ function* handleUserPage(userPage, initialComponents) {
 
 const userHasAccess = (projects, currentProject) =>
   projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
+
+const URL_REFRESH_COMPONENTS = {
+  [URL_COMPONENTS.PROJECT]: setProject,
+  [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
+  [URL_COMPONENTS.URL_COMPONENTS]: setMeasure,
+  [URL_COMPONENTS.REPORT]: openEnlargedDialog,
+  [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
+};
 
 function* handleLocationChange({ location, previousLocation }) {
   const { project } = yield select();
@@ -231,18 +229,12 @@ function* handleLocationChange({ location, previousLocation }) {
 
   // refresh data if the url has changed
   const previousComponents = decodeLocation(previousLocation);
-  yield call(
-    setComponentsIfUpdated,
-    [
-      { key: URL_COMPONENTS.PROJECT, setter: setProject },
-      { key: URL_COMPONENTS.ORG_UNIT, setter: setOrgUnit },
-      { key: URL_COMPONENTS.URL_COMPONENTS, setter: setMeasure },
-      { key: URL_COMPONENTS.REPORT, setter: openEnlargedDialog },
-      { key: URL_COMPONENTS.MEASURE_PERIOD, setter: updateCurrentMeasureConfigOnceHierarchyLoads },
-    ],
-    previousComponents,
-    otherComponents,
-  );
+  for (const [key, value] of Object.entries(URL_REFRESH_COMPONENTS)) {
+    const component = otherComponents[key];
+    if (component && component !== previousComponents[key]) {
+      yield put({ ...value(component), meta: { preventHistoryUpdate: true } });
+    }
+  }
 }
 
 function* watchHandleLocationChange() {
