@@ -27,7 +27,7 @@
   "overrides": [
     // TypeScript packages
     {
-      "files": ["packages/indicators/**"],
+      "files": ["packages/indicators/**", "packages/reports/**"],
       "extends": "@beyondessential/ts",
       "parserOptions": {
         "project": "tsconfig.json"
@@ -45,6 +45,7 @@
         "packages/indicators/**",
         "packages/meditrak-app/**",
         "packages/psss/**",
+        "packages/reports/**",
         "packages/ui-components/**",
         "packages/utils/**",
         "packages/web-frontend/**"
