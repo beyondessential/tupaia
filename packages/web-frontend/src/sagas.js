@@ -159,14 +159,15 @@ function* handleInvalidPermission({ projectCode }) {
     // show project access dialog
     const project = selectProjectByCode(state, projectCode);
 
-    if ('code' in project) {
+    if (Object.keys(project).length > 0) {
       yield put(setRequestingAccess(project));
       yield put(setOverlayComponent('requestProjectAccess'));
       return;
     }
 
     // handle 404s
-    console.log('project does not exist - 404'); // Todo: handle 404s
+    // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
+    console.error('project does not exist - 404');
     return;
   }
   // show login dialog
