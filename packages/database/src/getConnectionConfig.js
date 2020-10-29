@@ -37,5 +37,6 @@ const validateEnv = () => {
 
 export const getConnectionConfig = () => {
   validateEnv();
+  // Note: Must use functions to guarantee environment variables have loaded
   return process.env.CI_NAME === 'codeship' ? getCiConfig() : getServerConfig();
 };
