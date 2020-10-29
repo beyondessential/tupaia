@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
+import { ReactQueryDevtools } from 'react-query-devtools';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { persistCombineReducers } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -36,6 +37,7 @@ const store = initStore();
 const render = () => {
   return renderReactApp(
     <AppProviders store={store}>
+      <ReactQueryDevtools />
       <App />
     </AppProviders>,
     document.getElementById('root'),

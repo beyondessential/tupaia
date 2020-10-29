@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { ExpandableTableBody } from '@tupaia/ui-components';
+import { Table, ExpandableTableBody } from '@tupaia/ui-components';
+import { useQuery } from 'react-query';
+// import { Table } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import {
@@ -12,7 +14,8 @@ import {
   SitesReportedCell,
   CountryNameLinkCell,
 } from '../../components';
-import { ConnectedTable } from './ConnectedTable';
+import { FakeAPI as api } from '../../api';
+// import { ConnectedTable } from './ConnectedTable';
 
 const countriesTableColumns = [
   {
@@ -60,12 +63,57 @@ const countriesTableColumns = [
   },
 ];
 
-export const CountriesTable = React.memo(() => (
-  <ConnectedTable
-    endpoint="countries"
-    fetchOptions={{ countries: ['TO', 'WS'] }}
-    columns={countriesTableColumns}
-    Body={ExpandableTableBody}
-    SubComponent={CountrySummaryTable}
-  />
-));
+const useTableQuery = (endpoint, options) => {
+  const [sorting, setSorting] = React.useState({ order: 'asc', orderBy: undefined });
+  const query = useQuery(
+    [endpoint, options, sorting],
+    () => api.get(endpoint, { ...options, ...sorting }),
+    { staleTime: 50 },
+  );
+
+  const handleChangeOrderBy = columnKey => {
+    const { order, orderBy } = sorting;
+    const isDesc = orderBy === columnKey && order === 'desc';
+    const newSorting = { order: isDesc ? 'asc' : 'desc', orderBy: columnKey };
+    setSorting(newSorting);
+  };
+
+  return { ...query, ...sorting, handleChangeOrderBy };
+};
+
+export const CountriesTable = () => {
+  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
+    'countries',
+    {
+      countries: ['TO', 'WS'],
+    },
+  );
+
+  return (
+    <>
+      <Table
+        order={order}
+        orderBy={orderBy}
+        onChangeOrderBy={handleChangeOrderBy}
+        data={data ? data.data : 0}
+        count={data ? data.count : 0}
+        isLoading={isLoading}
+        errorMessage={error && error.message}
+        columns={countriesTableColumns}
+        Body={ExpandableTableBody}
+        SubComponent={CountrySummaryTable}
+      />
+      {isFetching && 'Fetching...'}
+    </>
+  );
+};
+
+// export const CountriesTable = React.memo(() => (
+//   <ConnectedTable
+//     endpoint="countries"
+//     fetchOptions={{ countries: ['TO', 'WS'] }}
+//     columns={countriesTableColumns}
+//     Body={ExpandableTableBody}
+//     SubComponent={CountrySummaryTable}
+//   />
+// ));
