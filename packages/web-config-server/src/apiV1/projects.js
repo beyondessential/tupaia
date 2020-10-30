@@ -13,6 +13,17 @@ async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   );
 }
 
+// work out the entity to zoom to and open the dashboard of when this project is selected
+function getHomeEntityCode(project, entitiesWithAccess) {
+  if (entitiesWithAccess.length === 1) {
+    // only one entity (country) inside, return that code
+    return entitiesWithAccess[0].code;
+  }
+  // more than one child entity, return the code of the project entity, which should have bounds
+  // encompassing all children
+  return project.entity_code;
+}
+
 async function buildProjectDataForFrontend(project, req) {
   const {
     name,
@@ -36,7 +47,7 @@ async function buildProjectDataForFrontend(project, req) {
   // This controls which entity the project zooms to and what level dashboards are shown on the front-end.
   // If a single entity is available, zoom to that, otherwise show the project entity
   const hasAccess = entitiesWithAccess.length > 0;
-  const homeEntityCode = entitiesWithAccess.length === 1 ? entitiesWithAccess[0].code : code;
+  const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
 
   return {
     name,
