@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 export const getIsSyncing = state => state.sync.isSyncing;
 export const getSyncProgress = state => state.sync.progress;

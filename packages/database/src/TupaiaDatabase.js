@@ -43,6 +43,8 @@ export const JOIN_TYPES = {
   DEFAULT: null,
 };
 
+const VALID_CAST_TYPES = ['text'];
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
@@ -496,7 +498,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
       }
       return { [alias]: connection.raw('??', [selector]) };
     });
-  query = addWhereClause(query[queryMethod](queryMethodParameter || columns), where);
+  query = addWhereClause(connection, query[queryMethod](queryMethodParameter || columns), where);
 
   // Add sorting information if provided
   if (options.sort) {
@@ -531,7 +533,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   return query;
 }
 
-function addWhereClause(baseQuery, where) {
+function addWhereClause(connection, baseQuery, where) {
   if (!where) {
     return baseQuery;
   }
@@ -540,12 +542,12 @@ function addWhereClause(baseQuery, where) {
     // subsection of the broader WHERE clause
     if (key === QUERY_CONJUNCTIONS.AND) {
       return querySoFar.andWhere(function () {
-        addWhereClause(this, value); // Within the function, 'this' refers to the query so far
+        addWhereClause(connection, this, value); // Within the function, 'this' refers to the query so far
       });
     }
     if (key === QUERY_CONJUNCTIONS.OR) {
       return querySoFar.orWhere(function () {
-        addWhereClause(this, value); // Within the function, 'this' refers to the query so far
+        addWhereClause(connection, this, value); // Within the function, 'this' refers to the query so far
       });
     }
     if (key === QUERY_CONJUNCTIONS.RAW) {
@@ -562,9 +564,14 @@ function addWhereClause(baseQuery, where) {
       comparisonType = 'where',
       comparator = Array.isArray(value) ? 'in' : '=',
       comparisonValue = value,
+      castAs,
     } = value;
+    if (castAs && !VALID_CAST_TYPES.includes(castAs)) {
+      throw new Error(`Cannot cast as ${castAs}`);
+    }
+    const columnSelector = castAs ? connection.raw(`??::${castAs}`, [key]) : key;
     const { args = [comparator, comparisonValue] } = value;
-    return querySoFar[comparisonType](key, ...args);
+    return querySoFar[comparisonType](columnSelector, ...args);
   }, baseQuery);
 }
 

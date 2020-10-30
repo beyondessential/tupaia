@@ -92,7 +92,9 @@ We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/conf
 - [@beyondessential/eslint-config-ts](https://www.npmjs.com/package/@beyondessential/eslint-config-ts) for TypeScript packages
 - [@beyondessential/eslint-config-jest](https://www.npmjs.com/package/@beyondessential/eslint-config-jest) for packages using `Jest`
 
-The main config for the monorepo is defined in `.eslintrc` under the root folder. Additional rules may be specified in each package.
+The config for this repository is defined in `.eslintrc` under the root folder. Additional rules/overrides per package are specified in this file.
+
+⚠️ Please do not use individual eslint configs, but update the main configuration file instead.
 
 ### Auto-formatting in Visual Studio Code
 
