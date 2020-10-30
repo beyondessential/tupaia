@@ -53,7 +53,7 @@ export const disasterAffectedOrganisationOperationalData = async (
     0,
   );
 
-  const res = {
+  return {
     data: [
       {
         name: 'Number of known operational facilities',
@@ -67,6 +67,4 @@ export const disasterAffectedOrganisationOperationalData = async (
       },
     ],
   };
-  console.log(res);
-  return res;
 };
