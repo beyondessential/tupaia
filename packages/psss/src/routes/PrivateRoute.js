@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import { checkIsLoggedIn, getCurrentUser } from '../store';
+import { UnauthorisedView } from '../views/UnauthorisedView';
 
 export const PrivateRouteComponent = ({
   isLoggedIn,
@@ -33,14 +34,7 @@ export const PrivateRouteComponent = ({
       if (authCheck) {
         const isAuthorised = authCheck(currentUser, match);
         if (!isAuthorised) {
-          return (
-            <Redirect
-              to={{
-                pathname: redirectTo,
-                state: { from: location },
-              }}
-            />
-          );
+          return <UnauthorisedView />;
         }
       }
 
