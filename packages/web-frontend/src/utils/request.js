@@ -51,8 +51,22 @@ function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFu
 
 const inFlightRequests = {};
 
+// Create a promise that rejects after the request has taken too long
+const createTimeoutPromise = maxWaitTime =>
+  new Promise((resolve, reject) => {
+    const id = setTimeout(() => {
+      clearTimeout(id);
+      reject(new Error('Network request timed out'));
+    }, maxWaitTime);
+  });
+
+const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
+
+const fetchWithTimeout = (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) =>
+  Promise.race([fetch(url, config), createTimeoutPromise(maxWaitTime)]);
+
 async function performJSONRequest(url, options) {
-  const response = await fetch(url, options);
+  const response = await fetchWithTimeout(url, options);
 
   if (response.status < 200 || response.status >= 300) {
     const error = new Error(response.statusText);
