@@ -9,7 +9,7 @@ def lambda_handler(event, context):
         {'Name': 'tag-key', 'Values': ['backup', 'Backup']},
     ]
     if 'InstanceName' in event:
-      print('Only restoring ' + event['InstanceName'])
+      print('Only backing up ' + event['InstanceName'])
       filters.append({'Name': 'tag:Name', 'Values': [event['InstanceName']]})
     reservations = ec.describe_instances(
         Filters=filters
@@ -22,6 +22,9 @@ def lambda_handler(event, context):
             [i for i in r['Instances']]
             for r in reservations
         ], [])
+
+    if len(instances) == 0:
+        print('Found no instances to back up. Make sure the instance has the tag "Backup"')
 
 
     to_tag = collections.defaultdict(list)
@@ -45,6 +48,8 @@ def lambda_handler(event, context):
                 if t['Key'] == 'RestoreCode'][0]
         except IndexError:
             restore_code = ''
+
+        print('Backing up ' + instance_name)
 
         for dev in instance['BlockDeviceMappings']:
             if dev.get('Ebs', None) is None:
