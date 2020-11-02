@@ -1119,12 +1119,15 @@ function* resetToProjectSplash() {
   yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
-function* watchUserChangesAndUpdatePermissions() {
-  // On user login/logout, we should just reset to the initial landing page
+function* watchLoginSuccess() {
+  yield takeLatest(FETCH_LOGIN_SUCCESS, fetchLoginData);
+}
+
+function* watchLogoutSuccess() {
   yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+}
 
-  const action = yield take(FETCH_LOGIN_SUCCESS);
-
+function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
     yield put(setOverlayComponent(null));
@@ -1240,7 +1243,8 @@ export default [
   watchFindUserCurrentLoggedIn,
   watchAttemptChartExport,
   watchAttemptAttemptDrillDown,
-  watchUserChangesAndUpdatePermissions,
+  watchLoginSuccess,
+  watchLogoutSuccess,
   watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
   watchSetDrillDownDateRange,
   watchAttemptTokenLogin,
