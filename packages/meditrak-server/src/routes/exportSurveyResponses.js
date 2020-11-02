@@ -93,7 +93,7 @@ export async function exportSurveyResponses(req, res) {
       entities = [entity];
     } else if (countryId) {
       country = await models.country.findById(countryId);
-      entities = await models.entity.find({ country_code: country.code }, { sort: ['name'] });
+      entities = await models.entity.find({ country_code: country.code }, { sort: ['name ASC'] });
     } else if (entityIds) {
       entities = await Promise.all(
         entityIds.split(',').map(entityId => models.entity.findById(entityId)),
@@ -147,7 +147,7 @@ export async function exportSurveyResponses(req, res) {
       throw new ValidationError('Survey not found. Please check permissions');
     }
     const sortAndLimitSurveyResponses =
-      latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : {};
+      latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : { sort: ['end_time ASC'] };
 
     const addDataToSheet = (surveyName, exportData) => {
       const sheetName = truncateString(surveyName, 31);
@@ -227,66 +227,64 @@ export async function exportSurveyResponses(req, res) {
         }
       }
 
-      if (surveyResponseAnswers.length === 0) {
-        exportData = [
-          [
-            `No survey responses for ${currentSurvey.name} ${getExportDatesString(
-              startDate,
-              endDate,
-            )}`,
-          ],
-        ];
-      } else {
-        // Get the current set of questions, in the order they appear in the survey
-        const questions = await findQuestionsInSurvey(models, currentSurvey.id);
+      // Get the current set of questions, in the order they appear in the survey
+      const questions = await findQuestionsInSurvey(models, currentSurvey.id);
 
-        // Add any questions that are in survey responses but no longer in the survey
-        const questionIdsSeen = {};
-        questions.forEach(({ id: questionId }) => {
-          questionIdsSeen[questionId] = true;
-        });
-        for (let i = 0; i < surveyResponseAnswers.length; i++) {
-          const extraQuestions = await Promise.all(
-            Object.keys(surveyResponseAnswers[i])
-              .filter(questionId => !questionIdsSeen[questionId])
-              .map(async questionId => {
-                const question = await models.question.findById(questionId);
-                questionIdsSeen[questionId] = true;
-                return question;
-              }),
-          );
-          questions.push(...extraQuestions);
-        }
-
-        // Add the questions info and answers to be exported
-        let exportRow = INFO_ROW_HEADERS.length + 1; // Add one to make up for header row
-        for (let questionIndex = 0; questionIndex < questions.length; questionIndex++) {
-          // Set up the left columns with info about the questions
-          const question = questions[questionIndex];
-          const questionInfo = infoColumnKeys.map(columnKey => question[columnKey]);
-          const questionType = questionInfo[1];
-          // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
-          if (
-            NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType) &&
-            questionType !== ANSWER_TYPES.INSTRUCTION
-          ) {
-            continue;
-          }
-          exportData[exportRow] = questionInfo;
-
-          // Add the answers on the right columns to the exportData
-          for (
-            let surveyResponseIndex = 0;
-            surveyResponseIndex < surveyResponseAnswers.length;
-            surveyResponseIndex++
-          ) {
-            const answer = surveyResponseAnswers[surveyResponseIndex][question.id];
-            const exportColumn = infoColumnKeys.length + surveyResponseIndex;
-            exportData[exportRow][exportColumn] = answer || '';
-          }
-          exportRow++;
-        }
+      // Add any questions that are in survey responses but no longer in the survey
+      const questionIdsSeen = {};
+      questions.forEach(({ id: questionId }) => {
+        questionIdsSeen[questionId] = true;
+      });
+      for (const answersByQuestionId of surveyResponseAnswers) {
+        const extraQuestions = await Promise.all(
+          Object.keys(answersByQuestionId)
+            .filter(questionId => !questionIdsSeen[questionId])
+            .map(async questionId => {
+              const question = await models.question.findById(questionId);
+              questionIdsSeen[questionId] = true;
+              return question;
+            }),
+        );
+        questions.push(...extraQuestions);
       }
+
+      // If there is no data, add a message at the top
+      if (surveyResponseAnswers.length === 0) {
+        exportData.unshift([
+          `No survey responses for ${currentSurvey.name} ${getExportDatesString(
+            startDate,
+            endDate,
+          )}`,
+        ]);
+      }
+
+      // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
+      const questionsForExport = questions.filter(
+        ({ type: questionType }) =>
+          !NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType) ||
+          questionType === ANSWER_TYPES.INSTRUCTION,
+      );
+
+      // Add the questions info and answers to be exported
+      const preQuestionRowCount = INFO_ROW_HEADERS.length + 1; // Add one to make up for header row
+
+      // Set up the left columns with info about the questions
+      questionsForExport.forEach((question, questionIndex) => {
+        const questionInfo = infoColumnKeys.map(columnKey => question[columnKey]);
+        const exportRow = preQuestionRowCount + questionIndex;
+        exportData[exportRow] = questionInfo;
+      });
+
+      // Add the answers on the right columns to the exportData
+      questionsForExport.forEach((question, questionIndex) => {
+        const exportRow = preQuestionRowCount + questionIndex;
+        surveyResponseAnswers.forEach((answersByQuestionId, surveyResponseIndex) => {
+          const answer = answersByQuestionId[question.id];
+          const exportColumn = infoColumnKeys.length + surveyResponseIndex;
+          exportData[exportRow][exportColumn] = answer || '';
+        });
+      });
+
       addDataToSheet(currentSurvey.name, exportData);
     }
   } catch (error) {
