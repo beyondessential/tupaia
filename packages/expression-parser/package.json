@@ -1,0 +1,9 @@
+{
+  "name": "@tupaia/expression-parser",
+  "version": "1.0.0",
+  "description": "Expression Parser",
+  "main": "index.js",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "license": "MIT",
+  "private": true
+}
