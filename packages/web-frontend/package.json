@@ -79,6 +79,7 @@
   },
   "devDependencies": {
     "@cypress/snapshot": "^2.1.7",
+    "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "autoprefixer": "7.1.0",
@@ -87,6 +88,7 @@
     "chalk": "1.1.3",
     "cheerio": "^1.0.0-rc.3",
     "css-loader": "0.28.1",
+    "cypress-dotenv": "^1.2.2",
     "eslint-loader": "^4.0.2",
     "extract-text-webpack-plugin": "2.1.0",
     "file-loader": "0.11.1",
