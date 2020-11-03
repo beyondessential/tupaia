@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -15,20 +15,20 @@ import { getIsSyncing } from '../sync';
 const DumbHeaderToolbar = ({ onShowMenu, onPressSyncStatus, isSyncing }) => (
   <View style={localStyles.container}>
     <TouchableOpacity
-      analyticsLabel={'Header Toolbar: Sync'}
+      analyticsLabel="Header Toolbar: Sync"
       onPress={onPressSyncStatus}
       style={localStyles.rightButton}
     >
       <AnimatedView style={localStyles.rightButtonIcon} shouldAnimate={isSyncing}>
-        <Icon name={'refresh'} style={[localStyles.icon]} />
+        <Icon name="refresh" style={[localStyles.icon]} />
       </AnimatedView>
     </TouchableOpacity>
     <TouchableOpacity
-      analyticsLabel={'Header Toolbar: Menu'}
+      analyticsLabel="Header Toolbar: Menu"
       onPress={onShowMenu}
       style={localStyles.rightButton}
     >
-      <Icon name={'bars'} style={[localStyles.icon, localStyles.rightButtonIcon]} />
+      <Icon name="bars" style={[localStyles.icon, localStyles.rightButtonIcon]} />
     </TouchableOpacity>
   </View>
 );
@@ -87,9 +87,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const HeaderToolbar = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DumbHeaderToolbar);
+const HeaderToolbar = connect(mapStateToProps, mapDispatchToProps)(DumbHeaderToolbar);
 
 export { HeaderToolbar };

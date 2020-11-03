@@ -17,7 +17,7 @@
     "cypress:run": "cypress run",
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
+    "lint:fix": "yarn lint --fix",
     "pretest:test:cypress:run": "npm run build",
     "start": "react-scripts start",
     "start-dev": "npm-run-all -c -l -p start-server start",

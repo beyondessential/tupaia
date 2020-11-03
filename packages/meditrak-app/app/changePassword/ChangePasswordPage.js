@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React, { PureComponent } from 'react';
 import {
   ActivityIndicator,
@@ -19,7 +19,7 @@ import { getThemeColorOneFaded, DEFAULT_PADDING } from '../globalStyles';
 
 const renderLoadingOverlay = () => (
   <View style={localStyles.loadingOverlay}>
-    <ActivityIndicator size={'large'} />
+    <ActivityIndicator size="large" />
   </View>
 );
 
@@ -69,11 +69,7 @@ export class ChangePasswordPage extends PureComponent {
                 fieldValues={formFieldValues}
               />
               <View style={localStyles.actionsContainer}>
-                <Button
-                  title={'Change Password'}
-                  isDisabled={isLoading}
-                  onPress={() => onSubmit()}
-                />
+                <Button title="Change Password" isDisabled={isLoading} onPress={() => onSubmit()} />
               </View>
             </ScrollView>
           </KeyboardAvoidingView>

@@ -18,9 +18,9 @@ function expectError(response, match) {
 
 export const testImportSurveyResponses = (app, models, syncQueue) =>
   function () {
-    const importFile = filename =>
+    const importFile = (filename, surveyNames = []) =>
       app
-        .post('import/surveyResponses')
+        .post(`import/surveyResponses?${surveyNames.map(s => `surveyNames=${s}`).join('&')}`)
         .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
 
     const deletedSurveyResponseId = '1125f5e462d7a74a5a2_test';
@@ -135,7 +135,9 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           addQuestion('faccc42a44705c02b9e_test', 'FreeText'),
         ]);
 
-        const [{ survey }] = await buildAndInsertSurveys(models, [{ code: 'TEST_SURVEY' }]);
+        const [{ survey }] = await buildAndInsertSurveys(models, [
+          { code: 'TEST_SURVEY_FOR_IMPORT_RESPONSES', name: 'Test Survey' },
+        ]);
         const surveyId = survey.id;
 
         const entityId = 'entity_000000000001_test';
@@ -204,7 +206,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           (await models.answer.count({ survey_response_id: deletedSurveyResponseId })) + 1; // We test deleting a whole response, plus one individually deleted answer
         await models.database.waitForAllChangeHandlers();
         await syncQueue.clear();
-        const response = await importFile('valid.xlsx');
+        const response = await importFile('valid.xlsx', ['Test Survey']);
         expect(response.statusCode).to.equal(200);
       });
 

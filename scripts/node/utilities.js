@@ -7,11 +7,26 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const winston = require('winston');
 
-const configureWinston = () =>
-  winston.configure({
+const LOG_LEVEL_CONFIG = {
+  error: 'red',
+  warn: 'yellow',
+  success: 'green',
+  info: 'cyan',
+  verbose: 'dim white',
+  debug: 'gray',
+};
+
+const createLogger = () => {
+  winston.addColors(LOG_LEVEL_CONFIG);
+  const levels = Object.fromEntries(
+    Object.entries(LOG_LEVEL_CONFIG).map(([level], i) => [level, i]),
+  );
+
+  return winston.createLogger({
+    levels,
     transports: [
       new winston.transports.Console({
-        level: 'verbose',
+        level: 'debug',
         format: winston.format.combine(
           winston.format.colorize({ all: true }),
           winston.format.printf(({ message }) => message),
@@ -19,15 +34,15 @@ const configureWinston = () =>
       }),
     ],
   });
+};
 
-let isWinstonConfigured = false;
+let logger;
 
 const getLoggerInstance = () => {
-  if (!isWinstonConfigured) {
-    configureWinston();
-    isWinstonConfigured = true;
+  if (!logger) {
+    logger = createLogger();
   }
-  return winston;
+  return logger;
 };
 
 const executeCommand = async command => {
