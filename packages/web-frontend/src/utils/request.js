@@ -145,7 +145,7 @@ export default async function request(
 export const download = async (resourceUrl, errorFunction, options, fileName) => {
   const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
   try {
-    const response = await fetch(baseUrl + resourceUrl, {
+    const response = await fetchWithTimeout(baseUrl + resourceUrl, {
       ...options,
       credentials: 'include',
     });
