@@ -64,6 +64,7 @@ COPY packages/database/. ./packages/database
 COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
+COPY packages/expression-parser/. ./packages/weather-api
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/web-frontend/. ./packages/web-frontend
