@@ -3,11 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import math from 'mathjs';
+import { create, all } from 'mathjs'
 
 export class ExpressionParser {
   constructor() {
-    this.parser = math.parser();
+    this.math = create(all, {})
+    this.parser = this.math.parser();
   }
 
   evaluateExpression(expression) {
@@ -15,7 +16,7 @@ export class ExpressionParser {
   }
 
   getExpressionSymbols(expression) {
-    const nodes = math.parse(expression);
+    const nodes = this.math.parse(expression);
     return nodes.filter(node => node.isSymbolNode).map(node => node.name);
   }
 
