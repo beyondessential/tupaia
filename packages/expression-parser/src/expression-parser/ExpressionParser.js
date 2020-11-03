@@ -14,7 +14,12 @@ export class ExpressionParser {
     return this.parser.evaluate(expression);
   }
 
-  getVariables() {
+  getExpressionSymbols(expression) {
+    const node = math.parse(expression);
+    return node.filter(node => node.isSymbolNode)
+  }
+
+  getScopeVariables() {
     return this.parser.getAll();
   }
 
