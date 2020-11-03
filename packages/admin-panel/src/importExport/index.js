@@ -9,4 +9,5 @@ export { ExportButton, FilteredExportButton } from './ExportButton';
 export { ImportButton } from './ImportButton';
 export { ImportModal } from './ImportModal';
 export { ExportModal } from './ExportModal';
+export { SurveyResponsesExportModal } from './SurveyResponsesExportModal';
 export { reducer } from './reducer';

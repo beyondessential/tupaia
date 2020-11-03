@@ -30,7 +30,7 @@ const HeaderInner = styled.div`
   padding-bottom: 1.25rem;
 `;
 
-export const Header = ({ title, importConfig, createConfig }) => (
+export const Header = ({ title, importConfig, createConfig, ExportModalComponent }) => (
   <HeaderMain>
     <MuiContainer maxWidth="lg">
       <HeaderInner>
@@ -38,6 +38,7 @@ export const Header = ({ title, importConfig, createConfig }) => (
         <HeaderButtonContainer>
           {importConfig && <ImportButton {...importConfig} />}
           {createConfig && <CreateButton {...createConfig} />}
+          {ExportModalComponent && <ExportModalComponent />}
         </HeaderButtonContainer>
       </HeaderInner>
     </MuiContainer>
@@ -48,9 +49,11 @@ Header.propTypes = {
   title: PropTypes.string.isRequired,
   importConfig: PropTypes.object,
   createConfig: PropTypes.object,
+  ExportModalComponent: PropTypes.elementType,
 };
 
 Header.defaultProps = {
   importConfig: null,
   createConfig: null,
+  ExportModalComponent: null,
 };

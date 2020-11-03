@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { ResourcePage } from './ResourcePage';
+import { SurveyResponsesExportModal } from '../../importExport';
 
 const surveyName = {
   Header: 'Survey',
@@ -59,8 +60,10 @@ export const SURVEY_RESPONSE_COLUMNS = [
   dateOfData,
   {
     Header: 'Export',
+    filterable: false,
+    width: 80,
     source: 'id',
-    type: 'export',
+    type: 'filteredExport',
     actionConfig: {
       exportEndpoint: 'surveyResponse',
       fileName: 'Survey Response',
@@ -136,6 +139,51 @@ const IMPORT_CONFIG = {
   },
 };
 
+const FILTERED_EXPORT_CONFIG = {
+  title: 'Export Survey Responses',
+  actionConfig: {
+    exportEndpoint: 'surveyResponses',
+    rowIdQueryParameter: 'countryId',
+    fileName: '{name} Survey Responses',
+  },
+  queryParameters: [
+    {
+      label: 'Surveys to Include',
+      secondaryLabel: 'Please enter the names of the surveys to be exported.',
+      parameterKey: 'surveyCodes',
+      optionsEndpoint: 'country/{id}/surveys',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
+    {
+      label: 'Country to Include',
+      secondaryLabel: 'Please enter the names of the surveys to be exported.',
+      parameterKey: 'countries',
+      optionsEndpoint: 'country',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
+    {
+      label: 'Entities to Include',
+      secondaryLabel: 'Please enter the names of the entities to be exported.',
+      parameterKey: 'entities',
+      optionsEndpoint: 'entity',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
+    {
+      label: 'Start Date',
+      parameterKey: 'startDate',
+      type: 'datetime-local',
+    },
+    {
+      label: 'End Date',
+      parameterKey: 'endDate',
+      type: 'datetime-local',
+    },
+  ],
+};
+
 export const SurveyResponsesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Survey Responses"
@@ -145,6 +193,7 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
+    ExportModalComponent={SurveyResponsesExportModal}
   />
 );
 

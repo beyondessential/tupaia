@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
-import { ImportModal, ExportModal } from '../../importExport';
+import { ImportModal } from '../../importExport';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
@@ -23,14 +23,19 @@ export const ResourcePage = ({
   endpoint,
   expansionTabs,
   importConfig,
-  filteredExportConfig,
+  ExportModalComponent,
   onProcessDataForSave,
   baseFilter,
   title,
   getHeaderEl,
 }) => {
   const HeaderPortal = usePortalWithCallback(
-    <Header title={title} importConfig={importConfig} createConfig={createConfig} />,
+    <Header
+      title={title}
+      importConfig={importConfig}
+      createConfig={createConfig}
+      ExportModalComponent={ExportModalComponent}
+    />,
     getHeaderEl,
   );
   return (
@@ -46,7 +51,6 @@ export const ResourcePage = ({
         />
       </Container>
       {importConfig && <ImportModal {...importConfig} />}
-      {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
     </>
   );
@@ -68,7 +72,7 @@ ResourcePage.propTypes = {
     }),
   ),
   importConfig: PropTypes.object,
-  filteredExportConfig: PropTypes.object,
+  ExportModalComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
 };
@@ -78,7 +82,7 @@ ResourcePage.defaultProps = {
   editConfig: null,
   expansionTabs: null,
   importConfig: null,
-  filteredExportConfig: null,
+  ExportModalComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},
 };
