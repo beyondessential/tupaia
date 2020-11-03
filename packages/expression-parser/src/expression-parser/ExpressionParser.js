@@ -15,8 +15,8 @@ export class ExpressionParser {
   }
 
   getExpressionSymbols(expression) {
-    const node = math.parse(expression);
-    return node.filter(node => node.isSymbolNode).map(node => node.name);
+    const nodes = math.parse(expression);
+    return nodes.filter(node => node.isSymbolNode).map(node => node.name);
   }
 
   getScopeVariables() {
