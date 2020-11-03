@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { createReducer, analytics } from '../utilities';
 import {
@@ -13,6 +13,7 @@ import {
   LOGIN_FAILURE,
   LOGOUT,
 } from './constants';
+
 const { AUTHENTICATED, AUTHENTICATING, UNAUTHENTICATED, ERROR } = AUTH_STATUSES;
 
 const defaultState = {

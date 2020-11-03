@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+const cypressDotenv = require('cypress-dotenv');
 const fs = require('fs');
 
 /**
@@ -21,4 +22,6 @@ module.exports = (on, config) => {
       return fs.existsSync(filename) ? fs.readFileSync(filename, 'utf8') : null;
     },
   });
+
+  return cypressDotenv(config);
 };

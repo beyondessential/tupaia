@@ -6,6 +6,7 @@
  */
 
 import 'whatwg-fetch';
+import downloadJs from 'downloadjs';
 import { showSessionExpiredError, showServerUnreachableError } from '../actions';
 
 /**
@@ -126,3 +127,31 @@ export default async function request(
     );
   }
 }
+
+export const download = async (resourceUrl, errorFunction, options, fileName) => {
+  const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
+  try {
+    const response = await fetch(baseUrl + resourceUrl, {
+      ...options,
+      credentials: 'include',
+    });
+
+    if (response.status < 200 || response.status >= 300) {
+      const error = new Error(response.statusText);
+      error.response = response;
+      throw error;
+    }
+
+    const responseBlob = await response.blob();
+
+    downloadJs(responseBlob, fileName);
+
+    return true;
+  } catch (error) {
+    throw assignErrorAction(
+      error,
+      errorFunction,
+      options && options.alwaysUseSuppliedErrorFunction,
+    );
+  }
+};

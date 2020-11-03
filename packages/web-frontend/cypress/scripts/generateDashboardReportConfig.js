@@ -117,8 +117,6 @@ const getDashboardReportIdToGroups = async database => {
  * that matches the group's org unit code and level
  */
 export const generateDashboardReportConfig = async ({ database, logger }) => {
-  logger.verbose('Generating dashboard report config...');
-
   const reports = await database.executeSql(
     `SELECT id, "viewJson"->>'name' as name from "dashboardReport"`,
   );
