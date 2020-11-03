@@ -22,17 +22,6 @@ export const ENTITIES_COLUMNS = [
     Header: 'Type',
     source: 'type',
   },
-  {
-    Header: 'Export Survey Responses',
-    source: 'id',
-    type: 'export',
-    width: 200,
-    actionConfig: {
-      exportEndpoint: 'surveyResponses',
-      rowIdQueryParameter: 'entityIds',
-      fileName: '{name} Survey Responses',
-    },
-  },
 ];
 
 const COLUMNS = [
