@@ -23,7 +23,7 @@ export class ExpressionParser {
     return this.parser.getAll();
   }
 
-  setScopeVariables(values, defaultValues) {
+  setScopeVariables(values = {}, defaultValues = {}) {
     this.clear();
 
     Object.entries(values).forEach(([variableName, value]) => {

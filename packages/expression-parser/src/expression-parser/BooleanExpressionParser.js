@@ -4,7 +4,7 @@
  */
 
 export class BooleanExpressionParser extends ExpressionParser {
-  evaluate(expression, values, defaultValues) {
+  evaluate(expression, values = {}, defaultValues = {}) {
     this.setScopeVariables(values, defaultValues);
 
     return evaluate(expression);
