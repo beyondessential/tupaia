@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
@@ -29,7 +29,7 @@ export const RadioQuestion = ({ answer, onChangeAnswer, options, style }) => (
           key={value}
           labelText={label}
           labelColor={labelColor}
-          type={'radio'}
+          type="radio"
           isChecked={isSelected}
           onToggle={() => onChangeAnswer(isSelected ? null : value)}
           style={checkboxStyle}

@@ -10,7 +10,6 @@ import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-sag
 import request from './utils/request';
 import {
   ATTEMPT_CHANGE_PASSWORD,
-  ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
   ATTEMPT_LOGIN,
   ATTEMPT_LOGOUT,
@@ -30,8 +29,6 @@ import {
   displayUnverified,
   fetchChangePasswordError,
   fetchChangePasswordSuccess,
-  fetchChartExportError,
-  fetchChartExportSuccess,
   fetchCountryAccessDataError,
   fetchCountryAccessDataSuccess,
   fetchDashboardError,
@@ -243,7 +240,7 @@ function* attemptUserLogin(action) {
     yield put(findLoggedIn(LOGIN_TYPES.MANUAL, response.emailVerified));
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
-    if (errorMessage.details && errorMessage.details === 'Email address not yet verified') {
+    if (errorMessage?.error === 'Email address not yet verified') {
       yield put(displayUnverified());
     } else yield put(error.errorFunction(errorMessage));
   }
@@ -892,77 +889,6 @@ function getTimeZone() {
   }
 }
 
-function* exportChart(action) {
-  const requestResourceUrl = 'export/chart';
-
-  const {
-    viewId,
-    dashboardGroupId,
-    organisationUnitCode,
-    organisationUnitName,
-    selectedFormat,
-    exportFileName,
-    chartType,
-    startDate,
-    endDate,
-    selectedDisaster,
-    extraConfig,
-    projectCode,
-  } = action;
-
-  const timeZone = getTimeZone();
-
-  const exportUrl = createUrlString({
-    // Note that dashboard means dashboardId here rather than dashboardCode, e.g. 301 not General
-    [URL_COMPONENTS.DASHBOARD]: dashboardGroupId,
-    [URL_COMPONENTS.REPORT]: viewId,
-    [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
-    [URL_COMPONENTS.TIMEZONE]: timeZone,
-    [URL_COMPONENTS.START_DATE]: formatDateForApi(startDate, timeZone),
-    [URL_COMPONENTS.END_DATE]: formatDateForApi(endDate, timeZone),
-    [URL_COMPONENTS.DISASTER_START_DATE]:
-      selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
-    [URL_COMPONENTS.DISASTER_END_DATE]:
-      selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
-    [URL_COMPONENTS.PROJECT]: projectCode,
-    [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
-  });
-
-  const fetchOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      exportUrl,
-      viewId,
-      dashboardGroupId,
-      projectCode,
-      organisationUnitCode,
-      organisationUnitName,
-      selectedFormat,
-      exportFileName,
-      chartType,
-      extraConfig,
-    }),
-  };
-
-  const requestContext = {
-    alwaysUseSuppliedErrorFunction: true,
-  };
-
-  try {
-    yield call(request, requestResourceUrl, fetchChartExportError, fetchOptions, requestContext);
-    yield put(fetchChartExportSuccess());
-  } catch (error) {
-    yield put(error.errorFunction(error.message));
-  }
-}
-
-function* watchAttemptChartExport() {
-  yield takeLatest(ATTEMPT_CHART_EXPORT, exportChart);
-}
-
 /**
  * Fetches drilldown data for a given view and level.
  */
@@ -1100,7 +1026,6 @@ export default [
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
-  watchAttemptChartExport,
   watchAttemptAttemptDrillDown,
   watchUserChangesAndUpdatePermissions,
   watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,

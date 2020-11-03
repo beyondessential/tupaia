@@ -10,6 +10,7 @@ import { ValidationError } from '@tupaia/utils/dist/errors';
 export class RouteHandler {
   constructor(req, res) {
     this.req = req;
+
     this.query = req.query;
     this.res = res;
     this.entity = null;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -16,7 +15,7 @@ describe('buildArithmetic', () => {
   const aggregator = createAggregator(ANALYTIC_RESPONSE_FIXTURES);
 
   describe('throws for invalid config', () => {
-    const testData: [string, {}, RegExp][] = [
+    const testData: [string, Record<string, unknown>, RegExp][] = [
       ['undefined formula', { aggregation: {} }, /Error .*formula.* empty/],
       ['formula is not a string', { formula: {}, aggregation: {} }, /Error .*formula.* string/],
       ['undefined aggregation', { formula: 'A + B' }, /Error .*aggregation.* empty/],

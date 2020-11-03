@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 
@@ -25,9 +25,6 @@ function mapDispatchToProps(dispatch, { screenProps }) {
   };
 }
 
-const HomeScreenContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(HomeScreen);
+const HomeScreenContainer = connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 export { HomeScreenContainer };
