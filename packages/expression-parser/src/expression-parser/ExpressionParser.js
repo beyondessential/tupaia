@@ -18,7 +18,20 @@ export class ExpressionParser {
     return this.parser.getAll();
   }
 
+  setScopeVariables(values, defaultValues) {
+    this.clear();
+
+    Object.entries(values).forEach(([variableName, value]) => {
+      const expressionValue = value || defaultValues[variableName];
+      this.setScopeVariable(variableName, expressionValue);
+    });
+  }
+
   setScopeVariable(name, value) {
     this.parser.set(name, value);
+  }
+
+  clear() {
+    this.parser.clear();
   }
 }

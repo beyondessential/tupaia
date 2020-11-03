@@ -5,10 +5,7 @@
 
 export class BooleanExpressionParser extends ExpressionParser {
   evaluate(expression, values, defaultValues) {
-    Object.entries(values).forEach(([variableName, value]) => {
-      const expressionValue = value || defaultValues[variableName];
-      this.setScopeVariable(variableName, expressionValue);
-    });
+    this.setScopeVariables(values, defaultValues);
 
     return evaluate(expression);
   }
