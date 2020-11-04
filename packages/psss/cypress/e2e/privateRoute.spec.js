@@ -7,7 +7,7 @@ import { cleanup } from '@testing-library/react';
 afterEach(cleanup);
 
 describe('private route', () => {
-  it('redirects a logged out user form base url to the login form', () => {
+  it('redirects a logged out user from base url to the login form', () => {
     cy.visit('/');
     cy.findByPlaceholderText(/email/i);
     cy.findByPlaceholderText(/password/i);

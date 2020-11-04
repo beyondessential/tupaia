@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
 import {
   CardTabList,
@@ -28,7 +29,6 @@ import { CreateOutbreakModal } from '../Modals';
 import { NotesTab } from '../NotesTab';
 import { countryFlagImage, getCountryName } from '../../utils';
 import { useFetch } from '../../hooks';
-import { useParams } from 'react-router-dom';
 
 const Option = styled.span`
   display: flex;

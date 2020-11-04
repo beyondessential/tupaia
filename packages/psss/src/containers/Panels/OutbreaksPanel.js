@@ -15,6 +15,7 @@ import {
   WarningCloud,
   LinkButton,
 } from '@tupaia/ui-components';
+import { useParams } from 'react-router-dom';
 import {
   Drawer,
   AlertsDrawerHeader,
@@ -28,7 +29,6 @@ import * as COLORS from '../../constants/colors';
 import { countryFlagImage, getCountryName } from '../../utils';
 import { connectApi } from '../../api';
 import { useFetch } from '../../hooks';
-import { useParams } from 'react-router-dom';
 
 const Option = styled.span`
   display: flex;

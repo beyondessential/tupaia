@@ -18,7 +18,5 @@ export const getEntitiesAllowedByUser = user => {
   }
 
   const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed('PSSS');
-  // Todo: filter this list to countries only
-  console.log('entities allowed', entities);
   return entities.map(e => e.toLowerCase()); // always use lowercase entities
 };
