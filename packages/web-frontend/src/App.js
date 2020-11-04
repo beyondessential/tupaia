@@ -13,7 +13,6 @@ import { FETCH_INITIAL_DATA } from './actions';
 
 const DesktopApp = lazy(() => import('./screens/desktop/RootScreen'));
 const MobileApp = lazy(() => import('./screens/mobile/RootScreen'));
-const ExporterApp = lazy(() => import('./screens/exporter/RootScreen'));
 
 const store = configureStore();
 const { dispatch } = store;
@@ -35,8 +34,6 @@ const App = () => {
 
   if (appType === 'mobile') {
     RootScreen = MobileApp;
-  } else if (appType === 'exporter') {
-    RootScreen = ExporterApp;
   }
 
   return (

@@ -85,12 +85,6 @@ import {
   TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
   SET_OVERLAY_COMPONENT,
-  OPEN_EXPORT_DIALOG,
-  CLOSE_EXPORT_DIALOG,
-  ATTEMPT_CHART_EXPORT,
-  FETCH_CHART_EXPORT_SUCCESS,
-  FETCH_CHART_EXPORT_ERROR,
-  SELECT_CHART_EXPORT_FORMAT,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
   UPDATE_ENLARGED_DIALOG,
@@ -638,84 +632,6 @@ function global(
   }
 }
 
-function chartExport(
-  state = {
-    isVisible: false,
-    isLoading: false,
-    isComplete: false,
-    errorMessage: '',
-    formats: ['png'],
-    organisationUnitCode: '',
-    organisationUnitName: '',
-    viewId: '',
-    dashboardGroupId: '',
-    chartType: '',
-    startDate: null,
-    endDate: null,
-    extraConfig: {},
-    selectedFormat: 'png',
-  },
-  action,
-) {
-  switch (action.type) {
-    case ATTEMPT_CHART_EXPORT:
-      return {
-        ...state,
-        isLoading: true,
-        errorMessage: '',
-      };
-
-    case FETCH_CHART_EXPORT_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        isComplete: true,
-      };
-
-    case FETCH_CHART_EXPORT_ERROR:
-      return {
-        ...state,
-        isLoading: false,
-        errorMessage: action.errorMessage,
-      };
-
-    case OPEN_EXPORT_DIALOG:
-      return {
-        ...state,
-        isVisible: true,
-        isLoading: false,
-        isComplete: false,
-        organisationUnitCode: action.organisationUnitCode,
-        organisationUnitName: action.organisationUnitName,
-        viewId: action.viewId,
-        dashboardGroupId: action.dashboardGroupId,
-        startDate: action.startDate,
-        endDate: action.endDate,
-        formats: action.formats,
-        selectedFormat: action.formats[0],
-        chartType: action.chartType,
-        extraConfig: action.extraConfig,
-      };
-
-    case CLOSE_EXPORT_DIALOG:
-      return {
-        ...state,
-        isVisible: false,
-        isComplete: false,
-        errorMessage: '',
-      };
-
-    case SELECT_CHART_EXPORT_FORMAT:
-      return {
-        ...state,
-        selectedFormat: action.format,
-      };
-
-    default:
-      return state;
-  }
-}
-
 function enlargedDialog(
   state = {
     isVisible: false,
@@ -876,7 +792,6 @@ export default combineReducers({
   changePassword,
   resetPassword,
   requestCountryAccess,
-  chartExport,
   enlargedDialog,
   drillDown,
   disaster,
