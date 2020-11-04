@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { exportData } from './actions';
@@ -15,49 +16,173 @@ import {
   LightOutlinedButton,
   OutlinedButton,
   SaveAlt,
+  DateTimePicker,
+  RadioGroup,
 } from '@tupaia/ui-components';
 import { ModalContentProvider } from '../widgets';
 import { Autocomplete } from '../autocomplete';
 
-const SurveyResponsesExportModalComponent = ({ onExport, errorMessage }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+const MODES = {
+  COUNTRY: 'country',
+  ENTITY: 'entity',
+};
+
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  ERROR: 'error',
+  DISABLED: 'disabled',
+};
+
+const SurveyResponsesExportModalComponent = ({ onExport }) => {
+  const [status, setStatus] = useState(STATUS.IDLE);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
+  const [values, setValues] = useState({});
+  const [mode, setMode] = useState(MODES.COUNTRY);
+
+  const handleValueChange = (key, value) => {
+    setValues(prevState => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
+
+  const handleSubmit = async event => {
+    event.preventDefault();
+    setErrorMessage(null);
+    setStatus(STATUS.LOADING);
+
+    if (mode === MODES.COUNTRY) {
+      delete values.entities;
+    } else {
+      delete values.countries;
+    }
+
+    console.log('values', values);
+
+    try {
+      await onExport(values);
+      setStatus(STATUS.SUCCESS);
+    } catch (error) {
+      setStatus(STATUS.ERROR);
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleDismiss = () => {
+    setStatus(STATUS.IDLE);
+    setErrorMessage(null);
+  };
 
   return (
     <>
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} disableBackdropClick>
-        <DialogHeader
-          onClose={() => setIsOpen(false)}
-          title={errorMessage ? 'Error' : 'Export Survey Responses'}
-          color={errorMessage ? 'error' : 'textPrimary'}
-        />
-        <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
-          <form action="">
+        <form onSubmit={handleSubmit} noValidate>
+          <DialogHeader
+            onClose={() => setIsOpen(false)}
+            title={errorMessage ? 'Error' : 'Export Survey Responses'}
+            color={errorMessage ? 'error' : 'textPrimary'}
+          />
+          <ModalContentProvider errorMessage={errorMessage} isLoading={status === STATUS.LOADING}>
             <Autocomplete
               label="Surveys to Include"
               helperText="Please enter the names of the surveys to be exported."
+              reduxId="surveyCodes"
+              onChange={inputValue => handleValueChange('surveyCodes', inputValue)}
               endpoint="country/{id}/surveys"
-              optionLabelKey={optionLabelKey}
-              optionValueKey={optionValueKey}
-              reduxId={inputKey}
-              onChange={inputValue => onChange(inputKey, inputValue)}
-              canCreateNewOptions={canCreateNewOptions}
-              disabled={disabled}
-              allowMultipleValues={allowMultipleValues}
-              parentRecord={parentRecord}
+              optionLabelKey="name"
+              optionValueKey="code"
+              allowMultipleValues
             />
-          </form>
-        </ModalContentProvider>
-        <DialogFooter>
-          <OutlinedButton onClick={() => setIsOpen(false)} disabled={isLoading}>
-            {errorMessage ? 'Dismiss' : 'Cancel'}
-          </OutlinedButton>
-          <Button onClick={() => onExport()} disabled={!!errorMessage || isLoading}>
-            Export
-          </Button>
-        </DialogFooter>
+            <RadioGroup
+              label="Mode"
+              onChange={event => setMode(event.currentTarget.value)}
+              options={[
+                {
+                  label: 'Country',
+                  value: MODES.COUNTRY,
+                },
+                {
+                  label: 'Entity',
+                  value: MODES.ENTITY,
+                },
+              ]}
+              value={mode}
+            />
+            {mode === MODES.COUNTRY ? (
+              <Autocomplete
+                label="Countries to Include"
+                helperText="Please enter the names of the countries to be exported."
+                reduxId="countries"
+                onChange={inputValue => handleValueChange('countries', inputValue)}
+                endpoint="country"
+                optionLabelKey="name"
+                optionValueKey="code"
+              />
+            ) : (
+              <Autocomplete
+                label="Entities to Include"
+                helperText="Please enter the names of the entities to be exported."
+                reduxId="entities"
+                onChange={inputValue => handleValueChange('entities', inputValue)}
+                endpoint="entity"
+                optionLabelKey="name"
+                optionValueKey="code"
+              />
+            )}
+            <DateTimePicker
+              label="Start Date"
+              format="yyyy-MM-dd HH:mm"
+              value={
+                values.startDate && moment(values.startDate).isValid
+                  ? moment(values.startDate).format('YYYY-MM-DDTHH:mm')
+                  : null
+              }
+              onChange={date => {
+                if (date && moment(date).isValid()) {
+                  handleValueChange('startDate', moment(date).toISOString());
+                }
+              }}
+            />
+            <DateTimePicker
+              label="End Date"
+              format="yyyy-MM-dd HH:mm"
+              value={
+                values.endDate && moment(values.endDate).isValid
+                  ? moment(values.endDate).format('YYYY-MM-DDTHH:mm')
+                  : null
+              }
+              onChange={date => {
+                if (date && moment(date).isValid()) {
+                  handleValueChange('endDate', moment(date).toISOString());
+                }
+              }}
+            />
+          </ModalContentProvider>
+          <DialogFooter>
+            {status === STATUS.ERROR ? (
+              <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
+            ) : (
+              <OutlinedButton onClick={() => setIsOpen(false)}>Cancel</OutlinedButton>
+            )}
+            <Button
+              type="submit"
+              disabled={status === STATUS.ERROR}
+              isLoading={status === STATUS.LOADING}
+            >
+              Export
+            </Button>
+          </DialogFooter>
+        </form>
       </Dialog>
-      <LightOutlinedButton startIcon={<SaveAlt />} onClick={() => setIsOpen(true)}>
+      <LightOutlinedButton
+        startIcon={<SaveAlt />}
+        onClick={() => setIsOpen(true)}
+        isLoading={STATUS === STATUS.LOADING}
+        disabled={STATUS === STATUS.ERROR}
+      >
         Export
       </LightOutlinedButton>
     </>
@@ -66,24 +191,20 @@ const SurveyResponsesExportModalComponent = ({ onExport, errorMessage }) => {
 
 SurveyResponsesExportModalComponent.propTypes = {
   onExport: PropTypes.func.isRequired,
-  errorMessage: PropTypes.string,
 };
 
-SurveyResponsesExportModalComponent.defaultProps = {
-  errorMessage: null,
+const actionConfig = {
+  exportEndpoint: 'surveyResponses',
+  rowIdQueryParameter: 'countryId',
+  fileName: '{name} Survey Responses',
 };
 
-const mapStateToProps = ({ importExport }) => ({
-  isOpen: importExport.isExportDialogOpen,
-  errorMessage: importExport.errorMessage,
-});
-
-const mapDispatchToProps = (dispatch, { actionConfig }) => ({
-  onExport: (queryParameters, parentRecord) =>
+const mapDispatchToProps = dispatch => ({
+  onExport: (queryParameters, parentRecord = {}) =>
     dispatch(exportData(actionConfig, parentRecord, queryParameters)),
 });
 
 export const SurveyResponsesExportModal = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(SurveyResponsesExportModalComponent);

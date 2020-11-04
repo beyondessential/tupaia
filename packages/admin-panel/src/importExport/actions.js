@@ -53,14 +53,17 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
   return queryParameters;
 };
 
-export const exportData = (
-  { exportEndpoint, rowIdQueryParameter, fileName },
-  rowData,
-  filterQueryParameters,
-) => async (dispatch, getState, { api }) => {
-  dispatch({
-    type: IMPORT_EXPORT_START,
+function sleep(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
   });
+}
+
+export const exportData = (
+  { exportEndpoint, rowIdQueryParameter, fileName }, // actionConfig
+  rowData, // ? parentRecord
+  filterQueryParameters, // values
+) => async (dispatch, getState, { api }) => {
   const queryParameters = buildExportQueryParameters(
     rowIdQueryParameter,
     rowData,
@@ -70,17 +73,8 @@ export const exportData = (
     !queryParameters && rowData.id ? `/${rowData.id}` : ''
   }`;
   const processedFileName = processFileName(fileName, rowData);
-  try {
-    await api.download(endpoint, queryParameters, processedFileName);
-    dispatch({
-      type: IMPORT_EXPORT_SUCCESS,
-    });
-  } catch (error) {
-    dispatch({
-      type: IMPORT_EXPORT_ERROR,
-      errorMessage: error.message,
-    });
-  }
+  await sleep(3000);
+  await api.download(endpoint, queryParameters, processedFileName);
 };
 
 const processFileName = (unprocessedFileName, rowData) => {
