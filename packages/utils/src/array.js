@@ -33,3 +33,5 @@ export const max = array =>
   Array.isArray(array) && array.length > 0
     ? array.reduce((result, value) => Math.max(value, result), Number.NEGATIVE_INFINITY)
     : undefined;
+
+export const toArray = input => (Array.isArray(input) ? input : [input]);
