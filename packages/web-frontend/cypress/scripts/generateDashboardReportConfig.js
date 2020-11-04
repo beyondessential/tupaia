@@ -5,6 +5,7 @@
 
 import { snake } from 'case';
 
+import { filterEntities, toArray } from '@tupaia/utils';
 import orgUnitMap from '../config/orgUnitMap.json';
 import { CONFIG_ROOT } from '../constants';
 
@@ -20,7 +21,7 @@ const WARNING_TYPE_TO_MESSAGE = {
   [WARNING_TYPES.DRILL_DOWN]: `drill down levels are not supported`,
   [WARNING_TYPES.NO_GROUP]: 'not attached to any dashboard group',
   [WARNING_TYPES.NO_PROJECT]: 'not attached to any projects',
-  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `no valid org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
+  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `no compatible org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
 };
 
 const logWarningsForSkippedReports = (logger, skippedReportsByWarnType) => {
@@ -44,7 +45,21 @@ const createUrl = (report, urlParams) => {
   return `/${projectCode}/${orgUnitCode}/${dashboardGroup.name}?report=${report.id}`;
 };
 
-const selectUrlParams = dashboardGroups => {
+const selectOrgUnitCode = async (database, orgUnitCodes, entityConditions) => {
+  if (!entityConditions) {
+    return orgUnitCodes[0];
+  }
+
+  const entities = await database.executeSql(
+    `SELECT * FROM entity WHERE code IN (${orgUnitCodes.map(() => '?').join(',')})`,
+    orgUnitCodes,
+  );
+  return filterEntities(entities, entityConditions)[0]?.code;
+};
+
+const selectUrlParams = async (database, report, dashboardGroups) => {
+  const { viewJson } = report;
+
   for (const dashboardGroup of dashboardGroups) {
     const {
       organisationUnitCode: dashboardOrgUnitCode,
@@ -52,7 +67,12 @@ const selectUrlParams = dashboardGroups => {
     } = dashboardGroup;
 
     const level = snake(dashboardLevel);
-    const orgUnitCode = orgUnitMap?.[dashboardOrgUnitCode]?.[level];
+    const orgUnitCodes = toArray(orgUnitMap?.[dashboardOrgUnitCode]?.[level]);
+    const orgUnitCode = await selectOrgUnitCode(
+      database,
+      orgUnitCodes,
+      (viewJson || {}).displayOnEntityConditions,
+    );
     const [projectCode] = dashboardGroup.projectCodes;
 
     if (orgUnitCode && projectCode) {
@@ -63,7 +83,7 @@ const selectUrlParams = dashboardGroups => {
   return undefined;
 };
 
-const getUrlsForReports = (reports, reportIdToGroups) => {
+const getUrlsForReports = async (database, reports, reportIdToGroups) => {
   const skippedReports = {
     [WARNING_TYPES.DRILL_DOWN]: [],
     [WARNING_TYPES.NO_GROUP]: [],
@@ -71,34 +91,33 @@ const getUrlsForReports = (reports, reportIdToGroups) => {
     [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: [],
   };
 
-  const urls = reports
-    .map(report => {
-      const { drillDownLevel } = report;
-      if (drillDownLevel) {
-        skippedReports[WARNING_TYPES.DRILL_DOWN].push(`${report.id} - level ${drillDownLevel}`);
-        return null;
-      }
-      const groupsForReport = reportIdToGroups[report.id];
-      if (!groupsForReport) {
-        skippedReports[WARNING_TYPES.NO_GROUP].push(report.id);
-        return null;
-      }
-      if (!groupsForReport.some(dg => dg.projectCodes)) {
-        skippedReports[WARNING_TYPES.NO_PROJECT].push(report.id);
-        return null;
-      }
-      const urlParams = selectUrlParams(groupsForReport);
-      if (!urlParams) {
-        skippedReports[WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY].push(report.id);
-        return null;
-      }
+  const getUrlForReport = async report => {
+    const { drillDownLevel } = report;
+    if (drillDownLevel) {
+      skippedReports[WARNING_TYPES.DRILL_DOWN].push(`${report.id} - level ${drillDownLevel}`);
+      return null;
+    }
+    const groupsForReport = reportIdToGroups[report.id];
+    if (!groupsForReport) {
+      skippedReports[WARNING_TYPES.NO_GROUP].push(report.id);
+      return null;
+    }
+    if (!groupsForReport.some(dg => dg.projectCodes)) {
+      skippedReports[WARNING_TYPES.NO_PROJECT].push(report.id);
+      return null;
+    }
+    const urlParams = await selectUrlParams(database, report, groupsForReport);
+    if (!urlParams) {
+      skippedReports[WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY].push(report.id);
+      return null;
+    }
 
-      return createUrl(report, urlParams);
-    })
-    .filter(u => u)
-    .sort();
+    return createUrl(report, urlParams);
+  };
 
-  return { urls, skippedReports };
+  const urls = await Promise.all(reports.map(getUrlForReport));
+  const validUrls = urls.filter(u => u).sort();
+  return { urls: validUrls, skippedReports };
 };
 
 const getDashboardReportIdToGroups = async database => {
@@ -124,9 +143,9 @@ const getDashboardReportIdToGroups = async database => {
  * that matches the group's org unit code and level
  */
 export const generateDashboardReportConfig = async ({ database, logger }) => {
-  const reports = await database.executeSql(`SELECT id, "drillDownLevel" from "dashboardReport"`);
+  const reports = await database.executeSql('SELECT * from "dashboardReport"');
   const reportIdToGroups = await getDashboardReportIdToGroups(database);
-  const { urls, skippedReports } = getUrlsForReports(reports, reportIdToGroups);
+  const { urls, skippedReports } = await getUrlsForReports(database, reports, reportIdToGroups);
   logWarningsForSkippedReports(logger, skippedReports);
   logger.info(`Report urls created: ${urls.length}, skipped: ${reports.length - urls.length}`);
 
