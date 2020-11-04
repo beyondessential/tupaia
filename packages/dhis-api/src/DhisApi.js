@@ -149,8 +149,15 @@ export class DhisApi {
     return this.fetch(endpoint, queryParameters, { method: 'DELETE' });
   }
 
-  async postData(endpoint, data) {
-    return this.post(endpoint, data, { idScheme: 'code', skipAudit: true });
+  async postData(endpoint, data, queryParameters = {}) {
+    const { idScheme = 'code', orgUnitIdScheme, programIdScheme } = queryParameters;
+
+    return this.post(endpoint, data, {
+      idScheme,
+      orgUnitIdScheme,
+      programIdScheme,
+      skipAudit: true,
+    });
   }
 
   async postDataValueSets(data) {
@@ -263,7 +270,13 @@ export class DhisApi {
   }
 
   async postEvents(events) {
-    const response = await this.postData(EVENT, { events });
+    const queryParameters = {
+      idScheme: 'uid',
+      orgUnitIdScheme: 'code',
+      programIdScheme: 'code',
+    };
+
+    const response = await this.postData(EVENT, { events }, queryParameters);
     return getDiagnosticsFromResponse(response);
   }
 
