@@ -11,6 +11,7 @@ export * from './errors';
 export { Multilock } from './Multilock';
 export * from './period';
 export * from './testUtilities';
+export { filterEntities } from './filterEntities';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { getUniqueEntries } from './getUniqueEntries';
 export {

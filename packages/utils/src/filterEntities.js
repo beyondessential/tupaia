@@ -85,7 +85,3 @@ export const filterEntities = (entities, entityFilter) => {
 
   return filteredEntities;
 };
-
-export const checkEntityAgainstConditions = (entity, conditions = {}) => {
-  return filterEntities([entity], conditions).length === 1;
-};
