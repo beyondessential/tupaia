@@ -13,6 +13,7 @@ validation:
   build:
     dockerfile: full-testable-package.Dockerfile
   cached: true
+  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
 
 testing:
@@ -22,11 +23,13 @@ testing:
     - db
   encrypted_env_file: ./ci-env-vars.encrypted # all individual .env files combined and encrypted
   cached: true
+  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
 
 db:
   image: mdillon/postgis:9.6-alpine
   cached: true
+  encrypted_dockercfg_path: dockercfg.encrypted
 
 deployment:
   build:
@@ -36,4 +39,5 @@ deployment:
     # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
     - ./.ssh:/root/.ssh
   cached: true
+  encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
