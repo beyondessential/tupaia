@@ -19,10 +19,11 @@ const setupAncestorDescendantRelations = async (
   models,
   childEntity,
   parentEntity,
-  grandParentEntity,
+  grandparentEntity,
+  hierarchyName = 'explore',
 ) => {
   const { id: hierarchyId } = await findOrCreateDummyRecord(models.entityHierarchy, {
-    name: 'explore',
+    name: hierarchyName,
   });
   await upsertDummyRecord(models.ancestorDescendantRelation, {
     ancestor_id: parentEntity.id,
@@ -30,15 +31,15 @@ const setupAncestorDescendantRelations = async (
     entity_hierarchy_id: hierarchyId,
     generational_distance: 1,
   });
-  if (grandParentEntity) {
+  if (grandparentEntity) {
     await upsertDummyRecord(models.ancestorDescendantRelation, {
-      ancestor_id: grandParentEntity.id,
+      ancestor_id: grandparentEntity.id,
       descendant_id: childEntity.id,
       entity_hierarchy_id: hierarchyId,
       generational_distance: 2,
     });
     await upsertDummyRecord(models.ancestorDescendantRelation, {
-      ancestor_id: grandParentEntity.id,
+      ancestor_id: grandparentEntity.id,
       descendant_id: parentEntity.id,
       entity_hierarchy_id: hierarchyId,
       generational_distance: 1,
@@ -94,9 +95,8 @@ describe('EntityModel', () => {
     });
   });
 
-  // todo update these tests to handle traversing alternative hierarchies
   describe('fetchNearestOrgUnitAncestor()', () => {
-    it('should return itself if it is an organisation unit', async () => {
+    it('returns itself if it is an organisation unit', async () => {
       const parentEntity = await upsertOrgUnitEntity();
       const entity = await upsertOrgUnitEntity({ parent_id: parentEntity.id });
       await setupAncestorDescendantRelations(models, entity, parentEntity);
@@ -105,7 +105,7 @@ describe('EntityModel', () => {
       assertHaveEqualIds(entity, result);
     });
 
-    it('should return its parent if it is the closest organisation unit', async () => {
+    it('returns its parent if it is the closest organisation unit', async () => {
       const parentEntity = await upsertOrgUnitEntity();
       const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
       await setupAncestorDescendantRelations(models, entity, parentEntity);
@@ -114,14 +114,86 @@ describe('EntityModel', () => {
       assertHaveEqualIds(parentEntity, result);
     });
 
-    it('should return an ancestor other than parent if it is the closest organisation unit', async () => {
-      const grandParentEntity = await upsertOrgUnitEntity();
-      const parentEntity = await upsertNonOrgUnitEntity({ parent_id: grandParentEntity.id });
+    it('returns an ancestor other than parent if it is the closest organisation unit', async () => {
+      const grandparentEntity = await upsertOrgUnitEntity();
+      const parentEntity = await upsertNonOrgUnitEntity({ parent_id: grandparentEntity.id });
       const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
-      await setupAncestorDescendantRelations(models, entity, parentEntity, grandParentEntity);
+      await setupAncestorDescendantRelations(models, entity, parentEntity, grandparentEntity);
 
       const result = await entity.fetchNearestOrgUnitAncestor();
-      assertHaveEqualIds(grandParentEntity, result);
+      assertHaveEqualIds(grandparentEntity, result);
+    });
+
+    it('fetches ancestors based on the hierarchy id specified', async () => {
+      const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
+      const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
+      const parentEntity = await upsertNonOrgUnitEntity({
+        parent_id: grandparentInExploreHierarchy.id,
+      });
+      const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
+      await setupAncestorDescendantRelations(
+        models,
+        entity,
+        parentEntity,
+        grandparentInExploreHierarchy,
+        'explore',
+      );
+      await setupAncestorDescendantRelations(
+        models,
+        entity,
+        parentEntity,
+        grandparentInLilyHierarchy,
+        'lily',
+      );
+
+      const lilyHierarchy = await models.entityHierarchy.findOne({ name: 'lily' });
+      const result = await entity.fetchNearestOrgUnitAncestor(lilyHierarchy.id);
+      assertHaveEqualIds(grandparentInLilyHierarchy, result);
+    });
+
+    it('fetches ancestors using the explore hierarchy by default', async () => {
+      const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
+      const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
+      const parentEntity = await upsertNonOrgUnitEntity({
+        parent_id: grandparentInExploreHierarchy.id,
+      });
+      const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
+      await setupAncestorDescendantRelations(
+        models,
+        entity,
+        parentEntity,
+        grandparentInExploreHierarchy,
+        'explore',
+      );
+      await setupAncestorDescendantRelations(
+        models,
+        entity,
+        parentEntity,
+        grandparentInLilyHierarchy,
+        'lily',
+      );
+
+      const result = await entity.fetchNearestOrgUnitAncestor();
+      assertHaveEqualIds(grandparentInExploreHierarchy, result);
+    });
+
+    it('fetches ancestors using another hierarchy if the entity is not present in explore', async () => {
+      const grandparentInExploreHierarchy = await upsertOrgUnitEntity();
+      const grandparentInLilyHierarchy = await upsertOrgUnitEntity();
+      const parentEntity = await upsertNonOrgUnitEntity({
+        parent_id: grandparentInExploreHierarchy.id,
+      });
+      const entity = await upsertNonOrgUnitEntity({ parent_id: parentEntity.id });
+      await setupAncestorDescendantRelations(
+        models,
+        entity,
+        parentEntity,
+        grandparentInLilyHierarchy,
+        'lily',
+      );
+
+      const result = await entity.fetchNearestOrgUnitAncestor();
+      assertHaveEqualIds(grandparentInLilyHierarchy, result);
     });
   });
 });
