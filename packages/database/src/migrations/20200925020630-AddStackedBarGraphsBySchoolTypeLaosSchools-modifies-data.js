@@ -78,46 +78,16 @@ const REPORTS = [
     },
     chartConfigConfig: [
       // Order important here
-      {
-        name: 'Tap water',
-        color: 'magenta',
-      },
-      {
-        name: 'Borehole',
-        color: 'green',
-      },
-      {
-        name: 'Spring water (gravity-fed system)',
-        color: 'deepPink',
-      },
-      {
-        name: 'Pond',
-        color: 'orange',
-      },
-      {
-        name: 'River/stream',
-        color: 'yellow',
-      },
-      {
-        name: 'Reservoir',
-        color: 'teal',
-      },
-      {
-        name: 'Well',
-        color: 'blue',
-      },
-      {
-        name: 'Rainwater harvesting',
-        color: 'pink',
-      },
-      {
-        name: 'Other',
-        color: 'maroon',
-      },
-      {
-        name: 'Multiple',
-        color: 'purple',
-      },
+      { name: 'Tap water' },
+      { name: 'Borehole' },
+      { name: 'Spring water (gravity-fed system)' },
+      { name: 'Pond' },
+      { name: 'River/stream' },
+      { name: 'Reservoir' },
+      { name: 'Well' },
+      { name: 'Rainwater harvesting' },
+      { name: 'Other' },
+      { name: 'Multiple' },
     ],
   },
   {
