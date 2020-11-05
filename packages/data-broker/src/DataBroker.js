@@ -5,13 +5,23 @@
 
 import groupBy from 'lodash.groupby';
 
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { countDistinct } from '@tupaia/utils';
 import { createService } from './services';
-import { getModels } from './getModels';
+import { modelClasses } from './modelClasses';
+
+let database;
+
+const getDatabaseInstance = () => {
+  if (!database) {
+    database = new TupaiaDatabase();
+  }
+  return database;
+};
 
 export class DataBroker {
   constructor() {
-    this.models = getModels();
+    this.models = new ModelRegistry(getDatabaseInstance(), modelClasses);
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
