@@ -57,6 +57,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   async fetchAnalyticsAndMetadata() {
     const dataElementCodes = this.buildDataElementCodes();
+    // There are some valid configs which don't fetch any data
+    if (dataElementCodes.length === 0) return { results: [] };
+
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');

@@ -18,11 +18,61 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     this.aggregator = createAggregator(Aggregator, this.models, this);
   }
 
-  findAllDataSourceEntities = async (entity, entityType, hierarchyId) => {
+  // Builds the list of entities data should be fetched from, using org unit descendants of the
+  // selected entity (optionally of a specific entity type)
+  fetchDataSourceEntities = async (entityCode, options) => {
+    const { dataSourceEntityType, ...restOfOptions } = options;
+    if (Array.isArray(dataSourceEntityType)) {
+      return (
+        await Promise.all(
+          dataSourceEntityType.map(entityType =>
+            this.fetchAndFilterDataSourceEntitiesOfType(entityCode, entityType, restOfOptions),
+          ),
+        )
+      ).flat();
+    }
+
+    const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
+    const entity = await this.models.entity.findOne({ code: entityCode });
+    return this.fetchAndFilterDataSourceEntitiesOfType(entity, entityType, restOfOptions);
+  };
+
+  fetchAndFilterDataSourceEntitiesOfType = async (entity, entityType, options) => {
+    const { dataSourceEntityFilter, ...restOfOptions } = options;
+
+    const allDataSourceEntities = await this.fetchDataSourceEntitiesOfType(
+      entity,
+      entityType,
+      restOfOptions,
+    );
+
+    const permittedEntities = await this.filterOutNonPermittedEntities(allDataSourceEntities);
+
+    if (dataSourceEntityFilter) {
+      return filterEntities(permittedEntities, dataSourceEntityFilter);
+    }
+    return permittedEntities;
+  };
+
+  fetchDataSourceEntitiesOfType = async (entity, entityType, options) => {
+    const { includeSiblingData, aggregationEntityType } = options;
+    const hierarchyId = await this.fetchHierarchyId();
+
     // if no entity type is specified, we should just use the closest "canonical org unit" descendants
     // this is the "old way", and exists to support older dashboard reports fetching from DHIS2
     if (!entityType) {
       return entity.getNearestOrgUnitDescendants(hierarchyId);
+    }
+
+    // fetch siblings via the common ancestor if includeSiblingData is true
+    //    A
+    //   / \
+    //  B   C
+    // this is when we are at B and want to fetch data for both B and C
+    //
+    if (includeSiblingData) {
+      const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
+      return ancestor.getDescendantsOfType(entityType, hierarchyId);
     }
 
     // if the entity we're building for is of the correct type already, just use that
@@ -46,35 +96,5 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       {},
     );
     return entities.filter(e => countryAccess[e.country_code]);
-  };
-
-  // Builds the list of entities data should be fetched from, using org unit descendants of the
-  // selected entity (optionally of a specific entity type)
-  fetchDataSourceEntities = async (entityCode, dataSourceEntityType, dataSourceEntityFilter) => {
-    if (Array.isArray(dataSourceEntityType)) {
-      return (
-        await Promise.all(
-          dataSourceEntityType.map(entityType =>
-            this.fetchDataSourceEntities(entityCode, entityType, dataSourceEntityFilter),
-          ),
-        )
-      ).flat();
-    }
-
-    const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
-    const hierarchyId = await this.fetchHierarchyId();
-    const entity = await this.models.entity.findOne({ code: entityCode });
-    const allDataSourceEntities = await this.findAllDataSourceEntities(
-      entity,
-      entityType,
-      hierarchyId,
-    );
-
-    const permittedEntities = await this.filterOutNonPermittedEntities(allDataSourceEntities);
-
-    if (dataSourceEntityFilter) {
-      return filterEntities(permittedEntities, dataSourceEntityFilter);
-    }
-    return permittedEntities;
   };
 }

@@ -6,17 +6,7 @@
 export const MAPBOX_TOKEN =
   'pk.eyJ1Ijoic3Vzc29sIiwiYSI6ImNqNHMwOW02MzFhaGIycXRjMnZ1dXFlN2gifQ.1sAg5w7hYU7e3LtJM0-hSg';
 
-const GERRY_ACCESS_KEY =
-  'pk.eyJ1IjoiZ2VkY2tlbGx5IiwiYSI6ImNrY3BsZ2RwYTB3N20yc3FyaTZlNzhzNDUifQ.N61FIOcE-3RTksi9Tlm5ow#10.25/17.9782/102.6277';
-
-const TOM_ACCESS_KEY =
-  'pk.eyJ1IjoiY2FpZ2VydG9tIiwiYSI6ImNrN2luY3Q2NTBsczUzZXF2NzBjcDMyZnIifQ.5j-7bo9L6dzC0VGqeUmsmA';
-
-const GERRY_USERNAME = 'gedckelly';
-
-const TOM_USERNAME = 'caigertom';
-
-const makeMapboxStyleUrl = ({ styleId, accessKey = GERRY_ACCESS_KEY, username = GERRY_USERNAME }) =>
+const makeMapboxStyleUrl = ({ styleId, accessKey = MAPBOX_TOKEN, username = 'sussol' }) =>
   `https://api.mapbox.com/styles/v1/${username}/${styleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${accessKey}`;
 
 export const TILE_SETS = [
@@ -38,13 +28,13 @@ export const TILE_SETS = [
     label: 'Waterways',
     thumbnail:
       'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/waterways-tile-thumbnail.png',
-    url: makeMapboxStyleUrl({ styleId: 'ckemdct811px619qklzgvvg53' }),
+    url: makeMapboxStyleUrl({ styleId: 'ckglkjbtq02t919nytx6yaopk' }),
   },
   {
     key: 'roads',
     label: 'Roads',
     thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/roads-tile-thumbnail.png',
-    url: makeMapboxStyleUrl({ styleId: 'ckenp4uq10dfq1anzert7iot7' }),
+    url: makeMapboxStyleUrl({ styleId: 'ckglkibqe02u019rsdszxsxrr' }),
   },
   {
     key: 'ethnicity',
@@ -52,9 +42,7 @@ export const TILE_SETS = [
     thumbnail:
       'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/ethnicity-tile-thumbnail.png',
     url: makeMapboxStyleUrl({
-      styleId: 'ckexmd0e30lm619lxeu6za5yt',
-      accessKey: TOM_ACCESS_KEY,
-      username: TOM_USERNAME,
+      styleId: 'ckh14lmqg02v819nfa7y14xvy',
     }),
     legendItems: [
       {
@@ -139,6 +127,6 @@ export const TILE_SETS = [
     key: 'terrain',
     label: 'Terrain',
     thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/terrain-tile-thumbnail.png',
-    url: makeMapboxStyleUrl({ styleId: 'ckenu2thw0ibl1anzk5aarzu6' }),
+    url: makeMapboxStyleUrl({ styleId: 'ckglkirqa02ty19tb3kzky18t' }),
   },
 ];
