@@ -15,13 +15,12 @@ exports.setup = function (options, seedLink) {
 };
 
 const dashboardReportId = 'Raw_Data_KI_MS1_Surveys';
-const dashboardGroupId = 331;
+const dashboardGroupName = 'MS1 Administration';
 const mapOverlayId = 'MS1_COMPLETENESS';
 exports.up = async function (db) {
   // Add MS1 Administration to Dashboard Group
   await db.runSql(`
       INSERT INTO "dashboardGroup" (
-        "id",
         "organisationLevel" ,
         "userGroup" ,
         "organisationUnitCode" ,
@@ -31,12 +30,11 @@ exports.up = async function (db) {
         "projectCodes")
         
       VALUES (
-         ${dashboardGroupId},
         'Country',
         'MS1 Administration',
         'KI',
         '{${dashboardReportId}}',
-        'MS1 Administration',
+        '${dashboardGroupName}',
         'KI_MS1_Administration',
         '{explore}'
       );
@@ -84,7 +82,7 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM "dashboardGroup" 
-    WHERE id = ${dashboardGroupId};
+    WHERE name = '${dashboardGroupName}';
   `);
 
   await db.runSql(`
