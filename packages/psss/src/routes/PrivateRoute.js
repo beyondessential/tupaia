@@ -32,7 +32,7 @@ export const PrivateRouteComponent = ({
       }
 
       if (authCheck) {
-        const isAuthorised = authCheck(currentUser, match);
+        const isAuthorised = authCheck(match);
         if (!isAuthorised) {
           return <UnauthorisedView />;
         }

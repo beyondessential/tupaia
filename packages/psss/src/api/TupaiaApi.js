@@ -7,8 +7,13 @@
 // https://docs.cypress.io/guides/guides/network-requests.html#Testing-Strategies
 import 'whatwg-fetch';
 import { stringifyQuery } from '@tupaia/utils';
-import { getEntitiesAllowedByUser } from '../utils/auth';
-import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../store';
+import {
+  getAccessToken,
+  getRefreshToken,
+  loginSuccess,
+  loginError,
+  getEntitiesAllowed,
+} from '../store';
 
 const [CLIENT_BASIC_AUTH_HEADER, PSSS_API_URL] = [
   process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
@@ -56,7 +61,7 @@ export class TupaiaApi {
       throw new Error('Invalid response from auth server');
     }
 
-    const entitiesAllowed = getEntitiesAllowedByUser(authenticationDetails.user);
+    const entitiesAllowed = getEntitiesAllowed({ auth: { user } });
     if (entitiesAllowed.length === 0) {
       throw new Error(
         'Your permissions for Tupaia do not allow you to view the Pacific Syndromic Surveillance System',
