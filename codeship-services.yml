@@ -26,6 +26,7 @@ testing:
 
 db:
   image: mdillon/postgis:9.6-alpine
+  cached: true
 
 deployment:
   build:
