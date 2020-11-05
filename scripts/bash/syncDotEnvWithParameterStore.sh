@@ -36,12 +36,10 @@ while [[ $# -gt 0 ]]; do
     --upload)
         DIRECTION="upload"
         shift # past argument
-        shift # past value
         ;;
     --download)
         DIRECTION="download"
         shift # past argument
-        shift # past value
         ;;
     esac
 done
