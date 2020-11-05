@@ -17,7 +17,7 @@ var THUMB_WIDTH = 500;
 // get reference to S3 client
 var s3 = new AWS.S3();
 
-exports.handler = function(event, context, callback) {
+exports.handler = function (event, context, callback) {
   // Read options from the event.
   console.log('Reading options from event:\n', util.inspect(event, { depth: 5 }));
   var srcBucket = event.Records[0].s3.bucket.name;
@@ -34,7 +34,7 @@ exports.handler = function(event, context, callback) {
   }
   var imageType = typeMatch[1];
   if (imageType != 'jpg' && imageType != 'png') {
-    callback('Unsupported image type: ${imageType}');
+    callback(`Unsupported image type: ${imageType}`);
     return;
   }
 
@@ -60,7 +60,7 @@ exports.handler = function(event, context, callback) {
         }
       },
       function resize(data, next) {
-        Jimp.read(data, function(err, image) {
+        Jimp.read(data, function (err, image) {
           image
             .resize(THUMB_WIDTH, Jimp.AUTO)
             .quality(60)
@@ -81,7 +81,7 @@ exports.handler = function(event, context, callback) {
         );
       },
     ],
-    function(err) {
+    function (err) {
       if (err) {
         console.error(
           'Unable to resize ' +

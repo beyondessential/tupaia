@@ -41,11 +41,11 @@ export class QueryBuilder {
   async getDataSourceEntities() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
-      entity,
-      (this.getQueryParameter('entityAggregation') || {}).dataSourceEntityType,
-      this.getQueryParameter('dataSourceEntityFilter'),
-    );
+    const entityAggregationConfig = this.getQueryParameter('entityAggregation') || {};
+    const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(entity, {
+      ...entityAggregationConfig,
+      dataSourceEntityFilter: this.getQueryParameter('dataSourceEntityFilter'),
+    });
     return dataSourceEntities;
   }
 
