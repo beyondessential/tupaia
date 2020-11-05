@@ -31,7 +31,7 @@ const logWarningsForSkippedReports = (logger, skippedReports) => {
     if (!message) {
       throw new Error(`Dev error: no message defined for warning category: '${warnType}'`);
     }
-    logger.warn(`* ${message}`);
+    logger.warn(`* ${message}:`);
     reportIds.sort().forEach(reportId => {
       logger.warn(`  ${reportId}`);
     });
@@ -43,8 +43,11 @@ const createUrl = (report, urlParams) => {
   return `/${projectCode}/${orgUnitCode}/${dashboardGroup.name}?report=${report.id}`;
 };
 
+/**
+ * @returns {string|undefined}
+ */
 const selectOrgUnitCode = async (database, orgUnitCodes, entityConditions) => {
-  if (!entityConditions) {
+  if (orgUnitCodes.length === 0 || !entityConditions) {
     return orgUnitCodes[0];
   }
 
