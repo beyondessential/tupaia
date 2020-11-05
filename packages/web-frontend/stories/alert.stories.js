@@ -8,7 +8,6 @@ import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import MoodBadIcon from '@material-ui/icons/MoodBad';
 import { Alert } from '../src/components/Alert';
-import { CheckCircle } from '@material-ui/icons';
 
 const Container = styled(MuiBox)`
   padding: 1rem;

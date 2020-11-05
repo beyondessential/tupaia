@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import styled from 'styled-components';
 
 import { VIEW_STYLES } from '../../../styles';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
@@ -14,6 +15,13 @@ const UnknownChart = () => (
     <h2 style={VIEW_STYLES.title}>New chart coming soon</h2>
   </div>
 );
+
+const Container = styled.div`
+  // recharts components doesn't pass nested styles so they need to be added on a wrapping component
+  li.recharts-legend-item {
+    white-space: nowrap; // ensure there are no line breaks on the export legends
+  }
+`;
 
 export class ChartWrapper extends PureComponent {
   getViewContent() {
@@ -42,9 +50,9 @@ export class ChartWrapper extends PureComponent {
     const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
     return (
       <div style={VIEW_STYLES.chartViewContainer}>
-        <div style={VIEW_STYLES.chartContainer}>
+        <Container style={VIEW_STYLES.chartContainer}>
           <Chart {...this.props} viewContent={viewContent} />
-        </div>
+        </Container>
       </div>
     );
   }

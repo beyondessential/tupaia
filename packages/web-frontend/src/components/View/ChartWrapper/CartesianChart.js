@@ -233,13 +233,19 @@ export class CartesianChart extends PureComponent {
     return isEnlarged || chartType === BAR ? undefined : this.renderTickFirstAndLastLabel;
   };
 
+  /*
+    If set 0, all the ticks will be shown.
+    If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
+    @see https://recharts.org/en-US/api/YAxis
+  */
   getXAxisTickInterval = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType } = viewContent;
 
-    if (chartType === BAR) {
-      return !isExporting ? 'preserveStartEnd' : 0;
+    if (chartType === BAR || chartType === COMPOSED) {
+      return isExporting ? 0 : 'preserveStartEnd';
     }
+
     return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
@@ -416,14 +422,21 @@ export class CartesianChart extends PureComponent {
   };
 
   renderLegend = () => {
-    const { isEnlarged, viewContent } = this.props;
+    const { isEnlarged, viewContent, isExporting } = this.props;
     const { renderLegendForOneItem } = viewContent;
     const { chartConfig } = this.state;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
     return (
       (hasDataSeries || renderLegendForOneItem) &&
-      isEnlarged && <Legend onClick={this.onLegendClick} formatter={this.formatLegend} />
+      isEnlarged && (
+        <Legend
+          onClick={this.onLegendClick}
+          formatter={this.formatLegend}
+          verticalAlign={isExporting ? 'top' : 'bottom'}
+          wrapperStyle={isExporting ? { top: '-20px' } : {}}
+        />
+      )
     );
   };
 
@@ -447,7 +460,7 @@ export class CartesianChart extends PureComponent {
   };
 
   renderReferenceLineForAverage = () => {
-    const { isEnlarged, viewContent } = this.props;
+    const { isEnlarged, viewContent, isExporting } = this.props;
     const { valueType, data, presentationOptions } = viewContent;
     // show reference line by default
     const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
@@ -462,7 +475,7 @@ export class CartesianChart extends PureComponent {
         y={average}
         stroke={TUPAIA_ORANGE}
         label={<ReferenceLabel value={formatDataValue(average, valueType)} fill={TUPAIA_ORANGE} />}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       />
     );
   };
@@ -522,7 +535,7 @@ export class CartesianChart extends PureComponent {
   };
 
   renderArea = ({ color = BLUE, dataKey, yAxisId }) => {
-    const { isEnlarged } = this.props;
+    const { isEnlarged, isExporting } = this.props;
 
     return (
       <Area
@@ -532,7 +545,7 @@ export class CartesianChart extends PureComponent {
         type="monotone"
         stroke={color}
         fill={color}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       />
     );
   };
@@ -549,7 +562,7 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         stackId={stackId}
         fill={color}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
         barSize={this.getBarSize()}
       >
         {isExporting && !stackId && (
@@ -578,7 +591,7 @@ export class CartesianChart extends PureComponent {
         stroke={color || defaultColor}
         strokeWidth={isEnlarged ? 3 : 1}
         fill={color || defaultColor}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       >
         {isExporting && (
           <LabelList
@@ -597,11 +610,10 @@ export class CartesianChart extends PureComponent {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
-
-    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
+    const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
-      <ResponsiveContainer width="100%" aspect={responsiveStyle}>
+      <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
         <Chart
           data={this.filterDisabledData(data)}
           margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}

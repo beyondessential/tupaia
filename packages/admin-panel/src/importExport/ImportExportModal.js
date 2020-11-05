@@ -38,6 +38,15 @@ export const ImportExportModalComponent = ({
     setValues({});
   }, [isOpen]);
 
+  const checkVisibilityCriteriaAreMet = visibilityCriteria => {
+    if (!visibilityCriteria) {
+      return true; // no visibility criteria to meet, fine to display
+    }
+    return Object.entries(visibilityCriteria).every(
+      ([parameterKey, requiredValue]) => values[parameterKey] === requiredValue,
+    );
+  };
+
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick>
       <DialogHeader
@@ -47,21 +56,23 @@ export const ImportExportModalComponent = ({
       />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         <p>{subtitle}</p>
-        {queryParameters.map(queryParameter => {
-          const { parameterKey, label, secondaryLabel } = queryParameter;
-          return (
-            <InputField
-              key={parameterKey}
-              inputKey={parameterKey}
-              value={values[parameterKey]}
-              {...queryParameter}
-              onChange={handleValueChange}
-              label={label}
-              secondaryLabel={secondaryLabel}
-              parentRecord={parentRecord}
-            />
-          );
-        })}
+        {queryParameters
+          .filter(({ visibilityCriteria }) => checkVisibilityCriteriaAreMet(visibilityCriteria))
+          .map(queryParameter => {
+            const { parameterKey, label, secondaryLabel } = queryParameter;
+            return (
+              <InputField
+                key={parameterKey}
+                inputKey={parameterKey}
+                value={values[parameterKey]}
+                {...queryParameter}
+                onChange={handleValueChange}
+                label={label}
+                secondaryLabel={secondaryLabel}
+                parentRecord={parentRecord}
+              />
+            );
+          })}
         {children}
       </ModalContentProvider>
       <DialogFooter>
