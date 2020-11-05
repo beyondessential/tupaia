@@ -115,11 +115,10 @@ const getUrlsForReports = async (database, reports, reportIdToGroups) => {
 
     return createUrl(report, urlParams);
   };
-
   const urls = await Promise.all(reports.map(getUrlForReport));
-  const validUrls = urls.filter(u => u).sort();
+
   return {
-    urls: validUrls,
+    urls: urls.filter(u => u).sort(),
     skippedReports: filterValues(skippedReports, r => r.length > 0),
   };
 };
