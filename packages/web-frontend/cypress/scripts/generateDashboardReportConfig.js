@@ -5,7 +5,7 @@
 
 import { snake } from 'case';
 
-import { filterEntities, toArray } from '@tupaia/utils';
+import { filterEntities, filterValues, toArray } from '@tupaia/utils';
 import orgUnitMap from '../config/orgUnitMap.json';
 import { CONFIG_ROOT } from '../constants';
 
@@ -18,22 +18,20 @@ const WARNING_TYPES = {
 };
 
 const WARNING_TYPE_TO_MESSAGE = {
-  [WARNING_TYPES.DRILL_DOWN]: `drill down levels are not supported`,
-  [WARNING_TYPES.NO_GROUP]: 'not attached to any dashboard group',
-  [WARNING_TYPES.NO_PROJECT]: 'not attached to any projects',
-  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `no compatible org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
+  [WARNING_TYPES.DRILL_DOWN]: `Drill down levels are not supported`,
+  [WARNING_TYPES.NO_GROUP]: 'Not attached to any dashboard group',
+  [WARNING_TYPES.NO_PROJECT]: 'Not attached to any projects',
+  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `No compatible org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
 };
 
-const logWarningsForSkippedReports = (logger, skippedReportsByWarnType) => {
-  Object.entries(skippedReportsByWarnType).forEach(([warnType, reportIds]) => {
-    if (reportIds.length === 0) {
-      return;
-    }
+const logWarningsForSkippedReports = (logger, skippedReports) => {
+  logger.warn(`Skipping the following reports:`);
+  Object.entries(skippedReports).forEach(([warnType, reportIds]) => {
     const message = WARNING_TYPE_TO_MESSAGE[warnType];
     if (!message) {
       throw new Error(`Dev error: no message defined for warning category: '${warnType}'`);
     }
-    logger.warn(`Skipping the following reports - ${message}:`);
+    logger.warn(`* ${message}`);
     reportIds.sort().forEach(reportId => {
       logger.warn(`  ${reportId}`);
     });
@@ -117,7 +115,10 @@ const getUrlsForReports = async (database, reports, reportIdToGroups) => {
 
   const urls = await Promise.all(reports.map(getUrlForReport));
   const validUrls = urls.filter(u => u).sort();
-  return { urls: validUrls, skippedReports };
+  return {
+    urls: validUrls,
+    skippedReports: filterValues(skippedReports, r => r.length > 0),
+  };
 };
 
 const getDashboardReportIdToGroups = async database => {
@@ -146,7 +147,10 @@ export const generateDashboardReportConfig = async ({ database, logger }) => {
   const reports = await database.executeSql('SELECT * from "dashboardReport"');
   const reportIdToGroups = await getDashboardReportIdToGroups(database);
   const { urls, skippedReports } = await getUrlsForReports(database, reports, reportIdToGroups);
-  logWarningsForSkippedReports(logger, skippedReports);
+  const skippedReportsExist = Object.keys(skippedReports).length > 0;
+  if (skippedReportsExist) {
+    logWarningsForSkippedReports(logger, skippedReports);
+  }
   logger.info(`Report urls created: ${urls.length}, skipped: ${reports.length - urls.length}`);
 
   return urls;
