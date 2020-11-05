@@ -4,8 +4,8 @@
  */
 
 import { createSelector } from 'reselect';
-import { createReducer } from '../utils/createReducer';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { createReducer } from '../utils/createReducer';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -69,12 +69,14 @@ export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
 
+const PSSS_PERMISSION_GROUP = 'PSSS';
+
 export const getEntitiesAllowed = createSelector(getCurrentUser, user => {
   if (!user) {
     return [];
   }
 
-  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed('PSSS');
+  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
   return entities.map(e => e.toLowerCase()); // always use lowercase entities
 });
 
