@@ -70,19 +70,28 @@ const performArithmeticOperation = (analytics, arithmeticConfig) => {
 };
 
 const combineBinaryIndicatorsToString = (analytics, config) => {
-  const { dataElementToString } = config;
+  const { dataElementToString, delimiter = ', ' } = config;
   const filteredAnalytics = analytics.filter(({ dataElement: de }) =>
     Object.keys(dataElementToString).includes(de),
   );
   const stringArray = [];
   filteredAnalytics.forEach(({ dataElement, value }) => {
-    const stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+    let stringValue;
+
+    if (typeof dataElementToString[dataElement] === 'object') {
+      const { valueOfInterest, displayString } = dataElementToString[dataElement];
+      if (valueOfInterest === value) {
+        stringValue = displayString;
+      }
+    } else {
+      stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+    }
 
     if (stringValue) {
       stringArray.push(stringValue);
     }
   });
-  return stringArray.length === 0 ? 'None' : stringArray.join(', ');
+  return stringArray.length === 0 ? 'None' : stringArray.join(delimiter);
 };
 
 const combineTextIndicators = (analytics, config) => {
@@ -147,6 +156,13 @@ const OPERATORS = {
 const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
 
 const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT'];
+
+export const getDataElementsFromCalculateOperationConfig = config =>
+  config.dataElement || // Single dataElement
+  config.dataElements ||
+  (config.operands && config.operands.map(operand => operand.dataValues)) || // Arithmetic operators
+  (config.dataElementToString && Object.keys(config.dataElementToString)) || // COMBINE_BINARY_AS_STRING
+  [];
 
 export const calculateOperationForAnalytics = (analytics, config) => {
   const { operator } = config;
