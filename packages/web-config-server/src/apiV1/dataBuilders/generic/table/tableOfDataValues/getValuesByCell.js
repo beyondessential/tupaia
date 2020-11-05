@@ -83,12 +83,3 @@ export const getCalculatedValuesByCell = async (cells, results, hierarchyId) => 
   );
   return calculatedValuesByCell;
 };
-
-export const getDataElementsFromCell = cell =>
-  typeof cell === 'string'
-    ? cell
-    : cell.dataElement || // Single dataElement
-      cell.dataElements ||
-      (cell.operands && cell.operands.map(operand => operand.dataValues)) || // Arithmetic operators
-      (cell.dataElementToString && Object.keys(cell.dataElementToString)) || // COMBINE_BINARY_AS_STRING
-      [];

@@ -472,7 +472,7 @@ export const VIEW_STYLES = {
   },
   legendExporting: {
     color: DARK_BLUE,
-    fontSize: '12px',
+    fontSize: '11px',
   },
   // MultiValueView styles below
   text: {

@@ -1,18 +1,9 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/**
- * SidePanel
- *
- * Visual flex expandable div to show Information on the bottom.
- * Switchs between showing Dashboard and TupaiaInfo.
- */
-
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -34,39 +25,26 @@ const MAX_EXPANDED_WIDTH = 1000;
 const Panel = styled.div`
   display: flex;
   align-items: stretch;
+  flex-direction: column;
+  align-content: stretch;
   max-width: ${MAX_EXPANDED_WIDTH}px;
   position: relative;
   overflow: visible;
   background-color: ${TRANS_BLACK};
-  display: flex;
-  flex-direction: column;
-  align-content: stretch;
-  align-items: stretch;
   pointer-events: auto;
   height: 100%;
   cursor: auto;
   transition: ${DASHBOARD_TRANSITION_TIME};
 `;
 
-export class SidePanel extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.updateDimensions = this.updateDimensions.bind(this);
-  }
-
-  componentWillMount() {
-    window.addEventListener('resize', this.updateDimensions);
-    this.updateDimensions();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions);
-  }
-
-  updateDimensions() {
-    const { onChangeDefaultWidth, onChangeExpandedWidth } = this.props;
-
+const SidePanel = ({
+  isSidePanelExpanded,
+  contractedWidth,
+  expandedWidth,
+  onChangeDefaultWidth,
+  onChangeExpandedWidth,
+}) => {
+  const updateDimensions = () => {
     let dashboardDefaultWidth = window.innerWidth * DEFAULT_WIDTH_RATIO;
     dashboardDefaultWidth = Math.min(dashboardDefaultWidth, MAX_DEFAULT_WIDTH);
     dashboardDefaultWidth = Math.max(dashboardDefaultWidth, MIN_DEFAULT_WIDTH);
@@ -76,31 +54,37 @@ export class SidePanel extends PureComponent {
 
     onChangeDefaultWidth(dashboardDefaultWidth);
     onChangeExpandedWidth(dashboardExpandedWidth);
-  }
+  };
 
-  render() {
-    const { isSidePanelExpanded, contractedWidth, expandedWidth } = this.props;
-    const width = isSidePanelExpanded ? expandedWidth : contractedWidth;
+  React.useEffect(() => {
+    window.addEventListener('resize', updateDimensions);
+    updateDimensions();
 
-    return (
-      <Panel
-        expanded={isSidePanelExpanded}
-        ref={panel => {
-          this.panel = panel;
-        }}
-        style={{ width }}
-      >
-        <ExpandButton />
-        <Dashboard />
-      </Panel>
-    );
-  }
-}
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
+  }, []);
+
+  const width = isSidePanelExpanded ? expandedWidth : contractedWidth;
+
+  return (
+    <Panel expanded={isSidePanelExpanded} style={{ width }}>
+      <ExpandButton />
+      <Dashboard />
+    </Panel>
+  );
+};
 
 SidePanel.propTypes = {
   isSidePanelExpanded: PropTypes.bool,
-  contractedWidth: PropTypes.number,
-  expandedWidth: PropTypes.number,
+  contractedWidth: PropTypes.number.isRequired,
+  expandedWidth: PropTypes.number.isRequired,
+  onChangeDefaultWidth: PropTypes.func.isRequired,
+  onChangeExpandedWidth: PropTypes.func.isRequired,
+};
+
+SidePanel.defaultProps = {
+  isSidePanelExpanded: true,
 };
 
 const mapStateToProps = state => {
