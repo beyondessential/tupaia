@@ -17,9 +17,9 @@ exports.setup = function (options, seedLink) {
 };
 
 const PROJECT_CODE = 'psss';
+const ENTITY_NAME = 'PSSS';
 const DASHBOARDGROUP_NAME = 'PSSS';
 const USER_GROUP = 'PSSS';
-const NZ_COUNTRY_CODE = 'NZ';
 
 const COUNTRY_LIST = [
   'AS',
@@ -33,7 +33,6 @@ const COUNTRY_LIST = [
   'NR',
   'NC',
   'NU',
-  'NZ', // New Zealand needs to be added to db
   'MP',
   'PW',
   'PG',
@@ -53,27 +52,12 @@ export const hierarchyNameToId = async (db, name) => {
 };
 
 exports.up = async function (db) {
-  // Add country + entity for New Zealand
-  await insertObject(db, 'entity', {
-    id: generateId(),
-    code: NZ_COUNTRY_CODE,
-    country_code: NZ_COUNTRY_CODE,
-    parent_id: await codeToId(db, 'entity', 'World'),
-    name: 'New Zealand',
-    type: 'country',
-  });
-  await insertObject(db, 'country', {
-    id: generateId(),
-    code: NZ_COUNTRY_CODE,
-    name: 'New Zealand',
-  });
-
   // Add project entity and entity hierarchy for PSSS
   await insertObject(db, 'entity', {
     id: generateId(),
     code: PROJECT_CODE,
     parent_id: await codeToId(db, 'entity', 'World'),
-    name: DASHBOARDGROUP_NAME,
+    name: ENTITY_NAME,
     type: 'project',
   });
   await insertObject(db, 'entity_hierarchy', {
@@ -111,8 +95,6 @@ exports.down = async function (db) {
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE name = '${PROJECT_CODE}'`);
   await db.runSql(`DELETE FROM entity WHERE code = '${PROJECT_CODE}'`);
-  await db.runSql(`DELETE FROM country WHERE code = '${NZ_COUNTRY_CODE}'`);
-  await db.runSql(`DELETE FROM entity WHERE code = '${NZ_COUNTRY_CODE}'`);
 };
 
 exports._meta = {
