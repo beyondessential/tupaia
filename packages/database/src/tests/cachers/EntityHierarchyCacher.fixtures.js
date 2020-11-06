@@ -524,3 +524,22 @@ export const HIERARCHY_STORM_AFTER_ENTITIES_CREATED = expandEntityRelations([
   // ancestor entity aaa
   ['aaa', 'aaaa', 1],
 ]);
+
+// canonical types are changed from
+// project, country, district, sub_district, case
+// to
+// project, country, facility
+// so facilities are added in, and all districts, sub_districts, and cases are dropped
+//          a
+//    aa         ab
+//            aba  abb
+export const HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED = expandEntityRelations([
+  // ancestor entity a
+  ['a', 'aa', 1],
+  ['a', 'ab', 1],
+  ['a', 'aba', 2],
+  ['a', 'abb', 2],
+  // ancestor entity ab
+  ['ab', 'aba', 1],
+  ['ab', 'abb', 1],
+]);
