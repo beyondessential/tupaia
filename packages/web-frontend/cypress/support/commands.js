@@ -8,7 +8,7 @@ import '@testing-library/cypress/add-commands';
 import snapshot from '@cypress/snapshot';
 import { PUBLIC_USER } from '../constants';
 import { escapeRegex, serializeReactToHTML } from './utils';
-import { closeOverlay, submitLoginForm } from './actions';
+import { submitLoginForm } from './actions';
 
 snapshot.register();
 
@@ -36,11 +36,7 @@ Cypress.Commands.add('login', () => {
       cy.wait('@projects');
 
       submitLoginForm();
-      cy.wait('@getUser').then(() => {
-        closeOverlay();
-      });
-    } else {
-      closeOverlay();
+      cy.wait('@getUser');
     }
   });
 });

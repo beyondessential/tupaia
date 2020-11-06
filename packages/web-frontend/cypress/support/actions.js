@@ -28,7 +28,3 @@ export const submitLoginForm = () => {
 
   cy.get('@loginForm').findByTextI('Sign in').click();
 };
-
-export const closeOverlay = () => {
-  cy.findByTestId('overlay-close-btn').click();
-};
