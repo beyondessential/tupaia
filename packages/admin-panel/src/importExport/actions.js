@@ -53,12 +53,6 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
   return queryParameters;
 };
 
-function sleep(delay = 0) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay);
-  });
-}
-
 export const exportData = (
   { exportEndpoint, rowIdQueryParameter, fileName }, // actionConfig
   rowData, // ? parentRecord

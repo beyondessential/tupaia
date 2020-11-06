@@ -3,40 +3,108 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { exportData } from './actions';
-import { ImportExportModal } from './ImportExportModal';
+import {
+  Button,
+  Dialog,
+  DialogFooter,
+  DialogHeader,
+  LightOutlinedButton,
+  OutlinedButton,
+  SaveAlt,
+} from '@tupaia/ui-components';
+import { filteredExportData } from './actions';
+import { ModalContentProvider } from '../widgets';
 
-const ExportModalComponent = ({ onExport, isOpen, errorMessage, ...restOfProps }) => (
-  <ImportExportModal
-    confirmLabel="Export"
-    onConfirm={(queryParameters, parentRecord) => onExport(queryParameters, parentRecord)}
-    isOpen={isOpen}
-    errorMessage={errorMessage}
-    {...restOfProps}
-  />
-);
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  ERROR: 'error',
+  DISABLED: 'disabled',
+};
+
+const ExportModalComponent = ({ onExport, title, config, values, children }) => {
+  const [status, setStatus] = useState(STATUS.IDLE);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleDismiss = () => {
+    setStatus(STATUS.IDLE);
+    setErrorMessage(null);
+  };
+
+  const handleSubmit = async event => {
+    event.preventDefault();
+    setErrorMessage(null);
+    setStatus(STATUS.LOADING);
+
+    try {
+      await onExport(values, config);
+      setStatus(STATUS.SUCCESS);
+    } catch (error) {
+      setStatus(STATUS.ERROR);
+      setErrorMessage(error.message);
+    }
+  };
+
+  return (
+    <>
+      <Dialog onClose={() => setIsOpen(false)} open={isOpen} disableBackdropClick>
+        <form onSubmit={handleSubmit} noValidate>
+          <DialogHeader
+            onClose={() => setIsOpen(false)}
+            title={errorMessage ? 'Error' : title}
+            color={errorMessage ? 'error' : 'textPrimary'}
+          />
+          <ModalContentProvider errorMessage={errorMessage} isLoading={status === STATUS.LOADING}>
+            {children}
+          </ModalContentProvider>
+          <DialogFooter>
+            {status === STATUS.ERROR ? (
+              <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
+            ) : (
+              <OutlinedButton onClick={() => setIsOpen(false)}>Cancel</OutlinedButton>
+            )}
+            <Button
+              type="submit"
+              disabled={status === STATUS.ERROR}
+              isLoading={status === STATUS.LOADING}
+            >
+              Export
+            </Button>
+          </DialogFooter>
+        </form>
+      </Dialog>
+      <LightOutlinedButton
+        startIcon={<SaveAlt />}
+        onClick={() => setIsOpen(true)}
+        isLoading={STATUS === STATUS.LOADING}
+        disabled={STATUS === STATUS.ERROR}
+      >
+        Export
+      </LightOutlinedButton>
+    </>
+  );
+};
 
 ExportModalComponent.propTypes = {
   onExport: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  errorMessage: PropTypes.string,
+  children: PropTypes.any.isRequired,
+  title: PropTypes.string,
+  config: PropTypes.object.isRequired,
+  values: PropTypes.object,
 };
 
 ExportModalComponent.defaultProps = {
-  errorMessage: null,
+  title: 'Export',
+  values: {},
 };
 
-const mapStateToProps = ({ importExport }) => ({
-  isOpen: importExport.isExportDialogOpen,
-  errorMessage: importExport.errorMessage,
+const mapDispatchToProps = dispatch => ({
+  onExport: (queryParams, config) => dispatch(filteredExportData(config, queryParams)),
 });
 
-const mapDispatchToProps = (dispatch, { actionConfig }) => ({
-  onExport: (queryParameters, parentRecord) =>
-    dispatch(exportData(actionConfig, parentRecord, queryParameters)),
-});
-
-export const ExportModal = connect(mapStateToProps, mapDispatchToProps)(ExportModalComponent);
+export const ExportModal = connect(null, mapDispatchToProps)(ExportModalComponent);
