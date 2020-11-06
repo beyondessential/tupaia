@@ -12,6 +12,8 @@ import { CONFIG_ROOT } from '../constants';
 const ORG_UNIT_MAP_PATH = `${CONFIG_ROOT}/orgUnitMap.json`;
 
 const WARNING_TYPES = {
+  DRILL_DOWN: 'drillDown',
+  NO_DATA_BUILDER: 'noDataBuilder',
   NO_GROUP: 'noGroup',
   NO_PROJECT: 'noProject',
   NO_ORG_UNIT_MAP_ENTRY: 'noOrgUnitMapEntry',
@@ -19,6 +21,7 @@ const WARNING_TYPES = {
 
 const WARNING_TYPE_TO_MESSAGE = {
   [WARNING_TYPES.DRILL_DOWN]: `Drill down levels are not supported`,
+  [WARNING_TYPES.NO_DATA_BUILDER]: `No data builder`,
   [WARNING_TYPES.NO_GROUP]: 'Not attached to any dashboard group',
   [WARNING_TYPES.NO_PROJECT]: 'Not attached to any projects',
   [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `No compatible org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
@@ -85,31 +88,35 @@ const selectUrlParams = async (database, report, dashboardGroups) => {
 };
 
 const getUrlsForReports = async (database, reports, reportIdToGroups) => {
-  const skippedReports = {
-    [WARNING_TYPES.DRILL_DOWN]: [],
-    [WARNING_TYPES.NO_GROUP]: [],
-    [WARNING_TYPES.NO_PROJECT]: [],
-    [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: [],
+  const skippedReports = Object.fromEntries(
+    Object.values(WARNING_TYPES).map(warnType => [warnType, []]),
+  );
+  const addSkippedReport = (warnType, reportDescription) => {
+    skippedReports[warnType].push(reportDescription);
   };
 
   const getUrlForReport = async report => {
-    const { drillDownLevel } = report;
+    const { dataBuilder, drillDownLevel } = report;
     if (drillDownLevel) {
-      skippedReports[WARNING_TYPES.DRILL_DOWN].push(`${report.id} - level ${drillDownLevel}`);
+      addSkippedReport(WARNING_TYPES.DRILL_DOWN, `${report.id} - level ${drillDownLevel}`);
+      return null;
+    }
+    if (!dataBuilder) {
+      addSkippedReport(WARNING_TYPES.NO_DATA_BUILDER, report.id);
       return null;
     }
     const groupsForReport = reportIdToGroups[report.id];
     if (!groupsForReport) {
-      skippedReports[WARNING_TYPES.NO_GROUP].push(report.id);
+      addSkippedReport(WARNING_TYPES.NO_GROUP, report.id);
       return null;
     }
     if (!groupsForReport.some(dg => dg.projectCodes)) {
-      skippedReports[WARNING_TYPES.NO_PROJECT].push(report.id);
+      addSkippedReport(WARNING_TYPES.NO_PROJECT, report.id);
       return null;
     }
     const urlParams = await selectUrlParams(database, report, groupsForReport);
     if (!urlParams) {
-      skippedReports[WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY].push(report.id);
+      addSkippedReport(WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY, report.id);
       return null;
     }
 
