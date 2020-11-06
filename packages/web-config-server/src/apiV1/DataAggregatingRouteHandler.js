@@ -20,12 +20,13 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
   // Builds the list of entities data should be fetched from, using org unit descendants of the
   // selected entity (optionally of a specific entity type)
-  fetchDataSourceEntities = async (entity, dataSourceEntityType, dataSourceEntityFilter) => {
+  fetchDataSourceEntities = async (entity, options) => {
+    const { dataSourceEntityType, ...restOfOptions } = options;
     if (Array.isArray(dataSourceEntityType)) {
       return (
         await Promise.all(
           dataSourceEntityType.map(entityType =>
-            this.fetchDataSourceEntitiesOfType(entity, entityType, dataSourceEntityFilter),
+            this.fetchDataSourceEntitiesOfType(entity, entityType, restOfOptions),
           ),
         )
       ).flat();
@@ -33,19 +34,31 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
     const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
-    return this.fetchDataSourceEntitiesOfType(entity, entityType, dataSourceEntityFilter);
+    return this.fetchDataSourceEntitiesOfType(entity, entityType, restOfOptions);
   };
 
-  fetchDataSourceEntitiesOfType = async (entity, entityType, dataSourceEntityFilter) => {
+  fetchDataSourceEntitiesOfType = async (entity, entityType, options) => {
+    const { includeSiblingData, aggregationEntityType, dataSourceEntityFilter } = options;
     const hierarchyId = await this.fetchHierarchyId();
 
     let dataSourceEntities = [];
     if (entityType) {
-      const ancestor = await entity.getAncestorOfType(entityType, hierarchyId);
-      if (ancestor && ancestor.type !== entity.type) {
-        dataSourceEntities = [ancestor];
+      /**
+       *    A
+       *   / \
+       *  B   C
+       * This is when we are at B and want to fetch data for both B and C
+       */
+      if (includeSiblingData) {
+        const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
+        dataSourceEntities = await ancestor.getDescendantsOfType(entityType, hierarchyId);
       } else {
-        dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
+        const ancestor = await entity.getAncestorOfType(entityType, hierarchyId);
+        if (ancestor && ancestor.type !== entity.type) {
+          dataSourceEntities = [ancestor];
+        } else {
+          dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
+        }
       }
     } else {
       dataSourceEntities = await entity.getNearestOrgUnitDescendants(hierarchyId);

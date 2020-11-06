@@ -16,7 +16,7 @@ export const disasterAffectedOrganisationOperationalData = async (
 
   if (!disasterStartDate) return { data: [] };
 
-  const facilities = Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
+  const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
   const { results: facilityStatusResults } = await aggregator.fetchAnalytics(
     DATA_ELEMENT_CODES.facilityAffectedStatus,
     {

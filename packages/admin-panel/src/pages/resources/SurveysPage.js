@@ -230,6 +230,21 @@ const QUESTION_COLUMNS = [
                     getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
                   },
                   {
+                    label: 'Attributes',
+                    fieldName: 'attributes',
+                    type: 'json',
+                    getJsonFieldSchema: () => [
+                      {
+                        label: 'Type',
+                        fieldName: 'type',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                    ],
+                  },
+                  {
                     label: 'Name',
                     fieldName: 'name',
                     type: 'json',
@@ -251,6 +266,28 @@ const QUESTION_COLUMNS = [
                   { label: 'Type', fieldName: 'type' },
                   { label: 'Prefix', fieldName: 'prefix' },
                   { label: 'Length', fieldName: 'length' },
+                ],
+              },
+              {
+                label: 'Autocomplete',
+                fieldName: 'autocomplete',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Attributes',
+                    fieldName: 'attributes',
+                    type: 'json',
+                    getJsonFieldSchema: () => [
+                      {
+                        label: 'Parent Project',
+                        fieldName: 'parent_project',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                    ],
+                  },
                 ],
               },
             ],

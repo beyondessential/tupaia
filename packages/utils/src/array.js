@@ -35,3 +35,10 @@ export const max = array =>
     : undefined;
 
 export const toArray = input => (Array.isArray(input) ? input : [input]);
+
+export const asyncFilter = async (array, predicate) =>
+  Promise.all(array.map(predicate)).then(results => array.filter((_v, index) => results[index]));
+
+// https://advancedweb.hu/how-to-use-async-functions-with-array-some-and-every-in-javascript/
+export const asyncEvery = async (array, predicate) =>
+  (await asyncFilter(array, predicate)).length === array.length;
