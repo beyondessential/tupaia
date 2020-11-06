@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { exportData } from './actions';
 import {
   Button,
   Dialog,
@@ -19,6 +18,7 @@ import {
   DateTimePicker,
   RadioGroup,
 } from '@tupaia/ui-components';
+import { filteredExportData } from './actions';
 import { ModalContentProvider } from '../widgets';
 import { Autocomplete } from '../autocomplete';
 
@@ -91,7 +91,7 @@ const SurveyResponsesExportModalComponent = ({ onExport }) => {
               helperText="Please enter the names of the surveys to be exported."
               reduxId="surveyCodes"
               onChange={inputValue => handleValueChange('surveyCodes', inputValue)}
-              endpoint="country/{id}/surveys"
+              endpoint="surveys"
               optionLabelKey="name"
               optionValueKey="code"
               allowMultipleValues
@@ -115,8 +115,8 @@ const SurveyResponsesExportModalComponent = ({ onExport }) => {
               <Autocomplete
                 label="Countries to Include"
                 helperText="Please enter the names of the countries to be exported."
-                reduxId="countries"
-                onChange={inputValue => handleValueChange('countries', inputValue)}
+                reduxId="countryCode"
+                onChange={inputValue => handleValueChange('countryCode', inputValue)}
                 endpoint="country"
                 optionLabelKey="name"
                 optionValueKey="code"
@@ -125,11 +125,12 @@ const SurveyResponsesExportModalComponent = ({ onExport }) => {
               <Autocomplete
                 label="Entities to Include"
                 helperText="Please enter the names of the entities to be exported."
-                reduxId="entities"
-                onChange={inputValue => handleValueChange('entities', inputValue)}
+                reduxId="entityIds"
+                onChange={inputValue => handleValueChange('entityIds', inputValue)}
                 endpoint="entity"
                 optionLabelKey="name"
                 optionValueKey="code"
+                allowMultipleValues
               />
             )}
             <DateTimePicker
@@ -195,13 +196,11 @@ SurveyResponsesExportModalComponent.propTypes = {
 
 const actionConfig = {
   exportEndpoint: 'surveyResponses',
-  rowIdQueryParameter: 'countryId',
-  fileName: '{name} Survey Responses',
+  fileName: `survey-responses-${Date.now()}.xlsx`,
 };
 
 const mapDispatchToProps = dispatch => ({
-  onExport: (queryParameters, parentRecord = {}) =>
-    dispatch(exportData(actionConfig, parentRecord, queryParameters)),
+  onExport: queryParameters => dispatch(filteredExportData(actionConfig, queryParameters)),
 });
 
 export const SurveyResponsesExportModal = connect(

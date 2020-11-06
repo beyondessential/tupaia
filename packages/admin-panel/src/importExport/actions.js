@@ -62,19 +62,21 @@ function sleep(delay = 0) {
 export const exportData = (
   { exportEndpoint, rowIdQueryParameter, fileName }, // actionConfig
   rowData, // ? parentRecord
-  filterQueryParameters, // values
 ) => async (dispatch, getState, { api }) => {
-  const queryParameters = buildExportQueryParameters(
-    rowIdQueryParameter,
-    rowData,
-    filterQueryParameters,
-  );
+  const queryParameters = buildExportQueryParameters(rowIdQueryParameter, rowData);
   const endpoint = `export/${exportEndpoint}${
     !queryParameters && rowData.id ? `/${rowData.id}` : ''
   }`;
   const processedFileName = processFileName(fileName, rowData);
-  await sleep(3000);
   await api.download(endpoint, queryParameters, processedFileName);
+};
+
+export const filteredExportData = (
+  { exportEndpoint, fileName }, // actionConfig
+  queryParams, // values
+) => async (dispatch, getState, { api }) => {
+  const endpoint = `export/${exportEndpoint}`;
+  await api.download(endpoint, queryParams, fileName);
 };
 
 const processFileName = (unprocessedFileName, rowData) => {
