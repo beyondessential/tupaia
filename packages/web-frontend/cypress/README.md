@@ -43,7 +43,7 @@ yarn workspace @tupaia/web-frontend test:cypress:run
 
 ⊞ Windows
 
-Either in a **Windows terminal** or under **WSL**:
+Run the following in **WSL**:
 
 ```bash
 # In one terminal
