@@ -25,7 +25,7 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
-export const ExportModal = ({ title, exportEndpoint, exportFileName, values, children }) => {
+export const ExportModal = ({ title, exportEndpoint, fileName, values, children }) => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +48,7 @@ export const ExportModal = ({ title, exportEndpoint, exportFileName, values, chi
 
     try {
       const endpoint = `export/${exportEndpoint}`;
-      await api.download(endpoint, values, exportFileName);
+      await api.download(endpoint, values, fileName);
       setStatus(STATUS.SUCCESS);
     } catch (error) {
       setStatus(STATUS.ERROR);
@@ -98,9 +98,9 @@ export const ExportModal = ({ title, exportEndpoint, exportFileName, values, chi
 
 ExportModal.propTypes = {
   children: PropTypes.any.isRequired,
-  title: PropTypes.string,
   exportEndpoint: PropTypes.string.isRequired,
-  exportFileName: PropTypes.string.isRequired,
+  fileName: PropTypes.string.isRequired,
+  title: PropTypes.string,
   values: PropTypes.object,
 };
 

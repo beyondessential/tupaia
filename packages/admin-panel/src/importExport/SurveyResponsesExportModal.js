@@ -29,10 +29,8 @@ export const SurveyResponsesExportModal = () => {
     <ExportModal
       title="Export Survey Responses"
       values={values}
-      config={{
-        exportEndpoint: 'surveyResponses',
-        fileName: `survey-responses-${Date.now()}.xlsx`,
-      }}
+      exportEndpoint="surveyResponses"
+      fileName={`survey-responses-${Date.now()}.xlsx`}
     >
       <Autocomplete
         label="Surveys to Include"
