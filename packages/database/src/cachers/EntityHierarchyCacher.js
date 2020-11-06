@@ -20,6 +20,9 @@ export class EntityHierarchyCacher {
     this.changeHandlerCancellers[1] = this.models.entityRelation.addChangeHandler(
       this.handleEntityRelationChange,
     );
+    this.changeHandlerCancellers[2] = this.models.entityHierarchy.addChangeHandler(
+      this.handleEntityHierarchyChange,
+    );
   }
 
   stopListeningForChanges() {
@@ -43,6 +46,24 @@ export class EntityHierarchyCacher {
     const tasks = [oldRecord, newRecord]
       .filter(r => r)
       .map(r => this.scheduleRebuildOfSubtree(r.entity_hierarchy_id, r.parent_id));
+    return Promise.all(tasks);
+  };
+
+  handleEntityHierarchyChange = async ({
+    record_id: hierarchyId,
+    old_record: oldRecord,
+    new_record: newRecord,
+  }) => {
+    if (oldRecord.canonical_types === newRecord.canonical_types) {
+      return null; // if the canonical types are the same, the change won't invalidate the cache
+    }
+    const projectsUsingHierarchy = await this.models.project.find({
+      entity_hierarchy_id: hierarchyId,
+    });
+    // delete and rebuild full hierarchy of any project using this entity
+    const tasks = projectsUsingHierarchy.map(p =>
+      this.scheduleRebuildOfSubtree(hierarchyId, p.entity_id),
+    );
     return Promise.all(tasks);
   };
 
