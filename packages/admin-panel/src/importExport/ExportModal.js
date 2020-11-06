@@ -29,11 +29,17 @@ const STATUS = {
 const ExportModalComponent = ({ onExport, title, config, values, children }) => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleDismiss = () => {
     setStatus(STATUS.IDLE);
     setErrorMessage(null);
+  };
+
+  const handleCancel = () => {
+    setStatus(STATUS.IDLE);
+    setErrorMessage(null);
+    setIsOpen(false);
   };
 
   const handleSubmit = async event => {
@@ -66,7 +72,7 @@ const ExportModalComponent = ({ onExport, title, config, values, children }) => 
             {status === STATUS.ERROR ? (
               <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
             ) : (
-              <OutlinedButton onClick={() => setIsOpen(false)}>Cancel</OutlinedButton>
+              <OutlinedButton onClick={handleCancel}>Cancel</OutlinedButton>
             )}
             <Button
               type="submit"
