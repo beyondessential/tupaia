@@ -7,18 +7,29 @@
 //          a
 //    aa         ab
 // aaa  aab   aba  abb
+// there are an additional two children below aaa that are not of a canonical type, so aren't included
+// in the default canonical hierarchy, but are included in hierarchy wind
 const ENTITIES = [
-  { id: 'entity_a_test', name: 'Entity A', parent_id: null },
-  { id: 'entity_aa_test', name: 'Entity AA', parent_id: 'entity_a_test' },
-  { id: 'entity_ab_test', name: 'Entity AB', parent_id: 'entity_a_test' },
-  { id: 'entity_aaa_test', name: 'Entity AAA', parent_id: 'entity_aa_test' },
-  { id: 'entity_aab_test', name: 'Entity AAB', parent_id: 'entity_aa_test' },
-  { id: 'entity_aba_test', name: 'Entity ABA', parent_id: 'entity_ab_test' },
-  { id: 'entity_abb_test', name: 'Entity ABB', parent_id: 'entity_ab_test' },
+  { id: 'entity_a_test', name: 'Entity A', parent_id: null, type: 'project' },
+  { id: 'entity_aa_test', name: 'Entity AA', parent_id: 'entity_a_test', type: 'country' },
+  { id: 'entity_ab_test', name: 'Entity AB', parent_id: 'entity_a_test', type: 'country' },
+  { id: 'entity_ac_test', name: 'Entity AC', parent_id: 'entity_a_test', type: 'case' },
+  { id: 'entity_ad_test', name: 'Entity AD', parent_id: 'entity_a_test', type: 'case' },
+  { id: 'entity_aaa_test', name: 'Entity AAA', parent_id: 'entity_aa_test', type: 'district' },
+  { id: 'entity_aab_test', name: 'Entity AAB', parent_id: 'entity_aa_test', type: 'sub_district' },
+  { id: 'entity_aba_test', name: 'Entity ABA', parent_id: 'entity_ab_test', type: 'facility' },
+  { id: 'entity_abb_test', name: 'Entity ABB', parent_id: 'entity_ab_test', type: 'facility' },
 ];
 
 // two hierarchies to play with
-const ENTITY_HIERARCHIES = [{ id: 'hierarchy_ocean_test' }, { id: 'hierarchy_storm_test' }];
+const ENTITY_HIERARCHIES = [
+  { id: 'hierarchy_ocean_test' },
+  { id: 'hierarchy_storm_test' },
+  {
+    id: 'hierarchy_wind_test',
+    canonical_types: ['project', 'country', 'district', 'sub_district', 'case'],
+  },
+];
 
 // a project for each of the two hierarchies
 const PROJECTS = [
@@ -31,6 +42,11 @@ const PROJECTS = [
     code: 'project_storm_test',
     entity_id: 'entity_a_test',
     entity_hierarchy_id: 'hierarchy_storm_test',
+  },
+  {
+    code: 'project_wind_test',
+    entity_id: 'entity_a_test',
+    entity_hierarchy_id: 'hierarchy_wind_test',
   },
 ];
 
@@ -98,6 +114,7 @@ const expandEntityRelations = relations =>
     generational_distance: r[2],
   }));
 
+// Hierarchy ocean is completely canonical, with the default canonical types
 //          a
 //    aa         ab
 // aaa  aab   aba  abb
@@ -117,6 +134,7 @@ export const INITIAL_HIERARCHY_OCEAN = expandEntityRelations([
   ['ab', 'abb', 1],
 ]);
 
+// Hierarchy storm has entity relations providing an alternative hierarchy
 //      a
 //      aa
 //      ab
@@ -145,6 +163,24 @@ export const INITIAL_HIERARCHY_STORM = expandEntityRelations([
   ['aba', 'aaa', 1],
   // ancestor entity abb
   ['abb', 'aab', 1],
+]);
+
+// Hierarchy wind has a different set of canonical types, which excludes facility and includes
+// case, so ac and ad (cases) are included, but aba and abb (facilities) are not
+//                a
+//    aa      ab      ac      ad
+// aaa  aab
+export const INITIAL_HIERARCHY_WIND = expandEntityRelations([
+  // ancestor entity a
+  ['a', 'aa', 1],
+  ['a', 'ab', 1],
+  ['a', 'ac', 1],
+  ['a', 'ad', 1],
+  ['a', 'aaa', 2],
+  ['a', 'aab', 2],
+  // ancestor entity aa
+  ['aa', 'aaa', 1],
+  ['aa', 'aab', 1],
 ]);
 
 // when aaa is deleted, it just gets taken off the end

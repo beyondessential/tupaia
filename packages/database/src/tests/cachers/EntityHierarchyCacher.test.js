@@ -18,6 +18,7 @@ import {
   TEST_DATA,
   INITIAL_HIERARCHY_OCEAN,
   INITIAL_HIERARCHY_STORM,
+  INITIAL_HIERARCHY_WIND,
   HIERARCHY_STORM_AFTER_ENTITY_AAA_DELETED,
   HIERARCHY_STORM_AFTER_MULTIPLE_ENTITIES_DELETED,
   HIERARCHY_STORM_AFTER_RELATION_ABA_AAA_DELETED,
@@ -80,6 +81,10 @@ describe('EntityHierarchyCacher', () => {
     });
     it('handles a hierarchy that has entity relation links', async () => {
       await assertProjectRelationsCorrectlyBuilt('project_storm_test', INITIAL_HIERARCHY_STORM);
+    });
+    it('handles a hierarchy that has a custom set of canonical types', async () => {
+      await buildAndCacheProject('project_wind_test');
+      await assertProjectRelationsCorrectlyBuilt('project_wind_test', INITIAL_HIERARCHY_WIND);
     });
   });
 
