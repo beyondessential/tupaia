@@ -5,12 +5,11 @@
 
 import { createReducer } from '../utilities';
 import {
-  IMPORT_EXPORT_START,
-  IMPORT_EXPORT_ERROR,
-  IMPORT_EXPORT_SUCCESS,
-  IMPORT_EXPORT_DISMISS,
+  IMPORT_START,
+  IMPORT_ERROR,
+  IMPORT_SUCCESS,
+  IMPORT_DISMISS,
   IMPORT_DIALOG_OPEN,
-  EXPORT_DIALOG_OPEN,
 } from './constants';
 
 const defaultState = {
@@ -22,10 +21,10 @@ const defaultState = {
 };
 
 const stateChanges = {
-  [IMPORT_EXPORT_START]: () => ({ isLoading: true, errorMessage: defaultState.errorMessage }),
-  [IMPORT_EXPORT_ERROR]: ({ errorMessage }) => ({ isLoading: false, errorMessage }),
-  [IMPORT_EXPORT_SUCCESS]: () => defaultState,
-  [IMPORT_EXPORT_DISMISS]: (payload, { errorMessage }) => {
+  [IMPORT_START]: () => ({ isLoading: true, errorMessage: defaultState.errorMessage }),
+  [IMPORT_ERROR]: ({ errorMessage }) => ({ isLoading: false, errorMessage }),
+  [IMPORT_SUCCESS]: () => defaultState,
+  [IMPORT_DISMISS]: (payload, { errorMessage }) => {
     if (errorMessage) {
       return { errorMessage: defaultState.errorMessage }; // If there is an error, dismiss it
     }
@@ -33,10 +32,6 @@ const stateChanges = {
   },
   [IMPORT_DIALOG_OPEN]: () => ({
     isImportDialogOpen: true,
-  }),
-  [EXPORT_DIALOG_OPEN]: ({ parentRecord }) => ({
-    parentRecord,
-    isExportDialogOpen: true,
   }),
 };
 

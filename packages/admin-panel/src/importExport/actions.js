@@ -4,12 +4,11 @@
  */
 
 import {
-  IMPORT_EXPORT_START,
-  IMPORT_EXPORT_ERROR,
-  IMPORT_EXPORT_SUCCESS,
-  IMPORT_EXPORT_DISMISS,
+  IMPORT_START,
+  IMPORT_ERROR,
+  IMPORT_SUCCESS,
+  IMPORT_DISMISS,
   IMPORT_DIALOG_OPEN,
-  EXPORT_DIALOG_OPEN,
 } from './constants';
 import { makeSubstitutionsInString } from '../utilities';
 
@@ -23,17 +22,17 @@ export const importData = (recordType, file, queryParameters) => async (
   { api },
 ) => {
   dispatch({
-    type: IMPORT_EXPORT_START,
+    type: IMPORT_START,
   });
   const endpoint = `import/${recordType}`;
   try {
     await api.upload(endpoint, recordType, file, queryParameters);
     dispatch({
-      type: IMPORT_EXPORT_SUCCESS,
+      type: IMPORT_SUCCESS,
     });
   } catch (error) {
     dispatch({
-      type: IMPORT_EXPORT_ERROR,
+      type: IMPORT_ERROR,
       errorMessage: error.message,
     });
   }
@@ -47,6 +46,9 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
   }
   return queryParameters;
 };
+export const dismissDialog = () => ({
+  type: IMPORT_DISMISS,
+});
 
 export const exportData = (
   { exportEndpoint, rowIdQueryParameter, fileName }, // actionConfig
@@ -72,7 +74,3 @@ const processFileName = (unprocessedFileName, rowData) => {
   const fileName = makeSubstitutionsInString(unprocessedFileName, rowData);
   return `${fileName}.xlsx`;
 };
-
-export const dismissDialog = () => ({
-  type: IMPORT_EXPORT_DISMISS,
-});

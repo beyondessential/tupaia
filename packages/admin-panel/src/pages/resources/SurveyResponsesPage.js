@@ -60,10 +60,8 @@ export const SURVEY_RESPONSE_COLUMNS = [
   dateOfData,
   {
     Header: 'Export',
-    filterable: false,
-    width: 80,
     source: 'id',
-    type: 'exportFilteredData',
+    type: 'export',
     actionConfig: {
       exportEndpoint: 'surveyResponse',
       fileName: 'Survey Response',

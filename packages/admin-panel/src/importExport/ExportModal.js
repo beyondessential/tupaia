@@ -5,7 +5,6 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import {
   Button,
   Dialog,
@@ -15,8 +14,8 @@ import {
   OutlinedButton,
   SaveAlt,
 } from '@tupaia/ui-components';
-import { exportFilteredData } from './actions';
 import { ModalContentProvider } from '../widgets';
+import { api } from '../api';
 
 const STATUS = {
   IDLE: 'idle',
@@ -26,7 +25,7 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
-const ExportModalComponent = ({ onExport, title, config, values, children }) => {
+export const ExportModal = ({ title, exportEndpoint, exportFileName, values, children }) => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +47,8 @@ const ExportModalComponent = ({ onExport, title, config, values, children }) => 
     setStatus(STATUS.LOADING);
 
     try {
-      await onExport(values, config);
+      const endpoint = `export/${exportEndpoint}`;
+      await api.download(endpoint, values, exportFileName);
       setStatus(STATUS.SUCCESS);
     } catch (error) {
       setStatus(STATUS.ERROR);
@@ -96,21 +96,15 @@ const ExportModalComponent = ({ onExport, title, config, values, children }) => 
   );
 };
 
-ExportModalComponent.propTypes = {
-  onExport: PropTypes.func.isRequired,
+ExportModal.propTypes = {
   children: PropTypes.any.isRequired,
   title: PropTypes.string,
-  config: PropTypes.object.isRequired,
+  exportEndpoint: PropTypes.string.isRequired,
+  exportFileName: PropTypes.string.isRequired,
   values: PropTypes.object,
 };
 
-ExportModalComponent.defaultProps = {
+ExportModal.defaultProps = {
   title: 'Export',
   values: {},
 };
-
-const mapDispatchToProps = dispatch => ({
-  onExport: (queryParams, config) => dispatch(exportFilteredData(config, queryParams)),
-});
-
-export const ExportModal = connect(null, mapDispatchToProps)(ExportModalComponent);
