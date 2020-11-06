@@ -5,7 +5,7 @@
 
 export * from './actions';
 export { DATA_CHANGE_ACTIONS } from './constants';
-export { ExportButton, FilteredExportButton } from './ExportButton';
+export { ExportButton } from './ExportButton';
 export { ImportButton } from './ImportButton';
 export { ImportModal } from './ImportModal';
 export { ExportModal } from './ExportModal';

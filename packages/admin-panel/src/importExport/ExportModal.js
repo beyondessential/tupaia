@@ -15,7 +15,7 @@ import {
   OutlinedButton,
   SaveAlt,
 } from '@tupaia/ui-components';
-import { filteredExportData } from './actions';
+import { exportFilteredData } from './actions';
 import { ModalContentProvider } from '../widgets';
 
 const STATUS = {
@@ -110,7 +110,7 @@ ExportModalComponent.defaultProps = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onExport: (queryParams, config) => dispatch(filteredExportData(config, queryParams)),
+  onExport: (queryParams, config) => dispatch(exportFilteredData(config, queryParams)),
 });
 
 export const ExportModal = connect(null, mapDispatchToProps)(ExportModalComponent);

@@ -63,7 +63,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
     filterable: false,
     width: 80,
     source: 'id',
-    type: 'filteredExport',
+    type: 'exportFilteredData',
     actionConfig: {
       exportEndpoint: 'surveyResponse',
       fileName: 'Survey Response',

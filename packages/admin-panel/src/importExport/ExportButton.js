@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { IconButton } from '../widgets';
-import { exportData, openFilteredExportDialog } from './actions';
+import { exportData } from './actions';
 
 const ExportButtonComponent = ({ onClick }) => {
   return (
@@ -24,8 +24,4 @@ ExportButtonComponent.propTypes = {
 
 export const ExportButton = connect(null, (dispatch, { row, actionConfig }) => ({
   onClick: () => dispatch(exportData(actionConfig, row)),
-}))(ExportButtonComponent);
-
-export const FilteredExportButton = connect(null, (dispatch, { row }) => ({
-  onClick: () => dispatch(openFilteredExportDialog(row)),
 }))(ExportButtonComponent);

@@ -13,11 +13,6 @@ import {
 } from './constants';
 import { makeSubstitutionsInString } from '../utilities';
 
-export const openFilteredExportDialog = parentRecord => ({
-  type: EXPORT_DIALOG_OPEN,
-  parentRecord,
-});
-
 export const openImportDialog = () => ({
   type: IMPORT_DIALOG_OPEN,
 });
@@ -65,7 +60,7 @@ export const exportData = (
   await api.download(endpoint, queryParameters, processedFileName);
 };
 
-export const filteredExportData = (
+export const exportFilteredData = (
   { exportEndpoint, fileName }, // actionConfig
   queryParams, // values
 ) => async (dispatch, getState, { api }) => {
