@@ -14,7 +14,7 @@ import { CreateButton } from '../editor';
 const HeaderButtonContainer = styled.div`
   display: grid;
   grid-auto-flow: column;
-  column-gap: 20px;
+  column-gap: 5px;
 `;
 
 const HeaderMain = styled.header`
