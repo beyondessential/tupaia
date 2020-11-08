@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { connect } from 'react-redux';
 
@@ -36,7 +36,7 @@ const QUESTION_TYPES = {
   FreeText: FreeTextQuestion,
   Geolocate: GeolocateQuestion,
   Autocomplete: AutocompleteQuestion,
-  Instruction: Instruction,
+  Instruction,
   Number: NumberQuestion,
   Photo: PhotoQuestion,
   Radio: RadioQuestion,
@@ -91,8 +91,4 @@ const mergeProps = ({ hasValidationErrorMessage, ...restOfStateProps }, { dispat
   };
 };
 
-export const Question = connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(DumbQuestion);
+export const Question = connect(mapStateToProps, null, mergeProps)(DumbQuestion);

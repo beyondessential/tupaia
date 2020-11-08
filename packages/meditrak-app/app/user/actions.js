@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import DeviceInfo from 'react-native-device-info';
 import {
   CREATE_USER_FAILURE,
@@ -38,7 +38,7 @@ export const createUserSuccess = () => ({
 /**
  * Attempts to log in to server using credentials entered by user. If successful, begins a sync to
  * get the latest data (which may be all data if this is the first time the user has logged in)
- **/
+ */
 export const createUser = userFields => async (dispatch, getState, { api, analytics }) => {
   dispatch(requestCreateUser());
 

@@ -8,9 +8,10 @@ import { convertCellToJson } from '../utilities';
 import { ConfigValidator } from '../Validator/ConfigValidator';
 import { processCodeGeneratorConfig } from './processCodeGeneratorConfig';
 import { processCalculatedConfig } from './processCalculatedConfig';
+import { processAutocompleteConfig } from './processAutocompleteConfig';
 import { processEntityConfig } from './processEntityConfig';
 
-const { CODE_GENERATOR, CALCULATED, ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
+const { CODE_GENERATOR, CALCULATED, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
 
 export class ConfigImporter {
   parse = convertCellToJson;
@@ -67,6 +68,10 @@ export class ConfigImporter {
       case CALCULATED: {
         const calculatedConfig = await processCalculatedConfig(this.models, config);
         return { calculated: calculatedConfig };
+      }
+      case AUTOCOMPLETE: {
+        const autocompleteConfig = await processAutocompleteConfig(this.models, config);
+        return { autocomplete: autocompleteConfig };
       }
       case ENTITY:
       case PRIMARY_ENTITY: {

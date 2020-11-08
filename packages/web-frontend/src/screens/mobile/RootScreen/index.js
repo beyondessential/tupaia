@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 import HeaderBar from '../../../containers/mobile/HeaderBar';
 import { EnlargedDialog } from '../../../containers/EnlargedDialog';
-import ExportDialog from '../../../containers/ExportDialog';
+import { ExportDialog } from '../../../components/ExportDialog';
 import HomeScreen from '../HomeScreen';
 import RegionScreen from '../RegionScreen';
 import FacilityScreen from '../FacilityScreen';

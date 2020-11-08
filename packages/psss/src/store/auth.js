@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createSelector } from 'reselect';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { createReducer } from '../utils/createReducer';
-import { getPermittedEntitiesForUser, checkIsAuthorisedForMultiCountry } from '../utils/auth';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -61,28 +62,31 @@ export const updatePassword = payload => async (dispatch, getState, { api }) =>
 // selectors
 export const getAccessToken = ({ auth }) => auth.accessToken;
 export const getRefreshToken = ({ auth }) => auth.refreshToken;
-export const getCurrentUser = ({ auth }) => auth.user;
+export const getCurrentUser = ({ auth }) => auth && auth.user;
 export const getError = ({ auth }) => auth.error;
 export const checkIsPending = ({ auth }) => auth.status === 'pending';
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
 
-export const getPermittedEntity = state => {
-  const user = getCurrentUser(state);
-  return getPermittedEntitiesForUser(user);
-};
+const PSSS_PERMISSION_GROUP = 'PSSS';
 
-export const checkIsMultiCountryUser = state => {
-  const user = getCurrentUser(state);
-  return checkIsAuthorisedForMultiCountry(user);
-};
+export const getEntitiesAllowed = createSelector(getCurrentUser, user => {
+  if (!user) {
+    return [];
+  }
 
-export const getPermittedEntitySlug = state =>
-  checkIsMultiCountryUser(state) ? '' : getPermittedEntity(state);
+  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
+  return entities.map(e => e.toLowerCase()); // always use lowercase entities
+});
+
+export const checkIsMultiCountryUser = createSelector(
+  getEntitiesAllowed,
+  entities => entities.length > 1,
+);
 
 export const getHomeUrl = state =>
-  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getPermittedEntity(state)}`;
+  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getEntitiesAllowed(state)[0]}`;
 
 // reducer
 const defaultState = {

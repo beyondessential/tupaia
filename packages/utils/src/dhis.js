@@ -12,9 +12,14 @@ const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, 'tonga']);
 
 const getServerUrlFromName = serverName => {
   const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
-  const devPrefix = isProduction ? '' : 'dev-';
+  const urlPrefix = isProduction ? '' : process.env.AGGREGATION_URL_PREFIX;
+  if (!urlPrefix && !isProduction) {
+    throw new Error(
+      'The environment variable AGGREGATION_URL_PREFIX is required in non-production environments. The default should be "dev-".',
+    );
+  }
   const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
-  return `https://${devPrefix}${specificServerPrefix}aggregation.tupaia.org`;
+  return `https://${urlPrefix}${specificServerPrefix}aggregation.tupaia.org`;
 };
 
 const getServerNameFromCountryCode = countryCode =>

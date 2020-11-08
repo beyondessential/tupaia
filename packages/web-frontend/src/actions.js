@@ -108,12 +108,6 @@ export const DIALOG_PAGE_REQUEST_RESET_PASSWORD = 'DIALOG_PAGE_REQUEST_RESET_PAS
 export const DIALOG_PAGE_REQUEST_COUNTRY_ACCESS = 'DIALOG_PAGE_REQUEST_COUNTRY_ACCESS';
 export const DIALOG_PAGE_SIGNUP = 'DIALOG_PAGE_SIGNUP';
 export const DIALOG_PAGE_RESET_PASSWORD = 'DIALOG_PAGE_RESET_PASSWORD';
-export const OPEN_EXPORT_DIALOG = 'OPEN_EXPORT_DIALOG';
-export const CLOSE_EXPORT_DIALOG = 'CLOSE_EXPORT_DIALOG';
-export const ATTEMPT_CHART_EXPORT = 'ATTEMPT_CHART_EXPORT';
-export const FETCH_CHART_EXPORT_SUCCESS = 'FETCH_SIGNUP_SUCCESS';
-export const FETCH_CHART_EXPORT_ERROR = 'FETCH_CHART_EXPORT_ERROR';
-export const SELECT_CHART_EXPORT_FORMAT = 'SELECT_CHART_EXPORT_FORMAT';
 export const OPEN_ENLARGED_DIALOG = 'OPEN_ENLARGED_DIALOG';
 export const CLOSE_ENLARGED_DIALOG = 'CLOSE_ENLARGED_DIALOG';
 export const SET_ENLARGED_DIALOG_DATE_RANGE = 'SET_ENLARGED_DIALOG_DATE_RANGE';
@@ -141,12 +135,7 @@ export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
 export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
 export const UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS =
   'UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS';
-
-export function fetchInitialData() {
-  return {
-    type: FETCH_INITIAL_DATA,
-  };
-}
+export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 
 /**
  * Attempt password change using old password, new password and new password
@@ -225,7 +214,6 @@ export function fetchUserLoginError(errors) {
   return {
     type: FETCH_LOGIN_ERROR,
     errors,
-    errorMessage: 'Wrong e-mail or password',
   };
 }
 
@@ -1036,101 +1024,6 @@ export function closeMapPopup(orgUnitCode) {
   return {
     type: CLOSE_MAP_POPUP,
     orgUnitCode,
-  };
-}
-
-export function openExportDialog({
-  organisationUnitCode,
-  organisationUnitName,
-  viewId,
-  dashboardGroupId,
-  startDate,
-  endDate,
-  formats = ['png'],
-  chartType,
-  extraConfig = {},
-}) {
-  return {
-    type: OPEN_EXPORT_DIALOG,
-    organisationUnitCode,
-    organisationUnitName,
-    viewId,
-    dashboardGroupId,
-    startDate,
-    endDate,
-    formats,
-    chartType,
-    extraConfig,
-  };
-}
-
-export function closeExportDialog() {
-  return {
-    type: CLOSE_EXPORT_DIALOG,
-  };
-}
-
-/**
- * Attempt to trigger a chart export job.
- *
- * @param  {object} payload     Export payload  explanatory)
- */
-export function attemptChartExport({
-  viewId,
-  organisationUnitCode,
-  organisationUnitName,
-  dashboardGroupId,
-  chartType,
-  startDate,
-  endDate,
-  selectedDisaster,
-  exportFileName,
-  extraConfig = {},
-  selectedFormat = 'png',
-  projectCode,
-}) {
-  return {
-    type: ATTEMPT_CHART_EXPORT,
-    viewId,
-    organisationUnitCode,
-    organisationUnitName,
-    dashboardGroupId,
-    chartType,
-    startDate,
-    endDate,
-    selectedDisaster,
-    exportFileName,
-    selectedFormat,
-    extraConfig,
-    projectCode,
-  };
-}
-
-/**
- * Indicates that the chart export job was successfully triggered.
- */
-export function fetchChartExportSuccess() {
-  return {
-    type: FETCH_CHART_EXPORT_SUCCESS,
-  };
-}
-
-/**
- * Indicates that the chart export job failed to trigger.
- *
- * @param {object} errors  response from saga on failed fetch
- */
-export function fetchChartExportError(errorMessage) {
-  return {
-    type: FETCH_CHART_EXPORT_ERROR,
-    errorMessage,
-  };
-}
-
-export function selectChartExportFormat(format) {
-  return {
-    type: SELECT_CHART_EXPORT_FORMAT,
-    format,
   };
 }
 

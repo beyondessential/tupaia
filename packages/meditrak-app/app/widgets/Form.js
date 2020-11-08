@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { Component } from 'react';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 import { THEME_FONT_SIZE_THREE } from '../globalStyles';
 
-import { Button, Checkbox, TextInput, MultilineTextInput } from '../widgets';
+import { Button, Checkbox, TextInput, MultilineTextInput } from '.';
 
 export const FIELD_TYPES = {
   TEXT: 'TEXT',
@@ -59,7 +59,7 @@ export class Form extends Component {
             <Checkbox
               {...fieldProps}
               labelText={fieldProps.label}
-              labelSide={'right'}
+              labelSide="right"
               onToggle={() => onFieldChange(key, !value)}
               style={localStyles.checkbox}
               isChecked={value}

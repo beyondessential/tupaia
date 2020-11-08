@@ -9,7 +9,10 @@ import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
 import { Aggregation, AggregationSpecs, Analytic, FetchOptions } from '../types';
 
-export const validateConfig = async <T extends {}>(config: {}, validators = {}): Promise<T> => {
+export const validateConfig = async <T extends Record<string, unknown>>(
+  config = {},
+  validators = {},
+): Promise<T> => {
   await new ObjectValidator(validators).validate(
     config,
     (error: string, field: string) => new Error(`Error in field '${field}': ${error}`),

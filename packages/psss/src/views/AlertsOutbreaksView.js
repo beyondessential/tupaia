@@ -9,7 +9,7 @@ import { Archive } from '@material-ui/icons';
 import { Header, HeaderTitle, HeaderTitleWithSubHeading } from '../components';
 import { AlertsExportModal, OutbreaksExportModal } from '../containers/Modals';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
-import { countryFlagImage } from '../utils';
+import { countryFlagImage, getCountryName } from '../utils';
 
 const links = [
   {
@@ -43,7 +43,7 @@ export const AlertsOutbreaksView = () => {
     Title = (
       <HeaderTitleWithSubHeading
         title="Alerts & Outbreaks"
-        subHeading="American Samoa"
+        subHeading={getCountryName(countryCode)}
         avatarUrl={countryFlagImage(countryCode)}
       />
     );

@@ -77,7 +77,7 @@
     "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
+    "lint:fix": "yarn lint --fix",
     "log:android": "react-native log-android",
     "log:ios": "react-native log-ios",
     "start": "node node_modules/react-native/local-cli/cli.js start",

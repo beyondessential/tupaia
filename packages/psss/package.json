@@ -17,14 +17,14 @@
     "cypress:run": "cypress run",
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
+    "lint:fix": "yarn lint --fix",
     "pretest:test:cypress:run": "npm run build",
-    "start": "react-scripts start",
-    "start-dev": "npm-run-all -c -l -p start-server start",
+    "start-dev": "react-scripts start",
+    "start-fullstack": "npm-run-all -c -l -p start-server start",
     "start-server": "yarn workspace @tupaia/meditrak-server start",
     "test": "npm run test:jest",
-    "test:cypress:open": "start-server-and-test start-dev 3000 cypress:open",
-    "test:cypress:run": "start-server-and-test start-dev 3000 cypress:run",
+    "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
+    "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
     "test:jest": "react-scripts test --env=jest-environment-jsdom-sixteen"
   },
   "babel": {
@@ -54,6 +54,7 @@
     "redux": "^4.0.2",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "styled-components": "^5.1.0",
     "whatwg-fetch": "^3.0.0"
   },
