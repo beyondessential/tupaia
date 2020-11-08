@@ -3,18 +3,8 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  IMPORT_START,
-  IMPORT_ERROR,
-  IMPORT_SUCCESS,
-  IMPORT_DISMISS,
-  IMPORT_DIALOG_OPEN,
-} from './constants';
+import { IMPORT_START, IMPORT_ERROR, IMPORT_SUCCESS } from './constants';
 import { makeSubstitutionsInString } from '../utilities';
-
-export const openImportDialog = () => ({
-  type: IMPORT_DIALOG_OPEN,
-});
 
 export const importData = (recordType, file, queryParameters) => async (
   dispatch,
@@ -46,9 +36,6 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
   }
   return queryParameters;
 };
-export const dismissDialog = () => ({
-  type: IMPORT_DISMISS,
-});
 
 export const exportData = (
   { exportEndpoint, rowIdQueryParameter, fileName }, // actionConfig

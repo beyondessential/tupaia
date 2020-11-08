@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import { ImportButton } from '../importExport';
+import { ImportModal } from '../importExport';
 import { CreateButton } from '../editor';
 
 const HeaderButtonContainer = styled.div`
@@ -36,7 +36,7 @@ export const Header = ({ title, importConfig, createConfig, ExportModalComponent
       <HeaderInner>
         <Typography variant="h1">{title}</Typography>
         <HeaderButtonContainer>
-          {importConfig && <ImportButton {...importConfig} />}
+          {importConfig && <ImportModal {...importConfig} />}
           {createConfig && <CreateButton {...createConfig} />}
           {ExportModalComponent && <ExportModalComponent />}
         </HeaderButtonContainer>

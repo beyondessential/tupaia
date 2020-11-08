@@ -7,7 +7,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
-import { OldImportModal } from '../../importExport';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
@@ -50,7 +49,6 @@ export const ResourcePage = ({
           baseFilter={baseFilter}
         />
       </Container>
-      {importConfig && <OldImportModal {...importConfig} />}
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
     </>
   );

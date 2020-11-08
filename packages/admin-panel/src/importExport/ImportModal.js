@@ -11,27 +11,26 @@ import {
   DialogFooter,
   DialogHeader,
   FileUploadField,
-  OutlinedButton,
+  LightOutlinedButton,
+  SaveAlt,
 } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
-import { dismissDialog, importData } from './actions';
+import { importData } from './actions';
 import { ModalContentProvider, InputField } from '../widgets';
 
 export const ImportModalComponent = ({
   isLoading,
   errorMessage,
-  onDismiss,
   title,
   onImport,
   queryParameters,
   subtitle,
   children,
   parentRecord,
-  isOpen,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [values, setValues] = useState({});
   const [file, setFile] = useState(null);
-  const [value, setValue] = useState(''); // To do: test removing value
 
   const handleValueChange = (key, val) => {
     setValues(prevState => ({
@@ -46,25 +45,14 @@ export const ImportModalComponent = ({
   useEffect(() => {
     if (errorMessage === 'Failed to fetch') {
       setFile(null);
-      setValue('');
     }
   }, [errorMessage]);
 
   // clear form state when modal is opened or closed
   useEffect(() => {
     setValues({});
-  }, [isOpen]);
-
-  // Clear the file field state when the modal opens and closes
-  useEffect(() => {
     setFile(null);
-    setValue('');
   }, [isOpen]);
-
-  const handleFiles = ({ target }) => {
-    setFile(target.files[0]);
-    setValue(target.value);
-  };
 
   const fileErrorMessage =
     errorMessage === 'Failed to fetch' || errorMessage === 'Network request timed out'
@@ -81,54 +69,62 @@ export const ImportModalComponent = ({
   };
 
   return (
-    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick>
-      <DialogHeader
-        onClose={onDismiss}
-        title={fileErrorMessage ? 'Error' : title}
-        color={fileErrorMessage ? 'error' : 'textPrimary'}
-      />
-      <ModalContentProvider errorMessage={fileErrorMessage} isLoading={isLoading}>
-        <p>{subtitle}</p>
-        {queryParameters
-          .filter(({ visibilityCriteria }) => checkVisibilityCriteriaAreMet(visibilityCriteria))
-          .map(queryParameter => {
-            const { parameterKey, label, secondaryLabel } = queryParameter;
-            return (
-              <InputField
-                key={parameterKey}
-                inputKey={parameterKey}
-                value={values[parameterKey]}
-                {...queryParameter}
-                onChange={handleValueChange}
-                label={label}
-                secondaryLabel={secondaryLabel}
-                parentRecord={parentRecord}
-              />
-            );
-          })}
-        {children}
-        <FileUploadField onChange={event => handleFiles(event)} name="file-upload" />
-      </ModalContentProvider>
-      <DialogFooter>
-        <OutlinedButton onClick={onDismiss} disabled={isLoading}>
-          {fileErrorMessage ? 'Dismiss' : 'Cancel'}
-        </OutlinedButton>
-        <Button
-          onClick={() => onImport(file, values)}
-          disabled={!!fileErrorMessage || isLoading || !file}
-        >
-          Import
-        </Button>
-      </DialogFooter>
-    </Dialog>
+    <>
+      <Dialog onClose={() => setIsOpen(false)} open={isOpen} disableBackdropClick>
+        <DialogHeader
+          onClose={() => setIsOpen(false)}
+          title={fileErrorMessage ? 'Error' : title}
+          color={fileErrorMessage ? 'error' : 'textPrimary'}
+        />
+        <ModalContentProvider errorMessage={fileErrorMessage} isLoading={isLoading}>
+          <p>{subtitle}</p>
+          {queryParameters
+            .filter(({ visibilityCriteria }) => checkVisibilityCriteriaAreMet(visibilityCriteria))
+            .map(queryParameter => {
+              const { parameterKey, label, secondaryLabel } = queryParameter;
+              return (
+                <InputField
+                  key={parameterKey}
+                  inputKey={parameterKey}
+                  value={values[parameterKey]}
+                  {...queryParameter}
+                  onChange={handleValueChange}
+                  label={label}
+                  secondaryLabel={secondaryLabel}
+                  parentRecord={parentRecord}
+                />
+              );
+            })}
+          {children}
+          <FileUploadField
+            onChange={({ target }) => {
+              setFile(target.files[0]);
+            }}
+            name="file-upload"
+          />
+        </ModalContentProvider>
+        <DialogFooter>
+          <LightOutlinedButton onClick={() => setIsOpen(false)} disabled={isLoading}>
+            {fileErrorMessage ? 'Dismiss' : 'Cancel'}
+          </LightOutlinedButton>
+          <Button
+            onClick={() => onImport(file, values)}
+            disabled={!!fileErrorMessage || isLoading || !file}
+          >
+            Import
+          </Button>
+        </DialogFooter>
+      </Dialog>
+      <LightOutlinedButton startIcon={<SaveAlt />} onClick={() => setIsOpen(true)}>
+        Import
+      </LightOutlinedButton>
+    </>
   );
 };
 
 ImportModalComponent.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  onDismiss: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
   title: PropTypes.string,
   subtitle: PropTypes.string,
@@ -147,18 +143,16 @@ ImportModalComponent.defaultProps = {
 };
 
 const mapStateToProps = ({ importExport }) => {
-  const { isLoading, parentRecord } = importExport;
+  const { isLoading, parentRecord, errorMessage } = importExport;
 
   return {
     isLoading,
     parentRecord,
-    isOpen: importExport.isImportDialogOpen,
-    errorMessage: importExport.errorMessage,
+    errorMessage,
   };
 };
 
 const mapDispatchToProps = (dispatch, { actionConfig }) => ({
-  onDismiss: () => dispatch(dismissDialog()),
   onImport: (file, queryParameters) =>
     dispatch(importData(actionConfig.importEndpoint, file, queryParameters)),
 });
