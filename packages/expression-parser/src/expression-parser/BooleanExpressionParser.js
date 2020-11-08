@@ -6,9 +6,19 @@
 import { ExpressionParser } from './ExpressionParser';
 
 export class BooleanExpressionParser extends ExpressionParser {
-  evaluate(expression, values = {}, defaultValues = {}) {
-    this.setScopeVariables(values, defaultValues);
+  constructor() {
+    super();
+    this.importFunctions();
+  }
 
-    return this.evaluateExpression(expression);
+  importFunctions() {
+    this.importMatchRegexFunction();
+  }
+
+  // Expression can be: 'matchRegex("abc", "a")'
+  importMatchRegexFunction() {
+    this.math.import({
+      matchRegex: (value, regex) => !!value.match(regex),
+    });
   }
 }
