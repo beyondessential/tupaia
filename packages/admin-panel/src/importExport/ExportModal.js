@@ -25,10 +25,12 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
-export const ExportModal = ({ title, exportEndpoint, fileName, values, children }) => {
+export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values, children }) => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpen = () => setIsOpen(true);
 
   const handleDismiss = () => {
     setStatus(STATUS.IDLE);
@@ -49,6 +51,7 @@ export const ExportModal = ({ title, exportEndpoint, fileName, values, children 
     try {
       const endpoint = `export/${exportEndpoint}`;
       await api.download(endpoint, values, fileName);
+      setIsOpen(false);
       setStatus(STATUS.SUCCESS);
     } catch (error) {
       setStatus(STATUS.ERROR);
@@ -58,10 +61,10 @@ export const ExportModal = ({ title, exportEndpoint, fileName, values, children 
 
   return (
     <>
-      <Dialog onClose={() => setIsOpen(false)} open={isOpen} disableBackdropClick>
+      <Dialog onClose={handleCancel} open={isOpen} disableBackdropClick>
         <form onSubmit={handleSubmit} noValidate>
           <DialogHeader
-            onClose={() => setIsOpen(false)}
+            onClose={handleCancel}
             title={errorMessage ? 'Error' : title}
             color={errorMessage ? 'error' : 'textPrimary'}
           />
@@ -86,7 +89,7 @@ export const ExportModal = ({ title, exportEndpoint, fileName, values, children 
       </Dialog>
       <LightOutlinedButton
         startIcon={<SaveAlt />}
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpen}
         isLoading={STATUS === STATUS.LOADING}
         disabled={STATUS === STATUS.ERROR}
       >
@@ -94,10 +97,10 @@ export const ExportModal = ({ title, exportEndpoint, fileName, values, children 
       </LightOutlinedButton>
     </>
   );
-};
+});
 
 ExportModal.propTypes = {
-  children: PropTypes.any.isRequired,
+  children: PropTypes.node.isRequired,
   exportEndpoint: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   title: PropTypes.string,
