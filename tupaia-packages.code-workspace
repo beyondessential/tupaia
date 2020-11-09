@@ -44,7 +44,7 @@
       "name": "export-chart-lambda",
       "path": "packages/export-chart-lambda"
     },
-	{
+	  {
       "name": "expression-parser",
       "path": "packages/expression-parser"
     },

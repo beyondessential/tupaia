@@ -6,11 +6,6 @@
 import { ExpressionParser } from './ExpressionParser';
 
 export class BooleanExpressionParser extends ExpressionParser {
-  constructor() {
-    super();
-    this.importFunctions();
-  }
-
   /**
    * Import any extra functions that we want to support
    */

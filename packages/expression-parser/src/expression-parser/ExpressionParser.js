@@ -5,10 +5,23 @@
 
 import { create, all } from 'mathjs';
 
+const startsWithNumber = s => s.match(/^\d/);
+
+/**
+ * Usage:
+ * const expressionParser = new ExpressionParser();
+ *
+ * //Set the scope variable a
+ * expressionParser.set('a', 1);
+ *
+ * //Evaluate an expression that has a as a variable
+ * expressionParser.evaluate('a + 2'); //returns 3
+ */
 export class ExpressionParser {
   constructor() {
     this.math = create(all, {});
     this.parser = this.math.parser();
+    this.importFunctions();
   }
 
   /**
@@ -35,11 +48,10 @@ export class ExpressionParser {
   /**
    * Set the parser's scope.
    * @param {*} scope
-   * @param {*} defaultScope
    */
-  setScope(scope = {}, defaultScope = {}) {
+  setScope(scope = {}) {
     Object.entries(scope).forEach(([name, value]) => {
-      const expressionValue = value || defaultScope[name] || 0;
+      const expressionValue = value || 0;
       this.set(name, expressionValue);
     });
   }
@@ -89,15 +101,11 @@ export class ExpressionParser {
     // mathjs does not allow variable names that begin with numbers (eg: 55aa) because they will be parsed as implicit multiplication (55aa -> 55 * aa).
     // In Tupaia, we sometimes want to support variables starting with numbers like data code or question id.
     // So to support it all the time, add a prefix $ to prevent implicit multiplication parsing
-    if (this.startsWithNumber(name)) {
+    if (startsWithNumber(name)) {
       sanitizedName = `$${sanitizedName}`;
     }
 
     return sanitizedName;
-  }
-
-  startsWithNumber(s) {
-    return s.match(/^\d/);
   }
 
   /**
@@ -107,4 +115,6 @@ export class ExpressionParser {
   clearScope() {
     this.parser.clear();
   }
+
+  importFunctions() {}
 }
