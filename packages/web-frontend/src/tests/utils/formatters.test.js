@@ -6,7 +6,7 @@
  */
 
 import { VALUE_TYPES } from '../../components/View/constants';
-import { formatDataValue } from '../formatters';
+import { formatDataValue } from '../../utils/formatters';
 
 const { PERCENTAGE, FRACTION_AND_PERCENTAGE } = VALUE_TYPES;
 

@@ -48,15 +48,11 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
-export const CountryNameLinkCell = ({ name, countryCode }) => {
-  // Todo: replace with real country code
-  const testCountryCode = 'as';
-  return (
-    <CountryTitle to={`weekly-reports/${testCountryCode}`} component={RouterLink}>
-      <Avatar src={countryFlagImage(countryCode)} /> {name}
-    </CountryTitle>
-  );
-};
+export const CountryNameLinkCell = ({ name, countryCode }) => (
+  <CountryTitle to={`weekly-reports/${countryCode}`} component={RouterLink}>
+    <Avatar src={countryFlagImage(countryCode)} /> {name}
+  </CountryTitle>
+);
 
 CountryNameLinkCell.propTypes = {
   name: PropTypes.string.isRequired,

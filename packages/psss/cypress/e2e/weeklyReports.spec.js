@@ -6,10 +6,10 @@ describe('weekly reports', () => {
   it('can navigate to weekly reports panel', () => {
     // set up route stubs. we don't want to retest login functionality as that is covered by the login test
     cy.server();
-    cy.route('POST', '**auth', 'fixture:auth.json').as('auth');
+    cy.route('POST', '**auth', 'fixture:multiCountryUserAuth.json').as('auth');
 
     cy.login();
-    cy.assertHome();
+    cy.assertMultiCountryHome();
 
     // select country
     cy.findByTestId('countries-table').within(() => {
@@ -24,7 +24,9 @@ describe('weekly reports', () => {
     });
 
     // open panel
-    cy.findByRole('button', { name: /review and confirm*/i }).click();
+    cy.findAllByRole('button', { name: /review and confirm*/i })
+      .first()
+      .click();
 
     // check that the panel is correctly rendered
     cy.findByText(/upcoming report*/i).should('exist');
