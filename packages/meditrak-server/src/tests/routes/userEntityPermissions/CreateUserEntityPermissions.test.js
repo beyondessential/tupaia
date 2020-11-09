@@ -13,7 +13,7 @@ import {
 import { TestableApp } from '../../TestableApp';
 import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
 
-describe('Permissions checker for DeleteUserEntityPermissions', async () => {
+describe('Permissions checker for CreateUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
