@@ -40,12 +40,13 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
 }
 
 export const countCalculatedValuesPerOrgUnit = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
   aggregationType,
 ) => {
   const builder = new CountCalculatedValuesPerOrgUnit(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
