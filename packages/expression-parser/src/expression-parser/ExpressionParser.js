@@ -11,41 +11,62 @@ export class ExpressionParser {
     this.parser = this.math.parser();
   }
 
+  /**
+   * Evaluate an expression.
+   * Before evaluating an expression, the scope will be sanitized to fix up any invalid variables that we want to support
+   * @param {*} expression
+   */
   evaluate(expression) {
-    const originalVariables = this.parser.getAll();
+    const originalScope = this.parser.getAll();
 
     // Sanitize scope and expression to fix any invalid variables before evaluating the expression
-    const sanitizedExpression = this.sanitizeExpression(expression, originalVariables);
+    const sanitizedExpression = this.sanitizeExpression(expression, originalScope);
 
     // Evaluate the sanitized expression
     const result = this.parser.evaluate(sanitizedExpression);
 
     // Reset the scope variables to original;
-    this.clear();
-    this.setScopeVariables(originalVariables);
+    this.clearScope();
+    this.setScope(originalScope);
 
     return result;
   }
 
-  setScopeVariables(values = {}, defaultValues = {}) {
-    Object.entries(values).forEach(([name, value]) => {
-      const expressionValue = value || defaultValues[name] || 0;
-      this.setScopeVariable(name, expressionValue);
+  /**
+   * Set the parser's scope.
+   * @param {*} scope
+   * @param {*} defaultScope
+   */
+  setScope(scope = {}, defaultScope = {}) {
+    Object.entries(scope).forEach(([name, value]) => {
+      const expressionValue = value || defaultScope[name] || 0;
+      this.set(name, expressionValue);
     });
   }
 
-  setScopeVariable(name, value) {
+  /**
+   * Add a value to the parser's scope.
+   * @param {*} name
+   * @param {*} value
+   */
+  set(name, value) {
     this.parser.set(name, value);
   }
 
-  sanitizeExpression(expression, originalVariables) {
+  /**
+   * Sanitize any invalid variables in the scope and expression.
+   * Eg: variables that start with numbers
+   * @param {*} expression
+   * @param {*} originalScope
+   */
+  sanitizeExpression(expression, originalScope) {
     let sanitizedExpression = expression;
 
     // Clear the scope and set new sanitized variables (if there's any)
-    this.clear();
+    this.clearScope();
 
     // Sanitize the scope variables and replace variable names in expression
-    Object.entries(originalVariables).forEach(([name, value]) => {
+    Object.entries(originalScope).forEach(([name, value]) => {
       const sanitizedName = this.sanitizeVariableName(name);
       this.parser.set(sanitizedName, value);
 
@@ -57,12 +78,17 @@ export class ExpressionParser {
     return sanitizedExpression;
   }
 
+  /**
+   * Sanitize a variable name.
+   * Eg: variables that start with numbers
+   * @param {*} name
+   */
   sanitizeVariableName(name) {
     let sanitizedName = name;
 
-    // mathjs does not allow variable name that begins with numbers (eg: 55aa) because it will be parsed as implicit multiplication (55aa -> 55 * aa).
-    // In Tupaia, we sometimes want to support variables starting with number like data code or question id.
-    // So to support it all the time, we add a prefix $ to prevent implicit multiplication parsing
+    // mathjs does not allow variable names that begin with numbers (eg: 55aa) because they will be parsed as implicit multiplication (55aa -> 55 * aa).
+    // In Tupaia, we sometimes want to support variables starting with numbers like data code or question id.
+    // So to support it all the time, add a prefix $ to prevent implicit multiplication parsing
     if (this.startsWithNumber(name)) {
       sanitizedName = `$${sanitizedName}`;
     }
@@ -74,7 +100,11 @@ export class ExpressionParser {
     return s.match(/^\d/);
   }
 
-  clear() {
+  /**
+   * Clear the scope of the parser.
+   * This will not remove any imported functions.
+   */
+  clearScope() {
     this.parser.clear();
   }
 }
