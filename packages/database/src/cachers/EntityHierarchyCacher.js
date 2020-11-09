@@ -16,13 +16,11 @@ export class EntityHierarchyCacher {
   }
 
   listenForChanges() {
-    this.changeHandlerCancellers[0] = this.models.entity.addChangeHandler(this.handleEntityChange);
-    this.changeHandlerCancellers[1] = this.models.entityRelation.addChangeHandler(
-      this.handleEntityRelationChange,
-    );
-    this.changeHandlerCancellers[2] = this.models.entityHierarchy.addChangeHandler(
-      this.handleEntityHierarchyChange,
-    );
+    this.changeHandlerCancellers = [
+      this.models.entity.addChangeHandler(this.handleEntityChange),
+      this.models.entityRelation.addChangeHandler(this.handleEntityRelationChange),
+      this.models.entityHierarchy.addChangeHandler(this.handleEntityHierarchyChange),
+    ];
   }
 
   stopListeningForChanges() {

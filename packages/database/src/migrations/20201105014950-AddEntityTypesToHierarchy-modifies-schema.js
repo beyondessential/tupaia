@@ -15,7 +15,10 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.addColumn('entity_hierarchy', 'canonical_types', { type: 'text[]' });
+  return db.addColumn('entity_hierarchy', 'canonical_types', {
+    type: 'text[]',
+    defaultValue: '{}',
+  });
 };
 
 exports.down = function (db) {
