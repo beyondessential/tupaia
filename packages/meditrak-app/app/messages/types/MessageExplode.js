@@ -75,7 +75,7 @@ export class MessageExplode extends PureComponent {
         ]}
       >
         <TouchableOpacity
-          analyticsLabel={'Message Explode'}
+          analyticsLabel="Message Explode"
           style={localStyles.message}
           onPress={onDismiss}
         >

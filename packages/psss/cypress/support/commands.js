@@ -13,9 +13,13 @@ Cypress.Commands.add('login', () => {
   cy.findByRole('button', { name: /login*/i }).click();
 });
 
-Cypress.Commands.add('assertHome', () => {
+Cypress.Commands.add('assertMultiCountryHome', () => {
   cy.findByText(/countries*/i, { selector: 'h1' });
   cy.url().should('eq', `${Cypress.config().baseUrl}/`);
+});
+
+Cypress.Commands.add('assertSingleCountryHome', () => {
+  cy.url().should('eq', `${Cypress.config().baseUrl}/weekly-reports/to`);
 });
 
 Cypress.Commands.add('assertWeeklyReportsPage', () => {

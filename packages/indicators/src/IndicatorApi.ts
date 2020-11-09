@@ -11,6 +11,7 @@ import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from '.
 
 export class IndicatorApi {
   private models: ModelRegistry;
+
   private aggregator: Aggregator;
 
   constructor(models: ModelRegistry, dataBroker: DataBroker) {

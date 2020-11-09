@@ -5,6 +5,7 @@
 
 const { execSync } = require('child_process');
 const { existsSync, readdirSync } = require('fs');
+const { platform } = require('os');
 const yargs = require('yargs');
 
 const { getLoggerInstance } = require('./utilities');
@@ -108,6 +109,8 @@ class Script {
   findFolderNames = path => this.findFolders(path).map(({ name }) => name);
 
   checkPathExists = path => existsSync(path);
+
+  isOsWindows = () => platform() === 'win32';
 }
 
 module.exports = Script;

@@ -7,8 +7,8 @@ export PATH=/home/ubuntu/.local/bin:/home/ubuntu/.yarn/bin:/home/ubuntu/.config/
 # Set the home directory of the user
 export HOME_DIRECTORY="/home/ubuntu/tupaia"
 
-DIR=`dirname "$0"`
-export STAGE=$(${DIR}/../utility/detectStage.sh)
+DIR=$(dirname "$0")
+export STAGE=$(${DIR}/../utility/getEC2TagValue.sh Stage)
 echo "Starting up instance for ${STAGE}"
 
 # Fetch and deploy the latest for each package based on the stage, including injecting environment
@@ -17,5 +17,3 @@ ${HOME_DIRECTORY}/packages/devops/scripts/deployment/deployLatestRepositories.sh
 
 # Set nginx config and start the service running
 ${HOME_DIRECTORY}/packages/devops/scripts/deployment/configureNginx.sh
-
-

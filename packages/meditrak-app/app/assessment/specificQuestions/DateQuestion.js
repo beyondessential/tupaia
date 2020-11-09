@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React, { PureComponent } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
@@ -76,16 +76,16 @@ export class DateQuestion extends PureComponent {
           style={localStyles.field}
           onPress={() => this.onOpenDatePicker()}
         >
-          <Icon library={'Ionic'} name={'md-calendar'} size={20} style={localStyles.icon} />
+          <Icon library="Ionic" name="md-calendar" size={20} style={localStyles.icon} />
           {this.renderInput()}
         </TouchableOpacity>
         {hasAnswer && (
           <TouchableOpacity
-            analyticsLabel={'Date: Clear'}
+            analyticsLabel="Date: Clear"
             style={localStyles.removeButton}
             onPress={() => this.onClearDate()}
           >
-            <Icon library={'Material'} name={'close'} size={14} />
+            <Icon library="Material" name="close" size={14} />
           </TouchableOpacity>
         )}
         <DatePicker

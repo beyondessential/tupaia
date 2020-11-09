@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import {
   ENTITY_SEARCH_TERM_CHANGE,
@@ -17,7 +17,7 @@ const getPermsCheckFunction = (database, surveyId) => {
   return entity => currentUser.hasAccessToSurveyInEntity(survey, entity);
 };
 
-const getEntityFilters = (state, database, questionId) => {
+const getEntityDatabaseFilters = (state, database, questionId) => {
   const { code: countryCode } = database.getCountry(state.country.selectedCountryId);
   const filters = { countryCode };
 
@@ -34,6 +34,26 @@ const getEntityFilters = (state, database, questionId) => {
   return filters;
 };
 
+const getEntityAttributeFilters = (state, questionId) => {
+  const question = getQuestion(state, questionId);
+  const { attributes } = question.config.entity;
+
+  return entity =>
+    attributes
+      ? Object.entries(attributes).every(([key, config]) => {
+          const attributeValue = getAnswerForQuestion(state, config.questionId);
+
+          // No answer was selected for the question to filter, return all
+          if (attributeValue === undefined) {
+            return true;
+          }
+
+          const { attributes: entityAttributes } = entity.toJson();
+          return entityAttributes[key] === attributeValue;
+        })
+      : true;
+};
+
 export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   dispatch,
   getState,
@@ -48,12 +68,14 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   // check permissions - only for the PrimaryEntity questions
   const { surveyId } = assessment;
   const permsCheck = isPrimaryEntity ? getPermsCheckFunction(database, surveyId) : () => true;
+  const checkMatchesAttributeFilters = getEntityAttributeFilters(state, questionId);
 
-  const filters = getEntityFilters(state, database, questionId);
+  const filters = getEntityDatabaseFilters(state, database, questionId);
   const entities = database.getEntities(searchTerm, filters);
 
   const filteredEntities = entities
     .filter(permsCheck)
+    .filter(checkMatchesAttributeFilters)
     .map(thisEntity => thisEntity.getReduxStoreData());
 
   dispatch({

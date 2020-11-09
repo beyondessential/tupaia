@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { Database } from './Database';
 import { Synchroniser } from '../sync';
@@ -11,7 +11,7 @@ import { constructRecord } from './constructRecord';
 export class SyncingDatabase extends Database {
   /**
    * Creates a database for Tupaia Meditrak that will keep itself in sync with the server
-   **/
+   */
   constructor(api) {
     super();
     this.synchroniser = new Synchroniser(this, api);
@@ -23,7 +23,7 @@ export class SyncingDatabase extends Database {
 
   /**
    * Begins regular syncing of data with the server
-   **/
+   */
   enableSync(dispatch) {
     this.synchroniser.enable(dispatch);
   }
@@ -31,7 +31,7 @@ export class SyncingDatabase extends Database {
   /**
    * Should be called for safety before Database goes out of scope, otherwise sync might try to
    * act without the database being instantiated.
-   **/
+   */
   disableSync() {
     this.synchroniser.disable();
   }
