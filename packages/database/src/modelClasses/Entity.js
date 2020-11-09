@@ -174,7 +174,7 @@ export class EntityType extends DatabaseType {
    * the first hierarchy it is a member of, alphabetically
    */
   async fetchDefaultEntityHierarchyId() {
-    const hierarchiesIncludingEntity = await this.otherModels.ancestorDescendantRelation.find(
+    const hierarchiesIncludingEntity = await this.otherModels.entityHierarchy.find(
       {
         ancestor_id: this.id,
         [QUERY_CONJUNCTIONS.OR]: {
@@ -182,7 +182,7 @@ export class EntityType extends DatabaseType {
         },
       },
       {
-        joinWith: TYPES.ENTITY_HIERARCHY,
+        joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
         sort: ['entity_hierarchy.name ASC'],
       },
     );
