@@ -634,13 +634,13 @@ function global(
 
 function enlargedDialog(
   state = {
-    isVisible: false,
-    isLoading: false,
-    viewContent: null,
-    organisationUnitName: '',
-    errorMessage: '',
-    startDate: null,
-    endDate: null,
+    isVisible: false, // ? make a type of overlay like landing?
+    isLoading: false, // Can be calculated in component
+    viewContent: null, // Can be calculated in component with default passed in?
+    organisationUnitName: '', // Can be current org unit at first render, pulled from redux?
+    errorMessage: '', // Can be calculated in component
+    startDate: null, // Can be passed as a prop
+    endDate: null, // Can be passed as a prop
   },
   action,
 ) {
@@ -691,13 +691,13 @@ function enlargedDialog(
   }
 }
 
-function drillDown(
+function drillDown( // Can just be rolled into enlargedDialog? Why do we need the difference?
   state = {
-    isVisible: false,
-    isLoading: false,
-    errorMessage: '',
-    currentLevel: 0,
-    levelContents: {},
+    isVisible: false, // Same as enlargedDialog
+    isLoading: false, // Same as enlargedDialog
+    errorMessage: '', // Same as enlargedDialog
+    currentLevel: 0, // Can be prop? Not sure about this one...
+    levelContents: {}, // Can be prop? Not sure about this one either...
   },
   action,
 ) {

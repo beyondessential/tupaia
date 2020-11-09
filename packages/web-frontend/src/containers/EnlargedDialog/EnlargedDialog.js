@@ -206,12 +206,12 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  ...state.enlargedDialog,
+  ...state.enlargedDialog, // TODO: Obviously remove...
   projectCode: selectCurrentProjectCode(state),
   viewConfigs: state.global.viewConfigs,
   isDrillDownVisible: state.drillDown.isVisible,
   infoViewKey: selectCurrentInfoViewKey(state),
-  viewContent: selectCurrentExpandedViewContent(state),
+  viewContent: selectCurrentExpandedViewContent(state), // TODO: Obviously remove...
   organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 

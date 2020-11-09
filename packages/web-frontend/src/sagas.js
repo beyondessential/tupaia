@@ -1068,7 +1068,7 @@ function* watchGoHomeAndResetToProjectSplash() {
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
   const state = yield select();
-  const viewContent = selectCurrentExpandedViewContent(state);
+  const viewContent = selectCurrentExpandedViewContent(state); //TODO: Move to component
   const infoViewKey = selectCurrentInfoViewKey(state);
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
 
@@ -1095,6 +1095,7 @@ function* fetchEnlargedDialogViewContentForPeriod(action) {
 }
 
 function* fetchDrillDownViewContentForPeriod(action) {
+  // TODO: Move to component
   const state = yield select();
   const { startDate, endDate, drillDownLevel } = action;
   const { viewContent } = state.drillDown.levelContents[drillDownLevel];
