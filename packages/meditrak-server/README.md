@@ -33,34 +33,6 @@ on Slack. Import the dump by running:
 psql tupaia -U tupaia < tupaia_dump.sql
 ```
 
-## Tests
-
-### Running the tests
-
-```bash
-  yarn test               # Runs all tests
-  yarn test -g ${pattern} # Runs tests filtering their file names by ${pattern}
-  yarn test:coverage      # Runs tests and displays project test coverage
-```
-
-### Filtering describe/it blocks
-
-```js
-// Run specific blocks
-describe.only('Describe block', function () => {});
-it.only(function () => {})
-
-// Skip blocks
-describe.skip('One Time Login', function () => {});
-it.skip(function () => {} )
-```
-
-Remember to **remove** `.only`/`.skip` calls before you commit the test files.
-
-### Test coverage
-
-To display line coverage in code, you can use [Coverage Gutters](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) for `Visual Studio Code`
-
 ### Importing geojson
 
 Documentation for importing geojson can be found [here](src/documentation/importingNewGeojson.md)
