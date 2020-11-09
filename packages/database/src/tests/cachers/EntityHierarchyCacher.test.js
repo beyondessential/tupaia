@@ -18,6 +18,7 @@ import {
   TEST_DATA,
   INITIAL_HIERARCHY_OCEAN,
   INITIAL_HIERARCHY_STORM,
+  INITIAL_HIERARCHY_WIND,
   HIERARCHY_STORM_AFTER_ENTITY_AAA_DELETED,
   HIERARCHY_STORM_AFTER_MULTIPLE_ENTITIES_DELETED,
   HIERARCHY_STORM_AFTER_RELATION_ABA_AAA_DELETED,
@@ -31,6 +32,7 @@ import {
   HIERARCHY_STORM_AFTER_ENTITY_RELATION_ADDED,
   HIERARCHY_OCEAN_AFTER_ENTITIES_CREATED,
   HIERARCHY_STORM_AFTER_ENTITIES_CREATED,
+  HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED,
 } from './EntityHierarchyCacher.fixtures';
 
 describe('EntityHierarchyCacher', () => {
@@ -80,6 +82,10 @@ describe('EntityHierarchyCacher', () => {
     });
     it('handles a hierarchy that has entity relation links', async () => {
       await assertProjectRelationsCorrectlyBuilt('project_storm_test', INITIAL_HIERARCHY_STORM);
+    });
+    it('handles a hierarchy that has a custom set of canonical types', async () => {
+      await buildAndCacheProject('project_wind_test');
+      await assertProjectRelationsCorrectlyBuilt('project_wind_test', INITIAL_HIERARCHY_WIND);
     });
   });
 
@@ -252,6 +258,15 @@ describe('EntityHierarchyCacher', () => {
     });
     await assertRelationsMatch('project_ocean_test', HIERARCHY_OCEAN_AFTER_ENTITIES_CREATED);
     await assertRelationsMatch('project_storm_test', HIERARCHY_STORM_AFTER_ENTITIES_CREATED);
+  });
+
+  it('rebuilds a whole tree if custom canonical types are changed', async () => {
+    await buildAndCacheProject('project_wind_test');
+    await assertRelationsMatch('project_wind_test', INITIAL_HIERARCHY_WIND);
+    await models.entityHierarchy.updateById('hierarchy_wind_test', {
+      canonical_types: ['project', 'country', 'facility'],
+    });
+    await assertRelationsMatch('project_wind_test', HIERARCHY_WIND_AFTER_CANONICAL_TYPES_CHANGED);
   });
 
   it('batches multiple changes', async () => {

@@ -5,8 +5,7 @@
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-
-const DEFAULT_ENTITY_HIERARCHY = 'explore';
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
@@ -169,11 +168,29 @@ export class EntityType extends DatabaseType {
     return descendants.filter(d => d.type === nearestOrgUnitDescendant.type);
   }
 
+  /**
+   * Returns the id of the entity hierarchy to use by default for this entity, if none is specified.
+   * Will prefer the "explore" hierarchy, but if the entity isn't a member of that, will choose
+   * the first hierarchy it is a member of, alphabetically
+   */
   async fetchDefaultEntityHierarchyId() {
-    const hierarchy = await this.otherModels.entityHierarchy.findOne({
-      name: DEFAULT_ENTITY_HIERARCHY,
-    });
-    return hierarchy.id;
+    const hierarchiesIncludingEntity = await this.otherModels.entityHierarchy.find(
+      {
+        ancestor_id: this.id,
+        [QUERY_CONJUNCTIONS.OR]: {
+          descendant_id: this.id,
+        },
+      },
+      {
+        joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+        sort: ['entity_hierarchy.name ASC'],
+      },
+    );
+    if (hierarchiesIncludingEntity.length === 0) {
+      throw new Error(`The entity with id ${this.id} is not included in any hierarchy`);
+    }
+    const exploreHierarchy = hierarchiesIncludingEntity.find(h => h.name === 'explore');
+    return exploreHierarchy ? exploreHierarchy.id : hierarchiesIncludingEntity[0].id;
   }
 
   /**
@@ -186,7 +203,7 @@ export class EntityType extends DatabaseType {
     const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
     // if this is an org unit, don't worry about going deeper
     if (orgUnitEntityTypes.has(this.type)) return this;
-    // if no hierarchy id was passed in, use the default hierarchy
+    // if no hierarchy id was passed in, default to a hierarchy this entity is a part of
     const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyId());
     // get ancestors and return the first that is an org unit type
     // we rely on ancestors being returned in order of proximity to this entity

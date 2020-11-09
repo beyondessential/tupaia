@@ -16,10 +16,11 @@ export class EntityHierarchyCacher {
   }
 
   listenForChanges() {
-    this.changeHandlerCancellers[0] = this.models.entity.addChangeHandler(this.handleEntityChange);
-    this.changeHandlerCancellers[1] = this.models.entityRelation.addChangeHandler(
-      this.handleEntityRelationChange,
-    );
+    this.changeHandlerCancellers = [
+      this.models.entity.addChangeHandler(this.handleEntityChange),
+      this.models.entityRelation.addChangeHandler(this.handleEntityRelationChange),
+      this.models.entityHierarchy.addChangeHandler(this.handleEntityHierarchyChange),
+    ];
   }
 
   stopListeningForChanges() {
@@ -43,6 +44,24 @@ export class EntityHierarchyCacher {
     const tasks = [oldRecord, newRecord]
       .filter(r => r)
       .map(r => this.scheduleRebuildOfSubtree(r.entity_hierarchy_id, r.parent_id));
+    return Promise.all(tasks);
+  };
+
+  handleEntityHierarchyChange = async ({
+    record_id: hierarchyId,
+    old_record: oldRecord,
+    new_record: newRecord,
+  }) => {
+    if (oldRecord.canonical_types === newRecord.canonical_types) {
+      return null; // if the canonical types are the same, the change won't invalidate the cache
+    }
+    const projectsUsingHierarchy = await this.models.project.find({
+      entity_hierarchy_id: hierarchyId,
+    });
+    // delete and rebuild full hierarchy of any project using this entity
+    const tasks = projectsUsingHierarchy.map(p =>
+      this.scheduleRebuildOfSubtree(hierarchyId, p.entity_id),
+    );
     return Promise.all(tasks);
   };
 
@@ -146,7 +165,7 @@ export class EntityHierarchyCacher {
     const useEntityRelationLinks = entityRelationChildCount > 0;
     const childCount = useEntityRelationLinks
       ? entityRelationChildCount
-      : await this.countCanonicalChildren(parentIds);
+      : await this.countCanonicalChildren(hierarchyId, parentIds);
 
     if (childCount === 0) {
       return; // at a leaf node generation, no need to go any further
@@ -168,7 +187,7 @@ export class EntityHierarchyCacher {
     const parentIds = Object.keys(parentIdsToAncestorIds);
     const relations = useEntityRelationLinks
       ? await this.getRelationsViaEntityRelation(hierarchyId, parentIds)
-      : await this.getRelationsCanonically(parentIds);
+      : await this.getRelationsCanonically(hierarchyId, parentIds);
     const childIdToParentId = reduceToDictionary(relations, 'child_id', 'parent_id');
     const childIdToAncestorIds = Object.fromEntries(
       Object.entries(childIdToParentId).map(([childId, parentId]) => [
@@ -197,21 +216,28 @@ export class EntityHierarchyCacher {
     return this.models.entityRelation.find(criteria);
   }
 
-  getCanonicalChildrenCriteria(parentIds) {
-    const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
+  async getCanonicalChildrenCriteria(hierarchyId, parentIds) {
+    // Only include entities of types that are considered canonical, either using a custom set of
+    // canonical types defined by the hierarchy, or the default, which is org unit types.
+    const entityHierarchy = await this.models.entityHierarchy.findById(hierarchyId);
+    const { canonical_types: customCanonicalTypes } = entityHierarchy;
+    const canonicalTypes =
+      customCanonicalTypes && customCanonicalTypes.length > 0
+        ? customCanonicalTypes
+        : Object.values(ORG_UNIT_ENTITY_TYPES);
     return {
       parent_id: parentIds,
       type: canonicalTypes,
     };
   }
 
-  async countCanonicalChildren(parentIds) {
-    const criteria = this.getCanonicalChildrenCriteria(parentIds);
+  async countCanonicalChildren(hierarchyId, parentIds) {
+    const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
     return this.models.entity.count(criteria);
   }
 
-  async getRelationsCanonically(parentIds) {
-    const criteria = this.getCanonicalChildrenCriteria(parentIds);
+  async getRelationsCanonically(hierarchyId, parentIds) {
+    const criteria = await this.getCanonicalChildrenCriteria(hierarchyId, parentIds);
     const children = await this.models.entity.find(criteria, { columns: ['id', 'parent_id'] });
     return children.map(c => ({ child_id: c.id, parent_id: c.parent_id }));
   }
