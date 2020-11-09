@@ -40,6 +40,8 @@ RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
 RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
+RUN mkdir -p ./packages/expression-parser
+COPY packages/expression-parser/package.json ./packages/expression-parser
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
 RUN mkdir -p ./packages/weather-api
