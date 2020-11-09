@@ -51,12 +51,12 @@ describe('Permissions checker for EditUserAccounts', async () => {
 
     // Create test users
     userAccount1 = await findOrCreateDummyRecord(models.user, {
-      first_name: 'Clark',
-      last_name: 'Kent',
+      first_name: 'Barry',
+      last_name: 'Allen',
     });
     userAccount2 = await findOrCreateDummyRecord(models.user, {
-      first_name: 'Bruce',
-      last_name: 'Wayne',
+      first_name: 'Hal',
+      last_name: 'Jordan',
     });
 
     // Give the test users some permissions
@@ -100,7 +100,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         };
         await prepareStubAndAuthenticate(app, policy);
         const { body: result } = await app.put(`users/${userAccount1.id}`, {
-          body: { email: 'clark.kent@dailyplanet.com' },
+          body: { email: 'barry.allen@ccpd.gov' },
         });
 
         expect(result).to.have.keys('error');
@@ -108,7 +108,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
       it('Throw an exception when trying to edit a user account the current user lacks permissions for', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.put(`users/${userAccount2.id}`, {
-          body: { email: 'bruce.wayne@waynecorp.com' },
+          body: { email: 'hal.jordan@lantern.corp' },
         });
 
         expect(result).to.have.keys('error');
@@ -119,20 +119,20 @@ describe('Permissions checker for EditUserAccounts', async () => {
       it('Edit a user account the current user has permissions for', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         await app.put(`users/${userAccount1.id}`, {
-          body: { email: 'clark.kent@dailyplanet.com' },
+          body: { email: 'barry.allen@ccpd.gov' },
         });
         const result = await models.user.findById(userAccount1.id);
 
-        expect(result.email).to.deep.equal('clark.kent@dailyplanet.com');
+        expect(result.email).to.deep.equal('barry.allen@ccpd.gov');
       });
       it('Edit any user account as BES Admin', async () => {
         await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
         await app.put(`users/${userAccount2.id}`, {
-          body: { email: 'bruce.wayne@waynecorp.com' },
+          body: { email: 'hal.jordan@lantern.corp' },
         });
         const result = await models.user.findById(userAccount2.id);
 
-        expect(result.email).to.deep.equal('bruce.wayne@waynecorp.com');
+        expect(result.email).to.deep.equal('hal.jordan@lantern.corp');
       });
     });
   });
