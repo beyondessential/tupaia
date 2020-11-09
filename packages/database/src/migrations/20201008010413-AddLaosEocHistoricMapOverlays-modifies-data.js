@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -44,7 +44,7 @@ const commonMapOverlayConfig = {
       start: {
         unit: 'day',
         offset: -365, // one year ago
-      }
+      },
     },
     defaultTimePeriod: {
       unit: 'day',
@@ -97,7 +97,17 @@ const MAP_OVERLAY_GROUP_RELATIONS = [
   },
 ];
 
-exports.up = async function(db) {
+const getMapOverlayGroupId = async function (db, name) {
+  const results = await db.runSql(`SELECT id FROM map_overlay_group WHERE name = '${name}';`);
+
+  if (results.rows.length > 0) {
+    return results.rows[0].id;
+  }
+
+  throw new Error('MapOverlayGroup not found');
+};
+
+exports.up = async function (db) {
   await insertObject(db, 'map_overlay_group', MAP_OVERLAY_GROUP);
 
   for (const mapOverlay of HISTORIC_MAP_OVERLAYS) {
@@ -108,15 +118,30 @@ exports.up = async function(db) {
     await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupRelation);
   }
 
+  const rootMapOverlayGroupId = await getMapOverlayGroupId(db, 'Root');
+
+  await insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: rootMapOverlayGroupId,
+    child_id: MAP_OVERLAY_GROUP.id,
+    child_type: 'mapOverlayGroup',
+  });
+
   return null;
 };
 
-exports.down = async function(db) {
+exports.down = async function (db) {
   for (const mapOverlayGroupRelation of MAP_OVERLAY_GROUP_RELATIONS) {
     await db.runSql(
       `DELETE FROM "map_overlay_group_relation" WHERE child_id = '${mapOverlayGroupRelation.child_id}';`,
     );
   }
+
+  const mapOverlayGroupId = await getMapOverlayGroupId(db, MAP_OVERLAY_GROUP.name);
+
+  await db.runSql(
+    `DELETE FROM map_overlay_group_relation WHERE child_id = '${mapOverlayGroupId}';`,
+  );
 
   await db.runSql(`DELETE FROM "map_overlay_group" WHERE code = '${MAP_OVERLAY_GROUP.code}';`);
 
