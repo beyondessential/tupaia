@@ -31,10 +31,6 @@ Cypress.Commands.add('login', () => {
   cy.visit('/');
   cy.wait('@getUser').then(({ response }) => {
     if (response.body.name === PUBLIC_USER) {
-      // TODO This is a temporary hack to make sure that the login form is stable
-      // Remove it when https://github.com/beyondessential/tupaia-backlog/issues/1358 is fixed
-      cy.wait('@projects');
-
       submitLoginForm();
       cy.wait('@getUser').then(() => {
         closeOverlay();
