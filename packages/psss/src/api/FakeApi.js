@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import faker from 'faker';
+import { getCountryName } from '../utils';
 
 export class FakeAPI {
   sleep(delay = 0) {
@@ -29,9 +30,9 @@ export class FakeAPI {
         data.push(this.user());
       }
     } else if (endpoint === 'countries') {
-      for (let i = 0; i < 20; i++) {
-        data.push(this.country());
-      }
+      options.countries.forEach(countryCode => {
+        data.push(this.country(countryCode));
+      });
     } else if (endpoint === 'country-weeks') {
       for (let i = 0; i < 10; i++) {
         data.push(this.countryWeek(i));
@@ -208,11 +209,11 @@ export class FakeAPI {
     };
   }
 
-  country() {
+  country(countryCode) {
     return {
       id: faker.random.uuid(),
-      name: faker.address.country(),
-      countryCode: faker.address.countryCode().toLowerCase(),
+      name: getCountryName(countryCode),
+      countryCode: countryCode.toLowerCase(),
       sitesReported: faker.random.number({
         min: 0,
         max: 30,
