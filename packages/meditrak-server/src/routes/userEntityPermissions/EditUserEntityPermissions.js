@@ -9,7 +9,7 @@ import {
   assertBESAdminAccess,
   assertTupaiaAdminPanelAccess,
 } from '../../permissions';
-import { assertUserEntityPermissionPermissions } from './assertUserEntityPermissionPermissions';
+import { assertUserEntityPermissionEditPermissions } from './assertUserEntityPermissionPermissions';
 
 /**
  * Handles PUT endpoints:
@@ -28,9 +28,13 @@ export class EditUserEntityPermissions extends EditHandler {
 
   async editRecord() {
     // Check Permissions
-    const userEntityPermission = await this.models.userEntityPermission.findById(this.recordId);
     const userEntityPermissionChecker = accessPolicy =>
-      assertUserEntityPermissionPermissions(accessPolicy, this.models, userEntityPermission);
+      assertUserEntityPermissionEditPermissions(
+        accessPolicy,
+        this.models,
+        this.recordId,
+        this.updatedFields,
+      );
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, userEntityPermissionChecker]),
     );
