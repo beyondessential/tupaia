@@ -10,7 +10,6 @@ import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-sag
 import request from './utils/request';
 import {
   ATTEMPT_CHANGE_PASSWORD,
-  ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
   ATTEMPT_LOGIN,
   ATTEMPT_LOGOUT,
@@ -30,8 +29,6 @@ import {
   displayUnverified,
   fetchChangePasswordError,
   fetchChangePasswordSuccess,
-  fetchChartExportError,
-  fetchChartExportSuccess,
   fetchCountryAccessDataError,
   fetchCountryAccessDataSuccess,
   fetchDashboardError,
@@ -92,16 +89,30 @@ import {
   updateMeasureConfig,
   UPDATE_MEASURE_CONFIG,
   UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+  FETCH_INITIAL_DATA,
+  setPasswordResetToken,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
+  setVerifyEmailToken,
+  setOrgUnit,
+  openEnlargedDialog,
+  updateCurrentMeasureConfigOnceHierarchyLoads,
+  LOCATION_CHANGE,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
-import { LANDING } from './containers/OverlayDiv/constants';
+import {
+  LANDING,
+  PROJECT_LANDING,
+  PROJECTS_WITH_LANDING_PAGES,
+} from './containers/OverlayDiv/constants';
 import { DEFAULT_PROJECT_CODE } from './defaults';
+import { fetchDisasterDateRange } from './disaster/sagas';
 import {
   convertUrlPeriodStringToDateRange,
   createUrlString,
+  getInitialLocation,
   URL_COMPONENTS,
 } from './historyNavigation';
-import { setProject } from './projects/actions';
+import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentExpandedViewContent,
   selectCurrentExpandedViewId,
@@ -117,9 +128,117 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
+  selectProjectByCode,
 } from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
+import { fetchProjectData } from './projects/sagas';
+import { clearLocation } from './historyNavigation/historyNavigation';
+import { decodeLocation } from './historyNavigation/utils';
+import { PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './historyNavigation/constants';
+
+function* watchFetchInitialData() {
+  yield take(FETCH_INITIAL_DATA);
+
+  // Login must happen first so that projects return the correct access flags
+  yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
+  yield call(fetchProjectData);
+  yield call(handleLocationChange, {
+    location: getInitialLocation(),
+    previousLocation: clearLocation(),
+  });
+}
+
+function* handleInvalidPermission({ projectCode }) {
+  const state = yield select();
+  const { isUserLoggedIn } = state.authentication;
+
+  if (isUserLoggedIn) {
+    // show project access dialog
+    const project = selectProjectByCode(state, projectCode);
+
+    if (Object.keys(project).length > 0) {
+      yield put(setRequestingAccess(project));
+      yield put(setOverlayComponent('requestProjectAccess'));
+      return;
+    }
+
+    // handle 404s
+    // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
+    console.error('project does not exist - 404');
+    return;
+  }
+  // show login dialog
+  yield put(setOverlayComponent(LANDING));
+}
+
+function* handleUserPage(userPage, initialComponents) {
+  yield put(setOverlayComponent(LANDING));
+
+  switch (userPage) {
+    case PASSWORD_RESET_PREFIX:
+      yield put(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
+      yield put(openUserPage(DIALOG_PAGE_ONE_TIME_LOGIN));
+      break;
+    case VERIFY_EMAIL_PREFIX:
+      yield put(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
+      break;
+    default:
+      console.error('Unhandled user page', userPage);
+  }
+}
+
+const userHasAccess = (projects, currentProject) =>
+  projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
+
+const URL_REFRESH_COMPONENTS = {
+  [URL_COMPONENTS.PROJECT]: setProject,
+  [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
+  [URL_COMPONENTS.URL_COMPONENTS]: setMeasure,
+  [URL_COMPONENTS.REPORT]: openEnlargedDialog,
+  [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
+};
+
+function* handleLocationChange({ location, previousLocation }) {
+  const { project } = yield select();
+  const { userPage, projectSelector, ...otherComponents } = decodeLocation(location);
+
+  if (userPage) {
+    yield call(handleUserPage, userPage, otherComponents);
+    return;
+  }
+
+  if (projectSelector) {
+    // Set project to explore, this is the default
+    yield put(setOverlayComponent(LANDING));
+    yield put(setProject(DEFAULT_PROJECT_CODE));
+    return;
+  }
+
+  const hasAccess = userHasAccess(project.projects, otherComponents.PROJECT);
+  if (!hasAccess) {
+    yield call(handleInvalidPermission, { projectCode: otherComponents.PROJECT });
+    return;
+  }
+
+  const isLandingPageProject = PROJECTS_WITH_LANDING_PAGES[otherComponents[URL_COMPONENTS.PROJECT]];
+  if (isLandingPageProject) {
+    yield put(setOverlayComponent(PROJECT_LANDING));
+  }
+
+  // refresh data if the url has changed
+  const previousComponents = decodeLocation(previousLocation);
+  for (const [key, value] of Object.entries(URL_REFRESH_COMPONENTS)) {
+    const component = otherComponents[key];
+    if (component && component !== previousComponents[key]) {
+      yield put({ ...value(component), meta: { preventHistoryUpdate: true } });
+    }
+  }
+}
+
+function* watchHandleLocationChange() {
+  yield takeLatest(LOCATION_CHANGE, handleLocationChange);
+}
 
 /**
  * attemptChangePassword
@@ -471,7 +590,11 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
+    if (error.errorFunction) {
+      yield put(error.errorFunction(error));
+    }
     yield put(fetchOrgUnitError(organisationUnitCode, error.message));
+
     throw error;
   }
 }
@@ -514,7 +637,6 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
       ),
     );
   } catch (error) {
-    console.log(error);
     yield put(changeOrgUnitError(error));
   }
 }
@@ -633,23 +755,14 @@ function* fetchViewData(parameters, errorHandler) {
  *
  */
 function* fetchDashboardItemData(action) {
-  const { dashboardItemProject, infoViewKey } = action;
-
-  // If this dashboard item is a member of a module that requires extra work before fetching its
-  // data, allow the module to handle that work and return any extra url parameters
-  let prepareForDashboardItemDataFetch;
-  try {
-    // eslint-disable-next-line import/no-dynamic-require
-    const moduleSagas = require(`./${dashboardItemProject}/sagas`);
-    prepareForDashboardItemDataFetch = moduleSagas.prepareForDashboardItemDataFetch;
-  } catch (error) {
-    // the project is not associated with a module handling its own sagas, ignore
-  }
+  const { infoViewKey } = action;
+  const state = yield select();
+  const project = selectCurrentProjectCode(state);
 
   // Run preparation saga if it exists to collect module specific url parameters
   let extraUrlParameters = {};
-  if (prepareForDashboardItemDataFetch) {
-    extraUrlParameters = yield call(prepareForDashboardItemDataFetch);
+  if (project === 'disaster') {
+    extraUrlParameters = yield call(fetchDisasterDateRange);
   }
 
   const viewData = yield call(
@@ -892,77 +1005,6 @@ function getTimeZone() {
   }
 }
 
-function* exportChart(action) {
-  const requestResourceUrl = 'export/chart';
-
-  const {
-    viewId,
-    dashboardGroupId,
-    organisationUnitCode,
-    organisationUnitName,
-    selectedFormat,
-    exportFileName,
-    chartType,
-    startDate,
-    endDate,
-    selectedDisaster,
-    extraConfig,
-    projectCode,
-  } = action;
-
-  const timeZone = getTimeZone();
-
-  const exportUrl = createUrlString({
-    // Note that dashboard means dashboardId here rather than dashboardCode, e.g. 301 not General
-    [URL_COMPONENTS.DASHBOARD]: dashboardGroupId,
-    [URL_COMPONENTS.REPORT]: viewId,
-    [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
-    [URL_COMPONENTS.TIMEZONE]: timeZone,
-    [URL_COMPONENTS.START_DATE]: formatDateForApi(startDate, timeZone),
-    [URL_COMPONENTS.END_DATE]: formatDateForApi(endDate, timeZone),
-    [URL_COMPONENTS.DISASTER_START_DATE]:
-      selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
-    [URL_COMPONENTS.DISASTER_END_DATE]:
-      selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
-    [URL_COMPONENTS.PROJECT]: projectCode,
-    [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
-  });
-
-  const fetchOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      exportUrl,
-      viewId,
-      dashboardGroupId,
-      projectCode,
-      organisationUnitCode,
-      organisationUnitName,
-      selectedFormat,
-      exportFileName,
-      chartType,
-      extraConfig,
-    }),
-  };
-
-  const requestContext = {
-    alwaysUseSuppliedErrorFunction: true,
-  };
-
-  try {
-    yield call(request, requestResourceUrl, fetchChartExportError, fetchOptions, requestContext);
-    yield put(fetchChartExportSuccess());
-  } catch (error) {
-    yield put(error.errorFunction(error.message));
-  }
-}
-
-function* watchAttemptChartExport() {
-  yield takeLatest(ATTEMPT_CHART_EXPORT, exportChart);
-}
-
 /**
  * Fetches drilldown data for a given view and level.
  */
@@ -989,19 +1031,35 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* resetToProjectSplash(action) {
-  // Only reset to project splash on manual login to avoid messing up routing
-  if (action.type === FETCH_LOGIN_SUCCESS && action.loginType !== LOGIN_TYPES.MANUAL) return;
-
+function* resetToProjectSplash() {
   yield put(clearMeasureHierarchy());
   yield put(setOverlayComponent(LANDING));
   yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
-function* watchUserChangesAndUpdatePermissions() {
-  // On user login/logout, we should just reset to the initial landing page
+function* watchLoginSuccess() {
+  yield takeLatest(FETCH_LOGIN_SUCCESS, fetchLoginData);
+}
+
+function* watchLogoutSuccess() {
   yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToProjectSplash);
+}
+
+function* fetchLoginData(action) {
+  if (action.loginType === LOGIN_TYPES.MANUAL) {
+    const { routing: location } = yield select();
+    yield put(setOverlayComponent(null));
+    yield call(fetchProjectData);
+    yield call(handleLocationChange, {
+      location,
+      // Assume an empty location string so that the url will trigger fetching fresh data
+      previousLocation: {
+        pathname: '',
+        search: '',
+        hash: '',
+      },
+    });
+  }
 }
 
 function* watchGoHomeAndResetToProjectSplash() {
@@ -1084,6 +1142,7 @@ function* refreshBrowserWhenFinishingUserSession() {
 
 // Add all sagas to be loaded
 export default [
+  watchFetchInitialData,
   watchAttemptChangePasswordAndFetchIt,
   watchAttemptResetPasswordAndFetchIt,
   watchAttemptRequestCountryAccessAndFetchIt,
@@ -1100,9 +1159,9 @@ export default [
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
-  watchAttemptChartExport,
   watchAttemptAttemptDrillDown,
-  watchUserChangesAndUpdatePermissions,
+  watchLoginSuccess,
+  watchLogoutSuccess,
   watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
   watchSetDrillDownDateRange,
   watchAttemptTokenLogin,
@@ -1116,4 +1175,5 @@ export default [
   watchFetchResetTokenLoginSuccess,
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
+  watchHandleLocationChange,
 ];

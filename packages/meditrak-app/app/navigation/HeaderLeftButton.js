@@ -13,7 +13,4 @@ const mapDispatchToProps = dispatch => ({
   onPress: () => dispatch(goBack()),
 });
 
-export const HeaderLeftButton = connect(
-  null,
-  mapDispatchToProps,
-)(HeaderLeftButtonContainer);
+export const HeaderLeftButton = connect(null, mapDispatchToProps)(HeaderLeftButtonContainer);

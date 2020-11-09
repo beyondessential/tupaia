@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { Alert, StyleSheet, View, ActivityIndicator } from 'react-native';
@@ -82,7 +82,7 @@ class GeolocateQuestionComponent extends React.Component {
   onGeolocationError(errorMessage) {
     this.setState({
       isFindingLocation: false,
-      errorMessage: errorMessage,
+      errorMessage,
     });
   }
 

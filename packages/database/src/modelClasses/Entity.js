@@ -194,9 +194,10 @@ export class EntityModel extends DatabaseModel {
     });
   }
 
-  async find(conditions) {
+  async find(conditions, options) {
     return super.find(conditions, {
       columns: this.getColumnSpecs(),
+      ...options,
     });
   }
 

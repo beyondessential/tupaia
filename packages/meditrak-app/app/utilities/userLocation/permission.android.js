@@ -13,9 +13,8 @@ export async function requestLocationPermission() {
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   } catch (err) {
     console.warn(err);
     return false;

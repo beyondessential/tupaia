@@ -11,7 +11,7 @@ import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header, HeaderAvatarTitle } from '../components';
 import { WeeklyReportsExportModal } from '../containers/Modals';
 import { CountryRoutes } from '../routes/CountryRoutes';
-import { countryFlagImage } from '../utils';
+import { countryFlagImage, getCountryName } from '../utils';
 import { checkIsMultiCountryUser } from '../store';
 
 const links = [
@@ -32,7 +32,12 @@ export const CountryReportsViewComponent = ({ backButtonConfig }) => {
   return (
     <>
       <Header
-        Title={<HeaderAvatarTitle title={countryCode} avatarUrl={countryFlagImage(countryCode)} />}
+        Title={
+          <HeaderAvatarTitle
+            title={getCountryName(countryCode)}
+            avatarUrl={countryFlagImage(countryCode)}
+          />
+        }
         back={backButtonConfig}
         ExportModal={WeeklyReportsExportModal}
       />

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import {
   SET_SYNC_PROGRESS,
@@ -16,7 +16,7 @@ import { getLatestUserRewardCount } from '../rewards';
 
 export const setSyncProgress = progress => ({
   type: SET_SYNC_PROGRESS,
-  progress: progress,
+  progress,
 });
 
 export const setSyncError = errorMessage => ({

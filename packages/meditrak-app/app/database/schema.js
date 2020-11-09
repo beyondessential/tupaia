@@ -1,13 +1,13 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import * as DataTypes from './types';
 
 export const schema = {
   schema: Object.values(DataTypes),
-  schemaVersion: 17,
+  schemaVersion: 18,
   migration: (oldRealm, newRealm) => {
     // For anyone upgrading from below version 3, change permission level to permission group
     if (oldRealm.schemaVersion < 3) {
@@ -87,8 +87,8 @@ export const schema = {
       const countries = newRealm.objects('Country');
 
       countries.forEach(country => {
-        // eslint-disable-next-line no-param-reassign
         if (countryCodeMapping[country.name]) {
+          // eslint-disable-next-line no-param-reassign
           country.code = countryCodeMapping[country.name];
         }
       });

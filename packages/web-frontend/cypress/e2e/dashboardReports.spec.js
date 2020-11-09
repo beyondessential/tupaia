@@ -6,6 +6,16 @@
 import { EmptyConfigError, preserveUserSession } from '../support';
 import config from '../config/dashboardReports.json';
 
+const urlToRouteRegex = url => {
+  const queryParams = url.split('?').slice(1).join('');
+  const viewId = new URLSearchParams(queryParams).get('report');
+  if (!viewId) {
+    throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
+  }
+
+  return new RegExp(`view?.*viewId=${viewId}`);
+};
+
 describe('Dashboard reports', () => {
   if (config.length === 0) {
     throw new EmptyConfigError('dashboardReports');
@@ -22,10 +32,10 @@ describe('Dashboard reports', () => {
   config.forEach(url => {
     it(url, () => {
       cy.server();
-      cy.route(/\/dashboard/).as('dashboard');
+      cy.route(urlToRouteRegex(url)).as('report');
 
       cy.visit(url);
-      cy.wait('@dashboard');
+      cy.wait('@report');
       cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
     });
   });
