@@ -4,7 +4,7 @@
  */
 
 import { expect, assert } from 'chai';
-import { fetchWithTimeout } from '@tupaia/utils';
+import { fetchWithTimeout, oneSecondSleep } from '@tupaia/utils';
 import {
   generateId,
   generateTestId,
@@ -17,7 +17,6 @@ import { TEST_IMAGE_DATA } from '../../testData';
 import {
   insertEntityAndFacility,
   randomIntBetween,
-  oneSecondSleep,
   upsertEntity,
   upsertQuestion,
 } from '../../testUtilities';

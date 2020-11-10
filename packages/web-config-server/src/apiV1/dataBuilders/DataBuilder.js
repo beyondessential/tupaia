@@ -2,10 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
-import { Project, Entity } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { transformValue } from 'apiV1/dataBuilders/transform';
 
@@ -20,7 +18,8 @@ export class DataBuilder {
    * @param {Entity} [entity]
    * @param {string} [aggregationType]
    */
-  constructor(aggregator, dhisApi, config, query, entity, aggregationType) {
+  constructor(models, aggregator, dhisApi, config, query, entity, aggregationType) {
+    this.models = models;
     this.aggregator = aggregator;
     this.dhisApi = dhisApi;
     this.config = config || {};
@@ -107,37 +106,33 @@ export class DataBuilder {
 
   async fetchEntityHierarchyId() {
     const { projectCode } = this.query;
-    const project = await Project.findOne({ code: projectCode });
+    const project = await this.models.project.findOne({ code: projectCode });
     return project.entity_hierarchy_id;
   }
 
   async fetchDescendantsOfType(type) {
     const entityHierarchyId = await this.fetchEntityHierarchyId();
-    return this.entity.getDescendantsOfType(type, entityHierarchyId);
+    return this.entity.getDescendantsOfType(entityHierarchyId, type);
   }
 
   /**
    * Fetch ancestor of type for each organisationUnit in event
    */
-  async mapAncestorOfTypeToEvents(events, ancestorType) {
+  async addAncestorsToEvents(events, ancestorType) {
     const hierarchyId = await this.fetchEntityHierarchyId();
     const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
-    const allEntities = await Entity.find({ code: allEntityCodes });
-    const allAncestors = await Promise.all(
-      await allEntities.map(entity => entity.getAncestorOfType(ancestorType, hierarchyId)),
+    const ancestorDetailsByDescendantCode = await this.models.entity.fetchAncestorDetailsByDescendantCode(
+      allEntityCodes,
+      hierarchyId,
+      ancestorType,
     );
-    const entityCodeToAncestor = {};
-    allEntities.forEach((entity, index) => {
-      entityCodeToAncestor[entity.code] = allAncestors[index].name;
-    });
-    const mappedEvents = events.map(event => {
-      const ancestor = entityCodeToAncestor[event.orgUnit];
+    return events.map(event => {
+      const { name: ancestorName } = ancestorDetailsByDescendantCode[event.orgUnit];
       return {
         ...event,
-        orgUnitAncestor: ancestor,
+        orgUnitAncestor: ancestorName,
       };
     });
-    return mappedEvents;
   }
 
   mapOrgUnitCodesToNames = async orgUnitCodes => {

@@ -43,6 +43,7 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
 }
 
 export const getStringsFromBinaryData = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -50,6 +51,7 @@ export const getStringsFromBinaryData = async (
   entity,
 ) => {
   const builder = new GetStringsFromBinaryDataBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,
