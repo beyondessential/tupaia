@@ -42,7 +42,12 @@ export default class extends RouteHandler {
     const project = await this.fetchProject();
     const projectEntity = await project.entity();
 
-    const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
+    const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id, {
+      type: {
+        comparator: 'not in',
+        comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+      },
+    });
     const matchingEntities = await this.getMatchingEntities(searchString, allEntities, limit);
 
     const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentId(

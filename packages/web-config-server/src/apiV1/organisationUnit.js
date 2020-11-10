@@ -27,7 +27,12 @@ export default class extends RouteHandler {
     const projectEntity = await project.entity();
     const country = await this.entity.countryEntity();
     const countryDescendants = country
-      ? await country.getDescendants(project.entity_hierarchy_id)
+      ? await country.getDescendants(project.entity_hierarchy_id, {
+          type: {
+            comparator: 'not in',
+            comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+          },
+        })
       : [];
     const orgUnitHierarchy = await this.filterForAccess([
       projectEntity,
@@ -63,11 +68,13 @@ export default class extends RouteHandler {
   }
 
   async filterForAccess(entities) {
-    return (await Promise.all(
-      entities
-        .filter(entity => entity)
-        .map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
-    )).filter(entity => entity);
+    return (
+      await Promise.all(
+        entities
+          .filter(entity => entity)
+          .map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
+      )
+    ).filter(entity => entity);
   }
 
   checkUserHasEntityAccess = async entity => {
