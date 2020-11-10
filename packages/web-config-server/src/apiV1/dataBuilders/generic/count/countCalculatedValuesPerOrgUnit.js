@@ -14,7 +14,7 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
     const { results } = await this.fetchAnalytics(dataElementCodes);
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
     const calculatedValues = Object.values(analyticsByOrgUnit).map(analytics =>
-      calculateOperationForAnalytics(analytics, operation),
+      calculateOperationForAnalytics(this.models, analytics, operation),
     );
 
     let sum = 0;

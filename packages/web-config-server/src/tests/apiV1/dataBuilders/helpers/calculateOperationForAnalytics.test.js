@@ -94,12 +94,14 @@ describe('calculateOperationForAnalytics', () => {
     it('should return no data if appropriate', () => {
       expect(
         calculateOperationForAnalytics(
+          models,
           analytics,
           createSubtractionConfig(['uniqueCode'], ['NON_EXISTENT']),
         ),
       ).to.eventually.equal(NO_DATA_AVAILABLE);
       expect(
         calculateOperationForAnalytics(
+          models,
           analytics,
           createSubtractionConfig(['NON_EXISTENT'], ['NON_EXISTENT_EITHER']),
         ),
@@ -118,6 +120,7 @@ describe('calculateOperationForAnalytics', () => {
     it('should subtract correctly in valid cases (and sum multiple analytics with the same code)', () => {
       expect(
         calculateOperationForAnalytics(
+          models,
           analytics,
           createSubtractionConfig(['height', 'width'], ['temperature']),
         ),
