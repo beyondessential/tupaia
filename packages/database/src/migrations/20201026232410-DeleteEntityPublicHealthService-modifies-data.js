@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = async function(db) {
   await db.runSql(`
       delete from entity
       where name = '${Public_Health_Services}'
