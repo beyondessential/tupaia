@@ -17,7 +17,11 @@ describe('AccessPolicyBuilder', () => {
   const models = {
     userEntityPermission: {
       addChangeHandler: onPermissionsChanged => {
-        notifyPermissionsChange = userId => onPermissionsChanged({ record: { user_id: userId } });
+        notifyPermissionsChange = userId =>
+          onPermissionsChanged({
+            old_record: { user_id: userId },
+            new_record: { user_id: userId },
+          });
       },
     },
   };

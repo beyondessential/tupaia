@@ -1,5 +1,4 @@
 import { convertDateRangeToPeriodString } from '@tupaia/utils';
-import { Entity } from '/models';
 
 const DATA_ELEMENT_CODES = {
   currentBeds: ['DP9'],
@@ -8,7 +7,7 @@ const DATA_ELEMENT_CODES = {
 };
 
 export const disasterAffectedOrganisationOperationalData = async (
-  { dataBuilderConfig, query },
+  { models, dataBuilderConfig, query, entity, fetchHierarchyId },
   aggregator,
 ) => {
   const { organisationUnitCode, disasterStartDate } = query;
@@ -16,7 +15,8 @@ export const disasterAffectedOrganisationOperationalData = async (
 
   if (!disasterStartDate) return { data: [] };
 
-  const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
+  const hierarchyId = await fetchHierarchyId();
+  const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
   const { results: facilityStatusResults } = await aggregator.fetchAnalytics(
     DATA_ELEMENT_CODES.facilityAffectedStatus,
     {
