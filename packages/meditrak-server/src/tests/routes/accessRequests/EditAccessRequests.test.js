@@ -24,7 +24,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
   };
 
   const BES_ADMIN_POLICY = {
-    LA: [BES_ADMIN_PERMISSION_GROUP],
+    SB: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
@@ -33,13 +33,12 @@ describe('Permissions checker for EditAccessRequests', async () => {
   let laosPublicRequest;
   let kiribatiBESRequest;
   let laosEntityId;
-  let BESPermissionGroupId;
+  let besPermissionGroupId;
 
   before(async () => {
     const { entity: vanuatuEntity } = await findOrCreateDummyCountryEntity(models, {
       code: 'VU',
     });
-
     const { entity: kiribatiEntity } = await findOrCreateDummyCountryEntity(models, {
       code: 'KI',
     });
@@ -51,10 +50,10 @@ describe('Permissions checker for EditAccessRequests', async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
-    const BESPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+    const besPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: BES_ADMIN_PERMISSION_GROUP,
     });
-    BESPermissionGroupId = BESPermissionGroup.id;
+    besPermissionGroupId = besPermissionGroup.id;
 
     vanuatuPublicRequest = await findOrCreateDummyRecord(models.accessRequest, {
       entity_id: vanuatuEntity.id,
@@ -70,7 +69,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
     });
     kiribatiBESRequest = await findOrCreateDummyRecord(models.accessRequest, {
       entity_id: kiribatiEntity.id,
-      permission_group_id: BESPermissionGroup.id,
+      permission_group_id: besPermissionGroup.id,
       approved: null,
       processed_by: null,
     });
@@ -82,7 +81,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
 
   describe('PUT /accessRequests/:id', async () => {
     describe('Insufficient permissions', async () => {
-      it('Throw a permissions gate error if current user does not have BES admin or Tupaia Admin panel access anywhere', async () => {
+      it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
         };
@@ -93,7 +92,8 @@ describe('Permissions checker for EditAccessRequests', async () => {
 
         expect(result).to.have.keys('error');
       });
-      it('Throw an exception when trying to edit an access request user lacks permissions for', async () => {
+
+      it('Throw an exception if we do not have admin panel access to the entity of the access request are editing', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${laosPublicRequest.id}`, {
           body: { approved: true },
@@ -101,7 +101,8 @@ describe('Permissions checker for EditAccessRequests', async () => {
 
         expect(result).to.have.keys('error');
       });
-      it('Throw an exception when trying to edit an access request to point to an entity user lacks permission for', async () => {
+
+      it('Throw an exception when trying to edit an access request to point to an entity we lack permission for', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: {
@@ -112,6 +113,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
 
         expect(result).to.have.keys('error');
       });
+
       it('Throw an exception when trying to approve a BES Admin request as a non BES Admin user', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${kiribatiBESRequest.id}`, {
@@ -122,12 +124,13 @@ describe('Permissions checker for EditAccessRequests', async () => {
 
         expect(result).to.have.keys('error');
       });
+
       it('Throw an exception when trying to edit an access request to point to BES Admin permission group', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: {
             approved: true,
-            permission_group_id: BESPermissionGroupId,
+            permission_group_id: besPermissionGroupId,
           },
         });
 
@@ -136,7 +139,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
     });
 
     describe('Sufficient permissions', async () => {
-      it('Edit an access request user has permissions for', async () => {
+      it('Edit an access request if we have admin panel access to the entity the request is for', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: { approved: true },
@@ -145,6 +148,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
 
         expect(result.approved).to.true;
       });
+
       it('Edit any access request as BES Admin', async () => {
         await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
         await app.put(`accessRequests/${kiribatiBESRequest.id}`, {
@@ -157,7 +161,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
     });
 
     describe('Restricted actions', async () => {
-      it('Throw an exception when trying to edit an access request that has already been processed', async () => {
+      it('Throw an exception when editing an access request that has already been processed', async () => {
         // Exactly the same as the sufficient permissions check
         // Most of the time, this is still approved from the previous check
         // But redoing it here allows this unit test to run in isolation

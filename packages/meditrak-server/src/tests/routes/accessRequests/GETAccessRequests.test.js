@@ -24,7 +24,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
   };
 
   const BES_ADMIN_POLICY = {
-    LA: [BES_ADMIN_PERMISSION_GROUP],
+    SB: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
@@ -70,21 +70,21 @@ describe('Permissions checker for GETAccessRequests', async () => {
   });
 
   describe('GET /accessRequests/:id', async () => {
-    it('Sufficient permissions: Return a requested access request if users have admin panel access to the entity the access request is for', async () => {
+    it('Sufficient permissions: Return a requested access request if we have admin panel access to the entity the access request is for', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
       expect(result.id).to.equal(accessRequest1.id);
     });
 
-    it('Sufficient permissions: Return a requested access request if users have BES admin access', async () => {
+    it('Sufficient permissions: Return a requested access request if we have BES admin access', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
       expect(result.id).to.equal(accessRequest1.id);
     });
 
-    it('Insufficient permissions: Throw an exception if users do not have access to entity of the access request', async () => {
+    it('Insufficient permissions: Throw an exception if we do not have access to entity of the access request', async () => {
       const policy = {
         DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
       };
@@ -117,7 +117,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
       await prepareStubAndAuthenticate(app, policy);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
-      expect(results).have.keys('error');
+      expect(results).to.have.keys('error');
     });
 
     it('Insufficient permissions: Return an empty array if we have permissions to no access requests', async () => {
