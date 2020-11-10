@@ -87,7 +87,7 @@ export const OverlayDiv = ({
   return (
     <Dialog open={!!overlay} onClose={closeOverlay} fullScreen={isMobile()} fullWidth={isMobile()}>
       <Wrapper id="overlay-wrapper">
-        <CloseIcon data-testid="overlay-close-btn" onClick={closeOverlay} />
+        <CloseIcon onClick={closeOverlay} />
         {overlay && <OverlayComponent />}
       </Wrapper>
     </Dialog>
