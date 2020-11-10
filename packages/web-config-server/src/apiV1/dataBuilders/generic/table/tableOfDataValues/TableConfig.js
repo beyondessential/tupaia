@@ -2,7 +2,6 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { Facility } from '/models';
 import { TotalCalculator } from './TotalCalculator';
 
 const METADATA_FIELDS = {
@@ -11,9 +10,9 @@ const METADATA_FIELDS = {
 };
 
 const METADATA_FIELD_TRANSLATORS = {
-  $orgUnitTypeName: async results => {
+  $orgUnitTypeName: async (models, results) => {
     const orgUnitCodes = results.map(({ organisationUnit }) => organisationUnit);
-    const facilities = await Facility.find({ code: orgUnitCodes });
+    const facilities = await models.facility.find({ code: orgUnitCodes });
     const types = new Map(
       facilities.map(fac => [
         fac.code,
@@ -49,7 +48,8 @@ export class TableConfig {
 
   cells = null;
 
-  constructor(baseConfig, results) {
+  constructor(models, baseConfig, results) {
+    this.models = models;
     this.baseConfig = baseConfig;
     this.generateTableFields(results);
   }
@@ -114,7 +114,7 @@ export class TableConfig {
   }
 
   async processColumnMetadataTranslator(results) {
-    return this.getColumnMetadataTranslator()(results);
+    return this.getColumnMetadataTranslator()(this.models, results);
   }
 
   getColumnMetadataTranslator() {

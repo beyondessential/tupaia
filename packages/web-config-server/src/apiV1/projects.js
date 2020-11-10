@@ -1,5 +1,4 @@
 import { respond } from '@tupaia/utils';
-import { AccessRequest, Entity, Project } from '/models';
 import { calculateBoundsFromEntities } from '/utils/geoJson';
 
 async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
@@ -24,6 +23,16 @@ const fetchHasPendingProjectAccess = async (projectId, userId) => {
   });
   return accessRequests.length > 0;
 };
+// work out the entity to zoom to and open the dashboard of when this project is selected
+function getHomeEntityCode(project, entitiesWithAccess) {
+  if (entitiesWithAccess.length === 1) {
+    // only one entity (country) inside, return that code
+    return entitiesWithAccess[0].code;
+  }
+  // more than one child entity, return the code of the project entity, which should have bounds
+  // encompassing all children
+  return project.entity_code;
+}
 
 async function buildProjectDataForFrontend(project, req) {
   const {
@@ -41,7 +50,7 @@ async function buildProjectDataForFrontend(project, req) {
     tile_sets: tileSets,
   } = project;
 
-  const entities = await Promise.all(entityIds.map(id => Entity.findById(id)));
+  const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id)));
   const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, userGroups);
   const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(x => x));
   const names = entities.map(e => e.name);
@@ -49,7 +58,7 @@ async function buildProjectDataForFrontend(project, req) {
   // This controls which entity the project zooms to and what level dashboards are shown on the front-end.
   // If a single entity is available, zoom to that, otherwise show the project entity
   const hasAccess = entitiesWithAccess.length > 0;
-  const homeEntityCode = entitiesWithAccess.length === 1 ? entitiesWithAccess[0].code : code;
+  const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
 
   // Only want to check pending if no access
   const { userId } = req.session.userJson;
@@ -77,7 +86,8 @@ async function buildProjectDataForFrontend(project, req) {
 }
 
 export async function getProjects(req, res) {
-  const data = await Project.getProjectDetails();
+  const data = await req.models.project.getAllProjectDetails();
+
   const promises = data.map(project => buildProjectDataForFrontend(project, req));
   const projects = await Promise.all(promises);
 

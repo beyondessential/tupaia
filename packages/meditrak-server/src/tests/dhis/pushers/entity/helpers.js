@@ -22,7 +22,7 @@ export const createEntityStub = (
     metadata,
     name,
     type,
-    fetchClosestOrganisationUnit: () => closestOrgUnit,
+    fetchNearestOrgUnitAncestor: () => closestOrgUnit,
     getDhisId: () => dhisId,
     hasDhisId: () => !!dhisId,
     setDhisId: setDhisId || sinon.stub().returnsArg(0),
