@@ -39,7 +39,8 @@ exports.up = async function (db) {
 exports.down = function (db) {
   return db.runSql(
     `DELETE FROM entity_relation 
-    WHERE child_id IN (${arrayToDbString(districts)});`,
+    WHERE child_id IN (${arrayToDbString(districts)})
+    AND entity_hierarchy_id = '${hierarchyId}';`,
   );
 };
 
