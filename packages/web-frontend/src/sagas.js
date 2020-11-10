@@ -195,6 +195,8 @@ const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
   [URL_COMPONENTS.URL_COMPONENTS]: setMeasure,
+  // Note, the signature is openEnlargedDialog(viewId, startDate, endDate),
+  // so we only pass viewId on refresh and leave the others undefined
   [URL_COMPONENTS.REPORT]: openEnlargedDialog,
   [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
 };
