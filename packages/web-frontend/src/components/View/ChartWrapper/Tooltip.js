@@ -88,13 +88,14 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
 };
 
 function Tooltip(props) {
-  if (props.active && props.payload.length >= 1) {
-    if (props.payload.length === 1 && !props.presentationOptions) {
-      return <SingleValueTooltip {...props} />;
+  const filteredPayload = props.payload.filter(({ value }) => value !== undefined);
+  if (props.active && filteredPayload.length >= 1) {
+    if (filteredPayload.length === 1 && !props.presentationOptions) {
+      return <SingleValueTooltip {...props} payload={filteredPayload} />;
     }
-    return <MultiValueTooltip {...props} />;
+    return <MultiValueTooltip {...props} payload={filteredPayload} />;
   }
-  return null;
+  return <div style={VIEW_STYLES.tooltip}>No Data</div>;
 }
 
 Tooltip.propTypes = {

@@ -33,3 +33,10 @@ export const max = array =>
   Array.isArray(array) && array.length > 0
     ? array.reduce((result, value) => Math.max(value, result), Number.NEGATIVE_INFINITY)
     : undefined;
+
+export const asyncFilter = async (array, predicate) =>
+  Promise.all(array.map(predicate)).then(results => array.filter((_v, index) => results[index]));
+
+// https://advancedweb.hu/how-to-use-async-functions-with-array-some-and-every-in-javascript/
+export const asyncEvery = async (array, predicate) =>
+  (await asyncFilter(array, predicate)).length === array.length;

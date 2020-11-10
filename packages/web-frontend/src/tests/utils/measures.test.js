@@ -12,7 +12,7 @@ import {
   getMeasureDisplayInfo,
   getFormattedInfo,
   flattenNumericalMeasureData,
-} from '../measures';
+} from '../../utils/measures';
 
 describe('measures', () => {
   describe('processing', () => {

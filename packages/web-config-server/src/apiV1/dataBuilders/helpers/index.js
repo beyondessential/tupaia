@@ -6,7 +6,10 @@
 export { mapAnalyticsToCountries } from './mapAnalyticsToCountries';
 export { divideValues } from './divideValues';
 export { subtractValues } from './subtractValues';
-export { calculateOperationForAnalytics } from './calculateOperationForAnalytics';
+export {
+  calculateOperationForAnalytics,
+  getDataElementsFromCalculateOperationConfig,
+} from './calculateOperationForAnalytics';
 export { groupEvents, getAllDataElementCodes } from './groupEvents';
 export { fetchComposedData } from './fetchComposedData';
 export { addMetadataToEvents, isMetadataKey, metadataKeysToDataElementMap } from './eventMetadata';

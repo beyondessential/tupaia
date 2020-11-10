@@ -10,10 +10,8 @@ export const uploadImage = (base64EncodedImage, fileId) => {
   const buffer = Buffer.from(base64EncodedImage.replace(/^data:image\/\w+;base64,/, ''), 'base64');
 
   const filePath = getImageFilePath();
-  const type = base64EncodedImage.split(';')[0].split('/')[1] || 'png';
-
   const fileName = fileId
-    ? `${filePath}${fileId}.${type}`
+    ? `${filePath}${fileId}.png`
     : `${filePath}${getCurrentTime()}_${getRandomInteger()}.png`;
 
   return new Promise((resolve, reject) => {
@@ -24,7 +22,7 @@ export const uploadImage = (base64EncodedImage, fileId) => {
         Key: fileName,
         Body: buffer,
         ACL: 'public-read',
-        ContentType: `image/${type}`,
+        ContentType: 'image/png',
         ContentEncoding: 'base64',
       },
       (error, data) => {
