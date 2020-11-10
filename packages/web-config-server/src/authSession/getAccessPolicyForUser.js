@@ -4,19 +4,18 @@
  */
 import { AccessPolicy } from '@tupaia/access-policy';
 
-import { UserSession } from '/models';
 import { PUBLIC_USER_NAME, PUBLIC_COUNTRY_CODES } from './publicAccess';
 
-async function getBaseAccessPolicyForUser(userName) {
+async function getBaseAccessPolicyForUser(models, userName) {
   if (userName === PUBLIC_USER_NAME) {
     return {};
   }
-  const userSession = await UserSession.findOne({ userName });
+  const userSession = await models.userSession.findOne({ userName });
   return userSession.accessPolicy;
 }
 
-export async function getAccessPolicyForUser(userName) {
-  const policy = await getBaseAccessPolicyForUser(userName);
+export async function getAccessPolicyForUser(models, userName) {
+  const policy = await getBaseAccessPolicyForUser(models, userName);
 
   // Add public permissions for reports to all countries (for all users).
   PUBLIC_COUNTRY_CODES.forEach(countryCode => {

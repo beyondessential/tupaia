@@ -8,7 +8,6 @@ import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
 import { translatePointForFrontend } from '/utils/geoJson';
-import { Entity } from '/models';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
@@ -106,12 +105,12 @@ const combineTextIndicators = (analytics, config) => {
   return stringArray.length === 0 ? 'None' : stringArray.join(', ');
 };
 
-const getMetaDataFromOrgUnit = async (_, config) => {
+const getMetaDataFromOrgUnit = async (_, config, models) => {
   const { orgUnitCode, ancestorType, hierarchyId } = config;
-  const baseEntity = await Entity.findOne({ code: orgUnitCode });
+  const baseEntity = await models.entity.findOne({ code: orgUnitCode });
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
-    ? await baseEntity.getAncestorOfType(ancestorType, hierarchyId)
+    ? await baseEntity.getAncestorOfType(hierarchyId, ancestorType)
     : baseEntity;
 
   return getValueFromEntity(entity, config);
@@ -164,7 +163,7 @@ export const getDataElementsFromCalculateOperationConfig = config =>
   (config.dataElementToString && Object.keys(config.dataElementToString)) || // COMBINE_BINARY_AS_STRING
   [];
 
-export const calculateOperationForAnalytics = (analytics, config) => {
+export const calculateOperationForAnalytics = async (models, analytics, config) => {
   const { operator } = config;
   if (SINGLE_ANALYTIC_OPERATORS.includes(operator)) {
     return performSingleAnalyticOperation(analytics, config);
@@ -173,7 +172,7 @@ export const calculateOperationForAnalytics = (analytics, config) => {
     return performArithmeticOperation(analytics, config);
   }
   if (Object.keys(OPERATORS).includes(operator)) {
-    return OPERATORS[operator](analytics, config);
+    return OPERATORS[operator](analytics, config, models);
   }
   throw new Error(`Cannot find operator: ${operator}`);
 };

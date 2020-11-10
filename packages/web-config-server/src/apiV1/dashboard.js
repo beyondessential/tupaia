@@ -1,4 +1,3 @@
-import { DashboardGroup, DashboardReport } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 import { checkEntityAgainstConditions } from './utils';
@@ -18,7 +17,7 @@ export default class extends RouteHandler {
     // return all matching userGroup and dashboard group name configs
     // (can have same userGroup in different dashboard group names)
     const hierarchyId = await this.fetchHierarchyId();
-    const dashboardGroups = await DashboardGroup.getDashboardGroups(
+    const dashboardGroups = await this.models.dashboardGroup.getDashboardGroups(
       userGroups,
       organisationLevel,
       entity,
@@ -26,7 +25,7 @@ export default class extends RouteHandler {
       hierarchyId,
     );
 
-    const allDashboardGroups = await DashboardGroup.getAllDashboardGroups(
+    const allDashboardGroups = await this.models.dashboardGroup.getAllDashboardGroups(
       organisationLevel,
       entity,
       query.projectCode,
@@ -92,7 +91,7 @@ export default class extends RouteHandler {
     const views = [];
     for (let i = 0; i < dashboardReportIds.length; i++) {
       const viewId = dashboardReportIds[i];
-      const reports = await DashboardReport.find({
+      const reports = await this.models.dashboardReport.find({
         id: viewId,
       });
 

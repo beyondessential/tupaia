@@ -100,8 +100,9 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
 }
 
 function sumPreviousValuesPer100kByOrgUnit(queryConfig, aggregator, dhisApi, aggregationType) {
-  const { dataBuilderConfig, query, entity } = queryConfig;
+  const { models, dataBuilderConfig, query, entity } = queryConfig;
   const builder = new ValuesPer100kPerPeriodByOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

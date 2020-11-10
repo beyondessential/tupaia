@@ -23,10 +23,6 @@ class GeographicalAreaType extends DatabaseType {
     return this.model.findById(this.parent_id);
   }
 
-  async children() {
-    return this.model.find({ parentId: this.id });
-  }
-
   async getParents() {
     const geographicalAreaTree = await this.model.getAncestorsPath(this.id);
 

@@ -3,6 +3,8 @@ import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 import { calculateOperationForAnalytics } from '/apiV1/dataBuilders/helpers';
 
+const models = {};
+
 const analytics = [
   { dataElement: 'temperature', value: 2 },
   { dataElement: 'result', value: 'Positive' },
@@ -27,50 +29,52 @@ const analytics = [
 
 describe('calculateOperationForAnalytics', () => {
   it('should throw if the operation is not defined', () => {
-    expect(() =>
-      calculateOperationForAnalytics(analytics, { operator: 'NOT_AN_OPERATOR' }),
-    ).to.throw('Cannot find operator: NOT_AN_OPERATOR');
-    expect(() => calculateOperationForAnalytics(analytics, {})).to.throw(
+    expect(
+      calculateOperationForAnalytics(models, analytics, { operator: 'NOT_AN_OPERATOR' }),
+    ).to.eventually.throw('Cannot find operator: NOT_AN_OPERATOR');
+    expect(calculateOperationForAnalytics(models, analytics, {})).to.eventually.throw(
       'Cannot find operator: undefined',
     );
   });
 
   describe('CHECK_CONDITION', () => {
     it('should throw an error when passed too many analytics', () => {
-      expect(() =>
-        calculateOperationForAnalytics(analytics, {
+      expect(
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'CHECK_CONDITION',
           dataElement: 'result',
           condition: { value: 'Positive', operator: 'regex' },
         }),
-      ).to.throw('Too many results passed to checkConditions (calculateOperationForAnalytics)');
+      ).to.eventually.throw(
+        'Too many results passed to checkConditions (calculateOperationForAnalytics)',
+      );
     });
 
     it('should return no data if no analytics match the dataElement', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'CHECK_CONDITION',
           dataElement: 'NON_EXISTENT',
           condition: { value: 'Positive', operator: 'regex' },
         }),
-      ).to.equal(NO_DATA_AVAILABLE);
+      ).to.eventually.equal(NO_DATA_AVAILABLE);
     });
 
     it('should return correctly for valid cases', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'CHECK_CONDITION',
           dataElement: 'uniqueCode',
           condition: { value: 'Yes', operator: 'regex' },
         }),
-      ).to.equal('Yes');
+      ).to.eventually.equal('Yes');
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'CHECK_CONDITION',
           dataElement: 'uniqueCode',
           condition: { value: 'No', operator: 'regex' },
         }),
-      ).to.equal('No');
+      ).to.eventually.equal('No');
     });
   });
 
@@ -93,22 +97,22 @@ describe('calculateOperationForAnalytics', () => {
           analytics,
           createSubtractionConfig(['uniqueCode'], ['NON_EXISTENT']),
         ),
-      ).to.equal(NO_DATA_AVAILABLE);
+      ).to.eventually.equal(NO_DATA_AVAILABLE);
       expect(
         calculateOperationForAnalytics(
           analytics,
           createSubtractionConfig(['NON_EXISTENT'], ['NON_EXISTENT_EITHER']),
         ),
-      ).to.equal(NO_DATA_AVAILABLE);
+      ).to.eventually.equal(NO_DATA_AVAILABLE);
     });
 
     it('should throw if there are not 2 or more operands in the config', () => {
-      expect(() =>
-        calculateOperationForAnalytics(analytics, {
+      expect(
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'SUBTRACT',
           operands: [{ dataValues: 'hi' }],
         }),
-      ).to.throw('Must have 2 or more operands');
+      ).to.eventually.throw('Must have 2 or more operands');
     });
 
     it('should subtract correctly in valid cases (and sum multiple analytics with the same code)', () => {
@@ -117,99 +121,101 @@ describe('calculateOperationForAnalytics', () => {
           analytics,
           createSubtractionConfig(['height', 'width'], ['temperature']),
         ),
-      ).to.equal(1);
+      ).to.eventually.equal(1);
     });
   });
 
   describe('FORMAT', () => {
     it('should throw an error when passed too many analytics', () => {
-      expect(() =>
-        calculateOperationForAnalytics(analytics, {
+      expect(
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'FORMAT',
           dataElement: 'result',
           format: 'Hello: {value}',
         }),
-      ).to.throw('Too many results passed to checkConditions (calculateOperationForAnalytics)');
+      ).to.eventually.throw(
+        'Too many results passed to checkConditions (calculateOperationForAnalytics)',
+      );
     });
 
     it('should return no data if no analytics match the dataElement', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'FORMAT',
           dataElement: 'NON_EXISTENT',
           format: 'Hello: {value}',
         }),
-      ).to.equal(NO_DATA_AVAILABLE);
+      ).to.eventually.equal(NO_DATA_AVAILABLE);
     });
 
     it('should return correctly for valid case', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'FORMAT',
           dataElement: 'uniqueCodeForName',
           format: 'Hello: {value}',
         }),
-      ).to.equal('Hello: Octavia');
+      ).to.eventually.equal('Hello: Octavia');
     });
 
     it('should return correctly for multiple replacements', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'FORMAT',
           dataElement: 'uniqueCodeForName',
           format: 'Hello: {value} and also {value}',
         }),
-      ).to.equal('Hello: Octavia and also Octavia');
+      ).to.eventually.equal('Hello: Octavia and also Octavia');
     });
 
     it('should return correctly for no replacements', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'FORMAT',
           dataElement: 'uniqueCodeForName',
           format: 'Hello: My friend',
         }),
-      ).to.equal('Hello: My friend');
+      ).to.eventually.equal('Hello: My friend');
     });
   });
 
   describe('COMBINE_BINARY_AS_STRING', () => {
     it('should return the string "None" if no analytics match the dataElement', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'COMBINE_BINARY_AS_STRING',
           dataElementToString: {
             NON_EXISTENT: 'Should not matter',
           },
         }),
-      ).to.equal('None');
+      ).to.eventually.equal('None');
     });
 
     it('should return the string "None" if there are no data values equal to "Yes"', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'COMBINE_BINARY_AS_STRING',
           dataElementToString: {
             temperature: 'Explicitly not "Yes"',
           },
         }),
-      ).to.equal('None');
+      ).to.eventually.equal('None');
     });
 
     it('should return correctly for valid case', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'COMBINE_BINARY_AS_STRING',
           dataElementToString: {
             Flower_found_Daisy: 'Daisy',
             Flower_found_Tulip: 'Tulip',
           },
         }),
-      ).to.equal('Daisy');
+      ).to.eventually.equal('Daisy');
     });
 
-    it('should return correctly for multiple "Yes" values - order not guaranteed', () => {
-      const flowerList = calculateOperationForAnalytics(analytics, {
+    it('should return correctly for multiple "Yes" values - order not guaranteed', async () => {
+      const flowerList = await calculateOperationForAnalytics(models, analytics, {
         operator: 'COMBINE_BINARY_AS_STRING',
         dataElementToString: {
           Flower_found_Daisy: 'Daisy',
@@ -224,8 +230,8 @@ describe('calculateOperationForAnalytics', () => {
 
   describe('GROUP', () => {
     it('should throw an error when passed too many analytics', () => {
-      expect(() =>
-        calculateOperationForAnalytics(analytics, {
+      expect(
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'GROUP',
           dataElement: 'result',
           groups: {
@@ -234,12 +240,14 @@ describe('calculateOperationForAnalytics', () => {
           },
           defaultValue: 'Not a superhero',
         }),
-      ).to.throw('Too many results passed to checkConditions (calculateOperationForAnalytics)');
+      ).to.eventually.throw(
+        'Too many results passed to checkConditions (calculateOperationForAnalytics)',
+      );
     });
 
     it('should return no data if no analytics match the dataElement', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'GROUP',
           dataElement: 'NON_EXISTENT',
           groups: {
@@ -248,12 +256,12 @@ describe('calculateOperationForAnalytics', () => {
           },
           defaultValue: 'Not a superhero',
         }),
-      ).to.equal(NO_DATA_AVAILABLE);
+      ).to.eventually.equal(NO_DATA_AVAILABLE);
     });
 
     it('should return correctly for valid cases', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'GROUP',
           dataElement: 'Best_Superhero1',
           groups: {
@@ -262,10 +270,10 @@ describe('calculateOperationForAnalytics', () => {
           },
           defaultValue: 'Not a superhero',
         }),
-      ).to.equal('DC');
+      ).to.eventually.equal('DC');
 
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'GROUP',
           dataElement: 'Best_Superhero2',
           groups: {
@@ -274,12 +282,12 @@ describe('calculateOperationForAnalytics', () => {
           },
           defaultValue: 'Not a superhero',
         }),
-      ).to.equal('Marvel');
+      ).to.eventually.equal('Marvel');
     });
 
     it('should return the default value correctly', () => {
       expect(
-        calculateOperationForAnalytics(analytics, {
+        calculateOperationForAnalytics(models, analytics, {
           operator: 'GROUP',
           dataElement: 'Best_Superhero3',
           groups: {
@@ -288,7 +296,7 @@ describe('calculateOperationForAnalytics', () => {
           },
           defaultValue: 'Not a superhero',
         }),
-      ).to.equal('Not a superhero');
+      ).to.eventually.equal('Not a superhero');
     });
   });
 });
