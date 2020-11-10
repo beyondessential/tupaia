@@ -60,7 +60,7 @@ const EnlargedDialogComponent = ({
   organisationUnitName,
   onDrillDown,
   onSetDateRange,
-  isLoading,
+  isLoading, // delete
   isVisible,
   startDate,
   endDate,
@@ -71,12 +71,38 @@ const EnlargedDialogComponent = ({
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportStatus, setExportStatus] = React.useState(STATUS.IDLE);
 
+  // const isLoading = !!viewContent;
+
+  // React.useEffect(() => {
+  //   setViewContent(null); // clear so that it isn't displaying old data.
+  //   (async () => {
+  //     const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(
+  //       infoViewKey,
+  //     );
+  //     const options = {
+  //       dashboardGroupId,
+  //       projectCode,
+  //       organisationUnitCode,
+  //       viewId,
+  //       startDate,
+  //       endDate,
+  //       drillDownLevel: null,
+  //       isExpanded: true,
+  //     };
+  //     const newContent = fetchViewData(options); //
+  //     setViewContent(defaultViewContent);
+  //   })();
+  // }, [startDate, endDate]); // Also consider first render.
+
+  // console.log({ defaultViewContent, viewContent });
+
   if (!isVisible) {
+    // Use open prop on material ui prop rather than returning null here. (ideally, dw if it's hard)
     return null;
   }
 
   const isMatrix = getIsMatrix(viewContent);
-  const hasBigData = isMatrix || (viewContent && viewContent.data && viewContent.data.length) > 20;
+  const hasBigData = isMatrix || viewContent?.data?.length > 20;
   const exportFormats = isMatrix ? ['xlsx'] : ['png'];
 
   const getDialogStyle = () => {
@@ -130,6 +156,7 @@ const EnlargedDialogComponent = ({
         open
         style={styles.dialog}
         onClose={onCloseOverlay}
+        // Unmount on close (maybe)
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
@@ -211,7 +238,7 @@ const mapStateToProps = state => ({
   viewConfigs: state.global.viewConfigs,
   isDrillDownVisible: state.drillDown.isVisible,
   infoViewKey: selectCurrentInfoViewKey(state),
-  viewContent: selectCurrentExpandedViewContent(state), // TODO: Obviously remove...
+  viewContent: selectCurrentExpandedViewContent(state), // TODO:
   organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 
@@ -227,6 +254,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...dispatchProps,
   ...ownProps,
   onDrillDown: chartItem => {
+    // TODO: this will need to be in the component after viewContent loads
     const { viewContent, infoViewKey, viewConfigs } = stateProps;
     // Get first layer config
     const {
@@ -282,6 +310,9 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
       }),
     );
   },
+  // fetchViewData: options => {
+  //   dispatch(fetch);
+  // },
 });
 
 export const EnlargedDialog = connect(

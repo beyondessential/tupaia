@@ -1068,7 +1068,7 @@ function* watchGoHomeAndResetToProjectSplash() {
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
   const state = yield select();
-  const viewContent = selectCurrentExpandedViewContent(state); //TODO: Move to component
+  const viewContent = selectCurrentExpandedViewContent(state); // TODO: *don't* Move to component
   const infoViewKey = selectCurrentInfoViewKey(state);
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
 

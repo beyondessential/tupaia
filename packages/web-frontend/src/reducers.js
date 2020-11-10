@@ -634,10 +634,10 @@ function global(
 
 function enlargedDialog(
   state = {
-    isVisible: false, // ? make a type of overlay like landing?
+    isVisible: false, // store infoViewKey (in url). If null, the dialog is closed.
     isLoading: false, // Can be calculated in component
     viewContent: null, // Can be calculated in component with default passed in?
-    organisationUnitName: '', // Can be current org unit at first render, pulled from redux?
+    organisationUnitName: '', // Can be current org unit, pulled from redux
     errorMessage: '', // Can be calculated in component
     startDate: null, // Can be passed as a prop
     endDate: null, // Can be passed as a prop
@@ -696,8 +696,8 @@ function drillDown( // Can just be rolled into enlargedDialog? Why do we need th
     isVisible: false, // Same as enlargedDialog
     isLoading: false, // Same as enlargedDialog
     errorMessage: '', // Same as enlargedDialog
-    currentLevel: 0, // Can be prop? Not sure about this one...
-    levelContents: {}, // Can be prop? Not sure about this one either...
+    currentLevel: 0, // Can be local state.
+    levelContents: {}, // Can be fetched, same as viewContent?
   },
   action,
 ) {
