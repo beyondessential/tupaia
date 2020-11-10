@@ -1,9 +1,15 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { splitStringOnComma } from '../../utilities';
+import {
+  splitStringOnComma,
+  translateQuestionDependentFields,
+  translateQuestionDependentNestedFields,
+  replaceQuestionCodesWithIds,
+  replaceNestedQuestionCodesWithIds,
+} from '../../utilities';
 import { isYes } from '../utilities';
 
 /**
@@ -16,45 +22,37 @@ const ENTITY_CREATION_FIELD_TRANSLATION = {
   parent: 'parentId',
   grandparent: 'grandparentId',
 };
+
 const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATION);
+const ENTITY_CREATION_JSON_FIELD_LIST = ['attributes'];
 
 export const processEntityConfig = async (models, config) => {
-  const entityCreationFields = translateEntityCreationFields(config);
+  const entityCreationNonJsonFields = translateQuestionDependentFields(
+    config,
+    ENTITY_CREATION_FIELD_TRANSLATION,
+  );
+  const entityCreationJsonFields = translateQuestionDependentNestedFields(
+    config,
+    ENTITY_CREATION_JSON_FIELD_LIST,
+  );
+
   const processedConfig = {
     type: splitStringOnComma(config.type),
     createNew: isYes(config.createNew),
-    ...entityCreationFields,
+    ...entityCreationNonJsonFields,
+    ...entityCreationJsonFields,
   };
 
-  return replaceQuestionCodesWithIds(models, processedConfig);
-};
-
-const translateEntityCreationFields = config => {
-  const resultConfig = {};
-
-  Object.keys(config).forEach(fieldKey => {
-    const resultKey = ENTITY_CREATION_FIELD_TRANSLATION[fieldKey];
-    if (resultKey) {
-      const questionCode = config[fieldKey];
-      resultConfig[resultKey] = questionCode;
-    }
-  });
-
-  return resultConfig;
-};
-
-const replaceQuestionCodesWithIds = async (models, config) => {
-  const resultConfig = {};
-  const encodeField = async ([fieldKey, value]) => {
-    let newValue = value;
-    if (ENTITY_CREATION_FIELD_LIST.includes(fieldKey)) {
-      const { id: questionId } = await models.question.findOne({ code: value });
-      newValue = { questionId };
-    }
-
-    resultConfig[fieldKey] = newValue;
-  };
-  await Promise.all(Object.entries(config).map(encodeField));
+  let resultConfig = await replaceQuestionCodesWithIds(
+    models,
+    processedConfig,
+    ENTITY_CREATION_FIELD_LIST,
+  );
+  resultConfig = await replaceNestedQuestionCodesWithIds(
+    models,
+    resultConfig,
+    ENTITY_CREATION_JSON_FIELD_LIST,
+  );
 
   return resultConfig;
 };

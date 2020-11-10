@@ -29,7 +29,7 @@ const renderMessage = (messageKey, messageObject, onRemoveMessage) => {
 };
 
 const MessageOverlayComponent = ({ items, onRemoveMessage }) => (
-  <View style={localStyles.wrapper} pointerEvents={'box-none'}>
+  <View style={localStyles.wrapper} pointerEvents="box-none">
     {Object.keys(items).map(messageKey =>
       renderMessage(messageKey, items[messageKey], () => onRemoveMessage(messageKey)),
     )}
@@ -55,7 +55,4 @@ const mapDispatchToProps = dispatch => ({
   onRemoveMessage: messageKey => dispatch(removeMessage(messageKey)),
 });
 
-export const MessageOverlay = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MessageOverlayComponent);
+export const MessageOverlay = connect(mapStateToProps, mapDispatchToProps)(MessageOverlayComponent);

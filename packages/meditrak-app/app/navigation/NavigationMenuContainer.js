@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import { connect } from 'react-redux';
 
 import { NavigationMenu } from './NavigationMenu';
@@ -99,10 +99,6 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
   };
 }
 
-const NavigationMenuContainer = connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(NavigationMenu);
+const NavigationMenuContainer = connect(mapStateToProps, null, mergeProps)(NavigationMenu);
 
 export { NavigationMenuContainer };

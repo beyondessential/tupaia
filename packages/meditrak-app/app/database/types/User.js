@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { Object as RealmObject } from 'realm';
 import { AccessPolicy } from '@tupaia/access-policy';
@@ -23,7 +23,7 @@ export class User extends RealmObject {
   /**
    * Whether this survey is available to the given user. Checks whether that user has access to the
    * permission group required by this survey.
-   **/
+   */
   hasAccessToSurveyInEntity(survey, entity) {
     const { permissionGroup } = survey;
     if (!permissionGroup) return false; // this survey is not fully synced yet, don't show it

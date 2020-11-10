@@ -31,13 +31,29 @@ class RefreshDatabaseScript extends Script {
     this.logInfo('Refreshing the tupaia database...');
 
     this.verifyPsql();
-    this.exec('psql -U postgres -c "DROP DATABASE IF EXISTS tupaia"');
-    this.exec('psql -U postgres -c "CREATE DATABASE tupaia WITH OWNER tupaia"');
-    this.exec('psql -U postgres -d tupaia -c "CREATE EXTENSION postgis"');
-    this.exec('psql -U postgres -c "ALTER USER tupaia WITH SUPERUSER"');
+    this.execDbCommand('DROP DATABASE IF EXISTS tupaia');
+    this.execDbCommand('CREATE DATABASE tupaia WITH OWNER tupaia');
+    this.execDbCommand('CREATE EXTENSION postgis', { db: 'tupaia' });
+    this.execDbCommand('ALTER USER tupaia WITH SUPERUSER');
     this.exec(`psql -U tupaia -f "${this.args.dumpPath}"`); // Relative to the repo root
-    this.exec('psql -U tupaia -c "ALTER USER tupaia WITH NOSUPERUSER"');
+    this.execDbCommand('ALTER USER tupaia WITH NOSUPERUSER', { user: 'tupaia' });
   }
+
+  execDbCommand = (dbCommand, { user, db } = {}) => {
+    const parts = ['psql'];
+    if (user) {
+      parts.push('-U', user);
+    } else if (this.isOsWindows()) {
+      // `psql` in Windows requires a user to be specified
+      parts.push('-U', 'postgres');
+    }
+    if (db) {
+      parts.push('-d', db);
+    }
+    parts.push('-c', `"${dbCommand}"`);
+
+    this.exec(parts.join(' '));
+  };
 
   verifyPsql() {
     try {
