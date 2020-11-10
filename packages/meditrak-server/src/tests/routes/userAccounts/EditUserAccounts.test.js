@@ -24,7 +24,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
   };
 
   const BES_ADMIN_POLICY = {
-    LA: [BES_ADMIN_PERMISSION_GROUP],
+    SB: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
@@ -33,7 +33,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
   let userAccount2;
 
   before(async () => {
-    const permissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+    const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
 
@@ -63,28 +63,28 @@ describe('Permissions checker for EditUserAccounts', async () => {
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount1.id,
       entity_id: demoEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount1.id,
       entity_id: kiribatiEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
 
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount2.id,
       entity_id: demoEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount2.id,
       entity_id: kiribatiEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount2.id,
       entity_id: laosEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
   });
 
@@ -94,7 +94,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
 
   describe('PUT /users/:id', async () => {
     describe('Insufficient permissions', async () => {
-      it('Throw a permissions gate error if current user does not have BES admin or Tupaia Admin panel access anywhere', async () => {
+      it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
         };
@@ -105,7 +105,8 @@ describe('Permissions checker for EditUserAccounts', async () => {
 
         expect(result).to.have.keys('error');
       });
-      it('Throw an exception when trying to edit a user account the current user lacks permissions for', async () => {
+
+      it('Throw an exception if we do not have admin panel access to all the countries the user we are editing has access to', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.put(`users/${userAccount2.id}`, {
           body: { email: 'hal.jordan@lantern.corp' },
@@ -116,7 +117,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
     });
 
     describe('Sufficient permissions', async () => {
-      it('Edit a user account the current user has permissions for', async () => {
+      it('Allow editing of user information if we have admin panel access to all the countries the user we are editing has access to', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         await app.put(`users/${userAccount1.id}`, {
           body: { email: 'barry.allen@ccpd.gov' },
@@ -125,7 +126,8 @@ describe('Permissions checker for EditUserAccounts', async () => {
 
         expect(result.email).to.deep.equal('barry.allen@ccpd.gov');
       });
-      it('Edit any user account as BES Admin', async () => {
+
+      it('Allow editing of user information if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
         await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
         await app.put(`users/${userAccount2.id}`, {
           body: { email: 'hal.jordan@lantern.corp' },

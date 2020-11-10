@@ -24,7 +24,7 @@ describe('Permissions checker for GETUserAccounts', async () => {
   };
 
   const BES_ADMIN_POLICY = {
-    LA: [BES_ADMIN_PERMISSION_GROUP],
+    SB: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
@@ -36,7 +36,7 @@ describe('Permissions checker for GETUserAccounts', async () => {
   let filterString;
 
   before(async () => {
-    const permissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+    const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
 
@@ -74,39 +74,39 @@ describe('Permissions checker for GETUserAccounts', async () => {
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount1.id,
       entity_id: demoEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount1.id,
       entity_id: kiribatiEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
 
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount2.id,
       entity_id: demoEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount2.id,
       entity_id: vanuatuEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
 
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount3.id,
       entity_id: demoEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount3.id,
       entity_id: kiribatiEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount3.id,
       entity_id: laosEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
 
     // Create a filter string so we are only requesting the test data from the endpoint
