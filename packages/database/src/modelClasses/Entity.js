@@ -60,6 +60,10 @@ const ORG_UNIT_TYPE_LEVELS = {
   [VILLAGE]: 6,
 };
 
+// some entity types are just used to store data against for aggregation, and shouldn't be
+// individually shown on tupaia.org
+const TYPES_EXCLUDED_FROM_TUPAIA_FRONTEND = [CASE, CASE_CONTACT];
+
 const ENTITY_RELATION_TYPE = {
   ANCESTORS: 'ancestors',
   DESCENDANTS: 'descendants',
@@ -251,6 +255,8 @@ export class EntityModel extends DatabaseModel {
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 
   types = ENTITY_TYPES;
+
+  typesExcludedFromWebFrontend = TYPES_EXCLUDED_FROM_TUPAIA_FRONTEND;
 
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
 
