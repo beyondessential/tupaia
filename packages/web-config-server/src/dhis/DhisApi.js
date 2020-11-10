@@ -26,10 +26,9 @@ export class DhisApi extends BaseDhisApi {
       throw new Error('Cannot getDataValuesInSets until fetchDataSourceEntities is injected');
     }
 
-    const dataSourceEntities = await this.fetchDataSourceEntities(
-      entity.code,
-      entity.model.types.FACILITY,
-    );
+    const dataSourceEntities = await this.fetchDataSourceEntities(entity.code, {
+      dataSourceEntityType: entity.model.types.FACILITY,
+    });
     const organisationUnitCodes = dataSourceEntities.map(e => e.code);
 
     return super.getDataValuesInSets({ ...query, organisationUnitCodes });
