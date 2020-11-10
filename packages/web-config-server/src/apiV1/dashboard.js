@@ -1,9 +1,12 @@
+import { filterEntities } from '@tupaia/utils';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
-import { checkEntityAgainstConditions } from './utils';
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ID = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ID = 'no_access';
+
+const checkEntityAgainstConditions = (entity, conditions = {}) =>
+  filterEntities([entity], conditions).length === 1;
 
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;

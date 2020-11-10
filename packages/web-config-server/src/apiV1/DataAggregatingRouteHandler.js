@@ -4,9 +4,9 @@
  */
 
 import { createAggregator } from '@tupaia/aggregator';
+import { filterEntities } from '@tupaia/utils';
 import { RouteHandler } from './RouteHandler';
 import { Aggregator } from '/aggregator';
-import { filterEntities } from './utils';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
