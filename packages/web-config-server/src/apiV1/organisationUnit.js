@@ -28,8 +28,10 @@ export default class extends RouteHandler {
     const country = await this.entity.countryEntity();
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id, {
-          comparator: 'not in',
-          comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+          type: {
+            comparator: 'not in',
+            comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+          },
         })
       : [];
     const orgUnitHierarchy = await this.filterForAccess([
