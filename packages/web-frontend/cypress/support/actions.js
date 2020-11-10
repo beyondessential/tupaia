@@ -6,7 +6,7 @@
 import { TEST_USER } from '../constants';
 
 const getTestUserPassword = () => {
-  const password = Cypress.env('CYPRESS_TEST_USER_PASSWORD');
+  const password = Cypress.env('TEST_USER_PASSWORD');
   if (!password) {
     throw new Error(
       'Please specify a value for CYPRESS_TEST_USER_PASSWORD in packages/web-frontend/.env',
