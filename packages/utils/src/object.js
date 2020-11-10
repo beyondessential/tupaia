@@ -180,5 +180,15 @@ export const mapValues = (object, mapping, { defaultToExistingValues = false } =
   return result;
 };
 
+/**
+ * Filters the entries of an object based on its values
+ *
+ * @param {Object<string, any>} object
+ * @param {Function} valueFilter
+ * @returns {Object<string, any>}
+ */
+export const filterValues = (object, valueFilter) =>
+  Object.fromEntries(Object.entries(object).filter(([, value]) => valueFilter(value)));
+
 export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));

@@ -4,6 +4,7 @@
  */
 
 import {
+  filterValues,
   flattenToObject,
   getKeysSortedByValues,
   mapKeys,
@@ -358,6 +359,25 @@ describe('object', () => {
       it.each(testData)('%s', (_, options, expected) => {
         expect(mapValues(object, mapping, options)).toStrictEqual(expected);
       });
+    });
+  });
+
+  describe('filterValues', () => {
+    const object = { a: 1, b: 2, alpha: 1 };
+
+    const testData = [
+      ['no entry passes', value => value === 3, {}],
+      ['one entry passes', value => value === 2, { b: 2 }],
+      ['multiple entries pass', value => value === 1, { a: 1, alpha: 1 }],
+      ['all entries pass', () => true, { a: 1, b: 2, alpha: 1 }],
+    ];
+
+    it.each(testData)('%s', (_, valueFilter, expected) => {
+      expect(filterValues(object, valueFilter)).toStrictEqual(expected);
+    });
+
+    it('no entries in object', () => {
+      expect(filterValues({}, () => true)).toStrictEqual({});
     });
   });
 
