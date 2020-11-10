@@ -4,10 +4,16 @@
  */
 
 import { fetchReport } from '../routes';
+import { authenticationMiddleware } from '../auth';
 
 export function addRoutesToApp(app) {
   /**
+   * Attach authentication to each endpoint
+   */
+  app.use(authenticationMiddleware);
+
+  /**
    * GET routes
    **/
-  app.get('(/v[0-9]+)?/fetchReport/:reportCode', fetchReport);
+  app.post('(/v[0-9]+)?/fetchReport/:reportCode', fetchReport);
 }

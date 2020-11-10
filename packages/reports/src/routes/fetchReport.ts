@@ -5,9 +5,9 @@
 
 import { respond } from '@tupaia/utils';
 import { createAggregator } from '@tupaia/aggregator';
-import { Aggregator } from '../aggregator';
 import { Request, Response } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
+import { Aggregator } from '../aggregator';
 import { BuildReport, ReportBuilder } from '../reportBuilder';
 
 export interface FetchReportQuery extends Query {
@@ -32,6 +32,17 @@ class FetchReportRouteHandler {
     const report = await req.models.report.findOne({ code: params.reportCode });
     if (!report) {
       throw new Error(`No report found with code ${params.reportCode}`);
+    }
+
+    const orgUnit = await req.models.entity.findOne({ code: query.organisationUnitCode });
+    if (!orgUnit) {
+      throw new Error(`No entity found with code ${query.organisationUnitCode}`);
+    }
+    const country = await orgUnit.country();
+    const permissionGroup = await req.models.permissionGroup.findById(report.permission_group_id);
+
+    if (!req.accessPolicy.allows(country.code, permissionGroup.name)) {
+      throw new Error(`No access`);
     }
     const reportBuilder: ReportBuilder = new ReportBuilder(report, this.aggregator, query);
     const data: BuildReport = await reportBuilder.build();
