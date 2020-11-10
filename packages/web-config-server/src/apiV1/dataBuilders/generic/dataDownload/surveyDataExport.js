@@ -52,6 +52,7 @@ class SurveyDataExportBuilder extends DataBuilder {
 
     return buildData(
       {
+        models: this.models,
         query: this.query,
         entity: this.entity,
         dataBuilderConfig: { ...exportDataBuilderConfig, surveys, dataServices },
