@@ -379,6 +379,7 @@ describe('object', () => {
     it('no entries in object', () => {
       expect(filterValues({}, () => true)).toStrictEqual({});
     });
+  });
 
   describe('stripFields', () => {
     const object = { a: 1, b: 2, c: 3 };
