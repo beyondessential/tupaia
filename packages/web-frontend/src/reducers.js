@@ -88,13 +88,12 @@ import {
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
   UPDATE_ENLARGED_DIALOG,
-  CLOSE_DRILL_DOWN,
-  ATTEMPT_DRILL_DOWN,
-  FETCH_DRILL_DOWN_SUCCESS,
-  FETCH_DRILL_DOWN_ERROR,
-  GO_TO_DRILL_DOWN_LEVEL,
+  // CLOSE_DRILL_DOWN,
+  // FETCH_DRILL_DOWN_SUCCESS,
+  // FETCH_DRILL_DOWN_ERROR,
+  // GO_TO_DRILL_DOWN_LEVEL,
   SET_CONFIG_GROUP_VISIBLE,
-  SET_ENLARGED_DIALOG_DATE_RANGE,
+  FETCH_ENLARGED_DIALOG_DATA,
   UPDATE_ENLARGED_DIALOG_ERROR,
   SET_PASSWORD_RESET_TOKEN,
   TOGGLE_DASHBOARD_SELECT_EXPAND,
@@ -102,6 +101,7 @@ import {
   REQUEST_PROJECT_ACCESS,
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
+  ATTEMPT_DRILL_DOWN,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -637,10 +637,10 @@ function enlargedDialog(
     isVisible: false, // store infoViewKey (in url). If null, the dialog is closed.
     isLoading: false, // Can be calculated in component
     viewContent: null, // Can be calculated in component with default passed in?
-    organisationUnitName: '', // Can be current org unit, pulled from redux
     errorMessage: '', // Can be calculated in component
     startDate: null, // Can be passed as a prop
     endDate: null, // Can be passed as a prop
+    drillDownLevel: 0,
   },
   action,
 ) {
@@ -660,10 +660,9 @@ function enlargedDialog(
         ...state,
         isVisible: false,
         viewContent: null,
-        organisationUnitName: '',
       };
 
-    case SET_ENLARGED_DIALOG_DATE_RANGE:
+    case FETCH_ENLARGED_DIALOG_DATA:
       return {
         ...state,
         startDate: action.startDate,
@@ -685,70 +684,75 @@ function enlargedDialog(
         isLoading: false,
         errorMessage: action.errorMessage,
       };
-
-    default:
-      return state;
-  }
-}
-
-function drillDown( // Can just be rolled into enlargedDialog? Why do we need the difference?
-  state = {
-    isVisible: false, // Same as enlargedDialog
-    isLoading: false, // Same as enlargedDialog
-    errorMessage: '', // Same as enlargedDialog
-    currentLevel: 0, // Can be local state.
-    levelContents: {}, // Can be fetched, same as viewContent?
-  },
-  action,
-) {
-  switch (action.type) {
     case ATTEMPT_DRILL_DOWN:
       return {
         ...state,
         isLoading: true,
-        isVisible: true,
-        errorMessage: '',
-        currentLevel: action.drillDownLevel,
+        drillDownLevel: action.drillDownLevel,
       };
-
-    case FETCH_DRILL_DOWN_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        levelContents: {
-          ...state.levelContents,
-          [action.drillDownLevel]: {
-            viewContent: action.viewContent,
-          },
-        },
-      };
-
-    case FETCH_DRILL_DOWN_ERROR:
-      return {
-        ...state,
-        isLoading: false,
-        errorMessage: action.errorMessage,
-      };
-
-    case GO_TO_DRILL_DOWN_LEVEL:
-      return {
-        ...state,
-        errorMessage: '',
-        isLoading: false,
-        currentLevel: action.drillDownLevel,
-      };
-
-    case CLOSE_ENLARGED_DIALOG:
-    case CLOSE_DRILL_DOWN:
-      return {
-        ...state,
-        isVisible: false,
-      };
-
     default:
       return state;
   }
 }
+
+// function drillDown( // Can just be rolled into enlargedDialog? Why do we need the difference?
+//   state = {
+//     isVisible: false, // Same as enlargedDialog
+//     isLoading: false, // Same as enlargedDialog
+//     errorMessage: '', // Same as enlargedDialog
+//     currentLevel: 0, // Can be local state.
+//     levelContents: {}, // Can be fetched, same as viewContent?
+//   },
+//   action,
+// ) {
+//   switch (action.type) {
+//     case ATTEMPT_DRILL_DOWN:
+//       return {
+//         ...state,
+//         isLoading: true,
+//         isVisible: true,
+//         errorMessage: '',
+//         currentLevel: action.drillDownLevel,
+//       };
+
+//     case FETCH_DRILL_DOWN_SUCCESS:
+//       return {
+//         ...state,
+//         isLoading: false,
+//         levelContents: {
+//           ...state.levelContents,
+//           [action.drillDownLevel]: {
+//             viewContent: action.viewContent,
+//           },
+//         },
+//       };
+
+//     case FETCH_DRILL_DOWN_ERROR:
+//       return {
+//         ...state,
+//         isLoading: false,
+//         errorMessage: action.errorMessage,
+//       };
+
+//     case GO_TO_DRILL_DOWN_LEVEL:
+//       return {
+//         ...state,
+//         errorMessage: '',
+//         isLoading: false,
+//         currentLevel: action.drillDownLevel,
+//       };
+
+//     case CLOSE_ENLARGED_DIALOG:
+//     case CLOSE_DRILL_DOWN:
+//       return {
+//         ...state,
+//         isVisible: false,
+//       };
+
+//     default:
+//       return state;
+//   }
+// }
 
 function routing(state = getInitialLocation(), action) {
   if (action.type === 'UPDATE_HISTORY_LOCATION') {
@@ -793,7 +797,7 @@ export default combineReducers({
   resetPassword,
   requestCountryAccess,
   enlargedDialog,
-  drillDown,
+  // drillDown,
   disaster,
   project,
   orgUnits,

@@ -110,8 +110,8 @@ export const DIALOG_PAGE_SIGNUP = 'DIALOG_PAGE_SIGNUP';
 export const DIALOG_PAGE_RESET_PASSWORD = 'DIALOG_PAGE_RESET_PASSWORD';
 export const OPEN_ENLARGED_DIALOG = 'OPEN_ENLARGED_DIALOG';
 export const CLOSE_ENLARGED_DIALOG = 'CLOSE_ENLARGED_DIALOG';
+export const FETCH_ENLARGED_DIALOG_DATA = 'FETCH_ENLARGED_DIALOG_DATA';
 export const SET_ENLARGED_DIALOG_DATE_RANGE = 'SET_ENLARGED_DIALOG_DATE_RANGE';
-export const SET_DRILL_DOWN_DATE_RANGE = 'SET_DRILL_DOWN_DATE_RANGE';
 export const UPDATE_ENLARGED_DIALOG = 'UPDATE_ENLARGED_DIALOG';
 export const UPDATE_ENLARGED_DIALOG_ERROR = 'UPDATE_ENLARGED_DIALOG_ERROR';
 export const CLOSE_DRILL_DOWN = 'CLOSE_DRILL_DOWN';
@@ -1046,29 +1046,6 @@ export function closeDrillDown() {
   };
 }
 
-export function attemptDrillDown({
-  viewContent,
-  startDate,
-  endDate,
-  parameterLink,
-  parameterValue,
-  drillDownLevel,
-}) {
-  const { viewId, organisationUnitCode, dashboardGroupId, infoViewKey } = viewContent;
-  return {
-    type: ATTEMPT_DRILL_DOWN,
-    organisationUnitCode,
-    viewId,
-    drillDownLevel,
-    dashboardGroupId,
-    parameterLink,
-    parameterValue,
-    startDate,
-    endDate,
-    infoViewKey,
-  };
-}
-
 export function fetchDrillDownSuccess(drillDownLevel, viewContent) {
   return {
     type: FETCH_DRILL_DOWN_SUCCESS,
@@ -1106,12 +1083,33 @@ export function setEnlargedDashboardDateRange(startDate, endDate) {
   };
 }
 
-export function setDrillDownDateRange(startDate, endDate, currentLevel) {
+export function attemptDrillDown(drillDownLevel) {
   return {
-    type: SET_DRILL_DOWN_DATE_RANGE,
+    type: ATTEMPT_DRILL_DOWN,
+    drillDownLevel,
+  };
+}
+
+export function fetchEnlargedDialogData({
+  viewContent,
+  startDate,
+  endDate,
+  parameterLink,
+  parameterValue,
+  drillDownLevel,
+}) {
+  const { viewId, organisationUnitCode, dashboardGroupId, infoViewKey } = viewContent;
+  return {
+    type: FETCH_ENLARGED_DIALOG_DATA,
+    organisationUnitCode,
+    viewId,
+    drillDownLevel,
+    dashboardGroupId,
+    parameterLink,
+    parameterValue,
     startDate,
     endDate,
-    drillDownLevel: currentLevel,
+    infoViewKey,
   };
 }
 

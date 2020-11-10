@@ -236,7 +236,7 @@ const mapStateToProps = state => ({
   ...state.enlargedDialog, // TODO: Obviously remove...
   projectCode: selectCurrentProjectCode(state),
   viewConfigs: state.global.viewConfigs,
-  isDrillDownVisible: state.drillDown.isVisible,
+  isDrillDownVisible: false, // state.drillDown.isVisible,
   infoViewKey: selectCurrentInfoViewKey(state),
   viewContent: selectCurrentExpandedViewContent(state), // TODO:
   organisationUnitName: selectCurrentOrgUnit(state).name,
@@ -293,22 +293,22 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
       defaultEndDate = moment(startDate).clone().endOf(momentUnit);
     }
 
-    dispatch(
-      attemptDrillDown({
-        viewContent: {
-          dashboardGroupId,
-          organisationUnitCode,
-          ...drillDownConfig,
-          infoViewKey: drillDownConfigKey,
-          viewId,
-        },
-        startDate: defaultStartDate,
-        endDate: defaultEndDate,
-        parameterLink,
-        parameterValue: chartItem[keyLink],
-        drillDownLevel: newDrillDownLevel,
-      }),
-    );
+    dispatch(attemptDrillDown(newDrillDownLevel));
+
+    // attemptDrillDown({
+    //   viewContent: {
+    //     dashboardGroupId,
+    //     organisationUnitCode,
+    //     ...drillDownConfig,
+    //     infoViewKey: drillDownConfigKey,
+    //     viewId,
+    //   },
+    //   startDate: defaultStartDate,
+    //   endDate: defaultEndDate,
+    //   parameterLink,
+    //   parameterValue: chartItem[keyLink],
+    //   drillDownLevel: newDrillDownLevel,
+    // }),
   },
   // fetchViewData: options => {
   //   dispatch(fetch);

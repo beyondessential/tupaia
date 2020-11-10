@@ -16,7 +16,7 @@ import {
   attemptDrillDown,
   closeDrillDown,
   goToDrillDownLevel,
-  setDrillDownDateRange,
+  setEnlargedDashboardDateRange,
 } from '../../actions';
 import { VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from '../EnlargedDialog';
@@ -116,8 +116,9 @@ DrillDownOverlayComponent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { drillDown } = state;
-  const { currentLevel, isLoading, levelContents } = drillDown;
+  // const { drillDown } = state;
+  const { currentLevel, isLoading, levelContents } = {};
+  // TODO: Don't think we need this component? Loading animation and error should show for all enlarged dialog
 
   return {
     viewContent: levelContents[currentLevel] && levelContents[currentLevel].viewContent,
@@ -132,8 +133,8 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
     ...stateProps,
     ...ownProps,
     onSetDateRange: (startDate, endDate) => {
-      const { currentLevel } = stateProps;
-      dispatch(setDrillDownDateRange(startDate, endDate, currentLevel));
+      // const { currentLevel } = stateProps;
+      dispatch(setEnlargedDashboardDateRange(startDate, endDate));
     },
     onDrillDown: chartItem => {
       const { viewContent, currentLevel, infoViewKey } = stateProps;
@@ -146,17 +147,16 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
       const newDrillDownLevel = currentLevel + 1;
       const drillDownConfigKey = `${infoViewKey}_${newDrillDownLevel}`;
 
-      dispatch(
-        attemptDrillDown({
-          viewContent: {
-            infoViewKey: drillDownConfigKey,
-            ...viewContent,
-          },
-          parameterLink,
-          parameterValue: chartItem[keyLink],
-          drillDownLevel: newDrillDownLevel,
-        }),
-      );
+      dispatch(attemptDrillDown(newDrillDownLevel));
+      // fetchEnlargedDialogData({
+      //   viewContent: {
+      //     infoViewKey: drillDownConfigKey,
+      //     ...viewContent,
+      //   },
+      //   parameterLink,
+      //   parameterValue: chartItem[keyLink],
+      //   drillDownLevel: newDrillDownLevel,
+      // }),
     },
     onBack: () => {
       const { currentLevel } = stateProps;
