@@ -52,6 +52,7 @@ class SurveyDataExportBuilder extends DataBuilder {
 
     return buildData(
       {
+        models: this.models,
         query: this.query,
         entity: this.entity,
         dataBuilderConfig: { ...exportDataBuilderConfig, surveys, dataServices },
@@ -63,12 +64,13 @@ class SurveyDataExportBuilder extends DataBuilder {
 }
 
 export const surveyDataExport = async (
-  { dataBuilderConfig, query, entity, req },
+  { models, dataBuilderConfig, query, entity, req },
   aggregator,
   dhisApi,
 ) => {
   const builder = new SurveyDataExportBuilder(
     req,
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

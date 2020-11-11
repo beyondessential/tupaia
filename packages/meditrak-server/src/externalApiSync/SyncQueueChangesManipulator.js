@@ -25,7 +25,11 @@ export class SyncQueueChangesManipulator {
   getIdsFromChangesForModel = (changes, model) =>
     this.getRecordIds(this.getChangesForRecordType(changes, model.databaseType));
 
-  getRecords = changes => changes.map(c => c.record);
+  getRecords = changes =>
+    changes.map(change => {
+      const { old_record: oldRecord, new_record: newRecord, type } = change;
+      return type === DELETE ? oldRecord : newRecord;
+    });
 
   getRecordsFromChangesForModel = (changes, model) =>
     this.getRecords(this.getChangesForRecordType(changes, model.databaseType));

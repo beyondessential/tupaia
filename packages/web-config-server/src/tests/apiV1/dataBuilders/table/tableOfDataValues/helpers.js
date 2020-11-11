@@ -8,7 +8,7 @@ import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
 import { Aggregator } from '/aggregator';
-import { DATA_ELEMENTS } from './tableOfDataValues.fixtures';
+import { DATA_ELEMENTS, ORG_UNITS } from './tableOfDataValues.fixtures';
 
 const query = { organisationUnitCode: 'TO' };
 const dataServices = [{ isDataRegional: false }];
@@ -46,6 +46,14 @@ const createAggregatorStub = dataValues => {
   return sinon.createStubInstance(Aggregator, { fetchAnalytics, fetchDataElements });
 };
 
+const models = {
+  entity: {
+    find: sinon
+      .stub()
+      .callsFake(({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code))),
+  },
+};
+
 export const createAssertTableResults = (table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
@@ -53,7 +61,7 @@ export const createAssertTableResults = (table, availableDataValues) => {
   return async (tableConfig, expectedResults) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
     return expect(
-      table({ dataBuilderConfig, query }, aggregator, dhisApi),
+      table({ models, dataBuilderConfig, query }, aggregator, dhisApi),
     ).to.eventually.deep.equal({ period, ...expectedResults });
   };
 };
@@ -64,8 +72,8 @@ export const createAssertErrorIsThrown = (table, availableDataValues) => {
 
   return async (tableConfig, expectedError) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
-    return expect(table({ dataBuilderConfig, query }, aggregator, dhisApi)).to.be.rejectedWith(
-      expectedError,
-    );
+    return expect(
+      table({ models, dataBuilderConfig, query }, aggregator, dhisApi),
+    ).to.be.rejectedWith(expectedError);
   };
 };

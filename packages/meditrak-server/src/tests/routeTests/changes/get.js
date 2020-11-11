@@ -6,8 +6,9 @@
 import { expect } from 'chai';
 
 import { TYPES } from '@tupaia/database';
+import { oneSecondSleep } from '@tupaia/utils';
 import { SyncQueue } from '../../../database';
-import { upsertQuestion, randomIntBetween, oneSecondSleep } from '../../testUtilities';
+import { upsertQuestion, randomIntBetween } from '../../testUtilities';
 
 export const testGetChangesCount = (app, models) =>
   function () {

@@ -8,7 +8,6 @@ import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToSet } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { Entity } from '/models';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
@@ -27,7 +26,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const { results, period } = await this.fetchAnalyticsAndMetadata();
     this.results = results;
-    this.tableConfig = new TableConfig(this.config, this.results);
+    this.tableConfig = new TableConfig(this.models, this.config, this.results);
     this.valuesByCell = await this.buildValuesByCell();
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
     this.rowsToDescriptions = {};
@@ -297,7 +296,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   getOrgUnitCategoryToTitle = async dimension => {
     const orgUnitCodes = dimension.map(({ category }) => category);
-    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
     const orgUnitCodeToName = reduceToDictionary(orgUnits, 'code', 'name');
 
     return code => orgUnitCodeToName[code];
@@ -379,7 +378,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   fetchOrgUnitCodesToName = async columns => {
     const orgUnitCodes = columns.map(c => c.title);
-    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
     return reduceToDictionary(orgUnits, 'code', 'name');
   };
 
@@ -395,11 +394,12 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 }
 
 export const tableOfDataValues = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new TableOfDataValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

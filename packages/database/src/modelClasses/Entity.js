@@ -2,22 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-
-/**
- * TODO: This version of Entity.js comes from meditrak-server, which does not include any of the
- * a) alternative hierarchy logic, or b) optimisations that are in the version in web-config-server
- * https://github.com/beyondessential/tupaia-backlog/issues/427
- */
-
-/**
- * Maximum number of parents an entity can have.
- * Used to avoid infinite loops while traversing the entity hierarchy
- */
-const MAX_ENTITY_HIERARCHY_LEVELS = 100;
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
@@ -32,6 +20,7 @@ const CATCHMENT = 'catchment';
 const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
+const PROJECT = 'project';
 const CITY = 'city';
 
 const ENTITY_TYPES = {
@@ -48,16 +37,36 @@ const ENTITY_TYPES = {
   SUB_CATCHMENT,
   VILLAGE,
   WORLD,
+  PROJECT,
   CITY,
 };
 
-const ORG_UNIT_ENTITY_TYPES = {
+export const ORG_UNIT_ENTITY_TYPES = {
   WORLD,
   COUNTRY,
   DISTRICT,
   SUB_DISTRICT,
   FACILITY,
   VILLAGE,
+};
+
+// reflects how org units are stored on DHIS2
+const ORG_UNIT_TYPE_LEVELS = {
+  [WORLD]: 1,
+  [COUNTRY]: 2,
+  [DISTRICT]: 3,
+  [SUB_DISTRICT]: 4,
+  [FACILITY]: 5,
+  [VILLAGE]: 6,
+};
+
+// some entity types are just used to store data against for aggregation, and shouldn't be
+// individually shown on tupaia.org
+const TYPES_EXCLUDED_FROM_TUPAIA_FRONTEND = [CASE, CASE_CONTACT];
+
+const ENTITY_RELATION_TYPE = {
+  ANCESTORS: 'ancestors',
+  DESCENDANTS: 'descendants',
 };
 
 export class EntityType extends DatabaseType {
@@ -68,16 +77,20 @@ export class EntityType extends DatabaseType {
     return this.code;
   }
 
-  async country() {
-    return this.otherModels.country.findOne({ code: this.country_code });
-  }
-
   isFacility() {
     return this.type === FACILITY;
   }
 
+  isCountry() {
+    return this.type === COUNTRY;
+  }
+
   isWorld() {
     return this.type === WORLD;
+  }
+
+  isProject() {
+    return this.type === PROJECT;
   }
 
   isOrganisationUnit() {
@@ -107,13 +120,81 @@ export class EntityType extends DatabaseType {
     return !!this.getDhisId();
   }
 
-  async fetchParent() {
-    return this.model.findById(this.parent_id);
+  async countryEntity() {
+    return this.model.findOne({ code: this.country_code });
+  }
+
+  async parent() {
+    return this.parent_id ? this.model.findById(this.parent_id) : undefined;
   }
 
   async hasCountryParent() {
-    const parent = await this.fetchParent();
+    const parent = await this.parent();
     return parent.type === COUNTRY;
+  }
+
+  async getAncestors(hierarchyId, criteria) {
+    return this.model.getRelationsOfEntity(ENTITY_RELATION_TYPE.ANCESTORS, this.id, {
+      entity_hierarchy_id: hierarchyId,
+      ...criteria,
+    });
+  }
+
+  async getDescendants(hierarchyId, criteria) {
+    return this.model.getRelationsOfEntity(ENTITY_RELATION_TYPE.DESCENDANTS, this.id, {
+      entity_hierarchy_id: hierarchyId,
+      ...criteria,
+    });
+  }
+
+  async getAncestorOfType(hierarchyId, entityType) {
+    if (this.type === entityType) return this;
+    const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });
+    return ancestor;
+  }
+
+  async getDescendantsOfType(hierarchyId, entityType) {
+    if (this.type === entityType) return [this];
+    return this.getDescendants(hierarchyId, { type: entityType });
+  }
+
+  async getNearestOrgUnitDescendants(hierarchyId) {
+    const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
+    // if this is an org unit, don't worry about going deeper
+    if (orgUnitEntityTypes.has(this.type)) return [this];
+    // get descendants and return all of the first type that is an org unit type
+    // we rely on descendants being returned in order, with those higher in the hierarchy first
+    const descendants = await this.getDescendants(hierarchyId);
+    const nearestOrgUnitDescendant = descendants.find(d => orgUnitEntityTypes.has(d.type));
+    if (!nearestOrgUnitDescendant) {
+      return [];
+    }
+    return descendants.filter(d => d.type === nearestOrgUnitDescendant.type);
+  }
+
+  /**
+   * Returns the id of the entity hierarchy to use by default for this entity, if none is specified.
+   * Will prefer the "explore" hierarchy, but if the entity isn't a member of that, will choose
+   * the first hierarchy it is a member of, alphabetically
+   */
+  async fetchDefaultEntityHierarchyId() {
+    const hierarchiesIncludingEntity = await this.otherModels.entityHierarchy.find(
+      {
+        ancestor_id: this.id,
+        [QUERY_CONJUNCTIONS.OR]: {
+          descendant_id: this.id,
+        },
+      },
+      {
+        joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+        sort: ['entity_hierarchy.name ASC'],
+      },
+    );
+    if (hierarchiesIncludingEntity.length === 0) {
+      throw new Error(`The entity with id ${this.id} is not included in any hierarchy`);
+    }
+    const exploreHierarchy = hierarchiesIncludingEntity.find(h => h.name === 'explore');
+    return exploreHierarchy ? exploreHierarchy.id : hierarchiesIncludingEntity[0].id;
   }
 
   /**
@@ -121,19 +202,26 @@ export class EntityType extends DatabaseType {
    * starting from the entity itself and traversing the hierarchy up
    *
    * @returns {EntityType}
-   * @throws {Error}
    */
-  async fetchClosestOrganisationUnit() {
-    let currentEntity = this;
-    for (let i = 0; i < MAX_ENTITY_HIERARCHY_LEVELS; i++) {
-      if (currentEntity.isOrganisationUnit()) {
-        return currentEntity;
-      }
+  async fetchNearestOrgUnitAncestor(hierarchyId) {
+    const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
+    // if this is an org unit, don't worry about going deeper
+    if (orgUnitEntityTypes.has(this.type)) return this;
+    // if no hierarchy id was passed in, default to a hierarchy this entity is a part of
+    const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyId());
+    // get ancestors and return the first that is an org unit type
+    // we rely on ancestors being returned in order of proximity to this entity
+    const ancestors = await this.getAncestors(entityHierarchyId);
+    return ancestors.find(d => orgUnitEntityTypes.has(d.type));
+  }
 
-      currentEntity = await currentEntity.fetchParent();
-    }
+  async getAncestorCodes(hierarchyId) {
+    const ancestors = await this.getAncestors(hierarchyId);
+    return ancestors.map(a => a.code);
+  }
 
-    throw new Error(`Maximum of (${MAX_ENTITY_HIERARCHY_LEVELS}) entity hierarchy levels reached`);
+  async getChildren(hierarchyId) {
+    return this.getDescendants(hierarchyId, { generational_distance: 1 });
   }
 
   pointLatLon() {
@@ -150,77 +238,33 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
-  static fields = [
-    'id',
-    'code',
-    'parent_id',
-    'name',
-    'type',
-    'point',
-    'region',
-    'image_url',
-    'country_code',
-    'bounds',
-    'metadata',
-    'image_url',
-    'attributes',
-  ];
+  // Some cached functions within Entity need to be invalidated if an entity relation is changed,
+  // and therefore the hierarchy cache has been rebuilt.
+  // Note: we don't use ancestor_descendant_relation as the dependency, as adding change triggers
+  // to that table slows down the rebuilds considerably (40s -> 200s for full initial build)
+  get cacheDependencies() {
+    return [TYPES.ENTITY_RELATION];
+  }
 
-  static geoFields = ['point', 'region', 'bounds'];
+  customColumnSelectors = {
+    region: fieldName => `ST_AsGeoJSON(${fieldName})`,
+    point: fieldName => `ST_AsGeoJSON(${fieldName})`,
+    bounds: fieldName => `ST_AsGeoJSON(${fieldName})`,
+  };
 
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 
   types = ENTITY_TYPES;
 
+  typesExcludedFromWebFrontend = TYPES_EXCLUDED_FROM_TUPAIA_FRONTEND;
+
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
 
-  getColumnSpecs = tableAlias => {
-    return this.buildColumnSpecs(tableAlias, false);
-  };
-
-  buildColumnSpecs = tableAlias => {
-    const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
-    return EntityModel.fields.map(field => {
-      if (EntityModel.geoFields.includes(field)) {
-        return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
-      }
-      return { [field]: `${tableAliasPrefix}${field}` };
-    });
-  };
-
-  async findOne(conditions) {
-    return super.findOne(conditions, {
-      columns: this.getColumnSpecs(),
-    });
-  }
-
-  async find(conditions, options) {
-    return super.find(conditions, {
-      columns: this.getColumnSpecs(),
-      ...options,
-    });
-  }
-
-  async findById(id) {
-    return super.findById(id, {
-      columns: this.getColumnSpecs(),
-    });
-  }
-
-  async update(whereCondition, fieldsToUpdate) {
-    return super.update(whereCondition, this.removeUnUpdatableFields(fieldsToUpdate));
-  }
-
-  async updateOrCreate(whereCondition, fieldsToUpsert) {
-    return super.updateOrCreate(whereCondition, this.removeUnUpdatableFields(fieldsToUpsert));
-  }
-
-  async updateById(id, fieldsToUpdate) {
-    return super.updateById(id, this.removeUnUpdatableFields(fieldsToUpdate));
-  }
-
   async updatePointCoordinates(code, { longitude, latitude }) {
-    const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
+    const point = JSON.stringify({
+      coordinates: [longitude, latitude],
+      type: 'Point',
+    });
     await this.updatePointCoordinatesFormatted(code, point);
   }
 
@@ -270,17 +314,70 @@ export class EntityModel extends DatabaseModel {
     );
   }
 
-  /**
-   * @private
-   */
-  removeUnUpdatableFields(fields) {
-    const filteredFields = {};
-    for (const key of Object.keys(fields)) {
-      if (EntityModel.geoFields.indexOf(key) !== -1) {
-        continue;
-      }
-      filteredFields[key] = fields[key];
+  async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
+    const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
+    return this.runCachedFunction(cacheKey, async () => {
+      const ancestorDescendantRelations = await this.database.executeSqlInBatches(
+        descendantCodes,
+        batchOfDescendantCodes => [
+          `
+          SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
+          FROM
+            ancestor_descendant_relation
+          JOIN
+            entity as ancestor on ancestor.id = ancestor_descendant_relation.ancestor_id
+          JOIN
+            entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
+          WHERE
+            descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
+          AND
+            ancestor_descendant_relation.entity_hierarchy_id = ?
+          AND
+            ancestor.type = ?
+          ORDER BY
+            generational_distance ASC
+        `,
+          [...batchOfDescendantCodes, hierarchyId, ancestorType],
+        ],
+      );
+      const ancestorDetailsByDescendantCode = {};
+      ancestorDescendantRelations.forEach(r => {
+        ancestorDetailsByDescendantCode[r.descendant_code] = {
+          code: r.ancestor_code,
+          name: r.ancestor_name,
+        };
+      });
+      return ancestorDetailsByDescendantCode;
+    });
+  }
+
+  async getRelationsOfEntity(ancestorsOrDescendants, entityId, criteria) {
+    const cacheKey = this.getCacheKey(this.getRelationsOfEntity.name, arguments);
+    const [joinTablesOn, filterByEntityId] =
+      ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
+        ? ['ancestor_id', 'descendant_id']
+        : ['descendant_id', 'ancestor_id'];
+    return this.runCachedFunction(cacheKey, async () =>
+      this.find(
+        {
+          ...criteria,
+          [filterByEntityId]: entityId,
+        },
+        {
+          joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+          joinCondition: ['entity.id', joinTablesOn],
+          sort: ['generational_distance ASC'],
+        },
+      ),
+    );
+  }
+
+  getDhisLevel(type) {
+    const level = ORG_UNIT_TYPE_LEVELS[type];
+    if (!level) {
+      throw new Error(`${type} is not an organisational unit type`);
     }
-    return filteredFields;
+
+    return level;
   }
 }

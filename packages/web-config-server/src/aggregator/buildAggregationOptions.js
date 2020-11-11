@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { Aggregator } from '@tupaia/aggregator';
-import winston from '/log';
 
 const ENTITY_AGGREGATION_ORDER_AFTER = 'AFTER';
 const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
 const DEFAULT_ENTITY_AGGREGATION_ORDER = ENTITY_AGGREGATION_ORDER_AFTER;
 
 export const buildAggregationOptions = async (
+  models,
   initialAggregationOptions,
   dataSourceEntities = [],
   entityAggregationOptions,
@@ -39,6 +39,7 @@ export const buildAggregationOptions = async (
   }
 
   const entityAggregation = await fetchEntityAggregationConfig(
+    models,
     dataSourceEntities,
     aggregationEntityType,
     entityAggregationType,
@@ -55,26 +56,6 @@ export const buildAggregationOptions = async (
   };
 };
 
-// Will return a map for every entity (regardless of type) in entities to its ancestor of type aggregationEntityType
-const getEntityToAncestorMap = async (entities, aggregationEntityType, hierarchyId) => {
-  if (!entities || entities.length === 0) return {};
-  const entityToAncestor = {};
-  const addEntityToMap = async entity => {
-    if (entity.type !== aggregationEntityType) {
-      const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
-      if (ancestor) {
-        entityToAncestor[entity.code] = { code: ancestor.code, name: ancestor.name };
-      } else {
-        winston.warn(
-          `No ancestor of type ${aggregationEntityType} found for ${entity.code}, hierarchyId = ${hierarchyId}`,
-        );
-      }
-    }
-  };
-  await Promise.all(entities.map(entity => addEntityToMap(entity)));
-  return entityToAncestor;
-};
-
 const shouldAggregateEntities = (
   dataSourceEntities,
   aggregationEntityType,
@@ -86,16 +67,17 @@ const shouldAggregateEntities = (
   !(entityAggregationType === Aggregator.aggregationTypes.RAW);
 
 const fetchEntityAggregationConfig = async (
+  models,
   dataSourceEntities,
   aggregationEntityType,
   entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
   entityAggregationConfig,
   hierarchyId,
 ) => {
-  const entityToAncestorMap = await getEntityToAncestorMap(
-    dataSourceEntities,
-    aggregationEntityType,
+  const entityToAncestorMap = await models.entity.fetchAncestorDetailsByDescendantCode(
+    dataSourceEntities.map(e => e.code),
     hierarchyId,
+    aggregationEntityType,
   );
   return {
     type: entityAggregationType,

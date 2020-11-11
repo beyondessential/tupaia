@@ -7,7 +7,6 @@ import keyBy from 'lodash.keyby';
 
 import { stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { ENTITY_TYPES } from '/models/Entity';
 
 class StockoutsDataBuilder extends DataBuilder {
   async build() {
@@ -27,7 +26,11 @@ class StockoutsDataBuilder extends DataBuilder {
 
   getStockoutsByFacility = async (results, metadata) => {
     const { dataElementCodeToName } = metadata;
-    const facilities = await this.entity.getDescendantsOfType(ENTITY_TYPES.FACILITY);
+    const hierarchyId = await this.fetchEntityHierarchyId();
+    const facilities = await this.entity.getDescendantsOfType(
+      hierarchyId,
+      this.models.entity.types.FACILITY,
+    );
     const facilitiesByCode = keyBy(facilities, 'code');
     const stockoutsByOrgUnit = results.reduce((stockouts, vaccine) => {
       const orgUnitName = facilitiesByCode[vaccine.organisationUnit].name;
@@ -65,7 +68,18 @@ class StockoutsDataBuilder extends DataBuilder {
   };
 }
 
-export const stockouts = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
-  const builder = new StockoutsDataBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
+export const stockouts = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new StockoutsDataBuilder(
+    models,
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };
