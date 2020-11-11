@@ -23,13 +23,22 @@ export class ExpressionParser {
   }
 
   /**
+   * Return the variable names from an expression.
+   * @param {*} expression
+   */
+  getVariables(expression) {
+    const nodeTree = this.math.parse(expression);
+    return nodeTree.filter(node => node.isSymbolNode).map(({ name }) => name);
+  }
+
+  /**
    * Validate an expression and throw an error if it's invalid.
    * @param {*} expression
    */
   validate(expression) {
     const nodeTree = this.math.parse(expression);
     nodeTree.traverse(node => {
-      if (node.type === 'OperatorNode' && node.op === '*' && node.implicit) {
+      if (node.isOperatorNode && node.op === '*' && node.implicit) {
         throw new Error('Invalid syntax: Implicit multiplication found');
       }
     });
