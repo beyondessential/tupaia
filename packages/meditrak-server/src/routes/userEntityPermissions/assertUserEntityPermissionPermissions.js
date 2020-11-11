@@ -39,11 +39,9 @@ export const assertUserEntityPermissionEditPermissions = async (
   await assertUserEntityPermissionUpsertPermissions(accessPolicy, models, updatedFields);
 
   // Final check to make sure we're not editing a BES admin access permission
-  // There's nothing we could edit that couldn't be abused
+  // Changing any of the pieces of data in a BES admin UEP is abusable, so completely forbid it
   const userEntityPermission = await models.userEntityPermission.findById(userEntityPermissionId);
-  const permissionGroup = await models.permissionGroup.findById(
-    userEntityPermission.permission_group_id,
-  );
+  const permissionGroup = await userEntityPermission.permissionGroup();
   if (permissionGroup.name === BES_ADMIN_PERMISSION_GROUP) {
     throw new Error('Need BES Admin access to make this change');
   }

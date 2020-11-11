@@ -24,7 +24,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
   };
 
   const BES_ADMIN_POLICY = {
-    LA: [BES_ADMIN_PERMISSION_GROUP],
+    SB: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
@@ -36,7 +36,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
   let filterString;
 
   before(async () => {
-    const permissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+    const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
 
@@ -62,17 +62,17 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
     userEntityPermission1 = await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount.id,
       entity_id: vanuatuEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     userEntityPermission2 = await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount.id,
       entity_id: kiribatiEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
     userEntityPermission3 = await findOrCreateDummyRecord(models.userEntityPermission, {
       user_id: userAccount.id,
       entity_id: laosEntity.id,
-      permission_group_id: permissionGroup.id,
+      permission_group_id: publicPermissionGroup.id,
     });
 
     // Create a filter string so we are only requesting the test data from the endpoint
@@ -105,7 +105,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
       expect(result.id).to.equal(userEntityPermission2.id);
     });
 
-    it('Insufficient permissions: Throw an exception if we do not have permissions for the entity or the user entity permission', async () => {
+    it('Insufficient permissions: Throw an exception if we do not have permissions for the entity of the user entity permission', async () => {
       const policy = {
         DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
       };

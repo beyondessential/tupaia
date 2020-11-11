@@ -24,14 +24,14 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
   };
 
   const BES_ADMIN_POLICY = {
-    LA: [BES_ADMIN_PERMISSION_GROUP],
+    SB: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
   const { models } = app;
   let userAccountId;
   let publicPermissionGroupId;
-  let BESAdminPermissionGroupId;
+  let besPermissionGroupId;
   let vanuatuEntityId;
   let laosEntityId;
 
@@ -39,11 +39,11 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
-    const BESAdminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+    const besPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: BES_ADMIN_PERMISSION_GROUP,
     });
     publicPermissionGroupId = publicPermissionGroup.id;
-    BESAdminPermissionGroupId = BESAdminPermissionGroup.id;
+    besPermissionGroupId = besPermissionGroup.id;
 
     const { entity: vanuatuEntity } = await findOrCreateDummyCountryEntity(models, {
       code: 'VU',
@@ -68,7 +68,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
 
   describe('POST /userEntityPermissions', async () => {
     describe('Insufficient permission', async () => {
-      it('Throw a permissions gate error if current user does not have BES admin or Tupaia Admin panel access anywhere', async () => {
+      it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
         };
@@ -83,7 +83,8 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
 
         expect(result).to.have.keys('error');
       });
-      it('Throw an exception when trying to create a user entity permission for an entity current user lacks permissions for', async () => {
+
+      it('Throw an exception when trying to create a user entity permission for an entity we do not have permissions for', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.post(`userEntityPermissions`, {
           body: {
@@ -95,12 +96,13 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
 
         expect(result).to.have.keys('error');
       });
-      it('Throw an exception when trying to create a user entity permission with BES admin access when current user lacks BES admin access', async () => {
+
+      it('Throw an exception when trying to create a user entity permission with BES admin access when we lack BES admin access', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.post(`userEntityPermissions`, {
           body: {
             user_id: userAccountId,
-            permission_group_id: BESAdminPermissionGroupId,
+            permission_group_id: besPermissionGroupId,
             entity_id: vanuatuEntityId,
           },
         });
@@ -108,8 +110,9 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
         expect(result).to.have.keys('error');
       });
     });
+
     describe('Sufficient permission', async () => {
-      it('Allow creation of user entity permission for entity user has permission for', async () => {
+      it('Allow creation of user entity permission for entity we have permission for', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         await app.post(`userEntityPermissions`, {
           body: {
@@ -132,13 +135,13 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
         await app.post(`userEntityPermissions`, {
           body: {
             user_id: userAccountId,
-            permission_group_id: BESAdminPermissionGroupId,
+            permission_group_id: besPermissionGroupId,
             entity_id: vanuatuEntityId,
           },
         });
         const result = await models.userEntityPermission.find({
           user_id: userAccountId,
-          permission_group_id: BESAdminPermissionGroupId,
+          permission_group_id: besPermissionGroupId,
           entity_id: vanuatuEntityId,
         });
 

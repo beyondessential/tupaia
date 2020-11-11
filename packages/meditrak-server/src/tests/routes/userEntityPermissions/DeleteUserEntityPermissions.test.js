@@ -77,21 +77,26 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
         const { body: result } = await app.delete(
           `userEntityPermissions/${vanuatuPublicPermission.id}`,
         );
+        const record = await models.userEntityPermission.findById(vanuatuPublicPermission.id);
 
         expect(result).have.to.keys('error');
+        expect(record).to.not.equal(null);
       });
+
       it('Throw an exception if we do not have permissions for the entity of the user entity permission', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         const { body: result } = await app.delete(
           `userEntityPermissions/${laosPublicPermission.id}`,
         );
+        const record = await models.userEntityPermission.findById(laosPublicPermission.id);
 
         expect(result).to.have.keys('error');
+        expect(record).to.not.equal(null);
       });
     });
 
     describe('Sufficient permissions', async () => {
-      it('User can delete an entry they have permission for', async () => {
+      it('Delete a user entity permission if we have admin panel access to the specific entity', async () => {
         await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
         await app.delete(`userEntityPermissions/${vanuatuPublicPermission.id}`);
         const result = await models.userEntityPermission.findById(vanuatuPublicPermission.id);
@@ -99,7 +104,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
         expect(result).to.equal(null);
       });
 
-      it('BES Admin user can delete any entry', async () => {
+      it('BES Admin user can delete any user entity permission', async () => {
         await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
         await app.delete(`userEntityPermissions/${laosPublicPermission.id}`);
         const result = await models.userEntityPermission.findById(laosPublicPermission.id);
