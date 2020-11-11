@@ -16,7 +16,8 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await db.runSql(`
-    -- Drop triggers so that all the deletes don't flood the dhis sync queue
+    -- Drop triggers so that change notifications don't slow the migration down to the point it fails
+    -- This is safe because all data is internal, so no change handlers need to handle this for external sync queues
     DROP TRIGGER IF EXISTS survey_response_trigger
       ON survey_response;
     DROP TRIGGER IF EXISTS answer_trigger
