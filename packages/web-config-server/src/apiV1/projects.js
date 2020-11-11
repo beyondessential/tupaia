@@ -13,10 +13,10 @@ async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   );
 }
 
-const fetchHasPendingProjectAccess = async (projectId, userId) => {
+const fetchHasPendingProjectAccess = async (projectId, userId, req) => {
   if (!projectId || !userId) return false;
 
-  const accessRequests = await AccessRequest.find({
+  const accessRequests = await req.models.accessRequest.find({
     user_id: userId,
     project_id: projectId,
     processed_date: null,
@@ -64,7 +64,7 @@ async function buildProjectDataForFrontend(project, req) {
   const { userId } = req.session.userJson;
   const hasPendingAccess = hasAccess
     ? false
-    : await fetchHasPendingProjectAccess(projectId, userId);
+    : await fetchHasPendingProjectAccess(projectId, userId, req);
 
   return {
     name,
