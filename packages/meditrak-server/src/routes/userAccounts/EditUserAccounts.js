@@ -29,9 +29,8 @@ export class EditUserAccounts extends EditHandler {
 
   async editRecord() {
     // Check Permissions
-    const userAccount = await this.models.user.findById(this.recordId);
     const userAccountChecker = accessPolicy =>
-      assertUserAccountPermissions(accessPolicy, this.models, userAccount);
+      assertUserAccountPermissions(accessPolicy, this.models, this.recordId);
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
 
     // Update Record
