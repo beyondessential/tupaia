@@ -21,8 +21,14 @@ import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
-import { CreateUserAccounts, RegisterUserAccounts, EditUserAccounts, GETUserAccounts } from './userAccounts';
 import {
+  CreateUserAccounts,
+  RegisterUserAccounts,
+  EditUserAccounts,
+  GETUserAccounts,
+} from './userAccounts';
+import {
+  CreateUserEntityPermissions,
   DeleteUserEntityPermissions,
   EditUserEntityPermissions,
   GETUserEntityPermissions,
@@ -71,6 +77,7 @@ const useRouteHandler = HandlerClass =>
 export default {
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
+  createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   deleteRecord: catchAsyncErrors(deleteRecord),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
   editRecord: catchAsyncErrors(editRecord),
