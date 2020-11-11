@@ -27,6 +27,7 @@ export class ExpressionParser {
    * @param {*} expression
    */
   getVariables(expression) {
+    this.validate(expression);
     const nodeTree = this.math.parse(expression);
     return nodeTree.filter(node => node.isSymbolNode).map(({ name }) => name);
   }
