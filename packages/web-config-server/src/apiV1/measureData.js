@@ -3,7 +3,6 @@ import keyBy from 'lodash.keyby';
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { Entity, MapOverlay } from '/models';
 import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
@@ -11,10 +10,7 @@ import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
-const binaryOptionSet = [
-  { name: 'Yes', value: 1 },
-  { name: 'No', value: 0 },
-];
+const binaryOptionSet = [{ name: 'Yes', value: 1 }, { name: 'No', value: 0 }];
 
 const cannotFindCountryLevelInHierarchy = {
   type: 'Permission Error',
@@ -132,7 +128,7 @@ export default class extends DataAggregatingRouteHandler {
     const { code } = this.entity;
     const { measureId } = this.query;
     const measureIds = measureId.split(',');
-    const overlayResults = await MapOverlay.find({ id: measureIds });
+    const overlayResults = await this.models.mapOverlay.find({ id: measureIds });
 
     // Re-order the overlays array to follow the order in measureIds
     const overlaysById = keyBy(overlayResults, 'id');
@@ -162,9 +158,9 @@ export default class extends DataAggregatingRouteHandler {
 
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
-    const measureDataResponsesByMeasureId = (
-      await Promise.all(dataTasks)
-    ).reduce((dataResponse, current) => ({ ...dataResponse, ...current }));
+    const measureDataResponsesByMeasureId = (await Promise.all(dataTasks)).reduce(
+      (dataResponse, current) => ({ ...dataResponse, ...current }),
+    );
 
     /* Data arrives as an array of responses (one for each measure) containing an array of org
      * units. We need to rearrange it so that it's a 1D array of objects with the values
@@ -239,7 +235,7 @@ export default class extends DataAggregatingRouteHandler {
       presentationOptions,
       measureBuilderConfig,
       ...restOfMapOverlay
-    } = mapOverlay;
+    } = await mapOverlay.getData();
 
     const {
       displayType,
@@ -297,7 +293,7 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   async getCountryLevelOrgUnitCode() {
-    const country = await this.entity.getCountry();
+    const country = await this.entity.countryEntity();
 
     if (!country) {
       throw new CustomError(cannotFindCountryLevelInHierarchy);
@@ -318,7 +314,7 @@ export default class extends DataAggregatingRouteHandler {
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
-    const entity = await Entity.findOne({ code: entityCode });
+    const entity = await this.models.entity.findOne({ code: entityCode });
     const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
@@ -328,6 +324,7 @@ export default class extends DataAggregatingRouteHandler {
 
     return buildMeasure(
       id,
+      this.models,
       this.aggregator,
       dhisApi,
       { ...this.query, dataElementCode },

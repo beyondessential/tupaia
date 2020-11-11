@@ -6,7 +6,12 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { buildAndInsertSurveyResponses, buildAndInsertSurveys } from '@tupaia/database';
+import {
+  buildAndInsertSurveyResponses,
+  buildAndInsertSurveys,
+  findOrCreateDummyRecord,
+  upsertDummyRecord,
+} from '@tupaia/database';
 import { DhisApi } from '@tupaia/dhis-api';
 import * as Enrollments from '../../dhis/api/enrollments';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
@@ -38,9 +43,20 @@ describe('EventBuilder', () => {
     enrollmentSpy = sinon.stub(Enrollments, 'enrollTrackedEntityInProgramIfNotEnrolled');
     await buildAndInsertSurveys(models, Object.values(SURVEYS));
     const entities = Object.values(ENTITIES);
+    const exploreHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
+      name: 'explore',
+    });
     for (let i = 0; i < entities.length; i++) {
       // Upsert entities in order for correct parent/child relationships
-      await upsertEntity(entities[i]);
+      const entity = await upsertEntity(entities[i]);
+      if (entity.parent_id) {
+        await upsertDummyRecord(models.ancestorDescendantRelation, {
+          ancestor_id: entity.parent_id,
+          descendant_id: entity.id,
+          entity_hierarchy_id: exploreHierarchy.id,
+          generational_distance: 1,
+        });
+      }
     }
   });
 

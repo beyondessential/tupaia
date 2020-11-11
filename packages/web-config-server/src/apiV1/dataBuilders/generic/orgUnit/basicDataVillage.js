@@ -14,8 +14,13 @@ export class BasicDataVillageBuilder extends DataBuilder {
   }
 }
 
-export const basicDataVillage = ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const basicDataVillage = (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new BasicDataVillageBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
