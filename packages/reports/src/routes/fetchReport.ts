@@ -5,10 +5,11 @@
 
 import { respond } from '@tupaia/utils';
 import { createAggregator } from '@tupaia/aggregator';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
 import { Aggregator } from '../aggregator';
 import { BuildReport, ReportBuilder } from '../reportBuilder';
+import { ReportsRequest } from '../types';
 
 export interface FetchReportQuery extends Query {
   organisationUnitCode: string;
@@ -26,7 +27,7 @@ class FetchReportRouteHandler {
     this.aggregator = createAggregator(Aggregator);
   }
 
-  fetchReport = async (req: Request, res: Response): Promise<void> => {
+  fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
     const params = req.params as FetchReportParams;
     const query = req.query as FetchReportQuery;
     const report = await req.models.report.findOne({ code: params.reportCode });

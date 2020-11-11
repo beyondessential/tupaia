@@ -13,7 +13,7 @@ export function addRoutesToApp(app) {
   app.use(authenticationMiddleware);
 
   /**
-   * GET routes
-   **/
+   * POST routes
+   */
   app.post('(/v[0-9]+)?/fetchReport/:reportCode', fetchReport);
 }
