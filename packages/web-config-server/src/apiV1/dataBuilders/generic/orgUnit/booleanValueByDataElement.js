@@ -37,11 +37,12 @@ const wrapResults = responseObject => {
 };
 
 export const booleanValueByDataElements = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new BooleanValueByDataElementsBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

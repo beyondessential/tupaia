@@ -18,15 +18,18 @@ export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
  * hold off and pool several changes for the same user (e.g. if they're being granted permission
  * to three countries at once), but this is good enough.
  */
-async function onUpsertSendPermissionGrantEmail({ type: changeType, record }, models) {
+async function onUpsertSendPermissionGrantEmail(
+  { type: changeType, new_record: newRecord },
+  models,
+) {
   if (changeType === 'delete') {
     return; // Don't notify the user of permissions being taken away
   }
 
   // Get details of permission granted
-  const user = await models.user.findById(record.user_id);
-  const entity = await models.entity.findById(record.entity_id);
-  const permissionGroup = await models.permissionGroup.findById(record.permission_group_id);
+  const user = await models.user.findById(newRecord.user_id);
+  const entity = await models.entity.findById(newRecord.entity_id);
+  const permissionGroup = await models.permissionGroup.findById(newRecord.permission_group_id);
 
   // Compose message to send
   const message = `Hi ${user.first_name},

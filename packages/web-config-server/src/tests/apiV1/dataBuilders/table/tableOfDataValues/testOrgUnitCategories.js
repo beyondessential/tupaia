@@ -3,12 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import sinon from 'sinon';
-
 import { getSortByKey } from '@tupaia/utils';
-import * as Entity from '/models/Entity';
 import { createAssertTableResults } from './helpers';
-import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
+import { DATA_VALUES } from './tableOfDataValues.fixtures';
 import { tableOfDataValues } from '/apiV1/dataBuilders';
 
 const assertTableResults = createAssertTableResults(
@@ -20,16 +17,6 @@ const assertTableResults = createAssertTableResults(
 );
 
 export const testOrgUnitCategories = () => {
-  before(() => {
-    sinon
-      .stub(Entity.Entity, 'find')
-      .callsFake(({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code)));
-  });
-
-  after(() => {
-    Entity.Entity.find.restore();
-  });
-
   describe('row org unit categories', () => {
     it('no column categories', () =>
       assertTableResults(

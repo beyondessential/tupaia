@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { Database as RNDB, Settings } from 'react-native-database';
 import generateUUID from 'bson-objectid';
@@ -13,7 +13,7 @@ export class Database extends RNDB {
   /**
    * Creates a database based on react-native-database's realm db, but with automatic ids as well as
    * additional functionality making it easier to deal with settings and other objects
-   **/
+   */
   constructor() {
     super(schema);
     this.settings = new Settings(this);

@@ -45,10 +45,6 @@
       "path": "packages/eslint-config-typescript"
     },
     {
-      "name": "export-chart-lambda",
-      "path": "packages/export-chart-lambda"
-    },
-    {
       "name": "indicators",
       "path": "packages/indicators"
     },
@@ -96,6 +92,7 @@
       "analytics",
       "beyondessential",
       "cacheable",
+      "cachers",
       "cleanup",
       "debouncing",
       "deleters",
@@ -138,7 +135,6 @@
       "dbaeumer.vscode-eslint",
       "eamodio.gitlens",
       "esbenp.prettier-vscode",
-      "foxundermoon.shell-format",
       "streetsidesoftware.code-spell-checker",
       "visualstudioexptteam.vscodeintellicode",
       "wayou.vscode-todo-highlight"

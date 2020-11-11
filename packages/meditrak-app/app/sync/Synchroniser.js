@@ -1,10 +1,11 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { Scheduler } from 'sussol-utilities';
 
+import { YellowBox } from 'react-native';
 import { ChangeQueue } from './ChangeQueue';
 import {
   setSyncProgress,
@@ -19,7 +20,6 @@ import { loadSocialFeedLatest } from '../social';
 import { getSyncMigrations } from './syncMigrations';
 import { Change } from '../database/types';
 
-import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Setting a timer']);
 
 const MEASURE_BATCH_IN_RECORDS = 'records';
@@ -58,7 +58,7 @@ export class Synchroniser {
   /**
    * Starts regular syncing
    * @param  {integer}   syncInterval   Optional - The number of milliseconds between syncs
-   **/
+   */
   enable(dispatch, syncInterval = DEFAULT_SYNC_INTERVAL) {
     if (this.isEnabled) return; // Cannot enable an already running synchroniser
     this.scheduler.schedule(() => this.synchronise(dispatch), syncInterval);
@@ -67,7 +67,7 @@ export class Synchroniser {
 
   /**
    * Stops regular syncing
-   **/
+   */
   disable() {
     this.scheduler.clearAll();
     this.isEnabled = false;

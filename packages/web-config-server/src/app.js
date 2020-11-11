@@ -11,13 +11,13 @@ import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
-import { BaseModel } from './models/BaseModel';
+import { modelClasses } from './models';
 import { handleError } from './utils';
 
 import './log';
 import winston from 'winston';
 
-export function createApp() {
+export async function createApp() {
   const app = express();
 
   app.server = http.createServer(app);
@@ -48,11 +48,8 @@ export function createApp() {
   // Connect to db
   const database = new TupaiaDatabase();
 
-  // Attach database to legacy singleton models
-  BaseModel.database = database;
-
-  // Attach newer model registry to req, along with the authenticator
-  const modelRegistry = new ModelRegistry(database);
+  // Attach model registry to req, along with the authenticator
+  const modelRegistry = new ModelRegistry(database, modelClasses);
   const authenticator = new Authenticator(modelRegistry);
   app.use((req, res, next) => {
     req.models = modelRegistry;

@@ -4,6 +4,7 @@
  */
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
@@ -38,7 +39,7 @@ import {
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
-import { countryFlagImage } from '../../utils';
+import { countryFlagImage, getCountryName } from '../../utils';
 
 const columns = [
   {
@@ -129,6 +130,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { countryCode } = useParams();
 
     const isVerified = unVerifiedSyndromes.length === 0;
     const hasAlerts = alerts.length > 0;
@@ -164,7 +166,7 @@ export const WeeklyReportsPanelComponent = React.memo(
         <DrawerTray heading="Upcoming report" onClose={handleClose} />
         <DrawerHeader
           trayHeading="Upcoming report"
-          heading="American Samoa"
+          heading={getCountryName(countryCode)}
           date="Week 9 Feb 25 - Mar 1, 2020"
           avatarUrl={countryFlagImage('as')}
         />
