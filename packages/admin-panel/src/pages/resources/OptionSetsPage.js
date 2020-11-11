@@ -40,6 +40,12 @@ const OPTION_FIELDS = [
     Header: 'Sort Order',
     source: 'sort_order',
   },
+  {
+    Header: 'Attributes',
+    source: 'attributes',
+    type: 'jsonTooltip',
+    editConfig: { type: 'jsonEditor' },
+  },
 ];
 
 const OPTION_COLUMNS = [

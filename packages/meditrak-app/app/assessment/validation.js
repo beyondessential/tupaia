@@ -18,7 +18,8 @@ export const validateAnswer = (validationCriteria, answer) => {
   }
   if (validationCriteria.mandatory && (!answer || answer === '')) {
     return 'This is a required field';
-  } else if (!answer || answer === '') {
+  }
+  if (!answer || answer === '') {
     return null;
   }
   const validationCriteriaArray = Object.entries(validationCriteria);

@@ -104,31 +104,3 @@ There's one exception however, authentication cookies will not work so you'll on
 3. Click the green arrow to `Start Debugging`. A list with currently running Node processes will pop up. Select the one that starts with `--inspect=9999`
 4. You are ready to start debugging! Add breakpoints to your code to inspect the program state. You can also enable breakpoints at `All Exceptions` to effectively
    debug errors.
-
-## Tests
-
-### Running the tests
-
-```bash
-  yarn test               # Runs all tests
-  yarn test -g ${pattern} # Runs tests filtering their file names by ${pattern}
-  yarn test:coverage      # Runs tests and displays project test coverage
-```
-
-### Filtering describe/it blocks
-
-```js
-// Run specific blocks
-describe.only('Describe block', function () => {});
-it.only(function () => {})
-
-// Skip blocks
-describe.skip('One Time Login', function () => {});
-it.skip(function () => {} )
-```
-
-Remember to **remove** `.only`/`.skip` calls before you commit the test files.
-
-### Test coverage
-
-To display line coverage in code, you can use [Coverage Gutters](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) for `Visual Studio Code`

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 /**
  * Maintains the internal queue of changes to be synced: queues changes, provides them when asked,
@@ -52,12 +52,11 @@ export class ChangeQueue {
     const allChanges = this.database.objects('Change').sorted('timestamp');
     const changesWithinThreshold = [];
     let size = 0;
-    for (let changeId in allChanges) {
-      const change = allChanges[changeId];
+    for (const change of allChanges) {
       const record = change.generateSyncJson(this.database);
       const currentRecordSize = JSON.stringify(record).length;
       if (size + currentRecordSize > threshold && changesWithinThreshold.length > 0) {
-        //threshold is breached and at least one record
+        // threshold is breached and at least one record
         break;
       }
       size += currentRecordSize;

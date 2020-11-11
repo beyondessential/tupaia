@@ -34,6 +34,9 @@
     "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh",
     "validate": "./scripts/bash/validate.sh"
   },
+  "resolutions": {
+    "@typescript-eslint/eslint-plugin": "^4.1.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.0.0",
@@ -46,9 +49,10 @@
     "@babel/preset-typescript": "^7.10.1",
     "@babel/register": "^7.11.5",
     "@babel/runtime-corejs3": "^7.11.2",
-    "@beyondessential/eslint-config-jest": "^0.1.2",
-    "@beyondessential/eslint-config-js": "^0.1.4",
-    "@beyondessential/eslint-config-ts": "^0.1.0",
+    "@beyondessential/eslint-config-jest": "^1.0.0",
+    "@beyondessential/eslint-config-js": "^1.0.0",
+    "@beyondessential/eslint-config-ts": "^1.0.0",
+    "@sambego/storybook-state": "^2.0.1",
     "@storybook/addon-essentials": "^6.0.10",
     "@storybook/react": "^6.0.10",
     "@testing-library/cypress": "^7.0.0",

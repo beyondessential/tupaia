@@ -21,8 +21,8 @@ class SurveyType extends DatabaseType {
       `
       SELECT q.* FROM question q
       JOIN survey_screen_component ssc ON ssc.question_id  = q.id
-      JOIN survey_screen ss ON ss.id = ssc.screen_id 
-      JOIN survey s ON s.id = ss.survey_id 
+      JOIN survey_screen ss ON ss.id = ssc.screen_id
+      JOIN survey s ON s.id = ss.survey_id
       WHERE s.code = ?
     `,
       [this.code],
@@ -50,14 +50,19 @@ export class SurveyModel extends DatabaseModel {
   isDeletableViaApi = true;
 }
 
-const onChangeUpdateDataGroup = async ({ type: changeType, record }, models) => {
-  const { code, data_source_id: dataSourceId } = record;
-
+const onChangeUpdateDataGroup = async (
+  { type: changeType, old_record: oldRecord, new_record: newRecord },
+  models,
+) => {
   switch (changeType) {
-    case 'update':
+    case 'update': {
+      const { code, data_source_id: dataSourceId } = newRecord;
       return models.dataSource.updateById(dataSourceId, { code });
-    case 'delete':
+    }
+    case 'delete': {
+      const { data_source_id: dataSourceId } = oldRecord;
       return models.dataSource.deleteById(dataSourceId);
+    }
     default:
       throw new Error(`Non supported change type: ${changeType}`);
   }

@@ -8,6 +8,7 @@ import sinon from 'sinon';
 
 import { groupEventsPerOrgUnit } from '/apiV1/measureBuilders/groupEventsPerOrgUnit';
 
+const models = {};
 const organisationUnitCode = 'PG';
 const programCode = 'SCRF';
 const dataServices = [{ isDataRegional: true }];
@@ -113,7 +114,7 @@ const createAggregator = () => {
 describe('groupEventsPerOrgUnit', () => {
   it('should group counts of events into buckets', async () => {
     return expect(
-      groupEventsPerOrgUnit(createAggregator(), {}, query, config, entity),
+      groupEventsPerOrgUnit(models, createAggregator(), {}, query, config, entity),
     ).to.eventually.deep.equal({
       data: [
         { organisationUnitCode: 'oneEventLand', value: 'lessThanTwo', originalValue: 1 },
@@ -136,7 +137,7 @@ describe('groupEventsPerOrgUnit', () => {
       },
     };
     return expect(
-      groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
+      groupEventsPerOrgUnit(models, createAggregator(), {}, query, newConfig, entity),
     ).to.eventually.deep.equal({
       data: [
         { organisationUnitCode: 'oneEventLand', value: 1, originalValue: 1 },
@@ -159,7 +160,7 @@ describe('groupEventsPerOrgUnit', () => {
       },
     };
     return expect(
-      groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
+      groupEventsPerOrgUnit(models, createAggregator(), {}, query, newConfig, entity),
     ).to.be.rejectedWith("Unknown operator: 'no-op'");
   });
 });

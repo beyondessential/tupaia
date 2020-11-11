@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import Geolocation from '@react-native-community/geolocation';
 import { GEOLOCATION_OPTIONS } from './constants';
@@ -34,9 +34,9 @@ export const getCurrentUserLocation = async (state, timeout = GEOLOCATION_OPTION
     Geolocation.getCurrentPosition(
       ({ latitude, longitude, accuracy }) => {
         resolve({
-          latitude: latitude,
-          longitude: longitude,
-          accuracy: accuracy,
+          latitude,
+          longitude,
+          accuracy,
         });
       },
       error => {

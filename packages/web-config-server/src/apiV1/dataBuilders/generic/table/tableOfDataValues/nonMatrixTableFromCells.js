@@ -1,12 +1,12 @@
 import { tableOfCalculatedValues } from './tableOfCalculatedValues';
 
 export const nonMatrixTableFromCells = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builtMatrix = await tableOfCalculatedValues(
-    { dataBuilderConfig, query, entity },
+    { models, dataBuilderConfig, query, entity },
     aggregator,
     dhisApi,
   );

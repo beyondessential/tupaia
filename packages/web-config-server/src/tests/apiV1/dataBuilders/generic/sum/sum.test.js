@@ -20,6 +20,7 @@ const EVENT_ANALYTICS = [
 const PROGRAM_CODE = 'CD8';
 
 const dataServices = [{ isDataRegional: false }];
+const models = {};
 const entity = {};
 const query = { organisationUnitCode: 'TO' };
 const aggregationType = 'FINAL_EACH_MONTH';
@@ -53,7 +54,15 @@ const dhisApi = {};
 describe('SumBuilder', () => {
   const assertBuilderResponseIsCorrect = async (sumConfig, expectedResponse) => {
     const config = { ...sumConfig, dataServices };
-    const builder = new SumBuilder(aggregator, dhisApi, config, query, entity, aggregationType);
+    const builder = new SumBuilder(
+      models,
+      aggregator,
+      dhisApi,
+      config,
+      query,
+      entity,
+      aggregationType,
+    );
     return expect(builder.build()).to.eventually.deep.equal(expectedResponse);
   };
 
