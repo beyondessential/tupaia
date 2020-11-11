@@ -92,6 +92,7 @@
       "analytics",
       "beyondessential",
       "cacheable",
+      "cachers",
       "cleanup",
       "debouncing",
       "deleters",

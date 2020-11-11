@@ -4,13 +4,12 @@
  */
 
 import { TEST_USER } from '../constants';
+import { TestUserPasswordUndefinedError } from './helpers';
 
 const getTestUserPassword = () => {
   const password = Cypress.env('TEST_USER_PASSWORD');
   if (!password) {
-    throw new Error(
-      'Please specify a value for CYPRESS_TEST_USER_PASSWORD in packages/web-frontend/.env',
-    );
+    throw new TestUserPasswordUndefinedError();
   }
   return password;
 };
@@ -28,8 +27,4 @@ export const submitLoginForm = () => {
     .type(getTestUserPassword(), { log: false });
 
   cy.get('@loginForm').findByTextI('Sign in').click();
-};
-
-export const closeOverlay = () => {
-  cy.findByTestId('overlay-close-btn').click();
 };

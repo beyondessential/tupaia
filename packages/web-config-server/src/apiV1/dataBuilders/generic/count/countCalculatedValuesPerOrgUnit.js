@@ -13,8 +13,10 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
     const dataElementCodes = getDataElementsFromCalculateOperationConfig(operation);
     const { results } = await this.fetchAnalytics(dataElementCodes);
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
-    const calculatedValues = Object.values(analyticsByOrgUnit).map(analytics =>
-      calculateOperationForAnalytics(analytics, operation),
+    const calculatedValues = await Promise.all(
+      Object.values(analyticsByOrgUnit).map(async analytics =>
+        calculateOperationForAnalytics(this.models, analytics, operation),
+      ),
     );
 
     let sum = 0;
@@ -40,12 +42,13 @@ class CountCalculatedValuesPerOrgUnit extends DataBuilder {
 }
 
 export const countCalculatedValuesPerOrgUnit = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
   aggregationType,
 ) => {
   const builder = new CountCalculatedValuesPerOrgUnit(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
