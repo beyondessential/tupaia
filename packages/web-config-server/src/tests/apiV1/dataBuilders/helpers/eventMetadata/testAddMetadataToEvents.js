@@ -5,15 +5,16 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { getTestModels } from '@tupaia/database';
 
 import { addMetadataToEvents } from '/apiV1/dataBuilders/helpers/eventMetadata';
-import * as Entity from '/models/Entity';
 import { EVENTS, ORG_UNITS } from './eventMetadata.fixtures';
 
 export const testAddMetadataToEvents = () => {
+  const models = getTestModels();
   it('should throw an error if an invalid key has been provided', async () => {
     const assertErrorIsThrownForKeys = async keys =>
-      expect(addMetadataToEvents([EVENTS.objectDataValue], keys)).to.be.rejectedWith(
+      expect(addMetadataToEvents(models, [EVENTS.objectDataValue], keys)).to.be.rejectedWith(
         'Invalid metadata key',
       );
 
@@ -23,14 +24,16 @@ export const testAddMetadataToEvents = () => {
 
   it('should return the events input if no metadata keys are provided', async () => {
     const events = [EVENTS.objectDataValue1];
-    await expect(addMetadataToEvents(events)).to.eventually.deep.equal(events);
-    return expect(addMetadataToEvents(events, [])).to.eventually.deep.equal(events);
+    await expect(addMetadataToEvents(models, events)).to.eventually.deep.equal(events);
+    return expect(addMetadataToEvents(models, events, [])).to.eventually.deep.equal(events);
   });
 
   it('should return an empty array if no events are provided', async () => {
-    await expect(addMetadataToEvents([])).to.eventually.deep.equal([]);
-    await expect(addMetadataToEvents([], [])).to.eventually.deep.equal([]);
-    return expect(addMetadataToEvents([], ['$eventOrgUnitName'])).to.eventually.deep.equal([]);
+    await expect(addMetadataToEvents(models, [])).to.eventually.deep.equal([]);
+    await expect(addMetadataToEvents(models, [], [])).to.eventually.deep.equal([]);
+    return expect(addMetadataToEvents(models, [], ['$eventOrgUnitName'])).to.eventually.deep.equal(
+      [],
+    );
   });
 
   /**
@@ -43,7 +46,9 @@ export const testAddMetadataToEvents = () => {
       it('should add metadata to events', () => {
         const events = [EVENTS.objectDataValue];
 
-        return expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.be.like([
+        return expect(
+          addMetadataToEvents(models, events, ['$eventOrgUnitName']),
+        ).to.eventually.be.like([
           {
             orgUnit: 'TO_Nukunuku',
             dataValues: {
@@ -57,7 +62,9 @@ export const testAddMetadataToEvents = () => {
       it('should not include value metadata if data values are empty', async () => {
         const events = [EVENTS.objectNoDataValues];
 
-        await expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.be.like([
+        await expect(
+          addMetadataToEvents(models, events, ['$eventOrgUnitName']),
+        ).to.eventually.be.like([
           {
             orgUnit: 'TO_Nukunuku',
             dataValues: {
@@ -70,7 +77,9 @@ export const testAddMetadataToEvents = () => {
       it('should include the value metadata of the first data value', () => {
         const events = [EVENTS.objectDataValues];
 
-        return expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.be.like([
+        return expect(
+          addMetadataToEvents(models, events, ['$eventOrgUnitName']),
+        ).to.eventually.be.like([
           {
             orgUnit: 'TO_Nukunuku',
             dataValues: {
@@ -87,7 +96,9 @@ export const testAddMetadataToEvents = () => {
       it('should add metadata to events', () => {
         const events = [EVENTS.arrayDataValue];
 
-        return expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.be.like([
+        return expect(
+          addMetadataToEvents(models, events, ['$eventOrgUnitName']),
+        ).to.eventually.be.like([
           {
             orgUnit: 'TO_Nukunuku',
             dataValues: [
@@ -101,7 +112,9 @@ export const testAddMetadataToEvents = () => {
       it('should not include value metadata if data values are empty', async () => {
         const events = [EVENTS.arrayNoDataValues];
 
-        await expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.be.like([
+        await expect(
+          addMetadataToEvents(models, events, ['$eventOrgUnitName']),
+        ).to.eventually.be.like([
           {
             orgUnit: 'TO_Nukunuku',
             dataValues: [{ dataElement: '$eventOrgUnitName' }],
@@ -112,7 +125,9 @@ export const testAddMetadataToEvents = () => {
       it('should include the value metadata of the first data value', () => {
         const events = [EVENTS.arrayDataValues];
 
-        return expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.be.like([
+        return expect(
+          addMetadataToEvents(models, events, ['$eventOrgUnitName']),
+        ).to.eventually.be.like([
           {
             orgUnit: 'TO_Nukunuku',
             dataValues: [
@@ -128,22 +143,22 @@ export const testAddMetadataToEvents = () => {
 
   describe('metadata keys', () => {
     describe('$eventOrgUnitName', () => {
-      before(() => {
-        sinon
-          .stub(Entity.Entity, 'find')
-          .callsFake(({ code }) =>
-            ORG_UNITS.filter(({ code: currentCode }) => code.includes(currentCode)),
-          );
-      });
-
-      after(() => {
-        Entity.Entity.find.restore();
-      });
+      const modelsWithStubbedEntity = {
+        entity: {
+          find: sinon
+            .stub()
+            .callsFake(({ code }) =>
+              ORG_UNITS.filter(({ code: currentCode }) => code.includes(currentCode)),
+            ),
+        },
+      };
 
       it('should use the name of the event org unit', () => {
         const events = [EVENTS.objectDataValue];
 
-        return expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.deep.equal([
+        return expect(
+          addMetadataToEvents(modelsWithStubbedEntity, events, ['$eventOrgUnitName']),
+        ).to.eventually.deep.equal([
           {
             orgUnit: 'TO_Nukunuku',
             dataValues: {
@@ -161,7 +176,9 @@ export const testAddMetadataToEvents = () => {
       it('should use an empty string if the org unit is not found', () => {
         const events = [EVENTS.unknownOrgUnit];
 
-        return expect(addMetadataToEvents(events, ['$eventOrgUnitName'])).to.eventually.deep.equal([
+        return expect(
+          addMetadataToEvents(modelsWithStubbedEntity, events, ['$eventOrgUnitName']),
+        ).to.eventually.deep.equal([
           {
             orgUnit: 'Unknown_Org_Unit',
             dataValues: {

@@ -29,6 +29,7 @@ export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
 export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
-export { areStringsEqual } from './string';
+export { areStringsEqual, stringToFilename } from './string';
 export { hexToRgba, getPresentationOption, getInactiveColor } from './color';
 export { getUniqueViewId, getViewIdFromInfoViewKey } from './getUniqueViewId';
+export { sleep } from './sleep';

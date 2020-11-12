@@ -25,7 +25,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 Any of the main packages can be run using `yarn workspace @tupaia/package-name start-dev`.
 In the case of the two servers, this will also build and watch all of the internal dependencies, so
 that hot reload detects changes to other packages within the mono-repo. As this delays startup time,
-if you prefer to prebuild internal dependencies, add `--skip-internal` to the above command.
+if you prefer to pre-build internal dependencies, add `--skip-internal` to the above command.
 
 ### Internal dependencies
 
@@ -79,8 +79,8 @@ Most of the packages support the following scripts for testing:
 
 ```
 
-yarn test # runs the tests
-yarn test:coverage # runs the tests and displays code coverage
+yarn test
+yarn test:coverage # also displays code coverage
 
 ```
 

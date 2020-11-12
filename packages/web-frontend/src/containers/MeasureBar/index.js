@@ -27,7 +27,7 @@ import {
   selectCurrentProject,
   selectMeasureBarItemById,
 } from '../../selectors';
-import { getDefaultDates } from '../../utils/periodGranularities';
+import { getDefaultDates, getLimits } from '../../utils/periodGranularities';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -144,11 +144,17 @@ export class MeasureBar extends Component {
 
     const defaultDates = getDefaultDates(currentMeasure);
 
+    const datePickerLimits = getLimits(
+      currentMeasure.periodGranularity,
+      currentMeasure.datePickerLimits,
+    );
+
     return (
       <Control
         emptyMessage={emptyMessage}
         selectedMeasure={currentMeasure}
         defaultDates={defaultDates}
+        datePickerLimits={datePickerLimits}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >

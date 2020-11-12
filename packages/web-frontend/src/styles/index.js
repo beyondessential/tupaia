@@ -465,6 +465,8 @@ export const VIEW_STYLES = {
       },
   tooltip: {
     color: fullWhite,
+    background: 'rgba(0, 0, 0, 0.7)',
+    padding: '15px 10px 15px 5px',
   },
   legend: {
     color: fullWhite,
@@ -472,7 +474,7 @@ export const VIEW_STYLES = {
   },
   legendExporting: {
     color: DARK_BLUE,
-    fontSize: '12px',
+    fontSize: '11px',
   },
   // MultiValueView styles below
   text: {

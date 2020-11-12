@@ -3,7 +3,8 @@
   "experimentalFetchPolyfill": true,
   "ignoreTestFiles": "snapshots.js",
   "integrationFolder": "cypress/e2e",
-  "requestTimeout": 20000,
+  "requestTimeout": 30000,
+  "responseTimeout": 60000,
   "useRelativeSnapshots": true,
   "viewportHeight": 900,
   "viewportWidth": 1400

@@ -7,10 +7,9 @@ import {
   calculatePercentagesWithinRange,
   getDataElementCodesInGroup,
 } from '/apiV1/utils';
-import { ENTITY_TYPES } from '/models/Entity';
 
 export const percentPerValuePerOrgUnit = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity, fetchHierarchyId },
   aggregator,
   dhisApi,
 ) => {
@@ -21,11 +20,12 @@ export const percentPerValuePerOrgUnit = async (
     range,
     valuesOfInterest,
   } = dataBuilderConfig;
-  const { dataSourceEntityType = ENTITY_TYPES.FACILITY } = entityAggregation;
+  const { dataSourceEntityType = models.entity.types.FACILITY } = entityAggregation;
 
   const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
-  const entities = await entity.getDescendantsOfType(dataSourceEntityType);
+  const hierarchyId = await fetchHierarchyId();
+  const entities = await entity.getDescendantsOfType(hierarchyId, dataSourceEntityType);
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,
     entities,

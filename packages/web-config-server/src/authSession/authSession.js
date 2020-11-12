@@ -3,7 +3,6 @@ import session from 'client-sessions';
 
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
-import { Entity, Project } from '/models';
 
 const allowedUnauthRoutes = ['/login', '/version'];
 
@@ -36,7 +35,7 @@ const checkAllowedUnauthRoutes = req =>
 const getUserAccessPolicyFromSession = async req => {
   if (!req.accessPolicy) {
     const { userName } = req.session.userJson;
-    req.accessPolicy = getAccessPolicyForUser(userName);
+    req.accessPolicy = getAccessPolicyForUser(req.models, userName);
   }
   return req.accessPolicy;
 };
@@ -56,7 +55,7 @@ const addUserAccessHelper = (req, res, next) => {
 
     const entity =
       typeof entityOrCode === 'string'
-        ? await Entity.findOne({
+        ? await req.models.entity.findOne({
             code: entityOrCode,
           })
         : entityOrCode;
@@ -72,7 +71,7 @@ const addUserAccessHelper = (req, res, next) => {
 
     // project access rights are determined by their children
     if (entity.isProject()) {
-      const project = await Project.findOne({ code: entity.code });
+      const project = await req.models.project.findOne({ code: entity.code });
       const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
 
       return accessPolicy.allowsSome(
@@ -94,13 +93,13 @@ const addUserAccessHelper = (req, res, next) => {
       return [];
     }
 
-    const entity = await Entity.findOne({
+    const entity = await req.models.entity.findOne({
       code: entityCode,
     });
 
     // project access rights are determined by their children
     if (entity.isProject()) {
-      const project = await Project.findOne({ code: entity.code });
+      const project = await req.models.project.findOne({ code: entity.code });
       const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
       return accessPolicy.getPermissionGroups([
         ...new Set(projectChildren.map(c => c.country_code)),

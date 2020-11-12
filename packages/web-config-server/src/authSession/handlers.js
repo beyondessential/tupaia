@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { UserSession } from '/models';
 import { setSession } from './authSession';
 
 const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
@@ -22,14 +21,14 @@ const processLogin = (sessionDetails, req, res) => {
 };
 
 const authenticateUsingMethod = async (req, res, authenticationMethod) => {
-  const { authenticator, body } = req;
+  const { authenticator, body, models } = req;
   try {
     const { user, accessPolicy, refreshToken } = await authenticator[authenticationMethod]({
       ...body,
       deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME,
     });
     const { fullName: userName, email, verified_email: verifiedEmail } = user;
-    await UserSession.updateOrCreate({ userName }, { accessPolicy, refreshToken }); // Save tokens for user
+    await models.userSession.updateOrCreate({ userName }, { accessPolicy, refreshToken }); // Save tokens for user
     processLogin(
       {
         userName,

@@ -19,6 +19,7 @@ export class SelectUniqueValueFromEventsPerOrgUnitBuilder extends DataPerOrgUnit
 }
 
 export const selectUniqueValueFromEventsPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -26,6 +27,7 @@ export const selectUniqueValueFromEventsPerOrgUnit = async (
   entity,
 ) => {
   const builder = new SelectUniqueValueFromEventsPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,
