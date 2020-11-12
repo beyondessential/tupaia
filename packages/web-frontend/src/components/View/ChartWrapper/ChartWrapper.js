@@ -27,14 +27,23 @@ export class ChartWrapper extends PureComponent {
   getViewContent() {
     const { viewContent } = this.props;
     const { chartConfig, data } = viewContent;
+    const massagedData = this.sortData(this.removeNonNumeric(data));
     return chartConfig
       ? {
           ...viewContent,
-          data: this.sortData(data),
+          data: massagedData,
           chartConfig: parseChartConfig(viewContent),
         }
-      : { ...viewContent, data: this.sortData(data) };
+      : { ...viewContent, data: massagedData };
   }
+
+  removeNonNumeric = data =>
+    data.map(dataSeries =>
+      Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
+        const isNonNumeric = Number.isNaN(Number(value));
+        return isNonNumeric ? newDataSeries : { ...newDataSeries, [key]: value };
+      }, {}),
+    );
 
   sortData = data =>
     getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
