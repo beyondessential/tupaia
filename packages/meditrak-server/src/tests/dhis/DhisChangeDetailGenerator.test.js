@@ -13,13 +13,18 @@ import {
   TONGA_SURVEY_RESPONSE,
 } from './DhisChangeDetailGenerator.fixtures';
 
-const buildChange = (type, record) => ({
-  record_type: type,
-  record: {
-    id: generateTestId(),
-    ...record,
-  },
-});
+const buildChange = (type, { id, ...record }) => {
+  const recordId = id || generateTestId();
+  return {
+    record_type: type,
+    record_id: recordId,
+    new_record: {
+      id: recordId,
+      ...record,
+    },
+    old_record: null,
+  };
+};
 
 const generator = new DhisChangeDetailGenerator(MODELS);
 

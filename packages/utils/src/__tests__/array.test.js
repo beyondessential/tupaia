@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { countDistinct, min, max } from '../array';
+import { countDistinct, min, max, toArray } from '../array';
 
 describe('array', () => {
   describe('countDistinct', () => {
@@ -59,6 +59,18 @@ describe('array', () => {
 
     it.each(testData)('%s', (_, input, expected) => {
       expect(max(input)).toBe(expected);
+    });
+  });
+
+  describe('toArray', () => {
+    it('array input', () => {
+      expect(toArray(['a'])).toStrictEqual(['a']);
+      expect(toArray(['a', 'b', 'c'])).toStrictEqual(['a', 'b', 'c']);
+    });
+
+    it('non array input', () => {
+      expect(toArray('a')).toStrictEqual(['a']);
+      expect(toArray(undefined)).toStrictEqual([undefined]);
     });
   });
 });

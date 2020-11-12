@@ -8,14 +8,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Alert } from '../Alert';
+import { BLUE } from '../../styles';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 
-const StyledAlert = styled(Alert)`
-  &.MuiAlert-root {
-    margin: 20px auto 10px;
-    padding: 5px 16px 5px 13px;
-  }
+const NoDataMessageText = styled.p`
+  color: ${BLUE};
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.8;
 `;
 
 export const NoDataMessage = ({ viewContent }) => {
@@ -29,7 +30,7 @@ export const NoDataMessage = ({ viewContent }) => {
     message = `No data for ${viewContent.startDate} to ${viewContent.endDate}`;
   }
 
-  return <StyledAlert severity="info">{message}</StyledAlert>;
+  return <NoDataMessageText>{message}</NoDataMessageText>;
 };
 
 NoDataMessage.propTypes = {

@@ -1,9 +1,13 @@
-import { checkValueSatisfiesCondition, replaceValues } from '@tupaia/utils';
+import {
+  checkValueSatisfiesCondition,
+  replaceValues,
+  asyncFilter,
+  asyncEvery,
+} from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from './divideValues';
 import { subtractValues } from './subtractValues';
 import { translatePointForFrontend } from '/utils/geoJson';
-import { Entity } from '/models';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
@@ -65,19 +69,28 @@ const performArithmeticOperation = (analytics, arithmeticConfig) => {
 };
 
 const combineBinaryIndicatorsToString = (analytics, config) => {
-  const { dataElementToString } = config;
+  const { dataElementToString, delimiter = ', ' } = config;
   const filteredAnalytics = analytics.filter(({ dataElement: de }) =>
     Object.keys(dataElementToString).includes(de),
   );
   const stringArray = [];
   filteredAnalytics.forEach(({ dataElement, value }) => {
-    const stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+    let stringValue;
+
+    if (typeof dataElementToString[dataElement] === 'object') {
+      const { valueOfInterest, displayString } = dataElementToString[dataElement];
+      if (valueOfInterest === value) {
+        stringValue = displayString;
+      }
+    } else {
+      stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+    }
 
     if (stringValue) {
       stringArray.push(stringValue);
     }
   });
-  return stringArray.length === 0 ? 'None' : stringArray.join(', ');
+  return stringArray.length === 0 ? 'None' : stringArray.join(delimiter);
 };
 
 const combineTextIndicators = (analytics, config) => {
@@ -92,13 +105,19 @@ const combineTextIndicators = (analytics, config) => {
   return stringArray.length === 0 ? 'None' : stringArray.join(', ');
 };
 
-const getMetaDataFromOrgUnit = async (_, config) => {
-  const { orgUnitCode, ancestorType, field, hierarchyId } = config;
-  const baseEntity = await Entity.findOne({ code: orgUnitCode });
+const getMetaDataFromOrgUnit = async (_, config, models) => {
+  const { orgUnitCode, ancestorType, hierarchyId } = config;
+  const baseEntity = await models.entity.findOne({ code: orgUnitCode });
   if (!baseEntity) return 'Entity not found';
   const entity = ancestorType
-    ? await baseEntity.getAncestorOfType(ancestorType, hierarchyId)
+    ? await baseEntity.getAncestorOfType(hierarchyId, ancestorType)
     : baseEntity;
+
+  return getValueFromEntity(entity, config);
+};
+
+const getValueFromEntity = async (entity, config) => {
+  const { field, conditions, hierarchyId } = config;
 
   switch (field) {
     case 'subType':
@@ -106,6 +125,16 @@ const getMetaDataFromOrgUnit = async (_, config) => {
     case 'coordinates': {
       const [lat, long] = translatePointForFrontend(entity.point);
       return `${lat}, ${long}`;
+    }
+    case '$countDescendantsMatchingConditions': {
+      const allDescendants = await entity.getDescendants(hierarchyId);
+      const descendantsMatchingConditions = await asyncFilter(allDescendants, descendant =>
+        asyncEvery(
+          conditions,
+          async condition => (await getValueFromEntity(descendant, condition)) === condition.value,
+        ),
+      );
+      return descendantsMatchingConditions.length;
     }
     default:
       return entity[field];
@@ -127,7 +156,14 @@ const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
 
 const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT'];
 
-export const calculateOperationForAnalytics = (analytics, config) => {
+export const getDataElementsFromCalculateOperationConfig = config =>
+  config.dataElement || // Single dataElement
+  config.dataElements ||
+  (config.operands && config.operands.map(operand => operand.dataValues)) || // Arithmetic operators
+  (config.dataElementToString && Object.keys(config.dataElementToString)) || // COMBINE_BINARY_AS_STRING
+  [];
+
+export const calculateOperationForAnalytics = async (models, analytics, config) => {
   const { operator } = config;
   if (SINGLE_ANALYTIC_OPERATORS.includes(operator)) {
     return performSingleAnalyticOperation(analytics, config);
@@ -136,7 +172,7 @@ export const calculateOperationForAnalytics = (analytics, config) => {
     return performArithmeticOperation(analytics, config);
   }
   if (Object.keys(OPERATORS).includes(operator)) {
-    return OPERATORS[operator](analytics, config);
+    return OPERATORS[operator](analytics, config, models);
   }
   throw new Error(`Cannot find operator: ${operator}`);
 };

@@ -4,7 +4,6 @@
  */
 
 import keyBy from 'lodash.keyby';
-import { Entity, Project, EntityRelation } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
@@ -39,14 +38,19 @@ export default class extends RouteHandler {
     return allResults;
   }
 
-  async getSearchResults(searchString, projectCode, limit) {
-    const project = await Project.findOne({ code: projectCode });
-    const projectEntity = await Entity.findOne({ id: project.entity_id });
+  async getSearchResults(searchString, limit) {
+    const project = await this.fetchProject();
+    const projectEntity = await project.entity();
 
-    const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
+    const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id, {
+      type: {
+        comparator: 'not in',
+        comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+      },
+    });
     const matchingEntities = await this.getMatchingEntities(searchString, allEntities, limit);
 
-    const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
+    const childIdToParentId = await this.models.ancestorDescendantRelation.getChildIdToParentId(
       project.entity_hierarchy_id,
     );
     const entityById = keyBy(allEntities, 'id');
@@ -64,11 +68,11 @@ export default class extends RouteHandler {
   };
 
   buildResponse = async () => {
-    const { limit = DEFAULT_LIMIT, criteria: searchString, projectCode } = this.req.query;
+    const { limit = DEFAULT_LIMIT, criteria: searchString } = this.req.query;
     if (!searchString || searchString === '' || isNaN(parseInt(limit, 10))) {
       throw new Error('Query parameters must match "criteria" (text) and "limit" (number)');
     }
-    return this.getSearchResults(searchString, projectCode, limit);
+    return this.getSearchResults(searchString, limit);
   };
 }
 

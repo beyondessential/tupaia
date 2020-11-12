@@ -417,6 +417,7 @@ export class CartesianChart extends PureComponent {
 
     return (
       <Tooltip
+        filterNull={false}
         content={
           <CustomTooltip
             valueType={valueType}

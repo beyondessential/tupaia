@@ -94,7 +94,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const mappedEvents =
         ancestorMappingConfig && ancestorMappingConfig.ancestorType
-          ? await this.mapAncestorOfTypeToEvents(rawEvents, ancestorMappingConfig.ancestorType)
+          ? await this.addAncestorsToEvents(rawEvents, ancestorMappingConfig.ancestorType)
           : rawEvents;
 
       // Optional sorting config bit of performance hacking here
@@ -236,8 +236,13 @@ class RawDataValuesBuilder extends DataBuilder {
   };
 }
 
-export const rawDataValues = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const rawDataValues = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new RawDataValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
