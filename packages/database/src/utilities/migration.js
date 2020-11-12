@@ -222,7 +222,7 @@ function deleteReport(db, reportId) {
 }
 
 // Update data builder configuration for a report
-async function updateBuilderConfigByReportId(db, newConfig, reportId) {
+export async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
 
