@@ -1,4 +1,4 @@
-import { Row } from '../../../reportBuilder';
+import { Row } from '../../../types';
 import { aggregations } from './aggregations';
 
 export const buildCreateGroupKey = (params: { [key: string]: keyof typeof aggregations }) => {

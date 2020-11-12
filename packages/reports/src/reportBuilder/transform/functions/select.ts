@@ -1,7 +1,7 @@
+import { Parser, parser } from 'mathjs';
 import { functions, parseExpression } from '../../functions';
 import { buildWhere } from './where';
-import { FieldValue, Row } from '../../reportBuilder';
-import { Parser, parser } from 'mathjs';
+import { FieldValue, Row } from '../../types';
 
 type SelectParams = {
   select: { [key: string]: string };

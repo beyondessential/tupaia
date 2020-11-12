@@ -1,7 +1,7 @@
+import { parser, Parser } from 'mathjs';
 import { functions } from '../../functions';
 import { buildWhere } from './where';
-import { Row } from '../../reportBuilder';
-import { parser, Parser } from 'mathjs';
+import { Row } from '../../types';
 
 type FilterParams = {
   where: (row: Row, rowParser: Parser) => boolean;

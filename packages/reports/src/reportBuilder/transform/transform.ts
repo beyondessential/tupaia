@@ -1,4 +1,4 @@
-import { Row } from '../reportBuilder';
+import { Row } from '../types';
 import { transformBuilders } from './functions';
 import { aliases } from './aliases';
 
@@ -6,10 +6,10 @@ type TransformParams = {
   apply: (rows: Row[]) => Row[];
 };
 
-const transform = (rows: Row[], transforms: TransformParams[]): Row[] => {
+const transform = (rows: Row[], transformSteps: TransformParams[]): Row[] => {
   let transformedRows: Row[] = rows;
-  transforms.forEach((transform: TransformParams) => {
-    transformedRows = transform.apply(transformedRows);
+  transformSteps.forEach((transformStep: TransformParams) => {
+    transformedRows = transformStep.apply(transformedRows);
   });
   return transformedRows;
 };
@@ -35,15 +35,17 @@ const buildParams = (params: unknown): TransformParams => {
     throw new Error(`Expected transform in params`);
   }
 
-  const { transform, ...restOfTransformParams } = params;
-  if (typeof transform !== 'string' || !(transform in transformBuilders)) {
+  const { transform: transformStep, ...restOfTransformParams } = params;
+  if (typeof transformStep !== 'string' || !(transformStep in transformBuilders)) {
     throw new Error(
       `Expected transform to be one of ${Object.keys(transformBuilders)} but got ${transform}`,
     );
   }
 
   return {
-    apply: transformBuilders[transform as keyof typeof transformBuilders](restOfTransformParams),
+    apply: transformBuilders[transformStep as keyof typeof transformBuilders](
+      restOfTransformParams,
+    ),
   };
 };
 

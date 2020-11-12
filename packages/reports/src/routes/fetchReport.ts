@@ -5,19 +5,10 @@
 
 import { respond } from '@tupaia/utils';
 import { createAggregator } from '@tupaia/aggregator';
-import { Aggregator } from '../aggregator';
 import { Request, Response } from 'express';
-import { ParamsDictionary, Query } from 'express-serve-static-core';
-import { BuildReport, ReportBuilder } from '../reportBuilder';
-
-export interface FetchReportQuery extends Query {
-  organisationUnitCode: string;
-  period?: string;
-}
-
-export interface FetchReportParams extends ParamsDictionary {
-  reportCode: string;
-}
+import { Aggregator } from '../aggregator';
+import { ReportBuilder } from '../reportBuilder';
+import { FetchReportQuery, FetchReportParams } from './types';
 
 class FetchReportRouteHandler {
   private aggregator: Aggregator;
@@ -34,7 +25,7 @@ class FetchReportRouteHandler {
       throw new Error(`No report found with code ${params.reportCode}`);
     }
     const reportBuilder: ReportBuilder = new ReportBuilder(report, this.aggregator, query);
-    const data: BuildReport = await reportBuilder.build();
+    const data = await reportBuilder.build();
     respond(res, data, 200);
   };
 }
