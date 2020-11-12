@@ -38,12 +38,15 @@ export class ChartWrapper extends PureComponent {
   }
 
   removeNonNumericData = data =>
-    data.map(dataSeries =>
-      Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
-        const isNonNumericData = isDataKey(key) && Number.isNaN(Number(value));
-        return isNonNumericData ? newDataSeries : { ...newDataSeries, [key]: value };
-      }, {}),
-    );
+    data.map(dataSeries => {
+      const filteredDataSeries = {};
+      Object.entries(dataSeries).forEach(([key, value]) => {
+        if (!isDataKey(key) || !Number.isNaN(Number(value))) {
+          filteredDataSeries[key] = value;
+        }
+      });
+      return filteredDataSeries;
+    });
 
   sortData = data =>
     getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
