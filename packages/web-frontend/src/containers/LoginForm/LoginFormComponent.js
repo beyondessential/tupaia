@@ -63,7 +63,7 @@ export const LoginFormComponent = React.memo(
             name="password"
             type="password"
             required
-            onKeyPress={e => e.key === 'Enter' && submitForm()}
+            onKeyPress={e => e.key === 'Enter' && submitForm(e)}
           />
           <FlexRow>
             <ForgotPassword handleClick={onClickResetPassword} />
