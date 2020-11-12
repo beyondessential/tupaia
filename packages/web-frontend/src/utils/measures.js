@@ -134,6 +134,8 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
 
+  if (flattenedMeasureData.length === 0) return { min: null, max: null };
+
   const dataMin = Math.min(...flattenedMeasureData);
   const dataMax = Math.max(...flattenedMeasureData);
 
