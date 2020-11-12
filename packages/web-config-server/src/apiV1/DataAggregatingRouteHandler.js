@@ -71,8 +71,8 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // this is when we are at B and want to fetch data for both B and C
     //
     if (includeSiblingData) {
-      const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
-      return ancestor.getDescendantsOfType(entityType, hierarchyId);
+      const ancestor = await entity.getAncestorOfType(hierarchyId, aggregationEntityType);
+      return ancestor.getDescendantsOfType(hierarchyId, entityType);
     }
 
     // if the entity we're building for is of the correct type already, just use that
