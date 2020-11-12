@@ -269,24 +269,10 @@ const QUESTION_COLUMNS = [
                 ],
               },
               {
-                label: 'Calculated',
-                fieldName: 'calculated',
+                label: 'Arithmetic',
+                fieldName: 'arithmetic',
                 type: 'json',
                 getJsonFieldSchema: () => [
-                  {
-                    label: 'Calculated Type',
-                    fieldName: 'type',
-                    options: [
-                      {
-                        label: 'Arithmetic',
-                        value: 'arithmetic',
-                      },
-                      {
-                        label: 'Condition',
-                        value: 'condition',
-                      },
-                    ],
-                  },
                   {
                     label: 'Formula',
                     fieldName: 'formula',
@@ -302,9 +288,16 @@ const QUESTION_COLUMNS = [
                     type: 'jsonEditor',
                   },
                   {
-                    label: 'Text',
-                    fieldName: 'text',
+                    label: 'Answer Display Text',
+                    fieldName: 'answerDisplayText',
                   },
+                ],
+              },
+              {
+                label: 'Condition',
+                fieldName: 'condition',
+                type: 'json',
+                getJsonFieldSchema: () => [
                   {
                     label: 'Conditions',
                     fieldName: 'conditions',
