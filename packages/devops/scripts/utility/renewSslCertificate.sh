@@ -4,7 +4,7 @@
 set -e
 
 DIR=$(dirname "$0")
-STAGE=$(${DIR}/detectStage.sh)
+STAGE=$(${DIR}/getEC2TagValue.sh Stage)
 AWS_PROFILE=certbot
 
 if [[ $STAGE == "production" ]]; then

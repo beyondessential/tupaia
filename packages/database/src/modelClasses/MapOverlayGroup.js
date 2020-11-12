@@ -42,9 +42,7 @@ export class MapOverlayGroupModel extends DatabaseModel {
   }
 }
 
-const onChangeDeleteRelation = async ({ type: changeType, record }, models) => {
-  const { id } = record; // map_overlay_group id
-
+const onChangeDeleteRelation = async ({ type: changeType, record_id: id }, models) => {
   switch (changeType) {
     case 'delete':
       await models.mapOverlayGroupRelation.delete({ child_id: id, child_type: 'mapOverlayGroup' });

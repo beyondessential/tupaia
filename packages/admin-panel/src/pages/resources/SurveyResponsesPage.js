@@ -134,6 +134,24 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'surveyResponses',
   },
+  queryParameters: [
+    {
+      label: 'Will this import create new survey responses?',
+      secondaryLabel: 'Leave unchecked if it will only update existing responses',
+      parameterKey: 'createNew',
+      type: 'boolean',
+    },
+    {
+      label: 'Survey Names',
+      secondaryLabel:
+        'Please enter the names of the surveys for the responses to be imported against. These should match the tab names in the file.',
+      parameterKey: 'surveyNames',
+      optionsEndpoint: 'surveys',
+      optionValueKey: 'name',
+      allowMultipleValues: true,
+      visibilityCriteria: { createNew: true },
+    },
+  ],
 };
 
 export const SurveyResponsesPage = ({ getHeaderEl }) => (

@@ -66,7 +66,7 @@ export const getPercentageCountOfValuesByCell = (cells, results) => {
   return percentageCountOfValuesByCell;
 };
 
-export const getCalculatedValuesByCell = async (cells, results, hierarchyId) => {
+export const getCalculatedValuesByCell = async (models, cells, results, hierarchyId) => {
   const calculatedValuesByCell = {};
   await Promise.all(
     cells.map(async cell => {
@@ -74,7 +74,7 @@ export const getCalculatedValuesByCell = async (cells, results, hierarchyId) => 
         const analyticForCell = results.find(result => result.dataElement === cell) || {};
         calculatedValuesByCell[cell] = analyticForCell.value ?? NO_DATA_AVAILABLE;
       } else {
-        calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(results, {
+        calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(models, results, {
           ...cell,
           hierarchyId,
         });
@@ -83,12 +83,3 @@ export const getCalculatedValuesByCell = async (cells, results, hierarchyId) => 
   );
   return calculatedValuesByCell;
 };
-
-export const getDataElementsFromCell = cell =>
-  typeof cell === 'string'
-    ? cell
-    : cell.dataElement || // Single dataElement
-      cell.dataElements ||
-      (cell.operands && cell.operands.map(operand => operand.dataValues)) || // Arithmetic operators
-      (cell.dataElementToString && Object.keys(cell.dataElementToString)) || // COMBINE_BINARY_AS_STRING
-      [];

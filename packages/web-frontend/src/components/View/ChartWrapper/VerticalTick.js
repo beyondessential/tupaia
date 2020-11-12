@@ -11,6 +11,7 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { truncate } from '../../../utils/string';
 
 export default class VerticalTick extends PureComponent {
   componentDidMount() {
@@ -18,31 +19,33 @@ export default class VerticalTick extends PureComponent {
   }
 
   getHeight() {
-    const rectangle = this.ref.getBoundingClientRect();
-
-    return rectangle.height;
+    return 90; // set a fixed height for consistent exporting
   }
 
   render() {
     const { x, y, payload } = this.props;
 
     return (
-      <g transform={`translate(${x},${y})`}>
-        <text
-          x={0}
-          y={0}
-          dy={5}
-          textAnchor="end"
-          fill="#666"
-          ref={element => {
-            this.ref = element;
+      <foreignObject x={x} y={y} style={{ overflow: 'visible' }}>
+        <div
+          xmlns="http://www.w3.org/1999/xhtml"
+          style={{
+            position: 'relative',
+            wordBreak: 'break-all',
+            textAlign: 'right',
+            left: '-6px',
+            top: '135px',
+            width: '135px',
+            color: 'black',
+            transform: 'rotate(-90deg)',
+            transformOrigin: '0 0',
+            fontSize: '12px',
+            lineHeight: '1',
           }}
-          className="chart-label-text"
-          transform="rotate(-90)"
         >
-          {payload.value}
-        </text>
-      </g>
+          {truncate(payload.value, 45, true)}
+        </div>
+      </foreignObject>
     );
   }
 }
@@ -50,7 +53,7 @@ export default class VerticalTick extends PureComponent {
 VerticalTick.propTypes = {
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
-  payload: PropTypes.shape({ value: PropTypes.number }).isRequired,
+  payload: PropTypes.object.isRequired,
   onHeight: PropTypes.func,
 };
 

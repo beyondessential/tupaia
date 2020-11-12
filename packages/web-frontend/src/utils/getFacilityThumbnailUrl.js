@@ -12,9 +12,7 @@ export const getFacilityThumbnailUrl = orgUnit => {
     return null;
   }
 
-  // TODO handle dev uploads as thumbnails https://github.com/beyondessential/tupaia-backlog/issues/960
-  if (photoUrl.includes('dev_uploads')) {
-    return photoUrl;
-  }
-  return photoUrl.replace('/uploads/', '/thumbnails/uploads/').replace('.png', '.jpg');
+  const dir = photoUrl.includes('dev_uploads') ? 'dev_uploads' : 'uploads';
+
+  return photoUrl.replace(`/${dir}/`, `/thumbnails/${dir}/`).replace('.png', '.jpg');
 };
