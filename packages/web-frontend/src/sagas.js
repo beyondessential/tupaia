@@ -105,6 +105,7 @@ import {
   PROJECTS_WITH_LANDING_PAGES,
 } from './containers/OverlayDiv/constants';
 import { DEFAULT_PROJECT_CODE } from './defaults';
+import { fetchDisasterDateRange } from './disaster/sagas';
 import {
   convertUrlPeriodStringToDateRange,
   createUrlString,
@@ -754,23 +755,14 @@ function* fetchViewData(parameters, errorHandler) {
  *
  */
 function* fetchDashboardItemData(action) {
-  const { dashboardItemProject, infoViewKey } = action;
-
-  // If this dashboard item is a member of a module that requires extra work before fetching its
-  // data, allow the module to handle that work and return any extra url parameters
-  let prepareForDashboardItemDataFetch;
-  try {
-    // eslint-disable-next-line import/no-dynamic-require
-    const moduleSagas = require(`./${dashboardItemProject}/sagas`);
-    prepareForDashboardItemDataFetch = moduleSagas.prepareForDashboardItemDataFetch;
-  } catch (error) {
-    // the project is not associated with a module handling its own sagas, ignore
-  }
+  const { infoViewKey } = action;
+  const state = yield select();
+  const project = selectCurrentProjectCode(state);
 
   // Run preparation saga if it exists to collect module specific url parameters
   let extraUrlParameters = {};
-  if (prepareForDashboardItemDataFetch) {
-    extraUrlParameters = yield call(prepareForDashboardItemDataFetch);
+  if (project === 'disaster') {
+    extraUrlParameters = yield call(fetchDisasterDateRange);
   }
 
   const viewData = yield call(

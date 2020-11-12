@@ -86,7 +86,7 @@
     "sub_district": "LA_Anouvong District",
     "facility": "LA_ATPHO",
     "village": "LA_vil_1001002",
-    "school": "LA_sch_1001001"
+    "school": ["LA_sch_1001001", "LA_sch_10101002", "LA_sch_20101001"]
   },
   "MH": {
     "country": "MH",

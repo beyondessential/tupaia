@@ -69,7 +69,7 @@ export class EventBuilder {
       throw new Error(`Program ${programCode} was not found on DHIS2`);
     }
     const { id: programId, programStages } = program;
-    const { code: orgUnitCode } = await entity.fetchClosestOrganisationUnit();
+    const { code: orgUnitCode } = await entity.fetchNearestOrgUnitAncestor();
     const { id: orgUnitDhisId } = await this.fetchOrganisationUnit(orgUnitCode);
     await enrollTrackedEntityInProgramIfNotEnrolled(this.api, {
       trackedEntityId,
@@ -104,7 +104,7 @@ export class EventBuilder {
 
   async fetchDefaultEventOrgUnit() {
     const entity = await this.surveyResponse.entity();
-    return entity.fetchClosestOrganisationUnit();
+    return entity.fetchNearestOrgUnitAncestor();
   }
 
   async fetchOrganisationUnit(code) {

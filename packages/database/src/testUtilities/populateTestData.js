@@ -14,10 +14,9 @@ import { upsertDummyRecord } from './upsertDummyRecord';
 export const populateTestData = async (models, recordsByModelType) => {
   const modelTypes = Object.keys(recordsByModelType);
   // process sequentially, as some inserts may depend on earlier foreign keys being inserted
-  for (let i = 0; i < modelTypes.length; i++) {
-    const modelType = modelTypes[i];
-    await Promise.all(
-      recordsByModelType[modelType].map(record => upsertDummyRecord(models[modelType], record)),
-    );
+  for (const modelType of modelTypes) {
+    for (const record of recordsByModelType[modelType]) {
+      await upsertDummyRecord(models[modelType], record);
+    }
   }
 };

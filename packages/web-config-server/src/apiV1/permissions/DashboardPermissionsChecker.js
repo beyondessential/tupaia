@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DashboardGroup } from '/models';
 import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
@@ -12,7 +11,7 @@ export class DashboardPermissionsChecker extends PermissionsChecker {
     if (!this.dashboardGroup) {
       // get dashboardGroup based on id from db, and check it matches user permissions
       const { dashboardGroupId } = this.query;
-      this.dashboardGroup = await DashboardGroup.findById(dashboardGroupId);
+      this.dashboardGroup = await this.models.dashboardGroup.findById(dashboardGroupId);
     }
     return this.dashboardGroup;
   }

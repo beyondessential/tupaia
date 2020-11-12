@@ -250,6 +250,11 @@ describe('Question hooks', () => {
 
       const entity = await models.entity.findById(ENTITY_ID);
       expect(entity.image_url).to.equal(TEST_URL);
+
+      // should be otherwise unchanged
+      const { image_url: beforeImageUrl, ...beforeData } = await beforeEntity.getData();
+      const { image_url: afterImageUrl, ...afterData } = await entity.getData();
+      expect(beforeData).to.deep.equal(afterData);
     });
 
     describe('Entity creation', () => {

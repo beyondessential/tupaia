@@ -33,11 +33,12 @@ export class SelectUniqueValueFromEventsBuilder extends DataBuilder {
 }
 
 export const selectUniqueValueFromEvents = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new SelectUniqueValueFromEventsBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

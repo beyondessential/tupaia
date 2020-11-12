@@ -57,11 +57,12 @@ export class CountEventsPerPeriodByDataValueBuilder extends DataPerPeriodBuilder
 }
 
 export const countEventsPerPeriodByDataValue = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new CountEventsPerPeriodByDataValueBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

@@ -11,7 +11,7 @@ import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-class TableOfCalculatedValues extends TableOfDataValuesBuilder {
+class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
       this.config.cells.map(row =>
@@ -32,16 +32,22 @@ class TableOfCalculatedValues extends TableOfDataValuesBuilder {
 
   async buildValuesByCell() {
     const hierarchyId = await this.fetchEntityHierarchyId();
-    return getCalculatedValuesByCell(flatten(this.tableConfig.cells), this.results, hierarchyId);
+    return getCalculatedValuesByCell(
+      this.models,
+      flatten(this.tableConfig.cells),
+      this.results,
+      hierarchyId,
+    );
   }
 }
 
 export const tableOfCalculatedValues = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
-  const builder = new TableOfCalculatedValues(
+  const builder = new TableOfCalculatedValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
