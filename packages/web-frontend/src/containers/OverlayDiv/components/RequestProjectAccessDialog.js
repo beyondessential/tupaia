@@ -18,9 +18,15 @@ import { SubmitButton } from '../../Form/common';
 import { PrimaryButton } from '../../../components/Buttons';
 import { TextField, CheckboxField } from '../../Form/Fields';
 import { aggregateFields } from '../../Form/utils';
-import { attemptRequestCountryAccess, setOverlayComponent, closeUserPage } from '../../../actions';
+import {
+  attemptRequestCountryAccess,
+  setRequestingAdditionalCountryAccess,
+  setOverlayComponent,
+  closeUserPage,
+} from '../../../actions';
 import { LANDING } from '../constants';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../../../constants';
+import { BLUE, WHITE } from '../../../styles';
 
 const leftPadding = '40px';
 
@@ -136,81 +142,196 @@ const BackButton = styled(PrimaryButton)`
   margin-bottom: 10px;
 `;
 
+const RequestLink = styled.a`
+  color: ${BLUE};
+  white-space: nowrap;
+  outline: none;
+  text-decoration: underline;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+`;
+
+const RequestedProjectCountriesList = styled.div`
+  text-align: left;
+  margin-left: 16px;
+`;
+
+const styles = {
+  list: {
+    padding: 0,
+    marginBottom: '10px',
+    marginTop: 0,
+    textAlign: 'left',
+  },
+  contactLink: {
+    display: 'inline-block',
+    padding: '5px 0',
+    textDecoration: 'underline',
+    color: WHITE,
+  },
+};
+
 export const RequestProjectAccessComponent = React.memo(
   ({
     project,
     countries,
     onBackToProjects,
     onAttemptRequestProjectAccess,
+    onRequestProjectAdditionalAccess,
+    isRequestingAdditionalCountryAccess,
     isLoading,
     success,
     errorMessage,
-  }) => (
-    <>
-      <Header>
-        <div>
-          <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
-          <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
-        </div>
-        <ExploreButton onClick={onBackToProjects} variant="outlined">
-          <ExploreIcon />
-          &nbsp; View other projects
-        </ExploreButton>
-      </Header>
-      <Title>Requesting Project Access</Title>
-      <HeroImage src={project.imageUrl}>
-        <LogoImage src={project.logoUrl} />
-      </HeroImage>
-      <ProjectBody>
-        <Heading>{project.name}</Heading>
-        <SubHeading>{project.description}</SubHeading>
-        {project.names && <Countries>{project.names.join(', ')}</Countries>}
-        <Divider />
-        {success ? (
-          <>
-            <Alert severity="success">
-              Thank you for your access request to {project.name}. We will review your application
-              and respond by email shortly.
-            </Alert>
-            <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
-          </>
-        ) : (
-          <Form
-            isLoading={isLoading}
-            formError={errorMessage}
-            onSubmit={fieldValues =>
-              onAttemptRequestProjectAccess(
-                aggregateFields({ ...fieldValues, projectCode: project.code }),
-              )
-            }
-            GridComponent={FormGrid}
-            render={submitForm => (
-              <>
-                {countries.map(country => (
-                  <CheckboxField
-                    label={country.name}
-                    key={country.id}
-                    name={`entityIds.${country.id}`}
+  }) => {
+    const requestedCountries = countries.filter(c => c.accessRequests.includes(project.code));
+    const availableCountries = countries.filter(c => !c.accessRequests.includes(project.code));
+
+    let hideForm = false;
+    if (success || (requestedCountries.length > 0 && !isRequestingAdditionalCountryAccess))
+      hideForm = true;
+
+    const modalMessage = success ? (
+      <>
+        <Alert severity="success">
+          Thank you for your access request to {project.name}. We will review your application and
+          respond by email shortly.
+        </Alert>
+        <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
+      </>
+    ) : (
+      <RequestPendingMessage
+        requestedCountries={requestedCountries}
+        availableCountries={availableCountries}
+        setRequestingAdditionalCountryAccess={setRequestingAdditionalCountryAccess}
+        handleRequest={onRequestProjectAdditionalAccess}
+      />
+    );
+
+    return (
+      <>
+        <Header>
+          <div>
+            <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
+            <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
+          </div>
+          <ExploreButton onClick={onBackToProjects} variant="outlined">
+            <ExploreIcon />
+            &nbsp; View other projects
+          </ExploreButton>
+        </Header>
+        <Title>Requesting Project Access</Title>
+        <HeroImage src={project.imageUrl}>
+          <LogoImage src={project.logoUrl} />
+        </HeroImage>
+        <ProjectBody>
+          <Heading>{project.name}</Heading>
+          <SubHeading>{project.description}</SubHeading>
+          {project.names && <Countries>{project.names.join(', ')}</Countries>}
+          <Divider />
+          {hideForm ? (
+            modalMessage
+          ) : (
+            <Form
+              isLoading={isLoading}
+              formError={errorMessage}
+              onSubmit={fieldValues =>
+                onAttemptRequestProjectAccess(
+                  aggregateFields({ ...fieldValues, projectCode: project.code }),
+                )
+              }
+              GridComponent={FormGrid}
+              render={submitForm => (
+                <>
+                  {availableCountries.map(country => (
+                    <CheckboxField
+                      label={country.name}
+                      key={country.id}
+                      name={`entityIds.${country.id}`}
+                    />
+                  ))}
+                  <TextField
+                    label="Why would you like access to this project?"
+                    name="message"
+                    multiline
+                    rows="4"
+                    fullWidth
                   />
-                ))}
-                <TextField
-                  label="Why would you like access to this project?"
-                  name="message"
-                  multiline
-                  rows="4"
-                  fullWidth
-                />
-                <SubmitButton type="submit" handleClick={submitForm} gutterTop>
-                  Request access
-                </SubmitButton>
-              </>
-            )}
-          />
-        )}
-      </ProjectBody>
-    </>
-  ),
+                  <SubmitButton type="submit" handleClick={submitForm} gutterTop>
+                    Request access
+                  </SubmitButton>
+                </>
+              )}
+            />
+          )}
+        </ProjectBody>
+      </>
+    );
+  },
 );
+
+export const RequestPendingMessage = ({
+  requestedCountries,
+  availableCountries,
+  handleRequest,
+  onBackToProjects,
+}) => (
+  <>
+    <p>
+      <b>You have already requested access to this project</b>
+    </p>
+    <RequestedProjectCountryAccessList
+      requestedCountries={requestedCountries}
+      availableCountries={availableCountries}
+      handleRequest={handleRequest}
+    />
+    <p>This can take some time to process, as requests require formal permission to be granted.</p>
+    <p>
+      {`If you have any questions, please email: `}
+      <a style={styles.contactLink} href="mailto:admin@tupaia.org">
+        admin@tupaia.org
+      </a>
+    </p>
+    <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
+  </>
+);
+
+export const RequestedProjectCountryAccessList = ({
+  requestedCountries,
+  availableCountries,
+  handleRequest,
+}) => {
+  if (!availableCountries.length || !requestedCountries) return null;
+
+  return (
+    <>
+      <SubHeading>Countries requested for this project:</SubHeading>
+      <RequestedProjectCountriesList>
+        <ul style={styles.list}>
+          {requestedCountries.map(country => (
+            <li key={`requestedProjectCountry${country.name}`}>{country.name}</li>
+          ))}
+        </ul>
+      </RequestedProjectCountriesList>
+      <RequestLink onClick={handleRequest}>Request other countries</RequestLink>
+    </>
+  );
+};
+
+RequestedProjectCountryAccessList.propTypes = {
+  requestedCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
+  availableCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
+  handleRequest: PropTypes.func.isRequired,
+};
+
+RequestPendingMessage.propTypes = {
+  requestedCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
+  availableCountries: PropTypes.arrayOf(PropTypes.object).isRequired,
+  handleRequest: PropTypes.func.isRequired,
+  onBackToProjects: PropTypes.func.isRequired,
+};
 
 RequestProjectAccessComponent.propTypes = {
   project: PropTypes.shape({
@@ -225,6 +346,8 @@ RequestProjectAccessComponent.propTypes = {
   errorMessage: PropTypes.string.isRequired,
   onBackToProjects: PropTypes.func.isRequired,
   onAttemptRequestProjectAccess: PropTypes.func.isRequired,
+  onRequestProjectAdditionalAccess: PropTypes.func.isRequired,
+  isRequestingAdditionalCountryAccess: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   success: PropTypes.bool.isRequired,
 };
@@ -257,6 +380,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(setOverlayComponent(LANDING));
       dispatch(closeUserPage());
     },
+    onRequestProjectAdditionalAccess: () => dispatch(setRequestingAdditionalCountryAccess(true)),
   };
 };
 
