@@ -8,6 +8,7 @@ export { constructNewRecordValidationRules } from './constructNewRecordValidatio
 export {
   extractTabNameFromQuery,
   splitStringOn,
+  splitStringOnFirstOccurrence,
   splitStringOnComma,
   splitOnNewLinesOrCommas,
 } from './excel';
@@ -22,3 +23,4 @@ export {
   replaceQuestionCodesWithIds,
   replaceNestedQuestionCodesWithIds,
 } from './translateQuestionDependentFields';
+export { translateExpression } from './translateExpression';

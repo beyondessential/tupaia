@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../widgets';
 import { getLineHeight, THEME_FONT_SIZE_ONE } from '../../globalStyles';
-import { getCalculatedResult } from '../selectors';
+import { getArithmeticResult, getConditionResult } from '../selectors';
 
 export class CalculatedQuestionComponent extends PureComponent {
   componentDidMount() {
@@ -16,39 +16,48 @@ export class CalculatedQuestionComponent extends PureComponent {
   }
 
   updateAnswer(props) {
-    const { answer, onChangeAnswer, calculatedResult } = props;
-    if (answer !== calculatedResult) {
-      onChangeAnswer(calculatedResult);
+    const { answer, onChangeAnswer, result } = props;
+    if (answer !== result) {
+      onChangeAnswer(result);
     }
   }
 
   render() {
-    const { translatedText, answer } = this.props;
+    const { answerDisplayText, answer } = this.props;
     return (
       <View>
-        <Text style={localStyles.text}>{translatedText || answer}</Text>
+        <Text style={localStyles.text}>{answerDisplayText || answer}</Text>
       </View>
     );
   }
 }
 
-export const CalculatedQuestion = connect((state, { id: questionId }) => {
-  const { translatedText = '', calculatedResult = 0 } = getCalculatedResult(state, questionId);
+export const ArithmeticQuestion = connect((state, { id: questionId }) => {
+  const { answerDisplayText = '', result = 0 } = getArithmeticResult(state, questionId);
 
   return {
-    translatedText,
-    calculatedResult,
+    answerDisplayText,
+    result,
+  };
+})(CalculatedQuestionComponent);
+
+export const ConditionQuestion = connect((state, { id: questionId }) => {
+  const { answerDisplayText = '', result = 0 } = getConditionResult(state, questionId);
+
+  return {
+    answerDisplayText,
+    result,
   };
 })(CalculatedQuestionComponent);
 
 CalculatedQuestionComponent.propTypes = {
-  translatedText: PropTypes.string,
+  answerDisplayText: PropTypes.string,
   onChangeAnswer: PropTypes.func.isRequired,
   answer: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 CalculatedQuestionComponent.defaultProps = {
-  translatedText: '',
+  answerDisplayText: '',
 };
 
 const localStyles = StyleSheet.create({

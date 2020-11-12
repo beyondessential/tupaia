@@ -3,16 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { getVariables, runArithmetic } from '@beyondessential/arithmetic';
+import { ExpressionParser, BooleanExpressionParser } from '@tupaia/expression-parser';
 import { checkAnswerPreconditionsAreMet } from './helpers';
-
-const CONDITION_TYPE = {
-  '=': (value, filterValue) => value === filterValue,
-  '>': (value, filterValue) => value > filterValue,
-  '<': (value, filterValue) => value < filterValue,
-  '>=': (value, filterValue) => value >= filterValue,
-  '<=': (value, filterValue) => value <= filterValue,
-};
 
 export const getSurveyScreenIndex = state => state.assessment.currentScreenIndex;
 
@@ -119,79 +111,84 @@ export const getAnswers = state => state.assessment.answers;
 
 export const getAnswerForQuestion = (state, questionId) => getAnswers(state)[questionId];
 
-const getArithmeticResult = (state, config) => {
-  const { formula, valueTranslation, defaultValues = {}, text = '' } = config.calculated;
+export const getArithmeticResult = (state, arithmeticQuestionId) => {
+  const { config } = getQuestion(state, arithmeticQuestionId);
+
+  const {
+    arithmetic: { formula, valueTranslation = {}, defaultValues = {}, answerDisplayText = '' },
+  } = config;
+
   const values = {};
-  const variables = getVariables(formula);
-  let translatedText = text;
+  const expressionParser = new ExpressionParser();
+  const variables = expressionParser.getVariables(formula);
+  let translatedAnswerDisplayText = answerDisplayText;
 
+  const getArithmeticAnswer = questionId => {
+    const answer = getAnswerForQuestion(state, questionId);
+
+    if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
+      return valueTranslation[questionId][answer]; // return translated answer if there's any
+    }
+
+    if (answer !== undefined) {
+      return answer; // return raw answer
+    }
+
+    return defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // No answer found, return the default answer
+  };
+
+  // Setting up scope values.
   variables.forEach(questionIdVariable => {
-    let answer = getAnswerForQuestion(state, questionIdVariable) || 0;
-
-    if (
-      valueTranslation &&
-      valueTranslation[questionIdVariable] &&
-      valueTranslation[questionIdVariable][answer] !== undefined
-    ) {
-      answer = valueTranslation[questionIdVariable][answer];
-    }
-
-    if (answer === undefined) {
-      answer = defaultValues[questionIdVariable];
-    }
-
-    values[questionIdVariable] = answer || 0;
-
-    translatedText = translatedText.replace(questionIdVariable, answer);
+    const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix to get the actual questionId
+    values[questionIdVariable] = getArithmeticAnswer(questionId);
   });
 
-  const calculatedResult = !isNaN(runArithmetic(formula, values))
-    ? Math.round(runArithmetic(formula, values) * 1000) / 1000
+  // Replace variables with real values in answerDisplayText
+  variables.forEach(questionIdVariable => {
+    const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix to get the actual questionId
+    const answer = getArithmeticAnswer(questionId);
+    translatedAnswerDisplayText = translatedAnswerDisplayText.replace(questionId, answer);
+  });
+
+  expressionParser.setScope(values);
+
+  const result = !isNaN(expressionParser.evaluate(formula))
+    ? Math.round(expressionParser.evaluate(formula) * 1000) / 1000 // Round to 3 decimal places
     : 0;
-
-  translatedText = translatedText.replace('$result', calculatedResult);
+  translatedAnswerDisplayText = translatedAnswerDisplayText.replace('$result', result);
 
   return {
-    translatedText,
-    calculatedResult,
+    answerDisplayText: translatedAnswerDisplayText,
+    result,
   };
 };
 
-const getConditionResult = (state, config) => {
-  const { conditions } = config.calculated;
-  const result = Object.entries(conditions).find(([displayValue, valueConditions]) => {
-    return Object.entries(valueConditions).every(([questionId, { operator, operand }]) => {
+export const getConditionResult = (state, conditionQuestionId) => {
+  const { config } = getQuestion(state, conditionQuestionId);
+  const {
+    condition: { conditions },
+  } = config;
+  const expressionParser = new BooleanExpressionParser();
+  const checkConditionMet = ({ formula, defaultValues }) => {
+    const values = {};
+    const variables = expressionParser.getVariables(formula);
+
+    variables.forEach(questionIdVariable => {
+      const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix
       const answer = getAnswerForQuestion(state, questionId);
-
-      if (answer === undefined) {
-        return false;
-      }
-
-      const checkConditionMethod = CONDITION_TYPE[operator];
-      return checkConditionMethod ? checkConditionMethod(answer, operand) : false;
+      const value = answer || defaultValues[questionId];
+      values[questionIdVariable] = value;
     });
-  });
 
-  let calculatedResult;
+    expressionParser.setScope(values);
+    return expressionParser.evaluate(formula);
+  };
 
-  if (result) {
-    [calculatedResult] = result;
-  }
+  const result = Object.keys(conditions).find(displayValue =>
+    checkConditionMet(conditions[displayValue]),
+  );
 
   return {
-    calculatedResult,
+    result,
   };
-};
-
-export const getCalculatedResult = (state, questionId) => {
-  const { config } = getQuestion(state, questionId);
-
-  switch (config.calculated.type) {
-    case 'arithmetic':
-      return getArithmeticResult(state, config);
-    case 'condition':
-      return getConditionResult(state, config);
-    default:
-      throw new Error(`Invalid calculated type: ${config.calculated.type}`);
-  }
 };

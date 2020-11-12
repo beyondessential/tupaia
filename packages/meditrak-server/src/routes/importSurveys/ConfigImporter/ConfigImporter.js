@@ -7,11 +7,19 @@ import { ANSWER_TYPES } from '../../../database/models/Answer';
 import { convertCellToJson } from '../utilities';
 import { ConfigValidator } from '../Validator/ConfigValidator';
 import { processCodeGeneratorConfig } from './processCodeGeneratorConfig';
-import { processCalculatedConfig } from './processCalculatedConfig';
+import { processArithmeticConfig } from './processArithmeticConfig';
+import { processConditionConfig } from './processConditionConfig';
 import { processAutocompleteConfig } from './processAutocompleteConfig';
 import { processEntityConfig } from './processEntityConfig';
 
-const { CODE_GENERATOR, CALCULATED, AUTOCOMPLETE, ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
+const {
+  CODE_GENERATOR,
+  ARITHMETIC,
+  CONDITION,
+  AUTOCOMPLETE,
+  ENTITY,
+  PRIMARY_ENTITY,
+} = ANSWER_TYPES;
 
 export class ConfigImporter {
   parse = convertCellToJson;
@@ -65,9 +73,13 @@ export class ConfigImporter {
         const codeGeneratorConfig = processCodeGeneratorConfig(config);
         return { codeGenerator: codeGeneratorConfig };
       }
-      case CALCULATED: {
-        const calculatedConfig = await processCalculatedConfig(this.models, config);
-        return { calculated: calculatedConfig };
+      case ARITHMETIC: {
+        const arithmeticConfig = await processArithmeticConfig(this.models, config);
+        return { arithmetic: arithmeticConfig };
+      }
+      case CONDITION: {
+        const conditionConfig = await processConditionConfig(this.models, config);
+        return { condition: conditionConfig };
       }
       case AUTOCOMPLETE: {
         const autocompleteConfig = await processAutocompleteConfig(this.models, config);

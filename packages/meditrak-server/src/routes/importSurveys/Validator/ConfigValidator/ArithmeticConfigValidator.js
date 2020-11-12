@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getVariables } from '@beyondessential/arithmetic';
-import { constructIsNotPresentOr, constructIsOneOf, hasContent } from '@tupaia/utils';
+import { ExpressionParser } from '@tupaia/expression-parser';
+import { constructIsNotPresentOr, hasContent } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 import { splitStringOn, splitStringOnComma } from '../../../utilities';
 
-export class CalculatedConfigValidator extends JsonFieldValidator {
+export class ArithmeticConfigValidator extends JsonFieldValidator {
   constructor(questions, models) {
     super(questions);
     this.models = models;
@@ -24,24 +24,21 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
     const valueTranslationPointToOtherQuestions = this.constructValueTranslationPointsToOtherQuestions(
       rowIndex,
     );
-    const conditionsPointToOtherQuestions = this.constructConditionsPointToOtherQuestions(rowIndex);
 
     return {
-      type: [hasContent, constructIsOneOf(['arithmetic', 'condition'])],
       formula: [constructIsNotPresentOr(formulaPointsToOtherQuestions)],
       defaultValues: [constructIsNotPresentOr(defaultValuesPointToOtherQuestions)],
       valueTranslation: [constructIsNotPresentOr(valueTranslationPointToOtherQuestions)],
-      text: [constructIsNotPresentOr(hasContent)],
-      conditions: [constructIsNotPresentOr(conditionsPointToOtherQuestions)],
+      answerDisplayText: [constructIsNotPresentOr(hasContent)],
     };
   }
 
   constructFormulaPointsToOtherQuestions(rowIndex) {
+    const expressionParser = new ExpressionParser();
     return value => {
-      const codes = getVariables(value);
+      const codes = expressionParser.getVariables(value);
 
-      for (let i = 0; i < codes.length; i++) {
-        const code = codes[i];
+      for (const code of codes) {
         this.assertPointingToPrecedingQuestion(
           code,
           rowIndex,
@@ -57,8 +54,8 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
     return value => {
       const defaultValues = splitStringOnComma(value);
 
-      for (let i = 0; i < defaultValues.length; i++) {
-        const [code] = splitStringOn(defaultValues[i], '=');
+      for (const defaultValue of defaultValues) {
+        const [code] = splitStringOn(defaultValue, ':');
         this.assertPointingToPrecedingQuestion(
           code,
           rowIndex,
@@ -75,30 +72,12 @@ export class CalculatedConfigValidator extends JsonFieldValidator {
       const valueTranslation = splitStringOnComma(value);
 
       for (let i = 0; i < valueTranslation.length; i++) {
-        const [code] = splitStringOn(valueTranslation[i], '=');
+        const [code] = splitStringOn(valueTranslation[i], ':');
         const [questionCode] = splitStringOn(code, '.');
         this.assertPointingToPrecedingQuestion(
           questionCode,
           rowIndex,
           `Code '${questionCode}' does not reference a preceding question`,
-        );
-      }
-
-      return true;
-    };
-  }
-
-  constructConditionsPointToOtherQuestions(rowIndex) {
-    return value => {
-      const conditions = splitStringOnComma(value);
-
-      for (let i = 0; i < conditions.length; i++) {
-        const [key] = splitStringOn(conditions[i], '=');
-        const [finalValue, code] = splitStringOn(key, '.');
-        this.assertPointingToPrecedingQuestion(
-          code,
-          rowIndex,
-          `Code '${code}' does not reference a preceding question`,
         );
       }
 

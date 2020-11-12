@@ -8,9 +8,10 @@ import { BaseValidator } from '../BaseValidator';
 import { IsEmptyValidator } from './IsEmptyValidator';
 import { CodeGeneratorConfigValidator } from './CodeGeneratorConfigValidator';
 import { EntityConfigValidator } from './EntityConfigValidator';
-import { CalculatedConfigValidator } from './CalculatedConfigValidator';
+import { ArithmeticConfigValidator } from './ArithmeticConfigValidator';
+import { ConditionConfigValidator } from './ConditionConfigValidator';
 
-const { CODE_GENERATOR, ENTITY, PRIMARY_ENTITY, CALCULATED } = ANSWER_TYPES;
+const { CODE_GENERATOR, ENTITY, PRIMARY_ENTITY, ARITHMETIC, CONDITION } = ANSWER_TYPES;
 
 export class ConfigValidator extends BaseValidator {
   constructor(...constructorArgs) {
@@ -32,8 +33,10 @@ export class ConfigValidator extends BaseValidator {
         return EntityConfigValidator;
       case CODE_GENERATOR:
         return CodeGeneratorConfigValidator;
-      case CALCULATED:
-        return CalculatedConfigValidator;
+      case ARITHMETIC:
+        return ArithmeticConfigValidator;
+      case CONDITION:
+        return ConditionConfigValidator;
       default:
         return IsEmptyValidator;
     }
