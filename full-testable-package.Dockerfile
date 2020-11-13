@@ -38,6 +38,8 @@ RUN mkdir -p ./packages/indicators
 COPY packages/indicators/package.json ./packages/indicators
 RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
+RUN mkdir -p ./packages/reports
+COPY packages/reports/package.json ./packages/reports
 RUN mkdir -p ./packages/utils
 COPY packages/utils/package.json ./packages/utils
 RUN mkdir -p ./packages/ui-components
@@ -63,6 +65,7 @@ COPY packages/devops/. ./packages/devops
 COPY packages/database/. ./packages/database
 COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/indicators/. ./packages/indicators
+COPY packages/reports/. ./packages/reports
 COPY packages/utils/. ./packages/utils
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/weather-api/. ./packages/weather-api
