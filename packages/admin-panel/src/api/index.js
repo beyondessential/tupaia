@@ -1,7 +1,6 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export { TupaiaApi } from './TupaiaApi';
-export * from './singletons';
+export { api } from './apiSingleton';
