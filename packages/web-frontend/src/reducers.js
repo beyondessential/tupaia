@@ -416,6 +416,7 @@ function requestCountryAccess(
       return {
         ...state,
         isFetchingCountryAccessData: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: action.error || 'Something went wrong while fetching country access data',
       };
     case FETCH_COUNTRY_ACCESS_DATA_SUCCESS:
@@ -435,6 +436,7 @@ function requestCountryAccess(
       return {
         ...state,
         isRequestingCountryAccess: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage:
           action.error ||
           'Something went wrong during country access request, please check the form and try again',

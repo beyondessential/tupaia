@@ -207,6 +207,7 @@ export const RequestProjectAccessComponent = React.memo(
         availableCountries={availableCountries}
         setRequestingAdditionalCountryAccess={setRequestingAdditionalCountryAccess}
         handleRequest={onRequestProjectAdditionalAccess}
+        onBackToProjects={onBackToProjects}
       />
     );
 
@@ -358,6 +359,7 @@ const mapStateToProps = state => {
     countries,
     isFetchingCountryAccessData,
     isRequestingCountryAccess,
+    isRequestingAdditionalCountryAccess,
     hasRequestCountryAccessCompleted,
     errorMessage,
   } = state.requestCountryAccess;
@@ -366,6 +368,7 @@ const mapStateToProps = state => {
     project: requestingAccess,
     countries: countries.filter(c => requestingAccess.names.includes(c.name)),
     isRequestingCountryAccess,
+    isRequestingAdditionalCountryAccess,
     isLoading: isFetchingCountryAccessData || isRequestingCountryAccess,
     success: hasRequestCountryAccessCompleted,
     errorMessage,
