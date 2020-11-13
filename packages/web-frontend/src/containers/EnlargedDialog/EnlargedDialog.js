@@ -91,7 +91,8 @@ const EnlargedDialogComponent = props => {
       ...drillDownState,
     };
     fetchViewData(options);
-  }, [startDate, endDate, drillDownLevel, infoViewKey]); // Also consider first render.
+    // TODO: Only refetching on parameterValue change is a bit hacky... We rely on not refetching here...
+  }, [startDate, endDate, drillDownState.parameterValue, infoViewKey]);
 
   const onDrillDown = chartItem => {
     const { drillDown } = viewContent;
@@ -107,6 +108,13 @@ const EnlargedDialogComponent = props => {
       drillDownLevel: newDrillDownLevel,
       parameterLink,
       parameterValue: chartItem[keyLink],
+    });
+  };
+
+  const onUnDrillDown = () => {
+    setDrillDownState({
+      ...drillDownState,
+      drillDownLevel: drillDownState.drillDownLevel - 1,
     });
   };
 
@@ -178,6 +186,7 @@ const EnlargedDialogComponent = props => {
           isExporting={isExporting} // Todo: set exporting theme here?
           errorMessage={errorMessage}
           isDrilledDown={drillDownState.drillDownLevel > 0}
+          onUnDrillDown={onUnDrillDown}
         />
       </Dialog>
       <ExportDialog
