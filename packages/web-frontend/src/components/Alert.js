@@ -20,6 +20,15 @@ const StyledSmallAlert = styled(MuiAlert)`
     box-shadow: none;
   }
 
+  &.MuiAlert-standardSuccess {
+    color: rgb(30, 70, 32);
+    background-color: rgb(237, 247, 237);
+
+    .MuiAlert-icon {
+      color: #4caf50;
+    }
+  }
+
   &.MuiAlert-standardError {
     background: #fee2e2;
     border: 1px solid rgba(209, 51, 51, 0.15);

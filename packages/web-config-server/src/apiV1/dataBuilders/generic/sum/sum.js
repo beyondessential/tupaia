@@ -39,8 +39,9 @@ export class SumBuilder extends DataBuilder {
   }
 }
 
-export const sum = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const sum = async ({ models, dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
   const builder = new SumBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
