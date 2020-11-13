@@ -33,7 +33,6 @@ class DrillDownOverlayComponent extends PureComponent {
         isDrilledDown
         viewContent={viewContent}
         onDrillDown={onDrillDown}
-        isVisible
         onSetDateRange={onSetDateRange}
         {...restOfProps}
       />

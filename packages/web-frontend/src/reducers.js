@@ -631,7 +631,6 @@ function global(
 
 function enlargedDialog(
   state = {
-    isVisible: false, // store infoViewKey (in url). If null, the dialog is closed.
     isLoading: false, // Can be calculated in component
     contentByLevel: {
       0: {
@@ -651,7 +650,6 @@ function enlargedDialog(
     case OPEN_ENLARGED_DIALOG:
       return {
         ...state,
-        isVisible: true,
         isLoading: false,
         errorMessage: '',
         startDate: null,
@@ -661,7 +659,6 @@ function enlargedDialog(
     case CLOSE_ENLARGED_DIALOG:
       return {
         ...state,
-        isVisible: false,
         contentByLevel: {
           0: {
             viewContent: null,

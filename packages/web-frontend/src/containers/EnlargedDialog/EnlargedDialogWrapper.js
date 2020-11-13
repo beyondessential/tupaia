@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { closeEnlargedDialog } from '../../actions';
+import { selectCurrentExpandedViewId } from '../../selectors';
 import { EnlargedDialog } from './EnlargedDialog';
 
 const EnlargedDialogWrapperComponent = ({ isVisible, onCloseOverlay }) => {
@@ -28,7 +29,7 @@ EnlargedDialogWrapperComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  isVisible: state.enlargedDialog.isVisible,
+  isVisible: selectCurrentExpandedViewId(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -228,7 +228,6 @@ EnlargedDialogComponent.propTypes = {
   projectCode: PropTypes.string,
   startDate: PropTypes.string,
   endDate: PropTypes.string,
-  isVisible: PropTypes.bool,
 };
 
 EnlargedDialogComponent.defaultProps = {
@@ -239,7 +238,6 @@ EnlargedDialogComponent.defaultProps = {
   endDate: null,
   projectCode: null,
   isLoading: false,
-  isVisible: false,
 };
 
 const styles = {
