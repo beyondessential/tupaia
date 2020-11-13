@@ -3,33 +3,24 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import styled from 'styled-components';
 import Dialog from '@material-ui/core/Dialog';
-
-import { exportToPng, exportToExcel } from '../../utils/exports';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
+import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../actions';
+import { ExportDialog } from '../../components/ExportDialog';
+import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
-  attemptDrillDown,
-  closeEnlargedDialog,
-  setEnlargedDashboardDateRange,
-  fetchEnlargedDialogData,
-} from '../../actions';
-import { DrillDownOverlay } from '../DrillDownOverlay';
-import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { getInfoFromInfoViewKey, isMobile, sleep, stringToFilename } from '../../utils';
-import { DIALOG_Z_INDEX } from '../../styles';
-import {
-  selectCurrentInfoViewKey,
   selectCurrentExpandedViewContent,
+  selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
   selectCurrentProjectCode,
 } from '../../selectors';
-import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
-import { ExportDialog } from '../../components/ExportDialog';
+import { DIALOG_Z_INDEX } from '../../styles';
+import { getInfoFromInfoViewKey, isMobile, sleep, stringToFilename } from '../../utils';
+import { exportToExcel, exportToPng } from '../../utils/exports';
+import { EnlargedDialogContent } from './EnlargedDialogContent';
 
 const Loader = styled.div`
   display: block;
@@ -53,19 +44,19 @@ const STATUS = {
   ERROR: 'error',
 };
 
-const EnlargedDialogComponent = ({
-  onCloseOverlay,
-  contentByLevel,
-  errorMessage,
-  organisationUnitName,
-  onDrillDown,
-  onSetDateRange,
-  startDate,
-  endDate,
-  projectCode,
-  infoViewKey,
-  fetchViewData,
-}) => {
+const EnlargedDialogComponent = props => {
+  const {
+    onCloseOverlay,
+    contentByLevel,
+    errorMessage,
+    organisationUnitName,
+    onSetDateRange,
+    startDate,
+    endDate,
+    projectCode,
+    infoViewKey,
+    fetchViewData,
+  } = props;
   const exportRef = React.useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
@@ -79,6 +70,7 @@ const EnlargedDialogComponent = ({
 
   const viewContent = contentByLevel[drillDownLevel] && contentByLevel[drillDownLevel].viewContent;
 
+  console.log(props, viewContent);
   const isLoading = false;
 
   const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
@@ -95,31 +87,13 @@ const EnlargedDialogComponent = ({
       projectCode,
       startDate,
       endDate,
-      drillDownLevel,
       isExpanded: true,
+      ...drillDownState,
     };
     fetchViewData(options);
   }, [startDate, endDate, drillDownLevel, infoViewKey]); // Also consider first render.
 
-  console.log(
-    { infoViewKey, viewContent },
-    {
-      onCloseOverlay,
-      contentByLevel,
-      errorMessage,
-      organisationUnitName,
-      onDrillDown,
-      onSetDateRange,
-      // isLoading, // delete
-      startDate,
-      endDate,
-      projectCode,
-      drillDownLevel,
-      infoViewKey,
-      fetchViewData,
-    },
-  );
-  const onDrillDownReal = chartItem => {
+  const onDrillDown = chartItem => {
     const { drillDown } = viewContent;
 
     if (!drillDown) {
@@ -129,7 +103,6 @@ const EnlargedDialogComponent = ({
     const newDrillDownLevel = drillDownLevel + 1;
 
     const { parameterLink, keyLink } = drillDown;
-    console.log(chartItem);
     setDrillDownState({
       drillDownLevel: newDrillDownLevel,
       parameterLink,
@@ -138,14 +111,15 @@ const EnlargedDialogComponent = ({
   };
 
   const isMatrix = getIsMatrix(viewContent);
-  const hasBigData = isMatrix || viewContent?.data?.length > 20;
-  const exportFormats = isMatrix ? ['xlsx'] : ['png'];
 
   const getDialogStyle = () => {
+    const hasBigData = isMatrix || viewContent?.data?.length > 20;
     if (hasBigData) return styles.largeContainer;
     if (getIsDataDownload(viewContent)) return styles.smallContainer;
     return styles.container;
   };
+
+  const exportFormats = isMatrix ? ['xlsx'] : ['png'];
 
   const onExport = async format => {
     setExportStatus(STATUS.LOADING);
@@ -188,7 +162,6 @@ const EnlargedDialogComponent = ({
         open
         style={styles.dialog}
         onClose={onCloseOverlay}
-        // Unmount on close (maybe)
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
@@ -198,12 +171,13 @@ const EnlargedDialogComponent = ({
           onCloseOverlay={onCloseOverlay}
           viewContent={viewContent}
           organisationUnitName={organisationUnitName}
-          onDrillDown={onDrillDownReal}
+          onDrillDown={onDrillDown}
           onOpenExportDialog={handleOpenExportDialog}
           onSetDateRange={onSetDateRange}
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
           errorMessage={errorMessage}
+          isDrilledDown={drillDownState.drillDownLevel > 0}
         />
       </Dialog>
       <ExportDialog
@@ -222,7 +196,6 @@ EnlargedDialogComponent.propTypes = {
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
   organisationUnitName: PropTypes.string.isRequired,
   onSetDateRange: PropTypes.func,
-  onDrillDown: PropTypes.func,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
   projectCode: PropTypes.string,
@@ -231,7 +204,6 @@ EnlargedDialogComponent.propTypes = {
 };
 
 EnlargedDialogComponent.defaultProps = {
-  onDrillDown: () => {},
   onSetDateRange: () => {},
   errorMessage: null,
   startDate: null,
@@ -272,9 +244,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setEnlargedDashboardDateRange(startDate, endDate)),
   fetchViewData: options => {
     dispatch(fetchEnlargedDialogData(options));
-  },
-  onDrillDown: newDrillDownLevel => {
-    dispatch(attemptDrillDown(newDrillDownLevel));
   },
   dispatch,
 });

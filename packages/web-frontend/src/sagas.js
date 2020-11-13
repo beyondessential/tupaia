@@ -1022,11 +1022,6 @@ function* fetchEnlargedDialogData(action) {
     drillDownLevel,
   } = action;
 
-  // const state = yield select();
-
-  // const infoViewKey = selectCurrentInfoViewKey(state);
-  // const { viewId, organisationUnitCode, dashboardGroupId } = getInfoFromInfoViewKey(infoViewKey);
-  // drillDownLevel ? `${infoViewKey}_${drillDownLevel}` :
   const drillDownInfoViewKey = infoViewKey;
 
   const parameters = {
@@ -1041,24 +1036,19 @@ function* fetchEnlargedDialogData(action) {
     extraUrlParameters: { [parameterLink]: parameterValue },
     drillDownLevel: drillDownLevel === 0 ? null : drillDownLevel,
   };
-  console.log(parameters);
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
-  console.log(viewData);
 
   const newState = yield select();
   const newInfoViewKey = selectCurrentInfoViewKey(newState);
 
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
   if (viewData && newInfoViewKey === infoViewKey) {
-    // TODO: Also check drillDown level
-    yield put(updateEnlargedDialog(viewData));
+    yield put(updateEnlargedDialog(drillDownLevel, viewData));
   }
 }
 
-function* watchAttemptDrillDown() {
+function* watchFetchNewEnlargedDialogData() {
   yield takeLatest(FETCH_ENLARGED_DIALOG_DATA, fetchEnlargedDialogData);
-  // yield takeLatest(SET_ENLARGED_DIALOG_DATE_RANGE, fetchEnlargedDialogData);
-  // yield takeLatest(SET_DRILL_DOWN_DATE_RANGE, fetchEnlargedDialogData);
 }
 
 function* resetToProjectSplash() {
@@ -1096,39 +1086,6 @@ function* watchGoHomeAndResetToProjectSplash() {
   yield takeLatest(GO_HOME, resetToProjectSplash);
 }
 
-// function* fetchDrillDownViewContentForPeriod(action) {
-//   // TODO: Move to component
-//   const state = yield select();
-//   const { startDate, endDate, drillDownLevel } = action;
-//   const { viewContent } = state.drillDown.levelContents[drillDownLevel];
-//   const { enlargedDialog } = state;
-//   const { infoViewKey } = enlargedDialog;
-//   const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
-
-//   const {
-//     viewId,
-//     organisationUnitCode,
-//     dashboardGroupId,
-//     parameterLink,
-//     parameterValue,
-//   } = viewContent;
-
-//   const parameters = {
-//     startDate,
-//     endDate,
-//     viewId,
-//     drillDownLevel,
-//     organisationUnitCode,
-//     dashboardGroupId,
-//     isExpanded: true,
-//     parameterLink,
-//     parameterValue,
-//     infoViewKey: drillDownConfigKey,
-//   };
-
-//   yield call(fetchDrillDownData, parameters);
-// }
-
 function* refreshBrowserWhenFinishingUserSession() {
   yield takeLatest(FINISH_USER_SESSION, () => {
     window.location.reload();
@@ -1154,7 +1111,7 @@ export default [
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
-  watchAttemptDrillDown,
+  watchFetchNewEnlargedDialogData,
   watchLoginSuccess,
   watchLogoutSuccess,
   watchAttemptTokenLogin,

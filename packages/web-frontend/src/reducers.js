@@ -97,8 +97,6 @@ import {
   REQUEST_PROJECT_ACCESS,
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
-  ATTEMPT_DRILL_DOWN,
-  GO_TO_DRILL_DOWN_LEVEL,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -642,7 +640,6 @@ function enlargedDialog(
     errorMessage: '', // Can be calculated in component
     startDate: null, // Can be passed as a prop
     endDate: null, // Can be passed as a prop
-    drillDownLevel: 0,
   },
   action,
 ) {
@@ -666,7 +663,6 @@ function enlargedDialog(
             endDate: null,
           },
         },
-        drillDownLevel: 0,
       };
 
     case FETCH_ENLARGED_DIALOG_DATA:
@@ -682,32 +678,18 @@ function enlargedDialog(
         ...state,
         contentByLevel: {
           ...state.contentByLevel,
-          [state.drillDownLevel]: {
+          [action.drillDownLevel]: {
             viewContent: action.viewContent,
           },
         },
         isLoading: false,
         errorMessage: '',
       };
-
     case UPDATE_ENLARGED_DIALOG_ERROR:
       return {
         ...state,
         isLoading: false,
         errorMessage: action.errorMessage,
-      };
-    case ATTEMPT_DRILL_DOWN:
-      return {
-        ...state,
-        isLoading: true,
-        drillDownLevel: action.drillDownLevel,
-      };
-    case GO_TO_DRILL_DOWN_LEVEL:
-      return {
-        ...state,
-        errorMessage: '',
-        isLoading: false,
-        drillDownLevel: action.drillDownLevel,
       };
     default:
       return state;
@@ -757,7 +739,6 @@ export default combineReducers({
   resetPassword,
   requestCountryAccess,
   enlargedDialog,
-  // drillDown,
   disaster,
   project,
   orgUnits,

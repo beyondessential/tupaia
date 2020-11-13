@@ -114,11 +114,6 @@ export const FETCH_ENLARGED_DIALOG_DATA = 'FETCH_ENLARGED_DIALOG_DATA';
 export const SET_ENLARGED_DIALOG_DATE_RANGE = 'SET_ENLARGED_DIALOG_DATE_RANGE';
 export const UPDATE_ENLARGED_DIALOG = 'UPDATE_ENLARGED_DIALOG';
 export const UPDATE_ENLARGED_DIALOG_ERROR = 'UPDATE_ENLARGED_DIALOG_ERROR';
-export const CLOSE_DRILL_DOWN = 'CLOSE_DRILL_DOWN';
-export const ATTEMPT_DRILL_DOWN = 'ATTEMPT_DRILL_DOWN';
-export const FETCH_DRILL_DOWN_SUCCESS = 'FETCH_DRILL_DOWN_SUCCESS';
-export const FETCH_DRILL_DOWN_ERROR = 'FETCH_DRILL_DOWN_ERROR';
-export const GO_TO_DRILL_DOWN_LEVEL = 'GO_TO_DRILL_DOWN_LEVEL';
 export const SET_CONFIG_GROUP_VISIBLE = 'SET_CONFIG_GROUP_VISIBLE';
 export const DIALOG_PAGE_USER_MENU = 'DIALOG_PAGE_USER_MENU';
 export const SET_PASSWORD_RESET_TOKEN = 'SET_PASSWORD_RESET_TOKEN';
@@ -1040,34 +1035,6 @@ export function openEnlargedDialog(viewId) {
   };
 }
 
-export function closeDrillDown() {
-  return {
-    type: CLOSE_DRILL_DOWN,
-  };
-}
-
-export function fetchDrillDownSuccess(drillDownLevel, viewContent) {
-  return {
-    type: FETCH_DRILL_DOWN_SUCCESS,
-    drillDownLevel,
-    viewContent,
-  };
-}
-
-export function fetchDrillDownError(errorMessage) {
-  return {
-    type: FETCH_DRILL_DOWN_ERROR,
-    errorMessage,
-  };
-}
-
-export function goToDrillDownLevel(drillDownLevel) {
-  return {
-    type: GO_TO_DRILL_DOWN_LEVEL,
-    drillDownLevel,
-  };
-}
-
 export function setPasswordResetToken(passwordResetToken) {
   return {
     type: SET_PASSWORD_RESET_TOKEN,
@@ -1080,13 +1047,6 @@ export function setEnlargedDashboardDateRange(startDate, endDate) {
     type: SET_ENLARGED_DIALOG_DATE_RANGE,
     startDate,
     endDate,
-  };
-}
-
-export function attemptDrillDown(drillDownLevel) {
-  return {
-    type: ATTEMPT_DRILL_DOWN,
-    drillDownLevel,
   };
 }
 
@@ -1113,10 +1073,11 @@ export function fetchEnlargedDialogData({
   };
 }
 
-export function updateEnlargedDialog(viewContent) {
+export function updateEnlargedDialog(drillDownLevel, viewContent) {
   return {
     type: UPDATE_ENLARGED_DIALOG,
     viewContent,
+    drillDownLevel,
   };
 }
 
