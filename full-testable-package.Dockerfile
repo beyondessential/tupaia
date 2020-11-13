@@ -28,10 +28,10 @@ RUN mkdir -p ./packages/data-api
 COPY packages/data-api/package.json ./packages/data-api
 RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/package.json ./packages/data-broker
-RUN mkdir -p ./packages/devops
-COPY packages/devops/package.json ./packages/devops
 RUN mkdir -p ./packages/database
 COPY packages/database/package.json ./packages/database
+RUN mkdir -p ./packages/devops
+COPY packages/devops/package.json ./packages/devops
 RUN mkdir -p ./packages/dhis-api
 COPY packages/dhis-api/package.json ./packages/dhis-api
 RUN mkdir -p ./packages/indicators
@@ -40,10 +40,10 @@ RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
 RUN mkdir -p ./packages/reports
 COPY packages/reports/package.json ./packages/reports
-RUN mkdir -p ./packages/utils
-COPY packages/utils/package.json ./packages/utils
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/package.json ./packages/ui-components
+RUN mkdir -p ./packages/utils
+COPY packages/utils/package.json ./packages/utils
 RUN mkdir -p ./packages/weather-api
 COPY packages/weather-api/package.json ./packages/weather-api
 RUN mkdir -p ./packages/web-config-server
@@ -56,18 +56,18 @@ COPY packages/web-frontend/package.json ./packages/web-frontend
 RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
 ## add content of all internal dependency packages ready for internal dependencies to be built
-COPY packages/aggregator/. ./packages/aggregator
-COPY packages/data-api/. ./packages/data-api
-COPY packages/auth/. ./packages/auth
 COPY packages/access-policy/. ./packages/access-policy
+COPY packages/aggregator/. ./packages/aggregator
+COPY packages/auth/. ./packages/auth
+COPY packages/data-api/. ./packages/data-api
 COPY packages/data-broker/. ./packages/data-broker
-COPY packages/devops/. ./packages/devops
 COPY packages/database/. ./packages/database
+COPY packages/devops/. ./packages/devops
 COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/indicators/. ./packages/indicators
 COPY packages/reports/. ./packages/reports
-COPY packages/utils/. ./packages/utils
 COPY packages/ui-components/. ./packages/ui-components
+COPY packages/utils/. ./packages/utils
 COPY packages/weather-api/. ./packages/weather-api
 COPY packages/web-frontend/. ./packages/web-frontend
 
