@@ -11,7 +11,6 @@ import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
 
 import HeaderBar from '../../../containers/mobile/HeaderBar';
-import { EnlargedDialog } from '../../../containers/EnlargedDialog';
 import { ExportDialog } from '../../../components/ExportDialog';
 import HomeScreen from '../HomeScreen';
 import RegionScreen from '../RegionScreen';
@@ -21,6 +20,7 @@ import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
 import { selectCurrentOrgUnit } from '../../../selectors';
+import { EnlargedDialogWrapper } from '../../../containers/EnlargedDialog/EnlargedDialogWrapper';
 
 const ORG_UNIT_TYPE_TO_COMPONENT = {
   [ENTITY_TYPE.COUNTRY]: RegionScreen,
@@ -48,11 +48,11 @@ class RootScreen extends Component {
         <div>
           <HeaderBar />
           {this.renderPage()}
-          <EnlargedDialog />
+          <EnlargedDialogWrapper />
           <ExportDialog />
           <Footer />
           {isUserLoggedIn && <OverlayDiv />}
-          <EnlargedDialog />
+          <EnlargedDialogWrapper />
           <ExportDialog />
         </div>
       </StyleRoot>

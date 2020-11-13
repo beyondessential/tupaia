@@ -121,6 +121,7 @@ const mapStateToProps = state => {
   // TODO: Don't think we need this component? Loading animation and error should show for all enlarged dialog
 
   return {
+    // delete
     viewContent: levelContents[currentLevel] && levelContents[currentLevel].viewContent,
     currentLevel,
     isLoading,

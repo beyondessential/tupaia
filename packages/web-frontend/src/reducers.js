@@ -88,10 +88,6 @@ import {
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
   UPDATE_ENLARGED_DIALOG,
-  // CLOSE_DRILL_DOWN,
-  // FETCH_DRILL_DOWN_SUCCESS,
-  // FETCH_DRILL_DOWN_ERROR,
-  // GO_TO_DRILL_DOWN_LEVEL,
   SET_CONFIG_GROUP_VISIBLE,
   FETCH_ENLARGED_DIALOG_DATA,
   UPDATE_ENLARGED_DIALOG_ERROR,
@@ -102,6 +98,7 @@ import {
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
   ATTEMPT_DRILL_DOWN,
+  GO_TO_DRILL_DOWN_LEVEL,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -636,7 +633,13 @@ function enlargedDialog(
   state = {
     isVisible: false, // store infoViewKey (in url). If null, the dialog is closed.
     isLoading: false, // Can be calculated in component
-    viewContent: null, // Can be calculated in component with default passed in?
+    contentByLevel: {
+      0: {
+        viewContent: null,
+        startDate: null,
+        endDate: null,
+      },
+    }, // Can be calculated in component with default passed in?
     errorMessage: '', // Can be calculated in component
     startDate: null, // Can be passed as a prop
     endDate: null, // Can be passed as a prop
@@ -659,7 +662,14 @@ function enlargedDialog(
       return {
         ...state,
         isVisible: false,
-        viewContent: null,
+        contentByLevel: {
+          0: {
+            viewContent: null,
+            startDate: null,
+            endDate: null,
+          },
+        },
+        drillDownLevel: 0,
       };
 
     case FETCH_ENLARGED_DIALOG_DATA:
@@ -673,7 +683,12 @@ function enlargedDialog(
     case UPDATE_ENLARGED_DIALOG:
       return {
         ...state,
-        viewContent: action.viewContent,
+        contentByLevel: {
+          ...state.contentByLevel,
+          [state.drillDownLevel]: {
+            viewContent: action.viewContent,
+          },
+        },
         isLoading: false,
         errorMessage: '',
       };
@@ -690,69 +705,17 @@ function enlargedDialog(
         isLoading: true,
         drillDownLevel: action.drillDownLevel,
       };
+    case GO_TO_DRILL_DOWN_LEVEL:
+      return {
+        ...state,
+        errorMessage: '',
+        isLoading: false,
+        drillDownLevel: action.drillDownLevel,
+      };
     default:
       return state;
   }
 }
-
-// function drillDown( // Can just be rolled into enlargedDialog? Why do we need the difference?
-//   state = {
-//     isVisible: false, // Same as enlargedDialog
-//     isLoading: false, // Same as enlargedDialog
-//     errorMessage: '', // Same as enlargedDialog
-//     currentLevel: 0, // Can be local state.
-//     levelContents: {}, // Can be fetched, same as viewContent?
-//   },
-//   action,
-// ) {
-//   switch (action.type) {
-//     case ATTEMPT_DRILL_DOWN:
-//       return {
-//         ...state,
-//         isLoading: true,
-//         isVisible: true,
-//         errorMessage: '',
-//         currentLevel: action.drillDownLevel,
-//       };
-
-//     case FETCH_DRILL_DOWN_SUCCESS:
-//       return {
-//         ...state,
-//         isLoading: false,
-//         levelContents: {
-//           ...state.levelContents,
-//           [action.drillDownLevel]: {
-//             viewContent: action.viewContent,
-//           },
-//         },
-//       };
-
-//     case FETCH_DRILL_DOWN_ERROR:
-//       return {
-//         ...state,
-//         isLoading: false,
-//         errorMessage: action.errorMessage,
-//       };
-
-//     case GO_TO_DRILL_DOWN_LEVEL:
-//       return {
-//         ...state,
-//         errorMessage: '',
-//         isLoading: false,
-//         currentLevel: action.drillDownLevel,
-//       };
-
-//     case CLOSE_ENLARGED_DIALOG:
-//     case CLOSE_DRILL_DOWN:
-//       return {
-//         ...state,
-//         isVisible: false,
-//       };
-
-//     default:
-//       return state;
-//   }
-// }
 
 function routing(state = getInitialLocation(), action) {
   if (action.type === 'UPDATE_HISTORY_LOCATION') {

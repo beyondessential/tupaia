@@ -693,6 +693,7 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 }
 
 function* fetchViewData(parameters, errorHandler) {
+  console.log(parameters);
   const { infoViewKey } = parameters;
 
   // If the view should be constrained to a date range and isn't, constrain it
@@ -700,8 +701,9 @@ function* fetchViewData(parameters, errorHandler) {
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
       ? parameters
-      : getDefaultDates(state.global.viewConfigs[infoViewKey]);
+      : getDefaultDates(state.global.viewConfigs[infoViewKey] || {});
   // Build the request url
+  console.log(formatDateForApi(startDate));
   const {
     organisationUnitCode,
     dashboardGroupId,
@@ -724,9 +726,11 @@ function* fetchViewData(parameters, errorHandler) {
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
 
   try {
+    console.log(requestResourceUrl);
     return yield call(request, requestResourceUrl, errorHandler);
   } catch (error) {
     let errorMessage = error.message;
+    console.log(errorMessage);
 
     if (error.errorFunction) {
       yield put(error.errorFunction(error));
@@ -1035,7 +1039,7 @@ function* fetchEnlargedDialogData(action) {
     infoViewKey: drillDownInfoViewKey,
     // drillDown params
     extraUrlParameters: { [parameterLink]: parameterValue },
-    drillDownLevel,
+    drillDownLevel: drillDownLevel === 0 ? null : drillDownLevel,
   };
   console.log(parameters);
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);

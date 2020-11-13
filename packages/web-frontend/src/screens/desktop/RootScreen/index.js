@@ -23,6 +23,7 @@ import OverlayDiv from '../../../containers/OverlayDiv';
 import { OverlayContainer } from '../../../utils';
 import { TOP_BAR_HEIGHT } from '../../../styles';
 import './desktop-styles.css';
+import { EnlargedDialogWrapper } from '../../../containers/EnlargedDialog/EnlargedDialogWrapper';
 
 export const RootScreen = () => {
   return (
@@ -36,7 +37,7 @@ export const RootScreen = () => {
         </div>
         <OverlayDiv />
         <SessionExpiredDialog />
-        <EnlargedDialog />
+        <EnlargedDialogWrapper />
       </OverlayContainer>
       <Map />
     </div>

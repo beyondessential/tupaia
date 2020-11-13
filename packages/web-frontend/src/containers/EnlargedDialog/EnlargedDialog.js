@@ -15,11 +15,12 @@ import {
   attemptDrillDown,
   closeEnlargedDialog,
   setEnlargedDashboardDateRange,
+  fetchEnlargedDialogData,
 } from '../../actions';
 import { DrillDownOverlay } from '../DrillDownOverlay';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { isMobile, sleep, stringToFilename } from '../../utils';
+import { getInfoFromInfoViewKey, isMobile, sleep, stringToFilename } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
 import {
   selectCurrentInfoViewKey,
@@ -53,53 +54,88 @@ const STATUS = {
 };
 
 const EnlargedDialogComponent = ({
-  isDrillDownVisible,
   onCloseOverlay,
-  viewContent,
+  contentByLevel,
   errorMessage,
   organisationUnitName,
   onDrillDown,
   onSetDateRange,
-  isLoading, // delete
-  isVisible,
   startDate,
   endDate,
   projectCode,
+  infoViewKey,
+  fetchViewData,
 }) => {
   const exportRef = React.useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportStatus, setExportStatus] = React.useState(STATUS.IDLE);
+  const [drillDownState, setDrillDownState] = React.useState({
+    drillDownLevel: 0,
+    parameterLink: null,
+    parameterValue: null,
+  });
+  const { drillDownLevel } = drillDownState;
 
-  // const isLoading = !!viewContent;
+  const viewContent = contentByLevel[drillDownLevel] && contentByLevel[drillDownLevel].viewContent;
 
-  // React.useEffect(() => {
-  //   setViewContent(null); // clear so that it isn't displaying old data.
-  //   (async () => {
-  //     const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(
-  //       infoViewKey,
-  //     );
-  //     const options = {
-  //       dashboardGroupId,
-  //       projectCode,
-  //       organisationUnitCode,
-  //       viewId,
-  //       startDate,
-  //       endDate,
-  //       drillDownLevel: null,
-  //       isExpanded: true,
-  //     };
-  //     const newContent = fetchViewData(options); //
-  //     setViewContent(defaultViewContent);
-  //   })();
-  // }, [startDate, endDate]); // Also consider first render.
+  const isLoading = false;
 
-  // console.log({ defaultViewContent, viewContent });
+  const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
 
-  if (!isVisible) {
-    // Use open prop on material ui prop rather than returning null here. (ideally, dw if it's hard)
-    return null;
-  }
+  React.useEffect(() => {
+    if (!viewId) return;
+    const options = {
+      viewContent: {
+        infoViewKey,
+        organisationUnitCode,
+        viewId,
+        dashboardGroupId,
+      },
+      projectCode,
+      startDate,
+      endDate,
+      drillDownLevel,
+      isExpanded: true,
+    };
+    fetchViewData(options);
+  }, [startDate, endDate, drillDownLevel, infoViewKey]); // Also consider first render.
+
+  console.log(
+    { infoViewKey, viewContent },
+    {
+      onCloseOverlay,
+      contentByLevel,
+      errorMessage,
+      organisationUnitName,
+      onDrillDown,
+      onSetDateRange,
+      // isLoading, // delete
+      startDate,
+      endDate,
+      projectCode,
+      drillDownLevel,
+      infoViewKey,
+      fetchViewData,
+    },
+  );
+  const onDrillDownReal = chartItem => {
+    const { drillDown } = viewContent;
+
+    if (!drillDown) {
+      return;
+    }
+
+    const newDrillDownLevel = drillDownLevel + 1;
+
+    const { parameterLink, keyLink } = drillDown;
+    console.log(chartItem);
+    setDrillDownState({
+      drillDownLevel: newDrillDownLevel,
+      parameterLink,
+      parameterValue: chartItem[keyLink],
+    });
+  };
 
   const isMatrix = getIsMatrix(viewContent);
   const hasBigData = isMatrix || viewContent?.data?.length > 20;
@@ -146,10 +182,6 @@ const EnlargedDialogComponent = ({
     setExportDialogIsOpen(true);
   };
 
-  const drillDownOverlay = isDrillDownVisible ? (
-    <DrillDownOverlay organisationUnitName={organisationUnitName} />
-  ) : null;
-
   return (
     <>
       <Dialog
@@ -166,14 +198,12 @@ const EnlargedDialogComponent = ({
           onCloseOverlay={onCloseOverlay}
           viewContent={viewContent}
           organisationUnitName={organisationUnitName}
-          onDrillDown={onDrillDown}
+          onDrillDown={onDrillDownReal}
           onOpenExportDialog={handleOpenExportDialog}
           onSetDateRange={onSetDateRange}
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
           errorMessage={errorMessage}
-          isVisible={isVisible}
-          drillDownOverlay={drillDownOverlay}
         />
       </Dialog>
       <ExportDialog
@@ -199,7 +229,6 @@ EnlargedDialogComponent.propTypes = {
   startDate: PropTypes.string,
   endDate: PropTypes.string,
   isVisible: PropTypes.bool,
-  isDrillDownVisible: PropTypes.bool,
 };
 
 EnlargedDialogComponent.defaultProps = {
@@ -211,7 +240,6 @@ EnlargedDialogComponent.defaultProps = {
   projectCode: null,
   isLoading: false,
   isVisible: false,
-  isDrillDownVisible: false,
 };
 
 const styles = {
@@ -236,16 +264,20 @@ const mapStateToProps = state => ({
   ...state.enlargedDialog, // TODO: Obviously remove...
   projectCode: selectCurrentProjectCode(state),
   viewConfigs: state.global.viewConfigs,
-  isDrillDownVisible: false, // state.drillDown.isVisible,
   infoViewKey: selectCurrentInfoViewKey(state),
   viewContent: selectCurrentExpandedViewContent(state), // TODO:
   organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCloseOverlay: () => dispatch(closeEnlargedDialog()),
   onSetDateRange: (startDate, endDate) =>
     dispatch(setEnlargedDashboardDateRange(startDate, endDate)),
+  fetchViewData: options => {
+    dispatch(fetchEnlargedDialogData(options));
+  },
+  onDrillDown: newDrillDownLevel => {
+    dispatch(attemptDrillDown(newDrillDownLevel));
+  },
   dispatch,
 });
 
@@ -253,66 +285,6 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  onDrillDown: chartItem => {
-    // TODO: this will need to be in the component after viewContent loads
-    const { viewContent, infoViewKey, viewConfigs } = stateProps;
-    // Get first layer config
-    const {
-      drillDown,
-      drillDownLevel: currentDrillDownLevel,
-      dashboardGroupId,
-      organisationUnitCode,
-      viewId,
-      startDate,
-    } = viewContent;
-
-    if (!drillDown) {
-      return;
-    }
-
-    const newDrillDownLevel = currentDrillDownLevel + 1;
-
-    // Get second layer config
-    // A special key signature is set up for drill down report configs
-    // @see extractViewsFromAllDashboards in reducers.js
-    const drillDownConfigKey = `${infoViewKey}_${newDrillDownLevel}`;
-    const drillDownConfig = viewConfigs[drillDownConfigKey];
-    const { parameterLink, keyLink } = drillDown;
-    const { periodGranularity } = drillDownConfig;
-
-    let defaultStartDate = null;
-    let defaultEndDate = null;
-
-    // If the second layer has periodGranularity set,
-    // constrain the fetch by 1st layer date range
-    if (periodGranularity) {
-      defaultStartDate = startDate;
-
-      // set the endDate to be end of the startDate period
-      const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
-      defaultEndDate = moment(startDate).clone().endOf(momentUnit);
-    }
-
-    dispatch(attemptDrillDown(newDrillDownLevel));
-
-    // attemptDrillDown({
-    //   viewContent: {
-    //     dashboardGroupId,
-    //     organisationUnitCode,
-    //     ...drillDownConfig,
-    //     infoViewKey: drillDownConfigKey,
-    //     viewId,
-    //   },
-    //   startDate: defaultStartDate,
-    //   endDate: defaultEndDate,
-    //   parameterLink,
-    //   parameterValue: chartItem[keyLink],
-    //   drillDownLevel: newDrillDownLevel,
-    // }),
-  },
-  // fetchViewData: options => {
-  //   dispatch(fetch);
-  // },
 });
 
 export const EnlargedDialog = connect(
