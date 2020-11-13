@@ -70,6 +70,7 @@ export const CountriesPage = ({ getHeaderEl }) => (
     endpoint="countries"
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
+    editConfig={{ title: 'Create New Country' }}
     createConfig={CREATE_CONFIG}
     filteredExportConfig={FILTERED_EXPORT_CONFIG}
     getHeaderEl={getHeaderEl}

@@ -67,7 +67,11 @@ export class CountEventsBuilder extends DataBuilder {
 
   async groupEvents(events) {
     const { groupBy } = this.config;
-    return groupBy ? groupEvents(events, groupBy) : { value: events };
+    if (groupBy) {
+      const hierarchyId = await this.fetchEntityHierarchyId();
+      return groupEvents(this.models, events, { ...groupBy, hierarchyId });
+    }
+    return { value: events };
   }
 
   buildDataForGroup(events, name = 'countEvents') {
@@ -83,7 +87,18 @@ export class CountEventsBuilder extends DataBuilder {
   }
 }
 
-export const countEvents = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
-  const builder = new CountEventsBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
+export const countEvents = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new CountEventsBuilder(
+    models,
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };

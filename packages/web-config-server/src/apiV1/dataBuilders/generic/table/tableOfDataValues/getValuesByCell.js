@@ -66,7 +66,7 @@ export const getPercentageCountOfValuesByCell = (cells, results) => {
   return percentageCountOfValuesByCell;
 };
 
-export const getCalculatedValuesByCell = async (cells, results, hierarchyId) => {
+export const getCalculatedValuesByCell = async (models, cells, results, hierarchyId) => {
   const calculatedValuesByCell = {};
   await Promise.all(
     cells.map(async cell => {
@@ -74,7 +74,7 @@ export const getCalculatedValuesByCell = async (cells, results, hierarchyId) => 
         const analyticForCell = results.find(result => result.dataElement === cell) || {};
         calculatedValuesByCell[cell] = analyticForCell.value ?? NO_DATA_AVAILABLE;
       } else {
-        calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(results, {
+        calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(models, results, {
           ...cell,
           hierarchyId,
         });

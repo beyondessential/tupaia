@@ -4,6 +4,7 @@
  */
 
 import {
+  filterValues,
   flattenToObject,
   getKeysSortedByValues,
   mapKeys,
@@ -11,6 +12,7 @@ import {
   reduceToDictionary,
   reduceToSet,
   getSortByKey,
+  stripFields,
 } from '../object';
 
 describe('object', () => {
@@ -358,5 +360,55 @@ describe('object', () => {
         expect(mapValues(object, mapping, options)).toStrictEqual(expected);
       });
     });
+  });
+
+  describe('filterValues', () => {
+    const object = { a: 1, b: 2, alpha: 1 };
+
+    const testData = [
+      ['no entry passes', value => value === 3, {}],
+      ['one entry passes', value => value === 2, { b: 2 }],
+      ['multiple entries pass', value => value === 1, { a: 1, alpha: 1 }],
+      ['all entries pass', () => true, { a: 1, b: 2, alpha: 1 }],
+    ];
+
+    it.each(testData)('%s', (_, valueFilter, expected) => {
+      expect(filterValues(object, valueFilter)).toStrictEqual(expected);
+    });
+
+    it('no entries in object', () => {
+      expect(filterValues({}, () => true)).toStrictEqual({});
+    });
+  });
+
+  describe('stripFields', () => {
+    const object = { a: 1, b: 2, c: 3 };
+    const testData = [
+      ['should remove a single field, and retain the others', ['b'], { a: 1, c: 3 }],
+      ['should remove multiple fields, and retain others', ['a', 'b'], { c: 3 }],
+      ['should remove all fields', ['a', 'b', 'c'], {}],
+      [
+        'should make no changes when the fields to strip are not present',
+        ['d', 'e'],
+        { a: 1, b: 2, c: 3 },
+      ],
+      ['should make no changes when fields to strip is undefined', undefined, { a: 1, b: 2, c: 3 }],
+    ];
+
+    it.each(testData)('%s', (_, fieldsToStrip, expected) => {
+      expect(stripFields(object, fieldsToStrip)).toStrictEqual(expected);
+    });
+
+    const undefinedParamPermutations = [
+      [undefined, ['a']],
+      [undefined, undefined],
+    ];
+
+    it.each(undefinedParamPermutations)(
+      'should return an empty object when object is undefined',
+      (obj, fieldsToStrip) => {
+        expect(stripFields(obj, fieldsToStrip)).toStrictEqual({});
+      },
+    );
   });
 });

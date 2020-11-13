@@ -4,8 +4,9 @@
  */
 
 import { expect } from 'chai';
+import { oneSecondSleep } from '@tupaia/utils';
 
-import { randomIntBetween, oneSecondSleep } from '../../testUtilities';
+import { randomIntBetween } from '../../testUtilities';
 
 const getRandomSurveyResponse = async models => {
   const surveyResponses = await models.surveyResponse.all();
