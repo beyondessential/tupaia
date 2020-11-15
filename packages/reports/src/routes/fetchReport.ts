@@ -39,11 +39,10 @@ class FetchReportRouteHandler {
     if (!orgUnit) {
       throw new Error(`No entity found with code ${query.organisationUnitCode}`);
     }
-    const country = await orgUnit.country();
     const permissionGroup = await req.models.permissionGroup.findById(report.permission_group_id);
 
-    if (!req.accessPolicy.allows(country.code, permissionGroup.name)) {
-      throw new Error(`No access`);
+    if (!req.accessPolicy.allows(orgUnit.country_code, permissionGroup.name)) {
+      throw new Error(`No ${permissionGroup.name} access for user to ${orgUnit.name}`);
     }
     const reportBuilder: ReportBuilder = new ReportBuilder(report, this.aggregator, query);
     const data: BuildReport = await reportBuilder.build();
