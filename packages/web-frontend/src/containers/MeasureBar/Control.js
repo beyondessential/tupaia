@@ -165,6 +165,7 @@ export const Control = ({
       {selectedMeasure.periodGranularity && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
+            key={selectedMeasure.name} // force re-create the component on measure change, which resets initial dates
             granularity={selectedMeasure.periodGranularity}
             startDate={startDate}
             endDate={endDate}
