@@ -35,14 +35,19 @@ export class QuestionModel extends DatabaseModel {
   }
 }
 
-const onChangeUpdateDataElement = async ({ type: changeType, record }, models) => {
-  const { code, data_source_id: dataSourceId } = record;
-
+const onChangeUpdateDataElement = async (
+  { type: changeType, old_record: oldRecord, new_record: newRecord },
+  models,
+) => {
   switch (changeType) {
-    case 'update':
+    case 'update': {
+      const { code, data_source_id: dataSourceId } = newRecord;
       return models.dataSource.updateById(dataSourceId, { code });
-    case 'delete':
+    }
+    case 'delete': {
+      const { data_source_id: dataSourceId } = oldRecord;
       return models.dataSource.deleteById(dataSourceId);
+    }
     default:
       throw new Error(`Non supported change type: ${changeType}`);
   }

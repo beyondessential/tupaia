@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import { getDefaultPeriod } from '/utils';
-import { Entity } from '/models';
 
 export class QueryBuilder {
   constructor(originalQuery, replacementValues = {}, routeHandler) {
@@ -40,12 +39,14 @@ export class QueryBuilder {
 
   async getDataSourceEntities() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
-    const entity = await Entity.findOne({ code: organisationUnitCode });
     const entityAggregationConfig = this.getQueryParameter('entityAggregation') || {};
-    const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(entity, {
-      ...entityAggregationConfig,
-      dataSourceEntityFilter: this.getQueryParameter('dataSourceEntityFilter'),
-    });
+    const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
+      organisationUnitCode,
+      {
+        ...entityAggregationConfig,
+        dataSourceEntityFilter: this.getQueryParameter('dataSourceEntityFilter'),
+      },
+    );
     return dataSourceEntities;
   }
 

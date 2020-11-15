@@ -27,6 +27,9 @@ const MOCK_EVENTS = [
 const dataServices = [{ isDataRegional: true }];
 const entity = {};
 const query = { organisationUnitCode: 'PG' };
+const models = {
+  project: { findOne: sinon.stub().resolves({ entity_hierarchy_id: 'xxx' }) },
+};
 
 const fetchEvents = sinon.stub().returns(MOCK_EVENTS);
 const aggregator = sinon.createStubInstance(Aggregator, { fetchEvents });
@@ -35,7 +38,7 @@ const dhisApi = {};
 describe('CountEventsBuilder', () => {
   const assertBuilderResponseIsCorrect = async (builderConfig, expectedResponse) => {
     const config = { ...builderConfig, dataServices };
-    const builder = new CountEventsBuilder(aggregator, dhisApi, config, query, entity);
+    const builder = new CountEventsBuilder(models, aggregator, dhisApi, config, query, entity);
     return expect(builder.build()).to.eventually.deep.equal(expectedResponse);
   };
 
