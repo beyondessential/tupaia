@@ -466,6 +466,8 @@ export const VIEW_STYLES = {
       },
   tooltip: {
     color: fullWhite,
+    background: 'rgba(0, 0, 0, 0.7)',
+    padding: '15px 10px 15px 5px',
   },
   legend: {
     color: fullWhite,
