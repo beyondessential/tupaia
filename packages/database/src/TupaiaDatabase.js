@@ -11,6 +11,10 @@ import { Multilock } from '@tupaia/utils';
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { generateId } from './utilities/generateId';
+import {
+  runDatabaseFunctionInBatches,
+  MAX_BINDINGS_PER_QUERY,
+} from './utilities/runDatabaseFunctionInBatches';
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -44,9 +48,6 @@ const VALID_CAST_TYPES = ['text'];
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
-
-// some part of knex or node-pg struggles with too many bindings, so we batch them in some places
-const MAX_BINDINGS_PER_QUERY = 2500; // errors occurred at around 5000 bindings in testing
 
 export class TupaiaDatabase {
   constructor(transactingConnection) {
@@ -109,6 +110,9 @@ export class TupaiaDatabase {
     // if a change handler is being added, this db needs a change channel - make sure it's instantiated
     this.getOrCreateChangeChannel();
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
+    return () => {
+      delete this.getChangeHandlersForCollection(collectionName)[key];
+    };
   }
 
   getHandlersForChange(change) {
@@ -268,14 +272,16 @@ export class TupaiaDatabase {
   }
 
   async createMany(recordType, records) {
-    // TODO could be more efficient to create all records in one query
-    const recordsCreated = [];
-    for (let i = 0; i < records.length; i++) {
-      const record = records[i];
-      const recordCreated = await this.create(recordType, record);
-      recordsCreated.push(recordCreated);
-    }
-    return recordsCreated;
+    // generate ids for any records that don't have them
+    const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
+    await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
+      this.query({
+        recordType,
+        queryMethod: QUERY_METHODS.INSERT,
+        queryMethodParameter: batchOfRecords,
+      }),
+    );
+    return sanitizedRecords;
   }
 
   /**
@@ -442,6 +448,13 @@ export class TupaiaDatabase {
 
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
+  }
+
+  async executeSqlInBatches(arrayToBeBatched, generateSql) {
+    return runDatabaseFunctionInBatches(arrayToBeBatched, async batch => {
+      const [sql, substitutions] = generateSql(batch);
+      return this.executeSql(sql, substitutions);
+    });
   }
 }
 

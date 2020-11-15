@@ -78,8 +78,16 @@ export class ExternalApiSyncQueue {
 
   processUpdates = async changes => {
     const validUpdates = await this.validator.getValidUpdates(changes);
-    const changeDetails = await this.detailGenerator.generateDetails(validUpdates);
-    return this.persistToSyncQueue(validUpdates, changeDetails);
+    try {
+      const changeDetails = await this.detailGenerator.generateDetails(validUpdates);
+      return this.persistToSyncQueue(validUpdates, changeDetails);
+    } catch (e) {
+      // Something went wrong with generating change details, possibly because the entity hierarchy
+      // cache is still being built as the result of an entity change. Put this batch of changes
+      // back on the queue to attempt processing again
+      this.unprocessedChanges.push(...validUpdates);
+      return null;
+    }
   };
 
   processChangesIntoDb = async () => {
