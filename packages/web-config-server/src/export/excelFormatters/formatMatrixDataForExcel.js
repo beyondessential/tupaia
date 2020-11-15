@@ -48,8 +48,8 @@ export const formatMatrixDataForExcel = (
     return rowData;
   };
 
-  const buildTitleRow = () => {
-    const titleRowData = columnCategories
+  const buildHeadersRow = () => {
+    const headersRowData = columnCategories
       ? // This table has categories, iterate through the column categories add category title
         // and iterate through each of the columns in the category, and add the relevant title
         columnCategories.map(({ category: columnCategoryTitle, columns: columnsInCategory }) => {
@@ -58,21 +58,21 @@ export const formatMatrixDataForExcel = (
       : columns.map(col => col.title);
 
     // prepend dataElementHeader
-    titleRowData.unshift(config.dataElementHeader);
+    headersRowData.unshift(config.dataElementHeader);
 
-    return titleRowData;
+    return headersRowData;
   };
 
-  // add to title row 'top' of sheet
-  const titleRow = buildTitleRow();
-  formattedData.push(titleRow);
+  // add headers row to the second 'top' of the sheet
+  const headersRow = buildHeadersRow();
+  formattedData.push(headersRow);
 
   // Iterate through all rows and add them
   if (rowCategories) {
     // Add rows a category at a time, so all rows from the same category are grouped
     rowCategories.forEach(({ key: rowCategoryKey, title: rowCategoryTitle }) => {
       // Insert a separating empty row between categories
-      formattedData.push([rowCategoryTitle].fill('', 1, titleRow.length - 1));
+      formattedData.push([rowCategoryTitle].fill('', 1, headersRow.length - 1));
       // Add the data from all rows in this category
       const formattedRowData = rows
         .filter(({ categoryId }) => rowCategoryKey === categoryId)
