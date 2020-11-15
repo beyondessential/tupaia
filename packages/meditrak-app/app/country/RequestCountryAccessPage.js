@@ -194,7 +194,7 @@ export class RequestCountryAccessPage extends React.Component {
                 <Button
                   title="Request access"
                   isDisabled={isComplete}
-                  onPress={e => this.submitForm(e)}
+                  onPress={() => this.submitForm()}
                 />
               </View>
             </ScrollView>
