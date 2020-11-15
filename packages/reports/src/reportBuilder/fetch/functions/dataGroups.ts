@@ -1,5 +1,5 @@
 import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery } from '../../../routes/types';
+import { FetchReportQuery } from '../../../types';
 import { FetchResponse } from '../types';
 import { Row } from '../../types';
 

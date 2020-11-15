@@ -24,11 +24,14 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/aggregator": "1.0.0",
+    "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "mathjs": "^7.3.0",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "express": "^4.16.2"
   },
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"

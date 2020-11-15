@@ -1,4 +1,4 @@
-import { FetchReportQuery } from '../../routes/types';
+import { FetchReportQuery } from '../../types';
 import { Aggregator } from '../../aggregator';
 import { FetchResponse } from './types';
 import { fetchBuilders } from './functions';

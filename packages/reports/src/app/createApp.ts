@@ -11,6 +11,8 @@ import { Authenticator } from '@tupaia/auth';
 
 import { addRoutesToApp } from './addRoutesToApp';
 
+import { ReportsRequest } from '../types';
+
 /**
  * Set up express server with middleware,
  **/
@@ -28,7 +30,7 @@ export function createApp(database, models) {
    * Add singletons to be attached to req for every route
    **/
   const authenticator = new Authenticator(models);
-  app.use((req, res, next) => {
+  app.use((req: ReportsRequest, res, next) => {
     req.database = database;
     req.models = models;
     req.authenticator = authenticator;
