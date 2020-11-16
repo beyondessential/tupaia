@@ -40,7 +40,9 @@ export class ExpressionParser {
     const nodeTree = this.math.parse(expression);
     nodeTree.traverse(node => {
       if (node.isOperatorNode && node.op === '*' && node.implicit) {
-        throw new Error('Invalid syntax: Implicit multiplication found');
+        throw new Error(
+          'Invalid syntax: Implicit multiplication found. Perhaps you used a variable starting with a number?',
+        );
       }
     });
   }
