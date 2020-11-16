@@ -44,7 +44,6 @@ export const selectIsDashboardGroupCodeDefined = createSelector(
 );
 
 export const selectCurrentInfoViewKey = createSelector(
-  // TODO: InfoViewKey should include drillDown level? Probably not, drillDown's pretty contained now...
   [
     selectCurrentDashboardGroupIdForExpandedReport,
     selectCurrentOrgUnitCode,
@@ -59,13 +58,8 @@ export const selectCurrentInfoViewKey = createSelector(
 );
 
 export const selectCurrentExpandedViewContent = createSelector(
-  // TODO: remove
-  [
-    state => state.enlargedDialog.viewContent,
-    selectCurrentInfoViewKey,
-    state => state.dashboard.viewResponses,
-  ],
-  (viewContent, infoViewKey, viewResponses) => {
-    return viewContent || viewResponses[infoViewKey];
+  [selectCurrentInfoViewKey, state => state.dashboard.viewResponses],
+  (infoViewKey, viewResponses) => {
+    return viewResponses[infoViewKey];
   },
 );

@@ -12,9 +12,9 @@ import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../ac
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
-  selectCurrentExpandedViewContent,
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
+  selectCurrentExpandedViewContent,
   selectCurrentProjectCode,
 } from '../../selectors';
 import { DIALOG_Z_INDEX } from '../../styles';
@@ -55,6 +55,7 @@ const EnlargedDialogComponent = props => {
     startDate,
     endDate,
     isLoading,
+    initialViewContent,
     projectCode,
     infoViewKey,
     fetchViewData,
@@ -62,20 +63,24 @@ const EnlargedDialogComponent = props => {
   const exportRef = React.useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
+
   const [exportStatus, setExportStatus] = React.useState(STATUS.IDLE);
   const [drillDownState, setDrillDownState] = React.useState({
     drillDownLevel: 0,
     parameterLink: null,
     parameterValue: null,
   });
-  const { drillDownLevel } = drillDownState;
 
-  const viewContent = contentByLevel[drillDownLevel] && contentByLevel[drillDownLevel].viewContent;
+  const viewContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
 
   const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
 
   React.useEffect(() => {
     if (!viewId) return;
+
+    // No need to refetch if everything is default
+    if (!startDate && !endDate && !drillDownState.drillDownLevel === 0) return;
+
     const options = {
       viewContent: {
         infoViewKey,
@@ -95,16 +100,11 @@ const EnlargedDialogComponent = props => {
 
   const onDrillDown = chartItem => {
     const { drillDown } = viewContent;
-
-    if (!drillDown) {
-      return;
-    }
-
-    const newDrillDownLevel = drillDownLevel + 1;
+    if (!drillDown) return;
 
     const { parameterLink, keyLink } = drillDown;
     setDrillDownState({
-      drillDownLevel: newDrillDownLevel,
+      drillDownLevel: drillDownState.drillDownLevel + 1,
       parameterLink,
       parameterValue: chartItem[keyLink],
     });
@@ -248,7 +248,7 @@ const mapStateToProps = state => ({
   errorMessage: state.enlargedDialog.errorMessage,
   projectCode: selectCurrentProjectCode(state),
   infoViewKey: selectCurrentInfoViewKey(state),
-  viewContent: selectCurrentExpandedViewContent(state), // TODO:
+  initialViewContent: selectCurrentExpandedViewContent(state),
   organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 

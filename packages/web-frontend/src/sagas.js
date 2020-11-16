@@ -111,8 +111,6 @@ import {
 } from './historyNavigation';
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
-  selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
   selectCurrentInfoViewKey,
   selectCurrentMeasureId,
   selectCurrentOrgUnitCode,
@@ -128,7 +126,7 @@ import {
   selectProjectByCode,
 } from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey } from './utils';
-import { getDefaultDates, GRANULARITY_CONFIG } from './utils/periodGranularities';
+import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
 import { decodeLocation } from './historyNavigation/utils';
@@ -694,7 +692,6 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 }
 
 function* fetchViewData(parameters, errorHandler) {
-  console.log(parameters);
   const { infoViewKey } = parameters;
 
   // If the view should be constrained to a date range and isn't, constrain it
@@ -703,8 +700,8 @@ function* fetchViewData(parameters, errorHandler) {
     parameters.startDate || parameters.endDate
       ? parameters
       : getDefaultDates(state.global.viewConfigs[infoViewKey] || {});
+
   // Build the request url
-  console.log(formatDateForApi(startDate));
   const {
     organisationUnitCode,
     dashboardGroupId,
@@ -726,11 +723,9 @@ function* fetchViewData(parameters, errorHandler) {
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
 
   try {
-    console.log(requestResourceUrl);
     return yield call(request, requestResourceUrl, errorHandler);
   } catch (error) {
     let errorMessage = error.message;
-    console.log(errorMessage);
 
     if (error.errorFunction) {
       yield put(error.errorFunction(error));
@@ -1004,32 +999,7 @@ function getTimeZone() {
     return 'Australia/Melbourne';
   }
 }
-const getDatesacb = (drillDownViewConfig, startDate, endDate) => {
-  // Get second layer config
-  // A special key signature is set up for drill down report configs
-  // @see extractViewsFromAllDashboards in reducers.js
-  const { periodGranularity } = drillDownViewConfig;
 
-  let defaultStartDate = null;
-  let defaultEndDate = null;
-  console.log('a');
-  // If the second layer has periodGranularity set,
-  // constrain the fetch by 1st layer date range
-  if (periodGranularity) {
-    defaultStartDate = startDate;
-
-    console.log('a');
-    // set the endDate to be end of the startDate period
-    const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
-    defaultEndDate = moment(startDate).clone().endOf(momentUnit);
-  }
-  console.log('a');
-
-  return {
-    startDate: defaultStartDate,
-    endDate: defaultEndDate,
-  };
-};
 /**
  * Fetches enlarged dialog data for a given view, drillDown level and date range.
  */
@@ -1047,7 +1017,7 @@ function* fetchEnlargedDialogData(action) {
     drillDownLevel,
   } = action;
 
-  const parameters = {
+  let parameters = {
     startDate,
     endDate,
     viewId,
@@ -1057,20 +1027,21 @@ function* fetchEnlargedDialogData(action) {
     infoViewKey,
   };
 
+  // Handle extra drillDown params
   if (drillDownLevel > 0) {
-    console.log('drilled down!');
-    // drillDown params
     const { global } = yield select();
 
     const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
     const drillDownViewConfig = global.viewConfigs[drillDownConfigKey];
-    console.log(drillDownViewConfig);
-    const drillDownDates = getDatesacb(drillDownViewConfig, startDate, endDate);
-    console.log(drillDownViewConfig, drillDownDates);
-    parameters.extraUrlParameters = { drillDownLevel, [parameterLink]: parameterValue };
-    parameters.startDate = drillDownDates.startDate;
-    parameters.endDate = drillDownDates.endDate;
-    parameters.infoViewKey = drillDownConfigKey;
+    const drillDownDates = getDefaultDrillDownDates(drillDownViewConfig, startDate, endDate);
+
+    parameters = {
+      ...parameters,
+      extraUrlParameters: { drillDownLevel, [parameterLink]: parameterValue },
+      startDate: drillDownDates.startDate,
+      endDate: drillDownDates.endDate,
+      infoViewKey: drillDownConfigKey,
+    };
   }
 
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);

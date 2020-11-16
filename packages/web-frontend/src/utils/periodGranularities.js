@@ -253,8 +253,8 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
   return {};
 };
 
-export function getDefaultDates(state) {
-  const { periodGranularity, defaultTimePeriod } = state;
+export function getDefaultDates(viewConfig) {
+  const { periodGranularity, defaultTimePeriod } = viewConfig;
 
   // we need a valid granularity to proceed
   if (!periodGranularity) {
@@ -269,6 +269,27 @@ export function getDefaultDates(state) {
 
   return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod);
 }
+
+export const getDefaultDrillDownDates = (drillDownViewConfig, previousStartDate) => {
+  const { periodGranularity } = drillDownViewConfig;
+
+  let defaultStartDate = null;
+  let defaultEndDate = null;
+  // If the second layer has periodGranularity set,
+  // constrain the fetch by 1st layer date range
+  if (periodGranularity) {
+    defaultStartDate = previousStartDate;
+
+    // set the endDate to be end of the startDate period
+    const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+    defaultEndDate = moment(previousStartDate).clone().endOf(momentUnit);
+  }
+
+  return {
+    startDate: defaultStartDate,
+    endDate: defaultEndDate,
+  };
+};
 
 /**
  * @param {*} periodGranularity

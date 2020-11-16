@@ -631,13 +631,7 @@ function global(
 function enlargedDialog(
   state = {
     isLoading: false,
-    contentByLevel: {
-      0: {
-        viewContent: null,
-        startDate: null,
-        endDate: null,
-      },
-    }, // Can be calculated in component with default passed in?
+    contentByLevel: null,
     errorMessage: '',
     startDate: null, // TODO: store these in the url
     endDate: null,
@@ -652,6 +646,11 @@ function enlargedDialog(
         errorMessage: '',
         startDate: null,
         endDate: null,
+        contentByLevel: {
+          0: {
+            viewContent: action.viewContent,
+          },
+        },
       };
     case CLOSE_ENLARGED_DIALOG:
       return {
@@ -660,13 +659,7 @@ function enlargedDialog(
         errorMessage: '',
         startDate: null,
         endDate: null,
-        contentByLevel: {
-          0: {
-            viewContent: null,
-            startDate: null,
-            endDate: null,
-          },
-        },
+        contentByLevel: null,
       };
     case SET_ENLARGED_DIALOG_DATE_RANGE:
       return {
@@ -683,7 +676,7 @@ function enlargedDialog(
       return {
         ...state,
         contentByLevel: {
-          ...state.contentByLevel,
+          ...(state.contentByLevel || {}),
           [action.drillDownLevel]: {
             viewContent: action.viewContent,
           },
