@@ -81,7 +81,7 @@ export async function exportSurveyResponses(req, res) {
 
   // Create empty workbook to contain survey response export
   const workbook = { SheetNames: [], Sheets: {} };
-  console.log(viewId);
+
   try {
     let country;
     let entities;
