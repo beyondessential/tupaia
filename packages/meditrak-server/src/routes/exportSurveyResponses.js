@@ -95,9 +95,7 @@ export async function exportSurveyResponses(req, res) {
       country = await models.country.findById(countryId);
       entities = await models.entity.find({ country_code: country.code }, { sort: ['name ASC'] });
     } else if (entityIds) {
-      entities = await Promise.all(
-        entityIds.split(',').map(entityId => models.entity.findById(entityId)),
-      );
+      entities = await models.entity.find({ id: entityIds.split(',') });
       if (!countryId && entities.length > 0) {
         const countryCodeFromEntity = entities[0].country_code;
         country = await models.country.findOne({ code: countryCodeFromEntity });

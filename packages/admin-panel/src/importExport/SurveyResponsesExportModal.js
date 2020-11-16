@@ -75,7 +75,7 @@ export const SurveyResponsesExportModal = () => {
           onChange={inputValue => handleValueChange('entityIds', inputValue)}
           endpoint="entity"
           optionLabelKey="name"
-          optionValueKey="code"
+          optionValueKey="id"
           allowMultipleValues
         />
       )}
