@@ -182,14 +182,12 @@ const DatePickerDialog = ({
   );
 };
 
-const stringOrMoment = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
-
 DatePickerDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   granularity: GRANULARITY_SHAPE.isRequired,
-  startDate: stringOrMoment.isRequired,
-  endDate: stringOrMoment.isRequired,
+  startDate: PropTypes.object.isRequired,
+  endDate: PropTypes.object.isRequired,
   minMomentDate: PropTypes.object.isRequired,
   maxMomentDate: PropTypes.object.isRequired,
   onSetNewDates: PropTypes.func.isRequired,
