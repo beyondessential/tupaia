@@ -131,7 +131,7 @@ export const ROUTES = [
       },
       {
         label: 'Countries',
-        to: '',
+        to: '/countries',
         component: CountriesPage,
       },
     ],

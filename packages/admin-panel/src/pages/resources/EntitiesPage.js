@@ -9,14 +9,15 @@ import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 export const ENTITIES_COLUMNS = [
+  { source: 'id', show: false },
+  {
+    Header: 'Code',
+    source: 'code',
+  },
   {
     Header: 'Name',
     source: 'name',
     type: 'tooltip',
-  },
-  {
-    Header: 'Code',
-    source: 'code',
   },
   {
     Header: 'Type',
@@ -25,11 +26,11 @@ export const ENTITIES_COLUMNS = [
 ];
 
 const COLUMNS = [
+  ...ENTITIES_COLUMNS,
   {
     Header: 'Country',
     source: 'country_code',
   },
-  ...ENTITIES_COLUMNS,
 ];
 
 const EXPANSION_CONFIG = [
