@@ -160,6 +160,7 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
+    defaultSorting={[{ id: 'submission_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
