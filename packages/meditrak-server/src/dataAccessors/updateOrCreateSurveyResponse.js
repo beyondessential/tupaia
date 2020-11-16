@@ -90,7 +90,7 @@ const createOptions = async (models, optionsCreated) => {
         { option_set_id: optionSetId, value },
         {
           ...option,
-          sort_order: largestSorOrder + 1, // append the option to the last position
+          sort_order: largestSorOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
           attributes: {},
         },
       );
