@@ -28,7 +28,7 @@ const expressionParser = new BooleanExpressionParser();
 expressionParser.set('a', 1);
 
 //Evaluate an expression that has 'a' as a variable
-expressionParser.evaluate('a < 2'); //returns false
+expressionParser.evaluate('a < 2'); //returns true
 expressionParser.evaluate('a > 2'); //returns false
 ```
 
