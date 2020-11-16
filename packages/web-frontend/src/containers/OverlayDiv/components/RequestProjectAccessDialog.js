@@ -26,7 +26,7 @@ import {
 } from '../../../actions';
 import { LANDING } from '../constants';
 import { TUPAIA_LIGHT_LOGO_SRC } from '../../../constants';
-import { BLUE, WHITE } from '../../../styles';
+import { BLUE, WHITE, GREY } from '../../../styles';
 
 const leftPadding = '40px';
 
@@ -137,6 +137,13 @@ const FormGrid = styled.div`
   }
 `;
 
+const Note = styled.p`
+  text-align: center;
+  color: ${GREY};
+  font-size: small;
+  padding: 10px;
+`;
+
 const BackButton = styled(PrimaryButton)`
   margin-top: 30px;
   margin-bottom: 10px;
@@ -194,13 +201,7 @@ export const RequestProjectAccessComponent = React.memo(
       hideForm = true;
 
     const modalMessage = success ? (
-      <>
-        <Alert severity="success">
-          Thank you for your access request to {project.name}. We will review your application and
-          respond by email shortly.
-        </Alert>
-        <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
-      </>
+      <SuccessMessage projectName={project.name} onBackToProjects={onBackToProjects} />
     ) : (
       <RequestPendingMessage
         requestedCountries={requestedCountries}
@@ -273,6 +274,19 @@ export const RequestProjectAccessComponent = React.memo(
   },
 );
 
+export const SuccessMessage = ({ projectName, onBackToProjects }) => (
+  <>
+    <Alert severity="success">
+      Thank you for your access request to {projectName}. We will review your application and
+      respond by email shortly.
+    </Alert>
+    <Note>
+      Note: This can take some time to process, as requests require formal permission to be granted.
+    </Note>
+    <BackButton onClick={onBackToProjects}>Back to Projects</BackButton>
+  </>
+);
+
 export const RequestPendingMessage = ({
   requestedCountries,
   availableCountries,
@@ -319,6 +333,11 @@ export const RequestedProjectCountryAccessList = ({
       <RequestLink onClick={handleRequest}>Request other countries</RequestLink>
     </>
   );
+};
+
+SuccessMessage.propTypes = {
+  projectName: PropTypes.string.isRequired,
+  onBackToProjects: PropTypes.func.isRequired,
 };
 
 RequestedProjectCountryAccessList.propTypes = {
