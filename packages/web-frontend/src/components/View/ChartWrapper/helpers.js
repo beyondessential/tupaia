@@ -7,3 +7,6 @@ export const formatTimestampForChart = (timestamp, granularity, periodTickFormat
   moment.utc(timestamp).format(periodTickFormat || GRANULARITY_CONFIG[granularity].chartFormat);
 
 export const getIsTimeSeries = data => data && data.length > 0 && data[0].timestamp;
+
+export const isDataKey = key =>
+  !(['name', 'timestamp'].includes(key) || key.substr(-9) === '_metadata');
