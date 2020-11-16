@@ -656,6 +656,10 @@ function enlargedDialog(
     case CLOSE_ENLARGED_DIALOG:
       return {
         ...state,
+        isLoading: false,
+        errorMessage: '',
+        startDate: null,
+        endDate: null,
         contentByLevel: {
           0: {
             viewContent: null,
@@ -673,11 +677,8 @@ function enlargedDialog(
     case FETCH_ENLARGED_DIALOG_DATA:
       return {
         ...state,
-        startDate: action.startDate,
-        endDate: action.endDate,
         isLoading: true,
       };
-
     case UPDATE_ENLARGED_DIALOG:
       return {
         ...state,

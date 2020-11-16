@@ -6,6 +6,7 @@
  */
 
 import queryString from 'query-string';
+import moment from 'moment';
 import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import request from './utils/request';
 import {
@@ -127,7 +128,7 @@ import {
   selectProjectByCode,
 } from './selectors';
 import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey } from './utils';
-import { getDefaultDates } from './utils/periodGranularities';
+import { getDefaultDates, GRANULARITY_CONFIG } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
 import { decodeLocation } from './historyNavigation/utils';
@@ -1003,7 +1004,32 @@ function getTimeZone() {
     return 'Australia/Melbourne';
   }
 }
+const getDatesacb = (drillDownViewConfig, startDate, endDate) => {
+  // Get second layer config
+  // A special key signature is set up for drill down report configs
+  // @see extractViewsFromAllDashboards in reducers.js
+  const { periodGranularity } = drillDownViewConfig;
 
+  let defaultStartDate = null;
+  let defaultEndDate = null;
+  console.log('a');
+  // If the second layer has periodGranularity set,
+  // constrain the fetch by 1st layer date range
+  if (periodGranularity) {
+    defaultStartDate = startDate;
+
+    console.log('a');
+    // set the endDate to be end of the startDate period
+    const { momentUnit } = GRANULARITY_CONFIG[periodGranularity];
+    defaultEndDate = moment(startDate).clone().endOf(momentUnit);
+  }
+  console.log('a');
+
+  return {
+    startDate: defaultStartDate,
+    endDate: defaultEndDate,
+  };
+};
 /**
  * Fetches enlarged dialog data for a given view, drillDown level and date range.
  */
@@ -1021,8 +1047,6 @@ function* fetchEnlargedDialogData(action) {
     drillDownLevel,
   } = action;
 
-  const drillDownInfoViewKey = infoViewKey;
-
   const parameters = {
     startDate,
     endDate,
@@ -1030,13 +1054,25 @@ function* fetchEnlargedDialogData(action) {
     organisationUnitCode,
     dashboardGroupId,
     isExpanded: true,
-    infoViewKey: drillDownInfoViewKey,
-    // drillDown params
-    extraUrlParameters:
-      drillDownLevel > 0 && parameterValue
-        ? { drillDownLevel, [parameterLink]: parameterValue }
-        : {},
+    infoViewKey,
   };
+
+  if (drillDownLevel > 0) {
+    console.log('drilled down!');
+    // drillDown params
+    const { global } = yield select();
+
+    const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
+    const drillDownViewConfig = global.viewConfigs[drillDownConfigKey];
+    console.log(drillDownViewConfig);
+    const drillDownDates = getDatesacb(drillDownViewConfig, startDate, endDate);
+    console.log(drillDownViewConfig, drillDownDates);
+    parameters.extraUrlParameters = { drillDownLevel, [parameterLink]: parameterValue };
+    parameters.startDate = drillDownDates.startDate;
+    parameters.endDate = drillDownDates.endDate;
+    parameters.infoViewKey = drillDownConfigKey;
+  }
+
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
 
   const newState = yield select();
