@@ -298,6 +298,7 @@ export async function exportSurveyResponses(req, res) {
       });
 
       // Add export date and origin
+      // Add two [] for spacing between the table and the export date
       exportData.push(
         [],
         [],
