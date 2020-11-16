@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import ExportIcon from '@material-ui/icons/GetApp';
 import {
   Button,
   Dialog,
@@ -12,7 +13,6 @@ import {
   DialogHeader,
   LightOutlinedButton,
   OutlinedButton,
-  SaveAlt,
 } from '@tupaia/ui-components';
 import { ModalContentProvider } from '../widgets';
 import { api } from '../api';
@@ -88,7 +88,7 @@ export const ExportModal = React.memo(({ title, exportEndpoint, fileName, values
         </form>
       </Dialog>
       <LightOutlinedButton
-        startIcon={<SaveAlt />}
+        startIcon={<ExportIcon />}
         onClick={handleOpen}
         isLoading={STATUS === STATUS.LOADING}
         disabled={STATUS === STATUS.ERROR}
