@@ -13,18 +13,8 @@ const fetchEvents = async (
   params: DataGroupsFetchParams,
 ): Promise<FetchResponse> => {
   const { programCode } = params;
-  const { organisationUnitCode, startDate, endDate } = query;
-  const response = (await aggregator.fetchEvents(
-    programCode,
-    {
-      useDeprecatedApi: false,
-      dataServices: { isDataRegional: true },
-      organisationUnitCodes: [organisationUnitCode],
-      startDate,
-      endDate,
-    },
-    {},
-  )) as Row[];
+  const { organisationUnitCode } = query;
+  const response = (await aggregator.fetchEvents(programCode, [organisationUnitCode])) as Row[];
   response.forEach(row => {
     Object.entries(row.dataValues).forEach(([key, value]) => {
       row[key] = value;

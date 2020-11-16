@@ -12,17 +12,9 @@ const fetchAnalytics = async (
   params: DataElementsFetchParams,
 ): Promise<FetchResponse> => {
   const { organisationUnitCode } = query;
-  const response = (await aggregator.fetchAnalytics(
-    params.dataElementCodes,
-    {
-      dataServices: [{ isDataRegional: true }],
-      organisationUnitCodes: [organisationUnitCode],
-    },
-    {},
-    {
-      aggregationType: 'RAW',
-    },
-  )) as FetchResponse;
+  const response = (await aggregator.fetchAnalytics(params.dataElementCodes, [
+    organisationUnitCode,
+  ])) as FetchResponse;
   return response;
 };
 
