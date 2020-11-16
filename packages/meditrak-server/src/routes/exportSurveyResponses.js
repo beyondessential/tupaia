@@ -301,7 +301,7 @@ export async function exportSurveyResponses(req, res) {
       exportData.push(
         [],
         [],
-        [`Data exported from ${ORIGIN} on ${moment().format('Do MMM YYYY')}`],
+        [`Date exported from ${ORIGIN} on ${moment().format('Do MMM YYYY')}`],
       );
       addDataToSheet(currentSurvey.name, exportData);
     }

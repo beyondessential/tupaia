@@ -90,7 +90,7 @@ export const formatMatrixDataForExcel = (
   }
 
   // Add export date and origin to the bottom of the sheet
-  formattedData.push([`Data exported from ${ORIGIN} on ${moment().format('Do MMM YY')}`]);
+  formattedData.push([`Data exported from ${ORIGIN} on ${moment().format('Do MMM YYYY')}`]);
   return outputFormat === 'aoo' ? convertAoaToAoo(formattedData) : formattedData;
 };
 
