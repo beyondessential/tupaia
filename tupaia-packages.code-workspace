@@ -41,8 +41,8 @@
       "path": "packages/dhis-api"
     },
     {
-      "name": "export-chart-lambda",
-      "path": "packages/export-chart-lambda"
+      "name": "eslint-config-typescript",
+      "path": "packages/eslint-config-typescript"
     },
     {
       "name": "indicators",
@@ -92,6 +92,7 @@
       "analytics",
       "beyondessential",
       "cacheable",
+      "cachers",
       "cleanup",
       "debouncing",
       "deleters",

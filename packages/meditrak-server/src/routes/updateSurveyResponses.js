@@ -7,22 +7,24 @@ import xlsx from 'xlsx';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import {
-  respond,
-  DatabaseError,
-  ImportValidationError,
-  UploadError,
-  ObjectValidator,
-  hasContent,
-  constructRecordExistsWithId,
-  takesIdForm,
   constructIsOneOf,
+  constructRecordExistsWithId,
+  DatabaseError,
+  hasContent,
+  ImportValidationError,
+  ObjectValidator,
+  respond,
+  takesIdForm,
+  UploadError,
+  ValidationError,
 } from '@tupaia/utils';
+import { getArrayQueryParameter, extractTabNameFromQuery } from './utilities';
 import { ANSWER_TYPES } from '../database/models/Answer';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { EXPORT_DATE_FORMAT, INFO_COLUMN_HEADERS, INFO_ROW_HEADERS } from './exportSurveyResponses';
 
 /**
- * Updates existing survey responses by importing the new answers from an Excel file, and either
+ * Creates or updates survey responses by importing the new answers from an Excel file, and either
  * updating or creating each answer as appropriate
  */
 export async function updateSurveyResponses(req, res) {
@@ -30,20 +32,17 @@ export async function updateSurveyResponses(req, res) {
     if (!req.file) {
       throw new UploadError();
     }
+    const surveyNames = getArrayQueryParameter(req?.query?.surveyNames);
     const { models } = req;
     await models.wrapInTransaction(async transactingModels => {
       const workbook = xlsx.readFile(req.file.path);
       // Go through each sheet in the workbook and process the updated survey responses
-      const sheets = Object.values(workbook.Sheets);
-      for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
-        const sheet = sheets[sheetIndex];
-        const tabName = Object.keys(workbook.Sheets)[sheetIndex];
+      for (const surveySheets of Object.entries(workbook.Sheets)) {
+        const [tabName, sheet] = surveySheets;
         const deletedColumnHeaders = new Set();
         const questionIds = [];
         const newSurveyResponseIds = {};
 
-        // Create new survey responses where required
-        let firstSurveyResponseId;
         const maxCell = sheet['!ref'].split(':')[1]; // The range property of the sheet looks like "A1:E56"
         const { c: maxColumnIndex, r: maxRowIndex } = xlsx.utils.decode_cell(maxCell);
         for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
@@ -58,21 +57,19 @@ export async function updateSurveyResponses(req, res) {
             try {
               if (checkIsNewSurveyResponse(columnHeader)) {
                 // Create a new survey response
-                if (!firstSurveyResponseId) {
+                if (!surveyNames) {
                   throw new Error(
-                    'Each tab of the import file must have at least one previously submitted survey as the first entry',
+                    'When importing new survey responses, you must specify the names of the surveys they are for',
                   );
                 }
-                const firstSurveyResponse = await transactingModels.surveyResponse.findById(
-                  firstSurveyResponseId,
-                );
+                const surveyName = extractTabNameFromQuery(tabName, surveyNames);
+                const survey = await transactingModels.survey.findOne({ name: surveyName });
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
-
                 const user = await transactingModels.user.findById(req.userId);
                 const surveyDate = getDateForColumn(sheet, columnIndex);
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
-                  survey_id: firstSurveyResponse.survey_id, // All survey responses within a sheet should be for the same survey
+                  survey_id: survey.id,
                   assessor_name: `${user.first_name} ${user.last_name}`,
                   user_id: user.id,
                   entity_id: entity.id,
@@ -85,9 +82,6 @@ export async function updateSurveyResponses(req, res) {
                 // Validate that every header takes id form, i.e. is an existing or deleted response
                 await hasContent(columnHeader);
                 await takesIdForm(columnHeader);
-                if (!firstSurveyResponseId) {
-                  firstSurveyResponseId = columnHeader;
-                }
               }
             } catch (error) {
               throw new ImportValidationError(

@@ -20,4 +20,3 @@ export {
   upsertUserEntityPermission,
 } from './database';
 export { randomEmail, randomIntBetween, randomString } from './random';
-export { oneSecondSleep, sleep } from './sleep';

@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
 import {
   CardTabList,
@@ -26,7 +27,7 @@ import {
 } from '../../components';
 import { CreateOutbreakModal } from '../Modals';
 import { NotesTab } from '../NotesTab';
-import { countryFlagImage } from '../../utils';
+import { countryFlagImage, getCountryName } from '../../utils';
 import { useFetch } from '../../hooks';
 
 const Option = styled.span`
@@ -74,6 +75,7 @@ export const AlertsPanelComponent = React.memo(
     const sitesState = useFetch(fetchSitesData);
     const notesState = useFetch(fetchNotesData);
     const activityState = useFetch(fetchActivityData);
+    const { countryCode } = useParams();
 
     const handleChange = option => {
       // todo handle changes other than creating an outbreak
@@ -87,7 +89,7 @@ export const AlertsPanelComponent = React.memo(
           date="Week 9 Feb 25 - Mar 1, 2021"
           dateText="Triggered on:"
           avatarUrl={countryFlagImage('as')}
-          subheading="American Samoa"
+          subheading={getCountryName(countryCode)}
           heading="Acute Fever and Rash (AFR)"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />

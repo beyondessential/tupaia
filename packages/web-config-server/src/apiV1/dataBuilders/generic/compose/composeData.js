@@ -27,15 +27,19 @@ import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
  */
 
 export const composeData = async (config, aggregator, dhisApi) => {
-  const { dataBuilders } = config.dataBuilderConfig;
+  const { dataBuilders, fillWithNoData } = config.dataBuilderConfig;
   const responses = await fetchComposedData(config, aggregator, dhisApi);
+
+  if (Object.values(responses).every(({ data: responseData }) => containsNoData(responseData)))
+    return [];
 
   const data = [];
   Object.entries(responses).forEach(([name, { data: responseData }]) => {
-    if (!responseData || responseData.length === 0) return;
+    if (containsNoData(responseData) && !fillWithNoData) return;
+
     const responseObj = {};
     responseData.forEach(({ name: dataPointName, value }) => {
-      if (!(value === NO_DATA_AVAILABLE)) {
+      if (!(value === NO_DATA_AVAILABLE) || fillWithNoData) {
         responseObj[dataPointName] = value;
       }
     });
@@ -48,3 +52,8 @@ export const composeData = async (config, aggregator, dhisApi) => {
 
   return { data };
 };
+
+const containsNoData = responseData =>
+  !responseData ||
+  responseData.length === 0 ||
+  responseData.every(({ value }) => value === NO_DATA_AVAILABLE);

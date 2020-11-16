@@ -23,7 +23,7 @@ import {
   GRANULARITIES_WITH_ONE_DATE,
   roundStartEndDates,
 } from '../../utils/periodGranularities';
-import { MIN_DATE_PICKER_DATE } from './constants';
+import { DEFAULT_MIN_DATE } from './constants';
 
 const {
   DAY,
@@ -102,6 +102,8 @@ export const DatePickerDialog = ({
   granularity,
   startDate,
   endDate,
+  min,
+  max,
   onSetNewDates,
 }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
@@ -135,7 +137,8 @@ export const DatePickerDialog = ({
     return setErrorMessage('');
   };
 
-  const minMomentDate = moment(MIN_DATE_PICKER_DATE);
+  const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
+  const maxMomentDate = max ? moment(max) : moment();
 
   return (
     <Dialog
@@ -152,7 +155,7 @@ export const DatePickerDialog = ({
               granularity={granularity}
               momentDateValue={selectedStartDate}
               minMomentDate={minMomentDate}
-              maxMomentDate={moment()}
+              maxMomentDate={maxMomentDate}
               onChange={setSelectedStartDate}
             />
           </StyledDateRow>
@@ -162,7 +165,7 @@ export const DatePickerDialog = ({
             granularity={granularity}
             momentDateValue={selectedEndDate}
             minMomentDate={minMomentDate}
-            maxMomentDate={moment()}
+            maxMomentDate={maxMomentDate}
             onChange={setSelectedEndDate}
           />
         </StyledDateRow>
