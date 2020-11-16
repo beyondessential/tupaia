@@ -11,6 +11,11 @@ export class OptionSet extends RealmObject {
     if (doesIdExist(this.options, option.id)) return;
     this.options.push(option);
   }
+
+  getLargestSortOrder() {
+    const sortOrders = this.options.map(o => o.sortOrder);
+    return Math.max(...sortOrders);
+  }
 }
 
 OptionSet.schema = {

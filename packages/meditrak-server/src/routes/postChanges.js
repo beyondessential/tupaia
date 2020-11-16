@@ -15,6 +15,7 @@ import {
   takesIdForm,
   takesDateForm,
   constructIsOneOf,
+  isNumber,
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 
@@ -109,6 +110,16 @@ const constructEntitiesCreatedValidators = models => ({
 const constructIsValidEntity = models => async value =>
   new ObjectValidator(constructEntitiesCreatedValidators(models)).validate(value);
 
+const constructOptionsCreatedValidators = () => ({
+  id: [hasContent, takesIdForm],
+  value: [hasContent],
+  option_set_id: [hasContent, takesIdForm],
+  sort_order: [isNumber],
+});
+
+const constructIsValidOption = () => async value =>
+  new ObjectValidator(constructOptionsCreatedValidators()).validate(value);
+
 const constructSurveyResponseValidators = models => ({
   id: [hasContent, takesIdForm],
   assessor_name: [hasContent],
@@ -120,6 +131,7 @@ const constructSurveyResponseValidators = models => ({
   user_id: [hasContent, takesIdForm],
   answers: [isPresent],
   entities_created: [constructIsEmptyOr(constructEveryItem(constructIsValidEntity(models)))],
+  options_created: [constructIsEmptyOr(constructEveryItem(constructIsValidOption(models)))],
 });
 
 const constructAnswerValidators = models => ({
