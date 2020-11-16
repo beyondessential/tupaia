@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
 };
@@ -21,15 +23,15 @@ const DEFAULT_CONFIG = {
 // ]
 // See https://docs.sheetjs.com/#array-of-objects-input for more
 export const formatMatrixDataForExcel = (
-  { columns, categories: rowCategories, rows },
+  { columns, categories: rowCategories, rows, name: reportName },
   configIn,
   outputFormat = 'aoa',
 ) => {
   // Create the empty array of objects to build the data into
+  const ORIGIN = 'Tupaia.org';
   const formattedData = [];
   const columnCategories = columns[0].columns && columns; // If columns are grouped into categories, store as a well named const
   const config = { ...DEFAULT_CONFIG, ...configIn };
-
   // Returns populated array instead of object
   const formatRowData = row => {
     const rowData = columnCategories
@@ -63,7 +65,10 @@ export const formatMatrixDataForExcel = (
     return headersRowData;
   };
 
-  // add headers row to the second 'top' of the sheet
+  // Add title row (report name) to the top of the sheet
+  formattedData.push([reportName]);
+
+  // Add headers row to the second top of the sheet
   const headersRow = buildHeadersRow();
   formattedData.push(headersRow);
 
@@ -83,6 +88,9 @@ export const formatMatrixDataForExcel = (
     // This table has no row categories, just one set of rows
     formattedData.push(...rows.map(formatRowData));
   }
+
+  // Add export date and origin to the bottom of the sheet
+  formattedData.push([`Data exported from ${ORIGIN} on ${moment().format('Do MMM YY')}`]);
   return outputFormat === 'aoo' ? convertAoaToAoo(formattedData) : formattedData;
 };
 
