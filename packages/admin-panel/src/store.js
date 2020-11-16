@@ -16,6 +16,7 @@ const persistedRootReducer = persistReducer(
     key: 'root',
     storage: localforage,
     transforms: [RememberMeTransform],
+    whitelist: ['authentication'], // only persist logged in state
   },
   rootReducer,
 );
