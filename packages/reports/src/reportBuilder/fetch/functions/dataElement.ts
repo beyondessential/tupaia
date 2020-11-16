@@ -12,7 +12,7 @@ const fetchAnalytics = async (
   params: DataElementsFetchParams,
 ): Promise<FetchResponse> => {
   const { organisationUnitCode } = query;
-  const response = (await aggregator.fetchAnalytics(
+  const response = await aggregator.fetchAnalytics(
     params.dataElementCodes,
     {
       dataServices: [{ isDataRegional: true }],
@@ -22,13 +22,21 @@ const fetchAnalytics = async (
     {
       aggregationType: 'RAW',
     },
-  )) as FetchResponse;
+  );
   return response;
 };
 
 const buildParams = (params: unknown): DataElementsFetchParams => {
   if (!Array.isArray(params)) {
-    throw new Error(`Expected params object but got ${params}`);
+    throw new Error(`Expected an array of data element codes but got ${params}`);
+  }
+
+  const nonStringDataElementCode = params.find(param => typeof param !== 'string');
+
+  if (nonStringDataElementCode) {
+    throw new Error(
+      `Expected all data element codes to be strings, but got ${nonStringDataElementCode}`,
+    );
   }
 
   return {
@@ -36,7 +44,7 @@ const buildParams = (params: unknown): DataElementsFetchParams => {
   };
 };
 
-export const buildDataElementsFetch = (params: unknown) => {
+export const buildDataElementFetch = (params: unknown) => {
   const builtDataElementsFetchParams = buildParams(params);
   return (aggregator: Aggregator, query: FetchReportQuery) =>
     fetchAnalytics(aggregator, query, builtDataElementsFetchParams);
