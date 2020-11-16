@@ -80,11 +80,12 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
 }
 
 export const tableOfValuesForOrgUnits = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new TableOfValuesForOrgUnitsBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

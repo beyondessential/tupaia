@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { LoginFormComponent } from '../../src/containers/LoginForm/LoginFormComponent';
 import { EmailVerificationComponent } from '../../src/containers/EmailVerification/EmailVerification';
 import { RequestResetPasswordFormComponent } from '../../src/containers/RequestResetPasswordForm/RequestResetPasswordFormComponent';
-import { RequestProjectAccessComponent } from '../../src/containers/OverlayDiv/components/RequestProjectAccess';
+import { RequestProjectAccessComponent } from '../../src/containers/OverlayDiv/components/RequestProjectAccessDialog';
 import { SignupFormComponent } from '../../src/containers/SignupForm/SignupFormComponent';
 import { DARK_BLUE } from '../../src/styles';
 import { Form } from '../../src/containers/Form';
@@ -65,6 +65,7 @@ const RequestProjectAccessTemplate = args => <RequestProjectAccessComponent {...
 
 export const RequestProjectAccess = RequestProjectAccessTemplate.bind({});
 RequestProjectAccess.args = {
+  success: true,
   project: {
     name: 'Laos Schools',
     code: 'laos-123',
@@ -91,8 +92,7 @@ RequestProjectAccess.args = {
       hasAccess: false,
     },
   ],
-  isFetchingCountryAccessData: false,
-  isRequestingCountryAccess: false,
+  isLoading: false,
   hasRequestCountryAccessCompleted: false,
   errorMessage: '',
 };

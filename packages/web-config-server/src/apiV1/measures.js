@@ -62,11 +62,6 @@ export default class extends RouteHandler {
         this.req.models,
         accessibleMapOverlays,
       );
-
-      // Sort groups alphabetically
-      accessibleMapOverlayGroups = accessibleMapOverlayGroups.sort((a, b) =>
-        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
-      );
     }
 
     return {

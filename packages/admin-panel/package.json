@@ -1,7 +1,37 @@
 {
   "name": "@tupaia/admin-panel",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "description": "An interface for managing Tupaia data for non-developers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/admin-panel"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "react-scripts build",
+    "postbuild": "rm -rf served_build && mv build served_build",
+    "eject": "react-scripts eject",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix",
+    "start": "react-scripts start",
+    "start-dev": "npm run start",
+    "test": "react-scripts test --env=jsdom --passWithNoTests"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
@@ -39,32 +69,5 @@
     "redux-thunk": "^2.2.0",
     "styled-components": "^5.1.0",
     "uuid": "^3.2.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "start-dev": "npm run start",
-    "build": "react-scripts build",
-    "postbuild": "rm -rf served_build && mv build served_build",
-    "test": "react-scripts test --env=jsdom --passWithNoTests",
-    "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "eslintConfig": {
-    "env": {
-      "browser": true
-    }
   }
 }

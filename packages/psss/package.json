@@ -1,33 +1,40 @@
 {
   "name": "@tupaia/psss",
-  "private": true,
   "version": "0.1.0",
-  "description": "Pacific Syndromic Surveillance System",
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "private": true,
+  "description": "Pacific Syndromic Surveillance System client application",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia"
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/psss"
   },
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
   "scripts": {
     "build": "react-scripts build",
     "postbuild": "rm -rf served_build && mv build served_build",
-    "cypress:run": "cypress run",
     "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "eject": "react-scripts eject",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix",
     "pretest:test:cypress:run": "npm run build",
-    "start": "react-scripts start",
-    "start-dev": "npm-run-all -c -l -p start-server start",
+    "start-dev": "react-scripts start",
+    "start-fullstack": "npm-run-all -c -l -p start-server start",
     "start-server": "yarn workspace @tupaia/meditrak-server start",
     "test": "npm run test:jest",
-    "test:jest": "react-scripts test --env=jest-environment-jsdom-sixteen",
-    "test:cypress:open": "start-server-and-test start-dev 3000 cypress:open",
-    "test:cypress:run": "start-server-and-test start-dev 3000 cypress:run",
-    "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix ."
+    "test:cypress:open": "start-server-and-test start-fullstack 3000 cypress:open",
+    "test:cypress:run": "start-server-and-test start-fullstack 3000 cypress:run",
+    "test:jest": "react-scripts test --env=jest-environment-jsdom-sixteen"
   },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
+  },
+  "browserslist": [
+    "defaults"
+  ],
   "dependencies": {
     "@material-ui/core": "^4.9.11",
     "@material-ui/icons": "^4.9.1",
@@ -47,17 +54,10 @@
     "redux": "^4.0.2",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "styled-components": "^5.1.0",
     "whatwg-fetch": "^3.0.0"
   },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
-  },
-  "browserslist": [
-    "defaults"
-  ],
   "devDependencies": {
     "eslint-import-resolver-alias": "^1.1.2",
     "faker": "^4.1.0"

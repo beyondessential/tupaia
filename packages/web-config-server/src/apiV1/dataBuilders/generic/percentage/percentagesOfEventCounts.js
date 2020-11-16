@@ -81,11 +81,12 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
 }
 
 export const percentagesOfEventCounts = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new PercentagesOfEventCountsBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

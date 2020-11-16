@@ -40,6 +40,7 @@ const EVENTS = [
 ];
 
 const dataServices = [{ isDataRegional: true }];
+const models = {};
 const entity = {};
 const query = { organisationUnitCode: 'PG' };
 
@@ -51,6 +52,7 @@ describe('CountEventsPerPeriodByDataValueBuilder', () => {
   const assertBuilderResponseIsCorrect = async (sumConfig, expectedResponse) => {
     const config = { ...sumConfig, dataServices };
     const builder = new CountEventsPerPeriodByDataValueBuilder(
+      models,
       aggregator,
       dhisApi,
       config,

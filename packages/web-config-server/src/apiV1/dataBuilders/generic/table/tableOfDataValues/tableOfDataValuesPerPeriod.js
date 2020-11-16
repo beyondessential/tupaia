@@ -197,11 +197,12 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 }
 
 export const tableOfValuesPerPeriod = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new TableOfValuesPerPeriodBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

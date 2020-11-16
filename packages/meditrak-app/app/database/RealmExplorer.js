@@ -8,6 +8,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import * as dataTypes from './types';
+
 const DATA_TYPES = Object.keys(dataTypes);
 
 /**

@@ -3,8 +3,9 @@ import { QueryBuilder } from './QueryBuilder';
 import { buildAggregationOptions } from './buildAggregationOptions';
 
 export class Aggregator extends BaseAggregator {
-  constructor(dataBroker, routeHandler) {
+  constructor(dataBroker, models, routeHandler) {
     super(dataBroker);
+    this.models = models;
     this.routeHandler = routeHandler;
   }
 
@@ -22,6 +23,7 @@ export class Aggregator extends BaseAggregator {
 
     const entityAggregationOptions = queryBuilder.getEntityAggregationOptions();
     const aggregationOptions = await buildAggregationOptions(
+      this.models,
       initialAggregationOptions,
       dataSourceEntities,
       entityAggregationOptions,
@@ -41,6 +43,7 @@ export class Aggregator extends BaseAggregator {
 
     const entityAggregationOptions = queryBuilder.getEntityAggregationOptions();
     const aggregationOptions = await buildAggregationOptions(
+      this.models,
       {}, // No input aggregation for events (yet)
       dataSourceEntities,
       entityAggregationOptions,

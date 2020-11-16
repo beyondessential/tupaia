@@ -1,10 +1,10 @@
 import { expect } from 'chai';
+import { EntityType } from '@tupaia/database';
 import { basicDataVillage } from '/apiV1/dataBuilders/generic/orgUnit/basicDataVillage';
-import { Entity } from '/models/Entity';
 import sinon from 'sinon';
 
 const createEntity = parent =>
-  sinon.createStubInstance(Entity, {
+  sinon.createStubInstance(EntityType, {
     parent,
   });
 
