@@ -2,14 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
   fetchOperationalFacilityCodes,
   translateCategoryCodeToFacilityType,
   pluraliseFacilityType,
 } from '/apiV1/utils';
-import { ENTITY_TYPES } from '/models/Entity';
 
 class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
   async build() {
@@ -44,11 +42,11 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
 
   async fetchFacilityTypeData() {
     // Get facility entities under this entity, for the given project
-    const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
+    const facilityEntities = await this.fetchDescendantsOfType(this.models.entity.types.FACILITY);
     if (facilityEntities.length === 0) return {};
 
     // Find matching facility records
-    const facilities = await Facility.find({ code: facilityEntities.map(e => e.code) });
+    const facilities = await this.models.facility.find({ code: facilityEntities.map(e => e.code) });
 
     // Work out which "type" to use
     // To have a cohesive aggregation of facility types across multiple countries, we use standard
@@ -78,8 +76,9 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
 
 // Number of Operational Facilities by Facility Type
 export const countOperationalFacilitiesByType = async (queryConfig, aggregator, dhisApi) => {
-  const { dataBuilderConfig, query, entity } = queryConfig;
+  const { models, dataBuilderConfig, query, entity } = queryConfig;
   const builder = new CountOperationalFacilitiesByTypeBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

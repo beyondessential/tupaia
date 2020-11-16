@@ -1,5 +1,4 @@
 import { convertDateRangeToPeriods, replaceValues, CustomError } from '@tupaia/utils';
-import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { isSingleValue } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
@@ -58,7 +57,7 @@ export default class extends DataAggregatingRouteHandler {
 
     const { viewId, drillDownLevel } = this.query;
     // If drillDownLevel is undefined, send it through as null instead so it's not dropped from the object.
-    const dashboardReport = await DashboardReport.findOne({
+    const dashboardReport = await this.models.dashboardReport.findOne({
       id: viewId,
       drillDownLevel: drillDownLevel || null,
     });

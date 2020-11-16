@@ -34,6 +34,8 @@ export const max = array =>
     ? array.reduce((result, value) => Math.max(value, result), Number.NEGATIVE_INFINITY)
     : undefined;
 
+export const toArray = input => (Array.isArray(input) ? input : [input]);
+
 export const asyncFilter = async (array, predicate) =>
   Promise.all(array.map(predicate)).then(results => array.filter((_v, index) => results[index]));
 

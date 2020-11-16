@@ -8,7 +8,7 @@ import { CartesianChart } from './CartesianChart';
 import { CHART_TYPES } from './chartTypes';
 import { PieChart } from './PieChart';
 import { parseChartConfig } from './parseChartConfig';
-import { getIsTimeSeries } from './helpers';
+import { getIsTimeSeries, isDataKey } from './helpers';
 
 const UnknownChart = () => (
   <div style={VIEW_STYLES.newChartComing}>
@@ -27,14 +27,26 @@ export class ChartWrapper extends PureComponent {
   getViewContent() {
     const { viewContent } = this.props;
     const { chartConfig, data } = viewContent;
+    const massagedData = this.sortData(this.removeNonNumericData(data));
     return chartConfig
       ? {
           ...viewContent,
-          data: this.sortData(data),
+          data: massagedData,
           chartConfig: parseChartConfig(viewContent),
         }
-      : { ...viewContent, data: this.sortData(data) };
+      : { ...viewContent, data: massagedData };
   }
+
+  removeNonNumericData = data =>
+    data.map(dataSeries => {
+      const filteredDataSeries = {};
+      Object.entries(dataSeries).forEach(([key, value]) => {
+        if (!isDataKey(key) || !Number.isNaN(Number(value))) {
+          filteredDataSeries[key] = value;
+        }
+      });
+      return filteredDataSeries;
+    });
 
   sortData = data =>
     getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
