@@ -1,5 +1,6 @@
 import { COLOR_PALETTES } from '../../../styles';
 import { CHART_TYPES } from './chartTypes';
+import { isDataKey } from './helpers';
 
 const ADD_TO_ALL_KEY = '$all';
 
@@ -64,15 +65,8 @@ const sortChartConfigByLegendOrder = chartConfig => {
 
 const createDynamicConfig = (chartConfig, dynamicChartConfig, data) => {
   // Just find keys. Doesn't include keys which end in _metadata.
-  const keys = new Set();
-  data.forEach(dataPoint => {
-    const { timestamp, name, ...restOfData } = dataPoint;
-    Object.keys(restOfData).forEach(key => {
-      if (!(key.substr(-9) === '_metadata')) {
-        keys.add(key);
-      }
-    });
-  });
+  const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
+  const keys = new Set(dataKeys);
 
   // Add config to each key
   const newChartConfig = {};
