@@ -286,46 +286,6 @@ export class EnlargedDialogContent extends PureComponent {
   }
 }
 
-// const drillDownStyles = {
-//   wrapper: {
-//     backgroundColor: TRANS_BLACK,
-//     position: 'absolute',
-//     top: 0,
-//     left: 0,
-//     right: 0,
-//     bottom: 0,
-//     overflowY: 'auto',
-//     maxHeight: '100%',
-//     display: 'flex',
-//     flexDirection: 'column',
-//     zIndex: DIALOG_Z_INDEX + 1, // above export buttons.
-//   },
-//   titleBar: {
-//     display: 'flex',
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginBottom: 10,
-//     minHeight: 30,
-//   },
-//   leftCornerToolbar: {
-//     left: 5,
-//     right: undefined,
-//   },
-//   backButton: {
-//     cursor: 'pointer',
-//   },
-//   title: {
-//     margin: 0,
-//     color: WHITE,
-//   },
-//   error: {
-//     color: 'red',
-//   },
-//   progressIndicator: {
-//     alignSelf: 'center',
-//     marginTop: 50,
-//   },
-// };
 const styles = {
   titleText: {
     display: 'inline-block',
@@ -403,7 +363,6 @@ EnlargedDialogContent.propTypes = {
   organisationUnitName: PropTypes.string,
   onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
-  isDrilledDown: PropTypes.bool,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
   isExporting: PropTypes.bool,
@@ -416,7 +375,6 @@ EnlargedDialogContent.defaultProps = {
   onDrillDown: () => {},
   onUnDrillDown: () => {},
   onSetDateRange: () => {},
-  isDrilledDown: false,
   isLoading: false,
   errorMessage: null,
   isExporting: false,

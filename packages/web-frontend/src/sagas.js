@@ -708,16 +708,15 @@ function* fetchViewData(parameters, errorHandler) {
     organisationUnitCode,
     dashboardGroupId,
     viewId,
-    drillDownLevel,
     isExpanded,
     extraUrlParameters,
   } = parameters;
+
   const urlParameters = {
     organisationUnitCode,
     projectCode: selectCurrentProjectCode(state),
     dashboardGroupId,
     viewId,
-    drillDownLevel,
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
@@ -1033,8 +1032,10 @@ function* fetchEnlargedDialogData(action) {
     isExpanded: true,
     infoViewKey: drillDownInfoViewKey,
     // drillDown params
-    extraUrlParameters: { [parameterLink]: parameterValue },
-    drillDownLevel: drillDownLevel === 0 ? null : drillDownLevel,
+    extraUrlParameters:
+      drillDownLevel > 0 && parameterValue
+        ? { drillDownLevel, [parameterLink]: parameterValue }
+        : {},
   };
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
 

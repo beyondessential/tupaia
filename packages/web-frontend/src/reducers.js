@@ -97,6 +97,7 @@ import {
   REQUEST_PROJECT_ACCESS,
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
+  SET_ENLARGED_DIALOG_DATE_RANGE,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -629,7 +630,7 @@ function global(
 
 function enlargedDialog(
   state = {
-    isLoading: false, // Can be calculated in component
+    isLoading: false,
     contentByLevel: {
       0: {
         viewContent: null,
@@ -637,9 +638,9 @@ function enlargedDialog(
         endDate: null,
       },
     }, // Can be calculated in component with default passed in?
-    errorMessage: '', // Can be calculated in component
-    startDate: null, // Can be passed as a prop
-    endDate: null, // Can be passed as a prop
+    errorMessage: '',
+    startDate: null, // TODO: store these in the url
+    endDate: null,
   },
   action,
 ) {
@@ -652,7 +653,6 @@ function enlargedDialog(
         startDate: null,
         endDate: null,
       };
-
     case CLOSE_ENLARGED_DIALOG:
       return {
         ...state,
@@ -664,7 +664,12 @@ function enlargedDialog(
           },
         },
       };
-
+    case SET_ENLARGED_DIALOG_DATE_RANGE:
+      return {
+        ...state,
+        startDate: action.startDate,
+        endDate: action.endDate,
+      };
     case FETCH_ENLARGED_DIALOG_DATA:
       return {
         ...state,

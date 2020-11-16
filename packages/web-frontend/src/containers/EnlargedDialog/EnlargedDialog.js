@@ -21,6 +21,7 @@ import { DIALOG_Z_INDEX } from '../../styles';
 import { getInfoFromInfoViewKey, isMobile, sleep, stringToFilename } from '../../utils';
 import { exportToExcel, exportToPng } from '../../utils/exports';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
+import { LoadingIndicator } from '../Form/common';
 
 const Loader = styled.div`
   display: block;
@@ -53,6 +54,7 @@ const EnlargedDialogComponent = props => {
     onSetDateRange,
     startDate,
     endDate,
+    isLoading,
     projectCode,
     infoViewKey,
     fetchViewData,
@@ -69,9 +71,6 @@ const EnlargedDialogComponent = props => {
   const { drillDownLevel } = drillDownState;
 
   const viewContent = contentByLevel[drillDownLevel] && contentByLevel[drillDownLevel].viewContent;
-
-  console.log(props, viewContent);
-  const isLoading = false;
 
   const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
 
@@ -164,6 +163,8 @@ const EnlargedDialogComponent = props => {
     setExportDialogIsOpen(true);
   };
 
+  if (isLoading) return <LoadingIndicator />;
+
   return (
     <>
       <Dialog
@@ -202,7 +203,7 @@ const EnlargedDialogComponent = props => {
 
 EnlargedDialogComponent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
+  contentByLevel: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
   organisationUnitName: PropTypes.string.isRequired,
   onSetDateRange: PropTypes.func,
   isLoading: PropTypes.bool,
@@ -240,9 +241,12 @@ const styles = {
 };
 
 const mapStateToProps = state => ({
-  ...state.enlargedDialog, // TODO: Obviously remove...
+  isLoading: state.enlargedDialog.isLoading,
+  contentByLevel: state.enlargedDialog.contentByLevel,
+  startDate: state.enlargedDialog.startDate,
+  endDate: state.enlargedDialog.endDate,
+  errorMessage: state.enlargedDialog.errorMessage,
   projectCode: selectCurrentProjectCode(state),
-  viewConfigs: state.global.viewConfigs,
   infoViewKey: selectCurrentInfoViewKey(state),
   viewContent: selectCurrentExpandedViewContent(state), // TODO:
   organisationUnitName: selectCurrentOrgUnit(state).name,
@@ -254,17 +258,6 @@ const mapDispatchToProps = dispatch => ({
   fetchViewData: options => {
     dispatch(fetchEnlargedDialogData(options));
   },
-  dispatch,
 });
 
-const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  ...ownProps,
-});
-
-export const EnlargedDialog = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(EnlargedDialogComponent);
+export const EnlargedDialog = connect(mapStateToProps, mapDispatchToProps)(EnlargedDialogComponent);
