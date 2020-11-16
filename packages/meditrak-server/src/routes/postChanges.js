@@ -131,7 +131,7 @@ const constructSurveyResponseValidators = models => ({
   user_id: [hasContent, takesIdForm],
   answers: [isPresent],
   entities_created: [constructIsEmptyOr(constructEveryItem(constructIsValidEntity(models)))],
-  options_created: [constructIsEmptyOr(constructEveryItem(constructIsValidOption(models)))],
+  options_created: [constructIsEmptyOr(constructEveryItem(constructIsValidOption()))],
 });
 
 const constructAnswerValidators = models => ({
