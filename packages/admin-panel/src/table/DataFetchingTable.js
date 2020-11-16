@@ -36,7 +36,7 @@ const StyledAlert = styled(SmallAlert)`
   margin-top: 30px;
 `;
 
-const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
+const ExpandRowIcon = styled(AddBox)`
   transition: color 0.2s ease;
 
   &:hover {
@@ -122,7 +122,7 @@ class DataFetchingTableComponent extends React.Component {
         FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
         ExpanderComponent={({ isExpanded }) =>
-          isExpanded ? <AddBox color="primary" /> : <IndeterminateCheckboxIcon />
+          isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />
         }
         getPaginationProps={customPagination}
         SubComponent={
