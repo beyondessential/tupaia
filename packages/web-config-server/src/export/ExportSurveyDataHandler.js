@@ -49,21 +49,22 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const sheetNames = [];
     const sheets = {};
+    const reportName = data.name;
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
       const header = surveyData.data.columns.length
         ? `Data ${this.getExportDatesString(startDate, endDate)}`
         : `No data for ${surveyName} ${this.getExportDatesString(startDate, endDate)}`;
 
-      const headerData = [[header]];
+      const titleAndHeaderData = [[`${reportName}: ${surveyName}`], [header]];
       // Using array of arrays (aoa) input as transformations like mergeSurveys
       // increases the likelyhood of columns with same title (leads to missing keys in object json (aoo))
       const formattedData = surveyData.data.columns.length
         ? formatMatrixDataForExcel(surveyData.data)
         : [];
 
-      // Header
-      let sheet = xlsx.utils.aoa_to_sheet(headerData);
+      // Header and title
+      let sheet = xlsx.utils.aoa_to_sheet(titleAndHeaderData);
 
       const { skipHeader = true } = surveyData;
 
