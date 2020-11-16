@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
@@ -163,8 +164,6 @@ const EnlargedDialogComponent = props => {
     setExportDialogIsOpen(true);
   };
 
-  if (isLoading) return <LoadingIndicator />;
-
   return (
     <>
       <Dialog
@@ -174,6 +173,11 @@ const EnlargedDialogComponent = props => {
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
+        {isLoading && (
+          <Loader>
+            <CircularProgress />
+          </Loader>
+        )}
         {exportStatus === STATUS.LOADING && <Loader>Exporting...</Loader>}
         <EnlargedDialogContent
           exportRef={exportRef}

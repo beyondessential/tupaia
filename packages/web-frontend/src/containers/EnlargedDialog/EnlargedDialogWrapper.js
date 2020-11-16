@@ -29,7 +29,7 @@ EnlargedDialogWrapperComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  isVisible: selectCurrentExpandedViewId(state),
+  isVisible: !!selectCurrentExpandedViewId(state),
 });
 
 const mapDispatchToProps = dispatch => ({
