@@ -35,7 +35,13 @@ export class ConditionConfigValidator extends JsonFieldValidator {
 
       for (const condition of conditions) {
         const [targetValue, expression] = splitStringOn(condition, ':');
-        const codes = expressionParser.getVariables(expression);
+        const variables = expressionParser.getVariables(expression);
+        const codes = variables.map(variable => {
+          if (!variable.match(/^\$/)) {
+            throw new Error(`Variable ${variable} in formula must have prefix $`);
+          }
+          return variable.replace(/^\$/, '');
+        });
 
         for (const code of codes) {
           this.assertPointingToPrecedingQuestion(

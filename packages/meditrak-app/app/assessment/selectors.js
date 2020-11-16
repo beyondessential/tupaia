@@ -121,15 +121,12 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
   const values = {};
   const expressionParser = new ExpressionParser();
   const variables = expressionParser.getVariables(formula);
-  let translatedAnswerDisplayText = answerDisplayText;
-
   const getArithmeticAnswer = questionId => {
     const answer = getAnswerForQuestion(state, questionId);
 
     if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
       return valueTranslation[questionId][answer]; // return translated answer if there's any
     }
-
     if (answer !== undefined) {
       return answer; // return raw answer
     }
@@ -138,23 +135,23 @@ export const getArithmeticResult = (state, arithmeticQuestionId) => {
   };
 
   // Setting up scope values.
-  variables.forEach(questionIdVariable => {
-    const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix to get the actual questionId
-    values[questionIdVariable] = getArithmeticAnswer(questionId);
+  const questionIds = variables.map(v => v.replace(/^\$/, ''));
+  questionIds.forEach(questionId => {
+    values[`$${questionId}`] = getArithmeticAnswer(questionId); // scope variables need $ prefix to match the variables in expressions
   });
 
-  // Replace variables with real values in answerDisplayText
-  variables.forEach(questionIdVariable => {
-    const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix to get the actual questionId
-    const answer = getArithmeticAnswer(questionId);
-    translatedAnswerDisplayText = translatedAnswerDisplayText.replace(questionId, answer);
-  });
-
+  // Evaluate the expression
   expressionParser.setScope(values);
-
   const result = !isNaN(expressionParser.evaluate(formula))
     ? Math.round(expressionParser.evaluate(formula) * 1000) / 1000 // Round to 3 decimal places
     : 0;
+
+  // Replace variables with actual values in answerDisplayText
+  let translatedAnswerDisplayText = answerDisplayText;
+  questionIds.forEach(questionId => {
+    const answer = values[`$${questionId}`];
+    translatedAnswerDisplayText = translatedAnswerDisplayText.replace(questionId, answer);
+  });
   translatedAnswerDisplayText = translatedAnswerDisplayText.replace('$result', result);
 
   return {
@@ -176,7 +173,7 @@ export const getConditionResult = (state, conditionQuestionId) => {
     variables.forEach(questionIdVariable => {
       const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix
       const answer = getAnswerForQuestion(state, questionId);
-      const value = answer || defaultValues[questionId];
+      const value = answer !== undefined ? answer : defaultValues[questionId];
       values[questionIdVariable] = value;
     });
 
@@ -184,8 +181,8 @@ export const getConditionResult = (state, conditionQuestionId) => {
     return expressionParser.evaluate(formula);
   };
 
-  const result = Object.keys(conditions).find(displayValue =>
-    checkConditionMet(conditions[displayValue]),
+  const result = Object.keys(conditions).find(resultValue =>
+    checkConditionMet(conditions[resultValue]),
   );
 
   return {

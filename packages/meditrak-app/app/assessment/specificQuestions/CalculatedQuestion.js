@@ -6,7 +6,7 @@ import { Text } from '../../widgets';
 import { getLineHeight, THEME_FONT_SIZE_ONE } from '../../globalStyles';
 import { getArithmeticResult, getConditionResult } from '../selectors';
 
-export class CalculatedQuestionComponent extends PureComponent {
+class CalculatedQuestionComponent extends PureComponent {
   componentDidMount() {
     this.updateAnswer(this.props);
   }

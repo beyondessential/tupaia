@@ -48,7 +48,8 @@ const translateConditions = async (models, conditionsConfig, defaultValuesConfig
   // Translate the expressions
   for (const condition of conditions) {
     const [targetValue, expression] = splitStringOn(condition, ':');
-    const codes = expressionParser.getVariables(expression);
+    const variables = expressionParser.getVariables(expression);
+    const codes = variables.map(v => v.replace(/^\$/, ''));
     const translatedExpression = await translateExpression(models, expression, codes);
     translatedConditions[targetValue] = {
       formula: translatedExpression,
@@ -56,12 +57,22 @@ const translateConditions = async (models, conditionsConfig, defaultValuesConfig
   }
 
   const defaultValues = splitStringOnComma(defaultValuesConfig);
+  const codes = [
+    ...new Set( // Remove duplicated codes
+      defaultValues.map(defaultValue => {
+        const [key] = splitStringOn(defaultValue, ':');
+        const [targetValue, code] = splitStringOn(key, '.');
+        return code;
+      }),
+    ),
+  ];
 
+  const questionCodeToId = await models.question.findCodeToId(codes);
   // Translate the defaultValues (optional)
   for (const defaultValue of defaultValues) {
     const [key, value] = splitStringOn(defaultValue, ':');
     const [targetValue, code] = splitStringOn(key, '.');
-    const { id: questionId } = await models.question.findOne({ code });
+    const questionId = questionCodeToId[code];
 
     if (!translatedConditions[targetValue]) {
       translatedConditions[targetValue] = {};

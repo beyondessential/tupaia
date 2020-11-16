@@ -36,7 +36,13 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
   constructFormulaPointsToOtherQuestions(rowIndex) {
     const expressionParser = new ExpressionParser();
     return value => {
-      const codes = expressionParser.getVariables(value);
+      const variables = expressionParser.getVariables(value);
+      const codes = variables.map(variable => {
+        if (!variable.match(/^\$/)) {
+          throw new Error(`Variable ${variable} in formula must have prefix $`);
+        }
+        return variable.replace(/^\$/, '');
+      });
 
       for (const code of codes) {
         this.assertPointingToPrecedingQuestion(

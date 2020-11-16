@@ -9,7 +9,8 @@ import { splitStringOn, splitStringOnComma, translateExpression } from '../../ut
 export const processArithmeticConfig = async (models, config) => {
   const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
   const expressionParser = new ExpressionParser();
-  const codes = expressionParser.getVariables(formula);
+  const variables = expressionParser.getVariables(formula);
+  const codes = variables.map(v => v.replace(/^\$/, ''));
 
   let translatedConfig = {
     formula: await translateExpression(models, formula, codes),
@@ -40,7 +41,9 @@ export const processArithmeticConfig = async (models, config) => {
 };
 
 /**
+ * Excel config
  * defaultValues: SchFF00Section1Total:0,SchFF00Section1TotalObtainable:0
+ *
  * will be converted to:
  * defaultValues:{
  *     5ed7558b61f76a6ba5003114:0,
@@ -52,18 +55,25 @@ export const processArithmeticConfig = async (models, config) => {
 const translateDefaultValues = async (models, defaultValuesConfig) => {
   const defaultValues = splitStringOnComma(defaultValuesConfig);
   const translatedDefaultValues = {};
-
-  for (const defaultValue of defaultValues) {
+  const codeToValue = {};
+  defaultValues.forEach(defaultValue => {
     const [code, value] = splitStringOn(defaultValue, ':');
-    const { id: questionId } = await models.question.findOne({ code });
+    codeToValue[code] = value;
+  });
+  const questionCodeToId = await models.question.findCodeToId(Object.keys(codeToValue));
+
+  Object.entries(codeToValue).forEach(([code, value]) => {
+    const questionId = questionCodeToId[code];
     translatedDefaultValues[questionId] = value;
-  }
+  });
 
   return translatedDefaultValues;
 };
 
 /**
- * valueTranslation: SchCVD016a.Yes=3,SchCVD016a.No=0
+ * Excel config
+ * valueTranslation: SchCVD016a.Yes:3,SchCVD016a.No:0
+ *
  * will be converted to:
  * valueTranslation: {
  *		5ed7558b61f76a6ba5003114: { Yes: 3, No: 0 }
@@ -74,11 +84,20 @@ const translateDefaultValues = async (models, defaultValuesConfig) => {
 const translateValueTranslation = async (models, valueTranslationConfig) => {
   const valueTranslation = splitStringOnComma(valueTranslationConfig);
   const translatedValueTranslation = {};
+  const codes = [
+    ...new Set( // Remove duplicated codes
+      valueTranslation.map(defaultValue => {
+        const [code] = splitStringOn(defaultValue, '.');
+        return code;
+      }),
+    ),
+  ];
+  const questionCodeToId = await models.question.findCodeToId(codes);
 
   for (const translation of valueTranslation) {
     const [code, value] = splitStringOn(translation, ':');
     const [questionCode, questionOption] = splitStringOn(code, '.');
-    const { id: questionId } = await models.question.findOne({ code: questionCode });
+    const questionId = questionCodeToId[questionCode];
 
     if (!translatedValueTranslation[questionId]) {
       translatedValueTranslation[questionId] = {};
@@ -98,9 +117,10 @@ const translateValueTranslation = async (models, valueTranslationConfig) => {
  */
 const translateAnswerDisplayText = async (models, text, codes) => {
   let translatedText = text;
+  const questionCodeToId = await models.question.findCodeToId(codes);
 
   for (const code of codes) {
-    const { id: questionId } = await models.question.findOne({ code });
+    const questionId = questionCodeToId[code];
     translatedText = translatedText.replace(code, questionId);
   }
 
