@@ -7,6 +7,7 @@ import React from 'react';
 import { Assignment, InsertChart, PeopleAlt, Flag, Storage } from '@material-ui/icons';
 import { StrivePage } from './pages/StrivePage';
 import {
+  CountriesPage,
   EntitiesPage,
   OptionSetsPage,
   PermissionGroupsPage,
@@ -127,6 +128,11 @@ export const ROUTES = [
         label: 'Entities',
         to: '',
         component: EntitiesPage,
+      },
+      {
+        label: 'Countries',
+        to: '',
+        component: CountriesPage,
       },
     ],
   },
