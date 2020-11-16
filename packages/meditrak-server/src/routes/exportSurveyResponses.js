@@ -13,6 +13,7 @@ import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAcces
 
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
+const ORIGIN = 'Tupaia.org';
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
 export const API_DATE_FORMAT = 'YYYY-MM-DD';
 const INFO_COLUMNS = {
@@ -33,7 +34,7 @@ function getExportDatesString(startDate, endDate) {
   } else if (endDate) {
     dateString = `before ${moment(endDate).format(format)} `;
   }
-  return `${dateString}as of ${moment().format(format)}`;
+  return `${dateString}`;
 }
 function getEasyReadingInfoColumns(startDate, endDate) {
   return { text: `Survey responses ${getExportDatesString(startDate, endDate)}` };
@@ -296,6 +297,12 @@ export async function exportSurveyResponses(req, res) {
         });
       });
 
+      // Add export date and origin
+      exportData.push(
+        [],
+        [],
+        [`Data exported from ${ORIGIN} on ${moment().format('Do MMM YYYY')}`],
+      );
       addDataToSheet(currentSurvey.name, exportData);
     }
   } catch (error) {
