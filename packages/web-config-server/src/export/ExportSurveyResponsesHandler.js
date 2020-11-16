@@ -13,6 +13,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       latest,
       startDate,
       endDate,
+      viewId,
       easyReadingMode,
     } = this.query;
     const meditrakServerEndpoint = 'export/surveyResponses';
@@ -21,6 +22,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       surveyCodes,
       startDate,
       endDate,
+      viewId,
       easyReadingMode,
     };
 

@@ -67,6 +67,7 @@ export async function exportSurveyResponses(req, res) {
     latest = false,
     startDate,
     endDate,
+    viewId,
     easyReadingMode = false,
   } = req.query;
   let { surveyId, countryId } = req.query;
@@ -79,10 +80,15 @@ export async function exportSurveyResponses(req, res) {
 
   // Create empty workbook to contain survey response export
   const workbook = { SheetNames: [], Sheets: {} };
-
+  console.log(viewId);
   try {
     let country;
     let entities;
+    let reportName;
+    if (viewId) {
+      const dashboardReport = await models.dashboardReport.findById(viewId);
+      reportName = dashboardReport.viewJson.name;
+    }
     if (countryCode) {
       country = await models.country.findOne({ code: countryCode });
       countryId = country.id;
@@ -163,7 +169,7 @@ export async function exportSurveyResponses(req, res) {
         addDataToSheet(currentSurvey.name, exportData);
         continue;
       }
-      let exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
+      const exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
       const surveyResponseAnswers = [];
       const processSurveyResponse = async (currentSurveyResponse, currentEntity) => {
         const surveyDate = currentSurveyResponse.timezoneAwareSubmissionTime();
@@ -256,6 +262,11 @@ export async function exportSurveyResponses(req, res) {
             endDate,
           )}`,
         ]);
+      }
+
+      // Add title
+      if (reportName) {
+        exportData.unshift([`${reportName}, ${country.name || ''}`]);
       }
 
       // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
