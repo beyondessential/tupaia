@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
 
-import { Text, Icon, TouchableOpacity } from './';
+import { Text, Icon, TouchableOpacity } from '.';
 import {
   getThemeColorOneFaded,
   BORDER_RADIUS,
@@ -23,36 +23,36 @@ export const ProgressActionBar = ({
 }) => (
   <View style={[localStyles.wrapper, style]}>
     <TouchableOpacity
-      analyticsLabel={'Progress Action Bar: Previous'}
+      analyticsLabel="Progress Action Bar: Previous"
       style={localStyles.buttonWrapper}
       onPress={onPressPrevious}
       disabled={!isPreviousEnabled}
     >
       <View style={!isPreviousEnabled ? localStyles.buttonDisabled : {}}>
-        <Icon name={'angle-left'} />
+        <Icon name="angle-left" />
       </View>
     </TouchableOpacity>
     <TouchableOpacity
-      analyticsLabel={'Progress Action Bar: Table of Contents'}
+      analyticsLabel="Progress Action Bar: Table of Contents"
       style={localStyles.progressWrapper}
       onPress={onPressToc}
       disabled={!isTableOfContentsEnabled}
     >
       <Text style={localStyles.label} numberOfLines={1}>
-        <Icon name={'list'} size={BASELINE_FONT_SIZE * 1.3} /> {label}
+        <Icon name="list" size={BASELINE_FONT_SIZE * 1.3} /> {label}
       </Text>
       <View style={localStyles.progressBar}>
         <View style={[localStyles.progressBarFill, { right: `${(1 - progress) * 100} %` }]} />
       </View>
     </TouchableOpacity>
     <TouchableOpacity
-      analyticsLabel={'Progress Action Bar: Next'}
+      analyticsLabel="Progress Action Bar: Next"
       style={localStyles.buttonWrapper}
       onPress={onPressNext}
       disabled={!isNextEnabled}
     >
       <View style={!isNextEnabled ? localStyles.buttonDisabled : {}}>
-        <Icon name={'angle-right'} />
+        <Icon name="angle-right" />
       </View>
     </TouchableOpacity>
   </View>

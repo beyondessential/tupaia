@@ -3,17 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { DatabaseError } from '@tupaia/utils';
+import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
   otherModels = {};
 
   constructor(database) {
     this.database = database;
-    // Add change handler to database if defined, and this is the singleton instance of the model
-    const { onChange } = this.constructor;
-    if (this.database.isSingleton && onChange) {
-      this.addChangeHandler(change => onChange(change, this));
-    }
 
     // this.schema contains information about the columns on the table in the database, e.g.:
     // { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
@@ -22,22 +18,41 @@ export class DatabaseModel {
     this.schema = null;
 
     this.cache = {};
+    this.cachedFunctionInvalidationCancellers = {};
 
     // If this model uses the singleton database, it is probably long running, so be sure to
     // invalidate the cache any time a change is detected. Non-singleton models are those created
     // during transactions, so are short lived and unlikely to need cache invalidation - thus we
     // avoid making an additional connection to pubsub and just leave their cache untouched
     if (this.database.isSingleton) {
+      // fully reset cache on any change to this model's records
       this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
-        this.cache = {}; // invalidate cache on any change
+        this.cache = {};
       });
+
+      // if this model has caching that depends on other models, also add invalidation for them
+      this.cacheDependencies.forEach(databaseType => {
+        this.database.addChangeHandlerForCollection(databaseType, () => {
+          this.cache = {};
+        });
+      });
+
+      // invalidate cached schema for this model on any change to db schema
       this.database.addSchemaChangeHandler(() => {
-        // invalidate cached schema for this model on any change to db schema
         this.schema = null;
         this.fieldNames = null;
       });
     }
   }
+
+  // can be overridden by any subclass that needs cache invalidation when a related table changes
+  get cacheDependencies() {
+    return [];
+  }
+
+  // functionArguments should receive the 'arguments' object
+  getCacheKey = (functionName, functionArguments) =>
+    `${functionName}:${JSON.stringify(Object.values(functionArguments))}`;
 
   addChangeHandler = handler =>
     this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, handler);
@@ -78,15 +93,24 @@ export class DatabaseModel {
     };
   }
 
-  async getQueryOptions(customQueryOptions = {}) {
-    const options = {};
-
+  async getColumnsForQuery() {
     // Alias field names to the table to prevent errors when joining other tables
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
-    options.columns = fieldNames.map(fieldName => {
-      return `${this.databaseType}.${fieldName}`;
+    return fieldNames.map(fieldName => {
+      const qualifiedName = `${this.databaseType}.${fieldName}`;
+      const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
+      if (customSelector) {
+        return { [fieldName]: customSelector(qualifiedName) };
+      }
+      return qualifiedName;
     });
+  }
+
+  async getQueryOptions(customQueryOptions = {}) {
+    const options = {};
+
+    options.columns = await this.getColumnsForQuery();
 
     if (this.joins.length > 0) {
       options.multiJoin = this.joins;
@@ -115,18 +139,13 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
-  async findManyById(ids) {
+  async findManyById(ids, criteria = {}) {
     if (!ids) {
       throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
     }
-    const records = [];
-    const batchSize = this.database.maxBindingsPerQuery;
-    for (let i = 0; i < ids.length; i += batchSize) {
-      const batchOfIds = ids.slice(i, i + batchSize);
-      const batchOfRecords = await this.find({ id: batchOfIds });
-      records.push(...batchOfRecords);
-    }
-    return records;
+    return runDatabaseFunctionInBatches(ids, async batchOfIds =>
+      this.find({ id: batchOfIds, ...criteria }),
+    );
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {

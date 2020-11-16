@@ -17,26 +17,27 @@ if [ "$identity_file" == "" ]; then
 fi
 
 while [ "$2" != "" ]; do
-  case $2 in
-      -s | --server)
+    case $2 in
+    -s | --server)
         shift
         server=$2
         shift
         ;;
-      -t | --target)
+    -t | --target)
         shift
         target_dir=$2
         shift
         ;;
-      -h | --help )
+    -h | --help)
         echo "Will download a dump of the latest Tupaia database into the specified target path"
-        echo $USAGE;
+        echo $USAGE
         exit
         ;;
-      * )
+    *)
         echo $USAGE
         exit 1
-  esac
+        ;;
+    esac
 done
 
 domain=$server.tupaia.org
@@ -45,14 +46,16 @@ dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
 
 echo "Creating dump file in $domain..."
 ssh -o StrictHostKeyChecking=no -i $identity_file $host \
-  "sudo -u postgres bash -c \"pg_dump tupaia > $dump_file_path\""
-
+    "sudo -u postgres bash -c \"pg_dump tupaia > $dump_file_path\""
 
 echo "Compressing dump file"
 ssh -o StrictHostKeyChecking=no -i $identity_file $host \
-  "sudo gzip -f $dump_file_path"
+    "sudo gzip -f $dump_file_path"
 
-target_path="$(cd "$target_dir"; pwd)/$DUMP_FILE_NAME.gz"
+target_path="$(
+    cd "$target_dir"
+    pwd
+)/$DUMP_FILE_NAME.gz"
 echo "Downloading dump file into '$target_path'..."
 scp -i $identity_file "$host:$dump_file_path.gz" $target_dir
 

@@ -6,24 +6,31 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { BLUE, TUPAIA_ORANGE } from '../../styles';
+import { BLUE } from '../../styles';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 
+const NoDataMessageText = styled.p`
+  color: ${BLUE};
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.8;
+`;
+
 export const NoDataMessage = ({ viewContent }) => {
-  const style = { color: BLUE };
   let message = 'No data';
 
   if (viewContent.noDataMessage) {
     message = viewContent.noDataMessage;
   } else if (viewContent.source === 'mSupply') {
-    style.color = TUPAIA_ORANGE;
     message = 'Requires mSupply';
   } else if (viewContent.startDate && viewContent.endDate) {
     message = `No data for ${viewContent.startDate} to ${viewContent.endDate}`;
   }
 
-  return <span style={style}>{message}</span>;
+  return <NoDataMessageText>{message}</NoDataMessageText>;
 };
 
 NoDataMessage.propTypes = {

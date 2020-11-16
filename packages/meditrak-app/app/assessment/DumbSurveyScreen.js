@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import {
@@ -105,7 +105,7 @@ export class DumbSurveyScreen extends React.Component {
 
   getStyleForContent(forScreenIndex) {
     const { screenIndex: currentScreenIndex } = this.props;
-    const lastScreenIndex = this.state.lastScreenIndex;
+    const { lastScreenIndex } = this.state;
     const isCurrentScreen = forScreenIndex === currentScreenIndex;
     const isIncreasing = currentScreenIndex > lastScreenIndex;
 
@@ -184,18 +184,18 @@ export class DumbSurveyScreen extends React.Component {
                 ) : (
                   <QuestionScreen database={database} screenIndex={screenIndexForThisContent} />
                 )}
-                {isSubmitting && <ActivityIndicator color={THEME_COLOR_ONE} size={'large'} />}
+                {isSubmitting && <ActivityIndicator color={THEME_COLOR_ONE} size="large" />}
                 <View style={localStyles.buttonContainerContainer}>
                   {isCurrentContent && onPressSubmit !== null && !isSubmitting && (
                     <Button
-                      title={'Submit'}
+                      title="Submit"
                       onPress={onPressSubmit}
                       style={localStyles.submitButton}
                     />
                   )}
                   {isCurrentContent && onPressRepeat !== null && !isSubmitting && (
                     <Button
-                      title={'Submit and repeat'}
+                      title="Submit and repeat"
                       onPress={onPressRepeat}
                       style={localStyles.submitButton}
                     />

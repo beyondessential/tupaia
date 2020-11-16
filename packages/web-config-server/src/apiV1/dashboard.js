@@ -1,10 +1,12 @@
-import { DashboardGroup, DashboardReport } from '/models';
+import { filterEntities } from '@tupaia/utils';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
-import { checkEntityAgainstConditions } from './utils';
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ID = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ID = 'no_access';
+
+const checkEntityAgainstConditions = (entity, conditions = {}) =>
+  filterEntities([entity], conditions).length === 1;
 
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
@@ -18,7 +20,7 @@ export default class extends RouteHandler {
     // return all matching userGroup and dashboard group name configs
     // (can have same userGroup in different dashboard group names)
     const hierarchyId = await this.fetchHierarchyId();
-    const dashboardGroups = await DashboardGroup.getDashboardGroups(
+    const dashboardGroups = await this.models.dashboardGroup.getDashboardGroups(
       userGroups,
       organisationLevel,
       entity,
@@ -26,7 +28,7 @@ export default class extends RouteHandler {
       hierarchyId,
     );
 
-    const allDashboardGroups = await DashboardGroup.getAllDashboardGroups(
+    const allDashboardGroups = await this.models.dashboardGroup.getAllDashboardGroups(
       organisationLevel,
       entity,
       query.projectCode,
@@ -92,7 +94,7 @@ export default class extends RouteHandler {
     const views = [];
     for (let i = 0; i < dashboardReportIds.length; i++) {
       const viewId = dashboardReportIds[i];
-      const reports = await DashboardReport.find({
+      const reports = await this.models.dashboardReport.find({
         id: viewId,
       });
 

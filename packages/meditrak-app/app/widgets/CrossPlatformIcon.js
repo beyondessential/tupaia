@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { Platform } from 'react-native';
@@ -12,7 +12,7 @@ export function CrossPlatformIcon({ name, ...restOfProps }) {
 
   // Note: library property must appear after restOfProps to override
   // default library prop.
-  return <Icon name={iconName} {...restOfProps} library={'Ionic'} />;
+  return <Icon name={iconName} {...restOfProps} library="Ionic" />;
 }
 
 CrossPlatformIcon.propTypes = {

@@ -14,10 +14,10 @@
     "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
-    "test": "mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
-    "test:debug": "mocha --inspect-brk"
+    "lint:fix": "yarn lint --fix",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage",
+    "test:debug": "yarn test --debug"
   },
   "dependencies": {
     "@tupaia/data-api": "1.0.0",

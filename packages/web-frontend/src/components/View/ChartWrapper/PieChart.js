@@ -239,7 +239,7 @@ export class PieChart extends PureComponent {
             activeShape={this.renderActiveShape}
             onMouseOver={this.handleMouseEnter}
             onMouseOut={this.handleMouseOut}
-            isAnimationActive={isEnlarged}
+            isAnimationActive={!isExporting && isEnlarged}
             onClick={this.onItemClick}
             label={isExporting}
             startAngle={360 + 90}

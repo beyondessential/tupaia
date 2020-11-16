@@ -35,7 +35,7 @@ describe('mapMeasureDataToCountries()', () => {
   });
 
   it('replace facility orgUnit codes with their corresponding country codes', async () => {
-    const countryAnalytics = await mapMeasureDataToCountries(ANALYTICS);
+    const countryAnalytics = await mapMeasureDataToCountries(models, ANALYTICS);
     countryAnalytics.forEach(analytic => {
       expect(analytic.organisationUnitCode).to.equal(ENTITY_COUNTRY_CODE);
     });

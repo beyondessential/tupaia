@@ -1,10 +1,10 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button } from './';
+import { Button } from '.';
 import { THEME_COLOR_ONE, THEME_COLOR_TWO, BORDER_RADIUS } from '../globalStyles';
 
 export const BlueButton = props => {

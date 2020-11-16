@@ -19,21 +19,28 @@ export class IndicatorModel extends DatabaseModel {
   }
 }
 
-const onChangeUpdateDataElement = async ({ type: changeType, record }, models) => {
-  const { code } = record;
-
+const onChangeUpdateDataElement = async (
+  { type: changeType, new_record: newRecord, old_record: oldRecord },
+  models,
+) => {
   switch (changeType) {
     case 'update':
+      if (oldRecord && oldRecord.code !== newRecord.code) {
+        await models.dataSource.delete({
+          code: oldRecord.code,
+          type: models.dataSource.getTypes().DATA_ELEMENT,
+        });
+      }
       return models.dataSource.findOrCreate(
         {
-          code,
+          code: newRecord.code,
           type: models.dataSource.getTypes().DATA_ELEMENT,
           service_type: models.dataSource.SERVICE_TYPES.INDICATOR,
         },
         {},
       );
     case 'delete':
-      return models.dataSource.delete({ code });
+      return models.dataSource.delete({ code: oldRecord.code });
     default:
       throw new Error(`Non supported change type: ${changeType}`);
   }
