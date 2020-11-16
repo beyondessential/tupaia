@@ -1,9 +1,12 @@
-import { convertDateRangeToPeriods, replaceValues, CustomError } from '@tupaia/utils';
+import { convertDateRangeToPeriods, CustomError, replaceValues, utcMoment } from '@tupaia/utils';
 import { getDhisApiInstance } from '/dhis';
 import { isSingleValue } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { DashboardPermissionsChecker } from './permissions';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
+
+// Same as in @tupaia/web-frontend
+const DEFAULT_MIN_DATE = '20150101';
 
 const viewFail = {
   type: 'View Error',
@@ -14,13 +17,6 @@ const noViewWithId = {
   responseText: {
     status: 'viewError',
     details: 'No view with corresponding id',
-  },
-};
-
-const viewNotInGroup = {
-  responseText: {
-    status: 'viewError',
-    details: 'Dashboard group does not contain view',
   },
 };
 
@@ -113,7 +109,12 @@ export default class extends DataAggregatingRouteHandler {
 
   // common view translation (for all possible views)
   addViewMetaData = inJson => {
-    const { viewJson, query, startDate, endDate } = this;
+    const {
+      viewJson,
+      query,
+      startDate = DEFAULT_MIN_DATE,
+      endDate = utcMoment().format('YYYYMMDD'),
+    } = this;
     const { drillDown } = viewJson;
     let returnJson = {
       viewId: query.viewId,

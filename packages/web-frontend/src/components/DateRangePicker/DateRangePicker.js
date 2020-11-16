@@ -15,7 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import { Error } from '../Error';
-import { DatePickerDialog } from './DatePickerDialog';
+import DatePickerDialog from './DatePickerDialog';
 import {
   momentToDateString,
   GRANULARITIES,
@@ -114,8 +114,8 @@ export const DateRangePicker = ({
   align,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [initialStartDate, setInitialStartDate] = useState(startDate);
-  const [initialEndDate, setInitialEndDate] = useState(endDate);
+  const [initialStartDate] = useState(startDate);
+  const [initialEndDate] = useState(endDate);
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
   const { momentShorthand } = GRANULARITY_CONFIG[granularity];
@@ -231,8 +231,8 @@ export const DateRangePicker = ({
           granularity={granularity}
           startDate={currentStartDate}
           endDate={currentEndDate}
-          min={minMomentDate}
-          max={maxMomentDate}
+          minMomentDate={minMomentDate}
+          maxMomentDate={maxMomentDate}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onSetNewDates={onSetDates}

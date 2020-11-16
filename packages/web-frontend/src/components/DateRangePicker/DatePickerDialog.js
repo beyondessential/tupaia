@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
-import moment from 'moment';
 import styled from 'styled-components';
 import { DIALOG_Z_INDEX } from '../../styles';
 import { Error } from '../Error';
@@ -21,9 +21,9 @@ import { QuarterPicker } from './QuarterPicker';
 import {
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_SHAPE,
   roundStartEndDates,
 } from '../../utils/periodGranularities';
-import { DEFAULT_MIN_DATE } from './constants';
 
 const {
   DAY,
@@ -78,6 +78,10 @@ const DateRow = ({ granularity, ...props }) => {
   }
 };
 
+DateRow.propTypes = {
+  granularity: GRANULARITY_SHAPE.isRequired,
+};
+
 const getLabelText = granularity => {
   switch (granularity) {
     default:
@@ -96,14 +100,14 @@ const StyledDateRow = styled.div`
   margin-top: 30px;
 `;
 
-export const DatePickerDialog = ({
+const DatePickerDialog = ({
   isOpen,
   onClose,
   granularity,
   startDate,
   endDate,
-  min,
-  max,
+  minMomentDate,
+  maxMomentDate,
   onSetNewDates,
 }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
@@ -136,9 +140,6 @@ export const DatePickerDialog = ({
     onClose();
     return setErrorMessage('');
   };
-
-  const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
-  const maxMomentDate = max ? moment(max) : moment();
 
   return (
     <Dialog
@@ -180,3 +181,18 @@ export const DatePickerDialog = ({
     </Dialog>
   );
 };
+
+const stringOrMoment = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
+
+DatePickerDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  granularity: GRANULARITY_SHAPE.isRequired,
+  startDate: stringOrMoment.isRequired,
+  endDate: stringOrMoment.isRequired,
+  minMomentDate: PropTypes.object.isRequired,
+  maxMomentDate: PropTypes.object.isRequired,
+  onSetNewDates: PropTypes.func.isRequired,
+};
+
+export default DatePickerDialog;
