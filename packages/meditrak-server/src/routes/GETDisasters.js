@@ -24,8 +24,8 @@ const createDBPermissionsFilter = accessPolicy => {
 
 /**
  * Handles endpoints:
- * - /disaster
- * - /disaster/:disasterId
+ * - /disasters
+ * - /disasters/:disasterId
  */
 export class GETDisasters extends GETHandler {
   customJoinConditions = {
