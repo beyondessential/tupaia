@@ -61,7 +61,7 @@ const IMPORT_CONFIG = {
 export const DisasterResponsePage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Disasters"
-    endpoint="disaster"
+    endpoint="disasters"
     columns={DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}

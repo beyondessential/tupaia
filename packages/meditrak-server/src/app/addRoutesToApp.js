@@ -121,7 +121,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
   app.get('(/v[0-9]+)/answer/:recordId?', getAnswers);
-  app.get('(/v[0-9]+)/disaster/:recordId?', getDisasters);
+  app.get('(/v[0-9]+)/disasters/:recordId?', getDisasters);
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
   app.get('(/v[0-9]+)/mapOverlays/:recordId?', getMapOverlays);
