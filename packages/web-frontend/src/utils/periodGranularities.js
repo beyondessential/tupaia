@@ -252,7 +252,7 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     return roundStartEndDates(periodGranularity, startDate, endDate);
   }
 
-  return { startDate: DEFAULT_MIN_DATE, endDate: moment().format('YYYYMMDD') };
+  return { startDate: moment(DEFAULT_MIN_DATE), endDate: moment() };
 };
 
 export function getDefaultDates(state) {
