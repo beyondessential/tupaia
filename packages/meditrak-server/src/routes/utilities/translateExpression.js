@@ -23,7 +23,7 @@ export const translateExpression = async (models, rawExpression, codes) => {
 
   for (const code of codes) {
     const questionId = questionCodeToId[code];
-    // UUID often starts with a number which is invalid when evaluating using mathjs
+    // Retain the $ prefix, as UUID often starts with a number (breaks evaluation in mathjs)
     expression = expression.replace(`$${code}`, `$${questionId}`);
   }
 
