@@ -7,7 +7,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 export class GetStringsFromBinaryDataBuilder extends DataBuilder {
   async build() {
-    const { dataElementToString } = this.config;
+    const { dataElementToString, delimiter = ', ' } = this.config;
     const { period, results } = await this.fetchAnalytics(Object.keys(dataElementToString));
 
     const stringArrayByOrgUnit = [];
@@ -35,7 +35,7 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
     return {
       data: Object.entries(stringArrayByOrgUnit).map(([organisationUnitCode, valueArray]) => ({
         organisationUnitCode,
-        value: valueArray.join(', '),
+        value: valueArray.join(delimiter),
       })),
       period,
     };
@@ -43,6 +43,7 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
 }
 
 export const getStringsFromBinaryData = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -50,6 +51,7 @@ export const getStringsFromBinaryData = async (
   entity,
 ) => {
   const builder = new GetStringsFromBinaryDataBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

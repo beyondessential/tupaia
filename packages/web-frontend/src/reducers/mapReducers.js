@@ -25,6 +25,7 @@ import {
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
   UPDATE_MEASURE_CONFIG,
+  SET_PROJECT,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
@@ -203,10 +204,12 @@ function getAutoTileset() {
 /**
  * Which tileset to use for the map.
  */
-function tileSet(state, action) {
+function activeTileSetKey(state, action) {
   switch (action.type) {
     case CHANGE_TILE_SET:
       return action.setKey;
+    case SET_PROJECT:
+      return getAutoTileset();
     default:
       return state || getAutoTileset();
   }
@@ -215,7 +218,7 @@ function tileSet(state, action) {
 export default combineReducers({
   position,
   measureInfo,
-  tileSet,
+  activeTileSetKey,
   isAnimating,
   popup,
   shouldSnapToPosition,

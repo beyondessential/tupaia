@@ -9,7 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import polyline from '@mapbox/polyline';
 
-import { mapBoxToken } from '../utils';
+import { MAPBOX_TOKEN } from '../constants';
 import { areBoundsValid } from '../utils/geometry';
 
 const mapboxBaseUrl = 'https://api.mapbox.com/styles/v1/sussol/cj64gthqq297z2so13qljil5n/static';
@@ -64,7 +64,7 @@ const StaticMap = ({
   const zoomLevel = longitude === 180 && zoomOutWhenPast180 ? zoom - 1 : zoom;
   const position = `${longitude},${latitude},${zoomLevel}`;
 
-  const url = `${mapboxBaseUrl}${polygonParams}/${position}/${size}?access_token=${mapBoxToken}&attribution=${
+  const url = `${mapboxBaseUrl}${polygonParams}/${position}/${size}?access_token=${MAPBOX_TOKEN}&attribution=${
     showAttribution ? 'true' : 'false'
   }`;
 

@@ -111,7 +111,7 @@ export class AccessPolicy {
   /**
    * Return entities the user has access to the given permission group for
    *
-   * @param {string} [permissionsGroup]
+   * @param {string} [permissionGroup]
    *
    * @returns entities[] The entity objects
    */

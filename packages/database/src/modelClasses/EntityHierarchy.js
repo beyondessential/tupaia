@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class EntityHierarchyType extends DatabaseType {
+class EntityHierarchyType extends DatabaseType {
   static databaseType = TYPES.ENTITY_HIERARCHY;
 }
 

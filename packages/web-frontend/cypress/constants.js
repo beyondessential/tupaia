@@ -4,5 +4,9 @@
  */
 
 export const CONFIG_ROOT = 'cypress/config';
-export const EXPLORE_PROJECT = 'explore';
 export const PUBLIC_USER = 'public';
+export const TEST_USER = {
+  email: 'test@beyondessential.com.au',
+  firstName: 'TestFirst',
+  lastName: 'TestLast',
+};

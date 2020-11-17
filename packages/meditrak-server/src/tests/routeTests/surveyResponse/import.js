@@ -9,7 +9,8 @@ import {
   findOrCreateDummyCountryEntity,
   buildAndInsertSurveys,
 } from '@tupaia/database';
-import { oneSecondSleep, upsertEntity } from '../../testUtilities';
+import { oneSecondSleep } from '@tupaia/utils';
+import { upsertEntity } from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
@@ -22,9 +23,9 @@ function expectError(response, match) {
 
 export const testImportSurveyResponses = (app, models, syncQueue) =>
   function () {
-    const importFile = filename =>
+    const importFile = (filename, surveyNames = []) =>
       app
-        .post('import/surveyResponses')
+        .post(`import/surveyResponses?${surveyNames.map(s => `surveyNames=${s}`).join('&')}`)
         .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
 
     const deletedSurveyResponseId = '1125f5e462d7a74a5a2_test';
@@ -151,7 +152,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           name: 'Public',
         });
         const [{ survey }] = await buildAndInsertSurveys(models, [
-          { code: 'TEST_IMPORT_SURVEY', permission_group_id: publicPermissionGroup.id },
+          { code: 'TEST_IMPORT_SURVEY_FOR_IMPORT_RESPONSES', name: 'Test Survey', permission_group_id: publicPermissionGroup.id },
         ]);
         const surveyId = survey.id;
 
@@ -221,7 +222,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           (await models.answer.count({ survey_response_id: deletedSurveyResponseId })) + 1; // We test deleting a whole response, plus one individually deleted answer
         await models.database.waitForAllChangeHandlers();
         await syncQueue.clear();
-        const response = await importFile('valid.xlsx');
+        const response = await importFile('valid.xlsx', ['Test Survey']);
         expect(response.statusCode).to.equal(200);
       });
 

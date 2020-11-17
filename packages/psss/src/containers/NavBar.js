@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
 import { ProfileButton } from './ProfileButton';
-import { getPermittedEntitySlug, getHomeUrl } from '../store';
+import { getEntitiesAllowed, getHomeUrl, checkIsMultiCountryUser } from '../store';
 
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
@@ -46,22 +46,26 @@ NavBarComponent.defaultProps = {
   links: [],
 };
 
-const makeLinks = slug => [
-  {
-    label: 'Weekly Reports',
-    to: slug ? `/weekly-reports/${slug}` : '/',
-    icon: <Dashboard />,
-  },
-  {
-    label: 'Alerts & Outbreaks',
-    to: slug ? `/alerts/${slug}` : '/alerts',
-    icon: <WarningCloud />,
-  },
-];
+const makeLinks = state => {
+  const entities = getEntitiesAllowed(state);
+  const multiCountry = checkIsMultiCountryUser(state);
+  return [
+    {
+      label: 'Weekly Reports',
+      to: multiCountry ? '/' : `/weekly-reports/${entities[0]}`,
+      icon: <Dashboard />,
+    },
+    {
+      label: 'Alerts & Outbreaks',
+      to: multiCountry ? '/alerts' : `/alerts/${entities[0]}`,
+      icon: <WarningCloud />,
+    },
+  ];
+};
 
 const mapStateToProps = state => ({
   homeUrl: getHomeUrl(state),
-  links: makeLinks(getPermittedEntitySlug(state)),
+  links: makeLinks(state),
 });
 
 export const NavBar = connect(mapStateToProps)(NavBarComponent);

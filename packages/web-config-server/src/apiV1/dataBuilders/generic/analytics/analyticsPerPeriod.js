@@ -38,9 +38,14 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
   };
 }
 
-export const analyticsPerPeriod = ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const analyticsPerPeriod = (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const { aggregationType } = dataBuilderConfig;
   const builder = new AnalyticsPerPeriodBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

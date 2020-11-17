@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { MapOverlay } from '/models';
 import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
@@ -18,7 +17,7 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
 
   async fetchAndCacheOverlays() {
     if (!this.overlays) {
-      this.overlays = await MapOverlay.find({ id: this.getMeasureIds() });
+      this.overlays = await this.models.mapOverlay.find({ id: this.getMeasureIds() });
     }
     return this.overlays;
   }
