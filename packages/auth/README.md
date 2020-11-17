@@ -22,3 +22,8 @@ policy
 Note that parsing of that access policy is handled by the separate isomorphic package
 @tupaia/access-policy, as it is required on both the back ends and front end clients (admin-panel,
 meditrak-app, etc.)
+
+### Test
+Temporarily there could be a timeout problem when testing. It will be investigated after all packages' tests have been converted to Jest.
+
+In a short term, this could be solved by adding `"testTimeout": 50000` to `auth/jest.config.json`
