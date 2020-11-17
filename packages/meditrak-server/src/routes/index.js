@@ -15,6 +15,7 @@ import { GETDisasters } from './GETDisasters';
 import { GETDashboardReports } from './GETDashboardReports';
 import { GETDashboardGroups } from './GETDashboardGroups';
 import { GETMapOverlays } from './GETMapOverlays';
+import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { GETSurveyResponses } from './GETSurveyResponses';
 import { GETQuestions } from './GETQuestions';
@@ -94,6 +95,7 @@ export default {
   getDashboardReports: useRouteHandler(GETDashboardReports),
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
   getMapOverlays: useRouteHandler(GETMapOverlays),
+  getSurveys: useRouteHandler(GETSurveys),
   getSurveyGroups: useRouteHandler(GETSurveyGroups),
   getSurveyResponses: useRouteHandler(GETSurveyResponses),
   getQuestions: useRouteHandler(GETQuestions),
