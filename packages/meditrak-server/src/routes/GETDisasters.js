@@ -5,9 +5,12 @@
 
 import { GETHandler } from './GETHandler';
 import {
+  allowNoPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
   assertTupaiaAdminPanelAccess,
+  hasBESAdminAccess,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../permissions';
 
 const columns = {
@@ -18,55 +21,55 @@ const columns = {
   country: 'country.name',
 };
 
+const createDBPermissionsFilter = accessPolicy => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return {}; // no additional conditions, BES Admin users have full access
+  }
+  const permittedCountryCodes = accessPolicy.getEntitiesAllowed(
+    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  );
+  return { countryCode: permittedCountryCodes };
+};
+
 /**
  * Handles endpoints:
  * - /disaster
  * - /disaster/:disasterId
  */
 export class GETDisasters extends GETHandler {
-  // fail permissions checking if they definitely don't have access to the user groups required to
-  // view disasters
+  customJoinConditions = {
+    country: ['country.code', 'disaster.countryCode'],
+    entity: ['entity.code', 'disaster.countryCode'],
+  };
+
   async assertUserHasAccess() {
-    await this.assertPermissions(
-      assertAnyPermissions(
-        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
-        'You need either BES Admin or Tupaia Admin Panel access to view disasters',
-      ),
+    return this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, assertTupaiaAdminPanelAccess]),
+      'You need either BES Admin or Tupaia Admin Panel access to view disasters',
     );
   }
 
-  async findRecords(criteria) {
-    let where = ' where ';
-    let whereClause = '';
-    const bindParams = [];
+  async findSingleRecord(disasterId, options) {
+    const disaster = await super.findSingleRecord(disasterId, options);
 
-    Object.keys(criteria).forEach(key => {
-      if (key === 'disaster.id') {
-        whereClause += `${where} ${columns.id} = ?`;
-        bindParams.push(criteria[key]);
-      } else {
-        // check there's no dodgy comparator being used as an sql injection attack
-        if (criteria[key].comparator !== 'ilike') {
-          throw new Error('Only ilike is supported as a comparator for finding disasters');
-        }
-        whereClause += `${where} ${columns[key]} ${criteria[key].comparator} ?`;
-        bindParams.push(criteria[key].comparisonValue);
+    const adminPanelAccessChecker = accessPolicy => {
+      const { countryCode } = disaster;
+      if (!accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
+        throw new Error(
+          `Access to disaster with id ${disasterId} requires admin panel access for ${countryCode}`,
+        );
       }
-      where = ' and ';
-    });
+    };
 
-    return this.database.executeSql(
-      `SELECT
-      "disaster".id, "disaster".type, description, "disaster"."name", "country".name as country,
-      ST_AsGeoJSON("point") as point,
-      ST_AsGeoJSON("bounds") as bounds
-    FROM "disaster"
-      LEFT JOIN "entity"
-        ON "disaster"."id" = "entity"."code"
-      left join "country"
-        ON "countryCode" = "country".code
-    ${whereClause}`,
-      bindParams,
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, adminPanelAccessChecker]),
     );
+
+    return disaster;
+  }
+
+  async findRecords(criteria, options) {
+    const permissionsFilter = createDBPermissionsFilter(this.accessPolicy);
+    return super.findRecords({ ...criteria, ...permissionsFilter }, options);
   }
 }
