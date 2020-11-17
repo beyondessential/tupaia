@@ -5,21 +5,12 @@
 
 import { GETHandler } from './GETHandler';
 import {
-  allowNoPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
   assertTupaiaAdminPanelAccess,
   hasBESAdminAccess,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../permissions';
-
-const columns = {
-  id: 'disaster.id',
-  type: 'disaster.type::text',
-  name: 'disaster.name',
-  description: 'disaster.description',
-  country: 'country.name',
-};
 
 const createDBPermissionsFilter = accessPolicy => {
   if (hasBESAdminAccess(accessPolicy)) {
