@@ -1,40 +1,49 @@
 'use strict';
 
-import { insertObject } from '../utilities/migration';
-import { generateId } from '../utilities/generateId';
+import { insertObject, generateId } from '../utilities';
 
 var dbm;
 var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = async function (db) {
+  const servicesProvidedId = await db.runSql(`
+    SELECT id FROM map_overlay_group WHERE code = 'Services_provided'
+  `);
+
   return db.runSql(`
-    DELETE FROM map_overlay_group_relation where child_id IN (SELECT id FROM map_overlay_group where name = 'Services provided');
-  `)
+    UPDATE "mapOverlay"
+    SET "projectCodes" = array_remove("projectCodes",'unfpa')
+    FROM map_overlay_group_relation
+    WHERE map_overlay_group_relation.map_overlay_group_id = '${servicesProvidedId}'
+    AND map_overlay_group_relation.child_id = "mapOverlay".id;
+  `);
 };
 
-exports.down = async function(db) {
-  const mapOverlayGroupRelation = {
-    id: generateId(),
-    map_overlay_group_id: '5f88d3a361f76a2d3f000004',
-    child_id: '5f2c7ddb61f76a513a000037',
-    child_type: 'mapOverlayGroup',
-  };
+exports.down = async function (db) {
+  const servicesProvidedId = await db.runSql(`
+    SELECT id FROM map_overlay_group WHERE code = 'Services_provided'
+  `);
 
-  await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupRelation);
+  return db.runSql(`
+    UPDATE "mapOverlay"
+    SET "projectCodes" = array_prepend('unfpa',"projectCodes")
+    FROM map_overlay_group_relation
+    WHERE map_overlay_group_relation.map_overlay_group_id = '${servicesProvidedId}'
+    AND map_overlay_group_relation.child_id = "mapOverlay".id;
+  `);
 };
-
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
