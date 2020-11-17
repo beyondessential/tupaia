@@ -6,7 +6,7 @@
 import { GETHandler } from '../GETHandler';
 import {
   assertSurveyResponsePermissions,
-  filterSurveyResponsesByPermissions,
+  createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
@@ -25,7 +25,7 @@ export class GETSurveyResponses extends GETHandler {
     const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
 
     const surveyResponseChecker = accessPolicy =>
-      assertSurveyResponsePermissions(accessPolicy, this.models, surveyResponse);
+      assertSurveyResponsePermissions(accessPolicy, this.models, surveyResponseId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
@@ -35,17 +35,14 @@ export class GETSurveyResponses extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    const surveyResponses = await super.findRecords(criteria, options);
-    const filteredResponses = await filterSurveyResponsesByPermissions(
-      this.req.accessPolicy,
-      surveyResponses,
+    const { dbConditions, dbOptions } = await createSurveyResponseDBFilter(
+      this.accessPolicy,
       this.models,
+      criteria,
+      options,
     );
+    const surveyResponses = await super.findRecords(dbConditions, dbOptions);
 
-    if (!filteredResponses.length) {
-      throw new Error('Your permissions do not allow access to any of the requested resources');
-    }
-
-    return filteredResponses;
+    return surveyResponses;
   }
 }

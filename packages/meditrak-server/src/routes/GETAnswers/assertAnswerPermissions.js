@@ -5,26 +5,25 @@
 
 import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
+import {
+  assertSurveyResponsePermissions,
+  createSurveyResponseDBFilter,
+} from '../GETSurveyResponses';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
-export const assertSurveyResponsePermissions = async (accessPolicy, models, surveyResponseId) => {
-  const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
-  if (!surveyResponse) {
-    throw new Error(`No survey response exists with id ${surveyResponseId}`);
+export const assertAnswerPermissions = async (accessPolicy, models, answerId) => {
+  const answer = await models.answer.findById(answerId);
+  if (!answer) {
+    throw new Error(`No answer exists with id ${answerId}`);
   }
 
-  const entity = await models.entity.findById(surveyResponse.entity_id);
-  const survey = await models.survey.findById(surveyResponse.survey_id);
-  const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
+  await assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
 
-  if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
-    throw new Error('You do not have permissions for this survey response');
-  }
   return true;
 };
 
-export const createSurveyResponseDBFilter = async (accessPolicy, models, criteria, options) => {
+export const createAnswerDBFilter = async (accessPolicy, models, criteria, options) => {
   const dbConditions = { ...criteria };
   const dbOptions = { ...options };
 
@@ -44,9 +43,13 @@ export const createSurveyResponseDBFilter = async (accessPolicy, models, criteri
     }
   }
 
-  // Join SQL table with entity and survey tables
+  // Join SQL table with survey_response, entity and survey tables
   // Running the permissions filtering is much faster with joins
   dbOptions.multiJoin = [
+    {
+      joinWith: TYPES.SURVEY_RESPONSE,
+      joinCondition: [`${TYPES.SURVEY_RESPONSE}.id`, `${TYPES.ANSWER}.survey_response_id`],
+    },
     {
       joinWith: TYPES.SURVEY,
       joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
@@ -59,7 +62,7 @@ export const createSurveyResponseDBFilter = async (accessPolicy, models, criteri
 
   // If columns weren't specified, avoid returning the joined columns
   if (!dbOptions.columns) {
-    dbOptions.columns = ['survey_response.*'];
+    dbOptions.columns = ['answer.*'];
   }
 
   // Check the country code of the entity exists in our list for the permission group

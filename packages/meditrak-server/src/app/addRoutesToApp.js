@@ -126,6 +126,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
   app.get('(/v[0-9]+)/mapOverlays/:recordId?', getMapOverlays);
   app.get('(/v[0-9]+)/surveyGroups/:recordId?', getSurveyGroups);
+  app.get('(/v[0-9]+)/surveyResponses/:parentRecordId/answers', getAnswers);
   app.get('(/v[0-9]+)/surveyResponses/:recordId?', getSurveyResponses);
   app.get('(/v[0-9]+)/questions/:recordId?', getQuestions);
   app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
