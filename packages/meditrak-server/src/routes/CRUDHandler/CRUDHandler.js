@@ -6,7 +6,7 @@
 import { singularise } from '@tupaia/utils';
 import { RouteHandler } from '../RouteHandler';
 import { resourceToRecordType } from '../../utilities';
-import { extractResourceFromEndpoint } from './helpers';
+import { extractResourceFromEndpoint, extractChildResourceFromEndpoint } from './helpers';
 
 export class CRUDHandler extends RouteHandler {
   constructor(req, res) {
@@ -16,12 +16,16 @@ export class CRUDHandler extends RouteHandler {
     this.query = query;
     this.models = models;
     this.accessPolicy = accessPolicy;
-    this.resource = extractResourceFromEndpoint(endpoint);
-    this.recordType = resourceToRecordType(this.resource);
-    this.recordId = params.recordId; // undefined for multi record requests
-    this.parentResource = params.parentResource;
+    this.parentResource = params.parentResource
+      ? params.parentResource
+      : extractResourceFromEndpoint(endpoint);
     this.parentRecordType = resourceToRecordType(this.parentResource);
     this.parentRecordId = params.parentRecordId;
+    this.resource = this.parentRecordId
+      ? extractChildResourceFromEndpoint(endpoint)
+      : extractResourceFromEndpoint(endpoint);
+    this.recordType = resourceToRecordType(this.resource);
+    this.recordId = params.recordId; // undefined for multi record requests
     this.resourceModel = this.models[singularise(this.resource)];
   }
 }
