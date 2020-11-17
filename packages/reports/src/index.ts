@@ -1,7 +1,7 @@
 /**
  * Tupaia
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import '@babel/polyfill';
 
@@ -27,7 +27,7 @@ const app = createApp(database, models);
 
 /**
  * Start the server
- **/
+ */
 const port = 8030;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
