@@ -43,31 +43,34 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
   return formatLinkHeader(linkHeader);
 };
 
-export const processColumnSelector = (unprocessedColumnSelector, baseRecordType) => {
+export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
   if (unprocessedColumnSelector.includes('.')) {
     const [recordType, column] = unprocessedColumnSelector.split('.');
-    return `${resourceToRecordType(recordType)}.${column}`;
+    const model = models.getModelForDatabaseType(recordType);
+    const customSelector = model.customColumnSelectors && model.customColumnSelectors[column];
+    const selector = `${resourceToRecordType(recordType)}.${column}`;
+    return customSelector ? customSelector(selector) : selector;
   }
   return `${baseRecordType}.${unprocessedColumnSelector}`;
 };
 
 // Make sure all column keys have the table specified to avoid ambiguous column errors,
 // and also transform any resource names into database record types
-export const processColumnSelectorKeys = (object, recordType) => {
+export const processColumnSelectorKeys = (models, object, recordType) => {
   const processedObject = {};
   Object.entries(object).forEach(([columnSelector, value]) => {
-    processedObject[processColumnSelector(columnSelector, recordType)] = value;
+    processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
   });
   return processedObject;
 };
 
-export const processColumns = (unprocessedColumns, recordType) => {
+export const processColumns = (models, unprocessedColumns, recordType) => {
   return unprocessedColumns.map(column => ({
-    [column]: processColumnSelector(column, recordType),
+    [column]: processColumnSelector(models, column, recordType),
   }));
 };
 
-export const getQueryOptionsForColumns = (columns, baseRecordType) => {
+export const getQueryOptionsForColumns = (columns, baseRecordType, customJoinConditions = {}) => {
   const sort = [`${baseRecordType}.id`];
   if (!columns) {
     return { sort };
@@ -87,10 +90,14 @@ export const getQueryOptionsForColumns = (columns, baseRecordType) => {
     const recordType = resourceToRecordType(resourceName);
 
     if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
+      const joinCondition = customJoinConditions[recordType] || [
+        `${recordType}.id`,
+        `${resourceName}_id`,
+      ];
       multiJoin.push({
         joinType: JOIN_TYPES.LEFT_OUTER,
         joinWith: recordType,
-        joinCondition: [`${recordType}.id`, `${resourceName}_id`],
+        joinCondition,
       });
       recordTypesJoined.push(recordType);
     }

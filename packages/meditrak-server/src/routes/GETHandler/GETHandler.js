@@ -49,8 +49,13 @@ export class GETHandler extends CRUDHandler {
 
     // set up db query options
     const unprocessedColumns = columnsString && JSON.parse(columnsString);
-    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, this.recordType);
-    const columns = unprocessedColumns && processColumns(unprocessedColumns, this.recordType);
+    const { sort, multiJoin } = getQueryOptionsForColumns(
+      unprocessedColumns,
+      this.recordType,
+      this.customJoinConditions,
+    );
+    const columns =
+      unprocessedColumns && processColumns(this.models, unprocessedColumns, this.recordType);
 
     const { limit, page } = this.getPaginationParameters();
     const offset = limit * page;
@@ -61,7 +66,7 @@ export class GETHandler extends CRUDHandler {
     if (sortString) {
       const sortKeys = JSON.parse(sortString);
       const fullyQualifiedSortKeys = sortKeys.map(sortKey =>
-        processColumnSelector(sortKey, this.recordType),
+        processColumnSelector(this.models, sortKey, this.recordType),
       );
       // if 'distinct', we can't order by any columns that aren't included in the distinct selection
       if (distinct) {
@@ -77,7 +82,7 @@ export class GETHandler extends CRUDHandler {
   getDbQueryCriteria() {
     const { filter: filterString } = this.req.query;
     const filter = filterString ? JSON.parse(filterString) : {};
-    return processColumnSelectorKeys(filter, this.recordType);
+    return processColumnSelectorKeys(this.models, filter, this.recordType);
   }
 
   async buildResponse() {
