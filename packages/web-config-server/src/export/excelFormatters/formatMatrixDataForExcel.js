@@ -23,7 +23,7 @@ const DEFAULT_CONFIG = {
 // ]
 // See https://docs.sheetjs.com/#array-of-objects-input for more
 export const formatMatrixDataForExcel = (
-  { columns, categories: rowCategories, rows, name: reportName },
+  { columns, categories: rowCategories, rows, name: reportName, organisationUnitCode },
   configIn,
   outputFormat = 'aoa',
 ) => {
@@ -66,7 +66,7 @@ export const formatMatrixDataForExcel = (
   };
 
   // Add title row (report name) to the top of the sheet
-  formattedData.push([reportName]);
+  formattedData.push([`${reportName}, ${organisationUnitCode}`]);
 
   // Add headers row to the second top of the sheet
   const headersRow = buildHeadersRow();
