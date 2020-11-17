@@ -2,14 +2,14 @@ import { Aggregator } from '../../../aggregator';
 import { FetchReportQuery } from '../../../types';
 import { FetchResponse } from '../types';
 
-type DataElementsFetchParams = {
+type DataElementFetchParams = {
   dataElementCodes: string[];
 };
 
 const fetchAnalytics = async (
   aggregator: Aggregator,
   query: FetchReportQuery,
-  params: DataElementsFetchParams,
+  params: DataElementFetchParams,
 ): Promise<FetchResponse> => {
   const { organisationUnitCode } = query;
   const response = await aggregator.fetchAnalytics(
@@ -26,7 +26,7 @@ const fetchAnalytics = async (
   return response;
 };
 
-const buildParams = (params: unknown): DataElementsFetchParams => {
+const buildParams = (params: unknown): DataElementFetchParams => {
   if (!Array.isArray(params)) {
     throw new Error(`Expected an array of data element codes but got ${params}`);
   }

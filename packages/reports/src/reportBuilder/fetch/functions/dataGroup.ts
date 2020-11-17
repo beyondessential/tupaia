@@ -2,14 +2,14 @@ import { Aggregator } from '../../../aggregator';
 import { FetchReportQuery, Event } from '../../../types';
 import { FetchResponse } from '../types';
 
-type DataGroupsFetchParams = {
+type DataGroupFetchParams = {
   dataGroupCode: string;
 };
 
 const fetchEvents = async (
   aggregator: Aggregator,
   query: FetchReportQuery,
-  params: DataGroupsFetchParams,
+  params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
   const { dataGroupCode } = params;
   const { organisationUnitCode, startDate, endDate } = query;
@@ -33,7 +33,7 @@ const fetchEvents = async (
   };
 };
 
-const buildParams = (params: unknown): DataGroupsFetchParams => {
+const buildParams = (params: unknown): DataGroupFetchParams => {
   if (!Array.isArray(params)) {
     throw new Error(`Expected an array with a single data group code but got ${params}`);
   }
