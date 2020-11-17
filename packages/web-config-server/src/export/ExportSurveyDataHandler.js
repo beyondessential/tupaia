@@ -49,14 +49,15 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const sheetNames = [];
     const sheets = {};
-    const reportName = data.name;
+    const {name: organisationUnitName} = await this.models.entity.findOne({code: data.organisationUnitCode});
+    const reportTitle = `${data.name}, ${organisationUnitName}`;
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
       const header = surveyData.data.columns.length
         ? `Data ${this.getExportDatesString(startDate, endDate)}`
         : `No data for ${surveyName} ${this.getExportDatesString(startDate, endDate)}`;
 
-      const titleAndHeaderData = [[`${reportName}: ${surveyName}`], [header]];
+      const titleAndHeaderData = [[`${reportTitle}: ${surveyName}`], [header]];
       // Using array of arrays (aoa) input as transformations like mergeSurveys
       // increases the likelyhood of columns with same title (leads to missing keys in object json (aoo))
       const formattedData = surveyData.data.columns.length
