@@ -59,7 +59,7 @@ describe.only('Permissions checker for GETSurveys', async () => {
         code: 'TEST_SURVEY_1',
         name: 'Test Survey 1',
         permission_group_id: adminPermission.id,
-        country_ids: [vanuatuCountry.id, laosCountry.id, tongaCountry.id],
+        country_ids: [vanuatuCountry.id, laosCountry.id],
       },
       {
         id: survey2Id,
@@ -136,7 +136,7 @@ describe.only('Permissions checker for GETSurveys', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveys?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members([survey1Id, survey2Id, survey3Id]);
+      expect(results.map(r => r.id)).to.have.members([survey1Id, survey2Id, survey3Id, survey4Id]);
     });
 
     it('Insufficient permissions: Return an empty array if users do not have access to any surveys', async () => {
@@ -173,7 +173,7 @@ describe.only('Permissions checker for GETSurveys', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: results } = await app.get(`country/${tongaCountryId}/surveys?${filterString}`);
 
-      expect(results).to.have.keys('error');
+      expect(results).to.be.empty;
     });
   });
 });

@@ -57,9 +57,6 @@ export const createSurveyDBFilter = async (accessPolicy, models, criteria) => {
 };
 
 export const createSurveyViaCountryDBFilter = async (accessPolicy, models, criteria, countryId) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return criteria;
-  }
   const dbConditions = { ...criteria };
   const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
   const countryIdsByPermissionGroupId = {};
@@ -74,24 +71,37 @@ export const createSurveyViaCountryDBFilter = async (accessPolicy, models, crite
     }
   }
 
-  dbConditions[RAW] = {
-    sql: `
-    (
+  // Even if we're BES admin, we need to filter by the country
+  if (hasBESAdminAccess(accessPolicy)) {
+    dbConditions[RAW] = {
+      sql: `
       (
         ARRAY[?]
         <@
         survey.country_ids
-      )
-      AND
+      )`,
+      parameters: countryId,
+    };
+  } else {
+    dbConditions[RAW] = {
+      sql: `
       (
-        survey.country_ids
-        &&
-        ARRAY(
-          SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+        (
+          ARRAY[?]
+          <@
+          survey.country_ids
         )
-      )
-    )`,
-    parameters: [countryId, JSON.stringify(countryIdsByPermissionGroupId)],
-  };
+        AND
+        (
+          survey.country_ids
+          &&
+          ARRAY(
+            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+          )
+        )
+      )`,
+      parameters: [countryId, JSON.stringify(countryIdsByPermissionGroupId)],
+    };
+  }
   return dbConditions;
 };
