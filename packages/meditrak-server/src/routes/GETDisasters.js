@@ -12,14 +12,23 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../permissions';
 
-const createDBPermissionsFilter = accessPolicy => {
+const createDBFilter = (accessPolicy, criteria) => {
   if (hasBESAdminAccess(accessPolicy)) {
-    return {}; // no additional conditions, BES Admin users have full access
+    return criteria; // no additional criteria, BES Admin users have full access
   }
   const permittedCountryCodes = accessPolicy.getEntitiesAllowed(
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
-  return { countryCode: permittedCountryCodes };
+  const { countryCode: incomingCountryCode } = criteria;
+  if (!incomingCountryCode) {
+    return { ...criteria, countryCode: permittedCountryCodes };
+  }
+
+  const countryCodesRequested = Array.isArray(incomingCountryCode)
+    ? incomingCountryCode
+    : [incomingCountryCode];
+  const countryCodesFilter = countryCodesRequested.filter(c => permittedCountryCodes.includes(c));
+  return { ...criteria, countryCode: countryCodesFilter };
 };
 
 /**
@@ -60,7 +69,7 @@ export class GETDisasters extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    const permissionsFilter = createDBPermissionsFilter(this.accessPolicy);
-    return super.findRecords({ ...criteria, ...permissionsFilter }, options);
+    const dbFilter = createDBFilter(this.accessPolicy, criteria);
+    return super.findRecords(dbFilter, options);
   }
 }
