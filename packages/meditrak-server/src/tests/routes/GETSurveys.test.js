@@ -10,7 +10,7 @@ import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from 
 import { TestableApp } from '../TestableApp';
 import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
-describe.only('Permissions checker for GETSurveys', async () => {
+describe('Permissions checker for GETSurveys', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],

@@ -35,6 +35,7 @@ const {
   getSurveys,
   getSurveyGroups,
   getSurveyResponses,
+  getSurveyScreenComponents,
   getQuestions,
   getPermissionGroups,
   getOptions,
@@ -130,6 +131,8 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/country/:parentRecordId/surveys', getSurveys);
   app.get('(/v[0-9]+)/surveyGroups/:recordId?', getSurveyGroups);
   app.get('(/v[0-9]+)/surveyResponses/:recordId?', getSurveyResponses);
+  app.get('(/v[0-9]+)/surveyScreenComponents/:recordId?', getSurveyScreenComponents);
+  app.get('(/v[0-9]+)/surveys/:parentRecordId?/surveyScreenComponents', getSurveyScreenComponents);
   app.get('(/v[0-9]+)/questions/:recordId?', getQuestions);
   app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
   app.get('(/v[0-9]+)/options/:recordId?', getOptions);

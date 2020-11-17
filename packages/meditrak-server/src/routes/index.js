@@ -18,6 +18,7 @@ import { GETMapOverlays } from './GETMapOverlays';
 import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { GETSurveyResponses } from './GETSurveyResponses';
+import { GETSurveyScreenComponents } from './GETSurveyScreenComponents';
 import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
@@ -98,6 +99,7 @@ export default {
   getSurveys: useRouteHandler(GETSurveys),
   getSurveyGroups: useRouteHandler(GETSurveyGroups),
   getSurveyResponses: useRouteHandler(GETSurveyResponses),
+  getSurveyScreenComponents: useRouteHandler(GETSurveyScreenComponents),
   getQuestions: useRouteHandler(GETQuestions),
   getPermissionGroups: useRouteHandler(GETPermissionGroups),
   getOptions: useRouteHandler(GETOptions),
