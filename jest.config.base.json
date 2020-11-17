@@ -1,0 +1,7 @@
+{
+  "clearMocks": true,
+  "transform": { "^.+\\.jsx?$": "../../jestTransformer.js" },
+  "testMatch": ["<rootDir>/src/__tests__/**/**.test.js"],
+  "transformIgnorePatterns": ["/node_modules/"],
+  "testEnvironment": "node"
+}
