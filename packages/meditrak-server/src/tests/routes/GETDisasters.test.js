@@ -10,6 +10,8 @@ import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from 
 import { TestableApp } from '../TestableApp';
 import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
+const getFilterString = filter => `filter=${JSON.stringify(filter)}`;
+
 describe('Permissions checker for GETDisasters', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
@@ -28,6 +30,7 @@ describe('Permissions checker for GETDisasters', async () => {
   let disaster1;
   let disaster2;
   let disaster3;
+  let filter;
   let filterString;
 
   before(async () => {
@@ -44,7 +47,10 @@ describe('Permissions checker for GETDisasters', async () => {
       name: 'Test disaster 3',
       countryCode: 'LA',
     });
-    filterString = `filter={"id":{"comparator":"in","comparisonValue":["${disaster1.id}", "${disaster2.id}", "${disaster3.id}"]}}`;
+    filter = {
+      id: { comparator: 'in', comparisonValue: [disaster1.id, disaster2.id, disaster3.id] },
+    };
+    filterString = getFilterString(filter);
   });
 
   afterEach(() => {
@@ -52,14 +58,14 @@ describe('Permissions checker for GETDisasters', async () => {
   });
 
   describe('GET /disasters/:id', async () => {
-    it('Sufficient permissions: Should return a requested disaster that user has access to', async () => {
+    it('Sufficient permissions: returns a requested disaster that user has access to', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: result } = await app.get(`disasters/${disaster1.id}`);
 
       expect(result.id).to.equal(disaster1.id);
     });
 
-    it('Insufficient permissions: Should throw an error if requesting disaster that user does not have access to', async () => {
+    it('Insufficient permissions: throws an error if requesting disaster that user does not have access to', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: result } = await app.get(`disasters/${disaster3.id}`);
 
@@ -68,21 +74,41 @@ describe('Permissions checker for GETDisasters', async () => {
   });
 
   describe('GET /disasters', async () => {
-    it('Sufficient permissions: Should return only disasters the user has permission to', async () => {
+    it('Sufficient permissions: returns only disasters the user has permission to', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([disaster1.id, disaster2.id]);
     });
 
-    it('Sufficient permissions: Should return all disasters if the user has BES admin access', async () => {
+    it('Sufficient permissions: returns all disasters if the user has BES admin access', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([disaster1.id, disaster2.id, disaster3.id]);
     });
 
-    it('Insufficient permissions: Should return an empty array if users do not have access to any disaster', async () => {
+    it('Returns disasters respecting single country code supplied', async () => {
+      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      const filterWithCountryCode = { ...filter, countryCode: 'KI' };
+      const { body: results } = await app.get(
+        `disasters?${getFilterString(filterWithCountryCode)}`,
+      );
+
+      expect(results.map(r => r.id)).to.deep.equal([disaster2.id]);
+    });
+
+    it('Returns disasters respecting multiple country codes supplied', async () => {
+      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      const filterWithCountryCode = { ...filter, countryCode: ['KI', 'LA'] };
+      const { body: results } = await app.get(
+        `disasters?${getFilterString(filterWithCountryCode)}`,
+      );
+
+      expect(results.map(r => r.id)).to.deep.equal([disaster2.id, disaster3.id]);
+    });
+
+    it('Insufficient permissions: returns an empty array if users do not have access to any disaster', async () => {
       const policy = {
         DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Public'],
       };
@@ -92,7 +118,7 @@ describe('Permissions checker for GETDisasters', async () => {
       expect(results).to.be.empty;
     });
 
-    it('Insufficient permissions: Should throw an error if user does not have admin panel access anywhere', async () => {
+    it('Insufficient permissions: throws an error if user does not have admin panel access anywhere', async () => {
       const policy = {
         DL: ['Public'],
       };
