@@ -602,7 +602,7 @@ export class CartesianChart extends PureComponent {
         stroke={color || defaultColor}
         strokeWidth={isEnlarged ? 3 : 1}
         fill={color || defaultColor}
-        isAnimationActive={isEnlarged && !isExporting}
+        isAnimationActive={false}
       >
         {isExporting && (
           <LabelList
