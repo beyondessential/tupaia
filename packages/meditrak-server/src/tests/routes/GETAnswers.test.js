@@ -15,7 +15,7 @@ import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from 
 import { TestableApp } from '../TestableApp';
 import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
-describe.only('Permissions checker for GETAnswers', async () => {
+describe('Permissions checker for GETAnswers', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -160,7 +160,6 @@ describe.only('Permissions checker for GETAnswers', async () => {
     it('Sufficient permissions: Return the answers for the requested survey response if we have permission to the survey in the responses country', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses/${vanuatuAdminResponseId}/answers`);
-      console.log(results);
 
       expect(results.map(r => r.id)).to.have.members(vanuatuAdminAnswers);
     });
@@ -168,7 +167,6 @@ describe.only('Permissions checker for GETAnswers', async () => {
     it('Sufficient permissions: Return the answers for the requested survey response if we are BES Admin', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveyResponses/${vanuatuDonorResponseId}/answers`);
-      console.log(results);
 
       expect(results.map(r => r.id)).to.have.members(vanuatuDonorAnswers);
     });

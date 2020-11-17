@@ -6,7 +6,6 @@
 import { GETHandler } from '../GETHandler';
 import { assertAnswerPermissions, createAnswerDBFilter } from './assertAnswerPermissions';
 import { assertSurveyResponsePermissions } from '../GETSurveyResponses';
-import { findAnswersInSurveyResponse } from '../../dataAccessors';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
@@ -43,8 +42,7 @@ export class GETAnswers extends GETHandler {
       criteria,
       options,
     );
-    const answers = await super.findRecords(dbConditions, dbOptions);
-    return answers;
+    return super.findRecords(dbConditions, dbOptions);
   }
 
   async findRecordsViaParent(criteria, options) {
@@ -57,6 +55,9 @@ export class GETAnswers extends GETHandler {
     );
 
     // Get answers from survey response
-    return findAnswersInSurveyResponse(this.models, this.parentRecordId, criteria, options);
+    const dbConditions = { ...criteria };
+    dbConditions.survey_response_id = this.parentRecordId;
+
+    return super.findRecords(dbConditions, options);
   }
 }
