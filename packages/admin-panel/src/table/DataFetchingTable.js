@@ -251,11 +251,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const onRefreshData = () =>
     dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
   const initialiseTable = () => {
-    if (defaultSorting) {
-      dispatch(changeSorting(reduxId, defaultSorting)); // will trigger a data fetch afterwards
-    } else {
-      onRefreshData();
-    }
+    dispatch(changeSorting(reduxId, defaultSorting)); // will trigger a data fetch afterwards
   };
   return {
     reduxId,

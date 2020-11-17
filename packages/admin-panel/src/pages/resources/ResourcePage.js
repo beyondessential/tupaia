@@ -86,5 +86,5 @@ ResourcePage.defaultProps = {
   ExportModalComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},
-  defaultSorting: null,
+  defaultSorting: [],
 };
