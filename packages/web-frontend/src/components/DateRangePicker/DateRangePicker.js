@@ -17,6 +17,7 @@ import styled from 'styled-components';
 import { Error } from '../Error';
 import DatePickerDialog from './DatePickerDialog';
 import {
+  DEFAULT_MIN_DATE,
   momentToDateString,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
@@ -25,7 +26,6 @@ import {
   roundStartEndDates,
   constrainDate,
 } from '../../utils/periodGranularities';
-import { DEFAULT_MIN_DATE } from './constants';
 
 const FlexRow = styled.div`
   display: flex;
