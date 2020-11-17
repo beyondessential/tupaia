@@ -163,7 +163,8 @@ describe('controlled dateRangePicker', () => {
         userEvent.click(prev);
         userEvent.click(reset);
 
-        const endDate = moment(END_DATE).startOf(value.momentUnit).format(value.rangeFormat);
+        // date range is reset to min-max. endDate is today (unless min-max specified)
+        const endDate = moment().startOf(value.momentUnit).format(value.rangeFormat);
         expect(labelText).toHaveTextContent(endDate);
       });
     }
