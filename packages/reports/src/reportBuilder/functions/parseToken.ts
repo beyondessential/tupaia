@@ -1,4 +1,4 @@
-import { Row, FieldValue } from '../reportBuilder';
+import { Row, FieldValue } from '../types';
 import { Parser } from 'mathjs';
 
 export const parseToken = (row: Row, token: string): FieldValue => {

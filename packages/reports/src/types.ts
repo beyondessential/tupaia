@@ -9,11 +9,25 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator } from '@tupaia/auth';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
+export interface FetchReportQuery extends Query {
+  organisationUnitCode: string;
+  period?: string;
+}
+
+export interface FetchReportParams extends ParamsDictionary {
+  reportCode: string;
+}
+
+interface ReportsRequestBody {
+  emailAddress: string;
+  password: string;
+}
+
 export interface ReportsRequest<
-  P = ParamsDictionary,
-  ResBody = any,
+  P = FetchReportParams,
+  ResBody = unknown,
   ReqBody = ReportsRequestBody,
-  ReqQuery = Query
+  ReqQuery = FetchReportQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   accessPolicy: AccessPolicy;
   authenticator: Authenticator;
@@ -21,7 +35,12 @@ export interface ReportsRequest<
   models: ModelRegistry;
 }
 
-interface ReportsRequestBody {
-  emailAddress: string;
-  password: string;
+export interface Event {
+  event: string;
+  eventDate: string;
+  orgUnitName: string;
+  orgUnit: string;
+  dataValues?: {
+    [key: string]: string | number;
+  };
 }

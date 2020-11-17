@@ -1,6 +1,6 @@
-import { Row } from '../../reportBuilder';
-import { functions, parseExpression } from '../../functions';
 import { parser } from 'mathjs';
+import { Row } from '../../types';
+import { functions, parseExpression } from '../../functions';
 
 type SortParams = {
   by: string;
@@ -29,7 +29,9 @@ const getRowSortFunction = (params: SortParams, descending = false) => {
     if (descending) {
       if (row1Value < row2Value) {
         return 1;
-      } else if (row1Value === row2Value) {
+      }
+
+      if (row1Value === row2Value) {
         return 0;
       }
       return -1;
@@ -37,7 +39,9 @@ const getRowSortFunction = (params: SortParams, descending = false) => {
 
     if (row1Value > row2Value) {
       return 1;
-    } else if (row1Value === row2Value) {
+    }
+
+    if (row1Value === row2Value) {
       return 0;
     }
     return -1;

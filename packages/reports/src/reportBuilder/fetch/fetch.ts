@@ -1,26 +1,43 @@
-import { FetchReportQuery } from '../../routes/fetchReport';
+import { FetchReportQuery } from '../../types';
 import { Aggregator } from '../../aggregator';
-import { fetchFunctions, isValidFetchFunction } from './fetchFunctions';
-import { Row } from '../reportBuilder';
+import { FetchResponse } from './types';
+import { fetchBuilders } from './functions';
 
-export type Fetch = {
-  [fetchFunctionName in keyof typeof fetchFunctions]?: object;
+type FetchParams = {
+  call: (aggregator: Aggregator, query: FetchReportQuery) => Promise<FetchResponse>;
 };
 
-export interface FetchResponse {
-  results: Row[];
-}
-
-export const fetch = (
-  fetches: Fetch[],
+const fetch = (
   aggregator: Aggregator,
   query: FetchReportQuery,
+  fetcher: FetchParams,
 ): Promise<FetchResponse> => {
-  const firstFetch: Fetch = fetches[0]; //Only support 1 fetch for now
-  const fetchFunctionKey: string = Object.keys(firstFetch)[0];
-  if (isValidFetchFunction(fetchFunctionKey)) {
-    const fetchFunction = fetchFunctions[fetchFunctionKey];
-    return fetchFunction(aggregator, query, firstFetch[fetchFunctionKey]);
+  return fetcher.call(aggregator, query);
+};
+
+const buildParams = (params: unknown): FetchParams => {
+  if (typeof params !== 'object' || params === null) {
+    throw new Error(`Expected object but got ${params}`);
   }
-  throw new Error(`Expected fetch function but got ${fetchFunctionKey}`);
+
+  if (Object.keys(params).length > 1) {
+    throw new Error(`Expected fetch params to contain a single key`);
+  }
+
+  const fetchFunction = Object.keys(params)[0];
+
+  if (!(fetchFunction in fetchBuilders)) {
+    throw new Error(
+      `Expected transform to be one of ${Object.keys(fetchBuilders)} but got ${fetchFunction}`,
+    );
+  }
+
+  return {
+    call: fetchBuilders[fetchFunction as keyof typeof fetchBuilders](params[fetchFunction]),
+  };
+};
+
+export const buildFetch = (params: unknown) => {
+  const builtParams = buildParams(params);
+  return (aggregator: Aggregator, query: FetchReportQuery) => fetch(aggregator, query, builtParams);
 };

@@ -1,6 +1,6 @@
-import { Row } from '../../reportBuilder';
-import { parseExpression } from '../../functions';
 import { Parser } from 'mathjs';
+import { Row } from '../../types';
+import { parseExpression } from '../../functions';
 
 type WhereParams = {
   where?: string;
@@ -15,7 +15,6 @@ const where = (row: Row, rowParser: Parser, params: WhereParams): boolean => {
   if (typeof whereResult === 'boolean') {
     return whereResult;
   }
-  console.log(`Expected truthy result but got ${whereResult}`);
   return true;
 };
 

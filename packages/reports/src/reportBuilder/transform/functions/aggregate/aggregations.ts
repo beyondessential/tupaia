@@ -1,4 +1,4 @@
-import { Row, FieldValue } from '../../../reportBuilder';
+import { Row, FieldValue } from '../../../types';
 
 const isUndefined = (value: FieldValue): value is undefined => {
   return value === undefined;

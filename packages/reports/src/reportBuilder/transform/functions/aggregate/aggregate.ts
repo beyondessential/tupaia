@@ -1,13 +1,15 @@
+import { parser, Parser } from 'mathjs';
 import { aggregations } from './aggregations';
 import { buildWhere } from '../where';
-import { Row } from '../../../reportBuilder';
+import { Row } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetFieldAggregation } from './getFieldAggregation';
+import { functions } from '../../../functions';
 
 type AggregateParams = {
   createGroupKey: (row: Row) => string;
   getFieldAggregation: (field: string) => keyof typeof aggregations;
-  where: (row: Row) => boolean;
+  where: (row: Row, rowParser: Parser) => boolean;
 };
 
 const merge = (mergedRow: Row, newRow: Row, params: AggregateParams): Row => {
@@ -22,8 +24,14 @@ const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
   const groupedRows: { [groupKey: string]: Row } = {};
   const otherRows: Row[] = [];
 
+  const rowParser = parser();
+  Object.entries(functions).forEach(([name, call]) => rowParser.set(name, call));
+  const context = {} as { row: Row };
+  rowParser.set('$', context);
+
   rows.forEach((row: Row) => {
-    if (!params.where(row)) {
+    context.row = row;
+    if (!params.where(row, rowParser)) {
       otherRows.push(row);
       return;
     }

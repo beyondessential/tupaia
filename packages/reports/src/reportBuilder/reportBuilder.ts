@@ -1,29 +1,18 @@
 import { Aggregator } from '../aggregator';
-import { FetchReportQuery } from '../routes/fetchReport';
-import { fetch, FetchResponse } from './fetch';
+import { FetchReportQuery } from '../types';
+import { buildFetch } from './fetch';
 import { buildTransform } from './transform';
+import { Row } from './types';
 
-export type FieldValue = string | number | boolean | undefined;
-export const isValidFieldValue = (fieldValue: any): fieldValue is FieldValue => {
-  return (
-    typeof fieldValue === 'number' ||
-    typeof fieldValue === 'string' ||
-    typeof fieldValue === 'boolean' ||
-    fieldValue === undefined
-  );
-};
-
-export interface Row {
-  [field: string]: FieldValue;
-}
-
-export interface BuildReport {
+interface BuildReport {
   results: Row[];
 }
 
 export class ReportBuilder {
   readonly report;
+
   readonly aggregator: Aggregator;
+
   readonly query: FetchReportQuery;
 
   constructor(report, aggregator: Aggregator, query: FetchReportQuery) {
@@ -33,9 +22,10 @@ export class ReportBuilder {
   }
 
   build = async (): Promise<BuildReport> => {
-    const data: FetchResponse = await fetch(this.report.config.fetch, this.aggregator, this.query);
-    const builtTransform = buildTransform(this.report.config.transform);
-    data.results = builtTransform(data.results);
+    const fetch = buildFetch(this.report.config.fetch);
+    const transform = buildTransform(this.report.config.transform);
+    const data = await fetch(this.aggregator, this.query);
+    data.results = transform(data.results);
     return data;
   };
 }
