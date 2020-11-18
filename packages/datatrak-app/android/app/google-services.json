@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "357640682036",
+    "firebase_url": "https://tupaia-6ae1f.firebaseio.com",
+    "project_id": "tupaia-6ae1f",
+    "storage_bucket": "tupaia-6ae1f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357640682036:android:a738dc09e2c44b8b",
+        "android_client_info": {
+          "package_name": "com.tupaiameditrak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "357640682036-r678q2qapsldbh1vi368g7j1kjbfa9sj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcQQLTZQg2UbJYeuEhMkKhyEtgTrsAZHk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
