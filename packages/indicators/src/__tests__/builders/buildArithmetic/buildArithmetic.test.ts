@@ -20,9 +20,9 @@ describe('buildArithmetic', () => {
       ['formula is not a string', { formula: {}, aggregation: {} }, /Error .*formula.* string/],
       ['undefined aggregation', { formula: 'A + B' }, /Error .*aggregation.* empty/],
       [
-        'aggregation is not an object',
-        { formula: 'A + B', aggregation: 'MOST_RECENT' },
-        /Error .*aggregation.* object/,
+        'wrong aggregation type',
+        { formula: 'A + B', aggregation: ['MOST_RECENT'] },
+        /must be one of string \| object/i,
       ],
       [
         'a data element referenced in the formula has no defined aggregation',
@@ -48,12 +48,17 @@ describe('buildArithmetic', () => {
     );
   });
 
-  it('resolves for valid config', async () => {
-    const config = {
-      formula: '2 * A + B',
-      aggregation: { A: 'MOST_RECENT', B: ['SUM', 'MOST_RECENT'] },
-    };
-    return expect(buildArithmetic({ aggregator, config, fetchOptions: {} })).toResolve();
+  describe('resolves for valid config', () => {
+    const formula = '2 * A + B';
+    const testData = [
+      ['string aggregation', 'MOST_RECENT'],
+      ['object aggregation', { A: 'MOST_RECENT', B: ['SUM', 'MOST_RECENT'] }],
+    ];
+
+    it.each(testData)('%s', (_, aggregation) => {
+      const config = { formula, aggregation };
+      return expect(buildArithmetic({ aggregator, config, fetchOptions: {} })).toResolve();
+    });
   });
 
   it('calls `aggregator.fetchAnalytics` with `fetchOptions`', async () => {

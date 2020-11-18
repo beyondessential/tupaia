@@ -76,13 +76,12 @@ export const isEmail = value => {
   }
 };
 
+// Conditional taken from https://github.com/bttmly/is-pojo/blob/master/lib/index.js
+const isPojo = value =>
+  value !== null && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype;
+
 export const isPlainObject = value => {
-  // Conditional taken from https://github.com/bttmly/is-pojo/blob/master/lib/index.js
-  const isPojo =
-    value !== null &&
-    typeof value === 'object' &&
-    Object.getPrototypeOf(value) === Object.prototype;
-  if (!isPojo) {
+  if (!isPojo(value)) {
     throw new Error('Not a plain javascript object');
   }
 };
@@ -124,6 +123,37 @@ export const constructIsOneOf = options => value => {
   if (!options.includes(value)) {
     throw new ValidationError(`${value} is not an accepted value`);
   }
+};
+
+const checkIsOfType = (value, type) => {
+  switch (type) {
+    case 'array':
+      return Array.isArray(value);
+    case 'object':
+      return isPojo(value);
+    case 'number':
+    case 'string':
+    case 'boolean':
+      // eslint-disable-next-line valid-typeof
+      return typeof value === type;
+    default:
+      throw new Error(`Non supported type: ${type}`);
+  }
+};
+
+export const constructIsOneOfType = types => {
+  if (!Array.isArray(types)) {
+    throw new Error('constructIsOneOfType expects an array of types');
+  }
+  if (types.length === 0) {
+    throw new Error('constructIsOneOfType expects at least one type');
+  }
+
+  return value => {
+    if (!types.some(type => checkIsOfType(value, type))) {
+      throw new Error(`Must be one of ${types.join(' | ')}`);
+    }
+  };
 };
 
 export const constructRecordExistsWithCode = model => async value => {
