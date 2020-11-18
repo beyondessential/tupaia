@@ -42,8 +42,8 @@ const ExploreButton = styled(Button)`
 `;
 
 const renderProjectsWithFilter = (projects, accessType, action, actionText) => {
-  const hasAccessType = accessType === 'pending' ? false : accessType;
   const hasPendingType = accessType === 'pending';
+  const hasAccessType = hasPendingType ? false : accessType;
   return projects
     .filter(
       ({ code, hasAccess, hasPendingAccess = false }) =>
