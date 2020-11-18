@@ -34,3 +34,13 @@ export interface ReportsRequest<
   database: TupaiaDatabase;
   models: ModelRegistry;
 }
+
+export interface Event {
+  event: string;
+  eventDate: string;
+  orgUnitName: string;
+  orgUnit: string;
+  dataValues?: {
+    [key: string]: string | number;
+  };
+}

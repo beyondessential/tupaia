@@ -1,7 +1,7 @@
-import { buildDataElementsFetch } from './dataElements';
-import { buildDataGroupsFetch } from './dataGroups';
+import { buildDataElementFetch } from './dataElement';
+import { buildDataGroupFetch } from './dataGroup';
 
 export const fetchBuilders = {
-  dataElements: buildDataElementsFetch,
-  dataGroups: buildDataGroupsFetch,
+  dataElements: buildDataElementFetch,
+  dataGroups: buildDataGroupFetch,
 };
