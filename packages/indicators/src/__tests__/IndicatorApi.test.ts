@@ -6,7 +6,7 @@
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { IndicatorApi } from '../IndicatorApi';
-import { IndicatorFields, IndicatorType, ModelRegistry } from '../types';
+import { Indicator, IndicatorType, ModelRegistry } from '../types';
 
 jest.mock('@tupaia/aggregator');
 jest.mock('@tupaia/data-broker');
@@ -22,7 +22,7 @@ jest.mock('../builders', () => {
   return { buildTestArithmetic, buildTestAnalyticCount };
 });
 
-const INDICATORS: Record<string, Omit<IndicatorFields, 'id'>> = {
+const INDICATORS: Record<string, Indicator> = {
   MALARIA: {
     code: 'MALARIA',
     builder: 'testArithmetic',

@@ -12,7 +12,7 @@ import {
   Builder,
   FetchOptions,
   IndicatorApiInterface,
-  IndicatorFields,
+  Indicator,
   ModelRegistry,
 } from './types';
 
@@ -36,7 +36,7 @@ export class IndicatorApi implements IndicatorApiInterface {
   }
 
   async buildAnalyticsForIndicators(
-    indicators: Omit<IndicatorFields, 'id'>[],
+    indicators: Indicator[],
     fetchOptions: FetchOptions,
   ): Promise<Analytic[]> {
     const nestedAnalytics = await Promise.all(
@@ -45,10 +45,7 @@ export class IndicatorApi implements IndicatorApiInterface {
     return nestedAnalytics.flat().sort(getSortByKey('period'));
   }
 
-  private buildAnalyticsForIndicator = async (
-    indicator: Omit<IndicatorFields, 'id'>,
-    fetchOptions: FetchOptions,
-  ) => {
+  private buildAnalyticsForIndicator = async (indicator: Indicator, fetchOptions: FetchOptions) => {
     const { code, builder, config } = indicator;
     const buildAnalyticValues = this.getBuilderFunction(builder);
     const analyticValues = await buildAnalyticValues({ api: this, config, fetchOptions });

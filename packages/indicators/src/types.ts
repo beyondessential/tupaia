@@ -34,12 +34,13 @@ interface DatabaseModel<F extends TypeFields, T extends DatabaseType<F>> {
   find: (dbConditions: DbConditions<F>) => Promise<T[]>;
 }
 
-export type IndicatorFields = {
-  id: string;
+export type Indicator = {
   code: string;
   builder: string;
   config: Record<string, unknown>;
 };
+
+type IndicatorFields = Indicator & { id: string };
 
 export type IndicatorType = DatabaseType<IndicatorFields>;
 
@@ -50,7 +51,7 @@ export interface ModelRegistry {
 export interface IndicatorApiInterface {
   getAggregator: () => Aggregator;
   buildAnalyticsForIndicators: (
-    indicators: Omit<IndicatorType, 'id'>[],
+    indicators: Indicator[],
     fetchOptions: FetchOptions,
   ) => Promise<Analytic[]>;
 }
