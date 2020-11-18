@@ -15,7 +15,7 @@ import {
   isAString,
 } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
-import { Aggregation, AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
+import { AggregationSpecs, Analytic, AnalyticCluster, Builder, FetchOptions } from '../types';
 
 export type DefaultValuesSpecs = Readonly<Record<string, number>>;
 
@@ -66,17 +66,12 @@ const configValidators = {
 };
 
 const fetchAnalyticClusters = async (
-  aggregator: Aggregator,
-  aggregationsByCode: Record<string, Aggregation[]>,
+  analytics: Analytic[],
+  dataElements: string[],
   defaultValues: DefaultValuesSpecs,
-  fetchOptions: FetchOptions,
 ) => {
-  const analytics = await fetchAnalytics(aggregator, aggregationsByCode, fetchOptions);
-  const clusters = analyticsToAnalyticClusters(analytics);
-
-  const allElements = Object.keys(aggregationsByCode);
   const checkClusterIncludesAllElements = (cluster: AnalyticCluster) =>
-    allElements.every(member => member in cluster.dataValues);
+    dataElements.every(member => member in cluster.dataValues);
 
   const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster) => {
     const returnDataValues = { ...cluster.dataValues };
@@ -84,13 +79,11 @@ const fetchAnalyticClusters = async (
       returnDataValues[code] = returnDataValues[code] ?? defaultValues[code];
     });
 
-    return {
-      ...cluster,
-      dataValues: returnDataValues,
-    };
+    return { ...cluster, dataValues: returnDataValues };
   };
 
   // Remove clusters that do not include all elements referenced in the specs
+  const clusters = analyticsToAnalyticClusters(analytics);
   return clusters.map(replaceAnalyticValuesWithDefaults).filter(checkClusterIncludesAllElements);
 };
 
@@ -103,17 +96,29 @@ const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: strin
     }))
     .filter(({ value }) => isFinite(value));
 
+const fetchAnalyticsAndElements = async (
+  aggregator: Aggregator,
+  config: ArithmeticConfig,
+  fetchOptions: FetchOptions,
+) => {
+  const { formula, aggregation: aggregationSpecs } = config;
+  const aggregationsByCode = getAggregationsByCode(aggregationSpecs, formula);
+  const analytics = await fetchAnalytics(aggregator, aggregationsByCode, fetchOptions);
+  const dataElements = Object.keys(aggregationsByCode);
+
+  return { analytics, dataElements };
+};
+
 export const buildArithmetic: Builder = async input => {
   const { aggregator, config: configInput, fetchOptions } = input;
   const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
-
-  const { formula, aggregation: aggregationSpecs, defaultValues = {} } = config;
-  const aggregationsByCode = getAggregationsByCode(aggregationSpecs, formula);
-  const clusters = await fetchAnalyticClusters(
+  const { analytics, dataElements } = await fetchAnalyticsAndElements(
     aggregator,
-    aggregationsByCode,
-    defaultValues,
+    config,
     fetchOptions,
   );
+
+  const { formula, defaultValues = {} } = config;
+  const clusters = await fetchAnalyticClusters(analytics, dataElements, defaultValues);
   return buildAnalyticValues(clusters, formula);
 };
