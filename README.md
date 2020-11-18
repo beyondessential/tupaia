@@ -17,6 +17,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
+- [datatrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/datatrak-app/README.md)
 - [meditrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-server/README.md)
 - [psss](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
