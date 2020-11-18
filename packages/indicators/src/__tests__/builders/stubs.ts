@@ -13,7 +13,7 @@ export type AnalyticResponseFixture = {
   analytic: Analytic;
 };
 
-export const createAggregator = (responseFixtures: AnalyticResponseFixture[]): Aggregator => {
+export const createAggregator = (responseFixtures: AnalyticResponseFixture[] = []): Aggregator => {
   /**
    * Looks for the provided codes and aggregations in the input
    * and returns analytics for all matched items

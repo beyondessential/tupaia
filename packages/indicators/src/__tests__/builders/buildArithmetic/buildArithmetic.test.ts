@@ -4,18 +4,18 @@
  */
 
 import { ArithmeticConfig, buildArithmetic } from '../../../builders/buildArithmetic';
-import { AnalyticValue, IndicatorApiInterface } from '../../../types';
+import { AnalyticValue } from '../../../types';
 import { createAggregator } from '../stubs';
 import { ANALYTIC_RESPONSE_FIXTURES } from './buildArithmetic.fixtures';
 
 describe('buildArithmetic', () => {
-  const aggregator = createAggregator(ANALYTIC_RESPONSE_FIXTURES);
-  const api: IndicatorApiInterface = {
-    getAggregator: () => aggregator,
+  const getDummyApi = () => ({
+    getAggregator: () => createAggregator(),
     buildAnalyticsForIndicators: async () => [],
-  };
+  });
 
   describe('throws for invalid config', () => {
+    const api = getDummyApi();
     const testData: [string, Record<string, unknown>, RegExp][] = [
       ['undefined formula', { aggregation: {} }, /Error .*formula.* empty/],
       ['formula is not a string', { formula: {}, aggregation: {} }, /Error .*formula.* string/],
@@ -32,7 +32,11 @@ describe('buildArithmetic', () => {
       ],
       [
         'a data element not referenced in the formula but has a default',
-        { formula: 'A + B', aggregation: { A: 'MOST_RECENT', B: 'SUM' }, defaultValues: { C: 10 } },
+        {
+          formula: 'A + B',
+          aggregation: { A: 'MOST_RECENT', B: 'SUM' },
+          defaultValues: { C: 10 },
+        },
         /C.* is in defaultValues but not referenced in the formula/,
       ],
       [
@@ -48,6 +52,7 @@ describe('buildArithmetic', () => {
   });
 
   describe('resolves for valid config', () => {
+    const api = getDummyApi();
     const formula = '2 * A + B';
     const testData = [
       ['string aggregation', 'MOST_RECENT'],
@@ -61,6 +66,11 @@ describe('buildArithmetic', () => {
   });
 
   it('calls `aggregator.fetchAnalytics` with `fetchOptions`', async () => {
+    const aggregator = createAggregator();
+    const api = {
+      getAggregator: () => aggregator,
+      buildAnalyticsForIndicators: async () => [],
+    };
     const config = {
       formula: 'A + B',
       aggregation: { A: ['MOST_RECENT'], B: ['MOST_RECENT'] },
@@ -76,6 +86,11 @@ describe('buildArithmetic', () => {
   });
 
   describe('calculations for a single orgUnit/period combo', () => {
+    const api = {
+      getAggregator: () => createAggregator(ANALYTIC_RESPONSE_FIXTURES),
+      buildAnalyticsForIndicators: async () => [],
+    };
+
     const testData: [string, ArithmeticConfig, AnalyticValue[]][] = [
       [
         'simple calculation - integer',
@@ -127,6 +142,11 @@ describe('buildArithmetic', () => {
   });
 
   describe('calculations for multiple orgUnit/period combos', () => {
+    const api = {
+      getAggregator: () => createAggregator(ANALYTIC_RESPONSE_FIXTURES),
+      buildAnalyticsForIndicators: async () => [],
+    };
+
     const testData: [string, ArithmeticConfig, AnalyticValue[]][] = [
       [
         'all data elements are defined in all combos',
