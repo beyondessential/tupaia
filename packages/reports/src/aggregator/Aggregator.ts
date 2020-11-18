@@ -1,28 +1,33 @@
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
 import { getDefaultPeriod } from '@tupaia/utils';
+import { Event } from '../types';
 
 export class Aggregator extends BaseAggregator {
   async fetchAnalytics(
     dataElementCodes: string[],
-    organisationUnitCodes: string[],
+    organisationUnitCodes: string,
     period = getDefaultPeriod(),
   ) {
     return super.fetchAnalytics(
       dataElementCodes,
-      { organisationUnitCodes, period, dataServices: [{ isDataRegional: true }] },
+      {
+        organisationUnitCodes: organisationUnitCodes.split(','),
+        period,
+        dataServices: [{ isDataRegional: true }],
+      },
       { aggregationType: 'RAW' },
     );
   }
 
   async fetchEvents(
     programCode: string,
-    organisationUnitCodes: string[],
+    organisationUnitCodes: string,
     period = getDefaultPeriod(),
-  ): Promise<unknown[]> {
+  ): Promise<Event[]> {
     return super.fetchEvents(
       programCode,
       {
-        organisationUnitCodes,
+        organisationUnitCodes: organisationUnitCodes.split(','),
         period,
         dataServices: [{ isDataRegional: true }],
         useDeprecatedApi: false,

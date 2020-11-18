@@ -24,15 +24,30 @@ class FetchReportRouteHandler {
       throw new Error(`No report found with code ${params.reportCode}`);
     }
 
-    const orgUnit = await models.entity.findOne({ code: query.organisationUnitCode });
-    if (!orgUnit) {
-      throw new Error(`No entity found with code ${query.organisationUnitCode}`);
-    }
     const permissionGroup = await models.permissionGroup.findById(report.permission_group_id);
+    const orgUnitCodes = query.organisationUnitCodes.split(',');
+    const orgUnitsAndCodes = await Promise.all(
+      orgUnitCodes.map(async orgUnitCode => ({
+        orgUnitCode,
+        orgUnit: await models.entity.findOne({ code: orgUnitCode }),
+      })),
+    );
 
-    if (!accessPolicy.allows(orgUnit.country_code, permissionGroup.name)) {
-      throw new Error(`No ${permissionGroup.name} access for user to ${orgUnit.name}`);
+    const invalidOrgUnit = orgUnitsAndCodes.find(orgUnitAndCode => !orgUnitAndCode.orgUnit);
+    if (invalidOrgUnit) {
+      throw new Error(`No entity found with code ${invalidOrgUnit.orgUnitCode}`);
     }
+
+    const countryCodes = new Set(
+      orgUnitsAndCodes.map(orgUnitAndCode => orgUnitAndCode.orgUnit.country_code),
+    );
+
+    countryCodes.forEach(countryCode => {
+      if (!accessPolicy.allows(countryCode, permissionGroup.name)) {
+        throw new Error(`No ${permissionGroup.name} access for user to ${countryCode}`);
+      }
+    });
+
     const reportBuilder = new ReportBuilder(report, this.aggregator, query);
     const data = await reportBuilder.build();
     respond(res, data, 200);
