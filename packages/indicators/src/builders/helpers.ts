@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getVariables } from '@beyondessential/arithmetic';
 import groupBy from 'lodash.groupby';
 
 import { Aggregator } from '@tupaia/aggregator';
@@ -23,14 +24,20 @@ export const validateConfig = async <T extends Record<string, unknown>>(
   return config as T;
 };
 
-export const getAggregationsByCode = (aggregationSpecs: AggregationSpecs) =>
-  Object.fromEntries(
-    Object.entries(aggregationSpecs).map(([code, descriptor]) => {
+export const getAggregationsByCode = (aggregationSpecs: AggregationSpecs, formula?: string) => {
+  const aggregationObject =
+    typeof aggregationSpecs === 'string'
+      ? Object.fromEntries(getVariables(formula).map(code => [code, aggregationSpecs]))
+      : aggregationSpecs;
+
+  return Object.fromEntries(
+    Object.entries(aggregationObject).map(([code, descriptor]) => {
       const descriptorArray = Array.isArray(descriptor) ? descriptor : [descriptor];
       const aggregations = descriptorArray.map(aggregationType => ({ type: aggregationType }));
       return [code, aggregations];
     }),
   );
+};
 
 export const groupKeysByValueJson = (object: Record<string, unknown>) =>
   groupBy(Object.keys(object), code => JSON.stringify(object[code]));

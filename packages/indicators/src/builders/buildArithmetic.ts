@@ -8,14 +8,14 @@ import { getVariables, runArithmetic } from '@beyondessential/arithmetic';
 import { Aggregator } from '@tupaia/aggregator';
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import {
-  hasContent,
-  isAString,
-  isPlainObject,
   allValuesAreNumbers,
   constructIsEmptyOr,
+  constructIsOneOfType,
+  hasContent,
+  isAString,
 } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
-import { AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
+import { Aggregation, AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
 
 export type DefaultValuesSpecs = Readonly<Record<string, number>>;
 
@@ -25,10 +25,14 @@ export type ArithmeticConfig = {
   readonly defaultValues?: DefaultValuesSpecs;
 };
 
-const assertAggregationIsDefinedForCodesInFormula = (
-  aggregation: AggregationSpecs,
-  { formula }: { formula: ArithmeticConfig['formula'] },
+const assertAggregationObjectIsValid = (
+  aggregation: string | Record<string, unknown>,
+  { formula }: { formula: string },
 ) => {
+  if (typeof aggregation === 'string') {
+    return;
+  }
+
   getVariables(formula).forEach(code => {
     if (!(code in aggregation)) {
       throw new Error(`'${code}' is referenced in the formula but has no aggregation defined`);
@@ -38,7 +42,7 @@ const assertAggregationIsDefinedForCodesInFormula = (
 
 const assertAllDefaultsAreCodesInFormula = (
   defaultValues: DefaultValuesSpecs,
-  { formula }: { formula: ArithmeticConfig['formula'] },
+  { formula }: { formula: string },
 ) => {
   const variables = getVariables(formula);
   Object.keys(defaultValues).forEach(code => {
@@ -50,7 +54,11 @@ const assertAllDefaultsAreCodesInFormula = (
 
 const configValidators = {
   formula: [hasContent, isAString],
-  aggregation: [hasContent, isPlainObject, assertAggregationIsDefinedForCodesInFormula],
+  aggregation: [
+    hasContent,
+    constructIsOneOfType(['string', 'object']),
+    assertAggregationObjectIsValid,
+  ],
   defaultValues: [
     constructIsEmptyOr(assertAllDefaultsAreCodesInFormula),
     constructIsEmptyOr(allValuesAreNumbers),
@@ -59,11 +67,10 @@ const configValidators = {
 
 const fetchAnalyticClusters = async (
   aggregator: Aggregator,
-  aggregationSpecs: AggregationSpecs,
+  aggregationsByCode: Record<string, Aggregation[]>,
   defaultValues: DefaultValuesSpecs,
   fetchOptions: FetchOptions,
 ) => {
-  const aggregationsByCode = getAggregationsByCode(aggregationSpecs);
   const analytics = await fetchAnalytics(aggregator, aggregationsByCode, fetchOptions);
   const clusters = analyticsToAnalyticClusters(analytics);
 
@@ -101,9 +108,10 @@ export const buildArithmetic: Builder = async input => {
   const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
 
   const { formula, aggregation: aggregationSpecs, defaultValues = {} } = config;
+  const aggregationsByCode = getAggregationsByCode(aggregationSpecs, formula);
   const clusters = await fetchAnalyticClusters(
     aggregator,
-    aggregationSpecs,
+    aggregationsByCode,
     defaultValues,
     fetchOptions,
   );
