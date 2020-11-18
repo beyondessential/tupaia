@@ -4,13 +4,16 @@
  */
 
 import { ArithmeticConfig, buildArithmetic } from '../../../builders/buildArithmetic';
-import { AnalyticValue } from '../../../types';
+import { AnalyticValue, IndicatorApiInterface } from '../../../types';
 import { createAggregator } from '../stubs';
 import { ANALYTIC_RESPONSE_FIXTURES } from './buildArithmetic.fixtures';
 
 describe('buildArithmetic', () => {
   const aggregator = createAggregator(ANALYTIC_RESPONSE_FIXTURES);
-  const api = { getAggregator: () => aggregator };
+  const api: IndicatorApiInterface = {
+    getAggregator: () => aggregator,
+    buildAnalyticsForIndicators: async () => [],
+  };
 
   describe('throws for invalid config', () => {
     const testData: [string, Record<string, unknown>, RegExp][] = [

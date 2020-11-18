@@ -5,7 +5,6 @@
 
 import { getVariables, runArithmetic } from '@beyondessential/arithmetic';
 
-import { Aggregator } from '@tupaia/aggregator';
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import {
   allValuesAreNumbers,

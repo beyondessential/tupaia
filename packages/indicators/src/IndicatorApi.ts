@@ -12,7 +12,7 @@ import {
   Builder,
   FetchOptions,
   IndicatorApiInterface,
-  IndicatorType,
+  IndicatorFields,
   ModelRegistry,
 } from './types';
 
@@ -30,16 +30,23 @@ export class IndicatorApi implements IndicatorApiInterface {
     return this.aggregator;
   }
 
-  async buildAnalytics(codes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
-    const indicators = await this.models.indicator.find({ code: codes });
+  async buildAnalytics(indicatorCodes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
+    const indicators = await this.models.indicator.find({ code: indicatorCodes });
+    return this.buildAnalyticsForIndicators(indicators, fetchOptions);
+  }
+
+  async buildAnalyticsForIndicators(
+    indicators: Omit<IndicatorFields, 'id'>[],
+    fetchOptions: FetchOptions,
+  ): Promise<Analytic[]> {
     const nestedAnalytics = await Promise.all(
       indicators.map(async indicator => this.buildAnalyticsForIndicator(indicator, fetchOptions)),
     );
     return nestedAnalytics.flat().sort(getSortByKey('period'));
   }
 
-  buildAnalyticsForIndicator = async (
-    indicator: Omit<IndicatorType, 'id'>,
+  private buildAnalyticsForIndicator = async (
+    indicator: Omit<IndicatorFields, 'id'>,
     fetchOptions: FetchOptions,
   ) => {
     const { code, builder, config } = indicator;

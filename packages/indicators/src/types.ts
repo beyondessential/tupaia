@@ -49,6 +49,10 @@ export interface ModelRegistry {
 
 export interface IndicatorApiInterface {
   getAggregator: () => Aggregator;
+  buildAnalyticsForIndicators: (
+    indicators: Omit<IndicatorType, 'id'>[],
+    fetchOptions: FetchOptions,
+  ) => Promise<Analytic[]>;
 }
 
 export interface Builder {
