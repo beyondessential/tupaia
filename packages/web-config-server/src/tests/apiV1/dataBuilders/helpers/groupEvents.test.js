@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import { groupEvents, getAllDataElementCodes } from '/apiV1/dataBuilders/helpers/groupEvents';
 
-const EVENTS_1 = [
+const EVENTS = [
   {
     orgUnit: 'TO_Tongatapu',
     orgUnitName: 'Tongatapu',
@@ -15,24 +15,6 @@ const EVENTS_1 = [
   },
   { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '2' }] },
   { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '3' }] },
-];
-
-const EVENTS_2 = [
-  {
-    dataValues: [
-      { dataElement: 'A', value: '10' },
-      { dataElement: 'B', value: '20' },
-    ],
-  },
-  {
-    dataValues: [
-      { dataElement: 'A', value: '10' },
-      { dataElement: 'B', value: '21' },
-    ],
-  },
-  {
-    dataValues: [{ dataElement: 'C', value: '30' }],
-  },
 ];
 
 const PARENT_ORG_UNIT = {
@@ -56,131 +38,153 @@ const models = {
   },
 };
 
-describe('groupEvents()', () => {
+describe.only('groupEvents()', () => {
   it('groups by nothing', () =>
-    expect(groupEvents(models, EVENTS_1, { type: 'nothing' })).to.eventually.deep.equal({
-      all: [...EVENTS_1],
-    }));
-
-  it('groups by allOrgUnitNames', () =>
-    expect(
-      groupEvents(models, EVENTS_1, {
-        type: 'allOrgUnitNames',
-        options: { parentCode: 'TO', type: 'district' },
-      }),
-    ).to.eventually.deep.equal({
-      Tongatapu: [
-        {
-          orgUnit: 'TO_Tongatapu',
-          orgUnitName: 'Tongatapu',
-          dataValues: [{ dataElement: 'A', value: '1' }],
-        },
-      ],
-      Niuas: [
-        {
-          orgUnit: 'TO_Niuas',
-          orgUnitName: 'Niuas',
-          dataValues: [{ dataElement: 'A', value: '2' }],
-        },
-        {
-          orgUnit: 'TO_Niuas',
-          orgUnitName: 'Niuas',
-          dataValues: [{ dataElement: 'A', value: '3' }],
-        },
-      ],
-      Haapai: [],
+    expect(groupEvents(models, EVENTS, { type: 'nothing' })).to.eventually.deep.equal({
+      all: [...EVENTS],
     }));
 
   it('rejects unknown groupBy type', async () => {
     const assertCorrectErrorIsThrown = groupBySpecs =>
-      expect(groupEvents(models, EVENTS_1, groupBySpecs)).to.be.rejectedWith(
+      expect(groupEvents(models, EVENTS, groupBySpecs)).to.be.rejectedWith(
         'not a supported groupBy type',
       );
 
     return Promise.all([{ type: 'unknownType' }, { type: '' }, {}].map(assertCorrectErrorIsThrown));
   });
 
-  it('groups by dataValues basic', () => {
-    expect(
-      groupEvents(models, EVENTS_2, {
-        type: 'dataValues',
-        options: {
-          GROUPING_1: {
-            dataValues: { A: { operator: '=', value: '10' } },
+  describe('getAllDataElementCodes', () => {
+    it('returns empty by default', () =>
+      expect(
+        getAllDataElementCodes({
+          type: 'allOrgUnitNames',
+          options: { parentCode: 'TO', type: 'district' },
+        }),
+      ).to.deep.equal([]));
+
+    it('finds all data element codes used in conditionals', () =>
+      expect(
+        getAllDataElementCodes({
+          type: 'dataValues',
+          options: {
+            GROUPING_1: {
+              dataValues: { A: { operator: '=', value: '10' } },
+            },
+            GROUPING_2: {
+              dataValues: { B: { operator: '=', value: '21' } },
+            },
           },
-          GROUPING_2: {
-            dataValues: { B: { operator: '=', value: '21' } },
-          },
-        },
-      }),
-    ).to.eventually.deep.equal({
-      GROUPING_1: [
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '20' },
-          ],
-        },
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '21' },
-          ],
-        },
-      ],
-      GROUPING_2: [
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '21' },
-          ],
-        },
-      ],
-    });
+        }),
+      ).to.deep.equal(['A', 'B']));
   });
 
-  it('uses a union type condition check when grouping by dataValues', () => {
-    expect(
-      groupEvents(models, EVENTS_2, {
-        type: 'dataValues',
-        options: {
-          GROUPING_1: {
-            dataValues: { A: { operator: '=', value: '10' }, B: { operator: '=', value: '21' } },
+  describe('type: allOrgUnitNames', () => {
+    it('groups', () =>
+      expect(
+        groupEvents(models, EVENTS, {
+          type: 'allOrgUnitNames',
+          options: { parentCode: 'TO', type: 'district' },
+        }),
+      ).to.eventually.deep.equal({
+        Tongatapu: [
+          {
+            orgUnit: 'TO_Tongatapu',
+            orgUnitName: 'Tongatapu',
+            dataValues: [{ dataElement: 'A', value: '1' }],
           },
-        },
-      }),
-    ).to.eventually.deep.equal({
-      GROUPING_1: [
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '21' },
-          ],
-        },
-      ],
-    });
+        ],
+        Niuas: [
+          {
+            orgUnit: 'TO_Niuas',
+            orgUnitName: 'Niuas',
+            dataValues: [{ dataElement: 'A', value: '2' }],
+          },
+          {
+            orgUnit: 'TO_Niuas',
+            orgUnitName: 'Niuas',
+            dataValues: [{ dataElement: 'A', value: '3' }],
+          },
+        ],
+        Haapai: [],
+      }));
   });
 
-  it('getAllDataElementCodes returns empty by default', () =>
-    expect(
-      getAllDataElementCodes({
-        type: 'allOrgUnitNames',
-        options: { parentCode: 'TO', type: 'district' },
-      }),
-    ).to.deep.equal([]));
+  describe('type: dataValues', () => {
+    const EVENTS_2 = [
+      {
+        dataValues: [
+          { dataElement: 'A', value: '10' },
+          { dataElement: 'B', value: '20' },
+        ],
+      },
+      {
+        dataValues: [
+          { dataElement: 'A', value: '10' },
+          { dataElement: 'B', value: '21' },
+        ],
+      },
+      {
+        dataValues: [{ dataElement: 'C', value: '30' }],
+      },
+    ];
 
-  it('getAllDataElementCodes finds all data element codes used in conditionals', () =>
-    expect(
-      getAllDataElementCodes({
-        type: 'dataValues',
-        options: {
-          GROUPING_1: {
-            dataValues: { A: { operator: '=', value: '10' } },
+    it('groups', () =>
+      expect(
+        groupEvents(models, EVENTS_2, {
+          type: 'dataValues',
+          options: {
+            GROUPING_1: {
+              dataValues: { A: { operator: '=', value: '10' } },
+            },
+            GROUPING_2: {
+              dataValues: { B: { operator: '=', value: '21' } },
+            },
           },
-          GROUPING_2: {
-            dataValues: { B: { operator: '=', value: '21' } },
+        }),
+      ).to.eventually.deep.equal({
+        GROUPING_1: [
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '20' },
+            ],
           },
-        },
-      }),
-    ).to.deep.equal(['A', 'B']));
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '21' },
+            ],
+          },
+        ],
+        GROUPING_2: [
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '21' },
+            ],
+          },
+        ],
+      }));
+
+    it('uses a union type condition check', () =>
+      expect(
+        groupEvents(models, EVENTS_2, {
+          type: 'dataValues',
+          options: {
+            GROUPING_1: {
+              dataValues: { A: { operator: '=', value: '10' }, B: { operator: '=', value: '21' } },
+            },
+          },
+        }),
+      ).to.eventually.deep.equal({
+        GROUPING_1: [
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '21' },
+            ],
+          },
+        ],
+      }));
+  });
 });
