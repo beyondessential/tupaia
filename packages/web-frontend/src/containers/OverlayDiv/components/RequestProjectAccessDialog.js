@@ -147,6 +147,7 @@ const Note = styled.p`
 const BackButton = styled(PrimaryButton)`
   margin-top: 30px;
   margin-bottom: 10px;
+  width: 220px;
 `;
 
 const RequestLink = styled.a`
