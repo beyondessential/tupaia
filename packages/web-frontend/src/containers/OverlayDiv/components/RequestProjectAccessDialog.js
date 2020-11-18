@@ -138,10 +138,9 @@ const FormGrid = styled.div`
 `;
 
 const Note = styled.p`
-  text-align: center;
+  text-align: left;
   color: ${GREY};
   font-size: small;
-  padding: 10px;
 `;
 
 const BackButton = styled(PrimaryButton)`
