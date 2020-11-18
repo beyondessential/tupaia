@@ -8,9 +8,6 @@ import { AnalyticValue } from '../../../types';
 import { createAggregator } from '../stubs';
 import { ANALYTIC_RESPONSE_FIXTURES } from './buildArithmetic.fixtures';
 
-const getAggregationForCodes = (codes: string[]) =>
-  Object.fromEntries(codes.map(code => [code, ['FINAL_EACH_YEAR']]));
-
 describe('buildArithmetic', () => {
   const aggregator = createAggregator(ANALYTIC_RESPONSE_FIXTURES);
 
@@ -82,7 +79,7 @@ describe('buildArithmetic', () => {
         'simple calculation - integer',
         {
           formula: 'A_To_2019 + B_To_2019',
-          aggregation: getAggregationForCodes(['A_To_2019', 'B_To_2019']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [{ organisationUnit: 'TO', period: '2019', value: 3 }],
       ],
@@ -90,7 +87,7 @@ describe('buildArithmetic', () => {
         'simple calculation - float',
         {
           formula: 'A_To_2019 / B_To_2019',
-          aggregation: getAggregationForCodes(['A_To_2019', 'B_To_2019']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [{ organisationUnit: 'TO', period: '2019', value: 0.5 }],
       ],
@@ -98,13 +95,7 @@ describe('buildArithmetic', () => {
         'complex calculation',
         {
           formula: '((A_To_2019 + B_To_2019) * C_To_2019) / (D_To_2019 - E_To_2019)',
-          aggregation: getAggregationForCodes([
-            'A_To_2019',
-            'B_To_2019',
-            'C_To_2019',
-            'D_To_2019',
-            'E_To_2019',
-          ]),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [{ organisationUnit: 'TO', period: '2019', value: -9 }],
       ],
@@ -112,7 +103,7 @@ describe('buildArithmetic', () => {
         'division with zero',
         {
           formula: 'A_To_2019 / (A_To_2019 + B_To_2019 - C_To_2019)',
-          aggregation: getAggregationForCodes(['A_To_2019', 'B_To_2019', 'C_To_2019']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [],
       ],
@@ -120,7 +111,7 @@ describe('buildArithmetic', () => {
         'some data elements are undefined in the orgUnit/period combo',
         {
           formula: 'A_To_2020 + Undefined_To_2019',
-          aggregation: getAggregationForCodes(['A_To_2020', 'Undefined_To_2019']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [],
       ],
@@ -139,7 +130,7 @@ describe('buildArithmetic', () => {
         'all data elements are defined in all combos',
         {
           formula: 'A_ToPg_20192020 + B_ToPg_20192020',
-          aggregation: getAggregationForCodes(['A_ToPg_20192020', 'B_ToPg_20192020']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [
           { organisationUnit: 'TO', period: '2019', value: 3 },
@@ -152,7 +143,7 @@ describe('buildArithmetic', () => {
         'some data elements are undefined in some periods',
         {
           formula: 'A_ToPg_20192020 + C_ToPg_2019',
-          aggregation: getAggregationForCodes(['A_ToPg_20192020', 'C_ToPg_2019']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [
           { organisationUnit: 'TO', period: '2019', value: 4 },
@@ -163,7 +154,7 @@ describe('buildArithmetic', () => {
         'some data elements are undefined in some org units',
         {
           formula: 'A_ToPg_20192020 + D_To_20192020',
-          aggregation: getAggregationForCodes(['A_ToPg_20192020', 'D_To_20192020']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [
           { organisationUnit: 'TO', period: '2019', value: 5 },
@@ -174,7 +165,7 @@ describe('buildArithmetic', () => {
         'all combos include an undefined data element',
         {
           formula: 'C_ToPg_2019 + D_To_20192020 + E_Pg_20192020',
-          aggregation: getAggregationForCodes(['C_ToPg_2019', 'D_To_20192020', 'E_Pg_20192020']),
+          aggregation: 'FINAL_EACH_YEAR',
         },
         [],
       ],
@@ -182,7 +173,7 @@ describe('buildArithmetic', () => {
         'some combos include an undefined data element, but all defaults defined',
         {
           formula: 'C_ToPg_2019 + E_Pg_20192020',
-          aggregation: getAggregationForCodes(['C_ToPg_2019', 'E_Pg_20192020']),
+          aggregation: 'FINAL_EACH_YEAR',
           defaultValues: {
             C_ToPg_2019: 10,
             E_Pg_20192020: 100,
@@ -198,7 +189,7 @@ describe('buildArithmetic', () => {
         'some combos include an undefined data element, but not all defaults defined',
         {
           formula: 'C_ToPg_2019 + E_Pg_20192020',
-          aggregation: getAggregationForCodes(['C_ToPg_2019', 'E_Pg_20192020']),
+          aggregation: 'FINAL_EACH_YEAR',
           defaultValues: {
             C_ToPg_2019: 10,
           },
@@ -212,7 +203,7 @@ describe('buildArithmetic', () => {
         "defaults don't replace 0s",
         {
           formula: 'Z_To_2019 * 2',
-          aggregation: getAggregationForCodes(['Z_To_2019']),
+          aggregation: 'FINAL_EACH_YEAR',
           defaultValues: {
             Z_To_2019: 10,
           },
