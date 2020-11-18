@@ -15,7 +15,14 @@ import {
   isAString,
 } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
-import { AggregationSpecs, Analytic, AnalyticCluster, Builder, FetchOptions } from '../types';
+import {
+  AggregationSpecs,
+  Analytic,
+  AnalyticCluster,
+  Builder,
+  FetchOptions,
+  IndicatorApiInterface,
+} from '../types';
 
 export type DefaultValuesSpecs = Readonly<Record<string, number>>;
 
@@ -97,11 +104,12 @@ const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: strin
     .filter(({ value }) => isFinite(value));
 
 const fetchAnalyticsAndElements = async (
-  aggregator: Aggregator,
+  api: IndicatorApiInterface,
   config: ArithmeticConfig,
   fetchOptions: FetchOptions,
 ) => {
   const { formula, aggregation: aggregationSpecs } = config;
+  const aggregator = api.getAggregator();
   const aggregationsByCode = getAggregationsByCode(aggregationSpecs, formula);
   const analytics = await fetchAnalytics(aggregator, aggregationsByCode, fetchOptions);
   const dataElements = Object.keys(aggregationsByCode);
@@ -110,13 +118,9 @@ const fetchAnalyticsAndElements = async (
 };
 
 export const buildArithmetic: Builder = async input => {
-  const { aggregator, config: configInput, fetchOptions } = input;
+  const { api, config: configInput, fetchOptions } = input;
   const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
-  const { analytics, dataElements } = await fetchAnalyticsAndElements(
-    aggregator,
-    config,
-    fetchOptions,
-  );
+  const { analytics, dataElements } = await fetchAnalyticsAndElements(api, config, fetchOptions);
 
   const { formula, defaultValues = {} } = config;
   const clusters = await fetchAnalyticClusters(analytics, dataElements, defaultValues);

@@ -7,9 +7,16 @@ import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { getSortByKey, upperFirst } from '@tupaia/utils';
 import * as builders from './builders';
-import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from './types';
+import {
+  Analytic,
+  Builder,
+  FetchOptions,
+  IndicatorApiInterface,
+  IndicatorType,
+  ModelRegistry,
+} from './types';
 
-export class IndicatorApi {
+export class IndicatorApi implements IndicatorApiInterface {
   private models: ModelRegistry;
 
   private aggregator: Aggregator;
@@ -17,6 +24,10 @@ export class IndicatorApi {
   constructor(models: ModelRegistry, dataBroker: DataBroker) {
     this.models = models;
     this.aggregator = new Aggregator(dataBroker);
+  }
+
+  getAggregator() {
+    return this.aggregator;
   }
 
   async buildAnalytics(codes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
@@ -27,17 +38,13 @@ export class IndicatorApi {
     return nestedAnalytics.flat().sort(getSortByKey('period'));
   }
 
-  private buildAnalyticsForIndicator = async (
-    indicator: IndicatorType,
+  buildAnalyticsForIndicator = async (
+    indicator: Omit<IndicatorType, 'id'>,
     fetchOptions: FetchOptions,
   ) => {
     const { code, builder, config } = indicator;
     const buildAnalyticValues = this.getBuilderFunction(builder);
-    const analyticValues = await buildAnalyticValues({
-      aggregator: this.aggregator,
-      config,
-      fetchOptions,
-    });
+    const analyticValues = await buildAnalyticValues({ api: this, config, fetchOptions });
 
     return analyticValues.map(value => ({ ...value, dataElement: code }));
   };

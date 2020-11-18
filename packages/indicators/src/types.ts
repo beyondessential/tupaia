@@ -47,9 +47,13 @@ export interface ModelRegistry {
   readonly indicator: DatabaseModel<IndicatorFields, IndicatorType>;
 }
 
+export interface IndicatorApiInterface {
+  getAggregator: () => Aggregator;
+}
+
 export interface Builder {
   (input: {
-    aggregator: Aggregator;
+    api: IndicatorApiInterface;
     config: IndicatorFields['config'];
     fetchOptions: FetchOptions;
   }): Promise<AnalyticValue[]>;

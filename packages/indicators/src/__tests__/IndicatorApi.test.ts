@@ -50,6 +50,10 @@ describe('IndicatorApi', () => {
   const dataBroker = new DataBroker();
   const api = new IndicatorApi(models, dataBroker);
 
+  it('getAggregator()', () => {
+    expect(api.getAggregator()).toBeInstanceOf(Aggregator);
+  });
+
   describe('buildAnalytics()', () => {
     it('should inject the provided `dataBroker` into an `Aggregator` instance', () => {
       new IndicatorApi(models, dataBroker);
@@ -63,12 +67,12 @@ describe('IndicatorApi', () => {
 
       await api.buildAnalytics(['MALARIA', 'POSITIVE'], fetchOptions);
       expect(jest.requireMock('../builders').buildTestArithmetic).toHaveBeenCalledOnceWith({
-        aggregator: expect.any(Aggregator),
+        api,
         config: INDICATORS.MALARIA.config,
         fetchOptions,
       });
       expect(jest.requireMock('../builders').buildTestAnalyticCount).toHaveBeenCalledOnceWith({
-        aggregator: expect.any(Aggregator),
+        api,
         config: INDICATORS.POSITIVE.config,
         fetchOptions,
       });

@@ -10,6 +10,7 @@ import { ANALYTIC_RESPONSE_FIXTURES } from './buildArithmetic.fixtures';
 
 describe('buildArithmetic', () => {
   const aggregator = createAggregator(ANALYTIC_RESPONSE_FIXTURES);
+  const api = { getAggregator: () => aggregator };
 
   describe('throws for invalid config', () => {
     const testData: [string, Record<string, unknown>, RegExp][] = [
@@ -39,9 +40,7 @@ describe('buildArithmetic', () => {
     ];
 
     it.each(testData)('%s', async (_, config, expectedError) =>
-      expect(buildArithmetic({ aggregator, config, fetchOptions: {} })).toBeRejectedWith(
-        expectedError,
-      ),
+      expect(buildArithmetic({ api, config, fetchOptions: {} })).toBeRejectedWith(expectedError),
     );
   });
 
@@ -54,7 +53,7 @@ describe('buildArithmetic', () => {
 
     it.each(testData)('%s', (_, aggregation) => {
       const config = { formula, aggregation };
-      return expect(buildArithmetic({ aggregator, config, fetchOptions: {} })).toResolve();
+      return expect(buildArithmetic({ api, config, fetchOptions: {} })).toResolve();
     });
   });
 
@@ -64,7 +63,7 @@ describe('buildArithmetic', () => {
       aggregation: { A: ['MOST_RECENT'], B: ['MOST_RECENT'] },
     };
     const fetchOptions = { organisationUnitCodes: ['TO'] };
-    await buildArithmetic({ aggregator, config, fetchOptions });
+    await buildArithmetic({ api, config, fetchOptions });
 
     expect(aggregator.fetchAnalytics).toHaveBeenCalledOnceWith(
       expect.anything(),
@@ -118,9 +117,9 @@ describe('buildArithmetic', () => {
     ];
 
     it.each(testData)('%s', (_, config, expected) =>
-      expect(
-        buildArithmetic({ aggregator, config, fetchOptions: {} }),
-      ).resolves.toIncludeSameMembers(expected),
+      expect(buildArithmetic({ api, config, fetchOptions: {} })).resolves.toIncludeSameMembers(
+        expected,
+      ),
     );
   });
 
@@ -213,9 +212,9 @@ describe('buildArithmetic', () => {
     ];
 
     it.each(testData)('%s', (_, config, expected) =>
-      expect(
-        buildArithmetic({ aggregator, config, fetchOptions: {} }),
-      ).resolves.toIncludeSameMembers(expected),
+      expect(buildArithmetic({ api, config, fetchOptions: {} })).resolves.toIncludeSameMembers(
+        expected,
+      ),
     );
   });
 });
