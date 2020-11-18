@@ -242,7 +242,7 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
   const {
     baseFilter = {},
-    defaultSorting,
+    defaultSorting = [],
     endpoint,
     columns,
     reduxId,
