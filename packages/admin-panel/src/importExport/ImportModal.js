@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import ImportIcon from '@material-ui/icons/Publish';
 import {
   Button,
   Dialog,
@@ -13,7 +14,6 @@ import {
   FileUploadField,
   LightOutlinedButton,
   OutlinedButton,
-  SaveAlt,
 } from '@tupaia/ui-components';
 import { ModalContentProvider, InputField } from '../widgets';
 import { api } from '../api';
@@ -150,7 +150,7 @@ export const ImportModal = React.memo(({ title, subtitle, queryParameters, actio
           </DialogFooter>
         </form>
       </Dialog>
-      <LightOutlinedButton startIcon={<SaveAlt />} onClick={handleOpen}>
+      <LightOutlinedButton startIcon={<ImportIcon />} onClick={handleOpen}>
         Import
       </LightOutlinedButton>
     </>

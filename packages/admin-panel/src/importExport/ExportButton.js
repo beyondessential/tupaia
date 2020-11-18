@@ -5,7 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
+import ExportIcon from '@material-ui/icons/GetApp';
 import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
 import { api } from '../api';
@@ -34,7 +34,7 @@ export const ExportButton = ({ actionConfig, row }) => (
       await api.download(endpoint, queryParameters, processedFileName);
     }}
   >
-    <ImportExportIcon />
+    <ExportIcon />
   </IconButton>
 );
 

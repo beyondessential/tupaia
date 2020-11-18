@@ -27,6 +27,7 @@ export const ResourcePage = ({
   baseFilter,
   title,
   getHeaderEl,
+  defaultSorting,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -47,6 +48,7 @@ export const ResourcePage = ({
           expansionTabs={expansionTabs}
           reduxId={endpoint}
           baseFilter={baseFilter}
+          defaultSorting={defaultSorting}
         />
       </Container>
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
@@ -73,6 +75,7 @@ ResourcePage.propTypes = {
   ExportModalComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
+  defaultSorting: PropTypes.array,
 };
 
 ResourcePage.defaultProps = {
@@ -83,4 +86,5 @@ ResourcePage.defaultProps = {
   ExportModalComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},
+  defaultSorting: [],
 };
