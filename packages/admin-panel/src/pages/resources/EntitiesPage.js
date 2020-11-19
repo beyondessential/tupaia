@@ -51,7 +51,7 @@ const EXPANSION_CONFIG = [
     expansionTabs: [
       {
         title: 'Answers',
-        endpoint: 'surveyResponse/{id}/answers',
+        endpoint: 'surveyResponses/{id}/answers',
         columns: ANSWER_COLUMNS,
       },
     ],

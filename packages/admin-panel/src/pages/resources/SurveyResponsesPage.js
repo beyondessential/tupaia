@@ -62,7 +62,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
     source: 'id',
     type: 'export',
     actionConfig: {
-      exportEndpoint: 'surveyResponse',
+      exportEndpoint: 'surveyResponses',
       fileName: 'Survey Response',
     },
   },
@@ -76,7 +76,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'surveyResponse',
+      editEndpoint: 'surveyResponses',
       fields: [entityName, surveyName, assessorName, date, dateOfData],
     },
   },
@@ -85,7 +85,7 @@ const COLUMNS = [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'surveyResponse',
+      endpoint: 'surveyResponses',
     },
   },
 ];
@@ -115,7 +115,7 @@ export const ANSWER_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'answer',
+      editEndpoint: 'answers',
       fields: ANSWER_FIELDS,
     },
   },
@@ -125,7 +125,7 @@ const EXPANSION_CONFIG = [
   {
     title: 'Answers',
     columns: ANSWER_COLUMNS,
-    endpoint: 'surveyResponse/{id}/answers',
+    endpoint: 'surveyResponses/{id}/answers',
   },
 ];
 

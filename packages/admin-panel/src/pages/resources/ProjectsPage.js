@@ -22,7 +22,7 @@ const FIELDS = [
     source: 'dashboard_group_name',
     type: 'tooltip',
     editConfig: {
-      optionsEndpoint: 'dashboardGroup',
+      optionsEndpoint: 'dashboardGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
       sourceKey: 'dashboard_group_name',
