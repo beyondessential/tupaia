@@ -5,7 +5,7 @@
 
 import { GETHandler } from '../GETHandler';
 import { assertAnswerPermissions, createAnswerDBFilter } from './assertAnswerPermissions';
-import { assertSurveyResponsePermissions } from '../GETSurveyResponses';
+import { assertSurveyResponsePermissions } from '../surveyResponses';
 import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**

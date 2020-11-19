@@ -8,7 +8,7 @@ import { hasBESAdminAccess } from '../../permissions';
 import {
   assertSurveyResponsePermissions,
   createSurveyResponseDBFilter,
-} from '../GETSurveyResponses';
+} from '../surveyResponses';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -20,6 +20,14 @@ export const assertAnswerPermissions = async (accessPolicy, models, answerId) =>
 
   await assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
 
+  return true;
+};
+
+export const assertAnswerEditPermissions = async (accessPolicy, models, answerId, updatedFields) => {
+  // Forbid editing the survey response id into a survey response we don't have permission to access
+  if (updatedFields.survey_response_id) {
+    await assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
+  }
   return true;
 };
 

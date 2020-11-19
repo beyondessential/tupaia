@@ -19,9 +19,13 @@ const {
   countChanges,
   createUserEntityPermissions,
   deleteRecord,
+  deleteAnswers,
+  deleteSurveyResponses,
   deleteUserEntityPermissions,
   editRecord,
   editAccessRequests,
+  editAnswers,
+  editSurveyResponses,
   editUserAccounts,
   editUserEntityPermissions,
   exportSurveyResponses,
@@ -120,7 +124,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/me', getUser);
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
-  app.get('(/v[0-9]+)/answer/:recordId?', getAnswers);
+  app.get('(/v[0-9]+)/answers/:recordId?', getAnswers);
   app.get('(/v[0-9]+)/disaster/:recordId?', getDisasters);
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
@@ -174,6 +178,9 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/users/:recordId', editUserAccounts);
   app.put('(/v[0-9]+)/userEntityPermissions/:recordId', editUserEntityPermissions);
   app.put('(/v[0-9]+)/accessRequests/:recordId', editAccessRequests);
+  app.put('(/v[0-9]+)/surveyResponses/:recordId', editSurveyResponses);
+  app.put('(/v[0-9]+)/answers/:recordId', editAnswers);
+  app.put('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:id', editRecord);
   app.put('(/v[0-9]+)/:resource/:id', editRecord);
   app.put('(/v[0-9]+)/me', editUser);
@@ -182,6 +189,9 @@ export function addRoutesToApp(app) {
    * DELETE routes
    */
   app.delete('(/v[0-9]+)/userEntityPermissions/:recordId', deleteUserEntityPermissions);
+  app.delete('(/v[0-9]+)/surveyResponses/:recordId', deleteSurveyResponses);
+  app.delete('(/v[0-9]+)/answers/:recordId', deleteAnswers);
+  app.delete('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', deleteAnswers);
   // TODO: Remove the generic handlers once all DELETE endpoints have specific handlers
   app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
