@@ -13,5 +13,3 @@ export const functions = {
   periodToTimestamp,
   periodToDisplayString,
 };
-
-export { parseToken, parseExpression } from './parseToken';

@@ -1,4 +1,4 @@
-import { parser, Parser } from 'mathjs';
+import { ReportParser } from '../../../parser';
 import { aggregations } from './aggregations';
 import { buildWhere } from '../where';
 import { Row } from '../../../types';
@@ -9,7 +9,7 @@ import { functions } from '../../../functions';
 type AggregateParams = {
   createGroupKey: (row: Row) => string;
   getFieldAggregation: (field: string) => keyof typeof aggregations;
-  where: (row: Row, rowParser: Parser) => boolean;
+  where: (parser: ReportParser) => boolean;
 };
 
 const merge = (mergedRow: Row, newRow: Row, params: AggregateParams): Row => {
@@ -24,20 +24,18 @@ const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
   const groupedRows: { [groupKey: string]: Row } = {};
   const otherRows: Row[] = [];
 
-  const rowParser = parser();
-  Object.entries(functions).forEach(([name, call]) => rowParser.set(name, call));
-  const context = {} as { row: Row };
-  rowParser.set('$', context);
-
+  const parser = new ReportParser(rows, functions);
   rows.forEach((row: Row) => {
-    context.row = row;
-    if (!params.where(row, rowParser)) {
+    if (!params.where(parser)) {
       otherRows.push(row);
+      parser.next();
       return;
     }
     const groupKey = params.createGroupKey(row);
     groupedRows[groupKey] = merge(groupedRows[groupKey] || {}, row, params);
+    parser.next();
   });
+
   return Object.values(groupedRows).concat(otherRows);
 };
 

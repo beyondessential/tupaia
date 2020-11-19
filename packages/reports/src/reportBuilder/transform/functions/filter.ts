@@ -1,20 +1,18 @@
-import { parser, Parser } from 'mathjs';
+import { ReportParser } from '../../parser';
 import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 
 type FilterParams = {
-  where: (row: Row, rowParser: Parser) => boolean;
+  where: (parser: ReportParser) => boolean;
 };
 
 const filter = (rows: Row[], params: FilterParams): Row[] => {
-  const rowParser = parser();
-  Object.entries(functions).forEach(([name, call]) => rowParser.set(name, call));
-  const context = {} as { row: Row };
-  rowParser.set('$', context);
-  return rows.filter(row => {
-    context.row = row;
-    return params.where(row, rowParser);
+  const parser = new ReportParser(rows, functions);
+  return rows.filter(() => {
+    const filterResult = params.where(parser);
+    parser.next();
+    return filterResult;
   });
 };
 

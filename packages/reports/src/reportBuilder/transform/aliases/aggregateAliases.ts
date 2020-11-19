@@ -4,7 +4,7 @@ export const aggregateMostRecentValuePerOrgUnit = () =>
   buildTransform([
     {
       transform: 'sort',
-      by: '$.row.period',
+      by: '$row.period',
     },
     {
       transform: 'aggregate',
