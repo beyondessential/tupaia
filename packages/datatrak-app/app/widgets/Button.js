@@ -39,6 +39,7 @@ const localStyles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'center',
     color: THEME_COLOR_TWO,
+    width: '100%',
   },
   button: {
     width: 180,

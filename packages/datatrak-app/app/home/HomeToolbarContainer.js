@@ -10,15 +10,15 @@ import { BlueButton, Button } from '../widgets';
 const HomeToolbar = ({ onNavigateToSurveysMenu, onNavigateToTupaiaWebsite, style }) => (
   <View style={[localStyles.toolbar, style]}>
     <Button
-      title="EXPLORE DATA"
+      title="Explore Data"
       onPress={onNavigateToTupaiaWebsite}
       style={[localStyles.button, localStyles.exploreButton]}
       textStyle={localStyles.buttonText}
     />
     <BlueButton
-      title="SURVEY FACILITIES"
+      title="Collect Data"
       onPress={onNavigateToSurveysMenu}
-      style={[localStyles.button, localStyles.surveyButton]}
+      style={[localStyles.button]}
       textStyle={localStyles.buttonText}
     />
   </View>
@@ -36,22 +36,14 @@ HomeToolbar.defaultProps = {
 const { width } = Dimensions.get('window');
 const localStyles = StyleSheet.create({
   toolbar: {
-    flexDirection: 'row',
     flex: 1,
-    width: '100%',
   },
   button: {
-    width: 'auto',
-    paddingVertical: 0,
-    height: 36,
-    justifyContent: 'center',
-    borderRadius: 4,
-  },
-  surveyButton: {
-    flexGrow: 1,
+    flexDirection: 'row',
+    marginBottom: 10,
+    minWidth: '100%',
   },
   exploreButton: {
-    marginRight: DEFAULT_PADDING / 2,
     borderColor: THEME_COLOR_TWO,
     borderWidth: 1,
   },

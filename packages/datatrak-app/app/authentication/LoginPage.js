@@ -70,7 +70,7 @@ export class LoginPage extends React.Component {
             Collect baseline data from clinics, health centres and hospitals around the world.
           </Text>
           {errorMessage !== '' && renderErrorMessage(errorMessage)}
-          <View style={localStyles.horizontalContainer}>
+          <View style={[localStyles.horizontalContainer, localStyles.inputContainer]}>
             <TextInput
               style={[localStyles.textInput, localStyles.text]}
               placeholder="Email Address"
@@ -86,7 +86,7 @@ export class LoginPage extends React.Component {
               }}
             />
           </View>
-          <View style={localStyles.horizontalContainer}>
+          <View style={[localStyles.horizontalContainer, localStyles.inputContainer]}>
             <TextInput
               inputRef={reference => {
                 this.passwordInputRef = reference;
@@ -106,10 +106,12 @@ export class LoginPage extends React.Component {
               }}
             />
           </View>
-          <View style={localStyles.actions}>
+          <View style={localStyles.horizontalContainer}>
             {isLoggingIn && renderLoadingSpinner()}
             {!isLoggingIn &&
               renderSubmitButton(() => onLogin(emailAddress, password), !loginButtonIsEnabled)}
+          </View>
+          <View style={localStyles.horizontalContainer}>
             {!isLoggingIn && renderCreateAccountLink(onCreateAccount, isLoggingIn)}
           </View>
         </KeyboardAvoidingView>
@@ -144,18 +146,22 @@ LoginPage.defaultProps = {
 const HORIZONTAL_MARGIN = 20;
 const localStyles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     justifyContent: 'center',
   },
   horizontalContainer: {
     marginHorizontal: HORIZONTAL_MARGIN,
-    height: 50,
     flexDirection: 'row',
+    textAlign: 'center',
+  },
+  inputContainer: {
+    height: 50,
     borderBottomWidth: 1,
     borderColor: THEME_COLOR_ONE,
   },
   logo: {
     marginBottom: DEFAULT_PADDING,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   intro: {
     marginBottom: 32,
@@ -168,12 +174,10 @@ const localStyles = StyleSheet.create({
     padding: 0,
     paddingTop: 15,
   },
-  actions: {
-    marginTop: 40,
-    width: '100%',
-  },
   loginButton: {
+    marginTop: 40,
     marginBottom: 10,
+    width: '100%',
   },
   text: {
     color: THEME_COLOR_ONE,
@@ -186,6 +190,8 @@ const localStyles = StyleSheet.create({
   linkButton: {
     padding: 8,
     flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center',
   },
   linkButtonEmphasis: {
     textDecorationLine: 'underline',

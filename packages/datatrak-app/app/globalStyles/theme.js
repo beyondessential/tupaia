@@ -40,7 +40,7 @@ export const THEME_FONT_SIZE_FOUR = BASELINE_FONT_SIZE * 3;
 export const THEME_SECTION_BORDER_COLOR = '#DFDFDF';
 export const HEADER_HEIGHT = 40;
 export const DEFAULT_PADDING = 16;
-export const BORDER_RADIUS = 2;
+export const BORDER_RADIUS = 3;
 export const SMALL_PHONE_WIDTH = 350;
 
 export const FEED_TITLE_TEXT_STYLE = {
