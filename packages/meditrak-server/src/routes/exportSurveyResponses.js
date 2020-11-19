@@ -10,6 +10,7 @@ import { truncateString } from 'sussol-utilities';
 import { DatabaseError, ValidationError } from '@tupaia/utils';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
+import { SurveyResponseVariablesExtractor } from './utilities';
 
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
@@ -83,76 +84,43 @@ export async function exportSurveyResponses(req, res) {
   const workbook = { SheetNames: [], Sheets: {} };
 
   try {
+    const variablesExtractor = new SurveyResponseVariablesExtractor(models);
     let country;
     let entities;
-    let reportName;
-    if (viewId) {
-      const dashboardReport = await models.dashboardReport.findById(viewId);
-      reportName = dashboardReport.viewJson.name;
-    }
+    const reportName = viewId && (await models.dashboardReport.findById(viewId).viewJson.name);
+
     if (countryCode) {
-      country = await models.country.findOne({ code: countryCode });
-      countryId = country.id;
+      const variables = await variablesExtractor.getVariablesByCountryCode(countryCode);
+      country = variables.country;
+      countryId = variables.countryId;
     }
+
     if (entityCode) {
-      const entity = await models.entity.findOne({ code: entityCode });
-      country = await models.country.findOne({ code: entity.country_code });
-      entities = [entity];
+      const variables = await variablesExtractor.getVariablesByEntityCode(entityCode);
+      country = variables.country;
+      entities = variables.entities;
     } else if (countryId) {
-      country = await models.country.findById(countryId);
-      entities = await models.entity.find({ country_code: country.code }, { sort: ['name ASC'] });
+      const variables = await variablesExtractor.getVariablesByCountryId(countryId);
+      country = variables.country;
+      entities = variables.entities;
     } else if (entityIds) {
-      entities = await Promise.all(
-        entityIds.split(',').map(entityId => models.entity.findById(entityId)),
-      );
-      if (!countryId && entities.length > 0) {
-        const countryCodeFromEntity = entities[0].country_code;
-        country = await models.country.findOne({ code: countryCodeFromEntity });
-        countryId = country.id;
-      }
+      const variables = await variablesExtractor.getVariablesByEntityIds(entityIds);
+      country = variables.country;
+      countryId = variables.countryId;
+      entities = variables.entities;
     } else if (surveyResponseId) {
-      surveyResponse = await models.surveyResponse.findById(surveyResponseId);
-      surveyId = surveyResponse.survey_id;
-      country = await surveyResponse.country();
+      const variables = await variablesExtractor.getVariablesBySurveyResponseId(surveyResponseId);
+      country = variables.country;
+      surveyId = variables.surveyId;
+      surveyResponse = variables.surveyResponse;
     } else {
       throw new ValidationError(
         'Please specify either surveyResponseId, countryId, countryCode, facilityCode or entityIds',
       );
     }
-    let surveys;
-    if (surveyId) {
-      // A surveyId of interest passed in, only export that
-      surveys = [await models.survey.findById(surveyId)];
-    } else if (surveyCodes) {
-      const surveyFindConditions = {
-        // surveyCodes may be passed through as a comma separated string or as an array, which looks like this in a query:
-        // ?surveyCodes=code1&surveyCodes=code2
-        code: {
-          comparisonType: 'whereIn',
-          args: Array.isArray(surveyCodes) ? [surveyCodes] : [surveyCodes.split(',')],
-        },
-      };
-      if (countryId) {
-        // Fetch surveys where country_ids is empty (enabled in all countries) or contains countryId
-        // eslint-disable-next-line no-underscore-dangle
-        surveyFindConditions._and_ = {
-          country_ids: '{}',
-          _or_: {
-            country_ids: { comparator: '@>', comparisonValue: [countryId] },
-          },
-        };
-      }
-      surveys = await models.survey.find(surveyFindConditions);
-    } else {
-      // No specific surveyId passed in, so export all surveys that apply to this country
-      const allSurveys = await models.survey.all();
-      surveys = allSurveys.filter(
-        survey => survey.country_ids.length === 0 || survey.country_ids.includes(countryId),
-      );
-    }
-    if (!surveys || surveys.length < 1) {
-      throw new ValidationError('Survey not found. Please check permissions');
-    }
+
+    const surveys = await variablesExtractor.getSurveys(surveyId, surveyCodes, countryId);
+
     const sortAndLimitSurveyResponses =
       latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : { sort: ['end_time ASC'] };
 

@@ -16,6 +16,7 @@ export { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
 export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
+export { SurveyResponseVariablesExtractor } from './SurveyResponseVariablesExtractor';
 export {
   translateQuestionDependentFields,
   translateQuestionDependentNestedFields,
