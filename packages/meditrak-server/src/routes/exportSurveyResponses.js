@@ -87,7 +87,11 @@ export async function exportSurveyResponses(req, res) {
     const variablesExtractor = new SurveyResponseVariablesExtractor(models);
     let country;
     let entities;
-    const reportName = viewId && (await models.dashboardReport.findById(viewId).viewJson.name);
+    let reportName;
+    if (viewId) {
+      const dashboardReport = await models.dashboardReport.findById(viewId);
+      reportName = dashboardReport.viewJson.name;
+    }
 
     if (countryCode) {
       const variables = await variablesExtractor.getVariablesByCountryCode(countryCode);
