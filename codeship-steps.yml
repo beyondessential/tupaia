@@ -31,9 +31,9 @@
             - name: test-auth
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh auth'
-            - name: test-reports
+            - name: test-report-server
               service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh reports'
+              command: './packages/devops/scripts/ci/testBackend.sh report-server'
             - name: test-internal-dependencies
               service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
