@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
@@ -28,7 +29,6 @@ export const formatMatrixDataForExcel = (
   outputFormat = 'aoa',
 ) => {
   // Create the empty array of objects to build the data into
-  const ORIGIN = 'Tupaia.org';
   const formattedData = [];
   const columnCategories = columns[0].columns && columns; // If columns are grouped into categories, store as a well named const
   const config = { ...DEFAULT_CONFIG, ...configIn };
@@ -90,12 +90,7 @@ export const formatMatrixDataForExcel = (
   }
 
   // Add export date and origin to the bottom of the sheet
-  // Add two [] for spacing between the table and the export date
-  formattedData.push(
-    [],
-    [],
-    [`Data exported from ${ORIGIN} on ${moment().format('Do MMM YYYY')}`]
-  );
+  addExportedDateAndOriginAtTheSheetBottom(formattedData);
 
   return outputFormat === 'aoo' ? convertAoaToAoo(formattedData) : formattedData;
 };

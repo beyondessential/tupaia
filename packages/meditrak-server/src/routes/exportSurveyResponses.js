@@ -7,14 +7,17 @@ import xlsx from 'xlsx';
 import moment from 'moment';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
-import { DatabaseError, ValidationError } from '@tupaia/utils';
+import {
+  DatabaseError,
+  ValidationError,
+  addExportedDateAndOriginAtTheSheetBottom,
+} from '@tupaia/utils';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
 import { SurveyResponseVariablesExtractor } from './utilities';
 
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
-const ORIGIN = 'Tupaia.org';
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
 export const API_DATE_FORMAT = 'YYYY-MM-DD';
 const INFO_COLUMNS = {
@@ -270,12 +273,8 @@ export async function exportSurveyResponses(req, res) {
       });
 
       // Add export date and origin
-      // Add two [] for spacing between the table and the export date
-      exportData.push(
-        [],
-        [],
-        [`Data exported from ${ORIGIN} on ${moment().format('Do MMM YYYY')}`],
-      );
+      addExportedDateAndOriginAtTheSheetBottom(exportData);
+
       addDataToSheet(currentSurvey.name, exportData);
     }
   } catch (error) {
