@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { arrayToAnalytic } from '@tupaia/data-broker';
 import { AnalyticResponseFixture } from '../stubs';
-
-type ArrayAnalytic = [string, string, string, number]; // dataElement, orgUnit, period, value
 
 /**
  * Code format: `valueHint_orgUnits_periods`
@@ -14,7 +13,7 @@ type ArrayAnalytic = [string, string, string, number]; // dataElement, orgUnit, 
  * ToPg => analytics exist for orgUnits: TO, PG
  * 20192020 => analytics exist for periods: 2019, 2020
  */
-const ARRAY_ANALYTICS: ArrayAnalytic[] = [
+const AGGREGATOR_ARRAY_ANALYTICS: [string, string, string, number][] = [
   ['Z_To_2019', 'TO', '2019', 0],
   ['A_To_2019', 'TO', '2019', 1],
   ['B_To_2019', 'TO', '2019', 2],
@@ -40,12 +39,15 @@ const ARRAY_ANALYTICS: ArrayAnalytic[] = [
 
   ['E_Pg_20192020', 'PG', '2019', 5.5],
   ['E_Pg_20192020', 'PG', '2020', 55],
+
+  ['Population', 'TO', '2019', 100],
+  ['Population', 'TO', '2020', 75],
 ];
 
-export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = ARRAY_ANALYTICS.map(
-  ([dataElement, organisationUnit, period, value]) => ({
-    code: dataElement,
+export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = AGGREGATOR_ARRAY_ANALYTICS.map(
+  arrayAnalytic => ({
+    code: arrayAnalytic[0],
     aggregations: [{ type: 'FINAL_EACH_YEAR' }],
-    analytic: { dataElement, organisationUnit, period, value },
+    analytic: arrayToAnalytic(arrayAnalytic),
   }),
 );

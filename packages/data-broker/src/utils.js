@@ -19,3 +19,10 @@ export const analyticsToAnalyticClusters = analytics => {
 
   return Object.values(clusterMap);
 };
+
+export const arrayToAnalytic = ([dataElement, organisationUnit, period, value]) => ({
+  dataElement,
+  organisationUnit,
+  period,
+  value,
+});
