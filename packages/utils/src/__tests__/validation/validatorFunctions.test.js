@@ -53,7 +53,7 @@ describe('validatorFunctions', () => {
       expect(() => constructIsOneOfType([])).toThrow('expects at least one type');
     });
 
-    describe('single type - passes', () => {
+    describe('single type - validator passes', () => {
       const testData = [
         ['array', [1, 2]],
         ['object', { alpha: 1 }],
@@ -69,7 +69,7 @@ describe('validatorFunctions', () => {
       });
     });
 
-    describe('single type - fails', () => {
+    describe('single type - validator fails', () => {
       const testData = [
         ['array', { alpha: 1 }],
         ['object', [1, 2]],
@@ -85,13 +85,13 @@ describe('validatorFunctions', () => {
       });
     });
 
-    it('multiple types - passes', () => {
+    it('multiple types - validator passes', () => {
       const validator = constructIsOneOfType(['string', 'number', 'array']);
       expect(() => validator(1)).not.toThrow();
       expect(() => validator([1])).not.toThrow();
     });
 
-    it('multiple types - fails', () => {
+    it('multiple types - validator fails', () => {
       const validator = constructIsOneOfType(['string', 'number', 'array']);
       const errorMessage = 'Must be one of string | number | array';
       expect(() => validator({ alpha: 1 })).toThrow(errorMessage);
@@ -100,19 +100,19 @@ describe('validatorFunctions', () => {
   });
 
   describe('constructIsArrayOf', () => {
-    it('throws if value is not an array', () => {
+    it('validator throws if value is not an array', () => {
       [undefined, { alpha: 1 }].forEach(value => {
         const validator = constructIsArrayOf(value);
         expect(() => validator()).toThrow(/should contain an array/i);
       });
     });
 
-    it('passes for empty array', () => {
+    it('validator passes for empty array', () => {
       const validator = constructIsArrayOf('object');
       expect(() => validator([])).not.toThrow();
     });
 
-    describe('passes if all values are of same type', () => {
+    describe('validator passes if all values are of the specified type', () => {
       const testData = [
         [
           'array',
@@ -134,7 +134,7 @@ describe('validatorFunctions', () => {
       });
     });
 
-    describe('fails if all values are of different types', () => {
+    describe('validator fails if some values are not of the specified type', () => {
       const testData = [
         ['array', [[1, '2'], { a: 1 }], `${JSON.stringify({ a: 1 })} is not an array`],
         ['object', [{ a: 1 }, [{ b: 2 }]], `${JSON.stringify([{ b: 2 }])} is not an object`],
