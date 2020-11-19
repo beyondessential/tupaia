@@ -39,7 +39,7 @@ export type ArithmeticConfig = {
 };
 
 const isParameterCode = (parameters: { code: string }[], code: string) =>
-  parameters.find(p => p.code === code);
+  !!parameters.find(p => p.code === code);
 
 const assertAggregationObjectIsValid = (
   aggregation: string | Record<string, unknown>,
@@ -131,9 +131,7 @@ const getAggregationTypesByCode = (config: ArithmeticConfig): Record<string, str
   if (typeof aggregation === 'object') {
     return aggregation;
   }
-
-  const parameterCodes = parameters.map(p => p.code);
-  const elementCodes = getVariables(formula).filter(code => !parameterCodes.includes(code));
+  const elementCodes = getVariables(formula).filter(code => !isParameterCode(parameters, code));
   return Object.fromEntries(elementCodes.map(code => [code, aggregation]));
 };
 
