@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getVariables } from '@beyondessential/arithmetic';
 import groupBy from 'lodash.groupby';
 
 import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
-import { Aggregation, AggregationSpecs, Analytic, FetchOptions } from '../types';
+import { Aggregation, Analytic, FetchOptions } from '../types';
 
 export const validateConfig = async <T extends Record<string, unknown>>(
   config = {},
@@ -22,21 +21,6 @@ export const validateConfig = async <T extends Record<string, unknown>>(
   // Since async assertions are not supported yet, we return the asserted type as a workaround:
   // https://github.com/microsoft/TypeScript/issues/37515
   return config as T;
-};
-
-export const getAggregationsByCode = (aggregationSpecs: AggregationSpecs, formula?: string) => {
-  const aggregationObject =
-    typeof aggregationSpecs === 'string'
-      ? Object.fromEntries(getVariables(formula).map(code => [code, aggregationSpecs]))
-      : aggregationSpecs;
-
-  return Object.fromEntries(
-    Object.entries(aggregationObject).map(([code, descriptor]) => {
-      const descriptorArray = Array.isArray(descriptor) ? descriptor : [descriptor];
-      const aggregations = descriptorArray.map(aggregationType => ({ type: aggregationType }));
-      return [code, aggregations];
-    }),
-  );
 };
 
 export const groupKeysByValueJson = (object: Record<string, unknown>) =>

@@ -40,45 +40,6 @@ describe('helpers', () => {
       expect(validateConfig({ countFemale: 1, countMale: 2 }, configValidators)).toResolve());
   });
 
-  describe('getAggregationsByCode()', () => {
-    it('string', () => {
-      expect(getAggregationsByCode('SUM', 'BCD01 + BCD02')).toStrictEqual({
-        BCD01: [{ type: 'SUM' }],
-        BCD02: [{ type: 'SUM' }],
-      });
-    });
-
-    describe('object', () => {
-      const testData: [string, AggregationSpecs, Record<string, Aggregation[]>][] = [
-        [
-          'string values',
-          { BCD01: 'FINAL_EACH_WEEK', BCD02: 'FINAL_EACH_WEEK' },
-          { BCD01: [{ type: 'FINAL_EACH_WEEK' }], BCD02: [{ type: 'FINAL_EACH_WEEK' }] },
-        ],
-        [
-          'array values',
-          { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK', 'COUNT'] },
-          {
-            BCD01: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
-            BCD02: [{ type: 'FINAL_EACH_WEEK' }, { type: 'COUNT' }],
-          },
-        ],
-        [
-          'mixed values',
-          { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK'] },
-          {
-            BCD01: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
-            BCD02: [{ type: 'FINAL_EACH_WEEK' }],
-          },
-        ],
-      ];
-
-      it.each(testData)('%s', (_, aggregationsByCode, expected) => {
-        expect(getAggregationsByCode(aggregationsByCode)).toStrictEqual(expected);
-      });
-    });
-  });
-
   describe('groupKeysByValueJson()', () => {
     it('single key', () => {
       const value = [{ alpha: 1, beta: 2 }, 3, true];

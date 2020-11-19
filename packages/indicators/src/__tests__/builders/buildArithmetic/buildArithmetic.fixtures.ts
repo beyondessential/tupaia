@@ -51,3 +51,12 @@ export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = AGGREGATOR_
     analytic: arrayToAnalytic(arrayAnalytic),
   }),
 );
+
+const PARAMETER_ARRAY_ANALYTICS: [string, string, string, number][] = [
+  ['_Positive_Cases', 'TO', '2019', 10],
+  ['_Positive_Cases', 'TO', '2020', 15],
+  ['_Total_Consultations', 'TO', '2019', 25],
+  ['_Total_Consultations', 'TO', '2020', 50],
+];
+
+export const PARAMETER_ANALYTICS = PARAMETER_ARRAY_ANALYTICS.map(arrayToAnalytic);

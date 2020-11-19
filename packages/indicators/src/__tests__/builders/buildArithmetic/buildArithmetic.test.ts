@@ -4,9 +4,9 @@
  */
 
 import { ArithmeticConfig, buildArithmetic } from '../../../builders/buildArithmetic';
-import { AnalyticValue } from '../../../types';
+import { Aggregation, AnalyticValue, Indicator } from '../../../types';
 import { createAggregator } from '../stubs';
-import { ANALYTIC_RESPONSE_FIXTURES } from './buildArithmetic.fixtures';
+import { ANALYTIC_RESPONSE_FIXTURES, PARAMETER_ANALYTICS } from './buildArithmetic.fixtures';
 
 describe('buildArithmetic', () => {
   const getDummyApi = () => ({
@@ -31,6 +31,15 @@ describe('buildArithmetic', () => {
         /B.* has no aggregation defined/,
       ],
       [
+        'default values is not a plain object',
+        {
+          formula: 'A + B',
+          aggregation: { A: 'MOST_RECENT', B: 'SUM' },
+          defaultValues: [{ C: 10 }],
+        },
+        /defaultValues.* not a plain javascript object/i,
+      ],
+      [
         'a data element not referenced in the formula but has a default',
         {
           formula: 'A + B',
@@ -44,6 +53,27 @@ describe('buildArithmetic', () => {
         { formula: 'A + 1', aggregation: { A: 'SUM' }, defaultValues: { A: '10' } },
         /Value 'A' is not a number: '10'/,
       ],
+      [
+        'parameters must be an array of objects',
+        {
+          formula: 'A + 1',
+          aggregation: { A: 'SUM' },
+          parameters: { code: 'A', builder: 'arithmetic', config: {} },
+        },
+        /parameters.* should contain an array/i,
+      ],
+      [
+        'all parameters should have an indicator shape',
+        {
+          formula: 'A + 1',
+          aggregation: { A: 'SUM' },
+          parameters: [
+            { code: 'A', builder: 'arithmetic', config: {} },
+            { code: 'A', config: {} },
+          ],
+        },
+        /parameters.* .*builder.* .*should not be empty/i,
+      ],
     ];
 
     it.each(testData)('%s', async (_, config, expectedError) =>
@@ -53,15 +83,109 @@ describe('buildArithmetic', () => {
 
   describe('resolves for valid config', () => {
     const api = getDummyApi();
-    const formula = '2 * A + B';
-    const testData = [
-      ['string aggregation', 'MOST_RECENT'],
-      ['object aggregation', { A: 'MOST_RECENT', B: ['SUM', 'MOST_RECENT'] }],
+    const codesToParameters = (codes: string[]) =>
+      codes.map(code => ({ code, builder: 'testAnalytic', config: {} }));
+
+    const testData: [string, ArithmeticConfig][] = [
+      [
+        'string aggregation',
+        {
+          formula: '2 * A + B',
+          aggregation: 'MOST_RECENT',
+        },
+      ],
+      [
+        'object aggregation',
+        {
+          formula: '2 * A + B',
+          aggregation: { A: 'MOST_RECENT', B: ['SUM', 'MOST_RECENT'] },
+        },
+      ],
+      [
+        'formula includes parameter',
+        {
+          formula: '2 * A + B',
+          aggregation: { A: 'MOST_RECENT' },
+          parameters: codesToParameters(['B']),
+        },
+      ],
+      [
+        'formula consists of parameters',
+        {
+          formula: '2 * A + B',
+          aggregation: {},
+          parameters: codesToParameters(['A', 'B']),
+        },
+      ],
     ];
 
-    it.each(testData)('%s', (_, aggregation) => {
-      const config = { formula, aggregation };
+    it.each(testData)('%s', (_, config) => {
       return expect(buildArithmetic({ api, config, fetchOptions: {} })).toResolve();
+    });
+  });
+
+  describe('calls `aggregator.fetchAnalytics` with correct element codes and aggregations', () => {
+    const aggregator = createAggregator();
+    const api = {
+      getAggregator: () => aggregator,
+      buildAnalyticsForIndicators: async () => [],
+    };
+
+    type FetchAnalyticsParams = { codes: string[]; aggregations: Aggregation[] };
+
+    const testData: [string, ArithmeticConfig, FetchAnalyticsParams[]][] = [
+      [
+        'string',
+        {
+          formula: 'BCD01 + BCD02',
+          aggregation: 'FINAL_EACH_WEEK',
+        },
+        [{ codes: ['BCD01', 'BCD02'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] }],
+      ],
+      [
+        'object with string values',
+        {
+          formula: 'BCD01 + BCD02',
+          aggregation: { BCD01: 'FINAL_EACH_WEEK', BCD02: 'SUM' },
+        },
+        [
+          { codes: ['BCD01'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] },
+          { codes: ['BCD02'], aggregations: [{ type: 'SUM' }] },
+        ],
+      ],
+      [
+        'object with string[] values',
+        {
+          formula: 'BCD01 + BCD02',
+          aggregation: { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK', 'COUNT'] },
+        },
+        [
+          { codes: ['BCD01'], aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }] },
+          { codes: ['BCD02'], aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'COUNT' }] },
+        ],
+      ],
+      [
+        'object with mixed string and string[] values',
+        {
+          formula: 'BCD01 + BCD02',
+          aggregation: { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK'] },
+        },
+        [
+          { codes: ['BCD01'], aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }] },
+          { codes: ['BCD02'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] },
+        ],
+      ],
+    ];
+
+    it.each(testData)('%s', async (_, config, expectedCallArgs) => {
+      await buildArithmetic({ api, config, fetchOptions: {} });
+
+      expect(aggregator.fetchAnalytics).toHaveBeenCalledTimes(expectedCallArgs.length);
+      expectedCallArgs.forEach(({ codes, aggregations }) => {
+        expect(aggregator.fetchAnalytics).toHaveBeenCalledWith(codes, expect.anything(), {
+          aggregations,
+        });
+      });
     });
   });
 
@@ -239,5 +363,72 @@ describe('buildArithmetic', () => {
         expected,
       ),
     );
+  });
+
+  describe('intermediary calculations (`parameters` field)', () => {
+    const aggregator = createAggregator(ANALYTIC_RESPONSE_FIXTURES);
+    const api = {
+      getAggregator: () => aggregator,
+      buildAnalyticsForIndicators: jest.fn(async (indicators: Indicator[]) => {
+        const indicatorCodes = indicators.map(i => i.code);
+        return PARAMETER_ANALYTICS.filter(a => indicatorCodes.includes(a.dataElement));
+      }),
+    };
+    const PARAMETERS = {
+      Positive_Cases: {
+        code: '_Positive_Cases',
+        builder: 'testAnalyticCount',
+        config: {
+          formula: "Result = 'Positive'",
+          aggregation: 'FINAL_EACH_WEEK',
+        },
+      },
+      Total_Consultations: {
+        code: '_Total_Consultations',
+        builder: 'testArithmetic',
+        config: {
+          formula: 'Male_Consultations + Female_Consultations',
+          aggregation: 'FINAL_EACH_WEEK',
+        },
+      },
+    };
+    const fetchOptions = { organisationUnitCodes: ['TO'] };
+
+    it('formula consists of parameters', async () => {
+      const parameters = [PARAMETERS.Positive_Cases, PARAMETERS.Total_Consultations];
+      const config = {
+        formula: '_Positive_Cases / _Total_Consultations',
+        parameters,
+        aggregation: {},
+      };
+
+      await expect(buildArithmetic({ api, config, fetchOptions })).resolves.toIncludeSameMembers([
+        { organisationUnit: 'TO', period: '2019', value: 0.4 },
+        { organisationUnit: 'TO', period: '2020', value: 0.3 },
+      ]);
+      expect(api.buildAnalyticsForIndicators).toHaveBeenCalledOnceWith(parameters, fetchOptions);
+      expect(aggregator.fetchAnalytics).not.toHaveBeenCalled();
+    });
+
+    it('formula consists of parameters and data sources', async () => {
+      const parameters = [PARAMETERS.Positive_Cases];
+      const config = {
+        formula: '_Positive_Cases / Population',
+        parameters,
+        aggregation: 'FINAL_EACH_YEAR',
+      };
+
+      await expect(buildArithmetic({ api, config, fetchOptions })).resolves.toIncludeSameMembers([
+        { organisationUnit: 'TO', period: '2019', value: 0.1 },
+        { organisationUnit: 'TO', period: '2020', value: 0.2 },
+      ]);
+      expect(api.buildAnalyticsForIndicators).toHaveBeenCalledOnceWith(parameters, fetchOptions);
+      expect(aggregator.fetchAnalytics).toHaveBeenCalledOnceWith(
+        ['Population'],
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(aggregator.fetchAnalytics).toHaveBeenCalledTimes(1);
+    });
   });
 });
