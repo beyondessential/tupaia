@@ -40,7 +40,7 @@ describe('buildArithmetic', () => {
         /defaultValues.* not a plain javascript object/i,
       ],
       [
-        'a data element not referenced in the formula but has a default',
+        'a data element not referenced in the formula has a default',
         {
           formula: 'A + B',
           aggregation: { A: 'MOST_RECENT', B: 'SUM' },
