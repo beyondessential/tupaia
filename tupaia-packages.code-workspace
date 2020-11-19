@@ -44,7 +44,7 @@
       "name": "eslint-config-typescript",
       "path": "packages/eslint-config-typescript"
     },
-	  {
+    {
       "name": "expression-parser",
       "path": "packages/expression-parser"
     },
@@ -65,8 +65,8 @@
       "path": "packages/meditrak-server"
     },
     {
-      "name": "reports",
-      "path": "packages/reports"
+      "name": "report-server",
+      "path": "packages/report-server"
     },
     {
       "name": "ui-components",

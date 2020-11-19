@@ -1,3 +1,3 @@
-# @tupaia/reports
+# @tupaia/report-server
 
 Application for building reports within Tupaia.
