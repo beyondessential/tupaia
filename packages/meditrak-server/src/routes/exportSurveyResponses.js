@@ -76,7 +76,6 @@ export async function exportSurveyResponses(req, res) {
     easyReadingMode = false,
   } = req.query;
   let { surveyId, countryId } = req.query;
-  let surveyResponse;
   const infoColumns = easyReadingMode
     ? getEasyReadingInfoColumns(startDate, endDate)
     : INFO_COLUMNS;
@@ -88,43 +87,17 @@ export async function exportSurveyResponses(req, res) {
 
   try {
     const variablesExtractor = new SurveyResponseVariablesExtractor(models);
-    let country;
-    let entities;
-    let reportName;
-    if (viewId) {
-      const dashboardReport = await models.dashboardReport.findById(viewId);
-      reportName = dashboardReport.viewJson.name;
-    }
-
-    if (countryCode) {
-      const variables = await variablesExtractor.getVariablesByCountryCode(countryCode);
-      country = variables.country;
-      countryId = variables.countryId;
-    }
-
-    if (entityCode) {
-      const variables = await variablesExtractor.getVariablesByEntityCode(entityCode);
-      country = variables.country;
-      entities = variables.entities;
-    } else if (countryId) {
-      const variables = await variablesExtractor.getVariablesByCountryId(countryId);
-      country = variables.country;
-      entities = variables.entities;
-    } else if (entityIds) {
-      const variables = await variablesExtractor.getVariablesByEntityIds(entityIds);
-      country = variables.country;
-      countryId = variables.countryId;
-      entities = variables.entities;
-    } else if (surveyResponseId) {
-      const variables = await variablesExtractor.getVariablesBySurveyResponseId(surveyResponseId);
-      country = variables.country;
-      surveyId = variables.surveyId;
-      surveyResponse = variables.surveyResponse;
-    } else {
-      throw new ValidationError(
-        'Please specify either surveyResponseId, countryId, countryCode, facilityCode or entityIds',
-      );
-    }
+    const reportName = viewId && (await models.dashboardReport.findById(viewId)).viewJson.name;
+    const variables = await variablesExtractor.getParametersFromInput(
+      countryCode,
+      entityCode,
+      countryId,
+      entityIds,
+      surveyResponseId,
+    );
+    const { country, entities, surveyResponse } = variables;
+    countryId = variables.countryId && countryId;
+    surveyId = variables.surveyId && surveyId;
 
     const surveys = await variablesExtractor.getSurveys(surveyId, surveyCodes, countryId);
 

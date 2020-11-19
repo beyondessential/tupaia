@@ -38,6 +38,12 @@ export class SurveyResponseVariablesExtractor {
     return { country, entities };
   }
 
+  /**
+   * @typedef {string, string, Array | Array} variables
+   *
+   * @param entityIds
+   * @returns {Promise<variables>}
+   */
   async getVariablesByEntityIds(entityIds) {
     let country;
     let countryId;
@@ -96,5 +102,43 @@ export class SurveyResponseVariablesExtractor {
     }
 
     return surveys;
+  }
+
+  async getParametersFromInput(countryCode, entityCode, countryId, entityIds, surveyResponseId) {
+    let country;
+    let entities;
+    let surveyId;
+    let surveyResponse;
+    if (countryCode) {
+      const variables = await this.getVariablesByCountryCode(countryCode);
+      country = variables.country;
+      countryId = variables.countryId;
+    }
+
+    if (entityCode) {
+      const variables = await this.getVariablesByEntityCode(entityCode);
+      country = variables.country;
+      entities = variables.entities;
+    } else if (countryId) {
+      const variables = await this.getVariablesByCountryId(countryId);
+      country = variables.country;
+      entities = variables.entities;
+    } else if (entityIds) {
+      const variables = await this.getVariablesByEntityIds(entityIds);
+      country = variables.country;
+      countryId = variables.countryId;
+      entities = variables.entities;
+    } else if (surveyResponseId) {
+      const variables = await this.getVariablesBySurveyResponseId(surveyResponseId);
+      country = variables.country;
+      surveyId = variables.surveyId;
+      surveyResponse = variables.surveyResponse;
+    } else {
+      throw new ValidationError(
+        'Please specify either surveyResponseId, countryId, countryCode, facilityCode or entityIds',
+      );
+    }
+
+    return { country, entities, countryId, surveyId, surveyResponse };
   }
 }
