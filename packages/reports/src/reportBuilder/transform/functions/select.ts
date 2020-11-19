@@ -1,4 +1,4 @@
-import { ReportParser } from '../../parser';
+import { TransformParser } from '../parser';
 import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
@@ -6,11 +6,11 @@ import { Row } from '../../types';
 type SelectParams = {
   select: { [key: string]: string };
   '...'?: '*' | string[];
-  where: (parser: ReportParser) => boolean;
+  where: (parser: TransformParser) => boolean;
 };
 
 const select = (rows: Row[], params: SelectParams): Row[] => {
-  const parser = new ReportParser(rows, functions);
+  const parser = new TransformParser(rows, functions);
   return rows.map(row => {
     const returnNewRow = params.where(parser);
     const newRow: Row = {};

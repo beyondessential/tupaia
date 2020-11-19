@@ -1,4 +1,4 @@
-import { ReportParser } from '../../parser';
+import { TransformParser } from '../parser';
 import { Row } from '../../types';
 import { functions } from '../../functions';
 
@@ -8,7 +8,7 @@ type SortParams = {
 };
 
 const getRowSortFunction = (params: SortParams, descending = false) => {
-  const sortParser = new ReportParser([], functions);
+  const sortParser = new TransformParser([], functions);
   return (row1: Row, row2: Row) => {
     sortParser.set('$row', row1);
     const row1Value = sortParser.evaluate(params.by);

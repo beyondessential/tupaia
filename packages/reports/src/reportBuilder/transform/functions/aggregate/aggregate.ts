@@ -1,4 +1,4 @@
-import { ReportParser } from '../../../parser';
+import { TransformParser } from '../../parser';
 import { aggregations } from './aggregations';
 import { buildWhere } from '../where';
 import { Row } from '../../../types';
@@ -9,7 +9,7 @@ import { functions } from '../../../functions';
 type AggregateParams = {
   createGroupKey: (row: Row) => string;
   getFieldAggregation: (field: string) => keyof typeof aggregations;
-  where: (parser: ReportParser) => boolean;
+  where: (parser: TransformParser) => boolean;
 };
 
 const merge = (mergedRow: Row, newRow: Row, params: AggregateParams): Row => {
@@ -24,7 +24,7 @@ const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
   const groupedRows: { [groupKey: string]: Row } = {};
   const otherRows: Row[] = [];
 
-  const parser = new ReportParser(rows, functions);
+  const parser = new TransformParser(rows, functions);
   rows.forEach((row: Row) => {
     if (!params.where(parser)) {
       otherRows.push(row);

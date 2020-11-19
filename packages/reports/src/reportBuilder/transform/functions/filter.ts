@@ -1,14 +1,14 @@
-import { ReportParser } from '../../parser';
+import { TransformParser } from '../parser';
 import { functions } from '../../functions';
 import { buildWhere } from './where';
 import { Row } from '../../types';
 
 type FilterParams = {
-  where: (parser: ReportParser) => boolean;
+  where: (parser: TransformParser) => boolean;
 };
 
 const filter = (rows: Row[], params: FilterParams): Row[] => {
-  const parser = new ReportParser(rows, functions);
+  const parser = new TransformParser(rows, functions);
   return rows.filter(() => {
     const filterResult = params.where(parser);
     parser.next();

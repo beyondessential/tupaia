@@ -4,7 +4,7 @@
  */
 
 import { ExpressionParser } from '@tupaia/expression-parser';
-import { Row, FieldValue } from '../types';
+import { Row, FieldValue } from '../../types';
 
 type RowLookup = {
   [key: string]: FieldValue[];
@@ -27,7 +27,7 @@ type Lookups = {
   where: (check: (row: Row) => boolean) => RowLookup;
 };
 
-export class ReportParser extends ExpressionParser {
+export class TransformParser extends ExpressionParser {
   private currentRow = 0;
 
   private rows: Row[];

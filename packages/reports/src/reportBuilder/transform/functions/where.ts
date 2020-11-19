@@ -1,10 +1,10 @@
-import { ReportParser } from '../../parser';
+import { TransformParser } from '../parser';
 
 type WhereParams = {
   where?: string;
 };
 
-const where = (parser: ReportParser, params: WhereParams): boolean => {
+const where = (parser: TransformParser, params: WhereParams): boolean => {
   if (params.where === undefined) {
     return true;
   }
@@ -38,5 +38,5 @@ const buildParams = (params: unknown): WhereParams => {
 
 export const buildWhere = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (parser: ReportParser) => where(parser, builtParams);
+  return (parser: TransformParser) => where(parser, builtParams);
 };
