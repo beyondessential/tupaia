@@ -367,7 +367,7 @@ RequestProjectAccessComponent.propTypes = {
   onBackToProjects: PropTypes.func.isRequired,
   onAttemptRequestProjectAccess: PropTypes.func.isRequired,
   onRequestProjectAdditionalAccess: PropTypes.func.isRequired,
-  isRequestingAdditionalCountryAccess: PropTypes.func.isRequired,
+  isRequestingAdditionalCountryAccess: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   success: PropTypes.bool.isRequired,
 };
