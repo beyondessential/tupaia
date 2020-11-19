@@ -6,6 +6,7 @@
 import moment from 'moment';
 import validator from 'validator';
 
+import { toArray } from '../array';
 import { ValidationError } from '../errors';
 import { checkIsOfType, getTypeWithArticle, stringifyValue } from './validationTypes';
 
@@ -192,11 +193,16 @@ export const constructRecordExistsWithId = (modelOrDatabase, recordType) => asyn
   }
 };
 
-export const constructIsEmptyOr = validatorFunction => (value, object, key) => {
+/**
+ * @param {Function|Function[]} validators
+ */
+export const constructIsEmptyOr = validators => async (value, object, key) => {
   if (value !== undefined && value !== null && value !== '') {
-    return validatorFunction(value, object, key);
+    const runValidator = async validatorFunction => {
+      await validatorFunction(value, object, key);
+    };
+    await Promise.all(toArray(validators).map(runValidator));
   }
-  return true;
 };
 
 export const constructIsNotPresentOr = validatorFunction => (value, object, key) => {
