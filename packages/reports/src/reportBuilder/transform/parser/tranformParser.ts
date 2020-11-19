@@ -18,7 +18,7 @@ type RowLookup = {
  * '$all.BCD1' => [5, 8, 4]
  * '$allPrevious.BCD1' => [5, 8]
  * '$where(f($otherRow) = $otherRow.BCD1 < $row.BCD1).BCD1' => [5, 4]
- * '$.row.BCD1 + sum($allPrevious.BCD1)' => 21
+ * '$row.BCD1 + sum($allPrevious.BCD1)' => 21
  */
 type Lookups = {
   row: Row;

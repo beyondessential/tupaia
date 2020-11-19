@@ -46,3 +46,12 @@ export const FILTERABLE_ANALYTICS = [
   { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
   { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
 ];
+
+export const PARSABLE_ANALYTICS = [
+  { period: '20200101', organisationUnit: 'TO', BCD1: 4 },
+  { period: '20200102', organisationUnit: 'TO', BCD1: 2 },
+  { period: '20200103', organisationUnit: 'TO', BCD1: 5 },
+  { period: '20200101', organisationUnit: 'PG', BCD1: 7 },
+  { period: '20200102', organisationUnit: 'PG', BCD1: 8 },
+  { period: '20200103', organisationUnit: 'PG', BCD1: 2 },
+];

@@ -1,11 +1,19 @@
-import { FieldValue } from '../reportBuilder';
+import { FieldValue } from '../types';
 
 export const value = (valueGiven: FieldValue): FieldValue => {
   return valueGiven;
 };
 
 export const last = (values: FieldValue[]): FieldValue => {
-  return values.reverse()[0];
+  if (!Array.isArray(values)) {
+    throw new Error(`Function 'last' expected an array, but got: ${values}`);
+  }
+
+  if (values.length < 1) {
+    return undefined;
+  }
+
+  return values[values.length - 1];
 };
 
 export const eq = (value1, value2): boolean => {
