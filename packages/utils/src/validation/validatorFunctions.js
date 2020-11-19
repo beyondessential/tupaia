@@ -5,7 +5,10 @@
 
 import moment from 'moment';
 import validator from 'validator';
+
 import { ValidationError } from '../errors';
+import { getArticle } from '../string';
+import { checkIsOfType, stringifyValue } from './validationTypes';
 
 const checkIsEmpty = value => value === undefined || value === null || value.length === 0;
 
@@ -63,6 +66,12 @@ export const isAString = value => {
   }
 };
 
+export const isArray = value => {
+  if (!Array.isArray(value)) {
+    throw new ValidationError(`Should contain an array instead of ${value}`);
+  }
+};
+
 export const hasNoAlphaLetters = value => {
   if (value.toString().match(/[a-zA-Z]/g)) {
     throw new ValidationError('Should not contain any alpha letters');
@@ -76,12 +85,8 @@ export const isEmail = value => {
   }
 };
 
-// Conditional taken from https://github.com/bttmly/is-pojo/blob/master/lib/index.js
-const isPojo = value =>
-  value !== null && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype;
-
 export const isPlainObject = value => {
-  if (!isPojo(value)) {
+  if (!checkIsOfType(value, 'object')) {
     throw new Error('Not a plain javascript object');
   }
 };
@@ -90,7 +95,7 @@ const constructAllValuesAreOfType = type => object => {
   Object.entries(object).forEach(([key, value]) => {
     // eslint-disable-next-line valid-typeof
     if (typeof value !== type) {
-      throw new ValidationError(`Value '${key}' is not a ${type}: '${value}'`);
+      throw new ValidationError(`Value '${key}' is not a ${type}: ${stringifyValue(value)}`);
     }
   });
 };
@@ -125,22 +130,6 @@ export const constructIsOneOf = options => value => {
   }
 };
 
-const checkIsOfType = (value, type) => {
-  switch (type) {
-    case 'array':
-      return Array.isArray(value);
-    case 'object':
-      return isPojo(value);
-    case 'number':
-    case 'string':
-    case 'boolean':
-      // eslint-disable-next-line valid-typeof
-      return typeof value === type;
-    default:
-      throw new Error(`Non supported type: ${type}`);
-  }
-};
-
 export const constructIsOneOfType = types => {
   if (!Array.isArray(types)) {
     throw new Error('constructIsOneOfType expects an array of types');
@@ -154,6 +143,16 @@ export const constructIsOneOfType = types => {
       throw new Error(`Must be one of ${types.join(' | ')}`);
     }
   };
+};
+
+export const constructIsArrayOf = type => value => {
+  isArray(value);
+  Object.values(value).forEach(item => {
+    if (!checkIsOfType(item, type)) {
+      const a = getArticle(type);
+      throw new ValidationError(`${stringifyValue(item)} is not ${a} ${type}`);
+    }
+  });
 };
 
 export const constructRecordExistsWithCode = model => async value => {
