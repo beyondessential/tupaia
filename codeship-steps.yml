@@ -22,6 +22,9 @@
             - name: test-web-config-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+            - name: test-report-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh report-server'
             - name: test-database
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh database'
@@ -31,9 +34,6 @@
             - name: test-auth
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh auth'
-            - name: test-report-server
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh report-server'
             - name: test-internal-dependencies
               service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
@@ -61,8 +61,8 @@
         - type: serial
           name: restart-backends
           steps:
-            - name: deploy-reports
-              command: './packages/devops/scripts/ci/deployBackend.sh reports'
+            - name: deploy-report-server
+              command: './packages/devops/scripts/ci/deployBackend.sh report-server'
             - name: deploy-web-config-server
               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
             - name: deploy-meditrak-server
