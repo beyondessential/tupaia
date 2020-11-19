@@ -61,6 +61,7 @@ describe('validatorFunctions', () => {
         ['string', '1'],
         ['boolean', false],
         ['undefined', undefined],
+        ['null', null],
       ];
 
       it.each(testData)('%s', (type, value) => {
@@ -77,6 +78,7 @@ describe('validatorFunctions', () => {
         ['string', 1],
         ['boolean', 'true'],
         ['undefined', null],
+        ['null', { a: 1 }],
       ];
 
       it.each(testData)('%s', (type, value) => {
@@ -126,6 +128,7 @@ describe('validatorFunctions', () => {
         ['string', ['1', '2']],
         ['boolean', [true, false]],
         ['undefined', [undefined, undefined]],
+        ['null', [null, null]],
       ];
 
       it.each(testData)('%s', (type, value) => {
@@ -142,6 +145,7 @@ describe('validatorFunctions', () => {
         ['string', ['1', 2], '2 is not a string'],
         ['boolean', [true, 'false'], "'false' is not a boolean"],
         ['undefined', [undefined, null], 'null is not undefined'],
+        ['null', [{ a: 1 }, null], `${JSON.stringify({ a: 1 })} is not null`],
       ];
 
       it.each(testData)('%s', (type, value, expectedError) => {

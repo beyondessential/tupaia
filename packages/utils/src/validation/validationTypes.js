@@ -12,6 +12,7 @@ export const VALIDATION_TYPES = {
   STRING: 'string',
   BOOLEAN: 'boolean',
   UNDEFINED: 'undefined',
+  NULL: 'null',
 };
 
 // Conditional taken from https://github.com/bttmly/is-pojo/blob/master/lib/index.js
@@ -24,6 +25,8 @@ export const checkIsOfType = (value, type) => {
       return Array.isArray(value);
     case VALIDATION_TYPES.OBJECT:
       return isPojo(value);
+    case VALIDATION_TYPES.NULL:
+      return value === null;
     case VALIDATION_TYPES.NUMBER:
     case VALIDATION_TYPES.STRING:
     case VALIDATION_TYPES.BOOLEAN:
@@ -37,8 +40,6 @@ export const checkIsOfType = (value, type) => {
 
 const getValidationType = value => {
   switch (typeof value) {
-    case 'object':
-      return Array.isArray(value) ? VALIDATION_TYPES.ARRAY : VALIDATION_TYPES.OBJECT;
     case 'number':
       return VALIDATION_TYPES.NUMBER;
     case 'string':
@@ -47,6 +48,18 @@ const getValidationType = value => {
       return VALIDATION_TYPES.BOOLEAN;
     case 'undefined':
       return VALIDATION_TYPES.UNDEFINED;
+    case 'object': {
+      if (Array.isArray(value)) {
+        return VALIDATION_TYPES.ARRAY;
+      }
+      if (isPojo(value)) {
+        return VALIDATION_TYPES.OBJECT;
+      }
+      if (value === null) {
+        return VALIDATION_TYPES.NULL;
+      }
+    }
+    // fall through
     default:
       throw new Error(`Non supported type: ${typeof value}`);
   }
@@ -54,16 +67,17 @@ const getValidationType = value => {
 
 export const stringifyValue = value => {
   switch (getValidationType(value)) {
-    case VALIDATION_TYPES.NUMBER:
-    case VALIDATION_TYPES.BOOLEAN:
-    case VALIDATION_TYPES.UNDEFINED:
-      return value;
+    case VALIDATION_TYPES.ARRAY:
+    case VALIDATION_TYPES.OBJECT:
+      return JSON.stringify(value);
     case VALIDATION_TYPES.STRING:
       return `'${value}'`;
     default:
-      return JSON.stringify(value);
+      return value;
   }
 };
 
 export const getTypeWithArticle = type =>
-  type === VALIDATION_TYPES.UNDEFINED ? type : `${getArticle(type)} ${type}`;
+  [VALIDATION_TYPES.UNDEFINED, VALIDATION_TYPES.NULL].includes(type)
+    ? type
+    : `${getArticle(type)} ${type}`;
