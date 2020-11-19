@@ -6,12 +6,8 @@
 import { ValidationError } from '@tupaia/utils';
 
 /**
- * A function that extracts `entityId` and `answers` from a row
+ * A function that extracts `country`, `countryId`, 'entities', 'surveyResponse' and 'surveys' from a database
  *
- * @callback ResponseExtractor
- * @async
- * @param {string[]} row
- * @returns {{ entityId, answers }}
  */
 
 export class SurveyResponseVariablesExtractor {
@@ -22,12 +18,6 @@ export class SurveyResponseVariablesExtractor {
     this.models = models;
   }
 
-  /**
-   * @public
-   * @param {Object<string, Array>} rowsBySurvey
-   * @param {string} userId
-   * @returns {Promise<{country: *, countryId: *}>}
-   */
   async getVariablesByCountryCode(countryCode) {
     const country = await this.models.country.findOne({ code: countryCode });
     return { country, countryId: country.id };
