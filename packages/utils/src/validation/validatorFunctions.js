@@ -7,8 +7,7 @@ import moment from 'moment';
 import validator from 'validator';
 
 import { ValidationError } from '../errors';
-import { getArticle } from '../string';
-import { checkIsOfType, stringifyValue } from './validationTypes';
+import { checkIsOfType, getTypeWithArticle, stringifyValue } from './validationTypes';
 
 const checkIsEmpty = value => value === undefined || value === null || value.length === 0;
 
@@ -68,7 +67,7 @@ export const isAString = value => {
 
 export const isArray = value => {
   if (!Array.isArray(value)) {
-    throw new ValidationError(`Should contain an array instead of ${value}`);
+    throw new ValidationError(`Should contain an array instead of ${stringifyValue(value)}`);
   }
 };
 
@@ -95,7 +94,10 @@ const constructAllValuesAreOfType = type => object => {
   Object.entries(object).forEach(([key, value]) => {
     // eslint-disable-next-line valid-typeof
     if (typeof value !== type) {
-      throw new ValidationError(`Value '${key}' is not a ${type}: ${stringifyValue(value)}`);
+      const typeDescription = getTypeWithArticle(type);
+      throw new ValidationError(
+        `Value '${key}' is not ${typeDescription}: ${stringifyValue(value)}`,
+      );
     }
   });
 };
@@ -149,8 +151,8 @@ export const constructIsArrayOf = type => value => {
   isArray(value);
   Object.values(value).forEach(item => {
     if (!checkIsOfType(item, type)) {
-      const a = getArticle(type);
-      throw new ValidationError(`${stringifyValue(item)} is not ${a} ${type}`);
+      const typeDescription = getTypeWithArticle(type);
+      throw new ValidationError(`${stringifyValue(item)} is not ${typeDescription}`);
     }
   });
 };

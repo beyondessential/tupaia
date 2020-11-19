@@ -60,6 +60,7 @@ describe('validatorFunctions', () => {
         ['number', 1],
         ['string', '1'],
         ['boolean', false],
+        ['undefined', undefined],
       ];
 
       it.each(testData)('%s', (type, value) => {
@@ -75,6 +76,7 @@ describe('validatorFunctions', () => {
         ['number', '1'],
         ['string', 1],
         ['boolean', 'true'],
+        ['undefined', null],
       ];
 
       it.each(testData)('%s', (type, value) => {
@@ -123,6 +125,7 @@ describe('validatorFunctions', () => {
         ['number', [1, 2]],
         ['string', ['1', '2']],
         ['boolean', [true, false]],
+        ['undefined', [undefined, undefined]],
       ];
 
       it.each(testData)('%s', (type, value) => {
@@ -138,6 +141,7 @@ describe('validatorFunctions', () => {
         ['number', [1, '2'], "'2' is not a number"],
         ['string', ['1', 2], '2 is not a string'],
         ['boolean', [true, 'false'], "'false' is not a boolean"],
+        ['undefined', [undefined, null], 'null is not undefined'],
       ];
 
       it.each(testData)('%s', (type, value, expectedError) => {

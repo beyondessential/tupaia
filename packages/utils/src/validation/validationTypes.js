@@ -1,9 +1,17 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { getArticle } from '../string';
+
 export const VALIDATION_TYPES = {
   ARRAY: 'array',
   OBJECT: 'object',
   NUMBER: 'number',
   STRING: 'string',
   BOOLEAN: 'boolean',
+  UNDEFINED: 'undefined',
 };
 
 // Conditional taken from https://github.com/bttmly/is-pojo/blob/master/lib/index.js
@@ -19,6 +27,7 @@ export const checkIsOfType = (value, type) => {
     case VALIDATION_TYPES.NUMBER:
     case VALIDATION_TYPES.STRING:
     case VALIDATION_TYPES.BOOLEAN:
+    case VALIDATION_TYPES.UNDEFINED:
       // eslint-disable-next-line valid-typeof
       return typeof value === type;
     default:
@@ -36,8 +45,10 @@ const getValidationType = value => {
       return VALIDATION_TYPES.STRING;
     case 'boolean':
       return VALIDATION_TYPES.BOOLEAN;
+    case 'undefined':
+      return VALIDATION_TYPES.UNDEFINED;
     default:
-      throw new Error(`Non supported type: ${type}`);
+      throw new Error(`Non supported type: ${typeof value}`);
   }
 };
 
@@ -45,6 +56,7 @@ export const stringifyValue = value => {
   switch (getValidationType(value)) {
     case VALIDATION_TYPES.NUMBER:
     case VALIDATION_TYPES.BOOLEAN:
+    case VALIDATION_TYPES.UNDEFINED:
       return value;
     case VALIDATION_TYPES.STRING:
       return `'${value}'`;
@@ -52,3 +64,6 @@ export const stringifyValue = value => {
       return JSON.stringify(value);
   }
 };
+
+export const getTypeWithArticle = type =>
+  type === VALIDATION_TYPES.UNDEFINED ? type : `${getArticle(type)} ${type}`;
