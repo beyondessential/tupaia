@@ -96,8 +96,8 @@ export async function exportSurveyResponses(req, res) {
       surveyResponseId,
     );
     const { country, entities, surveyResponse } = variables;
-    countryId = variables.countryId && countryId;
-    surveyId = variables.surveyId && surveyId;
+    countryId = variables.countryId ? variables.countryId : countryId;
+    surveyId = variables.surveyId ? variables.surveyId : surveyId;
 
     const surveys = await variablesExtractor.getSurveys(surveyId, surveyCodes, countryId);
 
