@@ -126,7 +126,7 @@ const models = {
   },
 };
 
-describe.only('groupEvents()', () => {
+describe('groupEvents()', () => {
   it('groups by nothing', () =>
     expect(groupEvents(models, EVENTS, { type: 'nothing' })).to.eventually.deep.equal({
       all: [...EVENTS],
