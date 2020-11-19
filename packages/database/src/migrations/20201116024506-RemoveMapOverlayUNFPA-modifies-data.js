@@ -35,7 +35,6 @@ exports.down = async function (db) {
   const { rows } = await db.runSql(`
     SELECT id FROM map_overlay_group WHERE code = 'Services_provided'
   `);
-
   const [{ id: servicesProvidedId }] = rows;
 
   return db.runSql(`
