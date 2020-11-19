@@ -10,7 +10,7 @@ import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from 
 import { TestableApp } from '../TestableApp';
 import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
-describe.only('Permissions checker for GETSurveyScreenComponents', async () => {
+describe('Permissions checker for GETSurveyScreenComponents', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -78,21 +78,21 @@ describe.only('Permissions checker for GETSurveyScreenComponents', async () => {
   describe('GET /surveyScreenComponents/:id', async () => {
     it('Sufficient permissions: Return a requested screen component if we have access to the associated survey', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[2]}`);
-
-      expect(result.id).to.equal(screenComponentIds[2]);
-    });
-
-    it('Sufficient permissions: Return a requested screen component if we have BES admin access anywhere', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
       const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[0]}`);
 
       expect(result.id).to.equal(screenComponentIds[0]);
     });
 
+    it('Sufficient permissions: Return a requested screen component if we have BES admin access anywhere', async () => {
+      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[2]}`);
+
+      expect(result.id).to.equal(screenComponentIds[2]);
+    });
+
     it('Insufficient permissions: Throw an error if we do not have permission to the survey associated with the screen component', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[0]}`);
+      const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[2]}`);
 
       expect(result).to.have.keys('error');
     });
@@ -104,8 +104,8 @@ describe.only('Permissions checker for GETSurveyScreenComponents', async () => {
       const { body: results } = await app.get(`surveyScreenComponents?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members([
-        screenComponentIds[2],
-        screenComponentIds[3],
+        screenComponentIds[0],
+        screenComponentIds[1],
       ]);
     });
 
@@ -131,19 +131,19 @@ describe.only('Permissions checker for GETSurveyScreenComponents', async () => {
     it('Sufficient permissions: Return only screen components associated with the selected survey', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: results } = await app.get(
-        `surveys/${surveyIds[1]}/surveyScreenComponents?${filterString}`,
+        `surveys/${surveyIds[0]}/surveyScreenComponents?${filterString}`,
       );
 
       expect(results.map(r => r.id)).to.have.members([
-        screenComponentIds[2],
-        screenComponentIds[3],
+        screenComponentIds[0],
+        screenComponentIds[1],
       ]);
     });
 
     it('Insufficient permissions: Throw an error if we do not have access to the selected survey', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: results } = await app.get(
-        `surveys/${surveyIds[0]}/surveyScreenComponents?${filterString}`,
+        `surveys/${surveyIds[1]}/surveyScreenComponents?${filterString}`,
       );
 
       expect(results).to.have.key('error');
