@@ -677,8 +677,9 @@ function enlargedDialog(
         ...state,
         contentByLevel: {
           ...(state.contentByLevel || {}),
-          [action.drillDownLevel]: {
+          [action.options.drillDownLevel]: {
             viewContent: action.viewContent,
+            options: action.options,
           },
         },
         isLoading: false,

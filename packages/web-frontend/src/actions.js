@@ -1050,34 +1050,18 @@ export function setEnlargedDashboardDateRange(startDate, endDate) {
   };
 }
 
-export function fetchEnlargedDialogData({
-  viewContent,
-  startDate,
-  endDate,
-  parameterLink,
-  parameterValue,
-  drillDownLevel,
-}) {
-  const { viewId, organisationUnitCode, dashboardGroupId, infoViewKey } = viewContent;
+export function fetchEnlargedDialogData(options) {
   return {
     type: FETCH_ENLARGED_DIALOG_DATA,
-    organisationUnitCode,
-    viewId,
-    drillDownLevel,
-    dashboardGroupId,
-    parameterLink,
-    parameterValue,
-    startDate,
-    endDate,
-    infoViewKey,
+    options,
   };
 }
 
-export function updateEnlargedDialog(drillDownLevel, viewContent) {
+export function updateEnlargedDialog(options, viewContent) {
   return {
     type: UPDATE_ENLARGED_DIALOG,
     viewContent,
-    drillDownLevel,
+    options,
   };
 }
 

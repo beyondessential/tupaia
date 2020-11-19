@@ -63,3 +63,13 @@ export const selectCurrentExpandedViewContent = createSelector(
     return viewResponses[infoViewKey];
   },
 );
+
+export const selectIsEnlargedDialogVisible = createSelector(
+  [
+    selectCurrentDashboardGroupIdForExpandedReport,
+    selectCurrentOrgUnitCode,
+    selectCurrentExpandedViewId,
+  ],
+  (dashboardGroupId, organisationUnitCode, viewId) =>
+    !!(dashboardGroupId && organisationUnitCode && viewId),
+);

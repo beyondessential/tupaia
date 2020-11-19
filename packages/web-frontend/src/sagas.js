@@ -720,6 +720,7 @@ function* fetchViewData(parameters, errorHandler) {
     endDate: formatDateForApi(endDate),
     ...extraUrlParameters,
   };
+  console.log(urlParameters);
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
 
   try {
@@ -1007,15 +1008,14 @@ function* fetchEnlargedDialogData(action) {
   const {
     startDate,
     endDate,
-    organisationUnitCode,
-    viewId,
     infoViewKey,
-    dashboardGroupId,
     // drillDown params
     parameterLink,
     parameterValue,
     drillDownLevel,
-  } = action;
+  } = action.options;
+
+  const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
 
   let parameters = {
     startDate,
@@ -1044,14 +1044,17 @@ function* fetchEnlargedDialogData(action) {
     };
   }
 
+  console.log(action, parameters);
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
+  console.log(viewData);
 
   const newState = yield select();
   const newInfoViewKey = selectCurrentInfoViewKey(newState);
 
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
   if (viewData && newInfoViewKey === infoViewKey) {
-    yield put(updateEnlargedDialog(drillDownLevel, viewData));
+    console.log(viewData && newInfoViewKey === infoViewKey, viewData, newInfoViewKey, infoViewKey, updateEnlargedDialog(action.options, viewData));
+    yield put(updateEnlargedDialog(action.options, viewData));
   }
 }
 

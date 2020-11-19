@@ -16,8 +16,8 @@ import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
   selectCurrentExpandedViewContent,
-  selectCurrentProjectCode,
 } from '../../selectors';
+import shallowEqual from 'shallowequal';
 import { DIALOG_Z_INDEX } from '../../styles';
 import { getInfoFromInfoViewKey, isMobile, sleep, stringToFilename } from '../../utils';
 import { exportToExcel, exportToPng } from '../../utils/exports';
@@ -57,7 +57,6 @@ const EnlargedDialogComponent = props => {
     endDate,
     isLoading,
     initialViewContent,
-    projectCode,
     infoViewKey,
     fetchViewData,
   } = props;
@@ -68,46 +67,49 @@ const EnlargedDialogComponent = props => {
   const [exportStatus, setExportStatus] = React.useState(STATUS.IDLE);
   const [drillDownState, setDrillDownState] = React.useState({
     drillDownLevel: 0,
-    parameterLink: null,
-    parameterValue: null,
+    parameterLinks: {},
+    parameterValues: {},
   });
 
   const viewContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
 
-  const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
-
   React.useEffect(() => {
-    if (!viewId) return;
+    const { drillDownLevel, parameterLinks, parameterValues } = drillDownState;
+    const cachedOptions = contentByLevel?.[drillDownLevel]?.options;
 
-    // No need to refetch if everything is default
-    if (!startDate && !endDate && !drillDownState.drillDownLevel === 0) return;
+    const parameterLink = parameterLinks[drillDownLevel];
+    const parameterValue = parameterValues[drillDownLevel];
 
     const options = {
-      viewContent: {
-        infoViewKey,
-        organisationUnitCode,
-        viewId,
-        dashboardGroupId,
-      },
-      projectCode,
+      infoViewKey,
       startDate,
       endDate,
-      isExpanded: true,
-      ...drillDownState,
+      drillDownLevel,
+      parameterLink,
+      parameterValue,
     };
+
+    // No need to refetch if nothing has changed for that drillDownLevel.
+    // Note: this means that all options are strings, numbers etc.
+    if (shallowEqual(options, cachedOptions)) return;
+
     fetchViewData(options);
-    // TODO: Only refetching on parameterValue change is a bit hacky... We rely on not refetching here...
-  }, [startDate, endDate, drillDownState.parameterValue, infoViewKey]);
+  }, [startDate, endDate, drillDownState]);
 
   const onDrillDown = chartItem => {
     const { drillDown } = viewContent;
     if (!drillDown) return;
+    const newDrillDownLevel = drillDownState.drillDownLevel + 1;
 
     const { parameterLink, keyLink } = drillDown;
+    const { parameterLinks: oldParameterLinks, parameterValues: oldParameterValues } = drillDownState;
+    oldParameterLinks[newDrillDownLevel] = parameterLink;
+    oldParameterValues[newDrillDownLevel] = chartItem[keyLink];
+
     setDrillDownState({
-      drillDownLevel: drillDownState.drillDownLevel + 1,
-      parameterLink,
-      parameterValue: chartItem[keyLink],
+      drillDownLevel: newDrillDownLevel,
+      parameterLinks: oldParameterLinks,
+      parameterValues: oldParameterValues,
     });
   };
 
@@ -212,17 +214,15 @@ EnlargedDialogComponent.propTypes = {
   onSetDateRange: PropTypes.func,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
-  projectCode: PropTypes.string,
   startDate: PropTypes.string,
   endDate: PropTypes.string,
 };
 
 EnlargedDialogComponent.defaultProps = {
-  onSetDateRange: () => {},
+  onSetDateRange: () => { },
   errorMessage: null,
   startDate: null,
   endDate: null,
-  projectCode: null,
   isLoading: false,
 };
 
@@ -250,7 +250,6 @@ const mapStateToProps = state => ({
   startDate: state.enlargedDialog.startDate,
   endDate: state.enlargedDialog.endDate,
   errorMessage: state.enlargedDialog.errorMessage,
-  projectCode: selectCurrentProjectCode(state),
   infoViewKey: selectCurrentInfoViewKey(state),
   initialViewContent: selectCurrentExpandedViewContent(state),
   organisationUnitName: selectCurrentOrgUnit(state).name,
