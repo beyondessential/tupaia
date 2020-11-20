@@ -18,7 +18,7 @@ import {
   selectCurrentExpandedViewContent,
 } from '../../selectors';
 import shallowEqual from 'shallowequal';
-import { DIALOG_Z_INDEX } from '../../styles';
+import { DIALOG_Z_INDEX, DARK_BLUE } from '../../styles';
 import { getInfoFromInfoViewKey, isMobile, sleep, stringToFilename } from '../../utils';
 import { exportToExcel, exportToPng } from '../../utils/exports';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
@@ -31,7 +31,7 @@ const Loader = styled.div`
   height: 100%;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 1);
+  background: ${DARK_BLUE};
   color: white;
   z-index: 100;
   padding-top: 45px;
