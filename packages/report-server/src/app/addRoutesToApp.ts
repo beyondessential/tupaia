@@ -39,9 +39,6 @@ export function addRoutesToApp(app: Express) {
 }
 
 const handleError = (err, req: ReportsRequest, res: Response) => {
-  let error = err;
-  if (!error.respond) {
-    error = new InternalServerError(err);
-  }
+  const error = err.respond ? err : new InternalServerError(err);
   error.respond(res);
 };
