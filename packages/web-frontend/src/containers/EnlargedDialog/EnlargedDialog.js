@@ -214,8 +214,8 @@ EnlargedDialogComponent.propTypes = {
   onSetDateRange: PropTypes.func,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
-  startDate: PropTypes.string,
-  endDate: PropTypes.string,
+  startDate: PropTypes.object,
+  endDate: PropTypes.object,
 };
 
 EnlargedDialogComponent.defaultProps = {

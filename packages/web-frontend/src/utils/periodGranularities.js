@@ -8,6 +8,8 @@
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+export const DEFAULT_MIN_DATE = '20150101';
+
 const DAY = 'day';
 const SINGLE_DAY = 'one_day_at_a_time';
 const WEEK = 'week';
@@ -250,7 +252,7 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
     return roundStartEndDates(periodGranularity, startDate, endDate);
   }
 
-  return {};
+  return { startDate: moment(DEFAULT_MIN_DATE), endDate: moment() };
 };
 
 export function getDefaultDates(viewConfig) {
@@ -262,11 +264,9 @@ export function getDefaultDates(viewConfig) {
   }
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
-
   if (isSingleDate) {
     return getDefaultDatesForSingleDateGranularities(periodGranularity, defaultTimePeriod);
   }
-
   return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod);
 }
 
