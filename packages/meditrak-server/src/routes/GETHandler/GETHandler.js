@@ -50,11 +50,11 @@ export class GETHandler extends CRUDHandler {
     if (!columnsString) {
       // no columns specifically requested, use all fields on the model
       const fields = await this.resourceModel.fetchFieldNames();
-      return processColumns(fields, this.recordType);
+      return processColumns(this.models, fields, this.recordType);
     }
 
     const unprocessedColumns = columnsString && JSON.parse(columnsString);
-    return processColumns(unprocessedColumns, this.recordType);
+    return processColumns(this.models, unprocessedColumns, this.recordType);
   }
 
   async getDbQueryOptions() {
@@ -63,7 +63,7 @@ export class GETHandler extends CRUDHandler {
     // set up db query options
     const columns = await this.getProcessedColumns();
     const { sort, multiJoin } = getQueryOptionsForColumns(
-      columns,
+      Object.keys(columns),
       this.recordType,
       this.customJoinConditions,
     );

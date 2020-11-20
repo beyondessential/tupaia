@@ -78,32 +78,34 @@ const getForeignKeyColumnName = foreignTable => {
   return exceptions[foreignTable] || `${foreignTable}_id`;
 };
 
-export const getQueryOptionsForColumns = (columns, baseRecordType, customJoinConditions = {}) => {
-  const sort = [`${baseRecordType}.id`];
-  if (!columns) {
-    return { sort };
-  }
-  if (columns.some(c => c.startsWith('_'))) {
+export const getQueryOptionsForColumns = (
+  columnNames,
+  baseRecordType,
+  customJoinConditions = {},
+) => {
+  if (columnNames.some(c => c.startsWith('_'))) {
     throw new ValidationError(
       'No columns start with "_", and conjunction operators are reserved for internal use only',
     );
   }
   const multiJoin = [];
   const recordTypesInQuery = new Set([baseRecordType]);
-  for (const column of columns) {
-    // Split strings into the record type to join with and the column to select, e.g. if the column
-    // is 'survey.name', split into 'survey' and 'name'
-    const recordType = column.split('.')[0];
-    if (recordType !== baseRecordType && !recordTypesInQuery.has(recordType)) {
-      const joinCondition = customJoinConditions[recordType] || [
-        `${recordType}.id`,
-        getForeignKeyColumnName(recordType),
-      ];
-      multiJoin.push(joinCondition);
-      recordTypesInQuery.add(recordType);
-    }
-  }
+  columnNames
+    .filter(c => c.includes('.'))
+    .forEach(columnName => {
+      // Split strings into the record type to join with and the column to select, e.g. if the column
+      // is 'survey.name', split into 'survey' and 'name'
+      const recordType = columnName.split('.')[0];
+      if (!recordTypesInQuery.has(recordType)) {
+        const joinCondition = customJoinConditions[recordType] || [
+          `${recordType}.id`,
+          getForeignKeyColumnName(recordType),
+        ];
+        multiJoin.push(joinCondition);
+        recordTypesInQuery.add(recordType);
+      }
+    });
   // Ensure every join table is added to the sort, so that queries are predictable during pagination
-  sort.push(...recordTypesInQuery.map(recordType => `${recordType}.id`));
+  const sort = [...recordTypesInQuery].map(recordType => `${recordType}.id`);
   return { multiJoin, sort };
 };
