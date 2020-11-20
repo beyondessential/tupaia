@@ -16,6 +16,7 @@ import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
   selectCurrentExpandedViewContent,
+  selectCurrentProjectCode,
 } from '../../selectors';
 import shallowEqual from 'shallowequal';
 import { DIALOG_Z_INDEX, DARK_BLUE } from '../../styles';
@@ -71,6 +72,7 @@ const EnlargedDialogComponent = props => {
     startDate: startDateForTopLevel,
     endDate: endDateForTopLevel,
     isLoading,
+    projectCode,
     initialViewContent,
     infoViewKey,
     fetchViewData,
@@ -241,6 +243,7 @@ EnlargedDialogComponent.propTypes = {
   errorMessage: PropTypes.string,
   startDate: PropTypes.object,
   endDate: PropTypes.object,
+  projectCode: PropTypes.string,
 };
 
 EnlargedDialogComponent.defaultProps = {
@@ -249,6 +252,7 @@ EnlargedDialogComponent.defaultProps = {
   startDate: null,
   endDate: null,
   isLoading: false,
+  projectCode: null,
 };
 
 const styles = {
@@ -279,6 +283,7 @@ const mapStateToProps = state => ({
   infoViewKey: selectCurrentInfoViewKey(state),
   initialViewContent: selectCurrentExpandedViewContent(state),
   organisationUnitName: selectCurrentOrgUnit(state).name,
+  projectCode: selectCurrentProjectCode(state),
 });
 
 const mapDispatchToProps = dispatch => ({
