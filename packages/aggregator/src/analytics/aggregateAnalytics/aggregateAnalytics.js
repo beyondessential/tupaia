@@ -6,17 +6,17 @@
 import { PERIOD_TYPES } from '@tupaia/utils';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import {
+  countPerOrgGroup,
+  countPerPeriodPerOrgGroup,
   filterLatest,
   getFinalValuePerPeriod,
   getSumValuePerPeriod,
+  replaceOrgUnitWithOrgGroup,
   sumAcrossPeriods,
   sumEachDataElement,
-  sumPreviousPerPeriod,
   sumPerOrgGroup,
   sumPerPeriodPerOrgGroup,
-  countPerOrgGroup,
-  countPerPeriodPerOrgGroup,
-  replaceOrgUnitWithOrgGroup,
+  sumPreviousPerPeriod,
 } from './aggregations';
 
 export const aggregateAnalytics = (
