@@ -428,7 +428,6 @@ describe('buildArithmetic', () => {
         expect.anything(),
         expect.anything(),
       );
-      expect(aggregator.fetchAnalytics).toHaveBeenCalledTimes(1);
     });
   });
 });
