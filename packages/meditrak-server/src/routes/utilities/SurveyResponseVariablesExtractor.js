@@ -18,9 +18,9 @@ export class SurveyResponseVariablesExtractor {
     this.models = models;
   }
 
-  async getVariablesByCountryCode(countryCode) {
+  async getCountryIdByCountryCode(countryCode) {
     const country = await this.models.country.findOne({ code: countryCode });
-    return { country, countryId: country.id };
+    return country.id;
   }
 
   async getVariablesByEntityCode(entityCode) {
@@ -44,18 +44,18 @@ export class SurveyResponseVariablesExtractor {
    * @param entityIds
    * @returns {Promise<variables>}
    */
-  async getVariablesByEntityIds(entityIds) {
+  async getVariablesByEntityIds(entityIds, countryId) {
     let country;
-    let countryId;
+    let newCountryId = countryId;
     const entities = await Promise.all(
       entityIds.split(',').map(entityId => this.models.entity.findById(entityId)),
     );
     if (!countryId && entities.length > 0) {
       const countryCodeFromEntity = entities[0].country_code;
       country = await this.models.country.findOne({ code: countryCodeFromEntity });
-      countryId = country.id;
+      newCountryId = country.id;
     }
-    return { country, countryId, entities };
+    return { country, countryId: newCountryId, entities };
   }
 
   async getVariablesBySurveyResponseId(surveyResponseId) {
@@ -105,40 +105,13 @@ export class SurveyResponseVariablesExtractor {
   }
 
   async getParametersFromInput(countryCode, entityCode, countryId, entityIds, surveyResponseId) {
-    let country;
-    let entities;
-    let surveyId;
-    let surveyResponse;
-    if (countryCode) {
-      const variables = await this.getVariablesByCountryCode(countryCode);
-      country = variables.country;
-      countryId = variables.countryId;
-    }
-
-    if (entityCode) {
-      const variables = await this.getVariablesByEntityCode(entityCode);
-      country = variables.country;
-      entities = variables.entities;
-    } else if (countryId) {
-      const variables = await this.getVariablesByCountryId(countryId);
-      country = variables.country;
-      entities = variables.entities;
-    } else if (entityIds) {
-      const variables = await this.getVariablesByEntityIds(entityIds);
-      country = variables.country;
-      countryId = variables.countryId;
-      entities = variables.entities;
-    } else if (surveyResponseId) {
-      const variables = await this.getVariablesBySurveyResponseId(surveyResponseId);
-      country = variables.country;
-      surveyId = variables.surveyId;
-      surveyResponse = variables.surveyResponse;
-    } else {
-      throw new ValidationError(
-        'Please specify either surveyResponseId, countryId, countryCode, facilityCode or entityIds',
-      );
-    }
-
-    return { country, entities, countryId, surveyId, surveyResponse };
+    countryId = countryCode && (await this.getCountryIdByCountryCode(countryCode));
+    if (entityCode) return this.getVariablesByEntityCode(entityCode);
+    if (countryId) return this.getVariablesByCountryId(countryId);
+    if (entityIds) return this.getVariablesByEntityIds(entityIds, countryId);
+    if (surveyResponseId) return this.getVariablesBySurveyResponseId(surveyResponseId);
+    throw new ValidationError(
+      'Please specify either surveyResponseId, countryId, countryCode, facilityCode or entityIds',
+    );
   }
 }

@@ -29,7 +29,7 @@ export const formatMatrixDataForExcel = (
   outputFormat = 'aoa',
 ) => {
   // Create the empty array of objects to build the data into
-  const formattedData = [];
+  let formattedData = [];
   const columnCategories = columns[0].columns && columns; // If columns are grouped into categories, store as a well named const
   const config = { ...DEFAULT_CONFIG, ...configIn };
   // Returns populated array instead of object
@@ -90,7 +90,7 @@ export const formatMatrixDataForExcel = (
   }
 
   // Add export date and origin to the bottom of the sheet
-  addExportedDateAndOriginAtTheSheetBottom(formattedData);
+  formattedData = addExportedDateAndOriginAtTheSheetBottom(formattedData);
 
   return outputFormat === 'aoo' ? convertAoaToAoo(formattedData) : formattedData;
 };

@@ -96,8 +96,8 @@ export async function exportSurveyResponses(req, res) {
       surveyResponseId,
     );
     const { country, entities, surveyResponse } = variables;
-    countryId = variables.countryId ? variables.countryId : countryId;
-    surveyId = variables.surveyId ? variables.surveyId : surveyId;
+    countryId = variables.countryId || country.id || countryId;
+    surveyId = variables.surveyId || surveyId;
 
     const surveys = await variablesExtractor.getSurveys(surveyId, surveyCodes, countryId);
 
@@ -118,7 +118,7 @@ export async function exportSurveyResponses(req, res) {
         addDataToSheet(currentSurvey.name, exportData);
         continue;
       }
-      const exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
+      let exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
       const surveyResponseAnswers = [];
       const processSurveyResponse = async (currentSurveyResponse, currentEntity) => {
         const surveyDate = currentSurveyResponse.timezoneAwareSubmissionTime();
@@ -246,7 +246,7 @@ export async function exportSurveyResponses(req, res) {
       });
 
       // Add export date and origin
-      addExportedDateAndOriginAtTheSheetBottom(exportData);
+      exportData = addExportedDateAndOriginAtTheSheetBottom(exportData);
 
       addDataToSheet(currentSurvey.name, exportData);
     }

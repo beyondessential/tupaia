@@ -13,6 +13,10 @@ import moment from 'moment';
 export const addExportedDateAndOriginAtTheSheetBottom = exportData => {
   // Add export date and origin
   // Add two [] for spacing between the table and the export date
-  exportData.push([], [], [`Data exported from Tupaia.org on ${moment().format('Do MMM YYYY')}`]);
-  return exportData;
+  return [
+    ...exportData,
+    [],
+    [],
+    [`Data exported from Tupaia.org on ${moment().format('Do MMM YYYY')}`],
+  ];
 };
