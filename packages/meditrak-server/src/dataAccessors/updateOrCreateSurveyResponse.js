@@ -82,20 +82,23 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
 }
 
 const createOptions = async (models, optionsCreated) => {
-  return Promise.all(
-    optionsCreated.map(async option => {
-      const { value, option_set_id: optionSetId } = option;
-      const largestSorOrder = await models.option.getLargestSortOrder(optionSetId);
-      return models.option.updateOrCreate(
-        { option_set_id: optionSetId, value },
-        {
-          ...option,
-          sort_order: largestSorOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
-          attributes: {},
-        },
-      );
-    }),
-  );
+  const options = [];
+
+  for (const optionObject of optionsCreated) {
+    const { value, option_set_id: optionSetId } = optionObject;
+    const largestSorOrder = await models.option.getLargestSortOrder(optionSetId);
+    const optionRecord = await models.option.updateOrCreate(
+      { option_set_id: optionSetId, value },
+      {
+        ...optionObject,
+        sort_order: largestSorOrder + 1, // append the option to the end to resolve any sort order conflict from other devices
+        attributes: {},
+      },
+    );
+    options.push(optionRecord);
+  }
+
+  return options;
 };
 
 const createEntities = async (models, entitiesCreated, surveyId) => {

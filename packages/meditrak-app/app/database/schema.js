@@ -169,5 +169,16 @@ export const schema = {
         }
       });
     }
+
+    if (oldRealm.schemaVersion < 18) {
+      const oldOptions = oldRealm.objects('Option');
+      const newOptions = newRealm.objects('Option');
+
+      oldOptions.forEach((oldOption, index) => {
+        const optionSets = oldRealm.objects('OptionSet').filtered(`options.id="${oldOption.id}"`);
+        const optionSet = optionSets[0];
+        newOptions[index].optionSetId = optionSet.id;
+      });
+    }
   },
 };

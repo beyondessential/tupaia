@@ -98,6 +98,13 @@ const clinicOrEntityIdExist = (id, obj) => {
   }
 };
 
+const optionSetExist = models => async id => {
+  const optionSet = models.optionSet.findById(id);
+  if (!optionSet) {
+    throw new Error(`Option set with id ${id} does not exist.`);
+  }
+};
+
 const constructEntitiesCreatedValidators = models => ({
   id: [hasContent, takesIdForm],
   code: [hasContent],
@@ -110,15 +117,15 @@ const constructEntitiesCreatedValidators = models => ({
 const constructIsValidEntity = models => async value =>
   new ObjectValidator(constructEntitiesCreatedValidators(models)).validate(value);
 
-const constructOptionsCreatedValidators = () => ({
+const constructOptionsCreatedValidators = models => ({
   id: [hasContent, takesIdForm],
   value: [hasContent],
-  option_set_id: [hasContent, takesIdForm],
+  option_set_id: [hasContent, takesIdForm, optionSetExist(models)],
   sort_order: [isNumber],
 });
 
-const constructIsValidOption = () => async value =>
-  new ObjectValidator(constructOptionsCreatedValidators()).validate(value);
+const constructIsValidOption = models => async value =>
+  new ObjectValidator(constructOptionsCreatedValidators(models)).validate(value);
 
 const constructSurveyResponseValidators = models => ({
   id: [hasContent, takesIdForm],
@@ -131,7 +138,7 @@ const constructSurveyResponseValidators = models => ({
   user_id: [hasContent, takesIdForm],
   answers: [isPresent],
   entities_created: [constructIsEmptyOr(constructEveryItem(constructIsValidEntity(models)))],
-  options_created: [constructIsEmptyOr(constructEveryItem(constructIsValidOption()))],
+  options_created: [constructIsEmptyOr(constructEveryItem(constructIsValidOption(models)))],
 });
 
 const constructAnswerValidators = models => ({

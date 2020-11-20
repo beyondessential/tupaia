@@ -31,7 +31,7 @@ export class AutocompleteQuestionComponent extends React.Component {
     // Don't want to return an option with a null label (which is valid data)
     // if we are passed null str (which indicates no option selected)
     if (!str) return null;
-    const { creatNewOption } = this.state;
+    const { newlyCreatedOption } = this.state;
     const result = this.optionSet.options.find(
       option => str === option.value || str === option.label,
     );
@@ -40,14 +40,15 @@ export class AutocompleteQuestionComponent extends React.Component {
       return result.value;
     }
 
-    return creatNewOption && (creatNewOption.value === str || creatNewOption.label === str)
-      ? creatNewOption.value
+    return newlyCreatedOption &&
+      (newlyCreatedOption.value === str || newlyCreatedOption.label === str)
+      ? newlyCreatedOption.value
       : '';
   };
 
   getOptionLabel = str => {
     if (!str) return null;
-    const { creatNewOption } = this.state;
+    const { newlyCreatedOption } = this.state;
     const result = this.optionSet.options.find(
       option => str === option.value || str === option.label,
     );
@@ -57,8 +58,9 @@ export class AutocompleteQuestionComponent extends React.Component {
       return result.label || result.value;
     }
 
-    return creatNewOption && (creatNewOption.label === str || creatNewOption.value === str)
-      ? creatNewOption.value // when selecting 'Create xxx as a new option', we want to show xxx (the value) instead of 'Create xxx as a new option' in the field
+    return newlyCreatedOption &&
+      (newlyCreatedOption.label === str || newlyCreatedOption.value === str)
+      ? newlyCreatedOption.value // when selecting 'Create xxx as a new option', we want to show xxx (the value) instead of 'Create xxx as a new option' in the field
       : '';
   };
 
@@ -76,28 +78,28 @@ export class AutocompleteQuestionComponent extends React.Component {
         : true;
   };
 
-  filterOptionList = searchTerm => {
-    const { createNew } = this.props;
+  filterOptions = searchTerm => {
     const checkMatchesAttributeFilters = this.getOptionAttributeFilters();
-    let creatNewOption;
-    let filteredResults = this.optionSet.options
+    return this.optionSet.options
       .filtered(
         `((label != null && label CONTAINS[c] "${searchTerm}") || label == null && value CONTAINS[c] "${searchTerm}")`,
       )
       .sorted('sortOrder')
       .filter(checkMatchesAttributeFilters);
+  };
 
-    if (createNew && !filteredResults.length) {
-      // Return a dummy selection for creating a new option
-      creatNewOption = {
-        label: `Create ${searchTerm} as a new option`,
-        value: searchTerm,
-      };
-      filteredResults = [creatNewOption];
-    }
-
+  filterOptionList = searchTerm => {
+    const { createNew: allowCreatingOptions } = this.props;
+    const filteredOptions = this.filterOptions(searchTerm);
+    const dummyCreateNewOption = {
+      label: `Create ${searchTerm} as a new option`,
+      value: searchTerm,
+    };
+    const shouldCreateNewOption = allowCreatingOptions && !filteredOptions.length;
+    const filteredResults = shouldCreateNewOption ? [dummyCreateNewOption] : filteredOptions;
+    const newlyCreatedOption = shouldCreateNewOption ? dummyCreateNewOption : null;
     const newList = this.buildOptionList(filteredResults.slice(0, OPTIONS_PER_PAGE));
-    this.setState({ filteredResults, optionList: newList, creatNewOption });
+    this.setState({ filteredResults, optionList: newList, newlyCreatedOption });
   };
 
   fetchMoreResults = () => {
@@ -144,25 +146,19 @@ AutocompleteQuestionComponent.defaultProps = {
 
 export const AutocompleteQuestion = connect((state, { id: questionId }) => {
   const question = getQuestion(state, questionId);
-  const { autocomplete } = question.config;
-  const props = {
-    attributeAnswers: {},
-    createNew: false,
+  const { autocomplete = {} } = question.config;
+  const { attributes = {}, createNew = false } = autocomplete;
+  const attributeAnswers = {};
+
+  Object.entries(attributes).forEach(([key, config]) => {
+    const attributeValue = getAnswerForQuestion(state, config.questionId);
+    if (attributeValue !== undefined) {
+      attributeAnswers[key] = attributeValue;
+    }
+  });
+
+  return {
+    attributeAnswers,
+    createNew,
   };
-
-  if (autocomplete) {
-    const attributeAnswers = {};
-    const { attributes = {}, createNew = false } = autocomplete;
-    Object.entries(attributes).forEach(([key, config]) => {
-      const attributeValue = getAnswerForQuestion(state, config.questionId);
-      if (attributeValue !== undefined) {
-        attributeAnswers[key] = attributeValue;
-      }
-    });
-
-    props.attributeAnswers = attributeAnswers;
-    props.createNew = createNew;
-  }
-
-  return props;
 })(AutocompleteQuestionComponent);
