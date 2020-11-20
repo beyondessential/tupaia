@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { arrayToAnalytic } from '@tupaia/data-broker';
+import { arrayToAnalytics } from '@tupaia/data-broker';
 import { AnalyticResponseFixture } from '../stubs';
 
 /**
@@ -45,18 +45,16 @@ const AGGREGATOR_ARRAY_ANALYTICS: [string, string, string, number][] = [
 ];
 
 export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = AGGREGATOR_ARRAY_ANALYTICS.map(
-  arrayAnalytic => ({
-    code: arrayAnalytic[0],
-    aggregations: [{ type: 'FINAL_EACH_YEAR' }],
-    analytic: arrayToAnalytic(arrayAnalytic),
-  }),
+  arrayAnalytic => {
+    const code = arrayAnalytic[0];
+    const [analytic] = arrayToAnalytics([arrayAnalytic]);
+    return { code, aggregations: [{ type: 'FINAL_EACH_YEAR' }], analytic };
+  },
 );
 
-const PARAMETER_ARRAY_ANALYTICS: [string, string, string, number][] = [
+export const PARAMETER_ANALYTICS = arrayToAnalytics([
   ['_Positive_Cases', 'TO', '2019', 10],
   ['_Positive_Cases', 'TO', '2020', 15],
   ['_Total_Consultations', 'TO', '2019', 25],
   ['_Total_Consultations', 'TO', '2020', 50],
-];
-
-export const PARAMETER_ANALYTICS = PARAMETER_ARRAY_ANALYTICS.map(arrayToAnalytic);
+]);
