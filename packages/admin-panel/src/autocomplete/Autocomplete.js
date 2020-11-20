@@ -151,7 +151,7 @@ const mapDispatchToProps = (
     optionValueKey,
     reduxId,
     onChange,
-    parentRecord,
+    parentRecord = {},
     allowMultipleValues,
   },
 ) => ({
