@@ -13,7 +13,6 @@ const desktopWidth = '768px';
  * Wrapping container
  */
 export const Container = styled(MuiContainer)`
-  position: relative;
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-gap: 40px;

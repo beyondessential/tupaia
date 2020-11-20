@@ -12,11 +12,13 @@ export const ArchiveTabView = () => {
   const { countryCode } = useParams();
 
   return (
-    <MuiContainer style={{ position: 'relative ' }}>
+    <div style={{ position: 'relative' }}>
       <ComingSoon text="The Archive page will show archived Alerts and Outbreaks." />
-      <Main>
-        <ArchiveTable countryCode={countryCode} />
-      </Main>
-    </MuiContainer>
+      <MuiContainer style={{ position: 'relative ' }}>
+        <Main>
+          <ArchiveTable countryCode={countryCode} />
+        </Main>
+      </MuiContainer>
+    </div>
   );
 };

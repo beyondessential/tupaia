@@ -13,12 +13,14 @@ export const OutbreaksTabView = () => {
   const { countryCode } = useParams();
 
   return (
-    <MuiContainer style={{ position: 'relative ' }}>
+    <div style={{ position: 'relative' }}>
       <ComingSoon text="The Outbreaks page will show archived Alerts and Outbreaks." />
-      <Main>
-        <OutbreaksTable handlePanelOpen={() => setIsPanelOpen(true)} countryCode={countryCode} />
-        <OutbreaksPanel isOpen={isPanelOpen} handleClose={() => setIsPanelOpen(false)} />
-      </Main>
-    </MuiContainer>
+      <MuiContainer style={{ position: 'relative ' }}>
+        <Main>
+          <OutbreaksTable handlePanelOpen={() => setIsPanelOpen(true)} countryCode={countryCode} />
+          <OutbreaksPanel isOpen={isPanelOpen} handleClose={() => setIsPanelOpen(false)} />
+        </Main>
+      </MuiContainer>
+    </div>
   );
 };
