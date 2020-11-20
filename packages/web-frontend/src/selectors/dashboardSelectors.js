@@ -82,13 +82,12 @@ export const selectShouldUseDashboardData = createSelector(
 
     if (drillDownLevel > 0) return false;
     if (candidateInfoViewKey !== infoViewKey) return false;
-    if (!candidateViewContent) return false;
-    if (candidateViewContent.type === 'matrix') return false;
+    if (!candidateViewContent || candidateViewContent.type === 'matrix') return false;
 
     const { startDate: candidateStartDate, endDate: candidateEndDate } = candidateViewContent;
     if (!startDate && !endDate) return true;
-    if (moment(candidateStartDate).format('yyyymmdd') !== moment(startDate).format('yyyymmdd')) return false;
-    if (moment(candidateEndDate).format('yyyymmdd') !== moment(endDate).format('yyyymmdd')) return false;
+    if (moment(candidateStartDate).isSame(moment(startDate), 'day')) return false;
+    if (moment(candidateEndDate).isSame(moment(endDate), 'day')) return false;
 
     return true;
   },
