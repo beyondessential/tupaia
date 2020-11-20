@@ -70,6 +70,14 @@ export const processColumns = (models, unprocessedColumns, recordType) => {
   }));
 };
 
+const getForeignKeyColumnName = foreignTable => {
+  const exceptions = {
+    user_account: 'user_id',
+    survey_screen: 'screen_id',
+  };
+  return exceptions[foreignTable] || `${foreignTable}_id`;
+};
+
 export const getQueryOptionsForColumns = (columns, baseRecordType, customJoinConditions = {}) => {
   const sort = [`${baseRecordType}.id`];
   if (!columns) {
@@ -80,29 +88,22 @@ export const getQueryOptionsForColumns = (columns, baseRecordType, customJoinCon
       'No columns start with "_", and conjunction operators are reserved for internal use only',
     );
   }
-  const columnsNeedingJoin = columns.filter(column => column.includes('.'));
   const multiJoin = [];
-  const recordTypesJoined = [];
-  for (let i = 0; i < columnsNeedingJoin.length; i++) {
+  const recordTypesInQuery = new Set([baseRecordType]);
+  for (const column of columns) {
     // Split strings into the record type to join with and the column to select, e.g. if the column
     // is 'survey.name', split into 'survey' and 'name'
-    const resourceName = columnsNeedingJoin[i].split('.')[0];
-    const recordType = resourceToRecordType(resourceName);
-
-    if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
+    const recordType = column.split('.')[0];
+    if (recordType !== baseRecordType && !recordTypesInQuery.has(recordType)) {
       const joinCondition = customJoinConditions[recordType] || [
         `${recordType}.id`,
-        `${resourceName}_id`,
+        getForeignKeyColumnName(recordType),
       ];
-      multiJoin.push({
-        joinType: JOIN_TYPES.LEFT_OUTER,
-        joinWith: recordType,
-        joinCondition,
-      });
-      recordTypesJoined.push(recordType);
+      multiJoin.push(joinCondition);
+      recordTypesInQuery.add(recordType);
     }
   }
   // Ensure every join table is added to the sort, so that queries are predictable during pagination
-  sort.push(...recordTypesJoined.map(recordType => `${recordType}.id`));
+  sort.push(...recordTypesInQuery.map(recordType => `${recordType}.id`));
   return { multiJoin, sort };
 };
