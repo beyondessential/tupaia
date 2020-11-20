@@ -17,47 +17,6 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const mapOverlaysGroupsRelationData = [
-  {
-    mapOverlayGroupName: 'RH Commodity Months of Stock (National Warehouse)',
-    map_overlay_group_id: '5f2c7ddb61f76a513a000013',
-    items: [
-      { id: '5f2c7ddb61f76a513a00005e', child_id: 'RH_MOS_4752843e_Regional', sort_order: 0 },
-      { id: '5f2c7ddb61f76a513a000059', child_id: 'RH_MOS_3ff944bf_Regional', sort_order: 0 },
-      { id: '5f2c7ddb61f76a513a00005f', child_id: 'RH_MOS_542a34bf_Regional', sort_order: 0 },
-    ],
-  },
-  {
-    mapOverlayGroupName: 'Reproductive Health Commodities (mSupply)',
-    map_overlay_group_id: '5f2c7ddb61f76a513a000028',
-    items: [
-      { id: '5f2c7ddb61f76a513a0000a4', child_id: 'UNFPA_RH_SAYANA_Press', sort_order: 9 },
-      { id: '5f2c7ddb61f76a513a000029', child_id: 'UNFPA_RH_Norethisterone_amp', sort_order: 10 },
-      {
-        id: '5f2c7ddb61f76a513a00009f',
-        child_id: 'UNFPA_RH_Etonogestrel-releasing_implant',
-        sort_order: 4,
-      },
-    ],
-  },
-];
-
-// Table name = 'Stock Status by product: MOS mSupply, % of countries, UNFPA'
-const UNFPAStockMOSByPercentCountriesDashboardReport = {
-  id: 'UNFPA_Stock_MOS_By_percent_Countries',
-  targetItems: {
-    'Medroxyprogesterone_acetate_104mg_0.65ml_SAYANA_Press': {
-      name: 'SAYANA Press',
-      codes: ['MOS_4752843e'],
-    },
-    Norethisterone_enantate_200mg_mL_in_1mL_ampoule_oily_solution: {
-      name: 'Norethisterone amp',
-      codes: ['MOS_542a34bf'],
-    },
-    UNFPA_Stock_MOS_By_percent_Countries: { name: 'Implant', codes: ['MOS_3ff944bf'] },
-  },
-};
-
 // Table name = 'Reproductive Health Product Average Monthly Consumption (AMC), Country Name'
 const UNFPAReproductiveHealthProductAmcDashboardReport = {
   id: 'UNFPA_Reproductive_Health_Product_AMC',
@@ -161,26 +120,6 @@ const UNFPARhProductsMosDashboardReport = {
   },
 };
 
-// Other tables (check ids please)
-const UNFPAPriorityMedicinesDashboardReport = {
-  projects: [
-    { id: 'UNFPA_Priority_Medicines_MOS', code: 'MOS' },
-    { id: 'UNFPA_Priority_Medicines_MOS_Project', code: 'MOS' },
-    { id: 'UNFPA_Priority_Medicines_AMC', code: 'AMC' },
-    { id: 'UNFPA_Priority_Medicines_AMC_Project', code: 'AMC' },
-    { id: 'UNFPA_Priority_Medicines_SOH', code: 'SOH' },
-    { id: 'UNFPA_Priority_Medicines_SOH_Project', code: 'SOH' },
-  ],
-  deleteItems: {
-    names: [
-      'Medroxyprogesterone acetate 104mg\\/0\\.65ml \\(SAYANA Press\\)',
-      'Norethisterone enantate 200mg\\/mL in 1mL ampoule oily solution',
-      'Jadelle Contraceptive Implant',
-    ],
-    itemsCodes: ['4752843e', '3ff944bf', '542a34bf'],
-  },
-};
-
 async function getDashboardReportById(db, id) {
   const { rows: dashboardReports } = await db.runSql(`
       SELECT * FROM "dashboardReport"
@@ -191,30 +130,6 @@ async function getDashboardReportById(db, id) {
 
 async function updateViewJsonByReportId(db, newJson, reportId) {
   return updateValues(db, 'dashboardReport', { viewJson: newJson }, { id: reportId });
-}
-
-async function deleteItemsFromBarChartConfig(db, dashboardData) {
-  const dashboardReport = await getDashboardReportById(db, dashboardData.id);
-  if (dashboardReport) {
-    Object.keys(dashboardData.targetItems).forEach(key => {
-      delete dashboardReport.dataBuilderConfig.labels[key];
-      delete dashboardReport.dataBuilderConfig.dataClasses[key];
-    });
-
-    await updateBuilderConfigByReportId(db, dashboardReport.dataBuilderConfig, dashboardData.id);
-  }
-}
-
-async function restoreItemsForBarChartConfig(db, dashboardData) {
-  const dashboardReport = await getDashboardReportById(db, dashboardData.id);
-  if (dashboardReport) {
-    Object.entries(dashboardData.targetItems).forEach(([key, { name, codes }]) => {
-      dashboardReport.dataBuilderConfig.labels[key] = name;
-      dashboardReport.dataBuilderConfig.dataClasses[key] = { codes: [codes] };
-    });
-
-    await updateBuilderConfigByReportId(db, dashboardReport.dataBuilderConfig, dashboardData.id);
-  }
 }
 
 async function deleteItemsFromLineChartConfig(db, dashboardData) {
@@ -243,44 +158,7 @@ async function restoreItemsForLineChartConfig(db, dashboardData) {
   }
 }
 
-async function deleteItemsFromMatrixConfig(db, dashboardData) {
-  for (const project of dashboardData.projects) {
-    // Delete these items in rows, e.g. delete "Norethisterone enantate 200mg/mL in 1mL ampoule oily solution",
-    for (const name of dashboardData.deleteItems.names) {
-      await db.runSql(`
-          update "dashboardReport" dr 
-          set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, '\\"${name}\\"\\,','')::jsonb 
-          where id = '${project.id}'
-        `);
-    }
-
-    // Delete these item codes in cells list, e.g. delete "MOS_4752843e",
-    for (const itemsCode of dashboardData.deleteItems.itemsCodes) {
-      await db.runSql(`
-          update "dashboardReport" dr 
-          set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, '\\"${project.code}\\_${itemsCode}\\"\\,','')::jsonb 
-          where id = '${project.id}'
-        `);
-    }
-  }
-}
-
 exports.up = async function (db) {
-  //  Remove these items in map overlay group (check @Params: mapOverlaysGroupsRelationData)
-  for (const relations of mapOverlaysGroupsRelationData) {
-    for (const item of relations.items) {
-      await db.runSql(`
-        delete from map_overlay_group_relation mogr
-        using map_overlay_group mog
-        where mog."name" = '${relations.mapOverlayGroupName}' 
-        and mogr.child_id = '${item.child_id}'
-      `);
-    }
-  }
-
-  // Delete these items in dashboardReport (id = 'UNFPA_Stock_MOS_By_percent_Countries')
-  await deleteItemsFromBarChartConfig(db, UNFPAStockMOSByPercentCountriesDashboardReport);
-
   // Delete these items in dashboardReport (id = 'UNFPA_Reproductive_Health_Product_AMC')
   await deleteItemsFromLineChartConfig(db, UNFPAReproductiveHealthProductAmcDashboardReport);
 
@@ -295,26 +173,10 @@ exports.up = async function (db) {
 
   // Delete these items in dashboardReport (id = 'UNFPA_RH_Products_MOS')
   await deleteItemsFromLineChartConfig(db, UNFPARhProductsMosDashboardReport);
-
-  // Delete these items in dashboardReport config
-  await deleteItemsFromMatrixConfig(db, UNFPAPriorityMedicinesDashboardReport);
 };
 
 exports.down = async function (db) {
-  // Restore these items in 'map_overlay_group_relation' table
-  for (const restoreData of mapOverlaysGroupsRelationData) {
-    for (const item of restoreData.items) {
-      const data = {
-        child_type: 'mapOverlay',
-        map_overlay_group_id: restoreData.map_overlay_group_id,
-        ...item,
-      };
-      await insertObject(db, 'map_overlay_group_relation', data);
-    }
-  }
-
   // Restore these items in 'dashboardReport' tables
-  await restoreItemsForBarChartConfig(db, UNFPAStockMOSByPercentCountriesDashboardReport);
   await restoreItemsForLineChartConfig(db, UNFPAReproductiveHealthProductAmcDashboardReport);
   await restoreItemsForLineChartConfig(
     db,
