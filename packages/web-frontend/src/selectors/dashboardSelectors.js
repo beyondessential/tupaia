@@ -78,14 +78,15 @@ export const selectIsEnlargedDialogVisible = createSelector(
 export const selectShouldUseDashboardData = createSelector(
   [selectCurrentInfoViewKey, selectCurrentExpandedViewContent, (_, options) => options],
   (candidateInfoViewKey, candidateViewContent, options) => {
-    console.log('INPORT o f VIG', candidateInfoViewKey, candidateViewContent, options)
     const { startDate, endDate, infoViewKey, drillDownLevel } = options;
 
     if (drillDownLevel > 0) return false;
     if (candidateInfoViewKey !== infoViewKey) return false;
     if (!candidateViewContent) return false;
+    if (candidateViewContent.type === 'matrix') return false;
 
     const { startDate: candidateStartDate, endDate: candidateEndDate } = candidateViewContent;
+    if (!startDate && !endDate) return true;
     if (moment(candidateStartDate).format('yyyymmdd') !== moment(startDate).format('yyyymmdd')) return false;
     if (moment(candidateEndDate).format('yyyymmdd') !== moment(endDate).format('yyyymmdd')) return false;
 

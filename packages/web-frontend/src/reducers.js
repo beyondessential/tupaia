@@ -635,6 +635,7 @@ function enlargedDialog(
     errorMessage: '',
     startDate: null, // TODO: store these in the url
     endDate: null,
+    drillDownDatesByLevel: null,
   },
   action,
 ) {
@@ -657,12 +658,27 @@ function enlargedDialog(
         endDate: null,
         contentByLevel: null,
       };
-    case SET_ENLARGED_DIALOG_DATE_RANGE:
+    case SET_ENLARGED_DIALOG_DATE_RANGE: {
+      const { drillDownLevel, startDate, endDate } = action;
+      if (drillDownLevel === 0) {
+        // TODO: Move top level dates to url
+        return {
+          ...state,
+          startDate: action.startDate,
+          endDate: action.endDate,
+        };
+      }
       return {
         ...state,
-        startDate: action.startDate,
-        endDate: action.endDate,
+        drillDownDatesByLevel: {
+          ...(state.drillDownDatesByLevel || {}),
+          [drillDownLevel]: {
+            startDate,
+            endDate,
+          },
+        },
       };
+    }
     case FETCH_ENLARGED_DIALOG_DATA:
       return {
         ...state,

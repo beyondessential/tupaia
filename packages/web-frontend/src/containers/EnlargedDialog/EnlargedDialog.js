@@ -46,6 +46,21 @@ const STATUS = {
   ERROR: 'error',
 };
 
+const getDatesForCurrentLevel = (
+  drillDownLevel,
+  startDateForTopLevel,
+  endDateForTopLevel,
+  drillDownDatesByLevel,
+) => {
+  if (drillDownLevel === 0) {
+    return {
+      startDate: startDateForTopLevel,
+      endDate: endDateForTopLevel,
+    };
+  }
+  return drillDownDatesByLevel?.[drillDownLevel] || {};
+};
+
 const EnlargedDialogComponent = props => {
   const {
     onCloseOverlay,
@@ -53,12 +68,13 @@ const EnlargedDialogComponent = props => {
     errorMessage,
     organisationUnitName,
     onSetDateRange,
-    startDate,
-    endDate,
+    startDate: startDateForTopLevel,
+    endDate: endDateForTopLevel,
     isLoading,
     initialViewContent,
     infoViewKey,
     fetchViewData,
+    drillDownDatesByLevel,
   } = props;
   const exportRef = React.useRef(null);
   const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
@@ -72,6 +88,12 @@ const EnlargedDialogComponent = props => {
   });
 
   const viewContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
+  const { startDate, endDate } = getDatesForCurrentLevel(
+    drillDownState.drillDownLevel,
+    startDateForTopLevel,
+    endDateForTopLevel,
+    drillDownDatesByLevel,
+  );
 
   React.useEffect(() => {
     const { drillDownLevel, parameterLinks, parameterValues } = drillDownState;
@@ -102,7 +124,10 @@ const EnlargedDialogComponent = props => {
     const newDrillDownLevel = drillDownState.drillDownLevel + 1;
 
     const { parameterLink, keyLink } = drillDown;
-    const { parameterLinks: oldParameterLinks, parameterValues: oldParameterValues } = drillDownState;
+    const {
+      parameterLinks: oldParameterLinks,
+      parameterValues: oldParameterValues,
+    } = drillDownState;
     oldParameterLinks[newDrillDownLevel] = parameterLink;
     oldParameterValues[newDrillDownLevel] = chartItem[keyLink];
 
@@ -188,7 +213,7 @@ const EnlargedDialogComponent = props => {
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
           onOpenExportDialog={handleOpenExportDialog}
-          onSetDateRange={onSetDateRange}
+          onSetDateRange={onSetDateRange(drillDownState.drillDownLevel)}
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
           errorMessage={errorMessage}
@@ -250,14 +275,15 @@ const mapStateToProps = state => ({
   startDate: state.enlargedDialog.startDate,
   endDate: state.enlargedDialog.endDate,
   errorMessage: state.enlargedDialog.errorMessage,
+  drillDownDatesByLevel: state.enlargedDialog.drillDownDatesByLevel,
   infoViewKey: selectCurrentInfoViewKey(state),
   initialViewContent: selectCurrentExpandedViewContent(state),
   organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onSetDateRange: (startDate, endDate) =>
-    dispatch(setEnlargedDashboardDateRange(startDate, endDate)),
+  onSetDateRange: drillDownLevel => (startDate, endDate) =>
+    dispatch(setEnlargedDashboardDateRange(drillDownLevel, startDate, endDate)),
   fetchViewData: options => {
     dispatch(fetchEnlargedDialogData(options));
   },

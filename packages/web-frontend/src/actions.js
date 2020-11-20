@@ -1040,9 +1040,10 @@ export function setPasswordResetToken(passwordResetToken) {
   };
 }
 
-export function setEnlargedDashboardDateRange(startDate, endDate) {
+export function setEnlargedDashboardDateRange(drillDownLevel, startDate, endDate) {
   return {
     type: SET_ENLARGED_DIALOG_DATE_RANGE,
+    drillDownLevel,
     startDate,
     endDate,
   };
