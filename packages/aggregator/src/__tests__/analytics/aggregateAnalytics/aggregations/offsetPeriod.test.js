@@ -155,7 +155,7 @@ describe('offsetPeriod()', () => {
 
     it('month - different total days between months', () => {
       const periodType = 'month';
-      // This is an edge case where applying a - offset is not a reversible with a + offset
+      // This is an edge case where applying a '-' offset is not a reversible with a '+' offset
       assertPeriodOffsetIsApplied('20190531', { periodType, offset: -1 }, '20190430');
       assertPeriodOffsetIsApplied('20190430', { periodType, offset: +1 }, '20190530');
     });
