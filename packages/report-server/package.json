@@ -2,7 +2,7 @@
   "name": "@tupaia/report-server",
   "version": "0.0.0",
   "private": true,
-  "description": "Lambda Function for building report data",
+  "description": "Server for building report data",
   "homepage": "https://github.com/beyondessential/tupaia",
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"

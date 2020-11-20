@@ -1,1 +1,1 @@
-export { TransformParser } from './TranformParser';
+export { TransformParser } from './TransformParser';

@@ -28,7 +28,7 @@ const app = createApp(database, models);
 /**
  * Start the server
  */
-const port = 8030;
+const port = process.env.PORT || 8030;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
 
