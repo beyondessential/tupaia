@@ -42,7 +42,7 @@ const mapOverlaysGroupsRelationData = [
   },
 ];
 
-// Data for Deleting in dashboardReport (name = 'Stock Status by product: MOS mSupply, % of countries, UNFPA')
+// Table name = 'Stock Status by product: MOS mSupply, % of countries, UNFPA'
 const UNFPAStockMOSByPercentCountriesDashboardReport = {
   id: 'UNFPA_Stock_MOS_By_percent_Countries',
   targetItems: {
@@ -58,7 +58,7 @@ const UNFPAStockMOSByPercentCountriesDashboardReport = {
   },
 };
 
-// Data for Deleting in dashboardReport (name = 'Reproductive Health Product Average Monthly Consumption (AMC), Country Name')
+// Table name = 'Reproductive Health Product Average Monthly Consumption (AMC), Country Name'
 const UNFPAReproductiveHealthProductAmcDashboardReport = {
   id: 'UNFPA_Reproductive_Health_Product_AMC',
   targetItems: {
@@ -83,7 +83,7 @@ const UNFPAReproductiveHealthProductAmcDashboardReport = {
   },
 };
 
-// Data for Deleting in dashboardReport (name = 'Reproductive Health Products Months of Stock (MOS) (mSupply data)')
+// Table name = 'Reproductive Health Products Months of Stock (MOS) (mSupply data)'
 const UNFPAReproductiveHealthProductMosNationalDashboardReport = {
   id: 'UNFPA_Reproductive_Health_Product_MOS_National',
   targetItems: {
@@ -108,7 +108,7 @@ const UNFPAReproductiveHealthProductMosNationalDashboardReport = {
   },
 };
 
-// Data for Deleting in dashboardReport (name = 'Reproductive Health Products Months of Stock (MOS)')
+// Table name = 'Reproductive Health Products Months of Stock (MOS)'
 const UNFPAReproductiveHealthProductMosDashboardReport = {
   id: 'UNFPA_Reproductive_Health_Product_MOS',
   targetItems: {
@@ -133,7 +133,7 @@ const UNFPAReproductiveHealthProductMosDashboardReport = {
   },
 };
 
-// Data for Deleting in dashboardReport (name = 'Reproductive Health Stock Status: Months Of Stock (mSupply)')
+// Table name = 'Reproductive Health Stock Status: Months Of Stock (mSupply)'
 const UNFPARhProductsMosDashboardReport = {
   id: 'UNFPA_RH_Products_MOS',
   targetItems: {
@@ -158,6 +158,26 @@ const UNFPARhProductsMosDashboardReport = {
       stackId: 4,
       legendOrder: 4,
     },
+  },
+};
+
+// Other tables (check ids please)
+const UNFPAPriorityMedicinesDashboardReport = {
+  projects: [
+    { id: 'UNFPA_Priority_Medicines_MOS', code: 'MOS' },
+    { id: 'UNFPA_Priority_Medicines_MOS_Project', code: 'MOS' },
+    { id: 'UNFPA_Priority_Medicines_AMC', code: 'AMC' },
+    { id: 'UNFPA_Priority_Medicines_AMC_Project', code: 'AMC' },
+    { id: 'UNFPA_Priority_Medicines_SOH', code: 'SOH' },
+    { id: 'UNFPA_Priority_Medicines_SOH_Project', code: 'SOH' },
+  ],
+  deleteItems: {
+    names: [
+      'Medroxyprogesterone acetate 104mg\\/0\\.65ml \\(SAYANA Press\\)',
+      'Norethisterone enantate 200mg\\/mL in 1mL ampoule oily solution',
+      'Jadelle Contraceptive Implant',
+    ],
+    itemsCodes: ['4752843e', '3ff944bf', '542a34bf'],
   },
 };
 
@@ -223,6 +243,28 @@ async function restoreItemsForLineChartConfig(db, dashboardData) {
   }
 }
 
+async function deleteItemsFromMatrixConfig(db, dashboardData) {
+  for (const project of dashboardData.projects) {
+    // Delete these items in rows, e.g. delete "Norethisterone enantate 200mg/mL in 1mL ampoule oily solution",
+    for (const name of dashboardData.deleteItems.names) {
+      await db.runSql(`
+          update "dashboardReport" dr 
+          set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, '\\"${name}\\"\\,','')::jsonb 
+          where id = '${project.id}'
+        `);
+    }
+
+    // Delete these item codes in cells list, e.g. delete "MOS_4752843e",
+    for (const itemsCode of dashboardData.deleteItems.itemsCodes) {
+      await db.runSql(`
+          update "dashboardReport" dr 
+          set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, '\\"${project.code}\\_${itemsCode}\\"\\,','')::jsonb 
+          where id = '${project.id}'
+        `);
+    }
+  }
+}
+
 exports.up = async function (db) {
   //  Remove these items in map overlay group (check @Params: mapOverlaysGroupsRelationData)
   for (const relations of mapOverlaysGroupsRelationData) {
@@ -253,6 +295,9 @@ exports.up = async function (db) {
 
   // Delete these items in dashboardReport (id = 'UNFPA_RH_Products_MOS')
   await deleteItemsFromLineChartConfig(db, UNFPARhProductsMosDashboardReport);
+
+  // Delete these items in dashboardReport config
+  await deleteItemsFromMatrixConfig(db, UNFPAPriorityMedicinesDashboardReport);
 };
 
 exports.down = async function (db) {
