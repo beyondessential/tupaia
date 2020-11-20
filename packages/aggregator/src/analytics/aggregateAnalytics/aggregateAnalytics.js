@@ -11,6 +11,7 @@ import {
   filterLatest,
   getFinalValuePerPeriod,
   getSumValuePerPeriod,
+  offsetPeriod,
   replaceOrgUnitWithOrgGroup,
   sumAcrossPeriods,
   sumEachDataElement,
@@ -38,6 +39,8 @@ export const aggregateAnalytics = (
       });
     case AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY:
       return sumEachDataElement(filterLatest(analytics, aggregationConfig));
+    case AGGREGATION_TYPES.OFFSET_PERIOD:
+      return offsetPeriod(analytics, aggregationConfig);
     case AGGREGATION_TYPES.FINAL_EACH_DAY:
       return getFinalValuePerPeriod(analytics, aggregationConfig, DAY);
     case AGGREGATION_TYPES.FINAL_EACH_DAY_FILL_EMPTY_DAYS:
