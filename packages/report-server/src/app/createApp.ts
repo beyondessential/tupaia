@@ -8,6 +8,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import { Authenticator } from '@tupaia/auth';
+import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
 import { addRoutesToApp } from './addRoutesToApp';
 
@@ -16,7 +17,7 @@ import { ReportsRequest } from '../types';
 /**
  * Set up express server with middleware,
  */
-export function createApp(database, models) {
+export function createApp(database: TupaiaDatabase, models: ModelRegistry) {
   const app = express();
 
   /**

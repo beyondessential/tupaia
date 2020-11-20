@@ -11,7 +11,7 @@ describe('sort', () => {
     const transform = buildTransform([
       {
         transform: 'sort',
-        by: '$.row.period',
+        by: '$row.period',
       },
     ]);
     expect(transform(SORTABLE_ANALYTICS)).toEqual([
@@ -34,7 +34,7 @@ describe('sort', () => {
     const transform = buildTransform([
       {
         transform: 'sort',
-        by: '$.row.period',
+        by: '$row.period',
         descending: true,
       },
     ]);

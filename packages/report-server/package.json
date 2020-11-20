@@ -32,7 +32,11 @@
     "@tupaia/aggregator": "1.0.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/database": "1.0.0",
+    "@tupaia/expression-parser": "1.0.0",
     "@tupaia/utils": "1.0.0",
+    "api-error-handler": "^1.0.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "express": "^4.16.2",
     "mathjs": "^7.3.0",
     "winston": "^3.2.1"

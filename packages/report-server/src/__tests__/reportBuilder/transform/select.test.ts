@@ -23,7 +23,7 @@ describe('select', () => {
     const transform = buildTransform([
       {
         transform: 'select',
-        "'dataElementValue'": '$.row.value',
+        "'dataElementValue'": '$row.value',
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([{ dataElementValue: 4 }]);
@@ -33,7 +33,7 @@ describe('select', () => {
     const transform = buildTransform([
       {
         transform: 'select',
-        '$.row.dataElement': '$.row.value',
+        '$row.dataElement': '$row.value',
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([{ BCD1: 4 }]);
@@ -43,7 +43,7 @@ describe('select', () => {
     const transform = buildTransform([
       {
         transform: 'select',
-        "'period'": "periodToDisplayString($.row.period, 'DAY')",
+        "'period'": "periodToDisplayString($row.period, 'DAY')",
       },
     ]);
     expect(transform(SINGLE_ANALYTIC)).toEqual([{ period: '1st Jan 2020' }]);
@@ -53,7 +53,7 @@ describe('select', () => {
     const transform = buildTransform([
       {
         transform: 'select',
-        "'period'": "periodToDisplayString($.row.period, 'DAY')",
+        "'period'": "periodToDisplayString($row.period, 'DAY')",
         '...': '*',
       },
     ]);
@@ -66,7 +66,7 @@ describe('select', () => {
     const transform = buildTransform([
       {
         transform: 'select',
-        "'period'": "periodToDisplayString($.row.period, 'DAY')",
+        "'period'": "periodToDisplayString($row.period, 'DAY')",
         '...': ['organisationUnit', 'value'],
       },
     ]);
@@ -79,8 +79,8 @@ describe('select', () => {
     const transform = buildTransform([
       {
         transform: 'select',
-        "'period'": "periodToDisplayString($.row.period, 'DAY')",
-        '$.row.dataElement': '$.row.value',
+        "'period'": "periodToDisplayString($row.period, 'DAY')",
+        '$row.dataElement': '$row.value',
         '...': ['organisationUnit'],
       },
     ]);

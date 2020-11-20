@@ -1,5 +1,5 @@
 import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery, Event } from '../../../types';
+import { FetchReportQuery } from '../../../types';
 import { FetchResponse } from '../types';
 
 type DataGroupFetchParams = {
@@ -12,18 +12,8 @@ const fetchEvents = async (
   params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
   const { dataGroupCode } = params;
-  const { organisationUnitCode, startDate, endDate } = query;
-  const response = (await aggregator.fetchEvents(
-    dataGroupCode,
-    {
-      useDeprecatedApi: false,
-      dataServices: [{ isDataRegional: true }],
-      organisationUnitCodes: [organisationUnitCode],
-      startDate,
-      endDate,
-    },
-    {},
-  )) as Event[];
+  const { organisationUnitCodes, period } = query;
+  const response = await aggregator.fetchEvents(dataGroupCode, organisationUnitCodes, period);
   const rows = response.map(event => {
     const { dataValues, ...restOfEvent } = event;
     return { ...dataValues, ...restOfEvent };

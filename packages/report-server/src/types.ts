@@ -10,7 +10,7 @@ import { Authenticator } from '@tupaia/auth';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
 export interface FetchReportQuery extends Query {
-  organisationUnitCode: string;
+  organisationUnitCodes: string;
   period?: string;
 }
 

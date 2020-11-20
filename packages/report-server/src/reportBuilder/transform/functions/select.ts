@@ -1,70 +1,22 @@
-import { Parser, parser } from 'mathjs';
-import { functions, parseExpression } from '../../functions';
+import { TransformParser } from '../parser';
+import { functions } from '../../functions';
 import { buildWhere } from './where';
-import { FieldValue, Row } from '../../types';
+import { Row } from '../../types';
 
 type SelectParams = {
   select: { [key: string]: string };
   '...'?: '*' | string[];
-  where: (row: Row, rowParser: Parser) => boolean;
-};
-
-type Context = {
-  row: Row;
-  all: { [key: string]: FieldValue[] };
-  allPrevious: { [key: string]: FieldValue[] };
-  where: (check: (row: Row) => boolean) => { [key: string]: FieldValue[] };
+  where: (parser: TransformParser) => boolean;
 };
 
 const select = (rows: Row[], params: SelectParams): Row[] => {
-  const rowParser = parser();
-  Object.entries(functions).forEach(([name, call]) => rowParser.set(name, call));
-
-  const whereFunction = (check: (row: Row) => boolean) => {
-    const whereData = {} as { [key: string]: FieldValue[] };
-    const filteredRows = rows.filter(rowInFilter => check(rowInFilter));
-    filteredRows.forEach(row => {
-      Object.entries(row).forEach(([field, value]) => {
-        if (value !== undefined && value !== null) {
-          if (!(field in whereData)) {
-            whereData[field] = [];
-          }
-          whereData[field].push(value);
-        }
-      });
-    });
-    return whereData;
-  };
-  const context = { row: {}, all: {}, allPrevious: {}, where: whereFunction } as Context;
-  rows.forEach(row => {
-    Object.entries(row).forEach(([field, value]) => {
-      if (value !== undefined && value !== null) {
-        if (!(field in context.all)) {
-          context.all[field] = [];
-        }
-        context.all[field].push(value);
-      }
-    });
-  });
-  rowParser.set('$', context);
-
+  const parser = new TransformParser(rows, functions);
   return rows.map(row => {
-    context.row = row;
-    Object.entries(row).forEach(([field, value]) => {
-      if (value !== undefined && value !== null) {
-        if (!(field in context.allPrevious)) {
-          context.allPrevious[field] = [];
-        }
-        context.allPrevious[field].push(value);
-      }
-    });
-
-    const returnNewRow = params.where(row, rowParser);
+    const returnNewRow = params.where(parser);
     const newRow: Row = {};
-    Object.entries(params.select).forEach(
-      ([key, expression]) =>
-        (newRow[`${parseExpression(rowParser, key)}`] = parseExpression(rowParser, expression)),
-    );
+    Object.entries(params.select).forEach(([key, expression]) => {
+      newRow[`${parser.evaluate(key)}`] = parser.evaluate(expression);
+    });
 
     if (params['...'] !== undefined) {
       Object.entries(row).forEach(([field, value]) => {
@@ -78,6 +30,8 @@ const select = (rows: Row[], params: SelectParams): Row[] => {
         }
       });
     }
+
+    parser.next();
     return returnNewRow ? newRow : { ...row };
   });
 };

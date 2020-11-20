@@ -1,6 +1,6 @@
-import { parser } from 'mathjs';
+import { TransformParser } from '../parser';
 import { Row } from '../../types';
-import { functions, parseExpression } from '../../functions';
+import { functions } from '../../functions';
 
 type SortParams = {
   by: string;
@@ -8,19 +8,12 @@ type SortParams = {
 };
 
 const getRowSortFunction = (params: SortParams, descending = false) => {
+  const sortParser = new TransformParser([], functions);
   return (row1: Row, row2: Row) => {
-    const row1Parser = parser();
-    const context1 = { row: row1 };
-    row1Parser.set('$', context1);
-    Object.entries(functions).forEach(([name, call]) => row1Parser.set(name, call));
-
-    const row2Parser = parser();
-    const context2 = { row: row2 };
-    row2Parser.set('$', context2);
-    Object.entries(functions).forEach(([name, call]) => row2Parser.set(name, call));
-
-    const row1Value = parseExpression(row1Parser, params.by);
-    const row2Value = parseExpression(row2Parser, params.by);
+    sortParser.set('$row', row1);
+    const row1Value = sortParser.evaluate(params.by);
+    sortParser.set('$row', row2);
+    const row2Value = sortParser.evaluate(params.by);
 
     if (row1Value === undefined || row2Value === undefined) {
       throw new Error(`Unexpected undefined value when sorting rows: ${row1}, ${row2}`);
