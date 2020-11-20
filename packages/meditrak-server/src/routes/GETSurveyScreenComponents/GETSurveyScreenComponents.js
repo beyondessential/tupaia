@@ -13,9 +13,9 @@ import { assertSurveyPermissions } from '../GETSurveys/assertSurveyPermissions';
 
 /**
  * Handles endpoints:
- * - /suveyScreenComponents
- * - /suveyScreenComponents/id
- * - /survey/id/suveyScreenComponents
+ * - /surveyScreenComponents
+ * - /surveyScreenComponents/id
+ * - /survey/id/surveyScreenComponents
  */
 
 export class GETSurveyScreenComponents extends GETHandler {
@@ -23,17 +23,17 @@ export class GETSurveyScreenComponents extends GETHandler {
     return this.assertPermissions(allowNoPermissions);
   }
 
-  async findSingleRecord(suveyScreenComponentId, options) {
-    const suveyScreenComponent = await super.findSingleRecord(suveyScreenComponentId, options);
+  async findSingleRecord(surveyScreenComponentId, options) {
+    const surveyScreenComponent = await super.findSingleRecord(surveyScreenComponentId, options);
 
-    const suveyScreenComponentChecker = accessPolicy =>
-      assertSurveyScreenComponentPermissions(accessPolicy, this.models, suveyScreenComponentId);
+    const surveyScreenComponentChecker = accessPolicy =>
+      assertSurveyScreenComponentPermissions(accessPolicy, this.models, surveyScreenComponentId);
 
     await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, suveyScreenComponentChecker]),
+      assertAnyPermissions([assertBESAdminAccess, surveyScreenComponentChecker]),
     );
 
-    return suveyScreenComponent;
+    return surveyScreenComponent;
   }
 
   async findRecords(criteria, options) {
@@ -53,9 +53,11 @@ export class GETSurveyScreenComponents extends GETHandler {
 
   async findRecordsViaParent(criteria, options) {
     // Check parent permissions
-    const suveyChecker = accessPolicy =>
+    const surveyPermissionsChecker = accessPolicy =>
       assertSurveyPermissions(accessPolicy, this.models, this.parentRecordId);
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, suveyChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, surveyPermissionsChecker]),
+    );
 
     const { dbConditions, dbOptions } = await createSurveyScreenComponentDBFilter(
       this.accessPolicy,
