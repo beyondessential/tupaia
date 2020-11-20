@@ -644,13 +644,9 @@ function enlargedDialog(
         ...state,
         isLoading: false,
         errorMessage: '',
-        startDate: null,
-        endDate: null,
-        contentByLevel: {
-          0: {
-            viewContent: action.viewContent,
-          },
-        },
+        startDate: action.startDate,
+        endDate: action.endDate,
+        contentByLevel: null,
       };
     case CLOSE_ENLARGED_DIALOG:
       return {

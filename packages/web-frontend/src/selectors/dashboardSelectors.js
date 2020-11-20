@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { createSelector } from 'reselect';
 
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
@@ -72,4 +73,22 @@ export const selectIsEnlargedDialogVisible = createSelector(
   ],
   (dashboardGroupId, organisationUnitCode, viewId) =>
     !!(dashboardGroupId && organisationUnitCode && viewId),
+);
+
+export const selectShouldUseDashboardData = createSelector(
+  [selectCurrentInfoViewKey, selectCurrentExpandedViewContent, (_, options) => options],
+  (candidateInfoViewKey, candidateViewContent, options) => {
+    console.log('INPORT o f VIG', candidateInfoViewKey, candidateViewContent, options)
+    const { startDate, endDate, infoViewKey, drillDownLevel } = options;
+
+    if (drillDownLevel > 0) return false;
+    if (candidateInfoViewKey !== infoViewKey) return false;
+    if (!candidateViewContent) return false;
+
+    const { startDate: candidateStartDate, endDate: candidateEndDate } = candidateViewContent;
+    if (moment(candidateStartDate).format('yyyymmdd') !== moment(startDate).format('yyyymmdd')) return false;
+    if (moment(candidateEndDate).format('yyyymmdd') !== moment(endDate).format('yyyymmdd')) return false;
+
+    return true;
+  },
 );

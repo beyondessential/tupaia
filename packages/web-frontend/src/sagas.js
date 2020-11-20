@@ -113,9 +113,9 @@ import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
   selectCurrentMeasureId,
-  selectCurrentOrgUnitCode,
+  selectCurrentOrgUnitCode, selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
-  selectCurrentProjectCode,
+  selectCurrentProjectCode, selectCurrentExpandedViewContent,
   selectDefaultMeasureId,
   selectIsMeasureInHierarchy,
   selectIsProject,
@@ -1005,6 +1005,17 @@ function getTimeZone() {
  * Fetches enlarged dialog data for a given view, drillDown level and date range.
  */
 function* fetchEnlargedDialogData(action) {
+  const { options } = action;
+
+  const state = yield select();
+  if (selectShouldUseDashboardData(state, options)) {
+    console.log('hie');
+    const viewData = selectCurrentExpandedViewContent(state);
+    console.log(viewData);
+    yield put(updateEnlargedDialog(options, viewData));
+    return;
+  }
+
   const {
     startDate,
     endDate,
@@ -1013,7 +1024,7 @@ function* fetchEnlargedDialogData(action) {
     parameterLink,
     parameterValue,
     drillDownLevel,
-  } = action.options;
+  } = options;
 
   const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
 

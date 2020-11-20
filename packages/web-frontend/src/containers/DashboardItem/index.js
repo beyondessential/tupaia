@@ -90,7 +90,13 @@ export class DashboardItem extends Component {
         viewContent={viewContent}
         viewConfig={viewConfig}
         organisationUnitName={organisationUnitName}
-        onEnlarge={() => onEnlarge(getViewIdFromInfoViewKey(infoViewKey))}
+        onEnlarge={() =>
+          onEnlarge(
+            getViewIdFromInfoViewKey(infoViewKey),
+            viewContent?.startDate,
+            viewContent?.endDate,
+          )
+        }
         isSidePanelExpanded={isSidePanelExpanded}
       />
     );
@@ -113,7 +119,7 @@ DashboardItem.defaultProps = {
   isSidePanelExpanded: false,
   organisationUnitName: '',
   organisationUnit: null,
-  onEnlarge: () => {},
+  onEnlarge: () => { },
 };
 
 const mapStateToProps = (state, { infoViewKey }) => {
@@ -130,7 +136,8 @@ const mapStateToProps = (state, { infoViewKey }) => {
 const mapDispatchToProps = dispatch => ({
   fetchContent: (organisationUnitCode, dashboardGroupId, viewId, infoViewKey) =>
     dispatch(fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)),
-  onEnlarge: viewId => dispatch(openEnlargedDialog(viewId)),
+  onEnlarge: (viewId, startDate, endDate) =>
+    dispatch(openEnlargedDialog(viewId, startDate, endDate)),
   dispatch, // Necessary for merge props.
 });
 
