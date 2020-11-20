@@ -85,7 +85,6 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   isExportable() {
-    // TODO: why don't we allow the export of drilled down content?
     const { viewContent, isDrilledDown } = this.props;
     return (getIsMatrix(viewContent) || viewContent.type === 'chart') && !isDrilledDown;
   }
@@ -372,9 +371,9 @@ EnlargedDialogContent.propTypes = {
 };
 
 EnlargedDialogContent.defaultProps = {
-  onDrillDown: () => {},
-  onUnDrillDown: () => {},
-  onSetDateRange: () => {},
+  onDrillDown: () => { },
+  onUnDrillDown: () => { },
+  onSetDateRange: () => { },
   isLoading: false,
   errorMessage: null,
   isExporting: false,
