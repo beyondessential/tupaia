@@ -1,17 +1,15 @@
-import { Parser } from 'mathjs';
-import { Row } from '../../types';
-import { parseExpression } from '../../functions';
+import { TransformParser } from '../parser';
 
 type WhereParams = {
   where?: string;
 };
 
-const where = (row: Row, rowParser: Parser, params: WhereParams): boolean => {
+const where = (parser: TransformParser, params: WhereParams): boolean => {
   if (params.where === undefined) {
     return true;
   }
 
-  const whereResult = parseExpression(rowParser, params.where);
+  const whereResult = parser.evaluate(params.where);
   if (typeof whereResult === 'boolean') {
     return whereResult;
   }
@@ -40,5 +38,5 @@ const buildParams = (params: unknown): WhereParams => {
 
 export const buildWhere = (params: unknown) => {
   const builtParams = buildParams(params);
-  return (row: Row, rowParser: Parser) => where(row, rowParser, builtParams);
+  return (parser: TransformParser) => where(parser, builtParams);
 };

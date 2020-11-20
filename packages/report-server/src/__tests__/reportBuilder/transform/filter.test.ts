@@ -11,7 +11,7 @@ describe('filter', () => {
     const transform = buildTransform([
       {
         transform: 'filter',
-        where: '$.row.BCD1 > 5',
+        where: '$row.BCD1 > 5',
       },
     ]);
     expect(transform(FILTERABLE_ANALYTICS)).toEqual([

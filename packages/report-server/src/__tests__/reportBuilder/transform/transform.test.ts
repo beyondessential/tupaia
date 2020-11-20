@@ -11,16 +11,15 @@ describe('transform', () => {
     const transform = buildTransform([
       {
         transform: 'select',
-        '$.row.dataElement': '$.row.value',
+        '$row.dataElement': '$row.value',
       },
       {
         transform: 'aggregate',
         BCD1: 'sum',
       },
-      ,
       {
         transform: 'select',
-        "'Total'": '$.row.BCD1',
+        "'Total'": '$row.BCD1',
       },
     ]);
     expect(transform(MULTIPLE_ANALYTICS)).toEqual([{ Total: 11 }]);
