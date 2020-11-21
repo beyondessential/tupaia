@@ -36,16 +36,18 @@ class LastUpdated extends Component {
 }
 
 LastUpdated.propTypes = {
-  latestAvailable: PropTypes.string.isRequired,
+  latestAvailable: PropTypes.string,
+};
+
+LastUpdated.defaultProps = {
+  latestAvailable: null,
 };
 
 const mapStateToProps = state => {
   const { measureInfo = {} } = state.map;
 
   const latestAvailable = measureInfo.period && measureInfo.period.latestAvailable;
-  return {
-    latestAvailable: latestAvailable,
-  };
+  return { latestAvailable };
 };
 
 export default connect(mapStateToProps)(LastUpdated);

@@ -13,7 +13,7 @@ import {
   FETCH_ORG_UNIT_ERROR,
   FETCH_LOGIN_SUCCESS,
   FETCH_LOGOUT_SUCCESS,
-  SELECT_PROJECT,
+  SET_PROJECT,
 } from '../actions';
 
 function orgUnitMap(state = {}, action) {
@@ -28,7 +28,7 @@ function orgUnitMap(state = {}, action) {
       return {}; // Clear org units on login incase of permission change
     case FETCH_LOGOUT_SUCCESS:
       return {}; // Clear org units on logout incase of permission change
-    case SELECT_PROJECT:
+    case SET_PROJECT:
       return {}; // Clear org units on project change to fetch alternative hierarchy
     default: {
       return state;
@@ -81,7 +81,7 @@ const normaliseForMap = (
 ) => ({
   ...restOfOrgUnit,
   parent: parentOrganisationUnitCode,
-  isComplete: isComplete,
+  isComplete,
 });
 
 const addOrgUnitToMap = (state, orgUnit) => {

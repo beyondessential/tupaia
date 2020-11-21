@@ -2,6 +2,7 @@
 export { blankDataBuilder } from './blankDataBuilder';
 
 /** Generics */
+export * from './generic/analytics';
 export * from './generic/average';
 export * from './generic/comparison';
 export * from './generic/compose';
@@ -14,6 +15,7 @@ export * from './generic/percentage';
 export * from './generic/sum';
 export * from './generic/calc';
 export * from './generic/table';
+export * from './generic/unique';
 
 /** Modules */
 export * from './modules/disaster';

@@ -13,11 +13,11 @@ const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
   font-weight: 400;
   align-items: center;
-  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
+  padding: 0.9rem 1.25rem 0.8rem 2.5rem;
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
 
   .MuiAlert-icon {
-    margin-right: 0.5rem;
+    margin-right: 0.8rem;
   }
 
   &.MuiAlert-standardError {
@@ -47,7 +47,7 @@ Alert.defaultProps = {
 };
 
 const StyledSmallAlert = styled(StyledAlert)`
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   border-radius: 3px;
   padding: 0.5rem 1.25rem 0.5rem 1rem;
   box-shadow: none;

@@ -12,8 +12,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import UserIcon from '@material-ui/icons/AccountCircle';
 
-import logo from '../../../images/tupaia-logo-white.png';
 import { WHITE } from '../../../styles';
+import { TUPAIA_LIGHT_LOGO_SRC } from '../../../constants';
 
 const Header = styled.div`
   display: flex;
@@ -33,9 +33,11 @@ const ToolbarButton = styled.button`
   border-radius: 4px;
   vertical-align: top;
   color: ${WHITE};
-  :focus {
-    background: 'rgba(255,255,255,0.1)';
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.1);
   }
+
   svg {
     vertical-align: middle;
     margin-left: 5px;
@@ -53,7 +55,7 @@ export const TopBar = ({
   return (
     <Header>
       <a href="/">
-        <img src={logo} alt="Tupaia logo" width="70" height="30" />
+        <img src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" width="70" height="30" />
       </a>
       <Toolbar>
         <ToolbarButton onClick={onToggleSearchExpand}>

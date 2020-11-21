@@ -6,9 +6,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ReactTable from 'react-table';
-import { Alert } from 'reactstrap';
-import { Tabs, ConfirmModal } from '../widgets';
+import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
+import styled from 'styled-components';
+import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
+import { Tabs } from '../widgets';
+import { TableHeadCell } from './TableHeadCell';
+import { ColumnFilter } from './ColumnFilter';
 import {
   cancelAction,
   changeExpansions,
@@ -25,10 +28,25 @@ import { getTableState, getIsFetchingData } from './selectors';
 import { generateConfigForColumnType } from './columnTypes';
 import { getIsChangingDataOnServer } from '../dataChangeListener';
 import { makeSubstitutionsInString } from '../utilities';
+import { customPagination } from './customPagination';
+import { ExpansionContainer } from './ExpansionContainer';
+import { StyledReactTable } from './StyledReactTable';
+
+const StyledAlert = styled(SmallAlert)`
+  margin-top: 30px;
+`;
+
+const ExpandRowIcon = styled(AddBox)`
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${props => props.theme.palette.primary.main};
+  }
+`;
 
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
-    this.props.onRefreshData();
+    this.props.initialiseTable();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -46,7 +64,8 @@ class DataFetchingTableComponent extends React.Component {
   renderConfirmModal() {
     const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
     return (
-      <ConfirmModal
+      <ConfirmDeleteModal
+        isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}
@@ -80,7 +99,7 @@ class DataFetchingTableComponent extends React.Component {
     } = this.props;
 
     return (
-      <ReactTable
+      <StyledReactTable
         columns={columns}
         data={data}
         manual
@@ -100,17 +119,22 @@ class DataFetchingTableComponent extends React.Component {
         loading={isFetchingData || isChangingDataOnServer}
         filterable
         freezeWhenExpanded
+        FilterComponent={ColumnFilter}
+        ThComponent={TableHeadCell}
+        ExpanderComponent={({ isExpanded }) =>
+          isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />
+        }
+        getPaginationProps={customPagination}
         SubComponent={
           expansionTabs &&
           (({ original: rowData, index }) => {
-            // eslint-disable-line react/prop-types
             const { id } = rowData;
             const expansionTab = expansionTabStates[id] || 0;
             const expansionItem = expansionTabs[expansionTab];
             const { title, endpoint, ...restOfProps } = expansionItem;
             // Each table needs a unique id so that we can keep track of state separately in redux
             return (
-              <div style={localStyles.expansion}>
+              <ExpansionContainer>
                 <Tabs
                   tabs={expansionTabs.map(({ title: tabTitle }, tabIndex) => ({
                     label: tabTitle,
@@ -125,7 +149,7 @@ class DataFetchingTableComponent extends React.Component {
                   key={expansionTab} // Triggers refresh of data.
                   {...restOfProps}
                 />
-              </div>
+              </ExpansionContainer>
             );
           })
         }
@@ -136,19 +160,23 @@ class DataFetchingTableComponent extends React.Component {
   render() {
     const { errorMessage } = this.props;
     return (
-      <div style={localStyles.container}>
-        {errorMessage && <Alert color={'danger'}>{errorMessage}</Alert>}
+      <>
+        {errorMessage && (
+          <StyledAlert severity="error" variant="standard">
+            {errorMessage}
+          </StyledAlert>
+        )}
         {this.renderReactTable()}
         {this.renderConfirmModal()}
-      </div>
+      </>
     );
   }
 }
 
 DataFetchingTableComponent.propTypes = {
-  columns: PropTypes.array.isRequired,
+  columns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   confirmActionMessage: PropTypes.string,
-  data: PropTypes.array,
+  data: PropTypes.arrayOf(PropTypes.shape({})),
   errorMessage: PropTypes.string,
   expansionTabs: PropTypes.arrayOf(
     PropTypes.shape({
@@ -159,7 +187,7 @@ DataFetchingTableComponent.propTypes = {
     }),
   ),
   expansions: PropTypes.object.isRequired,
-  filters: PropTypes.array.isRequired,
+  filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number,
@@ -172,10 +200,11 @@ DataFetchingTableComponent.propTypes = {
   onRefreshData: PropTypes.func.isRequired,
   onResizedChange: PropTypes.func.isRequired,
   onSortedChange: PropTypes.func.isRequired,
+  initialiseTable: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   reduxId: PropTypes.string.isRequired,
-  resizedColumns: PropTypes.array.isRequired,
+  resizedColumns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sorting: PropTypes.array.isRequired,
   expansionTabStates: PropTypes.object.isRequired,
   onExpandedTabChange: PropTypes.func.isRequired,
@@ -211,13 +240,26 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
 });
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
-  const { baseFilter = {}, endpoint, columns, reduxId, ...restOfOwnProps } = ownProps;
+  const {
+    baseFilter = {},
+    defaultSorting = [],
+    endpoint,
+    columns,
+    reduxId,
+    ...restOfOwnProps
+  } = ownProps;
+  const onRefreshData = () =>
+    dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
+  const initialiseTable = () => {
+    dispatch(changeSorting(reduxId, defaultSorting)); // will trigger a data fetch afterwards
+  };
   return {
     reduxId,
     ...restOfOwnProps,
     ...stateProps,
     ...dispatchProps,
-    onRefreshData: () => dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps)),
+    onRefreshData,
+    initialiseTable,
   };
 };
 
@@ -229,15 +271,6 @@ const formatColumnForReactTable = (originalColumn, reduxId) => {
     ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
     ...restOfColumn,
   };
-};
-
-const localStyles = {
-  container: {
-    padding: '20px 0px',
-  },
-  expansion: {
-    padding: '0 20px 20px',
-  },
 };
 
 export const DataFetchingTable = connect(

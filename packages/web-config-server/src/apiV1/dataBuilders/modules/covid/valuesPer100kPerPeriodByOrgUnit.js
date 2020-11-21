@@ -41,7 +41,7 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
     results.forEach(result => {
       const { period, value, organisationUnit } = result;
 
-      //Assume that we always have population result available for a period.
+      // Assume that we always have population result available for a period.
       const populationResultByOrg = populationResultsGroupedByPeriod[period];
 
       const valuePer100k = Math.round((value / populationResultByOrg[organisationUnit]) * 100000);
@@ -83,10 +83,10 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
    * @param {Array} populationResults Array of all the population results
    */
   groupPopulationResultsByPeriod = populationResults => {
-    //Group the population results array by 'period'
+    // Group the population results array by 'period'
     const populationResultsGroupedByPeriod = groupBy(populationResults, 'period');
 
-    //Convert each grouped period into a dictionary keyed by 'organisationUnit'
+    // Convert each grouped period into a dictionary keyed by 'organisationUnit'
     Object.entries(populationResultsGroupedByPeriod).forEach(([period, populationResultValue]) => {
       populationResultsGroupedByPeriod[period] = reduceToDictionary(
         populationResultValue,
@@ -100,8 +100,9 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
 }
 
 function sumPreviousValuesPer100kByOrgUnit(queryConfig, aggregator, dhisApi, aggregationType) {
-  const { dataBuilderConfig, query, entity } = queryConfig;
+  const { models, dataBuilderConfig, query, entity } = queryConfig;
   const builder = new ValuesPer100kPerPeriodByOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

@@ -27,6 +27,11 @@ export const SimpleTableRow = styled(ExpandableTableRow)`
     }
   }
 
+  &:hover {
+    background: none;
+    cursor: auto;
+  }
+
   &:last-child {
     .MuiTableCell-root {
       border-bottom: none;

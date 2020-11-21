@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable max-classes-per-file */
+
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
@@ -27,6 +29,7 @@ export class MaxSumBuilder extends DataBuilder {
 }
 
 export const maxSumPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -34,6 +37,7 @@ export const maxSumPerOrgUnit = async (
   entity,
 ) => {
   const builder = new MaxSumPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

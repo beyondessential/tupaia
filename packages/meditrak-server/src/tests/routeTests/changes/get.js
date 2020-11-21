@@ -6,29 +6,30 @@
 import { expect } from 'chai';
 
 import { TYPES } from '@tupaia/database';
+import { oneSecondSleep } from '@tupaia/utils';
 import { SyncQueue } from '../../../database';
-import { upsertQuestion, randomIntBetween, oneSecondSleep } from '../../testUtilities';
+import { upsertQuestion, randomIntBetween } from '../../testUtilities';
 
 export const testGetChangesCount = (app, models) =>
-  function() {
-    before(async function() {
+  function () {
+    before(async function () {
       // Set up real sync queue for testing the /changes endpoint
       const syncQueue = new SyncQueue(models, models.meditrakSyncQueue, [TYPES.QUESTION]);
     });
 
-    it('should return a number under the key "changeCount"', async function() {
+    it('should return a number under the key "changeCount"', async function () {
       const response = await app.get('changes/count');
       expect(response.statusCode).to.equal(200);
       expect(response.body.changeCount).to.be.a('number');
     });
 
-    it('should return the total number of update changes with no "since"', async function() {
+    it('should return the total number of update changes with no "since"', async function () {
       const correctChangeCount = await models.meditrakSyncQueue.count({ type: 'update' });
       const response = await app.get('changes/count');
       expect(response.body.changeCount).to.equal(correctChangeCount);
     });
 
-    it('should return the correct number of changes since "since" if updates are made', async function() {
+    it('should return the correct number of changes since "since" if updates are made', async function () {
       const since = Date.now();
       const numberOfQuestionsToAdd = randomIntBetween(1, 20);
       const newQuestions = [];
@@ -42,7 +43,7 @@ export const testGetChangesCount = (app, models) =>
       expect(response.body.changeCount).to.equal(numberOfQuestionsToAdd);
     });
 
-    it('should return the correct number of changes since "since" if updates and deletes are made', async function() {
+    it('should return the correct number of changes since "since" if updates and deletes are made', async function () {
       // Note: sync skips redundant deletes, i.e. any 'delete' records that reflect the deletion of a
       // record that the client has never seen are not synced to that client
 

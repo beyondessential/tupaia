@@ -15,9 +15,6 @@
  * In the future we may want to refactor, moving each action into the appropriate container folder.
  */
 
-import { initialOrgUnit } from './defaults';
-import { getSiblingItems, storeSiblingItems } from './utils';
-
 export const FETCH_INITIAL_DATA = 'FETCH_INITIAL_DATA';
 export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
 export const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
@@ -32,16 +29,16 @@ export const FETCH_RESEND_EMAIL_ERROR = 'FETCH_RESEND_EMAIL_ERROR';
 export const DIALOG_PAGE_VERIFICATION_PAGE = 'DIALOG_PAGE_VERIFICATION_PAGE';
 export const ATTEMPT_REQUEST_COUNTRY_ACCESS = 'ATTEMPT_REQUEST_COUNTRY_ACCESS';
 export const ATTEMPT_SIGNUP = 'ATTEMPT_SIGNUP';
-export const CHANGE_DASHBOARD_GROUP = 'CHANGE_DASHBOARD_GROUP';
+export const SET_DASHBOARD_GROUP = 'SET_DASHBOARD_GROUP';
 export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
-export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const SET_MEASURE = 'SET_MEASURE';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
-export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
+export const SET_ORG_UNIT = 'SET_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
@@ -106,19 +103,15 @@ export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
 export const CLOSE_MAP_POPUP = 'CLOSE_MAP_POPUP';
 export const DIALOG_PAGE_CHANGE_PASSWORD = 'DIALOG_PAGE_CHANGE_PASSWORD';
 export const DIALOG_PAGE_LOGIN = 'DIALOG_PAGE_LOGIN';
+export const DIALOG_PAGE_ONE_TIME_LOGIN = 'DIALOG_PAGE_ONE_TIME_LOGIN';
 export const DIALOG_PAGE_REQUEST_RESET_PASSWORD = 'DIALOG_PAGE_REQUEST_RESET_PASSWORD';
 export const DIALOG_PAGE_REQUEST_COUNTRY_ACCESS = 'DIALOG_PAGE_REQUEST_COUNTRY_ACCESS';
 export const DIALOG_PAGE_SIGNUP = 'DIALOG_PAGE_SIGNUP';
 export const DIALOG_PAGE_RESET_PASSWORD = 'DIALOG_PAGE_RESET_PASSWORD';
-export const OPEN_EXPORT_DIALOG = 'OPEN_EXPORT_DIALOG';
-export const CLOSE_EXPORT_DIALOG = 'CLOSE_EXPORT_DIALOG';
-export const ATTEMPT_CHART_EXPORT = 'ATTEMPT_CHART_EXPORT';
-export const FETCH_CHART_EXPORT_SUCCESS = 'FETCH_SIGNUP_SUCCESS';
-export const FETCH_CHART_EXPORT_ERROR = 'FETCH_CHART_EXPORT_ERROR';
-export const SELECT_CHART_EXPORT_FORMAT = 'SELECT_CHART_EXPORT_FORMAT';
 export const OPEN_ENLARGED_DIALOG = 'OPEN_ENLARGED_DIALOG';
 export const CLOSE_ENLARGED_DIALOG = 'CLOSE_ENLARGED_DIALOG';
 export const SET_ENLARGED_DIALOG_DATE_RANGE = 'SET_ENLARGED_DIALOG_DATE_RANGE';
+export const SET_DRILL_DOWN_DATE_RANGE = 'SET_DRILL_DOWN_DATE_RANGE';
 export const UPDATE_ENLARGED_DIALOG = 'UPDATE_ENLARGED_DIALOG';
 export const UPDATE_ENLARGED_DIALOG_ERROR = 'UPDATE_ENLARGED_DIALOG_ERROR';
 export const CLOSE_DRILL_DOWN = 'CLOSE_DRILL_DOWN';
@@ -136,23 +129,21 @@ export const VIEW_DISASTER = 'VIEW_DISASTER';
 export const TOGGLE_DASHBOARD_SELECT_EXPAND = 'TOGGLE_DASHBOARD_SELECT_EXPAND';
 export const SET_MOBILE_DASHBOARD_EXPAND = 'SET_MOBILE_DASHBOARD_EXPAND';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
-export const SELECT_PROJECT = 'SELECT_PROJECT';
+export const SET_PROJECT = 'SET_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
-
-export function fetchInitialData() {
-  return {
-    type: FETCH_INITIAL_DATA,
-  };
-}
+export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
+export const UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS =
+  'UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS';
+export const LOCATION_CHANGE = 'LOCATION_CHANGE';
 
 /**
  * Attempt password change using old password, new password and new password
  * confirmation by clicking on Change password button.
  *
  * @param  {string} oldPassword Registered user's old password
- * @param  {string} pasword Registered user's new password
- * @param  {string} paswordConfirm Confirmation of new password
+ * @param  {string} password Registered user's new password
+ * @param  {string} passwordConfirm Confirmation of new password
  */
 export function attemptChangePassword(oldPassword, password, passwordConfirm, passwordResetToken) {
   return {
@@ -205,12 +196,12 @@ export function attemptUserLogin(emailAddress, password) {
  *
  * @param {string} username     Logged user's username
  */
-export function fetchUserLoginSuccess(username, email, shouldCloseDialog) {
+export function fetchUserLoginSuccess(username, email, loginType) {
   return {
     type: FETCH_LOGIN_SUCCESS,
     email,
     username,
-    shouldCloseDialog,
+    loginType,
   };
 }
 
@@ -223,7 +214,39 @@ export function fetchUserLoginError(errors) {
   return {
     type: FETCH_LOGIN_ERROR,
     errors,
-    errorMessage: 'Wrong e-mail or password',
+  };
+}
+
+/**
+ * Attempt login using a one time token.
+ *
+ * @param  {string} passwordResetToken
+ */
+export function attemptResetTokenLogin(passwordResetToken) {
+  return {
+    type: ATTEMPT_RESET_TOKEN_LOGIN,
+    passwordResetToken,
+  };
+}
+
+/**
+ * Success logging in with one time token
+ */
+export function fetchResetTokenLoginSuccess() {
+  return {
+    type: FETCH_RESET_TOKEN_LOGIN_SUCCESS,
+  };
+}
+
+/**
+ * Changes state to communicate error to login some user
+ *
+ * @param {object} errors  response from saga on failed fetch
+ */
+export function fetchResetTokenLoginError(errors) {
+  return {
+    type: FETCH_RESET_TOKEN_LOGIN_ERROR,
+    errors,
   };
 }
 
@@ -442,7 +465,7 @@ export function fetchRequestCountryAccessError(errorMessage) {
  *
  * @param {object} organisationUnit
  */
-export function requestOrgUnit(organisationUnitCode = initialOrgUnit.organisationUnitCode) {
+export function requestOrgUnit(organisationUnitCode) {
   return {
     type: REQUEST_ORG_UNIT,
     organisationUnitCode,
@@ -462,15 +485,15 @@ export function fetchOrgUnit(organisationUnitCode) {
 }
 
 /**
- * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
- * map and the current dashboard.
+ * Changes the current Organisation Unit. Sets org unit in the url and triggers side effects.
+ * Will trigger sagas affecting state for map and the current dashboard.
+ *
+ * @param {string} organisationUnitCode
+ * @param {boolean} shouldChangeMapBounds
  */
-export function changeOrgUnit(
-  organisationUnitCode = initialOrgUnit.organisationUnitCode,
-  shouldChangeMapBounds = true,
-) {
+export function setOrgUnit(organisationUnitCode, shouldChangeMapBounds = true) {
   return {
-    type: CHANGE_ORG_UNIT,
+    type: SET_ORG_UNIT,
     organisationUnitCode,
     shouldChangeMapBounds,
   };
@@ -499,16 +522,13 @@ export function changeBounds(bounds) {
 
 /**
  * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates currentMeasure in measureBar.
- *
+ * Updates the current measureId in the url.
  * @param {string} measureId
- * @param {string} organisationUnitCode
  */
-export function changeMeasure(measureId, organisationUnitCode) {
+export function setMeasure(measureId) {
   return {
-    type: CHANGE_MEASURE,
+    type: SET_MEASURE,
     measureId,
-    organisationUnitCode,
   };
 }
 
@@ -517,10 +537,23 @@ export function changeMeasure(measureId, organisationUnitCode) {
  *
  * @param {object} measureConfig
  */
-export function updateMeasureConfig(measureConfig) {
+export function updateMeasureConfig(measureId, measureConfig) {
   return {
     type: UPDATE_MEASURE_CONFIG,
+    measureId,
     measureConfig,
+  };
+}
+
+/**
+ * Updates measure config for current measure in measureBar once the hierarchy is populated
+ *
+ * @param {object} measureConfig
+ */
+export function updateCurrentMeasureConfigOnceHierarchyLoads(periodString) {
+  return {
+    type: UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+    periodString,
   };
 }
 
@@ -641,12 +674,12 @@ export function fetchDashboardSuccess(dashboardConfig) {
 /**
  * Changes state to communicate error to user appropriately.
  *
- * @param {object} error  response from saga on failed fetch
+ * @param {string} errorMessage  response from saga on failed fetch
  */
-export function fetchDashboardError(error) {
+export function fetchDashboardError(errorMessage) {
   return {
     type: FETCH_DASHBOARD_CONFIG_ERROR,
-    error,
+    errorMessage,
   };
 }
 
@@ -664,9 +697,6 @@ export function fetchDashboardItemData(
   dashboardGroupId,
   viewId,
   infoViewKey,
-  dashboardItemViewMode,
-  startDate,
-  endDate,
 ) {
   return {
     type: FETCH_INFO_VIEW_DATA,
@@ -674,9 +704,6 @@ export function fetchDashboardItemData(
     dashboardGroupId,
     viewId,
     infoViewKey,
-    dashboardItemViewMode,
-    startDate,
-    endDate,
   };
 }
 
@@ -801,11 +828,11 @@ export function showTupaiaInfo() {
 /**
  * Changes the currently selected Tab in DataPanel
  *
- * @param  {string} name  The dashboard group name
+ * @param  {string} name  The dashboard group name (also known as it's key)
  */
-export function changeDashboardGroup(name) {
+export function setDashboardGroup(name) {
   return {
-    type: CHANGE_DASHBOARD_GROUP,
+    type: SET_DASHBOARD_GROUP,
     name,
   };
 }
@@ -907,10 +934,10 @@ export function clearMeasureHierarchy() {
   };
 }
 
-export function findLoggedIn(shouldCloseDialog, emailVerified) {
+export function findLoggedIn(loginType, emailVerified) {
   return {
     type: FIND_USER_LOGGEDIN,
-    shouldCloseDialog,
+    loginType,
     emailVerified,
   };
 }
@@ -996,113 +1023,16 @@ export function closeMapPopup(orgUnitCode) {
   };
 }
 
-export function openExportDialog({
-  organisationUnitCode,
-  organisationUnitName,
-  viewId,
-  dashboardGroupId,
-  startDate,
-  endDate,
-  formats = ['pdf', 'png'],
-  chartType,
-  extraConfig = {},
-}) {
-  return {
-    type: OPEN_EXPORT_DIALOG,
-    organisationUnitCode,
-    organisationUnitName,
-    viewId,
-    dashboardGroupId,
-    startDate,
-    endDate,
-    formats,
-    chartType,
-    extraConfig,
-  };
-}
-
-export function closeExportDialog() {
-  return {
-    type: CLOSE_EXPORT_DIALOG,
-  };
-}
-
-/**
- * Attempt to trigger a chart export job.
- *
- * @param  {object} payload     Export payload  explanatory)
- */
-export function attemptChartExport({
-  viewId,
-  organisationUnitCode,
-  organisationUnitName,
-  dashboardGroupId,
-  chartType,
-  startDate,
-  endDate,
-  selectedDisaster,
-  exportFileName,
-  extraConfig = {},
-  selectedFormat = 'pdf',
-  projectCode,
-}) {
-  return {
-    type: ATTEMPT_CHART_EXPORT,
-    viewId,
-    organisationUnitCode,
-    organisationUnitName,
-    dashboardGroupId,
-    chartType,
-    startDate,
-    endDate,
-    selectedDisaster,
-    exportFileName,
-    selectedFormat,
-    extraConfig,
-    projectCode,
-  };
-}
-
-/**
- * Indicates that the chart export job was successfully triggered.
- */
-export function fetchChartExportSuccess() {
-  return {
-    type: FETCH_CHART_EXPORT_SUCCESS,
-  };
-}
-
-/**
- * Indicates that the chart export job failed to trigger.
- *
- * @param {object} errors  response from saga on failed fetch
- */
-export function fetchChartExportError(errorMessage) {
-  return {
-    type: FETCH_CHART_EXPORT_ERROR,
-    errorMessage,
-  };
-}
-
-export function selectChartExportFormat(format) {
-  return {
-    type: SELECT_CHART_EXPORT_FORMAT,
-    format,
-  };
-}
-
 export function closeEnlargedDialog() {
   return {
     type: CLOSE_ENLARGED_DIALOG,
   };
 }
 
-export function openEnlargedDialog(viewContent, organisationUnitName, infoViewKey) {
+export function openEnlargedDialog(viewId) {
   return {
     type: OPEN_ENLARGED_DIALOG,
-    viewContent,
-    organisationUnitName,
-    infoViewKey,
+    viewId,
   };
 }
 
@@ -1112,15 +1042,15 @@ export function closeDrillDown() {
   };
 }
 
-export function attemptDrillDown(viewContent, parameterLink, parameterValue, drillDownLevel) {
-  const {
-    viewId,
-    organisationUnitCode,
-    dashboardGroupId,
-    startDate,
-    endDate,
-    infoViewKey,
-  } = viewContent;
+export function attemptDrillDown({
+  viewContent,
+  startDate,
+  endDate,
+  parameterLink,
+  parameterValue,
+  drillDownLevel,
+}) {
+  const { viewId, organisationUnitCode, dashboardGroupId, infoViewKey } = viewContent;
   return {
     type: ATTEMPT_DRILL_DOWN,
     organisationUnitCode,
@@ -1172,6 +1102,15 @@ export function setEnlargedDashboardDateRange(startDate, endDate) {
   };
 }
 
+export function setDrillDownDateRange(startDate, endDate, currentLevel) {
+  return {
+    type: SET_DRILL_DOWN_DATE_RANGE,
+    startDate,
+    endDate,
+    drillDownLevel: currentLevel,
+  };
+}
+
 export function updateEnlargedDialog(viewContent) {
   return {
     type: UPDATE_ENLARGED_DIALOG,
@@ -1184,4 +1123,8 @@ export function updateEnlargedDialogError(errorMessage) {
     type: UPDATE_ENLARGED_DIALOG_ERROR,
     errorMessage,
   };
+}
+
+export function updateHistoryLocation(location) {
+  return { type: UPDATE_HISTORY_LOCATION, location };
 }

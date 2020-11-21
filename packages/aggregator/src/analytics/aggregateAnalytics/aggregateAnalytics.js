@@ -32,6 +32,10 @@ export const aggregateAnalytics = (
       return filterLatest(analytics, aggregationConfig);
     case AGGREGATION_TYPES.SUM:
       return sumAcrossPeriods(analytics);
+    case AGGREGATION_TYPES.SUM_UNTIL_CURRENT_DAY:
+      return sumAcrossPeriods(analytics, {
+        periodOptions: { periodType: DAY, useCurrent: true, excludeFuture: true },
+      });
     case AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY:
       return sumEachDataElement(filterLatest(analytics, aggregationConfig));
     case AGGREGATION_TYPES.FINAL_EACH_DAY:
@@ -88,6 +92,8 @@ export const aggregateAnalytics = (
         },
         YEAR,
       );
+    case AGGREGATION_TYPES.SUM_EACH_YEAR:
+      return getSumValuePerPeriod(analytics, aggregationConfig, YEAR);
     case AGGREGATION_TYPES.SUM_PREVIOUS_EACH_DAY:
       return sumPreviousPerPeriod(analytics, aggregationConfig, DAY);
     case AGGREGATION_TYPES.SUM_PER_ORG_GROUP:

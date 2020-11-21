@@ -11,14 +11,14 @@ class SurveyDataExportBuilder extends DataBuilder {
   }
 
   async build() {
-    const surveyCodes = this.query.surveyCodes;
+    const { surveyCodes } = this.query;
     if (!surveyCodes) {
-      //First call to this data builder will return only the available surveys that can be exported.
+      // First call to this data builder will return only the available surveys that can be exported.
       return this.getSurveyExportOptions();
     }
 
-    //When surveyCodes is provided in the query, it will grab the exportDataBuilder
-    //and build the actual data that can be exported.
+    // When surveyCodes is provided in the query, it will grab the exportDataBuilder
+    // and build the actual data that can be exported.
     return this.fetchExportResults();
   }
 
@@ -52,6 +52,7 @@ class SurveyDataExportBuilder extends DataBuilder {
 
     return buildData(
       {
+        models: this.models,
         query: this.query,
         entity: this.entity,
         dataBuilderConfig: { ...exportDataBuilderConfig, surveys, dataServices },
@@ -63,12 +64,13 @@ class SurveyDataExportBuilder extends DataBuilder {
 }
 
 export const surveyDataExport = async (
-  { dataBuilderConfig, query, entity, req },
+  { models, dataBuilderConfig, query, entity, req },
   aggregator,
   dhisApi,
 ) => {
   const builder = new SurveyDataExportBuilder(
     req,
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

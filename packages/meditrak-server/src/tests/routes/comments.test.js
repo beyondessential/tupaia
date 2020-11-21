@@ -10,7 +10,7 @@ import { createAlert, createComment, resetTestData } from '../testUtilities';
 
 describe('Alert Comments CRUD', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   beforeEach(app.authenticate);
 

@@ -15,13 +15,10 @@
  * @property {Description} description
  * @property {Function} matcher
  * @property {Function} [negationDiff]
+ * @property {boolean} [isAsync]
  */
 
-const removeLinesFromTextStart = (text, lineCount) =>
-  text
-    .split('\n')
-    .slice(lineCount)
-    .join('\n');
+const removeLinesFromTextStart = (text, lineCount) => text.split('\n').slice(lineCount).join('\n');
 
 class JestMatcherFactory {
   constructor(expect, extendApi) {
@@ -32,18 +29,38 @@ class JestMatcherFactory {
   /**
    * @param {MatcherConfig} config
    */
-  create = config => (received, ...expected) => {
-    const { description, matcher } = config;
+  create = config => {
+    const { description, matcher, isAsync } = config;
 
-    try {
-      matcher(this.expect(received), expected);
-    } catch (error) {
+    const onError = error => {
       const diff = this.extractDiffFromMessage(error.message);
       return this.createFailureResponse(description, diff);
-    }
+    };
+    const onSuccess = (received, expected) => {
+      const diff = this.createNegationDiff(config, received, expected);
+      return this.createSuccessResponse(description, diff);
+    };
 
-    const diff = this.createNegationDiff(config, received, expected);
-    return this.createSuccessResponse(description, diff);
+    const createMatcher = isAsync ? this.createAsync : this.createSync;
+    return createMatcher(matcher, onError, onSuccess);
+  };
+
+  createAsync = (matcher, onError, onSuccess) => async (received, ...expected) => {
+    try {
+      await matcher(this.expect, received, expected);
+    } catch (error) {
+      return onError(error);
+    }
+    return onSuccess(received, expected);
+  };
+
+  createSync = (matcher, onError, onSuccess) => (received, ...expected) => {
+    try {
+      matcher(this.expect, received, expected);
+    } catch (error) {
+      return onError(error);
+    }
+    return onSuccess(received, expected);
   };
 
   createSuccessResponse = (description, diff) => ({

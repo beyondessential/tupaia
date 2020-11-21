@@ -6,8 +6,9 @@
 import React from 'react';
 import { EditButton } from '../../editor';
 import { DeleteButton } from './DeleteButton';
-import { ExportButton, FilteredExportButton } from '../../importExport';
+import { ExportButton } from '../../importExport';
 import { BooleanSelectFilter } from './columnFilters';
+import { Tooltip, JSONTooltip } from './Tooltip';
 
 const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
   <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
@@ -23,9 +24,10 @@ const BUTTON_COLUMN_OPTIONS = {
 const CUSTOM_CELL_COMPONENTS = {
   edit: EditButton,
   export: ExportButton,
-  filteredExport: FilteredExportButton,
   delete: DeleteButton,
   boolean: ({ value }) => (value ? 'Yes' : 'No'),
+  tooltip: Tooltip,
+  jsonTooltip: JSONTooltip,
 };
 
 const BUTTON_COLUMN_TYPES = ['edit', 'export', 'delete'];

@@ -1,4 +1,4 @@
-import { sleep } from './testUtilities';
+import { sleep } from '@tupaia/utils';
 
 /**
  * Tupaia MediTrak

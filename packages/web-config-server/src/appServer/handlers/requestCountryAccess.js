@@ -5,7 +5,8 @@ import { fetchFromMeditrakServerUsingTokens } from '/appServer/requestHelpers';
  * logged in user's access to them
  */
 export const requestCountryAccess = async req => {
-  const userName = req.session.userJson.userName;
+  const { session, models, body } = req;
+  const { userName } = session.userJson;
   const endpoint = 'me/requestCountryAccess';
-  return fetchFromMeditrakServerUsingTokens(endpoint, req.body, null, {}, userName);
+  return fetchFromMeditrakServerUsingTokens(models, endpoint, body, null, userName);
 };

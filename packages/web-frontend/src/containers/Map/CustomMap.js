@@ -12,8 +12,8 @@ import { LayerGroup, Pane } from 'react-leaflet';
 
 import { LeafletMap } from './LeafletMap';
 
-import MarkerLayer from './MarkerLayer'; // eslint-disable-line import/no-named-as-default
-import DisasterLayer from './DisasterLayer'; // eslint-disable-line import/no-named-as-default
+import MarkerLayer from './MarkerLayer';
+import DisasterLayer from './DisasterLayer';
 import { DemoLand } from './DemoLand';
 import { TileLayer } from './TileLayer';
 
@@ -46,7 +46,7 @@ export class CustomMap extends Component {
     const {
       measureInfo,
       currentOrganisationUnit,
-      tileSet,
+      tileSetUrl,
       position,
       displayedChildren,
     } = this.props;
@@ -63,7 +63,7 @@ export class CustomMap extends Component {
       return true;
     }
 
-    if (nextProps.tileSet !== tileSet) return true;
+    if (nextProps.tileSetUrl !== tileSetUrl) return true;
     if (JSON.stringify(nextProps.position) !== JSON.stringify(position)) return true;
     return false;
   }
@@ -81,7 +81,7 @@ export class CustomMap extends Component {
   };
 
   checkZoomOutToParentOrgUnit(bounds) {
-    const { currentParent, changeOrgUnit } = this.props;
+    const { currentParent, setOrgUnit } = this.props;
 
     // Maybe we need to zoom out to a parent!
     // First, check if there's a valid parent to zoom out to
@@ -90,7 +90,7 @@ export class CustomMap extends Component {
         // Now check if we're at a reasonable zoom level to switch to that parent
         const difference = checkBoundsDifference(currentParent.location.bounds, bounds);
         if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-          changeOrgUnit(currentParent.organisationUnitCode, false);
+          setOrgUnit(currentParent.organisationUnitCode, false);
         }
       }
     }
@@ -131,7 +131,7 @@ export class CustomMap extends Component {
 
   render() {
     const {
-      tileSet,
+      tileSetUrl,
       closeDropdownOverlays,
       sidePanelWidth,
       position,
@@ -145,7 +145,7 @@ export class CustomMap extends Component {
         rightPadding={sidePanelWidth}
         onPositionChanged={this.onPositionChanged}
       >
-        <TileLayer tileSet={tileSet} />
+        <TileLayer tileSetUrl={tileSetUrl} />
         <MapPane name="demo-land" above="tilePane" aboveAmount={0}>
           <DemoLand />
         </MapPane>
@@ -168,13 +168,11 @@ export class CustomMap extends Component {
 
 CustomMap.propTypes = {
   ...Map.propTypes,
-  changeOrgUnit: PropTypes.func.isRequired,
+  setOrgUnit: PropTypes.func.isRequired,
   changePosition: PropTypes.func.isRequired,
 
-  /* eslint-disable react/forbid-prop-types */
   currentOrganisationUnit: PropTypes.object.isRequired,
   measureInfo: PropTypes.object.isRequired,
-  /* eslint-enable react/forbid-prop-types */
   displayedChildren: PropTypes.arrayOf(PropTypes.object),
 
   shouldSnapToPosition: PropTypes.bool.isRequired,

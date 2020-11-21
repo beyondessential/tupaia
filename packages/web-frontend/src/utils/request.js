@@ -6,6 +6,7 @@
  */
 
 import 'whatwg-fetch';
+import downloadJs from 'downloadjs';
 import { showSessionExpiredError, showServerUnreachableError } from '../actions';
 
 /**
@@ -50,8 +51,22 @@ function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFu
 
 const inFlightRequests = {};
 
+// Create a promise that rejects after the request has taken too long
+const createTimeoutPromise = maxWaitTime =>
+  new Promise((resolve, reject) => {
+    const id = setTimeout(() => {
+      clearTimeout(id);
+      reject(new Error('Network request timed out'));
+    }, maxWaitTime);
+  });
+
+const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
+
+const fetchWithTimeout = (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) =>
+  Promise.race([fetch(url, config), createTimeoutPromise(maxWaitTime)]);
+
 async function performJSONRequest(url, options) {
-  const response = await fetch(url, options);
+  const response = await fetchWithTimeout(url, options);
 
   if (response.status < 200 || response.status >= 300) {
     const error = new Error(response.statusText);
@@ -119,7 +134,6 @@ export default async function request(
     if (shouldRetryOnFail) {
       return request(resourceUrl, errorFunction, options, requestContext, false);
     }
-
     throw assignErrorAction(
       error,
       errorFunction,
@@ -127,3 +141,31 @@ export default async function request(
     );
   }
 }
+
+export const download = async (resourceUrl, errorFunction, options, fileName) => {
+  const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1/';
+  try {
+    const response = await fetchWithTimeout(baseUrl + resourceUrl, {
+      ...options,
+      credentials: 'include',
+    });
+
+    if (response.status < 200 || response.status >= 300) {
+      const error = new Error(response.statusText);
+      error.response = response;
+      throw error;
+    }
+
+    const responseBlob = await response.blob();
+
+    downloadJs(responseBlob, fileName);
+
+    return true;
+  } catch (error) {
+    throw assignErrorAction(
+      error,
+      errorFunction,
+      options && options.alwaysUseSuppliedErrorFunction,
+    );
+  }
+};

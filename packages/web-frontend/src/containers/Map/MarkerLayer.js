@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
 import { createSelector } from 'reselect';
-import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
+import { setOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import {
   selectHasPolygonMeasure,
@@ -46,10 +46,10 @@ const MeasureMarker = props => {
   if (radius && icon) {
     const { markerRef, ...otherProps } = props;
     return (
-      <React.Fragment>
+      <>
         <CircleProportionMarker markerRef={() => null} {...otherProps} />
         <IconMarker {...otherProps} markerRef={markerRef} />
-      </React.Fragment>
+      </>
     );
   }
   if (radius) {
@@ -150,13 +150,13 @@ export class MarkerLayer extends Component {
       displayPolygons,
     } = this.props;
     if (!measureData || !measureData.length) return null;
-    
+
     if (isMeasureLoading) return null;
     const processedData = measureData
-    .filter(data => data.coordinates && data.coordinates.length === 2)
-    .filter(displayInfo => !displayInfo.isHidden);
-    
-    //for radius overlay sort desc radius to place smaller circles over larger circles
+      .filter(data => data.coordinates && data.coordinates.length === 2)
+      .filter(displayInfo => !displayInfo.isHidden);
+
+    // for radius overlay sort desc radius to place smaller circles over larger circles
     if (hasRadiusLayer(measureOptions)) {
       processedData.sort((a, b) => {
         return Number(b.radius) - Number(a.radius);
@@ -191,7 +191,7 @@ export class MarkerLayer extends Component {
       );
     });
   }
-  
+
   render() {
     return <LayerGroup>{this.renderMeasures()}</LayerGroup>;
   }
@@ -235,7 +235,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = false) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
   onPopupOpen: orgUnitCode => dispatch(openMapPopup(orgUnitCode)),
   onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),

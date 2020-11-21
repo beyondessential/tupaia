@@ -54,8 +54,11 @@ class SumPerSeriesDataBuilder extends DataBuilder {
         dataByClass[classKey][seriesKey] = sum;
       });
     });
-
-    const data = this.sortDataByName(Object.values(dataByClass));
+    const { dataClassKeyOrder = [] } = this.config;
+    const data =
+      dataClassKeyOrder.length > 0
+        ? dataClassKeyOrder.map(dataClassKey => dataByClass[dataClassKey])
+        : this.sortDataByName(Object.values(dataByClass));
     return { data, period };
   }
 
@@ -79,11 +82,12 @@ class SumPerSeriesDataBuilder extends DataBuilder {
 }
 
 export const sumLatestPerSeries = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new SumPerSeriesDataBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
@@ -96,17 +100,36 @@ export const sumLatestPerSeries = async (
 };
 
 export const sumPerMonthPerSeries = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new SumPerSeriesDataBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
     entity,
     aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  );
+
+  return builder.build();
+};
+
+export const sumPerYearPerSeries = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new SumPerSeriesDataBuilder(
+    models,
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+    aggregator.aggregationTypes.FINAL_EACH_YEAR,
   );
 
   return builder.build();

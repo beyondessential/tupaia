@@ -14,8 +14,8 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle, WeeklyReportsExportModal } from '../components';
-import { CountriesTable } from '../containers';
+import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle } from '../components';
+import { CountriesTable, WeeklyReportsExportModal } from '../containers';
 
 const StyledCardContent = styled(CardContent)`
   display: flex;

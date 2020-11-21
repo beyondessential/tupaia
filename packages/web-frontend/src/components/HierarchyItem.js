@@ -67,6 +67,7 @@ export class HierarchyItem extends Component {
       Icon,
       onClick,
       isLoading,
+      hasNestedItems,
       ...otherProps
     } = this.props;
     const { isOpen } = this.state;

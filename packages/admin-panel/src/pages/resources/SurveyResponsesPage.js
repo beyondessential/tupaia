@@ -3,15 +3,17 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { utcMoment } from '@tupaia/utils';
-
 import React from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import { ResourcePage } from './ResourcePage';
+import { SurveyResponsesExportModal } from '../../importExport';
 
 const surveyName = {
   Header: 'Survey',
   source: 'survey.name',
   editable: false,
+  type: 'tooltip',
 };
 
 const assessorName = {
@@ -23,7 +25,8 @@ const assessorName = {
 const date = {
   Header: 'Date of Survey',
   source: 'end_time',
-  accessor: row => utcMoment(row.end_time).format('ddd MMM DD YYYY HH:mm:ss Z'),
+  type: 'tooltip',
+  accessor: row => moment(row.end_time).local().toString(),
   filterable: false,
   editable: false,
 };
@@ -31,11 +34,14 @@ const date = {
 const dateOfData = {
   Header: 'Date of Data',
   source: 'submission_time',
+  type: 'tooltip',
   accessor: row =>
-    utcMoment(row.submission_time || row.end_time).format('ddd MMM DD YYYY HH:mm:ss Z'),
+    moment(row.submission_time || row.end_time)
+      .local()
+      .toString(),
   filterable: false,
   editConfig: {
-    type: 'date',
+    type: 'datetime-local',
   },
 };
 
@@ -94,10 +100,12 @@ const ANSWER_FIELDS = [
     Header: 'Question',
     source: 'question.text',
     editable: false,
+    type: 'tooltip',
   },
   {
     Header: 'Answer',
     source: 'text',
+    type: 'tooltip',
   },
 ];
 
@@ -127,15 +135,40 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'surveyResponses',
   },
+  queryParameters: [
+    {
+      label: 'Will this import create new survey responses?',
+      secondaryLabel: 'Leave unchecked if it will only update existing responses',
+      parameterKey: 'createNew',
+      type: 'boolean',
+    },
+    {
+      label: 'Survey Names',
+      secondaryLabel:
+        'Please enter the names of the surveys for the responses to be imported against. These should match the tab names in the file.',
+      parameterKey: 'surveyNames',
+      optionsEndpoint: 'surveys',
+      optionValueKey: 'name',
+      allowMultipleValues: true,
+      visibilityCriteria: { createNew: true },
+    },
+  ],
 };
 
-export const SurveyResponsesPage = () => (
+export const SurveyResponsesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
+    defaultSorting={[{ id: 'submission_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    getHeaderEl={getHeaderEl}
+    ExportModalComponent={SurveyResponsesExportModal}
   />
 );
+
+SurveyResponsesPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

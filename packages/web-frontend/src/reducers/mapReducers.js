@@ -8,8 +8,8 @@
 import { combineReducers } from 'redux';
 
 import {
-  CHANGE_MEASURE,
-  CHANGE_ORG_UNIT,
+  SET_MEASURE,
+  SET_ORG_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
@@ -24,14 +24,14 @@ import {
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
+  UPDATE_MEASURE_CONFIG,
+  SET_PROJECT,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
-import { initialOrgUnit } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 
-const defaultBounds = initialOrgUnit.location.bounds;
-
-function position(state = { bounds: defaultBounds }, action) {
+function position(state = { bounds: DEFAULT_BOUNDS }, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
@@ -80,7 +80,7 @@ function measureInfo(state = {}, action) {
     case FETCH_MEASURE_DATA_SUCCESS: {
       const currentCountry = action.countryCode;
       // remove measure units with no coordinates
-      let measureData = action.response.measureData;
+      let { measureData } = action.response;
       // for circle heatmap remove empty values or values that are not of positive float type
       if (action.response.displayType === MARKER_TYPES.CIRCLE_HEATMAP) {
         measureData = measureData.filter(({ value }) => {
@@ -92,8 +92,8 @@ function measureInfo(state = {}, action) {
 
       return {
         ...action.response,
-        //Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
-        //If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
+        // Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
+        // If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
         hiddenMeasures: {
           ...action.response.hiddenMeasures,
           ...state.hiddenMeasures,
@@ -127,7 +127,8 @@ function measureInfo(state = {}, action) {
 
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
-    case CHANGE_MEASURE:
+    case UPDATE_MEASURE_CONFIG:
+    case SET_MEASURE:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
     case FETCH_MEASURE_DATA_SUCCESS:
@@ -177,7 +178,7 @@ function shouldSnapToPosition(state = true, action) {
     case CHANGE_BOUNDS:
       return true;
 
-    case CHANGE_ORG_UNIT:
+    case SET_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
 
@@ -203,10 +204,12 @@ function getAutoTileset() {
 /**
  * Which tileset to use for the map.
  */
-function tileSet(state, action) {
+function activeTileSetKey(state, action) {
   switch (action.type) {
     case CHANGE_TILE_SET:
       return action.setKey;
+    case SET_PROJECT:
+      return getAutoTileset();
     default:
       return state || getAutoTileset();
   }
@@ -215,7 +218,7 @@ function tileSet(state, action) {
 export default combineReducers({
   position,
   measureInfo,
-  tileSet,
+  activeTileSetKey,
   isAnimating,
   popup,
   shouldSnapToPosition,

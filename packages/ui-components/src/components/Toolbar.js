@@ -40,6 +40,7 @@ const ToolbarTab = styled(LightTab)`
   font-size: 1.125rem;
   height: ${toolbarHeight};
   text-transform: none;
+  font-weight: 400;
 
   &:first-child {
     margin-left: 0;

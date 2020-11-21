@@ -1,24 +1,37 @@
 {
   "name": "@tupaia/data-broker",
   "version": "1.0.0",
-  "main": "dist/index.js",
   "private": true,
+  "description": "Maps data from Tupaia to external sources, and vice versa",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/data-broker"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "mocha",
-    "test-coverage": "cross-env NODE_ENV=test nyc mocha"
+    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "build:ts": "tsc",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix",
+    "test": "jest",
+    "test:coverage": "yarn test --coverage",
+    "test:debug": "yarn test --debug"
   },
   "dependencies": {
     "@tupaia/data-api": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
+    "@tupaia/indicators": "1.0.0",
     "@tupaia/utils": "1.0.0",
+    "@tupaia/weather-api": "1.0.0",
     "case": "^1.5.5",
     "lodash.flatten": "^4.4.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "lodash.pickby": "^4.6.0",
     "moment": "^2.24.0",
-    "winston": "^3.1.0"
+    "winston": "^3.3.3"
   }
 }

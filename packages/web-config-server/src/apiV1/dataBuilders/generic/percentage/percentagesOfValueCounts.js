@@ -5,7 +5,11 @@
 import flatten from 'lodash.flatten';
 import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues, countAnalyticsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
+import {
+  divideValues,
+  countAnalyticsThatSatisfyConditions,
+  countAnalyticsGroupsThatSatisfyConditions,
+} from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
 const COMPARISON_TYPES = {
@@ -13,6 +17,7 @@ const COMPARISON_TYPES = {
 };
 const OPERATION_TYPES = {
   GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
+  // eslint-disable-next-line eqeqeq
   EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
   IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
 };
@@ -61,17 +66,38 @@ const buildFilterAnalyticsFunction = fraction => {
 
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getDataElementCodes() {
-    const dataElementCodes = Object.values(this.config.dataClasses).reduce(
-      (codes, { numerator, denominator }) =>
-        codes.concat(
-          flatten(numerator.dataValues),
-          denominator.hasOwnProperty('dataValues') && denominator.dataValues,
-        ),
-      [],
-    );
+    const getCodesFromConfig = config => {
+      if (config.hasOwnProperty('dataValues')) {
+        if (Array.isArray(config.dataValues)) {
+          return flatten(config.dataValues);
+        }
+        return Object.keys(config.dataValues);
+      }
+      return [];
+    };
 
-    //Remove duplicated data element codes if there's any
-    return [...new Set(dataElementCodes)];
+    const codes = {
+      numerator: [],
+      denominator: [],
+    };
+
+    Object.values(this.config.dataClasses).forEach(({ numerator, denominator }) => {
+      const numeratorCodesForClass = getCodesFromConfig(numerator);
+      codes.numerator = codes.numerator.concat(numeratorCodesForClass);
+
+      const denominatorCodesForClass = getCodesFromConfig(denominator);
+      codes.denominator = codes.denominator.concat(denominatorCodesForClass);
+    });
+
+    // This ensures each bit of data is only fetched once.
+    // Both sets of results will be available when building.
+    const uniqueNumeratorCodes = new Set(codes.numerator);
+    codes.denominator.forEach(elem => uniqueNumeratorCodes.delete(elem));
+
+    return {
+      numerator: [...uniqueNumeratorCodes],
+      denominator: [...new Set(codes.denominator)],
+    };
   }
 
   async build() {
@@ -81,15 +107,62 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return { data: this.areDataAvailable(data) ? data : [] };
   }
 
+  getAggregationType() {
+    // Can be overwritten in child class
+    return {};
+  }
+
   async fetchResults() {
-    const dataElementCodes = this.getDataElementCodes();
-    const { results } = await this.fetchAnalytics(dataElementCodes);
-    return results;
+    const { numerator: numeratorCodes, denominator: denominatorCodes } = this.getDataElementCodes();
+    const {
+      numerator: numeratorAggregationType,
+      denominator: denominatorAggregationType,
+    } = this.getAggregationType();
+
+    let numeratorResults = [];
+    if (numeratorCodes.length > 0) {
+      numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
+        .results;
+    }
+
+    if (denominatorCodes.length === 0) {
+      return numeratorResults;
+    }
+
+    const { results: denominatorResults } = await this.fetchAnalytics(
+      denominatorCodes,
+      {},
+      denominatorAggregationType,
+    );
+
+    const getResultMapKey = ({ organisationUnit, dataElement, value, period }) =>
+      `${organisationUnit}|${dataElement}|${value}|${period}`;
+
+    const allResults = numeratorResults;
+
+    const numeratorResultsSet = new Set();
+    numeratorResults.forEach(analytic => {
+      numeratorResultsSet.add(getResultMapKey(analytic));
+    });
+
+    // Hack to make sure that there are no duplicated analytics returned to count twice.
+    // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
+    denominatorResults.forEach(analytic => {
+      if (!numeratorResultsSet.has(getResultMapKey(analytic))) {
+        allResults.push(analytic);
+      }
+    });
+
+    return allResults;
   }
 
   buildData(analytics) {
     const dataClasses = [];
-    Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
+    const getSortOrder = ({ sortOrder }) => sortOrder || 0;
+
+    Object.entries(this.config.dataClasses)
+      .sort(([key1, config1], [key2, config2]) => getSortOrder(config1) - getSortOrder(config2))
+      .forEach(([name, dataClass]) => {
       const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
       const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
 
@@ -120,7 +193,12 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         filterAnalyticsFunction,
         fraction.groupBy,
       );
-    } else if (fraction === ORG_UNIT_COUNT) {
+    }
+    if (fraction.groupBeforeCounting) {
+      const groupedAnalytics = groupBy(analytics, fraction.groupBy);
+      return countAnalyticsGroupsThatSatisfyConditions(groupedAnalytics, fraction);
+    }
+    if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
 
@@ -130,8 +208,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   countAnalyticsUsingFilterFunction = (analytics, filterAnalyticsFunction, fractionGroupBy) => {
     let result = 0;
 
-    //If there's groupBy set for analytics, try group the analytics before applying filterAnalyticsFunction.
-    //If not, apply filterAnalyticsFunction to the raw analytics.
+    // If there's groupBy set for analytics, try group the analytics before applying filterAnalyticsFunction.
+    // If not, apply filterAnalyticsFunction to the raw analytics.
     if (fractionGroupBy) {
       const groupedAnalytics = groupBy(analytics, fractionGroupBy);
 
@@ -149,11 +227,12 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 }
 
 export const percentagesOfValueCounts = async (
-  { dataBuilderConfig, query, organisationUnitInfo },
+  { models, dataBuilderConfig, query, organisationUnitInfo },
   aggregator,
   dhisApi,
 ) => {
   const builder = new PercentagesOfValueCountsBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

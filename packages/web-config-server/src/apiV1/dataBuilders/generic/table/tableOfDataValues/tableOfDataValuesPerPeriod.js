@@ -45,7 +45,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
       tableColumns = tableColumns.concat(this.buildBaselineColumns(baselineColumns));
     }
 
-    //Only support for 1 period column at the moment
+    // Only support for 1 period column at the moment
     if (typeof columns === 'object' && columns.type === '$period') {
       const { periodType, name, fillEmptyPeriods } = columns;
       const parsedPeriodType = parsePeriodType(periodType);
@@ -132,7 +132,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 
     rowData = this.populateBaselineDataForRows(rowData, dataElementToRowConfig);
 
-    //Only support for 1 period column at the moment
+    // Only support for 1 period column at the moment
     if (typeof configColumns === 'object' && configColumns.type === '$period') {
       const { periodType } = configColumns;
       const parsedPeriodType = parsePeriodType(periodType);
@@ -197,17 +197,18 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 }
 
 export const tableOfValuesPerPeriod = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new TableOfValuesPerPeriodBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
     entity,
-    dataBuilderConfig.columns.aggregationType, //columns is mandatory in the config of this dataBuilder
+    dataBuilderConfig.columns.aggregationType, // columns is mandatory in the config of this dataBuilder
   );
   return builder.build();
 };

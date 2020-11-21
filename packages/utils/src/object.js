@@ -4,7 +4,7 @@
  */
 
 /**
- * @typedef {Object[] | Object<string, Object>} ObjectCollection
+ * @typedef {Object<string, any>[] | Object<string, Object<string, any>>} ObjectCollection
  */
 
 const compareAsc = (a, b) => {
@@ -24,9 +24,9 @@ const compareDesc = (a, b) => compareAsc(a, b) * -1;
  * Sorts the keys in the provided object by their corresponding values
  * Default direction: ASC
  *
- * @param {Object<string, Object>} object
+ * @param {Object<string, any>} object
  * @param {{ asc: boolean }} options
- * @returns {Array}
+ * @returns {string[]}
  */
 export const getKeysSortedByValues = (object, options = {}) => {
   const { asc = true } = options || {};
@@ -40,8 +40,8 @@ export const getKeysSortedByValues = (object, options = {}) => {
  * Can be used in `Array.prototype.sort` for an array of objects
  *
  * @param {string} key
- * @param {{ ascending: boolean }} options
- * @returns {Function} A `(object1: object, object2: object) => number` function
+ * @param {{ ascending: boolean }} [options]
+ * @returns { (a: Object<string, any>, b: Object<string, any> ) => number }
  */
 export function getSortByKey(key, options) {
   return getSortByExtractedValue(o => o[key], options);
@@ -52,15 +52,15 @@ export function getSortByKey(key, options) {
  * Can be used in `Array.prototype.sort` for an array of objects
  *
  * @param {Function} valueExtractor function to extract the comparison value
- * @param {{ ascending: boolean }} options
- * @returns {Function} A `(object1: object, object2: object) => number` function
+ * @param {{ ascending: boolean }} [options]
+ * @returns { (a: Object<string, any>, b: Object<string, any> ) => number }
  */
 export function getSortByExtractedValue(valueExtractor, options) {
   const compareValuesAscending = (a, b) => {
     const valueA = valueExtractor(a);
     const valueB = valueExtractor(b);
 
-    if (typeof valueA === 'string' && typeof valueB === 'string') { 
+    if (typeof valueA === 'string' && typeof valueB === 'string') {
       return valueA.localeCompare(valueB, undefined, { numeric: true });
     }
 
@@ -162,7 +162,7 @@ export const mapKeys = (object, mapping, { defaultToExistingKeys = false } = {})
  *
  * @param {Object<string, any>} object
  * @param {Object<string, string>} mapping `oldValue` => `newValue` mapping
- * @param {Objcet} options
+ * @param {Object} options
  * @returns {Object<string, any>}
  */
 export const mapValues = (object, mapping, { defaultToExistingValues = false } = {}) => {
@@ -179,3 +179,16 @@ export const mapValues = (object, mapping, { defaultToExistingValues = false } =
 
   return result;
 };
+
+/**
+ * Filters the entries of an object based on its values
+ *
+ * @param {Object<string, any>} object
+ * @param {Function} valueFilter
+ * @returns {Object<string, any>}
+ */
+export const filterValues = (object, valueFilter) =>
+  Object.fromEntries(Object.entries(object).filter(([, value]) => valueFilter(value)));
+
+export const stripFields = (object = {}, fieldsToExclude = []) =>
+  Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));

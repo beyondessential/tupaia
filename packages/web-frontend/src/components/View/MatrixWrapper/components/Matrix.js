@@ -54,7 +54,6 @@ export class Matrix extends PureComponent {
 
     this.state = state;
 
-    this.setExportHandlers();
     this.rowElements = []; // For exporting.
   }
 
@@ -147,142 +146,6 @@ export class Matrix extends PureComponent {
     if (!this.rowElements.includes(rowElement)) {
       this.rowElements.push(rowElement);
     }
-  }
-
-  setExportHandlers() {
-    /* eslint-disable no-param-reassign */
-    if (!window) {
-      return;
-    }
-
-    const { presentationOptions } = this.props;
-    const columnKeys = this.getColumnKeys();
-
-    window.tupaiaExportProps = {
-      currentExportXPage: 0,
-      currentPresentationOption: 0,
-      presentationOptions: Object.keys(presentationOptions),
-      rowElements: [],
-      initExporter: extraConfig => {
-        /* eslint-disable-line */ // Used by aws lambda
-        if (extraConfig.search) {
-          this.search(extraConfig.search);
-        }
-
-        this.currentExportXPage = 0;
-        this.resetClipping();
-        this.changeXPage(0);
-        this.openAll();
-        this.rowElements = this.getOrderedRowElements();
-        this.fitToViewport();
-      },
-      moveToNextExportPage: () => {
-        /* eslint-disable-line */ // Used by aws lambda, needs es5
-        const totalXPages = window.tupaiaExportProps.getXPageCount();
-        this.currentExportXPage++;
-
-        // Advance horizontally by default.
-        if (this.currentExportXPage < totalXPages) {
-          this.changeXPage(this.currentExportXPage);
-          return true;
-        }
-        // Reset column page and advance vertically.
-
-        this.changeXPage(0);
-
-        if (this.clipNext()) {
-          this.currentExportXPage = 0;
-          this.fitToViewport();
-
-          return true;
-        }
-
-        if (this.currentPresentationOption < this.presentationOptions.length) {
-          this.currentPresentationOption++;
-          return true;
-        }
-
-        return false;
-      },
-      getXPageCount: () => {
-        const { numberOfColumnsPerPage } = this.props;
-        return Math.ceil(columnKeys.length / numberOfColumnsPerPage);
-      },
-      getOrderedRowElements: () =>
-        this.rowElements
-          // Filter out stale refs.
-          .filter(e => e && e.getRowElement())
-          // Sort by Y position (refs can be added in any which order by React)
-          .sort((a, b) => a.getRowElement().offsetTop - b.getRowElement().offsetTop),
-      changeXPage: pageNumber => {
-        // 0 based page number index.
-        const { numberOfColumnsPerPage } = this.props;
-        const startColumn = numberOfColumnsPerPage * pageNumber;
-        this.setState({ startColumn });
-      },
-      // Clips to the new set of rows, useful for printing
-      clipNext: () => {
-        this.verticalScroller.style.maxHeight = '100%'; // Reset height.
-
-        const { rowElements } = window.tupaiaExportProps;
-        const scrollWindowHeight = this.verticalScroller.offsetHeight;
-        const rowsToHide = [];
-
-        let r = 0;
-        for (; r < rowElements.length; r++) {
-          const rowElement = rowElements[r] ? rowElements[r].getRowElement() : null;
-          if (rowElement && rowElement.style.display !== 'none') {
-            if (rowElement.offsetHeight + rowElement.offsetTop < scrollWindowHeight) {
-              rowsToHide.push(rowElement);
-            } else {
-              break;
-            }
-          }
-        }
-        rowsToHide.forEach(rowElement => {
-          rowElement.style.display = 'none';
-        });
-
-        // Return true if there are still rows visible on screen, otherwise
-        // return false to signify clipping has gone as far as it can go.
-        return r < rowElements.length - 1;
-      },
-      fitToViewport: () => {
-        this.verticalScroller.style.maxHeight = '100%'; // Reset height.
-        let newScrollHeight = '100%';
-
-        const { rowElements } = window.tupaiaExportProps;
-        const scrollWindowHeight = this.verticalScroller.offsetHeight;
-        const scrollWindowTop = this.verticalScroller.scrollTop;
-        for (let r = 0; r < rowElements.length; r++) {
-          const rowElement = rowElements[r] ? rowElements[r].getRowElement() : null;
-          if (rowElement) {
-            const scrollBottom = scrollWindowHeight + scrollWindowTop;
-            const rowBottom = rowElement.offsetHeight + rowElement.offsetTop;
-            if (scrollBottom < rowBottom) {
-              newScrollHeight = rowElement.offsetTop - scrollWindowTop;
-              break;
-            }
-          }
-        }
-
-        this.verticalScroller.style.maxHeight = `${newScrollHeight}px`;
-      },
-      resetClipping: () => {
-        const { rowElements } = window.tupaiaExportProps;
-
-        rowElements
-          .map(r => r && r.getRowElement())
-          .filter(r => r)
-          .forEach(r => {
-            r.style.display = 'flex';
-          });
-
-        this.forceUpdate();
-      },
-      openAll: () => this.setState({ areAllExpanded: true }),
-      search: searchTerm => this.setState({ searchTerm }),
-    };
   }
 
   moveColumn(distance) {
@@ -395,7 +258,7 @@ export class Matrix extends PureComponent {
         }
 
         const rowData = columns.map(({ key, isGroupHeader }) => ({
-          value: isNaN(cellData[key]) ? cellData[key] : Math.round(cellData[key] * 1000) / 1000, //round the numeric values UP TO 3 decimal places
+          value: isNaN(cellData[key]) ? cellData[key] : Math.round(cellData[key] * 1000) / 1000, // round the numeric values UP TO 3 decimal places
           isGroupBoundary: isGroupHeader,
         }));
 
@@ -434,7 +297,7 @@ export class Matrix extends PureComponent {
 
   renderHeaderRow() {
     const styles = this.props.calculatedStyles;
-    const { columns, title, renderPeriodSelector } = this.props;
+    const { columns, title, hideColumnTitles, renderPeriodSelector } = this.props;
     const { startColumn, searchTerm } = this.state;
     const { numberOfColumnsPerPage } = this.props;
     const searchPlaceholder =
@@ -449,6 +312,7 @@ export class Matrix extends PureComponent {
         numberOfColumnsPerPage={numberOfColumnsPerPage}
         onMoveColumnPress={this.onMoveColumnPress}
         onMoveColumnRelease={this.onMoveColumnRelease}
+        hideColumnTitles={hideColumnTitles}
         styles={styles}
         onSearchTermChange={this.onSearchTermChange}
         searchTerm={searchTerm}
@@ -550,6 +414,7 @@ Matrix.propTypes = {
   rows: PropTypes.arrayOf(rowShape),
   title: PropTypes.string,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE).isRequired,
+  hideColumnTitles: PropTypes.bool,
   isExporting: PropTypes.bool,
   onSearch: PropTypes.func,
   numberOfColumnsPerPage: PropTypes.number.isRequired,
@@ -563,6 +428,7 @@ Matrix.defaultProps = {
   columns: [],
   rows: [],
   title: '',
+  hideColumnTitles: false,
   isExporting: false,
   onSearch: () => {},
   renderPeriodSelector: () => null,

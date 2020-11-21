@@ -23,17 +23,21 @@ const truncateDecimalToPlace = decimalPlace => number => {
   return Math.floor(number * place) / place;
 };
 
+// Note: will display 0 if passed undefined
 const currency = value => numeral(value).format('$0.00a');
+
 const fraction = (value, { total }) => {
   if (isNaN(total)) return 'No data';
   return `${String(value)}/${String(total)}`;
 };
+
 const fractionAndPercentage = (value, { numerator, denominator }) => {
-  // eslint-disable-next-line no-restricted-globals
   if (isNaN(value)) return value;
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
+
 const text = value => String(value);
+
 const boolean = (value, { presentationOptions = {} }) => {
   const isPositive = value > 0;
   const Icon = isPositive ? PositiveIcon : NegativeIcon;
@@ -54,7 +58,6 @@ const boolean = (value, { presentationOptions = {} }) => {
 };
 
 const percentage = value => {
-  // eslint-disable-next-line no-restricted-globals
   if (isNaN(value)) {
     return value;
   }
@@ -82,7 +85,7 @@ const percentage = value => {
 
 const number = (value, { presentationOptions = {} }) => {
   const { valueFormat = '0,0' } = presentationOptions;
-  return numeral(value).format(valueFormat);
+  return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
 };
 
 const defaultFormatter = input =>

@@ -12,6 +12,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Text,
@@ -97,13 +98,13 @@ const LEGEND_ALL_DATA = {
   stackId: 1,
 };
 /**
- * Note
- * ----
+ * Cartesian Chart types using recharts
+ * @see https://recharts.org
+ *
  * Ideally, we would want to extract the various chart subcomponents (Axis, Legend etc)
  * to independent components to isolate their behavior. Unfortunately, for some reason recharts
  * does not work with wrapped components, so we just render everything here
  */
-
 export class CartesianChart extends PureComponent {
   constructor(props) {
     super(props);
@@ -232,14 +233,20 @@ export class CartesianChart extends PureComponent {
     return isEnlarged || chartType === BAR ? undefined : this.renderTickFirstAndLastLabel;
   };
 
+  /*
+    If set 0, all the ticks will be shown.
+    If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
+    @see https://recharts.org/en-US/api/YAxis
+  */
   getXAxisTickInterval = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType } = viewContent;
 
-    if (chartType === BAR) {
-      return !isExporting ? 'preserveStartEnd' : 0;
+    if (chartType === BAR || chartType === COMPOSED) {
+      return isExporting ? 0 : 'preserveStartEnd';
     }
-    return isEnlarged ? 'preservedStartEnd' : 0;
+
+    return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
   formatXAxisTick = tickData => {
@@ -276,12 +283,19 @@ export class CartesianChart extends PureComponent {
     switch (config.type) {
       case 'scale':
         return dataExtreme => dataExtreme * config.value;
+      case 'clamp':
+        return dataExtreme => {
+          const maxClampedVal = config.max ? Math.min(dataExtreme, config.max) : dataExtreme;
+          return config.min ? Math.max(maxClampedVal, config.min) : maxClampedVal;
+        };
       case 'number':
       case 'string':
       default:
         return config.value;
     }
   };
+
+  containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
   renderVerticalTick = props => {
     const { viewContent } = this.props;
@@ -375,7 +389,7 @@ export class CartesianChart extends PureComponent {
     valueType: axisValueType,
   } = {}) => {
     const { isExporting, viewContent } = this.props;
-    const { data, valueType } = viewContent;
+    const { data, valueType, presentationOptions } = viewContent;
 
     return (
       <YAxis
@@ -384,10 +398,12 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         orientation={orientation}
         domain={this.calculateYAxisDomain(yAxisDomain)}
-        allowDataOverflow={valueType === PERCENTAGE}
+        allowDataOverflow={valueType === PERCENTAGE || this.containsClamp(yAxisDomain)}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
-        tickFormatter={value => formatDataValue(value, valueType || axisValueType)}
+        tickFormatter={value =>
+          formatDataValue(value, valueType || axisValueType, { presentationOptions })
+        }
         interval={isExporting ? 0 : 'preserveStartEnd'}
         stroke={isExporting ? DARK_BLUE : 'white'}
       />
@@ -397,16 +413,18 @@ export class CartesianChart extends PureComponent {
   renderTooltip = () => {
     const { viewContent } = this.props;
     const { chartConfig = {} } = this.state;
-    const { chartType, valueType, labelType } = viewContent;
+    const { chartType, valueType, labelType, presentationOptions } = viewContent;
 
     return (
       <Tooltip
+        filterNull={false}
         content={
           <CustomTooltip
             valueType={valueType}
             labelType={labelType}
             periodGranularity={viewContent.periodGranularity}
-            presentationOptions={chartConfig}
+            chartConfig={chartConfig}
+            presentationOptions={presentationOptions}
             chartType={chartType}
           />
         }
@@ -415,15 +433,32 @@ export class CartesianChart extends PureComponent {
   };
 
   renderLegend = () => {
-    const { isEnlarged, viewContent } = this.props;
+    const { isEnlarged, viewContent, isExporting } = this.props;
     const { renderLegendForOneItem } = viewContent;
     const { chartConfig } = this.state;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
     return (
       (hasDataSeries || renderLegendForOneItem) &&
-      isEnlarged && <Legend onClick={this.onLegendClick} formatter={this.formatLegend} />
+      isEnlarged && (
+        <Legend
+          onClick={this.onLegendClick}
+          formatter={this.formatLegend}
+          verticalAlign={isExporting ? 'top' : 'bottom'}
+          wrapperStyle={isExporting ? { top: '-20px' } : {}}
+        />
+      )
     );
+  };
+
+  renderReferenceAreas = () => {
+    const { viewContent } = this.props;
+
+    if (!('referenceAreas' in viewContent)) {
+      return null;
+    }
+
+    return viewContent.referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />);
   };
 
   renderReferenceLines = () => {
@@ -436,7 +471,7 @@ export class CartesianChart extends PureComponent {
   };
 
   renderReferenceLineForAverage = () => {
-    const { isEnlarged, viewContent } = this.props;
+    const { isEnlarged, viewContent, isExporting } = this.props;
     const { valueType, data, presentationOptions } = viewContent;
     // show reference line by default
     const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
@@ -451,7 +486,7 @@ export class CartesianChart extends PureComponent {
         y={average}
         stroke={TUPAIA_ORANGE}
         label={<ReferenceLabel value={formatDataValue(average, valueType)} fill={TUPAIA_ORANGE} />}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       />
     );
   };
@@ -511,7 +546,7 @@ export class CartesianChart extends PureComponent {
   };
 
   renderArea = ({ color = BLUE, dataKey, yAxisId }) => {
-    const { isEnlarged } = this.props;
+    const { isEnlarged, isExporting } = this.props;
 
     return (
       <Area
@@ -521,7 +556,7 @@ export class CartesianChart extends PureComponent {
         type="monotone"
         stroke={color}
         fill={color}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       />
     );
   };
@@ -538,7 +573,7 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         stackId={stackId}
         fill={color}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
         barSize={this.getBarSize()}
       >
         {isExporting && !stackId && (
@@ -567,7 +602,7 @@ export class CartesianChart extends PureComponent {
         stroke={color || defaultColor}
         strokeWidth={isEnlarged ? 3 : 1}
         fill={color || defaultColor}
-        isAnimationActive={isEnlarged}
+        isAnimationActive={isEnlarged && !isExporting}
       >
         {isExporting && (
           <LabelList
@@ -586,15 +621,15 @@ export class CartesianChart extends PureComponent {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
-
-    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
+    const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
-      <ResponsiveContainer width="100%" aspect={responsiveStyle}>
+      <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
         <Chart
           data={this.filterDisabledData(data)}
           margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
         >
+          {this.renderReferenceAreas()}
           {this.renderXAxis()}
           {this.renderYAxes()}
           {this.renderTooltip()}
@@ -611,6 +646,7 @@ export class CartesianChart extends PureComponent {
 CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
+  /** The main chart configuration */
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
 };
 

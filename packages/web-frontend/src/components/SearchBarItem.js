@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { HierarchyItem } from './HierarchyItem';
-import { changeOrgUnit, openMapPopup } from '../actions';
+import { setOrgUnit, openMapPopup } from '../actions';
 import { selectOrgUnit, selectOrgUnitChildren } from '../selectors';
 
 const ICON_BY_ORG_UNIT_TYPE = {
@@ -68,7 +68,7 @@ SearchBarItemComponent.defaultProps = {
 };
 
 const sortOrgUnitsAlphabeticallyByName = orgUnits => {
-  //Sort countries alphabetically, this may not be the case if one country was loaded first
+  // Sort countries alphabetically, this may not be the case if one country was loaded first
   return orgUnits.concat().sort((data1, data2) => {
     if (data1.name > data2.name) return 1;
     if (data1.name < data2.name) return -1;
@@ -92,7 +92,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     onClick: organisationUnitCode => {
-      dispatch(changeOrgUnit(organisationUnitCode));
+      dispatch(setOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
   };

@@ -4,41 +4,33 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 export const ENTITIES_COLUMNS = [
-  {
-    Header: 'Name',
-    source: 'name',
-  },
+  { source: 'id', show: false },
   {
     Header: 'Code',
     source: 'code',
   },
   {
-    Header: 'Type',
-    source: 'type',
+    Header: 'Name',
+    source: 'name',
+    type: 'tooltip',
   },
   {
-    Header: 'Export Survey Responses',
-    source: 'id',
-    type: 'export',
-    width: 200,
-    actionConfig: {
-      exportEndpoint: 'surveyResponses',
-      rowIdQueryParameter: 'entityIds',
-      fileName: '{name} Survey Responses',
-    },
+    Header: 'Type',
+    source: 'type',
   },
 ];
 
 const COLUMNS = [
+  ...ENTITIES_COLUMNS,
   {
     Header: 'Country',
     source: 'country_code',
   },
-  ...ENTITIES_COLUMNS,
 ];
 
 const EXPANSION_CONFIG = [
@@ -65,12 +57,17 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const EntitiesPage = () => (
+export const EntitiesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Entities"
     endpoint="entities"
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+EntitiesPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

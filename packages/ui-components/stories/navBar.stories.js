@@ -54,7 +54,8 @@ const HOME_ALIAS = 'country';
 const isTabActive = (match, location) => {
   if (!match) {
     return false;
-  } else if (match.url === '') {
+  }
+  if (match.url === '') {
     const newPathnames = location.pathname.split('/').filter(x => x);
     return newPathnames[0] === HOME_ALIAS;
   }

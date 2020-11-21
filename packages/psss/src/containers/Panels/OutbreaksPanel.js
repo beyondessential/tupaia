@@ -15,17 +15,18 @@ import {
   WarningCloud,
   LinkButton,
 } from '@tupaia/ui-components';
+import { useParams } from 'react-router-dom';
 import {
   Drawer,
   AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
-  NotesTab,
   DrawerTray,
   DropdownMenu,
 } from '../../components';
+import { NotesTab } from '../NotesTab';
 import * as COLORS from '../../constants/colors';
-import { countryFlagImage } from '../../utils';
+import { countryFlagImage, getCountryName } from '../../utils';
 import { connectApi } from '../../api';
 import { useFetch } from '../../hooks';
 
@@ -40,10 +41,10 @@ const Option = styled.span`
 
 const menuOptions = [
   {
-    value: 'Alert',
+    value: 'Outbreak',
     label: (
       <Option>
-        <WarningCloud /> Alert
+        <Virus /> Outbreak
       </Option>
     ),
   },
@@ -51,15 +52,7 @@ const menuOptions = [
     value: 'Archive',
     label: (
       <Option>
-        <MoveToInbox /> Archive Alert
-      </Option>
-    ),
-  },
-  {
-    value: 'Outbreak',
-    label: (
-      <Option>
-        <Virus /> Create Outbreak
+        <MoveToInbox /> End and Archive
       </Option>
     ),
   },
@@ -78,6 +71,7 @@ export const OutbreaksPanelComponent = ({
   const sitesState = useFetch(fetchSitesData);
   const notesState = useFetch(fetchNotesData);
   const activityState = useFetch(fetchActivityData);
+  const { countryCode } = useParams();
 
   const handleChange = option => {
     console.log('handle change...', option);
@@ -97,7 +91,7 @@ export const OutbreaksPanelComponent = ({
           dateText="Outbreak Start Date:"
           date="Mar 6, 2020"
           avatarUrl={countryFlagImage('as')}
-          subheading="American Samoa"
+          subheading={getCountryName(countryCode)}
           heading="Measles"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />

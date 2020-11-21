@@ -1,9 +1,8 @@
 import { expect } from 'chai';
 
-import { generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from './TestableApp';
 import { registerHook } from '../hooks';
-import { buildAndInsertSurveys } from '@tupaia/database/dist/testUtilities/buildAndInsertSurveys';
 
 const ENTITY_ID = generateTestId();
 
@@ -38,8 +37,8 @@ const SURVEYS = [
 
 describe('Question hooks', () => {
   const app = new TestableApp();
-  const models = app.models;
-  const database = models.database;
+  const { models } = app;
+  const { database } = models;
 
   const createHookSpy = name => {
     // register the hook
@@ -251,6 +250,11 @@ describe('Question hooks', () => {
 
       const entity = await models.entity.findById(ENTITY_ID);
       expect(entity.image_url).to.equal(TEST_URL);
+
+      // should be otherwise unchanged
+      const { image_url: beforeImageUrl, ...beforeData } = await beforeEntity.getData();
+      const { image_url: afterImageUrl, ...afterData } = await entity.getData();
+      expect(beforeData).to.deep.equal(afterData);
     });
 
     describe('Entity creation', () => {

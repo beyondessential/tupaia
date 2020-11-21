@@ -7,12 +7,12 @@ import React from 'react';
 import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import {
-  ConnectedTable,
   createTotalCasesAccessor,
   AlertCell,
   SitesReportedCell,
   WeekAndDateCell,
 } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
 
 const countrySummaryTableColumns = [
   {
@@ -65,7 +65,7 @@ const TableHeader = () => {
 };
 
 export const CountrySummaryTable = React.memo(() => (
-  <React.Fragment>
+  <>
     <TableHeader />
     <ConnectedTable
       endpoint="country-weeks"
@@ -73,5 +73,5 @@ export const CountrySummaryTable = React.memo(() => (
       Header={false}
       Body={CondensedTableBody}
     />
-  </React.Fragment>
+  </>
 ));

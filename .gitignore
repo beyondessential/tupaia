@@ -1,4 +1,5 @@
 *.env*
+!*.env.example*
 .DS_Store
 **/node_modules
 **/coverage
@@ -17,3 +18,4 @@ dump.sql
 **/cypress/videos
 /snapshots.js
 .idea
+dockercfg

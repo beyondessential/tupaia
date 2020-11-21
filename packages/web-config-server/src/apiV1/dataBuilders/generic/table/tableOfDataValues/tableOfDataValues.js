@@ -8,7 +8,6 @@ import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToSet } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { Entity } from '/models';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
@@ -27,8 +26,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const { results, period } = await this.fetchAnalyticsAndMetadata();
     this.results = results;
-    this.tableConfig = new TableConfig(this.config, this.results);
-    this.valuesByCell = this.buildValuesByCell();
+    this.tableConfig = new TableConfig(this.models, this.config, this.results);
+    this.valuesByCell = await this.buildValuesByCell();
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
     this.rowsToDescriptions = {};
 
@@ -58,6 +57,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   async fetchAnalyticsAndMetadata() {
     const dataElementCodes = this.buildDataElementCodes();
+    // There are some valid configs which don't fetch any data
+    if (dataElementCodes.length === 0) return { results: [] };
+
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
@@ -70,7 +72,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   buildDataElementCodes() {
-    return [...new Set(flatten(this.config.cells))];
+    return [...new Set(flatten(this.config.cells))].filter(
+      cell => !TotalCalculator.isTotalKey(cell),
+    );
   }
 
   buildValuesByCell() {
@@ -228,7 +232,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) {
       this.buildOrgsFromResults();
     }
-    
+
     if (this.tableConfig.columns === ORG_UNIT_WITH_TYPE_COL_KEY) {
       this.buildOrgsFromResultsWithCategories();
     }
@@ -292,7 +296,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   getOrgUnitCategoryToTitle = async dimension => {
     const orgUnitCodes = dimension.map(({ category }) => category);
-    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
     const orgUnitCodeToName = reduceToDictionary(orgUnits, 'code', 'name');
 
     return code => orgUnitCodeToName[code];
@@ -324,7 +328,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   calculateCategoryTotals = rows => {
     const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
     return rows.reduce((columnAggregates, row) => {
-      const categoryId = row.categoryId;
+      const { categoryId } = row;
       const categoryTotals = columnAggregates[categoryId] || {};
       Object.keys(row).forEach(key => {
         if (!rowKeysToIgnore.has(key)) {
@@ -374,7 +378,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   fetchOrgUnitCodesToName = async columns => {
     const orgUnitCodes = columns.map(c => c.title);
-    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
     return reduceToDictionary(orgUnits, 'code', 'name');
   };
 
@@ -390,11 +394,12 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 }
 
 export const tableOfDataValues = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new TableOfDataValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

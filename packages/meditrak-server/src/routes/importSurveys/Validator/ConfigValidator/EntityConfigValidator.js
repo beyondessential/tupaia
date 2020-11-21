@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { constructIsNotPresentOr, hasContent } from '@tupaia/utils';
 import { constructListItemsAreOneOf, validateIsYesOrNo } from '../../validatorFunctions';
@@ -51,6 +51,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       parent: [pointsToValidPrecedingEntityQuestion],
       grandparent: [pointsToValidPrecedingEntityQuestion],
+      'attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
     };
   }
 

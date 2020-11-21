@@ -18,7 +18,7 @@ const exampleNameRegex = /chewbacca/i;
 const fetchOptions = async () => {
   const users = await API.get('users');
   const knownUser = { id: 'chewy', name: exampleName };
-  return users.data.concat(knownUser);
+  return users.data.concat(knownUser).map(option => option.name);
 };
 
 function renderAsyncAutocomplete() {
@@ -33,7 +33,7 @@ function renderAsyncAutocomplete() {
   );
 }
 
-describe('autocomplete', () => {
+describe('asyncAutocomplete', () => {
   it('renders', async () => {
     renderAsyncAutocomplete();
     expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument();

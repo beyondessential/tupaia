@@ -7,11 +7,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MuiButton from '@material-ui/core/Button';
-import MuiAvatar from '@material-ui/core/Avatar';
 import Popper from '@material-ui/core/Popper';
 import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
+import { Avatar } from './Avatar';
 import { FlexStart } from './Layout';
 
 const StyledListItem = styled(MuiListItem)`
@@ -46,9 +47,8 @@ const Paper = styled.div`
   min-width: 13rem;
 `;
 
-const Avatar = styled(MuiAvatar)`
+const StyledAvatar = styled(Avatar)`
   color: white;
-  background: ${props => props.theme.palette.success.main};
   font-weight: 600;
 `;
 
@@ -96,58 +96,60 @@ const StyledButton = styled(MuiButton)`
   }
 
   .MuiAvatar-root {
-    color: white;
-    background: ${props => props.theme.palette.success.main};
     font-size: 0.8rem;
-    font-weight: 600;
   }
 `;
 
-export const ProfileButton = ({ user, MenuOptions, className }) => {
+export const ProfileButton = React.memo(({ user, MenuOptions, className }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleClick = event => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
 
   const open = Boolean(anchorEl);
   const userInitial = user.name.substring(0, 1);
   const userFirstName = user.firstName ? user.firstName : user.name.replace(/ .*/, '');
 
   return (
-    <>
-      <StyledButton
-        onClick={handleClick}
-        className={className}
-        endIcon={<Avatar>{userInitial}</Avatar>}
-      >
-        {userFirstName}
-      </StyledButton>
-      <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
-        <Paper>
-          <Header>
-            <Avatar>{userInitial}</Avatar>
-            <Details>
-              <NameText>{user.name}</NameText>
-              <EmailText>{user.email}</EmailText>
-            </Details>
-          </Header>
-          <MuiList>
-            <MenuOptions />
-          </MuiList>
-        </Paper>
-      </Popper>
-    </>
+    <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+      <div>
+        <StyledButton
+          onClick={event => setAnchorEl(anchorEl ? null : event.currentTarget)}
+          className={className}
+          endIcon={
+            <StyledAvatar src={user.profileImage || null} initial={userInitial}>
+              {userInitial}
+            </StyledAvatar>
+          }
+        >
+          {userFirstName}
+        </StyledButton>
+        <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
+          <Paper>
+            <Header>
+              <StyledAvatar src={user.profileImage || null} initial={userInitial}>
+                {userInitial}
+              </StyledAvatar>
+              <Details>
+                <NameText>{user.name}</NameText>
+                <EmailText>{user.email}</EmailText>
+              </Details>
+            </Header>
+            <MuiList>
+              <MenuOptions />
+            </MuiList>
+          </Paper>
+        </Popper>
+      </div>
+    </ClickAwayListener>
   );
-};
+});
 
 ProfileButton.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     firstName: PropTypes.string,
+    profileImage: PropTypes.string,
   }).isRequired,
-  MenuOptions: PropTypes.any.isRequired,
+  MenuOptions: PropTypes.element.isRequired,
   className: PropTypes.string,
 };
 

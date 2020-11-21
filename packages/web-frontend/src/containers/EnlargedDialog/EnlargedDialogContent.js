@@ -5,6 +5,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -12,22 +13,64 @@ import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import IconButton from 'material-ui/IconButton';
 import moment from 'moment';
+import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
-import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE } from '../../styles';
+import { DIALOG_Z_INDEX, DARK_BLUE, WHITE } from '../../styles';
 import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
+import { LoadingIndicator } from '../Form/common';
+
+const StyledAlert = styled(Alert)`
+  display: inline-flex;
+  min-width: 240px;
+`;
+
+const ExportDateText = styled.div`
+  padding-bottom: 5px;
+  text-align: center;
+  font-size: 12px;
+  color: #333333;
+  background: white;
+`;
+
+const Description = styled(DialogContentText)`
+  margin-top: 0;
+  margin-bottom: 20px;
+  line-height: 1.15;
+  padding: 0 30px;
+  text-align: center;
+`;
+
+const formatDate = date => moment(date).format('DD/MM/YY');
+
+const ExportDate = ({ startDate, endDate }) => {
+  const date = String(moment());
+  return (
+    <ExportDateText>
+      {startDate &&
+        endDate &&
+        `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
+      Exported {date}
+    </ExportDateText>
+  );
+};
+
+ExportDate.propTypes = {
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+};
+
+ExportDate.defaultProps = {
+  startDate: null,
+  endDate: null,
+};
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      extraChartConfig: {}, // Bridge for connecting chart to exporter.
-    };
-
     this.onItemClick = this.onItemClick.bind(this);
     this.renderPeriodSelector = this.renderPeriodSelector.bind(this);
-    this.onChangeConfig = this.onChangeConfig.bind(this);
     this.onSetDateRange = this.onSetDateRange.bind(this);
   }
 
@@ -39,13 +82,6 @@ export class EnlargedDialogContent extends PureComponent {
   onSetDateRange(startDate, endDate) {
     const { onSetDateRange } = this.props;
     onSetDateRange(startDate, endDate);
-    this.onChangeConfig({ startDate, endDate });
-  }
-
-  onChangeConfig(newConfigFields) {
-    this.setState(previousState => ({
-      extraChartConfig: { ...previousState.extraChartConfig, ...newConfigFields },
-    }));
   }
 
   isExportable() {
@@ -54,7 +90,7 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderTitle() {
-    const { viewContent, organisationUnitName } = this.props;
+    const { viewContent, organisationUnitName, isExporting } = this.props;
     let titleText;
     if (getIsMatrix(viewContent)) {
       return null;
@@ -67,35 +103,36 @@ export class EnlargedDialogContent extends PureComponent {
       titleText = `${viewContent.name}, ${viewContent.entityHeader}`;
     else titleText = `${name}${organisationUnitName ? `, ${organisationUnitName} ` : ''}`;
 
+    const style = {
+      textAlign: 'center',
+      color: isExporting ? DARK_BLUE : WHITE,
+    };
+
     return (
-      <DialogTitle style={styles.title}>
-        <p style={styles.titleText}>{titleText}</p>
+      <DialogTitle style={style}>
+        <span style={styles.titleText}>{titleText}</span>
         {periodGranularity && this.renderPeriodSelector()}
       </DialogTitle>
     );
   }
 
   renderBody() {
-    const { viewContent, drillDownOverlay } = this.props;
-    const getStyle = () => {
-      if (getIsMatrix(viewContent)) return styles.matrixContent;
-      if (viewContent.chartType) return styles.chartContent;
-      return {}; // No custom styling for other types of dialog content
-    };
-    return (
-      <div style={getStyle()}>
-        {viewContent.data && viewContent.data.length === 0 ? (
-          <div style={{ color: OFF_WHITE }}>No data found for this time period</div>
-        ) : (
-          this.renderBodyContent()
-        )}
-        {drillDownOverlay}
-      </div>
-    );
+    const { viewContent, errorMessage } = this.props;
+    const noData = viewContent.data && viewContent.data.length === 0;
+
+    if (errorMessage) {
+      return <StyledAlert severity="error">{errorMessage}</StyledAlert>;
+    }
+
+    if (noData) {
+      return <StyledAlert severity="info">No data found for this time period</StyledAlert>;
+    }
+
+    return this.renderBodyContent();
   }
 
   renderBodyContent() {
-    const { viewContent, onCloseOverlay, organisationUnitName } = this.props;
+    const { viewContent, onCloseOverlay, organisationUnitName, isExporting } = this.props;
     const ViewWrapper = getViewWrapper(viewContent);
     const viewProps = {
       viewContent,
@@ -106,26 +143,28 @@ export class EnlargedDialogContent extends PureComponent {
     if (getIsMatrix(viewContent)) {
       viewProps.organisationUnitName = organisationUnitName;
       viewProps.onSetDateRange = this.onSetDateRange;
-      viewProps.onChangeConfig = this.onChangeConfig;
     }
 
-    return <ViewWrapper {...viewProps} />;
+    return <ViewWrapper {...viewProps} isExporting={isExporting} />;
   }
 
   renderDescription() {
-    const { viewContent } = this.props;
+    const { viewContent, isExporting } = this.props;
     const { description } = viewContent;
 
-    if (!description) {
+    if (isExporting || !description) {
       return null;
     }
 
-    return <DialogContentText style={styles.description}>{description}</DialogContentText>;
+    return <Description>{description}</Description>;
   }
 
   renderToolbar() {
-    const { onCloseOverlay, onExport, CloseIcon, toolbarStyle } = this.props;
-    const { extraChartConfig } = this.state;
+    const { onCloseOverlay, onOpenExportDialog, CloseIcon, toolbarStyle, isExporting } = this.props;
+
+    if (isExporting) {
+      return null;
+    }
 
     return (
       <div style={{ ...styles.toolbar, ...toolbarStyle }}>
@@ -133,13 +172,12 @@ export class EnlargedDialogContent extends PureComponent {
           <IconButton
             style={styles.toolbarButton}
             iconStyle={styles.toolbarButtonIcon}
-            onClick={() => onExport(extraChartConfig)}
+            onClick={onOpenExportDialog}
           >
             <DownloadIcon />
           </IconButton>
         ) : null}
         <IconButton
-          data-testid="enlarged-dialog-close-btn"
           style={styles.toolbarButton}
           iconStyle={styles.toolbarButtonIcon}
           onClick={onCloseOverlay}
@@ -151,14 +189,11 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderPeriodSelector() {
-    const { onSetDateRange, isLoading, viewContent } = this.props;
+    const { onSetDateRange, isLoading, viewContent, isExporting } = this.props;
     const { periodGranularity, startDate, endDate } = viewContent;
-    if (!periodGranularity) {
-      return null;
-    }
 
     return (
-      <div style={styles.periodSelector}>
+      <div style={styles.periodSelector(isExporting)}>
         <DateRangePicker
           align="center"
           granularity={periodGranularity}
@@ -188,42 +223,58 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   render() {
+    if (!this.props.viewContent) return <LoadingIndicator />;
+
     const isMatrix = getIsMatrix(this.props.viewContent);
+    const { isExporting, exportRef, viewContent, drillDownOverlay } = this.props;
+
     const contentStyle = {
-      ...styles.body,
+      overflowY: isExporting ? 'visible' : 'auto',
       padding: isMatrix ? 0 : 20,
     };
 
+    const getBodyStyle = () => {
+      if (isMatrix) return styles.matrixContent;
+      if (viewContent.chartType) return styles.chartContent;
+      return {}; // No custom styling for other types of dialog content
+    };
+
     return (
-      <div data-testid="enlarged-dialog">
+      <div
+        data-testid="enlarged-dialog"
+        ref={exportRef}
+        style={{ backgroundColor: isExporting ? WHITE : DARK_BLUE }}
+      >
+        {this.renderToolbar()}
         {this.renderTitle()}
+        {this.renderDescription()}
         <DialogContent style={contentStyle}>
-          {this.renderToolbar()}
-          {this.renderDescription()}
-          {this.renderBody()}
+          <div style={getBodyStyle()}>
+            {this.renderBody()}
+            {drillDownOverlay}
+          </div>
           {this.renderPeriodRange()}
         </DialogContent>
+        {isExporting && (
+          <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
+        )}
       </div>
     );
   }
 }
 
 const styles = {
-  title: {
-    backgroundColor: DARK_BLUE,
-  },
   titleText: {
+    display: 'inline-block',
     textAlign: 'center',
-  },
-  body: {
-    backgroundColor: DARK_BLUE,
-  },
-  description: {
-    marginTop: 0,
-    marginBottom: 20,
-    lineHeight: 1.15,
+    color: 'inherit',
+    marginTop: '18px',
+    marginBottom: '10px',
   },
   chartContent: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     height: 350,
   },
   matrixContent: {
@@ -237,12 +288,17 @@ const styles = {
     backgroundColor: 'rgba(255,255,255,0.2)',
     zIndex: DIALOG_Z_INDEX,
   },
-  periodSelector: {
-    fontSize: 14,
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: 5,
-    marginBottom: 5,
+  periodSelector: isExporting => {
+    return {
+      fontSize: 14,
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: 5,
+      marginBottom: 5,
+      overflow: 'hidden',
+      transition: isExporting ? '' : '0.5s height ease',
+      height: isExporting ? '0' : '46px',
+    };
   },
   periodSelectorMenu: {
     marginTop: 0,
@@ -280,15 +336,18 @@ const styles = {
 EnlargedDialogContent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
-  onExport: PropTypes.func,
+  onOpenExportDialog: PropTypes.func,
   organisationUnitName: PropTypes.string,
   onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
   isDrilledDown: PropTypes.bool,
   isLoading: PropTypes.bool,
+  errorMessage: PropTypes.string,
   isVisible: PropTypes.bool,
+  isExporting: PropTypes.bool,
   drillDownOverlay: PropTypes.element,
   CloseIcon: PropTypes.func,
+  exportRef: PropTypes.object,
   toolbarStyle: PropTypes.shape({}),
 };
 
@@ -297,11 +356,14 @@ EnlargedDialogContent.defaultProps = {
   onSetDateRange: () => {},
   isDrilledDown: false,
   isLoading: false,
+  errorMessage: null,
   isVisible: false,
+  isExporting: false,
   drillDownOverlay: null,
   organisationUnitName: '',
-  onExport: null,
+  onOpenExportDialog: null,
   CloseIcon: DefaultCloseIcon,
   toolbarStyle: {},
   viewContent: null,
+  exportRef: null,
 };

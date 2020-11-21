@@ -56,7 +56,7 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
 
       return {
         name: dataClassKey,
-        value: value,
+        value,
         [`${dataClassKey}_metadata`]: {
           numerator,
           denominator,
@@ -128,12 +128,13 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
 }
 
 const basicPercentagesPerDataClass = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
   aggregationType,
 ) => {
   const builder = new PercentagesPerDataClassDataBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

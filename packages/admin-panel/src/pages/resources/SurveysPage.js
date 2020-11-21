@@ -4,12 +4,14 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const SURVEY_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Code',
@@ -62,7 +64,16 @@ const SURVEY_COLUMNS = [
           Header: 'Data Service',
           source: 'data_source.service_type',
           editConfig: {
-            options: ['dhis', 'tupaia'],
+            options: [
+              {
+                label: 'DHIS',
+                value: 'dhis',
+              },
+              {
+                label: 'Tupaia',
+                value: 'tupaia',
+              },
+            ],
             setFieldsOnChange: (newValue, currentRecord) => {
               const { isDataRegional = true } = currentRecord['data_source.config'];
               const config = newValue === 'dhis' ? { isDataRegional } : {};
@@ -98,6 +109,7 @@ const SURVEY_COLUMNS = [
                 label: 'MS1',
                 fieldName: 'ms1',
                 type: 'json',
+                variant: 'grey',
                 getJsonFieldSchema: () => [
                   {
                     label: 'Endpoint',
@@ -136,6 +148,7 @@ const QUESTION_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    type: 'tooltip',
     editable: false,
   },
   {
@@ -145,22 +158,27 @@ const QUESTION_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Question',
     source: 'text',
+    type: 'tooltip',
   },
   {
     Header: 'Detail',
     source: 'detail',
+    type: 'tooltip',
   },
   {
     Header: 'Question Label',
     source: 'question_label',
+    type: 'tooltip',
   },
   {
     Header: 'Detail Label',
     source: 'detail_label',
+    type: 'tooltip',
   },
 ];
 
@@ -212,6 +230,21 @@ const QUESTION_COLUMNS = [
                     getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
                   },
                   {
+                    label: 'Attributes',
+                    fieldName: 'attributes',
+                    type: 'json',
+                    getJsonFieldSchema: () => [
+                      {
+                        label: 'Type',
+                        fieldName: 'type',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                    ],
+                  },
+                  {
                     label: 'Name',
                     fieldName: 'name',
                     type: 'json',
@@ -233,6 +266,28 @@ const QUESTION_COLUMNS = [
                   { label: 'Type', fieldName: 'type' },
                   { label: 'Prefix', fieldName: 'prefix' },
                   { label: 'Length', fieldName: 'length' },
+                ],
+              },
+              {
+                label: 'Autocomplete',
+                fieldName: 'autocomplete',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Attributes',
+                    fieldName: 'attributes',
+                    type: 'json',
+                    getJsonFieldSchema: () => [
+                      {
+                        label: 'Parent Project',
+                        fieldName: 'parent_project',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                    ],
+                  },
                 ],
               },
             ],
@@ -296,7 +351,16 @@ const IMPORT_CONFIG = {
       label: 'Data service',
       secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
       parameterKey: 'serviceType',
-      options: ['dhis', 'tupaia'],
+      options: [
+        {
+          label: 'DHIS',
+          value: 'dhis',
+        },
+        {
+          label: 'Tupaia',
+          value: 'tupaia',
+        },
+      ],
     },
   ],
 };
@@ -305,7 +369,7 @@ const EDIT_CONFIG = {
   title: 'Edit Survey',
 };
 
-export const SurveysPage = () => (
+export const SurveysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Surveys"
     endpoint="surveys"
@@ -313,5 +377,10 @@ export const SurveysPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+SurveysPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

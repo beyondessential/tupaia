@@ -4,6 +4,8 @@
  */
 
 export * from './actions';
+export { LOGOUT } from './constants';
 export * from './selectors';
 export { reducer } from './reducer';
-export { LoginModal } from './LoginModal';
+export { ProfileButton } from './ProfileButton';
+export { PrivateRoute } from './PrivateRoute';

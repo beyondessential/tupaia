@@ -7,33 +7,47 @@ import flatten from 'lodash.flatten';
 import flattenDeep from 'lodash.flattendeep';
 
 import { getCalculatedValuesByCell } from './getValuesByCell';
+import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
+
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-class TableOfCalculatedValues extends TableOfDataValuesBuilder {
+class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
       this.config.cells.map(row =>
-        row.map(cell => cell.operands.map(operand => operand.dataValues)),
+        row.map(cell =>
+          typeof cell === 'string' ? cell : getDataElementsFromCalculateOperationConfig(cell),
+        ),
       ),
     );
     return [...new Set(dataElementCodes)];
   }
 
   getCellKey(rowIndex, columnIndex) {
-    return this.tableConfig.cells[rowIndex][columnIndex].key;
+    return (
+      this.tableConfig.cells[rowIndex][columnIndex].key ??
+      this.tableConfig.cells[rowIndex][columnIndex]
+    );
   }
 
-  buildValuesByCell() {
-    return getCalculatedValuesByCell(flatten(this.tableConfig.cells), this.results);
+  async buildValuesByCell() {
+    const hierarchyId = await this.fetchEntityHierarchyId();
+    return getCalculatedValuesByCell(
+      this.models,
+      flatten(this.tableConfig.cells),
+      this.results,
+      hierarchyId,
+    );
   }
 }
 
 export const tableOfCalculatedValues = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
-  const builder = new TableOfCalculatedValues(
+  const builder = new TableOfCalculatedValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

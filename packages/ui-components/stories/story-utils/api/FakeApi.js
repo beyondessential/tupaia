@@ -5,7 +5,6 @@
 import faker from 'faker';
 
 export class FakeAPI {
-  // eslint-disable-next-line class-methods-use-this
   sleep(delay = 0) {
     return new Promise(resolve => {
       setTimeout(resolve, delay);
@@ -57,7 +56,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   countryWeek() {
     return {
       id: faker.random.uuid(),
@@ -95,7 +93,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   siteWeek() {
     return {
       id: faker.random.uuid(),
@@ -127,7 +124,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   country() {
     return {
       id: faker.random.uuid(),
@@ -159,7 +155,6 @@ export class FakeAPI {
     };
   }
 
-  // eslint-disable-next-line class-methods-use-this
   user() {
     return {
       id: faker.random.uuid(),

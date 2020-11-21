@@ -6,6 +6,7 @@
 export const TYPES = {
   ALERT: 'alert',
   ALERT_COMMENT: 'alert_comment',
+  ANCESTOR_DESCENDANT_RELATION: 'ancestor_descendant_relation',
   ANSWER: 'answer',
   ACCESS_REQUEST: 'access_request',
   API_CLIENT: 'api_client',
@@ -27,6 +28,7 @@ export const TYPES = {
   FACILITY: 'clinic',
   FEED_ITEM: 'feed_item',
   GEOGRAPHICAL_AREA: 'geographical_area',
+  INDICATOR: 'indicator',
   MAP_OVERLAY: 'mapOverlay',
   MAP_OVERLAY_GROUP: 'map_overlay_group',
   MAP_OVERLAY_GROUP_RELATION: 'map_overlay_group_relation',
@@ -41,6 +43,7 @@ export const TYPES = {
   PROJECT: 'project',
   QUESTION: 'question',
   REFRESH_TOKEN: 'refresh_token',
+  REPORT: 'report',
   SETTING: 'setting',
   SURVEY_GROUP: 'survey_group',
   SURVEY_RESPONSE: 'survey_response',

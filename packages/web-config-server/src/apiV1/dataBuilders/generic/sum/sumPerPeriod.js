@@ -41,7 +41,7 @@ class SumPerPeriodBuilder extends DataBuilder {
 
     results.forEach(({ period: dataPeriod, value, dataElement }) => {
       const dataClass = dataElementToDataClass[dataElement];
-      const convertPeriod = configPeriodType //Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
+      const convertPeriod = configPeriodType // Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
         ? convertToPeriod(dataPeriod, configPeriodType)
         : dataPeriod;
 
@@ -82,13 +82,14 @@ class SumPerPeriodBuilder extends DataBuilder {
   }
 }
 
-const sumPerPeriod = async (
-  { dataBuilderConfig, query, entity },
+export const sumPerPeriod = async (
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
-  aggregationType,
 ) => {
+  const { aggregationType } = dataBuilderConfig;
   const builder = new SumPerPeriodBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,
@@ -98,15 +99,3 @@ const sumPerPeriod = async (
   );
   return builder.build();
 };
-
-export const sumPerDay = (config, aggregator, dhisApi) =>
-  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_DAY);
-
-export const sumAllPreviousPerDay = (config, aggregator, dhisApi) =>
-  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.SUM_PREVIOUS_EACH_DAY);
-
-export const sumPerWeek = (config, aggregator, dhisApi) =>
-  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_WEEK);
-
-export const sumPerMonth = (config, aggregator, dhisApi) =>
-  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_MONTH);

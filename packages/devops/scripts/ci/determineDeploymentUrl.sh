@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ $CI_BRANCH == "master" ]];then
-   echo "tupaia.org"
+if [[ $CI_BRANCH == "master" ]]; then
+    echo "tupaia.org"
 else
-   echo "${CI_BRANCH}.tupaia.org"
+    echo "${CI_BRANCH}.tupaia.org"
 fi

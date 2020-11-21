@@ -67,7 +67,8 @@ export class PieChart extends PureComponent {
       return {
         wrapperStyle: VIEW_STYLES.legendExporting,
       };
-    } else if (isEnlarged && !isMobile()) {
+    }
+    if (isEnlarged && !isMobile()) {
       return {
         wrapperStyle: {
           paddingTop: '20px',
@@ -238,7 +239,7 @@ export class PieChart extends PureComponent {
             activeShape={this.renderActiveShape}
             onMouseOver={this.handleMouseEnter}
             onMouseOut={this.handleMouseOut}
-            isAnimationActive={isEnlarged}
+            isAnimationActive={!isExporting && isEnlarged}
             onClick={this.onItemClick}
             label={isExporting}
             startAngle={360 + 90}

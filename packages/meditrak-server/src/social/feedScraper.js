@@ -1,7 +1,7 @@
 /**
  ** Tupaia MediTrak
  ** Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import winston from 'winston';
 import { ANSWER_TYPES } from '../database/models/Answer';
 
@@ -67,7 +67,7 @@ const addLatestSurveyFeedItems = async models => {
       } = await surveyResponse.country();
       const { id: userId, fullName: authorName } = await surveyResponse.user();
       if (SKIPPED_COUNTRY_CODES.includes(countryCode)) {
-        continue; // eslint-disable-line no-continue
+        continue;
       }
 
       const photoAnswer = await models.answer.findOne(
@@ -79,8 +79,8 @@ const addLatestSurveyFeedItems = async models => {
       );
       const imageUrl = photoAnswer ? photoAnswer.text : null;
       const link = facilityCode
-        ? `https://mobile.tupaia.org/facility/${facilityCode}`
-        : `https://mobile.tupaia.org/country/${countryCode}`;
+        ? `https://mobile.tupaia.org/explore/${facilityCode}`
+        : `https://mobile.tupaia.org/explore/${countryCode}`;
 
       await models.feedItem.create({
         type,

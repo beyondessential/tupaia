@@ -45,8 +45,12 @@
       "path": "packages/eslint-config-typescript"
     },
     {
-      "name": "export-chart-lambda",
-      "path": "packages/export-chart-lambda"
+      "name": "expression-parser",
+      "path": "packages/expression-parser"
+    },
+    {
+      "name": "indicators",
+      "path": "packages/indicators"
     },
     {
       "name": "meditrak-app",
@@ -61,12 +65,20 @@
       "path": "packages/meditrak-server"
     },
     {
+      "name": "report-server",
+      "path": "packages/report-server"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },
     {
       "name": "utils",
       "path": "packages/utils"
+    },
+    {
+      "name": "weather-api",
+      "path": "packages/weather-api"
     },
     {
       "name": "web-config-server",
@@ -78,19 +90,25 @@
     }
   ],
   "settings": {
+    "cSpell.language": "en-GB",
     "cSpell.words": [
+      "Codeship",
       "DHIS",
       "MediTrak",
       "Tongatapu",
       "Tupaia",
       "analytics",
+      "beyondessential",
       "cacheable",
+      "cachers",
       "cleanup",
+      "debouncing",
       "deleters",
       "dialogs",
       "enroll",
       "enrollment",
       "enrollments",
+      "eqeqeq",
       "eventdate",
       "geojson",
       "groupby",
@@ -99,6 +117,7 @@
       "keyby",
       "migrator",
       "oucode",
+      "postgresql",
       "preaggregate",
       "preaggregated",
       "preaggregating",
@@ -107,11 +126,12 @@
       "preaggregators",
       "promisify",
       "singularise",
-      "Tongatapu",
-      "Tupaia",
-      "updaters",
+      "spec",
+      "specs",
       "testid",
-      "upsert"
+      "updaters",
+      "upsert",
+      "vars"
     ],
     "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {

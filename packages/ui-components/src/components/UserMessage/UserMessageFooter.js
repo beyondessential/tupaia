@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { FlexSpaceBetween } from '../Layout';
+import { Avatar } from '../Avatar';
 import { AM_PM_DATE_FORMAT, DAY_MONTH_YEAR_DATE_FORMAT } from '../../constants';
 
 const FooterContainer = styled.div`
@@ -40,21 +40,30 @@ const FooterAvatar = styled(Avatar)`
   height: 1.25rem;
 `;
 
-export const UserMessageFooter = ({ dateTime, user }) => (
-  <FooterContainer>
-    <FooterInner>
-      <FooterText>
-        Last updated on: {format(dateTime, `${DAY_MONTH_YEAR_DATE_FORMAT} - ${AM_PM_DATE_FORMAT}`)}
-      </FooterText>
-      <FlexSpaceBetween>
-        <FooterUser>{user.name}</FooterUser>
-        <FooterAvatar src={user.avatar} />
-      </FlexSpaceBetween>
-    </FooterInner>
-  </FooterContainer>
-);
+export const UserMessageFooter = ({ dateTime, user }) => {
+  const userInitial = user.name.substring(0, 1);
+  return (
+    <FooterContainer>
+      <FooterInner>
+        <FooterText>
+          Last updated on:{' '}
+          {format(dateTime, `${DAY_MONTH_YEAR_DATE_FORMAT} - ${AM_PM_DATE_FORMAT}`)}
+        </FooterText>
+        <FlexSpaceBetween>
+          <FooterUser>{user.name}</FooterUser>
+          <FooterAvatar initial={userInitial} src={user.profileImage}>
+            {userInitial}
+          </FooterAvatar>
+        </FlexSpaceBetween>
+      </FooterInner>
+    </FooterContainer>
+  );
+};
 
 UserMessageFooter.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.PropTypes.shape({
+    name: PropTypes.string,
+    profileImage: PropTypes.string,
+  }).isRequired,
   dateTime: PropTypes.instanceOf(Date).isRequired,
 };

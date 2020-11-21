@@ -4,29 +4,26 @@ import styled from 'styled-components';
 import moment from 'moment';
 import LayersIcon from '@material-ui/icons/Layers';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
-import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LastUpdated from './LastUpdated';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
-  pointer-events: auto;
   cursor: auto;
   min-height: 0; /* firefox vertical scroll */
   display: flex;
   flex-direction: column;
   height: 100%;
-
-  // Apply anti-aliasing to the control scope until it is added globally
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const Header = styled.div`
   display: flex;
   font-weight: 500;
+  pointer-events: auto;
   background: ${TUPAIA_ORANGE};
   color: #ffffff;
   text-transform: uppercase;
@@ -44,6 +41,7 @@ const Header = styled.div`
 
 const Content = styled.div`
   display: flex;
+  pointer-events: auto;
   padding: 12px 15px;
   background: ${MAP_OVERLAY_SELECTOR.background};
   color: #ffffff;
@@ -70,7 +68,7 @@ const IconWrapper = styled.div`
   padding: 2px 0 2px 10px;
 `;
 
-const ContentText = styled(Typography)`
+const ContentText = styled.div`
   font-size: 16px;
 `;
 
@@ -80,13 +78,15 @@ const EmptyContentText = styled(ContentText)`
 
 const SubHeader = styled.div`
   color: ${TUPAIA_ORANGE};
-  font-size: 0.7rem;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
   padding: 4px;
   text-transform: uppercase;
+  margin-bottom: 10px;
 `;
 
 const MeasureDatePicker = styled.div`
+  pointer-events: auto;
   background: #203e5c;
   padding: 16px 8px;
   border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
@@ -94,6 +94,7 @@ const MeasureDatePicker = styled.div`
 `;
 
 const ExpandedContent = styled.div`
+  pointer-events: auto;
   background: #203e5c;
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   color: #fff;
@@ -108,6 +109,8 @@ const ExpandedContent = styled.div`
 export const Control = ({
   emptyMessage,
   selectedMeasure,
+  defaultDates,
+  datePickerLimits,
   isMeasureLoading,
   onUpdateMeasurePeriod,
   children,
@@ -128,6 +131,12 @@ export const Control = ({
     onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
   };
 
+  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
+  // and uses those rather than calculating it's own defaults
+  let { startDate, endDate } = selectedMeasure;
+  if (!startDate) startDate = defaultDates.startDate;
+  if (!endDate) endDate = defaultDates.endDate;
+
   return (
     <Container>
       <Header>
@@ -145,7 +154,9 @@ export const Control = ({
           period={selectedMeasure.periodGranularity}
           onClick={toggleMeasures}
         >
-          <ContentText>{selectedMeasure.name}</ContentText>
+          <ContentText>
+            {isMeasureLoading ? <CircularProgress size={22} /> : selectedMeasure.name}
+          </ContentText>
           <IconWrapper>
             <DownArrow />
           </IconWrapper>
@@ -155,19 +166,22 @@ export const Control = ({
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
             granularity={selectedMeasure.periodGranularity}
-            startDate={selectedMeasure.startDate}
-            endDate={selectedMeasure.endDate}
+            startDate={startDate}
+            endDate={endDate}
+            min={datePickerLimits.startDate}
+            max={datePickerLimits.endDate}
             onSetDates={updateMeasurePeriod}
             isLoading={isMeasureLoading}
           />
         </MeasureDatePicker>
       )}
-      <Fade in={isExpanded}>
+      <Fade in={isExpanded} mountOnEnter unmountOnExit exit={false}>
         <ExpandedContent>
           <SubHeader>Select an overlay</SubHeader>
           {children}
         </ExpandedContent>
       </Fade>
+      <LastUpdated />
     </Container>
   );
 };
@@ -179,6 +193,14 @@ Control.propTypes = {
     startDate: PropTypes.shape({}),
     endDate: PropTypes.shape({}),
   }),
+  defaultDates: PropTypes.shape({
+    startDate: PropTypes.object,
+    endDate: PropTypes.object,
+  }).isRequired,
+  datePickerLimits: PropTypes.shape({
+    startDate: PropTypes.object,
+    endDate: PropTypes.object,
+  }),
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
@@ -188,4 +210,8 @@ Control.propTypes = {
 Control.defaultProps = {
   isMeasureLoading: false,
   selectedMeasure: {},
+  datePickerLimits: {
+    startDate: null,
+    endDate: null,
+  },
 };

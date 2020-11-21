@@ -18,16 +18,13 @@ import {
   FETCH_INITIAL_DATA,
   changeBounds,
   setOverlayComponent,
-  changeOrgUnit,
+  setOrgUnit,
 } from '../actions';
 import { DISASTER } from '../containers/OverlayDiv/constants';
 import { formatDateForApi } from '../utils';
 import { selectCurrentOrgUnit } from '../selectors';
 
-// As a module that requires extra data for its dashboard item data fetches, the 'disaster' sagas
-// file must export this generator function to allow the global fetchDashboardItemData saga to
-// call it and wait for it to finish during the fetch of 'disaster' project dashboard elements
-export function* prepareForDashboardItemDataFetch() {
+export function* fetchDisasterDateRange() {
   let state = yield select();
   if (!state.disaster.disasters) {
     yield take(SET_DISASTERS_DATA); // If disaster state is not yet initialised, wait until it is
@@ -48,12 +45,11 @@ export function* prepareForDashboardItemDataFetch() {
     state = yield select();
   }
 
-  const viewedDisaster = state.disaster.selectedDisaster;
-  const extraUrlParameters = {
-    disasterStartDate: formatDateForApi(viewedDisaster.startDate),
-    disasterEndDate: formatDateForApi(viewedDisaster.endDate),
+  const { selectedDisaster: disaster } = state.disaster;
+  return {
+    disasterStartDate: formatDateForApi(disaster.startDate),
+    disasterEndDate: formatDateForApi(disaster.endDate),
   };
-  return extraUrlParameters;
 }
 
 function* fetchDisasters() {
@@ -78,21 +74,21 @@ function* watchFetchInitialDataAndFetchDisasters() {
 }
 
 function* watchViewDisasterAndZoomToBounds() {
-  yield takeLatest(VIEW_DISASTER, function*(action) {
+  yield takeLatest(VIEW_DISASTER, function* (action) {
     const { disaster } = action;
     const { bounds } = disaster;
 
     if (bounds.length > 0) {
       yield put(changeBounds(bounds));
-      yield put(changeOrgUnit(disaster.countryCode, false));
+      yield put(setOrgUnit(disaster.countryCode, false));
     } else {
-      yield put(changeOrgUnit(disaster.countryCode, true));
+      yield put(setOrgUnit(disaster.countryCode, true));
     }
   });
 }
 
 function* watchSelectDisasterAndOpenOverlay() {
-  yield takeLatest(SELECT_DISASTER, function*() {
+  yield takeLatest(SELECT_DISASTER, function* () {
     yield put(setOverlayComponent(DISASTER));
   });
 }

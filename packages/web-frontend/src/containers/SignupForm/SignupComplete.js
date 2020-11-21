@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -17,6 +16,7 @@ const Container = styled.div`
   margin: 18px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   button {
     margin-top: 20px;
@@ -28,8 +28,8 @@ export const SignupComplete = ({ onClickResend }) => (
   <Container>
     <div>
       Congratulations, you have successfully signed up to Tupaia. To activate your account please{' '}
-      <b>click the verification link in your email.</b>
-      You can use your new account to log in to tupaia.org as well as our app, Tupaia Meditrak on{' '}
+      <b>click the verification link in your email.</b> You can use your new account to log in to
+      tupaia.org as well as our app, Tupaia Meditrak on{' '}
       <FormLink
         href="https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537?mt=8"
         target="_blank"
@@ -43,7 +43,7 @@ export const SignupComplete = ({ onClickResend }) => (
         target="_blank"
         rel="noopener noreferrer"
       >
-        &nbsp;Android&nbsp;
+        &nbsp;Android&nbsp;.
       </FormLink>
     </div>
     <PrimaryButton onClick={onClickResend}>Re-send verification email</PrimaryButton>

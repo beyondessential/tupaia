@@ -1,18 +1,28 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { prettyJSON, prettyArray } from '../../utilities/pretty';
+import { prettyArray } from '../../utilities';
 
 const FIELDS = [
   {
     Header: 'ID',
     source: 'id',
+    type: 'tooltip',
   },
   {
     Header: 'Name',
     source: 'name',
+    width: 140,
+    type: 'tooltip',
   },
   {
     Header: 'Permission Group',
+    width: 160,
     source: 'userGroup',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
@@ -24,10 +34,12 @@ const FIELDS = [
   {
     Header: 'Data Element Code',
     source: 'dataElementCode',
+    width: 170,
   },
   {
     Header: 'Measure Builder',
     source: 'measureBuilder',
+    width: 170,
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'measureBuilder',
@@ -38,17 +50,20 @@ const FIELDS = [
   {
     Header: 'Measure Builder Config',
     source: 'measureBuilderConfig',
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
+    width: 200,
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'isDataRegional',
     source: 'isDataRegional',
     type: 'boolean',
+    width: 150,
   },
   {
     Header: 'Linked Measures',
     source: 'linkedMeasures',
+    width: 160,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'mapOverlays',
@@ -58,18 +73,16 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Sort Order',
-    source: 'sortOrder',
-  },
-  {
     Header: 'Presentation Options',
     source: 'presentationOptions',
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
+    width: 200,
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Country Codes',
     source: 'countryCodes',
+    width: 140,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'entities',
@@ -82,6 +95,7 @@ const FIELDS = [
   {
     Header: 'Project Codes',
     source: 'projectCodes',
+    width: 140,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
@@ -106,13 +120,18 @@ const COLUMNS = [
   },
 ];
 
-export const MapOverlaysPage = () => (
+export const MapOverlaysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Map Overlays"
     endpoint="mapOverlays"
     columns={COLUMNS}
+    getHeaderEl={getHeaderEl}
     editConfig={{
       title: 'Edit Map Overlay',
     }}
   />
 );
+
+MapOverlaysPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

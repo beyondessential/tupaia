@@ -14,11 +14,13 @@ import styled from 'styled-components';
 import { getSingleFormattedValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
-import { changeOrgUnit } from '../../actions';
+import { setOrgUnit } from '../../actions';
 import {
   selectOrgUnit,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
+  selectCurrentMeasureId,
+  selectOrgUnitChildren,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
 
@@ -50,9 +52,11 @@ export const ShadedPolygon = styled(Polygon)`
  */
 class ConnectedPolygon extends Component {
   shouldComponentUpdate(nextProps) {
-    const { measureId, coordinates } = this.props;
+    const { measureId, coordinates, orgUnitMeasureData, isHidden } = this.props;
     if (nextProps.measureId !== measureId) return true;
-    if (coordinates !== nextProps.coordinates) return true;
+    if (nextProps.coordinates !== coordinates) return true;
+    if (nextProps.orgUnitMeasureData !== orgUnitMeasureData) return true;
+    if (isHidden !== nextProps.isHidden) return true;
     return false;
   }
 
@@ -78,9 +82,12 @@ class ConnectedPolygon extends Component {
       isActive,
       coordinates,
       shade,
+      isHidden,
       hasChildren,
       hasShadedChildren,
     } = this.props;
+    if (isHidden) return null;
+
     const { organisationUnitCode } = area;
     const tooltip = this.getTooltip(area.name);
 
@@ -107,7 +114,7 @@ class ConnectedPolygon extends Component {
     };
 
     if (shade) {
-      //To match with the color in markerIcon.js which uses BREWER_PALETTE
+      // To match with the color in markerIcon.js which uses BREWER_PALETTE
       const color = BREWER_PALETTE[shade] || shade;
 
       // Work around: color should go through the styled components
@@ -127,6 +134,7 @@ ConnectedPolygon.propTypes = {
   area: PropTypes.shape({
     name: PropTypes.string,
     type: PropTypes.string,
+    organisationUnitCode: PropTypes.string,
   }).isRequired,
   measureId: PropTypes.string,
   isActive: PropTypes.bool,
@@ -140,6 +148,7 @@ ConnectedPolygon.propTypes = {
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
+  isHidden: PropTypes.bool,
   orgUnitMeasureData: PropTypes.shape({
     value: PropTypes.any,
     originalValue: PropTypes.any,
@@ -157,14 +166,18 @@ ConnectedPolygon.defaultProps = {
   hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
+  isHidden: false,
   orgUnitMeasureData: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {
-  const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData, measureOptions } = state.map.measureInfo;
+  const { organisationUnitCode } = givenProps.area;
+  const { measureData, measureOptions } = state.map.measureInfo;
+  const measureId = selectCurrentMeasureId(state);
+  const organisationUnitChildren = selectOrgUnitChildren(state, organisationUnitCode);
 
   let shade;
+  let isHidden;
   let orgUnitMeasureData;
   let hasShadedChildren = false;
   if (selectHasPolygonMeasure(state)) {
@@ -181,9 +194,11 @@ const mapStateToProps = (state, givenProps) => {
       orgUnitMeasureData = measureOrgUnits.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
+      if (orgUnitMeasureData) {
+        shade = orgUnitMeasureData.color;
+        isHidden = orgUnitMeasureData.isHidden;
+      }
     }
-
-    shade = (orgUnitMeasureData || {}).color;
   }
 
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
@@ -195,6 +210,7 @@ const mapStateToProps = (state, givenProps) => {
     hasShadedChildren,
     orgUnitMeasureData,
     shade,
+    isHidden,
     measureOptions,
     hasChildren: organisationUnitChildren && organisationUnitChildren.length > 0,
     hasMeasureData: measureData && measureData.length > 0,
@@ -203,7 +219,7 @@ const mapStateToProps = (state, givenProps) => {
 
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
 });
 

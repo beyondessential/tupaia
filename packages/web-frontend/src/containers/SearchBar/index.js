@@ -19,11 +19,11 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
-import { selectOrgUnitChildren } from '../../selectors';
+import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors';
 import {
   changeSearch,
   toggleSearchExpand,
-  changeOrgUnit,
+  setOrgUnit,
   openMapPopup,
   requestOrgUnit,
 } from '../../actions';
@@ -158,7 +158,7 @@ export class SearchBar extends PureComponent {
 }
 
 const sortOrgUnitsAlphabeticallyByName = orgUnits => {
-  //Sort countries alphabetically, this may not be the case if one country was loaded first
+  // Sort countries alphabetically, this may not be the case if one country was loaded first
   return orgUnits.concat().sort((data1, data2) => {
     if (data1.name > data2.name) return 1;
     if (data1.name < data2.name) return -1;
@@ -199,7 +199,7 @@ const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString } = state.searchBar;
   const { orgUnitFetchError } = state.orgUnits;
   const hierarchyData = selectCodeFromOrgUnit(
-    selectOrgUnitChildren(state, state.project.activeProjectCode),
+    selectOrgUnitChildren(state, selectCurrentProjectCode(state)),
   );
   return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };
@@ -212,7 +212,7 @@ const mapDispatchToProps = dispatch => {
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>
       isExpanded && isSafeToCloseResults && dispatch(toggleSearchExpand()),
     onOrgUnitClick: organisationUnitCode => {
-      dispatch(changeOrgUnit(organisationUnitCode));
+      dispatch(setOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
     requestRootOrgUnit: () => dispatch(requestOrgUnit()),

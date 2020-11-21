@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import autobind from 'react-autobind';
 import { getIsProductionEnvironment } from '../devops';
 
@@ -78,8 +78,16 @@ export class ExternalApiSyncQueue {
 
   processUpdates = async changes => {
     const validUpdates = await this.validator.getValidUpdates(changes);
-    const changeDetails = await this.detailGenerator.generateDetails(validUpdates);
-    return this.persistToSyncQueue(validUpdates, changeDetails);
+    try {
+      const changeDetails = await this.detailGenerator.generateDetails(validUpdates);
+      return this.persistToSyncQueue(validUpdates, changeDetails);
+    } catch (e) {
+      // Something went wrong with generating change details, possibly because the entity hierarchy
+      // cache is still being built as the result of an entity change. Put this batch of changes
+      // back on the queue to attempt processing again
+      this.unprocessedChanges.push(...validUpdates);
+      return null;
+    }
   };
 
   processChangesIntoDb = async () => {
@@ -107,7 +115,7 @@ export class ExternalApiSyncQueue {
   /**
    * Returns the oldest changes on the sync queue, up to numberToGet. Returns a promise, which can be
    * awaited by the calling function.
-   **/
+   */
   async get(numberToGet) {
     const criteria = {
       is_dead_letter: false,
@@ -142,7 +150,7 @@ export class ExternalApiSyncQueue {
   /**
    * Removes the given change from the sync queue, i.e. marks it as 'used'. Returns a promise, which
    * can be awaited by the calling function.
-   **/
+   */
   use(change) {
     return this.syncQueueModel.updateById(change.id, { is_deleted: true });
   }

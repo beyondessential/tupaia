@@ -7,9 +7,7 @@ export function generateValueOfType(type, options = {}) {
   switch (type) {
     case 'text':
     case 'character varying': {
-      const text = Math.random()
-        .toString(36)
-        .substring(2); // 0.sdf -> sdf
+      const text = Math.random().toString(36).substring(2); // 0.sdf -> sdf
       return options.maxLength ? text.substring(0, options.maxLength) : text;
     }
     case 'integer':

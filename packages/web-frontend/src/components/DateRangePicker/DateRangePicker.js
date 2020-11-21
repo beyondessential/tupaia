@@ -11,18 +11,21 @@ import Typography from '@material-ui/core/Typography';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import { Error } from '../Error';
-import { DatePickerDialog } from './DatePickerDialog';
+import DatePickerDialog from './DatePickerDialog';
 import {
+  DEFAULT_MIN_DATE,
+  momentToDateString,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
   GRANULARITY_SHAPE,
   roundStartEndDates,
+  constrainDate,
 } from '../../utils/periodGranularities';
-import { MIN_DATE_PICKER_DATE } from './constants';
 
 const FlexRow = styled.div`
   display: flex;
@@ -92,39 +95,58 @@ const ResetLabel = styled(Link)`
 const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];
 
 const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
-  const { momentUnit, rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
-  const formattedStartDate = startDate.format(rangeFormat);
-  const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
+  const { rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
+
+  const formattedStartDate = momentToDateString(startDate, granularity, rangeFormat);
+  const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat);
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
 
-const minMomentDate = moment(MIN_DATE_PICKER_DATE);
-const maxMomentDate = moment();
-
 export const DateRangePicker = ({
   startDate,
   endDate,
+  min,
+  max,
   granularity,
   onSetDates,
   isLoading,
   align,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [initialStartDate, setInitialStartDate] = useState(startDate);
-  const [initialEndDate, setInitialEndDate] = useState(endDate);
+  const [initialStartDate] = useState(startDate);
+  const [initialEndDate] = useState(endDate);
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
   const { momentShorthand } = GRANULARITY_CONFIG[granularity];
 
-  const defaultStartDate = isSingleDate ? moment() : minMomentDate;
-  const defaultEndDate = isSingleDate ? defaultStartDate : maxMomentDate;
+  const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
+  const maxMomentDate = max ? moment(max) : moment();
 
-  const currentStartDate = startDate ? moment(startDate) : defaultStartDate;
-  const currentEndDate = endDate ? moment(endDate) : defaultEndDate;
+  let defaultStartDate;
+  let defaultEndDate;
+  if (isSingleDate) {
+    defaultStartDate = constrainDate(moment(), minMomentDate, maxMomentDate);
+    defaultEndDate = defaultStartDate; // end date is the same, but gets rounded to the period below
+  } else {
+    defaultStartDate = minMomentDate;
+    defaultEndDate = maxMomentDate;
+  }
+  const roundedDefaults = roundStartEndDates(granularity, defaultStartDate, defaultEndDate);
+  defaultStartDate = roundedDefaults.startDate;
+  defaultEndDate = roundedDefaults.endDate;
+
+  let currentStartDate = startDate ? moment(startDate) : defaultStartDate;
+  let currentEndDate = endDate ? moment(endDate) : defaultEndDate;
+  const roundedCurrent = roundStartEndDates(granularity, currentStartDate, currentEndDate);
+  currentStartDate = roundedCurrent.startDate;
+  currentEndDate = roundedCurrent.endDate;
 
   useEffect(() => {
-    onSetDates(currentStartDate, currentEndDate);
+    // Prevent set dates to the same dates
+    if (!(initialStartDate && initialEndDate)) {
+      onSetDates(currentStartDate, currentEndDate);
+    }
   }, []);
 
   // Number of periods to move may be negative if changing to the previous period
@@ -133,8 +155,8 @@ export const DateRangePicker = ({
       throw new Error('Can only change period for single unit date pickers (e.g. one month)');
     }
 
-    let newStartDate = currentStartDate.clone().add(numberOfPeriodsToMove, momentShorthand);
-    let newEndDate = currentEndDate.clone().add(numberOfPeriodsToMove, momentShorthand);
+    const newStartDate = currentStartDate.clone().add(numberOfPeriodsToMove, momentShorthand);
+    const newEndDate = currentEndDate.clone().add(numberOfPeriodsToMove, momentShorthand);
 
     const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
       granularity,
@@ -171,7 +193,7 @@ export const DateRangePicker = ({
         )}
         <FlexRow>
           <IconButton onClick={() => setIsOpen(true)} aria-label="open">
-            <DateRangeIcon />
+            {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
           </IconButton>
           <LabelContainer>
             <Label aria-label="active-date">{labelText}</Label>
@@ -209,6 +231,8 @@ export const DateRangePicker = ({
           granularity={granularity}
           startDate={currentStartDate}
           endDate={currentEndDate}
+          minMomentDate={minMomentDate}
+          maxMomentDate={maxMomentDate}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onSetNewDates={onSetDates}
@@ -218,9 +242,13 @@ export const DateRangePicker = ({
   );
 };
 
+const stringOrMoment = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
+
 DateRangePicker.propTypes = {
-  startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  endDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  startDate: stringOrMoment,
+  endDate: stringOrMoment,
+  min: stringOrMoment,
+  max: stringOrMoment,
   granularity: GRANULARITY_SHAPE,
   onSetDates: PropTypes.func,
   isLoading: PropTypes.bool,
@@ -230,6 +258,8 @@ DateRangePicker.propTypes = {
 DateRangePicker.defaultProps = {
   startDate: null,
   endDate: null,
+  min: null,
+  max: null,
   granularity: GRANULARITIES.DAY,
   onSetDates: () => {},
   isLoading: false,

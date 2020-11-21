@@ -4,6 +4,7 @@
  */
 
 const FILTER_TYPE_TO_METHOD = {
+  // eslint-disable-next-line eqeqeq
   '=': (analytic, filterValue, filterProperty) => analytic[filterProperty] == filterValue,
   '>': (analytic, filterValue, filterProperty) => analytic[filterProperty] > filterValue,
   '>=': (analytic, filterValue, filterProperty) => analytic[filterProperty] >= filterValue,
@@ -36,7 +37,7 @@ export const filterAnalytics = (analytics, filter = {}) => {
   Object.entries(filter).forEach(([property, value]) => {
     const filterProperty = property || 'value';
 
-    //If value is object format (eg: { '>': 3, '<': 6 }), process each of the filter entry.
+    // If value is object format (eg: { '>': 3, '<': 6 }), process each of the filter entry.
     if (typeof value === 'object') {
       Object.entries(value).forEach(([filterOperator, filterValue]) => {
         filteredAnalytics = applyFilter(
@@ -47,7 +48,7 @@ export const filterAnalytics = (analytics, filter = {}) => {
         );
       });
     } else {
-      //Asume that the value is raw data (eg: value: 20). Apply '=' filter.
+      // Assume that the value is raw data (eg: value: 20). Apply '=' filter.
       const operator = '=';
 
       filteredAnalytics = applyFilter(filteredAnalytics, filterProperty, operator, value);

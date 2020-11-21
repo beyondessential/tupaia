@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import {
   constructRecordExistsWithId,
@@ -13,7 +13,7 @@ import {
 
 /**
  * Responds to the DELETE requests by deleting the record with the given id
- **/
+ */
 export async function deleteRecord(req, res) {
   const { models, params } = req;
   const { resource: pluralResource, recordId } = params;

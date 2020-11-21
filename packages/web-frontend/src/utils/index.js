@@ -1,6 +1,3 @@
-/* eslint-disable import/no-cycle */
-// It's fine to disable dependency cycle here as index.js isn't actually "using" any of the modules:
-// It doesn't DEPEND on them.
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -16,10 +13,8 @@ export { default as checkBoundsDifference } from './checkBoundsDifference';
 export { organisationUnitIsArea } from './organisation';
 export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
-export { mapBoxToken } from './mapbox';
 export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
-export { initHistoryDispatcher, historyMiddleware } from './historyNavigation';
 export { OverlayContainer, OverlayView } from './overlayContainer';
 export {
   processMeasureInfo,
@@ -34,5 +29,7 @@ export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
 export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
-export { areStringsEqual } from './string';
+export { areStringsEqual, stringToFilename } from './string';
 export { hexToRgba, getPresentationOption, getInactiveColor } from './color';
+export { getUniqueViewId, getViewIdFromInfoViewKey } from './getUniqueViewId';
+export { sleep } from './sleep';

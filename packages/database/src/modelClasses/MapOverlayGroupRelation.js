@@ -20,6 +20,15 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     return MapOverlayGroupRelationType;
   }
 
+  async findTopLevelMapOverlayGroupRelations() {
+    const rootMapOverlayGroup = await this.otherModels.mapOverlayGroup.findRootMapOverlayGroup();
+
+    return this.find({
+      map_overlay_group_id: rootMapOverlayGroup.id,
+      child_type: 'mapOverlayGroup',
+    });
+  }
+
   async findGroupRelations(mapOverlayGroupIds) {
     return this.find({
       map_overlay_group_id: {

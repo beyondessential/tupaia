@@ -36,10 +36,6 @@ build a list of its ancestors, i.e. Ravenclaw (subdistrict), South West (distric
 (country), and pass all of these codes through to `allowsSome`. In that way, if the user has access
 to any entity further up the hierarchy, they will be granted access to Thornbury.
 
-## Running tests
-
-Use the command `npm run test`.
-
 ## Editing, changing, building
 
 Edit files in src and run `npm run build` to create a new version that's able to be imported by other

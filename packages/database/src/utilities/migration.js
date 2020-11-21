@@ -24,11 +24,27 @@ export const insertObject = async (db, table, data, onError) =>
   db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
+export const arrayToDoubleQuotedDbString = array => array.map(item => `"${item}"`).join(', '); // For formatting Postgres text[]
 
 export const codeToId = async (db, table, code) => {
   const record = await db.runSql(`SELECT id FROM "${table}" WHERE code = '${code}'`);
   return record.rows[0] && record.rows[0].id;
 };
+
+export const createForeignKeyConfig = (
+  localTable,
+  localColumn,
+  foreignTable,
+  foreignColumn = 'id',
+) => ({
+  name: `${localTable}_${localColumn}_${foreignTable}_${foreignColumn}_fk`,
+  table: foreignTable,
+  rules: {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  },
+  mapping: foreignColumn,
+});
 
 /**
  * @param {Object<string, any>} params
@@ -104,9 +120,7 @@ export async function replaceArrayValue(db, table, column, oldValue, newValueInp
   );
 
   const newValues = Array.isArray(newValueInput) ? newValueInput : [newValueInput];
-  const newValuesPlaceholder = Array(newValues.length)
-    .fill('?')
-    .join(',');
+  const newValuesPlaceholder = Array(newValues.length).fill('?').join(',');
 
   // Use `ARRAY[?,...]` syntax instead of `'{?...}'` because db-migrate treats the
   // second syntax as a string literal

@@ -1,7 +1,7 @@
 export async function entityImage({ answer, surveyResponse, models }) {
   const entity = await surveyResponse.entity();
 
-  if(!entity) {
+  if (!entity) {
     throw new Error('Invalid entity');
   }
 

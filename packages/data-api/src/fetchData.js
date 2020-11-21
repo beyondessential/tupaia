@@ -38,16 +38,12 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
   // Add start and end date, which are inclusive
   if (startDate) {
     sqlQuery.addClause(`AND survey_response.submission_time >= ?`, [
-      utcMoment(startDate)
-        .startOf('day')
-        .toISOString(),
+      utcMoment(startDate).startOf('day').toISOString(),
     ]);
   }
   if (endDate) {
     sqlQuery.addClause(`AND survey_response.submission_time <= ?`, [
-      utcMoment(endDate)
-        .endOf('day')
-        .toISOString(),
+      utcMoment(endDate).endOf('day').toISOString(),
     ]);
   }
 

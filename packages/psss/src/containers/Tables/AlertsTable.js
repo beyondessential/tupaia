@@ -4,22 +4,23 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  ConnectedTable,
-  SyndromeCell,
-  AlertMenuCell,
-  CountryNameButtonCreator,
-  WeekAndDateCell,
-} from '../../components';
+import { SyndromeCell, AlertMenuCell, WeekAndDateCell, CountryNameCell } from '../../components';
+import { ConnectedTable } from './ConnectedTable';
+import { getEntitiesAllowed } from '../../store';
+import { connect } from 'react-redux';
 
-const createColumns = handlePanelOpen => [
-  {
-    title: 'Country',
-    key: 'name',
-    width: '28%',
-    align: 'left',
-    CellComponent: CountryNameButtonCreator(handlePanelOpen),
-  },
+const createColumns = isForMultipleCountries => [
+  ...(isForMultipleCountries
+    ? [
+        {
+          title: 'Country',
+          key: 'name',
+          width: '28%',
+          align: 'left',
+          CellComponent: CountryNameCell,
+        },
+      ]
+    : []),
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -30,7 +31,7 @@ const createColumns = handlePanelOpen => [
     title: 'Alert Start Date',
     key: 'weekNumber',
     align: 'left',
-    width: '180px',
+    width: '200px',
     CellComponent: WeekAndDateCell,
   },
   {
@@ -49,14 +50,32 @@ const createColumns = handlePanelOpen => [
     key: 'id',
     sortable: false,
     CellComponent: AlertMenuCell,
-    width: '50px',
+    width: '45px',
   },
 ];
 
-export const AlertsTable = React.memo(({ handlePanelOpen }) => (
-  <ConnectedTable endpoint="alerts" columns={createColumns(handlePanelOpen)} />
+const AlertsTableComponent = React.memo(({ handlePanelOpen, countryCode, allowedEntities }) => (
+  <ConnectedTable
+    endpoint="alerts"
+    fetchOptions={{ countries: allowedEntities }} // this may not be needed when the api is complete but is needed for app testing in the meantime
+    columns={createColumns(!countryCode)}
+    onRowClick={handlePanelOpen}
+  />
 ));
 
-AlertsTable.propTypes = {
+AlertsTableComponent.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,
+  countryCode: PropTypes.string,
+  allowedEntities: PropTypes.array,
 };
+
+AlertsTableComponent.defaultProps = {
+  countryCode: null,
+  allowedEntities: [],
+};
+
+const mapStateToProps = state => ({
+  allowedEntities: getEntitiesAllowed(state),
+});
+
+export const AlertsTable = connect(mapStateToProps)(AlertsTableComponent);

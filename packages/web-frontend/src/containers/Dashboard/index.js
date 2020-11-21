@@ -19,17 +19,17 @@ import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
 import StaticMap from '../../components/StaticMap';
 
-import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
-import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
+import { setDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
 import {
-  selectCurrentDashboardKey,
+  selectCurrentDashboardGroupCode,
   selectCurrentOrgUnit,
   selectAdjustedProjectBounds,
 } from '../../selectors';
+import { DEFAULT_BOUNDS } from '../../defaults';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -92,7 +92,7 @@ export class Dashboard extends Component {
           2 /* Multiply by 2 to render maps that look sharp when expanded */
         }
         style={DASHBOARD_STYLES.metaImage}
-        showBox={currentOrganisationUnitBounds !== initialOrgUnit.location.bounds}
+        showBox={currentOrganisationUnitBounds !== DEFAULT_BOUNDS}
       />
     );
   }
@@ -176,7 +176,7 @@ export class Dashboard extends Component {
   }
 
   renderGroupsDropdown() {
-    const { onChangeDashboardGroup, currentDashboardKey, sections, project } = this.props;
+    const { onChangeDashboardGroup, currentDashboardGroupCode, sections, project } = this.props;
 
     // sort group names based on current project
     const groupNames = Object.entries(sections).reduce((names, entry) => {
@@ -202,7 +202,7 @@ export class Dashboard extends Component {
 
     return (
       <DropDownMenu
-        selectedOption={currentDashboardKey}
+        selectedOption={currentDashboardGroupCode}
         options={groupNames}
         onChange={onChangeDashboardGroup}
         menuListStyle={DASHBOARD_STYLES.groupsDropDownMenu}
@@ -222,7 +222,7 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { onDashboardClicked, isLoading, sections, currentDashboardKey } = this.props;
+    const { onDashboardClicked, isLoading, sections, currentDashboardGroupCode } = this.props;
 
     return (
       <div
@@ -236,7 +236,7 @@ export class Dashboard extends Component {
         {this.renderHeader()}
         <div style={DASHBOARD_STYLES.content}>
           {this.renderGroupsDropdown()}
-          {this.renderGroup(sections[currentDashboardKey])}
+          {this.renderGroup(sections[currentDashboardGroupCode])}
         </div>
         {this.renderFloatingHeader()}
         {this.renderEnlargePopup()}
@@ -247,7 +247,7 @@ export class Dashboard extends Component {
 
 Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
-  currentDashboardKey: PropTypes.string,
+  currentDashboardGroupCode: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
   currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.string),
   onDashboardClicked: PropTypes.func.isRequired,
@@ -261,7 +261,7 @@ const mapStateToProps = state => {
   const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  let currentOrganisationUnitBounds = initialOrgUnit.location.bounds;
+  let currentOrganisationUnitBounds = DEFAULT_BOUNDS;
   if (currentOrganisationUnit.type === 'Project') {
     currentOrganisationUnitBounds = selectAdjustedProjectBounds(
       state,
@@ -274,7 +274,7 @@ const mapStateToProps = state => {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
     sections: dashboardConfig,
-    currentDashboardKey: selectCurrentDashboardKey(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
@@ -285,7 +285,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+    onChangeDashboardGroup: name => dispatch(setDashboardGroup(name)),
     onDashboardClicked: () => dispatch(closeDropdownOverlays()),
   };
 };

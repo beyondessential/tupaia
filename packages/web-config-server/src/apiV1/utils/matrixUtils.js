@@ -67,14 +67,13 @@ export const sortByColumns = ({ columns, rows }, columnsToSortBy = []) => {
     return recursivelyCompareValuesAscending;
   };
 
-  //sanitise the column list and find keys
+  // sanitise the column list and find keys
   const columnKeysToSortBy = columnsToSortBy
     .map(sortHeader => {
       const columnFound = columns.find(column => column.title === sortHeader[0]);
       return columnFound ? columnFound.key : '';
     })
     .filter(key => key !== '');
-  const headerRow = rows.shift();
   const sortedRows = rows.sort(getRecursiveRowsOnKeysSorter(columnKeysToSortBy));
-  return { columns, rows: [headerRow, ...sortedRows] };
+  return { columns, rows: [ ...sortedRows] };
 };

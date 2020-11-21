@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { EntityPusher } from './EntityPusher';
@@ -194,7 +194,7 @@ export class OrganisationUnitPusher extends EntityPusher {
     const level = await this.getLevel(entity);
     const organisationUnitDetails = {
       name,
-      shortName: name,
+      shortName: name.substring(0, MAXIMUM_SHORT_NAME_LENGTH),
       code,
       description: JSON.stringify({ level }),
       openingDate: '2017-01-01T00:00:00.000', // Set the opening date to before Tupaia existed

@@ -3,11 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { Aggregator } from '@tupaia/aggregator';
-import winston from '/log';
 
+const ENTITY_AGGREGATION_ORDER_AFTER = 'AFTER';
 const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
+const DEFAULT_ENTITY_AGGREGATION_ORDER = ENTITY_AGGREGATION_ORDER_AFTER;
 
 export const buildAggregationOptions = async (
+  models,
   initialAggregationOptions,
   dataSourceEntities = [],
   entityAggregationOptions,
@@ -23,12 +25,13 @@ export const buildAggregationOptions = async (
     aggregationEntityType,
     aggregationType: entityAggregationType,
     aggregationConfig: entityAggregationConfig,
+    aggregationOrder: entityAggregationOrder = DEFAULT_ENTITY_AGGREGATION_ORDER,
   } = entityAggregationOptions;
 
   // Note aggregationType and aggregationConfig might be undefined
   const inputAggregations = aggregations || [{ type: aggregationType, config: aggregationConfig }];
 
-  if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType)) {
+  if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType, entityAggregationType)) {
     return {
       aggregations: inputAggregations,
       ...restOfOptions,
@@ -36,6 +39,7 @@ export const buildAggregationOptions = async (
   }
 
   const entityAggregation = await fetchEntityAggregationConfig(
+    models,
     dataSourceEntities,
     aggregationEntityType,
     entityAggregationType,
@@ -44,49 +48,39 @@ export const buildAggregationOptions = async (
   );
 
   return {
-    aggregations: [
-      // entity aggregation always happens last, this should be configurable
-      ...inputAggregations,
-      entityAggregation,
-    ],
+    aggregations:
+      entityAggregationOrder === ENTITY_AGGREGATION_ORDER_AFTER
+        ? [...inputAggregations, entityAggregation]
+        : [entityAggregation, ...inputAggregations],
     ...restOfOptions,
   };
 };
 
-// Will return a map for every org unit (regardless of type) in orgUnits to its ancestor of type aggregationEntityType
-const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType, hierarchyId) => {
-  if (!orgUnits || orgUnits.length === 0) return {};
-  const orgUnitToAncestor = {};
-  const addOrgUnitToMap = async orgUnit => {
-    if (orgUnit.type !== aggregationEntityType) {
-      const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType, hierarchyId);
-      if (ancestor) {
-        orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
-      } else {
-        winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.code}, hierarchyId = ${hierarchyId}`);
-      }
-    }
-  };
-  await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
-  return orgUnitToAncestor;
-};
-
-const shouldAggregateEntities = (dataSourceEntities, aggregationEntityType) =>
+const shouldAggregateEntities = (
+  dataSourceEntities,
+  aggregationEntityType,
+  entityAggregationType,
+) =>
   aggregationEntityType &&
   !(dataSourceEntities.length === 0) &&
-  !dataSourceEntities.every(({ type }) => type === aggregationEntityType);
+  !dataSourceEntities.every(({ type }) => type === aggregationEntityType) &&
+  !(entityAggregationType === Aggregator.aggregationTypes.RAW);
 
 const fetchEntityAggregationConfig = async (
+  models,
   dataSourceEntities,
   aggregationEntityType,
   entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
   entityAggregationConfig,
   hierarchyId,
 ) => {
-  const orgUnitMap = await getOrgUnitToAncestorMap(
-    dataSourceEntities,
-    aggregationEntityType,
+  const entityToAncestorMap = await models.entity.fetchAncestorDetailsByDescendantCode(
+    dataSourceEntities.map(e => e.code),
     hierarchyId,
+    aggregationEntityType,
   );
-  return { type: entityAggregationType, config: { ...entityAggregationConfig, orgUnitMap } };
+  return {
+    type: entityAggregationType,
+    config: { ...entityAggregationConfig, orgUnitMap: entityToAncestorMap },
+  };
 };

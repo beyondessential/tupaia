@@ -3,67 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  closeOpenDialogs,
-  expandDashboardItem,
-  preserveUserSession,
-  selectDashboardGroup,
-  selectProject,
-} from '../support';
-import { REPORTS } from '../fixtures/reports';
+import { EmptyConfigError, preserveUserSession } from '../support';
+import config from '../config/dashboardReports.json';
 
-/**
- * This is a workaround in case a dashboard is left open due to a previous test failing
- * Normally we would close the dashboard anyway using an `after` block,
- * but this is not currently possible due to a Cypress bug
- *
- * @see https://github.com/cypress-io/cypress/issues/2831
- */
-const closeDialogsBecauseOfCypressBug = () => {
-  closeOpenDialogs();
+const urlToRouteRegex = url => {
+  const queryParams = url.split('?').slice(1).join('');
+  const viewId = new URLSearchParams(queryParams).get('report');
+  if (!viewId) {
+    throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
+  }
+
+  return new RegExp(`view?.*viewId=${viewId}`);
 };
 
 describe('Dashboard reports', () => {
-  const testReportsForProject = (project, reports) => {
-    describe(`Project: ${project}`, () => {
-      const reportsByGroup = Cypress._.groupBy(reports, 'dashboardGroup');
-
-      before(() => {
-        closeDialogsBecauseOfCypressBug();
-        selectProject(project);
-      });
-
-      Object.entries(reportsByGroup).forEach(([groupName, reportsForGroup]) =>
-        testReportsForGroup(groupName, reportsForGroup),
-      );
-    });
-  };
-
-  const testReportsForGroup = (groupName, reports) => {
-    describe(`Group: ${groupName}`, () => {
-      before(() => {
-        closeDialogsBecauseOfCypressBug();
-        selectDashboardGroup(groupName);
-      });
-
-      reports.forEach(testReport);
-    });
-  };
-
-  const testReport = report => {
-    describe(report.name, () => {
-      before(() => {
-        closeDialogsBecauseOfCypressBug();
-        expandDashboardItem(report.name);
-      });
-
-      it('enlarged dialog', () => {
-        cy.findByTestId('enlarged-dialog').snapshot({ name: 'html' });
-      });
-    });
-  };
-
-  const reportsByProject = Cypress._.groupBy(REPORTS, 'project');
+  if (config.length === 0) {
+    throw new EmptyConfigError('dashboardReports');
+  }
 
   before(() => {
     cy.login();
@@ -73,7 +29,14 @@ describe('Dashboard reports', () => {
     preserveUserSession();
   });
 
-  Object.entries(reportsByProject).forEach(([project, reports]) => {
-    testReportsForProject(project, reports);
+  config.forEach(url => {
+    it(url, () => {
+      cy.server();
+      cy.route(urlToRouteRegex(url)).as('report');
+
+      cy.visit(url);
+      cy.wait('@report');
+      cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
+    });
   });
 });

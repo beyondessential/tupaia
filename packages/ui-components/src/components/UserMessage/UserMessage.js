@@ -43,7 +43,7 @@ const MessageView = ({ status, message }) => {
   useEffect(() => {
     if (status === STATUS.EDITING) {
       const input = inputRef.current;
-      const length = input.value.length;
+      const { length } = input.value;
       input.setSelectionRange(length, length);
       input.focus();
     }

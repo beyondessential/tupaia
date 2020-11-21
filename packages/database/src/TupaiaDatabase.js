@@ -1,7 +1,7 @@
 /**
  * Tupaia
  * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import autobind from 'react-autobind';
 import knex from 'knex';
@@ -11,6 +11,10 @@ import { Multilock } from '@tupaia/utils';
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { generateId } from './utilities/generateId';
+import {
+  runDatabaseFunctionInBatches,
+  MAX_BINDINGS_PER_QUERY,
+} from './utilities/runDatabaseFunctionInBatches';
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -39,12 +43,11 @@ export const JOIN_TYPES = {
   DEFAULT: null,
 };
 
+const VALID_CAST_TYPES = ['text'];
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
-
-// some part of knex or node-pg struggles with too many bindings, so we batch them in some places
-const MAX_BINDINGS_PER_QUERY = 2500; // errors occurred at around 5000 bindings in testing
 
 export class TupaiaDatabase {
   constructor(transactingConnection) {
@@ -107,6 +110,9 @@ export class TupaiaDatabase {
     // if a change handler is being added, this db needs a change channel - make sure it's instantiated
     this.getOrCreateChangeChannel();
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
+    return () => {
+      delete this.getChangeHandlersForCollection(collectionName)[key];
+    };
   }
 
   getHandlersForChange(change) {
@@ -266,14 +272,16 @@ export class TupaiaDatabase {
   }
 
   async createMany(recordType, records) {
-    // TODO could be more efficient to create all records in one query
-    const recordsCreated = [];
-    for (let i = 0; i < records.length; i++) {
-      const record = records[i];
-      const recordCreated = await this.create(recordType, record);
-      recordsCreated.push(recordCreated);
-    }
-    return recordsCreated;
+    // generate ids for any records that don't have them
+    const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
+    await runDatabaseFunctionInBatches(sanitizedRecords, async batchOfRecords =>
+      this.query({
+        recordType,
+        queryMethod: QUERY_METHODS.INSERT,
+        queryMethodParameter: batchOfRecords,
+      }),
+    );
+    return sanitizedRecords;
   }
 
   /**
@@ -303,10 +311,7 @@ export class TupaiaDatabase {
     const updatedFieldsWithoutUndefined = JSON.parse(JSON.stringify(updatedFields));
     const newRecord = { id: newId, ...identifiers, ...updatedFieldsWithoutUndefined };
 
-    const buildQueryList = (object, formatter) =>
-      Object.keys(object)
-        .map(formatter)
-        .join(',');
+    const buildQueryList = (object, formatter) => Object.keys(object).map(formatter).join(',');
 
     // Build string of all column names to be inserted on new record creation
     const columns = buildQueryList(newRecord, columnName => `:old_column_${columnName}:`);
@@ -380,7 +385,7 @@ export class TupaiaDatabase {
   }
 
   async getSetting(key) {
-    const setting = await this.findOne('setting', { key: key });
+    const setting = await this.findOne('setting', { key });
     return setting ? setting.value : null;
   }
 
@@ -444,6 +449,13 @@ export class TupaiaDatabase {
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
   }
+
+  async executeSqlInBatches(arrayToBeBatched, generateSql) {
+    return runDatabaseFunctionInBatches(arrayToBeBatched, async batch => {
+      const [sql, substitutions] = generateSql(batch);
+      return this.executeSql(sql, substitutions);
+    });
+  }
 }
 
 /**
@@ -486,7 +498,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
       }
       return { [alias]: connection.raw('??', [selector]) };
     });
-  query = addWhereClause(query[queryMethod](queryMethodParameter || columns), where);
+  query = addWhereClause(connection, query[queryMethod](queryMethodParameter || columns), where);
 
   // Add sorting information if provided
   if (options.sort) {
@@ -521,7 +533,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   return query;
 }
 
-function addWhereClause(baseQuery, where) {
+function addWhereClause(connection, baseQuery, where) {
   if (!where) {
     return baseQuery;
   }
@@ -529,14 +541,16 @@ function addWhereClause(baseQuery, where) {
     // Providing the _and_ or the _or_ keys will use the contained criteria as a bracket wrapped
     // subsection of the broader WHERE clause
     if (key === QUERY_CONJUNCTIONS.AND) {
-      return querySoFar.andWhere(function() {
-        addWhereClause(this, value); // Within the function, 'this' refers to the query so far
+      return querySoFar.andWhere(function () {
+        addWhereClause(connection, this, value); // Within the function, 'this' refers to the query so far
       });
-    } else if (key === QUERY_CONJUNCTIONS.OR) {
-      return querySoFar.orWhere(function() {
-        addWhereClause(this, value); // Within the function, 'this' refers to the query so far
+    }
+    if (key === QUERY_CONJUNCTIONS.OR) {
+      return querySoFar.orWhere(function () {
+        addWhereClause(connection, this, value); // Within the function, 'this' refers to the query so far
       });
-    } else if (key === QUERY_CONJUNCTIONS.RAW) {
+    }
+    if (key === QUERY_CONJUNCTIONS.RAW) {
       const { sql = value, parameters } = value;
       return querySoFar.whereRaw(sql, parameters);
     }
@@ -550,9 +564,14 @@ function addWhereClause(baseQuery, where) {
       comparisonType = 'where',
       comparator = Array.isArray(value) ? 'in' : '=',
       comparisonValue = value,
+      castAs,
     } = value;
+    if (castAs && !VALID_CAST_TYPES.includes(castAs)) {
+      throw new Error(`Cannot cast as ${castAs}`);
+    }
+    const columnSelector = castAs ? connection.raw(`??::${castAs}`, [key]) : key;
     const { args = [comparator, comparisonValue] } = value;
-    return querySoFar[comparisonType](key, ...args);
+    return querySoFar[comparisonType](columnSelector, ...args);
   }, baseQuery);
 }
 
@@ -566,7 +585,7 @@ function addJoin(baseQuery, recordType, joinOptions) {
     joinConditions = [joinCondition],
   } = joinOptions;
   const joinMethod = joinType ? `${joinType}Join` : 'join';
-  return baseQuery[joinMethod](joinWith, function() {
+  return baseQuery[joinMethod](joinWith, function () {
     const joining = this.on(...joinConditions[0]);
     for (
       let joinConditionIndex = 1;

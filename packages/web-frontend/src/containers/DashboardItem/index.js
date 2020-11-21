@@ -43,6 +43,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { View } from '../../components/View';
 import { fetchDashboardItemData, openEnlargedDialog } from '../../actions';
+import { getViewIdFromInfoViewKey } from '../../utils';
 import { selectCurrentOrgUnit } from '../../selectors';
 
 export class DashboardItem extends Component {
@@ -62,12 +63,12 @@ export class DashboardItem extends Component {
 
   updateCharts() {
     const { viewContent, viewConfig, fetchContent, infoViewKey } = this.props;
-    const { viewId, dashboardGroupId, organisationUnitCode, project } = viewConfig;
+    const { viewId, dashboardGroupId, organisationUnitCode } = viewConfig;
 
     if (!viewContent) {
-      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project);
+      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey);
     } else if (isEmpty(viewContent.data)) {
-      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project);
+      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey);
     }
   }
 
@@ -80,12 +81,16 @@ export class DashboardItem extends Component {
       infoViewKey,
       organisationUnitName,
     } = this.props;
+
+    const { viewId, dashboardGroupId, organisationUnitCode } = viewConfig;
+
     return (
       <View
+        retry={() => this.updateCharts(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)}
         viewContent={viewContent}
         viewConfig={viewConfig}
         organisationUnitName={organisationUnitName}
-        onEnlarge={() => onEnlarge(viewContent, organisationUnitName, infoViewKey)}
+        onEnlarge={() => onEnlarge(getViewIdFromInfoViewKey(infoViewKey))}
         isSidePanelExpanded={isSidePanelExpanded}
       />
     );
@@ -123,12 +128,9 @@ const mapStateToProps = (state, { infoViewKey }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  fetchContent: (organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project) =>
-    dispatch(
-      fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project),
-    ),
-  onEnlarge: (viewContent, organisationUnitName, infoViewKey) =>
-    dispatch(openEnlargedDialog(viewContent, organisationUnitName, infoViewKey)),
+  fetchContent: (organisationUnitCode, dashboardGroupId, viewId, infoViewKey) =>
+    dispatch(fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)),
+  onEnlarge: viewId => dispatch(openEnlargedDialog(viewId)),
   dispatch, // Necessary for merge props.
 });
 

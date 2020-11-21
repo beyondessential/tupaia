@@ -8,7 +8,7 @@ export class CallbackQueue {
 
   add(callback, friendlyName) {
     // need to check this *before* we add it to the queue, otherwise
-    // (of course) the queue will have length >0 
+    // (of course) the queue will have length >0
     const isFirstTask = !this.activeTask && this.queue.length === 0;
 
     const waiter = new Promise((resolve, reject) => {
@@ -31,6 +31,7 @@ export class CallbackQueue {
       const result = await this.activeTask;
       resolve(result);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error(e);
       reject(e);
     }
@@ -38,7 +39,7 @@ export class CallbackQueue {
     this.activeTask = null;
 
     if (this.queue.length === 0) {
-      if(this.finishedResolve) {
+      if (this.finishedResolve) {
         this.finishedResolve();
       }
       return;

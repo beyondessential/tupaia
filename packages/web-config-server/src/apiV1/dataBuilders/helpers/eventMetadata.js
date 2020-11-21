@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity } from '/models/Entity';
+/* eslint-disable max-classes-per-file */
 
 const getEventOrgUnitName = async (event, cache) => {
   const { orgUnit: code } = event;
@@ -101,7 +101,8 @@ class Cache {
     [CACHE_KEYS.entities]: this.getEntitiesCache.bind(this),
   };
 
-  constructor(events, metadataKeys) {
+  constructor(models, events, metadataKeys) {
+    this.models = models;
     this.events = events;
     this.metadataKeys = metadataKeys;
   }
@@ -116,7 +117,7 @@ class Cache {
 
   async getEntitiesCache() {
     const orgUnitCodes = this.events.map(({ orgUnit }) => orgUnit);
-    return Entity.find({ code: orgUnitCodes });
+    return this.models.entity.find({ code: orgUnitCodes });
   }
 
   async create() {
@@ -130,13 +131,13 @@ class Cache {
   }
 }
 
-export const addMetadataToEvents = async (events, metadataKeys = []) => {
+export const addMetadataToEvents = async (models, events, metadataKeys = []) => {
   if (metadataKeys.length === 0) {
     return events;
   }
 
   metadataKeys.map(assertIsMetadataKey);
-  const cache = await new Cache(events, metadataKeys).create();
+  const cache = await new Cache(models, events, metadataKeys).create();
   return Promise.all(
     events.map(event => new EventMetadataValueAdder(event, metadataKeys, cache).run()),
   );

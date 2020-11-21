@@ -14,7 +14,7 @@ const expandSurveyCodes = surveys => {
     surveys.map(survey => {
       return survey.codes
         ? survey.codes.map(code => ({
-            code: code,
+            code,
             name: `${code}-${survey.name}`,
           }))
         : survey;
@@ -24,7 +24,7 @@ const expandSurveyCodes = surveys => {
 
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
-    const surveyCodes = this.query.surveyCodes;
+    const { surveyCodes } = this.query;
     const { transformations: tranformationConfigs = [] } = this.config;
     const transformations = keyBy(tranformationConfigs, 'type');
 
@@ -33,7 +33,7 @@ class RawDataValuesBuilder extends DataBuilder {
     let transformableData = await this.fetchResults(surveyCodes.split(','), ancestorMappingConfig);
 
     if (transformations.mergeSurveys) {
-      const mergedTableName = transformations.mergeSurveys.mergedTableName;
+      const { mergedTableName } = transformations.mergeSurveys;
       transformableData = mergeTableDataOnKey(transformableData, mergedTableName);
     }
 
@@ -66,8 +66,8 @@ class RawDataValuesBuilder extends DataBuilder {
 
     const { surveysConfig = {} } = this.config;
 
-    //Loop through each selected survey and fetch the analytics of that survey,
-    //then build a matrix around the analytics
+    // Loop through each selected survey and fetch the analytics of that survey,
+    // then build a matrix around the analytics
     for (let surveyCodeIndex = 0; surveyCodeIndex < surveyCodes.length; surveyCodeIndex++) {
       const surveyCode = surveyCodes[surveyCodeIndex];
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
@@ -94,12 +94,12 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const mappedEvents =
         ancestorMappingConfig && ancestorMappingConfig.ancestorType
-          ? await this.mapAncestorOfTypeToEvents(rawEvents, ancestorMappingConfig.ancestorType)
+          ? await this.addAncestorsToEvents(rawEvents, ancestorMappingConfig.ancestorType)
           : rawEvents;
 
       // Optional sorting config bit of performance hacking here
       // merge needs data sorted on mergeRowKey
-      const mergeRowKey = surveyConfig.mergeRowKey;
+      const { mergeRowKey } = surveyConfig;
       const ancestorKey = ancestorMappingConfig && ancestorMappingConfig.ancestorType;
       const sortedEvents = await this.sortEvents(mappedEvents, {
         mergeRowKey,
@@ -152,7 +152,7 @@ class RawDataValuesBuilder extends DataBuilder {
     // this is a performance hack for some cases fetching ancestors and sorting
     if (sortKeys.ancestorKey) return this.sortEventsByAncestor(events);
 
-    //default unsorted
+    // default unsorted
     return events;
   };
 
@@ -163,8 +163,8 @@ class RawDataValuesBuilder extends DataBuilder {
     const builtColumnsMap = {};
 
     events.forEach(({ event, mergeCompareValue }) => {
-      //event = id of survey_response
-      //mergeCompareValue = optional dataValue to merge tables
+      // event = id of survey_response
+      // mergeCompareValue = optional dataValue to merge tables
       builtColumnsMap[event] = {
         key: event,
         title: event,
@@ -193,14 +193,14 @@ class RawDataValuesBuilder extends DataBuilder {
       ...dataElementCodeToText,
     };
 
-    //Loop through each data key and build a row for each organisationUnit - period combination
+    // Loop through each data key and build a row for each organisationUnit - period combination
     Object.entries(dataKeyToName).forEach(([dataKey, text]) => {
-      //First column is the name of the data element
+      // First column is the name of the data element
       const row = {
         dataElement: text,
       };
 
-      //Build a row for each organisationUnit - period combination
+      // Build a row for each organisationUnit - period combination
       events.forEach(({ event, orgUnit, orgUnitName, eventDate, dataValues, orgUnitAncestor }) => {
         Object.entries(dataValues).forEach(([code, dataValue]) => {
           if (dataKey === code || DEFAULT_DATA_KEY_TO_TEXT[dataKey]) {
@@ -236,8 +236,13 @@ class RawDataValuesBuilder extends DataBuilder {
   };
 }
 
-export const rawDataValues = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const rawDataValues = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new RawDataValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

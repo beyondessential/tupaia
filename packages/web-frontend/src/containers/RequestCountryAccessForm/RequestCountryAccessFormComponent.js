@@ -38,7 +38,7 @@ export const RequestCountryAccessFormComponent = ({
       formError={errorMessage}
       onSubmit={fieldValues => onAttemptRequestCountryAccess(aggregateFields(fieldValues))}
       render={submitForm => (
-        <React.Fragment>
+        <>
           {countries.map(country => (
             <CheckboxField
               fullWidth
@@ -54,10 +54,8 @@ export const RequestCountryAccessFormComponent = ({
             rows="4"
             fullWidth
           />
-          <PrimaryButton variant="contained" onClick={submitForm}>
-            Request access
-          </PrimaryButton>
-        </React.Fragment>
+          <PrimaryButton onClick={submitForm}>Request access</PrimaryButton>
+        </>
       )}
     />
   );

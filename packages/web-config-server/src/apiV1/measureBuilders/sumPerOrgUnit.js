@@ -19,6 +19,7 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
 }
 
 export const sumLatestPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -26,6 +27,7 @@ export const sumLatestPerOrgUnit = async (
   entity,
 ) => {
   const builder = new SumPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,
@@ -37,6 +39,7 @@ export const sumLatestPerOrgUnit = async (
 };
 
 export const sumAllPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -44,6 +47,7 @@ export const sumAllPerOrgUnit = async (
   entity,
 ) => {
   const builder = new SumPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

@@ -25,15 +25,17 @@ import {
   selectAllMeasuresWithDisplayInfo,
 } from '../../selectors';
 
+import { selectActiveTileSet } from '../../selectors/projectSelectors';
+
 import {
-  changeOrgUnit,
+  setOrgUnit,
   changePosition,
   closeDropdownOverlays,
   setMapIsAnimating,
 } from '../../actions';
 
 const mapStateToProps = state => {
-  const { isAnimating, shouldSnapToPosition, position, measureInfo, tileSet } = state.map;
+  const { isAnimating, shouldSnapToPosition, position, measureInfo } = state.map;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -67,7 +69,7 @@ const mapStateToProps = state => {
       currentOrganisationUnit.organisationUnitCode,
     ),
     measureInfo,
-    tileSet,
+    tileSetUrl: selectActiveTileSet(state).url,
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
@@ -75,8 +77,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  changeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  setOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
   changePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
   closeDropdownOverlays: () => dispatch(closeDropdownOverlays()),

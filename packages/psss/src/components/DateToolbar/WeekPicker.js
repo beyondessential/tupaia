@@ -16,6 +16,10 @@ import { createStyles } from '@material-ui/styles';
 import { WeekPickerToolbar } from './WeekPickerToolbar';
 import { MIN_DATE } from './constants';
 
+/**
+ * Customisation of the DatePicker is not easily possible using styled-components
+ * so have had to use a createStyles solution
+ */
 const styles = createStyles(theme => ({
   dayWrapper: {
     position: 'relative',
@@ -58,6 +62,10 @@ const styles = createStyles(theme => ({
   },
 }));
 
+/**
+ * Custom week picker component which allows selecting of ISOWeeks
+ * Customisation is based heavily on material-ui docs @See: https://material-ui-pickers.dev/demo/datepicker
+ */
 export const WeekPickerComponent = ({ label, value, onChange, isOpen, onClose, classes }) => {
   const renderWeekPickerDay = (date, selectedDate, dayInCurrentMonth) => {
     const start = startOfISOWeek(selectedDate);
@@ -82,7 +90,7 @@ export const WeekPickerComponent = ({ label, value, onChange, isOpen, onClose, c
     return (
       <div className={wrapperClassName}>
         <IconButton className={dayClassName}>
-          <span> {format(date, 'd')} </span>
+          <span>{format(date, 'd')}</span>
         </IconButton>
       </div>
     );

@@ -12,7 +12,18 @@ class MapOverlayType extends DatabaseType {
 }
 
 export class MapOverlayModel extends DatabaseModel {
+  notifiers = [onChangeDeleteRelation];
+
   get DatabaseTypeClass() {
     return MapOverlayType;
   }
 }
+
+const onChangeDeleteRelation = async ({ type: changeType, record_id: id }, models) => {
+  switch (changeType) {
+    case 'delete':
+      return models.mapOverlayGroupRelation.delete({ child_id: id, child_type: 'mapOverlay' });
+    default:
+      return true;
+  }
+};

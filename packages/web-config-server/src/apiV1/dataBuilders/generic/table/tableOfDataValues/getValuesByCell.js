@@ -10,8 +10,9 @@ import { addPrefixToCell } from './TableConfig';
 import {
   countAnalyticsThatSatisfyConditions,
   divideValues,
-  calculateArithmeticOperationForAnalytics,
+  calculateOperationForAnalytics,
 } from '/apiV1/dataBuilders/helpers';
+import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 const groupByMetadata = (groupedResults, metadataField) => {
   const newResults = {};
@@ -65,10 +66,20 @@ export const getPercentageCountOfValuesByCell = (cells, results) => {
   return percentageCountOfValuesByCell;
 };
 
-export const getCalculatedValuesByCell = (cells, results) => {
+export const getCalculatedValuesByCell = async (models, cells, results, hierarchyId) => {
   const calculatedValuesByCell = {};
-  cells.forEach(cell => {
-    calculatedValuesByCell[cell.key] = calculateArithmeticOperationForAnalytics(results, cell);
-  });
+  await Promise.all(
+    cells.map(async cell => {
+      if (typeof cell === 'string') {
+        const analyticForCell = results.find(result => result.dataElement === cell) || {};
+        calculatedValuesByCell[cell] = analyticForCell.value ?? NO_DATA_AVAILABLE;
+      } else {
+        calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(models, results, {
+          ...cell,
+          hierarchyId,
+        });
+      }
+    }),
+  );
   return calculatedValuesByCell;
 };

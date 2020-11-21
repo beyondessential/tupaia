@@ -10,30 +10,6 @@
 
 For contributor's code of conduct - see the [code-of-conduct.md](https://gitlab.com/beyond-essential/tupaia/blob/master/code-of-conduct.md) published in the repo.
 
-## Initial setup
-
-First, install project dependencies by running `yarn install`.
-
-Find Tupaia Config Server .env Environment Variables in lastpass, and copy to repo's directory as `.env`
-(with no text before the `.`).
-
-Set up postgres on your machine and create the database 'tupaia', with credentials matching those in
-the .env file.
-
-The project requires importing an initial database dump. Grab the latest database dump from dev server using `yarn dump-database ~/path/to/key.pem` (pem key can be obtained in LastPass - Tupaia Main Server). This will create a db dump and pull it to your current directory. You also need to be added into the Security Groups of the server.
-
-After pulling the latest database dump from dev server, run:
-
-```bash
-yarn refresh-database tupaia_dump.sql
-```
-
-or on windows, first DROP and recreate the tupaia database, then run:
-
-```bash
-psql -U tupaia < tupaia_dump.sql
-```
-
 ## Development
 
 Run `yarn start-dev` to start running on local machine.
@@ -119,24 +95,6 @@ Note: The `EXPORT_COOKIE_URL` should not contain a http or https prefix.
 
 There's one exception however, authentication cookies will not work so you'll only be able to export publicly accessible charts (though you'll still need to log in in order for the config server to know which email address to send the export to).
 
-## Code Style
-
-We use [Eslint](https://eslint.org/) to indicate quality and formatting errors in the codebase.
-
-### Code quality
-
-The [Airbnb Style Guide](https://github.com/airbnb/javascript) is used for code quality, other than formatting which is handled by Prettier. Modifications to the default rules are defined in our custom `@beyondessential/eslint-config-beyondessential` package.
-
-### Formatting style
-
-[Prettier](https://prettier.io/) is used for formatting style. `.prettierrc` defines modification to the default rules. \
-\
-In order to use Prettier in **Visual Studio Code**:
-
-1. Install the `Prettier` plugin
-2. Enable the `Editor: Format on Save` setting.
-3. You can now format a file either by saving it, or by using the `Format Document` command
-
 ## Debugging
 
 ### Visual Studio Code
@@ -146,31 +104,3 @@ In order to use Prettier in **Visual Studio Code**:
 3. Click the green arrow to `Start Debugging`. A list with currently running Node processes will pop up. Select the one that starts with `--inspect=9999`
 4. You are ready to start debugging! Add breakpoints to your code to inspect the program state. You can also enable breakpoints at `All Exceptions` to effectively
    debug errors.
-
-## Tests
-
-### Running the tests
-
-```bash
-  yarn test               # Runs all tests
-  yarn test -g ${pattern} # Runs tests filtering their file names by ${pattern}
-  yarn test-coverage      # Runs tests and displays project test coverage
-```
-
-### Filtering describe/it blocks
-
-```js
-// Run specific blocks
-describe.only('Describe block', function () => {});
-it.only(function () => {})
-
-// Skip blocks
-describe.skip('One Time Login', function () => {});
-it.skip(function () => {} )
-```
-
-Remember to **remove** `.only`/`.skip` calls before you commit the test files.
-
-### Test coverage
-
-To display line coverage in code, you can use [Coverage Gutters](https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters) for `Visual Studio Code`

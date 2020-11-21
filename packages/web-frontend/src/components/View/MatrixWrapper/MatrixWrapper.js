@@ -76,6 +76,7 @@ const buildMatrixDataFromViewContent = viewContent => {
     presentationOptions = {},
     categoryPresentationOptions = {},
     isExporting,
+    hideColumnTitles,
     valueType = 'text',
   } = viewContent;
 
@@ -132,6 +133,7 @@ const buildMatrixDataFromViewContent = viewContent => {
     calculatedStyles,
     presentationOptions,
     categoryPresentationOptions,
+    hideColumnTitles,
   };
 };
 
@@ -232,11 +234,16 @@ export class MatrixWrapper extends Component {
       presentationOptions,
       categoryPresentationOptions,
       maximumColumnWidth,
+      hideColumnTitles,
     } = expandedMatrixData;
     const PeriodSelectorComponent = this.renderPeriodSelector();
 
     if (!columns) {
-      return <div style={styles.loadingWrapper}>{<CircularProgress />}</div>;
+      return (
+        <div style={styles.loadingWrapper}>
+          <CircularProgress />
+        </div>
+      );
     }
 
     let numberOfColumnsPerPage = 0;
@@ -262,6 +269,7 @@ export class MatrixWrapper extends Component {
         presentationOptions={presentationOptions}
         categoryPresentationOptions={categoryPresentationOptions}
         isExporting={isExporting}
+        hideColumnTitles={hideColumnTitles}
         title={titleText}
         onSearch={searchTerm => onChangeConfig({ search: searchTerm })}
         renderPeriodSelector={() => PeriodSelectorComponent}
@@ -284,7 +292,7 @@ export class MatrixWrapper extends Component {
       <div style={VIEW_STYLES.chartViewContainer}>
         <div style={VIEW_STYLES.chartContainer}>
           {isMobile() ? (
-            <React.Fragment>
+            <>
               <img
                 src={matrixPlaceholder}
                 alt="Matrix chart placeholder"
@@ -296,7 +304,7 @@ export class MatrixWrapper extends Component {
                   screens.
                 </div>
               </div>
-            </React.Fragment>
+            </>
           ) : (
             <div>
               <img
