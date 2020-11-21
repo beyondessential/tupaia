@@ -176,8 +176,10 @@ export const schema = {
 
       oldOptions.forEach((oldOption, index) => {
         const optionSets = oldRealm.objects('OptionSet').filtered(`options.id="${oldOption.id}"`);
-        const optionSet = optionSets[0];
-        newOptions[index].optionSetId = optionSet.id;
+        if (optionSets.length > 0) {
+          const optionSet = optionSets[0];
+          newOptions[index].optionSetId = optionSet.id;
+        }
       });
     }
   },
