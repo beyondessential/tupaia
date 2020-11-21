@@ -142,7 +142,7 @@ const createOptions = (getState, database, questions) => {
   const autocompleteQuestions = getOptionCreationAutocompleteQuestions(questions);
   const answers = getAnswers(getState());
   return autocompleteQuestions
-    .filter(({ id: questionId }) => answers[questionId] !== undefined) // filter questions
+    .filter(({ id: questionId }) => answers[questionId] !== undefined)
     .map(question => {
       const { id: questionId, optionSetId } = question;
       const answer = answers[questionId];
