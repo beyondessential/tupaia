@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { API } from '../../api';
 import { LoginForm } from '../Forms';
 import { render } from '../../utils/test-utils';
@@ -25,11 +24,11 @@ describe('login form', () => {
     const passwordInput = screen.getByPlaceholderText(/password/i);
     const submitButton = screen.getByRole('button', { name: /login*/i });
 
-    await userEvent.type(emailInput, testData.email);
-    await userEvent.type(passwordInput, testData.password);
+    fireEvent.change(emailInput, { target: { value: testData.email } });
+    fireEvent.change(passwordInput, { target: { value: testData.password } });
 
     await act(async () => {
-      await userEvent.click(submitButton);
+      await fireEvent.click(submitButton);
     });
 
     expect(API.reauthenticate).toHaveBeenCalledWith({

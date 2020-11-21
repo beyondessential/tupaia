@@ -40,8 +40,8 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-export const Button = ({ children, isLoading, loadingText, disabled, color, ...props }) => (
-  <StyledButton variant="contained" color={color} {...props} disabled={isLoading || disabled}>
+export const Button = ({ children, isLoading, loadingText, disabled, ...props }) => (
+  <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
     {isLoading ? `${loadingText}...` : children}
   </StyledButton>
 );
@@ -51,11 +51,9 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
   loadingText: PropTypes.string,
   disabled: PropTypes.bool,
-  color: PropTypes.string,
 };
 
 Button.defaultProps = {
-  color: 'primary',
   loadingText: 'Loading',
   isLoading: false,
   disabled: false,
@@ -124,8 +122,6 @@ export const SuccessButton = styled(Button)`
  */
 export const SmallButton = styled(Button)`
   font-size: 0.75rem;
-  padding-top: 0.9em;
-  padding-bottom: 0.9em;
 `;
 
 /*
