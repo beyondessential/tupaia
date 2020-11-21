@@ -14,7 +14,15 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle } from '../components';
+import {
+  DateToolbar,
+  Container,
+  Main,
+  Sidebar,
+  Header,
+  HeaderTitle,
+  ComingSoon,
+} from '../components';
 import { CountriesTable, WeeklyReportsExportModal } from '../containers';
 
 const StyledCardContent = styled(CardContent)`
@@ -63,9 +71,10 @@ export const CountriesReportsView = () => (
             <CircleMeter value={11} total={22} />
           </StyledCardContent>
         </Card>
-        <Card variant="outlined">
-          <DataCardTabs data={tabData} />
-        </Card>
+        {/* Temporarily removed for MVP release. Please do not delete */}
+        {/*<Card variant="outlined">*/}
+        {/*  <DataCardTabs data={tabData} />*/}
+        {/*</Card>*/}
       </Sidebar>
     </Container>
   </>
