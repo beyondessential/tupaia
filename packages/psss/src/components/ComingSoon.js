@@ -34,9 +34,9 @@ const StyledAlert = styled(SmallAlert)`
   z-index: 10;
 
   &.MuiAlert-filledWarning {
-    background-color: #fee2e2;
-    color: #d13333;
-    border: 1px solid rgba(209, 51, 51, 0.15);
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
   }
 `;
 
