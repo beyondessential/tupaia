@@ -1,5 +1,5 @@
 import { Aggregator } from '../aggregator';
-import { FetchReportQuery } from '../types';
+import { FetchReportQuery, ReportConfig } from '../types';
 import { buildFetch } from './fetch';
 import { buildTransform } from './transform';
 import { Row } from './types';
@@ -9,22 +9,33 @@ interface BuildReport {
 }
 
 export class ReportBuilder {
-  readonly report;
+  readonly config: ReportConfig;
 
   readonly aggregator: Aggregator;
 
   readonly query: FetchReportQuery;
 
-  constructor(report, aggregator: Aggregator, query: FetchReportQuery) {
-    this.report = report;
+  readonly testData: Row[];
+
+  constructor(
+    config: ReportConfig,
+    aggregator: Aggregator,
+    query: FetchReportQuery,
+    testData: Row[] = [],
+  ) {
+    this.config = config;
     this.aggregator = aggregator;
     this.query = query;
+    this.testData = testData;
   }
 
   build = async (): Promise<BuildReport> => {
-    const fetch = buildFetch(this.report.config.fetch);
-    const transform = buildTransform(this.report.config.transform);
-    const data = await fetch(this.aggregator, this.query);
+    const fetch = buildFetch(this.config.fetch);
+    const transform = buildTransform(this.config.transform);
+    const data =
+      this.testData.length > 0
+        ? { results: this.testData }
+        : await fetch(this.aggregator, this.query);
     data.results = transform(data.results);
     return data;
   };

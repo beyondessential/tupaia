@@ -18,7 +18,19 @@ class FetchReportRouteHandler {
   }
 
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
-    const { query, params, models, accessPolicy } = req;
+    const { query, params, models, accessPolicy, body } = req;
+    if (body.testConfig) {
+      const reportBuilder = new ReportBuilder(
+        body.testConfig,
+        this.aggregator,
+        query,
+        body.testData,
+      );
+      const data = await reportBuilder.build();
+      respond(res, data, 200);
+      return;
+    }
+
     const report = await models.report.findOne({ code: params.reportCode });
     if (!report) {
       throw new Error(`No report found with code ${params.reportCode}`);
@@ -48,7 +60,7 @@ class FetchReportRouteHandler {
       }
     });
 
-    const reportBuilder = new ReportBuilder(report, this.aggregator, query);
+    const reportBuilder = new ReportBuilder(report.config, this.aggregator, query, body.testData);
     const data = await reportBuilder.build();
     respond(res, data, 200);
   };
