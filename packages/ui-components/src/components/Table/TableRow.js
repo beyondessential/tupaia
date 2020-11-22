@@ -6,8 +6,10 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiTableCell from '@material-ui/core/TableCell';
 import PropTypes from 'prop-types';
+import { AddCircle, RemoveCircle } from '@material-ui/icons';
 import MuiTableRow from '@material-ui/core/TableRow';
 import { tableColumnShape } from './tableColumnShape';
+import { IconButton } from '../IconButton';
 
 export const TableCell = styled(MuiTableCell)`
   height: 70px;
@@ -22,21 +24,29 @@ export const TableCell = styled(MuiTableCell)`
   }
 `;
 
-export const TableRowCells = React.memo(({ columns, rowData }) =>
-  columns.map(({ key, accessor, CellComponent, width = null, align = 'center', cellColor }) => {
-    const value = accessor ? accessor(rowData) : rowData[key];
-    const displayValue = value === 0 ? '0' : value;
-    const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
-    return (
-      <TableCell background={backgroundColor} key={key} style={{ width }} align={align}>
-        {CellComponent ? (
-          <CellComponent {...rowData} displayValue={value} columnKey={key} />
-        ) : (
-          displayValue
-        )}
-      </TableCell>
-    );
-  }),
+export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
+  columns.map(
+    ({ key, accessor, CellComponent, width = null, align = 'center', cellColor }, index) => {
+      const value = accessor ? accessor(rowData) : rowData[key];
+      const displayValue = value === 0 ? '0' : value;
+      const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
+      return (
+        <TableCell
+          background={backgroundColor}
+          key={key}
+          style={{ width, position: 'relative' }}
+          align={align}
+        >
+          {CellComponent ? (
+            <CellComponent {...rowData} displayValue={value} columnKey={key} />
+          ) : (
+            displayValue
+          )}
+          {ExpandButton && index >= columns.length - 1 && ExpandButton}
+        </TableCell>
+      );
+    },
+  ),
 );
 
 TableRowCells.propTypes = {
@@ -47,7 +57,6 @@ TableRowCells.propTypes = {
 const rowHoverColor = '#F1F1F1';
 
 export const StyledTableRow = styled(MuiTableRow)`
-  cursor: pointer;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 
   &:hover {
