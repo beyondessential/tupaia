@@ -1,5 +1,9 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 import { getChangesFilter } from '../../../routes/utilities/getChangesFilter';
 
