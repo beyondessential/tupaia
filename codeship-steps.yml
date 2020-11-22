@@ -61,8 +61,6 @@
         - type: serial
           name: restart-backends
           steps:
-            - name: deploy-report-server
-              command: './packages/devops/scripts/ci/deployBackend.sh report-server'
             - name: deploy-web-config-server
               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
             - name: deploy-meditrak-server
