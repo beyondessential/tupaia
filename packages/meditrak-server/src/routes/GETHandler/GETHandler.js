@@ -44,18 +44,29 @@ export class GETHandler extends CRUDHandler {
     return { limit, page };
   }
 
-  getDbQueryOptions() {
-    const { columns: columnsString, sort: sortString, distinct = false } = this.req.query;
+  async getProcessedColumns() {
+    const { columns: columnsString } = this.req.query;
+
+    if (!columnsString) {
+      // no columns specifically requested, use all fields on the model
+      const fields = await this.resourceModel.fetchFieldNames();
+      return processColumns(this.models, fields, this.recordType);
+    }
+
+    const unprocessedColumns = columnsString && JSON.parse(columnsString);
+    return processColumns(this.models, unprocessedColumns, this.recordType);
+  }
+
+  async getDbQueryOptions() {
+    const { sort: sortString, distinct = false } = this.req.query;
 
     // set up db query options
-    const unprocessedColumns = columnsString && JSON.parse(columnsString);
+    const columns = await this.getProcessedColumns();
     const { sort, multiJoin } = getQueryOptionsForColumns(
-      unprocessedColumns,
+      Object.keys(columns),
       this.recordType,
       this.customJoinConditions,
     );
-    const columns =
-      unprocessedColumns && processColumns(this.models, unprocessedColumns, this.recordType);
 
     const { limit, page } = this.getPaginationParameters();
     const offset = limit * page;
@@ -86,10 +97,10 @@ export class GETHandler extends CRUDHandler {
   }
 
   async buildResponse() {
-    const options = this.getDbQueryOptions();
+    const options = await this.getDbQueryOptions();
 
     // handle request for a single record
-    const recordId = this.recordId;
+    const { recordId } = this;
     if (recordId) {
       const record = await this.findSingleRecord(recordId, options);
       return { body: record };

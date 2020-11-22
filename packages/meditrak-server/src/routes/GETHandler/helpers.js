@@ -70,39 +70,42 @@ export const processColumns = (models, unprocessedColumns, recordType) => {
   }));
 };
 
-export const getQueryOptionsForColumns = (columns, baseRecordType, customJoinConditions = {}) => {
-  const sort = [`${baseRecordType}.id`];
-  if (!columns) {
-    return { sort };
-  }
-  if (columns.some(c => c.startsWith('_'))) {
+const getForeignKeyColumnName = foreignTable => {
+  const exceptions = {
+    user_account: 'user_id',
+    survey_screen: 'screen_id',
+  };
+  return exceptions[foreignTable] || `${foreignTable}_id`;
+};
+
+export const getQueryOptionsForColumns = (
+  columnNames,
+  baseRecordType,
+  customJoinConditions = {},
+) => {
+  if (columnNames.some(c => c.startsWith('_'))) {
     throw new ValidationError(
       'No columns start with "_", and conjunction operators are reserved for internal use only',
     );
   }
-  const columnsNeedingJoin = columns.filter(column => column.includes('.'));
   const multiJoin = [];
-  const recordTypesJoined = [];
-  for (let i = 0; i < columnsNeedingJoin.length; i++) {
-    // Split strings into the record type to join with and the column to select, e.g. if the column
-    // is 'survey.name', split into 'survey' and 'name'
-    const resourceName = columnsNeedingJoin[i].split('.')[0];
-    const recordType = resourceToRecordType(resourceName);
-
-    if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
-      const joinCondition = customJoinConditions[recordType] || [
-        `${recordType}.id`,
-        `${resourceName}_id`,
-      ];
-      multiJoin.push({
-        joinType: JOIN_TYPES.LEFT_OUTER,
-        joinWith: recordType,
-        joinCondition,
-      });
-      recordTypesJoined.push(recordType);
-    }
-  }
+  const recordTypesInQuery = new Set([baseRecordType]);
+  columnNames
+    .filter(c => c.includes('.'))
+    .forEach(columnName => {
+      // Split strings into the record type to join with and the column to select, e.g. if the column
+      // is 'survey.name', split into 'survey' and 'name'
+      const recordType = columnName.split('.')[0];
+      if (!recordTypesInQuery.has(recordType)) {
+        const joinCondition = customJoinConditions[recordType] || [
+          `${recordType}.id`,
+          getForeignKeyColumnName(recordType),
+        ];
+        multiJoin.push(joinCondition);
+        recordTypesInQuery.add(recordType);
+      }
+    });
   // Ensure every join table is added to the sort, so that queries are predictable during pagination
-  sort.push(...recordTypesJoined.map(recordType => `${recordType}.id`));
+  const sort = [...recordTypesInQuery].map(recordType => `${recordType}.id`);
   return { multiJoin, sort };
 };
