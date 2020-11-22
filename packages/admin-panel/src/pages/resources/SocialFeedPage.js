@@ -81,7 +81,7 @@ export const SOCIAL_FEED_COLUMNS = [
     source: 'id',
     type: 'edit',
     actionConfig: {
-      editEndpoint: 'feedItem',
+      editEndpoint: 'feedItems',
       fields: FIELDS,
     },
   },
@@ -90,7 +90,7 @@ export const SOCIAL_FEED_COLUMNS = [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'feedItem',
+      endpoint: 'feedItems',
     },
   },
 ];

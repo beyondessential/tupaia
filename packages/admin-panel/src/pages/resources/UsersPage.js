@@ -64,7 +64,7 @@ const COLUMNS = [
     type: 'edit',
     width: 150,
     actionConfig: {
-      editEndpoint: 'user',
+      editEndpoint: 'users',
       fields: EDIT_FIELDS,
     },
   },
@@ -78,7 +78,7 @@ const COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Permissions',
-    endpoint: `user/{id}/${PERMISSIONS_ENDPOINT}`,
+    endpoint: `users/{id}/${PERMISSIONS_ENDPOINT}`,
     columns: PERMISSIONS_COLUMNS,
   },
 ];
@@ -97,7 +97,7 @@ const IMPORT_CONFIG = {
 const CREATE_CONFIG = {
   title: 'New User',
   actionConfig: {
-    editEndpoint: 'userAccount', // Bit of a hack to avoid the /user route that the app uses
+    editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,
       {

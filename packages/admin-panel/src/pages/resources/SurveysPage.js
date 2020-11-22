@@ -48,7 +48,7 @@ const SURVEY_COLUMNS = [
     source: 'id',
     type: 'export',
     actionConfig: {
-      exportEndpoint: 'survey',
+      exportEndpoint: 'surveys',
       fileName: '{name}',
     },
   },
@@ -57,7 +57,7 @@ const SURVEY_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'survey',
+      editEndpoint: 'surveys',
       fields: [
         ...SURVEY_FIELDS,
         {
@@ -139,7 +139,7 @@ const SURVEY_COLUMNS = [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'survey',
+      endpoint: 'surveys',
     },
   },
 ];
@@ -193,7 +193,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'surveyScreenComponent',
+      editEndpoint: 'surveyScreenComponents',
       fields: [
         ...QUESTION_FIELDS,
         {

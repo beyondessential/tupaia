@@ -120,7 +120,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/me', getUser);
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
-  app.get('(/v[0-9]+)/answer/:recordId?', getAnswers);
+  app.get('(/v[0-9]+)/answers/:recordId?', getAnswers);
   app.get('(/v[0-9]+)/disasters/:recordId?', getDisasters);
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
@@ -158,12 +158,13 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
   app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
-  app.post('(/v[0-9]+)?/user', registerUserAccount);
-  app.post('(/v[0-9]+)?/userAccount', createUserAccount);
+  app.post('(/v[0-9]+)?/user', registerUserAccount); // used for user registration on tupaia.org etc.
+  app.post('(/v[0-9]+)?/users', createUserAccount); // used by admin panel to directly create users
   app.post('(/v[0-9]+)?/userEntityPermissions', createUserEntityPermissions);
   app.post('(/v[0-9]+)/me/requestCountryAccess', requestCountryAccess);
   app.post('(/v[0-9]+)/me/changePassword', changePassword);
-  app.post('(/v[0-9]+)/surveyResponse', surveyResponse);
+  app.post('(/v[0-9]+)/surveyResponse', surveyResponse); // used by mSupply to directly submit data
+  app.post('(/v[0-9]+)/surveyResponses', surveyResponse);
   app.post('(/v[0-9]+)/:resource', addRecord);
   app.post('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', addRecord);
 
