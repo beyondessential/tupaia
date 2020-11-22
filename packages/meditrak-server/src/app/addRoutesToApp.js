@@ -158,12 +158,12 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
   app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
-  app.post('(/v[0-9]+)?/user', registerUserAccount);
-  app.post('(/v[0-9]+)?/users', createUserAccount); // for admin panel use
+  app.post('(/v[0-9]+)?/user', registerUserAccount); // used for user registration on tupaia.org etc.
+  app.post('(/v[0-9]+)?/users', createUserAccount); // used by admin panel to directly create users
   app.post('(/v[0-9]+)?/userEntityPermissions', createUserEntityPermissions);
   app.post('(/v[0-9]+)/me/requestCountryAccess', requestCountryAccess);
   app.post('(/v[0-9]+)/me/changePassword', changePassword);
-  app.post('(/v[0-9]+)/surveyResponse', surveyResponse);
+  app.post('(/v[0-9]+)/surveyResponse', surveyResponse); // used by mSupply to directly submit data
   app.post('(/v[0-9]+)/surveyResponses', surveyResponse);
   app.post('(/v[0-9]+)/:resource', addRecord);
   app.post('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', addRecord);
