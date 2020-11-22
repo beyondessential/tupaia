@@ -80,8 +80,6 @@ const EXPANSION_CONFIG = [
     title: 'Permissions',
     endpoint: `user/{id}/${PERMISSIONS_ENDPOINT}`,
     columns: PERMISSIONS_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'user_id',
   },
 ];
 

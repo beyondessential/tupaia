@@ -43,59 +43,69 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
   return formatLinkHeader(linkHeader);
 };
 
-export const processColumnSelector = (unprocessedColumnSelector, baseRecordType) => {
+export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
   if (unprocessedColumnSelector.includes('.')) {
     const [recordType, column] = unprocessedColumnSelector.split('.');
-    return `${resourceToRecordType(recordType)}.${column}`;
+    const model = models.getModelForDatabaseType(recordType);
+    const customSelector = model.customColumnSelectors && model.customColumnSelectors[column];
+    const selector = `${resourceToRecordType(recordType)}.${column}`;
+    return customSelector ? customSelector(selector) : selector;
   }
   return `${baseRecordType}.${unprocessedColumnSelector}`;
 };
 
 // Make sure all column keys have the table specified to avoid ambiguous column errors,
 // and also transform any resource names into database record types
-export const processColumnSelectorKeys = (object, recordType) => {
+export const processColumnSelectorKeys = (models, object, recordType) => {
   const processedObject = {};
   Object.entries(object).forEach(([columnSelector, value]) => {
-    processedObject[processColumnSelector(columnSelector, recordType)] = value;
+    processedObject[processColumnSelector(models, columnSelector, recordType)] = value;
   });
   return processedObject;
 };
 
-export const processColumns = (unprocessedColumns, recordType) => {
+export const processColumns = (models, unprocessedColumns, recordType) => {
   return unprocessedColumns.map(column => ({
-    [column]: processColumnSelector(column, recordType),
+    [column]: processColumnSelector(models, column, recordType),
   }));
 };
 
-export const getQueryOptionsForColumns = (columns, baseRecordType) => {
-  const sort = [`${baseRecordType}.id`];
-  if (!columns) {
-    return { sort };
-  }
-  if (columns.some(c => c.startsWith('_'))) {
+const getForeignKeyColumnName = foreignTable => {
+  const exceptions = {
+    user_account: 'user_id',
+    survey_screen: 'screen_id',
+  };
+  return exceptions[foreignTable] || `${foreignTable}_id`;
+};
+
+export const getQueryOptionsForColumns = (
+  columnNames,
+  baseRecordType,
+  customJoinConditions = {},
+) => {
+  if (columnNames.some(c => c.startsWith('_'))) {
     throw new ValidationError(
       'No columns start with "_", and conjunction operators are reserved for internal use only',
     );
   }
-  const columnsNeedingJoin = columns.filter(column => column.includes('.'));
   const multiJoin = [];
-  const recordTypesJoined = [];
-  for (let i = 0; i < columnsNeedingJoin.length; i++) {
-    // Split strings into the record type to join with and the column to select, e.g. if the column
-    // is 'survey.name', split into 'survey' and 'name'
-    const resourceName = columnsNeedingJoin[i].split('.')[0];
-    const recordType = resourceToRecordType(resourceName);
-
-    if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
-      multiJoin.push({
-        joinType: JOIN_TYPES.LEFT_OUTER,
-        joinWith: recordType,
-        joinCondition: [`${recordType}.id`, `${resourceName}_id`],
-      });
-      recordTypesJoined.push(recordType);
-    }
-  }
+  const recordTypesInQuery = new Set([baseRecordType]);
+  columnNames
+    .filter(c => c.includes('.'))
+    .forEach(columnName => {
+      // Split strings into the record type to join with and the column to select, e.g. if the column
+      // is 'survey.name', split into 'survey' and 'name'
+      const recordType = columnName.split('.')[0];
+      if (!recordTypesInQuery.has(recordType)) {
+        const joinCondition = customJoinConditions[recordType] || [
+          `${recordType}.id`,
+          getForeignKeyColumnName(recordType),
+        ];
+        multiJoin.push(joinCondition);
+        recordTypesInQuery.add(recordType);
+      }
+    });
   // Ensure every join table is added to the sort, so that queries are predictable during pagination
-  sort.push(...recordTypesJoined.map(recordType => `${recordType}.id`));
+  const sort = [...recordTypesInQuery].map(recordType => `${recordType}.id`);
   return { multiJoin, sort };
 };
