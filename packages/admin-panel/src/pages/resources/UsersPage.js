@@ -97,7 +97,7 @@ const IMPORT_CONFIG = {
 const CREATE_CONFIG = {
   title: 'New User',
   actionConfig: {
-    editEndpoint: 'userAccounts', // Bit of a hack to avoid the /user route that the app uses
+    editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,
       {
