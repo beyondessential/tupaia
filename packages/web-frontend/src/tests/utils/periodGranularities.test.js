@@ -119,14 +119,13 @@ describe('periodGranularities', () => {
       });
     });
 
-    describe('defaultTimePeriod with a date range', () => {
-      it('uses the default date range for empty config', () => {
-        const { startDate, endDate } = getDefaultDates({
+    describe('defaultTimePeriod with a non-single period', () => {
+      it('gives nothing by default', () => {
+        const result = getDefaultDates({
           periodGranularity: 'day',
           defaultTimePeriod: null,
         });
-        expect(startDate.format()).toEqual('2015-01-01T00:00:00+11:00');
-        expect(endDate.format()).toEqual('2019-02-05T21:00:00+11:00');
+        expect(result).toEqual({});
       });
 
       it('basic config works', () => {

@@ -36,7 +36,6 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 - [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
-- [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)

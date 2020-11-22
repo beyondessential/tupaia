@@ -1,4 +1,4 @@
-import { convertDateRangeToPeriods, CustomError, replaceValues } from '@tupaia/utils';
+import { convertDateRangeToPeriods, replaceValues, CustomError } from '@tupaia/utils';
 import { getDhisApiInstance } from '/dhis';
 import { isSingleValue } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
@@ -14,6 +14,13 @@ const noViewWithId = {
   responseText: {
     status: 'viewError',
     details: 'No view with corresponding id',
+  },
+};
+
+const viewNotInGroup = {
+  responseText: {
+    status: 'viewError',
+    details: 'Dashboard group does not contain view',
   },
 };
 

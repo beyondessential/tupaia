@@ -169,8 +169,8 @@ EnlargedDialogComponent.propTypes = {
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
   projectCode: PropTypes.string,
-  startDate: PropTypes.object,
-  endDate: PropTypes.object,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
   isVisible: PropTypes.bool,
   isDrillDownVisible: PropTypes.bool,
 };

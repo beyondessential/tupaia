@@ -1,0 +1,17 @@
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ */
+
+export const IMPORT_EXPORT_START = 'IMPORT_EXPORT_START';
+export const IMPORT_EXPORT_ERROR = 'IMPORT_EXPORT_ERROR';
+export const IMPORT_EXPORT_SUCCESS = 'IMPORT_EXPORT_SUCCESS';
+export const IMPORT_DIALOG_OPEN = 'IMPORT_DIALOG_OPEN';
+export const EXPORT_DIALOG_OPEN = 'EXPORT_DIALOG_OPEN';
+export const IMPORT_EXPORT_DISMISS = 'IMPORT_EXPORT_DISMISS';
+
+export const DATA_CHANGE_ACTIONS = {
+  start: IMPORT_EXPORT_START,
+  finish: IMPORT_EXPORT_SUCCESS,
+  error: IMPORT_EXPORT_ERROR,
+};

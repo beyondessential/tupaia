@@ -45,14 +45,7 @@ export const FileUploadField = ({ onChange, name }) => {
 
   return (
     <FlexStart as="label" htmlFor={name}>
-      <HiddenFileInput
-        ref={inputEl}
-        id={name}
-        name={name}
-        type="file"
-        onChange={handleChange}
-        value=""
-      />
+      <HiddenFileInput ref={inputEl} id={name} name={name} type="file" onChange={handleChange} />
       <GreyButton component="span" startIcon={<SaveAlt />}>
         Choose file
       </GreyButton>

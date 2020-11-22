@@ -2,7 +2,7 @@
 
 ## User Guide
 
-Most aspects are fairly self explanatory, but this guide should cover any tricky bits as they get added
+Most aspects are fairly self explanatory, but this guide should cover the tricky bits as they get added
 
 ### Creating an Api Client
 

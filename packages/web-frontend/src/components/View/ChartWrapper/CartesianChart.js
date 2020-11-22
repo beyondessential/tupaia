@@ -283,19 +283,12 @@ export class CartesianChart extends PureComponent {
     switch (config.type) {
       case 'scale':
         return dataExtreme => dataExtreme * config.value;
-      case 'clamp':
-        return dataExtreme => {
-          const maxClampedVal = config.max ? Math.min(dataExtreme, config.max) : dataExtreme;
-          return config.min ? Math.max(maxClampedVal, config.min) : maxClampedVal;
-        };
       case 'number':
       case 'string':
       default:
         return config.value;
     }
   };
-
-  containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
   renderVerticalTick = props => {
     const { viewContent } = this.props;
@@ -389,7 +382,7 @@ export class CartesianChart extends PureComponent {
     valueType: axisValueType,
   } = {}) => {
     const { isExporting, viewContent } = this.props;
-    const { data, valueType, presentationOptions } = viewContent;
+    const { data, valueType } = viewContent;
 
     return (
       <YAxis
@@ -398,12 +391,10 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         orientation={orientation}
         domain={this.calculateYAxisDomain(yAxisDomain)}
-        allowDataOverflow={valueType === PERCENTAGE || this.containsClamp(yAxisDomain)}
+        allowDataOverflow={valueType === PERCENTAGE}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
-        tickFormatter={value =>
-          formatDataValue(value, valueType || axisValueType, { presentationOptions })
-        }
+        tickFormatter={value => formatDataValue(value, valueType || axisValueType)}
         interval={isExporting ? 0 : 'preserveStartEnd'}
         stroke={isExporting ? DARK_BLUE : 'white'}
       />
@@ -413,7 +404,7 @@ export class CartesianChart extends PureComponent {
   renderTooltip = () => {
     const { viewContent } = this.props;
     const { chartConfig = {} } = this.state;
-    const { chartType, valueType, labelType, presentationOptions } = viewContent;
+    const { chartType, valueType, labelType } = viewContent;
 
     return (
       <Tooltip
@@ -423,8 +414,7 @@ export class CartesianChart extends PureComponent {
             valueType={valueType}
             labelType={labelType}
             periodGranularity={viewContent.periodGranularity}
-            chartConfig={chartConfig}
-            presentationOptions={presentationOptions}
+            presentationOptions={chartConfig}
             chartType={chartType}
           />
         }

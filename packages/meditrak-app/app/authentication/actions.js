@@ -19,8 +19,6 @@ import {
 
 import { resetToHome, resetToLogin, resetToWelcomeScreen } from '../navigation';
 
-import { getErrorMessage } from '../sync/selectors';
-
 const UNABLE_TO_CONNECT_MESSAGE = 'Unable to connect';
 
 export const changeEmailAddress = emailAddress => ({
@@ -107,9 +105,7 @@ export const receiveLogin = (emailAddress, user, accessPolicy, installId) => asy
   const existingLoginDetails = database.getCurrentLoginDetails();
   // If sync failed and this is the first time the user has logged in, don't let them see the app
   if (!syncWasSuccessful && !existingLoginDetails.emailAddress) {
-    const state = getState();
-    const errorMessage = getErrorMessage(state);
-    dispatch(receiveLoginError(`Sync failed: ${errorMessage}. Log in again to retry.`));
+    dispatch(receiveLoginError('Sync failed. Tap to retry.'));
     dispatch(resetToLogin());
     return;
   }

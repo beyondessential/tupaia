@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
+import { ImportModal, ExportModal } from '../../importExport';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
@@ -22,20 +23,14 @@ export const ResourcePage = ({
   endpoint,
   expansionTabs,
   importConfig,
-  ExportModalComponent,
+  filteredExportConfig,
   onProcessDataForSave,
   baseFilter,
   title,
   getHeaderEl,
-  defaultSorting,
 }) => {
   const HeaderPortal = usePortalWithCallback(
-    <Header
-      title={title}
-      importConfig={importConfig}
-      createConfig={createConfig}
-      ExportModalComponent={ExportModalComponent}
-    />,
+    <Header title={title} importConfig={importConfig} createConfig={createConfig} />,
     getHeaderEl,
   );
   return (
@@ -48,9 +43,10 @@ export const ResourcePage = ({
           expansionTabs={expansionTabs}
           reduxId={endpoint}
           baseFilter={baseFilter}
-          defaultSorting={defaultSorting}
         />
       </Container>
+      {importConfig && <ImportModal {...importConfig} />}
+      {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
     </>
   );
@@ -72,10 +68,9 @@ ResourcePage.propTypes = {
     }),
   ),
   importConfig: PropTypes.object,
-  ExportModalComponent: PropTypes.elementType,
+  filteredExportConfig: PropTypes.object,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
-  defaultSorting: PropTypes.array,
 };
 
 ResourcePage.defaultProps = {
@@ -83,8 +78,7 @@ ResourcePage.defaultProps = {
   editConfig: null,
   expansionTabs: null,
   importConfig: null,
-  ExportModalComponent: null,
+  filteredExportConfig: null,
   onProcessDataForSave: null,
   baseFilter: {},
-  defaultSorting: [],
 };

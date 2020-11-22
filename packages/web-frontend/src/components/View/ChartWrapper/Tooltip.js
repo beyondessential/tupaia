@@ -26,7 +26,6 @@ function formatLabelledValue(label, value, valueType, metadata) {
 
 const MultiValueTooltip = ({
   valueType,
-  chartConfig,
   presentationOptions,
   payload,
   periodGranularity,
@@ -46,20 +45,14 @@ const MultiValueTooltip = ({
   }
 
   const valueLabels = payload.map(({ dataKey, value }) => {
-    const options = chartConfig && chartConfig[dataKey];
+    const options = presentationOptions && presentationOptions[dataKey];
     const label = (options && options.label) || dataKey;
-    const valueTypeForLabel = labelType || valueType || get(chartConfig, [dataKey, 'valueType']);
+    const valueTypeForLabel =
+      labelType || valueType || get(presentationOptions, [dataKey, 'valueType']);
 
-    const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`] || {};
+    const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`];
 
-    return (
-      <li key={dataKey}>
-        {formatLabelledValue(label, value, valueTypeForLabel, {
-          presentationOptions,
-          ...metadata,
-        })}
-      </li>
-    );
+    return <li key={dataKey}>{formatLabelledValue(label, value, valueTypeForLabel, metadata)}</li>;
   });
 
   return (

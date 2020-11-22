@@ -44,10 +44,6 @@
       "name": "eslint-config-typescript",
       "path": "packages/eslint-config-typescript"
     },
-	  {
-      "name": "expression-parser",
-      "path": "packages/expression-parser"
-    },
     {
       "name": "indicators",
       "path": "packages/indicators"
