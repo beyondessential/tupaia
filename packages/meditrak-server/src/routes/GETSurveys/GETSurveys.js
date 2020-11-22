@@ -14,8 +14,8 @@ import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '
 /**
  * Handles endpoints:
  * - /surveys
- * - /survey/id
- * - /country/id/surveys
+ * - /surveys/id
+ * - /countries/id/surveys
  */
 
 export class GETSurveys extends GETHandler {
