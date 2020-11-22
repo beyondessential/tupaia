@@ -11,8 +11,8 @@ import {
 } from './assertSurveyGroupsPermissions';
 /**
  * Handles endpoints:
- * - /surveyGroup
- * - /surveyGroup/:surveyGroupId
+ * - /surveyGroups
+ * - /surveyGroups/:surveyGroupId
  */
 export class GETSurveyGroups extends GETHandler {
   async assertUserHasAccess() {

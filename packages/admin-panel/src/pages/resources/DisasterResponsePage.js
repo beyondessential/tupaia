@@ -54,7 +54,7 @@ const DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds
 const IMPORT_CONFIG = {
   title: 'Import Disasters',
   actionConfig: {
-    importEndpoint: 'disaster',
+    importEndpoint: 'disasters',
   },
 };
 

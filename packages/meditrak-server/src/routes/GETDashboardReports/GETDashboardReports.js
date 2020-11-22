@@ -11,8 +11,8 @@ import {
 } from './assertDashboardReportsPermissions';
 /**
  * Handles endpoints:
- * - /dashboardReport
- * - /dashboardReport/:dashboardReportId
+ * - /dashboardReports
+ * - /dashboardReports/:dashboardReportId
  */
 export class GETDashboardReports extends GETHandler {
   async assertUserHasAccess() {

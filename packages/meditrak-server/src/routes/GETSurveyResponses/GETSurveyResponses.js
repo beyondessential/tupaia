@@ -12,8 +12,8 @@ import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '
 
 /**
  * Handles endpoints:
- * - /surveyResponse
- * - /surveyResponse/:surveyResponseId
+ * - /surveyResponses
+ * - /surveyResponses/:surveyResponseId
  */
 export class GETSurveyResponses extends GETHandler {
   async assertUserHasAccess() {
