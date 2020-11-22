@@ -18,7 +18,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 function initStore() {
   const persistConfig = { key: 'psss', storage };
   if (process.env.NODE_ENV !== 'development') {
-    persistConfig.whitelist = []; // persist used for a dev experience, but not required in production
+    persistConfig.whitelist = ['auth']; // apart from auth, persist is used for a dev experience, but not required in production
   }
   const persistedReducers = persistCombineReducers(persistConfig, createReducers());
   const enhancers = composeEnhancers(

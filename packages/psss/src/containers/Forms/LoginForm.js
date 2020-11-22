@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
-import { login, checkIsPending, checkIsError, getError } from '../../store';
+import { login, checkIsPending, checkIsError, getError, getCurrentUser } from '../../store';
 import * as COLORS from '../../constants/colors';
 
 const ErrorMessage = styled.p`
@@ -30,16 +30,23 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
-const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
+const LoginFormComponent = ({ user, isPending, isError, error, onLogin }) => {
   const { handleSubmit, register, errors } = useForm();
   return (
-    <form onSubmit={handleSubmit(({ email, password }) => onLogin({ email, password }))} noValidate>
+    <form
+      onSubmit={handleSubmit(({ email, password, rememberMe }) => {
+        onLogin({ email, password });
+        window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
+      })}
+      noValidate
+    >
       <Heading component="h4">Enter your email and password</Heading>
       {isError && <ErrorMessage>{error}</ErrorMessage>}
       <TextField
         name="email"
         placeholder="Email"
         type="email"
+        defaultValue={user?.email}
         error={!!errors.email}
         helperText={errors.email && errors.email.message}
         inputRef={register({
@@ -61,7 +68,7 @@ const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         })}
       />
       <Checkbox
-        name="remember"
+        name="rememberMe"
         color="primary"
         label="Remember me"
         inputRef={register}
@@ -79,20 +86,25 @@ LoginFormComponent.propTypes = {
   isPending: PropTypes.bool.isRequired,
   error: PropTypes.string,
   onLogin: PropTypes.func.isRequired,
+  user: PropTypes.PropTypes.shape({
+    email: PropTypes.string,
+  }),
 };
 
 LoginFormComponent.defaultProps = {
+  user: null,
   error: null,
 };
 
 const mapStateToProps = state => ({
+  user: getCurrentUser(state),
   isPending: checkIsPending(state),
   isError: checkIsError(state),
   error: getError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  onLogin: ({ email, password }) => dispatch(login(email, password)),
+  onLogin: ({ email, password }) => dispatch(login({ email, password })),
 });
 
 export const LoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginFormComponent);
