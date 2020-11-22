@@ -105,10 +105,11 @@ export class SurveyResponseVariablesExtractor {
   }
 
   async getParametersFromInput(countryCode, entityCode, countryId, entityIds, surveyResponseId) {
-    countryId = countryCode && (await this.getCountryIdByCountryCode(countryCode));
+    const newCountryId =
+      (countryCode && (await this.getCountryIdByCountryCode(countryCode))) || countryId;
     if (entityCode) return this.getVariablesByEntityCode(entityCode);
-    if (countryId) return this.getVariablesByCountryId(countryId);
-    if (entityIds) return this.getVariablesByEntityIds(entityIds, countryId);
+    if (newCountryId) return this.getVariablesByCountryId(newCountryId);
+    if (entityIds) return this.getVariablesByEntityIds(entityIds, newCountryId);
     if (surveyResponseId) return this.getVariablesBySurveyResponseId(surveyResponseId);
     throw new ValidationError(
       'Please specify either surveyResponseId, countryId, countryCode, facilityCode or entityIds',

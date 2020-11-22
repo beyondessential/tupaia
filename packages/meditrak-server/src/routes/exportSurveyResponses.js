@@ -1,17 +1,13 @@
 /**
  * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import xlsx from 'xlsx';
 import moment from 'moment';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
-import {
-  DatabaseError,
-  ValidationError,
-  addExportedDateAndOriginAtTheSheetBottom,
-} from '@tupaia/utils';
+import { DatabaseError, addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
 import { SurveyResponseVariablesExtractor } from './utilities';
