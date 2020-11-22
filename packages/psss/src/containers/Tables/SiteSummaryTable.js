@@ -29,7 +29,7 @@ const siteWeekColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: COLUMN_WIDTHS.FIRST,
+    width: '190px', // must be same width as CountryTable weekNumber column to align
     align: 'left',
     CellComponent: NameCell,
   },
