@@ -4,6 +4,7 @@
  */
 import { TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
+import { mergeMultiJoin } from '../utilities';
 import {
   assertSurveyPermissions,
   createSurveyDBFilter,
@@ -48,23 +49,7 @@ export const createSurveyScreenComponentDBFilter = async (
     dbConditions.survey_id = permittedSurveyIds;
   }
 
-  dbOptions.columns = [
-    { id: `${TYPES.SURVEY_SCREEN_COMPONENT}.id` },
-    'code',
-    'type',
-    'name',
-    'text',
-    'detail',
-    'options',
-    'option_set_id',
-    'visibility_criteria',
-    'validation_criteria',
-    'question_label',
-    'detail_label',
-    'config',
-    'screen_number',
-  ];
-  dbOptions.multiJoin = [
+  dbOptions.multiJoin = mergeMultiJoin([
     {
       joinWith: TYPES.QUESTION,
       joinCondition: [`${TYPES.QUESTION}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
@@ -73,7 +58,7 @@ export const createSurveyScreenComponentDBFilter = async (
       joinWith: TYPES.SURVEY_SCREEN,
       joinCondition: [`${TYPES.SURVEY_SCREEN}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`],
     },
-  ];
+  ], dbOptions.multiJoin);
 
   return { dbConditions, dbOptions };
 };
