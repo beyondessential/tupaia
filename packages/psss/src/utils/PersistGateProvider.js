@@ -8,23 +8,21 @@ import { PersistGate } from 'redux-persist/integration/react';
 import PropTypes from 'prop-types';
 
 function initPersistor(store) {
-  const persistor = persistStore(store, null);
+  const persistor = persistStore(store);
 
-  // if you run into problems with redux state, call "purge()" in the dev console
-  if (window.localStorage.getItem('queuePurge')) {
-    persistor.purge();
-    window.localStorage.setItem('queuePurge', '');
+  if (!window.sessionStorage.getItem('PSSS:activeSession')) {
+    const rememberMe = window.localStorage.getItem('PSSS:rememberMe');
+    if (rememberMe === 'false') {
+      persistor.purge();
+    }
+    window.sessionStorage.setItem('PSSS:activeSession', 'true');
   }
-
-  window.purge = () => {
-    window.localStorage.setItem('queuePurge', 'true');
-    window.location.reload();
-  };
 
   return persistor;
 }
 
 export const PersistGateProvider = ({ children, store }) => {
+  // Do not persist state for tests
   if (process.env.NODE_ENV === 'test') {
     return children;
   }
