@@ -21,7 +21,7 @@ const countriesTableColumns = [
   {
     title: 'Country',
     key: 'name',
-    width: COLUMN_WIDTHS.FIRST,
+    width: '30%', // must be same as CountrySummaryTable name column to align
     align: 'left',
     CellComponent: CountryNameLinkCell,
   },
