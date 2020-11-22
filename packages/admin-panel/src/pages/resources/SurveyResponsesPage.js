@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { ResourcePage } from './ResourcePage';
+import { SurveyResponsesExportModal } from '../../importExport';
 
 const surveyName = {
   Header: 'Survey',
@@ -159,10 +160,12 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
+    defaultSorting={[{ id: 'submission_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
+    ExportModalComponent={SurveyResponsesExportModal}
   />
 );
 
