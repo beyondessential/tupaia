@@ -39,6 +39,17 @@ const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
 const VIS_CRITERIA_CONJUNCTION = '_conjunction';
 
+const validateSurveyServiceType = async (models, surveyCode, serviceType) => {
+  const existingDataGroup = await models.dataSource.findOne({ code: surveyCode });
+  if (existingDataGroup !== null) {
+    if (serviceType !== existingDataGroup.service_type) {
+      throw new ImportValidationError(
+        `Data service must match. The existing survey has Data service: ${existingDataGroup.service_type}. Attempted to import with Data service: ${serviceType}.`,
+      );
+    }
+  }
+};
+
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
   if (!rows || !rows.some(isQuestionRow)) {
@@ -53,12 +64,9 @@ const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
       type: models.dataSource.getTypes().DATA_GROUP,
       code: surveyCode,
     },
-    { service_type: DEFAULT_SERVICE_TYPE },
+    { service_type: serviceType },
   );
 
-  if (serviceType && serviceType !== dataGroup.service_type) {
-    dataGroup.service_type = serviceType;
-  }
   dataGroup.sanitizeConfig();
   await dataGroup.save();
 
@@ -72,21 +80,44 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
     service_type: serviceType,
     config,
   });
-  const dataElement = await models.dataSource.updateOrCreate(
-    {
+
+  // If dataElement already exists, don't overwrite it
+  let dataElement = await models.dataSource.findOne({ code: dataElementCode });
+
+  if (dataElement === null) {
+    dataElement = await models.dataSource.create({
       type: models.dataSource.getTypes().DATA_ELEMENT,
       code: dataElementCode,
-    },
-    { service_type: serviceType },
-  );
-  dataElement.config = { ...dataElement.config, ...config };
-  dataElement.sanitizeConfig();
-  await dataElement.save();
+      service_type: serviceType,
+    });
+    dataElement.config = { ...dataElement.config, ...config };
+    dataElement.sanitizeConfig();
+    await dataElement.save();
 
-  await models.dataElementDataGroup.findOrCreate({
-    data_element_id: dataElement.id,
-    data_group_id: dataGroup.id,
-  });
+    await models.dataElementDataGroup.findOrCreate({
+      data_element_id: dataElement.id,
+      data_group_id: dataGroup.id,
+    });
+  } else {
+    /*
+     * Link the existing dataElement to a potentially new dataGroup
+     *
+     * We use separate find and create instead of findOrCreate because we may have an
+     * "invalid" state, where the dataElement and dataGroup have different services, and
+     * we want to allow this to continue as is.
+     */
+    const dataElementDataGroup = await models.dataElementDataGroup.findOne({
+      data_element_id: dataElement.id,
+      data_group_id: dataGroup.id,
+    });
+
+    if (dataElementDataGroup === null) {
+      await models.dataElementDataGroup.create({
+        data_element_id: dataElement.id,
+        data_group_id: dataGroup.id,
+      });
+    }
+  }
 
   return dataElement;
 };
@@ -125,9 +156,14 @@ export async function importSurveys(req, res) {
         const [tabName, sheet] = surveySheets;
         const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
         const surveyCode = await findOrCreateSurveyCode(transactingModels, surveyName);
+
+        const { serviceType = DEFAULT_SERVICE_TYPE } = req.query;
+
+        await validateSurveyServiceType(transactingModels, surveyCode, serviceType);
+
         const dataGroup = await updateOrCreateDataGroup(transactingModels, {
           surveyCode,
-          serviceType: req.query.serviceType,
+          serviceType,
         });
 
         // Clear all existing data element/data group associations
