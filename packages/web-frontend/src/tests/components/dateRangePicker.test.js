@@ -10,12 +10,12 @@ import moment from 'moment';
 import { render } from '../testableRender';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import {
+  DEFAULT_MIN_DATE,
   GRANULARITY_CONFIG,
   GRANULARITIES_WITH_ONE_DATE,
   momentToDateString,
   GRANULARITIES,
 } from '../../utils/periodGranularities';
-import { DEFAULT_MIN_DATE } from '../../components/DateRangePicker/constants';
 
 const MAX_MOMENT_DATE = moment();
 
