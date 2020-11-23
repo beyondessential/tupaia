@@ -98,13 +98,6 @@ const clinicOrEntityIdExist = (id, obj) => {
   }
 };
 
-const optionSetExist = models => async id => {
-  const optionSet = models.optionSet.findById(id);
-  if (!optionSet) {
-    throw new Error(`Option set with id ${id} does not exist.`);
-  }
-};
-
 const constructEntitiesCreatedValidators = models => ({
   id: [hasContent, takesIdForm],
   code: [hasContent],
@@ -120,7 +113,7 @@ const constructIsValidEntity = models => async value =>
 const constructOptionsCreatedValidators = models => ({
   id: [hasContent, takesIdForm],
   value: [hasContent],
-  option_set_id: [hasContent, takesIdForm, optionSetExist(models)],
+  option_set_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.optionSet)],
   sort_order: [isNumber],
 });
 
