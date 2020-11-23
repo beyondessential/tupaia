@@ -20,7 +20,7 @@ import {
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import { useForm, Controller } from 'react-hook-form';
-import { FlexSpaceBetween } from '../../components/Layout';
+import { FlexSpaceBetween, ComingSoon } from '../../components';
 import { connectApi } from '../../api';
 
 // Todo replace with data from api
@@ -134,6 +134,7 @@ export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, 
 
   return (
     <Dialog onClose={handleClose} open={isOpen}>
+      <ComingSoon text="The Modal dialog will enable you to export report data." />
       <form onSubmit={handleSubmit(handleConfirm)} noValidate>
         <DialogHeader onClose={handleClose} title="Export Weekly Case Data" />
         <LoadingContainer isLoading={status === STATUS.LOADING}>
