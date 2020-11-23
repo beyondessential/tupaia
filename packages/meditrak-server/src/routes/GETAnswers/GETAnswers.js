@@ -19,10 +19,12 @@ export class GETAnswers extends GETHandler {
   async findSingleRecord(answerId, options) {
     const answer = await super.findSingleRecord(answerId, options);
 
-    const answerChecker = accessPolicy =>
+    const answerPermissionsChecker = accessPolicy =>
       assertAnswerPermissions(accessPolicy, this.models, answerId);
 
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, answerChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, answerPermissionsChecker]),
+    );
 
     return answer;
   }
