@@ -27,7 +27,7 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
     const valueTranslationPointToOtherQuestions = this.constructValueTranslationPointsToOtherQuestions(
       rowIndex,
     );
-    const valueTranslationAreNumeric = this.valueTranslationAreNumeric();
+    const valueTranslationsAreNumeric = this.valueTranslationsAreNumeric();
 
     return {
       formula: [constructIsNotPresentOr(formulaPointsToOtherQuestions)],
@@ -35,7 +35,7 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
       valueTranslation: [
         existIfQuestionsInFormulaAreNonNumeric,
         constructIsNotPresentOr(valueTranslationPointToOtherQuestions),
-        constructIsNotPresentOr(valueTranslationAreNumeric),
+        constructIsNotPresentOr(valueTranslationsAreNumeric),
       ],
       answerDisplayText: [constructIsNotPresentOr(hasContent)],
     };
@@ -130,7 +130,7 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
     };
   }
 
-  valueTranslationAreNumeric = () => {
+  valueTranslationsAreNumeric = () => {
     return value => {
       const valueTranslation = splitStringOnComma(value);
 
