@@ -18,7 +18,7 @@ const countrySummaryTableColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: COLUMN_WIDTHS.FIRST,
+    width: '30%', // must be same as CountriesTable name column to align
     align: 'left',
     CellComponent: WeekAndDateCell,
   },
