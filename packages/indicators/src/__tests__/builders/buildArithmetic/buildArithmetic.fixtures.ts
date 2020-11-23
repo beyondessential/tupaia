@@ -58,4 +58,4 @@ export const PARAMETER_ANALYTICS = arrayToAnalytics([
   ['_Positive_Cases', 'TO', '2020', 15],
   ['_Total_Consultations', 'TO', '2019', 25],
   ['_Total_Consultations', 'TO', '2020', 50],
-]);
+]) as Analytic[];
