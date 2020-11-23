@@ -5,6 +5,7 @@
 
 import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
+import { mergeMultiJoin } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -46,21 +47,19 @@ export const createSurveyResponseDBFilter = async (accessPolicy, models, criteri
 
   // Join SQL table with entity and survey tables
   // Running the permissions filtering is much faster with joins
-  dbOptions.multiJoin = [
-    {
-      joinWith: TYPES.SURVEY,
-      joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
-    },
-    {
-      joinWith: TYPES.ENTITY,
-      joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
-    },
-  ];
-
-  // If columns weren't specified, avoid returning the joined columns
-  if (!dbOptions.columns) {
-    dbOptions.columns = ['survey_response.*'];
-  }
+  dbOptions.multiJoin = mergeMultiJoin(
+    [
+      {
+        joinWith: TYPES.SURVEY,
+        joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+      },
+      {
+        joinWith: TYPES.ENTITY,
+        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
+      },
+    ],
+    dbOptions.multiJoin,
+  );
 
   // Check the country code of the entity exists in our list for the permission group
   // of the survey
