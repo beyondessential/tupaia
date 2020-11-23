@@ -25,6 +25,11 @@ describe('buildArithmetic', () => {
         'must be one of (string | { type: string }), or an array of those types',
       ],
       [
+        'null aggregation',
+        { formula: 'A + B', aggregation: null },
+        'must be one of (string | { type: string }), or an array of those types',
+      ],
+      [
         'wrong aggregation type',
         { formula: 'A + B', aggregation: true },
         'must be one of (string | { type: string }), or an array of those types',
@@ -34,6 +39,16 @@ describe('buildArithmetic', () => {
         'aggregation object without type',
         { formula: 'A + B', aggregation: { config: { periodType: 'month' } } },
         'no aggregation defined',
+      ],
+      [
+        'aggregation object with wrong type',
+        { formula: 'A + B', aggregation: { type: true } },
+        'non empty string',
+      ],
+      [
+        'aggregation object with empty type',
+        { formula: 'A + B', aggregation: { type: '' } },
+        'non empty string',
       ],
       [
         'aggregation array item is invalid',

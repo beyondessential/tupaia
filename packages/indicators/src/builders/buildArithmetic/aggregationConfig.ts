@@ -48,13 +48,15 @@ const validateAggregationDescriptor = (descriptor: unknown) => {
         throw new Error('Aggregation string must not be empty');
       }
       return;
-    case 'object': {
-      const type = descriptor?.type;
-      if (!type || typeof type !== 'string') {
-        throw new Error("Aggregation object requires a non empty string as a 'type'");
+    case 'object':
+      if (descriptor !== null) {
+        const type = descriptor?.type;
+        if (!type || typeof type !== 'string') {
+          throw new Error("Aggregation object requires a non empty string as a 'type'");
+        }
+        return;
       }
-      return;
-    }
+    // fall through for `null`
     default:
       throw new Error(
         'Aggregation must be one of (string | { type: string }), or an array of those types',
