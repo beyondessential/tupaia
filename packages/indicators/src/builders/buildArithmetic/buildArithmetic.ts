@@ -35,7 +35,7 @@ const fetchAnalyticClusters = async (
     return { ...cluster, dataValues: returnDataValues };
   };
 
-  // Remove clusters that do not include all elements referenced in the specs
+  // Remove clusters that do not include all specified elements
   const clusters = analyticsToAnalyticClusters(analytics);
   return clusters.map(replaceAnalyticValuesWithDefaults).filter(checkClusterIncludesAllElements);
 };
