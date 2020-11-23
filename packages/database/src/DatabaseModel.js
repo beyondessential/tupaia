@@ -181,7 +181,7 @@ export class DatabaseModel {
     return reduceToDictionary(records, 'code', 'id');
   }
 
-  async findCodeToId(codes) {
+  async findIdByCode(codes) {
     return this.findIdByField('code', codes);
   }
 

@@ -5,7 +5,7 @@
 
 import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { mergeMultiJoin } from '../utilities';
+import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -33,17 +33,10 @@ export const createSurveyResponseDBFilter = async (accessPolicy, models, criteri
     return { dbConditions, dbOptions };
   }
 
-  // Generate lists of country codes we have access to per permission group id
-  const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
-  const countryCodesByPermissionGroupId = {};
-  const permissionGroupNameToId = await models.permissionGroup.findIdByField(
-    'name',
-    allPermissionGroupsNames,
+  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
+    accessPolicy,
+    models,
   );
-  for (const [permissionGroupName, permissionGroupId] of Object.entries(permissionGroupNameToId)) {
-    const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
-    countryCodesByPermissionGroupId[permissionGroupId] = countryCodes;
-  }
 
   // Join SQL table with entity and survey tables
   // Running the permissions filtering is much faster with joins than records individually
