@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { constructIsNotPresentOr, hasContent } from '@tupaia/utils';
+import { constructIsNotPresentOr, hasContent, ValidationError } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 import { splitStringOn, splitStringOnComma, getExpressionQuestionCodes } from '../../../utilities';
 import { isEmpty } from '../../utilities';
@@ -27,6 +27,7 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
     const valueTranslationPointToOtherQuestions = this.constructValueTranslationPointsToOtherQuestions(
       rowIndex,
     );
+    const valueTranslationAreNumeric = this.valueTranslationAreNumeric();
 
     return {
       formula: [constructIsNotPresentOr(formulaPointsToOtherQuestions)],
@@ -34,6 +35,7 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
       valueTranslation: [
         existIfQuestionsInFormulaAreNonNumeric,
         constructIsNotPresentOr(valueTranslationPointToOtherQuestions),
+        constructIsNotPresentOr(valueTranslationAreNumeric),
       ],
       answerDisplayText: [constructIsNotPresentOr(hasContent)],
     };
@@ -114,8 +116,8 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
     return value => {
       const valueTranslation = splitStringOnComma(value);
 
-      for (let i = 0; i < valueTranslation.length; i++) {
-        const [code] = splitStringOn(valueTranslation[i], ':');
+      for (const translation of valueTranslation) {
+        const [code] = splitStringOn(translation, ':');
         const [questionCode] = splitStringOn(code, '.');
         this.assertPointingToPrecedingQuestion(
           questionCode,
@@ -127,4 +129,21 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
       return true;
     };
   }
+
+  valueTranslationAreNumeric = () => {
+    return value => {
+      const valueTranslation = splitStringOnComma(value);
+
+      for (const translation of valueTranslation) {
+        const [code, translatedValue] = splitStringOn(translation, ':');
+        if (isNaN(translatedValue)) {
+          throw new ValidationError(
+            `Translated values must be numeric. Found non numeric value '${translatedValue}'`,
+          );
+        }
+      }
+
+      return true;
+    };
+  };
 }
