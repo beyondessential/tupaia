@@ -19,15 +19,12 @@ export class RouteHandler {
   }
 
   /**
-   * All route handlers should provide a concrete "permissions gate" implementation, to check the
+   * Most route handlers should provide a concrete "permissions gate" implementation, to check the
    * basic level of access to the resource.
-   * There may be additional permissions filtering required in the body of the handler, but this
-   * will check whether the user should have any access to the endpoint whatsoever, and throw an
-   * error if they shouldn't get any further.
+   * Others may handle permissions filtering in the body of the handler, in which case the handler
+   * does not necessarily need to provide a "gate" (though may still choose to)
    */
-  assertUserHasAccess() {
-    throw new Error(`'assertUserHasAccess' must be implemented by every GETHandler`);
-  }
+  assertUserHasAccess() {}
 
   async handleRequest() {
     throw new Error(`'handleRequest' must be implemented by every RouteHandler`);

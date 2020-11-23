@@ -6,7 +6,7 @@
 import { GETHandler } from '../GETHandler';
 import { assertAnswerPermissions, createAnswerDBFilter } from './assertAnswerPermissions';
 import { assertSurveyResponsePermissions } from '../GETSurveyResponses';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -16,10 +16,6 @@ import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '
  */
 
 export class GETAnswers extends GETHandler {
-  assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
-  }
-
   async findSingleRecord(answerId, options) {
     const answer = await super.findSingleRecord(answerId, options);
 

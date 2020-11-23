@@ -8,7 +8,7 @@ import {
   assertSurveyScreenComponentPermissions,
   createSurveyScreenComponentDBFilter,
 } from './assertSurveyScreenComponentPermissions';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertSurveyPermissions } from '../GETSurveys/assertSurveyPermissions';
 
 /**
@@ -19,10 +19,6 @@ import { assertSurveyPermissions } from '../GETSurveys/assertSurveyPermissions';
  */
 
 export class GETSurveyScreenComponents extends GETHandler {
-  assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
-  }
-
   async findSingleRecord(surveyScreenComponentId, options) {
     const surveyScreenComponent = await super.findSingleRecord(surveyScreenComponentId, options);
 

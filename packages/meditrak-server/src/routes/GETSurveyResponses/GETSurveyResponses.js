@@ -8,7 +8,7 @@ import {
   assertSurveyResponsePermissions,
   createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -16,11 +16,6 @@ import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '
  * - /surveyResponses/:surveyResponseId
  */
 export class GETSurveyResponses extends GETHandler {
-  async assertUserHasAccess() {
-    // Is there a way to check they have any permission group that may contain survey responses?
-    return this.assertPermissions(allowNoPermissions);
-  }
-
   async findSingleRecord(surveyResponseId, options) {
     const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
 

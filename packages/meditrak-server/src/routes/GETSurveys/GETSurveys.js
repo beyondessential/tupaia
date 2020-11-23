@@ -9,7 +9,7 @@ import {
   createSurveyDBFilter,
   createSurveyViaCountryDBFilter,
 } from './assertSurveyPermissions';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -19,10 +19,6 @@ import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '
  */
 
 export class GETSurveys extends GETHandler {
-  assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
-  }
-
   async findSingleRecord(surveyId, options) {
     const survey = await super.findSingleRecord(surveyId, options);
 
