@@ -4,6 +4,7 @@
  */
 
 export * from './actions';
+export { LOGOUT } from './constants';
 export * from './selectors';
 export { reducer } from './reducer';
 export { ProfileButton } from './ProfileButton';
