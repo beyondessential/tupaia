@@ -15,6 +15,8 @@ import {
  * - /dashboardGroups/:dashboardGroupId
  */
 export class GETDashboardGroups extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async findSingleRecord(dashboardGroupId, options) {
     const dashboardGroup = await super.findSingleRecord(dashboardGroupId, options);
 

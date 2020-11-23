@@ -19,6 +19,8 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
  */
 
 export class GETSurveys extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async findSingleRecord(surveyId, options) {
     const survey = await super.findSingleRecord(surveyId, options);
 
@@ -32,6 +34,7 @@ export class GETSurveys extends GETHandler {
 
   async findRecords(criteria, options) {
     const dbConditions = await createSurveyDBFilter(this.accessPolicy, this.models, criteria);
+    console.log(dbConditions);
     return super.findRecords(dbConditions, options);
   }
 
