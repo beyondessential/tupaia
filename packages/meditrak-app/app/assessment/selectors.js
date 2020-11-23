@@ -173,7 +173,8 @@ export const getConditionResult = (state, conditionQuestionId) => {
     variables.forEach(questionIdVariable => {
       const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix
       const answer = getAnswerForQuestion(state, questionId);
-      const value = answer !== undefined ? answer : defaultValues[questionId];
+      const defaultValue = defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // 0 is the last resort
+      const value = answer !== undefined ? answer : defaultValue;
       values[questionIdVariable] = value;
     });
 
