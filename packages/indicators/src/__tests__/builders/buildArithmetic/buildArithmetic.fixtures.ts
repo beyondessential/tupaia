@@ -4,6 +4,7 @@
  */
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
+import { Analytic } from '../../../types';
 import { AnalyticResponseFixture } from '../stubs';
 
 /**
@@ -44,13 +45,13 @@ const AGGREGATOR_ARRAY_ANALYTICS: [string, string, string, number][] = [
   ['Population', 'TO', '2020', 75],
 ];
 
-export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = AGGREGATOR_ARRAY_ANALYTICS.map(
-  arrayAnalytic => {
-    const code = arrayAnalytic[0];
-    const [analytic] = arrayToAnalytics([arrayAnalytic]);
-    return { code, aggregations: [{ type: 'FINAL_EACH_YEAR' }], analytic };
-  },
-);
+export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = arrayToAnalytics(
+  AGGREGATOR_ARRAY_ANALYTICS,
+).map((analytic: Analytic) => ({
+  code: analytic.dataElement,
+  aggregations: [{ type: 'FINAL_EACH_YEAR' }],
+  analytic,
+}));
 
 export const PARAMETER_ANALYTICS = arrayToAnalytics([
   ['_Positive_Cases', 'TO', '2019', 10],
