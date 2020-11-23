@@ -5,10 +5,7 @@
 
 import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import {
-  assertSurveyResponsePermissions,
-  createSurveyResponseDBFilter,
-} from '../GETSurveyResponses';
+import { assertSurveyResponsePermissions } from '../GETSurveyResponses';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -18,9 +15,7 @@ export const assertAnswerPermissions = async (accessPolicy, models, answerId) =>
     throw new Error(`No answer exists with id ${answerId}`);
   }
 
-  await assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
-
-  return true;
+  return assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
 };
 
 export const createAnswerDBFilter = async (accessPolicy, models, criteria, options) => {

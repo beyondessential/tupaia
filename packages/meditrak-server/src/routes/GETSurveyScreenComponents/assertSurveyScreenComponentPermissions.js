@@ -24,9 +24,7 @@ export const assertSurveyScreenComponentPermissions = async (
 
   // Pull the survey from the survey screen, then run the survey permissions check
   const surveyScreen = await models.surveyScreen.findById(surveyScreenComponent.screen_id);
-  await assertSurveyPermissions(accessPolicy, models, surveyScreen.survey_id);
-
-  return true;
+  return assertSurveyPermissions(accessPolicy, models, surveyScreen.survey_id);
 };
 
 export const createSurveyScreenComponentDBFilter = async (
