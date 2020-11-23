@@ -3,14 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ExpressionParser } from '@tupaia/expression-parser';
-import { splitStringOn, splitStringOnComma, translateExpression } from '../../utilities';
+import {
+  splitStringOn,
+  splitStringOnComma,
+  translateExpression,
+  getExpressionQuestionCodes,
+} from '../../utilities';
 
 export const processArithmeticConfig = async (models, config) => {
   const { formula, defaultValues, valueTranslation, answerDisplayText } = config;
-  const expressionParser = new ExpressionParser();
-  const variables = expressionParser.getVariables(formula);
-  const codes = variables.map(v => v.replace(/^\$/, ''));
+  const codes = getExpressionQuestionCodes(formula);
 
   let translatedConfig = {
     formula: await translateExpression(models, formula, codes),

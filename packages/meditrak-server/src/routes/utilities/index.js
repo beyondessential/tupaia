@@ -24,3 +24,4 @@ export {
   replaceNestedQuestionCodesWithIds,
 } from './translateQuestionDependentFields';
 export { translateExpression } from './translateExpression';
+export { getExpressionQuestionCodes } from './getExpressionQuestionCodes';

@@ -3,8 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { BooleanExpressionParser } from '@tupaia/expression-parser';
-import { splitStringOn, splitStringOnComma, translateExpression } from '../../utilities';
+import {
+  splitStringOn,
+  splitStringOnComma,
+  translateExpression,
+  getExpressionQuestionCodes,
+} from '../../utilities';
 
 export const processConditionConfig = async (models, config) => {
   const { conditions, defaultValues } = config;
@@ -43,13 +47,11 @@ export const processConditionConfig = async (models, config) => {
 const translateConditions = async (models, conditionsConfig, defaultValuesConfig = '') => {
   const conditions = splitStringOnComma(conditionsConfig);
   const translatedConditions = {};
-  const expressionParser = new BooleanExpressionParser();
 
   // Translate the expressions
   for (const condition of conditions) {
     const [targetValue, expression] = splitStringOn(condition, ':');
-    const variables = expressionParser.getVariables(expression);
-    const codes = variables.map(v => v.replace(/^\$/, ''));
+    const codes = getExpressionQuestionCodes(expression);
     const translatedExpression = await translateExpression(models, expression, codes);
     translatedConditions[targetValue] = {
       formula: translatedExpression,

@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ExpressionParser } from '@tupaia/expression-parser';
 import { constructIsNotPresentOr, hasContent } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
-import { splitStringOn, splitStringOnComma } from '../../../utilities';
+import { splitStringOn, splitStringOnComma, getExpressionQuestionCodes } from '../../../utilities';
+import { isEmpty } from '../../utilities';
 
 export class ArithmeticConfigValidator extends JsonFieldValidator {
   constructor(questions, models) {
@@ -21,6 +21,9 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
     const defaultValuesPointToOtherQuestions = this.constructDefaultValuesPointToOtherQuestions(
       rowIndex,
     );
+    const existIfQuestionsInFormulaAreNonNumeric = this.hasContentIfQuestionsInFormulaAreNonNumeric(
+      rowIndex,
+    );
     const valueTranslationPointToOtherQuestions = this.constructValueTranslationPointsToOtherQuestions(
       rowIndex,
     );
@@ -28,21 +31,55 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
     return {
       formula: [constructIsNotPresentOr(formulaPointsToOtherQuestions)],
       defaultValues: [constructIsNotPresentOr(defaultValuesPointToOtherQuestions)],
-      valueTranslation: [constructIsNotPresentOr(valueTranslationPointToOtherQuestions)],
+      valueTranslation: [
+        existIfQuestionsInFormulaAreNonNumeric,
+        constructIsNotPresentOr(valueTranslationPointToOtherQuestions),
+      ],
       answerDisplayText: [constructIsNotPresentOr(hasContent)],
     };
   }
 
-  constructFormulaPointsToOtherQuestions(rowIndex) {
-    const expressionParser = new ExpressionParser();
-    return value => {
-      const variables = expressionParser.getVariables(value);
-      const codes = variables.map(variable => {
-        if (!variable.match(/^\$/)) {
-          throw new Error(`Variable ${variable} in formula must have prefix $`);
+  /**
+   * When any questions used in the formula are non numeric, users need to provide 'valueTranslation'
+   * to translate the raw answers into numbers so that arithmetic calculation can be done.
+   * @param {*} rowIndex
+   */
+  hasContentIfQuestionsInFormulaAreNonNumeric(rowIndex) {
+    return (value, object, key) => {
+      const { formula } = object;
+      const questionsInFormulaAreNumeric = this.checkQuestionsInFormulaAreNumeric(
+        formula,
+        rowIndex,
+      );
+      if (!questionsInFormulaAreNumeric) {
+        if (!object.hasOwnProperty(key) || isEmpty(value)) {
+          throw new Error(
+            'Should not be empty if any questions used in the formula are not numeric',
+          );
         }
-        return variable.replace(/^\$/, '');
-      });
+      }
+
+      return true;
+    };
+  }
+
+  checkQuestionsInFormulaAreNumeric(formula, rowIndex) {
+    const codes = getExpressionQuestionCodes(formula);
+
+    for (const code of codes) {
+      const questionType = this.getPrecedingQuestionField(code, rowIndex, 'type');
+
+      if (questionType !== 'Number') {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  constructFormulaPointsToOtherQuestions(rowIndex) {
+    return value => {
+      const codes = getExpressionQuestionCodes(value);
 
       for (const code of codes) {
         this.assertPointingToPrecedingQuestion(
