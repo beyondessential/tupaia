@@ -34,7 +34,6 @@ export class GETSurveys extends GETHandler {
 
   async findRecords(criteria, options) {
     const dbConditions = await createSurveyDBFilter(this.accessPolicy, this.models, criteria);
-    console.log(dbConditions);
     return super.findRecords(dbConditions, options);
   }
 
