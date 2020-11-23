@@ -15,12 +15,13 @@ import {
   ObjectValidator,
 } from '@tupaia/utils';
 import { validateAggregation } from './aggregationConfig';
+import { ArithmeticConfig } from './types';
 
 const assertAllDefaultsAreCodesInFormula = (
   defaultValues: Record<string, unknown>,
-  { formula }: { formula: string },
+  config: ArithmeticConfig,
 ) => {
-  const variables = getVariables(formula);
+  const variables = getVariables(config.formula);
   Object.keys(defaultValues).forEach(code => {
     if (!variables.includes(code)) {
       throw new Error(`'${code}' is in defaultValues but not referenced in the formula`);
@@ -28,17 +29,18 @@ const assertAllDefaultsAreCodesInFormula = (
   });
 };
 
-const validateParameters = async (parameters: Record<string, unknown>[]) => {
-  const validator = new ObjectValidator({
-    code: [hasContent, isAString],
-    builder: [hasContent, isAString],
-    config: [isPlainObject],
-  });
+const parameterValidator = new ObjectValidator({
+  code: [hasContent, isAString],
+  builder: [hasContent, isAString],
+  config: [isPlainObject],
+});
 
-  const validateParameter = async (parameter: Record<string, unknown>) =>
-    validator.validate(parameter);
-  await Promise.all(parameters.map(validateParameter));
-};
+const validateParameters = async (parameters: Record<string, unknown>[]) =>
+  Promise.all(
+    parameters.map(async (parameter: Record<string, unknown>) =>
+      parameterValidator.validate(parameter),
+    ),
+  );
 
 export const configValidators = {
   formula: [hasContent, isAString],
