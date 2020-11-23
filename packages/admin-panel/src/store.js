@@ -7,17 +7,16 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import localforage from 'localforage';
 import { persistReducer, persistStore } from 'redux-persist';
-import { TupaiaApi } from './api';
+import { api } from './api';
 import { rootReducer } from './rootReducer';
 import { RememberMeTransform } from './authentication/reducer';
-
-const api = new TupaiaApi();
 
 const persistedRootReducer = persistReducer(
   {
     key: 'root',
     storage: localforage,
     transforms: [RememberMeTransform],
+    whitelist: ['authentication'], // only persist logged in state
   },
   rootReducer,
 );
