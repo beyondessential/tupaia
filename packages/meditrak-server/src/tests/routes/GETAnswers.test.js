@@ -70,7 +70,7 @@ describe('Permissions checker for GETAnswers', async () => {
     vanuatuAdminResponseId = generateTestId();
     vanuatuDonorResponseId = generateTestId();
 
-    const surveyResponseModels = await buildAndInsertSurveyResponses(models, [
+    const surveyResponses = await buildAndInsertSurveyResponses(models, [
       {
         id: vanuatuAdminResponseId,
         surveyCode: 'TEST_SURVEY_1',
@@ -87,7 +87,7 @@ describe('Permissions checker for GETAnswers', async () => {
       },
     ]);
 
-    for (const { surveyResponse, answers } of surveyResponseModels) {
+    for (const { surveyResponse, answers } of surveyResponses) {
       if (surveyResponse.id === vanuatuAdminResponseId) {
         vanuatuAdminAnswers = answers.map(a => a.id);
       } else {
