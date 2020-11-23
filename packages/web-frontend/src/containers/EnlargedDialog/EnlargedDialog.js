@@ -9,6 +9,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import shallowEqual from 'shallowequal';
 import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
@@ -18,12 +19,10 @@ import {
   selectCurrentExpandedViewContent,
   selectCurrentProjectCode,
 } from '../../selectors';
-import shallowEqual from 'shallowequal';
 import { DIALOG_Z_INDEX, DARK_BLUE } from '../../styles';
-import { getInfoFromInfoViewKey, isMobile, sleep, stringToFilename } from '../../utils';
+import { isMobile, sleep, stringToFilename } from '../../utils';
 import { exportToExcel, exportToPng } from '../../utils/exports';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { LoadingIndicator } from '../Form/common';
 
 const Loader = styled.div`
   display: block;
@@ -73,7 +72,6 @@ const EnlargedDialogComponent = props => {
     endDate: endDateForTopLevel,
     isLoading,
     projectCode,
-    initialViewContent,
     infoViewKey,
     fetchViewData,
     drillDownDatesByLevel,
@@ -239,20 +237,26 @@ EnlargedDialogComponent.propTypes = {
   contentByLevel: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
   organisationUnitName: PropTypes.string.isRequired,
   onSetDateRange: PropTypes.func,
+  fetchViewData: PropTypes.func,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
   startDate: PropTypes.object,
   endDate: PropTypes.object,
+  drillDownDatesByLevel: PropTypes.object,
   projectCode: PropTypes.string,
+  infoViewKey: PropTypes.string,
 };
 
 EnlargedDialogComponent.defaultProps = {
   onSetDateRange: () => { },
+  fetchViewData: () => { },
   errorMessage: null,
   startDate: null,
   endDate: null,
+  drillDownDatesByLevel: null,
   isLoading: false,
   projectCode: null,
+  infoViewKey: null,
 };
 
 const styles = {
