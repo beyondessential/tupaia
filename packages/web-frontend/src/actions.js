@@ -707,8 +707,6 @@ export function fetchDashboardItemData(
   dashboardGroupId,
   viewId,
   infoViewKey,
-  startDate,
-  endDate,
 ) {
   return {
     type: FETCH_INFO_VIEW_DATA,
@@ -716,8 +714,6 @@ export function fetchDashboardItemData(
     dashboardGroupId,
     viewId,
     infoViewKey,
-    startDate,
-    endDate,
   };
 }
 

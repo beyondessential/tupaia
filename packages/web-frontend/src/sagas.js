@@ -777,7 +777,6 @@ function* fetchDashboardItemData(action) {
 }
 
 function* watchViewFetchRequests() {
-  // Watches for VIEW_FETCH_REQUESTED actions and calls fetchDashboardItemData when one comes in.
   // By using `takeEvery` fetches for different views will be run simultaneously.
   // It returns task descriptor (just like fork) so we can continue execution
   yield takeEvery(FETCH_INFO_VIEW_DATA, fetchDashboardItemData);
