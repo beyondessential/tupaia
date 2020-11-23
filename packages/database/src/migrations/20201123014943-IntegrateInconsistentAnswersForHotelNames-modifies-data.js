@@ -46,25 +46,22 @@ const convertData = [
 ];
 
 function checkHotelName(answer) {
-  const newAnswer = answer;
-  convertData.forEach(({ incorrectNames, correctName }) => {
-    if (incorrectNames.includes(answer.text)) {
-      newAnswer.text = correctName;
-    }
-  });
-  return newAnswer;
+  for (const { incorrectNames, correctName } of convertData) {
+    if (incorrectNames.includes(answer.text)) return { id: answer.id, text: correctName };
+  }
+  return null;
 }
 
 exports.up = async function (db) {
-  let { rows: answers } = await db.runSql(`
+  const { rows: answers } = await db.runSql(`
     select a.id, a."text" from answer a 
     join question q on a.question_id = q.id 
     where q.text = 'Quarantine Site'
   `);
-  answers = answers.map(a => ({ ...a, text: a.text.trim() }));
-  for (const answer of answers) {
+  const trimAnswers = answers.map(a => ({ ...a, text: a.text.trim() }));
+  for (const answer of trimAnswers) {
     const newAnswer = checkHotelName(answer);
-    await updateValues(db, 'answer', { text: newAnswer.text }, { id: newAnswer.id });
+    if (newAnswer) await updateValues(db, 'answer', { text: newAnswer.text }, { id: newAnswer.id });
   }
 };
 
