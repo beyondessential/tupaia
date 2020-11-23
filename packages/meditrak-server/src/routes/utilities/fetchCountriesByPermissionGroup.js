@@ -15,6 +15,7 @@ export const fetchCountryCodesByPermissionGroupId = async (accessPolicy, models)
     const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
     countryCodesByPermissionGroupId[permissionGroupId] = countryCodes;
   }
+  return countryCodesByPermissionGroupId;
 };
 
 // Generate lists of country ids we have access to per permission group id
