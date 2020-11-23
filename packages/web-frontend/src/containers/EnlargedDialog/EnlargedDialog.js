@@ -3,23 +3,23 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import shallowEqual from 'shallowequal';
+import styled from 'styled-components';
 import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
+  selectCurrentExpandedViewContent,
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
-  selectCurrentExpandedViewContent,
   selectCurrentProjectCode,
 } from '../../selectors';
-import { DIALOG_Z_INDEX, DARK_BLUE } from '../../styles';
+import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
 import { isMobile, sleep, stringToFilename } from '../../utils';
 import { exportToExcel, exportToPng } from '../../utils/exports';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
@@ -248,8 +248,8 @@ EnlargedDialogComponent.propTypes = {
 };
 
 EnlargedDialogComponent.defaultProps = {
-  onSetDateRange: () => { },
-  fetchViewData: () => { },
+  onSetDateRange: () => {},
+  fetchViewData: () => {},
   errorMessage: null,
   startDate: null,
   endDate: null,

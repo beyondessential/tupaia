@@ -1,11 +1,10 @@
 import moment from 'moment';
 import { createSelector } from 'reselect';
-
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { getUniqueViewId } from '../utils';
-import { selectLocation } from './utils';
-import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
 import { getDefaultDates } from '../utils/periodGranularities';
+import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
+import { selectLocation } from './utils';
 
 export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
   [selectLocation],
