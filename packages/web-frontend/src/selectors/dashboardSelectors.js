@@ -5,6 +5,7 @@ import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation'
 import { getUniqueViewId } from '../utils';
 import { selectLocation } from './utils';
 import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
+import { getDefaultDates } from '../utils/periodGranularities';
 
 export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
   [selectLocation],
@@ -84,10 +85,17 @@ export const selectShouldUseDashboardData = createSelector(
     if (candidateInfoViewKey !== infoViewKey) return false;
     if (!candidateViewContent || candidateViewContent.type === 'matrix') return false;
 
-    const { startDate: candidateStartDate, endDate: candidateEndDate } = candidateViewContent;
+    const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
+      candidateViewContent,
+    );
+    const {
+      startDate: candidateStartDate = defaultStartDate,
+      endDate: candidateEndDate = defaultEndDate,
+    } = candidateViewContent;
+
     if (!startDate && !endDate) return true;
-    if (moment(candidateStartDate).isSame(moment(startDate), 'day')) return false;
-    if (moment(candidateEndDate).isSame(moment(endDate), 'day')) return false;
+    if (!moment(candidateStartDate).isSame(moment(startDate), 'day')) return false;
+    if (!moment(candidateEndDate).isSame(moment(endDate), 'day')) return false;
 
     return true;
   },
