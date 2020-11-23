@@ -36,7 +36,7 @@ const StyledAlert = styled(SmallAlert)`
   margin-top: 30px;
 `;
 
-const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
+const ExpandRowIcon = styled(AddBox)`
   transition: color 0.2s ease;
 
   &:hover {
@@ -46,7 +46,7 @@ const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
 
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
-    this.props.onRefreshData();
+    this.props.initialiseTable();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -122,7 +122,7 @@ class DataFetchingTableComponent extends React.Component {
         FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
         ExpanderComponent={({ isExpanded }) =>
-          isExpanded ? <AddBox color="primary" /> : <IndeterminateCheckboxIcon />
+          isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />
         }
         getPaginationProps={customPagination}
         SubComponent={
@@ -200,6 +200,7 @@ DataFetchingTableComponent.propTypes = {
   onRefreshData: PropTypes.func.isRequired,
   onResizedChange: PropTypes.func.isRequired,
   onSortedChange: PropTypes.func.isRequired,
+  initialiseTable: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   reduxId: PropTypes.string.isRequired,
@@ -239,13 +240,26 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
 });
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
-  const { baseFilter = {}, endpoint, columns, reduxId, ...restOfOwnProps } = ownProps;
+  const {
+    baseFilter = {},
+    defaultSorting = [],
+    endpoint,
+    columns,
+    reduxId,
+    ...restOfOwnProps
+  } = ownProps;
+  const onRefreshData = () =>
+    dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
+  const initialiseTable = () => {
+    dispatch(changeSorting(reduxId, defaultSorting)); // will trigger a data fetch afterwards
+  };
   return {
     reduxId,
     ...restOfOwnProps,
     ...stateProps,
     ...dispatchProps,
-    onRefreshData: () => dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps)),
+    onRefreshData,
+    initialiseTable,
   };
 };
 

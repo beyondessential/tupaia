@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { ResourcePage } from './ResourcePage';
+import { SurveyResponsesExportModal } from '../../importExport';
 
 const surveyName = {
   Header: 'Survey',
@@ -62,7 +63,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
     source: 'id',
     type: 'export',
     actionConfig: {
-      exportEndpoint: 'surveyResponse',
+      exportEndpoint: 'surveyResponses',
       fileName: 'Survey Response',
     },
   },
@@ -76,7 +77,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'surveyResponse',
+      editEndpoint: 'surveyResponses',
       fields: [entityName, surveyName, assessorName, date, dateOfData],
     },
   },
@@ -85,7 +86,7 @@ const COLUMNS = [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'surveyResponse',
+      endpoint: 'surveyResponses',
     },
   },
 ];
@@ -115,7 +116,7 @@ export const ANSWER_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'answer',
+      editEndpoint: 'answers',
       fields: ANSWER_FIELDS,
     },
   },
@@ -125,7 +126,7 @@ const EXPANSION_CONFIG = [
   {
     title: 'Answers',
     columns: ANSWER_COLUMNS,
-    endpoint: 'surveyResponse/{id}/answers',
+    endpoint: 'surveyResponses/{id}/answers',
   },
 ];
 
@@ -159,10 +160,12 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
+    defaultSorting={[{ id: 'submission_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
+    ExportModalComponent={SurveyResponsesExportModal}
   />
 );
 

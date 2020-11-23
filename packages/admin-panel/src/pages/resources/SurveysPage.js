@@ -48,7 +48,7 @@ const SURVEY_COLUMNS = [
     source: 'id',
     type: 'export',
     actionConfig: {
-      exportEndpoint: 'survey',
+      exportEndpoint: 'surveys',
       fileName: '{name}',
     },
   },
@@ -57,7 +57,7 @@ const SURVEY_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'survey',
+      editEndpoint: 'surveys',
       fields: [
         ...SURVEY_FIELDS,
         {
@@ -139,7 +139,7 @@ const SURVEY_COLUMNS = [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'survey',
+      endpoint: 'surveys',
     },
   },
 ];
@@ -147,27 +147,27 @@ const SURVEY_COLUMNS = [
 const QUESTION_FIELDS = [
   {
     Header: 'Code',
-    source: 'code',
+    source: 'question.code',
     type: 'tooltip',
     editable: false,
   },
   {
     Header: 'Type',
-    source: 'type',
+    source: 'question.type',
   },
   {
     Header: 'Name',
-    source: 'name',
+    source: 'question.name',
     type: 'tooltip',
   },
   {
     Header: 'Question',
-    source: 'text',
+    source: 'question.text',
     type: 'tooltip',
   },
   {
     Header: 'Detail',
-    source: 'detail',
+    source: 'question.detail',
     type: 'tooltip',
   },
   {
@@ -193,7 +193,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'surveyScreenComponent',
+      editEndpoint: 'surveyScreenComponents',
       fields: [
         ...QUESTION_FIELDS,
         {
@@ -301,7 +301,7 @@ const QUESTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Questions',
-    endpoint: 'survey/{id}/surveyScreenComponents',
+    endpoint: 'surveys/{id}/surveyScreenComponents',
     columns: QUESTION_COLUMNS,
   },
 ];

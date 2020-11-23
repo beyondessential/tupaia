@@ -11,8 +11,8 @@ import {
 } from './assertMapOverlaysPermissions';
 /**
  * Handles endpoints:
- * - /mapOverlay
- * - /mapOverlay/:mapOverlayId
+ * - /mapOverlays
+ * - /mapOverlays/:mapOverlayId
  */
 export class GETMapOverlays extends GETHandler {
   async assertUserHasAccess() {

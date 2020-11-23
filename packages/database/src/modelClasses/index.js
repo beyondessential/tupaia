@@ -30,6 +30,7 @@ import { OneTimeLoginModel } from './OneTimeLogin';
 import { PermissionGroupModel } from './PermissionGroup';
 import { ProjectModel } from './Project';
 import { QuestionModel } from './Question';
+import { ReportModel } from './Report';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
 import { SurveyResponseModel } from './SurveyResponse';
@@ -69,6 +70,7 @@ export const modelClasses = {
   Project: ProjectModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
+  Report: ReportModel,
   Survey: SurveyModel,
   SurveyResponse: SurveyResponseModel,
   SurveyScreen: SurveyScreenModel,

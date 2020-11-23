@@ -1,0 +1,1 @@
+export { buildAggregate } from './aggregate';

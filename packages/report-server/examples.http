@@ -1,0 +1,9 @@
+# Fetch Reports
+
+POST http://localhost:8030/v1/fetchReport/8?organisationUnitCode=TO HTTP/1.1
+content-type: application/json
+
+{
+    "emailAddress": "username",
+    "password": "password"
+}
