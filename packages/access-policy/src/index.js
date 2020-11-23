@@ -118,6 +118,6 @@ export class AccessPolicy {
   getEntitiesAllowed(permissionGroup) {
     const allEntityCodes = Object.keys(this.policy);
     if (!permissionGroup) return allEntityCodes;
-    return Object.keys(this.policy).filter(e => this.allows(e, permissionGroup));
+    return allEntityCodes.filter(e => this.allows(e, permissionGroup));
   }
 }
