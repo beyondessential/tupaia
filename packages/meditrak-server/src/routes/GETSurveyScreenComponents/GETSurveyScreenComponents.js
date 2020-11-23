@@ -33,10 +33,6 @@ export class GETSurveyScreenComponents extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    if (this.parentRecordId) {
-      return this.findRecordsViaParent(criteria, options);
-    }
-
     const { dbConditions, dbOptions } = await createSurveyScreenComponentDBFilter(
       this.accessPolicy,
       this.models,

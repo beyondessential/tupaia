@@ -31,10 +31,6 @@ export class GETSurveys extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    if (this.parentRecordId) {
-      return this.findRecordsViaParent(criteria, options);
-    }
-
     const dbConditions = await createSurveyDBFilter(this.accessPolicy, this.models, criteria);
     return super.findRecords(dbConditions, options);
   }

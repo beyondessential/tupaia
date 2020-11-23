@@ -30,10 +30,6 @@ export class GETAnswers extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    if (this.parentRecordId) {
-      return this.findRecordsViaParent(criteria, options);
-    }
-
     const { dbConditions, dbOptions } = await createAnswerDBFilter(
       this.accessPolicy,
       this.models,
