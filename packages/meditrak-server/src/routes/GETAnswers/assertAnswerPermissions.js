@@ -27,16 +27,16 @@ export const createAnswerDBFilter = async (accessPolicy, models, criteria, optio
     return { dbConditions, dbOptions };
   }
 
+  // Generate lists of country codes we have access to per permission group id
   const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
   const countryCodesByPermissionGroupId = {};
-
-  // Generate lists of country codes we have access to per permission group id
-  for (const permissionGroupName of allPermissionGroupsNames) {
-    const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
-    if (permissionGroup) {
-      const countryNames = accessPolicy.getEntitiesAllowed(permissionGroupName);
-      countryCodesByPermissionGroupId[permissionGroup.id] = countryNames;
-    }
+  const permissionGroupNameToId = await models.permissionGroup.findIdByField(
+    'name',
+    allPermissionGroupsNames,
+  );
+  for (const [permissionGroupName, permissionGroupId] of Object.entries(permissionGroupNameToId)) {
+    const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
+    countryCodesByPermissionGroupId[permissionGroupId] = countryCodes;
   }
 
   // Join SQL table with survey_response, entity and survey tables
