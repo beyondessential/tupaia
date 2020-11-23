@@ -178,7 +178,7 @@ export class DatabaseModel {
       throw new Error(`${this.databaseType} table does not have ${field} or id column`);
     }
     const records = await this.find({ [field]: fieldValues });
-    return reduceToDictionary(records, 'code', 'id');
+    return reduceToDictionary(records, field, 'id');
   }
 
   async findIdByCode(codes) {
