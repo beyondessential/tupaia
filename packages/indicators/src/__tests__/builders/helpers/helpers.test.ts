@@ -3,13 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  fetchAnalytics,
-  getAggregationsByCode,
-  groupKeysByValueJson,
-  validateConfig,
-} from '../../../builders/helpers';
-import { Aggregation, AggregationSpecs } from '../../../types';
+import { fetchAnalytics, groupKeysByValueJson, validateConfig } from '../../../builders/helpers';
 import { createAggregator } from '../stubs';
 import { ANALYTIC_RESPONSE_CONFIG } from './helpers.fixtures';
 
