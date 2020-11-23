@@ -208,6 +208,12 @@ export async function importSurveyResponses(req, res) {
   }
 }
 
+/**
+ * Return all the entitites of the submitted survey responses, grouped by the survey name (sheet name) that the survey responses belong to
+ * @param {*} models
+ * @param {*} sheets
+ * @param {*} surveyNames
+ */
 const getEntitiesBySurveyName = async (models, sheets, surveyNames) => {
   const entitiesGroupedBySurveyName = {};
 
