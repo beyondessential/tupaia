@@ -21,13 +21,14 @@ export const closeWeeklyReportsPanel = () => ({ type: TOGGLE_PANEL, panelIsOpen:
 
 export const setActiveWeek = id => ({ type: SET_ACTIVE_WEEK, id });
 
-export const updateWeeklyReportsData = () => async dispatch => {
+export const updateWeeklyReportsData = data => async dispatch => {
+  console.log('updateWeeklyReportsData..., post data to server...', data);
   await dispatch(reloadCountryWeeks({}));
   dispatch(setDefaultVerifiedStatuses());
 };
 
-export const confirmWeeklyReportsData = () => async dispatch => {
-  console.log('confirm data..., post data to server...');
+export const confirmWeeklyReportsData = data => async dispatch => {
+  console.log('confirmWeeklyReportsData..., post data to server...', data);
   dispatch(updateWeeklyReportsData());
 };
 

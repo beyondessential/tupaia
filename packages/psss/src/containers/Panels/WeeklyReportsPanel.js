@@ -261,7 +261,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   handleClose: () => dispatch(closeWeeklyReportsPanel()),
-  handleConfirm: () => dispatch(confirmWeeklyReportsData()),
+  handleConfirm: data => dispatch(confirmWeeklyReportsData(data)),
 });
 
 export const WeeklyReportsPanel = connect(

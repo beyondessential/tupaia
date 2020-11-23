@@ -80,6 +80,7 @@ export const CountryReportTableComponent = React.memo(
   ({ tableStatus, setTableStatus, onSubmit, sitesReported, totalSites }) => {
     const { fields } = useContext(EditableTableContext);
     const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
+    const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
 
     const handleEdit = useCallback(() => {
       setTableStatus(TABLE_STATUSES.EDITABLE);
@@ -94,6 +95,7 @@ export const CountryReportTableComponent = React.memo(
       await onSubmit({
         ...fields,
         sitesReported: parseInt(sitesReportedValue, 10),
+        totalSites: parseInt(totalSitesValue, 10),
       });
       setTableStatus(TABLE_STATUSES.STATIC);
     };
@@ -109,7 +111,12 @@ export const CountryReportTableComponent = React.memo(
                 onChange={event => setSitesReportedValue(event.target.value)}
                 name="sites-reported"
               />
-              <ReportedSites variant="h6"> / Total Sites: {totalSites}</ReportedSites>
+              <ReportedSites variant="h5"> / Total Sites: </ReportedSites>
+              <StyledTextField
+                value={totalSitesValue}
+                onChange={event => setTotalSitesValue(event.target.value)}
+                name="total-sites"
+              />
             </FormRow>
           ) : (
             <Typography variant="h5">
