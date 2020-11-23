@@ -40,7 +40,7 @@ export const createAnswerDBFilter = async (accessPolicy, models, criteria, optio
   }
 
   // Join SQL table with survey_response, entity and survey tables
-  // Running the permissions filtering is much faster with joins
+  // Running the permissions filtering is much faster with joins than records individually
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
