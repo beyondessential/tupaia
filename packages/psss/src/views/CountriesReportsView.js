@@ -63,9 +63,10 @@ export const CountriesReportsView = () => (
             <CircleMeter value={11} total={22} />
           </StyledCardContent>
         </Card>
-        <Card variant="outlined">
-          <DataCardTabs data={tabData} />
-        </Card>
+        {/* Temporarily removed for MVP release. Please do not delete */}
+        {/*<Card variant="outlined">*/}
+        {/*  <DataCardTabs data={tabData} />*/}
+        {/*</Card>*/}
       </Sidebar>
     </Container>
   </>

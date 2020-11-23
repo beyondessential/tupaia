@@ -9,4 +9,5 @@ export {
 } from './convertDateRangeToPeriods';
 export { convertPeriodStringToDateRange } from './convertPeriodStringToDateRange';
 export { getMostRecentPeriod, getMostAncientPeriod } from './periodExtremes';
+export { getDefaultPeriod } from './getDefaultPeriod';
 export * from './period';
