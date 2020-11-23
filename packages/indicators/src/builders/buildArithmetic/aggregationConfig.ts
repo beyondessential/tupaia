@@ -12,7 +12,7 @@ enum AggregationType {
   String, // 'SUM'
   Array, // ['SUM', 'MOST_RECENT']
   Object, // { type: 'OFFSET_PERIOD', config: { periodType: 'week' }}
-  // Dictionary's keys are data elements included in `ArithmeticConfig.formula`
+  // Dictionary keys are data elements included in `ArithmeticConfig.formula`
   // or `ArithmeticConfig.parameters`
   Dictionary, // { BCD1: 'SUM', BCD2: ['COUNT', 'FINAL_EACH_WEEK' ] }
   Invalid,
