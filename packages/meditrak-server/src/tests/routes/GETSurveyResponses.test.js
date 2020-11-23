@@ -121,7 +121,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
   });
 
   describe('GET /surveyResponses/:id', async () => {
-    it('Sufficient permissions: Return a requested survey response if we have permission for the survey in the responses country', async () => {
+    it("Sufficient permissions: Return a requested survey response if we have permission for the survey in the response's country", async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyResponses/${vanuatuAdminResponseId}`);
 
@@ -135,7 +135,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       expect(result.id).to.equal(laosAdminResponseId);
     });
 
-    it('Insufficient permissions: Throw an error if we do not have permission for the survey in the responses country', async () => {
+    it("Insufficient permissions: Throw an error if we do not have permission for the survey in the response's country", async () => {
       const policy = {
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],

@@ -9,44 +9,34 @@ import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 export const ENTITIES_COLUMNS = [
+  { source: 'id', show: false },
+  {
+    Header: 'Code',
+    source: 'code',
+  },
   {
     Header: 'Name',
     source: 'name',
     type: 'tooltip',
   },
   {
-    Header: 'Code',
-    source: 'code',
-  },
-  {
     Header: 'Type',
     source: 'type',
-  },
-  {
-    Header: 'Export Survey Responses',
-    source: 'id',
-    type: 'export',
-    width: 200,
-    actionConfig: {
-      exportEndpoint: 'surveyResponses',
-      rowIdQueryParameter: 'entityIds',
-      fileName: '{name} Survey Responses',
-    },
   },
 ];
 
 const COLUMNS = [
+  ...ENTITIES_COLUMNS,
   {
     Header: 'Country',
     source: 'country_code',
   },
-  ...ENTITIES_COLUMNS,
 ];
 
 const EXPANSION_CONFIG = [
   {
     title: 'Survey Responses',
-    endpoint: 'entity/{id}/surveyResponses',
+    endpoint: 'entities/{id}/surveyResponses',
     columns: SURVEY_RESPONSE_COLUMNS,
     expansionTabs: [
       {

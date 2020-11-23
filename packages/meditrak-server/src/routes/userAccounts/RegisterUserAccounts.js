@@ -14,7 +14,6 @@ import {
 } from '@tupaia/utils';
 import { CreateUserAccounts } from './CreateUserAccounts';
 import { sendVerifyEmail } from '../verifyEmail';
-import { allowNoPermissions } from '../../permissions';
 
 /**
  * Handles POST endpoint for registering user:
@@ -22,10 +21,6 @@ import { allowNoPermissions } from '../../permissions';
  */
 
 export class RegisterUserAccounts extends CreateUserAccounts {
-  async assertUserHasAccess() {
-    await this.assertPermissions(allowNoPermissions);
-  }
-
   async validate() {
     const { emailAddress, password, passwordConfirm, contactNumber } = this.newRecordData;
 

@@ -6,7 +6,7 @@
 import { GETHandler } from '../GETHandler';
 import { assertAnswerPermissions, createAnswerDBFilter } from './assertAnswerPermissions';
 import { assertSurveyResponsePermissions } from '../surveyResponses';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -16,26 +16,20 @@ import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '
  */
 
 export class GETAnswers extends GETHandler {
-  assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
-  }
-
   async findSingleRecord(answerId, options) {
     const answer = await super.findSingleRecord(answerId, options);
 
-    const answerChecker = accessPolicy =>
+    const answerPermissionsChecker = accessPolicy =>
       assertAnswerPermissions(accessPolicy, this.models, answerId);
 
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, answerChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, answerPermissionsChecker]),
+    );
 
     return answer;
   }
 
   async findRecords(criteria, options) {
-    if (this.parentRecordId) {
-      return this.findRecordsViaParent(criteria, options);
-    }
-
     const { dbConditions, dbOptions } = await createAnswerDBFilter(
       this.accessPolicy,
       this.models,

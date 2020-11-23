@@ -11,13 +11,18 @@ export {
   splitStringOnComma,
   splitOnNewLinesOrCommas,
 } from './excel';
-export { getArrayQueryParameter } from './getArrayQueryParameter';
+export {
+  fetchCountryIdsByPermissionGroupId,
+  fetchCountryCodesByPermissionGroupId,
+} from './fetchCountriesByPermissionGroup';
 export { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
+export { getAdminPanelAllowedEntityIds } from './getAdminPanelAllowedEntityIds';
+export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
+export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
-export { getAdminPanelAllowedEntityIds } from './getAdminPanelAllowedEntityIds';
 export {
   translateQuestionDependentFields,
   translateQuestionDependentNestedFields,

@@ -115,9 +115,10 @@ export const WeeklyCasesTabViewComponent = React.memo(
               <BarMeter value={22} total={30} legend="Sites reported" />
             </CardFooter>
           </Card>
-          <Card variant="outlined">
-            <DataCardTabs data={tabData} />
-          </Card>
+          {/* Temporarily removed for MVP release. Please do not delete */}
+          {/*<Card variant="outlined">*/}
+          {/*  <DataCardTabs data={tabData} />*/}
+          {/*</Card>*/}
         </Sidebar>
       </Container>
     );

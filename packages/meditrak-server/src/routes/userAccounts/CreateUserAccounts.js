@@ -10,7 +10,7 @@ import { assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles POST endpoints:
- * - /userAccount
+ * - /users
  */
 
 export class CreateUserAccounts extends CreateHandler {

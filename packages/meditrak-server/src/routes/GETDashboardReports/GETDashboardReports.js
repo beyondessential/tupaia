@@ -4,21 +4,17 @@
  */
 
 import { GETHandler } from '../GETHandler';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertDashboardReportsPermissions,
   createDashboardReportDBFilter,
 } from './assertDashboardReportsPermissions';
 /**
  * Handles endpoints:
- * - /dashboardReport
- * - /dashboardReport/:dashboardReportId
+ * - /dashboardReports
+ * - /dashboardReports/:dashboardReportId
  */
 export class GETDashboardReports extends GETHandler {
-  async assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
-  }
-
   async findSingleRecord(dashboardReportId, options) {
     const dashboardReport = await super.findSingleRecord(dashboardReportId, options);
 

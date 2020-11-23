@@ -5,6 +5,7 @@
 
 import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
+import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -58,47 +59,35 @@ export const createSurveyResponseDBFilter = async (accessPolicy, models, criteri
     return { dbConditions, dbOptions };
   }
 
-  const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
-  const countryCodesByPermissionGroupId = {};
-
-  // Generate lists of country codes we have access to per permission group id
-  for (const permissionGroupName of allPermissionGroupsNames) {
-    const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
-    if (permissionGroup) {
-      const countryNames = accessPolicy.getEntitiesAllowed(permissionGroupName);
-      countryCodesByPermissionGroupId[permissionGroup.id] = countryNames;
-    }
-  }
+  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
+    accessPolicy,
+    models,
+  );
 
   // Join SQL table with entity and survey tables
-  // Running the permissions filtering is much faster with joins
-  dbOptions.multiJoin = [
-    {
-      joinWith: TYPES.SURVEY,
-      joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
-    },
-    {
-      joinWith: TYPES.ENTITY,
-      joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
-    },
-  ];
-
-  // If columns weren't specified, avoid returning the joined columns
-  if (!dbOptions.columns) {
-    dbOptions.columns = ['survey_response.*'];
-  }
+  // Running the permissions filtering is much faster with joins than records individually
+  dbOptions.multiJoin = mergeMultiJoin(
+    [
+      {
+        joinWith: TYPES.SURVEY,
+        joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+      },
+      {
+        joinWith: TYPES.ENTITY,
+        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
+      },
+    ],
+    dbOptions.multiJoin,
+  );
 
   // Check the country code of the entity exists in our list for the permission group
   // of the survey
   dbConditions[RAW] = {
     sql: `
-    (
-      ARRAY[entity.country_code]::TEXT[]
-      <@
-      ARRAY(
+      entity.country_code IN (
         SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
       )
-    )`,
+    `,
     parameters: JSON.stringify(countryCodesByPermissionGroupId),
   };
 

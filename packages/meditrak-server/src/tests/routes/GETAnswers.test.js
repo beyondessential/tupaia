@@ -70,7 +70,7 @@ describe('Permissions checker for GETAnswers', async () => {
     vanuatuAdminResponseId = generateTestId();
     vanuatuDonorResponseId = generateTestId();
 
-    const surveyResponseModels = await buildAndInsertSurveyResponses(models, [
+    const surveyResponses = await buildAndInsertSurveyResponses(models, [
       {
         id: vanuatuAdminResponseId,
         surveyCode: 'TEST_SURVEY_1',
@@ -87,7 +87,7 @@ describe('Permissions checker for GETAnswers', async () => {
       },
     ]);
 
-    for (const { surveyResponse, answers } of surveyResponseModels) {
+    for (const { surveyResponse, answers } of surveyResponses) {
       if (surveyResponse.id === vanuatuAdminResponseId) {
         vanuatuAdminAnswers = answers.map(a => a.id);
       } else {
@@ -106,7 +106,7 @@ describe('Permissions checker for GETAnswers', async () => {
   });
 
   describe('GET /answer/:id', async () => {
-    it('Sufficient permissions: Return a requested answer if we have permission for the survey in the responses country', async () => {
+    it("Sufficient permissions: Return a requested answer if we have permission for the survey in the response's country", async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: result } = await app.get(`answer/${vanuatuAdminAnswers[0]}`);
 
@@ -120,7 +120,7 @@ describe('Permissions checker for GETAnswers', async () => {
       expect(result.id).to.equal(vanuatuDonorAnswers[0]);
     });
 
-    it('Insufficient permissions: Throw an error if we do not have permission for the survey in the responses country for this answer', async () => {
+    it("Insufficient permissions: Throw an error if we do not have permission for the survey in the response's country for this answer", async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: result } = await app.get(`answer/${vanuatuDonorAnswers[0]}`);
 
@@ -157,7 +157,7 @@ describe('Permissions checker for GETAnswers', async () => {
   });
 
   describe('GET /surveyResponses/id/answers', async () => {
-    it('Sufficient permissions: Return the answers for the requested survey response if we have permission to the survey in the responses country', async () => {
+    it("Sufficient permissions: Return the answers for the requested survey response if we have permission to the survey in the response's country", async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses/${vanuatuAdminResponseId}/answers`);
 
