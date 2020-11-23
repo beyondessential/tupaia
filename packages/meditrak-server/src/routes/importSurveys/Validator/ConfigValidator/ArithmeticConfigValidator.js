@@ -54,7 +54,7 @@ export class ArithmeticConfigValidator extends JsonFieldValidator {
       if (!questionsInFormulaAreNumeric) {
         if (!object.hasOwnProperty(key) || isEmpty(value)) {
           throw new Error(
-            'Should not be empty if any questions used in the formula are not numeric',
+            'Should not be empty if any questions used in the formula are non numeric',
           );
         }
       }
