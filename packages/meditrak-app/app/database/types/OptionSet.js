@@ -24,7 +24,11 @@ OptionSet.schema = {
   properties: {
     id: 'string',
     name: { type: 'string', default: 'OptionSet not properly synced' },
-    options: 'Option[]',
+    options: {
+      type: 'linkingObjects',
+      objectType: 'Option',
+      property: 'optionSet',
+    },
   },
 };
 

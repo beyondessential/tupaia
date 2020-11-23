@@ -13,7 +13,7 @@ export class Option extends RealmObject {
       label: this.label,
       sort_order: this.sortOrder,
       attributes: this.attributes ? JSON.parse(this.attributes) : {},
-      option_set_id: this.optionSetId,
+      option_set_id: this.optionSet.id,
     };
   }
 }
@@ -27,7 +27,7 @@ Option.schema = {
     label: { type: 'string', optional: true },
     sortOrder: { type: 'int', default: 0 }, // index based sorting, 0 = first
     attributes: { type: 'string', default: '{}' },
-    optionSetId: 'string',
+    optionSet: 'OptionSet',
   },
 };
 
@@ -40,7 +40,5 @@ Option.construct = (database, data) => {
     optionObject.attributes = JSON.stringify(attributes);
   }
   const optionSet = database.getOrCreate('OptionSet', data.optionSetId);
-  const option = database.update('Option', optionObject);
-  optionSet.addOptionIfUnique(option);
-  return option;
+  return database.update('Option', { ...optionObject, optionSet });
 };

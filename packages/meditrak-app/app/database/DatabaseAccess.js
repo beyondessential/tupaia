@@ -64,12 +64,7 @@ export class DatabaseAccess extends SyncingDatabase {
   }
 
   saveOptionObjects(optionObjects) {
-    return optionObjects.map(optionObject => {
-      const option = this.create('Option', optionObject);
-      const optionSet = this.getOptionSetById(optionObject.optionSetId);
-      optionSet.addOptionIfUnique(option);
-      return option;
-    });
+    return optionObjects.map(optionObject => this.create('Option', optionObject));
   }
 
   saveSurveyResponse(responseObject, answersObjects, newObjects = {}) {

@@ -178,7 +178,7 @@ export const schema = {
         const optionSets = oldRealm.objects('OptionSet').filtered(`options.id="${oldOption.id}"`);
         if (optionSets.length > 0) {
           const optionSet = optionSets[0];
-          newOptions[index].optionSetId = optionSet.id;
+          newOptions[index].optionSet = optionSet;
         }
       });
     }

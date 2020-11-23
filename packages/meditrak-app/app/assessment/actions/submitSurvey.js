@@ -133,8 +133,8 @@ const buildOption = (database, optionSetId, value) => {
   return {
     id: generateMongoId(),
     value,
-    optionSetId,
     sortOrder: largestSortOrder + 1,
+    optionSet,
   };
 };
 
