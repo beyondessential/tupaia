@@ -30,7 +30,7 @@ const convertData = [
   { incorrectNames: ['Insel'], correctName: 'Insel Hotel' },
   { incorrectNames: ['Karls Getaway'], correctName: "Karl's Getaway" },
   {
-    incorrectNames: ['lynns getaway', 'Lynns Getaway', 'Lynns Getaway'],
+    incorrectNames: ['lynns getaway', 'Lynns Getaway'],
     correctName: "Lynn's Getaway",
   },
   { incorrectNames: ['Pasifika Inn'], correctName: 'Pasefika Inn' },
