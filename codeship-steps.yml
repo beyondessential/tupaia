@@ -22,6 +22,9 @@
             - name: test-web-config-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+            - name: test-psss-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh psss-server'
             - name: test-report-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
