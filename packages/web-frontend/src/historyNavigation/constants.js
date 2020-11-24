@@ -22,6 +22,7 @@ const DISASTER_END_DATE = 'DISASTER_END_DATE';
 const VERIFY_EMAIL_TOKEN = 'VERIFY_EMAIL_TOKEN';
 const ORG_UNIT_NAME = 'ORG_UNIT_NAME'; // Used for exporting charts
 const MEASURE_PERIOD = 'MEASURE_PERIOD';
+const REPORT_PERIOD = 'REPORT_PERIOD';
 
 export const URL_COMPONENTS = {
   // Path components
@@ -41,6 +42,7 @@ export const URL_COMPONENTS = {
   VERIFY_EMAIL_TOKEN,
   ORG_UNIT_NAME,
   MEASURE_PERIOD,
+  REPORT_PERIOD,
 };
 
 export const PATH_COMPONENTS = [PROJECT, ORG_UNIT, DASHBOARD];
@@ -56,6 +58,7 @@ export const SEARCH_COMPONENTS = [
   VERIFY_EMAIL_TOKEN,
   ORG_UNIT_NAME,
   MEASURE_PERIOD,
+  REPORT_PERIOD,
 ];
 
 export const SEARCH_PARAM_KEY_MAP = {
@@ -68,11 +71,12 @@ export const SEARCH_PARAM_KEY_MAP = {
   [REPORT]: 'report',
   [PASSWORD_RESET_TOKEN]: 'passwordResetToken',
   [TIMEZONE]: 'timeZone',
-  [START_DATE]: 'startDate',
+  [START_DATE]: 'startDate', // TODO: <- It's for export. Should just use normal reportPeriod
   [END_DATE]: 'endDate',
   [DISASTER_START_DATE]: 'disasterStartDate',
   [DISASTER_END_DATE]: 'disasterEndDate',
   [VERIFY_EMAIL_TOKEN]: 'verifyEmailToken',
+  [REPORT_PERIOD]: 'reportPeriod',
 };
 
 export const PASSWORD_RESET_PREFIX = 'reset-password';

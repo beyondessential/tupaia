@@ -48,6 +48,7 @@ export {
   selectCurrentExpandedViewId,
   selectIsEnlargedDialogVisible,
   selectShouldUseDashboardData,
+  selectCurrentExpandedDates,
 } from './dashboardSelectors';
 
 export {
