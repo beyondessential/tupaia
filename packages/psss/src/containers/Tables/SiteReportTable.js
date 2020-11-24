@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useCallback } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { queryCache, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
@@ -59,22 +59,14 @@ export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNu
   const { fields } = useContext(EditableTableContext);
   const { countryCode } = useParams();
 
-  const handleEdit = useCallback(() => {
-    setTableStatus(TABLE_STATUSES.EDITABLE);
-  }, [setTableStatus]);
-
-  const handleCancel = useCallback(() => {
-    setTableStatus(TABLE_STATUSES.STATIC);
-  }, [setTableStatus]);
-
   const [saveReport] = useMutation(
-    async () => {
+    () => {
       setTableStatus(TABLE_STATUSES.SAVING);
-      await FakeAPI.post(fields);
-      setTableStatus(TABLE_STATUSES.STATIC);
+      FakeAPI.post(fields);
     },
     {
       onSuccess: () => queryCache.invalidateQueries('country-weeks', { countryCode, weekNumber }),
+      onSettled: () => setTableStatus(TABLE_STATUSES.STATIC),
     },
   );
 
@@ -82,14 +74,24 @@ export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNu
     <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
       <HeadingRow>
         <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
-        <GreyOutlinedButton onClick={handleEdit} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
+        <GreyOutlinedButton
+          onClick={() => {
+            setTableStatus(TABLE_STATUSES.EDITABLE);
+          }}
+          disabled={tableStatus === TABLE_STATUSES.EDITABLE}
+        >
           Edit
         </GreyOutlinedButton>
       </HeadingRow>
       <StyledEditableTable Header={GreyTableHeader} Body={DottedTableBody} />
       {tableStatus === TABLE_STATUSES.EDITABLE && (
         <ActionsRow>
-          <Button variant="outlined" onClick={handleCancel}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setTableStatus(TABLE_STATUSES.STATIC);
+            }}
+          >
             Cancel
           </Button>
           <Button onClick={saveReport}>Save</Button>

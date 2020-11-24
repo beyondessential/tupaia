@@ -81,7 +81,7 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen }) => {
     <Container>
       <Main data-testid="country-table">
         <CountryTable
-          data={data ? data.data : 0}
+          data={data ? data.data : []}
           isLoading={isLoading}
           errorMessage={error && error.message}
           order={order}
@@ -91,7 +91,7 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen }) => {
           setPage={setPage}
         />
         {isFetching && 'Fetching...'}
-        <WeeklyReportsPanel />
+        {!isLoading && data.data && <WeeklyReportsPanel countryData={data.data} />}
       </Main>
       <Sidebar>
         <Card variant="outlined">

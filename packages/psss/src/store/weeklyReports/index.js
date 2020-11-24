@@ -4,13 +4,10 @@
  */
 
 import { combineReducers } from 'redux';
-import { country } from './country';
 import { activeWeek } from './activeWeek';
 
 export const weeklyReports = combineReducers({
-  country,
   activeWeek,
 });
 
-export * from './country';
 export * from './activeWeek';
