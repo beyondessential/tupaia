@@ -58,7 +58,7 @@ export class RouteHandler {
     }
 
     const { accessPolicy } = session;
-    const authorized = accessPolicy.allowsSome([], PSSS_PERMISSION_GROUP);
+    const authorized = accessPolicy.allowsAnywhere(PSSS_PERMISSION_GROUP);
     if (!authorized) {
       throw new PermissionsError('User not authorized for PSSS');
     }

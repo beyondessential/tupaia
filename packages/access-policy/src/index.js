@@ -46,9 +46,6 @@ export class AccessPolicy {
    * - has access to the given entities with some permission group
    *   accessPolicy.allowsSome(['DL']);
    *
-   * - some entity has access to Donor
-   *   accessPolicy.allowsSome([], 'Donor');
-   *
    * @param {string[]} [entities]
    * @param {string} [permissionGroup]
    *
@@ -65,6 +62,18 @@ export class AccessPolicy {
 
     const allowedPermissionGroups = this.getPermissionGroupsSet(entities);
     return allowedPermissionGroups.has(permissionGroup);
+  }
+
+  /**
+   * Returns true if the access policy grants access to any entity with the specified permission
+   * group
+   * @param {string} permissionGroup
+   */
+  allowsAnywhere(permissionGroup) {
+    if (!permissionGroup) {
+      throw new Error('Must provide a permission group when checking allowsAnywhere');
+    }
+    return this.getPermissionGroupsSet().has(permissionGroup);
   }
 
   /**
