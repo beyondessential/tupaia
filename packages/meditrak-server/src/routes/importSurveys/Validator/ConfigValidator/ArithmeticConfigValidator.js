@@ -7,6 +7,10 @@ import { constructIsNotPresentOr, hasContent, ValidationError } from '@tupaia/ut
 import { CalculatedConfigValidator } from './CalculatedConfigValidator';
 import { splitStringOn, splitStringOnComma, getExpressionQuestionCodes } from '../../../utilities';
 import { isEmpty } from '../../utilities';
+import { ANSWER_TYPES } from '../../../../database/models/Answer';
+
+const { NUMBER, ARITHMETIC } = ANSWER_TYPES;
+const NUMERIC_QUESTION_TYPES = [NUMBER, ARITHMETIC];
 
 export class ArithmeticConfigValidator extends CalculatedConfigValidator {
   getFieldValidators(rowIndex) {
@@ -112,7 +116,7 @@ export class ArithmeticConfigValidator extends CalculatedConfigValidator {
 
     return codes.filter(code => {
       const questionType = this.getPrecedingQuestionField(code, rowIndex, 'type');
-      return questionType !== 'Number';
+      return !NUMERIC_QUESTION_TYPES.includes(questionType);
     });
   }
 
