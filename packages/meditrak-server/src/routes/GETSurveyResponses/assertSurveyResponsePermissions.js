@@ -3,46 +3,67 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { keyBy } from 'lodash';
-import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions/constants';
+import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
+import { hasBESAdminAccess } from '../../permissions';
+import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
 
-export const hasSurveyResponsePermissions = async (accessPolicy, models, surveyResponse) => {
+const { RAW } = QUERY_CONJUNCTIONS;
+
+export const assertSurveyResponsePermissions = async (accessPolicy, models, surveyResponseId) => {
+  const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
+  if (!surveyResponse) {
+    throw new Error(`No survey response exists with id ${surveyResponseId}`);
+  }
+
   const entity = await models.entity.findById(surveyResponse.entity_id);
   const survey = await models.survey.findById(surveyResponse.survey_id);
   const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
 
-  return accessPolicy.allows(entity.country_code, permissionGroup.name);
-};
-
-export const assertSurveyResponsePermissions = async (accessPolicy, models, surveyResponse) => {
-  const hasPermission = await hasSurveyResponsePermissions(accessPolicy, models, surveyResponse);
-  if (!hasPermission) {
+  if (!accessPolicy.allows(entity.country_code, permissionGroup.name)) {
     throw new Error('You do not have permissions for this survey response');
   }
   return true;
 };
 
-export const filterSurveyResponsesByPermissions = async (accessPolicy, surveyResponses, models) => {
-  if (accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP)) {
-    return surveyResponses;
+export const createSurveyResponseDBFilter = async (accessPolicy, models, criteria, options) => {
+  const dbConditions = { ...criteria };
+  const dbOptions = { ...options };
+
+  if (hasBESAdminAccess(accessPolicy)) {
+    return { dbConditions, dbOptions };
   }
-  const entities = await models.entity.findManyById(surveyResponses.map(sr => sr.entity_id));
-  const surveys = await models.survey.findManyById(surveyResponses.map(sr => sr.survey_id));
-  const permissionGroups = await models.permissionGroup.findManyById(
-    surveys.map(s => s.permission_group_id),
+
+  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
+    accessPolicy,
+    models,
   );
 
-  const entitiesById = keyBy(entities, 'id');
-  const surveysById = keyBy(surveys, 'id');
-  const permissionGroupsById = keyBy(permissionGroups, 'id');
+  // Join SQL table with entity and survey tables
+  // Running the permissions filtering is much faster with joins than records individually
+  dbOptions.multiJoin = mergeMultiJoin(
+    [
+      {
+        joinWith: TYPES.SURVEY,
+        joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+      },
+      {
+        joinWith: TYPES.ENTITY,
+        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
+      },
+    ],
+    dbOptions.multiJoin,
+  );
 
-  const filteredSurveyResponses = surveyResponses.filter(surveyResponse => {
-    const entity = entitiesById[surveyResponse.entity_id];
-    const survey = surveysById[surveyResponse.survey_id];
-    const permissionGroup = permissionGroupsById[survey.permission_group_id];
+  // Check the country code of the entity exists in our list for the permission group
+  // of the survey
+  dbConditions[RAW] = {
+    sql: `
+      entity.country_code IN (
+        SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+      )
+    `,
+    parameters: JSON.stringify(countryCodesByPermissionGroupId),
+  };
 
-    return accessPolicy.allows(entity.country_code, permissionGroup.name);
-  });
-
-  return filteredSurveyResponses;
+  return { dbConditions, dbOptions };
 };

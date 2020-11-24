@@ -2,19 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import MockDate from 'mockdate';
 
+import { arrayToAnalytics } from '@tupaia/data-broker';
 import { sumAcrossPeriods } from '../../../../analytics/aggregateAnalytics/aggregations/sumAcrossPeriods';
 
 describe('sumAcrossPeriods', () => {
-  const arrayToAnalytics = arrayAnalytics =>
-    arrayAnalytics.map(([dataElement, organisationUnit, period, value]) => ({
-      dataElement,
-      organisationUnit,
-      period,
-      value,
-    }));
-
   const ANALYTICS = arrayToAnalytics([
     // BCD01 - TO
     ['BCD01', 'TO', '201601', 0.01],

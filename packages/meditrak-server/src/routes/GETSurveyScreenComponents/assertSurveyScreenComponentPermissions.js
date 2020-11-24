@@ -24,9 +24,7 @@ export const assertSurveyScreenComponentPermissions = async (
 
   // Pull the survey from the survey screen, then run the survey permissions check
   const surveyScreen = await models.surveyScreen.findById(surveyScreenComponent.screen_id);
-  await assertSurveyPermissions(accessPolicy, models, surveyScreen.survey_id);
-
-  return true;
+  return assertSurveyPermissions(accessPolicy, models, surveyScreen.survey_id);
 };
 
 export const createSurveyScreenComponentDBFilter = async (
@@ -49,16 +47,19 @@ export const createSurveyScreenComponentDBFilter = async (
     dbConditions.survey_id = permittedSurveyIds;
   }
 
-  dbOptions.multiJoin = mergeMultiJoin([
-    {
-      joinWith: TYPES.QUESTION,
-      joinCondition: [`${TYPES.QUESTION}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
-    },
-    {
-      joinWith: TYPES.SURVEY_SCREEN,
-      joinCondition: [`${TYPES.SURVEY_SCREEN}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`],
-    },
-  ], dbOptions.multiJoin);
+  dbOptions.multiJoin = mergeMultiJoin(
+    [
+      {
+        joinWith: TYPES.QUESTION,
+        joinCondition: [`${TYPES.QUESTION}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
+      },
+      {
+        joinWith: TYPES.SURVEY_SCREEN,
+        joinCondition: [`${TYPES.SURVEY_SCREEN}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`],
+      },
+    ],
+    dbOptions.multiJoin,
+  );
 
   return { dbConditions, dbOptions };
 };

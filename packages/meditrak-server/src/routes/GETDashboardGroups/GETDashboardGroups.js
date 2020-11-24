@@ -4,7 +4,7 @@
  */
 
 import { GETHandler } from '../GETHandler';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertDashboardGroupsPermissions,
   createDashboardGroupDBFilter,
@@ -15,9 +15,7 @@ import {
  * - /dashboardGroups/:dashboardGroupId
  */
 export class GETDashboardGroups extends GETHandler {
-  async assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
-  }
+  permissionsFilteredInternally = true;
 
   async findSingleRecord(dashboardGroupId, options) {
     const dashboardGroup = await super.findSingleRecord(dashboardGroupId, options);

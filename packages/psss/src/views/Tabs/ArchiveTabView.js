@@ -5,17 +5,20 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import MuiContainer from '@material-ui/core/Container';
-import { Main } from '../../components';
+import { ComingSoon, Container, Main } from '../../components';
 import { ArchiveTable } from '../../containers';
 
 export const ArchiveTabView = () => {
   const { countryCode } = useParams();
 
   return (
-    <MuiContainer>
-      <Main>
-        <ArchiveTable countryCode={countryCode} />
-      </Main>
-    </MuiContainer>
+    <div style={{ position: 'relative' }}>
+      <ComingSoon text="The Archive page will show archived Alerts and Outbreaks." />
+      <MuiContainer style={{ position: 'relative ' }}>
+        <Main>
+          <ArchiveTable countryCode={countryCode} />
+        </Main>
+      </MuiContainer>
+    </div>
   );
 };

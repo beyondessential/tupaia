@@ -6,6 +6,7 @@
 import { expect } from 'chai';
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
+import { resetTestData } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../TestableApp';
 import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
@@ -30,6 +31,8 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   let filterString;
 
   before(async () => {
+    await resetTestData();
+
     // Set up the survey groups and their surveys
     surveyGroup1 = await findOrCreateDummyRecord(models.surveyGroup, {
       name: 'Test survey group 1',

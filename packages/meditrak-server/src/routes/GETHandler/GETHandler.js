@@ -109,7 +109,9 @@ export class GETHandler extends CRUDHandler {
 
     // handle request for multiple records, including pagination headers
     const criteria = this.getDbQueryCriteria();
-    const pageOfRecords = await this.findRecords(criteria, options);
+    const pageOfRecords = this.parentRecordId
+      ? await this.findRecordsViaParent(criteria, options)
+      : await this.findRecords(criteria, options);
     const totalNumberOfRecords = await this.countRecords(criteria, options);
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil(totalNumberOfRecords / limit);
