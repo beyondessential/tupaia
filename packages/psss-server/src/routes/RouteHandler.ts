@@ -4,20 +4,24 @@
  */
 import { NextFunction, Response } from 'express';
 import { respond } from '@tupaia/utils';
-import { ModelRegistry, PsssRequest, PsssResponseBody } from '../types';
+import { PsssRequest, PsssResponseBody } from '../types';
+import { PsssSessionModel, PsssSessionType } from '../models';
 
 export class RouteHandler {
   req: PsssRequest;
   res: Response;
   next: NextFunction;
-  models: ModelRegistry;
+  sessionModel: PsssSessionModel;
+  session?: PsssSessionType;
 
   constructor(req: PsssRequest, res: Response, next: NextFunction) {
     this.req = req;
     this.res = res;
     this.next = next;
-    const { models } = req;
-    this.models = models;
+
+    const { sessionModel, session } = req;
+    this.sessionModel = sessionModel;
+    this.session = session;
   }
 
   respond(responseBody: PsssResponseBody, statusCode: number) {

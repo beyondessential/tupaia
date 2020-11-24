@@ -7,22 +7,22 @@ import '@babel/polyfill';
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import http from 'http';
-import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+import { TupaiaDatabase } from '@tupaia/database';
 
 import { createApp } from './app';
 import winston from './log';
-import * as modelClasses from './models';
+import { PsssSessionModel } from './models';
 
 /**
  * Set up database
  */
 const database = new TupaiaDatabase();
-const models = new ModelRegistry(database, modelClasses);
+const sessionModel = new PsssSessionModel(database);
 
 /**
  * Set up app with routes etc.
  */
-const app = createApp(models);
+const app = createApp(sessionModel);
 
 /**
  * Start the server

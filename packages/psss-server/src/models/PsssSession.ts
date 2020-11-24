@@ -6,7 +6,7 @@
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 
-class PsssSessionType extends DatabaseType {
+export class PsssSessionType extends DatabaseType {
   id!: string;
   email!: string;
   access_policy!: string;

@@ -33,14 +33,15 @@ export class LoginRouteHandler extends RouteHandler {
     const { accessToken, refreshToken, user } = response;
     const { accessPolicy, email } = user;
 
-    const session = await this.models.psssSession.create({
+    const session = await this.sessionModel.create({
       email,
       access_policy: accessPolicy,
       access_token: accessToken,
       refresh_token: refreshToken,
     });
 
-    this.req.session = { id: session.id, email };
+    // set sessionId cookie
+    this.req.sessionId = session.id;
 
     this.respond({ accessPolicy }, 200);
   }

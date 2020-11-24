@@ -4,16 +4,14 @@
  */
 
 import { PermissionsError, UnauthenticatedError } from '@tupaia/utils';
-import { AccessPolicy } from '@tupaia/access-policy';
-import { ModelRegistry } from '@tupaia/database';
 import { Response, NextFunction, Express } from 'express';
 import session from 'client-sessions';
 import { PsssRequest } from '../types';
+import { PsssSessionType } from '../models/PsssSession';
 
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
-const checkUserPermissions = async (models: ModelRegistry, sessionId: string) => {
-  const session = await models.psssSession.findById(sessionId);
+const checkUserPermissions = async (session: PsssSessionType) => {
   const { accessPolicy } = session;
   return accessPolicy.allowsSome([], PSSS_PERMISSION_GROUP);
 };
@@ -25,23 +23,31 @@ export const authMiddleware = async (req: PsssRequest, res: Response, next: Next
     return;
   }
 
-  if (!req.session || !req.session.id) {
+  const { sessionId, sessionModel } = req;
+
+  if (!sessionId) {
     next(new UnauthenticatedError('User not authenticated'));
     return;
   }
 
-  const authorized = await checkUserPermissions(req.models, req.session.id);
+  const session = await sessionModel.findById(sessionId);
+  if (!session) {
+    next(new UnauthenticatedError('Session not found in database'));
+  }
+
+  const authorized = await checkUserPermissions(session);
   if (!authorized) {
     next(new PermissionsError('User not authorized for PSSS'));
     return;
   }
 
+  req.session = session;
   next();
 };
 
 const USER_SESSION_COOKIE_TIMEOUT = 24 * 60 * 60 * 1000; // session lasts 24 hours
 export const USER_SESSION_CONFIG = {
-  cookieName: 'session',
+  cookieName: 'sessionId',
   secret: process.env.USER_SESSION_COOKIE_SECRET || '',
   secure: false,
   httpOnly: false,

@@ -7,15 +7,15 @@ import express, { Response, NextFunction } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
-import { ModelRegistry } from '@tupaia/database';
 
 import { addRoutesToApp } from './addRoutesToApp';
 import { PsssRequest } from '../types';
+import { PsssSessionModel } from '../models';
 
 /**
  * Set up express server with middleware,
  */
-export function createApp(models: ModelRegistry) {
+export function createApp(sessionModel: PsssSessionModel) {
   const app = express();
 
   /**
@@ -26,10 +26,10 @@ export function createApp(models: ModelRegistry) {
   app.use(errorHandler());
 
   /**
-   * Attach model registry to the request
+   * Attach psss session model to the request
    */
   app.use((req: PsssRequest, res: Response, next: NextFunction) => {
-    req.models = models;
+    req.sessionModel = sessionModel;
     next();
   });
 
