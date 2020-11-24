@@ -14,7 +14,6 @@ import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../ac
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
-  selectCurrentExpandedViewContent,
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
   selectCurrentProjectCode,
@@ -288,7 +287,6 @@ const mapStateToProps = state => {
     errorMessage: state.enlargedDialog.errorMessage,
     drillDownDatesByLevel: state.enlargedDialog.drillDownDatesByLevel,
     infoViewKey: selectCurrentInfoViewKey(state),
-    initialViewContent: selectCurrentExpandedViewContent(state),
     organisationUnitName: selectCurrentOrgUnit(state).name,
     projectCode: selectCurrentProjectCode(state),
   };
