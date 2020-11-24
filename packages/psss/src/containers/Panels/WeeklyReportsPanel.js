@@ -265,7 +265,7 @@ export const WeeklyReportsPanelComponent = React.memo(
         </DrawerFooter>
         <AlertCreatedModal
           isOpen={isModalOpen}
-          alerts={getSyndromeAlerts(countryData[weekNumber]}
+          alerts={getSyndromeAlerts(countryData[weekNumber])}
           handleClose={() => setIsModalOpen(false)}
         />
       </StyledDrawer>

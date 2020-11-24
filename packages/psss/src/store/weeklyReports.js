@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { createReducer } from '../../utils/createReducer';
+import { createReducer } from '../utils/createReducer';
 
 // actions
 const SET_ACTIVE_WEEK = 'SET_ACTIVE_WEEK';
@@ -23,20 +23,19 @@ export const setActiveWeek = id => ({ type: SET_ACTIVE_WEEK, id });
 export const updateVerifiedStatus = id => ({ type: VERIFY_SYNDROME, id });
 
 // selectors
-export const checkWeeklyReportsPanelIsOpen = ({ weeklyReports }) =>
-  weeklyReports.activeWeek.panelIsOpen;
+export const checkWeeklyReportsPanelIsOpen = ({ weeklyReports }) => weeklyReports.panelIsOpen;
 
-export const getActiveWeekId = ({ weeklyReports }) => weeklyReports.activeWeek.id;
+export const getActiveWeekId = ({ weeklyReports }) => weeklyReports.id;
 
 export const getVerifiedStatus = ({ weeklyReports }, syndromeId) =>
-  weeklyReports.activeWeek.verifiedStatuses.includes(syndromeId);
+  weeklyReports.verifiedStatuses.includes(syndromeId);
 
 export const getUnVerifiedSyndromes = ({ weeklyReports }, countryData) => {
-  const { id } = weeklyReports.activeWeek;
+  const { id } = weeklyReports;
   if (id === null || countryData.length === 0) {
     return [];
   }
-  const statuses = weeklyReports.activeWeek.verifiedStatuses;
+  const statuses = weeklyReports.verifiedStatuses;
   return countryData[id].syndromes.reduce((list, syndrome) => {
     if (syndrome.isAlert && !statuses.includes(syndrome.id)) {
       return [...list, syndrome.id];
@@ -68,4 +67,4 @@ const actionHandlers = {
   }),
 };
 
-export const activeWeek = createReducer(defaultState, actionHandlers);
+export const weeklyReports = createReducer(defaultState, actionHandlers);

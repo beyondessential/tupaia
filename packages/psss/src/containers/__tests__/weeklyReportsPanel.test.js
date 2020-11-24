@@ -16,29 +16,9 @@ const ACTIVE_ID = 0;
 const defaultState = {
   auth: {},
   weeklyReports: {
-    site: {
-      data: sitesData,
-      status: 'idle',
-      error: null,
-      fetchStartedAt: null,
-    },
-    country: {
-      data: countryData,
-      status: 'idle',
-      error: null,
-      fetchStartedAt: null,
-    },
-    activeWeek: {
-      id: ACTIVE_ID,
-      panelIsOpen: true,
-      verifiedStatuses: {
-        afr: null,
-        dia: false,
-        ili: null,
-        pf: null,
-        dil: null,
-      },
-    },
+    id: ACTIVE_ID,
+    panelIsOpen: true,
+    verifiedStatuses: ['dia'],
   },
 };
 
