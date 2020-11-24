@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Express, Response, NextFunction } from 'express';
+import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { PsssRequest } from '../types';
 import { LoginHandler, LogoutHandler, TestHandler } from '../routes';
@@ -20,7 +20,7 @@ const handleWith = (Handler: typeof RouteHandler) => (
 
 const handleError = (
   err: RespondingError | Error,
-  req: PsssRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {

@@ -4,6 +4,7 @@
  */
 
 import { Request } from 'express';
+import { ParamsDictionary, Query } from 'express-serve-static-core';
 import { PsssSessionModel, PsssSessionType } from './models';
 
 export interface SessionCookie {
@@ -12,7 +13,9 @@ export interface SessionCookie {
   reset: () => void;
 }
 
-export interface PsssRequest extends Request {
+interface PsssRequestBody {}
+
+export interface PsssRequest<>extends Request<ParamsDictionary, unknown, PsssRequestBody, Query> {
   sessionModel: PsssSessionModel;
   sessionCookie?: SessionCookie;
   session?: PsssSessionType;
