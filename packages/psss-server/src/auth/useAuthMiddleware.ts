@@ -25,13 +25,15 @@ export const authMiddleware = async (req: PsssRequest, res: Response, next: Next
     return;
   }
 
-  if (!req.session) {
-    throw new UnauthenticatedError('User not authenticated');
+  if (!req.session || !req.session.id) {
+    next(new UnauthenticatedError('User not authenticated'));
+    return;
   }
 
   const authorized = await checkUserPermissions(req.models, req.session.id);
   if (!authorized) {
-    throw new PermissionsError('User not authorized for PSSS');
+    next(new PermissionsError('User not authorized for PSSS'));
+    return;
   }
 
   next();
