@@ -4,18 +4,15 @@
  */
 import React from 'react';
 import { Table, ExpandableTableBody } from '@tupaia/ui-components';
-import { useQuery } from 'react-query';
-// import { Table } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
+import { useTableQuery } from '../../hooks';
 import {
   createTotalCasesAccessor,
   AlertCell,
   SitesReportedCell,
   CountryNameLinkCell,
 } from '../../components';
-import { FakeAPI as api } from '../../api';
-// import { ConnectedTable } from './ConnectedTable';
 
 const countriesTableColumns = [
   {
@@ -63,24 +60,6 @@ const countriesTableColumns = [
   },
 ];
 
-const useTableQuery = (endpoint, options) => {
-  const [sorting, setSorting] = React.useState({ order: 'asc', orderBy: undefined });
-  const query = useQuery(
-    [endpoint, options, sorting],
-    () => api.get(endpoint, { ...options, ...sorting }),
-    { staleTime: 50 },
-  );
-
-  const handleChangeOrderBy = columnKey => {
-    const { order, orderBy } = sorting;
-    const isDesc = orderBy === columnKey && order === 'desc';
-    const newSorting = { order: isDesc ? 'asc' : 'desc', orderBy: columnKey };
-    setSorting(newSorting);
-  };
-
-  return { ...query, ...sorting, handleChangeOrderBy };
-};
-
 export const CountriesTable = () => {
   const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
     'countries',
@@ -107,13 +86,3 @@ export const CountriesTable = () => {
     </>
   );
 };
-
-// export const CountriesTable = React.memo(() => (
-//   <ConnectedTable
-//     endpoint="countries"
-//     fetchOptions={{ countries: ['TO', 'WS'] }}
-//     columns={countriesTableColumns}
-//     Body={ExpandableTableBody}
-//     SubComponent={CountrySummaryTable}
-//   />
-// ));
