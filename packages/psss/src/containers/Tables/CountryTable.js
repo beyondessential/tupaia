@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { Table } from '@tupaia/ui-components';
+import { ExpandableTable } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../constants/colors';
@@ -133,13 +133,13 @@ const countryColumns = [
   {
     title: 'STATUS',
     key: 'status',
-    width: '110px',
+    width: '165px',
     CellComponent: StatusCell,
   },
 ];
 
 export const CountryTable = React.memo(({ data, isLoading, errorMessage, page, setPage }) => (
-  <Table
+  <ExpandableTable
     isLoading={isLoading}
     columns={countryColumns}
     data={data}

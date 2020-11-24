@@ -30,17 +30,18 @@ import {
   ComingSoon,
 } from '../../components';
 import {
-  getSitesForWeek,
   getActiveWeekCountryData,
   closeWeeklyReportsPanel,
   checkWeeklyReportsPanelIsOpen,
   getUnVerifiedSyndromes,
   confirmWeeklyReportsData,
   getSyndromeAlerts,
+  getActiveWeekId,
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage, getCountryName } from '../../utils';
+import { useTableQuery } from '../../hooks';
 
 const columns = [
   {
@@ -125,13 +126,26 @@ const toCommaList = values =>
     .replace(/,(?!.*,)/gim, ' and');
 
 export const WeeklyReportsPanelComponent = React.memo(
-  ({ countryData, sitesData, isOpen, handleClose, unVerifiedSyndromes, alerts, handleConfirm }) => {
+  ({
+    countryData,
+    isOpen,
+    handleClose,
+    weekNumber,
+    unVerifiedSyndromes,
+    alerts,
+    handleConfirm,
+  }) => {
     const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
     const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { countryCode } = useParams();
+
+    const { isLoading, data } = useTableQuery('sites', {
+      countryCode,
+      weekNumber,
+    });
 
     const isVerified = unVerifiedSyndromes.length === 0;
     const hasAlerts = alerts.length > 0;
@@ -150,10 +164,11 @@ export const WeeklyReportsPanelComponent = React.memo(
       }
     }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
 
-    if (!countryData.syndromes || countryData.syndromes.length === 0 || sitesData.length === 0) {
+    if (isLoading || !countryData.syndromes || countryData.syndromes.length === 0) {
       return null;
     }
 
+    const { data: sitesData } = data;
     const activeSite = sitesData[activeSiteIndex];
     const { syndromes: syndromesData } = activeSite;
 
@@ -244,17 +259,17 @@ export const WeeklyReportsPanelComponent = React.memo(
 WeeklyReportsPanelComponent.propTypes = {
   handleConfirm: PropTypes.func.isRequired,
   countryData: PropTypes.object.isRequired,
-  sitesData: PropTypes.array.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  weekNumber: PropTypes.number.isRequired,
   alerts: PropTypes.array.isRequired,
   unVerifiedSyndromes: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
+  weekNumber: getActiveWeekId(state),
   isOpen: checkWeeklyReportsPanelIsOpen(state),
   countryData: getActiveWeekCountryData(state),
-  sitesData: getSitesForWeek(state),
   unVerifiedSyndromes: getUnVerifiedSyndromes(state),
   alerts: getSyndromeAlerts(state),
 });

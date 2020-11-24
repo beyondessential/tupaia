@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, ExpandableTableBody } from '@tupaia/ui-components';
+import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
@@ -73,7 +73,7 @@ export const CountriesTableComponent = ({ allowedEntities }) => {
 
   return (
     <>
-      <Table
+      <ExpandableTable
         order={order}
         orderBy={orderBy}
         onChangeOrderBy={handleChangeOrderBy}
