@@ -23,7 +23,7 @@ class LoggedError {
  * Responding errors are able to respond to the client's request, informing them of the error with
  * the appropriate http status code
  */
-class RespondingError extends LoggedError {
+export class RespondingError extends LoggedError {
   constructor(message, statusCode, extraFields = {}) {
     super(message);
     this.statusCode = statusCode;
