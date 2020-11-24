@@ -56,13 +56,10 @@ export const createAnswerDBFilter = async (accessPolicy, models, criteria, optio
   // of the survey
   dbConditions[RAW] = {
     sql: `
-    (
-      ARRAY[entity.country_code]::TEXT[]
-      <@
-      ARRAY(
+      entity.country_code IN (
         SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
       )
-    )`,
+    `,
     parameters: JSON.stringify(countryCodesByPermissionGroupId),
   };
 
