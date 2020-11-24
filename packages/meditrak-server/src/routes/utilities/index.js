@@ -11,6 +11,10 @@ export {
   splitStringOnComma,
   splitOnNewLinesOrCommas,
 } from './excel';
+export {
+  fetchCountryIdsByPermissionGroupId,
+  fetchCountryCodesByPermissionGroupId,
+} from './fetchCountriesByPermissionGroup';
 export { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
 export { getAdminPanelAllowedEntityIds } from './getAdminPanelAllowedEntityIds';
 export { getArrayQueryParameter } from './getArrayQueryParameter';

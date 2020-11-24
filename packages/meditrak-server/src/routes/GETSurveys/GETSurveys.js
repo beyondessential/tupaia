@@ -9,7 +9,7 @@ import {
   createSurveyDBFilter,
   createSurveyViaCountryDBFilter,
 } from './assertSurveyPermissions';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -19,9 +19,7 @@ import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '
  */
 
 export class GETSurveys extends GETHandler {
-  assertUserHasAccess() {
-    return this.assertPermissions(allowNoPermissions);
-  }
+  permissionsFilteredInternally = true;
 
   async findSingleRecord(surveyId, options) {
     const survey = await super.findSingleRecord(surveyId, options);
@@ -35,10 +33,6 @@ export class GETSurveys extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    if (this.parentRecordId) {
-      return this.findRecordsViaParent(criteria, options);
-    }
-
     const dbConditions = await createSurveyDBFilter(this.accessPolicy, this.models, criteria);
     return super.findRecords(dbConditions, options);
   }

@@ -27,6 +27,7 @@ import {
   DrawerHeader,
   PercentageChangeCell,
   AlertCreatedModal,
+  ComingSoon,
 } from '../../components';
 import {
   getSitesForWeek,
@@ -190,6 +191,7 @@ export const WeeklyReportsPanelComponent = React.memo(
           </EditableTableProvider>
         </GreySection>
         <MainSection disabled={isSaving} data-testid="site-reports">
+          <ComingSoon text="The Sentinel Case data section will allow you to explore sentinel site data." />
           <ButtonSelect
             id="active-site"
             options={sitesData}

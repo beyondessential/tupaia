@@ -168,10 +168,7 @@ export const DateRangePicker = ({
   };
 
   const handleReset = () => {
-    const resetStartDate = initialStartDate ? moment(initialStartDate) : defaultStartDate;
-    const resetEndDate = initialEndDate ? moment(initialEndDate) : defaultEndDate;
-
-    onSetDates(resetStartDate, resetEndDate);
+    onSetDates(defaultStartDate, defaultEndDate);
   };
 
   const nextDisabled = currentEndDate.isSameOrAfter(maxMomentDate);

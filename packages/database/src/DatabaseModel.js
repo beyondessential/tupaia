@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { DatabaseError } from '@tupaia/utils';
+import { DatabaseError, reduceToDictionary } from '@tupaia/utils';
 import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInBatches';
 
 export class DatabaseModel {
@@ -170,6 +170,24 @@ export class DatabaseModel {
   async findOrCreate(where, extraFieldsIfCreating = {}) {
     const record = await this.findOne(where);
     return record || this.create({ ...where, ...extraFieldsIfCreating });
+  }
+
+  async findIdByField(field, fieldValues) {
+    const containFields = await this.checkFieldNamesExist([field, 'id']);
+    if (!containFields) {
+      throw new Error(`${this.databaseType} table does not have ${field} or id column`);
+    }
+    const records = await this.find({ [field]: fieldValues });
+    return reduceToDictionary(records, field, 'id');
+  }
+
+  async findIdByCode(codes) {
+    return this.findIdByField('code', codes);
+  }
+
+  async checkFieldNamesExist(fields) {
+    const fieldNames = await this.fetchFieldNames();
+    return fields.every(field => fieldNames.includes(field));
   }
 
   async all(customQueryOptions = {}) {

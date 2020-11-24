@@ -1,0 +1,67 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
+import { hasBESAdminAccess } from '../../permissions';
+import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
+import { assertSurveyResponsePermissions } from '../GETSurveyResponses';
+
+const { RAW } = QUERY_CONJUNCTIONS;
+
+export const assertAnswerPermissions = async (accessPolicy, models, answerId) => {
+  const answer = await models.answer.findById(answerId);
+  if (!answer) {
+    throw new Error(`No answer exists with id ${answerId}`);
+  }
+
+  return assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
+};
+
+export const createAnswerDBFilter = async (accessPolicy, models, criteria, options) => {
+  const dbConditions = { ...criteria };
+  const dbOptions = { ...options };
+
+  if (hasBESAdminAccess(accessPolicy)) {
+    return { dbConditions, dbOptions };
+  }
+
+  const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
+    accessPolicy,
+    models,
+  );
+
+  // Join SQL table with survey_response, entity and survey tables
+  // Running the permissions filtering is much faster with joins than records individually
+  dbOptions.multiJoin = mergeMultiJoin(
+    [
+      {
+        joinWith: TYPES.SURVEY_RESPONSE,
+        joinCondition: [`${TYPES.SURVEY_RESPONSE}.id`, `${TYPES.ANSWER}.survey_response_id`],
+      },
+      {
+        joinWith: TYPES.SURVEY,
+        joinCondition: [`${TYPES.SURVEY}.id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+      },
+      {
+        joinWith: TYPES.ENTITY,
+        joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.SURVEY_RESPONSE}.entity_id`],
+      },
+    ],
+    dbOptions.multiJoin,
+  );
+
+  // Check the country code of the entity exists in our list for the permission group
+  // of the survey
+  dbConditions[RAW] = {
+    sql: `
+      entity.country_code IN (
+        SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
+      )
+    `,
+    parameters: JSON.stringify(countryCodesByPermissionGroupId),
+  };
+
+  return { dbConditions, dbOptions };
+};

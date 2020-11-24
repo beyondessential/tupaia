@@ -6,6 +6,7 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { groupBy, flattenDeep } from 'lodash';
 import { hasBESAdminAccess } from '../../permissions';
+import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -59,18 +60,11 @@ export const createSurveyGroupDBFilter = async (accessPolicy, models, criteria) 
     return criteria;
   }
   const dbConditions = { ...criteria };
-  const allPermissionGroupsNames = accessPolicy.getPermissionGroups();
-  const countryIdsByPermissionGroupId = {};
 
-  // Generate lists of country ids we have access to per permission group id
-  for (const permissionGroupName of allPermissionGroupsNames) {
-    const permissionGroup = await models.permissionGroup.findOne({ name: permissionGroupName });
-    if (permissionGroup) {
-      const countryNames = accessPolicy.getEntitiesAllowed(permissionGroupName);
-      const countryList = await models.country.find({ code: countryNames });
-      countryIdsByPermissionGroupId[permissionGroup.id] = countryList.map(e => e.id);
-    }
-  }
+  const countryIdsByPermissionGroupId = await fetchCountryIdsByPermissionGroupId(
+    accessPolicy,
+    models,
+  );
 
   dbConditions[RAW] = {
     sql: `

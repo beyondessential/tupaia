@@ -4,3 +4,4 @@
  */
 
 export { GETSurveyResponses } from './GETSurveyResponses';
+export * from './assertSurveyResponsePermissions';

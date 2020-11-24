@@ -4,7 +4,7 @@
  */
 
 import { GETHandler } from '../GETHandler';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertSurveyGroupsPermissions,
   createSurveyGroupDBFilter,
@@ -15,9 +15,7 @@ import {
  * - /surveyGroups/:surveyGroupId
  */
 export class GETSurveyGroups extends GETHandler {
-  async assertUserHasAccess() {
-    await this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
-  }
+  permissionsFilteredInternally = true;
 
   async findSingleRecord(surveyGroupId, options) {
     const surveyGroup = await super.findSingleRecord(surveyGroupId, options);

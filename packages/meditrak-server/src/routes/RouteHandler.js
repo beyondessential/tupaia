@@ -7,6 +7,24 @@ export class RouteHandler {
   constructor(req, res) {
     this.req = req;
     this.res = res;
+
+    const { accessPolicy, database, endpoint, models, params, query } = req;
+    this.accessPolicyInstance = accessPolicy; // use a different name so getter can add a side effect
+    this.database = database;
+    this.endpoint = endpoint;
+    this.models = models;
+    this.params = params;
+    this.query = query;
+  }
+
+  // Get the access policy, and also set the permissions checked flag if the route was marked as
+  // being filtered internally (it's the best approximation we have to whether the developer has
+  // remembered to actually implement permissions filtering)
+  get accessPolicy() {
+    if (this.permissionsFilteredInternally) {
+      this.req.flagPermissionsChecked();
+    }
+    return this.accessPolicyInstance;
   }
 
   async handle() {
@@ -19,14 +37,18 @@ export class RouteHandler {
   }
 
   /**
-   * All route handlers should provide a concrete "permissions gate" implementation, to check the
+   * Most route handlers should provide a concrete "permissions gate" implementation, to check the
    * basic level of access to the resource.
-   * There may be additional permissions filtering required in the body of the handler, but this
-   * will check whether the user should have any access to the endpoint whatsoever, and throw an
-   * error if they shouldn't get any further.
+   * Others may handle permissions filtering in the body of the handler, in which case the handler
+   * does not necessarily need to provide a "gate" (though may still choose to). Classes in this
+   * category should have this.permissionsFilteredInternally set to true
    */
   assertUserHasAccess() {
-    throw new Error(`'assertUserHasAccess' must be implemented by every GETHandler`);
+    if (!this.permissionsFilteredInternally) {
+      throw new Error(
+        `The 'assertUserHasAccess' permissions gate must be implemented by every GETHandler that does not filter permissions internally`,
+      );
+    }
   }
 
   async handleRequest() {

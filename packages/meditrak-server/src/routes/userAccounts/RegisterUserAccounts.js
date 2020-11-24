@@ -23,7 +23,7 @@ import { allowNoPermissions } from '../../permissions';
 
 export class RegisterUserAccounts extends CreateUserAccounts {
   async assertUserHasAccess() {
-    await this.assertPermissions(allowNoPermissions);
+    await this.assertPermissions(allowNoPermissions); // new registrations can be created by anyone
   }
 
   async validate() {

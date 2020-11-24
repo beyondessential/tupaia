@@ -4,7 +4,7 @@
  */
 
 import { GETHandler } from '../GETHandler';
-import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertMapOverlaysPermissions,
   createMapOverlayDBFilter,
@@ -15,9 +15,7 @@ import {
  * - /mapOverlays/:mapOverlayId
  */
 export class GETMapOverlays extends GETHandler {
-  async assertUserHasAccess() {
-    await this.assertPermissions(allowNoPermissions); // all users can request, but results will be filtered according to access
-  }
+  permissionsFilteredInternally = true;
 
   async findSingleRecord(mapOverlayId, options) {
     const mapOverlay = await super.findSingleRecord(mapOverlayId, options);
