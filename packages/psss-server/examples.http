@@ -1,9 +1,19 @@
-# Fetch Reports
-
-POST http://localhost:8040/v1/auth HTTP/1.1
+### /login
+POST http://localhost:8040/v1/login HTTP/2.0
 content-type: application/json
 
 {
     "emailAddress": "username",
     "password": "password"
 }
+
+### /logout
+POST http://localhost:8040/v1/logout HTTP/2.0
+content-type: application/json
+
+{
+    "test": "hi"
+}
+
+### /test
+GET http://localhost:8040/v1/test HTTP/2.0
