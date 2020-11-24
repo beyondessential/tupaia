@@ -42,7 +42,6 @@ export class RouteHandler {
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
-      console.log('e', error);
       this.next(error);
     }
   }
