@@ -7,8 +7,13 @@ import { Express, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { PsssRequest } from '../types';
 import { LoginHandler, LogoutHandler, TestHandler } from '../routes';
+import { RouteHandler } from '../routes/RouteHandler';
 
-const handleWith = (Handler: any) => (req: PsssRequest, res: Response, next: NextFunction) => {
+const handleWith = (Handler: typeof RouteHandler) => (
+  req: PsssRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const handler = new Handler(req, res, next);
   return handler.handle();
 };
