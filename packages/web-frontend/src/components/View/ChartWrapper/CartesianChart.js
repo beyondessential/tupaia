@@ -475,10 +475,16 @@ export class CartesianChart extends PureComponent {
       <ReferenceLine
         y={average}
         stroke={TUPAIA_ORANGE}
-        label={<ReferenceLabel value={formatDataValue(average, valueType)} fill={TUPAIA_ORANGE} />}
+        label={<ReferenceLabel value={`Average ${formatDataValue(average, valueType)}`} fill={TUPAIA_ORANGE} />}
         isAnimationActive={isEnlarged && !isExporting}
       />
     );
+  };
+
+  renderReferenceLineLabel = (referenceLineLabel) => {
+    const { isExporting } = this.props;
+    const labelToRender = <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />;
+    if (typeof referenceLineLabel != 'undefined') return labelToRender;
   };
 
   renderReferenceLineForValues = () => {
@@ -487,16 +493,18 @@ export class CartesianChart extends PureComponent {
 
     const referenceLines = Object.entries(chartConfig)
       .filter(([, { referenceValue }]) => referenceValue)
-      .map(([dataKey, { referenceValue, yAxisOrientation }]) => ({
+      .map(([dataKey, { referenceValue, yAxisOrientation, referenceLabel }]) => ({
         key: `reference_line_${dataKey}`, // Use prefix to distinguish from curve key
         y: referenceValue,
         yAxisId: orientationToYAxisId(yAxisOrientation),
+        referenceLineLabel: referenceLabel,
       }));
 
     return referenceLines.map(referenceLine => (
       <ReferenceLine
         stroke={isExporting ? '#000000' : '#ffffff'}
         strokeDasharray="3 3"
+        label={this.renderReferenceLineLabel(referenceLine.referenceLineLabel)}
         {...referenceLine}
       />
     ));
@@ -526,7 +534,7 @@ export class CartesianChart extends PureComponent {
       return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
     });
 
-    return sortedChartConfig.map(([dataKey, { chartType = defaultChartType }]) => {
+    return sortedChartConfig.filter(([, { hideFromLegend }]) => !hideFromLegend).map(([dataKey, { chartType = defaultChartType }]) => {
       const renderMethod = this.chartTypeToRenderMethod[chartType];
       const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
       const yAxisId = orientationToYAxisId(yAxisOrientation);

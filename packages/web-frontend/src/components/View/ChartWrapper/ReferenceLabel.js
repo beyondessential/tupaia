@@ -12,11 +12,13 @@ function ReferenceLabel(props) {
   const x = viewBox.width / 2 + 30;
   const y = viewBox.y + 15;
 
+  if(typeof value != 'undefined' && value !=null) {
   return (
     <text x={x} y={y} fill={fill} fontSize={fontSize || 14} fontWeight="bolder">
-      {`Average ${value}`}
+      {`${value}`}
     </text>
   );
+  };
 }
 
 export default ReferenceLabel;
