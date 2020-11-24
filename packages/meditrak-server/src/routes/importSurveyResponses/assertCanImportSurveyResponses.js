@@ -57,3 +57,29 @@ export const assertCanImportSurveyResponses = async (
 
   return true;
 };
+
+export const assertSurveyResponseBatchPermissions = async (
+  accessPolicy,
+  models,
+  surveyResponses,
+) => {
+  // Assumes the data has already been validated
+  const entitiesGroupedBySurveyName = {};
+
+  for (const response of surveyResponses) {
+    // There are three valid ways to refer to the entity in a batch change
+    const entityCode =
+      response.entity_code ||
+      (response.entity_id
+        ? (await models.entity.findById(response.entity_id)).code
+        : (await models.facility.findById(response.clinic_id)).code);
+    const surveyName = (await models.survey.findById(response.survey_id)).name;
+
+    if (!entitiesGroupedBySurveyName[surveyName]) {
+      entitiesGroupedBySurveyName[surveyName] = [];
+    }
+    entitiesGroupedBySurveyName[surveyName].push(entityCode);
+  }
+
+  return assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyName);
+};
