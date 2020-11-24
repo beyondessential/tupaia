@@ -15,6 +15,8 @@ import {
  * - /mapOverlays/:mapOverlayId
  */
 export class GETMapOverlays extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async findSingleRecord(mapOverlayId, options) {
     const mapOverlay = await super.findSingleRecord(mapOverlayId, options);
 

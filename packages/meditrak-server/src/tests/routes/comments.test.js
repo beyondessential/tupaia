@@ -8,7 +8,8 @@ import { generateTestId } from '@tupaia/database';
 import { TestableApp } from '../TestableApp';
 import { createAlert, createComment, resetTestData } from '../testUtilities';
 
-describe('Alert Comments CRUD', () => {
+// @todo update to point to survey responses as part of https://github.com/beyondessential/tupaia-backlog/issues/1504
+xdescribe('Alert Comments CRUD', () => {
   const app = new TestableApp();
   const { models } = app;
 

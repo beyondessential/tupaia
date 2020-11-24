@@ -36,9 +36,8 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
   let combinedErrorMessages = `One of the following conditions need to be satisfied:\n`;
 
-  for (let i = 0; i < assertions.length; i++) {
+  for (const assertion of assertions) {
     try {
-      const assertion = assertions[i];
       await assertion(accessPolicy);
       return true;
     } catch (e) {

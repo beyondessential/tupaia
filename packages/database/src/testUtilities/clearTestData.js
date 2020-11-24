@@ -67,7 +67,7 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
     survey_screen_component: [`question_id ${COMPARISON}`],
-    survey: [`code LIKE 'test%'`, `name ${COMPARISON}`], //Name comparison is for clearing test data when importing new surveys using excel files,
+    survey: [`code LIKE 'test%'`, `name ${COMPARISON}`], // name comparison is for clearing test data when importing new surveys using excel files
     user_entity_permission: [`permission_group_id ${COMPARISON}`],
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
