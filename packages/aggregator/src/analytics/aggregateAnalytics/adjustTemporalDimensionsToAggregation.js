@@ -24,8 +24,7 @@ const getDateRangeExtremes = dateRanges => {
 };
 
 /**
- * @returns {DateRange | undefined} Returns `undefined` if there is no need for
- * adjustment
+ * @returns {DateRange | undefined} Returns `undefined` if there is no need for adjustment
  */
 const adjustDateRangeToAggregation = (dateRange, aggregation) => {
   const { type: aggregationType, config } = aggregation;
