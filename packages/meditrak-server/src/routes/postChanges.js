@@ -43,7 +43,7 @@ export async function postChanges(req, res) {
   // Check permissions for survey responses
   const surveyResponsePayloads = changes
     .filter(c => c.action === SUBMIT_SURVEY_RESPONSE)
-    .map(c => c.payload);
+    .map(c => c.payload.survey_response || c.payload);
   const surveyResponsePermissionsChecker = async accessPolicy => {
     await assertSurveyResponseBatchPermissions(accessPolicy, models, surveyResponsePayloads);
   };
