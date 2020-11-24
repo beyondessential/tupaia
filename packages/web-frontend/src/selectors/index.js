@@ -46,7 +46,8 @@ export {
   selectCurrentDashboardGroupCode,
   selectCurrentExpandedViewContent,
   selectCurrentExpandedViewId,
-  selectIsEnlargedDialogVisible, selectShouldUseDashboardData,
+  selectIsEnlargedDialogVisible,
+  selectShouldUseDashboardData,
 } from './dashboardSelectors';
 
 export {

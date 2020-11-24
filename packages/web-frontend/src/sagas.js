@@ -6,7 +6,6 @@
  */
 
 import queryString from 'query-string';
-import moment from 'moment';
 import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
 import request from './utils/request';
 import {
@@ -113,9 +112,11 @@ import { setProject, setRequestingAccess } from './projects/actions';
 import {
   selectCurrentInfoViewKey,
   selectCurrentMeasureId,
-  selectCurrentOrgUnitCode, selectShouldUseDashboardData,
+  selectCurrentOrgUnitCode,
+  selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
-  selectCurrentProjectCode, selectCurrentExpandedViewContent,
+  selectCurrentProjectCode,
+  selectCurrentExpandedViewContent,
   selectDefaultMeasureId,
   selectIsMeasureInHierarchy,
   selectIsProject,

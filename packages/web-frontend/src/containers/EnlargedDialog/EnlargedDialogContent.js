@@ -168,12 +168,6 @@ export class EnlargedDialogContent extends PureComponent {
       onUnDrillDown,
       isDrilledDown,
     } = this.props;
-    // onCloseOverlay = { onBack };
-    // toolbarStyle={drillDownStyles.leftCornerToolbar}
-    // isDrilledDown
-    // viewContent={viewContent}
-    // onDrillDown={onDrillDown}
-    // isVisible
 
     if (isExporting) {
       return null;
@@ -376,9 +370,9 @@ EnlargedDialogContent.propTypes = {
 };
 
 EnlargedDialogContent.defaultProps = {
-  onDrillDown: () => { },
-  onUnDrillDown: () => { },
-  onSetDateRange: () => { },
+  onDrillDown: () => {},
+  onUnDrillDown: () => {},
+  onSetDateRange: () => {},
   isLoading: false,
   errorMessage: null,
   isExporting: false,

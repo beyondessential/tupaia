@@ -113,7 +113,7 @@ DashboardItem.defaultProps = {
   isSidePanelExpanded: false,
   organisationUnitName: '',
   organisationUnit: null,
-  onEnlarge: () => { },
+  onEnlarge: () => {},
 };
 
 const mapStateToProps = (state, { infoViewKey }) => {
