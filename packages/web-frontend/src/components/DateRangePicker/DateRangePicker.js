@@ -15,8 +15,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiIconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import { Error } from '../Error';
-import { DatePickerDialog } from './DatePickerDialog';
+import DatePickerDialog from './DatePickerDialog';
 import {
+  DEFAULT_MIN_DATE,
   momentToDateString,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
@@ -25,7 +26,6 @@ import {
   roundStartEndDates,
   constrainDate,
 } from '../../utils/periodGranularities';
-import { DEFAULT_MIN_DATE } from './constants';
 
 const FlexRow = styled.div`
   display: flex;
@@ -114,8 +114,8 @@ export const DateRangePicker = ({
   align,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [initialStartDate, setInitialStartDate] = useState(startDate);
-  const [initialEndDate, setInitialEndDate] = useState(endDate);
+  const [initialStartDate] = useState(startDate);
+  const [initialEndDate] = useState(endDate);
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
   const { momentShorthand } = GRANULARITY_CONFIG[granularity];
@@ -168,10 +168,7 @@ export const DateRangePicker = ({
   };
 
   const handleReset = () => {
-    const resetStartDate = initialStartDate ? moment(initialStartDate) : defaultStartDate;
-    const resetEndDate = initialEndDate ? moment(initialEndDate) : defaultEndDate;
-
-    onSetDates(resetStartDate, resetEndDate);
+    onSetDates(defaultStartDate, defaultEndDate);
   };
 
   const nextDisabled = currentEndDate.isSameOrAfter(maxMomentDate);
@@ -231,8 +228,8 @@ export const DateRangePicker = ({
           granularity={granularity}
           startDate={currentStartDate}
           endDate={currentEndDate}
-          min={minMomentDate}
-          max={maxMomentDate}
+          minMomentDate={minMomentDate}
+          maxMomentDate={maxMomentDate}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onSetNewDates={onSetDates}

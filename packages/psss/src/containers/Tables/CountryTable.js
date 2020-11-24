@@ -90,7 +90,7 @@ const countryColumns = [
   {
     title: 'Date ',
     key: 'weekNumber',
-    width: '190px',
+    width: '190px', // must be same width as SiteSummaryTable name column to align
     align: 'left',
     CellComponent: NameCell,
   },

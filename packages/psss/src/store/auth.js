@@ -15,13 +15,13 @@ const LOGOUT = 'LOGOUT';
 export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
-export const login = (emailAddress, password) => async (dispatch, getState, { api }) => {
+export const login = ({ email, password }) => async (dispatch, getState, { api }) => {
   const deviceName = window.navigator.userAgent;
 
   dispatch({ type: LOGIN_START });
   try {
     const userDetails = await api.reauthenticate({
-      emailAddress,
+      emailAddress: email,
       password,
       deviceName,
     });
@@ -113,7 +113,10 @@ const actionHandlers = {
     status: 'error',
     error: action.error,
   }),
-  [LOGOUT]: () => defaultState,
+  [LOGOUT]: (action, currentState) => ({
+    ...defaultState,
+    user: currentState.user,
+  }),
   [PROFILE_SUCCESS]: (user, currentState) => ({
     user: {
       ...currentState.user,

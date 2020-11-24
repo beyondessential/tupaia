@@ -10,7 +10,9 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SumBuilder;
 
   async fetchResultsAndPeriod() {
-    const { dataElementCodes } = this.config;
+    const { dataElementCode } = this.query;
+    const dataElementCodes = this.config.dataElementCodes || [dataElementCode];
+
     const { period, results } = await this.fetchAnalytics(dataElementCodes, {
       organisationUnitCode: this.entity.code,
     });
