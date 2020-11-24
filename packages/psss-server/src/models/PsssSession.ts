@@ -7,12 +7,6 @@ import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 
 export class PsssSessionType extends DatabaseType {
-  id!: string;
-  email!: string;
-  access_policy!: string;
-  access_token!: string;
-  refresh_token!: string;
-
   static databaseType = 'psss_session';
 
   get accessPolicy() {
