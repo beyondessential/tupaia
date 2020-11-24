@@ -166,7 +166,7 @@ export const getConditionResult = (state, conditionQuestionId) => {
     condition: { conditions },
   } = config;
   const expressionParser = new BooleanExpressionParser();
-  const checkConditionMet = ({ formula, defaultValues }) => {
+  const checkConditionMet = ({ formula, defaultValues = {} }) => {
     const values = {};
     const variables = expressionParser.getVariables(formula);
 
