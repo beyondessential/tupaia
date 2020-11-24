@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { runArithmetic } from '@beyondessential/arithmetic';
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
+import { ExpressionParser } from '@tupaia/expression-parser';
 import { getUniqueEntries } from '@tupaia/utils';
 import {
   Analytic,
@@ -40,14 +40,16 @@ const fetchAnalyticClusters = async (
   return clusters.map(replaceAnalyticValuesWithDefaults).filter(checkClusterIncludesAllElements);
 };
 
-const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) =>
-  analyticClusters
-    .map(({ organisationUnit, period, dataValues }) => ({
-      organisationUnit,
-      period,
-      value: runArithmetic(formula, dataValues),
-    }))
+const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) => {
+  const parser = new ExpressionParser();
+
+  return analyticClusters
+    .map(({ organisationUnit, period, dataValues }) => {
+      parser.setScope(dataValues);
+      return { organisationUnit, period, value: parser.evaluate(formula) };
+    })
     .filter(({ value }) => isFinite(value));
+};
 
 const fetchAnalyticsAndElements = async (
   api: IndicatorApiInterface,

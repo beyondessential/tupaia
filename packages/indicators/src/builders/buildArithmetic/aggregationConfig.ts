@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getVariables } from '@beyondessential/arithmetic';
-
+import { ExpressionParser } from '@tupaia/expression-parser';
 import { toArray } from '@tupaia/utils';
 import { ArithmeticConfig, AggregationDescriptor, AggregationSpecs } from './types';
 
@@ -81,7 +80,7 @@ const validateAggregationDictionary = (
   const { formula, parameters = [] } = config;
 
   // Validate keys
-  getVariables(formula).forEach(code => {
+  new ExpressionParser().getVariables(formula).forEach(code => {
     if (!(code in aggregation) && !isParameterCode(parameters, code)) {
       throw new Error(`'${code}' is referenced in the formula but has no aggregation defined`);
     }
@@ -129,8 +128,10 @@ const getAggregationDictionary = (config: ArithmeticConfig): Record<string, Aggr
     return aggregation as Record<string, AggregationSpecs>;
   }
 
-  const elementCodes = getVariables(formula).filter(code => !isParameterCode(parameters, code));
-  return Object.fromEntries(elementCodes.map(code => [code, aggregation]));
+  const elementCodes = new ExpressionParser()
+    .getVariables(formula)
+    .filter(code => !isParameterCode(parameters, code));
+  return Object.fromEntries(elementCodes.map(code => [code, aggregation as AggregationSpecs]));
 };
 
 export const getAggregationsByCode = (config: ArithmeticConfig) => {
