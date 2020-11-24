@@ -4,3 +4,4 @@
  */
 
 export { LoginRouteHandler } from './LoginRouteHandler';
+export { TestHandler } from './TestHandler';

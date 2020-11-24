@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { RouteHandler } from './RouteHandler';
+import { UnauthenticatedRouteHandler } from './UnauthenticatedRouteHandler';
 
 // @todo remove and replace with connection to meditrak-server
 const response = {
@@ -27,8 +27,8 @@ const response = {
   },
 };
 
-export class LoginRouteHandler extends RouteHandler {
-  async handleRequest(): Promise<void> {
+export class LoginRouteHandler extends UnauthenticatedRouteHandler {
+  async buildResponse() {
     // @todo fetch from meditrak-server
     const { accessToken, refreshToken, user } = response;
     const { accessPolicy, email } = user;
@@ -43,6 +43,6 @@ export class LoginRouteHandler extends RouteHandler {
     // set sessionId cookie
     this.req.sessionId = session.id;
 
-    this.respond({ accessPolicy }, 200);
+    return { accessPolicy };
   }
 }

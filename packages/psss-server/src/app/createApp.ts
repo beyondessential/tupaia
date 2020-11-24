@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import express, { Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 
 import { addRoutesToApp } from './addRoutesToApp';
-import { PsssRequest } from '../types';
+import { sessionCookie } from './sessionCookie';
+import { attachSessionModel } from './attachSessionModel';
 import { PsssSessionModel } from '../models';
 
 /**
@@ -24,14 +25,8 @@ export function createApp(sessionModel: PsssSessionModel) {
   app.use(cors());
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(errorHandler());
-
-  /**
-   * Attach psss session model to the request
-   */
-  app.use((req: PsssRequest, res: Response, next: NextFunction) => {
-    req.sessionModel = sessionModel;
-    next();
-  });
+  app.use(sessionCookie());
+  app.use(attachSessionModel(sessionModel));
 
   /**
    * Add all routes to the app

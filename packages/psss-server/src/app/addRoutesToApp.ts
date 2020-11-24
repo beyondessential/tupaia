@@ -5,25 +5,35 @@
 
 import { Express, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
-import { useAuthMiddleware } from '../auth';
 import { PsssRequest } from '../types';
-import { LoginRouteHandler } from '../routes';
+import { LoginRouteHandler, TestHandler } from '../routes';
 
 const handleWith = (Handler: any) => (req: PsssRequest, res: Response, next: NextFunction) => {
   const handler = new Handler(req, res, next);
   return handler.handle();
 };
 
-const handleError = (err: RespondingError | Error, req: PsssRequest, res: Response) => {
+const handleError = (
+  err: RespondingError | Error,
+  req: PsssRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  // use default if response is already being sent and there are connection problems
+  if (res && res.headersSent) {
+    next(err);
+    return;
+  }
+
   const error = 'respond' in err ? err : new InternalServerError(err);
   error.respond(res);
 };
 
 export function addRoutesToApp(app: Express) {
   /**
-   * Attach authentication to each endpoint
+   * GET routes
    */
-  useAuthMiddleware(app);
+  app.get('/v1/test', handleWith(TestHandler));
 
   /**
    * POST routes

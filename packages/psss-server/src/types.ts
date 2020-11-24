@@ -6,9 +6,14 @@
 import { Request } from 'express';
 import { PsssSessionModel, PsssSessionType } from './models';
 
+export interface SessionCookie {
+  id: string;
+  email: string;
+}
+
 export interface PsssRequest extends Request {
   sessionModel: PsssSessionModel;
-  sessionId?: string;
+  sessionCookie?: SessionCookie;
   session?: PsssSessionType;
 }
 
