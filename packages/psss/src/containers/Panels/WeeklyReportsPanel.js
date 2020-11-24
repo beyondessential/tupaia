@@ -66,6 +66,11 @@ const columns = [
 ];
 
 const MainSection = styled.section`
+  // temp styling
+  margin-top: 50px;
+  margin-bottom: 20px;
+  // ---
+
   position: relative;
   padding: 1.8rem 1.25rem;
 
@@ -224,6 +229,7 @@ export const WeeklyReportsPanelComponent = React.memo(
               <SiteReportTable
                 tableStatus={sitesTableStatus}
                 setTableStatus={setSitesTableStatus}
+                weekNumber={weekNumber}
               />
             </EditableTableProvider>
           </Card>

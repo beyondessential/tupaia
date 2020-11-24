@@ -4,8 +4,9 @@
  */
 import React, { useContext, useCallback } from 'react';
 import styled from 'styled-components';
+import { queryCache, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import {
   EditableTableContext,
@@ -15,7 +16,7 @@ import {
   Button,
 } from '@tupaia/ui-components';
 import { DottedTableBody, GreyTableHeader } from '../../components';
-import { updateWeeklyReportsData } from '../../store';
+import { FakeAPI } from '../../api';
 
 const HeadingRow = styled.div`
   display: flex;
@@ -54,8 +55,9 @@ const TABLE_STATUSES = {
   LOADING: 'loading',
 };
 
-export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, setTableStatus }) => {
+export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNumber }) => {
   const { fields } = useContext(EditableTableContext);
+  const { countryCode } = useParams();
 
   const handleEdit = useCallback(() => {
     setTableStatus(TABLE_STATUSES.EDITABLE);
@@ -65,11 +67,16 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
     setTableStatus(TABLE_STATUSES.STATIC);
   }, [setTableStatus]);
 
-  const handleSubmit = async () => {
-    setTableStatus(TABLE_STATUSES.SAVING);
-    await onSubmit(fields);
-    setTableStatus(TABLE_STATUSES.STATIC);
-  };
+  const [saveReport] = useMutation(
+    async () => {
+      setTableStatus(TABLE_STATUSES.SAVING);
+      await FakeAPI.post(fields);
+      setTableStatus(TABLE_STATUSES.STATIC);
+    },
+    {
+      onSuccess: () => queryCache.invalidateQueries('country-weeks', { countryCode, weekNumber }),
+    },
+  );
 
   return (
     <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
@@ -85,14 +92,14 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
           <Button variant="outlined" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>Save</Button>
+          <Button onClick={saveReport}>Save</Button>
         </ActionsRow>
       )}
     </LoadingContainer>
   );
 });
 
-SiteReportTableComponent.propTypes = {
+SiteReportTable.propTypes = {
   tableStatus: PropTypes.PropTypes.oneOf([
     TABLE_STATUSES.STATIC,
     TABLE_STATUSES.EDITABLE,
@@ -100,11 +107,5 @@ SiteReportTableComponent.propTypes = {
     TABLE_STATUSES.SAVING,
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  weekNumber: PropTypes.number.isRequired,
 };
-
-const mapDispatchToProps = dispatch => ({
-  onSubmit: data => dispatch(updateWeeklyReportsData(data)),
-});
-
-export const SiteReportTable = connect(null, mapDispatchToProps)(SiteReportTableComponent);
