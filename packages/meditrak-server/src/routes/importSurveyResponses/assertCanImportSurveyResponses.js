@@ -35,7 +35,7 @@ export const assertCanImportSurveyResponses = async (
 
     for (const surveyResponseCountry of surveyResponseCountries) {
       // Check if the country of the submitted survey response(s) matches with the survey countries.
-      if (!survey.country_ids.includes(surveyResponseCountry.id)) {
+      if (survey.country_ids?.length && !survey.country_ids.includes(surveyResponseCountry.id)) {
         const surveyCountries = await models.country.findManyById(survey.country_ids);
         const entities = entitiesByCountryCode[surveyResponseCountry.code];
         const entityCodesString = entities.map(e => e.code).join(', ');
@@ -46,7 +46,7 @@ export const assertCanImportSurveyResponses = async (
       }
 
       // Now check if users have permission group access to the survey response's country
-      const permissionGroup = idToPermissionGroupName[surveyResponseCountry.permission_group_id];
+      const permissionGroup = idToPermissionGroupName[survey.permission_group_id];
       if (!accessPolicy.allows(surveyResponseCountry.code, permissionGroup)) {
         throw new Error(
           `Need ${permissionGroup} access to ${surveyResponseCountry.name} to import the survey response(s)`,

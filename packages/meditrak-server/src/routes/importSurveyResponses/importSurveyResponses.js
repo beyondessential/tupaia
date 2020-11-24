@@ -320,12 +320,16 @@ function getCellContents(sheet, columnIndex, rowIndex) {
 
 async function getSurveyFromSheet(models, sheet) {
   const firstSurveyResponseId = getColumnHeader(sheet, INFO_COLUMN_HEADERS.length);
+  const errorMessage =
+    'Each tab of the import file must have at least one previously submitted survey as the first entry';
   if (!firstSurveyResponseId) {
-    throw new Error(
-      'Each tab of the import file must have at least one previously submitted survey as the first entry',
-    );
+    throw new ImportValidationError(errorMessage);
   }
 
   const firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
+  if (!firstSurveyResponse) {
+    throw new ImportValidationError(errorMessage);
+  }
+
   return models.survey.findById(firstSurveyResponse.survey_id);
 }

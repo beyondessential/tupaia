@@ -37,14 +37,14 @@ const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
 
 describe('importEntities(): POST import/entities', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   before(async () => {
     await findOrCreateDummyRecord(models.entity, {
       code: 'World',
       name: 'World',
       type: 'world',
-      country_code: 'wo',
+      country_code: 'Wo',
     });
 
     await addBaselineTestCountries(models);
@@ -54,7 +54,7 @@ describe('importEntities(): POST import/entities', () => {
       app.post('import/entities').attach('entities', `${TEST_DATA_FOLDER}/entities/${filename}`);
 
     before(() => {
-      //Only test permissions part so stub these methods to avoid them being called
+      // Only test permissions part so stub these methods to avoid them being called
       sinon.stub(UpdateCountryEntities, 'updateCountryEntities').resolves({ code: 'DL' });
       sinon.stub(PopulateCoordinatesForCountry, 'populateCoordinatesForCountry');
     });
@@ -104,7 +104,7 @@ describe('importEntities(): POST import/entities', () => {
     });
 
     it('Insufficient permissions: Should return an error when importing entities if users do not have Tupaia Admin Panel access to any country of the entities', async () => {
-      await prepareStubAndAuthenticate(app); //DEFAULT_POLICY does not have Tupaia Admin Panel access to Laos
+      await prepareStubAndAuthenticate(app); // DEFAULT_POLICY does not have Tupaia Admin Panel access to Laos
       const response = await importFile(
         'insufficientPermissionsImportEntitiesMultipleCountries.xlsx',
       );
