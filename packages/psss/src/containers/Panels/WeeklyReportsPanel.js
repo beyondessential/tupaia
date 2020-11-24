@@ -202,6 +202,7 @@ export const WeeklyReportsPanelComponent = React.memo(
               setTableStatus={setCountryTableStatus}
               sitesReported={countryData.sitesReported}
               totalSites={countryData.totalSites}
+              weekNumber={weekNumber}
             />
           </EditableTableProvider>
         </GreySection>
@@ -261,9 +262,13 @@ WeeklyReportsPanelComponent.propTypes = {
   countryData: PropTypes.object.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  weekNumber: PropTypes.number.isRequired,
+  weekNumber: PropTypes.number,
   alerts: PropTypes.array.isRequired,
   unVerifiedSyndromes: PropTypes.array.isRequired,
+};
+
+WeeklyReportsPanelComponent.defaultProps = {
+  weekNumber: null,
 };
 
 const mapStateToProps = state => ({

@@ -12,9 +12,9 @@ export class FakeAPI {
     });
   }
 
-  async post() {
+  async post(data) {
+    console.log('posting data...', data);
     await this.sleep(2000);
-
     return {
       status: 'success',
     };

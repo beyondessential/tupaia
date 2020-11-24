@@ -4,7 +4,8 @@
  */
 import React, { useContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { queryCache, useMutation } from 'react-query';
 import Typography from '@material-ui/core/Typography';
 import InfoIcon from '@material-ui/icons/Info';
 import MuiLink from '@material-ui/core/Link';
@@ -22,7 +23,7 @@ import {
 } from '@tupaia/ui-components';
 import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
-import { updateWeeklyReportsData } from '../../store';
+import { FakeAPI } from '../../api';
 
 const VerifiableBody = props => {
   const { tableStatus } = useContext(EditableTableContext);
@@ -73,14 +74,29 @@ const TABLE_STATUSES = {
   STATIC: 'static',
   EDITABLE: 'editable',
   SAVING: 'saving',
-  LOADING: 'loading',
 };
 
-export const CountryReportTableComponent = React.memo(
-  ({ tableStatus, setTableStatus, onSubmit, sitesReported, totalSites }) => {
+export const CountryReportTable = React.memo(
+  ({ tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
     const { fields } = useContext(EditableTableContext);
     const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
     const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
+    const { countryCode } = useParams();
+
+    const [saveReport] = useMutation(
+      async () => {
+        setTableStatus(TABLE_STATUSES.SAVING);
+        await FakeAPI.post({
+          ...fields,
+          sitesReported: parseInt(sitesReportedValue, 10),
+          totalSites: parseInt(totalSitesValue, 10),
+        });
+        setTableStatus(TABLE_STATUSES.STATIC);
+      },
+      {
+        onSuccess: () => queryCache.invalidateQueries('country-weeks', { countryCode, weekNumber }),
+      },
+    );
 
     const handleEdit = useCallback(() => {
       setTableStatus(TABLE_STATUSES.EDITABLE);
@@ -89,16 +105,6 @@ export const CountryReportTableComponent = React.memo(
     const handleCancel = useCallback(() => {
       setTableStatus(TABLE_STATUSES.STATIC);
     }, [setTableStatus]);
-
-    const handleSubmit = async () => {
-      setTableStatus(TABLE_STATUSES.SAVING);
-      await onSubmit({
-        ...fields,
-        sitesReported: parseInt(sitesReportedValue, 10),
-        totalSites: parseInt(totalSitesValue, 10),
-      });
-      setTableStatus(TABLE_STATUSES.STATIC);
-    };
 
     return (
       <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
@@ -151,7 +157,7 @@ export const CountryReportTableComponent = React.memo(
               <Button variant="outlined" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button onClick={handleSubmit}>Save</Button>
+              <Button onClick={saveReport}>Save</Button>
             </div>
           </FlexSpaceBetween>
         )}
@@ -160,21 +166,14 @@ export const CountryReportTableComponent = React.memo(
   },
 );
 
-CountryReportTableComponent.propTypes = {
+CountryReportTable.propTypes = {
   tableStatus: PropTypes.PropTypes.oneOf([
     TABLE_STATUSES.STATIC,
     TABLE_STATUSES.EDITABLE,
-    TABLE_STATUSES.LOADING,
     TABLE_STATUSES.SAVING,
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
   sitesReported: PropTypes.number.isRequired,
+  weekNumber: PropTypes.number.isRequired,
   totalSites: PropTypes.number.isRequired,
 };
-
-const mapDispatchToProps = dispatch => ({
-  onSubmit: data => dispatch(updateWeeklyReportsData(data)),
-});
-
-export const CountryReportTable = connect(null, mapDispatchToProps)(CountryReportTableComponent);
