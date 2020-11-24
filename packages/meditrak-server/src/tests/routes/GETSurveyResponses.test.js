@@ -8,9 +8,9 @@ import {
   buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
-  generateTestId,
 } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
+import { resetTestData } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../TestableApp';
 import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
@@ -37,6 +37,8 @@ describe('Permissions checker for GETSurveyResponses', async () => {
   let filterString;
 
   before(async () => {
+    await resetTestData();
+
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -67,14 +69,12 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       },
     ]);
 
-    // It's much easier to keep track of the different ids this way
-    // rather than trying to extract the correct ids from the models array
-    laosAdminResponseId = generateTestId();
-    laosDonorResponseId = generateTestId();
-    vanuatuAdminResponseId = generateTestId();
-    vanuatuDonorResponseId = generateTestId();
-
-    await buildAndInsertSurveyResponses(models, [
+    const [
+      vanuatuAdminBuild,
+      laosAdminBuild,
+      vanuatuDonorBuild,
+      laosDonorBuild,
+    ] = await buildAndInsertSurveyResponses(models, [
       {
         id: vanuatuAdminResponseId,
         surveyCode: 'TEST_SURVEY_1',
@@ -104,6 +104,11 @@ describe('Permissions checker for GETSurveyResponses', async () => {
         answers: [],
       },
     ]);
+
+    laosAdminResponseId = laosAdminBuild.surveyResponse.id;
+    laosDonorResponseId = laosDonorBuild.surveyResponse.id;
+    vanuatuAdminResponseId = vanuatuAdminBuild.surveyResponse.id;
+    vanuatuDonorResponseId = vanuatuDonorBuild.surveyResponse.id;
 
     const surveyResponseIds = [
       laosAdminResponseId,
