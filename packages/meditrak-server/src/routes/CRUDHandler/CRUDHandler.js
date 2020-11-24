@@ -11,21 +11,15 @@ import { extractResourceFromEndpoint, extractChildResourceFromEndpoint } from '.
 export class CRUDHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    const { database, query, endpoint, models, accessPolicy, params } = req;
-    this.database = database;
-    this.query = query;
-    this.models = models;
-    this.accessPolicy = accessPolicy;
-    this.parentResource = params.parentResource
-      ? params.parentResource
-      : extractResourceFromEndpoint(endpoint);
+    const { recordId, parentResource, parentRecordId } = this.params;
+    this.parentResource = parentResource || extractResourceFromEndpoint(this.endpoint);
     this.parentRecordType = resourceToRecordType(this.parentResource);
-    this.parentRecordId = params.parentRecordId;
-    this.resource = this.parentRecordId
-      ? extractChildResourceFromEndpoint(endpoint)
-      : extractResourceFromEndpoint(endpoint);
+    this.parentRecordId = parentRecordId;
+    this.resource = parentRecordId
+      ? extractChildResourceFromEndpoint(this.endpoint)
+      : extractResourceFromEndpoint(this.endpoint);
     this.recordType = resourceToRecordType(this.resource);
-    this.recordId = params.recordId; // undefined for multi record requests
+    this.recordId = recordId; // undefined for multi record requests
     this.resourceModel = this.models[singularise(this.resource)];
   }
 }

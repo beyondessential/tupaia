@@ -15,6 +15,8 @@ import {
  * - /dashboardReports/:dashboardReportId
  */
 export class GETDashboardReports extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async findSingleRecord(dashboardReportId, options) {
     const dashboardReport = await super.findSingleRecord(dashboardReportId, options);
 

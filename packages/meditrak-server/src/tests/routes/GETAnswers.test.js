@@ -8,9 +8,9 @@ import {
   buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
-  generateTestId,
 } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
+import { resetTestData } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../TestableApp';
 import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
@@ -37,6 +37,8 @@ describe('Permissions checker for GETAnswers', async () => {
   let filterString;
 
   before(async () => {
+    await resetTestData();
+
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -65,21 +67,14 @@ describe('Permissions checker for GETAnswers', async () => {
       },
     ]);
 
-    // It's much easier to keep track of the different ids this way
-    // rather than trying to extract the correct ids from the models array
-    vanuatuAdminResponseId = generateTestId();
-    vanuatuDonorResponseId = generateTestId();
-
-    const surveyResponses = await buildAndInsertSurveyResponses(models, [
+    const [vanuatuAdminBuild, vanuatuDonorBuild] = await buildAndInsertSurveyResponses(models, [
       {
-        id: vanuatuAdminResponseId,
         surveyCode: 'TEST_SURVEY_1',
         entityCode: vanuatuEntity.code,
         submission_time: '2020-01-31T09:00:00Z',
         answers: { TEST_SURVEY_11: 'Scary' },
       },
       {
-        id: vanuatuDonorResponseId,
         surveyCode: 'TEST_SURVEY_2',
         entityCode: vanuatuEntity.code,
         submission_time: '2020-01-31T09:00:00Z',
@@ -87,15 +82,12 @@ describe('Permissions checker for GETAnswers', async () => {
       },
     ]);
 
-    for (const { surveyResponse, answers } of surveyResponses) {
-      if (surveyResponse.id === vanuatuAdminResponseId) {
-        vanuatuAdminAnswers = answers.map(a => a.id);
-      } else {
-        vanuatuDonorAnswers = answers.map(a => a.id);
-      }
-    }
+    vanuatuAdminResponseId = vanuatuAdminBuild.surveyResponse.id;
+    vanuatuDonorResponseId = vanuatuDonorBuild.surveyResponse.id;
 
-    const answerIds = vanuatuAdminAnswers.concat(vanuatuDonorAnswers);
+    vanuatuAdminAnswers = vanuatuAdminBuild.answers.map(a => a.id);
+    vanuatuDonorAnswers = vanuatuDonorBuild.answers.map(a => a.id);
+    const answerIds = [...vanuatuAdminAnswers, ...vanuatuDonorAnswers];
     filterString = `filter={"id":{"comparator":"in","comparisonValue":["${answerIds.join(
       '","',
     )}"]}}`;
@@ -105,24 +97,24 @@ describe('Permissions checker for GETAnswers', async () => {
     Authenticator.prototype.getAccessPolicyForUser.restore();
   });
 
-  describe('GET /answer/:id', async () => {
+  describe('GET /answers/:id', async () => {
     it("Sufficient permissions: Return a requested answer if we have permission for the survey in the response's country", async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: result } = await app.get(`answer/${vanuatuAdminAnswers[0]}`);
+      const { body: result } = await app.get(`answers/${vanuatuAdminAnswers[0]}`);
 
       expect(result.id).to.equal(vanuatuAdminAnswers[0]);
     });
 
     it('Sufficient permissions: Return a requested answer if we have BES admin access anywhere', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
-      const { body: result } = await app.get(`answer/${vanuatuDonorAnswers[0]}`);
+      const { body: result } = await app.get(`answers/${vanuatuDonorAnswers[0]}`);
 
       expect(result.id).to.equal(vanuatuDonorAnswers[0]);
     });
 
     it("Insufficient permissions: Throw an error if we do not have permission for the survey in the response's country for this answer", async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: result } = await app.get(`answer/${vanuatuDonorAnswers[0]}`);
+      const { body: result } = await app.get(`answers/${vanuatuDonorAnswers[0]}`);
 
       expect(result).to.have.keys('error');
     });
@@ -131,14 +123,14 @@ describe('Permissions checker for GETAnswers', async () => {
   describe('GET /answer', async () => {
     it('Sufficient permissions: Return only answers we have permission to the survey responses for', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: results } = await app.get(`answer?${filterString}`);
+      const { body: results } = await app.get(`answers?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(vanuatuAdminAnswers);
     });
 
     it('Sufficient permissions: Always return all answers if we have BES admin access', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
-      const { body: results } = await app.get(`answer?${filterString}`);
+      const { body: results } = await app.get(`answers?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(
         vanuatuAdminAnswers.concat(vanuatuDonorAnswers),
@@ -150,7 +142,7 @@ describe('Permissions checker for GETAnswers', async () => {
         DL: ['Public'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const { body: results } = await app.get(`answer?${filterString}`);
+      const { body: results } = await app.get(`answers?${filterString}`);
 
       expect(results).to.be.empty;
     });

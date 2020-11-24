@@ -10,16 +10,18 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
- * - /answer
+ * - /answers
  * - /answers/id
- * - /surveyReponses/id/answers
+ * - /surveyResponses/id/answers
  */
 
 export class GETAnswers extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async findSingleRecord(answerId, options) {
     const answer = await super.findSingleRecord(answerId, options);
 
-    const answerPermissionsChecker = accessPolicy =>
+    const answerPermissionsChecker = async accessPolicy =>
       assertAnswerPermissions(accessPolicy, this.models, answerId);
 
     await this.assertPermissions(
