@@ -27,21 +27,21 @@ const response = {
   },
 };
 
-export class LoginRouteHandler extends UnauthenticatedRouteHandler {
+export class LoginHandler extends UnauthenticatedRouteHandler {
   async buildResponse() {
     // @todo fetch from meditrak-server
     const { accessToken, refreshToken, user } = response;
     const { accessPolicy, email } = user;
 
-    const session = await this.sessionModel.create({
+    const { id } = await this.sessionModel.create({
       email,
-      access_policy: accessPolicy,
+      access_policy: JSON.stringify(accessPolicy),
       access_token: accessToken,
       refresh_token: refreshToken,
     });
 
     // set sessionId cookie
-    this.req.sessionId = session.id;
+    this.req.sessionCookie = { id, email };
 
     return { accessPolicy };
   }

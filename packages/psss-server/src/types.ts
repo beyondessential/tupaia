@@ -9,6 +9,7 @@ import { PsssSessionModel, PsssSessionType } from './models';
 export interface SessionCookie {
   id: string;
   email: string;
+  reset: () => void;
 }
 
 export interface PsssRequest extends Request {

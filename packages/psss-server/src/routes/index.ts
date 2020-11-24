@@ -3,5 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export { LoginRouteHandler } from './LoginRouteHandler';
+export { LoginHandler } from './LoginHandler';
+export { LogoutHandler } from './LogoutHandler';
 export { TestHandler } from './TestHandler';
