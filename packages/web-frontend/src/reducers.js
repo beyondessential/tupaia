@@ -633,8 +633,6 @@ function enlargedDialog(
     isLoading: false,
     contentByLevel: null,
     errorMessage: '',
-    startDate: null, // TODO: store these in the url
-    endDate: null,
     drillDownDatesByLevel: null,
   },
   action,
@@ -652,20 +650,14 @@ function enlargedDialog(
         ...state,
         isLoading: false,
         errorMessage: '',
-        startDate: null,
-        endDate: null,
         contentByLevel: null,
       };
     case SET_ENLARGED_DIALOG_DATE_RANGE: {
       const { drillDownLevel, startDate, endDate } = action;
-      if (drillDownLevel === 0) {
-        // TODO: Move top level dates to url
-        return {
-          ...state,
-          startDate: action.startDate,
-          endDate: action.endDate,
-        };
-      }
+
+      // Base level dates are stored in the url
+      if (drillDownLevel === 0) return state;
+
       return {
         ...state,
         drillDownDatesByLevel: {

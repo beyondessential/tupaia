@@ -99,6 +99,14 @@ export const convertUrlPeriodStringToDateRange = (
   granularity = GRANULARITIES.DAY,
 ) => {
   const [startDate, endDate] = periodString.split('-');
+
+  if (!startDate) {
+    return {
+      startDate: null,
+      endDate: null,
+    };
+  }
+
   const { urlFormat } = GRANULARITY_CONFIG[granularity];
 
   const momentStartDate = moment(startDate, urlFormat);
@@ -119,6 +127,7 @@ export const convertDateRangeToUrlPeriodString = (
 ) => {
   if (!(startDate || endDate)) return null;
 
+  console.log({ startDate, endDate });
   const { urlFormat } = GRANULARITY_CONFIG[granularity];
 
   const formattedStartDate = momentToDateString(startDate, granularity, urlFormat);

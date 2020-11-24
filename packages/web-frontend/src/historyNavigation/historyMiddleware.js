@@ -57,24 +57,19 @@ export const historyMiddleware = store => next => action => {
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewId);
-      dispatchLocationUpdate(
-        store,
-        URL_COMPONENTS.REPORT_PERIOD,
-        convertDateRangeToUrlPeriodString({
-          startDate: moment(action.startDate),
-          endDate: moment(action.endDate),
-        }),
-      );
       break;
     case SET_ENLARGED_DIALOG_DATE_RANGE:
-      dispatchLocationUpdate(
-        store,
-        URL_COMPONENTS.REPORT_PERIOD,
-        convertDateRangeToUrlPeriodString({
-          startDate: moment(action.startDate),
-          endDate: moment(action.endDate),
-        }),
-      );
+      // Drill down dates are handled in normal redux state
+      if (action.drillDownLevel === 0) {
+        dispatchLocationUpdate(
+          store,
+          URL_COMPONENTS.REPORT_PERIOD,
+          convertDateRangeToUrlPeriodString({
+            startDate: moment(action.startDate),
+            endDate: moment(action.endDate),
+          }),
+        );
+      }
       break;
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
