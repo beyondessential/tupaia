@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Table, ExpandableTableBody } from '@tupaia/ui-components';
+import { connect } from 'react-redux';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { useTableQuery } from '../../hooks';
@@ -13,6 +15,7 @@ import {
   SitesReportedCell,
   CountryNameLinkCell,
 } from '../../components';
+import { getEntitiesAllowed } from '../../store';
 
 const countriesTableColumns = [
   {
@@ -60,11 +63,11 @@ const countriesTableColumns = [
   },
 ];
 
-export const CountriesTable = () => {
+export const CountriesTableComponent = ({ allowedEntities }) => {
   const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
     'countries',
     {
-      countries: ['TO', 'WS'],
+      countries: allowedEntities,
     },
   );
 
@@ -86,3 +89,17 @@ export const CountriesTable = () => {
     </>
   );
 };
+
+CountriesTableComponent.propTypes = {
+  allowedEntities: PropTypes.array,
+};
+
+CountriesTableComponent.defaultProps = {
+  allowedEntities: [],
+};
+
+const mapStateToProps = state => ({
+  allowedEntities: getEntitiesAllowed(state),
+});
+
+export const CountriesTable = connect(mapStateToProps)(CountriesTableComponent);
