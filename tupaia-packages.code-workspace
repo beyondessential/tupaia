@@ -61,6 +61,10 @@
       "path": "packages/psss"
     },
     {
+      "name": "psss-server",
+      "path": "packages/psss-server"
+    },
+    {
       "name": "meditrak-server",
       "path": "packages/meditrak-server"
     },
@@ -95,6 +99,7 @@
       "Codeship",
       "DHIS",
       "MediTrak",
+      "PSSS",
       "Tongatapu",
       "Tupaia",
       "analytics",

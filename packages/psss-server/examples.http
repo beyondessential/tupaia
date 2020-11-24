@@ -1,0 +1,9 @@
+# Fetch Reports
+
+POST http://localhost:8040/v1/auth HTTP/1.1
+content-type: application/json
+
+{
+    "emailAddress": "username",
+    "password": "password"
+}
