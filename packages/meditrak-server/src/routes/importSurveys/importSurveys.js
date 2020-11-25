@@ -81,16 +81,16 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
     config,
   });
 
-  // If dataElement already exists, don't overwrite it
   let dataElement = await models.dataSource.findOne({ code: dataElementCode });
 
   if (dataElement === null) {
+    // Data Element doesn't exist, create it
     dataElement = await models.dataSource.create({
       type: models.dataSource.getTypes().DATA_ELEMENT,
       code: dataElementCode,
       service_type: serviceType,
     });
-    dataElement.config = { ...dataElement.config, ...config };
+    dataElement.config = config;
     dataElement.sanitizeConfig();
     await dataElement.save();
 
@@ -99,24 +99,11 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
       data_group_id: dataGroup.id,
     });
   } else {
-    /*
-     * Link the existing dataElement to a potentially new dataGroup
-     *
-     * We use separate find and create instead of findOrCreate because we may have an
-     * "invalid" state, where the dataElement and dataGroup have different services, and
-     * we want to allow this to continue as is.
-     */
-    const dataElementDataGroup = await models.dataElementDataGroup.findOne({
+    // dataElement already exists, don't overwrite it
+    await models.dataElementDataGroup.findOrCreate({
       data_element_id: dataElement.id,
       data_group_id: dataGroup.id,
     });
-
-    if (dataElementDataGroup === null) {
-      await models.dataElementDataGroup.create({
-        data_element_id: dataElement.id,
-        data_group_id: dataGroup.id,
-      });
-    }
   }
 
   return dataElement;
