@@ -46,7 +46,7 @@ const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: strin
   return analyticClusters
     .map(({ organisationUnit, period, dataValues }) => {
       parser.setScope(dataValues);
-      return { organisationUnit, period, value: parser.evaluate(formula) };
+      return { organisationUnit, period, value: parser.evaluateToNumber(formula) };
     })
     .filter(({ value }) => isFinite(value));
 };

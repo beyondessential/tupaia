@@ -351,11 +351,59 @@ describe('buildArithmetic', () => {
     };
 
     const testData: [string, string, number[]][] = [
-      ['simple calculation - integer', 'One + Two', [3]],
-      ['simple calculation - float', 'One / Two', [1 / 2]],
-      ['complex calculation', '((One + Two) * Three) / (Four - Five)', [((1 + 2) * 3) / (4 - 5)]],
+      ['simple expression - integer result', 'One + Two', [3]],
+      ['simple expression - float result', 'One / Two', [1 / 2]],
+      ['complex expression', '((One + Two) * Three) / (Four - Five)', [((1 + 2) * 3) / (4 - 5)]],
       ['division with zero', 'One / (One + Two - Three)', []],
       ['some data elements are undefined in the orgUnit/period combo', 'One + Undefined', []],
+    ];
+
+    it.each(testData)('%s', (_, formula, expected) => {
+      const config = { formula, aggregation: 'FINAL_EACH_YEAR' };
+
+      return expect(
+        buildArithmetic({ api, config, fetchOptions: {} }),
+      ).resolves.toIncludeSameMembers(
+        expected.map(value => ({ organisationUnit: 'TO', period: '2019', value })),
+      );
+    });
+  });
+
+  describe('boolean calculations', () => {
+    const api = {
+      getAggregator: () => createAggregator(ANALYTIC_RESPONSE_FIXTURES),
+      buildAnalyticsForIndicators: async () => [],
+    };
+
+    const testData: [string, string, number[]][] = [
+      ['> (true)', 'Two > One', [1]],
+      ['> (false)', 'One > Two', [0]],
+      ['= (true)', 'Zero == Zero', [1]],
+      ['= (false)', 'Zero == One', [0]],
+      ['< (true)', 'Two < Five', [1]],
+      ['< (false)', 'Five < Two', [0]],
+      ['and (true)', '(Two > One) and (Two < Three)', [1]],
+      ['and (false)', '(Two > One) and (Two > Three)', [0]],
+      ['or (true)', '(Two == One) or (Two < Three)', [1]],
+      ['or (false)', '(Two == One) or (Two > Three)', [0]],
+      [
+        'complex expression - comparisons',
+        '((Two + One) / (Five)) > ((One + One) / (Three))',
+        // eslint-disable-next-line no-constant-condition
+        [(2 + 1) / 5 > (1 + 1) / 3 ? 1 : 0],
+      ],
+      [
+        'complex expression - boolean operators',
+        '(Three < Two) or ((Two > One) and not (Two > Five))',
+        // eslint-disable-next-line no-constant-condition
+        [3 < 2 || (2 > 1 && !(2 > 5)) ? 1 : 0],
+      ],
+      [
+        'complex expression - boolean operators',
+        '(Three < 4 / 2) or ((Two > 1) and not (Two > (2 + 3)))',
+        // eslint-disable-next-line no-constant-condition, yoda
+        [3 < 4 / 2 || (2 > 1 && !(2 > 2 + 3)) ? 1 : 0],
+      ],
     ];
 
     it.each(testData)('%s', (_, formula, expected) => {
