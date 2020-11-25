@@ -5,8 +5,8 @@
 
 import { ApiConnection } from './ApiConnection';
 
-const { REPORT_SERVER_URL = 'http://localhost:8030/v2' } = process.env;
+const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 
 export class ReportConnection extends ApiConnection {
-  baseUrl = REPORT_SERVER_URL;
+  baseUrl = REPORT_API_URL;
 }

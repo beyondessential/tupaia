@@ -5,8 +5,8 @@
 
 import { ApiConnection } from './ApiConnection';
 
-const { MEDITRAK_SERVER_URL = 'http://localhost:8090/v2' } = process.env;
+const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 export class MeditrakConnection extends ApiConnection {
-  baseUrl = MEDITRAK_SERVER_URL;
+  baseUrl = MEDITRAK_API_URL;
 }
