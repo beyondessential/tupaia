@@ -1,12 +1,12 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import styled from 'styled-components';
@@ -60,27 +60,26 @@ const getDatesForCurrentLevel = (
   return drillDownDatesByLevel?.[drillDownLevel] || {};
 };
 
-const EnlargedDialogComponent = props => {
-  const {
-    onCloseOverlay,
-    contentByLevel,
-    errorMessage,
-    organisationUnitName,
-    onSetDateRange,
-    startDate: startDateForTopLevel,
-    endDate: endDateForTopLevel,
-    isLoading,
-    projectCode,
-    infoViewKey,
-    fetchViewData,
-    drillDownDatesByLevel,
-  } = props;
-  const exportRef = React.useRef(null);
-  const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
-  const [isExporting, setIsExporting] = React.useState(false);
+const EnlargedDialogComponent = ({
+  onCloseOverlay,
+  contentByLevel,
+  errorMessage,
+  organisationUnitName,
+  onSetDateRange,
+  startDate: startDateForTopLevel,
+  endDate: endDateForTopLevel,
+  isLoading,
+  projectCode,
+  infoViewKey,
+  fetchViewData,
+  drillDownDatesByLevel,
+}) => {
+  const exportRef = useRef(null);
+  const [exportDialogIsOpen, setExportDialogIsOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
-  const [exportStatus, setExportStatus] = React.useState(STATUS.IDLE);
-  const [drillDownState, setDrillDownState] = React.useState({
+  const [exportStatus, setExportStatus] = useState(STATUS.IDLE);
+  const [drillDownState, setDrillDownState] = useState({
     drillDownLevel: 0,
     parameterLinks: {},
     parameterValues: {},
@@ -94,7 +93,7 @@ const EnlargedDialogComponent = props => {
     drillDownDatesByLevel,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const { drillDownLevel, parameterLinks, parameterValues } = drillDownState;
     const cachedOptions = contentByLevel?.[drillDownLevel]?.options;
 
