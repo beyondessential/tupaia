@@ -34,27 +34,35 @@ const performSingleAnalyticOperation = (analytics, config) => {
   return OPERATORS[operator](filteredAnalytics[0].value, config);
 };
 
-const sumDataValues = (analytics, dataValues) => {
+const sumDataValues = (analytics, dataValues, filter = {}) => {
   let sum; // Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
+  const { organisationUnit: organisationUnitFilter } = filter;
 
-  analytics.forEach(({ dataElement, value }) => {
+  analytics.forEach(({ dataElement, value, organisationUnit }) => {
+    if (
+      organisationUnitFilter &&
+      !checkValueSatisfiesCondition(organisationUnit, organisationUnitFilter)
+    )
+      return;
+
     if (dataValues.includes(dataElement)) {
       sum = (sum || 0) + (value || 0);
     }
   });
 
+  // console.log(analytics, organisationUnitFilter, dataValues, sum);
   return sum;
 };
 
 const performArithmeticOperation = (analytics, arithmeticConfig) => {
-  const { operator, operands: operandConfigs } = arithmeticConfig;
+  const { operator, operands: operandConfigs, filter } = arithmeticConfig;
 
   if (!operandConfigs || operandConfigs.length < 2) {
     throw new Error(`Must have 2 or more operands`);
   }
 
   const operands = operandConfigs.map(operandConfig =>
-    sumDataValues(analytics, operandConfig.dataValues),
+    sumDataValues(analytics, operandConfig.dataValues, filter),
   );
 
   let result = operands[0];
@@ -143,18 +151,21 @@ const getValueFromEntity = async (entity, config) => {
 
 const OPERATORS = {
   DIVIDE: divideValues,
+  FRACTION_AND_PERCENTAGE: (numerator, divisor) =>
+    `${numerator} / ${divisor} = ${divideValues(numerator, divisor)}`,
   SUBTRACT: subtractValues,
   CHECK_CONDITION: checkCondition,
   GROUP: valueToGroup,
-  FORMAT: formatString,
+  FORMAT: () => 'hi',
   COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
   COMBINE_TEXT: combineTextIndicators,
   ORG_UNIT_METADATA: getMetaDataFromOrgUnit,
+  STRING: () => 'hi',
 };
 
-const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
+const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'GROUP'];
 
-const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT'];
+const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT', 'FRACTION_AND_PERCENTAGE'];
 
 export const getDataElementsFromCalculateOperationConfig = config =>
   config.dataElement || // Single dataElement

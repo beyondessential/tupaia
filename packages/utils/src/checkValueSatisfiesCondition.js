@@ -8,8 +8,14 @@ const OPERATOR_TO_VALUE_CHECK = {
   '<': (value, target) => value < target,
   range: (value, target) => target[0] <= value && value <= target[1],
   rangeExclusive: (value, target) => target[0] < value && value < target[1],
-  regex: (value, target) => !!value.match(target),
+  regex: (value, target) => !!String(value).match(target),
   in: (value, target) => target.includes(value),
+  or: (value, target) =>
+    target.some(
+      condition =>
+        console.log(value, condition, checkValueSatisfiesCondition(value, condition)) ||
+        checkValueSatisfiesCondition(value, condition),
+    ),
 };
 
 const NUMERIC_OPERATORS = ['>=', '<=', '>', '<', 'range', 'rangeExclusive'];
