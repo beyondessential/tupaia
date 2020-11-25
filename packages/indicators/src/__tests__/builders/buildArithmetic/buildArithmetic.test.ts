@@ -344,7 +344,7 @@ describe('buildArithmetic', () => {
     );
   });
 
-  describe('calculations for a single orgUnit/period combo', () => {
+  describe('arithmetic calculations', () => {
     const api = {
       getAggregator: () => createAggregator(ANALYTIC_RESPONSE_FIXTURES),
       buildAnalyticsForIndicators: async () => [],
@@ -354,7 +354,7 @@ describe('buildArithmetic', () => {
       [
         'simple calculation - integer',
         {
-          formula: 'A_To_2019 + B_To_2019',
+          formula: 'One + Two',
           aggregation: 'FINAL_EACH_YEAR',
         },
         [{ organisationUnit: 'TO', period: '2019', value: 3 }],
@@ -362,23 +362,23 @@ describe('buildArithmetic', () => {
       [
         'simple calculation - float',
         {
-          formula: 'A_To_2019 / B_To_2019',
+          formula: 'One / Two',
           aggregation: 'FINAL_EACH_YEAR',
         },
-        [{ organisationUnit: 'TO', period: '2019', value: 0.5 }],
+        [{ organisationUnit: 'TO', period: '2019', value: 1 / 2 }],
       ],
       [
         'complex calculation',
         {
-          formula: '((A_To_2019 + B_To_2019) * C_To_2019) / (D_To_2019 - E_To_2019)',
+          formula: '((One + Two) * Three) / (Four - Five)',
           aggregation: 'FINAL_EACH_YEAR',
         },
-        [{ organisationUnit: 'TO', period: '2019', value: -9 }],
+        [{ organisationUnit: 'TO', period: '2019', value: ((1 + 2) * 3) / (4 - 5) }],
       ],
       [
         'division with zero',
         {
-          formula: 'A_To_2019 / (A_To_2019 + B_To_2019 - C_To_2019)',
+          formula: 'One / (One + Two - Three)',
           aggregation: 'FINAL_EACH_YEAR',
         },
         [],
@@ -386,7 +386,7 @@ describe('buildArithmetic', () => {
       [
         'some data elements are undefined in the orgUnit/period combo',
         {
-          formula: 'A_To_2020 + Undefined_To_2019',
+          formula: 'One + Undefined',
           aggregation: 'FINAL_EACH_YEAR',
         },
         [],
@@ -483,10 +483,10 @@ describe('buildArithmetic', () => {
       [
         "defaults don't replace 0s",
         {
-          formula: 'Z_To_2019 * 2',
+          formula: 'Zero * 2',
           aggregation: 'FINAL_EACH_YEAR',
           defaultValues: {
-            Z_To_2019: 10,
+            Zero: 10,
           },
         },
         [{ organisationUnit: 'TO', period: '2019', value: 0 }],
