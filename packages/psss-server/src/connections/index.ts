@@ -4,3 +4,4 @@
  */
 
 export { MeditrakConnection } from './MeditrakConnection';
+export { ReportConnection } from './ReportConnection';

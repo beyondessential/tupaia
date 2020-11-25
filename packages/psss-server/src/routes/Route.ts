@@ -7,7 +7,7 @@ import { respond, PermissionsError, UnauthenticatedError } from '@tupaia/utils';
 
 import { PsssRequest, PsssResponseBody, SessionCookie } from '../types';
 import { PsssSessionModel, PsssSessionType } from '../models';
-import { MeditrakConnection } from '../connections';
+import { MeditrakConnection, ReportConnection } from '../connections';
 
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
@@ -25,6 +25,8 @@ export class Route {
   session!: PsssSessionType;
 
   meditrakConnection?: MeditrakConnection;
+
+  reportConnection?: ReportConnection;
 
   constructor(req: PsssRequest, res: Response, next: NextFunction) {
     this.req = req;
@@ -47,6 +49,7 @@ export class Route {
     try {
       const session = await this.verifyAuth();
       this.meditrakConnection = new MeditrakConnection(session);
+      this.reportConnection = new ReportConnection(session);
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
