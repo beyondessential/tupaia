@@ -3,7 +3,7 @@ POST http://localhost:8040/v1/login HTTP/2.0
 content-type: application/json
 
 {
-    "emailAddress": "username",
+    "emailAddress": "testuser@test.com",
     "password": "password"
 }
 
