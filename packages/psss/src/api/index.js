@@ -5,3 +5,4 @@
 
 export * from './singletons';
 export * from './connectApi';
+export * from './psssService';

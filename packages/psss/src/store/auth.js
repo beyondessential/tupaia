@@ -6,6 +6,7 @@
 import { createSelector } from 'reselect';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { createReducer } from '../utils/createReducer';
+import { authenticate, getUser, updateUser } from '../api';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -20,12 +21,13 @@ export const login = ({ email, password }) => async (dispatch, getState, { api }
 
   dispatch({ type: LOGIN_START });
   try {
-    const userDetails = await api.reauthenticate({
+    const response = await authenticate({
       emailAddress: email,
       password,
       deviceName,
     });
-    dispatch(loginSuccess(userDetails));
+
+    dispatch(loginSuccess(response));
   } catch (error) {
     dispatch(loginError(error.message));
   }
@@ -48,8 +50,8 @@ export const logout = () => ({
 });
 
 export const updateProfile = payload => async (dispatch, getState, { api }) => {
-  await api.put(`me`, null, payload);
-  const { body: user } = await api.get(`me`);
+  await updateUser(payload);
+  const user = await getUser();
   dispatch({
     type: PROFILE_SUCCESS,
     ...user,
