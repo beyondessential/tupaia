@@ -10,7 +10,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import styled from 'styled-components';
-import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../actions';
+import { fetchEnlargedDialogData, setEnlargedDashboardDateRange, closeEnlargedDialog } from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
@@ -243,6 +243,7 @@ EnlargedDialogComponent.propTypes = {
   drillDownDatesByLevel: PropTypes.object,
   projectCode: PropTypes.string,
   infoViewKey: PropTypes.string,
+  onCloseOverlay: PropTypes.func.isRequired,
 };
 
 EnlargedDialogComponent.defaultProps = {
@@ -293,6 +294,7 @@ const mapDispatchToProps = dispatch => ({
   fetchViewData: options => {
     dispatch(fetchEnlargedDialogData(options));
   },
+  onCloseOverlay: () => dispatch(closeEnlargedDialog()),
 });
 
 export const EnlargedDialog = connect(mapStateToProps, mapDispatchToProps)(EnlargedDialogComponent);

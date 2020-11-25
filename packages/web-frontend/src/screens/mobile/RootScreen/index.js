@@ -19,8 +19,8 @@ import { LoadingScreen } from '../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { selectCurrentOrgUnit } from '../../../selectors';
-import { EnlargedDialogWrapper } from '../../../containers/EnlargedDialog';
+import { selectCurrentOrgUnit, selectIsEnlargedDialogVisible } from '../../../selectors';
+import { EnlargedDialog } from '../../../containers/EnlargedDialog';
 
 const ORG_UNIT_TYPE_TO_COMPONENT = {
   [ENTITY_TYPE.COUNTRY]: RegionScreen,
@@ -40,7 +40,7 @@ class RootScreen extends Component {
   }
 
   render() {
-    const { isLoading, isUserLoggedIn } = this.props;
+    const { isLoading, isUserLoggedIn, enlargedDialogIsVisible } = this.props;
 
     return (
       <StyleRoot>
@@ -48,11 +48,11 @@ class RootScreen extends Component {
         <div>
           <HeaderBar />
           {this.renderPage()}
-          <EnlargedDialogWrapper />
+          {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
           <ExportDialog />
           <Footer />
           {isUserLoggedIn && <OverlayDiv />}
-          <EnlargedDialogWrapper />
+          {/* <EnlargedDialog /> */}
           <ExportDialog />
         </div>
       </StyleRoot>
@@ -64,10 +64,12 @@ RootScreen.propTypes = {
   currentOrganisationUnitType: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
+  enlargedDialogIsVisible: PropTypes.bool,
 };
 
 RootScreen.defaultProps = {
   currentOrganisationUnitType: '',
+  enlargedDialogIsVisible: false,
 };
 
 const mapStateToProps = state => {
@@ -75,6 +77,7 @@ const mapStateToProps = state => {
     currentOrganisationUnitType: selectCurrentOrgUnit(state).type,
     isLoading: state.global.isLoadingOrganisationUnit,
     isUserLoggedIn: state.authentication.isUserLoggedIn,
+    enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
   };
 };
 
