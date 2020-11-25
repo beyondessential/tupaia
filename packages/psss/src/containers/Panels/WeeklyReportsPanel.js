@@ -130,11 +130,16 @@ const toCommaList = values =>
     .toUpperCase()
     .replace(/,(?!.*,)/gim, ' and');
 
-const getSyndromeAlerts = data =>
-  data.syndromes.reduce(
+const getSyndromeAlerts = (countryData, weekNumber) => {
+  if (countryData.length === 0 || !weekNumber) {
+    return [];
+  }
+
+  return countryData[weekNumber].syndromes.reduce(
     (statuses, syndrome) => (syndrome.isAlert ? [...statuses, syndrome] : statuses),
     [],
   );
+};
 
 export const WeeklyReportsPanelComponent = React.memo(
   ({ countryData, isOpen, handleClose, weekNumber, unVerifiedSyndromes }) => {
@@ -151,7 +156,7 @@ export const WeeklyReportsPanelComponent = React.memo(
 
     const [confirmReport] = useMutation(() => FakeAPI.post(), {
       onSuccess: () => {
-        if (getSyndromeAlerts(countryData[weekNumber])) {
+        if (getSyndromeAlerts(countryData, weekNumber)) {
           setIsModalOpen(true);
         }
         setPanelStatus(PANEL_STATUSES.SUCCESS);
@@ -265,7 +270,7 @@ export const WeeklyReportsPanelComponent = React.memo(
         </DrawerFooter>
         <AlertCreatedModal
           isOpen={isModalOpen}
-          alerts={getSyndromeAlerts(countryData[weekNumber])}
+          alerts={getSyndromeAlerts(countryData, weekNumber)}
           handleClose={() => setIsModalOpen(false)}
         />
       </StyledDrawer>
