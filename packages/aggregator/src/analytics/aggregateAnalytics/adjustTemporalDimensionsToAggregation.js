@@ -19,7 +19,7 @@ import { getDateRangeForSumPreviousPerPeriod } from './aggregations/sumPreviousP
  */
 const getDateRangeExtremes = dateRanges => {
   const [startDate] = dateRanges.map(dr => dr.startDate).sort(comparePeriods);
-  const [endDate] = dateRanges.map(dr => dr.endDate).sort((a, b) => comparePeriods(a, b) * -1);
+  const [endDate] = dateRanges.map(dr => dr.endDate).sort((a, b) => comparePeriods(b, a));
   return { startDate, endDate };
 };
 
