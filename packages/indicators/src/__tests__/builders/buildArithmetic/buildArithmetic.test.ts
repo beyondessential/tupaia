@@ -350,54 +350,23 @@ describe('buildArithmetic', () => {
       buildAnalyticsForIndicators: async () => [],
     };
 
-    const testData: [string, ArithmeticConfig, AnalyticValue[]][] = [
-      [
-        'simple calculation - integer',
-        {
-          formula: 'One + Two',
-          aggregation: 'FINAL_EACH_YEAR',
-        },
-        [{ organisationUnit: 'TO', period: '2019', value: 3 }],
-      ],
-      [
-        'simple calculation - float',
-        {
-          formula: 'One / Two',
-          aggregation: 'FINAL_EACH_YEAR',
-        },
-        [{ organisationUnit: 'TO', period: '2019', value: 1 / 2 }],
-      ],
-      [
-        'complex calculation',
-        {
-          formula: '((One + Two) * Three) / (Four - Five)',
-          aggregation: 'FINAL_EACH_YEAR',
-        },
-        [{ organisationUnit: 'TO', period: '2019', value: ((1 + 2) * 3) / (4 - 5) }],
-      ],
-      [
-        'division with zero',
-        {
-          formula: 'One / (One + Two - Three)',
-          aggregation: 'FINAL_EACH_YEAR',
-        },
-        [],
-      ],
-      [
-        'some data elements are undefined in the orgUnit/period combo',
-        {
-          formula: 'One + Undefined',
-          aggregation: 'FINAL_EACH_YEAR',
-        },
-        [],
-      ],
+    const testData: [string, string, number[]][] = [
+      ['simple calculation - integer', 'One + Two', [3]],
+      ['simple calculation - float', 'One / Two', [1 / 2]],
+      ['complex calculation', '((One + Two) * Three) / (Four - Five)', [((1 + 2) * 3) / (4 - 5)]],
+      ['division with zero', 'One / (One + Two - Three)', []],
+      ['some data elements are undefined in the orgUnit/period combo', 'One + Undefined', []],
     ];
 
-    it.each(testData)('%s', (_, config, expected) =>
-      expect(buildArithmetic({ api, config, fetchOptions: {} })).resolves.toIncludeSameMembers(
-        expected,
-      ),
-    );
+    it.each(testData)('%s', (_, formula, expected) => {
+      const config = { formula, aggregation: 'FINAL_EACH_YEAR' };
+
+      return expect(
+        buildArithmetic({ api, config, fetchOptions: {} }),
+      ).resolves.toIncludeSameMembers(
+        expected.map(value => ({ organisationUnit: 'TO', period: '2019', value })),
+      );
+    });
   });
 
   describe('calculations for multiple orgUnit/period combos', () => {
