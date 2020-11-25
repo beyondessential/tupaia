@@ -7,11 +7,6 @@ import { Object as RealmObject } from 'realm';
 import { doesIdExist } from './utilities';
 
 export class OptionSet extends RealmObject {
-  addOptionIfUnique(option) {
-    if (doesIdExist(this.options, option.id)) return;
-    this.options.push(option);
-  }
-
   getLargestSortOrder() {
     const sortOrders = this.options.map(o => o.sortOrder);
     return Math.max(...sortOrders);
