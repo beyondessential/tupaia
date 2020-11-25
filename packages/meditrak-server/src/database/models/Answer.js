@@ -30,6 +30,8 @@ export const ANSWER_TYPES = {
   RADIO: 'Radio',
   SUBMISSION_DATE: 'SubmissionDate',
   YEARS_SINCE: 'YearsSince',
+  ARITHMETIC: 'Arithmetic',
+  CONDITION: 'Condition',
   // If adding a new type, add validation in both importSurveys and updateSurveyResponses
 };
 
