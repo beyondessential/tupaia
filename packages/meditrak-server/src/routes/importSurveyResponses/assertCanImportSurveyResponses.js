@@ -3,30 +3,55 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { flattenDeep } from 'lodash';
+import { flattenDeep, groupBy, keyBy } from 'lodash';
+import { reduceToDictionary } from '@tupaia/utils';
 
 export const assertCanImportSurveyResponses = async (
   accessPolicy,
   models,
-  entitiesByPermissionGroup,
+  entitiesBySurveyName,
 ) => {
-  const allEntityCodes = flattenDeep(Object.values(entitiesByPermissionGroup));
+  const allEntityCodes = flattenDeep(Object.values(entitiesBySurveyName));
+  const surveyNames = Object.keys(entitiesBySurveyName);
   const allEntities = await models.entity.findManyByColumn('code', allEntityCodes);
+  const surveys = await models.survey.findManyByColumn('name', surveyNames);
+  const nameToSurvey = keyBy(surveys, 'name');
+  const surveyPermissionGroupIds = surveys.map(s => s.permission_group_id);
+  const surveyPermissionGroups = await models.permissionGroup.findManyById(
+    surveyPermissionGroupIds,
+  );
+  const idToPermissionGroupName = reduceToDictionary(surveyPermissionGroups, 'id', 'name');
 
-  for (let i = 0; i < Object.entries(entitiesByPermissionGroup).length; i++) {
-    const [permissionGroup, entityCodes] = Object.entries(entitiesByPermissionGroup)[i];
-    const entities = allEntities.filter(e => entityCodes.includes(e.code));
-    const entityCountryCodes = entities.map(e => e.country_code);
-    const countryCodes = [...new Set(entityCountryCodes)];
+  for (const entry of Object.entries(entitiesBySurveyName)) {
+    const [surveyName, entityCodes] = entry;
+    const survey = nameToSurvey[surveyName];
+    const responseEntities = allEntities.filter(e => entityCodes.includes(e.code));
+    const surveyResponseCountryCodes = [...new Set(responseEntities.map(e => e.country_code))];
+    const surveyResponseCountries = await models.country.findManyByColumn(
+      'code',
+      surveyResponseCountryCodes,
+    );
+    const entitiesByCountryCode = groupBy(responseEntities, 'country_code');
 
-    if (!accessPolicy.allowsAll(countryCodes, permissionGroup)) {
-      const countries = await models.country.findManyByColumn('code', countryCodes);
-      const countryNames = countries.map(c => c.name);
-      const countryNamesString = countryNames.join(',');
+    for (const surveyResponseCountry of surveyResponseCountries) {
+      // Check if the country of the submitted survey response(s) matches with the survey countries.
+      if (survey.country_ids?.length && !survey.country_ids.includes(surveyResponseCountry.id)) {
+        const surveyCountries = await models.country.findManyById(survey.country_ids);
+        const entities = entitiesByCountryCode[surveyResponseCountry.code];
+        const entityCodesString = entities.map(e => e.code).join(', ');
+        const surveyCountryNamesString = surveyCountries.map(s => s.name).join(', ');
+        throw new Error(
+          `Some survey response(s) are submitted against entity code(s) (${entityCodesString}) that do not belong to the countries (${surveyCountryNamesString}) of the survey '${survey.name}'`,
+        );
+      }
 
-      throw new Error(
-        `Need ${permissionGroup} access to ${countryNamesString} to import the survey responses`,
-      );
+      // Now check if users have permission group access to the survey response's country
+      const permissionGroup = idToPermissionGroupName[survey.permission_group_id];
+      if (!accessPolicy.allows(surveyResponseCountry.code, permissionGroup)) {
+        throw new Error(
+          `Need ${permissionGroup} access to ${surveyResponseCountry.name} to import the survey response(s)`,
+        );
+      }
     }
   }
 
