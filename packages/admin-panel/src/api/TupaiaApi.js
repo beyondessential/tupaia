@@ -5,7 +5,7 @@
 
 import { saveAs } from 'file-saver';
 
-import { stringifyQuery } from '@tupaia/utils';
+import { checkStatusAndParseResponse, stringifyQuery } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../authentication';
 
@@ -139,25 +139,7 @@ export class TupaiaApi {
       newFetchConfig.headers.Authorization = this.getBearerAuthHeader();
       return this.request(endpoint, queryParameters, newFetchConfig, false);
     }
-    if (!response.ok) {
-      let responseJson;
-      try {
-        responseJson = await response.json();
-      } catch (error) {
-        throw new Error(`Network error ${response.status}`);
-      }
-      if (
-        responseJson.status &&
-        (responseJson.status < 200 || responseJson.status >= 300) &&
-        !responseJson.error
-      ) {
-        throw new Error(responseJson.message);
-      }
-      if (responseJson.error) {
-        throw new Error(responseJson.error);
-      }
-    }
-    return response;
+    return checkStatusAndParseResponse(response);
   }
 
   buildFetchConfig(requestMethod, authHeader, body, isJson = true) {
