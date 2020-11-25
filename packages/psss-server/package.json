@@ -31,8 +31,6 @@
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/utils": "1.0.0",
-    "@types/client-sessions": "^0.8.0",
-    "@types/jsonwebtoken": "^8.5.0",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "client-sessions": "^0.8.0",
