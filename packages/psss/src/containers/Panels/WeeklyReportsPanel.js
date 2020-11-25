@@ -2,9 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
+import { queryCache, useMutation } from 'react-query';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
@@ -30,17 +31,16 @@ import {
   ComingSoon,
 } from '../../components';
 import {
-  getSitesForWeek,
-  getActiveWeekCountryData,
   closeWeeklyReportsPanel,
   checkWeeklyReportsPanelIsOpen,
   getUnVerifiedSyndromes,
-  confirmWeeklyReportsData,
-  getSyndromeAlerts,
+  getActiveWeekId,
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage, getCountryName } from '../../utils';
+import { useTableQuery } from '../../hooks';
+import { FakeAPI } from '../../api';
 
 const columns = [
   {
@@ -64,7 +64,12 @@ const columns = [
   },
 ];
 
-const MainSection = styled.section`
+const SiteReportsSection = styled.section`
+  // Todo: remove temp styling for coming soon blurred area
+  margin-top: 50px;
+  margin-bottom: 20px;
+  // ---
+
   position: relative;
   padding: 1.8rem 1.25rem;
 
@@ -81,7 +86,7 @@ const MainSection = styled.section`
   }
 `;
 
-const GreySection = styled(MainSection)`
+const CountryReportsSection = styled(SiteReportsSection)`
   background: ${COLORS.LIGHTGREY};
   box-shadow: 0 1px 0 ${COLORS.GREY_DE};
   padding: 1.6rem 1.25rem;
@@ -114,6 +119,7 @@ const TABLE_STATUSES = {
 
 const PANEL_STATUSES = {
   INITIAL: 'initial',
+  SAVING: 'saving',
   SUBMIT_ATTEMPTED: 'submitAttempted',
   SUCCESS: 'success',
 };
@@ -124,38 +130,54 @@ const toCommaList = values =>
     .toUpperCase()
     .replace(/,(?!.*,)/gim, ' and');
 
+const getSyndromeAlerts = (countryData, weekNumber) => {
+  if (countryData.length === 0 || !weekNumber) {
+    return [];
+  }
+
+  return countryData[weekNumber].syndromes.reduce(
+    (statuses, syndrome) => (syndrome.isAlert ? [...statuses, syndrome] : statuses),
+    [],
+  );
+};
+
 export const WeeklyReportsPanelComponent = React.memo(
-  ({ countryData, sitesData, isOpen, handleClose, unVerifiedSyndromes, alerts, handleConfirm }) => {
+  ({ countryData, isOpen, handleClose, weekNumber, unVerifiedSyndromes }) => {
     const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
     const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { countryCode } = useParams();
+    const { data: sitesData } = useTableQuery('sites', {
+      countryCode,
+      weekNumber,
+    });
 
-    const isVerified = unVerifiedSyndromes.length === 0;
-    const hasAlerts = alerts.length > 0;
-
-    const handleSubmit = useCallback(() => {
-      if (isVerified) {
-        handleConfirm();
-
-        if (hasAlerts) {
+    const [confirmReport] = useMutation(() => FakeAPI.post(), {
+      onSuccess: () => {
+        if (getSyndromeAlerts(countryData, weekNumber)) {
           setIsModalOpen(true);
         }
-
         setPanelStatus(PANEL_STATUSES.SUCCESS);
+        queryCache.invalidateQueries('country-weeks', { countryCode, weekNumber });
+      },
+    });
+
+    const isVerified = unVerifiedSyndromes.length === 0;
+
+    const handleSubmit = () => {
+      if (isVerified) {
+        setPanelStatus(PANEL_STATUSES.SAVING);
+        confirmReport();
       } else {
         setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
       }
-    }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
+    };
 
-    if (!countryData.syndromes || countryData.syndromes.length === 0 || sitesData.length === 0) {
-      return null;
-    }
-
-    const activeSite = sitesData[activeSiteIndex];
-    const { syndromes: syndromesData } = activeSite;
+    const showSitesSection =
+      weekNumber !== null && sitesData && sitesData.data && sitesData.data.length > 0;
+    const showCountriesSection = weekNumber !== null && countryData && countryData.length > 0;
 
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
@@ -176,42 +198,51 @@ export const WeeklyReportsPanelComponent = React.memo(
             {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
           </Alert>
         </Collapse>
-        <GreySection disabled={isSaving} data-testid="country-reports">
-          <EditableTableProvider
-            columns={columns}
-            data={countryData.syndromes}
-            tableStatus={countryTableStatus}
-          >
-            <CountryReportTable
-              tableStatus={countryTableStatus}
-              setTableStatus={setCountryTableStatus}
-              sitesReported={countryData.sitesReported}
-              totalSites={countryData.totalSites}
-            />
-          </EditableTableProvider>
-        </GreySection>
-        <MainSection disabled={isSaving} data-testid="site-reports">
-          <ComingSoon text="The Sentinel Case data section will allow you to explore sentinel site data." />
-          <ButtonSelect
-            id="active-site"
-            options={sitesData}
-            onChange={setActiveSiteIndex}
-            index={activeSiteIndex}
-          />
-          <SiteAddress address={activeSite.address} contact={activeSite.contact} />
-          <Card variant="outlined" mb={3}>
+        <CountryReportsSection disabled={isSaving} data-testid="country-reports">
+          {showCountriesSection && (
             <EditableTableProvider
               columns={columns}
-              data={syndromesData}
-              tableStatus={sitesTableStatus}
+              data={countryData[weekNumber].syndromes}
+              tableStatus={countryTableStatus}
             >
-              <SiteReportTable
-                tableStatus={sitesTableStatus}
-                setTableStatus={setSitesTableStatus}
+              <CountryReportTable
+                tableStatus={countryTableStatus}
+                setTableStatus={setCountryTableStatus}
+                sitesReported={countryData[weekNumber].sitesReported}
+                totalSites={countryData[weekNumber].totalSites}
+                weekNumber={weekNumber}
               />
             </EditableTableProvider>
-          </Card>
-        </MainSection>
+          )}
+        </CountryReportsSection>
+        {showSitesSection && (
+          <SiteReportsSection disabled={isSaving} data-testid="site-reports">
+            <ComingSoon text="The Sentinel Case data section will allow you to explore sentinel site data." />
+            <ButtonSelect
+              id="active-site"
+              options={sitesData.data}
+              onChange={setActiveSiteIndex}
+              index={activeSiteIndex}
+            />
+            <SiteAddress
+              address={sitesData.data[activeSiteIndex].address}
+              contact={sitesData.data[activeSiteIndex].contact}
+            />
+            <Card variant="outlined" mb={3}>
+              <EditableTableProvider
+                columns={columns}
+                data={sitesData.data[activeSiteIndex].syndromes}
+                tableStatus={sitesTableStatus}
+              >
+                <SiteReportTable
+                  tableStatus={sitesTableStatus}
+                  setTableStatus={setSitesTableStatus}
+                  weekNumber={weekNumber}
+                />
+              </EditableTableProvider>
+            </Card>
+          </SiteReportsSection>
+        )}
         <DrawerFooter disabled={isSaving}>
           <Fade in={verificationRequired}>
             <PositionedAlert severity="error">
@@ -224,8 +255,14 @@ export const WeeklyReportsPanelComponent = React.memo(
             </LightPrimaryButton>
           ) : (
             <>
-              <Button fullWidth onClick={handleSubmit} disabled={verificationRequired}>
-                Submit now
+              <Button
+                fullWidth
+                onClick={handleSubmit}
+                disabled={verificationRequired}
+                isLoading={panelStatus === PANEL_STATUSES.SAVING}
+                loadingText="Saving"
+              >
+                Confirm now
               </Button>
               <HelperText>Verify data to submit Weekly Report to Regional</HelperText>
             </>
@@ -233,7 +270,7 @@ export const WeeklyReportsPanelComponent = React.memo(
         </DrawerFooter>
         <AlertCreatedModal
           isOpen={isModalOpen}
-          alerts={alerts}
+          alerts={getSyndromeAlerts(countryData, weekNumber)}
           handleClose={() => setIsModalOpen(false)}
         />
       </StyledDrawer>
@@ -242,26 +279,25 @@ export const WeeklyReportsPanelComponent = React.memo(
 );
 
 WeeklyReportsPanelComponent.propTypes = {
-  handleConfirm: PropTypes.func.isRequired,
-  countryData: PropTypes.object.isRequired,
-  sitesData: PropTypes.array.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  alerts: PropTypes.array.isRequired,
+  weekNumber: PropTypes.number,
   unVerifiedSyndromes: PropTypes.array.isRequired,
+  countryData: PropTypes.array.isRequired,
 };
 
-const mapStateToProps = state => ({
+WeeklyReportsPanelComponent.defaultProps = {
+  weekNumber: null,
+};
+
+const mapStateToProps = (state, { countryData }) => ({
+  weekNumber: getActiveWeekId(state),
   isOpen: checkWeeklyReportsPanelIsOpen(state),
-  countryData: getActiveWeekCountryData(state),
-  sitesData: getSitesForWeek(state),
-  unVerifiedSyndromes: getUnVerifiedSyndromes(state),
-  alerts: getSyndromeAlerts(state),
+  unVerifiedSyndromes: getUnVerifiedSyndromes(state, countryData),
 });
 
 const mapDispatchToProps = dispatch => ({
   handleClose: () => dispatch(closeWeeklyReportsPanel()),
-  handleConfirm: () => dispatch(confirmWeeklyReportsData()),
 });
 
 export const WeeklyReportsPanel = connect(
