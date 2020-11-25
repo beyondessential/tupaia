@@ -475,16 +475,23 @@ export class CartesianChart extends PureComponent {
       <ReferenceLine
         y={average}
         stroke={TUPAIA_ORANGE}
-        label={<ReferenceLabel value={`Average ${formatDataValue(average, valueType)}`} fill={TUPAIA_ORANGE} />}
+        label={
+          <ReferenceLabel
+            value={`Average ${formatDataValue(average, valueType)}`}
+            fill={TUPAIA_ORANGE}
+          />
+        }
         isAnimationActive={isEnlarged && !isExporting}
       />
     );
   };
 
-  renderReferenceLineLabel = (referenceLineLabel) => {
+  renderReferenceLineLabel = referenceLineLabel => {
     const { isExporting } = this.props;
-    const labelToRender = <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />;
-    if (typeof referenceLineLabel != 'undefined') return labelToRender;
+    if (referenceLineLabel === undefined) return null;
+    return (
+      <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />
+    );
   };
 
   renderReferenceLineForValues = () => {
@@ -534,13 +541,15 @@ export class CartesianChart extends PureComponent {
       return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
     });
 
-    return sortedChartConfig.filter(([, { hideFromLegend }]) => !hideFromLegend).map(([dataKey, { chartType = defaultChartType }]) => {
-      const renderMethod = this.chartTypeToRenderMethod[chartType];
-      const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
-      const yAxisId = orientationToYAxisId(yAxisOrientation);
+    return sortedChartConfig
+      .filter(([, { hideFromLegend }]) => !hideFromLegend)
+      .map(([dataKey, { chartType = defaultChartType }]) => {
+        const renderMethod = this.chartTypeToRenderMethod[chartType];
+        const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
+        const yAxisId = orientationToYAxisId(yAxisOrientation);
 
-      return renderMethod({ ...chartConfig[dataKey], dataKey, yAxisId });
-    });
+        return renderMethod({ ...chartConfig[dataKey], dataKey, yAxisId });
+      });
   };
 
   renderArea = ({ color = BLUE, dataKey, yAxisId }) => {

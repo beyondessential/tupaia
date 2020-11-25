@@ -75,20 +75,18 @@ const OLD_CHART_CONFIG = {
 const NEW_CHART_CONFIG = {
   ...OLD_CHART_CONFIG,
   max_reference_line: {
-      referenceValue: 12,
-      color: '#ffffff',
-      referenceLabel: 'MAX (12)',
-      hideFromLegend: true,
-   },
+    referenceValue: 12,
+    referenceLabel: 'MAX (12)',
+    hideFromLegend: true,
+  },
   min_reference_line: {
-      referenceValue: 6,
-      color: '#ffffff',
-      referenceLabel: 'MIN (6)',
-      hideFromLegend: true,
-   },
+    referenceValue: 6,
+    referenceLabel: 'MIN (6)',
+    hideFromLegend: true,
+  },
 };
 
-exports.up = function(db) {
+exports.up = function (db) {
   return db.runSql(`
     UPDATE "dashboardReport"
     SET "viewJson" = "viewJson" || '{"chartConfig": ${JSON.stringify(NEW_CHART_CONFIG)}}'
@@ -96,7 +94,7 @@ exports.up = function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
   UPDATE "dashboardReport"
   SET "viewJson" = "viewJson" || '{"chartConfig": ${JSON.stringify(OLD_CHART_CONFIG)}}'
