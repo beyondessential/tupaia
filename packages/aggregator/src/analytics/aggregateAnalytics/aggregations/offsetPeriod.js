@@ -12,20 +12,46 @@ class RequiredConfigFieldError extends Error {
   }
 }
 
-export const offsetPeriod = (analytics, aggregationConfig = {}) => {
-  const { periodType, offset } = aggregationConfig;
+const validateOffsetPeriodConfig = (config = {}) => {
+  const { periodType, offset } = config;
   if (!periodType) {
     throw new RequiredConfigFieldError('periodType');
   }
   if (!offset && offset !== 0) {
     throw new RequiredConfigFieldError('offset');
   }
+};
 
+const addOffsetToPeriod = (period, { periodType, offset }) => {
   const momentUnit = periodTypeToMomentUnit(periodType.toUpperCase());
-  return analytics.map(analytic => {
-    const { period } = analytic;
-    const momentWithOffset = utcMoment(period).add(offset, momentUnit);
-    const currentPeriodType = periodToType(period);
-    return { ...analytic, period: momentToPeriod(momentWithOffset, currentPeriodType) };
-  });
+  const momentWithOffset = utcMoment(period).add(offset, momentUnit);
+  const currentPeriodType = periodToType(period);
+  return momentToPeriod(momentWithOffset, currentPeriodType);
+};
+
+export const offsetPeriod = (analytics, aggregationConfig) => {
+  validateOffsetPeriodConfig(aggregationConfig);
+
+  return analytics.map(analytic => ({
+    ...analytic,
+    period: addOffsetToPeriod(analytic.period, aggregationConfig),
+  }));
+};
+
+/**
+ * Expands the provided date to the opposite direction than the offset
+ * so that enough data will be available for its calculation
+ */
+const compensateForPeriodOffset = (date, { periodType, offset }) =>
+  addOffsetToPeriod(date, { periodType, offset: offset * -1 });
+
+export const getDateRangeForOffsetPeriod = (dateRange, config) => {
+  validateOffsetPeriodConfig(config);
+  const { offset } = config;
+  const { startDate, endDate } = dateRange;
+
+  return {
+    startDate: offset > 0 ? compensateForPeriodOffset(startDate, config) : startDate,
+    endDate: offset < 0 ? compensateForPeriodOffset(endDate, config) : endDate,
+  };
 };
