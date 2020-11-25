@@ -25,6 +25,8 @@ import {
   YearsSinceQuestion,
   EntityQuestion,
   PrimaryEntityQuestion,
+  ArithmeticQuestion,
+  ConditionQuestion,
   CodeGeneratorQuestion,
 } from './specificQuestions';
 
@@ -46,6 +48,8 @@ const QUESTION_TYPES = {
   Entity: EntityQuestion,
   PrimaryEntity: PrimaryEntityQuestion,
   CodeGenerator: CodeGeneratorQuestion,
+  Arithmetic: ArithmeticQuestion,
+  Condition: ConditionQuestion,
 };
 
 const TYPES_CONTROLLING_QUESTION_TEXT = ['Instruction', 'Checkbox'];
