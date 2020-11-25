@@ -19,8 +19,9 @@ exports.up = function (db) {
     columns: {
       id: { type: 'text', primaryKey: true },
       email: { type: 'text', notNull: true },
-      access_policy: { type: 'text', notNull: true },
+      access_policy: { type: 'jsonb', notNull: true },
       access_token: { type: 'text', notNull: true },
+      access_token_expiry: { type: 'bigint', notNull: true },
       refresh_token: { type: 'text', notNull: true },
     },
     ifNotExists: true,
