@@ -3,20 +3,28 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { NextFunction, Response } from 'express';
-import { respond } from '@tupaia/utils';
-import { PermissionsError, UnauthenticatedError } from '@tupaia/utils';
+import { respond, PermissionsError, UnauthenticatedError } from '@tupaia/utils';
+
 import { PsssRequest, PsssResponseBody, SessionCookie } from '../types';
 import { PsssSessionModel, PsssSessionType } from '../models';
+import { MeditrakConnection } from '../connections';
 
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
-export class RouteHandler {
+export class Route {
   req: PsssRequest;
+
   res: Response;
+
   next: NextFunction;
+
   sessionModel: PsssSessionModel;
+
   sessionCookie?: SessionCookie;
-  session?: PsssSessionType;
+
+  session!: PsssSessionType;
+
+  meditrakConnection?: MeditrakConnection;
 
   constructor(req: PsssRequest, res: Response, next: NextFunction) {
     this.req = req;
@@ -38,7 +46,7 @@ export class RouteHandler {
     // swallowed.
     try {
       const session = await this.verifyAuth();
-      this.session = session;
+      this.meditrakConnection = new MeditrakConnection(session);
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
@@ -46,7 +54,7 @@ export class RouteHandler {
     }
   }
 
-  async verifyAuth(): Promise<PsssSessionType | undefined> {
+  async verifyAuth(): Promise<PsssSessionType> {
     const sessionId = this.sessionCookie?.id;
     if (!sessionId) {
       throw new UnauthenticatedError('User not authenticated');
@@ -66,7 +74,7 @@ export class RouteHandler {
     return session;
   }
 
-  async buildResponse(): Promise<{}> {
-    throw new Error('Any RouteHandler must implement "buildResponse"');
+  async buildResponse(): Promise<Record<string, unknown>> {
+    throw new Error('Any Route must implement "buildResponse"');
   }
 }

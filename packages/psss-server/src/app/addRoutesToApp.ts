@@ -6,15 +6,15 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { PsssRequest } from '../types';
-import { LoginHandler, LogoutHandler, TestHandler } from '../routes';
-import { RouteHandler } from '../routes/RouteHandler';
+import { LoginRoute, LogoutRoute, TestRoute } from '../routes';
+import { Route } from '../routes/Route';
 
-const handleWith = (Handler: typeof RouteHandler) => (
+const handleWith = (RouteClass: typeof Route) => (
   req: PsssRequest,
   res: Response,
   next: NextFunction,
 ) => {
-  const handler = new Handler(req, res, next);
+  const handler = new RouteClass(req, res, next);
   return handler.handle();
 };
 
@@ -38,13 +38,13 @@ export function addRoutesToApp(app: Express) {
   /**
    * GET routes
    */
-  app.get('/v1/test', handleWith(TestHandler));
+  app.get('/v1/test', handleWith(TestRoute));
 
   /**
    * POST routes
    */
-  app.post('/v1/login', handleWith(LoginHandler));
-  app.post('/v1/logout', handleWith(LogoutHandler));
+  app.post('/v1/login', handleWith(LoginRoute));
+  app.post('/v1/logout', handleWith(LogoutRoute));
 
   app.use(handleError);
 }
