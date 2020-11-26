@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 
-import { AccessPolicyObject, SessionColumns, SessionDetails } from '../types';
+import { AccessPolicyObject, SessionFields, SessionDetails } from '../types';
 import { AuthConnection } from '../connections/AuthConnection';
 
 const getTokenExpiry = (accessToken: string) => {
@@ -38,7 +38,7 @@ export class PsssSessionType extends DatabaseType {
 
   static databaseType = 'psss_session';
 
-  constructor(model: PsssSessionModel, fieldValues: SessionColumns) {
+  constructor(model: PsssSessionModel, fieldValues: SessionFields) {
     super(model, fieldValues);
 
     // explicitly reassign all field values to satisfy typescript
@@ -86,7 +86,7 @@ export class PsssSessionType extends DatabaseType {
     this.access_token = accessToken;
     this.access_token_expiry = getTokenExpiry(accessToken);
     this.access_policy = accessPolicy;
-    return this.save(); // update the underlying db record
+    return this.save();
   }
 }
 

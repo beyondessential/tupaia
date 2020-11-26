@@ -14,8 +14,8 @@ const handleWith = (RouteClass: typeof Route) => (
   res: Response,
   next: NextFunction,
 ) => {
-  const handler = new RouteClass(req, res, next);
-  return handler.handle();
+  const route = new RouteClass(req, res, next);
+  return route.handle();
 };
 
 const handleError = (

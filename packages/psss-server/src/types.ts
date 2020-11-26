@@ -7,7 +7,7 @@ import { Request } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
 import { PsssSessionModel, PsssSessionType } from './models';
 
-export type AccessPolicyObject = Record<string, Array<string>>;
+export type AccessPolicyObject = Record<string, string[]>;
 
 export interface SessionCookie {
   id: string;
@@ -66,7 +66,7 @@ export interface SessionDetails {
   refreshToken: string;
 }
 
-export interface SessionColumns {
+export interface SessionFields {
   id: string;
   email: string;
   access_policy: AccessPolicyObject;

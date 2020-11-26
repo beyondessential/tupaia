@@ -11,12 +11,10 @@ const {
   MEDITRAK_API_CLIENT_PASSWORD,
   MEDITRAK_API_URL = 'http://localhost:8090/v2',
 } = process.env;
-
+const MEDITRAK_API_CREDENTIALS = `${MEDITRAK_API_CLIENT_NAME}:${MEDITRAK_API_CLIENT_PASSWORD}`;
+const BASIC_AUTH_HEADER = `Basic ${Buffer.from(MEDITRAK_API_CREDENTIALS).toString('base64')}`;
 const basicAuthHandler = {
-  getAuthHeader: async () => {
-    const credentials = `${MEDITRAK_API_CLIENT_NAME}:${MEDITRAK_API_CLIENT_PASSWORD}`;
-    return `Basic ${Buffer.from(credentials).toString('base64')}`;
-  },
+  getAuthHeader: async () => BASIC_AUTH_HEADER,
 };
 
 export class AuthConnection extends ApiConnection {
