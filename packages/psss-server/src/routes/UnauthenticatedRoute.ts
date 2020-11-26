@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { RouteHandler } from './RouteHandler';
+import { Route } from './Route';
 
-export class UnauthenticatedRouteHandler extends RouteHandler {
+export class UnauthenticatedRoute extends Route {
   async verifyAuth() {
     return undefined;
   }

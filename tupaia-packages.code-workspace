@@ -129,6 +129,7 @@
       "preaggregation",
       "preaggregator",
       "preaggregators",
+      "prestart",
       "promisify",
       "singularise",
       "spec",
