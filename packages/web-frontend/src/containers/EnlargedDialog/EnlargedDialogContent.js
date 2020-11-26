@@ -14,10 +14,11 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
+import { CircularProgress } from '@material-ui/core';
 import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getIsMatrix, getViewWrapper, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { TRANS_BLACK, DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
+import { DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import { LoadingIndicator } from '../Form/common';
 import { getLimits } from '../../utils/periodGranularities';
 
@@ -65,6 +66,12 @@ ExportDate.defaultProps = {
   startDate: null,
   endDate: null,
 };
+
+const LoadingDrillDown = () => (
+  <div style={styles.drillDownWrapper}>
+    <CircularProgress style={styles.progressIndicator} />
+  </div>
+);
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
@@ -247,8 +254,10 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderDrillDown() {
-    const { drillDownContent } = this.props;
-    if (!drillDownContent) return null;
+    const { drillDownContent, isLoading, isDrilledDown, isDrillDownContent } = this.props;
+    if (isDrillDownContent) return null;
+    if (!drillDownContent) return isDrilledDown ? <LoadingDrillDown /> : null;
+    if (isLoading) return <LoadingDrillDown />;
     return (
       <div style={styles.drillDownWrapper}>
         <EnlargedDialogContent
@@ -256,7 +265,7 @@ export class EnlargedDialogContent extends PureComponent {
           exportRef={null} // Drilled down overlays can't export at the moment
           viewContent={drillDownContent}
           drillDownContent={null}
-          isDrilledDown
+          isDrillDownContent
         />
       </div>
     );
@@ -384,6 +393,10 @@ const styles = {
     flexDirection: 'column',
     zIndex: DIALOG_Z_INDEX + 1, // above export buttons.
   },
+  progressIndicator: {
+    alignSelf: 'center',
+    marginTop: 50,
+  },
 };
 
 EnlargedDialogContent.propTypes = {
@@ -399,6 +412,7 @@ EnlargedDialogContent.propTypes = {
   isExporting: PropTypes.bool,
   exportRef: PropTypes.object,
   isDrilledDown: PropTypes.bool,
+  isDrillDownContent: PropTypes.bool,
   onUnDrillDown: PropTypes.func,
 };
 
@@ -415,4 +429,5 @@ EnlargedDialogContent.defaultProps = {
   drillDownContent: null,
   exportRef: null,
   isDrilledDown: false,
+  isDrillDownContent: false,
 };

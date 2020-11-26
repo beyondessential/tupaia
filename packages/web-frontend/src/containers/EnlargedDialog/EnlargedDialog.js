@@ -88,7 +88,8 @@ const EnlargedDialogComponent = ({
     parameterValues: {},
   });
 
-  const viewContent = contentByLevel?.[0]?.viewContent;
+  // Regardless of the drillDown level, we pass the base view content through
+  const baseViewContent = contentByLevel?.[0]?.viewContent;
   const drillDownContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
 
   const { startDate, endDate } = getDatesForCurrentLevel(
@@ -98,6 +99,7 @@ const EnlargedDialogComponent = ({
     drillDownDatesByLevel,
   );
 
+  // This useEffect only acts on the current drillDownLevel
   useEffect(() => {
     const { drillDownLevel, parameterLinks, parameterValues } = drillDownState;
     const cachedOptions = contentByLevel?.[drillDownLevel]?.options;
@@ -148,12 +150,12 @@ const EnlargedDialogComponent = ({
     });
   };
 
-  const isMatrix = getIsMatrix(viewContent);
+  const isMatrix = getIsMatrix(baseViewContent);
 
   const getDialogStyle = () => {
-    const hasBigData = isMatrix || viewContent?.data?.length > 20;
+    const hasBigData = isMatrix || baseViewContent?.data?.length > 20;
     if (hasBigData) return styles.largeContainer;
-    if (getIsDataDownload(viewContent)) return styles.smallContainer;
+    if (getIsDataDownload(baseViewContent)) return styles.smallContainer;
     return styles.container;
   };
 
@@ -163,13 +165,13 @@ const EnlargedDialogComponent = ({
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
 
-    const filename = stringToFilename(`export-${organisationUnitName}-${viewContent.name}`);
+    const filename = stringToFilename(`export-${organisationUnitName}-${baseViewContent.name}`);
 
     try {
       if (format === 'xlsx') {
         await exportToExcel({
           projectCode,
-          viewContent,
+          viewContent: baseViewContent,
           organisationUnitName,
           startDate,
           endDate,
@@ -207,7 +209,7 @@ const EnlargedDialogComponent = ({
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
-          viewContent={viewContent}
+          viewContent={baseViewContent}
           drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
@@ -216,8 +218,9 @@ const EnlargedDialogComponent = ({
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
           errorMessage={errorMessage}
-          isDrilledDown={false}
+          isDrillDownContent={false}
           onUnDrillDown={onUnDrillDown}
+          isDrilledDown={drillDownState.drillDownLevel > 0}
         />
       </Dialog>
       <ExportDialog
