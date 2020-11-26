@@ -15,12 +15,12 @@ import { AnalyticResponseFixture } from '../stubs';
  * 20192020 => analytics exist for periods: 2019, 2020
  */
 const AGGREGATOR_ARRAY_ANALYTICS: [string, string, string, number][] = [
-  ['Z_To_2019', 'TO', '2019', 0],
-  ['A_To_2019', 'TO', '2019', 1],
-  ['B_To_2019', 'TO', '2019', 2],
-  ['C_To_2019', 'TO', '2019', 3],
-  ['D_To_2019', 'TO', '2019', 4],
-  ['E_To_2019', 'TO', '2019', 5],
+  ['Zero', 'TO', '2019', 0],
+  ['One', 'TO', '2019', 1],
+  ['Two', 'TO', '2019', 2],
+  ['Three', 'TO', '2019', 3],
+  ['Four', 'TO', '2019', 4],
+  ['Five', 'TO', '2019', 5],
 
   ['A_ToPg_20192020', 'TO', '2019', 1],
   ['A_ToPg_20192020', 'TO', '2020', 10],

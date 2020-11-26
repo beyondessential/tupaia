@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "aggregator" "data-broker" "database" "utils"
+echo "aggregator" "data-broker" "database" "expression-parser" "utils"
