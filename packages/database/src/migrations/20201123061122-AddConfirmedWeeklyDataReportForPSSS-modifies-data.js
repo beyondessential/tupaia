@@ -47,7 +47,7 @@ exports.up = async function (db) {
       transform: [
         'keyValueByDataElementName',
         'convertPeriodToWeek',
-        'aggregateFirstValuePerPeriodPerOrgUnit',
+        'firstValuePerPeriodPerOrgUnit',
         {
           transform: 'select',
           "'AFR'": '$row.PSSS_Confirmed_AFR_Cases',

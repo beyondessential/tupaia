@@ -43,7 +43,7 @@ const min = (existingRow: Row, field: string, value: FieldValue) => {
 };
 
 const unique = (existingRow: Row, field: string, value: FieldValue) => {
-  if (existingRow[field] !== undefined && existingRow[field] !== value) {
+  if (!isUndefined(existingRow[field]) && existingRow[field] !== value) {
     existingRow[field] = 'NO_UNIQUE_VALUE';
   } else {
     existingRow[field] = value;
@@ -55,7 +55,7 @@ const drop = (existingRow: Row, field: string, value: FieldValue) => {
 };
 
 const first = (existingRow: Row, field: string, value: FieldValue) => {
-  if (!existingRow[field]) {
+  if (isUndefined(existingRow[field])) {
     existingRow[field] = value;
   }
 };

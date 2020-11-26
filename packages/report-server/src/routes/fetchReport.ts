@@ -24,7 +24,7 @@ class FetchReportRouteHandler {
       reportBuilder.setConfig(body.testConfig);
     } else {
       const report = await fetchReportObjectFromDb(models, params.reportCode);
-      checkUserHasAccessToReport(
+      await checkUserHasAccessToReport(
         models,
         accessPolicy,
         report,
@@ -55,25 +55,21 @@ const checkUserHasAccessToReport = async (
   models,
   accessPolicy,
   report,
-  organisationUnitCodes: string[],
+  requestedOrgUnitCodes: string[],
 ) => {
   const permissionGroup = await models.permissionGroup.findById(report.permission_group_id);
-  const orgUnitsAndCodes = await Promise.all(
-    organisationUnitCodes.map(async orgUnitCode => ({
-      orgUnitCode,
-      orgUnit: await models.entity.findOne({ code: orgUnitCode }),
-    })),
-  );
 
-  const invalidOrgUnit = orgUnitsAndCodes.find(orgUnitAndCode => !orgUnitAndCode.orgUnit);
-  if (invalidOrgUnit) {
-    throw new Error(`No entity found with code ${invalidOrgUnit.orgUnitCode}`);
+  const foundOrgUnits = await models.entity.find({ code: requestedOrgUnitCodes });
+  const foundOrgUnitCodes = foundOrgUnits.map(orgUnit => orgUnit.code);
+
+  const missingOrgUnitCodes = requestedOrgUnitCodes.filter(
+    orgUnitCode => !foundOrgUnitCodes.includes(orgUnitCode),
+  );
+  if (missingOrgUnitCodes.length > 0) {
+    throw new Error(`No entities found with codes ${missingOrgUnitCodes}`);
   }
 
-  const countryCodes = new Set(
-    orgUnitsAndCodes.map(orgUnitAndCode => orgUnitAndCode.orgUnit.country_code),
-  );
-
+  const countryCodes = new Set(foundOrgUnits.map(orgUnit => orgUnit.country_code));
   countryCodes.forEach(countryCode => {
     if (!accessPolicy.allows(countryCode, permissionGroup.name)) {
       throw new Error(`No ${permissionGroup.name} access for user to ${countryCode}`);
