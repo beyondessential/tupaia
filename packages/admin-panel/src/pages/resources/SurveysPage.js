@@ -311,6 +311,11 @@ const QUESTION_COLUMNS = [
                 type: 'json',
                 getJsonFieldSchema: () => [
                   {
+                    label: 'Create New',
+                    fieldName: 'createNew',
+                    type: 'boolean',
+                  },
+                  {
                     label: 'Attributes',
                     fieldName: 'attributes',
                     type: 'json',
