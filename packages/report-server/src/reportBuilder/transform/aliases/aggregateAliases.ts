@@ -1,6 +1,6 @@
 import { buildTransform } from '..';
 
-export const aggregateMostRecentValuePerOrgUnit = () =>
+export const mostRecentValuePerOrgUnit = () =>
   buildTransform([
     {
       transform: 'sort',
@@ -10,5 +10,15 @@ export const aggregateMostRecentValuePerOrgUnit = () =>
       transform: 'aggregate',
       organisationUnit: 'group',
       '...': 'last',
+    },
+  ]);
+
+export const firstValuePerPeriodPerOrgUnit = () =>
+  buildTransform([
+    {
+      transform: 'aggregate',
+      organisationUnit: 'group',
+      period: 'group',
+      '...': 'first',
     },
   ]);
