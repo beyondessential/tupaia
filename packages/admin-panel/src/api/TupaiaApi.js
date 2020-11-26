@@ -5,7 +5,7 @@
 
 import { saveAs } from 'file-saver';
 
-import { checkStatusAndParseResponse, stringifyQuery } from '@tupaia/utils';
+import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../authentication';
 
@@ -139,7 +139,8 @@ export class TupaiaApi {
       newFetchConfig.headers.Authorization = this.getBearerAuthHeader();
       return this.request(endpoint, queryParameters, newFetchConfig, false);
     }
-    return checkStatusAndParseResponse(response);
+    await verifyResponseStatus(response);
+    return response;
   }
 
   buildFetchConfig(requestMethod, authHeader, body, isJson = true) {

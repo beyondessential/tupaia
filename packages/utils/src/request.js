@@ -71,7 +71,7 @@ export const asynchronouslyFetchValuesForObject = async objectSpecification => {
   return returnObject;
 };
 
-export const checkStatusAndParseResponse = async response => {
+export const verifyResponseStatus = async response => {
   if (!response.ok) {
     let responseJson;
     try {
@@ -90,5 +90,4 @@ export const checkStatusAndParseResponse = async response => {
       throw new Error(responseJson.error);
     }
   }
-  return response.json();
 };

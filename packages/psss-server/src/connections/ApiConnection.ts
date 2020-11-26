@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { fetchWithTimeout, checkStatusAndParseResponse, stringifyQuery } from '@tupaia/utils';
+import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 import { FetchConfig, QueryParameters, RequestBody } from '../types';
 
 interface AuthHandler {
@@ -54,6 +54,7 @@ export class ApiConnection {
     }
 
     const response = await fetchWithTimeout(queryUrl, fetchConfig);
-    return checkStatusAndParseResponse(response);
+    await verifyResponseStatus(response);
+    return response.json();
   }
 }
