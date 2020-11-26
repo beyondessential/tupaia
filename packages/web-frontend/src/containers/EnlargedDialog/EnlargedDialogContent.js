@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getIsMatrix, getViewWrapper, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
+import { TRANS_BLACK, DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import { LoadingIndicator } from '../Form/common';
 import { getLimits } from '../../utils/periodGranularities';
 
@@ -246,6 +246,43 @@ export class EnlargedDialogContent extends PureComponent {
     );
   }
 
+  renderDrillDown() {
+    const { drillDownContent: viewContent, organisationUnitName } = this.props;
+    if (!viewContent) return null;
+    const ViewWrapper = getViewWrapper(viewContent);
+    const viewProps = {
+      viewContent,
+      isEnlarged: true,
+      onClose: () => {},
+      onItemClick: this.onItemClick,
+    };
+    if (getIsMatrix(viewContent)) {
+      viewProps.organisationUnitName = organisationUnitName;
+      viewProps.onSetDateRange = this.onSetDateRange;
+    }
+
+    return (
+      <div
+        style={{
+          padding: 20,
+          backgroundColor: TRANS_BLACK,
+          position: 'absolute',
+          top: 20,
+          left: 20,
+          right: 20,
+          bottom: 20,
+          overflowY: 'auto',
+          maxHeight: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          zIndex: DIALOG_Z_INDEX + 1, // above export buttons.
+        }}
+      >
+        <ViewWrapper {...viewProps} isExporting={false} />
+      </div>
+    );
+  }
+
   render() {
     if (!this.props.viewContent) return <LoadingIndicator />;
 
@@ -273,7 +310,10 @@ export class EnlargedDialogContent extends PureComponent {
         {this.renderTitle()}
         {this.renderDescription()}
         <DialogContent style={contentStyle}>
-          <div style={getBodyStyle()}>{this.renderBody()}</div>
+          <div style={getBodyStyle()}>
+            {this.renderBody()}
+            {this.renderDrillDown()}
+          </div>
           {this.renderPeriodRange()}
         </DialogContent>
         {isExporting && (
@@ -357,6 +397,7 @@ const styles = {
 EnlargedDialogContent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  drillDownContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onOpenExportDialog: PropTypes.func,
   organisationUnitName: PropTypes.string,
   onDrillDown: PropTypes.func,
@@ -379,6 +420,7 @@ EnlargedDialogContent.defaultProps = {
   organisationUnitName: '',
   onOpenExportDialog: null,
   viewContent: null,
+  drillDownContent: null,
   exportRef: null,
   isDrilledDown: false,
 };

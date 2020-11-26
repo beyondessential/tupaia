@@ -10,7 +10,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import styled from 'styled-components';
-import { fetchEnlargedDialogData, setEnlargedDashboardDateRange, closeEnlargedDialog } from '../../actions';
+import {
+  fetchEnlargedDialogData,
+  setEnlargedDashboardDateRange,
+  closeEnlargedDialog,
+} from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
@@ -85,7 +89,9 @@ const EnlargedDialogComponent = ({
     parameterValues: {},
   });
 
-  const viewContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
+  const viewContent = contentByLevel?.[0]?.viewContent;
+  const drillDownContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
+
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
     startDateForTopLevel,
@@ -117,7 +123,7 @@ const EnlargedDialogComponent = ({
   }, [startDate, endDate, drillDownState]);
 
   const onDrillDown = chartItem => {
-    const { drillDown } = viewContent;
+    const { drillDown } = drillDownContent;
     if (!drillDown) return;
     const newDrillDownLevel = drillDownState.drillDownLevel + 1;
 
@@ -208,6 +214,7 @@ const EnlargedDialogComponent = ({
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
           viewContent={viewContent}
+          drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
           onOpenExportDialog={handleOpenExportDialog}
