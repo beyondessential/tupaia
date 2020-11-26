@@ -15,7 +15,7 @@ const buildParameterString = (key, value) => {
 
 export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
   const queryParamsString = Object.entries(queryParams || {})
-    .filter(([key, value]) => value !== undefined && value !== null)
+    .filter(([, value]) => value !== undefined && value !== null)
     .map(([key, value]) => buildParameterString(key, value))
     .join('&');
 
@@ -64,9 +64,31 @@ export const fetchWithTimeout = (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIM
 export const asynchronouslyFetchValuesForObject = async objectSpecification => {
   const returnObject = {};
   await Promise.all(
-    Object.entries(objectSpecification).map(async ([key, asyncronouslyFetchValue]) => {
-      returnObject[key] = await asyncronouslyFetchValue();
+    Object.entries(objectSpecification).map(async ([key, asynchronouslyFetchValue]) => {
+      returnObject[key] = await asynchronouslyFetchValue();
     }),
   );
   return returnObject;
+};
+
+export const checkStatusAndParseResponse = async response => {
+  if (!response.ok) {
+    let responseJson;
+    try {
+      responseJson = await response.json();
+    } catch (error) {
+      throw new Error(`Network error ${response.status}`);
+    }
+    if (
+      responseJson.status &&
+      (responseJson.status < 200 || responseJson.status >= 300) &&
+      !responseJson.error
+    ) {
+      throw new Error(responseJson.message);
+    }
+    if (responseJson.error) {
+      throw new Error(responseJson.error);
+    }
+  }
+  return response.json();
 };
