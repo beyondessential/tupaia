@@ -31,4 +31,11 @@ describe('functions', () => {
         expect(functions.eq(1, 2)).toBe(false));
     });
   });
+
+  describe('utils', () => {
+    describe('convertToPeriod', () => {
+      it('converts given period to target type', () =>
+        expect(functions.convertToPeriod('20200101', 'WEEK')).toBe('2020W01'));
+    });
+  });
 });

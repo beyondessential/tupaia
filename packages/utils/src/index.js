@@ -15,7 +15,7 @@ export { filterEntities } from './filterEntities';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { getUniqueEntries } from './getUniqueEntries';
 export * from './object';
-export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
+export * from './request';
 export { replaceValues } from './replaceValues';
 export { respond } from './respond';
 export * from './string';

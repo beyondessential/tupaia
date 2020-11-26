@@ -63,16 +63,23 @@ export class DatabaseAccess extends SyncingDatabase {
     });
   }
 
-  saveSurveyResponse(responseObject, answersObjects, entityObjects) {
+  saveOptionObjects(optionObjects) {
+    return optionObjects.map(optionObject => this.create('Option', optionObject));
+  }
+
+  saveSurveyResponse(responseObject, answersObjects, newObjects = {}) {
     this.write(() => {
+      const { entityObjects = [], optionObjects = [] } = newObjects;
       const answers = answersObjects.map(answerObject => this.create('Answer', answerObject));
       const entitiesCreated = entityObjects.map(entityObject =>
         this.create('Entity', entityObject),
       );
+      const optionsCreated = this.saveOptionObjects(optionObjects);
       const surveyResponse = this.create('Response', {
         ...responseObject,
         answers,
         entitiesCreated,
+        optionsCreated,
       });
       this.addChangeToSync('SubmitSurveyResponse', surveyResponse.id);
     });

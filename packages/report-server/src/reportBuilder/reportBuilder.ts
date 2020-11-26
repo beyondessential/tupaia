@@ -1,5 +1,5 @@
 import { Aggregator } from '../aggregator';
-import { FetchReportQuery } from '../types';
+import { FetchReportQuery, ReportConfig } from '../types';
 import { buildFetch } from './fetch';
 import { buildTransform } from './transform';
 import { Row } from './types';
@@ -9,22 +9,25 @@ interface BuildReport {
 }
 
 export class ReportBuilder {
-  readonly report;
+  config?: ReportConfig;
 
-  readonly aggregator: Aggregator;
+  testData?: Row[];
 
-  readonly query: FetchReportQuery;
+  setConfig = (config: ReportConfig) => {
+    this.config = config;
+  };
 
-  constructor(report, aggregator: Aggregator, query: FetchReportQuery) {
-    this.report = report;
-    this.aggregator = aggregator;
-    this.query = query;
-  }
+  setTestData = (testData: Row[]) => {
+    this.testData = testData;
+  };
 
-  build = async (): Promise<BuildReport> => {
-    const fetch = buildFetch(this.report.config.fetch);
-    const transform = buildTransform(this.report.config.transform);
-    const data = await fetch(this.aggregator, this.query);
+  build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuildReport> => {
+    if (!this.config) {
+      throw new Error('Report requires a config be set');
+    }
+    const fetch = buildFetch(this.config.fetch);
+    const transform = buildTransform(this.config.transform);
+    const data = this.testData ? { results: this.testData } : await fetch(aggregator, query);
     data.results = transform(data.results);
     return data;
   };

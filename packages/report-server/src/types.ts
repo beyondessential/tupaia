@@ -18,9 +18,19 @@ export interface FetchReportParams extends ParamsDictionary {
   reportCode: string;
 }
 
+export interface ReportConfig {
+  fetch: {
+    dataElements?: string[];
+    dataGroups?: string[];
+  };
+  transform: (string | Record<string, unknown>)[];
+}
+
 interface ReportsRequestBody {
   emailAddress: string;
   password: string;
+  testConfig?: ReportConfig;
+  testData?: Record<string, string | number>[];
 }
 
 export interface ReportsRequest<
@@ -40,7 +50,5 @@ export interface Event {
   eventDate: string;
   orgUnitName: string;
   orgUnit: string;
-  dataValues?: {
-    [key: string]: string | number;
-  };
+  dataValues?: Record<string, string | number>;
 }

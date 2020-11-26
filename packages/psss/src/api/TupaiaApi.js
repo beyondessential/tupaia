@@ -6,7 +6,7 @@
 // so have added this polyfill so that cypress requests fall back to xhr
 // https://docs.cypress.io/guides/guides/network-requests.html#Testing-Strategies
 import 'whatwg-fetch';
-import { stringifyQuery } from '@tupaia/utils';
+import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 import {
   getAccessToken,
   getRefreshToken,
@@ -157,24 +157,7 @@ export class TupaiaApi {
         throw error;
       }
     }
-    if (!response.ok) {
-      let responseJson;
-      try {
-        responseJson = await response.json();
-      } catch (error) {
-        throw new Error(`Network error ${response.status}`);
-      }
-      if (
-        responseJson.status &&
-        (responseJson.status < 200 || responseJson.status >= 300) &&
-        !responseJson.error
-      ) {
-        throw new Error(responseJson.message);
-      }
-      if (responseJson.error) {
-        throw new Error(responseJson.error);
-      }
-    }
+    await verifyResponseStatus(response);
     return response;
   }
 
