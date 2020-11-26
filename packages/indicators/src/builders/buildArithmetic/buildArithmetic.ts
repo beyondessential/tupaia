@@ -42,12 +42,19 @@ const fetchAnalyticClusters = async (
 
 const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) => {
   const parser = new ExpressionParser();
+  const calculateValue = (dataValues: Record<string, number>) => {
+    parser.setScope(dataValues);
+    const value = parser.evaluateToNumber(formula);
+    parser.clearScope();
+    return value;
+  };
 
   return analyticClusters
-    .map(({ organisationUnit, period, dataValues }) => {
-      parser.setScope(dataValues);
-      return { organisationUnit, period, value: parser.evaluateToNumber(formula) };
-    })
+    .map(({ organisationUnit, period, dataValues }) => ({
+      organisationUnit,
+      period,
+      value: calculateValue(dataValues),
+    }))
     .filter(({ value }) => isFinite(value));
 };
 
