@@ -135,10 +135,7 @@ const getSyndromeAlerts = (countryData, weekNumber) => {
     return [];
   }
 
-  return countryData[weekNumber].syndromes.reduce(
-    (statuses, syndrome) => (syndrome.isAlert ? [...statuses, syndrome] : statuses),
-    [],
-  );
+  return countryData[weekNumber].syndromes.filter(s => s.isAlert);
 };
 
 export const WeeklyReportsPanelComponent = React.memo(
@@ -175,9 +172,8 @@ export const WeeklyReportsPanelComponent = React.memo(
       }
     };
 
-    const showSitesSection =
-      weekNumber !== null && sitesData && sitesData.data && sitesData.data.length > 0;
-    const showCountriesSection = weekNumber !== null && countryData && countryData.length > 0;
+    const showSitesSection = weekNumber !== null && sitesData?.data?.length > 0;
+    const showCountriesSection = weekNumber !== null && countryData?.length > 0;
 
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
