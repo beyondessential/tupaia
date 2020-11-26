@@ -5,7 +5,7 @@
 
 import { createSelector } from 'reselect';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { authenticate, updateUser, updatePassword, getUser } from '../api';
+import { authenticate, updateUser, getUser } from '../api';
 import { createReducer } from '../utils/createReducer';
 
 // actions
