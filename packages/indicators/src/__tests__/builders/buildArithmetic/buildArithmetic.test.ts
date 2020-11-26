@@ -51,7 +51,21 @@ describe('buildArithmetic', () => {
         'non empty string',
       ],
       [
-        'aggregation array item is invalid',
+        'aggregation array item type is invalid',
+        { formula: 'A + B', aggregation: ['SUM', true] },
+        new RegExp(
+          /item #2.* must be one of \(AggregationDescriptor | AggregationDescriptor\[\]\)/,
+        ),
+      ],
+      [
+        'aggregation array item is null',
+        { formula: 'A + B', aggregation: ['SUM', null] },
+        new RegExp(
+          /item #2.* must be one of \(AggregationDescriptor | AggregationDescriptor\[\]\)/,
+        ),
+      ],
+      [
+        'aggregation array item value is invalid',
         { formula: 'A + B', aggregation: ['SUM', ''] },
         /item #2.* must not be empty/,
       ],
