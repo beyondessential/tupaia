@@ -5,8 +5,8 @@
 
 import { createSelector } from 'reselect';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { authenticate, updateUser, updatePassword, getUser } from '../api';
 import { createReducer } from '../utils/createReducer';
-import { authenticate, getUser, updateUser } from '../api';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -16,7 +16,7 @@ const LOGOUT = 'LOGOUT';
 export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
-export const login = ({ email, password }) => async (dispatch, getState, { api }) => {
+export const login = ({ email, password }) => async dispatch => {
   const deviceName = window.navigator.userAgent;
 
   dispatch({ type: LOGIN_START });
@@ -49,7 +49,7 @@ export const logout = () => ({
   type: LOGOUT,
 });
 
-export const updateProfile = payload => async (dispatch, getState, { api }) => {
+export const updateProfile = payload => async dispatch => {
   await updateUser(payload);
   const user = await getUser();
   dispatch({
@@ -58,12 +58,7 @@ export const updateProfile = payload => async (dispatch, getState, { api }) => {
   });
 };
 
-export const updatePassword = payload => async (dispatch, getState, { api }) =>
-  api.post(`me/changePassword`, null, payload);
-
 // selectors
-export const getAccessToken = ({ auth }) => auth.accessToken;
-export const getRefreshToken = ({ auth }) => auth.refreshToken;
 export const getCurrentUser = ({ auth }) => auth && auth.user;
 export const getError = ({ auth }) => auth.error;
 export const checkIsPending = ({ auth }) => auth.status === 'pending';

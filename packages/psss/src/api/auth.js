@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { get, put, post } from '../api';
-import { getEntitiesAllowed } from '../../store';
+import { get, put, post } from './api';
+import { getEntitiesAllowed } from '../store';
 
 const PSSS_API_URL = process.env.REACT_APP_PSSS_API_URL;
 const CLIENT_BASIC_AUTH_HEADER = process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER;
@@ -36,3 +36,5 @@ export const updateUser = data =>
   put(`${PSSS_API_URL}/me`, {
     data,
   });
+
+export const updatePassword = data => post(`${PSSS_API_URL}/me/changePassword`, { data });

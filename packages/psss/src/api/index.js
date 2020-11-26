@@ -3,6 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './singletons';
-export * from './connectApi';
-export * from './psssService';
+export * from './alertsOutbreaks';
+export * from './auth';
+export * from './weeklyReports';
