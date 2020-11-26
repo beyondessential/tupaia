@@ -11,7 +11,7 @@ const permissionGroupNameToId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
-const REPORT_CODE = 'PSSS_CONFIRMED_WEEKLY_REPORT';
+const REPORT_CODE = 'PSSS_Confirmed_Weekly_Report';
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -46,17 +46,8 @@ exports.up = async function (db) {
       },
       transform: [
         'keyValueByDataElementName',
-        {
-          transform: 'select',
-          "'period'": "convertToPeriod($row.period, 'WEEK')",
-          '...': '*',
-        },
-        {
-          transform: 'aggregate',
-          period: 'group',
-          organisationUnit: 'group',
-          '...': 'last',
-        },
+        'convertPeriodToWeek',
+        'aggregateFirstValuePerPeriodPerOrgUnit',
         {
           transform: 'select',
           "'AFR'": '$row.PSSS_Confirmed_AFR_Cases',

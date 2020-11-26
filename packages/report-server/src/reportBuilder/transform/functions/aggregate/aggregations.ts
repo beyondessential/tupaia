@@ -54,6 +54,12 @@ const drop = (existingRow: Row, field: string, value: FieldValue) => {
   // Do nothing, don't add the field to the existing row
 };
 
+const first = (existingRow: Row, field: string, value: FieldValue) => {
+  if (!existingRow[field]) {
+    existingRow[field] = value;
+  }
+};
+
 const last = (existingRow: Row, field: string, value: FieldValue) => {
   existingRow[field] = value;
 };
@@ -66,6 +72,7 @@ export const aggregations = {
   min,
   unique,
   drop,
+  first,
   last,
   default: last,
 };

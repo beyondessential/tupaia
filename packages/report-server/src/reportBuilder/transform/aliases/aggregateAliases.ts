@@ -12,3 +12,13 @@ export const aggregateMostRecentValuePerOrgUnit = () =>
       '...': 'last',
     },
   ]);
+
+export const aggregateFirstValuePerPeriodPerOrgUnit = () =>
+  buildTransform([
+    {
+      transform: 'aggregate',
+      organisationUnit: 'group',
+      period: 'group',
+      '...': 'first',
+    },
+  ]);

@@ -9,33 +9,25 @@ interface BuildReport {
 }
 
 export class ReportBuilder {
-  readonly config: ReportConfig;
+  config?: ReportConfig;
 
-  readonly aggregator: Aggregator;
+  testData?: Row[];
 
-  readonly query: FetchReportQuery;
-
-  readonly testData: Row[];
-
-  constructor(
-    config: ReportConfig,
-    aggregator: Aggregator,
-    query: FetchReportQuery,
-    testData: Row[] = [],
-  ) {
+  setConfig = (config: ReportConfig) => {
     this.config = config;
-    this.aggregator = aggregator;
-    this.query = query;
-    this.testData = testData;
-  }
+  };
 
-  build = async (): Promise<BuildReport> => {
+  setTestData = (testData: Row[]) => {
+    this.testData = testData;
+  };
+
+  build = async (aggregator: Aggregator, query: FetchReportQuery): Promise<BuildReport> => {
+    if (!this.config) {
+      throw new Error('Report requires a config be set');
+    }
     const fetch = buildFetch(this.config.fetch);
     const transform = buildTransform(this.config.transform);
-    const data =
-      this.testData.length > 0
-        ? { results: this.testData }
-        : await fetch(this.aggregator, this.query);
+    const data = this.testData ? { results: this.testData } : await fetch(aggregator, query);
     data.results = transform(data.results);
     return data;
   };
