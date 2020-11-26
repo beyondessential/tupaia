@@ -13,8 +13,8 @@
     - type: serial
       name: test
       steps:
-        - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
-          name: test-all
+        - type: parallel
+          name: test-batch-1 # they're in sandboxed containers, but share a db which can't handle all at once
           steps:
             - name: test-meditrak-server
               service: testing
@@ -28,6 +28,9 @@
             - name: test-report-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
+        - type: parallel
+          name: test-batch-2
+          steps:
             - name: test-database
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh database'
