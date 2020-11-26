@@ -22,17 +22,17 @@ describe('buildArithmetic', () => {
       [
         'undefined aggregation',
         { formula: 'A + B' },
-        'must be one of (string | { type: string }), or an array of those types',
+        'must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
       ],
       [
         'null aggregation',
         { formula: 'A + B', aggregation: null },
-        'must be one of (string | { type: string }), or an array of those types',
+        'must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
       ],
       [
         'wrong aggregation type',
         { formula: 'A + B', aggregation: true },
-        'must be one of (string | { type: string }), or an array of those types',
+        'must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
       ],
       ['empty aggregation string', { formula: 'A + B', aggregation: '' }, 'must not be empty'],
       [
@@ -51,7 +51,21 @@ describe('buildArithmetic', () => {
         'non empty string',
       ],
       [
-        'aggregation array item is invalid',
+        'aggregation array item type is invalid',
+        { formula: 'A + B', aggregation: ['SUM', true] },
+        new RegExp(
+          /item #2.* must be one of \(AggregationDescriptor | AggregationDescriptor\[\]\)/,
+        ),
+      ],
+      [
+        'aggregation array item is null',
+        { formula: 'A + B', aggregation: ['SUM', null] },
+        new RegExp(
+          /item #2.* must be one of \(AggregationDescriptor | AggregationDescriptor\[\]\)/,
+        ),
+      ],
+      [
+        'aggregation array item value is invalid',
         { formula: 'A + B', aggregation: ['SUM', ''] },
         /item #2.* must not be empty/,
       ],

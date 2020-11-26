@@ -100,6 +100,7 @@ import {
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
+  SET_PROJECT_ADDITIONAL_ACCESS,
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
 } from './actions';
@@ -390,6 +391,7 @@ function requestCountryAccess(
     countries: [],
     isFetchingCountryAccessData: false,
     isRequestingCountryAccess: false,
+    isRequestingAdditionalCountryAccess: false,
     errorMessage: '',
     hasRequestCountryAccessCompleted: false,
   },
@@ -401,12 +403,20 @@ function requestCountryAccess(
       return {
         ...state,
         isFetchingCountryAccessData: true,
+        isRequestingAdditionalCountryAccess: false,
+        errorMessage: '',
+      };
+    case SET_PROJECT_ADDITIONAL_ACCESS:
+      return {
+        ...state,
+        isRequestingAdditionalCountryAccess: true,
         errorMessage: '',
       };
     case FETCH_COUNTRY_ACCESS_DATA_ERROR:
       return {
         ...state,
         isFetchingCountryAccessData: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: action.error || 'Something went wrong while fetching country access data',
       };
     case FETCH_COUNTRY_ACCESS_DATA_SUCCESS:
@@ -426,6 +436,7 @@ function requestCountryAccess(
       return {
         ...state,
         isRequestingCountryAccess: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage:
           action.error ||
           'Something went wrong during country access request, please check the form and try again',
@@ -435,12 +446,14 @@ function requestCountryAccess(
         ...state,
         hasRequestCountryAccessCompleted: true,
         isRequestingCountryAccess: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: '',
       };
     case CLOSE_USER_DIALOG:
       return {
         ...state,
         hasRequestCountryAccessCompleted: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: '',
       };
     default:

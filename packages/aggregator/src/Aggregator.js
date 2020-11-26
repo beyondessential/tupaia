@@ -4,10 +4,10 @@
  */
 
 import {
+  adjustTemporalDimensionsToAggregation,
   aggregateAnalytics,
   filterAnalytics,
   periodFromAnalytics,
-  getPeriodForDataBroker,
 } from './analytics';
 import { aggregateEvents } from './events';
 import { AGGREGATION_TYPES } from './aggregationTypes';
@@ -62,15 +62,14 @@ export class Aggregator {
     const code = Array.isArray(codeInput) ? codeInput : [codeInput];
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
     const { startDate, endDate, period, ...restOfFetchOptions } = fetchOptions;
-    const periodForDataBroker = getPeriodForDataBroker(aggregationOptions.aggregationType, {
-      startDate,
-      endDate,
-      period,
-    });
+    const temporalDimensions = adjustTemporalDimensionsToAggregation(
+      { startDate, endDate, period },
+      aggregationOptions,
+    );
 
     const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, {
       ...restOfFetchOptions,
-      ...periodForDataBroker,
+      ...temporalDimensions,
     });
 
     return {

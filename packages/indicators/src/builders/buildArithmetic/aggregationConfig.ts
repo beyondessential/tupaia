@@ -14,19 +14,22 @@ enum AggregationType {
   // Dictionary keys are data elements included in `ArithmeticConfig.formula`
   // or `ArithmeticConfig.parameters`
   Dictionary, // { BCD1: 'SUM', BCD2: ['COUNT', 'FINAL_EACH_WEEK' ] }
-  Invalid,
 }
 
 const isParameterCode = (parameters: { code: string }[], code: string) =>
   !!parameters.find(p => p.code === code);
 
 const getAggregationType = (aggregation: unknown): AggregationType => {
+  const invalidTypeError = new Error(
+    'Aggregation config must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
+  );
+
   switch (typeof aggregation) {
     case 'string':
       return AggregationType.String;
     case 'object':
       if (aggregation === null) {
-        return AggregationType.Invalid;
+        throw invalidTypeError;
       }
       if (Array.isArray(aggregation)) {
         return AggregationType.Array;
@@ -36,7 +39,7 @@ const getAggregationType = (aggregation: unknown): AggregationType => {
       }
       return AggregationType.Dictionary;
     default:
-      return AggregationType.Invalid;
+      throw invalidTypeError;
   }
 };
 
@@ -58,7 +61,7 @@ const validateAggregationDescriptor = (descriptor: unknown) => {
     // fall through for `null`
     default:
       throw new Error(
-        'Aggregation must be one of (string | { type: string }), or an array of those types',
+        'Aggregation must be one of (AggregationDescriptor | AggregationDescriptor[])',
       );
   }
 };
