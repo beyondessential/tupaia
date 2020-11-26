@@ -30,20 +30,12 @@ export const getActiveWeekId = ({ weeklyReports }) => weeklyReports.id;
 export const getVerifiedStatus = ({ weeklyReports }, syndromeId) =>
   weeklyReports.verifiedStatuses.includes(syndromeId);
 
-export const getUnVerifiedSyndromes = ({ weeklyReports }, countryData) => {
-  const { id } = weeklyReports;
-  if (id === null || countryData.length === 0) {
-    return [];
-  }
-  const statuses = weeklyReports.verifiedStatuses;
-  return countryData[id].syndromes.reduce((list, syndrome) => {
-    if (syndrome.isAlert && !statuses.includes(syndrome.id)) {
-      return [...list, syndrome.id];
-    }
-
-    return list;
-  }, []);
-};
+export const getUnVerifiedSyndromes = ({ weeklyReports }, alerts) =>
+  alerts.reduce(
+    (list, syndrome) =>
+      weeklyReports.verifiedStatuses.includes(syndrome.id) ? list : [...list, syndrome.id],
+    [],
+  );
 
 // reducer
 const defaultState = {

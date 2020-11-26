@@ -22,7 +22,7 @@ import {
 } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
 import { CountryTable, WeeklyReportsPanel } from '../../containers';
-import { openWeeklyReportsPanel, setActiveWeek } from '../../store';
+import { getActiveWeekId, openWeeklyReportsPanel, setActiveWeek } from '../../store';
 import { useTableQuery } from '../../hooks';
 
 const ExampleContent = styled.div`
@@ -61,7 +61,7 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen }) => {
+export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const [page, setPage] = useState(0);
   const { countryCode } = useParams();
   const {
@@ -91,7 +91,9 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen }) => {
           setPage={setPage}
         />
         {isFetching && 'Fetching...'}
-        {!isLoading && data.data && <WeeklyReportsPanel countryData={data.data} />}
+        {!isLoading && activeWeek !== null && (
+          <WeeklyReportsPanel activeWeek={activeWeek} countryWeekData={data.data[activeWeek]} />
+        )}
       </Main>
       <Sidebar>
         <Card variant="outlined">
@@ -128,7 +130,10 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen }) => {
 
 WeeklyCasesTabViewComponent.propTypes = {
   handleOpen: PropTypes.func.isRequired,
+  activeWeek: PropTypes.number.isRequired,
 };
+
+const mapStateToProps = state => ({ activeWeek: getActiveWeekId(state) });
 
 const mapDispatchToProps = dispatch => ({
   handleOpen: id => {
@@ -137,4 +142,7 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export const WeeklyCasesTabView = connect(null, mapDispatchToProps)(WeeklyCasesTabViewComponent);
+export const WeeklyCasesTabView = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(WeeklyCasesTabViewComponent);
