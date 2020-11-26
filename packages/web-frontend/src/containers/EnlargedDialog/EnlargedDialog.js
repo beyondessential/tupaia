@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
@@ -204,11 +203,6 @@ const EnlargedDialogComponent = ({
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
-        {isLoading && (
-          <Loader>
-            <CircularProgress />
-          </Loader>
-        )}
         {exportStatus === STATUS.LOADING && <Loader>Exporting...</Loader>}
         <EnlargedDialogContent
           exportRef={exportRef}
