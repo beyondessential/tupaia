@@ -6,7 +6,7 @@
 import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { fetchCountryCodesByPermissionGroupId, mergeMultiJoin } from '../utilities';
-import { assertSurveyResponsePermissions } from '../GETSurveyResponses';
+import { assertSurveyResponsePermissions } from '../surveyResponses';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
@@ -17,6 +17,20 @@ export const assertAnswerPermissions = async (accessPolicy, models, answerId) =>
   }
 
   return assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
+};
+
+export const assertAnswerEditPermissions = async (
+  accessPolicy,
+  models,
+  answerId,
+  updatedFields,
+) => {
+  // Forbid editing the survey response id into a survey response we don't have permission to access
+  if (updatedFields.survey_response_id) {
+    const answer = await models.answer.findById(answerId);
+    await assertSurveyResponsePermissions(accessPolicy, models, answer.survey_response_id);
+  }
+  return true;
 };
 
 export const createAnswerDBFilter = async (accessPolicy, models, criteria, options) => {

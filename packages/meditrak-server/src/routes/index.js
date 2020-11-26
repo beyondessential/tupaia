@@ -10,19 +10,19 @@ import { editRecord } from './editRecord';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
-import { GETAnswers } from './GETAnswers';
 import { GETDisasters } from './GETDisasters';
 import { GETDashboardReports } from './GETDashboardReports';
 import { GETDashboardGroups } from './GETDashboardGroups';
 import { GETMapOverlays } from './GETMapOverlays';
 import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
-import { GETSurveyResponses } from './GETSurveyResponses';
 import { GETSurveyScreenComponents } from './GETSurveyScreenComponents';
 import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
+import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
+import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
   CreateUserAccounts,
   RegisterUserAccounts,
@@ -81,11 +81,15 @@ export default {
   countChanges: catchAsyncErrors(countChanges),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   deleteRecord: catchAsyncErrors(deleteRecord),
+  deleteAnswers: useRouteHandler(DeleteAnswers),
+  deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
   editRecord: catchAsyncErrors(editRecord),
   createUserAccount: useRouteHandler(CreateUserAccounts),
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
+  editAnswers: useRouteHandler(EditAnswers),
+  editSurveyResponses: useRouteHandler(EditSurveyResponses),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
   exportSurveyResponses: catchAsyncErrors(exportSurveyResponses),
