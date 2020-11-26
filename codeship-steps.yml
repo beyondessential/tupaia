@@ -65,6 +65,10 @@
               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
             - name: deploy-meditrak-server
               command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+            - name: deploy-psss-server
+              command: './packages/devops/scripts/ci/deployBackend.sh psss-server'
+            - name: deploy-report-server
+              command: './packages/devops/scripts/ci/deployBackend.sh report-server'
         # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
         - name: run db migrations
           command: './packages/devops/scripts/ci/runMigrations.sh'
