@@ -16,14 +16,63 @@ describe('buildArithmetic', () => {
 
   describe('throws for invalid config', () => {
     const api = getDummyApi();
-    const testData: [string, Record<string, unknown>, RegExp][] = [
+    const testData: [string, Record<string, unknown>, RegExp | string][] = [
       ['undefined formula', { aggregation: {} }, /Error .*formula.* empty/],
       ['formula is not a string', { formula: {}, aggregation: {} }, /Error .*formula.* string/],
-      ['undefined aggregation', { formula: 'A + B' }, /Error .*aggregation.* empty/],
+      [
+        'undefined aggregation',
+        { formula: 'A + B' },
+        'must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
+      ],
+      [
+        'null aggregation',
+        { formula: 'A + B', aggregation: null },
+        'must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
+      ],
       [
         'wrong aggregation type',
-        { formula: 'A + B', aggregation: ['MOST_RECENT'] },
-        /must be one of string \| object/i,
+        { formula: 'A + B', aggregation: true },
+        'must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
+      ],
+      ['empty aggregation string', { formula: 'A + B', aggregation: '' }, 'must not be empty'],
+      [
+        'aggregation object without type',
+        { formula: 'A + B', aggregation: { config: { periodType: 'month' } } },
+        'no aggregation defined',
+      ],
+      [
+        'aggregation object with wrong type',
+        { formula: 'A + B', aggregation: { type: true } },
+        'non empty string',
+      ],
+      [
+        'aggregation object with empty type',
+        { formula: 'A + B', aggregation: { type: '' } },
+        'non empty string',
+      ],
+      [
+        'aggregation array item type is invalid',
+        { formula: 'A + B', aggregation: ['SUM', true] },
+        new RegExp(
+          /item #2.* must be one of \(AggregationDescriptor | AggregationDescriptor\[\]\)/,
+        ),
+      ],
+      [
+        'aggregation array item is null',
+        { formula: 'A + B', aggregation: ['SUM', null] },
+        new RegExp(
+          /item #2.* must be one of \(AggregationDescriptor | AggregationDescriptor\[\]\)/,
+        ),
+      ],
+      [
+        'aggregation array item value is invalid',
+        { formula: 'A + B', aggregation: ['SUM', ''] },
+        /item #2.* must not be empty/,
+      ],
+      [
+        'aggregation dictionary value is invalid',
+        { formula: 'A + B', aggregation: { A: 'SUM', B: '' } },
+        /key 'B'.* must not be empty/,
       ],
       [
         'a data element referenced in the formula has no defined aggregation',
@@ -88,17 +137,51 @@ describe('buildArithmetic', () => {
 
     const testData: [string, ArithmeticConfig][] = [
       [
-        'string aggregation',
+        'single aggregation - string',
         {
           formula: '2 * A + B',
           aggregation: 'MOST_RECENT',
         },
       ],
       [
-        'object aggregation',
+        'single aggregation - object without config',
         {
           formula: '2 * A + B',
-          aggregation: { A: 'MOST_RECENT', B: ['SUM', 'MOST_RECENT'] },
+          aggregation: { type: 'FINAL_EACH_WEEK' },
+        },
+      ],
+      [
+        'single aggregation - object with config',
+        {
+          formula: '2 * A + B',
+          aggregation: { type: 'OFFSET_PERIOD', config: { periodType: 'week', offset: 1 } },
+        },
+      ],
+      [
+        'single aggregation - array',
+        {
+          formula: '2 * A + B',
+          aggregation: [
+            { type: 'FINAL_EACH_WEEK' },
+            'SUM',
+            { type: 'OFFSET_PERIOD', config: { periodType: 'week', offset: 1 } },
+          ],
+        },
+      ],
+      [
+        'multiple aggregations - multiple types',
+        {
+          formula: '2 * A + B + C + D',
+          aggregation: {
+            A: 'MOST_RECENT',
+            B: { type: 'MOST_RECENT' },
+            C: { type: 'OFFSET_PERIOD', config: { periodType: 'week', offset: 1 } },
+            D: [
+              { type: 'FINAL_EACH_WEEK' },
+              'SUM',
+              { type: 'OFFSET_PERIOD', config: { periodType: 'week', offset: 1 } },
+            ],
+          },
         },
       ],
       [
@@ -135,44 +218,110 @@ describe('buildArithmetic', () => {
 
     const testData: [string, ArithmeticConfig, FetchAnalyticsParams[]][] = [
       [
-        'string',
+        'single aggregation - string',
         {
-          formula: 'BCD01 + BCD02',
+          formula: 'BCD1 + BCD2',
           aggregation: 'FINAL_EACH_WEEK',
         },
-        [{ codes: ['BCD01', 'BCD02'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] }],
+        [{ codes: ['BCD1', 'BCD2'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] }],
       ],
       [
-        'object with string values',
+        'single aggregation - object without config',
         {
-          formula: 'BCD01 + BCD02',
-          aggregation: { BCD01: 'FINAL_EACH_WEEK', BCD02: 'SUM' },
+          formula: 'BCD1 + BCD2',
+          aggregation: { type: 'FINAL_EACH_WEEK' },
+        },
+        [{ codes: ['BCD1', 'BCD2'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] }],
+      ],
+      [
+        'single aggregation - object with config',
+        {
+          formula: 'BCD1 + BCD2',
+          aggregation: { type: 'SUM_UNTIL_CURRENT_DAY', config: { periodType: 'month' } },
         },
         [
-          { codes: ['BCD01'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] },
-          { codes: ['BCD02'], aggregations: [{ type: 'SUM' }] },
+          {
+            codes: ['BCD1', 'BCD2'],
+            aggregations: [{ type: 'SUM_UNTIL_CURRENT_DAY', config: { periodType: 'month' } }],
+          },
         ],
       ],
       [
-        'object with string[] values',
+        'single aggregation - array',
         {
-          formula: 'BCD01 + BCD02',
-          aggregation: { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK', 'COUNT'] },
+          formula: 'BCD1 + BCD2',
+          aggregation: [
+            'MOST_RECENT',
+            { type: 'FINAL_EACH_WEEK' },
+            { type: 'SUM_UNTIL_CURRENT_DAY', config: { periodType: 'month' } },
+          ],
         },
         [
-          { codes: ['BCD01'], aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }] },
-          { codes: ['BCD02'], aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'COUNT' }] },
+          {
+            codes: ['BCD1', 'BCD2'],
+            aggregations: [
+              { type: 'MOST_RECENT' },
+              { type: 'FINAL_EACH_WEEK' },
+              { type: 'SUM_UNTIL_CURRENT_DAY', config: { periodType: 'month' } },
+            ],
+          },
         ],
       ],
       [
-        'object with mixed string and string[] values',
+        'multiple aggregations - strings',
         {
-          formula: 'BCD01 + BCD02',
-          aggregation: { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK'] },
+          formula: 'BCD1 + BCD2',
+          aggregation: { BCD1: 'FINAL_EACH_WEEK', BCD2: 'SUM' },
         },
         [
-          { codes: ['BCD01'], aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }] },
-          { codes: ['BCD02'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] },
+          { codes: ['BCD1'], aggregations: [{ type: 'FINAL_EACH_WEEK' }] },
+          { codes: ['BCD2'], aggregations: [{ type: 'SUM' }] },
+        ],
+      ],
+      [
+        'multiple aggregations - multiple types',
+        {
+          formula: 'BCD1 + BCD1a + BCD2 + BCD3 + BCD4 + BCD4a + BCD5 + BCD6',
+          aggregation: {
+            BCD1: 'MOST_RECENT',
+            BCD1a: { type: 'MOST_RECENT' },
+            BCD2: 'SUM',
+            BCD3: { type: 'SUM', config: { periodType: 'week', offset: 1 } },
+
+            BCD4: ['FINAL_EACH_WEEK', 'SUM'],
+            BCD4a: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
+            BCD5: ['FINAL_EACH_WEEK', 'COUNT'],
+
+            BCD6: [
+              { type: 'FINAL_EACH_WEEK' },
+              'SUM',
+              { type: 'OFFSET_PERIOD', config: { periodType: 'week', offset: 1 } },
+            ],
+          },
+        },
+        [
+          { codes: ['BCD1', 'BCD1a'], aggregations: [{ type: 'MOST_RECENT' }] },
+          { codes: ['BCD2'], aggregations: [{ type: 'SUM' }] },
+          {
+            codes: ['BCD3'],
+            aggregations: [{ type: 'SUM', config: { periodType: 'week', offset: 1 } }],
+          },
+          {
+            codes: ['BCD4', 'BCD4a'],
+            aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
+          },
+          {
+            codes: ['BCD5'],
+            aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'COUNT' }],
+          },
+          {
+            codes: ['BCD6'],
+            aggregations: [
+              { type: 'FINAL_EACH_WEEK' },
+              { type: 'SUM' },
+              { type: 'OFFSET_PERIOD', config: { periodType: 'week', offset: 1 } },
+            ],
+          },
         ],
       ],
     ];
@@ -197,7 +346,7 @@ describe('buildArithmetic', () => {
     };
     const config = {
       formula: 'A + B',
-      aggregation: { A: ['MOST_RECENT'], B: ['MOST_RECENT'] },
+      aggregation: { A: 'MOST_RECENT', B: 'MOST_RECENT' },
     };
     const fetchOptions = { organisationUnitCodes: ['TO'] };
     await buildArithmetic({ api, config, fetchOptions });

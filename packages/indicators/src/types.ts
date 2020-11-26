@@ -69,9 +69,4 @@ export interface Aggregation {
   readonly config?: Record<string, unknown>;
 }
 
-/**
- * Used to define the aggregation(s) that should be used for each data element in an indicator.
- */
-export type AggregationSpecs = string | Readonly<Record<string, string | string[]>>;
-
 export type FetchOptions = Readonly<Record<string, unknown>>;
