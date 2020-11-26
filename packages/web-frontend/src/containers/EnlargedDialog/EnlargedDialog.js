@@ -222,7 +222,7 @@ const EnlargedDialogComponent = ({
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
           errorMessage={errorMessage}
-          isDrilledDown={drillDownState.drillDownLevel > 0}
+          isDrilledDown={false}
           onUnDrillDown={onUnDrillDown}
         />
       </Dialog>

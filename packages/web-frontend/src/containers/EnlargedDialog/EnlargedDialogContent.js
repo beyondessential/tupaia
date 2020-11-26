@@ -247,38 +247,17 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderDrillDown() {
-    const { drillDownContent: viewContent, organisationUnitName } = this.props;
-    if (!viewContent) return null;
-    const ViewWrapper = getViewWrapper(viewContent);
-    const viewProps = {
-      viewContent,
-      isEnlarged: true,
-      onClose: () => {},
-      onItemClick: this.onItemClick,
-    };
-    if (getIsMatrix(viewContent)) {
-      viewProps.organisationUnitName = organisationUnitName;
-      viewProps.onSetDateRange = this.onSetDateRange;
-    }
-
+    const { drillDownContent } = this.props;
+    if (!drillDownContent) return null;
     return (
-      <div
-        style={{
-          padding: 20,
-          backgroundColor: TRANS_BLACK,
-          position: 'absolute',
-          top: 20,
-          left: 20,
-          right: 20,
-          bottom: 20,
-          overflowY: 'auto',
-          maxHeight: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          zIndex: DIALOG_Z_INDEX + 1, // above export buttons.
-        }}
-      >
-        <ViewWrapper {...viewProps} isExporting={false} />
+      <div style={styles.drillDownWrapper}>
+        <EnlargedDialogContent
+          {...this.props}
+          exportRef={null} // Drilled down overlays can't export at the moment
+          viewContent={drillDownContent}
+          drillDownContent={null}
+          isDrilledDown
+        />
       </div>
     );
   }
@@ -391,6 +370,19 @@ const styles = {
   periodRange: {
     fontSize: 10,
     marginLeft: 20,
+  },
+  drillDownWrapper: {
+    backgroundColor: DARK_BLUE,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflowY: 'auto',
+    maxHeight: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    zIndex: DIALOG_Z_INDEX + 1, // above export buttons.
   },
 };
 
