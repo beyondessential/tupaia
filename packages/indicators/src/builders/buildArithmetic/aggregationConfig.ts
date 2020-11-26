@@ -21,7 +21,7 @@ const isParameterCode = (parameters: { code: string }[], code: string) =>
   !!parameters.find(p => p.code === code);
 
 const getAggregationType = (aggregation: unknown): AggregationType => {
-  const InvalidTypeError = new Error(
+  const invalidTypeError = new Error(
     'Aggregation config must be one of (AggregationDescriptor | AggregationDescriptor[] | Object<string, AggregationDescriptor>)',
   );
 
@@ -30,7 +30,7 @@ const getAggregationType = (aggregation: unknown): AggregationType => {
       return AggregationType.String;
     case 'object':
       if (aggregation === null) {
-        throw InvalidTypeError;
+        throw invalidTypeError;
       }
       if (Array.isArray(aggregation)) {
         return AggregationType.Array;
@@ -40,7 +40,7 @@ const getAggregationType = (aggregation: unknown): AggregationType => {
       }
       return AggregationType.Dictionary;
     default:
-      throw InvalidTypeError;
+      throw invalidTypeError;
   }
 };
 
