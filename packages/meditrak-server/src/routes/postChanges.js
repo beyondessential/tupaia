@@ -17,6 +17,7 @@ import {
   constructIsOneOf,
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
+import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
@@ -37,6 +38,18 @@ export async function postChanges(req, res) {
       throw new ValidationError(`${action} is not a supported change action`);
     }
     await PAYLOAD_VALIDATORS[action](models, payload);
+  }
+
+  // Check permissions for survey responses
+  const surveyResponsePayloads = changes
+    .filter(c => c.action === SUBMIT_SURVEY_RESPONSE)
+    .map(c => c.payload.survey_response || c.payload);
+  const surveyResponsePermissionsChecker = async accessPolicy => {
+    await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
+  };
+  await req.assertPermissions(surveyResponsePermissionsChecker);
+
+  for (const { action, payload } of changes) {
     await ACTION_HANDLERS[action](models, payload);
   }
 

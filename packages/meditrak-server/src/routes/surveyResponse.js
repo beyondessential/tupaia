@@ -16,6 +16,7 @@ import {
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
+import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
@@ -149,8 +150,7 @@ async function saveResponsesToDatabase(models, userId, responses) {
   return idsCreated;
 }
 
-export const submitResponses = async (models, userId, responses) => {
-  // allow responses to be submitted in bulk
+export const validateAllResponses = async (models, userId, responses) => {
   const validations = await Promise.all(
     responses.map(async (r, i) => {
       try {
@@ -169,7 +169,11 @@ export const submitResponses = async (models, userId, responses) => {
       errors,
     );
   }
+};
 
+export const submitResponses = async (models, userId, responses) => {
+  // allow responses to be submitted in bulk
+  await validateAllResponses(models, userId, responses);
   return saveResponsesToDatabase(models, userId, responses);
 };
 
@@ -179,7 +183,14 @@ export async function surveyResponse(req, res) {
   let results;
   const responses = Array.isArray(body) ? body : [body];
   await models.wrapInTransaction(async transactingModels => {
-    results = await submitResponses(transactingModels, userId, responses);
+    await validateAllResponses(transactingModels, userId, responses);
+    // Check permissions
+    const surveyResponsePermissionsChecker = async accessPolicy => {
+      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, responses);
+    };
+    await req.assertPermissions(surveyResponsePermissionsChecker);
+
+    results = await saveResponsesToDatabase(transactingModels, userId, responses);
   });
   res.send({ count: responses.length, results });
 }
