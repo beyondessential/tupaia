@@ -4,12 +4,16 @@
  */
 
 import { Object as RealmObject } from 'realm';
-import { doesIdExist } from './utilities';
+import { doesValueExist } from './utilities';
 
 export class OptionSet extends RealmObject {
   getLargestSortOrder() {
     const sortOrders = this.options.map(o => o.sortOrder);
     return Math.max(...sortOrders);
+  }
+
+  doesOptionValueExist(value) {
+    return doesValueExist(this.options, 'value', value);
   }
 }
 

@@ -141,13 +141,20 @@ const buildOption = (database, optionSetId, value) => {
 const createOptions = (getState, database, questions) => {
   const autocompleteQuestions = getOptionCreationAutocompleteQuestions(questions);
   const answers = getAnswers(getState());
-  return autocompleteQuestions
+  const createdOptions = [];
+  autocompleteQuestions
     .filter(({ id: questionId }) => answers[questionId] !== undefined)
-    .map(question => {
+    .forEach(question => {
       const { id: questionId, optionSetId } = question;
       const answer = answers[questionId];
-      return buildOption(database, optionSetId, answer);
+      const optionSet = database.getOptionSetById(optionSetId);
+      // Check if the selected option isn't an existing option in the option set
+      if (!optionSet.doesOptionValueExist(answer)) {
+        createdOptions.push(buildOption(database, optionSetId, answer));
+      }
     });
+
+  return createdOptions;
 };
 
 const createEntities = async (dispatch, getState, database, questions) => {
