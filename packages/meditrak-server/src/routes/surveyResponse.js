@@ -16,7 +16,7 @@ import {
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
-import { assertSurveyResponseBatchPermissions } from './importSurveyResponses/assertCanImportSurveyResponses';
+import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
@@ -186,7 +186,7 @@ export async function surveyResponse(req, res) {
     await validateAllResponses(transactingModels, userId, responses);
     // Check permissions
     const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertSurveyResponseBatchPermissions(accessPolicy, transactingModels, responses);
+      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, responses);
     };
     await req.assertPermissions(surveyResponsePermissionsChecker);
 

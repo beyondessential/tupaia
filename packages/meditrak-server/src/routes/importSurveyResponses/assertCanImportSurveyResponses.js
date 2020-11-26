@@ -4,7 +4,7 @@
  */
 
 import { flattenDeep, groupBy, keyBy } from 'lodash';
-import { reduceToDictionary } from '@tupaia/utils';
+import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 
 export const assertCanImportSurveyResponses = async (
   accessPolicy,
@@ -58,28 +58,42 @@ export const assertCanImportSurveyResponses = async (
   return true;
 };
 
-export const assertSurveyResponseBatchPermissions = async (
-  accessPolicy,
-  models,
-  surveyResponses,
-) => {
-  // Assumes the data has already been validated
-  const entitiesGroupedBySurveyName = {};
-
-  for (const response of surveyResponses) {
-    // There are three valid ways to refer to the entity in a batch change
-    const entityCode =
-      response.entity_code ||
-      (response.entity_id
-        ? (await models.entity.findById(response.entity_id)).code
-        : (await models.facility.findById(response.clinic_id)).code);
-    const surveyName = (await models.survey.findById(response.survey_id)).name;
-
-    if (!entitiesGroupedBySurveyName[surveyName]) {
-      entitiesGroupedBySurveyName[surveyName] = [];
-    }
-    entitiesGroupedBySurveyName[surveyName].push(entityCode);
+const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse) => {
+  // There are three valid ways to refer to the entity in a batch change:
+  // entity_code, entity_id, clinic_id
+  if (surveyResponse.entity_code) {
+    return surveyResponse.entity_code;
+  }
+  if (surveyResponse.entity_id) {
+    const entity = await models.entity.findById(surveyResponse.entity_id);
+    return entity.code;
+  }
+  if (surveyResponse.clinic_id) {
+    const clinic = await models.facility.findById(surveyResponse.clinic_id);
+    return clinic.code;
   }
 
-  return assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyName);
+  throw new Error('Survey response change does not contain valid entity reference');
+};
+
+export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surveyResponses) => {
+  // Assumes the data has already been validated
+  const entitiesBySurveyName = {};
+
+  // Pre-fetch unique surveys
+  const surveyIds = getUniqueEntries(surveyResponses.map(sr => sr.survey_id));
+  const surveys = await models.survey.findManyById(surveyIds);
+  const surveyNamesById = reduceToDictionary(surveys, 'id', 'name');
+
+  for (const response of surveyResponses) {
+    const entityCode = await getEntityCodeFromSurveyResponseChange(models, response);
+    const surveyName = surveyNamesById[response.survey_id];
+
+    if (!entitiesBySurveyName[surveyName]) {
+      entitiesBySurveyName[surveyName] = [];
+    }
+    entitiesBySurveyName[surveyName].push(entityCode);
+  }
+
+  return assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyName);
 };

@@ -17,7 +17,7 @@ import {
   constructIsOneOf,
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
-import { assertSurveyResponseBatchPermissions } from './importSurveyResponses/assertCanImportSurveyResponses';
+import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
@@ -45,7 +45,7 @@ export async function postChanges(req, res) {
     .filter(c => c.action === SUBMIT_SURVEY_RESPONSE)
     .map(c => c.payload.survey_response || c.payload);
   const surveyResponsePermissionsChecker = async accessPolicy => {
-    await assertSurveyResponseBatchPermissions(accessPolicy, models, surveyResponsePayloads);
+    await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
   };
   await req.assertPermissions(surveyResponsePermissionsChecker);
 
