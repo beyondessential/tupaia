@@ -7,7 +7,7 @@ import * as DataTypes from './types';
 
 export const schema = {
   schema: Object.values(DataTypes),
-  schemaVersion: 18,
+  schemaVersion: 19,
   migration: (oldRealm, newRealm) => {
     // For anyone upgrading from below version 3, change permission level to permission group
     if (oldRealm.schemaVersion < 3) {
@@ -170,7 +170,7 @@ export const schema = {
       });
     }
 
-    if (oldRealm.schemaVersion < 18) {
+    if (oldRealm.schemaVersion < 19) {
       const oldOptions = oldRealm.objects('Option');
       const newOptions = newRealm.objects('Option');
 
