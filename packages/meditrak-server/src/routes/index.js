@@ -129,7 +129,7 @@ export default {
   pruneChanges: catchAsyncErrors(pruneChanges),
   addRecord: catchAsyncErrors(addRecord),
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
-  changePassword: catchAsyncErrors(changePassword),
+  changePassword: allowAnyone(changePassword),
   editUser: catchAsyncErrors(editUser),
   requestCountryAccess: allowAnyone(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
