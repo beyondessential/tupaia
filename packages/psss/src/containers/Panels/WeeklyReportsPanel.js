@@ -5,7 +5,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { queryCache, useMutation } from 'react-query';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
@@ -38,8 +37,8 @@ import {
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage, getCountryName } from '../../utils';
+import { useConfirmWeeklyReport } from '../../api';
 import { useTableQuery } from '../../hooks';
-import { FakeAPI } from '../../api';
 
 const columns = [
   {
@@ -121,6 +120,7 @@ const PANEL_STATUSES = {
   SAVING: 'saving',
   SUBMIT_ATTEMPTED: 'submitAttempted',
   SUCCESS: 'success',
+  ERROR: 'error',
 };
 
 const toCommaList = values =>
@@ -142,20 +142,20 @@ export const WeeklyReportsPanelComponent = React.memo(
       weekNumber,
     });
 
-    const [confirmReport] = useMutation(() => FakeAPI.post(), {
-      onSuccess: () => {
-        if (syndromeAlerts) {
-          setIsModalOpen(true);
-        }
-        setPanelStatus(PANEL_STATUSES.SUCCESS);
-        queryCache.invalidateQueries('country-weeks', { countryCode, weekNumber });
-      },
-    });
+    const [confirmReport] = useConfirmWeeklyReport({ countryCode, weekNumber });
 
     const handleSubmit = isVerified => {
       if (isVerified) {
         setPanelStatus(PANEL_STATUSES.SAVING);
-        confirmReport();
+        try {
+          confirmReport();
+          setPanelStatus(PANEL_STATUSES.SUCCESS);
+          if (syndromeAlerts) {
+            setIsModalOpen(true);
+          }
+        } catch (error) {
+          setPanelStatus(PANEL_STATUSES.ERROR);
+        }
       } else {
         setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
       }

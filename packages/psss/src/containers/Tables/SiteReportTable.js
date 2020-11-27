@@ -58,13 +58,13 @@ const TABLE_STATUSES = {
 export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNumber }) => {
   const { fields } = useContext(EditableTableContext);
   const { countryCode } = useParams();
-  const [saveReport] = useSaveSiteReport();
+  const [saveReport] = useSaveSiteReport({ countryCode, weekNumber });
 
   const handleSubmit = async () => {
     setTableStatus(TABLE_STATUSES.SAVING);
 
     try {
-      await saveReport(fields, { countryCode, weekNumber });
+      await saveReport(fields);
       setTableStatus(TABLE_STATUSES.STATIC);
     } catch (error) {
       setTableStatus(TABLE_STATUSES.ERROR);

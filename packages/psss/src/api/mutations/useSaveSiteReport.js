@@ -6,9 +6,9 @@
 import { queryCache, useMutation } from 'react-query';
 import { FakeAPI } from '../index';
 
-export const useSaveSiteReport = (fields, params) =>
+export const useSaveSiteReport = params =>
   useMutation(
-    () => {
+    fields => {
       FakeAPI.post(fields);
     },
     {

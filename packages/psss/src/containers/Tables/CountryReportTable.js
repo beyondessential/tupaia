@@ -5,7 +5,6 @@
 import React, { useContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { queryCache, useMutation } from 'react-query';
 import Typography from '@material-ui/core/Typography';
 import InfoIcon from '@material-ui/icons/Info';
 import MuiLink from '@material-ui/core/Link';
@@ -23,7 +22,7 @@ import {
 } from '@tupaia/ui-components';
 import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
-import { FakeAPI } from '../../api';
+import { useSaveCountryReport } from '../../api';
 
 const VerifiableBody = props => {
   const { tableStatus } = useContext(EditableTableContext);
@@ -74,6 +73,7 @@ const TABLE_STATUSES = {
   STATIC: 'static',
   EDITABLE: 'editable',
   SAVING: 'saving',
+  ERROR: 'error',
 };
 
 export const CountryReportTable = React.memo(
@@ -83,20 +83,22 @@ export const CountryReportTable = React.memo(
     const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
     const { countryCode } = useParams();
 
-    const [saveReport] = useMutation(
-      async () => {
-        setTableStatus(TABLE_STATUSES.SAVING);
-        await FakeAPI.post({
+    const [saveReport] = useSaveCountryReport({ countryCode, weekNumber });
+
+    const handleSubmit = () => {
+      setTableStatus(TABLE_STATUSES.SAVING);
+
+      try {
+        saveReport({
           ...fields,
           sitesReported: parseInt(sitesReportedValue, 10),
           totalSites: parseInt(totalSitesValue, 10),
         });
         setTableStatus(TABLE_STATUSES.STATIC);
-      },
-      {
-        onSuccess: () => queryCache.invalidateQueries('country-weeks', { countryCode, weekNumber }),
-      },
-    );
+      } catch (error) {
+        setTableStatus(TABLE_STATUSES.ERROR);
+      }
+    };
 
     const handleEdit = useCallback(() => {
       setTableStatus(TABLE_STATUSES.EDITABLE);
@@ -157,7 +159,7 @@ export const CountryReportTable = React.memo(
               <Button variant="outlined" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button onClick={saveReport}>Save</Button>
+              <Button onClick={handleSubmit}>Save</Button>
             </div>
           </FlexSpaceBetween>
         )}
