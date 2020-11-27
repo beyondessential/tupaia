@@ -4,7 +4,6 @@
  */
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { queryCache, useMutation } from 'react-query';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
@@ -16,7 +15,7 @@ import {
   Button,
 } from '@tupaia/ui-components';
 import { DottedTableBody, GreyTableHeader } from '../../components';
-import { FakeAPI } from '../../api';
+import { useSaveSiteReport } from '../../api';
 
 const HeadingRow = styled.div`
   display: flex;
@@ -53,22 +52,24 @@ const TABLE_STATUSES = {
   EDITABLE: 'editable',
   SAVING: 'saving',
   LOADING: 'loading',
+  ERROR: 'error',
 };
 
 export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNumber }) => {
   const { fields } = useContext(EditableTableContext);
   const { countryCode } = useParams();
+  const [saveReport] = useSaveSiteReport();
 
-  const [saveReport] = useMutation(
-    () => {
-      setTableStatus(TABLE_STATUSES.SAVING);
-      FakeAPI.post(fields);
-    },
-    {
-      onSuccess: () => queryCache.invalidateQueries('country-weeks', { countryCode, weekNumber }),
-      onSettled: () => setTableStatus(TABLE_STATUSES.STATIC),
-    },
-  );
+  const handleSubmit = async () => {
+    setTableStatus(TABLE_STATUSES.SAVING);
+
+    try {
+      await saveReport(fields, { countryCode, weekNumber });
+      setTableStatus(TABLE_STATUSES.STATIC);
+    } catch (error) {
+      setTableStatus(TABLE_STATUSES.ERROR);
+    }
+  };
 
   return (
     <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
@@ -94,7 +95,7 @@ export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNu
           >
             Cancel
           </Button>
-          <Button onClick={saveReport}>Save</Button>
+          <Button onClick={handleSubmit}>Save</Button>
         </ActionsRow>
       )}
     </LoadingContainer>
