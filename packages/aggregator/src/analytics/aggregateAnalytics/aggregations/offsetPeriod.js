@@ -47,11 +47,8 @@ const compensateForPeriodOffset = (date, { periodType, offset }) =>
 
 export const getDateRangeForOffsetPeriod = (dateRange, config) => {
   validateOffsetPeriodConfig(config);
-  const { offset } = config;
-  const { startDate, endDate } = dateRange;
-
   return {
-    startDate: offset > 0 ? compensateForPeriodOffset(startDate, config) : startDate,
-    endDate: offset < 0 ? compensateForPeriodOffset(endDate, config) : endDate,
+    startDate: compensateForPeriodOffset(dateRange.startDate, config),
+    endDate: compensateForPeriodOffset(dateRange.endDate, config),
   };
 };
