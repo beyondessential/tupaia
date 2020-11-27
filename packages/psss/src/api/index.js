@@ -6,3 +6,4 @@
 export * from './alertsOutbreaks';
 export * from './auth';
 export * from './weeklyReports';
+export * from './mutations';
