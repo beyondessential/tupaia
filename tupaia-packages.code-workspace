@@ -45,6 +45,10 @@
       "path": "packages/eslint-config-typescript"
     },
     {
+      "name": "expression-parser",
+      "path": "packages/expression-parser"
+    },
+    {
       "name": "indicators",
       "path": "packages/indicators"
     },
@@ -57,8 +61,16 @@
       "path": "packages/psss"
     },
     {
+      "name": "psss-server",
+      "path": "packages/psss-server"
+    },
+    {
       "name": "meditrak-server",
       "path": "packages/meditrak-server"
+    },
+    {
+      "name": "report-server",
+      "path": "packages/report-server"
     },
     {
       "name": "ui-components",
@@ -87,6 +99,7 @@
       "Codeship",
       "DHIS",
       "MediTrak",
+      "PSSS",
       "Tongatapu",
       "Tupaia",
       "analytics",
@@ -116,6 +129,7 @@
       "preaggregation",
       "preaggregator",
       "preaggregators",
+      "prestart",
       "promisify",
       "singularise",
       "spec",
