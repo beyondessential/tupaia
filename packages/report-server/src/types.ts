@@ -27,8 +27,6 @@ export interface ReportConfig {
 }
 
 interface ReportsRequestBody {
-  emailAddress: string;
-  password: string;
   testConfig?: ReportConfig;
   testData?: Record<string, string | number>[];
 }

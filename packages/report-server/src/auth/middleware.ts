@@ -9,13 +9,39 @@ const authenticateUser = async (req: ReportsRequest) => {
     throw new UnauthenticatedError('No authorization header provided - must be Bearer Auth Header');
   }
 
+  if (authHeader.startsWith('Bearer')) {
+    return authenticateBearerAuthHeader(authHeader);
+  } else if (authHeader.startsWith('Basic')) {
+    return authenticateBasicAuthHeader(req, authHeader);
+  }
+
+  throw new UnauthenticatedError('Could not authenticate with the provided token');
+}
+
+const authenticateBearerAuthHeader = async (authHeader: string) => {
   // Use the user account provided in the auth header if present
-  const tokenUserID = authHeader.startsWith('Bearer') && getUserIDFromToken(authHeader);
+  const tokenUserID = getUserIDFromToken(authHeader);
   if (tokenUserID) {
     return tokenUserID;
   }
 
-  throw new UnauthenticatedError('Could not authenticate with the provided token');
+  throw new UnauthenticatedError('Could not authenticate with the provided access token');
+}
+
+const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: string) => {
+  const usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
+  const [username, password] = usernamePassword.split(':');
+  const { authenticator } = req;
+  const { user } = await authenticator.authenticatePassword({
+    emailAddress: username,
+    password,
+    deviceName: 'reports',
+  });
+  if (user) {
+    return user.id;
+  } 
+    
+  throw new UnauthenticatedError('Could not find user');
 }
 
 export const authenticationMiddleware = async (req: ReportsRequest, res, next) => {
