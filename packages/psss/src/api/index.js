@@ -5,3 +5,4 @@
 
 export * from './endpoints';
 export * from './mutations';
+export * from './useTableQuery';

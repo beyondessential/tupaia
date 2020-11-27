@@ -23,7 +23,7 @@ import {
 import { Container, Main, Sidebar } from '../../components';
 import { CountryTable, WeeklyReportsPanel } from '../../containers';
 import { getActiveWeekId, openWeeklyReportsPanel, setActiveWeek } from '../../store';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;

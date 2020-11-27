@@ -5,13 +5,13 @@
 
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { FakeAPI as api } from '../api';
+import { get } from './api';
 
 export const useTableQuery = (endpoint, options) => {
   const [sorting, setSorting] = useState({ order: 'asc', orderBy: undefined });
   const query = useQuery(
     [endpoint, options, sorting],
-    () => api.get(endpoint, { ...options, ...sorting }),
+    () => get(endpoint, { ...options, ...sorting }),
     { staleTime: 50 },
   );
 

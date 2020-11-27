@@ -14,7 +14,7 @@ import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-compon
 import { COLUMN_WIDTHS } from './constants';
 import { createTotalCasesAccessor, AlertCell } from '../../components';
 import { openWeeklyReportsPanel } from '../../store';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 // Todo: update placeholder
 const NameCell = data => {

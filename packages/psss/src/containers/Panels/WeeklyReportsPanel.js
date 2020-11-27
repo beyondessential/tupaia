@@ -38,7 +38,7 @@ import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage, getCountryName } from '../../utils';
 import { useConfirmWeeklyReport } from '../../api';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 const columns = [
   {
@@ -148,7 +148,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       if (isVerified) {
         setPanelStatus(PANEL_STATUSES.SAVING);
         try {
-          confirmReport();
+          confirmReport({ countryCode, weekNumber });
           setPanelStatus(PANEL_STATUSES.SUCCESS);
           if (syndromeAlerts) {
             setIsModalOpen(true);
