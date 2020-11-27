@@ -53,7 +53,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-const NotesTab = ({ state }) => {
+export const NotesTab = ({ state }) => {
   const { data: messages } = state;
   const [status, setStatus] = useState('');
   const { handleSubmit, register, errors } = useForm();

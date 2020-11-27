@@ -13,10 +13,10 @@ const headers = { 'X-Custom-Header': 'foobar' };
 const timeout = 45 * 1000;
 
 const request = async (endpoint, options) => {
-  // if (body) {
-  //   fetchConfig.body =
-  //     typeof body === 'object' && !(body instanceof FormData) ? JSON.stringify(body) : body;
-  // }
+  if (body) {
+    fetchConfig.body =
+      typeof body === 'object' && !(body instanceof FormData) ? JSON.stringify(body) : body;
+  }
 
   const response = await axios(`${PSSS_API_URL}/${endpoint}`, { headers, timeout, ...options });
 
