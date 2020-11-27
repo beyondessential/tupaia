@@ -56,6 +56,7 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
+import { allowNoPermissions } from '../permissions';
 
 /**
  * All routes will be wrapped with an error catcher that simply passes the error to the next()
@@ -75,6 +76,14 @@ const useRouteHandler = HandlerClass =>
     const handler = new HandlerClass(res, req);
     await handler.handle();
   });
+
+/**
+ * Quick and dirty permission wrappers, run a basic check before an endpoint
+ */
+const allowAnyone = routeHandler => (req, res, next) => {
+  req.assertPermissions(allowNoPermissions);
+  catchAsyncErrors(routeHandler)(req, res, next);
+};
 
 export default {
   authenticate: catchAsyncErrors(authenticate),
@@ -122,7 +131,7 @@ export default {
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
   changePassword: catchAsyncErrors(changePassword),
   editUser: catchAsyncErrors(editUser),
-  requestCountryAccess: catchAsyncErrors(requestCountryAccess),
+  requestCountryAccess: allowAnyone(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
   getUserRewards: catchAsyncErrors(getUserRewards),
   getUser: catchAsyncErrors(getUser),
