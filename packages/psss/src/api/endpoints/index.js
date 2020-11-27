@@ -6,3 +6,4 @@
 export * from './auth';
 export * from './weeklyReports';
 export * from './alertsOutbreaks';
+export * from './exports';

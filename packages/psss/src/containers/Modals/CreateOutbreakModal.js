@@ -23,7 +23,7 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 import { useForm, Controller } from 'react-hook-form';
 import Typography from '@material-ui/core/Typography';
 import { FlexSpaceBetween } from '../../components/Layout';
-import { connectApi } from '../../api';
+import { createOutbreak } from '../../api';
 
 const Content = styled(DialogContent)`
   text-align: left;
@@ -68,7 +68,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbreak }) => {
+export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
   const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
@@ -156,14 +156,7 @@ export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbre
   );
 };
 
-CreateOutbreakModalComponent.propTypes = {
+CreateOutbreakModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  createOutbreak: PropTypes.func.isRequired,
 };
-
-const mapApiToProps = api => ({
-  createOutbreak: () => api.post(),
-});
-
-export const CreateOutbreakModal = connectApi(mapApiToProps)(CreateOutbreakModalComponent);
