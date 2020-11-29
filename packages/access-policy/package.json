@@ -12,6 +12,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
+    "build:ts": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
