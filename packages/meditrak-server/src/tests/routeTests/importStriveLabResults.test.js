@@ -130,6 +130,10 @@ describe('POST /import/striveLabResults', async () => {
     response = await importLabResults(app);
   });
 
+  after(() => {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
+  });
+
   it('should respond with a successful http status', () => {
     expect(response).to.have.property('statusCode', 200);
   });
