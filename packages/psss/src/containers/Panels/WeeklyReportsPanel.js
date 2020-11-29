@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -144,22 +144,25 @@ export const WeeklyReportsPanelComponent = React.memo(
 
     const [confirmReport] = useConfirmWeeklyReport({ countryCode, weekNumber });
 
-    const handleSubmit = isVerified => {
-      if (isVerified) {
-        setPanelStatus(PANEL_STATUSES.SAVING);
-        try {
-          confirmReport();
-          setPanelStatus(PANEL_STATUSES.SUCCESS);
-          if (syndromeAlerts) {
-            setIsModalOpen(true);
+    const handleSubmit = useCallback(
+      isVerified => {
+        if (isVerified) {
+          setPanelStatus(PANEL_STATUSES.SAVING);
+          try {
+            confirmReport();
+            setPanelStatus(PANEL_STATUSES.SUCCESS);
+            if (syndromeAlerts) {
+              setIsModalOpen(true);
+            }
+          } catch (error) {
+            setPanelStatus(PANEL_STATUSES.ERROR);
           }
-        } catch (error) {
-          setPanelStatus(PANEL_STATUSES.ERROR);
+        } else {
+          setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
         }
-      } else {
-        setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
-      }
-    };
+      },
+      [syndromeAlerts],
+    );
 
     const isVerified = unVerifiedSyndromes.length === 0;
     const showSitesSection = weekNumber !== null && sitesData?.data?.length > 0;
