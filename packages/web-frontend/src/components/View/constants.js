@@ -13,4 +13,5 @@ export const VALUE_TYPES = {
   FRACTION_AND_PERCENTAGE: 'fractionAndPercentage',
   TEXT: 'text',
   NUMBER: 'number',
+  ONE_DECIMAL_PLACE: 'oneDecimalPlace',
 };

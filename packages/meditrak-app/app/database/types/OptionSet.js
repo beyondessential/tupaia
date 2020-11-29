@@ -4,12 +4,16 @@
  */
 
 import { Object as RealmObject } from 'realm';
-import { doesIdExist } from './utilities';
+import { doesValueExist } from './utilities';
 
 export class OptionSet extends RealmObject {
-  addOptionIfUnique(option) {
-    if (doesIdExist(this.options, option.id)) return;
-    this.options.push(option);
+  getLargestSortOrder() {
+    const sortOrders = this.options.map(o => o.sortOrder);
+    return Math.max(...sortOrders);
+  }
+
+  doesOptionValueExist(value) {
+    return doesValueExist(this.options, 'value', value);
   }
 }
 
@@ -19,7 +23,11 @@ OptionSet.schema = {
   properties: {
     id: 'string',
     name: { type: 'string', default: 'OptionSet not properly synced' },
-    options: 'Option[]',
+    options: {
+      type: 'linkingObjects',
+      objectType: 'Option',
+      property: 'optionSet',
+    },
   },
 };
 
