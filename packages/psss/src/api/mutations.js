@@ -4,7 +4,7 @@
  */
 
 import { queryCache, useMutation } from 'react-query';
-import { saveCountryReport, saveSiteReport, confirmWeeklyReport } from './endpoints';
+import { saveCountryReport, saveSiteReport, confirmWeeklyReport } from './requests';
 
 export const useSaveSiteReport = params =>
   useMutation(saveSiteReport, {
