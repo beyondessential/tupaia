@@ -1,11 +1,11 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import jwt from 'jsonwebtoken';
 import { UnauthenticatedError } from '@tupaia/utils';
-import { getJwtToken } from '../utilities';
+import { getJwtToken } from './security';
 
 /**
  * Custom authenticator to check user has a valid and current JWT token, i.e. they have previously
