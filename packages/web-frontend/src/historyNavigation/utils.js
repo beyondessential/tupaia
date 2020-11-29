@@ -127,7 +127,6 @@ export const convertDateRangeToUrlPeriodString = (
 ) => {
   if (!(startDate || endDate)) return null;
 
-  console.log({ startDate, endDate });
   const { urlFormat } = GRANULARITY_CONFIG[granularity];
 
   const formattedStartDate = momentToDateString(startDate, granularity, urlFormat);
