@@ -7,6 +7,7 @@ import {
   translateQuestionDependentNestedFields,
   replaceNestedQuestionCodesWithIds,
 } from '../../utilities';
+import { isYes } from '../utilities';
 
 const OPTION_JSON_FIELD_LIST = ['attributes'];
 
@@ -22,6 +23,16 @@ const OPTION_JSON_FIELD_LIST = ['attributes'];
  * }
  */
 export const processAutocompleteConfig = async (models, config) => {
+  const { createNew } = config;
   const optionJsonFields = translateQuestionDependentNestedFields(config, OPTION_JSON_FIELD_LIST);
-  return replaceNestedQuestionCodesWithIds(models, optionJsonFields, OPTION_JSON_FIELD_LIST);
+  const translatedOptionJsonFields = await replaceNestedQuestionCodesWithIds(
+    models,
+    optionJsonFields,
+    OPTION_JSON_FIELD_LIST,
+  );
+
+  return {
+    createNew: isYes(createNew),
+    ...translatedOptionJsonFields,
+  };
 };
