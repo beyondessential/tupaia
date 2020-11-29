@@ -1,6 +1,6 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import DialogContent from '@material-ui/core/DialogContent';
@@ -14,6 +14,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
+import { CircularProgress } from '@material-ui/core';
 import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { getIsMatrix, getViewWrapper, VIEW_CONTENT_SHAPE } from '../../components/View';
@@ -65,6 +66,12 @@ ExportDate.defaultProps = {
   startDate: null,
   endDate: null,
 };
+
+const LoadingDrillDown = () => (
+  <div style={styles.drillDownWrapper}>
+    <CircularProgress style={styles.progressIndicator} />
+  </div>
+);
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
@@ -250,6 +257,24 @@ export class EnlargedDialogContent extends PureComponent {
     );
   }
 
+  renderDrillDown() {
+    const { drillDownContent, isLoading, isDrilledDown, isDrillDownContent } = this.props;
+    if (isDrillDownContent) return null;
+    if (!drillDownContent) return isDrilledDown ? <LoadingDrillDown /> : null;
+    if (isLoading) return <LoadingDrillDown />;
+    return (
+      <div style={styles.drillDownWrapper}>
+        <EnlargedDialogContent
+          {...this.props}
+          exportRef={null} // Drilled down overlays can't export at the moment
+          viewContent={drillDownContent}
+          drillDownContent={null}
+          isDrillDownContent
+        />
+      </div>
+    );
+  }
+
   render() {
     if (!this.props.viewContent) return <LoadingIndicator />;
 
@@ -277,7 +302,10 @@ export class EnlargedDialogContent extends PureComponent {
         {this.renderTitle()}
         {this.renderDescription()}
         <DialogContent style={contentStyle}>
-          <div style={getBodyStyle()}>{this.renderBody()}</div>
+          <div style={getBodyStyle()}>
+            {this.renderBody()}
+            {this.renderDrillDown()}
+          </div>
           {this.renderPeriodRange()}
         </DialogContent>
         {isExporting && (
@@ -356,11 +384,29 @@ const styles = {
     fontSize: 10,
     marginLeft: 20,
   },
+  drillDownWrapper: {
+    backgroundColor: DARK_BLUE,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflowY: 'auto',
+    maxHeight: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    zIndex: DIALOG_Z_INDEX + 1, // above export buttons.
+  },
+  progressIndicator: {
+    alignSelf: 'center',
+    marginTop: 50,
+  },
 };
 
 EnlargedDialogContent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  drillDownContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onOpenExportDialog: PropTypes.func,
   organisationUnitName: PropTypes.string,
   onDrillDown: PropTypes.func,
@@ -370,6 +416,7 @@ EnlargedDialogContent.propTypes = {
   isExporting: PropTypes.bool,
   exportRef: PropTypes.object,
   isDrilledDown: PropTypes.bool,
+  isDrillDownContent: PropTypes.bool,
   onUnDrillDown: PropTypes.func,
 };
 
@@ -383,6 +430,8 @@ EnlargedDialogContent.defaultProps = {
   organisationUnitName: '',
   onOpenExportDialog: null,
   viewContent: null,
+  drillDownContent: null,
   exportRef: null,
   isDrilledDown: false,
+  isDrillDownContent: false,
 };

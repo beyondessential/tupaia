@@ -525,6 +525,7 @@ function* attemptRequestCountryAccess(action) {
   try {
     yield call(request, requestResourceUrl, fetchRequestCountryAccessError, options);
     yield put(fetchRequestCountryAccessSuccess());
+    yield call(fetchProjectData);
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
     yield put(error.errorFunction(errorMessage.details ? errorMessage.details : ''));

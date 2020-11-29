@@ -5,7 +5,8 @@
 import jwt from 'jsonwebtoken';
 
 import { respond, DatabaseError, UnauthenticatedError, ValidationError } from '@tupaia/utils';
-import { getJwtToken, sendEmail } from '../utilities';
+import { getJwtToken } from '@tupaia/auth';
+import { sendEmail } from '../utilities';
 
 const checkUserPermission = (req, userId) => {
   const authHeader = req.headers.authorization;

@@ -1,16 +1,19 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import styled from 'styled-components';
-import { fetchEnlargedDialogData, setEnlargedDashboardDateRange } from '../../actions';
+import {
+  fetchEnlargedDialogData,
+  setEnlargedDashboardDateRange,
+  closeEnlargedDialog,
+} from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
@@ -61,33 +64,35 @@ const getDatesForCurrentLevel = (
   return drillDownDatesByLevel?.[drillDownLevel] || {};
 };
 
-const EnlargedDialogComponent = props => {
-  const {
-    onCloseOverlay,
-    contentByLevel,
-    errorMessage,
-    organisationUnitName,
-    onSetDateRange,
-    startDate: startDateForTopLevel,
-    endDate: endDateForTopLevel,
-    isLoading,
-    projectCode,
-    infoViewKey,
-    fetchViewData,
-    drillDownDatesByLevel,
-  } = props;
-  const exportRef = React.useRef(null);
-  const [exportDialogIsOpen, setExportDialogIsOpen] = React.useState(false);
-  const [isExporting, setIsExporting] = React.useState(false);
+const EnlargedDialogComponent = ({
+  onCloseOverlay,
+  contentByLevel,
+  errorMessage,
+  organisationUnitName,
+  onSetDateRange,
+  startDate: startDateForTopLevel,
+  endDate: endDateForTopLevel,
+  isLoading,
+  projectCode,
+  infoViewKey,
+  fetchViewData,
+  drillDownDatesByLevel,
+}) => {
+  const exportRef = useRef(null);
+  const [exportDialogIsOpen, setExportDialogIsOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
-  const [exportStatus, setExportStatus] = React.useState(STATUS.IDLE);
-  const [drillDownState, setDrillDownState] = React.useState({
+  const [exportStatus, setExportStatus] = useState(STATUS.IDLE);
+  const [drillDownState, setDrillDownState] = useState({
     drillDownLevel: 0,
     parameterLinks: {},
     parameterValues: {},
   });
 
-  const viewContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
+  // Regardless of the drillDown level, we pass the base view content through
+  const baseViewContent = contentByLevel?.[0]?.viewContent;
+  const drillDownContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
+
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
     startDateForTopLevel,
@@ -95,7 +100,8 @@ const EnlargedDialogComponent = props => {
     drillDownDatesByLevel,
   );
 
-  React.useEffect(() => {
+  // This useEffect only acts on the current drillDownLevel
+  useEffect(() => {
     const { drillDownLevel, parameterLinks, parameterValues } = drillDownState;
     const cachedOptions = contentByLevel?.[drillDownLevel]?.options;
 
@@ -119,7 +125,7 @@ const EnlargedDialogComponent = props => {
   }, [startDate, endDate, drillDownState]);
 
   const onDrillDown = chartItem => {
-    const { drillDown } = viewContent;
+    const { drillDown } = drillDownContent;
     if (!drillDown) return;
     const newDrillDownLevel = drillDownState.drillDownLevel + 1;
 
@@ -145,12 +151,12 @@ const EnlargedDialogComponent = props => {
     });
   };
 
-  const isMatrix = getIsMatrix(viewContent);
+  const isMatrix = getIsMatrix(baseViewContent);
 
   const getDialogStyle = () => {
-    const hasBigData = isMatrix || viewContent?.data?.length > 20;
+    const hasBigData = isMatrix || baseViewContent?.data?.length > 20;
     if (hasBigData) return styles.largeContainer;
-    if (getIsDataDownload(viewContent)) return styles.smallContainer;
+    if (getIsDataDownload(baseViewContent)) return styles.smallContainer;
     return styles.container;
   };
 
@@ -160,13 +166,13 @@ const EnlargedDialogComponent = props => {
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
 
-    const filename = stringToFilename(`export-${organisationUnitName}-${viewContent.name}`);
+    const filename = stringToFilename(`export-${organisationUnitName}-${baseViewContent.name}`);
 
     try {
       if (format === 'xlsx') {
         await exportToExcel({
           projectCode,
-          viewContent,
+          viewContent: baseViewContent,
           organisationUnitName,
           startDate,
           endDate,
@@ -200,16 +206,12 @@ const EnlargedDialogComponent = props => {
         scroll={isMobile() ? 'body' : 'paper'}
         PaperProps={{ style: getDialogStyle() }}
       >
-        {isLoading && (
-          <Loader>
-            <CircularProgress />
-          </Loader>
-        )}
         {exportStatus === STATUS.LOADING && <Loader>Exporting...</Loader>}
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
-          viewContent={viewContent}
+          viewContent={baseViewContent}
+          drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
           onOpenExportDialog={handleOpenExportDialog}
@@ -217,8 +219,9 @@ const EnlargedDialogComponent = props => {
           isLoading={isLoading}
           isExporting={isExporting} // Todo: set exporting theme here?
           errorMessage={errorMessage}
-          isDrilledDown={drillDownState.drillDownLevel > 0}
+          isDrillDownContent={false}
           onUnDrillDown={onUnDrillDown}
+          isDrilledDown={drillDownState.drillDownLevel > 0}
         />
       </Dialog>
       <ExportDialog
@@ -245,6 +248,7 @@ EnlargedDialogComponent.propTypes = {
   drillDownDatesByLevel: PropTypes.object,
   projectCode: PropTypes.string,
   infoViewKey: PropTypes.string,
+  onCloseOverlay: PropTypes.func.isRequired,
 };
 
 EnlargedDialogComponent.defaultProps = {
@@ -298,6 +302,7 @@ const mapDispatchToProps = dispatch => ({
   fetchViewData: options => {
     dispatch(fetchEnlargedDialogData(options));
   },
+  onCloseOverlay: () => dispatch(closeEnlargedDialog()),
 });
 
 export const EnlargedDialog = connect(mapStateToProps, mapDispatchToProps)(EnlargedDialogComponent);
