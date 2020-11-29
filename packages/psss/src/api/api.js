@@ -16,12 +16,6 @@ const timeout = 45 * 1000;
 axios.defaults.withCredentials = true;
 
 const request = async (endpoint, options) => {
-  // Don't need as By default, axios serializes JavaScript objects to JSON
-  // if (body) {
-  //   fetchConfig.body =
-  //     typeof body === 'object' && !(body instanceof FormData) ? JSON.stringify(body) : body;
-  // }
-
   try {
     const { data } = await axios(`${PSSS_API_URL}/${endpoint}`, {
       headers,
