@@ -3,19 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
-import { ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
+import { useTableQuery } from '../../hooks';
 import {
   createTotalCasesAccessor,
   AlertCell,
   SitesReportedCell,
   CountryNameLinkCell,
 } from '../../components';
-import { ConnectedTable } from './ConnectedTable';
 import { getEntitiesAllowed } from '../../store';
-import PropTypes from 'prop-types';
 
 const countriesTableColumns = [
   {
@@ -63,16 +63,32 @@ const countriesTableColumns = [
   },
 ];
 
-const CountriesTableComponent = React.memo(({ allowedEntities }) => (
-  <ConnectedTable
-    endpoint="countries"
-    // this may not be needed when the api is complete but is needed for app testing in the meantime
-    fetchOptions={{ countries: allowedEntities }}
-    columns={countriesTableColumns}
-    Body={ExpandableTableBody}
-    SubComponent={CountrySummaryTable}
-  />
-));
+export const CountriesTableComponent = ({ allowedEntities }) => {
+  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
+    'countries',
+    {
+      countries: allowedEntities,
+    },
+  );
+
+  return (
+    <>
+      <ExpandableTable
+        order={order}
+        orderBy={orderBy}
+        onChangeOrderBy={handleChangeOrderBy}
+        data={data ? data.data : 0}
+        count={data ? data.count : 0}
+        isLoading={isLoading}
+        errorMessage={error && error.message}
+        columns={countriesTableColumns}
+        Body={ExpandableTableBody}
+        SubComponent={CountrySummaryTable}
+      />
+      {isFetching && 'Fetching...'}
+    </>
+  );
+};
 
 CountriesTableComponent.propTypes = {
   allowedEntities: PropTypes.array,
