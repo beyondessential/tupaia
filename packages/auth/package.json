@@ -21,7 +21,9 @@
     "@tupaia/utils": "1.0.0",
     "rand-token": "^1.0.1",
     "semver-compare": "^1.0.0",
-    "sha256": "^0.2.0"
+    "sha256": "^0.2.0",
+    "jsonwebtoken": "^7.4.3",
+    "randomatic": "^3.1.1"
   },
   "devDependencies": {
     "@beyondessential/tupaia-access-policy": "^2.5.0",

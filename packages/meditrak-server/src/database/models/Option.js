@@ -52,6 +52,12 @@ export class OptionModel extends DatabaseModel {
   meditrakConfig = {
     minAppVersion: '1.7.92',
   };
+
+  async getLargestSortOrder(optionSetId) {
+    const options = await this.find({ option_set_id: optionSetId });
+    const sorOrders = options.map(option => option.sort_order); // sort_order should not be null;
+    return Math.max(...sorOrders);
+  }
 }
 
 const findFieldConflict = async (field, valueToCompare, model) => {

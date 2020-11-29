@@ -281,7 +281,7 @@ const mapStateToProps = state => {
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
-    selectOrgUnitChildren(state, orgUnit.code),
+    selectOrgUnitChildren(state, orgUnit.organisationUnitCode),
     isMeasureLoading,
     measureInfo,
   );

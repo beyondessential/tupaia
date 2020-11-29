@@ -1,4 +1,4 @@
-import { buildTransform } from '../';
+import { buildTransform } from '..';
 
 export const keyValueByDataElementName = () =>
   buildTransform([
