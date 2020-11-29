@@ -39,7 +39,7 @@ done
 
 # Start server command for TS
 if [[ ${type_script} == true ]]; then
-    start_server="nodemon -w src --exec \"babel-node --extensions \".ts\" src/index.ts --inspect=${inspect_port} --config-file '../../.babelrc-ts.js'\""
+    start_server="nodemon -w src -e ts,json --exec \"babel-node --extensions \".ts\" src/index.ts --inspect=${inspect_port} --config-file '../../.babelrc-ts.js'\""
 fi
 
 echo "Starting server"

@@ -15,7 +15,7 @@ export const DrawerFooter = styled.div`
   text-align: center;
   box-shadow: 0px -1px 0px ${COLORS.GREY_DE};
   padding: 1.5rem;
-  z-index: 1;
+  z-index: 100;
 
   &:after {
     display: ${props => (props.disabled ? 'block' : 'none')};
