@@ -44,3 +44,6 @@ export const getDefaultEntitySettingKey = (userId, entityTypes, countryId) =>
 
 export const getEntityCreationQuestions = questions =>
   questions.filter(({ config }) => config.entity && config.entity.createNew);
+
+export const getOptionCreationAutocompleteQuestions = questions =>
+  questions.filter(({ config }) => config.autocomplete && config.autocomplete.createNew);

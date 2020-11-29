@@ -20,6 +20,7 @@ export class Response extends RealmObject {
       user_id: this.userId,
       answers: this.answers.map(answer => answer.toJson()),
       entities_created: this.entitiesCreated.map(entity => entity.toJson()),
+      options_created: this.optionsCreated.map(option => option.toJson()),
       metadata: this.metadata,
       timezone: DeviceInfo.getTimezone(),
     };
@@ -41,6 +42,7 @@ Response.schema = {
     userId: 'string',
     answers: { type: 'list', objectType: 'Answer' },
     entitiesCreated: { type: 'list', objectType: 'Entity' },
+    optionsCreated: { type: 'list', objectType: 'Option' },
     metadata: 'string',
   },
 };

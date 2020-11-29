@@ -43,7 +43,7 @@ const min = (existingRow: Row, field: string, value: FieldValue) => {
 };
 
 const unique = (existingRow: Row, field: string, value: FieldValue) => {
-  if (existingRow[field] !== undefined && existingRow[field] !== value) {
+  if (!isUndefined(existingRow[field]) && existingRow[field] !== value) {
     existingRow[field] = 'NO_UNIQUE_VALUE';
   } else {
     existingRow[field] = value;
@@ -52,6 +52,12 @@ const unique = (existingRow: Row, field: string, value: FieldValue) => {
 
 const drop = (existingRow: Row, field: string, value: FieldValue) => {
   // Do nothing, don't add the field to the existing row
+};
+
+const first = (existingRow: Row, field: string, value: FieldValue) => {
+  if (isUndefined(existingRow[field])) {
+    existingRow[field] = value;
+  }
 };
 
 const last = (existingRow: Row, field: string, value: FieldValue) => {
@@ -66,6 +72,7 @@ export const aggregations = {
   min,
   unique,
   drop,
+  first,
   last,
   default: last,
 };

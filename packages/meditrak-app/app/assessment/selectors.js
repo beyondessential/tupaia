@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { ExpressionParser, BooleanExpressionParser } from '@tupaia/expression-parser';
 import { checkAnswerPreconditionsAreMet } from './helpers';
 
 export const getSurveyScreenIndex = state => state.assessment.currentScreenIndex;
@@ -109,3 +110,83 @@ export const getQuestion = (state, questionId) => state.assessment.questions[que
 export const getAnswers = state => state.assessment.answers;
 
 export const getAnswerForQuestion = (state, questionId) => getAnswers(state)[questionId];
+
+export const getArithmeticResult = (state, arithmeticQuestionId) => {
+  const { config } = getQuestion(state, arithmeticQuestionId);
+
+  const {
+    arithmetic: { formula, valueTranslation = {}, defaultValues = {}, answerDisplayText = '' },
+  } = config;
+
+  const values = {};
+  const expressionParser = new ExpressionParser();
+  const variables = expressionParser.getVariables(formula);
+  const getArithmeticAnswer = questionId => {
+    const answer = getAnswerForQuestion(state, questionId);
+
+    if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
+      return valueTranslation[questionId][answer]; // return translated answer if there's any
+    }
+    if (answer !== undefined) {
+      return answer; // return raw answer
+    }
+
+    return defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // No answer found, return the default answer
+  };
+
+  // Setting up scope values.
+  const questionIds = variables.map(v => v.replace(/^\$/, ''));
+  questionIds.forEach(questionId => {
+    values[`$${questionId}`] = getArithmeticAnswer(questionId); // scope variables need $ prefix to match the variables in expressions
+  });
+
+  // Evaluate the expression
+  expressionParser.setScope(values);
+  const result = !isNaN(expressionParser.evaluate(formula))
+    ? Math.round(expressionParser.evaluate(formula) * 1000) / 1000 // Round to 3 decimal places
+    : 0;
+
+  // Replace variables with actual values in answerDisplayText
+  let translatedAnswerDisplayText = answerDisplayText;
+  questionIds.forEach(questionId => {
+    const answer = values[`$${questionId}`];
+    translatedAnswerDisplayText = translatedAnswerDisplayText.replace(questionId, answer);
+  });
+  translatedAnswerDisplayText = translatedAnswerDisplayText.replace('$result', result);
+
+  return {
+    answerDisplayText: translatedAnswerDisplayText,
+    result,
+  };
+};
+
+export const getConditionResult = (state, conditionQuestionId) => {
+  const { config } = getQuestion(state, conditionQuestionId);
+  const {
+    condition: { conditions },
+  } = config;
+  const expressionParser = new BooleanExpressionParser();
+  const checkConditionMet = ({ formula, defaultValues = {} }) => {
+    const values = {};
+    const variables = expressionParser.getVariables(formula);
+
+    variables.forEach(questionIdVariable => {
+      const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix
+      const answer = getAnswerForQuestion(state, questionId);
+      const defaultValue = defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // 0 is the last resort
+      const value = answer !== undefined ? answer : defaultValue;
+      values[questionIdVariable] = value;
+    });
+
+    expressionParser.setScope(values);
+    return expressionParser.evaluate(formula);
+  };
+
+  const result = Object.keys(conditions).find(resultValue =>
+    checkConditionMet(conditions[resultValue]),
+  );
+
+  return {
+    result,
+  };
+};

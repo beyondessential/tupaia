@@ -18,17 +18,29 @@ export interface FetchReportParams extends ParamsDictionary {
   reportCode: string;
 }
 
+export interface ReportConfig {
+  fetch: {
+    dataElements?: string[];
+    dataGroups?: string[];
+  };
+  transform: (string | Record<string, unknown>)[];
+}
+
 interface ReportsRequestBody {
-  emailAddress: string;
-  password: string;
+  testConfig?: ReportConfig;
+  testData?: Record<string, string | number>[];
+}
+interface ReportsRequestHeaders {
+  Authorization: string;
 }
 
 export interface ReportsRequest<
   P = FetchReportParams,
   ResBody = unknown,
   ReqBody = ReportsRequestBody,
-  ReqQuery = FetchReportQuery
-> extends Request<P, ResBody, ReqBody, ReqQuery> {
+  ReqQuery = FetchReportQuery,
+  Headers = ReportsRequestHeaders,
+> extends Request<P, ResBody, ReqBody, ReqQuery, Headers> {
   accessPolicy: AccessPolicy;
   authenticator: Authenticator;
   database: TupaiaDatabase;
@@ -40,7 +52,5 @@ export interface Event {
   eventDate: string;
   orgUnitName: string;
   orgUnit: string;
-  dataValues?: {
-    [key: string]: string | number;
-  };
+  dataValues?: Record<string, string | number>;
 }
