@@ -13,7 +13,7 @@ import {
   SitesReportedCell,
   WeekAndDateCell,
 } from '../../components';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 const countrySummaryTableColumns = [
   {
