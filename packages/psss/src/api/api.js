@@ -12,35 +12,36 @@ const PSSS_API_URL = process.env.REACT_APP_PSSS_API_URL;
 const headers = { 'X-Custom-Header': 'foobar' };
 const timeout = 45 * 1000;
 
+// withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
+axios.defaults.withCredentials = true;
+
 const request = async (endpoint, options) => {
-  if (body) {
-    fetchConfig.body =
-      typeof body === 'object' && !(body instanceof FormData) ? JSON.stringify(body) : body;
+  // Don't need as By default, axios serializes JavaScript objects to JSON
+  // if (body) {
+  //   fetchConfig.body =
+  //     typeof body === 'object' && !(body instanceof FormData) ? JSON.stringify(body) : body;
+  // }
+
+  try {
+    const { data } = await axios(`${PSSS_API_URL}/${endpoint}`, {
+      headers,
+      timeout,
+      ...options,
+    });
+    return data;
+  } catch (error) {
+    if (error.response) {
+      const { data } = error.response;
+      if (data.error) {
+        throw new Error(data.error);
+      } else if (data.message) {
+        throw new Error(data.message);
+      }
+    } else {
+      throw new Error('Network error. Please try again');
+    }
+    return false;
   }
-
-  const response = await axios(`${PSSS_API_URL}/${endpoint}`, { headers, timeout, ...options });
-
-  // Todo: check whether this is still needed
-  if (!response.ok) {
-    let responseJson;
-    try {
-      responseJson = await response.json();
-    } catch (error) {
-      throw new Error(`Network error ${response.status}`);
-    }
-    if (
-      responseJson.status &&
-      (responseJson.status < 200 || responseJson.status >= 300) &&
-      !responseJson.error
-    ) {
-      throw new Error(responseJson.message);
-    }
-    if (responseJson.error) {
-      throw new Error(responseJson.error);
-    }
-  }
-
-  return response.data;
 };
 
 export const get = (endpoint, options) => request(endpoint, { method: 'get', ...options });

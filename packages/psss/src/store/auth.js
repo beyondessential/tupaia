@@ -5,49 +5,34 @@
 
 import { createSelector } from 'reselect';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { authenticate, updateUser, getUser } from '../api';
+import { loginUser, logoutUser, updateUser, getUser } from '../api';
 import { createReducer } from '../utils/createReducer';
 
 // actions
-const LOGIN_START = 'LOGIN_START';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-const LOGIN_ERROR = 'LOGIN_ERROR';
 const LOGOUT = 'LOGOUT';
-export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
+const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
 export const login = ({ email, password }) => async dispatch => {
   const deviceName = window.navigator.userAgent;
-
-  dispatch({ type: LOGIN_START });
-  try {
-    const response = await authenticate({
-      emailAddress: email,
-      password,
-      deviceName,
-    });
-
-    dispatch(loginSuccess(response));
-  } catch (error) {
-    dispatch(loginError(error.message));
-  }
+  const user = await loginUser({
+    emailAddress: email,
+    password,
+    deviceName,
+  });
+  dispatch({
+    type: LOGIN_SUCCESS,
+    ...user,
+  });
 };
 
-export const loginSuccess = ({ accessToken, refreshToken, user }) => ({
-  type: LOGIN_SUCCESS,
-  accessToken,
-  refreshToken,
-  user,
-});
-
-export const loginError = errorMessage => ({
-  type: LOGIN_ERROR,
-  error: errorMessage,
-});
-
-export const logout = () => ({
-  type: LOGOUT,
-});
+export const logout = () => async dispatch => {
+  dispatch({
+    type: LOGOUT,
+  });
+  await logoutUser();
+};
 
 export const updateProfile = payload => async dispatch => {
   await updateUser(payload);
@@ -60,11 +45,13 @@ export const updateProfile = payload => async dispatch => {
 
 // selectors
 export const getCurrentUser = ({ auth }) => auth && auth.user;
-export const getError = ({ auth }) => auth.error;
-export const checkIsPending = ({ auth }) => auth.status === 'pending';
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
-export const checkIsError = ({ auth }) => auth.status === 'error';
-export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
+export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.isLoggedIn;
+
+// export const checkIsLoggedIn = state => {
+//   const user = getCurrentUser(state);
+//   return !!(user && user.id);
+// };
 
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
@@ -87,34 +74,21 @@ export const getHomeUrl = state =>
 
 // reducer
 const defaultState = {
-  status: 'idle',
+  isLoggedIn: false,
   user: null,
-  error: null,
-  accessToken: null,
-  refreshToken: null,
 };
 
 const actionHandlers = {
-  [LOGIN_START]: () => ({
-    ...defaultState,
-    status: 'pending',
-  }),
   [LOGIN_SUCCESS]: action => ({
-    status: 'success',
     user: action.user,
-    error: defaultState.error,
-    accessToken: action.accessToken,
-    refreshToken: action.refreshToken,
-  }),
-  [LOGIN_ERROR]: action => ({
-    status: 'error',
-    error: action.error,
+    isLoggedIn: true,
   }),
   [LOGOUT]: (action, currentState) => ({
-    ...defaultState,
-    user: currentState.user,
+    ...currentState,
+    isLoggedIn: false,
   }),
   [PROFILE_SUCCESS]: (user, currentState) => ({
+    ...currentState,
     user: {
       ...currentState.user,
       firstName: user.first_name,
