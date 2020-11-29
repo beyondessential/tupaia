@@ -52,6 +52,6 @@ export class AuthConnection extends ApiConnection {
       throw new Error('Invalid response from auth server');
     }
     const { accessPolicy, email } = user;
-    return { accessToken, refreshToken, accessPolicy, email };
+    return { accessToken, refreshToken, accessPolicy, email, user };
   }
 }
