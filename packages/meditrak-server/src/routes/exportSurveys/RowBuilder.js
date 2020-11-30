@@ -4,10 +4,11 @@
  */
 
 import {
-  KeyValueCellBuilder,
-  EntityConfigCellBuilder,
-  VisibilityCriteriaCellBuilder,
+  AutocompleteConfigCellBuilder,
   CodeGeneratorConfigCellBuilder,
+  EntityConfigCellBuilder,
+  KeyValueCellBuilder,
+  VisibilityCriteriaCellBuilder,
 } from './cellBuilders';
 
 export class RowBuilder {
@@ -18,9 +19,10 @@ export class RowBuilder {
     this.visibilityCriteriaCellBuilder = new VisibilityCriteriaCellBuilder(models);
     const entityConfigCellBuilder = new EntityConfigCellBuilder(models);
     this.configCellBuilders = {
+      Autocomplete: new AutocompleteConfigCellBuilder(models),
+      CodeGenerator: new CodeGeneratorConfigCellBuilder(models),
       Entity: entityConfigCellBuilder,
       PrimaryEntity: entityConfigCellBuilder,
-      CodeGenerator: new CodeGeneratorConfigCellBuilder(models),
     };
     this.build = this.build.bind(this);
   }

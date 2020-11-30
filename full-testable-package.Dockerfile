@@ -39,6 +39,8 @@ RUN mkdir -p ./packages/indicators
 COPY packages/indicators/package.json ./packages/indicators
 RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
+RUN mkdir -p ./packages/psss-server
+COPY packages/psss-server/package.json ./packages/psss-server
 RUN mkdir -p ./packages/report-server
 COPY packages/report-server/package.json ./packages/report-server
 RUN mkdir -p ./packages/expression-parser
@@ -68,6 +70,7 @@ COPY packages/database/. ./packages/database
 COPY packages/devops/. ./packages/devops
 COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/indicators/. ./packages/indicators
+COPY packages/psss-server/. ./packages/psss-server
 COPY packages/report-server/. ./packages/report-server
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/ui-components/. ./packages/ui-components

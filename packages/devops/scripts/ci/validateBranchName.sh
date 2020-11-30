@@ -5,7 +5,7 @@ DIR=$(dirname "$0")
 
 MAX_LENGTH=56
 INVALID_CHARS=('/' '\' '.' '&' '?')
-RESERVED_ENDINGS=(admin aggregation api config export mobile tonga-aggregation www)
+RESERVED_ENDINGS=(admin aggregation api config export mobile psss tonga-aggregation www)
 
 function get_branch_name() {
     local branch_name="$CI_BRANCH"
