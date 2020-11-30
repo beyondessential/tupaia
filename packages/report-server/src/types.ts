@@ -27,18 +27,20 @@ export interface ReportConfig {
 }
 
 interface ReportsRequestBody {
-  emailAddress: string;
-  password: string;
   testConfig?: ReportConfig;
   testData?: Record<string, string | number>[];
+}
+interface ReportsRequestHeaders {
+  Authorization: string;
 }
 
 export interface ReportsRequest<
   P = FetchReportParams,
   ResBody = unknown,
   ReqBody = ReportsRequestBody,
-  ReqQuery = FetchReportQuery
-> extends Request<P, ResBody, ReqBody, ReqQuery> {
+  ReqQuery = FetchReportQuery,
+  Headers = ReportsRequestHeaders,
+> extends Request<P, ResBody, ReqBody, ReqQuery, Headers> {
   accessPolicy: AccessPolicy;
   authenticator: Authenticator;
   database: TupaiaDatabase;

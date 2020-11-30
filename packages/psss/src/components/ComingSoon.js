@@ -13,7 +13,7 @@ const Container = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: 10;
   backdrop-filter: blur(2px);
   background: rgba(0, 0, 0, 0.3);
 `;
