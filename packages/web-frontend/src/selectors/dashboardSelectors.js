@@ -21,8 +21,8 @@ export const selectCurrentExpandedViewId = createSelector([selectLocation], loca
 );
 
 export const selectCurrentExpandedDates = createSelector([selectLocation], location => {
-  const startDateString = getLocationComponentValue(location, URL_COMPONENTS.REPORT_PERIOD) ?? '';
-  return convertUrlPeriodStringToDateRange(startDateString);
+  const periodString = getLocationComponentValue(location, URL_COMPONENTS.REPORT_PERIOD) ?? '';
+  return convertUrlPeriodStringToDateRange(periodString);
 });
 
 export const selectCurrentDashboardGroupCode = createSelector(
