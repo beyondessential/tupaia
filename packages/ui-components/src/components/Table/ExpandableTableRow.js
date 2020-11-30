@@ -75,8 +75,28 @@ const CloseIcon = styled(RemoveCircle)`
   color: ${props => props.theme.palette.text.primary};
 `;
 
+const DefaultExpandButton = ({ onClick, expanded }) => (
+  <PositionedIconButton onClick={onClick}>
+    {expanded ? <CloseIcon /> : <OpenIcon />}
+  </PositionedIconButton>
+);
+
+DefaultExpandButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  expanded: PropTypes.bool.isRequired,
+};
+
 export const ExpandableTableRow = React.memo(
-  ({ columns, rowData, className, expandedValue, SubComponent, ExpansionContainer, onClick }) => {
+  ({
+    columns,
+    rowData,
+    className,
+    expandedValue,
+    SubComponent,
+    ExpansionContainer,
+    onClick,
+    ExpandButtonComponent,
+  }) => {
     const isControlled = expandedValue !== undefined;
     const [expandedState, setExpandedState] = useState(false);
     const expanded = isControlled ? expandedValue : expandedState;
@@ -95,12 +115,9 @@ export const ExpandableTableRow = React.memo(
           columns={columns}
           rowData={rowData}
           ExpandButton={
-            <PositionedIconButton
-              onClick={handleClick}
-              style={{ position: 'absolute', top: 10, right: 0 }}
-            >
-              {expanded ? <CloseIcon /> : <OpenIcon />}
-            </PositionedIconButton>
+            ExpandButtonComponent && (
+              <ExpandButtonComponent onClick={handleClick} expanded={expanded} />
+            )
           }
         />
       </StyledTableRow>
@@ -126,6 +143,7 @@ ExpandableTableRow.propTypes = {
   ExpansionContainer: PropTypes.any,
   expandedValue: PropTypes.bool,
   onClick: PropTypes.func,
+  ExpandButtonComponent: PropTypes.node,
 };
 
 ExpandableTableRow.defaultProps = {
@@ -134,4 +152,5 @@ ExpandableTableRow.defaultProps = {
   ExpansionContainer: TableRowExpansionContainer,
   expandedValue: undefined,
   onClick: null,
+  ExpandButtonComponent: DefaultExpandButton,
 };

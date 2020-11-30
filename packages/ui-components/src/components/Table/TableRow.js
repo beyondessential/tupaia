@@ -52,6 +52,11 @@ export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
 TableRowCells.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   rowData: PropTypes.object.isRequired,
+  ExpandButton: PropTypes.node,
+};
+
+TableRowCells.defaultProps = {
+  ExpandButton: null,
 };
 
 const rowHoverColor = '#F1F1F1';

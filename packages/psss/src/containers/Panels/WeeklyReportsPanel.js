@@ -63,11 +63,6 @@ const columns = [
 ];
 
 const SiteReportsSection = styled.section`
-  // Todo: remove temp styling for coming soon blurred area
-  margin-top: 50px;
-  margin-bottom: 20px;
-  // ---
-
   position: relative;
   padding: 1.8rem 1.25rem;
 
