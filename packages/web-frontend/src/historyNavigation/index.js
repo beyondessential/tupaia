@@ -7,7 +7,6 @@
 
 export { historyMiddleware, initHistoryDispatcher } from './historyMiddleware';
 export {
-  createUrlString,
   getLocationComponentValue,
   getInitialLocation,
   getInitialLocationComponents,

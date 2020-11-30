@@ -104,7 +104,6 @@ import { DEFAULT_PROJECT_CODE } from './defaults';
 import { fetchDisasterDateRange } from './disaster/sagas';
 import {
   convertUrlPeriodStringToDateRange,
-  createUrlString,
   getInitialLocation,
   URL_COMPONENTS,
 } from './historyNavigation';

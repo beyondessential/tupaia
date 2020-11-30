@@ -20,6 +20,7 @@ import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
   selectCurrentProjectCode,
+  selectCurrentExpandedDates,
 } from '../../selectors';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
 import { isMobile, sleep, stringToFilename } from '../../utils';
@@ -280,17 +281,20 @@ const styles = {
   },
 };
 
-const mapStateToProps = state => ({
-  isLoading: state.enlargedDialog.isLoading,
-  contentByLevel: state.enlargedDialog.contentByLevel,
-  startDate: state.enlargedDialog.startDate,
-  endDate: state.enlargedDialog.endDate,
-  errorMessage: state.enlargedDialog.errorMessage,
-  drillDownDatesByLevel: state.enlargedDialog.drillDownDatesByLevel,
-  infoViewKey: selectCurrentInfoViewKey(state),
-  organisationUnitName: selectCurrentOrgUnit(state).name,
-  projectCode: selectCurrentProjectCode(state),
-});
+const mapStateToProps = state => {
+  const { startDate, endDate } = selectCurrentExpandedDates(state);
+  return {
+    startDate,
+    endDate,
+    isLoading: state.enlargedDialog.isLoading,
+    contentByLevel: state.enlargedDialog.contentByLevel,
+    errorMessage: state.enlargedDialog.errorMessage,
+    drillDownDatesByLevel: state.enlargedDialog.drillDownDatesByLevel,
+    infoViewKey: selectCurrentInfoViewKey(state),
+    organisationUnitName: selectCurrentOrgUnit(state).name,
+    projectCode: selectCurrentProjectCode(state),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   onSetDateRange: drillDownLevel => (startDate, endDate) =>

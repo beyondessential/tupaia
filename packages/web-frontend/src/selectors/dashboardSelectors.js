@@ -1,7 +1,12 @@
 import moment from 'moment';
 import { createSelector } from 'reselect';
-import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { getUniqueViewId } from '../utils';
+
+import {
+  convertUrlPeriodStringToDateRange,
+  getLocationComponentValue,
+  URL_COMPONENTS,
+} from '../historyNavigation';
 import { getDefaultDates } from '../utils/periodGranularities';
 import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
 import { selectLocation } from './utils';
@@ -14,6 +19,11 @@ export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
 export const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.REPORT),
 );
+
+export const selectCurrentExpandedDates = createSelector([selectLocation], location => {
+  const periodString = getLocationComponentValue(location, URL_COMPONENTS.REPORT_PERIOD) ?? '';
+  return convertUrlPeriodStringToDateRange(periodString);
+});
 
 export const selectCurrentDashboardGroupCode = createSelector(
   [state => state.global.dashboardConfig, selectCurrentDashboardGroupCodeFromLocation],
