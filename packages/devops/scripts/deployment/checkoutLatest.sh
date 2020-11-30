@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# Set the branch to fetch
-if [[ $STAGE == "production" ]]; then
-    BRANCH="master"
-else
-    BRANCH="$STAGE"
-fi
-
 # Get latest code and dependencies
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
 cd ${HOME_DIRECTORY}
