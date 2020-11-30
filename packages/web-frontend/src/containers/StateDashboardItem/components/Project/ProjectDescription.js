@@ -45,7 +45,7 @@ function ProjectDescription({ project }) {
     <Grid>
       <FullWidthRow>{description}</FullWidthRow>
       <Footer>
-        <Countries>{names.join(', ')}</Countries>
+        <Countries>{names.sort().join(', ')}</Countries>
       </Footer>
     </Grid>
   ) : (
