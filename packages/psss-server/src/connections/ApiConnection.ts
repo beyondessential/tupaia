@@ -23,7 +23,7 @@ export class ApiConnection {
     return this.request('GET', endpoint, queryParameters);
   }
 
-  post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+  post(endpoint: string, queryParameters: QueryParameters, body?: RequestBody) {
     return this.request('POST', endpoint, queryParameters, body);
   }
 

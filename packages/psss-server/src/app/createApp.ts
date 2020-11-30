@@ -8,15 +8,16 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 
+import { ModelRegistry } from '@tupaia/database';
 import { addRoutesToApp } from './addRoutesToApp';
 import { sessionCookie } from './sessionCookie';
-import { attachSessionModel } from './attachSessionModel';
+import { attachModels } from './attachModels';
 import { PsssSessionModel } from '../models';
 
 /**
  * Set up express server with middleware,
  */
-export function createApp(sessionModel: PsssSessionModel) {
+export function createApp(models: ModelRegistry, sessionModel: PsssSessionModel) {
   const app = express();
 
   /**
@@ -26,7 +27,7 @@ export function createApp(sessionModel: PsssSessionModel) {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(errorHandler());
   app.use(sessionCookie());
-  app.use(attachSessionModel(sessionModel));
+  app.use(attachModels(models, sessionModel));
 
   /**
    * Add all routes to the app

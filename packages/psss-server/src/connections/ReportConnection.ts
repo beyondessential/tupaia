@@ -9,4 +9,15 @@ const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 
 export class ReportConnection extends ApiConnection {
   baseUrl = REPORT_API_URL;
+
+  async fetchReport(reportCode: string, orgUnitCodes: string[], periods: string[] = []) {
+    if (!orgUnitCodes || !orgUnitCodes.length) {
+      throw new Error(`No organisationUnitCodes provided`);
+    }
+
+    return this.post(`fetchReport/${reportCode}`, {
+      organisationUnitCodes: orgUnitCodes.join(','),
+      period: periods.join(';')
+    })
+  }
 }
