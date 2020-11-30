@@ -162,8 +162,8 @@ const EnlargedDialogComponent = ({
 
 EnlargedDialogComponent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  organisationUnitName: PropTypes.string.isRequired,
+  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  organisationUnitName: PropTypes.string,
   onSetDateRange: PropTypes.func,
   onDrillDown: PropTypes.func,
   isLoading: PropTypes.bool,
@@ -178,6 +178,8 @@ EnlargedDialogComponent.propTypes = {
 EnlargedDialogComponent.defaultProps = {
   onDrillDown: () => {},
   onSetDateRange: () => {},
+  organisationUnitName: '',
+  viewContent: null,
   errorMessage: null,
   startDate: null,
   endDate: null,
