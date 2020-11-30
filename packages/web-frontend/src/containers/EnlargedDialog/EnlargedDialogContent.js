@@ -219,10 +219,6 @@ export class EnlargedDialogContent extends PureComponent {
     const { onSetDateRange, isLoading, viewContent, isExporting } = this.props;
     const { periodGranularity, startDate, endDate } = viewContent;
 
-    if (!periodGranularity) {
-      return null;
-    }
-
     const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
 
     return (
