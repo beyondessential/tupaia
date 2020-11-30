@@ -4,7 +4,7 @@
  */
 
 import { Express, Response, NextFunction } from 'express';
-import { InternalServerError } from '@tupaia/utils';
+import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { fetchReport } from '../routes';
 import { authenticationMiddleware } from '../auth';
 import { ReportsRequest } from '../types';
@@ -38,7 +38,18 @@ export function addRoutesToApp(app: Express) {
   app.use(handleError);
 }
 
-const handleError = (err, req: ReportsRequest, res: Response) => {
-  const error = err.respond ? err : new InternalServerError(err);
+const handleError = (
+  err: RespondingError | Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // use default if response is already being sent and there are connection problems
+  if (res && res.headersSent) {
+    next(err);
+    return;
+  }
+
+  const error = 'respond' in err ? err : new InternalServerError(err);
   error.respond(res);
 };
