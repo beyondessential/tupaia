@@ -529,6 +529,7 @@ function* attemptRequestCountryAccess(action) {
   try {
     yield call(request, requestResourceUrl, fetchRequestCountryAccessError, options);
     yield put(fetchRequestCountryAccessSuccess());
+    yield call(fetchProjectData);
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
     yield put(error.errorFunction(errorMessage.details ? errorMessage.details : ''));
@@ -776,7 +777,6 @@ function* fetchDashboardItemData(action) {
 }
 
 function* watchViewFetchRequests() {
-  // Watches for VIEW_FETCH_REQUESTED actions and calls fetchDashboardItemData when one comes in.
   // By using `takeEvery` fetches for different views will be run simultaneously.
   // It returns task descriptor (just like fork) so we can continue execution
   yield takeEvery(FETCH_INFO_VIEW_DATA, fetchDashboardItemData);
@@ -1048,8 +1048,10 @@ function* watchLogoutSuccess() {
 function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
-    yield put(setOverlayComponent(null));
     yield call(fetchProjectData);
+    const { PROJECT } = decodeLocation(location);
+    const overlay = PROJECT === 'explore' ? LANDING : null;
+    yield put(setOverlayComponent(overlay));
     yield call(handleLocationChange, {
       location,
       // Assume an empty location string so that the url will trigger fetching fresh data

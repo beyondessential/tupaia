@@ -19,6 +19,7 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { DIALOG_Z_INDEX, DARK_BLUE, WHITE } from '../../styles';
 import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { LoadingIndicator } from '../Form/common';
+import { getLimits } from '../../utils/periodGranularities';
 
 const StyledAlert = styled(Alert)`
   display: inline-flex;
@@ -192,6 +193,8 @@ export class EnlargedDialogContent extends PureComponent {
     const { onSetDateRange, isLoading, viewContent, isExporting } = this.props;
     const { periodGranularity, startDate, endDate } = viewContent;
 
+    const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
+
     return (
       <div style={styles.periodSelector(isExporting)}>
         <DateRangePicker
@@ -200,6 +203,8 @@ export class EnlargedDialogContent extends PureComponent {
           onSetDates={onSetDateRange}
           startDate={startDate}
           endDate={endDate}
+          min={datePickerLimits.startDate}
+          max={datePickerLimits.endDate}
           isLoading={isLoading}
         />
       </div>

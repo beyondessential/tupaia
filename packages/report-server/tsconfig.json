@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "CommonJS",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2019"
+  }
+}
