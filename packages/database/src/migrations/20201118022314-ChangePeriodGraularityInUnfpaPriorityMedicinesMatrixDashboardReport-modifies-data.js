@@ -30,6 +30,18 @@ const defaultTimePeriod = {
   unit: 'month',
   offset: -1,
 };
+
+const datePickerLimits = {
+  end: {
+    unit: 'month',
+    offset: -1,
+  },
+  start: {
+    unit: 'month',
+    offset: -365,
+  },
+};
+
 const showPeriodRange = 'all';
 
 async function getDashboardReportById(db, id) {
@@ -50,6 +62,7 @@ exports.up = async function (db) {
     const newJson = dashboardReport.viewJson;
     newJson.periodGranularity = periodGranularity;
     newJson.defaultTimePeriod = defaultTimePeriod;
+    newJson.datePickerLimits = datePickerLimits;
     newJson.showPeriodRange = showPeriodRange;
     await updateViewJsonByReportId(db, newJson, id);
   }
@@ -61,6 +74,7 @@ exports.down = async function (db) {
     const newJson = dashboardReport.viewJson;
     newJson.periodGranularity = 'month';
     delete newJson.defaultTimePeriod;
+    delete newJson.datePickerLimits;
     delete newJson.showPeriodRange;
     await updateViewJsonByReportId(db, newJson, id);
   }
