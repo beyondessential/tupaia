@@ -24,11 +24,11 @@ export class AuthConnection extends ApiConnection {
     super(basicAuthHandler);
   }
 
-  async login({ emailAddress, password }: Credentials) {
+  async login({ emailAddress, password, deviceName }: Credentials) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
-      { emailAddress, password, deviceName: 'PSSS Server' },
+      { emailAddress, password, deviceName: `PSSS-SERVER: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
   }

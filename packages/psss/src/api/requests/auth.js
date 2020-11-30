@@ -7,7 +7,7 @@ import { get, put, post } from '../api';
 
 export const loginUser = data =>
   post('login', {
-    data,
+    data: { ...data, deviceName: window.navigator.userAgent },
   });
 
 export const logoutUser = async () => {
@@ -27,3 +27,5 @@ export const updateUser = data =>
   });
 
 export const updatePassword = data => post('me/changePassword', { data });
+
+export const doTest = () => get('test');

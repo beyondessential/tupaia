@@ -27,6 +27,6 @@ export class LoginRoute extends UnauthenticatedRoute {
     // set sessionId cookie
     this.req.sessionCookie = { id, email };
 
-    return { user: response.user, accessPolicy };
+    return { user: response.user };
   }
 }

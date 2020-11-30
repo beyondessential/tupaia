@@ -24,8 +24,8 @@ export function createApp(sessionModel: PsssSessionModel) {
    */
   app.use(
     cors({
-      origin: true,
-      credentials: true,
+      origin: true, // allow request across origins
+      credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
     }),
   );
   app.use(bodyParser.json({ limit: '50mb' }));
