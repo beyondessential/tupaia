@@ -5,9 +5,9 @@
 
 import { get, put, post } from '../api';
 
-export const loginUser = data =>
+export const loginUser = credentials =>
   post('login', {
-    data: { ...data, deviceName: window.navigator.userAgent },
+    data: { ...credentials, deviceName: window.navigator.userAgent },
   });
 
 export const logoutUser = async () => {
