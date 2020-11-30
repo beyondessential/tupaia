@@ -1,22 +1,33 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { NextFunction, Response } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { getUserIDFromToken } from '@tupaia/auth';
 import { ReportsRequest } from '../types';
 
 const authenticateUser = async (req: ReportsRequest) => {
-  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const authHeader = req.headers.authorization;
+
   if (!authHeader) {
-    throw new UnauthenticatedError('No authorization header provided - must be Bearer Auth Header');
+    throw new UnauthenticatedError(
+      'No authorization header provided - must be Basic or Bearer Auth Header',
+    );
   }
 
   if (authHeader.startsWith('Bearer')) {
     return authenticateBearerAuthHeader(authHeader);
-  } else if (authHeader.startsWith('Basic')) {
+  }
+
+  if (authHeader.startsWith('Basic')) {
     return authenticateBasicAuthHeader(req, authHeader);
   }
 
   throw new UnauthenticatedError('Could not authenticate with the provided token');
-}
+};
 
 const authenticateBearerAuthHeader = async (authHeader: string) => {
   // Use the user account provided in the auth header if present
@@ -26,7 +37,7 @@ const authenticateBearerAuthHeader = async (authHeader: string) => {
   }
 
   throw new UnauthenticatedError('Could not authenticate with the provided access token');
-}
+};
 
 const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: string) => {
   const usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
@@ -34,7 +45,7 @@ const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: stri
     throw new UnauthenticatedError('Invalid Basic auth credentials');
   }
 
-  //Split on first occurrence because password can contain ':'
+  // Split on first occurrence because password can contain ':'
   const username = usernamePassword.split(':')[0];
   const password = usernamePassword.substring(username.length + 1, usernamePassword.length);
   const { authenticator } = req;
@@ -45,12 +56,16 @@ const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: stri
   });
   if (user) {
     return user.id;
-  } 
-    
-  throw new UnauthenticatedError('Could not find user');
-}
+  }
 
-export const authenticationMiddleware = async (req: ReportsRequest, res, next) => {
+  throw new UnauthenticatedError('Could not find user');
+};
+
+export const authenticationMiddleware = async (
+  req: ReportsRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const userId = await authenticateUser(req);
     if (userId) {

@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { Row, FieldValue } from '../../../types';
 
 const isUndefined = (value: FieldValue): value is undefined => {
