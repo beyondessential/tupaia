@@ -34,7 +34,6 @@ const STATUS = {
   IDLE: 'idle',
   LOADING: 'loading',
   ERROR: 'error',
-  SUCCESS: 'success',
 };
 
 const LoginFormComponent = ({ user, onLogin }) => {
@@ -46,9 +45,8 @@ const LoginFormComponent = ({ user, onLogin }) => {
     setStatus(STATUS.LOADING);
     setErrorMessage(null);
     try {
-      await onLogin({ email, password });
       window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
-      setStatus(STATUS.SUCCESS);
+      await onLogin({ email, password });
     } catch (error) {
       setErrorMessage(error.message);
       setStatus(STATUS.ERROR);

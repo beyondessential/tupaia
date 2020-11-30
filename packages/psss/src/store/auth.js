@@ -48,11 +48,6 @@ export const getCurrentUser = ({ auth }) => auth && auth.user;
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.isLoggedIn;
 
-// export const checkIsLoggedIn = state => {
-//   const user = getCurrentUser(state);
-//   return !!(user && user.id);
-// };
-
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
 export const getEntitiesAllowed = createSelector(getCurrentUser, user => {
