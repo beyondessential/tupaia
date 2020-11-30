@@ -13,9 +13,9 @@ echo "Starting up instance for ${STAGE}"
 
 # Set the branch based on STAGE
 if [[ $STAGE == "production" ]]; then
-    BRANCH="master"
+    export BRANCH="master"
 else
-    BRANCH="$STAGE"
+    export BRANCH="$STAGE"
 fi
 
 # Fetch the latest code
