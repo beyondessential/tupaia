@@ -136,6 +136,7 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 
 Can only be done on mac, with Xcode installed
 
+- Be sure to follow the steps under "If you are developing/building for ios:" above
 - Open the `TupaiaMediTrak.xcworkspace` file within `meditrak-app/ios`
 - Set up signing:
   - Get the provisioning profile, certificate, and private key from LastPass
