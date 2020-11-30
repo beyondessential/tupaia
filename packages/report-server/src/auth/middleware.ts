@@ -3,20 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { NextFunction, Response } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { getUserIDFromToken } from '@tupaia/auth';
 import { ReportsRequest } from '../types';
 
 const authenticateUser = async (req: ReportsRequest) => {
-  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const authHeader = req.headers.authorization;
+
   if (!authHeader) {
-    throw new UnauthenticatedError('No authorization header provided - must be Bearer Auth Header');
+    throw new UnauthenticatedError(
+      'No authorization header provided - must be Basic or Bearer Auth Header',
+    );
   }
 
   if (authHeader.startsWith('Bearer')) {
     return authenticateBearerAuthHeader(authHeader);
-  } else if (authHeader.startsWith('Basic')) {
+  }
+
+  if (authHeader.startsWith('Basic')) {
     return authenticateBasicAuthHeader(req, authHeader);
   }
 
@@ -39,7 +45,7 @@ const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: stri
     throw new UnauthenticatedError('Invalid Basic auth credentials');
   }
 
-  //Split on first occurrence because password can contain ':'
+  // Split on first occurrence because password can contain ':'
   const username = usernamePassword.split(':')[0];
   const password = usernamePassword.substring(username.length + 1, usernamePassword.length);
   const { authenticator } = req;
@@ -55,7 +61,11 @@ const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: stri
   throw new UnauthenticatedError('Could not find user');
 };
 
-export const authenticationMiddleware = async (req: ReportsRequest, res, next) => {
+export const authenticationMiddleware = async (
+  req: ReportsRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const userId = await authenticateUser(req);
     if (userId) {
