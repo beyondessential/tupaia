@@ -18,6 +18,7 @@ import {
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
@@ -47,7 +48,9 @@ export async function postChanges(req, res) {
   const surveyResponsePermissionsChecker = async accessPolicy => {
     await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
   };
-  await req.assertPermissions(surveyResponsePermissionsChecker);
+  await req.assertPermissions(
+    assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
+  );
 
   for (const { action, payload } of changes) {
     await ACTION_HANDLERS[action](models, payload);

@@ -140,11 +140,11 @@ describe('Permissions checker for GETSurveys', async () => {
     });
   });
 
-  describe('GET /country/id/surveys', async () => {
+  describe('GET /countries/id/surveys', async () => {
     it('Sufficient permissions: Return only surveys we have permission for in the selected country', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
       const { body: results } = await app.get(
-        `country/${vanuatuCountryId}/surveys?${filterString}`,
+        `countries/${vanuatuCountryId}/surveys?${filterString}`,
       );
 
       expect(results.map(r => r.id)).to.have.members([surveyIds[0]]);
@@ -153,7 +153,7 @@ describe('Permissions checker for GETSurveys', async () => {
     it('Sufficient permissions: Return all surveys in the selected country if we are BES admin', async () => {
       await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
       const { body: results } = await app.get(
-        `country/${vanuatuCountryId}/surveys?${filterString}`,
+        `countries/${vanuatuCountryId}/surveys?${filterString}`,
       );
 
       expect(results.map(r => r.id)).to.have.members([surveyIds[0], surveyIds[1]]);
@@ -161,7 +161,9 @@ describe('Permissions checker for GETSurveys', async () => {
 
     it('Insufficient permissions: Return an empty array if we do not have access to any of the surveys in the selected country', async () => {
       await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
-      const { body: results } = await app.get(`country/${tongaCountryId}/surveys?${filterString}`);
+      const { body: results } = await app.get(
+        `countries/${tongaCountryId}/surveys?${filterString}`,
+      );
 
       expect(results).to.be.empty;
     });

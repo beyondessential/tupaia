@@ -17,6 +17,7 @@ import {
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
 import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
@@ -188,7 +189,7 @@ export async function surveyResponse(req, res) {
     const surveyResponsePermissionsChecker = async accessPolicy => {
       await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, responses);
     };
-    await req.assertPermissions(surveyResponsePermissionsChecker);
+    await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]));
 
     results = await saveResponsesToDatabase(transactingModels, userId, responses);
   });

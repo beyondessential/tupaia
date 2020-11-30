@@ -26,6 +26,7 @@ import {
   INFO_ROW_HEADERS,
 } from '../exportSurveyResponses';
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
@@ -51,7 +52,9 @@ export async function importSurveyResponses(req, res) {
         await assertCanImportSurveyResponses(accessPolicy, transactingModels, entitiesBySurveyName);
       };
 
-      await req.assertPermissions(importSurveyResponsePermissionsChecker);
+      await req.assertPermissions(
+        assertAnyPermissions([assertBESAdminAccess, importSurveyResponsePermissionsChecker]),
+      );
 
       for (const surveySheets of Object.entries(workbook.Sheets)) {
         const [tabName, sheet] = surveySheets;
