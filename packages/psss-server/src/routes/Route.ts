@@ -4,7 +4,6 @@
  */
 import { NextFunction, Response } from 'express';
 import { respond, PermissionsError, UnauthenticatedError } from '@tupaia/utils';
-import { ModelRegistry } from '@tupaia/database';
 
 import { PsssRequest, PsssResponseBody, SessionCookie } from '../types';
 import { PsssSessionModel, PsssSessionType } from '../models';
@@ -17,8 +16,6 @@ export class Route {
   res: Response;
 
   next: NextFunction;
-
-  models: ModelRegistry;
 
   sessionModel: PsssSessionModel;
 
@@ -35,10 +32,9 @@ export class Route {
     this.res = res;
     this.next = next;
 
-    const { sessionModel, sessionCookie, models } = req;
+    const { sessionModel, sessionCookie } = req;
     this.sessionModel = sessionModel;
     this.sessionCookie = sessionCookie;
-    this.models = models;
   }
 
   respond(responseBody: PsssResponseBody, statusCode: number) {

@@ -33,7 +33,12 @@ export function addRoutesToApp(app: Express) {
   /**
    * POST routes
    */
-  app.post('(/v[0-9]+)?/fetchReport/:reportCode', wrappedFetchReportWithAsyncCatch);
+  app.post('(/v[0-9]+)?/testFetchReport/:reportCode', wrappedFetchReportWithAsyncCatch); // POST endpoint for testing fetching a report (able to provide test data and config in request body)
+
+  /**
+   * GET routes
+   */
+  app.get('(/v[0-9]+)?/fetchReport/:reportCode', wrappedFetchReportWithAsyncCatch);
 
   app.use(handleError);
 }

@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { Entity } from '@tupaia/database';
 import { Route } from '../Route';
 import { PSSS_PERMISSION_GROUP } from '../../constants';
 
@@ -25,8 +24,6 @@ export class ConfirmedWeeklyReportRoute extends Route {
 
   async getAccessibleCountryCodes() {
     const { accessPolicy } = await this.getSession();
-    const accessibleEntityCodes = accessPolicy.getEntitiesAllowed(PSSS_PERMISSION_GROUP);
-    const accessibleEntities = await this.models.entity.find({ code: accessibleEntityCodes });
-    return accessibleEntities.map((e: Entity) => e.country_code);
+    return accessPolicy.getEntitiesAllowed(PSSS_PERMISSION_GROUP);
   }
 }

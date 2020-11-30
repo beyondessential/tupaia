@@ -15,9 +15,9 @@ export class ReportConnection extends ApiConnection {
       throw new Error(`No organisationUnitCodes provided`);
     }
 
-    return this.post(`fetchReport/${reportCode}`, {
+    return this.get(`fetchReport/${reportCode}`, {
       organisationUnitCodes: orgUnitCodes.join(','),
-      period: periods.join(';')
-    })
+      period: periods.join(';'),
+    });
   }
 }

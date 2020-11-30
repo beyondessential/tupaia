@@ -5,7 +5,6 @@
 
 import { Request } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
-import { ModelRegistry } from '@tupaia/database';
 import { PsssSessionModel, PsssSessionType } from './models';
 
 export type AccessPolicyObject = Record<string, string[]>;
@@ -19,7 +18,6 @@ export interface SessionCookie {
 type PsssRequestBody = Record<string, unknown>;
 
 export interface PsssRequest<>extends Request<ParamsDictionary, unknown, PsssRequestBody, Query> {
-  models: ModelRegistry,
   sessionModel: PsssSessionModel;
   sessionCookie?: SessionCookie;
   session?: PsssSessionType;
