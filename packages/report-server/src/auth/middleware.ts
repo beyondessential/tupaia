@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { getUserIDFromToken } from '@tupaia/auth';
@@ -16,7 +21,7 @@ const authenticateUser = async (req: ReportsRequest) => {
   }
 
   throw new UnauthenticatedError('Could not authenticate with the provided token');
-}
+};
 
 const authenticateBearerAuthHeader = async (authHeader: string) => {
   // Use the user account provided in the auth header if present
@@ -26,7 +31,7 @@ const authenticateBearerAuthHeader = async (authHeader: string) => {
   }
 
   throw new UnauthenticatedError('Could not authenticate with the provided access token');
-}
+};
 
 const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: string) => {
   const usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
@@ -45,10 +50,10 @@ const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: stri
   });
   if (user) {
     return user.id;
-  } 
-    
+  }
+
   throw new UnauthenticatedError('Could not find user');
-}
+};
 
 export const authenticationMiddleware = async (req: ReportsRequest, res, next) => {
   try {
