@@ -122,6 +122,7 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 - Copy meditrak-release-key.keystore from lastpass (follow instructions to save and decode) and save under /android/app
 - Uncomment the line `signingConfig signingConfigs.release` in android/app/build.gradle (don't commit this change, it will break CI builds)
 - cd android && ./gradlew assembleRelease
+- You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
 
 ### Beta builds (Android)
 
