@@ -16,6 +16,9 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const SITES_DATA_CODE = 'PSSS_Sites';
+const TOTAL_SITES_INDICATOR_CODE = 'PSSS_Total_Sites';
+
 const insertIndicator = async (db, indicator) => {
   await insertObject(db, 'indicator', { ...indicator, id: generateId() });
   await insertObject(db, 'data_source', {
@@ -28,17 +31,18 @@ const insertIndicator = async (db, indicator) => {
 
 exports.up = function (db) {
   return insertIndicator(db, {
-    code: 'PSSS_Total_Sites',
+    code: TOTAL_SITES_INDICATOR_CODE,
     builder: 'arithmetic',
     config: {
-      formula: 'PSSS_Sites',
+      formula: SITES_DATA_CODE,
       aggregation: 'FINAL_EACH_WEEK',
     },
   });
 };
 
-exports.down = function (db) {
-  return null;
+exports.down = async function (db) {
+  await db.runSql(`DELETE FROM indicator WHERE code = '${TOTAL_SITES_INDICATOR_CODE}'`);
+  await db.runSql(`DELETE FROM data_source WHERE code = '${TOTAL_SITES_INDICATOR_CODE}'`);
 };
 
 exports._meta = {

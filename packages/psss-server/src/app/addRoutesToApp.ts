@@ -12,7 +12,7 @@ import {
   TestRoute,
   ConfirmedWeeklyReportRoute,
   ConfirmedCountryWeeklyReportRoute,
-  UnconfirmedCountryWeeklyReportRoute,
+  CountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -52,8 +52,8 @@ export function addRoutesToApp(app: Express) {
     handleWith(ConfirmedCountryWeeklyReportRoute),
   );
   app.get(
-    '/v1/unconfirmedWeeklyReport/:organisationUnitCode',
-    handleWith(UnconfirmedCountryWeeklyReportRoute),
+    '/v1/weeklyReport/:organisationUnitCode',
+    handleWith(CountryWeeklyReportRoute),
   );
 
   /**

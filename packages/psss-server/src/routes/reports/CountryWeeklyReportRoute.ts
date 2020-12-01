@@ -5,7 +5,7 @@
 
 import { Route } from '../Route';
 
-export class UnconfirmedCountryWeeklyReportRoute extends Route {
+export class CountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
     const { organisationUnitCode: countryCode } = this.req.params;
