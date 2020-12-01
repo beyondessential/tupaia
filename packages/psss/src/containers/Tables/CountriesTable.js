@@ -8,7 +8,7 @@ import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 import {
   createTotalCasesAccessor,
   AlertCell,
@@ -56,9 +56,9 @@ const countriesTableColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
+    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
 ];

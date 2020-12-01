@@ -4,20 +4,19 @@
  */
 
 import { queryCache, useMutation } from 'react-query';
-import { FakeAPI } from './singletons';
+import { saveCountryReport, saveSiteReport, confirmWeeklyReport } from './requests';
 
-// Todo: update mutations to use psss-server api
 export const useSaveSiteReport = params =>
-  useMutation(data => FakeAPI.postdata(data), {
+  useMutation(saveSiteReport, {
     onSuccess: () => queryCache.invalidateQueries('country-weeks', params),
   });
 
 export const useConfirmWeeklyReport = params =>
-  useMutation(data => FakeAPI.postdata(data), {
+  useMutation(confirmWeeklyReport, {
     onSuccess: () => queryCache.invalidateQueries('country-weeks', params),
   });
 
 export const useSaveCountryReport = params =>
-  useMutation(data => FakeAPI.postdata(data), {
+  useMutation(saveCountryReport, {
     onSuccess: () => queryCache.invalidateQueries('country-weeks', params),
   });
