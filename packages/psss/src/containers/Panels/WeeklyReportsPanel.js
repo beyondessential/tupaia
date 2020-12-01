@@ -38,7 +38,7 @@ import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage, getCountryName } from '../../utils';
 import { useConfirmWeeklyReport } from '../../api';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 const columns = [
   {

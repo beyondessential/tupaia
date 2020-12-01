@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { FetchReportQuery } from '../../types';
 import { Aggregator } from '../../aggregator';
 import { FetchResponse } from './types';

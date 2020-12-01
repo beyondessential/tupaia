@@ -25,3 +25,10 @@ export const stripFromString = (originalString, toStripOff = '') =>
     .trim();
 
 export const upperFirst = text => `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+
+export const getArticle = word => {
+  if (!word) {
+    return '';
+  }
+  return word.match(/^[aeiou]/i) ? 'an' : 'a';
+};
