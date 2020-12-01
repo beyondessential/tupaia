@@ -1,6 +1,7 @@
 import xlsx from 'xlsx';
 import fs from 'fs';
 import moment from 'moment';
+import { truncateString } from 'sussol-utilities';
 
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
@@ -73,8 +74,10 @@ export class ExportSurveyDataHandler extends RouteHandler {
         origin: 'A2',
       });
 
-      sheetNames.push(surveyName);
-      sheets[surveyName] = sheet;
+      const sheetName = truncateString(surveyName, 31);
+
+      sheetNames.push(sheetName);
+      sheets[sheetName] = sheet;
     });
 
     const workbook = {
