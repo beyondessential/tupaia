@@ -55,9 +55,6 @@ class MeditrakContainer extends React.Component {
       <View style={localStyles.container}>
         <NavigationMenuContainer>
           <Navigator
-            ref={navigator => {
-              this.navigator = navigator;
-            }}
             navigation={addNavigationHelpers({
               dispatch,
               state: navigationState,
