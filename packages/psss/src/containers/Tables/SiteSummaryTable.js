@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -12,13 +13,8 @@ import MuiLink from '@material-ui/core/Link';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { createTotalCasesAccessor, AlertCell } from '../../components';
-import {
-  openWeeklyReportsPanel,
-  getSitesForWeekError,
-  getSitesForWeek,
-  reloadSitesForWeek,
-  checkSitesForWeekIsLoading,
-} from '../../store';
+import { openWeeklyReportsPanel } from '../../store';
+import { useTableQuery } from '../../api';
 
 // Todo: update placeholder
 const NameCell = data => {
@@ -64,9 +60,9 @@ const siteWeekColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
+    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
   {
@@ -94,65 +90,46 @@ const Link = styled(MuiLink)`
   font-size: 0.68rem;
 `;
 
-export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, handleOpen, isLoading, errorMessage }) => {
-    useEffect(() => {
-      (async () => {
-        await fetchData();
-      })();
-    }, [fetchData]);
+export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) => {
+  const { countryCode } = useParams();
+  const { isLoading, error, data } = useTableQuery('sites', {
+    countryCode,
+    weekNumber: rowData.weekNumber,
+  });
 
-    return (
-      <>
-        <FakeHeader>
-          <div>10/30 Sentinel Sites Reported</div>
-          <Link component="button" onClick={handleOpen} underline="always">
-            Review and Confirm Now
-          </Link>
-        </FakeHeader>
-        <Table
-          isLoading={isLoading}
-          errorMessage={errorMessage}
-          columns={siteWeekColumns}
-          fetchData={fetchData}
-          data={data}
-          Header={false}
-          Body={CondensedTableBody}
-        />
-        <TableFooter>
-          <Text>Verify data to submit Weekly report to Regional</Text>
-          <Button onClick={handleOpen}>Review and Confirm Now</Button>
-        </TableFooter>
-      </>
-    );
-  },
-);
-
-SiteSummaryTableComponent.propTypes = {
-  fetchData: PropTypes.func.isRequired,
-  data: PropTypes.array.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
-  errorMessage: PropTypes.string,
-};
-
-SiteSummaryTableComponent.defaultProps = {
-  isLoading: false,
-  errorMessage: '',
-};
-
-const mapStateToProps = state => ({
-  data: getSitesForWeek(state),
-  isLoading: checkSitesForWeekIsLoading(state),
-  errorMessage: getSitesForWeekError(state),
+  return (
+    <>
+      <FakeHeader>
+        <div>10/30 Sentinel Sites Reported</div>
+        <Link component="button" onClick={handleOpen} underline="always">
+          Review and Confirm Now
+        </Link>
+      </FakeHeader>
+      <Table
+        isLoading={isLoading}
+        errorMessage={error}
+        columns={siteWeekColumns}
+        data={data ? data.data : 0}
+        Header={false}
+        Body={CondensedTableBody}
+      />
+      <TableFooter>
+        <Text>Verify data to submit Weekly report to Regional</Text>
+        <Button onClick={handleOpen}>Review and Confirm Now</Button>
+      </TableFooter>
+    </>
+  );
 });
 
+SiteSummaryTableComponent.propTypes = {
+  handleOpen: PropTypes.func.isRequired,
+  rowData: PropTypes.shape({
+    weekNumber: PropTypes.number,
+  }).isRequired,
+};
+
 const mapDispatchToProps = dispatch => ({
-  fetchData: () => dispatch(reloadSitesForWeek({})),
   handleOpen: () => dispatch(openWeeklyReportsPanel()),
 });
 
-export const SiteSummaryTable = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SiteSummaryTableComponent);
+export const SiteSummaryTable = connect(null, mapDispatchToProps)(SiteSummaryTableComponent);

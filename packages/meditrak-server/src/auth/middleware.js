@@ -1,6 +1,6 @@
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { getUserIDFromToken } from './userAuth';
+import { getUserIDFromToken } from '@tupaia/auth';
 import { getAPIClientUser } from './clientAuth';
 
 async function authenticateUser(req) {

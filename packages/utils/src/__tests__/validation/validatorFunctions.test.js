@@ -3,9 +3,27 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { allValuesAreNumbers } from '../../validation';
+import {
+  allValuesAreNumbers,
+  constructIsArrayOf,
+  constructIsOneOfType,
+  isArray,
+} from '../../validation';
 
 describe('validatorFunctions', () => {
+  describe('isArray', () => {
+    it('fails if not given an array', () => {
+      [undefined, null, 1, '1', true, { alpha: 1 }].forEach(value => {
+        expect(() => isArray(value)).toThrowError(/should contain an array/i);
+      });
+    });
+
+    it('passes if given an array', () => {
+      expect(() => isArray([])).not.toThrow();
+      expect(() => isArray([1, 2])).not.toThrow();
+    });
+  });
+
   describe('allValuesAreNumbers', () => {
     it('fails if a not given an object', () => {
       expect(() => allValuesAreNumbers(null)).toThrowError();
@@ -23,6 +41,117 @@ describe('validatorFunctions', () => {
 
     it('passes if given an empty object', () => {
       expect(() => allValuesAreNumbers({})).not.toThrowError();
+    });
+  });
+
+  describe('constructIsOneOfType', () => {
+    it('throws if types are not an array', () => {
+      expect(() => constructIsOneOfType('string')).toThrow('expects an array');
+    });
+
+    it('throws if types are an empty array ', () => {
+      expect(() => constructIsOneOfType([])).toThrow('expects at least one type');
+    });
+
+    describe('single type - validator passes', () => {
+      const testData = [
+        ['array', [1, 2]],
+        ['object', { alpha: 1 }],
+        ['number', 1],
+        ['string', '1'],
+        ['boolean', false],
+        ['undefined', undefined],
+        ['null', null],
+      ];
+
+      it.each(testData)('%s', (type, value) => {
+        const validator = constructIsOneOfType([type]);
+        expect(() => validator(value)).not.toThrow();
+      });
+    });
+
+    describe('single type - validator fails', () => {
+      const testData = [
+        ['array', { alpha: 1 }],
+        ['object', [1, 2]],
+        ['number', '1'],
+        ['string', 1],
+        ['boolean', 'true'],
+        ['undefined', null],
+        ['null', { a: 1 }],
+      ];
+
+      it.each(testData)('%s', (type, value) => {
+        const validator = constructIsOneOfType([type]);
+        expect(() => validator(value)).toThrow(`Must be one of ${type}`);
+      });
+    });
+
+    it('multiple types - validator passes', () => {
+      const validator = constructIsOneOfType(['string', 'number', 'array']);
+      expect(() => validator(1)).not.toThrow();
+      expect(() => validator([1])).not.toThrow();
+    });
+
+    it('multiple types - validator fails', () => {
+      const validator = constructIsOneOfType(['string', 'number', 'array']);
+      const errorMessage = 'Must be one of string | number | array';
+      expect(() => validator({ alpha: 1 })).toThrow(errorMessage);
+      expect(() => validator(false)).toThrow(errorMessage);
+    });
+  });
+
+  describe('constructIsArrayOf', () => {
+    it('validator throws if value is not an array', () => {
+      [undefined, { alpha: 1 }].forEach(value => {
+        const validator = constructIsArrayOf(value);
+        expect(() => validator()).toThrow(/should contain an array/i);
+      });
+    });
+
+    it('validator passes for empty array', () => {
+      const validator = constructIsArrayOf('object');
+      expect(() => validator([])).not.toThrow();
+    });
+
+    describe('validator passes if all values are of the specified type', () => {
+      const testData = [
+        [
+          'array',
+          [
+            [1, '2'],
+            [true, { a: 1 }],
+          ],
+        ],
+        ['object', [{ a: 1 }, { b: 2 }]],
+        ['number', [1, 2]],
+        ['string', ['1', '2']],
+        ['boolean', [true, false]],
+        ['undefined', [undefined, undefined]],
+        ['null', [null, null]],
+      ];
+
+      it.each(testData)('%s', (type, value) => {
+        const validator = constructIsArrayOf(type);
+        expect(() => validator(value)).not.toThrow();
+      });
+    });
+
+    describe('validator fails if some values are not of the specified type', () => {
+      const testData = [
+        ['array', [[1, '2'], { a: 1 }], `${JSON.stringify({ a: 1 })} is not an array`],
+        ['object', [{ a: 1 }, [{ b: 2 }]], `${JSON.stringify([{ b: 2 }])} is not an object`],
+        ['number', [1, '2'], "'2' is not a number"],
+        ['string', ['1', 2], '2 is not a string'],
+        ['boolean', [true, 'false'], "'false' is not a boolean"],
+        ['undefined', [undefined, null], 'null is not undefined'],
+        ['null', [{ a: 1 }, null], `${JSON.stringify({ a: 1 })} is not null`],
+      ];
+
+      it.each(testData)('%s', (type, value, expectedError) => {
+        const validator = constructIsArrayOf(type);
+        expect(() => validator(value)).toThrow(expectedError);
+      });
     });
   });
 });

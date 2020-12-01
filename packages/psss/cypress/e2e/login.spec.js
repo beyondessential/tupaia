@@ -9,14 +9,14 @@ afterEach(cleanup);
 describe('login', () => {
   it('logs in an existing multi-country user', () => {
     cy.server();
-    cy.route('POST', '**auth', 'fixture:multiCountryUserAuth.json').as('auth');
+    cy.route('POST', '**login', 'fixture:multiCountryUserAuth.json').as('login');
     cy.login();
     cy.assertMultiCountryHome();
   });
 
   it('logs in an existing single-country user', () => {
     cy.server();
-    cy.route('POST', '**auth', 'fixture:singleCountryUserAuth.json').as('auth');
+    cy.route('POST', '**login', 'fixture:singleCountryUserAuth.json').as('login');
     cy.login();
     cy.assertSingleCountryHome();
   });
