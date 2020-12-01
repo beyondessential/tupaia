@@ -4,7 +4,7 @@
  */
 
 import { Object as RealmObject } from 'realm';
-import DeviceInfo from 'react-native-device-info';
+import { getTimezone } from 'react-native-localize';
 
 export class Response extends RealmObject {
   toJson() {
@@ -22,7 +22,7 @@ export class Response extends RealmObject {
       entities_created: this.entitiesCreated.map(entity => entity.toJson()),
       options_created: this.optionsCreated.map(option => option.toJson()),
       metadata: this.metadata,
-      timezone: DeviceInfo.getTimezone(),
+      timezone: getTimezone(),
     };
   }
 }
