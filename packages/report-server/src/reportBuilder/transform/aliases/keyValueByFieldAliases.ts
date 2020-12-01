@@ -1,4 +1,9 @@
-import { buildTransform } from '../';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { buildTransform } from '..';
 
 export const keyValueByDataElementName = () =>
   buildTransform([

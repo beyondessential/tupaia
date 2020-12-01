@@ -1,6 +1,6 @@
 /**
- * Reports package
- * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { respond } from '@tupaia/utils';
@@ -18,40 +18,63 @@ class FetchReportRouteHandler {
   }
 
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
-    const { query, params, models, accessPolicy } = req;
-    const report = await models.report.findOne({ code: params.reportCode });
-    if (!report) {
-      throw new Error(`No report found with code ${params.reportCode}`);
+    const { query, params, models, accessPolicy, body } = req;
+    const reportBuilder = new ReportBuilder();
+    if (body.testConfig) {
+      reportBuilder.setConfig(body.testConfig);
+    } else {
+      const report = await fetchReportObjectFromDb(models, params.reportCode);
+      await checkUserHasAccessToReport(
+        models,
+        accessPolicy,
+        report,
+        query.organisationUnitCodes.split(','),
+      );
+      reportBuilder.setConfig(report.config);
     }
 
-    const permissionGroup = await models.permissionGroup.findById(report.permission_group_id);
-    const orgUnitCodes = query.organisationUnitCodes.split(',');
-    const orgUnitsAndCodes = await Promise.all(
-      orgUnitCodes.map(async orgUnitCode => ({
-        orgUnitCode,
-        orgUnit: await models.entity.findOne({ code: orgUnitCode }),
-      })),
-    );
-
-    const invalidOrgUnit = orgUnitsAndCodes.find(orgUnitAndCode => !orgUnitAndCode.orgUnit);
-    if (invalidOrgUnit) {
-      throw new Error(`No entity found with code ${invalidOrgUnit.orgUnitCode}`);
+    if (body.testData) {
+      reportBuilder.setTestData(body.testData);
     }
 
-    const countryCodes = new Set(
-      orgUnitsAndCodes.map(orgUnitAndCode => orgUnitAndCode.orgUnit.country_code),
-    );
-
-    countryCodes.forEach(countryCode => {
-      if (!accessPolicy.allows(countryCode, permissionGroup.name)) {
-        throw new Error(`No ${permissionGroup.name} access for user to ${countryCode}`);
-      }
-    });
-
-    const reportBuilder = new ReportBuilder(report, this.aggregator, query);
-    const data = await reportBuilder.build();
+    const data = await reportBuilder.build(this.aggregator, query);
     respond(res, data, 200);
   };
 }
+
+const fetchReportObjectFromDb = async (models, reportCode: string) => {
+  const report = await models.report.findOne({ code: reportCode });
+  if (!report) {
+    throw new Error(`No report found with code ${reportCode}`);
+  }
+
+  return report;
+};
+
+const checkUserHasAccessToReport = async (
+  models,
+  accessPolicy,
+  report,
+  requestedOrgUnitCodes: string[],
+) => {
+  const permissionGroup = await models.permissionGroup.findById(report.permission_group_id);
+
+  const foundOrgUnits = await models.entity.find({ code: requestedOrgUnitCodes });
+  const foundOrgUnitCodes = foundOrgUnits.map(orgUnit => orgUnit.code);
+
+  const missingOrgUnitCodes = requestedOrgUnitCodes.filter(
+    orgUnitCode => !foundOrgUnitCodes.includes(orgUnitCode),
+  );
+  if (missingOrgUnitCodes.length > 0) {
+    throw new Error(`No entities found with codes ${missingOrgUnitCodes}`);
+  }
+
+  const countryCodes = new Set(foundOrgUnits.map(orgUnit => orgUnit.country_code));
+  countryCodes.forEach(countryCode => {
+    if (!accessPolicy.allows(countryCode, permissionGroup.name)) {
+      throw new Error(`No ${permissionGroup.name} access for user to ${countryCode}`);
+    }
+  });
+};
 
 export const { fetchReport } = new FetchReportRouteHandler();

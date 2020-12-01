@@ -13,8 +13,8 @@ import { ValidationError } from '../errors';
  */
 export class ObjectValidator {
   /**
-   * @param {Object<string, Function>} fieldValidators
-   * @param {Object<string, Function>} [defaultValidators]
+   * @param {Object<string, Function[]>} fieldValidators
+   * @param {Object<string, Function[]>} [defaultValidators]
    */
   constructor(fieldValidators, defaultValidators) {
     this.fieldValidators = fieldValidators;

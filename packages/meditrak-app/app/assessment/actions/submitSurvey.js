@@ -8,7 +8,7 @@ import moment from 'moment';
 import RNFS from 'react-native-fs';
 
 import { synchroniseDatabase } from '../../sync';
-import { getFileInDocumentsPath, imageDataIsFileName } from '../../utilities';
+import { getFileInDocumentsPath, imageDataIsFileName, generateMongoId } from '../../utilities';
 import { getCurrentUserLocation, stopWatchingUserLocation } from '../../utilities/userLocation';
 import { SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
 import { addMessage } from '../../messages';
@@ -19,6 +19,7 @@ import {
   doesScreenHaveValidationErrors,
   getDefaultEntitySettingKey,
   getEntityCreationQuestions,
+  getOptionCreationAutocompleteQuestions,
 } from '../helpers';
 
 const getValidatedScreens = (dispatch, getState) => {
@@ -126,10 +127,39 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
   return { responseFields, answersToSubmit };
 };
 
+const buildOption = (database, optionSetId, value) => {
+  const optionSet = database.getOptionSetById(optionSetId);
+  const largestSortOrder = optionSet.getLargestSortOrder();
+  return {
+    id: generateMongoId(),
+    value,
+    sortOrder: largestSortOrder + 1,
+    optionSet,
+  };
+};
+
+const createOptions = (getState, database, questions) => {
+  const autocompleteQuestions = getOptionCreationAutocompleteQuestions(questions);
+  const answers = getAnswers(getState());
+  const createdOptions = [];
+  autocompleteQuestions
+    .filter(({ id: questionId }) => answers[questionId] !== undefined)
+    .forEach(question => {
+      const { id: questionId, optionSetId } = question;
+      const answer = answers[questionId];
+      const optionSet = database.getOptionSetById(optionSetId);
+      // Check if the selected option isn't an existing option in the option set
+      if (!optionSet.doesOptionValueExist(answer)) {
+        createdOptions.push(buildOption(database, optionSetId, answer));
+      }
+    });
+
+  return createdOptions;
+};
+
 const createEntities = async (dispatch, getState, database, questions) => {
   const entityCreationQuestions = getEntityCreationQuestions(questions);
   const answers = getAnswers(getState());
-
   const newEntities = [];
   await Promise.all(
     entityCreationQuestions.map(async question => {
@@ -164,6 +194,7 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
   if (existingSurveyResponses.length === 0) {
     const validQuestions = getValidQuestions(getState(), questions, validatedScreens);
     const newEntities = await createEntities(dispatch, getState, database, validQuestions);
+    const newOptions = createOptions(getState, database, validQuestions);
     const { responseFields, answersToSubmit } = await processQuestions(
       dispatch,
       getState,
@@ -184,7 +215,10 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
       ...responseFields,
     };
 
-    database.saveSurveyResponse(response, answersToSubmit, newEntities);
+    database.saveSurveyResponse(response, answersToSubmit, {
+      entityObjects: newEntities,
+      optionObjects: newOptions,
+    });
     analytics.trackEvent('Submit Survey', response);
   }
 

@@ -12,8 +12,9 @@ import { respond } from './respond';
  * Logged errors print out to the server's logs so that we have a record of all errors. In future
  * this may change to saving the error info to the database, notifying the admin, or similar
  */
-class LoggedError {
+class LoggedError extends Error {
   constructor(message) {
+    super(message);
     this.message = message;
     winston.error(this.message);
   }
@@ -23,7 +24,7 @@ class LoggedError {
  * Responding errors are able to respond to the client's request, informing them of the error with
  * the appropriate http status code
  */
-class RespondingError extends LoggedError {
+export class RespondingError extends LoggedError {
   constructor(message, statusCode, extraFields = {}) {
     super(message);
     this.statusCode = statusCode;
