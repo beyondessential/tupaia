@@ -36,7 +36,7 @@ const defaultState = {
         dia: false,
         ili: null,
         pf: null,
-        dil: null,
+        dli: null,
       },
     },
   },

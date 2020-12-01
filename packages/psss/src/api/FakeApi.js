@@ -104,7 +104,7 @@ export const FakeAPI = {
       this.makeSyndrome('dia', 'Diarrhoea (DIA)'),
       this.makeSyndrome('ili', 'Influenza-like Illness (ILI)'),
       this.makeSyndrome('pf', 'Prolonged Fever (PF)'),
-      this.makeSyndrome('dil', 'Dengue-like Illness (DIL)'),
+      this.makeSyndrome('dli', 'Dengue-like Illness (DLI)'),
     ];
   },
 
@@ -227,13 +227,13 @@ export const FakeAPI = {
       id: faker.random.uuid(),
       name: faker.address.country(),
       countryCode: faker.address.countryCode().toLowerCase(),
-      syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DIL']),
+      syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DLI']),
       syndromeDisplayName: faker.random.arrayElement([
         'Acute Fever and Rash (AFR)',
         'Diarrhoea (DIA)',
         'Influenza-like Illness (ILI)',
         'Prolonged Fever (PF)',
-        'Dengue-like Illness (DIL)',
+        'Dengue-like Illness (DLI)',
       ]),
       weekNumber: faker.random.number({
         min: 1,
