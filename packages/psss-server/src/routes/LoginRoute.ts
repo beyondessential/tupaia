@@ -6,6 +6,9 @@
 import { AuthConnection } from '../connections/AuthConnection';
 import { Credentials } from '../types';
 import { UnauthenticatedRoute } from './UnauthenticatedRoute';
+import { PermissionsError } from '@tupaia/utils';
+
+const PSSS_PERMISSION_GROUP = 'PSSS';
 
 export class LoginRoute extends UnauthenticatedRoute {
   async buildResponse() {
@@ -16,9 +19,14 @@ export class LoginRoute extends UnauthenticatedRoute {
 
     const { id, email, accessPolicy } = await this.sessionModel.createSession(response);
 
+    const authorized = accessPolicy.allowsAnywhere(PSSS_PERMISSION_GROUP);
+    if (!authorized) {
+      throw new PermissionsError('User not authorized for PSSS');
+    }
+
     // set sessionId cookie
     this.req.sessionCookie = { id, email };
 
-    return { accessPolicy };
+    return { user: response.user };
   }
 }

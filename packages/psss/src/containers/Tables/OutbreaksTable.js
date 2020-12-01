@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from '@tupaia/ui-components';
 import { AlertMenuCell, CountryNameCell, StartDateCell, WeekAndDateCell } from '../../components';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 const createColumns = isForMultipleCountries => [
   ...(isForMultipleCountries

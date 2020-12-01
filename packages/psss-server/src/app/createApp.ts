@@ -22,7 +22,12 @@ export function createApp(sessionModel: PsssSessionModel) {
   /**
    * Add middleware
    */
-  app.use(cors());
+  app.use(
+    cors({
+      origin: true, // allow request across origins
+      credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
+    }),
+  );
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(errorHandler());
   app.use(sessionCookie());

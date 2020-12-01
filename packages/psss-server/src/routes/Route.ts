@@ -8,8 +8,7 @@ import { respond, PermissionsError, UnauthenticatedError } from '@tupaia/utils';
 import { PsssRequest, PsssResponseBody, SessionCookie } from '../types';
 import { PsssSessionModel, PsssSessionType } from '../models';
 import { MeditrakConnection, ReportConnection } from '../connections';
-
-const PSSS_PERMISSION_GROUP = 'PSSS';
+import { PSSS_PERMISSION_GROUP } from '../constants';
 
 export class Route {
   req: PsssRequest;
@@ -57,7 +56,7 @@ export class Route {
     }
   }
 
-  async verifyAuth(): Promise<PsssSessionType> {
+  async getSession() {
     const sessionId = this.sessionCookie?.id;
     if (!sessionId) {
       throw new UnauthenticatedError('User not authenticated');
@@ -68,6 +67,11 @@ export class Route {
       throw new UnauthenticatedError('Session not found in database');
     }
 
+    return session;
+  }
+
+  async verifyAuth(): Promise<PsssSessionType> {
+    const session = await this.getSession();
     const { accessPolicy } = session;
     const authorized = accessPolicy.allowsAnywhere(PSSS_PERMISSION_GROUP);
     if (!authorized) {

@@ -6,6 +6,7 @@ import React from 'react';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import PropTypes from 'prop-types';
+import { logoutUser } from '../api';
 
 function initPersistor(store) {
   const persistor = persistStore(store);
@@ -17,6 +18,7 @@ function initPersistor(store) {
 
     // If it is a new session and the user has not ticked rememberMe, then remove the user data from localStorage
     if (rememberMe === 'false') {
+      logoutUser();
       persistor.purge();
     }
     window.sessionStorage.setItem('PSSS:activeSession', 'true');
