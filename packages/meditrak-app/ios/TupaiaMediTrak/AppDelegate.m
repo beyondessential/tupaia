@@ -1,8 +1,7 @@
 #import "AppDelegate.h"
-#import "AppCenterReactNativePush.h"
-#import "AppCenterReactNativeCrashes.h"
-#import "AppCenterReactNativeAnalytics.h"
 #import "AppCenterReactNative.h"
+#import "AppCenterReactNativeAnalytics.h"
+#import "AppCenterReactNativeCrashes.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -41,13 +40,9 @@ static void InitializeFlipper(UIApplication *application) {
                                                    moduleName:@"TupaiaMediTrak"
                                             initialProperties:nil];
 
-  [AppCenterReactNativePush register];  // Initialize AppCenter push
-
-  [AppCenterReactNativeCrashes register];  // Initialize AppCenter crashes
-
-  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];  // Initialize AppCenter analytics
-
   [AppCenterReactNative register];  // Initialize AppCenter
+  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];  // Initialize AppCenter analytics
+  [AppCenterReactNativeCrashes registerWithAutomaticProcessing];  // Initialize AppCenter crashes
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 

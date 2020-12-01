@@ -38,11 +38,6 @@ target 'TupaiaMediTrak' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'appcenter', path: '../node_modules/appcenter/ios'
-  pod 'appcenter-analytics', path: '../node_modules/appcenter-analytics/ios'
-  pod 'appcenter-crashes', path: '../node_modules/appcenter-crashes/ios'
-  pod 'appcenter-push', path: '../node_modules/appcenter-push/ios'
-
   pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
 
   pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'

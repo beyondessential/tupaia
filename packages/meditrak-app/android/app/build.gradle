@@ -184,10 +184,6 @@ android {
 }
 
 dependencies {
-    def appCenterSdkVersion = '1.5.1'
-    implementation "com.microsoft.appcenter:appcenter-push:${appCenterSdkVersion}"
-    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
-    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules

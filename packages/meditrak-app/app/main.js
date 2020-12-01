@@ -15,7 +15,7 @@ import { TupaiaApi } from './api';
 import { DatabaseAccess } from './database';
 import { reducers } from './reducers';
 import { createMiddleware } from './middleware';
-import { analytics, linkPushNotificationsToReduxStore, CrashReporter } from './utilities';
+import { analytics, CrashReporter } from './utilities';
 import { isBeta, betaBranch } from './version';
 
 const api = new TupaiaApi();
@@ -57,7 +57,6 @@ const store = createStore(persistedReducers, {}, enhancers);
 
 api.injectReduxStore(store);
 crashReporter.injectReduxStore(store);
-linkPushNotificationsToReduxStore(store);
 
 const persistedStore = persistStore(store);
 // persistedStore.purge(); // Uncomment this to wipe bad redux state during development
