@@ -109,7 +109,7 @@
     "react-native-database": "^0.1.7",
     "react-native-device-info": "^7.2.1",
     "react-native-dotenv": "^0.2.0",
-    "react-native-fs": "^2.13.3",
+    "react-native-fs": "^2.16.6",
     "react-native-image-picker": "^0.28.1",
     "react-native-linear-gradient": "^2.5.4",
     "react-native-localize": "^2.0.1",
