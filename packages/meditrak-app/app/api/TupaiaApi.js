@@ -33,7 +33,7 @@ export class TupaiaApi {
     this.connectionStatus = null;
 
     this.tokenPromise = this.retrieveAuthTokens(); // Async function that will complete some time after constructor
-    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+    NetInfo.addEventListener(this.handleConnectivityChange);
   }
 
   async reauthenticate(loginCredentials) {
@@ -185,8 +185,8 @@ export class TupaiaApi {
     return this.request('POST', ...params);
   }
 
-  handleConnectivityChange = isConnected => {
-    this.connectionStatus = isConnected;
+  handleConnectivityChange = ({ isInternetReachable }) => {
+    this.connectionStatus = isInternetReachable;
   };
 
   getQueryUrl = (endpoint, queryParamsIn) => {
