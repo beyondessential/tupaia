@@ -13,6 +13,16 @@ async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   );
 }
 
+const fetchHasPendingProjectAccess = async (projectId, userId, req) => {
+  if (!projectId || !userId) return false;
+
+  const accessRequests = await req.models.accessRequest.find({
+    user_id: userId,
+    project_id: projectId,
+    processed_date: null,
+  });
+  return accessRequests.length > 0;
+};
 // work out the entity to zoom to and open the dashboard of when this project is selected
 function getHomeEntityCode(project, entitiesWithAccess) {
   if (entitiesWithAccess.length === 1) {
@@ -26,6 +36,7 @@ function getHomeEntityCode(project, entitiesWithAccess) {
 
 async function buildProjectDataForFrontend(project, req) {
   const {
+    id: projectId,
     name,
     code,
     description,
@@ -49,6 +60,12 @@ async function buildProjectDataForFrontend(project, req) {
   const hasAccess = entitiesWithAccess.length > 0;
   const homeEntityCode = getHomeEntityCode(project, entitiesWithAccess);
 
+  // Only want to check pending if no access
+  const { userId } = req.session.userJson;
+  const hasPendingAccess = hasAccess
+    ? false
+    : await fetchHasPendingProjectAccess(projectId, userId, req);
+
   return {
     name,
     code,
@@ -60,6 +77,7 @@ async function buildProjectDataForFrontend(project, req) {
     names,
     bounds: calculateBoundsFromEntities(entitiesWithAccess),
     hasAccess,
+    hasPendingAccess,
     homeEntityCode,
     dashboardGroupName,
     defaultMeasure,

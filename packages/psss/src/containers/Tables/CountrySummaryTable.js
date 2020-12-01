@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
+import PropTypes from 'prop-types';
+import { Table, CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import {
   createTotalCasesAccessor,
@@ -12,13 +13,13 @@ import {
   SitesReportedCell,
   WeekAndDateCell,
 } from '../../components';
-import { ConnectedTable } from './ConnectedTable';
+import { useTableQuery } from '../../api';
 
 const countrySummaryTableColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: COLUMN_WIDTHS.FIRST,
+    width: '30%', // must be same as CountriesTable name column to align
     align: 'left',
     CellComponent: WeekAndDateCell,
   },
@@ -53,25 +54,44 @@ const countrySummaryTableColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
+    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
 ];
 
-const TableHeader = () => {
-  return <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>;
-};
+export const CountrySummaryTable = React.memo(({ rowData }) => {
+  const {
+    isLoading,
+    error,
+    data,
+    order,
+    orderBy,
+    handleChangeOrderBy,
+  } = useTableQuery('country-weeks', { countryCode: rowData.countryCode });
 
-export const CountrySummaryTable = React.memo(() => (
-  <>
-    <TableHeader />
-    <ConnectedTable
-      endpoint="country-weeks"
-      columns={countrySummaryTableColumns}
-      Header={false}
-      Body={CondensedTableBody}
-    />
-  </>
-));
+  return (
+    <>
+      <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>
+      <Table
+        columns={countrySummaryTableColumns}
+        Header={false}
+        Body={CondensedTableBody}
+        order={order}
+        orderBy={orderBy}
+        onChangeOrderBy={handleChangeOrderBy}
+        data={data ? data.data : 0}
+        count={data ? data.count : 0}
+        isLoading={isLoading}
+        errorMessage={error && error.message}
+      />
+    </>
+  );
+});
+
+CountrySummaryTable.propTypes = {
+  rowData: PropTypes.shape({
+    countryCode: PropTypes.string.isRequired,
+  }).isRequired,
+};
