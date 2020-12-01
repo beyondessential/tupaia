@@ -1048,10 +1048,10 @@ function* watchLogoutSuccess() {
 function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
-    yield call(fetchProjectData);
     const { PROJECT } = decodeLocation(location);
     const overlay = PROJECT === 'explore' ? LANDING : null;
     yield put(setOverlayComponent(overlay));
+    yield call(fetchProjectData);
     yield call(handleLocationChange, {
       location,
       // Assume an empty location string so that the url will trigger fetching fresh data
