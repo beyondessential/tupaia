@@ -80,7 +80,9 @@
     "lint:fix": "yarn lint --fix",
     "log:android": "react-native log-android",
     "log:ios": "react-native log-ios",
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
     "start-dev": "react-native run-android",
     "test": "echo \"No tests specified\" && exit 0"
   },
@@ -103,8 +105,8 @@
     "nanoid": "^2.0.3",
     "npm-bump": "^0.0.23",
     "prop-types": "^15.7.2",
-    "react": "16.8.6",
-    "react-native": "^0.59.10",
+    "react": "16.13.1",
+    "react-native": "^0.63.4",
     "react-native-database": "^0.1.7",
     "react-native-device-info": "^7.2.1",
     "react-native-dotenv": "^0.2.0",
@@ -137,10 +139,10 @@
   "devDependencies": {
     "@babel/preset-flow": "^7.0.0",
     "@babel/runtime": "^7.4.2",
-    "@react-native-community/eslint-config": "^0.0.3",
+    "@react-native-community/eslint-config": "^1.10",
     "eslint-plugin-react-native": "^3.6.0",
     "flow-bin": "0.38.0",
-    "metro-react-native-babel-preset": "^0.53.1",
-    "react-test-renderer": "16.8.6"
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-test-renderer": "16.13.1"
   }
 }
