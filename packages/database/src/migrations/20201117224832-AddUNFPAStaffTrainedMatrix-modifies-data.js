@@ -92,6 +92,11 @@ const buildDataDateCell = (countryCode, key) => {
     key,
     operator: 'STATIC',
     value: countryCodeToDate[countryCode],
+    noDataValue: 'N/A',
+    dataElement: 'RHS1UNFPA03',
+    filter: {
+      organisationUnit: countryCode,
+    },
   };
 };
 
