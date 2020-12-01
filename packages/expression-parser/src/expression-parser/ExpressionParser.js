@@ -56,6 +56,14 @@ export class ExpressionParser {
     return this.parser.evaluate(expression);
   }
 
+  evaluateToNumber(expression) {
+    const result = this.evaluate(expression);
+    if (typeof result === 'boolean') {
+      return result ? 1 : 0;
+    }
+    return result;
+  }
+
   /**
    * Set the parser's scope.
    * @param {*} scope

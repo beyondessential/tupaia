@@ -47,7 +47,7 @@ const options = [
   { label: 'Diarrhoea (DIA)', value: 'dia' },
   { label: 'Influenza-like Illness (ILI)', value: 'ili' },
   { label: 'Prolonged Fever (AFR)', value: 'pf' },
-  { label: 'Dengue-like Illness (DIL)', value: 'dil' },
+  { label: 'Dengue-like Illness (DLI)', value: 'dli' },
 ];
 
 const TickIcon = styled(CheckCircle)`
