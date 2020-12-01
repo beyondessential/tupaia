@@ -46,6 +46,8 @@
       "react-native-image-picker/**",
       "react-native-linear-gradient",
       "react-native-linear-gradient/**",
+      "react-native-localize",
+      "react-native-localize/**",
       "react-native-markdown-renderer",
       "react-native-markdown-renderer/**",
       "react-native-menu",
