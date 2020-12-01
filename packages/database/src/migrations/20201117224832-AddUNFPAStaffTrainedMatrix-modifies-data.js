@@ -55,10 +55,10 @@ exports.setup = function (options, seedLink) {
 }
  */
 const dataElementToName = {
-  RHS4UNFPA809: 'Family_Planning',
-  RHS2UNFPA292: 'SGBV',
+  RHS4UNFPA809: 'Family Planning',
   RHS3UNFPA5410: 'Delivery',
-  $dataDate: 'Date_Of_Data',
+  RHS2UNFPA292: 'SGBV Services',
+  $dataDate: 'Data Collection Date',
 };
 
 const countryCodeToName = {
@@ -72,6 +72,17 @@ const countryCodeToName = {
   VU: 'Vanuatu',
 };
 
+const countryCodeToDate = {
+  FJ: 'Q3 2019',
+  FM: 'Q4 2018',
+  KI: 'Q3 2019',
+  MH: 'Q4 2018',
+  WS: 'Q4 2018',
+  SB: 'N/A',
+  TO: 'Q3 2019',
+  VU: 'N/A',
+};
+
 const DASHBOARD_GROUP_CODES = ['UNFPA_Project'];
 
 const REPORT_ID = 'UNFPA_Region_Facilities_offering_services_At_Least_1_Matrix';
@@ -79,21 +90,26 @@ const REPORT_ID = 'UNFPA_Region_Facilities_offering_services_At_Least_1_Matrix';
 const buildDataDateCell = (countryCode, key) => {
   return {
     key,
-    operator: 'FORMAT',
-    dataElement: 'RHS1UNFPA03',
-    format: `This is date for ${countryCode}`,
+    operator: 'STATIC',
+    value: countryCodeToDate[countryCode],
   };
 };
 
 const buildCell = (dataElement, countryCode) => {
-  const key = `${countryCodeToName[countryCode]}_${dataElementToName[dataElement]}`;
+  const key = `${countryCodeToName[countryCode]}_${dataElementToName[dataElement].replace(
+    ' ',
+    '_',
+  )}`;
 
   if (dataElement === '$dataDate') return buildDataDateCell(countryCode, key);
 
   return {
     key,
     operator: 'FRACTION_AND_PERCENTAGE',
-    operands: [{ dataValues: [dataElement] }, { dataValues: ['RHS1UNFPA03'] }],
+    operands: [
+      { dataValues: [dataElement], countCondition: { operator: '>', value: 0 } },
+      { dataValues: ['RHS1UNFPA03'] },
+    ],
     filter: {
       organisationUnit: countryCode,
     },
@@ -101,32 +117,13 @@ const buildCell = (dataElement, countryCode) => {
 };
 
 const DATA_BUILDER_CONFIG = {
-  rows: ['Family Planning', 'Delivery', 'SGBV Services', 'Data Collection Date'],
+  rows: Object.values(dataElementToName),
   cells: Object.keys(dataElementToName).map(dataElement =>
     Object.keys(countryCodeToName).map(countryCode => buildCell(dataElement, countryCode)),
   ),
   columns: Object.values(countryCodeToName),
   entityAggregation: {
-    aggregationType: 'COUNT_PER_ORG_GROUP',
-    aggregationConfig: {
-      condition: {
-        // Incredibly hacky way to use the same entityAggregation for both the numerator and denominator.
-        // In the denominator case, we allow any string with a letter in it, which is all responses currently.
-        // In the numerator case, we only count values more than 0.
-        // TODO: Improve/remove this
-        operator: 'or',
-        value: [
-          {
-            value: 0,
-            operator: '>',
-          },
-          {
-            value: '[a-zA-Z]+',
-            operator: 'regex',
-          },
-        ],
-      },
-    },
+    aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
     dataSourceEntityType: 'facility',
     aggregationEntityType: 'country',
   },

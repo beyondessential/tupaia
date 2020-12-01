@@ -50,9 +50,18 @@ const sumDataValues = (analytics, dataValues, filter = {}) => {
     }
   });
 
-  // console.log(analytics, organisationUnitFilter, dataValues, sum);
   return sum;
 };
+
+const countDataValues = (analytics, dataValues, filter, countCondition = '*') =>
+  sumDataValues(
+    analytics.map(a => ({
+      ...a,
+      value: checkValueSatisfiesCondition(a.value, countCondition) ? 1 : 0,
+    })),
+    dataValues,
+    filter,
+  );
 
 const performArithmeticOperation = (analytics, arithmeticConfig) => {
   const { operator, operands: operandConfigs, filter } = arithmeticConfig;
@@ -62,7 +71,7 @@ const performArithmeticOperation = (analytics, arithmeticConfig) => {
   }
 
   const operands = operandConfigs.map(operandConfig =>
-    sumDataValues(analytics, operandConfig.dataValues, filter),
+    countDataValues(analytics, operandConfig.dataValues, filter, operandConfig.countCondition),
   );
 
   let result = operands[0];
@@ -149,18 +158,28 @@ const getValueFromEntity = async (entity, config) => {
   }
 };
 
+const staticValueOrNoData = (analytics, config) => {
+  const { value, noDataValue = NO_DATA_AVAILABLE, dataElement, filter } = config;
+  if (!dataElement) return value;
+  const analyticsCount = countDataValues(analytics, [dataElement], filter);
+  return analyticsCount > 0 ? value : noDataValue;
+};
+
 const OPERATORS = {
   DIVIDE: divideValues,
   FRACTION_AND_PERCENTAGE: (numerator, divisor) =>
-    `${numerator} / ${divisor} = ${divideValues(numerator, divisor)}`,
+    (numerator || numerator === 0) && divisor
+      ? `${numerator} / ${divisor} = ${Math.floor(divideValues(numerator, divisor) * 100)}%`
+      : NO_DATA_AVAILABLE,
   SUBTRACT: subtractValues,
+  COUNT: countDataValues,
   CHECK_CONDITION: checkCondition,
   GROUP: valueToGroup,
-  FORMAT: () => 'hi',
+  FORMAT: formatString,
   COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
   COMBINE_TEXT: combineTextIndicators,
   ORG_UNIT_METADATA: getMetaDataFromOrgUnit,
-  STRING: () => 'hi',
+  STATIC: staticValueOrNoData,
 };
 
 const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'GROUP'];
