@@ -3,8 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-export { reducer, sideMenuReducer } from './reducer';
-export { NAVIGATION_MIDDLEWARE, NAVIGATION_ADD_LISTENER } from './reduxIntegration';
+export { sideMenuReducer } from './sideMenuReducer';
+export { createNavigationMiddleware } from './reduxIntegration';
 export {
   goBack,
   viewSyncPage,

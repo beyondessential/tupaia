@@ -9,18 +9,25 @@ import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import { persistStore, persistCombineReducers, createTransform } from 'redux-persist';
 import { ErrorHandler } from 'redux-persist-error-handler';
+import { createNavigationReducer, createReduxContainer } from 'react-navigation-redux-helpers';
 
 import { Meditrak } from './Meditrak';
 import { TupaiaApi } from './api';
 import { DatabaseAccess } from './database';
 import { reducers } from './reducers';
 import { createMiddleware } from './middleware';
+import { Navigator } from './navigation';
 import { analytics, CrashReporter } from './utilities';
 import { isBeta, betaBranch } from './version';
 
 const api = new TupaiaApi();
 const database = new DatabaseAccess(api);
 const crashReporter = new CrashReporter(analytics);
+
+const allReducers = {
+  ...reducers,
+  nav: createNavigationReducer(Navigator),
+};
 
 const composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -50,7 +57,7 @@ const persistedReducers = persistCombineReducers(
       }),
     ],
   },
-  reducers,
+  allReducers,
 );
 
 const store = createStore(persistedReducers, {}, enhancers);
@@ -59,12 +66,16 @@ api.injectReduxStore(store);
 crashReporter.injectReduxStore(store);
 
 const persistedStore = persistStore(store);
-// persistedStore.purge(); // Uncomment this to wipe bad redux state during development
+persistedStore.purge(); // Uncomment this to wipe bad redux state during development
+
+const NavigationConnectedApp = createReduxContainer(Navigator);
 
 const App = () => (
   <ErrorHandler persistedStore={persistedStore}>
     <Provider store={store}>
-      <Meditrak database={database} />
+      <Meditrak database={database}>
+        <NavigationConnectedApp />
+      </Meditrak>
     </Provider>
   </ErrorHandler>
 );

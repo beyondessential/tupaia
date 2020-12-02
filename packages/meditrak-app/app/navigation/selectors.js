@@ -4,8 +4,7 @@
  */
 import { SURVEY_SCREEN } from './constants';
 
-const getCurrentRoute = ({ navigation }) =>
-  navigation.routes ? navigation.routes[navigation.index] : {};
+const getCurrentRoute = ({ nav }) => (nav.routes ? nav.routes[nav.index] : {});
 
 export const getCurrentRouteName = state => getCurrentRoute(state).routeName;
 

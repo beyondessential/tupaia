@@ -35,7 +35,7 @@ const renderErrorMessage = messageText => (
 export class CreateUserPage extends React.Component {
   static navigationOptions = {
     title: 'Create an account',
-    headerVisible: true,
+    headerMode: 'screen',
   };
 
   componentWillReceiveProps(nextProps) {

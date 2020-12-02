@@ -4,7 +4,6 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withNavigationFocus } from 'react-navigation';
 import { Animated, StyleSheet, Text, FlatList, View } from 'react-native';
 
 import {

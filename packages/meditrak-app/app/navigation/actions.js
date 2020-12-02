@@ -168,9 +168,9 @@ export const navigateToScreen = (routeName, title, params = {}) =>
   });
 
 export const replaceCurrentScreen = (routeName, title, params = {}) => (dispatch, getState) => {
-  const { navigation } = getState();
-  const { routes } = navigation;
-  const currentRoute = routes[navigation.index];
+  const { nav } = getState();
+  const { routes } = nav;
+  const currentRoute = routes[nav.index];
   dispatch(
     NavigationActions.replace({
       key: currentRoute.key,

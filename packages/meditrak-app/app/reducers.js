@@ -5,7 +5,7 @@
 
 import { reducer as authentication } from './authentication';
 import { reducer as assessment } from './assessment';
-import { reducer as navigation, sideMenuReducer as sideMenu } from './navigation';
+import { sideMenuReducer as sideMenu } from './navigation';
 import { reducer as sync } from './sync';
 import { reducer as version } from './version';
 import { reducer as newUser } from './user';
@@ -21,7 +21,6 @@ import { reducer as changePassword } from './changePassword';
 export const reducers = {
   authentication,
   assessment,
-  navigation,
   sync,
   version,
   newUser,
