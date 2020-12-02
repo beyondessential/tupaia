@@ -16,7 +16,7 @@ import {
   Virus,
   LinkButton,
 } from '@tupaia/ui-components';
-import { connectApi } from '../../api';
+import { getAffectedSites, getAlertsMessages, getActivityFeed } from '../../api';
 import {
   Drawer,
   DropdownMenu,
@@ -68,72 +68,59 @@ const menuOptions = [
 
 const TabsContext = React.createContext(null);
 
-export const AlertsPanelComponent = React.memo(
-  ({ isOpen, handleClose, fetchSitesData, fetchNotesData, fetchActivityData }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [activeIndex, setActiveIndex] = useState(0);
-    const sitesState = useFetch(fetchSitesData);
-    const notesState = useFetch(fetchNotesData);
-    const activityState = useFetch(fetchActivityData);
-    const { countryCode } = useParams();
+export const AlertsPanel = React.memo(({ isOpen, handleClose }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const sitesState = useFetch(getAffectedSites);
+  const notesState = useFetch(getAlertsMessages);
+  const activityState = useFetch(getActivityFeed);
+  const { countryCode } = useParams();
 
-    const handleChange = option => {
-      // todo handle changes other than creating an outbreak
-      setIsModalOpen(true);
-    };
+  const handleChange = option => {
+    // todo handle changes other than creating an outbreak
+    setIsModalOpen(true);
+  };
 
-    return (
-      <Drawer open={isOpen} onClose={handleClose}>
-        <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
-        <AlertsDrawerHeader
-          date="Week 9 Feb 25 - Mar 1, 2021"
-          dateText="Triggered on:"
-          avatarUrl={countryFlagImage('as')}
-          subheading={getCountryName(countryCode)}
-          heading="Acute Fever and Rash (AFR)"
-          DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
-        />
-        <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
-          <CardTabList Context={TabsContext}>
-            <CardTab>
-              <LocationOn /> Affected Sites
-            </CardTab>
-            <CardTab>
-              <SpeakerNotes />
-              Notes ({notesState.count})
-            </CardTab>
-            <CardTab>
-              <List />
-              Activity
-            </CardTab>
-          </CardTabList>
-          <CardTabPanels Context={TabsContext}>
-            <AffectedSitesTab state={sitesState} />
-            <NotesTab state={notesState} />
-            <ActivityTab
-              state={activityState}
-              NotesTabLink={<LinkButton onClick={() => setActiveIndex(1)}>note</LinkButton>}
-            />
-          </CardTabPanels>
-        </TabsContext.Provider>
-        <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
-      </Drawer>
-    );
-  },
-);
-
-AlertsPanelComponent.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  fetchSitesData: PropTypes.func.isRequired,
-  fetchNotesData: PropTypes.func.isRequired,
-  fetchActivityData: PropTypes.func.isRequired,
-};
-
-const mapApiToProps = api => ({
-  fetchSitesData: () => api.get('affected-sites'),
-  fetchNotesData: () => api.get('messages'),
-  fetchActivityData: () => api.get('activity-feed'),
+  return (
+    <Drawer open={isOpen} onClose={handleClose}>
+      <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
+      <AlertsDrawerHeader
+        date="Week 9 Feb 25 - Mar 1, 2021"
+        dateText="Triggered on:"
+        avatarUrl={countryFlagImage('as')}
+        subheading={getCountryName(countryCode)}
+        heading="Acute Fever and Rash (AFR)"
+        DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
+      />
+      <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
+        <CardTabList Context={TabsContext}>
+          <CardTab>
+            <LocationOn /> Affected Sites
+          </CardTab>
+          <CardTab>
+            <SpeakerNotes />
+            Notes ({notesState.count})
+          </CardTab>
+          <CardTab>
+            <List />
+            Activity
+          </CardTab>
+        </CardTabList>
+        <CardTabPanels Context={TabsContext}>
+          <AffectedSitesTab state={sitesState} />
+          <NotesTab state={notesState} />
+          <ActivityTab
+            state={activityState}
+            NotesTabLink={<LinkButton onClick={() => setActiveIndex(1)}>note</LinkButton>}
+          />
+        </CardTabPanels>
+      </TabsContext.Provider>
+      <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+    </Drawer>
+  );
 });
 
-export const AlertsPanel = connectApi(mapApiToProps)(AlertsPanelComponent);
+AlertsPanel.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+};

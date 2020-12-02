@@ -14,8 +14,8 @@ import {
   CardTabPanel,
   Toast,
 } from '@tupaia/ui-components';
-import { FetchLoader } from '../components/FetchLoader';
-import { connectApi } from '../api';
+import { FetchLoader } from '../components';
+import { createNote, updateNote, deleteNote } from '../api';
 import * as COLORS from '../constants/colors';
 
 const GREY_SECTION_HEIGHT = '225px';
@@ -53,7 +53,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-const NotesTabComponent = ({ state, handleUpdate, handleDelete, createNote }) => {
+export const NotesTab = ({ state }) => {
   const { data: messages } = state;
   const [status, setStatus] = useState('');
   const { handleSubmit, register, errors } = useForm();
@@ -77,8 +77,8 @@ const NotesTabComponent = ({ state, handleUpdate, handleDelete, createNote }) =>
             return (
               <StyledUserMessage
                 key={message.id}
-                onUpdate={handleUpdate}
-                onDelete={handleDelete}
+                onUpdate={updateNote}
+                onDelete={deleteNote}
                 Header={<UserMessageHeader user={data.user} dateTime={message.created} />}
                 message={message}
               />
@@ -119,17 +119,6 @@ const NotesTabComponent = ({ state, handleUpdate, handleDelete, createNote }) =>
   );
 };
 
-NotesTabComponent.propTypes = {
+NotesTab.propTypes = {
   state: PropTypes.object.isRequired,
-  createNote: PropTypes.func.isRequired,
-  handleUpdate: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
 };
-
-const mapApiToProps = api => ({
-  createNote: () => api.post(),
-  handleUpdate: () => api.post(),
-  handleDelete: () => api.post(),
-});
-
-export const NotesTab = connectApi(mapApiToProps)(NotesTabComponent);

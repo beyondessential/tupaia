@@ -23,7 +23,7 @@ describe('private route', () => {
 
   it('does not let a single country user see the countries page', () => {
     cy.server();
-    cy.route('POST', '**auth', 'fixture:singleCountryUserAuth.json').as('auth');
+    cy.route('POST', '**login', 'fixture:singleCountryUserAuth.json').as('login');
     cy.login();
     cy.visit('/');
     cy.findByText(/authorisation required/i, { selector: 'h1' });
@@ -32,7 +32,7 @@ describe('private route', () => {
 
   it('does not let a single country user see the wrong country page', () => {
     cy.server();
-    cy.route('POST', '**auth', 'fixture:singleCountryUserAuth.json').as('auth');
+    cy.route('POST', '**login', 'fixture:singleCountryUserAuth.json').as('login');
     cy.login();
     cy.visit('/weekly-reports/ws');
     cy.findByText(/authorisation required/i, { selector: 'h1' });
@@ -40,7 +40,7 @@ describe('private route', () => {
 
   it('shows a 404 page if a user goes to an invalid url', () => {
     cy.server();
-    cy.route('POST', '**auth', 'fixture:singleCountryUserAuth.json').as('auth');
+    cy.route('POST', '**login', 'fixture:singleCountryUserAuth.json').as('login');
     cy.login();
     cy.visit('/chewbacca');
     cy.findByText(/404/i, { selector: 'h1' });
