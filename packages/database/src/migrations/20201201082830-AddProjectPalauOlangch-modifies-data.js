@@ -71,11 +71,12 @@ exports.up = async function (db) {
     code: PROJECT_CODE,
     description: 'HIS for Palau’s public health data, integrating DHIS2 and mSupply.',
     sort_order: 10,
-    image_url: '', // 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/palau_olangch_background.png',
+    image_url:
+      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/olangch_palau_background.png',
     default_measure: '126,171',
     dashboard_group_name: DASHBOARDGROUP_NAME,
     user_groups: `{${USER_GROUP}}`,
-    logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/palau_olangch_logo.png',
+    logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/olangch_palau_logo.png',
     entity_id: await codeToId(db, 'entity', PROJECT_CODE),
     entity_hierarchy_id: await hierarchyNameToId(db, PROJECT_CODE),
   });
