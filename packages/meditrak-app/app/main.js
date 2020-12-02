@@ -6,7 +6,7 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { AppRegistry, AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore, compose } from 'redux';
+import { createStore, compose, connect } from 'redux';
 import { persistStore, persistCombineReducers, createTransform } from 'redux-persist';
 import { ErrorHandler } from 'redux-persist-error-handler';
 import { createNavigationReducer, createReduxContainer } from 'react-navigation-redux-helpers';
@@ -68,7 +68,11 @@ crashReporter.injectReduxStore(store);
 const persistedStore = persistStore(store);
 persistedStore.purge(); // Uncomment this to wipe bad redux state during development
 
-const NavigationConnectedApp = createReduxContainer(Navigator);
+const NavigationReduxContainer = createReduxContainer(Navigator);
+const mapStateToProps = state => ({
+  state: state.nav,
+});
+const NavigationConnectedApp = connect(mapStateToProps)(NavigationReduxContainer);
 
 const App = () => (
   <ErrorHandler persistedStore={persistedStore}>
