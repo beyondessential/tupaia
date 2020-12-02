@@ -5,4 +5,4 @@
 
 export { ConfirmedWeeklyReportRoute } from './ConfirmedWeeklyReportRoute';
 export { ConfirmedCountryWeeklyReportRoute } from './ConfirmedCountryWeeklyReportRoute';
-export { UpdateConfirmedCountryWeeklyReportRoute } from './UpdateConfirmedCountryWeeklyReportRoute';
+export { SubmitConfirmedCountryWeeklyReportRoute } from './SubmitConfirmedCountryWeeklyReportRoute';

@@ -7,7 +7,7 @@ import { Route } from '../Route';
 
 const SURVEY_CODE = 'PSSS_Confirmed_WNR';
 
-export class UpdateConfirmedCountryWeeklyReportRoute extends Route {
+export class SubmitConfirmedCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { week } = this.req.query;
     const { answers } = this.req.body;

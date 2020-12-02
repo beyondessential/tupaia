@@ -9,5 +9,5 @@ export { TestRoute } from './TestRoute';
 export {
   ConfirmedWeeklyReportRoute,
   ConfirmedCountryWeeklyReportRoute,
-  UpdateConfirmedCountryWeeklyReportRoute,
+  SubmitConfirmedCountryWeeklyReportRoute,
 } from './reports';

@@ -12,7 +12,7 @@ import {
   TestRoute,
   ConfirmedWeeklyReportRoute,
   ConfirmedCountryWeeklyReportRoute,
-  UpdateConfirmedCountryWeeklyReportRoute,
+  SubmitConfirmedCountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -63,7 +63,7 @@ export function addRoutesToApp(app: Express) {
    */
   app.put(
     '/v1/confirmedWeeklyReport/:organisationUnitCode',
-    handleWith(UpdateConfirmedCountryWeeklyReportRoute),
+    handleWith(SubmitConfirmedCountryWeeklyReportRoute),
   );
 
   app.use(handleError);
