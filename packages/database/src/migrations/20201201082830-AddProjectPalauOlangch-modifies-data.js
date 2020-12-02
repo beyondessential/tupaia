@@ -17,12 +17,12 @@ exports.setup = function (options, seedLink) {
 };
 
 const COUNTRY_CODE = 'PW';
-const PROJECT_CODE = 'palau_olangch';
+const PROJECT_CODE = 'olangch_palau';
 const PROJECT_NAME = 'MoH Project Olangch';
 const DASHBOARDGROUP_NAME = 'General';
 const DASHBOARDGROUP_CODE = 'PW_Olangch';
 const DASHBOARDGROUP_COUNTRY_CODE = 'PW_Olangch_Country';
-const USER_GROUP = 'Palau General';
+const USER_GROUP = 'Donor';
 
 export const hierarchyNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM entity_hierarchy WHERE name = '${name}'`);
@@ -43,7 +43,7 @@ exports.up = async function (db) {
     organisationLevel: 'Country',
     userGroup: USER_GROUP,
     organisationUnitCode: COUNTRY_CODE,
-    dashboardReports: '{project_details}',
+    dashboardReports: '{23,19,8,26}',
     name: DASHBOARDGROUP_NAME,
     code: DASHBOARDGROUP_COUNTRY_CODE,
     projectCodes: `{${PROJECT_CODE}}`,
