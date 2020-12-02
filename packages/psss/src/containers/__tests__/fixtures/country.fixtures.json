@@ -36,8 +36,8 @@
         "isAlert": false
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": -8,
         "totalCases": 607,
         "isAlert": false
@@ -78,8 +78,8 @@
         "totalCases": 689
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": 1,
         "totalCases": 367
       }
@@ -119,8 +119,8 @@
         "totalCases": 844
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": -4,
         "totalCases": 324
       }
@@ -160,8 +160,8 @@
         "totalCases": 13
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": 3,
         "totalCases": 851
       }
@@ -201,8 +201,8 @@
         "totalCases": 834
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": 6,
         "totalCases": 423
       }
@@ -242,8 +242,8 @@
         "totalCases": 41
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": 5,
         "totalCases": 645
       }
@@ -283,8 +283,8 @@
         "totalCases": 141
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": 8,
         "totalCases": 589
       }
@@ -324,8 +324,8 @@
         "totalCases": 402
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": -5,
         "totalCases": 321
       }
@@ -365,8 +365,8 @@
         "totalCases": 35
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": -6,
         "totalCases": 610
       }
@@ -406,8 +406,8 @@
         "totalCases": 377
       },
       {
-        "id": "dil",
-        "title": "Dengue-like Illness (DIL)",
+        "id": "dli",
+        "title": "Dengue-like Illness (DLI)",
         "percentageChange": 3,
         "totalCases": 707
       }

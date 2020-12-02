@@ -7,7 +7,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { ImportModal } from '../importExport';
 import { usePortalWithCallback } from '../utilities';
 import { Header, PageBody } from '../widgets';
 
@@ -36,7 +35,6 @@ export const StrivePage = ({ getHeaderEl }) => {
         </Typography>
         <Typography>Use the above Import button to import lab results.</Typography>
       </StyledBody>
-      <ImportModal {...importConfig} />
     </>
   );
 };

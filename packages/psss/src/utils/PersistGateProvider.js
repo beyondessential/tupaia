@@ -6,25 +6,29 @@ import React from 'react';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import PropTypes from 'prop-types';
+import { logoutUser } from '../api';
 
 function initPersistor(store) {
-  const persistor = persistStore(store, null);
+  const persistor = persistStore(store);
 
-  // if you run into problems with redux state, call "purge()" in the dev console
-  if (window.localStorage.getItem('queuePurge')) {
-    persistor.purge();
-    window.localStorage.setItem('queuePurge', '');
+  // Handle rememberMe flow.
+  // The PSSS:activeSession is used to determine if it is a new or existing active session
+  if (!window.sessionStorage.getItem('PSSS:activeSession')) {
+    const rememberMe = window.localStorage.getItem('PSSS:rememberMe');
+
+    // If it is a new session and the user has not ticked rememberMe, then remove the user data from localStorage
+    if (rememberMe === 'false') {
+      logoutUser();
+      persistor.purge();
+    }
+    window.sessionStorage.setItem('PSSS:activeSession', 'true');
   }
-
-  window.purge = () => {
-    window.localStorage.setItem('queuePurge', 'true');
-    window.location.reload();
-  };
 
   return persistor;
 }
 
 export const PersistGateProvider = ({ children, store }) => {
+  // Do not persist state for tests
   if (process.env.NODE_ENV === 'test') {
     return children;
   }

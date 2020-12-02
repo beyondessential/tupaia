@@ -4,6 +4,8 @@
  */
 import React from 'react';
 import { screen, within, fireEvent } from '@testing-library/react';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import { WeeklyReportsPanel } from '../Panels';
 import sitesData from './fixtures/sites.fixtures.json';
 import countryData from './fixtures/country.fixtures.json';
@@ -34,7 +36,7 @@ const defaultState = {
         dia: false,
         ili: null,
         pf: null,
-        dil: null,
+        dli: null,
       },
     },
   },
@@ -54,7 +56,13 @@ jest.mock('@tupaia/ui-components', () => ({
 }));
 
 function renderWeeklyReportsPanel() {
-  render(<WeeklyReportsPanel />, defaultState);
+  const history = createMemoryHistory();
+  render(
+    <Router history={history}>
+      <WeeklyReportsPanel />
+    </Router>,
+    defaultState,
+  );
   const countryReports = screen.getByTestId('country-reports');
   const inCountryReports = within(countryReports);
 
