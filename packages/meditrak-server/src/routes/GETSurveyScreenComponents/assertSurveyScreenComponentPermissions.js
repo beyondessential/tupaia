@@ -34,17 +34,23 @@ export const createSurveyScreenComponentDBFilter = async (
   options,
   surveyId,
 ) => {
-  const dbConditions = { ...criteria };
+  let dbConditions = { ...criteria };
   const dbOptions = { ...options };
 
   if (surveyId) {
-    dbConditions.survey_id = surveyId;
+    dbConditions = {
+      'survey_screen.survey_id': surveyId,
+      ...criteria,
+    };
   } else if (!hasBESAdminAccess(accessPolicy)) {
     // If we have BES admin, don't bother filtering by survey
     const surveyConditions = await createSurveyDBFilter(accessPolicy, models);
     const permittedSurveys = await models.survey.find(surveyConditions);
     const permittedSurveyIds = permittedSurveys.map(s => s.id);
-    dbConditions.survey_id = permittedSurveyIds;
+    dbConditions = {
+      'survey_screen.survey_id': permittedSurveyIds,
+      ...criteria,
+    };
   }
 
   dbOptions.multiJoin = mergeMultiJoin(

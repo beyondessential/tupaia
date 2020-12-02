@@ -72,8 +72,10 @@ export const createAccessRequestDBFilter = async (accessPolicy, models, criteria
     return criteria;
   }
   // If we don't have BES Admin access, add a filter to the SQL query
-  const dbConditions = { ...criteria };
-  dbConditions.entity_id = await getAdminPanelAllowedEntityIds(accessPolicy, models);
+  const dbConditions = {
+    'access_request.entity_id': await getAdminPanelAllowedEntityIds(accessPolicy, models),
+    ...criteria,
+  };
 
   return dbConditions;
 };

@@ -33,7 +33,6 @@ export const createDashboardReportDBFilter = async (accessPolicy, models, criter
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  const dbConditions = { ...criteria };
 
   // Pull the list of dashboard groups we have access to, then pull the dashboard reports
   // we have permission to from that
@@ -43,7 +42,10 @@ export const createDashboardReportDBFilter = async (accessPolicy, models, criter
     permittedDashboardGroups.map(dg => dg.dashboardReports),
   );
 
-  dbConditions.id = permittedDashboardReportIds;
+  const dbConditions = {
+    'dashboardReport.id': permittedDashboardReportIds,
+    ...criteria,
+  };
 
   return dbConditions;
 };
