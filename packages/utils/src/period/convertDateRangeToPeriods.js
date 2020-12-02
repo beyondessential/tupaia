@@ -26,6 +26,9 @@ const getDateData = date => {
  * * (20180103, 20180106) => [20180103, 20180104, 20180105, 20180106]
  * * (20180101, 20180228) => [201801, 201802]
  *
+ * * It should also support yyyy-mm-dd format. E,g.
+ * * (2015-01-01, 2018-01-01)
+ *
  * @param {Moment|string} startDate
  * @param {Moment|string} endDate
  * @returns {string[]}
