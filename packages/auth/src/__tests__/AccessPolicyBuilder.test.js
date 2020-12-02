@@ -14,6 +14,7 @@ const buildLegacyAccessPolicyMock = buildLegacyAccessPolicy.mockResolvedValue({}
 
 describe('AccessPolicyBuilder', () => {
   let notifyPermissionsChange;
+  let notifyPermissionGroupChange;
   const models = {
     userEntityPermission: {
       addChangeHandler: onPermissionsChanged => {
@@ -22,6 +23,11 @@ describe('AccessPolicyBuilder', () => {
             old_record: { user_id: userId },
             new_record: { user_id: userId },
           });
+      },
+    },
+    permissionGroup: {
+      addChangeHandler: onPermissionGroupChanged => {
+       notifyPermissionGroupChange = () => onPermissionGroupChanged();
       },
     },
   };
@@ -84,6 +90,15 @@ describe('AccessPolicyBuilder', () => {
       await builder.getPolicyForUser(userId); // built once
       await builder.getPolicyForUser(userId); // just fetched
       notifyPermissionsChange(userId); // cache invalidated
+      await builder.getPolicyForUser(userId); // built a second time
+      expect(buildAccessPolicyMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('does rebuild if there is a change to permission groups', async () => {
+      const builder = new AccessPolicyBuilder(models);
+      await builder.getPolicyForUser(userId); // built once
+      await builder.getPolicyForUser(userId); // just fetched
+      notifyPermissionGroupChange(); // cache invalidated
       await builder.getPolicyForUser(userId); // built a second time
       expect(buildAccessPolicyMock).toHaveBeenCalledTimes(2);
     });
