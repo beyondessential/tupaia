@@ -23,6 +23,11 @@ export class UpdateConfirmedCountryWeeklyReportRoute extends Route {
       return this.meditrakConnection?.updateSurveyResponse(result, answers);
     }
 
-    return this.meditrakConnection?.createSurveyResponse(SURVEY_CODE, answers);
+    return this.meditrakConnection?.createSurveyResponse(
+      SURVEY_CODE,
+      organisationUnitCode,
+      week,
+      answers,
+    );
   }
 }

@@ -22,6 +22,7 @@ export {
   translateQuestionDependentNestedFields,
   replaceQuestionCodesWithIds,
   replaceNestedQuestionCodesWithIds,
+  translateQuestionCodeToId,
 } from './translateQuestionDependentFields';
 export { translateExpression } from './translateExpression';
 export { getExpressionQuestionCodes } from './getExpressionQuestionCodes';
@@ -30,3 +31,4 @@ export {
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,
 } from './translateSurveyResponseFields';
+export { translateObjectFields } from './translateObjectFields';

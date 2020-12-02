@@ -19,9 +19,11 @@ import {
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 import {
+  translateObjectFields,
   translateEntityCodeToId,
   translateSurveyCodeToId,
   translateUserEmailToIdAndAssessorName,
+  translateQuestionCodeToId,
 } from './utilities';
 
 // Action constants
@@ -114,19 +116,14 @@ async function translateSurveyResponseObject(models, surveyResponseObject) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
   }
-  const translators = constructSurveyResponseTranslators(models);
 
-  await Promise.all(
-    Object.entries(surveyResponseObject).map(async ([field, value]) => {
-      if (translators[field]) {
-        const newFields = await translators[field](value);
-        Object.entries(newFields).forEach(
-          ([newField, newValue]) => (surveyResponseObject[newField] = newValue),
-        );
-        delete surveyResponseObject[field];
-      }
-    }),
-  );
+  const surveyResponseTranslators = constructSurveyResponseTranslators(models);
+  await translateObjectFields(surveyResponseObject, surveyResponseTranslators);
+
+  const answerTranslators = constructAnswerTranslators(models);
+  for (let i = 0; i < surveyResponseObject.answers.length; i++) {
+    await translateObjectFields(surveyResponseObject.answers[i], answerTranslators);
+  }
 
   return true;
 }
@@ -141,6 +138,10 @@ const constructSurveyResponseTranslators = models => ({
   user_email: userEmail => translateUserEmailToIdAndAssessorName(models.user, userEmail),
   entity_code: entityCode => translateEntityCodeToId(models.entity, entityCode),
   survey_code: surveyCode => translateSurveyCodeToId(models.survey, surveyCode),
+});
+
+const constructAnswerTranslators = models => ({
+  question_code: questionCode => translateQuestionCodeToId(models.question, questionCode),
 });
 
 const constructEntitiesCreatedValidators = models => ({
