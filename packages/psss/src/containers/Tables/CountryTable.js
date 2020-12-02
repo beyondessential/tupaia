@@ -7,12 +7,13 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
+import { convertPeriodStringToDateRange } from '@tupaia/utils';
 import { ExpandableTable } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor, AlertCell, SitesReportedCell } from '../../components';
+import { AlertCell, SitesReportedCell } from '../../components';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -28,9 +29,11 @@ const CountryWeekSubTitle = styled.div`
   line-height: 1rem;
 `;
 
-const NameCell = ({ weekNumber, startDate, endDate }) => {
-  const start = `${format(new Date(startDate), 'LLL d')}`;
-  const end = `${format(new Date(endDate), 'LLL d, yyyy')}`;
+const NameCell = ({ period }) => {
+  const weekNumber = period.split('W').pop();
+  const dates = convertPeriodStringToDateRange(period);
+  const start = `${format(new Date(dates[0]), 'LLL d')}`;
+  const end = `${format(new Date(dates[1]), 'LLL d, yyyy')}`;
   return (
     <>
       <CountryWeekTitle>{`Week ${weekNumber}`}</CountryWeekTitle>
@@ -40,9 +43,7 @@ const NameCell = ({ weekNumber, startDate, endDate }) => {
 };
 
 NameCell.propTypes = {
-  weekNumber: PropTypes.number.isRequired,
-  startDate: PropTypes.any.isRequired,
-  endDate: PropTypes.any.isRequired,
+  period: PropTypes.string.isRequired, // eg. 2020W32
 };
 
 const Status = styled.div`
@@ -86,6 +87,10 @@ StatusCell.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
+StatusCell.defaultProps = {
+  status: 'Submitted',
+};
+
 const countryColumns = [
   {
     title: 'Date ',
@@ -96,38 +101,33 @@ const countryColumns = [
   },
   {
     title: 'Sites Reported',
-    key: 'sitesReported',
+    key: 'Sites Reported',
     CellComponent: SitesReportedCell,
     width: COLUMN_WIDTHS.SITES_REPORTED,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DLI',
     key: 'DLI',
-    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
   {

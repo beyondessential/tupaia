@@ -31,7 +31,7 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
           expandedValue={expanded}
           rowData={rowData}
           rowIndex={rowIndex}
-          key={rowData.id} // todo: update to key when real data is in place
+          key={rowData.period}
           columns={columns}
           SubComponent={SiteSummaryTable}
         />

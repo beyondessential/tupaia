@@ -11,11 +11,9 @@ const DottedUnderline = styled.div`
   border-bottom: 1px dotted ${props => props.theme.palette.text.secondary};
 `;
 
-// Todo: update placeholder number
-export const SitesReportedCell = data => {
-  return (
-    <Tooltip title="Submitted: 1 day ago">
-      <DottedUnderline>{`${data.sitesReported}/30`}</DottedUnderline>
-    </Tooltip>
-  );
-};
+// Todo: update placeholder title
+export const SitesReportedCell = data => (
+  <Tooltip title="Submitted: 1 day ago">
+    <DottedUnderline>{`${data['Sites Reported']}/${data['Sites']}`}</DottedUnderline>
+  </Tooltip>
+);

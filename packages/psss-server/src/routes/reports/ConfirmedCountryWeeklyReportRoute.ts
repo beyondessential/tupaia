@@ -12,7 +12,7 @@ export class ConfirmedCountryWeeklyReportRoute extends Route {
     const reportData = await this.reportConnection?.fetchReport(
       'PSSS_Confirmed_Weekly_Report',
       [countryCode],
-      [startWeek], //Only need to send startWeek period because this is a weekly report
+      [startWeek, endWeek],
     );
 
     return {

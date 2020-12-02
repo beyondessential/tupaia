@@ -13,16 +13,16 @@ import {
   SitesReportedCell,
   WeekAndDateCell,
 } from '../../components';
-import { useTableQuery } from '../../api';
+import { useLiveTableQuery, useTableQuery } from '../../api';
 
 const countrySummaryTableColumns = [
-  {
-    title: 'Name',
-    key: 'name',
-    width: '30%', // must be same as CountriesTable name column to align
-    align: 'left',
-    CellComponent: WeekAndDateCell,
-  },
+  // {
+  //   title: 'Name',
+  //   key: 'name',
+  //   width: '30%', // must be same as CountriesTable name column to align
+  //   align: 'left',
+  //   CellComponent: WeekAndDateCell,
+  // },
   {
     title: 'Sites Reported',
     key: 'sitesReported',
@@ -32,32 +32,32 @@ const countrySummaryTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
-    CellComponent: AlertCell,
+    // accessor: createTotalCasesAccessor('afr'),
+    // CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
-    CellComponent: AlertCell,
+    // accessor: createTotalCasesAccessor('dia'),
+    // CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
-    CellComponent: AlertCell,
+    // accessor: createTotalCasesAccessor('ili'),
+    // CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
-    CellComponent: AlertCell,
+    // accessor: createTotalCasesAccessor('pf'),
+    // CellComponent: AlertCell,
   },
   {
     title: 'DLI',
     key: 'DLI',
-    accessor: createTotalCasesAccessor('dli'),
-    CellComponent: AlertCell,
+    // accessor: createTotalCasesAccessor('dli'),
+    // CellComponent: AlertCell,
   },
 ];
 
@@ -70,6 +70,14 @@ export const CountrySummaryTable = React.memo(({ rowData }) => {
     orderBy,
     handleChangeOrderBy,
   } = useTableQuery('country-weeks', { countryCode: rowData.countryCode });
+
+  const { data: d, isLoading: l } = useLiveTableQuery('confirmedWeeklyReport/TO', {
+    params: { startWeek: '2020W14', endWeek: '2020W22' },
+  });
+
+  if (!l) {
+    console.log('single country data', d);
+  }
 
   return (
     <>

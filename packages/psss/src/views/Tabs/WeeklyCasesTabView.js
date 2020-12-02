@@ -23,7 +23,7 @@ import {
 import { Container, Main, Sidebar } from '../../components';
 import { CountryTable, WeeklyReportsPanel } from '../../containers';
 import { getActiveWeekId, openWeeklyReportsPanel, setActiveWeek } from '../../store';
-import { useTableQuery } from '../../api';
+import { useLiveTableQuery, useTableQuery } from '../../api';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -64,6 +64,10 @@ const DateSubtitle = styled(Typography)`
 export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const [page, setPage] = useState(0);
   const { countryCode } = useParams();
+
+  // Todo: Get the latest week data when there is real data
+  const latestWeek = data ? data.data[0] : [];
+
   const {
     isLoading,
     error,
@@ -72,16 +76,19 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
     orderBy,
     handleChangeOrderBy,
     isFetching,
-  } = useTableQuery('country-weeks', { countryCode });
+  } = useLiveTableQuery(`confirmedWeeklyReport/${countryCode.toUpperCase()}`, {
+    params: { startWeek: '2020W14', endWeek: '2020W22' },
+  });
 
-  // Todo: Get the latest week data when there is real data
-  const latestWeek = data ? data.data[0] : [];
+  if (!isLoading) {
+    console.log('single country data', data?.data?.results);
+  }
 
   return (
     <Container>
       <Main data-testid="country-table">
         <CountryTable
-          data={data ? data.data : []}
+          data={!isLoading ? data?.data?.results : []}
           isLoading={isLoading}
           errorMessage={error && error.message}
           order={order}
@@ -89,6 +96,7 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
           onChangeOrderBy={handleChangeOrderBy}
           page={page}
           setPage={setPage}
+          rowIdKey="period"
         />
         {isFetching && 'Fetching...'}
         {!isLoading && activeWeek !== null && (

@@ -158,7 +158,7 @@ export const WeeklyReportsPanelComponent = React.memo(
           setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
         }
       },
-      [syndromeAlerts],
+      [syndromeAlerts, confirmReport],
     );
 
     const isVerified = unVerifiedSyndromes.length === 0;
