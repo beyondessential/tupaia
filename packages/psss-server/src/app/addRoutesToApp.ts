@@ -12,6 +12,7 @@ import {
   TestRoute,
   ConfirmedWeeklyReportRoute,
   ConfirmedCountryWeeklyReportRoute,
+  CountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -49,6 +50,10 @@ export function addRoutesToApp(app: Express) {
   app.get(
     '/v1/confirmedWeeklyReport/:organisationUnitCode',
     handleWith(ConfirmedCountryWeeklyReportRoute),
+  );
+  app.get(
+    '/v1/weeklyReport/:organisationUnitCode',
+    handleWith(CountryWeeklyReportRoute),
   );
 
   /**
