@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getCurrentPeriod, convertPeriodStringToDateRange } from '@tupaia/utils';
+import { getCurrentPeriod } from '@tupaia/utils';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -26,12 +26,8 @@ import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
 import { MIN_DATE } from './constants';
+import { getDateByPeriod } from '../../utils';
 import { getLatestViewableWeek, setLatestViewableWeek } from '../../store';
-import {
-  getFormattedStartByPeriod,
-  getFormattedEndByPeriod,
-  getWeekNumberByPeriod,
-} from '../../utils';
 
 const Container = styled(FlexSpaceBetween)`
   width: 66%;
@@ -94,9 +90,9 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
   const [isOpen, setIsOpen] = useState(false);
   const now = new Date();
 
-  React.useEffect(() => {
-    setCurrentWeek();
-  }, []);
+  // React.useEffect(() => {
+  //   setCurrentWeek();
+  // }, []);
 
   const setCurrentWeek = () => {
     setPeriod(now);
@@ -159,10 +155,9 @@ DateToolbarComponent.propTypes = {
 
 const mapStateToProps = state => {
   const period = getLatestViewableWeek(state);
-  const test = convertPeriodStringToDateRange(period)[0];
-  const newDate = new Date(test);
+  const date = getDateByPeriod(period);
   return {
-    date: newDate,
+    date,
   };
 };
 

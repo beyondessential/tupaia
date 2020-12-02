@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { getCurrentPeriod } from '@tupaia/utils';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import {
@@ -17,6 +16,7 @@ import {
 } from '@tupaia/ui-components';
 import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle } from '../components';
 import { CountriesTable, WeeklyReportsExportModal } from '../containers';
+import { getCurrentIsoWeekNumber } from '../utils';
 
 const StyledCardContent = styled(CardContent)`
   display: flex;
@@ -60,7 +60,7 @@ export const CountriesReportsView = () => (
         <Card variant="outlined">
           <CardHeader
             title="Current reports submitted"
-            label={`Week ${getCurrentPeriod('WEEK')}`}
+            label={`Week ${getCurrentIsoWeekNumber()}`}
           />
           <StyledCardContent>
             <Typography variant="h3">11/22 Countries</Typography>

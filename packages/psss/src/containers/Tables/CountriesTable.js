@@ -9,7 +9,7 @@ import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { useLiveTableQuery } from '../../api';
 import { AlertCell, SitesReportedCell, CountryNameLinkCell } from '../../components';
-import { getLatestViewableWeek } from '../../store';
+import { getLatestViewableWeek, getEntitiesAllowed } from '../../store';
 import { connect } from 'react-redux';
 
 const countriesTableColumns = [
@@ -53,14 +53,32 @@ const countriesTableColumns = [
   },
 ];
 
-export const CountriesTableComponent = ({ period }) => {
-  const { data, isLoading, error } = useLiveTableQuery('confirmedWeeklyReport', {
+const useConfirmedWeeklyReport = (period, countryCodes) => {
+  const query = useLiveTableQuery('confirmedWeeklyReport', {
     params: { startWeek: period },
   });
 
+  const data = countryCodes.map(code => {
+    const report = query.data.find(report => report.organisationUnit === code.toUpperCase());
+    return report
+      ? report
+      : {
+          organisationUnit: code.toUpperCase(),
+        };
+  });
+
+  return {
+    ...query,
+    data,
+  };
+};
+
+export const CountriesTableComponent = ({ period, countryCodes }) => {
+  const { data, isLoading, error } = useConfirmedWeeklyReport(period, countryCodes);
+
   return (
     <ExpandableTable
-      data={!isLoading ? data?.data?.results : []}
+      data={data}
       isLoading={isLoading}
       errorMessage={error && error.message}
       columns={countriesTableColumns}
@@ -73,10 +91,12 @@ export const CountriesTableComponent = ({ period }) => {
 
 CountriesTableComponent.propTypes = {
   period: PropTypes.string.isRequired,
+  countryCodes: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
   period: getLatestViewableWeek(state),
+  countryCodes: getEntitiesAllowed(state),
 });
 
 export const CountriesTable = connect(mapStateToProps)(CountriesTableComponent);

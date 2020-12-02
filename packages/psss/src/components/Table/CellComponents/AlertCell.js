@@ -25,13 +25,11 @@ const StyledAlert = styled.div`
   }
 `;
 
-/*
- * Conditionally displays the value styled as an alert
- */
-export const AlertCell = props => {
-  const { displayValue } = props;
-  // this is just temporary logic until real data is in place
-  if (displayValue > 900) {
+export const AlertCell = ({ displayValue, columnKey, ...props }) => {
+  const key = `${columnKey} Threshold Crossed`;
+  const isAlert = props[key];
+
+  if (isAlert) {
     return (
       <StyledAlert>
         {displayValue}
@@ -40,5 +38,5 @@ export const AlertCell = props => {
     );
   }
 
-  return displayValue;
+  return displayValue === undefined ? '-' : displayValue;
 };

@@ -13,6 +13,7 @@ import { Container, Main, Sidebar } from '../../components';
 import { CountryTable, UpcomingReportCard, WeeklyReportsPanel } from '../../containers';
 import { getActiveWeek, openWeeklyReportsPanel, setActiveWeek } from '../../store';
 import { useLiveTableQuery } from '../../api';
+import { useCountryConfirmedWeeklyReport } from '../../api';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -66,7 +67,7 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
     <Container>
       <Main data-testid="country-table">
         <CountryTable
-          data={!isLoading ? data?.data?.results : []}
+          data={data}
           isLoading={isLoading}
           errorMessage={error && error.message}
           rowIdKey="period"

@@ -13,7 +13,7 @@ export const useTableQuery = (endpoint, options) => {
   const query = useQuery(
     [endpoint, options, sorting],
     () => FakeAPI.get(endpoint, { ...options, ...sorting }),
-    { staleTime: 50 },
+    { staleTime: 60 * 1000, refetchOnWindowFocus: false },
   );
 
   const handleChangeOrderBy = columnKey => {
@@ -31,7 +31,7 @@ export const useLiveTableQuery = (endpoint, options) => {
   const query = useQuery(
     [endpoint, options, sorting],
     () => get(endpoint, { ...options, ...sorting }),
-    { staleTime: 50 },
+    { staleTime: 60 * 1000, refetchOnWindowFocus: false },
   );
 
   const handleChangeOrderBy = columnKey => {
@@ -41,5 +41,7 @@ export const useLiveTableQuery = (endpoint, options) => {
     setSorting(newSorting);
   };
 
-  return { ...query, ...sorting, handleChangeOrderBy };
+  const data = query?.data?.data?.results ? query.data.data.results : [];
+
+  return { ...query, ...sorting, handleChangeOrderBy, data };
 };

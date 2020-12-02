@@ -5,10 +5,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Table, CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { AlertCell, SitesReportedCell, WeekAndDateCell } from '../../components';
-import { useLiveTableQuery, useTableQuery } from '../../api';
+import { getLatestViewableWeek } from '../../store';
+import { useCountryConfirmedWeeklyReport } from '../../api';
+import { subtractPeriod } from '../../utils';
 
 const countrySummaryTableColumns = [
   {
@@ -51,12 +54,11 @@ const countrySummaryTableColumns = [
   },
 ];
 
-export const CountrySummaryTable = React.memo(({ rowData }) => {
-  const { isLoading, error, data } = useLiveTableQuery(
-    `confirmedWeeklyReport/${rowData.organisationUnit}`,
-    {
-      params: { startWeek: '2020W14', endWeek: '2020W22' },
-    },
+export const CountrySummaryTableComponent = React.memo(({ rowData, startPeriod, endPeriod }) => {
+  const { isLoading, error, data } = useCountryConfirmedWeeklyReport(
+    rowData.organisationUnit,
+    startPeriod,
+    endPeriod,
   );
 
   return (
@@ -66,7 +68,7 @@ export const CountrySummaryTable = React.memo(({ rowData }) => {
         columns={countrySummaryTableColumns}
         Header={false}
         Body={CondensedTableBody}
-        data={!isLoading ? data?.data?.results : []}
+        data={data}
         isLoading={isLoading}
         errorMessage={error && error.message}
         rowIdKey="period"
@@ -75,8 +77,20 @@ export const CountrySummaryTable = React.memo(({ rowData }) => {
   );
 });
 
-CountrySummaryTable.propTypes = {
+CountrySummaryTableComponent.propTypes = {
+  startPeriod: PropTypes.string.isRequired,
+  endPeriod: PropTypes.string.isRequired,
   rowData: PropTypes.shape({
     organisationUnit: PropTypes.string.isRequired,
   }).isRequired,
 };
+
+const mapStateToProps = state => {
+  const period = getLatestViewableWeek(state);
+  return {
+    startPeriod: subtractPeriod(period, 7),
+    endPeriod: getLatestViewableWeek(state),
+  };
+};
+
+export const CountrySummaryTable = connect(mapStateToProps)(CountrySummaryTableComponent);

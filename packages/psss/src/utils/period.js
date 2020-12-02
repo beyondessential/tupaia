@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { convertPeriodStringToDateRange } from '@tupaia/utils';
-import { format } from 'date-fns';
+import { getCurrentPeriod, convertPeriodStringToDateRange } from '@tupaia/utils';
+import { format, subWeeks } from 'date-fns';
 
 /**
  *
@@ -28,4 +28,22 @@ export const getFormattedEndByPeriod = (period, f) => {
   return format(new Date(dates[1]), f);
 };
 
+export const getCurrentIsoWeekNumber = () => {
+  const period = getCurrentPeriod('WEEK');
+  return getWeekNumberByPeriod(period);
+};
+
 export const getWeekNumberByPeriod = period => period.split('W').pop();
+
+export const getDateByPeriod = period => {
+  const date = convertPeriodStringToDateRange(period)[0];
+  return new Date(date);
+};
+
+export const getPeriodByDate = date => format(date, "yyyy'W'II");
+
+export const subtractPeriod = (period, amount) => {
+  const date = getDateByPeriod(period);
+  const newDate = subWeeks(date, amount);
+  return getPeriodByDate(newDate);
+};

@@ -12,8 +12,13 @@ const DottedUnderline = styled.div`
 `;
 
 // Todo: update placeholder title
-export const SitesReportedCell = data => (
-  <Tooltip title="Submitted: 1 day ago">
-    <DottedUnderline>{`${data['Sites Reported']}/${data['Sites']}`}</DottedUnderline>
-  </Tooltip>
-);
+export const SitesReportedCell = data => {
+  if (data.Sites === undefined) {
+    return '-';
+  }
+  return (
+    <Tooltip title="Submitted: 1 day ago">
+      <DottedUnderline>{`${data['Sites Reported']}/${data['Sites']}`}</DottedUnderline>
+    </Tooltip>
+  );
+};
