@@ -27,10 +27,11 @@ const authenticateUsingMethod = async (req, res, authenticationMethod) => {
       ...body,
       deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME,
     });
-    const { fullName: userName, email, verified_email: verifiedEmail } = user;
+    const { id: userId, fullName: userName, email, verified_email: verifiedEmail } = user;
     await models.userSession.updateOrCreate({ userName }, { accessPolicy, refreshToken }); // Save tokens for user
     processLogin(
       {
+        userId,
         userName,
         email,
         verifiedEmail,

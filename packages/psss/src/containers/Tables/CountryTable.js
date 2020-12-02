@@ -90,7 +90,7 @@ const countryColumns = [
   {
     title: 'Date ',
     key: 'weekNumber',
-    width: '190px',
+    width: '190px', // must be same width as SiteSummaryTable name column to align
     align: 'left',
     CellComponent: NameCell,
   },
@@ -125,9 +125,9 @@ const countryColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
+    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
   {

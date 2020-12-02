@@ -37,6 +37,7 @@ export const TRANSPARENT = 'rgba(0,0,0,0)';
 export const TUPAIA_ORANGE = '#EE6230';
 export const PRIMARY_BLUE = '#2196f3';
 export const BLUE = '#22c7fc';
+export const LIGHT_BLUE = '#cde9ff';
 export const DARKENED_BLUE = '#0296c5';
 export const GREY = '#c7c7c7';
 export const LIGHT_GREY = '#EFEFF0';
@@ -465,6 +466,8 @@ export const VIEW_STYLES = {
       },
   tooltip: {
     color: fullWhite,
+    background: 'rgba(0, 0, 0, 0.7)',
+    padding: '15px 10px 15px 5px',
   },
   legend: {
     color: fullWhite,

@@ -23,16 +23,21 @@ const truncateDecimalToPlace = decimalPlace => number => {
   return Math.floor(number * place) / place;
 };
 
+// Note: will display 0 if passed undefined
 const currency = value => numeral(value).format('$0.00a');
+
 const fraction = (value, { total }) => {
   if (isNaN(total)) return 'No data';
   return `${String(value)}/${String(total)}`;
 };
+
 const fractionAndPercentage = (value, { numerator, denominator }) => {
   if (isNaN(value)) return value;
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
+
 const text = value => String(value);
+
 const boolean = (value, { presentationOptions = {} }) => {
   const isPositive = value > 0;
   const Icon = isPositive ? PositiveIcon : NegativeIcon;
@@ -80,11 +85,14 @@ const percentage = value => {
 
 const number = (value, { presentationOptions = {} }) => {
   const { valueFormat = '0,0' } = presentationOptions;
-  return numeral(value).format(valueFormat);
+  return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
 };
 
 const defaultFormatter = input =>
   Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(2)(input);
+
+const oneDecimalPlace = input =>
+  Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(1)(input);
 
 const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.TEXT]: text,
@@ -94,6 +102,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.CURRENCY]: currency,
   [VALUE_TYPES.BOOLEAN]: boolean,
   [VALUE_TYPES.NUMBER]: number,
+  [VALUE_TYPES.ONE_DECIMAL_PLACE]: oneDecimalPlace,
 };
 
 export const formatDataValue = (value, valueType, metadata = {}) => {

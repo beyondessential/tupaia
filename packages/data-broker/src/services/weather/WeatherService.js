@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { ValidationError } from '@tupaia/utils';
 import { Service } from '../Service';
 import { ApiResultTranslator } from './ApiResultTranslator';
 import { DateSanitiser } from './DateSanitiser';
@@ -19,6 +19,8 @@ export class WeatherService extends Service {
    * @inheritDoc
    */
   async pull(dataSources, type, options = {}) {
+    this.validateOptions(options);
+
     const { startDate, endDate } = options;
 
     const resultFormat = this.getResultFormat(type);
@@ -49,22 +51,14 @@ export class WeatherService extends Service {
         forecastDataElementCodes,
       );
 
-      if (!this.isRequestForCurrentWeather(startDate, endDate)) {
-        // no technical reason, just not implemented yet
-        throw new Error('Date range not supported with forecast weather');
-      }
-
-      return this.getForecastWeatherForToday(entities, apiResultTranslator);
-    } else if (historicDataElementCodes.length > 0) {
+      return this.getForecastWeather(entities, startDate, endDate, apiResultTranslator);
+    }
+    if (historicDataElementCodes.length > 0) {
       const apiResultTranslator = new ApiResultTranslator(
         entities,
         resultFormat,
         historicDataElementCodes,
       );
-
-      if (this.isRequestForCurrentWeather(startDate, endDate)) {
-        throw new Error('Empty date range not supported with historic weather');
-      }
 
       return this.getHistoricWeather(entities, startDate, endDate, apiResultTranslator);
     }
@@ -149,39 +143,55 @@ export class WeatherService extends Service {
   }
 
   /**
-   * @param {string?} startDate
-   * @param {string?} endDate
-   * @returns {boolean}
+   * @param {*} options
+   * @throws {ValidationError}
    * @private
    */
-  isRequestForCurrentWeather(startDate, endDate) {
-    return !startDate && !endDate;
+  validateOptions(options) {
+    if (!options.startDate || !options.endDate) {
+      throw new ValidationError('Empty date range not supported with weather service');
+    }
   }
 
   /**
    * Fetch API data and return in format of events/analytics
    *
    * @param {EntityType[]} entities
+   * @param {string} startDate
+   * @param {string} endDate
    * @param {ApiResultTranslator} apiResultTranslator
    * @returns {Promise<Object.<results: {Object[]}, metadata: {}>>}
    * @private
    */
-  async getForecastWeatherForToday(entities, apiResultTranslator) {
+  async getForecastWeather(entities, startDate, endDate, apiResultTranslator) {
     /*
      * Current weather uses the forecast weather API instead of the current weather API
      * because we want complete data on what will happen today (e.g. total rainfall), rather than
      * live data of what the weather is like at the moment.
      */
+    const filterApiResultForDates = apiResult => {
+      const filteredData = apiResult.data.filter(
+        entry => entry.datetime >= startDate && entry.datetime <= endDate,
+      );
+      return {
+        ...apiResult,
+        data: filteredData,
+      };
+    };
+
     // Run requests in parallel for performance
     const getDataForEntity = async entity => {
       const { lat, lon } = entity.pointLatLon();
 
-      const days = 1; // just need today
+      // Maximum forecast is 16 days, we request all of it and filter it down to the dates we need.
+      // Performance looks fine requesting 16 days.
+      const days = 16;
 
       const apiResult = await this.api.forecastDaily(lat, lon, days);
+
       return {
         entityCode: entity.code,
-        apiResult,
+        apiResult: filterApiResultForDates(apiResult),
       };
     };
 

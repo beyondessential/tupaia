@@ -3,5 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './singletons';
-export * from './connectApi';
+export * from './requests';
+export * from './mutations';
+export * from './useTableQuery';

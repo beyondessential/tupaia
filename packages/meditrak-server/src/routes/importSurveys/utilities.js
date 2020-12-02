@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { splitStringOn } from '../utilities';
+import { splitStringOn, splitStringOnFirstOccurrence } from '../utilities';
 
 export const MAX_SURVEY_CODE_GENERATION_ATTEMPTS = 20;
 
@@ -36,7 +36,7 @@ export const convertCellToJson = (cellString, processValue = value => value) => 
   splitStringOn(cellString, '\n')
     .filter(line => line !== '')
     .forEach(line => {
-      const [key, value] = splitStringOn(line, ':');
+      const [key, value] = splitStringOnFirstOccurrence(line, ':');
       jsonObject[key] = processValue(value);
     });
   return jsonObject;

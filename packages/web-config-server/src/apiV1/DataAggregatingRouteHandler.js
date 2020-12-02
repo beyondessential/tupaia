@@ -33,12 +33,12 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     }
 
     const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
-    const entity = await this.models.entity.findOne({ code: entityCode });
-    return this.fetchAndFilterDataSourceEntitiesOfType(entity, entityType, restOfOptions);
+    return this.fetchAndFilterDataSourceEntitiesOfType(entityCode, entityType, restOfOptions);
   };
 
-  fetchAndFilterDataSourceEntitiesOfType = async (entity, entityType, options) => {
+  fetchAndFilterDataSourceEntitiesOfType = async (entityCode, entityType, options) => {
     const { dataSourceEntityFilter, ...restOfOptions } = options;
+    const entity = await this.models.entity.findOne({ code: entityCode });
 
     const allDataSourceEntities = await this.fetchDataSourceEntitiesOfType(
       entity,
@@ -71,8 +71,8 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // this is when we are at B and want to fetch data for both B and C
     //
     if (includeSiblingData) {
-      const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
-      return ancestor.getDescendantsOfType(entityType, hierarchyId);
+      const ancestor = await entity.getAncestorOfType(hierarchyId, aggregationEntityType);
+      return ancestor.getDescendantsOfType(hierarchyId, entityType);
     }
 
     // if the entity we're building for is of the correct type already, just use that

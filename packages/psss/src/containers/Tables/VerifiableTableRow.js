@@ -75,10 +75,11 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
 `;
 
 export const VerifiableTableRowComponent = React.memo(props => {
-  const { rowData, verifiedStatus, setVerifiedStatus } = props;
+  const { rowData, setVerifiedStatus, isVerified } = props;
+  const hasWarning = rowData.isAlert;
 
   const WarningButtonComponent = () => {
-    if (verifiedStatus) {
+    if (isVerified) {
       return (
         <VerifiedWrapper>
           <VerifiedAlert>
@@ -88,13 +89,14 @@ export const VerifiableTableRowComponent = React.memo(props => {
       );
     }
 
-    const handleVerify = () => {
-      setVerifiedStatus(rowData.id);
-    };
-
     return (
       <WarningWrapper>
-        <WarningButton fullWidth onClick={handleVerify}>
+        <WarningButton
+          fullWidth
+          onClick={() => {
+            setVerifiedStatus(rowData.id);
+          }}
+        >
           Click to verify
         </WarningButton>
       </WarningWrapper>
@@ -104,7 +106,7 @@ export const VerifiableTableRowComponent = React.memo(props => {
   return (
     <BorderlessTableRow
       {...props}
-      expandedValue={verifiedStatus !== null}
+      expandedValue={hasWarning}
       SubComponent={WarningButtonComponent}
       ExpansionContainer={StyledExpansionContainer}
     />
@@ -113,20 +115,20 @@ export const VerifiableTableRowComponent = React.memo(props => {
 
 VerifiableTableRowComponent.propTypes = {
   rowData: PropTypes.object.isRequired,
-  verifiedStatus: PropTypes.bool,
+  isVerified: PropTypes.bool,
   setVerifiedStatus: PropTypes.func.isRequired,
 };
 
 VerifiableTableRowComponent.defaultProps = {
-  verifiedStatus: null,
+  isVerified: false,
 };
 
 const mapStateToProps = (state, { rowData }) => ({
-  verifiedStatus: getVerifiedStatus(state, rowData.id),
+  isVerified: getVerifiedStatus(state, rowData.id),
 });
 
 const mapDispatchToProps = dispatch => ({
-  setVerifiedStatus: data => dispatch(updateVerifiedStatus(data)),
+  setVerifiedStatus: id => dispatch(updateVerifiedStatus(id)),
 });
 
 export const VerifiableTableRow = connect(

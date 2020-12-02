@@ -13,8 +13,8 @@
     - type: serial
       name: test
       steps:
-        - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
-          name: test-all
+        - type: parallel
+          name: test-batch-1 # they're in sandboxed containers, but share a db which can't handle all at once
           steps:
             - name: test-meditrak-server
               service: testing
@@ -22,6 +22,15 @@
             - name: test-web-config-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+            - name: test-psss-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh psss-server'
+            - name: test-report-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh report-server'
+        - type: parallel
+          name: test-batch-2
+          steps:
             - name: test-database
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh database'
@@ -62,6 +71,10 @@
               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
             - name: deploy-meditrak-server
               command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+            - name: deploy-psss-server
+              command: './packages/devops/scripts/ci/deployBackend.sh psss-server'
+            - name: deploy-report-server
+              command: './packages/devops/scripts/ci/deployBackend.sh report-server'
         # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
         - name: run db migrations
           command: './packages/devops/scripts/ci/runMigrations.sh'

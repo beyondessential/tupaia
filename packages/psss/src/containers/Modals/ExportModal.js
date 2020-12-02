@@ -20,8 +20,8 @@ import {
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import { useForm, Controller } from 'react-hook-form';
-import { FlexSpaceBetween } from '../../components/Layout';
-import { connectApi } from '../../api';
+import { FlexSpaceBetween, ComingSoon } from '../../components';
+import { createExport } from '../../api';
 
 // Todo replace with data from api
 const countries = [
@@ -104,7 +104,7 @@ const SuccessText = styled(Typography)`
 
 const getLabelForValue = value => countries.find(option => option.value === value).label;
 
-export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, createExport }) => {
+export const ExportModal = ({ renderCustomFields, isOpen, handleClose }) => {
   const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
@@ -134,6 +134,7 @@ export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, 
 
   return (
     <Dialog onClose={handleClose} open={isOpen}>
+      <ComingSoon text="The Modal dialog will enable you to export report data." />
       <form onSubmit={handleSubmit(handleConfirm)} noValidate>
         <DialogHeader onClose={handleClose} title="Export Weekly Case Data" />
         <LoadingContainer isLoading={status === STATUS.LOADING}>
@@ -202,15 +203,8 @@ export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, 
   );
 };
 
-ExportModalComponent.propTypes = {
+ExportModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  createExport: PropTypes.func.isRequired,
   renderCustomFields: PropTypes.func.isRequired,
 };
-
-const mapApiToProps = api => ({
-  createExport: () => api.post(),
-});
-
-export const ExportModal = connectApi(mapApiToProps)(ExportModalComponent);
