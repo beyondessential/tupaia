@@ -31,6 +31,7 @@ export interface PsssResponseBody {
 export interface Credentials {
   emailAddress: string;
   password: string;
+  deviceName: string;
 }
 
 export type QueryParameters = Record<string, string>;

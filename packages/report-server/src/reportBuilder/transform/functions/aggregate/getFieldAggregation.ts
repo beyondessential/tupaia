@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { aggregations } from './aggregations';
 
 export const buildGetFieldAggregation = (params: { [key: string]: keyof typeof aggregations }) => {
@@ -9,7 +14,9 @@ export const buildGetFieldAggregation = (params: { [key: string]: keyof typeof a
     const aggregation = params[field];
     if (aggregation !== undefined) {
       return aggregation;
-    } else if ('...' in params) {
+    }
+
+    if ('...' in params) {
       return params['...'];
     }
 

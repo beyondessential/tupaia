@@ -12,7 +12,7 @@ import {
   WeekAndDateCell,
   StartDateCell,
 } from '../../components';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 const createColumns = isForMultipleCountries => [
   ...(isForMultipleCountries

@@ -3,12 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Route } from './Route';
+import { UnauthenticatedRoute } from './UnauthenticatedRoute';
 
-export class LogoutRoute extends Route {
+export class LogoutRoute extends UnauthenticatedRoute {
   async buildResponse() {
-    await this.sessionModel.deleteById(this.sessionCookie.id);
-    this.sessionCookie?.reset();
+    const sessionId = this.sessionCookie?.id;
+
+    if (sessionId && this.sessionModel) {
+      await this.sessionModel.deleteById(sessionId);
+    }
+
+    if (this.sessionCookie) {
+      this.sessionCookie.reset();
+    }
+
     return { success: true };
   }
 }
