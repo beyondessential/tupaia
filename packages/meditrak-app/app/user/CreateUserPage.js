@@ -16,7 +16,14 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { MenuContext } from 'react-native-menu';
-import { Form, FIELD_TYPES, Button, StatusMessage, STATUS_MESSAGE_ERROR } from '../widgets';
+import {
+  Form,
+  FIELD_TYPES,
+  Button,
+  StatusMessage,
+  STATUS_MESSAGE_ERROR,
+  TupaiaBackground,
+} from '../widgets';
 import { USER_AGREE_TERMS } from './constants';
 import * as userFieldConstants from './userFieldConstants';
 import { getThemeColorOneFaded, DEFAULT_PADDING } from '../globalStyles';
@@ -51,7 +58,6 @@ export class CreateUserPage extends React.Component {
 
   render() {
     const {
-      screenProps,
       buttonText,
       submitIsEnabled,
       onChangeNewUserField,
@@ -61,11 +67,10 @@ export class CreateUserPage extends React.Component {
       isLoading,
       invalidFields,
     } = this.props;
-    const { BackgroundComponent } = screenProps;
 
     return (
       <MenuContext style={localStyles.menuContainer}>
-        <BackgroundComponent style={localStyles.container}>
+        <TupaiaBackground style={localStyles.container}>
           <StatusBar barStyle="dark-content" />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -96,7 +101,7 @@ export class CreateUserPage extends React.Component {
             </ScrollView>
           </KeyboardAvoidingView>
           {isLoading ? renderLoadingOverlay() : null}
-        </BackgroundComponent>
+        </TupaiaBackground>
       </MenuContext>
     );
   }
@@ -106,7 +111,6 @@ CreateUserPage.propTypes = {
   onChangeNewUserField: PropTypes.func.isRequired,
   buttonText: PropTypes.string,
   submitIsEnabled: PropTypes.bool,
-  screenProps: PropTypes.object.isRequired,
   onSubmitFields: PropTypes.func.isRequired,
   formFieldValues: PropTypes.object.isRequired,
   errorMessage: PropTypes.string,

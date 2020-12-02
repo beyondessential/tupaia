@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { database } from '../database';
 import { QuestionScreen } from './QuestionScreen';
 import { SubmitScreen } from './SubmitScreen';
 import {
@@ -22,6 +23,7 @@ import {
   ProgressActionBar,
   Popup,
   StatusMessage,
+  TupaiaBackground,
   STATUS_MESSAGE_ERROR,
 } from '../widgets';
 import { SurveyTableOfContents } from './SurveyTableOfContents';
@@ -141,7 +143,6 @@ export class DumbSurveyScreen extends React.Component {
       onPressNext,
       onPressRepeat,
       onPressSubmit,
-      screenProps,
       surveyName,
       surveyProgress,
       isSubmitting,
@@ -150,11 +151,10 @@ export class DumbSurveyScreen extends React.Component {
       screenIndex,
       questions,
     } = this.props;
-    const { BackgroundComponent, database } = screenProps;
     const { isTableOfContentsVisible } = this.state;
 
     return (
-      <BackgroundComponent style={localStyles.container}>
+      <TupaiaBackground style={localStyles.container}>
         {[0, 1].map(index => {
           // Even screens will use the first component, odd will use the second
           const isCurrentContent = screenIndex % 2 === index;
@@ -229,7 +229,7 @@ export class DumbSurveyScreen extends React.Component {
           />
         </Popup>
         <KeyboardSpacer />
-      </BackgroundComponent>
+      </TupaiaBackground>
     );
   }
 }
@@ -241,7 +241,6 @@ DumbSurveyScreen.propTypes = {
   onPressRepeat: PropTypes.func,
   onSelectSurveyScreen: PropTypes.func,
   releaseScrollControl: PropTypes.func,
-  screenProps: PropTypes.object.isRequired,
   surveyName: PropTypes.string.isRequired,
   surveyProgress: PropTypes.number.isRequired,
   isSubmitting: PropTypes.bool,

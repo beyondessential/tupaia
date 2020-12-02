@@ -23,6 +23,7 @@ import {
   STATUS_MESSAGE_SUCCESS,
   STATUS_MESSAGE_ERROR,
   Text,
+  TupaiaBackground,
 } from '../widgets';
 
 import {
@@ -149,24 +150,23 @@ export class RequestCountryAccessPage extends React.Component {
 
   render() {
     const { countries } = this.state;
-    const { screenProps, errorMessage, isLoading, isComplete, formFieldValues } = this.props;
+    const { errorMessage, isLoading, isComplete, formFieldValues } = this.props;
 
-    const { BackgroundComponent } = screenProps;
     const restrictedCountries = countries;
 
     if (restrictedCountries.length === 0) {
       return (
         <MenuContext style={localStyles.menuContainer}>
-          <BackgroundComponent style={localStyles.container}>
+          <TupaiaBackground style={localStyles.container}>
             <View style={localStyles.noCountries}>{renderNoCountries()}</View>
-          </BackgroundComponent>
+          </TupaiaBackground>
         </MenuContext>
       );
     }
 
     return (
       <MenuContext style={localStyles.menuContainer}>
-        <BackgroundComponent style={localStyles.container}>
+        <TupaiaBackground style={localStyles.container}>
           <StatusBar barStyle="dark-content" />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -200,14 +200,13 @@ export class RequestCountryAccessPage extends React.Component {
             </ScrollView>
             {isLoading ? renderLoadingOverlay() : null}
           </KeyboardAvoidingView>
-        </BackgroundComponent>
+        </TupaiaBackground>
       </MenuContext>
     );
   }
 }
 
 RequestCountryAccessPage.propTypes = {
-  screenProps: PropTypes.object.isRequired,
   onFormFieldChange: PropTypes.func.isRequired,
   onSubmitFields: PropTypes.func.isRequired,
   getCountries: PropTypes.func.isRequired,

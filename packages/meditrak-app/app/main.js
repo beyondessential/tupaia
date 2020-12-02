@@ -13,16 +13,14 @@ import { ErrorHandler } from 'redux-persist-error-handler';
 import { createNavigationReducer, createReduxContainer } from 'react-navigation-redux-helpers';
 
 import { Meditrak } from './Meditrak';
-import { TupaiaApi } from './api';
-import { DatabaseAccess } from './database';
+import { api } from './api';
+import { database } from './database';
 import { reducers } from './reducers';
 import { createMiddleware } from './middleware';
 import { Navigator } from './navigation';
 import { analytics, CrashReporter } from './utilities';
 import { isBeta, betaBranch } from './version';
 
-const api = new TupaiaApi();
-const database = new DatabaseAccess(api);
 const crashReporter = new CrashReporter(analytics);
 
 const allReducers = {
@@ -78,7 +76,7 @@ const NavigationConnectedApp = connect(mapStateToProps)(NavigationReduxContainer
 const App = () => (
   <ErrorHandler persistedStore={persistedStore}>
     <Provider store={store}>
-      <Meditrak database={database}>
+      <Meditrak>
         <NavigationConnectedApp />
       </Meditrak>
     </Provider>

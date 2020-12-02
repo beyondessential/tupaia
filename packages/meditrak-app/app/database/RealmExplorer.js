@@ -5,9 +5,11 @@
 
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import PropTypes from 'prop-types';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
+
+import { database } from './singleton';
 import * as dataTypes from './types';
+import { TupaiaBackground } from '../widgets';
 
 const DATA_TYPES = Object.keys(dataTypes);
 
@@ -27,7 +29,6 @@ export class RealmExplorer extends React.Component {
     super(props);
     this.state = {
       columns: [],
-      rawData: null,
       data: [],
       selectedType: DATA_TYPES[0],
     };
@@ -44,7 +45,7 @@ export class RealmExplorer extends React.Component {
 
   setDataTypeDisplayed = type => {
     const databaseType = type === 'GeographicalArea' ? 'Area' : type;
-    const rawData = this.props.screenProps.database.objects(databaseType);
+    const rawData = database.objects(databaseType);
     const data = rawData.map(row => {
       const rowData = {};
       Object.keys(row).forEach(key => {
@@ -70,17 +71,14 @@ export class RealmExplorer extends React.Component {
     this.setState({
       selectedType: type,
       columns,
-      rawData,
       data,
     });
   };
 
   render() {
-    const { BackgroundComponent } = this.props.screenProps;
-
     return (
       <MenuContext style={localStyles.container}>
-        <BackgroundComponent style={localStyles.container}>
+        <TupaiaBackground style={localStyles.container}>
           <View style={localStyles.menuWrapper}>
             <Menu
               style={localStyles.menu}
@@ -120,7 +118,7 @@ export class RealmExplorer extends React.Component {
             )}
             keyExtractor={JSON.stringify}
           />
-        </BackgroundComponent>
+        </TupaiaBackground>
       </MenuContext>
     );
   }
@@ -164,7 +162,3 @@ const localStyles = StyleSheet.create({
     position: 'relative',
   },
 });
-
-RealmExplorer.propTypes = {
-  screenProps: PropTypes.object.isRequired,
-};

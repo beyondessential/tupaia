@@ -8,6 +8,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { database } from './database';
 import { MessageOverlay } from './messages/MessageOverlay';
 import { isBeta, betaBranch } from './version';
 import { NavigationMenuContainer } from './navigation';
@@ -17,7 +18,7 @@ import { requestLocationPermission } from './utilities/userLocation/permission';
 
 class MeditrakContainer extends React.Component {
   componentDidMount() {
-    this.props.database.enableSync(this.props.dispatch);
+    database.enableSync(this.props.dispatch);
 
     requestLocationPermission();
   }
@@ -42,7 +43,7 @@ class MeditrakContainer extends React.Component {
 }
 
 MeditrakContainer.propTypes = {
-  database: PropTypes.any.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 const localStyles = StyleSheet.create({
