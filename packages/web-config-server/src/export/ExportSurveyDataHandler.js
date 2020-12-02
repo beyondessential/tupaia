@@ -24,6 +24,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
       surveyCodes,
       startDate,
       endDate,
+      timeZone,
     } = this.query;
 
     const sessionCookieName = USER_SESSION_CONFIG.cookieName;
@@ -61,7 +62,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
       // Using array of arrays (aoa) input as transformations like mergeSurveys
       // increases the likelyhood of columns with same title (leads to missing keys in object json (aoo))
       const formattedData = surveyData.data.columns.length
-        ? formatMatrixDataForExcel(surveyData.data)
+        ? formatMatrixDataForExcel(surveyData.data, timeZone)
         : [];
 
       // Header and title

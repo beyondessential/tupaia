@@ -68,6 +68,7 @@ export async function exportSurveyResponses(req, res) {
     latest = false,
     startDate,
     endDate,
+    timeZone,
     viewId,
     easyReadingMode = false,
   } = req.query;
@@ -242,7 +243,7 @@ export async function exportSurveyResponses(req, res) {
       });
 
       // Add export date and origin
-      exportData = addExportedDateAndOriginAtTheSheetBottom(exportData);
+      exportData = addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);
 
       addDataToSheet(currentSurvey.name, exportData);
     }
