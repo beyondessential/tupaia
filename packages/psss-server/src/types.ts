@@ -36,7 +36,7 @@ export interface Credentials {
 
 export type QueryParameters = Record<string, string>;
 
-export type RequestBody = Record<string, unknown>;
+export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 interface FetchHeaders {
   Authorization: string;

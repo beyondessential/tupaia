@@ -6,4 +6,8 @@
 export { LoginRoute } from './LoginRoute';
 export { LogoutRoute } from './LogoutRoute';
 export { TestRoute } from './TestRoute';
-export { ConfirmedWeeklyReportRoute, ConfirmedCountryWeeklyReportRoute } from './reports';
+export {
+  ConfirmedWeeklyReportRoute,
+  ConfirmedCountryWeeklyReportRoute,
+  UpdateConfirmedCountryWeeklyReportRoute,
+} from './reports';

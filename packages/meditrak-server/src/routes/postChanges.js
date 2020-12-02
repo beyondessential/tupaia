@@ -18,6 +18,11 @@ import {
   isNumber,
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
+import {
+  translateEntityCodeToId,
+  translateSurveyCodeToId,
+  translateUserEmailToIdAndAssessorName,
+} from './utilities';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
@@ -37,6 +42,7 @@ export async function postChanges(req, res) {
     if (!ACTION_HANDLERS[action]) {
       throw new ValidationError(`${action} is not a supported change action`);
     }
+    await PAYLOAD_TRANSLATORS[action](models, payload);
     await PAYLOAD_VALIDATORS[action](models, payload);
     await ACTION_HANDLERS[action](models, payload);
   }
@@ -72,6 +78,18 @@ const PAYLOAD_VALIDATORS = {
   },
 };
 
+/**
+ * Contains functions that accept the payload, and translate the data so that the required fields are present
+ * for the relevant change action, returning true if successful and throwing an error if not
+ */
+const PAYLOAD_TRANSLATORS = {
+  [SUBMIT_SURVEY_RESPONSE]: async (models, payload) =>
+    translateSurveyResponseObject(models, payload.survey_response || payload), // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
+  [ADD_SURVEY_IMAGE]: () => {
+    // No translation required
+  },
+};
+
 async function validateSurveyResponseObject(models, surveyResponseObject) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
@@ -92,11 +110,38 @@ async function validateSurveyResponseObject(models, surveyResponseObject) {
   }
 }
 
+async function translateSurveyResponseObject(models, surveyResponseObject) {
+  if (!surveyResponseObject) {
+    throw new ValidationError('Payload must contain survey_response_object');
+  }
+  const translators = constructSurveyResponseTranslators(models);
+
+  await Promise.all(
+    Object.entries(surveyResponseObject).map(async ([field, value]) => {
+      if (translators[field]) {
+        const newFields = await translators[field](value);
+        Object.entries(newFields).forEach(
+          ([newField, newValue]) => (surveyResponseObject[newField] = newValue),
+        );
+        delete surveyResponseObject[field];
+      }
+    }),
+  );
+
+  return true;
+}
+
 const clinicOrEntityIdExist = (id, obj) => {
   if (!(obj.clinic_id || obj.entity_id)) {
     throw new Error('Either clinic_id or entity_id are required.');
   }
 };
+
+const constructSurveyResponseTranslators = models => ({
+  user_email: userEmail => translateUserEmailToIdAndAssessorName(models.user, userEmail),
+  entity_code: entityCode => translateEntityCodeToId(models.entity, entityCode),
+  survey_code: surveyCode => translateSurveyCodeToId(models.survey, surveyCode),
+});
 
 const constructEntitiesCreatedValidators = models => ({
   id: [hasContent, takesIdForm],

@@ -25,3 +25,8 @@ export {
 } from './translateQuestionDependentFields';
 export { translateExpression } from './translateExpression';
 export { getExpressionQuestionCodes } from './getExpressionQuestionCodes';
+export {
+  translateEntityCodeToId,
+  translateSurveyCodeToId,
+  translateUserEmailToIdAndAssessorName,
+} from './translateSurveyResponseFields';

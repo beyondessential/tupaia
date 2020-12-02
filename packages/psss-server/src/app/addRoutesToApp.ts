@@ -12,6 +12,7 @@ import {
   TestRoute,
   ConfirmedWeeklyReportRoute,
   ConfirmedCountryWeeklyReportRoute,
+  UpdateConfirmedCountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -56,6 +57,14 @@ export function addRoutesToApp(app: Express) {
    */
   app.post('/v1/login', handleWith(LoginRoute));
   app.post('/v1/logout', handleWith(LogoutRoute));
+
+  /**
+   * PUT routes
+   */
+  app.put(
+    '/v1/confirmedWeeklyReport/:organisationUnitCode',
+    handleWith(UpdateConfirmedCountryWeeklyReportRoute),
+  );
 
   app.use(handleError);
 }
