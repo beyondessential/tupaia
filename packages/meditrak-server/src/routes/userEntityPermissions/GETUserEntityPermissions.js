@@ -53,4 +53,14 @@ export class GETUserEntityPermissions extends GETHandler {
 
     return userEntityPermissions;
   }
+
+  async findRecordsViaParent(criteria, options) {
+    // Add additional filter by user id
+    const dbConditions = {
+      'user_entity_permission.user_id': this.parentRecordId,
+      ...criteria,
+    };
+
+    return this.findRecords(dbConditions, options);
+  }
 }
