@@ -3,11 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { useLiveTableQuery } from '../../api';
 import { AlertCell, SitesReportedCell, CountryNameLinkCell } from '../../components';
+import { getLatestViewableWeek } from '../../store';
+import { connect } from 'react-redux';
 
 const countriesTableColumns = [
   {
@@ -50,23 +53,30 @@ const countriesTableColumns = [
   },
 ];
 
-export const CountriesTable = () => {
-  const { data, isLoading, error, isFetching } = useLiveTableQuery('confirmedWeeklyReport', {
-    params: { startWeek: '2020W13' },
+export const CountriesTableComponent = ({ period }) => {
+  const { data, isLoading, error } = useLiveTableQuery('confirmedWeeklyReport', {
+    params: { startWeek: period },
   });
 
   return (
-    <>
-      <ExpandableTable
-        data={!isLoading ? data?.data?.results : []}
-        isLoading={isLoading}
-        errorMessage={error && error.message}
-        columns={countriesTableColumns}
-        Body={ExpandableTableBody}
-        rowIdKey="organisationUnit"
-        SubComponent={CountrySummaryTable}
-      />
-      {isFetching && '...'}
-    </>
+    <ExpandableTable
+      data={!isLoading ? data?.data?.results : []}
+      isLoading={isLoading}
+      errorMessage={error && error.message}
+      columns={countriesTableColumns}
+      Body={ExpandableTableBody}
+      rowIdKey="organisationUnit"
+      SubComponent={CountrySummaryTable}
+    />
   );
 };
+
+CountriesTableComponent.propTypes = {
+  period: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = state => ({
+  period: getLatestViewableWeek(state),
+});
+
+export const CountriesTable = connect(mapStateToProps)(CountriesTableComponent);

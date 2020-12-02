@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { getCurrentPeriod } from '@tupaia/utils';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { getISOWeek } from 'date-fns';
 import {
   CircleMeter,
   Card,
@@ -58,7 +58,10 @@ export const CountriesReportsView = () => (
       </Main>
       <Sidebar>
         <Card variant="outlined">
-          <CardHeader title="Current reports submitted" label={`Week ${getISOWeek(new Date())}`} />
+          <CardHeader
+            title="Current reports submitted"
+            label={`Week ${getCurrentPeriod('WEEK')}`}
+          />
           <StyledCardContent>
             <Typography variant="h3">11/22 Countries</Typography>
             <CircleMeter value={11} total={22} />
