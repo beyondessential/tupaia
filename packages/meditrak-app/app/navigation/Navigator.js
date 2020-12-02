@@ -15,7 +15,7 @@ import { CreateUserContainer } from '../user';
 import { HomeScreenContainer } from '../home';
 import { WebBrowserContainer } from '../web';
 import { ChangePasswordContainer } from '../changePassword';
-import { RealmExplorer } from '../database';
+import { RealmExplorer } from '../database/RealmExplorer';
 import { SurveyScreen, SurveysMenuScreen } from '../assessment';
 import {
   CREATE_ACCOUNT_SCREEN,
