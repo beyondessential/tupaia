@@ -45,10 +45,11 @@ export const generateLinkHeader = (resource, pageString, lastPage, originalQuery
 
 export const processColumnSelector = (models, unprocessedColumnSelector, baseRecordType) => {
   if (unprocessedColumnSelector.includes('.')) {
-    const [recordType, column] = unprocessedColumnSelector.split('.');
+    const [resource, column] = unprocessedColumnSelector.split('.');
+    const recordType = resourceToRecordType(resource);
     const model = models.getModelForDatabaseType(recordType);
     const customSelector = model.customColumnSelectors && model.customColumnSelectors[column];
-    const selector = `${resourceToRecordType(recordType)}.${column}`;
+    const selector = `${recordType}.${column}`;
     return customSelector ? customSelector(selector) : selector;
   }
   return `${baseRecordType}.${unprocessedColumnSelector}`;
@@ -95,7 +96,8 @@ export const getQueryOptionsForColumns = (
     .forEach(columnName => {
       // Split strings into the record type to join with and the column to select, e.g. if the column
       // is 'survey.name', split into 'survey' and 'name'
-      const recordType = columnName.split('.')[0];
+      const resource = columnName.split('.')[0];
+      const recordType = resourceToRecordType(resource);
       if (!recordTypesInQuery.has(recordType)) {
         const joinCondition = customJoinConditions[recordType] || [
           `${recordType}.id`,
