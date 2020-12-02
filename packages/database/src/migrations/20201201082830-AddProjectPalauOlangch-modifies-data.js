@@ -19,7 +19,7 @@ exports.setup = function (options, seedLink) {
 const COUNTRY_CODE = 'PW';
 const PROJECT_CODE = 'olangch_palau';
 const PROJECT_NAME = 'MoH Project Olangch';
-const DASHBOARDGROUP_NAME = 'General';
+const DASHBOARDGROUP_NAME = PROJECT_NAME;
 const DASHBOARDGROUP_CODE = 'OLANGCH_PALAU_Project';
 const DASHBOARDGROUP_COUNTRY_CODE = 'PW_Olangch_Country';
 const USER_GROUP = 'Donor';
@@ -43,7 +43,7 @@ exports.up = async function (db) {
     organisationLevel: 'Country',
     userGroup: USER_GROUP,
     organisationUnitCode: COUNTRY_CODE,
-    dashboardReports: '{23,19,8,26}',
+    dashboardReports: '{project_details}',
     name: DASHBOARDGROUP_NAME,
     code: DASHBOARDGROUP_COUNTRY_CODE,
     projectCodes: `{${PROJECT_CODE}}`,
