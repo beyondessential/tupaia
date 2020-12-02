@@ -3,5 +3,4 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-export { RealmExplorer } from './RealmExplorer';
 export { database } from './singleton';
