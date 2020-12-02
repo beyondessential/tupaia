@@ -18,7 +18,7 @@ exports.setup = function (options, seedLink) {
 
 const PROJECT_CODE = 'covid_samoa';
 const DASHBOARDGROUP_NAME = 'COVID-19 Samoa';
-const DASHBOARDGROUP_CODE = 'WS_Covid_Samoa';
+const DASHBOARDGROUP_CODE = 'COVID_SAMOA_Project';
 const DASHBOARDGROUP_COUNTRY_CODE = 'WS_Covid_Samoa_Country';
 const USER_GROUP = 'Donor';
 
