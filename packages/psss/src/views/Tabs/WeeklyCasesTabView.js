@@ -4,6 +4,7 @@
  */
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { getCurrentPeriod } from '@tupaia/utils';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -22,8 +23,8 @@ import {
 } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
 import { CountryTable, WeeklyReportsPanel } from '../../containers';
-import { getActiveWeekId, openWeeklyReportsPanel, setActiveWeek } from '../../store';
-import { useLiveTableQuery, useTableQuery } from '../../api';
+import { getActiveWeek, openWeeklyReportsPanel, setActiveWeek } from '../../store';
+import { useLiveTableQuery } from '../../api';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -61,28 +62,22 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
+const getCountryWeekData = (data, activeWeek) => data.find(c => c.period === activeWeek);
+
 export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const [page, setPage] = useState(0);
   const { countryCode } = useParams();
 
   // Todo: Get the latest week data when there is real data
   const latestWeek = data ? data.data[0] : [];
+  const latestPeriod = getCurrentPeriod('WEEK');
 
-  const {
-    isLoading,
-    error,
-    data,
-    order,
-    orderBy,
-    handleChangeOrderBy,
-    isFetching,
-  } = useLiveTableQuery(`confirmedWeeklyReport/${countryCode.toUpperCase()}`, {
-    params: { startWeek: '2020W14', endWeek: '2020W22' },
-  });
-
-  if (!isLoading) {
-    console.log('single country data', data?.data?.results);
-  }
+  const { isLoading, error, data, isFetching } = useLiveTableQuery(
+    `confirmedWeeklyReport/${countryCode.toUpperCase()}`,
+    {
+      params: { startWeek: '2020W14', endWeek: '2020W22' },
+    },
+  );
 
   return (
     <Container>
@@ -91,16 +86,11 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
           data={!isLoading ? data?.data?.results : []}
           isLoading={isLoading}
           errorMessage={error && error.message}
-          order={order}
-          orderBy={orderBy}
-          onChangeOrderBy={handleChangeOrderBy}
-          page={page}
-          setPage={setPage}
           rowIdKey="period"
         />
-        {isFetching && 'Fetching...'}
-        {!isLoading && activeWeek !== null && (
-          <WeeklyReportsPanel activeWeek={activeWeek} countryWeekData={data.data[activeWeek]} />
+        {isFetching && '...'}
+        {!isLoading && (
+          <WeeklyReportsPanel countryWeekData={getCountryWeekData(data.data.results, activeWeek)} />
         )}
       </Main>
       <Sidebar>
@@ -138,10 +128,14 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
 
 WeeklyCasesTabViewComponent.propTypes = {
   handleOpen: PropTypes.func.isRequired,
-  activeWeek: PropTypes.number.isRequired,
+  activeWeek: PropTypes.string,
 };
 
-const mapStateToProps = state => ({ activeWeek: getActiveWeekId(state) });
+WeeklyCasesTabViewComponent.defaultProps = {
+  activeWeek: null,
+};
+
+const mapStateToProps = state => ({ activeWeek: getActiveWeek(state) });
 
 const mapDispatchToProps = dispatch => ({
   handleOpen: id => {

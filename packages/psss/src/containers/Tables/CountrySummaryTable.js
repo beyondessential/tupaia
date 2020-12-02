@@ -7,22 +7,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
-import {
-  createTotalCasesAccessor,
-  AlertCell,
-  SitesReportedCell,
-  WeekAndDateCell,
-} from '../../components';
+import { AlertCell, SitesReportedCell, WeekAndDateCell } from '../../components';
 import { useLiveTableQuery, useTableQuery } from '../../api';
 
 const countrySummaryTableColumns = [
-  // {
-  //   title: 'Name',
-  //   key: 'name',
-  //   width: '30%', // must be same as CountriesTable name column to align
-  //   align: 'left',
-  //   CellComponent: WeekAndDateCell,
-  // },
+  {
+    title: 'Name',
+    key: 'name',
+    width: '30%', // must be same as CountriesTable name column to align
+    align: 'left',
+    CellComponent: WeekAndDateCell,
+  },
   {
     title: 'Sites Reported',
     key: 'sitesReported',
@@ -32,52 +27,37 @@ const countrySummaryTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    // accessor: createTotalCasesAccessor('afr'),
-    // CellComponent: AlertCell,
+    CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    // accessor: createTotalCasesAccessor('dia'),
-    // CellComponent: AlertCell,
+    CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    // accessor: createTotalCasesAccessor('ili'),
-    // CellComponent: AlertCell,
+    CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    // accessor: createTotalCasesAccessor('pf'),
-    // CellComponent: AlertCell,
+    CellComponent: AlertCell,
   },
   {
     title: 'DLI',
     key: 'DLI',
-    // accessor: createTotalCasesAccessor('dli'),
-    // CellComponent: AlertCell,
+    CellComponent: AlertCell,
   },
 ];
 
 export const CountrySummaryTable = React.memo(({ rowData }) => {
-  const {
-    isLoading,
-    error,
-    data,
-    order,
-    orderBy,
-    handleChangeOrderBy,
-  } = useTableQuery('country-weeks', { countryCode: rowData.countryCode });
-
-  const { data: d, isLoading: l } = useLiveTableQuery('confirmedWeeklyReport/TO', {
-    params: { startWeek: '2020W14', endWeek: '2020W22' },
-  });
-
-  if (!l) {
-    console.log('single country data', d);
-  }
+  const { isLoading, error, data } = useLiveTableQuery(
+    `confirmedWeeklyReport/${rowData.organisationUnit}`,
+    {
+      params: { startWeek: '2020W14', endWeek: '2020W22' },
+    },
+  );
 
   return (
     <>
@@ -86,13 +66,10 @@ export const CountrySummaryTable = React.memo(({ rowData }) => {
         columns={countrySummaryTableColumns}
         Header={false}
         Body={CondensedTableBody}
-        order={order}
-        orderBy={orderBy}
-        onChangeOrderBy={handleChangeOrderBy}
-        data={data ? data.data : 0}
-        count={data ? data.count : 0}
+        data={!isLoading ? data?.data?.results : []}
         isLoading={isLoading}
         errorMessage={error && error.message}
+        rowIdKey="period"
       />
     </>
   );
@@ -100,6 +77,6 @@ export const CountrySummaryTable = React.memo(({ rowData }) => {
 
 CountrySummaryTable.propTypes = {
   rowData: PropTypes.shape({
-    countryCode: PropTypes.string.isRequired,
+    organisationUnit: PropTypes.string.isRequired,
   }).isRequired,
 };

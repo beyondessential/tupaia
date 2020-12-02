@@ -86,6 +86,8 @@ export const VerifiableTableRowComponent = React.memo(props => {
   const { rowData, setVerifiedStatus, isVerified } = props;
   const hasWarning = rowData.isAlert;
 
+  console.log('row Data');
+
   const WarningButtonComponent = () => {
     if (isVerified) {
       return (

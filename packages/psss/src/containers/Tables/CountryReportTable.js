@@ -77,13 +77,13 @@ const TABLE_STATUSES = {
 };
 
 export const CountryReportTable = React.memo(
-  ({ tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
+  ({ tableStatus, setTableStatus, sitesReported, totalSites, activeWeek }) => {
     const { fields } = useContext(EditableTableContext);
     const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
     const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
     const { countryCode } = useParams();
 
-    const [saveReport] = useSaveCountryReport({ countryCode, weekNumber });
+    const [saveReport] = useSaveCountryReport({ countryCode, activeWeek });
 
     const handleSubmit = () => {
       setTableStatus(TABLE_STATUSES.SAVING);
@@ -176,6 +176,6 @@ CountryReportTable.propTypes = {
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
   sitesReported: PropTypes.number.isRequired,
-  weekNumber: PropTypes.number.isRequired,
+  activeWeek: PropTypes.string.isRequired,
   totalSites: PropTypes.number.isRequired,
 };

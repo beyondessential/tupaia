@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import { createReducer } from '../utils/createReducer';
 
 // actions
@@ -18,14 +19,14 @@ export const openWeeklyReportsPanel = () => dispatch => {
 
 export const closeWeeklyReportsPanel = () => ({ type: TOGGLE_PANEL, panelIsOpen: false });
 
-export const setActiveWeek = id => ({ type: SET_ACTIVE_WEEK, id });
+export const setActiveWeek = activeWeek => ({ type: SET_ACTIVE_WEEK, activeWeek });
 
 export const updateVerifiedStatus = id => ({ type: VERIFY_SYNDROME, id });
 
 // selectors
 export const checkWeeklyReportsPanelIsOpen = ({ weeklyReports }) => weeklyReports.panelIsOpen;
 
-export const getActiveWeekId = ({ weeklyReports }) => weeklyReports.id;
+export const getActiveWeek = ({ weeklyReports }) => weeklyReports.activeWeek;
 
 export const getVerifiedStatus = ({ weeklyReports }, syndromeId) =>
   weeklyReports.verifiedStatuses.includes(syndromeId);
@@ -39,14 +40,14 @@ export const getUnVerifiedSyndromes = ({ weeklyReports }, alerts) =>
 
 // reducer
 const defaultState = {
-  id: null, // Todo: update to be the latest week by default??
+  activeWeek: null,
   panelIsOpen: false,
   verifiedStatuses: [],
 };
 
 const actionHandlers = {
-  [SET_ACTIVE_WEEK]: ({ id }) => ({
-    id,
+  [SET_ACTIVE_WEEK]: ({ activeWeek }) => ({
+    activeWeek,
   }),
   [TOGGLE_PANEL]: ({ panelIsOpen }) => ({
     panelIsOpen,

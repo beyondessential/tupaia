@@ -103,7 +103,8 @@ export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) =>
   const { error, data } = useTableQuery('sites', options);
   const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
 
-  const showSites = sitesMetaData?.sites.length > 0 && data?.data?.length > 0;
+  const showSites = false;
+  // const showSites = sitesMetaData?.sites?.length > 0 && data?.data?.length > 0;
 
   return (
     <>

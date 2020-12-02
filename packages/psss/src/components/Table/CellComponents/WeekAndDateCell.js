@@ -6,6 +6,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
+import { convertPeriodStringToDateRange } from '@tupaia/utils';
 import styled from 'styled-components';
 import * as COLORS from '../../../constants/colors';
 
@@ -16,19 +17,18 @@ const CountrySummaryTitle = styled.div`
   padding-right: 0.625rem;
 `;
 
-export const WeekAndDateCell = ({ weekNumber, startDate, endDate }) => {
-  const start = format(startDate, 'LLL d');
-  const end = format(endDate, 'LLL d');
-  const year = format(endDate, 'yyyy');
+export const WeekAndDateCell = ({ period }) => {
+  const weekNumber = period.split('W').pop();
+  const dates = convertPeriodStringToDateRange(period);
+  const start = `${format(new Date(dates[0]), 'LLL d')}`;
+  const end = `${format(new Date(dates[1]), 'LLL d, yyyy')}`;
   return (
     <CountrySummaryTitle>
-      <strong>W{weekNumber}</strong> {`${start} - ${end}, ${year}`}
+      <strong>W{weekNumber}</strong> {`${start} - ${end}`}
     </CountrySummaryTitle>
   );
 };
 
 WeekAndDateCell.propTypes = {
-  weekNumber: PropTypes.number.isRequired,
-  startDate: PropTypes.instanceOf(Date).isRequired,
-  endDate: PropTypes.instanceOf(Date).isRequired,
+  period: PropTypes.string.isRequired,
 };
