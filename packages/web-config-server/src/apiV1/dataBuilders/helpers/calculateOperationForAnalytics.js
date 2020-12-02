@@ -53,15 +53,20 @@ const sumDataValues = (analytics, dataValues, filter = {}) => {
   return sum;
 };
 
-const countDataValues = (analytics, dataValues, filter, countCondition = '*') =>
+const countDataValues = (analytics, dataValues, filter, config) =>
   sumDataValues(
     analytics.map(a => ({
       ...a,
-      value: checkValueSatisfiesCondition(a.value, countCondition) ? 1 : 0,
+      value: checkValueSatisfiesCondition(a.value, config?.countCondition || '*') ? 1 : 0,
     })),
     dataValues,
     filter,
   );
+
+const AGGREGATIONS = {
+  SUM: sumDataValues,
+  COUNT: countDataValues,
+};
 
 const performArithmeticOperation = (analytics, arithmeticConfig) => {
   const { operator, operands: operandConfigs, filter } = arithmeticConfig;
@@ -70,8 +75,12 @@ const performArithmeticOperation = (analytics, arithmeticConfig) => {
     throw new Error(`Must have 2 or more operands`);
   }
 
-  const operands = operandConfigs.map(operandConfig =>
-    countDataValues(analytics, operandConfig.dataValues, filter, operandConfig.countCondition),
+  const operands = operandConfigs.map(
+    ({ dataValues, aggregationType = 'SUM', aggregationConfig }) => {
+      if (aggregationType && !AGGREGATIONS[aggregationType])
+        throw new Error(`aggregation not found: ${aggregationType}`);
+      return AGGREGATIONS[aggregationType](analytics, dataValues, filter, aggregationConfig);
+    },
   );
 
   let result = operands[0];
@@ -172,7 +181,6 @@ const OPERATORS = {
       ? `${numerator} / ${divisor} = ${Math.floor(divideValues(numerator, divisor) * 100)}%`
       : NO_DATA_AVAILABLE,
   SUBTRACT: subtractValues,
-  COUNT: countDataValues,
   CHECK_CONDITION: checkCondition,
   GROUP: valueToGroup,
   FORMAT: formatString,
@@ -182,7 +190,7 @@ const OPERATORS = {
   STATIC: staticValueOrNoData,
 };
 
-const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'GROUP'];
+const SINGLE_ANALYTIC_OPERATORS = ['CHECK_CONDITION', 'FORMAT', 'GROUP'];
 
 const ARITHMETIC_OPERATORS = ['DIVIDE', 'SUBTRACT', 'FRACTION_AND_PERCENTAGE'];
 

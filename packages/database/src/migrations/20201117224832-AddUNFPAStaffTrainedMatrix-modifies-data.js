@@ -15,45 +15,7 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
-/**
- * 
- * 
-  "dataBuilders": {
-    "countFacilitiesSurveyed": {
-      "dataBuilder": "sumValuesPerQuarterByOrgUnit",
-      "dataBuilderConfig": {
-        "dataElementCodes": [
-          "RHS1UNFPA03"
-        ],
-        "entityAggregation": {
-          "aggregationType": "COUNT_PER_PERIOD_PER_ORG_GROUP",
-          "dataSourceEntityType": "facility",
-          "aggregationEntityType": "country"
-        }
-      }
-    },
-    "sumFacilitiesWithServicesAvailable": {
-      "dataBuilder": "sumValuesPerQuarterByOrgUnit",
-      "dataBuilderConfig": {
-        "dataElementCodes": [
-          "RHS4UNFPA809"
-        ],
-        "entityAggregation": {
-          "aggregationType": "COUNT_PER_PERIOD_PER_ORG_GROUP",
-          "aggregationConfig": {
-            "condition": {
-              "value": 0,
-              "operator": ">"
-            }
-          },
-          "dataSourceEntityType": "facility",
-          "aggregationEntityType": "country"
-        }
-      }
-    }
-  }
-}
- */
+
 const dataElementToName = {
   RHS4UNFPA809: 'Family Planning',
   RHS3UNFPA5410: 'Delivery',
@@ -132,7 +94,6 @@ const DATA_BUILDER_CONFIG = {
     dataSourceEntityType: 'facility',
     aggregationEntityType: 'country',
   },
-  aggregationType: 'MOST_RECENT',
 };
 
 const VIEW_JSON = {

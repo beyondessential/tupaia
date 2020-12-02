@@ -20,10 +20,6 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
         ),
       ),
     );
-    console.log(
-      '.....................................................................................................................................................................................................................................',
-      [...new Set(dataElementCodes)],
-    );
     return [...new Set(dataElementCodes)];
   }
 
