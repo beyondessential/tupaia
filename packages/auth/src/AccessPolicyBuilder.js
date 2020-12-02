@@ -14,6 +14,10 @@ export class AccessPolicyBuilder {
     this.setupCacheInvalidation();
   }
 
+  resetCaches() {
+    this.cachedPolicyPromises = {};
+  }
+
   resetCachesForUser(userId) {
     this.cachedPolicyPromises[getCacheKey(userId, true)] = null; // legacy
     this.cachedPolicyPromises[getCacheKey(userId, false)] = null; // modern
@@ -34,6 +38,7 @@ export class AccessPolicyBuilder {
         }
       },
     );
+    this.models.permissionGroup.addChangeHandler(() => this.resetCaches());
   }
 
   async getPolicyForUser(userId, useLegacyFormat = false) {
