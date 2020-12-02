@@ -89,9 +89,9 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
           rowIdKey="period"
         />
         {isFetching && '...'}
-        {!isLoading && (
-          <WeeklyReportsPanel countryWeekData={getCountryWeekData(data.data.results, activeWeek)} />
-        )}
+        {/*{!isLoading && (*/}
+        {/*  <WeeklyReportsPanel countryWeekData={getCountryWeekData(data.data.results, activeWeek)} />*/}
+        {/*)}*/}
       </Main>
       <Sidebar>
         <Card variant="outlined">
