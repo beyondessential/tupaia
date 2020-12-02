@@ -25,9 +25,7 @@ export const exportChartHandler = async (req, res) => {
     timeZone,
     dataElementHeader,
   } = chartConfig;
-
-  console.log("exportChartHandler");
-  console.log(timeZone);
+  
   const queryParameters = {
     viewId,
     organisationUnitCode,
