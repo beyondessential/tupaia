@@ -30,17 +30,13 @@ interface ReportsRequestBody {
   testConfig?: ReportConfig;
   testData?: Record<string, string | number>[];
 }
-interface ReportsRequestHeaders {
-  Authorization: string;
-}
 
 export interface ReportsRequest<
   P = FetchReportParams,
   ResBody = unknown,
   ReqBody = ReportsRequestBody,
-  ReqQuery = FetchReportQuery,
-  Headers = ReportsRequestHeaders,
-> extends Request<P, ResBody, ReqBody, ReqQuery, Headers> {
+  ReqQuery = FetchReportQuery
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
   accessPolicy: AccessPolicy;
   authenticator: Authenticator;
   database: TupaiaDatabase;

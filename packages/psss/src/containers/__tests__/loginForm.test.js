@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { screen, fireEvent, act } from '@testing-library/react';
-import { API } from '../../api';
+import { loginUser } from '../../api';
 import { LoginForm } from '../Forms';
 import { render } from '../../utils/test-utils';
 
@@ -17,7 +17,7 @@ describe('login form', () => {
   };
 
   it('submits a login form with email and password field', async () => {
-    API.reauthenticate.mockResolvedValueOnce({ user: { name: 'tupaia' } });
+    loginUser.mockResolvedValueOnce({ user: { name: 'tupaia' } });
     render(<LoginForm />);
 
     const emailInput = screen.getByPlaceholderText(/email/i);
@@ -31,13 +31,13 @@ describe('login form', () => {
       await fireEvent.click(submitButton);
     });
 
-    expect(API.reauthenticate).toHaveBeenCalledWith({
+    expect(loginUser).toHaveBeenCalledWith({
       emailAddress: testData.email,
       password: testData.password,
       deviceName: window.navigator.userAgent,
     });
 
-    expect(API.reauthenticate).toHaveBeenCalledTimes(1);
-    API.reauthenticate.mockReset();
+    expect(loginUser).toHaveBeenCalledTimes(1);
+    loginUser.mockReset();
   });
 });

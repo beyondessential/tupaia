@@ -21,7 +21,7 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import { useForm, Controller } from 'react-hook-form';
 import { FlexSpaceBetween, ComingSoon } from '../../components';
-import { connectApi } from '../../api';
+import { createExport } from '../../api';
 
 // Todo replace with data from api
 const countries = [
@@ -104,7 +104,7 @@ const SuccessText = styled(Typography)`
 
 const getLabelForValue = value => countries.find(option => option.value === value).label;
 
-export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, createExport }) => {
+export const ExportModal = ({ renderCustomFields, isOpen, handleClose }) => {
   const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
@@ -203,15 +203,8 @@ export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, 
   );
 };
 
-ExportModalComponent.propTypes = {
+ExportModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  createExport: PropTypes.func.isRequired,
   renderCustomFields: PropTypes.func.isRequired,
 };
-
-const mapApiToProps = api => ({
-  createExport: () => api.post(),
-});
-
-export const ExportModal = connectApi(mapApiToProps)(ExportModalComponent);
