@@ -18,6 +18,26 @@ const fillData = (data, period, numberOfWeeks) => {
   });
 };
 
+export const useConfirmedWeeklyReport = (period, countryCodes) => {
+  const query = useLiveTableQuery('confirmedWeeklyReport', {
+    params: { startWeek: period },
+  });
+
+  const data = countryCodes.map(code => {
+    const report = query.data.find(report => report.organisationUnit === code.toUpperCase());
+    return report
+      ? report
+      : {
+          organisationUnit: code.toUpperCase(),
+        };
+  });
+
+  return {
+    ...query,
+    data,
+  };
+};
+
 export const useCountryConfirmedWeeklyReport = (orgUnit, period, numberOfWeeks) => {
   const startWeek = subtractPeriod(period, numberOfWeeks - 1);
 

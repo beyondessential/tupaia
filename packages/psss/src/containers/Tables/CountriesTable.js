@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
-import { useLiveTableQuery } from '../../api';
+import { useConfirmedWeeklyReport } from '../../api';
 import { AlertCell, SitesReportedCell, CountryNameLinkCell } from '../../components';
 import { getLatestViewableWeek, getEntitiesAllowed } from '../../store';
 import { connect } from 'react-redux';
@@ -52,26 +52,6 @@ const countriesTableColumns = [
     CellComponent: AlertCell,
   },
 ];
-
-const useConfirmedWeeklyReport = (period, countryCodes) => {
-  const query = useLiveTableQuery('confirmedWeeklyReport', {
-    params: { startWeek: period },
-  });
-
-  const data = countryCodes.map(code => {
-    const report = query.data.find(report => report.organisationUnit === code.toUpperCase());
-    return report
-      ? report
-      : {
-          organisationUnit: code.toUpperCase(),
-        };
-  });
-
-  return {
-    ...query,
-    data,
-  };
-};
 
 export const CountriesTableComponent = ({ period, countryCodes }) => {
   const { data, isLoading, error } = useConfirmedWeeklyReport(period, countryCodes);
