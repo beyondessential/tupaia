@@ -4,8 +4,7 @@
  */
 import React from 'react';
 import { Platform } from 'react-native';
-import { StackNavigator } from 'react-navigation';
-import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
+import { createStackNavigator } from 'react-navigation';
 
 import { HeaderToolbar } from './HeaderToolbar';
 import { HeaderLeftButton } from './HeaderLeftButton';
@@ -39,12 +38,12 @@ const INITIAL_SCREEN_NAME = 'Login';
 
 const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
-  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: { header: false } },
+  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: () => ({ headerMode: 'none' }) },
   [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
-  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: { header: false } },
+  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: () => ({ headerMode: 'none' }) },
   [CREATE_ACCOUNT_SCREEN]: {
     screen: CreateUserContainer,
-    navigationOptions: { headerRight: null },
+    navigationOptions: () => ({ headerRight: null }),
   },
   [HOME_SCREEN]: { screen: HomeScreenContainer },
   [SYNC_SCREEN]: { screen: SyncContainer },
@@ -70,7 +69,6 @@ const isInvisibleHeader = navigation =>
 const config = {
   initialRouteName: INITIAL_SCREEN_NAME,
   initialRouteParams: { surveyScreenIndex: 0 },
-  cardStyle: { backgroundColor: 'transparent' },
   headerMode: 'float',
   navigationOptions: ({ navigation }) => ({
     headerLeft: HeaderLeftButton,
@@ -93,24 +91,6 @@ const config = {
     },
     headerRight: <HeaderToolbar />,
   }),
-  transitionConfig: () => ({
-    screenInterpolator: sceneProps => {
-      const { scenes, index: indexToNavigateTo } = sceneProps;
-      const lastScene = scenes[scenes.length - 1];
-      const { route } = lastScene;
-      const params = route.params || {};
-      const transition = lastScene.index >= indexToNavigateTo - 1 ? params.transition : 'default';
-
-      switch (transition) {
-        case 'SurveyTransition':
-        case 'SyncTransition':
-          return CardStackStyleInterpolator.forVertical(sceneProps);
-
-        default:
-          return CardStackStyleInterpolator.forHorizontal(sceneProps);
-      }
-    },
-  }),
 };
 
-export const Navigator = StackNavigator(routes, config);
+export const Navigator = createStackNavigator(routes, config);
