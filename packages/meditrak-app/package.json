@@ -12,8 +12,8 @@
   "main": "app/main.js",
   "workspaces": {
     "nohoist": [
-      "@react-native-community/async-storage",
-      "@react-native-community/async-storage/**",
+      "@react-native-async-storage/async-storage",
+      "@react-native-async-storage/async-storage/**",
       "@react-native-community/geolocation",
       "@react-native-community/geolocation/**",
       "@react-native-community/masked-view",
@@ -99,7 +99,7 @@
     "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
-    "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/datetimepicker": "^3.0.6",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "0.1.10",
