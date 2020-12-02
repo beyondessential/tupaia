@@ -125,7 +125,7 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey } from './utils';
+import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getTimeZone } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -719,6 +719,7 @@ function* fetchViewData(parameters, errorHandler) {
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
+    timeZone: getTimeZone(),
     ...extraUrlParameters,
   };
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
@@ -989,15 +990,6 @@ function* findUserLoggedIn(action) {
 
 function* watchFindUserCurrentLoggedIn() {
   yield takeLatest(FIND_USER_LOGGEDIN, findUserLoggedIn);
-}
-
-function getTimeZone() {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-  } catch (e) {
-    // Time zone not supported in this browser.
-    return 'Australia/Melbourne';
-  }
 }
 
 /**

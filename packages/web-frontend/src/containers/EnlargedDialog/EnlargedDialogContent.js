@@ -52,7 +52,7 @@ const ExportDate = ({ startDate, endDate }) => {
       {startDate &&
         endDate &&
         `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
-      Exported {date}
+      Exported on {date} from Tupaia.org
     </ExportDateText>
   );
 };

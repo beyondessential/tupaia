@@ -16,6 +16,8 @@ import {
 } from '../../actions';
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
+import { EnlargedDialogContent } from './EnlargedDialogContent';
+import { getTimeZone, isMobile, sleep, stringToFilename } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -23,9 +25,7 @@ import {
   selectCurrentExpandedDates,
 } from '../../selectors';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { isMobile, sleep, stringToFilename } from '../../utils';
 import { exportToExcel, exportToPng } from '../../utils/exports';
-import { EnlargedDialogContent } from './EnlargedDialogContent';
 
 const Loader = styled.div`
   display: block;
@@ -176,6 +176,7 @@ const EnlargedDialogComponent = ({
           organisationUnitName,
           startDate,
           endDate,
+          timeZone: getTimeZone(),
           filename,
         });
       } else {
