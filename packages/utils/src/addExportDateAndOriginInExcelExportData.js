@@ -13,9 +13,6 @@ import moment from 'moment-timezone';
 export const addExportedDateAndOriginAtTheSheetBottom = (exportData, timeZone) => {
   // Add export date and origin
   // Add two [] for spacing between the table and the export date
-  console.log(timeZone);
-  if (!timeZone) throw new Error();
-
   return [
     ...exportData,
     [],

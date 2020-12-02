@@ -13,6 +13,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       latest,
       startDate,
       endDate,
+      timeZone,
       viewId,
       easyReadingMode,
     } = this.query;
@@ -22,6 +23,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       surveyCodes,
       startDate,
       endDate,
+      timeZone,
       viewId,
       easyReadingMode,
     };

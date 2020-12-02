@@ -212,7 +212,7 @@ export async function exportSurveyResponses(req, res) {
 
       // Add title
       if (reportName) {
-        exportData.unshift([`${reportName}, ${country.name}`]);
+        exportData.unshift([`${reportName} - ${currentSurvey.name}, ${country.name}`]);
       }
 
       // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
