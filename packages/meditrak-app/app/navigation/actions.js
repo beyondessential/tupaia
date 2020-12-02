@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { Alert } from 'react-native';
 
 import {
@@ -35,13 +35,13 @@ export const goBack = (shouldAlertIfInSurvey = true) => (dispatch, getState) => 
 };
 
 export const resetToHome = () =>
-  NavigationActions.reset({
+  StackActions.reset({
     index: 0,
     actions: [NavigationActions.navigate({ routeName: HOME_SCREEN })],
   });
 
 export const resetToLogin = () =>
-  NavigationActions.reset({
+  StackActions.reset({
     index: 0,
     actions: [
       NavigationActions.navigate({
@@ -86,7 +86,7 @@ export const openSurveyGroup = (surveyGroupId, surveyGroupName) =>
 
 export const resetToWelcomeScreen = () => dispatch => {
   dispatch(
-    NavigationActions.reset({
+    StackActions.reset({
       index: 0,
       actions: [
         NavigationActions.navigate({
@@ -172,7 +172,7 @@ export const replaceCurrentScreen = (routeName, title, params = {}) => (dispatch
   const { routes } = nav;
   const currentRoute = routes[nav.index];
   dispatch(
-    NavigationActions.replace({
+    StackActions.replace({
       key: currentRoute.key,
       routeName,
       params,
