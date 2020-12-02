@@ -6,13 +6,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
-import { convertPeriodStringToDateRange } from '@tupaia/utils';
 import { ExpandableTable } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
 import { AlertCell, SitesReportedCell } from '../../components';
 
 const CountryWeekTitle = styled.div`
@@ -29,21 +28,15 @@ const CountryWeekSubTitle = styled.div`
   line-height: 1rem;
 `;
 
-const NameCell = ({ period }) => {
-  const weekNumber = period.split('W').pop();
-  const dates = convertPeriodStringToDateRange(period);
-  const start = `${format(new Date(dates[0]), 'LLL d')}`;
-  const end = `${format(new Date(dates[1]), 'LLL d, yyyy')}`;
-  return (
-    <>
-      <CountryWeekTitle>{`Week ${weekNumber}`}</CountryWeekTitle>
-      <CountryWeekSubTitle>{`${start} - ${end}`}</CountryWeekSubTitle>
-    </>
-  );
-};
+const NameCell = ({ period }) => (
+  <>
+    <CountryWeekTitle>{`Week ${getWeekNumberByPeriod(period)}`}</CountryWeekTitle>
+    <CountryWeekSubTitle>{getDisplayDatesByPeriod(period)}</CountryWeekSubTitle>
+  </>
+);
 
 NameCell.propTypes = {
-  period: PropTypes.string.isRequired, // eg. 2020W32
+  period: PropTypes.string.isRequired,
 };
 
 const Status = styled.div`

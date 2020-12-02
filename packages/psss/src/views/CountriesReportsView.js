@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import { getISOWeek } from 'date-fns';
 import {
   CircleMeter,
   Card,
@@ -57,7 +58,7 @@ export const CountriesReportsView = () => (
       </Main>
       <Sidebar>
         <Card variant="outlined">
-          <CardHeader title="Current reports submitted" label="Week 10" />
+          <CardHeader title="Current reports submitted" label={`Week ${getISOWeek(new Date())}`} />
           <StyledCardContent>
             <Typography variant="h3">11/22 Countries</Typography>
             <CircleMeter value={11} total={22} />
