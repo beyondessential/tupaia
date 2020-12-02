@@ -54,11 +54,13 @@ const countrySummaryTableColumns = [
   },
 ];
 
-export const CountrySummaryTableComponent = React.memo(({ rowData, startPeriod, endPeriod }) => {
+const NUMBER_OF_WEEKS = 8;
+
+export const CountrySummaryTableComponent = React.memo(({ rowData, period }) => {
   const { isLoading, error, data } = useCountryConfirmedWeeklyReport(
     rowData.organisationUnit,
-    startPeriod,
-    endPeriod,
+    period,
+    NUMBER_OF_WEEKS,
   );
 
   return (
@@ -86,10 +88,8 @@ CountrySummaryTableComponent.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const period = getLatestViewableWeek(state);
   return {
-    startPeriod: subtractPeriod(period, 7),
-    endPeriod: getLatestViewableWeek(state),
+    period: getLatestViewableWeek(state),
   };
 };
 

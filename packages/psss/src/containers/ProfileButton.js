@@ -10,7 +10,8 @@ import { getCurrentUser, logout } from '../store';
 
 const ProfileLinksComponent = ({ onLogout }) => (
   <>
-    <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
+    {/* Removed for MVP */}
+    {/*<ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>*/}
     <ProfileButtonItem button onClick={onLogout}>
       Logout
     </ProfileButtonItem>

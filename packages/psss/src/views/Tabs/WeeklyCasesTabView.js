@@ -12,8 +12,8 @@ import { Button, WarningCloud, Virus } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
 import { CountryTable, UpcomingReportCard, WeeklyReportsPanel } from '../../containers';
 import { getActiveWeek, openWeeklyReportsPanel, setActiveWeek } from '../../store';
-import { useLiveTableQuery } from '../../api';
-import { useCountryConfirmedWeeklyReport } from '../../api';
+import { getCurrentPeriod } from '@tupaia/utils';
+import { useCountryWeeklyReport } from '../../api';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -53,14 +53,16 @@ const DateSubtitle = styled(Typography)`
 
 const getCountryWeekData = (data, activeWeek) => data.find(c => c.period === activeWeek);
 
+const NUMBER_OF_WEEKS = 8;
+
 export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const { countryCode } = useParams();
+  const defaultPeriod = getCurrentPeriod('WEEK');
 
-  const { isLoading, error, data, isFetching } = useLiveTableQuery(
-    `confirmedWeeklyReport/${countryCode.toUpperCase()}`,
-    {
-      params: { startWeek: '2020W14', endWeek: '2020W22' },
-    },
+  const { isLoading, error, data } = useCountryWeeklyReport(
+    countryCode.toUpperCase(),
+    defaultPeriod,
+    NUMBER_OF_WEEKS,
   );
 
   return (
@@ -72,7 +74,6 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
           errorMessage={error && error.message}
           rowIdKey="period"
         />
-        {isFetching && '...'}
         {/*{!isLoading && (*/}
         {/*  <WeeklyReportsPanel countryWeekData={getCountryWeekData(data.data.results, activeWeek)} />*/}
         {/*)}*/}
