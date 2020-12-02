@@ -4,10 +4,10 @@
  */
 import 'react-native-gesture-handler';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { createStore, compose, connect } from 'redux';
 import { AppRegistry } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Provider, connect } from 'react-redux';
+import { createStore, compose } from 'redux';
 import { persistStore, persistCombineReducers, createTransform } from 'redux-persist';
 import { ErrorHandler } from 'redux-persist-error-handler';
 import { createNavigationReducer, createReduxContainer } from 'react-navigation-redux-helpers';
