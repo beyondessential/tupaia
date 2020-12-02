@@ -4,6 +4,7 @@
  */
 
 import nodeFetch from 'node-fetch';
+import { CustomError } from './errors';
 
 const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
@@ -71,6 +72,14 @@ export const asynchronouslyFetchValuesForObject = async objectSpecification => {
   return returnObject;
 };
 
+const throwCustomError = (status, errorMessage) => {
+  const statusCode = status || 500;
+  throw new CustomError({
+    responseStatus: statusCode,
+    responseText: errorMessage,
+  });
+};
+
 export const verifyResponseStatus = async response => {
   if (!response.ok) {
     let responseJson;
@@ -80,14 +89,14 @@ export const verifyResponseStatus = async response => {
       throw new Error(`Network error ${response.status}`);
     }
     if (
-      responseJson.status &&
-      (responseJson.status < 200 || responseJson.status >= 300) &&
+      response.status &&
+      (response.status < 200 || response.status >= 300) &&
       !responseJson.error
     ) {
-      throw new Error(responseJson.message);
+      throwCustomError(response.status, responseJson.message);
     }
     if (responseJson.error) {
-      throw new Error(responseJson.error);
+      throwCustomError(response.status, responseJson.error);
     }
   }
 };
