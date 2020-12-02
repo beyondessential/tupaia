@@ -20,7 +20,7 @@ const COUNTRY_CODE = 'PW';
 const PROJECT_CODE = 'olangch_palau';
 const PROJECT_NAME = 'MoH Project Olangch';
 const DASHBOARDGROUP_NAME = 'General';
-const DASHBOARDGROUP_CODE = 'PW_Olangch';
+const DASHBOARDGROUP_CODE = 'OLANGCH_PALAU_Project';
 const DASHBOARDGROUP_COUNTRY_CODE = 'PW_Olangch_Country';
 const USER_GROUP = 'Donor';
 
