@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-
+import 'react-native-gesture-handler';
 import React from 'react';
 import { AppRegistry, AsyncStorage } from 'react-native';
 import { Provider } from 'react-redux';
