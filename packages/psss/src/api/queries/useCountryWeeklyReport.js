@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { useLiveTableQuery } from '../useTableQuery';
+import { useTableData } from './useTableData';
 import { getDaysRemaining, subtractPeriod } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 
@@ -57,11 +57,11 @@ const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWe
 export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
   const startWeek = subtractPeriod(period, numberOfWeeks);
 
-  const confirmedQuery = useLiveTableQuery(`confirmedWeeklyReport/${orgUnit}`, {
+  const confirmedQuery = useTableData(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek: period },
   });
 
-  const query = useLiveTableQuery(`weeklyReport/${orgUnit}`, {
+  const query = useTableData(`weeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek: period },
   });
 

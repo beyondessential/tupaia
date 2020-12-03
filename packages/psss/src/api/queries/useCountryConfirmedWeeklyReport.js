@@ -4,17 +4,17 @@
  */
 
 import { subtractPeriod } from '../../utils';
-import { useLiveTableQuery } from '../useTableQuery';
+import { useTableData } from './useTableData';
 
 const fillWeeklyData = (data, period, numberOfWeeks) => {
   return [...Array(numberOfWeeks)].map((code, index) => {
     const newPeriod = subtractPeriod(period, index);
-    const report = data.find(report => report.period === newPeriod);
-    return report
-      ? report
-      : {
-          period: newPeriod,
-        };
+    const report = data.find(r => r.period === newPeriod);
+    return (
+      report || {
+        period: newPeriod,
+      }
+    );
   });
 };
 
@@ -22,7 +22,7 @@ export const useCountryConfirmedWeeklyReport = (orgUnit, period, numberOfWeeks) 
   const endWeek = subtractPeriod(period, 1);
   const startWeek = subtractPeriod(period, numberOfWeeks);
 
-  const query = useLiveTableQuery(`confirmedWeeklyReport/${orgUnit}`, {
+  const query = useTableData(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek },
   });
 
