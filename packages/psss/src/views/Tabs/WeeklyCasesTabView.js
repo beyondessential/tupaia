@@ -58,7 +58,6 @@ const NUMBER_OF_WEEKS = 10;
 export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const { countryCode } = useParams();
   const defaultPeriod = getCurrentPeriod('WEEK');
-  // const defaultPeriod = '2020W25';
 
   const { isLoading, error, data } = useCountryWeeklyReport(
     countryCode.toUpperCase(),
@@ -76,9 +75,10 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
           rowIdKey="period"
         />
         {/*{!isLoading && (*/}
-        {/*  <WeeklyReportsPanel countryWeekData={getCountryWeekData(data.data.results, activeWeek)} />*/}
+        {/*  <WeeklyReportsPanel countryWeekData={getCountryWeekData(data, activeWeek)} />*/}
         {/*)}*/}
       </Main>
+
       <Sidebar>
         <UpcomingReportCard />
         {/* Temporarily removed for MVP release. Please do not delete */}
