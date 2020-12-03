@@ -5,16 +5,15 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { getCurrentPeriod } from '@tupaia/utils';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
-import { Button, WarningCloud, Virus, TablePaginator } from '@tupaia/ui-components';
+import { Button, WarningCloud, Virus } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
 import { CountryTable, UpcomingReportCard, WeeklyReportsPanel } from '../../containers';
 import { getActiveWeek, openWeeklyReportsPanel, setActiveWeek } from '../../store';
+import { getCurrentPeriod } from '@tupaia/utils';
 import { useCountryWeeklyReport } from '../../api';
-import { subtractPeriod } from '../../utils';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -54,21 +53,16 @@ const DateSubtitle = styled(Typography)`
 
 const getCountryWeekData = (data, activeWeek) => data.find(c => c.period === activeWeek);
 
-const DEFAULT_NUMBER_OF_WEEKS = 10;
+const NUMBER_OF_WEEKS = 10;
 
 export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const { countryCode } = useParams();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(DEFAULT_NUMBER_OF_WEEKS);
-
   const defaultPeriod = getCurrentPeriod('WEEK');
 
-  const period = subtractPeriod(defaultPeriod, page * rowsPerPage);
-
-  const { isLoading, error, data, isFetching } = useCountryWeeklyReport(
+  const { isLoading, error, data } = useCountryWeeklyReport(
     countryCode.toUpperCase(),
-    period,
-    rowsPerPage,
+    defaultPeriod,
+    NUMBER_OF_WEEKS,
   );
 
   return (
@@ -79,18 +73,6 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
           isLoading={isLoading}
           errorMessage={error && error.message}
           rowIdKey="period"
-          isFetching={isFetching}
-          Paginator={props => (
-            <TablePaginator
-              {...props}
-              disabled={isFetching}
-              rowsPerPage={rowsPerPage}
-              onChangeRowsPerPage={setRowsPerPage}
-              onChangePage={p => setPage(p)}
-              page={page}
-              count={120}
-            />
-          )}
         />
         {/*{!isLoading && (*/}
         {/*  <WeeklyReportsPanel countryWeekData={getCountryWeekData(data, activeWeek)} />*/}

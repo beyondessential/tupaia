@@ -14,7 +14,6 @@ import { TableMessageProvider } from './TableMessageProvider';
 import { tableColumnShape } from './tableColumnShape';
 
 const StyledTable = styled(MuiTable)`
-  position: relative;
   border-collapse: unset;
   table-layout: fixed;
 `;
@@ -40,11 +39,10 @@ export const Table = React.memo(
     page,
     rowsPerPage,
     rowIdKey,
-    isFetching,
     className,
   }) => (
     <StyledTable className={className}>
-      {Header && <Header {...{ isFetching, columns, order, orderBy, onChangeOrderBy }} />}
+      {Header && <Header {...{ columns, order, orderBy, onChangeOrderBy }} />}
       <TableMessageProvider
         errorMessage={errorMessage}
         isLoading={isLoading}
@@ -58,7 +56,6 @@ export const Table = React.memo(
             columns,
             errorMessage,
             isLoading,
-            isFetching,
             noDataMessage,
             SubComponent,
             rowIdKey,
@@ -92,7 +89,6 @@ Table.propTypes = {
   errorMessage: PropTypes.string,
   noDataMessage: PropTypes.string,
   isLoading: PropTypes.bool,
-  isFetching: PropTypes.bool,
   count: PropTypes.number,
   onChangePage: PropTypes.func,
   onRowClick: PropTypes.func,
@@ -115,7 +111,6 @@ Table.defaultProps = {
   noDataMessage: 'No data found',
   count: 0,
   isLoading: false,
-  isFetching: false,
   onChangePage: null,
   onChangeRowsPerPage: null,
   onChangeOrderBy: null,

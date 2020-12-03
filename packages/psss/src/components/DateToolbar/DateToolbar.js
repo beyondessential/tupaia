@@ -5,9 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useIsFetching } from 'react-query';
 import { connect } from 'react-redux';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -27,27 +25,16 @@ import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
 import { MIN_DATE } from './constants';
-import { getDateByPeriod, getPeriodByDate } from '../../utils';
+import { getDateByPeriod } from '../../utils';
 import { getLatestViewableWeek, setLatestViewableWeek } from '../../store';
 
 const Container = styled(FlexSpaceBetween)`
   width: 66%;
   height: 100%;
   padding-right: 1.8rem;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
 `;
 
-const Loader = styled(CircularProgress)`
-  margin-right: 1rem;
-  margin-left: 1rem;
-`;
-
-const StyledButton = styled(SmallButton)`
-  width: 100px;
-  height: 35px;
+const TodayButton = styled(SmallButton)`
   background-color: rgba(0, 0, 0, 0.15);
   color: rgba(255, 255, 255, 0.6);
   transition: color 0.2s ease, background-color 0.2s ease;
@@ -99,7 +86,6 @@ const MediumText = styled.span`
 `;
 
 export const DateToolbarComponent = ({ date, setPeriod }) => {
-  const isFetching = useIsFetching();
   const [isOpen, setIsOpen] = useState(false);
   const now = new Date();
 
@@ -135,7 +121,7 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
           </CalendarButton>
           <WeekPicker
             label="Date"
-            onChange={week => setPeriod(startOfISOWeek(week))}
+            onChange={date => setPeriod(startOfISOWeek(date))}
             value={date}
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
@@ -148,13 +134,11 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
           </Text>
         </FlexStart>
         <FlexEnd>
-          <ArrowButton onClick={decreaseWeek} disabled={!!isFetching || isPrevDisabled}>
+          <ArrowButton onClick={decreaseWeek} disabled={isPrevDisabled}>
             <ChevronLeftIcon />
           </ArrowButton>
-          <StyledButton onClick={setCurrentWeek} isDisabled={isFetching}>
-            {isFetching ? <Loader size={21} thickness={5} /> : <span>This Week</span>}
-          </StyledButton>
-          <ArrowButton onClick={increaseWeek} disabled={!!isFetching || isNextDisabled}>
+          <TodayButton onClick={setCurrentWeek}>This week</TodayButton>
+          <ArrowButton onClick={increaseWeek} disabled={isNextDisabled}>
             <ChevronRightIcon />
           </ArrowButton>
         </FlexEnd>
@@ -178,7 +162,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   setPeriod: date => {
-    const period = getPeriodByDate(date);
+    const period = format(date, "yyyy'W'II");
     dispatch(setLatestViewableWeek(period));
   },
 });

@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
@@ -12,40 +11,34 @@ import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import { setActiveWeek, getActiveWeek } from '../../store';
 
-const StyledTableBody = styled(MuiTableBody)`
-  opacity: ${props => (props.isFetching ? '0.5' : 1)};
-`;
+const TableBodyComponent = React.memo(({ data, columns, activeWeek, toggleTableRow }) => (
+  <MuiTableBody>
+    {data.map((rowData, rowIndex) => {
+      const period = rowData.period;
+      const expanded = activeWeek === period;
 
-const TableBodyComponent = React.memo(
-  ({ data, columns, activeWeek, toggleTableRow, isFetching }) => (
-    <StyledTableBody isFetching={isFetching}>
-      {data.map((rowData, rowIndex) => {
-        const period = rowData.period;
-        const expanded = activeWeek === period;
+      const handleRowClick = () => {
+        if (expanded) {
+          toggleTableRow(null);
+        } else {
+          toggleTableRow(period);
+        }
+      };
 
-        const handleRowClick = () => {
-          if (expanded) {
-            toggleTableRow(null);
-          } else {
-            toggleTableRow(period);
-          }
-        };
-
-        return (
-          <ExpandableTableRow
-            onClick={handleRowClick}
-            expandedValue={expanded}
-            rowData={rowData}
-            rowIndex={rowIndex}
-            key={rowData.period}
-            columns={columns}
-            SubComponent={SiteSummaryTable}
-          />
-        );
-      })}
-    </StyledTableBody>
-  ),
-);
+      return (
+        <ExpandableTableRow
+          onClick={handleRowClick}
+          expandedValue={expanded}
+          rowData={rowData}
+          rowIndex={rowIndex}
+          key={rowData.period}
+          columns={columns}
+          SubComponent={SiteSummaryTable}
+        />
+      );
+    })}
+  </MuiTableBody>
+));
 
 TableBodyComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,

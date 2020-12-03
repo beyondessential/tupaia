@@ -13,9 +13,8 @@ import { tableColumnShape } from './tableColumnShape';
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
 const TableFooter = styled(MuiTableFooter)`
-  .MuiTableCell-footer.MuiTablePagination-root {
+  .MuiTableCell-footer {
     padding-top: 40px;
-    padding-right: 0;
     border: none;
   }
 `;
@@ -56,7 +55,7 @@ const TablePagination = styled(MuiTablePagination)`
 `;
 
 export const TablePaginator = React.memo(
-  ({ columns, page, count, rowsPerPage, onChangePage, onChangeRowsPerPage, disabled }) => {
+  ({ columns, page, count, rowsPerPage, onChangePage, onChangeRowsPerPage }) => {
     const handleChangePage = useCallback(
       (event, newPage) => {
         if (onChangePage) onChangePage(newPage);
@@ -80,7 +79,6 @@ export const TablePaginator = React.memo(
       <TableFooter>
         <MuiTableRow>
           <TablePagination
-            disabled={disabled}
             rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
             colSpan={columns.length}
             page={page}
@@ -102,7 +100,6 @@ TablePaginator.propTypes = {
   onChangeRowsPerPage: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-  disabled: PropTypes.bool,
 };
 
 TablePaginator.defaultProps = {
@@ -111,5 +108,4 @@ TablePaginator.defaultProps = {
   onChangeRowsPerPage: null,
   page: null,
   rowsPerPage: 10,
-  disabled: false,
 };
