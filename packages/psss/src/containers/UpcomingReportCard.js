@@ -32,7 +32,10 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const getDisplayDays = days => `${Math.abs(days)} day${days > 1 ? 's' : ''}`;
+const getDisplayDays = days => {
+  const d = Math.abs(days);
+  return `${Math.abs(d)} day${d > 1 ? 's' : ''}`;
+};
 
 const HeaderComponent = ({ status, days }) => {
   const displayDays = getDisplayDays(days);

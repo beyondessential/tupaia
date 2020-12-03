@@ -16,17 +16,21 @@ const StyledTable = styled(Table)`
   }
 `;
 
-export const ExpandableTable = React.memo(({ Body, SubComponent, ...tableProps }) => {
-  const TableBody = tableBodyProps => <Body {...tableBodyProps} SubComponent={SubComponent} />;
-  return <StyledTable Body={TableBody} {...tableProps} />;
+export const ExpandableTable = React.memo(({ Body, SubComponent, isFetching, ...tableProps }) => {
+  const TableBody = tableBodyProps => (
+    <Body {...tableBodyProps} SubComponent={SubComponent} isFetching={isFetching} />
+  );
+  return <StyledTable Body={TableBody} {...tableProps} isFetching={false} />;
 });
 
 ExpandableTable.propTypes = {
   SubComponent: PropTypes.any,
   Body: PropTypes.any,
+  isFetching: PropTypes.bool,
 };
 
 ExpandableTable.defaultProps = {
   SubComponent: null,
   Body: ExpandableTableBody,
+  isFetching: false,
 };

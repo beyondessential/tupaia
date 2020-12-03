@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, usePaginatedQuery } from 'react-query';
 import { FakeAPI } from './FakeApi';
 import { get } from './api';
 
@@ -28,7 +28,7 @@ export const useTableQuery = (endpoint, options) => {
 
 export const useLiveTableQuery = (endpoint, options) => {
   const [sorting, setSorting] = useState({ order: 'asc', orderBy: undefined });
-  const query = useQuery(
+  const query = usePaginatedQuery(
     [endpoint, options, sorting],
     () => get(endpoint, { ...options, ...sorting }),
     { staleTime: 60 * 1000, refetchOnWindowFocus: false },
@@ -41,7 +41,7 @@ export const useLiveTableQuery = (endpoint, options) => {
     setSorting(newSorting);
   };
 
-  const data = query?.data?.data?.results ? query.data.data.results : [];
+  const data = query?.resolvedData?.data?.results ? query.resolvedData.data.results : [];
 
   return { ...query, ...sorting, handleChangeOrderBy, data };
 };

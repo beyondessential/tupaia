@@ -140,29 +140,33 @@ const countryColumns = [
   },
 ];
 
-export const CountryTable = React.memo(({ data, isLoading, errorMessage, page, setPage }) => (
-  <ExpandableTable
-    isLoading={isLoading}
-    columns={countryColumns}
-    data={data}
-    errorMessage={errorMessage}
-    onChangePage={setPage}
-    page={page}
-    Body={CountryTableBody}
-  />
-));
+export const CountryTable = React.memo(
+  ({ data, isLoading, errorMessage, isFetching, Paginator }) => {
+    return (
+      <ExpandableTable
+        // isFetching={!isLoading && isFetching}
+        isLoading={isLoading}
+        columns={countryColumns}
+        data={data}
+        errorMessage={errorMessage}
+        Body={CountryTableBody}
+        Paginator={Paginator}
+      />
+    );
+  },
+);
 
 CountryTable.propTypes = {
   data: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
+  isFetching: PropTypes.bool,
   errorMessage: PropTypes.string,
-  page: PropTypes.number,
-  setPage: PropTypes.func,
+  Paginator: PropTypes.node,
 };
 
 CountryTable.defaultProps = {
+  isFetching: false,
   isLoading: false,
   errorMessage: '',
-  page: 0,
-  setPage: null,
+  Paginator: null,
 };
