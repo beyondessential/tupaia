@@ -58,7 +58,9 @@ const Status = styled.div`
   }
 `;
 
-const StatusCell = ({ status }) => {
+const StatusCell = data => {
+  console.log('data', data);
+  const { status } = data;
   if (status === 'Overdue') {
     return (
       <Status color={COLORS.ORANGE}>

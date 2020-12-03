@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getCurrentPeriod } from '@tupaia/utils';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -90,9 +89,9 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
   const [isOpen, setIsOpen] = useState(false);
   const now = new Date();
 
-  // React.useEffect(() => {
-  //   setCurrentWeek();
-  // }, []);
+  useEffect(() => {
+    setCurrentWeek();
+  }, []);
 
   const setCurrentWeek = () => {
     setPeriod(now);

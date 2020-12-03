@@ -58,6 +58,7 @@ const NUMBER_OF_WEEKS = 8;
 export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const { countryCode } = useParams();
   const defaultPeriod = getCurrentPeriod('WEEK');
+  // const defaultPeriod = '2020W25';
 
   const { isLoading, error, data } = useCountryWeeklyReport(
     countryCode.toUpperCase(),
