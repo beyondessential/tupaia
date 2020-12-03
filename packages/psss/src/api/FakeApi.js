@@ -223,6 +223,10 @@ export const FakeAPI = {
   },
 
   alert() {
+    const weekNumber = faker.random.number({
+      min: 10,
+      max: 50,
+    });
     return {
       id: faker.random.uuid(),
       name: faker.address.country(),
@@ -235,10 +239,8 @@ export const FakeAPI = {
         'Prolonged Fever (PF)',
         'Dengue-like Illness (DLI)',
       ]),
-      weekNumber: faker.random.number({
-        min: 1,
-        max: 10,
-      }),
+      weekNumber: weekNumber,
+      period: `2020W${weekNumber}`,
       startDate: faker.date.between('2020-01-01', '2020-01-31'),
       endDate: faker.date.between('2020-02-01', '2020-02-28'),
       totalCases: faker.random.number({

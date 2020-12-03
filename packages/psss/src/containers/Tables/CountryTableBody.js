@@ -9,19 +9,19 @@ import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
-import { setActiveWeek, getActiveWeekId } from '../../store';
+import { setActiveWeek, getActiveWeek } from '../../store';
 
-const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTableRow }) => (
+const TableBodyComponent = React.memo(({ data, columns, activeWeek, toggleTableRow }) => (
   <MuiTableBody>
     {data.map((rowData, rowIndex) => {
-      const key = rowData.index; // todo: use real id
-      const expanded = activeWeekId === key;
+      const period = rowData.period;
+      const expanded = activeWeek === period;
 
       const handleRowClick = () => {
         if (expanded) {
           toggleTableRow(null);
         } else {
-          toggleTableRow(key);
+          toggleTableRow(period);
         }
       };
 
@@ -31,7 +31,7 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
           expandedValue={expanded}
           rowData={rowData}
           rowIndex={rowIndex}
-          key={rowData.id} // todo: update to key when real data is in place
+          key={rowData.period}
           columns={columns}
           SubComponent={SiteSummaryTable}
         />
@@ -43,20 +43,20 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
 TableBodyComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
-  activeWeekId: PropTypes.number,
+  activeWeek: PropTypes.string,
   toggleTableRow: PropTypes.func.isRequired,
 };
 
 TableBodyComponent.defaultProps = {
-  activeWeekId: null,
+  activeWeek: null,
 };
 
 const mapStateToProps = state => ({
-  activeWeekId: getActiveWeekId(state),
+  activeWeek: getActiveWeek(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleTableRow: key => dispatch(setActiveWeek(key)),
+  toggleTableRow: period => dispatch(setActiveWeek(period)),
 });
 
 export const CountryTableBody = connect(mapStateToProps, mapDispatchToProps)(TableBodyComponent);
