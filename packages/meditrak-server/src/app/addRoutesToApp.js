@@ -144,6 +144,10 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/optionSets/:recordId?', getOptionSets);
   app.get('(/v[0-9]+)/users/:recordId?', getUserAccounts);
   app.get('(/v[0-9]+)/userEntityPermissions/:recordId?', getUserEntityPermissions);
+  app.get(
+    '(/v[0-9]+)/users/:parentRecordId/userEntityPermissions/:recordId?',
+    getUserEntityPermissions,
+  );
   app.get('(/v[0-9]+)/accessRequests/:recordId?', getAccessRequests);
 
   /**

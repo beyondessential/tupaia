@@ -8,7 +8,7 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../permissions';
-import { getAdminPanelAllowedEntityIds } from '../utilities';
+import { getAdminPanelAllowedEntityIds, mergeFilter } from '../utilities';
 
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequestId) => {
   const accessRequest = await models.accessRequest.findById(accessRequestId);
@@ -73,7 +73,10 @@ export const createAccessRequestDBFilter = async (accessPolicy, models, criteria
   }
   // If we don't have BES Admin access, add a filter to the SQL query
   const dbConditions = { ...criteria };
-  dbConditions.entity_id = await getAdminPanelAllowedEntityIds(accessPolicy, models);
+  dbConditions['access_request.entity_id'] = mergeFilter(
+    await getAdminPanelAllowedEntityIds(accessPolicy, models),
+    dbConditions['access_request.entity_id'],
+  );
 
   return dbConditions;
 };

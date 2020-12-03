@@ -4,7 +4,7 @@
  */
 import { TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { mergeMultiJoin } from '../utilities';
+import { mergeFilter, mergeMultiJoin } from '../utilities';
 import {
   assertSurveyPermissions,
   createSurveyDBFilter,
@@ -38,13 +38,16 @@ export const createSurveyScreenComponentDBFilter = async (
   const dbOptions = { ...options };
 
   if (surveyId) {
-    dbConditions.survey_id = surveyId;
+    dbConditions['survey_screen.survey_id'] = surveyId;
   } else if (!hasBESAdminAccess(accessPolicy)) {
     // If we have BES admin, don't bother filtering by survey
     const surveyConditions = await createSurveyDBFilter(accessPolicy, models);
     const permittedSurveys = await models.survey.find(surveyConditions);
     const permittedSurveyIds = permittedSurveys.map(s => s.id);
-    dbConditions.survey_id = permittedSurveyIds;
+    dbConditions['survey_screen.survey_id'] = mergeFilter(
+      permittedSurveyIds,
+      dbConditions['survey_screen.survey_id'],
+    );
   }
 
   dbOptions.multiJoin = mergeMultiJoin(
