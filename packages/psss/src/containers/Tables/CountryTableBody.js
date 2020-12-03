@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
@@ -11,34 +12,40 @@ import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import { setActiveWeek, getActiveWeek } from '../../store';
 
-const TableBodyComponent = React.memo(({ data, columns, activeWeek, toggleTableRow }) => (
-  <MuiTableBody>
-    {data.map((rowData, rowIndex) => {
-      const period = rowData.period;
-      const expanded = activeWeek === period;
+const StyledTableBody = styled(MuiTableBody)`
+  opacity: ${props => (props.isFetching ? '0.5' : 1)};
+`;
 
-      const handleRowClick = () => {
-        if (expanded) {
-          toggleTableRow(null);
-        } else {
-          toggleTableRow(period);
-        }
-      };
+const TableBodyComponent = React.memo(
+  ({ data, columns, activeWeek, toggleTableRow, isFetching }) => (
+    <StyledTableBody isFetching={isFetching}>
+      {data.map((rowData, rowIndex) => {
+        const period = rowData.period;
+        const expanded = activeWeek === period;
 
-      return (
-        <ExpandableTableRow
-          onClick={handleRowClick}
-          expandedValue={expanded}
-          rowData={rowData}
-          rowIndex={rowIndex}
-          key={rowData.period}
-          columns={columns}
-          SubComponent={SiteSummaryTable}
-        />
-      );
-    })}
-  </MuiTableBody>
-));
+        const handleRowClick = () => {
+          if (expanded) {
+            toggleTableRow(null);
+          } else {
+            toggleTableRow(period);
+          }
+        };
+
+        return (
+          <ExpandableTableRow
+            onClick={handleRowClick}
+            expandedValue={expanded}
+            rowData={rowData}
+            rowIndex={rowIndex}
+            key={rowData.period}
+            columns={columns}
+            SubComponent={SiteSummaryTable}
+          />
+        );
+      })}
+    </StyledTableBody>
+  ),
+);
 
 TableBodyComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,

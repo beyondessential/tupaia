@@ -18,7 +18,7 @@ import {
   getFormattedEndByPeriod,
 } from '../utils';
 import { useUpcomingReport } from '../api/queries';
-import { REPORT_STATUSES } from '../constants';
+import { REPORT_STATUSES, DUE_ISO_DAY } from '../constants';
 
 const StyledButton = styled(Button)`
   margin-top: 1rem;
@@ -32,7 +32,10 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const getDisplayDays = days => `${Math.abs(days)} day${days > 1 ? 's' : ''}`;
+const getDisplayDays = days => {
+  const d = Math.abs(days);
+  return `${Math.abs(d)} day${d > 1 ? 's' : ''}`;
+};
 
 const HeaderComponent = ({ status, days }) => {
   const displayDays = getDisplayDays(days);
@@ -80,7 +83,9 @@ export const UpcomingReportCardComponent = ({ handleOpen }) => {
   }
 
   const buttonText =
-    reportStatus === REPORT_STATUSES.UPCOMING && days > 3 ? 'View Now' : 'Review and Confirm Now';
+    reportStatus === REPORT_STATUSES.UPCOMING && days > DUE_ISO_DAY
+      ? 'View Now'
+      : 'Review and Confirm Now';
 
   return (
     <Card variant="outlined">

@@ -5,13 +5,13 @@
 
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { FakeAPI } from './FakeApi';
+import { get } from '../api';
 
-export const useTableQuery = (endpoint, options) => {
+export const useTableData = (endpoint, options) => {
   const [sorting, setSorting] = useState({ order: 'asc', orderBy: undefined });
   const query = useQuery(
     [endpoint, options, sorting],
-    () => FakeAPI.get(endpoint, { ...options, ...sorting }),
+    () => get(endpoint, { ...options, ...sorting }),
     { staleTime: 60 * 1000, refetchOnWindowFocus: false },
   );
 
@@ -22,5 +22,7 @@ export const useTableQuery = (endpoint, options) => {
     setSorting(newSorting);
   };
 
-  return { ...query, ...sorting, handleChangeOrderBy };
+  const data = query?.data?.data?.results ? query.data.data.results : [];
+
+  return { ...query, ...sorting, handleChangeOrderBy, data };
 };

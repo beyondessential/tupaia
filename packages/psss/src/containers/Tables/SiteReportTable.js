@@ -110,5 +110,5 @@ SiteReportTable.propTypes = {
     TABLE_STATUSES.SAVING,
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
-  activeWeek: PropTypes.string.isRequired,
+  weekNumber: PropTypes.number.isRequired,
 };
