@@ -93,43 +93,51 @@ const countryColumns = [
     width: '190px', // must be same width as SiteSummaryTable name column to align
     align: 'left',
     CellComponent: NameCell,
+    sortable: false,
   },
   {
     title: 'Sites Reported',
     key: 'Sites Reported',
     CellComponent: SitesReportedCell,
     width: COLUMN_WIDTHS.SITES_REPORTED,
+    sortable: false,
   },
   {
     title: 'AFR',
     key: 'AFR',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'DIA',
     key: 'DIA',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'ILI',
     key: 'ILI',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'PF',
     key: 'PF',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'DLI',
     key: 'DLI',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'STATUS',
     key: 'status',
     width: '165px',
     CellComponent: StatusCell,
+    sortable: false,
   },
 ];
 

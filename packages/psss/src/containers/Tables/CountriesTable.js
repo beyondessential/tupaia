@@ -18,38 +18,45 @@ const countriesTableColumns = [
     key: 'organisationUnit',
     width: '30%', // must be same as CountrySummaryTable name column to align
     align: 'left',
+    sortable: false,
     CellComponent: CountryNameLinkCell,
   },
   {
     title: 'Sites Reported',
     key: 'Sites Reported',
     CellComponent: SitesReportedCell,
+    sortable: false,
     width: COLUMN_WIDTHS.SITES_REPORTED,
   },
   {
     title: 'AFR',
     key: 'AFR',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'DIA',
     key: 'DIA',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'ILI',
     key: 'ILI',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'PF',
     key: 'PF',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'DLI',
     key: 'DLI',
     CellComponent: AlertCell,
+    sortable: false,
   },
 ];
 
