@@ -43,6 +43,8 @@ export const SEARCH_COMPONENTS = [
   REPORT_PERIOD,
 ];
 
+export const LEGACY_PATH_PREFIXES = ['country', 'facility'];
+
 export const SEARCH_PARAM_KEY_MAP = {
   // Different to key
   [MEASURE]: 'overlay',

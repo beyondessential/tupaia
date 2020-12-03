@@ -38,9 +38,9 @@ export const FakeAPI = {
         data.push(this.countryWeek(i));
       }
     } else if (endpoint === 'sites') {
-      for (let i = 0; i < 7; i++) {
-        data.push(this.siteWeek());
-      }
+      // for (let i = 0; i < 7; i++) {
+      //   data.push(this.siteWeek());
+      // }
     } else if (endpoint === 'alerts') {
       for (let i = 0; i < 10; i++) {
         data.push(this.alert());
