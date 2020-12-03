@@ -65,7 +65,7 @@ export const CountrySummaryTableComponent = React.memo(({ rowData, period }) => 
 
   return (
     <>
-      <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>
+      <FakeHeader>PREVIOUS {NUMBER_OF_WEEKS} WEEKS</FakeHeader>
       <Table
         columns={countrySummaryTableColumns}
         Header={false}

@@ -19,13 +19,14 @@ const fillWeeklyData = (data, period, numberOfWeeks) => {
 };
 
 export const useCountryConfirmedWeeklyReport = (orgUnit, period, numberOfWeeks) => {
-  const startWeek = subtractPeriod(period, numberOfWeeks - 1);
+  const endWeek = subtractPeriod(period, 1);
+  const startWeek = subtractPeriod(period, numberOfWeeks);
 
   const query = useLiveTableQuery(`confirmedWeeklyReport/${orgUnit}`, {
-    params: { startWeek, endWeek: period },
+    params: { startWeek, endWeek },
   });
 
-  const data = fillWeeklyData(query.data, period, numberOfWeeks);
+  const data = fillWeeklyData(query.data, endWeek, numberOfWeeks);
 
   return {
     ...query,

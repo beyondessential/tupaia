@@ -7,8 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { getCurrentPeriod } from '@tupaia/utils';
-import { getISODay } from 'date-fns';
+import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { Warning } from '@material-ui/icons';
 import { CardContent, CardFooter, CardHeader, BarMeter, Card, Button } from '@tupaia/ui-components';
@@ -18,6 +17,7 @@ import {
   getFormattedStartByPeriod,
   getFormattedEndByPeriod,
 } from '../utils';
+import { useUpcomingReport } from '../api/queries';
 
 const StyledButton = styled(Button)`
   margin-top: 1rem;
@@ -31,60 +31,48 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const DUE_ISO_DAY = 3; // wednesday
-
-const getDaysRemaining = () => {
-  const isoDay = getISODay(new Date());
-  return DUE_ISO_DAY - isoDay;
-};
-
 const STATUS = {
+  DEFAULT: 'default',
   UPCOMING: 'upcoming',
-  DUE: 'upcoming',
-  OVERDUE: 'upcoming',
-};
-
-const getDueStatus = numberOfDays => {
-  if (numberOfDays > 0) {
-    return STATUS.UPCOMING;
-  } else if (numberOfDays < 0) {
-    return STATUS.OVERDUE;
-  }
-
-  return STATUS.DUE;
+  DUE_TODAY: 'today',
+  OVERDUE: 'overdue',
 };
 
 const Header = {
+  [STATUS.DEFAULT]: ({ days }) => <CardHeader title={`Confirmation due in ${days}`} />,
   [STATUS.UPCOMING]: ({ days }) => (
     <CardHeader
       color="error"
-      title={`Confirmation due in ${days} days`}
+      title={`Confirmation due in ${days}`}
       label={<Warning color="error" />}
     />
   ),
   [STATUS.OVERDUE]: ({ days }) => (
     <CardHeader
       color="error"
-      title={`Confirmation overdue by ${days} days`}
+      title={`Confirmation overdue by ${days}`}
       label={<Warning color="error" />}
     />
   ),
-  [STATUS.DUE]: () => (
-    <CardHeader color="error" title={`Confirmation due today`} label={<Warning color="error" />} />
+  [STATUS.DUE_TODAY]: () => (
+    <CardHeader color="error" title="Confirmation due today" label={<Warning color="error" />} />
   ),
 };
 
 export const UpcomingReportCardComponent = ({ handleOpen }) => {
-  const isConfirmed = false;
-  const period = getCurrentPeriod('WEEK');
-  const daysRemaining = getDaysRemaining();
-  const status = getDueStatus(daysRemaining);
+  const { countryCode } = useParams();
+  const { isLoading, period, reportStatus, displayDays } = useUpcomingReport(countryCode);
 
-  const HeaderComponent = Header[status];
+  if (isLoading) {
+    return <Card variant="outlined" style={{ height: 300 }} />;
+  }
+
+  const HeaderComponent = Header[reportStatus];
+  const buttonText = reportStatus === STATUS.DEFAULT ? 'View Now' : 'Review and Confirm Now';
 
   return (
     <Card variant="outlined">
-      <HeaderComponent days={daysRemaining} />
+      <HeaderComponent days={displayDays} />
       <CardContent>
         <Typography variant="h4">Week {getWeekNumberByPeriod(period)}</Typography>
         <Typography variant="h4" gutterBottom>
@@ -95,7 +83,7 @@ export const UpcomingReportCardComponent = ({ handleOpen }) => {
           {getFormattedEndByPeriod(period, 'LLL d, yyyy')}
         </DateSubtitle>
         <StyledButton fullWidth onClick={() => handleOpen()}>
-          Review and Confirm Now
+          {buttonText}
         </StyledButton>
       </CardContent>
       <CardFooter>
