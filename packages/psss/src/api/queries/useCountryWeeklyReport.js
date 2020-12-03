@@ -21,41 +21,45 @@ const getDaysRemaining = () => {
 };
 
 const fillWeeklyData = (data, confirmedData, period, numberOfWeeks) => {
-  return [...Array(numberOfWeeks)].map((code, index) => {
-    const newPeriod = subtractPeriod(period, index);
+  let currentWeekIsSubmitted = false;
 
-    let finalReport = {
-      period: newPeriod,
-      status: STATUSES.OVERDUE,
-    };
+  const finalData = [...Array(numberOfWeeks + 1)].map((code, index) => {
+    const newPeriod = subtractPeriod(period, index);
 
     const confirmedReport = confirmedData.find(report => report.period === newPeriod);
 
     if (confirmedReport) {
-      finalReport = { ...confirmedReport, status: STATUSES.SUBMITTED };
-    } else {
-      const report = data.find(report => report.period === newPeriod);
-
-      if (report) {
-        let reportStatus = STATUSES.OVERDUE;
-
-        // is overdue unless this is this weeks report and it is before wednesday
-        if (newPeriod === period) {
-          const daysRemaining = getDaysRemaining();
-          if (daysRemaining < 0) {
-            reportStatus = STATUSES.SUBMITTED;
-          }
-        }
-        finalReport = { ...report, status: reportStatus };
+      if (index === 0) {
+        currentWeekIsSubmitted = true;
       }
+      return { ...confirmedReport, status: STATUSES.SUBMITTED };
     }
 
-    return finalReport;
+    const report = data.find(report => report.period === newPeriod);
+    if (report) {
+      let reportStatus = STATUSES.OVERDUE;
+
+      // is overdue unless this is this weeks report and it is before wednesday
+      if (newPeriod === period) {
+        const daysRemaining = getDaysRemaining();
+        if (daysRemaining < 0) {
+          reportStatus = STATUSES.SUBMITTED;
+        }
+      }
+      return { ...report, status: reportStatus };
+    }
+
+    return {
+      period: newPeriod,
+      status: STATUSES.OVERDUE,
+    };
   });
+
+  return currentWeekIsSubmitted ? [...finalData.slice(0, -1)] : [...finalData.slice(1)];
 };
 
 export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
-  const startWeek = subtractPeriod(period, numberOfWeeks - 1);
+  const startWeek = subtractPeriod(period, numberOfWeeks);
 
   const confirmedQuery = useLiveTableQuery(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek: period },

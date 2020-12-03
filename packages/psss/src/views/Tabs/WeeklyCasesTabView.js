@@ -53,7 +53,7 @@ const DateSubtitle = styled(Typography)`
 
 const getCountryWeekData = (data, activeWeek) => data.find(c => c.period === activeWeek);
 
-const NUMBER_OF_WEEKS = 8;
+const NUMBER_OF_WEEKS = 10;
 
 export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek }) => {
   const { countryCode } = useParams();
