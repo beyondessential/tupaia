@@ -34,7 +34,6 @@ import {
   closeWeeklyReportsPanel,
   checkWeeklyReportsPanelIsOpen,
   getUnVerifiedSyndromes,
-  getActiveWeek,
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
@@ -126,7 +125,7 @@ const toCommaList = values =>
     .replace(/,(?!.*,)/gim, ' and');
 
 export const WeeklyReportsPanelComponent = React.memo(
-  ({ countryWeekData, syndromeAlerts, isOpen, handleClose, activeWeek, unVerifiedSyndromes }) => {
+  ({ countryWeekData, syndromeAlerts, isOpen, handleClose, weekNumber, unVerifiedSyndromes }) => {
     const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
     const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
@@ -135,12 +134,12 @@ export const WeeklyReportsPanelComponent = React.memo(
     const { countryCode } = useParams();
     const options = {
       countryCode,
-      activeWeek,
+      weekNumber,
     };
     const { data: sitesData } = useTableQuery('sites', options);
     const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
 
-    const [confirmReport] = useConfirmWeeklyReport({ countryCode, activeWeek });
+    const [confirmReport] = useConfirmWeeklyReport({ countryCode, weekNumber });
 
     const handleSubmit = useCallback(
       isVerified => {
@@ -159,13 +158,12 @@ export const WeeklyReportsPanelComponent = React.memo(
           setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
         }
       },
-      [syndromeAlerts, confirmReport],
+      [syndromeAlerts],
     );
 
     const isVerified = unVerifiedSyndromes.length === 0;
-    // const showSites = false;
     const showSites =
-      activeWeek !== null && sitesMetaData?.data?.sites.length > 0 && sitesData?.data?.length > 0;
+      weekNumber !== null && sitesMetaData?.data?.sites.length > 0 && sitesData?.data?.length > 0;
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
@@ -186,23 +184,19 @@ export const WeeklyReportsPanelComponent = React.memo(
           </Alert>
         </Collapse>
         <CountryReportsSection disabled={isSaving} data-testid="country-reports">
-          {countryWeekData ? (
-            <EditableTableProvider
-              columns={columns}
-              data={[countryWeekData]}
+          <EditableTableProvider
+            columns={columns}
+            data={countryWeekData.syndromes}
+            tableStatus={countryTableStatus}
+          >
+            <CountryReportTable
               tableStatus={countryTableStatus}
-            >
-              <CountryReportTable
-                tableStatus={countryTableStatus}
-                setTableStatus={setCountryTableStatus}
-                sitesReported={countryWeekData['Sites Reported']}
-                totalSites={countryWeekData.Sites}
-                activeWeek={activeWeek}
-              />
-            </EditableTableProvider>
-          ) : (
-            'Loading...'
-          )}
+              setTableStatus={setCountryTableStatus}
+              sitesReported={countryWeekData.sitesReported}
+              totalSites={countryWeekData.totalSites}
+              weekNumber={weekNumber}
+            />
+          </EditableTableProvider>
         </CountryReportsSection>
         {showSites && (
           <SiteReportsSection disabled={isSaving} data-testid="site-reports">
@@ -226,7 +220,7 @@ export const WeeklyReportsPanelComponent = React.memo(
                 <SiteReportTable
                   tableStatus={sitesTableStatus}
                   setTableStatus={setSitesTableStatus}
-                  activeWeek={activeWeek}
+                  weekNumber={weekNumber}
                 />
               </EditableTableProvider>
             </Card>
@@ -270,25 +264,22 @@ export const WeeklyReportsPanelComponent = React.memo(
 WeeklyReportsPanelComponent.propTypes = {
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  activeWeek: PropTypes.string,
+  weekNumber: PropTypes.number.isRequired,
   unVerifiedSyndromes: PropTypes.array.isRequired,
   syndromeAlerts: PropTypes.array,
-  countryWeekData: PropTypes.object,
+  countryWeekData: PropTypes.object.isRequired,
 };
 
 WeeklyReportsPanelComponent.defaultProps = {
   syndromeAlerts: [],
-  countryWeekData: null,
-  activeWeek: null,
 };
 
 const mapStateToProps = (state, { countryWeekData }) => {
-  // const syndromeAlerts = countryWeekData.syndromes.filter(s => s.isAlert);
+  const syndromeAlerts = countryWeekData.syndromes.filter(s => s.isAlert);
   return {
-    syndromeAlerts: [],
+    syndromeAlerts,
     isOpen: checkWeeklyReportsPanelIsOpen(state),
-    activeWeek: getActiveWeek(state),
-    unVerifiedSyndromes: getUnVerifiedSyndromes(state, []),
+    unVerifiedSyndromes: getUnVerifiedSyndromes(state, syndromeAlerts),
   };
 };
 

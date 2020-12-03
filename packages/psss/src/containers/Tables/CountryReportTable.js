@@ -138,15 +138,16 @@ export const CountryReportTable = React.memo(
             Edit
           </GreyOutlinedButton>
         </FlexSpaceBetween>
-        {tableStatus === TABLE_STATUSES.EDITABLE ? (
+        {tableStatus === TABLE_STATUSES.EDITABLE && (
           <Alert severity="error" variant="standard">
             Updating country level data manually: all individual sentinel site data will be ignored
           </Alert>
-        ) : (
-          <GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>
-            Country level data has been manually edited, sentinel data will not be used.
-          </GreyAlert>
         )}
+        {/* ToDo: implement with sentinel sites feature
+        @see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1640
+        <GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>
+        Country level data has been manually edited, sentinel data will not be used.
+        </GreyAlert>*/}
         <GreyHeader>
           <span>SYNDROMES</span>
           <span>TOTAL CASES</span>
