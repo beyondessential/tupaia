@@ -8,22 +8,24 @@ import PropTypes from 'prop-types';
 import { CondensedTableRow, TableRow as TableRowComponent } from './TableRow';
 import { tableColumnShape } from './tableColumnShape';
 
-export const TableBody = React.memo(({ data, columns, rowIdKey, TableRow, onRowClick }) => (
-  <MuiTableBody>
-    {data.map((rowData, rowIndex) => {
-      const key = rowData[rowIdKey] || rowData[columns[0].key];
-      return (
-        <TableRow
-          rowData={rowData}
-          rowIndex={rowIndex}
-          key={key}
-          columns={columns}
-          onRowClick={onRowClick}
-        />
-      );
-    })}
-  </MuiTableBody>
-));
+export const TableBody = React.memo(
+  ({ data, columns, rowIdKey, TableRow, onRowClick, className }) => (
+    <MuiTableBody className={className}>
+      {data.map((rowData, rowIndex) => {
+        const key = rowData[rowIdKey] || rowData[columns[0].key];
+        return (
+          <TableRow
+            rowData={rowData}
+            rowIndex={rowIndex}
+            key={key}
+            columns={columns}
+            onRowClick={onRowClick}
+          />
+        );
+      })}
+    </MuiTableBody>
+  ),
+);
 
 TableBody.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
@@ -31,11 +33,13 @@ TableBody.propTypes = {
   TableRow: PropTypes.any,
   rowIdKey: PropTypes.string.isRequired,
   onRowClick: PropTypes.func,
+  className: PropTypes.string,
 };
 
 TableBody.defaultProps = {
   TableRow: TableRowComponent,
   onRowClick: null,
+  className: '',
 };
 
 export const CondensedTableBody = React.memo(({ data, rowIdKey, columns }) => (
