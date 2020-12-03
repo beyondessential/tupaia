@@ -32,13 +32,6 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const STATUS = {
-  DEFAULT: 'default',
-  UPCOMING: 'upcoming',
-  DUE_TODAY: 'today',
-  OVERDUE: 'overdue',
-};
-
 const getDisplayDays = days => `${Math.abs(days)} day${days > 1 ? 's' : ''}`;
 
 const HeaderComponent = ({ status, days }) => {
@@ -86,7 +79,8 @@ export const UpcomingReportCardComponent = ({ handleOpen }) => {
     return <Card variant="outlined" style={{ height: 300 }} />;
   }
 
-  const buttonText = reportStatus === STATUS.DEFAULT ? 'View Now' : 'Review and Confirm Now';
+  const buttonText =
+    reportStatus === REPORT_STATUSES.UPCOMING && days > 3 ? 'View Now' : 'Review and Confirm Now';
 
   return (
     <Card variant="outlined">
