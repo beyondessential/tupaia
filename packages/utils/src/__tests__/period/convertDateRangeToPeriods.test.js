@@ -78,10 +78,26 @@ describe('convertDateRangeToPeriods', () => {
     ['should handle last day of month', ['20160701', '20160831'], ['201607', '201608']],
   ];
 
-  it.each(testData)('%s', (_, [startDate, endDate], expected) => {
-    const startMoment = moment.utc(startDate);
-    const endMoment = moment.utc(endDate);
+  describe('handle format yyyymmdd', () => {
+    it.each(testData)('%s', (_, [startDate, endDate], expected) => {
+      const startMoment = moment.utc(startDate);
+      const endMoment = moment.utc(endDate);
 
-    expect(convertDateRangeToPeriods(startMoment, endMoment)).toStrictEqual(expected);
+      expect(convertDateRangeToPeriods(startMoment, endMoment)).toStrictEqual(expected);
+    });
+  });
+
+  describe('handle format YYYY-MM-DD', () => {
+    function changeFormat(date) {
+      const newDate = moment(date).format('YYYY-MM-DD');
+      return newDate;
+    }
+
+    it.each(testData)('%s', (_, [startDate, endDate], expected) => {
+      const startMoment = moment.utc(changeFormat(startDate));
+      const endMoment = moment.utc(changeFormat(endDate));
+
+      expect(convertDateRangeToPeriods(startMoment, endMoment)).toStrictEqual(expected);
+    });
   });
 });
