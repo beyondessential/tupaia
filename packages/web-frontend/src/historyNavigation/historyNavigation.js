@@ -50,6 +50,15 @@ export const getInitialLocationComponents = () => {
 };
 
 /**
+ * Returns a string representing the url given certain parameters
+ * @param {String} params An object containing the parameters to set in the url
+ */
+export function createUrlString(params) {
+  const { pathname, search } = createLocation(params);
+  return `${pathname}${search}`;
+}
+
+/**
  * Returns a new location with a component of the url set to the specified value
  * @param {Object} baseLocation The existing location
  * @param {String} component A member of URL_COMPONENTS

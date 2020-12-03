@@ -11,6 +11,7 @@ import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
 
 import HeaderBar from '../../../containers/mobile/HeaderBar';
+import { EnlargedDialog } from '../../../containers/EnlargedDialog';
 import { ExportDialog } from '../../../components/ExportDialog';
 import HomeScreen from '../HomeScreen';
 import RegionScreen from '../RegionScreen';
@@ -19,8 +20,7 @@ import { LoadingScreen } from '../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { selectCurrentOrgUnit, selectIsEnlargedDialogVisible } from '../../../selectors';
-import { EnlargedDialog } from '../../../containers/EnlargedDialog';
+import { selectCurrentOrgUnit } from '../../../selectors';
 
 const ORG_UNIT_TYPE_TO_COMPONENT = {
   [ENTITY_TYPE.COUNTRY]: RegionScreen,
@@ -40,7 +40,7 @@ class RootScreen extends Component {
   }
 
   render() {
-    const { isLoading, isUserLoggedIn, enlargedDialogIsVisible } = this.props;
+    const { isLoading, isUserLoggedIn } = this.props;
 
     return (
       <StyleRoot>
@@ -48,11 +48,11 @@ class RootScreen extends Component {
         <div>
           <HeaderBar />
           {this.renderPage()}
-          {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+          <EnlargedDialog />
           <ExportDialog />
           <Footer />
           {isUserLoggedIn && <OverlayDiv />}
-          {/* <EnlargedDialog /> */}
+          <EnlargedDialog />
           <ExportDialog />
         </div>
       </StyleRoot>
@@ -64,12 +64,10 @@ RootScreen.propTypes = {
   currentOrganisationUnitType: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
-  enlargedDialogIsVisible: PropTypes.bool,
 };
 
 RootScreen.defaultProps = {
   currentOrganisationUnitType: '',
-  enlargedDialogIsVisible: false,
 };
 
 const mapStateToProps = state => {
@@ -77,7 +75,6 @@ const mapStateToProps = state => {
     currentOrganisationUnitType: selectCurrentOrgUnit(state).type,
     isLoading: state.global.isLoadingOrganisationUnit,
     isUserLoggedIn: state.authentication.isUserLoggedIn,
-    enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
   };
 };
 

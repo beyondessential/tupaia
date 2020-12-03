@@ -3,20 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { useLiveTableQuery } from '../useTableQuery';
+import { useTableData } from './useTableData';
 
 export const useConfirmedWeeklyReport = (period, countryCodes) => {
-  const query = useLiveTableQuery('confirmedWeeklyReport', {
+  const query = useTableData('confirmedWeeklyReport', {
     params: { startWeek: period },
   });
 
   const data = countryCodes.map(code => {
-    const report = query.data.find(report => report.organisationUnit === code.toUpperCase());
-    return report
-      ? report
-      : {
-          organisationUnit: code.toUpperCase(),
-        };
+    const report = query.data.find(r => r.organisationUnit === code.toUpperCase());
+    return (
+      report || {
+        organisationUnit: code.toUpperCase(),
+      }
+    );
   });
 
   return {
