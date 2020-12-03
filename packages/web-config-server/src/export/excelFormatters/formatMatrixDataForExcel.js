@@ -1,3 +1,6 @@
+import moment from 'moment';
+import {addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
+
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
 };
@@ -21,15 +24,15 @@ const DEFAULT_CONFIG = {
 // ]
 // See https://docs.sheetjs.com/#array-of-objects-input for more
 export const formatMatrixDataForExcel = (
-  { columns, categories: rowCategories, rows },
+  { columns, categories: rowCategories, rows, name: reportName, organisationUnitCode },
+  timeZone,
   configIn,
-  outputFormat = 'aoa',
+  outputFormat = 'aoa'
 ) => {
   // Create the empty array of objects to build the data into
-  const formattedData = [];
+  let formattedData = [];
   const columnCategories = columns[0].columns && columns; // If columns are grouped into categories, store as a well named const
   const config = { ...DEFAULT_CONFIG, ...configIn };
-
   // Returns populated array instead of object
   const formatRowData = row => {
     const rowData = columnCategories
@@ -48,8 +51,8 @@ export const formatMatrixDataForExcel = (
     return rowData;
   };
 
-  const buildTitleRow = () => {
-    const titleRowData = columnCategories
+  const buildHeadersRow = () => {
+    const headersRowData = columnCategories
       ? // This table has categories, iterate through the column categories add category title
         // and iterate through each of the columns in the category, and add the relevant title
         columnCategories.map(({ category: columnCategoryTitle, columns: columnsInCategory }) => {
@@ -58,21 +61,24 @@ export const formatMatrixDataForExcel = (
       : columns.map(col => col.title);
 
     // prepend dataElementHeader
-    titleRowData.unshift(config.dataElementHeader);
+    headersRowData.unshift(config.dataElementHeader);
 
-    return titleRowData;
+    return headersRowData;
   };
 
-  // add to title row 'top' of sheet
-  const titleRow = buildTitleRow();
-  formattedData.push(titleRow);
+  // Add title row (report name) to the top of the sheet
+  formattedData.push([`${reportName}, ${organisationUnitCode}`]);
+
+  // Add headers row to the second top of the sheet
+  const headersRow = buildHeadersRow();
+  formattedData.push(headersRow);
 
   // Iterate through all rows and add them
   if (rowCategories) {
     // Add rows a category at a time, so all rows from the same category are grouped
     rowCategories.forEach(({ key: rowCategoryKey, title: rowCategoryTitle }) => {
       // Insert a separating empty row between categories
-      formattedData.push([rowCategoryTitle].fill('', 1, titleRow.length - 1));
+      formattedData.push([rowCategoryTitle].fill('', 1, headersRow.length - 1));
       // Add the data from all rows in this category
       const formattedRowData = rows
         .filter(({ categoryId }) => rowCategoryKey === categoryId)
@@ -83,6 +89,10 @@ export const formatMatrixDataForExcel = (
     // This table has no row categories, just one set of rows
     formattedData.push(...rows.map(formatRowData));
   }
+
+  // Add export date and origin to the bottom of the sheet
+  formattedData = addExportedDateAndOriginAtTheSheetBottom(formattedData, timeZone);
+
   return outputFormat === 'aoo' ? convertAoaToAoo(formattedData) : formattedData;
 };
 

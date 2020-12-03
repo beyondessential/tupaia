@@ -4,6 +4,7 @@
  */
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -37,8 +38,7 @@ import {
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage, getCountryName } from '../../utils';
-import { useConfirmWeeklyReport } from '../../api';
-import { useTableQuery } from '../../api';
+import { useTableQuery, useConfirmWeeklyReport, getSitesMetaData } from '../../api';
 
 const columns = [
   {
@@ -63,11 +63,6 @@ const columns = [
 ];
 
 const SiteReportsSection = styled.section`
-  // Todo: remove temp styling for coming soon blurred area
-  margin-top: 50px;
-  margin-bottom: 20px;
-  // ---
-
   position: relative;
   padding: 1.8rem 1.25rem;
 
@@ -137,10 +132,12 @@ export const WeeklyReportsPanelComponent = React.memo(
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { countryCode } = useParams();
-    const { data: sitesData } = useTableQuery('sites', {
+    const options = {
       countryCode,
       weekNumber,
-    });
+    };
+    const { data: sitesData } = useTableQuery('sites', options);
+    const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
 
     const [confirmReport] = useConfirmWeeklyReport({ countryCode, weekNumber });
 
@@ -165,7 +162,8 @@ export const WeeklyReportsPanelComponent = React.memo(
     );
 
     const isVerified = unVerifiedSyndromes.length === 0;
-    const showSitesSection = weekNumber !== null && sitesData?.data?.length > 0;
+    const showSites =
+      weekNumber !== null && sitesMetaData?.data?.sites.length > 0 && sitesData?.data?.length > 0;
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
@@ -200,7 +198,7 @@ export const WeeklyReportsPanelComponent = React.memo(
             />
           </EditableTableProvider>
         </CountryReportsSection>
-        {showSitesSection && (
+        {showSites && (
           <SiteReportsSection disabled={isSaving} data-testid="site-reports">
             <ComingSoon text="The Sentinel Case data section will allow you to explore sentinel site data." />
             <ButtonSelect
