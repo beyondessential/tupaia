@@ -1,24 +1,23 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia Config Server
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from 'material-ui/IconButton';
-import DownloadIcon from 'material-ui/svg-icons/file/file-download';
-import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
-import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
-import moment from 'moment';
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { CircularProgress } from '@material-ui/core';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
+import DownloadIcon from 'material-ui/svg-icons/file/file-download';
+import IconButton from 'material-ui/IconButton';
+import moment from 'moment';
 import { Alert } from '../../components/Alert';
 import { DateRangePicker } from '../../components/DateRangePicker';
-import { getIsMatrix, getViewWrapper, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
+
+import { DIALOG_Z_INDEX, DARK_BLUE, WHITE } from '../../styles';
+import { getViewWrapper, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { LoadingIndicator } from '../Form/common';
 import { getLimits } from '../../utils/periodGranularities';
 
@@ -66,12 +65,6 @@ ExportDate.defaultProps = {
   startDate: null,
   endDate: null,
 };
-
-const LoadingDrillDown = () => (
-  <div style={styles.drillDownWrapper}>
-    <CircularProgress style={styles.progressIndicator} />
-  </div>
-);
 
 export class EnlargedDialogContent extends PureComponent {
   constructor(props) {
@@ -168,50 +161,31 @@ export class EnlargedDialogContent extends PureComponent {
   }
 
   renderToolbar() {
-    const {
-      onCloseOverlay,
-      onOpenExportDialog,
-      isExporting,
-      onUnDrillDown,
-      isDrilledDown,
-    } = this.props;
+    const { onCloseOverlay, onOpenExportDialog, CloseIcon, toolbarStyle, isExporting } = this.props;
 
     if (isExporting) {
       return null;
     }
 
     return (
-      <>
-        <div style={{ ...styles.toolbar }}>
-          {this.isExportable() ? (
-            <IconButton
-              style={styles.toolbarButton}
-              iconStyle={styles.toolbarButtonIcon}
-              onClick={onOpenExportDialog}
-            >
-              <DownloadIcon />
-            </IconButton>
-          ) : null}
+      <div style={{ ...styles.toolbar, ...toolbarStyle }}>
+        {this.isExportable() ? (
           <IconButton
             style={styles.toolbarButton}
             iconStyle={styles.toolbarButtonIcon}
-            onClick={onCloseOverlay}
+            onClick={onOpenExportDialog}
           >
-            <DefaultCloseIcon />
+            <DownloadIcon />
           </IconButton>
-        </div>
-        <div style={{ ...styles.toolbar, left: 5, right: undefined }}>
-          {isDrilledDown ? (
-            <IconButton
-              style={{ ...styles.toolbarButton }}
-              iconStyle={styles.toolbarButtonIcon}
-              onClick={onUnDrillDown}
-            >
-              <BackIcon />
-            </IconButton>
-          ) : null}
-        </div>
-      </>
+        ) : null}
+        <IconButton
+          style={styles.toolbarButton}
+          iconStyle={styles.toolbarButtonIcon}
+          onClick={onCloseOverlay}
+        >
+          {CloseIcon ? <CloseIcon /> : <DefaultCloseIcon />}
+        </IconButton>
+      </div>
     );
   }
 
@@ -253,29 +227,11 @@ export class EnlargedDialogContent extends PureComponent {
     );
   }
 
-  renderDrillDown() {
-    const { drillDownContent, isLoading, isDrilledDown, isDrillDownContent } = this.props;
-    if (isDrillDownContent) return null;
-    if (!drillDownContent) return isDrilledDown ? <LoadingDrillDown /> : null;
-    if (isLoading) return <LoadingDrillDown />;
-    return (
-      <div style={styles.drillDownWrapper}>
-        <EnlargedDialogContent
-          {...this.props}
-          exportRef={null} // Drilled down overlays can't export at the moment
-          viewContent={drillDownContent}
-          drillDownContent={null}
-          isDrillDownContent
-        />
-      </div>
-    );
-  }
-
   render() {
     if (!this.props.viewContent) return <LoadingIndicator />;
 
     const isMatrix = getIsMatrix(this.props.viewContent);
-    const { isExporting, exportRef, viewContent } = this.props;
+    const { isExporting, exportRef, viewContent, drillDownOverlay } = this.props;
 
     const contentStyle = {
       overflowY: isExporting ? 'visible' : 'auto',
@@ -300,7 +256,7 @@ export class EnlargedDialogContent extends PureComponent {
         <DialogContent style={contentStyle}>
           <div style={getBodyStyle()}>
             {this.renderBody()}
-            {this.renderDrillDown()}
+            {drillDownOverlay}
           </div>
           {this.renderPeriodRange()}
         </DialogContent>
@@ -380,54 +336,39 @@ const styles = {
     fontSize: 10,
     marginLeft: 20,
   },
-  drillDownWrapper: {
-    backgroundColor: DARK_BLUE,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    overflowY: 'auto',
-    maxHeight: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    zIndex: DIALOG_Z_INDEX + 1, // above export buttons.
-  },
-  progressIndicator: {
-    alignSelf: 'center',
-    marginTop: 50,
-  },
 };
 
 EnlargedDialogContent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
-  drillDownContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onOpenExportDialog: PropTypes.func,
   organisationUnitName: PropTypes.string,
   onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
+  isDrilledDown: PropTypes.bool,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
+  isVisible: PropTypes.bool,
   isExporting: PropTypes.bool,
+  drillDownOverlay: PropTypes.element,
+  CloseIcon: PropTypes.func,
   exportRef: PropTypes.object,
-  isDrilledDown: PropTypes.bool,
-  isDrillDownContent: PropTypes.bool,
-  onUnDrillDown: PropTypes.func,
+  toolbarStyle: PropTypes.shape({}),
 };
 
 EnlargedDialogContent.defaultProps = {
   onDrillDown: () => {},
-  onUnDrillDown: () => {},
   onSetDateRange: () => {},
+  isDrilledDown: false,
   isLoading: false,
   errorMessage: null,
+  isVisible: false,
   isExporting: false,
+  drillDownOverlay: null,
   organisationUnitName: '',
   onOpenExportDialog: null,
+  CloseIcon: DefaultCloseIcon,
+  toolbarStyle: {},
   viewContent: null,
-  drillDownContent: null,
   exportRef: null,
-  isDrilledDown: false,
-  isDrillDownContent: false,
 };

@@ -9,14 +9,12 @@
  * History middleware. This specifies the interface between the site and the url
  */
 
-import moment from 'moment';
 import {
   CLEAR_MEASURE,
   CLOSE_ENLARGED_DIALOG,
   GO_HOME,
   OPEN_ENLARGED_DIALOG,
   SET_DASHBOARD_GROUP,
-  SET_ENLARGED_DIALOG_DATE_RANGE,
   SET_MEASURE,
   SET_ORG_UNIT,
   SET_PROJECT,
@@ -58,22 +56,8 @@ export const historyMiddleware = store => next => action => {
     case OPEN_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewId);
       break;
-    case SET_ENLARGED_DIALOG_DATE_RANGE:
-      // Drill down dates are handled in normal redux state
-      if (action.drillDownLevel === 0) {
-        dispatchLocationUpdate(
-          store,
-          URL_COMPONENTS.REPORT_PERIOD,
-          convertDateRangeToUrlPeriodString({
-            startDate: moment(action.startDate),
-            endDate: moment(action.endDate),
-          }),
-        );
-      }
-      break;
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT_PERIOD, null);
       break;
     case SET_MEASURE: {
       const { startDate, endDate, periodGranularity } =
