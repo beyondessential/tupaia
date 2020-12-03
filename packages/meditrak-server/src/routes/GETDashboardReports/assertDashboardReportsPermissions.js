@@ -8,6 +8,7 @@ import {
   createDashboardGroupDBFilter,
   hasDashboardGroupsPermissions,
 } from '../GETDashboardGroups/assertDashboardGroupsPermissions';
+import { mergeFilter } from '../utilities';
 
 export const assertDashboardReportsPermissions = async (
   accessPolicy,
@@ -34,6 +35,8 @@ export const createDashboardReportDBFilter = async (accessPolicy, models, criter
     return criteria;
   }
 
+  const dbConditions = { ...criteria };
+
   // Pull the list of dashboard groups we have access to, then pull the dashboard reports
   // we have permission to from that
   const dashboardGroupsConditions = await createDashboardGroupDBFilter(accessPolicy, models);
@@ -42,10 +45,10 @@ export const createDashboardReportDBFilter = async (accessPolicy, models, criter
     permittedDashboardGroups.map(dg => dg.dashboardReports),
   );
 
-  const dbConditions = {
-    'dashboardReport.id': permittedDashboardReportIds,
-    ...criteria,
-  };
+  dbConditions['dashboardReport.id'] = mergeFilter(
+    permittedDashboardReportIds,
+    dbConditions['dashboardReport.id'],
+  );
 
   return dbConditions;
 };
