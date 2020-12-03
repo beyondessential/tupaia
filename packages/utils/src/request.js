@@ -4,6 +4,7 @@
  */
 
 import nodeFetch from 'node-fetch';
+import { CustomError } from './errors';
 
 const DEFAULT_MAX_WAIT_TIME = 45 * 1000; // 45 seconds in milliseconds
 
@@ -15,7 +16,7 @@ const buildParameterString = (key, value) => {
 
 export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
   const queryParamsString = Object.entries(queryParams || {})
-    .filter(([key, value]) => value !== undefined && value !== null)
+    .filter(([, value]) => value !== undefined && value !== null)
     .map(([key, value]) => buildParameterString(key, value))
     .join('&');
 
@@ -64,9 +65,38 @@ export const fetchWithTimeout = (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIM
 export const asynchronouslyFetchValuesForObject = async objectSpecification => {
   const returnObject = {};
   await Promise.all(
-    Object.entries(objectSpecification).map(async ([key, asyncronouslyFetchValue]) => {
-      returnObject[key] = await asyncronouslyFetchValue();
+    Object.entries(objectSpecification).map(async ([key, asynchronouslyFetchValue]) => {
+      returnObject[key] = await asynchronouslyFetchValue();
     }),
   );
   return returnObject;
+};
+
+const throwCustomError = (status, errorMessage) => {
+  const statusCode = status || 500;
+  throw new CustomError({
+    responseStatus: statusCode,
+    responseText: errorMessage,
+  });
+};
+
+export const verifyResponseStatus = async response => {
+  if (!response.ok) {
+    let responseJson;
+    try {
+      responseJson = await response.json();
+    } catch (error) {
+      throw new Error(`Network error ${response.status}`);
+    }
+    if (
+      response.status &&
+      (response.status < 200 || response.status >= 300) &&
+      !responseJson.error
+    ) {
+      throwCustomError(response.status, responseJson.message);
+    }
+    if (responseJson.error) {
+      throwCustomError(response.status, responseJson.error);
+    }
+  }
 };

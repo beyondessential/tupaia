@@ -5,12 +5,12 @@
 import faker from 'faker';
 import { getCountryName } from '../utils';
 
-export class FakeAPI {
+export const FakeAPI = {
   sleep(delay = 0) {
     return new Promise(resolve => {
       setTimeout(resolve, delay);
     });
-  }
+  },
 
   async post() {
     await this.sleep(2000);
@@ -18,7 +18,7 @@ export class FakeAPI {
     return {
       status: 'success',
     };
-  }
+  },
 
   async get(endpoint, options) {
     // console.log('OPTIONS', options);
@@ -38,9 +38,9 @@ export class FakeAPI {
         data.push(this.countryWeek(i));
       }
     } else if (endpoint === 'sites') {
-      for (let i = 0; i < 7; i++) {
-        data.push(this.siteWeek());
-      }
+      // for (let i = 0; i < 7; i++) {
+      //   data.push(this.siteWeek());
+      // }
     } else if (endpoint === 'alerts') {
       for (let i = 0; i < 10; i++) {
         data.push(this.alert());
@@ -78,7 +78,7 @@ export class FakeAPI {
       data,
       count: data.length,
     };
-  }
+  },
 
   makeSyndrome(code, name) {
     const percentageChange = faker.random.number({
@@ -96,7 +96,7 @@ export class FakeAPI {
       }),
       isAlert: percentageChange > 5,
     };
-  }
+  },
 
   syndromes() {
     return [
@@ -104,9 +104,9 @@ export class FakeAPI {
       this.makeSyndrome('dia', 'Diarrhoea (DIA)'),
       this.makeSyndrome('ili', 'Influenza-like Illness (ILI)'),
       this.makeSyndrome('pf', 'Prolonged Fever (PF)'),
-      this.makeSyndrome('dil', 'Dengue-like Illness (DIL)'),
+      this.makeSyndrome('dli', 'Dengue-like Illness (DLI)'),
     ];
-  }
+  },
 
   affectedSite() {
     const countryWeek = this.countryWeek(0);
@@ -119,7 +119,7 @@ export class FakeAPI {
       status: faker.random.arrayElement(['alert', 'outbreak']),
       sites,
     };
-  }
+  },
 
   countryWeek(index) {
     return {
@@ -147,7 +147,7 @@ export class FakeAPI {
       syndromes: this.syndromes(),
       status: faker.random.arrayElement(['Submitted', 'Overdue']),
     };
-  }
+  },
 
   message() {
     const user = this.user();
@@ -160,7 +160,7 @@ export class FakeAPI {
         content: faker.lorem.sentences(),
       },
     };
-  }
+  },
 
   update() {
     const user = this.user();
@@ -170,7 +170,7 @@ export class FakeAPI {
       type: faker.random.arrayElement(['note', 'statusChange']),
       dateTime: faker.date.between('2020-01-01', '2020-04-31'),
     };
-  }
+  },
 
   activity() {
     const update1 = this.update();
@@ -184,7 +184,7 @@ export class FakeAPI {
       dateTime: faker.date.between('2020-04-01', '2020-04-31'),
       updates: [update1, update2],
     };
-  }
+  },
 
   siteWeek() {
     const city = faker.address.city();
@@ -207,7 +207,7 @@ export class FakeAPI {
       },
       syndromes: this.syndromes(),
     };
-  }
+  },
 
   country(countryCode) {
     return {
@@ -220,20 +220,20 @@ export class FakeAPI {
       }),
       syndromes: this.syndromes(),
     };
-  }
+  },
 
   alert() {
     return {
       id: faker.random.uuid(),
       name: faker.address.country(),
       countryCode: faker.address.countryCode().toLowerCase(),
-      syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DIL']),
+      syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DLI']),
       syndromeDisplayName: faker.random.arrayElement([
         'Acute Fever and Rash (AFR)',
         'Diarrhoea (DIA)',
         'Influenza-like Illness (ILI)',
         'Prolonged Fever (PF)',
-        'Dengue-like Illness (DIL)',
+        'Dengue-like Illness (DLI)',
       ]),
       weekNumber: faker.random.number({
         min: 1,
@@ -250,7 +250,7 @@ export class FakeAPI {
         max: 100,
       }),
     };
-  }
+  },
 
   outbreak() {
     const alert = this.alert();
@@ -263,7 +263,7 @@ export class FakeAPI {
         max: 300,
       }),
     };
-  }
+  },
 
   user() {
     return {
@@ -274,5 +274,5 @@ export class FakeAPI {
       email: faker.internet.email(),
       city: faker.address.city(),
     };
-  }
-}
+  },
+};

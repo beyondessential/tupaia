@@ -3,9 +3,14 @@
 DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
-MAX_LENGTH=56
 INVALID_CHARS=('/' '\' '.' '&' '?')
-RESERVED_ENDINGS=(admin aggregation api config export mobile tonga-aggregation www)
+SUBDOMAIN_SUFFIXES=(admin aggregation api config export mobile psss psss-api report-api tonga-aggregation www)
+
+# Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
+# to create deployment urls, eg {{branchName}}-tonga-aggregation.tupaia.org
+MAX_SUBDOMAIN_LENGTH=63
+MAX_SUBDOMAIN_SUFFIX_LENGTH=$(get_max_length "${SUBDOMAIN_SUFFIXES[@]}")
+MAX_BRANCH_NAME_LENGTH=$((MAX_SUBDOMAIN_LENGTH - ${MAX_SUBDOMAIN_SUFFIX_LENGTH}))
 
 function get_branch_name() {
     local branch_name="$CI_BRANCH"
@@ -20,9 +25,9 @@ function get_branch_name() {
 function validate_name_ending() {
     local branch_name=$1
 
-    for reserved_ending in ${RESERVED_ENDINGS[@]}; do
-        if [[ "$branch_name" == *$reserved_ending ]]; then
-            log_error "❌ Invalid branch name ending: '$reserved_ending'"
+    for suffix in ${SUBDOMAIN_SUFFIXES[@]}; do
+        if [[ "$branch_name" == *$suffix ]]; then
+            log_error "❌ Invalid branch name ending: '$suffix'"
             exit 1
         fi
     done
@@ -32,8 +37,8 @@ function validate_name_length() {
     local branch_name=$1
     local name_length=${#branch_name}
 
-    if [[ $name_length -gt MAX_LENGTH ]]; then
-        log_error "❌ Branch name is too long, must be $MAX_LENGTH characters max"
+    if [[ $name_length -gt MAX_BRANCH_NAME_LENGTH ]]; then
+        log_error "❌ Branch name is too long, must be $MAX_BRANCH_NAME_LENGTH characters max"
         exit 1
     fi
 }

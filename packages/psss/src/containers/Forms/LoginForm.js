@@ -2,14 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Button, Checkbox } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
-import { login, checkIsPending, checkIsError, getError } from '../../store';
+import { login, getCurrentUser } from '../../store';
 import * as COLORS from '../../constants/colors';
 
 const ErrorMessage = styled.p`
@@ -30,16 +30,38 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
-const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  ERROR: 'error',
+};
+
+const LoginFormComponent = ({ user, onLogin }) => {
+  const [status, setStatus] = useState(STATUS.IDLE);
+  const [errorMessage, setErrorMessage] = useState(null);
   const { handleSubmit, register, errors } = useForm();
+
+  const onSubmit = handleSubmit(async ({ email, password, rememberMe }) => {
+    setStatus(STATUS.LOADING);
+    setErrorMessage(null);
+    try {
+      window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
+      await onLogin({ email, password });
+    } catch (error) {
+      setErrorMessage(error.message);
+      setStatus(STATUS.ERROR);
+    }
+  });
+
   return (
-    <form onSubmit={handleSubmit(({ email, password }) => onLogin({ email, password }))} noValidate>
+    <form onSubmit={onSubmit} noValidate>
       <Heading component="h4">Enter your email and password</Heading>
-      {isError && <ErrorMessage>{error}</ErrorMessage>}
+      {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <TextField
         name="email"
         placeholder="Email"
         type="email"
+        defaultValue={user?.email}
         error={!!errors.email}
         helperText={errors.email && errors.email.message}
         inputRef={register({
@@ -61,13 +83,13 @@ const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         })}
       />
       <Checkbox
-        name="remember"
+        name="rememberMe"
         color="primary"
         label="Remember me"
         inputRef={register}
         defaultValue={false}
       />
-      <StyledButton type="submit" fullWidth isLoading={isPending}>
+      <StyledButton type="submit" fullWidth isLoading={status === STATUS.LOADING}>
         Login to your account
       </StyledButton>
     </form>
@@ -75,24 +97,22 @@ const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
 };
 
 LoginFormComponent.propTypes = {
-  isError: PropTypes.any.isRequired,
-  isPending: PropTypes.bool.isRequired,
-  error: PropTypes.string,
   onLogin: PropTypes.func.isRequired,
+  user: PropTypes.PropTypes.shape({
+    email: PropTypes.string,
+  }),
 };
 
 LoginFormComponent.defaultProps = {
-  error: null,
+  user: null,
 };
 
 const mapStateToProps = state => ({
-  isPending: checkIsPending(state),
-  isError: checkIsError(state),
-  error: getError(state),
+  user: getCurrentUser(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  onLogin: ({ email, password }) => dispatch(login(email, password)),
+  onLogin: ({ email, password }) => dispatch(login({ email, password })),
 });
 
 export const LoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginFormComponent);
