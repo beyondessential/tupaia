@@ -32,13 +32,6 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const STATUS = {
-  DEFAULT: 'default',
-  UPCOMING: 'upcoming',
-  DUE_TODAY: 'today',
-  OVERDUE: 'overdue',
-};
-
 const getDisplayDays = days => `${Math.abs(days)} day${days > 1 ? 's' : ''}`;
 
 const HeaderComponent = ({ status, days }) => {
