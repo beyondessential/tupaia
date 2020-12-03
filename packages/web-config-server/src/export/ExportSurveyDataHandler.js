@@ -25,6 +25,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
       surveyCodes,
       startDate,
       endDate,
+      timeZone,
     } = this.query;
 
     const sessionCookieName = USER_SESSION_CONFIG.cookieName;
@@ -50,21 +51,23 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const sheetNames = [];
     const sheets = {};
+    const {name: organisationUnitName} = await this.models.entity.findOne({code: data.organisationUnitCode});
+    const reportTitle = `${data.name}, ${organisationUnitName}`;
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
       const header = surveyData.data.columns.length
         ? `Data ${this.getExportDatesString(startDate, endDate)}`
         : `No data for ${surveyName} ${this.getExportDatesString(startDate, endDate)}`;
 
-      const headerData = [[header]];
+      const titleAndHeaderData = [[`${reportTitle}: ${surveyName}`], [header]];
       // Using array of arrays (aoa) input as transformations like mergeSurveys
       // increases the likelyhood of columns with same title (leads to missing keys in object json (aoo))
       const formattedData = surveyData.data.columns.length
-        ? formatMatrixDataForExcel(surveyData.data)
+        ? formatMatrixDataForExcel(surveyData.data, timeZone)
         : [];
 
-      // Header
-      let sheet = xlsx.utils.aoa_to_sheet(headerData);
+      // Header and title
+      let sheet = xlsx.utils.aoa_to_sheet(titleAndHeaderData);
 
       const { skipHeader = true } = surveyData;
 

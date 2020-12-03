@@ -99,6 +99,14 @@ export const convertUrlPeriodStringToDateRange = (
   granularity = GRANULARITIES.DAY,
 ) => {
   const [startDate, endDate] = periodString.split('-');
+
+  if (!startDate) {
+    return {
+      startDate: null,
+      endDate: null,
+    };
+  }
+
   const { urlFormat } = GRANULARITY_CONFIG[granularity];
 
   const momentStartDate = moment(startDate, urlFormat);
