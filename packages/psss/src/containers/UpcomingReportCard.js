@@ -18,6 +18,7 @@ import {
   getFormattedEndByPeriod,
 } from '../utils';
 import { useUpcomingReport } from '../api/queries';
+import { REPORT_STATUSES } from '../constants';
 
 const StyledButton = styled(Button)`
   margin-top: 1rem;
@@ -38,41 +39,58 @@ const STATUS = {
   OVERDUE: 'overdue',
 };
 
-const Header = {
-  [STATUS.DEFAULT]: ({ days }) => <CardHeader title={`Confirmation due in ${days}`} />,
-  [STATUS.UPCOMING]: ({ days }) => (
-    <CardHeader
-      color="error"
-      title={`Confirmation due in ${days}`}
-      label={<Warning color="error" />}
-    />
-  ),
-  [STATUS.OVERDUE]: ({ days }) => (
-    <CardHeader
-      color="error"
-      title={`Confirmation overdue by ${days}`}
-      label={<Warning color="error" />}
-    />
-  ),
-  [STATUS.DUE_TODAY]: () => (
-    <CardHeader color="error" title="Confirmation due today" label={<Warning color="error" />} />
-  ),
+const getDisplayDays = days => `${Math.abs(days)} day${days > 1 ? 's' : ''}`;
+
+const HeaderComponent = ({ status, days }) => {
+  const displayDays = getDisplayDays(days);
+
+  if (status === REPORT_STATUSES.UPCOMING && days <= 3) {
+    return (
+      <CardHeader
+        color="error"
+        title={`Confirmation due in ${displayDays}`}
+        label={<Warning color="error" />}
+      />
+    );
+  }
+
+  if (status === REPORT_STATUSES.UPCOMING && days === 0) {
+    return (
+      <CardHeader color="error" title="Confirmation due today" label={<Warning color="error" />} />
+    );
+  }
+
+  if (status === REPORT_STATUSES.OVERDUE) {
+    return (
+      <CardHeader
+        color="error"
+        title={`Confirmation overdue by ${displayDays}`}
+        label={<Warning color="error" />}
+      />
+    );
+  }
+
+  return <CardHeader title={`Confirmation due in ${displayDays}`} />;
+};
+
+HeaderComponent.propTypes = {
+  status: PropTypes.string.isRequired,
+  days: PropTypes.number.isRequired,
 };
 
 export const UpcomingReportCardComponent = ({ handleOpen }) => {
   const { countryCode } = useParams();
-  const { isLoading, period, reportStatus, displayDays } = useUpcomingReport(countryCode);
+  const { isLoading, period, reportStatus, days } = useUpcomingReport(countryCode);
 
   if (isLoading) {
     return <Card variant="outlined" style={{ height: 300 }} />;
   }
 
-  const HeaderComponent = Header[reportStatus];
   const buttonText = reportStatus === STATUS.DEFAULT ? 'View Now' : 'Review and Confirm Now';
 
   return (
     <Card variant="outlined">
-      <HeaderComponent days={displayDays} />
+      <HeaderComponent days={days} status={reportStatus} />
       <CardContent>
         <Typography variant="h4">Week {getWeekNumberByPeriod(period)}</Typography>
         <Typography variant="h4" gutterBottom>

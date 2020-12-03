@@ -5,35 +5,9 @@
 
 import { getCurrentPeriod } from '@tupaia/utils';
 import { useQuery } from 'react-query';
-import { subtractPeriod } from '../../utils';
+import { subtractPeriod, getDaysRemaining } from '../../utils';
 import { get } from '../api';
-import { getISODay } from 'date-fns';
-
-const DUE_ISO_DAY = 3; // wednesday
-
-const STATUS = {
-  DEFAULT: 'default',
-  UPCOMING: 'upcoming',
-  DUE_TODAY: 'today',
-  OVERDUE: 'overdue',
-};
-
-const getDueStatus = numberOfDays => {
-  if (numberOfDays > 0) {
-    return STATUS.UPCOMING;
-  } else if (numberOfDays < 0) {
-    return STATUS.OVERDUE;
-  }
-
-  return STATUS.DUE_TODAY;
-};
-
-const getDaysRemaining = () => {
-  const isoDay = getISODay(new Date());
-  return DUE_ISO_DAY - isoDay;
-};
-
-const getDisplayDays = days => `${Math.abs(days)} day${days > 1 ? 's' : ''}`;
+import { REPORT_STATUSES } from '../../constants';
 
 export const useUpcomingReport = countryCode => {
   const currentPeriod = getCurrentPeriod('WEEK');
@@ -53,32 +27,29 @@ export const useUpcomingReport = countryCode => {
     return query;
   }
 
-  const isSubmitted = data.length > 0;
+  const isConfirmed = data.length > 0;
 
-  const daysRemaining = getDaysRemaining();
+  const days = getDaysRemaining();
 
-  if (isSubmitted) {
-    const totalDays = daysRemaining + 7;
-    const status = getDueStatus(totalDays);
+  if (isConfirmed) {
+    const totalDays = days + 7;
 
     return {
       ...query,
       data,
-      reportStatus: status,
+      reportStatus: REPORT_STATUSES.UPCOMING,
       period: currentPeriod,
-      daysRemaining: totalDays,
-      displayDays: getDisplayDays(totalDays),
+      days: totalDays,
     };
   }
 
-  const status = getDueStatus(daysRemaining);
+  const status = days > 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
 
   return {
     ...query,
     data,
     reportStatus: status,
     period: lastPeriod,
-    daysRemaining: daysRemaining,
-    displayDays: getDisplayDays(daysRemaining),
+    days,
   };
 };

@@ -4,26 +4,24 @@
  */
 
 import { useLiveTableQuery } from '../useTableQuery';
-import { subtractPeriod } from '../../utils';
-import { getISODay } from 'date-fns';
+import { getDaysRemaining, subtractPeriod } from '../../utils';
+import { REPORT_STATUSES } from '../../constants';
 
-const STATUSES = {
-  SUBMITTED: 'Submitted',
-  CONFIRMED: 'Confirmed',
-  OVERDUE: 'Overdue',
-};
-
-const DUE_ISO_DAY = 3; // wednesday
-
-const getDaysRemaining = () => {
-  const isoDay = getISODay(new Date());
-  return DUE_ISO_DAY - isoDay;
-};
-
-const fillWeeklyData = (data, confirmedData, period, numberOfWeeks) => {
+/**
+ * Get the weekly reports data by combining the un-confirmed and confirmed weekly reports
+ * and fill in any missing weeks with empty rows
+ *
+ * @param unconfirmedData
+ * @param confirmedData
+ * @param period
+ * @param numberOfWeeks
+ * @returns []
+ */
+const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
   let currentWeekIsSubmitted = false;
 
-  const finalData = [...Array(numberOfWeeks + 1)].map((code, index) => {
+  // Set up array with an extra week and later drop the first or last week based on whether or not currentWeekIsSubmitted
+  const reportData = [...Array(numberOfWeeks + 1)].map((code, index) => {
     const newPeriod = subtractPeriod(period, index);
 
     const confirmedReport = confirmedData.find(report => report.period === newPeriod);
@@ -32,30 +30,28 @@ const fillWeeklyData = (data, confirmedData, period, numberOfWeeks) => {
       if (index === 0) {
         currentWeekIsSubmitted = true;
       }
-      return { ...confirmedReport, status: STATUSES.SUBMITTED };
+      return { ...confirmedReport, status: REPORT_STATUSES.SUBMITTED };
     }
 
-    const report = data.find(report => report.period === newPeriod);
+    const report = unconfirmedData.find(r => r.period === newPeriod);
     if (report) {
-      let reportStatus = STATUSES.OVERDUE;
+      // is overdue unless it is this weeks report and it is before wednesday
+      const reportStatus =
+        newPeriod === period && getDaysRemaining() > 0
+          ? REPORT_STATUSES.SUBMITTED
+          : REPORT_STATUSES.OVERDUE;
 
-      // is overdue unless this is this weeks report and it is before wednesday
-      if (newPeriod === period) {
-        const daysRemaining = getDaysRemaining();
-        if (daysRemaining < 0) {
-          reportStatus = STATUSES.SUBMITTED;
-        }
-      }
       return { ...report, status: reportStatus };
     }
 
     return {
       period: newPeriod,
-      status: STATUSES.OVERDUE,
+      status: REPORT_STATUSES.OVERDUE,
     };
   });
 
-  return currentWeekIsSubmitted ? [...finalData.slice(0, -1)] : [...finalData.slice(1)];
+  // drop the first or last week based on whether or not currentWeekIsSubmitted
+  return currentWeekIsSubmitted ? [...reportData.slice(0, -1)] : [...reportData.slice(1)];
 };
 
 export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
@@ -69,7 +65,7 @@ export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
     params: { startWeek, endWeek: period },
   });
 
-  const data = fillWeeklyData(query.data, confirmedQuery.data, period, numberOfWeeks);
+  const data = getWeeklyReportsData(query.data, confirmedQuery.data, period, numberOfWeeks);
 
   return {
     ...query,

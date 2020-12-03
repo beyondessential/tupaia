@@ -13,6 +13,7 @@ import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
 import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
 import { AlertCell, SitesReportedCell } from '../../components';
+import { REPORT_STATUSES } from '../../constants';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -59,7 +60,7 @@ const Status = styled.div`
 `;
 
 const StatusCell = ({ status }) => {
-  if (status === 'Overdue') {
+  if (status === REPORT_STATUSES.OVERDUE) {
     return (
       <Status color={COLORS.ORANGE}>
         <Alarm />
@@ -77,11 +78,11 @@ const StatusCell = ({ status }) => {
 };
 
 StatusCell.propTypes = {
-  status: PropTypes.string.isRequired,
+  status: PropTypes.string,
 };
 
 StatusCell.defaultProps = {
-  status: 'Submitted',
+  status: REPORT_STATUSES.SUBMITTED,
 };
 
 const countryColumns = [
