@@ -13,7 +13,7 @@ import {
   SitesReportedCell,
   WeekAndDateCell,
 } from '../../components';
-import { useTableQuery } from '../../hooks';
+import { useTableQuery } from '../../api';
 
 const countrySummaryTableColumns = [
   {
@@ -54,9 +54,9 @@ const countrySummaryTableColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
+    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
 ];

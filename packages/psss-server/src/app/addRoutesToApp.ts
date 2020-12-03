@@ -6,7 +6,14 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { PsssRequest } from '../types';
-import { LoginRoute, LogoutRoute, TestRoute } from '../routes';
+import {
+  LoginRoute,
+  LogoutRoute,
+  TestRoute,
+  ConfirmedWeeklyReportRoute,
+  ConfirmedCountryWeeklyReportRoute,
+  CountryWeeklyReportRoute,
+} from '../routes';
 import { Route } from '../routes/Route';
 
 const handleWith = (RouteClass: typeof Route) => (
@@ -39,6 +46,15 @@ export function addRoutesToApp(app: Express) {
    * GET routes
    */
   app.get('/v1/test', handleWith(TestRoute));
+  app.get('/v1/confirmedWeeklyReport', handleWith(ConfirmedWeeklyReportRoute));
+  app.get(
+    '/v1/confirmedWeeklyReport/:organisationUnitCode',
+    handleWith(ConfirmedCountryWeeklyReportRoute),
+  );
+  app.get(
+    '/v1/weeklyReport/:organisationUnitCode',
+    handleWith(CountryWeeklyReportRoute),
+  );
 
   /**
    * POST routes
