@@ -19,7 +19,7 @@ exports.setup = function (options, seedLink) {
 const COUNTRY_CODE = 'PW';
 const PROJECT_CODE = 'olangch_palau';
 const PROJECT_NAME = 'MoH Project Olangch';
-const DASHBOARDGROUP_NAME = 'Olangch';
+const DASHBOARDGROUP_NAME = 'General';
 const DASHBOARDGROUP_CODE = 'OLANGCH_PALAU_Project';
 const DASHBOARDGROUP_COUNTRY_CODE = 'PW_Olangch_Country';
 const USER_GROUP = 'Donor';
@@ -76,7 +76,7 @@ exports.up = async function (db) {
     default_measure: '126,171',
     dashboard_group_name: DASHBOARDGROUP_NAME,
     user_groups: `{${USER_GROUP}}`,
-    logo_url: null, // 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/olangch_palau_logo.png',
+    logo_url: '', // 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/olangch_palau_logo.png',
     entity_id: await codeToId(db, 'entity', PROJECT_CODE),
     entity_hierarchy_id: await hierarchyNameToId(db, PROJECT_CODE),
   });
