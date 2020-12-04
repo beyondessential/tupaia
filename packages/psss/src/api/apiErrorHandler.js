@@ -13,7 +13,7 @@ export const apiErrorHandler = store => {
     },
     async error => {
       if (error.response.status === 401) {
-        await store.dispatch(logout());
+        await store.dispatch(logout(error.response.data.error));
         return Promise.resolve(error);
       }
       return Promise.reject(error);
