@@ -20,7 +20,7 @@ export const ExpandableTable = React.memo(({ Body, SubComponent, isFetching, ...
   const TableBody = tableBodyProps => (
     <Body {...tableBodyProps} SubComponent={SubComponent} isFetching={isFetching} />
   );
-  return <StyledTable Body={TableBody} {...tableProps} isFetching={false} />;
+  return <StyledTable Body={TableBody} {...tableProps} isFetching={isFetching} />;
 });
 
 ExpandableTable.propTypes = {

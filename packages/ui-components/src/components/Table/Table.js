@@ -71,6 +71,7 @@ export const Table = React.memo(
           {...{
             columns,
             page,
+            isFetching,
             count,
             rowsPerPage,
             onChangePage,

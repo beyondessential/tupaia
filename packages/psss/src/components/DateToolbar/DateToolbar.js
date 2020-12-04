@@ -7,7 +7,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIsFetching } from 'react-query';
 import { connect } from 'react-redux';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -40,17 +39,18 @@ const Container = styled(FlexSpaceBetween)`
   }
 `;
 
-const Loader = styled(CircularProgress)`
-  margin-right: 1rem;
-  margin-left: 1rem;
-`;
-
 const StyledButton = styled(SmallButton)`
   width: 100px;
   height: 35px;
   background-color: rgba(0, 0, 0, 0.15);
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
   transition: color 0.2s ease, background-color 0.2s ease;
+
+  &.Mui-disabled {
+    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.6);
+  }
 
   &:hover {
     background: rgba(0, 0, 0, 0.25);
@@ -151,8 +151,8 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
           <ArrowButton onClick={decreaseWeek} disabled={!!isFetching || isPrevDisabled}>
             <ChevronLeftIcon />
           </ArrowButton>
-          <StyledButton onClick={setCurrentWeek} isDisabled={isFetching}>
-            {isFetching ? <Loader size={21} thickness={5} /> : <span>This Week</span>}
+          <StyledButton onClick={setCurrentWeek} disabled={isFetching}>
+            This Week
           </StyledButton>
           <ArrowButton onClick={increaseWeek} disabled={!!isFetching || isNextDisabled}>
             <ChevronRightIcon />

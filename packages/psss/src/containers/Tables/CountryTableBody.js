@@ -13,14 +13,15 @@ import { SiteSummaryTable } from './SiteSummaryTable';
 import { setActiveWeek, getActiveWeek } from '../../store';
 
 const StyledTableBody = styled(MuiTableBody)`
-  opacity: ${props => (props.isFetching ? '0.5' : 1)};
+  pointer-events: ${props => (props.isfetching ? 'none' : 'initial')};
+  opacity: ${props => (props.isfetching ? '0.5' : 1)};
 `;
 
 const TableBodyComponent = React.memo(
   ({ data, columns, activeWeek, toggleTableRow, isFetching }) => (
-    <StyledTableBody isFetching={isFetching}>
+    <StyledTableBody isfetching={isFetching}>
       {data.map((rowData, rowIndex) => {
-        const period = rowData.period;
+        const { period } = rowData;
         const expanded = activeWeek === period;
 
         const handleRowClick = () => {
@@ -52,10 +53,12 @@ TableBodyComponent.propTypes = {
   data: PropTypes.array.isRequired,
   activeWeek: PropTypes.string,
   toggleTableRow: PropTypes.func.isRequired,
+  isFetching: PropTypes.bool,
 };
 
 TableBodyComponent.defaultProps = {
   activeWeek: null,
+  isFetching: false,
 };
 
 const mapStateToProps = state => ({

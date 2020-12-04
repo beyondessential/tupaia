@@ -144,7 +144,7 @@ export const CountryTable = React.memo(
   ({ data, isLoading, errorMessage, isFetching, Paginator }) => {
     return (
       <ExpandableTable
-        // isFetching={!isLoading && isFetching}
+        isFetching={!isLoading && isFetching}
         isLoading={isLoading}
         columns={countryColumns}
         data={data}
