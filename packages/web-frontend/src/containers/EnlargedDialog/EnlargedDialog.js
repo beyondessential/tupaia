@@ -10,7 +10,6 @@ import moment from 'moment';
 import styled from 'styled-components';
 import Dialog from '@material-ui/core/Dialog';
 
-import { getBrowserTimeZone } from '@tupaia/utils';
 import { exportToPng, exportToExcel } from '../../utils/exports';
 import {
   attemptDrillDown,
@@ -20,7 +19,7 @@ import {
 import { DrillDownOverlay } from '../DrillDownOverlay';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { isMobile, sleep, stringToFilename } from '../../utils';
+import { isMobile, sleep, stringToFilename, getBrowserTimeZone } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
 import {
   selectCurrentInfoViewKey,
