@@ -7,6 +7,7 @@
 
 import queryString from 'query-string';
 import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import { getBrowserTimeZone } from '@tupaia/utils';
 import request from './utils/request';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -130,7 +131,7 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getTimeZone } from './utils';
+import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -724,7 +725,7 @@ function* fetchViewData(parameters, errorHandler) {
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    timeZone: getTimeZone(),
+    timeZone: getBrowserTimeZone(),
     ...extraUrlParameters,
   };
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;

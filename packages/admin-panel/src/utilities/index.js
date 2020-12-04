@@ -8,5 +8,4 @@ export { createNestedReducer } from './createNestedReducer';
 export { convertSearchTermToFilter } from './convertSearchTermToFilter';
 export { makeSubstitutionsInString } from './makeSubstitutionsInString';
 export { usePortalWithCallback } from './usePortalWithCallback';
-export { getTimeZone } from './getTimeZone';
 export * from './pretty';

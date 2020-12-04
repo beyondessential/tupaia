@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { getTimeZone } from '../../utilities';
+import { getBrowserTimeZone } from '@tupaia/utils';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
 
@@ -67,7 +67,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
       exportEndpoint: 'surveyResponse',
       fileName: 'Survey Response',
       extraQueryParameters: {
-        timeZone: getTimeZone(),
+        timeZone: getBrowserTimeZone(),
       },
     },
   },
