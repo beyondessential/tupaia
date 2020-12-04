@@ -151,7 +151,7 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
           <ArrowButton onClick={decreaseWeek} disabled={!!isFetching || isPrevDisabled}>
             <ChevronLeftIcon />
           </ArrowButton>
-          <StyledButton onClick={setCurrentWeek} disabled={isFetching}>
+          <StyledButton onClick={setCurrentWeek} disabled={!!isFetching}>
             This Week
           </StyledButton>
           <ArrowButton onClick={increaseWeek} disabled={!!isFetching || isNextDisabled}>

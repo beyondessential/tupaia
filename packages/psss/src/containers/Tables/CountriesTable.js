@@ -63,8 +63,6 @@ const countriesTableColumns = [
 export const CountriesTableComponent = ({ period, countryCodes }) => {
   const { data, isLoading, error, isFetching } = useConfirmedWeeklyReport(period, countryCodes);
 
-  console.log('fetching', isFetching);
-
   return (
     <ExpandableTable
       data={data}

@@ -79,8 +79,7 @@ export const CountrySummaryTableComponent = React.memo(({ rowData, period }) => 
 });
 
 CountrySummaryTableComponent.propTypes = {
-  startPeriod: PropTypes.string.isRequired,
-  endPeriod: PropTypes.string.isRequired,
+  period: PropTypes.string.isRequired,
   rowData: PropTypes.shape({
     organisationUnit: PropTypes.string.isRequired,
   }).isRequired,
