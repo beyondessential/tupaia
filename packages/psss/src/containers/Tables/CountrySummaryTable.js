@@ -11,7 +11,6 @@ import { COLUMN_WIDTHS } from './constants';
 import { AlertCell, SitesReportedCell, WeekAndDateCell } from '../../components';
 import { getLatestViewableWeek } from '../../store';
 import { useCountryConfirmedWeeklyReport } from '../../api';
-import { subtractPeriod } from '../../utils';
 
 const countrySummaryTableColumns = [
   {

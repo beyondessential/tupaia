@@ -16,34 +16,37 @@ import { ProfileView } from '../views/ProfileView';
 import { NotFoundView } from '../views/NotFoundView';
 import { getEntitiesAllowed, checkIsMultiCountryUser } from '../store';
 
-export const PageRoutesComponent = React.memo(({ canViewMultipleCountries, canViewCountry }) => (
-  <Switch>
-    <PrivateRoute exact path="/" authCheck={canViewMultipleCountries}>
-      <CountriesReportsView />
-    </PrivateRoute>
-    <Route path="/profile">
-      <ProfileView />
-    </Route>
-    <PrivateRoute path="/weekly-reports/:countryCode" authCheck={canViewCountry}>
-      <CountryReportsView />
-    </PrivateRoute>
-    {canViewMultipleCountries() ? (
-      <PrivateRoute path="/alerts" authCheck={canViewMultipleCountries}>
-        <AlertsOutbreaksView />
+export const PageRoutesComponent = React.memo(({ canViewMultipleCountries, canViewCountry }) => {
+  console.log('re-render app...');
+  return (
+    <Switch>
+      <PrivateRoute exact path="/" authCheck={canViewMultipleCountries}>
+        <CountriesReportsView />
       </PrivateRoute>
-    ) : (
-      <PrivateRoute path="/alerts/:countryCode" authCheck={canViewCountry}>
-        <AlertsOutbreaksView />
+      <Route path="/profile">
+        <ProfileView />
+      </Route>
+      <PrivateRoute path="/weekly-reports/:countryCode" authCheck={canViewCountry}>
+        <CountryReportsView />
       </PrivateRoute>
-    )}
-    <Route path="/unauthorised">
-      <UnauthorisedView />
-    </Route>
-    <Route>
-      <NotFoundView />
-    </Route>
-  </Switch>
-));
+      {canViewMultipleCountries() ? (
+        <PrivateRoute path="/alerts" authCheck={canViewMultipleCountries}>
+          <AlertsOutbreaksView />
+        </PrivateRoute>
+      ) : (
+        <PrivateRoute path="/alerts/:countryCode" authCheck={canViewCountry}>
+          <AlertsOutbreaksView />
+        </PrivateRoute>
+      )}
+      <Route path="/unauthorised">
+        <UnauthorisedView />
+      </Route>
+      <Route>
+        <NotFoundView />
+      </Route>
+    </Switch>
+  );
+});
 
 PageRoutesComponent.propTypes = {
   canViewMultipleCountries: PropTypes.func.isRequired,

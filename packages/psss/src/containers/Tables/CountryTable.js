@@ -161,7 +161,7 @@ CountryTable.propTypes = {
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
   errorMessage: PropTypes.string,
-  Paginator: PropTypes.node,
+  Paginator: PropTypes.any,
 };
 
 CountryTable.defaultProps = {

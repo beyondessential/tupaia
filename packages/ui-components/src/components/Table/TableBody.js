@@ -10,13 +10,13 @@ import { CondensedTableRow, TableRow as TableRowComponent } from './TableRow';
 import { tableColumnShape } from './tableColumnShape';
 
 const StyledTableBody = styled(MuiTableBody)`
-  pointer-events: ${props => (props.isfetching ? 'none' : 'initial')};
-  opacity: ${props => (props.isfetching ? '0.5' : 1)};
+  pointer-events: ${props => (props.disabled ? 'none' : 'initial')};
+  opacity: ${props => (props.disabled ? '0.5' : 1)};
 `;
 
 export const TableBody = React.memo(
   ({ data, columns, rowIdKey, TableRow, onRowClick, isFetching, className }) => (
-    <StyledTableBody isfetching={isFetching} className={className}>
+    <StyledTableBody disabled={isFetching} className={className}>
       {data.map((rowData, rowIndex) => {
         const key = rowData[rowIdKey] || rowData[columns[0].key];
         return (
