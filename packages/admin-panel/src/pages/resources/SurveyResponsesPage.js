@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { getTimeZone } from '../../utilities';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
 
@@ -65,6 +66,9 @@ export const SURVEY_RESPONSE_COLUMNS = [
     actionConfig: {
       exportEndpoint: 'surveyResponse',
       fileName: 'Survey Response',
+      extraQueryParameters: {
+        timeZone: getTimeZone(),
+      },
     },
   },
 ];
