@@ -67,7 +67,7 @@ export const CountriesTableComponent = ({ period, countryCodes }) => {
     <ExpandableTable
       data={data}
       isLoading={isLoading}
-      isFetching={isFetching}
+      isFetching={!isLoading && isFetching}
       errorMessage={error && error.message}
       columns={countriesTableColumns}
       Body={ExpandableTableBody}

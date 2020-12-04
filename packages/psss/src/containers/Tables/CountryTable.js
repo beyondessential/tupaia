@@ -6,14 +6,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { ExpandableTable } from '@tupaia/ui-components';
+import { getCurrentPeriod } from '@tupaia/utils';
+import { useParams } from 'react-router-dom';
+import { ExpandableTable, TablePaginator } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
-import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
-import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod, subtractPeriod } from '../../utils';
 import { AlertCell, SitesReportedCell } from '../../components';
 import { REPORT_STATUSES } from '../../constants';
+import { SiteSummaryTable } from './SiteSummaryTable';
+import { useCountryWeeklyReport } from '../../api/queries';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -140,33 +143,43 @@ const countryColumns = [
   },
 ];
 
-export const CountryTable = React.memo(
-  ({ data, isLoading, errorMessage, isFetching, Paginator }) => {
-    return (
-      <ExpandableTable
-        isFetching={!isLoading && isFetching}
-        isLoading={isLoading}
-        columns={countryColumns}
-        data={data}
-        errorMessage={errorMessage}
-        Body={CountryTableBody}
-        Paginator={Paginator}
-      />
-    );
-  },
-);
+const DEFAULT_NUMBER_OF_WEEKS = 10;
 
-CountryTable.propTypes = {
-  data: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool,
-  isFetching: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  Paginator: PropTypes.any,
-};
+export const CountryTable = () => {
+  const { countryCode } = useParams();
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(DEFAULT_NUMBER_OF_WEEKS);
 
-CountryTable.defaultProps = {
-  isFetching: false,
-  isLoading: false,
-  errorMessage: '',
-  Paginator: null,
+  const defaultPeriod = getCurrentPeriod('WEEK');
+
+  const period = subtractPeriod(defaultPeriod, page * rowsPerPage);
+
+  const { isLoading, error, data, isFetching } = useCountryWeeklyReport(
+    countryCode.toUpperCase(),
+    period,
+    rowsPerPage,
+  );
+
+  return (
+    <ExpandableTable
+      data={data}
+      isLoading={isLoading}
+      isFetching={!isLoading && isFetching}
+      columns={countryColumns}
+      rowIdKey="period"
+      errorMessage={error && error.message}
+      SubComponent={SiteSummaryTable}
+      Paginator={props => (
+        <TablePaginator
+          {...props}
+          disabled={isFetching}
+          rowsPerPage={rowsPerPage}
+          onChangeRowsPerPage={setRowsPerPage}
+          onChangePage={p => setPage(p)}
+          page={page}
+          count={120}
+        />
+      )}
+    />
+  );
 };
