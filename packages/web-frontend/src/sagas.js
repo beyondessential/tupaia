@@ -130,7 +130,7 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
+import { formatDateForApi, isMobile, processMeasureInfo, getTimeZone } from './utils';
 import { getDefaultDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -724,6 +724,7 @@ function* fetchViewData(parameters, errorHandler) {
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
+    timeZone: getTimeZone(),
     ...extraUrlParameters,
   };
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
@@ -996,15 +997,6 @@ function* watchFindUserCurrentLoggedIn() {
   yield takeLatest(FIND_USER_LOGGEDIN, findUserLoggedIn);
 }
 
-function getTimeZone() {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-  } catch (e) {
-    // Time zone not supported in this browser.
-    return 'Australia/Melbourne';
-  }
-}
-
 /**
  * Fetches drilldown data for a given view and level.
  */
@@ -1048,10 +1040,10 @@ function* watchLogoutSuccess() {
 function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
-    yield call(fetchProjectData);
     const { PROJECT } = decodeLocation(location);
     const overlay = PROJECT === 'explore' ? LANDING : null;
     yield put(setOverlayComponent(overlay));
+    yield call(fetchProjectData);
     yield call(handleLocationChange, {
       location,
       // Assume an empty location string so that the url will trigger fetching fresh data

@@ -4,13 +4,15 @@
  */
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
+import { ReactQueryDevtools } from 'react-query-devtools';
 import App from './App';
 import { AppProviders } from './AppProviders';
-import { initStore } from './store/store';
+import { store } from './store/store';
 
 const render = () => {
   return renderReactApp(
-    <AppProviders store={initStore()}>
+    <AppProviders store={store}>
+      <ReactQueryDevtools />
       <App />
     </AppProviders>,
     document.getElementById('root'),

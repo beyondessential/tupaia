@@ -12,7 +12,7 @@ import MuiDivider from '@material-ui/core/Divider';
 import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
 import { PasswordStrengthBar } from '../../components/PasswordStrengthBar';
 import { Main } from '../../components';
-import { updatePassword } from '../../store';
+import { updatePassword } from '../../api';
 
 const Container = styled.section`
   padding-top: 1rem;
