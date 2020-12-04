@@ -27,11 +27,11 @@ const processFileName = (unprocessedFileName, rowData) => {
 export const ExportButton = ({ actionConfig, row }) => (
   <IconButton
     onClick={async () => {
-      const { exportEndpoint, rowIdQueryParameter, fileName } = actionConfig;
+      const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } = actionConfig;
       const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row);
       const endpoint = `export/${exportEndpoint}${!queryParameters && row.id ? `/${row.id}` : ''}`;
       const processedFileName = processFileName(fileName, row);
-      await api.download(endpoint, queryParameters, processedFileName);
+      await api.download(endpoint, { queryParameters, ...extraQueryParameters }, processedFileName);
     }}
   >
     <ExportIcon />
