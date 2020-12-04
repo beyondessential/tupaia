@@ -26,8 +26,8 @@ const UNFPAPriorityMedicinesDashboardReport = {
   deleteItems: {
     names: [
       'Medroxyprogesterone acetate 104mg\\/0\\.65ml \\(SAYANA Press\\)',
+      'Etonogestrel\\-releasing implant \\(single rod containing 68mg of etonogestrel\\)',
       'Norethisterone enantate 200mg\\/mL in 1mL ampoule oily solution',
-      'Jadelle Contraceptive Implant',
     ],
     itemsCodes: ['4752843e', '3ff944bf', '542a34bf'],
   },
