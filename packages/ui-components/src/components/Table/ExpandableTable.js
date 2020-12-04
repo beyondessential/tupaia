@@ -17,8 +17,9 @@ const StyledTable = styled(Table)`
 `;
 
 export const ExpandableTable = React.memo(({ Body, SubComponent, isFetching, ...tableProps }) => {
-  const TableBody = tableBodyProps => (
-    <Body {...tableBodyProps} SubComponent={SubComponent} isFetching={isFetching} />
+  const TableBody = React.useCallback(
+    props => <Body {...props} SubComponent={SubComponent} isFetching={isFetching} />,
+    [Body, SubComponent, isFetching],
   );
   return <StyledTable Body={TableBody} {...tableProps} isFetching={isFetching} />;
 });
