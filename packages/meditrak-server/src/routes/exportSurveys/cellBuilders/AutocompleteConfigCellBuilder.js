@@ -12,8 +12,4 @@ export class AutocompleteConfigCellBuilder extends KeyValueCellBuilder {
     }
     return value;
   }
-
-  extractRelevantObject({ autocomplete }) {
-    return autocomplete;
-  }
 }
