@@ -1,3 +1,9 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { queryCache } from 'react-query';
 import { useTableData } from './useTableData';
 
 const getAlerts = row =>
@@ -68,9 +74,23 @@ const getTableData = data => [
 ];
 
 export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses) => {
-  const query = useTableData(`weeklyReport/${orgUnit}`, {
-    params: { startWeek: period, endWeek: period },
-  });
+  const query = useTableData(
+    `weeklyReport/${orgUnit}`,
+    {
+      params: { startWeek: period, endWeek: period },
+    },
+    {
+      initialData: () => {
+        // return queryCache.getQueryData('weeklyReport')?.find(d => d.id === todoId)
+        const data = queryCache.getQueryData(`weeklyReport/TO`, {
+          endWeek: '2020W49',
+          startWeek: '2020W39',
+        });
+        console.log('data', data);
+        return undefined;
+      },
+    },
+  );
 
   if (query.isLoading || query.data.length === 0) {
     return {

@@ -9,8 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
 import {
-  // EditableTable,
-  // EditableTableContext,
+  EditableTable,
+  EditableTableContext,
   LoadingContainer,
   TableBody,
   GreyOutlinedButton,
@@ -22,7 +22,6 @@ import {
 import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { useSaveCountryReport } from '../../api';
-import { EditableTableContext, EditableTable } from '../../components/EditableTable';
 
 const VerifiableBody = props => {
   const { tableStatus } = useContext(EditableTableContext);
@@ -83,13 +82,15 @@ export const CountryReportTable = React.memo(
     const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
     const { countryCode } = useParams();
 
-    const [saveReport] = useSaveCountryReport({ countryCode, weekNumber });
+    const [saveReport] = useSaveCountryReport(countryCode);
 
     const handleSubmit = async () => {
       setTableStatus(TABLE_STATUSES.SAVING);
 
       try {
         await saveReport({
+          orgUnit: countryCode,
+          period: weekNumber,
           ...fields,
           sitesReported: parseInt(sitesReportedValue, 10),
           totalSites: parseInt(totalSitesValue, 10),

@@ -13,7 +13,7 @@ import Collapse from '@material-ui/core/Collapse';
 import Fade from '@material-ui/core/Fade';
 import Typography from '@material-ui/core/Typography';
 import {
-  // EditableTableProvider,
+  EditableTableProvider,
   ButtonSelect,
   Card,
   Alert,
@@ -45,7 +45,6 @@ import {
   getSitesMetaData,
   useSingleWeeklyReport,
 } from '../../api';
-import { EditableTableProvider } from '../../components/EditableTable';
 
 const columns = [
   {
@@ -140,6 +139,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     const { data: sitesData } = useTableQuery('sites', options);
     const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
 
+    // page and pageSize??
     const {
       isFetching,
       isLoading,
@@ -150,7 +150,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       unVerifiedList,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses);
 
-    const [confirmReport] = useConfirmWeeklyReport({ countryCode, activeWeek });
+    const [confirmReport] = useConfirmWeeklyReport(countryCode);
 
     const handleSubmit = useCallback(
       isVerified => {
