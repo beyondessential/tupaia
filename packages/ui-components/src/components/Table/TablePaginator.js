@@ -54,7 +54,7 @@ const TablePagination = styled(MuiTablePagination)`
     &:hover {
       background-color: ${props =>
         props.disabled ? props.theme.palette.grey['200'] : props.theme.palette.primary.main};
-      color: ${props => (props.disabled ? props.theme.palette.text.secondary : 'white')};
+      color: ${props => (props.disabled ? props.theme.palette.text.tertiary : 'white')};
     }
   }
 `;

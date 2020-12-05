@@ -73,7 +73,7 @@ const PSSS_PERMISSION_GROUP = 'PSSS';
 
 export const canUserViewCountry = (user, match) => {
   const e = getEntitiesAllowedByUser(user);
-  return e.some(entityCode => entityCode.toLowerCase() === match.params.countryCode);
+  return e.some(entityCode => entityCode === match.params.countryCode);
 };
 
 export const canUserViewMultipleCountries = user => {
@@ -86,8 +86,7 @@ export const getEntitiesAllowedByUser = user => {
     return [];
   }
 
-  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
-  return entities.map(e => e.toLowerCase()); // always use lowercase entities
+  return new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
 };
 
 export const getEntitiesAllowed = createSelector(getCurrentUser, user =>

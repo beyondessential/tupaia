@@ -16,43 +16,40 @@ import { ProfileView } from '../views/ProfileView';
 import { NotFoundView } from '../views/NotFoundView';
 import { canUserViewMultipleCountries, getCurrentUser, canUserViewCountry } from '../store';
 
-export const PageRoutesComponent = React.memo(({ user }) => {
-  console.log('re-render app...');
-  return (
-    <Switch>
-      <PrivateRoute exact path="/" authCheck={match => canUserViewMultipleCountries(user, match)}>
-        <CountriesReportsView />
+export const PageRoutesComponent = React.memo(({ user }) => (
+  <Switch>
+    <PrivateRoute exact path="/" authCheck={match => canUserViewMultipleCountries(user, match)}>
+      <CountriesReportsView />
+    </PrivateRoute>
+    <Route path="/profile">
+      <ProfileView />
+    </Route>
+    <PrivateRoute
+      path="/weekly-reports/:countryCode"
+      authCheck={match => canUserViewCountry(user, match)}
+    >
+      <CountryReportsView />
+    </PrivateRoute>
+    {canUserViewMultipleCountries(user) ? (
+      <PrivateRoute path="/alerts">
+        <AlertsOutbreaksView />
       </PrivateRoute>
-      <Route path="/profile">
-        <ProfileView />
-      </Route>
+    ) : (
       <PrivateRoute
-        path="/weekly-reports/:countryCode"
+        path="/alerts/:countryCode"
         authCheck={match => canUserViewCountry(user, match)}
       >
-        <CountryReportsView />
+        <AlertsOutbreaksView />
       </PrivateRoute>
-      {canUserViewMultipleCountries(user) ? (
-        <PrivateRoute path="/alerts">
-          <AlertsOutbreaksView />
-        </PrivateRoute>
-      ) : (
-        <PrivateRoute
-          path="/alerts/:countryCode"
-          authCheck={match => canUserViewCountry(user, match)}
-        >
-          <AlertsOutbreaksView />
-        </PrivateRoute>
-      )}
-      <Route path="/unauthorised">
-        <UnauthorisedView />
-      </Route>
-      <Route>
-        <NotFoundView />
-      </Route>
-    </Switch>
-  );
-});
+    )}
+    <Route path="/unauthorised">
+      <UnauthorisedView />
+    </Route>
+    <Route>
+      <NotFoundView />
+    </Route>
+  </Switch>
+));
 
 PageRoutesComponent.propTypes = {
   user: PropTypes.object.isRequired,

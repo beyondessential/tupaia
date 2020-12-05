@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import differenceInWeeks from 'date-fns/difference_in_weeks';
 import { getCurrentPeriod } from '@tupaia/utils';
 import { useParams } from 'react-router-dom';
 import { ExpandableTable, TablePaginator } from '@tupaia/ui-components';
@@ -144,18 +145,23 @@ const countryColumns = [
 ];
 
 const DEFAULT_NUMBER_OF_WEEKS = 10;
+const TOTAL_RECORDS = differenceInWeeks(new Date(), new Date(2016, 1, 1));
+
+// console.log('TOTAL_RECORDS', TOTAL_RECORDS);
 
 export const CountryTable = () => {
   const { countryCode } = useParams();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(DEFAULT_NUMBER_OF_WEEKS);
+
+  // Todo: move pagination to use table data hook if possible
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_NUMBER_OF_WEEKS);
 
   const defaultPeriod = getCurrentPeriod('WEEK');
 
   const period = subtractPeriod(defaultPeriod, page * rowsPerPage);
 
   const { isLoading, error, data, isFetching } = useCountryWeeklyReport(
-    countryCode.toUpperCase(),
+    countryCode,
     period,
     rowsPerPage,
   );
@@ -177,7 +183,7 @@ export const CountryTable = () => {
           onChangeRowsPerPage={setRowsPerPage}
           onChangePage={p => setPage(p)}
           page={page}
-          count={120}
+          count={TOTAL_RECORDS}
         />
       )}
     />

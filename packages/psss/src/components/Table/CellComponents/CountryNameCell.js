@@ -49,7 +49,7 @@ CountryNameCell.defaultProps = {
 };
 
 export const CountryNameLinkCell = ({ organisationUnit }) => {
-  const countryCode = organisationUnit.toLowerCase();
+  const countryCode = organisationUnit;
   return (
     <CountryTitle to={`weekly-reports/${countryCode}`} component={RouterLink}>
       <Avatar src={countryFlagImage(countryCode)} /> {getCountryName(countryCode)}

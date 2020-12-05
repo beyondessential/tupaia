@@ -12,7 +12,7 @@ import { REPORT_STATUSES } from '../../constants';
 export const useUpcomingReport = countryCode => {
   const currentPeriod = getCurrentPeriod('WEEK');
   const lastPeriod = subtractPeriod(currentPeriod, 1);
-  const endpoint = `confirmedWeeklyReport/${countryCode.toUpperCase()}`;
+  const endpoint = `confirmedWeeklyReport/${countryCode}`;
   const query = useQuery(
     [endpoint, lastPeriod],
     () => get(endpoint, { params: { startWeek: lastPeriod, endWeek: lastPeriod } }),

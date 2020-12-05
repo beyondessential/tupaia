@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { Warning } from '@material-ui/icons';
 import { CardContent, CardFooter, CardHeader, BarMeter, Card, Button } from '@tupaia/ui-components';
-import { openWeeklyReportsPanel, setActiveWeek } from '../store';
+import { openWeeklyReportsPanel } from '../store';
 import {
   getWeekNumberByPeriod,
   getFormattedStartByPeriod,
@@ -99,7 +99,7 @@ export const UpcomingReportCardComponent = ({ handleOpen }) => {
           {getFormattedStartByPeriod(period, 'LLL d, yyyy')} -{' '}
           {getFormattedEndByPeriod(period, 'LLL d, yyyy')}
         </DateSubtitle>
-        <StyledButton fullWidth onClick={() => handleOpen()}>
+        <StyledButton fullWidth onClick={() => handleOpen(period)}>
           {buttonText}
         </StyledButton>
       </CardContent>
@@ -115,10 +115,7 @@ UpcomingReportCardComponent.propTypes = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  handleOpen: id => {
-    dispatch(setActiveWeek(id));
-    dispatch(openWeeklyReportsPanel());
-  },
+  handleOpen: period => dispatch(openWeeklyReportsPanel(period)),
 });
 
 export const UpcomingReportCard = connect(null, mapDispatchToProps)(UpcomingReportCardComponent);

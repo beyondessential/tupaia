@@ -96,9 +96,10 @@ const Link = styled(MuiLink)`
 
 export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) => {
   const { countryCode } = useParams();
+  const { period, weekNumber } = rowData;
   const options = {
     countryCode,
-    weekNumber: rowData.weekNumber,
+    weekNumber,
   };
   const { error, data } = useTableQuery('sites', options);
   const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
@@ -126,7 +127,7 @@ export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) =>
       )}
       <TableFooter>
         <Text>Verify data to submit Weekly report to Regional</Text>
-        <Button onClick={handleOpen}>Review and Confirm Now</Button>
+        <Button onClick={() => handleOpen(period)}>Review and Confirm Now</Button>
       </TableFooter>
     </>
   );
@@ -136,11 +137,12 @@ SiteSummaryTableComponent.propTypes = {
   handleOpen: PropTypes.func.isRequired,
   rowData: PropTypes.shape({
     weekNumber: PropTypes.number,
+    period: PropTypes.string,
   }).isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
-  handleOpen: () => dispatch(openWeeklyReportsPanel()),
+  handleOpen: period => dispatch(openWeeklyReportsPanel(period)),
 });
 
 export const SiteSummaryTable = connect(null, mapDispatchToProps)(SiteSummaryTableComponent);

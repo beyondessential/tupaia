@@ -12,7 +12,7 @@ export const useTableData = (endpoint, options) => {
   const query = usePaginatedQuery(
     [endpoint, options, sorting],
     () => get(endpoint, { ...options, ...sorting }),
-    { staleTime: 60 * 1000, refetchOnWindowFocus: false },
+    { staleTime: 60 * 1000 * 5, refetchOnWindowFocus: false },
   );
 
   const handleChangeOrderBy = columnKey => {

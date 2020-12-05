@@ -9,8 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
 import {
-  EditableTable,
-  EditableTableContext,
+  // EditableTable,
+  // EditableTableContext,
   LoadingContainer,
   TableBody,
   GreyOutlinedButton,
@@ -22,6 +22,7 @@ import {
 import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { useSaveCountryReport } from '../../api';
+import { EditableTableContext, EditableTable } from '../../components/EditableTable';
 
 const VerifiableBody = props => {
   const { tableStatus } = useContext(EditableTableContext);
@@ -76,7 +77,7 @@ const TABLE_STATUSES = {
 };
 
 export const CountryReportTable = React.memo(
-  ({ tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
+  ({ isFetching, tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
     const { fields } = useContext(EditableTableContext);
     const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
     const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
@@ -84,11 +85,11 @@ export const CountryReportTable = React.memo(
 
     const [saveReport] = useSaveCountryReport({ countryCode, weekNumber });
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       setTableStatus(TABLE_STATUSES.SAVING);
 
       try {
-        saveReport({
+        await saveReport({
           ...fields,
           sitesReported: parseInt(sitesReportedValue, 10),
           totalSites: parseInt(totalSitesValue, 10),
@@ -107,8 +108,15 @@ export const CountryReportTable = React.memo(
       setTableStatus(TABLE_STATUSES.STATIC);
     }, [setTableStatus]);
 
+    if (Object.keys(fields).length === 0 && fields.constructor === Object) {
+      return null;
+    }
+
     return (
-      <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+      <LoadingContainer
+        isLoading={isFetching || tableStatus === TABLE_STATUSES.SAVING}
+        heading={isFetching ? 'Loading data' : 'Saving Data'}
+      >
         <FlexSpaceBetween pb={2}>
           {tableStatus === TABLE_STATUSES.EDITABLE ? (
             <FormRow>
@@ -169,6 +177,7 @@ export const CountryReportTable = React.memo(
 );
 
 CountryReportTable.propTypes = {
+  isFetching: PropTypes.bool,
   tableStatus: PropTypes.PropTypes.oneOf([
     TABLE_STATUSES.STATIC,
     TABLE_STATUSES.EDITABLE,
@@ -176,6 +185,10 @@ CountryReportTable.propTypes = {
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
   sitesReported: PropTypes.number.isRequired,
-  weekNumber: PropTypes.number.isRequired,
+  weekNumber: PropTypes.string.isRequired,
   totalSites: PropTypes.number.isRequired,
+};
+
+CountryReportTable.defaultProps = {
+  isFetching: false,
 };

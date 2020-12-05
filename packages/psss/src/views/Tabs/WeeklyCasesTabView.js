@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { Button, WarningCloud, Virus } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
@@ -46,18 +45,13 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const getCountryWeekData = (data, activeWeek) => data.find(c => c.period === activeWeek);
-
 export const WeeklyCasesTabView = () => {
   return (
     <Container>
       <Main data-testid="country-table">
         <CountryTable />
-        {/*{!isLoading && (*/}
-        {/*  <WeeklyReportsPanel countryWeekData={getCountryWeekData(data, activeWeek)} />*/}
-        {/*)}*/}
+        <WeeklyReportsPanel />
       </Main>
-
       <Sidebar>
         <UpcomingReportCard />
         {/* Temporarily removed for MVP release. Please do not delete */}
