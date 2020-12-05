@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import { HeaderBackButton } from 'react-navigation';
+import { HeaderBackButton } from 'react-navigation-stack';
 import { goBack } from './actions';
 
 export const HeaderLeftButtonContainer = props => <HeaderBackButton {...props} />;

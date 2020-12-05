@@ -19,7 +19,7 @@ import { HomeToolbarContainer } from './HomeToolbarContainer';
 
 class HomeScreenComponent extends PureComponent {
   static navigationOptions = {
-    headerTitle: <TupaiaHeaderLogo />,
+    headerTitle: () => <TupaiaHeaderLogo />,
   };
 
   constructor(props) {

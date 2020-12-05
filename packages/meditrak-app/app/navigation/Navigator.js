@@ -38,12 +38,12 @@ const INITIAL_SCREEN_NAME = 'Login';
 
 const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
-  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: () => ({ headerMode: 'none' }) },
+  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: { header: null } },
   [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
-  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: () => ({ headerMode: 'none' }) },
+  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: { header: null } },
   [CREATE_ACCOUNT_SCREEN]: {
     screen: CreateUserContainer,
-    navigationOptions: () => ({ headerRight: null }),
+    navigationOptions: { headerRight: null },
   },
   [HOME_SCREEN]: { screen: HomeScreenContainer },
   [SYNC_SCREEN]: { screen: SyncContainer },
@@ -69,9 +69,8 @@ const isInvisibleHeader = navigation =>
 const config = {
   initialRouteName: INITIAL_SCREEN_NAME,
   initialRouteParams: { surveyScreenIndex: 0 },
-  headerMode: 'float',
-  navigationOptions: ({ navigation }) => ({
-    headerLeft: HeaderLeftButton,
+  defaultNavigationOptions: ({ navigation }) => ({
+    headerLeft: () => <HeaderLeftButton />,
     headerTitle: null,
     headerBackTitle: null,
     headerStyle: isInvisibleHeader(navigation)
@@ -89,7 +88,7 @@ const config = {
       color: '#222',
       ...(Platform.OS === 'android' ? androidHeaderTitleStyle : {}),
     },
-    headerRight: <HeaderToolbar />,
+    headerRight: () => <HeaderToolbar />,
   }),
 };
 
