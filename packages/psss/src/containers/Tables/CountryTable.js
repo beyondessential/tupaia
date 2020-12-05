@@ -18,6 +18,7 @@ import { AlertCell, SitesReportedCell } from '../../components';
 import { REPORT_STATUSES } from '../../constants';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import { useCountryWeeklyReport } from '../../api/queries';
+import { WeeklyReportsPanel } from '../Panels';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -160,32 +161,35 @@ export const CountryTable = () => {
 
   const period = subtractPeriod(defaultPeriod, page * rowsPerPage);
 
-  const { isLoading, error, data, isFetching } = useCountryWeeklyReport(
+  const { isLoading, error, data, isFetching, startWeek } = useCountryWeeklyReport(
     countryCode,
     period,
     rowsPerPage,
   );
 
   return (
-    <ExpandableTable
-      data={data}
-      isLoading={isLoading}
-      isFetching={!isLoading && isFetching}
-      columns={countryColumns}
-      rowIdKey="period"
-      errorMessage={error && error.message}
-      SubComponent={SiteSummaryTable}
-      Paginator={props => (
-        <TablePaginator
-          {...props}
-          disabled={isFetching}
-          rowsPerPage={rowsPerPage}
-          onChangeRowsPerPage={setRowsPerPage}
-          onChangePage={p => setPage(p)}
-          page={page}
-          count={TOTAL_RECORDS}
-        />
-      )}
-    />
+    <>
+      <ExpandableTable
+        data={data}
+        isLoading={isLoading}
+        isFetching={!isLoading && isFetching}
+        columns={countryColumns}
+        rowIdKey="period"
+        errorMessage={error && error.message}
+        SubComponent={SiteSummaryTable}
+        Paginator={props => (
+          <TablePaginator
+            {...props}
+            disabled={isFetching}
+            rowsPerPage={rowsPerPage}
+            onChangeRowsPerPage={setRowsPerPage}
+            onChangePage={p => setPage(p)}
+            page={page}
+            count={TOTAL_RECORDS}
+          />
+        )}
+      />
+      <WeeklyReportsPanel pageQueryKey={{ startWeek, endWeek: period }} />
+    </>
   );
 };

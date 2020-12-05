@@ -125,7 +125,7 @@ const PANEL_STATUSES = {
 };
 
 export const WeeklyReportsPanelComponent = React.memo(
-  ({ isOpen, handleClose, activeWeek, verifiedStatuses }) => {
+  ({ isOpen, handleClose, activeWeek, verifiedStatuses, pageQueryKey }) => {
     const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
     const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
@@ -148,7 +148,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       alerts,
       unVerifiedAlerts,
       unVerifiedList,
-    } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses);
+    } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
 
     const [confirmReport] = useConfirmWeeklyReport(countryCode);
 

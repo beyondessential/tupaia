@@ -73,7 +73,7 @@ const getTableData = data => [
   },
 ];
 
-export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses) => {
+export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQueryKey) => {
   const query = useTableData(
     `weeklyReport/${orgUnit}`,
     {
@@ -81,12 +81,8 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses) => {
     },
     {
       initialData: () => {
-        // return queryCache.getQueryData('weeklyReport')?.find(d => d.id === todoId)
-        const data = queryCache.getQueryData(`weeklyReport/TO`, {
-          endWeek: '2020W49',
-          startWeek: '2020W39',
-        });
-        console.log('data', data);
+        const data = queryCache.getQueryData([`weeklyReport/${orgUnit}`, pageQueryKey]);
+        // Todo: get correct endpoint for weekly reports panel and see if it is possible to set initial data
         return undefined;
       },
     },

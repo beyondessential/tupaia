@@ -70,6 +70,7 @@ export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
   return {
     ...query,
     isLoading: confirmedQuery.isLoading || query.isLoading,
+    startWeek,
     data,
   };
 };

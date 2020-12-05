@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { Button, WarningCloud, Virus } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
-import { CountryTable, UpcomingReportCard, WeeklyReportsPanel } from '../../containers';
+import { CountryTable, UpcomingReportCard } from '../../containers';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -50,7 +50,6 @@ export const WeeklyCasesTabView = () => {
     <Container>
       <Main data-testid="country-table">
         <CountryTable />
-        <WeeklyReportsPanel />
       </Main>
       <Sidebar>
         <UpcomingReportCard />
