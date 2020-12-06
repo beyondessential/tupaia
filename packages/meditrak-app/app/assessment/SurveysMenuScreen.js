@@ -25,7 +25,7 @@ import { SurveysMenu } from './SurveysMenu';
 
 class DumbSurveysMenuScreen extends React.PureComponent {
   static navigationOptions = {
-    title: 'Surveys',
+    headerTitle: 'Surveys',
   };
 
   onToggleCountryMenu = () => {

@@ -45,7 +45,7 @@ const routes = {
     screen: CreateUserContainer,
     navigationOptions: { headerRight: null },
   },
-  [HOME_SCREEN]: { screen: HomeScreenContainer },
+  [HOME_SCREEN]: { screen: HomeScreenContainer, navigationOptions: { headerLeft: null } },
   [SYNC_SCREEN]: { screen: SyncContainer },
   [SURVEY_SCREEN]: { screen: SurveyScreen },
   [SURVEYS_MENU_SCREEN]: { screen: SurveysMenuScreen },
@@ -83,7 +83,6 @@ const config = {
       : {
           backgroundColor: THEME_COLOR_ONE,
         },
-    headerTintColor: THEME_COLOR_THREE,
     headerTitleStyle: {
       color: '#222',
       ...(Platform.OS === 'android' ? androidHeaderTitleStyle : {}),

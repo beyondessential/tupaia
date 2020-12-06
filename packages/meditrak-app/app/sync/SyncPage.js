@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { TupaiaBackground, Button, Text, ProgressBar } from '../widgets';
 import { formatPlural, formatDate } from '../utilities';
 import { THEME_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
+import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
 
 const getStatusMessage = (isSyncing, progressMessage, errorMessage) => {
   let message;
@@ -89,7 +90,7 @@ const localStyles = StyleSheet.create({
 });
 
 SyncPage.navigationOptions = {
-  headerBackImage: require('../images/x.png'),
+  headerLeft: <HeaderLeftButton source={require('../images/x.png')}></HeaderLeftButton>,
   title: 'Sync',
 };
 
