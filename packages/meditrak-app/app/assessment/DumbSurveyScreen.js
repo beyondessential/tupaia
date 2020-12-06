@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ActivityIndicator, Animated, ScrollView, StyleSheet, View, Image } from 'react-native';
+import { ActivityIndicator, Animated, ScrollView, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { database } from '../database';
