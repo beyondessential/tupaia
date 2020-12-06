@@ -164,7 +164,6 @@ export class MatrixWrapper extends Component {
     return (
       !shallowEqual(this.props, nextProps) ||
       nextState.isLoading !== this.state.isLoading ||
-      nextState.expandedMatrixData !== this.state.expandedMatrixData ||
       nextState.offsetWidth !== this.state.offsetWidth
     );
   }
