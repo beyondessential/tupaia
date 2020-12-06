@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import keyBy from 'lodash.keyby';
 import { useTableData } from './useTableData';
-import { getDaysRemaining, subtractWeeksFromPeriod } from '../../utils';
+import { getDaysTillDueDay, subtractWeeksFromPeriod } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 import { useUpcomingReport } from './useUpcomingReport';
 
@@ -37,7 +37,7 @@ const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWe
     if (report) {
       // is overdue unless it is this weeks report and it is before wednesday
       const reportStatus =
-        newPeriod === period && getDaysRemaining() > 0
+        newPeriod === period && getDaysTillDueDay() > 0
           ? REPORT_STATUSES.SUBMITTED
           : REPORT_STATUSES.OVERDUE;
 

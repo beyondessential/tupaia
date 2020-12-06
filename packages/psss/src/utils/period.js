@@ -53,7 +53,7 @@ export const subtractWeeksFromPeriod = (period, amount) => {
   return getPeriodByDate(newDate);
 };
 
-export const getDaysRemaining = () => {
+export const getDaysTillDueDay = () => {
   const isoDay = getISODay(new Date());
   return DUE_ISO_DAY - isoDay;
 };
