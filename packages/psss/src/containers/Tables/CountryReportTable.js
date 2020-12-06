@@ -76,19 +76,21 @@ const TABLE_STATUSES = {
 };
 
 export const CountryReportTable = React.memo(
-  ({ tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
+  ({ isFetching, tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
     const { fields } = useContext(EditableTableContext);
     const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
     const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
     const { countryCode } = useParams();
 
-    const [saveReport] = useSaveCountryReport({ countryCode, weekNumber });
+    const [saveReport] = useSaveCountryReport(countryCode);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       setTableStatus(TABLE_STATUSES.SAVING);
 
       try {
-        saveReport({
+        await saveReport({
+          orgUnit: countryCode,
+          period: weekNumber,
           ...fields,
           sitesReported: parseInt(sitesReportedValue, 10),
           totalSites: parseInt(totalSitesValue, 10),
@@ -107,8 +109,15 @@ export const CountryReportTable = React.memo(
       setTableStatus(TABLE_STATUSES.STATIC);
     }, [setTableStatus]);
 
+    if (Object.keys(fields).length === 0 && fields.constructor === Object) {
+      return null;
+    }
+
     return (
-      <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+      <LoadingContainer
+        isLoading={isFetching || tableStatus === TABLE_STATUSES.SAVING}
+        heading={isFetching ? 'Loading data' : 'Saving Data'}
+      >
         <FlexSpaceBetween pb={2}>
           {tableStatus === TABLE_STATUSES.EDITABLE ? (
             <FormRow>
@@ -169,6 +178,7 @@ export const CountryReportTable = React.memo(
 );
 
 CountryReportTable.propTypes = {
+  isFetching: PropTypes.bool,
   tableStatus: PropTypes.PropTypes.oneOf([
     TABLE_STATUSES.STATIC,
     TABLE_STATUSES.EDITABLE,
@@ -176,6 +186,10 @@ CountryReportTable.propTypes = {
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
   sitesReported: PropTypes.number.isRequired,
-  weekNumber: PropTypes.number.isRequired,
+  weekNumber: PropTypes.string.isRequired,
   totalSites: PropTypes.number.isRequired,
+};
+
+CountryReportTable.defaultProps = {
+  isFetching: false,
 };
