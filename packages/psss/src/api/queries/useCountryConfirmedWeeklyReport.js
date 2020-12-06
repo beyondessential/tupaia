@@ -14,12 +14,14 @@ import { useTableData } from './useTableData';
  * @param numberOfWeeks
  * @returns {[]}
  */
-const fillWeeklyData = (data, period, numberOfWeeks) =>
-  [...Array(numberOfWeeks)].map((code, index) => {
-    const reportsByPeriod = keyBy(data, 'period');
+const fillWeeklyData = (data, period, numberOfWeeks) => {
+  const reportsByPeriod = keyBy(data, 'period');
+
+  return [...Array(numberOfWeeks)].map((code, index) => {
     const newPeriod = subtractWeeksFromPeriod(period, index);
     return reportsByPeriod[newPeriod] || { period: newPeriod };
   });
+};
 
 export const useCountryConfirmedWeeklyReport = (orgUnit, period, numberOfWeeks) => {
   const endWeek = subtractWeeksFromPeriod(period, 1);
