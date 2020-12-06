@@ -19,7 +19,7 @@ export const useUpcomingReport = countryCode => {
     { staleTime: 60 * 1000 },
   );
 
-  const data = query?.data?.data?.results ? query.data.data.results : [];
+  const data = query?.data?.data?.results ?? [];
 
   const { isLoading } = query;
 
