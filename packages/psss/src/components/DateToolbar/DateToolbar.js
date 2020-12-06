@@ -4,6 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { dateStringToPeriod } from '@tupaia/utils';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';

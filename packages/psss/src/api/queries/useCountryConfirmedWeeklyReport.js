@@ -3,20 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
 import { subtractWeeksFromPeriod } from '../../utils';
 import { useTableData } from './useTableData';
 
-const fillWeeklyData = (data, period, numberOfWeeks) => {
-  return [...Array(numberOfWeeks)].map((code, index) => {
+/**
+ * Fill empty data if required so that every period renders as a row in the table
+ * @param data
+ * @param period
+ * @param numberOfWeeks
+ * @returns {[]}
+ */
+const fillWeeklyData = (data, period, numberOfWeeks) =>
+  [...Array(numberOfWeeks)].map((code, index) => {
+    const reportsByPeriod = keyBy(data, 'period');
     const newPeriod = subtractWeeksFromPeriod(period, index);
-    const report = data.find(r => r.period === newPeriod);
-    return (
-      report || {
-        period: newPeriod,
-      }
-    );
+    return reportsByPeriod[newPeriod] || { period: newPeriod };
   });
-};
 
 export const useCountryConfirmedWeeklyReport = (orgUnit, period, numberOfWeeks) => {
   const endWeek = subtractWeeksFromPeriod(period, 1);

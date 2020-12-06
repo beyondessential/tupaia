@@ -3,7 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getCurrentPeriod, convertPeriodStringToDateRange } from '@tupaia/utils';
+import {
+  getCurrentPeriod,
+  convertPeriodStringToDateRange,
+  periodToDateString,
+} from '@tupaia/utils';
 import { format, getISODay, subWeeks } from 'date-fns';
 import { DUE_ISO_DAY, WEEK_PERIOD_FORMAT } from '../constants';
 
@@ -37,7 +41,7 @@ export const getCurrentIsoWeekNumber = () => {
 export const getWeekNumberByPeriod = period => period.split('W').pop();
 
 export const getDateByPeriod = period => {
-  const date = convertPeriodStringToDateRange(period)[0];
+  const date = periodToDateString(period);
   return new Date(date);
 };
 
@@ -49,7 +53,7 @@ export const subtractWeeksFromPeriod = (period, amount) => {
   return getPeriodByDate(newDate);
 };
 
-export const getDaysRemaining = () => {
+export const getDaysTillDueDay = () => {
   const isoDay = getISODay(new Date());
   return DUE_ISO_DAY - isoDay;
 };

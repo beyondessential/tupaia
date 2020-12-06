@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
 import { useTableData } from './useTableData';
-import { getDaysRemaining, subtractWeeksFromPeriod } from '../../utils';
+import { getDaysTillDueDay, subtractWeeksFromPeriod } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 
 /**
@@ -20,12 +21,14 @@ import { REPORT_STATUSES } from '../../constants';
 const getWeeklyReportData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
   let currentWeekIsSubmitted = false;
 
+  const reportsByPeriod = keyBy(unconfirmedData, period);
+  const confirmedReportsByPeriod = keyBy(confirmedData, period);
+
   // Set up array with an extra week and later drop the first or last week based on whether or not currentWeekIsSubmitted
   const reportData = [...Array(numberOfWeeks + 1)].map((code, index) => {
     const newPeriod = subtractWeeksFromPeriod(period, index);
 
-    const confirmedReport = confirmedData.find(report => report.period === newPeriod);
-
+    const confirmedReport = confirmedReportsByPeriod[newPeriod];
     if (confirmedReport) {
       if (index === 0) {
         currentWeekIsSubmitted = true;
@@ -33,11 +36,11 @@ const getWeeklyReportData = (unconfirmedData, confirmedData, period, numberOfWee
       return { ...confirmedReport, status: REPORT_STATUSES.SUBMITTED };
     }
 
-    const report = unconfirmedData.find(r => r.period === newPeriod);
+    const report = reportsByPeriod[newPeriod];
     if (report) {
       // is overdue unless it is this weeks report and it is before wednesday
       const reportStatus =
-        newPeriod === period && getDaysRemaining() > 0
+        newPeriod === period && getDaysTillDueDay() > 0
           ? REPORT_STATUSES.SUBMITTED
           : REPORT_STATUSES.OVERDUE;
 
