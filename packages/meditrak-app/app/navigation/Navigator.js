@@ -69,6 +69,7 @@ const isInvisibleHeader = navigation =>
 const config = {
   initialRouteName: INITIAL_SCREEN_NAME,
   initialRouteParams: { surveyScreenIndex: 0 },
+  headerMode: 'float',
   defaultNavigationOptions: ({ navigation }) => ({
     headerLeft: () => <HeaderLeftButton />,
     headerTitle: null,
