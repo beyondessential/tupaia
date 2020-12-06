@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const WEEK_PERIOD_FORMAT = "yyyy'W'II";
-
 export const DUE_ISO_DAY = 3; // wednesday
 
 export const REPORT_STATUSES = {
