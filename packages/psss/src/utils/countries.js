@@ -7,6 +7,6 @@ import { getName } from 'country-list';
 
 const circleFlagsUrl = 'https://hatscripts.github.io/circle-flags/flags';
 // eg. https://hatscripts.github.io/circle-flags/flags/as.svg
-export const countryFlagImage = orgUnit => `${circleFlagsUrl}/${orgUnit.toLowerCase()}.svg`;
+export const countryFlagImage = countryCode => `${circleFlagsUrl}/${countryCode.toLowerCase()}.svg`;
 
-export const getCountryName = orgUnit => (orgUnit ? getName(orgUnit.toLowerCase()) : null);
+export const getCountryName = countryCode => getName(countryCode) || '';

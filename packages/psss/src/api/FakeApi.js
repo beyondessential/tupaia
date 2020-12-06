@@ -239,7 +239,7 @@ export const FakeAPI = {
         'Prolonged Fever (PF)',
         'Dengue-like Illness (DLI)',
       ]),
-      weekNumber: weekNumber,
+      weekNumber,
       period: `2020W${weekNumber}`,
       startDate: faker.date.between('2020-01-01', '2020-01-31'),
       endDate: faker.date.between('2020-02-01', '2020-02-28'),

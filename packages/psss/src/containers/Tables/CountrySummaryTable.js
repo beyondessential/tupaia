@@ -85,10 +85,8 @@ CountrySummaryTableComponent.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = state => {
-  return {
-    period: getLatestViewableWeek(state),
-  };
-};
+const mapStateToProps = state => ({
+  period: getLatestViewableWeek(state),
+});
 
 export const CountrySummaryTable = connect(mapStateToProps)(CountrySummaryTableComponent);

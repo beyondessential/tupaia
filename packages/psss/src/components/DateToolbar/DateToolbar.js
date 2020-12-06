@@ -26,7 +26,7 @@ import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
 import { MIN_DATE } from './constants';
-import { getDateByPeriod, getPeriodByDate } from '../../utils';
+import { getDateByPeriod } from '../../utils';
 import { getLatestViewableWeek, setLatestViewableWeek } from '../../store';
 
 const Container = styled(FlexSpaceBetween)`
@@ -164,7 +164,7 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
 };
 
 DateToolbarComponent.propTypes = {
-  date: PropTypes.any.isRequired, // start of week
+  date: PropTypes.instanceOf(Date).isRequired,
   setPeriod: PropTypes.func.isRequired,
 };
 
