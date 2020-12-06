@@ -12,10 +12,7 @@
  * of Dashboard and MapDiv based on expanded state of Dashboard (through redux store)
  */
 
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import React from 'react';
-import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import Map from '../../../containers/Map';
 import { MapDiv } from '../../../components/MapDiv';
 import TopBar from '../../../containers/TopBar';
@@ -27,7 +24,7 @@ import { OverlayContainer } from '../../../utils';
 import { TOP_BAR_HEIGHT } from '../../../styles';
 import './desktop-styles.css';
 
-export const RootScreen = ({ enlargedDialogIsVisible }) => {
+export const RootScreen = () => {
   return (
     <div>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
@@ -39,19 +36,11 @@ export const RootScreen = ({ enlargedDialogIsVisible }) => {
         </div>
         <OverlayDiv />
         <SessionExpiredDialog />
-        {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
+        <EnlargedDialog />
       </OverlayContainer>
       <Map />
     </div>
   );
-};
-
-RootScreen.propTypes = {
-  enlargedDialogIsVisible: PropTypes.bool,
-};
-
-RootScreen.defaultProps = {
-  enlargedDialogIsVisible: false,
 };
 
 const styles = {
@@ -62,8 +51,4 @@ const styles = {
   },
 };
 
-const mapStateToProps = state => ({
-  enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
-});
-
-export default connect(mapStateToProps)(RootScreen);
+export default RootScreen;
