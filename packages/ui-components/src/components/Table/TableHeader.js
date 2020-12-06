@@ -51,6 +51,13 @@ const SortLabel = styled(MuiTableSortLabel)`
   }
 `;
 
+const Label = styled.span`
+  color: ${props => props.theme.palette.text.primary};
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+`;
+
 export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderBy, className }) => {
   const getContent = (key, sortable, title) =>
     sortable ? (
@@ -63,7 +70,7 @@ export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderB
         {title}
       </SortLabel>
     ) : (
-      title
+      <Label>{title}</Label>
     );
 
   return (
