@@ -8,7 +8,6 @@ import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 import storage from 'redux-persist/lib/storage';
 import { rootReducer } from './rootReducer';
-import { apiErrorHandler } from '../api/apiErrorHandler';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -21,7 +20,5 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const enhancers = composeEnhancers(applyMiddleware(thunk));
 
 const store = createStore(persistedReducer, {}, enhancers);
-
-apiErrorHandler(store);
 
 export { store };
