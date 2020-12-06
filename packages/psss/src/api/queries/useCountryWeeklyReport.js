@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
+import { useState } from 'react';
 import { useTableData } from './useTableData';
-import { getDaysTillDueDay, subtractWeeksFromPeriod } from '../../utils';
+import { getDaysRemaining, subtractPeriod, addPeriod } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
+import { useUpcomingReport } from './useUpcomingReport';
 
 /**
  * Get the weekly reports data by combining the un-confirmed and confirmed weekly reports
@@ -16,31 +17,17 @@ import { REPORT_STATUSES } from '../../constants';
  * @param confirmedData
  * @param period
  * @param numberOfWeeks
+
  * @returns []
  */
-const getWeeklyReportData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
-  let currentWeekIsSubmitted = false;
-
-  const reportsByPeriod = keyBy(unconfirmedData, period);
-  const confirmedReportsByPeriod = keyBy(confirmedData, period);
-
-  // Set up array with an extra week and later drop the first or last week based on whether or not currentWeekIsSubmitted
-  const reportData = [...Array(numberOfWeeks + 1)].map((code, index) => {
-    const newPeriod = subtractWeeksFromPeriod(period, index);
-
-    const confirmedReport = confirmedReportsByPeriod[newPeriod];
-    if (confirmedReport) {
-      if (index === 0) {
-        currentWeekIsSubmitted = true;
-      }
-      return { ...confirmedReport, status: REPORT_STATUSES.SUBMITTED };
-    }
-
-    const report = reportsByPeriod[newPeriod];
+const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWeeks) =>
+  [...Array(numberOfWeeks)].map((code, index) => {
+    const newPeriod = subtractPeriod(period, index);
+    const report = unconfirmedData.find(r => r.period === newPeriod);
     if (report) {
       // is overdue unless it is this weeks report and it is before wednesday
       const reportStatus =
-        newPeriod === period && getDaysTillDueDay() > 0
+        newPeriod === period && getDaysRemaining() > 0
           ? REPORT_STATUSES.SUBMITTED
           : REPORT_STATUSES.OVERDUE;
 
@@ -53,26 +40,56 @@ const getWeeklyReportData = (unconfirmedData, confirmedData, period, numberOfWee
     };
   });
 
-  // drop the first or last week based on whether or not currentWeekIsSubmitted
-  return currentWeekIsSubmitted ? [...reportData.slice(0, -1)] : [...reportData.slice(1)];
+const DEFAULT_NUMBER_OF_WEEKS = 10;
+
+const usePagination = (period, count) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_NUMBER_OF_WEEKS);
+  const pageNum = page + 1;
+
+  const rowsOnLastPage = count % rowsPerPage || rowsPerPage;
+  const isLastPage = pageNum * rowsPerPage > count;
+  const rowsOnThisPage = isLastPage ? rowsOnLastPage : rowsPerPage;
+
+  const endWeek = subtractPeriod(period, pageNum * rowsPerPage - rowsPerPage);
+  const startWeek = subtractPeriod(endWeek, rowsOnThisPage - 1);
+
+  return { startWeek, endWeek, page, setPage, rowsPerPage, rowsOnThisPage, setRowsPerPage };
 };
 
-export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
-  const startWeek = subtractWeeksFromPeriod(period, numberOfWeeks);
+export const useCountryWeeklyReport = (orgUnit, period, count) => {
+  const { period: upcomingReportPeriod } = useUpcomingReport(orgUnit);
+  const upcomingReportSubmitted = upcomingReportPeriod === period;
+  const lastPeriod = subtractPeriod(period, upcomingReportSubmitted ? 1 : 2);
+
+  const {
+    startWeek,
+    endWeek,
+    page,
+    setPage,
+    rowsPerPage,
+    setRowsPerPage,
+    rowsOnThisPage,
+  } = usePagination(lastPeriod, count);
 
   const confirmedQuery = useTableData(`confirmedWeeklyReport/${orgUnit}`, {
-    params: { startWeek, endWeek: period },
+    params: { startWeek, endWeek },
   });
 
   const query = useTableData(`weeklyReport/${orgUnit}`, {
-    params: { startWeek, endWeek: period },
+    params: { startWeek, endWeek },
   });
 
-  const data = getWeeklyReportData(query.data, confirmedQuery.data, period, numberOfWeeks);
+  const data = getWeeklyReportsData(query.data, confirmedQuery.data, endWeek, rowsOnThisPage);
 
   return {
     ...query,
     isLoading: confirmedQuery.isLoading || query.isLoading,
     data,
+    startWeek,
+    page,
+    setPage,
+    rowsPerPage,
+    setRowsPerPage,
   };
 };

@@ -3,16 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { useQuery } from 'react-query';
+import { usePaginatedQuery } from 'react-query';
 import { get } from '../api';
 
-export const useTableData = (endpoint, options) => {
-  const query = useQuery([endpoint, options], () => get(endpoint, { ...options }), {
-    staleTime: 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
-
-  const data = query?.data?.data?.results ?? [];
+export const useTableData = (endpoint, apiOptions, queryOptions) => {
+  const query = usePaginatedQuery(
+    [endpoint, apiOptions.params], // key
+    () => get(endpoint, { ...apiOptions }), // api call
+    { staleTime: 60 * 1000 * 5, refetchOnWindowFocus: false, ...queryOptions }, // options
+  );
+  const data = query?.resolvedData?.data?.results ? query.resolvedData.data.results : [];
 
   return { ...query, data };
 };
