@@ -40,7 +40,6 @@ export const getVerifiedStatus = ({ weeklyReports }, syndromeId) =>
 
 // reducer
 const defaultPeriod = getCurrentPeriod('WEEK');
-// const defaultPeriod = '2020W13';
 
 const defaultState = {
   latestViewableWeek: defaultPeriod,

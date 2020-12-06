@@ -26,7 +26,7 @@ import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
 import { MIN_DATE } from './constants';
-import { getDateByPeriod } from '../../utils';
+import { getDateByPeriod, getPeriodByDate } from '../../utils';
 import { getLatestViewableWeek, setLatestViewableWeek } from '../../store';
 
 const Container = styled(FlexSpaceBetween)`
@@ -40,8 +40,6 @@ const Container = styled(FlexSpaceBetween)`
 `;
 
 const StyledButton = styled(SmallButton)`
-  width: 100px;
-  height: 35px;
   background-color: rgba(0, 0, 0, 0.15);
   color: rgba(255, 255, 255, 0.8);
   transition: color 0.2s ease, background-color 0.2s ease;
