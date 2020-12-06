@@ -14,7 +14,7 @@ import { setActiveWeek, getActiveWeek } from '../../store';
 const TableBodyComponent = React.memo(({ data, columns, activeWeek, toggleTableRow }) => (
   <MuiTableBody>
     {data.map((rowData, rowIndex) => {
-      const period = rowData.period;
+      const { period } = rowData;
       const expanded = activeWeek === period;
 
       const handleRowClick = () => {

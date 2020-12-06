@@ -55,8 +55,7 @@ export const getEntitiesAllowed = createSelector(getCurrentUser, user => {
     return [];
   }
 
-  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
-  return entities.map(e => e.toLowerCase()); // always use lowercase entities
+  return new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
 });
 
 export const checkIsMultiCountryUser = createSelector(

@@ -60,7 +60,7 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
   const defaultPeriod = getCurrentPeriod('WEEK');
 
   const { isLoading, error, data } = useCountryWeeklyReport(
-    countryCode.toUpperCase(),
+    countryCode,
     defaultPeriod,
     NUMBER_OF_WEEKS,
   );
@@ -80,7 +80,7 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
       </Main>
 
       <Sidebar>
-        <UpcomingReportCard />
+        {/*<UpcomingReportCard />*/}
         {/* Temporarily removed for MVP release. Please do not delete */}
         {/*<Card variant="outlined">*/}
         {/*  <DataCardTabs data={tabData} />*/}

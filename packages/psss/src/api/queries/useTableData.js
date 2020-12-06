@@ -3,26 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
 export const useTableData = (endpoint, options) => {
-  const [sorting, setSorting] = useState({ order: 'asc', orderBy: undefined });
-  const query = useQuery(
-    [endpoint, options, sorting],
-    () => get(endpoint, { ...options, ...sorting }),
-    { staleTime: 60 * 1000, refetchOnWindowFocus: false },
-  );
+  const query = useQuery([endpoint, options], () => get(endpoint, { ...options }), {
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
-  const handleChangeOrderBy = columnKey => {
-    const { order, orderBy } = sorting;
-    const isDesc = orderBy === columnKey && order === 'desc';
-    const newSorting = { order: isDesc ? 'asc' : 'desc', orderBy: columnKey };
-    setSorting(newSorting);
-  };
+  const data = query?.data?.data?.results ?? [];
 
-  const data = query?.data?.data?.results ? query.data.data.results : [];
-
-  return { ...query, ...sorting, handleChangeOrderBy, data };
+  return { ...query, data };
 };
