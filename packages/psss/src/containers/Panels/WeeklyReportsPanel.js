@@ -139,7 +139,6 @@ export const WeeklyReportsPanelComponent = React.memo(
     const { data: sitesData } = useTableQuery('sites', options);
     const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
 
-    // page and pageSize??
     const {
       isFetching,
       isLoading,

@@ -4,7 +4,7 @@
  */
 
 import { getCurrentPeriod, convertPeriodStringToDateRange } from '@tupaia/utils';
-import { format, getISODay, subWeeks } from 'date-fns';
+import { format, getISODay, subWeeks, addWeeks } from 'date-fns';
 import { DUE_ISO_DAY } from '../constants';
 
 /**
@@ -46,6 +46,12 @@ export const getPeriodByDate = date => format(date, "yyyy'W'II");
 export const subtractPeriod = (period, amount) => {
   const date = getDateByPeriod(period);
   const newDate = subWeeks(date, amount);
+  return getPeriodByDate(newDate);
+};
+
+export const addPeriod = (period, amount) => {
+  const date = getDateByPeriod(period);
+  const newDate = addWeeks(date, amount);
   return getPeriodByDate(newDate);
 };
 

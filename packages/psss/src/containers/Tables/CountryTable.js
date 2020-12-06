@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import differenceInWeeks from 'date-fns/difference_in_weeks';
@@ -13,7 +13,7 @@ import { ExpandableTable, TablePaginator } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
-import { getDisplayDatesByPeriod, getWeekNumberByPeriod, subtractPeriod } from '../../utils';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
 import { AlertCell, SitesReportedCell } from '../../components';
 import { REPORT_STATUSES } from '../../constants';
 import { SiteSummaryTable } from './SiteSummaryTable';
@@ -145,27 +145,23 @@ const countryColumns = [
   },
 ];
 
-const DEFAULT_NUMBER_OF_WEEKS = 10;
 const TOTAL_RECORDS = differenceInWeeks(new Date(), new Date(2016, 1, 1));
-
-// console.log('TOTAL_RECORDS', TOTAL_RECORDS);
 
 export const CountryTable = () => {
   const { countryCode } = useParams();
+  const period = getCurrentPeriod('WEEK');
 
-  // Todo: move pagination to use table data hook if possible
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_NUMBER_OF_WEEKS);
-
-  const defaultPeriod = getCurrentPeriod('WEEK');
-
-  const period = subtractPeriod(defaultPeriod, page * rowsPerPage);
-
-  const { isLoading, error, data, isFetching, startWeek } = useCountryWeeklyReport(
-    countryCode,
-    period,
+  const {
+    isLoading,
+    error,
+    data,
+    isFetching,
+    startWeek,
+    page,
+    setPage,
     rowsPerPage,
-  );
+    setRowsPerPage,
+  } = useCountryWeeklyReport(countryCode, period, TOTAL_RECORDS);
 
   return (
     <>
