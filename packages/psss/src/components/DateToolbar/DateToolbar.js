@@ -4,42 +4,49 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { dateStringToPeriod } from '@tupaia/utils';
 import PropTypes from 'prop-types';
+import { getCurrentPeriod, isFuturePeriod, comparePeriods } from '@tupaia/utils';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import {
-  format,
-  getISOWeek,
-  endOfISOWeek,
-  startOfISOWeek,
-  addWeeks,
-  subWeeks,
-  isAfter,
-  isBefore,
-} from 'date-fns';
 import styled from 'styled-components';
 import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components';
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
 import { MIN_DATE } from './constants';
-import { WEEK_PERIOD_FORMAT } from '../../constants';
-import { getDateByPeriod } from '../../utils';
+import {
+  getDateByPeriod,
+  getPeriodByDate,
+  addWeeksToPeriod,
+  getFormattedStartByPeriod,
+  getFormattedEndByPeriod,
+  getWeekNumberByPeriod,
+  subtractWeeksFromPeriod,
+} from '../../utils';
 import { getLatestViewableWeek, setLatestViewableWeek } from '../../store';
 
 const Container = styled(FlexSpaceBetween)`
   width: 66%;
   height: 100%;
   padding-right: 1.8rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
-const TodayButton = styled(SmallButton)`
+const StyledButton = styled(SmallButton)`
   background-color: rgba(0, 0, 0, 0.15);
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
   transition: color 0.2s ease, background-color 0.2s ease;
+
+  &.Mui-disabled {
+    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.6);
+  }
 
   &:hover {
     background: rgba(0, 0, 0, 0.25);
@@ -87,32 +94,34 @@ const MediumText = styled.span`
   font-weight: 500;
 `;
 
-export const DateToolbarComponent = ({ date, setPeriod }) => {
+export const DateToolbarComponent = ({ period, setPeriod }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const now = new Date();
 
   useEffect(() => {
     setCurrentWeek();
   }, []);
 
   const setCurrentWeek = () => {
-    setPeriod(now);
+    const defaultPeriod = getCurrentPeriod('WEEK');
+    setPeriod(defaultPeriod);
   };
 
   const increaseWeek = () => {
-    const newDate = addWeeks(date, 1);
+    const newDate = addWeeksToPeriod(period, 1);
     setPeriod(newDate);
   };
 
   const decreaseWeek = () => {
-    const newDate = subWeeks(date, 1);
+    const newDate = subtractWeeksFromPeriod(period, 1);
     setPeriod(newDate);
   };
 
-  const start = format(date, 'MMM d');
-  const end = format(endOfISOWeek(date), 'MMM d , yyyy');
-  const isNextDisabled = isAfter(addWeeks(date, 1), now);
-  const isPrevDisabled = isBefore(addWeeks(date, 1), MIN_DATE);
+  const start = getFormattedStartByPeriod(period, 'MMM d');
+  const end = getFormattedEndByPeriod(period, 'MMM d , yyyy');
+
+  const isNextDisabled = isFuturePeriod(addWeeksToPeriod(period, 1));
+  const isPrevDisabled =
+    comparePeriods(subtractWeeksFromPeriod(period, 1), getPeriodByDate(MIN_DATE)) < 0;
 
   return (
     <BaseToolbar>
@@ -123,14 +132,14 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
           </CalendarButton>
           <WeekPicker
             label="Date"
-            onChange={date => setPeriod(startOfISOWeek(date))}
-            value={date}
+            onChange={newDate => setPeriod(getPeriodByDate(newDate))}
+            value={getDateByPeriod(period)}
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
           />
           <Text variant="h5">
             <MediumText>
-              Week {getISOWeek(date)} <Dot>&#183;</Dot>
+              Week {getWeekNumberByPeriod(period)} <Dot>&#183;</Dot>
             </MediumText>
             {start} &#8211; {end}
           </Text>
@@ -139,7 +148,7 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
           <ArrowButton onClick={decreaseWeek} disabled={isPrevDisabled}>
             <ChevronLeftIcon />
           </ArrowButton>
-          <TodayButton onClick={setCurrentWeek}>This week</TodayButton>
+          <StyledButton onClick={setCurrentWeek}>This Week</StyledButton>
           <ArrowButton onClick={increaseWeek} disabled={isNextDisabled}>
             <ChevronRightIcon />
           </ArrowButton>
@@ -150,21 +159,16 @@ export const DateToolbarComponent = ({ date, setPeriod }) => {
 };
 
 DateToolbarComponent.propTypes = {
-  date: PropTypes.instanceOf(Date).isRequired,
+  period: PropTypes.string.isRequired,
   setPeriod: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => {
-  const period = getLatestViewableWeek(state);
-  const date = getDateByPeriod(period);
-  return {
-    date,
-  };
-};
+const mapStateToProps = state => ({
+  period: getLatestViewableWeek(state),
+});
 
 const mapDispatchToProps = dispatch => ({
-  setPeriod: date => {
-    const period = format(date, WEEK_PERIOD_FORMAT);
+  setPeriod: period => {
     dispatch(setLatestViewableWeek(period));
   },
 });
