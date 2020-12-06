@@ -11,10 +11,10 @@ export const useConfirmedWeeklyReport = (period, countryCodes) => {
   });
 
   const data = countryCodes.map(code => {
-    const report = query.data.find(r => r.organisationUnit === code.toUpperCase());
+    const report = query.data.find(r => r.organisationUnit === code);
     return (
       report || {
-        organisationUnit: code.toUpperCase(),
+        organisationUnit: code,
       }
     );
   });

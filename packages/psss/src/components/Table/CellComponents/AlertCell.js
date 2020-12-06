@@ -38,5 +38,5 @@ export const AlertCell = ({ displayValue, columnKey, ...props }) => {
     );
   }
 
-  return displayValue === undefined ? '-' : displayValue;
+  return displayValue ?? '-';
 };

@@ -11,7 +11,6 @@ import { COLUMN_WIDTHS } from './constants';
 import { AlertCell, SitesReportedCell, WeekAndDateCell } from '../../components';
 import { getLatestViewableWeek } from '../../store';
 import { useCountryConfirmedWeeklyReport } from '../../api';
-import { subtractPeriod } from '../../utils';
 
 const countrySummaryTableColumns = [
   {
@@ -80,17 +79,14 @@ export const CountrySummaryTableComponent = React.memo(({ rowData, period }) => 
 });
 
 CountrySummaryTableComponent.propTypes = {
-  startPeriod: PropTypes.string.isRequired,
-  endPeriod: PropTypes.string.isRequired,
+  period: PropTypes.string.isRequired,
   rowData: PropTypes.shape({
     organisationUnit: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-const mapStateToProps = state => {
-  return {
-    period: getLatestViewableWeek(state),
-  };
-};
+const mapStateToProps = state => ({
+  period: getLatestViewableWeek(state),
+});
 
 export const CountrySummaryTable = connect(mapStateToProps)(CountrySummaryTableComponent);

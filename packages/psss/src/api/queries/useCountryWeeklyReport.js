@@ -4,7 +4,7 @@
  */
 
 import { useTableData } from './useTableData';
-import { getDaysRemaining, subtractPeriod } from '../../utils';
+import { getDaysRemaining, subtractWeeksFromPeriod } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 
 /**
@@ -17,12 +17,12 @@ import { REPORT_STATUSES } from '../../constants';
  * @param numberOfWeeks
  * @returns []
  */
-const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
+const getWeeklyReportData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
   let currentWeekIsSubmitted = false;
 
   // Set up array with an extra week and later drop the first or last week based on whether or not currentWeekIsSubmitted
   const reportData = [...Array(numberOfWeeks + 1)].map((code, index) => {
-    const newPeriod = subtractPeriod(period, index);
+    const newPeriod = subtractWeeksFromPeriod(period, index);
 
     const confirmedReport = confirmedData.find(report => report.period === newPeriod);
 
@@ -55,7 +55,7 @@ const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWe
 };
 
 export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
-  const startWeek = subtractPeriod(period, numberOfWeeks);
+  const startWeek = subtractWeeksFromPeriod(period, numberOfWeeks);
 
   const confirmedQuery = useTableData(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek: period },
@@ -65,7 +65,7 @@ export const useCountryWeeklyReport = (orgUnit, period, numberOfWeeks) => {
     params: { startWeek, endWeek: period },
   });
 
-  const data = getWeeklyReportsData(query.data, confirmedQuery.data, period, numberOfWeeks);
+  const data = getWeeklyReportData(query.data, confirmedQuery.data, period, numberOfWeeks);
 
   return {
     ...query,
