@@ -48,14 +48,11 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
-export const CountryNameLinkCell = ({ organisationUnit }) => {
-  const countryCode = organisationUnit.toLowerCase();
-  return (
-    <CountryTitle to={`weekly-reports/${countryCode}`} component={RouterLink}>
-      <Avatar src={countryFlagImage(countryCode)} /> {getCountryName(countryCode)}
-    </CountryTitle>
-  );
-};
+export const CountryNameLinkCell = ({ organisationUnit }) => (
+  <CountryTitle to={`weekly-reports/${organisationUnit}`} component={RouterLink}>
+    <Avatar src={countryFlagImage(organisationUnit)} /> {getCountryName(organisationUnit)}
+  </CountryTitle>
+);
 
 CountryNameLinkCell.propTypes = {
   organisationUnit: PropTypes.string.isRequired,

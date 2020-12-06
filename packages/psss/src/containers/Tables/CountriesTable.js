@@ -78,7 +78,7 @@ export const CountriesTableComponent = ({ period, countryCodes }) => {
 
 CountriesTableComponent.propTypes = {
   period: PropTypes.string.isRequired,
-  countryCodes: PropTypes.array.isRequired,
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const mapStateToProps = state => ({

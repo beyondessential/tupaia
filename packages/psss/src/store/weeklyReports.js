@@ -50,7 +50,6 @@ export const getUnVerifiedSyndromes = ({ weeklyReports }, alerts) =>
 const defaultPeriod = getCurrentPeriod('WEEK');
 
 const defaultState = {
-  // latestViewableWeek: '2020W13',
   latestViewableWeek: defaultPeriod,
   activeWeek: null,
   panelIsOpen: false,
