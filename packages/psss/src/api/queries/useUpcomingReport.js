@@ -5,13 +5,13 @@
 
 import { getCurrentPeriod } from '@tupaia/utils';
 import { useQuery } from 'react-query';
-import { subtractPeriod, getDaysRemaining } from '../../utils';
+import { subtractWeeksFromPeriod, getDaysTillDueDay } from '../../utils';
 import { get } from '../api';
 import { REPORT_STATUSES } from '../../constants';
 
 export const useUpcomingReport = countryCode => {
   const currentPeriod = getCurrentPeriod('WEEK');
-  const lastPeriod = subtractPeriod(currentPeriod, 1);
+  const lastPeriod = subtractWeeksFromPeriod(currentPeriod, 1);
   const endpoint = `confirmedWeeklyReport/${countryCode.toUpperCase()}`;
   const query = useQuery(
     [endpoint, lastPeriod],
@@ -19,7 +19,7 @@ export const useUpcomingReport = countryCode => {
     { staleTime: 60 * 1000 },
   );
 
-  const data = query?.data?.data?.results ? query.data.data.results : [];
+  const data = query?.data?.data?.results ?? [];
 
   const { isLoading } = query;
 
@@ -29,7 +29,7 @@ export const useUpcomingReport = countryCode => {
 
   const isConfirmed = data.length > 0;
 
-  const days = getDaysRemaining();
+  const days = getDaysTillDueDay();
 
   if (isConfirmed) {
     const totalDays = days + 7;

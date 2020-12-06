@@ -80,7 +80,7 @@ export const WeeklyCasesTabViewComponent = React.memo(({ handleOpen, activeWeek 
       </Main>
 
       <Sidebar>
-        {/*<UpcomingReportCard />*/}
+        <UpcomingReportCard />
         {/* Temporarily removed for MVP release. Please do not delete */}
         {/*<Card variant="outlined">*/}
         {/*  <DataCardTabs data={tabData} />*/}
