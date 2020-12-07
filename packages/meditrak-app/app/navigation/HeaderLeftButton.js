@@ -14,7 +14,7 @@ export const HeaderLeftButtonContainer = ({ source, ...props }) => (
     {...props}
     tintColor={THEME_COLOR_THREE}
     backImage={source ? () => <Image source={source} tintColor={THEME_COLOR_THREE}></Image> : null}
-  ></HeaderBackButton>
+  />
 );
 
 const mapDispatchToProps = dispatch => ({

@@ -28,7 +28,7 @@ const LENGTH_OF_TRANSITION = 300;
 export class DumbSurveyScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: navigation.state.params.headerLabel,
-    headerLeft: () => <HeaderLeftButton source={require('../images/x.png')}></HeaderLeftButton>,
+    headerLeft: () => <HeaderLeftButton source={require('../images/x.png')} />,
   });
 
   constructor(props) {
