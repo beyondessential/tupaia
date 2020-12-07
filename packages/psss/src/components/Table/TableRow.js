@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import { TableRow } from '@tupaia/ui-components';
 import * as COLORS from '../../constants/colors';
 
-export const SimpleTableRowStyles = css`
+const SimpleTableRowStyles = css`
   border: none;
 
   .MuiTableCell-root {
@@ -60,7 +60,7 @@ export const BorderlessTableRow = styled(SimpleTableRow)`
   ${BorderlessTableRowStyles}
 `;
 
-export const DottedTableRowStyles = css`
+const DottedTableRowStyles = css`
   ${SimpleTableRowStyles}
 
   .MuiTableCell-root {

@@ -172,9 +172,8 @@ export const WeeklyReportsPanelComponent = React.memo(
     );
 
     const isVerified = isFetching || unVerifiedAlerts.length === 0;
-    const showSites = false;
-    // const showSites =
-    //   weekNumber !== null && sitesMetaData?.data?.sites.length > 0 && sitesData?.data?.length > 0;
+    const showSites =
+      activeWeek !== null && sitesMetaData?.data?.sites.length > 0 && sitesData?.data?.length > 0;
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
@@ -278,6 +277,14 @@ WeeklyReportsPanelComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   activeWeek: PropTypes.string.isRequired,
   verifiedStatuses: PropTypes.array.isRequired,
+  pageQueryKey: PropTypes.PropTypes.shape({
+    startWeek: PropTypes.string.isRequired,
+    endWeek: PropTypes.string.isRequired,
+  }),
+};
+
+WeeklyReportsPanelComponent.defaultProps = {
+  pageQueryKey: null,
 };
 
 const mapStateToProps = state => ({

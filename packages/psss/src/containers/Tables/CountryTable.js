@@ -15,7 +15,7 @@ import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
 import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
 import { AlertCell, SitesReportedCell } from '../../components';
-import { REPORT_STATUSES } from '../../constants';
+import { MIN_DATE, REPORT_STATUSES } from '../../constants';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import { useCountryWeeklyReport } from '../../api/queries';
 import { WeeklyReportsPanel } from '../Panels';
@@ -145,11 +145,12 @@ const countryColumns = [
   },
 ];
 
-const TOTAL_RECORDS = differenceInWeeks(new Date(), new Date(2016, 1, 1));
+const TOTAL_RECORDS = differenceInWeeks(new Date(), MIN_DATE);
 
 export const CountryTable = () => {
   const { countryCode } = useParams();
-  const period = getCurrentPeriod('WEEK');
+  // const period = getCurrentPeriod('WEEK');
+  const period = '2020W22';
 
   const {
     isLoading,
@@ -157,6 +158,7 @@ export const CountryTable = () => {
     data,
     isFetching,
     startWeek,
+    endWeek,
     page,
     setPage,
     rowsPerPage,
@@ -185,7 +187,7 @@ export const CountryTable = () => {
           />
         )}
       />
-      <WeeklyReportsPanel pageQueryKey={{ startWeek, endWeek: period }} />
+      <WeeklyReportsPanel pageQueryKey={{ startWeek, endWeek }} />
     </>
   );
 };

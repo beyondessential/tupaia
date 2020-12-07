@@ -22,7 +22,7 @@ import { useUpcomingReport } from './useUpcomingReport';
 
  * @returns []
  */
-const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
+const getWeeklyReportData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
   const reportsByPeriod = keyBy(unconfirmedData, 'period');
   const confirmedReportsByPeriod = keyBy(confirmedData, 'period');
 
@@ -90,13 +90,14 @@ export const useCountryWeeklyReport = (orgUnit, period, count) => {
     params: { startWeek, endWeek },
   });
 
-  const data = getWeeklyReportsData(query.data, confirmedQuery.data, endWeek, rowsOnThisPage);
+  const data = getWeeklyReportData(query.data, confirmedQuery.data, endWeek, rowsOnThisPage);
 
   return {
     ...query,
     isLoading: confirmedQuery.isLoading || query.isLoading,
     data,
     startWeek,
+    endWeek,
     page,
     setPage,
     rowsPerPage,

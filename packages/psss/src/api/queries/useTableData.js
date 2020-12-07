@@ -6,13 +6,20 @@
 import { usePaginatedQuery } from 'react-query';
 import { get } from '../api';
 
+/**
+ *
+ * @param endpoint - api endpoint
+ * @param apiOptions - axios options
+ * @param queryOptions - react-query options
+ * @returns {}
+ */
 export const useTableData = (endpoint, apiOptions, queryOptions) => {
   const query = usePaginatedQuery(
-    [endpoint, apiOptions.params], // key
-    () => get(endpoint, { ...apiOptions }), // api call
-    { staleTime: 60 * 1000 * 5, refetchOnWindowFocus: false, ...queryOptions }, // options
+    [endpoint, apiOptions.params],
+    () => get(endpoint, { ...apiOptions }),
+    { staleTime: 60 * 1000 * 5, refetchOnWindowFocus: false, ...queryOptions },
   );
-  const data = query?.resolvedData?.data?.results ? query.resolvedData.data.results : [];
+  const data = query?.resolvedData?.data?.results ?? [];
 
   return { ...query, data };
 };

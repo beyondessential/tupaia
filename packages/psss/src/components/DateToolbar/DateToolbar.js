@@ -16,7 +16,7 @@ import styled from 'styled-components';
 import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components';
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
-import { MIN_DATE } from './constants';
+import { MIN_DATE } from '../../constants';
 import {
   getDateByPeriod,
   getPeriodByDate,

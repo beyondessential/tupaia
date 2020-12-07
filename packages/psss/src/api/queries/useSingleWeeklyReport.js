@@ -81,9 +81,8 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
     },
     {
       initialData: () => {
-        const data = queryCache.getQueryData([`weeklyReport/${orgUnit}`, pageQueryKey]);
-        // Todo: get correct endpoint for weekly reports panel and see if it is possible to set initial data
-        return undefined;
+        const cachedQuery = queryCache.getQueryData([`weeklyReport/${orgUnit}`, pageQueryKey]);
+        return cachedQuery?.data?.results.find(row => row.period === period);
       },
     },
   );

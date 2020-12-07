@@ -14,7 +14,7 @@ import { IconButton, withStyles } from '@material-ui/core';
 import format from 'date-fns/format';
 import { createStyles } from '@material-ui/styles';
 import { WeekPickerToolbar } from './WeekPickerToolbar';
-import { MIN_DATE } from './constants';
+import { MIN_DATE } from '../../constants';
 
 /**
  * Customisation of the DatePicker is not easily possible using styled-components

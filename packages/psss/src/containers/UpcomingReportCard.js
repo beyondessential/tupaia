@@ -34,26 +34,16 @@ const DateSubtitle = styled(Typography)`
 
 const getDisplayDays = days => {
   const d = Math.abs(days);
-  return `${Math.abs(d)} day${d > 1 ? 's' : ''}`;
+  return `${d} day${d > 1 ? 's' : ''}`;
 };
 
-const HeaderComponent = ({ status, days }) => {
-  const displayDays = getDisplayDays(days);
+const HeaderComponent = ({ status, daysTillDueDay }) => {
+  const displayDays = getDisplayDays(daysTillDueDay);
 
-  if (status === REPORT_STATUSES.UPCOMING && days <= 3) {
-    return (
-      <CardHeader
-        color="error"
-        title={`Confirmation due in ${displayDays}`}
-        label={<Warning color="error" />}
-      />
-    );
-  }
-
-  if (status === REPORT_STATUSES.UPCOMING && days === 0) {
-    return (
-      <CardHeader color="error" title="Confirmation due today" label={<Warning color="error" />} />
-    );
+  if (status === REPORT_STATUSES.UPCOMING) {
+    const title =
+      daysTillDueDay === 0 ? 'Confirmation due today' : `Confirmation due in ${displayDays}`;
+    return <CardHeader color="error" title={title} label={<Warning color="error" />} />;
   }
 
   if (status === REPORT_STATUSES.OVERDUE) {
@@ -71,25 +61,25 @@ const HeaderComponent = ({ status, days }) => {
 
 HeaderComponent.propTypes = {
   status: PropTypes.string.isRequired,
-  days: PropTypes.number.isRequired,
+  daysTillDueDay: PropTypes.number.isRequired,
 };
 
 export const UpcomingReportCardComponent = ({ handleOpen }) => {
   const { countryCode } = useParams();
-  const { isLoading, period, reportStatus, days } = useUpcomingReport(countryCode);
+  const { isLoading, period, reportStatus, daysTillDueDay } = useUpcomingReport(countryCode);
 
   if (isLoading) {
     return <Card variant="outlined" style={{ height: 300 }} />;
   }
 
   const buttonText =
-    reportStatus === REPORT_STATUSES.UPCOMING && days > DUE_ISO_DAY
+    reportStatus === REPORT_STATUSES.UPCOMING && daysTillDueDay > DUE_ISO_DAY
       ? 'View Now'
       : 'Review and Confirm Now';
 
   return (
     <Card variant="outlined">
-      <HeaderComponent days={days} status={reportStatus} />
+      <HeaderComponent daysTillDueDay={daysTillDueDay} status={reportStatus} />
       <CardContent>
         <Typography variant="h4">Week {getWeekNumberByPeriod(period)}</Typography>
         <Typography variant="h4" gutterBottom>
