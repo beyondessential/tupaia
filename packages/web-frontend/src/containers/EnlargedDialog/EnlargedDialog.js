@@ -18,7 +18,6 @@ import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { isMobile, sleep, stringToFilename, getBrowserTimeZone } from '../../utils';
-import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
