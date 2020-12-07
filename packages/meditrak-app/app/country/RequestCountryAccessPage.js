@@ -71,7 +71,7 @@ export class RequestCountryAccessPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.initCountries();
   }
 

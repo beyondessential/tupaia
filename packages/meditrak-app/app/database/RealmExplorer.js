@@ -34,7 +34,7 @@ export class RealmExplorer extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setDataTypeDisplayed(DATA_TYPES[0]);
   }
 
