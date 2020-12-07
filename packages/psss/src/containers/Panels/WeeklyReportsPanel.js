@@ -111,6 +111,12 @@ const PositionedAlert = styled(Alert)`
   width: 100%;
 `;
 
+const toCommaList = values =>
+  values
+    .join(', ')
+    .toUpperCase()
+    .replace(/,(?!.*,)/gim, ' and');
+
 const TABLE_STATUSES = {
   STATIC: 'static',
   SAVING: 'saving',
@@ -146,7 +152,6 @@ export const WeeklyReportsPanelComponent = React.memo(
       syndromes: countrySyndromesData,
       alerts,
       unVerifiedAlerts,
-      unVerifiedList,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
 
     const [confirmReport] = useConfirmWeeklyReport(countryCode);
@@ -178,6 +183,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
     const date = `Week ${getWeekNumberByPeriod(activeWeek)} ${getDisplayDatesByPeriod(activeWeek)}`;
+    const unVerifiedList = toCommaList(unVerifiedAlerts);
 
     return (
       <StyledDrawer open={isOpen} onClose={handleClose}>

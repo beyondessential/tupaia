@@ -14,21 +14,6 @@ const SYNDROMES = {
   DLI: 'Dengue-like Illness (DLI)',
 };
 
-const getAlerts = row =>
-  Object.entries(row).reduce(
-    (list, [key, value]) =>
-      key.includes('Threshold Crossed') && value
-        ? [...list, key.split('Threshold Crossed')[0]]
-        : list,
-    [],
-  );
-
-const getUnVerifiedAlerts = (alerts, verifiedStatuses) =>
-  alerts.reduce(
-    (list, syndrome) => (verifiedStatuses.includes(syndrome.id) ? list : [...list, syndrome.id]),
-    [],
-  );
-
 const getEmptySyndromeData = id => ({
   id,
   title: SYNDROMES[id],
@@ -42,15 +27,32 @@ const getSyndromeData = (id, data) => ({
   isAlert: data[`${id} Threshold Crossed`],
 });
 
+/**
+ *
+ * @returns {{id: *, title: *, percentageChange: number, totalCases: number}[]}
+ */
 const getEmptyTableData = () => Object.keys(SYNDROMES).map(getEmptySyndromeData);
 
+/**
+ *
+ * @param data
+ * @returns {{id: *, title: *, percentageChange: number, totalCases: number,isAlert: *}[]}
+ */
 const getTableData = data => Object.keys(SYNDROMES).map(id => getSyndromeData(id, data));
 
-const toCommaList = values =>
-  values
-    .join(', ')
-    .toUpperCase()
-    .replace(/,(?!.*,)/gim, ' and');
+/**
+ *
+ * @param row
+ * @returns [] eg. ['AFR', 'PF']
+ */
+const getAlerts = row =>
+  Object.entries(row).reduce(
+    (list, [key, value]) =>
+      key.includes('Threshold Crossed') && value
+        ? [...list, key.split(' Threshold Crossed')[0]]
+        : list,
+    [],
+  );
 
 export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQueryKey) => {
   const query = useData(
@@ -89,13 +91,13 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
       syndromes: getEmptyTableData(),
       alerts: [],
       unVerifiedAlerts: [],
-      unVerifiedList: null,
     };
   }
 
   const data = query.data[0];
   const alerts = getAlerts(data);
-  const unVerifiedAlerts = getUnVerifiedAlerts(alerts, verifiedStatuses);
+
+  const unVerifiedAlerts = alerts.filter(a => !verifiedStatuses.includes(a.id));
   const syndromes = getTableData(data);
 
   return {
@@ -104,6 +106,5 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
     syndromes,
     alerts,
     unVerifiedAlerts,
-    unVerifiedList: toCommaList(unVerifiedAlerts),
   };
 };
