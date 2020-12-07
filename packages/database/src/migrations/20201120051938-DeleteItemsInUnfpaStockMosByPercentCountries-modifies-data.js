@@ -28,7 +28,7 @@ const UNFPAStockMOSByPercentCountriesDashboardReport = {
       name: 'Norethisterone amp',
       codes: ['MOS_542a34bf'],
     },
-    UNFPA_Stock_MOS_By_percent_Countries: { name: 'Implant', codes: ['MOS_3ff944bf'] },
+    'Etonogestrel-releasing_implant_single_rod_containing_68mg_of_etonogestrel': { name: 'Implant', codes: ['MOS_3ff944bf'] },
   },
 };
 
