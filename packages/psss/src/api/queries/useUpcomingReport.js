@@ -29,10 +29,10 @@ export const useUpcomingReport = countryCode => {
 
   const isConfirmed = data.length > 0;
 
-  const days = getDaysTillDueDay();
+  const daysTillDueDay = getDaysTillDueDay();
 
   if (isConfirmed) {
-    const totalDays = days + 7;
+    const totalDays = daysTillDueDay + 7;
 
     return {
       ...query,
@@ -43,13 +43,13 @@ export const useUpcomingReport = countryCode => {
     };
   }
 
-  const status = days > 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
+  const status = daysTillDueDay > 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
 
   return {
     ...query,
     data,
     reportStatus: status,
     period: lastPeriod,
-    days,
+    daysTillDueDay,
   };
 };
