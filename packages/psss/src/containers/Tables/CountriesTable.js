@@ -61,12 +61,13 @@ const countriesTableColumns = [
 ];
 
 export const CountriesTableComponent = ({ period, countryCodes }) => {
-  const { data, isLoading, error } = useConfirmedWeeklyReport(period, countryCodes);
+  const { data, isLoading, error, isFetching } = useConfirmedWeeklyReport(period, countryCodes);
 
   return (
     <ExpandableTable
       data={data}
       isLoading={isLoading}
+      isFetching={!isLoading && isFetching}
       errorMessage={error && error.message}
       columns={countriesTableColumns}
       Body={ExpandableTableBody}
@@ -78,7 +79,7 @@ export const CountriesTableComponent = ({ period, countryCodes }) => {
 
 CountriesTableComponent.propTypes = {
   period: PropTypes.string.isRequired,
-  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  countryCodes: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({

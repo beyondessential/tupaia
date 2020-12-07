@@ -5,6 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useIsFetching } from 'react-query';
 import { getCurrentPeriod, isFuturePeriod, comparePeriods } from '@tupaia/utils';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -15,7 +16,7 @@ import styled from 'styled-components';
 import { BaseToolbar, LightIconButton, SmallButton } from '@tupaia/ui-components';
 import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
-import { MIN_DATE } from './constants';
+import { MIN_DATE } from '../../constants';
 import {
   getDateByPeriod,
   getPeriodByDate,
@@ -95,6 +96,7 @@ const MediumText = styled.span`
 `;
 
 export const DateToolbarComponent = ({ period, setPeriod }) => {
+  const isFetching = !!useIsFetching();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -145,11 +147,13 @@ export const DateToolbarComponent = ({ period, setPeriod }) => {
           </Text>
         </FlexStart>
         <FlexEnd>
-          <ArrowButton onClick={decreaseWeek} disabled={isPrevDisabled}>
+          <ArrowButton onClick={decreaseWeek} disabled={isFetching || isPrevDisabled}>
             <ChevronLeftIcon />
           </ArrowButton>
-          <StyledButton onClick={setCurrentWeek}>This Week</StyledButton>
-          <ArrowButton onClick={increaseWeek} disabled={isNextDisabled}>
+          <StyledButton onClick={setCurrentWeek} disabled={isFetching}>
+            This Week
+          </StyledButton>
+          <ArrowButton onClick={increaseWeek} disabled={isFetching || isNextDisabled}>
             <ChevronRightIcon />
           </ArrowButton>
         </FlexEnd>
