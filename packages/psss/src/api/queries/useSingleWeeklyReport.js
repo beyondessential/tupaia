@@ -4,7 +4,7 @@
  */
 
 import { queryCache } from 'react-query';
-import { useTableData } from './useTableData';
+import { useData } from './useData';
 
 const getAlerts = row =>
   Object.entries(row).reduce(
@@ -74,7 +74,7 @@ const getTableData = data => [
 ];
 
 export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQueryKey) => {
-  const query = useTableData(
+  const query = useData(
     `weeklyReport/${orgUnit}`,
     {
       params: { startWeek: period, endWeek: period },
@@ -82,7 +82,20 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
     {
       initialData: () => {
         const cachedQuery = queryCache.getQueryData([`weeklyReport/${orgUnit}`, pageQueryKey]);
-        return cachedQuery?.data?.results.find(row => row.period === period);
+        const results = cachedQuery?.data?.results;
+
+        if (!results) {
+          return undefined;
+        }
+
+        if (results.length === 0) {
+          return cachedQuery;
+        }
+
+        const record = results.filter(row => row.period === period);
+        return record.length > 0
+          ? { ...cachedQuery, data: { ...cachedQuery.data, results: record } }
+          : undefined;
       },
     },
   );
