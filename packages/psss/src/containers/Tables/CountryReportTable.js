@@ -6,7 +6,6 @@ import React, { useContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import InfoIcon from '@material-ui/icons/Info';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
 import {

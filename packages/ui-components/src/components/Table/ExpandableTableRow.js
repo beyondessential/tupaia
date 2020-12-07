@@ -5,20 +5,25 @@
 
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import MuiTable from '@material-ui/core/Table';
 import MuiTableRow from '@material-ui/core/TableRow';
 import MuiTableBody from '@material-ui/core/TableBody';
-import styled from 'styled-components';
 import MuiTableCell from '@material-ui/core/TableCell';
+import { AddCircle, RemoveCircle } from '@material-ui/icons';
 import { tableColumnShape } from './tableColumnShape';
 import { TableRowCells, StyledTableRow } from './TableRow';
+import { IconButton } from '../IconButton';
 
 const WrapperCell = styled(MuiTableCell)`
   background: white;
-  padding: 0;
   border: 1px solid ${props => props.theme.palette.grey['400']};
   box-sizing: border-box;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+
+  &.MuiTableCell-root.MuiTableCell-body {
+    padding: 0;
+  }
 
   .MuiTableRow-root {
     &:hover {
@@ -56,8 +61,42 @@ TableRowExpansionContainer.defaultProps = {
   className: '',
 };
 
+const PositionedIconButton = styled(IconButton)`
+  position: absolute;
+  top: 10px;
+  right: 0;
+`;
+
+const OpenIcon = styled(AddCircle)`
+  color: ${props => props.theme.palette.text.tertiary};
+`;
+
+const CloseIcon = styled(RemoveCircle)`
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+const DefaultExpandButton = ({ onClick, expanded }) => (
+  <PositionedIconButton onClick={onClick}>
+    {expanded ? <CloseIcon /> : <OpenIcon />}
+  </PositionedIconButton>
+);
+
+DefaultExpandButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  expanded: PropTypes.bool.isRequired,
+};
+
 export const ExpandableTableRow = React.memo(
-  ({ columns, rowData, className, expandedValue, SubComponent, ExpansionContainer, onClick }) => {
+  ({
+    columns,
+    rowData,
+    className,
+    expandedValue,
+    SubComponent,
+    ExpansionContainer,
+    onClick,
+    ExpandButtonComponent,
+  }) => {
     const isControlled = expandedValue !== undefined;
     const [expandedState, setExpandedState] = useState(false);
     const expanded = isControlled ? expandedValue : expandedState;
@@ -71,8 +110,16 @@ export const ExpandableTableRow = React.memo(
     }, [setExpandedState, onClick, isControlled]);
 
     const row = (
-      <StyledTableRow className={className} onClick={handleClick}>
-        <TableRowCells columns={columns} rowData={rowData} />
+      <StyledTableRow className={className}>
+        <TableRowCells
+          columns={columns}
+          rowData={rowData}
+          ExpandButton={
+            ExpandButtonComponent && (
+              <ExpandButtonComponent onClick={handleClick} expanded={expanded} />
+            )
+          }
+        />
       </StyledTableRow>
     );
 
@@ -96,6 +143,7 @@ ExpandableTableRow.propTypes = {
   ExpansionContainer: PropTypes.any,
   expandedValue: PropTypes.bool,
   onClick: PropTypes.func,
+  ExpandButtonComponent: PropTypes.node,
 };
 
 ExpandableTableRow.defaultProps = {
@@ -104,4 +152,5 @@ ExpandableTableRow.defaultProps = {
   ExpansionContainer: TableRowExpansionContainer,
   expandedValue: undefined,
   onClick: null,
+  ExpandButtonComponent: DefaultExpandButton,
 };
