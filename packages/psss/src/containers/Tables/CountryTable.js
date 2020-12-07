@@ -149,8 +149,7 @@ const TOTAL_RECORDS = differenceInWeeks(new Date(), MIN_DATE);
 
 export const CountryTable = () => {
   const { countryCode } = useParams();
-  // const period = getCurrentPeriod('WEEK');
-  const period = '2020W22';
+  const period = getCurrentPeriod('WEEK');
 
   const {
     isLoading,
