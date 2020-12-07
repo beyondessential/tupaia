@@ -5,8 +5,9 @@
 
 import { useState } from 'react';
 import keyBy from 'lodash.keyby';
+import isequal from 'lodash.isequal';
 import { useTableData } from './useTableData';
-import { getDaysTillDueDay, subtractWeeksFromPeriod } from '../../utils';
+import { subtractWeeksFromPeriod } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 import { useUpcomingReport } from './useUpcomingReport';
 
@@ -22,30 +23,28 @@ import { useUpcomingReport } from './useUpcomingReport';
  * @returns []
  */
 const getWeeklyReportsData = (unconfirmedData, confirmedData, period, numberOfWeeks) => {
-  const reportsByPeriod = keyBy(unconfirmedData, period);
-  const confirmedReportsByPeriod = keyBy(confirmedData, period);
+  const reportsByPeriod = keyBy(unconfirmedData, 'period');
+  const confirmedReportsByPeriod = keyBy(confirmedData, 'period');
 
   return [...Array(numberOfWeeks)].map((code, index) => {
-    const newPeriod = subtractWeeksFromPeriod(period, index);
+    const currentPeriod = subtractWeeksFromPeriod(period, index);
+    const confirmedReport = confirmedReportsByPeriod[currentPeriod];
+    const report = reportsByPeriod[currentPeriod];
 
-    const confirmedReport = confirmedReportsByPeriod[newPeriod];
-    if (confirmedReport) {
-      return { ...confirmedReport, status: REPORT_STATUSES.SUBMITTED };
-    }
-
-    const report = reportsByPeriod[newPeriod];
     if (report) {
-      // is overdue unless it is this weeks report and it is before wednesday
-      const reportStatus =
-        newPeriod === period && getDaysTillDueDay() > 0
+      let reportStatus = REPORT_STATUSES.OVERDUE;
+
+      if (confirmedReport) {
+        reportStatus = isequal(report, confirmedReport)
           ? REPORT_STATUSES.SUBMITTED
-          : REPORT_STATUSES.OVERDUE;
+          : REPORT_STATUSES.RESUBMIT;
+      }
 
       return { ...report, status: reportStatus };
     }
 
     return {
-      period: newPeriod,
+      period: currentPeriod,
       status: REPORT_STATUSES.OVERDUE,
     };
   });
