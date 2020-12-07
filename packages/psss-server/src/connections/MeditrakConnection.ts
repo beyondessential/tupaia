@@ -47,7 +47,7 @@ export class MeditrakConnection extends ApiConnection {
 
   async updateSurveyResponse(
     surveyResponse: SurveyResponseObject,
-    answers: Record<string, string>,
+    answers: Record<string, number>,
   ) {
     const existingAnswers = (await this.get(`surveyResponses/${surveyResponse.id}/answers`, {
       columns: `["${ANSWER_FIELDS.join('","')}"]`,

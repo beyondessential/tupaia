@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { Route } from '../Route';
-import { PSSS_PERMISSION_GROUP } from '../../constants';
+import { PSSS_PERMISSION_GROUP, PSSS_CONFIRMED_WEEKLY_REPORT_CODE } from '../../constants';
 
 export class ConfirmedWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
     const countryCodes = await this.getAccessibleCountryCodes();
     const reportData = await this.reportConnection?.fetchReport(
-      'PSSS_Confirmed_Weekly_Report',
+      PSSS_CONFIRMED_WEEKLY_REPORT_CODE,
       countryCodes,
       [startWeek], //Only need to send startWeek period because this is a weekly report
     );
