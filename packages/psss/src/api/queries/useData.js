@@ -14,7 +14,7 @@ import { get } from '../api';
  * @returns {}
  */
 export const useData = (endpoint, apiOptions, queryOptions) => {
-  const query = useQuery([endpoint, apiOptions.params], () => get(endpoint, { ...apiOptions }), {
+  const query = useQuery([endpoint, apiOptions.params], () => get(endpoint, apiOptions), {
     staleTime: 60 * 1000 * 5,
     refetchOnWindowFocus: false,
     ...queryOptions,

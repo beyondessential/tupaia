@@ -14,11 +14,11 @@ import { get } from '../api';
  * @returns {}
  */
 export const useTableData = (endpoint, apiOptions, queryOptions) => {
-  const query = usePaginatedQuery(
-    [endpoint, apiOptions.params],
-    () => get(endpoint, { ...apiOptions }),
-    { staleTime: 60 * 1000 * 5, refetchOnWindowFocus: false, ...queryOptions },
-  );
+  const query = usePaginatedQuery([endpoint, apiOptions.params], () => get(endpoint, apiOptions), {
+    staleTime: 60 * 1000 * 5,
+    refetchOnWindowFocus: false,
+    ...queryOptions,
+  });
   const data = query?.resolvedData?.data?.results ?? [];
 
   return { ...query, data };

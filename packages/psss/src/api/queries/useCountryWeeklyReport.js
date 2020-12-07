@@ -58,10 +58,10 @@ const usePagination = (period, count) => {
   const pageNum = page + 1;
 
   const rowsOnLastPage = count % rowsPerPage || rowsPerPage;
-  const isLastPage = pageNum * rowsPerPage > count;
+  const isLastPage = pageNum * rowsPerPage >= count;
   const rowsOnThisPage = isLastPage ? rowsOnLastPage : rowsPerPage;
 
-  const endWeek = subtractWeeksFromPeriod(period, pageNum * rowsPerPage - rowsPerPage);
+  const endWeek = subtractWeeksFromPeriod(period, page * rowsPerPage);
   const startWeek = subtractWeeksFromPeriod(endWeek, rowsOnThisPage - 1);
 
   return { startWeek, endWeek, page, setPage, rowsPerPage, rowsOnThisPage, setRowsPerPage };

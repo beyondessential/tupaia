@@ -60,7 +60,7 @@ export const canUserViewMultipleCountries = user => {
   return count.length > 1;
 };
 
-export const getEntitiesAllowedByUser = user => {
+const getEntitiesAllowedByUser = user => {
   if (!user) {
     return [];
   }

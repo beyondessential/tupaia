@@ -12,11 +12,11 @@ export const useSaveSiteReport = params =>
     onSuccess: () => queryCache.invalidateQueries('country-weeks', params),
   });
 
-export const useConfirmWeeklyReport = countryCode =>
+export const useConfirmWeeklyReport = orgUnit =>
   useMutation(() => console.log('post to confirmWeeklyReport...'), {
     onSuccess: () => {
-      queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
-      queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
+      queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
+      queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
     },
   });
 

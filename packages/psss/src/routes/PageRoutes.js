@@ -18,7 +18,7 @@ import { canUserViewMultipleCountries, getCurrentUser, canUserViewCountry } from
 
 export const PageRoutesComponent = React.memo(({ user }) => (
   <Switch>
-    <PrivateRoute exact path="/" authCheck={match => canUserViewMultipleCountries(user, match)}>
+    <PrivateRoute exact path="/" authCheck={() => canUserViewMultipleCountries(user)}>
       <CountriesReportsView />
     </PrivateRoute>
     <Route path="/profile">

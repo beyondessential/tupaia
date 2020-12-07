@@ -109,7 +109,7 @@ export const CountryReportTable = React.memo(
       setTableStatus(TABLE_STATUSES.STATIC);
     }, [setTableStatus]);
 
-    if (Object.keys(fields).length === 0 && fields.constructor === Object) {
+    if (Object.keys(fields).length === 0) {
       return null;
     }
 

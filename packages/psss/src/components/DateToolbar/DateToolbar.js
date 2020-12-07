@@ -96,7 +96,7 @@ const MediumText = styled.span`
 `;
 
 export const DateToolbarComponent = ({ period, setPeriod }) => {
-  const isFetching = useIsFetching();
+  const isFetching = !!useIsFetching();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -147,13 +147,13 @@ export const DateToolbarComponent = ({ period, setPeriod }) => {
           </Text>
         </FlexStart>
         <FlexEnd>
-          <ArrowButton onClick={decreaseWeek} disabled={!!isFetching || isPrevDisabled}>
+          <ArrowButton onClick={decreaseWeek} disabled={isFetching || isPrevDisabled}>
             <ChevronLeftIcon />
           </ArrowButton>
-          <StyledButton onClick={setCurrentWeek} disabled={!!isFetching}>
+          <StyledButton onClick={setCurrentWeek} disabled={isFetching}>
             This Week
           </StyledButton>
-          <ArrowButton onClick={increaseWeek} disabled={!!isFetching || isNextDisabled}>
+          <ArrowButton onClick={increaseWeek} disabled={isFetching || isNextDisabled}>
             <ChevronRightIcon />
           </ArrowButton>
         </FlexEnd>
