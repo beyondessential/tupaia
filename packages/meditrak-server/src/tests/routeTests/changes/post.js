@@ -78,11 +78,11 @@ export const testPostChanges = (app, models, syncQueue) =>
     describe('SubmitSurveyResponse', () => {
       before(async () => {
         for (let i = 0; i < 20; i++) {
-          await upsertQuestion({ id: getQuestionId(i) });
+          await upsertQuestion({ id: getQuestionId(i), code: `TEST_QUESTION_${i}` });
         }
 
         await buildAndInsertSurveys(models, [{ id: surveyId, code: 'TEST_SURVEY' }]);
-        await upsertEntity({ id: entityId });
+        await upsertEntity({ id: entityId, code: 'TEST_ENTITY' });
 
         const user = await models.user.findOne();
         userId = user.id;
@@ -285,7 +285,7 @@ export const testPostChanges = (app, models, syncQueue) =>
 
         it('correctly translates entity_code to entity_id', async () => {
           const surveyResponseObject = generateDummySurveyResponse();
-          const entityCode = 'TO';
+          const entityCode = 'TEST_ENTITY';
           delete surveyResponseObject.entity_id;
           surveyResponseObject.entity_code = entityCode;
           surveyResponseObject.answers.push(generateDummyAnswer());
@@ -302,7 +302,7 @@ export const testPostChanges = (app, models, syncQueue) =>
 
         it('correctly translates survey_code to survey_id', async () => {
           const surveyResponseObject = generateDummySurveyResponse();
-          const surveyCode = 'FP01';
+          const surveyCode = 'TEST_SURVEY';
           delete surveyResponseObject.survey_id;
           surveyResponseObject.survey_code = surveyCode;
           surveyResponseObject.answers.push(generateDummyAnswer());
@@ -320,7 +320,7 @@ export const testPostChanges = (app, models, syncQueue) =>
         it('correctly translates question_code to question_id', async () => {
           const surveyResponseObject = generateDummySurveyResponse();
           const answerObject = generateDummyAnswer();
-          const questionCode = 'PEHS82';
+          const questionCode = 'TEST_QUESTION_1';
           delete answerObject.question_id;
           answerObject.question_code = questionCode;
           surveyResponseObject.answers.push(answerObject);
