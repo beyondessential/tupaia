@@ -88,6 +88,7 @@ const config = {
       color: '#222',
       ...(Platform.OS === 'android' ? androidHeaderTitleStyle : {}),
     },
+    headerTitleAlign: 'center',
     headerRight: () => <HeaderToolbar />,
   }),
 };
