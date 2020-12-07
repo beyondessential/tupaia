@@ -33,7 +33,9 @@ const getPresentationOptionFromRange = (options, value) => {
 const getPresentationOptionFromKey = (options, value) => findByKey(options, value, false) || null;
 
 const getPresentationOptionFromCondition = (options, value) => {
-  const option = Object.values(options).find(({ condition }) => {
+  const { conditions = [] } = options;
+
+  const option = conditions.find(({ condition }) => {
     if (typeof condition === 'object') {
       // Check if the value satisfies all the conditions if condition is an object
       return Object.entries(condition).every(([operator, conditionalValue]) => {

@@ -20,8 +20,16 @@ export const VIEW_CONTENT_SHAPE = {
   periodGranularity: GRANULARITY_SHAPE,
 };
 
-export const PRESENTATION_OPTIONS_SHAPE = {
-  color: PropTypes.string,
+export const CONDITIONAL_MATRIX_CONDITION_SHAPE = {
+  key: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
   label: PropTypes.string,
+  condition: PropTypes.oneOfType([PropTypes.number, PropTypes.object]).isRequired, // 0 or object e.g. { "<": 3 }
   description: PropTypes.string,
+};
+
+export const PRESENTATION_OPTIONS_SHAPE = {
+  type: PropTypes.string,
+  showRawValue: PropTypes.bool,
+  conditions: PropTypes.arrayOf(PropTypes.shape(CONDITIONAL_MATRIX_CONDITION_SHAPE)),
 };
