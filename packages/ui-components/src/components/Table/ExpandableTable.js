@@ -4,13 +4,24 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Table } from './Table';
 import { ExpandableTableBody } from './ExpandableTableBody';
 
-export const ExpandableTable = React.memo(({ Body, SubComponent, ...tableProps }) => {
-  const TableBody = tableBodyProps => <Body {...tableBodyProps} SubComponent={SubComponent} />;
-  return <Table Body={TableBody} {...tableProps} />;
+const StyledTable = styled(Table)`
+  th:last-child,
+  td:last-child {
+    padding-right: 65px;
+  }
+`;
+
+export const ExpandableTable = React.memo(({ Body, SubComponent, isFetching, ...tableProps }) => {
+  const TableBody = React.useCallback(props => <Body {...props} SubComponent={SubComponent} />, [
+    Body,
+    SubComponent,
+  ]);
+  return <StyledTable Body={TableBody} {...tableProps} isFetching={isFetching} />;
 });
 
 ExpandableTable.propTypes = {

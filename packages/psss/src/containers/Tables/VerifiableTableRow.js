@@ -7,8 +7,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
-import { TableRowExpansionContainer, WarningButton } from '@tupaia/ui-components';
-import { BorderlessTableRow } from '../../components/Table';
+import {
+  ExpandableTableRow,
+  TableRowExpansionContainer,
+  WarningButton,
+} from '@tupaia/ui-components';
+import { BorderlessTableRowStyles } from '../../components/Table';
 import * as COLORS from '../../constants/colors';
 import { getVerifiedStatus, updateVerifiedStatus } from '../../store';
 
@@ -69,9 +73,13 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
     box-shadow: none;
   }
 
-  > .MuiTableCell-root {
+  > .MuiTableCell-root.MuiTableCell-body {
     padding-top: 0.5rem;
   }
+`;
+
+const StyledExpandableRow = styled(ExpandableTableRow)`
+  ${BorderlessTableRowStyles}
 `;
 
 export const VerifiableTableRowComponent = React.memo(props => {
@@ -104,8 +112,9 @@ export const VerifiableTableRowComponent = React.memo(props => {
   };
 
   return (
-    <BorderlessTableRow
+    <StyledExpandableRow
       {...props}
+      ExpandButtonComponent={null}
       expandedValue={hasWarning}
       SubComponent={WarningButtonComponent}
       ExpansionContainer={StyledExpansionContainer}
