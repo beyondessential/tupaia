@@ -42,7 +42,7 @@ export const TableRowCells = React.memo(({ columns, rowData, ExpandButton }) =>
           ) : (
             displayValue
           )}
-          {ExpandButton && index >= columns.length - 1 && ExpandButton}
+          {index === columns.length - 1 && ExpandButton}
         </TableCell>
       );
     },
