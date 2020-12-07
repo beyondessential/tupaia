@@ -24,6 +24,7 @@ export const CONDITIONAL_MATRIX_CONDITION_SHAPE = {
   key: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   label: PropTypes.string,
+  legendLabel: PropTypes.string,
   condition: PropTypes.oneOfType([PropTypes.number, PropTypes.object]).isRequired, // 0 or object e.g. { "<": 3 }
   description: PropTypes.string,
 };
