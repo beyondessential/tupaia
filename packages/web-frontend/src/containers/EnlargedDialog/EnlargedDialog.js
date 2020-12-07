@@ -17,7 +17,8 @@ import {
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { getTimeZone, isMobile, sleep, stringToFilename } from '../../utils';
+import { isMobile, sleep, stringToFilename, getBrowserTimeZone } from '../../utils';
+import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -176,7 +177,7 @@ const EnlargedDialogComponent = ({
           organisationUnitName,
           startDate,
           endDate,
-          timeZone: getTimeZone(),
+          timeZone: getBrowserTimeZone(),
           filename,
         });
       } else {

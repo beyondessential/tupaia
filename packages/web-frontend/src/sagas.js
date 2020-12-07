@@ -125,7 +125,7 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getTimeZone } from './utils';
+import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getBrowserTimeZone } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -719,7 +719,7 @@ function* fetchViewData(parameters, errorHandler) {
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    timeZone: getTimeZone(),
+    timeZone: getBrowserTimeZone(),
     ...extraUrlParameters,
   };
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;

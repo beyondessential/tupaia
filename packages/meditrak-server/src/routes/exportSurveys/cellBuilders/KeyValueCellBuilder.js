@@ -34,7 +34,7 @@ export class KeyValueCellBuilder {
     }
     const fullObject =
       typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
-    const object = this.extractRelevantObject(fullObject);
+    const object = this.extractRelevantObject(fullObject) || {};
     const processedFields = await Promise.all(
       Object.entries(object).map(async ([key, value]) => {
         const processedKey = await this.processKey(key);
