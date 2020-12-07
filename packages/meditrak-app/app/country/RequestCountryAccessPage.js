@@ -60,7 +60,7 @@ const renderNoCountries = () => (
 
 export class RequestCountryAccessPage extends React.Component {
   static navigationOptions = {
-    title: 'Request country access',
+    headerTitle: 'Request country access',
   };
 
   constructor(props) {

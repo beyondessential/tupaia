@@ -38,14 +38,14 @@ const INITIAL_SCREEN_NAME = 'Login';
 
 const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
-  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: { header: null } },
+  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: { headerShown: false } },
   [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
-  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: { header: null } },
+  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: { headerShown: false } },
   [CREATE_ACCOUNT_SCREEN]: {
     screen: CreateUserContainer,
-    navigationOptions: { headerRight: null },
+    navigationOptions: { headerRight: () => null },
   },
-  [HOME_SCREEN]: { screen: HomeScreenContainer, navigationOptions: { headerLeft: null } },
+  [HOME_SCREEN]: { screen: HomeScreenContainer, navigationOptions: { headerLeft: () => null } },
   [SYNC_SCREEN]: { screen: SyncContainer },
   [SURVEY_SCREEN]: { screen: SurveyScreen },
   [SURVEYS_MENU_SCREEN]: { screen: SurveysMenuScreen },
@@ -72,7 +72,7 @@ const config = {
   headerMode: 'float',
   defaultNavigationOptions: ({ navigation }) => ({
     headerLeft: () => <HeaderLeftButton />,
-    headerTitle: null,
+    headerTitle: () => null,
     headerBackTitle: null,
     headerStyle: isInvisibleHeader(navigation)
       ? {
