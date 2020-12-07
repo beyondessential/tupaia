@@ -7,7 +7,7 @@ import { periodToMoment, periodToType, periodTypeToMomentUnit } from './period';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 
-const periodToDateString = (period, isEndPeriod) => {
+export const periodToDateString = (period, isEndPeriod) => {
   const mutatingMoment = periodToMoment(period);
   const periodType = periodToType(period);
   const momentUnit = periodTypeToMomentUnit(periodType);
