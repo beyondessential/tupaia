@@ -17,8 +17,12 @@ const fetchEvents = async (
   params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
   const { dataGroupCode } = params;
-  const { organisationUnitCodes, period } = query;
-  const response = await aggregator.fetchEvents(dataGroupCode, organisationUnitCodes, period);
+  const { organisationUnitCodes, period, startDate, endDate } = query;
+  const response = await aggregator.fetchEvents(dataGroupCode, organisationUnitCodes, {
+    period,
+    startDate,
+    endDate,
+  });
   const rows = response.map(event => {
     const { dataValues, ...restOfEvent } = event;
     return { ...dataValues, ...restOfEvent };
