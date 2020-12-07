@@ -120,9 +120,12 @@ async function translateSurveyResponseObject(models, surveyResponseObject) {
   const surveyResponseTranslators = constructSurveyResponseTranslators(models);
   await translateObjectFields(surveyResponseObject, surveyResponseTranslators);
 
-  const answerTranslators = constructAnswerTranslators(models);
-  for (let i = 0; i < surveyResponseObject.answers.length; i++) {
-    await translateObjectFields(surveyResponseObject.answers[i], answerTranslators);
+  const { answers } = surveyResponseObject;
+  if (Array.isArray(answers)) {
+    const answerTranslators = constructAnswerTranslators(models);
+    for (let i = 0; i < answers.length; i++) {
+      await translateObjectFields(answers[i], answerTranslators);
+    }
   }
 
   return true;

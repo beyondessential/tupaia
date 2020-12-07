@@ -263,6 +263,79 @@ export const testPostChanges = (app, models, syncQueue) =>
         });
       });
 
+      describe('Translating survey responses', () => {
+        it('correctly translates user_email to user_id and assessor_name', async () => {
+          const surveyResponseObject = generateDummySurveyResponse();
+          const existingUserId = surveyResponseObject.user_id;
+          delete surveyResponseObject.user_id;
+          delete surveyResponseObject.assessor_name;
+          const user = await models.user.findById(existingUserId);
+          surveyResponseObject.user_email = user.email;
+          surveyResponseObject.answers.push(generateDummyAnswer());
+          const action = {
+            action: 'SubmitSurveyResponse',
+            payload: surveyResponseObject,
+          };
+          const response = await app.post('changes', { body: [action] });
+          const newSurveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
+          expect(response.statusCode).to.equal(200);
+          expect(newSurveyResponse.user_id).to.equal(user.id);
+          expect(newSurveyResponse.assessor_name).to.equal(user.fullName);
+        });
+
+        it('correctly translates entity_code to entity_id', async () => {
+          const surveyResponseObject = generateDummySurveyResponse();
+          const entityCode = 'TO';
+          delete surveyResponseObject.entity_id;
+          surveyResponseObject.entity_code = entityCode;
+          surveyResponseObject.answers.push(generateDummyAnswer());
+          const action = {
+            action: 'SubmitSurveyResponse',
+            payload: surveyResponseObject,
+          };
+          const response = await app.post('changes', { body: [action] });
+          const entity = await models.entity.findOne({ code: entityCode });
+          const newSurveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
+          expect(response.statusCode).to.equal(200);
+          expect(newSurveyResponse.entity_id).to.equal(entity.id);
+        });
+
+        it('correctly translates survey_code to survey_id', async () => {
+          const surveyResponseObject = generateDummySurveyResponse();
+          const surveyCode = 'FP01';
+          delete surveyResponseObject.survey_id;
+          surveyResponseObject.survey_code = surveyCode;
+          surveyResponseObject.answers.push(generateDummyAnswer());
+          const action = {
+            action: 'SubmitSurveyResponse',
+            payload: surveyResponseObject,
+          };
+          const response = await app.post('changes', { body: [action] });
+          const survey = await models.survey.findOne({ code: surveyCode });
+          const newSurveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
+          expect(response.statusCode).to.equal(200);
+          expect(newSurveyResponse.survey_id).to.equal(survey.id);
+        });
+
+        it('correctly translates question_code to question_id', async () => {
+          const surveyResponseObject = generateDummySurveyResponse();
+          const answerObject = generateDummyAnswer();
+          const questionCode = 'PEHS82';
+          delete answerObject.question_id;
+          answerObject.question_code = questionCode;
+          surveyResponseObject.answers.push(answerObject);
+          const action = {
+            action: 'SubmitSurveyResponse',
+            payload: surveyResponseObject,
+          };
+          const response = await app.post('changes', { body: [action] });
+          const question = await models.question.findOne({ code: questionCode });
+          const newAnswer = await models.answer.findById(answerObject.id);
+          expect(response.statusCode).to.equal(200);
+          expect(newAnswer.question_id).to.equal(question.id);
+        });
+      });
+
       describe('Survey responses with 0 answers', () => {
         it('correctly adds survey responses with no answers', async () => {
           const previousNumberOfSurveyResponses = await models.surveyResponse.count();
