@@ -93,9 +93,10 @@ export const UpcomingReportCardComponent = ({ handleOpen }) => {
           {buttonText}
         </StyledButton>
       </CardContent>
+      {/* Removed until there is data @see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1336
       <CardFooter>
         <BarMeter value={22} total={30} legend="Sites reported" />
-      </CardFooter>
+      </CardFooter>*/}
     </Card>
   );
 };
