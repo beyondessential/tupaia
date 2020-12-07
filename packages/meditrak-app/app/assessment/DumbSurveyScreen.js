@@ -65,6 +65,7 @@ export class DumbSurveyScreen extends React.Component {
       Animated.timing(this.state.screenIndexAnimation, {
         toValue: nextProps.screenIndex,
         duration: LENGTH_OF_TRANSITION,
+        useNativeDriver: false,
       }).start(() => {
         this.setState({ lastScreenIndex: null });
       });

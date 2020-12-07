@@ -53,6 +53,7 @@ class HomeScreenComponent extends PureComponent {
       Animated.timing(this.floatingHeaderVisibleAnimation, {
         toValue: isFloatingHeaderVisible ? 1 : 0,
         duration: 800,
+        useNativeDriver: false,
       }).start();
     }
 

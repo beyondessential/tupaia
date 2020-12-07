@@ -90,6 +90,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  dispatch,
   onGoBack: () => dispatch(goBack()),
 });
 
