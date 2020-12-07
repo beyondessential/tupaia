@@ -6,6 +6,14 @@
 import { queryCache } from 'react-query';
 import { useData } from './useData';
 
+const SYNDROMES = {
+  AFR: 'Acute Fever and Rash (AFR)',
+  DIA: 'Diarrhoea (DIA)',
+  ILI: 'Influenza-like Illness (ILI)',
+  PF: 'Prolonged Fever (PF)',
+  DLI: 'Dengue-like Illness (DLI)',
+};
+
 const getAlerts = row =>
   Object.entries(row).reduce(
     (list, [key, value]) =>
@@ -21,57 +29,28 @@ const getUnVerifiedAlerts = (alerts, verifiedStatuses) =>
     [],
   );
 
-const getEmptyTableData = () => [
-  { id: 'afr', title: 'Acute Fever and Rash (AFR)', percentageChange: 0, totalCases: 0 },
-  { id: 'dia', title: 'Diarrhoea (DIA)', percentageChange: 0, totalCases: 0 },
-  { id: 'ili', title: 'Influenza-like Illness (ILI)', percentageChange: 0, totalCases: 0 },
-  { id: 'pf', title: 'Prolonged Fever (PF)', percentageChange: 0, totalCases: 0 },
-  { id: 'dli', title: 'Dengue-like Illness (DLI)', percentageChange: 0, totalCases: 0 },
-];
+const getEmptySyndromeData = id => ({
+  id,
+  title: SYNDROMES[id],
+  percentageChange: 0,
+  totalCases: 0,
+});
+
+const getSyndromeData = (id, data) => ({
+  ...getEmptySyndromeData(id),
+  totalCases: data[id],
+  isAlert: data[`${id} Threshold Crossed`],
+});
+
+const getEmptyTableData = () => Object.keys(SYNDROMES).map(getEmptySyndromeData);
+
+const getTableData = data => Object.keys(SYNDROMES).map(id => getSyndromeData(id, data));
 
 const toCommaList = values =>
   values
     .join(', ')
     .toUpperCase()
     .replace(/,(?!.*,)/gim, ' and');
-
-const getTableData = data => [
-  {
-    id: 'afr',
-    title: 'Acute Fever and Rash (AFR)',
-    percentageChange: 0,
-    totalCases: data.AFR,
-    isAlert: data[`AFR Threshold Crossed`],
-  },
-  {
-    id: 'dia',
-    title: 'Diarrhoea (DIA)',
-    percentageChange: 0,
-    totalCases: data.DIA,
-    isAlert: data[`DIA Threshold Crossed`],
-  },
-  {
-    id: 'ili',
-    title: 'Influenza-like Illness (ILI)',
-    percentageChange: 0,
-    totalCases: data.ILI,
-    isAlert: data[`ILI Threshold Crossed`],
-  },
-  {
-    id: 'pf',
-    title: 'Prolonged Fever (PF)',
-    percentageChange: 0,
-    totalCases: data.PF,
-    isAlert: data[`PF Threshold Crossed`],
-  },
-  {
-    id: 'dli',
-    title: 'Dengue-like Illness (DLI)',
-    percentageChange: 0,
-    totalCases: data.DLI,
-    isAlert: data[`DLI Threshold Crossed`],
-  },
-];
 
 export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQueryKey) => {
   const query = useData(
