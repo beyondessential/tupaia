@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
-import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import * as COLORS from '../../../constants/colors';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../../utils';
 
 const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
@@ -16,19 +16,12 @@ const CountrySummaryTitle = styled.div`
   padding-right: 0.625rem;
 `;
 
-export const WeekAndDateCell = ({ weekNumber, startDate, endDate }) => {
-  const start = format(startDate, 'LLL d');
-  const end = format(endDate, 'LLL d');
-  const year = format(endDate, 'yyyy');
-  return (
-    <CountrySummaryTitle>
-      <strong>W{weekNumber}</strong> {`${start} - ${end}, ${year}`}
-    </CountrySummaryTitle>
-  );
-};
+export const WeekAndDateCell = ({ period }) => (
+  <CountrySummaryTitle>
+    <strong>W{getWeekNumberByPeriod(period)}</strong> {getDisplayDatesByPeriod(period)}
+  </CountrySummaryTitle>
+);
 
 WeekAndDateCell.propTypes = {
-  weekNumber: PropTypes.number.isRequired,
-  startDate: PropTypes.instanceOf(Date).isRequired,
-  endDate: PropTypes.instanceOf(Date).isRequired,
+  period: PropTypes.string.isRequired,
 };

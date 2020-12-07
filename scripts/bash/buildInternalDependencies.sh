@@ -6,6 +6,8 @@ CONCURRENT_BUILD_BATCH_SIZE=2
 
 USAGE="Usage: buildInternalDependencies.sh [--watch] [--withTypes]"
 
+OUT_DIR="dist"
+
 watch=false
 with_types=false
 while [ "$1" != "" ]; do
@@ -34,9 +36,11 @@ done
 [[ $watch = "true" ]] && build_ts_args="--watch --preserveWatchOutput" || build_ts_args=""
 
 build_commands=()
+delete_command="rm -rf"
 
 # Build dependencies
 for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
+    delete_command="${delete_command} packages/${PACKAGE}/${OUT_DIR}"
     build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
 done
 
@@ -52,6 +56,10 @@ if [[ $watch == "true" ]]; then
     echo "yarn concurrently ${build_commands[@]}"
     eval "yarn concurrently ${build_commands[@]}"
 else
+    echo "Deleting existing internal dependency builds"
+    echo "${delete_command}"
+    eval "${delete_command}"
+
     echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
     total_build_commands=${#build_commands[@]}
     for ((start_index = 0; start_index < ${total_build_commands}; start_index += ${CONCURRENT_BUILD_BATCH_SIZE})); do

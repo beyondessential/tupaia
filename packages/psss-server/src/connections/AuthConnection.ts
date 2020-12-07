@@ -24,11 +24,11 @@ export class AuthConnection extends ApiConnection {
     super(basicAuthHandler);
   }
 
-  async login({ emailAddress, password }: Credentials) {
+  async login({ emailAddress, password, deviceName }: Credentials) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
-      { emailAddress, password, deviceName: 'PSSS Server' },
+      { emailAddress, password, deviceName: `PSSS-SERVER: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
   }
@@ -52,6 +52,6 @@ export class AuthConnection extends ApiConnection {
       throw new Error('Invalid response from auth server');
     }
     const { accessPolicy, email } = user;
-    return { accessToken, refreshToken, accessPolicy, email };
+    return { accessToken, refreshToken, accessPolicy, email, user };
   }
 }

@@ -34,12 +34,13 @@ interface DatabaseModel<F extends TypeFields, T extends DatabaseType<F>> {
   find: (dbConditions: DbConditions<F>) => Promise<T[]>;
 }
 
-export type IndicatorFields = {
-  id: string;
+export type Indicator = {
   code: string;
   builder: string;
   config: Record<string, unknown>;
 };
+
+type IndicatorFields = Indicator & { id: string };
 
 export type IndicatorType = DatabaseType<IndicatorFields>;
 
@@ -47,9 +48,17 @@ export interface ModelRegistry {
   readonly indicator: DatabaseModel<IndicatorFields, IndicatorType>;
 }
 
+export interface IndicatorApiInterface {
+  getAggregator: () => Aggregator;
+  buildAnalyticsForIndicators: (
+    indicators: Indicator[],
+    fetchOptions: FetchOptions,
+  ) => Promise<Analytic[]>;
+}
+
 export interface Builder {
   (input: {
-    aggregator: Aggregator;
+    api: IndicatorApiInterface;
     config: IndicatorFields['config'];
     fetchOptions: FetchOptions;
   }): Promise<AnalyticValue[]>;
@@ -59,10 +68,5 @@ export interface Aggregation {
   readonly type: string;
   readonly config?: Record<string, unknown>;
 }
-
-/**
- * Used to define the aggregation(s) that should be used for each data element in an indicator.
- */
-export type AggregationSpecs = Readonly<Record<string, string | string[]>>;
 
 export type FetchOptions = Readonly<Record<string, unknown>>;

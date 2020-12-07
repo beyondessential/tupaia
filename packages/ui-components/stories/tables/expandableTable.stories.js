@@ -27,7 +27,7 @@ const Container = styled.div`
   padding: 3rem;
   background: ${COLORS.LIGHTGREY};
 
-  > div {
+  > table {
     max-width: 900px;
     margin: 0 auto;
   }

@@ -6,13 +6,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
-import { Table } from '@tupaia/ui-components';
+import { ExpandableTable } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor, AlertCell, SitesReportedCell } from '../../components';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
+import { AlertCell, SitesReportedCell } from '../../components';
+import { REPORT_STATUSES } from '../../constants';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -28,21 +29,15 @@ const CountryWeekSubTitle = styled.div`
   line-height: 1rem;
 `;
 
-const NameCell = ({ weekNumber, startDate, endDate }) => {
-  const start = `${format(new Date(startDate), 'LLL d')}`;
-  const end = `${format(new Date(endDate), 'LLL d, yyyy')}`;
-  return (
-    <>
-      <CountryWeekTitle>{`Week ${weekNumber}`}</CountryWeekTitle>
-      <CountryWeekSubTitle>{`${start} - ${end}`}</CountryWeekSubTitle>
-    </>
-  );
-};
+const NameCell = ({ period }) => (
+  <>
+    <CountryWeekTitle>{`Week ${getWeekNumberByPeriod(period)}`}</CountryWeekTitle>
+    <CountryWeekSubTitle>{getDisplayDatesByPeriod(period)}</CountryWeekSubTitle>
+  </>
+);
 
 NameCell.propTypes = {
-  weekNumber: PropTypes.number.isRequired,
-  startDate: PropTypes.any.isRequired,
-  endDate: PropTypes.any.isRequired,
+  period: PropTypes.string.isRequired,
 };
 
 const Status = styled.div`
@@ -65,7 +60,7 @@ const Status = styled.div`
 `;
 
 const StatusCell = ({ status }) => {
-  if (status === 'Overdue') {
+  if (status === REPORT_STATUSES.OVERDUE) {
     return (
       <Status color={COLORS.ORANGE}>
         <Alarm />
@@ -83,7 +78,11 @@ const StatusCell = ({ status }) => {
 };
 
 StatusCell.propTypes = {
-  status: PropTypes.string.isRequired,
+  status: PropTypes.string,
+};
+
+StatusCell.defaultProps = {
+  status: REPORT_STATUSES.SUBMITTED,
 };
 
 const countryColumns = [
@@ -93,53 +92,56 @@ const countryColumns = [
     width: '190px', // must be same width as SiteSummaryTable name column to align
     align: 'left',
     CellComponent: NameCell,
+    sortable: false,
   },
   {
     title: 'Sites Reported',
-    key: 'sitesReported',
+    key: 'Sites Reported',
     CellComponent: SitesReportedCell,
     width: COLUMN_WIDTHS.SITES_REPORTED,
+    sortable: false,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'STATUS',
     key: 'status',
-    width: '110px',
+    width: '165px',
     CellComponent: StatusCell,
+    sortable: false,
   },
 ];
 
 export const CountryTable = React.memo(({ data, isLoading, errorMessage, page, setPage }) => (
-  <Table
+  <ExpandableTable
     isLoading={isLoading}
     columns={countryColumns}
     data={data}

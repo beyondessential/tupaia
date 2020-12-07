@@ -1,18 +1,18 @@
 {
   "name": "@tupaia/expression-parser",
   "version": "1.0.0",
+  "private": true,
   "description": "Wraps around mathjs package, used for evaluating expressions",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/expression-parser"
   },
-  "main": "dist/index.js",
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "license": "MIT",
-  "private": true,
+  "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
+    "build:ts": "tsc",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "test": "jest",

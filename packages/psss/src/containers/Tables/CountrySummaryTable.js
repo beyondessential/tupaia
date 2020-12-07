@@ -5,15 +5,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Table, CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
-import {
-  createTotalCasesAccessor,
-  AlertCell,
-  SitesReportedCell,
-  WeekAndDateCell,
-} from '../../components';
-import { useTableQuery } from '../../hooks';
+import { AlertCell, SitesReportedCell, WeekAndDateCell } from '../../components';
+import { getLatestViewableWeek } from '../../store';
+import { useCountryConfirmedWeeklyReport } from '../../api';
 
 const countrySummaryTableColumns = [
   {
@@ -32,66 +29,64 @@ const countrySummaryTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
     CellComponent: AlertCell,
   },
 ];
 
-export const CountrySummaryTable = React.memo(({ rowData }) => {
-  const {
-    isLoading,
-    error,
-    data,
-    order,
-    orderBy,
-    handleChangeOrderBy,
-  } = useTableQuery('country-weeks', { countryCode: rowData.countryCode });
+const NUMBER_OF_WEEKS = 8;
+
+export const CountrySummaryTableComponent = React.memo(({ rowData, period }) => {
+  const { isLoading, error, data } = useCountryConfirmedWeeklyReport(
+    rowData.organisationUnit,
+    period,
+    NUMBER_OF_WEEKS,
+  );
 
   return (
     <>
-      <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>
+      <FakeHeader>PREVIOUS {NUMBER_OF_WEEKS} WEEKS</FakeHeader>
       <Table
         columns={countrySummaryTableColumns}
         Header={false}
         Body={CondensedTableBody}
-        order={order}
-        orderBy={orderBy}
-        onChangeOrderBy={handleChangeOrderBy}
-        data={data ? data.data : 0}
-        count={data ? data.count : 0}
+        data={data}
         isLoading={isLoading}
         errorMessage={error && error.message}
+        rowIdKey="period"
       />
     </>
   );
 });
 
-CountrySummaryTable.propTypes = {
+CountrySummaryTableComponent.propTypes = {
+  period: PropTypes.string.isRequired,
   rowData: PropTypes.shape({
-    countryCode: PropTypes.string.isRequired,
+    organisationUnit: PropTypes.string.isRequired,
   }).isRequired,
 };
+
+const mapStateToProps = state => ({
+  period: getLatestViewableWeek(state),
+});
+
+export const CountrySummaryTable = connect(mapStateToProps)(CountrySummaryTableComponent);

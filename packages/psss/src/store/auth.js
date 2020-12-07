@@ -5,69 +5,48 @@
 
 import { createSelector } from 'reselect';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { loginUser, logoutUser, updateUser, getUser } from '../api';
 import { createReducer } from '../utils/createReducer';
 
 // actions
-const LOGIN_START = 'LOGIN_START';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-const LOGIN_ERROR = 'LOGIN_ERROR';
 const LOGOUT = 'LOGOUT';
-export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
+const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
-export const login = ({ email, password }) => async (dispatch, getState, { api }) => {
+export const login = ({ email, password }) => async dispatch => {
   const deviceName = window.navigator.userAgent;
-
-  dispatch({ type: LOGIN_START });
-  try {
-    const userDetails = await api.reauthenticate({
-      emailAddress: email,
-      password,
-      deviceName,
-    });
-    dispatch(loginSuccess(userDetails));
-  } catch (error) {
-    dispatch(loginError(error.message));
-  }
+  const user = await loginUser({
+    emailAddress: email,
+    password,
+    deviceName,
+  });
+  dispatch({
+    type: LOGIN_SUCCESS,
+    ...user,
+  });
 };
 
-export const loginSuccess = ({ accessToken, refreshToken, user }) => ({
-  type: LOGIN_SUCCESS,
-  accessToken,
-  refreshToken,
-  user,
-});
+export const logout = () => async dispatch => {
+  dispatch({
+    type: LOGOUT,
+  });
+  await logoutUser();
+};
 
-export const loginError = errorMessage => ({
-  type: LOGIN_ERROR,
-  error: errorMessage,
-});
-
-export const logout = () => ({
-  type: LOGOUT,
-});
-
-export const updateProfile = payload => async (dispatch, getState, { api }) => {
-  await api.put(`me`, null, payload);
-  const { body: user } = await api.get(`me`);
+export const updateProfile = payload => async dispatch => {
+  await updateUser(payload);
+  const user = await getUser();
   dispatch({
     type: PROFILE_SUCCESS,
     ...user,
   });
 };
 
-export const updatePassword = payload => async (dispatch, getState, { api }) =>
-  api.post(`me/changePassword`, null, payload);
-
 // selectors
-export const getAccessToken = ({ auth }) => auth.accessToken;
-export const getRefreshToken = ({ auth }) => auth.refreshToken;
 export const getCurrentUser = ({ auth }) => auth && auth.user;
-export const getError = ({ auth }) => auth.error;
-export const checkIsPending = ({ auth }) => auth.status === 'pending';
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
-export const checkIsError = ({ auth }) => auth.status === 'error';
-export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
+export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.isLoggedIn;
 
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
@@ -76,8 +55,7 @@ export const getEntitiesAllowed = createSelector(getCurrentUser, user => {
     return [];
   }
 
-  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
-  return entities.map(e => e.toLowerCase()); // always use lowercase entities
+  return new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
 });
 
 export const checkIsMultiCountryUser = createSelector(
@@ -90,34 +68,21 @@ export const getHomeUrl = state =>
 
 // reducer
 const defaultState = {
-  status: 'idle',
+  isLoggedIn: false,
   user: null,
-  error: null,
-  accessToken: null,
-  refreshToken: null,
 };
 
 const actionHandlers = {
-  [LOGIN_START]: () => ({
-    ...defaultState,
-    status: 'pending',
-  }),
   [LOGIN_SUCCESS]: action => ({
-    status: 'success',
     user: action.user,
-    error: defaultState.error,
-    accessToken: action.accessToken,
-    refreshToken: action.refreshToken,
-  }),
-  [LOGIN_ERROR]: action => ({
-    status: 'error',
-    error: action.error,
+    isLoggedIn: true,
   }),
   [LOGOUT]: (action, currentState) => ({
-    ...defaultState,
-    user: currentState.user,
+    ...currentState,
+    isLoggedIn: false,
   }),
   [PROFILE_SUCCESS]: (user, currentState) => ({
+    ...currentState,
     user: {
       ...currentState.user,
       firstName: user.first_name,

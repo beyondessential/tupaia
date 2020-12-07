@@ -53,9 +53,7 @@ PageRoutesComponent.propTypes = {
 const mapStateToProps = state => ({
   canViewMultipleCountries: () => checkIsMultiCountryUser(state),
   canViewCountry: match =>
-    getEntitiesAllowed(state).some(
-      entityCode => entityCode.toLowerCase() === match.params.countryCode,
-    ),
+    getEntitiesAllowed(state).some(entityCode => entityCode === match.params.countryCode),
 });
 
 export const PageRoutes = connect(mapStateToProps)(PageRoutesComponent);

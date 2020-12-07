@@ -21,7 +21,14 @@ export const exportToPng = (node, filename) => {
   });
 };
 
-export const exportToExcel = async ({ projectCode, viewContent, startDate, endDate, filename }) => {
+export const exportToExcel = async ({
+  projectCode,
+  viewContent,
+  startDate,
+  endDate,
+  timeZone,
+  filename,
+}) => {
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
   const dataElementHeader = viewContent?.exportConfig?.dataElementHeader;
   const file = `${filename}.xlsx`;
@@ -35,6 +42,7 @@ export const exportToExcel = async ({ projectCode, viewContent, startDate, endDa
     projectCode,
     startDate,
     endDate,
+    timeZone,
     dataElementHeader,
   });
 
