@@ -11,8 +11,8 @@ import { extractResourceFromEndpoint, extractChildResourceFromEndpoint } from '.
 export class CRUDHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    const { recordId, parentResource, parentRecordId } = this.params;
-    this.parentResource = parentResource || extractResourceFromEndpoint(this.endpoint);
+    const { recordId, parentRecordId } = this.params;
+    this.parentResource = parentRecordId ? extractResourceFromEndpoint(this.endpoint) : undefined;
     this.parentRecordType = resourceToRecordType(this.parentResource);
     this.parentRecordId = parentRecordId;
     this.resource = parentRecordId
