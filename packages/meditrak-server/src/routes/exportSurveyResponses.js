@@ -68,7 +68,7 @@ export async function exportSurveyResponses(req, res) {
     latest = false,
     startDate,
     endDate,
-    timeZone,
+    timeZone = 'UTC',
     viewId,
     easyReadingMode = false,
   } = req.query;
