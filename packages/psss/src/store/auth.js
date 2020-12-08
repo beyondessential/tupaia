@@ -50,15 +50,10 @@ export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.is
 
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
-export const canUserViewCountry = (user, match) => {
-  const e = getEntitiesAllowedByUser(user);
-  return e.some(entityCode => entityCode === match.params.countryCode);
-};
+export const canUserViewCountry = (entities, match) =>
+  entities.some(entityCode => entityCode === match.params.countryCode);
 
-export const canUserViewMultipleCountries = user => {
-  const count = getEntitiesAllowedByUser(user);
-  return count.length > 1;
-};
+export const canUserViewMultipleCountries = entities => entities.length > 1;
 
 const getEntitiesAllowedByUser = user => {
   if (!user) {
