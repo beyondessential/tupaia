@@ -27,7 +27,7 @@ export class GETEntities extends GETHandler {
   async findSingleRecord(entityId, options) {
     const entityPermissionChecker = accessPolicy =>
       assertEntityPermissions(accessPolicy, this.models, entityId);
-    this.assertPermissions(assertAnyPermissions[(assertBESAdminAccess, entityPermissionChecker)]);
+    this.assertPermissions(assertAnyPermissions[assertBESAdminAccess, entityPermissionChecker]);
 
     return super.findSingleRecord(entityId, options);
   }
