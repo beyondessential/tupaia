@@ -10,4 +10,10 @@ export class GETOptions extends GETHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(assertTupaiaAdminPanelAccess);
   }
+
+  async findRecordsViaParent(criteria, options) {
+    const dbConditions = { 'option.option_set_id': this.parentRecordId, ...criteria };
+
+    return super.findRecords(dbConditions, options);
+  }
 }

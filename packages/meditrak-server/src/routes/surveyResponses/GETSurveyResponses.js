@@ -8,7 +8,14 @@ import {
   assertSurveyResponsePermissions,
   createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
-import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertTupaiaAdminPanelAccess,
+} from '../../permissions';
+import {
+  assertEntityPermissions
+} from '../GETEntities';
 
 /**
  * Handles endpoints:
@@ -41,5 +48,14 @@ export class GETSurveyResponses extends GETHandler {
     const surveyResponses = await super.findRecords(dbConditions, dbOptions);
 
     return surveyResponses;
+  }
+
+  async findRecordsViaParent(criteria, options) {
+    entityPermissionChecker = accessPolicy =>
+      assertEntityPermissions(accessPolicy, this.models, entityId);
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, entityPermissionChecker]);
+    const dbConditions = { 'survey_response.entity_id': this.parentRecordId, ...criteria };
+
+    return super.findRecords(dbConditions, options);
   }
 }

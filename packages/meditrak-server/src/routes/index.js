@@ -5,8 +5,6 @@
 
 import { authenticate } from './authenticate';
 import { countChanges } from './countChanges';
-import { deleteRecord } from './deleteRecord';
-import { editRecord } from './editRecord';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
@@ -17,6 +15,8 @@ import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETDisasters } from './GETDisasters';
 import { GETDashboardReports } from './GETDashboardReports';
 import { GETDashboardGroups } from './GETDashboardGroups';
+import { GETDataSources } from './GETDataSources';
+import { GETEntities } from './GETEntities';
 import { GETMapOverlays } from './GETMapOverlays';
 import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -98,8 +98,10 @@ export default {
   // ====
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
+  createCountries: useRouteHandler(BESAdminCreateHandler),
   createDisasters: useRouteHandler(BESAdminCreateHandler),
   createFeedItems: useRouteHandler(BESAdminCreateHandler),
+  createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
@@ -122,6 +124,8 @@ export default {
   getDisasters: useRouteHandler(GETDisasters),
   getDashboardReports: useRouteHandler(GETDashboardReports),
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
+  getDataSources: useRouteHandler(GETDataSources),
+  getEntities: useRouteHandler(GETEntities),
   getFeedItems: useRouteHandler(BESAdminGETHandler),
   getMapOverlays: useRouteHandler(GETMapOverlays),
   getSurveys: useRouteHandler(GETSurveys),
