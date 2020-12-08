@@ -13,6 +13,7 @@ import {
   ConfirmedWeeklyReportRoute,
   ConfirmedCountryWeeklyReportRoute,
   CountryWeeklyReportRoute,
+  SubmitConfirmedCountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -51,16 +52,21 @@ export function addRoutesToApp(app: Express) {
     '/v1/confirmedWeeklyReport/:organisationUnitCode',
     handleWith(ConfirmedCountryWeeklyReportRoute),
   );
-  app.get(
-    '/v1/weeklyReport/:organisationUnitCode',
-    handleWith(CountryWeeklyReportRoute),
-  );
+  app.get('/v1/weeklyReport/:organisationUnitCode', handleWith(CountryWeeklyReportRoute));
 
   /**
    * POST routes
    */
   app.post('/v1/login', handleWith(LoginRoute));
   app.post('/v1/logout', handleWith(LogoutRoute));
+
+  /**
+   * PUT routes
+   */
+  app.put(
+    '/v1/confirmedWeeklyReport/:organisationUnitCode',
+    handleWith(SubmitConfirmedCountryWeeklyReportRoute),
+  );
 
   app.use(handleError);
 }

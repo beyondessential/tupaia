@@ -10,4 +10,5 @@ export {
   ConfirmedWeeklyReportRoute,
   ConfirmedCountryWeeklyReportRoute,
   CountryWeeklyReportRoute,
+  SubmitConfirmedCountryWeeklyReportRoute,
 } from './reports';
