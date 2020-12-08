@@ -41,13 +41,13 @@ const DATA_BUILDER_CONFIG = {
       surveysConfig: {
         WISH_2GMM: {
           entityAggregation: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'sub_catchment',
           },
           // excludeCodes: ['WFIGM2'],
         },
         WISH_2GM: {
           entityAggregation: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'sub_catchment',
           },
         },
       },
