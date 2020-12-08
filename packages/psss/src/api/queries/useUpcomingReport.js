@@ -43,7 +43,7 @@ export const useUpcomingReport = countryCode => {
     };
   }
 
-  const status = daysTillDueDay > 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
+  const status = daysTillDueDay >= 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
 
   return {
     ...query,

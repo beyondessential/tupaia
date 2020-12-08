@@ -57,7 +57,7 @@ export const PageRoutesComponent = React.memo(({ allowedEntities }) => (
 ));
 
 PageRoutesComponent.propTypes = {
-  allowedEntities: PropTypes.object.isRequired,
+  allowedEntities: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
