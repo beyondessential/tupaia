@@ -2,11 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import styled from 'styled-components';
-import { ExpandableTableRow } from '@tupaia/ui-components';
+import styled, { css } from 'styled-components';
+import { TableRow } from '@tupaia/ui-components';
 import * as COLORS from '../../constants/colors';
 
-export const SimpleTableRow = styled(ExpandableTableRow)`
+const SimpleTableRowStyles = css`
   border: none;
 
   .MuiTableCell-root {
@@ -39,7 +39,13 @@ export const SimpleTableRow = styled(ExpandableTableRow)`
   }
 `;
 
-export const BorderlessTableRow = styled(SimpleTableRow)`
+export const SimpleTableRow = styled(TableRow)`
+  ${SimpleTableRowStyles}
+`;
+
+export const BorderlessTableRowStyles = css`
+  ${SimpleTableRowStyles}
+
   .MuiTableCell-root {
     font-size: 0.9375rem;
     line-height: 1.125rem;
@@ -50,7 +56,13 @@ export const BorderlessTableRow = styled(SimpleTableRow)`
   }
 `;
 
-export const DottedTableRow = styled(SimpleTableRow)`
+export const BorderlessTableRow = styled(SimpleTableRow)`
+  ${BorderlessTableRowStyles}
+`;
+
+const DottedTableRowStyles = css`
+  ${SimpleTableRowStyles}
+
   .MuiTableCell-root {
     font-size: 0.875rem;
     border-bottom: 1px dashed ${COLORS.GREY_DE};
@@ -59,4 +71,8 @@ export const DottedTableRow = styled(SimpleTableRow)`
     color: ${props => props.theme.palette.text.primary};
     height: auto;
   }
+`;
+
+export const DottedTableRow = styled(SimpleTableRow)`
+  ${DottedTableRowStyles}
 `;

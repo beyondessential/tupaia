@@ -13,13 +13,16 @@ import { tableColumnShape } from './tableColumnShape';
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
 const TableFooter = styled(MuiTableFooter)`
-  .MuiTableCell-footer {
+  .MuiTableCell-footer.MuiTablePagination-root {
     padding-top: 40px;
+    padding-right: 0;
     border: none;
   }
 `;
 
 const TablePagination = styled(MuiTablePagination)`
+  pointer-events: ${props => (props.disabled ? 'none' : 'inherit')};
+
   .MuiTablePagination-toolbar {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
@@ -42,20 +45,22 @@ const TablePagination = styled(MuiTablePagination)`
     background-color: ${props => props.theme.palette.grey['200']};
     padding: 0.5rem;
     border-radius: 3px;
+    color: ${props => (props.disabled ? props.theme.palette.text.secondary : 'inherit')};
 
     &:last-child {
       margin-left: 0.5rem;
     }
 
     &:hover {
-      background-color: ${props => props.theme.palette.primary.main};
-      color: white;
+      background-color: ${props =>
+        props.disabled ? props.theme.palette.grey['200'] : props.theme.palette.primary.main};
+      color: ${props => (props.disabled ? props.theme.palette.text.tertiary : 'white')};
     }
   }
 `;
 
 export const TablePaginator = React.memo(
-  ({ columns, page, count, rowsPerPage, onChangePage, onChangeRowsPerPage }) => {
+  ({ columns, page, count, rowsPerPage, onChangePage, onChangeRowsPerPage, isFetching }) => {
     const handleChangePage = useCallback(
       (event, newPage) => {
         if (onChangePage) onChangePage(newPage);
@@ -79,6 +84,7 @@ export const TablePaginator = React.memo(
       <TableFooter>
         <MuiTableRow>
           <TablePagination
+            disabled={isFetching}
             rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
             colSpan={columns.length}
             page={page}
@@ -100,6 +106,7 @@ TablePaginator.propTypes = {
   onChangeRowsPerPage: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  isFetching: PropTypes.bool,
 };
 
 TablePaginator.defaultProps = {
@@ -108,4 +115,5 @@ TablePaginator.defaultProps = {
   onChangeRowsPerPage: null,
   page: null,
   rowsPerPage: 10,
+  isFetching: false,
 };

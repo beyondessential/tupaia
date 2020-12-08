@@ -6,7 +6,7 @@
 import flatten from 'lodash.flatten';
 import keyBy from 'lodash.keyby';
 
-import { reduceToDictionary, reduceToSet } from '@tupaia/utils';
+import { reduceToDictionary, reduceToSet, getSortByKey } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { TableConfig } from './TableConfig';
@@ -50,7 +50,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       this.tableConfig.columnType === ORG_UNIT_COL_KEY ||
       this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY
     ) {
-      data.columns = await this.replaceOrgUnitCodesWithNames(data.columns);
+      const columns = await this.replaceOrgUnitCodesWithNames(data.columns);
+      data.columns = columns.sort(getSortByKey('title'));
     }
     return data;
   }
