@@ -46,9 +46,7 @@ const countryCodeToDate = {
   VU: 'N/A',
 };
 
-const DASHBOARD_GROUP_CODES = ['UNFPA_Project'];
-
-const REPORT_ID = 'UNFPA_Region_Facilities_offering_services_At_Least_1_Matrix';
+const BASE_REPORT_ID = 'UNFPA_Country_Facilities_offering_services_At_Least_1_Matrix';
 
 const buildDataDateCell = (countryCode, key) => {
   return {
@@ -68,8 +66,8 @@ const buildCell = (dataElement, countryCode) => {
     / /g,
     '_',
   )}`;
-
   if (dataElement === '$dataDate') return buildDataDateCell(countryCode, key);
+  console.log(dataElement, countryCode, key);
 
   return {
     key,
@@ -81,7 +79,7 @@ const buildCell = (dataElement, countryCode) => {
         aggregationConfig: {
           countCondition:
             dataElementToName[dataElement] === 'Adolescent and Youth Services'
-              ? { operator: 'regex', value: 'Yes' }
+              ? { operator: '>', value: 0 }
               : { operator: '>', value: 0 },
         },
       },
@@ -93,18 +91,16 @@ const buildCell = (dataElement, countryCode) => {
   };
 };
 
-const DATA_BUILDER_CONFIG = {
+const buildDataBuilderConfig = countryCode => ({
   rows: Object.values(dataElementToName),
-  cells: Object.keys(dataElementToName).map(dataElement =>
-    Object.keys(countryCodeToName).map(countryCode => buildCell(dataElement, countryCode)),
-  ),
-  columns: Object.values(countryCodeToName),
+  cells: Object.keys(dataElementToName).map(dataElement => [buildCell(dataElement, countryCode)]),
+  columns: [countryCode],
   entityAggregation: {
     aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
     dataSourceEntityType: 'facility',
     aggregationEntityType: 'country',
   },
-};
+});
 
 const VIEW_JSON = {
   name: '% of facilities with at least 1 staff member trained in SRH service provision',
@@ -112,37 +108,54 @@ const VIEW_JSON = {
   placeholder: '/static/media/PEHSMatrixPlaceholder.png',
 };
 
-const REPORT = {
-  id: REPORT_ID,
+const buildReport = countryCode => ({
+  id: `${BASE_REPORT_ID}_${countryCode}`,
   dataBuilder: 'tableOfCalculatedValues',
-  dataBuilderConfig: DATA_BUILDER_CONFIG,
+  dataBuilderConfig: buildDataBuilderConfig(countryCode),
   viewJson: VIEW_JSON,
-};
+});
 
-exports.up = async function (db) {
-  await insertObject(db, 'dashboardReport', REPORT);
-
+const addReport = async (db, countryCode) => {
+  const DASHBOARD_GROUP_CODES = [`${countryCode}_Unfpa_Country`];
+  const report = buildReport(countryCode);
+  console.log(report);
+  await insertObject(db, 'dashboardReport', report);
   return db.runSql(`
-    UPDATE
+     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = "dashboardReports" || '{ ${REPORT.id} }'
+       "dashboardReports" = "dashboardReports" || '{ ${report.id} }'
     WHERE
       "code" IN (${arrayToDbString(DASHBOARD_GROUP_CODES)});
   `);
 };
 
-exports.down = function (db) {
+const deleteReport = async (db, countryCode) => {
+  const DASHBOARD_GROUP_CODES = [`${countryCode}_Unfpa_Country`];
+  const reportId = `${BASE_REPORT_ID}_${countryCode}`;
+
   return db.runSql(`
-    DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
+    DELETE FROM "dashboardReport" WHERE id = '${reportId}';
 
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = array_remove("dashboardReports", '${REPORT.id}')
+      "dashboardReports" = array_remove("dashboardReports", '${reportId}')
     WHERE
     "code" IN (${arrayToDbString(DASHBOARD_GROUP_CODES)});
   `);
+};
+
+exports.up = async function (db) {
+  for (const countryCode of Object.keys(countryCodeToName)) {
+    await addReport(db, countryCode);
+  }
+};
+
+exports.down = async function (db) {
+  for (const countryCode of Object.keys(countryCodeToName)) {
+    await deleteReport(db, countryCode);
+  }
 };
 
 exports._meta = {

@@ -5,7 +5,7 @@ import {
   asyncEvery,
 } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { divideValues } from './divideValues';
+import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
 import { translatePointForFrontend } from '/utils/geoJson';
 
@@ -53,8 +53,8 @@ const sumDataValues = (analytics, dataValues, filter = {}) => {
   return sum;
 };
 
-const countDataValues = (analytics, dataValues, filter, config) =>
-  sumDataValues(
+const countDataValues = (analytics, dataValues, filter, config) => {
+  return sumDataValues(
     analytics.map(a => ({
       ...a,
       value: checkValueSatisfiesCondition(a.value, config?.countCondition || '*') ? 1 : 0,
@@ -62,6 +62,7 @@ const countDataValues = (analytics, dataValues, filter, config) =>
     dataValues,
     filter,
   );
+};
 
 const AGGREGATIONS = {
   SUM: sumDataValues,
@@ -176,10 +177,7 @@ const staticValueOrNoData = (analytics, config) => {
 
 const OPERATORS = {
   DIVIDE: divideValues,
-  FRACTION_AND_PERCENTAGE: (numerator, divisor) =>
-    (numerator || numerator === 0) && divisor
-      ? `${numerator} / ${divisor} = ${Math.floor(divideValues(numerator, divisor) * 100)}%`
-      : NO_DATA_AVAILABLE,
+  FRACTION_AND_PERCENTAGE: fractionAndPercentage,
   SUBTRACT: subtractValues,
   CHECK_CONDITION: checkCondition,
   GROUP: valueToGroup,
