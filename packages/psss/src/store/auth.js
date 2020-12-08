@@ -65,7 +65,8 @@ const getEntitiesAllowedByUser = user => {
     return [];
   }
 
-  return new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
+  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
+  return entities.filter(e => e !== 'DL'); // don't show demo land in psss
 };
 
 export const getEntitiesAllowed = createSelector(getCurrentUser, user =>
