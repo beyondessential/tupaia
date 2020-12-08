@@ -87,7 +87,7 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     organisationUnitCode: string,
     period: string,
-    answers: Record<string, string>,
+    answers: Record<string, number>,
   ) {
     const [_, endDate] = convertPeriodStringToDateRange(period);
 
@@ -115,5 +115,9 @@ export class MeditrakConnection extends ApiConnection {
         },
       },
     ]);
+  }
+
+  async deleteSurveyResponse(surveyResponse: SurveyResponseObject) {
+    return this.delete(`surveyResponse/${surveyResponse.id}`);
   }
 }
