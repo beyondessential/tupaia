@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-stack';
 
 import { HeaderToolbar } from './HeaderToolbar';
 import { HeaderLeftButton } from './HeaderLeftButton';
@@ -49,8 +49,18 @@ const routes = {
     screen: HomeScreenContainer,
     navigationOptions: () => ({ headerLeft: () => null }),
   },
-  [SYNC_SCREEN]: { screen: SyncContainer },
-  [SURVEY_SCREEN]: { screen: SurveyScreen },
+  [SYNC_SCREEN]: {
+    screen: SyncContainer,
+    navigationOptions: () => ({
+      cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS, // vertical transition for Sync Screen
+    }),
+  },
+  [SURVEY_SCREEN]: {
+    screen: SurveyScreen,
+    navigationOptions: () => ({
+      cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS, // vertical transition for Survey Screen
+    }),
+  },
   [SURVEYS_MENU_SCREEN]: { screen: SurveysMenuScreen },
   [WEB_BROWSER_SCREEN]: { screen: WebBrowserContainer },
   [REALM_EXPLORER_SCREEN]: { screen: RealmExplorer },
@@ -93,6 +103,7 @@ const config = {
     },
     headerTitleAlign: 'center',
     headerRight: () => <HeaderToolbar />,
+    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // horizontal transition by default
   }),
 };
 

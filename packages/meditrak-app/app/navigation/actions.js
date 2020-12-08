@@ -50,13 +50,7 @@ export const resetToLogin = () =>
     ],
   });
 
-export const viewSyncPage = () =>
-  NavigationActions.navigate({
-    routeName: SYNC_SCREEN,
-    params: {
-      transition: 'SyncTransition',
-    },
-  });
+export const viewSyncPage = () => navigateToScreen(SYNC_SCREEN);
 
 export const goToCreateAccount = () => dispatch => {
   dispatch(
@@ -66,13 +60,7 @@ export const goToCreateAccount = () => dispatch => {
   );
 };
 
-export const openSurvey = () =>
-  NavigationActions.navigate({
-    routeName: SURVEY_SCREEN,
-    params: {
-      transition: 'SurveyTransition',
-    },
-  });
+export const openSurvey = () => navigateToScreen(SURVEY_SCREEN);
 
 export const openSurveyGroup = (surveyGroupId, surveyGroupName) =>
   NavigationActions.navigate({
