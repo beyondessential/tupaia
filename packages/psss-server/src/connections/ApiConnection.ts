@@ -7,6 +7,7 @@ import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/
 import { FetchConfig, QueryParameters, RequestBody } from '../types';
 
 interface AuthHandler {
+  email?: string;
   getAuthHeader: () => Promise<string>;
 }
 
