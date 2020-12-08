@@ -29,7 +29,7 @@ const renderErrorMessage = messageText => (
 
 export class ChangePasswordPage extends PureComponent {
   static navigationOptions = {
-    title: 'Change your password',
+    headerTitle: 'Change your password',
     headerMode: 'screen',
   };
 

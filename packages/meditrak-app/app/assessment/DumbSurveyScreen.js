@@ -4,14 +4,7 @@
  */
 
 import React from 'react';
-import {
-  ActivityIndicator,
-  Animated,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Animated, ScrollView, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { database } from '../database';
@@ -28,13 +21,14 @@ import {
 } from '../widgets';
 import { SurveyTableOfContents } from './SurveyTableOfContents';
 import { THEME_COLOR_ONE } from '../globalStyles';
+import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
 
 const LENGTH_OF_TRANSITION = 300;
 
 export class DumbSurveyScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: navigation.state.params.headerLabel,
-    headerBackImage: require('../images/x.png'),
+    headerTitle: navigation.state.params.headerLabel,
+    headerLeft: () => <HeaderLeftButton source={require('../images/x.png')} />,
   });
 
   constructor(props) {
@@ -71,6 +65,7 @@ export class DumbSurveyScreen extends React.Component {
       Animated.timing(this.state.screenIndexAnimation, {
         toValue: nextProps.screenIndex,
         duration: LENGTH_OF_TRANSITION,
+        useNativeDriver: false,
       }).start(() => {
         this.setState({ lastScreenIndex: null });
       });

@@ -20,6 +20,7 @@ export class InvisiblableView extends React.Component {
     Animated.timing(this.state.animatedOpacity, {
       toValue: nextProps.isInvisible ? 0 : 1,
       duration: 300,
+      useNativeDriver: false,
     }).start();
   }
 
