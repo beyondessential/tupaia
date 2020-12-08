@@ -25,9 +25,9 @@ export const PercentageChangeCell = ({ percentageChange, className }) => {
     return '-';
   }
 
-  const roundedValue = Math.round(percentageChange);
+  const roundedValue = Math.round((percentageChange - 1) * 100);
 
-  if (percentageChange > 0) {
+  if (roundedValue > 0) {
     return <WarningStyleText className={className}>+{roundedValue}%</WarningStyleText>;
   }
 
