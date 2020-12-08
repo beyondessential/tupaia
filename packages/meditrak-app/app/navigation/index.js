@@ -4,7 +4,7 @@
  */
 
 export { sideMenuReducer } from './sideMenuReducer';
-export { createNavigationMiddleware } from './reduxIntegration';
+export * from './reduxIntegration';
 export {
   goBack,
   viewSyncPage,
@@ -16,7 +16,6 @@ export {
   navigateToSurveysMenu,
   navigateToTupaiaWebsite,
 } from './actions';
-export { Navigator } from './Navigator';
 export { NavigationMenu } from './NavigationMenu';
 export { NavigationMenuContainer } from './NavigationMenuContainer';
 export * from './constants';

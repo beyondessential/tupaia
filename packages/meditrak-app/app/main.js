@@ -6,27 +6,21 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { AppRegistry } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
 import { persistStore, persistCombineReducers, createTransform } from 'redux-persist';
 import { ErrorHandler } from 'redux-persist-error-handler';
-import { createNavigationReducer, createReduxContainer } from 'react-navigation-redux-helpers';
 
 import { Meditrak } from './Meditrak';
 import { api } from './api';
 import { database } from './database';
 import { reducers } from './reducers';
 import { createMiddleware } from './middleware';
-import { Navigator } from './navigation';
+import { NavigationConnectedApp } from './navigation';
 import { analytics, CrashReporter } from './utilities';
 import { isBeta, betaBranch } from './version';
 
 const crashReporter = new CrashReporter(analytics);
-
-const allReducers = {
-  ...reducers,
-  nav: createNavigationReducer(Navigator),
-};
 
 const composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -56,7 +50,7 @@ const persistedReducers = persistCombineReducers(
       }),
     ],
   },
-  allReducers,
+  reducers,
 );
 
 const store = createStore(persistedReducers, {}, enhancers);
@@ -66,12 +60,6 @@ crashReporter.injectReduxStore(store);
 
 const persistedStore = persistStore(store);
 persistedStore.purge(); // Uncomment this to wipe bad redux state during development
-
-const NavigationReduxContainer = createReduxContainer(Navigator);
-const mapStateToProps = state => ({
-  state: state.nav,
-});
-const NavigationConnectedApp = connect(mapStateToProps)(NavigationReduxContainer);
 
 const App = () => (
   <ErrorHandler persistedStore={persistedStore}>
