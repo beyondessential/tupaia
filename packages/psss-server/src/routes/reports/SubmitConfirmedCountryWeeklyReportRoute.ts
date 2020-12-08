@@ -5,9 +5,9 @@
 
 import { RespondingError } from '@tupaia/utils';
 import { Route } from '../Route';
-import { PSSS_WEEKLY_REPORT_CODE } from '../../constants';
 
 const SURVEY_CODE = 'PSSS_Confirmed_WNR';
+const REPORT_CODE = 'PSSS_Weekly_Cases';
 
 type ConfirmedWeeklyReportAnswers = {
   PSSS_Confirmed_Sites: number;
@@ -25,7 +25,7 @@ export class SubmitConfirmedCountryWeeklyReportRoute extends Route {
     const { organisationUnitCode } = this.req.params;
 
     const report = await this.reportConnection?.fetchReport(
-      PSSS_WEEKLY_REPORT_CODE,
+      REPORT_CODE,
       [organisationUnitCode],
       [week],
     );

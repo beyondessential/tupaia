@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { cloneDeep } from 'lodash';
 import {
   respond,
   ValidationError,
@@ -44,9 +45,9 @@ export async function postChanges(req, res) {
     if (!ACTION_HANDLERS[action]) {
       throw new ValidationError(`${action} is not a supported change action`);
     }
-    await PAYLOAD_TRANSLATORS[action](models, payload);
-    await PAYLOAD_VALIDATORS[action](models, payload);
-    await ACTION_HANDLERS[action](models, payload);
+    const translatedPayload = await PAYLOAD_TRANSLATORS[action](models, payload);
+    await PAYLOAD_VALIDATORS[action](models, translatedPayload);
+    await ACTION_HANDLERS[action](models, translatedPayload);
   }
 
   // Reset the cache for the current users rewards.
@@ -87,9 +88,7 @@ const PAYLOAD_VALIDATORS = {
 const PAYLOAD_TRANSLATORS = {
   [SUBMIT_SURVEY_RESPONSE]: async (models, payload) =>
     translateSurveyResponseObject(models, payload.survey_response || payload), // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
-  [ADD_SURVEY_IMAGE]: () => {
-    // No translation required
-  },
+  [ADD_SURVEY_IMAGE]: (models, payload) => payload, // No translation required
 };
 
 async function validateSurveyResponseObject(models, surveyResponseObject) {
@@ -118,18 +117,53 @@ async function translateSurveyResponseObject(models, surveyResponseObject) {
   }
 
   const surveyResponseTranslators = constructSurveyResponseTranslators(models);
-  await translateObjectFields(surveyResponseObject, surveyResponseTranslators);
+  const answerTranslators = constructAnswerTranslators(models);
 
-  const { answers } = surveyResponseObject;
+  if (
+    !requiresSurveyResponseTranslation(
+      surveyResponseObject,
+      surveyResponseTranslators,
+      answerTranslators,
+    )
+  ) {
+    return surveyResponseObject;
+  }
+
+  const translatedSurveyResponseObject = cloneDeep(surveyResponseObject);
+  await translateObjectFields(translatedSurveyResponseObject, surveyResponseTranslators);
+
+  const { answers } = translatedSurveyResponseObject;
   if (Array.isArray(answers)) {
-    const answerTranslators = constructAnswerTranslators(models);
     for (let i = 0; i < answers.length; i++) {
       await translateObjectFields(answers[i], answerTranslators);
     }
   }
 
-  return true;
+  return translatedSurveyResponseObject;
 }
+
+const requiresSurveyResponseTranslation = (
+  surveyResponseObject,
+  surveyResponseTranslators,
+  answerTranslators,
+) => {
+  const surveyResponseTranslatorFields = Object.keys(surveyResponseTranslators);
+  if (
+    Object.keys(surveyResponseObject).some(field => surveyResponseTranslatorFields.includes(field))
+  ) {
+    return true;
+  }
+
+  const answerTranslatorFields = Object.keys(answerTranslators);
+  const { answers } = surveyResponseObject;
+  if (Array.isArray(answers)) {
+    return answers.some(answer =>
+      Object.keys(answer).some(field => answerTranslatorFields.includes(field)),
+    );
+  }
+
+  return false;
+};
 
 const clinicOrEntityIdExist = (id, obj) => {
   if (!(obj.clinic_id || obj.entity_id)) {

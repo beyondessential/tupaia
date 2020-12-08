@@ -9,16 +9,18 @@ import { ApiConnection } from './ApiConnection';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
-const SURVEY_RESPONSE_FIELDS = <const>['entity.code', 'survey.code', 'submission_time', 'id'];
-const ANSWER_FIELDS = <const>['question.code', 'id'];
 const PSSS_SURVEY_RESPONSE_ANSWER_TYPE = 'Number'; // All survey response answers are 'Number' in PSSS
 
 type SurveyResponseObject = {
-  [key in typeof SURVEY_RESPONSE_FIELDS[number]]: string;
+  'entity.code': string;
+  'survey.code': string;
+  submission_time: string;
+  id: string;
 };
 
 type AnswerObject = {
-  [key in typeof ANSWER_FIELDS[number]]: string;
+  'question.code': string;
+  id: string;
 };
 
 export class MeditrakConnection extends ApiConnection {
@@ -29,10 +31,10 @@ export class MeditrakConnection extends ApiConnection {
     const results = (await this.get(`surveyResponses/`, {
       page: '0',
       pageSize: '1',
-      columns: `["${SURVEY_RESPONSE_FIELDS.join('","')}"]`,
+      columns: `["entity.code","survey.code","submission_time","id"]`,
       filter: JSON.stringify({
-        'survey.code': { comparisonValue: surveyCode, castAs: 'text' },
-        'entity.code': { comparisonValue: orgUnitCode, castAs: 'text' },
+        'survey.code': { comparisonValue: surveyCode },
+        'entity.code': { comparisonValue: orgUnitCode },
         submission_time: {
           comparator: 'BETWEEN',
           comparisonValue: [startDate, endDate],
@@ -50,16 +52,19 @@ export class MeditrakConnection extends ApiConnection {
     answers: Record<string, number>,
   ) {
     const existingAnswers = (await this.get(`surveyResponses/${surveyResponse.id}/answers`, {
-      columns: `["${ANSWER_FIELDS.join('","')}"]`,
+      columns: `["question.code","id"]`,
     })) as AnswerObject[];
 
-    const newAnswers = existingAnswers.map(existingAnswer => ({
-      id: existingAnswer.id,
-      type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
-      question_code: existingAnswer['question.code'],
-      body: answers[existingAnswer['question.code']],
-    }));
-    const date = new Date().toISOString();
+    const newAnswers = existingAnswers.map(existingAnswer => {
+      const questionCode = existingAnswer['question.code'];
+      return {
+        id: existingAnswer.id,
+        type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
+        question_code: questionCode,
+        body: answers[questionCode],
+      };
+    });
+    const currentDate = new Date().toISOString();
 
     return this.post(`changes`, {}, [
       {
@@ -70,8 +75,8 @@ export class MeditrakConnection extends ApiConnection {
           entity_code: surveyResponse['entity.code'],
           survey_code: surveyResponse['survey.code'],
           user_email: this.authHandler.email,
-          start_time: date,
-          end_time: date,
+          start_time: currentDate,
+          end_time: currentDate,
           answers: newAnswers,
         },
       },
