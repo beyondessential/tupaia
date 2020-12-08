@@ -59,7 +59,7 @@ api.injectReduxStore(store);
 crashReporter.injectReduxStore(store);
 
 const persistedStore = persistStore(store);
-persistedStore.purge(); // Uncomment this to wipe bad redux state during development
+// persistedStore.purge(); // Uncomment this to wipe bad redux state during development
 
 const App = () => (
   <ErrorHandler persistedStore={persistedStore}>
