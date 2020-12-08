@@ -7,14 +7,17 @@
 
 import React from 'react';
 
+const isMaxLabel = value => value.toLowerCase().includes('max');
+
 function ReferenceLabel(props) {
   const { fill, fontSize, value, viewBox } = props;
   const x = viewBox.width / 2 + 30;
-  const y = viewBox.y + 15;
+  const y = isMaxLabel(value) ? viewBox.y - 5 : viewBox.y + 15;
 
+  if (value == null) return null;
   return (
     <text x={x} y={y} fill={fill} fontSize={fontSize || 14} fontWeight="bolder">
-      {`Average ${value}`}
+      {`${value}`}
     </text>
   );
 }

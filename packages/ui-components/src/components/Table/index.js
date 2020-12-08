@@ -5,6 +5,7 @@
 
 export * from './Table';
 export * from './ExpandableTable';
+export * from './ExpandableTableHeader';
 export * from './ExpandableTableBody';
 export * from './ExpandableTableRow';
 export * from './DataFetchingTable';

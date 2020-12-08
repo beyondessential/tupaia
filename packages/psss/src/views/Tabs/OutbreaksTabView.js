@@ -18,7 +18,8 @@ export const OutbreaksTabView = () => {
       <MuiContainer style={{ position: 'relative ' }}>
         <Main>
           <OutbreaksTable handlePanelOpen={() => setIsPanelOpen(true)} countryCode={countryCode} />
-          <OutbreaksPanel isOpen={isPanelOpen} handleClose={() => setIsPanelOpen(false)} />
+          {/*Removed for MVP release*/}
+          {/*<OutbreaksPanel isOpen={isPanelOpen} handleClose={() => setIsPanelOpen(false)} />*/}
         </Main>
       </MuiContainer>
     </div>
