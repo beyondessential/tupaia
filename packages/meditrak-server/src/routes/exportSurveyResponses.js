@@ -223,8 +223,7 @@ export async function exportSurveyResponses(req, res) {
       );
 
       // Add the questions info and answers to be exported
-      const preQuestionRowCount = INFO_ROW_HEADERS.length + 1; // Add one to make up for header row
-
+      const preQuestionRowCount = exportData.length;
       // Set up the left columns with info about the questions
       questionsForExport.forEach((question, questionIndex) => {
         const questionInfo = infoColumnKeys.map(columnKey => question[columnKey]);
