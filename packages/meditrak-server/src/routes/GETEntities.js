@@ -3,12 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from './GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
-import { fetchCountryCodesByPermissionGroupId } from './utilities';
-
-const { RAW } = QUERY_CONJUNCTIONS;
+import { mergeFilter } from './utilities';
 
 export const assertEntityPermissions = async (accessPolicy, models, entityId) => {
   const entity = await models.entity.findById(entityId);
@@ -36,18 +33,10 @@ export class GETEntities extends GETHandler {
     const dbConditions = { ...criteria };
 
     if (!hasBESAdminAccess(this.accessPolicy)) {
-      const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
-        this.accessPolicy,
-        this.models,
+      dbConditions['entity.country_code'] = mergeFilter(
+        this.accessPolicy.getEntitiesAllowed(),
+        dbConditions['entity.country_code'],
       );
-      dbConditions[RAW] = {
-        sql: `
-          entity.country_code IN (
-            SELECT TRIM('"' FROM JSON_ARRAY_ELEMENTS(?::JSON->survey.permission_group_id)::TEXT)
-          )
-        `,
-        parameters: JSON.stringify(countryCodesByPermissionGroupId),
-      };
     }
 
     return super.findRecords(dbConditions, options);
