@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
@@ -12,13 +14,8 @@ import MuiLink from '@material-ui/core/Link';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { createTotalCasesAccessor, AlertCell } from '../../components';
-import {
-  openWeeklyReportsPanel,
-  getSitesForWeekError,
-  getSitesForWeek,
-  reloadSitesForWeek,
-  checkSitesForWeekIsLoading,
-} from '../../store';
+import { openWeeklyReportsPanel } from '../../store';
+import { useTableQuery, getSitesMetaData } from '../../api';
 
 // Todo: update placeholder
 const NameCell = data => {
@@ -64,9 +61,9 @@ const siteWeekColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
+    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
   {
@@ -82,7 +79,10 @@ const TableFooter = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1.25rem 1.3rem 1.3rem;
-  border-top: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+const TableWrapper = styled.div`
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
 const Text = styled(Typography)`
@@ -94,65 +94,55 @@ const Link = styled(MuiLink)`
   font-size: 0.68rem;
 `;
 
-export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, handleOpen, isLoading, errorMessage }) => {
-    useEffect(() => {
-      (async () => {
-        await fetchData();
-      })();
-    }, [fetchData]);
+export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) => {
+  const { countryCode } = useParams();
+  const { period, weekNumber } = rowData;
+  const options = {
+    countryCode,
+    weekNumber,
+  };
+  const { error, data } = useTableQuery('sites', options);
+  const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
 
-    return (
-      <>
-        <FakeHeader>
-          <div>10/30 Sentinel Sites Reported</div>
-          <Link component="button" onClick={handleOpen} underline="always">
-            Review and Confirm Now
-          </Link>
-        </FakeHeader>
-        <Table
-          isLoading={isLoading}
-          errorMessage={errorMessage}
-          columns={siteWeekColumns}
-          fetchData={fetchData}
-          data={data}
-          Header={false}
-          Body={CondensedTableBody}
-        />
-        <TableFooter>
-          <Text>Verify data to submit Weekly report to Regional</Text>
-          <Button onClick={handleOpen}>Review and Confirm Now</Button>
-        </TableFooter>
-      </>
-    );
-  },
-);
+  const showSites = sitesMetaData?.sites.length > 0 && data?.data?.length > 0;
+
+  return (
+    <>
+      {showSites && (
+        <TableWrapper>
+          <FakeHeader>
+            <div>10/30 Sentinel Sites Reported</div>
+            <Link component="button" onClick={handleOpen} underline="always">
+              Review and Confirm Now
+            </Link>
+          </FakeHeader>
+          <Table
+            errorMessage={error}
+            columns={siteWeekColumns}
+            data={data ? data.data : 0}
+            Header={false}
+            Body={CondensedTableBody}
+          />
+        </TableWrapper>
+      )}
+      <TableFooter>
+        <Text>Verify data to submit Weekly report to Regional</Text>
+        <Button onClick={() => handleOpen(period)}>Review and Confirm Now</Button>
+      </TableFooter>
+    </>
+  );
+});
 
 SiteSummaryTableComponent.propTypes = {
-  fetchData: PropTypes.func.isRequired,
-  data: PropTypes.array.isRequired,
   handleOpen: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
-  errorMessage: PropTypes.string,
+  rowData: PropTypes.shape({
+    weekNumber: PropTypes.number,
+    period: PropTypes.string,
+  }).isRequired,
 };
-
-SiteSummaryTableComponent.defaultProps = {
-  isLoading: false,
-  errorMessage: '',
-};
-
-const mapStateToProps = state => ({
-  data: getSitesForWeek(state),
-  isLoading: checkSitesForWeekIsLoading(state),
-  errorMessage: getSitesForWeekError(state),
-});
 
 const mapDispatchToProps = dispatch => ({
-  fetchData: () => dispatch(reloadSitesForWeek({})),
-  handleOpen: () => dispatch(openWeeklyReportsPanel()),
+  handleOpen: period => dispatch(openWeeklyReportsPanel(period)),
 });
 
-export const SiteSummaryTable = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SiteSummaryTableComponent);
+export const SiteSummaryTable = connect(null, mapDispatchToProps)(SiteSummaryTableComponent);

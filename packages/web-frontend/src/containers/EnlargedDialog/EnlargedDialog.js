@@ -19,7 +19,7 @@ import {
 import { DrillDownOverlay } from '../DrillDownOverlay';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
-import { isMobile, sleep, stringToFilename } from '../../utils';
+import { isMobile, sleep, stringToFilename, getBrowserTimeZone } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
 import {
   selectCurrentInfoViewKey,
@@ -99,6 +99,7 @@ const EnlargedDialogComponent = ({
           organisationUnitName,
           startDate,
           endDate,
+          timeZone: getBrowserTimeZone(),
           filename,
         });
       } else {

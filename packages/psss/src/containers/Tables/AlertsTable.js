@@ -4,10 +4,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Table } from '@tupaia/ui-components';
 import { SyndromeCell, AlertMenuCell, WeekAndDateCell, CountryNameCell } from '../../components';
-import { ConnectedTable } from './ConnectedTable';
-import { getEntitiesAllowed } from '../../store';
-import { connect } from 'react-redux';
+import { useTableQuery } from '../../api';
 
 const createColumns = isForMultipleCountries => [
   ...(isForMultipleCountries
@@ -54,28 +53,34 @@ const createColumns = isForMultipleCountries => [
   },
 ];
 
-const AlertsTableComponent = React.memo(({ handlePanelOpen, countryCode, allowedEntities }) => (
-  <ConnectedTable
-    endpoint="alerts"
-    fetchOptions={{ countries: allowedEntities }} // this may not be needed when the api is complete but is needed for app testing in the meantime
-    columns={createColumns(!countryCode)}
-    onRowClick={handlePanelOpen}
-  />
-));
+export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => {
+  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
+    'alerts',
+  );
 
-AlertsTableComponent.propTypes = {
-  handlePanelOpen: PropTypes.func.isRequired,
-  countryCode: PropTypes.string,
-  allowedEntities: PropTypes.array,
-};
-
-AlertsTableComponent.defaultProps = {
-  countryCode: null,
-  allowedEntities: [],
-};
-
-const mapStateToProps = state => ({
-  allowedEntities: getEntitiesAllowed(state),
+  return (
+    <>
+      <Table
+        order={order}
+        orderBy={orderBy}
+        onChangeOrderBy={handleChangeOrderBy}
+        data={data ? data.data : 0}
+        count={data ? data.count : 0}
+        isLoading={isLoading}
+        errorMessage={error && error.message}
+        columns={createColumns(!countryCode)}
+        onRowClick={handlePanelOpen}
+      />
+      {isFetching && 'Fetching...'}
+    </>
+  );
 });
 
-export const AlertsTable = connect(mapStateToProps)(AlertsTableComponent);
+AlertsTable.propTypes = {
+  handlePanelOpen: PropTypes.func.isRequired,
+  countryCode: PropTypes.string,
+};
+
+AlertsTable.defaultProps = {
+  countryCode: null,
+};

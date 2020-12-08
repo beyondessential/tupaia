@@ -4,3 +4,4 @@
  */
 
 export * from './colors';
+export * from './weeklyReports';
