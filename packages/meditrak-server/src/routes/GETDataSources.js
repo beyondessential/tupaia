@@ -30,6 +30,6 @@ export class GETDataSources extends GETHandler {
       dbOptions.multiJoin,
     );
 
-    return super.findRecords(dbConditions, options);
+    return super.findRecords(dbConditions, dbOptions);
   }
 }

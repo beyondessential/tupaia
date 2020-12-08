@@ -3,35 +3,39 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { GETHandler } from './GETHandler';
-import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
+import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
+import { fetchCountryCodesByPermissionGroupId } from './utilities';
 
-export const assertEntityPermissions = async (accessPolicy, models, entityId) {
+const { RAW } = QUERY_CONJUNCTIONS;
+
+export const assertEntityPermissions = async (accessPolicy, models, entityId) => {
   const entity = await models.entity.findById(entityId);
   if (!entity) {
-    throw new Error(`No entity exists with id ${entity_id}`);
+    throw new Error(`No entity exists with id ${entityId}`);
   }
   if (!accessPolicy.allows(entity.country_code)) {
     throw new Error('You do not have permissions for this entity');
   }
   return true;
-}
+};
 
 export class GETEntities extends GETHandler {
   permissionsFilteredInternally = true;
 
   async findSingleRecord(entityId, options) {
-    entityPermissionChecker = accessPolicy =>
+    const entityPermissionChecker = accessPolicy =>
       assertEntityPermissions(accessPolicy, this.models, entityId);
-    this.assertPermissions(assertAnyPermissions[assertBESAdminAccess, entityPermissionChecker]);
+    this.assertPermissions(assertAnyPermissions[(assertBESAdminAccess, entityPermissionChecker)]);
 
     return super.findSingleRecord(entityId, options);
   }
 
   async findRecords(criteria, options) {
-    dbConditions = { ...criteria };
-    
-    if (!hasBESAdminAccess(accessPolicy)) {
+    const dbConditions = { ...criteria };
+
+    if (!hasBESAdminAccess(this.accessPolicy)) {
       const countryCodesByPermissionGroupId = await fetchCountryCodesByPermissionGroupId(
         this.accessPolicy,
         this.models,
@@ -52,8 +56,7 @@ export class GETEntities extends GETHandler {
   async findRecordsViaParent(criteria, options) {
     // TODO: Split this out to GETCountries file with #1129
     const country = await this.models.country.findById(this.parentRecordId);
-    if (!hasBESAdminAccess(accessPolicy) &&
-        !accessPolicy.allows(country.code)) {
+    if (!hasBESAdminAccess(this.accessPolicy) && !accessPolicy.allows(country.code)) {
       throw new Error('You do not have permission for this country');
     }
     const dbConditions = { 'entity.country_code': country.code, ...criteria };
