@@ -20,7 +20,6 @@ const dataElementToName = {
   RHS4UNFPA809: 'Family Planning',
   RHS3UNFPA5410: 'Delivery',
   RHS2UNFPA292: 'SGBV Services',
-  // RHS2UNFPA240: 'Adolescent and Youth Services',
   $dataDate: 'Data Collection Date',
 };
 
@@ -79,10 +78,7 @@ const buildCell = (dataElement, countryCode) => {
         aggregationType: 'COUNT',
         dataValues: [dataElement],
         aggregationConfig: {
-          countCondition:
-            dataElementToName[dataElement] === 'Adolescent and Youth Services'
-              ? { operator: 'regex', value: 'Yes' }
-              : { operator: '>', value: 0 },
+          countCondition: { operator: '>', value: 0 },
         },
       },
       { aggregationType: 'COUNT', dataValues: ['RHS1UNFPA03'] },

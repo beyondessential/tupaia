@@ -20,7 +20,6 @@ const dataElementToName = {
   RHS4UNFPA809: 'Family Planning',
   RHS3UNFPA5410: 'Delivery',
   RHS2UNFPA292: 'SGBV Services',
-  // RHS2UNFPA240: 'Adolescent and Youth Services',
   $dataDate: 'Data Collection Date',
 };
 
@@ -67,7 +66,6 @@ const buildCell = (dataElement, countryCode) => {
     '_',
   )}`;
   if (dataElement === '$dataDate') return buildDataDateCell(countryCode, key);
-  console.log(dataElement, countryCode, key);
 
   return {
     key,
@@ -77,10 +75,7 @@ const buildCell = (dataElement, countryCode) => {
         aggregationType: 'COUNT',
         dataValues: [dataElement],
         aggregationConfig: {
-          countCondition:
-            dataElementToName[dataElement] === 'Adolescent and Youth Services'
-              ? { operator: '>', value: 0 }
-              : { operator: '>', value: 0 },
+          countCondition: { operator: '>', value: 0 },
         },
       },
       { aggregationType: 'COUNT', dataValues: ['RHS1UNFPA03'] },
@@ -118,7 +113,7 @@ const buildReport = countryCode => ({
 const addReport = async (db, countryCode) => {
   const DASHBOARD_GROUP_CODES = [`${countryCode}_Unfpa_Country`];
   const report = buildReport(countryCode);
-  console.log(report);
+
   await insertObject(db, 'dashboardReport', report);
   return db.runSql(`
      UPDATE
