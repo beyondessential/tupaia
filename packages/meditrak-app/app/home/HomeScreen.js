@@ -4,7 +4,6 @@
  */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withNavigationFocus } from 'react-navigation';
 import { Animated, StyleSheet, Text, FlatList, View } from 'react-native';
 
 import {
@@ -20,7 +19,7 @@ import { HomeToolbarContainer } from './HomeToolbarContainer';
 
 class HomeScreenComponent extends PureComponent {
   static navigationOptions = {
-    headerTitle: <TupaiaHeaderLogo />,
+    headerTitle: () => <TupaiaHeaderLogo />,
   };
 
   constructor(props) {
@@ -54,6 +53,7 @@ class HomeScreenComponent extends PureComponent {
       Animated.timing(this.floatingHeaderVisibleAnimation, {
         toValue: isFloatingHeaderVisible ? 1 : 0,
         duration: 800,
+        useNativeDriver: false,
       }).start();
     }
 

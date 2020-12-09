@@ -4,10 +4,18 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import { HeaderBackButton } from 'react-navigation';
+import { Image } from 'react-native';
+import { HeaderBackButton } from 'react-navigation-stack';
 import { goBack } from './actions';
+import { THEME_COLOR_THREE } from '../globalStyles';
 
-export const HeaderLeftButtonContainer = props => <HeaderBackButton {...props} />;
+export const HeaderLeftButtonContainer = ({ source, ...props }) => (
+  <HeaderBackButton
+    {...props}
+    tintColor={THEME_COLOR_THREE}
+    backImage={source ? () => <Image source={source} tintColor={THEME_COLOR_THREE}></Image> : null}
+  />
+);
 
 const mapDispatchToProps = dispatch => ({
   onPress: () => dispatch(goBack()),

@@ -18,7 +18,7 @@ function mapStateToProps({ social }) {
   };
 }
 
-function mapDispatchToProps(dispatch, { screenProps }) {
+function mapDispatchToProps(dispatch) {
   return {
     onLoadNextFeedPage: () => dispatch(loadSocialFeedNextPage()),
     onFetchFeedLatest: () => dispatch(loadSocialFeedLatest()),
