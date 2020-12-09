@@ -19,7 +19,7 @@ type WeeklyReportAnswers = {
   PSSS_DLI_Cases: number;
 };
 
-export class SubmitCountryWeeklyReportRoute extends Route {
+export class SaveCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { week } = this.req.query;
     const { organisationUnitCode } = this.req.params;

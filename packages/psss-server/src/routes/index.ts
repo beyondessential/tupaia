@@ -11,6 +11,6 @@ export {
   ConfirmedCountryWeeklyReportRoute,
   CountryWeeklyReportRoute,
   SubmitConfirmedCountryWeeklyReportRoute,
-  SubmitCountryWeeklyReportRoute,
+  SaveCountryWeeklyReportRoute,
   DeleteCountryWeeklyReportRoute,
 } from './reports';

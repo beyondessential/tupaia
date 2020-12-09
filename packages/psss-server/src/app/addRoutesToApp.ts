@@ -14,7 +14,7 @@ import {
   ConfirmedCountryWeeklyReportRoute,
   CountryWeeklyReportRoute,
   SubmitConfirmedCountryWeeklyReportRoute,
-  SubmitCountryWeeklyReportRoute,
+  SaveCountryWeeklyReportRoute,
   DeleteCountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
@@ -69,7 +69,7 @@ export function addRoutesToApp(app: Express) {
   /**
    * PUT routes
    */
-  app.put('/v1/weeklyReport/:organisationUnitCode', handleWith(SubmitCountryWeeklyReportRoute));
+  app.put('/v1/weeklyReport/:organisationUnitCode', handleWith(SaveCountryWeeklyReportRoute));
 
   /**
    * DELETE routes

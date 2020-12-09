@@ -7,5 +7,5 @@ export { ConfirmedWeeklyReportRoute } from './ConfirmedWeeklyReportRoute';
 export { ConfirmedCountryWeeklyReportRoute } from './ConfirmedCountryWeeklyReportRoute';
 export { CountryWeeklyReportRoute } from './CountryWeeklyReportRoute';
 export { SubmitConfirmedCountryWeeklyReportRoute } from './SubmitConfirmedCountryWeeklyReportRoute';
-export { SubmitCountryWeeklyReportRoute } from './SubmitCountryWeeklyReportRoute';
+export { SaveCountryWeeklyReportRoute } from './SaveCountryWeeklyReportRoute';
 export { DeleteCountryWeeklyReportRoute } from './DeleteCountryWeeklyReportRoute';
