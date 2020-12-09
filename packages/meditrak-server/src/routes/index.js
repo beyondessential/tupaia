@@ -5,14 +5,18 @@
 
 import { authenticate } from './authenticate';
 import { countChanges } from './countChanges';
-import { deleteRecord } from './deleteRecord';
-import { editRecord } from './editRecord';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
+import { BESAdminCreateHandler, TupaiaAdminCreateHandler } from './CreateHandler';
+import { BESAdminDeleteHandler, TupaiaAdminDeleteHandler } from './DeleteHandler';
+import { BESAdminEditHandler, TupaiaAdminEditHandler } from './EditHandler';
+import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETDisasters } from './GETDisasters';
 import { GETDashboardReports } from './GETDashboardReports';
 import { GETDashboardGroups } from './GETDashboardGroups';
+import { GETDataSources } from './GETDataSources';
+import { GETEntities } from './GETEntities';
 import { GETMapOverlays } from './GETMapOverlays';
 import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -86,18 +90,30 @@ const allowAnyone = routeHandler => (req, res, next) => {
 };
 
 export default {
+  // == TODO: Remove generic handlers when all endpoints are implemented ==
+  addRecord: useRouteHandler(TupaiaAdminCreateHandler),
+  deleteRecord: useRouteHandler(TupaiaAdminDeleteHandler),
+  editRecord: useRouteHandler(TupaiaAdminEditHandler),
+  getRecord: useRouteHandler(TupaiaAdminGETHandler),
+  // ====
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
+  createCountries: useRouteHandler(BESAdminCreateHandler),
+  createDisasters: useRouteHandler(BESAdminCreateHandler),
+  createFeedItems: useRouteHandler(BESAdminCreateHandler),
+  createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
-  deleteRecord: catchAsyncErrors(deleteRecord),
   deleteAnswers: useRouteHandler(DeleteAnswers),
+  deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
+  deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
   deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
-  editRecord: catchAsyncErrors(editRecord),
   createUserAccount: useRouteHandler(CreateUserAccounts),
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editAnswers: useRouteHandler(EditAnswers),
+  editDisasters: useRouteHandler(BESAdminEditHandler),
+  editFeedItems: useRouteHandler(BESAdminEditHandler),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
@@ -108,6 +124,9 @@ export default {
   getDisasters: useRouteHandler(GETDisasters),
   getDashboardReports: useRouteHandler(GETDashboardReports),
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
+  getDataSources: useRouteHandler(GETDataSources),
+  getEntities: useRouteHandler(GETEntities),
+  getFeedItems: useRouteHandler(BESAdminGETHandler),
   getMapOverlays: useRouteHandler(GETMapOverlays),
   getSurveys: useRouteHandler(GETSurveys),
   getSurveyGroups: useRouteHandler(GETSurveyGroups),
@@ -127,7 +146,6 @@ export default {
   importOptionSets: catchAsyncErrors(importOptionSets),
   postChanges: catchAsyncErrors(postChanges),
   pruneChanges: catchAsyncErrors(pruneChanges),
-  addRecord: catchAsyncErrors(addRecord),
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
   changePassword: allowAnyone(changePassword),
   editUser: catchAsyncErrors(editUser),

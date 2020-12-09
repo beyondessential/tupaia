@@ -119,7 +119,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     expansionTabs={[
       {
         title: 'Data Elements',
-        endpoint: 'data_sources/{id}/data_sources',
+        endpoint: 'dataSources/{id}/dataSources',
         columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
       },
     ]}

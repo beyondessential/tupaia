@@ -15,16 +15,28 @@ import { ensurePermissionCheck } from '../permissions';
 import routes from '../routes';
 
 const {
+  // == TODO: Remove generic handlers ==
+  addRecord,
+  deleteRecord,
+  editRecord,
+  getRecord,
+  // ====
   authenticate,
   countChanges,
+  createCountries,
+  createDisasters,
+  createFeedItems,
+  createPermissionGroups,
   createUserEntityPermissions,
-  deleteRecord,
   deleteAnswers,
+  deleteDisasters,
+  deleteFeedItems,
   deleteSurveyResponses,
   deleteUserEntityPermissions,
-  editRecord,
   editAccessRequests,
   editAnswers,
+  editDisasters,
+  editFeedItems,
   editSurveyResponses,
   editUserAccounts,
   editUserEntityPermissions,
@@ -35,6 +47,9 @@ const {
   getDisasters,
   getDashboardReports,
   getDashboardGroups,
+  getDataSources,
+  getEntities,
+  getFeedItems,
   getMapOverlays,
   getSurveys,
   getSurveyGroups,
@@ -61,7 +76,6 @@ const {
   editUser,
   changePassword,
   requestCountryAccess,
-  addRecord,
   getUserRewards,
   getUser,
   requestPasswordReset,
@@ -130,9 +144,11 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/disasters/:recordId?', getDisasters);
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
+  app.get('(/v[0-9]+)/feedItems/:recordId?', getFeedItems);
   app.get('(/v[0-9]+)/mapOverlays/:recordId?', getMapOverlays);
   app.get('(/v[0-9]+)/surveys/:recordId?', getSurveys);
   app.get('(/v[0-9]+)/countries/:parentRecordId/surveys', getSurveys);
+  app.get('(/v[0-9]+)/countries/:parentRecordId/entities', getEntities);
   app.get('(/v[0-9]+)/surveyGroups/:recordId?', getSurveyGroups);
   app.get('(/v[0-9]+)/surveyResponses/:parentRecordId/answers', getAnswers);
   app.get('(/v[0-9]+)/surveyResponses/:recordId?', getSurveyResponses);
@@ -142,6 +158,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
   app.get('(/v[0-9]+)/options/:recordId?', getOptions);
   app.get('(/v[0-9]+)/optionSets/:recordId?', getOptionSets);
+  app.get('(/v[0-9]+)/optionSets/:parentRecordId/options', getOptions);
   app.get('(/v[0-9]+)/users/:recordId?', getUserAccounts);
   app.get('(/v[0-9]+)/userEntityPermissions/:recordId?', getUserEntityPermissions);
   app.get(
@@ -149,6 +166,14 @@ export function addRoutesToApp(app) {
     getUserEntityPermissions,
   );
   app.get('(/v[0-9]+)/accessRequests/:recordId?', getAccessRequests);
+  app.get('(/v[0-9]+)/dataSources/:recordId?', getDataSources);
+  app.get('(/v[0-9]+)/dataSources/:parentRecordId/dataSources', getDataSources);
+  app.get('(/v[0-9]+)/entities/:recordId?', getEntities);
+  app.get('(/v[0-9]+)/entities/:parentRecordId/surveyResponses', getSurveyResponses);
+
+  // TODO: Remove generic handlers when all endpoints are implemented
+  app.get('(/v[0-9]+)/:resource', getRecord);
+  app.get('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', getRecord);
 
   /**
    * POST routes
@@ -180,6 +205,12 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/me/changePassword', changePassword);
   app.post('(/v[0-9]+)/surveyResponse', surveyResponse); // used by mSupply to directly submit data
   app.post('(/v[0-9]+)/surveyResponses', surveyResponse);
+  app.post('(/v[0-9]+)/countries', createCountries);
+  app.post('(/v[0-9]+)/disasters', createDisasters);
+  app.post('(/v[0-9]+)/feedItems', createFeedItems);
+  app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
+
+  // TODO: Remove generic handlers when all endpoints are implemented
   app.post('(/v[0-9]+)/:resource', addRecord);
   app.post('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', addRecord);
 
@@ -192,9 +223,13 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/surveyResponses/:recordId', editSurveyResponses);
   app.put('(/v[0-9]+)/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', editAnswers);
-  app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:id', editRecord);
-  app.put('(/v[0-9]+)/:resource/:id', editRecord);
+  app.put('(/v[0-9]+)/disasters/:recordId', editDisasters);
+  app.put('(/v[0-9]+)/feedItems/:recordId', editFeedItems);
   app.put('(/v[0-9]+)/me', editUser);
+
+  // TODO: Remove generic handlers when all endpoints are implemented
+  app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', editRecord);
+  app.put('(/v[0-9]+)/:resource/:recordId', editRecord);
 
   /**
    * DELETE routes
@@ -203,6 +238,8 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/surveyResponses/:recordId', deleteSurveyResponses);
   app.delete('(/v[0-9]+)/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', deleteAnswers);
+  app.delete('(/v[0-9]+)/disasters/:recordId', deleteDisasters);
+  app.delete('(/v[0-9]+)/feedItems/:recordId', deleteFeedItems);
   // TODO: Remove the generic handlers once all DELETE endpoints have specific handlers
   app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
