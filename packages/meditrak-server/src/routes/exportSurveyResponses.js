@@ -24,17 +24,16 @@ const INFO_COLUMNS = {
 };
 function getExportDatesString(startDate, endDate) {
   const format = 'D-M-YY';
-  let dateString = '';
-  if (startDate && endDate) {
-    dateString = `between ${moment(startDate).format(format)} and ${moment(endDate).format(
-      format,
-    )} `;
-  } else if (startDate) {
-    dateString = `after ${moment(startDate).format(format)} `;
-  } else if (endDate) {
-    dateString = `before ${moment(endDate).format(format)} `;
-  }
-  return `${dateString}`;
+  const momentFormat = date => moment(date).format(format);
+
+  if (startDate && endDate)
+    return `between ${momentFormat(startDate)} and ${momentFormat(endDate)} `;
+
+  if (startDate) return `after ${momentFormat(startDate)} `;
+
+  if (endDate) return `before ${momentFormat(endDate)} `;
+
+  return '(no period specified)';
 }
 function getEasyReadingInfoColumns(startDate, endDate) {
   return { text: `Survey responses ${getExportDatesString(startDate, endDate)}` };
