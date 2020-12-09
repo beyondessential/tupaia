@@ -40,17 +40,7 @@ export class SubmitConfirmedCountryWeeklyReportRoute extends Route {
 
     const answers = mapUnconfirmedReportToConfirmedAnswers(report.results[0]);
 
-    const existingSurveyResponse = await this.meditrakConnection?.findSurveyResponse(
-      SURVEY_CODE,
-      organisationUnitCode,
-      week,
-    );
-
-    if (existingSurveyResponse) {
-      return this.meditrakConnection?.updateSurveyResponse(existingSurveyResponse, answers);
-    }
-
-    return this.meditrakConnection?.createSurveyResponse(
+    return this.meditrakConnection?.updateOrCreateSurveyResponse(
       SURVEY_CODE,
       organisationUnitCode,
       week,

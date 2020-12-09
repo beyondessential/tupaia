@@ -26,6 +26,21 @@ type AnswerObject = {
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
+  async updateOrCreateSurveyResponse(
+    surveyCode: string,
+    orgUnitCode: string,
+    period: string,
+    answers: Record<string, number>,
+  ) {
+    const existingSurveyResponse = await this.findSurveyResponse(surveyCode, orgUnitCode, period);
+
+    if (existingSurveyResponse) {
+      return this.updateSurveyResponse(existingSurveyResponse, answers);
+    }
+
+    return this.createSurveyResponse(surveyCode, orgUnitCode, period, answers);
+  }
+
   async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
     const [startDate, endDate] = convertPeriodStringToDateRange(period);
     const results = (await this.get(`surveyResponses/`, {

@@ -25,17 +25,7 @@ export class SubmitCountryWeeklyReportRoute extends Route {
     const { organisationUnitCode } = this.req.params;
     const answers = mapReqBodyToAnswers(this.req.body);
 
-    const existingSurveyResponse = await this.meditrakConnection?.findSurveyResponse(
-      SURVEY_CODE,
-      organisationUnitCode,
-      week,
-    );
-
-    if (existingSurveyResponse) {
-      return this.meditrakConnection?.updateSurveyResponse(existingSurveyResponse, answers);
-    }
-
-    return this.meditrakConnection?.createSurveyResponse(
+    return this.meditrakConnection?.updateOrCreateSurveyResponse(
       SURVEY_CODE,
       organisationUnitCode,
       week,
