@@ -40,14 +40,17 @@ const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
   [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: () => ({ headerShown: false }) },
   [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
-  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: () => ({ headerShown: false }) },
+  [WELCOME_SCREEN]: {
+    screen: WelcomeContainer,
+    navigationOptions: () => ({ headerShown: false, animationEnabled: false }),
+  },
   [CREATE_ACCOUNT_SCREEN]: {
     screen: CreateUserContainer,
     navigationOptions: () => ({ headerRight: () => null }),
   },
   [HOME_SCREEN]: {
     screen: HomeScreenContainer,
-    navigationOptions: () => ({ headerLeft: () => null }),
+    navigationOptions: () => ({ headerLeft: () => null, animationEnabled: false }),
   },
   [SYNC_SCREEN]: {
     screen: SyncContainer,
