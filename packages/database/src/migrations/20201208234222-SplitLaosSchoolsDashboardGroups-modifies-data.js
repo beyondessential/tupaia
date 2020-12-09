@@ -343,18 +343,16 @@ const populateDashboardGroup = dashboardGroups =>
     return entityDashboardGroups;
   });
 
-exports.up = function (db) {
+exports.up = async function (db) {
   const populatedDGs = populateDashboardGroup(newDashboardGroups).flat(1);
 
-  populatedDGs.forEach(dbg => createDashboardGroup(db, dbg));
+  await Promise.all(populatedDGs.map(dbg => createDashboardGroup(db, dbg)));
 
-  db.runSql(`
+  return db.runSql(`
     update "project" set "dashboard_group_name" = '${defaultDashboardGroup}' where code = 'laos_schools';    
 
     delete from "dashboardGroup" where name in (${arrayToDbString(dashboardsToRemoveByName)});
   `);
-
-  return null;
 };
 
 exports.down = function (db) {
