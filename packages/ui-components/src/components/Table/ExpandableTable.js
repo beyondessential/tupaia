@@ -27,9 +27,11 @@ export const ExpandableTable = React.memo(({ Body, SubComponent, isFetching, ...
 ExpandableTable.propTypes = {
   SubComponent: PropTypes.any,
   Body: PropTypes.any,
+  isFetching: PropTypes.bool,
 };
 
 ExpandableTable.defaultProps = {
   SubComponent: null,
   Body: ExpandableTableBody,
+  isFetching: false,
 };

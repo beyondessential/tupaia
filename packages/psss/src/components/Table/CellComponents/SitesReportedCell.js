@@ -14,13 +14,14 @@ const DottedUnderline = styled.div`
 `;
 
 // Todo: use distanceInWordsToNow to get submitted time when data exists
+//  @see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1752
 export const SitesReportedCell = ({ Sites, ...data }) => {
   if (Sites === undefined) {
     return '-';
   }
 
   return (
-    <Tooltip title="Submitted: 1 day ago">
+    <Tooltip title="Submitted 1 day ago" open={false}>
       <DottedUnderline>{`${data['Sites Reported']}/${Sites}`}</DottedUnderline>
     </Tooltip>
   );

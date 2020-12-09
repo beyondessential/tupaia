@@ -16,7 +16,7 @@ export const useUpcomingReport = countryCode => {
   const query = useQuery(
     [endpoint, lastPeriod],
     () => get(endpoint, { params: { startWeek: lastPeriod, endWeek: lastPeriod } }),
-    { staleTime: 60 * 1000 },
+    { staleTime: 60 * 1000 * 5 },
   );
 
   const data = query?.data?.data?.results ?? [];

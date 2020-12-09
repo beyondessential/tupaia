@@ -17,8 +17,9 @@ const StyledTableBody = styled(TableBody)`
 `;
 
 export const ExpandableTableBody = ({ ExpandableTableRow, SubComponent, ...tableBodyProps }) => {
-  const TableRow = tableRowProps => (
-    <ExpandableTableRow {...tableRowProps} SubComponent={SubComponent} />
+  const TableRow = React.useCallback(
+    props => <ExpandableTableRow {...props} SubComponent={SubComponent} />,
+    [ExpandableTableRow, SubComponent],
   );
   return <StyledTableBody {...tableBodyProps} TableRow={TableRow} />;
 };

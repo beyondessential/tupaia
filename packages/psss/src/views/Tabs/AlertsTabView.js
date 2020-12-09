@@ -35,7 +35,8 @@ export const AlertsTabView = React.memo(() => {
       <Container>
         <Main>
           <AlertsTable handlePanelOpen={handlePanelOpen} countryCode={countryCode} />
-          <AlertsPanel isOpen={isPanelOpen} handleClose={handlePanelClose} />
+          {/*Removed for MVP release
+          <AlertsPanel isOpen={isPanelOpen} handleClose={handlePanelClose} />*/}
         </Main>
         {/* Temporarily removed for MVP release. Please do not delete */}
         {/*<Sidebar>*/}
