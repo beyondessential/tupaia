@@ -320,6 +320,8 @@ const defaultDashboardGroup = 'Students / Schools';
 
 const dashboardsToRemoveByName = ['Laos Schools', 'Laos Schools MoES View'];
 
+const underscore = str => str.replace(/ /g, '_');
+
 const createDashboardGroup = (db, dashboardGroup) =>
   insertObject(db, 'dashboardGroup', dashboardGroup);
 
@@ -333,7 +335,7 @@ const populateDashboardGroup = dashboardGroups =>
         organisationUnitCode: 'LA',
         dashboardReports: `{${dbg.reports[entity].join(',')}}`,
         name: dbg.name,
-        code: `${dbg.codePrefix}${entity}_${dbg.userGroup}`,
+        code: `${dbg.codePrefix}${entity}_${underscore(dbg.userGroup)}`,
         projectCodes: '{laos_schools}',
       };
       entityDashboardGroups.push(entityDashbaoardGroup);
