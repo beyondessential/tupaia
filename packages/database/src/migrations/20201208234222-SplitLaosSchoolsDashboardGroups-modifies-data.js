@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject } from '../utilities';
+import { insertObject, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -91,7 +91,7 @@ const newDashboardGroups = [
   },
   {
     name: 'Textbooks and Teacher Guides',
-    code: 'LA_Textbooks_Teacher_Guides_',
+    codePrefix: 'LA_Textbooks_Teacher_Guides_',
     reports: {
       // School level view (school)
       School: [
@@ -108,7 +108,7 @@ const newDashboardGroups = [
   },
   {
     name: 'WASH',
-    code: 'LA_WASH_',
+    codePrefix: 'LA_WASH_',
     reports: {
       // National level view (Country)
       Country: [
@@ -146,7 +146,7 @@ const newDashboardGroups = [
   },
   {
     name: 'ICT/Utility Data',
-    code: 'LA_ICT_Utility Data_',
+    codePrefix: 'LA_ICT_Utility Data_',
     reports: {
       // National level view (Country)
       Country: [
@@ -222,7 +222,7 @@ const newDashboardGroups = [
   },
   {
     name: 'COVID',
-    code: 'LA_COVID_',
+    codePrefix: 'LA_COVID_',
     reports: {
       // National level view (Country)
       Country: [
@@ -274,7 +274,7 @@ const newDashboardGroups = [
   },
   {
     name: 'Development Partner Information',
-    code: 'LA_Development_Partner_Information_',
+    codePrefix: 'LA_Development_Partner_Information_',
     reports: {
       // National level view (Country)
       Country: [
@@ -310,24 +310,43 @@ const newDashboardGroups = [
 const baseDashboardGroup = {
   userGroup: 'Laos Schools User', // 'Laos Schools Super User' - which groups have super user?
   organisationUnitCode: 'LA',
-  // organisationLevel
-  // dashboardReports
-  // name
-  // code
   projectCodes: '{laos_schools}',
 };
+
+const defaultDashboardGroup = 'Students / Schools';
+
+const dashboardsToRemoveByName = ['Laos Schools', 'Laos Schools MoES View'];
 
 const createDashboardGroup = (db, dashboardGroup) =>
   insertObject(db, 'dashboardGroup', dashboardGroup);
 
 const populateDashboardGroup = dashboardGroups =>
-  dashboardGroups.map(dbg =>
-    Object.keys(dbg.reports).forEach(entity =>
-      dbg.reports[entity].map(report => console.log('report', report)),
-    ),
-  );
+  dashboardGroups.map(dbg => {
+    const entityDashboardGroups = [];
+    Object.keys(dbg.reports).forEach(entity => {
+      const entityDashbaoardGroup = {
+        ...baseDashboardGroup,
+        organisationLevel: entity,
+        dashboardReports: `{${dbg.reports[entity].join(',')}}`,
+        name: dbg.name,
+        code: `${dbg.codePrefix}${entity}`,
+      };
+      entityDashboardGroups.push(entityDashbaoardGroup);
+    });
+    return entityDashboardGroups;
+  });
 
 exports.up = function (db) {
+  const populatedDGs = populateDashboardGroup(newDashboardGroups).flat(1);
+
+  populatedDGs.forEach(dbg => createDashboardGroup(db, dbg));
+
+  db.runSql(`
+    update "project" set "dashboard_group_name" = '${defaultDashboardGroup}' where code = 'laos_schools';    
+
+    delete from "dashboardGroup" where name in (${arrayToDbString(dashboardsToRemoveByName)});
+  `);
+
   return null;
 };
 
