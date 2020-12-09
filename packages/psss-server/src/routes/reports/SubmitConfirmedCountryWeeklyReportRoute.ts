@@ -5,6 +5,7 @@
 
 import { RespondingError } from '@tupaia/utils';
 import { Route } from '../Route';
+import { validateIsNumber } from '../../utils';
 
 const SURVEY_CODE = 'PSSS_Confirmed_WNR';
 const REPORT_CODE = 'PSSS_Weekly_Cases';
@@ -70,21 +71,20 @@ const mapUnconfirmedReportToConfirmedAnswers = (
     PF: pf,
     DLI: dli,
   } = reportValues;
+
+  const errorHandler = (field: string) => (value: unknown) =>
+    new RespondingError(
+      `Cannot confirm weekly data: Invalid value for '${field}' - ${value} is not a number`,
+      500,
+    );
+
   return {
-    PSSS_Confirmed_Sites: validateIsNumber(sites),
-    PSSS_Confirmed_Sites_Reported: validateIsNumber(sitesReported),
-    PSSS_Confirmed_AFR_Cases: validateIsNumber(afr),
-    PSSS_Confirmed_DIA_Cases: validateIsNumber(dia),
-    PSSS_Confirmed_ILI_Cases: validateIsNumber(ili),
-    PSSS_Confirmed_PF_Cases: validateIsNumber(pf),
-    PSSS_Confirmed_DLI_Cases: validateIsNumber(dli),
+    PSSS_Confirmed_Sites: validateIsNumber(sites, errorHandler('Sites')),
+    PSSS_Confirmed_Sites_Reported: validateIsNumber(sitesReported, errorHandler('Sites Reported')),
+    PSSS_Confirmed_AFR_Cases: validateIsNumber(afr, errorHandler('AFR')),
+    PSSS_Confirmed_DIA_Cases: validateIsNumber(dia, errorHandler('DIA')),
+    PSSS_Confirmed_ILI_Cases: validateIsNumber(ili, errorHandler('ILI')),
+    PSSS_Confirmed_PF_Cases: validateIsNumber(pf, errorHandler('PF')),
+    PSSS_Confirmed_DLI_Cases: validateIsNumber(dli, errorHandler('DLI')),
   };
-};
-
-const validateIsNumber = (value: unknown): number => {
-  if (typeof value !== 'number') {
-    throw new RespondingError(`Cannot confirm weekly data: ${value} is not a number`, 500);
-  }
-
-  return value;
 };

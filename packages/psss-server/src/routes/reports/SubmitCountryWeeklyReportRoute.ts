@@ -5,6 +5,7 @@
 
 import { RespondingError } from '@tupaia/utils';
 import { Route } from '../Route';
+import { validateIsNumber } from '../../utils';
 
 const SURVEY_CODE = 'PSSS_WNR';
 
@@ -45,21 +46,20 @@ export class SubmitCountryWeeklyReportRoute extends Route {
 
 const mapReqBodyToAnswers = (body: Record<string, unknown>): WeeklyReportAnswers => {
   const { sites, sitesReported, afr, dia, ili, pf, dli } = body;
+
+  const errorHandler = (field: string) => (value: unknown) =>
+    new RespondingError(
+      `Cannot save weekly data: Invalid value for '${field}' - ${value} is not a number`,
+      500,
+    );
+
   return {
-    PSSS_Sites: validateIsNumber(sites),
-    PSSS_Sites_Reported: validateIsNumber(sitesReported),
-    PSSS_AFR_Cases: validateIsNumber(afr),
-    PSSS_DIA_Cases: validateIsNumber(dia),
-    PSSS_ILI_Cases: validateIsNumber(ili),
-    PSSS_PF_Cases: validateIsNumber(pf),
-    PSSS_DLI_Cases: validateIsNumber(dli),
+    PSSS_Sites: validateIsNumber(sites, errorHandler('sites')),
+    PSSS_Sites_Reported: validateIsNumber(sitesReported, errorHandler('sitesReported')),
+    PSSS_AFR_Cases: validateIsNumber(afr, errorHandler('afr')),
+    PSSS_DIA_Cases: validateIsNumber(dia, errorHandler('dia')),
+    PSSS_ILI_Cases: validateIsNumber(ili, errorHandler('ili')),
+    PSSS_PF_Cases: validateIsNumber(pf, errorHandler('pf')),
+    PSSS_DLI_Cases: validateIsNumber(dli, errorHandler('dli')),
   };
-};
-
-const validateIsNumber = (value: unknown): number => {
-  if (typeof value !== 'number') {
-    throw new RespondingError(`Cannot save weekly data: ${value} is not a number`, 500);
-  }
-
-  return value;
 };
