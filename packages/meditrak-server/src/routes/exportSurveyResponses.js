@@ -28,11 +28,8 @@ function getExportDatesString(startDate, endDate) {
 
   if (startDate && endDate)
     return `between ${momentFormat(startDate)} and ${momentFormat(endDate)} `;
-
   if (startDate) return `after ${momentFormat(startDate)} `;
-
   if (endDate) return `before ${momentFormat(endDate)} `;
-
   return '(no period specified)';
 }
 function getEasyReadingInfoColumns(startDate, endDate) {
