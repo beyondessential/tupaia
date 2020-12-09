@@ -20,7 +20,7 @@ type ConfirmedWeeklyReportAnswers = {
   PSSS_Confirmed_DLI_Cases: number;
 };
 
-export class SubmitConfirmedCountryWeeklyReportRoute extends Route {
+export class ConfirmCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { week } = this.req.query;
     const { organisationUnitCode } = this.req.params;
