@@ -18,10 +18,10 @@ content-type: application/json
 ### /test
 GET http://localhost:8040/v1/test HTTP/2.0
 
-### Fetch Weekly Report Data (GET /weeklyReport)
+### Fetch Country Weekly Report Data
 GET http://localhost:8040/v1/weeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
 
-### Save Weekly Report Data (PUT /weeklyReport)
+### Save Country Weekly Report Data
 PUT http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
 content-type: application/json
 
@@ -35,11 +35,14 @@ content-type: application/json
     "sitesReported": 16
 }
 
-### Delete Weekly Report Data (DELETE /weeklyReport)
+### Delete Country Weekly Report Data
 DELETE http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
 
-### Fetch Confirmed Weekly Report Data (GET /confirmedWeeklyReport)
+### Fetch Confirmed Weekly Report Data
+GET http://localhost:8040/v1/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+
+### Fetch Country Confirmed Weekly Report Data
 GET http://localhost:8040/v1/confirmedWeeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
 
-### Confirm Weekly Report Data (POST /confirmedWeeklyReport)
+### Confirm Country Weekly Report Data
 POST http://localhost:8040/v1/confirmedWeeklyReport/TO?week=2021W07 HTTP/2.0
