@@ -14,6 +14,8 @@ import {
   ConfirmedCountryWeeklyReportRoute,
   CountryWeeklyReportRoute,
   SubmitConfirmedCountryWeeklyReportRoute,
+  SaveCountryWeeklyReportRoute,
+  DeleteCountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -59,14 +61,20 @@ export function addRoutesToApp(app: Express) {
    */
   app.post('/v1/login', handleWith(LoginRoute));
   app.post('/v1/logout', handleWith(LogoutRoute));
+  app.post(
+    '/v1/confirmedWeeklyReport/:organisationUnitCode',
+    handleWith(SubmitConfirmedCountryWeeklyReportRoute),
+  );
 
   /**
    * PUT routes
    */
-  app.put(
-    '/v1/confirmedWeeklyReport/:organisationUnitCode',
-    handleWith(SubmitConfirmedCountryWeeklyReportRoute),
-  );
+  app.put('/v1/weeklyReport/:organisationUnitCode', handleWith(SaveCountryWeeklyReportRoute));
+
+  /**
+   * DELETE routes
+   */
+  app.delete('/v1/weeklyReport/:organisationUnitCode', handleWith(DeleteCountryWeeklyReportRoute));
 
   app.use(handleError);
 }
