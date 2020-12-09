@@ -26,13 +26,13 @@ PUT http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
 content-type: application/json
 
 {
-    "AFR": 7,
-    "DIA": 3,
-    "ILI": 9,
-    "PF": 11,
-    "DLI": 2,
-    "Sites": 13,
-    "Sites Reported": 16
+    "afr": 7,
+    "dia": 3,
+    "ili": 9,
+    "pf": 11,
+    "dli": 2,
+    "sites": 13,
+    "sitesReported": 16
 }
 
 ### Delete Weekly Report Data (DELETE /weeklyReport)

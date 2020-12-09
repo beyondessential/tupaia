@@ -44,15 +44,7 @@ export class SubmitCountryWeeklyReportRoute extends Route {
 }
 
 const mapReqBodyToAnswers = (body: Record<string, unknown>): WeeklyReportAnswers => {
-  const {
-    Sites: sites,
-    'Sites Reported': sitesReported,
-    AFR: afr,
-    DIA: dia,
-    ILI: ili,
-    PF: pf,
-    DLI: dli,
-  } = body;
+  const { sites, sitesReported, afr, dia, ili, pf, dli } = body;
   return {
     PSSS_Sites: validateIsNumber(sites),
     PSSS_Sites_Reported: validateIsNumber(sitesReported),
@@ -66,7 +58,7 @@ const mapReqBodyToAnswers = (body: Record<string, unknown>): WeeklyReportAnswers
 
 const validateIsNumber = (value: unknown): number => {
   if (typeof value !== 'number') {
-    throw new RespondingError(`Cannot confirm weekly data: invalid data`, 500);
+    throw new RespondingError(`Cannot save weekly data: ${value} is not a number`, 500);
   }
 
   return value;

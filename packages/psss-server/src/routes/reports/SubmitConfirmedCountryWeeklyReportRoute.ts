@@ -83,7 +83,7 @@ const mapUnconfirmedReportToConfirmedAnswers = (
 
 const validateIsNumber = (value: unknown): number => {
   if (typeof value !== 'number') {
-    throw new RespondingError(`Cannot confirm weekly data: invalid data`, 500);
+    throw new RespondingError(`Cannot confirm weekly data: ${value} is not a number`, 500);
   }
 
   return value;
