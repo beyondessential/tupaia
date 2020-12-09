@@ -6,6 +6,7 @@
 import { GETHandler } from './GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../permissions';
 import { mergeFilter } from './utilities';
+import { assertCountryPermissions } from './GETCountries';
 
 export const assertEntityPermissions = async (accessPolicy, models, entityId) => {
   const entity = await models.entity.findById(entityId);
@@ -43,11 +44,11 @@ export class GETEntities extends GETHandler {
   }
 
   async findRecordsViaParent(criteria, options) {
-    // TODO: Split this out to GETCountries file with #1129
+    const countryPermissionChecker = accessPolicy =>
+      assertCountryPermissions(accessPolicy, this.models, this.parentRecordId);
+    this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]));
+
     const country = await this.models.country.findById(this.parentRecordId);
-    if (!hasBESAdminAccess(this.accessPolicy) && !this.accessPolicy.allows(country.code)) {
-      throw new Error('You do not have permission for this country');
-    }
     const dbConditions = { 'entity.country_code': country.code, ...criteria };
 
     return super.findRecords(dbConditions, options);
