@@ -166,8 +166,8 @@ export function addRoutesToApp(app) {
     getUserEntityPermissions,
   );
   app.get('(/v[0-9]+)/accessRequests/:recordId?', getAccessRequests);
-  app.get('(/v[0-9]+)/data_sources/:recordId?', getDataSources);
-  app.get('(/v[0-9]+)/data_sources/:parentRecordId/data_sources', getDataSources);
+  app.get('(/v[0-9]+)/dataSources/:recordId?', getDataSources);
+  app.get('(/v[0-9]+)/dataSources/:parentRecordId/dataSources', getDataSources);
   app.get('(/v[0-9]+)/entities/:recordId?', getEntities);
   app.get('(/v[0-9]+)/entities/:parentRecordId/surveyResponses', getSurveyResponses);
 
