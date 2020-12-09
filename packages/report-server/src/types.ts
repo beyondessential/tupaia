@@ -12,6 +12,8 @@ import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 export interface FetchReportQuery extends Query {
   organisationUnitCodes: string;
   period?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface FetchReportParams extends ParamsDictionary {
@@ -30,17 +32,13 @@ interface ReportsRequestBody {
   testConfig?: ReportConfig;
   testData?: Record<string, string | number>[];
 }
-interface ReportsRequestHeaders {
-  Authorization: string;
-}
 
 export interface ReportsRequest<
   P = FetchReportParams,
   ResBody = unknown,
   ReqBody = ReportsRequestBody,
-  ReqQuery = FetchReportQuery,
-  Headers = ReportsRequestHeaders,
-> extends Request<P, ResBody, ReqBody, ReqQuery, Headers> {
+  ReqQuery = FetchReportQuery
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
   accessPolicy: AccessPolicy;
   authenticator: Authenticator;
   database: TupaiaDatabase;

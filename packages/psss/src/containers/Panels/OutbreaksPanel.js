@@ -7,14 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { LocationOn, SpeakerNotes, List, MoveToInbox } from '@material-ui/icons';
-import {
-  CardTabList,
-  CardTab,
-  CardTabPanels,
-  Virus,
-  WarningCloud,
-  LinkButton,
-} from '@tupaia/ui-components';
+import { CardTabList, CardTab, CardTabPanels, Virus, LinkButton } from '@tupaia/ui-components';
 import { useParams } from 'react-router-dom';
 import {
   Drawer,
@@ -27,7 +20,7 @@ import {
 import { NotesTab } from '../NotesTab';
 import * as COLORS from '../../constants/colors';
 import { countryFlagImage, getCountryName } from '../../utils';
-import { connectApi } from '../../api';
+import { getAffectedSites, getAlertsMessages, getActivityFeed } from '../../api';
 import { useFetch } from '../../hooks';
 
 const Option = styled.span`
@@ -60,17 +53,11 @@ const menuOptions = [
 
 const TabsContext = React.createContext(null);
 
-export const OutbreaksPanelComponent = ({
-  isOpen,
-  handleClose,
-  fetchSitesData,
-  fetchNotesData,
-  fetchActivityData,
-}) => {
+export const OutbreaksPanel = ({ isOpen, handleClose }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const sitesState = useFetch(fetchSitesData);
-  const notesState = useFetch(fetchNotesData);
-  const activityState = useFetch(fetchActivityData);
+  const sitesState = useFetch(getAffectedSites);
+  const notesState = useFetch(getAlertsMessages);
+  const activityState = useFetch(getActivityFeed);
   const { countryCode } = useParams();
 
   const handleChange = option => {
@@ -123,18 +110,7 @@ export const OutbreaksPanelComponent = ({
   );
 };
 
-OutbreaksPanelComponent.propTypes = {
+OutbreaksPanel.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  fetchSitesData: PropTypes.func.isRequired,
-  fetchNotesData: PropTypes.func.isRequired,
-  fetchActivityData: PropTypes.func.isRequired,
 };
-
-const mapApiToProps = api => ({
-  fetchSitesData: () => api.get('affected-sites'),
-  fetchNotesData: () => api.get('messages'),
-  fetchActivityData: () => api.get('activity-feed'),
-});
-
-export const OutbreaksPanel = connectApi(mapApiToProps)(OutbreaksPanelComponent);

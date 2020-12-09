@@ -4,4 +4,3 @@
  */
 
 export * from './useFetchData';
-export * from './useTableQuery';

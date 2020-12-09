@@ -9,7 +9,13 @@ import MuiLink from '@material-ui/core/Link';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
-import { DataFetchingTable, CondensedTableBody, FakeHeader, ExpandableTableBody } from '../../src';
+import {
+  DataFetchingTable,
+  CondensedTableBody,
+  FakeHeader,
+  ExpandableTableBody,
+  ExpandableTableHeader,
+} from '../../src';
 import { AFRCell, SitesReportedCell } from '../story-utils/TableCells';
 import * as COLORS from '../story-utils/theme/colors';
 import { connectApi } from '../story-utils/api';
@@ -204,6 +210,7 @@ export const CountriesTable = () => {
       <ConnectedTable
         endpoint="countries"
         columns={countriesTableColumns}
+        Header={ExpandableTableHeader}
         Body={ExpandableTableBody}
         SubComponent={CountryTable}
       />
