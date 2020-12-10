@@ -16,8 +16,8 @@ export async function changePassword(req, res, next) {
     newPasswordConfirm,
   } = body;
 
-  // Support both alternatives so that users using old versions
-  // of meditrak-app can still change their passwords
+  // Support both alternatives so that users using versions
+  // of meditrak-app prior to 1.9.109 can still change their passwords
   const passwordParam = password || newPassword;
   const passwordConfirmParam = passwordConfirm || newPasswordConfirm;
 
