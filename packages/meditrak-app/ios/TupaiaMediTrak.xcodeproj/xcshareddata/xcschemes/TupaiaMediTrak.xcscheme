@@ -5,36 +5,6 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "58B511DA1A9E6C8500147676"
-               BuildableName = "libRCTLinking.a"
-               BlueprintName = "RCTLinking"
-               ReferencedContainer = "container:../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F12AFB9A1ADAF8F800E0535D"
-               BuildableName = "libRNFS.a"
-               BlueprintName = "RNFS"
-               ReferencedContainer = "container:../node_modules/react-native-fs/RNFS.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"

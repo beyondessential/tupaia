@@ -8,51 +8,6 @@ target 'TupaiaMediTrak' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  pod 'React', :path => '../node_modules/react-native', :subspecs => [
-    'Core',
-    'CxxBridge',
-    'DevSupport',
-    'RCTText',
-    'RCTImage',
-    'RCTNetwork',
-    'RCTWebSocket',
-    'RCTSettings',
-    'RCTAnimation',
-    'RCTLinkingIOS',
-    'RCTGeolocation',
-    # Add any other subspecs you want to use in your project
-    # Remove any subspecs you don't want to use in your project
-  ]
-
-  pod "yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
-  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
-  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
-  pod 'appcenter', path: '../node_modules/appcenter/ios'
-  pod 'appcenter-analytics', path: '../node_modules/appcenter-analytics/ios'
-  pod 'appcenter-crashes', path: '../node_modules/appcenter-crashes/ios'
-
-  pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
-
-  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
-
-  pod 'BugsnagReactNative', :path => '../node_modules/bugsnag-react-native'
-
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
-
-  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
-
-  pod 'RNFS', :path => '../node_modules/react-native-fs'
-
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-
-
-  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
-
-
-  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
-
   target 'TupaiaMediTrakTests' do
     inherit! :search_paths
     # Pods for testing
