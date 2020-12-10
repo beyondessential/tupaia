@@ -2,14 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { TextField, Button, Checkbox } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
-import { login, getCurrentUser } from '../../store';
+import { login, getCurrentUser, checkIsLoading, checkIsError, getError } from '../../store';
 import * as COLORS from '../../constants/colors';
 
 const ErrorMessage = styled.p`
@@ -30,33 +30,18 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
-const STATUS = {
-  IDLE: 'idle',
-  LOADING: 'loading',
-  ERROR: 'error',
-};
-
-const LoginFormComponent = ({ user, onLogin }) => {
-  const [status, setStatus] = useState(STATUS.IDLE);
-  const [errorMessage, setErrorMessage] = useState(null);
+const LoginFormComponent = ({ user, onLogin, isLoading, isError, error }) => {
   const { handleSubmit, register, errors } = useForm();
 
   const onSubmit = handleSubmit(async ({ email, password, rememberMe }) => {
-    setStatus(STATUS.LOADING);
-    setErrorMessage(null);
-    try {
-      window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
-      await onLogin({ email, password });
-    } catch (error) {
-      setErrorMessage(error.message);
-      setStatus(STATUS.ERROR);
-    }
+    window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
+    await onLogin({ email, password });
   });
 
   return (
     <form onSubmit={onSubmit} noValidate>
       <Heading component="h4">Enter your email and password</Heading>
-      {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      {isError && <ErrorMessage>{error}</ErrorMessage>}
       <TextField
         name="email"
         placeholder="Email"
@@ -89,7 +74,7 @@ const LoginFormComponent = ({ user, onLogin }) => {
         inputRef={register}
         defaultValue={false}
       />
-      <StyledButton type="submit" fullWidth isLoading={status === STATUS.LOADING}>
+      <StyledButton type="submit" fullWidth isLoading={isLoading}>
         Login to your account
       </StyledButton>
     </form>
@@ -98,17 +83,26 @@ const LoginFormComponent = ({ user, onLogin }) => {
 
 LoginFormComponent.propTypes = {
   onLogin: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  isLoading: PropTypes.bool,
+  isError: PropTypes.bool,
   user: PropTypes.PropTypes.shape({
     email: PropTypes.string,
   }),
 };
 
 LoginFormComponent.defaultProps = {
+  error: null,
+  isLoading: false,
+  isError: false,
   user: null,
 };
 
 const mapStateToProps = state => ({
   user: getCurrentUser(state),
+  isLoading: checkIsLoading(state),
+  isError: checkIsError(state),
+  error: getError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
