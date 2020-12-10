@@ -21,7 +21,7 @@ const SuccessStyleText = styled.span`
  * Displays a value as a percentage
  */
 export const PercentageChangeCell = ({ percentageChange, className }) => {
-  if (!percentageChange) {
+  if (percentageChange === undefined) {
     return '-';
   }
 
