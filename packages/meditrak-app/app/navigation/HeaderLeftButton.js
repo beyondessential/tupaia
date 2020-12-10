@@ -10,7 +10,7 @@ import { goBack } from './actions';
 import { THEME_COLOR_THREE } from '../globalStyles';
 
 // On iOS the tintColor prop on Image doesn't work, and the left margin is off
-const iosStyle = { marginLeft: 8, tintColor: THEME_COLOR_THREE };
+const iosStyle = { marginLeft: 10, tintColor: THEME_COLOR_THREE };
 
 export const HeaderLeftButtonContainer = ({ source, ...props }) => (
   <HeaderBackButton
