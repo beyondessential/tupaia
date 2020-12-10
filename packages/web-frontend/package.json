@@ -15,7 +15,7 @@
     "build": "mkdir -p builds && npm run build-desktop && npm run build-mobile",
     "build-desktop": "node scripts/build.js && rm -rf builds/desktop && mv build builds/desktop",
     "build-mobile": "REACT_APP_APP_TYPE=mobile node scripts/build.js && rm -rf builds/mobile && mv build builds/mobile",
-    "cypress:generate-config": "babel-node cypress/scripts/generateConfig --config-file '../../babel.config.json'",
+    "cypress:generate-config": "babel-node cypress/scripts/generateConfig --config-file \"../../babel.config.json\"",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "lint": "eslint --ignore-path ../../.gitignore .",

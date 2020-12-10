@@ -269,10 +269,52 @@ const QUESTION_COLUMNS = [
                 ],
               },
               {
+                label: 'Arithmetic',
+                fieldName: 'arithmetic',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Formula',
+                    fieldName: 'formula',
+                  },
+                  {
+                    label: 'Default Values',
+                    fieldName: 'defaultValues',
+                    type: 'jsonEditor',
+                  },
+                  {
+                    label: 'Value Translation',
+                    fieldName: 'valueTranslation',
+                    type: 'jsonEditor',
+                  },
+                  {
+                    label: 'Answer Display Text',
+                    fieldName: 'answerDisplayText',
+                  },
+                ],
+              },
+              {
+                label: 'Condition',
+                fieldName: 'condition',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Conditions',
+                    fieldName: 'conditions',
+                    type: 'jsonEditor',
+                  },
+                ],
+              },
+              {
                 label: 'Autocomplete',
                 fieldName: 'autocomplete',
                 type: 'json',
                 getJsonFieldSchema: () => [
+                  {
+                    label: 'Create New',
+                    fieldName: 'createNew',
+                    type: 'boolean',
+                  },
                   {
                     label: 'Attributes',
                     fieldName: 'attributes',

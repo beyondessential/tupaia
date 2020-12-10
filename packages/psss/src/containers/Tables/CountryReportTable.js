@@ -4,9 +4,8 @@
  */
 import React, { useContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import InfoIcon from '@material-ui/icons/Info';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
 import {
@@ -22,7 +21,7 @@ import {
 } from '@tupaia/ui-components';
 import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
-import { updateWeeklyReportsData } from '../../store';
+import { useSaveCountryReport } from '../../api';
 
 const VerifiableBody = props => {
   const { tableStatus } = useContext(EditableTableContext);
@@ -73,13 +72,34 @@ const TABLE_STATUSES = {
   STATIC: 'static',
   EDITABLE: 'editable',
   SAVING: 'saving',
-  LOADING: 'loading',
+  ERROR: 'error',
 };
 
-export const CountryReportTableComponent = React.memo(
-  ({ tableStatus, setTableStatus, onSubmit, sitesReported, totalSites }) => {
+export const CountryReportTable = React.memo(
+  ({ isFetching, tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
     const { fields } = useContext(EditableTableContext);
     const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
+    const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
+    const { countryCode } = useParams();
+
+    const [saveReport] = useSaveCountryReport(countryCode);
+
+    const handleSubmit = async () => {
+      setTableStatus(TABLE_STATUSES.SAVING);
+
+      try {
+        await saveReport({
+          orgUnit: countryCode,
+          period: weekNumber,
+          ...fields,
+          sitesReported: parseInt(sitesReportedValue, 10),
+          totalSites: parseInt(totalSitesValue, 10),
+        });
+        setTableStatus(TABLE_STATUSES.STATIC);
+      } catch (error) {
+        setTableStatus(TABLE_STATUSES.ERROR);
+      }
+    };
 
     const handleEdit = useCallback(() => {
       setTableStatus(TABLE_STATUSES.EDITABLE);
@@ -89,17 +109,15 @@ export const CountryReportTableComponent = React.memo(
       setTableStatus(TABLE_STATUSES.STATIC);
     }, [setTableStatus]);
 
-    const handleSubmit = async () => {
-      setTableStatus(TABLE_STATUSES.SAVING);
-      await onSubmit({
-        ...fields,
-        sitesReported: parseInt(sitesReportedValue, 10),
-      });
-      setTableStatus(TABLE_STATUSES.STATIC);
-    };
+    if (Object.keys(fields).length === 0) {
+      return null;
+    }
 
     return (
-      <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+      <LoadingContainer
+        isLoading={isFetching || tableStatus === TABLE_STATUSES.SAVING}
+        heading={isFetching ? 'Loading data' : 'Saving Data'}
+      >
         <FlexSpaceBetween pb={2}>
           {tableStatus === TABLE_STATUSES.EDITABLE ? (
             <FormRow>
@@ -109,7 +127,12 @@ export const CountryReportTableComponent = React.memo(
                 onChange={event => setSitesReportedValue(event.target.value)}
                 name="sites-reported"
               />
-              <ReportedSites variant="h6"> / Total Sites: {totalSites}</ReportedSites>
+              <ReportedSites variant="h5"> / Total Sites: </ReportedSites>
+              <StyledTextField
+                value={totalSitesValue}
+                onChange={event => setTotalSitesValue(event.target.value)}
+                name="total-sites"
+              />
             </FormRow>
           ) : (
             <Typography variant="h5">
@@ -123,15 +146,16 @@ export const CountryReportTableComponent = React.memo(
             Edit
           </GreyOutlinedButton>
         </FlexSpaceBetween>
-        {tableStatus === TABLE_STATUSES.EDITABLE ? (
+        {tableStatus === TABLE_STATUSES.EDITABLE && (
           <Alert severity="error" variant="standard">
             Updating country level data manually: all individual sentinel site data will be ignored
           </Alert>
-        ) : (
-          <GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>
-            Country level data has been manually edited, sentinel data will not be used.
-          </GreyAlert>
         )}
+        {/* ToDo: implement with sentinel sites feature
+        @see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1640
+        <GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>
+        Country level data has been manually edited, sentinel data will not be used.
+        </GreyAlert>*/}
         <GreyHeader>
           <span>SYNDROMES</span>
           <span>TOTAL CASES</span>
@@ -153,21 +177,19 @@ export const CountryReportTableComponent = React.memo(
   },
 );
 
-CountryReportTableComponent.propTypes = {
+CountryReportTable.propTypes = {
+  isFetching: PropTypes.bool,
   tableStatus: PropTypes.PropTypes.oneOf([
     TABLE_STATUSES.STATIC,
     TABLE_STATUSES.EDITABLE,
-    TABLE_STATUSES.LOADING,
     TABLE_STATUSES.SAVING,
   ]).isRequired,
   setTableStatus: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
   sitesReported: PropTypes.number.isRequired,
+  weekNumber: PropTypes.string.isRequired,
   totalSites: PropTypes.number.isRequired,
 };
 
-const mapDispatchToProps = dispatch => ({
-  onSubmit: data => dispatch(updateWeeklyReportsData(data)),
-});
-
-export const CountryReportTable = connect(null, mapDispatchToProps)(CountryReportTableComponent);
+CountryReportTable.defaultProps = {
+  isFetching: false,
+};

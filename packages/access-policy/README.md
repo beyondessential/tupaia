@@ -8,7 +8,7 @@ Methods for parsing the access policy that is received by Tupaia projects during
 // Create access policy instance
 const accessPolicy = new AccessPolicy(policy); // where `policy` is a JSON string to parse
 
-//Returns whether or not the access policy grants access to the 'Donor' permissionGroup for ALL the given countries 
+//Returns whether or not the access policy grants access to the 'Donor' permissionGroup for ALL the given countries
 //Demo Land and Laos
 accessPolicy.allowsAll(['DL', 'LA'], 'Donor');
 
@@ -20,7 +20,10 @@ accessPolicy.allowsSome(['DL', 'DL_North'], 'Donor');
 accessPolicy.allows('DL');
 
 // Returns the list of countries the policy has access to the 'Donor' permissionGroup for
-acessPolicy.getEntitiesAllowed('Donor');
+accessPolicy.getEntitiesAllowed('Donor');
+
+// Returns whether or not the access policy grants Donor access within any entity
+accessPolicy.allowsAnywhere('Donor');
 ```
 
 ## JSON Structure

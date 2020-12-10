@@ -4,15 +4,13 @@
  */
 
 import React from 'react';
-import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Table, CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
-import {
-  createTotalCasesAccessor,
-  AlertCell,
-  SitesReportedCell,
-  WeekAndDateCell,
-} from '../../components';
-import { ConnectedTable } from './ConnectedTable';
+import { AlertCell, SitesReportedCell, WeekAndDateCell } from '../../components';
+import { getLatestViewableWeek } from '../../store';
+import { useCountryConfirmedWeeklyReport } from '../../api';
 
 const countrySummaryTableColumns = [
   {
@@ -31,47 +29,64 @@ const countrySummaryTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
     CellComponent: AlertCell,
   },
 ];
 
-const TableHeader = () => {
-  return <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>;
+const NUMBER_OF_WEEKS = 8;
+
+export const CountrySummaryTableComponent = React.memo(({ rowData, period }) => {
+  const { isLoading, error, data } = useCountryConfirmedWeeklyReport(
+    rowData.organisationUnit,
+    period,
+    NUMBER_OF_WEEKS,
+  );
+
+  return (
+    <>
+      <FakeHeader>PREVIOUS {NUMBER_OF_WEEKS} WEEKS</FakeHeader>
+      <Table
+        columns={countrySummaryTableColumns}
+        Header={false}
+        Body={CondensedTableBody}
+        data={data}
+        isLoading={isLoading}
+        errorMessage={error && error.message}
+        rowIdKey="period"
+      />
+    </>
+  );
+});
+
+CountrySummaryTableComponent.propTypes = {
+  period: PropTypes.string.isRequired,
+  rowData: PropTypes.shape({
+    organisationUnit: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
-export const CountrySummaryTable = React.memo(() => (
-  <>
-    <TableHeader />
-    <ConnectedTable
-      endpoint="country-weeks"
-      columns={countrySummaryTableColumns}
-      Header={false}
-      Body={CondensedTableBody}
-    />
-  </>
-));
+const mapStateToProps = state => ({
+  period: getLatestViewableWeek(state),
+});
+
+export const CountrySummaryTable = connect(mapStateToProps)(CountrySummaryTableComponent);

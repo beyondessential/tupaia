@@ -3,87 +3,88 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { connect } from 'react-redux';
-import { ExpandableTableBody } from '@tupaia/ui-components';
+import PropTypes from 'prop-types';
+import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
-import {
-  createTotalCasesAccessor,
-  AlertCell,
-  SitesReportedCell,
-  CountryNameLinkCell,
-} from '../../components';
-import { ConnectedTable } from './ConnectedTable';
-import { getEntitiesAllowed } from '../../store';
-import PropTypes from 'prop-types';
+import { useConfirmedWeeklyReport } from '../../api';
+import { AlertCell, SitesReportedCell, CountryNameLinkCell } from '../../components';
+import { getLatestViewableWeek, getEntitiesAllowed } from '../../store';
+import { connect } from 'react-redux';
 
 const countriesTableColumns = [
   {
     title: 'Country',
-    key: 'name',
+    key: 'organisationUnit',
     width: '30%', // must be same as CountrySummaryTable name column to align
     align: 'left',
+    sortable: false,
     CellComponent: CountryNameLinkCell,
   },
   {
-    title: 'Site Reported',
-    key: 'sitesReported',
+    title: 'Sites Reported',
+    key: 'Sites Reported',
     CellComponent: SitesReportedCell,
+    sortable: false,
     width: COLUMN_WIDTHS.SITES_REPORTED,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
     CellComponent: AlertCell,
+    sortable: false,
   },
 ];
 
-const CountriesTableComponent = React.memo(({ allowedEntities }) => (
-  <ConnectedTable
-    endpoint="countries"
-    // this may not be needed when the api is complete but is needed for app testing in the meantime
-    fetchOptions={{ countries: allowedEntities }}
-    columns={countriesTableColumns}
-    Body={ExpandableTableBody}
-    SubComponent={CountrySummaryTable}
-  />
-));
+export const CountriesTableComponent = ({ period, countryCodes }) => {
+  const { data, isLoading, error, isFetching } = useConfirmedWeeklyReport(period, countryCodes);
 
-CountriesTableComponent.propTypes = {
-  allowedEntities: PropTypes.array,
+  return (
+    <ExpandableTable
+      data={data}
+      isLoading={isLoading}
+      isFetching={!isLoading && isFetching}
+      errorMessage={error && error.message}
+      columns={countriesTableColumns}
+      Body={ExpandableTableBody}
+      rowIdKey="organisationUnit"
+      SubComponent={CountrySummaryTable}
+    />
+  );
 };
 
-CountriesTableComponent.defaultProps = {
-  allowedEntities: [],
+CountriesTableComponent.propTypes = {
+  period: PropTypes.string.isRequired,
+  countryCodes: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
-  allowedEntities: getEntitiesAllowed(state),
+  period: getLatestViewableWeek(state),
+  countryCodes: getEntitiesAllowed(state),
 });
 
 export const CountriesTable = connect(mapStateToProps)(CountriesTableComponent);

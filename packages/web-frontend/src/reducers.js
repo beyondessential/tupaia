@@ -88,20 +88,17 @@ import {
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
   UPDATE_ENLARGED_DIALOG,
-  CLOSE_DRILL_DOWN,
-  ATTEMPT_DRILL_DOWN,
-  FETCH_DRILL_DOWN_SUCCESS,
-  FETCH_DRILL_DOWN_ERROR,
-  GO_TO_DRILL_DOWN_LEVEL,
   SET_CONFIG_GROUP_VISIBLE,
-  SET_ENLARGED_DIALOG_DATE_RANGE,
+  FETCH_ENLARGED_DIALOG_DATA,
   UPDATE_ENLARGED_DIALOG_ERROR,
   SET_PASSWORD_RESET_TOKEN,
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
+  SET_PROJECT_ADDITIONAL_ACCESS,
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
+  SET_ENLARGED_DIALOG_DATE_RANGE,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -390,6 +387,7 @@ function requestCountryAccess(
     countries: [],
     isFetchingCountryAccessData: false,
     isRequestingCountryAccess: false,
+    isRequestingAdditionalCountryAccess: false,
     errorMessage: '',
     hasRequestCountryAccessCompleted: false,
   },
@@ -401,12 +399,20 @@ function requestCountryAccess(
       return {
         ...state,
         isFetchingCountryAccessData: true,
+        isRequestingAdditionalCountryAccess: false,
+        errorMessage: '',
+      };
+    case SET_PROJECT_ADDITIONAL_ACCESS:
+      return {
+        ...state,
+        isRequestingAdditionalCountryAccess: true,
         errorMessage: '',
       };
     case FETCH_COUNTRY_ACCESS_DATA_ERROR:
       return {
         ...state,
         isFetchingCountryAccessData: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: action.error || 'Something went wrong while fetching country access data',
       };
     case FETCH_COUNTRY_ACCESS_DATA_SUCCESS:
@@ -426,6 +432,7 @@ function requestCountryAccess(
       return {
         ...state,
         isRequestingCountryAccess: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage:
           action.error ||
           'Something went wrong during country access request, please check the form and try again',
@@ -435,12 +442,14 @@ function requestCountryAccess(
         ...state,
         hasRequestCountryAccessCompleted: true,
         isRequestingCountryAccess: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: '',
       };
     case CLOSE_USER_DIALOG:
       return {
         ...state,
         hasRequestCountryAccessCompleted: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: '',
       };
     default:
@@ -634,13 +643,10 @@ function global(
 
 function enlargedDialog(
   state = {
-    isVisible: false,
     isLoading: false,
-    viewContent: null,
-    organisationUnitName: '',
+    contentByLevel: null,
     errorMessage: '',
-    startDate: null,
-    endDate: null,
+    drillDownDatesByLevel: null,
   },
   action,
 ) {
@@ -648,103 +654,58 @@ function enlargedDialog(
     case OPEN_ENLARGED_DIALOG:
       return {
         ...state,
-        isVisible: true,
         isLoading: false,
         errorMessage: '',
-        startDate: null,
-        endDate: null,
+        contentByLevel: null,
       };
-
     case CLOSE_ENLARGED_DIALOG:
       return {
         ...state,
-        isVisible: false,
-        viewContent: null,
-        organisationUnitName: '',
+        isLoading: false,
+        errorMessage: '',
+        contentByLevel: null,
       };
+    case SET_ENLARGED_DIALOG_DATE_RANGE: {
+      const { drillDownLevel, startDate, endDate } = action;
 
-    case SET_ENLARGED_DIALOG_DATE_RANGE:
+      // Base level dates are stored in the url
+      if (drillDownLevel === 0) return state;
+
       return {
         ...state,
-        startDate: action.startDate,
-        endDate: action.endDate,
+        drillDownDatesByLevel: {
+          ...(state.drillDownDatesByLevel || {}),
+          [drillDownLevel]: {
+            startDate,
+            endDate,
+          },
+        },
+      };
+    }
+    case FETCH_ENLARGED_DIALOG_DATA:
+      return {
+        ...state,
         isLoading: true,
       };
-
     case UPDATE_ENLARGED_DIALOG:
       return {
         ...state,
-        viewContent: action.viewContent,
+        contentByLevel: {
+          ...(state.contentByLevel || {}),
+          [action.options.drillDownLevel]: {
+            viewContent: action.viewContent,
+            options: action.options,
+          },
+        },
         isLoading: false,
         errorMessage: '',
       };
-
     case UPDATE_ENLARGED_DIALOG_ERROR:
       return {
         ...state,
         isLoading: false,
         errorMessage: action.errorMessage,
       };
-
-    default:
-      return state;
-  }
-}
-
-function drillDown(
-  state = {
-    isVisible: false,
-    isLoading: false,
-    errorMessage: '',
-    currentLevel: 0,
-    levelContents: {},
-  },
-  action,
-) {
-  switch (action.type) {
-    case ATTEMPT_DRILL_DOWN:
-      return {
-        ...state,
-        isLoading: true,
-        isVisible: true,
-        errorMessage: '',
-        currentLevel: action.drillDownLevel,
-      };
-
-    case FETCH_DRILL_DOWN_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        levelContents: {
-          ...state.levelContents,
-          [action.drillDownLevel]: {
-            viewContent: action.viewContent,
-          },
-        },
-      };
-
-    case FETCH_DRILL_DOWN_ERROR:
-      return {
-        ...state,
-        isLoading: false,
-        errorMessage: action.errorMessage,
-      };
-
-    case GO_TO_DRILL_DOWN_LEVEL:
-      return {
-        ...state,
-        errorMessage: '',
-        isLoading: false,
-        currentLevel: action.drillDownLevel,
-      };
-
-    case CLOSE_ENLARGED_DIALOG:
-    case CLOSE_DRILL_DOWN:
-      return {
-        ...state,
-        isVisible: false,
-      };
-
     default:
       return state;
   }
@@ -793,7 +754,6 @@ export default combineReducers({
   resetPassword,
   requestCountryAccess,
   enlargedDialog,
-  drillDown,
   disaster,
   project,
   orgUnits,

@@ -32,6 +32,13 @@ export const splitStringOn = (string, splitCharacter) => {
   return string ? string.split(splitCharacter).map(segment => segment.trim()) : [];
 };
 
+export const splitStringOnFirstOccurrence = (string, splitCharacter) => {
+  let [first, ...second] = string ? string.split(splitCharacter) : [];
+  second = second.join(splitCharacter);
+  const result = [first, second];
+  return result.map(segment => segment.trim());
+};
+
 export const splitStringOnComma = string => splitStringOn(string, ',');
 
 export const splitOnNewLinesOrCommas = string => {

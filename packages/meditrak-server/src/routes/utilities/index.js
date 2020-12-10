@@ -8,6 +8,7 @@ export { constructNewRecordValidationRules } from './constructNewRecordValidatio
 export {
   extractTabNameFromQuery,
   splitStringOn,
+  splitStringOnFirstOccurrence,
   splitStringOnComma,
   splitOnNewLinesOrCommas,
 } from './excel';
@@ -24,9 +25,12 @@ export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisuali
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
+export { SurveyResponseVariablesExtractor } from './SurveyResponseVariablesExtractor';
 export {
   translateQuestionDependentFields,
   translateQuestionDependentNestedFields,
   replaceQuestionCodesWithIds,
   replaceNestedQuestionCodesWithIds,
 } from './translateQuestionDependentFields';
+export { translateExpression } from './translateExpression';
+export { getExpressionQuestionCodes } from './getExpressionQuestionCodes';

@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore 'src/__tests__/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --ignore \"src/__tests__/**\" --config-file \"../../babel.config.json\"",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
@@ -21,7 +21,9 @@
     "@tupaia/utils": "1.0.0",
     "rand-token": "^1.0.1",
     "semver-compare": "^1.0.0",
-    "sha256": "^0.2.0"
+    "sha256": "^0.2.0",
+    "jsonwebtoken": "^7.4.3",
+    "randomatic": "^3.1.1"
   },
   "devDependencies": {
     "@beyondessential/tupaia-access-policy": "^2.5.0",

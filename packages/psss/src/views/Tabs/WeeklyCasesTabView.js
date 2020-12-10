@@ -2,33 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
-import { Warning } from '@material-ui/icons';
-import {
-  CardContent,
-  CardFooter,
-  CardHeader,
-  BarMeter,
-  Button,
-  Card,
-  DataCardTabs,
-  WarningCloud,
-  Virus,
-} from '@tupaia/ui-components';
+import { Button, WarningCloud, Virus } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
-import { CountryTable, WeeklyReportsPanel } from '../../containers';
-import {
-  checkCountryWeekIsLoading,
-  getCountryWeeks,
-  getCountryWeeksError,
-  openWeeklyReportsPanel,
-  reloadCountryWeeks,
-  setActiveWeek,
-} from '../../store';
+import { CountryTable, UpcomingReportCard } from '../../containers';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -66,93 +45,19 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const WeeklyCasesTabViewComponent = React.memo(
-  ({ fetchData, data, isLoading, errorMessage, handleOpen }) => {
-    const [page, setPage] = useState(0);
-
-    useEffect(() => {
-      (async () => {
-        await fetchData({ page });
-      })();
-    }, [fetchData, page]);
-
-    // Todo: Get the latest week data when there is real data
-    const latestWeek = data[0];
-
-    return (
-      <Container>
-        <Main data-testid="country-table">
-          <CountryTable
-            data={data}
-            isLoading={isLoading}
-            errorMessage={errorMessage}
-            page={page}
-            setPage={setPage}
-          />
-          <WeeklyReportsPanel />
-        </Main>
-        <Sidebar>
-          <Card variant="outlined">
-            <CardHeader
-              color="error"
-              title="Submission due in 3 days"
-              label={<Warning color="error" />}
-            />
-            <CardContent>
-              <Typography variant="h4">Week 11</Typography>
-              <Typography variant="h4" gutterBottom>
-                Upcoming Report
-              </Typography>
-              <DateSubtitle variant="subtitle2" gutterBottom>
-                Feb 25, 2020 - Mar 1, 2020
-              </DateSubtitle>
-              {/* Todo: update with id when there is real data */}
-              <StyledButton fullWidth onClick={() => handleOpen(latestWeek.index)}>
-                Review and Confirm now
-              </StyledButton>
-            </CardContent>
-            <CardFooter>
-              <BarMeter value={22} total={30} legend="Sites reported" />
-            </CardFooter>
-          </Card>
-          {/* Temporarily removed for MVP release. Please do not delete */}
-          {/*<Card variant="outlined">*/}
-          {/*  <DataCardTabs data={tabData} />*/}
-          {/*</Card>*/}
-        </Sidebar>
-      </Container>
-    );
-  },
-);
-
-WeeklyCasesTabViewComponent.propTypes = {
-  handleOpen: PropTypes.func.isRequired,
-  fetchData: PropTypes.func.isRequired,
-  data: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool,
-  errorMessage: PropTypes.string,
+export const WeeklyCasesTabView = () => {
+  return (
+    <Container>
+      <Main data-testid="country-table">
+        <CountryTable />
+      </Main>
+      <Sidebar>
+        <UpcomingReportCard />
+        {/* Temporarily removed for MVP release. Please do not delete */}
+        {/*<Card variant="outlined">*/}
+        {/*  <DataCardTabs data={tabData} />*/}
+        {/*</Card>*/}
+      </Sidebar>
+    </Container>
+  );
 };
-
-WeeklyCasesTabViewComponent.defaultProps = {
-  isLoading: false,
-  errorMessage: '',
-};
-
-const mapStateToProps = state => ({
-  data: getCountryWeeks(state),
-  isLoading: checkCountryWeekIsLoading(state),
-  error: getCountryWeeksError(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  handleOpen: id => {
-    dispatch(setActiveWeek(id));
-    dispatch(openWeeklyReportsPanel());
-  },
-  fetchData: () => dispatch(reloadCountryWeeks({})),
-});
-
-export const WeeklyCasesTabView = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(WeeklyCasesTabViewComponent);

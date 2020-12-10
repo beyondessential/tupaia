@@ -30,7 +30,9 @@ export const ANSWER_TYPES = {
   RADIO: 'Radio',
   SUBMISSION_DATE: 'SubmissionDate',
   YEARS_SINCE: 'YearsSince',
-  // If adding a new type, add validation in both importSurveys and importSurveyResponses
+  ARITHMETIC: 'Arithmetic',
+  CONDITION: 'Condition',
+  // If adding a new type, add validation in both importSurveys and updateSurveyResponses
 };
 
 // these answer types are not stored as data, because they either don't take any answer, or their data

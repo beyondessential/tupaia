@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { circleFlagsUrl } from '../constants';
+import { getName } from 'country-list';
 
-export const countryFlagImage = countryCode => `${circleFlagsUrl}/${countryCode}.svg`;
+const circleFlagsUrl = 'https://hatscripts.github.io/circle-flags/flags';
+// eg. https://hatscripts.github.io/circle-flags/flags/as.svg
+export const countryFlagImage = countryCode => `${circleFlagsUrl}/${countryCode.toLowerCase()}.svg`;
 
-export const getCountryName = countryCode => `Country Name - ${countryCode}`;
+export const getCountryName = countryCode => getName(countryCode) || '';

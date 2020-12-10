@@ -10,7 +10,6 @@ import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-sag
 import request from './utils/request';
 import {
   ATTEMPT_CHANGE_PASSWORD,
-  ATTEMPT_DRILL_DOWN,
   ATTEMPT_LOGIN,
   ATTEMPT_LOGOUT,
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
@@ -35,8 +34,6 @@ import {
   fetchDashboardItemDataError,
   fetchDashboardItemDataSuccess,
   fetchDashboardSuccess,
-  fetchDrillDownError,
-  fetchDrillDownSuccess,
   fetchEmailVerifyError,
   fetchMeasureInfoError,
   fetchMeasureInfoSuccess,
@@ -79,8 +76,7 @@ import {
   REQUEST_PROJECT_ACCESS,
   setMeasure,
   setOverlayComponent,
-  SET_DRILL_DOWN_DATE_RANGE,
-  SET_ENLARGED_DIALOG_DATE_RANGE,
+  FETCH_ENLARGED_DIALOG_DATA,
   SET_MEASURE,
   SET_ORG_UNIT,
   SET_VERIFY_EMAIL_TOKEN,
@@ -108,19 +104,18 @@ import { DEFAULT_PROJECT_CODE } from './defaults';
 import { fetchDisasterDateRange } from './disaster/sagas';
 import {
   convertUrlPeriodStringToDateRange,
-  createUrlString,
   getInitialLocation,
   URL_COMPONENTS,
 } from './historyNavigation';
 import { setProject, setRequestingAccess } from './projects/actions';
 import {
-  selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
   selectCurrentInfoViewKey,
   selectCurrentMeasureId,
   selectCurrentOrgUnitCode,
+  selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
   selectCurrentProjectCode,
+  selectCurrentExpandedViewContent,
   selectDefaultMeasureId,
   selectIsMeasureInHierarchy,
   selectIsProject,
@@ -130,8 +125,8 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
-import { getDefaultDates } from './utils/periodGranularities';
+import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getBrowserTimeZone } from './utils';
+import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
 import { decodeLocation } from './historyNavigation/utils';
@@ -529,6 +524,7 @@ function* attemptRequestCountryAccess(action) {
   try {
     yield call(request, requestResourceUrl, fetchRequestCountryAccessError, options);
     yield put(fetchRequestCountryAccessSuccess());
+    yield call(fetchProjectData);
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
     yield put(error.errorFunction(errorMessage.details ? errorMessage.details : ''));
@@ -704,25 +700,26 @@ function* fetchViewData(parameters, errorHandler) {
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
       ? parameters
-      : getDefaultDates(state.global.viewConfigs[infoViewKey]);
+      : getDefaultDates(state.global.viewConfigs[infoViewKey] || {});
+
   // Build the request url
   const {
     organisationUnitCode,
     dashboardGroupId,
     viewId,
-    drillDownLevel,
     isExpanded,
     extraUrlParameters,
   } = parameters;
+
   const urlParameters = {
     organisationUnitCode,
     projectCode: selectCurrentProjectCode(state),
     dashboardGroupId,
     viewId,
-    drillDownLevel,
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
+    timeZone: getBrowserTimeZone(),
     ...extraUrlParameters,
   };
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
@@ -995,39 +992,71 @@ function* watchFindUserCurrentLoggedIn() {
   yield takeLatest(FIND_USER_LOGGEDIN, findUserLoggedIn);
 }
 
-function getTimeZone() {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-  } catch (e) {
-    // Time zone not supported in this browser.
-    return 'Australia/Melbourne';
-  }
-}
-
 /**
- * Fetches drilldown data for a given view and level.
+ * Fetches enlarged dialog data for a given view, drillDown level and date range.
  */
-function* fetchDrillDownData(action) {
-  const { parameterLink, parameterValue, drillDownLevel, ...restOfAction } = action;
-  const drillDownData = yield call(
-    fetchViewData,
-    {
-      isExpanded: true,
-      extraUrlParameters: { [parameterLink]: parameterValue },
-      drillDownLevel,
-      ...restOfAction,
-    },
-    fetchDrillDownError,
-  );
-  if (drillDownData) {
-    yield put(
-      fetchDrillDownSuccess(drillDownLevel, { ...drillDownData, parameterLink, parameterValue }),
-    );
+function* fetchEnlargedDialogData(action) {
+  const { options } = action;
+
+  const state = yield select();
+  if (selectShouldUseDashboardData(state, options)) {
+    const viewData = selectCurrentExpandedViewContent(state);
+    yield put(updateEnlargedDialog(options, viewData));
+    return;
+  }
+
+  const {
+    startDate,
+    endDate,
+    infoViewKey,
+    // drillDown params
+    parameterLink,
+    parameterValue,
+    drillDownLevel,
+  } = options;
+
+  const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
+
+  let parameters = {
+    startDate,
+    endDate,
+    viewId,
+    organisationUnitCode,
+    dashboardGroupId,
+    isExpanded: true,
+    infoViewKey,
+  };
+
+  // Handle extra drillDown params
+  if (drillDownLevel > 0) {
+    const { global } = yield select();
+
+    const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
+    const drillDownViewConfig = global.viewConfigs[drillDownConfigKey];
+    const drillDownDates = getDefaultDrillDownDates(drillDownViewConfig, startDate, endDate);
+
+    parameters = {
+      ...parameters,
+      extraUrlParameters: { drillDownLevel, [parameterLink]: parameterValue },
+      startDate: drillDownDates.startDate,
+      endDate: drillDownDates.endDate,
+      infoViewKey: drillDownConfigKey,
+    };
+  }
+
+  const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
+
+  const newState = yield select();
+  const newInfoViewKey = selectCurrentInfoViewKey(newState);
+
+  // If the expanded view has changed, don't update the enlargedDialog's viewContent
+  if (viewData && newInfoViewKey === infoViewKey) {
+    yield put(updateEnlargedDialog(action.options, viewData));
   }
 }
 
-function* watchAttemptAttemptDrillDown() {
-  yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
+function* watchFetchNewEnlargedDialogData() {
+  yield takeLatest(FETCH_ENLARGED_DIALOG_DATA, fetchEnlargedDialogData);
 }
 
 function* resetToProjectSplash() {
@@ -1047,7 +1076,9 @@ function* watchLogoutSuccess() {
 function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
-    yield put(setOverlayComponent(null));
+    const { PROJECT } = decodeLocation(location);
+    const overlay = PROJECT === 'explore' ? LANDING : null;
+    yield put(setOverlayComponent(overlay));
     yield call(fetchProjectData);
     yield call(handleLocationChange, {
       location,
@@ -1063,74 +1094,6 @@ function* fetchLoginData(action) {
 
 function* watchGoHomeAndResetToProjectSplash() {
   yield takeLatest(GO_HOME, resetToProjectSplash);
-}
-
-function* fetchEnlargedDialogViewContentForPeriod(action) {
-  const state = yield select();
-  const viewContent = selectCurrentExpandedViewContent(state);
-  const infoViewKey = selectCurrentInfoViewKey(state);
-  const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
-
-  const { startDate, endDate } = action;
-
-  const parameters = {
-    startDate,
-    endDate,
-    viewId,
-    organisationUnitCode,
-    dashboardGroupId,
-    isExpanded: true,
-    infoViewKey,
-  };
-
-  const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
-
-  const newState = yield select();
-  const newViewId = selectCurrentExpandedViewId(newState);
-  // If the expanded view has changed, don't update the enlargedDialog's viewContent
-  if (viewData && newViewId === viewId) {
-    yield put(updateEnlargedDialog(viewData));
-  }
-}
-
-function* fetchDrillDownViewContentForPeriod(action) {
-  const state = yield select();
-  const { startDate, endDate, drillDownLevel } = action;
-  const { viewContent } = state.drillDown.levelContents[drillDownLevel];
-  const { enlargedDialog } = state;
-  const { infoViewKey } = enlargedDialog;
-  const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
-
-  const {
-    viewId,
-    organisationUnitCode,
-    dashboardGroupId,
-    parameterLink,
-    parameterValue,
-  } = viewContent;
-
-  const parameters = {
-    startDate,
-    endDate,
-    viewId,
-    drillDownLevel,
-    organisationUnitCode,
-    dashboardGroupId,
-    isExpanded: true,
-    parameterLink,
-    parameterValue,
-    infoViewKey: drillDownConfigKey,
-  };
-
-  yield call(fetchDrillDownData, parameters);
-}
-
-function* watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent() {
-  yield takeLatest(SET_ENLARGED_DIALOG_DATE_RANGE, fetchEnlargedDialogViewContentForPeriod);
-}
-
-function* watchSetDrillDownDateRange() {
-  yield takeLatest(SET_DRILL_DOWN_DATE_RANGE, fetchDrillDownViewContentForPeriod);
 }
 
 function* refreshBrowserWhenFinishingUserSession() {
@@ -1158,11 +1121,9 @@ export default [
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
-  watchAttemptAttemptDrillDown,
+  watchFetchNewEnlargedDialogData,
   watchLoginSuccess,
   watchLogoutSuccess,
-  watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
-  watchSetDrillDownDateRange,
   watchAttemptTokenLogin,
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
