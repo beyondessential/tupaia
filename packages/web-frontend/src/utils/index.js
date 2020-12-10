@@ -32,5 +32,9 @@ export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
 export { areStringsEqual, stringToFilename } from './string';
 export { hexToRgba, getPresentationOption, getInactiveColor } from './color';
-export { getUniqueViewId, getViewIdFromInfoViewKey } from './getUniqueViewId';
+export {
+  getUniqueViewId,
+  getViewIdFromInfoViewKey,
+  getInfoFromInfoViewKey,
+} from './getUniqueViewId';
 export { sleep } from './sleep';

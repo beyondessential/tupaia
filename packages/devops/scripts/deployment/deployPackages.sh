@@ -6,13 +6,6 @@ pm2 list
 echo "Deleting..."
 pm2 delete all
 
-# Set the branch to fetch
-if [[ $STAGE == "production" ]]; then
-    BRANCH="master"
-else
-    BRANCH="$STAGE"
-fi
-
 # Set the path of environment variables from parameter store
 if [[ $BRANCH == "master" ]]; then
     ENVIRONMENT="production"
@@ -23,16 +16,6 @@ else
     # Any other branch uses the default dev environment variables
     ENVIRONMENT="dev"
 fi
-
-# Get latest code and dependencies
-echo "Checking out ${BRANCH}, or dev if that doesn't exist"
-cd ${HOME_DIRECTORY}
-git fetch --all
-git checkout dev # Ensure we have dev as our default, if the specified branch doesn't exist
-git reset --hard origin/dev
-git checkout $BRANCH # Now try the requested branch
-git reset --hard origin/${BRANCH}
-yarn install
 
 PACKAGES=("meditrak-server" "web-config-server" "psss-server" "report-server" "web-frontend" "admin-panel" "psss")
 # For each package, get the latest and deploy it
