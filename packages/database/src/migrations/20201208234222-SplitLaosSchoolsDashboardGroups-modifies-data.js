@@ -152,7 +152,7 @@ const newDashboardGroups = [
   },
   {
     name: 'ICT/Utility Data',
-    codePrefix: 'LA_ICT_Utility Data_',
+    codePrefix: 'LA_ICT_Utility_Data_',
     userGroup: laosSchoolUser,
     reports: {
       // National level view (Country)
