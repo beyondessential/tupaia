@@ -5,14 +5,14 @@
 
 import { Route } from '../Route';
 
-export class CountryWeeklyReportRoute extends Route {
+export class FetchConfirmedCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
     const { organisationUnitCode: countryCode } = this.req.params;
     const reportData = await this.reportConnection?.fetchReport(
-      'PSSS_Weekly_Report',
+      'PSSS_Confirmed_Weekly_Report',
       [countryCode],
-      [startWeek, endWeek], // period list will be converted to startDate/endDate using convertPeriodStringToDateRange()
+      [startWeek, endWeek],
     );
 
     return {
