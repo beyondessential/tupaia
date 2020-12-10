@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -154,27 +154,23 @@ export const WeeklyReportsPanelComponent = React.memo(
       unVerifiedAlerts,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
 
-    const [confirmReport] = useConfirmWeeklyReport(countryCode);
+    const [
+      confirmReport,
+      { isLoading: isConfirming, isError, reset, isSuccess, error },
+    ] = useConfirmWeeklyReport(countryCode, activeWeek);
 
-    const handleSubmit = useCallback(
-      isVerified => {
-        if (isVerified) {
-          setPanelStatus(PANEL_STATUSES.SAVING);
-          try {
-            confirmReport();
-            setPanelStatus(PANEL_STATUSES.SUCCESS);
-            if (alerts) {
-              setIsModalOpen(true);
-            }
-          } catch (error) {
-            setPanelStatus(PANEL_STATUSES.ERROR);
-          }
-        } else {
-          setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
-        }
-      },
-      [alerts],
-    );
+    useEffect(() => {
+      reset();
+      setPanelStatus(PANEL_STATUSES.INITIAL);
+    }, [activeWeek]);
+
+    const handleSubmit = async isVerified => {
+      if (isVerified) {
+        confirmReport();
+      } else {
+        setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
+      }
+    };
 
     const isVerified = isFetching || unVerifiedAlerts.length === 0;
     const showSites =
@@ -243,13 +239,15 @@ export const WeeklyReportsPanelComponent = React.memo(
             </Card>
           </SiteReportsSection>
         )}
-        <DrawerFooter disabled={isSaving}>
-          <Fade in={verificationRequired}>
+        <DrawerFooter disabled={isSaving || isLoading || isFetching}>
+          <Fade in={verificationRequired || error}>
             <PositionedAlert severity="error">
-              {unVerifiedList} Above Threshold. Please review and verify data.
+              {verificationRequired
+                ? `${unVerifiedList} Above Threshold. Please review and verify data.`
+                : error?.message}
             </PositionedAlert>
           </Fade>
-          {panelStatus === PANEL_STATUSES.SUCCESS ? (
+          {isSuccess ? (
             <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
               Confirmed
             </LightPrimaryButton>
@@ -259,7 +257,7 @@ export const WeeklyReportsPanelComponent = React.memo(
                 fullWidth
                 onClick={() => handleSubmit(isVerified)}
                 disabled={verificationRequired}
-                isLoading={panelStatus === PANEL_STATUSES.SAVING}
+                isLoading={isConfirming}
                 loadingText="Saving"
               >
                 Confirm now
@@ -268,11 +266,12 @@ export const WeeklyReportsPanelComponent = React.memo(
             </>
           )}
         </DrawerFooter>
+        {/*Removed as not part of MVP
         <AlertCreatedModal
           isOpen={isModalOpen}
           alerts={alerts}
           handleClose={() => setIsModalOpen(false)}
-        />
+        />*/}
       </StyledDrawer>
     );
   },

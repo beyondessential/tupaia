@@ -5,6 +5,7 @@
 
 import { queryCache, useMutation } from 'react-query';
 import { saveSiteReport } from './requests';
+import { put, post } from './api';
 import { FakeAPI } from './FakeApi';
 
 export const useSaveSiteReport = params =>
@@ -12,20 +13,28 @@ export const useSaveSiteReport = params =>
     onSuccess: () => queryCache.invalidateQueries('country-weeks', params),
   });
 
-export const useConfirmWeeklyReport = orgUnit =>
-  useMutation(() => console.log('post to confirmWeeklyReport...'), {
-    onSuccess: () => {
-      queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
-      queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
-    },
-  });
-
-export const useSaveCountryReport = orgUnit =>
+export const useConfirmWeeklyReport = (orgUnit, period) =>
   useMutation(
-    data => {
-      console.log('useSaveCountryReport...', data);
-      return FakeAPI.post();
+    () =>
+      post(`confirmedWeeklyReport/${orgUnit}`, {
+        params: { week: period },
+      }),
+    {
+      onSuccess: () => {
+        queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
+        queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
+        queryCache.invalidateQueries(`confirmedWeeklyReport`);        
+      },
     },
+  );
+
+export const useSaveCountryReport = (orgUnit, period) =>
+  useMutation(
+    data =>
+      put(`weeklyReport/${orgUnit}`, {
+        params: { week: period },
+        data,
+      }),
     {
       onSuccess: () => {
         queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
