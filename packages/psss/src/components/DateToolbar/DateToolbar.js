@@ -6,7 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIsFetching } from 'react-query';
-import { getCurrentPeriod, isFuturePeriod, comparePeriods } from '@tupaia/utils';
+import { getCurrentPeriod, comparePeriods } from '@tupaia/utils';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -98,13 +98,13 @@ const MediumText = styled.span`
 export const DateToolbarComponent = ({ period, setPeriod }) => {
   const isFetching = !!useIsFetching();
   const [isOpen, setIsOpen] = useState(false);
+  const defaultPeriod = getCurrentPeriod('WEEK');
 
   useEffect(() => {
     setCurrentWeek();
   }, []);
 
   const setCurrentWeek = () => {
-    const defaultPeriod = getCurrentPeriod('WEEK');
     setPeriod(defaultPeriod);
   };
 
@@ -121,7 +121,7 @@ export const DateToolbarComponent = ({ period, setPeriod }) => {
   const start = getFormattedStartByPeriod(period, 'MMM d');
   const end = getFormattedEndByPeriod(period, 'MMM d , yyyy');
 
-  const isNextDisabled = isFuturePeriod(addWeeksToPeriod(period, 1));
+  const isNextDisabled = comparePeriods(addWeeksToPeriod(period, 1), defaultPeriod) > 0;
   const isPrevDisabled =
     comparePeriods(subtractWeeksFromPeriod(period, 1), getPeriodByDate(MIN_DATE)) < 0;
 

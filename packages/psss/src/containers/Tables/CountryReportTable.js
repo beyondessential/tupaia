@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useCallback, useState } from 'react';
+import React, { useContext, useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
@@ -19,7 +19,7 @@ import {
   FakeHeader,
   SmallAlert,
 } from '@tupaia/ui-components';
-import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
+import { FlexStart, BorderlessTableRow, FlexSpaceBetween, FlexEnd } from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { useSaveCountryReport } from '../../api';
 
@@ -82,18 +82,25 @@ export const CountryReportTable = React.memo(
     const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
     const { countryCode } = useParams();
 
-    const [saveReport] = useSaveCountryReport(countryCode);
+    useEffect(() => {
+      setSitesReportedValue(sitesReported);
+      setTotalSitesValue(totalSites);
+    }, [sitesReported, totalSites]);
+
+    const [saveReport] = useSaveCountryReport(countryCode, weekNumber);
 
     const handleSubmit = async () => {
       setTableStatus(TABLE_STATUSES.SAVING);
 
       try {
         await saveReport({
-          orgUnit: countryCode,
-          period: weekNumber,
-          ...fields,
-          sitesReported: parseInt(sitesReportedValue, 10),
-          totalSites: parseInt(totalSitesValue, 10),
+          afr: parseInt(fields['AFR-totalCases']),
+          dia: parseInt(fields['DIA-totalCases']),
+          ili: parseInt(fields['ILI-totalCases']),
+          pf: parseInt(fields['PF-totalCases']),
+          dli: parseInt(fields['DLI-totalCases']),
+          sitesReported: parseInt(sitesReportedValue),
+          sites: parseInt(totalSitesValue),
         });
         setTableStatus(TABLE_STATUSES.STATIC);
       } catch (error) {
@@ -146,31 +153,31 @@ export const CountryReportTable = React.memo(
             Edit
           </GreyOutlinedButton>
         </FlexSpaceBetween>
-        {tableStatus === TABLE_STATUSES.EDITABLE && (
-          <Alert severity="error" variant="standard">
-            Updating country level data manually: all individual sentinel site data will be ignored
-          </Alert>
-        )}
-        {/* ToDo: implement with sentinel sites feature
-        @see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1640
-        <GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>
-        Country level data has been manually edited, sentinel data will not be used.
-        </GreyAlert>*/}
+        {/*ToDo: implement with sentinel sites feature*/}
+        {/*@see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1640*/}
+        {/*{tableStatus === TABLE_STATUSES.EDITABLE && (*/}
+        {/*  <Alert severity="error" variant="standard">*/}
+        {/*    Updating country level data manually: all individual sentinel site data will be ignored*/}
+        {/*  </Alert>*/}
+        {/*)}*/}
+        {/*<GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>*/}
+        {/*Country level data has been manually edited, sentinel data will not be used.*/}
+        {/*</GreyAlert>*/}
         <GreyHeader>
           <span>SYNDROMES</span>
           <span>TOTAL CASES</span>
         </GreyHeader>
         <EditableTable Header={false} Body={VerifiableBody} />
         {tableStatus === TABLE_STATUSES.EDITABLE && (
-          <FlexSpaceBetween pt={3} mt={3} borderTop={1} borderColor="grey.400">
-            <MuiLink underline="always">Reset and use Sentinel data</MuiLink>
+          <FlexEnd pt={3} mt={3} borderTop={1} borderColor="grey.400">
+            {/*<MuiLink underline="always">Reset and use Sentinel data</MuiLink>*/}
             <div>
               <Button variant="outlined" onClick={handleCancel}>
                 Cancel
               </Button>
               <Button onClick={handleSubmit}>Save</Button>
             </div>
-          </FlexSpaceBetween>
+          </FlexEnd>
         )}
       </LoadingContainer>
     );
