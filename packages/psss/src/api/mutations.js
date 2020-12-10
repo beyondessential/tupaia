@@ -23,6 +23,7 @@ export const useConfirmWeeklyReport = (orgUnit, period) =>
       onSuccess: () => {
         queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
         queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
+        queryCache.invalidateQueries(`confirmedWeeklyReport`);        
       },
     },
   );
