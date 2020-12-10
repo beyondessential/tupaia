@@ -148,7 +148,7 @@ export class TupaiaApi {
     const response = await this.post(
       CHANGE_USER_PASSWORD_ENDPOINT,
       null,
-      JSON.stringify({ oldPassword, newPassword, newPasswordConfirm }),
+      JSON.stringify({ oldPassword, password: newPassword, passwordConfirm: newPasswordConfirm }),
     );
 
     return response;
