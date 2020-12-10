@@ -32,10 +32,7 @@ Steps to get working:
 - Add a .env file to the root directory. The required variables are listed in `.env.example`
 - `yarn`
 - Start your emulator or plug in your device and make sure USB debugging is enabled
-- If you are developing/building for ios:
-  - `cd ios && pod install`
-  - `cd .. && ./node_modules/react-native/scripts/ios-install-third-party.sh`
-  - If you get build errors, can be helpful to delete `~/.rncache`, `ios/Pods/*`, `third-party/*`, and then rerun the above
+- If you are developing/building for ios run `cd ios && pod install && cd ..` (if you have issues, try `pod deintegrate` from the ios folder first)
 - `react-native run-android` or `react-native run-ios` (for ios, may need to run through the XCode "build and run" button)
 - Edit some code, and reload it ('rr' in Genymotion, 'cmd + r' in iOS Simulator, shake a physical device)
 
