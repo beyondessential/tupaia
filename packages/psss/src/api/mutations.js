@@ -5,7 +5,7 @@
 
 import { queryCache, useMutation } from 'react-query';
 import { saveSiteReport } from './requests';
-import { put } from './api';
+import { post } from './api';
 import { FakeAPI } from './FakeApi';
 
 export const useSaveSiteReport = params =>
@@ -16,7 +16,7 @@ export const useSaveSiteReport = params =>
 export const useConfirmWeeklyReport = (orgUnit, period) =>
   useMutation(
     () =>
-      put(`confirmedWeeklyReport/${orgUnit}`, {
+      post(`confirmedWeeklyReport/${orgUnit}`, {
         params: { week: period },
       }),
     {

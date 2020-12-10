@@ -239,12 +239,12 @@ export const WeeklyReportsPanelComponent = React.memo(
             </Card>
           </SiteReportsSection>
         )}
-        <DrawerFooter disabled={isSaving}>
+        <DrawerFooter disabled={isSaving || isLoading || isFetching}>
           <Fade in={verificationRequired || error}>
             <PositionedAlert severity="error">
               {verificationRequired
                 ? `${unVerifiedList} Above Threshold. Please review and verify data.`
-                : 'Server error'}
+                : error?.message}
             </PositionedAlert>
           </Fade>
           {isSuccess ? (
