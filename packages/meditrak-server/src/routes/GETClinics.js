@@ -12,7 +12,8 @@ export const assertClinicPermissions = async (accessPolicy, models, clinicId) =>
   if (!clinic) {
     throw new Error(`No clinic exists with id ${clinicId}`);
   }
-  if (!accessPolicy.allows(clinic.country_id)) {
+  const country = await models.country.findById(clinic.country_id);
+  if (!accessPolicy.allows(country.code)) {
     throw new Error('You do not have permissions for this clinic');
   }
   return true;
