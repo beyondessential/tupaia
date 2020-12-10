@@ -97,7 +97,7 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
   const data = query.data[0];
   const alerts = getAlerts(data);
 
-  const unVerifiedAlerts = alerts.filter(a => !verifiedStatuses.includes(a.id));
+  const unVerifiedAlerts = alerts.filter(a => !verifiedStatuses.includes(a));
   const syndromes = getTableData(data);
 
   return {
