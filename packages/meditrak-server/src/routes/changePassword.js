@@ -7,7 +7,19 @@ import { editRecord } from './editRecord';
 
 export async function changePassword(req, res, next) {
   const { models, body, userId } = req;
-  const { oneTimeLoginToken, oldPassword, password, passwordConfirm } = body;
+  const {
+    oneTimeLoginToken,
+    oldPassword,
+    password,
+    newPassword,
+    passwordConfirm,
+    newPasswordConfirm,
+  } = body;
+
+  // Support both alternatives so that users using old versions
+  // of meditrak-app can still change their passwords
+  const passwordParam = password || newPassword;
+  const passwordConfirmParam = passwordConfirm || newPasswordConfirm;
 
   // Check password hash matches that in db
   const user = await models.user.findById(userId);
@@ -26,12 +38,12 @@ export async function changePassword(req, res, next) {
     throw new FormValidationError('Incorrect current password.', ['oldPassword']);
   }
 
-  if (password !== passwordConfirm) {
+  if (passwordParam !== passwordConfirmParam) {
     throw new FormValidationError('Passwords do not match.', ['password', 'passwordConfirm']);
   }
 
   try {
-    isValidPassword(password);
+    isValidPassword(passwordParam);
   } catch (error) {
     throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
   }
@@ -42,7 +54,7 @@ export async function changePassword(req, res, next) {
       resource: 'user',
     };
     req.body = {
-      password,
+      password: passwordParam,
     };
 
     await editRecord(req, res);
