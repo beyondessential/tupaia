@@ -151,7 +151,7 @@ const newDashboardGroups = [
     },
   },
   {
-    name: 'Utility (ICT) Data',
+    name: 'ICT Utility Data',
     codePrefix: 'LA_ICT_Utility_Data_',
     userGroup: laosSchoolUser,
     reports: {
