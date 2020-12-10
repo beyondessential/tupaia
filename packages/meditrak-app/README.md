@@ -32,11 +32,8 @@ Steps to get working:
 - Add a .env file to the root directory. The required variables are listed in `.env.example`
 - `yarn`
 - Start your emulator or plug in your device and make sure USB debugging is enabled
-- If you are developing/building for ios:
-  - `cd ios && pod install`
-  - `cd .. && ./node_modules/react-native/scripts/ios-install-third-party.sh`
-  - If you get build errors, can be helpful to delete `~/.rncache`, `ios/Pods/*`, `third-party/*`, and then rerun the above
-- `react-native run-android` or `react-native run-ios` (for ios, may need to run through the XCode "build and run" button)
+- If you are developing/building for ios run `cd ios && pod install && cd ..`
+- `react-native run-android` or `react-native run-ios` (for iOS, you will need XCode 12 or greater)
 - Edit some code, and reload it ('rr' in Genymotion, 'cmd + r' in iOS Simulator, shake a physical device)
 
 For more, see the react-native guides
@@ -121,7 +118,8 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 - Create gradle.properties within the /android directory, using the contents found on LastPass
 - Copy meditrak-release-key.keystore from lastpass (follow instructions to save and decode) and save under /android/app
 - Uncomment the line `signingConfig signingConfigs.release` in android/app/build.gradle (don't commit this change, it will break CI builds)
-- cd android && ./gradlew assembleRelease
+- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`
+- If building an aab for the Google Play store: `cd android && ./gradlew bundleRelease`
 - You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
 
 ### Beta builds (Android)
