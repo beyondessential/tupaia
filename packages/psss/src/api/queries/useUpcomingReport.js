@@ -39,7 +39,7 @@ export const useUpcomingReport = countryCode => {
       data,
       reportStatus: REPORT_STATUSES.UPCOMING,
       period: currentPeriod,
-      days: totalDays,
+      daysTillDueDay: totalDays,
     };
   }
 

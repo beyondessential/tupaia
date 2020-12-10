@@ -35,10 +35,11 @@ export const PercentageChangeCell = ({ percentageChange, className }) => {
 };
 
 PercentageChangeCell.propTypes = {
-  percentageChange: PropTypes.number.isRequired,
+  percentageChange: PropTypes.number,
   className: PropTypes.string,
 };
 
 PercentageChangeCell.defaultProps = {
   className: '',
+  percentageChange: undefined,
 };
