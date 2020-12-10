@@ -32,7 +32,7 @@ import {
   ROUTES_WITH_INVISIBLE_HEADERS,
 } from './constants';
 import { SyncContainer } from '../sync';
-import { THEME_COLOR_ONE, THEME_COLOR_THREE } from '../globalStyles';
+import { THEME_COLOR_ONE } from '../globalStyles';
 
 const INITIAL_SCREEN_NAME = 'Login';
 
