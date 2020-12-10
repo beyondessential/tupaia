@@ -24,7 +24,7 @@ export function createApp(sessionModel: PsssSessionModel) {
    */
   app.use(
     cors({
-      origin: true, // allow request across origins
+      origin: true,
       credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
     }),
   );

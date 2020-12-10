@@ -16,6 +16,7 @@ import {
 } from '@tupaia/ui-components';
 import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle } from '../components';
 import { CountriesTable, WeeklyReportsExportModal } from '../containers';
+import { getCurrentIsoWeekNumber } from '../utils';
 
 const StyledCardContent = styled(CardContent)`
   display: flex;
@@ -57,7 +58,10 @@ export const CountriesReportsView = () => (
       </Main>
       <Sidebar>
         <Card variant="outlined">
-          <CardHeader title="Current reports submitted" label="Week 10" />
+          <CardHeader
+            title="Current reports submitted"
+            label={`Week ${getCurrentIsoWeekNumber()}`}
+          />
           <StyledCardContent>
             <Typography variant="h3">11/22 Countries</Typography>
             <CircleMeter value={11} total={22} />

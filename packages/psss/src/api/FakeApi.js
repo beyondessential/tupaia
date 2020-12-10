@@ -38,9 +38,9 @@ export const FakeAPI = {
         data.push(this.countryWeek(i));
       }
     } else if (endpoint === 'sites') {
-      for (let i = 0; i < 7; i++) {
-        data.push(this.siteWeek());
-      }
+      // for (let i = 0; i < 7; i++) {
+      //   data.push(this.siteWeek());
+      // }
     } else if (endpoint === 'alerts') {
       for (let i = 0; i < 10; i++) {
         data.push(this.alert());
@@ -213,7 +213,7 @@ export const FakeAPI = {
     return {
       id: faker.random.uuid(),
       name: getCountryName(countryCode),
-      countryCode: countryCode.toLowerCase(),
+      countryCode: countryCode,
       sitesReported: faker.random.number({
         min: 0,
         max: 30,
@@ -223,10 +223,14 @@ export const FakeAPI = {
   },
 
   alert() {
+    const weekNumber = faker.random.number({
+      min: 10,
+      max: 50,
+    });
     return {
       id: faker.random.uuid(),
       name: faker.address.country(),
-      countryCode: faker.address.countryCode().toLowerCase(),
+      countryCode: faker.address.countryCode(),
       syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DLI']),
       syndromeDisplayName: faker.random.arrayElement([
         'Acute Fever and Rash (AFR)',
@@ -235,10 +239,8 @@ export const FakeAPI = {
         'Prolonged Fever (PF)',
         'Dengue-like Illness (DLI)',
       ]),
-      weekNumber: faker.random.number({
-        min: 1,
-        max: 10,
-      }),
+      weekNumber,
+      period: `2020W${weekNumber}`,
       startDate: faker.date.between('2020-01-01', '2020-01-31'),
       endDate: faker.date.between('2020-02-01', '2020-02-28'),
       totalCases: faker.random.number({

@@ -22,9 +22,10 @@ export const exportChartHandler = async (req, res) => {
     projectCode,
     startDate,
     endDate,
+    timeZone,
     dataElementHeader,
   } = chartConfig;
-
+  
   const queryParameters = {
     viewId,
     organisationUnitCode,
@@ -46,7 +47,7 @@ export const exportChartHandler = async (req, res) => {
   // an array of objects, with each object in the array representing a row in the spreadsheet, and
   // each key value pair in that object representing a column (with the key as the column header)
   const extraConfig = dataElementHeader !== 'undefined' ? { dataElementHeader } : null;
-  const formattedData = formatMatrixDataForExcel(response, extraConfig);
+  const formattedData = formatMatrixDataForExcel(response, timeZone, extraConfig);
 
   // Export out to an excel file
   const sheet = xlsx.utils.aoa_to_sheet(formattedData);
