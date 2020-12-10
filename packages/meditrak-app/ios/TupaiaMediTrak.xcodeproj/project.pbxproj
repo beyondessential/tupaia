@@ -24,12 +24,9 @@
 		DA2A29CC8545336915CD4780 /* libPods-TupaiaMediTrak-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 79205F9B335CA378553FB90E /* libPods-TupaiaMediTrak-tvOS.a */; };
 		E8481F3D225DC17A00FDB7BF /* libreact-native-webview.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8481F3C225DC17A00FDB7BF /* libreact-native-webview.a */; };
 		E84EF3DE225C2DB80063F2C2 /* libRealmJS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E84EF3DD225C2DB80063F2C2 /* libRealmJS.a */; };
-		E862E7BF22606F560031E600 /* libreact-native-async-storage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E862E7BE22606F560031E600 /* libreact-native-async-storage.a */; };
 		E862E7F122606FCF0031E600 /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E862E7F022606FCF0031E600 /* libreact-native-netinfo.a */; };
-		E867E7322260405F00893F29 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E867E7312260405F00893F29 /* libReact.a */; };
 		E87709C322606CD1007A63F3 /* libappcenter-analytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E87709C222606CD1007A63F3 /* libappcenter-analytics.a */; };
 		E87709C522606CD1007A63F3 /* libappcenter-crashes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E87709C422606CD1007A63F3 /* libappcenter-crashes.a */; };
-		E87709C922606CD1007A63F3 /* libappcenter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E87709C822606CD1007A63F3 /* libappcenter.a */; };
 		E87709FB22606D17007A63F3 /* libreact-native-geolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E87709FA22606D17007A63F3 /* libreact-native-geolocation.a */; };
 		E8B4DE70226053C00036274B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8B4DE6F226053C00036274B /* libRNDeviceInfo.a */; };
 		E8B4DE72226053EB0036274B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CD4C98BD30C45FEB9C88BEC /* libz.tbd */; };
@@ -93,18 +90,14 @@
 		E8481FA3225F017200FDB7BF /* libappcenter-crashes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libappcenter-crashes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8481FA7225F017200FDB7BF /* libappcenter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libappcenter.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E84EF3DD225C2DB80063F2C2 /* libRealmJS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRealmJS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E862E7BE22606F560031E600 /* libreact-native-async-storage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-async-storage.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E862E7F022606FCF0031E600 /* libreact-native-netinfo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-netinfo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E867E7312260405F00893F29 /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E87709C222606CD1007A63F3 /* libappcenter-analytics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libappcenter-analytics.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E87709C422606CD1007A63F3 /* libappcenter-crashes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libappcenter-crashes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E87709C822606CD1007A63F3 /* libappcenter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libappcenter.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E87709FA22606D17007A63F3 /* libreact-native-geolocation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-geolocation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8B4DE6F226053C00036274B /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8B4DE73226053F50036274B /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8B4DE75226054010036274B /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8B4DE772260540C0036274B /* libBugsnagReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libBugsnagReactNative.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E8D78F64225AFC9600E1F8C3 /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -122,18 +115,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E867E7322260405F00893F29 /* libReact.a in Frameworks */,
 				E8B4DE70226053C00036274B /* libRNDeviceInfo.a in Frameworks */,
 				E8B4DE72226053EB0036274B /* libz.tbd in Frameworks */,
 				E8B4DE74226053F50036274B /* libBVLinearGradient.a in Frameworks */,
 				E8B4DE76226054010036274B /* libRNSVG.a in Frameworks */,
 				E8B4DE782260540C0036274B /* libBugsnagReactNative.a in Frameworks */,
-				E87709C922606CD1007A63F3 /* libappcenter.a in Frameworks */,
 				E87709C322606CD1007A63F3 /* libappcenter-analytics.a in Frameworks */,
 				E87709C522606CD1007A63F3 /* libappcenter-crashes.a in Frameworks */,
 				E87709FB22606D17007A63F3 /* libreact-native-geolocation.a in Frameworks */,
 				E8481F3D225DC17A00FDB7BF /* libreact-native-webview.a in Frameworks */,
-				E862E7BF22606F560031E600 /* libreact-native-async-storage.a in Frameworks */,
 				E862E7F122606FCF0031E600 /* libreact-native-netinfo.a in Frameworks */,
 				E84EF3DE225C2DB80063F2C2 /* libRealmJS.a in Frameworks */,
 				66A3ABDDDB1F168A7F345D00 /* libPods-TupaiaMediTrak.a in Frameworks */,
@@ -213,16 +203,13 @@
 			isa = PBXGroup;
 			children = (
 				E862E7F022606FCF0031E600 /* libreact-native-netinfo.a */,
-				E862E7BE22606F560031E600 /* libreact-native-async-storage.a */,
 				E87709FA22606D17007A63F3 /* libreact-native-geolocation.a */,
 				E87709C222606CD1007A63F3 /* libappcenter-analytics.a */,
 				E87709C422606CD1007A63F3 /* libappcenter-crashes.a */,
-				E87709C822606CD1007A63F3 /* libappcenter.a */,
 				E8B4DE772260540C0036274B /* libBugsnagReactNative.a */,
 				E8B4DE75226054010036274B /* libRNSVG.a */,
 				E8B4DE73226053F50036274B /* libBVLinearGradient.a */,
 				E8B4DE6F226053C00036274B /* libRNDeviceInfo.a */,
-				E867E7312260405F00893F29 /* libReact.a */,
 				E8481FA1225F017200FDB7BF /* libappcenter-analytics.a */,
 				E8481FA3225F017200FDB7BF /* libappcenter-crashes.a */,
 				E8481FA7225F017200FDB7BF /* libappcenter.a */,
@@ -230,7 +217,6 @@
 				E8481F3A225DC17300FDB7BF /* libreact-native-webview.a */,
 				E8481F08225C818E00FDB7BF /* libreact-native-webview.a */,
 				E84EF3DD225C2DB80063F2C2 /* libRealmJS.a */,
-				E8D78F64225AFC9600E1F8C3 /* libReact.a */,
 				5CD4C98BD30C45FEB9C88BEC /* libz.tbd */,
 				0D1BE4A5CEF06B2FF9EFD3C6 /* libPods-TupaiaMediTrak.a */,
 				79205F9B335CA378553FB90E /* libPods-TupaiaMediTrak-tvOS.a */,
