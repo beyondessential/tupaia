@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import differenceInWeeks from 'date-fns/difference_in_weeks';
+import { differenceInWeeks } from 'date-fns';
 import { getCurrentPeriod } from '@tupaia/utils';
 import { useParams } from 'react-router-dom';
 import { ExpandableTable, TablePaginator } from '@tupaia/ui-components';
