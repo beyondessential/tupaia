@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregation, Indicator } from '../../types';
+import { Aggregation, Indicator } from '../../../types';
 
 // Corresponds to a single aggregation
 export type AggregationDescriptor = string | Aggregation;
@@ -17,4 +17,14 @@ export type ArithmeticConfig = {
   readonly aggregation: AggregationSpecs | Record<string, AggregationSpecs>;
   readonly parameters?: Indicator[];
   readonly defaultValues?: Record<string, number>;
+};
+
+// A fully expanded, verbose config containing as much information as possible.
+// Useful for code purposes
+export type ExpandedArithmeticConfig = {
+  readonly formula: string;
+  // If no `Record` is provided then the same `AggregationSpecs` will be applied to all elements
+  readonly aggregation: Record<string, Aggregation[]>;
+  readonly parameters: Indicator[];
+  readonly defaultValues: Record<string, number>;
 };
