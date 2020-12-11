@@ -5,25 +5,33 @@
 
 import { Aggregation, Indicator } from '../../../types';
 
-// Corresponds to a single aggregation
+/**
+ * A single aggregation
+ */
 export type AggregationDescriptor = string | Aggregation;
 
-// Specifies the aggregation(s) that should be applied to a list of elements
+/**
+ * A list of aggregation(s) that will be applied to a data element
+ */
 export type AggregationSpecs = AggregationDescriptor | AggregationDescriptor[];
 
+/**
+ * A flexible config schema that can be provided as an input to the indicator
+ */
 export type ArithmeticConfig = {
   readonly formula: string;
-  // If no `Record` is provided then the same `AggregationSpecs` will be applied to all elements
+  // If `AggregationSpecs` (and not a Record) is passed, it will be applied to all elements in `formula`
   readonly aggregation: AggregationSpecs | Record<string, AggregationSpecs>;
   readonly parameters?: Indicator[];
   readonly defaultValues?: Record<string, number>;
 };
 
-// A fully expanded, verbose config containing as much information as possible.
-// Useful for code purposes
+/**
+ * A fully expanded, verbose config containing as much information as possible.
+ * Useful for internal code purposes
+ */
 export type ExpandedArithmeticConfig = {
   readonly formula: string;
-  // If no `Record` is provided then the same `AggregationSpecs` will be applied to all elements
   readonly aggregation: Record<string, Aggregation[]>;
   readonly parameters: Indicator[];
   readonly defaultValues: Record<string, number>;
