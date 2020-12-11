@@ -1,54 +1,12 @@
-# Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '10.0'
 
 target 'TupaiaMediTrak' do
-  platform :ios, '9.0'
+  config = use_native_modules!
 
-  pod 'React', :path => '../node_modules/react-native', :subspecs => [
-    'Core',
-    'CxxBridge',
-    'DevSupport',
-    'RCTText',
-    'RCTImage',
-    'RCTNetwork',
-    'RCTWebSocket',
-    'RCTSettings',
-    'RCTAnimation',
-    'RCTLinkingIOS',
-    'RCTGeolocation',
-    # Add any other subspecs you want to use in your project
-    # Remove any subspecs you don't want to use in your project
-  ]
-
-  pod "yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
-  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
-  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
-  pod 'appcenter', path: '../node_modules/appcenter/ios'
-  pod 'appcenter-analytics', path: '../node_modules/appcenter-analytics/ios'
-  pod 'appcenter-crashes', path: '../node_modules/appcenter-crashes/ios'
-  pod 'appcenter-push', path: '../node_modules/appcenter-push/ios'
-
-  pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
-
-  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
-
-  pod 'BugsnagReactNative', :path => '../node_modules/bugsnag-react-native'
-
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
-
-  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
-
-  pod 'RNFS', :path => '../node_modules/react-native-fs'
-
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-
-
-  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
-
-
-  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+  use_react_native!(:path => config["reactNativePath"])
 
   target 'TupaiaMediTrakTests' do
     inherit! :search_paths
@@ -66,8 +24,9 @@ target 'TupaiaMediTrak' do
 end
 
 target 'TupaiaMediTrak-tvOS' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
-
   # Pods for TupaiaMediTrak-tvOS
+  target 'TupaiaMediTrak-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
 end

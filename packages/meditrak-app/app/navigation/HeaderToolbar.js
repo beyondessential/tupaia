@@ -75,7 +75,7 @@ DumbHeaderToolbar.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    navigationState: state.navigation,
+    navigationState: state.nav,
     isSyncing: getIsSyncing(state),
   };
 }

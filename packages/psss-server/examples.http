@@ -17,3 +17,32 @@ content-type: application/json
 
 ### /test
 GET http://localhost:8040/v1/test HTTP/2.0
+
+### Fetch Country Weekly Report Data
+GET http://localhost:8040/v1/weeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+
+### Save Country Weekly Report Data
+PUT http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
+content-type: application/json
+
+{
+    "afr": 7,
+    "dia": 3,
+    "ili": 9,
+    "pf": 11,
+    "dli": 2,
+    "sites": 13,
+    "sitesReported": 16
+}
+
+### Delete Country Weekly Report Data
+DELETE http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
+
+### Fetch Confirmed Weekly Report Data
+GET http://localhost:8040/v1/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+
+### Fetch Country Confirmed Weekly Report Data
+GET http://localhost:8040/v1/confirmedWeeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+
+### Confirm Country Weekly Report Data
+POST http://localhost:8040/v1/confirmedWeeklyReport/TO?week=2021W07 HTTP/2.0

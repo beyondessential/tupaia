@@ -249,7 +249,7 @@ Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
   currentDashboardGroupCode: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
-  currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.string),
+  currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
   onDashboardClicked: PropTypes.func.isRequired,
   mapIsAnimating: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool.isRequired,
