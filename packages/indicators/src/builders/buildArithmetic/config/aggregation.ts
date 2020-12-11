@@ -6,8 +6,8 @@
 import { ExpressionParser } from '@tupaia/expression-parser';
 import { toArray } from '@tupaia/utils';
 import { Aggregation } from '../../../types';
-import { AggregationDescriptor, AggregationSpecs, ArithmeticConfig } from './types';
 import { getDataElementsInFormula, isParameterCode } from './helpers';
+import { AggregationDescriptor, AggregationSpecs, ArithmeticConfig } from './types';
 
 enum AggregationType {
   String, // 'SUM'
