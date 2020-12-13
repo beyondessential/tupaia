@@ -44,11 +44,14 @@ const {
   exportSurveys,
   getChanges,
   getAnswers,
+  getClinics,
+  getCountries,
   getDisasters,
   getDashboardReports,
   getDashboardGroups,
   getDataSources,
   getEntities,
+  getGeographicalAreas,
   getFeedItems,
   getMapOverlays,
   getSurveys,
@@ -170,6 +173,10 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/dataSources/:parentRecordId/dataSources', getDataSources);
   app.get('(/v[0-9]+)/entities/:recordId?', getEntities);
   app.get('(/v[0-9]+)/entities/:parentRecordId/surveyResponses', getSurveyResponses);
+  app.get('(/v[0-9]+)/countries/:recordId?', getCountries);
+  app.get('(/v[0-9]+)/clinics/:recordId?', getClinics);
+  app.get('(/v[0-9]+)/facilities/:recordId?', getClinics);
+  app.get('(/v[0-9]+)/geographicalAreas/:recordId?', getGeographicalAreas);
 
   // TODO: Remove generic handlers when all endpoints are implemented
   app.get('(/v[0-9]+)/:resource', getRecord);

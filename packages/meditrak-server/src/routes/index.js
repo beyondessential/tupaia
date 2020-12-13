@@ -12,11 +12,14 @@ import { BESAdminCreateHandler, TupaiaAdminCreateHandler } from './CreateHandler
 import { BESAdminDeleteHandler, TupaiaAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler, TupaiaAdminEditHandler } from './EditHandler';
 import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
+import { GETCountries } from './GETCountries';
+import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
 import { GETDashboardReports } from './GETDashboardReports';
 import { GETDashboardGroups } from './GETDashboardGroups';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
+import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETMapOverlays } from './GETMapOverlays';
 import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
@@ -121,11 +124,14 @@ export default {
   exportSurveys: catchAsyncErrors(exportSurveys),
   getChanges: catchAsyncErrors(getChanges),
   getAnswers: useRouteHandler(GETAnswers),
+  getCountries: useRouteHandler(GETCountries),
+  getClinics: useRouteHandler(GETClinics),
   getDisasters: useRouteHandler(GETDisasters),
   getDashboardReports: useRouteHandler(GETDashboardReports),
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
   getDataSources: useRouteHandler(GETDataSources),
   getEntities: useRouteHandler(GETEntities),
+  getGeographicalAreas: useRouteHandler(GETGeographicalAreas),
   getFeedItems: useRouteHandler(BESAdminGETHandler),
   getMapOverlays: useRouteHandler(GETMapOverlays),
   getSurveys: useRouteHandler(GETSurveys),
