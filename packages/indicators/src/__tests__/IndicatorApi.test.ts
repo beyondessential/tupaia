@@ -3,24 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable max-classes-per-file */
+
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { IndicatorApi } from '../IndicatorApi';
 import { Indicator, IndicatorType, ModelRegistry } from '../types';
 
-jest.mock('@tupaia/aggregator');
-jest.mock('@tupaia/data-broker');
-jest.mock('../builders', () => {
-  const buildTestArithmetic = jest
-    .fn()
-    .mockResolvedValue([{ organisationUnit: 'TO', period: '2019', value: 1 }]);
-  const buildTestAnalyticCount = jest.fn().mockResolvedValue([
-    { organisationUnit: 'TO', period: '2018', value: 2 },
-    { organisationUnit: 'PG', period: '2020', value: 3 },
-  ]);
-
-  return { buildTestArithmetic, buildTestAnalyticCount };
-});
+const MOCK_BUILDERS = {
+  testArithmetic: {
+    buildAnalyticValues: jest
+      .fn()
+      .mockResolvedValue([{ organisationUnit: 'TO', period: '2019', value: 1 }]),
+  },
+  testAnalyticCount: {
+    buildAnalyticValues: jest.fn().mockResolvedValue([
+      { organisationUnit: 'TO', period: '2018', value: 2 },
+      { organisationUnit: 'PG', period: '2020', value: 3 },
+    ]),
+  },
+};
 
 const INDICATORS: Record<string, Indicator> = {
   MALARIA: {
@@ -33,12 +35,13 @@ const INDICATORS: Record<string, Indicator> = {
     builder: 'testAnalyticCount',
     config: { formula: 'MEASUREMENT > 0' },
   },
-  WRONG_BUILDER: {
-    code: 'WRONG_BUILDER',
-    builder: ' wrong',
-    config: {},
-  },
 };
+
+jest.mock('@tupaia/aggregator');
+jest.mock('@tupaia/data-broker');
+jest.mock('../Builder', () => ({
+  createBuilder: (builderName: keyof typeof MOCK_BUILDERS) => MOCK_BUILDERS[builderName],
+}));
 
 describe('IndicatorApi', () => {
   const models: ModelRegistry = {
@@ -74,23 +77,21 @@ describe('IndicatorApi', () => {
   });
 
   describe('buildAnalyticsForIndicators', () => {
-    it('calls all indicators using correct params', async () => {
+    it('instantiates and calls all indicators using correct params', async () => {
       const fetchOptions = { organisationUnitCodes: ['TO'] };
 
       await api.buildAnalyticsForIndicators(
         [INDICATORS.MALARIA, INDICATORS.POSITIVE],
         fetchOptions,
       );
-      expect(jest.requireMock('../builders').buildTestArithmetic).toHaveBeenCalledOnceWith({
-        api,
-        config: INDICATORS.MALARIA.config,
+      expect(MOCK_BUILDERS.testArithmetic.buildAnalyticValues).toHaveBeenCalledOnceWith(
+        INDICATORS.MALARIA.config,
         fetchOptions,
-      });
-      expect(jest.requireMock('../builders').buildTestAnalyticCount).toHaveBeenCalledOnceWith({
-        api,
-        config: INDICATORS.POSITIVE.config,
+      );
+      expect(MOCK_BUILDERS.testAnalyticCount.buildAnalyticValues).toHaveBeenCalledOnceWith(
+        INDICATORS.POSITIVE.config,
         fetchOptions,
-      });
+      );
     });
 
     it('returns all indicator results as analytics, sorted by period', async () =>
@@ -101,10 +102,5 @@ describe('IndicatorApi', () => {
         { dataElement: 'MALARIA', organisationUnit: 'TO', period: '2019', value: 1 },
         { dataElement: 'POSITIVE', organisationUnit: 'PG', period: '2020', value: 3 },
       ]));
-
-    it('throws an error if a specified builder does not exist', async () =>
-      expect(
-        api.buildAnalyticsForIndicators([INDICATORS.MALARIA, INDICATORS.WRONG_BUILDER], {}),
-      ).toBeRejectedWith(/is not an indicator builder/));
   });
 });

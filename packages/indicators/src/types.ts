@@ -56,14 +56,6 @@ export interface IndicatorApiInterface {
   ) => Promise<Analytic[]>;
 }
 
-export interface Builder {
-  (input: {
-    api: IndicatorApiInterface;
-    config: IndicatorFields['config'];
-    fetchOptions: FetchOptions;
-  }): Promise<AnalyticValue[]>;
-}
-
 export interface Aggregation {
   readonly type: string;
   readonly config?: Record<string, unknown>;

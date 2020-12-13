@@ -6,13 +6,8 @@
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import { ExpressionParser } from '@tupaia/expression-parser';
 import { getUniqueEntries } from '@tupaia/utils';
-import {
-  Analytic,
-  AnalyticCluster,
-  Builder,
-  FetchOptions,
-  IndicatorApiInterface,
-} from '../../types';
+import { Analytic, AnalyticCluster, FetchOptions, IndicatorApiInterface } from '../../types';
+import { Builder } from '../Builder';
 import { fetchAnalytics } from '../helpers';
 import { expandConfig, ExpandedArithmeticConfig, validateArithmeticConfig } from './config';
 
@@ -81,10 +76,15 @@ export const processConfigInput = async (configInput: Record<string, unknown>) =
   return expandConfig(config);
 };
 
-export const buildArithmetic: Builder = async input => {
-  const { api, fetchOptions } = input;
-  const config = await processConfigInput(input.config);
-  const { analytics, dataElements } = await fetchAnalyticsAndElements(api, config, fetchOptions);
-  const clusters = await fetchAnalyticClusters(analytics, dataElements, config.defaultValues);
-  return buildAnalyticValues(clusters, config.formula);
-};
+export class ArithmeticBuilder extends Builder {
+  async buildAnalyticValues(configInput: Record<string, unknown>, fetchOptions: FetchOptions) {
+    const config = await processConfigInput(configInput);
+    const { analytics, dataElements } = await fetchAnalyticsAndElements(
+      this.getIndicatorApi(),
+      config,
+      fetchOptions,
+    );
+    const clusters = await fetchAnalyticClusters(analytics, dataElements, config.defaultValues);
+    return buildAnalyticValues(clusters, config.formula);
+  }
+}

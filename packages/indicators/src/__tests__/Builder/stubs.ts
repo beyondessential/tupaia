@@ -5,7 +5,7 @@
 
 import { Aggregator } from '@tupaia/aggregator';
 import { createJestMockInstance } from '@tupaia/utils';
-import { Analytic, Aggregation } from '../../types';
+import { Aggregation, Analytic } from '../../types';
 
 export type AnalyticResponseFixture = {
   code: string;

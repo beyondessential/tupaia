@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ArithmeticConfig, buildArithmetic } from '../../../builders/buildArithmetic';
+import { ArithmeticBuilder, ArithmeticConfig } from '../../../Builder/ArithmeticBuilder';
 import { Aggregation, AnalyticValue, Indicator } from '../../../types';
 import { createAggregator } from '../stubs';
-import { ANALYTIC_RESPONSE_FIXTURES, PARAMETER_ANALYTICS } from './buildArithmetic.fixtures';
+import { ANALYTIC_RESPONSE_FIXTURES, PARAMETER_ANALYTICS } from './ArithmeticBuilder.fixtures';
 
-describe('buildArithmetic', () => {
+describe('ArithmeticBuilder', () => {
   const getDummyApi = () => ({
     getAggregator: () => createAggregator(),
     buildAnalyticsForIndicators: async () => [],
@@ -126,7 +126,9 @@ describe('buildArithmetic', () => {
     ];
 
     it.each(testData)('%s', async (_, config, expectedError) =>
-      expect(buildArithmetic({ api, config, fetchOptions: {} })).toBeRejectedWith(expectedError),
+      expect(new ArithmeticBuilder(api).buildAnalyticValues(config, {})).toBeRejectedWith(
+        expectedError,
+      ),
     );
   });
 
@@ -203,7 +205,7 @@ describe('buildArithmetic', () => {
     ];
 
     it.each(testData)('%s', (_, config) => {
-      return expect(buildArithmetic({ api, config, fetchOptions: {} })).toResolve();
+      return expect(new ArithmeticBuilder(api).buildAnalyticValues(config, {})).toResolve();
     });
   });
 
@@ -327,7 +329,7 @@ describe('buildArithmetic', () => {
     ];
 
     it.each(testData)('%s', async (_, config, expectedCallArgs) => {
-      await buildArithmetic({ api, config, fetchOptions: {} });
+      await new ArithmeticBuilder(api).buildAnalyticValues(config, {});
 
       expect(aggregator.fetchAnalytics).toHaveBeenCalledTimes(expectedCallArgs.length);
       expectedCallArgs.forEach(({ codes, aggregations }) => {
@@ -349,7 +351,7 @@ describe('buildArithmetic', () => {
       aggregation: { A: 'MOST_RECENT', B: 'MOST_RECENT' },
     };
     const fetchOptions = { organisationUnitCodes: ['TO'] };
-    await buildArithmetic({ api, config, fetchOptions });
+    await new ArithmeticBuilder(api).buildAnalyticValues(config, fetchOptions);
 
     expect(aggregator.fetchAnalytics).toHaveBeenCalledOnceWith(
       expect.anything(),
@@ -376,7 +378,7 @@ describe('buildArithmetic', () => {
       const config = { formula, aggregation: 'FINAL_EACH_YEAR' };
 
       return expect(
-        buildArithmetic({ api, config, fetchOptions: {} }),
+        new ArithmeticBuilder(api).buildAnalyticValues(config, {}),
       ).resolves.toIncludeSameMembers(
         expected.map(value => ({ organisationUnit: 'TO', period: '2019', value })),
       );
@@ -424,7 +426,7 @@ describe('buildArithmetic', () => {
       const config = { formula, aggregation: 'FINAL_EACH_YEAR' };
 
       return expect(
-        buildArithmetic({ api, config, fetchOptions: {} }),
+        new ArithmeticBuilder(api).buildAnalyticValues(config, {}),
       ).resolves.toIncludeSameMembers(
         expected.map(value => ({ organisationUnit: 'TO', period: '2019', value })),
       );
@@ -525,9 +527,9 @@ describe('buildArithmetic', () => {
     ];
 
     it.each(testData)('%s', (_, config, expected) =>
-      expect(buildArithmetic({ api, config, fetchOptions: {} })).resolves.toIncludeSameMembers(
-        expected,
-      ),
+      expect(
+        new ArithmeticBuilder(api).buildAnalyticValues(config, {}),
+      ).resolves.toIncludeSameMembers(expected),
     );
   });
 
@@ -568,7 +570,9 @@ describe('buildArithmetic', () => {
         aggregation: {},
       };
 
-      await expect(buildArithmetic({ api, config, fetchOptions })).resolves.toIncludeSameMembers([
+      await expect(
+        new ArithmeticBuilder(api).buildAnalyticValues(config, fetchOptions),
+      ).resolves.toIncludeSameMembers([
         { organisationUnit: 'TO', period: '2019', value: 0.4 },
         { organisationUnit: 'TO', period: '2020', value: 0.3 },
       ]);
@@ -584,7 +588,9 @@ describe('buildArithmetic', () => {
         aggregation: 'FINAL_EACH_YEAR',
       };
 
-      await expect(buildArithmetic({ api, config, fetchOptions })).resolves.toIncludeSameMembers([
+      await expect(
+        new ArithmeticBuilder(api).buildAnalyticValues(config, fetchOptions),
+      ).resolves.toIncludeSameMembers([
         { organisationUnit: 'TO', period: '2019', value: 0.1 },
         { organisationUnit: 'TO', period: '2020', value: 0.2 },
       ]);
