@@ -1,0 +1,50 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
+import { CircleMeter, Card, CardContent, CardHeader } from '@tupaia/ui-components';
+import Skeleton from '@material-ui/lab/Skeleton';
+import { useReportsSubmitted } from '../api/queries';
+import { getEntitiesAllowed } from '../store';
+import { connect } from 'react-redux';
+
+const StyledCardContent = styled(CardContent)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const ReportsSubmittedCardComponent = React.memo(({ countryCodes }) => {
+  const { isLoading, sitesReported, sites, currentWeekNumber } = useReportsSubmitted(countryCodes);
+
+  return (
+    <Card variant="outlined">
+      <CardHeader title="Current reports submitted" label={`Week ${currentWeekNumber}`} />
+      <StyledCardContent>
+        <Typography variant="h3">
+          {isLoading ? (
+            <Skeleton animation="wave" style={{ height: 36, width: 160 }} />
+          ) : (
+            `${sitesReported}/${sites} Countries`
+          )}
+        </Typography>
+        <CircleMeter value={sitesReported} total={sites} />
+      </StyledCardContent>
+    </Card>
+  );
+});
+
+ReportsSubmittedCardComponent.propTypes = {
+  countryCodes: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = state => ({
+  countryCodes: getEntitiesAllowed(state),
+});
+
+export const ReportsSubmittedCard = connect(mapStateToProps)(ReportsSubmittedCardComponent);

@@ -8,3 +8,4 @@ export * from './useCountryConfirmedWeeklyReport';
 export * from './useCountryWeeklyReport';
 export * from './useUpcomingReport';
 export * from './useSingleWeeklyReport';
+export * from './useReportsSubmitted';
