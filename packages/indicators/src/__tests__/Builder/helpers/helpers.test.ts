@@ -3,37 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { fetchAnalytics, groupKeysByValueJson, validateConfig } from '../../../Builder/helpers';
+import { fetchAnalytics, groupKeysByValueJson } from '../../../Builder/helpers';
 import { createAggregator } from '../stubs';
 import { ANALYTIC_RESPONSE_CONFIG } from './helpers.fixtures';
 
 describe('helpers', () => {
-  describe('validateConfig', () => {
-    const assertIsNotNegative = (value: number) => {
-      if (value < 0) {
-        throw new Error('Must be >= 0');
-      }
-    };
-
-    const configValidators = {
-      countFemale: [assertIsNotNegative],
-      countMale: [assertIsNotNegative],
-    };
-
-    it('resolves for empty config', () => expect(validateConfig(undefined, {})).toResolve());
-
-    it('resolves for empty validators', () =>
-      expect(validateConfig({ random: 'string' })).toResolve());
-
-    it('throws if a field is invalid', async () =>
-      expect(validateConfig({ countFemale: -1, countMale: 2 }, configValidators)).toBeRejectedWith(
-        "Error in field 'countFemale': Must be >= 0",
-      ));
-
-    it('resolves if all fields are valid', () =>
-      expect(validateConfig({ countFemale: 1, countMale: 2 }, configValidators)).toResolve());
-  });
-
   describe('groupKeysByValueJson()', () => {
     it('single key', () => {
       const value = [{ alpha: 1, beta: 2 }, 3, true];

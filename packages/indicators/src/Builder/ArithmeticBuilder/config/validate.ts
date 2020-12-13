@@ -13,7 +13,6 @@ import {
   isPlainObject,
   ObjectValidator,
 } from '@tupaia/utils';
-import { validateConfig } from '../../helpers';
 import { validateAggregation } from './aggregation';
 import { ArithmeticConfig } from './types';
 
@@ -42,7 +41,7 @@ const validateParameters = async (parameters: Record<string, unknown>[]) =>
     ),
   );
 
-const configValidators = {
+export const configValidators = {
   formula: [hasContent, isAString],
   aggregation: [validateAggregation],
   parameters: [constructIsEmptyOr([constructIsArrayOf('object'), validateParameters])],
@@ -50,7 +49,3 @@ const configValidators = {
     constructIsEmptyOr([isPlainObject, assertAllDefaultsAreCodesInFormula, allValuesAreNumbers]),
   ],
 };
-
-export const validateArithmeticConfig = (
-  config: Record<string, unknown>,
-): Promise<ArithmeticConfig> => validateConfig<ArithmeticConfig>(config, configValidators);

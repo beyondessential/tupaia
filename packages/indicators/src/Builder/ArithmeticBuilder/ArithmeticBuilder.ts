@@ -6,10 +6,15 @@
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import { ExpressionParser } from '@tupaia/expression-parser';
 import { getUniqueEntries } from '@tupaia/utils';
-import { Analytic, AnalyticCluster, FetchOptions, IndicatorApiInterface } from '../../types';
+import { Analytic, AnalyticCluster, FetchOptions } from '../../types';
 import { Builder } from '../Builder';
 import { fetchAnalytics } from '../helpers';
-import { expandConfig, ExpandedArithmeticConfig, validateArithmeticConfig } from './config';
+import {
+  ArithmeticConfig,
+  configValidators,
+  expandConfig,
+  ExpandedArithmeticConfig,
+} from './config';
 
 const fetchAnalyticClusters = async (
   analytics: Analytic[],
@@ -51,40 +56,38 @@ const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: strin
     .filter(({ value }) => isFinite(value));
 };
 
-const fetchAnalyticsAndElements = async (
-  api: IndicatorApiInterface,
-  config: ExpandedArithmeticConfig,
-  fetchOptions: FetchOptions,
-) => {
-  const { aggregation, parameters } = config;
-
-  const aggregator = api.getAggregator();
-  const formulaAnalytics = await fetchAnalytics(aggregator, aggregation, fetchOptions);
-  const formulaElements = Object.keys(aggregation);
-
-  const parameterAnalytics = await api.buildAnalyticsForIndicators(parameters, fetchOptions);
-  const parameterElements = parameters.map(p => p.code);
-
-  return {
-    analytics: formulaAnalytics.concat(parameterAnalytics),
-    dataElements: getUniqueEntries(formulaElements.concat(parameterElements)),
-  };
-};
-
-export const processConfigInput = async (configInput: Record<string, unknown>) => {
-  const config = await validateArithmeticConfig(configInput);
-  return expandConfig(config);
-};
-
 export class ArithmeticBuilder extends Builder {
   async buildAnalyticValues(configInput: Record<string, unknown>, fetchOptions: FetchOptions) {
-    const config = await processConfigInput(configInput);
-    const { analytics, dataElements } = await fetchAnalyticsAndElements(
-      this.getIndicatorApi(),
-      config,
-      fetchOptions,
-    );
+    const config = await this.processConfig(configInput);
+    const { analytics, dataElements } = await this.fetchAnalyticsAndElements(config, fetchOptions);
     const clusters = await fetchAnalyticClusters(analytics, dataElements, config.defaultValues);
     return buildAnalyticValues(clusters, config.formula);
   }
+
+  private processConfig = async (configInput: Record<string, unknown>) => {
+    const config = await this.validateConfig<ArithmeticConfig>(configInput, configValidators);
+    return expandConfig(config);
+  };
+
+  private fetchAnalyticsAndElements = async (
+    config: ExpandedArithmeticConfig,
+    fetchOptions: FetchOptions,
+  ) => {
+    const { aggregation, parameters } = config;
+
+    const aggregator = this.indicatorApi.getAggregator();
+    const formulaAnalytics = await fetchAnalytics(aggregator, aggregation, fetchOptions);
+    const formulaElements = Object.keys(aggregation);
+
+    const parameterAnalytics = await this.indicatorApi.buildAnalyticsForIndicators(
+      parameters,
+      fetchOptions,
+    );
+    const parameterElements = parameters.map(p => p.code);
+
+    return {
+      analytics: formulaAnalytics.concat(parameterAnalytics),
+      dataElements: getUniqueEntries(formulaElements.concat(parameterElements)),
+    };
+  };
 }
