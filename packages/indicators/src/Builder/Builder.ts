@@ -13,7 +13,7 @@ export abstract class Builder {
     this.indicatorApi = indicatorApi;
   }
 
-  abstract async buildAnalyticValues(
+  abstract buildAnalyticValues(
     config: Record<string, unknown>,
     fetchOptions: FetchOptions,
   ): Promise<AnalyticValue[]>;
