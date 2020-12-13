@@ -16,7 +16,7 @@ import {
   ExpandedArithmeticConfig,
 } from './config';
 
-const fetchAnalyticClusters = async (
+const buildAnalyticClusters = (
   analytics: Analytic[],
   dataElements: string[],
   defaultValues: Record<string, number>,
@@ -38,7 +38,7 @@ const fetchAnalyticClusters = async (
   return clusters.map(replaceAnalyticValuesWithDefaults).filter(checkClusterIncludesAllElements);
 };
 
-const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) => {
+const buildAnalyticValuesFromClusters = (analyticClusters: AnalyticCluster[], formula: string) => {
   const parser = new ExpressionParser();
   const calculateValue = (dataValues: Record<string, number>) => {
     parser.setScope(dataValues);
@@ -60,8 +60,8 @@ export class ArithmeticBuilder extends Builder {
   async buildAnalyticValues(configInput: Record<string, unknown>, fetchOptions: FetchOptions) {
     const config = await this.processConfig(configInput);
     const { analytics, dataElements } = await this.fetchAnalyticsAndElements(config, fetchOptions);
-    const clusters = await fetchAnalyticClusters(analytics, dataElements, config.defaultValues);
-    return buildAnalyticValues(clusters, config.formula);
+    const clusters = buildAnalyticClusters(analytics, dataElements, config.defaultValues);
+    return buildAnalyticValuesFromClusters(clusters, config.formula);
   }
 
   private processConfig = async (configInput: Record<string, unknown>) => {
