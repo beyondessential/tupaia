@@ -24,14 +24,14 @@ export interface AnalyticCluster {
 
 type TypeFields = Record<string, string | number | Record<string, unknown>>;
 
-type DatabaseType<F extends TypeFields> = BaseDatabaseType & F;
+type DatabaseType<T extends TypeFields> = BaseDatabaseType & T;
 
-type DbConditions<F extends TypeFields> = Partial<
-  Record<keyof F, number | number[] | string | string[]>
+type DbConditions<T extends TypeFields> = Partial<
+  Record<keyof T, number | number[] | string | string[]>
 >;
 
-interface DatabaseModel<F extends TypeFields, T extends DatabaseType<F>> {
-  find: (dbConditions: DbConditions<F>) => Promise<T[]>;
+interface DatabaseModel<T extends TypeFields> {
+  find: (dbConditions: DbConditions<T>) => Promise<DatabaseType<T>[]>;
 }
 
 export type Indicator = {
@@ -45,7 +45,7 @@ type IndicatorFields = Indicator & { id: string };
 export type IndicatorType = DatabaseType<IndicatorFields>;
 
 export interface ModelRegistry {
-  readonly indicator: DatabaseModel<IndicatorFields, IndicatorType>;
+  readonly indicator: DatabaseModel<IndicatorFields>;
 }
 
 export interface IndicatorApiInterface {
