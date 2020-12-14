@@ -227,19 +227,20 @@ const nationalAndProvincialLevelDashboardReportConfig = {
             operator: '=',
           },
         },
-        denominator: {
-          condition: {
-            operator: '*',
-          },
-        },
       },
       excludeCondition: { value: 'No data', operator: '=' },
     },
+
     rowSummary: {
-      title: '% of items out of stock at facility',
-      condition: {
-        value: 'No',
-        operator: '=',
+      title: '% of facilities with item out of stock',
+      operator: 'PERCENTAGE',
+      operatorConfig: {
+        numerator: {
+          condition: {
+            value: 'No',
+            operator: '=',
+          },
+        },
       },
       excludeCondition: { value: 'No data', operator: '=' },
     },
