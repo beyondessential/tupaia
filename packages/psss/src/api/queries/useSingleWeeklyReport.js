@@ -17,8 +17,8 @@ const SYNDROMES = {
 const getEmptySyndromeData = id => ({
   id,
   title: SYNDROMES[id],
-  percentageChange: 0,
-  totalCases: 0,
+  percentageChange: undefined,
+  totalCases: null,
 });
 
 const getSyndromeData = (id, data) => ({
