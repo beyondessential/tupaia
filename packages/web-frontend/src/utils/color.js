@@ -60,7 +60,7 @@ export const getPresentationOption = (options, value) => {
     case PRESENTATION_TYPES.CONDITION:
       return getPresentationOptionFromCondition(options, value);
     default:
-      return getPresentationOptionFromKey(options, value);
+      return getPresentationOptionFromKey(options.conditions, value);
   }
 };
 
