@@ -143,6 +143,14 @@ export class Matrix extends PureComponent {
     return Object.keys(presentationOptions).length > 0;
   }
 
+  shouldRenderFooter() {
+    if (!this.getIsUsingDots(this.props.presentationOptions)) {
+      return false;
+    }
+    const conditions = this.props.presentationOptions.conditions || [];
+    return conditions.filter(condition => !!condition.legendLabel).length > 0;
+  }
+
   setRowRef(rowElement) {
     if (!this.rowElements.includes(rowElement)) {
       this.rowElements.push(rowElement);
@@ -369,7 +377,7 @@ export class Matrix extends PureComponent {
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
 
-    const shouldRenderFooter = this.getIsUsingDots(this.props.presentationOptions);
+    const shouldRenderFooter = this.shouldRenderFooter();
 
     const { conditions } = this.props.presentationOptions;
 
