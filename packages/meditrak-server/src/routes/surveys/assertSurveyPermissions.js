@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { hasBESAdminAccess } from '../../permissions';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
-export const assertSurveyPermissions = async (accessPolicy, models, surveyId) => {
+const getPermissionInfoFromSurvey = async (models, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   if (!survey) {
     throw new Error(`No survey exists with id ${surveyId}`);
@@ -18,11 +18,29 @@ export const assertSurveyPermissions = async (accessPolicy, models, surveyId) =>
   const countries = await models.country.findManyById(survey.country_ids);
   const countryCodes = countries.map(c => c.code);
 
+  return { permissionGroup, countryCodes };
+};
+
+export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
+  const { permissionGroup, countryCodes } = getPermissionInfoFromSurvey(models, surveyId);
   if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) {
     return true;
   }
 
   throw new Error('Requires access to one of the countries the survey is in');
+};
+
+// Used for edit and delete actions
+export const assertSurveyEditPermissions = async (accessPolicy, models, surveyId) => {
+  const { permissionGroup, countryCodes } = getPermissionInfoFromSurvey(models, surveyId);
+  if (
+    accessPolicy.allowsAll(countryCodes, permissionGroup.name) &&
+    accessPolicy.allowsAll(countryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)
+  ) {
+    return true;
+  }
+
+  throw new Error('Requires access to all of the countries the survey is in');
 };
 
 export const createSurveyDBFilter = async (accessPolicy, models, criteria) => {

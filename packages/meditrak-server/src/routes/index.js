@@ -21,15 +21,19 @@ import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETMapOverlays } from './GETMapOverlays';
-import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
-import { GETSurveyScreenComponents } from './GETSurveyScreenComponents';
 import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
+import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
+import {
+  DeleteSurveyScreenComponents,
+  EditSurveyScreenComponents,
+  GETSurveyScreenComponents,
+} from './surveyScreenComponents';
 import {
   CreateUserAccounts,
   RegisterUserAccounts,
@@ -109,7 +113,9 @@ export default {
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
+  deleteSurveys: useRouteHandler(DeleteSurveys),
   deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
+  deleteSurveyScreenComponents: useRouteHandler(DeleteSurveyScreenComponents),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
   createUserAccount: useRouteHandler(CreateUserAccounts),
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
@@ -117,7 +123,9 @@ export default {
   editAnswers: useRouteHandler(EditAnswers),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
+  editSurveys: useRouteHandler(EditSurveys),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
+  editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
   exportSurveyResponses: catchAsyncErrors(exportSurveyResponses),

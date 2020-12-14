@@ -31,13 +31,17 @@ const {
   deleteAnswers,
   deleteDisasters,
   deleteFeedItems,
+  deleteSurveys,
   deleteSurveyResponses,
+  deleteSurveyScreenComponents,
   deleteUserEntityPermissions,
   editAccessRequests,
   editAnswers,
   editDisasters,
   editFeedItems,
+  editSurveys,
   editSurveyResponses,
+  editSurveyScreenComponents,
   editUserAccounts,
   editUserEntityPermissions,
   exportSurveyResponses,
@@ -227,7 +231,9 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/users/:recordId', editUserAccounts);
   app.put('(/v[0-9]+)/userEntityPermissions/:recordId', editUserEntityPermissions);
   app.put('(/v[0-9]+)/accessRequests/:recordId', editAccessRequests);
+  app.put('(/v[0-9]+)/surveys/:recordId', editSurveys);
   app.put('(/v[0-9]+)/surveyResponses/:recordId', editSurveyResponses);
+  app.put('(/v[0-9]+)/surveyScreenComponents/:recordId', editSurveyScreenComponents);
   app.put('(/v[0-9]+)/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/disasters/:recordId', editDisasters);
@@ -242,7 +248,9 @@ export function addRoutesToApp(app) {
    * DELETE routes
    */
   app.delete('(/v[0-9]+)/userEntityPermissions/:recordId', deleteUserEntityPermissions);
+  app.delete('(/v[0-9]+)/surveys/:recordId', deleteSurveys);
   app.delete('(/v[0-9]+)/surveyResponses/:recordId', deleteSurveyResponses);
+  app.delete('(/v[0-9]+)/surveyScreenComponents/:recordId', deleteSurveyScreenComponents);
   app.delete('(/v[0-9]+)/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/disasters/:recordId', deleteDisasters);
