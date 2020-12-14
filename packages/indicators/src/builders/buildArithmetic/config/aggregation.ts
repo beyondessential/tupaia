@@ -5,7 +5,9 @@
 
 import { ExpressionParser } from '@tupaia/expression-parser';
 import { toArray } from '@tupaia/utils';
-import { ArithmeticConfig, AggregationDescriptor, AggregationSpecs } from './types';
+import { Aggregation } from '../../../types';
+import { getDataElementsInFormula, isParameterCode } from './helpers';
+import { AggregationDescriptor, AggregationSpecs, ArithmeticConfig } from './types';
 
 enum AggregationType {
   String, // 'SUM'
@@ -15,9 +17,6 @@ enum AggregationType {
   // or `ArithmeticConfig.parameters`
   Dictionary, // { BCD1: 'SUM', BCD2: ['COUNT', 'FINAL_EACH_WEEK' ] }
 }
-
-const isParameterCode = (parameters: { code: string }[], code: string) =>
-  !!parameters.find(p => p.code === code);
 
 const getAggregationType = (aggregation: unknown): AggregationType => {
   const invalidTypeError = new Error(
@@ -124,20 +123,18 @@ const descriptorToAggregation = (descriptor: AggregationDescriptor) =>
   typeof descriptor === 'object' ? descriptor : { type: descriptor };
 
 const getAggregationDictionary = (config: ArithmeticConfig): Record<string, AggregationSpecs> => {
-  const { formula, aggregation, parameters = [] } = config;
+  const { aggregation } = config;
 
   const aggregationType = getAggregationType(aggregation);
   if (aggregationType === AggregationType.Dictionary) {
     return aggregation as Record<string, AggregationSpecs>;
   }
 
-  const elementCodes = new ExpressionParser()
-    .getVariables(formula)
-    .filter(code => !isParameterCode(parameters, code));
+  const elementCodes = getDataElementsInFormula(config);
   return Object.fromEntries(elementCodes.map(code => [code, aggregation as AggregationSpecs]));
 };
 
-export const getAggregationsByCode = (config: ArithmeticConfig) => {
+export const getAggregationsByCode = (config: ArithmeticConfig): Record<string, Aggregation[]> => {
   const aggregationDictionary = getAggregationDictionary(config);
 
   return Object.fromEntries(

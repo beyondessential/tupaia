@@ -4,4 +4,4 @@
  */
 
 export { buildArithmetic } from './buildArithmetic';
-export { ArithmeticConfig } from './types';
+export { ArithmeticConfig } from './config';
