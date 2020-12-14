@@ -4,8 +4,9 @@
  */
 
 import flatten from 'lodash.flatten';
-import { getSortByKey, stripFromString } from '@tupaia/utils';
+import { getSortByKey } from '@tupaia/utils';
 import { TableConfig } from './TableConfig';
+import { buildBaseRowsForOrgUnit } from './buildBaseRowsForOrgUnit';
 import { getCalculatedValuesByCell } from './getValuesByCell';
 import { buildColumnSummary, buildRowSummary } from './addSummaryToTable';
 import { TotalCalculator } from './TotalCalculator';
@@ -89,23 +90,8 @@ class TableOfCalculatedValuesForOrgUnitsBuilder extends TableOfCalculatedValuesB
     });
   }
 
-  // duplicated function in tableOfValuesForOrgUnits.js
   buildBaseRows(rows = this.tableConfig.rows, parent = undefined, baseCellIndex = 0) {
-    const { stripFromDataElementNames, cells } = this.config;
-    const flatCells = flatten(cells);
-    let currentCellIndex = baseCellIndex;
-    return rows.reduce((baseRows, row) => {
-      if (typeof row === 'string') {
-        const dataElement = stripFromString(row, stripFromDataElementNames);
-        const dataCode = flatCells[currentCellIndex];
-        currentCellIndex++;
-        return [...baseRows, { dataCode, dataElement, categoryId: parent }];
-      }
-
-      const next = this.buildBaseRows(row.rows, row.category, currentCellIndex);
-      currentCellIndex += next.length;
-      return [...baseRows, ...next];
-    }, []);
+    return buildBaseRowsForOrgUnit(rows, parent, baseCellIndex, this.config);
   }
 }
 
