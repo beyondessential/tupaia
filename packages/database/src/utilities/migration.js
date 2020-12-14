@@ -107,6 +107,24 @@ export async function removeArrayValue(db, table, column, value, condition) {
  * @param {string} db
  * @param {string} table
  * @param {string} column The name of the column. must be of `Array` type
+ * @param {DbValue} value
+ * @param {string} condition
+ * @returns {Promise}
+ * @throws {RequiredParameterError}
+ */
+export async function addArrayValue(db, table, column, value, condition) {
+  assertParamsAreDefined({ db, table, column, value, condition }, 'addArrayValue');
+
+  return db.runSql(
+    `UPDATE "${table}" SET "${column}" = array_append("${column}", ?) WHERE ${condition}`,
+    [value],
+  );
+}
+
+/**
+ * @param {string} db
+ * @param {string} table
+ * @param {string} column The name of the column. must be of `Array` type
  * @param {DbValue} oldValue
  * @param {DbValue|DbValue[]} newValueInput
  * @param {string} condition
@@ -212,7 +230,7 @@ function removeReportFromGroups(db, reportId, groupCodes) {
 }
 
 // Delete a report
-function deleteReport(db, reportId) {
+export async function deleteReport(db, reportId) {
   return db.runSql(`
     DELETE FROM
       "dashboardReport"
