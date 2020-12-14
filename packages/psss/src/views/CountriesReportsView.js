@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { WarningCloud, Virus } from '@tupaia/ui-components';
 import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle } from '../components';
-import { CountriesTable, WeeklyReportsExportModal, ReportsSubmittedCard } from '../containers';
+import { CountriesTable, WeeklyReportsExportModal, ConfirmedCountriesCard } from '../containers';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -41,7 +41,7 @@ export const CountriesReportsView = () => (
         <CountriesTable />
       </Main>
       <Sidebar>
-        <ReportsSubmittedCard />
+        <ConfirmedCountriesCard />
         {/* Temporarily removed for MVP release. Please do not delete */}
         {/*<Card variant="outlined">*/}
         {/*  <DataCardTabs data={tabData} />*/}

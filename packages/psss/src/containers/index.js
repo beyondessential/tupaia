@@ -9,4 +9,4 @@ export * from './Panels';
 export * from './Modals';
 export * from './NavBar';
 export * from './UpcomingReportCard';
-export * from './ReportsSubmittedCard';
+export * from './ConfirmedCountriesCard';

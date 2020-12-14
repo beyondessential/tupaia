@@ -5,13 +5,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { CircleMeter, Card, CardContent, CardHeader } from '@tupaia/ui-components';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { useReportsSubmitted } from '../api/queries';
+import { useConfirmedCountries } from '../api/queries';
 import { getEntitiesAllowed } from '../store';
-import { connect } from 'react-redux';
 
 const StyledCardContent = styled(CardContent)`
   display: flex;
@@ -20,7 +20,9 @@ const StyledCardContent = styled(CardContent)`
 `;
 
 export const ReportsSubmittedCardComponent = React.memo(({ countryCodes }) => {
-  const { isLoading, sitesReported, sites, currentWeekNumber } = useReportsSubmitted(countryCodes);
+  const { isLoading, sitesReported, sites, currentWeekNumber } = useConfirmedCountries(
+    countryCodes,
+  );
 
   return (
     <Card variant="outlined">
@@ -47,4 +49,4 @@ const mapStateToProps = state => ({
   countryCodes: getEntitiesAllowed(state),
 });
 
-export const ReportsSubmittedCard = connect(mapStateToProps)(ReportsSubmittedCardComponent);
+export const ConfirmedCountriesCard = connect(mapStateToProps)(ReportsSubmittedCardComponent);

@@ -7,7 +7,7 @@ import { getCurrentPeriod } from '@tupaia/utils';
 import { getWeekNumberByPeriod } from '../../utils';
 import { useData } from './useData';
 
-export const useReportsSubmitted = countryCodes => {
+export const useConfirmedCountries = countryCodes => {
   const period = getCurrentPeriod('WEEK');
   const currentWeekNumber = getWeekNumberByPeriod(period);
 
