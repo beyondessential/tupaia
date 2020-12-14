@@ -10,29 +10,71 @@ const getOrgUnits = async (models, { parentCode, type, hierarchyId }) => {
   return parentOrgUnit.getDescendantsOfType(hierarchyId, type);
 };
 
+/**
+ * Given an object of eventsByOrgUnitCode, returns the same object with the code changed to name, but
+ * disambiguated, e.g. 'Melbourne', 'Other', 'Other (1)'
+ *
+ * @param allOrgUnits
+ * @param eventsByOrgUnitCode
+ * @returns {{}}
+ * @private
+ */
+const mapOrgUnitCodeToUniqueOrgUnitName = (allOrgUnits, eventsByOrgUnitCode) => {
+  const orgUnitsByCode = {};
+
+  for (const orgUnitCode of Object.keys(eventsByOrgUnitCode)) {
+    orgUnitsByCode[orgUnitCode] = allOrgUnits.find(orgUnit => orgUnit.code === orgUnitCode);
+  }
+
+  const eventsByUniqueOrgUnitName = {};
+
+  for (const orgUnitCode of Object.keys(eventsByOrgUnitCode)) {
+    const orgUnit = orgUnitsByCode[orgUnitCode];
+
+    const isNameUnique =
+      Object.values(orgUnitsByCode)
+        .filter(otherOrgUnit => otherOrgUnit.code !== orgUnitCode)
+        .filter(otherOrgUnit => otherOrgUnit.name === orgUnit.name).length === 0;
+
+    if (isNameUnique) {
+      eventsByUniqueOrgUnitName[orgUnit.name] = eventsByOrgUnitCode[orgUnitCode];
+    } else {
+      const uniqueName = `${orgUnit.name} (${orgUnitCode})`;
+      eventsByUniqueOrgUnitName[uniqueName] = eventsByOrgUnitCode[orgUnitCode];
+    }
+  }
+
+  return eventsByUniqueOrgUnitName;
+};
+
 const groupByAllOrgUnitNames = async (models, events, options) => {
-  const eventsByOrgUnitName = (await getOrgUnits(models, options)).reduce(
-    (results, { name }) => ({ ...results, [name]: [] }),
+  const orgUnits = await getOrgUnits(models, options);
+
+  const eventsByOrgUnitCode = orgUnits.reduce(
+    (results, { code }) => ({ ...results, [code]: [] }),
     {},
   );
 
   events.forEach(event => {
-    const { orgUnitName } = event;
-    if (eventsByOrgUnitName[orgUnitName]) {
-      eventsByOrgUnitName[orgUnitName].push(event);
+    const { orgUnit: orgUnitCode } = event;
+    if (eventsByOrgUnitCode[orgUnitCode]) {
+      eventsByOrgUnitCode[orgUnitCode].push(event);
     }
   });
-  return eventsByOrgUnitName;
+
+  return mapOrgUnitCodeToUniqueOrgUnitName(orgUnits, eventsByOrgUnitCode);
 };
 
 const groupByAllOrgUnitParentNames = async (models, events, options) => {
   const { aggregationLevel, hierarchyId } = options;
   const orgUnits = await getOrgUnits(models, options);
-  const eventsByOrgUnitName = orgUnits.reduce(
-    (results, { name }) => ({ ...results, [name]: [] }),
+
+  const eventsByOrgUnitCode = orgUnits.reduce(
+    (results, { code }) => ({ ...results, [code]: [] }),
     {},
   );
-  const allOrgUnitsByOrgUnitName = {};
+
+  const allOrgUnitCodesByParentOrgUnitCode = {};
   /* format:
    * {
    *  "village1": "facility1",
@@ -42,25 +84,25 @@ const groupByAllOrgUnitParentNames = async (models, events, options) => {
    */
   await Promise.all(
     orgUnits.map(async parentOrgUnit => {
-      const { name } = parentOrgUnit;
+      const { code } = parentOrgUnit;
       const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(
         hierarchyId,
         aggregationLevel,
       );
       childrenAndSelf.forEach(orgUnit => {
-        allOrgUnitsByOrgUnitName[orgUnit.name] = name;
+        allOrgUnitCodesByParentOrgUnitCode[orgUnit.code] = code;
       });
     }),
   );
 
   events.forEach(event => {
-    const { orgUnitName } = event;
-    if (allOrgUnitsByOrgUnitName[orgUnitName]) {
-      eventsByOrgUnitName[allOrgUnitsByOrgUnitName[orgUnitName]].push(event);
+    const { orgUnit: orgUnitCode } = event;
+    if (allOrgUnitCodesByParentOrgUnitCode[orgUnitCode]) {
+      eventsByOrgUnitCode[allOrgUnitCodesByParentOrgUnitCode[orgUnitCode]].push(event);
     }
   });
 
-  return eventsByOrgUnitName;
+  return mapOrgUnitCodeToUniqueOrgUnitName(orgUnits, eventsByOrgUnitCode);
 };
 
 const groupByDataValues = (_, events, options) => {

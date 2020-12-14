@@ -6,16 +6,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import differenceInWeeks from 'date-fns/difference_in_weeks';
+import { differenceInWeeks } from 'date-fns';
 import { getCurrentPeriod } from '@tupaia/utils';
 import { useParams } from 'react-router-dom';
 import { ExpandableTable, TablePaginator } from '@tupaia/ui-components';
-import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
 import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
-import { AlertCell, SitesReportedCell } from '../../components';
-import { MIN_DATE, REPORT_STATUSES } from '../../constants';
+import { StatusCell, AlertCell, SitesReportedCell } from '../../components';
+import { MIN_DATE } from '../../constants';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import { useCountryWeeklyReport } from '../../api/queries';
 import { WeeklyReportsPanel } from '../Panels';
@@ -43,51 +42,6 @@ const NameCell = ({ period }) => (
 
 NameCell.propTypes = {
   period: PropTypes.string.isRequired,
-};
-
-const Status = styled.div`
-  display: inline-flex;
-  color: ${props => props.color};
-  align-items: center;
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 0.6875rem;
-  line-height: 1;
-  padding-left: 1rem;
-  text-align: left;
-  width: 100%;
-
-  .MuiSvgIcon-root {
-    width: 1.375rem;
-    height: 1.375rem;
-    margin-right: 0.3125rem;
-  }
-`;
-
-const StatusCell = ({ status }) => {
-  if (status === REPORT_STATUSES.OVERDUE) {
-    return (
-      <Status color={COLORS.ORANGE}>
-        <Alarm />
-        {status}
-      </Status>
-    );
-  }
-
-  return (
-    <Status color={COLORS.TEXT_LIGHTGREY}>
-      <CheckCircleOutline />
-      {status}
-    </Status>
-  );
-};
-
-StatusCell.propTypes = {
-  status: PropTypes.string,
-};
-
-StatusCell.defaultProps = {
-  status: REPORT_STATUSES.SUBMITTED,
 };
 
 const countryColumns = [

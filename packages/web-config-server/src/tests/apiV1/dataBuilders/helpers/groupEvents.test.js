@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import { groupEvents, getAllDataElementCodes } from '/apiV1/dataBuilders/helpers/groupEvents';
 
-const EVENTS_1 = [
+const EVENTS = [
   {
     orgUnit: 'TO_Tongatapu',
     orgUnitName: 'Tongatapu',
@@ -15,24 +15,6 @@ const EVENTS_1 = [
   },
   { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '2' }] },
   { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '3' }] },
-];
-
-const EVENTS_2 = [
-  {
-    dataValues: [
-      { dataElement: 'A', value: '10' },
-      { dataElement: 'B', value: '20' },
-    ],
-  },
-  {
-    dataValues: [
-      { dataElement: 'A', value: '10' },
-      { dataElement: 'B', value: '21' },
-    ],
-  },
-  {
-    dataValues: [{ dataElement: 'C', value: '30' }],
-  },
 ];
 
 const PARENT_ORG_UNIT = {
@@ -48,139 +30,353 @@ const PARENT_ORG_UNIT = {
       : [],
 };
 
+const PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES = {
+  code: 'NZ',
+  name: 'New Zealand',
+  getDescendantsOfType: (_, type) =>
+    type === 'district'
+      ? [
+        { code: 'NZ_WELLINGTON_CITY', name: 'Wellington' },
+        { code: 'NZ_WELLINGTON_OTHER', name: 'Other' }, // same name
+        { code: 'NZ_AUCKLAND_OTHER', name: 'Other' },   // same name
+      ]
+      : [],
+};
+
+const PARENT_ORG_UNIT_WITH_CHILDREN = {
+  code: 'AU1',
+  name: 'Australia',
+  getDescendantsOfType: (_, type) =>
+    type === 'district'
+      ? [
+        {
+          code: 'MLB',
+          name: 'Melbourne',
+          getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' } ]
+        },
+        {
+          code: 'SYD',
+          name: 'Sydney',
+          getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' } ]
+        },
+      ]
+      : [],
+};
+
+const PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN = {
+  code: 'AU2',
+  name: 'Australia',
+  getDescendantsOfType: (_, type) =>
+    type === 'district'
+      ? [
+        {
+          code: 'MLB',
+          name: 'Other', // duplicate
+          getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' } ]
+        },
+        {
+          code: 'SYD',
+          name: 'Other', // duplicate
+          getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' } ]
+        },
+      ]
+      : [],
+};
+
+const PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES = {
+  code: 'AU3',
+  name: 'Australia',
+  getDescendantsOfType: (_, type) =>
+    type === 'district'
+      ? [
+        {
+          code: 'MLB',
+          name: 'Melbourne',
+          getDescendantsOfType: () => [{ code: 'MLB_C', name: 'Collingwood' }, { code: 'MLB_O', name: 'Other' } ] // "Other" duplicate
+        },
+        {
+          code: 'SYD',
+          name: 'Sydney',
+          getDescendantsOfType: () => [{ code: 'SYD_U', name: 'Ultimo' }, { code: 'SYD_O', name: 'Other' } ] // "Other" duplicate
+        },
+      ]
+      : [],
+};
+
 const models = {
   entity: {
     findOne: sinon
       .stub()
-      .callsFake(({ code }) => (code === PARENT_ORG_UNIT.code ? PARENT_ORG_UNIT : null)),
+      .callsFake(({ code }) => {
+        switch (code) {
+          case PARENT_ORG_UNIT.code:
+            return PARENT_ORG_UNIT;
+          case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES.code:
+            return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES;
+          case PARENT_ORG_UNIT_WITH_CHILDREN.code:
+            return PARENT_ORG_UNIT_WITH_CHILDREN;
+          case PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN.code:
+            return PARENT_ORG_UNIT_WITH_NON_UNIQUE_NAMES_WITH_CHILDREN;
+          case PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES.code:
+            return PARENT_ORG_UNIT_WITH_CHILDREN_WITH_NON_UNIQUE_NAMES;
+          default:
+            return null;
+        }
+      }),
   },
 };
 
 describe('groupEvents()', () => {
   it('groups by nothing', () =>
-    expect(groupEvents(models, EVENTS_1, { type: 'nothing' })).to.eventually.deep.equal({
-      all: [...EVENTS_1],
-    }));
-
-  it('groups by allOrgUnitNames', () =>
-    expect(
-      groupEvents(models, EVENTS_1, {
-        type: 'allOrgUnitNames',
-        options: { parentCode: 'TO', type: 'district' },
-      }),
-    ).to.eventually.deep.equal({
-      Tongatapu: [
-        {
-          orgUnit: 'TO_Tongatapu',
-          orgUnitName: 'Tongatapu',
-          dataValues: [{ dataElement: 'A', value: '1' }],
-        },
-      ],
-      Niuas: [
-        {
-          orgUnit: 'TO_Niuas',
-          orgUnitName: 'Niuas',
-          dataValues: [{ dataElement: 'A', value: '2' }],
-        },
-        {
-          orgUnit: 'TO_Niuas',
-          orgUnitName: 'Niuas',
-          dataValues: [{ dataElement: 'A', value: '3' }],
-        },
-      ],
-      Haapai: [],
+    expect(groupEvents(models, EVENTS, { type: 'nothing' })).to.eventually.deep.equal({
+      all: [...EVENTS],
     }));
 
   it('rejects unknown groupBy type', async () => {
     const assertCorrectErrorIsThrown = groupBySpecs =>
-      expect(groupEvents(models, EVENTS_1, groupBySpecs)).to.be.rejectedWith(
+      expect(groupEvents(models, EVENTS, groupBySpecs)).to.be.rejectedWith(
         'not a supported groupBy type',
       );
 
     return Promise.all([{ type: 'unknownType' }, { type: '' }, {}].map(assertCorrectErrorIsThrown));
   });
 
-  it('groups by dataValues basic', () => {
-    expect(
-      groupEvents(models, EVENTS_2, {
-        type: 'dataValues',
-        options: {
-          GROUPING_1: {
-            dataValues: { A: { operator: '=', value: '10' } },
+  describe('getAllDataElementCodes', () => {
+    it('returns empty by default', () =>
+      expect(
+        getAllDataElementCodes({
+          type: 'allOrgUnitNames',
+          options: { parentCode: 'TO', type: 'district' },
+        }),
+      ).to.deep.equal([]));
+
+    it('finds all data element codes used in conditionals', () =>
+      expect(
+        getAllDataElementCodes({
+          type: 'dataValues',
+          options: {
+            GROUPING_1: {
+              dataValues: { A: { operator: '=', value: '10' } },
+            },
+            GROUPING_2: {
+              dataValues: { B: { operator: '=', value: '21' } },
+            },
           },
-          GROUPING_2: {
-            dataValues: { B: { operator: '=', value: '21' } },
+        }),
+      ).to.deep.equal(['A', 'B']));
+  });
+
+  describe('type: allOrgUnitNames', () => {
+    it('groups', () =>
+      expect(
+        groupEvents(models, EVENTS, {
+          type: 'allOrgUnitNames',
+          options: { parentCode: 'TO', type: 'district' },
+        }),
+      ).to.eventually.deep.equal({
+        Tongatapu: [
+          {
+            orgUnit: 'TO_Tongatapu',
+            orgUnitName: 'Tongatapu',
+            dataValues: [{ dataElement: 'A', value: '1' }],
           },
-        },
-      }),
-    ).to.eventually.deep.equal({
-      GROUPING_1: [
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '20' },
-          ],
-        },
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '21' },
-          ],
-        },
-      ],
-      GROUPING_2: [
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '21' },
-          ],
-        },
-      ],
+        ],
+        Niuas: [
+          {
+            orgUnit: 'TO_Niuas',
+            orgUnitName: 'Niuas',
+            dataValues: [{ dataElement: 'A', value: '2' }],
+          },
+          {
+            orgUnit: 'TO_Niuas',
+            orgUnitName: 'Niuas',
+            dataValues: [{ dataElement: 'A', value: '3' }],
+          },
+        ],
+        Haapai: [],
+      }));
+
+    it('can handle non-unique org unit names', () => {
+      const EVENTS = [
+        { orgUnit: 'NZ_WELLINGTON_CITY', orgUnitName: 'Wellington', dataValues: [{ dataElement: 'A', value: '1' }] },
+        { orgUnit: 'NZ_WELLINGTON_OTHER', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '2' }] }, // same org unit name
+        { orgUnit: 'NZ_AUCKLAND_OTHER', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '3' }] },   // same org unit name
+      ]
+      return expect(
+        groupEvents(models, EVENTS, {
+          type: 'allOrgUnitNames',
+          options: { parentCode: 'NZ', type: 'district' },
+        }),
+      ).to.eventually.deep.equal({
+        Wellington: [
+          {
+            orgUnit: 'NZ_WELLINGTON_CITY',
+            orgUnitName: 'Wellington',
+            dataValues: [{ dataElement: 'A', value: '1' }],
+          },
+        ],
+        "Other (NZ_WELLINGTON_OTHER)": [
+          {
+            orgUnit: 'NZ_WELLINGTON_OTHER',
+            orgUnitName: 'Other',
+            dataValues: [{ dataElement: 'A', value: '2' }],
+          },
+        ],
+        "Other (NZ_AUCKLAND_OTHER)": [
+          {
+            orgUnit: 'NZ_AUCKLAND_OTHER',
+            orgUnitName: 'Other',
+            dataValues: [{ dataElement: 'A', value: '3' }],
+          },
+        ],
+      })
     });
   });
 
-  it('uses a union type condition check when grouping by dataValues', () => {
-    expect(
-      groupEvents(models, EVENTS_2, {
-        type: 'dataValues',
-        options: {
-          GROUPING_1: {
-            dataValues: { A: { operator: '=', value: '10' }, B: { operator: '=', value: '21' } },
-          },
-        },
-      }),
-    ).to.eventually.deep.equal({
-      GROUPING_1: [
-        {
-          dataValues: [
-            { dataElement: 'A', value: '10' },
-            { dataElement: 'B', value: '21' },
-          ],
-        },
-      ],
+  describe('type: allOrgUnitParentNames', () => {
+    it('groups', () => {
+      const EVENTS = [
+        { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '3' }] },
+      ]
+      return expect(
+        groupEvents(models, EVENTS, {
+          type: 'allOrgUnitParentNames',
+          options: { parentCode: 'AU1', type: 'district' },
+        }),
+      ).to.eventually.deep.equal({
+        Melbourne: [
+          { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] }
+        ],
+        Sydney: [
+          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
+          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '3' }] },
+        ],
+      })
+    });
+
+    it('can handle non-unique org unit names', () => {
+      const EVENTS = [
+        { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
+      ]
+      return expect(
+        groupEvents(models, EVENTS, {
+          type: 'allOrgUnitParentNames',
+          options: { parentCode: 'AU2', type: 'district' },
+        }),
+      ).to.eventually.deep.equal({
+        "Other (MLB)": [
+          { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
+        ],
+        "Other (SYD)": [
+          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
+        ],
+      })
+    });
+
+    it('can handle non-unique child org unit names', () => {
+      const EVENTS = [
+        { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
+        { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
+        { orgUnit: 'MLB_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '3' }] }, // same child org unit name
+        { orgUnit: 'SYD_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '4' }] }, // same child org unit name
+      ]
+      return expect(
+        groupEvents(models, EVENTS, {
+          type: 'allOrgUnitParentNames',
+          options: { parentCode: 'AU3', type: 'district' },
+        }),
+      ).to.eventually.deep.equal({
+        Melbourne: [
+          { orgUnit: 'MLB_C', orgUnitName: 'Collingwood', dataValues: [{ dataElement: 'A', value: '1' }] },
+          { orgUnit: 'MLB_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '3' }] },
+        ],
+        Sydney: [
+          { orgUnit: 'SYD_U', orgUnitName: 'Ultimo', dataValues: [{ dataElement: 'A', value: '2' }] },
+          { orgUnit: 'SYD_O', orgUnitName: 'Other', dataValues: [{ dataElement: 'A', value: '4' }] },
+        ],
+      })
     });
   });
 
-  it('getAllDataElementCodes returns empty by default', () =>
-    expect(
-      getAllDataElementCodes({
-        type: 'allOrgUnitNames',
-        options: { parentCode: 'TO', type: 'district' },
-      }),
-    ).to.deep.equal([]));
+  describe('type: dataValues', () => {
+    const EVENTS_2 = [
+      {
+        dataValues: [
+          { dataElement: 'A', value: '10' },
+          { dataElement: 'B', value: '20' },
+        ],
+      },
+      {
+        dataValues: [
+          { dataElement: 'A', value: '10' },
+          { dataElement: 'B', value: '21' },
+        ],
+      },
+      {
+        dataValues: [{ dataElement: 'C', value: '30' }],
+      },
+    ];
 
-  it('getAllDataElementCodes finds all data element codes used in conditionals', () =>
-    expect(
-      getAllDataElementCodes({
-        type: 'dataValues',
-        options: {
-          GROUPING_1: {
-            dataValues: { A: { operator: '=', value: '10' } },
+    it('groups', () =>
+      expect(
+        groupEvents(models, EVENTS_2, {
+          type: 'dataValues',
+          options: {
+            GROUPING_1: {
+              dataValues: { A: { operator: '=', value: '10' } },
+            },
+            GROUPING_2: {
+              dataValues: { B: { operator: '=', value: '21' } },
+            },
           },
-          GROUPING_2: {
-            dataValues: { B: { operator: '=', value: '21' } },
+        }),
+      ).to.eventually.deep.equal({
+        GROUPING_1: [
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '20' },
+            ],
           },
-        },
-      }),
-    ).to.deep.equal(['A', 'B']));
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '21' },
+            ],
+          },
+        ],
+        GROUPING_2: [
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '21' },
+            ],
+          },
+        ],
+      }));
+
+    it('uses a union type condition check', () =>
+      expect(
+        groupEvents(models, EVENTS_2, {
+          type: 'dataValues',
+          options: {
+            GROUPING_1: {
+              dataValues: { A: { operator: '=', value: '10' }, B: { operator: '=', value: '21' } },
+            },
+          },
+        }),
+      ).to.eventually.deep.equal({
+        GROUPING_1: [
+          {
+            dataValues: [
+              { dataElement: 'A', value: '10' },
+              { dataElement: 'B', value: '21' },
+            ],
+          },
+        ],
+      }));
+  });
 });

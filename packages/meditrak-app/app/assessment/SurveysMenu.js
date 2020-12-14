@@ -16,7 +16,7 @@ import { DEFAULT_PADDING, getGreyShade, THEME_COLOR_DARK } from '../globalStyles
 const MENU_ITEM_WIDTH = (Dimensions.get('window').width - 50) / 2;
 
 class DumbSurveysMenu extends React.Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.onMount();
   }
 
