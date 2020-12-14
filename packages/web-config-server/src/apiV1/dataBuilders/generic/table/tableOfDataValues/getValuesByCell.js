@@ -66,7 +66,7 @@ export const getPercentageCountOfValuesByCell = (cells, results) => {
   return percentageCountOfValuesByCell;
 };
 
-export const getCalculatedValuesByCell = async (models, cells, results, hierarchyId) => {
+export const getCalculatedValuesByCell = async (models, cells, results, config) => {
   const calculatedValuesByCell = {};
   await Promise.all(
     cells.map(async cell => {
@@ -76,7 +76,7 @@ export const getCalculatedValuesByCell = async (models, cells, results, hierarch
       } else {
         calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(models, results, {
           ...cell,
-          hierarchyId,
+          ...config,
         });
       }
     }),

@@ -10,8 +10,7 @@ import { getCalculatedValuesByCell } from './getValuesByCell';
 import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
-
-class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
+export class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
       this.config.cells.map(row =>
@@ -32,12 +31,9 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
 
   async buildValuesByCell() {
     const hierarchyId = await this.fetchEntityHierarchyId();
-    return getCalculatedValuesByCell(
-      this.models,
-      flatten(this.tableConfig.cells),
-      this.results,
+    return getCalculatedValuesByCell(this.models, flatten(this.tableConfig.cells), this.results, {
       hierarchyId,
-    );
+    });
   }
 }
 
