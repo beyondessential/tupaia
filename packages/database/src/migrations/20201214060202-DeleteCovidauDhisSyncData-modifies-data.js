@@ -5,16 +5,16 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = async function (db) {
   await db.runSql(`
     DELETE FROM dhis_sync_log dsl
     USING survey_response sr, survey s
@@ -47,13 +47,13 @@ exports.up = function(db) {
     AND a.survey_response_id = sr.id
     AND sr.survey_id = s.id
     AND s.code in ('FLWV', 'DS', 'DTC', 'APS', 'FWV');
-  `);  
+  `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
