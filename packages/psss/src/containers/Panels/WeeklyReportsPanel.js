@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -12,21 +12,13 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import Collapse from '@material-ui/core/Collapse';
 import Fade from '@material-ui/core/Fade';
 import Typography from '@material-ui/core/Typography';
-import {
-  EditableTableProvider,
-  ButtonSelect,
-  Card,
-  Alert,
-  Button,
-  LightPrimaryButton,
-} from '@tupaia/ui-components';
+import { ButtonSelect, Card, Alert, Button, LightPrimaryButton } from '@tupaia/ui-components';
 import {
   SiteAddress,
   Drawer,
   DrawerFooter,
   DrawerTray,
   DrawerHeader,
-  PercentageChangeCell,
   AlertCreatedModal,
   ComingSoon,
 } from '../../components';
@@ -46,27 +38,7 @@ import {
   useSingleWeeklyReport,
 } from '../../api';
 
-const columns = [
-  {
-    title: 'Syndromes',
-    key: 'title',
-    sortable: false,
-  },
-  {
-    title: '',
-    key: 'percentageChange',
-    CellComponent: PercentageChangeCell,
-    sortable: false,
-    width: '80px',
-  },
-  {
-    title: 'Total Cases',
-    key: 'totalCases',
-    editable: true,
-    sortable: false,
-    width: '80px',
-  },
-];
+import { EditableTableProvider } from '../../components/EditableTable';
 
 const SiteReportsSection = styled.section`
   position: relative;
@@ -162,6 +134,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     useEffect(() => {
       reset();
       setPanelStatus(PANEL_STATUSES.INITIAL);
+      setCountryTableStatus(TABLE_STATUSES.STATIC);
     }, [activeWeek]);
 
     const handleSubmit = async isVerified => {
@@ -197,14 +170,12 @@ export const WeeklyReportsPanelComponent = React.memo(
         </Collapse>
         <CountryReportsSection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
-            columns={columns}
-            data={countrySyndromesData}
             tableStatus={countryTableStatus}
+            setTableStatus={setCountryTableStatus}
           >
             <CountryReportTable
+              data={countrySyndromesData}
               isFetching={isLoading || isFetching}
-              tableStatus={countryTableStatus}
-              setTableStatus={setCountryTableStatus}
               sitesReported={countryWeekData['Sites Reported']}
               totalSites={countryWeekData.Sites}
               weekNumber={activeWeek}
@@ -226,13 +197,11 @@ export const WeeklyReportsPanelComponent = React.memo(
             />
             <Card variant="outlined" mb={3}>
               <EditableTableProvider
-                columns={columns}
-                data={sitesData.data[activeSiteIndex].syndromes}
                 tableStatus={sitesTableStatus}
+                setTableStatus={setSitesTableStatus}
               >
                 <SiteReportTable
-                  tableStatus={sitesTableStatus}
-                  setTableStatus={setSitesTableStatus}
+                  data={sitesData.data[activeSiteIndex].syndromes}
                   weekNumber={activeWeek}
                 />
               </EditableTableProvider>

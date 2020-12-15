@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getCurrentPeriod } from '@tupaia/utils';
-import { getWeekNumberByPeriod } from '../../utils';
+import { getWeekNumberByPeriod, getCurrentPeriod } from '../../utils';
 import { useData } from './useData';
 
 export const useConfirmedCountries = countryCodes => {
-  const period = getCurrentPeriod('WEEK');
+  const period = getCurrentPeriod();
   const currentWeekNumber = getWeekNumberByPeriod(period);
 
   const query = useData('confirmedWeeklyReport', { params: { startWeek: period } });
