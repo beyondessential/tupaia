@@ -6,11 +6,12 @@ import { flatten } from 'lodash';
 import { hasBESAdminAccess } from '../../permissions';
 import {
   createDashboardGroupDBFilter,
-  hasDashboardGroupsPermissions,
-} from '../GETDashboardGroups/assertDashboardGroupsPermissions';
+  hasDashboardGroupsGetPermissions,
+  hasDashboardGroupsEditPermissions,
+} from '../dashboardGroups';
 import { mergeFilter } from '../utilities';
 
-export const assertDashboardReportsPermissions = async (
+export const assertDashboardReportsGetPermissions = async (
   accessPolicy,
   models,
   dashboardReportId,
@@ -22,12 +23,31 @@ export const assertDashboardReportsPermissions = async (
   // If the user has permission for any of the groups this report is in
   // they have permission for the report
   for (const dashboardGroup of dashboardGroups[dashboardReportId]) {
-    if (await hasDashboardGroupsPermissions(accessPolicy, models, dashboardGroup)) {
+    if (await hasDashboardGroupsGetPermissions(accessPolicy, models, dashboardGroup)) {
       return true;
     }
   }
 
   throw new Error('Requires access to one of the dashboard groups this report is in');
+};
+
+export const assertDashboardReportsEditPermissions = async (
+  accessPolicy,
+  models,
+  dashboardReportId,
+) => {
+  const dashboardGroups = await models.dashboardGroup.findDashboardGroupsByReportId([
+    dashboardReportId,
+  ]);
+
+  // User should had edit permissions to all dashboard groups if they want to edit the report
+  for (const dashboardGroup of dashboardGroups[dashboardReportId]) {
+    if (!(await hasDashboardGroupsEditPermissions(accessPolicy, models, dashboardGroup))) {
+      throw new Error('Requires access to all of the dashboard groups this report is in');
+    }
+  }
+
+  return true;
 };
 
 export const createDashboardReportDBFilter = async (accessPolicy, models, criteria) => {

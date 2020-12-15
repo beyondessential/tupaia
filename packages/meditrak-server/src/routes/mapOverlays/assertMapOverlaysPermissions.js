@@ -3,17 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { hasBESAdminAccess } from '../../permissions';
-import { hasAccessToEntityForVisualisation } from '../utilities';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import {
+  hasAccessToEntityForVisualisation,
+  hasTupaiaAdminAccessToEntityForVisualisation,
+} from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
-export const assertMapOverlaysPermissions = async (accessPolicy, models, mapOverlayId) => {
+export const assertMapOverlaysGetPermissions = async (accessPolicy, models, mapOverlayId) => {
   const mapOverlay = await models.mapOverlay.findById(mapOverlayId);
+  if (!mapOverlay) {
+    throw new Error(`No map overlay exists with id ${mapOverlayId}`);
+  }
 
   const countryCodes = mapOverlay.countryCodes || [];
   const entities = await models.entity.find({ code: countryCodes });
-
   for (let i = 0; i < entities.length; i++) {
     if (
       await hasAccessToEntityForVisualisation(
@@ -28,6 +33,44 @@ export const assertMapOverlaysPermissions = async (accessPolicy, models, mapOver
   }
 
   throw new Error('You do not have permissions for the requested map overlay(s)');
+};
+
+export const assertMapOverlaysEditPermissions = async (accessPolicy, models, mapOverlayId) => {
+  const mapOverlay = await models.mapOverlay.findById(mapOverlayId);
+  if (!mapOverlay) {
+    throw new Error(`No map overlay exists with id ${mapOverlayId}`);
+  }
+
+  const countryCodes = mapOverlay.countryCodes || [];
+  const entities = await models.entity.find({ code: countryCodes });
+  let hasUserGroupAccess = false;
+
+  // Check we have tupaia admin access to all countries the mapOverlay is in
+  // And user group access to at least one of the countries
+  for (let i = 0; i < entities.length; i++) {
+    if (!(await hasTupaiaAdminAccessToEntityForVisualisation(accessPolicy, models, entities[i]))) {
+      throw new Error('Requires tupaia admin panel access to all countries for the map overlay');
+    }
+    if (
+      !hasUserGroupAccess &&
+      (await hasAccessToEntityForVisualisation(
+        accessPolicy,
+        models,
+        entities[i],
+        mapOverlay.userGroup,
+      ))
+    ) {
+      hasUserGroupAccess = true;
+    }
+  }
+
+  if (!hasUserGroupAccess) {
+    throw new Error(
+      'Cannot edit a map overlay you do not have user group access to in at least one country',
+    );
+  }
+
+  return true;
 };
 
 export const createMapOverlayDBFilter = async (accessPolicy, models, criteria) => {

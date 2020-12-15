@@ -29,14 +29,20 @@ const {
   createPermissionGroups,
   createUserEntityPermissions,
   deleteAnswers,
+  deleteDashboardGroups,
+  deleteDashboardReports,
   deleteDisasters,
   deleteFeedItems,
+  deleteMapOverlays,
   deleteSurveyResponses,
   deleteUserEntityPermissions,
   editAccessRequests,
   editAnswers,
+  editDashboardGroups,
+  editDashboardReports,
   editDisasters,
   editFeedItems,
+  editMapOverlays,
   editSurveyResponses,
   editUserAccounts,
   editUserEntityPermissions,
@@ -232,6 +238,9 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/disasters/:recordId', editDisasters);
   app.put('(/v[0-9]+)/feedItems/:recordId', editFeedItems);
+  app.put('(/v[0-9]+)/dashboardGroups/:recordId', editDashboardGroups);
+  app.put('(/v[0-9]+)/dashboardReports/:recordId', editDashboardReports);
+  app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
   app.put('(/v[0-9]+)/me', editUser);
 
   // TODO: Remove generic handlers when all endpoints are implemented
@@ -247,6 +256,9 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/disasters/:recordId', deleteDisasters);
   app.delete('(/v[0-9]+)/feedItems/:recordId', deleteFeedItems);
+  app.delete('(/v[0-9]+)/dashboardGroups/:recordId', deleteDashboardGroups);
+  app.delete('(/v[0-9]+)/dashboardReports/:recordId', deleteDashboardReports);
+  app.delete('(/v[0-9]+)/mapOverlays/:recordId', deleteMapOverlays);
   // TODO: Remove the generic handlers once all DELETE endpoints have specific handlers
   app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
