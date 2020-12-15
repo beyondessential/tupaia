@@ -27,6 +27,15 @@ const PREVIOUS_THREE_WEEKS_DEFAULT_VALUES = {
   siteAverage3WeeksAgo: 0
 };
 
+//Should affect these indicators
+//"PSSS_Confirmed_DIA_Alert_Threshold_Level"
+//"PSSS_DIA_Alert_Threshold_Level"
+//"PSSS_DLI_Alert_Threshold_Level"
+//"PSSS_Confirmed_DLI_Alert_Threshold_Level"
+//"PSSS_ILI_Alert_Threshold_Level"
+//"PSSS_Confirmed_ILI_Alert_Threshold_Level"
+//"PSSS_PF_Alert_Threshold_Level"
+//"PSSS_Confirmed_PF_Alert_Threshold_Level"
 const psssIndicatorCode = (code, isConfirmed = false) => {
   const descriptor = isConfirmed ? 'PSSS_Confirmed' : 'PSSS';
   const indicatorCodeParts = [descriptor, code, 'Alert_Threshold_Level'];
