@@ -20,6 +20,7 @@ class TableOfCalculatedValuesForOrgUnitsBuilder extends TableOfCalculatedValuesB
     const { results, period } = await this.fetchAnalyticsAndMetadata();
     this.results = results;
     this.tableConfig = new TableConfig(this.models, this.config, this.results);
+    // Build columns first because `buildValuesByCell` function depends on it
     const columns = await this.buildColumns();
     this.valuesByCell = await this.buildValuesByCell(columns);
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
@@ -28,25 +29,7 @@ class TableOfCalculatedValuesForOrgUnitsBuilder extends TableOfCalculatedValuesB
     const rows = await this.buildRows();
     const data = { columns, rows, period };
 
-    if (this.tableConfig.hasRowCategories()) {
-      const categories = await this.buildRowCategories();
-
-      if (this.config.categoryAggregator) {
-        const categoryData = this.buildCategoryData(Object.values(rows));
-        data.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
-      } else {
-        data.rows = [...rows, ...categories];
-      }
-    }
-
-    if (
-      this.tableConfig.columnType === ORG_UNIT_COL_KEY ||
-      this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY
-    ) {
-      const columns = await this.replaceOrgUnitCodesWithNames(data.columns);
-      data.columns = columns.sort(getSortByKey('title'));
-    }
-    return data;
+    return this.buildFromExtraConfig(data);
   }
 
   /** 

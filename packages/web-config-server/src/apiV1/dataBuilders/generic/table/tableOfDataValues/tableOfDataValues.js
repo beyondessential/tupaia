@@ -35,14 +35,20 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const rows = await this.buildRows(columns);
     const data = { columns, rows, period };
 
+    return this.buildFromExtraConfig(data);
+  }
+
+  async buildFromExtraConfig(data) {
+    const newData = data;
+    const { rows } = data;
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
 
       if (this.config.categoryAggregator) {
         const categoryData = this.buildCategoryData(Object.values(rows));
-        data.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
+        newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {
-        data.rows = [...rows, ...categories];
+        newData.rows = [...rows, ...categories];
       }
     }
 
@@ -51,9 +57,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY
     ) {
       const columns = await this.replaceOrgUnitCodesWithNames(data.columns);
-      data.columns = columns.sort(getSortByKey('title'));
+      newData.columns = columns.sort(getSortByKey('title'));
     }
-    return data;
+
+    if (this.config.valueNotToDisplay) {
+      const excludedValue = this.config.valueNotToDisplay;
+      newData.rows.forEach(row => {
+        Object.entries(row).forEach(([key, value]) => {
+          if (value === excludedValue) delete row[key];
+        });
+      });
+    }
+    return newData;
   }
 
   async fetchAnalyticsAndMetadata() {

@@ -140,7 +140,11 @@ export class DataBuilder {
     if (!orgUnitCodes || orgUnitCodes.length < 1) return orgUnitNames;
     await Promise.all(
       orgUnitCodes.map(async orgUnitCode => {
-        orgUnitNames[orgUnitCode] = await transformValue(this.models, 'orgUnitCodeToName', orgUnitCode);
+        orgUnitNames[orgUnitCode] = await transformValue(
+          this.models,
+          'orgUnitCodeToName',
+          orgUnitCode,
+        );
       }),
     );
     return orgUnitNames;
