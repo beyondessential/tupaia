@@ -131,11 +131,12 @@ export const WeeklyReportsPanelComponent = React.memo(
       { isLoading: isConfirming, isError, reset, isSuccess, error },
     ] = useConfirmWeeklyReport(countryCode, activeWeek);
 
+    // Reset local state when the panel opens and closes
     useEffect(() => {
       reset();
       setPanelStatus(PANEL_STATUSES.INITIAL);
       setCountryTableStatus(TABLE_STATUSES.STATIC);
-    }, [activeWeek]);
+    }, [isOpen]);
 
     const handleSubmit = async isVerified => {
       if (isVerified) {
