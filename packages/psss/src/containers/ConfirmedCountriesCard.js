@@ -26,7 +26,7 @@ export const ReportsSubmittedCardComponent = React.memo(({ countryCodes }) => {
 
   return (
     <Card variant="outlined">
-      <CardHeader title="Current reports submitted" label={`Week ${currentWeekNumber}`} />
+      <CardHeader title="Current Confirmed Reports" label={`Week ${currentWeekNumber}`} />
       <StyledCardContent>
         <Typography variant="h3">
           {isLoading ? (
