@@ -4,16 +4,12 @@
  */
 
 import flatten from 'lodash.flatten';
-import { getSortByKey } from '@tupaia/utils';
 import { TableConfig } from './TableConfig';
 import { buildBaseRowsForOrgUnit } from './buildBaseRowsForOrgUnit';
 import { getCalculatedValuesByCell } from './getValuesByCell';
 import { buildColumnSummary, buildRowSummary } from './addSummaryToTable';
 import { TotalCalculator } from './TotalCalculator';
 import { TableOfCalculatedValuesBuilder } from './tableOfCalculatedValues';
-
-const ORG_UNIT_COL_KEY = '$orgUnit';
-const ORG_UNIT_WITH_TYPE_COL_KEY = '$orgUnitTypeName';
 
 class TableOfCalculatedValuesForOrgUnitsBuilder extends TableOfCalculatedValuesBuilder {
   async build() {
