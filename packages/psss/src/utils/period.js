@@ -13,7 +13,7 @@ import { DUE_ISO_DAY } from '../constants';
 
 /**
  *
- * Convenience utils that build on top of getCurrentPeriod
+ * Convenience utils that build on top of @tupaia/utils
  * Uses period string (eg. 2020W32)
  * Using local time for current period and not UTC. Therefore not using @tupaia/utils getCurrentPeriod
  */
