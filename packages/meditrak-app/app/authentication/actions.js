@@ -49,7 +49,7 @@ export const login = (emailAddress, password) => async (
   const loginCredentials = {
     emailAddress,
     password,
-    deviceName: DeviceInfo.getDeviceName(),
+    deviceName: await DeviceInfo.getDeviceName(),
     devicePlatform: Platform.OS,
     installId,
   };

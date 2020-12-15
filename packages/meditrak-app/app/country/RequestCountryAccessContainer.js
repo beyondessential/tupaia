@@ -5,15 +5,15 @@
 
 import { connect } from 'react-redux';
 
+import { database } from '../database';
 import { RequestCountryAccessPage } from './RequestCountryAccessPage';
 import { COUNTRY_REQUEST_STATUSES } from './constants';
 import { sendCountryAccessRequest, setCountryAccessFormFieldValues } from './actions';
 
-function mapStateToProps({ country, authentication }, { screenProps }) {
+function mapStateToProps({ country, authentication }) {
   const { requestCountryStatus, requestCountryErrorMessage, requestCountryFieldValues } = country;
 
   const { currentUserId } = authentication;
-  const { database } = screenProps;
   const user = database.findOne('User', currentUserId, 'id');
   return {
     isLoading: requestCountryStatus === COUNTRY_REQUEST_STATUSES.COUNTRY_REQUESTING,
@@ -24,9 +24,7 @@ function mapStateToProps({ country, authentication }, { screenProps }) {
   };
 }
 
-function mapDispatchToProps(dispatch, { screenProps }) {
-  const { database } = screenProps;
-
+function mapDispatchToProps(dispatch) {
   return {
     onSubmitFields: ({ entityIds, message }) =>
       dispatch(sendCountryAccessRequest(entityIds, message)),

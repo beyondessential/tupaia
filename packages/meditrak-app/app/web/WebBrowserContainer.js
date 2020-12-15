@@ -22,7 +22,7 @@ import {
 
 class WebBrowser extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    title: navigation.state.params ? navigation.state.params.title : '',
+    headerTitle: navigation.state.params ? navigation.state.params.title : '',
   });
 
   onNavigationStateChange = navState => {

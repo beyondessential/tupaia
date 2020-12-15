@@ -5,7 +5,7 @@
 import { Route } from '../Route';
 import { PSSS_PERMISSION_GROUP } from '../../constants';
 
-export class ConfirmedWeeklyReportRoute extends Route {
+export class FetchConfirmedWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
     const countryCodes = await this.getAccessibleCountryCodes();

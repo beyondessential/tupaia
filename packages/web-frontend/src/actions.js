@@ -110,15 +110,10 @@ export const DIALOG_PAGE_SIGNUP = 'DIALOG_PAGE_SIGNUP';
 export const DIALOG_PAGE_RESET_PASSWORD = 'DIALOG_PAGE_RESET_PASSWORD';
 export const OPEN_ENLARGED_DIALOG = 'OPEN_ENLARGED_DIALOG';
 export const CLOSE_ENLARGED_DIALOG = 'CLOSE_ENLARGED_DIALOG';
+export const FETCH_ENLARGED_DIALOG_DATA = 'FETCH_ENLARGED_DIALOG_DATA';
 export const SET_ENLARGED_DIALOG_DATE_RANGE = 'SET_ENLARGED_DIALOG_DATE_RANGE';
-export const SET_DRILL_DOWN_DATE_RANGE = 'SET_DRILL_DOWN_DATE_RANGE';
 export const UPDATE_ENLARGED_DIALOG = 'UPDATE_ENLARGED_DIALOG';
 export const UPDATE_ENLARGED_DIALOG_ERROR = 'UPDATE_ENLARGED_DIALOG_ERROR';
-export const CLOSE_DRILL_DOWN = 'CLOSE_DRILL_DOWN';
-export const ATTEMPT_DRILL_DOWN = 'ATTEMPT_DRILL_DOWN';
-export const FETCH_DRILL_DOWN_SUCCESS = 'FETCH_DRILL_DOWN_SUCCESS';
-export const FETCH_DRILL_DOWN_ERROR = 'FETCH_DRILL_DOWN_ERROR';
-export const GO_TO_DRILL_DOWN_LEVEL = 'GO_TO_DRILL_DOWN_LEVEL';
 export const SET_CONFIG_GROUP_VISIBLE = 'SET_CONFIG_GROUP_VISIBLE';
 export const DIALOG_PAGE_USER_MENU = 'DIALOG_PAGE_USER_MENU';
 export const SET_PASSWORD_RESET_TOKEN = 'SET_PASSWORD_RESET_TOKEN';
@@ -1046,57 +1041,6 @@ export function openEnlargedDialog(viewId) {
   };
 }
 
-export function closeDrillDown() {
-  return {
-    type: CLOSE_DRILL_DOWN,
-  };
-}
-
-export function attemptDrillDown({
-  viewContent,
-  startDate,
-  endDate,
-  parameterLink,
-  parameterValue,
-  drillDownLevel,
-}) {
-  const { viewId, organisationUnitCode, dashboardGroupId, infoViewKey } = viewContent;
-  return {
-    type: ATTEMPT_DRILL_DOWN,
-    organisationUnitCode,
-    viewId,
-    drillDownLevel,
-    dashboardGroupId,
-    parameterLink,
-    parameterValue,
-    startDate,
-    endDate,
-    infoViewKey,
-  };
-}
-
-export function fetchDrillDownSuccess(drillDownLevel, viewContent) {
-  return {
-    type: FETCH_DRILL_DOWN_SUCCESS,
-    drillDownLevel,
-    viewContent,
-  };
-}
-
-export function fetchDrillDownError(errorMessage) {
-  return {
-    type: FETCH_DRILL_DOWN_ERROR,
-    errorMessage,
-  };
-}
-
-export function goToDrillDownLevel(drillDownLevel) {
-  return {
-    type: GO_TO_DRILL_DOWN_LEVEL,
-    drillDownLevel,
-  };
-}
-
 export function setPasswordResetToken(passwordResetToken) {
   return {
     type: SET_PASSWORD_RESET_TOKEN,
@@ -1104,27 +1048,27 @@ export function setPasswordResetToken(passwordResetToken) {
   };
 }
 
-export function setEnlargedDashboardDateRange(startDate, endDate) {
+export function setEnlargedDashboardDateRange(drillDownLevel, startDate, endDate) {
   return {
     type: SET_ENLARGED_DIALOG_DATE_RANGE,
+    drillDownLevel,
     startDate,
     endDate,
   };
 }
 
-export function setDrillDownDateRange(startDate, endDate, currentLevel) {
+export function fetchEnlargedDialogData(options) {
   return {
-    type: SET_DRILL_DOWN_DATE_RANGE,
-    startDate,
-    endDate,
-    drillDownLevel: currentLevel,
+    type: FETCH_ENLARGED_DIALOG_DATA,
+    options,
   };
 }
 
-export function updateEnlargedDialog(viewContent) {
+export function updateEnlargedDialog(options, viewContent) {
   return {
     type: UPDATE_ENLARGED_DIALOG,
     viewContent,
+    options,
   };
 }
 

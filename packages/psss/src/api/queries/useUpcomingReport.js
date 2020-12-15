@@ -39,11 +39,11 @@ export const useUpcomingReport = countryCode => {
       data,
       reportStatus: REPORT_STATUSES.UPCOMING,
       period: currentPeriod,
-      days: totalDays,
+      daysTillDueDay: totalDays,
     };
   }
 
-  const status = daysTillDueDay > 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
+  const status = daysTillDueDay >= 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
 
   return {
     ...query,
