@@ -4,7 +4,6 @@
  */
 
 import {
-  getCurrentPeriod,
   convertPeriodStringToDateRange,
   periodToDateString,
   dateStringToPeriod,
@@ -14,9 +13,11 @@ import { DUE_ISO_DAY } from '../constants';
 
 /**
  *
- * Convenience utils that build on top of @tupaia/utils
+ * Convenience utils that build on top of getCurrentPeriod
  * Uses period string (eg. 2020W32)
+ * Using local time for current period and not UTC. Therefore not using @tupaia/utils getCurrentPeriod
  */
+export const getCurrentPeriod = () => format(new Date(), "RRRR'W'II");
 
 export const getDisplayDatesByPeriod = period => {
   const start = getFormattedStartByPeriod(period, 'LLL d');
@@ -35,7 +36,7 @@ export const getFormattedEndByPeriod = (period, f) => {
 };
 
 export const getCurrentIsoWeekNumber = () => {
-  const period = getCurrentPeriod('WEEK');
+  const period = getCurrentPeriod();
   return getWeekNumberByPeriod(period);
 };
 

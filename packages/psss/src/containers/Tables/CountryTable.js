@@ -7,12 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import differenceInWeeks from 'date-fns/difference_in_weeks';
-import { getCurrentPeriod } from '@tupaia/utils';
 import { useParams } from 'react-router-dom';
 import { ExpandableTable, TablePaginator } from '@tupaia/ui-components';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
-import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod, getCurrentPeriod } from '../../utils';
 import { StatusCell, AlertCell, SitesReportedCell } from '../../components';
 import { MIN_DATE } from '../../constants';
 import { SiteSummaryTable } from './SiteSummaryTable';
@@ -103,7 +102,7 @@ const TOTAL_RECORDS = differenceInWeeks(new Date(), MIN_DATE);
 
 export const CountryTable = () => {
   const { countryCode } = useParams();
-  const period = getCurrentPeriod('WEEK');
+  const period = getCurrentPeriod();
 
   const {
     isLoading,
