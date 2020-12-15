@@ -22,7 +22,7 @@ const getPermissionInfoFromSurvey = async (models, surveyId) => {
 };
 
 export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
-  const { permissionGroup, countryCodes } = getPermissionInfoFromSurvey(models, surveyId);
+  const { permissionGroup, countryCodes } = await getPermissionInfoFromSurvey(models, surveyId);
   if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) {
     return true;
   }
@@ -32,7 +32,7 @@ export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId)
 
 // Used for edit and delete actions
 export const assertSurveyEditPermissions = async (accessPolicy, models, surveyId) => {
-  const { permissionGroup, countryCodes } = getPermissionInfoFromSurvey(models, surveyId);
+  const { permissionGroup, countryCodes } = await getPermissionInfoFromSurvey(models, surveyId);
   if (
     accessPolicy.allowsAll(countryCodes, permissionGroup.name) &&
     accessPolicy.allowsAll(countryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)

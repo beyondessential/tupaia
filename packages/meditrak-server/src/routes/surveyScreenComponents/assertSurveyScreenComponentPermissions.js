@@ -19,7 +19,7 @@ const getSurveyIdFromScreenComponent = async (models, surveyScreenComponentId) =
     throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
   }
 
-  const surveyScreen = await models.survey.findById(surveyScreenComponent.screen_id);
+  const surveyScreen = await models.surveyScreen.findById(surveyScreenComponent.screen_id);
   return surveyScreen.survey_id;
 };
 
