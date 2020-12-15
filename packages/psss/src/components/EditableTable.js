@@ -7,6 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
+import { TABLE_STATUSES } from '../constants';
 
 const EditableTextField = styled(TextField)`
   margin: 0;
@@ -40,13 +41,6 @@ const ReadOnlyTextField = styled(EditableTextField)`
     box-shadow: none;
   }
 `;
-
-const TABLE_STATUSES = {
-  STATIC: 'static',
-  EDITABLE: 'editable',
-  LOADING: 'loading',
-  SAVING: 'saving',
-};
 
 export const EditableTableContext = createContext({});
 

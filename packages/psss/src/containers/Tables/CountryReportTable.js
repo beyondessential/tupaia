@@ -29,6 +29,7 @@ import {
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { useSaveCountryReport } from '../../api';
 import { EditableCell, EditableTableContext } from '../../components/EditableTable';
+import { TABLE_STATUSES } from '../../constants';
 
 const FormRow = styled(FlexStart)`
   flex: 1;
@@ -68,13 +69,6 @@ const StyledTextField = styled(TextField)`
     text-align: center;
   }
 `;
-
-const TABLE_STATUSES = {
-  STATIC: 'static',
-  EDITABLE: 'editable',
-  SAVING: 'saving',
-  ERROR: 'error',
-};
 
 const StyledTh = styled.th`
   background: #f1f1f1;

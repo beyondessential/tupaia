@@ -24,6 +24,7 @@ import {
 } from '../../components';
 import { closeWeeklyReportsPanel, checkWeeklyReportsPanelIsOpen, getActiveWeek } from '../../store';
 import * as COLORS from '../../constants/colors';
+import { TABLE_STATUSES } from '../../constants';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import {
   countryFlagImage,
@@ -89,11 +90,6 @@ const toCommaList = values =>
     .toUpperCase()
     .replace(/,(?!.*,)/gim, ' and');
 
-const TABLE_STATUSES = {
-  STATIC: 'static',
-  SAVING: 'saving',
-};
-
 const PANEL_STATUSES = {
   INITIAL: 'initial',
   SAVING: 'saving',
@@ -154,6 +150,8 @@ export const WeeklyReportsPanelComponent = React.memo(
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
     const date = `Week ${getWeekNumberByPeriod(activeWeek)} ${getDisplayDatesByPeriod(activeWeek)}`;
     const unVerifiedList = toCommaList(unVerifiedAlerts);
+    const confirmIsDisabled =
+      isSaving || isLoading || isFetching || countryTableStatus === TABLE_STATUSES.EDITABLE;
 
     return (
       <StyledDrawer open={isOpen} onClose={handleClose}>
@@ -209,7 +207,7 @@ export const WeeklyReportsPanelComponent = React.memo(
             </Card>
           </SiteReportsSection>
         )}
-        <DrawerFooter disabled={isSaving || isLoading || isFetching}>
+        <DrawerFooter disabled={confirmIsDisabled}>
           <Fade in={verificationRequired || error}>
             <PositionedAlert severity="error">
               {verificationRequired
