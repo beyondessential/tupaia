@@ -18,7 +18,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const countryCodes = ['FJ', 'FM', 'MH', 'WS'];
+const countryCodes = ['FJ', 'FM', 'MH', 'WS', 'TO', 'KI', 'SB', 'VU'];
 
 const facilityLevelDashboardReportConfig = {
   id: 'RH_Products_Stock_Availability_HFRSA_And_Spot_Check_Survey_Data',
@@ -245,6 +245,7 @@ const nationalAndProvincialLevelDashboardReportConfig = {
       excludeCondition: { value: 'No data', operator: '=' },
     },
     columns: '$orgUnit',
+    valueNotToDisplay: 'No data',
     entityAggregation: {
       dataSourceEntityType: 'facility',
     },
