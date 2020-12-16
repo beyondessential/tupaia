@@ -42,8 +42,8 @@ const validateParameters = async (parameters: Record<string, unknown>[]) =>
 
 const assertDefaultValuesAreNumbersOrUndefined = (defaultValues: Record<string, unknown>) => {
   Object.entries(defaultValues).forEach(([code, value]) => {
-    if (isNaN(value) && value !== 'undefined') {
-      throw new Error(`Value '${code}' in defaultValues has to be a number or 'undefined'`);
+    if (typeof value !== 'number' && value !== 'undefined') {
+      throw new Error(`Value '${code}' in defaultValues is not a number or 'undefined': ${value}`);
     }
   });
 };
