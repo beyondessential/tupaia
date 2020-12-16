@@ -99,6 +99,7 @@ const facilityLevelDashboardReportConfig = {
     type: 'matrix',
     placeholder: '/static/media/PEHSMatrixPlaceholder.png',
     periodGranularity: 'one_year_at_a_time',
+    showPeriodRange: 'all',
     presentationOptions: {
       red: {
         color: '#b71c1c',
@@ -256,6 +257,7 @@ const nationalAndProvincialLevelDashboardReportConfig = {
     type: 'matrix',
     placeholder: '/static/media/PEHSMatrixPlaceholder.png',
     periodGranularity: 'one_year_at_a_time',
+    showPeriodRange: 'all',
   },
 };
 
