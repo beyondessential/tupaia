@@ -4,7 +4,6 @@
  */
 
 import {
-  allValuesAreNumbers,
   constructIsArrayOf,
   constructIsEmptyOr,
   hasContent,
@@ -42,11 +41,23 @@ const validateParameters = async (parameters: Record<string, unknown>[]) =>
     ),
   );
 
+const assertDefaultValuesAreNumbersOrUndefined = (defaultValues: Record<string, unknown>) => {
+  Object.entries(defaultValues).forEach(([code, value]) => {
+    if (typeof value !== 'number' && value !== 'undefined') {
+      throw new Error(`Value '${code}' in defaultValues is not a number or 'undefined': ${value}`);
+    }
+  });
+};
+
 export const configValidators = {
   formula: [hasContent, isAString],
   aggregation: [validateAggregation],
   parameters: [constructIsEmptyOr([constructIsArrayOf('object'), validateParameters])],
   defaultValues: [
-    constructIsEmptyOr([isPlainObject, assertAllDefaultsAreCodesInFormula, allValuesAreNumbers]),
+    constructIsEmptyOr([
+      isPlainObject,
+      assertAllDefaultsAreCodesInFormula,
+      assertDefaultValuesAreNumbersOrUndefined,
+    ]),
   ],
 };
