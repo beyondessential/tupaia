@@ -24,7 +24,7 @@ import {
 } from '../../components';
 import { closeWeeklyReportsPanel, checkWeeklyReportsPanelIsOpen, getActiveWeek } from '../../store';
 import * as COLORS from '../../constants/colors';
-import { TABLE_STATUSES } from '../../constants';
+import { REPORT_STATUSES, TABLE_STATUSES } from '../../constants';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import {
   countryFlagImage,
@@ -38,7 +38,6 @@ import {
   getSitesMetaData,
   useSingleWeeklyReport,
 } from '../../api';
-
 import { EditableTableProvider } from '../../components/EditableTable';
 
 const SiteReportsSection = styled.section`
@@ -118,14 +117,14 @@ export const WeeklyReportsPanelComponent = React.memo(
       isLoading,
       data: countryWeekData,
       syndromes: countrySyndromesData,
-      alerts,
+      reportStatus,
       unVerifiedAlerts,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
 
-    const [
-      confirmReport,
-      { isLoading: isConfirming, isError, reset, isSuccess, error },
-    ] = useConfirmWeeklyReport(countryCode, activeWeek);
+    const [confirmReport, { isLoading: isConfirming, reset, error }] = useConfirmWeeklyReport(
+      countryCode,
+      activeWeek,
+    );
 
     // Reset local state when the panel opens and closes
     useEffect(() => {
@@ -215,7 +214,7 @@ export const WeeklyReportsPanelComponent = React.memo(
                 : error?.message}
             </PositionedAlert>
           </Fade>
-          {isSuccess ? (
+          {reportStatus === REPORT_STATUSES.SUBMITTED ? (
             <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
               Confirmed
             </LightPrimaryButton>

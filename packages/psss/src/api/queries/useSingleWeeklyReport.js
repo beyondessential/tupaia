@@ -5,6 +5,8 @@
 
 import { queryCache } from 'react-query';
 import { useData } from './useData';
+import { calculateWeekStatus } from '../../utils';
+import { REPORT_STATUSES } from '../../constants';
 
 const SYNDROMES = {
   AFR: 'Acute Fever and Rash (AFR)',
@@ -55,15 +57,15 @@ const getAlerts = row =>
     [],
   );
 
-export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQueryKey) => {
-  const query = useData(
-    `weeklyReport/${orgUnit}`,
+const useCachedQuery = (endpoint, orgUnit, period, queryKey) => {
+  return useData(
+    `${endpoint}/${orgUnit}`,
     {
       params: { startWeek: period, endWeek: period },
     },
     {
       initialData: () => {
-        const cachedQuery = queryCache.getQueryData([`weeklyReport/${orgUnit}`, pageQueryKey]);
+        const cachedQuery = queryCache.getQueryData([`${endpoint}/${orgUnit}`, queryKey]);
         const results = cachedQuery?.data?.results;
 
         if (!results) {
@@ -75,16 +77,31 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
         }
 
         const record = results.filter(row => row.period === period);
-        return record.length > 0
-          ? { ...cachedQuery, data: { ...cachedQuery.data, results: record } }
-          : undefined;
+
+        // If there is no results in the cache,
+        // don't try to populate the query with initial data
+        if (record.length === 0) {
+          return undefined;
+        }
+
+        return { ...cachedQuery, data: { ...cachedQuery.data, results: record } };
       },
     },
   );
+};
 
-  if (query.isLoading || query.data.length === 0) {
+export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQueryKey) => {
+  const reportQuery = useCachedQuery('weeklyReport', orgUnit, period, pageQueryKey);
+  const confirmedReportQuery = useCachedQuery(
+    'confirmedWeeklyReport',
+    orgUnit,
+    period,
+    pageQueryKey,
+  );
+
+  if (reportQuery.isLoading || confirmedReportQuery.isLoading || reportQuery.data.length === 0) {
     return {
-      ...query,
+      ...reportQuery,
       data: {
         Sites: 0,
         'Sites Reported': 0,
@@ -92,19 +109,20 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
       syndromes: getEmptyTableData(),
       alerts: [],
       unVerifiedAlerts: [],
+      reportStatus: REPORT_STATUSES.OVERDUE,
     };
   }
 
-  const data = query.data[0];
-  const alerts = getAlerts(data);
-
+  const [report] = reportQuery.data;
+  const [confirmedReport] = confirmedReportQuery?.data;
+  const alerts = getAlerts(report);
   const unVerifiedAlerts = alerts.filter(a => !verifiedStatuses.includes(a));
-  const syndromes = getTableData(data);
 
   return {
-    ...query,
-    data,
-    syndromes,
+    ...reportQuery,
+    data: report,
+    reportStatus: calculateWeekStatus(report, confirmedReport),
+    syndromes: getTableData(report),
     alerts,
     unVerifiedAlerts,
   };
