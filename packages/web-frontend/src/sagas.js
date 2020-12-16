@@ -125,7 +125,7 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getTimeZone } from './utils';
+import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getBrowserTimeZone } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -719,7 +719,7 @@ function* fetchViewData(parameters, errorHandler) {
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    timeZone: getTimeZone(),
+    timeZone: getBrowserTimeZone(),
     ...extraUrlParameters,
   };
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
@@ -1076,10 +1076,10 @@ function* watchLogoutSuccess() {
 function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
-    yield call(fetchProjectData);
     const { PROJECT } = decodeLocation(location);
     const overlay = PROJECT === 'explore' ? LANDING : null;
     yield put(setOverlayComponent(overlay));
+    yield call(fetchProjectData);
     yield call(handleLocationChange, {
       location,
       // Assume an empty location string so that the url will trigger fetching fresh data

@@ -16,8 +16,12 @@ const fetchAnalytics = async (
   query: FetchReportQuery,
   params: DataElementFetchParams,
 ): Promise<FetchResponse> => {
-  const { organisationUnitCodes, period } = query;
-  return aggregator.fetchAnalytics(params.dataElementCodes, organisationUnitCodes, period);
+  const { organisationUnitCodes, period, startDate, endDate } = query;
+  return aggregator.fetchAnalytics(params.dataElementCodes, organisationUnitCodes, {
+    period,
+    startDate,
+    endDate,
+  });
 };
 
 const buildParams = (params: unknown): DataElementFetchParams => {

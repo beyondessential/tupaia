@@ -64,6 +64,7 @@ import { DateRangePicker } from '../../DateRangePicker';
 import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles';
 import { Matrix } from './components';
 import { formatDataValue } from '../../../utils';
+import { getLimits } from '../../../utils/periodGranularities';
 
 const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
@@ -154,11 +155,6 @@ export class MatrixWrapper extends Component {
     this.updateWrapper = this.updateWrapper.bind(this);
   }
 
-  componentDidMount() {
-    const { startDate, endDate } = this.props.viewContent || {};
-    this.props.onSetDateRange(startDate, endDate); // Force a load when the expanded matrix first mounts
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return (
       !shallowEqual(this.props, nextProps) ||
@@ -205,6 +201,8 @@ export class MatrixWrapper extends Component {
       return null; // Not using a period selector
     }
 
+    const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
+
     return (
       <div style={styles.periodSelector}>
         <DateRangePicker
@@ -212,6 +210,8 @@ export class MatrixWrapper extends Component {
           onSetDates={this.onSetDateRange}
           startDate={viewContent.startDate}
           endDate={viewContent.endDate}
+          min={datePickerLimits.startDate}
+          max={datePickerLimits.endDate}
           isLoading={isLoading}
         />
       </div>

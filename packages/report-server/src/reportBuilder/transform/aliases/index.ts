@@ -8,7 +8,11 @@ import {
   keyValueByOrgUnit,
   keyValueByPeriod,
 } from './keyValueByFieldAliases';
-import { mostRecentValuePerOrgUnit, firstValuePerPeriodPerOrgUnit } from './aggregateAliases';
+import {
+  mostRecentValuePerOrgUnit,
+  firstValuePerPeriodPerOrgUnit,
+  lastValuePerPeriodPerOrgUnit,
+} from './aggregateAliases';
 import { convertPeriodToWeek } from './periodConversionAliases';
 
 export const aliases = {
@@ -17,5 +21,6 @@ export const aliases = {
   keyValueByPeriod,
   mostRecentValuePerOrgUnit,
   firstValuePerPeriodPerOrgUnit,
+  lastValuePerPeriodPerOrgUnit,
   convertPeriodToWeek,
 };

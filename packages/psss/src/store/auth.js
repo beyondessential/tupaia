@@ -50,14 +50,23 @@ export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.is
 
 const PSSS_PERMISSION_GROUP = 'PSSS';
 
-export const getEntitiesAllowed = createSelector(getCurrentUser, user => {
+export const canUserViewCountry = (entities, match) =>
+  entities.some(entityCode => entityCode === match.params.countryCode);
+
+export const canUserViewMultipleCountries = entities => entities.length > 1;
+
+const getEntitiesAllowedByUser = user => {
   if (!user) {
     return [];
   }
 
   const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
-  return entities.map(e => e.toLowerCase()); // always use lowercase entities
-});
+  return entities.filter(e => e !== 'DL'); // don't show demo land in psss
+};
+
+export const getEntitiesAllowed = createSelector(getCurrentUser, user =>
+  getEntitiesAllowedByUser(user),
+);
 
 export const checkIsMultiCountryUser = createSelector(
   getEntitiesAllowed,

@@ -17,7 +17,7 @@ import {
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { getTimeZone, isMobile, sleep, stringToFilename } from '../../utils';
+import { isMobile, sleep, stringToFilename, getBrowserTimeZone } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
@@ -176,7 +176,7 @@ const EnlargedDialogComponent = ({
           organisationUnitName,
           startDate,
           endDate,
-          timeZone: getTimeZone(),
+          timeZone: getBrowserTimeZone(),
           filename,
         });
       } else {
@@ -238,8 +238,8 @@ const EnlargedDialogComponent = ({
 
 EnlargedDialogComponent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
-  contentByLevel: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
-  organisationUnitName: PropTypes.string.isRequired,
+  contentByLevel: PropTypes.any,
+  organisationUnitName: PropTypes.string,
   onSetDateRange: PropTypes.func,
   fetchViewData: PropTypes.func,
   isLoading: PropTypes.bool,
@@ -255,6 +255,8 @@ EnlargedDialogComponent.propTypes = {
 EnlargedDialogComponent.defaultProps = {
   onSetDateRange: () => {},
   fetchViewData: () => {},
+  organisationUnitName: '',
+  contentByLevel: null,
   errorMessage: null,
   startDate: null,
   endDate: null,

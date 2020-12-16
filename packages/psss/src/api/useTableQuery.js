@@ -12,7 +12,7 @@ export const useTableQuery = (endpoint, options) => {
   const query = useQuery(
     [endpoint, options, sorting],
     () => FakeAPI.get(endpoint, { ...options, ...sorting }),
-    { staleTime: 50 },
+    { staleTime: 60 * 1000, refetchOnWindowFocus: false },
   );
 
   const handleChangeOrderBy = columnKey => {

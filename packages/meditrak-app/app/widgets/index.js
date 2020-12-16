@@ -18,7 +18,6 @@ export { Text } from './Text';
 export { TextInput } from './TextInput';
 export { MultilineTextInput } from './MultilineTextInput';
 export { TupaiaBackground } from './TupaiaBackground';
-export { TupaiaHeaderLogo } from './TupaiaHeaderLogo';
 export { TupaiaLogo } from './TupaiaLogo';
 export { TupaiaPin } from './TupaiaPin';
 export { Form, FIELD_TYPES } from './Form';
