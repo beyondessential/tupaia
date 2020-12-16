@@ -7,12 +7,6 @@ import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { buildBaseRowsForOrgUnit } from './buildBaseRowsForOrgUnit';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
-  /**
-   * @returns {
-   *  dataElement: { dataElement, categoryId }
-   * }
-   */
-
   buildBaseRows(rows = this.tableConfig.rows, parent = undefined, baseCellIndex = 0) {
     return buildBaseRowsForOrgUnit(rows, parent, baseCellIndex, this.config);
   }

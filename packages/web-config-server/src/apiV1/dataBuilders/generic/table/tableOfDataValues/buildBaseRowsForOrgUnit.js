@@ -6,6 +6,11 @@
 import flatten from 'lodash.flatten';
 import { stripFromString } from '@tupaia/utils';
 
+/**
+ * @returns {
+ *  dataElement: { dataElement, categoryId }
+ * }
+ */
 export const buildBaseRowsForOrgUnit = (rows, parent, baseCellIndex, config) => {
   const { stripFromDataElementNames, cells } = config;
   const flatCells = flatten(cells);
