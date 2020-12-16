@@ -113,8 +113,8 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
     };
   }
 
-  const report = reportQuery.data[0];
-  const confirmedReport = confirmedReportQuery?.data[0];
+  const [report] = reportQuery.data;
+  const [confirmedReport] = confirmedReportQuery?.data;
   const alerts = getAlerts(report);
   const unVerifiedAlerts = alerts.filter(a => !verifiedStatuses.includes(a));
 
