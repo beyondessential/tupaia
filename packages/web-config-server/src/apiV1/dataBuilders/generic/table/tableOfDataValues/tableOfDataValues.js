@@ -13,6 +13,8 @@ import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
 import { TotalCalculator } from './TotalCalculator';
 
+import { buildColumnSummary, buildRowSummary } from './addSummaryToTable';
+
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
 const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
@@ -39,7 +41,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   async buildFromExtraConfig(data) {
-    const newData = data;
+    let newData = data;
     const { rows } = data;
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
@@ -67,6 +69,14 @@ export class TableOfDataValuesBuilder extends DataBuilder {
           if (value === excludedValue) delete row[key];
         });
       });
+    }
+
+    if (this.config.columnSummary) {
+      newData = buildColumnSummary(newData, this.config.columnSummary);
+    }
+
+    if (this.config.rowSummary) {
+      newData = buildRowSummary(newData, this.config.rowSummary);
     }
     return newData;
   }

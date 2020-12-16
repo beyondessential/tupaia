@@ -7,7 +7,6 @@ import flatten from 'lodash.flatten';
 import { TableConfig } from './TableConfig';
 import { buildBaseRowsForOrgUnit } from './buildBaseRowsForOrgUnit';
 import { getCalculatedValuesByCell } from './getValuesByCell';
-import { buildColumnSummary, buildRowSummary } from './addSummaryToTable';
 import { TotalCalculator } from './TotalCalculator';
 import { TableOfCalculatedValuesBuilder } from './tableOfCalculatedValues';
 
@@ -32,7 +31,6 @@ class TableOfCalculatedValuesForOrgUnitsBuilder extends TableOfCalculatedValuesB
    * Add `key` to each cell to match the config of `TableOfCalculatedValues` data builder
    * 
    * Example of config of `TableOfCalculatedValues` data builder
-   * 
    * ----------------------------------------------------------
    *  {
         "key": "Lao_Language_Textbook_Student_Ratio_G1",
@@ -88,12 +86,5 @@ export const tableOfCalculatedValuesForOrgUnits = async (
     entity,
   );
 
-  let result = await builder.build();
-  if (dataBuilderConfig.columnSummary) {
-    result = buildColumnSummary(result, dataBuilderConfig.columnSummary);
-  }
-  if (dataBuilderConfig.rowSummary) {
-    result = buildRowSummary(result, dataBuilderConfig.rowSummary);
-  }
-  return result;
+  return builder.build();
 };

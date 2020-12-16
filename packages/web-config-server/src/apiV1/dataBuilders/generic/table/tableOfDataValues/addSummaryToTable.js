@@ -21,15 +21,16 @@ const OPERATORS = {
 /**
  * To add summary for each column in final data
  * 
+ * Configuration schema
  * For example:
  * ------------------------------------------------------
- * male condoms     |   yes
- * Female condoms   |   no
- * percentage of no |   50% (add new column summary)
+ *                               | Male condoms     |   yes
+ *                               | Female condoms   |   no
+ * (New Row for column summary)  | Percentage of no |   50% 
  * ------------------------------------------------------
  * 
  * @param {columns, rows, period} result: Matrix table data
- * @param { excludeCondition?, operator, title?, operatorConfig} config
+ * @param { operator, title<optional>, operatorConfig, excludeCondition<optional>} config
  *    
  * Config example:
  * ------------------------------------------------------
@@ -78,7 +79,7 @@ export const buildColumnSummary = (result, config) => {
  * ------------------------------------------------------
  * 
  * @param {columns, rows, period} result: Matrix table data
- * @param { excludeCondition?, operator, title?, operatorConfig} config
+ * @param { operator, title<optional>, operatorConfig, excludeCondition<optional>} config
  *    
  * Config example:
  * ------------------------------------------------------
