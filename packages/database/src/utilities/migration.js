@@ -197,7 +197,7 @@ async function getDashboardReportById(db, id) {
 }
 
 // Add a dashboard report to a dashboard group
-function addReportToGroups(db, reportId, groupCodes) {
+export function addReportToGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
       "dashboardGroup"
