@@ -21,6 +21,7 @@ const average = (...argumentList) => {
   const sum = existingValues.reduce((a, b) => a + b, 0);
   return sum / existingValues.length;
 };
+
 export class ExpressionParser {
   constructor() {
     this.math = create(all, {});
