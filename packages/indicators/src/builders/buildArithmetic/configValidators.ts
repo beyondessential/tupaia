@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ExpressionParser } from '@tupaia/expression-parser';
 import {
   allValuesAreNumbers,
   constructIsArrayOf,
@@ -13,6 +12,7 @@ import {
   isPlainObject,
   ObjectValidator,
 } from '@tupaia/utils';
+import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { validateAggregation } from './aggregationConfig';
 import { ArithmeticConfig } from './types';
 
@@ -20,7 +20,8 @@ const assertAllDefaultsAreCodesInFormula = (
   defaultValues: Record<string, unknown>,
   config: ArithmeticConfig,
 ) => {
-  const variables = new ExpressionParser().getVariables(config.formula);
+  const parser = getExpressionParserInstance();
+  const variables = parser.getVariables(config.formula);
   Object.keys(defaultValues).forEach(code => {
     if (!variables.includes(code)) {
       throw new Error(`'${code}' is in defaultValues but not referenced in the formula`);
