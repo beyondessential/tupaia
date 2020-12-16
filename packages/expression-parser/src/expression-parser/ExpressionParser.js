@@ -19,7 +19,8 @@ export class ExpressionParser {
   constructor() {
     this.math = create(all, {});
     this.parser = this.math.parser();
-    this.importFunctions();
+    this.customFunctions = this.getCustomFunctions();
+    this.math.import(this.customFunctions);
   }
 
   /**
@@ -29,7 +30,10 @@ export class ExpressionParser {
   getVariables(expression) {
     this.validate(expression);
     const nodeTree = this.math.parse(expression);
-    return nodeTree.filter(node => node.isSymbolNode).map(({ name }) => name);
+    const result = nodeTree
+      .filter(node => node.isSymbolNode && !Object.keys(this.customFunctions).includes(node.name))
+      .map(({ name }) => name);
+    return result;
   }
 
   /**
@@ -95,5 +99,15 @@ export class ExpressionParser {
   /**
    * This can be overridden in child classes to import new functions.
    */
-  importFunctions() {}
+  getCustomFunctions() {
+    return {
+      avg: this.average,
+    };
+  }
+
+  average = (...argumentList) => {
+    const existingValues = argumentList.filter(a => a !== 'undefined');
+    const sum = existingValues.reduce((a, b) => a + b, 0);
+    return sum / existingValues.length;
+  };
 }
