@@ -37,7 +37,7 @@ class ValueAndPercentageByAgeByFlightDate extends DataBuilder {
     flights.sort((a, b) => a.date < b.date ? -1 : 1);
 
     for (const flight of flights) {
-      const formattedDate = moment(flight.date).format('MMMM D') + ' Flight';
+      const formattedDate = moment(flight.date).format('MMM D') + ' Flight';
       columns.push({
         key: flight.key,
         title: `Number (%): ${formattedDate}`,
