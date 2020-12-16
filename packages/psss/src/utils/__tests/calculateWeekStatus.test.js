@@ -34,5 +34,13 @@ describe('calculateWeekStatus', () => {
     expect(
       calculateWeekStatus(reportsByPeriod['2020W25'], confirmedReportsByPeriod['2020W25']),
     ).toBe(REPORT_STATUSES.RESUBMIT);
+
+    expect(
+      calculateWeekStatus(reportsByPeriod['2020W23'], confirmedReportsByPeriod['2020W23']),
+    ).toBe(REPORT_STATUSES.RESUBMIT);
+
+    expect(
+      calculateWeekStatus(reportsByPeriod['2020W22'], confirmedReportsByPeriod['2020W22']),
+    ).toBe(REPORT_STATUSES.RESUBMIT);
   });
 });

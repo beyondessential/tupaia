@@ -7,8 +7,8 @@ import isequal from 'lodash.isequal';
 import { REPORT_STATUSES } from '../constants';
 
 const extractReportData = report => {
-  const { AFR, DIA, DLI, ILI, PF } = report;
-  return { AFR, DIA, DLI, ILI, PF };
+  const { AFR, DIA, DLI, ILI, PF, Sites, 'Sites Reported': sitesReported } = report;
+  return { AFR, DIA, DLI, ILI, PF, Sites, sitesReported };
 };
 
 export const reportsAreEqual = (reportA, reportB) => {
