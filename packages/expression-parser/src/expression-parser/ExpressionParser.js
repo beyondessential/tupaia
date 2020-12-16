@@ -15,6 +15,12 @@ import { create, all } from 'mathjs';
  * //Evaluate an expression that has a as a variable
  * expressionParser.evaluate('a + 2'); //returns 3
  */
+
+const average = (...argumentList) => {
+  const existingValues = argumentList.filter(a => a !== 'undefined');
+  const sum = existingValues.reduce((a, b) => a + b, 0);
+  return sum / existingValues.length;
+};
 export class ExpressionParser {
   constructor() {
     this.math = create(all, {});
@@ -101,13 +107,7 @@ export class ExpressionParser {
    */
   getCustomFunctions() {
     return {
-      avg: this.average,
+      avg: average,
     };
   }
-
-  average = (...argumentList) => {
-    const existingValues = argumentList.filter(a => a !== 'undefined');
-    const sum = existingValues.reduce((a, b) => a + b, 0);
-    return sum / existingValues.length;
-  };
 }
