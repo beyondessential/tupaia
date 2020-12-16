@@ -138,80 +138,80 @@ const nationalAndProvincialLevelDashboardReportConfig = {
       [
         {
           dataElement: 'RHS6UNFPA1207',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
       [
         {
           dataElement: 'RHS6UNFPA1220',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
       [
         {
           dataElement: 'RHS6UNFPA1233',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
       [
         {
           dataElement: 'RHS6UNFPA1246',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
       [
         {
           dataElement: 'RHS6UNFPA1259',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
       [
         {
           dataElement: 'RHS6UNFPA1272',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
       [
         {
           dataElement: 'RHS6UNFPA1285',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
       [
         {
           dataElement: 'RHS6UNFPA1298',
-          operator: 'CHECK_CONDITION',
-          condition: {
-            value: 0,
-            operator: '>',
+          operator: 'GROUP',
+          groups: {
+            Y: { value: 0, operator: '>' },
+            N: { value: 0, operator: '=' },
           },
         },
       ],
@@ -222,9 +222,9 @@ const nationalAndProvincialLevelDashboardReportConfig = {
       operator: 'PERCENTAGE',
       operatorConfig: {
         numerator: {
-          condition: {
-            value: 'No',
-            operator: '=',
+          groups: {
+            Y: { value: 'N', operator: '=' },
+            N: { value: 'N', operator: '=' },
           },
         },
       },
@@ -237,7 +237,7 @@ const nationalAndProvincialLevelDashboardReportConfig = {
       operatorConfig: {
         numerator: {
           condition: {
-            value: 'No',
+            value: 'N',
             operator: '=',
           },
         },
@@ -259,6 +259,162 @@ const nationalAndProvincialLevelDashboardReportConfig = {
   },
 };
 
+const nationalAndProvincialLevelLineGraphReportConfig = {
+  id: 'RH_Products_Stock_Availability_HFRSA_And_Spot_Check_Survey_Data_Line_Graph',
+  dataBuilder: 'percentagesOfValueCountsPerPeriod',
+  dataBuilderConfig: {
+    periodType: 'quarter',
+    dataClasses: {
+      'Male condoms': {
+        numerator: {
+          dataValues: ['RHS6UNFPA1207'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1207'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+      'Female condoms': {
+        numerator: {
+          dataValues: ['RHS6UNFPA1220'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1220'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+      'Combined oral contraceptive': {
+        numerator: {
+          dataValues: ['RHS6UNFPA1233'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1233'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+      'Progesterone only pill': {
+        numerator: {
+          dataValues: ['RHS6UNFPA1246'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1246'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+      'Injectable contraceptives': {
+        numerator: {
+          dataValues: ['RHS6UNFPA1259'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1259'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+      IUDs: {
+        numerator: {
+          dataValues: ['RHS6UNFPA1272'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1272'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+      'Implant contraceptives': {
+        numerator: {
+          dataValues: ['RHS6UNFPA1285'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1285'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+      'Emergency contraceptives': {
+        numerator: {
+          dataValues: ['RHS6UNFPA1298'],
+          valueOfInterest: {
+            operator: '=',
+            value: 0,
+          },
+        },
+        denominator: {
+          dataValues: ['RHS6UNFPA1298'],
+          valueOfInterest: {
+            operator: '>=',
+            value: 0,
+          },
+        },
+      },
+    },
+  },
+  viewJson: {
+    name: 'RH Products Stock Availability (HFRSA and Spot Check Survey Data)',
+    type: 'chart',
+    chartType: 'line',
+    labelType: 'fractionAndPercentage',
+    valueType: 'percentage',
+    chartConfig: {
+      'Male condoms': { legendOrder: 1 },
+      'Female condoms': { legendOrder: 2 },
+      'Combined oral contraceptive': { legendOrder: 3 },
+      'Progesterone only pill': { legendOrder: 4 },
+      'Injectable contraceptives': { legendOrder: 5 },
+      IUDs: { legendOrder: 6 },
+      'Implant contraceptives': { legendOrder: 7 },
+      'Emergency contraceptives': { legendOrder: 8 },
+    },
+    showPeriodRange: 'all',
+    periodGranularity: 'quarter',
+  },
+};
 exports.up = async function (db) {
   // Facility Level Matrix Table
   await insertObject(db, 'dashboardReport', facilityLevelDashboardReportConfig);
@@ -272,17 +428,22 @@ exports.up = async function (db) {
     )}) and "name" = 'UNFPA' and "organisationLevel" = 'Facility'`,
   );
 
-  // National and Provincial Matrix Table
-  await insertObject(db, 'dashboardReport', nationalAndProvincialLevelDashboardReportConfig);
-  await addArrayValue(
-    db,
-    'dashboardGroup',
-    'dashboardReports',
-    nationalAndProvincialLevelDashboardReportConfig.id,
-    `"organisationUnitCode" in (${arrayToDbString(
-      countryCodes,
-    )}) and "name" = 'UNFPA' and "organisationLevel" in ('District','Country')`,
-  );
+  // National and Provincial Matrix Table and Line Graph Chart
+  [
+    nationalAndProvincialLevelDashboardReportConfig,
+    nationalAndProvincialLevelLineGraphReportConfig,
+  ].forEach(async dashboardReport => {
+    await insertObject(db, 'dashboardReport', dashboardReport);
+    await addArrayValue(
+      db,
+      'dashboardGroup',
+      'dashboardReports',
+      dashboardReport.id,
+      `"organisationUnitCode" in (${arrayToDbString(
+        countryCodes,
+      )}) and "name" = 'UNFPA' and "organisationLevel" in ('District','Country')`,
+    );
+  });
 };
 
 exports.down = async function (db) {
@@ -297,16 +458,22 @@ exports.down = async function (db) {
     )}) and "name" = 'UNFPA' and "organisationLevel" = 'Facility'`,
   );
 
-  await deleteReport(db, nationalAndProvincialLevelDashboardReportConfig.id);
-  await removeArrayValue(
-    db,
-    'dashboardGroup',
-    'dashboardReports',
-    nationalAndProvincialLevelDashboardReportConfig.id,
-    `"organisationUnitCode" in (${arrayToDbString(
-      countryCodes,
-    )}) and "name" = 'UNFPA' and "organisationLevel" in ('District','Country')`,
-  );
+  // National and Provincial Matrix Table and Line Graph Chart
+  [
+    nationalAndProvincialLevelDashboardReportConfig,
+    nationalAndProvincialLevelLineGraphReportConfig,
+  ].forEach(async dashboardReport => {
+    await deleteReport(db, dashboardReport.id);
+    await removeArrayValue(
+      db,
+      'dashboardGroup',
+      'dashboardReports',
+      dashboardReport.id,
+      `"organisationUnitCode" in (${arrayToDbString(
+        countryCodes,
+      )}) and "name" = 'UNFPA' and "organisationLevel" in ('District','Country')`,
+    );
+  });
 };
 
 exports._meta = {
