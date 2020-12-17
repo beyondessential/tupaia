@@ -25,7 +25,7 @@ export class GETEntities extends GETHandler {
   async findSingleRecord(entityId, options) {
     const entityPermissionChecker = accessPolicy =>
       assertEntityPermissions(accessPolicy, this.models, entityId);
-    this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, entityPermissionChecker]));
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, entityPermissionChecker]));
 
     return super.findSingleRecord(entityId, options);
   }
@@ -46,7 +46,7 @@ export class GETEntities extends GETHandler {
   async findRecordsViaParent(criteria, options) {
     const countryPermissionChecker = accessPolicy =>
       assertCountryPermissions(accessPolicy, this.models, this.parentRecordId);
-    this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]));
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]));
 
     const country = await this.models.country.findById(this.parentRecordId);
     const dbConditions = { 'entity.country_code': country.code, ...criteria };

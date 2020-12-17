@@ -25,7 +25,7 @@ export class GETClinics extends GETHandler {
   async findSingleRecord(clinicId, options) {
     const clinicPermissionChecker = accessPolicy =>
       assertClinicPermissions(accessPolicy, this.models, clinicId);
-    this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, clinicPermissionChecker]));
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, clinicPermissionChecker]));
 
     return super.findSingleRecord(clinicId, options);
   }
