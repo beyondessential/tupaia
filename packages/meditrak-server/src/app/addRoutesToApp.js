@@ -62,6 +62,7 @@ const {
   getPermissionGroups,
   getOptions,
   getOptionSets,
+  getProjects,
   getSocialFeed,
   getAccessRequests,
   getUserAccounts,
@@ -162,6 +163,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/options/:recordId?', getOptions);
   app.get('(/v[0-9]+)/optionSets/:recordId?', getOptionSets);
   app.get('(/v[0-9]+)/optionSets/:parentRecordId/options', getOptions);
+  app.get('(/v[0-9]+)/projects/:recordId?', getProjects);
   app.get('(/v[0-9]+)/users/:recordId?', getUserAccounts);
   app.get('(/v[0-9]+)/userEntityPermissions/:recordId?', getUserEntityPermissions);
   app.get(

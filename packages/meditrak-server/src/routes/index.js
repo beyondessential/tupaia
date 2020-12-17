@@ -28,6 +28,7 @@ import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
+import { GETProjects } from './GETProjects';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
@@ -142,6 +143,7 @@ export default {
   getPermissionGroups: useRouteHandler(GETPermissionGroups),
   getOptions: useRouteHandler(GETOptions),
   getOptionSets: useRouteHandler(GETOptionSets),
+  getProjects: useRouteHandler(GETProjects),
   getUserAccounts: useRouteHandler(GETUserAccounts),
   getUserEntityPermissions: useRouteHandler(GETUserEntityPermissions),
   getAccessRequests: useRouteHandler(GETAccessRequests),
