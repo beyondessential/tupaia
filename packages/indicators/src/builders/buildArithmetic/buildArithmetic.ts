@@ -13,15 +13,13 @@ import {
   FetchOptions,
   IndicatorApiInterface,
 } from '../../types';
-import { fetchAnalytics, validateConfig } from '../helpers';
-import { getAggregationsByCode } from './aggregationConfig';
-import { configValidators } from './configValidators';
-import { ArithmeticConfig } from './types';
+import { fetchAnalytics } from '../helpers';
+import { expandConfig, ExpandedArithmeticConfig, validateArithmeticConfig } from './config';
 
 const fetchAnalyticClusters = async (
   analytics: Analytic[],
   dataElements: string[],
-  defaultValues: Record<string, number>,
+  defaultValues: ExpandedArithmeticConfig['defaultValues'],
 ) => {
   const checkClusterIncludesAllElements = (cluster: AnalyticCluster) =>
     dataElements.every(member => member in cluster.dataValues);
@@ -60,15 +58,14 @@ const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: strin
 
 const fetchAnalyticsAndElements = async (
   api: IndicatorApiInterface,
-  config: ArithmeticConfig,
+  config: ExpandedArithmeticConfig,
   fetchOptions: FetchOptions,
 ) => {
-  const { parameters = [] } = config;
+  const { aggregation, parameters } = config;
 
   const aggregator = api.getAggregator();
-  const aggregationsByCode = getAggregationsByCode(config);
-  const formulaAnalytics = await fetchAnalytics(aggregator, aggregationsByCode, fetchOptions);
-  const formulaElements = Object.keys(aggregationsByCode);
+  const formulaAnalytics = await fetchAnalytics(aggregator, aggregation, fetchOptions);
+  const formulaElements = Object.keys(aggregation);
 
   const parameterAnalytics = await api.buildAnalyticsForIndicators(parameters, fetchOptions);
   const parameterElements = parameters.map(p => p.code);
@@ -79,12 +76,15 @@ const fetchAnalyticsAndElements = async (
   };
 };
 
-export const buildArithmetic: Builder = async input => {
-  const { api, config: configInput, fetchOptions } = input;
-  const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
-  const { analytics, dataElements } = await fetchAnalyticsAndElements(api, config, fetchOptions);
+export const processConfigInput = async (configInput: Record<string, unknown>) => {
+  const config = await validateArithmeticConfig(configInput);
+  return expandConfig(config);
+};
 
-  const { formula, defaultValues = {} } = config;
-  const clusters = await fetchAnalyticClusters(analytics, dataElements, defaultValues);
-  return buildAnalyticValues(clusters, formula);
+export const buildArithmetic: Builder = async input => {
+  const { api, fetchOptions } = input;
+  const config = await processConfigInput(input.config);
+  const { analytics, dataElements } = await fetchAnalyticsAndElements(api, config, fetchOptions);
+  const clusters = await fetchAnalyticClusters(analytics, dataElements, config.defaultValues);
+  return buildAnalyticValues(clusters, config.formula);
 };

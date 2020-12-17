@@ -11,8 +11,9 @@ import {
   isPlainObject,
   ObjectValidator,
 } from '@tupaia/utils';
-import { getExpressionParserInstance } from '../../getExpressionParserInstance';
-import { validateAggregation } from './aggregationConfig';
+import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
+import { validateConfig } from '../../helpers';
+import { validateAggregation } from './aggregation';
 import { ArithmeticConfig } from './types';
 
 const assertAllDefaultsAreCodesInFormula = (
@@ -61,3 +62,7 @@ export const configValidators = {
     ]),
   ],
 };
+
+export const validateArithmeticConfig = (
+  config: Record<string, unknown>,
+): Promise<ArithmeticConfig> => validateConfig<ArithmeticConfig>(config, configValidators);
