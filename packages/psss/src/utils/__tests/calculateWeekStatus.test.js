@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
-import { REPORT_STATUSES } from '../../../constants';
-import { reportsAreEqual, calculateWeekStatus } from '../useCountryWeeklyReport';
+import { REPORT_STATUSES } from '../../constants';
+import { reportsAreEqual, calculateWeekStatus } from '../calculateWeekStatus';
 import unconfirmedData from './fixtures/unConfirmedReport.json';
 import confirmedData from './fixtures/confirmedReport.json';
 
-describe('useCountryWeeklyReport', () => {
+describe('calculateWeekStatus', () => {
   const reportsByPeriod = keyBy(unconfirmedData.data.results, 'period');
   const confirmedReportsByPeriod = keyBy(confirmedData.data.results, 'period');
 
@@ -33,6 +33,14 @@ describe('useCountryWeeklyReport', () => {
 
     expect(
       calculateWeekStatus(reportsByPeriod['2020W25'], confirmedReportsByPeriod['2020W25']),
+    ).toBe(REPORT_STATUSES.RESUBMIT);
+
+    expect(
+      calculateWeekStatus(reportsByPeriod['2020W23'], confirmedReportsByPeriod['2020W23']),
+    ).toBe(REPORT_STATUSES.RESUBMIT);
+
+    expect(
+      calculateWeekStatus(reportsByPeriod['2020W22'], confirmedReportsByPeriod['2020W22']),
     ).toBe(REPORT_STATUSES.RESUBMIT);
   });
 });

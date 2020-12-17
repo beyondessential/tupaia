@@ -14,3 +14,10 @@ export const REPORT_STATUSES = {
 };
 
 export const MIN_DATE = new Date('2016-01-01');
+
+export const TABLE_STATUSES = {
+  STATIC: 'static',
+  EDITABLE: 'editable',
+  SAVING: 'saving',
+  ERROR: 'error',
+};
