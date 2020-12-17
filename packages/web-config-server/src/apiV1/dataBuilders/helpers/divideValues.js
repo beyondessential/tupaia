@@ -20,5 +20,5 @@ export const divideValues = (numerator, denominator, fractionType = 'percentage'
 
 export const fractionAndPercentage = (numerator, divisor) =>
   (numerator || numerator === 0) && divisor
-    ? `${numerator} / ${divisor} = ${Math.floor(divideValues(numerator, divisor) * 100)}%`
+    ? `${numerator} / ${divisor} = ${Math.round(divideValues(numerator, divisor) * 100)}%`
     : NO_DATA_AVAILABLE;
