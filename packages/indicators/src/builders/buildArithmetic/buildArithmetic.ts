@@ -16,7 +16,7 @@ import {
 import { fetchAnalytics } from '../helpers';
 import { expandConfig, ExpandedArithmeticConfig, validateArithmeticConfig } from './config';
 
-const fetchAnalyticClusters = async (
+const buildAnalyticClusters = (
   analytics: Analytic[],
   dataElements: string[],
   defaultValues: ExpandedArithmeticConfig['defaultValues'],
@@ -85,6 +85,6 @@ export const buildArithmetic: Builder = async input => {
   const { api, fetchOptions } = input;
   const config = await processConfigInput(input.config);
   const { analytics, dataElements } = await fetchAnalyticsAndElements(api, config, fetchOptions);
-  const clusters = await fetchAnalyticClusters(analytics, dataElements, config.defaultValues);
+  const clusters = buildAnalyticClusters(analytics, dataElements, config.defaultValues);
   return buildAnalyticValues(clusters, config.formula);
 };
