@@ -5,9 +5,8 @@
 
 import { useState } from 'react';
 import keyBy from 'lodash.keyby';
-import isequal from 'lodash.isequal';
 import { useTableData } from './useTableData';
-import { subtractWeeksFromPeriod } from '../../utils';
+import { subtractWeeksFromPeriod, calculateWeekStatus } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
 import { useUpcomingReport } from './useUpcomingReport';
 
@@ -31,22 +30,16 @@ const getWeeklyReportData = (unconfirmedData, confirmedData, period, numberOfWee
     const confirmedReport = confirmedReportsByPeriod[currentPeriod];
     const report = reportsByPeriod[currentPeriod];
 
-    if (report) {
-      let reportStatus = REPORT_STATUSES.OVERDUE;
-
-      if (confirmedReport) {
-        reportStatus = isequal(report, confirmedReport)
-          ? REPORT_STATUSES.SUBMITTED
-          : REPORT_STATUSES.RESUBMIT;
-      }
-
-      return { ...report, status: reportStatus };
+    // return placeholder row if there is no report data
+    if (!report) {
+      return {
+        period: currentPeriod,
+        status: REPORT_STATUSES.OVERDUE,
+      };
     }
 
-    return {
-      period: currentPeriod,
-      status: REPORT_STATUSES.OVERDUE,
-    };
+    const status = calculateWeekStatus(report, confirmedReport);
+    return { ...report, status };
   });
 };
 

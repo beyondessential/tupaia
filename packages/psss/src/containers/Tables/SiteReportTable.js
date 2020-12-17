@@ -16,6 +16,7 @@ import {
 } from '@tupaia/ui-components';
 import { DottedTableBody, GreyTableHeader } from '../../components';
 import { useSaveSiteReport } from '../../api';
+import { TABLE_STATUSES } from '../../constants';
 
 const HeadingRow = styled.div`
   display: flex;
@@ -46,14 +47,6 @@ const StyledEditableTable = styled(EditableTable)`
   padding-left: 1.2rem;
   padding-right: 1.2rem;
 `;
-
-const TABLE_STATUSES = {
-  STATIC: 'static',
-  EDITABLE: 'editable',
-  SAVING: 'saving',
-  LOADING: 'loading',
-  ERROR: 'error',
-};
 
 export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNumber }) => {
   const { fields } = useContext(EditableTableContext);

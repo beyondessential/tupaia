@@ -53,7 +53,7 @@ class KeyboardSpacerIOS extends React.Component<Props, Props, State> {
     keyboardHeight: 0,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this._registerEvents();
   }
 
