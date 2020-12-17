@@ -34,6 +34,15 @@ class SurveyType extends DatabaseType {
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
+
+  async getCountries() {
+    return this.otherModels.country.findManyById(this.country_ids);
+  }
+
+  async getCountryCodes() {
+    const countries = await this.getCountries();
+    return countries.map(c => c.code);
+  }
 }
 
 export class SurveyModel extends DatabaseModel {

@@ -8,21 +8,14 @@ import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
-const getPermissionInfoFromSurvey = async (models, surveyId) => {
+export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   if (!survey) {
     throw new Error(`No survey exists with id ${surveyId}`);
   }
+  const permissionGroup = await survey.getPermissionGroup();
+  const countryCodes = await survey.getCountryCodes();
 
-  const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
-  const countries = await models.country.findManyById(survey.country_ids);
-  const countryCodes = countries.map(c => c.code);
-
-  return { permissionGroup, countryCodes };
-};
-
-export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
-  const { permissionGroup, countryCodes } = await getPermissionInfoFromSurvey(models, surveyId);
   if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) {
     return true;
   }
@@ -32,7 +25,13 @@ export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId)
 
 // Used for edit and delete actions
 export const assertSurveyEditPermissions = async (accessPolicy, models, surveyId) => {
-  const { permissionGroup, countryCodes } = await getPermissionInfoFromSurvey(models, surveyId);
+  const survey = await models.survey.findById(surveyId);
+  if (!survey) {
+    throw new Error(`No survey exists with id ${surveyId}`);
+  }
+  const permissionGroup = await survey.getPermissionGroup();
+  const countryCodes = await survey.getCountryCodes();
+
   if (
     accessPolicy.allowsAll(countryCodes, permissionGroup.name) &&
     accessPolicy.allowsAll(countryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)

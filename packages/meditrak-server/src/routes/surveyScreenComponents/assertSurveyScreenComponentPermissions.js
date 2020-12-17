@@ -11,24 +11,18 @@ import {
   createSurveyDBFilter,
 } from '../surveys/assertSurveyPermissions';
 
-const getSurveyIdFromScreenComponent = async (models, surveyScreenComponentId) => {
+export const assertSurveyScreenComponentGetPermissions = async (
+  accessPolicy,
+  models,
+  surveyScreenComponentId,
+) => {
   const surveyScreenComponent = await models.surveyScreenComponent.findById(
     surveyScreenComponentId,
   );
   if (!surveyScreenComponent) {
     throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
   }
-
-  const surveyScreen = await models.surveyScreen.findById(surveyScreenComponent.screen_id);
-  return surveyScreen.survey_id;
-};
-
-export const assertSurveyScreenComponentGetPermissions = async (
-  accessPolicy,
-  models,
-  surveyScreenComponentId,
-) => {
-  const surveyId = await getSurveyIdFromScreenComponent(models, surveyScreenComponentId);
+  const surveyId = await surveyScreenComponent.surveyId();
   return assertSurveyGetPermissions(accessPolicy, models, surveyId);
 };
 
@@ -37,7 +31,13 @@ export const assertSurveyScreenComponentEditPermissions = async (
   models,
   surveyScreenComponentId,
 ) => {
-  const surveyId = await getSurveyIdFromScreenComponent(models, surveyScreenComponentId);
+  const surveyScreenComponent = await models.surveyScreenComponent.findById(
+    surveyScreenComponentId,
+  );
+  if (!surveyScreenComponent) {
+    throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
+  }
+  const surveyId = await surveyScreenComponent.surveyId();
   return assertSurveyEditPermissions(accessPolicy, models, surveyId);
 };
 
