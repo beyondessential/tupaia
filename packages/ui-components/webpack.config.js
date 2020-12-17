@@ -26,6 +26,7 @@ module.exports = {
       'react-router': 'react-router',
     },
     /@material-ui\/core\/.*/,
+    /@material-ui\/lab\/.*/,
   ],
   module: {
     rules: [
