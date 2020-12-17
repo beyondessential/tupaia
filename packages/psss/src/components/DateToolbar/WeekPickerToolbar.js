@@ -9,9 +9,7 @@ import styled from 'styled-components';
 import format from 'date-fns/format';
 import PickerToolbar from '@material-ui/pickers/_shared/PickerToolbar';
 import Typography from '@material-ui/core/Typography';
-import getISOWeek from 'date-fns/get_iso_week';
-import startOfISOWeek from 'date-fns/start_of_iso_week';
-import endOfISOWeek from 'date-fns/end_of_iso_week';
+import { getISOWeek, startOfISOWeek, endOfISOWeek } from 'date-fns';
 
 const PickerBar = styled(PickerToolbar)`
   display: flex;

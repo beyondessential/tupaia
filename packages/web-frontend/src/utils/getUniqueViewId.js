@@ -6,5 +6,11 @@
 export const getUniqueViewId = ({ organisationUnitCode, dashboardGroupId, viewId }) =>
   [organisationUnitCode, dashboardGroupId, viewId].join('___');
 
+export const getInfoFromInfoViewKey = infoViewKey => {
+  if (!infoViewKey) return {};
+  const [organisationUnitCode, dashboardGroupId, viewId] = infoViewKey.split('___');
+  return { organisationUnitCode, dashboardGroupId, viewId };
+};
+
 export const getViewIdFromInfoViewKey = infoViewKey =>
-  (infoViewKey && infoViewKey.split('___')[2]) || null;
+  getInfoFromInfoViewKey(infoViewKey).viewId || null;
