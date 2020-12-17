@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, generateId, insertObject, updateValues } from '../utilities';
+import { updateValues } from '../utilities';
 import { getDashboardReportById, updateBuilderConfigByReportId } from '../utilities/migration';
 
 var dbm;
