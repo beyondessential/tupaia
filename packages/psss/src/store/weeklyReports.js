@@ -2,8 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { getCurrentPeriod } from '@tupaia/utils';
 import { createReducer } from '../utils/createReducer';
+import { getCurrentPeriod } from '../utils';
 
 // actions
 const SET_ACTIVE_WEEK = 'SET_ACTIVE_WEEK';
@@ -39,7 +39,7 @@ export const getVerifiedStatus = ({ weeklyReports }, syndromeId) =>
   weeklyReports.verifiedStatuses.includes(syndromeId);
 
 // reducer
-const defaultPeriod = getCurrentPeriod('WEEK');
+const defaultPeriod = getCurrentPeriod();
 
 const defaultState = {
   latestViewableWeek: defaultPeriod,

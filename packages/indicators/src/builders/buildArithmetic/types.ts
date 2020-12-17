@@ -16,5 +16,5 @@ export type ArithmeticConfig = {
   // If no `Record` is provided then the same `AggregationSpecs` will be applied to all elements
   readonly aggregation: AggregationSpecs | Record<string, AggregationSpecs>;
   readonly parameters?: Indicator[];
-  readonly defaultValues?: Record<string, number>;
+  readonly defaultValues?: Record<string, number | 'undefined'>;
 };
