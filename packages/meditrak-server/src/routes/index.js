@@ -22,10 +22,10 @@ import { GETEntities } from './GETEntities';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETMapOverlays } from './GETMapOverlays';
 import { GETSurveyGroups } from './GETSurveyGroups';
-import { GETQuestions } from './GETQuestions';
+import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
 import { GETPermissionGroups } from './GETPermissionGroups';
-import { GETOptions } from './GETOptions';
-import { GETOptionSets } from './GETOptionSets';
+import { DeleteOptions, EditOptions, GETOptions } from './options';
+import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
@@ -113,6 +113,9 @@ export default {
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
+  deleteOptions: useRouteHandler(DeleteOptions),
+  deleteOptionSets: useRouteHandler(DeleteOptionSets),
+  deleteQuestions: useRouteHandler(DeleteQuestions),
   deleteSurveys: useRouteHandler(DeleteSurveys),
   deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
   deleteSurveyScreenComponents: useRouteHandler(DeleteSurveyScreenComponents),
@@ -123,6 +126,9 @@ export default {
   editAnswers: useRouteHandler(EditAnswers),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
+  editOptions: useRouteHandler(EditOptions),
+  editOptionSets: useRouteHandler(EditOptionSets),
+  editQuestions: useRouteHandler(EditQuestions),
   editSurveys: useRouteHandler(EditSurveys),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
   editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
