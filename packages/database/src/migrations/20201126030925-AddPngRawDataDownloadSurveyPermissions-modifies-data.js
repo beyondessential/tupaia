@@ -5,20 +5,51 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
 const SURVEY_CODE = 'BCD';
-const COUNTRY_CODES = ['FJ', 'PG', 'PH', 'LA', 'WS'];
+const COUNTRY_CODES = [
+  'KI',
+  'SB',
+  'TO',
+  'VU',
+  'TL',
+  'TK',
+  'WS',
+  'CK',
+  'KH',
+  'FJ',
+  'PH',
+  'VE',
+  'CI',
+  'LA',
+  'PG',
+  'MH',
+  'FM',
+  'NR',
+  'NU',
+  'PW',
+  'TV',
+  'AS',
+  'GU',
+  'PF',
+  'MP',
+  'PI',
+  'WF',
+  'NC',
+  'AU',
+  'NZ',
+];
 const ORIGINAL_VALUE = '{5b6d219af013d64e81321efa,5d09ac4bf013d63ce9170d88}';
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const { rows: countries } = await db.runSql(`
       SELECT id FROM country WHERE code IN (${COUNTRY_CODES.map(cc => `'${cc}'`).join(', ')});
   `);
@@ -31,7 +62,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     UPDATE survey
     SET country_ids = '{${ORIGINAL_VALUE}}'
@@ -40,5 +71,5 @@ exports.down = function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
