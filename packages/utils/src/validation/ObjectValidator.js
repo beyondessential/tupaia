@@ -42,8 +42,8 @@ export class ObjectValidator {
   }
 
   /**
-   * @param {Object<string, any>} object          The object to be validated
-   * @param {function} [constructError]  An optional function to construct a custom error
+   * @param {Object<string, any>} object The object to be validated
+   * @param {function} [constructError] An optional function to construct a custom error
    */
   validateSync(object, constructError) {
     // Go through each of the fields we have explicit validators for, and run the validators
