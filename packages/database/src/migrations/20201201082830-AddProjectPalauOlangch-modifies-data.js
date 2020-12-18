@@ -19,12 +19,12 @@ exports.setup = function (options, seedLink) {
 const countryCode = 'PW';
 const projectCode = 'olangch_palau';
 const projectName = 'MoH Project Olangch';
-const dashboardGroupCode = 'OLANGCH_PALAU_Project';
+const projectDashboardGroupCode = 'OLANGCH_PALAU_Project';
+const countryDashboardGroupCode = 'PW_Olangch_Country';
 const dashboardGroupName = 'General';
-const dashboardGroupCountryCode = 'PW_Olangch_Country';
-const userGroup = 'Donor';
 const projectDashboardReports = '{project_details}';
 const countryDashboardReports = '{23,19,8,26}'; // requested to match CK_General_Country_Public
+const userGroup = 'Donor';
 
 export const hierarchyNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM entity_hierarchy WHERE name = '${name}'`);
@@ -36,18 +36,18 @@ exports.up = async function (db) {
     organisationLevel: 'Project',
     userGroup,
     organisationUnitCode: projectCode,
-    dashboardReports: '{project_details}',
-    name: dashboardGroupName,
-    code: dashboardGroupCode,
+    dashboardReports: projectDashboardReports,
+    name: projectName,
+    code: projectDashboardGroupCode,
     projectCodes: `{${projectCode}}`,
   });
   await insertObject(db, 'dashboardGroup', {
     organisationLevel: 'Country',
     userGroup,
     organisationUnitCode: countryCode,
-    dashboardReports: '{project_details}',
+    dashboardReports: countryDashboardReports,
     name: dashboardGroupName,
-    code: dashboardGroupCountryCode,
+    code: countryDashboardGroupCode,
     projectCodes: `{${projectCode}}`,
   });
   await insertObject(db, 'entity', {
@@ -88,7 +88,7 @@ exports.down = async function (db) {
   const hierarchyId = await hierarchyNameToId(db, projectCode);
 
   await db.runSql(
-    `DELETE FROM "dashboardGroup" WHERE code IN ('${dashboardGroupCode}', '${dashboardGroupCountryCode}')`,
+    `DELETE FROM "dashboardGroup" WHERE code IN ('${projectDashboardGroupCode}', '${countryDashboardGroupCode}')`,
   );
   await db.runSql(`DELETE FROM project WHERE code = '${projectCode}'`);
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
