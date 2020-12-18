@@ -5,13 +5,11 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import winston from 'winston';
+
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-
-import { Pusher } from '../../../../dhis/pushers/Pusher';
-
 import { TrackedEntityPusher } from '../../../../dhis/pushers/entity/TrackedEntityPusher';
-import { createEntityStub, createModelsStub, createDhisApiStub } from './helpers';
+import { Pusher } from '../../../../dhis/pushers/Pusher';
+import { createDhisApiStub, createEntityStub, createModelsStub } from './helpers';
 
 const { TRACKED_ENTITY_INSTANCE } = DHIS2_RESOURCE_TYPES;
 
@@ -56,15 +54,10 @@ const getDhisApiStub = () => createDhisApiStub(DEFAULT_DHIS_API_STUB_PROPS);
 describe('TrackedEntityPusher', () => {
   describe('push()', () => {
     before(() => {
-      // Suppress logging while running the tests
-      sinon.stub(winston, 'error');
-      sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
     });
 
     after(() => {
-      winston.error.restore();
-      winston.warn.restore();
       Pusher.prototype.logResults.restore();
     });
 

@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 import { getChangesFilter } from '../../../routes/utilities/getChangesFilter';
 
