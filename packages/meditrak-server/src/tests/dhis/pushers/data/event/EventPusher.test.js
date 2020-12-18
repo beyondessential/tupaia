@@ -54,12 +54,13 @@ describe('EventPusher', () => {
     });
 
     describe('creating a new survey response', () => {
-      it('should throw an error if the changed record was not found', async () => {
+      it('should log an error and return false if the changed record was not found', async () => {
         const change = await models.dhisSyncQueue.findById(CHANGE.id);
         change.record_id = 'does_not_exist_xxxxxxxxx';
         const pusher = new EventPusher(models, change, dhisApi, dataBroker);
-        expect(pusher.push()).to.be.rejectedWith(
-          `No survey response found for ${change.record_id}`,
+        await expect(pusher.push()).to.eventually.be.false;
+        expect(pusher.logResults).to.have.been.calledWithMatch(
+          sinon.match({ errors: [sinon.match(/No survey response found/i)] }),
         );
         expect(dataBroker.push).not.to.have.been.called;
         expect(dataBroker.delete).not.to.have.been.called;

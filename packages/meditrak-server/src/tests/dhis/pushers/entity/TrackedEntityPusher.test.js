@@ -66,9 +66,9 @@ describe('TrackedEntityPusher', () => {
     });
 
     describe('create/update an entity', () => {
-      it('should log an error if the changed record was not found', async () => {
+      it('should log an error and return false if the changed record was not found', async () => {
         const pusher = new TrackedEntityPusher(createModelsStub(), { type: 'update' }, {});
-        await pusher.push();
+        await expect(pusher.push()).to.eventually.be.false;
         return expect(pusher.logResults).to.have.been.calledWithMatch(
           sinon.match({ errors: [sinon.match(/entity .*not found/i)] }),
         );
