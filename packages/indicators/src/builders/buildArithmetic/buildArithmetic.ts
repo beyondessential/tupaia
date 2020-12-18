@@ -105,14 +105,14 @@ const fetchAnalyticsAndElements = async (
   };
 };
 
-export const processConfigInput = async (configInput: Record<string, unknown>) => {
-  const config = await validateArithmeticConfig(configInput);
+export const processConfigInput = (config: Record<string, unknown>) => {
+  validateArithmeticConfig(config);
   return arithmeticToBuilderConfig(config);
 };
 
 export const buildArithmetic: Builder = async input => {
   const { api, fetchOptions } = input;
-  const config = await processConfigInput(input.config);
+  const config = processConfigInput(input.config);
   const { analytics, dataElements } = await fetchAnalyticsAndElements(api, config, fetchOptions);
   const clusters = buildAnalyticClusters(analytics, dataElements, config.defaultValues);
   return buildAnalyticValues(clusters, config.formula);

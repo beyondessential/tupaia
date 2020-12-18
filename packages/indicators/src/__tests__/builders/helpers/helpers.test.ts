@@ -20,18 +20,25 @@ describe('helpers', () => {
       countMale: [assertIsNotNegative],
     };
 
-    it('resolves for empty config', () => expect(validateConfig(undefined, {})).toResolve());
+    it('resolves for empty config', () => {
+      expect(() => validateConfig(undefined, {})).not.toThrow();
+    });
 
-    it('resolves for empty validators', () =>
-      expect(validateConfig({ random: 'string' })).toResolve());
+    it('resolves for empty validators', () => {
+      expect(() => validateConfig({ random: 'string' })).not.toThrow();
+    });
 
-    it('throws if a field is invalid', async () =>
-      expect(validateConfig({ countFemale: -1, countMale: 2 }, configValidators)).toBeRejectedWith(
-        "Error in field 'countFemale': Must be >= 0",
-      ));
+    it('throws if a field is invalid', () => {
+      expect(() =>
+        validateConfig({ countFemale: -1, countMale: 2 }, configValidators),
+      ).toThrowError("Error in field 'countFemale': Must be >= 0");
+    });
 
-    it('resolves if all fields are valid', () =>
-      expect(validateConfig({ countFemale: 1, countMale: 2 }, configValidators)).toResolve());
+    it('resolves if all fields are valid', () => {
+      expect(() =>
+        validateConfig({ countFemale: 1, countMale: 2 }, configValidators),
+      ).not.toThrow();
+    });
   });
 
   describe('groupKeysByValueJson()', () => {

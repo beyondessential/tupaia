@@ -198,8 +198,8 @@ export const testConfigValidation = () => {
       ],
     ];
 
-    it.each(testData)('%s', (_, config) => {
-      return expect(buildArithmetic({ api, config, fetchOptions: {} })).toResolve();
-    });
+    it.each(testData)('%s', async (_, config) =>
+      expect(buildArithmetic({ api, config, fetchOptions: {} })).toResolve(),
+    );
   });
 };
