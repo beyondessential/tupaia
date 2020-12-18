@@ -6,7 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIsFetching } from 'react-query';
-import { getCurrentPeriod, comparePeriods } from '@tupaia/utils';
+import { comparePeriods } from '@tupaia/utils';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -18,6 +18,7 @@ import { FlexStart, FlexEnd, FlexSpaceBetween } from '../Layout';
 import { WeekPicker } from './WeekPicker';
 import { MIN_DATE } from '../../constants';
 import {
+  getCurrentPeriod,
   getDateByPeriod,
   getPeriodByDate,
   addWeeksToPeriod,
@@ -98,7 +99,7 @@ const MediumText = styled.span`
 export const DateToolbarComponent = ({ period, setPeriod }) => {
   const isFetching = !!useIsFetching();
   const [isOpen, setIsOpen] = useState(false);
-  const defaultPeriod = getCurrentPeriod('WEEK');
+  const defaultPeriod = getCurrentPeriod();
 
   useEffect(() => {
     setCurrentWeek();
