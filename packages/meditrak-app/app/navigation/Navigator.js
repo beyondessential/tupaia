@@ -4,8 +4,7 @@
  */
 import React from 'react';
 import { Platform } from 'react-native';
-import { StackNavigator } from 'react-navigation';
-import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
+import { createStackNavigator, CardStyleInterpolators } from 'react-navigation-stack';
 
 import { HeaderToolbar } from './HeaderToolbar';
 import { HeaderLeftButton } from './HeaderLeftButton';
@@ -16,7 +15,7 @@ import { CreateUserContainer } from '../user';
 import { HomeScreenContainer } from '../home';
 import { WebBrowserContainer } from '../web';
 import { ChangePasswordContainer } from '../changePassword';
-import { RealmExplorer } from '../database';
+import { RealmExplorer } from '../database/RealmExplorer';
 import { SurveyScreen, SurveysMenuScreen } from '../assessment';
 import {
   CREATE_ACCOUNT_SCREEN,
@@ -33,22 +32,38 @@ import {
   ROUTES_WITH_INVISIBLE_HEADERS,
 } from './constants';
 import { SyncContainer } from '../sync';
-import { THEME_COLOR_ONE, THEME_COLOR_THREE } from '../globalStyles';
+import { THEME_COLOR_ONE } from '../globalStyles';
 
 const INITIAL_SCREEN_NAME = 'Login';
 
 const routes = {
   [CHANGE_PASSWORD_SCREEN]: { screen: ChangePasswordContainer },
-  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: { header: false } },
+  [LOGIN_SCREEN]: { screen: LoginContainer, navigationOptions: () => ({ headerShown: false }) },
   [REQUEST_COUNTRY_ACCESS_SCREEN]: { screen: RequestCountryAccessContainer },
-  [WELCOME_SCREEN]: { screen: WelcomeContainer, navigationOptions: { header: false } },
+  [WELCOME_SCREEN]: {
+    screen: WelcomeContainer,
+    navigationOptions: () => ({ headerShown: false, animationEnabled: false }),
+  },
   [CREATE_ACCOUNT_SCREEN]: {
     screen: CreateUserContainer,
-    navigationOptions: { headerRight: null },
+    navigationOptions: () => ({ headerRight: () => null }),
   },
-  [HOME_SCREEN]: { screen: HomeScreenContainer },
-  [SYNC_SCREEN]: { screen: SyncContainer },
-  [SURVEY_SCREEN]: { screen: SurveyScreen },
+  [HOME_SCREEN]: {
+    screen: HomeScreenContainer,
+    navigationOptions: () => ({ headerLeft: () => null, animationEnabled: false }),
+  },
+  [SYNC_SCREEN]: {
+    screen: SyncContainer,
+    navigationOptions: () => ({
+      cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS, // vertical transition for Sync Screen
+    }),
+  },
+  [SURVEY_SCREEN]: {
+    screen: SurveyScreen,
+    navigationOptions: () => ({
+      cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS, // vertical transition for Survey Screen
+    }),
+  },
   [SURVEYS_MENU_SCREEN]: { screen: SurveysMenuScreen },
   [WEB_BROWSER_SCREEN]: { screen: WebBrowserContainer },
   [REALM_EXPLORER_SCREEN]: { screen: RealmExplorer },
@@ -70,11 +85,10 @@ const isInvisibleHeader = navigation =>
 const config = {
   initialRouteName: INITIAL_SCREEN_NAME,
   initialRouteParams: { surveyScreenIndex: 0 },
-  cardStyle: { backgroundColor: 'transparent' },
   headerMode: 'float',
-  navigationOptions: ({ navigation }) => ({
-    headerLeft: HeaderLeftButton,
-    headerTitle: null,
+  defaultNavigationOptions: ({ navigation }) => ({
+    headerLeft: () => <HeaderLeftButton />,
+    headerTitle: () => null,
     headerBackTitle: null,
     headerStyle: isInvisibleHeader(navigation)
       ? {
@@ -86,31 +100,14 @@ const config = {
       : {
           backgroundColor: THEME_COLOR_ONE,
         },
-    headerTintColor: THEME_COLOR_THREE,
     headerTitleStyle: {
       color: '#222',
       ...(Platform.OS === 'android' ? androidHeaderTitleStyle : {}),
     },
-    headerRight: <HeaderToolbar />,
-  }),
-  transitionConfig: () => ({
-    screenInterpolator: sceneProps => {
-      const { scenes, index: indexToNavigateTo } = sceneProps;
-      const lastScene = scenes[scenes.length - 1];
-      const { route } = lastScene;
-      const params = route.params || {};
-      const transition = lastScene.index >= indexToNavigateTo - 1 ? params.transition : 'default';
-
-      switch (transition) {
-        case 'SurveyTransition':
-        case 'SyncTransition':
-          return CardStackStyleInterpolator.forVertical(sceneProps);
-
-        default:
-          return CardStackStyleInterpolator.forHorizontal(sceneProps);
-      }
-    },
+    headerTitleAlign: 'center',
+    headerRight: () => <HeaderToolbar />,
+    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, // horizontal transition by default
   }),
 };
 
-export const Navigator = StackNavigator(routes, config);
+export const Navigator = createStackNavigator(routes, config);

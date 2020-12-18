@@ -38,9 +38,9 @@ const migrations = {
   7: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['survey_screen_component']);
   },
-  // Resync all entities so that the new attributes column come through
+  // Resync all entities and options so that the new attributes column come through
   8: async (synchroniser, setProgressMessage) => {
-    await resyncRecordTypes(synchroniser, setProgressMessage, ['entity']);
+    await resyncRecordTypes(synchroniser, setProgressMessage, ['entity', 'option']);
   },
 };
 

@@ -7,7 +7,10 @@ export { LoginRoute } from './LoginRoute';
 export { LogoutRoute } from './LogoutRoute';
 export { TestRoute } from './TestRoute';
 export {
-  ConfirmedWeeklyReportRoute,
-  ConfirmedCountryWeeklyReportRoute,
-  CountryWeeklyReportRoute,
+  FetchConfirmedWeeklyReportRoute,
+  FetchConfirmedCountryWeeklyReportRoute,
+  FetchCountryWeeklyReportRoute,
+  ConfirmCountryWeeklyReportRoute,
+  SaveCountryWeeklyReportRoute,
+  DeleteCountryWeeklyReportRoute,
 } from './reports';

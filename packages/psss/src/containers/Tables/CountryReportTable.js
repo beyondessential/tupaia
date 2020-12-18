@@ -2,16 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useCallback, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import InfoIcon from '@material-ui/icons/Info';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
 import {
-  EditableTable,
-  EditableTableContext,
   LoadingContainer,
   TableBody,
   GreyOutlinedButton,
@@ -19,16 +17,19 @@ import {
   TextField,
   FakeHeader,
   SmallAlert,
+  Table,
 } from '@tupaia/ui-components';
-import { FlexStart, BorderlessTableRow, FlexSpaceBetween } from '../../components';
+import {
+  FlexStart,
+  FlexSpaceBetween,
+  FlexEnd,
+  PercentageChangeCell,
+  BorderlessTableRow,
+} from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { useSaveCountryReport } from '../../api';
-
-const VerifiableBody = props => {
-  const { tableStatus } = useContext(EditableTableContext);
-  const Row = tableStatus === 'editable' ? BorderlessTableRow : VerifiableTableRow;
-  return <TableBody TableRow={Row} {...props} />;
-};
+import { EditableCell, EditableTableContext } from '../../components/EditableTable';
+import { TABLE_STATUSES } from '../../constants';
 
 const FormRow = styled(FlexStart)`
   flex: 1;
@@ -69,33 +70,78 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const TABLE_STATUSES = {
-  STATIC: 'static',
-  EDITABLE: 'editable',
-  SAVING: 'saving',
-  ERROR: 'error',
+const StyledTh = styled.th`
+  background: #f1f1f1;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 13px;
+  text-align: left;
+  color: ${props => props.theme.palette.text.secondary};
+  padding: 11px 20px;
+`;
+
+const TableHeader = () => (
+  <thead>
+    <tr>
+      <StyledTh>SYNDROMES</StyledTh>
+      <StyledTh style={{ width: 80 }} />
+      <StyledTh style={{ width: 80, padding: 0 }}>TOTAL CASES</StyledTh>
+    </tr>
+  </thead>
+);
+
+const VerifiableBody = props => {
+  const { tableStatus } = useContext(EditableTableContext);
+  const Row = tableStatus === 'editable' ? BorderlessTableRow : VerifiableTableRow;
+  return <TableBody TableRow={Row} {...props} />;
 };
 
+const columns = [
+  {
+    title: 'Syndromes',
+    key: 'title',
+    sortable: false,
+  },
+  {
+    title: '',
+    key: 'percentageChange',
+    CellComponent: PercentageChangeCell,
+    sortable: false,
+    width: '80px',
+  },
+  {
+    title: 'Total Cases',
+    key: 'totalCases',
+    CellComponent: EditableCell,
+    sortable: false,
+    width: '80px',
+  },
+];
+
 export const CountryReportTable = React.memo(
-  ({ tableStatus, setTableStatus, sitesReported, totalSites, weekNumber }) => {
-    const { fields } = useContext(EditableTableContext);
-    const [sitesReportedValue, setSitesReportedValue] = useState(sitesReported);
-    const [totalSitesValue, setTotalSitesValue] = useState(totalSites);
+  ({ isFetching, data, sitesReported, totalSites, weekNumber }) => {
+    const { tableStatus, setTableStatus } = useContext(EditableTableContext);
     const { countryCode } = useParams();
 
-    const [saveReport] = useSaveCountryReport({ countryCode, weekNumber });
+    const { handleSubmit, ...methods } = useForm();
 
-    const handleSubmit = () => {
+    const [saveReport, { error, isError }] = useSaveCountryReport(countryCode, weekNumber);
+
+    const onSubmit = async formData => {
       setTableStatus(TABLE_STATUSES.SAVING);
 
       try {
-        saveReport({
-          ...fields,
-          sitesReported: parseInt(sitesReportedValue, 10),
-          totalSites: parseInt(totalSitesValue, 10),
+        await saveReport({
+          afr: parseInt(formData.AFR),
+          dia: parseInt(formData.DIA),
+          ili: parseInt(formData.ILI),
+          pf: parseInt(formData.PF),
+          dli: parseInt(formData.DLI),
+          sitesReported: parseInt(formData.sitesReported),
+          sites: parseInt(formData.totalSites),
         });
         setTableStatus(TABLE_STATUSES.STATIC);
-      } catch (error) {
+      } catch (e) {
         setTableStatus(TABLE_STATUSES.ERROR);
       }
     };
@@ -109,74 +155,86 @@ export const CountryReportTable = React.memo(
     }, [setTableStatus]);
 
     return (
-      <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
-        <FlexSpaceBetween pb={2}>
-          {tableStatus === TABLE_STATUSES.EDITABLE ? (
-            <FormRow>
-              <ReportedSites variant="h6">Reported Sites:</ReportedSites>
-              <StyledTextField
-                value={sitesReportedValue}
-                onChange={event => setSitesReportedValue(event.target.value)}
-                name="sites-reported"
-              />
-              <ReportedSites variant="h5"> / Total Sites: </ReportedSites>
-              <StyledTextField
-                value={totalSitesValue}
-                onChange={event => setTotalSitesValue(event.target.value)}
-                name="total-sites"
-              />
-            </FormRow>
-          ) : (
-            <Typography variant="h5">
-              {sitesReportedValue}/{totalSites} Sites Reported
-            </Typography>
-          )}
-          <GreyOutlinedButton
-            onClick={handleEdit}
-            disabled={tableStatus === TABLE_STATUSES.EDITABLE}
-          >
-            Edit
-          </GreyOutlinedButton>
-        </FlexSpaceBetween>
-        {tableStatus === TABLE_STATUSES.EDITABLE && (
-          <Alert severity="error" variant="standard">
-            Updating country level data manually: all individual sentinel site data will be ignored
-          </Alert>
-        )}
-        {/* ToDo: implement with sentinel sites feature
-        @see https://app.zenhub.com/workspaces/sprint-board-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/1640
-        <GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>
-        Country level data has been manually edited, sentinel data will not be used.
-        </GreyAlert>*/}
-        <GreyHeader>
-          <span>SYNDROMES</span>
-          <span>TOTAL CASES</span>
-        </GreyHeader>
-        <EditableTable Header={false} Body={VerifiableBody} />
-        {tableStatus === TABLE_STATUSES.EDITABLE && (
-          <FlexSpaceBetween pt={3} mt={3} borderTop={1} borderColor="grey.400">
-            <MuiLink underline="always">Reset and use Sentinel data</MuiLink>
-            <div>
-              <Button variant="outlined" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button onClick={handleSubmit}>Save</Button>
-            </div>
-          </FlexSpaceBetween>
-        )}
+      <LoadingContainer
+        isLoading={isFetching || tableStatus === TABLE_STATUSES.SAVING}
+        heading={isFetching ? 'Loading data' : 'Saving Data'}
+      >
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FlexSpaceBetween pb={2}>
+              {tableStatus === TABLE_STATUSES.EDITABLE ? (
+                <FormRow>
+                  <ReportedSites variant="h6">Reported Sites:</ReportedSites>
+                  <StyledTextField
+                    defaultValue={sitesReported}
+                    error={!!methods.errors.sitesReported}
+                    name="sitesReported"
+                    inputRef={methods.register({
+                      required: 'Required',
+                    })}
+                  />
+                  <ReportedSites variant="h5"> / Total Sites: </ReportedSites>
+                  <StyledTextField
+                    defaultValue={totalSites}
+                    error={!!methods.errors.totalSites}
+                    name="totalSites"
+                    inputRef={methods.register({
+                      required: 'Required',
+                    })}
+                  />
+                </FormRow>
+              ) : (
+                <Typography variant="h5">
+                  {sitesReported}/{totalSites} Sites Reported
+                </Typography>
+              )}
+              <GreyOutlinedButton
+                onClick={handleEdit}
+                type="button"
+                disabled={tableStatus === TABLE_STATUSES.EDITABLE}
+              >
+                Edit
+              </GreyOutlinedButton>
+            </FlexSpaceBetween>
+            {isError && error && (
+              <Alert severity="error" variant="standard">
+                {error.message}
+              </Alert>
+            )}
+            {/*<GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>*/}
+            {/*Country level data has been manually edited, sentinel data will not be used.*/}
+            {/*</GreyAlert>*/}
+            {/*<GreyHeader>*/}
+            {/*  <span>SYNDROMES</span>*/}
+            {/*  <span>TOTAL CASES</span>*/}
+            {/*</GreyHeader>*/}
+            <Table Header={TableHeader} Body={VerifiableBody} data={data} columns={columns} />
+            {tableStatus === TABLE_STATUSES.EDITABLE && (
+              <FlexEnd pt={3} mt={3} borderTop={1} borderColor="grey.400">
+                {/*<MuiLink underline="always">Reset and use Sentinel data</MuiLink>*/}
+                <div>
+                  <Button variant="outlined" type="button" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Save</Button>
+                </div>
+              </FlexEnd>
+            )}
+          </form>
+        </FormProvider>
       </LoadingContainer>
     );
   },
 );
 
 CountryReportTable.propTypes = {
-  tableStatus: PropTypes.PropTypes.oneOf([
-    TABLE_STATUSES.STATIC,
-    TABLE_STATUSES.EDITABLE,
-    TABLE_STATUSES.SAVING,
-  ]).isRequired,
-  setTableStatus: PropTypes.func.isRequired,
+  isFetching: PropTypes.bool,
+  data: PropTypes.array.isRequired,
   sitesReported: PropTypes.number.isRequired,
-  weekNumber: PropTypes.number.isRequired,
+  weekNumber: PropTypes.string.isRequired,
   totalSites: PropTypes.number.isRequired,
+};
+
+CountryReportTable.defaultProps = {
+  isFetching: false,
 };

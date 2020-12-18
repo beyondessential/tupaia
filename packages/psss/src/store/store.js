@@ -3,27 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { createStore, compose, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 import storage from 'redux-persist/lib/storage';
-import { rootReducer } from './rootReducer';
-import { apiErrorHandler } from '../api/apiErrorHandler';
+import { apiErrorInterceptor } from '../api/apiErrorInterceptor';
+
+import { auth } from './auth';
+import { weeklyReports } from './weeklyReports';
+
+const rootReducer = combineReducers({
+  auth: persistReducer({ key: 'auth', storage, whitelist: ['user', 'isLoggedIn'] }, auth),
+  weeklyReports,
+});
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const persistConfig = { key: 'psss', storage };
-
-if (process.env.NODE_ENV !== 'development') {
-  persistConfig.whitelist = ['auth']; // apart from auth, persist is used for a dev experience, but not required in production
-}
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const enhancers = composeEnhancers(applyMiddleware(thunk));
 
-const store = createStore(persistedReducer, {}, enhancers);
+const store = createStore(rootReducer, {}, enhancers);
 
-apiErrorHandler(store);
+apiErrorInterceptor(store);
 
 export { store };

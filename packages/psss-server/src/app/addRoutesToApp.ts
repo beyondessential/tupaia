@@ -10,9 +10,12 @@ import {
   LoginRoute,
   LogoutRoute,
   TestRoute,
-  ConfirmedWeeklyReportRoute,
-  ConfirmedCountryWeeklyReportRoute,
-  CountryWeeklyReportRoute,
+  FetchConfirmedWeeklyReportRoute,
+  FetchConfirmedCountryWeeklyReportRoute,
+  FetchCountryWeeklyReportRoute,
+  ConfirmCountryWeeklyReportRoute,
+  SaveCountryWeeklyReportRoute,
+  DeleteCountryWeeklyReportRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -46,21 +49,32 @@ export function addRoutesToApp(app: Express) {
    * GET routes
    */
   app.get('/v1/test', handleWith(TestRoute));
-  app.get('/v1/confirmedWeeklyReport', handleWith(ConfirmedWeeklyReportRoute));
+  app.get('/v1/confirmedWeeklyReport', handleWith(FetchConfirmedWeeklyReportRoute));
   app.get(
     '/v1/confirmedWeeklyReport/:organisationUnitCode',
-    handleWith(ConfirmedCountryWeeklyReportRoute),
+    handleWith(FetchConfirmedCountryWeeklyReportRoute),
   );
-  app.get(
-    '/v1/weeklyReport/:organisationUnitCode',
-    handleWith(CountryWeeklyReportRoute),
-  );
+  app.get('/v1/weeklyReport/:organisationUnitCode', handleWith(FetchCountryWeeklyReportRoute));
 
   /**
    * POST routes
    */
   app.post('/v1/login', handleWith(LoginRoute));
   app.post('/v1/logout', handleWith(LogoutRoute));
+  app.post(
+    '/v1/confirmedWeeklyReport/:organisationUnitCode',
+    handleWith(ConfirmCountryWeeklyReportRoute),
+  );
+
+  /**
+   * PUT routes
+   */
+  app.put('/v1/weeklyReport/:organisationUnitCode', handleWith(SaveCountryWeeklyReportRoute));
+
+  /**
+   * DELETE routes
+   */
+  app.delete('/v1/weeklyReport/:organisationUnitCode', handleWith(DeleteCountryWeeklyReportRoute));
 
   app.use(handleError);
 }
