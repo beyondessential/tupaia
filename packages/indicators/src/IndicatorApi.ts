@@ -11,8 +11,8 @@ import {
   Analytic,
   Builder,
   FetchOptions,
-  IndicatorApiInterface,
   Indicator,
+  IndicatorApiInterface,
   ModelRegistry,
 } from './types';
 

@@ -19,7 +19,7 @@ export type AggregationSpecs = AggregationDescriptor | AggregationDescriptor[];
  * 'undefined' can be passed in to treat the value as "optional"
  * in supported calculations (eg `avg(a, b)`)
  */
-type DefaultValue = number | 'undefined';
+export type DefaultValue = number | 'undefined';
 
 /**
  * A flexible config schema that can be provided as an input to the indicator
@@ -30,15 +30,4 @@ export type ArithmeticConfig = {
   readonly aggregation: AggregationSpecs | Record<string, AggregationSpecs>;
   readonly parameters?: Indicator[];
   readonly defaultValues?: Record<string, DefaultValue>;
-};
-
-/**
- * A fully expanded, verbose config containing as much information as possible.
- * Useful for internal code purposes
- */
-export type ExpandedArithmeticConfig = {
-  readonly formula: string;
-  readonly aggregation: Record<string, Aggregation[]>;
-  readonly parameters: Indicator[];
-  readonly defaultValues: Record<string, DefaultValue>;
 };

@@ -7,19 +7,48 @@ import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import { getUniqueEntries } from '@tupaia/utils';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import {
+  Aggregation,
   Analytic,
   AnalyticCluster,
   Builder,
   FetchOptions,
+  Indicator,
   IndicatorApiInterface,
 } from '../../types';
 import { fetchAnalytics } from '../helpers';
-import { expandConfig, ExpandedArithmeticConfig, validateArithmeticConfig } from './config';
+import {
+  ArithmeticConfig,
+  DefaultValue,
+  getAggregationsByCode,
+  validateArithmeticConfig,
+} from './config';
+
+/**
+ * Config used by the builder. It is essential a fully expanded, verbose version
+ * of the indicator config passed in by the user (`ArithmeticConfig`)
+ */
+type BuilderConfig = {
+  readonly formula: string;
+  readonly aggregation: Record<string, Aggregation[]>;
+  readonly parameters: Indicator[];
+  readonly defaultValues: Record<string, DefaultValue>;
+};
+
+const arithmeticToBuilderConfig = (config: ArithmeticConfig): BuilderConfig => {
+  const { defaultValues = {}, parameters = [], ...otherFields } = config;
+
+  return {
+    ...otherFields,
+    defaultValues,
+    parameters,
+    aggregation: getAggregationsByCode(config),
+  };
+};
 
 const buildAnalyticClusters = (
   analytics: Analytic[],
   dataElements: string[],
-  defaultValues: ExpandedArithmeticConfig['defaultValues'],
+  defaultValues: Record<string, DefaultValue>,
 ) => {
   const checkClusterIncludesAllElements = (cluster: AnalyticCluster) =>
     dataElements.every(member => member in cluster.dataValues);
@@ -58,7 +87,7 @@ const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: strin
 
 const fetchAnalyticsAndElements = async (
   api: IndicatorApiInterface,
-  config: ExpandedArithmeticConfig,
+  config: BuilderConfig,
   fetchOptions: FetchOptions,
 ) => {
   const { aggregation, parameters } = config;
@@ -78,7 +107,7 @@ const fetchAnalyticsAndElements = async (
 
 export const processConfigInput = async (configInput: Record<string, unknown>) => {
   const config = await validateArithmeticConfig(configInput);
-  return expandConfig(config);
+  return arithmeticToBuilderConfig(config);
 };
 
 export const buildArithmetic: Builder = async input => {
