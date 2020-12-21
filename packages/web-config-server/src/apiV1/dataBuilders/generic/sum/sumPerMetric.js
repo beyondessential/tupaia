@@ -1,6 +1,7 @@
 import { getDataElementCodesInGroup, sumResults } from '/apiV1/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { addNameToDataElementResult } from 'apiV1/utils/addNameToDataElementResult';
 
 const getDataElementCodes = async (dataBuilderConfig, dhisApi) => {
   const { dataElementCodes, dataElementGroupCode } = dataBuilderConfig;
@@ -53,21 +54,13 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
   };
 
   const dataElementsWithData = [];
-  results
-    .map(({ dataElement: dataElementCode, ...result }) => {
-      const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
-      return {
-        ...result,
-        dataElementCode,
-        name,
-      };
-    })
-    .forEach(resultObject => {
-      const { value, dataElementCode } = resultObject;
-      dataElementsWithData.push(dataElementCode);
-      const returnDataObject = getOrCreateReturnData(resultObject);
-      returnDataObject.value += calculateValueToAdd(value, dataElementCode);
-    });
+  const dataElementsWithName = addNameToDataElementResult(results, dataElementCodeToName, labels);
+  dataElementsWithName.forEach(resultObject => {
+    const { value, dataElementCode } = resultObject;
+    dataElementsWithData.push(dataElementCode);
+    const returnDataObject = getOrCreateReturnData(resultObject);
+    returnDataObject.value += calculateValueToAdd(value, dataElementCode);
+  });
 
   const data = Object.values(returnData);
   if (dataBuilderConfig.dataElementCodes) {
