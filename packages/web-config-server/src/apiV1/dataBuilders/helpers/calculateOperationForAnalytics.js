@@ -32,11 +32,8 @@ const valueToGroup = (value, config) => {
 const performSingleAnalyticOperation = (analytics, config) => {
   const { operator } = config;
   // filterOptions could be ['dataElement', 'organisationUnit'] for multiple matching key options
-  const filterOptions = config.filterOptions ?? config.dataElement;
-  const filterOptionsValues = {};
-  filterOptions.forEach(filterOptionKey => {
-    filterOptionsValues[filterOptionKey] = config[filterOptionKey];
-  });
+  const filterOptions = config.filterOptions ?? [config.dataElement];
+  const filterOptionsValues = Object.fromEntries(filterOptions.map(key => [key, config[key]]));
   const filteredAnalytics = analytics.filter(analytic => some([analytic], filterOptionsValues));
   if (filteredAnalytics.length > 1) {
     throw new Error(`Too many results passed to checkConditions (calculateOperationForAnalytics)`);

@@ -1,7 +1,7 @@
 'use strict';
 
 import { insertObject, removeArrayValue } from '../utilities';
-import { addArrayValue, deleteReport } from '../utilities/migration';
+import { addArrayValue } from '../utilities/migration';
 import { arrayToDbString } from '../../dist/utilities/migration';
 
 var dbm;
@@ -17,6 +17,15 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
+
+async function deleteReport(db, reportId) {
+  return db.runSql(`
+    DELETE FROM
+      "dashboardReport"
+    WHERE
+      "id" = '${reportId}';
+  `);
+}
 
 const countryCodes = ['FJ', 'FM', 'MH', 'WS', 'TO', 'KI', 'SB', 'VU'];
 
@@ -431,10 +440,10 @@ exports.up = async function (db) {
   );
 
   // National and Provincial Matrix Table and Line Graph Chart
-  [
+  for (const dashboardReport of [
     nationalAndProvincialLevelDashboardReportConfig,
     nationalAndProvincialLevelLineGraphReportConfig,
-  ].forEach(async dashboardReport => {
+  ]) {
     await insertObject(db, 'dashboardReport', dashboardReport);
     await addArrayValue(
       db,
@@ -445,7 +454,7 @@ exports.up = async function (db) {
         countryCodes,
       )}) and "name" = 'UNFPA' and "organisationLevel" in ('District','Country')`,
     );
-  });
+  }
 };
 
 exports.down = async function (db) {
@@ -461,10 +470,10 @@ exports.down = async function (db) {
   );
 
   // National and Provincial Matrix Table and Line Graph Chart
-  [
+  for (const dashboardReport of [
     nationalAndProvincialLevelDashboardReportConfig,
     nationalAndProvincialLevelLineGraphReportConfig,
-  ].forEach(async dashboardReport => {
+  ]) {
     await deleteReport(db, dashboardReport.id);
     await removeArrayValue(
       db,
@@ -475,7 +484,7 @@ exports.down = async function (db) {
         countryCodes,
       )}) and "name" = 'UNFPA' and "organisationLevel" in ('District','Country')`,
     );
-  });
+  }
 };
 
 exports._meta = {

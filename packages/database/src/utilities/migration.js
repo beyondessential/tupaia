@@ -230,7 +230,7 @@ function removeReportFromGroups(db, reportId, groupCodes) {
 }
 
 // Delete a report
-export async function deleteReport(db, reportId) {
+async function deleteReport(db, reportId) {
   return db.runSql(`
     DELETE FROM
       "dashboardReport"

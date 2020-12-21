@@ -19,105 +19,70 @@ const OPERATORS = {
 };
 
 /**
- * To add summary for each column in final data
- * 
- * Configuration schema
+ * Adds summary for each column in a table
+ *
+
  * For example:
  * ------------------------------------------------------
  *                               | Male condoms     |   yes
  *                               | Female condoms   |   no
- * (New Row for column summary)  | Percentage of no |   50% 
+ * (New Row for column summary)  | Percentage of no |   50%
  * ------------------------------------------------------
- * 
- * @param {columns, rows, period} result: Matrix table data
- * @param { operator, title<optional>, operatorConfig, excludeCondition<optional>} config
- *    
- * Config example:
- * ------------------------------------------------------
- *  columnSummary: {
-      title: '% of items out of stock at facility',
-      operator: 'PERCENTAGE',
-      operatorConfig: {
-        numerator: {
-          condition: {
-            value: 'No',
-            operator: '=',
-          },
-        },
-      },
-      excludeCondition: { value: 'No data', operator: '=' },
-    },
- *-----------------------------------------------------
- * 
+ *
+ * @param {{ columns, rows }} tableData: Matrix table data
+ * @param {{ operator, title, operatorConfig, excludeCondition}} config
+ *
  */
-export const buildColumnSummary = (result, config) => {
-  const newResult = result;
+export const buildColumnSummary = (tableData, config) => {
+  const newTableData = { ...tableData };
   const { excludeCondition, operator: operatorName, title = 'Summary', operatorConfig } = config;
-  const newRow = { dataElement: title };
+  const summaryRow = { dataElement: title };
   const operator = OPERATORS[operatorName];
   if (!operator) throw new Error(`Cannot find operator: ${operatorName}`);
 
   // Add summary to each column
-  newResult.columns.forEach(({ key }) => {
-    const columnValuesSet = newResult.rows.map(row => row[key]);
+  newTableData.columns.forEach(({ key }) => {
+    const columnValuesSet = newTableData.rows.map(row => row[key]);
     const filteredColumnValuesSet = excludeCondition
       ? columnValuesSet.filter(value => !checkValueSatisfiesCondition(value, excludeCondition))
       : columnValuesSet;
-    newRow[key] = operator(filteredColumnValuesSet, operatorConfig);
+    summaryRow[key] = operator(filteredColumnValuesSet, operatorConfig);
   });
-  newResult.rows.push(newRow);
-  return newResult;
+  newTableData.rows.push(summaryRow);
+  return newTableData;
 };
 
 /**
- * To add summary for each row in final data
- * 
+ * Adds summary for each row in final data
+ *
  * For example:
  * ------------------------------------------------------
  *                                           % of no (add new row summary)
  *  male condoms     | yes | no | yes | no |  50%
  * ------------------------------------------------------
- * 
- * @param {columns, rows, period} result: Matrix table data
- * @param { operator, title<optional>, operatorConfig, excludeCondition<optional>} config
- *    
- * Config example:
- * ------------------------------------------------------
- *  rowSummary: {
-      title: '% of facilities with item out of stock',
-      operator: 'PERCENTAGE',
-      operatorConfig: {
-        numerator: {
-          condition: {
-            value: 'No',
-            operator: '=',
-          },
-        },
-      },
-      excludeCondition: { value: 'No data', operator: '=' },
-    },
- *-----------------------------------------------------
- * 
+ *
+ * @param {{ columns, rows }} result: Matrix table data
+ * @param {{ operator, title, operatorConfig, excludeCondition }} config
+ *
  */
-export const buildRowSummary = (result, config) => {
-  const newResult = result;
-  const newColumnKey = 'rowSummary';
+export const buildRowSummary = (tableData, config) => {
+  const newTableData = { ...tableData };
+  const summaryColumnKey = 'rowSummary';
   const { excludeCondition, operator: operatorName, title = 'Summary', operatorConfig } = config;
   const operator = OPERATORS[operatorName];
   if (!operator) throw new Error(`Cannot find operator: ${operatorName}`);
 
-  const columnKeys = newResult.columns.map(row => row.key);
+  const columnKeys = newTableData.columns.map(row => row.key);
   // Add summary to each row
-  newResult.rows.forEach((row, index) => {
+  newTableData.rows.forEach((row, index) => {
     const rowValuesSet = columnKeys.map(key => row[key]);
     const filteredRowValuesSet = excludeCondition
       ? rowValuesSet.filter(value => !checkValueSatisfiesCondition(value, excludeCondition))
       : rowValuesSet;
-    newResult.rows[index][newColumnKey] = operator(filteredRowValuesSet, operatorConfig);
+    newTableData.rows[index][summaryColumnKey] = operator(filteredRowValuesSet, operatorConfig);
   });
 
   // Add summary column to columns object
-  const newColumn = { key: newColumnKey, title };
-  result.columns.push(newColumn);
-  return newResult;
+  const newColumns = [...tableData.columns, { key: summaryColumnKey, title }];
+  return { ...tableData, columns: newColumns };
 };
