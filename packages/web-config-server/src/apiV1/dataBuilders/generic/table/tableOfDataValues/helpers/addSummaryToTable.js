@@ -6,6 +6,7 @@
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 const percentageOfConditions = (valueSet, config) => {
+  if (valueSet.length === 0) return false;
   const { numerator: numeratorConfig } = config;
   const numerator = valueSet.filter(value =>
     checkValueSatisfiesCondition(value, numeratorConfig.condition),
@@ -46,10 +47,13 @@ export const buildColumnSummary = (tableData, config) => {
     const filteredColumnValuesSet = excludeCondition
       ? columnValuesSet.filter(value => !checkValueSatisfiesCondition(value, excludeCondition))
       : columnValuesSet;
-    summaryRow[key] = operator(filteredColumnValuesSet, operatorConfig);
+    const summaryRowValue = operator(filteredColumnValuesSet, operatorConfig);
+    if (summaryRowValue) {
+      summaryRow[key] = summaryRowValue;
+    }
   });
-  newTableData.rows.push(summaryRow);
-  return newTableData;
+  const newRows = [...newTableData.rows, summaryRow];
+  return { ...newTableData, rows: newRows };
 };
 
 /**
@@ -66,23 +70,29 @@ export const buildColumnSummary = (tableData, config) => {
  *
  */
 export const buildRowSummary = (tableData, config) => {
-  const newTableData = { ...tableData };
   const summaryColumnKey = 'rowSummary';
   const { excludeCondition, operator: operatorName, title = 'Summary', operatorConfig } = config;
   const operator = OPERATORS[operatorName];
   if (!operator) throw new Error(`Cannot find operator: ${operatorName}`);
 
-  const columnKeys = newTableData.columns.map(row => row.key);
+  const columnKeys = tableData.columns.map(row => row.key);
   // Add summary to each row
-  newTableData.rows.forEach((row, index) => {
+  const newRows = tableData.rows.map(row => {
+    // Skip if it is a summary row (summary row do not have dataCode element)
+    if (!row.dataCode) return row;
+
     const rowValuesSet = columnKeys.map(key => row[key]);
     const filteredRowValuesSet = excludeCondition
       ? rowValuesSet.filter(value => !checkValueSatisfiesCondition(value, excludeCondition))
       : rowValuesSet;
-    newTableData.rows[index][summaryColumnKey] = operator(filteredRowValuesSet, operatorConfig);
+    const summaryCell = operator(filteredRowValuesSet, operatorConfig);
+    if (summaryCell) {
+      return { ...row, [summaryColumnKey]: summaryCell };
+    }
+    return row;
   });
 
   // Add summary column to columns object
   const newColumns = [...tableData.columns, { key: summaryColumnKey, title }];
-  return { ...tableData, columns: newColumns };
+  return { ...tableData, columns: newColumns, rows: newRows };
 };

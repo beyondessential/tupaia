@@ -8,12 +8,11 @@ import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToSet, getSortByKey } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-
+import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
 import { TableConfig } from './TableConfig';
-import { getValuesByCell } from './getValuesByCell';
+import { getValuesByCell } from './helpers/getValuesByCell';
 import { TotalCalculator } from './TotalCalculator';
-
-import { buildColumnSummary, buildRowSummary } from './addSummaryToTable';
+import { buildColumnSummary, buildRowSummary } from './helpers/addSummaryToTable';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
@@ -33,16 +32,19 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
     this.rowsToDescriptions = {};
 
-    const columns = await this.buildColumns();
-    const rows = await this.buildRows(columns);
+    const columns = this.columns || (await this.buildColumns());
+    const rows = await this.buildRows(this.columns);
     const data = { columns, rows, period };
 
     return this.buildFromExtraConfig(data);
   }
 
+  /**
+   * @param {{ rows, columns }} data
+   */
   async buildFromExtraConfig(data) {
-    let newData = data;
-    const { rows } = data;
+    let newData = { ...data };
+    const { rows } = newData;
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
 
@@ -62,10 +64,11 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       newData.columns = columns.sort(getSortByKey('title'));
     }
 
-    if (this.config.valueNotToDisplay) {
-      const excludedValue = this.config.valueNotToDisplay;
+    if ('excludedValue' in this.config) {
+      const { excludedValue } = this.config;
       newData.rows.forEach(row => {
         Object.entries(row).forEach(([key, value]) => {
+          // eslint-disable-next-line no-param-reassign
           if (value === excludedValue) delete row[key];
         });
       });
@@ -119,6 +122,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
    * @returns {{ dataElement: string, categoryId: (string:undefined) }}
    */
   async buildBaseRows() {
+    if (this.config.columns && this.config.columns === ORG_UNIT_COL_KEY) {
+      return buildBaseRowsForOrgUnit(this.tableConfig.rows, undefined, 0, this.config);
+    }
+
     if (this.tableConfig.hasRowCategories()) {
       if (this.tableConfig.hasRowDescriptions()) await this.buildRowDescriptions();
       if (this.tableConfig.hasRowDataElements()) {

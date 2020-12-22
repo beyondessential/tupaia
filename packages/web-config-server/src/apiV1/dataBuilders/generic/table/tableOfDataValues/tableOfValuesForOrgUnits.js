@@ -4,7 +4,7 @@
  */
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
-import { buildBaseRowsForOrgUnit } from './buildBaseRowsForOrgUnit';
+import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   buildBaseRows(rows = this.tableConfig.rows, parent = undefined, baseCellIndex = 0) {

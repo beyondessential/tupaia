@@ -132,7 +132,7 @@ const facilityLevelDashboardReportConfig = {
 
 const nationalAndProvincialLevelDashboardReportConfig = {
   id: 'RH_Products_Stock_Availability_HFRSA_And_Spot_Check_Survey_Data_With_Percentage',
-  dataBuilder: 'tableOfCalculatedValuesForOrgUnits',
+  dataBuilder: 'tableOfCalculatedValues',
   dataBuilderConfig: {
     rows: [
       'Male condoms',
@@ -232,9 +232,9 @@ const nationalAndProvincialLevelDashboardReportConfig = {
       operator: 'PERCENTAGE',
       operatorConfig: {
         numerator: {
-          groups: {
-            Y: { value: 'N', operator: '=' },
-            N: { value: 'N', operator: '=' },
+          condition: {
+            value: 'N',
+            operator: '=',
           },
         },
       },
@@ -254,8 +254,9 @@ const nationalAndProvincialLevelDashboardReportConfig = {
       },
       excludeCondition: { value: 'No data', operator: '=' },
     },
+    addDynamicKey: true,
     columns: '$orgUnit',
-    valueNotToDisplay: 'No data',
+    excludedValue: 'No data',
     entityAggregation: {
       dataSourceEntityType: 'facility',
     },

@@ -3,7 +3,7 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getPercentageCountOfValuesByCell } from './getValuesByCell';
+import { getPercentageCountOfValuesByCell } from './helpers/getValuesByCell';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 

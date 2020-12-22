@@ -9,5 +9,4 @@ export { tableOfValuesForOrgUnits } from './tableOfValuesForOrgUnits';
 export { tableOfPercentagesOfValueCounts } from './tableOfPercentagesOfValueCounts';
 export { tableOfValuesPerPeriod } from './tableOfDataValuesPerPeriod';
 export { tableOfCalculatedValues } from './tableOfCalculatedValues';
-export { tableOfCalculatedValuesForOrgUnits } from './tableOfCalculatedValuesForOrgUnits';
 export { nonMatrixTableFromCells } from './nonMatrixTableFromCells';
