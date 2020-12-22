@@ -6,7 +6,6 @@ export {
   tableOfPercentagesOfValueCounts,
   tableOfValuesPerPeriod,
   tableOfCalculatedValues,
-  tableOfCalculatedValuesForOrgUnits,
   nonMatrixTableFromCells,
 } from './tableOfDataValues';
 export { tableOfEvents } from './tableOfEvents';
