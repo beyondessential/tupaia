@@ -19,6 +19,8 @@ const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
 const ORG_UNIT_COL_KEY = '$orgUnit';
 const ORG_UNIT_WITH_TYPE_COL_KEY = '$orgUnitTypeName';
+const ORG_UNIT_COLUMNS_KEYS_SET = [ORG_UNIT_COL_KEY, ORG_UNIT_WITH_TYPE_COL_KEY];
+
 const CATEGORY_AGGREGATION_TYPES = {
   AVERAGE: '$average',
 };
@@ -56,10 +58,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       }
     }
 
-    if (
-      this.tableConfig.columnType === ORG_UNIT_COL_KEY ||
-      this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY
-    ) {
+    if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.tableConfig.columnType)) {
       const columns = await this.replaceOrgUnitCodesWithNames(data.columns);
       newData.columns = columns.sort(getSortByKey('title'));
     }
@@ -122,7 +121,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
    * @returns {{ dataElement: string, categoryId: (string:undefined) }}
    */
   async buildBaseRows() {
-    if (this.config.addDynamicKey === true) {
+    if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.config.columns)) {
       return buildBaseRowsForOrgUnit(this.tableConfig.rows, undefined, 0, this.config);
     }
 
