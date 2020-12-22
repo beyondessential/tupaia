@@ -78,7 +78,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }
 
     if (this.config.rowSummary) {
-      newData = buildRowSummary(newData, this.config.rowSummary);
+      const skipRowForColumnSummary = !!this.config.columnSummary;
+      newData = buildRowSummary(newData, { ...this.config.rowSummary, skipRowForColumnSummary });
     }
     return newData;
   }
