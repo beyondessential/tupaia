@@ -33,7 +33,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.rowsToDescriptions = {};
 
     const columns = this.columns || (await this.buildColumns());
-    const rows = await this.buildRows(this.columns);
+    const rows = await this.buildRows(columns);
     const data = { columns, rows, period };
 
     return this.buildFromExtraConfig(data);
