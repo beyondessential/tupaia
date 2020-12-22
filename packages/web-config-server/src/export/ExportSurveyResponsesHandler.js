@@ -13,14 +13,20 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       latest,
       startDate,
       endDate,
+      timeZone,
+      viewId,
       easyReadingMode,
     } = this.query;
     const meditrakServerEndpoint = 'export/surveyResponses';
+    const { viewJson: { name: reportName } } = viewId && (await this.models.dashboardReport.findById(viewId));
+
     const queryParameters = {
       latest,
       surveyCodes,
       startDate,
       endDate,
+      timeZone,
+      reportName,
       easyReadingMode,
     };
 

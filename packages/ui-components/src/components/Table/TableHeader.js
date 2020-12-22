@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import Skeleton from '@material-ui/lab/Skeleton';
 import MuiTableSortLabel from '@material-ui/core/TableSortLabel';
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import MuiTableHead from '@material-ui/core/TableHead';
@@ -51,38 +52,59 @@ const SortLabel = styled(MuiTableSortLabel)`
   }
 `;
 
-export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderBy, className }) => {
-  const getContent = (key, sortable, title) =>
-    sortable ? (
-      <SortLabel
-        IconComponent={UnfoldMoreIcon}
-        active={orderBy === key}
-        direction={order}
-        onClick={() => onChangeOrderBy(key)}
-      >
-        {title}
-      </SortLabel>
-    ) : (
-      title
-    );
+const Label = styled.span`
+  color: ${props => props.theme.palette.text.primary};
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+`;
 
-  return (
-    <MuiTableHead className={className}>
-      <MuiTableRow>
-        {columns.map(({ key, title, width = null, align = 'center', sortable = true }) => (
-          <TableHeaderCell key={key} style={{ width }} align={align}>
-            {getContent(key, sortable, title)}
-          </TableHeaderCell>
-        ))}
-      </MuiTableRow>
-    </MuiTableHead>
-  );
-});
+export const TableHeader = React.memo(
+  ({ isFetching, columns, order, orderBy, onChangeOrderBy, className }) => {
+    const getContent = (key, sortable, title) => {
+      if (isFetching) {
+        return (
+          <Skeleton animation="wave" style={{ display: 'inline-block' }}>
+            <Label>{title}</Label>
+          </Skeleton>
+        );
+      }
+
+      if (sortable) {
+        return (
+          <SortLabel
+            IconComponent={UnfoldMoreIcon}
+            active={orderBy === key}
+            direction={order}
+            onClick={() => onChangeOrderBy(key)}
+          >
+            {title}
+          </SortLabel>
+        );
+      }
+
+      return <Label>{title}</Label>;
+    };
+
+    return (
+      <MuiTableHead className={className}>
+        <MuiTableRow>
+          {columns.map(({ key, title, width = null, align = 'center', sortable = true }) => (
+            <TableHeaderCell key={key} style={{ width }} align={align}>
+              {getContent(key, sortable, title)}
+            </TableHeaderCell>
+          ))}
+        </MuiTableRow>
+      </MuiTableHead>
+    );
+  },
+);
 
 TableHeader.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   onChangeOrderBy: PropTypes.func,
   orderBy: PropTypes.string,
+  isFetching: PropTypes.bool,
   order: PropTypes.string,
   className: PropTypes.string,
 };
@@ -90,6 +112,7 @@ TableHeader.propTypes = {
 TableHeader.defaultProps = {
   onChangeOrderBy: null,
   orderBy: null,
+  isFetching: false,
   order: 'asc',
   className: null,
 };

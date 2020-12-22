@@ -98,9 +98,9 @@ describe('buildArithmetic', () => {
         /C.* is in defaultValues but not referenced in the formula/,
       ],
       [
-        'a default value must be a number',
+        'a default value must be a number or "undefined"',
         { formula: 'A + 1', aggregation: { A: 'SUM' }, defaultValues: { A: '10' } },
-        /Value 'A' is not a number: '10'/,
+        /Value 'A' in defaultValues is not a number or 'undefined': 10/,
       ],
       [
         'parameters must be an array of objects',

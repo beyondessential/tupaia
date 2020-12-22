@@ -43,7 +43,7 @@ export const JOIN_TYPES = {
   DEFAULT: null,
 };
 
-const VALID_CAST_TYPES = ['text'];
+const VALID_CAST_TYPES = ['text', 'date'];
 
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing

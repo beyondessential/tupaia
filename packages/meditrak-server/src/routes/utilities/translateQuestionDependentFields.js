@@ -34,6 +34,14 @@ export const translateQuestionDependentNestedFields = (config, nestedFieldList) 
   return resultConfig;
 };
 
+/**
+ * { question_code: "RHS1UNFPA68" } => { question_id: "5e01604261f76a4835c6600c" }
+ */
+export const translateQuestionCodeToId = async (questionModel, code) => {
+  const question = await questionModel.findOne({ code });
+  return { question_id: question.id };
+};
+
 export const replaceQuestionCodesWithIds = async (models, config, fieldList) => {
   const resultConfig = {};
 
@@ -41,7 +49,7 @@ export const replaceQuestionCodesWithIds = async (models, config, fieldList) => 
     Object.entries(config).map(async ([fieldKey, value]) => {
       let newValue = value;
       if (fieldList.includes(fieldKey)) {
-        const { id: questionId } = await models.question.findOne({ code: value });
+        const { question_id: questionId } = await translateQuestionCodeToId(models.question, value);
         newValue = { questionId };
       }
       resultConfig[fieldKey] = newValue;
@@ -63,7 +71,10 @@ export const replaceNestedQuestionCodesWithIds = async (models, config, nestedFi
       if (nestedFieldList.includes(fieldKey)) {
         for (let i = 0; i < Object.entries(value).length; i++) {
           const [subfieldKey, questionCode] = Object.entries(value)[i];
-          const { id: questionId } = await models.question.findOne({ code: questionCode });
+          const { question_id: questionId } = await translateQuestionCodeToId(
+            models.question,
+            questionCode,
+          );
           newValue = {
             ...newValue,
             [subfieldKey]: { questionId },

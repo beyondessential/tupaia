@@ -53,7 +53,7 @@ CardHeader.propTypes = {
 
 CardHeader.defaultProps = {
   color: 'initial',
-  label: 'initial',
+  label: null,
 };
 
 export const CardContent = styled(MuiCardContent)`

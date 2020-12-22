@@ -70,5 +70,5 @@ LoadingContainer.propTypes = {
 
 LoadingContainer.defaultProps = {
   heading: 'Saving Data',
-  text: 'Please do not refresh browser or close this page',
+  text: 'Please do not refresh the browser or close this page',
 };

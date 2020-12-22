@@ -1,15 +1,16 @@
 /**
  * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import xlsx from 'xlsx';
 import moment from 'moment';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
-import { DatabaseError, ValidationError } from '@tupaia/utils';
+import { DatabaseError, addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
+import { SurveyResponseVariablesExtractor } from './utilities';
 
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
@@ -23,17 +24,13 @@ const INFO_COLUMNS = {
 };
 function getExportDatesString(startDate, endDate) {
   const format = 'D-M-YY';
-  let dateString = '';
-  if (startDate && endDate) {
-    dateString = `between ${moment(startDate).format(format)} and ${moment(endDate).format(
-      format,
-    )} `;
-  } else if (startDate) {
-    dateString = `after ${moment(startDate).format(format)} `;
-  } else if (endDate) {
-    dateString = `before ${moment(endDate).format(format)} `;
-  }
-  return `${dateString}as of ${moment().format(format)}`;
+  const momentFormat = date => moment(date).format(format);
+
+  if (startDate && endDate)
+    return `between ${momentFormat(startDate)} and ${momentFormat(endDate)} `;
+  if (startDate) return `after ${momentFormat(startDate)} `;
+  if (endDate) return `before ${momentFormat(endDate)} `;
+  return '(no period specified)';
 }
 function getEasyReadingInfoColumns(startDate, endDate) {
   return { text: `Survey responses ${getExportDatesString(startDate, endDate)}` };
@@ -67,10 +64,11 @@ export async function exportSurveyResponses(req, res) {
     latest = false,
     startDate,
     endDate,
+    timeZone = 'UTC',
+    reportName,
     easyReadingMode = false,
   } = req.query;
   let { surveyId, countryId } = req.query;
-  let surveyResponse;
   const infoColumns = easyReadingMode
     ? getEasyReadingInfoColumns(startDate, endDate)
     : INFO_COLUMNS;
@@ -81,69 +79,20 @@ export async function exportSurveyResponses(req, res) {
   const workbook = { SheetNames: [], Sheets: {} };
 
   try {
-    let country;
-    let entities;
-    if (countryCode) {
-      country = await models.country.findOne({ code: countryCode });
-      countryId = country.id;
-    }
-    if (entityCode) {
-      const entity = await models.entity.findOne({ code: entityCode });
-      country = await models.country.findOne({ code: entity.country_code });
-      entities = [entity];
-    } else if (countryId) {
-      country = await models.country.findById(countryId);
-      entities = await models.entity.find({ country_code: country.code }, { sort: ['name ASC'] });
-    } else if (entityIds) {
-      entities = await models.entity.find({ id: entityIds });
-      if (!countryId && entities.length > 0) {
-        const countryCodeFromEntity = entities[0].country_code;
-        country = await models.country.findOne({ code: countryCodeFromEntity });
-        countryId = country.id;
-      }
-    } else if (surveyResponseId) {
-      surveyResponse = await models.surveyResponse.findById(surveyResponseId);
-      surveyId = surveyResponse.survey_id;
-      country = await surveyResponse.country();
-    } else {
-      throw new ValidationError(
-        'Please specify either surveyResponseId, countryId, countryCode, facilityCode or entityIds',
-      );
-    }
-    let surveys;
-    if (surveyId) {
-      // A surveyId of interest passed in, only export that
-      surveys = [await models.survey.findById(surveyId)];
-    } else if (surveyCodes) {
-      const surveyFindConditions = {
-        // surveyCodes may be passed through as a comma separated string or as an array, which looks like this in a query:
-        // ?surveyCodes=code1&surveyCodes=code2
-        code: {
-          comparisonType: 'whereIn',
-          args: Array.isArray(surveyCodes) ? [surveyCodes] : [surveyCodes.split(',')],
-        },
-      };
-      if (countryId) {
-        // Fetch surveys where country_ids is empty (enabled in all countries) or contains countryId
-        // eslint-disable-next-line no-underscore-dangle
-        surveyFindConditions._and_ = {
-          country_ids: '{}',
-          _or_: {
-            country_ids: { comparator: '@>', comparisonValue: [countryId] },
-          },
-        };
-      }
-      surveys = await models.survey.find(surveyFindConditions);
-    } else {
-      // No specific surveyId passed in, so export all surveys that apply to this country
-      const allSurveys = await models.survey.all();
-      surveys = allSurveys.filter(
-        survey => survey.country_ids.length === 0 || survey.country_ids.includes(countryId),
-      );
-    }
-    if (!surveys || surveys.length < 1) {
-      throw new ValidationError('Survey not found. Please check permissions');
-    }
+    const variablesExtractor = new SurveyResponseVariablesExtractor(models);
+    const variables = await variablesExtractor.getParametersFromInput(
+      countryCode,
+      entityCode,
+      countryId,
+      entityIds,
+      surveyResponseId,
+    );
+    const { country, entities, surveyResponse } = variables;
+    countryId = variables.countryId || country.id || countryId;
+    surveyId = variables.surveyId || surveyId;
+
+    const surveys = await variablesExtractor.getSurveys(surveyId, surveyCodes, countryId);
+
     const sortAndLimitSurveyResponses =
       latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : { sort: ['end_time ASC'] };
 
@@ -256,6 +205,11 @@ export async function exportSurveyResponses(req, res) {
         ]);
       }
 
+      // Add title
+      if (reportName) {
+        exportData.unshift([`${reportName} - ${currentSurvey.name}, ${country.name}`]);
+      }
+
       // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
       const questionsForExport = questions.filter(
         ({ type: questionType }) =>
@@ -264,7 +218,7 @@ export async function exportSurveyResponses(req, res) {
       );
 
       // Add the questions info and answers to be exported
-      const preQuestionRowCount = INFO_ROW_HEADERS.length + 1; // Add one to make up for header row
+      const preQuestionRowCount = exportData.length;
 
       // Set up the left columns with info about the questions
       questionsForExport.forEach((question, questionIndex) => {
@@ -282,6 +236,10 @@ export async function exportSurveyResponses(req, res) {
           exportData[exportRow][exportColumn] = answer || '';
         });
       });
+
+      // Add export date and origin
+      if (easyReadingMode)
+        exportData = addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);
 
       addDataToSheet(currentSurvey.name, exportData);
     }

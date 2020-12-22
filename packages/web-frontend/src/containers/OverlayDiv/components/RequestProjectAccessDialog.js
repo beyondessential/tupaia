@@ -41,6 +41,8 @@ const Header = styled.div`
 const Logo = styled.img`
   width: 106px;
   height: 46px;
+  max-width: 100%;
+  max-height: 100%;
 `;
 
 const TagLine = styled(Typography)`
@@ -120,6 +122,7 @@ const LogoImage = styled.div`
   background-image: ${({ src }) => `url(${src})`};
   background-repeat: no-repeat;
   background-position: center;
+  background-size: contain;
   bottom: -30px;
   right: 40px;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
@@ -226,7 +229,7 @@ export const RequestProjectAccessComponent = React.memo(
         </Header>
         <Title>Requesting Project Access</Title>
         <HeroImage src={project.imageUrl}>
-          <LogoImage src={project.logoUrl} />
+          {project.logoUrl && <LogoImage src={project.logoUrl} />}
         </HeroImage>
         <ProjectBody>
           <Heading>{project.name}</Heading>

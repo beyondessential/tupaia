@@ -7,14 +7,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DatePicker } from '@tupaia/ui-components';
 import isWithinInterval from 'date-fns/isWithinInterval';
+import { startOfISOWeek, endOfISOWeek } from 'date-fns';
 import isSameDay from 'date-fns/isSameDay';
-import startOfISOWeek from 'date-fns/start_of_iso_week';
-import endOfISOWeek from 'date-fns/end_of_iso_week';
 import { IconButton, withStyles } from '@material-ui/core';
 import format from 'date-fns/format';
 import { createStyles } from '@material-ui/styles';
 import { WeekPickerToolbar } from './WeekPickerToolbar';
-import { MIN_DATE } from './constants';
+import { MIN_DATE } from '../../constants';
 
 /**
  * Customisation of the DatePicker is not easily possible using styled-components

@@ -14,6 +14,7 @@ import HeaderRow from './HeaderRow';
 import DescriptionOverlay from './DescriptionOverlay';
 import Row from './Row';
 import RowGroup from './RowGroup';
+import FooterRow from './FooterRow';
 import { CATEGORY_INDENT } from '../styles';
 
 import './matrix.css';
@@ -140,6 +141,14 @@ export class Matrix extends PureComponent {
 
   getIsUsingDots(presentationOptions) {
     return Object.keys(presentationOptions).length > 0;
+  }
+
+  shouldRenderFooter() {
+    if (!this.getIsUsingDots(this.props.presentationOptions)) {
+      return false;
+    }
+    const conditions = this.props.presentationOptions.conditions || [];
+    return conditions.filter(condition => !!condition.legendLabel).length > 0;
   }
 
   setRowRef(rowElement) {
@@ -368,6 +377,10 @@ export class Matrix extends PureComponent {
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
 
+    const shouldRenderFooter = this.shouldRenderFooter();
+
+    const { conditions } = this.props.presentationOptions;
+
     return (
       <div
         style={styles.wrapper}
@@ -388,6 +401,7 @@ export class Matrix extends PureComponent {
               <div style={styles.contentInner}>{rowDisplay}</div>
             </div>
           </div>
+          {shouldRenderFooter && <FooterRow conditions={conditions} styles={styles} />}
         </div>
       </div>
     );
@@ -414,6 +428,7 @@ Matrix.propTypes = {
   rows: PropTypes.arrayOf(rowShape),
   title: PropTypes.string,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE).isRequired,
+  categoryPresentationOptions: PropTypes.object.isRequired, // category header rows can have values just like real rows, this is how you style them
   hideColumnTitles: PropTypes.bool,
   isExporting: PropTypes.bool,
   onSearch: PropTypes.func,

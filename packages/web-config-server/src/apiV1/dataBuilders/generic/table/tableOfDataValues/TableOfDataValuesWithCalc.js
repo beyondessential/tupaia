@@ -31,8 +31,10 @@ const TRANSFORMATIONS = {
 class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   async build() {
     const baseLine = await this.fetchResults();
-    if (baseLine.length === 0) return { data: [] };
-    const baseLineDate = moment(baseLine[0].period, 'YYYYMMDD');
+
+    const hasBaseLineData = baseLine.length > 0;
+
+    const baseLineDate = hasBaseLineData && moment(baseLine[0].period, 'YYYYMMDD');
     this.transformConfig(baseLineDate);
     this.tableConfig = new TableConfig(this.models, this.config, baseLine);
     this.valuesByCell = getValuesByCell(this.tableConfig, baseLine);
@@ -95,7 +97,7 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
 
     this.config.columns = this.config.columns.map(header => {
       return header.name && header.showYear
-        ? `${header.name} - ${baseLineDate.format('YYYY')}`
+        ? `${header.name}${baseLineDate ? ` - ${baseLineDate.format('YYYY')}` : ''}`
         : header;
     });
   }
