@@ -11,7 +11,7 @@ import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-export class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
+class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flattenDeep(
       this.config.cells.map(row =>

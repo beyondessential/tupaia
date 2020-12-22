@@ -8,10 +8,12 @@ import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToSet, getSortByKey } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
+
 import { TableConfig } from './TableConfig';
-import { getValuesByCell } from './helpers/getValuesByCell';
 import { TotalCalculator } from './TotalCalculator';
+
+import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
+import { getValuesByCell } from './helpers/getValuesByCell';
 import { buildColumnSummary, buildRowSummary } from './helpers/addSummaryToTable';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
@@ -20,6 +22,8 @@ const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
 const ORG_UNIT_COL_KEY = '$orgUnit';
 const ORG_UNIT_WITH_TYPE_COL_KEY = '$orgUnitTypeName';
 const ORG_UNIT_COLUMNS_KEYS_SET = [ORG_UNIT_COL_KEY, ORG_UNIT_WITH_TYPE_COL_KEY];
+
+const EXCLUDED_VALUE = 'excludedValue';
 
 const CATEGORY_AGGREGATION_TYPES = {
   AVERAGE: '$average',
@@ -63,8 +67,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       newData.columns = columns.sort(getSortByKey('title'));
     }
 
-    if ('excludedValue' in this.config) {
-      const { excludedValue } = this.config;
+    if (EXCLUDED_VALUE in this.config) {
+      const excludedValue = this.config[EXCLUDED_VALUE];
       newData.rows.forEach(row => {
         Object.entries(row).forEach(([key, value]) => {
           // eslint-disable-next-line no-param-reassign
