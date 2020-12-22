@@ -406,6 +406,9 @@ const nationalAndProvincialLevelLineGraphReportConfig = {
         },
       },
     },
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
   },
   viewJson: {
     name: 'RH Products Stock Availability (HFRSA and Spot Check Survey Data)',
