@@ -122,7 +122,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
    * @returns {{ dataElement: string, categoryId: (string:undefined) }}
    */
   async buildBaseRows() {
-    if (this.config.columns && this.config.columns === ORG_UNIT_COL_KEY) {
+    if (this.config.addDynamicKey === true) {
       return buildBaseRowsForOrgUnit(this.tableConfig.rows, undefined, 0, this.config);
     }
 
