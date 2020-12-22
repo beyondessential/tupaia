@@ -4,8 +4,13 @@
  */
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
+import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
+  buildBaseRows() {
+    return buildBaseRowsForOrgUnit(this.tableConfig.rows, undefined, 0, this.config);
+  }
+
   buildRows(columnsRaw) {
     const baseRows = this.buildBaseRows();
     const columns = this.flattenColumnCategories(columnsRaw);

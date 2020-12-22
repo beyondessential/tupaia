@@ -23,7 +23,7 @@ export const buildBaseRowsForOrgUnit = (rows, parent, baseCellIndex, config) => 
       return [...baseRows, { dataCode, dataElement, categoryId: parent }];
     }
 
-    const next = this.buildBaseRows(row.rows, row.category, currentCellIndex);
+    const next = buildBaseRowsForOrgUnit(row.rows, row.category, currentCellIndex, config);
     currentCellIndex += next.length;
     return [...baseRows, ...next];
   }, []);
