@@ -34,7 +34,7 @@ const DASHBOARD_REPORT = {
 exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', DASHBOARD_REPORT);
 
-  await addReportToGroups(db, DASHBOARD_REPORT.id, ['COVID_SAMOA_Country']);
+  await addReportToGroups(db, DASHBOARD_REPORT.id, ['WS_Covid_Samoa_Country']);
 
   return null;
 };
