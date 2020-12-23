@@ -8,6 +8,7 @@ import flattenDeep from 'lodash.flattendeep';
 
 import { getCalculatedValuesByCell } from './helpers/getValuesByCell';
 import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
+import { ORG_UNIT_COLUMNS_KEYS_SET } from '/apiV1/dataBuilders/constants';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
@@ -32,9 +33,9 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
 
   async buildValuesByCell() {
     const hierarchyId = await this.fetchEntityHierarchyId();
-    const filterOptions = ['dataElement'];
-    // Add `key` to each cell to match the config of `TableOfCalculatedValues` data builder
-    if (this.config.addDynamicKey === true) {
+    const filterKeys = ['dataElement'];
+    // Add `key` to each cell if columns are programmatically generated
+    if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.config.columns)) {
       this.columns = await this.buildColumns();
       this.tableConfig.cells.forEach((cell, rowKey) => {
         this.tableConfig.cells[rowKey] = this.columns.map(({ key: columnKey, title }) => ({
@@ -43,12 +44,12 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
           ...cell[0],
         }));
       });
-      filterOptions.push('organisationUnit');
+      filterKeys.push('organisationUnit');
     }
 
     return getCalculatedValuesByCell(this.models, flatten(this.tableConfig.cells), this.results, {
       hierarchyId,
-      filterOptions,
+      filterKeys,
     });
   }
 }

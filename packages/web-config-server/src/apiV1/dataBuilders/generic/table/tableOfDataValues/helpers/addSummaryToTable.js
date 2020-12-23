@@ -6,8 +6,8 @@
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 const percentageOfConditions = (valueSet, config) => {
-  const valueAllUndefined = valueSet.every(value => value === undefined);
-  if (valueSet.length === 0 || valueAllUndefined) return false;
+  const valueNotAllUndefined = valueSet.some(value => value !== undefined);
+  if (valueSet.length === 0 || !valueNotAllUndefined) return false;
   const { numerator: numeratorConfig } = config;
   const numerator = valueSet.filter(value =>
     checkValueSatisfiesCondition(value, numeratorConfig.condition),
@@ -85,7 +85,7 @@ export const buildRowSummary = (tableData, config) => {
   const columnKeys = tableData.columns.map(row => row.key);
   // Add summary to each row
   const newRows = tableData.rows.map((row, index) => {
-    // Skip if it is a summary row (summary row do not have dataCode element)
+    // Skip if it is a summary row
     if (index === tableData.rows.length - 1 && skipRowForColumnSummary) return row;
 
     const rowValuesSet = columnKeys.map(key => row[key]);

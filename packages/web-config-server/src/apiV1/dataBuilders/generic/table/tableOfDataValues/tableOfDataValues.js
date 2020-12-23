@@ -15,14 +15,15 @@ import { TotalCalculator } from './TotalCalculator';
 import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
 import { getValuesByCell } from './helpers/getValuesByCell';
 import { buildColumnSummary, buildRowSummary } from './helpers/addSummaryToTable';
+import {
+  ORG_UNIT_COL_KEY,
+  ORG_UNIT_WITH_TYPE_COL_KEY,
+  ORG_UNIT_COLUMNS_KEYS_SET,
+} from '/apiV1/dataBuilders/constants';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
 const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
-const ORG_UNIT_COL_KEY = '$orgUnit';
-const ORG_UNIT_WITH_TYPE_COL_KEY = '$orgUnitTypeName';
-const ORG_UNIT_COLUMNS_KEYS_SET = [ORG_UNIT_COL_KEY, ORG_UNIT_WITH_TYPE_COL_KEY];
-
 const EXCLUDED_VALUE = 'excludedValue';
 
 const CATEGORY_AGGREGATION_TYPES = {

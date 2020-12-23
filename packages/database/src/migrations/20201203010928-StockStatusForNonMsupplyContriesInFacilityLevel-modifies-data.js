@@ -254,7 +254,6 @@ const nationalAndProvincialLevelDashboardReportConfig = {
       },
       excludeCondition: { value: 'No data', operator: '=' },
     },
-    addDynamicKey: true,
     columns: '$orgUnit',
     excludedValue: 'No data',
     entityAggregation: {
