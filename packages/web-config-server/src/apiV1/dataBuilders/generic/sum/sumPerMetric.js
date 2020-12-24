@@ -1,7 +1,6 @@
 import { getDataElementCodesInGroup, sumResults } from '/apiV1/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { addNameToDataElementResult } from 'apiV1/utils/addNameToDataElementResult';
 
 const getDataElementCodes = async (dataBuilderConfig, dhisApi) => {
   const { dataElementCodes, dataElementGroupCode } = dataBuilderConfig;
@@ -34,9 +33,13 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
   const { dataElementCodeToName } = metadata;
 
   const calculateValueToAdd = (dataElementValue, dataElementCode) => {
-    if (specialCases[dataElementCode] && specialCases[dataElementCode] === 'complement') {
-      // Binary data element that requires its values (0 or 1) to be flipped
-      return !dataElementValue;
+    const specialCase = specialCases[dataElementCode] || specialCases.$all;
+    if (specialCase) {
+      if (specialCase === 'complement') {
+        // Binary data element that requires its values (0 or 1) to be flipped
+        return !dataElementValue;
+      }
+      return specialCase === dataElementValue ? 1 : 0;
     }
     return dataElementValue;
   };
@@ -54,13 +57,21 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
   };
 
   const dataElementsWithData = [];
-  const dataElementsWithName = addNameToDataElementResult(results, dataElementCodeToName, labels);
-  dataElementsWithName.forEach(resultObject => {
-    const { value, dataElementCode } = resultObject;
-    dataElementsWithData.push(dataElementCode);
-    const returnDataObject = getOrCreateReturnData(resultObject);
-    returnDataObject.value += calculateValueToAdd(value, dataElementCode);
-  });
+  results
+    .map(({ dataElement: dataElementCode, ...result }) => {
+      const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
+      return {
+        ...result,
+        dataElementCode,
+        name,
+      };
+    })
+    .forEach(resultObject => {
+      const { value, dataElementCode } = resultObject;
+      dataElementsWithData.push(dataElementCode);
+      const returnDataObject = getOrCreateReturnData(resultObject);
+      returnDataObject.value += calculateValueToAdd(value, dataElementCode);
+    });
 
   const data = Object.values(returnData);
   if (dataBuilderConfig.dataElementCodes) {
