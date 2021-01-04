@@ -1,8 +1,10 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
+
 import moment from 'moment';
+
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];

@@ -4,7 +4,6 @@
  */
 
 import sinon from 'sinon';
-import winston from 'winston';
 
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
 import { resetTestData } from '../../../../testUtilities';
@@ -28,15 +27,10 @@ describe('AggregateDataPusher', () => {
 
   describe('push()', () => {
     before(async () => {
-      // Suppress logging while running the tests
-      sinon.stub(winston, 'error');
-      sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
     });
 
     after(() => {
-      winston.error.restore();
-      winston.warn.restore();
       Pusher.prototype.logResults.restore();
     });
 
