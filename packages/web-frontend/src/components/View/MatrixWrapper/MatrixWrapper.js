@@ -155,15 +155,11 @@ export class MatrixWrapper extends Component {
     this.updateWrapper = this.updateWrapper.bind(this);
   }
 
-  componentDidMount() {
-    const { startDate, endDate } = this.props.viewContent || {};
-    this.props.onSetDateRange(startDate, endDate); // Force a load when the expanded matrix first mounts
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return (
       !shallowEqual(this.props, nextProps) ||
       nextState.isLoading !== this.state.isLoading ||
+      nextState.expandedMatrixData !== this.state.expandedMatrixData ||
       nextState.offsetWidth !== this.state.offsetWidth
     );
   }

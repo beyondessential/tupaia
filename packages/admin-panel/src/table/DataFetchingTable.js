@@ -127,7 +127,7 @@ class DataFetchingTableComponent extends React.Component {
         getPaginationProps={customPagination}
         SubComponent={
           expansionTabs &&
-          (({ original: rowData, index }) => {
+          (({ original: rowData }) => {
             const { id } = rowData;
             const expansionTab = expansionTabStates[id] || 0;
             const expansionItem = expansionTabs[expansionTab];
@@ -144,7 +144,7 @@ class DataFetchingTableComponent extends React.Component {
                   onSelectTab={tabValue => onExpandedTabChange(id, tabValue)}
                 />
                 <DataFetchingTable
-                  reduxId={`${reduxId}_${index}_${expansionTab}`}
+                  reduxId={`${reduxId}_${id}_${expansionTab}`}
                   endpoint={makeSubstitutionsInString(endpoint, rowData)}
                   key={expansionTab} // Triggers refresh of data.
                   {...restOfProps}

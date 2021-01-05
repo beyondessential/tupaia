@@ -1,9 +1,15 @@
+import moment from 'moment';
 import { createSelector } from 'reselect';
-
-import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { getUniqueViewId } from '../utils';
-import { selectLocation } from './utils';
+
+import {
+  convertUrlPeriodStringToDateRange,
+  getLocationComponentValue,
+  URL_COMPONENTS,
+} from '../historyNavigation';
+import { getDefaultDates } from '../utils/periodGranularities';
 import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
+import { selectLocation } from './utils';
 
 export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
   [selectLocation],
@@ -13,6 +19,11 @@ export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
 export const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.REPORT),
 );
+
+export const selectCurrentExpandedDates = createSelector([selectLocation], location => {
+  const periodString = getLocationComponentValue(location, URL_COMPONENTS.REPORT_PERIOD) ?? '';
+  return convertUrlPeriodStringToDateRange(periodString);
+});
 
 export const selectCurrentDashboardGroupCode = createSelector(
   [state => state.global.dashboardConfig, selectCurrentDashboardGroupCodeFromLocation],
@@ -58,12 +69,43 @@ export const selectCurrentInfoViewKey = createSelector(
 );
 
 export const selectCurrentExpandedViewContent = createSelector(
+  [selectCurrentInfoViewKey, state => state.dashboard.viewResponses],
+  (infoViewKey, viewResponses) => {
+    return viewResponses[infoViewKey];
+  },
+);
+
+export const selectIsEnlargedDialogVisible = createSelector(
   [
-    state => state.enlargedDialog.viewContent,
-    selectCurrentInfoViewKey,
-    state => state.dashboard.viewResponses,
+    selectCurrentDashboardGroupIdForExpandedReport,
+    selectCurrentOrgUnitCode,
+    selectCurrentExpandedViewId,
   ],
-  (viewContent, infoViewKey, viewResponses) => {
-    return viewContent || viewResponses[infoViewKey];
+  (dashboardGroupId, organisationUnitCode, viewId) =>
+    !!(dashboardGroupId && organisationUnitCode && viewId),
+);
+
+export const selectShouldUseDashboardData = createSelector(
+  [selectCurrentInfoViewKey, selectCurrentExpandedViewContent, (_, options) => options],
+  (candidateInfoViewKey, candidateViewContent, options) => {
+    const { startDate, endDate, infoViewKey, drillDownLevel } = options;
+
+    if (drillDownLevel > 0) return false;
+    if (candidateInfoViewKey !== infoViewKey) return false;
+    if (!candidateViewContent || candidateViewContent.type === 'matrix') return false;
+
+    const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
+      candidateViewContent,
+    );
+    const {
+      startDate: candidateStartDate = defaultStartDate,
+      endDate: candidateEndDate = defaultEndDate,
+    } = candidateViewContent;
+
+    if (!startDate && !endDate) return true;
+    if (!moment(candidateStartDate).isSame(moment(startDate), 'day')) return false;
+    if (!moment(candidateEndDate).isSame(moment(endDate), 'day')) return false;
+
+    return true;
   },
 );

@@ -4,8 +4,8 @@
  */
 
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
-import { ExpressionParser } from '@tupaia/expression-parser';
 import { getUniqueEntries } from '@tupaia/utils';
+import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import {
   Analytic,
   AnalyticCluster,
@@ -41,7 +41,7 @@ const fetchAnalyticClusters = async (
 };
 
 const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) => {
-  const parser = new ExpressionParser();
+  const parser = getExpressionParserInstance();
   const calculateValue = (dataValues: Record<string, number>) => {
     parser.setScope(dataValues);
     const value = parser.evaluateToNumber(formula);

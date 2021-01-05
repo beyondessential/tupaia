@@ -27,3 +27,13 @@ export const firstValuePerPeriodPerOrgUnit = () =>
       '...': 'first',
     },
   ]);
+
+export const lastValuePerPeriodPerOrgUnit = () =>
+  buildTransform([
+    {
+      transform: 'aggregate',
+      organisationUnit: 'group',
+      period: 'group',
+      '...': 'last',
+    },
+  ]);

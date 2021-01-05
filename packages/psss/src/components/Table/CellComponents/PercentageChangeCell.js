@@ -21,18 +21,25 @@ const SuccessStyleText = styled.span`
  * Displays a value as a percentage
  */
 export const PercentageChangeCell = ({ percentageChange, className }) => {
-  if (percentageChange > 0) {
-    return <WarningStyleText className={className}>+{percentageChange}%</WarningStyleText>;
+  if (percentageChange === undefined) {
+    return '-';
   }
 
-  return <SuccessStyleText className={className}>{percentageChange}%</SuccessStyleText>;
+  const roundedValue = Math.round(percentageChange * 100);
+
+  if (roundedValue > 0) {
+    return <WarningStyleText className={className}>+{roundedValue}%</WarningStyleText>;
+  }
+
+  return <SuccessStyleText className={className}>{roundedValue}%</SuccessStyleText>;
 };
 
 PercentageChangeCell.propTypes = {
-  percentageChange: PropTypes.number.isRequired,
+  percentageChange: PropTypes.number,
   className: PropTypes.string,
 };
 
 PercentageChangeCell.defaultProps = {
   className: '',
+  percentageChange: undefined,
 };
