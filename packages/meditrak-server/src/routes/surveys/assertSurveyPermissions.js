@@ -8,6 +8,8 @@ import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
+const DEFAULT_SURVEY_ERROR_MESSAGE = 'Requires access to one of the countries the survey is in';
+
 export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   if (!survey) {
@@ -20,11 +22,16 @@ export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId)
     return true;
   }
 
-  throw new Error('Requires access to one of the countries the survey is in');
+  throw new Error(DEFAULT_SURVEY_ERROR_MESSAGE);
 };
 
 // Used for edit and delete actions
-export const assertSurveyEditPermissions = async (accessPolicy, models, surveyId) => {
+export const assertSurveyEditPermissions = async (
+  accessPolicy,
+  models,
+  surveyId,
+  errorMessage = DEFAULT_SURVEY_ERROR_MESSAGE,
+) => {
   const survey = await models.survey.findById(surveyId);
   if (!survey) {
     throw new Error(`No survey exists with id ${surveyId}`);
@@ -39,7 +46,7 @@ export const assertSurveyEditPermissions = async (accessPolicy, models, surveyId
     return true;
   }
 
-  throw new Error('Requires access to all of the countries the survey is in');
+  throw new Error(errorMessage);
 };
 
 export const createSurveyDBFilter = async (accessPolicy, models, criteria) => {

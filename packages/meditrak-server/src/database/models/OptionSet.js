@@ -17,9 +17,7 @@ class OptionSetType extends DatabaseType {
         ON survey_screen_component.screen_id = survey_screen.id
       INNER JOIN question
         ON question.id = survey_screen_component.question_id
-      INNER JOIN option_set
-        ON option_set.id = question.option_set_id
-      WHERE option_set.id = ?
+      WHERE question.option_set_id = ?
     `,
       this.id,
     );

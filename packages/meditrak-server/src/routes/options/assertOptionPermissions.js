@@ -13,11 +13,12 @@ export const assertOptionEditPermissions = async (accessPolicy, models, optionId
 
   const surveyIds = await option.getSurveyIds();
   for (let i = 0; i < surveyIds.length; ++i) {
-    try {
-      await assertSurveyEditPermissions(accessPolicy, models, surveyIds[i]);
-    } catch {
-      throw new Error('Requires permission to all surveys the option appears in');
-    }
+    await assertSurveyEditPermissions(
+      accessPolicy,
+      models,
+      surveyIds[i],
+      'Requires permission to all surveys the option appears in',
+    );
   }
 
   return true;

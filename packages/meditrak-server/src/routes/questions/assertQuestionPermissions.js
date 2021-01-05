@@ -13,11 +13,12 @@ export const assertQuestionEditPermissions = async (accessPolicy, models, questi
 
   const surveyIds = await question.getSurveyIds();
   for (let i = 0; i < surveyIds.length; ++i) {
-    try {
-      await assertSurveyEditPermissions(accessPolicy, models, surveyIds[i]);
-    } catch {
-      throw new Error('Requires permission to all surveys the question appears in');
-    }
+    await assertSurveyEditPermissions(
+      accessPolicy,
+      models,
+      surveyIds[i],
+      'Requires permission to all surveys the question appears in',
+    );
   }
 
   return true;
