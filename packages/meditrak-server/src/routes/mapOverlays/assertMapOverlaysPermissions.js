@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+import { hasBESAdminAccess } from '../../permissions';
 import {
   hasAccessToEntityForVisualisation,
   hasTupaiaAdminAccessToEntityForVisualisation,
@@ -17,8 +17,7 @@ export const assertMapOverlaysGetPermissions = async (accessPolicy, models, mapO
     throw new Error(`No map overlay exists with id ${mapOverlayId}`);
   }
 
-  const countryCodes = mapOverlay.countryCodes || [];
-  const entities = await models.entity.find({ code: countryCodes });
+  const entities = await models.entity.find({ code: mapOverlay.countryCodes });
   for (let i = 0; i < entities.length; i++) {
     if (
       await hasAccessToEntityForVisualisation(
@@ -41,8 +40,7 @@ export const assertMapOverlaysEditPermissions = async (accessPolicy, models, map
     throw new Error(`No map overlay exists with id ${mapOverlayId}`);
   }
 
-  const countryCodes = mapOverlay.countryCodes || [];
-  const entities = await models.entity.find({ code: countryCodes });
+  const entities = await models.entity.find({ code: mapOverlay.countryCodes });
   let hasUserGroupAccess = false;
 
   // Check we have tupaia admin access to all countries the mapOverlay is in

@@ -51,7 +51,7 @@ export const assertDashboardGroupsEditPermissions = async (
   if (await hasDashboardGroupsEditPermissions(accessPolicy, models, dashboardGroup)) {
     return true;
   }
-  throw new Error('Requires tupaia admin access all the countries this dashboard group is in');
+  throw new Error('Requires tupaia admin access to the country this dashboard group is in');
 };
 
 export const createDashboardGroupDBFilter = async (accessPolicy, models, criteria) => {

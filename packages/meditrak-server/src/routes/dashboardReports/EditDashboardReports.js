@@ -9,9 +9,9 @@ import { assertDashboardReportsEditPermissions } from './assertDashboardReportsP
 
 export class EditDashboardReports extends EditHandler {
   async assertUserHasAccess() {
-    const mapOverlayChecker = accessPolicy =>
+    const dashboardReportChecker = accessPolicy =>
       assertDashboardReportsEditPermissions(accessPolicy, this.models, this.recordId);
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, dashboardReportChecker]));
   }
 
   async editRecord() {

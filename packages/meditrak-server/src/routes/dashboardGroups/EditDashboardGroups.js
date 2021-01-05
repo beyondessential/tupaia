@@ -9,9 +9,11 @@ import { assertDashboardGroupsEditPermissions } from './assertDashboardGroupsPer
 
 export class EditDashboardGroups extends EditHandler {
   async assertUserHasAccess() {
-    const mapOverlayChecker = accessPolicy =>
+    const dashboardGroupChecker = accessPolicy =>
       assertDashboardGroupsEditPermissions(accessPolicy, this.models, this.recordId);
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, dashboardGroupChecker]),
+    );
   }
 
   async editRecord() {
