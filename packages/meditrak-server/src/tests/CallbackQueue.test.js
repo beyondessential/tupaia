@@ -1,3 +1,10 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+/* eslint-disable no-return-assign */
+
 import { expect } from 'chai';
 import { CallbackQueue } from '../utilities/CallbackQueue';
 
@@ -9,7 +16,6 @@ describe('Callback queue', () => {
     cbq.add(() => (amt = 1), 'set');
 
     await cbq.waitUntilFinished();
-
     expect(amt).to.equal(1);
   });
 
@@ -23,7 +29,6 @@ describe('Callback queue', () => {
     cbq.add(() => (amt += 1), 'add');
 
     await cbq.waitUntilFinished();
-
     expect(amt).to.equal(4);
   });
 
@@ -37,7 +42,6 @@ describe('Callback queue', () => {
     cbq.add(() => (amt = 4), 'set');
 
     await cbq.waitUntilFinished();
-
     expect(amt).to.equal(4);
   });
 
@@ -54,7 +58,6 @@ describe('Callback queue', () => {
     cbq.add(() => (amt += 1), 'add');
 
     await cbq.waitUntilFinished();
-
     expect(amt).to.equal(4);
   });
 
@@ -71,7 +74,6 @@ describe('Callback queue', () => {
     cbq.add(() => (amt += 1), 'add');
 
     await cbq.waitUntilFinished();
-
     expect(amt).to.equal(14);
   });
 });

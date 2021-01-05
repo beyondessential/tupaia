@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getCurrentPeriod } from '@tupaia/utils';
 import { useQuery } from 'react-query';
-import { subtractWeeksFromPeriod, getDaysTillDueDay } from '../../utils';
+import { subtractWeeksFromPeriod, getDaysTillDueDay, getCurrentPeriod } from '../../utils';
 import { get } from '../api';
 import { REPORT_STATUSES } from '../../constants';
 
 export const useUpcomingReport = countryCode => {
-  const currentPeriod = getCurrentPeriod('WEEK');
+  const currentPeriod = getCurrentPeriod();
   const lastPeriod = subtractWeeksFromPeriod(currentPeriod, 1);
   const endpoint = `confirmedWeeklyReport/${countryCode.toUpperCase()}`;
   const query = useQuery(
@@ -39,11 +38,11 @@ export const useUpcomingReport = countryCode => {
       data,
       reportStatus: REPORT_STATUSES.UPCOMING,
       period: currentPeriod,
-      days: totalDays,
+      daysTillDueDay: totalDays,
     };
   }
 
-  const status = daysTillDueDay > 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
+  const status = daysTillDueDay >= 0 ? REPORT_STATUSES.UPCOMING : REPORT_STATUSES.OVERDUE;
 
   return {
     ...query,

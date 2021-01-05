@@ -44,7 +44,7 @@ export const createUser = userFields => async (dispatch, getState, { api, analyt
 
   const fields = {
     ...userFields,
-    deviceName: DeviceInfo.getDeviceName(),
+    deviceName: await DeviceInfo.getDeviceName(),
   };
 
   const invalidFields = [];

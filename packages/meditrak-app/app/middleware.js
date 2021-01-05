@@ -5,7 +5,7 @@
 
 import thunk from 'redux-thunk';
 import { applyMiddleware } from 'redux';
-import { NAVIGATION_MIDDLEWARE } from './navigation';
+import { createNavigationMiddleware } from './navigation';
 
 export const createMiddleware = thunkArguments =>
-  applyMiddleware(NAVIGATION_MIDDLEWARE, thunk.withExtraArgument(thunkArguments));
+  applyMiddleware(createNavigationMiddleware(), thunk.withExtraArgument(thunkArguments));

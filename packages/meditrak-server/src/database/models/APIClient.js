@@ -1,7 +1,8 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- **/
+ */
+
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class APIClientType extends DatabaseType {

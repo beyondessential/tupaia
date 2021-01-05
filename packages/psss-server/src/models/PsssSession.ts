@@ -59,7 +59,7 @@ export class PsssSessionType extends DatabaseType {
   }
 
   isAccessTokenExpired() {
-    return this.access_token_expiry >= Date.now();
+    return this.access_token_expiry <= Date.now();
   }
 
   async getAuthHeader() {

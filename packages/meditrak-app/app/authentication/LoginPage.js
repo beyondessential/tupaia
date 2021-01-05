@@ -6,7 +6,15 @@
 import React from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, StatusBar, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { Button, StatusMessage, TupaiaLogo, TextInput, Text, TouchableOpacity } from '../widgets';
+import {
+  Button,
+  StatusMessage,
+  TupaiaLogo,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  TupaiaBackground,
+} from '../widgets';
 
 import {
   DEFAULT_PADDING,
@@ -57,12 +65,10 @@ export class LoginPage extends React.Component {
       password,
       emailAddress,
       isLoggingIn,
-      screenProps,
     } = this.props;
-    const { BackgroundComponent } = screenProps;
 
     return (
-      <BackgroundComponent style={localStyles.container}>
+      <TupaiaBackground style={localStyles.container}>
         <KeyboardAvoidingView behavior="padding" style={localStyles.container}>
           <StatusBar barStyle="light-content" />
           <TupaiaLogo style={localStyles.logo} white width={168} height={69} />
@@ -113,13 +119,12 @@ export class LoginPage extends React.Component {
             {!isLoggingIn && renderCreateAccountLink(onCreateAccount, isLoggingIn)}
           </View>
         </KeyboardAvoidingView>
-      </BackgroundComponent>
+      </TupaiaBackground>
     );
   }
 }
 
 LoginPage.propTypes = {
-  screenProps: PropTypes.object.isRequired,
   errorMessage: PropTypes.string,
   fieldsAreEditable: PropTypes.bool,
   loginButtonIsEnabled: PropTypes.bool,

@@ -65,7 +65,7 @@ const localStyles = StyleSheet.create({
   textMain: {
     fontSize: THEME_FONT_SIZE_THREE,
     lineHeight: getLineHeight(THEME_FONT_SIZE_THREE),
-    fontWeight: '500',
+    fontWeight: 'bold',
   },
   textSub: {
     fontSize: THEME_FONT_SIZE_ONE,
