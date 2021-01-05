@@ -11,11 +11,13 @@ import { SCALE_TYPES } from '../../constants';
 
 const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
 const DEFAULT_COLOR_SCHEME = 'default';
+const SWAP_DEFAULT_COLOR_SCHEME = 'swap_default_color';
 const PERFORMANCE_COLOR_SCHEME = 'performance';
 const TIME_COLOR_SCHEME = 'time';
 
 const COLOR_SCHEME_TO_FUNCTION = {
   [DEFAULT_COLOR_SCHEME]: getHeatmapColor,
+  [SWAP_DEFAULT_COLOR_SCHEME]: getSwapHeatmapColor,
   [PERFORMANCE_COLOR_SCHEME]: getPerformanceHeatmapColor,
   [TIME_COLOR_SCHEME]: getTimeHeatmapColor,
 };
@@ -26,6 +28,18 @@ const SCALE_TYPE_TO_COLOR_SCHEME = {
   [SCALE_TYPES.NEUTRAL]: DEFAULT_COLOR_SCHEME,
   [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
 };
+
+const rgbSet = [
+  [255, 255, 204],
+  [255, 237, 160],
+  [254, 217, 118],
+  [254, 178, 76],
+  [253, 141, 60],
+  [252, 78, 42],
+  [227, 26, 28],
+  [118, 0, 38],
+  [128, 0, 38],
+];
 
 /**
  * Helper function just to point the spectrum type to the correct colours
@@ -110,17 +124,17 @@ export function getTimeHeatmapColor(value, noDataColour) {
  * @returns {style} css rgb string, e.g. `rgb(0,0,0)`
  */
 export function getHeatmapColor(value) {
-  let rgb = [0, 0, 0];
+  const difference = value - 0.15;
+  const index = difference < 0 ? 0 : difference / 0.1 + 1;
+  const rgb = rgbSet[index];
 
-  if (value < 0.15) rgb = [255, 255, 204];
-  else if (value >= 0.15 && value < 0.25) rgb = [255, 237, 160];
-  else if (value >= 0.25 && value < 0.35) rgb = [254, 217, 118];
-  else if (value >= 0.35 && value < 0.45) rgb = [254, 178, 76];
-  else if (value >= 0.45 && value < 0.55) rgb = [253, 141, 60];
-  else if (value >= 0.55 && value < 0.65) rgb = [252, 78, 42];
-  else if (value >= 0.65 && value < 0.75) rgb = [227, 26, 28];
-  else if (value >= 0.75 && value < 0.85) rgb = [118, 0, 38];
-  else if (value >= 0.85) rgb = [128, 0, 38];
+  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+}
+
+function getSwapHeatmapColor(value) {
+  const difference = value - 0.15;
+  const index = difference < 0 ? 0 : difference / 0.1 + 1;
+  const rgb = rgbSet[rgbSet.length - index - 1];
 
   return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
 }
