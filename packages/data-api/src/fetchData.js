@@ -6,7 +6,16 @@ import { utcMoment } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
 
-const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDate, endDate }) => {
+const fetchIdsFromCodes = async (database, tableName, codes) => {
+  const records = await database.find(tableName, { code: codes }, { columns: ['id'] });
+  return records.map(r => r.id);
+};
+
+const generateBaseSqlQuery = async (
+  database,
+  { dataElementCodes, organisationUnitCodes, startDate, endDate },
+) => {
+  const questionIds = await fetchIdsFromCodes(database, 'question', dataElementCodes);
   const sqlQuery = new SqlQuery(
     `
     SELECT
@@ -28,11 +37,11 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
     JOIN
       survey ON survey.id = survey_response.survey_id
     WHERE
-      question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+      question_id IN ${SqlQuery.parameteriseArray(questionIds)}
     AND
       entity.code IN ${SqlQuery.parameteriseArray(organisationUnitCodes)}
   `,
-    [...dataElementCodes, ...organisationUnitCodes],
+    [...questionIds, ...organisationUnitCodes],
   );
 
   // Add start and end date, which are inclusive
@@ -49,11 +58,13 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
 
   sqlQuery.orderBy('survey_response.submission_time');
 
+  sqlQuery.logQuery();
+
   return sqlQuery;
 };
 
 export async function fetchEventData(database, options) {
-  const sqlQuery = generateBaseSqlQuery(options);
+  const sqlQuery = await generateBaseSqlQuery(database, options);
   const { surveyCode, eventId } = options;
   sqlQuery.addClause(`AND survey.code = ?`, [surveyCode]);
   if (eventId) {
@@ -63,6 +74,6 @@ export async function fetchEventData(database, options) {
 }
 
 export async function fetchAnalyticData(database, options) {
-  const sqlQuery = generateBaseSqlQuery(options);
+  const sqlQuery = await generateBaseSqlQuery(database, options);
   return sqlQuery.executeOnDatabase(database);
 }
