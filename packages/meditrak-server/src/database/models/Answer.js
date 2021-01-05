@@ -1,13 +1,13 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
-import winston from 'winston';
+ */
 
 /* eslint-disable camelcase */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import winston from 'winston';
 
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
