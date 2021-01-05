@@ -1,6 +1,6 @@
-import { insertObject } from '../utilities/migration';
+'use strict';
 
-('use strict');
+import { insertObject } from '../utilities/migration';
 
 var dbm;
 var type;
@@ -17,6 +17,8 @@ const REPORT = {
     dataElementCodes: ['QMIA025'],
     entityAggregation: {
       dataSourceEntityType: 'case',
+      aggregationEntityType: 'country',
+      aggregationType: 'COUNT_PER_ORG_GROUP',
     },
   },
   viewJson: {
