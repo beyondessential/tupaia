@@ -16,7 +16,7 @@ export const assertProjectPermissions = async (accessPolicy, models, projectId) 
     throw new Error(`No project exists with id ${projectId}`);
   }
   const entity = await models.entity.findById(project.entity_id);
-  for (let i = 0; i < project.user_groups; ++i) {
+  for (let i = 0; i < project.user_groups.length; ++i) {
     if (
       await hasAccessToEntityForVisualisation(accessPolicy, models, entity, project.user_groups[i])
     ) {
