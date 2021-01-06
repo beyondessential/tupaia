@@ -64,7 +64,7 @@ export const TableHeader = React.memo(
     const getContent = (key, sortable, title) => {
       if (isFetching) {
         return (
-          <Skeleton style={{ display: 'inline-block' }}>
+          <Skeleton animation="wave" style={{ display: 'inline-block' }}>
             <Label>{title}</Label>
           </Skeleton>
         );

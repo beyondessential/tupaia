@@ -114,7 +114,7 @@
     },
     // Root folder overrides
     {
-      "files": ["jestScaffolding.js", "scripts/**"],
+      "files": ["jest.setup.js", "scripts/**"],
       "rules": {
         "import/no-extraneous-dependencies": ["error", { "packageDir": ["."] }]
       }
