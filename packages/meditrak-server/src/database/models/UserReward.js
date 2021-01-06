@@ -56,6 +56,7 @@ export class UserRewardModel extends DatabaseModel {
       "'5ea3984a61f76a61f1011fa7'", // Geoff F
       "'5cee0ba0f013d666713786a9'", // mSupply API Client
     ];
+    const internalEmail = '@beyondessential.com.au';
     return cache.getOrElse(CACHE_KEY_GENERATORS.leaderboard(), () =>
       this.database.executeSql(`
         SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
@@ -66,6 +67,7 @@ export class UserRewardModel extends DatabaseModel {
           GROUP BY user_id
         ) r
         JOIN user_account on user_account.id = r.user_id
+        WHERE email NOT LIKE '%${internalEmail}'
         ORDER BY pigs DESC, coconuts DESC
       `),
     );
