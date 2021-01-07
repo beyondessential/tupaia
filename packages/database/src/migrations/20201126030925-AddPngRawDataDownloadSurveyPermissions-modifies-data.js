@@ -19,6 +19,7 @@ const COUNTRY_CODES = [
   'AS',
   'AU',
   'CI',
+  'FJ',
   'FM',
   'GU',
   'KH',
