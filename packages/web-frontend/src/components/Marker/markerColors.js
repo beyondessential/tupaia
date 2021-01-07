@@ -126,21 +126,21 @@ export function getTimeHeatmapColor(value, noDataColour) {
  * @param {default} if default is true, return lightest to darkest colour, otherwise return darkest to lightest
  * @returns {style} css rgb string, e.g. `rgb(0,0,0)`
  */
-function getHeatmapColorByOrder(value, isDefault) {
+function getHeatmapColorByOrder(value, swapColor) {
   const difference = value - 0.15;
   const index = difference < 0 ? 0 : Math.floor(difference / 0.1) + 1;
   const indexInRange = index > rgbSet.length - 1 ? rgbSet.length - 1 : index;
 
-  const rgb = isDefault ? rgbSet[indexInRange] : rgbSet[rgbSet.length - indexInRange - 1];
+  const rgb = !swapColor ? rgbSet[indexInRange] : rgbSet[rgbSet.length - indexInRange - 1];
   return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
 }
 
 export function getHeatmapColor(value) {
-  return getHeatmapColorByOrder(value, true);
+  return getHeatmapColorByOrder(value, false);
 }
 
 export function getSwapHeatmapColor(value) {
-  return getHeatmapColorByOrder(value, false);
+  return getHeatmapColorByOrder(value, true);
 }
 
 export const BREWER_AUTO = [
