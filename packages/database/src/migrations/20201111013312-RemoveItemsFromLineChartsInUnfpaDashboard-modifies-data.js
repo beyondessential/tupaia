@@ -1,7 +1,6 @@
 'use strict';
 
 import { insertObject, updateValues } from '../utilities';
-import { updateBuilderConfigByReportId } from '../utilities/migration';
 
 var dbm;
 var type;
@@ -16,6 +15,10 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
+
+async function updateBuilderConfigByReportId(db, newConfig, reportId) {
+  return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
+}
 
 // Table name = 'Reproductive Health Product Average Monthly Consumption (AMC), Country Name'
 const UNFPAReproductiveHealthProductAmcDashboardReport = {

@@ -188,7 +188,7 @@ export function populateEntityBounds(db) {
 /* eslint-disable no-unused-vars */
 
 // Get a dashboard report by id
-export async function getDashboardReportById(db, id) {
+async function getDashboardReportById(db, id) {
   const { rows: dashboardReports } = await db.runSql(`
       SELECT * FROM "dashboardReport"
       WHERE id = '${id}';
@@ -231,12 +231,12 @@ function deleteReport(db, reportId) {
 }
 
 // Update data builder configuration for a report
-export async function updateBuilderConfigByReportId(db, newConfig, reportId) {
+async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
 
 // Update viewJson in dashboard report
-export async function updateViewJsonByReportId(db, newJson, reportId) {
+async function updateViewJsonByReportId(db, newJson, reportId) {
   return updateValues(db, 'dashboardReport', { viewJson: newJson }, { id: reportId });
 }
 
