@@ -1,6 +1,6 @@
 'use strict';
 
-import { updateBuilderConfigByReportId } from '../utilities/migration';
+import { updateValues } from '../utilities';
 
 var dbm;
 var type;
@@ -16,6 +16,10 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+async function updateBuilderConfigByReportId(db, newConfig, reportId) {
+  return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
+}
+
 // Table name = 'Stock Status by product: MOS mSupply, % of countries, UNFPA'
 const UNFPAStockMOSByPercentCountriesDashboardReport = {
   id: 'UNFPA_Stock_MOS_By_percent_Countries',
@@ -28,7 +32,10 @@ const UNFPAStockMOSByPercentCountriesDashboardReport = {
       name: 'Norethisterone amp',
       codes: ['MOS_542a34bf'],
     },
-    'Etonogestrel-releasing_implant_single_rod_containing_68mg_of_etonogestrel': { name: 'Implant', codes: ['MOS_3ff944bf'] },
+    'Etonogestrel-releasing_implant_single_rod_containing_68mg_of_etonogestrel': {
+      name: 'Implant',
+      codes: ['MOS_3ff944bf'],
+    },
   },
 };
 
