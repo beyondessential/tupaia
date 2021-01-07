@@ -97,7 +97,7 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
 function Tooltip(props) {
   const filteredPayload = props.payload.filter(({ value }) => value !== undefined);
   if (props.active && filteredPayload.length >= 1) {
-    if (filteredPayload.length === 1 && !props.presentationOptions) {
+    if (props.payload.length === 1 && !props.presentationOptions) {
       return <SingleValueTooltip {...props} payload={filteredPayload} />;
     }
     return <MultiValueTooltip {...props} payload={filteredPayload} />;
