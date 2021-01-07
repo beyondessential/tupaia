@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -12,26 +12,19 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import Collapse from '@material-ui/core/Collapse';
 import Fade from '@material-ui/core/Fade';
 import Typography from '@material-ui/core/Typography';
-import {
-  EditableTableProvider,
-  ButtonSelect,
-  Card,
-  Alert,
-  Button,
-  LightPrimaryButton,
-} from '@tupaia/ui-components';
+import { ButtonSelect, Card, Alert, Button, LightPrimaryButton } from '@tupaia/ui-components';
 import {
   SiteAddress,
   Drawer,
   DrawerFooter,
   DrawerTray,
   DrawerHeader,
-  PercentageChangeCell,
   AlertCreatedModal,
   ComingSoon,
 } from '../../components';
 import { closeWeeklyReportsPanel, checkWeeklyReportsPanelIsOpen, getActiveWeek } from '../../store';
 import * as COLORS from '../../constants/colors';
+import { REPORT_STATUSES, TABLE_STATUSES } from '../../constants';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import {
   countryFlagImage,
@@ -45,28 +38,7 @@ import {
   getSitesMetaData,
   useSingleWeeklyReport,
 } from '../../api';
-
-const columns = [
-  {
-    title: 'Syndromes',
-    key: 'title',
-    sortable: false,
-  },
-  {
-    title: '',
-    key: 'percentageChange',
-    CellComponent: PercentageChangeCell,
-    sortable: false,
-    width: '80px',
-  },
-  {
-    title: 'Total Cases',
-    key: 'totalCases',
-    editable: true,
-    sortable: false,
-    width: '80px',
-  },
-];
+import { EditableTableProvider } from '../../components/EditableTable';
 
 const SiteReportsSection = styled.section`
   position: relative;
@@ -117,11 +89,6 @@ const toCommaList = values =>
     .toUpperCase()
     .replace(/,(?!.*,)/gim, ' and');
 
-const TABLE_STATUSES = {
-  STATIC: 'static',
-  SAVING: 'saving',
-};
-
 const PANEL_STATUSES = {
   INITIAL: 'initial',
   SAVING: 'saving',
@@ -150,31 +117,29 @@ export const WeeklyReportsPanelComponent = React.memo(
       isLoading,
       data: countryWeekData,
       syndromes: countrySyndromesData,
-      alerts,
+      reportStatus,
       unVerifiedAlerts,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
 
-    const [confirmReport] = useConfirmWeeklyReport(countryCode);
-
-    const handleSubmit = useCallback(
-      isVerified => {
-        if (isVerified) {
-          setPanelStatus(PANEL_STATUSES.SAVING);
-          try {
-            confirmReport();
-            setPanelStatus(PANEL_STATUSES.SUCCESS);
-            if (alerts) {
-              setIsModalOpen(true);
-            }
-          } catch (error) {
-            setPanelStatus(PANEL_STATUSES.ERROR);
-          }
-        } else {
-          setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
-        }
-      },
-      [alerts],
+    const [confirmReport, { isLoading: isConfirming, reset, error }] = useConfirmWeeklyReport(
+      countryCode,
+      activeWeek,
     );
+
+    // Reset local state when the panel opens and closes
+    useEffect(() => {
+      reset();
+      setPanelStatus(PANEL_STATUSES.INITIAL);
+      setCountryTableStatus(TABLE_STATUSES.STATIC);
+    }, [isOpen]);
+
+    const handleSubmit = async isVerified => {
+      if (isVerified) {
+        confirmReport();
+      } else {
+        setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
+      }
+    };
 
     const isVerified = isFetching || unVerifiedAlerts.length === 0;
     const showSites =
@@ -184,6 +149,8 @@ export const WeeklyReportsPanelComponent = React.memo(
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
     const date = `Week ${getWeekNumberByPeriod(activeWeek)} ${getDisplayDatesByPeriod(activeWeek)}`;
     const unVerifiedList = toCommaList(unVerifiedAlerts);
+    const confirmIsDisabled =
+      isSaving || isLoading || isFetching || countryTableStatus === TABLE_STATUSES.EDITABLE;
 
     return (
       <StyledDrawer open={isOpen} onClose={handleClose}>
@@ -201,14 +168,12 @@ export const WeeklyReportsPanelComponent = React.memo(
         </Collapse>
         <CountryReportsSection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
-            columns={columns}
-            data={countrySyndromesData}
             tableStatus={countryTableStatus}
+            setTableStatus={setCountryTableStatus}
           >
             <CountryReportTable
+              data={countrySyndromesData}
               isFetching={isLoading || isFetching}
-              tableStatus={countryTableStatus}
-              setTableStatus={setCountryTableStatus}
               sitesReported={countryWeekData['Sites Reported']}
               totalSites={countryWeekData.Sites}
               weekNumber={activeWeek}
@@ -230,26 +195,26 @@ export const WeeklyReportsPanelComponent = React.memo(
             />
             <Card variant="outlined" mb={3}>
               <EditableTableProvider
-                columns={columns}
-                data={sitesData.data[activeSiteIndex].syndromes}
                 tableStatus={sitesTableStatus}
+                setTableStatus={setSitesTableStatus}
               >
                 <SiteReportTable
-                  tableStatus={sitesTableStatus}
-                  setTableStatus={setSitesTableStatus}
+                  data={sitesData.data[activeSiteIndex].syndromes}
                   weekNumber={activeWeek}
                 />
               </EditableTableProvider>
             </Card>
           </SiteReportsSection>
         )}
-        <DrawerFooter disabled={isSaving}>
-          <Fade in={verificationRequired}>
+        <DrawerFooter disabled={confirmIsDisabled}>
+          <Fade in={verificationRequired || error}>
             <PositionedAlert severity="error">
-              {unVerifiedList} Above Threshold. Please review and verify data.
+              {verificationRequired
+                ? `${unVerifiedList} Above Threshold. Please review and verify data.`
+                : error?.message}
             </PositionedAlert>
           </Fade>
-          {panelStatus === PANEL_STATUSES.SUCCESS ? (
+          {reportStatus === REPORT_STATUSES.SUBMITTED ? (
             <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
               Confirmed
             </LightPrimaryButton>
@@ -259,7 +224,7 @@ export const WeeklyReportsPanelComponent = React.memo(
                 fullWidth
                 onClick={() => handleSubmit(isVerified)}
                 disabled={verificationRequired}
-                isLoading={panelStatus === PANEL_STATUSES.SAVING}
+                isLoading={isConfirming}
                 loadingText="Saving"
               >
                 Confirm now
@@ -268,11 +233,12 @@ export const WeeklyReportsPanelComponent = React.memo(
             </>
           )}
         </DrawerFooter>
+        {/*Removed as not part of MVP
         <AlertCreatedModal
           isOpen={isModalOpen}
           alerts={alerts}
           handleClose={() => setIsModalOpen(false)}
-        />
+        />*/}
       </StyledDrawer>
     );
   },

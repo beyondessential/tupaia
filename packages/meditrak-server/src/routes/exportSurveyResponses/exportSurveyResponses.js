@@ -25,17 +25,13 @@ const INFO_COLUMNS = {
 };
 function getExportDatesString(startDate, endDate) {
   const format = 'D-M-YY';
-  let dateString = '';
-  if (startDate && endDate) {
-    dateString = `between ${moment(startDate).format(format)} and ${moment(endDate).format(
-      format,
-    )} `;
-  } else if (startDate) {
-    dateString = `after ${moment(startDate).format(format)} `;
-  } else if (endDate) {
-    dateString = `before ${moment(endDate).format(format)} `;
-  }
-  return `${dateString}`;
+  const momentFormat = date => moment(date).format(format);
+
+  if (startDate && endDate)
+    return `between ${momentFormat(startDate)} and ${momentFormat(endDate)} `;
+  if (startDate) return `after ${momentFormat(startDate)} `;
+  if (endDate) return `before ${momentFormat(endDate)} `;
+  return '(no period specified)';
 }
 function getEasyReadingInfoColumns(startDate, endDate) {
   return { text: `Survey responses ${getExportDatesString(startDate, endDate)}` };
@@ -70,7 +66,7 @@ export async function exportSurveyResponses(req, res) {
     startDate,
     endDate,
     timeZone = 'UTC',
-    viewId,
+    reportName,
     easyReadingMode = false,
   } = req.query;
   let { surveyId, countryId } = req.query;
@@ -87,7 +83,6 @@ export async function exportSurveyResponses(req, res) {
 
   try {
     const variablesExtractor = new SurveyResponseVariablesExtractor(models);
-    const reportName = viewId && (await models.dashboardReport.findById(viewId)).viewJson.name;
     const variables = await variablesExtractor.getParametersFromInput(
       countryCode,
       entityCode,
@@ -246,7 +241,8 @@ export async function exportSurveyResponses(req, res) {
       });
 
       // Add export date and origin
-      exportData = addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);
+      if (easyReadingMode)
+        exportData = addExportedDateAndOriginAtTheSheetBottom(exportData, timeZone);
 
       addDataToSheet(currentSurvey.name, exportData);
     }

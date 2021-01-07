@@ -298,6 +298,20 @@ const getStyles = (isPrintMode, cellCharacters) => {
       position: 'absolute',
       top: 20,
     },
+    footer: {
+      padding: 20,
+      legend: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        key: {
+          padding: 5,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        },
+      },
+    },
   };
 
   const gridCellChanger = {
