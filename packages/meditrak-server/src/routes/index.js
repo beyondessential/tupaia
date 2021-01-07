@@ -160,7 +160,7 @@ export default {
   getUserRewards: catchAsyncErrors(getUserRewards),
   getUser: catchAsyncErrors(getUser),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
-  getCountryAccessList: catchAsyncErrors(getCountryAccessList),
+  getCountryAccessList: allowAnyone(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
