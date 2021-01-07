@@ -16,6 +16,7 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'dashboardReport',
   'ancestor_descendant_relation',
   'psss_session',
+  'analytics',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
