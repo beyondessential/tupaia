@@ -11,6 +11,7 @@ export { PopupMarker, MeasurePopup } from './PopupMarker';
 
 export {
   getHeatmapColor,
+  getSwapHeatmapColor,
   getPerformanceHeatmapColor,
   resolveSpectrumColour,
   UNKNOWN_COLOR,

@@ -11,7 +11,7 @@ import { SCALE_TYPES } from '../../constants';
 
 const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
 const DEFAULT_COLOR_SCHEME = 'default';
-const SWAP_DEFAULT_COLOR_SCHEME = 'swap_default_color';
+const SWAP_DEFAULT_COLOR_SCHEME = 'default-swap';
 const PERFORMANCE_COLOR_SCHEME = 'performance';
 const TIME_COLOR_SCHEME = 'time';
 
@@ -26,6 +26,7 @@ const SCALE_TYPE_TO_COLOR_SCHEME = {
   [SCALE_TYPES.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
   [SCALE_TYPES.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
   [SCALE_TYPES.NEUTRAL]: DEFAULT_COLOR_SCHEME,
+  [SCALE_TYPES.NEUTRAL_SWAP]: SWAP_DEFAULT_COLOR_SCHEME,
   [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
 };
 
@@ -73,6 +74,7 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
 
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.NEUTRAL:
+    case SCALE_TYPES.NEUTRAL_SWAP:
     default:
       return valueToColor((value || value === 0) && normaliseToPercentage(value, min, max));
   }
@@ -121,22 +123,24 @@ export function getTimeHeatmapColor(value, noDataColour) {
  * https://commons.wikimedia.org/wiki/File:South_Africa_2011_population_density_map.svg
  *
  * @param {number} value A value in the range [0..1] representing a percentage
+ * @param {default} if default is true, return lightest to darkest colour, otherwise return darkest to lightest
  * @returns {style} css rgb string, e.g. `rgb(0,0,0)`
  */
-export function getHeatmapColor(value) {
+function getHeatmapColorByOrder(value, isDefault) {
   const difference = value - 0.15;
-  const index = difference < 0 ? 0 : difference / 0.1 + 1;
-  const rgb = rgbSet[index];
+  const index = difference < 0 ? 0 : Math.floor(difference / 0.1) + 1;
+  const indexInRange = index > rgbSet.length - 1 ? rgbSet.length - 1 : index;
 
+  const rgb = isDefault ? rgbSet[indexInRange] : rgbSet[rgbSet.length - indexInRange - 1];
   return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
 }
 
-function getSwapHeatmapColor(value) {
-  const difference = value - 0.15;
-  const index = difference < 0 ? 0 : difference / 0.1 + 1;
-  const rgb = rgbSet[rgbSet.length - index - 1];
+export function getHeatmapColor(value) {
+  return getHeatmapColorByOrder(value, true);
+}
 
-  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+export function getSwapHeatmapColor(value) {
+  return getHeatmapColorByOrder(value, false);
 }
 
 export const BREWER_AUTO = [
