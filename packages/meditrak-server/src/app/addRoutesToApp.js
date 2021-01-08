@@ -31,6 +31,9 @@ const {
   deleteAnswers,
   deleteDisasters,
   deleteFeedItems,
+  deleteOptions,
+  deleteOptionSets,
+  deleteQuestions,
   deleteSurveys,
   deleteSurveyResponses,
   deleteSurveyScreenComponents,
@@ -39,6 +42,9 @@ const {
   editAnswers,
   editDisasters,
   editFeedItems,
+  editOptions,
+  editOptionSets,
+  editQuestions,
   editSurveys,
   editSurveyResponses,
   editSurveyScreenComponents,
@@ -238,6 +244,9 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/disasters/:recordId', editDisasters);
   app.put('(/v[0-9]+)/feedItems/:recordId', editFeedItems);
+  app.put('(/v[0-9]+)/options/:recordId', editOptions);
+  app.put('(/v[0-9]+)/optionSets/:recordId', editOptionSets);
+  app.put('(/v[0-9]+)/questions/:recordId', editQuestions);
   app.put('(/v[0-9]+)/me', editUser);
 
   // TODO: Remove generic handlers when all endpoints are implemented
@@ -255,6 +264,9 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/disasters/:recordId', deleteDisasters);
   app.delete('(/v[0-9]+)/feedItems/:recordId', deleteFeedItems);
+  app.delete('(/v[0-9]+)/options/:recordId', deleteOptions);
+  app.delete('(/v[0-9]+)/optionSets/:recordId', deleteOptionSets);
+  app.delete('(/v[0-9]+)/questions/:recordId', deleteQuestions);
   // TODO: Remove the generic handlers once all DELETE endpoints have specific handlers
   app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);

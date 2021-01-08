@@ -6,4 +6,4 @@
 export { DeleteSurveys } from './DeleteSurveys';
 export { EditSurveys } from './EditSurveys';
 export { GETSurveys } from './GETSurveys';
-export { assertSurveyPermissions } from './assertSurveyPermissions';
+export { assertSurveyEditPermissions, assertSurveyGetPermissions } from './assertSurveyPermissions';
