@@ -22,6 +22,7 @@ export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
+export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
@@ -31,6 +32,13 @@ export {
   translateQuestionDependentNestedFields,
   replaceQuestionCodesWithIds,
   replaceNestedQuestionCodesWithIds,
+  translateQuestionCodeToId,
 } from './translateQuestionDependentFields';
 export { translateExpression } from './translateExpression';
 export { getExpressionQuestionCodes } from './getExpressionQuestionCodes';
+export {
+  translateEntityCodeToId,
+  translateSurveyCodeToId,
+  translateUserEmailToIdAndAssessorName,
+} from './translateSurveyResponseFields';
+export { translateObjectFields } from './translateObjectFields';

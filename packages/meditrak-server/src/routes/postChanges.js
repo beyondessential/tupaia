@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { cloneDeep } from 'lodash';
 import {
   respond,
   ValidationError,
@@ -20,6 +21,13 @@ import {
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
+import {
+  translateObjectFields,
+  translateEntityCodeToId,
+  translateSurveyCodeToId,
+  translateUserEmailToIdAndAssessorName,
+  translateQuestionCodeToId,
+} from './utilities';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
@@ -35,17 +43,20 @@ const ADD_SURVEY_IMAGE = 'AddSurveyImage';
 export async function postChanges(req, res) {
   const changes = req.body;
   const { models } = req;
+  const translatedChanges = [];
   for (const { action, payload } of changes) {
     if (!ACTION_HANDLERS[action]) {
       throw new ValidationError(`${action} is not a supported change action`);
     }
-    await PAYLOAD_VALIDATORS[action](models, payload);
+    const translatedPayload = await PAYLOAD_TRANSLATORS[action](models, payload);
+    await PAYLOAD_VALIDATORS[action](models, translatedPayload);
+    translatedChanges.push({ action, translatedPayload });
   }
 
   // Check permissions for survey responses
-  const surveyResponsePayloads = changes
+  const surveyResponsePayloads = translatedChanges
     .filter(c => c.action === SUBMIT_SURVEY_RESPONSE)
-    .map(c => c.payload.survey_response || c.payload);
+    .map(c => c.translatedPayload.survey_response || c.translatedPayload);
   const surveyResponsePermissionsChecker = async accessPolicy => {
     await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
   };
@@ -53,8 +64,8 @@ export async function postChanges(req, res) {
     assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
   );
 
-  for (const { action, payload } of changes) {
-    await ACTION_HANDLERS[action](models, payload);
+  for (const { action, translatedPayload } of translatedChanges) {
+    await ACTION_HANDLERS[action](models, translatedPayload);
   }
 
   // Reset the cache for the current users rewards.
@@ -88,6 +99,16 @@ const PAYLOAD_VALIDATORS = {
   },
 };
 
+/**
+ * Contains functions that accept the payload, and translate the data so that the required fields are present
+ * for the relevant change action, returning true if successful and throwing an error if not
+ */
+const PAYLOAD_TRANSLATORS = {
+  [SUBMIT_SURVEY_RESPONSE]: async (models, payload) =>
+    translateSurveyResponseObject(models, payload.survey_response || payload), // LEGACY: v1 and v2 allow survey_response object, v3 should deprecate this
+  [ADD_SURVEY_IMAGE]: (models, payload) => payload, // No translation required
+};
+
 async function validateSurveyResponseObject(models, surveyResponseObject) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
@@ -108,11 +129,75 @@ async function validateSurveyResponseObject(models, surveyResponseObject) {
   }
 }
 
+async function translateSurveyResponseObject(models, surveyResponseObject) {
+  if (!surveyResponseObject) {
+    throw new ValidationError('Payload must contain survey_response_object');
+  }
+
+  const surveyResponseTranslators = constructSurveyResponseTranslators(models);
+  const answerTranslators = constructAnswerTranslators(models);
+
+  if (
+    !requiresSurveyResponseTranslation(
+      surveyResponseObject,
+      surveyResponseTranslators,
+      answerTranslators,
+    )
+  ) {
+    return surveyResponseObject;
+  }
+
+  const translatedSurveyResponseObject = cloneDeep(surveyResponseObject);
+  await translateObjectFields(translatedSurveyResponseObject, surveyResponseTranslators);
+
+  const { answers } = translatedSurveyResponseObject;
+  if (Array.isArray(answers)) {
+    for (let i = 0; i < answers.length; i++) {
+      await translateObjectFields(answers[i], answerTranslators);
+    }
+  }
+
+  return translatedSurveyResponseObject;
+}
+
+const requiresSurveyResponseTranslation = (
+  surveyResponseObject,
+  surveyResponseTranslators,
+  answerTranslators,
+) => {
+  const surveyResponseTranslatorFields = Object.keys(surveyResponseTranslators);
+  if (
+    Object.keys(surveyResponseObject).some(field => surveyResponseTranslatorFields.includes(field))
+  ) {
+    return true;
+  }
+
+  const answerTranslatorFields = Object.keys(answerTranslators);
+  const { answers } = surveyResponseObject;
+  if (Array.isArray(answers)) {
+    return answers.some(answer =>
+      Object.keys(answer).some(field => answerTranslatorFields.includes(field)),
+    );
+  }
+
+  return false;
+};
+
 const clinicOrEntityIdExist = (id, obj) => {
   if (!(obj.clinic_id || obj.entity_id)) {
     throw new Error('Either clinic_id or entity_id are required.');
   }
 };
+
+const constructSurveyResponseTranslators = models => ({
+  user_email: userEmail => translateUserEmailToIdAndAssessorName(models.user, userEmail),
+  entity_code: entityCode => translateEntityCodeToId(models.entity, entityCode),
+  survey_code: surveyCode => translateSurveyCodeToId(models.survey, surveyCode),
+});
+
+const constructAnswerTranslators = models => ({
+  question_code: questionCode => translateQuestionCodeToId(models.question, questionCode),
+});
 
 const constructEntitiesCreatedValidators = models => ({
   id: [hasContent, takesIdForm],

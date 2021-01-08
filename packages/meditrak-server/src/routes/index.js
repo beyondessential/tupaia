@@ -15,12 +15,11 @@ import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
-import { GETDashboardReports } from './GETDashboardReports';
-import { GETDashboardGroups } from './GETDashboardGroups';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETMapOverlays } from './GETMapOverlays';
+import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
 import { GETPermissionGroups } from './GETPermissionGroups';
@@ -28,6 +27,17 @@ import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
+import { GETOptions } from './GETOptions';
+import { GETOptionSets } from './GETOptionSets';
+import { GETProjects } from './GETProjects';
+import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
+import {
+  DeleteDashboardReports,
+  EditDashboardReports,
+  GETDashboardReports,
+} from './dashboardReports';
+import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
+import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
   DeleteSurveyScreenComponents,
@@ -111,12 +121,15 @@ export default {
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   deleteAnswers: useRouteHandler(DeleteAnswers),
+  deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
+  deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
   deleteOptions: useRouteHandler(DeleteOptions),
   deleteOptionSets: useRouteHandler(DeleteOptionSets),
   deleteQuestions: useRouteHandler(DeleteQuestions),
   deleteSurveys: useRouteHandler(DeleteSurveys),
+  deleteMapOverlays: useRouteHandler(DeleteMapOverlays),
   deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
   deleteSurveyScreenComponents: useRouteHandler(DeleteSurveyScreenComponents),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
@@ -124,12 +137,15 @@ export default {
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editAnswers: useRouteHandler(EditAnswers),
+  editDashboardGroups: useRouteHandler(EditDashboardGroups),
+  editDashboardReports: useRouteHandler(EditDashboardReports),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
   editOptions: useRouteHandler(EditOptions),
   editOptionSets: useRouteHandler(EditOptionSets),
   editQuestions: useRouteHandler(EditQuestions),
   editSurveys: useRouteHandler(EditSurveys),
+  editMapOverlays: useRouteHandler(EditMapOverlays),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
   editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
   editUserAccounts: useRouteHandler(EditUserAccounts),
@@ -156,6 +172,7 @@ export default {
   getPermissionGroups: useRouteHandler(GETPermissionGroups),
   getOptions: useRouteHandler(GETOptions),
   getOptionSets: useRouteHandler(GETOptionSets),
+  getProjects: useRouteHandler(GETProjects),
   getUserAccounts: useRouteHandler(GETUserAccounts),
   getUserEntityPermissions: useRouteHandler(GETUserEntityPermissions),
   getAccessRequests: useRouteHandler(GETAccessRequests),
@@ -174,7 +191,7 @@ export default {
   getUserRewards: catchAsyncErrors(getUserRewards),
   getUser: catchAsyncErrors(getUser),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
-  getCountryAccessList: catchAsyncErrors(getCountryAccessList),
+  getCountryAccessList: allowAnyone(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),

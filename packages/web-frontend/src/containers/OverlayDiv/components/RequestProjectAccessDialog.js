@@ -229,7 +229,7 @@ export const RequestProjectAccessComponent = React.memo(
         </Header>
         <Title>Requesting Project Access</Title>
         <HeroImage src={project.imageUrl}>
-          <LogoImage src={project.logoUrl} />
+          {project.logoUrl && <LogoImage src={project.logoUrl} />}
         </HeroImage>
         <ProjectBody>
           <Heading>{project.name}</Heading>

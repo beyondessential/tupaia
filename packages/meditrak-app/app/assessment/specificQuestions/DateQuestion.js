@@ -76,7 +76,7 @@ export class DateQuestion extends PureComponent {
           style={localStyles.field}
           onPress={() => this.onOpenDatePicker()}
         >
-          <Icon library="Ionic" name="md-calendar" size={20} style={localStyles.icon} />
+          <Icon library="Ionic" name="md-calendar-outline" size={20} style={localStyles.icon} />
           {this.renderInput()}
         </TouchableOpacity>
         {hasAnswer && (

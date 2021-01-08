@@ -24,7 +24,7 @@ export class GETCountries extends GETHandler {
   async findSingleRecord(countryId, options) {
     const countryPermissionChecker = accessPolicy =>
       assertCountryPermissions(accessPolicy, this.models, countryId);
-    this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]));
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]));
 
     return super.findSingleRecord(countryId, options);
   }
