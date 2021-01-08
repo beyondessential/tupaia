@@ -22,6 +22,7 @@ export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
+export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
 export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';

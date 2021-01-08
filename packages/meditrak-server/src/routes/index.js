@@ -15,12 +15,9 @@ import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
-import { GETDashboardReports } from './GETDashboardReports';
-import { GETDashboardGroups } from './GETDashboardGroups';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
-import { GETMapOverlays } from './GETMapOverlays';
 import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { GETSurveyScreenComponents } from './GETSurveyScreenComponents';
@@ -29,6 +26,13 @@ import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
 import { GETOptionSets } from './GETOptionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
+import {
+  DeleteDashboardReports,
+  EditDashboardReports,
+  GETDashboardReports,
+} from './dashboardReports';
+import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
+import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
   CreateUserAccounts,
@@ -107,16 +111,22 @@ export default {
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   deleteAnswers: useRouteHandler(DeleteAnswers),
+  deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
+  deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
+  deleteMapOverlays: useRouteHandler(DeleteMapOverlays),
   deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
   createUserAccount: useRouteHandler(CreateUserAccounts),
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
   editAccessRequests: useRouteHandler(EditAccessRequests),
   editAnswers: useRouteHandler(EditAnswers),
+  editDashboardGroups: useRouteHandler(EditDashboardGroups),
+  editDashboardReports: useRouteHandler(EditDashboardReports),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
+  editMapOverlays: useRouteHandler(EditMapOverlays),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),

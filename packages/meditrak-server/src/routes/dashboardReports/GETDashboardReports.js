@@ -6,7 +6,7 @@
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
-  assertDashboardReportsPermissions,
+  assertDashboardReportsGetPermissions,
   createDashboardReportDBFilter,
 } from './assertDashboardReportsPermissions';
 /**
@@ -21,7 +21,7 @@ export class GETDashboardReports extends GETHandler {
     const dashboardReport = await super.findSingleRecord(dashboardReportId, options);
 
     const dashboardReportChecker = accessPolicy =>
-      assertDashboardReportsPermissions(accessPolicy, this.models, dashboardReportId);
+      assertDashboardReportsGetPermissions(accessPolicy, this.models, dashboardReportId);
 
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, dashboardReportChecker]),

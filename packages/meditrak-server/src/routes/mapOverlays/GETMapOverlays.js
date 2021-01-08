@@ -6,7 +6,7 @@
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
-  assertMapOverlaysPermissions,
+  assertMapOverlaysGetPermissions,
   createMapOverlayDBFilter,
 } from './assertMapOverlaysPermissions';
 /**
@@ -21,7 +21,7 @@ export class GETMapOverlays extends GETHandler {
     const mapOverlay = await super.findSingleRecord(mapOverlayId, options);
 
     const mapOverlayChecker = accessPolicy =>
-      assertMapOverlaysPermissions(accessPolicy, this.models, mapOverlayId);
+      assertMapOverlaysGetPermissions(accessPolicy, this.models, mapOverlayId);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
 
