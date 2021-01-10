@@ -18,8 +18,6 @@ import { GETDisasters } from './GETDisasters';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
-import { GETMapOverlays } from './GETMapOverlays';
-import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
 import { GETPermissionGroups } from './GETPermissionGroups';
@@ -27,10 +25,7 @@ import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
-import { GETOptions } from './GETOptions';
-import { GETOptionSets } from './GETOptionSets';
 import { GETProjects } from './GETProjects';
-import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
 import {
   DeleteDashboardReports,
   EditDashboardReports,
