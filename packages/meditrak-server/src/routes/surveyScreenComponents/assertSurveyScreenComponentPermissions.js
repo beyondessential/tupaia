@@ -6,11 +6,12 @@ import { TYPES } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import { mergeFilter, mergeMultiJoin } from '../utilities';
 import {
-  assertSurveyPermissions,
+  assertSurveyEditPermissions,
+  assertSurveyGetPermissions,
   createSurveyDBFilter,
-} from '../GETSurveys/assertSurveyPermissions';
+} from '../surveys/assertSurveyPermissions';
 
-export const assertSurveyScreenComponentPermissions = async (
+export const assertSurveyScreenComponentGetPermissions = async (
   accessPolicy,
   models,
   surveyScreenComponentId,
@@ -21,10 +22,23 @@ export const assertSurveyScreenComponentPermissions = async (
   if (!surveyScreenComponent) {
     throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
   }
+  const surveyId = await surveyScreenComponent.surveyId();
+  return assertSurveyGetPermissions(accessPolicy, models, surveyId);
+};
 
-  // Pull the survey from the survey screen, then run the survey permissions check
-  const surveyScreen = await models.surveyScreen.findById(surveyScreenComponent.screen_id);
-  return assertSurveyPermissions(accessPolicy, models, surveyScreen.survey_id);
+export const assertSurveyScreenComponentEditPermissions = async (
+  accessPolicy,
+  models,
+  surveyScreenComponentId,
+) => {
+  const surveyScreenComponent = await models.surveyScreenComponent.findById(
+    surveyScreenComponentId,
+  );
+  if (!surveyScreenComponent) {
+    throw new Error(`No surveyScreenComponent exists with id ${surveyScreenComponentId}`);
+  }
+  const surveyId = await surveyScreenComponent.surveyId();
+  return assertSurveyEditPermissions(accessPolicy, models, surveyId);
 };
 
 export const createSurveyScreenComponentDBFilter = async (

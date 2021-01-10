@@ -18,15 +18,14 @@ import { GETDisasters } from './GETDisasters';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
-import { GETSurveys } from './GETSurveys';
 import { GETSurveyGroups } from './GETSurveyGroups';
-import { GETSurveyScreenComponents } from './GETSurveyScreenComponents';
-import { GETQuestions } from './GETQuestions';
+import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
 import { GETPermissionGroups } from './GETPermissionGroups';
-import { GETOptions } from './GETOptions';
-import { GETOptionSets } from './GETOptionSets';
-import { GETProjects } from './GETProjects';
+import { DeleteOptions, EditOptions, GETOptions } from './options';
+import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
+import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
+import { GETProjects } from './GETProjects';
 import {
   DeleteDashboardReports,
   EditDashboardReports,
@@ -35,6 +34,11 @@ import {
 import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
+import {
+  DeleteSurveyScreenComponents,
+  EditSurveyScreenComponents,
+  GETSurveyScreenComponents,
+} from './surveyScreenComponents';
 import {
   CreateUserAccounts,
   RegisterUserAccounts,
@@ -116,8 +120,13 @@ export default {
   deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
+  deleteOptions: useRouteHandler(DeleteOptions),
+  deleteOptionSets: useRouteHandler(DeleteOptionSets),
+  deleteQuestions: useRouteHandler(DeleteQuestions),
+  deleteSurveys: useRouteHandler(DeleteSurveys),
   deleteMapOverlays: useRouteHandler(DeleteMapOverlays),
   deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
+  deleteSurveyScreenComponents: useRouteHandler(DeleteSurveyScreenComponents),
   deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
   createUserAccount: useRouteHandler(CreateUserAccounts),
   registerUserAccount: useRouteHandler(RegisterUserAccounts),
@@ -127,8 +136,13 @@ export default {
   editDashboardReports: useRouteHandler(EditDashboardReports),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
+  editOptions: useRouteHandler(EditOptions),
+  editOptionSets: useRouteHandler(EditOptionSets),
+  editQuestions: useRouteHandler(EditQuestions),
+  editSurveys: useRouteHandler(EditSurveys),
   editMapOverlays: useRouteHandler(EditMapOverlays),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
+  editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
   editUserAccounts: useRouteHandler(EditUserAccounts),
   editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
   exportSurveyResponses: catchAsyncErrors(exportSurveyResponses),

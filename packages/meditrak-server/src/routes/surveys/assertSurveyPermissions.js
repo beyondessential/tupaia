@@ -3,26 +3,50 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { hasBESAdminAccess } from '../../permissions';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 import { fetchCountryIdsByPermissionGroupId } from '../utilities';
 
 const { RAW } = QUERY_CONJUNCTIONS;
 
-export const assertSurveyPermissions = async (accessPolicy, models, surveyId) => {
+const DEFAULT_SURVEY_ERROR_MESSAGE = 'Requires access to one of the countries the survey is in';
+
+export const assertSurveyGetPermissions = async (accessPolicy, models, surveyId) => {
   const survey = await models.survey.findById(surveyId);
   if (!survey) {
     throw new Error(`No survey exists with id ${surveyId}`);
   }
-
-  const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
-  const countries = await models.country.findManyById(survey.country_ids);
-  const countryCodes = countries.map(c => c.code);
+  const permissionGroup = await survey.getPermissionGroup();
+  const countryCodes = await survey.getCountryCodes();
 
   if (accessPolicy.allowsSome(countryCodes, permissionGroup.name)) {
     return true;
   }
 
-  throw new Error('Requires access to one of the countries the survey is in');
+  throw new Error(DEFAULT_SURVEY_ERROR_MESSAGE);
+};
+
+// Used for edit and delete actions
+export const assertSurveyEditPermissions = async (
+  accessPolicy,
+  models,
+  surveyId,
+  errorMessage = DEFAULT_SURVEY_ERROR_MESSAGE,
+) => {
+  const survey = await models.survey.findById(surveyId);
+  if (!survey) {
+    throw new Error(`No survey exists with id ${surveyId}`);
+  }
+  const permissionGroup = await survey.getPermissionGroup();
+  const countryCodes = await survey.getCountryCodes();
+
+  if (
+    accessPolicy.allowsAll(countryCodes, permissionGroup.name) &&
+    accessPolicy.allowsAll(countryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)
+  ) {
+    return true;
+  }
+
+  throw new Error(errorMessage);
 };
 
 export const createSurveyDBFilter = async (accessPolicy, models, criteria) => {

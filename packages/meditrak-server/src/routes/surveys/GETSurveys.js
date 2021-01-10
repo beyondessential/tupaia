@@ -5,7 +5,7 @@
 
 import { GETHandler } from '../GETHandler';
 import {
-  assertSurveyPermissions,
+  assertSurveyGetPermissions,
   createSurveyDBFilter,
   createSurveyViaCountryDBFilter,
 } from './assertSurveyPermissions';
@@ -25,7 +25,7 @@ export class GETSurveys extends GETHandler {
     const survey = await super.findSingleRecord(surveyId, options);
 
     const surveyChecker = accessPolicy =>
-      assertSurveyPermissions(accessPolicy, this.models, surveyId);
+      assertSurveyGetPermissions(accessPolicy, this.models, surveyId);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyChecker]));
 

@@ -33,8 +33,13 @@ const {
   deleteDashboardReports,
   deleteDisasters,
   deleteFeedItems,
+  deleteOptions,
+  deleteOptionSets,
+  deleteQuestions,
+  deleteSurveys,
   deleteMapOverlays,
   deleteSurveyResponses,
+  deleteSurveyScreenComponents,
   deleteUserEntityPermissions,
   editAccessRequests,
   editAnswers,
@@ -42,8 +47,13 @@ const {
   editDashboardReports,
   editDisasters,
   editFeedItems,
+  editOptions,
+  editOptionSets,
+  editQuestions,
+  editSurveys,
   editMapOverlays,
   editSurveyResponses,
+  editSurveyScreenComponents,
   editUserAccounts,
   editUserEntityPermissions,
   exportSurveyResponses,
@@ -235,11 +245,16 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/users/:recordId', editUserAccounts);
   app.put('(/v[0-9]+)/userEntityPermissions/:recordId', editUserEntityPermissions);
   app.put('(/v[0-9]+)/accessRequests/:recordId', editAccessRequests);
+  app.put('(/v[0-9]+)/surveys/:recordId', editSurveys);
   app.put('(/v[0-9]+)/surveyResponses/:recordId', editSurveyResponses);
+  app.put('(/v[0-9]+)/surveyScreenComponents/:recordId', editSurveyScreenComponents);
   app.put('(/v[0-9]+)/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/disasters/:recordId', editDisasters);
   app.put('(/v[0-9]+)/feedItems/:recordId', editFeedItems);
+  app.put('(/v[0-9]+)/options/:recordId', editOptions);
+  app.put('(/v[0-9]+)/optionSets/:recordId', editOptionSets);
+  app.put('(/v[0-9]+)/questions/:recordId', editQuestions);
   app.put('(/v[0-9]+)/dashboardGroups/:recordId', editDashboardGroups);
   app.put('(/v[0-9]+)/dashboardReports/:recordId', editDashboardReports);
   app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
@@ -253,11 +268,16 @@ export function addRoutesToApp(app) {
    * DELETE routes
    */
   app.delete('(/v[0-9]+)/userEntityPermissions/:recordId', deleteUserEntityPermissions);
+  app.delete('(/v[0-9]+)/surveys/:recordId', deleteSurveys);
   app.delete('(/v[0-9]+)/surveyResponses/:recordId', deleteSurveyResponses);
+  app.delete('(/v[0-9]+)/surveyScreenComponents/:recordId', deleteSurveyScreenComponents);
   app.delete('(/v[0-9]+)/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/disasters/:recordId', deleteDisasters);
   app.delete('(/v[0-9]+)/feedItems/:recordId', deleteFeedItems);
+  app.delete('(/v[0-9]+)/options/:recordId', deleteOptions);
+  app.delete('(/v[0-9]+)/optionSets/:recordId', deleteOptionSets);
+  app.delete('(/v[0-9]+)/questions/:recordId', deleteQuestions);
   app.delete('(/v[0-9]+)/dashboardGroups/:recordId', deleteDashboardGroups);
   app.delete('(/v[0-9]+)/dashboardReports/:recordId', deleteDashboardReports);
   app.delete('(/v[0-9]+)/mapOverlays/:recordId', deleteMapOverlays);
