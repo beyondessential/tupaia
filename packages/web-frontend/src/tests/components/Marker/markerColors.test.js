@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getHeatmapColor, getSwapHeatmapColor } from '../../../components/Marker';
+import { getHeatmapColor, getReverseHeatmapColor } from '../../../components/Marker';
 
 describe('getHeatmapColorByOrder()', () => {
   it('getHeatmapColor() should return expected rgb', () => {
@@ -24,7 +24,7 @@ describe('getHeatmapColorByOrder()', () => {
     );
   });
 
-  it('getSwapHeatmapColor() should return expected rgb', () => {
+  it('getReverseHeatmapColor() should return expected rgb', () => {
     const value = (Math.random() * 10).toFixed(1);
     let expectedRgb = [];
     if (value < 0.15) expectedRgb = [128, 0, 38];
@@ -37,7 +37,7 @@ describe('getHeatmapColorByOrder()', () => {
     else if (value >= 0.75 && value < 0.85) expectedRgb = [255, 237, 160];
     else if (value >= 0.85) expectedRgb = [255, 255, 204];
 
-    expect(getSwapHeatmapColor(value)).toEqual(
+    expect(getReverseHeatmapColor(value)).toEqual(
       `rgb(${expectedRgb[0]},${expectedRgb[1]},${expectedRgb[2]})`,
     );
   });

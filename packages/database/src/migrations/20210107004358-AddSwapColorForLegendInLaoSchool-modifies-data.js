@@ -16,9 +16,9 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-// eslint-disable-next-line camelcase
-const Laos_Schools_Textbook_student_Ratio_Group_Id = '5f6d391a61f76a728e000011';
-const scaleColorScheme = 'default-swap';
+// Map Overlay Group code: Laos_Schools_Textbook_student_Ratio_Group_Id
+const textbookStudentRatioMapOverlayGroupId = '5f6d391a61f76a728e000011';
+const scaleColorScheme = 'default-reverse';
 
 async function getMapOverlayById(db, id) {
   const { rows: MapOverlays } = await db.runSql(`
@@ -41,14 +41,14 @@ async function findMapOverlayIds(db, mapOverlayGroupId) {
 }
 
 exports.up = async function (db) {
-  const mapOverlayIds = (
-    await findMapOverlayIds(db, Laos_Schools_Textbook_student_Ratio_Group_Id)
-  ).flat(Infinity);
+  const mapOverlayIds = (await findMapOverlayIds(db, textbookStudentRatioMapOverlayGroupId)).flat(
+    Infinity,
+  );
 
   for (const mapOverlayId of mapOverlayIds) {
     const mapOverlay = await getMapOverlayById(db, mapOverlayId);
     const { presentationOptions } = mapOverlay;
-    presentationOptions.scaleColorScheme = 'default-swap';
+    presentationOptions.scaleColorScheme = scaleColorScheme;
     await updateValues(
       db,
       'mapOverlay',
@@ -59,9 +59,9 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  const mapOverlayIds = (
-    await findMapOverlayIds(db, Laos_Schools_Textbook_student_Ratio_Group_Id)
-  ).flat(Infinity);
+  const mapOverlayIds = (await findMapOverlayIds(db, textbookStudentRatioMapOverlayGroupId)).flat(
+    Infinity,
+  );
 
   for (const mapOverlayId of mapOverlayIds) {
     const mapOverlay = await getMapOverlayById(db, mapOverlayId);

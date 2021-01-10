@@ -11,13 +11,13 @@ import { SCALE_TYPES } from '../../constants';
 
 const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
 const DEFAULT_COLOR_SCHEME = 'default';
-const SWAP_DEFAULT_COLOR_SCHEME = 'default-swap';
+const REVERSE_DEFAULT_COLOR_SCHEME = 'default-reverse';
 const PERFORMANCE_COLOR_SCHEME = 'performance';
 const TIME_COLOR_SCHEME = 'time';
 
 const COLOR_SCHEME_TO_FUNCTION = {
   [DEFAULT_COLOR_SCHEME]: getHeatmapColor,
-  [SWAP_DEFAULT_COLOR_SCHEME]: getSwapHeatmapColor,
+  [REVERSE_DEFAULT_COLOR_SCHEME]: getReverseHeatmapColor,
   [PERFORMANCE_COLOR_SCHEME]: getPerformanceHeatmapColor,
   [TIME_COLOR_SCHEME]: getTimeHeatmapColor,
 };
@@ -26,11 +26,11 @@ const SCALE_TYPE_TO_COLOR_SCHEME = {
   [SCALE_TYPES.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
   [SCALE_TYPES.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
   [SCALE_TYPES.NEUTRAL]: DEFAULT_COLOR_SCHEME,
-  [SCALE_TYPES.NEUTRAL_SWAP]: SWAP_DEFAULT_COLOR_SCHEME,
+  [SCALE_TYPES.NEUTRAL_REVERSE]: REVERSE_DEFAULT_COLOR_SCHEME,
   [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
 };
 
-const rgbSet = [
+const HEATMAP_DEFAULT_RGB_SET = [
   [255, 255, 204],
   [255, 237, 160],
   [254, 217, 118],
@@ -74,7 +74,7 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
 
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.NEUTRAL:
-    case SCALE_TYPES.NEUTRAL_SWAP:
+    case SCALE_TYPES.NEUTRAL_REVERSE:
     default:
       return valueToColor((value || value === 0) && normaliseToPercentage(value, min, max));
   }
@@ -129,9 +129,12 @@ export function getTimeHeatmapColor(value, noDataColour) {
 function getHeatmapColorByOrder(value, swapColor) {
   const difference = value - 0.15;
   const index = difference < 0 ? 0 : Math.floor(difference / 0.1) + 1;
-  const indexInRange = index > rgbSet.length - 1 ? rgbSet.length - 1 : index;
+  const indexInRange =
+    index > HEATMAP_DEFAULT_RGB_SET.length - 1 ? HEATMAP_DEFAULT_RGB_SET.length - 1 : index;
 
-  const rgb = !swapColor ? rgbSet[indexInRange] : rgbSet[rgbSet.length - indexInRange - 1];
+  const rgb = !swapColor
+    ? HEATMAP_DEFAULT_RGB_SET[indexInRange]
+    : HEATMAP_DEFAULT_RGB_SET[HEATMAP_DEFAULT_RGB_SET.length - indexInRange - 1];
   return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
 }
 
@@ -139,7 +142,7 @@ export function getHeatmapColor(value) {
   return getHeatmapColorByOrder(value, false);
 }
 
-export function getSwapHeatmapColor(value) {
+export function getReverseHeatmapColor(value) {
   return getHeatmapColorByOrder(value, true);
 }
 
