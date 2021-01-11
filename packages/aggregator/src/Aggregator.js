@@ -33,19 +33,17 @@ export class Aggregator {
 
   processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
     const { aggregations = [], filter } = aggregationOptions;
-
-    const aggregatedAnalytics = aggregations.reduce(
-      (partiallyAggregatedAnalytics, { type, config }) => {
-        return aggregateAnalytics(partiallyAggregatedAnalytics, type, {
-          ...config,
-          requestedPeriod,
-        });
-      },
-      analytics,
-    );
-
+    const aggregatedAnalytics = this.aggregateAnalytics(analytics, aggregations, requestedPeriod);
     return filterAnalytics(aggregatedAnalytics, filter);
   };
+
+  aggregateAnalytics = (analytics, aggregations, requestedPeriod) =>
+    aggregations.reduce((partiallyAggregatedAnalytics, { type, config }) => {
+      return aggregateAnalytics(partiallyAggregatedAnalytics, type, {
+        ...config,
+        requestedPeriod,
+      });
+    }, analytics);
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
     const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
