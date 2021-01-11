@@ -1,7 +1,6 @@
 'use strict';
 
 import { updateValues } from '../utilities';
-import { getDashboardReportById, updateBuilderConfigByReportId } from '../utilities/migration';
 
 var dbm;
 var type;
@@ -17,6 +16,18 @@ exports.setup = function (options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
+
+async function getDashboardReportById(db, id) {
+  const { rows: dashboardReports } = await db.runSql(`
+      SELECT * FROM "dashboardReport"
+      WHERE id = '${id}';
+  `);
+  return dashboardReports[0] || null;
+}
+
+async function updateBuilderConfigByReportId(db, newConfig, reportId) {
+  return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
+}
 
 const surveyCodes = ['RHC', 'RHFSC', 'RHFSCTS'];
 
