@@ -5,16 +5,9 @@
 
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { getSortByKey, upperFirst } from '@tupaia/utils';
-import * as builders from './builders';
-import {
-  Analytic,
-  Builder,
-  FetchOptions,
-  Indicator,
-  IndicatorApiInterface,
-  ModelRegistry,
-} from './types';
+import { getSortByKey } from '@tupaia/utils';
+import { createBuilder } from './Builder';
+import { Analytic, FetchOptions, Indicator, IndicatorApiInterface, ModelRegistry } from './types';
 
 export class IndicatorApi implements IndicatorApiInterface {
   private models: ModelRegistry;
@@ -46,19 +39,10 @@ export class IndicatorApi implements IndicatorApiInterface {
   }
 
   private buildAnalyticsForIndicator = async (indicator: Indicator, fetchOptions: FetchOptions) => {
-    const { code, builder, config } = indicator;
-    const buildAnalyticValues = this.getBuilderFunction(builder);
-    const analyticValues = await buildAnalyticValues({ api: this, config, fetchOptions });
+    const { code, builder: builderName, config } = indicator;
+    const builder = createBuilder(builderName, this);
+    const analyticValues = await builder.buildAnalyticValues(config, fetchOptions);
 
     return analyticValues.map(value => ({ ...value, dataElement: code }));
-  };
-
-  private getBuilderFunction = (builderName: string): Builder => {
-    const builderFunctionName = `build${upperFirst(builderName)}`;
-    if (!(builderFunctionName in builders)) {
-      throw new Error(`'${builderName}' is not an indicator builder`);
-    }
-
-    return builders[builderFunctionName as keyof typeof builders];
   };
 }

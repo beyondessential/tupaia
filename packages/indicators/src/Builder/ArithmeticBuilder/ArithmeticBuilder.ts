@@ -10,11 +10,11 @@ import {
   Aggregation,
   Analytic,
   AnalyticCluster,
-  Builder,
   FetchOptions,
   Indicator,
   IndicatorApiInterface,
 } from '../../types';
+import { Builder } from '../Builder';
 import { fetchAnalytics } from '../helpers';
 import {
   ArithmeticConfig,
@@ -34,14 +34,14 @@ type BuilderConfig = {
   readonly defaultValues: Record<string, DefaultValue>;
 };
 
-const arithmeticToBuilderConfig = (config: ArithmeticConfig): BuilderConfig => {
-  const { defaultValues = {}, parameters = [], ...otherFields } = config;
+const indicatorToBuilderConfig = (indicatorConfig: ArithmeticConfig): BuilderConfig => {
+  const { defaultValues = {}, parameters = [], ...otherFields } = indicatorConfig;
 
   return {
     ...otherFields,
     defaultValues,
     parameters,
-    aggregation: getAggregationsByCode(config),
+    aggregation: getAggregationsByCode(indicatorConfig),
   };
 };
 
@@ -107,13 +107,18 @@ const fetchAnalyticsAndElements = async (
 
 export const processConfigInput = (config: Record<string, unknown>) => {
   validateArithmeticConfig(config);
-  return arithmeticToBuilderConfig(config);
+  return indicatorToBuilderConfig(config);
 };
 
-export const buildArithmetic: Builder = async input => {
-  const { api, fetchOptions } = input;
-  const config = processConfigInput(input.config);
-  const { analytics, dataElements } = await fetchAnalyticsAndElements(api, config, fetchOptions);
-  const clusters = buildAnalyticClusters(analytics, dataElements, config.defaultValues);
-  return buildAnalyticValues(clusters, config.formula);
-};
+export class ArithmeticBuilder extends Builder {
+  async buildAnalyticValues(configInput: Record<string, unknown>, fetchOptions: FetchOptions) {
+    const config = processConfigInput(configInput);
+    const { analytics, dataElements } = await fetchAnalyticsAndElements(
+      this.indicatorApi,
+      config,
+      fetchOptions,
+    );
+    const clusters = buildAnalyticClusters(analytics, dataElements, config.defaultValues);
+    return buildAnalyticValues(clusters, config.formula);
+  }
+}
