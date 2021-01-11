@@ -12,7 +12,6 @@ import {
   ObjectValidator,
 } from '@tupaia/utils';
 import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
-import { validateConfig } from '../../helpers';
 import { validateAggregation } from './aggregation';
 import { ArithmeticConfig } from './types';
 
@@ -58,9 +57,3 @@ export const configValidators = {
     ]),
   ],
 };
-
-export function validateArithmeticConfig(
-  config: Record<string, unknown>,
-): asserts config is ArithmeticConfig {
-  validateConfig(config, configValidators);
-}

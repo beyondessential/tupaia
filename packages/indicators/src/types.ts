@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregator } from '@tupaia/aggregator';
 import { DatabaseType as BaseDatabaseType } from '@tupaia/database';
 
 export interface AnalyticValue {
@@ -42,18 +41,25 @@ export type Indicator = {
 
 type IndicatorFields = Indicator & { id: string };
 
+type DataSourceFields = {
+  id: string;
+  code: string;
+  type: 'dataElement' | 'dataGroup';
+  service_type: 'dhis' | 'indicator' | 'tupaia' | 'weather';
+  config: Record<string, unknown>;
+};
+
+export type DataSourceType = DatabaseType<DataSourceFields>;
+
 export type IndicatorType = DatabaseType<IndicatorFields>;
 
-export interface ModelRegistry {
-  readonly indicator: DatabaseModel<IndicatorFields>;
-}
+type DataSourceModel = DatabaseModel<DataSourceFields> & {
+  findOrDefault: DatabaseModel<DataSourceFields>['find'];
+};
 
-export interface IndicatorApiInterface {
-  getAggregator: () => Aggregator;
-  buildAnalyticsForIndicators: (
-    indicators: Indicator[],
-    fetchOptions: FetchOptions,
-  ) => Promise<Analytic[]>;
+export interface ModelRegistry {
+  readonly dataSource: DataSourceModel;
+  readonly indicator: DatabaseModel<IndicatorFields>;
 }
 
 export interface Aggregation {
@@ -61,4 +67,4 @@ export interface Aggregation {
   readonly config?: Record<string, unknown>;
 }
 
-export type FetchOptions = Readonly<Record<string, unknown>>;
+export type FetchOptions = Readonly<{ startDate: string; endDate: string; period?: string }>;

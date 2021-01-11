@@ -6,8 +6,8 @@
 import { toArray } from '@tupaia/utils';
 import { Aggregation } from '../../../types';
 import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
-import { isParameterCode } from './helpers';
 import { AggregationDescriptor, AggregationSpecs, ArithmeticConfig } from './types';
+import { isParameterCode } from './utils';
 
 enum AggregationType {
   String, // 'SUM'
@@ -83,9 +83,9 @@ const validateAggregationDictionary = (
 
   // Validate keys
   const parser = getExpressionParserInstance();
-  parser.getVariables(formula).forEach(code => {
-    if (!(code in aggregation) && !isParameterCode(parameters, code)) {
-      throw new Error(`'${code}' is referenced in the formula but has no aggregation defined`);
+  parser.getVariables(formula).forEach(variable => {
+    if (!(variable in aggregation) && !isParameterCode(parameters, variable)) {
+      throw new Error(`'${variable}' is referenced in the formula but has no aggregation defined`);
     }
   });
 
@@ -124,7 +124,7 @@ const descriptorToAggregation = (descriptor: AggregationDescriptor) =>
   typeof descriptor === 'object' ? descriptor : { type: descriptor };
 
 const getAggregationDictionary = (config: ArithmeticConfig): Record<string, AggregationSpecs> => {
-  const { formula, aggregation, parameters = [] } = config;
+  const { aggregation, formula } = config;
 
   const aggregationType = getAggregationType(aggregation);
   if (aggregationType === AggregationType.Dictionary) {
@@ -132,10 +132,8 @@ const getAggregationDictionary = (config: ArithmeticConfig): Record<string, Aggr
   }
 
   const parser = getExpressionParserInstance();
-  const elementCodes = parser
-    .getVariables(formula)
-    .filter(code => !isParameterCode(parameters, code));
-  return Object.fromEntries(elementCodes.map(code => [code, aggregation as AggregationSpecs]));
+  const variables = parser.getVariables(formula);
+  return Object.fromEntries(variables.map(variable => [variable, aggregation as AggregationSpecs]));
 };
 
 export const getAggregationsByCode = (config: ArithmeticConfig): Record<string, Aggregation[]> => {

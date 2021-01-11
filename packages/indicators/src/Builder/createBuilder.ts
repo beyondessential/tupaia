@@ -3,11 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { IndicatorApiInterface } from '../types';
+import { Indicator } from '../types';
 import { Builder } from './Builder';
 import { builders } from './builders';
 
-export const createBuilder = (builderName: string, api: IndicatorApiInterface) => {
+export const createBuilder = (indicator: Indicator, isRoot?: boolean) => {
+  const { builder: builderName } = indicator;
   if (!(builderName in builders)) {
     throw new Error(`'${builderName}' is not an indicator builder`);
   }
@@ -16,5 +17,5 @@ export const createBuilder = (builderName: string, api: IndicatorApiInterface) =
   if (!(BuilderClass.prototype instanceof Builder)) {
     throw new Error(`'${BuilderClass} must extend Builder`);
   }
-  return new BuilderClass(api);
+  return new BuilderClass(indicator, isRoot);
 };
