@@ -5,7 +5,7 @@
 
 import {
   constructIsArrayOf,
-  constructIsEmptyOr,
+  constructIsEmptyOrSync,
   hasContent,
   isAString,
   isPlainObject,
@@ -35,12 +35,8 @@ const parameterValidator = new ObjectValidator({
   config: [isPlainObject],
 });
 
-const validateParameters = async (parameters: Record<string, unknown>[]) =>
-  Promise.all(
-    parameters.map(async (parameter: Record<string, unknown>) =>
-      parameterValidator.validate(parameter),
-    ),
-  );
+const validateParameters = (parameters: Record<string, unknown>[]) =>
+  parameters.forEach(p => parameterValidator.validateSync(p));
 
 const assertDefaultValuesAreNumbersOrUndefined = (defaultValues: Record<string, unknown>) => {
   Object.entries(defaultValues).forEach(([code, value]) => {
@@ -53,9 +49,9 @@ const assertDefaultValuesAreNumbersOrUndefined = (defaultValues: Record<string, 
 export const configValidators = {
   formula: [hasContent, isAString],
   aggregation: [validateAggregation],
-  parameters: [constructIsEmptyOr([constructIsArrayOf('object'), validateParameters])],
+  parameters: [constructIsEmptyOrSync([constructIsArrayOf('object'), validateParameters])],
   defaultValues: [
-    constructIsEmptyOr([
+    constructIsEmptyOrSync([
       isPlainObject,
       assertAllDefaultsAreCodesInFormula,
       assertDefaultValuesAreNumbersOrUndefined,
@@ -63,6 +59,8 @@ export const configValidators = {
   ],
 };
 
-export const validateArithmeticConfig = (
+export function validateArithmeticConfig(
   config: Record<string, unknown>,
-): Promise<ArithmeticConfig> => validateConfig<ArithmeticConfig>(config, configValidators);
+): asserts config is ArithmeticConfig {
+  validateConfig(config, configValidators);
+}

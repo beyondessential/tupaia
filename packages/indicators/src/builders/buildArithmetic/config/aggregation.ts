@@ -51,7 +51,7 @@ const validateAggregationDescriptor = (descriptor: unknown) => {
       return;
     case 'object':
       if (descriptor !== null) {
-        const type = descriptor?.type;
+        const type = (descriptor as Record<string, unknown>)?.type;
         if (!type || typeof type !== 'string') {
           throw new Error("Aggregation object requires a non empty string as a 'type'");
         }
