@@ -37,6 +37,13 @@ export const TILE_SETS = [
     url: makeMapboxStyleUrl({ styleId: 'ckglkibqe02u019rsdszxsxrr' }),
   },
   {
+    key: 'population',
+    label: 'Population',
+    thumbnail:
+      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
+    url: makeMapboxStyleUrl({ styleId: 'ckhmxvdza02m919tfa95rsfyh' }),
+  },
+  {
     key: 'ethnicity',
     label: 'Ethnicity',
     thumbnail:
