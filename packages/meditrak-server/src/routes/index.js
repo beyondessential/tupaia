@@ -8,10 +8,10 @@ import { countChanges } from './countChanges';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
-import { BESAdminCreateHandler, TupaiaAdminCreateHandler } from './CreateHandler';
-import { BESAdminDeleteHandler, TupaiaAdminDeleteHandler } from './DeleteHandler';
-import { BESAdminEditHandler, TupaiaAdminEditHandler } from './EditHandler';
-import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
+import { BESAdminCreateHandler } from './CreateHandler';
+import { BESAdminDeleteHandler } from './DeleteHandler';
+import { BESAdminEditHandler } from './EditHandler';
+import { BESAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
@@ -59,7 +59,6 @@ import { importUsers } from './importUsers';
 import { importOptionSets } from './importOptionSets';
 import { postChanges } from './postChanges';
 import { pruneChanges } from './pruneChanges';
-import { addRecord } from './addRecord';
 import { importSurveyResponses } from './importSurveyResponses';
 import { changePassword } from './changePassword';
 import { editUser } from './editUser';
@@ -102,12 +101,6 @@ const allowAnyone = routeHandler => (req, res, next) => {
 };
 
 export default {
-  // == TODO: Remove generic handlers when all endpoints are implemented ==
-  addRecord: useRouteHandler(TupaiaAdminCreateHandler),
-  deleteRecord: useRouteHandler(TupaiaAdminDeleteHandler),
-  editRecord: useRouteHandler(TupaiaAdminEditHandler),
-  getRecord: useRouteHandler(TupaiaAdminGETHandler),
-  // ====
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
   createCountries: useRouteHandler(BESAdminCreateHandler),
