@@ -37,13 +37,6 @@ export const TILE_SETS = [
     url: makeMapboxStyleUrl({ styleId: 'ckglkibqe02u019rsdszxsxrr' }),
   },
   {
-    key: 'population',
-    label: 'Population',
-    thumbnail:
-      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
-    url: makeMapboxStyleUrl({ styleId: 'ckhmxvdza02m919tfa95rsfyh' }),
-  },
-  {
     key: 'ethnicity',
     label: 'Ethnicity',
     thumbnail:
@@ -135,5 +128,12 @@ export const TILE_SETS = [
     label: 'Terrain',
     thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/terrain-tile-thumbnail.png',
     url: makeMapboxStyleUrl({ styleId: 'ckglkirqa02ty19tb3kzky18t' }),
+  },
+  {
+    key: 'population',
+    label: 'Population',
+    thumbnail:
+      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
+    url: makeMapboxStyleUrl({ styleId: 'ckhmxvdza02m919tfa95rsfyh' }),
   },
 ];
