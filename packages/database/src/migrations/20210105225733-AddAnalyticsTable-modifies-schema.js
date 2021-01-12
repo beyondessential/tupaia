@@ -43,18 +43,14 @@ exports.up = async function (db) {
       survey ON survey.id = survey_response.survey_id);
   `);
 
-  await db.addIndex('analytics', 'analytics_survey_response_id_key', ['survey_response_id']);
-  await db.addIndex('analytics', 'analytics_date_key', ['date']);
-  await db.addIndex('analytics', 'analytics_entity_code_key', ['entity_code']);
-  await db.addIndex('analytics', 'analytics_entity_name_key', ['entity_name']);
-  await db.addIndex('analytics', 'analytics_data_element_code_key', ['data_element_code']);
-  await db.addIndex('analytics', 'analytics_type_key', ['type']);
-  await db.addIndex('analytics', 'analytics_value_key', ['value']);
+  // optimal index by adding heaps and looking at the "explain analyze" for
+  // internal data fetching queries
   await db.addIndex('analytics', 'analytics_composite_key', [
-    'data_element_code',
     'entity_code',
+    'data_element_code',
     'date',
   ]);
+
   return null;
 };
 
