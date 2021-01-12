@@ -29,21 +29,45 @@ exports.up = async function (db) {
   });
 
   await db.runSql(`
+    WITH analytics_cte(id, survey_response_id, type, entity_name, entity_code, data_element_code, value, date, duplicate_number)
+    AS (
+      SELECT
+        generate_object_id(),
+        survey_response.id,
+        question.type,
+        entity.name,
+        entity.code,
+        question.code,
+        answer.text,
+        survey_response.submission_time,
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            entity.code,
+            question.code,
+            date_part('year', submission_time),
+                date_part('month', submission_time),
+                date_part('day', submission_time)
+            ORDER BY
+              survey_response.end_time DESC
+        ) AS duplicate_number
+        FROM
+          survey_response
+        JOIN
+          answer ON answer.survey_response_id = survey_response.id
+        JOIN
+          entity ON entity.id = survey_response.entity_id
+        JOIN
+          question ON question.id = answer.question_id
+        JOIN
+          survey ON survey.id = survey_response.survey_id
+    )
     INSERT INTO analytics (id, survey_response_id, type, entity_name, entity_code, data_element_code, value, date)
-    (SELECT generate_object_id(), survey_response.id, question.type, entity.name, entity.code, question.code, answer.text, survey_response.submission_time
-    FROM
-      survey_response
-    JOIN
-      answer ON answer.survey_response_id = survey_response.id
-    JOIN
-      entity ON entity.id = survey_response.entity_id
-    JOIN
-      question ON question.id = answer.question_id
-    JOIN
-      survey ON survey.id = survey_response.survey_id);
+    SELECT id, survey_response_id, type, entity_name, entity_code, data_element_code, value, date
+    FROM analytics_cte
+    WHERE duplicate_number = 1;
   `);
 
-  // optimal index by adding heaps and looking at the "explain analyze" for
+  // best index worked out by adding heaps and looking at the "explain analyze" for
   // internal data fetching queries
   await db.addIndex('analytics', 'analytics_composite_key', [
     'entity_code',
