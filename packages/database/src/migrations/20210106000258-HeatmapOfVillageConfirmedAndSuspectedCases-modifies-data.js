@@ -66,7 +66,7 @@ const mapOverlay = {
 
 exports.up = async function (db) {
   await insertObject(db, 'mapOverlay', mapOverlay);
-  const MapOverLayGroupId = await codeToId(db, 'map_overlay_group', 'COVID19_Tonga');
+  const MapOverLayGroupId = await codeToId(db, 'map_overlay_group', 'COVID19_Samoa');
   await insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
     map_overlay_group_id: MapOverLayGroupId,
