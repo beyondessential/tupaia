@@ -37,8 +37,6 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
 
   sqlQuery.orderBy('date');
 
-  sqlQuery.logQuery();
-
   return sqlQuery;
 };
 
