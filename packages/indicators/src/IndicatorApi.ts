@@ -7,7 +7,7 @@ import keyBy from 'lodash.keyby';
 
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { getSortByKey, getUniqueEntries } from '@tupaia/utils';
+import { getSortByKey, getUniqueEntries, getUniqueObjects } from '@tupaia/utils';
 import { AnalyticsRepository } from './AnalyticsRepository';
 import {
   Builder,
@@ -89,7 +89,7 @@ export class IndicatorApi {
     return {
       buildersByNestDepth,
       dataElementCodes: getUniqueEntries(dataElementCodes),
-      aggregations,
+      aggregations: getUniqueObjects(aggregations),
     };
   };
 

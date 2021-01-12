@@ -7,6 +7,7 @@ import {
   filterValues,
   flattenToObject,
   getKeysSortedByValues,
+  getUniqueObjects,
   mapKeys,
   mapValues,
   reduceToDictionary,
@@ -410,5 +411,38 @@ describe('object', () => {
         expect(stripFields(obj, fieldsToStrip)).toStrictEqual({});
       },
     );
+  });
+
+  describe('getUniqueObjects', () => {
+    const testData = [
+      ['one empty object', [{}], [{}]],
+      ['one non empty object', [{ a: 1 }], [{ a: 1 }]],
+      ['different objects', [{ a: 1 }, { b: 2 }], [{ a: 1 }, { b: 2 }]],
+      [
+        'same objects - same key order (keys are sorted)',
+        [
+          { b: 2, a: 1 },
+          { b: 2, a: 1 },
+        ],
+        [{ a: 1, b: 2 }],
+      ],
+      [
+        'same objects - different key order',
+        [
+          { b: 2, a: 1 },
+          { a: 1, b: 2 },
+        ],
+        [{ a: 1, b: 2 }],
+      ],
+      [
+        'mix of different and same objects',
+        [{ b: 2, a: 1 }, { a: 1, b: 2 }, { a: 1 }],
+        [{ a: 1, b: 2 }, { a: 1 }],
+      ],
+    ];
+
+    it.each(testData)('%s', (_, objects, expected) => {
+      expect(getUniqueObjects(objects)).toStrictEqual(expected);
+    });
   });
 });

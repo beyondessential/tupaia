@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getUniqueEntries } from './getUniqueEntries';
+
 /**
  * @typedef {Object<string, any>[] | Object<string, Object<string, any>>} ObjectCollection
  */
@@ -192,3 +194,13 @@ export const filterValues = (object, valueFilter) =>
 
 export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));
+
+const sortFields = object => {
+  const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
+  return Object.fromEntries(sortedEntries);
+};
+
+export const getUniqueObjects = objects => {
+  const jsonStrings = objects.map(o => JSON.stringify(sortFields(o)));
+  return getUniqueEntries(jsonStrings).map(JSON.parse);
+};
