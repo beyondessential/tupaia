@@ -195,8 +195,6 @@ sudo su postgres
 psql
 CREATE USER tupaia WITH PASSWORD '{actual password}';
 CREATE DATABASE tupaia WITH OWNER tupaia;
-CREATE USER tupaia-config-server WITH PASSWORD '{actual password}';
-CREATE DATABASE tupaia-config-server WITH OWNER tupaia-config-server;
 \q
 exit
 ```
