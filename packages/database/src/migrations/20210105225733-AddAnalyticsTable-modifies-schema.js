@@ -67,11 +67,16 @@ exports.up = async function (db) {
     WHERE duplicate_number = 1;
   `);
 
-  // best index worked out by adding heaps and looking at the "explain analyze" for
+  // best combination of indexes worked out by adding heaps and looking at the "explain analyze" for
   // internal data fetching queries
-  await db.addIndex('analytics', 'analytics_composite_key', [
+  await db.addIndex('analytics', 'analytics_entity_element_date_key', [
     'entity_code',
     'data_element_code',
+    'date',
+  ]);
+  await db.addIndex('analytics', 'analytics_element_entity_date_key', [
+    'data_element_code',
+    'entity_code',
     'date',
   ]);
 
