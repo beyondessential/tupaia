@@ -2,6 +2,7 @@ import moment from 'moment';
 
 
 export const FLIGHT_DATE = 'QMIA028';
+const TIMEZONE_SAMOA = 'Pacific/Apia';
 
 export class Flight {
   /*
@@ -38,6 +39,7 @@ export class Flight {
       }
 
       const flightDate = moment(event.dataValues[FLIGHT_DATE])
+        .tz(TIMEZONE_SAMOA)
         .format('YYYY-MM-DD');
 
       if (!eventsByFlightDate[flightDate]) {
