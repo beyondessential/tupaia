@@ -67,6 +67,7 @@ export class GETHandler extends CRUDHandler {
       columnNames,
       this.recordType,
       this.customJoinConditions,
+      this.defaultJoinType,
     );
 
     const { limit, page } = this.getPaginationParameters();
