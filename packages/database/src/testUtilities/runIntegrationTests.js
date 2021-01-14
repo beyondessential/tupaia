@@ -31,7 +31,6 @@ const tearDownTest = async models => {
  */
 
 /**
- *
  * @param {IntegrationTestInput} input
  */
 export const runIntegrationTests = ({
