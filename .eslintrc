@@ -66,7 +66,7 @@
         "browser": true
       }
     },
-    // Rule overrides
+    // Overrides per rule/env
     {
       "files": [
         "packages/database/src/modelClasses/**",
@@ -76,7 +76,13 @@
         "max-classes-per-file": ["error", 2]
       }
     },
-    // File pattern overrides
+    {
+      "files": "packages/database/src/testUtilities/**",
+      "env": {
+        "jest": true
+      }
+    },
+    // Overrides per file pattern
     {
       "files": "**/cypress/**",
       "extends": "plugin:cypress/recommended",
@@ -87,6 +93,12 @@
       "rules": {
         "cypress/no-force": "error",
         "jest/expect-expect": "off"
+      }
+    },
+    {
+      "files": "**/__integration/**",
+      "rules": {
+        "jest/no-standalone-expect": "off"
       }
     },
     {
