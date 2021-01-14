@@ -93,6 +93,7 @@ import {
   openEnlargedDialog,
   updateCurrentMeasureConfigOnceHierarchyLoads,
   LOCATION_CHANGE,
+  goHome,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -125,7 +126,13 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getBrowserTimeZone } from './utils';
+import {
+  formatDateForApi,
+  isMobile,
+  processMeasureInfo,
+  getInfoFromInfoViewKey,
+  getBrowserTimeZone,
+} from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -1065,12 +1072,16 @@ function* resetToProjectSplash() {
   yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
+function* resetToHome() {
+  yield put(goHome());
+}
+
 function* watchLoginSuccess() {
   yield takeLatest(FETCH_LOGIN_SUCCESS, fetchLoginData);
 }
 
 function* watchLogoutSuccess() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToHome);
 }
 
 function* fetchLoginData(action) {
