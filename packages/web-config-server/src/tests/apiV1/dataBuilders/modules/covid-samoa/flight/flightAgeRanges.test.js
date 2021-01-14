@@ -70,16 +70,50 @@ describe('flightAgeRanges', () => {
       {
         dataValues: { QMIA031: 'No', QMIA032: 'Yes' },
       },
+      {
+        dataValues: { QMIA033: 'No' },
+      },
     ];
 
-    const dataValues = ['QMIA031', 'QMIA032', 'QMIA033'];
+    const dataValues = [['QMIA031'], ['QMIA032'], ['QMIA033']];
 
-    expect(getTotalNumPassengers(flight)).to.equal(3);
+    expect(getTotalNumPassengers(flight)).to.equal(4);
 
-    const passengersPerAgeRange = getPassengersPerDataValue(flight, dataValues);
+    const passengersPerDataValue = getPassengersPerDataValue(flight, dataValues, false);
 
-    expect(passengersPerAgeRange['QMIA031'].numPassengers).to.equal(2);
-    expect(passengersPerAgeRange['QMIA032'].numPassengers).to.equal(1);
-    expect(passengersPerAgeRange['QMIA033'].numPassengers).to.equal(0);
+    expect(passengersPerDataValue.QMIA031.numPassengers).to.equal(2);
+    expect(passengersPerDataValue.QMIA032.numPassengers).to.equal(1);
+    expect(passengersPerDataValue.QMIA033.numPassengers).to.equal(0);
+  });
+
+  it('can count passengers per data_value with specified value', () => {
+    const flight = new Flight();
+
+    flight.events = [
+      {
+        dataValues: { QMIA009: 'M' },
+      },
+      {
+        dataValues: { QMIA009: 'F' },
+      },
+      {
+        dataValues: { QMIA009: 'F', QMIA032: 'Yes' },
+      },
+      {
+        dataValues: { QMIA009: 'F' },
+      },
+    ];
+
+    const dataValues = [
+      ['QMIA009', 'F'],
+      ['QMIA009', 'M'],
+    ];
+
+    expect(getTotalNumPassengers(flight)).to.equal(4);
+
+    const passengersPerDataValue = getPassengersPerDataValue(flight, dataValues, true);
+
+    expect(passengersPerDataValue.QMIA009_M.numPassengers).to.equal(1);
+    expect(passengersPerDataValue.QMIA009_F.numPassengers).to.equal(3);
   });
 });
