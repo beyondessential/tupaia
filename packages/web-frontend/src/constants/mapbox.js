@@ -129,4 +129,11 @@ export const TILE_SETS = [
     thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/terrain-tile-thumbnail.png',
     url: makeMapboxStyleUrl({ styleId: 'ckglkirqa02ty19tb3kzky18t' }),
   },
+  {
+    key: 'population',
+    label: 'Population',
+    thumbnail:
+      'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
+    url: makeMapboxStyleUrl({ styleId: 'ckhmxvdza02m919tfa95rsfyh' }),
+  },
 ];

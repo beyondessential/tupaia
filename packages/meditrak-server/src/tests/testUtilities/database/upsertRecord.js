@@ -28,6 +28,10 @@ export const upsertQuestion = async data => {
   return upsertDummyRecord(models.question, data);
 };
 
+export const upsertDataSource = async data => {
+  return upsertDummyRecord(models.dataSource, data);
+};
+
 export const upsertSurvey = async data => {
   return upsertDummyRecord(models.survey, data);
 };
@@ -41,6 +45,14 @@ export const upsertSurveyResponse = async data => {
   };
 
   return upsertDummyRecord(models.surveyResponse, { ...defaultData, ...data });
+};
+
+export const upsertComment = async data => {
+  return upsertDummyRecord(models.comment, data);
+};
+
+export const upsertSurveyResponseComment = async data => {
+  return upsertDummyRecord(models.surveyResponseComment, data);
 };
 
 export const upsertSurveyScreen = async data => {
