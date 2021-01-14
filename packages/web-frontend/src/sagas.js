@@ -493,6 +493,10 @@ function* watchAttemptTokenLogin() {
   yield takeLatest(ATTEMPT_RESET_TOKEN_LOGIN, attemptTokenLogin);
 }
 
+function* watchAttemptTokenLoginSuccess() {
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, resetToHome);
+}
+
 function* openResetPasswordDialog() {
   yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
 }
@@ -1118,6 +1122,7 @@ export default [
   watchFetchInitialData,
   watchAttemptChangePasswordAndFetchIt,
   watchAttemptResetPasswordAndFetchIt,
+  watchAttemptTokenLoginSuccess,
   watchAttemptRequestCountryAccessAndFetchIt,
   watchAttemptUserLoginAndFetchIt,
   watchAttemptUserLogout,
