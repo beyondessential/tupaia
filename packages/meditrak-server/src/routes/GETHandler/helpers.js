@@ -83,7 +83,7 @@ export const getQueryOptionsForColumns = (
   columnNames,
   baseRecordType,
   customJoinConditions = {},
-  defaultJoinType = null,
+  joinType = null,
 ) => {
   if (columnNames.some(c => c.startsWith('_'))) {
     throw new ValidationError(
@@ -104,7 +104,7 @@ export const getQueryOptionsForColumns = (
           `${recordType}.id`,
           getForeignKeyColumnName(recordType),
         ];
-        multiJoin.push({ joinWith: recordType, joinCondition, joinType: defaultJoinType });
+        multiJoin.push({ joinWith: recordType, joinCondition, joinType });
         recordTypesInQuery.add(recordType);
       }
     });
