@@ -74,3 +74,11 @@ export const findOrCreateDummyRecord = async (model, findCriteria, data) => {
   const generatedData = await generateDummyRecord(model, { ...findCriteria, ...data });
   return model.findOrCreate(findCriteria, generatedData);
 };
+
+export const findOrCreateRecords = async (models, recordsByType) => {
+  for (const [type, records] of Object.entries(recordsByType)) {
+    for (const record of records) {
+      await findOrCreateDummyRecord(models[type], record);
+    }
+  }
+};

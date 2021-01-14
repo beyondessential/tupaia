@@ -50,6 +50,9 @@ const VALID_CAST_TYPES = ['text', 'date'];
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
+  /**
+   * @param {*} [transactingConnection]
+   */
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};

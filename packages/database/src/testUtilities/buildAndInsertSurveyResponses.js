@@ -56,7 +56,7 @@ const buildAndInsertSurveyResponse = async (
  * ]);
  * ```
  *
- * @returns {Array<{ surveyResponse, answers }>}
+ * @returns {Promise<{ surveyResponse, answers }[]>}
  */
 export const buildAndInsertSurveyResponses = async (models, surveyResponses) => {
   const user = await upsertDummyRecord(models.user);

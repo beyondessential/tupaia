@@ -10,4 +10,5 @@ export { generateTestId } from './generateTestId';
 export { generateValueOfType } from './generateValueOfType';
 export { getTestDatabase, getTestModels } from './getTestDatabase';
 export { populateTestData } from './populateTestData';
+export { runIntegrationTests } from './runIntegrationTests';
 export { upsertDummyRecord, findOrCreateDummyRecord } from './upsertDummyRecord';

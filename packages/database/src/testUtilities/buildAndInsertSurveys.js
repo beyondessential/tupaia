@@ -78,7 +78,7 @@ const buildAndInsertSurvey = async (
  * ]);
  * ```
  *
- * @returns {Array<{ survey, surveyScreen, surveyScreenComponents, questions, dataGroup }>}
+ * @returns {Promise<{ survey, surveyScreen, surveyScreenComponents, questions, dataGroup }[]>}
  */
 export const buildAndInsertSurveys = async (models, surveys) => {
   const createdModels = [];

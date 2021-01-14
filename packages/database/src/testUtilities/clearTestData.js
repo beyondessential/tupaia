@@ -34,6 +34,7 @@ const TABLES_TO_CLEAR = [
   'project',
   'entity',
   'data_source',
+  'indicator',
   'comment',
   'entity_hierarchy',
   'geographical_area',
