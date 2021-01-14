@@ -50,3 +50,23 @@ export const getPassengersPerAgeRange = (flight) => {
   return ageRangeData;
 }
 
+/**
+ * @param {Flight} flight
+ * @returns {*}
+ */
+export const getPassengersPerDataValue = (flight, dataValues) => {
+  const dataValueCounts = {};
+  for (const dataValue of dataValues) {
+    const numPassengersWithDataValue = flight.events
+      .filter(event => event.dataValues[dataValue] && event.dataValues[dataValue] === 'Yes')
+      .length;
+
+      dataValueCounts[dataValue] = {
+      numPassengersWithDataValue,
+      percentageOfTotalPassengers: numPassengersWithDataValue / getTotalNumPassengers(flight),
+    };
+  }
+
+  return dataValueCounts;
+}
+
