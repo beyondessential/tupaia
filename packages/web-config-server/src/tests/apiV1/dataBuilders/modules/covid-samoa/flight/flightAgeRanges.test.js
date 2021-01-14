@@ -6,6 +6,7 @@
 import { expect } from 'chai';
 import {
   Flight,
+  getPassengersPerDataValue,
   getPassengersPerAgeRange,
   getTotalNumPassengers,
 } from '../../../../../../apiV1/dataBuilders/modules/covid-samoa/flight';
@@ -30,8 +31,8 @@ describe('flightAgeRanges', () => {
 
     const passengersPerAgeRange = getPassengersPerAgeRange(flight);
 
-    expect(passengersPerAgeRange['0_4'].numPassengersInThisAgeRange).to.equal(2);
-    expect(passengersPerAgeRange['40_44'].numPassengersInThisAgeRange).to.equal(1);
+    expect(passengersPerAgeRange['0_4'].numPassengers).to.equal(2);
+    expect(passengersPerAgeRange['40_44'].numPassengers).to.equal(1);
   });
 
   it('skips events that do not have an age, or are outside of the age brackets', () => {
@@ -53,6 +54,32 @@ describe('flightAgeRanges', () => {
 
     const passengersPerAgeRange = getPassengersPerAgeRange(flight);
 
-    expect(passengersPerAgeRange['0_4'].numPassengersInThisAgeRange).to.equal(1);
+    expect(passengersPerAgeRange['0_4'].numPassengers).to.equal(1);
+  });
+
+  it('can count passengers per data_value', () => {
+    const flight = new Flight();
+
+    flight.events = [
+      {
+        dataValues: { QMIA031: 'Yes' },
+      },
+      {
+        dataValues: { QMIA031: 'Yes' },
+      },
+      {
+        dataValues: { QMIA031: 'No', QMIA032: 'Yes' },
+      },
+    ];
+
+    const dataValues = ['QMIA031', 'QMIA032', 'QMIA033'];
+
+    expect(getTotalNumPassengers(flight)).to.equal(3);
+
+    const passengersPerAgeRange = getPassengersPerDataValue(flight, dataValues);
+
+    expect(passengersPerAgeRange['QMIA031'].numPassengers).to.equal(2);
+    expect(passengersPerAgeRange['QMIA032'].numPassengers).to.equal(1);
+    expect(passengersPerAgeRange['QMIA033'].numPassengers).to.equal(0);
   });
 });

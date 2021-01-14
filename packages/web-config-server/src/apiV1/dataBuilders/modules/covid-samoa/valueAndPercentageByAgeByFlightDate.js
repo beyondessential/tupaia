@@ -30,9 +30,9 @@ export class ValueAndPercentageByAgeByFlightDate extends ValueAndPercentageByDat
           const passengersForThisAgeRange = getPassengersPerAgeRange(flight)[ageRange.key];
 
           row[column.key] = {
-            value: passengersForThisAgeRange.numPassengersInThisAgeRange,
+            value: passengersForThisAgeRange.numPassengers,
             metadata: {
-              numerator: passengersForThisAgeRange.numPassengersInThisAgeRange,
+              numerator: passengersForThisAgeRange.numPassengers,
               denominator: getTotalNumPassengers(flight),
             }
           };

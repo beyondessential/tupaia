@@ -64,9 +64,9 @@ export class ValueAndPercentageByDataValueByFlightDate extends DataBuilder {
           const passengersForThisDataKey = getPassengersPerDataValue(flight, cells)[dataKey];
           
           row[column.key] = {
-            value:  passengersForThisDataKey.numPassengersWithDataValue,
+            value:  passengersForThisDataKey.numPassengers,
             metadata: {
-              numerator: passengersForThisDataKey.numPassengersWithDataValue,
+              numerator: passengersForThisDataKey.numPassengers,
               denominator: getTotalNumPassengers(flight),
             }
           };
