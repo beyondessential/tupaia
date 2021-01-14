@@ -36,6 +36,11 @@ const fractionAndPercentage = (value, { numerator, denominator }) => {
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
 
+const numberAndPercentage = (value, { numerator, denominator }) => {
+  if (isNaN(value)) return value;
+  return `${value} (${percentage(numerator / denominator)})`;
+};
+
 const text = value => String(value);
 
 const boolean = (value, { presentationOptions = {} }) => {
@@ -98,6 +103,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.TEXT]: text,
   [VALUE_TYPES.PERCENTAGE]: percentage,
   [VALUE_TYPES.FRACTION_AND_PERCENTAGE]: fractionAndPercentage,
+  [VALUE_TYPES.NUMBER_AND_PERCENTAGE]: numberAndPercentage,
   [VALUE_TYPES.FRACTION]: fraction,
   [VALUE_TYPES.CURRENCY]: currency,
   [VALUE_TYPES.BOOLEAN]: boolean,
