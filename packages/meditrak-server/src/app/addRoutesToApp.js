@@ -155,9 +155,9 @@ export function addRoutesToApp(app) {
    */
   app.get('(/v[0-9]+)?/changes/count', countChanges);
   app.get('(/v[0-9]+)/export/surveyResponses', exportSurveyResponses);
-  app.get('(/v[0-9]+)/export/surveyResponse/:surveyResponseId', exportSurveyResponses);
+  app.get('(/v[0-9]+)/export/surveyResponses/:surveyResponseId', exportSurveyResponses);
   app.get('(/v[0-9]+)/export/surveys', exportSurveys);
-  app.get('(/v[0-9]+)/export/survey/:surveyId', exportSurveys);
+  app.get('(/v[0-9]+)/export/surveys/:surveyId', exportSurveys);
   app.get('(/v[0-9]+)?/changes', getChanges);
   app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
   app.get('(/v[0-9]+)/me', getUser);
