@@ -43,7 +43,7 @@ export class AnalyticsRepository {
 
   private get data(): Data {
     if (!this.populatedData) {
-      throw new Error('Please run fetchAnalytics first!');
+      throw new Error('Please run the "populate" method first!');
     }
     return this.populatedData;
   }

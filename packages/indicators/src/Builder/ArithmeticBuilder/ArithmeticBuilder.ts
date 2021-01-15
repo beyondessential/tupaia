@@ -16,6 +16,7 @@ import {
   DefaultValue,
   configValidators,
   getAggregationsByCode,
+  getParameter,
   isParameterCode,
 } from './config';
 
@@ -131,8 +132,8 @@ export class ArithmeticBuilder extends Builder {
     const buildAnalyticsUsingBuilder = (builder: Builder) =>
       builder.buildAnalytics(populatedAnalyticsRepo, buildersByIndicator, fetchOptions);
 
-    if (isParameterCode(parameters, variable)) {
-      const parameter = parameters.find(p => p.code === variable) as Indicator;
+    const parameter = getParameter(parameters, variable);
+    if (parameter) {
       return buildAnalyticsUsingBuilder(createBuilder(parameter));
     }
 
