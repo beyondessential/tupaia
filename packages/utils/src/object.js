@@ -9,9 +9,15 @@ import { getUniqueEntries } from './getUniqueEntries';
  * @typedef {Object<string, any>[] | Object<string, Object<string, any>>} ObjectCollection
  */
 
-const compareAsc = (a, b) => {
-  if (typeof a === 'string' && typeof b === 'string') {
+export const compareAsc = (a, b) => {
+  const types = [typeof a, typeof b];
+
+  if (types.every(t => t === 'string')) {
     return a.localeCompare(b, undefined, { numeric: true });
+  }
+  if (types.includes('number') && types.includes('string')) {
+    // Numbers are placed before strings
+    return typeof a === 'number' ? -1 : 1;
   }
 
   if (a < b) {
@@ -20,7 +26,7 @@ const compareAsc = (a, b) => {
   return a > b ? 1 : 0;
 };
 
-const compareDesc = (a, b) => compareAsc(a, b) * -1;
+export const compareDesc = (a, b) => compareAsc(a, b) * -1;
 
 /**
  * Sorts the keys in the provided object by their corresponding values
@@ -195,6 +201,10 @@ export const filterValues = (object, valueFilter) =>
 export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));
 
+/**
+ * Note: this only guarantees insertion order for properties in the new object.
+ * Enumeration order is not guaranteed before ES2015
+ */
 const sortFields = object => {
   const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
   return Object.fromEntries(sortedEntries);
