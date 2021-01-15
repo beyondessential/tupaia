@@ -32,7 +32,7 @@ const BES_ADMIN_POLICY = {
 };
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
-const SERVICE_TYPE = 'tupaia';
+const SERVICE_TYPE = 'dhis';
 const EXISTING_TEST_SURVEY_NAME_1 = 'existing_survey_import_1_test';
 const EXISTING_TEST_SURVEY_NAME_2 = 'existing_survey_import_2_test';
 const NEW_TEST_SURVEY_NAME_1 = 'new_survey_import_1_test';
@@ -46,7 +46,7 @@ const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
 
 describe('importSurveys(): POST import/surveys', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
   let vanuatuCountry;
   let kiribatiCountry;
 
@@ -81,7 +81,7 @@ describe('importSurveys(): POST import/surveys', () => {
           },
         );
 
-      //Questions used for all the surveys
+      // Questions used for all the surveys
       await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
       await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
 
@@ -92,7 +92,7 @@ describe('importSurveys(): POST import/surveys', () => {
           permission_group_id: adminPermissionGroup.id,
           country_ids: [vanuatuCountry.id],
           dataGroup: {
-            service_type: 'tupaia',
+            service_type: 'dhis',
           },
         },
         {
@@ -101,7 +101,7 @@ describe('importSurveys(): POST import/surveys', () => {
           permission_group_id: adminPermissionGroup.id,
           country_ids: [kiribatiCountry.id],
           dataGroup: {
-            service_type: 'tupaia',
+            service_type: 'dhis',
           },
         },
       ]);
@@ -138,7 +138,7 @@ describe('importSurveys(): POST import/surveys', () => {
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 
-        //Revert the countryIds back to Vanuatu for other test cases
+        // Revert the countryIds back to Vanuatu for other test cases
         await models.survey.update(
           { code: EXISTING_TEST_SURVEY_NAME_1 },
           { country_ids: [vanuatuCountry.id] },
@@ -199,7 +199,7 @@ describe('importSurveys(): POST import/surveys', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/], //No Admin access to Vanuatu => throw permission error
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */], // No Admin access to Vanuatu => throw permission error
           LA: ['Admin'],
         };
         const fileName = 'importAnExistingSurvey.xlsx';
@@ -218,7 +218,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Insufficient permissions - Single survey: Should not pass permissions check if new countries are specified and users do not have the Tupaia Admin Panel access to the new countries', async () => {
         const policy = {
           DL: ['Public'],
-          KI: [/*TUPAIA_ADMIN_PANEL_PERMISSION_GROUP*/ 'Admin', 'Public'], //No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
+          KI: [/* TUPAIA_ADMIN_PANEL_PERMISSION_GROUP */ 'Admin', 'Public'], // No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
           VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
           LA: ['Admin'],
@@ -242,7 +242,7 @@ describe('importSurveys(): POST import/surveys', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/], //Will not have Admin access to Vanuatu => throw permission error
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */], // Will not have Admin access to Vanuatu => throw permission error
           LA: ['Admin'],
         };
 
@@ -263,7 +263,7 @@ describe('importSurveys(): POST import/surveys', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/], //No Admin access to Vanuatu => throw permission error
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */], // No Admin access to Vanuatu => throw permission error
           LA: ['Admin'],
         };
 
@@ -329,7 +329,7 @@ describe('importSurveys(): POST import/surveys', () => {
         const fileName = 'importMultipleNewSurveys.xlsx';
         const policy = {
           DL: ['Public'],
-          KI: [/*TUPAIA_ADMIN_PANEL_PERMISSION_GROUP*/ 'Admin', 'Public'], //No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
+          KI: [/* TUPAIA_ADMIN_PANEL_PERMISSION_GROUP */ 'Admin', 'Public'], // No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
           VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
           LA: ['Admin'],
