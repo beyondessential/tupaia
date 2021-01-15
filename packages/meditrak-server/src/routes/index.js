@@ -17,6 +17,7 @@ import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
+import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
@@ -160,7 +161,7 @@ export default {
   getDataSources: useRouteHandler(GETDataSources),
   getEntities: useRouteHandler(GETEntities),
   getGeographicalAreas: useRouteHandler(GETGeographicalAreas),
-  getFeedItems: useRouteHandler(BESAdminGETHandler),
+  getFeedItems: useRouteHandler(GETFeedItems),
   getMapOverlays: useRouteHandler(GETMapOverlays),
   getSurveys: useRouteHandler(GETSurveys),
   getSurveyGroups: useRouteHandler(GETSurveyGroups),
