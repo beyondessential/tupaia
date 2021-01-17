@@ -7,7 +7,6 @@ import { toArray } from '@tupaia/utils';
 import { Aggregation } from '../../../types';
 import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
 import { AggregationDescriptor, AggregationSpecs, ArithmeticConfig } from './types';
-import { isParameterCode } from './utils';
 
 enum AggregationType {
   String, // 'SUM'
@@ -79,12 +78,12 @@ const validateAggregationDictionary = (
   aggregation: Record<string, unknown>,
   config: { formula: 'string'; parameters: { code: 'string' }[] },
 ) => {
-  const { formula, parameters = [] } = config;
+  const { formula } = config;
 
   // Validate keys
   const parser = getExpressionParserInstance();
   parser.getVariables(formula).forEach(variable => {
-    if (!(variable in aggregation) && !isParameterCode(parameters, variable)) {
+    if (!(variable in aggregation)) {
       throw new Error(`'${variable}' is referenced in the formula but has no aggregation defined`);
     }
   });

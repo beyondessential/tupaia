@@ -5,5 +5,4 @@
 
 export { getAggregationsByCode } from './aggregation';
 export { ArithmeticConfig, DefaultValue } from './types';
-export * from './utils';
 export { configValidators } from './validate';

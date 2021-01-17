@@ -11,14 +11,7 @@ import { Aggregation, Analytic, AnalyticCluster, FetchOptions, Indicator } from 
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
 import { getElementCodesForBuilders } from '../utils';
-import {
-  ArithmeticConfig,
-  DefaultValue,
-  configValidators,
-  getAggregationsByCode,
-  getParameter,
-  isParameterCode,
-} from './config';
+import { ArithmeticConfig, DefaultValue, configValidators, getAggregationsByCode } from './config';
 
 /**
  * Config used by the builder. It is essential a fully expanded, verbose version
@@ -45,12 +38,23 @@ const indicatorToBuilderConfig = (indicatorConfig: ArithmeticConfig): BuilderCon
 export class ArithmeticBuilder extends Builder {
   private configCache: BuilderConfig | null = null;
 
+  private paramBuildersByCodeCache: Record<string, Builder> | null = null;
+
   get config() {
     if (!this.configCache) {
       const config = this.validateConfig<ArithmeticConfig>(configValidators);
       this.configCache = indicatorToBuilderConfig(config);
     }
     return this.configCache;
+  }
+
+  get paramBuildersByCode() {
+    if (!this.paramBuildersByCodeCache) {
+      this.paramBuildersByCodeCache = Object.fromEntries(
+        this.config.parameters.map(p => [p.code, createBuilder(p)]),
+      );
+    }
+    return this.paramBuildersByCodeCache;
   }
 
   getElementCodes = (): string[] => {
@@ -60,19 +64,15 @@ export class ArithmeticBuilder extends Builder {
   };
 
   private getElementCodesInFormula = () =>
-    Object.keys(this.config.aggregation).filter(
-      variable => !isParameterCode(this.config.parameters, variable),
-    );
+    Object.keys(this.config.aggregation).filter(variable => !this.paramBuildersByCode[variable]);
 
-  private getElementCodesInParameters = () => {
-    const parameterBuilders = this.config.parameters.map(p => createBuilder(p));
-    return getElementCodesForBuilders(parameterBuilders);
-  };
+  private getElementCodesInParameters = () =>
+    getElementCodesForBuilders(Object.values(this.paramBuildersByCode));
 
   getAggregations = (): Aggregation[] => {
     const formulaAggregations = Object.values(this.config.aggregation).flat();
-    const parameterAggregations = this.config.parameters
-      .map(p => createBuilder(p).getAggregations())
+    const parameterAggregations = Object.values(this.paramBuildersByCode)
+      .map(b => b.getAggregations())
       .flat();
 
     return formulaAggregations.concat(parameterAggregations);
@@ -128,13 +128,12 @@ export class ArithmeticBuilder extends Builder {
     buildersByIndicator: Record<string, Builder>,
     fetchOptions: FetchOptions,
   ) => {
-    const { parameters } = this.config;
     const buildAnalyticsUsingBuilder = (builder: Builder) =>
       builder.buildAnalytics(populatedAnalyticsRepo, buildersByIndicator, fetchOptions);
 
-    const parameter = getParameter(parameters, variable);
-    if (parameter) {
-      return buildAnalyticsUsingBuilder(createBuilder(parameter));
+    const paramBuilder = this.paramBuildersByCode[variable];
+    if (paramBuilder) {
+      return buildAnalyticsUsingBuilder(paramBuilder);
     }
 
     const isIndicatorCode = variable in buildersByIndicator;
