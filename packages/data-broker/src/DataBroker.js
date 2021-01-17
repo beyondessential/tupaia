@@ -114,6 +114,7 @@ export class DataBroker {
       throw new Error('Cannot pull metadata for data sources belonging to different services');
     }
     const serviceType = dataSources[0].service_type;
+    // `indicator` service is not support `.pullMetadata()`
     if (serviceType === 'indicator') return [{ code: dataSources[0].code, name: undefined }];
     const service = this.createService(serviceType);
     // `dataSourceSpec` is defined  for a single `type`
