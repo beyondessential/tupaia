@@ -42,6 +42,7 @@ export const SET_ORG_UNIT = 'SET_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
+export const FETCH_MORE_SEARCH_RESULTS = 'FETCH_MORE_SEARCH_RESULTS';
 export const CHANGE_TILE_SET = 'CHANGE_TILE_SET';
 export const CHANGE_ZOOM = 'CHANGE_ZOOM';
 export const CLEAR_MEASURE = 'CLEAR_MEASURE';
@@ -855,14 +856,26 @@ export function changeSearch(searchString) {
 }
 
 /**
+ * Fetches more search results for given string
+ *
+ * @param {string} searchString
+ */
+export function fetchMoreSearchResults() {
+  return {
+    type: FETCH_MORE_SEARCH_RESULTS,
+  };
+}
+
+/**
  * Stores the search result in state
  *
  * @param {object} response response from saga on successful fetch
  */
-export function fetchSearchSuccess(response) {
+export function fetchSearchSuccess(searchResults, hasMoreResults) {
   return {
     type: FETCH_SEARCH_SUCCESS,
-    response,
+    searchResults,
+    hasMoreResults,
   };
 }
 
