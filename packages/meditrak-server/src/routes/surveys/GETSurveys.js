@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { JOIN_TYPES } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import {
   assertSurveyGetPermissions,
@@ -20,6 +21,8 @@ import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 export class GETSurveys extends GETHandler {
   permissionsFilteredInternally = true;
+
+  defaultJoinType = JOIN_TYPES.LEFT_OUTER;
 
   async findSingleRecord(surveyId, options) {
     const survey = await super.findSingleRecord(surveyId, options);

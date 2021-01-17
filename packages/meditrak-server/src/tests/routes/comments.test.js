@@ -6,22 +6,62 @@
 import { expect } from 'chai';
 import { generateTestId } from '@tupaia/database';
 import { TestableApp } from '../TestableApp';
-import { createAlert, createComment, resetTestData } from '../testUtilities';
+import {
+  upsertEntity,
+  upsertDataSource,
+  upsertSurvey,
+  upsertSurveyResponse,
+  upsertComment,
+  upsertSurveyResponseComment,
+  resetTestData,
+} from '../testUtilities';
 
-// @todo update to point to survey responses as part of https://github.com/beyondessential/tupaia-backlog/issues/1504
-xdescribe('Alert Comments CRUD', () => {
+const createSurveyResponse = async () => {
+  const SURVEY_CODE = 'BASIC_SURVEY';
+  const { id: dataSourceId } = await upsertDataSource({
+    code: SURVEY_CODE,
+    type: 'dataGroup',
+    service_type: 'tupaia',
+    config: '{}',
+  });
+  const { id: surveyId } = await upsertSurvey({
+    code: SURVEY_CODE,
+    name: 'Basic Survey',
+    data_source_id: dataSourceId,
+  });
+
+  const entity = await upsertEntity('TEST_ENTITY');
+  const { id: surveyResponseId } = await upsertSurveyResponse({
+    survey_id: surveyId,
+    entity_id: entity.id,
+    start_time: new Date().toISOString(),
+    end_time: new Date().toISOString(),
+  });
+  return surveyResponseId;
+};
+
+const createComment = async ({ surveyResponseId, userId, text }) => {
+  const comment = await upsertComment({ user_id: userId, text });
+  await upsertSurveyResponseComment({
+    survey_response_id: surveyResponseId,
+    comment_id: comment.id,
+  });
+  return comment;
+};
+
+xdescribe('Survey Response Comments CRUD', () => {
   const app = new TestableApp();
   const { models } = app;
 
   beforeEach(app.authenticate);
 
-  describe('Create: POST /alerts/[id]/comments', () => {
-    it("creates an alert's comment", async () => {
-      const { alert } = await createAlert('SISKO1');
+  describe('Create: POST /surveyResponses/[id]/comments', () => {
+    it("creates a survey response's comment", async () => {
+      const surveyResponseId = await createSurveyResponse();
       const id = generateTestId();
       const text = 'It is the unknown that defines our existence.';
 
-      const { statusCode, body } = await app.post(`alerts/${alert.id}/comments`, {
+      const { statusCode, body } = await app.post(`surveyResponses/${surveyResponseId}/comments`, {
         body: { id, user_id: app.user.id, text },
       });
 
@@ -32,17 +72,17 @@ xdescribe('Alert Comments CRUD', () => {
       expect(comment).to.be.an('object');
       expect(comment.user_id).to.equal(app.user.id);
       expect(comment.text).to.equal(text);
-      const alertCommentJoin = await models.alertComment.findOne({ comment_id: id });
-      expect(alertCommentJoin.alert_id).to.equal(alert.id);
+      const surveyResponseCommentJoin = await models.surveyResponseComment.findOne({
+        comment_id: id,
+      });
+      expect(surveyResponseCommentJoin.survey_response_id).to.equal(surveyResponseId);
     });
   });
 
-  describe('Read: GET /alerts/[id]/comments', () => {
-    it('reads a list of alert comments', async () => {
-      const {
-        alert: { id: alertId },
-      } = await createAlert('JANEWAY1');
-      const commonData = { alert_id: alertId, user_id: app.user.id };
+  describe('Read: GET /surveyResponses/[id]/comments', () => {
+    it('reads a list of survey response comments', async () => {
+      const surveyResponseId = await createSurveyResponse();
+      const commonData = { surveyResponseId, userId: app.user.id };
 
       const createdData = [
         await createComment({
@@ -56,7 +96,7 @@ xdescribe('Alert Comments CRUD', () => {
         }),
       ];
 
-      const { body: comments } = await app.get(`alerts/${alertId}/comments`);
+      const { body: comments } = await app.get(`surveyResponses/${surveyResponseId}/comments`);
       expect(comments.length).to.equal(2);
 
       for (const [index, comment] of createdData.entries()) {
@@ -72,18 +112,18 @@ xdescribe('Alert Comments CRUD', () => {
       }
     });
 
-    it('reads a single alert comment', async () => {
-      const {
-        alert: { id: alertId },
-      } = await createAlert('PICARD1');
+    it('reads a single survey response comment', async () => {
+      const surveyResponseId = await createSurveyResponse();
       const createdComment = await createComment({
-        alert_id: alertId,
-        user_id: app.user.id,
+        surveyResponseId,
+        userId: app.user.id,
         text:
           "There is a way out of every box, a solution to every puzzle, it's just a matter of finding it.",
       });
 
-      const { body: comment } = await app.get(`alerts/${alertId}/comments/${createdComment.id}`);
+      const { body: comment } = await app.get(
+        `surveyResponses/${surveyResponseId}/comments/${createdComment.id}`,
+      );
 
       expect(comment).to.have.property('id');
       expect(comment).to.have.property('user_id');
@@ -97,21 +137,21 @@ xdescribe('Alert Comments CRUD', () => {
     });
   });
 
-  describe('Update: PUT /alerts/[alertId]/comments/[commentId]', () => {
-    it('updates a single alert comment', async () => {
-      const {
-        alert: { id: alertId },
-      } = await createAlert('ARCHER1');
+  describe('Update: PUT /surveyResponses/[surveyResponseId]/comments/[commentId]', () => {
+    it('updates a single survey response comment', async () => {
+      const surveyResponseId = await createSurveyResponse();
       const createdComment = await createComment({
-        alert_id: alertId,
-        user_id: app.user.id,
+        surveyResponseId,
+        userId: app.user.id,
         text: "Just because someone isn't born on Earth doesn't make him any less human.",
       });
       const newText = "Once you give up, the game's over.";
 
       const { statusCode, body } = await app.put(
-        `alerts/${alertId}/comments/${createdComment.id}`,
-        { body: { text: newText } },
+        `surveyResponses/${surveyResponseId}/comments/${createdComment.id}`,
+        {
+          body: { text: newText },
+        },
       );
 
       expect(statusCode).to.equal(200);
@@ -122,19 +162,17 @@ xdescribe('Alert Comments CRUD', () => {
     });
   });
 
-  describe('Delete: DELETE /alerts/[alertId]/comments/[commentId]', () => {
-    it('deletes an alert comment', async () => {
-      const {
-        alert: { id: alertId },
-      } = await createAlert('PIKE1');
+  describe('Delete: DELETE /surveyResponses/[surveyResponseId]/comments/[commentId]', () => {
+    it('deletes a survey response comment', async () => {
+      const surveyResponseId = await createSurveyResponse();
       const createdComment = await createComment({
-        alert_id: alertId,
-        user_id: app.user.id,
+        surveyResponseId,
+        userId: app.user.id,
         text: "Just because someone isn't born on Earth doesn't make him any less human.",
       });
 
       const { statusCode, body } = await app.delete(
-        `alerts/${alertId}/comments/${createdComment.id}`,
+        `surveyResponses/${surveyResponseId}/comments/${createdComment.id}`,
       );
 
       expect(statusCode).to.equal(200);

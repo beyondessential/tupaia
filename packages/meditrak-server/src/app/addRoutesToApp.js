@@ -24,6 +24,7 @@ const {
   authenticate,
   countChanges,
   createCountries,
+  createDataSources,
   createDisasters,
   createFeedItems,
   createPermissionGroups,
@@ -31,6 +32,7 @@ const {
   deleteAnswers,
   deleteDashboardGroups,
   deleteDashboardReports,
+  deleteDataSources,
   deleteDisasters,
   deleteFeedItems,
   deleteOptions,
@@ -45,6 +47,7 @@ const {
   editAnswers,
   editDashboardGroups,
   editDashboardReports,
+  editDataSources,
   editDisasters,
   editFeedItems,
   editOptions,
@@ -152,9 +155,9 @@ export function addRoutesToApp(app) {
    */
   app.get('(/v[0-9]+)?/changes/count', countChanges);
   app.get('(/v[0-9]+)/export/surveyResponses', exportSurveyResponses);
-  app.get('(/v[0-9]+)/export/surveyResponse/:surveyResponseId', exportSurveyResponses);
+  app.get('(/v[0-9]+)/export/surveyResponses/:surveyResponseId', exportSurveyResponses);
   app.get('(/v[0-9]+)/export/surveys', exportSurveys);
-  app.get('(/v[0-9]+)/export/survey/:surveyId', exportSurveys);
+  app.get('(/v[0-9]+)/export/surveys/:surveyId', exportSurveys);
   app.get('(/v[0-9]+)?/changes', getChanges);
   app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
   app.get('(/v[0-9]+)/me', getUser);
@@ -220,7 +223,7 @@ export function addRoutesToApp(app) {
     upload.single('surveyResponses'),
     importSurveyResponses,
   );
-  app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
+  app.post('(/v[0-9]+)/import/disasters', upload.single('disasters'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
   app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
   app.post('(/v[0-9]+)?/user', registerUserAccount); // used for user registration on tupaia.org etc.
@@ -231,6 +234,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/surveyResponse', surveyResponse); // used by mSupply to directly submit data
   app.post('(/v[0-9]+)/surveyResponses', surveyResponse);
   app.post('(/v[0-9]+)/countries', createCountries);
+  app.post('(/v[0-9]+)/dataSources', createDataSources);
   app.post('(/v[0-9]+)/disasters', createDisasters);
   app.post('(/v[0-9]+)/feedItems', createFeedItems);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
@@ -250,6 +254,7 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/surveyScreenComponents/:recordId', editSurveyScreenComponents);
   app.put('(/v[0-9]+)/answers/:recordId', editAnswers);
   app.put('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', editAnswers);
+  app.put('(/v[0-9]+)/dataSources/:recordId', editDataSources);
   app.put('(/v[0-9]+)/disasters/:recordId', editDisasters);
   app.put('(/v[0-9]+)/feedItems/:recordId', editFeedItems);
   app.put('(/v[0-9]+)/options/:recordId', editOptions);
@@ -273,6 +278,7 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/surveyScreenComponents/:recordId', deleteSurveyScreenComponents);
   app.delete('(/v[0-9]+)/answers/:recordId', deleteAnswers);
   app.delete('(/v[0-9]+)/surveyResponses/:parentRecordId/answers/:recordId', deleteAnswers);
+  app.delete('(/v[0-9]+)/dataSources/:recordId', deleteDataSources);
   app.delete('(/v[0-9]+)/disasters/:recordId', deleteDisasters);
   app.delete('(/v[0-9]+)/feedItems/:recordId', deleteFeedItems);
   app.delete('(/v[0-9]+)/options/:recordId', deleteOptions);

@@ -28,7 +28,7 @@ const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
   await app.authenticate();
 };
 
-describe('exportSurveys(): GET export/surveys, GET export/survey/:surveyId', () => {
+describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', () => {
   const app = new TestableApp();
   const models = app.models;
 
@@ -71,7 +71,7 @@ describe('exportSurveys(): GET export/surveys, GET export/survey/:surveyId', () 
 
     it('Sufficient permissions: Should allow exporting an existing survey if users have both Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
       await prepareStubAndAuthenticate(app);
-      await app.get(`export/survey/${survey1.id}`);
+      await app.get(`export/surveys/${survey1.id}`);
 
       //json_to_sheet is called when putting exportData into excel sheet
       expect(xlsx.utils.json_to_sheet).to.have.been.calledOnce;

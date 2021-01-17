@@ -17,6 +17,7 @@ import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
+import { GETFeedItems } from './GETFeedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
@@ -111,6 +112,7 @@ export default {
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
   createCountries: useRouteHandler(BESAdminCreateHandler),
+  createDataSources: useRouteHandler(BESAdminCreateHandler),
   createDisasters: useRouteHandler(BESAdminCreateHandler),
   createFeedItems: useRouteHandler(BESAdminCreateHandler),
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
@@ -118,6 +120,7 @@ export default {
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
   deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
+  deleteDataSources: useRouteHandler(BESAdminDeleteHandler),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
   deleteOptions: useRouteHandler(DeleteOptions),
@@ -134,6 +137,7 @@ export default {
   editAnswers: useRouteHandler(EditAnswers),
   editDashboardGroups: useRouteHandler(EditDashboardGroups),
   editDashboardReports: useRouteHandler(EditDashboardReports),
+  editDataSources: useRouteHandler(BESAdminEditHandler),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
   editOptions: useRouteHandler(EditOptions),
@@ -157,7 +161,7 @@ export default {
   getDataSources: useRouteHandler(GETDataSources),
   getEntities: useRouteHandler(GETEntities),
   getGeographicalAreas: useRouteHandler(GETGeographicalAreas),
-  getFeedItems: useRouteHandler(BESAdminGETHandler),
+  getFeedItems: useRouteHandler(GETFeedItems),
   getMapOverlays: useRouteHandler(GETMapOverlays),
   getSurveys: useRouteHandler(GETSurveys),
   getSurveyGroups: useRouteHandler(GETSurveyGroups),

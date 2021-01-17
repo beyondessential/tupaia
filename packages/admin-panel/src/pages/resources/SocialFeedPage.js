@@ -102,7 +102,7 @@ const EDIT_CONFIG = {
 const CREATE_CONFIG = {
   title: 'Add Social Feed item',
   actionConfig: {
-    editEndpoint: 'feedItem',
+    editEndpoint: 'feedItems',
     fields: FIELDS,
   },
 };
