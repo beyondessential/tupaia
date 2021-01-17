@@ -10,6 +10,7 @@ import { findQuestionsInSurvey } from '../../dataAccessors';
 import { RowBuilder } from './RowBuilder';
 import { SurveyMetadataConfigCellBuilder } from './cellBuilders';
 import { assertCanExportSurveys } from './assertCanExportSurveys';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 const FILE_TITLE = 'exports/survey_export';
 
@@ -31,7 +32,9 @@ export class SurveyExporter {
     try {
       const exportSurveysChecker = async accessPolicy =>
         assertCanExportSurveys(accessPolicy, this.models, surveys);
-      await this.assertPermissions(exportSurveysChecker);
+      await this.assertPermissions(
+        assertAnyPermissions([assertBESAdminAccess, exportSurveysChecker]),
+      );
     } catch (error) {
       permissionsError = error.message;
     }
@@ -54,7 +57,7 @@ export class SurveyExporter {
 
       const permissionsError = await this.checkPermissionsError(surveys);
 
-      //If there is permission error, export an empty excel sheet with the error message
+      // If there is permission error, export an empty excel sheet with the error message
       if (permissionsError) {
         const sheetName = 'Error';
         workbook.SheetNames.push(sheetName);
