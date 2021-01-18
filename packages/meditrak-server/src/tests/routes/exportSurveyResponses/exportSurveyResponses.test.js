@@ -13,6 +13,7 @@ import {
   buildAndInsertSurveyResponses,
   buildAndInsertSurveys,
 } from '@tupaia/database';
+import { resetTestData } from '../../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
 import { INFO_COLUMN_HEADERS } from '../../../routes/exportSurveyResponses';
@@ -56,6 +57,8 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     let survey2;
 
     before(async () => {
+      await resetTestData();
+
       sinon.stub(xlsx.utils, 'aoa_to_sheet');
 
       const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
