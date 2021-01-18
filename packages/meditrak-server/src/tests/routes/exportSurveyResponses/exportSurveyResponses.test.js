@@ -48,7 +48,7 @@ const expectAccessibleExportDataHeaderRow = exportData => {
 
 describe('exportSurveyResponses(): GET export/surveysResponses', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   describe('Test permissions when exporting survey responses', async () => {
     let vanuatuCountry;
@@ -160,7 +160,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
         );
 
-        //Has access to both survey1 and survey2
+        // Has access to both survey1 and survey2
         expect(xlsx.utils.aoa_to_sheet).to.have.been.calledTwice;
 
         for (let i = 0; i < xlsx.utils.aoa_to_sheet.callCount; i++) {
@@ -176,7 +176,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Donor'], //Remove Admin permission to have insufficient permissions to access to survey1
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /* 'Admin' */ 'Donor'], // Remove Admin permission to have insufficient permissions to access to survey1
           LA: ['Admin'],
         };
 
@@ -187,7 +187,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
 
         expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
 
-        //Check the permissions error message in survey1 sheet
+        // Check the permissions error message in survey1 sheet
         const exportData = xlsx.utils.aoa_to_sheet.getCall(0).args[0];
         expect(exportData).to.be.deep.equal([[`You do not have export access to ${survey1.name}`]]);
       });
@@ -197,7 +197,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Donor'], //Remove Admin permission to have insufficient permissions to access to survey1
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /* 'Admin' */ 'Donor'], // Remove Admin permission to have insufficient permissions to access to survey1
           LA: ['Admin'],
         };
 
@@ -208,14 +208,24 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
 
         expect(xlsx.utils.aoa_to_sheet).to.have.been.calledTwice;
 
-        //Check the permissions error message in survey1 sheet
-        const survey1ExportData = xlsx.utils.aoa_to_sheet.getCall(0).args[0];
+        // Sheet order is non-deterministic
+        const sheetExportData = [
+          xlsx.utils.aoa_to_sheet.getCall(0).args[0],
+          xlsx.utils.aoa_to_sheet.getCall(1).args[0],
+        ];
+
+        // Use length of response to make an informed guess which survey is in each sheet
+        const survey1ExportData =
+          sheetExportData[0].length > 1 ? sheetExportData[1] : sheetExportData[0];
+        const survey2ExportData =
+          sheetExportData[0].length > 1 ? sheetExportData[0] : sheetExportData[1];
+
+        // Check the permissions error message in survey1 sheet
         expect(survey1ExportData).to.be.deep.equal([
           [`You do not have export access to ${survey1.name}`],
         ]);
 
-        //Should have access to survey2 which is the 2nd sheet.
-        const survey2ExportData = xlsx.utils.aoa_to_sheet.getCall(1).args[0];
+        // Should have access to survey2
         expectAccessibleExportDataHeaderRow(survey2ExportData);
       });
     });

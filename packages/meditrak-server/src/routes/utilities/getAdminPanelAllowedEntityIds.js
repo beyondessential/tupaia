@@ -6,15 +6,14 @@
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 /*
- * Get a list of entity ids this user has tupaia admin panel access to, or throw an error if they have none
+ * Get a list of country codes this user has tupaia admin panel access to, or throw an error if they have none
  *
  * @param {AccessPolicy}  accessPolicy
- * @param {ModelRegistry} models
  *
- * @returns string[] The entity ids
+ * @returns string[] The country codes
  */
 
-export const getAdminPanelAllowedEntityIds = async (accessPolicy, models) => {
+export const getAdminPanelAllowedCountryCodes = accessPolicy => {
   const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
@@ -24,8 +23,22 @@ export const getAdminPanelAllowedEntityIds = async (accessPolicy, models) => {
   }
 
   accessibleCountryCodes.push('DL'); // If we have admin panel anywhere, we can also view Demo Land
+  return accessibleCountryCodes;
+};
+
+/*
+ * Get a list of entity ids this user has tupaia admin panel access to, or throw an error if they have none
+ *
+ * @param {AccessPolicy}  accessPolicy
+ * @param {ModelRegistry} models
+ *
+ * @returns string[] The entity ids
+ */
+
+export const getAdminPanelAllowedEntityIds = async (accessPolicy, models) => {
+  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   const entities = await models.entity.find({
-    code: accessibleCountryCodes,
+    country_code: accessibleCountryCodes,
   });
 
   return entities.map(e => e.id);

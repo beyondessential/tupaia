@@ -8,7 +8,7 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../permissions';
-import { getAdminPanelAllowedEntityIds } from '../utilities';
+import { getAdminPanelAllowedEntityIds, getAdminPanelAllowedCountryCodes } from '../utilities';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
@@ -21,17 +21,18 @@ export const assertUserEntityPermissionPermissions = async (
   }
 
   const entity = await models.entity.findById(userEntityPermission.entity_id);
-  if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-    throw new Error('Need Admin Panel access to the country this entity is in');
+  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
+  if (accessibleCountryCodes.includes(entity.country_code)) {
+    return true;
   }
-  return true;
+  throw new Error('Need Admin Panel access to the country this entity is in');
 };
 
 export const assertUserEntityPermissionEditPermissions = async (
   accessPolicy,
   models,
   userEntityPermissionId,
-  updatedFields,
+  updatedFields = {},
 ) => {
   // Check we have permission to access the record we're trying to edit
   await assertUserEntityPermissionPermissions(accessPolicy, models, userEntityPermissionId);
