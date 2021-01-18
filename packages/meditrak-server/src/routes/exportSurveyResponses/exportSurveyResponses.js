@@ -10,7 +10,7 @@ import { truncateString } from 'sussol-utilities';
 import { DatabaseError, addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../dataAccessors';
-import { allowNoPermissions } from '../../permissions';
+import { allowNoPermissions, hasBESAdminAccess } from '../../permissions';
 import { SurveyResponseVariablesExtractor } from '../utilities';
 
 const FILE_LOCATION = 'exports';
@@ -107,7 +107,8 @@ export async function exportSurveyResponses(req, res) {
     for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
       const currentSurvey = surveys[surveyIndex];
       const permissionGroup = await currentSurvey.getPermissionGroup();
-      const hasSurveyAccess = accessPolicy.allows(country.code, permissionGroup.name);
+      const hasSurveyAccess =
+        hasBESAdminAccess(accessPolicy) || accessPolicy.allows(country.code, permissionGroup.name);
       if (!hasSurveyAccess) {
         const exportData = [[`You do not have export access to ${currentSurvey.name}`]];
         addDataToSheet(currentSurvey.name, exportData);
