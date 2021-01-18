@@ -9,7 +9,7 @@ import { Aggregator, expandFetchOptionsToSpanAggregations } from '@tupaia/aggreg
 import { comparePeriods, dateStringToPeriod } from '@tupaia/utils';
 import { Aggregation, Analytic, FetchOptions } from './types';
 
-interface Data {
+interface Fields {
   analyticsByElement: Record<string, Analytic[]>;
   fetchOptions: FetchOptions;
   expandedFetchOptions: FetchOptions;
@@ -35,25 +35,25 @@ interface Data {
 export class AnalyticsRepository {
   private aggregator: Aggregator;
 
-  private populatedData: Data | null = null;
+  private populatedFields: Fields | null = null;
 
   constructor(aggregator: Aggregator) {
     this.aggregator = aggregator;
   }
 
-  private get data(): Data {
-    if (!this.populatedData) {
+  private get fields(): Fields {
+    if (!this.populatedFields) {
       throw new Error('Please run the "populate" method first!');
     }
-    return this.populatedData;
+    return this.populatedFields;
   }
 
-  private set data(data: Data) {
-    this.populatedData = data;
+  private set fields(data: Fields) {
+    this.populatedFields = data;
   }
 
   isPopulated() {
-    return !!this.populatedData;
+    return !!this.populatedFields;
   }
 
   /**
@@ -73,7 +73,7 @@ export class AnalyticsRepository {
       expandedFetchOptions,
     );
 
-    this.data = {
+    this.fields = {
       analyticsByElement: groupBy(analytics, 'dataElement'),
       fetchOptions,
       expandedFetchOptions,
@@ -81,7 +81,7 @@ export class AnalyticsRepository {
   }
 
   getAnalyticsForDataElement = (dataElement: string) =>
-    this.data.analyticsByElement[dataElement] || [];
+    this.fields.analyticsByElement[dataElement] || [];
 
   /**
    * This method should be used for analytics in root indicators. The original fetch options are used,
@@ -90,12 +90,12 @@ export class AnalyticsRepository {
   aggregateRootAnalytics = (analytics: Analytic[], aggregations: Aggregation[]) => {
     const analyticsMatchingFetchOptions = this.keepAnalyticsMatchingFetchOptions(
       analytics,
-      this.data.fetchOptions,
+      this.fields.fetchOptions,
     );
     return this.aggregateAnalytics(
       analyticsMatchingFetchOptions,
       aggregations,
-      this.data.fetchOptions,
+      this.fields.fetchOptions,
     );
   };
 
@@ -104,7 +104,7 @@ export class AnalyticsRepository {
    * to allow calculations that may require data outside the originally requested dimensions
    */
   aggregateNestedAnalytics = (analytics: Analytic[], aggregations: Aggregation[]) =>
-    this.aggregateAnalytics(analytics, aggregations, this.data.expandedFetchOptions);
+    this.aggregateAnalytics(analytics, aggregations, this.fields.expandedFetchOptions);
 
   private aggregateAnalytics = (
     analytics: Analytic[],
