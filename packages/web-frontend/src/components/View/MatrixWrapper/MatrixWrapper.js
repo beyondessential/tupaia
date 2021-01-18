@@ -83,11 +83,27 @@ const buildMatrixDataFromViewContent = viewContent => {
 
   let maximumCellCharacters = 0;
   const formattedRows = rows.map(row => {
-    const { dataElement, code, categoryId, category, ...columns } = row;
+    const { dataElement, code, categoryId, category, valueType: rowValueType, ...cells } = row;
 
     const formattedCells = {};
-    Object.entries(columns).forEach(([columnName, columnValue]) => {
-      formattedCells[columnName] = formatDataValue(columnValue, valueType);
+    Object.entries(cells).forEach(([columnName, cellValue]) => {
+      const columnDefinition = columnData.find(c => c.key === columnName);
+
+      if (rowValueType) {
+        formattedCells[columnName] = formatDataValue(
+          cellValue.value,
+          rowValueType,
+          cellValue.metadata,
+        );
+      } else if (columnDefinition && columnDefinition.valueType) {
+        formattedCells[columnName] = formatDataValue(
+          cellValue.value,
+          columnDefinition.valueType,
+          cellValue.metadata,
+        );
+      } else {
+        formattedCells[columnName] = formatDataValue(cellValue, valueType);
+      }
     });
 
     Object.values(formattedCells).forEach(value => {
