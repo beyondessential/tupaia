@@ -41,7 +41,7 @@ export const runIntegrationTests = ({
 }) => {
   const { description, setup = {}, testCases } = config;
 
-  describe(`(integration) ${description}`, () => {
+  describe(description, () => {
     const models = getTestModels();
 
     beforeAll(async () => {
@@ -52,7 +52,7 @@ export const runIntegrationTests = ({
     });
 
     afterAll(async () => {
-      await tearDownTest(models);
+      // await tearDownTest(models);
       if (afterAllCallback) {
         await afterAllCallback();
       }
