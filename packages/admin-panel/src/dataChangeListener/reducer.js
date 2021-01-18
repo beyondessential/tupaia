@@ -6,7 +6,6 @@
 import { createReducer } from '../utilities';
 
 import { DATA_CHANGE_ACTIONS as tableActions } from '../table';
-import { DATA_CHANGE_ACTIONS as importExportActions } from '../importExport';
 import { DATA_CHANGE_ACTIONS as editorActions } from '../editor';
 
 const defaultState = {
@@ -21,7 +20,6 @@ const buildStateChangesFromDataChangeActions = dataChangeActions => ({
 
 const stateChanges = {
   ...buildStateChangesFromDataChangeActions(tableActions),
-  ...buildStateChangesFromDataChangeActions(importExportActions),
   ...buildStateChangesFromDataChangeActions(editorActions),
 };
 

@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
-import moment from 'moment';
 import styled from 'styled-components';
 import { DIALOG_Z_INDEX } from '../../styles';
 import { Error } from '../Error';
@@ -21,9 +21,9 @@ import { QuarterPicker } from './QuarterPicker';
 import {
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_SHAPE,
   roundStartEndDates,
 } from '../../utils/periodGranularities';
-import { MIN_DATE_PICKER_DATE } from './constants';
 
 const {
   DAY,
@@ -78,6 +78,10 @@ const DateRow = ({ granularity, ...props }) => {
   }
 };
 
+DateRow.propTypes = {
+  granularity: GRANULARITY_SHAPE.isRequired,
+};
+
 const getLabelText = granularity => {
   switch (granularity) {
     default:
@@ -96,12 +100,14 @@ const StyledDateRow = styled.div`
   margin-top: 30px;
 `;
 
-export const DatePickerDialog = ({
+const DatePickerDialog = ({
   isOpen,
   onClose,
   granularity,
   startDate,
   endDate,
+  minMomentDate,
+  maxMomentDate,
   onSetNewDates,
 }) => {
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
@@ -135,8 +141,6 @@ export const DatePickerDialog = ({
     return setErrorMessage('');
   };
 
-  const minMomentDate = moment(MIN_DATE_PICKER_DATE);
-
   return (
     <Dialog
       modal="true"
@@ -152,7 +156,7 @@ export const DatePickerDialog = ({
               granularity={granularity}
               momentDateValue={selectedStartDate}
               minMomentDate={minMomentDate}
-              maxMomentDate={moment()}
+              maxMomentDate={maxMomentDate}
               onChange={setSelectedStartDate}
             />
           </StyledDateRow>
@@ -162,7 +166,7 @@ export const DatePickerDialog = ({
             granularity={granularity}
             momentDateValue={selectedEndDate}
             minMomentDate={minMomentDate}
-            maxMomentDate={moment()}
+            maxMomentDate={maxMomentDate}
             onChange={setSelectedEndDate}
           />
         </StyledDateRow>
@@ -177,3 +181,16 @@ export const DatePickerDialog = ({
     </Dialog>
   );
 };
+
+DatePickerDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  granularity: GRANULARITY_SHAPE.isRequired,
+  startDate: PropTypes.object.isRequired,
+  endDate: PropTypes.object.isRequired,
+  minMomentDate: PropTypes.object.isRequired,
+  maxMomentDate: PropTypes.object.isRequired,
+  onSetNewDates: PropTypes.func.isRequired,
+};
+
+export default DatePickerDialog;

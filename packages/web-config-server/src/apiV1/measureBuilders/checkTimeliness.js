@@ -34,6 +34,7 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
  * @returns {Promise<Object>}
  */
 export const checkTimeliness = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -41,6 +42,7 @@ export const checkTimeliness = async (
   entity,
 ) => {
   const builder = new CheckTimelinessMeasureBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

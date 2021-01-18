@@ -69,6 +69,7 @@ import {
   FETCH_REQUEST_COUNTRY_ACCESS_ERROR,
   FETCH_SEARCH_ERROR,
   FETCH_SEARCH_SUCCESS,
+  FETCH_MORE_SEARCH_RESULTS,
   FETCH_SIGNUP_ERROR,
   FETCH_SIGNUP_SUCCESS,
   FINISH_USER_SESSION,
@@ -85,29 +86,20 @@ import {
   TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
   SET_OVERLAY_COMPONENT,
-  OPEN_EXPORT_DIALOG,
-  CLOSE_EXPORT_DIALOG,
-  ATTEMPT_CHART_EXPORT,
-  FETCH_CHART_EXPORT_SUCCESS,
-  FETCH_CHART_EXPORT_ERROR,
-  SELECT_CHART_EXPORT_FORMAT,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
   UPDATE_ENLARGED_DIALOG,
-  CLOSE_DRILL_DOWN,
-  ATTEMPT_DRILL_DOWN,
-  FETCH_DRILL_DOWN_SUCCESS,
-  FETCH_DRILL_DOWN_ERROR,
-  GO_TO_DRILL_DOWN_LEVEL,
   SET_CONFIG_GROUP_VISIBLE,
-  SET_ENLARGED_DIALOG_DATE_RANGE,
+  FETCH_ENLARGED_DIALOG_DATA,
   UPDATE_ENLARGED_DIALOG_ERROR,
   SET_PASSWORD_RESET_TOKEN,
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
+  SET_PROJECT_ADDITIONAL_ACCESS,
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
+  SET_ENLARGED_DIALOG_DATE_RANGE,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 
@@ -396,6 +388,7 @@ function requestCountryAccess(
     countries: [],
     isFetchingCountryAccessData: false,
     isRequestingCountryAccess: false,
+    isRequestingAdditionalCountryAccess: false,
     errorMessage: '',
     hasRequestCountryAccessCompleted: false,
   },
@@ -407,12 +400,20 @@ function requestCountryAccess(
       return {
         ...state,
         isFetchingCountryAccessData: true,
+        isRequestingAdditionalCountryAccess: false,
+        errorMessage: '',
+      };
+    case SET_PROJECT_ADDITIONAL_ACCESS:
+      return {
+        ...state,
+        isRequestingAdditionalCountryAccess: true,
         errorMessage: '',
       };
     case FETCH_COUNTRY_ACCESS_DATA_ERROR:
       return {
         ...state,
         isFetchingCountryAccessData: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: action.error || 'Something went wrong while fetching country access data',
       };
     case FETCH_COUNTRY_ACCESS_DATA_SUCCESS:
@@ -432,6 +433,7 @@ function requestCountryAccess(
       return {
         ...state,
         isRequestingCountryAccess: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage:
           action.error ||
           'Something went wrong during country access request, please check the form and try again',
@@ -441,12 +443,14 @@ function requestCountryAccess(
         ...state,
         hasRequestCountryAccessCompleted: true,
         isRequestingCountryAccess: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: '',
       };
     case CLOSE_USER_DIALOG:
       return {
         ...state,
         hasRequestCountryAccessCompleted: false,
+        isRequestingAdditionalCountryAccess: false,
         errorMessage: '',
       };
     default:
@@ -505,7 +509,9 @@ function dashboard(
 function searchBar(
   state = {
     isExpanded: false,
-    searchResponse: null,
+    isLoadingSearchResults: false,
+    searchResults: [],
+    hasMoreResults: false,
     searchString: '',
   },
   action,
@@ -514,22 +520,61 @@ function searchBar(
     case TOGGLE_SEARCH_EXPAND:
       return { ...state, isExpanded: !state.isExpanded };
     case FETCH_SEARCH_SUCCESS:
-      return { ...state, searchResponse: action.response };
+      return {
+        ...state,
+        isLoadingSearchResults: false,
+        searchResults: [...(state.searchResults || []), ...(action.searchResults || [])], // Append more search results
+        hasMoreResults: action.hasMoreResults,
+      };
+    case FETCH_MORE_SEARCH_RESULTS:
+      return { ...state, isLoadingSearchResults: true };
     case CHANGE_SEARCH:
-      return { ...state, searchResponse: null, searchString: action.searchString };
+      return {
+        ...state,
+        isLoadingSearchResults: true,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: action.searchString,
+      };
     case FETCH_SEARCH_ERROR:
-      return { ...state, searchResponse: action.error };
+      return {
+        ...state,
+        isLoadingSearchResults: false,
+        searchResults: action.error,
+        hasMoreResults: false,
+      };
     case CLOSE_DROPDOWN_OVERLAYS:
       return { ...state, isExpanded: false };
     case FETCH_LOGIN_SUCCESS:
       // Clear search results on login incase of permission change
-      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+      return {
+        ...state,
+        isExpanded: false,
+        isLoadingSearchResults: false,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: '',
+      };
     case FETCH_LOGOUT_SUCCESS:
       // Clear search results on logout incase of permission change
-      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+      return {
+        ...state,
+        isExpanded: false,
+        isLoadingSearchResults: false,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: '',
+      };
     case SET_PROJECT:
       // Clear search results on project change to fetch alternative hierarchy
-      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+      return {
+        ...state,
+        isExpanded: false,
+        isLoadingSearchResults: false,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: '',
+      };
     default:
       return state;
   }
@@ -587,7 +632,7 @@ function measureBar(
 function global(
   state = {
     isSidePanelExpanded: false,
-    overlay: !isMobile() && LANDING,
+    overlay: null,
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -638,93 +683,12 @@ function global(
   }
 }
 
-function chartExport(
-  state = {
-    isVisible: false,
-    isLoading: false,
-    isComplete: false,
-    errorMessage: '',
-    formats: ['png'],
-    organisationUnitCode: '',
-    organisationUnitName: '',
-    viewId: '',
-    dashboardGroupId: '',
-    chartType: '',
-    startDate: null,
-    endDate: null,
-    extraConfig: {},
-    selectedFormat: 'png',
-  },
-  action,
-) {
-  switch (action.type) {
-    case ATTEMPT_CHART_EXPORT:
-      return {
-        ...state,
-        isLoading: true,
-        errorMessage: '',
-      };
-
-    case FETCH_CHART_EXPORT_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        isComplete: true,
-      };
-
-    case FETCH_CHART_EXPORT_ERROR:
-      return {
-        ...state,
-        isLoading: false,
-        errorMessage: action.errorMessage,
-      };
-
-    case OPEN_EXPORT_DIALOG:
-      return {
-        ...state,
-        isVisible: true,
-        isLoading: false,
-        isComplete: false,
-        organisationUnitCode: action.organisationUnitCode,
-        organisationUnitName: action.organisationUnitName,
-        viewId: action.viewId,
-        dashboardGroupId: action.dashboardGroupId,
-        startDate: action.startDate,
-        endDate: action.endDate,
-        formats: action.formats,
-        selectedFormat: action.formats[0],
-        chartType: action.chartType,
-        extraConfig: action.extraConfig,
-      };
-
-    case CLOSE_EXPORT_DIALOG:
-      return {
-        ...state,
-        isVisible: false,
-        isComplete: false,
-        errorMessage: '',
-      };
-
-    case SELECT_CHART_EXPORT_FORMAT:
-      return {
-        ...state,
-        selectedFormat: action.format,
-      };
-
-    default:
-      return state;
-  }
-}
-
 function enlargedDialog(
   state = {
-    isVisible: false,
     isLoading: false,
-    viewContent: null,
-    organisationUnitName: '',
+    contentByLevel: null,
     errorMessage: '',
-    startDate: null,
-    endDate: null,
+    drillDownDatesByLevel: null,
   },
   action,
 ) {
@@ -732,103 +696,58 @@ function enlargedDialog(
     case OPEN_ENLARGED_DIALOG:
       return {
         ...state,
-        isVisible: true,
         isLoading: false,
         errorMessage: '',
-        startDate: null,
-        endDate: null,
+        contentByLevel: null,
       };
-
     case CLOSE_ENLARGED_DIALOG:
       return {
         ...state,
-        isVisible: false,
-        viewContent: null,
-        organisationUnitName: '',
+        isLoading: false,
+        errorMessage: '',
+        contentByLevel: null,
       };
+    case SET_ENLARGED_DIALOG_DATE_RANGE: {
+      const { drillDownLevel, startDate, endDate } = action;
 
-    case SET_ENLARGED_DIALOG_DATE_RANGE:
+      // Base level dates are stored in the url
+      if (drillDownLevel === 0) return state;
+
       return {
         ...state,
-        startDate: action.startDate,
-        endDate: action.endDate,
+        drillDownDatesByLevel: {
+          ...(state.drillDownDatesByLevel || {}),
+          [drillDownLevel]: {
+            startDate,
+            endDate,
+          },
+        },
+      };
+    }
+    case FETCH_ENLARGED_DIALOG_DATA:
+      return {
+        ...state,
         isLoading: true,
       };
-
     case UPDATE_ENLARGED_DIALOG:
       return {
         ...state,
-        viewContent: action.viewContent,
+        contentByLevel: {
+          ...(state.contentByLevel || {}),
+          [action.options.drillDownLevel]: {
+            viewContent: action.viewContent,
+            options: action.options,
+          },
+        },
         isLoading: false,
         errorMessage: '',
       };
-
     case UPDATE_ENLARGED_DIALOG_ERROR:
       return {
         ...state,
         isLoading: false,
         errorMessage: action.errorMessage,
       };
-
-    default:
-      return state;
-  }
-}
-
-function drillDown(
-  state = {
-    isVisible: false,
-    isLoading: false,
-    errorMessage: '',
-    currentLevel: 0,
-    levelContents: {},
-  },
-  action,
-) {
-  switch (action.type) {
-    case ATTEMPT_DRILL_DOWN:
-      return {
-        ...state,
-        isLoading: true,
-        isVisible: true,
-        errorMessage: '',
-        currentLevel: action.drillDownLevel,
-      };
-
-    case FETCH_DRILL_DOWN_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        levelContents: {
-          ...state.levelContents,
-          [action.drillDownLevel]: {
-            viewContent: action.viewContent,
-          },
-        },
-      };
-
-    case FETCH_DRILL_DOWN_ERROR:
-      return {
-        ...state,
-        isLoading: false,
-        errorMessage: action.errorMessage,
-      };
-
-    case GO_TO_DRILL_DOWN_LEVEL:
-      return {
-        ...state,
-        errorMessage: '',
-        isLoading: false,
-        currentLevel: action.drillDownLevel,
-      };
-
-    case CLOSE_ENLARGED_DIALOG:
-    case CLOSE_DRILL_DOWN:
-      return {
-        ...state,
-        isVisible: false,
-      };
-
     default:
       return state;
   }
@@ -876,9 +795,7 @@ export default combineReducers({
   changePassword,
   resetPassword,
   requestCountryAccess,
-  chartExport,
   enlargedDialog,
-  drillDown,
   disaster,
   project,
   orgUnits,

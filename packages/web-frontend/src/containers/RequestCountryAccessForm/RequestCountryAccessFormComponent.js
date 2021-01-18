@@ -1,8 +1,6 @@
 /**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 /**
@@ -17,6 +15,7 @@ import { TextField, CheckboxField } from '../Form/Fields';
 import { aggregateFields } from '../Form/utils';
 import { HasTotalAccessMessage } from './HasTotalAccessMessage';
 import { RequestSuccessfulMessage } from './RequestSuccessfulMessage';
+import { RequestedCountryAccessList } from './RequestedCountryAccessList';
 
 export const RequestCountryAccessFormComponent = ({
   countries,
@@ -32,6 +31,11 @@ export const RequestCountryAccessFormComponent = ({
 
   if (hasRequestCountryAccessCompleted) return <RequestSuccessfulMessage onClose={onClose} />;
 
+  const requestedCountries = countries.filter(c => c.accessRequests.includes('none'));
+  const unrequestedCountries = countries.filter(
+    c => !c.accessRequests.includes('none') && !c.hasAccess,
+  );
+
   return (
     <Form
       isLoading={isFetchingCountryAccessData || isRequestingCountryAccess}
@@ -39,7 +43,8 @@ export const RequestCountryAccessFormComponent = ({
       onSubmit={fieldValues => onAttemptRequestCountryAccess(aggregateFields(fieldValues))}
       render={submitForm => (
         <>
-          {countries.map(country => (
+          <RequestedCountryAccessList countries={requestedCountries} />
+          {unrequestedCountries.map(country => (
             <CheckboxField
               fullWidth
               label={country.name}

@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
- **/
+ * */
 import { PermissionsError } from '@tupaia/utils';
 
 const assertPermissions = async (req, assertion) => {
@@ -21,21 +21,21 @@ const assertPermissions = async (req, assertion) => {
 export const ensurePermissionCheck = async (req, res, next) => {
   const originalResSend = res.send;
 
-  //Assign generic assertPermissions method to req
-  //Every endpoint will have to call req.assertPermissions(assertion) to authorize the resources.
+  // Assign generic assertPermissions method to req
+  // Every endpoint will have to call req.assertPermissions(assertion) to authorize the resources.
   req.assertPermissions = async assertion => {
-    await assertPermissions(req, assertion); //req should have all the info required by the assertion (e.g. accessPolicy)
+    await assertPermissions(req, assertion); // req should have all the info required by the assertion (e.g. accessPolicy)
   };
 
-  //when permissionChecked is flagged, reset send method
-  //to the originalResSend to allow sending response as normal
+  // when permissionChecked is flagged, reset send method
+  // to the originalResSend to allow sending response as normal
   req.flagPermissionsChecked = () => {
     res.send = originalResSend;
   };
 
-  //Modify the send method of res to send back NoPermissionCheckError.
-  //If Permission is already checked, req.flagPermissionsChecked() should have already been called, which will reset res.send() back to normal
-  //If Permission is not yet checked, res.send() will execute like below, sending back NoPermissionCheckError.
+  // Modify the send method of res to send back NoPermissionCheckError.
+  // If Permission is already checked, req.flagPermissionsChecked() should have already been called, which will reset res.send() back to normal
+  // If Permission is not yet checked, res.send() will execute like below, sending back NoPermissionCheckError.
   res.send = (...args) => {
     res.send = originalResSend;
     // allow errors to be sent without a permissions check

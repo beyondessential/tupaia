@@ -6,13 +6,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
-import { Table } from '@tupaia/ui-components';
-import { Alarm, CheckCircleOutline } from '@material-ui/icons';
-import { CountryTableBody } from './CountryTableBody';
+import differenceInWeeks from 'date-fns/difference_in_weeks';
+import { useParams } from 'react-router-dom';
+import { ExpandableTable, TablePaginator } from '@tupaia/ui-components';
 import * as COLORS from '../../constants/colors';
 import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor, AlertCell, SitesReportedCell } from '../../components';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod, getCurrentPeriod } from '../../utils';
+import { StatusCell, AlertCell, SitesReportedCell } from '../../components';
+import { MIN_DATE } from '../../constants';
+import { SiteSummaryTable } from './SiteSummaryTable';
+import { useCountryWeeklyReport } from '../../api/queries';
+import { WeeklyReportsPanel } from '../Panels';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -28,139 +32,114 @@ const CountryWeekSubTitle = styled.div`
   line-height: 1rem;
 `;
 
-const NameCell = ({ weekNumber, startDate, endDate }) => {
-  const start = `${format(new Date(startDate), 'LLL d')}`;
-  const end = `${format(new Date(endDate), 'LLL d, yyyy')}`;
-  return (
-    <>
-      <CountryWeekTitle>{`Week ${weekNumber}`}</CountryWeekTitle>
-      <CountryWeekSubTitle>{`${start} - ${end}`}</CountryWeekSubTitle>
-    </>
-  );
-};
+const NameCell = ({ period }) => (
+  <>
+    <CountryWeekTitle>{`Week ${getWeekNumberByPeriod(period)}`}</CountryWeekTitle>
+    <CountryWeekSubTitle>{getDisplayDatesByPeriod(period)}</CountryWeekSubTitle>
+  </>
+);
 
 NameCell.propTypes = {
-  weekNumber: PropTypes.number.isRequired,
-  startDate: PropTypes.any.isRequired,
-  endDate: PropTypes.any.isRequired,
-};
-
-const Status = styled.div`
-  display: inline-flex;
-  color: ${props => props.color};
-  align-items: center;
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 0.6875rem;
-  line-height: 1;
-  padding-left: 1rem;
-  text-align: left;
-  width: 100%;
-
-  .MuiSvgIcon-root {
-    width: 1.375rem;
-    height: 1.375rem;
-    margin-right: 0.3125rem;
-  }
-`;
-
-const StatusCell = ({ status }) => {
-  if (status === 'Overdue') {
-    return (
-      <Status color={COLORS.ORANGE}>
-        <Alarm />
-        {status}
-      </Status>
-    );
-  }
-
-  return (
-    <Status color={COLORS.TEXT_LIGHTGREY}>
-      <CheckCircleOutline />
-      {status}
-    </Status>
-  );
-};
-
-StatusCell.propTypes = {
-  status: PropTypes.string.isRequired,
+  period: PropTypes.string.isRequired,
 };
 
 const countryColumns = [
   {
     title: 'Date ',
     key: 'weekNumber',
-    width: '190px',
+    width: '190px', // must be same width as SiteSummaryTable name column to align
     align: 'left',
     CellComponent: NameCell,
+    sortable: false,
   },
   {
     title: 'Sites Reported',
-    key: 'sitesReported',
+    key: 'Sites Reported',
     CellComponent: SitesReportedCell,
     width: COLUMN_WIDTHS.SITES_REPORTED,
+    sortable: false,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
-    title: 'DIL',
-    key: 'DIL',
-    accessor: createTotalCasesAccessor('dil'),
+    title: 'DLI',
+    key: 'DLI',
     CellComponent: AlertCell,
+    sortable: false,
   },
   {
     title: 'STATUS',
     key: 'status',
-    width: '110px',
+    width: '165px',
     CellComponent: StatusCell,
+    sortable: false,
   },
 ];
 
-export const CountryTable = React.memo(({ data, isLoading, errorMessage, page, setPage }) => (
-  <Table
-    isLoading={isLoading}
-    columns={countryColumns}
-    data={data}
-    errorMessage={errorMessage}
-    onChangePage={setPage}
-    page={page}
-    Body={CountryTableBody}
-  />
-));
+const TOTAL_RECORDS = differenceInWeeks(new Date(), MIN_DATE);
 
-CountryTable.propTypes = {
-  data: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  page: PropTypes.number,
-  setPage: PropTypes.func,
-};
+export const CountryTable = () => {
+  const { countryCode } = useParams();
+  const period = getCurrentPeriod();
 
-CountryTable.defaultProps = {
-  isLoading: false,
-  errorMessage: '',
-  page: 0,
-  setPage: null,
+  const {
+    isLoading,
+    error,
+    data,
+    isFetching,
+    startWeek,
+    endWeek,
+    page,
+    setPage,
+    rowsPerPage,
+    setRowsPerPage,
+  } = useCountryWeeklyReport(countryCode, period, TOTAL_RECORDS);
+
+  return (
+    <>
+      <ExpandableTable
+        data={data}
+        isLoading={isLoading}
+        isFetching={!isLoading && isFetching}
+        columns={countryColumns}
+        rowIdKey="period"
+        errorMessage={error && error.message}
+        SubComponent={SiteSummaryTable}
+        Paginator={props => (
+          <TablePaginator
+            {...props}
+            disabled={isFetching}
+            rowsPerPage={rowsPerPage}
+            onChangeRowsPerPage={setRowsPerPage}
+            onChangePage={p => setPage(p)}
+            page={page}
+            count={TOTAL_RECORDS}
+          />
+        )}
+      />
+      <WeeklyReportsPanel pageQueryKey={{ startWeek, endWeek }} />
+    </>
+  );
 };

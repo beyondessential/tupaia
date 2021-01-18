@@ -27,6 +27,7 @@ import {
   selectCurrentProject,
   selectMeasureBarItemById,
 } from '../../selectors';
+import { getDefaultDates, getLimits } from '../../utils/periodGranularities';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -141,10 +142,24 @@ export class MeasureBar extends Component {
     const orgName = currentOrganisationUnitName || 'Your current selection';
     const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
+    const defaultDates = getDefaultDates(currentMeasure);
+
+    const datePickerLimits = getLimits(
+      currentMeasure.periodGranularity,
+      currentMeasure.datePickerLimits,
+    );
+
+    const { isTimePeriodEditable = true } = currentMeasure;
+
+    const showDatePicker = isTimePeriodEditable && currentMeasure.periodGranularity;
+
     return (
       <Control
         emptyMessage={emptyMessage}
         selectedMeasure={currentMeasure}
+        showDatePicker={showDatePicker}
+        defaultDates={defaultDates}
+        datePickerLimits={datePickerLimits}
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >

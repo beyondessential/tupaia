@@ -1,11 +1,11 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import { reducer as authentication } from './authentication';
 import { reducer as assessment } from './assessment';
-import { reducer as navigation, sideMenuReducer as sideMenu } from './navigation';
+import { navReducer as nav, sideMenuReducer as sideMenu } from './navigation';
 import { reducer as sync } from './sync';
 import { reducer as version } from './version';
 import { reducer as newUser } from './user';
@@ -21,10 +21,10 @@ import { reducer as changePassword } from './changePassword';
 export const reducers = {
   authentication,
   assessment,
-  navigation,
   sync,
   version,
   newUser,
+  nav,
   sideMenu,
   country,
   social,

@@ -1,10 +1,11 @@
 package com.tupaiameditrak;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 import com.bugsnag.BugsnagReactNative;
 import android.os.Bundle;
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.push.Push;
 
 public class MainActivity extends ReactActivity {
 
@@ -18,9 +19,18 @@ public class MainActivity extends ReactActivity {
     }
 
     @Override
+    protected ReactActivityDelegate createReactActivityDelegate() {
+      return new ReactActivityDelegate(this, getMainComponentName()) {
+        @Override
+        protected ReactRootView createRootView() {
+          return new RNGestureHandlerEnabledRootView(MainActivity.this);
+        }
+      };
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       BugsnagReactNative.start(this);
-      AppCenter.start(getApplication(), "d31a83ce-61c8-497b-a40f-7241149464d1", Push.class);
     }
 }

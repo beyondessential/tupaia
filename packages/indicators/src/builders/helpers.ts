@@ -7,9 +7,12 @@ import groupBy from 'lodash.groupby';
 
 import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
-import { Aggregation, AggregationSpecs, Analytic, FetchOptions } from '../types';
+import { Aggregation, Analytic, FetchOptions } from '../types';
 
-export const validateConfig = async <T extends {}>(config: {}, validators = {}): Promise<T> => {
+export const validateConfig = async <T extends Record<string, unknown>>(
+  config = {},
+  validators = {},
+): Promise<T> => {
   await new ObjectValidator(validators).validate(
     config,
     (error: string, field: string) => new Error(`Error in field '${field}': ${error}`),
@@ -19,15 +22,6 @@ export const validateConfig = async <T extends {}>(config: {}, validators = {}):
   // https://github.com/microsoft/TypeScript/issues/37515
   return config as T;
 };
-
-export const getAggregationsByCode = (aggregationSpecs: AggregationSpecs) =>
-  Object.fromEntries(
-    Object.entries(aggregationSpecs).map(([code, descriptor]) => {
-      const descriptorArray = Array.isArray(descriptor) ? descriptor : [descriptor];
-      const aggregations = descriptorArray.map(aggregationType => ({ type: aggregationType }));
-      return [code, aggregations];
-    }),
-  );
 
 export const groupKeysByValueJson = (object: Record<string, unknown>) =>
   groupBy(Object.keys(object), code => JSON.stringify(object[code]));

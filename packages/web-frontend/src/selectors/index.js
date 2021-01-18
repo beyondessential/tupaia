@@ -36,6 +36,8 @@ export {
   selectIsProject,
   selectProjectByCode,
   selectAdjustedProjectBounds,
+  selectTileSets,
+  selectActiveTileSet,
 } from './projectSelectors';
 
 export {
@@ -44,6 +46,9 @@ export {
   selectCurrentDashboardGroupCode,
   selectCurrentExpandedViewContent,
   selectCurrentExpandedViewId,
+  selectIsEnlargedDialogVisible,
+  selectShouldUseDashboardData,
+  selectCurrentExpandedDates,
 } from './dashboardSelectors';
 
 export {

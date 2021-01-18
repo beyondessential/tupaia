@@ -18,7 +18,7 @@ const Overlay = ({ titleText, titleElement, children, onClose, contentStyle }) =
     <div style={styles.header}>
       {titleElement || <div style={styles.title}>{titleText}</div>}
       <button type="button" style={styles.closeButton} onClick={onClose}>
-        <CloseIcon data-testid="overlay-close-btn" />
+        <CloseIcon />
       </button>
     </div>
     <div style={[styles.content, contentStyle]}>{children}</div>

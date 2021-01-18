@@ -1,5 +1,4 @@
-import { convertDateRangeToPeriods, replaceValues, CustomError } from '@tupaia/utils';
-import { DashboardReport } from '/models';
+import { convertDateRangeToPeriods, CustomError, replaceValues } from '@tupaia/utils';
 import { getDhisApiInstance } from '/dhis';
 import { isSingleValue } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
@@ -15,13 +14,6 @@ const noViewWithId = {
   responseText: {
     status: 'viewError',
     details: 'No view with corresponding id',
-  },
-};
-
-const viewNotInGroup = {
-  responseText: {
-    status: 'viewError',
-    details: 'Dashboard group does not contain view',
   },
 };
 
@@ -58,7 +50,7 @@ export default class extends DataAggregatingRouteHandler {
 
     const { viewId, drillDownLevel } = this.query;
     // If drillDownLevel is undefined, send it through as null instead so it's not dropped from the object.
-    const dashboardReport = await DashboardReport.findOne({
+    const dashboardReport = await this.models.dashboardReport.findOne({
       id: viewId,
       drillDownLevel: drillDownLevel || null,
     });

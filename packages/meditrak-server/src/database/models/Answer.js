@@ -1,13 +1,13 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
-import winston from 'winston';
+ */
 
 /* eslint-disable camelcase */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import winston from 'winston';
 
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
@@ -30,7 +30,9 @@ export const ANSWER_TYPES = {
   RADIO: 'Radio',
   SUBMISSION_DATE: 'SubmissionDate',
   YEARS_SINCE: 'YearsSince',
-  // If adding a new type, add validation in both importSurveys and importSurveyResponses
+  ARITHMETIC: 'Arithmetic',
+  CONDITION: 'Condition',
+  // If adding a new type, add validation in both importSurveys and updateSurveyResponses
 };
 
 // these answer types are not stored as data, because they either don't take any answer, or their data
@@ -117,20 +119,21 @@ class AnswerType extends DatabaseType {
 }
 
 export class AnswerModel extends DatabaseModel {
+  notifiers = [onChangeRunQuestionHook];
+
   get DatabaseTypeClass() {
     return AnswerType;
   }
 
   types = ANSWER_TYPES;
-
-  static onChange = async ({ type: changeType, record }, model) => {
-    if (changeType === 'delete') return;
-
-    const answer = await model.generateInstance(record);
-    try {
-      await answer.runHook();
-    } catch (e) {
-      winston.error(e);
-    }
-  };
 }
+
+const onChangeRunQuestionHook = async ({ type: changeType, new_record: newRecord }, models) => {
+  if (changeType === 'delete') return;
+  try {
+    const answer = await models.answer.generateInstance(newRecord);
+    await answer.runHook();
+  } catch (e) {
+    winston.error(e);
+  }
+};

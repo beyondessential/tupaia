@@ -1,0 +1,104 @@
+[
+    {
+        "parent_code": "PW_Babeldaob",
+        "code": "PW_NorthCHC",
+        "name": "North Community Health Center (NCHC)",
+        "facility_type": "Community Health Center",
+        "Latitude": 7.69550278,
+        "Longitude": 134.63111111
+    },
+    {
+        "parent_code": "PW_Babeldaob",
+        "code": "PW_EastCHC",
+        "name": "East Community Health Center (ECHC)",
+        "facility_type": "Community Health Center",
+        "Latitude": 7.49089806,
+        "Longitude": 134.62027778
+    },
+    {
+        "parent_code": "PW_Babeldaob",
+        "code": "PW_CommunityCHC",
+        "name": "Community Health Center II (CHC II)",
+        "facility_type": "Community Health Center",
+        "Latitude": 7.35882333,
+        "Longitude": 134.54444444
+    },
+    {
+        "parent_code": "PW_Babeldaob",
+        "code": "PW_WestCHC",
+        "name": "West Community Health Center (WCHC)",
+        "facility_type": "Community Health Center",
+        "Latitude": 7.52851861,
+        "Longitude": 134.55694444
+    },
+    {
+        "parent_code": "PW_Koror",
+        "code": "PW_CentralCHC",
+        "name": "Central Community Health Center (CCHC I)",
+        "facility_type": "Community Health Center",
+        "Latitude": 7.33942917,
+        "Longitude": 134.47333333
+    },
+    {
+        "parent_code": "PW_Koror",
+        "code": "PW_BelauHP",
+        "name": "Belau National Hospital",
+        "facility_type": "Hospital",
+        "Latitude": 7.35342944,
+        "Longitude": 134.46416667
+    },
+    {
+        "parent_code": "PW_Peleliu",
+        "code": "PW_SouthCHC",
+        "name": "South Community Health Center (SCHC)",
+        "facility_type": "Community Health Center",
+        "Latitude": 7.03038028,
+        "Longitude": 134.24972222
+    },
+    {
+        "parent_code": "PW_Angaur",
+        "code": "PW_AngaurCHC",
+        "name": "Angaur Community Health Center",
+        "facility_type": "Community Health Center",
+        "Latitude": 6.9046625,
+        "Longitude": 134.13
+    },
+    {
+        "parent_code": "PW_Southwest Islands",
+        "code": "PW_SonsorolCHC",
+        "name": "Sonsorol Community Health Center",
+        "facility_type": "Community Health Center"
+    },
+    {
+        "parent_code": "PW_Southwest Islands",
+        "code": "PW_HatohobeiCHC",
+        "name": "Hatohobei Community Health Center",
+        "facility_type": "Community Health Center"
+    },
+    {
+        "parent_code": "PW_Kayangel",
+        "code": "PW_KayangelCHC",
+        "name": "Kayangel Community Health Center",
+        "facility_type": "Community Health Center",
+        "Latitude": 8.08113556,
+        "Longitude": 134.71833333
+    },
+    {
+        "parent_code": "PW_Koror",
+        "code": "PW_FamilySurgicalPC",
+        "name": "Family Surgical Clinic",
+        "facility_type": "Private Clinic"
+    },
+    {
+        "parent_code": "PW_Koror",
+        "code": "PW_BelauPC",
+        "name": "Belau Medical Clinic",
+        "facility_type": "Private Clinic"
+    },
+    {
+        "parent_code": "PW_Koror",
+        "code": "PW_PacificFamilyPC",
+        "name": "Pacific Family Medical Clinic",
+        "facility_type": "Private Clinic"
+    }
+]

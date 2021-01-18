@@ -31,6 +31,21 @@ export const codeToId = async (db, table, code) => {
   return record.rows[0] && record.rows[0].id;
 };
 
+export const createForeignKeyConfig = (
+  localTable,
+  localColumn,
+  foreignTable,
+  foreignColumn = 'id',
+) => ({
+  name: `${localTable}_${localColumn}_${foreignTable}_${foreignColumn}_fk`,
+  table: foreignTable,
+  rules: {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  },
+  mapping: foreignColumn,
+});
+
 /**
  * @param {Object<string, any>} params
  * @throws {RequiredParameterError}
@@ -172,8 +187,17 @@ export function populateEntityBounds(db) {
 
 /* eslint-disable no-unused-vars */
 
+// Get a dashboard report by id
+async function getDashboardReportById(db, id) {
+  const { rows: dashboardReports } = await db.runSql(`
+      SELECT * FROM "dashboardReport"
+      WHERE id = '${id}';
+  `);
+  return dashboardReports[0] || null;
+}
+
 // Add a dashboard report to a dashboard group
-function addReportToGroups(db, reportId, groupCodes) {
+export function addReportToGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
       "dashboardGroup"
@@ -209,6 +233,11 @@ function deleteReport(db, reportId) {
 // Update data builder configuration for a report
 async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
+}
+
+// Update viewJson in dashboard report
+async function updateViewJsonByReportId(db, newJson, reportId) {
+  return updateValues(db, 'dashboardReport', { viewJson: newJson }, { id: reportId });
 }
 
 const convertToTableOfDataValuesSql = table => {

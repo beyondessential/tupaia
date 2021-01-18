@@ -9,6 +9,7 @@ import { mapMeasureValuesToGroups } from './helpers';
 // Don't use this measurebuilder, use 'groupData' instead.
 // Ideally would remove this measureBuilder entirely
 export const groupSumDataPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -16,6 +17,7 @@ export const groupSumDataPerOrgUnit = async (
   entity,
 ) => {
   const builder = new SumPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

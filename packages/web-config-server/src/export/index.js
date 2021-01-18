@@ -4,6 +4,6 @@
  */
 
 export { buildExportUrl } from './buildExportUrl';
-export { exportChart } from './exportChart';
+export { exportChartHandler } from './exportChartHandler';
 export { ExportSurveyResponsesHandler } from './ExportSurveyResponsesHandler';
 export { ExportSurveyDataHandler } from './ExportSurveyDataHandler';

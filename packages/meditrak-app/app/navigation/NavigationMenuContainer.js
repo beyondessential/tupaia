@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import { connect } from 'react-redux';
 
 import { NavigationMenu } from './NavigationMenu';
@@ -19,10 +19,10 @@ const DEVELOPER_EMAIL_ADDRESSES = [
   'edmofro@gmail.com',
 ];
 
-function mapStateToProps({ sideMenu, authentication, navigation, rewards }) {
+function mapStateToProps({ sideMenu, authentication, nav, rewards }) {
   const { isOpen } = sideMenu;
   const { emailAddress, name } = authentication;
-  const { routes } = navigation;
+  const { routes } = nav;
   const { pigs, coconuts } = rewards;
 
   const sections = [
@@ -99,10 +99,6 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
   };
 }
 
-const NavigationMenuContainer = connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(NavigationMenu);
+const NavigationMenuContainer = connect(mapStateToProps, null, mergeProps)(NavigationMenu);
 
 export { NavigationMenuContainer };

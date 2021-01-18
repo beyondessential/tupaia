@@ -1,10 +1,10 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import NetInfo from '@react-native-community/netinfo';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CLIENT_BASIC_AUTH_HEADER } from 'react-native-dotenv';
 
 import { logoutWithError, receiveUpdatedAccessPolicy } from '../authentication/actions';
@@ -33,7 +33,7 @@ export class TupaiaApi {
     this.connectionStatus = null;
 
     this.tokenPromise = this.retrieveAuthTokens(); // Async function that will complete some time after constructor
-    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+    NetInfo.addEventListener(this.handleConnectivityChange);
   }
 
   async reauthenticate(loginCredentials) {
@@ -148,7 +148,7 @@ export class TupaiaApi {
     const response = await this.post(
       CHANGE_USER_PASSWORD_ENDPOINT,
       null,
-      JSON.stringify({ oldPassword, newPassword, newPasswordConfirm }),
+      JSON.stringify({ oldPassword, password: newPassword, passwordConfirm: newPasswordConfirm }),
     );
 
     return response;
@@ -185,8 +185,8 @@ export class TupaiaApi {
     return this.request('POST', ...params);
   }
 
-  handleConnectivityChange = isConnected => {
-    this.connectionStatus = isConnected;
+  handleConnectivityChange = ({ isInternetReachable }) => {
+    this.connectionStatus = isInternetReachable;
   };
 
   getQueryUrl = (endpoint, queryParamsIn) => {

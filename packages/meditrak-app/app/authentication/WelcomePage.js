@@ -1,17 +1,16 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { ProgressBar, TupaiaLogo, Text, TouchableOpacity } from '../widgets';
+import { ProgressBar, TupaiaLogo, Text, TouchableOpacity, TupaiaBackground } from '../widgets';
 import { DEFAULT_PADDING, THEME_COLOR_ONE } from '../globalStyles';
 
-export const WelcomePage = ({ syncMessage, screenProps, total, progress, isSyncing, onCancel }) => {
-  const { BackgroundComponent } = screenProps;
+export const WelcomePage = ({ syncMessage, total, progress, isSyncing, onCancel }) => {
   return (
-    <BackgroundComponent style={localStyles.container}>
+    <TupaiaBackground style={localStyles.container}>
       <StatusBar barStyle="light-content" />
       <TupaiaLogo white width={150} height={50} style={localStyles.logo} />
       <ProgressBar
@@ -21,15 +20,14 @@ export const WelcomePage = ({ syncMessage, screenProps, total, progress, isSynci
         style={localStyles.progressBar}
       />
       <Text style={localStyles.syncMessageText}>{syncMessage}</Text>
-      <TouchableOpacity onPress={onCancel} analyticsLabel={'Welcome: Cancel'}>
+      <TouchableOpacity onPress={onCancel} analyticsLabel="Welcome: Cancel">
         <Text style={localStyles.cancelLink}>Cancel and logout</Text>
       </TouchableOpacity>
-    </BackgroundComponent>
+    </TupaiaBackground>
   );
 };
 
 WelcomePage.propTypes = {
-  screenProps: PropTypes.object.isRequired,
   syncMessage: PropTypes.string,
   total: PropTypes.number,
   progress: PropTypes.number,

@@ -36,11 +36,11 @@ const STUBBED_MODEL_DATA = {
   entity: [
     {
       id: 'demo_land',
-      fetchClosestOrganisationUnit: () => ({ code: 'DL' }),
+      fetchNearestOrgUnitAncestor: () => ({ code: 'DL' }),
     },
     {
       id: 'tonga_case_1',
-      fetchClosestOrganisationUnit: () => ({ code: 'TO_Tongatapu_Tofoa' }),
+      fetchNearestOrgUnitAncestor: () => ({ code: 'TO_Tongatapu_Tofoa' }),
     },
   ],
   survey_response: [REGIONAL_SURVEY_RESPONSE, TONGA_SURVEY_RESPONSE],

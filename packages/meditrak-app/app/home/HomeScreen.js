@@ -1,26 +1,21 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withNavigationFocus } from 'react-navigation';
 import { Animated, StyleSheet, Text, FlatList, View } from 'react-native';
 
-import {
-  THEME_COLOR_ONE,
-  THEME_TEXT_COLOR_FOUR,
-  DEFAULT_PADDING,
-  getGreyShade,
-} from '../globalStyles';
+import { THEME_TEXT_COLOR_FOUR, DEFAULT_PADDING, getGreyShade } from '../globalStyles';
 import { FeedItemContainer } from '../social';
 import { HomeHeaderContainer } from './HomeHeaderContainer';
-import { TupaiaHeaderLogo } from '../widgets';
+import { TupaiaLogo } from '../widgets';
 import { HomeToolbarContainer } from './HomeToolbarContainer';
 
 class HomeScreenComponent extends PureComponent {
   static navigationOptions = {
-    headerTitle: <TupaiaHeaderLogo />,
+    headerTitle: () => <TupaiaLogo />,
+    headerTitleAlign: 'left',
   };
 
   constructor(props) {
@@ -54,6 +49,7 @@ class HomeScreenComponent extends PureComponent {
       Animated.timing(this.floatingHeaderVisibleAnimation, {
         toValue: isFloatingHeaderVisible ? 1 : 0,
         duration: 800,
+        useNativeDriver: false,
       }).start();
     }
 

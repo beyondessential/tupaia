@@ -4,3 +4,5 @@
  */
 
 export { CreateHandler } from './CreateHandler';
+export { BESAdminCreateHandler } from './BESAdminCreateHandler';
+export { TupaiaAdminCreateHandler } from './TupaiaAdminCreateHandler';

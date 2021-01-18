@@ -4,8 +4,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Table } from '@tupaia/ui-components';
 import { SyndromeCell, AlertMenuCell, WeekAndDateCell, CountryNameCell } from '../../components';
-import { ConnectedTable } from './ConnectedTable';
+import { useTableQuery } from '../../api';
 
 const createColumns = isForMultipleCountries => [
   ...(isForMultipleCountries
@@ -52,13 +53,28 @@ const createColumns = isForMultipleCountries => [
   },
 ];
 
-export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => (
-  <ConnectedTable
-    endpoint="alerts"
-    columns={createColumns(!countryCode)}
-    onRowClick={handlePanelOpen}
-  />
-));
+export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => {
+  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
+    'alerts',
+  );
+
+  return (
+    <>
+      <Table
+        order={order}
+        orderBy={orderBy}
+        onChangeOrderBy={handleChangeOrderBy}
+        data={data ? data.data : 0}
+        count={data ? data.count : 0}
+        isLoading={isLoading}
+        errorMessage={error && error.message}
+        columns={createColumns(!countryCode)}
+        onRowClick={handlePanelOpen}
+      />
+      {isFetching && 'Fetching...'}
+    </>
+  );
+});
 
 AlertsTable.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,

@@ -1,19 +1,13 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
-import {
-  ActivityIndicator,
-  Animated,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Animated, ScrollView, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { database } from '../database';
 import { QuestionScreen } from './QuestionScreen';
 import { SubmitScreen } from './SubmitScreen';
 import {
@@ -22,17 +16,19 @@ import {
   ProgressActionBar,
   Popup,
   StatusMessage,
+  TupaiaBackground,
   STATUS_MESSAGE_ERROR,
 } from '../widgets';
 import { SurveyTableOfContents } from './SurveyTableOfContents';
 import { THEME_COLOR_ONE } from '../globalStyles';
+import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
 
 const LENGTH_OF_TRANSITION = 300;
 
 export class DumbSurveyScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    title: navigation.state.params.headerLabel,
-    headerBackImage: require('../images/x.png'),
+    headerTitle: navigation.state.params.headerLabel,
+    headerLeft: () => <HeaderLeftButton source={require('../images/x.png')} labelVisible={false} />,
   });
 
   constructor(props) {
@@ -69,6 +65,7 @@ export class DumbSurveyScreen extends React.Component {
       Animated.timing(this.state.screenIndexAnimation, {
         toValue: nextProps.screenIndex,
         duration: LENGTH_OF_TRANSITION,
+        useNativeDriver: false,
       }).start(() => {
         this.setState({ lastScreenIndex: null });
       });
@@ -105,7 +102,7 @@ export class DumbSurveyScreen extends React.Component {
 
   getStyleForContent(forScreenIndex) {
     const { screenIndex: currentScreenIndex } = this.props;
-    const lastScreenIndex = this.state.lastScreenIndex;
+    const { lastScreenIndex } = this.state;
     const isCurrentScreen = forScreenIndex === currentScreenIndex;
     const isIncreasing = currentScreenIndex > lastScreenIndex;
 
@@ -141,7 +138,6 @@ export class DumbSurveyScreen extends React.Component {
       onPressNext,
       onPressRepeat,
       onPressSubmit,
-      screenProps,
       surveyName,
       surveyProgress,
       isSubmitting,
@@ -150,11 +146,10 @@ export class DumbSurveyScreen extends React.Component {
       screenIndex,
       questions,
     } = this.props;
-    const { BackgroundComponent, database } = screenProps;
     const { isTableOfContentsVisible } = this.state;
 
     return (
-      <BackgroundComponent style={localStyles.container}>
+      <TupaiaBackground style={localStyles.container}>
         {[0, 1].map(index => {
           // Even screens will use the first component, odd will use the second
           const isCurrentContent = screenIndex % 2 === index;
@@ -184,18 +179,18 @@ export class DumbSurveyScreen extends React.Component {
                 ) : (
                   <QuestionScreen database={database} screenIndex={screenIndexForThisContent} />
                 )}
-                {isSubmitting && <ActivityIndicator color={THEME_COLOR_ONE} size={'large'} />}
+                {isSubmitting && <ActivityIndicator color={THEME_COLOR_ONE} size="large" />}
                 <View style={localStyles.buttonContainerContainer}>
                   {isCurrentContent && onPressSubmit !== null && !isSubmitting && (
                     <Button
-                      title={'Submit'}
+                      title="Submit"
                       onPress={onPressSubmit}
                       style={localStyles.submitButton}
                     />
                   )}
                   {isCurrentContent && onPressRepeat !== null && !isSubmitting && (
                     <Button
-                      title={'Submit and repeat'}
+                      title="Submit and repeat"
                       onPress={onPressRepeat}
                       style={localStyles.submitButton}
                     />
@@ -229,7 +224,7 @@ export class DumbSurveyScreen extends React.Component {
           />
         </Popup>
         <KeyboardSpacer />
-      </BackgroundComponent>
+      </TupaiaBackground>
     );
   }
 }
@@ -241,7 +236,6 @@ DumbSurveyScreen.propTypes = {
   onPressRepeat: PropTypes.func,
   onSelectSurveyScreen: PropTypes.func,
   releaseScrollControl: PropTypes.func,
-  screenProps: PropTypes.object.isRequired,
   surveyName: PropTypes.string.isRequired,
   surveyProgress: PropTypes.number.isRequired,
   isSubmitting: PropTypes.bool,

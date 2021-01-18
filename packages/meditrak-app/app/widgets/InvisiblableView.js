@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { Animated, ViewPropTypes } from 'react-native';
@@ -20,6 +20,7 @@ export class InvisiblableView extends React.Component {
     Animated.timing(this.state.animatedOpacity, {
       toValue: nextProps.isInvisible ? 0 : 1,
       duration: 300,
+      useNativeDriver: false,
     }).start();
   }
 

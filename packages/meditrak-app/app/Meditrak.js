@@ -1,71 +1,58 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
-import { BackHandler, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addNavigationHelpers } from 'react-navigation';
-
+import { BackHandler } from 'react-native';
+import { database } from './database';
 import { MessageOverlay } from './messages/MessageOverlay';
 import { isBeta, betaBranch } from './version';
-import { NavigationMenuContainer, Navigator, goBack, NAVIGATION_ADD_LISTENER } from './navigation';
-import { TupaiaBackground } from './widgets';
+import { NavigationMenuContainer, goBack } from './navigation';
 import { DEFAULT_PADDING, THEME_COLOR_THREE, THEME_COLOR_ONE } from './globalStyles';
 
 import { requestLocationPermission } from './utilities/userLocation/permission';
 
 class MeditrakContainer extends React.Component {
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackEvent);
-    this.props.database.enableSync(this.props.dispatch);
+    BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    database.enableSync(this.props.dispatch);
 
     requestLocationPermission();
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackEvent);
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
   }
 
   getCanNavigateBack = () => {
-    const { navigationState } = this.props;
-    return navigationState.index !== 0;
+    const { nav } = this.props;
+    return nav.index !== 0;
   };
 
-  handleBackEvent = () => {
-    // If we are on base screen (e.g. home), back button should close app as we can't go back
+  onBackPress = () => {
     if (!this.getCanNavigateBack()) return false;
-    this.props.onBack();
+
+    const { onGoBack } = this.props;
+    onGoBack();
     return true;
   };
 
   renderBetaBanner() {
     return (
-      <View style={localStyles.betaBanner} pointerEvents={'none'}>
+      <View style={localStyles.betaBanner} pointerEvents="none">
         <Text style={localStyles.betaBannerText}>{betaBranch.toUpperCase()}</Text>
       </View>
     );
   }
 
   render() {
-    const { dispatch, navigationState } = this.props;
     return (
       <View style={localStyles.container}>
-        <NavigationMenuContainer>
-          <Navigator
-            ref={navigator => {
-              this.navigator = navigator;
-            }}
-            navigation={addNavigationHelpers({
-              dispatch,
-              state: navigationState,
-              addListener: NAVIGATION_ADD_LISTENER,
-            })}
-            screenProps={{ database: this.props.database, BackgroundComponent: TupaiaBackground }}
-          />
-        </NavigationMenuContainer>
+        <NavigationMenuContainer>{this.props.children}</NavigationMenuContainer>
         <MessageOverlay />
         {isBeta ? this.renderBetaBanner() : null}
       </View>
@@ -74,10 +61,7 @@ class MeditrakContainer extends React.Component {
 }
 
 MeditrakContainer.propTypes = {
-  database: PropTypes.any.isRequired,
   dispatch: PropTypes.func.isRequired,
-  navigationState: PropTypes.object.isRequired,
-  onBack: PropTypes.func.isRequired,
 };
 
 const localStyles = StyleSheet.create({
@@ -101,20 +85,13 @@ const localStyles = StyleSheet.create({
   },
 });
 
-function mapStateToProps(state) {
-  return {
-    navigationState: state.navigation,
-  };
-}
+const mapStateToProps = state => ({
+  nav: state.nav,
+});
 
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-    onBack: () => dispatch(goBack()),
-  };
-}
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+  onGoBack: () => dispatch(goBack()),
+});
 
-export const Meditrak = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MeditrakContainer);
+export const Meditrak = connect(mapStateToProps, mapDispatchToProps)(MeditrakContainer);

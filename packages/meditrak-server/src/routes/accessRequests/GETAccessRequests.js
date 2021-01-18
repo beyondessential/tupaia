@@ -51,10 +51,6 @@ export class GETAccessRequests extends GETHandler {
     );
     const accessRequests = await super.findRecords(dbConditions, options);
 
-    if (!accessRequests.length) {
-      throw new Error('Your permissions do not allow access to any of the requested resources');
-    }
-
     return accessRequests;
   }
 }

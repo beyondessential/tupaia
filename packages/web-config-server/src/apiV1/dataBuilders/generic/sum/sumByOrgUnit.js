@@ -32,8 +32,13 @@ class SumByOrgUnitBuilder extends DataBuilder {
   }
 }
 
-export const sumByOrgUnit = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const sumByOrgUnit = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new SumByOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

@@ -23,7 +23,6 @@ const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  text-align: center;
 `;
 
 const HeaderInner = styled.div`

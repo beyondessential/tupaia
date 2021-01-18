@@ -8,13 +8,37 @@ export { constructNewRecordValidationRules } from './constructNewRecordValidatio
 export {
   extractTabNameFromQuery,
   splitStringOn,
+  splitStringOnFirstOccurrence,
   splitStringOnComma,
   splitOnNewLinesOrCommas,
 } from './excel';
-export { getArrayQueryParameter } from './getArrayQueryParameter';
+export {
+  fetchCountryIdsByPermissionGroupId,
+  fetchCountryCodesByPermissionGroupId,
+} from './fetchCountriesByPermissionGroup';
 export { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
+export { getAdminPanelAllowedEntityIds } from './getAdminPanelAllowedEntityIds';
+export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
+export { hasTupaiaAdminAccessToEntityForVisualisation } from './hasTupaiaAdminAccessToEntityForVisualisation';
+export { mergeFilter } from './mergeFilter';
+export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
-export { getAdminPanelAllowedEntityIds } from './getAdminPanelAllowedEntityIds';
+export { SurveyResponseVariablesExtractor } from './SurveyResponseVariablesExtractor';
+export {
+  translateQuestionDependentFields,
+  translateQuestionDependentNestedFields,
+  replaceQuestionCodesWithIds,
+  replaceNestedQuestionCodesWithIds,
+  translateQuestionCodeToId,
+} from './translateQuestionDependentFields';
+export { translateExpression } from './translateExpression';
+export { getExpressionQuestionCodes } from './getExpressionQuestionCodes';
+export {
+  translateEntityCodeToId,
+  translateSurveyCodeToId,
+  translateUserEmailToIdAndAssessorName,
+} from './translateSurveyResponseFields';
+export { translateObjectFields } from './translateObjectFields';

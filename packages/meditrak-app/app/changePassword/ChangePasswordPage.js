@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 import React, { PureComponent } from 'react';
 import {
   ActivityIndicator,
@@ -14,12 +14,12 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { MenuContext } from 'react-native-menu';
-import { Form, Button, StatusMessage, STATUS_MESSAGE_ERROR } from '../widgets';
+import { Form, Button, StatusMessage, STATUS_MESSAGE_ERROR, TupaiaBackground } from '../widgets';
 import { getThemeColorOneFaded, DEFAULT_PADDING } from '../globalStyles';
 
 const renderLoadingOverlay = () => (
   <View style={localStyles.loadingOverlay}>
-    <ActivityIndicator size={'large'} />
+    <ActivityIndicator size="large" />
   </View>
 );
 
@@ -29,13 +29,12 @@ const renderErrorMessage = messageText => (
 
 export class ChangePasswordPage extends PureComponent {
   static navigationOptions = {
-    title: 'Change your password',
-    headerVisible: true,
+    headerTitle: 'Change your password',
+    headerMode: 'screen',
   };
 
   render() {
     const {
-      screenProps,
       onChangeField,
       onSubmit,
       formFieldValues,
@@ -43,11 +42,10 @@ export class ChangePasswordPage extends PureComponent {
       isLoading,
       invalidFields,
     } = this.props;
-    const { BackgroundComponent } = screenProps;
 
     return (
       <MenuContext style={localStyles.menuContainer}>
-        <BackgroundComponent style={localStyles.container}>
+        <TupaiaBackground style={localStyles.container}>
           <StatusBar barStyle="dark-content" />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -69,16 +67,12 @@ export class ChangePasswordPage extends PureComponent {
                 fieldValues={formFieldValues}
               />
               <View style={localStyles.actionsContainer}>
-                <Button
-                  title={'Change Password'}
-                  isDisabled={isLoading}
-                  onPress={() => onSubmit()}
-                />
+                <Button title="Change Password" isDisabled={isLoading} onPress={() => onSubmit()} />
               </View>
             </ScrollView>
           </KeyboardAvoidingView>
           {isLoading ? renderLoadingOverlay() : null}
-        </BackgroundComponent>
+        </TupaiaBackground>
       </MenuContext>
     );
   }

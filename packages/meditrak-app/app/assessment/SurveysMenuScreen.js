@@ -1,14 +1,14 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 
-import { Icon, Text, TouchableOpacity, TupaiaPin } from '../widgets';
+import { Icon, Text, TouchableOpacity, TupaiaPin, TupaiaBackground } from '../widgets';
 import {
   DEFAULT_PADDING,
   getGreyShade,
@@ -25,7 +25,7 @@ import { SurveysMenu } from './SurveysMenu';
 
 class DumbSurveysMenuScreen extends React.PureComponent {
   static navigationOptions = {
-    title: 'Surveys',
+    headerTitle: 'Surveys',
   };
 
   onToggleCountryMenu = () => {
@@ -61,26 +61,24 @@ class DumbSurveysMenuScreen extends React.PureComponent {
   }
 
   render() {
-    const { screenProps, navigation, selectedCountryName, isCountryMenuVisible } = this.props;
+    const { navigation, selectedCountryName, isCountryMenuVisible } = this.props;
     const showCountrySelector = !selectedCountryName || isCountryMenuVisible;
-    const { BackgroundComponent } = screenProps;
 
     const expandedSurveyGroupId = navigation.state.params.surveyGroupId;
     return (
-      <BackgroundComponent theme={TUPAIA_BACKGROUND_THEME.WHITE}>
+      <TupaiaBackground theme={TUPAIA_BACKGROUND_THEME.WHITE}>
         {!expandedSurveyGroupId && this.renderHeader()}
         {showCountrySelector ? (
           <CountryListContainer />
         ) : (
           <SurveysMenu expandedSurveyGroupId={expandedSurveyGroupId} />
         )}
-      </BackgroundComponent>
+      </TupaiaBackground>
     );
   }
 }
 
 DumbSurveysMenuScreen.propTypes = {
-  screenProps: PropTypes.shape({}).isRequired,
   selectedCountryName: PropTypes.string,
   isCountryMenuVisible: PropTypes.bool.isRequired,
   setCountryMenuVisible: PropTypes.func.isRequired,

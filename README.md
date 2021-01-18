@@ -25,7 +25,7 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 Any of the main packages can be run using `yarn workspace @tupaia/package-name start-dev`.
 In the case of the two servers, this will also build and watch all of the internal dependencies, so
 that hot reload detects changes to other packages within the mono-repo. As this delays startup time,
-if you prefer to prebuild internal dependencies, add `--skip-internal` to the above command.
+if you prefer to pre-build internal dependencies, add `--skip-internal` to the above command.
 
 ### Internal dependencies
 
@@ -36,6 +36,7 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 - [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
+- [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
@@ -45,6 +46,10 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 ### Secrets
 
 Most packages will require a .env file. `.env.example` files indicate the required variables per package.
+
+### Local database
+
+🔑 **BES internal:** [Tupaia monorepo setup](https://docs.beyondessential.com.au/books/software-development/page/tupaia-monorepo-setup#bkmrk-step-4.-install-post) - steps 4 and 5
 
 ### Dependencies
 
@@ -74,8 +79,10 @@ so if you've updated the environment variables here, you probably also need to p
 Most of the packages support the following scripts for testing:
 
 ```
-yarn test # runs the tests
-yarn test:coverage # runs the tests and displays code coverage
+
+yarn test
+yarn test:coverage # also displays code coverage
+
 ```
 
 ## Style Guide
@@ -86,7 +93,9 @@ We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/conf
 - [@beyondessential/eslint-config-ts](https://www.npmjs.com/package/@beyondessential/eslint-config-ts) for TypeScript packages
 - [@beyondessential/eslint-config-jest](https://www.npmjs.com/package/@beyondessential/eslint-config-jest) for packages using `Jest`
 
-The main config for the monorepo is defined in `.eslintrc` under the root folder. Additional rules may be specified in each package.
+The config for this repository is defined in `.eslintrc` under the root folder. Additional rules/overrides per package are specified in this file.
+
+⚠️ Please do not use individual eslint configs, but update the main configuration file instead.
 
 ### Auto-formatting in Visual Studio Code
 

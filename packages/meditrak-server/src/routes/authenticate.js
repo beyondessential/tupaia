@@ -63,6 +63,7 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permis
     position: user.position,
     employer: user.employer,
     email: user.email,
+    profileImage: user.profile_image,
     verifiedEmail: user.verified_email,
     accessPolicy,
   };

@@ -9,95 +9,30 @@
  * History middleware. This specifies the interface between the site and the url
  */
 
+import moment from 'moment';
 import {
   CLEAR_MEASURE,
   CLOSE_ENLARGED_DIALOG,
-  DIALOG_PAGE_ONE_TIME_LOGIN,
   GO_HOME,
-  openEnlargedDialog,
-  openUserPage,
   OPEN_ENLARGED_DIALOG,
-  setMeasure,
-  setOrgUnit,
-  setOverlayComponent,
-  setPasswordResetToken,
-  setVerifyEmailToken,
   SET_DASHBOARD_GROUP,
+  SET_ENLARGED_DIALOG_DATE_RANGE,
   SET_MEASURE,
   SET_ORG_UNIT,
   SET_PROJECT,
-  updateCurrentMeasureConfigOnceHierarchyLoads,
   updateHistoryLocation,
   UPDATE_MEASURE_CONFIG,
+  LOCATION_CHANGE,
 } from '../actions';
-import { DEFAULT_PROJECT_CODE } from '../defaults';
-import { setProject } from '../projects/actions';
 import { selectCurrentPeriodGranularity, selectMeasureBarItemById } from '../selectors';
-import { PASSWORD_RESET_PREFIX, URL_COMPONENTS, VERIFY_EMAIL_PREFIX } from './constants';
+import { URL_COMPONENTS } from './constants';
 import {
   addPopStateListener,
   attemptPushHistory,
   clearLocation,
-  getInitialLocation,
   setLocationComponent,
 } from './historyNavigation';
-import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
-import { convertDateRangeToUrlPeriodString, decodeLocation } from './utils';
-
-export const reactToInitialState = store => {
-  reactToLocationChange(store, getInitialLocation(), clearLocation());
-};
-
-const reactToLocationChange = (store, location, previousLocation) => {
-  const { dispatch: rawDispatch } = store;
-  const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
-
-  const { userPage, projectSelector, ...otherComponents } = decodeLocation(location);
-  if (userPage) {
-    reactToUserPage(userPage, otherComponents, dispatch);
-    return;
-  }
-
-  if (projectSelector) {
-    // Set project to explore, this is the default
-    rawDispatch(setProject(DEFAULT_PROJECT_CODE));
-    return;
-  }
-
-  const previousComponents = decodeLocation(previousLocation);
-
-  const setComponentIfUpdated = (componentKey, setComponent) => {
-    const component = otherComponents[componentKey];
-    if (component && component !== previousComponents[componentKey])
-      dispatch(setComponent(component));
-  };
-
-  const isLandingPageProject = PROJECTS_WITH_LANDING_PAGES[otherComponents[URL_COMPONENTS.PROJECT]];
-  const overlayComponent = isLandingPageProject ? PROJECT_LANDING : null;
-  dispatch(setOverlayComponent(overlayComponent));
-  setComponentIfUpdated(URL_COMPONENTS.PROJECT, setProject);
-  setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
-  setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
-  setComponentIfUpdated(URL_COMPONENTS.REPORT, openEnlargedDialog);
-  setComponentIfUpdated(
-    URL_COMPONENTS.MEASURE_PERIOD,
-    updateCurrentMeasureConfigOnceHierarchyLoads,
-  );
-};
-
-const reactToUserPage = (userPage, initialComponents, dispatch) => {
-  switch (userPage) {
-    case PASSWORD_RESET_PREFIX:
-      dispatch(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
-      dispatch(openUserPage(DIALOG_PAGE_ONE_TIME_LOGIN));
-      break;
-    case VERIFY_EMAIL_PREFIX:
-      dispatch(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
-      break;
-    default:
-      console.error('Unhandled user page', userPage);
-  }
-};
+import { convertDateRangeToUrlPeriodString } from './utils';
 
 export const historyMiddleware = store => next => action => {
   if (action.meta && action.meta.preventHistoryUpdate) return next(action);
@@ -123,8 +58,22 @@ export const historyMiddleware = store => next => action => {
     case OPEN_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewId);
       break;
+    case SET_ENLARGED_DIALOG_DATE_RANGE:
+      // Drill down dates are handled in normal redux state
+      if (action.drillDownLevel === 0) {
+        dispatchLocationUpdate(
+          store,
+          URL_COMPONENTS.REPORT_PERIOD,
+          convertDateRangeToUrlPeriodString({
+            startDate: moment(action.startDate),
+            endDate: moment(action.endDate),
+          }),
+        );
+      }
+      break;
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
+      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT_PERIOD, null);
       break;
     case SET_MEASURE: {
       const { startDate, endDate, periodGranularity } =
@@ -165,7 +114,7 @@ export const initHistoryDispatcher = store => {
   addPopStateListener(location => {
     const previousLocation = store.getState().routing;
     store.dispatch(updateHistoryLocation(location));
-    reactToLocationChange(store, location, previousLocation);
+    store.dispatch({ type: LOCATION_CHANGE, location, previousLocation });
   });
 
   // The other part of the two-way binding is updating the displayed

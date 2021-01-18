@@ -9,9 +9,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Lock from '@material-ui/icons/Lock';
+import Alarm from '@material-ui/icons/Alarm';
 import Button from '@material-ui/core/Button';
 
-import { BOX_SHADOW, WHITE, LIGHT_GREY } from '../../../../styles';
+import { BOX_SHADOW, WHITE, LIGHT_GREY, FORM_BLUE, LIGHT_BLUE } from '../../../../styles';
 
 const Card = styled.div`
   display: grid;
@@ -88,6 +89,19 @@ const LockIcon = styled(Lock)`
   margin-right: 5px;
 `;
 
+const AlarmIcon = styled(Alarm)`
+  margin-right: 5px;
+`;
+
+const styles = {
+  pendingAccessButton: {
+    background: LIGHT_BLUE,
+    color: FORM_BLUE,
+    padding: '5px',
+  },
+  accessButton: {},
+};
+
 export const ProjectCard = ({
   name,
   description,
@@ -97,9 +111,10 @@ export const ProjectCard = ({
   projectAction,
   actionText,
   accessType,
+  hasAccessPending,
 }) => {
   return (
-    <Card data-testid="project-card">
+    <Card>
       <Header>
         <img alt="project background" src={imageUrl} />
         {logoUrl && (
@@ -111,13 +126,15 @@ export const ProjectCard = ({
       <Title>{name}</Title>
       <FullWidthRow>{description}</FullWidthRow>
       <Footer>
-        <Countries>{name === 'Disaster Response' ? 'Global' : names.join(', ')}</Countries>
+        <Countries>{name === 'Disaster Response' ? 'Global' : names.sort().join(', ')}</Countries>
         <Button
           onClick={projectAction}
           color="primary"
-          variant={accessType ? 'contained' : 'outlined'}
+          style={hasAccessPending ? styles.pendingAccessButton : styles.accessButton}
+          variant={accessType || hasAccessPending ? 'contained' : 'outlined'}
         >
-          {!accessType && <LockIcon />}
+          {!accessType && !hasAccessPending && <LockIcon />}
+          {hasAccessPending && <AlarmIcon />}
           {actionText}
         </Button>
       </Footer>
@@ -134,6 +151,7 @@ ProjectCard.propTypes = {
   projectAction: PropTypes.func.isRequired,
   actionText: PropTypes.string.isRequired,
   accessType: PropTypes.bool.isRequired,
+  hasAccessPending: PropTypes.bool.isRequired,
 };
 
 ProjectCard.defaultProps = {
