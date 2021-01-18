@@ -53,12 +53,15 @@ describe('Permissions checker for GETAccessRequests', async () => {
 
     accessRequest1 = await findOrCreateDummyRecord(models.accessRequest, {
       entity_id: vanuatuEntity.id,
+      processed_by: null,
     });
     accessRequest2 = await findOrCreateDummyRecord(models.accessRequest, {
       entity_id: kiribatiEntity.id,
+      processed_by: null,
     });
     accessRequest3 = await findOrCreateDummyRecord(models.accessRequest, {
       entity_id: laosEntity.id,
+      processed_by: null,
     });
 
     // Create a filter string so we are only requesting the test data from the endpoint
