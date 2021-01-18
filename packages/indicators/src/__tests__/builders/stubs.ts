@@ -3,36 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregator } from '@tupaia/aggregator';
 import { createJestMockInstance } from '@tupaia/utils';
-import { Analytic, Aggregation } from '../../types';
+import { Analytic } from '../../types';
 
-export type AnalyticResponseFixture = {
-  code: string;
-  aggregations: Aggregation[];
-  analytic: Analytic;
-};
-
-export const createAggregator = (
-  analyticResponseFixtures: AnalyticResponseFixture[] = [],
-): Aggregator => {
-  /**
-   * Looks for the provided codes and aggregations in the input
-   * and returns analytics for all matched items
-   */
-  const fetchAnalytics = async (
-    codeInput: string[],
-    _: unknown,
-    aggregationOptions: { aggregations: Aggregation[] },
-  ) => ({
-    results: analyticResponseFixtures
-      .filter(
-        ({ code, aggregations }) =>
-          codeInput.includes(code) &&
-          JSON.stringify(aggregationOptions.aggregations) === JSON.stringify(aggregations),
-      )
-      .map(({ analytic }) => analytic),
+export const createPopulatedAnalyticsRepository = (availableAnalytics: Analytic[]) =>
+  createJestMockInstance('@tupaia/indicators/src/AnalyticsRepository.ts', 'AnalyticsRepository', {
+    isPopulated: () => true,
+    getAnalyticsForDataElement: (dataElement: string) =>
+      availableAnalytics.filter(a => a.dataElement === dataElement),
+    aggregateRootAnalytics: (analytics: Analytic[]) => analytics,
+    aggregateNestedAnalytics: (analytics: Analytic[]) => analytics,
   });
-
-  return createJestMockInstance('@tupaia/aggregator', 'Aggregator', { fetchAnalytics });
-};

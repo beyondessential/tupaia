@@ -3,18 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ArithmeticConfig, buildArithmetic } from '../../../builders/buildArithmetic';
-import { AnalyticValue } from '../../../types';
-import { createAggregator } from '../stubs';
-import { ANALYTIC_RESPONSE_FIXTURES } from './buildArithmetic.fixtures';
+import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
+import { DbRecord, FetchOptions } from '../../../types';
+import { createPopulatedAnalyticsRepository } from '../stubs';
+import { AGGREGATOR_ANALYTICS } from './ArithmeticBuilder.fixtures';
 
-export const testCalculations = () => {
+export const testBuildAnalytics = () => {
+  const populatedAnalyticsRepo = createPopulatedAnalyticsRepository(AGGREGATOR_ANALYTICS);
+
+  const valuesToAnalytics = (values: number[]) =>
+    values.map(value => ({
+      dataElement: 'TestAnalytics',
+      organisationUnit: 'TO',
+      period: '2019',
+      value,
+    }));
+
   describe('arithmetic', () => {
-    const api = {
-      getAggregator: () => createAggregator(ANALYTIC_RESPONSE_FIXTURES),
-      buildAnalyticsForIndicators: async () => [],
-    };
-
     const testData: [string, string, number[]][] = [
       ['simple expression - integer result', 'One + Two', [3]],
       ['simple expression - float result', 'One / Two', [1 / 2]],
@@ -23,23 +28,19 @@ export const testCalculations = () => {
       ['some data elements are undefined in the orgUnit/period combo', 'One + Undefined', []],
     ];
 
-    it.each(testData)('%s', (_, formula, expected) => {
-      const config = { formula, aggregation: 'FINAL_EACH_YEAR' };
+    it.each(testData)('%s', async (_, formula, expectedValues) => {
+      const config = { formula, aggregation: 'RAW' };
+      const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
+      const builder = new ArithmeticBuilder(indicator);
+      const expected = valuesToAnalytics(expectedValues);
 
-      return expect(
-        buildArithmetic({ api, config, fetchOptions: {} }),
-      ).resolves.toIncludeSameMembers(
-        expected.map(value => ({ organisationUnit: 'TO', period: '2019', value })),
-      );
+      expect(
+        builder.buildAnalytics(populatedAnalyticsRepo, {}, {} as FetchOptions),
+      ).toIncludeSameMembers(expected);
     });
   });
 
   describe('boolean', () => {
-    const api = {
-      getAggregator: () => createAggregator(ANALYTIC_RESPONSE_FIXTURES),
-      buildAnalyticsForIndicators: async () => [],
-    };
-
     const testData: [string, string, number[]][] = [
       ['> (true)', 'Two > One', [1]],
       ['> (false)', 'One > Two', [0]],
@@ -71,24 +72,20 @@ export const testCalculations = () => {
       ],
     ];
 
-    it.each(testData)('%s', (_, formula, expected) => {
-      const config = { formula, aggregation: 'FINAL_EACH_YEAR' };
+    it.each(testData)('%s', (_, formula, expectedValues) => {
+      const config = { formula, aggregation: 'RAW' };
+      const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
+      const builder = new ArithmeticBuilder(indicator);
+      const expected = valuesToAnalytics(expectedValues);
 
-      return expect(
-        buildArithmetic({ api, config, fetchOptions: {} }),
-      ).resolves.toIncludeSameMembers(
-        expected.map(value => ({ organisationUnit: 'TO', period: '2019', value })),
-      );
+      expect(
+        builder.buildAnalytics(populatedAnalyticsRepo, {}, {} as FetchOptions),
+      ).toIncludeSameMembers(expected);
     });
   });
 
   describe('multiple orgUnit/period combos', () => {
-    const api = {
-      getAggregator: () => createAggregator(ANALYTIC_RESPONSE_FIXTURES),
-      buildAnalyticsForIndicators: async () => [],
-    };
-
-    const testData: [string, ArithmeticConfig, AnalyticValue[]][] = [
+    const testData: [string, DbRecord, [string, string, number][]][] = [
       [
         'all data elements are defined in all combos',
         {
@@ -96,10 +93,10 @@ export const testCalculations = () => {
           aggregation: 'FINAL_EACH_YEAR',
         },
         [
-          { organisationUnit: 'TO', period: '2019', value: 3 },
-          { organisationUnit: 'TO', period: '2020', value: 30 },
-          { organisationUnit: 'PG', period: '2019', value: 3.3000000000000003 },
-          { organisationUnit: 'PG', period: '2020', value: 33 },
+          ['TO', '2019', 3],
+          ['TO', '2020', 30],
+          ['PG', '2019', 3.3000000000000003],
+          ['PG', '2020', 33],
         ],
       ],
       [
@@ -109,8 +106,8 @@ export const testCalculations = () => {
           aggregation: 'FINAL_EACH_YEAR',
         },
         [
-          { organisationUnit: 'TO', period: '2019', value: 4 },
-          { organisationUnit: 'PG', period: '2019', value: 4.4 },
+          ['TO', '2019', 4],
+          ['PG', '2019', 4.4],
         ],
       ],
       [
@@ -120,8 +117,8 @@ export const testCalculations = () => {
           aggregation: 'FINAL_EACH_YEAR',
         },
         [
-          { organisationUnit: 'TO', period: '2019', value: 5 },
-          { organisationUnit: 'TO', period: '2020', value: 50 },
+          ['TO', '2019', 5],
+          ['TO', '2020', 50],
         ],
       ],
       [
@@ -143,9 +140,9 @@ export const testCalculations = () => {
           },
         },
         [
-          { organisationUnit: 'TO', period: '2019', value: 103 },
-          { organisationUnit: 'PG', period: '2019', value: 8.8 },
-          { organisationUnit: 'PG', period: '2020', value: 65 },
+          ['TO', '2019', 103],
+          ['PG', '2019', 8.8],
+          ['PG', '2020', 65],
         ],
       ],
       [
@@ -158,8 +155,8 @@ export const testCalculations = () => {
           },
         },
         [
-          { organisationUnit: 'PG', period: '2019', value: 8.8 },
-          { organisationUnit: 'PG', period: '2020', value: 65 },
+          ['PG', '2019', 8.8],
+          ['PG', '2020', 65],
         ],
       ],
       [
@@ -171,14 +168,23 @@ export const testCalculations = () => {
             Zero: 10,
           },
         },
-        [{ organisationUnit: 'TO', period: '2019', value: 0 }],
+        [['TO', '2019', 0]],
       ],
     ];
 
-    it.each(testData)('%s', (_, config, expected) =>
-      expect(buildArithmetic({ api, config, fetchOptions: {} })).resolves.toIncludeSameMembers(
-        expected,
-      ),
-    );
+    it.each(testData)('%s', (_, config, expectedDimensions) => {
+      const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
+      const builder = new ArithmeticBuilder(indicator);
+      const expected = expectedDimensions.map(([organisationUnit, period, value]) => ({
+        dataElement: 'TestAnalytics',
+        organisationUnit,
+        period,
+        value,
+      }));
+
+      expect(
+        builder.buildAnalytics(populatedAnalyticsRepo, {}, {} as FetchOptions),
+      ).toIncludeSameMembers(expected);
+    });
   });
 };

@@ -5,7 +5,6 @@
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
 import { Analytic } from '../../../types';
-import { AnalyticResponseFixture } from '../stubs';
 
 /**
  * Code format: `valueHint_orgUnits_periods`
@@ -14,7 +13,7 @@ import { AnalyticResponseFixture } from '../stubs';
  * ToPg => analytics exist for orgUnits: TO, PG
  * 20192020 => analytics exist for periods: 2019, 2020
  */
-const AGGREGATOR_ARRAY_ANALYTICS: [string, string, string, number][] = [
+export const AGGREGATOR_ANALYTICS = arrayToAnalytics([
   ['Zero', 'TO', '2019', 0],
   ['One', 'TO', '2019', 1],
   ['Two', 'TO', '2019', 2],
@@ -43,19 +42,4 @@ const AGGREGATOR_ARRAY_ANALYTICS: [string, string, string, number][] = [
 
   ['Population', 'TO', '2019', 100],
   ['Population', 'TO', '2020', 75],
-];
-
-export const ANALYTIC_RESPONSE_FIXTURES: AnalyticResponseFixture[] = arrayToAnalytics(
-  AGGREGATOR_ARRAY_ANALYTICS,
-).map((analytic: Analytic) => ({
-  code: analytic.dataElement,
-  aggregations: [{ type: 'FINAL_EACH_YEAR' }],
-  analytic,
-}));
-
-export const PARAMETER_ANALYTICS = arrayToAnalytics([
-  ['_Positive_Cases', 'TO', '2019', 10],
-  ['_Positive_Cases', 'TO', '2020', 15],
-  ['_Total_Consultations', 'TO', '2019', 25],
-  ['_Total_Consultations', 'TO', '2020', 50],
 ]) as Analytic[];

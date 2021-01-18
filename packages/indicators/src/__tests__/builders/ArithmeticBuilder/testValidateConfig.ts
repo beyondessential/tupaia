@@ -3,17 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ArithmeticConfig, buildArithmetic } from '../../../builders/buildArithmetic';
-import { createAggregator } from '../stubs';
+import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
+import { DbRecord } from '../../../types';
 
 export const testConfigValidation = () => {
-  const api = {
-    getAggregator: () => createAggregator(),
-    buildAnalyticsForIndicators: async () => [],
-  };
-
-  describe('throws for invalid config', () => {
-    const testData: [string, Record<string, unknown>, RegExp | string][] = [
+  describe('invalid config', () => {
+    const testData: [string, DbRecord, RegExp | string][] = [
       ['undefined formula', { aggregation: {} }, /Error .*formula.* empty/],
       ['formula is not a string', { formula: {}, aggregation: {} }, /Error .*formula.* string/],
       [
@@ -122,16 +117,18 @@ export const testConfigValidation = () => {
       ],
     ];
 
-    it.each(testData)('%s', async (_, config, expectedError) =>
-      expect(buildArithmetic({ api, config, fetchOptions: {} })).toBeRejectedWith(expectedError),
-    );
+    it.each(testData)('%s', async (_, config, expectedError) => {
+      const indicator = { code: 'test', builder: 'arithmetic', config };
+      const builder = new ArithmeticBuilder(indicator);
+      return expect(() => builder.validateConfig()).toThrow(expectedError);
+    });
   });
 
-  describe('resolves for valid config', () => {
+  describe('valid config', () => {
     const codesToParameters = (codes: string[]) =>
       codes.map(code => ({ code, builder: 'testAnalytic', config: {} }));
 
-    const testData: [string, ArithmeticConfig][] = [
+    const testData: [string, DbRecord][] = [
       [
         'single aggregation - string',
         {
@@ -184,7 +181,7 @@ export const testConfigValidation = () => {
         'formula includes parameter',
         {
           formula: '2 * A + B',
-          aggregation: { A: 'MOST_RECENT' },
+          aggregation: 'MOST_RECENT',
           parameters: codesToParameters(['B']),
         },
       ],
@@ -192,14 +189,16 @@ export const testConfigValidation = () => {
         'formula consists of parameters',
         {
           formula: '2 * A + B',
-          aggregation: {},
+          aggregation: 'MOST_RECENT',
           parameters: codesToParameters(['A', 'B']),
         },
       ],
     ];
 
-    it.each(testData)('%s', async (_, config) =>
-      expect(buildArithmetic({ api, config, fetchOptions: {} })).toResolve(),
-    );
+    it.each(testData)('%s', async (_, config) => {
+      const indicator = { code: 'test', builder: 'arithmetic', config };
+      const builder = new ArithmeticBuilder(indicator);
+      return expect(() => builder.validateConfig()).not.toThrow();
+    });
   });
 };
