@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class AlertType extends DatabaseType {
-  static databaseType = TYPES.ALERT;
+export class SurveyResponseCommentType extends DatabaseType {
+  static databaseType = TYPES.SURVEY_RESPONSE_COMMENT;
 }
 
-export class AlertModel extends DatabaseModel {
+export class SurveyResponseCommentModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return AlertType;
+    return SurveyResponseCommentType;
   }
 }

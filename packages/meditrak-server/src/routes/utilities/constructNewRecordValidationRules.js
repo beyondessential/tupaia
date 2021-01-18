@@ -20,12 +20,12 @@ import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
-  const { ALERT, COMMENT } = TYPES;
+  const { SURVEY_RESPONSE, COMMENT } = TYPES;
 
   switch (combinedRecordType) {
-    case `${ALERT}/${COMMENT}`:
+    case `${SURVEY_RESPONSE}/${COMMENT}`:
       return {
-        alert_id: [constructRecordExistsWithId(models.alert)],
+        survey_response_id: [constructRecordExistsWithId(models.surveyResponse)],
         user_id: [constructRecordExistsWithId(models.user)],
         text: [hasContent],
       };
@@ -89,12 +89,6 @@ export const constructForSingle = (models, recordType) => {
         type: [hasContent],
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
-      };
-    case TYPES.ALERT:
-      return {
-        entity_id: [constructRecordExistsWithId(models.entity)],
-        data_element_id: [constructRecordExistsWithId(models.dataSource)],
-        start_time: [hasContent, takesDateForm],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);

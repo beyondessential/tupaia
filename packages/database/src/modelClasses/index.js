@@ -4,8 +4,6 @@
  */
 
 import { AccessRequestModel } from './AccessRequest';
-import { AlertCommentModel } from './AlertComment';
-import { AlertModel } from './Alert';
 import { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
 import { AnswerModel } from './Answer';
 import { CommentModel } from './Comment';
@@ -34,6 +32,7 @@ import { ReportModel } from './Report';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
 import { SurveyResponseModel } from './SurveyResponse';
+import { SurveyResponseCommentModel } from './SurveyResponseComment';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
 import { UserEntityPermissionModel } from './UserEntityPermission';
@@ -43,8 +42,6 @@ import { UserSessionModel } from './UserSession';
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
   AccessRequest: AccessRequestModel,
-  Alert: AlertModel,
-  AlertComment: AlertCommentModel,
   AncestorDescendantRelation: AncestorDescendantRelationModel,
   Answer: AnswerModel,
   Comment: CommentModel,
@@ -73,6 +70,7 @@ export const modelClasses = {
   Report: ReportModel,
   Survey: SurveyModel,
   SurveyResponse: SurveyResponseModel,
+  SurveyResponseComment: SurveyResponseCommentModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
   User: UserModel,
@@ -82,7 +80,6 @@ export const modelClasses = {
 
 // export any models and types that are extended in other packages
 export { AccessRequestModel } from './AccessRequest';
-export { AlertModel } from './Alert';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataSourceModel } from './DataSource';

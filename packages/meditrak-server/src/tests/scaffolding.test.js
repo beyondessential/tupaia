@@ -5,6 +5,7 @@ import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import moment from 'moment';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import winston from 'winston';
 
 import { clearTestData } from '@tupaia/database';
 import { getIsProductionEnvironment } from '../devops';
@@ -33,6 +34,11 @@ before(async () => {
   chai.use(sinonChai);
   // `chaiAsPromised` must be used after other plugins to promisify them
   chai.use(chaiAsPromised);
+
+  // Silence winston logs
+  winston.configure({
+    transports: [new winston.transports.Console({ silent: true })],
+  });
 });
 
 after(async () => {
