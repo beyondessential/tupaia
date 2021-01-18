@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword, encryptPassword } from '@tupaia/auth';
-import { generateSecretKey } from '@tupaia/utils';
+import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
 import { CreateHandler } from '../CreateHandler';
 import { assertBESAdminAccess } from '../../permissions';
 
