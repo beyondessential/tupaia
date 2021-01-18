@@ -12,6 +12,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
 import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
+import { resetTestData } from '../../testUtilities';
 
 describe('Permissions checker for GETAccessRequests', async () => {
   const DEFAULT_POLICY = {
@@ -36,6 +37,8 @@ describe('Permissions checker for GETAccessRequests', async () => {
   let filterString;
 
   before(async () => {
+    await resetTestData();
+
     const { entity: vanuatuEntity } = await findOrCreateDummyCountryEntity(models, {
       code: 'VU',
     });
