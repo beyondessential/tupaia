@@ -21,7 +21,7 @@ export const assertUserEntityPermissionPermissions = async (
   }
 
   const entity = await models.entity.findById(userEntityPermission.entity_id);
-  const accessibleCountryCodes = await getAdminPanelAllowedCountryCodes(accessPolicy);
+  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (accessibleCountryCodes.includes(entity.country_code)) {
     return true;
   }

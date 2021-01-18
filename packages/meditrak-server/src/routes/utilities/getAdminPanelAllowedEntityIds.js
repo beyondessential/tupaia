@@ -13,7 +13,7 @@ import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
  * @returns string[] The country codes
  */
 
-export const getAdminPanelAllowedCountryCodes = async accessPolicy => {
+export const getAdminPanelAllowedCountryCodes = accessPolicy => {
   const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
@@ -36,7 +36,7 @@ export const getAdminPanelAllowedCountryCodes = async accessPolicy => {
  */
 
 export const getAdminPanelAllowedEntityIds = async (accessPolicy, models) => {
-  const accessibleCountryCodes = await getAdminPanelAllowedCountryCodes(accessPolicy);
+  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   const entities = await models.entity.find({
     country_code: accessibleCountryCodes,
   });

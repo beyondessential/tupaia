@@ -17,7 +17,7 @@ export const assertAccessRequestPermissions = async (accessPolicy, models, acces
   }
 
   const entity = await models.entity.findById(accessRequest.entity_id);
-  const accessibleCountryCodes = await getAdminPanelAllowedCountryCodes(accessPolicy);
+  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
   if (accessibleCountryCodes.includes(entity.country_code)) {
     return true;
   }
@@ -62,7 +62,7 @@ export const assertAccessRequestUpsertPermissions = async (
   }
   if (entityId) {
     const entity = await models.entity.findById(entityId);
-    const accessibleCountryCodes = await getAdminPanelAllowedCountryCodes(accessPolicy);
+    const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
     if (!accessibleCountryCodes.includes(entity.country_code)) {
       throw new Error('Need access to the newly edited entity');
     }
