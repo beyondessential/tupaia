@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ObjectValidator } from '@tupaia/utils';
 import { AnalyticsRepository } from '../AnalyticsRepository';
 import { Aggregation, Analytic, AnalyticValue, FetchOptions, Indicator } from '../types';
 
@@ -17,9 +16,7 @@ export abstract class Builder {
     this.isRoot = isRoot;
   }
 
-  getIndicator() {
-    return this.indicator;
-  }
+  getIndicator = () => this.indicator;
 
   /**
    * Returns all element codes referenced in this Builder
@@ -51,12 +48,4 @@ export abstract class Builder {
     buildersByIndicator: Record<string, Builder>,
     fetchOptions: FetchOptions,
   ): AnalyticValue[];
-
-  protected validateConfig = <T extends Record<string, unknown>>(validators = {}): T => {
-    new ObjectValidator(validators).validateSync(
-      this.indicator.config,
-      (error: string, field: string) => new Error(`Error in field '${field}': ${error}`),
-    );
-    return this.indicator.config as T;
-  };
 }

@@ -21,9 +21,9 @@ export interface AnalyticCluster {
   dataValues: Record<Analytic['dataElement'], Analytic['value']>;
 }
 
-type DbValue = string | number | boolean | DbValue[] | { [key: string]: DbValue };
+type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: DbValue };
 
-type DbRecord = Record<string, DbValue>;
+export type DbRecord = Record<string, DbValue>;
 
 type DatabaseType<T extends DbRecord> = BaseDatabaseType & T;
 

@@ -4,14 +4,15 @@
  */
 
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
-import { getUniqueEntries } from '@tupaia/utils';
+import { getUniqueEntries, getUniqueObjects } from '@tupaia/utils';
 import { AnalyticsRepository } from '../../AnalyticsRepository';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { Aggregation, Analytic, AnalyticCluster, FetchOptions, Indicator } from '../../types';
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
+import { validateConfig } from '../helpers';
 import { getElementCodesForBuilders } from '../utils';
-import { ArithmeticConfig, DefaultValue, configValidators, getAggregationsByCode } from './config';
+import { ArithmeticConfig, configValidators, DefaultValue, getAggregationsByCode } from './config';
 
 /**
  * Config used by the builder. It is essential a fully expanded, verbose version
@@ -42,7 +43,7 @@ export class ArithmeticBuilder extends Builder {
 
   get config() {
     if (!this.configCache) {
-      const config = this.validateConfig<ArithmeticConfig>(configValidators);
+      const config = this.validateConfig();
       this.configCache = indicatorToBuilderConfig(config);
     }
     return this.configCache;
@@ -56,6 +57,12 @@ export class ArithmeticBuilder extends Builder {
     }
     return this.paramBuildersByCodeCache;
   }
+
+  validateConfig = () => {
+    const { config } = this.indicator;
+    validateConfig<ArithmeticConfig>(config, configValidators);
+    return config;
+  };
 
   getElementCodes = (): string[] => {
     const codesInFormula = this.getElementCodesInFormula();
@@ -75,7 +82,7 @@ export class ArithmeticBuilder extends Builder {
       .map(b => b.getAggregations())
       .flat();
 
-    return formulaAggregations.concat(parameterAggregations);
+    return getUniqueObjects(formulaAggregations.concat(parameterAggregations));
   };
 
   buildAnalyticValues(
