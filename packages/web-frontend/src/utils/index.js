@@ -27,7 +27,6 @@ export {
 } from './measures';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
-export { getBrowserTimeZone } from './getBrowserTimeZone';
 export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
 export { areStringsEqual, stringToFilename } from './string';
