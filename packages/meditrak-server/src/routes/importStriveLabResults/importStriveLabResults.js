@@ -10,6 +10,7 @@ import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
 import SURVEYS from './surveys';
 import { assertCanImportSurveyResponses } from '../importSurveyResponses/assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 const ENTITY_CODE_KEY = 'entityCode';
 const SURVEY_NAMES = Object.keys(SURVEYS);
