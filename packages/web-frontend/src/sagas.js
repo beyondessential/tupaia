@@ -7,6 +7,7 @@
 
 import queryString from 'query-string';
 import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-saga/effects';
+import { getBrowserTimeZone } from '@tupaia/utils';
 import request from './utils/request';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -21,6 +22,7 @@ import {
   changeOrgUnitSuccess,
   CHANGE_ORG_UNIT_SUCCESS,
   CHANGE_SEARCH,
+  FETCH_MORE_SEARCH_RESULTS,
   clearMeasure,
   clearMeasureHierarchy,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
@@ -125,7 +127,7 @@ import {
   selectOrgUnitCountry,
   selectProjectByCode,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getBrowserTimeZone } from './utils';
+import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey } from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -787,18 +789,20 @@ function* watchViewFetchRequests() {
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
   if (action.searchString === '') {
-    yield put(fetchSearchSuccess([]));
+    yield put(fetchSearchSuccess([], false));
   } else {
     const state = yield select();
+    const startIndex = state.searchBar.searchResults?.length || 0; // Send start index to allow loading more search results
     const urlParameters = {
-      criteria: action.searchString,
+      criteria: action.searchString || state.searchBar.searchString,
       limit: 5,
       projectCode: selectCurrentProjectCode(state),
+      startIndex,
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
-      const response = yield call(request, requestResourceUrl);
-      yield put(fetchSearchSuccess(response));
+      const { searchResults, hasMoreResults } = yield call(request, requestResourceUrl);
+      yield put(fetchSearchSuccess(searchResults, hasMoreResults));
     } catch (error) {
       yield put(fetchSearchError(error));
     }
@@ -807,6 +811,10 @@ function* fetchSearchData(action) {
 
 function* watchSearchChange() {
   yield takeLatest(CHANGE_SEARCH, fetchSearchData);
+}
+
+function* watchFetchMoreSearchResults() {
+  yield takeLatest(FETCH_MORE_SEARCH_RESULTS, fetchSearchData);
 }
 
 /**
@@ -1118,6 +1126,7 @@ export default [
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,
   watchSearchChange,
+  watchFetchMoreSearchResults,
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
