@@ -7,19 +7,12 @@ import { buildAndInsertSurveyResponses } from './buildAndInsertSurveyResponses';
 import { buildAndInsertSurveys } from './buildAndInsertSurveys';
 import { getTestModels } from './getTestDatabase';
 import { findOrCreateRecords } from './upsertDummyRecord';
-import { clearTestData } from './clearTestData';
 
 const setupTest = async (models, setup) => {
   const { dbRecords = [], surveys = [], surveyResponses = [] } = setup;
   await findOrCreateRecords(models, dbRecords);
   await buildAndInsertSurveys(models, surveys);
   await buildAndInsertSurveyResponses(models, surveyResponses);
-};
-
-const tearDownTest = async models => {
-  const { database } = models;
-  await clearTestData(database);
-  await database.closeConnections();
 };
 
 /**
@@ -52,7 +45,6 @@ export const runIntegrationTests = ({
     });
 
     afterAll(async () => {
-      // await tearDownTest(models);
       if (afterAllCallback) {
         await afterAllCallback();
       }
