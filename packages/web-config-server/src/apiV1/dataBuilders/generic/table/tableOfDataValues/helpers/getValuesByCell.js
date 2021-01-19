@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 import zipObject from 'lodash.zipobject';
 
-import { addPrefixToCell } from '../TableConfig';
+import { addPrefixToCell } from '/apiV1/dataBuilders/generic/table/tableOfDataValues/TableConfig';
 import {
   countAnalyticsThatSatisfyConditions,
   divideValues,

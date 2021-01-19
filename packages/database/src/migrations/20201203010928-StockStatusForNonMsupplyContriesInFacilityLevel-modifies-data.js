@@ -1,8 +1,7 @@
 'use strict';
 
 import { insertObject, removeArrayValue } from '../utilities';
-import { addArrayValue } from '../utilities/migration';
-import { arrayToDbString } from '../../dist/utilities/migration';
+import { addArrayValue, arrayToDbString } from '../utilities/migration';
 
 var dbm;
 var type;
@@ -110,21 +109,27 @@ const facilityLevelDashboardReportConfig = {
     periodGranularity: 'one_year_at_a_time',
     showPeriodRange: 'all',
     presentationOptions: {
-      red: {
-        color: '#b71c1c',
-        label: '',
-        condition: 0,
-        description: 'Out of stock: ',
-      },
-      green: {
-        color: '#33691e',
-        label: '',
-        condition: {
-          '>': 0,
-        },
-        description: 'In stock: ',
-      },
       type: 'condition',
+      conditions: [
+        {
+          key: 'red',
+          color: '#b71c1c',
+          label: '',
+          condition: 0,
+          description: 'Out of stock: ',
+          legendLabel: 'Out of stock',
+        },
+        {
+          key: 'green',
+          color: '#33691e',
+          label: '',
+          condition: {
+            '>': 0,
+          },
+          description: 'In stock: ',
+          legendLabel: 'In stock',
+        },
+      ],
       showRawValue: true,
     },
   },
