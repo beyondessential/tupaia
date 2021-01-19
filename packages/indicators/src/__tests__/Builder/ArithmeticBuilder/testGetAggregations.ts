@@ -88,7 +88,7 @@ export const testGetAggregations = () => {
     ],
   ];
 
-  it.each(testData)('%s', async (_, config, expected) => {
+  it.each(testData)('%s', (_, config, expected) => {
     const indicator = { code: 'test', builder: 'arithmetic', config };
     const builder = new ArithmeticBuilder(indicator);
     return expect(builder.getAggregations()).toIncludeSameMembers(expected);

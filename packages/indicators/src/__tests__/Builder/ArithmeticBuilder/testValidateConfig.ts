@@ -117,7 +117,7 @@ export const testConfigValidation = () => {
       ],
     ];
 
-    it.each(testData)('%s', async (_, config, expectedError) => {
+    it.each(testData)('%s', (_, config, expectedError) => {
       const indicator = { code: 'test', builder: 'arithmetic', config };
       const builder = new ArithmeticBuilder(indicator);
       return expect(() => builder.validateConfig()).toThrow(expectedError);
@@ -195,7 +195,7 @@ export const testConfigValidation = () => {
       ],
     ];
 
-    it.each(testData)('%s', async (_, config) => {
+    it.each(testData)('%s', (_, config) => {
       const indicator = { code: 'test', builder: 'arithmetic', config };
       const builder = new ArithmeticBuilder(indicator);
       return expect(() => builder.validateConfig()).not.toThrow();
