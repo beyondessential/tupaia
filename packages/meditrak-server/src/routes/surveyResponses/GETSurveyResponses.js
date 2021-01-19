@@ -56,6 +56,6 @@ export class GETSurveyResponses extends GETHandler {
     );
     const dbConditions = { 'survey_response.entity_id': this.parentRecordId, ...criteria };
 
-    return super.findRecords(dbConditions, options);
+    return this.findRecords(dbConditions, options);
   }
 }
