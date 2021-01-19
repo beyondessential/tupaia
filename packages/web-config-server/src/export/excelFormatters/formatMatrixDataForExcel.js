@@ -124,4 +124,12 @@ const convertAoaToAoo = data => {
 
 const isEmpty = data => data === undefined || data === null;
 
-const addValueOrEmpty = value => (isEmpty(value) ? '' : value);
+const addValueOrEmpty = value => {
+  if (isEmpty(value)) return '';
+
+  if (typeof value === 'object') {
+    return isEmpty(value.value) ? '' : value.value;
+  }
+
+  return value;
+}

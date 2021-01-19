@@ -68,8 +68,35 @@ export class DhisChangeValidator extends ChangeValidator {
       await this.queryValidSurveyResponseIds(surveyResponseIds, true),
     );
 
+    // filter out answers for questions that do not sync to dhis
+    const dhisLinkedAnswers = await this.filterDhisLinkedAnswers(answers);
+
     // return the answers that are part of a valid survey response
-    return answers.filter(a => validSurveyResponseIds.has(a.survey_response_id)).map(a => a.id);
+    return dhisLinkedAnswers
+      .filter(a => validSurveyResponseIds.has(a.survey_response_id))
+      .map(a => a.id);
+  };
+
+  /**
+   * Returns the set of answers that are linked via a data element to the dhis service type
+   * @param answers Answer[]
+   * @returns {Promise<Answer[]>}
+   * @private
+   */
+  filterDhisLinkedAnswers = async answers => {
+    const filteredAnswers = [];
+
+    for (const answer of answers) {
+      const question = await this.models.question.findById(answer.question_id);
+
+      const dataSource = await this.models.dataSource.findById(question.data_source_id);
+
+      if (dataSource.service_type === 'dhis') {
+        filteredAnswers.push(answer);
+      }
+    }
+
+    return filteredAnswers;
   };
 
   getValidSurveyResponseUpdates = async updateChanges => {
