@@ -78,7 +78,7 @@ export const importStriveLabResults = async (req, res) => {
     await assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyName);
   };
 
-  await req.assertPermissions(importSurveyResponsePermissionsChecker);
+  await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess, importSurveyResponsePermissionsChecker]));
 
   const importer = createImporter(models);
   const results = await importer.import(inputsPerSurvey, userId);
