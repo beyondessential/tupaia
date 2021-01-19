@@ -1,11 +1,16 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- * This uploads a surveyImage to s3
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+
+import winston from 'winston';
 import { uploadImage } from '../s3';
 
+// Upload a surveyImage to s3
 export const addSurveyImage = async (models, { id, data }) => {
-  const upload = await uploadImage(data, id);
-  return upload;
+  try {
+    await uploadImage(data, id);
+  } catch (error) {
+    winston.error(error.message);
+  }
 };
