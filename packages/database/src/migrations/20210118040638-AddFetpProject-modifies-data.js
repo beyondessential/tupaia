@@ -88,7 +88,7 @@ exports.up = async function (db) {
     code: projectCode,
     description: projectDescription,
     sort_order: 11,
-    image_url: '',
+    image_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/fetp_background.png',
     default_measure: '126,171',
     dashboard_group_name: dashboardGroupName,
     user_groups: `{${userGroups[0]}}`,
