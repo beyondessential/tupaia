@@ -25,12 +25,12 @@ const dashboardGroupName = 'FETP';
 const projectDashboardReports = '{project_details}';
 const userGroups = ['Public', 'FETP Graduates'];
 
-const getProjectDashboardGroupCode = userGroup => `FETP_Project_${userGroup.split(' ').join('_')}`;
+const projectDashboardGroupCode = 'FETP_Project';
 
 const getCountryDashboardGroupCode = (countryCode, userGroup) =>
   `${countryCode}_FETP_Country_${userGroup.split(' ').join('_')}`;
 
-export const hierarchyNameToId = async (db, name) => {
+const hierarchyNameToId = async (db, name) => {
   const record = await db.runSql(`SELECT id FROM entity_hierarchy WHERE name = '${name}'`);
   return record.rows[0] && record.rows[0].id;
 };
@@ -58,19 +58,15 @@ const addCountryToProject = async (db, countryCode) => {
 };
 
 exports.up = async function (db) {
-  await Promise.all(
-    userGroups.map(userGroup =>
-      insertObject(db, 'dashboardGroup', {
-        organisationLevel: 'Project',
-        userGroup,
-        organisationUnitCode: projectCode,
-        dashboardReports: projectDashboardReports,
-        name: projectName,
-        code: getProjectDashboardGroupCode(userGroup),
-        projectCodes: `{${projectCode}}`,
-      }),
-    ),
-  );
+  await insertObject(db, 'dashboardGroup', {
+    organisationLevel: 'Project',
+    userGroup: userGroups[0],
+    organisationUnitCode: projectCode,
+    dashboardReports: projectDashboardReports,
+    name: projectName,
+    code: projectDashboardGroupCode,
+    projectCodes: `{${projectCode}}`,
+  });
 
   await insertObject(db, 'entity', {
     id: generateId(),
