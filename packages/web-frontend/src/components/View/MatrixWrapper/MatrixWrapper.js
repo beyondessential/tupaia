@@ -95,7 +95,7 @@ const buildMatrixDataFromViewContent = viewContent => {
           rowValueType,
           cellValue.metadata,
         );
-      } else if (columnDefinition.valueType) {
+      } else if (columnDefinition && columnDefinition.valueType) {
         formattedCells[columnName] = formatDataValue(
           cellValue.value,
           columnDefinition.valueType,
