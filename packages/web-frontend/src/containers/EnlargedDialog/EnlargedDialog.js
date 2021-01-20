@@ -9,7 +9,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 import styled from 'styled-components';
-import { getBrowserTimeZone } from '@tupaia/utils';
 import {
   fetchEnlargedDialogData,
   setEnlargedDashboardDateRange,
@@ -18,7 +17,7 @@ import {
 import { ExportDialog } from '../../components/ExportDialog';
 import { getIsDataDownload, getIsMatrix, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
-import { isMobile, sleep, stringToFilename } from '../../utils';
+import { isMobile, sleep, stringToFilename, getBrowserTimeZone } from '../../utils';
 import {
   selectCurrentInfoViewKey,
   selectCurrentOrgUnit,
