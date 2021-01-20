@@ -24,3 +24,4 @@ export * from './modules/msupply';
 export * from './modules/pehs';
 export * from './modules/tonga';
 export * from './modules/covid';
+export * from './modules/covid-samoa';

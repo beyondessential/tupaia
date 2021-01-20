@@ -20,6 +20,7 @@ export const ResourcePage = ({
   editConfig,
   createConfig,
   endpoint,
+  reduxId,
   expansionTabs,
   importConfig,
   ExportModalComponent,
@@ -46,7 +47,7 @@ export const ResourcePage = ({
           columns={columns}
           endpoint={endpoint}
           expansionTabs={expansionTabs}
-          reduxId={endpoint}
+          reduxId={reduxId || endpoint}
           baseFilter={baseFilter}
           defaultSorting={defaultSorting}
         />
@@ -63,6 +64,7 @@ ResourcePage.propTypes = {
   editConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
+  reduxId: PropTypes.string,
   expansionTabs: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -87,4 +89,5 @@ ResourcePage.defaultProps = {
   onProcessDataForSave: null,
   baseFilter: {},
   defaultSorting: [],
+  reduxId: null,
 };

@@ -9,14 +9,13 @@ export {
   upsertAnswer,
   upsertEntity,
   upsertQuestion,
+  upsertDataSource,
   upsertSurvey,
   upsertSurveyResponse,
   upsertSurveyScreen,
   upsertSurveyScreenComponent,
-  createEntity,
-  createDataElement,
-  createAlert,
-  createComment,
+  upsertComment,
+  upsertSurveyResponseComment,
   upsertUserEntityPermission,
 } from './database';
 export { randomEmail, randomIntBetween, randomString } from './random';
