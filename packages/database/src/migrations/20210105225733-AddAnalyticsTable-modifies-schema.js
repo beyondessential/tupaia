@@ -67,13 +67,9 @@ exports.up = async function (db) {
     WHERE duplicate_number = 1;
   `);
 
-  // best index worked out by adding heaps and looking at the "explain analyze" for
-  // internal data fetching queries
-  await db.addIndex('analytics', 'analytics_entity_element_date_key', [
-    'entity_code',
-    'data_element_code',
-    'date',
-  ]);
+  // best index worked out by trying options and running timing tests, see
+  // https://docs.google.com/spreadsheets/d/1KoewibyIxEJjpcjataeKi5svspPi41gbcG0LUtwIHZk/edit
+  await db.addIndex('analytics', 'analytics_data_element_code_idx', ['data_element_code']);
 
   return null;
 };
