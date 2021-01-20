@@ -37,7 +37,6 @@ const GETTABLE_TYPES = [
   TYPES.PROJECT,
   TYPES.DISASTER,
   TYPES.DATA_SOURCE,
-  TYPES.ALERT,
   TYPES.COMMENT,
   TYPES.ACCESS_REQUEST,
   TYPES.DASHBOARD_REPORT,
@@ -66,7 +65,7 @@ const getForeignKeyColumn = (recordType, parentRecordType) => {
   return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
 };
 const PARENT_RECORD_FINDERS = {
-  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: findOrCountJoinChildren,
+  [`${TYPES.SURVEY_RESPONSE}/${TYPES.COMMENT}`]: findOrCountJoinChildren,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
