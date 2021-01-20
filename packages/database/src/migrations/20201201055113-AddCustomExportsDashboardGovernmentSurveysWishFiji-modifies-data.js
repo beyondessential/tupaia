@@ -39,21 +39,21 @@ const DATA_BUILDER_CONFIG = {
     dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
       surveysConfig: {
-        WISH_2GMM: {
+        WISH_2GM: {
           entityAggregation: {
             dataSourceEntityType: 'sub_catchment',
           },
-          // excludeCodes: ['WFIGM2'],
+          excludeCodes: ['WFIGM2'],
         },
-        WISH_2GM: {
+        WISH_2GMM: {
           entityAggregation: {
             dataSourceEntityType: 'sub_catchment',
           },
         },
       },
       transformations: [
-        // { type: 'transposeMatrix' },
-        // { type: 'sortByColumns', columns: [['WFIGMMET4'], ['WFIGM5'] },
+        { type: 'transposeMatrix' },
+        { type: 'sortByColumns', columns: [['Catchment name'], ['Catchment']] },
       ],
       skipHeader: false,
     },
