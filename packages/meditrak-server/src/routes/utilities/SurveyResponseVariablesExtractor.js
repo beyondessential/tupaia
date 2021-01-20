@@ -42,13 +42,15 @@ export class SurveyResponseVariablesExtractor {
    * @typedef {string, string, Array | Array} variables
    *
    * @param entityIds
+   * @param countryId
    * @returns {Promise<variables>}
    */
   async getVariablesByEntityIds(entityIds, countryId) {
     let country;
     let newCountryId = countryId;
+    const entitiesArray = Array.isArray(entityIds) ? entityIds : entityIds.split(',');
     const entities = await Promise.all(
-      entityIds.split(',').map(entityId => this.models.entity.findById(entityId)),
+      entitiesArray.map(entityId => this.models.entity.findById(entityId)),
     );
     if (!countryId && entities.length > 0) {
       const countryCodeFromEntity = entities[0].country_code;
