@@ -150,7 +150,7 @@ Can only be done on mac, with Xcode installed
  - Deploy the archive file
   - Navigate to the Archive file in Window/Organizer & click Distribute App
   - Use all the pre-selected options
-  - When prompted to select a profile, select second profile called Tupaia_Distribution_Profile_2020__2021.mobileprovision
+  - When prompted to select a profile, select second profile called Tupaia_MediTrak_Distribution_Profile_2020__2021.mobileprovision
   
 
 ### Testing
