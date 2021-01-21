@@ -209,7 +209,7 @@ export function addReportToGroups(db, reportId, groupCodes) {
 }
 
 // Remove a dashboard report from a dashboard group
-function removeReportFromGroups(db, reportId, groupCodes) {
+export function removeReportFromGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
       "dashboardGroup"
@@ -221,7 +221,7 @@ function removeReportFromGroups(db, reportId, groupCodes) {
 }
 
 // Delete a report
-function deleteReport(db, reportId) {
+export function deleteReport(db, reportId) {
   return db.runSql(`
     DELETE FROM
       "dashboardReport"

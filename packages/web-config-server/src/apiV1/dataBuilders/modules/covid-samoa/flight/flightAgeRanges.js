@@ -33,20 +33,29 @@ export const getTotalNumPassengers = (flight) => {
  * @param {Flight} flight
  * @returns {*}
  */
-export const getPassengersPerAgeRange = (flight) => {
-  const ageRangeData = {};
-
-  for (const ageRange of getAgeRanges()) {
-    const numPassengersInThisAgeRange = flight.events
-      .filter(event => event.dataValues[PASSENGER_AGE] >= ageRange.min && event.dataValues[PASSENGER_AGE] <= ageRange.max)
+export const getPassengersPerDataValue = (flight, dataValues, comparator = dataValue => event => event.dataValues[dataValue] && event.dataValues[dataValue] === 'Yes') => {
+  const dataValueCounts = {};
+  for (const dataValue of dataValues) {
+    const numPassengers = flight.events
+      .filter(comparator(dataValue))
       .length;
 
-    ageRangeData[ageRange.key] = {
-      numPassengersInThisAgeRange,
-      percentageOfTotalPassengers: numPassengersInThisAgeRange / getTotalNumPassengers(flight),
+      dataValueCounts[(dataValue.key || dataValue)] = {
+      numPassengers,
+      percentageOfTotalPassengers: numPassengers / getTotalNumPassengers(flight),
     };
   }
 
-  return ageRangeData;
+  return dataValueCounts;
+}
+
+/**
+ * @param {Flight} flight
+ * @returns {*}
+ */
+export const getPassengersPerAgeRange = (flight) => {
+  const dataValues = getAgeRanges();
+  const comparator = ageRange => event =>  event.dataValues[PASSENGER_AGE] >= ageRange.min && event.dataValues[PASSENGER_AGE] <= ageRange.max;
+  return getPassengersPerDataValue(flight, dataValues, comparator);
 }
 
