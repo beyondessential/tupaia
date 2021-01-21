@@ -52,10 +52,14 @@ function checkHotelName(answer) {
   return null;
 }
 
+const surveyId = '5f62bcbe61f76a2603093a3f'; // SC1QMIA
+
 exports.up = async function (db) {
   const { rows: answers } = await db.runSql(`
     select a.id, a."text" from answer a 
-    join question q on a.question_id = q.id 
+    join question q on a.question_id = q.id
+    join survey_response sr on sr.id = a.survey_response_id 
+        and sr.survey_id = '${surveyId}' 
     where q.text = 'Quarantine Site'
   `);
   const trimAnswers = answers.map(a => ({ ...a, text: a.text.trim() }));
