@@ -15,10 +15,9 @@ const getDeleteStatement = (table, mainCondition = `id ${COMPARISON}`, extraCond
 const TABLES_TO_CLEAR = [
   'api_request_log',
   'access_request',
-  'alert_comment',
-  'alert',
   'answer',
   'survey_response',
+  'survey_response_comment',
   'survey_screen_component',
   'survey_screen',
   'question',

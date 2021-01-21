@@ -17,7 +17,10 @@ export {
   fetchCountryCodesByPermissionGroupId,
 } from './fetchCountriesByPermissionGroup';
 export { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
-export { getAdminPanelAllowedEntityIds } from './getAdminPanelAllowedEntityIds';
+export {
+  getAdminPanelAllowedEntityIds,
+  getAdminPanelAllowedCountryCodes,
+} from './getAdminPanelAllowedEntityIds';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { getChangesFilter } from './getChangesFilter';
 export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';

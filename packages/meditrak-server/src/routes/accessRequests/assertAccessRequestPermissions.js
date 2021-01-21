@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { hasBESAdminAccess, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import {
-  hasBESAdminAccess,
-  BES_ADMIN_PERMISSION_GROUP,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-} from '../../permissions';
-import { getAdminPanelAllowedEntityIds, mergeFilter } from '../utilities';
+  getAdminPanelAllowedEntityIds,
+  getAdminPanelAllowedCountryCodes,
+  mergeFilter,
+} from '../utilities';
 
 export const assertAccessRequestPermissions = async (accessPolicy, models, accessRequestId) => {
   const accessRequest = await models.accessRequest.findById(accessRequestId);
@@ -17,10 +17,11 @@ export const assertAccessRequestPermissions = async (accessPolicy, models, acces
   }
 
   const entity = await models.entity.findById(accessRequest.entity_id);
-  if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-    throw new Error('Need Admin Panel access to the country this access request is for');
+  const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
+  if (accessibleCountryCodes.includes(entity.country_code)) {
+    return true;
   }
-  return true;
+  throw new Error('Need Admin Panel access to the country this access request is for');
 };
 
 export const assertAccessRequestEditPermissions = async (
@@ -61,8 +62,9 @@ export const assertAccessRequestUpsertPermissions = async (
   }
   if (entityId) {
     const entity = await models.entity.findById(entityId);
-    if (!accessPolicy.allows(entity.country_code, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      throw new Error('Need Admin Panel access to the updated entity');
+    const accessibleCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
+    if (!accessibleCountryCodes.includes(entity.country_code)) {
+      throw new Error('Need access to the newly edited entity');
     }
   }
 };

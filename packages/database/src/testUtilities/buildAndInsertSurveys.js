@@ -18,11 +18,11 @@ const buildAndInsertDataGroup = async (models, dataGroupProperties) =>
   findOrCreateDummyRecord(
     models.dataSource,
     {
+      service_type: 'dhis',
       ...dataGroupProperties,
       type: 'dataGroup',
     },
     {
-      service_type: 'dhis',
       config: { isDataRegional: false },
     },
   );

@@ -3,7 +3,6 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-export { AlertModel as Alert } from './Alert';
 export { AccessRequestModel as AccessRequest } from './AccessRequest';
 export { AnswerModel as Answer } from './Answer';
 export { APIClientModel as ApiClient } from './APIClient';

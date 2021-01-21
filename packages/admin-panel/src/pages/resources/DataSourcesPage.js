@@ -115,6 +115,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Groups"
     endpoint="dataSources"
+    reduxId="dataGroups"
     columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS)]}
     expansionTabs={[
       {
@@ -152,6 +153,7 @@ export const DataElementsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Elements"
     endpoint="dataSources"
+    reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)]}
     editConfig={{ title: 'Edit Data Source' }}
     baseFilter={{ type: { comparisonValue: 'dataElement' } }}
