@@ -210,7 +210,9 @@ export class DhisApi {
   }
 
   async getEvents({
+    programId,
     programCode,
+    organisationUnitId,
     organisationUnitCode,
     orgUnitIdScheme = 'code',
     dataElementIdScheme = 'uid',
@@ -226,14 +228,18 @@ export class DhisApi {
       );
     }
 
-    const programId = programCode && (await this.programCodeToId(programCode));
-    const organisationUnitId = organisationUnitCode
-      ? await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode)
-      : null;
+    const resolvedProgramId =
+      programId || (programCode && (await this.programCodeToId(programCode)));
+
+    const resolvedOrganisationUnitId =
+      organisationUnitId ||
+      (organisationUnitCode
+        ? await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode)
+        : null);
 
     const queryParameters = {
-      program: programId,
-      orgUnit: organisationUnitId,
+      program: resolvedProgramId,
+      orgUnit: resolvedOrganisationUnitId,
       programIdScheme: 'code',
       orgUnitIdScheme,
       ouMode: 'DESCENDANTS',
@@ -342,8 +348,11 @@ export class DhisApi {
 
   async getEventAnalytics(originalQuery) {
     const {
+      programId,
       programCode,
+      dataElementIds,
       dataElementCodes,
+      organisationUnitIds,
       organisationUnitCodes,
       dataElementIdScheme = 'code',
       period,
@@ -351,14 +360,25 @@ export class DhisApi {
       endDate,
     } = originalQuery;
 
-    const endpoint = await this.buildEventAnalyticsEndpoint(programCode);
-    // We use `fetchDataElements()` to leverage data element caching
-    const dataElements = await this.fetchDataElements(dataElementCodes);
-    const dataElementIds = dataElements.map(({ id }) => id);
-    const organisationUnitIds = await this.codesToIds(ORGANISATION_UNIT, organisationUnitCodes);
+    const endpoint = await this.buildEventAnalyticsEndpoint(programId, programCode);
+
+    let resolvedDataElementIds = dataElementIds;
+    if (!dataElementIds) {
+      if (dataElementCodes.length === 0) {
+        resolvedDataElementIds = [];
+      } else {
+        // We use `fetchDataElements()` to leverage data element caching
+        const dataElements = await this.fetchDataElements(dataElementCodes);
+        resolvedDataElementIds = dataElements.map(({ id }) => id);
+      }
+    }
+
+    const resolvedOrganisationUnitIds =
+      organisationUnitIds || (await this.codesToIds(ORGANISATION_UNIT, organisationUnitCodes));
+
     const query = await buildEventAnalyticsQuery({
-      dataElementIds,
-      organisationUnitIds,
+      dataElementIds: resolvedDataElementIds,
+      organisationUnitIds: resolvedOrganisationUnitIds,
       period,
       startDate,
       endDate,
@@ -369,13 +389,15 @@ export class DhisApi {
       return response;
     }
 
+    // translate response to be code based
+    const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementIdToCode = reduceToDictionary(dataElements, 'id', 'code');
     return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
   }
 
-  async buildEventAnalyticsEndpoint(programCode) {
-    const programId = await this.programCodeToId(programCode);
-    return `analytics/events/query/${programId}`;
+  async buildEventAnalyticsEndpoint(programId, programCode) {
+    const resolvedProgramId = programId || (await this.programCodeToId(programCode));
+    return `analytics/events/query/${resolvedProgramId}`;
   }
 
   async buildDataValuesInSetsQuery(originalQuery) {
@@ -436,6 +458,10 @@ export class DhisApi {
   }
 
   async fetchDataElements(dataElementCodes, { additionalFields = [], includeOptions } = {}) {
+    if (dataElementCodes.length === 0) {
+      return [];
+    }
+
     const fields = ['id', 'code', 'name', ...additionalFields];
     if (includeOptions) fields.push('optionSet');
     const dataElements = await this.getRecords({

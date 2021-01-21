@@ -68,4 +68,27 @@ export const testGetEvents = () => {
       undefined,
     );
   });
+
+  it('does not translate codes to ids if ids are provided', async () => {
+    // Some dhis configurations do not have codes against their data elements or programs etc. The way
+    // to work with these is to send ids instead, and if we specify ids we must make sure not to attempt
+    // to retrieve ids from the codes we pass in (because they will be not be defined).
+    await dhisApi.getEvents({
+      programId: PROGRAM.id,
+      organisationUnitId: 'to_dhisId',
+      eventId: 'dhis_event_id1',
+    });
+    return expect(dhisApi.fetcher.fetch).toHaveBeenCalledOnceWith(
+      'events/dhis_event_id1',
+      {
+        program: PROGRAM.id,
+        orgUnit: 'to_dhisId',
+        programIdScheme: 'code',
+        orgUnitIdScheme: 'code',
+        ouMode: 'DESCENDANTS',
+        trackedEntityInstance: undefined,
+      },
+      undefined,
+    );
+  });
 };
