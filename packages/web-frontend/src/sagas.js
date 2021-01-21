@@ -21,6 +21,7 @@ import {
   changeOrgUnitSuccess,
   CHANGE_ORG_UNIT_SUCCESS,
   CHANGE_SEARCH,
+  FETCH_MORE_SEARCH_RESULTS,
   clearMeasure,
   clearMeasureHierarchy,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
@@ -93,6 +94,7 @@ import {
   openEnlargedDialog,
   updateCurrentMeasureConfigOnceHierarchyLoads,
   LOCATION_CHANGE,
+  goHome,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -486,6 +488,10 @@ function* watchAttemptTokenLogin() {
   yield takeLatest(ATTEMPT_RESET_TOKEN_LOGIN, attemptTokenLogin);
 }
 
+function* watchAttemptTokenLoginSuccess() {
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, resetToHome);
+}
+
 function* openResetPasswordDialog() {
   yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
 }
@@ -787,18 +793,20 @@ function* watchViewFetchRequests() {
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
   if (action.searchString === '') {
-    yield put(fetchSearchSuccess([]));
+    yield put(fetchSearchSuccess([], false));
   } else {
     const state = yield select();
+    const startIndex = state.searchBar.searchResults?.length || 0; // Send start index to allow loading more search results
     const urlParameters = {
-      criteria: action.searchString,
+      criteria: action.searchString || state.searchBar.searchString,
       limit: 5,
       projectCode: selectCurrentProjectCode(state),
+      startIndex,
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
-      const response = yield call(request, requestResourceUrl);
-      yield put(fetchSearchSuccess(response));
+      const { searchResults, hasMoreResults } = yield call(request, requestResourceUrl);
+      yield put(fetchSearchSuccess(searchResults, hasMoreResults));
     } catch (error) {
       yield put(fetchSearchError(error));
     }
@@ -807,6 +815,10 @@ function* fetchSearchData(action) {
 
 function* watchSearchChange() {
   yield takeLatest(CHANGE_SEARCH, fetchSearchData);
+}
+
+function* watchFetchMoreSearchResults() {
+  yield takeLatest(FETCH_MORE_SEARCH_RESULTS, fetchSearchData);
 }
 
 /**
@@ -1065,12 +1077,16 @@ function* resetToProjectSplash() {
   yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
+function* resetToHome() {
+  yield put(goHome());
+}
+
 function* watchLoginSuccess() {
   yield takeLatest(FETCH_LOGIN_SUCCESS, fetchLoginData);
 }
 
 function* watchLogoutSuccess() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToHome);
 }
 
 function* fetchLoginData(action) {
@@ -1107,6 +1123,7 @@ export default [
   watchFetchInitialData,
   watchAttemptChangePasswordAndFetchIt,
   watchAttemptResetPasswordAndFetchIt,
+  watchAttemptTokenLoginSuccess,
   watchAttemptRequestCountryAccessAndFetchIt,
   watchAttemptUserLoginAndFetchIt,
   watchAttemptUserLogout,
@@ -1118,6 +1135,7 @@ export default [
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,
   watchSearchChange,
+  watchFetchMoreSearchResults,
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
