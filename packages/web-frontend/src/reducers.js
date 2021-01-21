@@ -69,6 +69,7 @@ import {
   FETCH_REQUEST_COUNTRY_ACCESS_ERROR,
   FETCH_SEARCH_ERROR,
   FETCH_SEARCH_SUCCESS,
+  FETCH_MORE_SEARCH_RESULTS,
   FETCH_SIGNUP_ERROR,
   FETCH_SIGNUP_SUCCESS,
   FINISH_USER_SESSION,
@@ -508,7 +509,9 @@ function dashboard(
 function searchBar(
   state = {
     isExpanded: false,
-    searchResponse: null,
+    isLoadingSearchResults: false,
+    searchResults: [],
+    hasMoreResults: false,
     searchString: '',
   },
   action,
@@ -517,22 +520,61 @@ function searchBar(
     case TOGGLE_SEARCH_EXPAND:
       return { ...state, isExpanded: !state.isExpanded };
     case FETCH_SEARCH_SUCCESS:
-      return { ...state, searchResponse: action.response };
+      return {
+        ...state,
+        isLoadingSearchResults: false,
+        searchResults: [...(state.searchResults || []), ...(action.searchResults || [])], // Append more search results
+        hasMoreResults: action.hasMoreResults,
+      };
+    case FETCH_MORE_SEARCH_RESULTS:
+      return { ...state, isLoadingSearchResults: true };
     case CHANGE_SEARCH:
-      return { ...state, searchResponse: null, searchString: action.searchString };
+      return {
+        ...state,
+        isLoadingSearchResults: true,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: action.searchString,
+      };
     case FETCH_SEARCH_ERROR:
-      return { ...state, searchResponse: action.error };
+      return {
+        ...state,
+        isLoadingSearchResults: false,
+        searchResults: action.error,
+        hasMoreResults: false,
+      };
     case CLOSE_DROPDOWN_OVERLAYS:
       return { ...state, isExpanded: false };
     case FETCH_LOGIN_SUCCESS:
       // Clear search results on login incase of permission change
-      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+      return {
+        ...state,
+        isExpanded: false,
+        isLoadingSearchResults: false,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: '',
+      };
     case FETCH_LOGOUT_SUCCESS:
       // Clear search results on logout incase of permission change
-      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+      return {
+        ...state,
+        isExpanded: false,
+        isLoadingSearchResults: false,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: '',
+      };
     case SET_PROJECT:
       // Clear search results on project change to fetch alternative hierarchy
-      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+      return {
+        ...state,
+        isExpanded: false,
+        isLoadingSearchResults: false,
+        searchResults: [],
+        hasMoreResults: false,
+        searchString: '',
+      };
     default:
       return state;
   }

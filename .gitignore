@@ -19,3 +19,4 @@ dump.sql
 /snapshots.js
 .idea
 dockercfg
+packages/.vscode/settings.json
