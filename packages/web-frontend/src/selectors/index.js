@@ -49,6 +49,7 @@ export {
   selectIsEnlargedDialogVisible,
   selectShouldUseDashboardData,
   selectCurrentExpandedDates,
+  selectCurrentDashboardGroupCodeFromLocation,
 } from './dashboardSelectors';
 
 export {
