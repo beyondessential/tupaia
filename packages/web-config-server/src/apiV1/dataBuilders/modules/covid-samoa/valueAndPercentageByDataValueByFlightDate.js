@@ -9,6 +9,7 @@ import {
   getTotalNumPassengers,
   getPassengersPerDataValue,
   FLIGHT_DATE,
+  DEFAULT_COMPARE_VALUE,
 } from './flight';
 
 export class ValueAndPercentageByDataValueByFlightDate extends DataBuilder {
@@ -31,7 +32,7 @@ export class ValueAndPercentageByDataValueByFlightDate extends DataBuilder {
 
   getDataElementCodes = () => {
     const { cells } = this.config;  
-    return [FLIGHT_DATE, ...cells.flat(Infinity)];
+    return [FLIGHT_DATE, ...cells.map(c=>c[0])];
   }
 
   getColumns = (flights) => {
@@ -58,10 +59,11 @@ export class ValueAndPercentageByDataValueByFlightDate extends DataBuilder {
           dataElement: `${rowHeader}`,
           valueType: 'numberAndPercentage',
         };
-        const dataKey = cells[rowIndex];
+        const dataKey = cells[rowIndex][0] || cells[rowIndex];
+        const dataKeySuffix = cells[rowIndex][1] || DEFAULT_COMPARE_VALUE;
         for (const column of columns) {
           const flight = Flight.getFlightByKey(flights, column.key);
-          const passengersForThisDataKey = getPassengersPerDataValue(flight, cells)[dataKey];
+          const passengersForThisDataKey = getPassengersPerDataValue(flight, cells)[`${dataKey}_${dataKeySuffix}`];
           
           row[column.key] = {
             value:  passengersForThisDataKey.numPassengers,

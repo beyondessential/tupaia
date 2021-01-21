@@ -94,6 +94,7 @@ import {
   openEnlargedDialog,
   updateCurrentMeasureConfigOnceHierarchyLoads,
   LOCATION_CHANGE,
+  goHome,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -494,6 +495,10 @@ function* attemptTokenLogin(action) {
 
 function* watchAttemptTokenLogin() {
   yield takeLatest(ATTEMPT_RESET_TOKEN_LOGIN, attemptTokenLogin);
+}
+
+function* watchAttemptTokenLoginSuccess() {
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, resetToHome);
 }
 
 function* openResetPasswordDialog() {
@@ -1088,12 +1093,16 @@ function* resetToProjectSplash() {
   yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
+function* resetToHome() {
+  yield put(goHome());
+}
+
 function* watchLoginSuccess() {
   yield takeLatest(FETCH_LOGIN_SUCCESS, fetchLoginData);
 }
 
 function* watchLogoutSuccess() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToHome);
 }
 
 function* fetchLoginData(action) {
@@ -1130,6 +1139,7 @@ export default [
   watchFetchInitialData,
   watchAttemptChangePasswordAndFetchIt,
   watchAttemptResetPasswordAndFetchIt,
+  watchAttemptTokenLoginSuccess,
   watchAttemptRequestCountryAccessAndFetchIt,
   watchAttemptUserLoginAndFetchIt,
   watchAttemptUserLogout,
