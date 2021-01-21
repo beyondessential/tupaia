@@ -57,9 +57,13 @@ const surveyId = '5f62bcbe61f76a2603093a3f'; // SC1QMIA
 exports.up = async function (db) {
   // trim all site names
   await db.runSql(`
-    update answer set "text" = TRIM(text) where id in (select a.id from answer a join question q on a.question_id = q.id 
-    join survey_response sr on sr.id = a.survey_response_id and sr.survey_id = '${surveyId}'
-    where q.text = 'Quarantine Site');
+    update answer 
+    set "text" = TRIM(text) 
+    where id in (
+      select a.id from answer a 
+      join question q on a.question_id = q.id 
+      join survey_response sr on sr.id = a.survey_response_id and sr.survey_id = '${surveyId}'
+      where q.text = 'Quarantine Site');
   `);
 
   const { rows: answers } = await db.runSql(`
