@@ -126,8 +126,15 @@ import {
   selectOrgUnitChildren,
   selectOrgUnitCountry,
   selectProjectByCode,
+  selectCurrentDashboardGroupCodeFromLocation,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getBrowserTimeZone } from './utils';
+import {
+  formatDateForApi,
+  isMobile,
+  processMeasureInfo,
+  getInfoFromInfoViewKey,
+  getBrowserTimeZone,
+} from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -185,7 +192,7 @@ function* handleUserPage(userPage, initialComponents) {
   }
 }
 
-const userHasAccess = (projects, currentProject) =>
+const userHasAccessToProject = (projects, currentProject) =>
   projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
 
 const URL_REFRESH_COMPONENTS = {
@@ -212,7 +219,9 @@ function* handleLocationChange({ location, previousLocation }) {
     return;
   }
 
-  const hasAccess = userHasAccess(project.projects, otherComponents.PROJECT);
+  const hasAccess = project.projects
+    .filter(p => p.hasAccess)
+    .find(p => p.code === otherComponents.PROJECT);
   if (!hasAccess) {
     yield call(handleInvalidPermission, { projectCode: otherComponents.PROJECT });
     return;
@@ -684,10 +693,17 @@ function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   const projectCode = selectCurrentProjectCode(state);
+  const currentDashboardCode = selectCurrentDashboardGroupCodeFromLocation(state);
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
+
+    if (!(currentDashboardCode in dashboard)) {
+      yield call(handleInvalidPermission, { projectCode });
+      return;
+    }
+
     yield put(fetchDashboardSuccess(dashboard));
   } catch (error) {
     yield put(error.errorFunction(error));
