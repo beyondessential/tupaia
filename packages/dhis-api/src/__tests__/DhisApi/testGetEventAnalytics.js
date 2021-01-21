@@ -59,14 +59,14 @@ export const testGetEventAnalytics = () => {
 
   it('translates codes to ids in the provided query', async () => {
     await dhisApi.getEventAnalytics(QUERY.originalInput);
-    expect(BuildAnalyticsQuery.buildEventAnalyticsQuery).toHaveBeenCalledOnceWith(
+    return expect(BuildAnalyticsQuery.buildEventAnalyticsQuery).toHaveBeenCalledOnceWith(
       QUERY.idsReplacedWithCodes,
     );
   });
 
   it('Invokes DhisFetcher.fetch() with the correct args', async () => {
     await dhisApi.getEventAnalytics(QUERY.originalInput);
-    expect(dhisApi.fetcher.fetch).toHaveBeenCalledWith(
+    return expect(dhisApi.fetcher.fetch).toHaveBeenCalledWith(
       `analytics/events/query/${PROGRAM.id}`,
       QUERY.fetch,
       undefined,
