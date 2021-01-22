@@ -15,6 +15,7 @@ export const TYPES = {
   DASHBOARD_REPORT: 'dashboardReport',
   DATA_ELEMENT_DATA_GROUP: 'data_element_data_group',
   DATA_SOURCE: 'data_source',
+  DHIS_ORG_UNIT_MAPPING: 'dhis_org_unit_mapping',
   DHIS_SYNC_LOG: 'dhis_sync_log',
   DHIS_SYNC_QUEUE: 'dhis_sync_queue',
   DISASTER: 'disaster',
