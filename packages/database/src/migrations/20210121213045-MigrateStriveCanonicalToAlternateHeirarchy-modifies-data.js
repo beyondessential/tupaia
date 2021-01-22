@@ -18,7 +18,10 @@ exports.setup = function (options, seedLink) {
 
 const striveHierarchyId = '5e9d06e261f76a30c4000018';
 const countryId = '5d3f8844f327a531bfd8ad77';
-const canonicalTypes = '{country,district,facility,village,case}';
+const striveCanonicalTypes = '{country,district,facility,village,case}';
+
+const fetpCanonicalTypes = '{country,district,sub_district,individual}';
+const fetpHierarchyId = '600998b6af9647092b000003';
 
 // Explicity naming codes so not to be dependant on order of operations of importing districts for FEPT
 const striveDistrictCodes = [
@@ -52,8 +55,16 @@ exports.up = async function (db) {
   await updateValues(
     db,
     'entity_hierarchy',
-    { canonical_types: canonicalTypes },
+    { canonical_types: striveCanonicalTypes },
     { id: striveHierarchyId },
+  );
+
+  // update FETP canonical types here
+  await updateValues(
+    db,
+    'entity_hierarchy',
+    { canonical_types: fetpCanonicalTypes },
+    { id: fetpHierarchyId },
   );
 };
 
