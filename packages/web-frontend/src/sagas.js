@@ -192,9 +192,6 @@ function* handleUserPage(userPage, initialComponents) {
   }
 }
 
-const userHasAccessToProject = (projects, currentProject) =>
-  projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
-
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
@@ -1108,8 +1105,10 @@ function* watchLogoutSuccess() {
 function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
-    const { PROJECT } = decodeLocation(location);
-    const overlay = PROJECT === 'explore' ? LANDING : null;
+    const { PROJECT, ORG_UNIT } = decodeLocation(location);
+
+    const overlay = PROJECT === 'explore' && ORG_UNIT === 'explore' ? LANDING : null;
+
     yield put(setOverlayComponent(overlay));
     yield call(fetchProjectData);
     yield call(handleLocationChange, {
