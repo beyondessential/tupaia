@@ -59,7 +59,7 @@ export class DhisService extends Service {
   getApiForValue = (dataSource, dataValue) => {
     const { isDataRegional } = dataSource.config;
     const { orgUnit: entityCode } = dataValue;
-    return getDhisApiInstance({ entityCode, isDataRegional });
+    return getDhisApiInstance({ entityCode, isDataRegional }, this.models);
   };
 
   validatePushData(dataSources, dataValues) {
@@ -103,7 +103,7 @@ export class DhisService extends Service {
 
   async delete(dataSource, data, { serverName } = {}) {
     const api = serverName
-      ? getDhisApiInstance({ serverName })
+      ? getDhisApiInstance({ serverName }, this.models)
       : this.getApiForValue(dataSource, data);
     const deleteData = this.deleters[dataSource.type];
     return deleteData(api, data, dataSource);
@@ -129,7 +129,7 @@ export class DhisService extends Service {
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCodes, isDataRegional }),
+      getDhisApiInstance({ entityCodes, isDataRegional }, this.models),
     );
 
     return pullData(apis, dataSources, options);
@@ -378,7 +378,7 @@ export class DhisService extends Service {
     const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }),
+      getDhisApiInstance({ entityCode, isDataRegional }, this.models),
     );
 
     const results = [];
