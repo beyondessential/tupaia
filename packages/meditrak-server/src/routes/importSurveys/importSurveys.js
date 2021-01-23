@@ -291,7 +291,7 @@ export async function importSurveys(req, res) {
             name,
             text,
             detail,
-            options: processOptions(options, optionLabels, optionColors),
+            options: processOptions(options, optionLabels, optionColors, type),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
             data_source_id: dataElement && dataElement.id,
           };
@@ -389,7 +389,26 @@ async function processOptionSetName(models, name) {
   return null;
 }
 
-function processOptions(optionValuesString, optionLabelsString, optionColorsString) {
+const processOptions = (optionValuesString, optionLabelsString, optionColorsString, type) => {
+  switch (type) {
+    case 'Binary':
+      return processBinaryOptions(optionLabelsString, optionColorsString);
+    default:
+      return processDefaultOptions(optionValuesString, optionLabelsString, optionColorsString);
+  }
+};
+
+const processBinaryOptions = (optionLabelsString, optionColorsString) => {
+  const optionLabels = splitOnNewLinesOrCommas(optionLabelsString);
+  const optionColors = splitOnNewLinesOrCommas(optionColorsString);
+  return optionLabels.map((label, i) => {
+    const color = optionColors[i];
+
+    return { label, color };
+  });
+};
+
+function processDefaultOptions(optionValuesString, optionLabelsString, optionColorsString) {
   const optionValues = splitOnNewLinesOrCommas(optionValuesString);
   const optionLabels = splitOnNewLinesOrCommas(optionLabelsString);
   const optionColors = splitOnNewLinesOrCommas(optionColorsString);

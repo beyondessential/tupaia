@@ -7,4 +7,15 @@ import React from 'react';
 
 import { RadioQuestion } from './RadioQuestion';
 
-export const BinaryQuestion = props => <RadioQuestion options={['Yes', 'No']} {...props} />;
+export const BinaryQuestion = ({ options, ...props }) => {
+  const binaryOptions = ['Yes', 'No'].map((value, i) =>
+    JSON.stringify({
+      value,
+      ...JSON.parse(options[i]),
+    }),
+  );
+
+  console.log('binaryOptions', binaryOptions);
+  console.log('props', props);
+  return <RadioQuestion options={binaryOptions} {...props} />;
+};

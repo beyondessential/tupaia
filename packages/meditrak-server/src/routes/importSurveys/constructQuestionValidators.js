@@ -11,6 +11,7 @@ import { convertCellToJson, isEmpty, isYesOrNo } from './utilities';
 const DHIS_MAX_NAME_LENGTH = 230; // In DHIS2, the field is capped at 230 characters
 const QUESTION_TYPES_WITH_OPTIONS = [
   ANSWER_TYPES.RADIO,
+  ANSWER_TYPES.BINARY,
   ANSWER_TYPES.ENTITY,
   ANSWER_TYPES.PRIMARY_ENTITY,
 ];
@@ -103,7 +104,10 @@ export const constructQuestionValidators = models => ({
   optionLabels: [
     ...optionsValidators,
     (cell, row) => {
-      if (splitOnNewLinesOrCommas(cell).length > splitOnNewLinesOrCommas(row.options).length) {
+      if (
+        row.type === 'Radio' &&
+        splitOnNewLinesOrCommas(cell).length > splitOnNewLinesOrCommas(row.options).length
+      ) {
         throw new Error('There are more labels than options.');
       }
     },

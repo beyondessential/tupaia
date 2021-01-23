@@ -53,7 +53,6 @@ export class RowBuilder {
     const processedOptions = options.map((option, optionIndex) => {
       try {
         const { value, label, color } = JSON.parse(option);
-        if (value === undefined) return option; // May be JSON but still not a formatted option object
         optionLabels[optionIndex] = label;
         optionColors[optionIndex] = color;
         return value;
