@@ -11,7 +11,6 @@ import { getChanges } from './getChanges';
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
-import { BESAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
@@ -174,14 +173,14 @@ export default {
   importUsers: catchAsyncErrors(importUsers),
   importOptionSets: catchAsyncErrors(importOptionSets),
   postChanges: catchAsyncErrors(postChanges),
-  pruneChanges: catchAsyncErrors(pruneChanges),
+  pruneChanges: catchAsyncErrors(pruneChanges), // TODO: Legacy endpoint?
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
   changePassword: allowAnyone(changePassword),
-  editUser: catchAsyncErrors(editUser),
+  editUser: catchAsyncErrors(editUser), // TODO: What is this?
   requestCountryAccess: allowAnyone(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
-  getUserRewards: catchAsyncErrors(getUserRewards),
-  getUser: catchAsyncErrors(getUser),
+  getUserRewards: catchAsyncErrors(getUserRewards), // TODO: What is this?
+  getUser: catchAsyncErrors(getUser), // TODO: What is this?
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
   getCountryAccessList: allowAnyone(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),
