@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import { FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
-import { EditUserAccounts } from './userAccounts';
+import { hashAndSaltPassword } from '@tupaia/auth';
 
 export async function changePassword(req, res, next) {
   const { models, body, userId } = req;
@@ -15,6 +15,9 @@ export async function changePassword(req, res, next) {
     passwordConfirm,
     newPasswordConfirm,
   } = body;
+
+  // Checking the oneTimeLogin/oldPassword acts as our permission check
+  await req.assertPermissions(allowNoPermissions);
 
   // Support both alternatives so that users using versions
   // of meditrak-app prior to 1.9.109 can still change their passwords
@@ -48,17 +51,7 @@ export async function changePassword(req, res, next) {
     throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
   }
 
-  try {
-    req.params = {
-      id: userId,
-      resource: 'user',
-    };
-    req.body = {
-      password: passwordParam,
-    };
-    const editUserAccountHandlerClass = new EditUserAccounts(req, res);
-    await editUserAccountHandlerClass.handle();
-  } catch (error) {
-    next(error);
-  }
+  return models.user.updateById(userId, {
+    ...hashAndSaltPassword(passwordParam),
+  });
 }
