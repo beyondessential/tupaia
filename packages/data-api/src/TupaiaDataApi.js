@@ -96,7 +96,7 @@ export class TupaiaDataApi {
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
       const sqlQuery = await new SqlQuery(
         `
-        SELECT question.code, question.name, question.text
+        SELECT question.code, question.name, question.text, question.type
         FROM question 
         JOIN survey_screen_component on question.id = survey_screen_component.question_id 
         JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id

@@ -22,6 +22,15 @@ const expandSurveyCodes = surveys => {
   );
 };
 
+const convertValueByType = (type, value) => {
+  switch (type) {
+    case 'Binary':
+    case 'Checkbox':
+      return value === 1 ? 'Yes' : 'No';
+    default:
+      return value;
+  }
+}
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const { surveyCodes } = this.query;
@@ -116,6 +125,7 @@ class RawDataValuesBuilder extends DataBuilder {
       const columns = this.buildColumns(sortedMappedEvents);
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
+      const dataElementCodeToType = reduceToDictionary(dataElementsMetadata, 'code', 'type');
 
       const ancestorRow =
         ancestorMappingConfig && ancestorMappingConfig.showInExport
@@ -123,7 +133,7 @@ class RawDataValuesBuilder extends DataBuilder {
           : {};
       const rows =
         columns && columns.length
-          ? await this.buildRows(mappedEvents, dataElementCodeToText, ancestorRow)
+          ? await this.buildRows(mappedEvents, dataElementCodeToText, dataElementCodeToType, ancestorRow)
           : [];
 
       const data = {
@@ -178,7 +188,7 @@ class RawDataValuesBuilder extends DataBuilder {
   /**
    * Build row values for data elements of different organisationUnit - period combination
    */
-  buildRows = async (events, dataElementCodeToText, ancestorRowKey = {}) => {
+  buildRows = async (events, dataElementCodeToText, dataElementCodeToType, ancestorRowKey = {}) => {
     const builtRows = [];
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
@@ -219,9 +229,11 @@ class RawDataValuesBuilder extends DataBuilder {
               case 'ancestor':
                 value = orgUnitAncestor;
                 break;
-              default:
-                value = dataValue;
+              default: {
+                const type = dataElementCodeToType[code];
+                value = convertValueByType(type, dataValue);
                 break;
+              }
             }
 
             row[event] = value;
