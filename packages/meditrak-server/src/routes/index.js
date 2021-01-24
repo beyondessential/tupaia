@@ -175,12 +175,12 @@ export default {
   postChanges: catchAsyncErrors(postChanges),
   pruneChanges: catchAsyncErrors(pruneChanges), // TODO: Legacy endpoint?
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
-  changePassword: allowAnyone(changePassword),
-  editUser: catchAsyncErrors(editUser), // TODO: What is this?
+  changePassword: catchAsyncErrors(changePassword),
+  editUser: catchAsyncErrors(editUser),
   requestCountryAccess: allowAnyone(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
-  getUserRewards: catchAsyncErrors(getUserRewards), // TODO: What is this?
-  getUser: catchAsyncErrors(getUser), // TODO: What is this?
+  getUserRewards: allowAnyone(getUserRewards),
+  getUser: catchAsyncErrors(getUser),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
   getCountryAccessList: allowAnyone(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),

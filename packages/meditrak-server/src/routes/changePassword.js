@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import { FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
-import { editRecord } from './editRecord';
+import { EditUserAccounts } from './userAccounts';
 
 export async function changePassword(req, res, next) {
   const { models, body, userId } = req;
@@ -56,8 +56,8 @@ export async function changePassword(req, res, next) {
     req.body = {
       password: passwordParam,
     };
-
-    await editRecord(req, res);
+    const editUserAccountHandlerClass = new EditUserAccounts(req, res);
+    await editUserAccountHandlerClass.handle();
   } catch (error) {
     next(error);
   }
