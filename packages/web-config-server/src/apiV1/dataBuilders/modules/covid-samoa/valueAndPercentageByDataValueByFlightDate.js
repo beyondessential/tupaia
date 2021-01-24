@@ -51,24 +51,34 @@ export class ValueAndPercentageByDataValueByFlightDate extends DataBuilder {
     return columns;
   }
 
+  /**
+   * 
+   * Returns a sorted set of unique values returned from events of a specified dataElement 
+   */
+  getDataValueSet = (events, dataValueKey) => Array.from(new Set(events.map(e => e.dataValues[dataValueKey]))).sort((a, b) => a > b ? 1 : -1);
+
   getRows = (flights, columns) => {
-    const { rows: rowHeaders, cells } = this.config;
+    const { rows: rowsConfig, cells } = this.config;
+    const useDynamicRows = rowsConfig === '$allValues';
+    const rowHeaders = useDynamicRows ? this.getDataValueSet(flights.map(f=>f.events).flat(), cells[0]) : rowsConfig;
+    const dataValues = useDynamicRows ? rowHeaders.map(rowheader => [cells[0], rowheader]) : cells;
     const rows = rowHeaders
       .map((rowHeader, rowIndex) => {
         const row = {
           dataElement: `${rowHeader}`,
           valueType: 'numberAndPercentage',
         };
-        const dataKey = cells[rowIndex][0] || cells[rowIndex];
-        const dataKeySuffix = cells[rowIndex][1] || DEFAULT_COMPARE_VALUE;
+        const cellIndex = useDynamicRows ? 0 : rowIndex;
+        const dataKey = cells[cellIndex][0] || cells[cellIndex];
+        const dataKeySuffix = useDynamicRows ? rowHeader : cells[cellIndex][1] || DEFAULT_COMPARE_VALUE;
         for (const column of columns) {
           const flight = Flight.getFlightByKey(flights, column.key);
-          const passengersForThisDataKey = getPassengersPerDataValue(flight, cells)[`${dataKey}_${dataKeySuffix}`];
-          
+          const passengersForThisDataKey = getPassengersPerDataValue(flight, dataValues)[`${dataKey}_${dataKeySuffix}`];
+          const passengerCount = passengersForThisDataKey && passengersForThisDataKey.numPassengers;
           row[column.key] = {
-            value:  passengersForThisDataKey.numPassengers,
+            value: passengerCount,
             metadata: {
-              numerator: passengersForThisDataKey.numPassengers,
+              numerator: passengerCount,
               denominator: getTotalNumPassengers(flight),
             }
           };
