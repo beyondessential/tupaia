@@ -11,6 +11,7 @@ import {
   assertTupaiaAdminPanelAccess,
 } from '../../permissions';
 import { assertUserAccountPermissions } from './assertUserAccountPermissions';
+import { uploadImage } from '../../s3';
 
 /**
  * Handles PUT endpoints:
@@ -34,7 +35,7 @@ export class EditUserAccounts extends EditHandler {
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
 
     // Update Record
-    const { password, ...restOfUpdatedFields } = this.updatedFields;
+    const { password, profile_image: profileImage, ...restOfUpdatedFields } = this.updatedFields;
     let updatedFields = restOfUpdatedFields;
     if (password) {
       updatedFields = {
@@ -42,6 +43,22 @@ export class EditUserAccounts extends EditHandler {
         ...hashAndSaltPassword(password),
       };
     }
+
+    if (profileImage) {
+      if (profileImage.data && profileImage.fileId) {
+        const profileImagePath = await uploadImage(profileImage.data, profileImage.fileId);
+        updatedFields = {
+          ...updatedFields,
+          profile_image: profileImagePath,
+        };
+      } else {
+        updatedFields = {
+          ...updatedFields,
+          profile_image: null,
+        };
+      }
+    }
+
     return this.models.user.updateById(this.recordId, updatedFields);
   }
 }

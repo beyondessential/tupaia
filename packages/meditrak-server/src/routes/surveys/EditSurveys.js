@@ -6,6 +6,7 @@
 import { EditHandler } from '../EditHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertSurveyEditPermissions } from './assertSurveyPermissions';
+import { editSurvey } from '../../dataAccessors';
 
 export class EditSurveys extends EditHandler {
   async assertUserHasAccess() {
@@ -15,6 +16,6 @@ export class EditSurveys extends EditHandler {
   }
 
   async editRecord() {
-    await this.updateRecord();
+    editSurvey(this.models, this.recordId, this.updatedFields);
   }
 }
