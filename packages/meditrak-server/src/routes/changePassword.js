@@ -2,8 +2,9 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
+import { respond, FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
+import { allowNoPermissions } from '../permissions';
 
 export async function changePassword(req, res, next) {
   const { models, body, userId } = req;
@@ -51,7 +52,9 @@ export async function changePassword(req, res, next) {
     throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
   }
 
-  return models.user.updateById(userId, {
+  await models.user.updateById(userId, {
     ...hashAndSaltPassword(passwordParam),
   });
+  
+  respond(res, { message: 'Successfully updated password' });
 }
