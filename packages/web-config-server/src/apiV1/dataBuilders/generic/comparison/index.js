@@ -7,4 +7,5 @@ export { latestAchievedVsTargetPercentage } from './latestAchievedVsTargetPercen
 export {
   sumPreviousValuesPerDayByOrgUnit,
   sumValuesPerQuarterByOrgUnit,
+  finalValuesPerQuarterByOrgUnit,
 } from './valuesPerPeriodByOrgUnit';
