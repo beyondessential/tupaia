@@ -38,6 +38,7 @@ export const buildAggregationOptions = async (
     };
   }
 
+  const fetchEntityAggregationConfig = getEntityAggregationConfigFetcher(entityAggregationType);
   const entityAggregation = await fetchEntityAggregationConfig(
     models,
     dataSourceEntities,
@@ -61,12 +62,13 @@ const shouldAggregateEntities = (
   aggregationEntityType,
   entityAggregationType,
 ) =>
-  aggregationEntityType &&
-  !(dataSourceEntities.length === 0) &&
-  !dataSourceEntities.every(({ type }) => type === aggregationEntityType) &&
-  !(entityAggregationType === Aggregator.aggregationTypes.RAW);
+  entityAggregationType === Aggregator.aggregationTypes.REPLACE_ENTITY_ANSWER_WITH_ENTITY_NAME ||
+  (aggregationEntityType &&
+    !(dataSourceEntities.length === 0) &&
+    !dataSourceEntities.every(({ type }) => type === aggregationEntityType) &&
+    !(entityAggregationType === Aggregator.aggregationTypes.RAW));
 
-const fetchEntityAggregationConfig = async (
+const replaceOrgUnitWithOrgGroupConfig = async (
   models,
   dataSourceEntities,
   aggregationEntityType,
@@ -84,3 +86,32 @@ const fetchEntityAggregationConfig = async (
     config: { ...entityAggregationConfig, orgUnitMap: entityToAncestorMap },
   };
 };
+
+const replaceEntityAnswerWithEntityNameConfig = async (
+  models,
+  dataSourceEntities,
+  aggregationEntityType,
+  entityAggregationType,
+  entityAggregationConfig,
+) => {
+  const entityIdToNameInAnswerMap = await entityAggregationConfig.questionCodes.reduce(
+    async (acc, questionCode) => {
+      const entityIdToNameMapping = await models.entity.getEntityAnswerWithEntityName(
+        dataSourceEntities.map(e => e.code),
+        questionCode,
+      );
+      return { ...acc, [questionCode]: entityIdToNameMapping };
+    },
+    {},
+  );
+
+  return {
+    type: entityAggregationType,
+    config: { ...entityAggregationConfig, answerTranslation: entityIdToNameInAnswerMap },
+  };
+};
+
+const getEntityAggregationConfigFetcher = entityAggregationType =>
+  entityAggregationType === Aggregator.aggregationTypes.REPLACE_ENTITY_ANSWER_WITH_ENTITY_NAME
+    ? replaceEntityAnswerWithEntityNameConfig
+    : replaceOrgUnitWithOrgGroupConfig;
