@@ -8,6 +8,79 @@ var seed;
 
 const LAOS_SCHOOLS_COUNTRY_ID = '5d09ac4bf013d63ce9170d88';
 
+// List of Radio questions with only YesNo options (and labels) which will be migrated to Binary questions
+/**
+ * 'BCD29_event',
+ * 'BCD32_event',
+ * 'LaosO23',
+ * 'LaosO24',
+ * 'LaosO26',
+ * 'LaosO27',
+ * 'SchCVD004b',
+ * 'SchCVD006',
+ * 'SchCVD007',
+ * 'SchCVD010a',
+ * 'SchCVD010b',
+ * 'SchCVD010c',
+ * 'SchCVD010d',
+ * 'SchCVD010e',
+ * 'SchCVD010f',
+ * 'SchCVD010g',
+ * 'SchCVD010h',
+ * 'SchCVD010i',
+ * 'SchCVD010l',
+ * 'SchCVD012',
+ * 'SchCVD012a',
+ * 'SchCVD012b',
+ * 'SchCVD013',
+ * 'SchCVD015',
+ * 'SchCVD016',
+ * 'SchCVD016a',
+ * 'SchCVD016b',
+ * 'SchCVD016c',
+ * 'SchCVD017',
+ * 'SchCVD017a',
+ * 'SchCVD017b',
+ * 'SchCVD017c',
+ * 'SchCVD017d',
+ * 'SchCVD019',
+ * 'SchCVD020',
+ * 'SchCVD022',
+ * 'SchCVD022l',
+ * 'SchCVD024',
+ * 'SchCVD028',
+ * 'SchDP_AEAL',
+ * 'SchDP_CRS',
+ * 'SchDP_HII',
+ * 'SchDP_Plan',
+ * 'SchDP_RtR',
+ * 'SchDP_UNICEF',
+ * 'SchDP_WB',
+ * 'SchDP_WC',
+ * 'SchDP_WFP',
+ * 'SchDP_WR',
+ * 'SchDP_WV',
+ * 'SchFF001',
+ * 'SchFF002',
+ * 'SchFF004',
+ * 'SchFF011',
+ * 'SchQuar001'
+ */
+
+// List of surveys that the questions aboved are included (All Laos Schools surveys)
+/**
+ * 'Laos O2 Survey',
+ * 'School COVID-19 Response DL',
+ * 'School COVID-19 Response Laos',
+ * 'School Dev Partners Laos',
+ * 'School Electricity Laos',
+ * 'School Fundamentals DL (obsolete)',
+ * 'School Fundamentals Laos (obsolete)',
+ * 'School Quarantine Laos',
+ * 'School WASH Laos',
+ * 'School Water Supply Laos'
+ */
+
 const selectLaosSchoolsRadioQuestionsOptions = async db =>
   db.runSql(`
     select distinct question.code, question.options
