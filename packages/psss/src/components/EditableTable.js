@@ -6,7 +6,7 @@ import React, { createContext, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Tooltip, TextField } from '@tupaia/ui-components';
+import { TextField } from '@tupaia/ui-components';
 import { TABLE_STATUSES } from '../constants';
 
 const EditableTextField = styled(TextField)`
@@ -42,16 +42,6 @@ const ReadOnlyTextField = styled(EditableTextField)`
   }
 `;
 
-const RedTooltip = styled(Tooltip)`
-  & .MuiTooltip-tooltip {
-    background: ${props => props.theme.palette.error.main};
-
-    .MuiTooltip-arrow {
-      color: ${props => props.theme.palette.error.main};
-    }
-  }
-`;
-
 export const EditableTableContext = createContext({});
 
 export const EditableCell = React.memo(({ id, columnKey, ...props }) => {
@@ -62,22 +52,16 @@ export const EditableCell = React.memo(({ id, columnKey, ...props }) => {
 
   if (editable) {
     return (
-      <RedTooltip title={errors[id] ? errors[id].message : ''} placement="left" open>
-        <EditableTextField
-          id={id}
-          name={id}
-          defaultValue={defaultValue}
-          inputProps={{ 'aria-label': columnKey }}
-          error={!!errors[id]}
-          inputRef={register({
-            required: 'Required',
-            pattern: {
-              value: /^\d+$/,
-              message: 'Invalid character',
-            },
-          })}
-        />
-      </RedTooltip>
+      <EditableTextField
+        id={id}
+        name={id}
+        defaultValue={defaultValue}
+        inputProps={{ 'aria-label': columnKey }}
+        error={!!errors[id]}
+        inputRef={register({
+          required: 'Required',
+        })}
+      />
     );
   }
 
