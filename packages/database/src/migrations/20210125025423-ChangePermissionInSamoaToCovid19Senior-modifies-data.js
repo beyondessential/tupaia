@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const permission = 'COVID19 Senior';
+const permission = 'COVID-19 Senior';
 
 exports.up = async function (db) {
   await updateValues(
