@@ -48,6 +48,30 @@ const addDistrictEntityRelations = (db, ids) =>
     }),
   );
 
+const removeStriveFromExplore = db =>
+  db.runSql(`
+    update "dashboardGroup" 
+    set "projectCodes" = array_remove("projectCodes",'explore')
+    WHERE name in ('STRIVE PNG', 'STRIVE Raw Data Downloads');
+
+    update "mapOverlay" 
+    set "projectCodes" = array_remove("projectCodes",'explore')
+    where "countryCodes" = '{PG}' and "projectCodes" = '{strive,explore}';
+
+  `);
+
+const restoreStriveFromExplore = db =>
+  db.runSql(`
+    update "dashboardGroup" 
+    set "projectCodes" = "projectCodes" || '{explore}'
+    WHERE name in ('STRIVE PNG', 'STRIVE Raw Data Downloads');
+
+    update "mapOverlay" 
+    set "projectCodes" = "projectCodes" || '{explore}'
+    where "countryCodes" = '{PG}' and "projectCodes" = '{strive}';
+
+  `);
+
 exports.up = async function (db) {
   const districtIds = (await selectDistrictIds(db, striveDistrictCodes)).rows;
   await addDistrictEntityRelations(db, districtIds);
@@ -66,12 +90,16 @@ exports.up = async function (db) {
     { canonical_types: fetpCanonicalTypes },
     { id: fetpHierarchyId },
   );
+
+  await removeStriveFromExplore(db);
 };
 
 exports.down = async function (db) {
   await db.runSql(
     `delete from entity_relation where entity_hierarchy_id = '${striveHierarchyId}' and child_id != '${countryId}'`,
   );
+
+  await restoreStriveFromExplore(db);
 };
 
 exports._meta = {
