@@ -45,7 +45,7 @@ const indicator = {
 const mapOverlay = {
   id: 'COVID_WS_Home_Village_Of_Confirmed_Cases',
   name: 'Home village of confirmed cases',
-  userGroup: 'Donor',
+  userGroup: 'COVID-19 Senior',
   dataElementCode: indicator.code,
   measureBuilderConfig: {
     entityAggregation: {
