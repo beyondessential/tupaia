@@ -60,7 +60,7 @@ const removeStriveFromExplore = db =>
 
   `);
 
-const restoreStriveFromExplore = db =>
+const restoreStriveToExplore = db =>
   db.runSql(`
     update "dashboardGroup" 
     set "projectCodes" = "projectCodes" || '{explore}'
@@ -99,7 +99,7 @@ exports.down = async function (db) {
     `delete from entity_relation where entity_hierarchy_id = '${striveHierarchyId}' and child_id != '${countryId}'`,
   );
 
-  await restoreStriveFromExplore(db);
+  await restoreStriveToExplore(db);
 };
 
 exports._meta = {
