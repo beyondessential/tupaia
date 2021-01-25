@@ -4,18 +4,26 @@
  */
 
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import { RadioQuestion } from './RadioQuestion';
 
 export const BinaryQuestion = ({ options, ...props }) => {
-  const binaryOptions = ['Yes', 'No'].map((value, i) =>
-    JSON.stringify({
-      value,
-      ...JSON.parse(options[i]),
-    }),
-  );
+  const binaryOptions = options.length
+    ? ['Yes', 'No'].map((value, i) =>
+        JSON.stringify({
+          ...(options[i] ? JSON.parse(options[i]) : {}),
+          value,
+        }),
+      )
+    : ['Yes', 'No'];
 
-  console.log('binaryOptions', binaryOptions);
-  console.log('props', props);
   return <RadioQuestion options={binaryOptions} {...props} />;
+};
+
+BinaryQuestion.propTypes = {
+  options: PropTypes.array,
+};
+
+BinaryQuestion.defaultProps = {
+  options: [],
 };
