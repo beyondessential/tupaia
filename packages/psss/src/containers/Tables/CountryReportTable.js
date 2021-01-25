@@ -231,7 +231,7 @@ export const CountryReportTable = React.memo(
 CountryReportTable.propTypes = {
   isFetching: PropTypes.bool,
   data: PropTypes.array.isRequired,
-  fetchError: PropTypes.array,
+  fetchError: PropTypes.string,
   sitesReported: PropTypes.number.isRequired,
   weekNumber: PropTypes.string.isRequired,
   totalSites: PropTypes.number.isRequired,
