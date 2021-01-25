@@ -11,8 +11,8 @@ export const BinaryQuestion = ({ options, ...props }) => {
   const binaryOptions = options.length
     ? ['Yes', 'No'].map((value, i) =>
         JSON.stringify({
-          value,
           ...(options[i] ? JSON.parse(options[i]) : {}),
+          value,
         }),
       )
     : ['Yes', 'No'];
