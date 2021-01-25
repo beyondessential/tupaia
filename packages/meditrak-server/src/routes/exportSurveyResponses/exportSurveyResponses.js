@@ -107,8 +107,20 @@ export async function exportSurveyResponses(req, res) {
     for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
       const currentSurvey = surveys[surveyIndex];
       const permissionGroup = await currentSurvey.getPermissionGroup();
-      const hasSurveyAccess =
-        hasBESAdminAccess(accessPolicy) || accessPolicy.allows(country.code, permissionGroup.name);
+      let hasSurveyAccess = true;
+      // Skip checks if we have BES admin
+      if (!hasBESAdminAccess(accessPolicy)) {
+        if (entities.length > 0) {
+          // Check we have access for all entities
+          entities.forEach(entity => {
+            hasSurveyAccess =
+              hasSurveyAccess && accessPolicy.allows(entity.country_code, permissionGroup.name);
+          });
+        } else {
+          // Check we have access to the singular country
+          hasSurveyAccess = accessPolicy.allows(country.code, permissionGroup.name);
+        }
+      }
       if (!hasSurveyAccess) {
         const exportData = [[`You do not have export access to ${currentSurvey.name}`]];
         addDataToSheet(currentSurvey.name, exportData);
