@@ -42,7 +42,7 @@ const ReadOnlyTextField = styled(EditableTextField)`
   }
 `;
 
-const RedTooltip = styled(Tooltip)`
+const ErrorTooltip = styled(Tooltip)`
   & .MuiTooltip-tooltip {
     background: ${props => props.theme.palette.error.main};
 
@@ -62,7 +62,7 @@ export const EditableCell = React.memo(({ id, columnKey, ...props }) => {
 
   if (editable) {
     return (
-      <RedTooltip title={errors[id] ? errors[id].message : ''} placement="left" open>
+      <ErrorTooltip title={errors[id] ? errors[id].message : ''} placement="left" open>
         <EditableTextField
           id={id}
           name={id}
@@ -77,7 +77,7 @@ export const EditableCell = React.memo(({ id, columnKey, ...props }) => {
             },
           })}
         />
-      </RedTooltip>
+      </ErrorTooltip>
     );
   }
 
