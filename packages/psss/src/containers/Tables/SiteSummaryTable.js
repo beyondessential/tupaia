@@ -33,44 +33,37 @@ const siteWeekColumns = [
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    accessor: createTotalCasesAccessor('sitesReported'),
     width: COLUMN_WIDTHS.SITES_REPORTED,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DLI',
     key: 'DLI',
-    accessor: createTotalCasesAccessor('dli'),
     CellComponent: AlertCell,
   },
   {
     title: 'Status',
     key: 'status',
     width: '110px',
-    accessor: createTotalCasesAccessor('status'),
   },
 ];
 
@@ -108,23 +101,23 @@ export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) =>
 
   return (
     <>
-      {showSites && (
-        <TableWrapper>
-          <FakeHeader>
-            <div>10/30 Sentinel Sites Reported</div>
-            <Link component="button" onClick={handleOpen} underline="always">
-              Review and Confirm Now
-            </Link>
-          </FakeHeader>
-          <Table
-            errorMessage={error}
-            columns={siteWeekColumns}
-            data={data ? data.data : 0}
-            Header={false}
-            Body={CondensedTableBody}
-          />
-        </TableWrapper>
-      )}
+      {/*{showSites && (*/}
+      {/*  <TableWrapper>*/}
+      {/*    <FakeHeader>*/}
+      {/*      <div>10/30 Sentinel Sites Reported</div>*/}
+      {/*      <Link component="button" onClick={handleOpen} underline="always">*/}
+      {/*        Review and Confirm Now*/}
+      {/*      </Link>*/}
+      {/*    </FakeHeader>*/}
+      {/*    <Table*/}
+      {/*      errorMessage={error}*/}
+      {/*      columns={siteWeekColumns}*/}
+      {/*      data={data ? data.data : 0}*/}
+      {/*      Header={false}*/}
+      {/*      Body={CondensedTableBody}*/}
+      {/*    />*/}
+      {/*  </TableWrapper>*/}
+      {/*)}*/}
       <TableFooter>
         <Text>Verify data to submit Weekly report to Regional</Text>
         <Button onClick={() => handleOpen(period)}>Review and Confirm Now</Button>
