@@ -15,10 +15,6 @@ export class EditOptionSets extends EditHandler {
   }
 
   async editRecord() {
-    const optionSet = await this.models.optionSet.findById(this.recordId);
-    const originalData = await optionSet.getData();
-    const updatedModel = { ...originalData, ...this.updatedFields };
-
-    return this.models.optionSet.updateById(this.recordId, updatedModel);
+    return this.updateRecord();
   }
 }
