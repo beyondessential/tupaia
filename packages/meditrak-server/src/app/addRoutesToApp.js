@@ -15,12 +15,6 @@ import { ensurePermissionCheck } from '../permissions';
 import routes from '../routes';
 
 const {
-  // == TODO: Remove generic handlers ==
-  addRecord,
-  deleteRecord,
-  editRecord,
-  getRecord,
-  // ====
   authenticate,
   countChanges,
   createCountries,
@@ -92,7 +86,6 @@ const {
   importUsers,
   importOptionSets,
   postChanges,
-  pruneChanges,
   importSurveyResponses,
   registerUserAccount,
   createUserAccount,
@@ -148,7 +141,6 @@ export function addRoutesToApp(app) {
     '(/v[0-9]+)?/user/:userId/requestCountryAccess', // TODO not used from app version 1.7.93. Once usage stops, remove
     requestCountryAccess,
   );
-  app.post('(/v[0-9]+)?/changes/prune', pruneChanges); // TODO not used from app version 1.5.68. Once usage stops, remove
 
   /**
    * GET routes
@@ -199,10 +191,6 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/facilities/:recordId?', getClinics);
   app.get('(/v[0-9]+)/geographicalAreas/:recordId?', getGeographicalAreas);
 
-  // TODO: Remove generic handlers when all endpoints are implemented
-  app.get('(/v[0-9]+)/:resource', getRecord);
-  app.get('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', getRecord);
-
   /**
    * POST routes
    */
@@ -239,10 +227,6 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/feedItems', createFeedItems);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
 
-  // TODO: Remove generic handlers when all endpoints are implemented
-  app.post('(/v[0-9]+)/:resource', addRecord);
-  app.post('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', addRecord);
-
   /**
    * PUT routes
    */
@@ -265,10 +249,6 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
   app.put('(/v[0-9]+)/me', editUser);
 
-  // TODO: Remove generic handlers when all endpoints are implemented
-  app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', editRecord);
-  app.put('(/v[0-9]+)/:resource/:recordId', editRecord);
-
   /**
    * DELETE routes
    */
@@ -287,9 +267,6 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/dashboardGroups/:recordId', deleteDashboardGroups);
   app.delete('(/v[0-9]+)/dashboardReports/:recordId', deleteDashboardReports);
   app.delete('(/v[0-9]+)/mapOverlays/:recordId', deleteMapOverlays);
-  // TODO: Remove the generic handlers once all DELETE endpoints have specific handlers
-  app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
-  app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
 
   /**
    * Handle errors

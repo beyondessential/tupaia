@@ -15,6 +15,6 @@ export class EditOptionSets extends EditHandler {
   }
 
   async editRecord() {
-    await this.updateRecord();
+    return this.updateRecord();
   }
 }
