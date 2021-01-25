@@ -86,7 +86,6 @@ const {
   importUsers,
   importOptionSets,
   postChanges,
-  pruneChanges,
   importSurveyResponses,
   registerUserAccount,
   createUserAccount,
@@ -142,7 +141,6 @@ export function addRoutesToApp(app) {
     '(/v[0-9]+)?/user/:userId/requestCountryAccess', // TODO not used from app version 1.7.93. Once usage stops, remove
     requestCountryAccess,
   );
-  app.post('(/v[0-9]+)?/changes/prune', pruneChanges); // TODO not used from app version 1.5.68. Once usage stops, remove
 
   /**
    * GET routes

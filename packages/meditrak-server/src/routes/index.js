@@ -58,7 +58,6 @@ import { importSurveys } from './importSurveys';
 import { importUsers } from './importUsers';
 import { importOptionSets } from './importOptionSets';
 import { postChanges } from './postChanges';
-import { pruneChanges } from './pruneChanges';
 import { importSurveyResponses } from './importSurveyResponses';
 import { changePassword } from './changePassword';
 import { editUser } from './editUser';
@@ -173,7 +172,6 @@ export default {
   importUsers: catchAsyncErrors(importUsers),
   importOptionSets: catchAsyncErrors(importOptionSets),
   postChanges: catchAsyncErrors(postChanges),
-  pruneChanges: catchAsyncErrors(pruneChanges), // TODO: Legacy endpoint?
   importSurveyResponses: catchAsyncErrors(importSurveyResponses),
   changePassword: catchAsyncErrors(changePassword),
   editUser: catchAsyncErrors(editUser),
