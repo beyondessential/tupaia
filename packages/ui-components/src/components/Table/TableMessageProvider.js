@@ -7,14 +7,9 @@ import MuiTableBody from '@material-ui/core/TableBody';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TableCell, StyledTableRow } from './TableRow';
-import { SmallAlert } from '../Alert';
 
-const ErrorAlert = styled(SmallAlert)`
-  font-weight: 500;
-  border: 1px solid rgba(209, 51, 51, 0.2);
-  justify-content: center;
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+const ErrorSpan = styled.span`
+  color: ${props => props.theme.palette.warning.main};
 `;
 
 const getMessage = ({ isLoading, errorMessage, isData, noDataMessage }) => {
@@ -35,13 +30,7 @@ export const TableMessageProvider = React.memo(
         <MuiTableBody>
           <StyledTableRow>
             <TableCell colSpan={colSpan} align="center">
-              {errorMessage ? (
-                <ErrorAlert severity="error" variant="standard">
-                  {errorMessage}
-                </ErrorAlert>
-              ) : (
-                message
-              )}
+              {errorMessage ? <ErrorSpan>{errorMessage}</ErrorSpan> : message}
             </TableCell>
           </StyledTableRow>
         </MuiTableBody>

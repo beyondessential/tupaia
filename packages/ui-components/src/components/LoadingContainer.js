@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { SmallAlert } from './Alert';
 
 const Container = styled.div`
   position: relative;
@@ -42,32 +41,10 @@ const LoadingText = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const ErrorAlert = styled(SmallAlert)`
-  position: absolute;
-  top: 30%;
-  width: 90%;
-  font-weight: 500;
-  border: 1px solid rgba(209, 51, 51, 0.2);
-  justify-content: center;
-`;
-
 /**
  * Adds a loader around the children
  */
-export const LoadingContainer = ({ isLoading, heading, text, children, errorMessage }) => {
-  if (errorMessage) {
-    return (
-      <Container>
-        {children}
-        <LoadingScreen>
-          <ErrorAlert severity="error" variant="standard">
-            {errorMessage}
-          </ErrorAlert>
-        </LoadingScreen>
-      </Container>
-    );
-  }
-
+export const LoadingContainer = ({ isLoading, heading, text, children }) => {
   if (isLoading) {
     return (
       <Container>

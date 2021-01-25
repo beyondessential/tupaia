@@ -119,7 +119,7 @@ const columns = [
 ];
 
 export const CountryReportTable = React.memo(
-  ({ isFetching, data, fetchError, sitesReported, totalSites, weekNumber }) => {
+  ({ isFetching, data, sitesReported, totalSites, weekNumber }) => {
     const { tableStatus, setTableStatus } = useContext(EditableTableContext);
     const { countryCode } = useParams();
 
@@ -158,7 +158,6 @@ export const CountryReportTable = React.memo(
       <LoadingContainer
         isLoading={isFetching || tableStatus === TABLE_STATUSES.SAVING}
         heading={isFetching ? 'Loading data' : 'Saving Data'}
-        errorMessage={fetchError}
       >
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -231,7 +230,6 @@ export const CountryReportTable = React.memo(
 CountryReportTable.propTypes = {
   isFetching: PropTypes.bool,
   data: PropTypes.array.isRequired,
-  fetchError: PropTypes.array,
   sitesReported: PropTypes.number.isRequired,
   weekNumber: PropTypes.string.isRequired,
   totalSites: PropTypes.number.isRequired,
@@ -239,5 +237,4 @@ CountryReportTable.propTypes = {
 
 CountryReportTable.defaultProps = {
   isFetching: false,
-  fetchError: null,
 };
