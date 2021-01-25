@@ -104,8 +104,11 @@ export const constructQuestionValidators = models => ({
   optionLabels: [
     ...optionsValidators,
     (cell, row) => {
-      if (
-        row.type === 'Radio' &&
+      if (row.type === 'Binary') {
+        if (splitOnNewLinesOrCommas(cell).length > 2) {
+          throw new Error('Only 2 labels are allowed for a Binary question');
+        }
+      } else if (
         splitOnNewLinesOrCommas(cell).length > splitOnNewLinesOrCommas(row.options).length
       ) {
         throw new Error('There are more labels than options.');
