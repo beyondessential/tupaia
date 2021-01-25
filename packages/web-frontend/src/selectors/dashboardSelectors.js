@@ -13,7 +13,11 @@ import { selectLocation } from './utils';
 
 export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
   [selectLocation],
-  location => getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
+  location => {
+    const dashboardSegment = getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD);
+    return dashboardSegment;
+    return decodeURIComponent(dashboardSegment);
+  },
 );
 
 export const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
@@ -27,10 +31,11 @@ export const selectCurrentExpandedDates = createSelector([selectLocation], locat
 
 export const selectCurrentDashboardGroupCode = createSelector(
   [state => state.global.dashboardConfig, selectCurrentDashboardGroupCodeFromLocation],
-  (dashboardConfig, currentDashboardGroupCode) =>
-    dashboardConfig[currentDashboardGroupCode]
+  (dashboardConfig, currentDashboardGroupCode) => {
+    return dashboardConfig[currentDashboardGroupCode]
       ? currentDashboardGroupCode
-      : Object.keys(dashboardConfig)[0],
+      : Object.keys(dashboardConfig)[0];
+  },
 );
 
 const selectCurrentDashboardGroupIdForExpandedReport = createSelector(
