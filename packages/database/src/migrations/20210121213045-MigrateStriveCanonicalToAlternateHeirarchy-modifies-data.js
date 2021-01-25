@@ -72,6 +72,22 @@ const restoreStriveToExplore = db =>
 
   `);
 
+// need to remove trailing space from Milne Bay district to 
+// stop double up in district imports #1671
+const trimMilneBay = db =>
+  db.runSql(`
+  update entity 
+  set code = TRIM(code),
+  name = TRIM(name)
+  where code = 'PG_Milne Bay '`);
+
+const unTrimMilneBay = db =>
+  db.runSql(`
+  update entity 
+  set code = 'PG_Milne Bay ',
+  name = 'Milne Bay '
+  where code = 'PG_Milne Bay'`);
+
 exports.up = async function (db) {
   const districtIds = (await selectDistrictIds(db, striveDistrictCodes)).rows;
   await addDistrictEntityRelations(db, districtIds);
@@ -91,6 +107,7 @@ exports.up = async function (db) {
     { id: fetpHierarchyId },
   );
 
+  await trimMilneBay(db);
   await removeStriveFromExplore(db);
 };
 
@@ -99,6 +116,7 @@ exports.down = async function (db) {
     `delete from entity_relation where entity_hierarchy_id = '${striveHierarchyId}' and child_id != '${countryId}'`,
   );
 
+  await unTrimMilneBay(db);
   await restoreStriveToExplore(db);
 };
 
