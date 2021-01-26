@@ -11,6 +11,13 @@ DIR=$(dirname "$0")
 export STAGE=$(${DIR}/../utility/getEC2TagValue.sh Stage)
 echo "Starting up instance for ${STAGE}"
 
+# Turn off cloudwatch agent for all except prod and dev (can be turned on manually if needed on feature instances)
+if [[ $STAGE != "production" && $STAGE != "dev" ]]; then
+    echo "Turning off cloudwatch agent for feature instance."
+    echo "To restart, run sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a start"
+    amazon-cloudwatch-agent-ctl -m ec2 -a stop
+fi
+
 # Set the branch based on STAGE
 if [[ $STAGE == "production" ]]; then
     export BRANCH="master"
@@ -27,10 +34,3 @@ ${HOME_DIRECTORY}/packages/devops/scripts/deployment/deployPackages.sh
 
 # Set nginx config and start the service running
 ${HOME_DIRECTORY}/packages/devops/scripts/deployment/configureNginx.sh
-
-# Turn off cloudwatch agent for all except prod and dev (can be turned on manually if needed on feature instances)
-if [[ $STAGE != "production" && $STAGE != "dev" ]]; then
-    echo "Turning off cloudwatch agent for feature instance."
-    echo "To restart, run sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a start"
-    amazon-cloudwatch-agent-ctl -m ec2 -a stop
-fi
