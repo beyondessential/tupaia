@@ -15,7 +15,7 @@ export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
   [selectLocation],
   location => {
     const dashboardSegment = getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD);
-    return decodeURIComponent(dashboardSegment);
+    return dashboardSegment && decodeURIComponent(dashboardSegment);
   },
 );
 
