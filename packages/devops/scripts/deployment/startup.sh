@@ -13,6 +13,8 @@ echo "Starting up instance for ${STAGE}"
 
 # Turn off cloudwatch agent for all except prod and dev (can be turned on manually if needed on feature instances)
 if [[ $STAGE != "production" && $STAGE != "dev" ]]; then
+    echo "Turning off cloudwatch agent for feature instance."
+    echo "To restart, run sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a start"
     /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a stop
 fi
 
