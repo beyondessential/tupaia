@@ -32,5 +32,5 @@ ${HOME_DIRECTORY}/packages/devops/scripts/deployment/configureNginx.sh
 if [[ $STAGE != "production" && $STAGE != "dev" ]]; then
     echo "Turning off cloudwatch agent for feature instance."
     echo "To restart, run sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a start"
-    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a stop
+    amazon-cloudwatch-agent-ctl -m ec2 -a stop
 fi
