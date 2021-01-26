@@ -34,6 +34,7 @@ export default class extends RouteHandler {
       query.projectCode,
       hierarchyId,
     );
+    console.log(allDashboardGroups, dashboardGroups);
 
     // No dashboards available
     if (!Object.keys(dashboardGroups).length && !Object.keys(allDashboardGroups).length) {

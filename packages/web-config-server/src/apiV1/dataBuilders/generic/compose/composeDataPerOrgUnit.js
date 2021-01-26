@@ -37,6 +37,7 @@ export const composeDataPerOrgUnit = async (config, aggregator, dhisApi) => {
       throw new Error('composeDataPerOrgUnit must be composed of orgUnit data builders');
     }
 
+    console.log(name, dataByOrgUnit[name], newDataItem);
     dataByOrgUnit[name] = {
       ...dataByOrgUnit[name],
       ...newDataItem,
