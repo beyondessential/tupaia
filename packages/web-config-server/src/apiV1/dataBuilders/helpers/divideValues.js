@@ -17,3 +17,8 @@ export const divideValues = (numerator, denominator, fractionType = 'percentage'
 
   return modifierFunc(numerator / denominator);
 };
+
+export const fractionAndPercentage = (numerator, divisor) =>
+  (numerator || numerator === 0) && divisor
+    ? `${numerator} / ${divisor} = ${Math.round(divideValues(numerator, divisor) * 100)}%`
+    : NO_DATA_AVAILABLE;
