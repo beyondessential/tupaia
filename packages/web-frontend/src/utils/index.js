@@ -13,7 +13,6 @@ export { default as checkBoundsDifference } from './checkBoundsDifference';
 export { organisationUnitIsArea } from './organisation';
 export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
-export { mapBoxToken } from './mapbox';
 export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
 export { OverlayContainer, OverlayView } from './overlayContainer';
@@ -28,8 +27,14 @@ export {
 } from './measures';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
+export { getBrowserTimeZone } from './getBrowserTimeZone';
 export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
-export { areStringsEqual } from './string';
+export { areStringsEqual, stringToFilename } from './string';
 export { hexToRgba, getPresentationOption, getInactiveColor } from './color';
-export { getUniqueViewId, getViewIdFromInfoViewKey } from './getUniqueViewId';
+export {
+  getUniqueViewId,
+  getViewIdFromInfoViewKey,
+  getInfoFromInfoViewKey,
+} from './getUniqueViewId';
+export { sleep } from './sleep';

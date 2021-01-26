@@ -4,24 +4,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
-import {
-  CircleMeter,
-  Card,
-  CardContent,
-  CardHeader,
-  DataCardTabs,
-  WarningCloud,
-  Virus,
-} from '@tupaia/ui-components';
+import { WarningCloud, Virus } from '@tupaia/ui-components';
 import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle } from '../components';
-import { CountriesTable, WeeklyReportsExportModal } from '../containers';
-
-const StyledCardContent = styled(CardContent)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+import { CountriesTable, WeeklyReportsExportModal, ConfirmedCountriesCard } from '../containers';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -56,16 +41,11 @@ export const CountriesReportsView = () => (
         <CountriesTable />
       </Main>
       <Sidebar>
-        <Card variant="outlined">
-          <CardHeader title="Current reports submitted" label="Week 10" />
-          <StyledCardContent>
-            <Typography variant="h3">11/22 Countries</Typography>
-            <CircleMeter value={11} total={22} />
-          </StyledCardContent>
-        </Card>
-        <Card variant="outlined">
-          <DataCardTabs data={tabData} />
-        </Card>
+        <ConfirmedCountriesCard />
+        {/* Temporarily removed for MVP release. Please do not delete */}
+        {/*<Card variant="outlined">*/}
+        {/*  <DataCardTabs data={tabData} />*/}
+        {/*</Card>*/}
       </Sidebar>
     </Container>
   </>

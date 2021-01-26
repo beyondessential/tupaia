@@ -11,3 +11,4 @@ export * from './SitesReportedCell';
 export * from './AlertMenuCell';
 export * from './StartDateCell';
 export * from './SyndromeCell';
+export * from './StatusCell';

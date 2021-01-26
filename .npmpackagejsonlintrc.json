@@ -1,0 +1,25 @@
+{
+  "rules": {
+    "require-name": "error",
+    "require-description": "error",
+    "require-repository": "error",
+    "require-author": "error",
+    "require-scripts": "error",
+    "require-version": "warning",
+    "require-main": "warning",
+    "description-type": "error",
+    "name-type": "error",
+    "private-type": "error",
+    "repository-type": "error",
+    "scripts-type": "error",
+    "version-type": "error",
+    "version-format": "error",
+    "valid-values-author": ["error", [
+      "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)"
+    ]],
+    "valid-values-private": ["error", [
+      true
+    ]],
+    "name-format": "error"
+  }
+}

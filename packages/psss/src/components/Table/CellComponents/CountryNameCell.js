@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import MuiLink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import { Link as RouterLink } from 'react-router-dom';
-import { countryFlagImage } from '../../../utils';
+import { countryFlagImage, getCountryName } from '../../../utils';
 import * as COLORS from '../../../constants/colors';
 
 const CountryTitle = styled(MuiLink)`
@@ -48,21 +48,12 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
-export const CountryNameLinkCell = ({ name, countryCode }) => {
-  // Todo: replace with real country code
-  const testCountryCode = 'as';
-  return (
-    <CountryTitle to={`weekly-reports/${testCountryCode}`} component={RouterLink}>
-      <Avatar src={countryFlagImage(countryCode)} /> {name}
-    </CountryTitle>
-  );
-};
+export const CountryNameLinkCell = ({ organisationUnit }) => (
+  <CountryTitle to={`weekly-reports/${organisationUnit}`} component={RouterLink}>
+    <Avatar src={countryFlagImage(organisationUnit)} /> {getCountryName(organisationUnit)}
+  </CountryTitle>
+);
 
 CountryNameLinkCell.propTypes = {
-  name: PropTypes.string.isRequired,
-  countryCode: PropTypes.string,
-};
-
-CountryNameLinkCell.defaultProps = {
-  countryCode: null,
+  organisationUnit: PropTypes.string.isRequired,
 };

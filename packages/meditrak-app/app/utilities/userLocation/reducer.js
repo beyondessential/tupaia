@@ -1,14 +1,15 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
-import { createReducer } from '../';
+import { createReducer } from '..';
 import {
   USER_LOCATION_UPDATE,
   USER_LOCATION_ERROR,
   USER_LOCATION_WATCH,
   USER_LOCATION_STOP_WATCHING,
+  CLEAR_LOCATION_DATA,
 } from './constants';
 
 const defaultState = {
@@ -44,6 +45,12 @@ const stateChanges = {
     longitude: defaultState.longitude,
     accuracy: defaultState.accuracy,
     errorMessage,
+  }),
+  [CLEAR_LOCATION_DATA]: () => ({
+    latitude: defaultState.latitude,
+    longitude: defaultState.longitude,
+    accuracy: defaultState.accuracy,
+    errorMessage: defaultState.errorMessage,
   }),
 };
 

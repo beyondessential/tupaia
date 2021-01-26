@@ -6,7 +6,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { getBrowserTimeZone } from '@tupaia/utils';
 import { ResourcePage } from './ResourcePage';
+import { SurveyResponsesExportModal } from '../../importExport';
 
 const surveyName = {
   Header: 'Survey',
@@ -62,8 +64,11 @@ export const SURVEY_RESPONSE_COLUMNS = [
     source: 'id',
     type: 'export',
     actionConfig: {
-      exportEndpoint: 'surveyResponse',
+      exportEndpoint: 'surveyResponses',
       fileName: 'Survey Response',
+      extraQueryParameters: {
+        timeZone: getBrowserTimeZone(),
+      },
     },
   },
 ];
@@ -76,7 +81,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'surveyResponse',
+      editEndpoint: 'surveyResponses',
       fields: [entityName, surveyName, assessorName, date, dateOfData],
     },
   },
@@ -85,7 +90,7 @@ const COLUMNS = [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'surveyResponse',
+      endpoint: 'surveyResponses',
     },
   },
 ];
@@ -115,7 +120,7 @@ export const ANSWER_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'answer',
+      editEndpoint: 'answers',
       fields: ANSWER_FIELDS,
     },
   },
@@ -125,7 +130,7 @@ const EXPANSION_CONFIG = [
   {
     title: 'Answers',
     columns: ANSWER_COLUMNS,
-    endpoint: 'surveyResponse/{id}/answers',
+    endpoint: 'surveyResponses/{id}/answers',
   },
 ];
 
@@ -134,6 +139,24 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'surveyResponses',
   },
+  queryParameters: [
+    {
+      label: 'Will this import create new survey responses?',
+      secondaryLabel: 'Leave unchecked if it will only update existing responses',
+      parameterKey: 'createNew',
+      type: 'boolean',
+    },
+    {
+      label: 'Survey Names',
+      secondaryLabel:
+        'Please enter the names of the surveys for the responses to be imported against. These should match the tab names in the file.',
+      parameterKey: 'surveyNames',
+      optionsEndpoint: 'surveys',
+      optionValueKey: 'name',
+      allowMultipleValues: true,
+      visibilityCriteria: { createNew: true },
+    },
+  ],
 };
 
 export const SurveyResponsesPage = ({ getHeaderEl }) => (
@@ -141,10 +164,12 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
+    defaultSorting={[{ id: 'submission_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
+    ExportModalComponent={SurveyResponsesExportModal}
   />
 );
 

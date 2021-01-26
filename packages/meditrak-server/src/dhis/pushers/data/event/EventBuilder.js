@@ -52,6 +52,8 @@ export class EventBuilder {
       throw new Error(`No answers in survey ${this.surveyResponse.id}`);
     }
 
+    await this.assertValidDataSources(answers);
+
     const dataValues = [];
     for (let i = 0; i < answers.length; i++) {
       const answer = answers[i];
@@ -69,7 +71,7 @@ export class EventBuilder {
       throw new Error(`Program ${programCode} was not found on DHIS2`);
     }
     const { id: programId, programStages } = program;
-    const { code: orgUnitCode } = await entity.fetchClosestOrganisationUnit();
+    const { code: orgUnitCode } = await entity.fetchNearestOrgUnitAncestor();
     const { id: orgUnitDhisId } = await this.fetchOrganisationUnit(orgUnitCode);
     await enrollTrackedEntityInProgramIfNotEnrolled(this.api, {
       trackedEntityId,
@@ -104,7 +106,7 @@ export class EventBuilder {
 
   async fetchDefaultEventOrgUnit() {
     const entity = await this.surveyResponse.entity();
-    return entity.fetchClosestOrganisationUnit();
+    return entity.fetchNearestOrgUnitAncestor();
   }
 
   async fetchOrganisationUnit(code) {
@@ -122,5 +124,32 @@ export class EventBuilder {
    */
   async fetchProgram(code) {
     return this.api.getRecord({ type: PROGRAM, code, fields: 'id,programStages' });
+  }
+
+  /**
+   * @param answers Answer[]
+   * @returns {Promise<void>}
+   * @private
+   */
+  async assertValidDataSources(answers) {
+    const questionIds = answers.map(answer => answer.question_id);
+
+    const questions = await this.models.question.find({ id: questionIds });
+
+    const dataSourceIds = questions.map(question => question.data_source_id);
+
+    const dataSources = await this.models.dataSource.find({ id: dataSourceIds });
+
+    const serviceTypes = {};
+
+    for (const dataSource of dataSources) {
+      serviceTypes[dataSource.service_type] = true;
+    }
+
+    if (Object.keys(serviceTypes).length > 1) {
+      throw new Error(
+        'All answers to an event based survey must use the same service type. See PR #1526',
+      );
+    }
   }
 }

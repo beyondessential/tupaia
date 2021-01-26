@@ -12,7 +12,6 @@ import {
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-import { upsertEntity } from '../../testUtilities';
 import { TestableApp } from '../../TestableApp';
 import { expectPermissionError } from '../../testUtilities/expectResponseError';
 
@@ -26,6 +25,10 @@ const DEFAULT_POLICY = {
 };
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
+const SURVEY_NAME_1 = 'Test Import Survey Response 1';
+const SURVEY_NAME_2 = 'Test Import Survey Response 2';
+const SURVEY_CODE_1 = 'TEST_IMPORT_SURVEY_RESPONSES_1_test';
+const SURVEY_CODE_2 = 'TEST_IMPORT_SURVEY_RESPONSES_2_test';
 
 const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
   sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
@@ -34,13 +37,15 @@ const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
 
 describe('importSurveyResponses(): POST import/surveyResponses', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   describe('Test permissions when importing surveyResponses', async () => {
-    const importFile = filename =>
-      app
-        .post('import/surveyResponses')
+    const importFile = (filename, surveyNames) => {
+      const surveyNamesParam = surveyNames.map(s => `surveyNames=${s}`).join('&');
+      return app
+        .post(`import/surveyResponses?${surveyNamesParam}`)
         .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
+    };
 
     before(async () => {
       const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
@@ -56,7 +61,8 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
       });
       const [{ survey: survey1 }, { survey: survey2 }] = await buildAndInsertSurveys(models, [
         {
-          code: 'TEST_IMPORT_SURVEY_RESPONSES_1_test',
+          code: SURVEY_CODE_1,
+          name: SURVEY_NAME_1,
           permission_group_id: adminPermissionGroup.id,
           country_ids: [demoLand.id],
           questions: [
@@ -75,9 +81,10 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
           ],
         },
         {
-          code: 'TEST_IMPORT_SURVEY_RESPONSES_2_test',
+          code: SURVEY_CODE_2,
+          name: SURVEY_NAME_2,
           permission_group_id: adminPermissionGroup.id,
-          country_ids: [demoLand.id],
+          country_ids: [kiribatiCountry.id],
           questions: [
             {
               id: 'fdfcc42a22321c123a8_test',
@@ -95,15 +102,29 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
         },
       ]);
 
-      const entity = await upsertEntity({ code: 'DL_7', country_code: demoLand.code });
-      await upsertEntity({ code: 'DL_9', country_code: demoLand.code });
-      await upsertEntity({ code: 'DL_10', country_code: demoLand.code });
-      await upsertEntity({ code: 'DL_11', country_code: demoLand.code });
-      await upsertEntity({ code: 'KI_111_test', country_code: kiribatiCountry.code });
-      await upsertEntity({ code: 'KI_222_test', country_code: kiribatiCountry.code });
-      await upsertEntity({ code: 'KI_333_test', country_code: kiribatiCountry.code });
-      await upsertEntity({ code: 'KI_444_test', country_code: kiribatiCountry.code });
-
+      const entity = await findOrCreateDummyRecord(models.entity, {
+        code: 'DL_7',
+        country_code: demoLand.code,
+      });
+      await findOrCreateDummyRecord(models.entity, { code: 'DL_9', country_code: demoLand.code });
+      await findOrCreateDummyRecord(models.entity, { code: 'DL_10', country_code: demoLand.code });
+      await findOrCreateDummyRecord(models.entity, { code: 'DL_11', country_code: demoLand.code });
+      await findOrCreateDummyRecord(models.entity, {
+        code: 'KI_111_test',
+        country_code: kiribatiCountry.code,
+      });
+      await findOrCreateDummyRecord(models.entity, {
+        code: 'KI_222_test',
+        country_code: kiribatiCountry.code,
+      });
+      await findOrCreateDummyRecord(models.entity, {
+        code: 'KI_333_test',
+        country_code: kiribatiCountry.code,
+      });
+      await findOrCreateDummyRecord(models.entity, {
+        code: 'KI_444_test',
+        country_code: kiribatiCountry.code,
+      });
       const userId = 'user_00000000000000_test';
       await models.user.updateOrCreate(
         {
@@ -145,7 +166,7 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
 
     it('Sufficient permissions: Should pass permissions check when importing survey responses from 1 survey', async () => {
       await prepareStubAndAuthenticate(app);
-      const response = await importFile('importResponsesFromSingleSurvey.xlsx');
+      const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_NAME_1]);
       const { statusCode } = response;
 
       expect(statusCode).to.equal(200);
@@ -153,7 +174,10 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
 
     it('Sufficient permissions: Should pass permissions check when importing survey responses from multiple surveys', async () => {
       await prepareStubAndAuthenticate(app);
-      const response = await importFile('importResponsesFromMultipleSurveys.xlsx');
+      const response = await importFile('importResponsesFromMultipleSurveys.xlsx', [
+        SURVEY_NAME_1,
+        SURVEY_NAME_2,
+      ]);
       const { statusCode } = response;
 
       expect(statusCode).to.equal(200);
@@ -161,7 +185,7 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
 
     it('Insufficient permissions: Should not pass permissions check when importing survey responses from 1 survey and users do not have access to the survey', async () => {
       const policy = {
-        DL: ['Public'], //Public instead of Admin =>  throw error for all the survey responses of DL
+        DL: ['Public'], // Public instead of Admin =>  throw error for all the survey responses of DL
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -169,29 +193,32 @@ describe('importSurveyResponses(): POST import/surveyResponses', () => {
         LA: ['Admin'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const response = await importFile('importResponsesFromSingleSurvey.xlsx');
+      const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_NAME_1]);
 
       expectPermissionError(
         response,
-        /Need Admin access to Demo Land to import the survey responses/,
+        /Need Admin access to Demo Land to import the survey response\(s\)/,
       );
     });
 
     it('Insufficient permissions: Should not pass permissions check when importing survey responses from multiple surveys and users do not have access to any of the surveys', async () => {
       const policy = {
         DL: ['Admin'],
-        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/], //No Admin access to KI => throw error for all the survey responses of Kiribati
+        KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */], // No Admin access to KI => throw error for all the survey responses of Kiribati
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         TO: ['Admin'],
         LA: ['Admin'],
       };
       await prepareStubAndAuthenticate(app, policy);
-      const response = await importFile('importResponsesFromMultipleSurveys.xlsx');
+      const response = await importFile('importResponsesFromMultipleSurveys.xlsx', [
+        SURVEY_NAME_1,
+        SURVEY_NAME_2,
+      ]);
 
       expectPermissionError(
         response,
-        /Need Admin access to Kiribati,Demo Land to import the survey responses/,
+        /Need Admin access to Kiribati to import the survey response\(s\)/,
       );
     });
   });

@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword, encryptPassword } from '@tupaia/auth';
-import { generateSecretKey } from '@tupaia/utils';
+import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
 import { CreateHandler } from '../CreateHandler';
 import { assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles POST endpoints:
- * - /userAccount
+ * - /users
  */
 
 export class CreateUserAccounts extends CreateHandler {
@@ -28,7 +27,7 @@ export class CreateUserAccounts extends CreateHandler {
     emailAddress,
     contactNumber,
     password,
-    countryName,
+    countryName = 'Demo Land',
     permissionGroupName,
     is_api_client: isApiClient,
     verifiedEmail,

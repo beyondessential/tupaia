@@ -14,6 +14,7 @@ import HeaderRow from './HeaderRow';
 import DescriptionOverlay from './DescriptionOverlay';
 import Row from './Row';
 import RowGroup from './RowGroup';
+import FooterRow from './FooterRow';
 import { CATEGORY_INDENT } from '../styles';
 
 import './matrix.css';
@@ -54,7 +55,6 @@ export class Matrix extends PureComponent {
 
     this.state = state;
 
-    this.setExportHandlers();
     this.rowElements = []; // For exporting.
   }
 
@@ -143,143 +143,18 @@ export class Matrix extends PureComponent {
     return Object.keys(presentationOptions).length > 0;
   }
 
+  shouldRenderFooter() {
+    if (!this.getIsUsingDots(this.props.presentationOptions)) {
+      return false;
+    }
+    const conditions = this.props.presentationOptions.conditions || [];
+    return conditions.filter(condition => !!condition.legendLabel).length > 0;
+  }
+
   setRowRef(rowElement) {
     if (!this.rowElements.includes(rowElement)) {
       this.rowElements.push(rowElement);
     }
-  }
-
-  setExportHandlers() {
-    if (!window) {
-      return;
-    }
-
-    const { presentationOptions } = this.props;
-    const columnKeys = this.getColumnKeys();
-
-    window.tupaiaExportProps = {
-      currentExportXPage: 0,
-      currentPresentationOption: 0,
-      presentationOptions: Object.keys(presentationOptions),
-      rowElements: [],
-      initExporter: extraConfig => {
-        if (extraConfig.search) {
-          this.search(extraConfig.search);
-        }
-
-        this.currentExportXPage = 0;
-        this.resetClipping();
-        this.changeXPage(0);
-        this.openAll();
-        this.rowElements = this.getOrderedRowElements();
-        this.fitToViewport();
-      },
-      moveToNextExportPage: () => {
-        const totalXPages = window.tupaiaExportProps.getXPageCount();
-        this.currentExportXPage++;
-
-        // Advance horizontally by default.
-        if (this.currentExportXPage < totalXPages) {
-          this.changeXPage(this.currentExportXPage);
-          return true;
-        }
-        // Reset column page and advance vertically.
-
-        this.changeXPage(0);
-
-        if (this.clipNext()) {
-          this.currentExportXPage = 0;
-          this.fitToViewport();
-
-          return true;
-        }
-
-        if (this.currentPresentationOption < this.presentationOptions.length) {
-          this.currentPresentationOption++;
-          return true;
-        }
-
-        return false;
-      },
-      getXPageCount: () => {
-        const { numberOfColumnsPerPage } = this.props;
-        return Math.ceil(columnKeys.length / numberOfColumnsPerPage);
-      },
-      getOrderedRowElements: () =>
-        this.rowElements
-          // Filter out stale refs.
-          .filter(e => e && e.getRowElement())
-          // Sort by Y position (refs can be added in any which order by React)
-          .sort((a, b) => a.getRowElement().offsetTop - b.getRowElement().offsetTop),
-      changeXPage: pageNumber => {
-        // 0 based page number index.
-        const { numberOfColumnsPerPage } = this.props;
-        const startColumn = numberOfColumnsPerPage * pageNumber;
-        this.setState({ startColumn });
-      },
-      // Clips to the new set of rows, useful for printing
-      clipNext: () => {
-        this.verticalScroller.style.maxHeight = '100%'; // Reset height.
-
-        const { rowElements } = window.tupaiaExportProps;
-        const scrollWindowHeight = this.verticalScroller.offsetHeight;
-        const rowsToHide = [];
-
-        let r = 0;
-        for (; r < rowElements.length; r++) {
-          const rowElement = rowElements[r] ? rowElements[r].getRowElement() : null;
-          if (rowElement && rowElement.style.display !== 'none') {
-            if (rowElement.offsetHeight + rowElement.offsetTop < scrollWindowHeight) {
-              rowsToHide.push(rowElement);
-            } else {
-              break;
-            }
-          }
-        }
-        rowsToHide.forEach(rowElement => {
-          rowElement.style.display = 'none';
-        });
-
-        // Return true if there are still rows visible on screen, otherwise
-        // return false to signify clipping has gone as far as it can go.
-        return r < rowElements.length - 1;
-      },
-      fitToViewport: () => {
-        this.verticalScroller.style.maxHeight = '100%'; // Reset height.
-        let newScrollHeight = '100%';
-
-        const { rowElements } = window.tupaiaExportProps;
-        const scrollWindowHeight = this.verticalScroller.offsetHeight;
-        const scrollWindowTop = this.verticalScroller.scrollTop;
-        for (let r = 0; r < rowElements.length; r++) {
-          const rowElement = rowElements[r] ? rowElements[r].getRowElement() : null;
-          if (rowElement) {
-            const scrollBottom = scrollWindowHeight + scrollWindowTop;
-            const rowBottom = rowElement.offsetHeight + rowElement.offsetTop;
-            if (scrollBottom < rowBottom) {
-              newScrollHeight = rowElement.offsetTop - scrollWindowTop;
-              break;
-            }
-          }
-        }
-
-        this.verticalScroller.style.maxHeight = `${newScrollHeight}px`;
-      },
-      resetClipping: () => {
-        const { rowElements } = window.tupaiaExportProps;
-
-        rowElements
-          .map(r => r && r.getRowElement())
-          .filter(r => r)
-          .forEach(r => {
-            r.style.display = 'flex';
-          });
-
-        this.forceUpdate();
-      },
-      openAll: () => this.setState({ areAllExpanded: true }),
-      search: searchTerm => this.setState({ searchTerm }),
-    };
   }
 
   moveColumn(distance) {
@@ -502,6 +377,10 @@ export class Matrix extends PureComponent {
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
 
+    const shouldRenderFooter = this.shouldRenderFooter();
+
+    const { conditions } = this.props.presentationOptions;
+
     return (
       <div
         style={styles.wrapper}
@@ -522,6 +401,7 @@ export class Matrix extends PureComponent {
               <div style={styles.contentInner}>{rowDisplay}</div>
             </div>
           </div>
+          {shouldRenderFooter && <FooterRow conditions={conditions} styles={styles} />}
         </div>
       </div>
     );
@@ -548,6 +428,7 @@ Matrix.propTypes = {
   rows: PropTypes.arrayOf(rowShape),
   title: PropTypes.string,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE).isRequired,
+  categoryPresentationOptions: PropTypes.object.isRequired, // category header rows can have values just like real rows, this is how you style them
   hideColumnTitles: PropTypes.bool,
   isExporting: PropTypes.bool,
   onSearch: PropTypes.func,

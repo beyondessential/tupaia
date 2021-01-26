@@ -8,7 +8,7 @@ Methods for parsing the access policy that is received by Tupaia projects during
 // Create access policy instance
 const accessPolicy = new AccessPolicy(policy); // where `policy` is a JSON string to parse
 
-//Returns whether or not the access policy grants access to the 'Donor' permissionGroup for ALL the given countries 
+//Returns whether or not the access policy grants access to the 'Donor' permissionGroup for ALL the given countries
 //Demo Land and Laos
 accessPolicy.allowsAll(['DL', 'LA'], 'Donor');
 
@@ -20,7 +20,10 @@ accessPolicy.allowsSome(['DL', 'DL_North'], 'Donor');
 accessPolicy.allows('DL');
 
 // Returns the list of countries the policy has access to the 'Donor' permissionGroup for
-acessPolicy.getEntitiesAllowed('Donor');
+accessPolicy.getEntitiesAllowed('Donor');
+
+// Returns whether or not the access policy grants Donor access within any entity
+accessPolicy.allowsAnywhere('Donor');
 ```
 
 ## JSON Structure
@@ -43,11 +46,6 @@ build a list of its ancestors, i.e. Ravenclaw (subdistrict), South West (distric
 (country), and pass all of these codes through to `allowsSome`. In that way, if the user has access
 to any entity further up the hierarchy, they will be granted access to Thornbury.
 
-## Running tests
-
-yarn test               # Runs all tests
-yarn test:coverage      # Runs tests and displays project test coverage
- 	 
 ## Editing, changing, building
 
 Edit files in src and run `npm run build` to create a new version that's able to be imported by other

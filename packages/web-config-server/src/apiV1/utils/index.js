@@ -29,7 +29,6 @@ export { timestampToPeriod } from './timestampToPeriod';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';
 export { regexLabel } from './regexLabel';
-export { filterEntities, checkEntityAgainstConditions } from './filterEntities';
 export { getDateRange } from './getDateRange';
 export { mapDataSourcesToElementCodes } from './mapDataSourcesToElementCodes';
 export { parseCoordinates } from './parseCoordinates';

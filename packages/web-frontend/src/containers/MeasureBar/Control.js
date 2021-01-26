@@ -109,6 +109,9 @@ const ExpandedContent = styled.div`
 export const Control = ({
   emptyMessage,
   selectedMeasure,
+  showDatePicker,
+  defaultDates,
+  datePickerLimits,
   isMeasureLoading,
   onUpdateMeasurePeriod,
   children,
@@ -128,6 +131,12 @@ export const Control = ({
     const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
     onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
   };
+
+  // Map overlays always have initial dates, so DateRangePicker always has dates on initialisation,
+  // and uses those rather than calculating it's own defaults
+  let { startDate, endDate } = selectedMeasure;
+  if (!startDate) startDate = defaultDates.startDate;
+  if (!endDate) endDate = defaultDates.endDate;
 
   return (
     <Container>
@@ -154,12 +163,15 @@ export const Control = ({
           </IconWrapper>
         </Content>
       )}
-      {selectedMeasure.periodGranularity && (
+      {showDatePicker && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
+            key={selectedMeasure.name} // force re-create the component on measure change, which resets initial dates
             granularity={selectedMeasure.periodGranularity}
-            startDate={selectedMeasure.startDate}
-            endDate={selectedMeasure.endDate}
+            startDate={startDate}
+            endDate={endDate}
+            min={datePickerLimits.startDate}
+            max={datePickerLimits.endDate}
             onSetDates={updateMeasurePeriod}
             isLoading={isMeasureLoading}
           />
@@ -183,6 +195,15 @@ Control.propTypes = {
     startDate: PropTypes.shape({}),
     endDate: PropTypes.shape({}),
   }),
+  showDatePicker: PropTypes.bool,
+  defaultDates: PropTypes.shape({
+    startDate: PropTypes.object,
+    endDate: PropTypes.object,
+  }).isRequired,
+  datePickerLimits: PropTypes.shape({
+    startDate: PropTypes.object,
+    endDate: PropTypes.object,
+  }),
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isMeasureLoading: PropTypes.bool,
@@ -192,4 +213,9 @@ Control.propTypes = {
 Control.defaultProps = {
   isMeasureLoading: false,
   selectedMeasure: {},
+  showDatePicker: false,
+  datePickerLimits: {
+    startDate: null,
+    endDate: null,
+  },
 };

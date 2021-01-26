@@ -21,7 +21,7 @@ const OPTION_SET_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'optionSet',
+      editEndpoint: 'optionSets',
       fields: [...OPTION_SET_FIELDS],
     },
   },
@@ -40,6 +40,12 @@ const OPTION_FIELDS = [
     Header: 'Sort Order',
     source: 'sort_order',
   },
+  {
+    Header: 'Attributes',
+    source: 'attributes',
+    type: 'jsonTooltip',
+    editConfig: { type: 'jsonEditor' },
+  },
 ];
 
 const OPTION_COLUMNS = [
@@ -49,7 +55,7 @@ const OPTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'option',
+      editEndpoint: 'options',
       fields: OPTION_FIELDS,
     },
   },
@@ -58,7 +64,7 @@ const OPTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Options',
-    endpoint: 'optionSet/{id}/options',
+    endpoint: 'optionSets/{id}/options',
     columns: OPTION_COLUMNS,
   },
 ];

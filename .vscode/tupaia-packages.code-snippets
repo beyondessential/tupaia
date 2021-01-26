@@ -15,7 +15,6 @@
       "/**",
       " * @abstract",
       " */",
-      "// eslint-disable-next-line class-methods-use-this",
       "$1() {",
       "\tthrow new Error('Any subclass of ${2:$TM_FILENAME_BASE} must implement the \"$1\" method');",
       "}"

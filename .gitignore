@@ -18,3 +18,5 @@ dump.sql
 **/cypress/videos
 /snapshots.js
 .idea
+dockercfg
+packages/.vscode/settings.json

@@ -19,7 +19,8 @@ const Container = styled.section`
   padding-top: 1rem;
   padding-bottom: 1rem;
   max-width: 460px;
-  margin: 2rem auto 3rem;
+  margin: 2.5rem auto;
+  min-height: calc(100vh - 445px);
 `;
 
 const StyledButton = styled(Button)`

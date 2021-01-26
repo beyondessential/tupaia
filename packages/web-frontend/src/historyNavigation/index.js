@@ -5,9 +5,8 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export { historyMiddleware, reactToInitialState, initHistoryDispatcher } from './historyMiddleware';
+export { historyMiddleware, initHistoryDispatcher } from './historyMiddleware';
 export {
-  createUrlString,
   getLocationComponentValue,
   getInitialLocation,
   getInitialLocationComponents,

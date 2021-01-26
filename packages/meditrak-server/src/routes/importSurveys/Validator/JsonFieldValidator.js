@@ -9,15 +9,19 @@ export class JsonFieldValidator extends BaseValidator {
    * @param {number} rowIndex
    */
   async validate(rowIndex) {
-    const fieldName = this.getFieldName();
-    const field = this.getField(rowIndex, fieldName);
-    const config = this.parseField(field);
+    const config = this.getConfig(rowIndex);
 
     const fieldValidators = this.getFieldValidators(rowIndex);
     const otherFieldValidators = this.getOtherFieldValidators();
     await new ObjectValidator(fieldValidators, otherFieldValidators).validate(config);
 
     return true;
+  }
+
+  getConfig(rowIndex) {
+    const fieldName = this.getFieldName();
+    const field = this.getField(rowIndex, fieldName);
+    return this.parseField(field);
   }
 
   getFieldName() {

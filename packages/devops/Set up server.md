@@ -89,8 +89,8 @@ AWS_PROFILE=certbot certbot-auto certonly -d *.tupaia.org -d tupaia.org --dns-ro
 
 - `mkdir /home/ubuntu/logs/`
 - `crontab -e`
-- Paste in `0 14 * * * /home/ubuntu/tupaia/packages/devops/scripts/utility/renewSslCertificate.sh >> /home/ubuntu/logs/certbot-auto.txt` (14 UTC is midnight AEST)
-  - For apache Wordpress sites use `0 14 * * * AWS_PROFILE=certbot /usr/local/bin/certbot-auto renew --no-self-upgrade --dns-route53 --non-interactive --server https://acme-v02.api.letsencrypt.org/directory --post-hook "sudo /opt/bitnami/ctlscript.sh restart apache" >> /home/bitnami/logs/certbot-auto.txt` instead
+- Paste in `0 14 * * * /home/ubuntu/tupaia/packages/devops/scripts/utility/renewSslCertificate.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done > /home/ubuntu/logs/certbot-auto.txt` (14 UTC is midnight AEST)
+  - For apache Wordpress sites use `0 14 * * * AWS_PROFILE=certbot /usr/local/bin/certbot-auto renew --no-self-upgrade --dns-route53 --non-interactive --server https://acme-v02.api.letsencrypt.org/directory --post-hook "sudo /opt/bitnami/ctlscript.sh restart apache" > /home/bitnami/logs/certbot-auto.txt` instead
 - Save and exit
 
 # nginx
@@ -195,8 +195,6 @@ sudo su postgres
 psql
 CREATE USER tupaia WITH PASSWORD '{actual password}';
 CREATE DATABASE tupaia WITH OWNER tupaia;
-CREATE USER tupaia-config-server WITH PASSWORD '{actual password}';
-CREATE DATABASE tupaia-config-server WITH OWNER tupaia-config-server;
 \q
 exit
 ```
@@ -276,7 +274,7 @@ sudo apt install jq
 ```
 mkdir ~/logs
 crontab -e
-@reboot /home/ubuntu/tupaia/packages/devops/scripts/deployment/startup.sh >> /home/ubuntu/logs/deployment_log.txt
+@reboot /home/ubuntu/tupaia/packages/devops/scripts/deployment/startup.sh | while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  > /home/ubuntu/logs/deployment_log.txt
 ```
 
 # monitoring

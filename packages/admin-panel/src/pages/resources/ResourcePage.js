@@ -7,7 +7,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
-import { ImportModal, ExportModal } from '../../importExport';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
@@ -21,16 +20,23 @@ export const ResourcePage = ({
   editConfig,
   createConfig,
   endpoint,
+  reduxId,
   expansionTabs,
   importConfig,
-  filteredExportConfig,
+  ExportModalComponent,
   onProcessDataForSave,
   baseFilter,
   title,
   getHeaderEl,
+  defaultSorting,
 }) => {
   const HeaderPortal = usePortalWithCallback(
-    <Header title={title} importConfig={importConfig} createConfig={createConfig} />,
+    <Header
+      title={title}
+      importConfig={importConfig}
+      createConfig={createConfig}
+      ExportModalComponent={ExportModalComponent}
+    />,
     getHeaderEl,
   );
   return (
@@ -41,12 +47,11 @@ export const ResourcePage = ({
           columns={columns}
           endpoint={endpoint}
           expansionTabs={expansionTabs}
-          reduxId={endpoint}
+          reduxId={reduxId || endpoint}
           baseFilter={baseFilter}
+          defaultSorting={defaultSorting}
         />
       </Container>
-      {importConfig && <ImportModal {...importConfig} />}
-      {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
     </>
   );
@@ -59,6 +64,7 @@ ResourcePage.propTypes = {
   editConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
+  reduxId: PropTypes.string,
   expansionTabs: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -68,9 +74,10 @@ ResourcePage.propTypes = {
     }),
   ),
   importConfig: PropTypes.object,
-  filteredExportConfig: PropTypes.object,
+  ExportModalComponent: PropTypes.elementType,
   title: PropTypes.string.isRequired,
   baseFilter: PropTypes.object,
+  defaultSorting: PropTypes.array,
 };
 
 ResourcePage.defaultProps = {
@@ -78,7 +85,9 @@ ResourcePage.defaultProps = {
   editConfig: null,
   expansionTabs: null,
   importConfig: null,
-  filteredExportConfig: null,
+  ExportModalComponent: null,
   onProcessDataForSave: null,
   baseFilter: {},
+  defaultSorting: [],
+  reduxId: null,
 };

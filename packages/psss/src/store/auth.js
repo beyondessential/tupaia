@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createSelector } from 'reselect';
+import { AccessPolicy } from '@tupaia/access-policy';
+import { loginUser, logoutUser, updateUser, getUser } from '../api';
 import { createReducer } from '../utils/createReducer';
-import { getPermittedEntitiesForUser, checkIsAuthorisedForMultiCountry } from '../utils/auth';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -14,103 +16,115 @@ const LOGOUT = 'LOGOUT';
 export const PROFILE_SUCCESS = 'PROFILE_SUCCESS';
 
 // action creators
-export const login = (emailAddress, password) => async (dispatch, getState, { api }) => {
+export const login = ({ email, password }) => async dispatch => {
   const deviceName = window.navigator.userAgent;
 
   dispatch({ type: LOGIN_START });
   try {
-    const userDetails = await api.reauthenticate({
-      emailAddress,
+    const user = await loginUser({
+      emailAddress: email,
       password,
       deviceName,
     });
-    dispatch(loginSuccess(userDetails));
+    dispatch({
+      type: LOGIN_SUCCESS,
+      ...user,
+    });
   } catch (error) {
-    dispatch(loginError(error.message));
+    dispatch({
+      type: LOGIN_ERROR,
+      error: error.message,
+    });
   }
 };
 
-export const loginSuccess = ({ accessToken, refreshToken, user }) => ({
-  type: LOGIN_SUCCESS,
-  accessToken,
-  refreshToken,
-  user,
-});
+export const logout = (error = null) => async dispatch => {
+  if (error) {
+    dispatch({
+      type: LOGIN_ERROR,
+      error,
+    });
+  }
 
-export const loginError = errorMessage => ({
-  type: LOGIN_ERROR,
-  error: errorMessage,
-});
+  dispatch({
+    type: LOGOUT,
+  });
+  await logoutUser();
+};
 
-export const logout = () => ({
-  type: LOGOUT,
-});
-
-export const updateProfile = payload => async (dispatch, getState, { api }) => {
-  await api.put(`me`, null, payload);
-  const { body: user } = await api.get(`me`);
+export const updateProfile = payload => async dispatch => {
+  await updateUser(payload);
+  const user = await getUser();
   dispatch({
     type: PROFILE_SUCCESS,
     ...user,
   });
 };
 
-export const updatePassword = payload => async (dispatch, getState, { api }) =>
-  api.post(`me/changePassword`, null, payload);
-
 // selectors
-export const getAccessToken = ({ auth }) => auth.accessToken;
-export const getRefreshToken = ({ auth }) => auth.refreshToken;
-export const getCurrentUser = ({ auth }) => auth.user;
-export const getError = ({ auth }) => auth.error;
-export const checkIsPending = ({ auth }) => auth.status === 'pending';
+export const getCurrentUser = ({ auth }) => auth && auth.user;
+export const checkIsLoading = ({ auth }) => auth.status === 'loading';
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
-export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
+export const getError = ({ auth }) => auth.error;
+export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.isLoggedIn;
 
-export const getPermittedEntity = state => {
-  const user = getCurrentUser(state);
-  return getPermittedEntitiesForUser(user);
+const PSSS_PERMISSION_GROUP = 'PSSS';
+
+export const canUserViewCountry = (entities, match) =>
+  entities.some(entityCode => entityCode === match.params.countryCode);
+
+export const canUserViewMultipleCountries = entities => entities.length > 1;
+
+const getEntitiesAllowedByUser = user => {
+  if (!user) {
+    return [];
+  }
+
+  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
+  return entities.filter(e => e !== 'DL'); // don't show demo land in psss
 };
 
-export const checkIsMultiCountryUser = state => {
-  const user = getCurrentUser(state);
-  return checkIsAuthorisedForMultiCountry(user);
-};
+export const getEntitiesAllowed = createSelector(getCurrentUser, user =>
+  getEntitiesAllowedByUser(user),
+);
 
-export const getPermittedEntitySlug = state =>
-  checkIsMultiCountryUser(state) ? '' : getPermittedEntity(state);
+export const checkIsMultiCountryUser = createSelector(
+  getEntitiesAllowed,
+  entities => entities.length > 1,
+);
 
 export const getHomeUrl = state =>
-  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getPermittedEntity(state)}`;
+  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getEntitiesAllowed(state)[0]}`;
 
 // reducer
 const defaultState = {
   status: 'idle',
-  user: null,
   error: null,
-  accessToken: null,
-  refreshToken: null,
+  isLoggedIn: false,
+  user: null,
 };
 
 const actionHandlers = {
   [LOGIN_START]: () => ({
     ...defaultState,
-    status: 'pending',
+    status: 'loading',
   }),
   [LOGIN_SUCCESS]: action => ({
-    status: 'success',
+    ...defaultState,
     user: action.user,
-    error: defaultState.error,
-    accessToken: action.accessToken,
-    refreshToken: action.refreshToken,
+    isLoggedIn: true,
   }),
   [LOGIN_ERROR]: action => ({
     status: 'error',
     error: action.error,
   }),
-  [LOGOUT]: () => defaultState,
+  [LOGOUT]: (action, currentState) => ({
+    ...currentState,
+    isLoggedIn: false,
+  }),
   [PROFILE_SUCCESS]: (user, currentState) => ({
+    ...currentState,
     user: {
       ...currentState.user,
       firstName: user.first_name,
@@ -118,6 +132,7 @@ const actionHandlers = {
       name: `${user.first_name} ${user.last_name}`,
       position: user.position,
       employer: user.employer,
+      profileImage: user.profile_image,
     },
   }),
 };

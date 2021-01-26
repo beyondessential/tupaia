@@ -93,6 +93,7 @@ const TopBarExpansion = styled.div`
   padding-left: ${wrapperPadding}px;
   padding-right: ${wrapperPadding}px;
   overflow: hidden;
+  border-radius: 0 0 8px 8px;
 `;
 
 const IconContainer = styled.div`

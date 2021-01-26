@@ -10,7 +10,9 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SumBuilder;
 
   async fetchResultsAndPeriod() {
-    const { dataElementCodes } = this.config;
+    const { dataElementCode } = this.query;
+    const dataElementCodes = this.config.dataElementCodes || [dataElementCode];
+
     const { period, results } = await this.fetchAnalytics(dataElementCodes, {
       organisationUnitCode: this.entity.code,
     });
@@ -19,6 +21,7 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
 }
 
 export const sumLatestPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -26,6 +29,7 @@ export const sumLatestPerOrgUnit = async (
   entity,
 ) => {
   const builder = new SumPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,
@@ -37,6 +41,7 @@ export const sumLatestPerOrgUnit = async (
 };
 
 export const sumAllPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -44,6 +49,7 @@ export const sumAllPerOrgUnit = async (
   entity,
 ) => {
   const builder = new SumPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

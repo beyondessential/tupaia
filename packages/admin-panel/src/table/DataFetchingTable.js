@@ -6,10 +6,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { SmallAlert } from '@tupaia/ui-components';
+import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
-import { Tabs, ConfirmDeleteModal } from '../widgets';
+import { Tabs } from '../widgets';
 import { TableHeadCell } from './TableHeadCell';
 import { ColumnFilter } from './ColumnFilter';
 import {
@@ -36,7 +36,7 @@ const StyledAlert = styled(SmallAlert)`
   margin-top: 30px;
 `;
 
-const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
+const ExpandRowIcon = styled(AddBox)`
   transition: color 0.2s ease;
 
   &:hover {
@@ -46,7 +46,7 @@ const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
 
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
-    this.props.onRefreshData();
+    this.props.initialiseTable();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,6 +65,7 @@ class DataFetchingTableComponent extends React.Component {
     const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
     return (
       <ConfirmDeleteModal
+        isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}
@@ -121,12 +122,12 @@ class DataFetchingTableComponent extends React.Component {
         FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
         ExpanderComponent={({ isExpanded }) =>
-          isExpanded ? <AddBox color="primary" /> : <IndeterminateCheckboxIcon />
+          isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />
         }
         getPaginationProps={customPagination}
         SubComponent={
           expansionTabs &&
-          (({ original: rowData, index }) => {
+          (({ original: rowData }) => {
             const { id } = rowData;
             const expansionTab = expansionTabStates[id] || 0;
             const expansionItem = expansionTabs[expansionTab];
@@ -143,7 +144,7 @@ class DataFetchingTableComponent extends React.Component {
                   onSelectTab={tabValue => onExpandedTabChange(id, tabValue)}
                 />
                 <DataFetchingTable
-                  reduxId={`${reduxId}_${index}_${expansionTab}`}
+                  reduxId={`${reduxId}_${id}_${expansionTab}`}
                   endpoint={makeSubstitutionsInString(endpoint, rowData)}
                   key={expansionTab} // Triggers refresh of data.
                   {...restOfProps}
@@ -199,6 +200,7 @@ DataFetchingTableComponent.propTypes = {
   onRefreshData: PropTypes.func.isRequired,
   onResizedChange: PropTypes.func.isRequired,
   onSortedChange: PropTypes.func.isRequired,
+  initialiseTable: PropTypes.func.isRequired,
   pageIndex: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   reduxId: PropTypes.string.isRequired,
@@ -238,13 +240,26 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
 });
 
 const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
-  const { baseFilter = {}, endpoint, columns, reduxId, ...restOfOwnProps } = ownProps;
+  const {
+    baseFilter = {},
+    defaultSorting = [],
+    endpoint,
+    columns,
+    reduxId,
+    ...restOfOwnProps
+  } = ownProps;
+  const onRefreshData = () =>
+    dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps));
+  const initialiseTable = () => {
+    dispatch(changeSorting(reduxId, defaultSorting)); // will trigger a data fetch afterwards
+  };
   return {
     reduxId,
     ...restOfOwnProps,
     ...stateProps,
     ...dispatchProps,
-    onRefreshData: () => dispatch(refreshData(reduxId, endpoint, columns, baseFilter, stateProps)),
+    onRefreshData,
+    initialiseTable,
   };
 };
 

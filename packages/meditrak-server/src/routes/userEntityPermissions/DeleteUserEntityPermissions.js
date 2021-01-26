@@ -5,7 +5,7 @@
 
 import { DeleteHandler } from '../DeleteHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { assertUserEntityPermissionPermissions } from './assertUserEntityPermissionPermissions';
+import { assertUserEntityPermissionEditPermissions } from './assertUserEntityPermissionPermissions';
 
 /**
  * Handles DELETE endpoints:
@@ -16,7 +16,7 @@ export class DeleteUserEntityPermissions extends DeleteHandler {
   async assertUserHasAccess() {
     // Check Permissions
     const userEntityPermissionChecker = accessPolicy =>
-      assertUserEntityPermissionPermissions(accessPolicy, this.models, this.recordId);
+      assertUserEntityPermissionEditPermissions(accessPolicy, this.models, this.recordId);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, userEntityPermissionChecker]),
     );

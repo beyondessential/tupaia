@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
@@ -16,7 +16,7 @@ import { DEFAULT_PADDING, getGreyShade, THEME_COLOR_DARK } from '../globalStyles
 const MENU_ITEM_WIDTH = (Dimensions.get('window').width - 50) / 2;
 
 class DumbSurveysMenu extends React.Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.onMount();
   }
 
@@ -157,8 +157,4 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
   };
 }
 
-export const SurveysMenu = connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(DumbSurveysMenu);
+export const SurveysMenu = connect(mapStateToProps, null, mergeProps)(DumbSurveysMenu);

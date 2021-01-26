@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -7,38 +9,39 @@ const Script = require('./Script');
 
 const PACKAGE_DIR = 'packages';
 
-/**
- * Usage: `node  testAll [-b|--bail] [-s|--silent]`
- *
- * Options:
- * -b|--bail: bail mode (exit on first failure)
- * -s|--silent: silent mode (do not print output from the tests)
- */
 class TestAllScript extends Script {
+  config = {
+    options: {
+      bail: {
+        alias: 'b',
+        type: 'boolean',
+        description: 'Exit on first failure',
+      },
+      silent: {
+        alias: 's',
+        type: 'boolean',
+        description: 'Dot not print output from the tests',
+      },
+    },
+    version: '1.0.0',
+  };
+
   packages;
 
-  run() {
+  runCommands() {
     this.printEnabledOptionsInfo();
     this.packages = this.findPackages();
     const results = this.runTests();
     this.printResults(results);
-
     this.exit(this.getScriptResult(results));
   }
 
-  parseOptions(args) {
-    return {
-      bailMode: args.includes('-b') || args.includes('--bail'),
-      silentMode: args.includes('-s') || args.includes('--silent'),
-    };
-  }
-
   printEnabledOptionsInfo() {
-    if (this.options.bailMode) {
-      this.log('Eager mode is on');
+    if (this.args.bail) {
+      this.logInfo('Bail mode is on');
     }
-    if (this.options.silentMode) {
-      this.log('Silent mode is on');
+    if (this.args.silent) {
+      this.logInfo('Silent mode is on');
     }
   }
 
@@ -65,22 +68,29 @@ class TestAllScript extends Script {
   };
 
   runTest = packageName => {
-    if (!this.options.silentMode) {
+    if (!this.args.silent) {
       this.log(`\n${packageName}`);
     }
-    const result = this.exec(`yarn workspace @tupaia/${packageName} test`, {
-      printOutput: !this.options.silentMode,
-    });
-    if (this.options.silentMode) {
-      // No test output in `silentMode`, so we can print the results as we get them
-      this.printPackageResult(packageName, result);
+
+    let passesTests = true;
+    try {
+      this.exec(`yarn workspace @tupaia/${packageName} test`, {
+        printOutput: !this.args.silent,
+      });
+    } catch (error) {
+      passesTests = false;
     }
 
-    if (!result && this.options.bailMode) {
+    if (this.args.silent) {
+      // No test output in `silentMode`, so we can print the results as we get them
+      this.printPackageResult(packageName, passesTests);
+    }
+
+    if (!passesTests && this.args.bail) {
       this.logError('\nA failing package was found, exiting');
       this.exit(false);
     }
-    return result;
+    return passesTests;
   };
 
   printPackageResult = (packageName, passesTests) => {
@@ -92,7 +102,7 @@ class TestAllScript extends Script {
   printResults = results => {
     this.log();
 
-    if (!this.options.silentMode) {
+    if (!this.args.silent) {
       this.log('Results\n');
       Object.entries(results).forEach(([packageName, result]) => {
         this.printPackageResult(packageName, result);

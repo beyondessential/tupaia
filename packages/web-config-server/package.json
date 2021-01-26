@@ -1,26 +1,26 @@
 {
   "name": "@tupaia/web-config-server",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "description": "Config server for tupaia.org",
-  "main": "dist",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia",
+    "directory": "packages/web-config-server"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --config-file \"../../babel.config.json\"",
+    "lint": "eslint --ignore-path ../../.gitignore .",
+    "lint:fix": "yarn lint --fix",
+    "prestart": "npm run -s build",
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "prestart": "npm run -s build",
     "test": "mocha",
-    "test:coverage": "cross-env NODE_ENV=test nyc mocha",
-    "lint": "eslint --ignore-path ../../.gitignore .",
-    "lint:fix": "yarn lint --fix .",
-    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
+    "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia"
-  },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
@@ -75,9 +75,5 @@
     "csvtojson": "^1.1.5",
     "eslint-import-resolver-babel-module": "^5.1.2",
     "eslint-plugin-module-resolver": "^1.0.0"
-  },
-  "bugs": {
-    "url": "https://github.com/beyondessential/tupaia/issues"
-  },
-  "homepage": "https://github.com/beyondessential/tupaia"
+  }
 }

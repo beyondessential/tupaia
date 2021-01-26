@@ -1,8 +1,8 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
-import { NavigationActions } from 'react-navigation';
+ */
+import { NavigationActions, StackActions } from 'react-navigation';
 import { Alert } from 'react-native';
 
 import {
@@ -35,13 +35,13 @@ export const goBack = (shouldAlertIfInSurvey = true) => (dispatch, getState) => 
 };
 
 export const resetToHome = () =>
-  NavigationActions.reset({
+  StackActions.reset({
     index: 0,
     actions: [NavigationActions.navigate({ routeName: HOME_SCREEN })],
   });
 
 export const resetToLogin = () =>
-  NavigationActions.reset({
+  StackActions.reset({
     index: 0,
     actions: [
       NavigationActions.navigate({
@@ -50,13 +50,7 @@ export const resetToLogin = () =>
     ],
   });
 
-export const viewSyncPage = () =>
-  NavigationActions.navigate({
-    routeName: SYNC_SCREEN,
-    params: {
-      transition: 'SyncTransition',
-    },
-  });
+export const viewSyncPage = () => navigateToScreen(SYNC_SCREEN);
 
 export const goToCreateAccount = () => dispatch => {
   dispatch(
@@ -66,13 +60,7 @@ export const goToCreateAccount = () => dispatch => {
   );
 };
 
-export const openSurvey = () =>
-  NavigationActions.navigate({
-    routeName: SURVEY_SCREEN,
-    params: {
-      transition: 'SurveyTransition',
-    },
-  });
+export const openSurvey = () => navigateToScreen(SURVEY_SCREEN);
 
 export const openSurveyGroup = (surveyGroupId, surveyGroupName) =>
   NavigationActions.navigate({
@@ -86,7 +74,7 @@ export const openSurveyGroup = (surveyGroupId, surveyGroupName) =>
 
 export const resetToWelcomeScreen = () => dispatch => {
   dispatch(
-    NavigationActions.reset({
+    StackActions.reset({
       index: 0,
       actions: [
         NavigationActions.navigate({
@@ -168,11 +156,11 @@ export const navigateToScreen = (routeName, title, params = {}) =>
   });
 
 export const replaceCurrentScreen = (routeName, title, params = {}) => (dispatch, getState) => {
-  const { navigation } = getState();
-  const { routes } = navigation;
-  const currentRoute = routes[navigation.index];
+  const { nav } = getState();
+  const { routes } = nav;
+  const currentRoute = routes[nav.index];
   dispatch(
-    NavigationActions.replace({
+    StackActions.replace({
       key: currentRoute.key,
       routeName,
       params,

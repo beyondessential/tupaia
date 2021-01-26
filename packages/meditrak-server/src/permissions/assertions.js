@@ -5,12 +5,6 @@
 
 import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from './constants';
 
-const DEFAULT_ERROR_MESSAGE = 'Your permissions do not allow access to the requested resource';
-
-////
-// utilities for running multiple permissions assertions
-////
-
 /**
  * Returns true all the time. This is for any route handlers that do not need permissions.
  */
@@ -42,9 +36,8 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
   let combinedErrorMessages = `One of the following conditions need to be satisfied:\n`;
 
-  for (let i = 0; i < assertions.length; i++) {
+  for (const assertion of assertions) {
     try {
-      const assertion = assertions[i];
       await assertion(accessPolicy);
       return true;
     } catch (e) {
@@ -55,9 +48,9 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
   throw new Error(errorMessage || combinedErrorMessages);
 };
 
-////
-// specific permissions assertions
-////
+/**
+ * specific permissions assertions
+ */
 
 export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP);

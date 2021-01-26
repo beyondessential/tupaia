@@ -2,12 +2,28 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
-import { editRecord } from './editRecord';
+import { respond, FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
+import { hashAndSaltPassword } from '@tupaia/auth';
+import { allowNoPermissions } from '../permissions';
 
 export async function changePassword(req, res, next) {
   const { models, body, userId } = req;
-  const { oneTimeLoginToken, oldPassword, password, passwordConfirm } = body;
+  const {
+    oneTimeLoginToken,
+    oldPassword,
+    password,
+    newPassword,
+    passwordConfirm,
+    newPasswordConfirm,
+  } = body;
+
+  // Checking the oneTimeLogin/oldPassword acts as our permission check
+  await req.assertPermissions(allowNoPermissions);
+
+  // Support both alternatives so that users using versions
+  // of meditrak-app prior to 1.9.109 can still change their passwords
+  const passwordParam = password || newPassword;
+  const passwordConfirmParam = passwordConfirm || newPasswordConfirm;
 
   // Check password hash matches that in db
   const user = await models.user.findById(userId);
@@ -26,27 +42,19 @@ export async function changePassword(req, res, next) {
     throw new FormValidationError('Incorrect current password.', ['oldPassword']);
   }
 
-  if (password !== passwordConfirm) {
+  if (passwordParam !== passwordConfirmParam) {
     throw new FormValidationError('Passwords do not match.', ['password', 'passwordConfirm']);
   }
 
   try {
-    isValidPassword(password);
+    isValidPassword(passwordParam);
   } catch (error) {
     throw new FormValidationError(error.message, ['password', 'passwordConfirm']);
   }
 
-  try {
-    req.params = {
-      id: userId,
-      resource: 'user',
-    };
-    req.body = {
-      password,
-    };
-
-    await editRecord(req, res);
-  } catch (error) {
-    next(error);
-  }
+  await models.user.updateById(userId, {
+    ...hashAndSaltPassword(passwordParam),
+  });
+  
+  respond(res, { message: 'Successfully updated password' });
 }

@@ -10,8 +10,6 @@ import { call, delay, put, select, take, takeEvery, takeLatest } from 'redux-sag
 import request from './utils/request';
 import {
   ATTEMPT_CHANGE_PASSWORD,
-  ATTEMPT_CHART_EXPORT,
-  ATTEMPT_DRILL_DOWN,
   ATTEMPT_LOGIN,
   ATTEMPT_LOGOUT,
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
@@ -23,6 +21,7 @@ import {
   changeOrgUnitSuccess,
   CHANGE_ORG_UNIT_SUCCESS,
   CHANGE_SEARCH,
+  FETCH_MORE_SEARCH_RESULTS,
   clearMeasure,
   clearMeasureHierarchy,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
@@ -30,16 +29,12 @@ import {
   displayUnverified,
   fetchChangePasswordError,
   fetchChangePasswordSuccess,
-  fetchChartExportError,
-  fetchChartExportSuccess,
   fetchCountryAccessDataError,
   fetchCountryAccessDataSuccess,
   fetchDashboardError,
   fetchDashboardItemDataError,
   fetchDashboardItemDataSuccess,
   fetchDashboardSuccess,
-  fetchDrillDownError,
-  fetchDrillDownSuccess,
   fetchEmailVerifyError,
   fetchMeasureInfoError,
   fetchMeasureInfoSuccess,
@@ -82,8 +77,7 @@ import {
   REQUEST_PROJECT_ACCESS,
   setMeasure,
   setOverlayComponent,
-  SET_DRILL_DOWN_DATE_RANGE,
-  SET_ENLARGED_DIALOG_DATE_RANGE,
+  FETCH_ENLARGED_DIALOG_DATA,
   SET_MEASURE,
   SET_ORG_UNIT,
   SET_VERIFY_EMAIL_TOKEN,
@@ -92,24 +86,38 @@ import {
   updateMeasureConfig,
   UPDATE_MEASURE_CONFIG,
   UPDATE_MEASURE_DATE_RANGE_ONCE_HIERARCHY_LOADS,
+  FETCH_INITIAL_DATA,
+  setPasswordResetToken,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
+  setVerifyEmailToken,
+  setOrgUnit,
+  openEnlargedDialog,
+  updateCurrentMeasureConfigOnceHierarchyLoads,
+  LOCATION_CHANGE,
+  goHome,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
-import { LANDING } from './containers/OverlayDiv/constants';
+import {
+  LANDING,
+  PROJECT_LANDING,
+  PROJECTS_WITH_LANDING_PAGES,
+} from './containers/OverlayDiv/constants';
 import { DEFAULT_PROJECT_CODE } from './defaults';
+import { fetchDisasterDateRange } from './disaster/sagas';
 import {
   convertUrlPeriodStringToDateRange,
-  createUrlString,
+  getInitialLocation,
   URL_COMPONENTS,
 } from './historyNavigation';
-import { setProject } from './projects/actions';
+import { setProject, setRequestingAccess } from './projects/actions';
 import {
-  selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
   selectCurrentInfoViewKey,
   selectCurrentMeasureId,
   selectCurrentOrgUnitCode,
+  selectShouldUseDashboardData,
   selectCurrentPeriodGranularity,
   selectCurrentProjectCode,
+  selectCurrentExpandedViewContent,
   selectDefaultMeasureId,
   selectIsMeasureInHierarchy,
   selectIsProject,
@@ -117,9 +125,126 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
+  selectProjectByCode,
+  selectCurrentDashboardGroupCodeFromLocation,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo } from './utils';
-import { getDefaultDates } from './utils/periodGranularities';
+import {
+  formatDateForApi,
+  isMobile,
+  processMeasureInfo,
+  getInfoFromInfoViewKey,
+  getBrowserTimeZone,
+} from './utils';
+import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
+import { fetchProjectData } from './projects/sagas';
+import { clearLocation } from './historyNavigation/historyNavigation';
+import { decodeLocation } from './historyNavigation/utils';
+import { PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './historyNavigation/constants';
+
+function* watchFetchInitialData() {
+  yield take(FETCH_INITIAL_DATA);
+
+  // Login must happen first so that projects return the correct access flags
+  yield call(findUserLoggedIn, LOGIN_TYPES.AUTO);
+  yield call(fetchProjectData);
+  yield call(handleLocationChange, {
+    location: getInitialLocation(),
+    previousLocation: clearLocation(),
+  });
+}
+
+function* handleInvalidPermission({ projectCode }) {
+  const state = yield select();
+  const { isUserLoggedIn } = state.authentication;
+
+  if (isUserLoggedIn) {
+    // show project access dialog
+    const project = selectProjectByCode(state, projectCode);
+
+    if (Object.keys(project).length > 0) {
+      yield put(setRequestingAccess(project));
+      yield put(setOverlayComponent('requestProjectAccess'));
+      return;
+    }
+
+    // handle 404s
+    // Todo: handle 404s. Issue: https://github.com/beyondessential/tupaia-backlog/issues/1474
+    console.error('project does not exist - 404');
+    return;
+  }
+  // show login dialog
+  yield put(setOverlayComponent(LANDING));
+}
+
+function* handleUserPage(userPage, initialComponents) {
+  yield put(setOverlayComponent(LANDING));
+
+  switch (userPage) {
+    case PASSWORD_RESET_PREFIX:
+      yield put(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
+      yield put(openUserPage(DIALOG_PAGE_ONE_TIME_LOGIN));
+      break;
+    case VERIFY_EMAIL_PREFIX:
+      yield put(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
+      break;
+    default:
+      console.error('Unhandled user page', userPage);
+  }
+}
+
+const userHasAccessToProject = (projects, currentProject) =>
+  projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
+
+const URL_REFRESH_COMPONENTS = {
+  [URL_COMPONENTS.PROJECT]: setProject,
+  [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
+  [URL_COMPONENTS.URL_COMPONENTS]: setMeasure,
+  [URL_COMPONENTS.REPORT]: openEnlargedDialog,
+  [URL_COMPONENTS.MEASURE_PERIOD]: updateCurrentMeasureConfigOnceHierarchyLoads,
+};
+
+function* handleLocationChange({ location, previousLocation }) {
+  const { project } = yield select();
+  const { userPage, projectSelector, ...otherComponents } = decodeLocation(location);
+
+  if (userPage) {
+    yield call(handleUserPage, userPage, otherComponents);
+    return;
+  }
+
+  if (projectSelector) {
+    // Set project to explore, this is the default
+    yield put(setOverlayComponent(LANDING));
+    yield put(setProject(DEFAULT_PROJECT_CODE));
+    return;
+  }
+
+  const hasAccess = project.projects
+    .filter(p => p.hasAccess)
+    .find(p => p.code === otherComponents.PROJECT);
+  if (!hasAccess) {
+    yield call(handleInvalidPermission, { projectCode: otherComponents.PROJECT });
+    return;
+  }
+
+  const isLandingPageProject = PROJECTS_WITH_LANDING_PAGES[otherComponents[URL_COMPONENTS.PROJECT]];
+  if (isLandingPageProject) {
+    yield put(setOverlayComponent(PROJECT_LANDING));
+  }
+
+  // refresh data if the url has changed
+  const previousComponents = decodeLocation(previousLocation);
+  for (const [key, value] of Object.entries(URL_REFRESH_COMPONENTS)) {
+    const component = otherComponents[key];
+    if (component && component !== previousComponents[key]) {
+      yield put({ ...value(component), meta: { preventHistoryUpdate: true } });
+    }
+  }
+}
+
+function* watchHandleLocationChange() {
+  yield takeLatest(LOCATION_CHANGE, handleLocationChange);
+}
 
 /**
  * attemptChangePassword
@@ -243,7 +368,7 @@ function* attemptUserLogin(action) {
     yield put(findLoggedIn(LOGIN_TYPES.MANUAL, response.emailVerified));
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
-    if (errorMessage.details && errorMessage.details === 'Email address not yet verified') {
+    if (errorMessage?.error === 'Email address not yet verified') {
       yield put(displayUnverified());
     } else yield put(error.errorFunction(errorMessage));
   }
@@ -372,6 +497,10 @@ function* watchAttemptTokenLogin() {
   yield takeLatest(ATTEMPT_RESET_TOKEN_LOGIN, attemptTokenLogin);
 }
 
+function* watchAttemptTokenLoginSuccess() {
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, resetToHome);
+}
+
 function* openResetPasswordDialog() {
   yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
 }
@@ -410,6 +539,7 @@ function* attemptRequestCountryAccess(action) {
   try {
     yield call(request, requestResourceUrl, fetchRequestCountryAccessError, options);
     yield put(fetchRequestCountryAccessSuccess());
+    yield call(fetchProjectData);
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
     yield put(error.errorFunction(errorMessage.details ? errorMessage.details : ''));
@@ -471,7 +601,11 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
+    if (error.errorFunction) {
+      yield put(error.errorFunction(error));
+    }
     yield put(fetchOrgUnitError(organisationUnitCode, error.message));
+
     throw error;
   }
 }
@@ -514,7 +648,6 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
       ),
     );
   } catch (error) {
-    console.log(error);
     yield put(changeOrgUnitError(error));
   }
 }
@@ -560,10 +693,17 @@ function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   const projectCode = selectCurrentProjectCode(state);
+  const currentDashboardCode = selectCurrentDashboardGroupCodeFromLocation(state);
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
+
+    if (!(currentDashboardCode in dashboard)) {
+      yield call(handleInvalidPermission, { projectCode });
+      return;
+    }
+
     yield put(fetchDashboardSuccess(dashboard));
   } catch (error) {
     yield put(error.errorFunction(error));
@@ -582,37 +722,46 @@ function* fetchViewData(parameters, errorHandler) {
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
       ? parameters
-      : getDefaultDates(state.global.viewConfigs[infoViewKey]);
+      : getDefaultDates(state.global.viewConfigs[infoViewKey] || {});
+
   // Build the request url
   const {
     organisationUnitCode,
     dashboardGroupId,
     viewId,
-    drillDownLevel,
     isExpanded,
     extraUrlParameters,
   } = parameters;
+
   const urlParameters = {
     organisationUnitCode,
     projectCode: selectCurrentProjectCode(state),
     dashboardGroupId,
     viewId,
-    drillDownLevel,
     isExpanded,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
+    timeZone: getBrowserTimeZone(),
     ...extraUrlParameters,
   };
   const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
 
   try {
-    const viewData = yield call(request, requestResourceUrl, errorHandler);
-    return viewData;
+    return yield call(request, requestResourceUrl, errorHandler);
   } catch (error) {
+    let errorMessage = error.message;
+
     if (error.errorFunction) {
-      yield put(error.errorFunction(error, infoViewKey));
-    } else {
-      console.log(`Failed to handle error: ${error.message}`);
+      yield put(error.errorFunction(error));
+    }
+
+    if (error.response) {
+      const json = yield error.response.json();
+      errorMessage = json.error;
+    }
+
+    if (errorHandler) {
+      yield put(errorHandler(errorMessage, infoViewKey));
     }
   }
   return null;
@@ -625,23 +774,14 @@ function* fetchViewData(parameters, errorHandler) {
  *
  */
 function* fetchDashboardItemData(action) {
-  const { dashboardItemProject, infoViewKey } = action;
-
-  // If this dashboard item is a member of a module that requires extra work before fetching its
-  // data, allow the module to handle that work and return any extra url parameters
-  let prepareForDashboardItemDataFetch;
-  try {
-    // eslint-disable-next-line import/no-dynamic-require
-    const moduleSagas = require(`./${dashboardItemProject}/sagas`);
-    prepareForDashboardItemDataFetch = moduleSagas.prepareForDashboardItemDataFetch;
-  } catch (error) {
-    // the project is not associated with a module handling its own sagas, ignore
-  }
+  const { infoViewKey } = action;
+  const state = yield select();
+  const project = selectCurrentProjectCode(state);
 
   // Run preparation saga if it exists to collect module specific url parameters
   let extraUrlParameters = {};
-  if (prepareForDashboardItemDataFetch) {
-    extraUrlParameters = yield call(prepareForDashboardItemDataFetch);
+  if (project === 'disaster') {
+    extraUrlParameters = yield call(fetchDisasterDateRange);
   }
 
   const viewData = yield call(
@@ -655,7 +795,6 @@ function* fetchDashboardItemData(action) {
 }
 
 function* watchViewFetchRequests() {
-  // Watches for VIEW_FETCH_REQUESTED actions and calls fetchDashboardItemData when one comes in.
   // By using `takeEvery` fetches for different views will be run simultaneously.
   // It returns task descriptor (just like fork) so we can continue execution
   yield takeEvery(FETCH_INFO_VIEW_DATA, fetchDashboardItemData);
@@ -670,18 +809,20 @@ function* watchViewFetchRequests() {
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
   if (action.searchString === '') {
-    yield put(fetchSearchSuccess([]));
+    yield put(fetchSearchSuccess([], false));
   } else {
     const state = yield select();
+    const startIndex = state.searchBar.searchResults?.length || 0; // Send start index to allow loading more search results
     const urlParameters = {
-      criteria: action.searchString,
+      criteria: action.searchString || state.searchBar.searchString,
       limit: 5,
       projectCode: selectCurrentProjectCode(state),
+      startIndex,
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
-      const response = yield call(request, requestResourceUrl);
-      yield put(fetchSearchSuccess(response));
+      const { searchResults, hasMoreResults } = yield call(request, requestResourceUrl);
+      yield put(fetchSearchSuccess(searchResults, hasMoreResults));
     } catch (error) {
       yield put(fetchSearchError(error));
     }
@@ -690,6 +831,10 @@ function* fetchSearchData(action) {
 
 function* watchSearchChange() {
   yield takeLatest(CHANGE_SEARCH, fetchSearchData);
+}
+
+function* watchFetchMoreSearchResults() {
+  yield takeLatest(FETCH_MORE_SEARCH_RESULTS, fetchSearchData);
 }
 
 /**
@@ -875,140 +1020,32 @@ function* watchFindUserCurrentLoggedIn() {
   yield takeLatest(FIND_USER_LOGGEDIN, findUserLoggedIn);
 }
 
-function getTimeZone() {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-  } catch (e) {
-    // Time zone not supported in this browser.
-    return 'Australia/Melbourne';
-  }
-}
+/**
+ * Fetches enlarged dialog data for a given view, drillDown level and date range.
+ */
+function* fetchEnlargedDialogData(action) {
+  const { options } = action;
 
-function* exportChart(action) {
-  const requestResourceUrl = 'export/chart';
+  const state = yield select();
+  if (selectShouldUseDashboardData(state, options)) {
+    const viewData = selectCurrentExpandedViewContent(state);
+    yield put(updateEnlargedDialog(options, viewData));
+    return;
+  }
 
   const {
-    viewId,
-    dashboardGroupId,
-    organisationUnitCode,
-    organisationUnitName,
-    selectedFormat,
-    exportFileName,
-    chartType,
     startDate,
     endDate,
-    selectedDisaster,
-    extraConfig,
-    projectCode,
-  } = action;
+    infoViewKey,
+    // drillDown params
+    parameterLink,
+    parameterValue,
+    drillDownLevel,
+  } = options;
 
-  const timeZone = getTimeZone();
+  const { organisationUnitCode, dashboardGroupId, viewId } = getInfoFromInfoViewKey(infoViewKey);
 
-  const exportUrl = createUrlString({
-    // Note that dashboard means dashboardId here rather than dashboardCode, e.g. 301 not General
-    [URL_COMPONENTS.DASHBOARD]: dashboardGroupId,
-    [URL_COMPONENTS.REPORT]: viewId,
-    [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
-    [URL_COMPONENTS.TIMEZONE]: timeZone,
-    [URL_COMPONENTS.START_DATE]: formatDateForApi(startDate, timeZone),
-    [URL_COMPONENTS.END_DATE]: formatDateForApi(endDate, timeZone),
-    [URL_COMPONENTS.DISASTER_START_DATE]:
-      selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
-    [URL_COMPONENTS.DISASTER_END_DATE]:
-      selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
-    [URL_COMPONENTS.PROJECT]: projectCode,
-    [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
-  });
-
-  const fetchOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      exportUrl,
-      viewId,
-      dashboardGroupId,
-      projectCode,
-      organisationUnitCode,
-      organisationUnitName,
-      selectedFormat,
-      exportFileName,
-      chartType,
-      extraConfig,
-    }),
-  };
-
-  const requestContext = {
-    alwaysUseSuppliedErrorFunction: true,
-  };
-
-  try {
-    yield call(request, requestResourceUrl, fetchChartExportError, fetchOptions, requestContext);
-    yield put(fetchChartExportSuccess());
-  } catch (error) {
-    yield put(error.errorFunction(error.message));
-  }
-}
-
-function* watchAttemptChartExport() {
-  yield takeLatest(ATTEMPT_CHART_EXPORT, exportChart);
-}
-
-/**
- * Fetches drilldown data for a given view and level.
- */
-function* fetchDrillDownData(action) {
-  const { parameterLink, parameterValue, drillDownLevel, ...restOfAction } = action;
-  const drillDownData = yield call(
-    fetchViewData,
-    {
-      isExpanded: true,
-      extraUrlParameters: { [parameterLink]: parameterValue },
-      drillDownLevel,
-      ...restOfAction,
-    },
-    fetchDrillDownError,
-  );
-  if (drillDownData) {
-    yield put(
-      fetchDrillDownSuccess(drillDownLevel, { ...drillDownData, parameterLink, parameterValue }),
-    );
-  }
-}
-
-function* watchAttemptAttemptDrillDown() {
-  yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
-}
-
-function* resetToProjectSplash(action) {
-  // Only reset to project splash on manual login to avoid messing up routing
-  if (action.type === FETCH_LOGIN_SUCCESS && action.loginType !== LOGIN_TYPES.MANUAL) return;
-
-  yield put(clearMeasureHierarchy());
-  yield put(setOverlayComponent(LANDING));
-  yield put(setProject(DEFAULT_PROJECT_CODE));
-}
-
-function* watchUserChangesAndUpdatePermissions() {
-  // On user login/logout, we should just reset to the initial landing page
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToProjectSplash);
-}
-
-function* watchGoHomeAndResetToProjectSplash() {
-  yield takeLatest(GO_HOME, resetToProjectSplash);
-}
-
-function* fetchEnlargedDialogViewContentForPeriod(action) {
-  const state = yield select();
-  const viewContent = selectCurrentExpandedViewContent(state);
-  const infoViewKey = selectCurrentInfoViewKey(state);
-  const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
-
-  const { startDate, endDate } = action;
-
-  const parameters = {
+  let parameters = {
     startDate,
     endDate,
     viewId,
@@ -1018,54 +1055,77 @@ function* fetchEnlargedDialogViewContentForPeriod(action) {
     infoViewKey,
   };
 
+  // Handle extra drillDown params
+  if (drillDownLevel > 0) {
+    const { global } = yield select();
+
+    const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
+    const drillDownViewConfig = global.viewConfigs[drillDownConfigKey];
+    const drillDownDates = getDefaultDrillDownDates(drillDownViewConfig, startDate, endDate);
+
+    parameters = {
+      ...parameters,
+      extraUrlParameters: { drillDownLevel, [parameterLink]: parameterValue },
+      startDate: drillDownDates.startDate,
+      endDate: drillDownDates.endDate,
+      infoViewKey: drillDownConfigKey,
+    };
+  }
+
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
 
   const newState = yield select();
-  const newViewId = selectCurrentExpandedViewId(newState);
+  const newInfoViewKey = selectCurrentInfoViewKey(newState);
+
   // If the expanded view has changed, don't update the enlargedDialog's viewContent
-  if (viewData && newViewId === viewId) {
-    yield put(updateEnlargedDialog(viewData));
+  if (viewData && newInfoViewKey === infoViewKey) {
+    yield put(updateEnlargedDialog(action.options, viewData));
   }
 }
 
-function* fetchDrillDownViewContentForPeriod(action) {
-  const state = yield select();
-  const { startDate, endDate, drillDownLevel } = action;
-  const { viewContent } = state.drillDown.levelContents[drillDownLevel];
-  const { enlargedDialog } = state;
-  const { infoViewKey } = enlargedDialog;
-  const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
-
-  const {
-    viewId,
-    organisationUnitCode,
-    dashboardGroupId,
-    parameterLink,
-    parameterValue,
-  } = viewContent;
-
-  const parameters = {
-    startDate,
-    endDate,
-    viewId,
-    drillDownLevel,
-    organisationUnitCode,
-    dashboardGroupId,
-    isExpanded: true,
-    parameterLink,
-    parameterValue,
-    infoViewKey: drillDownConfigKey,
-  };
-
-  yield call(fetchDrillDownData, parameters);
+function* watchFetchNewEnlargedDialogData() {
+  yield takeLatest(FETCH_ENLARGED_DIALOG_DATA, fetchEnlargedDialogData);
 }
 
-function* watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent() {
-  yield takeLatest(SET_ENLARGED_DIALOG_DATE_RANGE, fetchEnlargedDialogViewContentForPeriod);
+function* resetToProjectSplash() {
+  yield put(clearMeasureHierarchy());
+  yield put(setOverlayComponent(LANDING));
+  yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
-function* watchSetDrillDownDateRange() {
-  yield takeLatest(SET_DRILL_DOWN_DATE_RANGE, fetchDrillDownViewContentForPeriod);
+function* resetToHome() {
+  yield put(goHome());
+}
+
+function* watchLoginSuccess() {
+  yield takeLatest(FETCH_LOGIN_SUCCESS, fetchLoginData);
+}
+
+function* watchLogoutSuccess() {
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToHome);
+}
+
+function* fetchLoginData(action) {
+  if (action.loginType === LOGIN_TYPES.MANUAL) {
+    const { routing: location } = yield select();
+    const { PROJECT } = decodeLocation(location);
+    const overlay = PROJECT === 'explore' ? LANDING : null;
+    yield put(setOverlayComponent(overlay));
+    yield call(fetchProjectData);
+    yield call(handleLocationChange, {
+      location,
+      // Assume an empty location string so that the url will trigger fetching fresh data
+      previousLocation: {
+        pathname: '',
+        search: '',
+        hash: '',
+      },
+    });
+  }
+}
+
+function* watchGoHomeAndResetToProjectSplash() {
+  yield takeLatest(GO_HOME, resetToProjectSplash);
 }
 
 function* refreshBrowserWhenFinishingUserSession() {
@@ -1076,8 +1136,10 @@ function* refreshBrowserWhenFinishingUserSession() {
 
 // Add all sagas to be loaded
 export default [
+  watchFetchInitialData,
   watchAttemptChangePasswordAndFetchIt,
   watchAttemptResetPasswordAndFetchIt,
+  watchAttemptTokenLoginSuccess,
   watchAttemptRequestCountryAccessAndFetchIt,
   watchAttemptUserLoginAndFetchIt,
   watchAttemptUserLogout,
@@ -1089,14 +1151,13 @@ export default [
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,
   watchSearchChange,
+  watchFetchMoreSearchResults,
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
-  watchAttemptChartExport,
-  watchAttemptAttemptDrillDown,
-  watchUserChangesAndUpdatePermissions,
-  watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
-  watchSetDrillDownDateRange,
+  watchFetchNewEnlargedDialogData,
+  watchLoginSuccess,
+  watchLogoutSuccess,
   watchAttemptTokenLogin,
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
@@ -1108,4 +1169,5 @@ export default [
   watchFetchResetTokenLoginSuccess,
   watchMeasurePeriodChange,
   watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
+  watchHandleLocationChange,
 ];

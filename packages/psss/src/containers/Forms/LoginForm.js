@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
-import { login, checkIsPending, checkIsError, getError } from '../../store';
+import { login, getCurrentUser, checkIsLoading, checkIsError, getError } from '../../store';
 import * as COLORS from '../../constants/colors';
 
 const ErrorMessage = styled.p`
@@ -30,16 +30,23 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
-const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
+const LoginFormComponent = ({ user, onLogin, isLoading, isError, error }) => {
   const { handleSubmit, register, errors } = useForm();
+
+  const onSubmit = handleSubmit(async ({ email, password, rememberMe }) => {
+    window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
+    await onLogin({ email, password });
+  });
+
   return (
-    <form onSubmit={handleSubmit(({ email, password }) => onLogin({ email, password }))} noValidate>
+    <form onSubmit={onSubmit} noValidate>
       <Heading component="h4">Enter your email and password</Heading>
       {isError && <ErrorMessage>{error}</ErrorMessage>}
       <TextField
         name="email"
         placeholder="Email"
         type="email"
+        defaultValue={user?.email}
         error={!!errors.email}
         helperText={errors.email && errors.email.message}
         inputRef={register({
@@ -61,13 +68,13 @@ const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         })}
       />
       <Checkbox
-        name="remember"
+        name="rememberMe"
         color="primary"
         label="Remember me"
         inputRef={register}
         defaultValue={false}
       />
-      <StyledButton type="submit" fullWidth isLoading={isPending}>
+      <StyledButton type="submit" fullWidth isLoading={isLoading}>
         Login to your account
       </StyledButton>
     </form>
@@ -75,24 +82,31 @@ const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
 };
 
 LoginFormComponent.propTypes = {
-  isError: PropTypes.any.isRequired,
-  isPending: PropTypes.bool.isRequired,
-  error: PropTypes.string,
   onLogin: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  isLoading: PropTypes.bool,
+  isError: PropTypes.bool,
+  user: PropTypes.PropTypes.shape({
+    email: PropTypes.string,
+  }),
 };
 
 LoginFormComponent.defaultProps = {
   error: null,
+  isLoading: false,
+  isError: false,
+  user: null,
 };
 
 const mapStateToProps = state => ({
-  isPending: checkIsPending(state),
+  user: getCurrentUser(state),
+  isLoading: checkIsLoading(state),
   isError: checkIsError(state),
   error: getError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  onLogin: ({ email, password }) => dispatch(login(email, password)),
+  onLogin: ({ email, password }) => dispatch(login({ email, password })),
 });
 
 export const LoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginFormComponent);

@@ -4,8 +4,7 @@
  */
 
 export const TYPES = {
-  ALERT: 'alert',
-  ALERT_COMMENT: 'alert_comment',
+  ANCESTOR_DESCENDANT_RELATION: 'ancestor_descendant_relation',
   ANSWER: 'answer',
   ACCESS_REQUEST: 'access_request',
   API_CLIENT: 'api_client',
@@ -42,9 +41,11 @@ export const TYPES = {
   PROJECT: 'project',
   QUESTION: 'question',
   REFRESH_TOKEN: 'refresh_token',
+  REPORT: 'report',
   SETTING: 'setting',
   SURVEY_GROUP: 'survey_group',
   SURVEY_RESPONSE: 'survey_response',
+  SURVEY_RESPONSE_COMMENT: 'survey_response_comment',
   SURVEY_SCREEN_COMPONENT: 'survey_screen_component',
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',

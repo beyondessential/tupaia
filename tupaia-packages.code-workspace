@@ -45,8 +45,8 @@
       "path": "packages/eslint-config-typescript"
     },
     {
-      "name": "export-chart-lambda",
-      "path": "packages/export-chart-lambda"
+      "name": "expression-parser",
+      "path": "packages/expression-parser"
     },
     {
       "name": "indicators",
@@ -61,8 +61,16 @@
       "path": "packages/psss"
     },
     {
+      "name": "psss-server",
+      "path": "packages/psss-server"
+    },
+    {
       "name": "meditrak-server",
       "path": "packages/meditrak-server"
+    },
+    {
+      "name": "report-server",
+      "path": "packages/report-server"
     },
     {
       "name": "ui-components",
@@ -71,6 +79,10 @@
     {
       "name": "utils",
       "path": "packages/utils"
+    },
+    {
+      "name": "weather-api",
+      "path": "packages/weather-api"
     },
     {
       "name": "web-config-server",
@@ -87,11 +99,13 @@
       "Codeship",
       "DHIS",
       "MediTrak",
+      "PSSS",
       "Tongatapu",
       "Tupaia",
       "analytics",
       "beyondessential",
       "cacheable",
+      "cachers",
       "cleanup",
       "debouncing",
       "deleters",
@@ -108,12 +122,14 @@
       "keyby",
       "migrator",
       "oucode",
+      "postgresql",
       "preaggregate",
       "preaggregated",
       "preaggregating",
       "preaggregation",
       "preaggregator",
       "preaggregators",
+      "prestart",
       "promisify",
       "singularise",
       "spec",

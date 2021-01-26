@@ -10,6 +10,7 @@ import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
 import SURVEYS from './surveys';
 import { assertCanImportSurveyResponses } from '../importSurveyResponses/assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 const ENTITY_CODE_KEY = 'entityCode';
 const SURVEY_NAMES = Object.keys(SURVEYS);
@@ -44,39 +45,23 @@ const createImporter = models => {
   return new SurveyResponseImporter(models, responseExtractors);
 };
 
-const getEntitiesByPermissionGroup = async (models, inputsPerSurvey) => {
-  const entitiesByPermissionGroup = {};
-  const surveyNames = Object.keys(inputsPerSurvey);
-  const surveys = await models.survey.find({ name: surveyNames });
-  const permissionGroups = await models.permissionGroup.findManyById(
-    surveys.map(s => s.permission_group_id),
-  );
-  const surveysByName = keyBy(surveys, 'name');
-  const permissionGroupsById = keyBy(permissionGroups, 'id');
+const getEntitiesGroupedBySurveyName = async (models, inputsPerSurvey) => {
+  const entitiesGroupedBySurveyName = {};
 
-  for (let i = 0; i < surveyNames.length; i++) {
-    const surveyName = surveyNames[i];
-    const surveyResponses = inputsPerSurvey[surveyName];
-    const survey = surveysByName[surveyName];
-
-    if (!survey) {
-      throw new Error(`Cannot find survey ${surveyName}`);
-    }
-
-    const permissionGroup = permissionGroupsById[survey.permission_group_id];
-
+  for (const entry of Object.entries(inputsPerSurvey)) {
+    const [surveyName, surveyResponses] = entry;
     surveyResponses.forEach(surveyResponse => {
       const { entityCode } = surveyResponse;
 
-      if (!entitiesByPermissionGroup[permissionGroup.name]) {
-        entitiesByPermissionGroup[permissionGroup.name] = [];
+      if (!entitiesGroupedBySurveyName[surveyName]) {
+        entitiesGroupedBySurveyName[surveyName] = [];
       }
 
-      entitiesByPermissionGroup[permissionGroup.name].push(entityCode);
+      entitiesGroupedBySurveyName[surveyName].push(entityCode);
     });
   }
 
-  return entitiesByPermissionGroup;
+  return entitiesGroupedBySurveyName;
 };
 
 export const importStriveLabResults = async (req, res) => {
@@ -88,13 +73,13 @@ export const importStriveLabResults = async (req, res) => {
   const parser = createWorkBookParser();
   const workBook = xlsx.readFile(file.path);
   const inputsPerSurvey = await parser.parse(workBook);
-  const entitiesByPermissionGroup = await getEntitiesByPermissionGroup(models, inputsPerSurvey);
+  const entitiesGroupedBySurveyName = await getEntitiesGroupedBySurveyName(models, inputsPerSurvey);
 
   const importSurveyResponsePermissionsChecker = async accessPolicy => {
-    await assertCanImportSurveyResponses(accessPolicy, models, entitiesByPermissionGroup);
+    await assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyName);
   };
 
-  await req.assertPermissions(importSurveyResponsePermissionsChecker);
+  await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess, importSurveyResponsePermissionsChecker]));
 
   const importer = createImporter(models);
   const results = await importer.import(inputsPerSurvey, userId);

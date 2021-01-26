@@ -64,6 +64,7 @@ import { DateRangePicker } from '../../DateRangePicker';
 import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles';
 import { Matrix } from './components';
 import { formatDataValue } from '../../../utils';
+import { getLimits } from '../../../utils/periodGranularities';
 
 const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
@@ -82,11 +83,27 @@ const buildMatrixDataFromViewContent = viewContent => {
 
   let maximumCellCharacters = 0;
   const formattedRows = rows.map(row => {
-    const { dataElement, code, categoryId, category, ...columns } = row;
+    const { dataElement, code, categoryId, category, valueType: rowValueType, ...cells } = row;
 
     const formattedCells = {};
-    Object.entries(columns).forEach(([columnName, columnValue]) => {
-      formattedCells[columnName] = formatDataValue(columnValue, valueType);
+    Object.entries(cells).forEach(([columnName, cellValue]) => {
+      const columnDefinition = columnData.find(c => c.key === columnName);
+
+      if (rowValueType) {
+        formattedCells[columnName] = formatDataValue(
+          cellValue.value,
+          rowValueType,
+          cellValue.metadata,
+        );
+      } else if (columnDefinition && columnDefinition.valueType) {
+        formattedCells[columnName] = formatDataValue(
+          cellValue.value,
+          columnDefinition.valueType,
+          cellValue.metadata,
+        );
+      } else {
+        formattedCells[columnName] = formatDataValue(cellValue, valueType);
+      }
     });
 
     Object.values(formattedCells).forEach(value => {
@@ -154,15 +171,11 @@ export class MatrixWrapper extends Component {
     this.updateWrapper = this.updateWrapper.bind(this);
   }
 
-  componentDidMount() {
-    const { startDate, endDate } = this.props.viewContent || {};
-    this.props.onSetDateRange(startDate, endDate); // Force a load when the expanded matrix first mounts
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return (
       !shallowEqual(this.props, nextProps) ||
       nextState.isLoading !== this.state.isLoading ||
+      nextState.expandedMatrixData !== this.state.expandedMatrixData ||
       nextState.offsetWidth !== this.state.offsetWidth
     );
   }
@@ -204,6 +217,8 @@ export class MatrixWrapper extends Component {
       return null; // Not using a period selector
     }
 
+    const datePickerLimits = getLimits(viewContent.periodGranularity, viewContent.datePickerLimits);
+
     return (
       <div style={styles.periodSelector}>
         <DateRangePicker
@@ -211,6 +226,8 @@ export class MatrixWrapper extends Component {
           onSetDates={this.onSetDateRange}
           startDate={viewContent.startDate}
           endDate={viewContent.endDate}
+          min={datePickerLimits.startDate}
+          max={datePickerLimits.endDate}
           isLoading={isLoading}
         />
       </div>

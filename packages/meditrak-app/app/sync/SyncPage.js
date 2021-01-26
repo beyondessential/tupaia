@@ -1,14 +1,15 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { TupaiaBackground, Button, Text, ProgressBar } from '../widgets';
-import { formatPlural, formatDate } from '../utilities';
+import { formatDate } from '../utilities';
 import { THEME_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
+import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
 
 const getStatusMessage = (isSyncing, progressMessage, errorMessage) => {
   let message;
@@ -53,7 +54,7 @@ const SyncPage = ({
         <Text style={localStyles.lastSyncText}>{getSyncDateLabel(lastSyncDate)}</Text>
       </View>
       <View style={localStyles.row}>
-        <Button title={'Manual Sync'} onPress={onPressManualSync} isDisabled={isSyncing} />
+        <Button title="Manual Sync" onPress={onPressManualSync} isDisabled={isSyncing} />
       </View>
     </View>
   </TupaiaBackground>
@@ -89,8 +90,10 @@ const localStyles = StyleSheet.create({
 });
 
 SyncPage.navigationOptions = {
-  headerBackImage: require('../images/x.png'),
-  title: 'Sync',
+  headerLeft: () => (
+    <HeaderLeftButton source={require('../images/x.png')} labelVisible={false}></HeaderLeftButton>
+  ),
+  headerTitle: 'Sync',
 };
 
 SyncPage.propTypes = {

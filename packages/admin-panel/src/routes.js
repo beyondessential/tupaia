@@ -25,6 +25,7 @@ import {
   DashboardGroupsPage,
   DataElementsPage,
   DataGroupsPage,
+  ProjectsPage,
 } from './pages/resources';
 
 export const ROUTES = [
@@ -143,12 +144,17 @@ export const ROUTES = [
   },
   {
     label: 'Projects',
-    to: '/strive',
+    to: '/projects',
     icon: <Flag />,
     tabs: [
       {
-        label: 'Strive',
+        label: 'Projects',
         to: '',
+        component: ProjectsPage,
+      },
+      {
+        label: 'Strive',
+        to: '/strive',
         component: StrivePage,
       },
       {

@@ -73,11 +73,6 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Sort Order',
-    source: 'sortOrder',
-    width: 110,
-  },
-  {
     Header: 'Presentation Options',
     source: 'presentationOptions',
     type: 'jsonTooltip',

@@ -1,14 +1,16 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { getDataElementCodesInGroup } from '/apiV1/utils';
 
 class CountByDataValueBuilder extends DataBuilder {
   async build() {
-    const { valuesOfInterest } = this.config;
+    const { valuesOfInterest, convertToPercentage } = this.config;
     const dataElementCodes = await this.getDataElementCodes();
     const { results } = await this.fetchAnalytics(dataElementCodes);
 
-    const returnJson = {};
-    const returnDataJson = {};
+    const dataByValue = {};
+    // Sum recorded for calculating percentage
+    let sum = 0;
     results
       .filter(result => dataElementCodes.includes(result.dataElement))
       .forEach(({ value }) => {
@@ -16,14 +18,19 @@ class CountByDataValueBuilder extends DataBuilder {
           // not interested in this value, ignore it
           return;
         }
-        if (!returnDataJson[value]) {
-          returnDataJson[value] = { value: 0, name: value };
+        if (!dataByValue[value]) {
+          dataByValue[value] = { value: 0, name: value };
         }
-        returnDataJson[value].value += 1;
+        dataByValue[value].value += 1;
+        sum += 1;
       });
 
-    returnJson.data = Object.values(returnDataJson);
-    return returnJson;
+    if (convertToPercentage) {
+      Object.entries(dataByValue).forEach(([key, { value }]) => {
+        dataByValue[key].value = divideValues(value, sum);
+      });
+    }
+    return { data: Object.values(dataByValue) };
   }
 
   async getDataElementCodes() {
@@ -35,12 +42,13 @@ class CountByDataValueBuilder extends DataBuilder {
 }
 
 function countByDataValue(
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
   aggregationType,
 ) {
   const builder = new CountByDataValueBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

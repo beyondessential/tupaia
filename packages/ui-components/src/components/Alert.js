@@ -13,11 +13,12 @@ const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
   font-weight: 400;
   align-items: center;
-  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
+  padding: 0.9rem 1.25rem 0.8rem 2.5rem;
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
+  white-space: pre-wrap;
 
   .MuiAlert-icon {
-    margin-right: 0.5rem;
+    margin-right: 0.8rem;
   }
 
   &.MuiAlert-standardError {

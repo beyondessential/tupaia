@@ -20,12 +20,12 @@ import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
-  const { ALERT, COMMENT } = TYPES;
+  const { SURVEY_RESPONSE, COMMENT } = TYPES;
 
   switch (combinedRecordType) {
-    case `${ALERT}/${COMMENT}`:
+    case `${SURVEY_RESPONSE}/${COMMENT}`:
       return {
-        alert_id: [constructRecordExistsWithId(models.alert)],
+        survey_response_id: [constructRecordExistsWithId(models.surveyResponse)],
         user_id: [constructRecordExistsWithId(models.user)],
         text: [hasContent],
       };

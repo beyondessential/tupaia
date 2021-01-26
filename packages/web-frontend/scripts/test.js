@@ -1,3 +1,5 @@
+/* eslint-disable jest/no-jest-import */
+
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'test';
 process.env.NODE_ENV = 'test';
@@ -13,6 +15,7 @@ process.on('unhandledRejection', err => {
 // Ensure environment variables are read.
 require('../config/env');
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 const jest = require('jest');
 
 const argv = process.argv.slice(2);

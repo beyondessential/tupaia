@@ -3,13 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  fetchAnalytics,
-  getAggregationsByCode,
-  groupKeysByValueJson,
-  validateConfig,
-} from '../../../builders/helpers';
-import { Aggregation } from '../../../types';
+import { fetchAnalytics, groupKeysByValueJson, validateConfig } from '../../../builders/helpers';
 import { createAggregator } from '../stubs';
 import { ANALYTIC_RESPONSE_CONFIG } from './helpers.fixtures';
 
@@ -26,46 +20,18 @@ describe('helpers', () => {
       countMale: [assertIsNotNegative],
     };
 
-    it('should resolve for empty validators', () =>
+    it('resolves for empty config', () => expect(validateConfig(undefined, {})).toResolve());
+
+    it('resolves for empty validators', () =>
       expect(validateConfig({ random: 'string' })).toResolve());
 
-    it('should throw if a field is invalid', async () =>
+    it('throws if a field is invalid', async () =>
       expect(validateConfig({ countFemale: -1, countMale: 2 }, configValidators)).toBeRejectedWith(
-        `Error in field 'countFemale': Must be >= 0`,
+        "Error in field 'countFemale': Must be >= 0",
       ));
 
-    it('should resolve if all fields are valid', () =>
+    it('resolves if all fields are valid', () =>
       expect(validateConfig({ countFemale: 1, countMale: 2 }, configValidators)).toResolve());
-  });
-
-  describe('getAggregationsByCode()', () => {
-    const testData: [string, Record<string, string | string[]>, Record<string, Aggregation[]>][] = [
-      [
-        'string values',
-        { BCD01: 'FINAL_EACH_WEEK', BCD02: 'FINAL_EACH_WEEK' },
-        { BCD01: [{ type: 'FINAL_EACH_WEEK' }], BCD02: [{ type: 'FINAL_EACH_WEEK' }] },
-      ],
-      [
-        'array values',
-        { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK', 'COUNT'] },
-        {
-          BCD01: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
-          BCD02: [{ type: 'FINAL_EACH_WEEK' }, { type: 'COUNT' }],
-        },
-      ],
-      [
-        'mixed values',
-        { BCD01: ['FINAL_EACH_WEEK', 'SUM'], BCD02: ['FINAL_EACH_WEEK'] },
-        {
-          BCD01: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
-          BCD02: [{ type: 'FINAL_EACH_WEEK' }],
-        },
-      ],
-    ];
-
-    it.each(testData)('%s', (_, aggregationsByCode, expected) => {
-      expect(getAggregationsByCode(aggregationsByCode)).toStrictEqual(expected);
-    });
   });
 
   describe('groupKeysByValueJson()', () => {
@@ -86,7 +52,11 @@ describe('helpers', () => {
       const reverseAlphaJson = JSON.stringify(getReverseAlpha());
       const betaJson = JSON.stringify(getBeta());
 
-      const testData: [string, Record<string, {}>, Record<string, string[]>][] = [
+      const testData: [
+        string,
+        Record<string, Record<string, unknown>>,
+        Record<string, string[]>,
+      ][] = [
         [
           'different entries',
           { alpha: getAlpha(), beta: getBeta() },

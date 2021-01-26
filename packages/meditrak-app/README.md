@@ -32,11 +32,8 @@ Steps to get working:
 - Add a .env file to the root directory. The required variables are listed in `.env.example`
 - `yarn`
 - Start your emulator or plug in your device and make sure USB debugging is enabled
-- If you are developing/building for ios:
-  - `cd ios && pod install`
-  - `cd .. && ./node_modules/react-native/scripts/ios-install-third-party.sh`
-  - If you get build errors, can be helpful to delete `~/.rncache`, `ios/Pods/*`, `third-party/*`, and then rerun the above
-- `react-native run-android` or `react-native run-ios` (for ios, may need to run through the XCode "build and run" button)
+- If you are developing/building for ios run `cd ios && pod install && cd ..`
+- `react-native run-android` or `react-native run-ios` (for iOS, you will need XCode 12 or greater)
 - Edit some code, and reload it ('rr' in Genymotion, 'cmd + r' in iOS Simulator, shake a physical device)
 
 For more, see the react-native guides
@@ -121,7 +118,9 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 - Create gradle.properties within the /android directory, using the contents found on LastPass
 - Copy meditrak-release-key.keystore from lastpass (follow instructions to save and decode) and save under /android/app
 - Uncomment the line `signingConfig signingConfigs.release` in android/app/build.gradle (don't commit this change, it will break CI builds)
-- cd android && ./gradlew assembleRelease
+- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`
+- If building an aab for the Google Play store: `cd android && ./gradlew bundleRelease`
+- You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
 
 ### Beta builds (Android)
 
@@ -136,17 +135,23 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 
 Can only be done on mac, with Xcode installed
 
+- Be sure to follow the steps under "If you are developing/building for ios:" above
 - Open the `TupaiaMediTrak.xcworkspace` file within `meditrak-app/ios`
 - Set up signing:
-  - Get the provisioning profile, certificate, and private key from LastPass
-  - Double click the certificate and private key to add each to your keychain (the private key will require a password, also in LastPass)
+  - Get the provisioning profile, certificates (should be 2 of them), and private key from LastPass (MediTrak iOS App Building Resources)
+  - Double click the build certificates and private key to add each to your keychain (the private key will require a password, also in LastPass)
   - In XCode, click the "folder" icon underneath the play/stop buttons
   - Select the first entry (with the workspace icon)
   - Go into Signing and Capabilities
-  - Under Signing (Release), select "Import Profile" next to Provisioning Profile, and select the profile from LastPass
+  - Under Signing (Release), select "Import Profile" next to Provisioning Profile, and select the profile that you downloaded from LastPass that is called Tupaia_Distribution_Profile_2020__2021.mobileprovision
 - Build the archive file (iOS equivalent of apk):
   - To the right of play/stop buttons, select the device as "Generic iOS Device"
   - From the "Product" menu, select "Archive"
+ - Deploy the archive file
+  - Navigate to the Archive file in Window/Organizer & click Distribute App
+  - Use all the pre-selected options
+  - When prompted to select a profile, select second profile called Tupaia_MediTrak_Distribution_Profile_2020__2021.mobileprovision
+  
 
 ### Testing
 

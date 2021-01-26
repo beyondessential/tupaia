@@ -8,7 +8,7 @@ import {
 import { buildCategories } from './buildCategories';
 
 export const matrixMostRecentFromChildren = async (
-  { dataBuilderConfig, query },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
@@ -20,17 +20,9 @@ export const matrixMostRecentFromChildren = async (
     organisationUnitType,
   } = dataBuilderConfig;
 
-  const { organisationUnitCode } = query;
-
   const fetchedData = await asynchronouslyFetchValuesForObject({
     organisationUnits: () =>
-      getChildOrganisationUnits(
-        {
-          organisationUnitGroupCode: organisationUnitCode,
-          type: organisationUnitType,
-        },
-        dhisApi,
-      ),
+      getChildOrganisationUnits(dhisApi, entity, models.entity.getDhisLevel(organisationUnitType)),
     dataElementsInfo: () => getDataElementsInGroup(dhisApi, dataElementGroup, true),
     categoryMapping: () => getDataElementsInGroupSet(dhisApi, dataElementGroupSet, true),
     optionSetOptions: () => dhisApi.getOptionSetOptions({ code: optionSetCode }),

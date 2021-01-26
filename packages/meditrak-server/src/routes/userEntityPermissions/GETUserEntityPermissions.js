@@ -51,10 +51,16 @@ export class GETUserEntityPermissions extends GETHandler {
     );
     const userEntityPermissions = await super.findRecords(dbConditions, options);
 
-    if (!userEntityPermissions.length) {
-      throw new Error('Your permissions do not allow access to any of the requested resources');
-    }
-
     return userEntityPermissions;
+  }
+
+  async findRecordsViaParent(criteria, options) {
+    // Add additional filter by user id
+    const dbConditions = {
+      'user_entity_permission.user_id': this.parentRecordId,
+      ...criteria,
+    };
+
+    return this.findRecords(dbConditions, options);
   }
 }

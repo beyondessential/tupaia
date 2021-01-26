@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { PermissionsError } from '@tupaia/utils';
-import { ENTITY_TYPES } from '/models/Entity';
 
 export class PermissionsChecker {
-  constructor(query, userHasAccess, entity) {
+  constructor(models, query, userHasAccess, entity) {
+    this.models = models;
     this.query = query;
     this.userHasAccess = userHasAccess;
     this.entity = entity;
@@ -17,11 +17,11 @@ export class PermissionsChecker {
       throw new PermissionsError('Tried to access an entity that does not exist');
     }
 
-    if (this.entity.code === 'World') {
+    if (this.entity.isWorld()) {
       return; // Don't restrict access to World
     }
 
-    if (this.entity.type === ENTITY_TYPES.PROJECT) {
+    if (this.entity.isProject()) {
       return; // Don't restrict access to Project entities
     }
 

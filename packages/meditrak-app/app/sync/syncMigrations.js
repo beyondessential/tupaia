@@ -3,7 +3,7 @@ import { LATEST_SERVER_SYNC_TIMESTAMP } from '../settings';
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 const DATABASE_SYNC_MIGRATION_VERSION = 'DATABASE_SYNC_MIGRATION_VERSION';
 
@@ -37,6 +37,10 @@ const migrations = {
   // Resync all survey screen components so they will have correct config structure
   7: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['survey_screen_component']);
+  },
+  // Resync all entities and options so that the new attributes column come through
+  8: async (synchroniser, setProgressMessage) => {
+    await resyncRecordTypes(synchroniser, setProgressMessage, ['entity', 'option']);
   },
 };
 

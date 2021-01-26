@@ -1,7 +1,7 @@
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import Geolocation from '@react-native-community/geolocation';
 
@@ -11,6 +11,7 @@ import {
   USER_LOCATION_WATCH,
   USER_LOCATION_STOP_WATCHING,
   GEOLOCATION_OPTIONS,
+  CLEAR_LOCATION_DATA,
 } from './constants';
 
 import { requestLocationPermission, noPermissionErrorMessage } from './permission';
@@ -46,6 +47,16 @@ export const watchUserLocation = () => async (dispatch, getState) => {
   });
 };
 
+export const refreshWatchingUserLocation = () => dispatch => {
+  dispatch({ type: CLEAR_LOCATION_DATA });
+
+  Geolocation.getCurrentPosition(
+    position => dispatch(onGeolocationPosition(position.coords)),
+    error => dispatch(onGeolocationError(error.message)),
+    GEOLOCATION_OPTIONS,
+  );
+};
+
 export const stopWatchingUserLocation = () => (dispatch, getState) => {
   const { locationWatchId } = getState();
 
@@ -60,9 +71,9 @@ export const stopWatchingUserLocation = () => (dispatch, getState) => {
 
 const onGeolocationPosition = ({ latitude, longitude, accuracy }) => ({
   type: USER_LOCATION_UPDATE,
-  latitude: latitude,
-  longitude: longitude,
-  accuracy: accuracy,
+  latitude,
+  longitude,
+  accuracy,
 });
 
 const onGeolocationError = errorMessage => ({

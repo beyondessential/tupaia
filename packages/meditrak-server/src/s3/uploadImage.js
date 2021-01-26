@@ -3,35 +3,23 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { getS3Client } from './index';
-import { BUCKET_NAME, getImageFilePath } from './constants';
+import { getImageFilePath } from './constants';
+import { S3Client } from './S3Client';
 
-export const uploadImage = (base64EncodedImage, fileId) => {
-  const buffer = Buffer.from(base64EncodedImage, 'base64');
+export const uploadImage = async (base64EncodedImage, fileId) => {
+  const buffer = Buffer.from(base64EncodedImage.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+
   const filePath = getImageFilePath();
   const fileName = fileId
     ? `${filePath}${fileId}.png`
     : `${filePath}${getCurrentTime()}_${getRandomInteger()}.png`;
-  return new Promise((resolve, reject) => {
-    const s3Client = getS3Client();
-    s3Client.upload(
-      {
-        Bucket: BUCKET_NAME,
-        Key: fileName,
-        Body: buffer,
-        ACL: 'public-read',
-        ContentType: 'image/png',
-        ContentEncoding: 'base64',
-      },
-      (error, data) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(data.Location);
-        }
-      },
-    );
-  });
+
+  const s3Client = new S3Client();
+  const alreadyExists = await s3Client.checkIfFileExists(fileName);
+  if (alreadyExists) {
+    throw new Error(`File ${fileName} already exists on S3, overwrite is not allowed`);
+  }
+  return s3Client.uploadFile(fileName, buffer);
 };
 
 const getRandomInteger = () => Math.floor(Math.random() * 1000000 + 1);

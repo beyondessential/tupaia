@@ -7,10 +7,18 @@ import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { getSortByKey, upperFirst } from '@tupaia/utils';
 import * as builders from './builders';
-import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from './types';
+import {
+  Analytic,
+  Builder,
+  FetchOptions,
+  IndicatorApiInterface,
+  Indicator,
+  ModelRegistry,
+} from './types';
 
-export class IndicatorApi {
+export class IndicatorApi implements IndicatorApiInterface {
   private models: ModelRegistry;
+
   private aggregator: Aggregator;
 
   constructor(models: ModelRegistry, dataBroker: DataBroker) {
@@ -18,25 +26,29 @@ export class IndicatorApi {
     this.aggregator = new Aggregator(dataBroker);
   }
 
-  async buildAnalytics(codes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
-    const indicators = await this.models.indicator.find({ code: codes });
+  getAggregator() {
+    return this.aggregator;
+  }
+
+  async buildAnalytics(indicatorCodes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
+    const indicators = await this.models.indicator.find({ code: indicatorCodes });
+    return this.buildAnalyticsForIndicators(indicators, fetchOptions);
+  }
+
+  async buildAnalyticsForIndicators(
+    indicators: Indicator[],
+    fetchOptions: FetchOptions,
+  ): Promise<Analytic[]> {
     const nestedAnalytics = await Promise.all(
       indicators.map(async indicator => this.buildAnalyticsForIndicator(indicator, fetchOptions)),
     );
     return nestedAnalytics.flat().sort(getSortByKey('period'));
   }
 
-  private buildAnalyticsForIndicator = async (
-    indicator: IndicatorType,
-    fetchOptions: FetchOptions,
-  ) => {
+  private buildAnalyticsForIndicator = async (indicator: Indicator, fetchOptions: FetchOptions) => {
     const { code, builder, config } = indicator;
     const buildAnalyticValues = this.getBuilderFunction(builder);
-    const analyticValues = await buildAnalyticValues({
-      aggregator: this.aggregator,
-      config,
-      fetchOptions,
-    });
+    const analyticValues = await buildAnalyticValues({ api: this, config, fetchOptions });
 
     return analyticValues.map(value => ({ ...value, dataElement: code }));
   };

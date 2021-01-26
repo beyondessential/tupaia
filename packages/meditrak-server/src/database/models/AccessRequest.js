@@ -9,17 +9,16 @@ export class AccessRequestModel extends CommonAccessRequestModel {
   notifiers = [onApproveCreateUserCountryPermission];
 }
 
-async function onApproveCreateUserCountryPermission(
-  {
-    record: {
-      approved,
-      user_id: userId,
-      entity_id: entityId,
-      permission_group_id: permissionGroupId,
-    },
-  },
-  models,
-) {
+async function onApproveCreateUserCountryPermission({ type, new_record: newRecord }, models) {
+  if (type === 'delete') return;
+
+  const {
+    approved,
+    user_id: userId,
+    entity_id: entityId,
+    permission_group_id: permissionGroupId,
+  } = newRecord;
+
   const data = {
     user_id: userId,
     entity_id: entityId,
