@@ -90,12 +90,6 @@ export const constructForSingle = (models, recordType) => {
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };
-    case TYPES.ALERT:
-      return {
-        entity_id: [constructRecordExistsWithId(models.entity)],
-        data_element_id: [constructRecordExistsWithId(models.dataSource)],
-        start_time: [hasContent, takesDateForm],
-      };
     case TYPES.INDICATOR:
       return {
         code: [hasContent],
