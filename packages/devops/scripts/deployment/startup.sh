@@ -15,7 +15,7 @@ echo "Starting up instance for ${STAGE}"
 if [[ $STAGE != "production" && $STAGE != "dev" ]]; then
     echo "Turning off cloudwatch agent for feature instance."
     echo "To restart, run sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a start"
-    amazon-cloudwatch-agent-ctl -m ec2 -a stop
+    sudo amazon-cloudwatch-agent-ctl -m ec2 -a stop
 fi
 
 # Set the branch based on STAGE
