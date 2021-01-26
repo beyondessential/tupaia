@@ -15,7 +15,6 @@ export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
   [selectLocation],
   location => {
     const dashboardSegment = getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD);
-    return dashboardSegment;
     return decodeURIComponent(dashboardSegment);
   },
 );
@@ -31,11 +30,10 @@ export const selectCurrentExpandedDates = createSelector([selectLocation], locat
 
 export const selectCurrentDashboardGroupCode = createSelector(
   [state => state.global.dashboardConfig, selectCurrentDashboardGroupCodeFromLocation],
-  (dashboardConfig, currentDashboardGroupCode) => {
-    return dashboardConfig[currentDashboardGroupCode]
+  (dashboardConfig, currentDashboardGroupCode) =>
+    dashboardConfig[currentDashboardGroupCode]
       ? currentDashboardGroupCode
-      : Object.keys(dashboardConfig)[0];
-  },
+      : Object.keys(dashboardConfig)[0],
 );
 
 const selectCurrentDashboardGroupIdForExpandedReport = createSelector(
