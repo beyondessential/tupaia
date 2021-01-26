@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString } from '../utilities';
+import { insertObject } from '../utilities';
 
 var dbm;
 var type;
@@ -16,63 +16,24 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUPS_TO_COPY = [
-  '221',
-  '222',
-  '223',
-  '224',
-  '225',
-  '226',
-  '227',
-  '228',
-  '229',
-  '232',
-];
-const COUNTRY_DONOR_EXTRA_DASHBOARDS = ['23', '19', '8', '26'];
-
-const addDashboardGroupsToCountry = (db, dashboardGroups, countryCode) =>
-  Promise.all(
-    dashboardGroups.map(dashboardGroup => {
-      const { organisationLevel, userGroup, dashboardReports, name } = dashboardGroup;
-      if (organisationLevel === 'Country' && userGroup === 'Donor') {
-        return null; // TODO: Add COUNTRY_DONOR_EXTRA_DASHBOARDS to dashboardReports
-      }
-
-      return db.runSql(`
-        INSERT INTO "dashboardGroup" (
-          "organisationLevel",
-          "userGroup",
-          "organisationUnitCode",
-          "dashboardReports",
-          "name",
-          "code",
-          "projectCodes"
-        )
-        VALUES (
-          '${organisationLevel}',
-          '${userGroup}',
-          '${countryCode}',
-          '{${dashboardReports}}',     
-          '${name}',
-          '${[countryCode, name, organisationLevel, userGroup].join('_')}',
-          '{explore}'
-        )`);
-    }),
-  );
-
-const hasWorldDashboard = `"organisationLevel" <> 'World' AND "organisationUnitCode" = 'World'`;
+const DASHBOARD_GROUP = {
+  organisationLevel: 'Facility',
+  userGroup: 'Public',
+  organisationUnitCode: 'PW',
+  dashboardReports: '{21,22,18,8,5}',
+  name: 'General',
+  code: 'PW_General_Facility_Public',
+  projectCodes: '{explore}',
+};
 
 exports.up = async function (db) {
-  const { rows: dashboardGroups } = await db.runSql(
-    `SELECT * from "dashboardGroup" WHERE id in (${arrayToDbString(DASHBOARD_GROUPS_TO_COPY)})`,
-  );
-
-  await addDashboardGroupsToCountry(db, dashboardGroups, 'PW');
+  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP);
 };
 
 exports.down = async function (db) {
   await db.runSql(
-    `DELETE FROM "dashboardGroup" WHERE name='General' AND "organisationUnitCode"='PW';`,
+    `DELETE FROM "dashboardGroup" 
+     WHERE code='PW_General_Facility_Public';`,
   );
 };
 
