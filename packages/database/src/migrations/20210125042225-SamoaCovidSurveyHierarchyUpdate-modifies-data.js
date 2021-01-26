@@ -35,7 +35,7 @@ async function getAnswersByQuestionCode(db, code) {
 }
 
 async function findEntityIdByName(db, name) {
-  const cleanName = name.replace("'", '').replace(' ', '');
+  const cleanName = name.replace("'", '').trim();
   if (!name.includes('/'))
     return db.runSql(`
   select * from entity
