@@ -31,7 +31,7 @@ const indicator = {
   builder: 'arithmetic',
   config: {
     formula:
-      '(WS_COVID19_Clinsurv_75 == 0 OR WS_COVID19_Clinsurv_137 == 1 OR WS_COVID19_Clinsurv_79 == 0 OR (WS_COVID19_Clinsurv_83 != 3 AND WS_COVID19_Clinsurv_83 != 4) OR WS_COVID19_Clinsurv_87 == 0) ? 1 : 0',
+      '(WS_COVID19_Clinsurv_75 == 0 or WS_COVID19_Clinsurv_137 == 1 or WS_COVID19_Clinsurv_79 == 0 or (WS_COVID19_Clinsurv_83 != 3 and WS_COVID19_Clinsurv_83 != 4) or WS_COVID19_Clinsurv_87 == 0) ? 1 : 0',
     aggregation: 'COUNT_PER_ORG_GROUP',
     defaultValues: {
       WS_COVID19_Clinsurv_75: 2, // 3. Pending
