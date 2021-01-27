@@ -50,6 +50,7 @@
     "history": "^5.0.0",
     "lodash.isequal": "^4.5.0",
     "lodash.keyby": "^4.6.0",
+    "msw": "^0.26.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
