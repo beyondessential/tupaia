@@ -67,7 +67,7 @@ const EDIT_CONFIG = {
 const CREATE_CONFIG = {
   title: 'Add Indicator',
   actionConfig: {
-    editEndpoint: 'indicator',
+    editEndpoint: 'indicators',
     fields: FIELDS,
   },
 };

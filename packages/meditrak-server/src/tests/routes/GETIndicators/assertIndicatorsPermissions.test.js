@@ -20,7 +20,7 @@ import {
   assertIndicatorsPermissions,
 } from '../../../routes/GETIndicators/assertIndicatorsPermissions';
 
-describe('Permissions checker for GETIndicators', async () => {
+xdescribe('Permissions checker for GETIndicators', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
