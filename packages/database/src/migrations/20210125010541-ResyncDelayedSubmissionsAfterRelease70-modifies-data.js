@@ -1,5 +1,7 @@
 'use strict';
 
+import path from 'path';
+
 import { DatabaseChangeChannel } from '../DatabaseChangeChannel';
 import { arrayToDbString, markRecordsForResync } from '../utilities';
 
@@ -19,18 +21,22 @@ exports.setup = function (options, seedLink) {
 
 /**
  * This migration attempts to resync survey responses and answers
- * that were not added in the DHIS queue because of a bug.
+ * that were not added in the DHIS queue because of:
  *
- * The bug was in place between 2021-01-14T22:36Z and 2021-01-21T04.35Z.
- * A previous migration "20210120051444-ResyncSubmissionsAfterRelease70"
- * resynced responses that were completed in the app during  that period.
- * This migration resyncs earlier submissions by users who attempted to sync during that period.
+ * 1. Bug #2160 that was in place between 2021-01-14T22:36Z - 2021-01-21T04.35Z
+ * 2. A server malfunction that blocked syncing between 2020-12-20 - 2020-12-22
  *
+ * Here, we resync unsynced submissions by users who attempted to sync in the above periods
+ *
+ * @see https://github.com/beyondessential/tupaia-backlog/issues/885#issuecomment-767197853
+ * @see https://github.com/beyondessential/tupaia-backlog/issues/2143
  * @see https://github.com/beyondessential/tupaia-backlog/issues/2160
  */
 
-const MIN_REQUEST_TIME = '2021-01-14';
-const MAX_REQUEST_TIME = '2021-01-22';
+const DATE_RANGES = [
+  ['2020-12-20', '2020-12-23'],
+  ['2021-01-14', '2021-01-22'],
+];
 
 const selectEventBasedSurveys = async db => {
   const { rows } = await db.runSql(`
@@ -45,20 +51,29 @@ const selectEventBasedSurveys = async db => {
   return rows;
 };
 
-const createSelectResponseStatement = columns => `
-  SELECT sr.${columns} FROM survey_response sr
-  JOIN survey s ON sr.survey_id = s.id
-  JOIN data_source ds ON ds.id = s.data_source_id
-  LEFT JOIN dhis_sync_queue dsq ON sr.id = record_id
-  WHERE
+const createSelectResponseStatement = columns => {
+  const requestTimeCondition = DATE_RANGES.map(
+    ([start, end]) => `request_time BETWEEN '${start}' AND '${end}'`,
+  ).join(' OR ');
+
+  return `
+    SELECT sr.${columns} FROM survey_response sr
+    JOIN survey s ON sr.survey_id = s.id
+    JOIN data_source ds ON ds.id = s.data_source_id
+    JOIN entity e on e.id = sr.entity_id
+    LEFT JOIN dhis_sync_queue dsq ON sr.id = record_id
+    WHERE
     dsq.id IS NULL AND
     ds.service_type = 'dhis' AND
     sr.user_id IN (
       SELECT distinct user_id FROM api_request_log
-      WHERE
-        endpoint = '/changes/count' AND
-        request_time BETWEEN '${MIN_REQUEST_TIME}' AND '${MAX_REQUEST_TIME}'
-      )`;
+        WHERE endpoint = '/changes/count' AND (${requestTimeCondition})
+      ) AND
+      -- before this date, sync records were deleted once successful
+      sr.end_time > '2019-04-15' AND
+      -- Demo Land responses aren't synced (unless from a DL admin)
+      e.country_code <> 'DL'`;
+};
 
 const selectSurveyResponsesForResync = async db => {
   const query = createSelectResponseStatement('*');
@@ -108,24 +123,25 @@ exports.up = async function (db) {
   const changeChannel = new DatabaseChangeChannel();
 
   try {
-    //
-    // Publish changes for every survey response and answer that
-    // * isn't already in the sync queue,
-    // * its user attempted to push changes using the app while the app was in place
     // n.b. this requires a meditrak-server instance to be running and listening for the changes
     const surveyResponses = await selectSurveyResponsesForResync(db);
     await markRecordsForResync(changeChannel, 'survey_response', surveyResponses);
     const answers = await selectAnswersForResync(db);
     await markRecordsForResync(changeChannel, 'answer', answers);
 
-    await updateSyncQueueForSurveyResponses(
-      db,
-      surveyResponses.map(sr => sr.id),
-    );
-    await updateSyncQueueForAnswers(
-      db,
-      answers.map(a => a.id),
-    );
+    const surveyResponseIds = surveyResponses.map(sr => sr.id);
+    if (surveyResponseIds.length > 0) {
+      await updateSyncQueueForSurveyResponses(db, surveyResponseIds);
+    } else {
+      console.warn(`No unsynced submissions found while running ${path.basename(__filename)}`);
+    }
+
+    const answerIds = answers.map(a => a.id);
+    if (answerIds.length > 0) {
+      await updateSyncQueueForAnswers(db, answerIds);
+    } else {
+      console.warn(`No unsynced answers found while running ${path.basename(__filename)}`);
+    }
   } finally {
     changeChannel.close();
   }
