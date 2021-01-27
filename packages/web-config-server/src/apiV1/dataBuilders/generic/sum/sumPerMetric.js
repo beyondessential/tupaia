@@ -105,6 +105,28 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     });
   }
 
+  // Assign return value to an option key. e.g.: [{value: 24, dataElementCode: 'CD77'}] to [{Visa: 24, dataElementCode: 'CD77'}]
+  if (dataBuilderConfig.valueKeyToOption) {
+    // Create option key mapping. e.g.: {"Visa": ["CD75", "CD76", "CD77"]} to ["CD75":"Visa", "CD76":"Visa", "CD77":"Visa"]
+    const valueKeyToOptionMapping = Object.fromEntries(
+      Object.entries(
+        dataBuilderConfig.valueKeyToOption,
+      ).flatMap(([optionKey, dataElementCodesInGroup]) =>
+        dataElementCodesInGroup.map(e => [e, optionKey]),
+      ),
+    );
+    // Rename key, e.g.: {value: 5} to {'$option': 5}
+    const updatedData = data.map(e => {
+      const dataWithNewValueKey = { ...e };
+      Object.assign(dataWithNewValueKey, {
+        [valueKeyToOptionMapping[e.dataElementCode]]: e.value,
+      });
+      delete dataWithNewValueKey.value;
+      return dataWithNewValueKey;
+    });
+    return { data: updatedData, period };
+  }
+
   return { data, period };
 };
 
