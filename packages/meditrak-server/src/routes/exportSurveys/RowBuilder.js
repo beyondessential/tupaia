@@ -45,19 +45,28 @@ export class RowBuilder {
       config,
       ...restOfRowData
     } = rowData;
-
     const optionSetObject = optionSetId && (await this.models.optionSet.findById(optionSetId));
-
     const optionLabels = [];
     const optionColors = [];
-    const processedOptions = options.map((option, optionIndex) => {
+    const processedOptions = [];
+    options.forEach((option, optionIndex) => {
       try {
         const { value, label, color } = JSON.parse(option);
-        optionLabels[optionIndex] = label;
-        optionColors[optionIndex] = color;
-        return value;
+
+        // Do not export any options for Binary questions because they have fixed options (Yes/No)
+        if (restOfRowData.type !== 'Binary') {
+          processedOptions[optionIndex] = value;
+        }
+
+        if (label) {
+          optionLabels[optionIndex] = label;
+        }
+
+        if (color) {
+          optionColors[optionIndex] = color;
+        }
       } catch (error) {
-        return option;
+        processedOptions[optionIndex] = option;
       }
     });
 
