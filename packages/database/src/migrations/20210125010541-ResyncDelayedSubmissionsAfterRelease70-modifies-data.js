@@ -40,13 +40,13 @@ const DATE_RANGES = [
 
 const selectEventBasedSurveys = async db => {
   const { rows } = await db.runSql(`
-    SELECT s.code from survey s
+    SELECT distinct s.code from survey s
     JOIN survey_screen ss on ss.survey_id = s.id
     JOIN survey_screen_component ssc on ssc.screen_id = ss.id
     JOIN question q on q.id = ssc.question_id
     WHERE
-      q.type = 'PrimaryEntity' AND
-      can_repeat is FALSE or ssc.config::text like '%case%' or ssc.config::text like '%catchment%'`);
+      can_repeat is TRUE OR
+      (q.type = 'PrimaryEntity' AND (ssc.config::text like '%case%' or ssc.config::text like '%catchment%'))`);
 
   return rows;
 };
