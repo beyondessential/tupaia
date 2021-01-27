@@ -92,11 +92,10 @@ const selectLaosSchoolsRadioQuestionsOptions = async db =>
     and survey.country_ids::text = '{${LAOS_SCHOOLS_COUNTRY_ID}}'
     `);
 
-const updateQuestion = async (db, code, newOptions) =>
+const updateQuestion = async (db, code) =>
   db.runSql(`
     update question
-    set options = ARRAY[${arrayToDbString(newOptions)}],
-    type = 'Binary'
+    set type = 'Binary'
     where code = '${code}';
 `);
 
@@ -144,19 +143,7 @@ exports.up = async function (db) {
     }
 
     if (isYesNoRadioQuestion(options)) {
-      const newOptions = options.map(({ label, color }) => {
-        let newOption = { label };
-        if (color) {
-          newOption = {
-            ...newOption,
-            color,
-          };
-        }
-
-        return JSON.stringify(newOption);
-      });
-
-      await updateQuestion(db, code, newOptions);
+      await updateQuestion(db, code);
     }
   }
 };
