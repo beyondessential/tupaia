@@ -95,6 +95,7 @@ export class DhisInputSchemeResolvingApiProxy {
       if (!dataElement) {
         // most likely using a data element code that is not defined in data_source, which is supported
         // by this service
+        // TODO: Remove after tupaia-backlog#663 is done
         return false;
       }
 

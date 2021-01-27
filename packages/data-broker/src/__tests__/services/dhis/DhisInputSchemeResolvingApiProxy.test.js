@@ -48,6 +48,7 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
     });
 
     it('should not swap any codes for ids if some data elements dont exist in data_source', async () => {
+      // TODO: remove after tupaia-backlog#663 is done
       await proxy.getAnalytics({
         dataElementCodes: ['EL1', 'EL444'], // EL444 does not exist
         organisationUnitCodes: ['ORG1'],
