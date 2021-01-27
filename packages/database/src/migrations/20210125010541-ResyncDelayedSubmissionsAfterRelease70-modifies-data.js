@@ -46,7 +46,7 @@ const selectEventBasedSurveys = async db => {
     JOIN question q on q.id = ssc.question_id
     WHERE
       q.type = 'PrimaryEntity' AND
-      can_repeat is FALSE or ssc.config::text like '%case%'`);
+      can_repeat is FALSE or ssc.config::text like '%case%' or ssc.config::text like '%catchment%'`);
 
   return rows;
 };
