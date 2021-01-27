@@ -6,7 +6,13 @@ import { utcMoment } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
 
-const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDate, endDate }) => {
+const generateBaseSqlQuery = ({
+  dataElementCodes,
+  organisationUnitCodes,
+  startDate,
+  endDate,
+  aggregations,
+}) => {
   const sqlQuery = new SqlQuery(
     `
     SELECT
@@ -19,20 +25,39 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
       value
     FROM
       analytics
-    WHERE
-      data_element_code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
-    AND
-      entity_code IN ${SqlQuery.parameteriseArray(organisationUnitCodes)}
+    INNER JOIN (
+      ${SqlQuery.parameteriseValues(dataElementCodes)}
+    ) decs(dec) ON data_element_code = dec
+    INNER JOIN (
+      ${SqlQuery.parameteriseValues(organisationUnitCodes, dataElementCodes.length)}
+    ) ecs(ec) ON entity_code = ec
   `,
     [...dataElementCodes, ...organisationUnitCodes],
   );
 
+  // Perform fetch side aggregations if possible
+  const firstAggregation = aggregations && aggregations[0];
+  if (firstAggregation && firstAggregation.type === 'FINAL_EACH_DAY') {
+    sqlQuery.addClause(`AND final_per_day = $${sqlQuery.parameters.length + 1}`, [true]);
+    aggregations.shift();
+  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_WEEK') {
+    sqlQuery.addClause(`AND final_per_week = $${sqlQuery.parameters.length + 1}`, [true]);
+    aggregations.shift();
+  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_MONTH') {
+    sqlQuery.addClause(`AND final_per_month = $${sqlQuery.parameters.length + 1}`, [true]);
+    aggregations.shift();
+  }
+
   // Add start and end date, which are inclusive
   if (startDate) {
-    sqlQuery.addClause(`AND date >= ?`, [utcMoment(startDate).startOf('day').toISOString()]);
+    sqlQuery.addClause(`AND date >= $${sqlQuery.parameters.length + 1}`, [
+      utcMoment(startDate).startOf('day').toISOString(),
+    ]);
   }
   if (endDate) {
-    sqlQuery.addClause(`AND date <= ?`, [utcMoment(endDate).endOf('day').toISOString()]);
+    sqlQuery.addClause(`AND date <= $${sqlQuery.parameters.length + 1}`, [
+      utcMoment(endDate).endOf('day').toISOString(),
+    ]);
   }
 
   sqlQuery.orderBy('date');
@@ -52,5 +77,5 @@ export async function fetchEventData(database, options) {
 
 export async function fetchAnalyticData(database, options) {
   const sqlQuery = generateBaseSqlQuery(options);
-  return sqlQuery.executeOnDatabase(database);
+  return sqlQuery.executeOnDatabaseViaPgClient(database);
 }

@@ -25,6 +25,10 @@ exports.up = async function (db) {
       data_element_code: { type: 'text', notNull: true },
       value: { type: 'text', notNull: true },
       date: { type: 'timestamptz', notNull: true },
+      final_per_day: { type: 'boolean', default: false },
+      final_per_week: { type: 'boolean', default: false },
+      final_per_month: { type: 'boolean', default: false },
+      final_per_year: { type: 'boolean', default: false },
     },
   });
 

@@ -46,7 +46,10 @@ export class TupaiaDataApi {
 
   async fetchAnalytics(options) {
     await validateAnalyticsOptions(options);
+    const start = Date.now();
     const results = await fetchAnalyticData(this.database, options);
+    const end = Date.now();
+    console.log(`Fetch took: ${end - start}ms, ${results.length} results found`);
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
