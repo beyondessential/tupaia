@@ -1,1 +1,1 @@
-export * from './CartesianChart';
+export * from './Chart';
