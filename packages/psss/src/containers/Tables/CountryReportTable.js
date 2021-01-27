@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import MuiLink from '@material-ui/core/Link';
+import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import {
   LoadingContainer,
@@ -118,6 +118,16 @@ const columns = [
   },
 ];
 
+const ErrorTooltip = styled(Tooltip)`
+  & .MuiTooltip-tooltip {
+    background: ${props => props.theme.palette.error.main};
+
+    .MuiTooltip-arrow {
+      color: ${props => props.theme.palette.error.main};
+    }
+  }
+`;
+
 export const CountryReportTable = React.memo(
   ({ isFetching, data, sitesReported, totalSites, weekNumber }) => {
     const { tableStatus, setTableStatus } = useContext(EditableTableContext);
@@ -165,23 +175,43 @@ export const CountryReportTable = React.memo(
               {tableStatus === TABLE_STATUSES.EDITABLE ? (
                 <FormRow>
                   <ReportedSites variant="h6">Reported Sites:</ReportedSites>
-                  <StyledTextField
-                    defaultValue={sitesReported}
-                    error={!!methods.errors.sitesReported}
-                    name="sitesReported"
-                    inputRef={methods.register({
-                      required: 'Required',
-                    })}
-                  />
+                  <ErrorTooltip
+                    title={methods.errors.sitesReported ? methods.errors.sitesReported.message : ''}
+                    placement="left"
+                    open
+                  >
+                    <StyledTextField
+                      defaultValue={sitesReported}
+                      error={!!methods.errors.sitesReported}
+                      name="sitesReported"
+                      inputRef={methods.register({
+                        required: 'Required',
+                        pattern: {
+                          value: /^\d+$/,
+                          message: 'Invalid character',
+                        },
+                      })}
+                    />
+                  </ErrorTooltip>
                   <ReportedSites variant="h5"> / Total Sites: </ReportedSites>
-                  <StyledTextField
-                    defaultValue={totalSites}
-                    error={!!methods.errors.totalSites}
-                    name="totalSites"
-                    inputRef={methods.register({
-                      required: 'Required',
-                    })}
-                  />
+                  <ErrorTooltip
+                    title={methods.errors.totalSites ? methods.errors.totalSites.message : ''}
+                    placement="left"
+                    open
+                  >
+                    <StyledTextField
+                      defaultValue={totalSites}
+                      error={!!methods.errors.totalSites}
+                      name="totalSites"
+                      inputRef={methods.register({
+                        required: 'Required',
+                        pattern: {
+                          value: /^\d+$/,
+                          message: 'Invalid character',
+                        },
+                      })}
+                    />
+                  </ErrorTooltip>
                 </FormRow>
               ) : (
                 <Typography variant="h5">
