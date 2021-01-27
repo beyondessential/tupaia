@@ -3,13 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import {
-  getCurrentPeriod,
   getDisplayDatesByPeriod,
   getPeriodByDate,
   subtractWeeksFromPeriod,
   addWeeksToPeriod,
   getDaysTillDueDay,
-} from '../period';
+} from '../utils';
 
 describe('period', () => {
   it('Gets Display Dates By Period', async () => {

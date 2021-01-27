@@ -3,12 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { screen, within, fireEvent } from '@testing-library/react';
+import keyBy from 'lodash.keyby';
+import { screen, within, waitForElementToBeRemoved } from '@testing-library/react';
 import { Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
-import { WeeklyReportsPanelComponent } from '../Panels';
-import countryData from './fixtures/country.fixtures.json';
-import { render } from '../../utils/test-utils';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import confirmedReport from './fixtures/confirmedReport.json';
+import unConfirmedReport from './fixtures/unConfirmedReport.json';
+import { WeeklyReportsPanelComponent } from '../containers';
+import { SYNDROMES } from '../constants';
+import { render } from '../utils/test-utils';
+import unconfirmedData from './fixtures/unConfirmedReport.json';
 
 const ACTIVE_ID = 0;
 
@@ -22,21 +28,43 @@ const defaultState = {
   },
 };
 
+// declare which API requests to mock
+const server = setupServer(
+  // capture "GET /weeklyReport" requests
+  rest.get('*/weeklyReport/*', (req, res, ctx) => {
+    return res(ctx.json(unConfirmedReport));
+  }),
+
+  rest.get('*/confirmedWeeklyReport/*', (req, res, ctx) => {
+    return res(ctx.json(confirmedReport));
+  }),
+);
+
+// establish API mocking before all tests
+beforeAll(() => server.listen());
+// reset any request handlers that are declared as a part of our tests
+// (i.e. for testing one-time error scenarios)
+afterEach(() => server.resetHandlers());
+// clean up once the tests are done
+afterAll(() => server.close());
+
 function renderWeeklyReportsPanel() {
   const history = createMemoryHistory({ initialEntries: ['/weekly-reports/TO'] });
-  render(
+  const myElement = render(
     <Router history={history}>
       <Route path="/weekly-reports/:countryCode">
         <WeeklyReportsPanelComponent
-          isOpen={false}
+          isOpen={true}
           handleClose={() => console.log('close...')}
-          activeWeek="2020W50"
+          activeWeek="2019W51"
           verifiedStatuses={[]}
         />
       </Route>
     </Router>,
     defaultState,
   );
+  // myElement.debug();
+  // return true;
   const countryReports = screen.getByTestId('country-reports');
   const inCountryReports = within(countryReports);
 
@@ -46,16 +74,18 @@ function renderWeeklyReportsPanel() {
 }
 
 describe('weekly reports panel', () => {
-  it('renders country syndromes data', () => {
-    const { inCountryReports } = renderWeeklyReportsPanel();
-    const { syndromes } = countryData[ACTIVE_ID];
+  const reportsByPeriod = keyBy(unconfirmedData.data.results, 'period');
 
-    syndromes.forEach(({ title, totalCases }) => {
-      const row = inCountryReports.getByText(title).closest('tr');
-      const inRow = within(row);
-      expect(inRow.getByText(title)).toBeInTheDocument();
-      expect(inRow.getByDisplayValue(totalCases.toString())).toBeInTheDocument();
-    });
+  it('renders country syndromes data', async () => {
+    const report = reportsByPeriod['2019W51'];
+    const { inCountryReports } = renderWeeklyReportsPanel();
+
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading*/i));
+
+    for (let [syndromeKey, syndromeTitle] of Object.entries(SYNDROMES)) {
+      const row = inCountryReports.getByText(syndromeTitle).closest('tr');
+      expect(within(row).getByDisplayValue(report[syndromeKey].toString())).toBeInTheDocument();
+    }
   });
   //
   // it('renders site syndromes data', () => {
