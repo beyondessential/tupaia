@@ -20,3 +20,4 @@ dump.sql
 .idea
 dockercfg
 packages/.vscode/settings.json
+**/testRequests/*.http
