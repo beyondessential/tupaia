@@ -23,7 +23,7 @@ const DASHBOARD_GROUP = {
   dashboardReports: '{21,22,18,8,5}',
   name: 'General',
   code: 'PW_General_Facility_Public',
-  projectCodes: '{explore,disaster,olangch_palau}',
+  projectCodes: '{explore,disaster,olangch_palau,psss}',
 };
 
 exports.up = async function (db) {
