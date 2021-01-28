@@ -35,18 +35,18 @@ export class GETSurveys extends GETHandler {
     return survey;
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = await createSurveyDBFilter(this.accessPolicy, this.models, criteria);
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsViaParentFilter(criteria, options) {
     const dbConditions = await createSurveyViaCountryDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
       this.parentRecordId,
     );
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

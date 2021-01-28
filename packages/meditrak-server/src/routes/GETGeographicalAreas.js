@@ -36,7 +36,7 @@ export class GETGeographicalAreas extends GETHandler {
     return super.findSingleRecord(geographicalAreaId, options);
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = { ...criteria };
     const countryCodes = this.accessPolicy.getEntitiesAllowed();
     const countries = await this.models.country.find({ code: countryCodes });
@@ -48,6 +48,6 @@ export class GETGeographicalAreas extends GETHandler {
       );
     }
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

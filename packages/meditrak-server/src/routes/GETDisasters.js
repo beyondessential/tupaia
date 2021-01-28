@@ -68,8 +68,8 @@ export class GETDisasters extends GETHandler {
     return disaster;
   }
 
-  async findRecords(criteria, options) {
-    const dbFilter = createDBFilter(this.accessPolicy, criteria);
-    return super.findRecords(dbFilter, options);
+  async getPermissionsFilter(criteria, options) {
+    const dbConditions = createDBFilter(this.accessPolicy, criteria);
+    return { dbConditions, dbOptions: options };
   }
 }

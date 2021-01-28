@@ -98,8 +98,26 @@ export class GETHandler extends CRUDHandler {
     return processColumnSelectorKeys(this.models, filter, this.recordType);
   }
 
+  getPermissionsFilter() {
+    throw new Error(
+      `'getPermissionsFilter' must be implemented by all internally filtered GETHandlers`,
+    );
+  }
+
+  getPermissionsViaParentFilter() {
+    throw new Error(
+      `Cannot GET via parent record without 'getPermissionsViaParentFilter' implementation`,
+    );
+  }
+
+  async applyPermissionsFilter(criteria, options) {
+    return this.parentRecordId
+      ? this.getPermissionsViaParentFilter(criteria, options)
+      : this.getPermissionsFilter(criteria, options);
+  }
+
   async buildResponse() {
-    const options = await this.getDbQueryOptions();
+    let options = await this.getDbQueryOptions();
 
     // handle request for a single record
     const { recordId } = this;
@@ -109,10 +127,14 @@ export class GETHandler extends CRUDHandler {
     }
 
     // handle request for multiple records, including pagination headers
-    const criteria = this.getDbQueryCriteria();
-    const pageOfRecords = this.parentRecordId
-      ? await this.findRecordsViaParent(criteria, options)
-      : await this.findRecords(criteria, options);
+    let criteria = this.getDbQueryCriteria();
+    if (this.permissionsFilteredInternally) {
+      ({ dbConditions: criteria, dbOptions: options } = await this.applyPermissionsFilter(
+        criteria,
+        options,
+      ));
+    }
+    const pageOfRecords = await this.findRecords(criteria, options);
     const totalNumberOfRecords = await this.countRecords(criteria, options);
     const { limit, page } = this.getPaginationParameters();
     const lastPage = Math.ceil(totalNumberOfRecords / limit);

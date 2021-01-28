@@ -31,17 +31,11 @@ export class GETAnswers extends GETHandler {
     return answer;
   }
 
-  async findRecords(criteria, options) {
-    const { dbConditions, dbOptions } = await createAnswerDBFilter(
-      this.accessPolicy,
-      this.models,
-      criteria,
-      options,
-    );
-    return super.findRecords(dbConditions, dbOptions);
+  async getPermissionsFilter(criteria, options) {
+    return createAnswerDBFilter(this.accessPolicy, this.models, criteria, options);
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsViaParentFilter(criteria, options) {
     // Check parent permissions
     const surveyResponseChecker = accessPolicy =>
       assertSurveyResponsePermissions(accessPolicy, this.models, this.parentRecordId);
@@ -54,6 +48,6 @@ export class GETAnswers extends GETHandler {
     const dbConditions = { ...criteria };
     dbConditions.survey_response_id = this.parentRecordId;
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

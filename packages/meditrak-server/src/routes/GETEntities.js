@@ -30,7 +30,7 @@ export class GETEntities extends GETHandler {
     return super.findSingleRecord(entityId, options);
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = { ...criteria };
 
     if (!hasBESAdminAccess(this.accessPolicy)) {
@@ -40,10 +40,10 @@ export class GETEntities extends GETHandler {
       );
     }
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsViaParentFilter(criteria, options) {
     const countryPermissionChecker = accessPolicy =>
       assertCountryPermissions(accessPolicy, this.models, this.parentRecordId);
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]));
@@ -51,6 +51,6 @@ export class GETEntities extends GETHandler {
     const country = await this.models.country.findById(this.parentRecordId);
     const dbConditions = { 'entity.country_code': country.code, ...criteria };
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

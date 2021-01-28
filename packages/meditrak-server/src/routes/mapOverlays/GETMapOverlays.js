@@ -28,10 +28,8 @@ export class GETMapOverlays extends GETHandler {
     return mapOverlay;
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = await createMapOverlayDBFilter(this.accessPolicy, this.models, criteria);
-    const userAccounts = await super.findRecords(dbConditions, options);
-
-    return userAccounts;
+    return { dbConditions, dbOptions: options };
   }
 }

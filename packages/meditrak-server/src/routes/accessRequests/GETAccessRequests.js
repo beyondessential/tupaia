@@ -43,14 +43,12 @@ export class GETAccessRequests extends GETHandler {
     return accessRequest;
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = await createAccessRequestDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
     );
-    const accessRequests = await super.findRecords(dbConditions, options);
-
-    return accessRequests;
+    return { dbConditions, dbOptions: options };
   }
 }
