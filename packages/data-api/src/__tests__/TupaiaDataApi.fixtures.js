@@ -22,29 +22,47 @@ const BCD1 = {
   code: 'BCD1',
   name: 'Facility Status',
   type: 'Radio',
+  options: [],
 };
 
 const BCD325 = {
   code: 'BCD325',
   name: 'Days of operation',
   type: 'Number',
+  options: [],
+};
+
+const BCD57 = {
+  code: 'BCD57',
+  name: 'Foundation',
+  type: 'Radio',
+  options: [
+    'Concrete slab',
+    'Concrete stumps',
+    'Timber stumps',
+    'Timber on ground',
+    'Earth',
+    'Other',
+  ],
 };
 
 const BCD_SURVEY = {
   code: 'BCD',
   name: 'Basic Clinic Data',
-  questions: [BCD1, BCD325],
+  questions: [BCD1, BCD325, BCD57],
 };
 
 const CROP_1 = {
   code: 'CROP_1',
   name: 'Number of potatoes grown',
   type: 'Number',
+  options: [],
 };
 const CROP_2 = {
   code: 'CROP_2',
   name: 'Number of lettuces grown',
   type: 'Number',
+  options: [],
 };
 
 const CROP_SURVEY = {
