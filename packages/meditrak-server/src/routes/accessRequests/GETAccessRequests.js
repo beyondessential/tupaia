@@ -21,6 +21,8 @@ import {
  */
 
 export class GETAccessRequests extends GETHandler {
+  defaultJoinType = JOIN_TYPES.LEFT_OUTER;
+
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
