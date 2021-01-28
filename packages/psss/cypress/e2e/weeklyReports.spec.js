@@ -6,9 +6,7 @@ describe('weekly reports', () => {
   it('can navigate to weekly reports panel', () => {
     // set up route stubs. we don't want to retest login functionality as that is covered by the login test
     cy.server();
-    cy.route('POST', '**login', 'fixture:multiCountryUserAuth.json').as('login');
-
-    cy.login();
+    cy.loginTestUser2();
     cy.assertMultiCountryHome();
 
     // select country
@@ -29,7 +27,13 @@ describe('weekly reports', () => {
       .click();
 
     // check that the panel is correctly rendered
-    cy.findByText(/upcoming report*/i).should('exist');
-    cy.findByText(/submit now*/i).should('exist');
+    cy.findByTestId('weekly-reports-panel').within(() => {
+      cy.findByText(/tonga*/i).should('exist');
+      cy.findByText(/week 03*/i).should('exist');
+      cy.findByText(/jan 24*/i).should('exist');
+      cy.findByText(/jan 18*/i).should('exist');
+      cy.findByText(/upcoming report*/i).should('exist');
+      cy.findByText(/confirm now*/i).should('exist');
+    });
   });
 });
