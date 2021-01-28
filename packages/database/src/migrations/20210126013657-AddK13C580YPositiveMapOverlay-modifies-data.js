@@ -130,8 +130,27 @@ exports.up = async function(db) {
   await insertObject(db, 'map_overlay_group_relation', NEW_OVERLAY_GROUP_RELATION_FOR_GROUP);
 };
 
-exports.down = function(db) {
-  return null;
+exports.down = async function (db) {
+  await db.runSql(`
+    DELETE FROM "mapOverlay" WHERE "id" = '${LINKED_MEASURE_OVERLAY_ID}';
+  `);
+
+  await db.runSql(`
+    DELETE FROM "mapOverlay" WHERE "id" = '${MAIN_OVERLAY_ID}';
+  `);
+
+  await db.runSql(`
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${MAIN_OVERLAY_ID}';
+  `);
+
+  await db.runSql(`
+    DELETE FROM "map_overlay_group_relation" WHERE "child_id" in
+    (SELECT "id" from "map_overlay_group" WHERE "code" = 'STRIVE_Molecular_Data');
+  `);
+
+  await db.runSql(`
+    DELETE FROM "map_overlay_group" WHERE "code" = 'STRIVE_Molecular_Data';
+  `);
 };
 
 exports._meta = {
