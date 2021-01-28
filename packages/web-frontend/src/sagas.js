@@ -695,12 +695,6 @@ function* fetchDashboard(action) {
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
-
-    if (!(currentDashboardCode in dashboard)) {
-      yield call(handleInvalidPermission, { projectCode });
-      return;
-    }
-
     yield put(fetchDashboardSuccess(dashboard));
   } catch (error) {
     yield put(error.errorFunction(error));
