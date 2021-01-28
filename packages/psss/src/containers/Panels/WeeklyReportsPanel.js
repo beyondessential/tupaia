@@ -119,6 +119,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       syndromes: countrySyndromesData,
       reportStatus,
       unVerifiedAlerts,
+      error: countryWeekError,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
 
     const [confirmReport, { isLoading: isConfirming, reset, error }] = useConfirmWeeklyReport(
@@ -173,6 +174,7 @@ export const WeeklyReportsPanelComponent = React.memo(
           >
             <CountryReportTable
               data={countrySyndromesData}
+              fetchError={countryWeekError && countryWeekError.message}
               isFetching={isLoading || isFetching}
               sitesReported={countryWeekData['Sites Reported']}
               totalSites={countryWeekData.Sites}
