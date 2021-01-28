@@ -4,4 +4,3 @@
  */
 
 export { replaceOrgUnitWithOrgGroup } from './replaceOrgUnitWithOrgGroup';
-export { replaceEntityAnswerWithEntityName } from './replaceEntityAnswerWithEntityName';

@@ -22,3 +22,4 @@ export {
   countEventsThatSatisfyConditions,
 } from './checkAgainstConditions';
 export { uniqueValueFromEvents } from './uniqueValues';
+export { transformEventsDataValuesEntityIdToName } from './transformEventsDataValuesEntityIdToName';

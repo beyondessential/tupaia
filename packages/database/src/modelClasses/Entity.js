@@ -374,38 +374,6 @@ export class EntityModel extends DatabaseModel {
     );
   }
 
-  async getEntityAnswerWithEntityName(dataSourceEntities, questionCode) {
-    const eventId = 'event_id';
-    const entityAnswerIdToName = 'entity_answer_id_to_name';
-    const entityAnswerIdToNameMapping = await this.database.executeSql(
-      `
-        SELECT sr.id as ${eventId}, e2.name as ${entityAnswerIdToName}
-        FROM 
-          answer a2 
-        JOIN 
-          question q2 ON a2.question_id = q2.id 
-        JOIN 
-          survey_response sr ON sr.id = a2.survey_response_id 
-        JOIN 
-          entity e on e.id = sr.entity_id 
-        JOIN 
-          entity e2 ON a2.text = e2.id
-        WHERE 
-          q2.code = ? 
-        AND
-          e.code IN (${dataSourceEntities.map(() => '?').join(',')})
-      `,
-      [questionCode, ...dataSourceEntities],
-    );
-    return entityAnswerIdToNameMapping.reduce(
-      (acc, e) => ({
-        ...acc,
-        [e[eventId]]: e[entityAnswerIdToName],
-      }),
-      {},
-    );
-  }
-
   getDhisLevel(type) {
     const level = ORG_UNIT_TYPE_LEVELS[type];
     if (!level) {
