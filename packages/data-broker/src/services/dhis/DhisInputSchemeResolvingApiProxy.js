@@ -68,7 +68,10 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const dataElementIdToCode = {};
 
-    const dataElements = await this.models.dataSource.find({ code: query.dataElementCodes });
+    const dataElements = await this.models.dataSource.find({
+      code: query.dataElementCodes,
+      type: 'dataElement',
+    });
 
     for (const dataElement of dataElements) {
       if (dataElement.config.dhisId) {
@@ -87,7 +90,10 @@ export class DhisInputSchemeResolvingApiProxy {
   allDataElementsHaveDhisId = async query => {
     const { dataElementCodes } = query;
 
-    const dataElements = await this.models.dataSource.find({ code: dataElementCodes });
+    const dataElements = await this.models.dataSource.find({
+      code: dataElementCodes,
+      type: 'dataElement',
+    });
 
     for (const dataElementCode of dataElementCodes) {
       const dataElement = dataElements.find(d => d.code === dataElementCode);
@@ -138,7 +144,7 @@ export class DhisInputSchemeResolvingApiProxy {
   allProgramsHaveDhisId = async query => {
     const { programCode } = query;
 
-    const dataGroups = await this.models.dataSource.find({ code: programCode });
+    const dataGroups = await this.models.dataSource.find({ code: programCode, type: 'dataGroup' });
 
     for (const dataGroup of dataGroups) {
       if (!dataGroup.config.dhisId) {
@@ -159,7 +165,10 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const { dataElementCodes } = query;
 
-    const dataElements = await this.models.dataSource.find({ code: dataElementCodes });
+    const dataElements = await this.models.dataSource.find({
+      code: dataElementCodes,
+      type: 'dataElement',
+    });
 
     for (const dataElementCode of dataElementCodes) {
       const dataElement = dataElements.find(d => d.code === dataElementCode);
@@ -224,7 +233,10 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const { programCode } = query;
 
-    const dataGroup = await this.models.dataSource.findOne({ code: programCode });
+    const dataGroup = await this.models.dataSource.findOne({
+      code: programCode,
+      type: 'dataGroup',
+    });
 
     if (!dataGroup) {
       throw new Error(
