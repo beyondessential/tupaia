@@ -5,11 +5,11 @@
 import { TEST_USER_1, TEST_USER_2 } from '../constants';
 
 const login = user => {
-  const password = Cypress.env('TEST_USER_PASSWORD');
+  const password = Cypress.env('testUserPassword');
 
   cy.visit('/login');
   cy.findByPlaceholderText(/email/i).type(user.email);
-  cy.findByPlaceholderText(/password/i).type('test2020');
+  cy.findByPlaceholderText(/password/i).type(password);
   cy.findByRole('button', { name: /login*/i }).click();
 };
 

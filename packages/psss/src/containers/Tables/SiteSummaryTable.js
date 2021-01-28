@@ -101,23 +101,23 @@ export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) =>
 
   return (
     <>
-      {/*{showSites && (*/}
-      {/*  <TableWrapper>*/}
-      {/*    <FakeHeader>*/}
-      {/*      <div>10/30 Sentinel Sites Reported</div>*/}
-      {/*      <Link component="button" onClick={handleOpen} underline="always">*/}
-      {/*        Review and Confirm Now*/}
-      {/*      </Link>*/}
-      {/*    </FakeHeader>*/}
-      {/*    <Table*/}
-      {/*      errorMessage={error}*/}
-      {/*      columns={siteWeekColumns}*/}
-      {/*      data={data ? data.data : 0}*/}
-      {/*      Header={false}*/}
-      {/*      Body={CondensedTableBody}*/}
-      {/*    />*/}
-      {/*  </TableWrapper>*/}
-      {/*)}*/}
+      {showSites && (
+        <TableWrapper>
+          <FakeHeader>
+            <div>10/30 Sentinel Sites Reported</div>
+            <Link component="button" onClick={handleOpen} underline="always">
+              Review and Confirm Now
+            </Link>
+          </FakeHeader>
+          <Table
+            errorMessage={error}
+            columns={siteWeekColumns}
+            data={data ? data.data : 0}
+            Header={false}
+            Body={CondensedTableBody}
+          />
+        </TableWrapper>
+      )}
       <TableFooter>
         <Text>Verify data to submit Weekly report to Regional</Text>
         <Button onClick={() => handleOpen(period)}>Review and Confirm Now</Button>

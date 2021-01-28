@@ -14,7 +14,6 @@ import unConfirmedReport from './fixtures/unConfirmedReport.json';
 import { WeeklyReportsPanelComponent } from '../containers';
 import { SYNDROMES } from '../constants';
 import { render } from '../utils/test-utils';
-import unconfirmedData from './fixtures/unConfirmedReport.json';
 
 // Mock API Requests
 const server = setupServer(
@@ -37,7 +36,7 @@ function renderWeeklyReportsPanel() {
     <Router history={history}>
       <Route path="/weekly-reports/:countryCode">
         <WeeklyReportsPanelComponent
-          isOpen={true}
+          isOpen
           handleClose={() => console.log('close...')}
           activeWeek="2019W51"
           verifiedStatuses={[]}
@@ -54,7 +53,7 @@ function renderWeeklyReportsPanel() {
 }
 
 describe('weekly reports panel', () => {
-  const reportsByPeriod = keyBy(unconfirmedData.data.results, 'period');
+  const reportsByPeriod = keyBy(unConfirmedReport.data.results, 'period');
 
   it('renders country syndromes data', async () => {
     const report = reportsByPeriod['2019W51'];
@@ -62,7 +61,7 @@ describe('weekly reports panel', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByText(/loading*/i));
 
-    for (let [syndromeKey, syndromeTitle] of Object.entries(SYNDROMES)) {
+    for (const [syndromeKey, syndromeTitle] of Object.entries(SYNDROMES)) {
       const row = inCountryReports.getByText(syndromeTitle).closest('tr');
       expect(within(row).getByDisplayValue(report[syndromeKey].toString())).toBeInTheDocument();
     }

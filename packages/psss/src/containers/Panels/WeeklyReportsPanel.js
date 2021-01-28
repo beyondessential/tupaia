@@ -182,32 +182,32 @@ export const WeeklyReportsPanelComponent = React.memo(
             />
           </EditableTableProvider>
         </CountryReportsSection>
-        {/*{showSites && (*/}
-        {/*  <SiteReportsSection disabled={isSaving} data-testid="site-reports">*/}
-        {/*    <ComingSoon text="The Sentinel Case data section will allow you to explore sentinel site data." />*/}
-        {/*    <ButtonSelect*/}
-        {/*      id="active-site"*/}
-        {/*      options={sitesData.data}*/}
-        {/*      onChange={setActiveSiteIndex}*/}
-        {/*      index={activeSiteIndex}*/}
-        {/*    />*/}
-        {/*    <SiteAddress*/}
-        {/*      address={sitesData.data[activeSiteIndex].address}*/}
-        {/*      contact={sitesData.data[activeSiteIndex].contact}*/}
-        {/*    />*/}
-        {/*    <Card variant="outlined" mb={3}>*/}
-        {/*      <EditableTableProvider*/}
-        {/*        tableStatus={sitesTableStatus}*/}
-        {/*        setTableStatus={setSitesTableStatus}*/}
-        {/*      >*/}
-        {/*        <SiteReportTable*/}
-        {/*          data={sitesData.data[activeSiteIndex].syndromes}*/}
-        {/*          weekNumber={activeWeek}*/}
-        {/*        />*/}
-        {/*      </EditableTableProvider>*/}
-        {/*    </Card>*/}
-        {/*  </SiteReportsSection>*/}
-        {/*)}*/}
+        {showSites && (
+          <SiteReportsSection disabled={isSaving} data-testid="site-reports">
+            <ComingSoon text="The Sentinel Case data section will allow you to explore sentinel site data." />
+            <ButtonSelect
+              id="active-site"
+              options={sitesData.data}
+              onChange={setActiveSiteIndex}
+              index={activeSiteIndex}
+            />
+            <SiteAddress
+              address={sitesData.data[activeSiteIndex].address}
+              contact={sitesData.data[activeSiteIndex].contact}
+            />
+            <Card variant="outlined" mb={3}>
+              <EditableTableProvider
+                tableStatus={sitesTableStatus}
+                setTableStatus={setSitesTableStatus}
+              >
+                <SiteReportTable
+                  data={sitesData.data[activeSiteIndex].syndromes}
+                  weekNumber={activeWeek}
+                />
+              </EditableTableProvider>
+            </Card>
+          </SiteReportsSection>
+        )}
         <DrawerFooter disabled={confirmIsDisabled}>
           <Fade in={verificationRequired || error}>
             <PositionedAlert severity="error">
