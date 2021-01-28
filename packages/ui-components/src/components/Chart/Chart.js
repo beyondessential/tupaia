@@ -114,8 +114,9 @@ export const PieChartComponent = ({ data, config }) => {
   );
 };
 
+// Dev https://dev-config.tupaia.org/api/v1/view
 const useChartData = params => {
-  return useQuery('todos', async () => {
+  return useQuery('chart', async () => {
     try {
       const { data } = await axios('https://dev-config.tupaia.org/api/v1/view', {
         params,
