@@ -60,8 +60,8 @@ export const testGetEvents = () => {
       {
         program: PROGRAM.id,
         orgUnit: 'to_dhisId',
-        programIdScheme: 'code',
-        orgUnitIdScheme: 'code',
+        programIdScheme: 'uid',
+        orgUnitIdScheme: 'uid',
         ouMode: 'DESCENDANTS',
         trackedEntityInstance: undefined,
       },
@@ -83,8 +83,8 @@ export const testGetEvents = () => {
       {
         program: PROGRAM.id,
         orgUnit: 'to_dhisId',
-        programIdScheme: 'code',
-        orgUnitIdScheme: 'code',
+        programIdScheme: 'uid',
+        orgUnitIdScheme: 'uid',
         ouMode: 'DESCENDANTS',
         trackedEntityInstance: undefined,
       },

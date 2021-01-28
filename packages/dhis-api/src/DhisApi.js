@@ -240,8 +240,8 @@ export class DhisApi {
     const queryParameters = {
       program: resolvedProgramId,
       orgUnit: resolvedOrganisationUnitId,
-      programIdScheme: 'code',
-      orgUnitIdScheme,
+      programIdScheme: 'uid',
+      orgUnitIdScheme: 'uid',
       ouMode: 'DESCENDANTS',
       trackedEntityInstance,
     };
