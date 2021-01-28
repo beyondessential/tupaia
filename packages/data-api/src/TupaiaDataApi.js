@@ -56,13 +56,14 @@ export class TupaiaDataApi {
     }));
   }
 
-  async fetchDataElements(dataElementCodes, { includeOptions = true }) {
+  async fetchDataElements(dataElementCodes, options = {}) {
+    const { includeOptions = true } = options;
     if (!dataElementCodes || !Array.isArray(dataElementCodes)) {
       throw new Error('Please provide an array of data element codes');
     }
     const sqlQuery = new SqlQuery(
       `
-      SELECT code, name, type
+      SELECT code, name, options, option_set_id, type
       FROM question
       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
     `,
@@ -72,7 +73,8 @@ export class TupaiaDataApi {
     return this.fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions);
   }
 
-  async fetchDataGroup(dataGroupCode, dataElementCodes, { includeOptions = true }) {
+  async fetchDataGroup(dataGroupCode, dataElementCodes, options = {}) {
+    const { includeOptions = true } = options;
     if (!dataGroupCode) {
       throw new Error('Please provide a data group code');
     }
@@ -99,7 +101,7 @@ export class TupaiaDataApi {
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
       const sqlQuery = await new SqlQuery(
         `
-        SELECT question.code, question.name, question.text, question.options, question.type
+        SELECT question.code, question.name, question.text, question.options, question.option_set_id, question.type
         FROM question 
         JOIN survey_screen_component on question.id = survey_screen_component.question_id 
         JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
@@ -129,30 +131,69 @@ export class TupaiaDataApi {
   async fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions) {
     const dataElementsMetadata = await sqlQuery.executeOnDatabase(this.database);
 
+    // includeOptions = true, should also fetch metadata for options from both question.options and question.option_set_id
     if (includeOptions) {
-      return dataElementsMetadata.map(({ options, type, ...restOfMetadata }) => {
-        return {
-          options: this.buildOptionsMetadata(options, type),
-          ...restOfMetadata, // type will not be included
-        };
-      });
+      // Get all possible option_set_ids from questions
+      const optionSetIds = [
+        ...new Set(dataElementsMetadata.filter(d => !!d.option_set_id).map(d => d.option_set_id)),
+      ];
+      // Get all the options from the option sets and grouped by set ids.
+      const optionsGroupedBySetId = await this.getOptionsGroupedBySetId(optionSetIds);
+
+      return dataElementsMetadata.map(
+        ({ options, type, option_set_id: optionSetId, ...restOfMetadata }) => {
+          // In reality, the options can only come from either question.options or question.option_set_id
+          const allOptions = [...options, ...(optionsGroupedBySetId[optionSetId] || [])];
+          return {
+            options: this.buildOptionsMetadata(allOptions, type),
+            ...restOfMetadata,
+          };
+        },
+      );
     }
 
-    return dataElementsMetadata;
+    // includeOptions = false, return basic data elements metadata
+    return dataElementsMetadata.map(
+      ({ options, type, option_set_id: optionSetId, ...restOfMetadata }) => ({
+        ...restOfMetadata,
+      }),
+    );
+  }
+
+  async getOptionsGroupedBySetId(optionSetIds) {
+    if (!optionSetIds || !optionSetIds.length) {
+      return {};
+    }
+
+    const options = await new SqlQuery(
+      `
+      SELECT option.value, option.label, option.option_set_id
+      FROM option
+      WHERE option.option_set_id IN ${SqlQuery.parameteriseArray(optionSetIds)}
+      `,
+      optionSetIds,
+    ).executeOnDatabase(this.database);
+
+    return groupBy(options, 'option_set_id');
   }
 
   buildOptionsMetadata = (options = [], type) => {
     const optionList = options.length === 0 && type === 'Binary' ? DEFAULT_BINARY_OPTIONS : options;
     const optionsMetadata = {};
+
     optionList.forEach(option => {
       try {
-        const { value, label } = JSON.parse(option);
+        // options coming from question.options are JSON format strings
+        // options coming from option_set are actual JSON objects
+        const optionObject = typeof option === 'string' ? JSON.parse(option) : option;
+        const { value, label } = optionObject;
         optionsMetadata[sanitizeDataValue(value, type)] = label || value;
       } catch (error) {
         // Exception is thrown when option is a plain string
         optionsMetadata[sanitizeDataValue(option, type)] = option;
       }
     });
+
     return optionsMetadata;
   };
 }
