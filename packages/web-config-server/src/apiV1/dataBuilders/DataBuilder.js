@@ -6,7 +6,6 @@ import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { transformValue } from 'apiV1/dataBuilders/transform';
-import { transformEventsDataValuesEntityIdToName } from 'apiV1/dataBuilders/helpers';
 
 export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
@@ -86,7 +85,7 @@ export class DataBuilder {
       additionalQueryConfig.entityAnswerIdToName.dataElementCodes
     ) {
       const { dataElementCodes } = additionalQueryConfig.entityAnswerIdToName;
-      return transformEventsDataValuesEntityIdToName(this.models, rawEvents, dataElementCodes);
+      return this.eventsDataValuesEntityIdToName(this.models, rawEvents, dataElementCodes);
     }
 
     return rawEvents;
@@ -150,7 +149,11 @@ export class DataBuilder {
     if (!orgUnitCodes || orgUnitCodes.length < 1) return orgUnitNames;
     await Promise.all(
       orgUnitCodes.map(async orgUnitCode => {
-        orgUnitNames[orgUnitCode] = await transformValue(this.models, 'orgUnitCodeToName', orgUnitCode);
+        orgUnitNames[orgUnitCode] = await transformValue(
+          this.models,
+          'orgUnitCodeToName',
+          orgUnitCode,
+        );
       }),
     );
     return orgUnitNames;
@@ -178,4 +181,21 @@ export class DataBuilder {
   };
 
   areEventResults = results => !!(results[0] && results[0].event);
+
+  eventsDataValuesEntityIdToName = async (models, events, dataElementCodes) => {
+    return Promise.all(
+      events.map(async event => {
+        const updatedDataValues = await dataElementCodes.reduce(async (acc, dataElementCode) => {
+          const dataValueEntityId = event.dataValues[dataElementCode];
+          if (dataValueEntityId) {
+            const entityName = await transformValue(models, 'entityIdToName', dataValueEntityId);
+            return { ...acc, [dataElementCode]: entityName };
+          }
+          return acc;
+        }, {});
+
+        return { ...event, dataValues: { ...event.dataValues, ...updatedDataValues } };
+      }),
+    );
+  };
 }
