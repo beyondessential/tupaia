@@ -23,6 +23,8 @@ const NEW_OVERLAY_GROUP_ID = generateId();
 const NEW_OVERLAY_GROUP_RELATION_FOR_OVERLAY_ID = generateId();
 const NEW_OVERLAY_GROUP_RELATION_FOR_GROUP_ID = generateId();
 
+// the below object contains common properties across the two overlays that will be created
+
 const BASE_OVERLAY = {
   userGroup: 'STRIVE User',
   dataElementCode: 'value',
