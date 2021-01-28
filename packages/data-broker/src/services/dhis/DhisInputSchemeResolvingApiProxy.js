@@ -123,10 +123,10 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const orgUnitCodes = organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes;
 
-    const mappings = await this.models.dhisOrgUnitMapping.find({ code: orgUnitCodes });
+    const mappings = await this.models.dataServiceEntity.find({ entity_code: orgUnitCodes });
 
     for (const orgUnitCode of orgUnitCodes) {
-      const mapping = mappings.find(m => m.code === orgUnitCode);
+      const mapping = mappings.find(m => m.entity_code === orgUnitCode);
 
       if (!mapping) {
         return false;
@@ -204,18 +204,22 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const orgUnitCodes = organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes;
 
-    const mappings = await this.models.dhisOrgUnitMapping.find({ code: orgUnitCodes });
+    const mappings = await this.models.dataServiceEntity.find({ entity_code: orgUnitCodes });
 
     for (const orgUnitCode of orgUnitCodes) {
-      const mapping = mappings.find(m => m.code === orgUnitCode);
+      const mapping = mappings.find(m => m.entity_code === orgUnitCode);
 
       if (!mapping) {
         throw new Error(
-          'Org Unit not found in dhis_org_unit_mapping, attempted to replace its code with the id',
+          'Org Unit not found in data_service_entity, attempted to replace its code with the id',
         );
       }
 
-      modifiedQuery.organisationUnitIds.push(mapping.dhis_id);
+      if (!mapping.config.dhis_id) {
+        throw new Error('Mapping config in data_service_entity does not include required dhis_id');
+      }
+
+      modifiedQuery.organisationUnitIds.push(mapping.config.dhis_id);
     }
 
     delete modifiedQuery.organisationUnitCode;

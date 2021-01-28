@@ -13,7 +13,7 @@ const DATA_SOURCES = [
   { code: 'G2', type: 'dataGroup', config: {} },
 ];
 
-const DHIS_ORG_UNIT_MAPPING = [{ code: 'ORG1', dhis_id: 'dhisId_ou1' }];
+const DATA_SERVICE_ENTITIES = [{ entity_code: 'ORG1', config: { dhis_id: 'dhisId_ou1' } }];
 
 const createModelsStub = () => ({
   dataSource: {
@@ -24,9 +24,9 @@ const createModelsStub = () => ({
       return first;
     },
   },
-  dhisOrgUnitMapping: {
+  dataServiceEntity: {
     find: async filter =>
-      DHIS_ORG_UNIT_MAPPING.filter(mapping => filter.code.includes(mapping.code)),
+      DATA_SERVICE_ENTITIES.filter(mapping => filter.entity_code.includes(mapping.entity_code)),
   },
 });
 

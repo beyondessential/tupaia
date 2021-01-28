@@ -15,17 +15,17 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.createTable('dhis_org_unit_mapping', {
+  return db.createTable('data_service_entity', {
     columns: {
       id: { type: 'text', primaryKey: true },
-      code: { type: 'text', notNull: true, unique: true },
-      dhis_id: { type: 'text', notNull: true },
+      entity_code: { type: 'text', notNull: true, unique: true },
+      config: { type: 'jsonb', notNull: true, default: '{}' },
     },
   });
 };
 
 exports.down = function (db) {
-  return db.dropTable('dhis_org_unit_mapping');
+  return db.dropTable('data_service_entity');
 };
 
 exports._meta = {
