@@ -22,15 +22,6 @@ const expandSurveyCodes = surveys => {
   );
 };
 
-const convertValueByType = (type, value) => {
-  switch (type) {
-    case 'Binary':
-    case 'Checkbox':
-      return value === 1 ? 'Yes' : 'No';
-    default:
-      return value;
-  }
-}
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const { surveyCodes } = this.query;
@@ -123,17 +114,13 @@ class RawDataValuesBuilder extends DataBuilder {
         : sortedEvents;
 
       const columns = this.buildColumns(sortedMappedEvents);
-
-      const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
-      const dataElementCodeToType = reduceToDictionary(dataElementsMetadata, 'code', 'type');
-
       const ancestorRow =
         ancestorMappingConfig && ancestorMappingConfig.showInExport
           ? { ancestor: ancestorMappingConfig.label }
           : {};
       const rows =
         columns && columns.length
-          ? await this.buildRows(mappedEvents, dataElementCodeToText, dataElementCodeToType, ancestorRow)
+          ? await this.buildRows(mappedEvents, dataElementsMetadata, ancestorRow)
           : [];
 
       const data = {
@@ -188,8 +175,10 @@ class RawDataValuesBuilder extends DataBuilder {
   /**
    * Build row values for data elements of different organisationUnit - period combination
    */
-  buildRows = async (events, dataElementCodeToText, dataElementCodeToType, ancestorRowKey = {}) => {
+  buildRows = async (events, dataElementsMetadata, ancestorRowKey = {}) => {
     const builtRows = [];
+    const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
+    const dataElementCodeToOptions = reduceToDictionary(dataElementsMetadata, 'code', 'options');
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
       entityCode: 'Entity Code',
@@ -230,8 +219,11 @@ class RawDataValuesBuilder extends DataBuilder {
                 value = orgUnitAncestor;
                 break;
               default: {
-                const type = dataElementCodeToType[code];
-                value = convertValueByType(type, dataValue);
+                value =
+                  dataElementCodeToOptions[dataKey] !== undefined &&
+                  dataElementCodeToOptions[dataKey][dataValue] !== undefined
+                    ? dataElementCodeToOptions[dataKey][dataValue]
+                    : value;
                 break;
               }
             }

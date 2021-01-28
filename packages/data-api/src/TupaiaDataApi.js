@@ -13,6 +13,7 @@ import { validateEventOptions, validateAnalyticsOptions } from './validation';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 const ANALYTICS_DATE_FORMAT = 'YYYY-MM-DD';
+const DEFAULT_BINARY_OPTIONS = ['Yes', 'No'];
 
 export class TupaiaDataApi {
   constructor(database) {
@@ -55,21 +56,23 @@ export class TupaiaDataApi {
     }));
   }
 
-  async fetchDataElements(dataElementCodes) {
+  async fetchDataElements(dataElementCodes, { includeOptions = true }) {
     if (!dataElementCodes || !Array.isArray(dataElementCodes)) {
       throw new Error('Please provide an array of data element codes');
     }
-    return new SqlQuery(
+    const sqlQuery = new SqlQuery(
       `
-      SELECT code, name
+      SELECT code, name, type
       FROM question
       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
     `,
       dataElementCodes,
-    ).executeOnDatabase(this.database);
+    );
+
+    return this.fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions);
   }
 
-  async fetchDataGroup(dataGroupCode, dataElementCodes) {
+  async fetchDataGroup(dataGroupCode, dataElementCodes, { includeOptions = true }) {
     if (!dataGroupCode) {
       throw new Error('Please provide a data group code');
     }
@@ -96,7 +99,7 @@ export class TupaiaDataApi {
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
       const sqlQuery = await new SqlQuery(
         `
-        SELECT question.code, question.name, question.text, question.type
+        SELECT question.code, question.name, question.text, question.options, question.type
         FROM question 
         JOIN survey_screen_component on question.id = survey_screen_component.question_id 
         JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
@@ -109,7 +112,10 @@ export class TupaiaDataApi {
 
       sqlQuery.orderBy('survey_screen.screen_number, survey_screen_component.component_number');
 
-      const dataElementsMetadata = await sqlQuery.executeOnDatabase(this.database);
+      const dataElementsMetadata = await this.fetchDataElementsMetadataFromSqlQuery(
+        sqlQuery,
+        includeOptions,
+      );
 
       dataGroupMetadata = {
         ...dataGroupMetadata,
@@ -119,4 +125,34 @@ export class TupaiaDataApi {
 
     return dataGroupMetadata;
   }
+
+  async fetchDataElementsMetadataFromSqlQuery(sqlQuery, includeOptions) {
+    const dataElementsMetadata = await sqlQuery.executeOnDatabase(this.database);
+
+    if (includeOptions) {
+      return dataElementsMetadata.map(({ options, type, ...restOfMetadata }) => {
+        return {
+          options: this.buildOptionsMetadata(options, type),
+          ...restOfMetadata, // type will not be included
+        };
+      });
+    }
+
+    return dataElementsMetadata;
+  }
+
+  buildOptionsMetadata = (options = [], type) => {
+    const optionList = options.length === 0 && type === 'Binary' ? DEFAULT_BINARY_OPTIONS : options;
+    const optionsMetadata = {};
+    optionList.forEach(option => {
+      try {
+        const { value, label } = JSON.parse(option);
+        optionsMetadata[sanitizeDataValue(value, type)] = label || value;
+      } catch (error) {
+        // Exception is thrown when option is a plain string
+        optionsMetadata[sanitizeDataValue(option, type)] = option;
+      }
+    });
+    return optionsMetadata;
+  };
 }
