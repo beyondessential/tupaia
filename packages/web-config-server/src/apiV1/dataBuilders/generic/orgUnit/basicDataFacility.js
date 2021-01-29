@@ -1,3 +1,10 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
+
+import { addRow } from './addRow';
+
 const CATCHMENT_POPULATION = 'FF7';
 const WEEKDAY = 'BCD39';
 const SATURDAY = 'BCD41';
@@ -7,15 +14,7 @@ export const basicDataFacility = async ({ dataBuilderConfig, query }, aggregator
   const { dataElementCodes, dataServices } = dataBuilderConfig;
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
 
-  const returnData = [];
-
-  const addRow = (dataElementValue, dataElementName) => {
-    const returnedRow = {
-      value: dataElementValue,
-      name: dataElementName,
-    };
-    returnData.push(returnedRow);
-  };
+  const returnRawData = [];
 
   const getOpeningDays = () => {
     if (openingDays[0] === 1) {
@@ -44,7 +43,7 @@ export const basicDataFacility = async ({ dataBuilderConfig, query }, aggregator
   results.forEach(row => {
     switch (row.dataElement) {
       case CATCHMENT_POPULATION:
-        addRow(row.value, 'Catchment population');
+        returnRawData.push([row.value, 'Catchment population']);
         break;
       case WEEKDAY:
         openingDays[0] = 1;
@@ -60,7 +59,9 @@ export const basicDataFacility = async ({ dataBuilderConfig, query }, aggregator
         break;
     }
   });
-  addRow(getOpeningDays(), 'Opening Days');
-  addRow(numberOfStaff, 'Number of staff working');
+
+  returnRawData.push([getOpeningDays(), 'Opening Days']);
+  returnRawData.push([numberOfStaff, 'Number of staff working']);
+  const returnData = returnRawData.map(([value, name]) => addRow(value, name));
   return { data: returnData };
 };

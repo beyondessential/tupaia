@@ -1,11 +1,6 @@
 'use strict';
 
-import {
-  insertObject,
-  addReportToGroups,
-  deleteReport,
-  removeReportFromGroups,
-} from '../utilities';
+import { insertObject, deleteReport, removeReportFromGroups } from '../utilities';
 
 var dbm;
 var type;
@@ -21,9 +16,21 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+async function addReportToGroupsOnTop(db, reportId, groupCodes) {
+  return db.runSql(`
+    UPDATE
+      "dashboardGroup"
+    SET
+      "dashboardReports" = '{"${reportId}"}' || "dashboardReports" 
+    WHERE
+      "code" IN (${groupCodes.map(code => `'${code}'`).join(',')});
+  `);
+}
+
+const dashboardGroupCode = 'PW_General_Facility_Public';
 const dashboardReport = {
   id: 'Palau_Facility_Opening_Hours',
-  dataBuilder: 'FacilityOpeningHours',
+  dataBuilder: 'facilityOpeningHours',
   dataBuilderConfig: {
     dataElementCodes: {
       Monday: ['FF16', 'FF20', 'FF21'],
@@ -46,17 +53,13 @@ const dashboardReport = {
 exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', dashboardReport);
 
-  await addReportToGroups(db, dashboardReport.id, ['PW_General_Facility_Public']);
-
-  return null;
+  await addReportToGroupsOnTop(db, dashboardReport.id, [dashboardGroupCode]);
 };
 
 exports.down = async function (db) {
   await deleteReport(db, dashboardReport.id);
 
-  await removeReportFromGroups(db, dashboardReport.id, ['PW_General_Facility_Public']);
-
-  return null;
+  await removeReportFromGroups(db, dashboardReport.id, [dashboardGroupCode]);
 };
 
 exports._meta = {
