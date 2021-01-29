@@ -15,6 +15,7 @@ import {
   selectProjectByCode,
   selectCurrentOrgUnitCode,
   selectIsDashboardGroupCodeDefined,
+  selectCurrentDashboardGroupCode,
 } from '../selectors';
 
 export function* fetchProjectData() {
@@ -44,14 +45,19 @@ function* loadProject(action) {
 
   const project = selectProjectByCode(state, action.projectCode);
 
-  if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
-    yield put(setDashboardGroup(project.dashboardGroupName));
-  }
-
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   if (!organisationUnitCode || forceUpdate) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
+
+  // if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
+  //   const dashboardGroupName = selectCurrentDashboardGroupCode(state);
+  //
+  //   console.log('dashboardGroupName', dashboardGroupName);
+  //   if (dashboardGroupName) {
+  //     yield put(setDashboardGroup(dashboardGroupName));
+  //   }
+  // }
 }
 
 function* watchSelectProjectAndLoadProjectState() {

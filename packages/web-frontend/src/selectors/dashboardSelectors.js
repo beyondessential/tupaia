@@ -30,10 +30,13 @@ export const selectCurrentExpandedDates = createSelector([selectLocation], locat
 
 export const selectCurrentDashboardGroupCode = createSelector(
   [state => state.global.dashboardConfig, selectCurrentDashboardGroupCodeFromLocation],
-  (dashboardConfig, currentDashboardGroupCode) =>
-    dashboardConfig[currentDashboardGroupCode]
-      ? currentDashboardGroupCode
-      : Object.keys(dashboardConfig)[0],
+  (dashboardConfig, currentDashboardGroupCode) => {
+    if (dashboardConfig[currentDashboardGroupCode]) {
+      return currentDashboardGroupCode;
+    }
+    const keys = Object.keys(dashboardConfig);
+    return keys[keys.length - 1];
+  },
 );
 
 const selectCurrentDashboardGroupIdForExpandedReport = createSelector(

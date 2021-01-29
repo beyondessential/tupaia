@@ -95,6 +95,7 @@ import {
   updateCurrentMeasureConfigOnceHierarchyLoads,
   LOCATION_CHANGE,
   goHome,
+  setDashboardGroup,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -126,7 +127,10 @@ import {
   selectOrgUnitChildren,
   selectOrgUnitCountry,
   selectProjectByCode,
+  selectCurrentProject,
   selectCurrentDashboardGroupCodeFromLocation,
+  selectIsDashboardGroupCodeDefined,
+  selectCurrentDashboardGroupCode,
 } from './selectors';
 import {
   formatDateForApi,
@@ -690,11 +694,29 @@ function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   const projectCode = selectCurrentProjectCode(state);
+  const project = selectCurrentProject(state);
   const currentDashboardCode = selectCurrentDashboardGroupCodeFromLocation(state);
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
+
+    // If there is no dashboard code defined, assign the default if it is valid for the user
+    if (!selectIsDashboardGroupCodeDefined(state)) {
+      const { dashboardConfig } = state.global;
+      const currentDashboardGroupCode = project.dashboardGroupName;
+
+      if (dashboardConfig[currentDashboardGroupCode]) {
+        yield put(setDashboardGroup(project.dashboardGroupName));
+      }
+    }
+
+    // Check if the user has permission to view the dashboard
+    if (currentDashboardCode && !(currentDashboardCode in dashboard)) {
+      yield call(handleInvalidPermission, { projectCode });
+      return;
+    }
+
     yield put(fetchDashboardSuccess(dashboard));
   } catch (error) {
     yield put(error.errorFunction(error));
