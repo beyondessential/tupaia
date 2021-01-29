@@ -8,11 +8,7 @@ import {
   assertSurveyResponsePermissions,
   createSurveyResponseDBFilter,
 } from './assertSurveyResponsePermissions';
-import {
-  assertAnyPermissions,
-  assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
-} from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertEntityPermissions } from '../GETEntities';
 
 /**
@@ -36,26 +32,20 @@ export class GETSurveyResponses extends GETHandler {
     return surveyResponse;
   }
 
-  async findRecords(criteria, options) {
-    const { dbConditions, dbOptions } = await createSurveyResponseDBFilter(
-      this.accessPolicy,
-      this.models,
-      criteria,
-      options,
-    );
-    const surveyResponses = await super.findRecords(dbConditions, dbOptions);
-
-    return surveyResponses;
+  async getPermissionsFilter(criteria, options) {
+    return createSurveyResponseDBFilter(this.accessPolicy, this.models, criteria, options);
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsViaParentFilter(criteria, options) {
     const entityPermissionChecker = accessPolicy =>
       assertEntityPermissions(accessPolicy, this.models, this.parentRecordId);
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, entityPermissionChecker]),
     );
+    // Filter by parent
     const dbConditions = { 'survey_response.entity_id': this.parentRecordId, ...criteria };
 
-    return this.findRecords(dbConditions, options);
+    // Apply regular permissions
+    return this.getPermissionsFilter(dbConditions, options);
   }
 }

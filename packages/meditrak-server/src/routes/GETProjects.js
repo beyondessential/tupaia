@@ -32,12 +32,14 @@ export class GETProjects extends GETHandler {
   async findSingleRecord(projectId, options) {
     const projectPermissionChecker = accessPolicy =>
       assertProjectPermissions(accessPolicy, this.models, projectId);
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, projectPermissionChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, projectPermissionChecker]),
+    );
 
     return super.findSingleRecord(projectId, options);
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = { ...criteria };
 
     if (!hasBESAdminAccess(this.accessPolicy)) {
@@ -71,6 +73,6 @@ export class GETProjects extends GETHandler {
       };
     }
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

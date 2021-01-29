@@ -21,6 +21,8 @@ import {
  */
 
 export class GETUserEntityPermissions extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
@@ -43,24 +45,22 @@ export class GETUserEntityPermissions extends GETHandler {
     return userEntityPermission;
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = await createUserEntityPermissionDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
     );
-    const userEntityPermissions = await super.findRecords(dbConditions, options);
-
-    return userEntityPermissions;
+    return { dbConditions, dbOptions: options };
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsViaParentFilter(criteria, options) {
     // Add additional filter by user id
     const dbConditions = {
       'user_entity_permission.user_id': this.parentRecordId,
       ...criteria,
     };
 
-    return this.findRecords(dbConditions, options);
+    return this.getPermissionsFilter(dbConditions, options);
   }
 }

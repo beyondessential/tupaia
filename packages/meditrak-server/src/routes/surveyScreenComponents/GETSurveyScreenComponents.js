@@ -34,18 +34,11 @@ export class GETSurveyScreenComponents extends GETHandler {
     return surveyScreenComponent;
   }
 
-  async findRecords(criteria, options) {
-    const { dbConditions, dbOptions } = await createSurveyScreenComponentDBFilter(
-      this.accessPolicy,
-      this.models,
-      criteria,
-      options,
-    );
-
-    return super.findRecords(dbConditions, dbOptions);
+  async getPermissionsFilter(criteria, options) {
+    return createSurveyScreenComponentDBFilter(this.accessPolicy, this.models, criteria, options);
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsViaParentFilter(criteria, options) {
     // Check parent permissions
     const surveyPermissionsChecker = accessPolicy =>
       assertSurveyGetPermissions(accessPolicy, this.models, this.parentRecordId);
@@ -53,14 +46,12 @@ export class GETSurveyScreenComponents extends GETHandler {
       assertAnyPermissions([assertBESAdminAccess, surveyPermissionsChecker]),
     );
 
-    const { dbConditions, dbOptions } = await createSurveyScreenComponentDBFilter(
+    return createSurveyScreenComponentDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
       options,
       this.parentRecordId,
     );
-
-    return super.findRecords(dbConditions, dbOptions);
   }
 }

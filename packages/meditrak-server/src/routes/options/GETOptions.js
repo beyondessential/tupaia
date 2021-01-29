@@ -7,13 +7,19 @@ import { GETHandler } from '../GETHandler';
 import { assertTupaiaAdminPanelAccess } from '../../permissions';
 
 export class GETOptions extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async assertUserHasAccess() {
     await this.assertPermissions(assertTupaiaAdminPanelAccess);
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
+    return { dbConditions: criteria, dbOptions: options };
+  }
+
+  async getPermissionsViaParentFilter(criteria, options) {
     const dbConditions = { 'option.option_set_id': this.parentRecordId, ...criteria };
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

@@ -49,6 +49,7 @@ const {
   editQuestions,
   editSurveys,
   editMapOverlays,
+  editProjects,
   editSurveyResponses,
   editSurveyScreenComponents,
   editUserAccounts,
@@ -247,6 +248,7 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/dashboardGroups/:recordId', editDashboardGroups);
   app.put('(/v[0-9]+)/dashboardReports/:recordId', editDashboardReports);
   app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
+  app.put('(/v[0-9]+)/projects/:recordId', editProjects);
   app.put('(/v[0-9]+)/me', editUser);
 
   /**

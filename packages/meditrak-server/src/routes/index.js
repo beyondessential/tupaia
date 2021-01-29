@@ -136,6 +136,7 @@ export default {
   editQuestions: useRouteHandler(EditQuestions),
   editSurveys: useRouteHandler(EditSurveys),
   editMapOverlays: useRouteHandler(EditMapOverlays),
+  editProjects: useRouteHandler(BESAdminEditHandler),
   editSurveyResponses: useRouteHandler(EditSurveyResponses),
   editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
   editUserAccounts: useRouteHandler(EditUserAccounts),
