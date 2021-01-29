@@ -37,6 +37,8 @@ const createDBFilter = (accessPolicy, criteria) => {
  * - /disasters/:disasterId
  */
 export class GETDisasters extends GETHandler {
+  permissionsFilteredInternally = true;
+
   customJoinConditions = {
     country: ['country.code', 'disaster.countryCode'],
     entity: ['entity.code', 'disaster.countryCode'],

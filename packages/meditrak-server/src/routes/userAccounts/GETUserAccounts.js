@@ -21,6 +21,8 @@ import {
  */
 
 export class GETUserAccounts extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
