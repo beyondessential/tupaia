@@ -12,18 +12,23 @@ const formatGroupCodes = groupCodes =>
   groupCodes.map(groupCode => `DE_GROUP-${groupCode}`).join(';');
 
 const getDxDimension = query => {
-  const { dataElementCodes, dataElementGroupCodes, dataElementGroupCode } = query;
+  const { dataElementIds, dataElementCodes, dataElementGroupCodes, dataElementGroupCode } = query;
 
   return getUniqueEntries(
-    dataElementCodes ||
+    dataElementIds ||
+      dataElementCodes ||
       formatGroupCodes(dataElementGroupCodes) ||
       formatGroupCodes([dataElementGroupCode]),
   );
 };
 
 const getOuDimension = query => {
-  const { organisationUnitCode, organisationUnitCodes } = query;
-  return organisationUnitCode ? [organisationUnitCode] : getUniqueEntries(organisationUnitCodes);
+  const { organisationUnitIds, organisationUnitCode, organisationUnitCodes } = query;
+
+  return (
+    organisationUnitIds ||
+    (organisationUnitCode ? [organisationUnitCode] : getUniqueEntries(organisationUnitCodes))
+  );
 };
 
 const addTemporalDimension = (query, { period, startDate, endDate }) =>
