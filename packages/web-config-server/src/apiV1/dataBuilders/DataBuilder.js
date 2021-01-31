@@ -6,6 +6,7 @@ import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { transformValue } from 'apiV1/dataBuilders/transform';
+import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers';
 
 export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
@@ -80,12 +81,9 @@ export class DataBuilder {
       eventId,
       ...additionalQueryConfig,
     });
-    if (
-      additionalQueryConfig.entityAnswerIdToName &&
-      additionalQueryConfig.entityAnswerIdToName.dataElementCodes
-    ) {
+    if (additionalQueryConfig.entityAnswerIdToName?.dataElementCodes) {
       const { dataElementCodes } = additionalQueryConfig.entityAnswerIdToName;
-      return this.eventsDataValuesEntityIdToName(this.models, rawEvents, dataElementCodes);
+      return translateEventEntityIdsToNames(this.models, rawEvents, dataElementCodes);
     }
 
     return rawEvents;
@@ -181,21 +179,4 @@ export class DataBuilder {
   };
 
   areEventResults = results => !!(results[0] && results[0].event);
-
-  eventsDataValuesEntityIdToName = async (models, events, dataElementCodes) => {
-    return Promise.all(
-      events.map(async event => {
-        const updatedDataValues = await dataElementCodes.reduce(async (acc, dataElementCode) => {
-          const dataValueEntityId = event.dataValues[dataElementCode];
-          if (dataValueEntityId) {
-            const entityName = await transformValue(models, 'entityIdToName', dataValueEntityId);
-            return { ...acc, [dataElementCode]: entityName };
-          }
-          return acc;
-        }, {});
-
-        return { ...event, dataValues: { ...event.dataValues, ...updatedDataValues } };
-      }),
-    );
-  };
 }

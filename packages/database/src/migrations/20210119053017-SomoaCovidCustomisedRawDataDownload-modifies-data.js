@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, addReportToGroups } from '../utilities/migration';
+import { insertObject } from '../utilities/migration';
 
 var dbm;
 var type;
@@ -74,9 +74,18 @@ function removeReportFromGroups(db, reportId, groupCodes) {
   `);
 }
 
-exports.up = async function (db) {
-  // Associate missing hierarchy id to some data sources
+function addReportToGroups(db, reportId, groupCodes) {
+  return db.runSql(`
+    UPDATE
+      "dashboardGroup"
+    SET
+      "dashboardReports" = "dashboardReports" || '{"${reportId}"}'
+    WHERE
+      "code" IN (${groupCodes.map(code => `'${code}'`).join(',')});
+  `);
+}
 
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', newDashboardReport);
   await addReportToGroups(db, newDashboardReport.id, [dashboardReportCode]);
 };
