@@ -5,7 +5,7 @@
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { transformValue } from 'apiV1/dataBuilders/transform';
+import { transformValue } from '/apiV1/dataBuilders/transform';
 import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers/translateEventEntityIdsToNames';
 
 export class DataBuilder {
