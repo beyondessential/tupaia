@@ -29,7 +29,7 @@ const generateBaseSqlQuery = ({
       ${SqlQuery.parameteriseValues(dataElementCodes)}
     ) decs(dec) ON data_element_code = dec
     INNER JOIN (
-      ${SqlQuery.parameteriseValues(organisationUnitCodes, dataElementCodes.length)}
+      ${SqlQuery.parameteriseValues(organisationUnitCodes)}
     ) ecs(ec) ON entity_code = ec
   `,
     [...dataElementCodes, ...organisationUnitCodes],
@@ -38,26 +38,25 @@ const generateBaseSqlQuery = ({
   // Perform fetch side aggregations if possible
   const firstAggregation = aggregations && aggregations[0];
   if (firstAggregation && firstAggregation.type === 'FINAL_EACH_DAY') {
-    sqlQuery.addClause(`AND final_per_day = $${sqlQuery.parameters.length + 1}`, [true]);
-    aggregations.shift();
+    sqlQuery.addWhereClause(`final_per_day = ?`, [true]);
   } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_WEEK') {
-    sqlQuery.addClause(`AND final_per_week = $${sqlQuery.parameters.length + 1}`, [true]);
-    aggregations.shift();
-  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_MONTH') {
-    sqlQuery.addClause(`AND final_per_month = $${sqlQuery.parameters.length + 1}`, [true]);
-    aggregations.shift();
+    sqlQuery.addWhereClause(`final_per_week = ?`, [true]);
+  }
+  if (firstAggregation && firstAggregation.type === 'FINAL_EACH_MONTH') {
+    sqlQuery.addWhereClause(`final_per_month = ?`, [true]);
+  } else if (
+    firstAggregation &&
+    (firstAggregation.type === 'FINAL_EACH_YEAR' || firstAggregation.type === 'MOST_RECENT')
+  ) {
+    sqlQuery.addWhereClause(`final_per_year = ?`, [true]);
   }
 
   // Add start and end date, which are inclusive
   if (startDate) {
-    sqlQuery.addClause(`AND date >= $${sqlQuery.parameters.length + 1}`, [
-      utcMoment(startDate).startOf('day').toISOString(),
-    ]);
+    sqlQuery.addWhereClause(`date >= ?`, [utcMoment(startDate).startOf('day').toISOString()]);
   }
   if (endDate) {
-    sqlQuery.addClause(`AND date <= $${sqlQuery.parameters.length + 1}`, [
-      utcMoment(endDate).endOf('day').toISOString(),
-    ]);
+    sqlQuery.addWhereClause(`date <= ?`, [utcMoment(endDate).endOf('day').toISOString()]);
   }
 
   sqlQuery.orderBy('date');
@@ -68,14 +67,16 @@ const generateBaseSqlQuery = ({
 export async function fetchEventData(database, options) {
   const sqlQuery = generateBaseSqlQuery(options);
   const { surveyCode, eventId } = options;
-  sqlQuery.addClause(`AND survey.code = ?`, [surveyCode]);
+  sqlQuery.addWhereClause(`survey.code = ?`, [surveyCode]);
   if (eventId) {
-    sqlQuery.addClause(`AND survey_response.id = ?`, [eventId]);
+    sqlQuery.addWhereClause(`survey_response.id = ?`, [eventId]);
   }
   return sqlQuery.executeOnDatabase(database);
 }
 
 export async function fetchAnalyticData(database, options) {
   const sqlQuery = generateBaseSqlQuery(options);
-  return sqlQuery.executeOnDatabaseViaPgClient(database);
+  const results = sqlQuery.executeOnDatabase(database);
+
+  return results;
 }

@@ -67,14 +67,6 @@ export class TupaiaDatabase {
           client: 'pg',
           connection: getConnectionConfig(),
         }));
-      // this.pgClientConnection = new Client(getConnectionConfig());
-      // this.pgClientConnection.connect();
-      this.pgClientConnectionPool = new Pool({
-        ...getConnectionConfig(),
-        max: 20,
-        idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000,
-      });
       return true;
     };
     this.connectionPromise = connectToDatabase();
@@ -456,25 +448,6 @@ export class TupaiaDatabase {
     }
 
     const result = await this.connection.raw(sqlString, parametersToBind);
-    return result.rows;
-  }
-
-  /**
-   * Runs an arbitrary SQL query against the database.
-   *
-   * Use only for situations in which Knex is not able to assemble a query.
-   */
-  async executeSqlViaPgClient(sqlString, parametersToBind) {
-    if (!this.connection) {
-      await this.waitUntilConnected();
-    }
-
-    // const result = await this.pgClientConnection.query(sqlString, parametersToBind);
-
-    const conn = await this.pgClientConnectionPool.connect();
-    const result = await conn.query(sqlString, parametersToBind);
-    conn.release();
-
     return result.rows;
   }
 
