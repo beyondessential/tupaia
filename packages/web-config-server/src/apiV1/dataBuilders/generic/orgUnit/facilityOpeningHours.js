@@ -2,8 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
-import { addRow } from './addRow';
+const addRow = (dataElementValue, dataElementName) => {
+  const returnedRow = {
+    value: dataElementValue,
+    name: dataElementName,
+  };
+  return returnedRow;
+};
 
 const SORTED_WEEKDAYS = [
   'Monday',
@@ -16,24 +21,34 @@ const SORTED_WEEKDAYS = [
 ];
 
 export const facilityOpeningHours = async ({ dataBuilderConfig, query }, aggregator) => {
-  const { dataElementCodes: rawDataElementCodes, dataServices } = dataBuilderConfig;
-  const dataElementCodes = Object.values(rawDataElementCodes).flat();
+  const { dataElementCodes: nestedDataElementCodes, dataServices } = dataBuilderConfig;
+  const dataElementCodes = Object.values(nestedDataElementCodes).flat();
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
   const resultsCodeToValue = Object.fromEntries(results.map(row => [[row.dataElement], row.value]));
 
   const openingHours = {};
-  Object.entries(rawDataElementCodes).forEach(([day, codes]) => {
-    // If it is open this day 'codes[0]', and has opening time 'codes[1]' and closing time 'codes[2]'
-    if (
-      codes[0] &&
-      resultsCodeToValue[codes[0]] === 'Yes' &&
-      codes[1] &&
-      resultsCodeToValue[codes[1]] &&
-      codes[2] &&
-      resultsCodeToValue[codes[2]]
-    ) {
-      openingHours[day] = `${resultsCodeToValue(codes[1])} - ${resultsCodeToValue(codes[2])}`;
-    } else openingHours[day] = 'Closed';
+  Object.entries(nestedDataElementCodes).forEach(([day, codes]) => {
+    if (![1, 3].includes(codes.length))
+      throw new Error(
+        `Invalid data builder config, please provide either one or three codes on ${day}'s config`,
+      );
+
+    const IS_OPEN_CODE = codes[0];
+    if (!resultsCodeToValue[IS_OPEN_CODE]) {
+      openingHours[day] = 'No Data';
+      return;
+    }
+    if (resultsCodeToValue[IS_OPEN_CODE] === 'Yes') {
+      const openingTime = codes[1] && resultsCodeToValue[codes[1]];
+      const closingTime = codes[2] && resultsCodeToValue[codes[2]];
+      if (openingTime && closingTime) {
+        openingHours[day] = `${openingTime} - ${closingTime}`;
+      } else {
+        openingHours[day] = 'Open (unknown time)';
+      }
+    } else {
+      openingHours[day] = 'Closed';
+    }
   });
 
   const returnData = SORTED_WEEKDAYS.map(day => addRow(openingHours[day], day));

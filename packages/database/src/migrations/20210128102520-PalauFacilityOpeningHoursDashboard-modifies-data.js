@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, deleteReport, removeReportFromGroups } from '../utilities';
+import { insertObject, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -22,6 +22,24 @@ async function addReportToGroupsOnTop(db, reportId, groupCodes) {
       "dashboardGroup"
     SET
       "dashboardReports" = '{"${reportId}"}' || "dashboardReports" 
+    WHERE
+      "code" IN (${arrayToDbString(groupCodes)});
+  `);
+}
+async function deleteReport(db, reportId) {
+  return db.runSql(`
+    DELETE FROM
+      "dashboardReport"
+    WHERE
+      "id" = '${reportId}';
+  `);
+}
+async function removeReportFromGroups(db, reportId, groupCodes) {
+  return db.runSql(`
+    UPDATE
+      "dashboardGroup"
+    SET
+      "dashboardReports" = array_remove("dashboardReports", '${reportId}')
     WHERE
       "code" IN (${groupCodes.map(code => `'${code}'`).join(',')});
   `);
@@ -52,13 +70,11 @@ const dashboardReport = {
 
 exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', dashboardReport);
-
   await addReportToGroupsOnTop(db, dashboardReport.id, [dashboardGroupCode]);
 };
 
 exports.down = async function (db) {
   await deleteReport(db, dashboardReport.id);
-
   await removeReportFromGroups(db, dashboardReport.id, [dashboardGroupCode]);
 };
 

@@ -176,7 +176,7 @@ async function addReportToGroupsOnTop(db, reportId, groupCodes) {
     SET
       "dashboardReports" = '{"${reportId}"}' || "dashboardReports" 
     WHERE
-      "code" IN (${groupCodes.map(code => `'${code}'`).join(',')});
+      "code" IN (${arrayToDbString(groupCodes)});
   `);
 }
 
