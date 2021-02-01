@@ -188,7 +188,7 @@ export function removeReportFromGroups(db, reportId, groupCodes) {
     SET
       "dashboardReports" = array_remove("dashboardReports", '${reportId}')
     WHERE
-      "code" IN (${groupCodes.map(code => `'${code}'`).join(',')});
+      "code" IN (${arrayToDbString(groupCodes)});
   `);
 }
 
