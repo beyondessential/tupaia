@@ -20,6 +20,7 @@ export class SqlQuery {
       ${this.hasWhereClause ? 'AND' : 'WHERE'} ${clause}
     `;
     this.parameters = this.parameters.concat(parameters);
+    this.hasWhereClause = true;
   }
 
   orderBy(orderByClause) {
