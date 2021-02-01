@@ -23,7 +23,7 @@ const LINKED_OVERLAY_ID = 'Fiji_Operational_Facility_Type';
 
 const MAIN_OVERLAY = {
   id: MAIN_OVERLAY_ID,
-  name: 'Fiji operational facilities',
+  name: 'Operational facilities',
   userGroup: '',
   dataElementCode: 'BCD1',
   linkedMeasures: `{${LINKED_OVERLAY_ID}}`,
@@ -67,7 +67,7 @@ const MAIN_OVERLAY = {
 
 const LINKED_OVERLAY = {
   id: LINKED_OVERLAY_ID,
-  name: 'Fiji facilities',
+  name: 'Facility types',
   dataElementCode: 'facilityTypeCode',
   userGroup: 'Public',
   measureBuilderConfig: {
@@ -125,7 +125,7 @@ exports.up = async function (db) {
     map_overlay_group_id: await codeToId(db, 'map_overlay_group', 'Services_provided'),
     child_id: LINKED_OVERLAY_ID,
     child_type: 'mapOverlay',
-    sort_order: 10,
+    sort_order: 0, // doesn't matter because this overlay is hidden
   };
 
   await insertObject(db, 'mapOverlay', MAIN_OVERLAY);
@@ -133,6 +133,13 @@ exports.up = async function (db) {
 
   await insertObject(db, 'map_overlay_group_relation', mainMapOverlayRelation);
   await insertObject(db, 'map_overlay_group_relation', linkedMapOverlayRelation);
+
+  // Remove old Operational Facilities from FJ
+  await db.runSql(`
+    UPDATE "mapOverlay"
+    SET "countryCodes" = ARRAY_REMOVE("countryCodes", 'FJ')
+    WHERE id IN ('126', '171');
+  `);
 };
 
 exports.down = async function (db) {
@@ -144,6 +151,12 @@ exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${MAIN_OVERLAY_ID}';
     DELETE FROM "map_overlay_group_relation" WHERE "child_id" = '${LINKED_OVERLAY_ID}';
+  `);
+
+  await db.runSql(`
+    UPDATE "mapOverlay"
+    SET "countryCodes" = ARRAY_APPEND("countryCodes", 'FJ')
+    WHERE id IN ('126', '171');
   `);
 };
 
