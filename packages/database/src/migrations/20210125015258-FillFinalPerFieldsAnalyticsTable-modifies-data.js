@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   await db.runSql(`
     UPDATE analytics
-    SET final_per_year = false, final_per_year = false, final_per_year = false, final_per_year = false
+    SET final_per_day = false, final_per_week = false, final_per_month = false, final_per_year = false
   `);
 
   await db.runSql(`
@@ -82,7 +82,7 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   await db.runSql(`
     UPDATE analytics
-    SET final_per_year = false, final_per_year = false, final_per_year = false, final_per_year = false
+    SET final_per_day = false, final_per_week = false, final_per_month = false, final_per_year = false
   `);
 
   return null;

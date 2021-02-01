@@ -44,10 +44,7 @@ const generateBaseSqlQuery = ({
   }
   if (firstAggregation && firstAggregation.type === 'FINAL_EACH_MONTH') {
     sqlQuery.addWhereClause(`final_per_month = ?`, [true]);
-  } else if (
-    firstAggregation &&
-    (firstAggregation.type === 'FINAL_EACH_YEAR' || firstAggregation.type === 'MOST_RECENT')
-  ) {
+  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_YEAR') {
     sqlQuery.addWhereClause(`final_per_year = ?`, [true]);
   }
 
@@ -59,8 +56,28 @@ const generateBaseSqlQuery = ({
     sqlQuery.addWhereClause(`date <= ?`, [utcMoment(endDate).endOf('day').toISOString()]);
   }
 
-  sqlQuery.orderBy('date');
+  sqlQuery.addOrderByClause('date');
 
+  if (firstAggregation && firstAggregation.type === 'MOST_RECENT') {
+    sqlQuery.wrapAs(
+      'valid_analytics ("surveyResponseId", date, "entityCode", "entityName", "dataElementCode", type, value)',
+    );
+    sqlQuery.addSelectClause(`
+      SELECT 
+        a.*
+      FROM
+        valid_analytics a
+      LEFT JOIN
+        valid_analytics b
+        ON
+          a."entityCode" = b."entityCode"
+        AND
+          a."dataElementCode" = b."dataElementCode"
+        AND
+          a.date < b.date
+      WHERE
+        b.date IS NULL`);
+  }
   return sqlQuery;
 };
 

@@ -5,6 +5,7 @@
 
 export class SqlQuery {
   static parameteriseArray = arr => `(${arr.map(() => '?').join(',')})`;
+
   static parameteriseValues = arr => `VALUES (${arr.map(() => `?`).join('), (')})`;
 
   constructor(baseQuery, baseParameters = []) {
@@ -12,6 +13,20 @@ export class SqlQuery {
     this.parameters = baseParameters;
     this.orderByClause = null;
     this.hasWhereClause = false;
+  }
+
+  wrapAs(tableDefinition) {
+    this.query = `
+    WITH ${tableDefinition}
+    AS (${this.query})
+    `;
+  }
+
+  addSelectClause(clause) {
+    this.query = `
+      ${this.query}
+      ${clause}
+    `;
   }
 
   addWhereClause(clause, parameters) {
@@ -23,8 +38,11 @@ export class SqlQuery {
     this.hasWhereClause = true;
   }
 
-  orderBy(orderByClause) {
-    this.orderByClause = orderByClause;
+  addOrderByClause(orderByClause) {
+    this.query = `
+      ${this.query}
+      ORDER BY ${orderByClause}
+    `;
   }
 
   async executeOnDatabase(database) {
