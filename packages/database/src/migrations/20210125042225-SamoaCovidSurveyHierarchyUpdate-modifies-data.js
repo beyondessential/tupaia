@@ -34,7 +34,7 @@ async function getAnswersByQuestionCode(db, code) {
   `);
 }
 
-async function findEntityIdByName(db, name) {
+async function findEntityByName(db, name) {
   const cleanName = name.replace("'", '').trim();
   if (!name.includes('/'))
     return db.runSql(`
@@ -45,7 +45,7 @@ async function findEntityIdByName(db, name) {
 }
 
 async function changeEntityCaseParentToVillage(db, caseParentMapping) {
-  Promise.all(
+  await Promise.all(
     caseParentMapping.map(async cas => {
       const [caseCode, parentId] = Object.entries(cas)[0];
       if (parentId) await updateValues(db, 'entity', { parent_id: parentId }, { code: caseCode });
@@ -55,28 +55,30 @@ async function changeEntityCaseParentToVillage(db, caseParentMapping) {
 
 exports.up = async function (db) {
   const cases = (await getAnswersByQuestionCode(db, caseQuestionCode)).rows;
-  const addressesIds = (await getAnswersByQuestionCode(db, addressIdQuestionCode)).rows;
-  const addressesTexts = (await getAnswersByQuestionCode(db, addressTextQuestionCode)).rows;
+  const addressIds = (await getAnswersByQuestionCode(db, addressIdQuestionCode)).rows;
+  const addressTexts = (await getAnswersByQuestionCode(db, addressTextQuestionCode)).rows;
 
   const caseParentMapping = await Promise.all(
-    cases.map(async cas => {
+    cases.map(async currentCase => {
       // Find parent address by question code 'QMIA029'
-      const parentAddressId = addressesIds.find(a => a[surveyResponseId] === cas[surveyResponseId]);
-      if (parentAddressId) return { [cas.text]: parentAddressId.text };
+      const parentAddressId = addressIds.find(
+        a => a[surveyResponseId] === currentCase[surveyResponseId],
+      );
+      if (parentAddressId) return { [currentCase.text]: parentAddressId.text };
 
       // Find parent address by question code 'QMIA010'
-      const parentAddressText = addressesTexts.find(
-        a => a[surveyResponseId] === cas[surveyResponseId],
+      const parentAddressText = addressTexts.find(
+        a => a[surveyResponseId] === currentCase[surveyResponseId],
       );
       if (parentAddressText) {
-        const parentId = await findEntityIdByName(db, parentAddressText.text);
+        const parentId = await findEntityByName(db, parentAddressText.text);
         if (parentId && parentId.rows[0]) {
-          return { [cas.text]: parentId.rows[0].id };
+          return { [currentCase.text]: parentId.rows[0].id };
         }
       }
 
       // Could not find parent address
-      return { [cas.text]: undefined };
+      return { [currentCase.text]: undefined };
     }),
   );
 
