@@ -3,19 +3,11 @@ import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 import request from '../utils/request';
 import { setProjects, fetchProjectsError } from './actions';
 
-import {
-  SET_PROJECT,
-  changeBounds,
-  setDashboardGroup,
-  setOrgUnit,
-  FETCH_LOGOUT_SUCCESS,
-} from '../actions';
+import { SET_PROJECT, changeBounds, setOrgUnit, FETCH_LOGOUT_SUCCESS } from '../actions';
 import {
   selectAdjustedProjectBounds,
   selectProjectByCode,
   selectCurrentOrgUnitCode,
-  selectIsDashboardGroupCodeDefined,
-  selectCurrentDashboardGroupCode,
 } from '../selectors';
 
 export function* fetchProjectData() {
@@ -49,15 +41,6 @@ function* loadProject(action) {
   if (!organisationUnitCode || forceUpdate) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
-
-  // if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
-  //   const dashboardGroupName = selectCurrentDashboardGroupCode(state);
-  //
-  //   console.log('dashboardGroupName', dashboardGroupName);
-  //   if (dashboardGroupName) {
-  //     yield put(setDashboardGroup(dashboardGroupName));
-  //   }
-  // }
 }
 
 function* watchSelectProjectAndLoadProjectState() {
