@@ -37,7 +37,7 @@ const newDashboardReport = {
             entityAggregation: {
               dataSourceEntityType: 'case',
             },
-            entityAnswerIdToName: { dataElementCodes: ['QMIA029'] },
+            entityIdToNameElements: ['QMIA029'],
           },
         },
         transformations: [

@@ -6,7 +6,7 @@ import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { transformValue } from 'apiV1/dataBuilders/transform';
-import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers';
+import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers/translateEventEntityIdsToNames';
 
 export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
@@ -81,9 +81,13 @@ export class DataBuilder {
       eventId,
       ...additionalQueryConfig,
     });
-    if (additionalQueryConfig.entityAnswerIdToName?.dataElementCodes) {
-      const { dataElementCodes } = additionalQueryConfig.entityAnswerIdToName;
-      return translateEventEntityIdsToNames(this.models, rawEvents, dataElementCodes);
+
+    if (additionalQueryConfig.entityIdToNameElements) {
+      return translateEventEntityIdsToNames(
+        this.models,
+        rawEvents,
+        additionalQueryConfig.entityIdToNameElements,
+      );
     }
 
     return rawEvents;
