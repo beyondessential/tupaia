@@ -15,11 +15,11 @@ export class GETDataSources extends GETHandler {
     await this.assertPermissions(assertBESAdminAccess);
   }
 
-  async createPermissionsFilter(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     return { dbConditions: criteria, dbOptions: options };
   }
 
-  async createPermissionsViaParentFilter(criteria, options) {
+  async getPermissionsViaParentFilter(criteria, options) {
     const dbConditions = { ...criteria };
     const dbOptions = { ...options };
     dbConditions[`${TYPES.DATA_ELEMENT_DATA_GROUP}.data_group_id`] = this.parentRecordId;
