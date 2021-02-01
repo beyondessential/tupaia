@@ -2,6 +2,24 @@ import { getDataElementCodesInGroup, sumResults } from '/apiV1/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
+function transformValueKeyToGroup(dataBuilderConfig, data, period) {
+  // Create option group key mapping. e.g.: {"Visa": ["CD75", "CD76", "CD77"]} to ["CD75":"Visa", "CD76":"Visa", "CD77":"Visa"]
+  const valueKeyToGroupMapping = Object.fromEntries(
+    Object.entries(
+      dataBuilderConfig.valueKeyToGroup,
+    ).flatMap(([groupKey, dataElementCodesInGroup]) =>
+      dataElementCodesInGroup.map(e => [e, groupKey]),
+    ),
+  );
+  // Rename key, e.g.: {value: 5} to {'$optionGroup': 5}
+  const updatedData = data.map(d => {
+    const dataWithNewValueKey = { ...d, [valueKeyToGroupMapping[d.dataElementCode]]: d.value };
+    delete dataWithNewValueKey.value;
+    return dataWithNewValueKey;
+  });
+  return { data: updatedData, period };
+}
+
 const getDataElementCodes = async (dataBuilderConfig, dhisApi) => {
   const { dataElementCodes, dataElementGroupCode } = dataBuilderConfig;
   return dataElementGroupCode
@@ -105,26 +123,9 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     });
   }
 
-  // Assign return value to an option key. e.g.: [{value: 24, dataElementCode: 'CD77'}] to [{Visa: 24, dataElementCode: 'CD77'}]
-  if (dataBuilderConfig.valueKeyToOption) {
-    // Create option key mapping. e.g.: {"Visa": ["CD75", "CD76", "CD77"]} to ["CD75":"Visa", "CD76":"Visa", "CD77":"Visa"]
-    const valueKeyToOptionMapping = Object.fromEntries(
-      Object.entries(
-        dataBuilderConfig.valueKeyToOption,
-      ).flatMap(([optionKey, dataElementCodesInGroup]) =>
-        dataElementCodesInGroup.map(e => [e, optionKey]),
-      ),
-    );
-    // Rename key, e.g.: {value: 5} to {'$option': 5}
-    const updatedData = data.map(e => {
-      const dataWithNewValueKey = { ...e };
-      Object.assign(dataWithNewValueKey, {
-        [valueKeyToOptionMapping[e.dataElementCode]]: e.value,
-      });
-      delete dataWithNewValueKey.value;
-      return dataWithNewValueKey;
-    });
-    return { data: updatedData, period };
+  // Assign return value to an option group. e.g.: [{value: 24, dataElementCode: 'CD77'}] to [{Visa: 24, dataElementCode: 'CD77'}]
+  if (dataBuilderConfig.valueKeyToGroup) {
+    return transformValueKeyToGroup(dataBuilderConfig, data, period);
   }
 
   return { data, period };

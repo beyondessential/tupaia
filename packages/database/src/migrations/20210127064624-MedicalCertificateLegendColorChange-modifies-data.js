@@ -53,7 +53,7 @@ const newLabels = {
   CD90: 'Others',
   CD84a: 'Army',
 };
-const valueKeyToOption = {
+const valueKeyToGroup = {
   Visa: ['CD75', 'CD76', 'CD77', 'CD81', 'CD82', 'CD83', 'CD84'],
   Employment: ['CD85', 'CD86', 'CD87', 'CD88', 'CD89', 'CD90', 'CD84a'],
   Missionary: ['CD73', 'CD74'],
@@ -92,7 +92,7 @@ exports.up = async function (db) {
   const newDataBuilderConfig = {
     ...dashboardReport.dataBuilderConfig,
     labels: newLabels,
-    valueKeyToOption,
+    valueKeyToGroup,
   };
   await updateBuilderConfigByReportId(db, newDataBuilderConfig, dashboardReportId);
 
