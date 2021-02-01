@@ -2,13 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-const addRow = (dataElementValue, dataElementName) => {
-  const returnedRow = {
-    value: dataElementValue,
-    name: dataElementName,
-  };
-  return returnedRow;
-};
 
 const SORTED_WEEKDAYS = [
   'Monday',
@@ -51,6 +44,10 @@ export const facilityOpeningHours = async ({ dataBuilderConfig, query }, aggrega
     }
   });
 
-  const returnData = SORTED_WEEKDAYS.map(day => addRow(openingHours[day], day));
+  const returnData = SORTED_WEEKDAYS.map(day => ({
+    value: openingHours[day],
+    name: day,
+  }));
+  
   return { data: returnData };
 };
