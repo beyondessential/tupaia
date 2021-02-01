@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as COLORS from '../story-utils/theme/colors';
-import { Table } from '../../src';
+import { Table, LoadingContainer } from '../../src';
 import { useTableData } from '../../helpers/useTableData';
 
 export default {
@@ -53,6 +53,25 @@ export const SimpleTable = () => {
           console.log('click on row...');
         }}
       />
+    </Container>
+  );
+};
+
+export const ErroredTable = () => {
+  const { loading, data } = useTableData();
+
+  return (
+    <Container>
+      <LoadingContainer errorMessage="Network Error. Please try again">
+        <Table
+          columns={columns}
+          data={data}
+          loading={loading}
+          onRowClick={() => {
+            console.log('click on row...');
+          }}
+        />
+      </LoadingContainer>
     </Container>
   );
 };
