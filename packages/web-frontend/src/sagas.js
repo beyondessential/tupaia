@@ -703,10 +703,9 @@ function* fetchDashboard(action) {
 
     // If there is no dashboard code defined, assign the default if it is valid for the user
     if (!selectIsDashboardGroupCodeDefined(state)) {
-      const { dashboardConfig } = state.global;
       const currentDashboardGroupCode = project.dashboardGroupName;
 
-      if (dashboardConfig[currentDashboardGroupCode]) {
+      if (dashboard[currentDashboardGroupCode]) {
         yield put(setDashboardGroup(project.dashboardGroupName));
       }
     }
