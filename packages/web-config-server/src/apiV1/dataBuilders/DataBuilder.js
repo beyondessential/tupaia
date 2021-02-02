@@ -70,7 +70,7 @@ export class DataBuilder {
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
     const eventsProgramCode = overridenProgramCode || programCode;
 
-    const rawEvents = await this.aggregator.fetchEvents(eventsProgramCode, {
+    const events = await this.aggregator.fetchEvents(eventsProgramCode, {
       dataServices,
       entityAggregation,
       dataSourceEntityFilter,
@@ -85,12 +85,12 @@ export class DataBuilder {
     if (additionalQueryConfig.entityIdToNameElements) {
       return translateEventEntityIdsToNames(
         this.models,
-        rawEvents,
+        events,
         additionalQueryConfig.entityIdToNameElements,
       );
     }
 
-    return rawEvents;
+    return events;
   }
 
   async fetchDataElements(codes) {

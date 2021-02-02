@@ -83,7 +83,7 @@ class RawDataValuesBuilder extends DataBuilder {
             code => !excludeCodes.includes(code),
           );
         }
-        const { entityAggregation, entityIdToNameElements = {} } = surveyConfig;
+        const { entityAggregation, entityIdToNameElements } = surveyConfig;
         additionalQueryConfig = {
           ...additionalQueryConfig,
           entityAggregation,
