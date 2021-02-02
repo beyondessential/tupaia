@@ -173,6 +173,10 @@ exports.up = async function (db) {
 
     await db.runSql(`UPDATE entity SET parent_id = '${subDistrictId}' WHERE id = '${cityId}';`);
 
+    await db.runSql(
+      `DELETE FROM entity_relation WHERE child_id = '${cityId}' AND entity_hierarchy_id = '${laosEocEntityHierarchyId}';`,
+    );
+
     await db.runSql(`
       INSERT INTO entity_relation (id, parent_id, child_id, entity_hierarchy_id)
       VALUES (generate_object_id(), '${subDistrictId}', '${cityId}', '${laosEocEntityHierarchyId}');
