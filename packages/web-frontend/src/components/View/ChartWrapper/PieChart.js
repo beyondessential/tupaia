@@ -99,6 +99,8 @@ export class PieChart extends PureComponent {
 
   getValidData = () => {
     const { data, valueType } = this.props.viewContent;
+    console.log('viewContent', this.props.viewContent);
+
     return data
       .filter(element => element.value > 0)
       .map(item => {

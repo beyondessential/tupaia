@@ -10,8 +10,31 @@ import { useQuery } from 'react-query';
 import { LineChart } from './LineChart';
 import { PieChart } from './PieChart';
 import { BarChart } from './BarChart';
+import { formatDataValue } from './utils/formatters';
 
 // Dev https://dev-config.tupaia.org/api/v1/view
+// const getValidData = (data, config) => {
+//   const { valueType } = config;
+//
+//   return data
+//     .filter(element => element.value > 0)
+//     .map(item => {
+//       const { name, ...otherKeyValues } = item;
+//       // Map names to labels if available
+//       let label = this.getPresentationOption(name, 'label');
+//       if (!label) label = name;
+//
+//       const labelSuffix = ` (${formatDataValue(item.value, valueType)})`;
+//
+//       return {
+//         name: label + labelSuffix,
+//         ...otherKeyValues,
+//         originalItem: item,
+//       };
+//     })
+//     .sort((a, b) => b.value - a.value);
+// };
+
 const useChartData = params => {
   return useQuery('chart', async () => {
     try {
@@ -19,7 +42,18 @@ const useChartData = params => {
         params,
       });
 
+      console.log('data', data);
+
       return data;
+
+      // if (data.isLoading) {
+      //   return data;
+      // }
+      //
+      // return {
+      //   ...data,
+      //   // data: getValidData(data, config)
+      // };
     } catch (error) {
       console.log('api error', error);
       return null;
@@ -28,7 +62,7 @@ const useChartData = params => {
 };
 
 export const Chart = ({ projectCode, organisationUnitCode, dashboardGroupId, viewId }) => {
-  console.log('chart');
+  console.log('loading...');
   const { data: response, isLoading, error } = useChartData({
     projectCode,
     organisationUnitCode,
