@@ -19,6 +19,10 @@ exports.up = function (db) {
     update "entity_hierarchy"
     set "canonical_types" = '{country,district,sub_district,individual}'
     where "name" = 'fetp';
+
+    update "entity"
+    set "attributes" = '{}'
+    where type = 'individual' and "country_code" = 'PG';
   `);
 };
 
