@@ -88,10 +88,13 @@ export class DhisChangeValidator extends ChangeValidator {
 
     for (const answer of answers) {
       const question = await this.models.question.findById(answer.question_id);
-      const [dataSource] = await this.models.dataSource.findOrDefault({
+      const [dataSource] = await this.models.dataSource.find({
         code: question.code,
         type: 'dataElement',
       });
+      if (!dataSource) {
+        throw new Error(`Could not find a data element for question ${question.code}`);
+      }
 
       if (dataSource.service_type === 'dhis') {
         filteredAnswers.push(answer);

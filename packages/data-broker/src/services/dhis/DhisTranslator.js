@@ -109,7 +109,7 @@ export class DhisTranslator {
   };
 
   async translateOutboundEventDataValues(api, dataValues) {
-    const dataSources = await this.models.dataSource.findOrDefault({
+    const dataSources = await this.models.dataSource.find({
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });

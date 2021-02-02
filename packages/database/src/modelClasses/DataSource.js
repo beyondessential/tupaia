@@ -41,20 +41,6 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
   },
 };
 
-/**
- * Defines which data source(s) should be selected from the `data_source` table
- *
- * @typedef {Object} DataSourceSpec
- * @property {string|string[]} code  Matches on the code column
- * @property {string} type  Matches on the type column
- */
-
-const assertDataSourceSpecIsValid = dataSourceSpec => {
-  if (!dataSourceSpec || !dataSourceSpec.code || !dataSourceSpec.type) {
-    throw new Error('Please provide a valid data source spec');
-  }
-};
-
 export class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
 
@@ -100,14 +86,6 @@ export class DataSourceModel extends DatabaseModel {
 
   getTypes = () => DataSourceModel.types;
 
-  getDefault = async ({ code, type }) =>
-    this.generateInstance({
-      code,
-      type,
-      service_type: 'dhis',
-      config: {},
-    });
-
   async getDataElementsInGroup(dataGroupCode) {
     const dataGroup = await this.findOne({
       code: dataGroupCode,
@@ -125,27 +103,5 @@ export class DataSourceModel extends DatabaseModel {
       id: dataElements.map(({ data_element_id: dataElementId }) => dataElementId),
       type: DATA_ELEMENT,
     });
-  }
-
-  // TODO: Remove this function and the code directly associated with it when
-  // https://github.com/beyondessential/tupaia-backlog/issues/663 is implemented
-  /**
-   * Find the matching data sources or default to 1:1 mapping with dhis, as only mappings
-   * with non-standard rules are kept in the db
-   *
-   * @param {DataSourceSpec} dataSourceSpec
-   * @returns {Promise<Array>}
-   */
-  async findOrDefault(dataSourceSpec) {
-    assertDataSourceSpecIsValid(dataSourceSpec);
-
-    const records = await this.find(dataSourceSpec);
-    const codeToRecord = keyBy(records, 'code');
-    const { code: codeInput } = dataSourceSpec;
-    const codes = Array.isArray(codeInput) ? codeInput : [codeInput];
-
-    return Promise.all(
-      codes.map(code => codeToRecord[code] || this.getDefault({ ...dataSourceSpec, code })),
-    );
   }
 }

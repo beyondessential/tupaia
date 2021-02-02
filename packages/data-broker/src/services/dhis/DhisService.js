@@ -327,7 +327,7 @@ export class DhisService extends Service {
   pullEventsForApi = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
-    const dataElementSources = await this.models.dataSource.findOrDefault({
+    const dataElementSources = await this.models.dataSource.find({
       code: dataElementCodes,
       type: this.dataSourceTypes.DATA_ELEMENT,
     });

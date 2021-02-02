@@ -36,15 +36,13 @@ export class DataBroker {
   }
 
   async fetchDataSources(dataSourceSpec) {
-    const errorMessage = 'Please provide at least one existing data source code';
-
     const { code } = dataSourceSpec;
     if (!code || (Array.isArray(code) && code.length === 0)) {
-      throw new Error(errorMessage);
+      throw new Error('Please provide at least one existing data source code');
     }
-    const dataSources = await this.models.dataSource.findOrDefault(dataSourceSpec);
+    const dataSources = await this.models.dataSource.find(dataSourceSpec);
     if (dataSources.length === 0) {
-      throw new Error(errorMessage);
+      throw new Error(`None of the following data sources exist: ${code}`);
     }
 
     return dataSources;

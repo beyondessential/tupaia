@@ -68,21 +68,40 @@ describe('DataBroker', () => {
   });
 
   describe('pull()', () => {
-    it('should throw an error if no existing code is provided', async () =>
-      Promise.all(
+    describe('input validation', () => {
+      const testData = [
+        ['empty object', {}, 'Please provide at least one existing data source code'],
         [
-          {},
+          'no `code` field',
           { type: 'dataElement' },
+          'Please provide at least one existing data source code',
+        ],
+        [
+          'code is empty string',
           { code: '' },
+          'Please provide at least one existing data source code',
+        ],
+        [
+          'code is empty array',
           { code: [] },
+          'Please provide at least one existing data source code',
+        ],
+        [
+          'no code exists - single item',
           { code: 'NON_EXISTING' },
+          'None of the following data sources exist: NON_EXISTING',
+        ],
+        [
+          'no code exists - multiple items',
           { code: ['NON_EXISTING1', 'NON_EXISTING2'] },
-        ].map(dataSourceSpec =>
-          expect(new DataBroker().pull(dataSourceSpec, options)).toBeRejectedWith(
-            /Please provide .*data source/,
-          ),
-        ),
-      ));
+          'None of the following data sources exist: NON_EXISTING1,NON_EXISTING2',
+        ],
+      ];
+
+      it.each(testData)('%s', async (_, dataSourceSpec, expectedError) =>
+        expect(new DataBroker().pull(dataSourceSpec)).toBeRejectedWith(expectedError),
+      );
+    });
 
     describe('analytics', () => {
       const assertServicePulledDataElementsOnce = (service, dataElements) =>
