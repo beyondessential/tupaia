@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { get } from 'lodash';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import { get } from 'lodash';
 import {
   Area,
   AreaChart,
@@ -26,9 +26,8 @@ import {
   YAxis,
 } from 'recharts';
 
-import { CHART_BLUES, BLUE, TUPAIA_ORANGE, DARK_BLUE, EXPORT_CHART_PADDING } from '../../../styles';
-import { isMobile, formatDataValue, getInactiveColor } from '../../../utils';
-import { VALUE_TYPES } from '../constants';
+import { CHART_BLUES, BLUE, TUPAIA_ORANGE, DARK_BLUE, VALUE_TYPES } from '../constants';
+import { isMobile, formatDataValue } from '../utils';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CHART_TYPES } from './chartTypes';
 import { formatTimestampForChart, getIsTimeSeries } from './helpers';
@@ -110,109 +109,90 @@ const LEGEND_ALL_DATA = {
  * to independent components to isolate their behavior. Unfortunately, for some reason recharts
  * does not work with wrapped components, so we just render everything here
  */
-export class CartesianChart extends PureComponent {
-  constructor(props) {
-    super(props);
+export const CartesianChart = props => {
+  const [xAxisHeight, setXAxisHeight] = useState(0);
+  const [chartConfig, setChartConfig] = useState(props.viewContent.chartConfig);
+  const [activeDataKeys, setActiveDataKeys] = useState([]);
 
-    this.state = {
-      xAxisHeight: 0,
-      chartConfig: props.viewContent.chartConfig,
-      activeDataKeys: [],
-    };
-    // Because state isn't fast enough to update when ticks mount,
-    // use this method to hold on to a value to find the largest tick.
-    this.xAxisHeight = 0;
+  const chartTypeToRenderMethod = {
+    [AREA]: renderArea,
+    [BAR]: renderBar,
+    [LINE]: renderLine,
+  };
 
-    this.chartTypeToRenderMethod = {
-      [AREA]: this.renderArea,
-      [BAR]: this.renderBar,
-      [LINE]: this.renderLine,
-    };
-  }
-
-  isComposedChart = () => {
-    const { viewContent } = this.props;
+  const isComposedChart = () => {
+    const { viewContent } = props;
     return viewContent.chartType === COMPOSED;
   };
 
-  onLegendClick = event => {
-    const { activeDataKeys, chartConfig } = this.state;
+  const onLegendClick = event => {
     const legendDatakey = event.dataKey;
     const actionWillSelectAllKeys =
-      activeDataKeys.length + 1 >= this.getRealDataKeys(chartConfig).length &&
+      activeDataKeys.length + 1 >=
+        Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY)(chartConfig).length &&
       !activeDataKeys.includes(legendDatakey);
 
     if (legendDatakey === LEGEND_ALL_DATA_KEY || actionWillSelectAllKeys) {
-      this.setState({ activeDataKeys: [] });
+      setActiveDataKeys([]);
       return;
     }
 
-    // Note, this may be false even if the dataKey is active
+    // Note, may be false even if the dataKey is active
     if (activeDataKeys.includes(legendDatakey)) {
-      this.setState(state => ({
-        activeDataKeys: state.activeDataKeys.filter(dk => dk !== legendDatakey),
-      }));
+      setActiveDataKeys(state => state.activeDataKeys.filter(dk => dk !== legendDatakey));
     } else {
-      this.setState(state => ({
-        activeDataKeys: [...state.activeDataKeys, legendDatakey],
-      }));
+      setActiveDataKeys(state => [...state.activeDataKeys, legendDatakey]);
     }
   };
 
-  getRealDataKeys = chartConfig =>
-    Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
-
-  getIsActiveKey = legendDatakey =>
-    this.state.activeDataKeys.length === 0 ||
-    this.state.activeDataKeys.includes(legendDatakey) ||
+  const getIsActiveKey = legendDatakey =>
+    activeDataKeys.length === 0 ||
+    activeDataKeys.includes(legendDatakey) ||
     legendDatakey === LEGEND_ALL_DATA_KEY;
 
-  updateChartConfig = (hasDisabledData, viewContent) => {
+  const updateChartConfig = (hasDisabledData, viewContent) => {
     const { chartType } = viewContent;
-    const { chartConfig } = this.state;
     const newChartConfig = { ...chartConfig };
 
     if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
       const allChartType = Object.values(chartConfig)[0].chartType || chartType || 'line';
       newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
-      this.setState({ chartConfig: newChartConfig });
+      setChartConfig(newChartConfig);
     } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
       delete newChartConfig[LEGEND_ALL_DATA_KEY];
-      this.setState({ chartConfig: newChartConfig });
+      setChartConfig(newChartConfig);
     }
   };
 
-  filterDisabledData = data => {
-    const { viewContent } = this.props;
-    const { chartConfig, activeDataKeys } = this.state;
+  const filterDisabledData = data => {
+    const { viewContent } = props;
     // Can't disable data without chartConfig
     if (!chartConfig) return data;
 
     const hasDisabledData = activeDataKeys.length >= 1;
-    this.updateChartConfig(hasDisabledData, viewContent);
+    updateChartConfig(hasDisabledData, viewContent);
 
     return hasDisabledData
       ? data.map(dataSeries =>
           Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
-            const isInactive = Object.keys(chartConfig).includes(key) && !this.getIsActiveKey(key);
+            const isInactive = Object.keys(chartConfig).includes(key) && !getIsActiveKey(key);
             return isInactive ? newDataSeries : { ...newDataSeries, [key]: value };
           }, {}),
         )
       : data;
   };
 
-  getBarSize = () => {
-    const { isEnlarged, viewContent } = this.props;
+  const getBarSize = () => {
+    const { isEnlarged, viewContent } = props;
 
-    if (this.isComposedChart() || viewContent.data.length === 1) {
+    if (isComposedChart() || viewContent.data.length === 1) {
       return isEnlarged ? 100 : 50;
     }
     return undefined;
   };
 
-  getXAxisPadding = () => {
-    const { isEnlarged, viewContent } = this.props;
-    const { chartConfig = {} } = this.state;
+  const getXAxisPadding = () => {
+    const { isEnlarged, viewContent } = props;
     const { chartType, data } = viewContent;
     const hasBars =
       chartType === BAR ||
@@ -228,14 +208,14 @@ export class CartesianChart extends PureComponent {
     return { left: 0, right: 0 };
   };
 
-  getXAxisTickMethod = () => {
-    const { isEnlarged, isExporting, viewContent } = this.props;
+  const getXAxisTickMethod = () => {
+    const { isEnlarged, isExporting, viewContent } = props;
     const { chartType } = viewContent;
 
     if (isExporting) {
-      return this.renderVerticalTick;
+      return renderVerticalTick;
     }
-    return isEnlarged || chartType === BAR ? undefined : this.renderTickFirstAndLastLabel;
+    return isEnlarged || chartType === BAR ? undefined : renderTickFirstAndLastLabel;
   };
 
   /*
@@ -243,8 +223,8 @@ export class CartesianChart extends PureComponent {
     If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
     @see https://recharts.org/en-US/api/YAxis
   */
-  getXAxisTickInterval = () => {
-    const { isEnlarged, isExporting, viewContent } = this.props;
+  const getXAxisTickInterval = () => {
+    const { isEnlarged, isExporting, viewContent } = props;
     const { chartType } = viewContent;
 
     if (chartType === BAR || chartType === COMPOSED) {
@@ -254,8 +234,8 @@ export class CartesianChart extends PureComponent {
     return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
-  formatXAxisTick = tickData => {
-    const { viewContent } = this.props;
+  const formatXAxisTick = tickData => {
+    const { viewContent } = props;
     const { periodGranularity, data, presentationOptions = {} } = viewContent;
     const { periodTickFormat } = presentationOptions;
 
@@ -264,10 +244,10 @@ export class CartesianChart extends PureComponent {
       : tickData;
   };
 
-  formatLegend = (value, { color }) => {
-    const { chartConfig } = this.state;
-    const isActive = this.getIsActiveKey(value);
-    const displayColor = isActive ? color : getInactiveColor(color);
+  const formatLegend = (value, { color }) => {
+    const isActive = getIsActiveKey(value);
+    const displayColor = isActive ? color : color;
+    // const displayColor = isActive ? color : getInactiveColor(color);
     return (
       <span style={{ color: displayColor, textDecoration: isActive ? '' : 'line-through' }}>
         {chartConfig[value].label || value}
@@ -275,16 +255,14 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  getDefaultYAxisDomain = () =>
-    this.props.viewContent.valueType === PERCENTAGE
-      ? PERCENTAGE_Y_DOMAIN
-      : DEFAULT_Y_AXIS.yAxisDomain;
+  const getDefaultYAxisDomain = () =>
+    props.viewContent.valueType === PERCENTAGE ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
-  calculateYAxisDomain = ({ min, max }) => {
-    return [this.parseDomainConfig(min), this.parseDomainConfig(max)];
+  const calculateYAxisDomain = ({ min, max }) => {
+    return [parseDomainConfig(min), parseDomainConfig(max)];
   };
 
-  parseDomainConfig = config => {
+  const parseDomainConfig = config => {
     switch (config.type) {
       case 'scale':
         return dataExtreme => dataExtreme * config.value;
@@ -300,10 +278,10 @@ export class CartesianChart extends PureComponent {
     }
   };
 
-  containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
+  const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
-  renderVerticalTick = props => {
-    const { viewContent } = this.props;
+  const renderVerticalTick = props => {
+    const { viewContent } = props;
     const { payload, ...restOfProps } = props;
 
     return (
@@ -311,23 +289,23 @@ export class CartesianChart extends PureComponent {
         {...restOfProps}
         viewContent={viewContent}
         onHeight={height => {
-          if (this.xAxisHeight < height) {
-            this.setState({ xAxisHeight: height });
+          if (xAxisHeight < height) {
+            setXAxisHeight(height);
             // State isn't fast enough at updating to compare against
             // so always set the instance variable for comparison.
-            this.xAxisHeight = height;
+            // xAxisHeight = height;
           }
         }}
         payload={{
           ...payload,
-          value: this.formatXAxisTick(payload.value),
+          value: formatXAxisTick(payload.value),
         }}
       />
     );
   };
 
-  renderTickFirstAndLastLabel = props => {
-    const { viewContent } = this.props;
+  const renderTickFirstAndLastLabel = props => {
+    const { viewContent } = props;
     const { data } = viewContent;
     const { index, payload } = props;
 
@@ -336,7 +314,7 @@ export class CartesianChart extends PureComponent {
       // See https://github.com/recharts/recharts/blob/master/src/cartesian/CartesianAxis.js#L74
       return (
         <Text {...props} className="recharts-cartesian-axis-tick-value">
-          {this.formatXAxisTick(payload.value)}
+          {formatXAxisTick(payload.value)}
         </Text>
       );
     }
@@ -344,8 +322,8 @@ export class CartesianChart extends PureComponent {
     return null;
   };
 
-  renderXAxis = () => {
-    const { isExporting, viewContent } = this.props;
+  const renderXAxis = () => {
+    const { isExporting, viewContent } = props;
     const { data } = viewContent;
     const axisProps = getIsTimeSeries(data) ? AXIS_TIME_PROPS : {};
 
@@ -354,19 +332,17 @@ export class CartesianChart extends PureComponent {
         dataKey="name"
         label={data.xName}
         stroke={isExporting ? DARK_BLUE : 'white'}
-        height={isExporting ? this.state.xAxisHeight + EXPORT_CHART_PADDING : undefined}
-        interval={this.getXAxisTickInterval()}
-        tick={this.getXAxisTickMethod()}
-        tickFormatter={this.formatXAxisTick}
-        padding={this.getXAxisPadding()}
+        height={isExporting ? xAxisHeight + 20 : undefined}
+        interval={getXAxisTickInterval()}
+        tick={getXAxisTickMethod()}
+        tickFormatter={formatXAxisTick}
+        padding={getXAxisPadding()}
         {...axisProps}
       />
     );
   };
 
-  renderYAxes = () => {
-    const { chartConfig = {} } = this.state;
-
+  const renderYAxes = () => {
     const axisPropsById = {
       [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
       [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
@@ -384,16 +360,16 @@ export class CartesianChart extends PureComponent {
 
     const axesProps = Object.values(axisPropsById).filter(({ dataKeys }) => dataKeys.length > 0);
     // If no custom axes provided, render the  default y axis
-    return axesProps.length > 0 ? axesProps.map(this.renderYAxis) : this.renderYAxis();
+    return axesProps.length > 0 ? axesProps.map(renderYAxis) : renderYAxis();
   };
 
-  renderYAxis = ({
+  const renderYAxis = ({
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
-    yAxisDomain = this.getDefaultYAxisDomain(),
+    yAxisDomain = getDefaultYAxisDomain(),
     valueType: axisValueType,
   } = {}) => {
-    const { isExporting, viewContent } = this.props;
+    const { isExporting, viewContent } = props;
     const { data, valueType, presentationOptions } = viewContent;
 
     return (
@@ -402,8 +378,8 @@ export class CartesianChart extends PureComponent {
         ticks={viewContent.ticks}
         yAxisId={yAxisId}
         orientation={orientation}
-        domain={this.calculateYAxisDomain(yAxisDomain)}
-        allowDataOverflow={valueType === PERCENTAGE || this.containsClamp(yAxisDomain)}
+        domain={calculateYAxisDomain(yAxisDomain)}
+        allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
         tickFormatter={value =>
@@ -415,9 +391,8 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderTooltip = () => {
-    const { viewContent } = this.props;
-    const { chartConfig = {} } = this.state;
+  const renderTooltip = () => {
+    const { viewContent } = props;
     const { chartType, valueType, labelType, presentationOptions } = viewContent;
 
     return (
@@ -437,18 +412,17 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderLegend = () => {
-    const { isEnlarged, viewContent, isExporting } = this.props;
+  const renderLegend = () => {
+    const { isEnlarged, viewContent, isExporting } = props;
     const { renderLegendForOneItem } = viewContent;
-    const { chartConfig } = this.state;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
     return (
       (hasDataSeries || renderLegendForOneItem) &&
       isEnlarged && (
         <Legend
-          onClick={this.onLegendClick}
-          formatter={this.formatLegend}
+          onClick={onLegendClick}
+          formatter={formatLegend}
           verticalAlign={isExporting ? 'top' : 'bottom'}
           wrapperStyle={isExporting ? { top: '-20px' } : {}}
         />
@@ -456,8 +430,8 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderReferenceAreas = () => {
-    const { viewContent } = this.props;
+  const renderReferenceAreas = () => {
+    const { viewContent } = props;
 
     if (!('referenceAreas' in viewContent)) {
       return null;
@@ -466,17 +440,15 @@ export class CartesianChart extends PureComponent {
     return viewContent.referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />);
   };
 
-  renderReferenceLines = () => {
-    const { viewContent } = this.props;
+  const renderReferenceLines = () => {
+    const { viewContent } = props;
     const { chartType } = viewContent;
 
-    return chartType === BAR
-      ? this.renderReferenceLineForAverage()
-      : this.renderReferenceLineForValues();
+    return chartType === BAR ? renderReferenceLineForAverage() : renderReferenceLineForValues();
   };
 
-  renderReferenceLineForAverage = () => {
-    const { isEnlarged, viewContent, isExporting } = this.props;
+  const renderReferenceLineForAverage = () => {
+    const { isEnlarged, viewContent, isExporting } = props;
     const { valueType, data, presentationOptions } = viewContent;
     // show reference line by default
     const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
@@ -501,17 +473,16 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderReferenceLineLabel = referenceLineLabel => {
-    const { isExporting } = this.props;
+  const renderReferenceLineLabel = referenceLineLabel => {
+    const { isExporting } = props;
     if (referenceLineLabel === undefined) return null;
     return (
       <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />
     );
   };
 
-  renderReferenceLineForValues = () => {
-    const { isExporting } = this.props;
-    const { chartConfig = {} } = this.state;
+  const renderReferenceLineForValues = () => {
+    const { isExporting } = props;
 
     const referenceLines = Object.entries(chartConfig)
       .filter(([, { referenceValue }]) => referenceValue)
@@ -526,14 +497,14 @@ export class CartesianChart extends PureComponent {
       <ReferenceLine
         stroke={isExporting ? '#000000' : '#ffffff'}
         strokeDasharray="3 3"
-        label={this.renderReferenceLineLabel(referenceLine.referenceLineLabel)}
+        label={renderReferenceLineLabel(referenceLine.referenceLineLabel)}
         {...referenceLine}
       />
     ));
   };
 
-  renderBrush = () => {
-    const { isExporting, viewContent } = this.props;
+  const renderBrush = () => {
+    const { isExporting, viewContent } = props;
     const { chartType, data } = viewContent;
     const hasBigData = data.length > 20;
 
@@ -546,10 +517,9 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderCharts = () => {
-    const { viewContent } = this.props;
+  const renderCharts = () => {
+    const { viewContent } = props;
     const defaultChartConfig = { [DEFAULT_DATA_KEY]: {} };
-    const { chartConfig = defaultChartConfig } = this.state;
     const { chartType: defaultChartType } = viewContent;
 
     const sortedChartConfig = Object.entries(chartConfig).sort((a, b) => {
@@ -559,7 +529,7 @@ export class CartesianChart extends PureComponent {
     return sortedChartConfig
       .filter(([, { hideFromLegend }]) => !hideFromLegend)
       .map(([dataKey, { chartType = defaultChartType }]) => {
-        const renderMethod = this.chartTypeToRenderMethod[chartType];
+        const renderMethod = chartTypeToRenderMethod[chartType];
         const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
         const yAxisId = orientationToYAxisId(yAxisOrientation);
 
@@ -567,8 +537,8 @@ export class CartesianChart extends PureComponent {
       });
   };
 
-  renderArea = ({ color = BLUE, dataKey, yAxisId }) => {
-    const { isEnlarged, isExporting } = this.props;
+  const renderArea = ({ color = BLUE, dataKey, yAxisId }) => {
+    const { isEnlarged, isExporting } = props;
 
     return (
       <Area
@@ -583,9 +553,8 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderBar = ({ color = BLUE, dataKey, yAxisId, stackId }) => {
-    const { isEnlarged, isExporting, viewContent } = this.props;
-    const { chartConfig = {} } = this.state;
+  const renderBar = ({ color = BLUE, dataKey, yAxisId, stackId }) => {
+    const { isEnlarged, isExporting, viewContent } = props;
     const { valueType } = viewContent;
     const labelOffset = chartConfig ? -15 : -12;
     return (
@@ -596,7 +565,7 @@ export class CartesianChart extends PureComponent {
         stackId={stackId}
         fill={color}
         isAnimationActive={isEnlarged && !isExporting}
-        barSize={this.getBarSize()}
+        barSize={getBarSize()}
       >
         {isExporting && !stackId && (
           <LabelList
@@ -610,8 +579,8 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderLine = ({ color, dataKey, yAxisId }) => {
-    const { isEnlarged, isExporting, viewContent } = this.props;
+  const renderLine = ({ color, dataKey, yAxisId }) => {
+    const { isEnlarged, isExporting, viewContent } = props;
     const { valueType } = viewContent;
     const defaultColor = isExporting ? DARK_BLUE : BLUE;
 
@@ -639,31 +608,29 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  render = () => {
-    const { isEnlarged, isExporting, viewContent } = this.props;
-    const { chartType, data } = viewContent;
-    const Chart = CHART_TYPE_TO_COMPONENT[chartType];
-    const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
+  const { isEnlarged, isExporting, viewContent } = props;
+  const { chartType, data } = viewContent;
+  const Chart = CHART_TYPE_TO_COMPONENT[chartType];
+  const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
-    return (
-      <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
-        <Chart
-          data={this.filterDisabledData(data)}
-          margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
-        >
-          {this.renderReferenceAreas()}
-          {this.renderXAxis()}
-          {this.renderYAxes()}
-          {this.renderTooltip()}
-          {this.renderLegend()}
-          {this.renderCharts()}
-          {this.renderReferenceLines()}
-          {this.renderBrush()}
-        </Chart>
-      </ResponsiveContainer>
-    );
-  };
-}
+  return (
+    <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
+      <Chart
+        data={filterDisabledData(data)}
+        margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
+      >
+        {renderReferenceAreas()}
+        {renderXAxis()}
+        {renderYAxes()}
+        {renderTooltip()}
+        {renderLegend()}
+        {renderCharts()}
+        {renderReferenceLines()}
+        {renderBrush()}
+      </Chart>
+    </ResponsiveContainer>
+  );
+};
 
 CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,

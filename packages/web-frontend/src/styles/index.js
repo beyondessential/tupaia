@@ -49,7 +49,6 @@ export const MOBILE_MARGIN_SIZE = 16;
 export const MOBILE_HEADER_HEIGHT = 55;
 const MATERIAL_UI_POPOVER_INDEX = 1300; // Taken from material-ui source code
 export const DIALOG_Z_INDEX = MATERIAL_UI_POPOVER_INDEX - 1;
-export const EXPORT_CHART_PADDING = 20;
 export const DASHBOARD_VIEW_MARGIN = 4;
 export const DASHBOARD_META_MARGIN = 15;
 export const TOP_BAR_HEIGHT = 60;
