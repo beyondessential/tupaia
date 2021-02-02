@@ -41,6 +41,20 @@
     "SQ": "STR_PV04",
     "Positive result": "STR_PV05"
   },
+  "STRIVE PCR Po": {
+    "Well": "STR_PO01",
+    "Sample": "entityCode",
+    "CQ": "STR_PO03",
+    "SQ": "STR_PO04",
+    "Positive result": "STR_PO05"
+  },
+  "STRIVE PCR Pm": {
+    "Well": "STR_PM01",
+    "Sample": "entityCode",
+    "CQ": "STR_PM03",
+    "SQ": "STR_PM04",
+    "Positive result": "STR_PM05"
+  },
   "STRIVE QMAL": {
     "Well": "STR_QMAL01",
     "Sample": "entityCode",
