@@ -30,7 +30,13 @@ export default {
   ],
 };
 
-const Template = args => <Chart {...args} />;
+const Template = args => (
+  <div>
+    <Chart {...args} />
+    {/*<br />*/}
+    {/*<Chart {...args} />*/}
+  </div>
+);
 
 export const ExploreView29 = Template.bind({});
 ExploreView29.args = {
