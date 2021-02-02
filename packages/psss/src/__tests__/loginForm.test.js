@@ -4,11 +4,11 @@
  */
 import React from 'react';
 import { screen, fireEvent, act } from '@testing-library/react';
-import { loginUser } from '../../api';
-import { LoginForm } from '../Forms';
-import { render } from '../../utils/test-utils';
+import { loginUser } from '../api';
+import { LoginForm } from '../containers';
+import { render } from '../utils/test-utils';
 
-jest.mock('../../api');
+jest.mock('../api');
 
 describe('login form', () => {
   const testData = {
