@@ -450,11 +450,15 @@ export class TupaiaDatabase {
     return result.rows;
   }
 
-  async executeSqlInBatches(arrayToBeBatched, generateSql) {
-    return runDatabaseFunctionInBatches(arrayToBeBatched, async batch => {
-      const [sql, substitutions] = generateSql(batch);
-      return this.executeSql(sql, substitutions);
-    });
+  async executeSqlInBatches(arrayToBeBatched, generateSql, batchSize) {
+    return runDatabaseFunctionInBatches(
+      arrayToBeBatched,
+      async batch => {
+        const [sql, substitutions] = generateSql(batch);
+        return this.executeSql(sql, substitutions);
+      },
+      batchSize,
+    );
   }
 }
 
