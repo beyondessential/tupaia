@@ -18,16 +18,6 @@ exports.setup = function (options, seedLink) {
 
 const NON_DATA_ELEMENT_QUESTION_TYPES = ['Instruction', 'PrimaryEntity', 'SubmissionDate'];
 
-const selectMissingDataElements = async db => {
-  const { rows } = await db.runSql(`
-    SELECT code FROM question
-    WHERE
-      data_source_id IS NULL AND
-      type NOT IN (${arrayToDbString(NON_DATA_ELEMENT_QUESTION_TYPES)})`);
-
-  return rows;
-};
-
 const insertMissingDataElements = async db =>
   db.runSql(`
     INSERT INTO data_source
@@ -35,19 +25,6 @@ const insertMissingDataElements = async db =>
     WHERE
       data_source_id IS NULL AND
       type NOT IN (${arrayToDbString(NON_DATA_ELEMENT_QUESTION_TYPES)})`);
-
-const insertDataElementsDataGroups = async (db, dataElementCodes) =>
-  db.runSql(`
-  INSERT INTO data_element_data_group
-  SELECT generate_object_id(), de.id, dg.id FROM data_source de
-  JOIN question q on q.data_source_id = de.id
-  JOIN survey_screen_component ssc ON ssc.question_id = q.id
-  JOIN survey_screen ss ON ss.id = ssc.screen_id
-  JOIN survey s ON s.id = ss.survey_id
-  JOIN data_source dg ON dg.id = s.data_source_id
-  WHERE
-    de.type = 'dataElement' AND
-    de.code IN (${arrayToDbString(dataElementCodes)})`);
 
 const updateQuestionDataSourceIds = async db =>
   db.runSql(`
@@ -61,13 +38,8 @@ const updateQuestionDataSourceIds = async db =>
       question.type NOT IN (${arrayToDbString(NON_DATA_ELEMENT_QUESTION_TYPES)})`);
 
 exports.up = async function (db) {
-  const dataElements = await selectMissingDataElements(db);
   await insertMissingDataElements(db);
-
   await updateQuestionDataSourceIds(db);
-
-  const dataElementCodes = dataElements.map(de => de.code);
-  await insertDataElementsDataGroups(db, dataElementCodes);
 };
 
 exports.down = function (db) {
