@@ -17,7 +17,6 @@ import {
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
-  YAxis,
 } from 'recharts';
 
 import { CHART_BLUES, TUPAIA_ORANGE, DARK_BLUE, VALUE_TYPES } from '../constants';
@@ -30,9 +29,9 @@ import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';
 import { XAxis as XAxisComponent } from './XAxis';
+import { YAxes } from './YAxes';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
-const { PERCENTAGE } = VALUE_TYPES;
 
 // Orientation of the axis is used as an alias for its id
 const Y_AXIS_IDS = {
@@ -47,11 +46,6 @@ const DEFAULT_Y_AXIS = {
     min: { type: 'number', value: 0 },
     max: { type: 'string', value: 'auto' },
   },
-};
-
-const PERCENTAGE_Y_DOMAIN = {
-  min: { type: 'number', value: 0 },
-  max: { type: 'string', value: 'dataMax' },
 };
 
 const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
@@ -158,79 +152,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     );
   };
 
-  const getDefaultYAxisDomain = () =>
-    viewContent.valueType === PERCENTAGE ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
-
-  const calculateYAxisDomain = ({ min, max }) => {
-    return [parseDomainConfig(min), parseDomainConfig(max)];
-  };
-
-  const parseDomainConfig = config => {
-    switch (config.type) {
-      case 'scale':
-        return dataExtreme => dataExtreme * config.value;
-      case 'clamp':
-        return dataExtreme => {
-          const maxClampedVal = config.max ? Math.min(dataExtreme, config.max) : dataExtreme;
-          return config.min ? Math.max(maxClampedVal, config.min) : maxClampedVal;
-        };
-      case 'number':
-      case 'string':
-      default:
-        return config.value;
-    }
-  };
-
-  const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
-
-  const renderYAxes = () => {
-    const axisPropsById = {
-      [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
-      [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
-    };
-    Object.entries(chartConfig).forEach(
-      ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain }]) => {
-        const axisId = Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
-        axisPropsById[axisId].dataKeys.push(dataKey);
-        if (valueType) {
-          axisPropsById[axisId].valueType = valueType;
-        }
-        axisPropsById[axisId].yAxisDomain = yAxisDomain;
-      },
-    );
-
-    const axesProps = Object.values(axisPropsById).filter(({ dataKeys }) => dataKeys.length > 0);
-    // If no custom axes provided, render the  default y axis
-    return axesProps.length > 0 ? axesProps.map(renderYAxis) : renderYAxis();
-  };
-
-  const renderYAxis = ({
-    yAxisId = DEFAULT_Y_AXIS.id,
-    orientation = DEFAULT_Y_AXIS.orientation,
-    yAxisDomain = getDefaultYAxisDomain(),
-    valueType: axisValueType,
-  } = {}) => {
-    const { data, valueType, presentationOptions } = viewContent;
-
-    return (
-      <YAxis
-        key={yAxisId}
-        ticks={viewContent.ticks}
-        yAxisId={yAxisId}
-        orientation={orientation}
-        domain={calculateYAxisDomain(yAxisDomain)}
-        allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
-        // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
-        label={data.yName}
-        tickFormatter={value =>
-          formatDataValue(value, valueType || axisValueType, { presentationOptions })
-        }
-        interval={isExporting ? 0 : 'preserveStartEnd'}
-        stroke={isExporting ? DARK_BLUE : 'white'}
-      />
-    );
-  };
-
   const renderReferenceLineForAverage = () => {
     const { valueType, data, presentationOptions } = viewContent;
     // show reference line by default
@@ -312,7 +233,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
-        {renderYAxes()}
+        {YAxes({ viewContent, isExporting })}
         <Tooltip
           filterNull={false}
           content={
