@@ -3,7 +3,13 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { periodToTimestamp, reduceToDictionary } from '@tupaia/utils';
+import {
+  periodToTimestamp,
+  reduceToDictionary,
+  parsePeriodType,
+  convertToPeriod,
+  periodToDisplayString,
+} from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class AnalyticsPerPeriodBuilder extends DataBuilder {
@@ -24,14 +30,27 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
   }
 
   getResultsPerPeriod = results => {
+    const configPeriodType = this.config.periodType
+      ? parsePeriodType(this.config.periodType)
+      : null;
     const resultsPerPeriod = {};
     results.forEach(result => {
       const { period, value, dataElement } = result;
+      const convertPeriod = configPeriodType // Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
+        ? convertToPeriod(period, configPeriodType)
+        : period;
       const seriesKey = this.dataElementToSeriesKey[dataElement];
-      if (!resultsPerPeriod[period]) {
-        resultsPerPeriod[period] = { timestamp: periodToTimestamp(period) };
+      if (!resultsPerPeriod[convertPeriod]) {
+        resultsPerPeriod[convertPeriod] = {
+          timestamp: periodToTimestamp(convertPeriod),
+        };
+        if (configPeriodType) {
+          resultsPerPeriod[convertPeriod] = {
+            name: periodToDisplayString(convertPeriod, configPeriodType),
+          };
+        }
       }
-      resultsPerPeriod[period][seriesKey] = value;
+      resultsPerPeriod[convertPeriod][seriesKey] = value;
     });
 
     return resultsPerPeriod;
