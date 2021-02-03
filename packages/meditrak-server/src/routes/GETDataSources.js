@@ -9,11 +9,17 @@ import { assertBESAdminAccess } from '../permissions';
 import { mergeMultiJoin } from './utilities';
 
 export class GETDataSources extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async assertUserHasAccess() {
     await this.assertPermissions(assertBESAdminAccess);
   }
 
-  async findRecordsViaParent(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
+    return { dbConditions: criteria, dbOptions: options };
+  }
+
+  async getPermissionsViaParentFilter(criteria, options) {
     const dbConditions = { ...criteria };
     const dbOptions = { ...options };
     dbConditions[`${TYPES.DATA_ELEMENT_DATA_GROUP}.data_group_id`] = this.parentRecordId;
@@ -30,6 +36,6 @@ export class GETDataSources extends GETHandler {
       dbOptions.multiJoin,
     );
 
-    return super.findRecords(dbConditions, dbOptions);
+    return { dbConditions, dbOptions };
   }
 }

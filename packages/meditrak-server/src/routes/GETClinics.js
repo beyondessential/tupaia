@@ -25,12 +25,14 @@ export class GETClinics extends GETHandler {
   async findSingleRecord(clinicId, options) {
     const clinicPermissionChecker = accessPolicy =>
       assertClinicPermissions(accessPolicy, this.models, clinicId);
-    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, clinicPermissionChecker]));
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, clinicPermissionChecker]),
+    );
 
     return super.findSingleRecord(clinicId, options);
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = { ...criteria };
     const countryCodes = this.accessPolicy.getEntitiesAllowed();
     const countries = await this.models.country.find({ code: countryCodes });
@@ -42,6 +44,6 @@ export class GETClinics extends GETHandler {
       );
     }
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

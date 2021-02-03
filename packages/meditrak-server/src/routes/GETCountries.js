@@ -29,7 +29,7 @@ export class GETCountries extends GETHandler {
     return super.findSingleRecord(countryId, options);
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = { ...criteria };
 
     if (!hasBESAdminAccess(this.accessPolicy)) {
@@ -39,6 +39,6 @@ export class GETCountries extends GETHandler {
       );
     }
 
-    return super.findRecords(dbConditions, options);
+    return { dbConditions, dbOptions: options };
   }
 }

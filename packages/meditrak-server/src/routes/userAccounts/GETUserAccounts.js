@@ -21,6 +21,8 @@ import {
  */
 
 export class GETUserAccounts extends GETHandler {
+  permissionsFilteredInternally = true;
+
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
@@ -41,10 +43,8 @@ export class GETUserAccounts extends GETHandler {
     return userAccount;
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = await createUserAccountDBFilter(this.accessPolicy, this.models, criteria);
-    const userAccounts = await super.findRecords(dbConditions, options);
-
-    return userAccounts;
+    return { dbConditions, dbOptions: options };
   }
 }

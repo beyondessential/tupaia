@@ -37,6 +37,8 @@ const createDBFilter = (accessPolicy, criteria) => {
  * - /disasters/:disasterId
  */
 export class GETDisasters extends GETHandler {
+  permissionsFilteredInternally = true;
+
   customJoinConditions = {
     country: ['country.code', 'disaster.countryCode'],
     entity: ['entity.code', 'disaster.countryCode'],
@@ -68,8 +70,8 @@ export class GETDisasters extends GETHandler {
     return disaster;
   }
 
-  async findRecords(criteria, options) {
-    const dbFilter = createDBFilter(this.accessPolicy, criteria);
-    return super.findRecords(dbFilter, options);
+  async getPermissionsFilter(criteria, options) {
+    const dbConditions = createDBFilter(this.accessPolicy, criteria);
+    return { dbConditions, dbOptions: options };
   }
 }

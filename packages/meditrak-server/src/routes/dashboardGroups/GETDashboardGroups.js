@@ -30,14 +30,12 @@ export class GETDashboardGroups extends GETHandler {
     return dashboardGroup;
   }
 
-  async findRecords(criteria, options) {
+  async getPermissionsFilter(criteria, options) {
     const dbConditions = await createDashboardGroupDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
     );
-    const dashboardGroups = await super.findRecords(dbConditions, options);
-
-    return dashboardGroups;
+    return { dbConditions, dbOptions: options };
   }
 }
