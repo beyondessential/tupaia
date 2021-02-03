@@ -28,9 +28,9 @@ export const upsertQuestion = async (data = {}) => {
   const { code } = data;
 
   const dataElement = await upsertDummyRecord(models.dataSource, {
+    service_type: 'tupaia',
     ...data,
     code,
-    service_type: 'tupaia',
     type: 'dataElement',
   });
   return upsertDummyRecord(models.question, {
