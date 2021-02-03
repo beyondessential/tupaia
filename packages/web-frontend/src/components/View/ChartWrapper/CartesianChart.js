@@ -7,14 +7,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import {
-  Area,
   AreaChart,
   BarChart,
   Brush,
   ComposedChart,
-  LabelList,
   Legend,
-  Line,
   LineChart,
   ReferenceArea,
   ReferenceLine,
@@ -25,7 +22,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import { CHART_BLUES, BLUE, TUPAIA_ORANGE, DARK_BLUE, VALUE_TYPES } from '../constants';
+import { CHART_BLUES, TUPAIA_ORANGE, DARK_BLUE, VALUE_TYPES } from '../constants';
 import { isMobile, formatDataValue } from '../utils';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CHART_TYPES } from './chartTypes';
@@ -34,6 +31,8 @@ import ReferenceLabel from './ReferenceLabel';
 import CustomTooltip from './Tooltip';
 import VerticalTick from './VerticalTick';
 import { BarChart as BarChartComponent } from './BarChart';
+import { LineChart as LineChartComponent } from './LineChart';
+import { AreaChart as AreaChartComponent } from './AreaChart';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE } = VALUE_TYPES;
@@ -401,53 +400,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     ));
   };
 
-  const chartTypeToRenderMethod = {
-    [AREA]: renderArea,
-    [LINE]: renderLine,
-  };
-
-  function renderArea({ color = BLUE, dataKey, yAxisId }) {
-    return (
-      <Area
-        key={dataKey}
-        dataKey={dataKey}
-        yAxisId={yAxisId}
-        type="monotone"
-        stroke={color}
-        fill={color}
-        isAnimationActive={isEnlarged && !isExporting}
-      />
-    );
-  }
-
-  function renderLine({ color, dataKey, yAxisId }) {
-    const { valueType } = viewContent;
-    const defaultColor = isExporting ? DARK_BLUE : BLUE;
-
-    return (
-      <Line
-        key={dataKey}
-        type="monotone"
-        dataKey={dataKey}
-        yAxisId={yAxisId}
-        stroke={color || defaultColor}
-        strokeWidth={isEnlarged ? 3 : 1}
-        fill={color || defaultColor}
-        isAnimationActive={isEnlarged && !isExporting}
-      >
-        {isExporting && (
-          <LabelList
-            dataKey={dataKey}
-            position="insideTopRight"
-            offset={-20}
-            angle="50"
-            formatter={value => formatDataValue(value, valueType)}
-          />
-        )}
-      </Line>
-    );
-  }
-
   const {
     chartType,
     data,
@@ -514,9 +466,9 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         {sortedChartConfig
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
           .map(([dataKey, { chartT = defaultChartType }]) => {
-            const renderMethod = chartTypeToRenderMethod[chartT];
             const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
             const yAxisId = orientationToYAxisId(yAxisOrientation);
+
             // Render bar
             if (chartT === BAR) {
               return BarChartComponent({
@@ -528,8 +480,28 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
                 data,
               });
             }
-            // Render line and area
-            return renderMethod({ ...chartConfig[dataKey], dataKey, yAxisId, chartConfig, data });
+
+            // Render area
+            if (chartT === AREA) {
+              return AreaChartComponent({
+                ...chartConfig[dataKey],
+                dataKey,
+                yAxisId,
+                chartConfig,
+                data,
+              });
+            }
+
+            // Render line
+            if (chartT === LINE) {
+              return LineChartComponent({
+                ...chartConfig[dataKey],
+                dataKey,
+                yAxisId,
+                chartConfig,
+                data,
+              });
+            }
           })}
         {renderReferenceLines()}
         {chartType === BAR && data.length > 20 && !isExporting && (
