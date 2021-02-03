@@ -372,14 +372,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     );
   };
 
-  const renderReferenceAreas = () => {
-    if (!('referenceAreas' in viewContent)) {
-      return null;
-    }
-
-    return viewContent.referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />);
-  };
-
   const renderReferenceLines = () => {
     const { chartType } = viewContent;
 
@@ -538,6 +530,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     labelType,
     presentationOptions,
     renderLegendForOneItem,
+    referenceAreas,
   } = viewContent;
 
   const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
@@ -550,7 +543,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         data={filterDisabledData(data)}
         margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
       >
-        {renderReferenceAreas()}
+        {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {renderXAxis()}
         {renderYAxes()}
         <Tooltip
