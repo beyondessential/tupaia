@@ -164,7 +164,7 @@ const getValueFromEntity = async (entity, config) => {
       return descendantsMatchingConditions.length;
     }
     default:
-      return entity[field];
+      return (entity && entity[field]) || '';
   }
 };
 

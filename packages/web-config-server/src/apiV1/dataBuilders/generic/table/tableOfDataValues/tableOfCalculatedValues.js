@@ -10,6 +10,7 @@ import { getCalculatedValuesByCell } from './getValuesByCell';
 import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
+import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
@@ -32,11 +33,13 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
 
   async buildValuesByCell() {
     const hierarchyId = await this.fetchEntityHierarchyId();
+    const noDataValue = this.config.noDataValue ?? NO_DATA_AVAILABLE;
     return getCalculatedValuesByCell(
       this.models,
       flatten(this.tableConfig.cells),
       this.results,
       hierarchyId,
+      noDataValue,
     );
   }
 }

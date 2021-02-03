@@ -19,7 +19,10 @@ exports.setup = function (options, seedLink) {
 const dataServices = [{ isDataRegional: true }];
 
 const buildTable = report => {
-  const mapElementsToCells = element => [element];
+  const mapElementsToCells = element =>
+    report.elementConfigs && element in report.elementConfigs
+      ? [report.elementConfigs[element]]
+      : [element];
 
   const dataBuilderConfig = {
     rows: Object.values(report.elements),
@@ -30,6 +33,7 @@ const buildTable = report => {
       dataSourceEntityType: ['individual'],
       aggregationEntityType: 'individual',
     },
+    noDataValue: '',
   };
 
   const viewJson = {
@@ -56,6 +60,7 @@ const buildSingle = report => {
     name: report.name,
     type: 'view',
     viewType: 'singleValue',
+    noDataMessage: ' ',
   };
   return {
     id: report.id,
@@ -78,6 +83,7 @@ const buildMultiSingle = report => {
     type: 'view',
     viewType: 'multiSingleValue',
     valueType: 'text',
+    noDataMessage: ' ',
   };
 
   return {
@@ -109,6 +115,22 @@ const reports = [
       FETPNG20Data_034: 'District',
       FETPNG20Data_033: 'Province',
       FETPNG20Data_036: 'Employer Type',
+    },
+    elementConfigs: {
+      FETPNG20Data_034: {
+        key: 'District_name',
+        field: 'name',
+        operator: 'ORG_UNIT_METADATA',
+        orgUnitCode: '{organisationUnitCode}',
+        ancestorType: 'sub_district',
+      },
+      FETPNG20Data_033: {
+        key: 'Province_name',
+        field: 'name',
+        operator: 'ORG_UNIT_METADATA',
+        orgUnitCode: '{organisationUnitCode}',
+        ancestorType: 'district',
+      },
     },
   },
   {
