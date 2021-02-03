@@ -21,11 +21,6 @@ exports.up = function (db) {
     update "question" 
     set "type" = 'Binary'
     where code = '${questionCode}';
-
-    update "answer" 
-    set "type" = 'Binary'
-    where question_id = (select id from "question" where "question"."code" = '${questionCode}');
-
   `);
 };
 
@@ -34,10 +29,6 @@ exports.down = function (db) {
     update "question" 
     set "type" = 'FreeText'
     where code = '${questionCode}';
-    
-    update "answer" 
-    set "type" = 'FreeText'
-    where question_id = (select id from "question" where "question"."code" = '${questionCode}');
   `);
 };
 
