@@ -88,7 +88,7 @@ export class DhisChangeValidator extends ChangeValidator {
 
     for (const answer of answers) {
       const question = await this.models.question.findById(answer.question_id);
-      const [dataSource] = await this.models.dataSource.find({
+      const dataSource = await this.models.dataSource.findOne({
         code: question.code,
         type: 'dataElement',
       });

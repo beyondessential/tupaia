@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -44,9 +42,13 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
 export class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
 
+  SERVICE_TYPES = SERVICE_TYPES;
+
   get dataElementCode() {
     return this.config.dataElementCode || this.code;
   }
+
+  getTypes = () => DATA_SOURCE_TYPES;
 
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_TYPE_AND_SERVICE[this.type][this.service_type];
@@ -73,6 +75,21 @@ export class DataSourceType extends DatabaseType {
       }
     });
   }
+
+  assertFnCalledByDataGroup = functionName => {
+    if (this.type !== DATA_GROUP) {
+      throw new Error(`Can only invoke "${functionName}" in a dataGroup`);
+    }
+  };
+
+  attachDataElement = async dataElementId => {
+    this.assertFnCalledByDataGroup(this.attachDataElement.name);
+
+    await this.otherModels.dataElementDataGroup.findOrCreate({
+      data_element_id: dataElementId,
+      data_group_id: this.id,
+    });
+  };
 }
 
 export class DataSourceModel extends DatabaseModel {
@@ -104,4 +121,23 @@ export class DataSourceModel extends DatabaseModel {
       type: DATA_ELEMENT,
     });
   }
+
+  getDataGroupsThatIncludeElement = async elementConditions => {
+    const dataElement = await this.findOne({ ...elementConditions, type: DATA_ELEMENT });
+    if (!dataElement) {
+      return [];
+    }
+
+    // TODO use `this.find` with joins after
+    // https://github.com/beyondessential/tupaia-backlog/issues/662 is implemented
+    const dataGroups = await this.database.executeSql(
+      `
+        SELECT dg.* FROM data_source dg
+        JOIN data_element_data_group dedg ON dedg.data_group_id = dg.id
+        WHERE dg.type = 'dataGroup' and dedg.data_element_id = ?;
+      `,
+      [dataElement.id],
+    );
+    return Promise.all(dataGroups.map(this.generateInstance));
+  };
 }

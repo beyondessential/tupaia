@@ -82,7 +82,7 @@ export const modelClasses = {
 export { AccessRequestModel } from './AccessRequest';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
-export { DataSourceModel } from './DataSource';
+export { DataSourceModel, DataSourceType } from './DataSource';
 export { EntityModel, EntityType } from './Entity';
 export { FacilityModel } from './Facility';
 export { GeographicalAreaModel } from './GeographicalArea';

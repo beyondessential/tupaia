@@ -157,6 +157,10 @@ export async function importSurveys(req, res) {
         // We will re-create the ones required by the survey while processing its questions
         await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
 
+        // Refresh SurveyDate element
+        await dataGroup.deleteSurveyDateElement();
+        await dataGroup.upsertSurveyDateElement();
+
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(
           {
