@@ -16,9 +16,7 @@ import {
   ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
-  Text,
   Tooltip,
-  XAxis,
   YAxis,
 } from 'recharts';
 
@@ -26,42 +24,22 @@ import { CHART_BLUES, TUPAIA_ORANGE, DARK_BLUE, VALUE_TYPES } from '../constants
 import { isMobile, formatDataValue } from '../utils';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CHART_TYPES } from './chartTypes';
-import { formatTimestampForChart, getIsTimeSeries } from './helpers';
 import ReferenceLabel from './ReferenceLabel';
 import CustomTooltip from './Tooltip';
-import VerticalTick from './VerticalTick';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';
+import { XAxis as XAxisComponent } from './XAxis';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE } = VALUE_TYPES;
 
-const AXIS_TIME_PROPS = {
-  dataKey: 'timestamp',
-  type: 'number',
-  scale: 'time',
-  domain: ['dataMin', 'dataMax'],
-};
-const X_AXIS_PADDING = {
-  enlarged: {
-    dataLengthThreshold: 9,
-    base: 20,
-    offset: 30,
-    minimum: 30,
-  },
-  preview: {
-    dataLengthThreshold: 9,
-    base: 4,
-    offset: 10,
-    minimum: 10,
-  },
-};
 // Orientation of the axis is used as an alias for its id
 const Y_AXIS_IDS = {
   left: 0,
   right: 1,
 };
+
 const DEFAULT_Y_AXIS = {
   id: Y_AXIS_IDS.left,
   orientation: 'left',
@@ -109,8 +87,8 @@ const LEGEND_ALL_DATA = {
  * to independent components to isolate their behavior. Unfortunately, for some reason recharts
  * does not work with wrapped components, so we just render everything here
  */
+
 export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
-  const [xAxisHeight, setXAxisHeight] = useState(0);
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
 
@@ -169,55 +147,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
       : data;
   };
 
-  const getXAxisPadding = () => {
-    const { chartType, data } = viewContent;
-    const hasBars =
-      chartType === BAR ||
-      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
-
-    if (hasBars && data.length > 1 && getIsTimeSeries(data)) {
-      const paddingKey = isEnlarged ? 'enlarged' : 'preview';
-      const { dataLengthThreshold, base, offset, minimum } = X_AXIS_PADDING[paddingKey];
-      const padding = Math.max(minimum, (dataLengthThreshold - data.length) * base + offset);
-      return { left: padding, right: padding };
-    }
-
-    return { left: 0, right: 0 };
-  };
-
-  const getXAxisTickMethod = () => {
-    const { chartType } = viewContent;
-
-    if (isExporting) {
-      return renderVerticalTick;
-    }
-    return isEnlarged || chartType === BAR ? undefined : renderTickFirstAndLastLabel;
-  };
-
-  /*
-    If set 0, all the ticks will be shown.
-    If set preserveStart", "preserveEnd" or "preserveStartEnd", the ticks which is to be shown or hidden will be calculated automatically.
-    @see https://recharts.org/en-US/api/YAxis
-  */
-  const getXAxisTickInterval = () => {
-    const { chartType } = viewContent;
-
-    if (chartType === BAR || chartType === COMPOSED) {
-      return isExporting ? 0 : 'preserveStartEnd';
-    }
-
-    return isEnlarged ? 'preserveStartEnd' : 0;
-  };
-
-  const formatXAxisTick = tickData => {
-    const { periodGranularity, data, presentationOptions = {} } = viewContent;
-    const { periodTickFormat } = presentationOptions;
-
-    return getIsTimeSeries(data)
-      ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
-      : tickData;
-  };
-
   const formatLegend = (value, { color }) => {
     const isActive = getIsActiveKey(value);
     const displayColor = isActive ? color : color;
@@ -253,46 +182,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   };
 
   const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
-
-  const renderVerticalTick = tickProps => {
-    const { payload, ...restOfProps } = tickProps;
-
-    return (
-      <VerticalTick
-        {...restOfProps}
-        viewContent={viewContent}
-        onHeight={height => {
-          if (xAxisHeight < height) {
-            setXAxisHeight(height);
-            // State isn't fast enough at updating to compare against
-            // so always set the instance variable for comparison.
-            // xAxisHeight = height;
-          }
-        }}
-        payload={{
-          ...payload,
-          value: formatXAxisTick(payload.value),
-        }}
-      />
-    );
-  };
-
-  const renderTickFirstAndLastLabel = tickProps => {
-    const { data } = viewContent;
-    const { index, payload } = tickProps;
-
-    // Only render first and last ticks labels, the rest just have a tick mark without text
-    if (index === 0 || index === data.length - 1) {
-      // See https://github.com/recharts/recharts/blob/master/src/cartesian/CartesianAxis.js#L74
-      return (
-        <Text {...tickProps} className="recharts-cartesian-axis-tick-value">
-          {formatXAxisTick(payload.value)}
-        </Text>
-      );
-    }
-
-    return null;
-  };
 
   const renderYAxes = () => {
     const axisPropsById = {
@@ -340,12 +229,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         stroke={isExporting ? DARK_BLUE : 'white'}
       />
     );
-  };
-
-  const renderReferenceLines = () => {
-    const { chartType } = viewContent;
-
-    return chartType === BAR ? renderReferenceLineForAverage() : renderReferenceLineForValues();
   };
 
   const renderReferenceLineForAverage = () => {
@@ -428,19 +311,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
-        {
-          <XAxis
-            dataKey="name"
-            label={data.xName}
-            stroke={isExporting ? DARK_BLUE : 'white'}
-            height={isExporting ? xAxisHeight + 20 : undefined}
-            interval={getXAxisTickInterval()}
-            tick={getXAxisTickMethod()}
-            tickFormatter={formatXAxisTick}
-            padding={getXAxisPadding()}
-            {...(getIsTimeSeries(data) ? AXIS_TIME_PROPS : {})}
-          />
-        }
+        {XAxisComponent({ isEnlarged, isExporting, viewContent })}
         {renderYAxes()}
         <Tooltip
           filterNull={false}
@@ -503,7 +374,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
               });
             }
           })}
-        {renderReferenceLines()}
+        {chartType === BAR ? renderReferenceLineForAverage() : renderReferenceLineForValues()}
         {chartType === BAR && data.length > 20 && !isExporting && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
