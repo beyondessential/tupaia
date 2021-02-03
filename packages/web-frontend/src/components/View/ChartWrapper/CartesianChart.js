@@ -101,6 +101,9 @@ const LEGEND_ALL_DATA = {
   label: 'All',
   stackId: 1,
 };
+
+const XAxisComponent = () => {};
+
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
@@ -303,25 +306,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     }
 
     return null;
-  };
-
-  const renderXAxis = () => {
-    const { data } = viewContent;
-    const axisProps = getIsTimeSeries(data) ? AXIS_TIME_PROPS : {};
-
-    return (
-      <XAxis
-        dataKey="name"
-        label={data.xName}
-        stroke={isExporting ? DARK_BLUE : 'white'}
-        height={isExporting ? xAxisHeight + 20 : undefined}
-        interval={getXAxisTickInterval()}
-        tick={getXAxisTickMethod()}
-        tickFormatter={formatXAxisTick}
-        padding={getXAxisPadding()}
-        {...axisProps}
-      />
-    );
   };
 
   const renderYAxes = () => {
@@ -544,7 +528,19 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
-        {renderXAxis()}
+        {
+          <XAxis
+            dataKey="name"
+            label={data.xName}
+            stroke={isExporting ? DARK_BLUE : 'white'}
+            height={isExporting ? xAxisHeight + 20 : undefined}
+            interval={getXAxisTickInterval()}
+            tick={getXAxisTickMethod()}
+            tickFormatter={formatXAxisTick}
+            padding={getXAxisPadding()}
+            {...(getIsTimeSeries(data) ? AXIS_TIME_PROPS : {})}
+          />
+        }
         {renderYAxes()}
         <Tooltip
           filterNull={false}
