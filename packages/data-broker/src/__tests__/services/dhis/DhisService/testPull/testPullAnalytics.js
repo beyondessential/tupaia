@@ -225,6 +225,27 @@ export const testPullAnalytics = () => {
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledTimes(2);
       });
 
+      it('invokes once for each programCode that has a dataElement associated', async () => {
+        await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
+          programCodes: ['POP01', 'DIFF_GROUP', 'CODE_WITH_NO_ELEMENTS'],
+          useDeprecatedApi: false,
+        });
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
+          expect.objectContaining({
+            programCode: 'POP01',
+          }),
+        );
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
+          expect.objectContaining({
+            programCode: 'DIFF_GROUP',
+          }),
+        );
+
+        // Note: The api should NOT be called with programCode: CODE_WITH_NO_ELEMENTS
+
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledTimes(2);
+      });
+
       it('simple data elements', () =>
         assertEventAnalyticsApiWasInvokedOnceWith({
           dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
@@ -234,10 +255,19 @@ export const testPullAnalytics = () => {
           }),
         }));
 
-      it('data elements with data source codes different than DHIS2 codes', () =>
+      it('Only calls the dhis api with data elements in the programs being fetched', () =>
         assertEventAnalyticsApiWasInvokedOnceWith({
           dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.DIF01],
           options: basicOptions,
+          invocationArgs: expect.objectContaining({
+            dataElementCodes: ['POP01'],
+          }),
+        }));
+
+      it('data elements with data source codes different than DHIS2 codes', () =>
+        assertEventAnalyticsApiWasInvokedOnceWith({
+          dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.DIF01],
+          options: { programCodes: ['DIFF_GROUP'], ...basicOptions },
           invocationArgs: expect.objectContaining({
             dataElementCodes: ['POP01', 'DIF01_DHIS'],
           }),
@@ -343,7 +373,7 @@ export const testPullAnalytics = () => {
         });
       });
 
-      it('directly returns the buildAnalyticsFromDhisEventAnalytics() results', () => {
+      it('directly returns the buildAnalyticsFromDhisEventAnalytics() results for one program', () => {
         const analyticsResponse = {
           results: [
             { period: '20200206', organisationUnit: 'TO_Nukuhc', dataElement: 'POP01', value: 1 },
@@ -355,6 +385,47 @@ export const testPullAnalytics = () => {
         return expect(
           dhisService.pull([DATA_SOURCES.POP01], 'dataElement', basicOptions),
         ).resolves.toStrictEqual(analyticsResponse);
+      });
+
+      it('returns flattened results if more than one program is specified', () => {
+        const analyticsResponsePOP01 = {
+          results: [
+            { period: '20200206', organisationUnit: 'TO_Nukuhc', dataElement: 'POP01', value: 1 },
+          ],
+          metadata: { dataElementCodeToName: { POP01: 'Population 1' } },
+        };
+        const analyticsResponseDIF01 = {
+          results: [
+            { period: '20200206', organisationUnit: 'TO_Nukuhc', dataElement: 'DIF01', value: 3 },
+          ],
+          metadata: { dataElementCodeToName: { POP01: 'Different 1' } },
+        };
+
+        const expectedResults = {
+          results: [
+            { period: '20200206', organisationUnit: 'TO_Nukuhc', dataElement: 'POP01', value: 1 },
+            { period: '20200206', organisationUnit: 'TO_Nukuhc', dataElement: 'DIF01', value: 3 },
+          ],
+          metaData: {
+            dataElementCodeToName: {
+              POP01: 'Population 1',
+              DIF01: 'Different 1',
+            },
+          },
+        };
+
+        buildAnalyticsMock.mockImplementation(({ headers }) =>
+          headers.map(({ name }) => name).includes('POP01')
+            ? analyticsResponsePOP01
+            : analyticsResponseDIF01,
+        );
+
+        return expect(
+          dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
+            ...basicOptions,
+            programCodes: ['POP01', 'DIFF_GROUP'],
+          }),
+        ).resolves.toEqual(expectedResults);
       });
     });
   });
