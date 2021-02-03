@@ -162,37 +162,6 @@ export class DhisService extends Service {
     return events;
   };
 
-  // TODO: Delete
-  fetchEventAnalyticsForPrograms = async (api, programCodes, query) => {
-    const allHeaders = [];
-    let metaData = { items: {}, dimensions: {} };
-    let width = 0;
-    let height = 0;
-    const rows = [];
-
-    const fetchAnalyticsForProgram = async programCode => {
-      const newAnalytics = await api.getEventAnalytics({ ...query, programCode });
-
-      allHeaders.push(...newAnalytics.headers);
-      metaData = {
-        items: { ...metaData.items, ...newAnalytics.metaData.items },
-        dimensions: { ...metaData.dimensions, ...newAnalytics.metaData.dimensions },
-      };
-      width = newAnalytics.width;
-      height += newAnalytics.height;
-      rows.push(...newAnalytics.rows);
-    };
-
-    await Promise.all(programCodes.map(fetchAnalyticsForProgram));
-    return {
-      headers: Object.values(keyBy(allHeaders, 'name')),
-      metaData,
-      width,
-      height,
-      rows,
-    };
-  };
-
   /**
    * This is a deprecated method which invokes a slow DHIS2 api ('/events').
    * It is invoked using the `options.useDeprecatedApi` flag
@@ -228,10 +197,47 @@ export class DhisService extends Service {
     return buildAnalyticsFromEvents(translatedEvents, dataElements);
   };
 
+  translateDhisEventAnalytics = async (dhisAnalytics, dataSources) => {
+    const dataElementCodes = dataSources.map(({ code }) => code);
+
+    // Map to translation
+    const translatedEventAnalytics = await this.translator.translateInboundEventAnalytics(
+      dhisAnalytics,
+      dataSources,
+    );
+
+    // Map to analytics
+    const analytics = buildAnalyticsFromDhisEventAnalytics(
+      translatedEventAnalytics,
+      dataElementCodes,
+    );
+
+    return analytics;
+  };
+
+  getDataSourcesInProgram = async (dataSources, programCode) => {
+    const allowedDataSources = await this.models.dataSource.getDataElementsInGroup(programCode);
+    return dataSources.filter(({ id }) => allowedDataSources.includes(id));
+  };
+
+  mergeAnalytics = analytics => ({
+    results: analytics
+      .map(({ results }) => results)
+      .flat()
+      .sort(getSortByKey('period')),
+    metadata: {
+      dataElementCodeToName: analytics.reduce(
+        (dataElementCodeToName, { metadata }) => ({
+          ...dataElementCodeToName,
+          ...(metadata.dataElementCodeToName || {}),
+        }),
+        {},
+      ),
+    },
+  })
+
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
     const { programCodes = [], period, startDate, endDate, organisationUnitCodes } = options;
-    const dataElementCodes = dataSources.map(({ code }) => code);
-    const dhisElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
 
     const baseQuery = {
       programCodes,
@@ -245,14 +251,13 @@ export class DhisService extends Service {
     const allAnalytics = [];
 
     const fetchAnalyticsForProgram = async programCode => {
-      const allowedDataElementCodes = (
-        await this.models.dataSource.getDataElementsInGroup(programCode)
-      ).map(({ dataElementCode }) => dataElementCode);
+      const dataSourcesToFetch = this.getDataSourcesInProgram(dataSources, programCode);
 
-      const dataElementCodesToFetch = dhisElementCodes.filter(code =>
-        allowedDataElementCodes.includes(code),
-      );
       if (dataElementCodesToFetch.length === 0) return;
+
+      const dataElementCodesToFetch = dataSourcesToFetch.map(
+        ({ dataElementCode }) => dataElementCode,
+      );
 
       const dhisAnalytics = await api.getEventAnalytics({
         ...baseQuery,
@@ -260,40 +265,12 @@ export class DhisService extends Service {
         dataElementCodes: dataElementCodesToFetch,
       });
 
-      // Map to translation
-      const translatedEventAnalytics = await this.translator.translateInboundEventAnalytics(
-        dhisAnalytics,
-        dataSources,
-      );
-
-      // Map to analytics
-      const analytics = buildAnalyticsFromDhisEventAnalytics(
-        translatedEventAnalytics,
-        dataElementCodes,
-      );
-
-      allAnalytics.push(analytics);
+      allAnalytics.push(this.translateDhisEventAnalytics(dhisAnalytics));
     };
 
-    await Promise.all(programCodes.map(fetchAnalyticsForProgram));
-    // const eventAnalytics = await this.fetchEventAnalyticsForPrograms(api, programCodes, query);
+    await Promise.all(fetchAnalyticsForProgram);
 
-    // Flatten and return
-    return {
-      results: allAnalytics
-        .map(({ results }) => results)
-        .flat()
-        .sort(getSortByKey('period')),
-      metadata: {
-        dataElementCodeToName: allAnalytics.reduce(
-          (dataElementCodeToName, { metadata }) => ({
-            ...dataElementCodeToName,
-            ...(metadata.dataElementCodeToName || {}),
-          }),
-          {},
-        ),
-      },
-    };
+    return this.mergeAnalytics(allAnalytics);
   };
 
   pullAnalyticsForApi = async (api, dataSources, options) => {
