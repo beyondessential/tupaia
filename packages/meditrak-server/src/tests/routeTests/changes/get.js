@@ -14,6 +14,7 @@ export const testGetChangesCount = (app, models) =>
   function () {
     before(async function () {
       // Set up real sync queue for testing the /changes endpoint
+      // eslint-disable-next-line no-unused-vars
       const syncQueue = new SyncQueue(models, models.meditrakSyncQueue, [TYPES.QUESTION]);
     });
 
@@ -35,7 +36,7 @@ export const testGetChangesCount = (app, models) =>
       const newQuestions = [];
       await oneSecondSleep();
       for (let i = 0; i < numberOfQuestionsToAdd; i++) {
-        newQuestions[i] = await upsertQuestion({});
+        newQuestions[i] = await upsertQuestion();
       }
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
@@ -57,7 +58,7 @@ export const testGetChangesCount = (app, models) =>
       const numberOfQuestionsToAddInFirstUpdate = randomIntBetween(1, 20);
       const newQuestionsInFirstUpdate = [];
       for (let i = 0; i < numberOfQuestionsToAddInFirstUpdate; i++) {
-        newQuestionsInFirstUpdate[i] = await upsertQuestion({});
+        newQuestionsInFirstUpdate[i] = await upsertQuestion();
       }
 
       // Add some more questions
@@ -67,7 +68,7 @@ export const testGetChangesCount = (app, models) =>
       const numberOfQuestionsToAddInSecondUpdate = randomIntBetween(1, 20);
       const newQuestionsInSecondUpdate = [];
       for (let i = 0; i < numberOfQuestionsToAddInSecondUpdate; i++) {
-        newQuestionsInSecondUpdate[i] = await upsertQuestion({});
+        newQuestionsInSecondUpdate[i] = await upsertQuestion();
       }
 
       // Delete some of the questions added in the first update
