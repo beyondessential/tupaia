@@ -248,13 +248,7 @@ export class DhisService extends Service {
       const allowedDataElementCodes = (
         await this.models.dataSource.getDataElementsInGroup(programCode)
       ).map(({ dataElementCode }) => dataElementCode);
-      console.log(
-        JSON.stringify(
-          { programCode, allowedDataElementCodes, dataElementCodes, dhisElementCodes },
-          null,
-          2,
-        ),
-      );
+
       const dataElementCodesToFetch = dhisElementCodes.filter(code =>
         allowedDataElementCodes.includes(code),
       );
@@ -277,7 +271,6 @@ export class DhisService extends Service {
         translatedEventAnalytics,
         dataElementCodes,
       );
-      console.log(JSON.stringify({ dhisAnalytics, analytics, allAnalytics }, null, 2));
 
       allAnalytics.push(analytics);
     };
@@ -342,8 +335,6 @@ export class DhisService extends Service {
 
     await Promise.all(apis.map(pullForApi));
 
-    // console.log({ dataSources, options, response });
-    // console.log(response.results);
     return response;
   };
 
