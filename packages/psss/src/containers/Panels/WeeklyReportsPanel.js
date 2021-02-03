@@ -154,7 +154,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       isSaving || isLoading || isFetching || countryTableStatus === TABLE_STATUSES.EDITABLE;
 
     return (
-      <StyledDrawer open={isOpen} onClose={handleClose}>
+      <StyledDrawer open={isOpen} onClose={handleClose} data-testid="weekly-reports-panel">
         <DrawerTray heading="Upcoming report" onClose={handleClose} />
         <DrawerHeader
           trayHeading="Upcoming report"

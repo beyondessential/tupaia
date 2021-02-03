@@ -6,15 +6,7 @@
 import { queryCache } from 'react-query';
 import { useData } from './useData';
 import { calculateWeekStatus } from '../../utils';
-import { REPORT_STATUSES } from '../../constants';
-
-const SYNDROMES = {
-  AFR: 'Acute Fever and Rash (AFR)',
-  DIA: 'Diarrhoea (DIA)',
-  ILI: 'Influenza-like Illness (ILI)',
-  PF: 'Prolonged Fever (PF)',
-  DLI: 'Dengue-like Illness (DLI)',
-};
+import { REPORT_STATUSES, SYNDROMES } from '../../constants';
 
 const getEmptySyndromeData = id => ({
   id,
