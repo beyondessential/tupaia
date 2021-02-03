@@ -14,22 +14,21 @@ import {
   Legend,
   LineChart,
   ReferenceArea,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
 
-import { CHART_BLUES, TUPAIA_ORANGE, DARK_BLUE, VALUE_TYPES } from '../constants';
-import { isMobile, formatDataValue } from '../utils';
+import { CHART_BLUES } from '../constants';
+import { isMobile } from '../utils';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CHART_TYPES } from './chartTypes';
-import ReferenceLabel from './ReferenceLabel';
 import CustomTooltip from './Tooltip';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';
 import { XAxis as XAxisComponent } from './XAxis';
 import { YAxes } from './YAxes';
+import { ReferenceLines } from './ReferenceLines';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 
@@ -152,58 +151,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     );
   };
 
-  const renderReferenceLineForAverage = () => {
-    const { valueType, data, presentationOptions } = viewContent;
-    // show reference line by default
-    const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
-    // average is null for stacked charts that don't have a "value" key in data
-    const average = data.reduce((acc, row) => acc + row.value, 0) / data.length;
-
-    if (!average || shouldHideReferenceLine) {
-      return null;
-    }
-    return (
-      <ReferenceLine
-        y={average}
-        stroke={TUPAIA_ORANGE}
-        label={
-          <ReferenceLabel
-            value={`Average ${formatDataValue(average, valueType)}`}
-            fill={TUPAIA_ORANGE}
-          />
-        }
-        isAnimationActive={isEnlarged && !isExporting}
-      />
-    );
-  };
-
-  const renderReferenceLineLabel = referenceLineLabel => {
-    if (referenceLineLabel === undefined) return null;
-    return (
-      <ReferenceLabel value={`${referenceLineLabel}`} fill={isExporting ? '#000000' : '#ffffff'} />
-    );
-  };
-
-  const renderReferenceLineForValues = () => {
-    const referenceLines = Object.entries(chartConfig)
-      .filter(([, { referenceValue }]) => referenceValue)
-      .map(([dataKey, { referenceValue, yAxisOrientation, referenceLabel }]) => ({
-        key: `reference_line_${dataKey}`, // Use prefix to distinguish from curve key
-        y: referenceValue,
-        yAxisId: orientationToYAxisId(yAxisOrientation),
-        referenceLineLabel: referenceLabel,
-      }));
-
-    return referenceLines.map(referenceLine => (
-      <ReferenceLine
-        stroke={isExporting ? '#000000' : '#ffffff'}
-        strokeDasharray="3 3"
-        label={renderReferenceLineLabel(referenceLine.referenceLineLabel)}
-        {...referenceLine}
-      />
-    ));
-  };
-
   const {
     chartType,
     data,
@@ -295,7 +242,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
               });
             }
           })}
-        {chartType === BAR ? renderReferenceLineForAverage() : renderReferenceLineForValues()}
+        {ReferenceLines({ viewContent, isExporting, isEnlarged })}
         {chartType === BAR && data.length > 20 && !isExporting && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
