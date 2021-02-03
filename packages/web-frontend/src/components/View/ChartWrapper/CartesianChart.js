@@ -372,43 +372,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     );
   };
 
-  const renderTooltip = () => {
-    const { chartType, valueType, labelType, presentationOptions } = viewContent;
-
-    return (
-      <Tooltip
-      // filterNull={false}
-      // content={
-      //   <CustomTooltip
-      //     valueType={valueType}
-      //     labelType={labelType}
-      //     periodGranularity={viewContent.periodGranularity}
-      //     chartConfig={chartConfig}
-      //     presentationOptions={presentationOptions}
-      //     chartType={chartType}
-      //   />
-      // }
-      />
-    );
-  };
-
-  const renderLegend = () => {
-    const { renderLegendForOneItem } = viewContent;
-    const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
-
-    return (
-      (hasDataSeries || renderLegendForOneItem) &&
-      isEnlarged && (
-        <Legend
-          onClick={onLegendClick}
-          formatter={formatLegend}
-          verticalAlign={isExporting ? 'top' : 'bottom'}
-          wrapperStyle={isExporting ? { top: '-20px' } : {}}
-        />
-      )
-    );
-  };
-
   const renderReferenceAreas = () => {
     if (!('referenceAreas' in viewContent)) {
       return null;
@@ -475,19 +438,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     ));
   };
 
-  const renderBrush = () => {
-    const { chartType, data } = viewContent;
-    const hasBigData = data.length > 20;
-
-    return (
-      chartType === BAR &&
-      hasBigData &&
-      !isExporting && (
-        <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
-      )
-    );
-  };
-
   const chartTypeToRenderMethod = {
     [AREA]: renderArea,
     [BAR]: renderBar,
@@ -499,8 +449,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
     const { chartType: defaultChartType } = viewContent;
 
-    console.log('config', config);
-
     const sortedChartConfig = Object.entries(config).sort((a, b) => {
       return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
     });
@@ -509,7 +457,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
       .filter(([, { hideFromLegend }]) => !hideFromLegend)
       .map(([dataKey, { chartType = defaultChartType }]) => {
         const renderMethod = chartTypeToRenderMethod[chartType];
-        console.log('renderMethod', chartType, renderMethod);
         const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
         const yAxisId = orientationToYAxisId(yAxisOrientation);
 
@@ -534,7 +481,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   function renderBar({ color = BLUE, dataKey, yAxisId, stackId }) {
     const { valueType } = viewContent;
     const labelOffset = chartConfig ? -15 : -12;
-    console.log('render bar...');
     return (
       <Bar
         key={dataKey}
@@ -549,7 +495,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
           <LabelList
             dataKey={dataKey}
             position="insideTop"
-            offset={labelOffset}
+            offset={chartConfig ? -15 : -12}
             formatter={value => formatDataValue(value, valueType)}
           />
         )}
@@ -585,7 +531,16 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     );
   }
 
-  const { chartType, data } = viewContent;
+  const {
+    chartType,
+    data,
+    valueType,
+    labelType,
+    presentationOptions,
+    renderLegendForOneItem,
+  } = viewContent;
+
+  const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
   const Chart = CHART_TYPE_TO_COMPONENT[chartType];
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
@@ -598,11 +553,32 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         {renderReferenceAreas()}
         {renderXAxis()}
         {renderYAxes()}
-        {renderTooltip()}
-        {renderLegend()}
+        <Tooltip
+          filterNull={false}
+          content={
+            <CustomTooltip
+              valueType={valueType}
+              labelType={labelType}
+              periodGranularity={viewContent.periodGranularity}
+              chartConfig={chartConfig}
+              presentationOptions={presentationOptions}
+              chartType={chartType}
+            />
+          }
+        />
+        {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
+          <Legend
+            onClick={onLegendClick}
+            formatter={formatLegend}
+            verticalAlign={isExporting ? 'top' : 'bottom'}
+            wrapperStyle={isExporting ? { top: '-20px' } : {}}
+          />
+        )}
         {renderCharts()}
         {renderReferenceLines()}
-        {renderBrush()}
+        {chartType === BAR && data.length > 20 && !isExporting && (
+          <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
+        )}
       </Chart>
     </ResponsiveContainer>
   );
