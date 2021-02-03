@@ -46,7 +46,7 @@ async function deleteItemByOneCondition(db, table, condition) {
 }
 const totalClientNumberIndicator = {
   id: generateId(),
-  code: 'TO_HPU_Nutrition_Counselling_Number_Of_Total_Client',
+  code: 'TO_HPU_Nutrition_Counselling_Number_Of_Total_Clients',
   builder: 'arithmetic',
   config: {
     formula:
@@ -82,7 +82,7 @@ const totalClientNumberIndicator = {
 };
 const newClientNumberIndicator = {
   id: generateId(),
-  code: 'TO_HPU_Nutrition_Counselling_Number_Of_New_Client',
+  code: 'TO_HPU_Nutrition_Counselling_Number_Of_New_Clients',
   builder: 'arithmetic',
   config: {
     formula:
@@ -118,7 +118,7 @@ const newClientNumberIndicator = {
 };
 const completedClientNumberIndicator = {
   id: generateId(),
-  code: 'TO_HPU_Nutrition_Counselling_Number_Of_Completed_Client',
+  code: 'TO_HPU_Nutrition_Counselling_Number_Of_Completed_Clients',
   builder: 'arithmetic',
   config: {
     formula:
@@ -154,7 +154,7 @@ const completedClientNumberIndicator = {
 };
 const dropOutClientNumberIndicator = {
   id: generateId(),
-  code: 'TO_HPU_Nutrition_Counselling_Number_Of_Drop_Out_Client',
+  code: 'TO_HPU_Nutrition_Counselling_Number_Of_Drop_Out_Clients',
   builder: 'arithmetic',
   config: {
     formula:
