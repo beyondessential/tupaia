@@ -5,6 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 
+import { getSortByKey } from '@tupaia/utils';
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
@@ -161,6 +162,7 @@ export class DhisService extends Service {
     return events;
   };
 
+  // TODO: Delete
   fetchEventAnalyticsForPrograms = async (api, programCodes, query) => {
     const allHeaders = [];
     let metaData = { items: {}, dimensions: {} };
@@ -227,26 +229,78 @@ export class DhisService extends Service {
   };
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
-    const { programCodes = [], period, startDate, endDate } = options;
+    const { programCodes = [], period, startDate, endDate, organisationUnitCodes } = options;
     const dataElementCodes = dataSources.map(({ code }) => code);
     const dhisElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
 
-    const query = {
+    const baseQuery = {
       programCodes,
-      dataElementCodes: dhisElementCodes,
+      organisationUnitCodes,
       dataElementIdScheme: 'code',
       period,
       startDate,
       endDate,
     };
-    const eventAnalytics = await this.fetchEventAnalyticsForPrograms(api, programCodes, query);
 
-    const translatedEventAnalytics = await this.translator.translateInboundEventAnalytics(
-      eventAnalytics,
-      dataSources,
-    );
+    const allAnalytics = [];
 
-    return buildAnalyticsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
+    const fetchAnalyticsForProgram = async programCode => {
+      const allowedDataElementCodes = (
+        await this.models.dataSource.getDataElementsInGroup(programCode)
+      ).map(({ dataElementCode }) => dataElementCode);
+      console.log(
+        JSON.stringify(
+          { programCode, allowedDataElementCodes, dataElementCodes, dhisElementCodes },
+          null,
+          2,
+        ),
+      );
+      const dataElementCodesToFetch = dhisElementCodes.filter(code =>
+        allowedDataElementCodes.includes(code),
+      );
+      if (dataElementCodesToFetch.length === 0) return;
+
+      const dhisAnalytics = await api.getEventAnalytics({
+        ...baseQuery,
+        programCode,
+        dataElementCodes: dataElementCodesToFetch,
+      });
+
+      // Map to translation
+      const translatedEventAnalytics = await this.translator.translateInboundEventAnalytics(
+        dhisAnalytics,
+        dataSources,
+      );
+
+      // Map to analytics
+      const analytics = buildAnalyticsFromDhisEventAnalytics(
+        translatedEventAnalytics,
+        dataElementCodes,
+      );
+      console.log(JSON.stringify({ dhisAnalytics, analytics, allAnalytics }, null, 2));
+
+      allAnalytics.push(analytics);
+    };
+
+    await Promise.all(programCodes.map(fetchAnalyticsForProgram));
+    // const eventAnalytics = await this.fetchEventAnalyticsForPrograms(api, programCodes, query);
+
+    // Flatten and return
+    return {
+      results: allAnalytics
+        .map(({ results }) => results)
+        .flat()
+        .sort(getSortByKey('period')),
+      metadata: {
+        dataElementCodeToName: allAnalytics.reduce(
+          (dataElementCodeToName, { metadata }) => ({
+            ...dataElementCodeToName,
+            ...(metadata.dataElementCodeToName || {}),
+          }),
+          {},
+        ),
+      },
+    };
   };
 
   pullAnalyticsForApi = async (api, dataSources, options) => {
@@ -287,6 +341,9 @@ export class DhisService extends Service {
     };
 
     await Promise.all(apis.map(pullForApi));
+
+    // console.log({ dataSources, options, response });
+    // console.log(response.results);
     return response;
   };
 
@@ -332,7 +389,6 @@ export class DhisService extends Service {
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
     const dhisElementCodes = dataElementSources.map(({ dataElementCode }) => dataElementCode);
-
     const eventAnalytics = await api.getEventAnalytics({
       programCode,
       dataElementCodes: dhisElementCodes,
