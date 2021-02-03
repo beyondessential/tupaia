@@ -114,12 +114,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
 
-  const chartTypeToRenderMethod = {
-    [AREA]: renderArea,
-    [BAR]: renderBar,
-    [LINE]: renderLine,
-  };
-
   const isComposedChart = () => {
     return viewContent.chartType === COMPOSED;
   };
@@ -164,7 +158,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
 
   const filterDisabledData = data => {
     // Can't disable data without chartConfig
-    if (!chartConfig) return data;
+    if (!Object.keys(chartConfig).length === 0) return data;
 
     const hasDisabledData = activeDataKeys.length >= 1;
     updateChartConfig(hasDisabledData, viewContent);
@@ -494,12 +488,20 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     );
   };
 
+  const chartTypeToRenderMethod = {
+    [AREA]: renderArea,
+    [BAR]: renderBar,
+    [LINE]: renderLine,
+  };
+
   const renderCharts = () => {
-    console.log('render charts', chartConfig);
-    const defaultChartConfig = { [DEFAULT_DATA_KEY]: {} };
+    // Todo: update setting default chart config
+    const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
     const { chartType: defaultChartType } = viewContent;
 
-    const sortedChartConfig = Object.entries(chartConfig).sort((a, b) => {
+    console.log('config', config);
+
+    const sortedChartConfig = Object.entries(config).sort((a, b) => {
       return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
     });
 
@@ -507,7 +509,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
       .filter(([, { hideFromLegend }]) => !hideFromLegend)
       .map(([dataKey, { chartType = defaultChartType }]) => {
         const renderMethod = chartTypeToRenderMethod[chartType];
-        console.log('renderMethod', renderMethod);
+        console.log('renderMethod', chartType, renderMethod);
         const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
         const yAxisId = orientationToYAxisId(yAxisOrientation);
 
@@ -515,7 +517,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
       });
   };
 
-  const renderArea = ({ color = BLUE, dataKey, yAxisId }) => {
+  function renderArea({ color = BLUE, dataKey, yAxisId }) {
     return (
       <Area
         key={dataKey}
@@ -527,9 +529,9 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         isAnimationActive={isEnlarged && !isExporting}
       />
     );
-  };
+  }
 
-  const renderBar = ({ color = BLUE, dataKey, yAxisId, stackId }) => {
+  function renderBar({ color = BLUE, dataKey, yAxisId, stackId }) {
     const { valueType } = viewContent;
     const labelOffset = chartConfig ? -15 : -12;
     console.log('render bar...');
@@ -553,9 +555,9 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         )}
       </Bar>
     );
-  };
+  }
 
-  const renderLine = ({ color, dataKey, yAxisId }) => {
+  function renderLine({ color, dataKey, yAxisId }) {
     const { valueType } = viewContent;
     const defaultColor = isExporting ? DARK_BLUE : BLUE;
 
@@ -581,7 +583,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         )}
       </Line>
     );
-  };
+  }
 
   const { chartType, data } = viewContent;
   const Chart = CHART_TYPE_TO_COMPONENT[chartType];
