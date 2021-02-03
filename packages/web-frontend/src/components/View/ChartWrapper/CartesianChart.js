@@ -11,7 +11,6 @@ import {
   BarChart,
   Brush,
   ComposedChart,
-  Legend,
   LineChart,
   ReferenceArea,
   ResponsiveContainer,
@@ -26,6 +25,7 @@ import CustomTooltip from './Tooltip';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';
+import { Legend } from './Legend';
 import { XAxis as XAxisComponent } from './XAxis';
 import { YAxes } from './YAxes';
 import { ReferenceLines } from './ReferenceLines';
@@ -85,6 +85,24 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
 
+  const getIsActiveKey = legendDatakey =>
+    activeDataKeys.length === 0 ||
+    activeDataKeys.includes(legendDatakey) ||
+    legendDatakey === LEGEND_ALL_DATA_KEY;
+
+  const updateChartConfig = hasDisabledData => {
+    const newChartConfig = { ...chartConfig };
+
+    if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
+      const allChartType = Object.values(chartConfig)[0].chartType || chartType || 'line';
+      newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
+      setChartConfig(newChartConfig);
+    } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
+      delete newChartConfig[LEGEND_ALL_DATA_KEY];
+      setChartConfig(newChartConfig);
+    }
+  };
+
   const onLegendClick = event => {
     const legendDatakey = event.dataKey;
     const actionWillSelectAllKeys =
@@ -105,24 +123,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     }
   };
 
-  const getIsActiveKey = legendDatakey =>
-    activeDataKeys.length === 0 ||
-    activeDataKeys.includes(legendDatakey) ||
-    legendDatakey === LEGEND_ALL_DATA_KEY;
-
-  const updateChartConfig = hasDisabledData => {
-    const newChartConfig = { ...chartConfig };
-
-    if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
-      const allChartType = Object.values(chartConfig)[0].chartType || chartType || 'line';
-      newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
-      setChartConfig(newChartConfig);
-    } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
-      delete newChartConfig[LEGEND_ALL_DATA_KEY];
-      setChartConfig(newChartConfig);
-    }
-  };
-
   const filterDisabledData = data => {
     // Can't disable data without chartConfig
     if (!Object.keys(chartConfig).length === 0) return data;
@@ -138,17 +138,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
           }, {}),
         )
       : data;
-  };
-
-  const formatLegend = (value, { color }) => {
-    const isActive = getIsActiveKey(value);
-    const displayColor = isActive ? color : color;
-    // const displayColor = isActive ? color : getInactiveColor(color);
-    return (
-      <span style={{ color: displayColor, textDecoration: isActive ? '' : 'line-through' }}>
-        {chartConfig[value].label || value}
-      </span>
-    );
   };
 
   const {
@@ -196,10 +185,10 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         />
         {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
           <Legend
+            chartConfig={chartConfig}
+            getIsActiveKey={getIsActiveKey}
+            isExporting={isExporting}
             onClick={onLegendClick}
-            formatter={formatLegend}
-            verticalAlign={isExporting ? 'top' : 'bottom'}
-            wrapperStyle={isExporting ? { top: '-20px' } : {}}
           />
         )}
         {sortedChartConfig
