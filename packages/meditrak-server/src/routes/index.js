@@ -11,10 +11,10 @@ import { getChanges } from './getChanges';
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
+import { BESAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
-import { GETIndicators } from './GETIndicators';
 import { GETDataSources } from './GETDataSources';
 import { GETEntities } from './GETEntities';
 import { GETFeedItems } from './GETFeedItems';
@@ -153,7 +153,7 @@ export default {
   getDisasters: useRouteHandler(GETDisasters),
   getDashboardReports: useRouteHandler(GETDashboardReports),
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
-  getIndicators: useRouteHandler(GETIndicators),
+  getIndicators: useRouteHandler(BESAdminGETHandler),
   getDataSources: useRouteHandler(GETDataSources),
   getEntities: useRouteHandler(GETEntities),
   getGeographicalAreas: useRouteHandler(GETGeographicalAreas),
