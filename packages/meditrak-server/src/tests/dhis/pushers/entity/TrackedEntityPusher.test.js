@@ -5,13 +5,11 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import winston from 'winston';
+
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-
-import { Pusher } from '../../../../dhis/pushers/Pusher';
-
 import { TrackedEntityPusher } from '../../../../dhis/pushers/entity/TrackedEntityPusher';
-import { createEntityStub, createModelsStub, createDhisApiStub } from './helpers';
+import { Pusher } from '../../../../dhis/pushers/Pusher';
+import { createDhisApiStub, createEntityStub, createModelsStub } from './helpers';
 
 const { TRACKED_ENTITY_INSTANCE } = DHIS2_RESOURCE_TYPES;
 
@@ -56,15 +54,10 @@ const getDhisApiStub = () => createDhisApiStub(DEFAULT_DHIS_API_STUB_PROPS);
 describe('TrackedEntityPusher', () => {
   describe('push()', () => {
     before(() => {
-      // Suppress logging while running the tests
-      sinon.stub(winston, 'error');
-      sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
     });
 
     after(() => {
-      winston.error.restore();
-      winston.warn.restore();
       Pusher.prototype.logResults.restore();
     });
 
@@ -73,9 +66,9 @@ describe('TrackedEntityPusher', () => {
     });
 
     describe('create/update an entity', () => {
-      it('should log an error if the changed record was not found', async () => {
+      it('should log an error and return false if the changed record was not found', async () => {
         const pusher = new TrackedEntityPusher(createModelsStub(), { type: 'update' }, {});
-        await pusher.push();
+        await expect(pusher.push()).to.eventually.be.false;
         return expect(pusher.logResults).to.have.been.calledWithMatch(
           sinon.match({ errors: [sinon.match(/entity .*not found/i)] }),
         );

@@ -9,10 +9,10 @@ import { constructNewRecordValidationRules } from './utilities';
 import { resourceToRecordType } from '../utilities';
 import { createUser, createJoinChild } from '../dataAccessors';
 
-const { ALERT, COMMENT, USER_ACCOUNT } = TYPES;
+const { SURVEY_RESPONSE, COMMENT, USER_ACCOUNT } = TYPES;
 
 const PARENT_RECORD_CREATORS = {
-  [`${ALERT}/${COMMENT}`]: createJoinChild,
+  [`${SURVEY_RESPONSE}/${COMMENT}`]: createJoinChild,
 };
 
 const CUSTOM_RECORD_CREATORS = {

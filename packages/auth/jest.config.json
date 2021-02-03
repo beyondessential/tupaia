@@ -2,7 +2,7 @@
   "clearMocks": true,
   "transform": { "^.+\\.jsx?$": "../../jestTransformer.js" },
   "testMatch": ["<rootDir>/src/__tests__/**/**.test.js"],
-  "setupFilesAfterEnv": ["../../jestScaffolding.js", "./jest.setup.js"],
+  "setupFilesAfterEnv": ["../../jest.setup.js", "./jest.setup.js"],
   "transformIgnorePatterns": ["/node_modules/"],
   "testEnvironment": "node"
 }

@@ -11,17 +11,21 @@
  * Container providing all the controls for user: login, logout, info, account
  */
 
-import SearchIcon from 'material-ui/svg-icons/action/search';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import styled from 'styled-components';
+import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors';
+import SearchIcon from 'material-ui/svg-icons/action/search';
+import Button from '@material-ui/core/Button';
+import CircularProgress from 'material-ui/CircularProgress';
 import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
-import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors';
 import {
   changeSearch,
+  fetchMoreSearchResults,
   toggleSearchExpand,
   setOrgUnit,
   openMapPopup,
@@ -39,12 +43,14 @@ const styles = {
     overflowY: 'auto',
   },
   searchResultList: {
+    marginTop: '10px',
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: '0%',
     overflowY: 'auto',
+    maxHeight: '200px',
   },
   searchResultItem: {
     display: 'flex',
@@ -59,7 +65,7 @@ const styles = {
   searchResponseText: {
     paddingTop: 14,
   },
-  heirarchyItem: {
+  hierarchyItem: {
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: '0%',
@@ -69,7 +75,30 @@ const styles = {
   controlBar: {
     marginBottom: '10px',
   },
+  loadingContainer: {
+    marginTop: '10px',
+    height: '100px',
+    flexDirection: 'column',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingResultText: {
+    marginTop: '20px',
+  },
 };
+
+const LoadMoreResultsButton = styled(Button)`
+  width: 100%;
+  margin: 15px 0 5px 0;
+  padding: 10px 0;
+  border-radius: 3px;
+  background: rgb(68, 70, 80);
+
+  &:hover {
+    background: rgb(43, 45, 56);
+  }
+`;
 
 export class SearchBar extends PureComponent {
   constructor(props) {
@@ -88,28 +117,57 @@ export class SearchBar extends PureComponent {
   }
 
   renderSearchResults() {
-    const { searchResponse, onOrgUnitClick, searchString } = this.props;
+    const {
+      isLoadingSearchResults,
+      searchResults,
+      hasMoreResults,
+      onOrgUnitClick,
+      searchString,
+      onLoadMoreSearchResults,
+    } = this.props;
     if (searchString === '') {
       return null;
     }
-    if (!searchResponse || !Array.isArray(searchResponse) || searchResponse.length < 1) {
-      const responseText = isNull(searchResponse)
-        ? 'Loading search results...'
-        : `No results found for search '${searchString}'.`;
-      return <div style={styles.searchResponseText}>{responseText}</div>;
+
+    // Show loading results indicator
+    if (isLoadingSearchResults) {
+      return (
+        <div style={styles.loadingContainer}>
+          <CircularProgress />
+          <div style={styles.loadingResultText}>Loading results...</div>
+        </div>
+      );
     }
+
+    // Show 'No results found'
+    if (!searchResults || !Array.isArray(searchResults) || searchResults.length < 1) {
+      return (
+        <div
+          style={styles.searchResponseText}
+        >{`No results found for search '${searchString}'.`}</div>
+      );
+    }
+
+    // Show actual results
     return (
-      <List style={styles.searchResultList}>
-        {searchResponse.map(({ displayName, organisationUnitCode }) => (
-          <ListItem
-            style={{ display: 'flex' }}
-            innerDivStyle={styles.searchResultItem}
-            primaryText={displayName}
-            onClick={() => onOrgUnitClick(organisationUnitCode)}
-            key={displayName}
-          />
-        ))}
-      </List>
+      <div>
+        <List style={styles.searchResultList}>
+          {searchResults.map(({ displayName, organisationUnitCode }) => (
+            <ListItem
+              style={{ display: 'flex' }}
+              innerDivStyle={styles.searchResultItem}
+              primaryText={displayName}
+              onClick={() => onOrgUnitClick(organisationUnitCode)}
+              key={displayName}
+            />
+          ))}
+        </List>
+        {hasMoreResults ? (
+          <LoadMoreResultsButton onClick={onLoadMoreSearchResults}>
+            LOAD MORE RESULTS
+          </LoadMoreResultsButton>
+        ) : null}
+      </div>
     );
   }
 
@@ -124,7 +182,7 @@ export class SearchBar extends PureComponent {
     const hierarchy = hierarchyData.map(item => (
       <SearchBarItem key={item} organisationUnitCode={item} nestedMargin="0px" />
     ));
-    return <List style={styles.heirarchyItem}>{hierarchy}</List>;
+    return <List style={styles.hierarchyItem}>{hierarchy}</List>;
   }
 
   render() {
@@ -171,22 +229,28 @@ SearchBar.propTypes = {
   onOrgUnitClick: PropTypes.func.isRequired,
   requestRootOrgUnit: PropTypes.func.isRequired,
   isExpanded: PropTypes.bool,
-  searchResponse: PropTypes.arrayOf(PropTypes.object),
+  isLoadingSearchResults: PropTypes.bool,
+  hasMoreResults: PropTypes.bool,
+  searchResults: PropTypes.arrayOf(PropTypes.object),
   hierarchyData: PropTypes.arrayOf(PropTypes.string),
   searchString: PropTypes.string,
   orgUnitFetchError: PropTypes.string,
   onSearchChange: PropTypes.func,
+  onLoadMoreSearchResults: PropTypes.func,
   onSearchFocus: PropTypes.func,
   onSearchBlur: PropTypes.func,
 };
 
 SearchBar.defaultProps = {
   isExpanded: false,
-  searchResponse: null,
+  isLoadingSearchResults: false,
+  searchResults: null,
+  hasMoreResults: false,
   hierarchyData: null,
   searchString: '',
   orgUnitFetchError: '',
   onSearchChange: undefined,
+  onLoadMoreSearchResults: undefined,
   onSearchFocus: undefined,
   onSearchBlur: undefined,
 };
@@ -196,17 +260,32 @@ const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
 );
 
 const mapStateToProps = state => {
-  const { isExpanded, searchResponse, searchString } = state.searchBar;
+  const {
+    isExpanded,
+    isLoadingSearchResults,
+    searchResults,
+    hasMoreResults,
+    searchString,
+  } = state.searchBar;
   const { orgUnitFetchError } = state.orgUnits;
   const hierarchyData = selectCodeFromOrgUnit(
     selectOrgUnitChildren(state, selectCurrentProjectCode(state)),
   );
-  return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
+  return {
+    isExpanded,
+    isLoadingSearchResults,
+    searchResults,
+    hasMoreResults,
+    searchString,
+    hierarchyData,
+    orgUnitFetchError,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onSearchChange: event => dispatch(changeSearch(event.target.value)),
+    onLoadMoreSearchResults: () => dispatch(fetchMoreSearchResults(true)),
     onSearchFocus: () => dispatch(toggleSearchExpand(true)),
     onExpandClick: () => dispatch(toggleSearchExpand()),
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>

@@ -16,4 +16,5 @@ export const PUBLIC_COUNTRY_CODES = [
   'WS',
   'CK',
   'VE',
+  'PW',
 ];
