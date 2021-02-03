@@ -102,8 +102,6 @@ const LEGEND_ALL_DATA = {
   stackId: 1,
 };
 
-const XAxisComponent = () => {};
-
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
@@ -116,10 +114,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   const [xAxisHeight, setXAxisHeight] = useState(0);
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
-
-  const isComposedChart = () => {
-    return viewContent.chartType === COMPOSED;
-  };
 
   const onLegendClick = event => {
     const legendDatakey = event.dataKey;
@@ -177,7 +171,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   };
 
   const getBarSize = () => {
-    if (isComposedChart() || viewContent.data.length === 1) {
+    if (chartType === COMPOSED || viewContent.data.length === 1) {
       return isEnlarged ? 100 : 50;
     }
     return undefined;
@@ -420,26 +414,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     [LINE]: renderLine,
   };
 
-  const renderCharts = () => {
-    // Todo: update setting default chart config
-    const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
-    const { chartType: defaultChartType } = viewContent;
-
-    const sortedChartConfig = Object.entries(config).sort((a, b) => {
-      return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
-    });
-
-    return sortedChartConfig
-      .filter(([, { hideFromLegend }]) => !hideFromLegend)
-      .map(([dataKey, { chartType = defaultChartType }]) => {
-        const renderMethod = chartTypeToRenderMethod[chartType];
-        const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
-        const yAxisId = orientationToYAxisId(yAxisOrientation);
-
-        return renderMethod({ ...chartConfig[dataKey], dataKey, yAxisId });
-      });
-  };
-
   function renderArea({ color = BLUE, dataKey, yAxisId }) {
     return (
       <Area
@@ -521,6 +495,13 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   const Chart = CHART_TYPE_TO_COMPONENT[chartType];
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
+  const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
+  const { chartType: defaultChartType } = viewContent;
+
+  const sortedChartConfig = Object.entries(config).sort((a, b) => {
+    return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
+  });
+
   return (
     <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
       <Chart
@@ -563,7 +544,15 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
             wrapperStyle={isExporting ? { top: '-20px' } : {}}
           />
         )}
-        {renderCharts()}
+        {sortedChartConfig
+          .filter(([, { hideFromLegend }]) => !hideFromLegend)
+          .map(([dataKey, { chartT = defaultChartType }]) => {
+            const renderMethod = chartTypeToRenderMethod[chartT];
+            const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
+            const yAxisId = orientationToYAxisId(yAxisOrientation);
+
+            return renderMethod({ ...chartConfig[dataKey], dataKey, yAxisId, chartConfig, data });
+          })}
         {renderReferenceLines()}
         {chartType === BAR && data.length > 20 && !isExporting && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
