@@ -37,7 +37,7 @@ export const XAxis = ({ viewContent, isExporting, isEnlarged }) => {
   const [xAxisHeight, setXAxisHeight] = useState(0);
 
   const { BAR, COMPOSED } = CHART_TYPES;
-  const { chartType, chartConfig, data } = viewContent;
+  const { chartType, chartConfig = {}, data } = viewContent;
 
   /*
     If set 0, all the ticks will be shown.

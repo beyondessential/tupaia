@@ -45,8 +45,8 @@ const DEFAULT_Y_AXIS = {
 
 const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
-const ValueReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
-  const { chartConfig } = viewContent;
+const ValueReferenceLine = ({ viewContent, isExporting }) => {
+  const { chartConfig = {} } = viewContent;
 
   const referenceLines = Object.entries(chartConfig)
     .filter(([, { referenceValue }]) => referenceValue)
@@ -73,12 +73,10 @@ const ValueReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {
 ValueReferenceLine.propTypes = {
   viewContent: PropTypes.object.isRequired,
   isExporting: PropTypes.bool,
-  isEnlarged: PropTypes.bool,
 };
 
 ValueReferenceLine.defaultProps = {
   isExporting: false,
-  isEnlarged: false,
 };
 
 const AverageReferenceLine = ({ viewContent, isExporting, isEnlarged }) => {

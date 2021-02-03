@@ -9,12 +9,12 @@ import { get } from 'lodash';
 import {
   AreaChart,
   BarChart,
-  Brush,
   ComposedChart,
   LineChart,
   ReferenceArea,
   ResponsiveContainer,
   Tooltip,
+  Brush,
 } from 'recharts';
 
 import { CHART_BLUES } from '../constants';
@@ -49,19 +49,6 @@ const DEFAULT_Y_AXIS = {
 
 const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
-// Used to layer line charts on top of bar charts for composed charts.
-const CHART_SORT_ORDER = {
-  [LINE]: 0,
-  [BAR]: 1,
-};
-
-const CHART_TYPE_TO_COMPONENT = {
-  [AREA]: AreaChart,
-  [BAR]: BarChart,
-  [COMPOSED]: ComposedChart,
-  [LINE]: LineChart,
-};
-
 const DEFAULT_DATA_KEY = 'value';
 
 const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
@@ -72,15 +59,22 @@ const LEGEND_ALL_DATA = {
   stackId: 1,
 };
 
+// Used to layer line charts on top of bar charts for composed charts.
+const CHART_SORT_ORDER = {
+  [LINE]: 0,
+  [BAR]: 1,
+};
+const CHART_TYPE_TO_CHART = {
+  [AREA]: { Container: AreaChart, Component: AreaChartComponent },
+  [BAR]: { Container: BarChart, Component: BarChartComponent },
+  [COMPOSED]: { Container: ComposedChart, Component: BarChartComponent },
+  [LINE]: { Container: LineChart, Component: LineChartComponent },
+};
+
 /**
  * Cartesian Chart types using recharts
  * @see https://recharts.org
- *
- * Ideally, we would want to extract the various chart subcomponents (Axis, Legend etc)
- * to independent components to isolate their behavior. Unfortunately, for some reason recharts
- * does not work with wrapped components, so we just render everything here
  */
-
 export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState([]);
@@ -151,19 +145,19 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   } = viewContent;
 
   const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
-  const Chart = CHART_TYPE_TO_COMPONENT[chartType];
   const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
   const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
-  const { chartType: defaultChartType } = viewContent;
 
   const sortedChartConfig = Object.entries(config).sort((a, b) => {
     return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
   });
 
+  const Chart = CHART_TYPE_TO_CHART[chartType];
+
   return (
     <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
-      <Chart
+      <Chart.Container
         data={filterDisabledData(data)}
         margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
       >
@@ -193,49 +187,23 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         )}
         {sortedChartConfig
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
-          .map(([dataKey, { chartT = defaultChartType }]) => {
+          .map(([dataKey]) => {
             const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
             const yAxisId = orientationToYAxisId(yAxisOrientation);
 
-            // Render bar
-            if (chartT === BAR) {
-              return BarChartComponent({
-                valueType,
-                isEnlarged,
-                isExporting,
-                dataKey,
-                chartConfig,
-                data,
-              });
-            }
-
-            // Render area
-            if (chartT === AREA) {
-              return AreaChartComponent({
-                ...chartConfig[dataKey],
-                dataKey,
-                yAxisId,
-                chartConfig,
-                data,
-              });
-            }
-
-            // Render line
-            if (chartT === LINE) {
-              return LineChartComponent({
-                ...chartConfig[dataKey],
-                dataKey,
-                yAxisId,
-                chartConfig,
-                data,
-              });
-            }
+            return Chart.Component({
+              ...chartConfig[dataKey],
+              dataKey,
+              yAxisId,
+              chartConfig,
+              data,
+            });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
         {chartType === BAR && data.length > 20 && !isExporting && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
-      </Chart>
+      </Chart.Container>
     </ResponsiveContainer>
   );
 };
