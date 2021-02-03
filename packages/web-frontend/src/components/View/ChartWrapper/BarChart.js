@@ -10,7 +10,17 @@ import { formatDataValue } from '../utils';
 import { CHART_TYPES } from './chartTypes';
 import { BLUE } from '../constants';
 
-export const BarChart = ({ chartConfig, isExporting, isEnlarged, data }) => {
+export const BarChart = ({
+  color = BLUE,
+  dataKey,
+  yAxisId,
+  stackId,
+  valueType,
+  data,
+  isEnlarged,
+  isExporting,
+  chartConfig,
+}) => {
   const getBarSize = () => {
     if (chartConfig.chartType === CHART_TYPES.COMPOSED || data.length === 1) {
       return isEnlarged ? 100 : 50;
@@ -18,7 +28,6 @@ export const BarChart = ({ chartConfig, isExporting, isEnlarged, data }) => {
     return undefined;
   };
 
-  const { color = BLUE, dataKey, yAxisId, stackId } = chartConfig;
   return (
     <Bar
       key={dataKey}

@@ -9,7 +9,6 @@ import { get } from 'lodash';
 import {
   Area,
   AreaChart,
-  Bar,
   BarChart,
   Brush,
   ComposedChart,
@@ -34,6 +33,7 @@ import { formatTimestampForChart, getIsTimeSeries } from './helpers';
 import ReferenceLabel from './ReferenceLabel';
 import CustomTooltip from './Tooltip';
 import VerticalTick from './VerticalTick';
+import { BarChart as BarChartComponent } from './BarChart';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE } = VALUE_TYPES;
@@ -168,13 +168,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
           }, {}),
         )
       : data;
-  };
-
-  const getBarSize = () => {
-    if (chartType === COMPOSED || viewContent.data.length === 1) {
-      return isEnlarged ? 100 : 50;
-    }
-    return undefined;
   };
 
   const getXAxisPadding = () => {
@@ -410,7 +403,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
 
   const chartTypeToRenderMethod = {
     [AREA]: renderArea,
-    [BAR]: renderBar,
     [LINE]: renderLine,
   };
 
@@ -425,31 +417,6 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         fill={color}
         isAnimationActive={isEnlarged && !isExporting}
       />
-    );
-  }
-
-  function renderBar({ color = BLUE, dataKey, yAxisId, stackId }) {
-    const { valueType } = viewContent;
-    const labelOffset = chartConfig ? -15 : -12;
-    return (
-      <Bar
-        key={dataKey}
-        dataKey={dataKey}
-        yAxisId={yAxisId}
-        stackId={stackId}
-        fill={color}
-        isAnimationActive={isEnlarged && !isExporting}
-        barSize={getBarSize()}
-      >
-        {isExporting && !stackId && (
-          <LabelList
-            dataKey={dataKey}
-            position="insideTop"
-            offset={chartConfig ? -15 : -12}
-            formatter={value => formatDataValue(value, valueType)}
-          />
-        )}
-      </Bar>
     );
   }
 
@@ -550,7 +517,18 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
             const renderMethod = chartTypeToRenderMethod[chartT];
             const yAxisOrientation = get(chartConfig, [dataKey, 'yAxisOrientation']);
             const yAxisId = orientationToYAxisId(yAxisOrientation);
-
+            // Render bar
+            if (chartT === BAR) {
+              return BarChartComponent({
+                valueType,
+                isEnlarged,
+                isExporting,
+                dataKey,
+                chartConfig,
+                data,
+              });
+            }
+            // Render line and area
             return renderMethod({ ...chartConfig[dataKey], dataKey, yAxisId, chartConfig, data });
           })}
         {renderReferenceLines()}
