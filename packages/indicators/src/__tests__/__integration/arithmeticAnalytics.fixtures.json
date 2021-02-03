@@ -245,25 +245,6 @@
     {
       "description": "Evaluates a boolean formula (result: true)",
       "input": {
-        "indicatorCodes": ["FemaleGtMale"],
-        "fetchOptions": {
-          "startDate": "2019-01-01",
-          "endDate": "2019-01-31",
-          "organisationUnitCodes": ["GR"]
-        }
-      },
-      "expected": [
-        {
-          "dataElement": "FemaleGtMale",
-          "organisationUnit": "GR",
-          "period": "20190101",
-          "value": 0
-        }
-      ]
-    },
-    {
-      "description": "Evaluates a boolean formula (result: false)",
-      "input": {
         "indicatorCodes": ["MaleGtFemale"],
         "fetchOptions": {
           "startDate": "2019-01-01",
@@ -277,6 +258,25 @@
           "organisationUnit": "GR",
           "period": "20190101",
           "value": 1
+        }
+      ]
+    },
+    {
+      "description": "Evaluates a boolean formula (result: false)",
+      "input": {
+        "indicatorCodes": ["FemaleGtMale"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2019-01-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "FemaleGtMale",
+          "organisationUnit": "GR",
+          "period": "20190101",
+          "value": 0
         }
       ]
     },

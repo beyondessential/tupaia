@@ -82,3 +82,17 @@ export const findOrCreateRecords = async (models, recordsByType) => {
     }
   }
 };
+
+/**
+ * Generates test data, and stores it in the database. Uses test ids so that all can be cleanly
+ * wiped afterwards. Any missing fields on the records passed in are generated randomly or using
+ * sensible defaults, using the logic in upsertDummyRecord
+ */
+export const populateTestData = async (models, recordsByType) => {
+  // process sequentially, as some inserts may depend on earlier foreign keys being inserted
+  for (const [type, records] of Object.entries(recordsByType)) {
+    for (const record of records) {
+      await upsertDummyRecord(models[type], record);
+    }
+  }
+};

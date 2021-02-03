@@ -4,7 +4,7 @@
  */
 
 import { DataBroker } from '@tupaia/data-broker';
-import { runIntegrationTests } from '@tupaia/database';
+import { getTestModels, runIntegrationTests } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
 import { Analytic, FetchOptions } from '../../types';
 import arithmeticAnalyticsFixtures from './arithmeticAnalytics.fixtures.json';
@@ -19,10 +19,9 @@ interface TestCase {
   throws?: boolean;
 }
 
+const models = getTestModels();
 const dataBroker = new DataBroker();
-// TODO Use the base `@tupaia/database` models instead of `dataBroker.models`
-// after https://github.com/beyondessential/tupaia-backlog/issues/663 is implemented
-const api = new IndicatorApi(dataBroker.models, dataBroker);
+const api = new IndicatorApi(models, dataBroker);
 
 const runTestCase = (testCase: TestCase) => {
   const { input, expected, throws } = testCase;

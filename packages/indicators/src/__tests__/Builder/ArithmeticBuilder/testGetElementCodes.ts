@@ -6,6 +6,11 @@
 import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
 import { DbRecord } from '../../../types';
 
+/**
+ * Note: `testBuilder` instantiation is stubbed in the test file calling this function
+ * This is because apparently `jest.mock` only works in files loaded by the test runner,
+ * and not in other files called by them (as is the case here)
+ */
 export const testGetElementCodes = () => {
   const testData: [string, DbRecord, string[]][] = [
     ['single element in formula', { formula: 'A' }, ['A']],
