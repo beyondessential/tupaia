@@ -40,7 +40,11 @@ export const fetchAnalytics = async (
   await Promise.all(
     Object.entries(aggregationJsonToCodes).map(async ([aggregationJson, codes]) => {
       const aggregations = JSON.parse(aggregationJson);
-      const { results } = await aggregator.fetchAnalytics(codes, fetchOptions, { aggregations });
+      const { results } = await aggregator.fetchAnalytics(
+        codes,
+        { ...fetchOptions, useDeprecatedApi: false },
+        { aggregations },
+      );
       analytics.push(...results);
     }),
   );
