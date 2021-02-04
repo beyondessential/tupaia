@@ -9,3 +9,4 @@ export { countOperationalFacilitiesByCountry } from './countOperationalFacilitie
 export { countOperationalFacilitiesByType } from './countOperationalFacilitiesByType';
 export { countValuesByDataElementGroup } from './countValuesByDataElementGroup';
 export { countCalculatedValuesPerOrgUnit } from './countCalculatedValuesPerOrgUnit';
+export { countEventsPerPeriodByDataValue2 } from './countEventsPerPeriodByDataValue2';
