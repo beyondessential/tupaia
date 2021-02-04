@@ -363,8 +363,8 @@ export class EntityModel extends DatabaseModel {
       ancestorsOrDescendants === ENTITY_RELATION_TYPE.ANCESTORS
         ? ['ancestor_id', 'descendant_id']
         : ['descendant_id', 'ancestor_id'];
-    return this.runCachedFunction(cacheKey, async () =>
-      this.find(
+    const relationData = await this.runCachedFunction(cacheKey, async () => {
+      const relations = await this.find(
         {
           ...criteria,
           [filterByEntityId]: entityId,
@@ -374,8 +374,10 @@ export class EntityModel extends DatabaseModel {
           joinCondition: ['entity.id', joinTablesOn],
           sort: ['generational_distance ASC'],
         },
-      ),
-    );
+      );
+      return Promise.all(relations.map(async r => r.getData()));
+    });
+    return Promise.all(relationData.map(async r => this.generateInstance(r)));
   }
 
   getDhisLevel(type) {
