@@ -1,5 +1,5 @@
 export const PASSENGER_AGE = 'QMIA008';
-export const DEFAULT_COMPARE_VALUE = 'Yes';
+export const DEFAULT_COMPARE_VALUE = 1;
 
 
 export const getAgeRanges = () => {

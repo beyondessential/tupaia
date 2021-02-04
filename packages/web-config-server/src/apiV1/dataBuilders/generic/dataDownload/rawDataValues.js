@@ -114,16 +114,13 @@ class RawDataValuesBuilder extends DataBuilder {
         : sortedEvents;
 
       const columns = this.buildColumns(sortedMappedEvents);
-
-      const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
-
       const ancestorRow =
         ancestorMappingConfig && ancestorMappingConfig.showInExport
           ? { ancestor: ancestorMappingConfig.label }
           : {};
       const rows =
         columns && columns.length
-          ? await this.buildRows(mappedEvents, dataElementCodeToText, ancestorRow)
+          ? await this.buildRows(mappedEvents, dataElementsMetadata, ancestorRow)
           : [];
 
       const data = {
@@ -178,8 +175,10 @@ class RawDataValuesBuilder extends DataBuilder {
   /**
    * Build row values for data elements of different organisationUnit - period combination
    */
-  buildRows = async (events, dataElementCodeToText, ancestorRowKey = {}) => {
+  buildRows = async (events, dataElementsMetadata, ancestorRowKey = {}) => {
     const builtRows = [];
+    const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
+    const dataElementCodeToOptions = reduceToDictionary(dataElementsMetadata, 'code', 'options');
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
       entityCode: 'Entity Code',
@@ -219,9 +218,14 @@ class RawDataValuesBuilder extends DataBuilder {
               case 'ancestor':
                 value = orgUnitAncestor;
                 break;
-              default:
-                value = dataValue;
+              default: {
+                value =
+                  dataElementCodeToOptions[dataKey] !== undefined &&
+                  dataElementCodeToOptions[dataKey][dataValue] !== undefined
+                    ? dataElementCodeToOptions[dataKey][dataValue]
+                    : value;
                 break;
+              }
             }
 
             row[event] = value;
