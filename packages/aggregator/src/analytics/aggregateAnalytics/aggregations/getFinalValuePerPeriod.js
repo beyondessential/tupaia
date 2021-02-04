@@ -5,7 +5,7 @@
 
 /* eslint-disable max-classes-per-file */
 
-import { PERIOD_TYPES, convertToPeriod, findCoarsestPeriodType, periodToType } from '@tupaia/utils';
+import { PERIOD_TYPES, convertToPeriod, periodToType } from '@tupaia/utils';
 import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
 
 /**
@@ -57,14 +57,13 @@ class FinalValueCache {
     });
 
     this.cache = cache;
-    if (periodTypes.length > 1) {
-      // If multiple period types exist, make data consistent by converting
-      // all periods to the coarsest type (e.g. for day and month mix, convert to month)
-      this.ensurePeriodConsistency(findCoarsestPeriodType(periodTypes));
-    }
+
+    // Convert all the periods to a uniform aggregation period type
+    // eg: FINAL_EACH_MONTH will convert all periods to monthly periods
+    this.convertCachePeriods(aggregationPeriod);
   };
 
-  ensurePeriodConsistency = periodType => {
+  convertCachePeriods = periodType => {
     this.iterate((value, { dataElement, organisationUnit, period }) => {
       this.cache[dataElement][organisationUnit][period] = {
         ...value,

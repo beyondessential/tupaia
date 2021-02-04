@@ -15,30 +15,92 @@ export const testFetchDataElements = () => {
   });
 
   it('returns a single data element in the correct format', async () => {
-    await expect(api.fetchDataElements(['BCD1'])).resolves.toStrictEqual([
-      {
-        code: 'BCD1',
-        name: 'Facility Status',
-      },
-    ]);
-  });
-
-  it('returns multiple data elements in the correct format', async () => {
-    await expect(api.fetchDataElements(['BCD1', 'CROP_1', 'CROP_2'])).resolves.toIncludeSameMembers(
+    await expect(api.fetchDataElements(['BCD1'], { includeOptions: false })).resolves.toStrictEqual(
       [
         {
           code: 'BCD1',
           name: 'Facility Status',
         },
+      ],
+    );
+  });
+
+  it('returns a single data element with options metadata included', async () => {
+    await expect(api.fetchDataElements(['BCD57'], { includeOptions: true })).resolves.toStrictEqual(
+      [
         {
-          code: 'CROP_1',
-          name: 'Number of potatoes grown',
-        },
-        {
-          code: 'CROP_2',
-          name: 'Number of lettuces grown',
+          code: 'BCD57',
+          name: 'Foundation',
+          options: {
+            'Concrete slab': 'Concrete slab',
+            'Concrete stumps': 'Concrete stumps',
+            'Timber stumps': 'Timber stumps',
+            'Timber on ground': 'Timber on ground',
+            Earth: 'Earth',
+            Other: 'Other',
+          },
         },
       ],
     );
+  });
+
+  it('returns multiple data elements in the correct format', async () => {
+    await expect(
+      api.fetchDataElements(['BCD1', 'BCD57', 'CROP_1', 'CROP_2'], { includeOptions: false }),
+      {
+        includeOptions: false,
+      },
+    ).resolves.toIncludeSameMembers([
+      {
+        code: 'BCD1',
+        name: 'Facility Status',
+      },
+      {
+        code: 'BCD57',
+        name: 'Foundation',
+      },
+      {
+        code: 'CROP_1',
+        name: 'Number of potatoes grown',
+      },
+      {
+        code: 'CROP_2',
+        name: 'Number of lettuces grown',
+      },
+    ]);
+  });
+
+  it('returns multiple data elements with options metadata included', async () => {
+    await expect(api.fetchDataElements(['BCD1', 'BCD57', 'CROP_1', 'CROP_2']), {
+      includeOptions: false,
+    }).resolves.toIncludeSameMembers([
+      {
+        code: 'BCD1',
+        name: 'Facility Status',
+        options: {},
+      },
+      {
+        code: 'BCD57',
+        name: 'Foundation',
+        options: {
+          'Concrete slab': 'Concrete slab',
+          'Concrete stumps': 'Concrete stumps',
+          'Timber stumps': 'Timber stumps',
+          'Timber on ground': 'Timber on ground',
+          Earth: 'Earth',
+          Other: 'Other',
+        },
+      },
+      {
+        code: 'CROP_1',
+        name: 'Number of potatoes grown',
+        options: {},
+      },
+      {
+        code: 'CROP_2',
+        name: 'Number of lettuces grown',
+        options: {},
+      },
+    ]);
   });
 };
