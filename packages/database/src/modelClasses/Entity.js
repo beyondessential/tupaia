@@ -318,6 +318,9 @@ export class EntityModel extends DatabaseModel {
 
   async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
     const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
+    // in testing this function, there was no issue with many bound parameters, and reducing the
+    // number of batches greatly improved performance - so here we use a higher max bindings number
+    const maxBoundParameters = 20000;
     return this.runCachedFunction(cacheKey, async () => {
       const ancestorDescendantRelations = await this.database.executeSqlInBatches(
         descendantCodes,
@@ -341,6 +344,7 @@ export class EntityModel extends DatabaseModel {
         `,
           [...batchOfDescendantCodes, hierarchyId, ancestorType],
         ],
+        maxBoundParameters,
       );
       const ancestorDetailsByDescendantCode = {};
       ancestorDescendantRelations.forEach(r => {
