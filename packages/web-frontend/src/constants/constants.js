@@ -17,6 +17,7 @@ export const SCALE_TYPES = {
   PERFORMANCE: 'performance',
   PERFORMANCE_DESC: 'performanceDesc',
   NEUTRAL: 'neutral',
+  NEUTRAL_REVERSE: 'neutralReverse',
   TIME: 'time',
 };
 
