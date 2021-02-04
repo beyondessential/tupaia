@@ -5,48 +5,48 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import {
-  Legend,
-  Line,
-  LineChart as LineChartComponent,
-  CartesianGrid,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Line, LabelList } from 'recharts';
+import { formatDataValue } from './utils';
+import { BLUE, DARK_BLUE } from './constants';
 
-export const LineChart = ({ data, config }) => {
+export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isExporting }) => {
+  const defaultColor = isExporting ? DARK_BLUE : BLUE;
+
   return (
-    <section>
-      <Box style={{ marginLeft: '80px' }} mb={3}>
-        <Typography variant="h3">{config.name}</Typography>
-      </Box>
-      <LineChartComponent
-        width={500}
-        height={300}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis dataKey="value" />
-        <Tooltip />
-        <Legend />
-        {/*<Line type="monotone" dataKey={yName} stroke="#8884d8" />*/}
-        <Line type="monotone" dataKey="value" stroke="#82ca9d" />
-      </LineChartComponent>
-    </section>
+    <Line
+      key={dataKey}
+      type="monotone"
+      dataKey={dataKey}
+      yAxisId={yAxisId}
+      stroke={color || defaultColor}
+      strokeWidth={isEnlarged ? 3 : 1}
+      fill={color || defaultColor}
+      isAnimationActive={isEnlarged && !isExporting}
+    >
+      {isExporting && (
+        <LabelList
+          dataKey={dataKey}
+          position="insideTopRight"
+          offset={-20}
+          angle="50"
+          formatter={value => formatDataValue(value, valueType)}
+        />
+      )}
+    </Line>
   );
 };
 
 LineChart.propTypes = {
-  data: PropTypes.object.isRequired,
-  config: PropTypes.object.isRequired,
+  dataKey: PropTypes.string.isRequired,
+  yAxisId: PropTypes.string.isRequired,
+  valueType: PropTypes.string.isRequired,
+  color: PropTypes.string,
+  isExporting: PropTypes.bool,
+  isEnlarged: PropTypes.bool,
+};
+
+LineChart.defaultProps = {
+  color: BLUE,
+  isExporting: false,
+  isEnlarged: false,
 };

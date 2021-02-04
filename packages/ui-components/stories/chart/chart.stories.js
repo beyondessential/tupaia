@@ -12,6 +12,9 @@ const Container = styled.div`
   margin: 1rem auto;
   width: 600px;
   height: 400px;
+  background-color: rgb(38, 40, 52);
+  padding: 3rem 2rem 2rem;
+  color: white;
 `;
 
 const queryClient = new QueryClient();
@@ -30,13 +33,7 @@ export default {
   ],
 };
 
-const Template = args => (
-  <div>
-    <Chart {...args} />
-    {/*<br />*/}
-    {/*<Chart {...args} />*/}
-  </div>
-);
+const Template = args => <Chart {...args} />;
 
 export const ExploreView29 = Template.bind({});
 ExploreView29.args = {
@@ -44,6 +41,7 @@ ExploreView29.args = {
   organisationUnitCode: 'explore',
   dashboardGroupId: '301',
   viewId: '29',
+  isEnlarged: true,
 };
 
 export const ExploreView28 = Template.bind({});
@@ -52,6 +50,7 @@ ExploreView28.args = {
   organisationUnitCode: 'explore',
   dashboardGroupId: '301',
   viewId: '28',
+  isEnlarged: true,
 };
 
 export const ExploreView8 = Template.bind({});
@@ -60,4 +59,5 @@ ExploreView8.args = {
   organisationUnitCode: 'explore',
   dashboardGroupId: '301',
   viewId: '8',
+  isEnlarged: true,
 };

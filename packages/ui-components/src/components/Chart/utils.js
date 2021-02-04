@@ -7,7 +7,7 @@ import React from 'react';
 import numeral from 'numeral';
 import PositiveIcon from '@material-ui/icons/CheckCircle';
 import NegativeIcon from '@material-ui/icons/Cancel';
-import { VALUE_TYPES, BLUE, GREY } from '../constants';
+import { VALUE_TYPES, BLUE, GREY } from './constants';
 
 /**
  *
@@ -119,3 +119,5 @@ export const formatDataValue = (value, valueType, metadata = {}) => {
   const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
   return formatter(value, metadata);
 };
+
+export const isMobile = () => process.env.REACT_APP_APP_TYPE === 'mobile';

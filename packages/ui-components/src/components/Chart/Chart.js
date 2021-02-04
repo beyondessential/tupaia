@@ -3,60 +3,103 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import { useQuery } from 'react-query';
-import { LineChart } from './LineChart';
+import React from 'react';
+import styled from 'styled-components';
+import { CHART_TYPES } from './constants';
+import { CartesianChart } from './CartesianChart';
 import { PieChart } from './PieChart';
-import { BarChart } from './BarChart';
-import { formatDataValue } from './utils/formatters';
+import { parseChartConfig } from './parseChartConfig';
+import { getIsTimeSeries, isDataKey } from './helpers';
+import { useChartData } from './useChartData';
+import { isMobile } from './utils';
 
-// Dev https://dev-config.tupaia.org/api/v1/view
-
-const getPresentationOption = (config, key, option) => {
-  const { presentationOptions } = config;
-  return presentationOptions && presentationOptions[key] && presentationOptions[key][option];
+const VIEW_STYLES = {
+  newChartComing: {
+    position: 'relative',
+  },
+  title: {
+    position: 'relative',
+    color: 'rgba(255, 255, 255, 0.87)',
+    marginTop: 5,
+    marginBottom: 15,
+    lineHeight: '130%',
+    textAlign: 'center',
+  },
+  chartViewContainer: isMobile()
+    ? {}
+    : {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      },
+  chartContainer: isMobile()
+    ? {
+        height: 200,
+        textAlign: 'center',
+        position: 'relative',
+      }
+    : {
+        display: 'flex',
+        flexDirection: 'row',
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: '100%',
+        alignContent: 'stretch',
+        alignItems: 'stretch',
+      },
 };
 
-const getValidData = (data, config) => {
-  const { valueType } = config;
+const UnknownChart = () => (
+  <div style={VIEW_STYLES.newChartComing}>
+    <h2 style={VIEW_STYLES.title}>New chart coming soon</h2>
+  </div>
+);
 
-  return data
-    .filter(element => element.value > 0)
-    .map(item => {
-      const { name, ...otherKeyValues } = item;
-      // Map names to labels if available
-      let label = getPresentationOption(config, name, 'label');
-      if (!label) label = name;
+const Container = styled.div`
+  // recharts components doesn't pass nested styles so they need to be added on a wrapping component
+  li.recharts-legend-item {
+    white-space: nowrap; // ensure there are no line breaks on the export legends
+  }
+`;
 
-      const labelSuffix = ` (${formatDataValue(item.value, valueType)})`;
-
-      return {
-        name: label + labelSuffix,
-        ...otherKeyValues,
-        originalItem: item,
-      };
-    })
-    .sort((a, b) => b.value - a.value);
-};
-
-const useChartData = params => {
-  return useQuery('chart', async () => {
-    try {
-      const { data } = await axios('https://dev-config.tupaia.org/api/v1/view', {
-        params,
-      });
-      return data;
-    } catch (error) {
-      console.log('api error', error);
-      return null;
-    }
+const removeNonNumericData = data =>
+  data.map(dataSeries => {
+    const filteredDataSeries = {};
+    Object.entries(dataSeries).forEach(([key, value]) => {
+      if (!isDataKey(key) || !Number.isNaN(Number(value))) {
+        filteredDataSeries[key] = value;
+      }
+    });
+    return filteredDataSeries;
   });
+
+const sortData = data =>
+  getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
+
+const getViewContent = viewContent => {
+  const { chartConfig, data } = viewContent;
+  const massagedData = sortData(removeNonNumericData(data));
+  return chartConfig
+    ? {
+        ...viewContent,
+        data: massagedData,
+        chartConfig: parseChartConfig(viewContent),
+      }
+    : { ...viewContent, data: massagedData };
 };
 
-export const Chart = ({ projectCode, organisationUnitCode, dashboardGroupId, viewId }) => {
-  const { data: response, isLoading, error } = useChartData({
+export const Chart = ({
+  projectCode,
+  organisationUnitCode,
+  dashboardGroupId,
+  viewId,
+  isExporting,
+  isEnlarged,
+  onItemClick,
+}) => {
+  const { data: viewContent, isLoading } = useChartData({
     projectCode,
     organisationUnitCode,
     dashboardGroupId,
@@ -67,15 +110,29 @@ export const Chart = ({ projectCode, organisationUnitCode, dashboardGroupId, vie
     return '...loading';
   }
 
-  if (error || !response) {
-    return 'There was an error...';
+  console.log('viewContent!!!', viewContent);
+
+  const viewContentConfig = getViewContent(viewContent);
+  const { chartType } = viewContentConfig;
+
+  if (!Object.values(CHART_TYPES).includes(chartType)) {
+    return <UnknownChart />;
   }
 
-  const { data, chartType, ...chartConfig } = response;
+  const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
 
-  const ChartComponent = chartType === 'pie' ? PieChart : BarChart;
-
-  return <ChartComponent data={getValidData(data, chartConfig)} config={chartConfig} />;
+  return (
+    <div style={VIEW_STYLES.chartViewContainer}>
+      <Container style={VIEW_STYLES.chartContainer}>
+        <ChartComponent
+          isEnlarged={isEnlarged}
+          isExporting={isExporting}
+          viewContent={viewContentConfig}
+          onItemClick={onItemClick}
+        />
+      </Container>
+    </div>
+  );
 };
 
 Chart.propTypes = {
@@ -83,4 +140,13 @@ Chart.propTypes = {
   organisationUnitCode: PropTypes.string.isRequired,
   dashboardGroupId: PropTypes.string.isRequired,
   viewId: PropTypes.string.isRequired,
+  isEnlarged: PropTypes.bool,
+  isExporting: PropTypes.bool,
+  onItemClick: PropTypes.func,
+};
+
+Chart.defaultProps = {
+  isEnlarged: false,
+  isExporting: false,
+  onItemClick: () => {},
 };
