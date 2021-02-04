@@ -68,15 +68,15 @@ const findNestedGroupedMapOverlays = async (
     }
   }
 
-  const sortFunction = getSortFunction(mapOverlayItemRelations);
-  return mapOverlayGroupResults
-    .concat(mapOverlayResults)
-    .sort(sortFunction)
-    .map(item => {
-      //id was added only for sorting purposes, remove it because it is not required in the front end
-      const { id, ...itemToReturn } = item;
-      return itemToReturn;
-    });
+  const sortedMapOverlayResults = sortMapOverlayItems(
+    mapOverlayGroupResults.concat(mapOverlayResults),
+    mapOverlayItemRelations,
+  );
+  return sortedMapOverlayResults.map(item => {
+    //id was added only for sorting purposes, remove it because it is not required in the front end
+    const { id, ...itemToReturn } = item;
+    return itemToReturn;
+  });
 };
 
 const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
@@ -93,14 +93,21 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
   });
 };
 
-const allRelationsHaveSortOrder = relations => relations.every(m => m.sort_order !== null);
-
-const getSortFunction = relations => {
+/**
+ * Sort map overlays/map overlay groups with sort_order first, then the ones without sort_order alphabetically
+ * @param {*} mapOverlayItems 
+ * @param {*} relations 
+ */
+const sortMapOverlayItems = (mapOverlayItems, relations) => {
   const childIdToSortOrder = reduceToDictionary(relations, 'child_id', 'sort_order');
-  const sortBySortOrder = (m1, m2) => childIdToSortOrder[m1.id] - childIdToSortOrder[m2.id];
+  const sortedOverlaysByOrder = mapOverlayItems
+    .filter(m => childIdToSortOrder[m.id] !== null)
+    .sort((m1, m2) => childIdToSortOrder[m1.id] - childIdToSortOrder[m2.id]);
+  const sortedOverlaysAlphabetically = mapOverlayItems
+    .filter(m => childIdToSortOrder[m.id] === null)
+    .sort(getSortByKey('name'));
 
-  //If all the relations have sort_order, sort by the sort_order. Otherwise by default sort by name.
-  return allRelationsHaveSortOrder(relations) ? sortBySortOrder : getSortByKey('name');
+  return [...sortedOverlaysByOrder, ...sortedOverlaysAlphabetically];
 };
 
 const translateOverlaysForResponse = mapOverlays =>
@@ -185,8 +192,8 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
     }
   }
 
-  const sortFunction = getSortFunction(accessibleRelations);
-  return accessibleOverlayGroups.sort(sortFunction).map(og => {
+  const sortedGroups = sortMapOverlayItems(accessibleOverlayGroups, accessibleRelations);
+  return sortedGroups.map(og => {
     const { id, ...restOfOverlayGroup } = og;
     return restOfOverlayGroup;
   });
