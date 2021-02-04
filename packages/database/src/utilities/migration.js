@@ -3,12 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/**
- * A value that can be inserted in the database
- *
- * @typedef {(Object<string, any>|string|number|boolean)} DbValue
- */
-
 class RequiredParameterError extends Error {
   /**
    * @param {string} paramName
@@ -46,10 +40,6 @@ export const createForeignKeyConfig = (
   mapping: foreignColumn,
 });
 
-/**
- * @param {Object<string, any>} params
- * @throws {RequiredParameterError}
- */
 const assertParamsAreDefined = (params, methodName) => {
   Object.entries(params).forEach(([paramName, paramValue]) => {
     if (paramValue === undefined) {
@@ -58,16 +48,6 @@ const assertParamsAreDefined = (params, methodName) => {
   });
 };
 
-/**
- * @param {string} db
- * @param {string} table
- * @param {string} column
- * @param {Object<string, DbValue>} newValues A map of column names to new values
- * @param {(Object<string, DbValue>|string)} condition If an object is provided, it will be interpreted
- * as { columnName: value }. If a string is provided, it will be used as is
- * @returns {Promise}
- * @throws {RequiredParameterError}
- */
 export async function updateValues(db, table, newValues, condition) {
   assertParamsAreDefined({ db, table, newValues, condition }, 'updateValues');
 
@@ -85,15 +65,6 @@ export async function updateValues(db, table, newValues, condition) {
   );
 }
 
-/**
- * @param {string} db
- * @param {string} table
- * @param {string} column The name of the column. must be of `Array` type
- * @param {DbValue} value
- * @param {string} condition
- * @returns {Promise}
- * @throws {RequiredParameterError}
- */
 export async function removeArrayValue(db, table, column, value, condition) {
   assertParamsAreDefined({ db, table, column, value, condition }, 'removeArrayValue');
 
@@ -103,16 +74,6 @@ export async function removeArrayValue(db, table, column, value, condition) {
   );
 }
 
-/**
- * @param {string} db
- * @param {string} table
- * @param {string} column The name of the column. must be of `Array` type
- * @param {DbValue} oldValue
- * @param {DbValue|DbValue[]} newValueInput
- * @param {string} condition
- * @returns {Promise}
- * @throws {RequiredParameterError}
- */
 export async function replaceArrayValue(db, table, column, oldValue, newValueInput, condition) {
   assertParamsAreDefined(
     { db, table, column, oldValue, newValueInput, condition },
@@ -197,7 +158,7 @@ async function getDashboardReportById(db, id) {
 }
 
 // Add a dashboard report to a dashboard group
-function addReportToGroups(db, reportId, groupCodes) {
+export function addReportToGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
       "dashboardGroup"
@@ -209,7 +170,7 @@ function addReportToGroups(db, reportId, groupCodes) {
 }
 
 // Remove a dashboard report from a dashboard group
-function removeReportFromGroups(db, reportId, groupCodes) {
+export function removeReportFromGroups(db, reportId, groupCodes) {
   return db.runSql(`
     UPDATE
       "dashboardGroup"
@@ -221,7 +182,7 @@ function removeReportFromGroups(db, reportId, groupCodes) {
 }
 
 // Delete a report
-function deleteReport(db, reportId) {
+export function deleteReport(db, reportId) {
   return db.runSql(`
     DELETE FROM
       "dashboardReport"
