@@ -73,7 +73,7 @@ const deleteDeprecatedAnswers = db =>
 exports.up = async function (db) {
   await updateCatchment(db, oldCatchment[0], newCatchment[0], newCatchment[1]);
   const surveyResponses = (await fetchSurveyResponseCatchments(db)).rows;
-  await Promise.all([surveyResponses, updateSurveyResponseEntities(db, surveyResponses)]);
+  await updateSurveyResponseEntities(db, surveyResponses);
   return deleteDeprecatedAnswers(db);
 };
 
