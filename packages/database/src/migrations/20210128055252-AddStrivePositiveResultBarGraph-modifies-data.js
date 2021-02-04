@@ -41,40 +41,12 @@ const REPORT = {
       { key: 'Po +ve', dataElementCode: 'STRIVE_PERCENTAGE_PO_OF_TOTAL_WEEKLY' },
     ],
     entityAggregation: {
-      aggregationEntityType: 'facility',
       dataSourceEntityType: 'village',
-      aggregationType: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-    }
+      aggregationEntityType: 'facility',
+      aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
+    },
+    programCodes: ['SQMAL', 'SPF', 'SPV', 'SPM', 'SPO'],
   },
-  // dataBuilder: 'composeDataPerPeriod',
-  // dataBuilderConfig: {
-  //   dataBuilders: {
-  //     'Pf +ve': {
-  //       dataBuilder: 'analytics',
-  //       dataBuilderConfig: {
-
-  //       }
-  //     },
-  //     'Pv +ve': {
-  //       dataBuilder: 'analytics',
-  //       dataBuilderConfig: {
-
-  //       }
-  //     },
-  //     'Pm +ve': {
-  //       dataBuilder: 'analytics',
-  //       dataBuilderConfig: {
-
-  //       }
-  //     },
-  //     'Po +ve': {
-  //       dataBuilder: 'analytics',
-  //       dataBuilderConfig: {
-
-  //       }
-  //     },
-  //   }
-  // },
   viewJson: {
     name: 'Lab Confirmed Positive Results, Bar Graph',
     type: 'chart',
@@ -122,6 +94,10 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
+  await db.runSql(`
+    DELETE FROM "indicator" WHERE code like 'STRIVE_PERCENTAGE_%_OF_TOTAL_WEEKLY';
+  `);
+
   await db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
     UPDATE
