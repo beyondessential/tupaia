@@ -41,9 +41,11 @@ const removeNonNumericData = data =>
 const sortData = data =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-export const ChartWrapper = props => {
+export const ChartWrapper = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
+  const viewContentConfig = getViewContent();
+  const { chartType } = viewContentConfig;
+
   const getViewContent = () => {
-    const { viewContent } = props;
     const { chartConfig, data } = viewContent;
     const massagedData = sortData(removeNonNumericData(data));
     return chartConfig
@@ -55,18 +57,21 @@ export const ChartWrapper = props => {
       : { ...viewContent, data: massagedData };
   };
 
-  const viewContent = getViewContent();
-  const { chartType } = viewContent;
-
   if (!Object.values(CHART_TYPES).includes(chartType)) {
     return <UnknownChart />;
   }
 
   const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
+
   return (
     <div style={VIEW_STYLES.chartViewContainer}>
       <Container style={VIEW_STYLES.chartContainer}>
-        <Chart {...props} viewContent={viewContent} />
+        <Chart
+          isEnlarged={isEnlarged}
+          isExporting={isExporting}
+          viewContent={viewContentConfig}
+          onItemClick={onItemClick}
+        />
       </Container>
     </div>
   );
@@ -74,8 +79,14 @@ export const ChartWrapper = props => {
 
 ChartWrapper.propTypes = {
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  isEnlarged: PropTypes.bool,
+  isExporting: PropTypes.bool,
+  onItemClick: PropTypes.func,
 };
 
 ChartWrapper.defaultProps = {
   viewContent: null,
+  isEnlarged: false,
+  isExporting: false,
+  onItemClick: () => {},
 };
