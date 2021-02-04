@@ -53,7 +53,7 @@ const DATA_BUILDER_CONFIG = {
       },
       transformations: [
         { type: 'transposeMatrix' },
-        { type: 'sortByColumns', columns: [['Catchment name'], ['Catchment']] },
+        { type: 'sortByColumns', columns: [['Name']] },
       ],
       skipHeader: false,
     },

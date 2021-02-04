@@ -58,30 +58,27 @@ const updateSurveyResponseEntities = async (db, surveyResponses) =>
     await updateSurveyResponseRow(db, sr.id, catchmentNameToCode[sr.name]);
   });
 
-const resetSurveyResponseEntities = (db, surveyResponseIds, resetEntityId) =>
+const deleteDeprecatedAnswers = db =>
   db.runSql(`
-    update survey_response 
-    set entity_id = '${resetEntityId}' 
-    where id IN (${arrayToDbString(surveyResponseIds)});
+    delete from answer a
+    where id in (
+      select a.id
+      from answer a
+      inner join question q
+      on a.question_id = q.id
+      where q.code = 'WFIGM5' OR q.code = 'WFIGMMET4'
+    );
   `);
 
 exports.up = async function (db) {
   await updateCatchment(db, oldCatchment[0], newCatchment[0], newCatchment[1]);
-
   const surveyResponses = (await fetchSurveyResponseCatchments(db)).rows;
-  return updateSurveyResponseEntities(db, surveyResponses);
+  await Promise.all([surveyResponses, updateSurveyResponseEntities(db, surveyResponses)]);
+  return deleteDeprecatedAnswers(db);
 };
 
 exports.down = async function (db) {
   await updateCatchment(db, newCatchment[0], oldCatchment[0], oldCatchment[1]);
-
-  const surveyResponses = (await fetchSurveyResponseCatchments(db)).rows;
-
-  return resetSurveyResponseEntities(
-    db,
-    surveyResponses.map(sr => sr.id),
-    originalEntityId,
-  );
 };
 
 exports._meta = {
