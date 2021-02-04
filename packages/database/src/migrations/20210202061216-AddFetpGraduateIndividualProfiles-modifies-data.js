@@ -31,7 +31,6 @@ const buildTable = report => {
     entityAggregation: {
       aggregationType: 'RAW',
       dataSourceEntityType: ['individual'],
-      aggregationEntityType: 'individual',
     },
     noDataValue: '',
   };
@@ -60,7 +59,7 @@ const buildSingle = report => {
     name: report.name,
     type: 'view',
     viewType: 'singleValue',
-    noDataMessage: ' ',
+    noDataMessage: '',
   };
   return {
     id: report.id,
@@ -83,7 +82,7 @@ const buildMultiSingle = report => {
     type: 'view',
     viewType: 'multiSingleValue',
     valueType: 'text',
-    noDataMessage: ' ',
+    noDataMessage: '',
   };
 
   return {
