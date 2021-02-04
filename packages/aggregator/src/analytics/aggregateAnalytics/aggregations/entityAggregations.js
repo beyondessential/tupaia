@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { checkValueSatisfiesCondition, convertToPeriod } from '@tupaia/utils';
+import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 /**
  * Combines analytics together across org units
@@ -14,25 +14,20 @@ import { checkValueSatisfiesCondition, convertToPeriod } from '@tupaia/utils';
  * @param {Function} keyMapper
  */
 const valuePerOrgGroup = (analytics, aggregationConfig, valueMapper, keyMapper) => {
-  const { orgUnitMap = {}, condition, periodType } = aggregationConfig;
+  const { orgUnitMap = {}, condition } = aggregationConfig;
   const filterValueMapper = condition ? createFilterValueMapper(condition) : () => true;
 
   const analyticsByKey = {};
-  analytics.forEach(originalAnalytic => {
+  analytics.forEach(analytic => {
     const organisationUnit =
-      (orgUnitMap[originalAnalytic.organisationUnit] &&
-        orgUnitMap[originalAnalytic.organisationUnit].code) ||
-      originalAnalytic.organisationUnit;
-    const convertedPeriod = periodType
-      ? convertToPeriod(originalAnalytic.period, periodType)
-      : originalAnalytic.period;
-    const analytic = { ...originalAnalytic, organisationUnit, period: convertedPeriod };
-    const key = keyMapper(analytic);
+      (orgUnitMap[analytic.organisationUnit] && orgUnitMap[analytic.organisationUnit].code) ||
+      analytic.organisationUnit;
+    const key = keyMapper(analytic, organisationUnit);
     const value = filterValueMapper(analytic.value) ? valueMapper(analytic.value) : 0;
 
     // If there are no matching response elements already being returned, add it
     if (!analyticsByKey[key]) {
-      analyticsByKey[key] = { ...analytic, value };
+      analyticsByKey[key] = { ...analytic, value, organisationUnit };
     } else {
       analyticsByKey[key].value += value;
     }
@@ -83,7 +78,8 @@ const sumValueMapper = value => value;
 
 const countValueMapper = () => 1;
 
-const perOrgGroupKey = analytic => `${analytic.dataElement}__${analytic.organisationUnit}`;
+const perOrgGroupKey = (analytic, organisationUnit) =>
+  `${analytic.dataElement}__${organisationUnit}`;
 
-const perPeriodPerOrgGroupKey = analytic =>
-  `${analytic.period}__${analytic.dataElement}__${analytic.organisationUnit}`;
+const perPeriodPerOrgGroupKey = (analytic, organisationUnit) =>
+  `${analytic.period}__${analytic.dataElement}__${organisationUnit}`;

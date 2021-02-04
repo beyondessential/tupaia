@@ -37,9 +37,6 @@ const dashboardReportsConfig = {
   ],
   oldDataBuilder: 'sumValuesPerQuarterByOrgUnit',
   newDataBuilder: 'finalValuesPerQuarterByOrgUnit',
-  entityAggregationConfig: {
-    periodType: 'quarter',
-  },
 };
 
 exports.up = async function (db) {
@@ -48,12 +45,8 @@ exports.up = async function (db) {
     const { dataBuilderConfig } = dashboardReport;
     dataBuilderConfig.dataBuilders.countFacilitiesSurveyed.dataBuilder =
       dashboardReportsConfig.newDataBuilder;
-    dataBuilderConfig.dataBuilders.countFacilitiesSurveyed.dataBuilderConfig.entityAggregation.aggregationConfig =
-      dashboardReportsConfig.entityAggregationConfig;
     dataBuilderConfig.dataBuilders.sumFacilitiesWithServicesAvailable.dataBuilder =
       dashboardReportsConfig.newDataBuilder;
-    dataBuilderConfig.dataBuilders.sumFacilitiesWithServicesAvailable.dataBuilderConfig.entityAggregation.aggregationConfig =
-      dashboardReportsConfig.entityAggregationConfig;
     await updateBuilderConfigByReportId(db, dataBuilderConfig, id);
   }
 };
@@ -64,12 +57,8 @@ exports.down = async function (db) {
     const { dataBuilderConfig } = dashboardReport;
     dataBuilderConfig.dataBuilders.countFacilitiesSurveyed.dataBuilder =
       dashboardReportsConfig.oldDataBuilder;
-    delete dataBuilderConfig.dataBuilders.countFacilitiesSurveyed.dataBuilderConfig
-      .entityAggregation.aggregationConfig;
     dataBuilderConfig.dataBuilders.sumFacilitiesWithServicesAvailable.dataBuilder =
       dashboardReportsConfig.oldDataBuilder;
-    delete dataBuilderConfig.dataBuilders.sumFacilitiesWithServicesAvailable.dataBuilderConfig
-      .entityAggregation.aggregationConfig;
     await updateBuilderConfigByReportId(db, dataBuilderConfig, id);
   }
 };

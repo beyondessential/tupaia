@@ -31,8 +31,13 @@ async function updateBuilderConfigByReportId(db, newConfig, reportId) {
 
 const surveyCodes = ['RHC', 'RHFSC', 'RHFSCTS'];
 
-const switchServiceType = async (db, code, serviceType) => {
-  await updateValues(db, 'data_source', { service_type: serviceType }, { code });
+const switchServiceType = async (db, code, dataSourceType, serviceType) => {
+  await updateValues(
+    db,
+    'data_source',
+    { service_type: serviceType },
+    { code, type: dataSourceType },
+  );
 };
 
 const dashboardReportsChangeForEntityAggregation = [
@@ -44,7 +49,6 @@ const dashboardReportsChangeForEntityAggregation = [
   'UNFPA_Facilities_Offering_Delivery',
   'UNFPA_Facilities_Offering_Services',
   'UNFPA_Delivery_Services_Stock',
-  'UNFPA_Percentage_Of_Facilities_At_Least_1_Staff_Trained_SRH_Services',
 ];
 
 const newElementInDataBuilderConfig = {
@@ -69,11 +73,11 @@ exports.up = async function (db) {
   const serviceType = 'tupaia';
 
   for (const dataSource of dataSources) {
-    await switchServiceType(db, dataSource.code, serviceType);
+    await switchServiceType(db, dataSource.code, 'dataElement', serviceType);
   }
 
   for (const code of surveyCodes) {
-    await switchServiceType(db, code, serviceType);
+    await switchServiceType(db, code, 'dataGroup', serviceType);
   }
 
   dashboardReportsChangeForEntityAggregation.forEach(async id => {
@@ -89,11 +93,11 @@ exports.down = async function (db) {
   const serviceType = 'dhis';
 
   for (const dataSource of dataSources) {
-    await switchServiceType(db, dataSource.code, serviceType);
+    await switchServiceType(db, dataSource.code, 'dataElement', serviceType);
   }
 
   for (const code of surveyCodes) {
-    await switchServiceType(db, code, serviceType);
+    await switchServiceType(db, code, 'dataGroup', serviceType);
   }
 
   dashboardReportsChangeForEntityAggregation.forEach(async id => {
