@@ -87,20 +87,29 @@ describe('DataBroker', () => {
           'Please provide at least one existing data source code',
         ],
         [
-          'no code exists - single item',
-          { code: 'NON_EXISTING' },
-          'None of the following data sources exist: NON_EXISTING',
+          "data element doesn't exist",
+          { code: 'NON_EXISTING', type: 'dataElement' },
+          'None of the following data elements exist: NON_EXISTING',
         ],
         [
-          'no code exists - multiple items',
-          { code: ['NON_EXISTING1', 'NON_EXISTING2'] },
-          'None of the following data sources exist: NON_EXISTING1,NON_EXISTING2',
+          "data group doesn't exist",
+          { code: 'NON_EXISTING', type: 'dataGroup' },
+          'None of the following data groups exist: NON_EXISTING',
+        ],
+        [
+          'multiple codes, none exists',
+          { code: ['NON_EXISTING1', 'NON_EXISTING2'], type: 'dataElement' },
+          'None of the following data elements exist: NON_EXISTING1,NON_EXISTING2',
         ],
       ];
 
       it.each(testData)('%s', async (_, dataSourceSpec, expectedError) =>
         expect(new DataBroker().pull(dataSourceSpec)).toBeRejectedWith(expectedError),
       );
+
+      it('does not throw if at least one code exists', () => {
+        expect(new DataBroker().pull({ code: ['TEST_01', 'NON_EXISTING'] })).toResolve();
+      });
     });
 
     describe('analytics', () => {

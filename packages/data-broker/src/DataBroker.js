@@ -3,10 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { lower } from 'case';
 import groupBy from 'lodash.groupby';
 
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { countDistinct } from '@tupaia/utils';
+import { countDistinct, toArray } from '@tupaia/utils';
 import { createService } from './services';
 
 let database;
@@ -36,13 +37,22 @@ export class DataBroker {
   }
 
   async fetchDataSources(dataSourceSpec) {
-    const { code } = dataSourceSpec;
+    const { code, type } = dataSourceSpec;
     if (!code || (Array.isArray(code) && code.length === 0)) {
       throw new Error('Please provide at least one existing data source code');
     }
     const dataSources = await this.models.dataSource.find(dataSourceSpec);
+    const typeDescription = `${lower(type)}s`;
     if (dataSources.length === 0) {
-      throw new Error(`None of the following data sources exist: ${code}`);
+      throw new Error(`None of the following ${typeDescription} exist: ${code}`);
+    }
+
+    const codesRequested = toArray(code);
+    const codesFound = dataSources.map(ds => ds.code);
+    const codesNotFound = codesRequested.filter(c => !codesFound.includes(c));
+    if (codesNotFound.length > 0) {
+      // eslint-disable-next-line no-console
+      console.warn(`Could not find the following ${typeDescription}: ${codesNotFound}`);
     }
 
     return dataSources;
