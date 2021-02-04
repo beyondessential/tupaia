@@ -1,0 +1,447 @@
+{
+  "description": "Arithmetic analytics",
+  "setup": {
+    "dbRecords": {
+      "entity": [
+        { "code": "GR", "name": "Greece", "type": "country" },
+        { "code": "IT", "name": "Italy", "type": "country" },
+        { "code": "ES", "name": "Spain", "type": "country" }
+      ],
+      "dataSource": [
+        { "code": "Female", "type": "dataElement", "service_type": "tupaia" },
+        { "code": "Male", "type": "dataElement", "service_type": "tupaia" }
+      ],
+      "indicator": [
+        {
+          "code": "EmptyConfig",
+          "builder": "arithmetic",
+          "config": {}
+        },
+        {
+          "code": "MonthlyBirths",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "Female + Male",
+            "aggregation": "FINAL_EACH_MONTH"
+          }
+        },
+        {
+          "code": "MonthlyBirths_MonthlyBirths_ZeroDefaults",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "Female + Male",
+            "aggregation": "FINAL_EACH_MONTH",
+            "defaultValues": {
+              "Female": 0,
+              "Male": 0
+            }
+          }
+        },
+        {
+          "code": "AnnualBirths",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "Female + Male",
+            "aggregation": ["FINAL_EACH_MONTH", "SUM_EACH_YEAR"]
+          }
+        },
+        {
+          "code": "MonthlyBirthIncrease",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "(Female + Male) / MonthlyBirths",
+            "aggregation": {
+              "Female": "FINAL_EACH_MONTH",
+              "Male": "FINAL_EACH_MONTH",
+              "MonthlyBirths": [
+                "FINAL_EACH_MONTH",
+                {
+                  "type": "OFFSET_PERIOD",
+                  "config": { "periodType": "MONTH", "offset": 1 }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "code": "AnnualBirthIncrease",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "AnnualBirths / annualBirthsPrevYear",
+            "parameters": [
+              {
+                "code": "annualBirthsPrevYear",
+                "builder": "arithmetic",
+                "config": {
+                  "formula": "AnnualBirths",
+                  "aggregation": {
+                    "type": "OFFSET_PERIOD",
+                    "config": { "periodType": "YEAR", "offset": 1 }
+                  }
+                }
+              }
+            ],
+            "aggregation": "FINAL_EACH_YEAR"
+          }
+        },
+        {
+          "code": "FemaleGtMale",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "Female > Male",
+            "aggregation": "FINAL_EACH_MONTH"
+          }
+        },
+        {
+          "code": "MaleGtFemale",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "Male > Female",
+            "aggregation": "FINAL_EACH_MONTH"
+          }
+        }
+      ]
+    },
+    "surveys": [
+      {
+        "code": "Births",
+        "questions": [
+          { "code": "Female", "type": "Number" },
+          { "code": "Male", "type": "Number" }
+        ]
+      }
+    ],
+    "surveyResponses": [
+      {
+        "surveyCode": "Births",
+        "entityCode": "GR",
+        "submission_time": "2019-01-01T15:00:00Z",
+        "answers": {
+          "Female": "1",
+          "Male": "2"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "GR",
+        "submission_time": "2020-11-30T15:00:00Z",
+        "answers": {
+          "Female": "3",
+          "Male": "4"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "GR",
+        "submission_time": "2020-12-29T15:00:00Z",
+        "answers": {
+          "Female": "60",
+          "Male": "80"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "GR",
+        "submission_time": "2020-12-30T15:00:00Z",
+        "answers": {
+          "Female": "6",
+          "Male": "8"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "IT",
+        "submission_time": "2019-06-05T15:00:00Z",
+        "answers": {
+          "Female": "10",
+          "Male": "20"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "IT",
+        "submission_time": "2020-07-07T15:00:00Z",
+        "answers": {
+          "Female": "30",
+          "Male": "40"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "ES",
+        "submission_time": "2020-01-01T15:00:00Z",
+        "answers": {
+          "Female": "100"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "ES",
+        "submission_time": "2020-02-02T15:00:00Z",
+        "answers": {
+          "Female": "150",
+          "Male": "200"
+        }
+      }
+    ]
+  },
+  "testCases": [
+    {
+      "description": "Throws if config is empty",
+      "input": {
+        "indicatorCodes": ["EmptyConfig"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["TO"]
+        }
+      },
+      "throws": true,
+      "expected": "Should not be empty"
+    },
+    {
+      "description": "Returns empty results if org unit has no data",
+      "input": {
+        "indicatorCodes": ["MonthlyBirths"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["TO"]
+        }
+      },
+      "expected": []
+    },
+    {
+      "description": "Returns empty results if date range has no data",
+      "input": {
+        "indicatorCodes": ["MonthlyBirths"],
+        "fetchOptions": {
+          "startDate": "2017-01-01",
+          "endDate": "2017-12-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": []
+    },
+    {
+      "description": "Evaluates an arithmetic formula",
+      "input": {
+        "indicatorCodes": ["MonthlyBirths"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2019-01-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "MonthlyBirths",
+          "organisationUnit": "GR",
+          "period": "20190101",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "description": "Evaluates a boolean formula (result: true)",
+      "input": {
+        "indicatorCodes": ["MaleGtFemale"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2019-01-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "MaleGtFemale",
+          "organisationUnit": "GR",
+          "period": "20190101",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "description": "Evaluates a boolean formula (result: false)",
+      "input": {
+        "indicatorCodes": ["FemaleGtMale"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2019-01-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "FemaleGtMale",
+          "organisationUnit": "GR",
+          "period": "20190101",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "description": "Applies correct aggregation (string format)",
+      "input": {
+        "indicatorCodes": ["MonthlyBirths"],
+        "fetchOptions": {
+          "startDate": "2020-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "MonthlyBirths",
+          "organisationUnit": "GR",
+          "period": "20201130",
+          "value": 7
+        },
+        {
+          "dataElement": "MonthlyBirths",
+          "organisationUnit": "GR",
+          "period": "20201230",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "description": "Applies correct aggregation (array format)",
+      "input": {
+        "indicatorCodes": ["AnnualBirths"],
+        "fetchOptions": {
+          "startDate": "2020-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "AnnualBirths",
+          "organisationUnit": "GR",
+          "period": "2020",
+          "value": 21
+        }
+      ]
+    },
+    {
+      "description": "Applies correct aggregation (object format)",
+      "input": {
+        "indicatorCodes": ["MonthlyBirthIncrease"],
+        "fetchOptions": {
+          "startDate": "2020-12-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "MonthlyBirthIncrease",
+          "organisationUnit": "GR",
+          "period": "20201230",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "description": "Nested indicator + inline indicator (parameter)",
+      "input": {
+        "indicatorCodes": ["AnnualBirthIncrease"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["GR"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "AnnualBirthIncrease",
+          "organisationUnit": "GR",
+          "period": "2020",
+          "value": 7
+        }
+      ]
+    },
+    {
+      "description": "Skips calculation if an element is not defined in a specific org unit/date range combo",
+      "input": {
+        "indicatorCodes": ["MonthlyBirths"],
+        "fetchOptions": {
+          "startDate": "2020-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["ES"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "MonthlyBirths",
+          "organisationUnit": "ES",
+          "period": "20200202",
+          "value": 350
+        }
+      ]
+    },
+    {
+      "description": "Uses default values if provided",
+      "input": {
+        "indicatorCodes": ["MonthlyBirths_MonthlyBirths_ZeroDefaults"],
+        "fetchOptions": {
+          "startDate": "2020-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["ES"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "MonthlyBirths_MonthlyBirths_ZeroDefaults",
+          "organisationUnit": "ES",
+          "period": "20200101",
+          "value": 100
+        },
+        {
+          "dataElement": "MonthlyBirths_MonthlyBirths_ZeroDefaults",
+          "organisationUnit": "ES",
+          "period": "20200202",
+          "value": 350
+        }
+      ]
+    },
+    {
+      "description": "Calculates data across organisation units and periods",
+      "input": {
+        "indicatorCodes": ["AnnualBirths"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["GR", "IT"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "AnnualBirths",
+          "organisationUnit": "GR",
+          "period": "2019",
+          "value": 3
+        },
+        {
+          "dataElement": "AnnualBirths",
+          "organisationUnit": "IT",
+          "period": "2019",
+          "value": 30
+        },
+        {
+          "dataElement": "AnnualBirths",
+          "organisationUnit": "GR",
+          "period": "2020",
+          "value": 21
+        },
+        {
+          "dataElement": "AnnualBirths",
+          "organisationUnit": "IT",
+          "period": "2020",
+          "value": 70
+        }
+      ]
+    }
+  ]
+}

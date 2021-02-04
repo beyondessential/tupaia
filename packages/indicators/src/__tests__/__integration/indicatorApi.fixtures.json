@@ -1,0 +1,93 @@
+{
+  "description": "Indicator API features",
+  "setup": {
+    "dbRecords": {
+      "entity": [{ "code": "GR", "name": "Greece", "type": "country" }],
+      "dataSource": [
+        { "code": "Female", "type": "dataElement", "service_type": "tupaia" },
+        { "code": "Male", "type": "dataElement", "service_type": "tupaia" }
+      ],
+      "indicator": [
+        {
+          "code": "NonExistingBuilder",
+          "builder": "nonExisting",
+          "config": {}
+        },
+        {
+          "code": "SelfReferencing",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "SelfReferencing - 1",
+            "aggregation": "RAW"
+          }
+        },
+        {
+          "code": "CircularReference_A",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "CircularReference_B",
+            "aggregation": "RAW"
+          }
+        },
+        {
+          "code": "CircularReference_B",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "CircularReference_A",
+            "aggregation": "RAW"
+          }
+        }
+      ]
+    },
+    "surveys": [
+      {
+        "code": "Births",
+        "questions": [
+          { "code": "Female", "type": "Number" },
+          { "code": "Male", "type": "Number" }
+        ]
+      }
+    ]
+  },
+  "testCases": [
+    {
+      "description": "throws if a requested indicator builder does not exist",
+      "input": {
+        "indicatorCodes": ["NonExistingBuilder"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2019-12-31",
+          "organisationUnitCodes": ["TO"]
+        }
+      },
+      "throws": true,
+      "expected": "'nonExisting' is not an indicator builder"
+    },
+    {
+      "description": "throws for self referencing builders",
+      "input": {
+        "indicatorCodes": ["SelfReferencing"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2019-12-31",
+          "organisationUnitCodes": ["TO"]
+        }
+      },
+      "throws": true,
+      "expected": "Max indicator nesting depth reached"
+    },
+    {
+      "description": "throws for circular references",
+      "input": {
+        "indicatorCodes": ["CircularReference_A"],
+        "fetchOptions": {
+          "startDate": "2019-01-01",
+          "endDate": "2019-12-31",
+          "organisationUnitCodes": ["TO"]
+        }
+      },
+      "throws": true,
+      "expected": "Max indicator nesting depth reached"
+    }
+  ]
+}
