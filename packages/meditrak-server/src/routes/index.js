@@ -11,6 +11,7 @@ import { getChanges } from './getChanges';
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
+import { BESAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
 import { GETDisasters } from './GETDisasters';
@@ -106,6 +107,7 @@ export default {
   createDataSources: useRouteHandler(BESAdminCreateHandler),
   createDisasters: useRouteHandler(BESAdminCreateHandler),
   createFeedItems: useRouteHandler(BESAdminCreateHandler),
+  createIndicators: useRouteHandler(BESAdminCreateHandler),
   createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
   createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
   deleteAnswers: useRouteHandler(DeleteAnswers),
@@ -114,6 +116,7 @@ export default {
   deleteDataSources: useRouteHandler(BESAdminDeleteHandler),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
+  deleteIndicators: useRouteHandler(BESAdminDeleteHandler),
   deleteOptions: useRouteHandler(DeleteOptions),
   deleteOptionSets: useRouteHandler(DeleteOptionSets),
   deleteQuestions: useRouteHandler(DeleteQuestions),
@@ -131,6 +134,7 @@ export default {
   editDataSources: useRouteHandler(BESAdminEditHandler),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
+  editIndicators: useRouteHandler(BESAdminEditHandler),
   editOptions: useRouteHandler(EditOptions),
   editOptionSets: useRouteHandler(EditOptionSets),
   editQuestions: useRouteHandler(EditQuestions),
@@ -150,6 +154,7 @@ export default {
   getDisasters: useRouteHandler(GETDisasters),
   getDashboardReports: useRouteHandler(GETDashboardReports),
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
+  getIndicators: useRouteHandler(BESAdminGETHandler),
   getDataSources: useRouteHandler(GETDataSources),
   getEntities: useRouteHandler(GETEntities),
   getGeographicalAreas: useRouteHandler(GETGeographicalAreas),

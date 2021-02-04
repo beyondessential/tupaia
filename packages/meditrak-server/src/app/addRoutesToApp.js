@@ -21,6 +21,7 @@ const {
   createDataSources,
   createDisasters,
   createFeedItems,
+  createIndicators,
   createPermissionGroups,
   createUserEntityPermissions,
   deleteAnswers,
@@ -29,6 +30,7 @@ const {
   deleteDataSources,
   deleteDisasters,
   deleteFeedItems,
+  deleteIndicators,
   deleteOptions,
   deleteOptionSets,
   deleteQuestions,
@@ -44,6 +46,7 @@ const {
   editDataSources,
   editDisasters,
   editFeedItems,
+  editIndicators,
   editOptions,
   editOptionSets,
   editQuestions,
@@ -67,6 +70,7 @@ const {
   getEntities,
   getGeographicalAreas,
   getFeedItems,
+  getIndicators,
   getMapOverlays,
   getSurveys,
   getSurveyGroups,
@@ -160,6 +164,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/disasters/:recordId?', getDisasters);
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
+  app.get('(/v[0-9]+)/indicators/:recordId?', getIndicators);
   app.get('(/v[0-9]+)/feedItems/:recordId?', getFeedItems);
   app.get('(/v[0-9]+)/mapOverlays/:recordId?', getMapOverlays);
   app.get('(/v[0-9]+)/surveys/:recordId?', getSurveys);
@@ -226,6 +231,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/dataSources', createDataSources);
   app.post('(/v[0-9]+)/disasters', createDisasters);
   app.post('(/v[0-9]+)/feedItems', createFeedItems);
+  app.post('(/v[0-9]+)/indicators', createIndicators);
   app.post('(/v[0-9]+)/permissionGroups', createPermissionGroups);
 
   /**
@@ -248,6 +254,7 @@ export function addRoutesToApp(app) {
   app.put('(/v[0-9]+)/dashboardGroups/:recordId', editDashboardGroups);
   app.put('(/v[0-9]+)/dashboardReports/:recordId', editDashboardReports);
   app.put('(/v[0-9]+)/mapOverlays/:recordId', editMapOverlays);
+  app.put('(/v[0-9]+)/indicators/:recordId', editIndicators);
   app.put('(/v[0-9]+)/projects/:recordId', editProjects);
   app.put('(/v[0-9]+)/me', editUser);
 
@@ -269,6 +276,7 @@ export function addRoutesToApp(app) {
   app.delete('(/v[0-9]+)/dashboardGroups/:recordId', deleteDashboardGroups);
   app.delete('(/v[0-9]+)/dashboardReports/:recordId', deleteDashboardReports);
   app.delete('(/v[0-9]+)/mapOverlays/:recordId', deleteMapOverlays);
+  app.delete('(/v[0-9]+)/indicators/:recordId', deleteIndicators);
 
   /**
    * Handle errors
