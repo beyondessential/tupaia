@@ -13,6 +13,7 @@ import { CHART_TYPES } from './chartTypes';
 import { PieChart } from './PieChart';
 import { parseChartConfig } from './parseChartConfig';
 import { getIsTimeSeries, isDataKey } from './helpers';
+import { useChartData } from './useChartData';
 
 const UnknownChart = () => (
   <div style={VIEW_STYLES.newChartComing}>
@@ -53,7 +54,20 @@ const getViewContent = viewContent => {
     : { ...viewContent, data: massagedData };
 };
 
-export const ChartWrapper = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
+export const ChartWrapper = ({ isExporting, isEnlarged, onItemClick }) => {
+  const { data: viewContent, isLoading } = useChartData({
+    projectCode: 'explore',
+    organisationUnitCode: 'explore',
+    dashboardGroupId: '301',
+    viewId: '8',
+  });
+
+  if (isLoading) {
+    return '...loading';
+  }
+
+  console.log('viewContent!!!', viewContent);
+
   const viewContentConfig = getViewContent(viewContent);
   const { chartType } = viewContentConfig;
 
@@ -78,14 +92,14 @@ export const ChartWrapper = ({ viewContent, isExporting, isEnlarged, onItemClick
 };
 
 ChartWrapper.propTypes = {
-  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  // viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   onItemClick: PropTypes.func,
 };
 
 ChartWrapper.defaultProps = {
-  viewContent: null,
+  // viewContent: null,
   isEnlarged: false,
   isExporting: false,
   onItemClick: () => {},
