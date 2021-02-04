@@ -338,7 +338,7 @@ describe('buildArithmetic', () => {
     });
   });
 
-  it('calls `aggregator.fetchAnalytics` with `fetchOptions`', async () => {
+  it('calls `aggregator.fetchAnalytics` with `fetchOptions`, and adds useDeprecatedApi: false', async () => {
     const aggregator = createAggregator();
     const api = {
       getAggregator: () => aggregator,
@@ -353,7 +353,7 @@ describe('buildArithmetic', () => {
 
     expect(aggregator.fetchAnalytics).toHaveBeenCalledOnceWith(
       expect.anything(),
-      fetchOptions,
+      { ...fetchOptions, useDeprecatedApi: false },
       expect.anything(),
     );
   });

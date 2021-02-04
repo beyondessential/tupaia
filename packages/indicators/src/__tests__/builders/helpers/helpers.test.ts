@@ -127,7 +127,7 @@ describe('helpers', () => {
   describe('fetchAnalytics()', () => {
     const aggregator = createAggregator(Object.values(ANALYTIC_RESPONSE_CONFIG));
 
-    it('uses the provided fetchOptions', async () => {
+    it('uses the provided fetchOptions, and adds useDeprecatedApi: false', async () => {
       const fetchOptions = { organisationUnitCodes: ['TO'] };
       await fetchAnalytics(
         aggregator,
@@ -137,7 +137,7 @@ describe('helpers', () => {
 
       expect(aggregator.fetchAnalytics).toHaveBeenCalledOnceWith(
         expect.anything(),
-        fetchOptions,
+        { ...fetchOptions, useDeprecatedApi: false },
         expect.anything(),
       );
     });
