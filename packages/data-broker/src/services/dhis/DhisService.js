@@ -254,7 +254,6 @@ export class DhisService extends Service {
     const fetchAnalyticsForProgram = async programCode => {
       const dataSourcesToFetch = await this.getDataSourcesInProgram(dataSources, programCode);
 
-      console.log(programCode, dataSources, await this.models.dataSource.getDataElementsInGroup(programCode), dataSourcesToFetch);
       if (dataSourcesToFetch.length === 0) return;
 
       const dataElementCodesToFetch = dataSourcesToFetch.map(
