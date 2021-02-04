@@ -41,21 +41,21 @@ const removeNonNumericData = data =>
 const sortData = data =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-export const ChartWrapper = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
-  const viewContentConfig = getViewContent();
-  const { chartType } = viewContentConfig;
+const getViewContent = viewContent => {
+  const { chartConfig, data } = viewContent;
+  const massagedData = sortData(removeNonNumericData(data));
+  return chartConfig
+    ? {
+        ...viewContent,
+        data: massagedData,
+        chartConfig: parseChartConfig(viewContent),
+      }
+    : { ...viewContent, data: massagedData };
+};
 
-  const getViewContent = () => {
-    const { chartConfig, data } = viewContent;
-    const massagedData = sortData(removeNonNumericData(data));
-    return chartConfig
-      ? {
-          ...viewContent,
-          data: massagedData,
-          chartConfig: parseChartConfig(viewContent),
-        }
-      : { ...viewContent, data: massagedData };
-  };
+export const ChartWrapper = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
+  const viewContentConfig = getViewContent(viewContent);
+  const { chartType } = viewContentConfig;
 
   if (!Object.values(CHART_TYPES).includes(chartType)) {
     return <UnknownChart />;
