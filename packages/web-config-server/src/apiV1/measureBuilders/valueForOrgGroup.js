@@ -16,6 +16,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
 
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {
+      const { facilityTypeCodeMetadataKey = 'category_code' } = this.config;
       // create index of all facilities
       const facilityEntities = await this.fetchDescendantsOfType(this.models.entity.types.FACILITY);
       const facilityCodes = facilityEntities.map(facility => facility.code);
@@ -25,7 +26,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
           ...array,
           {
             organisationUnitCode: metadata.code,
-            facilityTypeCode: metadata.category_code,
+            facilityTypeCode: metadata[facilityTypeCodeMetadataKey],
             facilityTypeName: metadata.type_name,
           },
         ],
