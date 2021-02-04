@@ -59,3 +59,27 @@ export const adjustTemporalDimensionsToAggregation = (temporalDimensions, aggreg
   const { startDate, endDate } = getDateRangeExtremes(adjustedDateRanges);
   return { startDate, endDate, period: convertDateRangeToPeriodString(startDate, endDate) };
 };
+
+/**
+ * Each aggregation in the list may require the original fetch option dimensions (dates, org units etc)
+ * to be adjusted, eg when we need to take into account past data
+ * Return the widest values for each adjustable fetch option
+ */
+export const expandFetchOptionsToSpanAggregations = (fetchOptions, aggregations) => {
+  const originalDateRange = {
+    startDate: fetchOptions.startDate,
+    endDate: fetchOptions.endDate,
+  };
+  const adjustedDateRanges = aggregations
+    .map(aggregation => adjustDateRangeToAggregation(originalDateRange, aggregation))
+    .concat(originalDateRange)
+    .filter(dr => !!dr);
+  const { startDate, endDate } = getDateRangeExtremes(adjustedDateRanges);
+
+  return {
+    ...fetchOptions,
+    startDate,
+    endDate,
+    period: convertDateRangeToPeriodString(startDate, endDate),
+  };
+};
