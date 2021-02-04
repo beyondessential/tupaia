@@ -15,6 +15,13 @@ export class SqlQuery {
     this.hasWhereClause = false;
   }
 
+  loggableQuery() {
+    const replacementIterator = this.parameters
+      .map(param => param.replace(/'/g, "''"))
+      [Symbol.iterator]();
+    return this.query.replace(/\?/g, () => `'${replacementIterator.next().value}'`);
+  }
+
   wrapAs(tableDefinition) {
     this.query = `
     WITH ${tableDefinition}
@@ -22,11 +29,12 @@ export class SqlQuery {
     `;
   }
 
-  addSelectClause(clause) {
+  addClause(clause, parameters = []) {
     this.query = `
       ${this.query}
       ${clause}
     `;
+    this.parameters = this.parameters.concat(parameters);
   }
 
   addWhereClause(clause, parameters) {

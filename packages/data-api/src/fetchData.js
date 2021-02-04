@@ -13,71 +13,74 @@ const generateBaseSqlQuery = ({
   endDate,
   aggregations,
 }) => {
-  const sqlQuery = new SqlQuery(
-    `
+  const sqlQuery = new SqlQuery(`
     SELECT
-      survey_response_id as "surveyResponseId",
-      date,
+      survey_response.submission_time as "date",
       entity_code as "entityCode",
-      entity_name as "entityName",
       data_element_code as "dataElementCode",
-      type,
-      value
+      answer.type as "type",
+      answer.text as "value"
+  `);
+
+  // Perform fetch side aggregations if possible
+  const firstAggregation = aggregations && aggregations[0];
+  if (firstAggregation && firstAggregation.type === 'FINAL_EACH_DAY') {
+    sqlQuery.addClause(`
     FROM
-      analytics
+      aggregate_analytics_day`);
+  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_WEEK') {
+    sqlQuery.addClause(`
+    FROM
+      aggregate_analytics_week`);
+  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_MONTH') {
+    sqlQuery.addClause(`
+    FROM
+      aggregate_analytics_month`);
+  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_YEAR') {
+    sqlQuery.addClause(`
+    FROM
+      aggregate_analytics_year`);
+  } else if (firstAggregation && firstAggregation.type === 'MOST_RECENT') {
+    sqlQuery.addClause(`
+    FROM
+      aggregate_analytics_all_time`);
+  } else {
+    sqlQuery.addClause(`
+    FROM
+      aggregate_analytics_day`);
+  }
+  sqlQuery.addClause(`
+    INNER JOIN answer
+      ON answer.id = most_recent_answer_id
+    INNER JOIN survey_response
+      ON answer.survey_response_id = survey_response.id`);
+
+  sqlQuery.addClause(
+    `
     INNER JOIN (
       ${SqlQuery.parameteriseValues(dataElementCodes)}
     ) decs(dec) ON data_element_code = dec
     INNER JOIN (
       ${SqlQuery.parameteriseValues(organisationUnitCodes)}
     ) ecs(ec) ON entity_code = ec
-  `,
+   `,
     [...dataElementCodes, ...organisationUnitCodes],
   );
 
-  // Perform fetch side aggregations if possible
-  const firstAggregation = aggregations && aggregations[0];
-  if (firstAggregation && firstAggregation.type === 'FINAL_EACH_DAY') {
-    sqlQuery.addWhereClause(`final_per_day = ?`, [true]);
-  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_WEEK') {
-    sqlQuery.addWhereClause(`final_per_week = ?`, [true]);
-  }
-  if (firstAggregation && firstAggregation.type === 'FINAL_EACH_MONTH') {
-    sqlQuery.addWhereClause(`final_per_month = ?`, [true]);
-  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_YEAR') {
-    sqlQuery.addWhereClause(`final_per_year = ?`, [true]);
-  }
-
   // Add start and end date, which are inclusive
   if (startDate) {
-    sqlQuery.addWhereClause(`date >= ?`, [utcMoment(startDate).startOf('day').toISOString()]);
+    sqlQuery.addWhereClause(`survey_response.submission_time >= ?`, [
+      utcMoment(startDate).startOf('day').toISOString(),
+    ]);
   }
   if (endDate) {
-    sqlQuery.addWhereClause(`date <= ?`, [utcMoment(endDate).endOf('day').toISOString()]);
+    sqlQuery.addWhereClause(`survey_response.submission_time <= ?`, [
+      utcMoment(endDate).endOf('day').toISOString(),
+    ]);
   }
 
   sqlQuery.addOrderByClause('date');
 
-  if (firstAggregation && firstAggregation.type === 'MOST_RECENT') {
-    sqlQuery.wrapAs(
-      'valid_analytics ("surveyResponseId", date, "entityCode", "entityName", "dataElementCode", type, value)',
-    );
-    sqlQuery.addSelectClause(`
-      SELECT 
-        a.*
-      FROM
-        valid_analytics a
-      LEFT JOIN
-        valid_analytics b
-        ON
-          a."entityCode" = b."entityCode"
-        AND
-          a."dataElementCode" = b."dataElementCode"
-        AND
-          a.date < b.date
-      WHERE
-        b.date IS NULL`);
-  }
   return sqlQuery;
 };
 
