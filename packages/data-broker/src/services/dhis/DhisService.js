@@ -217,7 +217,8 @@ export class DhisService extends Service {
 
   getDataSourcesInProgram = async (dataSources, programCode) => {
     const allowedDataSources = await this.models.dataSource.getDataElementsInGroup(programCode);
-    return dataSources.filter(({ id }) => allowedDataSources.includes(id));
+    const allowedDataSourceCodes = allowedDataSources.map(({ code }) => code);
+    return dataSources.filter(({ code }) => allowedDataSourceCodes.includes(code)); // What check, dataElementCode, code, id?
   };
 
   mergeAnalytics = analytics => ({
@@ -240,7 +241,7 @@ export class DhisService extends Service {
     const { programCodes = [], period, startDate, endDate, organisationUnitCodes } = options;
 
     const baseQuery = {
-      programCodes,
+      // programCodes,
       organisationUnitCodes,
       dataElementIdScheme: 'code',
       period,
@@ -251,9 +252,10 @@ export class DhisService extends Service {
     const allAnalytics = [];
 
     const fetchAnalyticsForProgram = async programCode => {
-      const dataSourcesToFetch = this.getDataSourcesInProgram(dataSources, programCode);
+      const dataSourcesToFetch = await this.getDataSourcesInProgram(dataSources, programCode);
 
-      if (dataElementCodesToFetch.length === 0) return;
+      console.log(programCode, dataSources, await this.models.dataSource.getDataElementsInGroup(programCode), dataSourcesToFetch);
+      if (dataSourcesToFetch.length === 0) return;
 
       const dataElementCodesToFetch = dataSourcesToFetch.map(
         ({ dataElementCode }) => dataElementCode,
@@ -265,10 +267,10 @@ export class DhisService extends Service {
         dataElementCodes: dataElementCodesToFetch,
       });
 
-      allAnalytics.push(this.translateDhisEventAnalytics(dhisAnalytics));
+      allAnalytics.push(await this.translateDhisEventAnalytics(dhisAnalytics, dataSourcesToFetch));
     };
 
-    await Promise.all(fetchAnalyticsForProgram);
+    await Promise.all(programCodes.map(fetchAnalyticsForProgram));
 
     return this.mergeAnalytics(allAnalytics);
   };
