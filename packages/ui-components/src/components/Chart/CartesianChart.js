@@ -162,19 +162,19 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
         {YAxes({ viewContent, isExporting })}
-        <Tooltip
-          filterNull={false}
-          // content={
-          //   <CustomTooltip
-          //     valueType={valueType}
-          //     labelType={labelType}
-          //     periodGranularity={viewContent.periodGranularity}
-          //     chartConfig={chartConfig}
-          //     presentationOptions={presentationOptions}
-          //     chartType={chartType}
-          //   />
-          // }
-        />
+        {/*<Tooltip*/}
+        {/*  filterNull={false}*/}
+        {/*  content={*/}
+        {/*    <CustomTooltip*/}
+        {/*      valueType={valueType}*/}
+        {/*      labelType={labelType}*/}
+        {/*      periodGranularity={viewContent.periodGranularity}*/}
+        {/*      chartConfig={chartConfig}*/}
+        {/*      presentationOptions={presentationOptions}*/}
+        {/*      chartType={chartType}*/}
+        {/*    />*/}
+        {/*  }*/}
+        {/*/>*/}
         {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
           <Legend
             chartConfig={chartConfig}

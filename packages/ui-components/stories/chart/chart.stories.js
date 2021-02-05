@@ -32,41 +32,58 @@ export default {
   ],
 };
 
-const projects = [
+const explore = [
   {
-    projectName: 'Explore',
-    projectCode: 'explore',
-    organisationUnit: 'explore',
-    dashboarGroups: [
-      {
-        dashboardGroupId: '301',
-        name: 'General',
-        reports: ['28', '29', '8'],
-      },
-    ],
+    dashboardGroupId: '301',
+    name: 'General',
+    reports: ['28', '29', '8'],
   },
 ];
 
-export const Reports = () =>
-  projects.map(project =>
-    project.dashboarGroups.map(dashboardGroup => (
-      <>
-        <Typography variant="h1">
-          {project.projectName} - {dashboardGroup.name}
-        </Typography>
-        {dashboardGroup.reports.map(reportId => {
-          console.log('project', project);
-          return (
-            <Chart
-              key={reportId}
-              projectCode={project.projectCode}
-              organisationUnitCode={project.organisationUnit}
-              dashboardGroupId={dashboardGroup.dashboardGroupId}
-              viewId={reportId}
-              isEnlarged
-            />
-          );
-        })}
-      </>
-    )),
-  );
+export const Explore = () =>
+  explore.map(dashboardGroup => (
+    <React.Fragment key={dashboardGroup.name}>
+      <Typography variant="h1">Explore - {dashboardGroup.name}</Typography>
+      {dashboardGroup.reports.map(reportId => {
+        return (
+          <Chart
+            key={reportId}
+            projectCode="explore"
+            organisationUnitCode="explore"
+            dashboardGroupId={dashboardGroup.dashboardGroupId}
+            viewId={reportId}
+            isEnlarged
+          />
+        );
+      })}
+    </React.Fragment>
+  ));
+
+const fanafana = [
+  {
+    dashboardGroupId: '227',
+    name: 'General',
+    reports: ['8'],
+  },
+];
+
+export const Fanafana = () =>
+  fanafana.map(dashboardGroup => (
+    <React.Fragment key={dashboardGroup.name}>
+      <Typography key={dashboardGroup.name} variant="h1">
+        Fanafana - {dashboardGroup.name}
+      </Typography>
+      {dashboardGroup.reports.map(reportId => {
+        return (
+          <Chart
+            key={`${dashboardGroup.name}-${reportId}`}
+            projectCode="fanafana"
+            organisationUnitCode="TO"
+            dashboardGroupId={dashboardGroup.dashboardGroupId}
+            viewId={reportId}
+            isEnlarged
+          />
+        );
+      })}
+    </React.Fragment>
+  ));
