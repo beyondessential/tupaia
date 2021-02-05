@@ -4,7 +4,7 @@
  */
 
 import { DatabaseError } from '@tupaia/utils';
-import { getRecords } from './getRecords';
+import { GETUserAccounts } from './userAccounts';
 
 export const getUser = async (req, res, next) => {
   const { models, userId } = req;
@@ -17,9 +17,10 @@ export const getUser = async (req, res, next) => {
   try {
     req.params = {
       recordId: userId,
-      resource: 'user',
     };
-    await getRecords(req, res);
+    req.endpoint = '/users';
+    const getUserAccountHandlerClass = new GETUserAccounts(req, res);
+    await getUserAccountHandlerClass.handle();
   } catch (error) {
     next(error);
   }

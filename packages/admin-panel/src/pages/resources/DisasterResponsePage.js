@@ -32,19 +32,19 @@ const name = {
 
 const countryCode = {
   Header: 'Country',
-  source: 'country',
+  source: 'country.name',
 };
 
 const point = {
   Header: 'Point',
-  source: 'point',
+  source: 'entity.point',
   filterable: false,
   type: 'tooltip',
 };
 
 const bounds = {
   Header: 'Bounds',
-  source: 'bounds',
+  source: 'entity.bounds',
   filterable: false,
   type: 'tooltip',
 };
@@ -54,14 +54,14 @@ const DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds
 const IMPORT_CONFIG = {
   title: 'Import Disasters',
   actionConfig: {
-    importEndpoint: 'disaster',
+    importEndpoint: 'disasters',
   },
 };
 
 export const DisasterResponsePage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Disasters"
-    endpoint="disaster"
+    endpoint="disasters"
     columns={DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}

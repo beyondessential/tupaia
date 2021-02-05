@@ -39,7 +39,7 @@ const getButtonsConfig = fields => [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'dataSource',
+      editEndpoint: 'dataSources',
       fields,
     },
   },
@@ -48,7 +48,7 @@ const getButtonsConfig = fields => [
     source: 'id',
     type: 'delete',
     actionConfig: {
-      endpoint: 'dataSource',
+      endpoint: 'dataSources',
     },
   },
 ];
@@ -120,7 +120,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     expansionTabs={[
       {
         title: 'Data Elements',
-        endpoint: 'data_source/{id}/data_source',
+        endpoint: 'dataSources/{id}/dataSources',
         columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
       },
     ]}
@@ -129,7 +129,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
-        editEndpoint: 'dataSource',
+        editEndpoint: 'dataSources',
         fields: [
           ...DATA_GROUP_FIELDS,
           {
@@ -160,7 +160,7 @@ export const DataElementsPage = ({ getHeaderEl }) => (
     createConfig={{
       title: 'New Data Element',
       actionConfig: {
-        editEndpoint: 'dataSource',
+        editEndpoint: 'dataSources',
         fields: [
           ...DATA_ELEMENT_FIELDS,
           {
