@@ -2,12 +2,15 @@ import { expect } from 'chai';
 import momentTimezone from 'moment-timezone';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { Authenticator } from '@tupaia/auth';
 import { TestableApp } from './TestableApp';
 import {
   upsertEntity,
   upsertFacility,
   upsertQuestion,
 } from './testUtilities/database/upsertRecord';
+import { prepareStubAndAuthenticate } from './routes/utilities/prepareStubAndAuthenticate';
+import { BES_ADMIN_PERMISSION_GROUP } from '../permissions';
 
 const ENTITY_ID = generateTestId();
 const ENTITY_NON_CLINIC_ID = generateTestId();
@@ -35,7 +38,11 @@ describe('surveyResponse endpoint', () => {
   const { models } = app;
 
   before(async () => {
-    await app.authenticate();
+    // We're not testing permissions here
+    const policy = {
+      DL: [BES_ADMIN_PERMISSION_GROUP],
+    };
+    await prepareStubAndAuthenticate(app, policy);
 
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
@@ -87,6 +94,10 @@ describe('surveyResponse endpoint', () => {
       },
     ]);
     surveyId = survey.id;
+  });
+
+  after(() => {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
   });
 
   it('Should accept a single submission', async () => {

@@ -5,22 +5,61 @@
 
 import { authenticate } from './authenticate';
 import { countChanges } from './countChanges';
-import { deleteRecord } from './deleteRecord';
-import { editRecord } from './editRecord';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
-import { getRecords } from './getRecords';
+import { BESAdminCreateHandler } from './CreateHandler';
+import { BESAdminDeleteHandler } from './DeleteHandler';
+import { BESAdminEditHandler } from './EditHandler';
+import { BESAdminGETHandler } from './GETHandler';
+import { GETCountries } from './GETCountries';
+import { GETClinics } from './GETClinics';
+import { GETDisasters } from './GETDisasters';
+import { GETDataSources } from './GETDataSources';
+import { GETEntities } from './GETEntities';
+import { GETFeedItems } from './GETFeedItems';
+import { GETGeographicalAreas } from './GETGeographicalAreas';
+import { GETSurveyGroups } from './GETSurveyGroups';
+import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
+import { GETPermissionGroups } from './GETPermissionGroups';
+import { DeleteOptions, EditOptions, GETOptions } from './options';
+import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
+import { DeleteAnswers, EditAnswers, GETAnswers } from './answers';
+import { DeleteSurveys, EditSurveys, GETSurveys } from './surveys';
+import { GETProjects } from './GETProjects';
+import {
+  DeleteDashboardReports,
+  EditDashboardReports,
+  GETDashboardReports,
+} from './dashboardReports';
+import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
+import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
+import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
+import {
+  DeleteSurveyScreenComponents,
+  EditSurveyScreenComponents,
+  GETSurveyScreenComponents,
+} from './surveyScreenComponents';
+import {
+  CreateUserAccounts,
+  RegisterUserAccounts,
+  EditUserAccounts,
+  GETUserAccounts,
+} from './userAccounts';
+import {
+  CreateUserEntityPermissions,
+  DeleteUserEntityPermissions,
+  EditUserEntityPermissions,
+  GETUserEntityPermissions,
+} from './userEntityPermissions';
+import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
 import { importUsers } from './importUsers';
 import { importOptionSets } from './importOptionSets';
 import { postChanges } from './postChanges';
-import { pruneChanges } from './pruneChanges';
-import { addRecord } from './addRecord';
-import { updateSurveyResponses } from './updateSurveyResponses';
-import { createUser } from './createUser';
+import { importSurveyResponses } from './importSurveyResponses';
 import { changePassword } from './changePassword';
 import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
@@ -32,6 +71,7 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
+import { allowNoPermissions } from '../permissions';
 
 /**
  * All routes will be wrapped with an error catcher that simply passes the error to the next()
@@ -46,33 +86,107 @@ const catchAsyncErrors = routeHandler => (res, req, next) => {
   }
 };
 
+const useRouteHandler = HandlerClass =>
+  catchAsyncErrors(async (res, req) => {
+    const handler = new HandlerClass(res, req);
+    await handler.handle();
+  });
+
+/**
+ * Quick and dirty permission wrappers, run a basic check before an endpoint
+ */
+const allowAnyone = routeHandler => (req, res, next) => {
+  req.assertPermissions(allowNoPermissions);
+  catchAsyncErrors(routeHandler)(req, res, next);
+};
+
 export default {
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
-  deleteRecord: catchAsyncErrors(deleteRecord),
-  editRecord: catchAsyncErrors(editRecord),
+  createCountries: useRouteHandler(BESAdminCreateHandler),
+  createDataSources: useRouteHandler(BESAdminCreateHandler),
+  createDisasters: useRouteHandler(BESAdminCreateHandler),
+  createFeedItems: useRouteHandler(BESAdminCreateHandler),
+  createIndicators: useRouteHandler(BESAdminCreateHandler),
+  createPermissionGroups: useRouteHandler(BESAdminCreateHandler),
+  createUserEntityPermissions: useRouteHandler(CreateUserEntityPermissions),
+  deleteAnswers: useRouteHandler(DeleteAnswers),
+  deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
+  deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
+  deleteDataSources: useRouteHandler(BESAdminDeleteHandler),
+  deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
+  deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
+  deleteIndicators: useRouteHandler(BESAdminDeleteHandler),
+  deleteOptions: useRouteHandler(DeleteOptions),
+  deleteOptionSets: useRouteHandler(DeleteOptionSets),
+  deleteQuestions: useRouteHandler(DeleteQuestions),
+  deleteSurveys: useRouteHandler(DeleteSurveys),
+  deleteMapOverlays: useRouteHandler(DeleteMapOverlays),
+  deleteSurveyResponses: useRouteHandler(DeleteSurveyResponses),
+  deleteSurveyScreenComponents: useRouteHandler(DeleteSurveyScreenComponents),
+  deleteUserEntityPermissions: useRouteHandler(DeleteUserEntityPermissions),
+  createUserAccount: useRouteHandler(CreateUserAccounts),
+  registerUserAccount: useRouteHandler(RegisterUserAccounts),
+  editAccessRequests: useRouteHandler(EditAccessRequests),
+  editAnswers: useRouteHandler(EditAnswers),
+  editDashboardGroups: useRouteHandler(EditDashboardGroups),
+  editDashboardReports: useRouteHandler(EditDashboardReports),
+  editDataSources: useRouteHandler(BESAdminEditHandler),
+  editDisasters: useRouteHandler(BESAdminEditHandler),
+  editFeedItems: useRouteHandler(BESAdminEditHandler),
+  editIndicators: useRouteHandler(BESAdminEditHandler),
+  editOptions: useRouteHandler(EditOptions),
+  editOptionSets: useRouteHandler(EditOptionSets),
+  editQuestions: useRouteHandler(EditQuestions),
+  editSurveys: useRouteHandler(EditSurveys),
+  editMapOverlays: useRouteHandler(EditMapOverlays),
+  editProjects: useRouteHandler(BESAdminEditHandler),
+  editSurveyResponses: useRouteHandler(EditSurveyResponses),
+  editSurveyScreenComponents: useRouteHandler(EditSurveyScreenComponents),
+  editUserAccounts: useRouteHandler(EditUserAccounts),
+  editUserEntityPermissions: useRouteHandler(EditUserEntityPermissions),
   exportSurveyResponses: catchAsyncErrors(exportSurveyResponses),
   exportSurveys: catchAsyncErrors(exportSurveys),
   getChanges: catchAsyncErrors(getChanges),
-  getRecords: catchAsyncErrors(getRecords),
+  getAnswers: useRouteHandler(GETAnswers),
+  getCountries: useRouteHandler(GETCountries),
+  getClinics: useRouteHandler(GETClinics),
+  getDisasters: useRouteHandler(GETDisasters),
+  getDashboardReports: useRouteHandler(GETDashboardReports),
+  getDashboardGroups: useRouteHandler(GETDashboardGroups),
+  getIndicators: useRouteHandler(BESAdminGETHandler),
+  getDataSources: useRouteHandler(GETDataSources),
+  getEntities: useRouteHandler(GETEntities),
+  getGeographicalAreas: useRouteHandler(GETGeographicalAreas),
+  getFeedItems: useRouteHandler(GETFeedItems),
+  getMapOverlays: useRouteHandler(GETMapOverlays),
+  getSurveys: useRouteHandler(GETSurveys),
+  getSurveyGroups: useRouteHandler(GETSurveyGroups),
+  getSurveyResponses: useRouteHandler(GETSurveyResponses),
+  getSurveyScreenComponents: useRouteHandler(GETSurveyScreenComponents),
+  getQuestions: useRouteHandler(GETQuestions),
+  getPermissionGroups: useRouteHandler(GETPermissionGroups),
+  getOptions: useRouteHandler(GETOptions),
+  getOptionSets: useRouteHandler(GETOptionSets),
+  getProjects: useRouteHandler(GETProjects),
+  getUserAccounts: useRouteHandler(GETUserAccounts),
+  getUserEntityPermissions: useRouteHandler(GETUserEntityPermissions),
+  getAccessRequests: useRouteHandler(GETAccessRequests),
   importEntities: catchAsyncErrors(importEntities),
   importStriveLabResults: catchAsyncErrors(importStriveLabResults),
   importSurveys: catchAsyncErrors(importSurveys),
   importUsers: catchAsyncErrors(importUsers),
   importOptionSets: catchAsyncErrors(importOptionSets),
   postChanges: catchAsyncErrors(postChanges),
-  pruneChanges: catchAsyncErrors(pruneChanges),
-  addRecord: catchAsyncErrors(addRecord),
-  updateSurveyResponses: catchAsyncErrors(updateSurveyResponses),
-  createUser: catchAsyncErrors(createUser),
+  importSurveyResponses: catchAsyncErrors(importSurveyResponses),
   changePassword: catchAsyncErrors(changePassword),
   editUser: catchAsyncErrors(editUser),
-  requestCountryAccess: catchAsyncErrors(requestCountryAccess),
+  requestCountryAccess: allowAnyone(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
-  getUserRewards: catchAsyncErrors(getUserRewards),
+  getUserRewards: allowAnyone(getUserRewards),
   getUser: catchAsyncErrors(getUser),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
-  getCountryAccessList: catchAsyncErrors(getCountryAccessList),
+  getCountryAccessList: allowAnyone(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
