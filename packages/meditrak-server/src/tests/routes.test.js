@@ -6,12 +6,7 @@
 import { Authenticator } from '@tupaia/auth';
 import { TestableApp } from './TestableApp';
 import { DummySyncQueue } from './DummySyncQueue';
-import {
-  testGetChangesCount,
-  testPostChanges,
-  testImportSurveyResponses,
-  testPutSurveyResponses,
-} from './routeTests';
+import { testGetChangesCount, testPostChanges, testPutSurveyResponses } from './routeTests';
 import { prepareStubAndAuthenticate } from './routes/utilities/prepareStubAndAuthenticate';
 import { BES_ADMIN_PERMISSION_GROUP } from '../permissions';
 
@@ -41,6 +36,4 @@ describe('Tupaia API', () => {
   describe('POST /changes', testPostChanges(app, models, syncQueue));
 
   describe('POST /surveyResponses', testPutSurveyResponses(app, models, syncQueue));
-
-  describe('POST /import/surveyResponses', testImportSurveyResponses(app, models, syncQueue));
 });

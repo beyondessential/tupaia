@@ -1,6 +1,6 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 import { expect } from 'chai';
@@ -21,7 +21,7 @@ function expectError(response, match) {
   expect(body.error).to.match(match);
 }
 
-export const testImportSurveyResponses = (app, models, syncQueue) =>
+export const testFunctionality = (app, models, syncQueue) =>
   function () {
     const importFile = (filename, surveyNames = []) =>
       app
