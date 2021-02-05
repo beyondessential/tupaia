@@ -18,6 +18,13 @@ const getServerUrlFromName = serverName => {
       'The environment variable AGGREGATION_URL_PREFIX is required in non-production environments. The default should be "dev-".',
     );
   }
+
+  const dhisApiUrl = process.env[`${serverName.toUpperCase()}_DHIS_API_URL`];
+
+  if (dhisApiUrl) {
+    return dhisApiUrl;
+  }
+
   const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
   return `https://${urlPrefix}${specificServerPrefix}aggregation.tupaia.org`;
 };
