@@ -34,16 +34,14 @@ export default {
 
 const projects = [
   {
+    projectName: 'Explore',
     projectCode: 'explore',
     organisationUnit: 'explore',
     dashboarGroups: [
-      // {
-      //   dashboardGroupId: '309',
-      //   reports: ['WHO_SURVEY', 'WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST', 'WHO_IHR_JEE_WPRO'],
-      // },
       {
         dashboardGroupId: '301',
-        reports: ['28', '29', '8', '23'],
+        name: 'General',
+        reports: ['28', '29', '8'],
       },
     ],
   },
@@ -51,18 +49,24 @@ const projects = [
 
 export const Reports = () =>
   projects.map(project =>
-    project.dashboarGroups.map(dashboardGroup =>
-      {
-        return dashboardGroup.reports.map(reportId => (
-          <Chart
-            key={reportId}
-            projectCode={project.projectCode}
-            organisationUnitCode={project.organisationUnit}
-            dashboardGroupId={dashboardGroup.dashboardGroupId}
-            viewId={reportId}
-            isEnlarged
-          />
-        )),
-      }
-    ),
+    project.dashboarGroups.map(dashboardGroup => (
+      <>
+        <Typography variant="h1">
+          {project.projectName} - {dashboardGroup.name}
+        </Typography>
+        {dashboardGroup.reports.map(reportId => {
+          console.log('project', project);
+          return (
+            <Chart
+              key={reportId}
+              projectCode={project.projectCode}
+              organisationUnitCode={project.organisationUnit}
+              dashboardGroupId={dashboardGroup.dashboardGroupId}
+              viewId={reportId}
+              isEnlarged
+            />
+          );
+        })}
+      </>
+    )),
   );

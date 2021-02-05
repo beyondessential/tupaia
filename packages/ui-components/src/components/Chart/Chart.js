@@ -5,6 +5,8 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { CHART_TYPES } from './constants';
 import { CartesianChart } from './CartesianChart';
@@ -33,6 +35,8 @@ const VIEW_STYLES = {
         flexDirection: 'column',
         width: '100%',
         height: '100%',
+        paddingTop: 30,
+        paddingBottom: 30,
       },
   chartContainer: isMobile()
     ? {
@@ -107,7 +111,7 @@ export const Chart = ({
   });
 
   if (isLoading) {
-    return '...loading';
+    return <Box p={5}>loading...</Box>;
   }
 
   const { chartType } = viewContent;
@@ -116,14 +120,14 @@ export const Chart = ({
     return <UnknownChart />;
   }
 
-  console.log('viewContent!!!', viewContent);
-
   const viewContentConfig = getViewContent(viewContent);
 
   const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
 
   return (
     <div style={VIEW_STYLES.chartViewContainer}>
+      <Typography variant="h3">{viewContent.name}</Typography>
+      <br />
       <Container style={VIEW_STYLES.chartContainer}>
         <ChartComponent
           isEnlarged={isEnlarged}
