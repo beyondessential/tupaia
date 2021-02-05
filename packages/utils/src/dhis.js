@@ -8,7 +8,7 @@ import { kebab as convertToKebabCase } from 'case';
 import { getCountryNameFromCode } from './getCountryNameFromCode';
 
 const REGIONAL_SERVER_NAME = 'regional';
-const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, 'tonga']);
+const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, 'tonga', 'lao-peoples-democratic-republic']);
 
 const getServerUrlFromName = serverName => {
   const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
