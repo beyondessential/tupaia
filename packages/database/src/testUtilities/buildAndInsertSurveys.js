@@ -18,11 +18,11 @@ const buildAndInsertDataGroup = async (models, dataGroupProperties) =>
   findOrCreateDummyRecord(
     models.dataSource,
     {
+      service_type: 'dhis',
       ...dataGroupProperties,
       type: 'dataGroup',
     },
     {
-      service_type: 'dhis',
       config: { isDataRegional: false },
     },
   );
@@ -81,13 +81,5 @@ const buildAndInsertSurvey = async (
  * @returns {Array<{ survey, surveyScreen, surveyScreenComponents, questions, dataGroup }>}
  */
 export const buildAndInsertSurveys = async (models, surveys) => {
-  const createdModels = [];
-  await Promise.all(
-    surveys.map(async survey => {
-      const newCreatedModels = await buildAndInsertSurvey(models, survey);
-      createdModels.push(newCreatedModels);
-    }),
-  );
-
-  return createdModels;
+  return Promise.all(surveys.map(async survey => buildAndInsertSurvey(models, survey)));
 };

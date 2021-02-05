@@ -19,6 +19,8 @@ import {
   isNumber,
 } from '@tupaia/utils';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
+import { assertCanSubmitSurveyResponses } from './importSurveyResponses/assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
 import {
   translateObjectFields,
   translateEntityCodeToId,
@@ -41,12 +43,28 @@ const ADD_SURVEY_IMAGE = 'AddSurveyImage';
 export async function postChanges(req, res) {
   const changes = req.body;
   const { models } = req;
+  const translatedChanges = [];
   for (const { action, payload } of changes) {
     if (!ACTION_HANDLERS[action]) {
       throw new ValidationError(`${action} is not a supported change action`);
     }
     const translatedPayload = await PAYLOAD_TRANSLATORS[action](models, payload);
     await PAYLOAD_VALIDATORS[action](models, translatedPayload);
+    translatedChanges.push({ action, translatedPayload });
+  }
+
+  // Check permissions for survey responses
+  const surveyResponsePayloads = translatedChanges
+    .filter(c => c.action === SUBMIT_SURVEY_RESPONSE)
+    .map(c => c.translatedPayload.survey_response || c.translatedPayload);
+  const surveyResponsePermissionsChecker = async accessPolicy => {
+    await assertCanSubmitSurveyResponses(accessPolicy, models, surveyResponsePayloads);
+  };
+  await req.assertPermissions(
+    assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
+  );
+
+  for (const { action, translatedPayload } of translatedChanges) {
     await ACTION_HANDLERS[action](models, translatedPayload);
   }
 
