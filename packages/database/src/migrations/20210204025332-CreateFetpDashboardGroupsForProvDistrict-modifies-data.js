@@ -24,7 +24,7 @@ exports.setup = function (options, seedLink) {
 const countryCode = 'PG';
 const name = 'FETP';
 const levels = ['District', 'SubDistrict'];
-const users = ['Public', 'FETP Graduates'];
+const users = ['Public']; // FETP_Graduates
 
 const dashboardGroup = (level, userGroup) => ({
   organisationLevel: level,
@@ -45,6 +45,14 @@ levels.forEach(level => {
 });
 
 exports.up = async function (db) {
+  // clean up existing groups
+  await db.runSql(`
+    update "dashboardGroup"
+    set "dashboardReports" = array_remove("dashboardReports", 'project_details')
+    where "code" IN ('PG_FETP_Country_Public', 'PG_FETP_Country_FETP_Graduates');
+
+    delete from "dashboardGroup" where "code" IN ('SB_FETP_Country_FETP_Graduates', 'PG_FETP_Country_FETP_Graduates');
+  `);
   return Promise.all(dashboardGroupConfigs.map(dbg => insertObject(db, 'dashboardGroup', dbg)));
 };
 
