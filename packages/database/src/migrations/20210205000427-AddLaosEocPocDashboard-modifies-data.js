@@ -118,9 +118,9 @@ const DASHBOARD_REPORT = {
 
 exports.up = async function (db) {
   // 1. Add data sources
-  // await insertObject(db, 'data_source', DATA_GROUP);
-  // await insertObject(db, 'data_source', DATA_ELEMENT);
-  // await insertObject(db, 'data_element_data_group', DATA_ELEMENT_DATA_GROUP);
+  await insertObject(db, 'data_source', DATA_GROUP);
+  await insertObject(db, 'data_source', DATA_ELEMENT);
+  await insertObject(db, 'data_element_data_group', DATA_ELEMENT_DATA_GROUP);
 
   // 2. Add org unit code to id mapping
   for (const orgUnitCode of Object.keys(DHIS_ORG_UNIT_ID_MAP)) {
@@ -131,9 +131,9 @@ exports.up = async function (db) {
     });
   }
 
-  // // 3. Add dashboard
-  // await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP);
-  // await insertObject(db, 'dashboardReport', DASHBOARD_REPORT);
+  // 3. Add dashboard
+  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP);
+  await insertObject(db, 'dashboardReport', DASHBOARD_REPORT);
 
   return null;
 };
