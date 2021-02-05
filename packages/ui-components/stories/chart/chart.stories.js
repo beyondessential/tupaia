@@ -6,14 +6,13 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import { Chart } from '../../src';
 
 const Container = styled.div`
   margin: 1rem auto;
   width: 600px;
   height: 400px;
-  background-color: rgb(38, 40, 52);
-  padding: 3rem 2rem 2rem;
   color: white;
 `;
 
@@ -33,31 +32,37 @@ export default {
   ],
 };
 
-const Template = args => <Chart {...args} />;
+const projects = [
+  {
+    projectCode: 'explore',
+    organisationUnit: 'explore',
+    dashboarGroups: [
+      // {
+      //   dashboardGroupId: '309',
+      //   reports: ['WHO_SURVEY', 'WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST', 'WHO_IHR_JEE_WPRO'],
+      // },
+      {
+        dashboardGroupId: '301',
+        reports: ['28', '29', '8', '23'],
+      },
+    ],
+  },
+];
 
-export const ExploreView29 = Template.bind({});
-ExploreView29.args = {
-  projectCode: 'explore',
-  organisationUnitCode: 'explore',
-  dashboardGroupId: '301',
-  viewId: '29',
-  isEnlarged: true,
-};
-
-export const ExploreView28 = Template.bind({});
-ExploreView28.args = {
-  projectCode: 'explore',
-  organisationUnitCode: 'explore',
-  dashboardGroupId: '301',
-  viewId: '28',
-  isEnlarged: true,
-};
-
-export const ExploreView8 = Template.bind({});
-ExploreView8.args = {
-  projectCode: 'explore',
-  organisationUnitCode: 'explore',
-  dashboardGroupId: '301',
-  viewId: '8',
-  isEnlarged: true,
-};
+export const Reports = () =>
+  projects.map(project =>
+    project.dashboarGroups.map(dashboardGroup =>
+      {
+        return dashboardGroup.reports.map(reportId => (
+          <Chart
+            key={reportId}
+            projectCode={project.projectCode}
+            organisationUnitCode={project.organisationUnit}
+            dashboardGroupId={dashboardGroup.dashboardGroupId}
+            viewId={reportId}
+            isEnlarged
+          />
+        )),
+      }
+    ),
+  );

@@ -110,14 +110,15 @@ export const Chart = ({
     return '...loading';
   }
 
-  console.log('viewContent!!!', viewContent);
-
-  const viewContentConfig = getViewContent(viewContent);
-  const { chartType } = viewContentConfig;
+  const { chartType } = viewContent;
 
   if (!Object.values(CHART_TYPES).includes(chartType)) {
     return <UnknownChart />;
   }
+
+  console.log('viewContent!!!', viewContent);
+
+  const viewContentConfig = getViewContent(viewContent);
 
   const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
 
