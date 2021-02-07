@@ -1,13 +1,16 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { keyBy } from 'lodash';
 import xlsx from 'xlsx';
 
 import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
 import SURVEYS from './surveys';
+import { assertCanImportSurveyResponses } from '../importSurveyResponses/assertCanImportSurveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 const ENTITY_CODE_KEY = 'entityCode';
 const SURVEY_NAMES = Object.keys(SURVEYS);
@@ -42,6 +45,25 @@ const createImporter = models => {
   return new SurveyResponseImporter(models, responseExtractors);
 };
 
+const getEntitiesGroupedBySurveyName = async (models, inputsPerSurvey) => {
+  const entitiesGroupedBySurveyName = {};
+
+  for (const entry of Object.entries(inputsPerSurvey)) {
+    const [surveyName, surveyResponses] = entry;
+    surveyResponses.forEach(surveyResponse => {
+      const { entityCode } = surveyResponse;
+
+      if (!entitiesGroupedBySurveyName[surveyName]) {
+        entitiesGroupedBySurveyName[surveyName] = [];
+      }
+
+      entitiesGroupedBySurveyName[surveyName].push(entityCode);
+    });
+  }
+
+  return entitiesGroupedBySurveyName;
+};
+
 export const importStriveLabResults = async (req, res) => {
   const { file, models, userId } = req;
   if (!file) {
@@ -51,6 +73,13 @@ export const importStriveLabResults = async (req, res) => {
   const parser = createWorkBookParser();
   const workBook = xlsx.readFile(file.path);
   const inputsPerSurvey = await parser.parse(workBook);
+  const entitiesGroupedBySurveyName = await getEntitiesGroupedBySurveyName(models, inputsPerSurvey);
+
+  const importSurveyResponsePermissionsChecker = async accessPolicy => {
+    await assertCanImportSurveyResponses(accessPolicy, models, entitiesGroupedBySurveyName);
+  };
+
+  await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess, importSurveyResponsePermissionsChecker]));
 
   const importer = createImporter(models);
   const results = await importer.import(inputsPerSurvey, userId);

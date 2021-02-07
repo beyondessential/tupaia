@@ -139,13 +139,19 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
-  async findManyById(ids, criteria = {}) {
-    if (!ids) {
-      throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
+  async findManyByColumn(column, values) {
+    if (!values) {
+      throw new Error(
+        `Cannot search for ${this.databaseType} by ${column} without providing the values`,
+      );
     }
-    return runDatabaseFunctionInBatches(ids, async batchOfIds =>
-      this.find({ id: batchOfIds, ...criteria }),
+    return runDatabaseFunctionInBatches(values, async batchOfValues =>
+      this.find({ [column]: batchOfValues }),
     );
+  }
+
+  async findManyById(ids) {
+    return this.findManyByColumn('id', ids);
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {
@@ -166,13 +172,17 @@ export class DatabaseModel {
     return record || this.create({ ...where, ...extraFieldsIfCreating });
   }
 
-  async findCodeToId(codes) {
-    const containFields = await this.checkFieldNamesExist(['code', 'id']);
+  async findIdByField(field, fieldValues) {
+    const containFields = await this.checkFieldNamesExist([field, 'id']);
     if (!containFields) {
-      throw new Error(`${this.databaseType} table does not have code or id column`);
+      throw new Error(`${this.databaseType} table does not have ${field} or id column`);
     }
-    const records = await this.find({ code: codes });
-    return reduceToDictionary(records, 'code', 'id');
+    const records = await this.find({ [field]: fieldValues });
+    return reduceToDictionary(records, field, 'id');
+  }
+
+  async findIdByCode(codes) {
+    return this.findIdByField('code', codes);
   }
 
   async checkFieldNamesExist(fields) {

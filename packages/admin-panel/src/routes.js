@@ -21,6 +21,7 @@ import {
   AccessRequestsPage,
   DashboardReportsPage,
   MapOverlaysPage,
+  IndicatorsPage,
   DashboardGroupsPage,
   DataElementsPage,
   DataGroupsPage,
@@ -84,6 +85,11 @@ export const ROUTES = [
         label: 'Map Overlays',
         to: '/map-overlays',
         component: MapOverlaysPage,
+      },
+      {
+        label: 'Indicators',
+        to: '/indicators',
+        component: IndicatorsPage,
       },
       {
         label: 'Social Feed',
