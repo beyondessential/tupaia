@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import styled from 'styled-components';
@@ -123,6 +123,10 @@ export const Chart = ({
   const viewContentConfig = getViewContent(viewContent);
 
   const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
+
+  if (chartType !== CHART_TYPES.PIE) {
+    return null;
+  }
 
   return (
     <div style={VIEW_STYLES.chartViewContainer}>

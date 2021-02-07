@@ -4,10 +4,13 @@
  */
 
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import PropTypes from 'prop-types';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import axios from 'axios';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Chart } from '../../src';
+import { Button, Chart } from '../../src';
+import { LoginForm } from '../story-utils/LoginForm';
 
 const Container = styled.div`
   margin: 1rem auto;
@@ -25,11 +28,85 @@ export default {
     Story => (
       <Container>
         <QueryClientProvider client={queryClient}>
+          <LoginForm />
           <Story />
         </QueryClientProvider>
       </Container>
     ),
   ],
+};
+
+const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8000/api/v1/';
+
+const useDashboardData = params => {
+  return useQuery(['dashboard', params], async () => {
+    try {
+      const { data } = await axios(`${baseUrl}dashboard`, {
+        params: { ...params, cacheBreaker: Math.random().toString(36).substring(7) },
+        withCredentials: true,
+        credentials: 'include',
+      });
+      return data;
+    } catch (error) {
+      console.log('api error', error);
+      return null;
+    }
+  });
+};
+
+const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
+  return (
+    <>
+      <Typography variant="h1">
+        {projectCode.toUpperCase()} - {organisationUnitCode}
+      </Typography>
+      {Object.entries(data).map(([heading, dashboardGroup]) => {
+        return (
+          <>
+            <Typography variant="h2">{heading}</Typography>
+            {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
+              return groupValue.views
+                .filter(chart => chart.type === 'chart')
+                .map(view => {
+                  return (
+                    <Chart
+                      key={view.viewId}
+                      projectCode={projectCode}
+                      organisationUnitCode={organisationUnitCode}
+                      dashboardGroupId={groupValue.dashboardGroupId}
+                      viewId={view.viewId}
+                      isEnlarged
+                    />
+                  );
+                });
+            })}
+          </>
+        );
+      })}
+    </>
+  );
+};
+
+ProjectChartsList.propTypes = {
+  projectCode: PropTypes.string.isRequired,
+  organisationUnitCode: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
+};
+
+export const Fanafana = () => {
+  const projectCode = 'fanafana';
+  const organisationUnitCode = 'TO';
+  const { data, isLoading, isFetching } = useDashboardData({
+    organisationUnitCode,
+    projectCode,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  console.log('data', data);
+
+  return ProjectChartsList({ projectCode, organisationUnitCode, data });
 };
 
 const explore = [
@@ -39,51 +116,3 @@ const explore = [
     reports: ['28', '29', '8'],
   },
 ];
-
-export const Explore = () =>
-  explore.map(dashboardGroup => (
-    <React.Fragment key={dashboardGroup.name}>
-      <Typography variant="h1">Explore - {dashboardGroup.name}</Typography>
-      {dashboardGroup.reports.map(reportId => {
-        return (
-          <Chart
-            key={reportId}
-            projectCode="explore"
-            organisationUnitCode="explore"
-            dashboardGroupId={dashboardGroup.dashboardGroupId}
-            viewId={reportId}
-            isEnlarged
-          />
-        );
-      })}
-    </React.Fragment>
-  ));
-
-const fanafana = [
-  {
-    dashboardGroupId: '227',
-    name: 'General',
-    reports: ['8'],
-  },
-];
-
-export const Fanafana = () =>
-  fanafana.map(dashboardGroup => (
-    <React.Fragment key={dashboardGroup.name}>
-      <Typography key={dashboardGroup.name} variant="h1">
-        Fanafana - {dashboardGroup.name}
-      </Typography>
-      {dashboardGroup.reports.map(reportId => {
-        return (
-          <Chart
-            key={`${dashboardGroup.name}-${reportId}`}
-            projectCode="fanafana"
-            organisationUnitCode="TO"
-            dashboardGroupId={dashboardGroup.dashboardGroupId}
-            viewId={reportId}
-            isEnlarged
-          />
-        );
-      })}
-    </React.Fragment>
-  ));
