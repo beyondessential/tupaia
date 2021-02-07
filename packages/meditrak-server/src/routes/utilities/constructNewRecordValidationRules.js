@@ -90,6 +90,11 @@ export const constructForSingle = (models, recordType) => {
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };
+    case TYPES.INDICATOR:
+      return {
+        code: [hasContent],
+        builder: [hasContent],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }
