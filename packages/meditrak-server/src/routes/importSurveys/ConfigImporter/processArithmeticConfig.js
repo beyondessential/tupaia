@@ -62,7 +62,7 @@ const translateDefaultValues = async (models, defaultValuesConfig) => {
     const [code, value] = splitStringOn(defaultValue, ':');
     codeToValue[code] = value;
   });
-  const questionCodeToId = await models.question.findCodeToId(Object.keys(codeToValue));
+  const questionCodeToId = await models.question.findIdByCode(Object.keys(codeToValue));
 
   Object.entries(codeToValue).forEach(([code, value]) => {
     const questionId = questionCodeToId[code];
@@ -94,7 +94,7 @@ const translateValueTranslation = async (models, valueTranslationConfig) => {
       }),
     ),
   ];
-  const questionCodeToId = await models.question.findCodeToId(codes);
+  const questionCodeToId = await models.question.findIdByCode(codes);
 
   for (const translation of valueTranslation) {
     const [code, value] = splitStringOn(translation, ':');
@@ -119,7 +119,7 @@ const translateValueTranslation = async (models, valueTranslationConfig) => {
  */
 const translateAnswerDisplayText = async (models, text, codes) => {
   let translatedText = text;
-  const questionCodeToId = await models.question.findCodeToId(codes);
+  const questionCodeToId = await models.question.findIdByCode(codes);
 
   for (const code of codes) {
     const questionId = questionCodeToId[code];
