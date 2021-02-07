@@ -138,9 +138,12 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  await deleteMapOverlay(db, OVERLAY.id);
+  for (const overlay of OVERLAYS) {
+    await deleteMapOverlay(db, overlay.id);
+    await deleteRelationByChildId(db, overlay.id);
+  }
+
   await deleteMapOverlayGroup(db, FETP_MAP_OVERLAY_GROUP.id);
-  await deleteRelationByChildId(db, OVERLAY.id);
   await deleteRelationByChildId(db, FETP_MAP_OVERLAY_GROUP.id);
 };
 
