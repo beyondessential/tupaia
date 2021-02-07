@@ -27,15 +27,15 @@ const buildAndInsertQuestion = async (
 const buildAndInsertDataGroup = async (models, fields) =>
   findOrCreateDummyRecord(
     models.dataSource,
-    { ...fields, type: 'dataGroup' },
-    { service_type: 'dhis', config: { isDataRegional: true } },
+    { service_type: 'dhis', ...fields, type: 'dataGroup' },
+    { config: { isDataRegional: true } },
   );
 
 const buildAndInsertDataElement = async (models, fields) =>
   findOrCreateDummyRecord(
     models.dataSource,
-    { ...fields, type: 'dataElement' },
-    { service_type: 'dhis', config: { isDataRegional: true } },
+    { service_type: 'dhis', ...fields, type: 'dataElement' },
+    { config: { isDataRegional: true } },
   );
 
 const buildAndInsertSurvey = async (
@@ -95,13 +95,5 @@ const buildAndInsertSurvey = async (
  * ```
  */
 export const buildAndInsertSurveys = async (models, surveys) => {
-  const createdModels = [];
-  await Promise.all(
-    surveys.map(async survey => {
-      const newCreatedModels = await buildAndInsertSurvey(models, survey);
-      createdModels.push(newCreatedModels);
-    }),
-  );
-
-  return createdModels;
+  return Promise.all(surveys.map(async survey => buildAndInsertSurvey(models, survey)));
 };

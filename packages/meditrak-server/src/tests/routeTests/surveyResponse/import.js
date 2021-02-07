@@ -4,7 +4,11 @@
  */
 
 import { expect } from 'chai';
-import { buildAndInsertSurveys } from '@tupaia/database';
+import {
+  findOrCreateDummyRecord,
+  findOrCreateDummyCountryEntity,
+  buildAndInsertSurveys,
+} from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
 import { upsertEntity, upsertQuestion } from '../../testUtilities';
 
@@ -132,8 +136,29 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           addQuestion('faccc42a44705c02b9e_test', 'FreeText'),
         ]);
 
+        const { country: demoLand } = await findOrCreateDummyCountryEntity(models, {
+          code: 'DL',
+          name: 'Demo Land',
+        });
+        await findOrCreateDummyRecord(models.entity, { code: 'DL_7', country_code: demoLand.code });
+        await findOrCreateDummyRecord(models.entity, { code: 'DL_9', country_code: demoLand.code });
+        await findOrCreateDummyRecord(models.entity, {
+          code: 'DL_10',
+          country_code: demoLand.code,
+        });
+        await findOrCreateDummyRecord(models.entity, {
+          code: 'DL_11',
+          country_code: demoLand.code,
+        });
+        const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+          name: 'Public',
+        });
         const [{ survey }] = await buildAndInsertSurveys(models, [
-          { code: 'TEST_SURVEY_FOR_IMPORT_RESPONSES', name: 'Test Survey' },
+          {
+            code: 'TEST_IMPORT_SURVEY_FOR_IMPORT_RESPONSES',
+            name: 'Test Survey',
+            permission_group_id: publicPermissionGroup.id,
+          },
         ]);
         const surveyId = survey.id;
 
@@ -203,7 +228,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           (await models.answer.count({ survey_response_id: deletedSurveyResponseId })) + 1; // We test deleting a whole response, plus one individually deleted answer
         await models.database.waitForAllChangeHandlers();
         await syncQueue.clear();
-        const response = await importFile('valid.xlsx', ['Test Survey']);
+        const response = await importFile('valid.xlsx', ['Test Survey', 'Facility Fundamentals']);
         expect(response.statusCode).to.equal(200);
       });
 
@@ -308,7 +333,10 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
 
       it('should respond with an error if the header row is missing', async () => {
         const response = await importFile('missingHeaderRow.xlsx');
-        expectError(response, /Missing .* column/);
+        expectError(
+          response,
+          /Each tab of the import file must have at least one previously submitted survey as the first entry/,
+        );
       });
 
       it('should respond with an error if the id column is missing', async () => {
@@ -323,7 +351,10 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
 
       it('should respond with an error if a response id is missing', async () => {
         const response = await importFile('missingResponseId.xlsx');
-        expectError(response, /Should not be empty/);
+        expectError(
+          response,
+          /Each tab of the import file must have at least one previously submitted survey as the first entry/,
+        );
       });
 
       it('should respond with an error if the type column is missing', async () => {
