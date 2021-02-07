@@ -84,8 +84,10 @@ const BASE_PRESENTATION_OPTIONS = {
   valueType: 'number',
   displayType: 'shaded-spectrum',
   measureLevel: 'District',
-  hideByDefault: {
-    null: true,
+  scaleBounds: {
+    left: {
+      max: 0,
+    },
   },
 };
 
@@ -126,7 +128,7 @@ exports.up = async function (db) {
       presentationOptions: {
         ...BASE_PRESENTATION_OPTIONS,
         measureLevel,
-      }
+      },
     });
     await insertObject(db, 'map_overlay_group_relation', {
       id: generateId(),
