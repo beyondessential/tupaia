@@ -9,8 +9,8 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import axios from 'axios';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Button, Chart } from '../../src';
-import { LoginForm } from '../story-utils/LoginForm';
+import { Chart } from '../../src';
+import { LoginModal } from '../story-utils/LoginForm';
 
 const Container = styled.div`
   margin: 1rem auto;
@@ -28,7 +28,7 @@ export default {
     Story => (
       <Container>
         <QueryClientProvider client={queryClient}>
-          <LoginForm />
+          <LoginModal />
           <Story />
         </QueryClientProvider>
       </Container>
@@ -96,7 +96,7 @@ ProjectChartsList.propTypes = {
 export const Fanafana = () => {
   const projectCode = 'fanafana';
   const organisationUnitCode = 'TO';
-  const { data, isLoading, isFetching } = useDashboardData({
+  const { data, isLoading } = useDashboardData({
     organisationUnitCode,
     projectCode,
   });
@@ -104,15 +104,6 @@ export const Fanafana = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log('data', data);
 
   return ProjectChartsList({ projectCode, organisationUnitCode, data });
 };
-
-const explore = [
-  {
-    dashboardGroupId: '301',
-    name: 'General',
-    reports: ['28', '29', '8'],
-  },
-];
