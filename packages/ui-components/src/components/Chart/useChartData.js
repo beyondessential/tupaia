@@ -11,18 +11,13 @@ const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhos
 export const useChartData = params => {
   return useQuery(
     ['chart', params],
-    async () => {
-      try {
-        const { data } = await axios(`${baseUrl}view`, {
-          params,
-          withCredentials: true,
-          credentials: 'include',
-        });
-        return data;
-      } catch (error) {
-        console.log('api error', error);
-        return null;
-      }
+    () => {
+      return axios(`${baseUrl}view`, {
+        params,
+        withCredentials: true,
+        credentials: 'include',
+        timeout: 3000,
+      }).then(res => res.data);
     },
     { staleTime: 60 * 60 * 1000 },
   );

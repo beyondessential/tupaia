@@ -103,7 +103,7 @@ export const Chart = ({
   isEnlarged,
   onItemClick,
 }) => {
-  const { data: viewContent, isLoading } = useChartData({
+  const { data: viewContent, isLoading, isError, error } = useChartData({
     projectCode,
     organisationUnitCode,
     dashboardGroupId,
@@ -112,6 +112,11 @@ export const Chart = ({
 
   if (isLoading) {
     return <Box p={5}>loading...</Box>;
+  }
+
+  if (isError) {
+    console.log('error', error.message);
+    return <div>There was an error</div>;
   }
 
   const { chartType } = viewContent;
