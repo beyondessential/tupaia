@@ -83,7 +83,6 @@ const BASE_PRESENTATION_OPTIONS = {
   scaleType: 'performanceDesc',
   valueType: 'number',
   displayType: 'shaded-spectrum',
-  measureLevel: 'District',
   scaleBounds: {
     left: {
       max: 0,
