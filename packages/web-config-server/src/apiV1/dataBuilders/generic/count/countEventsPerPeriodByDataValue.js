@@ -26,7 +26,7 @@ class DataByValueBuilder extends DataBuilder {
         // not interested in this value, ignore it
         return;
       }
-      const { value } = dataValues[dataElement];
+      const value = dataValues[dataElement];
       const valueForMatching = optionCodeToName ? optionCodeToName[value] : value;
 
       if (!returnData[valueForMatching]) {
@@ -48,7 +48,8 @@ class DataByValueBuilder extends DataBuilder {
 
 export class CountEventsPerPeriodByDataValueBuilder extends DataPerPeriodBuilder {
   async fetchResults() {
-    return this.fetchEvents({ dataValueFormat: 'object' , useDeprecatedApi: false });
+    const dataElementCodes = [this.config.dataElement];
+    return this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
   }
 
   groupResultsByPeriod = groupEventsByPeriod;
