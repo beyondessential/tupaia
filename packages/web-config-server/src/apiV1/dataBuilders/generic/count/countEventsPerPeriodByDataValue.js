@@ -48,7 +48,7 @@ class DataByValueBuilder extends DataBuilder {
 
 export class CountEventsPerPeriodByDataValueBuilder extends DataPerPeriodBuilder {
   async fetchResults() {
-    return this.fetchEvents({ dataValueFormat: 'object' });
+    return this.fetchEvents({ dataValueFormat: 'object' , useDeprecatedApi: false });
   }
 
   groupResultsByPeriod = groupEventsByPeriod;
