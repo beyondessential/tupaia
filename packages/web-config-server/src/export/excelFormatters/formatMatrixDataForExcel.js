@@ -1,5 +1,5 @@
 import moment from 'moment';
-import {addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
+import { addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
@@ -27,7 +27,7 @@ export const formatMatrixDataForExcel = (
   { columns, categories: rowCategories, rows, name: reportName, organisationUnitCode },
   timeZone,
   configIn,
-  outputFormat = 'aoa'
+  outputFormat = 'aoa',
 ) => {
   // Create the empty array of objects to build the data into
   let formattedData = [];
@@ -67,7 +67,8 @@ export const formatMatrixDataForExcel = (
   };
 
   // Add title row (report name) to the top of the sheet
-  formattedData.push([`${reportName}, ${organisationUnitCode}`]);
+  if (reportName && organisationUnitCode)
+    formattedData.push([`${reportName}, ${organisationUnitCode}`]);
 
   // Add headers row to the second top of the sheet
   const headersRow = buildHeadersRow();
@@ -132,4 +133,4 @@ const addValueOrEmpty = value => {
   }
 
   return value;
-}
+};

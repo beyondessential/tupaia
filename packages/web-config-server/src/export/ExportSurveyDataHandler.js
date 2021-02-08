@@ -50,7 +50,9 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const sheetNames = [];
     const sheets = {};
-    const {name: organisationUnitName} = await this.models.entity.findOne({code: data.organisationUnitCode});
+    const { name: organisationUnitName } = await this.models.entity.findOne({
+      code: data.organisationUnitCode,
+    });
     const reportTitle = `${data.name}, ${organisationUnitName}`;
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
@@ -73,7 +75,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
       // Formatted data using array of arrays input
       sheet = xlsx.utils.sheet_add_aoa(sheet, formattedData, {
         skipHeader,
-        origin: 'A2',
+        origin: -1, // Append to bottom of worksheet starting on first column
       });
 
       sheetNames.push(surveyName);
