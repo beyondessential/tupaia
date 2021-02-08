@@ -13,7 +13,9 @@ export const useChartData = params => {
     ['chart', params],
     () => {
       return axios(`${baseUrl}view`, {
-        params,
+        params: {
+          ...params,
+        },
         withCredentials: true,
         credentials: 'include',
         timeout: 3000,

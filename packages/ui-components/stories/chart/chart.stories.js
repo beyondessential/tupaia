@@ -65,7 +65,7 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
         {projectCode.toUpperCase()} - {organisationUnitCode}
       </Typography>
       {Object.entries(data)
-        .slice(0, 2)
+        .slice(0, 12)
         .map(([heading, dashboardGroup]) => {
           return (
             <React.Fragment key={heading}>
@@ -74,7 +74,7 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
               {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
                 return groupValue.views
                   .filter(chart => chart.type === 'chart')
-                  .filter(chart => chart.chartType === 'bar')
+                  .filter(chart => chart.chartType === 'pie')
                   .map(view => {
                     return (
                       <Chart
