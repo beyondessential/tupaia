@@ -6,6 +6,92 @@ import { utcMoment } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
 
+const SUPPORTED_AGGREGATIONS = [
+  'FINAL_EACH_DAY',
+  'FINAL_EACH_WEEK',
+  'FINAL_EACH_MONTH',
+  'FINAL_EACH_YEAR',
+  'MOST_RECENT',
+];
+
+const getA1WhereClause = (startDate, endDate) => {
+  let clause = '';
+  if (startDate) {
+    clause = 'WHERE analytics."date" > ?';
+    if (endDate) {
+      clause = `${clause}
+      AND analytics."date" < ?`;
+    }
+  } else if (endDate) {
+    clause = 'WHERE analytics."date" < ?';
+  }
+
+  return clause;
+};
+
+const getA1GroupByClause = firstAggregationType => {
+  switch (firstAggregationType) {
+    case 'FINAL_EACH_DAY':
+      return 'GROUP BY data_element_code, entity_code, day_period';
+    case 'FINAL_EACH_WEEK':
+      return 'GROUP BY data_element_code, entity_code, week_period';
+    case 'FINAL_EACH_MONTH':
+      return 'GROUP BY data_element_code, entity_code, month_period';
+    case 'FINAL_EACH_YEAR':
+      return 'GROUP BY data_element_code, entity_code, year_period';
+    case 'MOST_RECENT':
+      return 'GROUP BY data_element_code, entity_code';
+    default:
+      return '';
+  }
+};
+
+const getA2FinalWhereClause = firstAggregationType => {
+  switch (firstAggregationType) {
+    case 'FINAL_EACH_DAY':
+      return 'AND day_period = a1.day_period';
+    case 'FINAL_EACH_WEEK':
+      return 'AND week_period = a1.week_period';
+    case 'FINAL_EACH_MONTH':
+      return 'AND month_period = a1.month_period';
+    case 'FINAL_EACH_YEAR':
+      return 'AND year_period = a1.year_period';
+    default:
+      return '';
+  }
+};
+
+const getA1Select = firstAggregationType => {
+  switch (firstAggregationType) {
+    case 'FINAL_EACH_DAY':
+      return 'select entity_code, data_element_code, day_period';
+    case 'FINAL_EACH_WEEK':
+      return 'select entity_code, data_element_code, week_period';
+    case 'FINAL_EACH_MONTH':
+      return 'select entity_code, data_element_code, month_period';
+    case 'FINAL_EACH_YEAR':
+      return 'select entity_code, data_element_code, year_period';
+    case 'MOST_RECENT':
+      return 'select entity_code, data_element_code';
+    default:
+      return 'select entity_code, data_element_code, date, value, answer_type';
+  }
+};
+
+const getA2Join = firstAggregationType => {
+  return SUPPORTED_AGGREGATIONS.includes(firstAggregationType)
+    ? `CROSS JOIN LATERAL (
+      SELECT date, value, answer_type
+      FROM analytics
+      WHERE entity_code = a1.entity_code
+      AND data_element_code = a1.data_element_code
+      ${getA2FinalWhereClause(firstAggregationType)}
+      order by date desc
+      limit 1
+    ) as a2`
+    : '';
+};
+
 const generateBaseSqlQuery = ({
   dataElementCodes,
   organisationUnitCodes,
@@ -13,71 +99,33 @@ const generateBaseSqlQuery = ({
   endDate,
   aggregations,
 }) => {
-  const sqlQuery = new SqlQuery(`
-    SELECT
-      survey_response.submission_time as "date",
-      entity_code as "entityCode",
-      data_element_code as "dataElementCode",
-      answer.type as "type",
-      answer.text as "value"
-  `);
-
-  // Perform fetch side aggregations if possible
-  const firstAggregation = aggregations && aggregations[0];
-  if (firstAggregation && firstAggregation.type === 'FINAL_EACH_DAY') {
-    sqlQuery.addClause(`
-    FROM
-      aggregate_analytics_day`);
-  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_WEEK') {
-    sqlQuery.addClause(`
-    FROM
-      aggregate_analytics_week`);
-  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_MONTH') {
-    sqlQuery.addClause(`
-    FROM
-      aggregate_analytics_month`);
-  } else if (firstAggregation && firstAggregation.type === 'FINAL_EACH_YEAR') {
-    sqlQuery.addClause(`
-    FROM
-      aggregate_analytics_year`);
-  } else if (firstAggregation && firstAggregation.type === 'MOST_RECENT') {
-    sqlQuery.addClause(`
-    FROM
-      aggregate_analytics_all_time`);
-  } else {
-    sqlQuery.addClause(`
-    FROM
-      aggregate_analytics_day`);
-  }
-  sqlQuery.addClause(`
-    INNER JOIN answer
-      ON answer.id = most_recent_answer_id
-    INNER JOIN survey_response
-      ON answer.survey_response_id = survey_response.id`);
-
-  sqlQuery.addClause(
+  const firstAggregationType = aggregations && aggregations[0] && aggregations[0].type;
+  const sqlQuery = new SqlQuery(
     `
-    INNER JOIN (
-      ${SqlQuery.parameteriseValues(dataElementCodes)}
-    ) decs(dec) ON data_element_code = dec
-    INNER JOIN (
-      ${SqlQuery.parameteriseValues(organisationUnitCodes)}
-    ) ecs(ec) ON entity_code = ec
-   `,
-    [...dataElementCodes, ...organisationUnitCodes],
+    SELECT 
+      date AS "date",
+      entity_code AS "entityCode",
+      data_element_code AS "dataElementCode",
+      value AS "value",
+      answer_type AS "type"
+    FROM (
+      ${getA1Select(firstAggregationType)}
+      FROM analytics
+      INNER JOIN (
+        ${SqlQuery.parameteriseValues(dataElementCodes)}
+      ) data_element_codes(code) ON data_element_codes.code = analytics.data_element_code
+      INNER JOIN (
+        ${SqlQuery.parameteriseValues(organisationUnitCodes)}
+      ) entity_codes(code) ON entity_codes.code = analytics.entity_code
+        ${getA1WhereClause(startDate, endDate)}
+        ${getA1GroupByClause(firstAggregationType)}
+    ) as a1
+    ${getA2Join(firstAggregationType)}
+  `,
+    [...dataElementCodes, ...organisationUnitCodes]
+      .concat([startDate ? utcMoment(startDate).startOf('day').toISOString() : undefined])
+      .concat([startDate ? utcMoment(endDate).startOf('day').toISOString() : undefined]),
   );
-
-  // Add start and end date, which are inclusive
-  if (startDate) {
-    sqlQuery.addWhereClause(`survey_response.submission_time >= ?`, [
-      utcMoment(startDate).startOf('day').toISOString(),
-    ]);
-  }
-  if (endDate) {
-    sqlQuery.addWhereClause(`survey_response.submission_time <= ?`, [
-      utcMoment(endDate).endOf('day').toISOString(),
-    ]);
-  }
 
   sqlQuery.addOrderByClause('date');
 

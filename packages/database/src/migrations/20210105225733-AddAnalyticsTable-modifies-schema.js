@@ -51,105 +51,101 @@ const createAggregateAnalyticsMaterialView = async (db, periodType) => {
 };
 
 exports.up = async function (db) {
-  await db.createTable('analytics', {
-    columns: {
-      id: { type: 'text', primaryKey: true },
-      entity_code: { type: 'text', notNull: true },
-      data_element_code: { type: 'text', notNull: true },
-      answer_id: { type: 'text', notNull: true },
-      day_period: { type: 'date', notNull: true },
-      week_period: { type: 'date', notNull: true },
-      month_period: { type: 'date', notNull: true },
-      year_period: { type: 'date', notNull: true },
-      date: { type: 'timestamptz', notNull: true },
-    },
-  });
-  console.log('Created analytics table');
+  // await db.createTable('analytics', {
+  //   columns: {
+  //     id: { type: 'text', primaryKey: true },
+  //     entity_code: { type: 'text', notNull: true },
+  //     data_element_code: { type: 'text', notNull: true },
+  //     answer_id: { type: 'text', notNull: true },
+  //     day_period: { type: 'date', notNull: true },
+  //     week_period: { type: 'date', notNull: true },
+  //     month_period: { type: 'date', notNull: true },
+  //     year_period: { type: 'date', notNull: true },
+  //     date: { type: 'timestamptz', notNull: true },
+  //   },
+  // });
+  // console.log('Created analytics table');
 
-  await db.runSql(`
-    INSERT INTO analytics (id, entity_code, data_element_code, day_period, week_period, month_period, year_period, answer_id, date) 
-      (SELECT
-        generate_object_id() as id,
-        entity.code as entity_code,
-        question.code as data_element_code,
-        date_trunc('day', survey_response.submission_time) as "day_period",
-        date_trunc('week', survey_response.submission_time) as "week_period",
-        date_trunc('month', survey_response.submission_time) as "month_period",
-        date_trunc('year', survey_response.submission_time) as "year_period",
-        answer.id as answer_id,
-        survey_response.submission_time as "date"
-        FROM
-          survey_response
-        JOIN
-          answer ON answer.survey_response_id = survey_response.id
-        JOIN
-          entity ON entity.id = survey_response.entity_id
-        JOIN
-          question ON question.id = answer.question_id
-        JOIN 
-          data_source ON data_source.code = question.code
-          AND data_source.service_type = 'tupaia'
-        ORDER BY survey_response.submission_time DESC);
-      `);
-  console.log('Added analytics table data');
+  // await db.runSql(`
+  //   INSERT INTO analytics (entity_code, data_element_code, day_period, week_period, month_period, year_period, answer_id, date)
+  //     (SELECT
+  //       entity.code as entity_code,
+  //       question.code as data_element_code,
+  //       date_trunc('day', survey_response.end_time) as "day_period",
+  //       date_trunc('week', survey_response.end_time) as "week_period",
+  //       date_trunc('month', survey_response.end_time) as "month_period",
+  //       date_trunc('year', survey_response.end_time) as "year_period",
+  //       answer.text as value,
+  //       answer.type as answer_type,
+  //       survey_response.end_time as "date"
+  //       FROM
+  //         survey_response
+  //       JOIN
+  //         answer ON answer.survey_response_id = survey_response.id
+  //       JOIN
+  //         entity ON entity.id = survey_response.entity_id
+  //       JOIN
+  //         question ON question.id = answer.question_id
+  //       JOIN
+  //         data_source ON data_source.code = question.code
+  //         AND data_source.service_type = 'tupaia'
+  //       ORDER BY survey_response.end_time DESC);
+  //     `);
+  // console.log('Added analytics table data');
 
-  await db.runSql(`
-    ALTER TABLE
-      analytics
-    ADD CONSTRAINT
-      analytics_answer_id_fk FOREIGN KEY (answer_id)
-        REFERENCES answer (id)
-        ON UPDATE CASCADE ON DELETE CASCADE;
-  `);
+  // await db.runSql(`
+  //   ALTER TABLE
+  //     analytics
+  //   ADD CONSTRAINT
+  //     analytics_answer_id_fk FOREIGN KEY (answer_id)
+  //       REFERENCES answer (id)
+  //       ON UPDATE CASCADE ON DELETE CASCADE;
+  // `);
 
-  // best index worked out by trying options and running timing tests, see
-  // https://docs.google.com/spreadsheets/d/1KoewibyIxEJjpcjataeKi5svspPi41gbcG0LUtwIHZk/edit
-  await db.addIndex('analytics', 'analytics_data_element_code_idx', ['data_element_code']);
-  console.log('Added analytics table fk and index');
+  // // best index worked out by trying options and running timing tests, see
+  // // https://docs.google.com/spreadsheets/d/1KoewibyIxEJjpcjataeKi5svspPi41gbcG0LUtwIHZk/edit
+  // await db.addIndex('analytics', 'analytics_data_element_code_idx', ['data_element_code']);
+  // console.log('Added analytics table fk and index');
 
-  await createAggregateAnalyticsMaterialView(db, 'day');
-  console.log('Created day aggregate analytics`');
-  await createAggregateAnalyticsMaterialView(db, 'week');
-  console.log('Created week aggregate analytics`');
-  await createAggregateAnalyticsMaterialView(db, 'month');
-  console.log('Created month aggregate analytics`');
-  await createAggregateAnalyticsMaterialView(db, 'year');
-  console.log('Created year aggregate analytics`');
-  await createAggregateAnalyticsMaterialView(db);
-  console.log('Created all time aggregate analytics`');
+  // await createAggregateAnalyticsMaterialView(db, 'day');
+  // console.log('Created day aggregate analytics`');
+  // await createAggregateAnalyticsMaterialView(db, 'week');
+  // console.log('Created week aggregate analytics`');
+  // await createAggregateAnalyticsMaterialView(db, 'month');
+  // console.log('Created month aggregate analytics`');
+  // await createAggregateAnalyticsMaterialView(db, 'year');
+  // console.log('Created year aggregate analytics`');
+  // await createAggregateAnalyticsMaterialView(db);
+  // console.log('Created all time aggregate analytics`');
 
-  await db.addIndex('aggregate_analytics_day', 'aggregate_analytics_day_data_element_code_idx', [
-    'data_element_code',
-  ]);
-  await db.addIndex('aggregate_analytics_week', 'aggregate_analytics_week_data_element_code_idx', [
-    'data_element_code',
-  ]);
-  await db.addIndex(
-    'aggregate_analytics_month',
-    'aggregate_analytics_month_data_element_code_idx',
-    ['data_element_code'],
-  );
-  await db.addIndex('aggregate_analytics_year', 'aggregate_analytics_year_data_element_code_idx', [
-    'data_element_code',
-  ]);
-  await db.addIndex(
-    'aggregate_analytics_all_time',
-    'aggregate_analytics_all_time_data_element_code_idx',
-    ['data_element_code'],
-  );
-  console.log('Added aggregate analytics indexes');
+  // await db.runSql(
+  //   'CREATE UNIQUE INDEX ON aggregate_analytics_day(data_element_code, entity_code, period)',
+  // );
+  // await db.runSql(
+  //   'CREATE UNIQUE INDEX ON aggregate_analytics_week(data_element_code, entity_code, period)',
+  // );
+  // await db.runSql(
+  //   'CREATE UNIQUE INDEX ON aggregate_analytics_month(data_element_code, entity_code, period)',
+  // );
+  // await db.runSql(
+  //   'CREATE UNIQUE INDEX ON aggregate_analytics_year(data_element_code, entity_code, period)',
+  // );
+  // await db.runSql(
+  //   'CREATE UNIQUE INDEX ON aggregate_analytics_all_time(data_element_code, entity_code)',
+  // );
+  // console.log('Added aggregate analytics indexes');
 
   return null;
 };
 
 exports.down = async function (db) {
-  return db.runSql(`
-  drop materialized view if exists aggregate_analytics_day;
-  drop materialized view if exists aggregate_analytics_week;
-  drop materialized view if exists aggregate_analytics_month;
-  drop materialized view if exists aggregate_analytics_year;
-  drop materialized view if exists aggregate_analytics_all_time;
-  drop table if exists analytics;`);
+  // return db.runSql(`
+  // drop materialized view if exists aggregate_analytics_day;
+  // drop materialized view if exists aggregate_analytics_week;
+  // drop materialized view if exists aggregate_analytics_month;
+  // drop materialized view if exists aggregate_analytics_year;
+  // drop materialized view if exists aggregate_analytics_all_time;
+  // drop table if exists analytics;`);
 };
 
 exports._meta = {
