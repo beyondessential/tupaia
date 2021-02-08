@@ -13,7 +13,7 @@ import { Chart } from '../../src';
 import { LoginModal } from '../story-utils/LoginForm';
 
 const Container = styled.div`
-  margin: 1rem;
+  padding: 2rem;
   width: 600px;
   height: 600px;
   color: white;
@@ -41,6 +41,23 @@ export default {
   ],
 };
 
+/**
+ * Render Single Chart
+ */
+const Template = args => <Chart {...args} />;
+
+export const SingleChart = Template.bind({});
+SingleChart.args = {
+  projectCode: 'fanafana',
+  organisationUnitCode: 'TO',
+  dashboardGroupId: 25,
+  viewId: 'TO_RH_Descriptive_FP01_03',
+  isEnlarged: true,
+};
+
+/**
+ * Render a List of Charts per Project
+ */
 const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8000/api/v1/';
 
 const useDashboardData = params => {
@@ -63,12 +80,25 @@ const useDashboardData = params => {
   );
 };
 
-const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
+const Title = styled(Typography)`
+  margin-bottom: 3rem;
+`;
+
+const ProjectChartsList = ({ projectCode, organisationUnitCode }) => {
+  const { data, isLoading } = useDashboardData({
+    organisationUnitCode,
+    projectCode,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
-      <Typography variant="h1">
+      <Title variant="h1">
         {projectCode.toUpperCase()} - {organisationUnitCode}
-      </Typography>
+      </Title>
       {Object.entries(data)
         .slice(0, 12)
         .map(([heading, dashboardGroup]) => {
@@ -96,6 +126,7 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
                     })
                 );
               })}
+              <br />
             </React.Fragment>
           );
         })}
@@ -106,46 +137,24 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
 ProjectChartsList.propTypes = {
   projectCode: PropTypes.string.isRequired,
   organisationUnitCode: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired,
 };
 
-const Template = args => <Chart {...args} />;
+export const Explore = () =>
+  ProjectChartsList({ projectCode: 'explore', organisationUnitCode: 'explore' });
 
-export const SingleChart = Template.bind({});
-SingleChart.args = {
-  projectCode: 'fanafana',
-  organisationUnitCode: 'TO',
-  dashboardGroupId: 25,
-  viewId: 'TO_RH_Descriptive_FP01_03',
-  isEnlarged: true,
-};
+export const Disaster = () =>
+  ProjectChartsList({ projectCode: 'disaster', organisationUnitCode: 'disaster' });
 
-export const Explore = () => {
-  const projectCode = 'explore';
-  const organisationUnitCode = 'explore';
-  const { data, isLoading } = useDashboardData({
-    organisationUnitCode,
-    projectCode,
-  });
+export const Fanafana = () =>
+  ProjectChartsList({ projectCode: 'fanafana', organisationUnitCode: 'TO' });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+export const UNFPA = () => ProjectChartsList({ projectCode: 'unfpa', organisationUnitCode: 'TO' });
 
-  return ProjectChartsList({ projectCode, organisationUnitCode, data });
-};
+export const CovidAU = () =>
+  ProjectChartsList({ projectCode: 'covidau', organisationUnitCode: 'AU' });
 
-export const Fanafana = () => {
-  const projectCode = 'fanafana';
-  const organisationUnitCode = 'TO';
-  const { data, isLoading } = useDashboardData({
-    organisationUnitCode,
-    projectCode,
-  });
+export const Strive = () =>
+  ProjectChartsList({ projectCode: 'strive', organisationUnitCode: 'PG' });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  return ProjectChartsList({ projectCode, organisationUnitCode, data });
-};
+export const LaosSchools = () =>
+  ProjectChartsList({ projectCode: 'laos_schools', organisationUnitCode: 'LA' });

@@ -129,6 +129,12 @@ export const Chart = ({
     return <UnknownChart />;
   }
 
+  if (!viewContent.data) {
+    console.log('viewContent', viewContent);
+    console.log('no data');
+    return null;
+  }
+
   const viewContentConfig = getViewContent(viewContent);
 
   const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
