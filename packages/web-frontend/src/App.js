@@ -5,7 +5,6 @@
 
 import React, { lazy, Suspense } from 'react';
 import { Provider } from 'react-redux';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import configureStore from './configureStore';
 import { AppStyleProviders } from './AppStyleProviders';
@@ -30,8 +29,6 @@ const initApp = () => {
 
 initApp();
 
-const queryClient = new QueryClient();
-
 const App = () => {
   let RootScreen = DesktopApp;
 
@@ -43,9 +40,7 @@ const App = () => {
     <Provider store={store}>
       <AppStyleProviders>
         <Suspense fallback={null}>
-          <QueryClientProvider client={queryClient}>
-            <RootScreen />
-          </QueryClientProvider>
+          <RootScreen />
         </Suspense>
       </AppStyleProviders>
     </Provider>

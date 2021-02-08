@@ -1,11 +1,7 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
+
 import { VIEW_STYLES } from '../../../styles';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CartesianChart } from './CartesianChart';
@@ -13,7 +9,6 @@ import { CHART_TYPES } from './chartTypes';
 import { PieChart } from './PieChart';
 import { parseChartConfig } from './parseChartConfig';
 import { getIsTimeSeries, isDataKey } from './helpers';
-import { useChartData } from './useChartData';
 
 const UnknownChart = () => (
   <div style={VIEW_STYLES.newChartComing}>
@@ -28,79 +23,57 @@ const Container = styled.div`
   }
 `;
 
-const removeNonNumericData = data =>
-  data.map(dataSeries => {
-    const filteredDataSeries = {};
-    Object.entries(dataSeries).forEach(([key, value]) => {
-      if (!isDataKey(key) || !Number.isNaN(Number(value))) {
-        filteredDataSeries[key] = value;
-      }
+export class ChartWrapper extends PureComponent {
+  getViewContent() {
+    const { viewContent } = this.props;
+    const { chartConfig, data } = viewContent;
+    const massagedData = this.sortData(this.removeNonNumericData(data));
+    return chartConfig
+      ? {
+          ...viewContent,
+          data: massagedData,
+          chartConfig: parseChartConfig(viewContent),
+        }
+      : { ...viewContent, data: massagedData };
+  }
+
+  removeNonNumericData = data =>
+    data.map(dataSeries => {
+      const filteredDataSeries = {};
+      Object.entries(dataSeries).forEach(([key, value]) => {
+        if (!isDataKey(key) || !Number.isNaN(Number(value))) {
+          filteredDataSeries[key] = value;
+        }
+      });
+      return filteredDataSeries;
     });
-    return filteredDataSeries;
-  });
 
-const sortData = data =>
-  getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
+  sortData = data =>
+    getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-const getViewContent = viewContent => {
-  const { chartConfig, data } = viewContent;
-  const massagedData = sortData(removeNonNumericData(data));
-  return chartConfig
-    ? {
-        ...viewContent,
-        data: massagedData,
-        chartConfig: parseChartConfig(viewContent),
-      }
-    : { ...viewContent, data: massagedData };
-};
+  render() {
+    const viewContent = this.getViewContent();
+    const { chartType } = viewContent;
 
-export const ChartWrapper = ({ isExporting, isEnlarged, onItemClick }) => {
-  const { data: viewContent, isLoading } = useChartData({
-    projectCode: 'explore',
-    organisationUnitCode: 'explore',
-    dashboardGroupId: '301',
-    viewId: '8',
-  });
+    if (!Object.values(CHART_TYPES).includes(chartType)) {
+      return <UnknownChart />;
+    }
 
-  if (isLoading) {
-    return '...loading';
+    const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
+    return (
+      <div style={VIEW_STYLES.chartViewContainer}>
+        <Container style={VIEW_STYLES.chartContainer}>
+          <Chart {...this.props} viewContent={viewContent} />
+        </Container>
+      </div>
+    );
   }
-
-  console.log('viewContent!!!', viewContent);
-
-  const viewContentConfig = getViewContent(viewContent);
-  const { chartType } = viewContentConfig;
-
-  if (!Object.values(CHART_TYPES).includes(chartType)) {
-    return <UnknownChart />;
-  }
-
-  const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
-
-  return (
-    <div style={VIEW_STYLES.chartViewContainer}>
-      <Container style={VIEW_STYLES.chartContainer}>
-        <Chart
-          isEnlarged={isEnlarged}
-          isExporting={isExporting}
-          viewContent={viewContentConfig}
-          onItemClick={onItemClick}
-        />
-      </Container>
-    </div>
-  );
-};
+}
 
 ChartWrapper.propTypes = {
-  // viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
-  isEnlarged: PropTypes.bool,
-  isExporting: PropTypes.bool,
-  onItemClick: PropTypes.func,
+  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
 };
 
 ChartWrapper.defaultProps = {
-  // viewContent: null,
-  isEnlarged: false,
-  isExporting: false,
-  onItemClick: () => {},
+  viewContent: null,
 };
