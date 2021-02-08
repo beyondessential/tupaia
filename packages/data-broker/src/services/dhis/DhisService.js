@@ -227,11 +227,12 @@ export class DhisService extends Service {
   };
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
-    const { programCodes = [], period, startDate, endDate } = options;
+    const { programCodes = [], period, startDate, endDate, organisationUnitCodes } = options;
     const dataElementCodes = dataSources.map(({ code }) => code);
     const dhisElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
 
     const query = {
+      organisationUnitCodes,
       programCodes,
       dataElementCodes: dhisElementCodes,
       dataElementIdScheme: 'code',

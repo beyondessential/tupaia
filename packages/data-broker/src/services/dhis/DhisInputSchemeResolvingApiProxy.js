@@ -49,37 +49,35 @@ export class DhisInputSchemeResolvingApiProxy {
       modifiedQuery = await this.replaceProgramCodesWithIds(modifiedQuery);
     }
 
-    if (await this.allOrgUnitsHaveDhisId(query)) {
+    const modifyOrgUnitsToUseDhisId = await this.allOrgUnitsHaveDhisId(query);
+    if (modifyOrgUnitsToUseDhisId) {
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
     }
 
     const response = await this.api.getEventAnalytics(modifiedQuery);
 
-    if (dataElementIdScheme !== 'code') {
-      return response;
-    }
+    let translatedResponse = { ...response };
 
     // The api response will contain data elements with ids, and DhisApi will not be able to translate these
     // back into codes (because the codes are not set in dhis). So, we have to do it ourselves using the internal
     // mapping.
-    if (!modifyDataElementsToUseDhisId) {
-      return response;
+    if (modifyDataElementsToUseDhisId && dataElementIdScheme === 'code') {
+      translatedResponse = await this.translateDataElementIdsToCodesInResponse(
+        translatedResponse,
+        query.dataElementCodes,
+      );
     }
 
-    const dataElementIdToCode = {};
-
-    const dataElements = await this.models.dataSource.find({
-      code: query.dataElementCodes,
-      type: 'dataElement',
-    });
-
-    for (const dataElement of dataElements) {
-      if (dataElement.config.dhisId) {
-        dataElementIdToCode[dataElement.config.dhisId] = dataElement.code;
-      }
+    if (modifyOrgUnitsToUseDhisId) {
+      const { organisationUnitCode, organisationUnitCodes } = query;
+      const orgUnitCodes = organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes;
+      translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(
+        translatedResponse,
+        orgUnitCodes,
+      );
     }
 
-    return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
+    return translatedResponse;
   }
 
   /**
@@ -190,6 +188,53 @@ export class DhisInputSchemeResolvingApiProxy {
 
     delete modifiedQuery.dataElementCodes;
     return modifiedQuery;
+  };
+
+  /**
+   * @param query {*}
+   * @returns {*}
+   * @private
+   */
+  translateDataElementIdsToCodesInResponse = async (response, dataElementCodes) => {
+    const dataElementIdToCode = {};
+
+    const dataElements = await this.models.dataSource.find({
+      code: dataElementCodes,
+      type: 'dataElement',
+    });
+
+    for (const dataElement of dataElements) {
+      if (dataElement.config.dhisId) {
+        dataElementIdToCode[dataElement.config.dhisId] = dataElement.code;
+      }
+    }
+
+    return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
+  };
+
+  /**
+   * @param query {*}
+   * @returns {*}
+   * @private
+   */
+  translateOrgUnitIdsToCodesInResponse = async (response, orgUnitCodes) => {
+    const newRows = [...response.rows];
+
+    const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
+    const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
+
+    const mappings = await this.models.dataServiceEntity.find({ entity_code: orgUnitCodes });
+
+    let i = 0;
+    for (const row of newRows) {
+      const dhisId = row[orgUnitIdIndex];
+      const mapping = mappings.find(m => m.config.dhis_id === dhisId);
+      if (i < 3) console.log(row, dhisId, mappings);
+      row[orgUnitCodeIndex] = mapping.entity_code;
+      i += 1;
+    }
+
+    return response;
   };
 
   /**
