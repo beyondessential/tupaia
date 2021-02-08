@@ -124,10 +124,6 @@ export const Chart = ({
 
   const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
 
-  if (chartType !== 'pie') {
-    return null;
-  }
-
   return (
     <div style={VIEW_STYLES.chartViewContainer}>
       <Typography variant="h3">{viewContent.name}</Typography>

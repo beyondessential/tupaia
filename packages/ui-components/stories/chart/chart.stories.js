@@ -39,19 +39,23 @@ export default {
 const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8000/api/v1/';
 
 const useDashboardData = params => {
-  return useQuery(['dashboard', params], async () => {
-    try {
-      const { data } = await axios(`${baseUrl}dashboard`, {
-        params,
-        withCredentials: true,
-        credentials: 'include',
-      });
-      return data;
-    } catch (error) {
-      console.log('api error', error);
-      return null;
-    }
-  });
+  return useQuery(
+    ['dashboard', params],
+    async () => {
+      try {
+        const { data } = await axios(`${baseUrl}dashboard`, {
+          params,
+          withCredentials: true,
+          credentials: 'include',
+        });
+        return data;
+      } catch (error) {
+        console.log('api error', error);
+        return null;
+      }
+    },
+    { staleTime: 60 * 1000 },
+  );
 };
 
 const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
@@ -60,30 +64,34 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
       <Typography variant="h1">
         {projectCode.toUpperCase()} - {organisationUnitCode}
       </Typography>
-      {Object.entries(data).map(([heading, dashboardGroup]) => {
-        return (
-          <React.Fragment key={heading}>
-            <Typography variant="h2">{heading}</Typography>
-            <hr />
-            {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
-              return groupValue.views
-                .filter(chart => chart.type === 'chart')
-                .map(view => {
-                  return (
-                    <Chart
-                      key={view.viewId}
-                      projectCode={projectCode}
-                      organisationUnitCode={organisationUnitCode}
-                      dashboardGroupId={groupValue.dashboardGroupId}
-                      viewId={view.viewId}
-                      isEnlarged
-                    />
-                  );
-                });
-            })}
-          </React.Fragment>
-        );
-      })}
+      {Object.entries(data)
+        .slice(4, 7)
+        .map(([heading, dashboardGroup]) => {
+          return (
+            <React.Fragment key={heading}>
+              <Typography variant="h2">{heading}</Typography>
+              <hr />
+              {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
+                return groupValue.views
+                  .filter(chart => chart.type === 'chart')
+                  .filter(chart => chart.chartType === 'line')
+                  .map(view => {
+                    console.log(view.viewId);
+                    return (
+                      <Chart
+                        key={view.viewId}
+                        projectCode={projectCode}
+                        organisationUnitCode={organisationUnitCode}
+                        dashboardGroupId={groupValue.dashboardGroupId}
+                        viewId={view.viewId}
+                        isEnlarged
+                      />
+                    );
+                  });
+              })}
+            </React.Fragment>
+          );
+        })}
     </>
   );
 };
