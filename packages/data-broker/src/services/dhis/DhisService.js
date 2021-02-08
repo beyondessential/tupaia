@@ -63,9 +63,6 @@ export class DhisService extends Service {
   };
 
   validatePushData(dataSources, dataValues) {
-    if (dataSources.length !== dataValues.length) {
-      throw new Error('Different number of data sources and values provided to push');
-    }
     const { serverName } = this.getApiForValue(dataSources[0], dataValues[0]);
     if (
       dataSources.some(

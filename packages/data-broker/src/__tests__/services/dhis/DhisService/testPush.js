@@ -24,9 +24,9 @@ export const testPush = () => {
     });
 
     it('aggregate data element with a different dhis code', async () => {
-      await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.POP01);
+      await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.DIF01);
       expect(dhisApi.postDataValueSets).toHaveBeenCalledOnceWith([
-        { dataElement: 'DIF01_DHIS', value: '1' },
+        { dataElement: 'DIF01_DHIS', value: '3' },
       ]);
     });
   });
