@@ -13,9 +13,9 @@ import { Chart } from '../../src';
 import { LoginModal } from '../story-utils/LoginForm';
 
 const Container = styled.div`
-  margin: 1rem auto;
+  margin: 1rem;
   width: 600px;
-  height: 400px;
+  height: 600px;
   color: white;
 `;
 
@@ -42,7 +42,7 @@ const useDashboardData = params => {
   return useQuery(['dashboard', params], async () => {
     try {
       const { data } = await axios(`${baseUrl}dashboard`, {
-        params: { ...params, cacheBreaker: Math.random().toString(36).substring(7) },
+        params,
         withCredentials: true,
         credentials: 'include',
       });
@@ -62,8 +62,9 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
       </Typography>
       {Object.entries(data).map(([heading, dashboardGroup]) => {
         return (
-          <>
+          <React.Fragment key={heading}>
             <Typography variant="h2">{heading}</Typography>
+            <hr />
             {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
               return groupValue.views
                 .filter(chart => chart.type === 'chart')
@@ -80,7 +81,7 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
                   );
                 });
             })}
-          </>
+          </React.Fragment>
         );
       })}
     </>

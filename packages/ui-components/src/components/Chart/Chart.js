@@ -124,7 +124,7 @@ export const Chart = ({
 
   const ChartComponent = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
 
-  if (chartType !== CHART_TYPES.PIE) {
+  if (chartType !== 'pie') {
     return null;
   }
 
