@@ -21,6 +21,7 @@ export const facilityOpeningHours = async ({ dataBuilderConfig, query }, aggrega
 
   const openingHours = {};
   Object.entries(nestedDataElementCodes).forEach(([day, codes]) => {
+    // one data element for 'is open?', three data elements for 'is open?', 'Open time',and 'Close time'
     if (![1, 3].includes(codes.length))
       throw new Error(
         `Invalid data builder config, please provide either one or three data elements on ${day}'s config`,
