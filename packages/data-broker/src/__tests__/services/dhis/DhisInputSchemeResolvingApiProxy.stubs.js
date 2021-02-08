@@ -33,7 +33,40 @@ const createModelsStub = () => ({
 export const createApiStub = () => {
   return {
     getAnalytics: jest.fn().mockReturnValue({ SOME_ANALYTICS_RESPONSE: 1 }),
-    getEventAnalytics: jest.fn().mockReturnValue({ SOME_EVENT_ANALYTICS_RESPONSE: 1 }),
+    getEventAnalytics: jest.fn().mockReturnValue({
+      headers: [
+        {
+          name: 'oucode',
+          column: 'Organisation unit code',
+          valueType: 'TEXT',
+          type: 'java.lang.String',
+          hidden: false,
+          meta: true,
+        },
+        {
+          name: 'ou',
+          column: 'Organisation unit',
+          valueType: 'TEXT',
+          type: 'java.lang.String',
+          hidden: false,
+          meta: true,
+        },
+        {
+          name: 'Dyq13cMGMzT',
+          column: 'NCLE: Disease name',
+          valueType: 'TEXT',
+          type: 'java.lang.String',
+          hidden: false,
+          meta: true,
+          optionSet: 'kMe7B54S9VH',
+        },
+      ],
+      rows: [['dhisOrgCode_ou1', 'dhisId_ou1', '7.1']],
+      metadata: {},
+      width: 3,
+      height: 1,
+      headerWidth: 3,
+    }),
   };
 };
 
