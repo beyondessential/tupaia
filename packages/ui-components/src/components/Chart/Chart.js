@@ -101,6 +101,8 @@ export const Chart = ({
   viewId,
   isExporting,
   isEnlarged,
+  periodGranularity,
+  defaultTimePeriod,
   onItemClick,
 }) => {
   const { data: viewContent, isLoading, isError, error } = useChartData({
@@ -108,6 +110,8 @@ export const Chart = ({
     organisationUnitCode,
     dashboardGroupId,
     viewId,
+    periodGranularity,
+    defaultTimePeriod,
   });
 
   if (isLoading) {
@@ -148,7 +152,7 @@ export const Chart = ({
 Chart.propTypes = {
   projectCode: PropTypes.string.isRequired,
   organisationUnitCode: PropTypes.string.isRequired,
-  dashboardGroupId: PropTypes.string.isRequired,
+  dashboardGroupId: PropTypes.number.isRequired,
   viewId: PropTypes.string.isRequired,
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,

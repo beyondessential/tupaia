@@ -24,6 +24,11 @@ const queryClient = new QueryClient();
 export default {
   title: 'Chart',
   component: Chart,
+  parameters: {
+    backgrounds: {
+      default: 'dark',
+    },
+  },
   decorators: [
     Story => (
       <Container>
@@ -72,21 +77,24 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode, data }) => {
               <Typography variant="h2">{heading}</Typography>
               <hr />
               {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
-                return groupValue.views
-                  .filter(chart => chart.type === 'chart')
-                  .filter(chart => chart.chartType === 'pie')
-                  .map(view => {
-                    return (
-                      <Chart
-                        key={view.viewId}
-                        projectCode={projectCode}
-                        organisationUnitCode={organisationUnitCode}
-                        dashboardGroupId={groupValue.dashboardGroupId}
-                        viewId={view.viewId}
-                        isEnlarged
-                      />
-                    );
-                  });
+                return (
+                  groupValue.views
+                    .filter(chart => chart.type === 'chart')
+                    // .filter(chart => chart.chartType === 'bar')
+                    .map(view => {
+                      return (
+                        <Chart
+                          key={view.viewId}
+                          projectCode={projectCode}
+                          organisationUnitCode={organisationUnitCode}
+                          dashboardGroupId={groupValue.dashboardGroupId}
+                          viewId={view.viewId}
+                          periodGranularity={view.periodGranularity}
+                          isEnlarged
+                        />
+                      );
+                    })
+                );
               })}
             </React.Fragment>
           );
@@ -99,6 +107,32 @@ ProjectChartsList.propTypes = {
   projectCode: PropTypes.string.isRequired,
   organisationUnitCode: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
+};
+
+const Template = args => <Chart {...args} />;
+
+export const SingleChart = Template.bind({});
+SingleChart.args = {
+  projectCode: 'fanafana',
+  organisationUnitCode: 'TO',
+  dashboardGroupId: 25,
+  viewId: 'TO_RH_Descriptive_FP01_03',
+  isEnlarged: true,
+};
+
+export const Explore = () => {
+  const projectCode = 'explore';
+  const organisationUnitCode = 'explore';
+  const { data, isLoading } = useDashboardData({
+    organisationUnitCode,
+    projectCode,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return ProjectChartsList({ projectCode, organisationUnitCode, data });
 };
 
 export const Fanafana = () => {

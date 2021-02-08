@@ -175,14 +175,14 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
             />
           }
         />
-        {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
-          <Legend
-            chartConfig={chartConfig}
-            getIsActiveKey={getIsActiveKey}
-            isExporting={isExporting}
-            onClick={onLegendClick}
-          />
-        )}
+        {/*{(hasDataSeries || renderLegendForOneItem) && isEnlarged && (*/}
+        {/*  <Legend*/}
+        {/*    chartConfig={chartConfig}*/}
+        {/*    getIsActiveKey={getIsActiveKey}*/}
+        {/*    isExporting={isExporting}*/}
+        {/*    onClick={onLegendClick}*/}
+        {/*  />*/}
+        {/*)}*/}
         {sortedChartConfig
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
           .map(([dataKey]) => {
