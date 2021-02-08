@@ -7,6 +7,7 @@ import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { createApiProxyStub, createApiStub } from './DhisInputSchemeResolvingApiProxy.stubs';
 
 jest.mock('@tupaia/dhis-api');
+translateElementKeysInEventAnalytics.mockImplementation(a => a);
 
 const api = createApiStub();
 const proxy = createApiProxyStub(api);
@@ -89,18 +90,26 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
       });
     });
 
-    it('should process the response and swap ids back to codes', async () => {
+    it('should process the response and swap dataElement ids back to codes', async () => {
       await proxy.getEventAnalytics({
         dataElementCodes: ['EL1', 'EL2'],
         organisationUnitCodes: ['ORG1'],
         programCode: 'G1',
       });
-      return expect(translateElementKeysInEventAnalytics).toHaveBeenCalledOnceWith(
-        {
-          SOME_EVENT_ANALYTICS_RESPONSE: 1,
-        },
-        { dhisId_el1: 'EL1', dhisId_el2: 'EL2' },
-      );
+      return expect(
+        translateElementKeysInEventAnalytics,
+      ).toHaveBeenCalledOnceWith(api.getEventAnalytics(), { dhisId_el1: 'EL1', dhisId_el2: 'EL2' });
+    });
+
+    it('should process the response and swap orgUnit ids back to codes', async () => {
+      const response = await proxy.getEventAnalytics({
+        dataElementCodes: ['EL1', 'EL2'],
+        organisationUnitCodes: ['ORG1'],
+        programCode: 'G1',
+      });
+      await expect(response).toMatchObject({
+        rows: [['ORG1', 'dhisId_ou1', '7.1']],
+      });
     });
   });
 });
