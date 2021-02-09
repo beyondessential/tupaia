@@ -61,38 +61,38 @@ SingleChart.args = {
  */
 const baseUrl = process.env.REACT_APP_CONFIG_SERVER_BASE_URL || 'http://localhost:8000/api/v1/';
 
-const useDashboardData = params => {
-  return useQuery(
+const useDashboardData = params =>
+  useQuery(
     ['dashboard', params],
-    async () => {
-      try {
-        const { data } = await axios(`${baseUrl}dashboard`, {
-          params,
-          withCredentials: true,
-          credentials: 'include',
-        });
-        return data;
-      } catch (error) {
-        console.log('api error', error);
-        return null;
-      }
-    },
+    () =>
+      axios(`${baseUrl}dashboard`, {
+        params,
+        withCredentials: true,
+      }).then(res => res.data),
     { staleTime: 60 * 1000 },
   );
-};
 
 const Title = styled(Typography)`
   margin-bottom: 3rem;
 `;
 
 const ProjectChartsList = ({ projectCode, organisationUnitCode }) => {
-  const { data, isLoading } = useDashboardData({
+  const { data, isLoading, isError, error } = useDashboardData({
     organisationUnitCode,
     projectCode,
   });
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <div>{error.message}</div>
+        <div>You need to have web-config-server running for this story</div>
+      </div>
+    );
   }
 
   return (
@@ -108,24 +108,21 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode }) => {
               <Typography variant="h2">{heading}</Typography>
               <hr />
               {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
-                return (
-                  groupValue.views
-                    .filter(chart => chart.type === 'chart')
-                    // .filter(chart => chart.chartType === 'bar')
-                    .map(view => {
-                      return (
-                        <Chart
-                          key={view.viewId}
-                          projectCode={projectCode}
-                          organisationUnitCode={organisationUnitCode}
-                          dashboardGroupId={groupValue.dashboardGroupId}
-                          viewId={view.viewId}
-                          periodGranularity={view.periodGranularity}
-                          isEnlarged
-                        />
-                      );
-                    })
-                );
+                return groupValue.views
+                  .filter(chart => chart.type === 'chart')
+                  .map(view => {
+                    return (
+                      <Chart
+                        key={view.viewId}
+                        projectCode={projectCode}
+                        organisationUnitCode={organisationUnitCode}
+                        dashboardGroupId={groupValue.dashboardGroupId}
+                        viewId={view.viewId}
+                        periodGranularity={view.periodGranularity}
+                        isEnlarged
+                      />
+                    );
+                  });
               })}
               <br />
             </React.Fragment>

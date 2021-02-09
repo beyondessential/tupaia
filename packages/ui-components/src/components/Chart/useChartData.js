@@ -19,14 +19,12 @@ export const useChartData = ({ defaultTimePeriod, periodGranularity, ...props })
 
   return useQuery(
     ['chart', params],
-    () => {
-      return axios(`${baseUrl}view`, {
+    () =>
+      axios(`${baseUrl}view`, {
         params,
         withCredentials: true,
-        credentials: 'include',
         timeout: 30 * 1000,
-      }).then(res => res.data);
-    },
+      }).then(res => res.data),
     { staleTime: 60 * 60 * 1000 },
   );
 };
