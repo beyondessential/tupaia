@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { get } from 'lodash';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { formatDataValue } from './utils';
@@ -19,13 +20,11 @@ function formatLabelledValue(label, value, valueType, metadata) {
   return valueText;
 }
 
-const VIEW_STYLES = {
-  tooltip: {
-    color: 'rgba(255, 255, 255, 0.87)',
-    background: 'rgba(0, 0, 0, 0.7)',
-    padding: '15px 10px 15px 5px',
-  },
-};
+const TooltipContainer = styled.div`
+  color: rgba(255, 255, 255, 0.87);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px 10px 15px 5px;
+`;
 
 const MultiValueTooltip = ({
   valueType,
@@ -66,13 +65,13 @@ const MultiValueTooltip = ({
   });
 
   return (
-    <div style={VIEW_STYLES.tooltip}>
+    <TooltipContainer>
       {headline ||
         (getIsTimeSeries([data]) &&
           periodGranularity &&
           formatTimestampForChart(timestamp, periodGranularity))}
       <ul>{valueLabels}</ul>
-    </div>
+    </TooltipContainer>
   );
 };
 
@@ -84,7 +83,7 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   const valueTypeForLabel = labelType || valueType;
 
   return (
-    <div style={VIEW_STYLES.tooltip}>
+    <TooltipContainer>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
         <div>
           <p>{formatTimestampForChart(timestamp, periodGranularity)}</p>
@@ -93,21 +92,25 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
       ) : (
         formatLabelledValue(name, value, valueTypeForLabel, metadata)
       )}
-    </div>
+    </TooltipContainer>
   );
 };
 
 export const Tooltip = props => {
-  const { payload = [], active, presentationOptions } = props;
+  const { payload, active, presentationOptions } = props;
 
-  const filteredPayload = payload.filter(({ value }) => value !== undefined);
+  const data = payload || []; // This is to hancle when recharts overrides the payload as null
+  const filteredPayload = data.filter(({ value }) => value !== undefined);
+
   if (active && filteredPayload.length >= 1) {
-    if (payload.length === 1 && !presentationOptions) {
+    if (data.length === 1 && !presentationOptions) {
       return <SingleValueTooltip {...props} payload={filteredPayload} />;
     }
+
     return <MultiValueTooltip {...props} payload={filteredPayload} />;
   }
-  return <div style={VIEW_STYLES.tooltip}>No Data</div>;
+
+  return <TooltipContainer>No Data</TooltipContainer>;
 };
 
 Tooltip.propTypes = {
