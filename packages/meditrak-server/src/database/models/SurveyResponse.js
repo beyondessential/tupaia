@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { moment, momentTimezone } from 'moment-timezone';
+import momentTimezone from 'moment-timezone';
 
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
@@ -42,7 +42,7 @@ class SurveyResponseType extends DatabaseType {
   }
 
   dataTime() {
-    return moment(this.data_time);
+    return momentTimezone(this.data_time);
   }
 
   timezoneAwareEndTime() {
