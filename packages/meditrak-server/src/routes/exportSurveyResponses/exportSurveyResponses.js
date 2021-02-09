@@ -159,8 +159,8 @@ export async function exportSurveyResponses(req, res) {
               comparisonType: 'whereBetween',
               args: [
                 [
-                  new Date(moment(startDate).subtract(1, 'day')),
-                  new Date(moment(endDate).add(1, 'day')),
+                  new Date(moment(startDate)),
+                  new Date(moment(endDate)),
                 ],
               ],
             };
