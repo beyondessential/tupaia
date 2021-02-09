@@ -62,12 +62,16 @@ const CHART_SORT_ORDER = {
   [LINE]: 0,
   [BAR]: 1,
 };
+
 const CHART_TYPE_TO_CHART = {
   [AREA]: { Container: AreaChart, Component: AreaChartComponent },
   [BAR]: { Container: BarChart, Component: BarChartComponent },
   [COMPOSED]: { Container: ComposedChart, Component: BarChartComponent },
   [LINE]: { Container: LineChart, Component: LineChartComponent },
 };
+
+const getRealDataKeys = chartConfig =>
+  Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
 
 /**
  * Cartesian Chart types using recharts
@@ -97,9 +101,9 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
 
   const onLegendClick = event => {
     const legendDatakey = event.dataKey;
+
     const actionWillSelectAllKeys =
-      activeDataKeys.length + 1 >=
-        Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY)(chartConfig).length &&
+      activeDataKeys.length + 1 >= getRealDataKeys(chartConfig).length &&
       !activeDataKeys.includes(legendDatakey);
 
     if (legendDatakey === LEGEND_ALL_DATA_KEY || actionWillSelectAllKeys) {
@@ -109,9 +113,9 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
 
     // Note, may be false even if the dataKey is active
     if (activeDataKeys.includes(legendDatakey)) {
-      setActiveDataKeys(state => state.activeDataKeys.filter(dk => dk !== legendDatakey));
+      setActiveDataKeys(activeDataKeys.filter(dk => dk !== legendDatakey));
     } else {
-      setActiveDataKeys(state => [...state.activeDataKeys, legendDatakey]);
+      setActiveDataKeys([...activeDataKeys, legendDatakey]);
     }
   };
 
@@ -175,14 +179,14 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
             />
           }
         />
-        {/*{(hasDataSeries || renderLegendForOneItem) && isEnlarged && (*/}
-        {/*  <Legend*/}
-        {/*    chartConfig={chartConfig}*/}
-        {/*    getIsActiveKey={getIsActiveKey}*/}
-        {/*    isExporting={isExporting}*/}
-        {/*    onClick={onLegendClick}*/}
-        {/*  />*/}
-        {/*)}*/}
+        {(hasDataSeries || renderLegendForOneItem) &&
+          isEnlarged &&
+          Legend({
+            chartConfig,
+            getIsActiveKey,
+            isExporting,
+            onClick: onLegendClick,
+          })}
         {sortedChartConfig
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
           .map(([dataKey]) => {

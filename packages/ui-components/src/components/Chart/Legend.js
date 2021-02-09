@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { Legend as LegendComponent } from 'recharts';
 import PropTypes from 'prop-types';
 
 export const Legend = ({ chartConfig, onClick, getIsActiveKey, isExporting }) => {
@@ -19,7 +20,7 @@ export const Legend = ({ chartConfig, onClick, getIsActiveKey, isExporting }) =>
   };
 
   return (
-    <Legend
+    <LegendComponent
       onClick={onClick}
       formatter={formatLegend}
       verticalAlign={isExporting ? 'top' : 'bottom'}

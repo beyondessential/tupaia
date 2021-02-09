@@ -16,6 +16,25 @@ import { getIsTimeSeries, isDataKey } from './helpers';
 import { useChartData } from './useChartData';
 import { isMobile } from './utils';
 
+const UnknownChartTitle = styled(Typography)`
+  position: relative;
+  color: rgba(255, 255, 255, 0.87);
+  margintop: 5;
+  marginbottom: 15;
+  lineheight: 130%;
+  textalign: center;
+`;
+
+const UnknownChartContainer = styled.div`
+  position: relative;
+`;
+
+const UnknownChart = () => (
+  <UnknownChartContainer>
+    <UnknownChartTitle variant="h2">New chart coming soon</UnknownChartTitle>
+  </UnknownChartContainer>
+);
+
 const VIEW_STYLES = {
   newChartComing: {
     position: 'relative',
@@ -54,12 +73,6 @@ const VIEW_STYLES = {
         alignItems: 'stretch',
       },
 };
-
-const UnknownChart = () => (
-  <div style={VIEW_STYLES.newChartComing}>
-    <h2 style={VIEW_STYLES.title}>New chart coming soon</h2>
-  </div>
-);
 
 const Container = styled.div`
   // recharts components doesn't pass nested styles so they need to be added on a wrapping component
@@ -162,11 +175,15 @@ Chart.propTypes = {
   viewId: PropTypes.string.isRequired,
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
+  periodGranularity: PropTypes.string,
+  defaultTimePeriod: PropTypes.object,
   onItemClick: PropTypes.func,
 };
 
 Chart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
+  periodGranularity: null,
+  defaultTimePeriod: null,
   onItemClick: () => {},
 };
