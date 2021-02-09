@@ -5,7 +5,6 @@
 
 import xlsx from 'xlsx';
 import moment from 'moment';
-import momentTimezone from 'moment-timezone';
 import {
   constructIsOneOf,
   constructRecordExistsWithId,
@@ -27,6 +26,8 @@ import {
 } from '../exportSurveyResponses';
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+
+const ISO_DATE_FORMAT_WITHOUT_TZ = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
@@ -89,7 +90,7 @@ export async function importSurveyResponses(req, res) {
                   entity_id: entity.id,
                   start_time: surveyDate,
                   end_time: surveyDate,
-                  submission_time: surveyDate,
+                  data_time: moment(surveyDate).format(ISO_DATE_FORMAT_WITHOUT_TZ),
                 });
                 newSurveyResponseIds[columnIndex] = newSurveyResponse.id;
               } else {
@@ -258,16 +259,15 @@ const getMaxRowColumnIndex = sheet => {
 async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmissionTimeString) {
   const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
   if (!surveyResponse) return; // Survey response is probably deleted
-  const currentSubmissionTime = surveyResponse.submission_time;
+  const currentDataTime = surveyResponse.data_time;
   const isInExportFormat = moment(newSubmissionTimeString, EXPORT_DATE_FORMAT, true).isValid();
-  const newSubmissionTimeWithTimezone = isInExportFormat
-    ? momentTimezone.tz(newSubmissionTimeString, EXPORT_DATE_FORMAT, surveyResponse.timezone)
-    : momentTimezone.tz(newSubmissionTimeString, surveyResponse.timezone);
-  const newSubmissionTimeInUtc = newSubmissionTimeWithTimezone.utc().format();
+  const newDataTime = isInExportFormat
+    ? moment(newSubmissionTimeString, EXPORT_DATE_FORMAT)
+    : moment(newSubmissionTimeString);
 
-  if (!moment(currentSubmissionTime).isSame(newSubmissionTimeInUtc, 'minute')) {
+  if (!moment(currentDataTime).isSame(newDataTime, 'minute')) {
     await models.surveyResponse.updateById(surveyResponseId, {
-      submission_time: newSubmissionTimeInUtc,
+      data_time: newDataTime.format(ISO_DATE_FORMAT_WITHOUT_TZ),
     });
   }
 }
