@@ -98,7 +98,7 @@ export async function pushChange(models, change, ms1Api) {
 
   const surveyResponseId = surveyResponse.id;
 
-  const { assessor_name: sentBy, submission_time: sentAt } = surveyResponse;
+  const { assessor_name: sentBy, data_time: sentAt } = surveyResponse;
   const metadata = {
     sentBy,
     sentAt,
