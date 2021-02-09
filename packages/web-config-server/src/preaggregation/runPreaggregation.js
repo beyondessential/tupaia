@@ -24,7 +24,7 @@ const runPreaggregators = async preaggregatorsToRun => {
     try {
       await preaggregator(aggregator, regionalDhisApiInstance); // Await each preaggregator as otherwise it will cause a huge spike in load
     } catch (error) {
-      winston.error(`Preaggregator ${name} failed!`, error.message);
+      winston.error(`Preaggregator ${name} failed wit error: ${error.message}`);
     }
   }
   await regionalDhisApiInstance.updateAnalyticsTables();

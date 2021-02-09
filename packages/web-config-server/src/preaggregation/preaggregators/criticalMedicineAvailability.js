@@ -157,7 +157,9 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
 
     return aggregatedValues;
   } catch (error) {
-    winston.error('Error while fetching analytics', { organisationUnitGroupCode, error });
+    winston.error(`Error while fetching analytics: ${error.message}`, {
+      organisationUnitGroupCode,
+    });
     return null;
   }
 };
