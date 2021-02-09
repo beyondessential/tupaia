@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { TestableApp } from '../TestableApp';
+import { TestableApp } from '../testUtilities';
 
 describe('Access Requests', () => {
   const app = new TestableApp();

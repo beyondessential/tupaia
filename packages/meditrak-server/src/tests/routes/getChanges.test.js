@@ -7,17 +7,22 @@ import { expect } from 'chai';
 
 import { TYPES } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
-import { SyncQueue } from '../../../database';
-import { TestableApp } from '../../TestableApp';
-import { upsertQuestion, randomIntBetween } from '../../testUtilities';
+import { SyncQueue } from '../../database';
+import { randomIntBetween, TestableApp, upsertQuestion } from '../testUtilities';
 
-export const testGetChangesCount = async () => {
+describe('GET /changes/count', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async function () {
+  before(async () => {
+    await app.grantFullAccess();
+
     // Set up real sync queue for testing the /changes endpoint
     const syncQueue = new SyncQueue(models, models.meditrakSyncQueue, [TYPES.QUESTION]); // eslint-disable-line no-unused-vars
+  });
+
+  after(() => {
+    app.revokeAccess();
   });
 
   it('should return a number under the key "changeCount"', async function () {
@@ -130,4 +135,4 @@ export const testGetChangesCount = async () => {
     response = await app.get(`changes/count?since=${timestampBeforeSecondDelete}`);
     expect(response.body.changeCount).to.equal(numberOfQuestionsToDeleteFromSecondUpdate);
   });
-};
+});

@@ -4,15 +4,13 @@
  */
 
 import { expect } from 'chai';
-import { Authenticator } from '@tupaia/auth';
 
 import {
   buildAndInsertSurveys,
   generateTestId,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
-import { TestableApp } from '../TestableApp';
-import { upsertEntity } from '../testUtilities';
+import { TestableApp, upsertEntity } from '../../testUtilities';
 
 const DEFAULT_POLICY = {
   PG: ['Public'],

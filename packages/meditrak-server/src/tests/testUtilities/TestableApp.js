@@ -10,11 +10,11 @@ import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
 
-import { BES_ADMIN_PERMISSION_GROUP } from '../permissions';
-import { createApp } from '../app';
-import { getModels } from './getModels';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { createApp } from '../../app';
+import { getModels } from './database';
 
-export const DEFAULT_API_VERSION = 2;
+const DEFAULT_API_VERSION = 2;
 const getVersionedEndpoint = (endpoint, apiVersion = DEFAULT_API_VERSION) =>
   `/v${apiVersion}/${endpoint}`;
 

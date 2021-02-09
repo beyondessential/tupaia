@@ -10,8 +10,7 @@ import {
   buildAndInsertSurveys,
 } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
-import { TestableApp } from '../../TestableApp';
-import { setupDummySyncQueue, upsertEntity } from '../../testUtilities';
+import { setupDummySyncQueue, TestableApp, upsertEntity } from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 

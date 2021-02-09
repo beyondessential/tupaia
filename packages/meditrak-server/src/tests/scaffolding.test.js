@@ -9,8 +9,7 @@ import winston from 'winston';
 
 import { clearTestData } from '@tupaia/database';
 import { getIsProductionEnvironment } from '../devops';
-import { resetTestData } from './testUtilities';
-import { getModels } from './getModels';
+import { getModels, resetTestData } from './testUtilities';
 import * as SendEmail from '../utilities/sendEmail';
 
 const testStartTime = moment().format('YYYY-MM-DD HH:mm:ss');

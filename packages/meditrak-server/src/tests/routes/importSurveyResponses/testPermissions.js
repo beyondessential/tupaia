@@ -10,8 +10,7 @@ import {
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
-import { expectPermissionError } from '../../testUtilities/expectResponseError';
+import { expectPermissionError, TestableApp } from '../../testUtilities';
 
 const DEFAULT_POLICY = {
   DL: ['Admin'],

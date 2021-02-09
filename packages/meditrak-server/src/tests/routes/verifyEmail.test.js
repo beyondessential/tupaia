@@ -7,8 +7,7 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 import { expect } from 'chai';
 
 import { encryptPassword } from '@tupaia/auth';
-import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail } from './testUtilities';
+import { getAuthorizationHeader, randomEmail, TestableApp } from '../testUtilities';
 
 describe('Verify Email', () => {
   const app = new TestableApp();

@@ -5,7 +5,6 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { Authenticator } from '@tupaia/auth';
 import { findOrCreateDummyRecord, addBaselineTestCountries } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -13,8 +12,7 @@ import {
 } from '../../../permissions';
 import * as PopulateCoordinatesForCountry from '../../../routes/importEntities/populateCoordinatesForCountry';
 import * as UpdateCountryEntities from '../../../routes/importEntities/updateCountryEntities';
-import { TestableApp } from '../../TestableApp';
-import { expectPermissionError } from '../../testUtilities/expectResponseError';
+import { expectPermissionError, TestableApp } from '../../testUtilities';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],

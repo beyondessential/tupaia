@@ -9,8 +9,7 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
-import { resetTestData } from '../../testUtilities';
+import { resetTestData, TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for GETAccessRequests', async () => {
   const DEFAULT_POLICY = {

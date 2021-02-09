@@ -6,16 +6,14 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import xlsx from 'xlsx';
-import { Authenticator } from '@tupaia/auth';
 import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
   buildAndInsertSurveyResponses,
   buildAndInsertSurveys,
 } from '@tupaia/database';
-import { resetTestData } from '../../testUtilities';
+import { resetTestData, TestableApp } from '../../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
 import { INFO_COLUMN_HEADERS } from '../../../routes/exportSurveyResponses';
 
 const DEFAULT_POLICY = {

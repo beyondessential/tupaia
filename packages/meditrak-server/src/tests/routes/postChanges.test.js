@@ -13,16 +13,16 @@ import {
   buildAndInsertSurveys,
 } from '@tupaia/database';
 
-import { TEST_IMAGE_DATA } from '../../testData';
-import { TestableApp } from '../../TestableApp';
+import { TEST_IMAGE_DATA } from '../testData';
 import {
   insertEntityAndFacility,
   randomIntBetween,
   setupDummySyncQueue,
+  TestableApp,
   upsertEntity,
   upsertQuestion,
-} from '../../testUtilities';
-import { getImageFilePath, BUCKET_NAME } from '../../../s3/constants';
+} from '../testUtilities';
+import { getImageFilePath, BUCKET_NAME } from '../../s3/constants';
 
 const clinicId = generateTestId();
 const entityId = generateTestId();
@@ -75,13 +75,15 @@ function expectEqualStrings(a, b) {
   }
 }
 
-export const testPostChanges = async () => {
+describe('POST /changes', async () => {
   const app = new TestableApp();
   const { models } = app;
   const syncQueue = setupDummySyncQueue(models);
 
   describe('SubmitSurveyResponse', () => {
     before(async () => {
+      await app.grantFullAccess();
+
       for (let i = 0; i < 20; i++) {
         await upsertQuestion({ id: getQuestionId(i), code: `TEST_QUESTION_${i}` });
       }
@@ -91,6 +93,10 @@ export const testPostChanges = async () => {
 
       const user = await models.user.findOne();
       userId = user.id;
+    });
+
+    after(() => {
+      app.revokeAccess();
     });
 
     describe('Supported change types in the correct format', () => {
@@ -466,4 +472,4 @@ export const testPostChanges = async () => {
       expect(response.statusCode).to.equal(400);
     });
   });
-};
+});

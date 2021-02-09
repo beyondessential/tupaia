@@ -9,9 +9,8 @@ import {
   buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { resetTestData } from '../testUtilities';
+import { resetTestData, TestableApp } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp } from '../TestableApp';
 
 describe('Permissions checker for GETSurveyResponses', async () => {
   const DEFAULT_POLICY = {
