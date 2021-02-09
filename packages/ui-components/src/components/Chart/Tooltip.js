@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { get } from 'lodash';
 import React from 'react';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 
 import { formatDataValue } from './utils';
@@ -97,25 +97,30 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
   );
 };
 
-function Tooltip(props) {
-  const payload = props.payload || [];
+export const Tooltip = props => {
+  const { payload = [], active, presentationOptions } = props;
+
   const filteredPayload = payload.filter(({ value }) => value !== undefined);
-  if (props.active && filteredPayload.length >= 1) {
-    if (payload.length === 1 && !props.presentationOptions) {
+  if (active && filteredPayload.length >= 1) {
+    if (payload.length === 1 && !presentationOptions) {
       return <SingleValueTooltip {...props} payload={filteredPayload} />;
     }
     return <MultiValueTooltip {...props} payload={filteredPayload} />;
   }
   return <div style={VIEW_STYLES.tooltip}>No Data</div>;
-}
+};
 
 Tooltip.propTypes = {
   valueType: PropTypes.oneOf(Object.values(VALUE_TYPES)),
-  payload: PropTypes.any,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
+  payload: PropTypes.array,
+};
+
+Tooltip.defaultProps = {
+  payload: [],
+  valueType: null,
+  presentationOptions: null,
 };
 
 SingleValueTooltip.propTypes = Tooltip.propTypes;
 MultiValueTooltip.propTypes = Tooltip.propTypes;
-
-export default Tooltip;

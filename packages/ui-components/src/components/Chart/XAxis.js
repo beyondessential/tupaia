@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { Text, XAxis as XAxisComponent } from 'recharts';
 import { CHART_TYPES, DARK_BLUE } from './constants';
 import { formatTimestampForChart, getIsTimeSeries } from './helpers';
-import VerticalTick from './VerticalTick';
+import { VerticalTick } from './VerticalTick';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',

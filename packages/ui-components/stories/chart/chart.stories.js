@@ -48,11 +48,12 @@ const Template = args => <Chart {...args} />;
 
 export const SingleChart = Template.bind({});
 SingleChart.args = {
-  projectCode: 'fanafana',
-  organisationUnitCode: 'TO',
-  dashboardGroupId: 25,
-  viewId: 'TO_RH_Descriptive_FP01_03',
+  projectCode: 'covidau',
+  organisationUnitCode: 'AU',
+  dashboardGroupId: 88,
+  viewId: 'COVID_Total_Cases_By_State',
   isEnlarged: true,
+  isExporting: false,
 };
 
 /**
@@ -143,7 +144,7 @@ export const Explore = () =>
   ProjectChartsList({ projectCode: 'explore', organisationUnitCode: 'explore' });
 
 export const Disaster = () =>
-  ProjectChartsList({ projectCode: 'disaster', organisationUnitCode: 'disaster' });
+  ProjectChartsList({ projectCode: 'disaster', organisationUnitCode: 'DL' });
 
 export const Fanafana = () =>
   ProjectChartsList({ projectCode: 'fanafana', organisationUnitCode: 'TO' });

@@ -5,7 +5,7 @@
 // todo: reconcile moment vs date fns
 import moment from 'moment';
 
-import { GRANULARITY_CONFIG } from './constants';
+import { GRANULARITY_CONFIG } from './periodGranularities';
 
 // Timestamps returned from the back-end correspond to UTC time
 export const formatTimestampForChart = (timestamp, granularity, periodTickFormat) =>

@@ -6,4 +6,3 @@
 export * from './colors';
 export * from './propTypes';
 export * from './constants';
-export * from './periodGranularities';

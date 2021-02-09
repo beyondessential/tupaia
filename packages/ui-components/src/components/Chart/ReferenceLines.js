@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { ReferenceLine } from 'recharts';
 import { TUPAIA_ORANGE, CHART_TYPES } from './constants';
 import { formatDataValue } from './utils';
-import ReferenceLabel from './ReferenceLabel';
+import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({ referenceLineLabel, isExporting }) => {
   if (referenceLineLabel === undefined) return null;

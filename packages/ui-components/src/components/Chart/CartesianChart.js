@@ -19,7 +19,7 @@ import {
 
 import { CHART_BLUES, CHART_TYPES, VIEW_CONTENT_SHAPE } from './constants';
 import { isMobile } from './utils';
-import CustomTooltip from './Tooltip';
+import { Tooltip as CustomTooltip } from './Tooltip';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';

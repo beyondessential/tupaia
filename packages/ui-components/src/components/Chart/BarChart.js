@@ -50,6 +50,11 @@ export const BarChart = ({
 };
 
 BarChart.propTypes = {
+  dataKey: PropTypes.string.isRequired,
+  yAxisId: PropTypes.string.isRequired,
+  stackId: PropTypes.string.isRequired,
+  valueType: PropTypes.string.isRequired,
+  color: PropTypes.string,
   chartConfig: PropTypes.object.isRequired,
   isExporting: PropTypes.bool,
   isEnlarged: PropTypes.bool,
@@ -57,6 +62,7 @@ BarChart.propTypes = {
 };
 
 BarChart.defaultProps = {
+  color: BLUE,
   isExporting: false,
   isEnlarged: false,
 };
