@@ -10,10 +10,8 @@ import PropTypes from 'prop-types';
 export const Legend = ({ chartConfig, onClick, getIsActiveKey, isExporting }) => {
   const formatLegend = (value, { color }) => {
     const isActive = getIsActiveKey(value);
-    const displayColor = isActive ? color : color;
-    // const displayColor = isActive ? color : getInactiveColor(color);
     return (
-      <span style={{ color: displayColor, textDecoration: isActive ? '' : 'line-through' }}>
+      <span style={{ color, textDecoration: isActive ? '' : 'line-through' }}>
         {chartConfig[value].label || value}
       </span>
     );

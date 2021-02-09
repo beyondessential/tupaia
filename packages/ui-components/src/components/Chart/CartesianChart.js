@@ -157,6 +157,10 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
 
   const Chart = CHART_TYPE_TO_CHART[chartType];
 
+  /**
+   * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
+   * so they are called as functions below
+   */
   return (
     <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
       <Chart.Container

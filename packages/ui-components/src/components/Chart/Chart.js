@@ -36,17 +36,6 @@ const UnknownChart = () => (
 );
 
 const VIEW_STYLES = {
-  newChartComing: {
-    position: 'relative',
-  },
-  title: {
-    position: 'relative',
-    color: 'rgba(255, 255, 255, 0.87)',
-    marginTop: 5,
-    marginBottom: 15,
-    lineHeight: '130%',
-    textAlign: 'center',
-  },
   chartViewContainer: isMobile()
     ? {}
     : {
@@ -132,8 +121,7 @@ export const Chart = ({
   }
 
   if (isError) {
-    console.log('error', error.message);
-    return <div>There was an error</div>;
+    return <div>There was an error with the report. {error.message}</div>;
   }
 
   const { chartType } = viewContent;
@@ -143,8 +131,6 @@ export const Chart = ({
   }
 
   if (!viewContent.data) {
-    console.log('viewContent', viewContent);
-    console.log('no data');
     return null;
   }
 
