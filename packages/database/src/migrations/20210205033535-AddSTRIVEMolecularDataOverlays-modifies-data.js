@@ -43,31 +43,31 @@ const BASE_OVERLAY = {
 
 const OVERLAYS_TO_IMPORT = [
   {
-    id: 'STR_QMAL05_POSITIVE',
+    id: 'PG_STRIVE_QMAL05_Positive',
     name: 'QMAL Positive',
     dataElementCode: 'STR_QMAL05',
     programCode: 'SQMAL',
   },
   {
-    id: 'STR_PF05_POSITIVE',
+    id: 'PG_STRIVE_PF05_Positive',
     name: 'PCR Pf Positive',
     dataElementCode: 'STR_PF05',
     programCode: 'SPF',
   },
   {
-    id: 'STR_PV05_POSITIVE',
+    id: 'PG_STRIVE_PV05_Positive',
     name: 'PCR Pv Positive',
     dataElementCode: 'STR_PV05',
     programCode: 'SPV',
   },
   {
-    id: 'STR_PM05_POSITIVE',
+    id: 'PG_STRIVE_PM05_Positive',
     name: 'PCR Pm Positive',
     dataElementCode: 'STR_PM05',
     programCode: 'SPM',
   },
   {
-    id: 'STR_PO05_POSITIVE',
+    id: 'PG_STRIVE_PO05_Positive',
     name: 'PCR Po Positive',
     dataElementCode: 'STR_PO05',
     programCode: 'SPO',
