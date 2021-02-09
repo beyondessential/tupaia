@@ -14,16 +14,36 @@ const SUPPORTED_AGGREGATIONS = [
   'MOST_RECENT',
 ];
 
-const getA1WhereClause = (startDate, endDate) => {
+const COMMON_FIELDS = 'data_element_code, entity_code, entity_name';
+const ANSWER_SPECIFIC_FIELDS = 'date, event_id, value, answer_type';
+
+const getA1WhereClause = conditions => {
+  let hasAnyCondition = false;
   let clause = '';
-  if (startDate) {
-    clause = 'WHERE analytics."date" > ?';
-    if (endDate) {
-      clause = `${clause}
-      AND analytics."date" < ?`;
+  for (const [condition, value] of Object.entries(conditions)) {
+    if (!value) {
+      continue;
     }
-  } else if (endDate) {
-    clause = 'WHERE analytics."date" < ?';
+
+    clause = `${clause}
+              ${hasAnyCondition ? 'AND' : 'WHERE'}`;
+    switch (condition) {
+      case 'surveyCode':
+        clause = `${clause} survey_code = ?`;
+        break;
+      case 'eventId':
+        clause = `${clause} event_id = ?`;
+        break;
+      case 'startDate':
+        clause = `${clause} date > ?`;
+        break;
+      case 'endDate':
+        clause = `${clause} date < ?`;
+        break;
+      default:
+        throw new Error(`Unknown condition in fetch data where clause: ${condition}`);
+    }
+    hasAnyCondition = true;
   }
 
   return clause;
@@ -32,15 +52,15 @@ const getA1WhereClause = (startDate, endDate) => {
 const getA1GroupByClause = firstAggregationType => {
   switch (firstAggregationType) {
     case 'FINAL_EACH_DAY':
-      return 'GROUP BY data_element_code, entity_code, day_period';
+      return `GROUP BY ${COMMON_FIELDS}, day_period`;
     case 'FINAL_EACH_WEEK':
-      return 'GROUP BY data_element_code, entity_code, week_period';
+      return `GROUP BY ${COMMON_FIELDS}, week_period`;
     case 'FINAL_EACH_MONTH':
-      return 'GROUP BY data_element_code, entity_code, month_period';
+      return `GROUP BY ${COMMON_FIELDS}, month_period`;
     case 'FINAL_EACH_YEAR':
-      return 'GROUP BY data_element_code, entity_code, year_period';
+      return `GROUP BY ${COMMON_FIELDS}, year_period`;
     case 'MOST_RECENT':
-      return 'GROUP BY data_element_code, entity_code';
+      return `GROUP BY ${COMMON_FIELDS}`;
     default:
       return '';
   }
@@ -64,24 +84,24 @@ const getA2FinalWhereClause = firstAggregationType => {
 const getA1Select = firstAggregationType => {
   switch (firstAggregationType) {
     case 'FINAL_EACH_DAY':
-      return 'select entity_code, data_element_code, day_period';
+      return `SELECT ${COMMON_FIELDS}, day_period`;
     case 'FINAL_EACH_WEEK':
-      return 'select entity_code, data_element_code, week_period';
+      return `SELECT ${COMMON_FIELDS}, week_period`;
     case 'FINAL_EACH_MONTH':
-      return 'select entity_code, data_element_code, month_period';
+      return `SELECT ${COMMON_FIELDS}, month_period`;
     case 'FINAL_EACH_YEAR':
-      return 'select entity_code, data_element_code, year_period';
+      return `SELECT ${COMMON_FIELDS}, year_period`;
     case 'MOST_RECENT':
-      return 'select entity_code, data_element_code';
+      return `SELECT ${COMMON_FIELDS}`;
     default:
-      return 'select entity_code, data_element_code, date, value, answer_type';
+      return `SELECT ${COMMON_FIELDS}, ${ANSWER_SPECIFIC_FIELDS}`;
   }
 };
 
 const getA2Join = firstAggregationType => {
   return SUPPORTED_AGGREGATIONS.includes(firstAggregationType)
     ? `CROSS JOIN LATERAL (
-      SELECT date, value, answer_type
+      SELECT ${ANSWER_SPECIFIC_FIELDS}
       FROM analytics
       WHERE entity_code = a1.entity_code
       AND data_element_code = a1.data_element_code
@@ -95,6 +115,8 @@ const getA2Join = firstAggregationType => {
 const generateBaseSqlQuery = ({
   dataElementCodes,
   organisationUnitCodes,
+  surveyCode,
+  eventId,
   startDate,
   endDate,
   aggregations,
@@ -105,7 +127,9 @@ const generateBaseSqlQuery = ({
     SELECT 
       date AS "date",
       entity_code AS "entityCode",
+      entity_name AS "entityName",
       data_element_code AS "dataElementCode",
+      event_id AS "eventId",
       value AS "value",
       answer_type AS "type"
     FROM (
@@ -117,14 +141,16 @@ const generateBaseSqlQuery = ({
       INNER JOIN (
         ${SqlQuery.parameteriseValues(organisationUnitCodes)}
       ) entity_codes(code) ON entity_codes.code = analytics.entity_code
-        ${getA1WhereClause(startDate, endDate)}
+        ${getA1WhereClause({ surveyCode, eventId, startDate, endDate })}
         ${getA1GroupByClause(firstAggregationType)}
     ) as a1
     ${getA2Join(firstAggregationType)}
   `,
     [...dataElementCodes, ...organisationUnitCodes]
-      .concat([startDate ? utcMoment(startDate).startOf('day').toISOString() : undefined])
-      .concat([startDate ? utcMoment(endDate).startOf('day').toISOString() : undefined]),
+      .concat(surveyCode ? [surveyCode] : [])
+      .concat(eventId ? [eventId] : [])
+      .concat(startDate ? [utcMoment(startDate).startOf('day').toISOString()] : [])
+      .concat(endDate ? [utcMoment(endDate).startOf('day').toISOString()] : []),
   );
 
   sqlQuery.addOrderByClause('date');
@@ -132,19 +158,7 @@ const generateBaseSqlQuery = ({
   return sqlQuery;
 };
 
-export async function fetchEventData(database, options) {
+export async function fetchData(database, options) {
   const sqlQuery = generateBaseSqlQuery(options);
-  const { surveyCode, eventId } = options;
-  sqlQuery.addWhereClause(`survey.code = ?`, [surveyCode]);
-  if (eventId) {
-    sqlQuery.addWhereClause(`survey_response.id = ?`, [eventId]);
-  }
   return sqlQuery.executeOnDatabase(database);
-}
-
-export async function fetchAnalyticData(database, options) {
-  const sqlQuery = generateBaseSqlQuery(options);
-  const results = sqlQuery.executeOnDatabase(database);
-
-  return results;
 }

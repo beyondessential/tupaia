@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import { getSortByKey, utcMoment } from '@tupaia/utils';
-import { fetchEventData, fetchAnalyticData } from './fetchData';
+import { fetchData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
@@ -21,11 +21,11 @@ export class TupaiaDataApi {
 
   async fetchEvents(options) {
     await validateEventOptions(options);
-    const results = await fetchEventData(this.database, options);
-    const resultsBySurveyResponse = groupBy(results, 'surveyResponseId');
+    const results = await fetchData(this.database, options);
+    const resultsBySurveyResponse = groupBy(results, 'eventId');
     return Object.values(resultsBySurveyResponse)
       .map(resultsForSurveyResponse => {
-        const { surveyResponseId, date, entityCode, entityName } = resultsForSurveyResponse[0];
+        const { eventId, date, entityCode, entityName } = resultsForSurveyResponse[0];
         const dataValues = resultsForSurveyResponse.reduce(
           (values, { dataElementCode, type, value }) => ({
             ...values,
@@ -34,7 +34,7 @@ export class TupaiaDataApi {
           {},
         );
         return {
-          event: surveyResponseId,
+          event: eventId,
           eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
           orgUnit: entityCode,
           orgUnitName: entityName,
@@ -47,7 +47,7 @@ export class TupaiaDataApi {
   async fetchAnalytics(options) {
     await validateAnalyticsOptions(options);
     const start = Date.now();
-    const results = await fetchAnalyticData(this.database, options);
+    const results = await fetchData(this.database, options);
     const end = Date.now();
     console.log(`Fetch took: ${end - start}ms, ${results.length} results found`);
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
