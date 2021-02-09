@@ -8,6 +8,20 @@ import { reduceToDictionary } from '@tupaia/utils';
 
 class QuestionType extends DatabaseType {
   static databaseType = TYPES.QUESTION;
+
+  async getSurveyIds() {
+    const surveyScreens = await this.database.executeSql(
+      `
+      SELECT survey_screen.survey_id
+      FROM survey_screen
+      INNER JOIN survey_screen_component
+        ON survey_screen_component.screen_id = survey_screen.id
+      WHERE survey_screen_component.question_id = ?
+    `,
+      this.id,
+    );
+    return surveyScreens.map(s => s.survey_id);
+  }
 }
 
 const HOOKS_BY_ID_CACHE_KEY = 'hooksByQuestionId';

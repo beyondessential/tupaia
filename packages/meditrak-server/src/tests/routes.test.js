@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { Authenticator } from '@tupaia/auth';
 import { TestableApp } from './TestableApp';
 import { DummySyncQueue } from './DummySyncQueue';
 import {
@@ -11,6 +12,8 @@ import {
   testImportSurveyResponses,
   testPutSurveyResponses,
 } from './routeTests';
+import { prepareStubAndAuthenticate } from './routes/utilities/prepareStubAndAuthenticate';
+import { BES_ADMIN_PERMISSION_GROUP } from '../permissions';
 
 describe('Tupaia API', () => {
   const app = new TestableApp();
@@ -22,7 +25,15 @@ describe('Tupaia API', () => {
   models.addChangeHandlerForCollection(models.answer.databaseType, syncQueue.add);
 
   before(async () => {
-    await app.authenticate();
+    // We're not testing permissions here
+    const policy = {
+      DL: [BES_ADMIN_PERMISSION_GROUP],
+    };
+    await prepareStubAndAuthenticate(app, policy);
+  });
+
+  after(() => {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
   });
 
   describe('GET /changes/count', testGetChangesCount(app, models));

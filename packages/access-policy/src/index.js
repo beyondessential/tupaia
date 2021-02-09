@@ -39,6 +39,18 @@ export class AccessPolicy {
   }
 
   /**
+   * Check if the user has access to a given permission group for all of a given set of entities.
+   * @param {*} entities
+   * @param {*} permissionGroup
+   */
+  allowsAll(entities, permissionGroup) {
+    if (!entities || !entities.length) {
+      return false;
+    }
+    return entities.every(entity => this.allows(entity, permissionGroup));
+  }
+
+  /**
    * Check if the user has access to a given permission group for any of a given set of entities e.g.
    * - has access to some of the given entities with the given permission group
    *   accessPolicy.allowsSome(['DL', 'DL_North'], 'Donor');
@@ -113,6 +125,8 @@ export class AccessPolicy {
    * @returns entities[] The entity objects
    */
   getEntitiesAllowed(permissionGroup) {
-    return Object.keys(this.policy).filter(e => this.allows(e, permissionGroup));
+    const allEntityCodes = Object.keys(this.policy);
+    if (!permissionGroup) return allEntityCodes;
+    return allEntityCodes.filter(e => this.allows(e, permissionGroup));
   }
 }
