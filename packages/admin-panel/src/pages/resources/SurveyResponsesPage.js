@@ -34,10 +34,10 @@ const date = {
 
 const dateOfData = {
   Header: 'Date of Data',
-  source: 'submission_time',
+  source: 'data_time',
   type: 'tooltip',
   accessor: row =>
-    moment(row.submission_time || row.end_time)
+    moment(row.data_time || row.end_time)
       .local()
       .toString(),
   filterable: false,
@@ -164,7 +164,7 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
-    defaultSorting={[{ id: 'submission_time', desc: true }]}
+    defaultSorting={[{ id: 'data_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}

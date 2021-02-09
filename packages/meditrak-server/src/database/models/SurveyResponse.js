@@ -3,9 +3,10 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import momentTimezone from 'moment-timezone';
+import { moment, momentTimezone } from 'moment-timezone';
 
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+
 class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 
@@ -40,8 +41,8 @@ class SurveyResponseType extends DatabaseType {
     return entity.isTrackedEntity();
   }
 
-  timezoneAwareSubmissionTime() {
-    return momentTimezone(this.submission_time).tz(this.timezone);
+  dataTime() {
+    return moment(this.data_time);
   }
 
   timezoneAwareEndTime() {

@@ -129,7 +129,7 @@ export async function exportSurveyResponses(req, res) {
       let exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
       const surveyResponseAnswers = [];
       const processSurveyResponse = async (currentSurveyResponse, currentEntity) => {
-        const surveyDate = currentSurveyResponse.timezoneAwareSubmissionTime();
+        const surveyDate = currentSurveyResponse.dataTime();
         const responseName = truncateString(currentEntity.name, 30);
         const dateString = moment(surveyDate).format(EXPORT_DATE_FORMAT);
         if (!easyReadingMode) exportData[0].push(currentSurveyResponse.id);
@@ -155,7 +155,7 @@ export async function exportSurveyResponses(req, res) {
             entity_id: entity.id,
           };
           if (startDate && endDate) {
-            surveyResponseFindConditions.submission_time = {
+            surveyResponseFindConditions.data_time = {
               comparisonType: 'whereBetween',
               args: [
                 [
@@ -165,12 +165,12 @@ export async function exportSurveyResponses(req, res) {
               ],
             };
           } else if (startDate) {
-            surveyResponseFindConditions.submission_time = {
+            surveyResponseFindConditions.data_time = {
               comparator: '>=',
               comparisonValue: new Date(startDate),
             };
           } else if (endDate) {
-            surveyResponseFindConditions.submission_time = {
+            surveyResponseFindConditions.data_time = {
               comparator: '<=',
               comparisonValue: new Date(endDate),
             };

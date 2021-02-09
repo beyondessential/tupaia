@@ -11,7 +11,7 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
     `
     SELECT
       survey_response.id as "surveyResponseId",
-      survey_response.submission_time as "date",
+      survey_response.data_time as "date",
       entity.code as "entityCode",
       entity.name as "entityName",
       question.code as "dataElementCode",
@@ -37,17 +37,17 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
 
   // Add start and end date, which are inclusive
   if (startDate) {
-    sqlQuery.addClause(`AND survey_response.submission_time >= ?`, [
+    sqlQuery.addClause(`AND survey_response.data_time >= ?`, [
       utcMoment(startDate).startOf('day').toISOString(),
     ]);
   }
   if (endDate) {
-    sqlQuery.addClause(`AND survey_response.submission_time <= ?`, [
+    sqlQuery.addClause(`AND survey_response.data_time <= ?`, [
       utcMoment(endDate).endOf('day').toISOString(),
     ]);
   }
 
-  sqlQuery.orderBy('survey_response.submission_time');
+  sqlQuery.orderBy('survey_response.data_time');
 
   return sqlQuery;
 };

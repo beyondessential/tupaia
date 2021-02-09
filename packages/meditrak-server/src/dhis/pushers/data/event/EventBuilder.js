@@ -41,7 +41,7 @@ export class EventBuilder {
     return {
       program: programCode,
       orgUnit: orgUnitCode,
-      eventDate: this.surveyResponse.timezoneAwareSubmissionTime().format(DATE_FORMAT),
+      eventDate: this.surveyResponse.dataTime().format(DATE_FORMAT),
       dataValues: await this.buildDataValues(),
     };
   }
