@@ -5,13 +5,11 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
-import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for EditUserAccounts', async () => {
   const DEFAULT_POLICY = {
@@ -89,7 +87,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('PUT /users/:id', async () => {
@@ -98,7 +96,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         const policy = {
           DL: ['Public'],
         };
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
         const { body: result } = await app.put(`users/${userAccount1.id}`, {
           body: { email: 'barry.allen@ccpd.gov' },
         });
@@ -107,7 +105,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
       });
 
       it('Throw an exception if we do not have admin panel access to all the countries the user we are editing has access to', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`users/${userAccount2.id}`, {
           body: { email: 'hal.jordan@lantern.corp' },
         });
@@ -118,7 +116,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
 
     describe('Sufficient permissions', async () => {
       it('Allow editing of user information if we have admin panel access to all the countries the user we are editing has access to', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         await app.put(`users/${userAccount1.id}`, {
           body: { email: 'barry.allen@ccpd.gov' },
         });
@@ -128,7 +126,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
       });
 
       it('Allow editing of user information if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
-        await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+        await app.grantAccess(BES_ADMIN_POLICY);
         await app.put(`users/${userAccount2.id}`, {
           body: { email: 'hal.jordan@lantern.corp' },
         });

@@ -4,8 +4,6 @@
  */
 
 import { expect } from 'chai';
-import sinon from 'sinon';
-import { Authenticator } from '@tupaia/auth';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
@@ -29,11 +27,6 @@ const SURVEY_NAME_1 = 'Test Import Survey Response 1';
 const SURVEY_NAME_2 = 'Test Import Survey Response 2';
 const SURVEY_CODE_1 = 'TEST_IMPORT_SURVEY_RESPONSES_1_test';
 const SURVEY_CODE_2 = 'TEST_IMPORT_SURVEY_RESPONSES_2_test';
-
-const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
-  await app.authenticate();
-};
 
 export const testPermissions = async () => {
   const app = new TestableApp();
@@ -160,11 +153,11 @@ export const testPermissions = async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   it('Sufficient permissions: Should pass permissions check when importing survey responses from 1 survey', async () => {
-    await prepareStubAndAuthenticate(app);
+    await app.grantAccess(DEFAULT_POLICY);
     const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_NAME_1]);
     const { statusCode } = response;
 
@@ -172,7 +165,7 @@ export const testPermissions = async () => {
   });
 
   it('Sufficient permissions: Should pass permissions check when importing survey responses from multiple surveys', async () => {
-    await prepareStubAndAuthenticate(app);
+    await app.grantAccess(DEFAULT_POLICY);
     const response = await importFile('importResponsesFromMultipleSurveys.xlsx', [
       SURVEY_NAME_1,
       SURVEY_NAME_2,
@@ -191,7 +184,7 @@ export const testPermissions = async () => {
       TO: ['Admin'],
       LA: ['Admin'],
     };
-    await prepareStubAndAuthenticate(app, policy);
+    await app.grantAccess(policy);
     const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_NAME_1]);
 
     expectPermissionError(
@@ -209,7 +202,7 @@ export const testPermissions = async () => {
       TO: ['Admin'],
       LA: ['Admin'],
     };
-    await prepareStubAndAuthenticate(app, policy);
+    await app.grantAccess(policy);
     const response = await importFile('importResponsesFromMultipleSurveys.xlsx', [
       SURVEY_NAME_1,
       SURVEY_NAME_2,

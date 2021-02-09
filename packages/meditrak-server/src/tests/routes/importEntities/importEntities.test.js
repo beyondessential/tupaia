@@ -30,11 +30,6 @@ const BES_ADMIN_POLICY = {
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
-const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
-  await app.authenticate();
-};
-
 describe('importEntities(): POST import/entities', () => {
   const app = new TestableApp();
   const { models } = app;
@@ -65,11 +60,11 @@ describe('importEntities(): POST import/entities', () => {
     });
 
     afterEach(() => {
-      Authenticator.prototype.getAccessPolicyForUser.restore();
+      app.revokeAccess();
     });
 
     it('Sufficient permissions: Should pass permissions check when importing multiple sub national entities within 1 country if users have Tupaia Admin Panel access to that country', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const response = await importFile('sufficientPermissionsImportEntities1Country.xlsx');
       const { statusCode } = response;
 
@@ -77,7 +72,7 @@ describe('importEntities(): POST import/entities', () => {
     });
 
     it('Sufficient permissions: Should pass permissions check when importing multiple sub national entities within MULTIPLE countries if users have Tupaia Admin Panel access to all the countries of the entities', async () => {
-      await prepareStubAndAuthenticate(app);
+      await app.grantAccess(DEFAULT_POLICY);
       const response = await importFile(
         'sufficientPermissionsImportEntitiesMultipleCountries.xlsx',
       );
@@ -87,7 +82,7 @@ describe('importEntities(): POST import/entities', () => {
     });
 
     it('Sufficient permissions: Should pass permissions check when importing multiple sub national entities if users have BES Admin access to any countries', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const response = await importFile(
         'insufficientPermissionsImportEntitiesMultipleCountries.xlsx',
       );
@@ -96,7 +91,7 @@ describe('importEntities(): POST import/entities', () => {
     });
 
     it('Sufficient permissions: Should pass permissions check when importing a national entity successfully if users have BES Admin access to any countries', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const response = await importFile('importNewCountryEntity.xlsx');
       const { statusCode } = response;
 
@@ -104,7 +99,7 @@ describe('importEntities(): POST import/entities', () => {
     });
 
     it('Insufficient permissions: Should return an error when importing entities if users do not have Tupaia Admin Panel access to any country of the entities', async () => {
-      await prepareStubAndAuthenticate(app); // DEFAULT_POLICY does not have Tupaia Admin Panel access to Laos
+      await app.grantAccess(DEFAULT_POLICY); // DEFAULT_POLICY does not have Tupaia Admin Panel access to Laos
       const response = await importFile(
         'insufficientPermissionsImportEntitiesMultipleCountries.xlsx',
       );
@@ -113,7 +108,7 @@ describe('importEntities(): POST import/entities', () => {
     });
 
     it('Insufficient permissions: Should return an error when importing a new country entity and no BES Admin access to any countries', async () => {
-      await prepareStubAndAuthenticate(app);
+      await app.grantAccess(DEFAULT_POLICY);
       const response = await importFile('importNewCountryEntity.xlsx');
 
       expectPermissionError(response, /Need BES Admin/);

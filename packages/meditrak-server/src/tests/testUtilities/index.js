@@ -19,3 +19,4 @@ export {
   upsertUserEntityPermission,
 } from './database';
 export { randomEmail, randomIntBetween, randomString } from './random';
+export { setupDummySyncQueue } from './setupDummySyncQueue';

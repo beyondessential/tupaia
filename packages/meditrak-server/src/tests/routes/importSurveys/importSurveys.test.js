@@ -39,14 +39,9 @@ const NEW_TEST_SURVEY_NAME_1 = 'new_survey_import_1_test';
 const NEW_TEST_SURVEY_NAME_2 = 'new_survey_import_2_test';
 const NEW_TEST_SURVEY_NAME_3 = 'new_survey_import_3_test';
 
-const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
-  await app.authenticate();
-};
-
 describe('importSurveys(): POST import/surveys', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
   let vanuatuCountry;
   let kiribatiCountry;
 
@@ -81,7 +76,7 @@ describe('importSurveys(): POST import/surveys', () => {
           },
         );
 
-      //Questions used for all the surveys
+      // Questions used for all the surveys
       await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
       await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
 
@@ -108,14 +103,14 @@ describe('importSurveys(): POST import/surveys', () => {
     });
 
     afterEach(() => {
-      Authenticator.prototype.getAccessPolicyForUser.restore();
+      app.revokeAccess();
     });
 
     describe('Import existing surveys', async () => {
       it('Sufficient permissions - Single survey: Should pass permissions check if user has the survey permission group access to all of the survey countries', async () => {
         const fileName = 'importAnExistingSurvey.xlsx';
 
-        await prepareStubAndAuthenticate(app);
+        await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app
           .post(
@@ -130,7 +125,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Single survey: Should pass permissions check if new countries are specified and user has the survey permission group access to the new countries', async () => {
         const fileName = 'importAnExistingSurvey.xlsx';
 
-        await prepareStubAndAuthenticate(app);
+        await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app
           .post(
@@ -138,7 +133,7 @@ describe('importSurveys(): POST import/surveys', () => {
           )
           .attach('surveys', `${TEST_DATA_FOLDER}/surveys/${fileName}`);
 
-        //Revert the countryIds back to Vanuatu for other test cases
+        // Revert the countryIds back to Vanuatu for other test cases
         await models.survey.update(
           { code: EXISTING_TEST_SURVEY_NAME_1 },
           { country_ids: [vanuatuCountry.id] },
@@ -152,7 +147,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Single survey: Should pass permissions check if users have BES Admin access to any countries', async () => {
         const fileName = 'importAnExistingSurvey.xlsx';
 
-        await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+        await app.grantAccess(BES_ADMIN_POLICY);
 
         const response = await app
           .post(
@@ -167,7 +162,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Multiple surveys: Should pass permissions check if users have both [survey permission group] - [Tupaia Admin Panel] access to all of the survey countries', async () => {
         const fileName = 'importMultipleExistingSurveys.xlsx';
 
-        await prepareStubAndAuthenticate(app);
+        await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app
           .post(
@@ -182,7 +177,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Multiple surveys: Should pass permissions check if users have BES Admin access to any countries', async () => {
         const fileName = 'importMultipleExistingSurveys.xlsx';
 
-        await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+        await app.grantAccess(BES_ADMIN_POLICY);
 
         const response = await app
           .post(
@@ -199,12 +194,12 @@ describe('importSurveys(): POST import/surveys', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/], //No Admin access to Vanuatu => throw permission error
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */], // No Admin access to Vanuatu => throw permission error
           LA: ['Admin'],
         };
         const fileName = 'importAnExistingSurvey.xlsx';
 
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
 
         const response = await app
           .post(
@@ -218,14 +213,14 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Insufficient permissions - Single survey: Should not pass permissions check if new countries are specified and users do not have the Tupaia Admin Panel access to the new countries', async () => {
         const policy = {
           DL: ['Public'],
-          KI: [/*TUPAIA_ADMIN_PANEL_PERMISSION_GROUP*/ 'Admin', 'Public'], //No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
+          KI: [/* TUPAIA_ADMIN_PANEL_PERMISSION_GROUP */ 'Admin', 'Public'], // No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
           VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
           LA: ['Admin'],
         };
         const fileName = 'importAnExistingSurvey.xlsx';
 
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
 
         const response = await app
           .post(
@@ -242,11 +237,11 @@ describe('importSurveys(): POST import/surveys', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/], //Will not have Admin access to Vanuatu => throw permission error
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */], // Will not have Admin access to Vanuatu => throw permission error
           LA: ['Admin'],
         };
 
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
 
         const response = await app
           .post(
@@ -263,11 +258,11 @@ describe('importSurveys(): POST import/surveys', () => {
           DL: ['Public'],
           KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/], //No Admin access to Vanuatu => throw permission error
+          VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */], // No Admin access to Vanuatu => throw permission error
           LA: ['Admin'],
         };
 
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
 
         const response = await app
           .post(
@@ -283,7 +278,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Single Survey: Should pass permissions user have Tupaia Admin Panel access to the specified countries of the new survey', async () => {
         const fileName = 'importANewSurvey.xlsx';
 
-        await prepareStubAndAuthenticate(app);
+        await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app
           .post(
@@ -298,7 +293,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Multiple new Surveys: Should pass permissions user have Tupaia Admin Panel access to the specified countries of the new surveys', async () => {
         const fileName = 'importMultipleNewSurveys.xlsx';
 
-        await prepareStubAndAuthenticate(app);
+        await app.grantAccess(DEFAULT_POLICY);
 
         const response = await app
           .post(
@@ -313,7 +308,7 @@ describe('importSurveys(): POST import/surveys', () => {
       it('Sufficient permissions - Multiple new Surveys: Should pass permissions check if user has BES Admin access to any countries', async () => {
         const fileName = 'importMultipleNewSurveys.xlsx';
 
-        await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+        await app.grantAccess(BES_ADMIN_POLICY);
 
         const response = await app
           .post(
@@ -329,13 +324,13 @@ describe('importSurveys(): POST import/surveys', () => {
         const fileName = 'importMultipleNewSurveys.xlsx';
         const policy = {
           DL: ['Public'],
-          KI: [/*TUPAIA_ADMIN_PANEL_PERMISSION_GROUP*/ 'Admin', 'Public'], //No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
+          KI: [/* TUPAIA_ADMIN_PANEL_PERMISSION_GROUP */ 'Admin', 'Public'], // No Tupaia Admin Panel access to newCountry Kiribati => throw permission error
           SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
           VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
           LA: ['Admin'],
         };
 
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
 
         const response = await app
           .post(

@@ -31,11 +31,6 @@ const TEST_SURVEY_1_NAME = 'Export Survey SR 1';
 const TEST_SURVEY_2_CODE = 'TEST_SURVEY_EXPORT_SURVEY_RESPONSES_2';
 const TEST_SURVEY_2_NAME = 'Export Survey SR 2';
 
-const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
-  await app.authenticate();
-};
-
 const expectAccessibleExportDataHeaderRow = exportData => {
   expect(exportData.length).to.be.greaterThan(1);
   const headerRow = exportData[0];
@@ -137,13 +132,13 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     });
 
     afterEach(() => {
-      Authenticator.prototype.getAccessPolicyForUser.restore();
+      app.revokeAccess();
       xlsx.utils.aoa_to_sheet.resetHistory();
     });
 
     describe('Should allow exporting a survey if users have Tupaia Admin Panel and survey permission group access to the corresponding countries', () => {
       it('one survey', async () => {
-        await prepareStubAndAuthenticate(app);
+        await app.grantAccess(DEFAULT_POLICY);
         await app.get(
           `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
         );
@@ -155,7 +150,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       });
 
       it('multiple surveys', async () => {
-        await prepareStubAndAuthenticate(app);
+        await app.grantAccess(DEFAULT_POLICY);
         await app.get(
           `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
         );
@@ -180,7 +175,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           LA: ['Admin'],
         };
 
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
         await app.get(
           `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
         );
@@ -201,7 +196,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           LA: ['Admin'],
         };
 
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
         await app.get(
           `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
         );

@@ -12,7 +12,6 @@ import {
 import { Authenticator } from '@tupaia/auth';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETDashboardGroups', async () => {
   const DEFAULT_POLICY = {
@@ -140,19 +139,19 @@ describe('Permissions checker for GETDashboardGroups', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /dashboardGroups/:id', async () => {
     it('Sufficient permissions: Should return a requested dashboard group if users have access to the country of the dashboard group', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardGroups/${nationalDashboardGroup1.id}`);
 
       expect(result.id).to.equal(nationalDashboardGroup1.id);
     });
 
     it('Sufficient permissions: Should return a requested project level dashboard group if users have access to any of their child countries', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardGroups/${projectLevelDashboardGroup.id}`);
 
       expect(result.id).to.equal(projectLevelDashboardGroup.id);
@@ -168,7 +167,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         LA: ['Admin', 'Public'],
         TO: ['Admin'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardGroups/${facilityDashboardGroup1.id}`);
 
       expect(result).to.have.keys('error');
@@ -184,7 +183,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         LA: [/* 'Admin' */ 'Public'],
         TO: [/* 'Admin' */ 'Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardGroups/${projectLevelDashboardGroup.id}`);
 
       expect(result).to.have.keys('error');
@@ -201,7 +200,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
         LA: ['Admin'],
         TO: ['Admin'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboardGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
@@ -211,7 +210,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
     });
 
     it('Sufficient permissions: Should return the full list of dashboard groups if we have BES Admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`dashboardGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
@@ -227,7 +226,7 @@ describe('Permissions checker for GETDashboardGroups', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboardGroups?${filterString}`);
 
       expect(results).to.be.empty;

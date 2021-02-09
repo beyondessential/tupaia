@@ -5,11 +5,9 @@
 
 import { expect } from 'chai';
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import { resetTestData } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETSurveyGroups', async () => {
   const DEFAULT_POLICY = {
@@ -87,12 +85,12 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /surveyGroups/:id', async () => {
     it('Sufficient permissions: Should return a requested survey group that users have access to any of the surveys within the groups', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyGroups/${surveyGroup1.id}`);
 
       expect(result.id).to.equal(surveyGroup1.id);
@@ -107,7 +105,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         LA: ['Admin'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`surveyGroups/${surveyGroup1.id}`);
 
       expect(result).to.have.keys('error');
@@ -116,7 +114,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
 
   describe('GET /surveyGroups', async () => {
     it('Sufficient permissions: Should return all survey groups the user has permission to', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
@@ -131,14 +129,14 @@ describe('Permissions checker for GETSurveyGroups', async () => {
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         LA: ['Admin'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup2.id]);
     });
 
     it('Sufficient permissions: Should return all survey groups if the user has BES admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
@@ -148,7 +146,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
       expect(results).to.be.empty;

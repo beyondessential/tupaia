@@ -12,7 +12,6 @@ import {
 import { Authenticator } from '@tupaia/auth';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETDashboardReports', async () => {
   const DEFAULT_POLICY = {
@@ -183,26 +182,26 @@ describe('Permissions checker for GETDashboardReports', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /dashboardReports/:id', async () => {
     it('Sufficient permissions: Should return requested dashboard reports contained in SUB NATIONAL dashboard groups that users have access to their countries', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardReports/${districtReport1.id}`);
 
       expect(result.id).to.equal(districtReport1.id);
     });
 
     it('Sufficient permissions: Should return requested dashboard reports contained in NATIONAL dashboard groups that users have access to their countries', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardReports/${nationalReport1.id}`);
 
       expect(result.id).to.equal(nationalReport1.id);
     });
 
     it('Sufficient permissions: Should return requested dashboard reports contained in project level dashboard groups that users have access to any of their child countries', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardReports/${projectLevelDashboard.id}`);
 
       expect(result.id).to.equal(projectLevelDashboard.id);
@@ -218,7 +217,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
         LA: ['Admin'],
         TO: ['Admin'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardReports/${districtReport1.id}`);
 
       expect(result).to.have.keys('error');
@@ -234,7 +233,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
         // LA: ['Admin'],
         TO: ['Admin'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardReports/${nationalReport3.id}`);
 
       expect(result).to.have.keys('error');
@@ -250,7 +249,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
         LA: ['Admin'],
         TO: [/* 'Admin' */ 'Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardReports/${projectLevelDashboard.id}`);
 
       expect(result).to.have.keys('error');
@@ -259,7 +258,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
 
   describe('GET /dashboardReports', async () => {
     it('Sufficient permissions: Should return all dashboard reports that users have access to', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`dashboardReports?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
@@ -272,7 +271,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
     });
 
     it('Sufficient permissions: Should return all dashboard reports if the user has BES Admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`dashboardReports?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
@@ -288,7 +287,7 @@ describe('Permissions checker for GETDashboardReports', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboardReports?${filterString}`);
 
       expect(results).to.be.empty;

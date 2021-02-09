@@ -5,13 +5,11 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../TestableApp';
-import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for EditAccessRequests', async () => {
   const DEFAULT_POLICY = {
@@ -76,7 +74,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('PUT /accessRequests/:id', async () => {
@@ -85,7 +83,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
         const policy = {
           DL: ['Public'],
         };
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
         const { body: result } = await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: { approved: true },
         });
@@ -94,7 +92,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
       });
 
       it('Throw an exception if we do not have admin panel access to the entity of the access request are editing', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${laosPublicRequest.id}`, {
           body: { approved: true },
         });
@@ -103,7 +101,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
       });
 
       it('Throw an exception when trying to edit an access request to point to an entity we lack permission for', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: {
             approved: true,
@@ -115,7 +113,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
       });
 
       it('Throw an exception when trying to approve a BES Admin request as a non BES Admin user', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${kiribatiBESRequest.id}`, {
           body: {
             approved: true,
@@ -126,7 +124,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
       });
 
       it('Throw an exception when trying to edit an access request to point to BES Admin permission group', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: {
             approved: true,
@@ -140,7 +138,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
 
     describe('Sufficient permissions', async () => {
       it('Edit an access request if we have admin panel access to the entity the request is for', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: { approved: true },
         });
@@ -150,7 +148,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
       });
 
       it('Edit any access request as BES Admin', async () => {
-        await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+        await app.grantAccess(BES_ADMIN_POLICY);
         await app.put(`accessRequests/${kiribatiBESRequest.id}`, {
           body: { approved: true },
         });
@@ -165,7 +163,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
         // Exactly the same as the sufficient permissions check
         // Most of the time, this is still approved from the previous check
         // But redoing it here allows this unit test to run in isolation
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
           body: { approved: true },
         });

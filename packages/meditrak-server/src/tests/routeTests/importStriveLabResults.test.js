@@ -4,7 +4,6 @@
  */
 
 import { expect } from 'chai';
-import sinon from 'sinon';
 import { Authenticator } from '@tupaia/auth';
 
 import {
@@ -101,11 +100,6 @@ const fetchCreatedResponseRecords = async models =>
 const fetchCreatedAnswerRecords = async (models, surveyResponseId) =>
   models.answer.find({ survey_response_id: surveyResponseId });
 
-const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
-  await app.authenticate();
-};
-
 describe('POST /import/striveLabResults', async () => {
   const app = new TestableApp();
   const { models } = app;
@@ -123,7 +117,7 @@ describe('POST /import/striveLabResults', async () => {
       permission_group_id: publicPermissionGroup.id,
     };
 
-    await prepareStubAndAuthenticate(app);
+    await app.grantAccess(DEFAULT_POLICY);
     await buildAndInsertSurveys(models, [survey]);
     await createEntities(models);
 
@@ -131,7 +125,7 @@ describe('POST /import/striveLabResults', async () => {
   });
 
   after(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   it('should respond with a successful http status', () => {
