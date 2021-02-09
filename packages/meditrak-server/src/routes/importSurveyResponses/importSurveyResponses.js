@@ -27,6 +27,8 @@ import {
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
+// used to strip the tz suffix so that a date can be added to the database without converting to utc
+// we don't want any timezone conversions when working with data_time
 const ISO_DATE_FORMAT_WITHOUT_TZ = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
 /**
