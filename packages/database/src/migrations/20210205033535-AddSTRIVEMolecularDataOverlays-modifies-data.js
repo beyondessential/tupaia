@@ -41,97 +41,37 @@ const BASE_OVERLAY = {
   projectCodes: '{strive,explore}',
 };
 
-const STR_QMAL05_OVERLAY = {
-  ...BASE_OVERLAY,
-  id: generateId(),
-  name: 'QMAL Positive',
-  measureBuilderConfig: {
-    dataValues: {
-      STR_QMAL05: 1,
-    },
-    programCode: 'SQMAL',
-    entityAggregation: {
-      aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-      dataSourceEntityType: 'village',
-      aggregationEntityType: 'facility',
-    },
-  },
-};
-
-const STR_PF05_OVERLAY = {
-  ...BASE_OVERLAY,
-  id: generateId(),
-  name: 'PCR Pf Positive',
-  measureBuilderConfig: {
-    dataValues: {
-      STR_PF05: 1,
-    },
-    programCode: 'SPF',
-    entityAggregation: {
-      aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-      dataSourceEntityType: 'village',
-      aggregationEntityType: 'facility',
-    },
-  },
-};
-
-const STR_PV05_OVERLAY = {
-  ...BASE_OVERLAY,
-  id: generateId(),
-  name: 'PCR Pv Positive',
-  measureBuilderConfig: {
-    dataValues: {
-      STR_PV05: 1,
-    },
-    programCode: 'SPV',
-    entityAggregation: {
-      aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-      dataSourceEntityType: 'village',
-      aggregationEntityType: 'facility',
-    },
-  },
-};
-
-const STR_PM05_OVERLAY = {
-  ...BASE_OVERLAY,
-  id: generateId(),
-  name: 'PCR Pm Positive',
-  measureBuilderConfig: {
-    dataValues: {
-      STR_PM05: 1,
-    },
-    programCode: 'SPM',
-    entityAggregation: {
-      aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-      dataSourceEntityType: 'village',
-      aggregationEntityType: 'facility',
-    },
-  },
-};
-
-const STR_PO05_OVERLAY = {
-  ...BASE_OVERLAY,
-  id: generateId(),
-  name: 'PCR Po Positive',
-  measureBuilderConfig: {
-    dataValues: {
-      STR_PO05: 1,
-    },
-    programCode: 'SPO',
-    entityAggregation: {
-      aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-      dataSourceEntityType: 'village',
-      aggregationEntityType: 'facility',
-    },
-  },
-};
-
 const OVERLAYS_TO_IMPORT = [
-  STR_QMAL05_OVERLAY,
-  STR_PF05_OVERLAY,
-  STR_PV05_OVERLAY,
-  STR_PM05_OVERLAY,
-  STR_PO05_OVERLAY,
+  {
+    id: 'STR_QMAL05_POSITIVE',
+    name: 'QMAL Positive',
+    dataElementCode: 'STR_QMAL05',
+    programCode: 'SQMAL',
+  },
+  {
+    id: 'STR_PF05_POSITIVE',
+    name: 'PCR Pf Positive',
+    dataElementCode: 'STR_PF05',
+    programCode: 'SPF',
+  },
+  {
+    id: 'STR_PV05_POSITIVE',
+    name: 'PCR Pv Positive',
+    dataElementCode: 'STR_PV05',
+    programCode: 'SPV',
+  },
+  {
+    id: 'STR_PM05_POSITIVE',
+    name: 'PCR Pm Positive',
+    dataElementCode: 'STR_PM05',
+    programCode: 'SPM',
+  },
+  {
+    id: 'STR_PO05_POSITIVE',
+    name: 'PCR Po Positive',
+    dataElementCode: 'STR_PO05',
+    programCode: 'SPO',
+  },
 ];
 
 exports.up = async function (db) {
@@ -139,15 +79,32 @@ exports.up = async function (db) {
      SELECT "id" FROM "map_overlay_group" WHERE "code" = 'STRIVE_Molecular_Data';
   `);
 
-  OVERLAYS_TO_IMPORT.forEach(overlay => {
-    const MAP_OVERLAY_RELATION_ID = generateId();
-
+  OVERLAYS_TO_IMPORT.forEach(({ id, name, dataElementCode, programCode }) => {
+    const overlay = {
+      ...BASE_OVERLAY,
+      id,
+      name,
+      measureBuilderConfig: {
+        dataValues: {
+          [dataElementCode]: 1,
+        },
+        programCode,
+        entityAggregation: {
+          aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
+          dataSourceEntityType: 'village',
+          aggregationEntityType: 'facility',
+        },
+      },
+    };
+    const relationship = {
+      id: generateId(),
+      map_overlay_group_id: `${STRIVE_MOLECULAR_DATA_ID.rows[0].id}`,
+      child_id: `${overlay.id}`,
+      child_type: 'mapOverlay',
+      sort_order: '0',
+    };
     insertObject(db, 'mapOverlay', overlay);
-
-    db.runSql(`
-    INSERT INTO "map_overlay_group_relation" ("id", "map_overlay_group_id", "child_id", "child_type", "sort_order")
-    VALUES ('${MAP_OVERLAY_RELATION_ID}', '${STRIVE_MOLECULAR_DATA_ID.rows[0].id}', '${overlay.id}', 'mapOverlay', '0');
-    `);
+    insertObject(db, 'map_overlay_group_relation', relationship);
   });
 };
 
@@ -157,16 +114,12 @@ exports.down = async function (db) {
   `);
 
   OVERLAYS_TO_IMPORT.forEach(async overlay => {
-    const OVERLAY_ID_TO_DELETE = await db.runSql(`
-      SELECT "id" FROM "mapOverlay" WHERE "name" = '${overlay.name}';
-    `);
-
     await db.runSql(`
-      DELETE FROM "mapOverlay" WHERE "id"='${OVERLAY_ID_TO_DELETE.rows[0].id}';
+      DELETE FROM "mapOverlay" WHERE "id"='${overlay.id}';
 
       DELETE FROM "map_overlay_group_relation"
       WHERE "map_overlay_group_id" = '${STRIVE_MOLECULAR_DATA_ID.rows[0].id}'
-      AND "child_id" ='${OVERLAY_ID_TO_DELETE.rows[0].id}';
+      AND "child_id" ='${overlay.id}';
     `);
   });
 };
