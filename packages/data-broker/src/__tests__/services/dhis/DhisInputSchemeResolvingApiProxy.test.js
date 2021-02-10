@@ -111,5 +111,22 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
         rows: [['ORG1', 'dhisId_ou1', '7.1']],
       });
     });
+
+    it('should be able to swap orgUnit ids that were not fetched', async () => {
+      const response = await proxy.getEventAnalytics({
+        dataElementCodes: ['EL1', 'EL2'],
+        organisationUnitCodes: ['SOME_PARENT_ORG_UNIT'],
+        programCode: 'G1',
+      });
+      await expect(api.getEventAnalytics).toHaveBeenCalledOnceWith({
+        dataElementIdScheme: 'id',
+        dataElementIds: ['dhisId_el1', 'dhisId_el2'],
+        organisationUnitCodes: ['SOME_PARENT_ORG_UNIT'],
+        programId: 'dhisId_g1',
+      });
+      await expect(response).toMatchObject({
+        rows: [['ORG1', 'dhisId_ou1', '7.1']],
+      });
+    });
   });
 });
