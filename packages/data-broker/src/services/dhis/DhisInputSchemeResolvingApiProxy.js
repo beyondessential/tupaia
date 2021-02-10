@@ -68,14 +68,7 @@ export class DhisInputSchemeResolvingApiProxy {
       );
     }
 
-    if (modifyOrgUnitsToUseDhisId) {
-      const { organisationUnitCode, organisationUnitCodes } = query;
-      const orgUnitCodes = organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes;
-      translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(
-        translatedResponse,
-        orgUnitCodes,
-      );
-    }
+    translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(translatedResponse);
 
     return translatedResponse;
   }
@@ -217,24 +210,31 @@ export class DhisInputSchemeResolvingApiProxy {
    * @returns {*}
    * @private
    */
-  translateOrgUnitIdsToCodesInResponse = async (response, orgUnitCodes) => {
-    const newRows = [...response.rows];
+  translateOrgUnitIdsToCodesInResponse = async response => {
+    const newRows = [];
 
     const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
     const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
 
-    const mappings = await this.models.dataServiceEntity.find({ entity_code: orgUnitCodes });
+    const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
 
-    let i = 0;
-    for (const row of newRows) {
+    const mappings = await this.models.dataServiceEntity.find({
+      _raw_: {
+        sql: `config->>'dhis_id' in (${dhisIds.map(() => '?')})`,
+        parameters: dhisIds,
+      },
+    });
+
+    for (const row of response.rows) {
+      const newRow = [...row];
       const dhisId = row[orgUnitIdIndex];
       const mapping = mappings.find(m => m.config.dhis_id === dhisId);
-      if (i < 3) console.log(row, dhisId, mappings);
-      row[orgUnitCodeIndex] = mapping.entity_code;
-      i += 1;
+      if (!mapping) continue;
+      newRow[orgUnitCodeIndex] = mapping.entity_code;
+      newRows.push(newRow);
     }
 
-    return response;
+    return { ...response, rows: newRows };
   };
 
   /**
