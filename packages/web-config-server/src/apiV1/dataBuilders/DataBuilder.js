@@ -46,7 +46,7 @@ export class DataBuilder {
     dataElementCodes,
     additionalQueryConfig,
     aggregationType = this.aggregationType,
-    aggregationConfig = {},
+    aggregationConfig = this.config.aggregationConfig,
   ) {
     const { dataServices, entityAggregation, dataSourceEntityFilter, filter = {} } = this.config;
     const fetchOptions = {
