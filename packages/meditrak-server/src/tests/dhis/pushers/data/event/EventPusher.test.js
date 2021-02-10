@@ -9,9 +9,8 @@ import sinon from 'sinon';
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
 import { EventPusher } from '../../../../../dhis/pushers/data/event/EventPusher';
 import { EventBuilder } from '../../../../../dhis/pushers/data/event/EventBuilder';
-import { resetTestData } from '../../../../testUtilities';
+import { getModels, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
-import { getModels } from '../../../../getModels';
 import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
 import {
   BASELINE_TEST_DATA,
