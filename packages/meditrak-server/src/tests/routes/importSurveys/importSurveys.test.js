@@ -9,7 +9,7 @@ import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
-import { resetTestData, TestableApp } from '../../testUtilities';
+import { resetTestData, upsertQuestion, TestableApp } from '../../testUtilities';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
@@ -60,7 +60,7 @@ describe('importSurveys(): POST import/surveys', () => {
       }));
 
       const addQuestion = (id, type) =>
-        findOrCreateDummyRecord(
+        upsertQuestion(
           models.question,
           {
             code: id,

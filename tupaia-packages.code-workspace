@@ -142,6 +142,10 @@
     "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {
       "packages/": true
+    },
+    "search.exclude": {
+      "**/logfile*.log": true,
+      "**/yarn-1.18.0.js": true
     }
   },
   "extensions": {

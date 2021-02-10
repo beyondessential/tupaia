@@ -9,6 +9,8 @@ import { reduceToDictionary } from '@tupaia/utils';
 class QuestionType extends DatabaseType {
   static databaseType = TYPES.QUESTION;
 
+  dataElement = async () => this.otherModels.dataSource.findById(this.data_source_id);
+
   async getSurveyIds() {
     const surveyScreens = await this.database.executeSql(
       `

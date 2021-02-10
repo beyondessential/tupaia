@@ -68,21 +68,49 @@ describe('DataBroker', () => {
   });
 
   describe('pull()', () => {
-    it('should throw an error if no existing code is provided', async () =>
-      Promise.all(
+    describe('input validation', () => {
+      const testData = [
+        ['empty object', {}, 'Please provide at least one existing data source code'],
         [
-          {},
+          'no `code` field',
           { type: 'dataElement' },
+          'Please provide at least one existing data source code',
+        ],
+        [
+          'code is empty string',
           { code: '' },
+          'Please provide at least one existing data source code',
+        ],
+        [
+          'code is empty array',
           { code: [] },
-          { code: 'NON_EXISTING' },
-          { code: ['NON_EXISTING1', 'NON_EXISTING2'] },
-        ].map(dataSourceSpec =>
-          expect(new DataBroker().pull(dataSourceSpec, options)).toBeRejectedWith(
-            /Please provide .*data source/,
-          ),
-        ),
-      ));
+          'Please provide at least one existing data source code',
+        ],
+        [
+          "data element doesn't exist",
+          { code: 'NON_EXISTING', type: 'dataElement' },
+          'None of the following data elements exist: NON_EXISTING',
+        ],
+        [
+          "data group doesn't exist",
+          { code: 'NON_EXISTING', type: 'dataGroup' },
+          'None of the following data groups exist: NON_EXISTING',
+        ],
+        [
+          'multiple codes, none exists',
+          { code: ['NON_EXISTING1', 'NON_EXISTING2'], type: 'dataElement' },
+          'None of the following data elements exist: NON_EXISTING1,NON_EXISTING2',
+        ],
+      ];
+
+      it.each(testData)('%s', async (_, dataSourceSpec, expectedError) =>
+        expect(new DataBroker().pull(dataSourceSpec)).toBeRejectedWith(expectedError),
+      );
+
+      it('does not throw if at least one code exists', () => {
+        expect(new DataBroker().pull({ code: ['TEST_01', 'NON_EXISTING'] })).toResolve();
+      });
+    });
 
     describe('analytics', () => {
       const assertServicePulledDataElementsOnce = (service, dataElements) =>

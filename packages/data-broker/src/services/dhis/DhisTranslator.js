@@ -98,29 +98,22 @@ export class DhisTranslator {
 
   translateOutboundDataValues = async (api, dataValues, dataSources) => {
     // prefetch options and types for unique data element codes so that DHIS2 doesn't get overwhelmed
+    const dataSourcesByCode = keyBy(dataSources, 'code');
     const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
-    return dataSources.map((dataSource, i) =>
-      this.translateOutboundDataValue(
-        dataValues[i],
-        dataSource,
-        dataElementsByCode[dataSource.dataElementCode],
-      ),
-    );
+    return dataValues.map(dataValue => {
+      const dataSource = dataSourcesByCode[dataValue.code];
+      const dataElement = dataElementsByCode[dataSource.dataElementCode];
+      return this.translateOutboundDataValue(dataValue, dataSource, dataElement);
+    });
   };
 
   async translateOutboundEventDataValues(api, dataValues) {
-    const dataSources = await this.models.dataSource.findOrDefault({
+    const dataSources = await this.models.dataSource.find({
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
     const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
-    const outboundDataValues = dataSources.map((dataSource, i) =>
-      this.translateOutboundDataValue(
-        dataValues[i],
-        dataSource,
-        dataElementsByCode[dataSource.dataElementCode],
-      ),
-    );
+    const outboundDataValues = await this.translateOutboundDataValues(api, dataValues, dataSources);
     const dataValuesWithIds = outboundDataValues.map(({ dataElement: dataElementCode, value }) => {
       const dataElement = dataElementsByCode[dataElementCode];
       if (!dataElement) {
