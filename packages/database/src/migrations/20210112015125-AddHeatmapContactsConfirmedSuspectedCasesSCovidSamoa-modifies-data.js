@@ -36,7 +36,7 @@ async function deleteMapOverlayInMapOverlayGroupRelation(db, childId) {
 
 const mapOverlay = {
   id: 'COVID_WS_Address_Contacts_Of_Suspected_And_Confirmed_Cases',
-  name: 'WIP Home village of contacts of suspected/confirmed cases',
+  name: 'Home village of contacts of suspected/confirmed cases',
   userGroup: 'COVID-19 Senior',
   dataElementCode: 'value',
   measureBuilderConfig: {
