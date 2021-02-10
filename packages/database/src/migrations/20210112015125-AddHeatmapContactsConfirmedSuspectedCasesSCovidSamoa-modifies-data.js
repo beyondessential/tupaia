@@ -35,20 +35,19 @@ async function deleteMapOverlayInMapOverlayGroupRelation(db, childId) {
 }
 
 const mapOverlay = {
-  id: 'COVID_WS_Address_Contacts_Of_Suspected_And_Confirmed_Cases_WS',
-  name: 'Home village of contacts of suspected/confirmed cases',
-  userGroup: 'Donor',
+  id: 'COVID_WS_Address_Contacts_Of_Suspected_And_Confirmed_Cases',
+  name: 'WIP Home village of contacts of suspected/confirmed cases',
+  userGroup: 'COVID-19 Senior',
   dataElementCode: 'value',
   measureBuilderConfig: {
     dataValues: {
       WS_CD_CT_Contact_12: '*',
-      WS_CD_CT_Contact_06: '1. Visit 1',
     },
-    programCode: 'SC1CT',
+    programCode: 'SC1CT1V',
     dataSourceType: 'custom',
     entityAggregation: {
       aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
-      dataSourceEntityType: 'case',
+      dataSourceEntityType: 'individual',
       aggregationEntityType: 'village',
     },
   },
@@ -67,10 +66,10 @@ const mapOverlay = {
 
 exports.up = async function (db) {
   await insertObject(db, 'mapOverlay', mapOverlay);
-  const MapOverLayGroupId = await codeToId(db, 'map_overlay_group', 'COVID19_Samoa');
+  const mapOverLayGroupId = await codeToId(db, 'map_overlay_group', 'COVID19_Samoa');
   await insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
-    map_overlay_group_id: MapOverLayGroupId,
+    map_overlay_group_id: mapOverLayGroupId,
     child_id: mapOverlay.id,
     child_type: 'mapOverlay',
   });
