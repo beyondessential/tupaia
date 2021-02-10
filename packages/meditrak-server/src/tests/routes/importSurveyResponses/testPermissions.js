@@ -143,7 +143,7 @@ export const testPermissions = async () => {
           assessor_name: 'Test',
           start_time: new Date(),
           end_time: new Date(),
-          submission_date: new Date(),
+          date_time: new Date(),
         },
       );
 

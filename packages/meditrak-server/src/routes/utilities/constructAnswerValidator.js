@@ -35,6 +35,7 @@ export function constructAnswerValidator(models, question) {
     PHOTO,
     RADIO,
     DATE,
+    DATE_OF_DATA,
     DAYS_SINCE,
     MONTHS_SINCE,
     YEARS_SINCE,
@@ -54,6 +55,7 @@ export function constructAnswerValidator(models, question) {
     case MONTHS_SINCE:
     case YEARS_SINCE:
       return [constructIsEmptyOr(isNumber)];
+    case DATE_OF_DATA:
     case SUBMISSION_DATE:
     case DATE:
       return [constructIsEmptyOr(takesDateForm)];

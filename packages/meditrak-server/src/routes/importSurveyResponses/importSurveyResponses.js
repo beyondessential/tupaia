@@ -181,9 +181,12 @@ export async function importSurveyResponses(req, res) {
                   survey_response_id: surveyResponseId,
                   question_id: questionId,
                 });
-              } else if (rowType === ANSWER_TYPES.SUBMISSION_DATE) {
-                // Don't save an answer for submission date rows, instead update the submission date
-                // of the survey response. Note that this will override what is in the Date info row
+              } else if (
+                rowType === ANSWER_TYPES.DATE_OF_DATA ||
+                rowType === ANSWER_TYPES.SUBMISSION_DATE
+              ) {
+                // Don't save an answer for date of data rows, instead update the date_time of the
+                // survey response. Note that this will override what is in the Date info row
                 await updateSubmissionTimeIfRequired(
                   transactingModels,
                   surveyResponseId,
