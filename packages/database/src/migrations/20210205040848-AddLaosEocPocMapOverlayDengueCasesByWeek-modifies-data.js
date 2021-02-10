@@ -28,15 +28,23 @@ const MAP_OVERLAY = {
   dataElementCode: 'NCLE_Disease_Name',
   userGroup: 'Laos EOC User',
   measureBuilderConfig: {
-    condition: {
-      value: ['7.1', '7.2', '7.3'],
-      operator: 'in',
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataSourceType: 'custom',
+    aggregationType: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
+    dataElementCode: 'NCLE_Disease_Name',
+    aggregationConfig: {
+      condition: {
+        value: ['7.1', '7.2', '7.3'],
+        operator: 'in',
+      },
     },
     entityAggregation: {
-      dataSourceEntityType: 'district',
+      dataSourceEntityType: 'facility',
+      aggregationEntityType: 'district',
     },
   },
-  measureBuilder: 'checkConditions',
+  isDataRegional: false,
+  measureBuilder: 'valueForOrgGroup',
   presentationOptions: {
     scaleType: 'performanceDesc',
     valueType: 'number',
