@@ -17,6 +17,7 @@ import {
   UploadError,
 } from '@tupaia/utils';
 import { getArrayQueryParameter, extractTabNameFromQuery } from '../utilities';
+import { stripTimezoneFromDate } from '../../utilities';
 import { ANSWER_TYPES } from '../../database/models/Answer';
 import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
 import {
@@ -26,10 +27,6 @@ import {
 } from '../exportSurveyResponses';
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-
-// used to strip the tz suffix so that a date can be added to the database without converting to utc
-// we don't want any timezone conversions when working with data_time
-const ISO_DATE_FORMAT_WITHOUT_TZ = 'YYYY-MM-DDTHH:mm:ss.SSS';
 
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
@@ -92,7 +89,7 @@ export async function importSurveyResponses(req, res) {
                   entity_id: entity.id,
                   start_time: surveyDate,
                   end_time: surveyDate,
-                  data_time: moment(surveyDate).format(ISO_DATE_FORMAT_WITHOUT_TZ),
+                  data_time: stripTimezoneFromDate(surveyDate),
                 });
                 newSurveyResponseIds[columnIndex] = newSurveyResponse.id;
               } else {
@@ -269,7 +266,7 @@ async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmi
 
   if (!moment(currentDataTime).isSame(newDataTime, 'minute')) {
     await models.surveyResponse.updateById(surveyResponseId, {
-      data_time: newDataTime.format(ISO_DATE_FORMAT_WITHOUT_TZ),
+      data_time: stripTimezoneFromDate(newDataTime),
     });
   }
 }

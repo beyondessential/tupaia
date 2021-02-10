@@ -3,11 +3,11 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
 import { getEntityIdFromClinicId } from '../database/utilities';
+import { stripTimezoneFromDate } from '../utilities';
 
 async function saveAnswer(models, answer, surveyResponseId) {
   const answerDocument = {
@@ -74,7 +74,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     const dataTime = suppliedDataTime || submissionTime || endTime;
 
     // Strip data_time of any timezone suffix, so it isn't converted to UTC when added to the db
-    surveyResponseProperties.data_time = moment(dataTime).format(ISO_DATE_FORMAT_WITHOUT_TZ);
+    surveyResponseProperties.data_time = stripTimezoneFromDate(dataTime);
 
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {
