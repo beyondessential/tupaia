@@ -9,13 +9,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   const tongaDataSourceMapping = (
     await db.runSql(`
       SELECT data_element.id AS data_element_id, data_group.id AS data_group_id
@@ -25,7 +25,7 @@ exports.up = async function(db) {
       JOIN survey ON survey_screen.survey_id = survey.id
       JOIN data_source AS data_group ON survey.code = data_group.code AND data_group.type = 'dataGroup'
       JOIN data_source AS data_element ON question.code = data_element.code AND data_element.type = 'dataElement'
-      WHERE question.type NOT IN ('Instruction', 'SubmissionDate', 'PrimaryEntity')
+      WHERE question.type NOT IN ('Instruction', 'SubmissionDate', 'DateOfData', 'PrimaryEntity')
       AND (survey.can_repeat = TRUE OR survey.code IN ('CD3a', 'CD3b', 'SCRF')); -- event based surveys
   `)
   ).rows;
@@ -39,7 +39,7 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
     TRUNCATE TABLE data_element_data_group;
   `);

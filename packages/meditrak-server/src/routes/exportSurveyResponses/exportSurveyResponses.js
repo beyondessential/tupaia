@@ -157,12 +157,7 @@ export async function exportSurveyResponses(req, res) {
           if (startDate && endDate) {
             surveyResponseFindConditions.data_time = {
               comparisonType: 'whereBetween',
-              args: [
-                [
-                  new Date(moment(startDate)),
-                  new Date(moment(endDate)),
-                ],
-              ],
+              args: [[new Date(moment(startDate)), new Date(moment(endDate))]],
             };
           } else if (startDate) {
             surveyResponseFindConditions.data_time = {
@@ -226,7 +221,7 @@ export async function exportSurveyResponses(req, res) {
         exportData.unshift([`${reportName} - ${currentSurvey.name}, ${country.name}`]);
       }
 
-      // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
+      // Exclude 'SubmissionDate'/'DateOfData' and 'PrimaryEntity' rows from survey response export since these have no answers
       const questionsForExport = questions.filter(
         ({ type: questionType }) =>
           !NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType) ||

@@ -102,6 +102,7 @@ describe('surveyResponse endpoint', () => {
           { code: questionCode('Photo'), type: 'Photo' },
           { code: questionCode('Radio'), type: 'Radio', options: ['RadioA', 'RadioB'] },
           { code: questionCode('SubmissionDate'), type: 'SubmissionDate' },
+          { code: questionCode('DateOfData'), type: 'DateOfData' },
         ],
       },
     ]);
@@ -472,7 +473,7 @@ describe('surveyResponse endpoint', () => {
           answers: {
             [questionCode('Binary')]: 'Yes',
             [questionCode('Date')]: '2019-01-01',
-            [questionCode('SubmissionDate')]: '2019-02-02',
+            [questionCode('DateOfData')]: '2019-02-02',
 
             [questionCode('Instruction')]: '',
             [questionCode('Number')]: '123',
@@ -532,6 +533,11 @@ describe('surveyResponse endpoint', () => {
 
     it('Should reject an invalid SubmissionDate answer', async () => {
       const response = await postTypeCheck('SubmissionDate', '1/1/2019');
+      expectError(response, /Dates should be in ISO 8601 format/);
+    });
+
+    it('Should reject an invalid DateOfData answer', async () => {
+      const response = await postTypeCheck('DateOfData', '1/1/2019');
       expectError(response, /Dates should be in ISO 8601 format/);
     });
   });

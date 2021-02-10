@@ -217,7 +217,7 @@ export async function importSurveys(req, res) {
         // Add all questions to the survey, creating screens, components and questions as required
         let currentScreen;
         let currentSurveyScreenComponent;
-        let hasSeenSubmissionDate = false;
+        let hasSeenDateOfDataQuestion = false;
         const questionCodes = []; // An array to hold all qustion codes, allowing duplicate checking
         const configImporter = new ConfigImporter(transactingModels, rows);
         const objectValidator = new ObjectValidator(constructQuestionValidators(transactingModels));
@@ -258,16 +258,16 @@ export async function importSurveys(req, res) {
           }
           questionCodes.push(questionObject.code);
 
-          // Validate max one submission date question
-          if (questionObject.type === 'SubmissionDate') {
-            if (hasSeenSubmissionDate) {
+          // Validate max one date of data/submission date question
+          if (questionObject.type === 'DateOfData' || questionObject.type === 'SubmissionDate') {
+            if (hasSeenDateOfDataQuestion) {
               // Previously had another submission date question
               throw new ImportValidationError(
-                'Only one SubmissionDate question allowed',
+                'Only one DateOfData/SubmissionDate question allowed',
                 excelRowNumber,
               );
             }
-            hasSeenSubmissionDate = true;
+            hasSeenDateOfDataQuestion = true;
           }
 
           // Extract question details from spreadsheet row

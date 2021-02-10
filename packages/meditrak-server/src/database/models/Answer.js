@@ -18,6 +18,7 @@ export const ANSWER_TYPES = {
   CODE_GENERATOR: 'CodeGenerator',
   DATE_TIME: 'DateTime',
   DATE: 'Date',
+  DATE_OF_DATA: 'DateOfData',
   DAYS_SINCE: 'DaysSince',
   ENTITY: 'Entity',
   FREE_TEXT: 'FreeText',
@@ -38,6 +39,7 @@ export const ANSWER_TYPES = {
 // these answer types are not stored as data, because they either don't take any answer, or their data
 // is used as metadata for the survey response rather than being stored as a standard answer
 export const NON_DATA_ELEMENT_ANSWER_TYPES = [
+  ANSWER_TYPES.DATE_OF_DATA,
   ANSWER_TYPES.INSTRUCTION,
   ANSWER_TYPES.PRIMARY_ENTITY,
   ANSWER_TYPES.SUBMISSION_DATE,
