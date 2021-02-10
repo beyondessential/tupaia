@@ -26,9 +26,9 @@ const createModelsStub = () => ({
   },
   dataServiceEntity: {
     find: async filter =>
-      filter.config
+      filter._raw_
         ? DATA_SERVICE_ENTITIES.filter(mapping =>
-          filter.config.comparisonValue.includes(mapping.config.dhis_id),
+          filter._raw_.parameters.includes(mapping.config.dhis_id),
         )
         : DATA_SERVICE_ENTITIES.filter(mapping => filter.entity_code.includes(mapping.entity_code)),
   },
