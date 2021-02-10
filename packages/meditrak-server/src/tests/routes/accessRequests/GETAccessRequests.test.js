@@ -5,14 +5,11 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
-import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
-import { resetTestData } from '../../testUtilities';
+import { resetTestData, TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for GETAccessRequests', async () => {
   const DEFAULT_POLICY = {
@@ -72,19 +69,19 @@ describe('Permissions checker for GETAccessRequests', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /accessRequests/:id', async () => {
     it('Sufficient permissions: Return a requested access request if we have admin panel access to the entity the access request is for', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
       expect(result.id).to.equal(accessRequest1.id);
     });
 
     it('Sufficient permissions: Return a requested access request if we have BES admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
       expect(result.id).to.equal(accessRequest1.id);
@@ -94,7 +91,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
       const policy = {
         DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
       expect(result).to.have.keys('error');
@@ -103,14 +100,14 @@ describe('Permissions checker for GETAccessRequests', async () => {
 
   describe('GET /accessRequests', async () => {
     it('Sufficient permissions: Return only the list of entries we have permissions for', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members([accessRequest1.id, accessRequest2.id]);
     });
 
     it('Sufficient permissions: Return the full list of access requests if we have BES Admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(accessRequestIds);
@@ -120,7 +117,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
       expect(results).to.have.keys('error');
@@ -130,7 +127,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
       const policy = {
         DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
       expect(results).to.be.empty;
