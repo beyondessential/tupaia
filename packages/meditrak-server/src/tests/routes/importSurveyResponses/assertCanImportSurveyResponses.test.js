@@ -12,7 +12,7 @@ import {
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-import { getModels } from '../../getModels';
+import { getModels } from '../../testUtilities';
 import { assertCanImportSurveyResponses } from '../../../routes/importSurveyResponses/assertCanImportSurveyResponses';
 
 const DEFAULT_POLICY = {
