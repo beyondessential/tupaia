@@ -40,6 +40,7 @@ export const SURVEY_RESPONSE = {
   entity_id: ENTITY.id,
   submission_time: '2019-05-20T10:05:00.000Z',
   end_time: '2019-04-10T10:05:00.000Z',
+  data_time: '2019-05-20T10:05:00.000',
   survey_id: SURVEY.id,
   user_id: USER.id,
 };

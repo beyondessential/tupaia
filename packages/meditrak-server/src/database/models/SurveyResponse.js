@@ -4,6 +4,7 @@
  **/
 
 import momentTimezone from 'moment-timezone';
+import moment from 'moment';
 
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
@@ -42,7 +43,7 @@ class SurveyResponseType extends DatabaseType {
   }
 
   dataTime() {
-    return momentTimezone(this.data_time);
+    return moment(this.data_time);
   }
 
   timezoneAwareEndTime() {
