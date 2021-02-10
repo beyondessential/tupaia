@@ -229,7 +229,7 @@ export class DhisInputSchemeResolvingApiProxy {
       const newRow = [...row];
       const dhisId = row[orgUnitIdIndex];
       const mapping = mappings.find(m => m.config.dhis_id === dhisId);
-      if (!mapping) continue;
+      if (!mapping) newRows.push(newRow);
       newRow[orgUnitCodeIndex] = mapping.entity_code;
       newRows.push(newRow);
     }
