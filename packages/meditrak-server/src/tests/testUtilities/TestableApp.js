@@ -5,13 +5,16 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import supertest from 'supertest';
 import autobind from 'react-autobind';
+import sinon from 'sinon';
 
+import { Authenticator } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
 
-import { createApp } from '../app';
-import { getModels } from './getModels';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { createApp } from '../../app';
+import { getModels } from './database';
 
-export const DEFAULT_API_VERSION = 2;
+const DEFAULT_API_VERSION = 2;
 const getVersionedEndpoint = (endpoint, apiVersion = DEFAULT_API_VERSION) =>
   `/v${apiVersion}/${endpoint}`;
 
@@ -30,6 +33,22 @@ export class TestableApp {
     this.app = createApp(this.database, this.models);
     this.user = {};
     autobind(this);
+  }
+
+  async grantFullAccess() {
+    const policy = {
+      DL: [BES_ADMIN_PERMISSION_GROUP],
+    };
+    return this.grantAccess(policy);
+  }
+
+  async grantAccess(policy) {
+    sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
+    return this.authenticate();
+  }
+
+  revokeAccess() {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
   }
 
   async authenticate() {

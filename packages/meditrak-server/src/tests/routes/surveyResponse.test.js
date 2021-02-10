@@ -2,15 +2,31 @@ import { expect } from 'chai';
 import momentTimezone from 'moment-timezone';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
-import { TestableApp } from './TestableApp';
+import { oneSecondSleep } from '@tupaia/utils';
 import {
+  randomIntBetween,
+  setupDummySyncQueue,
+  TestableApp,
   upsertEntity,
   upsertFacility,
   upsertQuestion,
-} from './testUtilities/database/upsertRecord';
-import { prepareStubAndAuthenticate } from './routes/utilities/prepareStubAndAuthenticate';
-import { BES_ADMIN_PERMISSION_GROUP } from '../permissions';
+} from '../testUtilities';
+
+const getRandomSurveyResponse = async models => {
+  const surveyResponses = await models.surveyResponse.all();
+  return surveyResponses[randomIntBetween(0, surveyResponses.length - 1)];
+};
+
+const getRandomNewEntityForSurveyResponse = async (models, surveyResponse) => {
+  const entities = await models.entity.find({
+    id: {
+      comparator: '!=',
+      comparisonValue: surveyResponse.entity_id,
+    },
+  });
+
+  return entities[randomIntBetween(0, entities.length - 1)].id;
+};
 
 const ENTITY_ID = generateTestId();
 const ENTITY_NON_CLINIC_ID = generateTestId();
@@ -38,11 +54,7 @@ describe('surveyResponse endpoint', () => {
   const { models } = app;
 
   before(async () => {
-    // We're not testing permissions here
-    const policy = {
-      DL: [BES_ADMIN_PERMISSION_GROUP],
-    };
-    await prepareStubAndAuthenticate(app, policy);
+    await app.grantFullAccess();
 
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
@@ -97,7 +109,7 @@ describe('surveyResponse endpoint', () => {
   });
 
   after(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   it('Should accept a single submission', async () => {
@@ -393,6 +405,61 @@ describe('surveyResponse endpoint', () => {
     );
     expect(dbResponse.timezone).to.be.oneOf(timezones);
     expect(dbResponse.submission_time.toISOString()).to.equal('2019-07-30T17:48:00.000Z');
+  });
+
+  describe('Update entity for existing survey response', async function () {
+    let syncQueue;
+    let surveyResponseId;
+    let previousNumberOfSurveyResponses = 0;
+    let previousNumberOfAnswers = 0;
+    let response = {};
+    let newEntityId;
+    let numberOfAnswersInSurveyResponse;
+
+    before(async () => {
+      syncQueue = setupDummySyncQueue(models);
+      syncQueue.clear();
+      previousNumberOfSurveyResponses = await models.surveyResponse.count();
+      previousNumberOfAnswers = await models.answer.count();
+      const surveyResponse = await getRandomSurveyResponse(models);
+      newEntityId = await getRandomNewEntityForSurveyResponse(models, surveyResponse);
+
+      surveyResponseId = surveyResponse.id;
+      numberOfAnswersInSurveyResponse = await models.answer.count({
+        survey_response_id: surveyResponseId,
+      });
+      response = await app.put(`surveyResponses/${surveyResponseId}`, {
+        body: {
+          entity_id: newEntityId,
+        },
+      });
+    });
+
+    it('should respond with a successful http status', function () {
+      expect(response.statusCode).to.equal(200);
+    });
+
+    it('should have the same number of survey responses', async function () {
+      const postNumberOfSurveyResponses = await models.surveyResponse.count();
+      expect(postNumberOfSurveyResponses).to.equal(previousNumberOfSurveyResponses);
+    });
+
+    it('should have the same number of answers', async function () {
+      const postNumberOfAnswers = await models.answer.count();
+      expect(postNumberOfAnswers).to.equal(previousNumberOfAnswers);
+    });
+
+    it('should have changed the entity associated with the survey response to the new entity', async function () {
+      const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
+      expect(surveyResponse.entity_id).to.equal(newEntityId);
+    });
+
+    it('should add the survey response and all answers to the sync queue after it is submitted', async function () {
+      this.retries(10);
+      await oneSecondSleep(1000);
+      expect(syncQueue.count(models.surveyResponse.databaseType)).to.equal(1);
+      expect(syncQueue.count(models.answer.databaseType)).to.equal(numberOfAnswersInSurveyResponse);
+    });
   });
 
   describe('Type checking', () => {

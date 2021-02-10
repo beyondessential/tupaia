@@ -6,14 +6,13 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import xlsx from 'xlsx';
-import { Authenticator } from '@tupaia/auth';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
+import { TestableApp } from '../../testUtilities';
 
 const DEFAULT_POLICY = {
   DL: ['Public'],
@@ -23,14 +22,9 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
-  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').returns(policy);
-  await app.authenticate();
-};
-
 describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', () => {
   const app = new TestableApp();
-  const models = app.models;
+  const { models } = app;
 
   describe('Test permissions when exporting surveys', async () => {
     let adminPermissionGroup;
@@ -65,23 +59,23 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
     });
 
     afterEach(() => {
-      Authenticator.prototype.getAccessPolicyForUser.restore();
+      app.revokeAccess();
       xlsx.utils.json_to_sheet.resetHistory();
     });
 
     it('Sufficient permissions: Should allow exporting an existing survey if users have both Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
-      await prepareStubAndAuthenticate(app);
+      await app.grantAccess(DEFAULT_POLICY);
       await app.get(`export/surveys/${survey1.id}`);
 
-      //json_to_sheet is called when putting exportData into excel sheet
+      // json_to_sheet is called when putting exportData into excel sheet
       expect(xlsx.utils.json_to_sheet).to.have.been.calledOnce;
     });
 
     it('Sufficient permissions: Should allow exporting an existing survey if users have both Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
-      await prepareStubAndAuthenticate(app);
+      await app.grantAccess(DEFAULT_POLICY);
       await app.get(`export/surveys?surveyCode=${survey1.code}`);
 
-      //json_to_sheet is called when putting exportData into excel sheet
+      // json_to_sheet is called when putting exportData into excel sheet
       expect(xlsx.utils.json_to_sheet).to.have.been.calledOnce;
     });
 
@@ -90,14 +84,14 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
         DL: ['Public'],
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /*'Admin'*/ 'Public'],
+        VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, /* 'Admin' */ 'Public'],
         LA: ['Admin'],
       };
 
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       await app.get(`export/surveys?surveyCode=${survey1.code}`);
 
-      //json_to_sheet is called when putting exportData into excel sheet
+      // json_to_sheet is called when putting exportData into excel sheet
       expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnceWithExactly([
         [
           `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed ${adminPermissionGroup.name} access to ${vanuatuCountry.name} to export the survey ${survey1.name}\n`,
