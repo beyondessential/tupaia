@@ -5,13 +5,11 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
-import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
+import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for DeleteUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
@@ -64,7 +62,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('DELETE /userEntityPermissions/:id', async () => {
@@ -73,7 +71,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
         const policy = {
           DL: ['Public'],
         };
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
         const { body: result } = await app.delete(
           `userEntityPermissions/${vanuatuPublicPermission.id}`,
         );
@@ -84,7 +82,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
       });
 
       it('Throw an exception if we do not have permissions for the entity of the user entity permission', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.delete(
           `userEntityPermissions/${laosPublicPermission.id}`,
         );
@@ -97,7 +95,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
 
     describe('Sufficient permissions', async () => {
       it('Delete a user entity permission if we have admin panel access to the specific entity', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         await app.delete(`userEntityPermissions/${vanuatuPublicPermission.id}`);
         const result = await models.userEntityPermission.findById(vanuatuPublicPermission.id);
 
@@ -105,7 +103,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
       });
 
       it('BES Admin user can delete any user entity permission', async () => {
-        await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+        await app.grantAccess(BES_ADMIN_POLICY);
         await app.delete(`userEntityPermissions/${laosPublicPermission.id}`);
         const result = await models.userEntityPermission.findById(laosPublicPermission.id);
 

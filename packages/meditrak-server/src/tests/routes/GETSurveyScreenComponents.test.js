@@ -5,10 +5,8 @@
 
 import { expect } from 'chai';
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
+import { TestableApp } from '../testUtilities';
 
 describe('Permissions checker for GETSurveyScreenComponents', async () => {
   const DEFAULT_POLICY = {
@@ -72,26 +70,26 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /surveyScreenComponents/:id', async () => {
     it('Sufficient permissions: Return a requested screen component if we have access to the associated survey', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[0]}`);
 
       expect(result.id).to.equal(screenComponentIds[0]);
     });
 
     it('Sufficient permissions: Return a requested screen component if we have BES admin access anywhere', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[2]}`);
 
       expect(result.id).to.equal(screenComponentIds[2]);
     });
 
     it('Insufficient permissions: Throw an error if we do not have permission to the survey associated with the screen component', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyScreenComponents/${screenComponentIds[2]}`);
 
       expect(result).to.have.keys('error');
@@ -100,7 +98,7 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
 
   describe('GET /surveyScreenComponents', async () => {
     it('Sufficient permissions: Return all screen components', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyScreenComponents?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members([
@@ -110,7 +108,7 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
     });
 
     it('Sufficient permissions: Return all screen components if we have BES admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveyScreenComponents?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(screenComponentIds);
@@ -120,7 +118,7 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyScreenComponents?${filterString}`);
 
       expect(results).to.be.empty;
@@ -129,7 +127,7 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
 
   describe('GET /surveys/id/surveyScreenComponents', async () => {
     it('Sufficient permissions: Return only screen components associated with the selected survey', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(
         `surveys/${surveyIds[0]}/surveyScreenComponents?${filterString}`,
       );
@@ -141,7 +139,7 @@ describe('Permissions checker for GETSurveyScreenComponents', async () => {
     });
 
     it('Insufficient permissions: Throw an error if we do not have access to the selected survey', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(
         `surveys/${surveyIds[1]}/surveyScreenComponents?${filterString}`,
       );

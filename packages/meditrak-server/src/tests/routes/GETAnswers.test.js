@@ -9,11 +9,8 @@ import {
   buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
-import { resetTestData } from '../testUtilities';
+import { resetTestData, TestableApp } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETAnswers', async () => {
   const DEFAULT_POLICY = {
@@ -94,26 +91,26 @@ describe('Permissions checker for GETAnswers', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /answers/:id', async () => {
     it("Sufficient permissions: Return a requested answer if we have permission for the survey in the response's country", async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`answers/${vanuatuAdminAnswers[0]}`);
 
       expect(result.id).to.equal(vanuatuAdminAnswers[0]);
     });
 
     it('Sufficient permissions: Return a requested answer if we have BES admin access anywhere', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`answers/${vanuatuDonorAnswers[0]}`);
 
       expect(result.id).to.equal(vanuatuDonorAnswers[0]);
     });
 
     it("Insufficient permissions: Throw an error if we do not have permission for the survey in the response's country for this answer", async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`answers/${vanuatuDonorAnswers[0]}`);
 
       expect(result).to.have.keys('error');
@@ -122,14 +119,14 @@ describe('Permissions checker for GETAnswers', async () => {
 
   describe('GET /answer', async () => {
     it('Sufficient permissions: Return only answers we have permission to the survey responses for', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`answers?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(vanuatuAdminAnswers);
     });
 
     it('Sufficient permissions: Always return all answers if we have BES admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`answers?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(
@@ -141,7 +138,7 @@ describe('Permissions checker for GETAnswers', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`answers?${filterString}`);
 
       expect(results).to.be.empty;
@@ -150,21 +147,21 @@ describe('Permissions checker for GETAnswers', async () => {
 
   describe('GET /surveyResponses/id/answers', async () => {
     it("Sufficient permissions: Return the answers for the requested survey response if we have permission to the survey in the response's country", async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses/${vanuatuAdminResponseId}/answers`);
 
       expect(results.map(r => r.id)).to.have.members(vanuatuAdminAnswers);
     });
 
     it('Sufficient permissions: Return the answers for the requested survey response if we are BES Admin', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveyResponses/${vanuatuDonorResponseId}/answers`);
 
       expect(results.map(r => r.id)).to.have.members(vanuatuDonorAnswers);
     });
 
     it('Insufficient permissions: Throw an error if we do not have permissions for the survey response we are requesting the answers for', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses/${vanuatuDonorResponseId}/answers`);
 
       expect(results).to.have.key('error');
