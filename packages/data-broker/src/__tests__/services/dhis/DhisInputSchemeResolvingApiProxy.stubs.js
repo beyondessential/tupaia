@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { DhisInputSchemeResolvingApiProxy } from '../../../services/dhis/DhisInputSchemeResolvingApiProxy';
 
 const DATA_SOURCES = [
@@ -26,10 +27,10 @@ const createModelsStub = () => ({
   },
   dataServiceEntity: {
     find: async filter =>
-      filter._raw_
+      filter[QUERY_CONJUNCTIONS.RAW]
         ? DATA_SERVICE_ENTITIES.filter(mapping =>
-          filter._raw_.parameters.includes(mapping.config.dhis_id),
-        )
+            filter[QUERY_CONJUNCTIONS.RAW].parameters.includes(mapping.config.dhis_id),
+          )
         : DATA_SERVICE_ENTITIES.filter(mapping => filter.entity_code.includes(mapping.entity_code)),
   },
 });
@@ -37,43 +38,40 @@ const createModelsStub = () => ({
 export const createApiStub = () => {
   return {
     getAnalytics: jest.fn().mockReturnValue({ SOME_ANALYTICS_RESPONSE: 1 }),
-    getEventAnalytics: jest.fn().mockImplementation(
-      () =>
-        console.log('hi') || {
-          headers: [
-            {
-              name: 'oucode',
-              column: 'Organisation unit code',
-              valueType: 'TEXT',
-              type: 'java.lang.String',
-              hidden: false,
-              meta: true,
-            },
-            {
-              name: 'ou',
-              column: 'Organisation unit',
-              valueType: 'TEXT',
-              type: 'java.lang.String',
-              hidden: false,
-              meta: true,
-            },
-            {
-              name: 'Dyq13cMGMzT',
-              column: 'NCLE: Disease name',
-              valueType: 'TEXT',
-              type: 'java.lang.String',
-              hidden: false,
-              meta: true,
-              optionSet: 'kMe7B54S9VH',
-            },
-          ],
-          rows: [['dhisCode_ou1-Not-Mapped', 'dhisId_ou1', '7.1']],
-          metadata: {},
-          width: 3,
-          height: 1,
-          headerWidth: 3,
+    getEventAnalytics: jest.fn().mockImplementation(() => ({
+      headers: [
+        {
+          name: 'oucode',
+          column: 'Organisation unit code',
+          valueType: 'TEXT',
+          type: 'java.lang.String',
+          hidden: false,
+          meta: true,
         },
-    ),
+        {
+          name: 'ou',
+          column: 'Organisation unit',
+          valueType: 'TEXT',
+          type: 'java.lang.String',
+          hidden: false,
+          meta: true,
+        },
+        {
+          name: 'Dyq13cMGMzT',
+          column: 'NCLE: Disease name',
+          valueType: 'TEXT',
+          type: 'java.lang.String',
+          hidden: false,
+          meta: true,
+          optionSet: 'kMe7B54S9VH',
+        },
+      ],
+      rows: [['dhisCode_ou1-Not-Mapped', 'dhisId_ou1', '7.1']],
+      metadata: {},
+      width: 3,
+      height: 1,
+      headerWidth: 3,
+    })),
   };
 };
 

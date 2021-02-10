@@ -4,6 +4,7 @@
  */
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 export class DhisInputSchemeResolvingApiProxy {
   constructor(models, api) {
@@ -49,8 +50,7 @@ export class DhisInputSchemeResolvingApiProxy {
       modifiedQuery = await this.replaceProgramCodesWithIds(modifiedQuery);
     }
 
-    const modifyOrgUnitsToUseDhisId = await this.allOrgUnitsHaveDhisId(query);
-    if (modifyOrgUnitsToUseDhisId) {
+    if (await this.allOrgUnitsHaveDhisId(query)) {
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
     }
 
@@ -68,6 +68,8 @@ export class DhisInputSchemeResolvingApiProxy {
       );
     }
 
+    // It's a little bit more complex with org units, as dhis may return
+    // different org units than were requested
     translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(translatedResponse);
 
     return translatedResponse;
@@ -184,7 +186,8 @@ export class DhisInputSchemeResolvingApiProxy {
   };
 
   /**
-   * @param query {*}
+   * @param response {*}
+   * @param dataElementCodes {*}
    * @returns {*}
    * @private
    */
@@ -206,20 +209,23 @@ export class DhisInputSchemeResolvingApiProxy {
   };
 
   /**
-   * @param query {*}
+   * @param response {*}
    * @returns {*}
    * @private
    */
   translateOrgUnitIdsToCodesInResponse = async response => {
+    if (!response.rows.length) return response;
     const newRows = [];
 
     const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
     const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
+    if (!orgUnitIdIndex || !orgUnitCodeIndex)
+      throw new Error("Can't read org unit id/code from dhis");
 
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
 
     const mappings = await this.models.dataServiceEntity.find({
-      _raw_: {
+      [QUERY_CONJUNCTIONS.RAW]: {
         sql: `config->>'dhis_id' in (${dhisIds.map(() => '?')})`,
         parameters: dhisIds,
       },
@@ -229,8 +235,7 @@ export class DhisInputSchemeResolvingApiProxy {
       const newRow = [...row];
       const dhisId = row[orgUnitIdIndex];
       const mapping = mappings.find(m => m.config.dhis_id === dhisId);
-      if (!mapping) newRows.push(newRow);
-      newRow[orgUnitCodeIndex] = mapping.entity_code;
+      if (mapping) newRow[orgUnitCodeIndex] = mapping.entity_code;
       newRows.push(newRow);
     }
 
