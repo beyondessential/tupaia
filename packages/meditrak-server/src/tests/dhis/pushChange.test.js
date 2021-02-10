@@ -11,7 +11,7 @@ import winston from 'winston';
 import { pushChange } from '../../dhis/pushChange';
 import { AggregateDataPusher, EventPusher } from '../../dhis/pushers';
 import * as GetPusherForEntity from '../../dhis/pushers/entity/getPusherForEntity';
-import { TestableApp } from '../TestableApp';
+import { TestableApp } from '../testUtilities';
 
 const test = sinonTest(sinon);
 

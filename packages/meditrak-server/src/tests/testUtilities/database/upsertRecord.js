@@ -4,7 +4,7 @@
  */
 
 import { upsertDummyRecord } from '@tupaia/database';
-import { getModels } from '../../getModels';
+import { getModels } from './getModels';
 
 const models = getModels();
 

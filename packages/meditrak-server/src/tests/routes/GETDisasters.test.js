@@ -5,10 +5,8 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
+import { TestableApp } from '../testUtilities';
 
 const getFilterString = filter => `filter=${JSON.stringify(filter)}`;
 
@@ -54,19 +52,19 @@ describe('Permissions checker for GETDisasters', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /disasters/:id', async () => {
     it('Sufficient permissions: returns a requested disaster that user has access to', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`disasters/${disaster1.id}`);
 
       expect(result.id).to.equal(disaster1.id);
     });
 
     it('Insufficient permissions: throws an error if requesting disaster that user does not have access to', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`disasters/${disaster3.id}`);
 
       expect(result).to.have.keys('error');
@@ -75,21 +73,21 @@ describe('Permissions checker for GETDisasters', async () => {
 
   describe('GET /disasters', async () => {
     it('Sufficient permissions: returns only disasters the user has permission to', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([disaster1.id, disaster2.id]);
     });
 
     it('Sufficient permissions: returns all disasters if the user has BES admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([disaster1.id, disaster2.id, disaster3.id]);
     });
 
     it('Returns disasters respecting single country code supplied', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const filterWithCountryCode = { ...filter, countryCode: 'KI' };
       const { body: results } = await app.get(
         `disasters?${getFilterString(filterWithCountryCode)}`,
@@ -99,7 +97,7 @@ describe('Permissions checker for GETDisasters', async () => {
     });
 
     it('Returns disasters respecting multiple country codes supplied', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const filterWithCountryCode = { ...filter, countryCode: ['KI', 'LA'] };
       const { body: results } = await app.get(
         `disasters?${getFilterString(filterWithCountryCode)}`,
@@ -112,7 +110,7 @@ describe('Permissions checker for GETDisasters', async () => {
       const policy = {
         DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
       expect(results).to.be.empty;
@@ -122,7 +120,7 @@ describe('Permissions checker for GETDisasters', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`disasters`);
 
       expect(result).to.have.keys('error');
