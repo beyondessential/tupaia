@@ -5,60 +5,76 @@
 
 import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
 
-const buildAndInsertQuestion = async (models, surveyScreen, { code, ...questionProperties }) => {
-  const question = await findOrCreateDummyRecord(models.question, { code }, questionProperties);
+const buildAndInsertQuestion = async (
+  models,
+  surveyScreen,
+  { code, ...questionFields },
+  dataSourceFields,
+) => {
+  const dataElement = await buildAndInsertDataElement(models, { code, ...dataSourceFields });
+  const question = await findOrCreateDummyRecord(
+    models.question,
+    { code },
+    { ...questionFields, data_source_id: dataElement.id },
+  );
   const surveyScreenComponent = await upsertDummyRecord(models.surveyScreenComponent, {
     screen_id: surveyScreen.id,
     question_id: question.id,
   });
-  return { question, surveyScreenComponent };
+  return { question, dataElement, surveyScreenComponent };
 };
 
-const buildAndInsertDataGroup = async (models, dataGroupProperties) =>
+const buildAndInsertDataGroup = async (models, fields) =>
   findOrCreateDummyRecord(
     models.dataSource,
-    {
-      ...dataGroupProperties,
-      type: 'dataGroup',
-    },
-    {
-      service_type: 'dhis',
-      config: { isDataRegional: false },
-    },
+    { service_type: 'dhis', ...fields, type: 'dataGroup' },
+    { config: { isDataRegional: true } },
+  );
+
+const buildAndInsertDataElement = async (models, fields) =>
+  findOrCreateDummyRecord(
+    models.dataSource,
+    { service_type: 'dhis', ...fields, type: 'dataElement' },
+    { config: { isDataRegional: true } },
   );
 
 const buildAndInsertSurvey = async (
   models,
-  { dataGroup: dataGroupProps, questions: questionProps = [], code, ...surveyProps },
+  { dataGroup: dataSourceFields, questions: questionFields = [], code, ...surveyFields },
 ) => {
-  const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataGroupProps });
+  const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataSourceFields });
 
   const survey = await findOrCreateDummyRecord(
     models.survey,
     { code },
-    { ...surveyProps, data_source_id: dataGroup.id },
+    { ...surveyFields, data_source_id: dataGroup.id },
   );
   const surveyScreen = await upsertDummyRecord(models.surveyScreen, { survey_id: survey.id });
 
   const surveyScreenComponents = [];
   const questions = [];
+  const dataElements = [];
+
   const processQuestion = async q => {
-    const { surveyScreenComponent, question } = await buildAndInsertQuestion(
+    const { surveyScreenComponent, question, dataElement } = await buildAndInsertQuestion(
       models,
       surveyScreen,
       q,
+      dataSourceFields,
     );
     surveyScreenComponents.push(surveyScreenComponent);
     questions.push(question);
+    dataElements.push(dataElement);
   };
-  await Promise.all(questionProps.map(processQuestion));
+  await Promise.all(questionFields.map(processQuestion));
 
-  return { survey, surveyScreen, surveyScreenComponents, questions, dataGroup };
+  return { survey, surveyScreen, surveyScreenComponents, questions, dataGroup, dataElements };
 };
 
 /**
- * Will create a survey with the provided properties, containing the provided questions all on a
+ * Will create a survey with the provided fields, containing the provided questions all on a
  * single survey screen.
+ *
  * Usage example:
  * ```js
  * await buildAndInsertSurveys([
@@ -77,17 +93,7 @@ const buildAndInsertSurvey = async (
  *   ..., // can handle more than one survey
  * ]);
  * ```
- *
- * @returns {Promise<{ survey, surveyScreen, surveyScreenComponents, questions, dataGroup }[]>}
  */
 export const buildAndInsertSurveys = async (models, surveys) => {
-  const createdModels = [];
-  await Promise.all(
-    surveys.map(async survey => {
-      const newCreatedModels = await buildAndInsertSurvey(models, survey);
-      createdModels.push(newCreatedModels);
-    }),
-  );
-
-  return createdModels;
+  return Promise.all(surveys.map(async survey => buildAndInsertSurvey(models, survey)));
 };

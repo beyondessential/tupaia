@@ -44,7 +44,7 @@ export const stubDhisApi = ({
 
 export const createModelsStub = () => ({
   dataSource: {
-    findOrDefault: async specs =>
+    find: async specs =>
       Object.values(DATA_SOURCES).filter(
         ({ code, type }) => specs.code.includes(code) && specs.type === type,
       ),

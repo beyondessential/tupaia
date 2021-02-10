@@ -43,7 +43,9 @@ export const JOIN_TYPES = {
   DEFAULT: null,
 };
 
+// list valid behaviour so we can validate against sql injection
 const VALID_CAST_TYPES = ['text', 'date'];
+const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
 
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
@@ -453,11 +455,15 @@ export class TupaiaDatabase {
     return result.rows;
   }
 
-  async executeSqlInBatches(arrayToBeBatched, generateSql) {
-    return runDatabaseFunctionInBatches(arrayToBeBatched, async batch => {
-      const [sql, substitutions] = generateSql(batch);
-      return this.executeSql(sql, substitutions);
-    });
+  async executeSqlInBatches(arrayToBeBatched, generateSql, batchSize) {
+    return runDatabaseFunctionInBatches(
+      arrayToBeBatched,
+      async batch => {
+        const [sql, substitutions] = generateSql(batch);
+        return this.executeSql(sql, substitutions);
+      },
+      batchSize,
+    );
   }
 }
 
@@ -571,6 +577,9 @@ function addWhereClause(connection, baseQuery, where) {
     } = value;
     if (castAs && !VALID_CAST_TYPES.includes(castAs)) {
       throw new Error(`Cannot cast as ${castAs}`);
+    }
+    if (!VALID_COMPARISON_TYPES.includes(comparisonType)) {
+      throw new Error(`Cannot compare using ${comparisonType}`);
     }
     const columnSelector = castAs ? connection.raw(`??::${castAs}`, [key]) : key;
     const { args = [comparator, comparisonValue] } = value;

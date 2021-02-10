@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { TestableApp } from '../TestableApp';
+import { TestableApp } from '../testUtilities';
 
 describe('Access Requests', () => {
   const app = new TestableApp();
@@ -36,7 +36,13 @@ describe('Access Requests', () => {
     });
   };
 
-  before(app.authenticate);
+  before(async () => {
+    await app.grantFullAccess(); // We're not testing permissions here
+  });
+
+  after(() => {
+    app.revokeAccess();
+  });
 
   describe('User Entity Permission via Access Request', () => {
     it('creates permission when approved', async () => {
