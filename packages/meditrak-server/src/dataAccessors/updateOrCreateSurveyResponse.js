@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import momentTimezone from 'moment-timezone';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
@@ -70,11 +71,15 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
       data_time: suppliedDataTime,
       submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
       end_time: endTime, // prior to v1.7.87 fall back to end_time
+      timezone,
     } = surveyResponseObject;
     const dataTime = suppliedDataTime || submissionTime || endTime;
 
-    // Strip data_time of any timezone suffix, so it isn't converted to UTC when added to the db
-    surveyResponseProperties.data_time = stripTimezoneFromDate(dataTime);
+    // Convert to the original timezone, then strip timezone suffix, so it ends up in db as it
+    // appeared to the original survey submitter
+    surveyResponseProperties.data_time = stripTimezoneFromDate(
+      momentTimezone(dataTime).tz(timezone).format(),
+    );
 
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {

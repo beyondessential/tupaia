@@ -9,5 +9,5 @@ import moment from 'moment';
 // we don't want any timezone conversions when working with data_time
 const ISO_DATE_FORMAT_WITHOUT_TZ = 'YYYY-MM-DDTHH:mm:ss.SSS';
 export function stripTimezoneFromDate(date) {
-  return moment(date).format(ISO_DATE_FORMAT_WITHOUT_TZ);
+  return moment.parseZone(date).format(ISO_DATE_FORMAT_WITHOUT_TZ);
 }
