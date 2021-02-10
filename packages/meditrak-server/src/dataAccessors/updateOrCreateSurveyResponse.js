@@ -50,7 +50,6 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     id: surveyResponseId,
     answers,
     clinic_id: clinicId,
-    submission_time: submissionTime,
     ...surveyResponseProperties
   } = surveyResponseObject;
   const entitiesCreated = surveyResponseObject.entities_created || [];
@@ -67,18 +66,16 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     }
 
     // Ensure data_time is populated, supporting legacy versions of MediTrak
-    let dataTime = surveyResponseProperties.data_time;
-    if (!dataTime) {
-      if (submissionTime) {
-        // from v1.7.87 to v1.9.110 (inclusive) MediTrak used submission_time rather than data_time
-        dataTime = submissionTime;
-      } else {
-        // prior to v1.7.87 MediTrak used neither data_time nor submission_time; default to end_time
-        dataTime = surveyResponseProperties.end_time;
-      }
-    }
+    const {
+      data_time: suppliedDataTime,
+      submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
+      end_time: endTime, // prior to v1.7.87 fall back to end_time
+    } = surveyResponseObject;
+    const dataTime = suppliedDataTime || submissionTime || endTime;
+
     // Strip data_time of any timezone suffix, so it isn't converted to UTC when added to the db
     surveyResponseProperties.data_time = moment(dataTime).format(ISO_DATE_FORMAT_WITHOUT_TZ);
+
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {
         id: surveyResponseId,
