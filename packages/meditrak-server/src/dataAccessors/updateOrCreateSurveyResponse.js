@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import moment from 'moment';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
@@ -49,6 +50,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     id: surveyResponseId,
     answers,
     clinic_id: clinicId,
+    submission_time: submissionTime,
     ...surveyResponseProperties
   } = surveyResponseObject;
   const entitiesCreated = surveyResponseObject.entities_created || [];
@@ -57,10 +59,26 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
   try {
     await createEntities(models, entitiesCreated, surveyResponseObject.survey_id);
     await createOptions(models, optionsCreated);
+
+    // Ensure entity_id is populated, supporting legacy versions of MediTrak
     if (clinicId) {
       const entityId = await getEntityIdFromClinicId(models, clinicId);
       surveyResponseProperties.entity_id = entityId;
     }
+
+    // Ensure data_time is populated, supporting legacy versions of MediTrak
+    let dataTime = surveyResponseProperties.data_time;
+    if (!dataTime) {
+      if (submissionTime) {
+        // from v1.7.87 to v1.9.110 (inclusive) MediTrak used submission_time rather than data_time
+        dataTime = submissionTime;
+      } else {
+        // prior to v1.7.87 MediTrak used neither data_time nor submission_time; default to end_time
+        dataTime = surveyResponseProperties.end_time;
+      }
+    }
+    // Strip data_time of any timezone suffix, so it isn't converted to UTC when added to the db
+    surveyResponseProperties.data_time = moment(dataTime).format(ISO_DATE_FORMAT_WITHOUT_TZ);
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {
         id: surveyResponseId,
@@ -70,11 +88,6 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         ...surveyResponseProperties,
       },
     );
-    if (!surveyResponse.submission_time) {
-      // Survey responses from older versions of Tupaia MediTrak may not have a submission time
-      surveyResponse.submission_time = surveyResponse.end_time;
-      await surveyResponse.save();
-    }
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with id ${surveyResponseId}`, error);
   }
