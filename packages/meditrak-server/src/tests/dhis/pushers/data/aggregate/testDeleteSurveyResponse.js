@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
-import { DummySyncQueue } from '../../../../DummySyncQueue';
+import { setupDummySyncQueue } from '../../../../testUtilities';
 import {
   DATA_SET_COMPLETION_DIMENSIONS,
   DATA_SET,
@@ -109,8 +109,7 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
 
     // set up dummy sync queue to listen for changes
-    const syncQueue = new DummySyncQueue();
-    models.addChangeHandlerForCollection(models.surveyResponse.databaseType, syncQueue.add);
+    const syncQueue = setupDummySyncQueue(models);
 
     // run the delete push
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);

@@ -11,7 +11,7 @@ import {
   buildAndInsertSurveys,
 } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
-import { getModels } from '../../getModels';
+import { getModels } from '../../testUtilities';
 import { assertCanExportSurveys } from '../../../routes/exportSurveys/assertCanExportSurveys';
 
 const DEFAULT_POLICY = {
@@ -81,12 +81,12 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
   });
 
   it('Insufficient permissions: Should not allow exporting an existing survey if users do not have survey permission group access to the country of that survey', async () => {
-    //No Admin Permission to VU => insufficient permissions to access survey1
+    // No Admin Permission to VU => insufficient permissions to access survey1
     const policy = {
       DL: ['Public'],
       KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
       SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-      VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/],
+      VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
       LA: ['Admin'],
     };
     const accessPolicy = new AccessPolicy(policy);
@@ -94,12 +94,12 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
   });
 
   it('Insufficient permissions: Should not allow exporting an existing survey if users do not have Tupaia Admin Panel access to the country of that survey', async () => {
-    //No TUPAIA_ADMIN_PANEL_PERMISSION_GROUP Permission to VU => insufficient permissions to access survey1
+    // No TUPAIA_ADMIN_PANEL_PERMISSION_GROUP Permission to VU => insufficient permissions to access survey1
     const policy = {
       DL: ['Public'],
       KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
       SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-      VU: [/*TUPAIA_ADMIN_PANEL_PERMISSION_GROUP*/ 'Admin'],
+      VU: [/* TUPAIA_ADMIN_PANEL_PERMISSION_GROUP */ 'Admin'],
       LA: ['Admin'],
     };
     const accessPolicy = new AccessPolicy(policy);
@@ -107,12 +107,12 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
   });
 
   it('Insufficient permissions: Should not allow exporting multiple existing surveys if users do not have survey permission group access to the country of any of the surveys', async () => {
-    //No Admin Permission to VU => insufficient permissions to access survey1
+    // No Admin Permission to VU => insufficient permissions to access survey1
     const policy = {
       DL: ['Public'],
       KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
       SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-      VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /*'Admin'*/],
+      VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
       LA: ['Admin'],
     };
     const accessPolicy = new AccessPolicy(policy);
@@ -122,12 +122,12 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
   });
 
   it('Insufficient permissions: Should not allow exporting multiple existing surveys if users do not have TUPAIA_ADMIN_PANEL_PERMISSION_GROUP access to the country of any of the surveys', async () => {
-    //No Admin Permission to VU => insufficient permissions to access survey1
+    // No Admin Permission to VU => insufficient permissions to access survey1
     const policy = {
       DL: ['Public'],
       KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
       SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-      VU: [/*TUPAIA_ADMIN_PANEL_PERMISSION_GROUP*/ 'Admin'],
+      VU: [/* TUPAIA_ADMIN_PANEL_PERMISSION_GROUP */ 'Admin'],
       LA: ['Admin'],
     };
     const accessPolicy = new AccessPolicy(policy);
