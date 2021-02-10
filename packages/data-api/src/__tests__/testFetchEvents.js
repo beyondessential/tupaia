@@ -18,7 +18,7 @@ const getEventsFromResponses = (responses, dataElementsToInclude) =>
     event: r.id,
     orgUnit: r.entityCode,
     orgUnitName: r.entityCode === 'NZ_AK' ? 'Auckland' : 'Wellington',
-    eventDate: r.submission_time.substring(0, r.submission_time.length - 1), // remove trailing 'Z'
+    eventDate: r.data_time,
     dataValues: Object.entries(r.answers)
       .filter(([code]) => dataElementsToInclude.includes(code))
       .reduce(

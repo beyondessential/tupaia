@@ -23,7 +23,7 @@ const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
           dataElement: questionCode,
           organisationUnit: r.entityCode,
           value: isNaN(answer) ? answer : parseFloat(answer),
-          date: r.submission_time.substring(0, 10), // just the YYYY-MM-DD bit
+          date: r.data_time.substring(0, 10), // just the YYYY-MM-DD bit
         });
       });
   });
