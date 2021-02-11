@@ -13,6 +13,7 @@ const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
+const SUB_FACILITY = 'sub_facility';
 const FIELD_STATION = 'field_station';
 const INDIVIDUAL = 'individual';
 const SCHOOL = 'school';
@@ -31,6 +32,7 @@ const ENTITY_TYPES = {
   DISASTER,
   DISTRICT,
   FACILITY,
+  SUB_FACILITY,
   FIELD_STATION,
   INDIVIDUAL,
   SCHOOL,
