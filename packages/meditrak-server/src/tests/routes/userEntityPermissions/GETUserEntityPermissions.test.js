@@ -5,13 +5,11 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
-import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
+import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for GETUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
@@ -87,19 +85,19 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /userEntityPermissions/:id', async () => {
     it('Sufficient permissions: Return a requested user entity permission if we have access to the specific entity', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`userEntityPermissions/${userEntityPermission2.id}`);
 
       expect(result.id).to.equal(userEntityPermission2.id);
     });
 
     it('Sufficient permissions: Return a requested user entity permission if we have BES admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`userEntityPermissions/${userEntityPermission2.id}`);
 
       expect(result.id).to.equal(userEntityPermission2.id);
@@ -109,7 +107,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
       const policy = {
         DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`userEntityPermissions/${userEntityPermission2.id}`);
 
       expect(result).to.have.keys('error');
@@ -118,7 +116,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
 
   describe('GET /userEntityPermissions', async () => {
     it('Sufficient permissions: Return only the list of user entity permissions we have permissions for', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`userEntityPermissions?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members([
@@ -128,7 +126,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
     });
 
     it('Sufficient permissions: Return the full list of user entity permissions if we have BES Admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`userEntityPermissions?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members(userEntityPermissionIds);
@@ -138,7 +136,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`userEntityPermissions?${filterString}`);
 
       expect(results).have.keys('error');
@@ -148,7 +146,7 @@ describe('Permissions checker for GETUserEntityPermissions', async () => {
       const policy = {
         DL: ['Public', TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`userEntityPermissions?${filterString}`);
 
       expect(results).to.be.empty;

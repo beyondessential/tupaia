@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -41,26 +39,16 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
   },
 };
 
-/**
- * Defines which data source(s) should be selected from the `data_source` table
- *
- * @typedef {Object} DataSourceSpec
- * @property {string|string[]} code  Matches on the code column
- * @property {string} type  Matches on the type column
- */
-
-const assertDataSourceSpecIsValid = dataSourceSpec => {
-  if (!dataSourceSpec || !dataSourceSpec.code || !dataSourceSpec.type) {
-    throw new Error('Please provide a valid data source spec');
-  }
-};
-
 export class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
+
+  SERVICE_TYPES = SERVICE_TYPES;
 
   get dataElementCode() {
     return this.config.dataElementCode || this.code;
   }
+
+  getTypes = () => DATA_SOURCE_TYPES;
 
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_TYPE_AND_SERVICE[this.type][this.service_type];
@@ -87,6 +75,21 @@ export class DataSourceType extends DatabaseType {
       }
     });
   }
+
+  assertFnCalledByDataGroup = functionName => {
+    if (this.type !== DATA_GROUP) {
+      throw new Error(`Can only invoke "${functionName}" in a dataGroup`);
+    }
+  };
+
+  attachDataElement = async dataElementId => {
+    this.assertFnCalledByDataGroup(this.attachDataElement.name);
+
+    await this.otherModels.dataElementDataGroup.findOrCreate({
+      data_element_id: dataElementId,
+      data_group_id: this.id,
+    });
+  };
 }
 
 export class DataSourceModel extends DatabaseModel {
@@ -99,14 +102,6 @@ export class DataSourceModel extends DatabaseModel {
   }
 
   getTypes = () => DataSourceModel.types;
-
-  getDefault = async ({ code, type }) =>
-    this.generateInstance({
-      code,
-      type,
-      service_type: 'dhis',
-      config: {},
-    });
 
   async getDataElementsInGroup(dataGroupCode) {
     const dataGroup = await this.findOne({
@@ -127,25 +122,22 @@ export class DataSourceModel extends DatabaseModel {
     });
   }
 
-  // TODO: Remove this function and the code directly associated with it when
-  // https://github.com/beyondessential/tupaia-backlog/issues/663 is implemented
-  /**
-   * Find the matching data sources or default to 1:1 mapping with dhis, as only mappings
-   * with non-standard rules are kept in the db
-   *
-   * @param {DataSourceSpec} dataSourceSpec
-   * @returns {Promise<Array>}
-   */
-  async findOrDefault(dataSourceSpec) {
-    assertDataSourceSpecIsValid(dataSourceSpec);
+  getDataGroupsThatIncludeElement = async elementConditions => {
+    const dataElement = await this.findOne({ ...elementConditions, type: DATA_ELEMENT });
+    if (!dataElement) {
+      return [];
+    }
 
-    const records = await this.find(dataSourceSpec);
-    const codeToRecord = keyBy(records, 'code');
-    const { code: codeInput } = dataSourceSpec;
-    const codes = Array.isArray(codeInput) ? codeInput : [codeInput];
-
-    return Promise.all(
-      codes.map(code => codeToRecord[code] || this.getDefault({ ...dataSourceSpec, code })),
+    // TODO use `this.find` with joins after
+    // https://github.com/beyondessential/tupaia-backlog/issues/662 is implemented
+    const dataGroups = await this.database.executeSql(
+      `
+        SELECT dg.* FROM data_source dg
+        JOIN data_element_data_group dedg ON dedg.data_group_id = dg.id
+        WHERE dg.type = 'dataGroup' and dedg.data_element_id = ?;
+      `,
+      [dataElement.id],
     );
-  }
+    return Promise.all(dataGroups.map(this.generateInstance));
+  };
 }
