@@ -94,6 +94,7 @@ import {
   openEnlargedDialog,
   updateCurrentMeasureConfigOnceHierarchyLoads,
   LOCATION_CHANGE,
+  goHome,
 } from './actions';
 import { LOGIN_TYPES } from './constants';
 import {
@@ -125,8 +126,15 @@ import {
   selectOrgUnitChildren,
   selectOrgUnitCountry,
   selectProjectByCode,
+  selectCurrentDashboardGroupCodeFromLocation,
 } from './selectors';
-import { formatDateForApi, isMobile, processMeasureInfo, getInfoFromInfoViewKey, getBrowserTimeZone } from './utils';
+import {
+  formatDateForApi,
+  isMobile,
+  processMeasureInfo,
+  getInfoFromInfoViewKey,
+  getBrowserTimeZone,
+} from './utils';
 import { getDefaultDates, getDefaultDrillDownDates } from './utils/periodGranularities';
 import { fetchProjectData } from './projects/sagas';
 import { clearLocation } from './historyNavigation/historyNavigation';
@@ -184,9 +192,6 @@ function* handleUserPage(userPage, initialComponents) {
   }
 }
 
-const userHasAccess = (projects, currentProject) =>
-  projects.filter(p => p.hasAccess).find(p => p.code === currentProject);
-
 const URL_REFRESH_COMPONENTS = {
   [URL_COMPONENTS.PROJECT]: setProject,
   [URL_COMPONENTS.ORG_UNIT]: setOrgUnit,
@@ -211,7 +216,9 @@ function* handleLocationChange({ location, previousLocation }) {
     return;
   }
 
-  const hasAccess = userHasAccess(project.projects, otherComponents.PROJECT);
+  const hasAccess = project.projects
+    .filter(p => p.hasAccess)
+    .find(p => p.code === otherComponents.PROJECT);
   if (!hasAccess) {
     yield call(handleInvalidPermission, { projectCode: otherComponents.PROJECT });
     return;
@@ -487,6 +494,10 @@ function* watchAttemptTokenLogin() {
   yield takeLatest(ATTEMPT_RESET_TOKEN_LOGIN, attemptTokenLogin);
 }
 
+function* watchAttemptTokenLoginSuccess() {
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, resetToHome);
+}
+
 function* openResetPasswordDialog() {
   yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
 }
@@ -679,6 +690,7 @@ function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   const projectCode = selectCurrentProjectCode(state);
+  const currentDashboardCode = selectCurrentDashboardGroupCodeFromLocation(state);
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
@@ -1072,19 +1084,25 @@ function* resetToProjectSplash() {
   yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
+function* resetToHome() {
+  yield put(goHome());
+}
+
 function* watchLoginSuccess() {
   yield takeLatest(FETCH_LOGIN_SUCCESS, fetchLoginData);
 }
 
 function* watchLogoutSuccess() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToHome);
 }
 
 function* fetchLoginData(action) {
   if (action.loginType === LOGIN_TYPES.MANUAL) {
     const { routing: location } = yield select();
-    const { PROJECT } = decodeLocation(location);
-    const overlay = PROJECT === 'explore' ? LANDING : null;
+    const { PROJECT, ORG_UNIT } = decodeLocation(location);
+
+    const overlay = PROJECT === 'explore' && ORG_UNIT === 'explore' ? LANDING : null;
+
     yield put(setOverlayComponent(overlay));
     yield call(fetchProjectData);
     yield call(handleLocationChange, {
@@ -1114,6 +1132,7 @@ export default [
   watchFetchInitialData,
   watchAttemptChangePasswordAndFetchIt,
   watchAttemptResetPasswordAndFetchIt,
+  watchAttemptTokenLoginSuccess,
   watchAttemptRequestCountryAccessAndFetchIt,
   watchAttemptUserLoginAndFetchIt,
   watchAttemptUserLogout,
