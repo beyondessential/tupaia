@@ -51,10 +51,11 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Tile Sets',
-    source: 'tile_sets',
-    secondaryLabel: 'Comma separated list (eg. osm,satellite,terrain).',
-    type: 'tooltip',
+    Header: 'Config',
+    source: 'config',
+    type: 'jsonTooltip',
+    editConfig: { type: 'jsonEditor' },
+    secondaryLabel: 'eg. {tileSets: osm,satellite,terrain, stickyRegionLabels: true}',
   },
   {
     Header: 'Sort',
