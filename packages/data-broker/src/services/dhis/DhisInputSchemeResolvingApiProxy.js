@@ -97,14 +97,6 @@ export class DhisInputSchemeResolvingApiProxy {
 
     for (const dataElementCode of dataElementCodes) {
       const dataElement = dataElements.find(d => d.code === dataElementCode);
-
-      if (!dataElement) {
-        // most likely using a data element code that is not defined in data_source, which is supported
-        // by this service
-        // TODO: Remove after tupaia-backlog#663 is done
-        return false;
-      }
-
       if (!dataElement.config.dhisId) {
         return false;
       }
