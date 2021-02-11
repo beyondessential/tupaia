@@ -5,6 +5,7 @@
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { reduceToDictionary } from '@tupaia/utils';
 
 export class DhisInputSchemeResolvingApiProxy {
   constructor(models, api) {
@@ -215,11 +216,10 @@ export class DhisInputSchemeResolvingApiProxy {
    */
   translateOrgUnitIdsToCodesInResponse = async response => {
     if (!response.rows.length) return response;
-    const newRows = [];
 
     const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
     const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
-    if (!orgUnitIdIndex || !orgUnitCodeIndex)
+    if (orgUnitIdIndex === -1 || orgUnitCodeIndex === -1)
       throw new Error("Can't read org unit id/code from dhis");
 
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
@@ -231,13 +231,15 @@ export class DhisInputSchemeResolvingApiProxy {
       },
     });
 
-    for (const row of response.rows) {
+    const mappingsByDhisId = reduceToDictionary(mappings, el => el.config.dhis_id, 'entity_code');
+
+    const newRows = response.rows.map(row => {
       const newRow = [...row];
       const dhisId = row[orgUnitIdIndex];
-      const mapping = mappings.find(m => m.config.dhis_id === dhisId);
-      if (mapping) newRow[orgUnitCodeIndex] = mapping.entity_code;
-      newRows.push(newRow);
-    }
+      const entityCode = mappingsByDhisId[dhisId];
+      if (entityCode) newRow[orgUnitCodeIndex] = entityCode;
+      return newRow;
+    });
 
     return { ...response, rows: newRows };
   };
