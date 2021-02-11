@@ -35,13 +35,14 @@ export class AreaTooltip extends Component {
   }
 
   render() {
-    const { permanent, onMouseOver, onMouseOut, text } = this.props;
+    const { permanent, onMouseOver, onMouseOut, text, sticky } = this.props;
 
     return (
       <Tooltip
         pane="tooltipPane"
         direction="auto"
         opacity={1}
+        sticky={sticky}
         permanent={permanent}
         interactive={permanent}
         onMouseOver={onMouseOver}

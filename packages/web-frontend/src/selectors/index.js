@@ -38,6 +38,7 @@ export {
   selectAdjustedProjectBounds,
   selectTileSets,
   selectActiveTileSet,
+  selectAreRegionLabelsSticky,
 } from './projectSelectors';
 
 export {
