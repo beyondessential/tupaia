@@ -79,3 +79,42 @@ export const createAnswerDBFilter = async (accessPolicy, models, criteria, optio
 
   return { dbConditions, dbOptions };
 };
+
+export const createAnswerViaSurveyResponseDBFilter = async (
+  criteria,
+  options,
+  surveyResponseId,
+) => {
+  // Filter by parent id
+  const dbConditions = { ...criteria };
+  dbConditions.survey_response_id = surveyResponseId;
+  // Add additional sorting when requesting via parent
+  const dbOptions = {
+    ...options,
+    sort: ['screen_number', 'component_number', ...options.sort],
+  };
+
+  // Join other tables necessary for the additional sorting entries
+  dbOptions.multiJoin = mergeMultiJoin(
+    [
+      {
+        joinWith: TYPES.SURVEY_RESPONSE,
+        joinCondition: [`${TYPES.SURVEY_RESPONSE}.id`, `${TYPES.ANSWER}.survey_response_id`],
+      },
+      {
+        joinWith: TYPES.SURVEY_SCREEN,
+        joinCondition: [`${TYPES.SURVEY_SCREEN}.survey_id`, `${TYPES.SURVEY_RESPONSE}.survey_id`],
+      },
+      {
+        joinWith: TYPES.SURVEY_SCREEN_COMPONENT,
+        joinConditions: [
+          [`${TYPES.ANSWER}.question_id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
+          [`${TYPES.SURVEY_SCREEN}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`],
+        ],
+      },
+    ],
+    dbOptions.multiJoin,
+  );
+
+  return { dbConditions, dbOptions };
+};

@@ -4,7 +4,11 @@
  */
 
 import { GETHandler } from '../GETHandler';
-import { assertAnswerPermissions, createAnswerDBFilter } from './assertAnswerPermissions';
+import {
+  assertAnswerPermissions,
+  createAnswerDBFilter,
+  createAnswerViaSurveyResponseDBFilter,
+} from './assertAnswerPermissions';
 import { assertSurveyResponsePermissions } from '../surveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
@@ -45,9 +49,6 @@ export class GETAnswers extends GETHandler {
     );
 
     // Get answers from survey response
-    const dbConditions = { ...criteria };
-    dbConditions.survey_response_id = this.parentRecordId;
-
-    return { dbConditions, dbOptions: options };
+    return createAnswerViaSurveyResponseDBFilter(criteria, options, this.parentRecordId);
   }
 }
