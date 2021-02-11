@@ -42,43 +42,45 @@ const reports = [
   },
   {
     id: 'FETP_PG_graduate_area_of_expertise',
-    dataBuilder: 'nonMatrixTableFromCells',
     newConfig: {
-      rows: ['Areas of Expertise'],
-      cells: [
-        [
-          {
-            key: 'Area_Of_Expertise',
-            operator: 'COMBINE_BINARY_AS_STRING',
-            dataElementToString: {
-              FETPNG20Data_012: 'Animal health',
-              FETPNG20Data_013: 'Community engagement',
-              FETPNG20Data_014: 'Data analysis',
-              FETPNG20Data_015: 'Data management',
-              FETPNG20Data_016: 'Environmental health',
-              FETPNG20Data_017: 'EPI',
-              FETPNG20Data_018: 'HIV',
-              FETPNG20Data_019: 'Lab',
-              FETPNG20Data_020: 'Malaria',
-              FETPNG20Data_021: 'MCH',
-              FETPNG20Data_022: 'NCDs',
-              FETPNG20Data_023: 'NTD',
-              FETPNG20Data_024: 'Operational research',
-              FETPNG20Data_025: 'Other research',
-              FETPNG20Data_026: 'Outbreak response',
-              FETPNG20Data_027: 'Surveillance',
-              FETPNG20Data_028: 'TB',
-              FETPNG20Data_029: 'Team leadership',
-              FETPNG20Data_030: 'Other',
+      dataBuilder: 'nonMatrixTableFromCells',
+      dataBuilderConfig: {
+        rows: ['Areas of Expertise'],
+        cells: [
+          [
+            {
+              key: 'Area_Of_Expertise',
+              operator: 'COMBINE_BINARY_AS_STRING',
+              dataElementToString: {
+                FETPNG20Data_012: 'Animal health',
+                FETPNG20Data_013: 'Community engagement',
+                FETPNG20Data_014: 'Data analysis',
+                FETPNG20Data_015: 'Data management',
+                FETPNG20Data_016: 'Environmental health',
+                FETPNG20Data_017: 'EPI',
+                FETPNG20Data_018: 'HIV',
+                FETPNG20Data_019: 'Lab',
+                FETPNG20Data_020: 'Malaria',
+                FETPNG20Data_021: 'MCH',
+                FETPNG20Data_022: 'NCDs',
+                FETPNG20Data_023: 'NTD',
+                FETPNG20Data_024: 'Operational research',
+                FETPNG20Data_025: 'Other research',
+                FETPNG20Data_026: 'Outbreak response',
+                FETPNG20Data_027: 'Surveillance',
+                FETPNG20Data_028: 'TB',
+                FETPNG20Data_029: 'Team leadership',
+                FETPNG20Data_030: 'Other',
+              },
             },
-          },
+          ],
         ],
-      ],
-      columns: ['main'],
-      entityAggregation: {
-        dataSourceEntityType: 'individual',
+        columns: ['main'],
+        entityAggregation: {
+          dataSourceEntityType: 'individual',
+        },
       },
-    },
+    },  
   },
 ];
 
