@@ -64,6 +64,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       longitude,
       latitude,
       geojson,
+      data_service_entity: dataServiceEntity,
       type_name: typeName,
       screen_bounds: screenBounds,
       category_code: categoryCode,
@@ -105,6 +106,17 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         newFacility.category_code = defaultTypeDetails.categoryCode;
       }
       await newFacility.save();
+    }
+    if (dataServiceEntity) {
+      const dataServiceEntityToUpsert = {
+        entity_code: code,
+        config: dataServiceEntity,
+      };
+
+      await transactingModels.dataServiceEntity.updateOrCreate(
+        { entity_code: code },
+        dataServiceEntityToUpsert,
+      );
     }
     await transactingModels.entity.updateOrCreate(
       { code },
