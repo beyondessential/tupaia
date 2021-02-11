@@ -77,7 +77,7 @@ export const testFetchDataElements = () => {
       {
         code: 'BCD1',
         name: 'Facility Status',
-        options: {},
+        options: undefined,
       },
       {
         code: 'BCD57',
@@ -94,12 +94,12 @@ export const testFetchDataElements = () => {
       {
         code: 'CROP_1',
         name: 'Number of potatoes grown',
-        options: {},
+        options: undefined,
       },
       {
         code: 'CROP_2',
         name: 'Number of lettuces grown',
-        options: {},
+        options: undefined,
       },
     ]);
   });
