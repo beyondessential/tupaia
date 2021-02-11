@@ -1,5 +1,5 @@
-import moment from 'moment';
-import {addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
+import { addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
+import { VALUE_TYPES } from '/constant';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
@@ -27,7 +27,7 @@ export const formatMatrixDataForExcel = (
   { columns, categories: rowCategories, rows, name: reportName, organisationUnitCode },
   timeZone,
   configIn,
-  outputFormat = 'aoa'
+  outputFormat = 'aoa',
 ) => {
   // Create the empty array of objects to build the data into
   let formattedData = [];
@@ -40,10 +40,13 @@ export const formatMatrixDataForExcel = (
         columnCategories.map(({ columns: columnsInCategory }) => {
           // Add an empty column to start each category, with just the header filled as the title of the category
           // Iterate through each of the columns in the category, and add the relevant row data
-          return ['', ...columnsInCategory.map(col => addValueOrEmpty(row[col.key]))];
+          return [
+            '',
+            ...columnsInCategory.map(col => addValueOrEmpty(row[col.key], row.valueType)),
+          ];
         })
       : // This table has no column categories, just one set of columns
-        columns.map(col => addValueOrEmpty(row[col.key]));
+        columns.map(col => addValueOrEmpty(row[col.key], row.valueType));
 
     // prepend dataElementHeader
     rowData.unshift(row.dataElement);
@@ -124,12 +127,22 @@ const convertAoaToAoo = data => {
 
 const isEmpty = data => data === undefined || data === null;
 
-const addValueOrEmpty = value => {
+const addValueOrEmpty = (value, valueType) => {
   if (isEmpty(value)) return '';
 
   if (typeof value === 'object') {
+    if (valueType === VALUE_TYPES.NUMBER_AND_PERCENTAGE) {
+      const { value: val, metadata } = value;
+      return numberAndPercentage(val, metadata);
+    }
     return isEmpty(value.value) ? '' : value.value;
   }
 
   return value;
-}
+};
+
+const numberAndPercentage = (value, { numerator, denominator }) => {
+  if (isNaN(value)) return value;
+  const percentage = (numerator / denominator) * 100;
+  return `${value} (${percentage === 0 ? 0 : percentage.toFixed(1)}%)`;
+};

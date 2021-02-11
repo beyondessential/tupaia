@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import { ValueAndPercentageByDataValueByFlightDate } from './valueAndPercentageByDataValueByFlightDate';
+import { VALUE_TYPES } from '/constant';
 import {
   Flight,
   FLIGHT_DATE,
@@ -13,41 +14,43 @@ import {
 } from './flight';
 
 export class ValueAndPercentageByAgeByFlightDate extends ValueAndPercentageByDataValueByFlightDate {
-
-  getDataElementCodes = () => [FLIGHT_DATE, PASSENGER_AGE]; 
+  getDataElementCodes = () => [FLIGHT_DATE, PASSENGER_AGE];
 
   getRows = (flights, columns) => {
-    const rows = getAgeRanges()
-      .map((ageRange) => {
-        const row = {
-          dataElement: `${ageRange.min}-${ageRange.max} yrs`,
-          valueType: 'numberAndPercentage',
+    const rows = getAgeRanges().map(ageRange => {
+      const row = {
+        dataElement: `${ageRange.min}-${ageRange.max} yrs`,
+        valueType: VALUE_TYPES.NUMBER_AND_PERCENTAGE,
+      };
+
+      for (const column of columns) {
+        const flight = Flight.getFlightByKey(flights, column.key);
+
+        const passengersForThisAgeRange = getPassengersPerAgeRange(flight)[ageRange.key];
+
+        row[column.key] = {
+          value: passengersForThisAgeRange.numPassengers,
+          metadata: {
+            numerator: passengersForThisAgeRange.numPassengers,
+            denominator: getTotalNumPassengers(flight),
+          },
         };
+      }
 
-        for (const column of columns) {
-          const flight = Flight.getFlightByKey(flights, column.key);
+      return row;
+    });
 
-          const passengersForThisAgeRange = getPassengersPerAgeRange(flight)[ageRange.key];
-
-          row[column.key] = {
-            value: passengersForThisAgeRange.numPassengers,
-            metadata: {
-              numerator: passengersForThisAgeRange.numPassengers,
-              denominator: getTotalNumPassengers(flight),
-            }
-          };
-        }
-
-        return row;
-      });
-
-      rows.push(this.getTotalsRow(flights, columns));
+    rows.push(this.getTotalsRow(flights, columns));
 
     return rows;
-  }
+  };
 }
 
-export const valueAndPercentageByAgeByFlightDate = async ({ models, dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const valueAndPercentageByAgeByFlightDate = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new ValueAndPercentageByAgeByFlightDate(
     models,
     aggregator,
@@ -58,5 +61,4 @@ export const valueAndPercentageByAgeByFlightDate = async ({ models, dataBuilderC
     dataBuilderConfig.aggregationType,
   );
   return builder.build();
-}
-
+};
