@@ -179,6 +179,11 @@ export class TupaiaDataApi {
 
   buildOptionsMetadata = (options = [], type) => {
     const optionList = options.length === 0 && type === 'Binary' ? DEFAULT_BINARY_OPTIONS : options;
+
+    if (!optionList.length) {
+      return undefined;
+    }
+
     const optionsMetadata = {};
 
     optionList.forEach(option => {
