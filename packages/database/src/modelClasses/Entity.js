@@ -226,6 +226,19 @@ export class EntityType extends DatabaseType {
     return this.getDescendants(hierarchyId, { generational_distance: 1 });
   }
 
+  async getChildrenViaHierarchy(hierarchyId) {
+    return this.database.executeSql(
+      `
+        SELECT entity.*
+        FROM entity
+        INNER JOIN entity_relation on entity.id = entity_relation.child_id
+        WHERE entity_relation.parent_id = ?
+        AND entity_relation.entity_hierarchy_id = ?;
+      `,
+      [this.id, hierarchyId],
+    );
+  }
+
   pointLatLon() {
     const pointJson = JSON.parse(this.point);
     return {
