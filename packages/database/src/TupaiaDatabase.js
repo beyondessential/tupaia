@@ -4,7 +4,7 @@
  */
 
 import autobind from 'react-autobind';
-import pg from 'pg';
+import { types as pgTypes } from 'pg';
 import knex from 'knex';
 import winston from 'winston';
 import { Multilock } from '@tupaia/utils';
@@ -54,7 +54,7 @@ const HANDLER_DEBOUNCE_DURATION = 250;
 
 // turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
 // string, independent of timezones, rather than being converted to local time
-pg.types.setTypeParser(1114, val => val);
+pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
 export class TupaiaDatabase {
   constructor(transactingConnection) {
