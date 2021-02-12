@@ -4,7 +4,7 @@
  */
 
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
-import * as modelClasses from '../database/models';
+import * as modelClasses from '../../../database/models';
 
 let modelsSingleton = null;
 export function getModels() {

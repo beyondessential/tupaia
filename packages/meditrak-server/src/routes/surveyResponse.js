@@ -189,7 +189,9 @@ export async function surveyResponse(req, res) {
     const surveyResponsePermissionsChecker = async accessPolicy => {
       await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, responses);
     };
-    await req.assertPermissions(assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]));
+    await req.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
+    );
 
     results = await saveResponsesToDatabase(transactingModels, userId, responses);
   });

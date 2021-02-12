@@ -63,9 +63,6 @@ export class DhisService extends Service {
   };
 
   validatePushData(dataSources, dataValues) {
-    if (dataSources.length !== dataValues.length) {
-      throw new Error('Different number of data sources and values provided to push');
-    }
     const { serverName } = this.getApiForValue(dataSources[0], dataValues[0]);
     if (
       dataSources.some(
@@ -327,7 +324,7 @@ export class DhisService extends Service {
   pullEventsForApi = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
-    const dataElementSources = await this.models.dataSource.findOrDefault({
+    const dataElementSources = await this.models.dataSource.find({
       code: dataElementCodes,
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
