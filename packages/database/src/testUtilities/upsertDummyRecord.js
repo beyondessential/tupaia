@@ -7,9 +7,12 @@ import { TYPES } from '../types';
 import { generateTestId } from './generateTestId';
 import { generateValueOfType } from './generateValueOfType';
 
-const { ENTITY, SURVEY_RESPONSE } = TYPES;
+const { DISASTER, ENTITY, SURVEY_RESPONSE } = TYPES;
 
 const CUSTOM_DUMMY_VALUES = {
+  [DISASTER]: {
+    type: 'cyclone',
+  },
   [ENTITY]: {
     type: 'facility', // default testing entity should be facility
     country_code: 'DL', // use demo land by default in testing

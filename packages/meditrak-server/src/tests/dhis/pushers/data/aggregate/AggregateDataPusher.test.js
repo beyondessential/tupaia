@@ -6,9 +6,8 @@
 import sinon from 'sinon';
 
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
-import { resetTestData } from '../../../../testUtilities';
+import { getModels, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
-import { getModels } from '../../../../getModels';
 import { BASELINE_TEST_DATA, QUESTION, SURVEY } from './AggregateDataPusher.fixtures';
 import { createDhisApiStub, resetDhisApiStubHistory } from './createDhisApiStub';
 import { testCreateAnswer } from './testCreateAnswer';
