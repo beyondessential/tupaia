@@ -17,10 +17,14 @@ const buildAndInsertQuestion = async (
     { code },
     { ...questionFields, data_source_id: dataElement.id },
   );
-  const surveyScreenComponent = await upsertDummyRecord(models.surveyScreenComponent, {
-    screen_id: surveyScreen.id,
-    question_id: question.id,
-  });
+  const surveyScreenComponent = await findOrCreateDummyRecord(
+    models.surveyScreenComponent,
+    {
+      screen_id: surveyScreen.id,
+      question_id: question.id,
+    },
+    {},
+  );
   return { question, dataElement, surveyScreenComponent };
 };
 
@@ -49,7 +53,11 @@ const buildAndInsertSurvey = async (
     { code },
     { ...surveyFields, data_source_id: dataGroup.id },
   );
-  const surveyScreen = await upsertDummyRecord(models.surveyScreen, { survey_id: survey.id });
+  const surveyScreen = await findOrCreateDummyRecord(
+    models.surveyScreen,
+    { survey_id: survey.id },
+    {},
+  );
 
   const surveyScreenComponents = [];
   const questions = [];
