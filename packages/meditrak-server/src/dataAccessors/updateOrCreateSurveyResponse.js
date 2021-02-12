@@ -71,7 +71,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
       data_time: suppliedDataTime,
       submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
       end_time: endTime, // prior to v1.7.87 fall back to end_time
-      timezone,
+      timezone = 'Pacific/Auckland', // if no timezone provided, use db default
     } = surveyResponseObject;
     const dataTime = suppliedDataTime || submissionTime || endTime;
 
