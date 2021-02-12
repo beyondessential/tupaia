@@ -1,5 +1,4 @@
-import { addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
-import { VALUE_TYPES } from '/constant';
+import { addExportedDateAndOriginAtTheSheetBottom, formatDataValueByType } from '@tupaia/utils';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
@@ -131,18 +130,11 @@ const addValueOrEmpty = (value, valueType) => {
   if (isEmpty(value)) return '';
 
   if (typeof value === 'object') {
-    if (valueType === VALUE_TYPES.NUMBER_AND_PERCENTAGE) {
-      const { value: val, metadata } = value;
-      return numberAndPercentage(val, metadata);
+    if (valueType) {
+      return formatDataValueByType(value, valueType);
     }
     return isEmpty(value.value) ? '' : value.value;
   }
 
   return value;
-};
-
-const numberAndPercentage = (value, { numerator, denominator }) => {
-  if (isNaN(value)) return value;
-  const percentage = (numerator / denominator) * 100;
-  return `${value} (${percentage === 0 ? 0 : percentage.toFixed(1)}%)`;
 };

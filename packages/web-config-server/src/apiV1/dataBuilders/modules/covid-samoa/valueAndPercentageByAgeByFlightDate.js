@@ -2,8 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import { VALUE_TYPES } from '@tupaia/utils';
 import { ValueAndPercentageByDataValueByFlightDate } from './valueAndPercentageByDataValueByFlightDate';
-import { VALUE_TYPES } from '/constant';
 import {
   Flight,
   FLIGHT_DATE,

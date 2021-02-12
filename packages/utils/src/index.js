@@ -25,3 +25,5 @@ export { WorkBookParser } from './WorkBookParser';
 export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
 export { addExportedDateAndOriginAtTheSheetBottom } from './addExportDateAndOriginInExcelExportData';
 export { getBrowserTimeZone } from './getBrowserTimeZone';
+export { formatDataValueByType } from './formatDataValueByType';
+export { VALUE_TYPES } from './constant';
