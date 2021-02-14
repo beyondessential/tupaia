@@ -6,8 +6,7 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
-import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail, randomString } from './testUtilities';
+import { getAuthorizationHeader, randomEmail, randomString, TestableApp } from '../testUtilities';
 
 describe('Reset Password', () => {
   const app = new TestableApp();

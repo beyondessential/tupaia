@@ -5,10 +5,7 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
-import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
-import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
+import { TestableApp } from '../testUtilities';
 
 describe('Access Requests', () => {
   const app = new TestableApp();
@@ -40,14 +37,11 @@ describe('Access Requests', () => {
   };
 
   before(async () => {
-    // We're not testing permissions here
-    const policy = {
-      DL: [BES_ADMIN_PERMISSION_GROUP],
-    };
-    await prepareStubAndAuthenticate(app, policy);
+    await app.grantFullAccess(); // We're not testing permissions here
   });
+
   after(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('User Entity Permission via Access Request', () => {
