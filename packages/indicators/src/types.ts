@@ -55,9 +55,7 @@ export type DataSourceType = DatabaseType<DataSourceRecord>;
 
 export type IndicatorType = DatabaseType<IndicatorRecord>;
 
-type DataSourceModel = DatabaseModel<DataSourceRecord> & {
-  findOrDefault: DatabaseModel<DataSourceRecord>['find'];
-};
+type DataSourceModel = DatabaseModel<DataSourceRecord>;
 
 export interface ModelRegistry {
   readonly dataSource: DataSourceModel;
@@ -68,6 +66,11 @@ export interface Aggregation {
   readonly type: string;
   readonly config?: Record<string, unknown>;
 }
+
+/**
+ * Maps a data element to multiple aggregation lists that will be applied to it
+ */
+export type AggregationListsMap = Record<string, Aggregation[][]>;
 
 export type FetchOptions = Readonly<{
   organisationUnit?: string;

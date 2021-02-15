@@ -8,5 +8,7 @@ import { Builder } from './Builder';
 export const getElementCodesForBuilders = (builders: Builder[]) =>
   builders.map(b => b.getElementCodes()).flat();
 
-export const getAggregationsForBuilders = (builders: Builder[]) =>
-  builders.map(b => b.getAggregations()).flat();
+export const getAggregationListMapsByBuilder = (builders: Builder[]) =>
+  Object.fromEntries(
+    builders.map(builder => [builder.getIndicator().code, builder.getAggregationListsMap()]),
+  );

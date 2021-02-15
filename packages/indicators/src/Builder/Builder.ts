@@ -4,16 +4,13 @@
  */
 
 import { AnalyticsRepository } from '../AnalyticsRepository';
-import { Aggregation, Analytic, AnalyticValue, FetchOptions, Indicator } from '../types';
+import { Aggregation, AggregationListsMap, Analytic, AnalyticValue, Indicator } from '../types';
 
 export abstract class Builder {
   protected readonly indicator: Indicator;
 
-  protected readonly isRoot: boolean;
-
-  constructor(indicator: Indicator, isRoot = false) {
+  constructor(indicator: Indicator) {
     this.indicator = indicator;
-    this.isRoot = isRoot;
   }
 
   getIndicator = () => this.indicator;
@@ -23,29 +20,24 @@ export abstract class Builder {
    */
   abstract getElementCodes(): string[];
 
-  abstract getAggregations(): Aggregation[];
+  abstract getAggregationListsMap(): AggregationListsMap;
 
+  /**
+   * @param extraAggregations Useful for passing aggregations top-down to nested indicators
+   */
   buildAnalytics = (
-    populatedAnalyticsRepo: AnalyticsRepository,
+    analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    fetchOptions: FetchOptions,
-  ): Analytic[] => {
-    if (!populatedAnalyticsRepo.isPopulated()) {
-      throw new Error(
-        'buildAnalytics expects that the provided analyticsRepository is already populated',
-      );
-    }
-
-    return this.buildAnalyticValues(
-      populatedAnalyticsRepo,
-      buildersByIndicator,
-      fetchOptions,
-    ).map(value => ({ ...value, dataElement: this.indicator.code }));
-  };
+    extraAggregations: Aggregation[] = [],
+  ): Analytic[] =>
+    this.buildAnalyticValues(analyticsRepo, buildersByIndicator, extraAggregations).map(value => ({
+      ...value,
+      dataElement: this.indicator.code,
+    }));
 
   abstract buildAnalyticValues(
-    populatedAnalyticsRepo: AnalyticsRepository,
+    analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    fetchOptions: FetchOptions,
+    extraAggregations: Aggregation[],
   ): AnalyticValue[];
 }
