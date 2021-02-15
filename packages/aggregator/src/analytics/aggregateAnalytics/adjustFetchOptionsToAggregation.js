@@ -14,6 +14,21 @@ const AGGREGATION_TYPE_TO_DATE_RANGE_GETTER = {
 };
 
 /**
+ * Currently not all `startDate`, `endDate`, `period` options are provided in each client request.
+ * This function preserves the existing functionality by retaining the original period if
+ * there was no date range adjustment
+ */
+const getAdjustedPeriod = (originalOptions, adjustedOptions) => {
+  const areDateRangesEqual =
+    originalOptions?.startDate === adjustedOptions?.startDate &&
+    originalOptions?.endDate === adjustedOptions?.endDate;
+
+  return areDateRangesEqual
+    ? originalOptions.period
+    : convertDateRangeToPeriodString(adjustedOptions.startDate, adjustedOptions.endDate);
+};
+
+/**
  * Returns the minimum startDate and the maximum endDate in the provided ranges
  */
 const getDateRangeExtremes = dateRanges => {
@@ -40,7 +55,7 @@ export const adjustFetchOptionsToAggregationList = (fetchOptions, aggregationLis
   }
 
   const { startDate, endDate } = adjustDateRangeToAggregationList(fetchOptions, aggregationList);
-  const period = convertDateRangeToPeriodString(startDate, endDate);
+  const period = getAdjustedPeriod(fetchOptions, { startDate, endDate });
 
   return { ...fetchOptions, startDate, endDate, period };
 };
@@ -63,7 +78,7 @@ export const adjustFetchOptionsToAggregationLists = (fetchOptions, aggregationLi
     adjustDateRangeToAggregationList(fetchOptions, aggregationList),
   );
   const { startDate, endDate } = getDateRangeExtremes(adjustedDateRanges);
-  const period = convertDateRangeToPeriodString(startDate, endDate);
+  const period = getAdjustedPeriod(fetchOptions, { startDate, endDate });
 
   return { ...fetchOptions, startDate, endDate, period };
 };
