@@ -7,8 +7,7 @@ import { DataBroker } from '@tupaia/data-broker';
 import { getTestModels, runIntegrationTests } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
 import { Analytic, FetchOptions } from '../../types';
-import arithmeticAnalyticsFixtures from './arithmeticAnalytics.fixtures.json';
-import indicatorApiFixtures from './indicatorApi.fixtures.json';
+import { arithmeticAnalyticsFixtures, indicatorApiFixtures } from './fixtures';
 
 interface TestCase {
   input: {
