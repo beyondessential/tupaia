@@ -8,9 +8,8 @@ import { get } from 'lodash';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { formatDataValue } from './utils';
 import { VALUE_TYPES, CHART_TYPES, PRESENTATION_OPTIONS_SHAPE } from './constants';
-import { formatTimestampForChart, getIsTimeSeries } from './helpers';
+import { formatTimestampForChart, getIsTimeSeries, formatDataValue } from './utils';
 
 function formatLabelledValue(label, value, valueType, metadata) {
   const valueText = formatDataValue(value, valueType, metadata);

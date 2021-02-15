@@ -12,9 +12,8 @@ import { CHART_TYPES } from './constants';
 import { CartesianChart } from './CartesianChart';
 import { PieChart } from './PieChart';
 import { parseChartConfig } from './parseChartConfig';
-import { getIsTimeSeries, isDataKey } from './helpers';
 import { useChartData } from './useChartData';
-import { isMobile } from './utils';
+import { getIsTimeSeries, isDataKey, isMobile } from './utils';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
