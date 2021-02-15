@@ -5,14 +5,13 @@
 
 import groupBy from 'lodash.groupby';
 
-import { getSortByKey, utcMoment } from '@tupaia/utils';
+import { getSortByKey, momentToDateString, utcMoment } from '@tupaia/utils';
 import { fetchEventData, fetchAnalyticData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
-const ANALYTICS_DATE_FORMAT = 'YYYY-MM-DD';
 
 export class TupaiaDataApi {
   constructor(database) {
@@ -50,7 +49,7 @@ export class TupaiaDataApi {
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      date: utcMoment(date).format(ANALYTICS_DATE_FORMAT),
+      date: momentToDateString(utcMoment(date)),
       value: sanitizeDataValue(value, type),
     }));
   }
@@ -77,7 +76,7 @@ export class TupaiaDataApi {
     const dataGroups = await new SqlQuery(
       `
       SELECT code, name
-      FROM survey 
+      FROM survey
       WHERE survey.code = '${dataGroupCode}'
     `,
     ).executeOnDatabase(this.database);
@@ -97,10 +96,10 @@ export class TupaiaDataApi {
       const sqlQuery = await new SqlQuery(
         `
         SELECT question.code, question.name, question.text
-        FROM question 
-        JOIN survey_screen_component on question.id = survey_screen_component.question_id 
+        FROM question
+        JOIN survey_screen_component on question.id = survey_screen_component.question_id
         JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
-        JOIN survey on survey_screen.survey_id = survey.id 
+        JOIN survey on survey_screen.survey_id = survey.id
         WHERE survey.code = '${dataGroupCode}'
         AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
       `,
