@@ -59,6 +59,14 @@ export const assertCanImportSurveyResponses = async (
 };
 
 const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse) => {
+  // If we're creating a new entity we don't have a currently valid entity_code
+  // So instead, check our permissions against the new entity's parent
+  const newEntity = surveyResponse.entities_created.find(e => e.id === surveyResponse.entity_id);
+  if (newEntity) {
+    const parentEntity = await models.entity.findById(newEntity.parent_id);
+    return parentEntity.code;
+  }
+
   // There are three valid ways to refer to the entity in a batch change:
   // entity_code, entity_id, clinic_id
   if (surveyResponse.entity_code) {
