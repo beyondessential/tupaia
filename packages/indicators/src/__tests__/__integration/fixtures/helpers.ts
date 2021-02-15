@@ -9,8 +9,8 @@ import { arrayToAnalytics } from '@tupaia/data-broker';
 export type ArraySurveyResponse = [string, string, string, Record<string, string>];
 
 export const arrayToSurveyResponse = (arrayResponse: ArraySurveyResponse) => {
-  const [surveyCode, entityCode, submissionTime, answers] = arrayResponse;
-  return { surveyCode, entityCode, submission_time: submissionTime, answers };
+  const [surveyCode, entityCode, date, answers] = arrayResponse;
+  return { surveyCode, entityCode, submission_time: `${date}T15:00:00Z`, answers };
 };
 
 // startDate, endDate, organisationUnitCodes

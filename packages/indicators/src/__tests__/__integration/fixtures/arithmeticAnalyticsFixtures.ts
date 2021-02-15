@@ -28,18 +28,25 @@ const SURVEYS = [
 ];
 
 const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
-  ['Births', 'GR', '2019-01-01T15:00:00Z', { Female: '1', Male: '2' }],
-  ['Births', 'GR', '2020-11-30T15:00:00Z', { Female: '3', Male: '4' }],
-  ['Births', 'GR', '2020-12-29T15:00:00Z', { Female: '60', Male: '80' }],
-  ['Births', 'GR', '2020-12-30T15:00:00Z', { Female: '6', Male: '8' }],
-  ['Births', 'IT', '2019-06-05T15:00:00Z', { Female: '10', Male: '20' }],
-  ['Births', 'IT', '2020-07-07T15:00:00Z', { Female: '30', Male: '40' }],
-  ['Births', 'ES', '2019-01-01T15:00:00Z', { Female: '3', Male: '3' }],
-  ['Births', 'ES', '2019-04-01T15:00:00Z', { Female: '7', Male: '5' }],
-  ['Births', 'ES', '2019-07-01T15:00:00Z', { Female: '4', Male: '5' }],
-  ['Births', 'ES', '2019-10-01T15:00:00Z', { Female: '9', Male: '9' }],
-  ['Births', 'ES', '2020-01-01T15:00:00Z', { Female: '100' }],
-  ['Births', 'ES', '2020-02-02T15:00:00Z', { Female: '150', Male: '200' }],
+  // GR
+  ['Births', 'GR', '2019-01-01', { Female: '1', Male: '2' }],
+  ['Births', 'GR', '2020-11-30', { Female: '3', Male: '4' }],
+  ['Births', 'GR', '2020-12-29', { Female: '60', Male: '80' }],
+  ['Births', 'GR', '2020-12-30', { Female: '6', Male: '8' }],
+  // IT
+  ['Births', 'IT', '2019-06-05', { Female: '10', Male: '20' }],
+  ['Births', 'IT', '2020-07-07', { Female: '30', Male: '40' }],
+  // ES
+  ['Births', 'ES', '2019-01-01', { Female: '0', Male: '1' }],
+  ['Births', 'ES', '2019-02-01', { Female: '2', Male: '3' }],
+  ['Births', 'ES', '2019-04-01', { Female: '2', Male: '3' }],
+  ['Births', 'ES', '2019-05-01', { Female: '3', Male: '4' }],
+  ['Births', 'ES', '2019-07-01', { Female: '1', Male: '2' }],
+  ['Births', 'ES', '2019-08-01', { Female: '3', Male: '3' }],
+  ['Births', 'ES', '2019-10-01', { Female: '3', Male: '4' }],
+  ['Births', 'ES', '2019-11-01', { Female: '5', Male: '6' }],
+  ['Births', 'ES', '2020-01-01', { Female: '100' }],
+  ['Births', 'ES', '2020-02-02', { Female: '150', Male: '200' }],
 ];
 
 const ARITHMETIC_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
@@ -48,17 +55,13 @@ const ARITHMETIC_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
     formula: 'Female + Male',
     aggregation: 'FINAL_EACH_MONTH',
   },
-  MonthlyBirths_MonthlyBirths_ZeroDefaults: {
+  MonthlyBirthsZeroDefaults: {
     formula: 'Female + Male',
     aggregation: 'FINAL_EACH_MONTH',
     defaultValues: { Female: 0, Male: 0 },
   },
-  AnnualBirths: {
-    formula: 'Female + Male',
-    aggregation: ['FINAL_EACH_MONTH', 'SUM_EACH_YEAR'],
-  },
-  MonthlyBirthIncreaseRatio: {
-    formula: '(Female + Male) / MonthlyBirths',
+  MonthlyBirthIncreaseRate: {
+    formula: '(Female + Male - MonthlyBirths) / MonthlyBirths',
     aggregation: {
       Female: 'FINAL_EACH_MONTH',
       Male: 'FINAL_EACH_MONTH',
@@ -68,8 +71,12 @@ const ARITHMETIC_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
       ],
     },
   },
-  AnnualBirthIncreaseRatio: {
-    formula: 'AnnualBirths / annualBirthsPrevYear',
+  AnnualBirths: {
+    formula: 'Female + Male',
+    aggregation: ['FINAL_EACH_MONTH', 'SUM_EACH_YEAR'],
+  },
+  AnnualBirthIncreaseRate: {
+    formula: '(AnnualBirths - annualBirthsPrevYear) / annualBirthsPrevYear',
     parameters: {
       annualBirthsPrevYear: {
         formula: 'AnnualBirths',
@@ -172,19 +179,19 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Applies correct aggregation (array format)',
     ['AnnualBirths'],
     ['2020-01-01', '2020-12-31', ['GR']],
-    [['AnnualBirths', 'GR', '2020', 21]],
+    [['AnnualBirths', 'GR', '2020', 7 + 14]],
   ],
   [
     'Applies correct aggregation (object format)',
-    ['MonthlyBirthIncreaseRatio'],
+    ['MonthlyBirthIncreaseRate'],
     ['2020-12-01', '2020-12-31', ['GR']],
-    [['MonthlyBirthIncreaseRatio', 'GR', '20201230', 2]],
+    [['MonthlyBirthIncreaseRate', 'GR', '20201230', (14 - 7) / 7]],
   ],
   [
     'Nested indicator + inline indicator (parameter)',
-    ['AnnualBirthIncreaseRatio'],
+    ['AnnualBirthIncreaseRate'],
     ['2019-01-01', '2020-12-31', ['GR']],
-    [['AnnualBirthIncreaseRatio', 'GR', '2020', 7]],
+    [['AnnualBirthIncreaseRate', 'GR', '2020', (7 + 14 - 3) / 3]],
   ],
   [
     'Skips calculation if an element is not defined in a specific org unit/date range combo',
@@ -194,11 +201,11 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
   ],
   [
     'Uses default values if provided',
-    ['MonthlyBirths_MonthlyBirths_ZeroDefaults'],
+    ['MonthlyBirthsZeroDefaults'],
     ['2020-01-01', '2020-12-31', ['ES']],
     [
-      ['MonthlyBirths_MonthlyBirths_ZeroDefaults', 'ES', '20200101', 100],
-      ['MonthlyBirths_MonthlyBirths_ZeroDefaults', 'ES', '20200202', 350],
+      ['MonthlyBirthsZeroDefaults', 'ES', '20200101', 100],
+      ['MonthlyBirthsZeroDefaults', 'ES', '20200202', 350],
     ],
   ],
   [
@@ -208,7 +215,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     [
       ['AnnualBirths', 'GR', '2019', 3],
       ['AnnualBirths', 'IT', '2019', 30],
-      ['AnnualBirths', 'GR', '2020', 21],
+      ['AnnualBirths', 'GR', '2020', 7 + 14],
       ['AnnualBirths', 'IT', '2020', 70],
     ],
   ],
@@ -216,7 +223,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Applies correct aggregation in nested indicators',
     ['AverageOf3QuarterlyIncreases'],
     ['2019-10-01', '2019-12-31', ['ES']],
-    [['AverageOf3QuarterlyIncreases', 'ES', '20191001', (6 - 3 + 9) / 3]],
+    [['AverageOf3QuarterlyIncreases', 'ES', '20191001', (12 - 6 + (9 - 12) + (18 - 9)) / 3]],
   ],
 ];
 
