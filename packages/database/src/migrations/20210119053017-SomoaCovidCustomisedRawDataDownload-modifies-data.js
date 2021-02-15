@@ -35,7 +35,7 @@ const newDashboardReport = {
         surveysConfig: {
           [surveyCode]: {
             entityAggregation: {
-              dataSourceEntityType: 'case',
+              dataSourceEntityType: 'individual',
             },
             entityIdToNameElements: ['QMIA029'],
           },
