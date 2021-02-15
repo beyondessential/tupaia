@@ -7,10 +7,7 @@ export {
   convertDateRangeToPeriods,
   convertDateRangeToPeriodString,
 } from './convertDateRangeToPeriods';
-export {
-  convertPeriodStringToDateRange,
-  periodToDateString,
-} from './convertPeriodStringToDateRange';
+export { convertPeriodStringToDateRange } from './convertPeriodStringToDateRange';
 export { getMostRecentPeriod, getMostAncientPeriod } from './periodExtremes';
-export { EARLIEST_DATA_DATE, getDefaultPeriod } from './getDefaultPeriod';
+export * from './getDefaultPeriod';
 export * from './period';
