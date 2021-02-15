@@ -5,7 +5,7 @@
 
 import { generateTestId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
-import { getModels } from '../../getModels';
+import { getModels } from './getModels';
 
 const models = getModels();
 

@@ -1,8 +1,8 @@
 import { upsertDummyRecord } from '@tupaia/database';
-import { TestableApp } from '../../TestableApp';
+import { getModels } from './getModels';
 import { upsertEntity, upsertFacility } from './upsertRecord';
 
-const testModels = new TestableApp().models;
+const testModels = getModels();
 
 export const insertEntityAndFacility = async (
   { entity: entityData, facility: facilityData },

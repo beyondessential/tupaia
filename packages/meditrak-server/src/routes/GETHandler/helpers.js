@@ -102,7 +102,7 @@ export const getQueryOptionsForColumns = (
       if (!recordTypesInQuery.has(recordType)) {
         const joinCondition = customJoinConditions[recordType] || [
           `${recordType}.id`,
-          getForeignKeyColumnName(recordType),
+          `${baseRecordType}.${getForeignKeyColumnName(recordType)}`,
         ];
         multiJoin.push({ joinWith: recordType, joinCondition, joinType });
         recordTypesInQuery.add(recordType);
