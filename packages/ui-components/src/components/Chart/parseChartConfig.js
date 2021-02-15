@@ -4,7 +4,7 @@
  */
 
 import { CHART_TYPES, COLOR_PALETTES } from './constants';
-import { isDataKey } from './helpers';
+import { isDataKey } from './utils';
 
 const ADD_TO_ALL_KEY = '$all';
 
