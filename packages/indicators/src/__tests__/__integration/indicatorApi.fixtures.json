@@ -3,11 +3,23 @@
   "setup": {
     "dbRecords": {
       "entity": [{ "code": "GR", "name": "Greece", "type": "country" }],
-      "dataSource": [
-        { "code": "Female", "type": "dataElement", "service_type": "tupaia" },
-        { "code": "Male", "type": "dataElement", "service_type": "tupaia" }
-      ],
       "indicator": [
+        {
+          "code": "AllColours",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "Red + Blue",
+            "aggregation": "RAW"
+          }
+        },
+        {
+          "code": "RedAgainstBlue",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "Red / Blue",
+            "aggregation": "RAW"
+          }
+        },
         {
           "code": "NonExistingBuilder",
           "builder": "nonExisting",
@@ -41,15 +53,51 @@
     },
     "surveys": [
       {
-        "code": "Births",
+        "code": "FavouriteColour",
         "questions": [
-          { "code": "Female", "type": "Number" },
-          { "code": "Male", "type": "Number" }
+          { "code": "Red", "type": "Number" },
+          { "code": "Blue", "type": "Number" }
         ]
+      }
+    ],
+    "surveyResponses": [
+      {
+        "surveyCode": "Births",
+        "entityCode": "AU",
+        "submission_time": "2020-12-10T15:00:00Z",
+        "answers": {
+          "Red": "10",
+          "Blue": "20"
+        }
       }
     ]
   },
   "testCases": [
+    {
+      "description": "fetches data for multiple indicators",
+      "input": {
+        "indicatorCodes": ["AllColours", "RedAgainstBlue"],
+        "fetchOptions": {
+          "startDate": "2020-01-01",
+          "endDate": "2020-12-31",
+          "organisationUnitCodes": ["AU"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "AllColours",
+          "organisationUnit": "AU",
+          "period": "20201210",
+          "value": 30
+        },
+        {
+          "dataElement": "RedAgainstBlue",
+          "organisationUnit": "AU",
+          "period": "20201210",
+          "value": 0.5
+        }
+      ]
+    },
     {
       "description": "throws if a requested indicator builder does not exist",
       "input": {

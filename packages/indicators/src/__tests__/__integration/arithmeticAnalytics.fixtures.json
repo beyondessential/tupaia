@@ -7,10 +7,6 @@
         { "code": "IT", "name": "Italy", "type": "country" },
         { "code": "ES", "name": "Spain", "type": "country" }
       ],
-      "dataSource": [
-        { "code": "Female", "type": "dataElement", "service_type": "tupaia" },
-        { "code": "Male", "type": "dataElement", "service_type": "tupaia" }
-      ],
       "indicator": [
         {
           "code": "EmptyConfig",
@@ -46,7 +42,7 @@
           }
         },
         {
-          "code": "MonthlyBirthIncrease",
+          "code": "MonthlyBirthIncreaseRatio",
           "builder": "arithmetic",
           "config": {
             "formula": "(Female + Male) / MonthlyBirths",
@@ -64,7 +60,7 @@
           }
         },
         {
-          "code": "AnnualBirthIncrease",
+          "code": "AnnualBirthIncreaseRatio",
           "builder": "arithmetic",
           "config": {
             "formula": "AnnualBirths / annualBirthsPrevYear",
@@ -98,6 +94,64 @@
           "config": {
             "formula": "Male > Female",
             "aggregation": "FINAL_EACH_MONTH"
+          }
+        },
+        {
+          "code": "TotalBirths",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "MonthlyBirths",
+            "aggregation": "SUM"
+          }
+        },
+        {
+          "code": "QuarterlyIncrease",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "TotalBirths - prevQuarterTotalBirths",
+            "parameters": [
+              {
+                "code": "prevQuarterTotalBirths",
+                "builder": "arithmetic",
+                "config": {
+                  "formula": "TotalBirths",
+                  "aggregation": [
+                    { "type": "OFFSET_PERIOD", "config": { "offset": 1, "periodType": "QUARTER" } }
+                  ]
+                }
+              }
+            ],
+            "aggregation": "FINAL_EACH_QUARTER"
+          }
+        },
+        {
+          "code": "AverageOf3QuarterlyIncreases",
+          "builder": "arithmetic",
+          "config": {
+            "formula": "avg(QuarterlyIncrease, prevQuarterIncrease, prev2QuartersIncrease)",
+            "parameters": [
+              {
+                "code": "prevQuarterIncrease",
+                "builder": "arithmetic",
+                "config": {
+                  "formula": "QuarterlyIncrease",
+                  "aggregation": [
+                    { "type": "OFFSET_PERIOD", "config": { "offset": 1, "periodType": "QUARTER" } }
+                  ]
+                }
+              },
+              {
+                "code": "prev2QuartersIncrease",
+                "builder": "arithmetic",
+                "config": {
+                  "formula": "QuarterlyIncrease",
+                  "aggregation": [
+                    { "type": "OFFSET_PERIOD", "config": { "offset": 2, "periodType": "QUARTER" } }
+                  ]
+                }
+              }
+            ],
+            "aggregation": "FINAL_EACH_QUARTER"
           }
         }
       ]
@@ -164,6 +218,42 @@
         "answers": {
           "Female": "30",
           "Male": "40"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "ES",
+        "submission_time": "2019-01-01T15:00:00Z",
+        "answers": {
+          "Male": "3",
+          "Female": "3"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "ES",
+        "submission_time": "2019-04-01T15:00:00Z",
+        "answers": {
+          "Male": "5",
+          "Female": "7"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "ES",
+        "submission_time": "2019-07-01T15:00:00Z",
+        "answers": {
+          "Male": "5",
+          "Female": "4"
+        }
+      },
+      {
+        "surveyCode": "Births",
+        "entityCode": "ES",
+        "submission_time": "2019-10-01T15:00:00Z",
+        "answers": {
+          "Male": "9",
+          "Female": "9"
         }
       },
       {
@@ -327,7 +417,7 @@
     {
       "description": "Applies correct aggregation (object format)",
       "input": {
-        "indicatorCodes": ["MonthlyBirthIncrease"],
+        "indicatorCodes": ["MonthlyBirthIncreaseRatio"],
         "fetchOptions": {
           "startDate": "2020-12-01",
           "endDate": "2020-12-31",
@@ -336,7 +426,7 @@
       },
       "expected": [
         {
-          "dataElement": "MonthlyBirthIncrease",
+          "dataElement": "MonthlyBirthIncreaseRatio",
           "organisationUnit": "GR",
           "period": "20201230",
           "value": 2
@@ -346,7 +436,7 @@
     {
       "description": "Nested indicator + inline indicator (parameter)",
       "input": {
-        "indicatorCodes": ["AnnualBirthIncrease"],
+        "indicatorCodes": ["AnnualBirthIncreaseRatio"],
         "fetchOptions": {
           "startDate": "2019-01-01",
           "endDate": "2020-12-31",
@@ -355,7 +445,7 @@
       },
       "expected": [
         {
-          "dataElement": "AnnualBirthIncrease",
+          "dataElement": "AnnualBirthIncreaseRatio",
           "organisationUnit": "GR",
           "period": "2020",
           "value": 7
@@ -440,6 +530,25 @@
           "organisationUnit": "IT",
           "period": "2020",
           "value": 70
+        }
+      ]
+    },
+    {
+      "description": "Applies correct aggregation in nested indicators",
+      "input": {
+        "indicatorCodes": ["AverageOf3QuarterlyIncreases"],
+        "fetchOptions": {
+          "startDate": "2019-10-01",
+          "endDate": "2019-12-31",
+          "organisationUnitCodes": ["ES"]
+        }
+      },
+      "expected": [
+        {
+          "dataElement": "AverageOf3QuarterlyIncreases",
+          "organisationUnit": "ES",
+          "period": "20191001",
+          "value": 4
         }
       ]
     }
