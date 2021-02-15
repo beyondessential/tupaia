@@ -28,12 +28,12 @@ export const testDelete = () => {
     });
 
     it('deletes an aggregate data element with a different dhis code', async () => {
-      await dhisService.delete(DATA_SOURCES.DIF01, DATA_VALUES.POP01, {
+      await dhisService.delete(DATA_SOURCES.DIF01, DATA_VALUES.DIF01, {
         serverName: SERVER_NAME,
       });
       expect(dhisApi.deleteDataValue).toHaveBeenCalledOnceWith({
         dataElement: 'DIF01_DHIS',
-        value: '1',
+        value: '3',
       });
     });
   });
