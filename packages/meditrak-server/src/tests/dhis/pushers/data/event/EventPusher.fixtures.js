@@ -59,7 +59,6 @@ export const BASELINE_TEST_DATA = {
   user: [USER],
   entity: [ENTITY],
   surveyResponse: [SURVEY_RESPONSE],
-  question: [QUESTION],
   answer: [ANSWER],
   dhisSyncQueue: [CHANGE],
 };
