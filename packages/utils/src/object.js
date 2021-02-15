@@ -3,30 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { compareAsc, compareDesc } from './compare';
 import { getUniqueEntries } from './getUniqueEntries';
 
 /**
  * @typedef {Object<string, any>[] | Object<string, Object<string, any>>} ObjectCollection
  */
-
-export const compareAsc = (a, b) => {
-  const types = [typeof a, typeof b];
-
-  if (types.every(t => t === 'string')) {
-    return a.localeCompare(b, undefined, { numeric: true });
-  }
-  if (types.includes('number') && types.includes('string')) {
-    // Numbers are placed before strings
-    return typeof a === 'number' ? -1 : 1;
-  }
-
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
-};
-
-export const compareDesc = (a, b) => compareAsc(a, b) * -1;
 
 /**
  * Sorts the keys in the provided object by their corresponding values
