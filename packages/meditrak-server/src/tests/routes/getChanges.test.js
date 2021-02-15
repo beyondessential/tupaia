@@ -43,7 +43,7 @@ describe('GET /changes/count', async () => {
     const newQuestions = [];
     await oneSecondSleep();
     for (let i = 0; i < numberOfQuestionsToAdd; i++) {
-      newQuestions[i] = await upsertQuestion({});
+      newQuestions[i] = await upsertQuestion();
     }
     // Wait one second for the triggers to have properly added the changes to the queue
     await oneSecondSleep();
@@ -65,7 +65,7 @@ describe('GET /changes/count', async () => {
     const numberOfQuestionsToAddInFirstUpdate = randomIntBetween(1, 20);
     const newQuestionsInFirstUpdate = [];
     for (let i = 0; i < numberOfQuestionsToAddInFirstUpdate; i++) {
-      newQuestionsInFirstUpdate[i] = await upsertQuestion({});
+      newQuestionsInFirstUpdate[i] = await upsertQuestion();
     }
 
     // Add some more questions
@@ -75,7 +75,7 @@ describe('GET /changes/count', async () => {
     const numberOfQuestionsToAddInSecondUpdate = randomIntBetween(1, 20);
     const newQuestionsInSecondUpdate = [];
     for (let i = 0; i < numberOfQuestionsToAddInSecondUpdate; i++) {
-      newQuestionsInSecondUpdate[i] = await upsertQuestion({});
+      newQuestionsInSecondUpdate[i] = await upsertQuestion();
     }
 
     // Delete some of the questions added in the first update
