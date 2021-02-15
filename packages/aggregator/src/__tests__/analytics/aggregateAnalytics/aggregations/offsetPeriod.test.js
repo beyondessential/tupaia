@@ -116,7 +116,6 @@ describe('offsetPeriod', () => {
             next: '20200131',
           },
         ],
-
         [
           'week',
           {
@@ -174,7 +173,7 @@ describe('offsetPeriod', () => {
     testConfigValidation();
 
     it('`periodType` is case insensitive', () => {
-      const dateRange = { startDate: '20180101', endDate: '20201231' };
+      const dateRange = { startDate: '2018-01-01', endDate: '2020-12-31' };
       const offset = 1;
 
       const resultsForLowerPeriodType = getDateRangeForOffsetPeriod(dateRange, {
@@ -188,17 +187,35 @@ describe('offsetPeriod', () => {
       expect(resultsForLowerPeriodType).toStrictEqual(resultsForUpperPeriodType);
     });
 
-    describe('adjusts the provided date range to compensate for an  offset', () => {
+    describe('adjusts the provided date range to compensate for an offset', () => {
       const dateRange = { startDate: '20180101', endDate: '20201231' };
-      // Correct offset calculation for other period types is already tested in offsetPeriod()
+      // Correct offset calculation for other period types is already tested in `offsetPeriod`
       // which shares core functionality with this function
       const periodType = 'year';
       const testData = [
-        [-2, { startDate: '20200101', endDate: '20221231' }],
-        [-1, { startDate: '20190101', endDate: '20211231' }],
-        [0, { startDate: '20180101', endDate: '20201231' }],
-        [1, { startDate: '20170101', endDate: '20191231' }],
-        [2, { startDate: '20160101', endDate: '20181231' }],
+        [-2, { startDate: '2020-01-01', endDate: '2022-12-31' }],
+        [-1, { startDate: '2019-01-01', endDate: '2021-12-31' }],
+        [+0, { startDate: '2018-01-01', endDate: '2020-12-31' }],
+        [+1, { startDate: '2017-01-01', endDate: '2019-12-31' }],
+        [+2, { startDate: '2016-01-01', endDate: '2018-12-31' }],
+      ];
+
+      it.each(testData)('%s', (offset, expected) => {
+        expect(getDateRangeForOffsetPeriod(dateRange, { periodType, offset })).toStrictEqual(
+          expected,
+        );
+      });
+    });
+
+    describe('handles `endDate` for months with different total days', () => {
+      // Edge case with different behaviour than `offsetPeriod`
+      const dateRange = { startDate: '20200101', endDate: '20200229' };
+      const periodType = 'month';
+      const testData = [
+        [-2, { startDate: '2020-03-01', endDate: '2020-04-30' }],
+        [-1, { startDate: '2020-02-01', endDate: '2020-03-31' }],
+        [+1, { startDate: '2019-12-01', endDate: '2020-01-31' }],
+        [+2, { startDate: '2019-11-01', endDate: '2019-12-31' }],
       ];
 
       it.each(testData)('%s', (offset, expected) => {

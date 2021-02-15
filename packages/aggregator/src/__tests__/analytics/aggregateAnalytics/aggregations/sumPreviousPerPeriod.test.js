@@ -5,7 +5,10 @@
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
 import { PERIOD_TYPES } from '@tupaia/utils';
-import { sumPreviousPerPeriod } from '../../../../analytics/aggregateAnalytics/aggregations/sumPreviousPerPeriod';
+import {
+  getDateRangeForSumPreviousPerPeriod,
+  sumPreviousPerPeriod,
+} from '../../../../analytics/aggregateAnalytics/aggregations/sumPreviousPerPeriod';
 
 const { DAY } = PERIOD_TYPES;
 const { YEAR } = PERIOD_TYPES;
@@ -139,5 +142,13 @@ describe('sumPreviousPerPeriod()', () => {
       ['BCD1', 'PG', '2020', 11],
     ]);
     expect(sumPreviousPerPeriod(analytics, config, YEAR)).toIncludeSameMembers(expected);
+  });
+});
+
+describe('getDateRangeForSumPreviousPerPeriod()', () => {
+  it('returns a date range from the earliest Tupaia data date till the provided end date', () => {
+    const input = { startDate: '2020-01-01', endDate: '2020-06-07' };
+    const expected = { startDate: '2017-01-01', endDate: '2020-06-07' };
+    expect(getDateRangeForSumPreviousPerPeriod(input)).toStrictEqual(expected);
   });
 });
