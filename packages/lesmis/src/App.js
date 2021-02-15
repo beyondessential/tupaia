@@ -25,11 +25,11 @@ const App = () => (
       <Route exact path="/login">
         <LoginView />
       </Route>
-      <Route path="/">
+      <PrivateRoute path="/">
         <NavBar />
         <PageRoutes />
         <Footer />
-      </Route>
+      </PrivateRoute>
     </Switch>
   </Router>
 );

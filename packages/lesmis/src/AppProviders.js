@@ -4,20 +4,22 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { AuthProvider } from './context/auth';
 import { theme } from './theme';
+
+const queryClient = new QueryClient();
 
 export const AppProviders = ({ children }) => (
   <StylesProvider injectFirst>
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
-        <AuthProvider>
+        <QueryClientProvider client={queryClient}>
           <CssBaseline />
           {children}
-        </AuthProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </MuiThemeProvider>
   </StylesProvider>

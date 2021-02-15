@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../constants';
-import { useAuth } from '../context/auth';
+import { useLogin } from '../api/mutations';
 
 const ErrorMessage = styled.p`
   color: ${COLORS.RED};
@@ -31,17 +31,17 @@ const StyledButton = styled(Button)`
 
 export const LoginForm = () => {
   const { handleSubmit, register, errors } = useForm();
-  const { login, user, isError, isLoading, error } = useAuth();
+  const { mutate: login, user, isError, isLoading, error } = useLogin();
 
   const onSubmit = handleSubmit(({ email, password, rememberMe }) => {
     // window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
-    // login({ email, password });
+    login({ email, password });
   });
 
   return (
     <form onSubmit={onSubmit} noValidate>
       <Heading component="h4">Enter your email and password</Heading>
-      {isError && <ErrorMessage>{error}</ErrorMessage>}
+      {isError && <ErrorMessage>{error.message}</ErrorMessage>}
       <TextField
         name="email"
         placeholder="Email"
