@@ -15,8 +15,7 @@ import {
 import { DhisApi } from '@tupaia/dhis-api';
 import * as Enrollments from '../../dhis/api/enrollments';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
-import { getModels } from '../getModels';
-import { upsertEntity } from '../testUtilities';
+import { getModels, upsertEntity } from '../testUtilities';
 import { DHIS_RESOURCES, ENTITIES, SURVEYS } from './EventBuilder.fixtures';
 
 const models = getModels();
