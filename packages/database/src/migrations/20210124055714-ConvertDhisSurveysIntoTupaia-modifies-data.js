@@ -51,6 +51,13 @@ const dashboardReportsChangeForEntityAggregation = [
   'UNFPA_Delivery_Services_Stock',
 ];
 
+const dashboardReportsChangeForValueOfInterest = [
+  'UNFPA_Monthly_3_Methods_of_Contraception',
+  'UNFPA_Monthly_3_Methods_of_Contraception_Regional',
+  'UNFPA_Monthly_5_Methods_of_Contraception',
+  'UNFPA_Monthly_5_Methods_of_Contraception_Regional',
+];
+
 const newElementInDataBuilderConfig = {
   entityAggregation: {
     dataSourceEntityType: 'facility',
@@ -80,6 +87,15 @@ exports.up = async function (db) {
     await switchServiceType(db, code, 'dataGroup', serviceType);
   }
 
+  // Have to convert these reports to use 'Yes' because the data elements are Condition questions
+  dashboardReportsChangeForValueOfInterest.forEach(async id => {
+    await db.runSql(`
+      update "dashboardReport" dr 
+      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, '\\"valueOfInterest\\"\\: 1','"valueOfInterest": "Yes"','g')::jsonb 
+      where id = '${id}'
+  `);
+  });
+
   dashboardReportsChangeForEntityAggregation.forEach(async id => {
     const dashboardReport = await getDashboardReportById(db, id);
     const { dataBuilderConfig } = dashboardReport;
@@ -99,6 +115,14 @@ exports.down = async function (db) {
   for (const code of surveyCodes) {
     await switchServiceType(db, code, 'dataGroup', serviceType);
   }
+
+  dashboardReportsChangeForValueOfInterest.forEach(async id => {
+    await db.runSql(`
+      update "dashboardReport" dr 
+      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, '\\"valueOfInterest\\"\\: \\"Yes\\"','"valueOfInterest": 1','g')::jsonb 
+      where id = '${id}'
+  `);
+  });
 
   dashboardReportsChangeForEntityAggregation.forEach(async id => {
     const dashboardReport = await getDashboardReportById(db, id);
