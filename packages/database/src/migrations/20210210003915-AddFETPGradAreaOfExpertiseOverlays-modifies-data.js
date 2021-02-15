@@ -24,14 +24,24 @@ const BASE_OVERLAY = {
   userGroup: 'FETP Graduates',
   isDataRegional: true,
   measureBuilderConfig: {
+    aggregationType: 'SUM',
     entityAggregation: {
+      aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
       dataSourceEntityType: 'individual',
+      aggregationEntityType: 'district',
     },
   },
   measureBuilder: 'valueForOrgGroup',
   presentationOptions: {
-    displayType: 'color',
-    measureLevel: 'Individual',
+    scaleType: 'neutral',
+    valueType: 'number',
+    displayType: 'shaded-spectrum',
+    scaleBounds: {
+      left: {
+        max: 0,
+      },
+    },
+    measureLevel: 'District',
   },
   countryCodes: '{PG,SB}',
   projectCodes: '{fetp}',
@@ -152,7 +162,7 @@ const OVERLAYS_TO_IMPORT = [
 
 const NEW_OVERLAY_GROUP = {
   id: `${NEW_OVERLAY_GROUP_ID}`,
-  name: 'Graduate by area of expertise',
+  name: 'FETP Graduate Area of Expertise',
   code: 'FETPNG_Grad_area_of_expertise',
 };
 
