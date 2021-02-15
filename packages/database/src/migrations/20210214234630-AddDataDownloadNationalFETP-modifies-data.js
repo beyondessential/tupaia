@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject } from '../utilities/migration';
+import { insertObject, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -16,93 +16,64 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const PG_DASHBOARD_GROUP_CODE = 'PG_FETP_Raw_Data_Downloads_Country';
-const SB_DASHBOARD_GROUP_CODE = 'SB_FETP_Raw_Data_Downloads_Country';
+const BASE_CODE = '_FETP_Raw_Data_Downloads_Country';
+const REPORT_ID = 'FETP_Raw_Data_Graduate_Survey';
 
-const DATA_BUILDER_CONFIG = {
+// PNG, Solomon Islands
+const COUNTRY_ORG_UNITS = ['SB', 'PG'];
+
+const dataBuilderConfig = {
   surveys: [
     {
       name: 'FETP Graduate Data Survey',
       code: 'FGDS',
     },
   ],
-  exportDataBuilder: {
-    dataBuilder: 'rawDataValues',
-    dataBuilderConfig: {
-      surveysConfig: {
-        FGDS: {
-          entityAggregation: {
-            dataSourceEntityType: 'individual',
-          },
-        },
-      },
-      skipHeader: false,
-    },
-  },
 };
 
-const VIEW_JSON = {
-  name: 'FETP Fellows Data Collection',
+const viewJson = {
+  name: 'Download FETP Fellows Data Collection',
   type: 'view',
   viewType: 'dataDownload',
   periodGranularity: 'year',
 };
 
-const PG_REPORT = {
-  id: 'PG_FETP_Cust_Exports_Fellows_Collection',
-  dataBuilder: 'surveyDataExport',
-  dataBuilderConfig: DATA_BUILDER_CONFIG,
-  viewJson: VIEW_JSON,
+const DASHBOARD_REPORT = {
+  id: REPORT_ID,
+  dataBuilder: 'rawDataDownload',
+  dataBuilderConfig,
+  viewJson,
 };
 
-const SB_REPORT = {
-  id: 'SB_FETP_Cust_Exports_Fellows_Collection',
-  dataBuilder: 'surveyDataExport',
-  dataBuilderConfig: DATA_BUILDER_CONFIG,
-  viewJson: VIEW_JSON,
+const DASHBOARD_GROUP_CONFIG = {
+  organisationLevel: 'Country',
+  userGroup: 'Admin',
+  dashboardReports: `{${REPORT_ID}}`,
+  name: 'FETP Raw Data Downloads',
+  projectCodes: '{fetp}',
 };
 
 exports.up = async function (db) {
-  await insertObject(db, 'dashboardReport', SB_REPORT);
-  await insertObject(db, 'dashboardReport', PG_REPORT);
+  await insertObject(db, 'dashboardReport', DASHBOARD_REPORT);
 
-  return db.runSql(`
-    UPDATE
-    "dashboardGroup"
-    SET
-      "dashboardReports" = "dashboardReports" || '{${PG_REPORT.id}}'
-    WHERE
-      "code" = '${PG_DASHBOARD_GROUP_CODE}';
-
-    UPDATE
-      "dashboardGroup"
-    SET
-      "dashboardReports" = "dashboardReports" || '{${SB_REPORT.id}}'
-    WHERE
-      "code" = '${SB_DASHBOARD_GROUP_CODE}';
-   `);
+  await Promise.all(
+    COUNTRY_ORG_UNITS.map(orgUnit => {
+      return insertObject(db, 'dashboardGroup', {
+        ...DASHBOARD_GROUP_CONFIG,
+        code: `${orgUnit}${BASE_CODE}`,
+        organisationUnitCode: `${orgUnit}`,
+      });
+    }),
+  );
 };
+exports.down = async function (db) {
+  await db.runSql(`
+    DELETE FROM "dashboardReport" WHERE id = '${REPORT_ID}';
 
-exports.down = function (db) {
-  return db.runSql(`
-    DELETE FROM "dashboardReport" WHERE id = '${SB_REPORT.id}';
-    UPDATE
-      "dashboardGroup"
-    SET
-      "dashboardReports" = array_remove("dashboardReports", '${SB_REPORT.id}')
-    WHERE
-      "code" = '${SB_DASHBOARD_GROUP_CODE}';
-
-    DELETE FROM "dashboardReport" WHERE id = '${PG_REPORT.id}';
-    UPDATE
-      "dashboardGroup"
-    SET
-      "dashboardReports" = array_remove("dashboardReports", '${PG_REPORT.id}')
-    WHERE
-      "code" = '${PG_DASHBOARD_GROUP_CODE}';
-   `);
+    DELETE FROM "dashboardGroup"
+    WHERE code IN (${arrayToDbString(COUNTRY_ORG_UNITS.map(orgUnit => `${orgUnit}${BASE_CODE}`))});
+  `);
 };
-
 exports._meta = {
   version: 1,
 };
