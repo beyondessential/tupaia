@@ -4,5 +4,5 @@
  */
 
 export { Aggregator } from './Aggregator';
-export { aggregateAnalytics, expandFetchOptionsToSpanAggregations } from './analytics';
+export * from './analytics';
 export { createAggregator } from './createAggregator';
