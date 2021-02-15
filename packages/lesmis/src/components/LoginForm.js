@@ -1,0 +1,82 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *
+ */
+import React from 'react';
+import { TextField, Button, Checkbox } from '@tupaia/ui-components';
+import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
+import { useForm } from 'react-hook-form';
+import * as COLORS from '../constants';
+import { useAuth } from '../context/auth';
+
+const ErrorMessage = styled.p`
+  color: ${COLORS.RED};
+`;
+
+const Heading = styled(Typography)`
+  font-size: 1.125rem;
+  line-height: 1.3rem;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.primary};
+  text-align: center;
+  margin-bottom: 2rem;
+`;
+
+const StyledButton = styled(Button)`
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+`;
+
+export const LoginForm = () => {
+  const { handleSubmit, register, errors } = useForm();
+  const { login, user, isError, isLoading, error } = useAuth();
+
+  const onSubmit = handleSubmit(({ email, password, rememberMe }) => {
+    // window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
+    // login({ email, password });
+  });
+
+  return (
+    <form onSubmit={onSubmit} noValidate>
+      <Heading component="h4">Enter your email and password</Heading>
+      {isError && <ErrorMessage>{error}</ErrorMessage>}
+      <TextField
+        name="email"
+        placeholder="Email"
+        type="email"
+        defaultValue={user?.email}
+        error={!!errors.email}
+        helperText={errors.email && errors.email.message}
+        inputRef={register({
+          required: 'Required',
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'invalid email address',
+          },
+        })}
+      />
+      <TextField
+        name="password"
+        type="password"
+        placeholder="Password"
+        error={!!errors.password}
+        helperText={errors.password && errors.password.message}
+        inputRef={register({
+          required: 'Required',
+        })}
+      />
+      <Checkbox
+        name="rememberMe"
+        color="primary"
+        label="Remember me"
+        inputRef={register}
+        defaultValue={false}
+      />
+      <StyledButton type="submit" fullWidth isLoading={isLoading}>
+        Login to your account
+      </StyledButton>
+    </form>
+  );
+};

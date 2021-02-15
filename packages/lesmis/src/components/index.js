@@ -5,6 +5,7 @@
 
 export * from './ExampleComponent';
 export * from './ThemeTest';
+export * from './LoginForm';
 export * from './Layout';
 export * from './NavBar';
 export * from './Footer';
