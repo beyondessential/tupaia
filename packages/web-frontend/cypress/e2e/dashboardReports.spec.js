@@ -13,7 +13,7 @@ const urlToRouteRegex = url => {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`view?.*viewId=${viewId}`);
+  return new RegExp(`view?.*viewId=${viewId}[&$]`);
 };
 
 describe('Dashboard reports', () => {
