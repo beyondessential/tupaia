@@ -8,14 +8,11 @@ import { Redirect, Route } from 'react-router-dom';
 import { useUser } from '../api';
 
 export const PrivateRoute = ({ children, ...rest }) => {
-  const { isLoading, isSuccess, data: user } = useUser();
-  const isLoggedIn = isSuccess && user !== undefined && user.name !== 'public';
+  const { isLoading, isLoggedIn } = useUser();
 
   if (isLoading) {
     return 'loading...';
   }
-
-  console.log('user', user);
 
   return (
     <Route

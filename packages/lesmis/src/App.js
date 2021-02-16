@@ -19,7 +19,7 @@ export const Container = styled.main`
   text-align: center;
 `;
 
-const App = () => (
+export const App = () => (
   <Router>
     <Switch>
       <Route exact path="/login">
@@ -33,5 +33,3 @@ const App = () => (
     </Switch>
   </Router>
 );
-
-export default App;

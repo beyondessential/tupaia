@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
-import App from './App';
+import { App } from './App';
 import { AppProviders } from './AppProviders';
 
 const render = () => {

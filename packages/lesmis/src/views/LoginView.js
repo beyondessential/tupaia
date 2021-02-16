@@ -8,8 +8,8 @@ import MuiCard from '@material-ui/core/Card';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import { LoginForm } from '../components';
+import { useUser } from '../api/queries';
 
 export const Main = styled.main`
   height: 100vh;
@@ -62,9 +62,15 @@ const StyledLink = styled(MuiLink)`
 
 const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 
-export const LoginView = ({ isLoggedIn }) => {
+export const LoginView = () => {
+  const { isLoggedIn, isLoading } = useUser();
+
   if (isLoggedIn) {
     return <Redirect to="/" />;
+  }
+
+  if (isLoading) {
+    return 'loading...';
   }
 
   return (
@@ -81,12 +87,4 @@ export const LoginView = ({ isLoggedIn }) => {
       </Container>
     </Main>
   );
-};
-
-LoginView.propTypes = {
-  isLoggedIn: PropTypes.bool,
-};
-
-LoginView.defaultProps = {
-  isLoggedIn: false,
 };
