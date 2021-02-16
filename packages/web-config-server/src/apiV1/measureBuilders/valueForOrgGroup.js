@@ -62,7 +62,19 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
     // If we group multiple data element codes, dataElementCode is usually 'value'
     const customDataKey = this.config.dataElementCodes ? dataElementCode : null;
 
-    return { data: analyticsToMeasureData(analytics, customDataKey), period };
+    // FIXME: demo
+    const mergedByOrgUnitCode = {};
+    for (const analytic of analytics) {
+      if (!mergedByOrgUnitCode[analytic.organisationUnit]) {
+        mergedByOrgUnitCode[analytic.organisationUnit] = analytic;
+        mergedByOrgUnitCode[analytic.organisationUnit].value = 0;
+      }
+      mergedByOrgUnitCode[analytic.organisationUnit].value += parseInt(analytic.value, 10);
+    }
+
+    const mergedAnalytics = Object.values(mergedByOrgUnitCode);
+
+    return { data: analyticsToMeasureData(mergedAnalytics, customDataKey), period };
   }
 }
 

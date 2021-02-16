@@ -53,6 +53,12 @@ export class DhisInputSchemeResolvingApiProxy {
 
     if (await this.allOrgUnitsHaveDhisId(query)) {
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
+    } else {
+      // FIXME: demo -- this triggers for the map overlay
+      console.log('Hi um it should work');
+      modifiedQuery.organisationUnitIds = ['IWp9dQGM0bS'];
+      delete modifiedQuery.organisationUnitCode;
+      delete modifiedQuery.organisationUnitCodes;
     }
 
     const response = await this.api.getEventAnalytics(modifiedQuery);

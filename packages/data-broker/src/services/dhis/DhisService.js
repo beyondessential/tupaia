@@ -232,7 +232,7 @@ export class DhisService extends Service {
     const dhisElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
 
     const query = {
-      organisationUnitCodes,
+      organisationUnitCodes, // FIXME: demo
       programCodes,
       dataElementCodes: dhisElementCodes,
       dataElementIdScheme: 'code',
