@@ -25,7 +25,8 @@ const newRawDataDownloadDashboardGroup = {
   name: 'COVID-19 Raw Data Downloads',
   code: 'WS_Covid_Raw_Data_Downloads_Country',
 };
-const dashboardReport = 'Raw_Data_Samoa_Covid_Surveys';
+const rawDataDashboardReport = 'Raw_Data_Samoa_Covid_Surveys';
+const customRawDataDashboardReport = 'Samoa_Covid_Customised_Raw_Data_Download';
 const dashboardGroupCodes = ['WS_Covid_Samoa_Country', 'WS_Covid_Country'];
 async function deleteDashboardGroup(db, code) {
   return db.runSql(`
@@ -38,18 +39,27 @@ async function deleteDashboardGroup(db, code) {
 
 exports.up = async function (db) {
   await insertObject(db, DASHBOARD_GROUP, {
-    dashboardReports: `{${dashboardReport}}`,
+    dashboardReports: `{${rawDataDashboardReport}, ${customRawDataDashboardReport}}`,
     ...newRawDataDownloadDashboardGroup,
   });
+
   for (const groupCode of dashboardGroupCodes) {
     await removeArrayValue(
       db,
       DASHBOARD_GROUP,
       'dashboardReports',
-      dashboardReport,
+      rawDataDashboardReport,
       `code = '${groupCode}'`,
     );
   }
+
+  await removeArrayValue(
+    db,
+    DASHBOARD_GROUP,
+    'dashboardReports',
+    customRawDataDashboardReport,
+    `code = '${dashboardGroupCodes[0]}'`,
+  );
 };
 
 exports.down = async function (db) {
@@ -59,7 +69,7 @@ exports.down = async function (db) {
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = "dashboardReports" || '{"${dashboardReport}"}'
+      "dashboardReports" = "dashboardReports" || '{"${rawDataDashboardReport}"}'
     WHERE
       code = '${groupCode}';
   `);
