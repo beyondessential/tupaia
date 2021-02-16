@@ -35,7 +35,13 @@ describe('Dashboard reports', () => {
       cy.route(urlToRouteRegex(url)).as('report');
 
       cy.visit(url);
-      cy.wait('@report');
+      cy.wait('@report').then(({ response }) => {
+        const isMatrixReport = response.body.type === 'matrix';
+        if (isMatrixReport) {
+          // Wait for the expanded matrix to load
+          cy.wait('@report');
+        }
+      });
       cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
     });
   });
