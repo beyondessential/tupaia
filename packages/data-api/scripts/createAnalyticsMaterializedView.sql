@@ -29,17 +29,17 @@ declare
             AND data_source.service_type = ''tupaia''';
 
 begin 
-  SELECT mv$createMaterializedViewlog( 'answer','public');
+  PERFORM mv$createMaterializedViewlog( 'answer','public');
   RAISE NOTICE 'Created Materialized View Log for answer table';
-  SELECT mv$createMaterializedViewlog( 'survey_response','public');
+  PERFORM mv$createMaterializedViewlog( 'survey_response','public');
   RAISE NOTICE 'Created Materialized View Log for survey_response table';
-  SELECT mv$createMaterializedViewlog( 'survey','public');
+  PERFORM mv$createMaterializedViewlog( 'survey','public');
   RAISE NOTICE 'Created Materialized View Log for survey table';
-  SELECT mv$createMaterializedViewlog( 'entity','public');
+  PERFORM mv$createMaterializedViewlog( 'entity','public');
   RAISE NOTICE 'Created Materialized View Log for entity table';
-  SELECT mv$createMaterializedViewlog( 'question','public');
+  PERFORM mv$createMaterializedViewlog( 'question','public');
   RAISE NOTICE 'Created Materialized View Log for question table';
-  SELECT mv$createMaterializedViewlog( 'data_source','public');
+  PERFORM mv$createMaterializedViewlog( 'data_source','public');
   RAISE NOTICE 'Created Materialized View Log for data_source table';
 
   PERFORM mv$createMaterializedView(

@@ -12,7 +12,6 @@ GRANT USAGE ON SCHEMA public TO :mv_user;
 GRANT ALL PRIVILEGES ON DATABASE :db_user TO :mv_user;
 GRANT ALL ON SCHEMA public  TO :mv_user;
 GRANT USAGE ON SCHEMA public  TO :mv_user;
-GRANT :mv_user TO :db_user;
 GRANT USAGE ON SCHEMA :mv_user TO :db_user;
 GRANT ALL ON SCHEMA public TO :mv_user;
 
