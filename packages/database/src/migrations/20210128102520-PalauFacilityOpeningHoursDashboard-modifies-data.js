@@ -68,12 +68,42 @@ const dashboardReport = {
   },
 };
 
+const elementList = [
+  'FF20',
+  'FF21',
+  'FF22',
+  'FF23',
+  'BCD39D',
+  'FF24',
+  'FF25',
+  'BCD39E',
+  'FF26',
+  'FF27',
+  'BCD39F',
+  'FF28',
+  'FF29',
+  'BCD39G',
+  'FF30',
+  'FF31',
+  'BCD39H',
+  'FF32',
+  'FF33',
+];
+const changeServiceType = async (db, serviceType) => {
+  await db.runSql(`
+    UPDATE data_source 
+    SET service_type = '${serviceType}'
+    WHERE code in (${arrayToDbString(elementList)})
+  `);
+};
 exports.up = async function (db) {
+  await changeServiceType(db, 'tupaia');
   await insertObject(db, 'dashboardReport', dashboardReport);
   await addReportToGroupsOnTop(db, dashboardReport.id, [dashboardGroupCode]);
 };
 
 exports.down = async function (db) {
+  await changeServiceType(db, 'dhis');
   await deleteReport(db, dashboardReport.id);
   await removeReportFromGroups(db, dashboardReport.id, [dashboardGroupCode]);
 };
