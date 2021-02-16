@@ -149,7 +149,7 @@ const OVERLAYS_TO_IMPORT = [
     dataElementCode: 'FETPNG20Data_046',
   },
   {
-    id: 'FETPNG_Grad_Expertise_	Health_promotion',
+    id: 'FETPNG_Grad_Expertise_Health_promotion',
     name: 'Health promotion',
     dataElementCode: 'FETPNG20Data_047',
   },
