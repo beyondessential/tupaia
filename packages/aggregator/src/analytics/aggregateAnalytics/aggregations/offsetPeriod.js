@@ -51,14 +51,12 @@ export const getDateRangeForOffsetPeriod = (dateRange, config) => {
   // Expands the provided date to the opposite direction than the offset
   // so that enough data will be available for its calculation
   const offsetCompensation = config.offset * -1;
+  const momentUnit = periodTypeToMomentUnit(periodType);
 
-  const getMomentWithOffset = dateString => {
-    const momentUnit = periodTypeToMomentUnit(periodType);
-    return utcMoment(dateString).add(offsetCompensation, momentUnit);
-  };
-
-  const startMoment = getMomentWithOffset(dateRange.startDate);
-  const endMoment = getMomentWithOffset(dateRange.endDate).endOf(periodType);
+  const startMoment = utcMoment(dateRange.startDate).add(offsetCompensation, momentUnit);
+  const endMoment = utcMoment(dateRange.endDate)
+    .add(offsetCompensation, momentUnit)
+    .endOf(momentUnit);
 
   return {
     startDate: momentToDateString(startMoment),
