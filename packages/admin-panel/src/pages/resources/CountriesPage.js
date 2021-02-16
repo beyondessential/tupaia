@@ -23,7 +23,7 @@ const FIELDS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Entities',
-    endpoint: 'country/{id}/entities',
+    endpoint: 'countries/{id}/entities',
     columns: ENTITIES_COLUMNS,
   },
 ];
@@ -31,7 +31,7 @@ const EXPANSION_CONFIG = [
 const CREATE_CONFIG = {
   title: 'New Country',
   actionConfig: {
-    editEndpoint: 'country',
+    editEndpoint: 'countries',
     fields: FIELDS,
   },
 };

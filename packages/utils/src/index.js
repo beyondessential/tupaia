@@ -13,6 +13,7 @@ export * from './period';
 export * from './testUtilities';
 export { filterEntities } from './filterEntities';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
+export { getCountryCode } from './getCountryCode';
 export { getUniqueEntries } from './getUniqueEntries';
 export * from './object';
 export * from './request';

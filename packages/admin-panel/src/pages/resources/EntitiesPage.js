@@ -36,12 +36,12 @@ const COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Survey Responses',
-    endpoint: 'entity/{id}/surveyResponses',
+    endpoint: 'entities/{id}/surveyResponses',
     columns: SURVEY_RESPONSE_COLUMNS,
     expansionTabs: [
       {
         title: 'Answers',
-        endpoint: 'surveyResponse/{id}/answers',
+        endpoint: 'surveyResponses/{id}/answers',
         columns: ANSWER_COLUMNS,
       },
     ],
