@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 // the ids of the individuals that need to have their country_code updated
 const INDIVIDUAL_IDS_TO_UPDATE = ['6018bde661f76a5311069bf2', '6018bde661f76a5311069c03'];
 
-exports.up = function (db) {
+exports.up = async function (db) {
   INDIVIDUAL_IDS_TO_UPDATE.forEach(async individual => {
     await db.runSql(`
       UPDATE "entity" SET "country_code"='SB' WHERE "id"='${individual}';
@@ -25,7 +25,7 @@ exports.up = function (db) {
   });
 };
 
-exports.down = function (db) {
+exports.down = async function (db) {
   INDIVIDUAL_IDS_TO_UPDATE.forEach(async individual => {
     await db.runSql(`
       UPDATE "entity" SET "country_code"='PG' WHERE "id"='${individual}';
