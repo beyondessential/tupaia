@@ -42,16 +42,11 @@ begin
   SELECT mvrefresh.mv$createMaterializedViewlog( 'data_source','public');
   RAISE NOTICE 'Created Materialized View Log for data_source table';
 
-  SELECT mv$createMaterializedView(
+  SELECT mvrefresh.mv$createMaterializedView(
       pViewName           => 'analytics',
       pSelectStatement    =>  pSqlStatement,
       pOwner              => 'public',
       pFastRefresh        =>  TRUE
   );
   RAISE NOTICE 'Created analytics table';
-
-  CREATE index analytics_data_element_code_entity_code_date_idx ON analytics(data_element_code, entity_code, date desc);
-  CREATE index analytics_data_element_code_entity_code_survey_code_date_idx ON analytics(data_element_code, entity_code, survey_code, date desc);
-  CREATE index analytics_data_element_code_entity_code_survey_code_event_id_date_idx ON analytics(data_element_code, entity_code, survey_code, event_id, date desc);
-  RAISE NOTICE 'Added analytics table indexes';
 end $$;
