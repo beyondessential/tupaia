@@ -45,7 +45,7 @@ export const testPutSurveyResponses = (app, models, syncQueue) =>
         numberOfAnswersInSurveyResponse = await models.answer.count({
           survey_response_id: surveyResponseId,
         });
-        response = await app.put(`surveyResponse/${surveyResponseId}`, {
+        response = await app.put(`surveyResponses/${surveyResponseId}`, {
           body: {
             entity_id: newEntityId,
           },

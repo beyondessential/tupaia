@@ -1,0 +1,53 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { GETHandler } from '../GETHandler';
+import { assertAnswerPermissions, createAnswerDBFilter } from './assertAnswerPermissions';
+import { assertSurveyResponsePermissions } from '../surveyResponses';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+
+/**
+ * Handles endpoints:
+ * - /answers
+ * - /answers/id
+ * - /surveyResponses/id/answers
+ */
+
+export class GETAnswers extends GETHandler {
+  permissionsFilteredInternally = true;
+
+  async findSingleRecord(answerId, options) {
+    const answer = await super.findSingleRecord(answerId, options);
+
+    const answerPermissionsChecker = async accessPolicy =>
+      assertAnswerPermissions(accessPolicy, this.models, answerId);
+
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, answerPermissionsChecker]),
+    );
+
+    return answer;
+  }
+
+  async getPermissionsFilter(criteria, options) {
+    return createAnswerDBFilter(this.accessPolicy, this.models, criteria, options);
+  }
+
+  async getPermissionsViaParentFilter(criteria, options) {
+    // Check parent permissions
+    const surveyResponseChecker = accessPolicy =>
+      assertSurveyResponsePermissions(accessPolicy, this.models, this.parentRecordId);
+
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, surveyResponseChecker]),
+    );
+
+    // Get answers from survey response
+    const dbConditions = { ...criteria };
+    dbConditions.survey_response_id = this.parentRecordId;
+
+    return { dbConditions, dbOptions: options };
+  }
+}

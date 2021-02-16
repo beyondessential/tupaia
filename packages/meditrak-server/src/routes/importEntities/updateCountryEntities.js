@@ -3,9 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getCode as getCountryIsoCode } from 'countrynames';
-
-import { ImportValidationError } from '@tupaia/utils';
+import { ImportValidationError, getCountryCode } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 
@@ -27,14 +25,6 @@ function getDefaultTypeDetails(type) {
     );
   }
   return { categoryCode, typeName };
-}
-
-function getCountryCode(countryName, entityObjects) {
-  // Use the country ISO code if there's a direct match, otherwise base on the two letter facility
-  // code prefix
-  const country = getCountryIsoCode(countryName) || entityObjects[0].code.substring(0, 2);
-  if (!country) throw new ImportValidationError(`${countryName} is not a recognised country`);
-  return country;
 }
 
 export async function updateCountryEntities(transactingModels, countryName, entityObjects) {
@@ -74,6 +64,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       longitude,
       latitude,
       geojson,
+      data_service_entity: dataServiceEntity,
       type_name: typeName,
       screen_bounds: screenBounds,
       category_code: categoryCode,
@@ -115,6 +106,17 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         newFacility.category_code = defaultTypeDetails.categoryCode;
       }
       await newFacility.save();
+    }
+    if (dataServiceEntity) {
+      const dataServiceEntityToUpsert = {
+        entity_code: code,
+        config: dataServiceEntity,
+      };
+
+      await transactingModels.dataServiceEntity.updateOrCreate(
+        { entity_code: code },
+        dataServiceEntityToUpsert,
+      );
     }
     await transactingModels.entity.updateOrCreate(
       { code },

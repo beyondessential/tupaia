@@ -8,6 +8,7 @@ import { transformBuilders } from './functions';
 import { aliases } from './aliases';
 
 type TransformParams = {
+  name: string;
   apply: (rows: Row[]) => Row[];
 };
 
@@ -28,6 +29,7 @@ const buildParams = (params: unknown): TransformParams => {
     }
 
     return {
+      name: params,
       apply: aliases[params as keyof typeof aliases](),
     };
   }
@@ -48,6 +50,7 @@ const buildParams = (params: unknown): TransformParams => {
   }
 
   return {
+    name: transformStep,
     apply: transformBuilders[transformStep as keyof typeof transformBuilders](
       restOfTransformParams,
     ),

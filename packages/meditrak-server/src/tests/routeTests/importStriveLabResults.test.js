@@ -4,11 +4,20 @@
  */
 
 import { expect } from 'chai';
+import sinon from 'sinon';
+import { Authenticator } from '@tupaia/auth';
 
-import { buildAndInsertSurveys, generateTestId } from '@tupaia/database';
+import {
+  buildAndInsertSurveys,
+  generateTestId,
+  findOrCreateDummyCountryEntity,
+} from '@tupaia/database';
 import { TestableApp } from '../TestableApp';
 import { upsertEntity } from '../testUtilities';
 
+const DEFAULT_POLICY = {
+  PG: ['Public'],
+};
 const QUESTION_IDS = {
   Well: generateTestId(),
   Cq: generateTestId(),
@@ -78,6 +87,7 @@ const createEntities = async models =>
         type: models.entity.types.CASE,
         code: caseCode,
         name: caseCode,
+        country_code: 'PG',
       }),
     ),
   );
@@ -91,17 +101,37 @@ const fetchCreatedResponseRecords = async models =>
 const fetchCreatedAnswerRecords = async (models, surveyResponseId) =>
   models.answer.find({ survey_response_id: surveyResponseId });
 
+const prepareStubAndAuthenticate = async (app, policy = DEFAULT_POLICY) => {
+  sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
+  await app.authenticate();
+};
+
 describe('POST /import/striveLabResults', async () => {
   const app = new TestableApp();
   const { models } = app;
   let response;
 
   before(async () => {
-    await app.authenticate();
-    await buildAndInsertSurveys(models, [SURVEY]);
+    const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
+    const { country: pgCountry } = await findOrCreateDummyCountryEntity(models, {
+      code: 'PG',
+      name: 'Papua New Guinea',
+    });
+    const survey = {
+      ...SURVEY,
+      country_ids: [pgCountry.id],
+      permission_group_id: publicPermissionGroup.id,
+    };
+
+    await prepareStubAndAuthenticate(app);
+    await buildAndInsertSurveys(models, [survey]);
     await createEntities(models);
 
     response = await importLabResults(app);
+  });
+
+  after(() => {
+    Authenticator.prototype.getAccessPolicyForUser.restore();
   });
 
   it('should respond with a successful http status', () => {

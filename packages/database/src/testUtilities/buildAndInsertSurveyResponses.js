@@ -28,12 +28,9 @@ const buildAndInsertSurveyResponse = async (
     ...surveyResponseProperties,
   });
 
-  const answers = [];
-  const processAnswer = async ([questionCode, answerText]) => {
-    const answer = await buildAndInsertAnswer(models, surveyResponse, questionCode, answerText);
-    answers.push(answer);
-  };
-  await Promise.all(Object.entries(answerData).map(processAnswer));
+  const processAnswer = async ([questionCode, answerText]) =>
+    buildAndInsertAnswer(models, surveyResponse, questionCode, answerText);
+  const answers = await Promise.all(Object.entries(answerData).map(processAnswer));
 
   return { surveyResponse, answers };
 };
@@ -60,14 +57,9 @@ const buildAndInsertSurveyResponse = async (
  */
 export const buildAndInsertSurveyResponses = async (models, surveyResponses) => {
   const user = await upsertDummyRecord(models.user);
-  const createdModels = [];
-
-  await Promise.all(
-    surveyResponses.map(async surveyResponse => {
-      const newCreatedModels = await buildAndInsertSurveyResponse(models, user, surveyResponse);
-      createdModels.push(newCreatedModels);
-    }),
+  return Promise.all(
+    surveyResponses.map(async surveyResponse =>
+      buildAndInsertSurveyResponse(models, user, surveyResponse),
+    ),
   );
-
-  return createdModels;
 };
