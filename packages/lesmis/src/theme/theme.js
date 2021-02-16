@@ -42,6 +42,7 @@ const palette = {
 };
 
 const typography = {
+  fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
   h1: {
     fontSize: '3.125rem',
     fontWeight: 500,

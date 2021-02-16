@@ -33,9 +33,9 @@ export const StyledCard = styled(MuiCard)`
 `;
 
 const StyledImg = styled.img`
-  height: 6rem;
+  height: 8rem;
   width: auto;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 `;
 
 const Wrapper = styled.div`
@@ -76,7 +76,7 @@ export const LoginView = () => {
   return (
     <Main>
       <Container>
-        <StyledImg src="/lesmis-logo.svg" alt="lesmis-logo" />
+        <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
         <StyledCard>
           <LoginForm />
         </StyledCard>

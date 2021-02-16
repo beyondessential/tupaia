@@ -7,10 +7,12 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import MuiLink from '@material-ui/core/Link';
+import { FOOTER_HEIGHT } from '../constants';
 
 const footerFontColor = '#c4c4c4';
 
 const Container = styled.footer`
+  height: ${FOOTER_HEIGHT};
   background: #283238;
   padding: 1rem;
 

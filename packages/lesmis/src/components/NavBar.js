@@ -4,41 +4,75 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import styled from 'styled-components';
+import MuiContainer from '@material-ui/core/Container';
+import { LightIconButton, HomeButton } from '@tupaia/ui-components';
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import { HomeButton } from '@tupaia/ui-components';
-
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import { FlexSpaceBetween } from './Layout';
 import { ProfileButton } from './ProfileButton';
+import { NAVBAR_HEIGHT } from '../constants';
+
+const Container = styled.nav`
+  background-color: ${props => props.theme.palette.primary.main};
+
+  img {
+    height: 50px;
+  }
+`;
+
+const Inner = styled(FlexSpaceBetween)`
+  height: ${NAVBAR_HEIGHT};
+`;
+
+const Left = styled.nav`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const Center = styled.nav`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const Right = styled.nav`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const SearchBar = styled.div`
+  height: 45px;
+  overflow: hidden;
+  background: white;
+
+  width: 390px;
+  background: #ffffff;
+  border-radius: 43px;
+`;
 
 export const NavBar = () => (
-  <AppBar position="static">
-    <Toolbar>
-      <IconButton edge="start" color="inherit" aria-label="open drawer">
-        <MenuIcon />
-      </IconButton>
-      <Typography variant="h6" noWrap>
-        Material-UI
-      </Typography>
-      <div>
-        <div>
-          <SearchIcon />
-        </div>
-        <InputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
-      </div>
-    </Toolbar>
-  </AppBar>
+  <Container>
+    <MuiContainer>
+      <Inner>
+        <Left>
+          <LightIconButton>
+            <MenuIcon />
+          </LightIconButton>
+          <HomeButton homeUrl="/" source="/lesmis-logo-white.svg" />
+        </Left>
+        <Center>
+          <SearchBar />
+        </Center>
+        <Right>
+          <LightIconButton>
+            <FavoriteBorderIcon />
+          </LightIconButton>
+          <ProfileButton />
+        </Right>
+      </Inner>
+    </MuiContainer>
+  </Container>
 );

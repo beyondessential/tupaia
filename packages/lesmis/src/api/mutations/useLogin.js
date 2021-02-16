@@ -8,6 +8,7 @@ import { post } from '../api';
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
+
   const query = useMutation(
     ({ email, password }) =>
       post('login', {
@@ -21,9 +22,7 @@ export const useLogin = () => {
       onError: error => {
         console.log('error', error);
       },
-      onSuccess: response => {
-        // Do we need to do anything to persist the session cookie?
-        console.log('success', response);
+      onSuccess: () => {
         queryClient.invalidateQueries('getUser');
       },
     },
