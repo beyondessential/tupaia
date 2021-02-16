@@ -13,7 +13,7 @@ const urlToRouteRegex = url => {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`view?.*viewId=${viewId}[&$]`);
+  return new RegExp(`view?.*\\WisExpanded=true&.*viewId=${viewId}[&$]`);
 };
 
 describe('Dashboard reports', () => {
@@ -35,13 +35,7 @@ describe('Dashboard reports', () => {
       cy.route(urlToRouteRegex(url)).as('report');
 
       cy.visit(url);
-      cy.wait('@report').then(({ response }) => {
-        const isMatrixReport = response.body.type === 'matrix';
-        if (isMatrixReport) {
-          // Wait for the expanded matrix to load
-          cy.wait('@report');
-        }
-      });
+      cy.wait('@report');
       cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
     });
   });
