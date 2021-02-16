@@ -14,3 +14,4 @@ export {
 export { getMostRecentPeriod, getMostAncientPeriod } from './periodExtremes';
 export { EARLIEST_DATA_DATE, getDefaultPeriod } from './getDefaultPeriod';
 export * from './period';
+export { getExportDatesString } from './getExportDatesString';
