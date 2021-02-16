@@ -16,7 +16,7 @@ export const escapeRegex = string => {
   return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&');
 };
 
-export const stripHtmlAttributes = (html, attrs) => {
+const stripHtmlAttributes = (html, attrs) => {
   const $ = cheerio.load(html);
   attrs.forEach(attr => {
     $('*').removeAttr(attr);
@@ -32,7 +32,10 @@ export const stripHtmlAttributes = (html, attrs) => {
  */
 export const serializeReactToHTML = jQueryEl => {
   const html = jQueryEl[0].outerHTML;
-  const stripped = stripHtmlAttributes(html, HTML_ATTRS_TO_STRIP_FROM_SNAPSHOTS);
+  const sanitizedHtml = stripHtmlAttributes(html, HTML_ATTRS_TO_STRIP_FROM_SNAPSHOTS).replace(
+    /(&amp;|)cacheBreaker=[0-9a-z]+/g,
+    '',
+  );
   const options = {
     wrap_line_length: 80,
     indent_inner_html: true,
@@ -40,5 +43,5 @@ export const serializeReactToHTML = jQueryEl => {
     wrap_attributes: 'force',
   };
 
-  return beautifyHtml(stripped, options);
+  return beautifyHtml(sanitizedHtml, options);
 };
