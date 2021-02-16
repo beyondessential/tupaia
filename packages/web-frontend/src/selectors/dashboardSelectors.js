@@ -13,7 +13,10 @@ import { selectLocation } from './utils';
 
 export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
   [selectLocation],
-  location => getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
+  location => {
+    const dashboardSegment = getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD);
+    return dashboardSegment && decodeURIComponent(dashboardSegment);
+  },
 );
 
 export const selectCurrentExpandedViewId = createSelector([selectLocation], location =>

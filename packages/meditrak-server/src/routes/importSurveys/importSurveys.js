@@ -34,6 +34,8 @@ import {
   findOrCreateSurveyCode,
 } from './utilities';
 import { assertCanAddDataElementInGroup } from '../../database';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertCanImportSurveys } from './assertCanImportSurveys';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
@@ -131,6 +133,17 @@ export async function importSurveys(req, res) {
         throw new DatabaseError('finding permission group');
       }
 
+      const surveyNames = Object.entries(workbook.Sheets).map(([tabName]) => {
+        return extractTabNameFromQuery(tabName, requestedSurveyNames);
+      });
+
+      const importSurveysPermissionsChecker = async accessPolicy =>
+        assertCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
+
+      await req.assertPermissions(
+        assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
+      );
+
       let surveyGroup;
       if (req.query.surveyGroup) {
         surveyGroup = await transactingModels.surveyGroup.findOrCreate({
@@ -156,6 +169,10 @@ export async function importSurveys(req, res) {
         // Clear all existing data element/data group associations
         // We will re-create the ones required by the survey while processing its questions
         await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
+
+        // Refresh SurveyDate element
+        await dataGroup.deleteSurveyDateElement();
+        await dataGroup.upsertSurveyDateElement();
 
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(

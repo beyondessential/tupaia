@@ -47,7 +47,7 @@ export const historyMiddleware = store => next => action => {
       dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
       break;
     case SET_DASHBOARD_GROUP:
-      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
+      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, encodeURIComponent(action.name));
       break;
     case GO_HOME:
       // Completely clear location, explore project will be set in a saga.

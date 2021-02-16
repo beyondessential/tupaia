@@ -1,6 +1,7 @@
 import xlsx from 'xlsx';
 
 import { DatabaseError, respond, ObjectValidator, fieldHasContent } from '@tupaia/utils';
+import { assertBESAdminAccess } from '../permissions';
 
 const TAB_NAMES = {
   DISASTER: 'Disaster',
@@ -35,6 +36,8 @@ const disasterEventFieldValidators = {
 
 export async function importDisaster(req, res) {
   const { models } = req;
+
+  await req.assertPermissions(assertBESAdminAccess);
 
   try {
     const workbook = xlsx.readFile(req.file.path);

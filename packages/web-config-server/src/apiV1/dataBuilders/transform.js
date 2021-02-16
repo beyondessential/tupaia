@@ -3,15 +3,19 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-const orgUnitCodeToName = async (models, value) => {
-  const organisationUnit = await models.entity.findOne({ code: value });
-  const { name } = organisationUnit || {};
-
-  return name || value;
+const findEntityName = async (models, conditions) => {
+  const entity = await models.entity.findOne(conditions);
+  const { name } = entity || {};
+  return name || Object.values(conditions)[0];
 };
+
+const orgUnitCodeToName = async (models, value) => findEntityName(models, { code: value });
+
+const entityIdToName = async (models, value) => findEntityName(models, { id: value });
 
 const TRANSFORMATIONS = {
   orgUnitCodeToName,
+  entityIdToName,
 };
 
 export const transformValue = async (models, transformationName, value) => {
