@@ -126,7 +126,7 @@ describe('period utilities', () => {
   });
 
   describe('periodToDateString', () => {
-    it('uses to start period by default', () => {
+    it('uses start period by default', () => {
       expect(periodToDateString('2020')).toBe(periodToDateString('2020', false));
     });
 

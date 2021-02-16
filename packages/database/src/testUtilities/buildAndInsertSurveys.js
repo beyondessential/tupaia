@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
+import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
 const buildAndInsertQuestion = async (
   models,
@@ -42,7 +42,7 @@ const buildAndInsertDataElement = async (models, fields) => {
   return findOrCreateDummyRecord(
     models.dataSource,
     { code, type: 'dataElement' },
-    { service_type: 'tupaia', createFields },
+    { service_type: 'tupaia', ...createFields },
   );
 };
 

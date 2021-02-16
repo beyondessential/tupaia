@@ -6,7 +6,7 @@
 import {
   adjustFetchOptionsToAggregationList,
   adjustFetchOptionsToAggregationLists,
-} from '../../../../analytics/aggregateAnalytics/adjustFetchOptionsToAggregation';
+} from '../../../../analytics/aggregateAnalytics/adjustFetchOptionsToAggregationList';
 
 const getOffsetMonthsAgg = offset => ({
   type: 'OFFSET_PERIOD',
