@@ -5,7 +5,6 @@
 
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from 'material-ui/IconButton';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
@@ -21,6 +20,7 @@ import { getIsMatrix, getViewWrapper, VIEW_CONTENT_SHAPE } from '../../component
 import { DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import { LoadingIndicator } from '../Form/common';
 import { getLimits } from '../../utils/periodGranularities';
+import { DialogTitleWrapper } from '../../components/DialogTitleWrapper';
 
 const StyledAlert = styled(Alert)`
   display: inline-flex;
@@ -104,23 +104,21 @@ export class EnlargedDialogContent extends PureComponent {
       return null;
     }
 
-    const { name, periodGranularity } = viewContent;
+    const { name, periodGranularity, source } = viewContent;
 
     if (viewContent.entityHeader === '') titleText = `${viewContent.name}`;
     else if (viewContent.entityHeader)
       titleText = `${viewContent.name}, ${viewContent.entityHeader}`;
     else titleText = `${name}${organisationUnitName ? `, ${organisationUnitName} ` : ''}`;
 
-    const style = {
-      textAlign: 'center',
-      color: isExporting ? DARK_BLUE : WHITE,
-    };
-
     return (
-      <DialogTitle style={style}>
-        <span style={styles.titleText}>{titleText}</span>
-        {periodGranularity && this.renderPeriodSelector()}
-      </DialogTitle>
+      <DialogTitleWrapper
+        titleText={titleText}
+        periodGranularity={periodGranularity}
+        isExporting={isExporting}
+        renderPeriodSelector={this.renderPeriodSelector}
+        source={source}
+      />
     );
   }
 

@@ -1,0 +1,66 @@
+/**
+ * Tupaia Web
+ * Copyright (c) 2021 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
+import React from 'react';
+
+import { Typography, Tooltip, withStyles, Link } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
+import styled from 'styled-components';
+import { BLUE } from '../styles';
+
+const IconButton = styled(InfoRoundedIcon)`
+  color: grey;
+  transition: color 0.2s ease;
+  &:hover {
+    background-color: initial;
+    color: white;
+  }
+`;
+const styles = {
+  link: { color: BLUE },
+  defaultIconButton: { fontSize: 15 },
+};
+const StyledToolTip = withStyles(theme => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+  },
+}))(Tooltip);
+
+export const SourceTooltip = props => {
+  const { source, iconStyle } = props;
+
+  return (
+    <StyledToolTip
+      arrow
+      interactive
+      placement="top"
+      title={
+        <Typography variant="caption" style={{ backgroundColor: 'black' }}>
+          <span>Source: </span>
+          <Link style={styles.link} href={source.link}>
+            {source.name}
+          </Link>
+        </Typography>
+      }
+    >
+      <IconButton style={iconStyle ? { ...iconStyle } : styles.defaultIconButton} />
+    </StyledToolTip>
+  );
+};
+
+SourceTooltip.propTypes = {
+  source: PropTypes.object,
+  iconStyle: PropTypes.object,
+};
+SourceTooltip.defaultProps = {
+  iconStyle: null,
+  source: null,
+};
