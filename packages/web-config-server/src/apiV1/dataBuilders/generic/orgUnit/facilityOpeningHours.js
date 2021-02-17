@@ -32,7 +32,7 @@ export const facilityOpeningHours = async ({ dataBuilderConfig, query }, aggrega
       openingHours[day] = 'No Data';
       return;
     }
-    if (resultsCodeToValue[IS_OPEN_CODE] === 'Yes') {
+    if (['Yes', 1].includes(resultsCodeToValue[IS_OPEN_CODE])) {
       const openingTime = codes[1] && resultsCodeToValue[codes[1]];
       const closingTime = codes[2] && resultsCodeToValue[codes[2]];
       if (openingTime && closingTime) {
@@ -49,6 +49,6 @@ export const facilityOpeningHours = async ({ dataBuilderConfig, query }, aggrega
     value: openingHours[day],
     name: day,
   }));
-  
+
   return { data: returnData };
 };
