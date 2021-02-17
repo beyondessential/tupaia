@@ -34,8 +34,8 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
-export const SourceTooltip = props => {
-  const { source, iconStyle } = props;
+export const ReferenceTooltip = props => {
+  const { reference, iconStyle } = props;
 
   return (
     <StyledToolTip
@@ -45,8 +45,8 @@ export const SourceTooltip = props => {
       title={
         <Typography variant="caption" style={styles.typography}>
           <span>Source: </span>
-          <Link color={BLUE} href={source.link} target="_blank" rel="noopener">
-            {source.name}
+          <Link color={BLUE} href={reference.link} target="_blank" rel="noopener">
+            {reference.name}
           </Link>
         </Typography>
       }
@@ -56,11 +56,11 @@ export const SourceTooltip = props => {
   );
 };
 
-SourceTooltip.propTypes = {
-  source: PropTypes.object,
+ReferenceTooltip.propTypes = {
+  reference: PropTypes.object,
   iconStyle: PropTypes.object,
 };
-SourceTooltip.defaultProps = {
+ReferenceTooltip.defaultProps = {
   iconStyle: null,
-  source: null,
+  reference: null,
 };
