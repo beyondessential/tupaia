@@ -22,8 +22,8 @@ const IconButton = styled(InfoRoundedIcon)`
   }
 `;
 const styles = {
-  link: { color: BLUE },
-  defaultIconButton: { fontSize: 15 },
+  defaultIconButton: { fontSize: '16px' },
+  typography: { backgroundColor: 'black' },
 };
 const StyledToolTip = withStyles(theme => ({
   arrow: {
@@ -43,9 +43,9 @@ export const SourceTooltip = props => {
       interactive
       placement="top"
       title={
-        <Typography variant="caption" style={{ backgroundColor: 'black' }}>
+        <Typography variant="caption" style={styles.typography}>
           <span>Source: </span>
-          <Link style={styles.link} href={source.link}>
+          <Link color={BLUE} href={source.link} target="_blank" rel="noopener">
             {source.name}
           </Link>
         </Typography>
