@@ -13,7 +13,15 @@ import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
 import { BLUE } from '../styles';
 
+const DEFAULT = 'default';
+const TILE_SET = 'tileSet';
+export const TOOLTIP_ICON_STYLE_OPTIONS = {
+  DEFAULT,
+  TILE_SET,
+};
+
 const IconButton = styled(InfoRoundedIcon)`
+  fontsize: 16px;
   color: grey;
   transition: color 0.2s ease;
   &:hover {
@@ -23,7 +31,10 @@ const IconButton = styled(InfoRoundedIcon)`
 `;
 const styles = {
   link: { color: BLUE },
-  defaultIconButton: { fontSize: '16px' },
+  iconButton: {
+    [DEFAULT]: { fontSize: '16px' },
+    [TILE_SET]: { fontSize: '16px', marginBottom: '-1px' },
+  },
   typography: { backgroundColor: 'black' },
 };
 const StyledToolTip = withStyles(theme => ({
@@ -36,7 +47,7 @@ const StyledToolTip = withStyles(theme => ({
 }))(Tooltip);
 
 export const ReferenceTooltip = props => {
-  const { reference, iconStyle } = props;
+  const { reference, iconStyleOption } = props;
 
   return (
     <StyledToolTip
@@ -52,16 +63,22 @@ export const ReferenceTooltip = props => {
         </Typography>
       }
     >
-      <IconButton style={iconStyle ? { ...iconStyle } : styles.defaultIconButton} />
+      <IconButton
+        style={
+          iconStyleOption && styles.iconButton[iconStyleOption]
+            ? styles.iconButton[iconStyleOption]
+            : styles.iconButton[DEFAULT]
+        }
+      />
     </StyledToolTip>
   );
 };
 
 ReferenceTooltip.propTypes = {
   reference: PropTypes.object,
-  iconStyle: PropTypes.object,
+  iconStyleOption: PropTypes.string,
 };
 ReferenceTooltip.defaultProps = {
-  iconStyle: null,
+  iconStyleOption: null,
   reference: null,
 };
