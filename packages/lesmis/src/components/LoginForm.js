@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { TextField, Button, Checkbox } from '@tupaia/ui-components';
+import { TextField, Button } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
@@ -33,13 +33,8 @@ export const LoginForm = () => {
   const { handleSubmit, register, errors } = useForm();
   const { mutate: login, user, isError, isLoading, error } = useLogin();
 
-  const onSubmit = handleSubmit(({ email, password, rememberMe }) => {
-    // window.localStorage.setItem('PSSS:rememberMe', rememberMe.toString());
-    login({ email, password });
-  });
-
   return (
-    <form onSubmit={onSubmit} noValidate>
+    <form onSubmit={handleSubmit(({ email, password }) => login({ email, password }))} noValidate>
       <Heading component="h4">Enter your email and password</Heading>
       {isError && <ErrorMessage>{error.message}</ErrorMessage>}
       <TextField
@@ -67,13 +62,14 @@ export const LoginForm = () => {
           required: 'Required',
         })}
       />
-      <Checkbox
-        name="rememberMe"
-        color="primary"
-        label="Remember me"
-        inputRef={register}
-        defaultValue={false}
-      />
+      {/*Todo: Remember me feature. @see https://github.com/beyondessential/tupaia-backlog/issues/2261*/}
+      {/*<Checkbox*/}
+      {/*  name="rememberMe"*/}
+      {/*  color="primary"*/}
+      {/*  label="Remember me"*/}
+      {/*  inputRef={register}*/}
+      {/*  defaultValue={false}*/}
+      {/*/>*/}
       <StyledButton type="submit" fullWidth isLoading={isLoading}>
         Login to your account
       </StyledButton>

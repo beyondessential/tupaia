@@ -19,9 +19,6 @@ export const useLogin = () => {
         },
       }),
     {
-      onError: error => {
-        console.log('error', error);
-      },
       onSuccess: () => {
         queryClient.invalidateQueries('getUser');
       },

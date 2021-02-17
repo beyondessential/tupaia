@@ -13,6 +13,14 @@ import { FlexSpaceBetween } from './Layout';
 import { ProfileButton } from './ProfileButton';
 import { NAVBAR_HEIGHT } from '../constants';
 
+/**
+ * === PLACEHOLDER NAVIGATION ===
+ *
+ * Waiting for designs to be completed. @see https://github.com/beyondessential/tupaia-backlog/issues/2234
+ *
+ * ================================
+ */
+
 const Container = styled.nav`
   background-color: ${props => props.theme.palette.primary.main};
 

@@ -20,7 +20,7 @@ axios.defaults.withCredentials = true;
  * @returns {AxiosPromise}
  */
 const request = (endpoint, options) =>
-  axios(`${API_URL}/${endpoint}`, {
+  axios(`${API_URL}${endpoint}`, {
     timeout,
     ...options,
   }).then(res => res.data);
