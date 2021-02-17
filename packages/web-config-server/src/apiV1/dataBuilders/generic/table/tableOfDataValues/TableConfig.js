@@ -2,6 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+
+import { compareAsc } from '@tupaia/utils';
 import { TotalCalculator } from './TotalCalculator';
 
 const METADATA_FIELDS = {
@@ -73,8 +75,8 @@ export class TableConfig {
   }
 
   getMetadataValues = (results, metadataField) =>
-    [...new Set(results.map(({ [metadataField]: metadataValue }) => metadataValue))].sort((a, b) =>
-      a.localeCompare(b, undefined, { numeric: true }),
+    [...new Set(results.map(({ [metadataField]: metadataValue }) => metadataValue))].sort(
+      compareAsc,
     );
 
   processRowMetadataFields(results) {
