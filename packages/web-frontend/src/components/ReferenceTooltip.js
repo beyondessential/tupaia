@@ -23,7 +23,8 @@ const IconButton = styled(InfoRoundedIcon)`
 `;
 const styles = {
   link: { color: BLUE },
-  defaultIconButton: { fontSize: 15 },
+  defaultIconButton: { fontSize: '16px' },
+  typography: { backgroundColor: 'black' },
 };
 const StyledToolTip = withStyles(theme => ({
   arrow: {
@@ -34,8 +35,8 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
-export const SourceTooltip = props => {
-  const { source, iconStyle } = props;
+export const ReferenceTooltip = props => {
+  const { reference, iconStyle } = props;
 
   return (
     <StyledToolTip
@@ -43,10 +44,10 @@ export const SourceTooltip = props => {
       interactive
       placement="top"
       title={
-        <Typography variant="caption" style={{ backgroundColor: 'black' }}>
+        <Typography variant="caption" style={styles.typography}>
           <span>Source: </span>
-          <Link style={styles.link} href={source.link}>
-            {source.name}
+          <Link style={styles.link} href={reference.link} target="_blank" rel="noopener">
+            {reference.name}
           </Link>
         </Typography>
       }
@@ -56,11 +57,11 @@ export const SourceTooltip = props => {
   );
 };
 
-SourceTooltip.propTypes = {
-  source: PropTypes.object,
+ReferenceTooltip.propTypes = {
+  reference: PropTypes.object,
   iconStyle: PropTypes.object,
 };
-SourceTooltip.defaultProps = {
+ReferenceTooltip.defaultProps = {
   iconStyle: null,
-  source: null,
+  reference: null,
 };

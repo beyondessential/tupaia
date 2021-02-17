@@ -28,7 +28,7 @@ async function getDashboardReportById(db, id) {
   return dashboardReports[0] || null;
 }
 
-const source = {
+const reference = {
   link: 'https://www.weatherbit.io/',
   name: 'openweather',
 };
@@ -41,7 +41,7 @@ const dashboards = [
 exports.up = async function (db) {
   for (const id of dashboards) {
     const report = await getDashboardReportById(db, id);
-    await updateViewJsonByReportId(db, { ...report.viewJson, source }, id);
+    await updateViewJsonByReportId(db, { ...report.viewJson, reference }, id);
   }
 };
 
@@ -49,7 +49,7 @@ exports.down = async function (db) {
   for (const id of dashboards) {
     const report = await getDashboardReportById(db, id);
     const newJson = { ...report.viewJson };
-    delete newJson.source;
+    delete newJson.reference;
     await updateViewJsonByReportId(db, newJson, id);
   }
 };

@@ -104,7 +104,7 @@ export class EnlargedDialogContent extends PureComponent {
       return null;
     }
 
-    const { name, periodGranularity, source } = viewContent;
+    const { name, periodGranularity, reference } = viewContent;
 
     if (viewContent.entityHeader === '') titleText = `${viewContent.name}`;
     else if (viewContent.entityHeader)
@@ -117,7 +117,7 @@ export class EnlargedDialogContent extends PureComponent {
         periodGranularity={periodGranularity}
         isExporting={isExporting}
         renderPeriodSelector={this.renderPeriodSelector}
-        source={source}
+        reference={reference}
       />
     );
   }
