@@ -8,7 +8,7 @@ import MuiCard from '@material-ui/core/Card';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import { LoginForm } from '../components';
+import { LoginForm, FullPageLoader } from '../components';
 import { useUser } from '../api/queries';
 
 export const Main = styled.main`
@@ -70,7 +70,7 @@ export const LoginView = () => {
   }
 
   if (isLoading) {
-    return 'loading...';
+    return <FullPageLoader />;
   }
 
   return (

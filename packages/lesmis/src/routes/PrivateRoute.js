@@ -5,13 +5,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+import { FullPageLoader } from '../components';
 import { useUser } from '../api';
 
 export const PrivateRoute = ({ children, ...rest }) => {
   const { isLoading, isLoggedIn } = useUser();
 
   if (isLoading) {
-    return 'loading...';
+    return <FullPageLoader />;
   }
 
   return (

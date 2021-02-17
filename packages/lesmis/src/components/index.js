@@ -8,3 +8,4 @@ export * from './LoginForm';
 export * from './Layout';
 export * from './NavBar';
 export * from './Footer';
+export * from './FullPageLoader';
