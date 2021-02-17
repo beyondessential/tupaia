@@ -22,6 +22,7 @@ const IconButton = styled(InfoRoundedIcon)`
   }
 `;
 const styles = {
+  link: { color: BLUE },
   defaultIconButton: { fontSize: '16px' },
   typography: { backgroundColor: 'black' },
 };
@@ -45,7 +46,7 @@ export const ReferenceTooltip = props => {
       title={
         <Typography variant="caption" style={styles.typography}>
           <span>Source: </span>
-          <Link color={BLUE} href={reference.link} target="_blank" rel="noopener">
+          <Link style={styles.link} href={reference.link} target="_blank" rel="noopener">
             {reference.name}
           </Link>
         </Typography>
