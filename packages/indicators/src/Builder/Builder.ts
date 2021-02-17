@@ -23,14 +23,14 @@ export abstract class Builder {
   abstract getAggregationListsByElement(): Record<string, AggregationList[]>;
 
   /**
-   * @param wrapperAggregations Useful for passing aggregations top-down to nested indicators
+   * @param wrapperAggregationList Useful for passing aggregations top-down to nested indicators
    */
   buildAnalytics = (
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    wrapperAggregations: Aggregation[] = [],
+    wrapperAggregationList: AggregationList = [],
   ): Analytic[] =>
-    this.buildAnalyticValues(analyticsRepo, buildersByIndicator, wrapperAggregations).map(
+    this.buildAnalyticValues(analyticsRepo, buildersByIndicator, wrapperAggregationList).map(
       value => ({
         ...value,
         dataElement: this.indicator.code,
@@ -40,6 +40,6 @@ export abstract class Builder {
   abstract buildAnalyticValues(
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    wrapperAggregations: Aggregation[],
+    wrapperAggregationList: AggregationList,
   ): AnalyticValue[];
 }

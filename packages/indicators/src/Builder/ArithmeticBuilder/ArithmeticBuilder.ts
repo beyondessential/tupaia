@@ -101,12 +101,12 @@ export class ArithmeticBuilder extends Builder {
   buildAnalyticValues(
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    wrapperAggregations: Aggregation[],
+    wrapperAggregationList: AggregationList,
   ) {
     const analytics = this.buildAggregatedAnalytics(
       analyticsRepo,
       buildersByIndicator,
-      wrapperAggregations,
+      wrapperAggregationList,
     );
     const clusters = this.buildAnalyticClusters(analytics);
     return this.buildAnalyticValuesFromClusters(clusters);
@@ -125,11 +125,11 @@ export class ArithmeticBuilder extends Builder {
   private buildAggregatedAnalytics = (
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    wrapperAggregations: Aggregation[],
+    wrapperAggregationList: AggregationList,
   ) =>
     this.getVariables()
       .map(variable => {
-        const aggregationList = [...this.config.aggregation[variable], ...wrapperAggregations];
+        const aggregationList = [...this.config.aggregation[variable], ...wrapperAggregationList];
         return this.getAggregatedAnalyticsForVariable(
           variable,
           analyticsRepo,
