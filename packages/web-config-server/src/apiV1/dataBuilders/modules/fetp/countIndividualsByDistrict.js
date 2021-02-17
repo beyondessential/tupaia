@@ -1,6 +1,8 @@
 /**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * 
  * count entities of type 'individual' by district and sub_district grouping by district
- *
  */
 export const countIndividualsByDistrict = async ({ models, dataBuilderConfig, entity, fetchHierarchyId }) => {
     const hierarchyId = await fetchHierarchyId();
