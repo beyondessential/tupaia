@@ -4,7 +4,7 @@
  */
 
 import { toArray } from '@tupaia/utils';
-import { Aggregation } from '../../../types';
+import { Aggregation, AggregationList } from '../../../types';
 import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
 import { AggregationDescriptor, AggregationSpecs, ArithmeticConfig } from './types';
 
@@ -137,7 +137,7 @@ const getAggregationDictionary = (config: ArithmeticConfig): Record<string, Aggr
 
 export const getAggregationListByCode = (
   config: ArithmeticConfig,
-): Record<string, Aggregation[]> => {
+): Record<string, AggregationList> => {
   const aggregationDictionary = getAggregationDictionary(config);
 
   return Object.fromEntries(

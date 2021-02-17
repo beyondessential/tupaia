@@ -11,7 +11,7 @@ import {
   Aggregator,
   keepAnalyticsMatchingFetchOptions,
 } from '@tupaia/aggregator';
-import { Aggregation, Analytic, FetchOptions } from './types';
+import { Aggregation, AggregationList, Analytic, FetchOptions } from './types';
 
 interface Fields {
   analyticsByElement: Record<string, Analytic[]>;
@@ -60,7 +60,7 @@ export class AnalyticsRepository {
    */
   async fetch(
     dataElementCodes: string[],
-    aggregationLists: Aggregation[][],
+    aggregationLists: AggregationList[],
     fetchOptions: FetchOptions,
   ) {
     const expandedOptions = adjustFetchOptionsToAggregationLists(fetchOptions, aggregationLists);
@@ -74,7 +74,7 @@ export class AnalyticsRepository {
     };
   }
 
-  getAggregatedAnalytics = (dataElement: string, aggregationList: Aggregation[]) => {
+  getAggregatedAnalytics = (dataElement: string, aggregationList: AggregationList) => {
     const analytics = this.fields.analyticsByElement[dataElement];
     if (!analytics) {
       return [];

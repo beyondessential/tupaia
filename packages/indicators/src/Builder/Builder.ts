@@ -4,7 +4,7 @@
  */
 
 import { AnalyticsRepository } from '../AnalyticsRepository';
-import { Aggregation, AggregationListsMap, Analytic, AnalyticValue, Indicator } from '../types';
+import { Aggregation, AggregationList, Analytic, AnalyticValue, Indicator } from '../types';
 
 export abstract class Builder {
   protected readonly indicator: Indicator;
@@ -20,7 +20,7 @@ export abstract class Builder {
    */
   abstract getElementCodes(): string[];
 
-  abstract getAggregationListsMap(): AggregationListsMap;
+  abstract getAggregationListsByElement(): Record<string, AggregationList[]>;
 
   /**
    * @param wrapperAggregations Useful for passing aggregations top-down to nested indicators

@@ -4,10 +4,10 @@
  */
 
 import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
-import { AggregationListsMap, DbRecord } from '../../../types';
+import { AggregationList, DbRecord } from '../../../types';
 
-export const getAggregationListsMap = () => {
-  const testData: [string, DbRecord, AggregationListsMap][] = [
+export const getAggregationListsByElement = () => {
+  const testData: [string, DbRecord, Record<string, AggregationList[]>][] = [
     [
       'single aggregation - string',
       {
@@ -101,6 +101,6 @@ export const getAggregationListsMap = () => {
   it.each(testData)('%s', (_, config, expected) => {
     const indicator = { code: 'test', builder: 'arithmetic', config };
     const builder = new ArithmeticBuilder(indicator);
-    return expect(builder.getAggregationListsMap()).toStrictEqual(expected);
+    return expect(builder.getAggregationListsByElement()).toStrictEqual(expected);
   });
 };

@@ -3,12 +3,15 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { AggregationListsMap } from './types';
+import { Builder } from './Builder';
+import { AggregationList } from './types';
+
+type AggregationListsMap = Record<string, AggregationList[]>;
 
 /**
  * Merge aggregation list maps from `newEntries` in `targetMap`
  */
-export const addEntriesInAggregationListMap = (
+const addEntriesInAggregationListMap = (
   targetMap: AggregationListsMap,
   newEntries: Record<string, AggregationListsMap>,
 ): AggregationListsMap => {
@@ -37,4 +40,20 @@ export const addEntriesInAggregationListMap = (
 
   Object.entries(newEntries).forEach(addEntry);
   return newMap;
+};
+
+const getAggregationListMapsByBuilder = (builders: Builder[]) =>
+  Object.fromEntries(
+    builders.map(builder => [builder.getIndicator().code, builder.getAggregationListsByElement()]),
+  );
+
+export const getAggregationListsForAnalyticsFetch = (buildersByNestDepth: Builder[][]) => {
+  let aggregationListMap: AggregationListsMap = {};
+
+  buildersByNestDepth.forEach(builders => {
+    const listMapsByBuilder = getAggregationListMapsByBuilder(builders);
+    aggregationListMap = addEntriesInAggregationListMap(aggregationListMap, listMapsByBuilder);
+  });
+
+  return Object.values(aggregationListMap).flat();
 };
