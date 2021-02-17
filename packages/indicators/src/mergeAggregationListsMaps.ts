@@ -6,7 +6,7 @@
 import { AggregationListsMap } from './types';
 
 /**
- * Merge aggregation list maps from `listMapEntries` in `targetMap`
+ * Merge aggregation list maps from `newEntries` in `targetMap`
  */
 export const addEntriesInAggregationListMap = (
   targetMap: AggregationListsMap,
