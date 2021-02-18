@@ -89,18 +89,6 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     ['2019-01-01', '2019-12-31', ['TO']],
     "'nonExisting' is not an indicator builder",
   ],
-  [
-    'throws for self referencing builders',
-    ['SelfReferencing'],
-    ['2019-01-01', '2019-12-31', ['TO']],
-    'Max indicator nesting depth reached',
-  ],
-  [
-    'throws for circular references',
-    ['CircularReference_A'],
-    ['2019-01-01', '2019-12-31', ['TO']],
-    'Max indicator nesting depth reached',
-  ],
 ];
 
 export const indicatorApiFixtures = {

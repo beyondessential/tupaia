@@ -3,43 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { AnalyticsRepository } from '../AnalyticsRepository';
-import { Aggregation, AggregationList, Analytic, AnalyticValue, Indicator } from '../types';
+import { IndicatorApi } from '../IndicatorApi';
+import { Analytic, AnalyticValue, FetchOptions, Indicator } from '../types';
 
 export abstract class Builder {
+  protected readonly api: IndicatorApi;
+
   protected readonly indicator: Indicator;
 
-  constructor(indicator: Indicator) {
+  constructor(api: IndicatorApi, indicator: Indicator) {
+    this.api = api;
     this.indicator = indicator;
   }
 
-  getIndicator = () => this.indicator;
+  buildAnalytics = async (fetchOptions: FetchOptions): Promise<Analytic[]> => {
+    const analyticValues = await this.buildAnalyticValues(fetchOptions);
+    return analyticValues.map(value => ({ ...value, dataElement: this.indicator.code }));
+  };
 
-  /**
-   * Returns all element codes referenced in this Builder
-   */
-  abstract getElementCodes(): string[];
-
-  abstract getAggregationListsByElement(): Record<string, AggregationList[]>;
-
-  /**
-   * @param wrapperAggregationList Useful for passing aggregations top-down to nested indicators
-   */
-  buildAnalytics = (
-    analyticsRepo: AnalyticsRepository,
-    buildersByIndicator: Record<string, Builder>,
-    wrapperAggregationList: AggregationList = [],
-  ): Analytic[] =>
-    this.buildAnalyticValues(analyticsRepo, buildersByIndicator, wrapperAggregationList).map(
-      value => ({
-        ...value,
-        dataElement: this.indicator.code,
-      }),
-    );
-
-  abstract buildAnalyticValues(
-    analyticsRepo: AnalyticsRepository,
-    buildersByIndicator: Record<string, Builder>,
-    wrapperAggregationList: AggregationList,
-  ): AnalyticValue[];
+  abstract buildAnalyticValues(fetchOptions: FetchOptions): Promise<AnalyticValue[]>;
 }
