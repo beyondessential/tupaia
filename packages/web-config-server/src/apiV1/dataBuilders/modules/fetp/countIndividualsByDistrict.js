@@ -35,7 +35,7 @@ export const countIndividualsByDistrict = async ({ models, dataBuilderConfig, en
         });
         const districtCountRow = {
             categoryId: district.name,
-            dataElement: 'Provincial Graduates',
+            dataElement: 'Provincial Level',
             CountColumn: districtCount};
         const category = {category: district.name, CountColumn: totalCount};
         return [districtCountRow, ...childRows, category];
