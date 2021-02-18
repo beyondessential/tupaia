@@ -53,6 +53,10 @@
       "path": "packages/indicators"
     },
     {
+      "name": "lesmis",
+      "path": "packages/lesmis"
+    },
+    {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
     },
