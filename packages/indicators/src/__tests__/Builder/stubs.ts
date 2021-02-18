@@ -6,11 +6,8 @@
 import { createJestMockInstance } from '@tupaia/utils';
 import { Analytic } from '../../types';
 
-export const createPopulatedAnalyticsRepository = (availableAnalytics: Analytic[]) =>
+export const createAnalyticsRepository = (availableAnalytics: Analytic[]) =>
   createJestMockInstance('@tupaia/indicators/src/AnalyticsRepository.ts', 'AnalyticsRepository', {
-    isPopulated: () => true,
-    getAnalyticsForDataElement: (dataElement: string) =>
+    getAggregatedAnalytics: (dataElement: string) =>
       availableAnalytics.filter(a => a.dataElement === dataElement),
-    aggregateRootAnalytics: (analytics: Analytic[]) => analytics,
-    aggregateNestedAnalytics: (analytics: Analytic[]) => analytics,
   });

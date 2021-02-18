@@ -4,15 +4,20 @@
  */
 
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
-import { getUniqueEntries, getUniqueObjects } from '@tupaia/utils';
+import { getUniqueEntries } from '@tupaia/utils';
 import { AnalyticsRepository } from '../../AnalyticsRepository';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
-import { Aggregation, Analytic, AnalyticCluster, FetchOptions, Indicator } from '../../types';
+import { Aggregation, AggregationList, Analytic, AnalyticCluster, Indicator } from '../../types';
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
 import { validateConfig } from '../helpers';
 import { getElementCodesForBuilders } from '../utils';
-import { ArithmeticConfig, configValidators, DefaultValue, getAggregationsByCode } from './config';
+import {
+  ArithmeticConfig,
+  configValidators,
+  DefaultValue,
+  getAggregationListByCode,
+} from './config';
 
 /**
  * Config used by the builder. It is essential a fully expanded, verbose version
@@ -20,7 +25,7 @@ import { ArithmeticConfig, configValidators, DefaultValue, getAggregationsByCode
  */
 type BuilderConfig = {
   readonly formula: string;
-  readonly aggregation: Record<string, Aggregation[]>;
+  readonly aggregation: Record<string, AggregationList>;
   readonly parameters: Indicator[];
   readonly defaultValues: Record<string, DefaultValue>;
 };
@@ -32,7 +37,7 @@ const indicatorToBuilderConfig = (indicatorConfig: ArithmeticConfig): BuilderCon
     ...otherFields,
     defaultValues,
     parameters,
-    aggregation: getAggregationsByCode(indicatorConfig),
+    aggregation: getAggregationListByCode(indicatorConfig),
   };
 };
 
@@ -67,7 +72,7 @@ export class ArithmeticBuilder extends Builder {
   getElementCodes = (): string[] => {
     const codesInFormula = this.getElementCodesInFormula();
     const codesInParameters = this.getElementCodesInParameters();
-    return getUniqueEntries(codesInParameters.concat(codesInFormula));
+    return getUniqueEntries([...codesInParameters, ...codesInFormula]);
   };
 
   private getElementCodesInFormula = () =>
@@ -76,24 +81,32 @@ export class ArithmeticBuilder extends Builder {
   private getElementCodesInParameters = () =>
     getElementCodesForBuilders(Object.values(this.paramBuildersByCode));
 
-  getAggregations = (): Aggregation[] => {
-    const formulaAggregations = Object.values(this.config.aggregation).flat();
-    const parameterAggregations = Object.values(this.paramBuildersByCode)
-      .map(b => b.getAggregations())
-      .flat();
+  getAggregationListsByElement = () => {
+    const listsByElement: Record<string, AggregationList[]> = {};
 
-    return getUniqueObjects(formulaAggregations.concat(parameterAggregations));
+    Object.entries(this.config.aggregation).forEach(([variable, list]) => {
+      const paramBuilder = this.paramBuildersByCode[variable];
+      const newListsByElement = paramBuilder
+        ? paramBuilder.getAggregationListsByElement()
+        : { [variable]: [list] };
+
+      Object.entries(newListsByElement).forEach(([k, newLists]) => {
+        listsByElement[k] = [...(listsByElement[k] || []), ...newLists];
+      });
+    });
+
+    return listsByElement;
   };
 
   buildAnalyticValues(
-    populatedAnalyticsRepo: AnalyticsRepository,
+    analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    fetchOptions: FetchOptions,
+    wrapperAggregationList: AggregationList,
   ) {
     const analytics = this.buildAggregatedAnalytics(
-      populatedAnalyticsRepo,
+      analyticsRepo,
       buildersByIndicator,
-      fetchOptions,
+      wrapperAggregationList,
     );
     const clusters = this.buildAnalyticClusters(analytics);
     return this.buildAnalyticValuesFromClusters(clusters);
@@ -102,7 +115,7 @@ export class ArithmeticBuilder extends Builder {
   private getVariables = () => Object.keys(this.config.aggregation);
 
   /**
-   * We use the provided analytics repo (pre-populated ) and builders for nested indicators
+   * We use the provided analytics repo and builders for nested indicators
    * to build analytics for the following categories of variables included in the formula:
    *
    * a. Parameters (they take precedence over other elements with clashing codes)
@@ -110,33 +123,30 @@ export class ArithmeticBuilder extends Builder {
    * c. "Primitive" elements (eg `dhis`, `tupaia` elements)
    */
   private buildAggregatedAnalytics = (
-    populatedAnalyticsRepo: AnalyticsRepository,
+    analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    fetchOptions: FetchOptions,
+    wrapperAggregationList: AggregationList,
   ) =>
     this.getVariables()
       .map(variable => {
-        const analytics = this.getAnalyticsForVariable(
+        const aggregationList = [...this.config.aggregation[variable], ...wrapperAggregationList];
+        return this.getAggregatedAnalyticsForVariable(
           variable,
-          populatedAnalyticsRepo,
+          analyticsRepo,
           buildersByIndicator,
-          fetchOptions,
+          aggregationList,
         );
-        const aggregations = this.config.aggregation[variable];
-        return this.isRoot
-          ? populatedAnalyticsRepo.aggregateRootAnalytics(analytics, aggregations)
-          : populatedAnalyticsRepo.aggregateNestedAnalytics(analytics, aggregations);
       })
       .flat();
 
-  private getAnalyticsForVariable = (
+  private getAggregatedAnalyticsForVariable = (
     variable: string,
-    populatedAnalyticsRepo: AnalyticsRepository,
+    analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    fetchOptions: FetchOptions,
+    aggregationList: AggregationList,
   ) => {
     const buildAnalyticsUsingBuilder = (builder: Builder) =>
-      builder.buildAnalytics(populatedAnalyticsRepo, buildersByIndicator, fetchOptions);
+      builder.buildAnalytics(analyticsRepo, buildersByIndicator, aggregationList);
 
     const paramBuilder = this.paramBuildersByCode[variable];
     if (paramBuilder) {
@@ -148,7 +158,7 @@ export class ArithmeticBuilder extends Builder {
       return buildAnalyticsUsingBuilder(buildersByIndicator[variable]);
     }
 
-    return populatedAnalyticsRepo.getAnalyticsForDataElement(variable);
+    return analyticsRepo.getAggregatedAnalytics(variable, aggregationList);
   };
 
   private buildAnalyticClusters = (analytics: Analytic[]) => {

@@ -7,6 +7,3 @@ import { Builder } from './Builder';
 
 export const getElementCodesForBuilders = (builders: Builder[]) =>
   builders.map(b => b.getElementCodes()).flat();
-
-export const getAggregationsForBuilders = (builders: Builder[]) =>
-  builders.map(b => b.getAggregations()).flat();

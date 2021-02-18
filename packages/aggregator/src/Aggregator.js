@@ -4,7 +4,7 @@
  */
 
 import {
-  adjustTemporalDimensionsToAggregation,
+  adjustFetchOptionsToAggregationList,
   aggregateAnalytics,
   filterAnalytics,
   periodFromAnalytics,
@@ -37,8 +37,8 @@ export class Aggregator {
     return filterAnalytics(aggregatedAnalytics, filter);
   };
 
-  aggregateAnalytics = (analytics, aggregations, requestedPeriod) =>
-    aggregations.reduce((partiallyAggregatedAnalytics, { type, config }) => {
+  aggregateAnalytics = (analytics, aggregationList, requestedPeriod) =>
+    aggregationList.reduce((partiallyAggregatedAnalytics, { type, config }) => {
       return aggregateAnalytics(partiallyAggregatedAnalytics, type, {
         ...config,
         requestedPeriod,
@@ -57,21 +57,15 @@ export class Aggregator {
         period: periodFromAnalytics([], fetchOptions),
       };
     }
+
     const code = Array.isArray(codeInput) ? codeInput : [codeInput];
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
-    const { startDate, endDate, period, ...restOfFetchOptions } = fetchOptions;
-    const temporalDimensions = adjustTemporalDimensionsToAggregation(
-      { startDate, endDate, period },
-      aggregationOptions,
-    );
-
-    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, {
-      ...restOfFetchOptions,
-      ...temporalDimensions,
-    });
+    const { aggregations = [] } = aggregationOptions;
+    const adjustedFetchOptions = adjustFetchOptionsToAggregationList(fetchOptions, aggregations);
+    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
 
     return {
-      results: this.processAnalytics(results, aggregationOptions, period),
+      results: this.processAnalytics(results, aggregationOptions, fetchOptions.period),
       metadata,
       period: periodFromAnalytics(results, fetchOptions),
     };

@@ -5,14 +5,17 @@
 
 import groupBy from 'lodash.groupby';
 
-import { Aggregator, expandFetchOptionsToSpanAggregations } from '@tupaia/aggregator';
-import { comparePeriods, dateStringToPeriod } from '@tupaia/utils';
-import { Aggregation, Analytic, FetchOptions } from './types';
+import {
+  adjustFetchOptionsToAggregationList,
+  adjustFetchOptionsToAggregationLists,
+  Aggregator,
+  keepAnalyticsMatchingFetchOptions,
+} from '@tupaia/aggregator';
+import { Aggregation, AggregationList, Analytic, FetchOptions } from './types';
 
 interface Fields {
   analyticsByElement: Record<string, Analytic[]>;
   fetchOptions: FetchOptions;
-  expandedFetchOptions: FetchOptions;
 }
 
 /**
@@ -35,94 +38,57 @@ interface Fields {
 export class AnalyticsRepository {
   private aggregator: Aggregator;
 
-  private populatedFields: Fields | null = null;
+  private fetchedFields: Fields | null = null;
 
   constructor(aggregator: Aggregator) {
     this.aggregator = aggregator;
   }
 
   private get fields(): Fields {
-    if (!this.populatedFields) {
-      throw new Error('Please run the "populate" method first!');
+    if (!this.fetchedFields) {
+      throw new Error('Please run the "fetch" method first!');
     }
-    return this.populatedFields;
+    return this.fetchedFields;
   }
 
-  private set fields(data: Fields) {
-    this.populatedFields = data;
-  }
-
-  isPopulated() {
-    return !!this.populatedFields;
+  private set fields(fetchFields: Fields) {
+    this.fetchedFields = fetchFields;
   }
 
   /**
-   * @param allAggregations A combined list of aggregations across all data elements
+   * @param aggregationLists All aggregation lists that will be used to aggregate the fetched elements
    */
-  async populate(
+  async fetch(
     dataElementCodes: string[],
-    allAggregations: Aggregation[],
+    aggregationLists: AggregationList[],
     fetchOptions: FetchOptions,
   ) {
-    const expandedFetchOptions = expandFetchOptionsToSpanAggregations(
-      fetchOptions,
-      allAggregations,
-    );
+    const expandedOptions = adjustFetchOptionsToAggregationLists(fetchOptions, aggregationLists);
     const { results: analytics } = await this.aggregator.fetchAnalytics(
       dataElementCodes,
-      expandedFetchOptions,
+      expandedOptions,
     );
-
     this.fields = {
       analyticsByElement: groupBy(analytics, 'dataElement'),
       fetchOptions,
-      expandedFetchOptions,
     };
   }
 
-  getAnalyticsForDataElement = (dataElement: string) =>
-    this.fields.analyticsByElement[dataElement] || [];
+  getAggregatedAnalytics = (dataElement: string, aggregationList: AggregationList) => {
+    const analytics = this.fields.analyticsByElement[dataElement];
+    if (!analytics) {
+      return [];
+    }
 
-  /**
-   * This method should be used for analytics in root indicators. The original fetch options are used,
-   * to restrict the top-level data in the originally requested dimensions
-   */
-  aggregateRootAnalytics = (analytics: Analytic[], aggregations: Aggregation[]) => {
-    const analyticsMatchingFetchOptions = this.keepAnalyticsMatchingFetchOptions(
-      analytics,
+    const adjustedOptions = adjustFetchOptionsToAggregationList(
       this.fields.fetchOptions,
+      aggregationList,
     );
-    return this.aggregateAnalytics(
-      analyticsMatchingFetchOptions,
-      aggregations,
-      this.fields.fetchOptions,
-    );
-  };
-
-  /**
-   * This method should be used for analytics in nested indicators.  Expanded fetch options are used,
-   * to allow calculations that may require data outside the originally requested dimensions
-   */
-  aggregateNestedAnalytics = (analytics: Analytic[], aggregations: Aggregation[]) =>
-    this.aggregateAnalytics(analytics, aggregations, this.fields.expandedFetchOptions);
-
-  private aggregateAnalytics = (
-    analytics: Analytic[],
-    aggregations: Aggregation[],
-    fetchOptions: FetchOptions,
-  ) => this.aggregator.aggregateAnalytics(analytics, aggregations, fetchOptions.period);
-
-  private keepAnalyticsMatchingFetchOptions = (
-    analytics: Analytic[],
-    fetchOptions: FetchOptions,
-  ) => {
-    const { startDate, endDate } = fetchOptions;
-    const startPeriod = dateStringToPeriod(startDate);
-    const endPeriod = dateStringToPeriod(endDate);
-
-    return analytics.filter(
-      ({ period }) =>
-        comparePeriods(period, startPeriod) >= 0 && comparePeriods(period, endPeriod) <= 0,
+    const analyticsMatchingOptions = keepAnalyticsMatchingFetchOptions(analytics, adjustedOptions);
+    return this.aggregator.aggregateAnalytics(
+      analyticsMatchingOptions,
+      aggregationList,
+      adjustedOptions.period,
     );
   };
 }

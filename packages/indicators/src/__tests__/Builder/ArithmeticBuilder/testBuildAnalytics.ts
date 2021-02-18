@@ -4,12 +4,12 @@
  */
 
 import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
-import { DbRecord, FetchOptions } from '../../../types';
-import { createPopulatedAnalyticsRepository } from '../stubs';
+import { DbRecord } from '../../../types';
+import { createAnalyticsRepository } from '../stubs';
 import { AGGREGATOR_ANALYTICS } from './ArithmeticBuilder.fixtures';
 
 export const testBuildAnalytics = () => {
-  const populatedAnalyticsRepo = createPopulatedAnalyticsRepository(AGGREGATOR_ANALYTICS);
+  const analyticsRepo = createAnalyticsRepository(AGGREGATOR_ANALYTICS);
 
   const valuesToAnalytics = (values: number[]) =>
     values.map(value => ({
@@ -34,9 +34,7 @@ export const testBuildAnalytics = () => {
       const builder = new ArithmeticBuilder(indicator);
       const expected = valuesToAnalytics(expectedValues);
 
-      expect(
-        builder.buildAnalytics(populatedAnalyticsRepo, {}, {} as FetchOptions),
-      ).toIncludeSameMembers(expected);
+      expect(builder.buildAnalytics(analyticsRepo, {})).toIncludeSameMembers(expected);
     });
   });
 
@@ -78,9 +76,7 @@ export const testBuildAnalytics = () => {
       const builder = new ArithmeticBuilder(indicator);
       const expected = valuesToAnalytics(expectedValues);
 
-      expect(
-        builder.buildAnalytics(populatedAnalyticsRepo, {}, {} as FetchOptions),
-      ).toIncludeSameMembers(expected);
+      expect(builder.buildAnalytics(analyticsRepo, {})).toIncludeSameMembers(expected);
     });
   });
 
@@ -182,9 +178,7 @@ export const testBuildAnalytics = () => {
         value,
       }));
 
-      expect(
-        builder.buildAnalytics(populatedAnalyticsRepo, {}, {} as FetchOptions),
-      ).toIncludeSameMembers(expected);
+      expect(builder.buildAnalytics(analyticsRepo, {})).toIncludeSameMembers(expected);
     });
   });
 };

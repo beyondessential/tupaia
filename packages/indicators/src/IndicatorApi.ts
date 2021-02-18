@@ -7,14 +7,10 @@ import keyBy from 'lodash.keyby';
 
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { getSortByKey, getUniqueEntries, getUniqueObjects } from '@tupaia/utils';
+import { getSortByKey, getUniqueEntries } from '@tupaia/utils';
 import { AnalyticsRepository } from './AnalyticsRepository';
-import {
-  Builder,
-  createBuilder,
-  getAggregationsForBuilders,
-  getElementCodesForBuilders,
-} from './Builder';
+import { Builder, createBuilder, getElementCodesForBuilders } from './Builder';
+import { getAggregationListsForAnalyticsFetch } from './getAggregationListsForAnalyticsFetch';
 import { Analytic, FetchOptions, ModelRegistry } from './types';
 
 const MAX_INDICATOR_NESTING_DEPTH = 10;
@@ -33,16 +29,16 @@ export class IndicatorApi {
     const {
       buildersByNestDepth,
       dataElementCodes,
-      aggregations,
+      aggregationLists,
     } = await this.getFetchAnalyticsDependencies(indicatorCodes);
 
     const analyticsRepo = new AnalyticsRepository(this.aggregator);
-    await analyticsRepo.populate(dataElementCodes, aggregations, fetchOptions);
+    await analyticsRepo.fetch(dataElementCodes, aggregationLists, fetchOptions);
     const [rootBuilders = []] = buildersByNestDepth;
     const buildersByIndicator = keyBy(buildersByNestDepth.flat(), b => b.getIndicator().code);
 
     return rootBuilders
-      .map(b => b.buildAnalytics(analyticsRepo, buildersByIndicator, fetchOptions))
+      .map(b => b.buildAnalytics(analyticsRepo, buildersByIndicator))
       .flat()
       .sort(getSortByKey('period'));
   }
@@ -53,19 +49,17 @@ export class IndicatorApi {
    * b. "Primitive" elements (eg `dhis`, `tupaia` elements)
    *
    * Here we use the first category to compile a list of codes belonging to the second category,
-   * one nesting level at a time. We also include all nested indicators and all aggregations that
-   * will be used. This information is useful to other clients that fetch and build analytics
+   * one nesting level at a time. We also include all nested indicators and aggregation lists.
+   * This information is useful to other clients that fetch and build analytics
    */
   private getFetchAnalyticsDependencies = async (rootIndicatorCodes: string[]) => {
     const buildersByNestDepth: Builder[][] = [];
     const dataElementCodes = [];
-    const aggregations = [];
 
     let i;
     let currentIndicatorCodes = rootIndicatorCodes;
     for (i = 0; i < MAX_INDICATOR_NESTING_DEPTH; i++) {
-      const isRoot = i === 0;
-      const currentBuilders = await this.indicatorCodesToBuilders(currentIndicatorCodes, isRoot);
+      const currentBuilders = await this.indicatorCodesToBuilders(currentIndicatorCodes);
       buildersByNestDepth.push(currentBuilders);
       if (currentBuilders.length === 0) {
         // No more indicators (root or nested)
@@ -77,8 +71,6 @@ export class IndicatorApi {
       );
       currentIndicatorCodes = indicatorCodes;
       dataElementCodes.push(...nonIndicatorCodes);
-      const currentAggregations = getAggregationsForBuilders(currentBuilders);
-      aggregations.push(...currentAggregations);
     }
 
     if (i === MAX_INDICATOR_NESTING_DEPTH) {
@@ -89,20 +81,20 @@ export class IndicatorApi {
     return {
       buildersByNestDepth,
       dataElementCodes: getUniqueEntries(dataElementCodes),
-      aggregations: getUniqueObjects(aggregations),
+      aggregationLists: getAggregationListsForAnalyticsFetch(buildersByNestDepth),
     };
   };
 
-  private indicatorCodesToBuilders = async (codes: string[], isRoot: boolean) => {
+  private indicatorCodesToBuilders = async (codes: string[]) => {
     const indicators = await this.models.indicator.find({ code: codes });
-    return indicators.map(i => createBuilder(i, isRoot));
+    return indicators.map(createBuilder);
   };
 
   private getElementCodesByCategory = async (builders: Builder[]) => {
     const indicatorCodes: string[] = [];
     const nonIndicatorCodes: string[] = [];
 
-    const dataElements = await this.models.dataSource.findOrDefault({
+    const dataElements = await this.models.dataSource.find({
       code: getElementCodesForBuilders(builders),
       type: 'dataElement',
     });

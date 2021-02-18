@@ -5,7 +5,7 @@
 
 import { Indicator } from '../../../types';
 import { testBuildAnalytics } from './testBuildAnalytics';
-import { testGetAggregations } from './testGetAggregations';
+import { getAggregationListsByElement } from './testGetAggregationListsByElement';
 import { testGetElementCodes } from './testGetElementCodes';
 import { testConfigValidation } from './testValidateConfig';
 
@@ -18,7 +18,7 @@ jest.mock('../../../Builder/createBuilder', () => ({
 describe('ArithmeticBuilder', () => {
   describe('validateConfig()', testConfigValidation);
 
-  describe('getAggregations()', testGetAggregations);
+  describe('getAggregationListsByElement()', getAggregationListsByElement);
 
   describe('getElementCodes()', testGetElementCodes);
 
