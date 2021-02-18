@@ -1,5 +1,6 @@
 do $$ 
 declare
+  tStartTime TIMESTAMP;
   pSqlStatement TEXT := '
     SELECT
           entity.code as entity_code,
@@ -29,24 +30,39 @@ declare
             AND data_source.service_type = ''tupaia''';
 
 begin 
+  RAISE NOTICE 'Creating Materialized View Logs...';
+  
+  tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'answer','public');
-  RAISE NOTICE 'Created Materialized View Log for answer table';
+  RAISE NOTICE 'Created Materialized View Log for answer table, took % % %', clock_timestamp() - tStartTime, chr(10), chr(10);
+  
+  tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'survey_response','public');
-  RAISE NOTICE 'Created Materialized View Log for survey_response table';
+  RAISE NOTICE 'Created Materialized View Log for survey_response table, took % % %', clock_timestamp() - tStartTime, chr(10), chr(10);
+  
+  tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'survey','public');
-  RAISE NOTICE 'Created Materialized View Log for survey table';
+  RAISE NOTICE 'Created Materialized View Log for survey table, took % % %', clock_timestamp() - tStartTime, chr(10), chr(10);
+  
+  tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'entity','public');
-  RAISE NOTICE 'Created Materialized View Log for entity table';
+  RAISE NOTICE 'Created Materialized View Log for entity table, took % % %', clock_timestamp() - tStartTime, chr(10), chr(10);
+  
+  tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'question','public');
-  RAISE NOTICE 'Created Materialized View Log for question table';
+  RAISE NOTICE 'Created Materialized View Log for question table, took % % %', clock_timestamp() - tStartTime, chr(10), chr(10);
+  
+  tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'data_source','public');
-  RAISE NOTICE 'Created Materialized View Log for data_source table';
+  RAISE NOTICE 'Created Materialized View Log for data_source table, took % % %', clock_timestamp() - tStartTime, chr(10), chr(10);
 
+  tStartTime := clock_timestamp();
+  RAISE NOTICE 'Creating analytics materialized view...';
   PERFORM mv$createMaterializedView(
       pViewName           => 'analytics',
       pSelectStatement    =>  pSqlStatement,
       pOwner              => 'public',
       pFastRefresh        =>  TRUE
   );
-  RAISE NOTICE 'Created analytics table';
+  RAISE NOTICE 'Created analytics table, took % % %', clock_timestamp() - tStartTime, chr(10), chr(10);
 end $$;
