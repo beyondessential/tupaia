@@ -51,7 +51,7 @@ SingleChart.args = {
   projectCode: 'covidau',
   organisationUnitCode: 'AU',
   dashboardGroupId: 88,
-  viewId: 'COVID_Total_Cases_By_State',
+  reportId: 'COVID_Total_Cases_By_State',
   isEnlarged: true,
   isExporting: false,
 };
@@ -113,11 +113,11 @@ const ProjectChartsList = ({ projectCode, organisationUnitCode }) => {
                   .map(view => {
                     return (
                       <Chart
-                        key={view.viewId}
+                        key={view.reportId}
                         projectCode={projectCode}
                         organisationUnitCode={organisationUnitCode}
                         dashboardGroupId={groupValue.dashboardGroupId}
-                        viewId={view.viewId}
+                        reportId={view.reportId}
                         periodGranularity={view.periodGranularity}
                         isEnlarged
                       />
