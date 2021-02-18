@@ -90,7 +90,7 @@ export class ArithmeticBuilder extends Builder {
       fetchOptions,
     );
 
-    return formulaAnalytics.concat(parameterAnalytics);
+    return [...formulaAnalytics, ...parameterAnalytics];
   };
 
   private buildAnalyticClusters = (analytics: Analytic[]) => {
