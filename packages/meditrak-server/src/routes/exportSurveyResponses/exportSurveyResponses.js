@@ -159,20 +159,20 @@ export async function exportSurveyResponses(req, res) {
               comparisonType: 'whereBetween',
               args: [
                 [
-                  new Date(moment(startDate)),
-                  new Date(moment(endDate)),
+                  new Date(moment(startDate).startOf('day')),
+                  new Date(moment(endDate).endOf('day')),
                 ],
               ],
             };
           } else if (startDate) {
             surveyResponseFindConditions.data_time = {
               comparator: '>=',
-              comparisonValue: new Date(startDate),
+              comparisonValue: new Date(moment(startDate).startOf('day')),
             };
           } else if (endDate) {
             surveyResponseFindConditions.data_time = {
               comparator: '<=',
-              comparisonValue: new Date(endDate),
+              comparisonValue: new Date(moment(endDate).endOf('day')),
             };
           }
           const surveyResponses = await models.surveyResponse.find(

@@ -95,15 +95,15 @@ export class AggregateDataPusher extends DataPusher {
       return this.fetchPeriodType();
     };
     const periodType = await getPeriodType();
-    const getSubmissionTime = async () => {
+    const getDataTime = async () => {
       if (period) return moment(period, periodTypeToFormat(periodType));
       const surveyResponse = await this.fetchSurveyResponse();
       return surveyResponse.dataTime();
     };
     const momentUnit = periodTypeToMomentUnit(periodType);
-    const submissionTime = await getSubmissionTime();
-    const minimumTime = submissionTime.clone().startOf(momentUnit).format();
-    const maximumTime = submissionTime.clone().endOf(momentUnit).format();
+    const dataTime = await getDataTime();
+    const minimumTime = dataTime.clone().startOf(momentUnit).format();
+    const maximumTime = dataTime.clone().endOf(momentUnit).format();
     return [minimumTime, maximumTime];
   }
 
