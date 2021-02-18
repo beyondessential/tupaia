@@ -36,7 +36,8 @@ export const facilityOpeningHours = async ({ dataBuilderConfig, query }, aggrega
       const openingTime = codes[1] && resultsCodeToValue[codes[1]];
       const closingTime = codes[2] && resultsCodeToValue[codes[2]];
       if (openingTime && closingTime) {
-        openingHours[day] = `${openingTime} - ${closingTime}`;
+        openingHours[day] =
+          openingTime === closingTime ? 'open 24 hours' : `${openingTime} - ${closingTime}`;
       } else {
         openingHours[day] = 'Open (unknown time)';
       }
