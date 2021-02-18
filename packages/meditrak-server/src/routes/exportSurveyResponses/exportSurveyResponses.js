@@ -7,7 +7,11 @@ import xlsx from 'xlsx';
 import moment from 'moment';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
-import { DatabaseError, addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
+import {
+  DatabaseError,
+  addExportedDateAndOriginAtTheSheetBottom,
+  getExportDatesString,
+} from '@tupaia/utils';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../dataAccessors';
 import { allowNoPermissions, hasBESAdminAccess } from '../../permissions';
@@ -23,16 +27,7 @@ const INFO_COLUMNS = {
   code: 'Code',
   text: 'Question',
 };
-function getExportDatesString(startDate, endDate) {
-  const format = 'D-M-YY';
-  const momentFormat = date => moment(date).format(format);
 
-  if (startDate && endDate)
-    return `between ${momentFormat(startDate)} and ${momentFormat(endDate)} `;
-  if (startDate) return `after ${momentFormat(startDate)} `;
-  if (endDate) return `before ${momentFormat(endDate)} `;
-  return '(no period specified)';
-}
 function getEasyReadingInfoColumns(startDate, endDate) {
   return { text: `Survey responses ${getExportDatesString(startDate, endDate)}` };
 }
