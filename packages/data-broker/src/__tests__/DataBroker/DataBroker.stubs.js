@@ -45,7 +45,7 @@ export const createServiceStub = serviceData => {
 
 export const createModelsStub = dataSources => ({
   dataSource: {
-    findOrDefault: spec =>
+    find: spec =>
       dataSources.filter(({ code, type }) => spec.code.includes(code) && spec.type === type),
     getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   },

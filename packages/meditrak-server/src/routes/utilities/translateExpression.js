@@ -18,7 +18,7 @@
  * @param {*} codes: List of question codes (with no prefix $)
  */
 export const translateExpression = async (models, rawExpression, codes) => {
-  const questionCodeToId = await models.question.findCodeToId(codes);
+  const questionCodeToId = await models.question.findIdByCode(codes);
   let expression = rawExpression;
 
   for (const code of codes) {
