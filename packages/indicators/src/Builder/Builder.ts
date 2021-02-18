@@ -4,7 +4,7 @@
  */
 
 import { AnalyticsRepository } from '../AnalyticsRepository';
-import { Aggregation, AggregationListsMap, Analytic, AnalyticValue, Indicator } from '../types';
+import { Aggregation, AggregationList, Analytic, AnalyticValue, Indicator } from '../types';
 
 export abstract class Builder {
   protected readonly indicator: Indicator;
@@ -20,24 +20,26 @@ export abstract class Builder {
    */
   abstract getElementCodes(): string[];
 
-  abstract getAggregationListsMap(): AggregationListsMap;
+  abstract getAggregationListsByElement(): Record<string, AggregationList[]>;
 
   /**
-   * @param extraAggregations Useful for passing aggregations top-down to nested indicators
+   * @param wrapperAggregationList Useful for passing aggregations top-down to nested indicators
    */
   buildAnalytics = (
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    extraAggregations: Aggregation[] = [],
+    wrapperAggregationList: AggregationList = [],
   ): Analytic[] =>
-    this.buildAnalyticValues(analyticsRepo, buildersByIndicator, extraAggregations).map(value => ({
-      ...value,
-      dataElement: this.indicator.code,
-    }));
+    this.buildAnalyticValues(analyticsRepo, buildersByIndicator, wrapperAggregationList).map(
+      value => ({
+        ...value,
+        dataElement: this.indicator.code,
+      }),
+    );
 
   abstract buildAnalyticValues(
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    extraAggregations: Aggregation[],
+    wrapperAggregationList: AggregationList,
   ): AnalyticValue[];
 }

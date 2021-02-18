@@ -67,10 +67,7 @@ export interface Aggregation {
   readonly config?: Record<string, unknown>;
 }
 
-/**
- * Maps a data element to multiple aggregation lists that will be applied to it
- */
-export type AggregationListsMap = Record<string, Aggregation[][]>;
+export type AggregationList = Aggregation[];
 
 export type FetchOptions = Readonly<{
   organisationUnit?: string;

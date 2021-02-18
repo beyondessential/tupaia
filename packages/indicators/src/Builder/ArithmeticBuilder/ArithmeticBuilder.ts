@@ -7,13 +7,7 @@ import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import { getUniqueEntries } from '@tupaia/utils';
 import { AnalyticsRepository } from '../../AnalyticsRepository';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
-import {
-  Aggregation,
-  AggregationListsMap,
-  Analytic,
-  AnalyticCluster,
-  Indicator,
-} from '../../types';
+import { Aggregation, AggregationList, Analytic, AnalyticCluster, Indicator } from '../../types';
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
 import { validateConfig } from '../helpers';
@@ -31,7 +25,7 @@ import {
  */
 type BuilderConfig = {
   readonly formula: string;
-  readonly aggregation: Record<string, Aggregation[]>;
+  readonly aggregation: Record<string, AggregationList>;
   readonly parameters: Indicator[];
   readonly defaultValues: Record<string, DefaultValue>;
 };
@@ -87,31 +81,32 @@ export class ArithmeticBuilder extends Builder {
   private getElementCodesInParameters = () =>
     getElementCodesForBuilders(Object.values(this.paramBuildersByCode));
 
-  getAggregationListsMap = () => {
-    const listsMap: AggregationListsMap = {};
+  getAggregationListsByElement = () => {
+    const listsByElement: Record<string, AggregationList[]> = {};
 
     Object.entries(this.config.aggregation).forEach(([variable, list]) => {
       const paramBuilder = this.paramBuildersByCode[variable];
-      const listsMapToAdd = paramBuilder
-        ? paramBuilder.getAggregationListsMap()
+      const newListsByElement = paramBuilder
+        ? paramBuilder.getAggregationListsByElement()
         : { [variable]: [list] };
-      Object.entries(listsMapToAdd).forEach(([k, lists]) => {
-        listsMap[k] = [...(listsMap[k] || []), ...lists];
+
+      Object.entries(newListsByElement).forEach(([k, newLists]) => {
+        listsByElement[k] = [...(listsByElement[k] || []), ...newLists];
       });
     });
 
-    return listsMap;
+    return listsByElement;
   };
 
   buildAnalyticValues(
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    extraAggregations: Aggregation[],
+    wrapperAggregationList: AggregationList,
   ) {
     const analytics = this.buildAggregatedAnalytics(
       analyticsRepo,
       buildersByIndicator,
-      extraAggregations,
+      wrapperAggregationList,
     );
     const clusters = this.buildAnalyticClusters(analytics);
     return this.buildAnalyticValuesFromClusters(clusters);
@@ -130,11 +125,11 @@ export class ArithmeticBuilder extends Builder {
   private buildAggregatedAnalytics = (
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    extraAggregations: Aggregation[],
+    wrapperAggregationList: AggregationList,
   ) =>
     this.getVariables()
       .map(variable => {
-        const aggregationList = [...this.config.aggregation[variable], ...extraAggregations];
+        const aggregationList = [...this.config.aggregation[variable], ...wrapperAggregationList];
         return this.getAggregatedAnalyticsForVariable(
           variable,
           analyticsRepo,
@@ -148,7 +143,7 @@ export class ArithmeticBuilder extends Builder {
     variable: string,
     analyticsRepo: AnalyticsRepository,
     buildersByIndicator: Record<string, Builder>,
-    aggregationList: Aggregation[],
+    aggregationList: AggregationList,
   ) => {
     const buildAnalyticsUsingBuilder = (builder: Builder) =>
       builder.buildAnalytics(analyticsRepo, buildersByIndicator, aggregationList);

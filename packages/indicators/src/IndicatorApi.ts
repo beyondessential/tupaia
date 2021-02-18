@@ -9,14 +9,9 @@ import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { getSortByKey, getUniqueEntries } from '@tupaia/utils';
 import { AnalyticsRepository } from './AnalyticsRepository';
-import {
-  Builder,
-  createBuilder,
-  getAggregationListMapsByBuilder,
-  getElementCodesForBuilders,
-} from './Builder';
-import { addEntriesInAggregationListMap } from './mergeAggregationListsMaps';
-import { AggregationListsMap, Analytic, FetchOptions, ModelRegistry } from './types';
+import { Builder, createBuilder, getElementCodesForBuilders } from './Builder';
+import { getAggregationListsForAnalyticsFetch } from './getAggregationListsForAnalyticsFetch';
+import { Analytic, FetchOptions, ModelRegistry } from './types';
 
 const MAX_INDICATOR_NESTING_DEPTH = 10;
 
@@ -60,7 +55,6 @@ export class IndicatorApi {
   private getFetchAnalyticsDependencies = async (rootIndicatorCodes: string[]) => {
     const buildersByNestDepth: Builder[][] = [];
     const dataElementCodes = [];
-    let aggregationListMap: AggregationListsMap = {};
 
     let i;
     let currentIndicatorCodes = rootIndicatorCodes;
@@ -77,8 +71,6 @@ export class IndicatorApi {
       );
       currentIndicatorCodes = indicatorCodes;
       dataElementCodes.push(...nonIndicatorCodes);
-      const listMapsByBuilder = getAggregationListMapsByBuilder(currentBuilders);
-      aggregationListMap = addEntriesInAggregationListMap(aggregationListMap, listMapsByBuilder);
     }
 
     if (i === MAX_INDICATOR_NESTING_DEPTH) {
@@ -89,7 +81,7 @@ export class IndicatorApi {
     return {
       buildersByNestDepth,
       dataElementCodes: getUniqueEntries(dataElementCodes),
-      aggregationLists: Object.values(aggregationListMap).flat(),
+      aggregationLists: getAggregationListsForAnalyticsFetch(buildersByNestDepth),
     };
   };
 
