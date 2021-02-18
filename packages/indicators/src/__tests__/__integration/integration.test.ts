@@ -3,8 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable jest/expect-expect */
+
 import { DataBroker } from '@tupaia/data-broker';
-import { getTestModels, runIntegrationTests } from '@tupaia/database';
+import { getTestModels, setupTest } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
 import { Analytic, FetchOptions } from '../../types';
 import { arithmeticAnalyticsFixtures, indicatorApiFixtures } from './fixtures';
@@ -22,7 +24,7 @@ const models = getTestModels();
 const dataBroker = new DataBroker();
 const api = new IndicatorApi(models, dataBroker);
 
-const runTestCase = (testCase: TestCase) => {
+const runTestCase = async (testCase: TestCase) => {
   const { input, expected, throws } = testCase;
   const { indicatorCodes, fetchOptions } = input;
 
@@ -38,13 +40,31 @@ describe('Integration tests', () => {
     await dataBroker.close();
   });
 
-  runIntegrationTests({
-    config: indicatorApiFixtures,
-    it: runTestCase,
+  describe('Indicator API features', () => {
+    const { setup, testCases } = indicatorApiFixtures;
+
+    beforeAll(async () => {
+      await setupTest(models, setup);
+    });
+
+    testCases.forEach(testCase => {
+      it(testCase.description, async () => {
+        await runTestCase(testCase);
+      });
+    });
   });
 
-  runIntegrationTests({
-    config: arithmeticAnalyticsFixtures,
-    it: runTestCase,
+  describe('Arithmetic analytics', () => {
+    const { setup, testCases } = arithmeticAnalyticsFixtures;
+
+    beforeAll(async () => {
+      await setupTest(models, setup);
+    });
+
+    testCases.forEach(testCase => {
+      it(testCase.description, async () => {
+        await runTestCase(testCase);
+      });
+    });
   });
 });

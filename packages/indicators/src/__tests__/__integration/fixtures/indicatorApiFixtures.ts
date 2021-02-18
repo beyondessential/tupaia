@@ -92,7 +92,6 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
 ];
 
 export const indicatorApiFixtures = {
-  description: 'Indicator API features',
   setup: {
     dbRecords: {
       entity: [{ code: 'AU', name: 'Australia', type: 'country' }],
