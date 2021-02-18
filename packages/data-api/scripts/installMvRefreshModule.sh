@@ -2,6 +2,7 @@
 source .env
 git submodule update --init scripts/pg-mv-fast-refresh
 cd scripts/pg-mv-fast-refresh/
+export DB_MV_HOME="$PWD"
 ./runCreateFastRefreshModule.sh
 cd ..
 export PGPASSWORD=$DB_PG_PASSWORD
