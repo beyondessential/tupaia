@@ -17,14 +17,11 @@ const CODE_TO_NAME = { STR_PF05: 'PF', STR_PV05: 'PV', STR_PM05: 'PM', STR_PO05:
 const insertIndicator = (db, code) => {
   const indicator = {
     id: generateId(),
-    code: `STRIVE_PERCENTAGE_${CODE_TO_NAME[code]}_OF_TOTAL_WEEKLY`,
+    code: `STRIVE_Percentage_${CODE_TO_NAME[code]}_Of_Total_Weekly`,
     builder: 'arithmetic',
     config: {
       formula: `${code} / STR_QMAL05`,
-      aggregation: {
-        [code]: 'SUM_EACH_WEEK',
-        STR_QMAL05: 'SUM_EACH_WEEK',
-      },
+      aggregation: 'SUM_EACH_WEEK',
     },
   };
   insertObject(db, 'indicator', indicator);
@@ -35,10 +32,10 @@ const REPORT = {
   dataBuilder: 'analyticsPerPeriod',
   dataBuilderConfig: {
     series: [
-      { key: 'Pf +ve', dataElementCode: 'STRIVE_PERCENTAGE_PF_OF_TOTAL_WEEKLY' },
-      { key: 'Pv +ve', dataElementCode: 'STRIVE_PERCENTAGE_PV_OF_TOTAL_WEEKLY' },
-      { key: 'Pm +ve', dataElementCode: 'STRIVE_PERCENTAGE_PM_OF_TOTAL_WEEKLY' },
-      { key: 'Po +ve', dataElementCode: 'STRIVE_PERCENTAGE_PO_OF_TOTAL_WEEKLY' },
+      { key: 'Pf +ve', dataElementCode: 'STRIVE_Percentage_PF_Of_Total_Weekly' },
+      { key: 'Pv +ve', dataElementCode: 'STRIVE_Percentage_PV_Of_Total_Weekly' },
+      { key: 'Pm +ve', dataElementCode: 'STRIVE_Percentage_PM_Of_Total_Weekly' },
+      { key: 'Po +ve', dataElementCode: 'STRIVE_Percentage_PO_Of_Total_Weekly' },
     ],
     entityAggregation: {
       dataSourceEntityType: 'village',
@@ -95,7 +92,7 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   await db.runSql(`
-    DELETE FROM "indicator" WHERE code like 'STRIVE_PERCENTAGE_%_OF_TOTAL_WEEKLY';
+    DELETE FROM "indicator" WHERE code like 'STRIVE_Percentage_%_Of_Total_Weekly';
   `);
 
   await db.runSql(`

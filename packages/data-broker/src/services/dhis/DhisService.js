@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
-
 import { getSortByKey } from '@tupaia/utils';
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
@@ -215,7 +213,7 @@ export class DhisService extends Service {
   getDataSourcesInProgram = async (dataSources, programCode) => {
     const allowedDataSources = await this.models.dataSource.getDataElementsInGroup(programCode);
     const allowedDataSourceCodes = allowedDataSources.map(({ code }) => code);
-    return dataSources.filter(({ code }) => allowedDataSourceCodes.includes(code)); // What check, dataElementCode, code, id?
+    return dataSources.filter(({ code }) => allowedDataSourceCodes.includes(code));
   };
 
   mergeAnalytics = analytics => ({
@@ -227,18 +225,17 @@ export class DhisService extends Service {
       dataElementCodeToName: analytics.reduce(
         (dataElementCodeToName, { metadata }) => ({
           ...dataElementCodeToName,
-          ...(metadata.dataElementCodeToName || {}),
+          ...metadata.dataElementCodeToName,
         }),
         {},
       ),
     },
-  })
+  });
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
     const { programCodes = [], period, startDate, endDate, organisationUnitCodes } = options;
 
     const baseQuery = {
-      // programCodes,
       organisationUnitCodes,
       dataElementIdScheme: 'code',
       period,
