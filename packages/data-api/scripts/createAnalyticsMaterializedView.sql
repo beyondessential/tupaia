@@ -32,6 +32,14 @@ declare
 begin 
   RAISE NOTICE 'Creating Materialized View Logs...';
   
+  -- Drop triggers so that all the deletes don't flood the sync queue - have taken care of them manually on dhis2
+  DROP TRIGGER IF EXISTS survey_response_trigger
+    ON survey_response;
+  DROP TRIGGER IF EXISTS answer_trigger
+    ON answer;
+  
+  RAISE NOTICE 'Dropped triggers on survey_response and answer tables';
+
   tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'answer','public');
   RAISE NOTICE 'Created Materialized View Log for answer table, took %', clock_timestamp() - tStartTime;
@@ -39,6 +47,18 @@ begin
   tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'survey_response','public');
   RAISE NOTICE 'Created Materialized View Log for survey_response table, took %', clock_timestamp() - tStartTime;
+
+  -- Recreate triggers
+  CREATE TRIGGER survey_response_trigger
+    AFTER INSERT OR UPDATE or DELETE
+    ON survey_response
+    FOR EACH ROW EXECUTE PROCEDURE notification();
+  CREATE TRIGGER answer_trigger
+    AFTER INSERT OR UPDATE or DELETE
+    ON answer
+    FOR EACH ROW EXECUTE PROCEDURE notification();
+
+  RAISE NOTICE 'Re-created triggers on survey_response and answer tables';
   
   tStartTime := clock_timestamp();
   PERFORM mv$createMaterializedViewlog( 'survey','public');
