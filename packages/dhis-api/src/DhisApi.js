@@ -132,50 +132,50 @@ export class DhisApi {
   }
 
   async post(endpoint, data, queryParameters) {
-    return this.fetch(endpoint, queryParameters, {
-      body: JSON.stringify(data),
-      method: 'POST',
-    });
+    // return this.fetch(endpoint, queryParameters, {
+    //   body: JSON.stringify(data),
+    //   method: 'POST',
+    // });
   }
 
   async put(endpoint, data, queryParameters) {
-    return this.fetch(endpoint, queryParameters, {
-      body: JSON.stringify(data),
-      method: 'PUT',
-    });
+    // return this.fetch(endpoint, queryParameters, {
+    //   body: JSON.stringify(data),
+    //   method: 'PUT',
+    // });
   }
 
   async delete(endpoint, queryParameters) {
-    return this.fetch(endpoint, queryParameters, { method: 'DELETE' });
+    // return this.fetch(endpoint, queryParameters, { method: 'DELETE' });
   }
 
   async postData(endpoint, data, queryParameters = {}) {
-    const { idScheme = 'code', orgUnitIdScheme, programIdScheme } = queryParameters;
-
-    return this.post(endpoint, data, {
-      idScheme,
-      orgUnitIdScheme,
-      programIdScheme,
-      skipAudit: true,
-    });
+    // const { idScheme = 'code', orgUnitIdScheme, programIdScheme } = queryParameters;
+    //
+    // return this.post(endpoint, data, {
+    //   idScheme,
+    //   orgUnitIdScheme,
+    //   programIdScheme,
+    //   skipAudit: true,
+    // });
   }
 
   async postDataValueSets(data) {
-    const response = await this.postData(DATA_VALUE_SET, { dataValues: data });
-    return getDiagnosticsFromResponse(response);
+    // const response = await this.postData(DATA_VALUE_SET, { dataValues: data });
+    // return getDiagnosticsFromResponse(response);
   }
 
   async postDataSetCompletion(data) {
-    const response = await this.postData(DATA_SET_COMPLETION, {
-      completeDataSetRegistrations: [data],
-    });
-    return getDiagnosticsFromResponse(response);
+    // const response = await this.postData(DATA_SET_COMPLETION, {
+    //   completeDataSetRegistrations: [data],
+    // });
+    // return getDiagnosticsFromResponse(response);
   }
 
   async updateAnalyticsTables() {
-    const { response } = await this.post('resourceTables/analytics', { lastYears: 3 });
-    const statusEndpoint = response.relativeNotifierEndpoint.substring('/api/'.length);
-    return new Promise(resolve => this.waitForAnalyticsToComplete(statusEndpoint, resolve));
+    // const { response } = await this.post('resourceTables/analytics', { lastYears: 3 });
+    // const statusEndpoint = response.relativeNotifierEndpoint.substring('/api/'.length);
+    // return new Promise(resolve => this.waitForAnalyticsToComplete(statusEndpoint, resolve));
   }
 
   async waitForAnalyticsToComplete(statusEndpoint, resolve) {
@@ -276,51 +276,51 @@ export class DhisApi {
   }
 
   async postEvents(events) {
-    const queryParameters = {
-      idScheme: 'uid',
-      orgUnitIdScheme: 'code',
-      programIdScheme: 'code',
-    };
-
-    const response = await this.postData(EVENT, { events }, queryParameters);
-    return getDiagnosticsFromResponse(response);
+    // const queryParameters = {
+    //   idScheme: 'uid',
+    //   orgUnitIdScheme: 'code',
+    //   programIdScheme: 'code',
+    // };
+    //
+    // const response = await this.postData(EVENT, { events }, queryParameters);
+    // return getDiagnosticsFromResponse(response);
   }
 
   async updateEvent(eventId, event) {
-    const response = await this.put(`events/${eventId}`, event);
-    return getDiagnosticsFromResponse(response);
+    // const response = await this.put(`events/${eventId}`, event);
+    // return getDiagnosticsFromResponse(response);
   }
 
   async updateEvents(events) {
-    const errors = [];
-    let totalUpdatedCount = 0;
-
-    for (let i = 0; i < events.length; i++) {
-      const eventId = events[i].event;
-
-      try {
-        const { counts } = await this.updateEvent(eventId, events[i]);
-        totalUpdatedCount += counts.updated;
-      } catch (error) {
-        errors.push(error.message);
-      }
-    }
-
-    return { counts: { updated: totalUpdatedCount }, errors };
+    // const errors = [];
+    // let totalUpdatedCount = 0;
+    //
+    // for (let i = 0; i < events.length; i++) {
+    //   const eventId = events[i].event;
+    //
+    //   try {
+    //     const { counts } = await this.updateEvent(eventId, events[i]);
+    //     totalUpdatedCount += counts.updated;
+    //   } catch (error) {
+    //     errors.push(error.message);
+    //   }
+    // }
+    //
+    // return { counts: { updated: totalUpdatedCount }, errors };
   }
 
   async updateRecord(resourceType, record) {
-    let existingId = record.id;
-    if (!existingId && record.code) {
-      existingId = await this.getIdFromCode(resourceType, record.code);
-    }
-    // If the resource already exists on DHIS2, update the existing one
-    if (existingId) {
-      const response = await this.put(`${resourceType}/${existingId}`, record);
-      return getDiagnosticsFromResponse(response);
-    }
-    const response = await this.post(resourceType, record);
-    return getDiagnosticsFromResponse(response);
+    // let existingId = record.id;
+    // if (!existingId && record.code) {
+    //   existingId = await this.getIdFromCode(resourceType, record.code);
+    // }
+    // // If the resource already exists on DHIS2, update the existing one
+    // if (existingId) {
+    //   const response = await this.put(`${resourceType}/${existingId}`, record);
+    //   return getDiagnosticsFromResponse(response);
+    // }
+    // const response = await this.post(resourceType, record);
+    // return getDiagnosticsFromResponse(response);
   }
 
   async getAnalytics(originalQuery) {
@@ -527,35 +527,35 @@ export class DhisApi {
   }
 
   async deleteRecord(resourceType, code) {
-    const recordId = await this.getIdFromCode(resourceType, code);
-    if (!recordId) {
-      throw new Error(`Attempted to delete a record from ${resourceType} that does not exist`);
-    }
-    return this.deleteRecordById(resourceType, recordId);
+    // const recordId = await this.getIdFromCode(resourceType, code);
+    // if (!recordId) {
+    //   throw new Error(`Attempted to delete a record from ${resourceType} that does not exist`);
+    // }
+    // return this.deleteRecordById(resourceType, recordId);
   }
 
   async deleteRecordById(resourceType, id) {
-    const response = await this.delete(`${resourceType}/${id}`);
-    return getDiagnosticsFromResponse(response, true);
+    // const response = await this.delete(`${resourceType}/${id}`);
+    // return getDiagnosticsFromResponse(response, true);
   }
 
   async deleteWithQuery(endpoint, query) {
-    try {
-      // dhis2 returns empty response if successful, throws an error (409 status code) if it fails
-      await this.delete(endpoint, query);
-      return getDiagnosticsFromResponse({ responseType: RESPONSE_TYPES.DELETE }, true);
-    } catch (error) {
-      if (error.status === 409) {
-        return getDiagnosticsFromResponse(
-          {
-            responseType: RESPONSE_TYPES.DELETE,
-            errors: [error.message],
-          },
-          true,
-        );
-      }
-      throw error;
-    }
+    // try {
+    //   // dhis2 returns empty response if successful, throws an error (409 status code) if it fails
+    //   await this.delete(endpoint, query);
+    //   return getDiagnosticsFromResponse({ responseType: RESPONSE_TYPES.DELETE }, true);
+    // } catch (error) {
+    //   if (error.status === 409) {
+    //     return getDiagnosticsFromResponse(
+    //       {
+    //         responseType: RESPONSE_TYPES.DELETE,
+    //         errors: [error.message],
+    //       },
+    //       true,
+    //     );
+    //   }
+    //   throw error;
+    // }
   }
 
   async deleteDataValue({
@@ -564,44 +564,44 @@ export class DhisApi {
     orgUnit: organisationUnitCode,
     categoryOptionCombo: categoryOptionComboCode,
   }) {
-    const dataElementId = await this.getIdFromCode(DATA_ELEMENT, dataElementCode);
-    if (!dataElementId) {
-      throw new Error(`No data element with code ${dataElementCode}`);
-    }
-    const organisationUnitId = await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode);
-    if (!organisationUnitId) {
-      throw new Error(`Organisation unit ${organisationUnitCode} does not exist`);
-    }
-
-    const query = {
-      de: dataElementId,
-      pe: period,
-      ou: organisationUnitId,
-    };
-    if (categoryOptionComboCode) {
-      const categoryOptionComboId = await this.getIdFromCode(
-        CATEGORY_OPTION_COMBO,
-        categoryOptionComboCode,
-      );
-      if (!categoryOptionComboId) {
-        throw new Error(`Category option combo ${categoryOptionComboCode} does not exist`);
-      }
-      query.co = categoryOptionComboId;
-    }
-    return this.deleteWithQuery(DATA_VALUE, query);
+    // const dataElementId = await this.getIdFromCode(DATA_ELEMENT, dataElementCode);
+    // if (!dataElementId) {
+    //   throw new Error(`No data element with code ${dataElementCode}`);
+    // }
+    // const organisationUnitId = await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode);
+    // if (!organisationUnitId) {
+    //   throw new Error(`Organisation unit ${organisationUnitCode} does not exist`);
+    // }
+    //
+    // const query = {
+    //   de: dataElementId,
+    //   pe: period,
+    //   ou: organisationUnitId,
+    // };
+    // if (categoryOptionComboCode) {
+    //   const categoryOptionComboId = await this.getIdFromCode(
+    //     CATEGORY_OPTION_COMBO,
+    //     categoryOptionComboCode,
+    //   );
+    //   if (!categoryOptionComboId) {
+    //     throw new Error(`Category option combo ${categoryOptionComboCode} does not exist`);
+    //   }
+    //   query.co = categoryOptionComboId;
+    // }
+    // return this.deleteWithQuery(DATA_VALUE, query);
   }
 
   async deleteEvent(eventReference) {
-    const response = await this.delete(`${EVENT}/${eventReference}`, true);
-    return getDiagnosticsFromResponse(response);
+    // const response = await this.delete(`${EVENT}/${eventReference}`, true);
+    // return getDiagnosticsFromResponse(response);
   }
 
   async deleteDataSetCompletion({ dataSet, period, organisationUnit }) {
-    const query = {
-      ds: dataSet,
-      pe: period,
-      ou: organisationUnit,
-    };
-    return this.deleteWithQuery(DATA_SET_COMPLETION, query);
+    // const query = {
+    //   ds: dataSet,
+    //   pe: period,
+    //   ou: organisationUnit,
+    // };
+    // return this.deleteWithQuery(DATA_SET_COMPLETION, query);
   }
 }

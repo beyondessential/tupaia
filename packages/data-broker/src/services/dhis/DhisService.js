@@ -74,48 +74,50 @@ export class DhisService extends Service {
   }
 
   async push(dataSources, data) {
-    const pushData = this.pushers[dataSources[0].type]; // all are of the same type
-    const dataValues = Array.isArray(data) ? data : [data];
-    this.validatePushData(dataSources, dataValues);
-    const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
-    const diagnostics = await pushData(api, dataValues, dataSources);
-    return { diagnostics, serverName: api.getServerName() };
+    // const pushData = this.pushers[dataSources[0].type]; // all are of the same type
+    // const dataValues = Array.isArray(data) ? data : [data];
+    // this.validatePushData(dataSources, dataValues);
+    // const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
+    // const diagnostics = await pushData(api, dataValues, dataSources);
+    // return { diagnostics, serverName: api.getServerName() };
   }
 
   async pushAggregateData(api, dataValues, dataSources) {
-    const translatedDataValues = await this.translator.translateOutboundDataValues(
-      api,
-      dataValues,
-      dataSources,
-    );
-    return api.postDataValueSets(translatedDataValues);
+    // const translatedDataValues = await this.translator.translateOutboundDataValues(
+    //   api,
+    //   dataValues,
+    //   dataSources,
+    // );
+    // return api.postDataValueSets(translatedDataValues);
   }
 
   async pushEvents(api, events) {
-    const translatedEvents = await Promise.all(
-      events.map(event => this.translator.translateOutboundEvent(api, event)),
-    );
-    return api.postEvents(translatedEvents);
+    // const translatedEvents = await Promise.all(
+    //   events.map(event => this.translator.translateOutboundEvent(api, event)),
+    // );
+    // return api.postEvents(translatedEvents);
   }
 
   async delete(dataSource, data, { serverName } = {}) {
-    const api = serverName
-      ? getDhisApiInstance({ serverName }, this.models)
-      : this.getApiForValue(dataSource, data);
-    const deleteData = this.deleters[dataSource.type];
-    return deleteData(api, data, dataSource);
+    // const api = serverName
+    //   ? getDhisApiInstance({ serverName }, this.models)
+    //   : this.getApiForValue(dataSource, data);
+    // const deleteData = this.deleters[dataSource.type];
+    // return deleteData(api, data, dataSource);
   }
 
   async deleteAggregateData(api, dataValue, dataSource) {
-    const [translatedDataValue] = await this.translator.translateOutboundDataValues(
-      api,
-      [dataValue],
-      [dataSource],
-    );
-    return api.deleteDataValue(translatedDataValue);
+    // const [translatedDataValue] = await this.translator.translateOutboundDataValues(
+    //   api,
+    //   [dataValue],
+    //   [dataSource],
+    // );
+    // return api.deleteDataValue(translatedDataValue);
   }
 
-  deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
+  deleteEvent = async (api, data) => {
+    // return api.deleteEvent(data.dhisReference);
+  };
 
   async pull(dataSources, type, options = {}) {
     const {
