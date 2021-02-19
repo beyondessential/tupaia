@@ -127,7 +127,7 @@ export const MainMenu = () => {
         <StyledList component="nav" aria-label="secondary mailbox folders">
           <ListItem>
             <TupaiaText>
-              Powered by <Link href="https://tupaia.org">Tupaia</Link>
+              Powered by <Link href="https://www.info.tupaia.org">Tupaia</Link>
             </TupaiaText>
           </ListItem>
         </StyledList>
