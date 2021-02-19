@@ -82,11 +82,7 @@ const ListItemLink = props => <ListItem button component={RouterLink} {...props}
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
 
-  const toggleDrawer = isOpen => event => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-
+  const toggleDrawer = isOpen => () => {
     setOpen(isOpen);
   };
 
@@ -104,7 +100,7 @@ export const MainMenu = () => {
             <Close />
           </IconButton>
         </MenuTray>
-        <StyledList onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
+        <StyledList onClick={toggleDrawer(false)}>
           <ListItem>
             <MenuHeading variant="h3">Menu</MenuHeading>
           </ListItem>
