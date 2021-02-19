@@ -1,5 +1,7 @@
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
+import isEqual from 'lodash.isequal';
+import get from 'lodash.get';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
@@ -67,7 +69,30 @@ const findNestedGroupedMapOverlays = async (
       });
     }
   }
+  console.log(mapOverlayResults);
 
+  const getReference = mapOverlay => get(mapOverlay, ['info', 'reference']);
+
+  // Only display reference info on map overlay group if all map overlays have same reference.
+  // const firstReference = getReference(mapOverlayResults[0]);
+  // if (firstReference) {
+  //   const referencesAreNotTheSame = mapOverlayResults.find(
+  //     mapOverlay =>
+  //       !(getReference(mapOverlay) && isEqual(getReference(mapOverlay), firstReference)),
+  //   );
+
+  //   // All map overlays have same reference
+  //   if (!referencesAreNotTheSame) {
+  //     // Delete all the same references
+  //     const noReferenceMapOverlayResults = mapOverlayResults.map(m => {
+  //       const { info, restValues } = m;
+  //       delete info.reference;
+  //       return { ...restValues, info };
+  //     });
+
+  //     // Add reference to map overlay group
+  //   }
+  // }
   const sortedMapOverlayResults = sortMapOverlayItems(
     mapOverlayGroupResults.concat(mapOverlayResults),
     mapOverlayItemRelations,
@@ -95,8 +120,8 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
 
 /**
  * Sort map overlays/map overlay groups with sort_order first, then the ones without sort_order alphabetically
- * @param {*} mapOverlayItems 
- * @param {*} relations 
+ * @param {*} mapOverlayItems
+ * @param {*} relations
  */
 const sortMapOverlayItems = (mapOverlayItems, relations) => {
   const childIdToSortOrder = reduceToDictionary(relations, 'child_id', 'sort_order');
@@ -184,11 +209,12 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
 
     if (isNonEmptyMapOverlayGroup) {
       accessibleRelations.push(worldRelationById[groupId]);
-      accessibleOverlayGroups.push({
+      const accessibleOverlayGroup = {
         id: groupId,
         name,
         children: nestedMapOverlayGroups,
-      });
+      };
+      accessibleOverlayGroups.push(accessibleOverlayGroup);
     }
   }
 
