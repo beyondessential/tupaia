@@ -37,9 +37,9 @@ begin
 
   FOREACH source_table IN ARRAY source_tables_array LOOP
     IF (SELECT NOT EXISTS (
-      SELECT FROM information_schema.tables 
-      WHERE table_schema = 'public'
-      AND table_name   = 'log$_' || source_table
+      SELECT FROM pg_tables 
+      WHERE schemaname = 'public'
+      AND tablename   = 'log$_' || source_table
     )) 
     THEN
       EXECUTE 'DROP TRIGGER IF EXISTS ' || source_table || '_trigger' || ' ON ' || source_table;
@@ -48,18 +48,21 @@ begin
       RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
       EXECUTE 'CREATE TRIGGER ' || source_table || '_trigger' || ' AFTER INSERT OR UPDATE or DELETE ON ' || source_table || ' FOR EACH ROW EXECUTE PROCEDURE notification()';
       iNewLogTableCount := iNewLogTableCount + 1;
+    ELSE
+      RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
     END IF;
   END LOOP;
   RAISE NOTICE 'Created % Materialized View Logs', iNewLogTableCount;
 
+
+  RAISE NOTICE 'Creating analytics materialized view...';
   IF (SELECT NOT EXISTS (
-    SELECT FROM information_schema.tables 
-    WHERE table_schema = 'public'
-    AND table_name   = 'analytics'
+    SELECT FROM pg_tables 
+    WHERE schemaname = 'public'
+    AND tablename   = 'analytics'
   ))
   THEN
     tStartTime := clock_timestamp();
-    RAISE NOTICE 'Creating analytics materialized view...';
     PERFORM mv$createMaterializedView(
         pViewName           => 'analytics',
         pSelectStatement    =>  pSqlStatement,
@@ -67,5 +70,7 @@ begin
         pFastRefresh        =>  TRUE
     );
     RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+  ELSE
+    RAISE NOTICE 'Analytics Materialized View already exists, skipping';
   END IF;
 end $$;
