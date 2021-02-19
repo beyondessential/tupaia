@@ -1,6 +1,9 @@
 do $$ 
 declare
+  iNewLogTableCount INTEGER := 0;
   tStartTime TIMESTAMP;
+  source_table TEXT;
+  source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
   pSqlStatement TEXT := '
     SELECT
       entity.code as entity_code,
@@ -31,58 +34,38 @@ declare
 
 begin 
   RAISE NOTICE 'Creating Materialized View Logs...';
-  
-  -- Drop triggers so that all the deletes don't flood the sync queue - have taken care of them manually on dhis2
-  DROP TRIGGER IF EXISTS survey_response_trigger
-    ON survey_response;
-  DROP TRIGGER IF EXISTS answer_trigger
-    ON answer;
-  
-  RAISE NOTICE 'Dropped triggers on survey_response and answer tables';
 
-  tStartTime := clock_timestamp();
-  PERFORM mv$createMaterializedViewlog( 'answer','public');
-  RAISE NOTICE 'Created Materialized View Log for answer table, took %', clock_timestamp() - tStartTime;
-  
-  tStartTime := clock_timestamp();
-  PERFORM mv$createMaterializedViewlog( 'survey_response','public');
-  RAISE NOTICE 'Created Materialized View Log for survey_response table, took %', clock_timestamp() - tStartTime;
+  FOREACH source_table IN ARRAY source_tables_array LOOP
+    IF (SELECT NOT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public'
+      AND table_name   = 'log$_' || source_table
+    )) 
+    THEN
+      EXECUTE 'DROP TRIGGER IF EXISTS ' || source_table || '_trigger' || ' ON ' || source_table;
+      tStartTime := clock_timestamp();
+      PERFORM mv$createMaterializedViewlog(source_table, 'public');
+      RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+      EXECUTE 'CREATE TRIGGER ' || source_table || '_trigger' || ' AFTER INSERT OR UPDATE or DELETE ON ' || source_table || ' FOR EACH ROW EXECUTE PROCEDURE notification()';
+      iNewLogTableCount := iNewLogTableCount + 1;
+    END IF;
+  END LOOP;
+  RAISE NOTICE 'Created % Materialized View Logs', iNewLogTableCount;
 
-  -- Recreate triggers
-  CREATE TRIGGER survey_response_trigger
-    AFTER INSERT OR UPDATE or DELETE
-    ON survey_response
-    FOR EACH ROW EXECUTE PROCEDURE notification();
-  CREATE TRIGGER answer_trigger
-    AFTER INSERT OR UPDATE or DELETE
-    ON answer
-    FOR EACH ROW EXECUTE PROCEDURE notification();
-
-  RAISE NOTICE 'Re-created triggers on survey_response and answer tables';
-  
-  tStartTime := clock_timestamp();
-  PERFORM mv$createMaterializedViewlog( 'survey','public');
-  RAISE NOTICE 'Created Materialized View Log for survey table, took %', clock_timestamp() - tStartTime;
-  
-  tStartTime := clock_timestamp();
-  PERFORM mv$createMaterializedViewlog( 'entity','public');
-  RAISE NOTICE 'Created Materialized View Log for entity table, took %', clock_timestamp() - tStartTime;
-  
-  tStartTime := clock_timestamp();
-  PERFORM mv$createMaterializedViewlog( 'question','public');
-  RAISE NOTICE 'Created Materialized View Log for question table, took %', clock_timestamp() - tStartTime;
-  
-  tStartTime := clock_timestamp();
-  PERFORM mv$createMaterializedViewlog( 'data_source','public');
-  RAISE NOTICE 'Created Materialized View Log for data_source table, took %', clock_timestamp() - tStartTime;
-
-  tStartTime := clock_timestamp();
-  RAISE NOTICE 'Creating analytics materialized view...';
-  PERFORM mv$createMaterializedView(
-      pViewName           => 'analytics',
-      pSelectStatement    =>  pSqlStatement,
-      pOwner              => 'public',
-      pFastRefresh        =>  TRUE
-  );
-  RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+  IF (SELECT NOT EXISTS (
+    SELECT FROM information_schema.tables 
+    WHERE table_schema = 'public'
+    AND table_name   = 'analytics'
+  ))
+  THEN
+    tStartTime := clock_timestamp();
+    RAISE NOTICE 'Creating analytics materialized view...';
+    PERFORM mv$createMaterializedView(
+        pViewName           => 'analytics',
+        pSelectStatement    =>  pSqlStatement,
+        pOwner              => 'public',
+        pFastRefresh        =>  TRUE
+    );
+    RAISE NOTICE 'Created analytics table, took %', clock_timestamp() - tStartTime;
+  END IF;
 end $$;
