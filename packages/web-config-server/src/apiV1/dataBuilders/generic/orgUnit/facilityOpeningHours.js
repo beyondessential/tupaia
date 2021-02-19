@@ -28,7 +28,10 @@ export const facilityOpeningHours = async ({ dataBuilderConfig, query }, aggrega
       );
 
     const IS_OPEN_CODE = codes[0];
-    if (!resultsCodeToValue[IS_OPEN_CODE]) {
+    if (
+      resultsCodeToValue[IS_OPEN_CODE] === null ||
+      resultsCodeToValue[IS_OPEN_CODE] === undefined
+    ) {
       openingHours[day] = 'No Data';
       return;
     }
