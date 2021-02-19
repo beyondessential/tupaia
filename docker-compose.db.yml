@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  db:
+    image: postgis/postgis
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: tupaia
+      POSTGRES_DB: tupaia
+      POSTGRES_MULTIPLE_EXTENSIONS: postgis,hstore,postgis_topology,postgis_raster,pgrouting
+    container_name: tupaia-pg
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgis-data:/var/lib/postgresql
+
+  pgadmin:
+       image: dpage/pgadmin4
+       volumes:
+         - pgadmin-data:/var/lib/pgadmin
+       restart: always
+       environment:
+         PGADMIN_DEFAULT_EMAIL: admin@test.com
+         PGADMIN_DEFAULT_PASSWORD: super-secret
+         PGADMIN_LISTEN_PORT: 80
+       ports:
+         - "8080:80"
+       links:
+         - "db:pgsql-server"
+
+volumes:
+  postgis-data:
+  pgadmin-data:

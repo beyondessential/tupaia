@@ -32,7 +32,8 @@
     "test-all": "node ./scripts/node/testAll --silent",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
     "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh",
-    "validate": "./scripts/bash/validate.sh"
+    "validate": "./scripts/bash/validate.sh",
+    "docker:db": "docker-compose -f docker-compose.db.yml up -d"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^4.1.0"
@@ -101,6 +102,6 @@
     "yargs": "^16.0.3"
   },
   "engines": {
-    "node": "^12.18.3"
+    "node": "^12"
   }
 }
