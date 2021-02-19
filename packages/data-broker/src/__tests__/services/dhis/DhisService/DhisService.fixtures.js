@@ -23,6 +23,10 @@ export const DATA_SOURCES = {
     type: 'dataGroup',
     code: 'DIFF_GROUP',
   }),
+  CODE_IN_SYSTEM_BUT_WITH_NO_ELEMENTS: createDataSource({
+    type: 'dataGroup',
+    code: 'CODE_IN_SYSTEM_BUT_WITH_NO_ELEMENTS',
+  }),
 };
 
 export const DATA_VALUES = {
@@ -40,7 +44,7 @@ export const DATA_ELEMENTS = {
 export const DATA_ELEMENTS_BY_GROUP = {
   POP01: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
   DIFF_GROUP: [DATA_SOURCES.POP01, DATA_SOURCES.DIF01],
-  CODE_WITH_NO_ELEMENTS: [],
+  CODE_IN_SYSTEM_BUT_WITH_NO_ELEMENTS: [],
 };
 
 export const DHIS_REFERENCE = 'XXXYYY';

@@ -216,6 +216,17 @@ export class DhisService extends Service {
     return dataSources.filter(({ code }) => allowedDataSourceCodes.includes(code));
   };
 
+  validateProgramCodesExist = async programCodes => {
+    const validateProgramCode = async programCode => {
+      const programDataSource = await this.models.dataSource.findOne({
+        code: programCode,
+        type: this.dataSourceTypes.DATA_GROUP,
+      });
+      if (!programDataSource) throw new Error(`Program not found: ${programCode}`);
+    };
+    return Promise.all(programCodes.map(programCode => validateProgramCode(programCode)));
+  };
+
   mergeAnalytics = analytics => ({
     results: analytics
       .map(({ results }) => results)
@@ -233,7 +244,9 @@ export class DhisService extends Service {
   });
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
-    const { programCodes = [], period, startDate, endDate, organisationUnitCodes } = options;
+    const { programCodes, period, startDate, endDate, organisationUnitCodes } = options;
+
+    await this.validateProgramCodesExist(programCodes);
 
     const baseQuery = {
       organisationUnitCodes,

@@ -48,6 +48,10 @@ export const createModelsStub = () => ({
       Object.values(DATA_SOURCES).filter(
         ({ code, type }) => specs.code.includes(code) && specs.type === type,
       ),
+    findOne: async specs =>
+      Object.values(DATA_SOURCES).find(
+        ({ code, type }) => specs.code.includes(code) && specs.type === type,
+      ),
     getDataElementsInGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
     getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   },

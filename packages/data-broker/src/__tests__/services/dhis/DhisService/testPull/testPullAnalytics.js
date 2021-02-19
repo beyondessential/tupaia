@@ -207,6 +207,15 @@ export const testPullAnalytics = () => {
         );
       });
 
+      it('non-existent program', async () => {
+        await expect(
+          dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
+            programCodes: ['POP01', 'DIFF_GROUP', 'CODE_NOT_IN_SYSTEM'],
+            useDeprecatedApi: false,
+          }),
+        ).rejects.toThrowError(/.*CODE_NOT_IN_SYSTEM.*/g);
+      });
+
       it('multiple programs', async () => {
         await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
           programCodes: ['POP01', 'DIFF_GROUP'],
@@ -227,7 +236,7 @@ export const testPullAnalytics = () => {
 
       it('invokes once for each programCode that has a dataElement associated', async () => {
         await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
-          programCodes: ['POP01', 'DIFF_GROUP', 'CODE_WITH_NO_ELEMENTS'],
+          programCodes: ['POP01', 'DIFF_GROUP', 'CODE_IN_SYSTEM_BUT_WITH_NO_ELEMENTS'],
           useDeprecatedApi: false,
         });
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
@@ -241,7 +250,7 @@ export const testPullAnalytics = () => {
           }),
         );
 
-        // Note: The api should NOT be called with programCode: CODE_WITH_NO_ELEMENTS
+        // Note: The api should NOT be called with programCode: CODE_IN_SYSTEM_BUT_WITH_NO_ELEMENTS
 
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledTimes(2);
       });
