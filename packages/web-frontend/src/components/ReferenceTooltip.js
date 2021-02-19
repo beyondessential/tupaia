@@ -15,9 +15,11 @@ import { BLUE } from '../styles';
 
 const DEFAULT = 'default';
 const TILE_SET = 'tileSet';
+const MAP_OVERLAY = 'mayOverlay';
 export const TOOLTIP_ICON_STYLE_OPTIONS = {
   DEFAULT,
   TILE_SET,
+  MAP_OVERLAY,
 };
 
 const IconButton = styled(InfoRoundedIcon)`
@@ -34,6 +36,7 @@ const styles = {
   iconButton: {
     [DEFAULT]: { fontSize: '16px' },
     [TILE_SET]: { fontSize: '16px', marginBottom: '-1px' },
+    [MAP_OVERLAY]: { fontSize: '20px', marginTop: '3px' },
   },
   typography: { backgroundColor: 'black' },
 };
