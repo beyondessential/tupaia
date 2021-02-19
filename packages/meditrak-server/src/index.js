@@ -8,7 +8,12 @@ import '@babel/polyfill';
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 
 import http from 'http';
-import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '@tupaia/database';
+import {
+  TupaiaDatabase,
+  ModelRegistry,
+  EntityHierarchyCacher,
+  AnalyticsRefresher,
+} from '@tupaia/database';
 
 import { createMeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
@@ -33,6 +38,10 @@ createMeditrakSyncQueue(models);
 // Pre-cache entity hierarchy details
 const entityHierarchyCacher = new EntityHierarchyCacher(models);
 entityHierarchyCacher.listenForChanges();
+
+// Add listener to refresh analytics table
+const analyticsRefresher = new AnalyticsRefresher(database, models);
+analyticsRefresher.listenForChanges();
 
 /**
  * Set up actual app with routes etc.
