@@ -3,13 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createJestMockInstance } from '@tupaia/utils';
 import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
 import { DbRecord } from '../../../types';
-import { createAnalyticsRepository } from '../stubs';
+import { createAggregator } from '../stubs';
 import { AGGREGATOR_ANALYTICS } from './ArithmeticBuilder.fixtures';
 
 export const testBuildAnalytics = () => {
-  const analyticsRepo = createAnalyticsRepository(AGGREGATOR_ANALYTICS);
+  const aggregator = createAggregator(AGGREGATOR_ANALYTICS);
+  const mockApi = createJestMockInstance('@tupaia/indicators', 'IndicatorApi', {
+    getAggregator: () => aggregator,
+    buildAnalyticsForBuilders: () => [],
+  });
+  const fetchOptions = {
+    startDate: '2020-01-01',
+    endDate: '2020-12-31',
+    organisationUnitCodes: ['TO'],
+  };
 
   const valuesToAnalytics = (values: number[]) =>
     values.map(value => ({
@@ -31,10 +41,10 @@ export const testBuildAnalytics = () => {
     it.each(testData)('%s', async (_, formula, expectedValues) => {
       const config = { formula, aggregation: 'RAW' };
       const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(indicator);
+      const builder = new ArithmeticBuilder(mockApi, indicator);
       const expected = valuesToAnalytics(expectedValues);
 
-      expect(builder.buildAnalytics(analyticsRepo, {})).toIncludeSameMembers(expected);
+      return expect(builder.buildAnalytics(fetchOptions)).resolves.toIncludeSameMembers(expected);
     });
   });
 
@@ -73,10 +83,10 @@ export const testBuildAnalytics = () => {
     it.each(testData)('%s', (_, formula, expectedValues) => {
       const config = { formula, aggregation: 'RAW' };
       const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(indicator);
+      const builder = new ArithmeticBuilder(mockApi, indicator);
       const expected = valuesToAnalytics(expectedValues);
 
-      expect(builder.buildAnalytics(analyticsRepo, {})).toIncludeSameMembers(expected);
+      return expect(builder.buildAnalytics(fetchOptions)).resolves.toIncludeSameMembers(expected);
     });
   });
 
@@ -86,7 +96,6 @@ export const testBuildAnalytics = () => {
         'all data elements are defined in all combos',
         {
           formula: 'A_ToPg_20192020 + B_ToPg_20192020',
-          aggregation: 'FINAL_EACH_YEAR',
         },
         [
           ['TO', '2019', 3],
@@ -99,7 +108,6 @@ export const testBuildAnalytics = () => {
         'some data elements are undefined in some periods',
         {
           formula: 'A_ToPg_20192020 + C_ToPg_2019',
-          aggregation: 'FINAL_EACH_YEAR',
         },
         [
           ['TO', '2019', 4],
@@ -110,7 +118,6 @@ export const testBuildAnalytics = () => {
         'some data elements are undefined in some org units',
         {
           formula: 'A_ToPg_20192020 + D_To_20192020',
-          aggregation: 'FINAL_EACH_YEAR',
         },
         [
           ['TO', '2019', 5],
@@ -121,7 +128,6 @@ export const testBuildAnalytics = () => {
         'all combos include an undefined data element',
         {
           formula: 'C_ToPg_2019 + D_To_20192020 + E_Pg_20192020',
-          aggregation: 'FINAL_EACH_YEAR',
         },
         [],
       ],
@@ -129,7 +135,6 @@ export const testBuildAnalytics = () => {
         'some combos include an undefined data element, but all defaults defined',
         {
           formula: 'C_ToPg_2019 + E_Pg_20192020',
-          aggregation: 'FINAL_EACH_YEAR',
           defaultValues: {
             C_ToPg_2019: 10,
             E_Pg_20192020: 100,
@@ -145,7 +150,6 @@ export const testBuildAnalytics = () => {
         'some combos include an undefined data element, but not all defaults defined',
         {
           formula: 'C_ToPg_2019 + E_Pg_20192020',
-          aggregation: 'FINAL_EACH_YEAR',
           defaultValues: {
             C_ToPg_2019: 10,
           },
@@ -159,7 +163,6 @@ export const testBuildAnalytics = () => {
         "defaults don't replace 0s",
         {
           formula: 'Zero * 2',
-          aggregation: 'FINAL_EACH_YEAR',
           defaultValues: {
             Zero: 10,
           },
@@ -169,8 +172,12 @@ export const testBuildAnalytics = () => {
     ];
 
     it.each(testData)('%s', (_, config, expectedDimensions) => {
-      const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(indicator);
+      const indicator = {
+        code: 'TestAnalytics',
+        builder: 'arithmetic',
+        config: { aggregation: 'RAW', ...config },
+      };
+      const builder = new ArithmeticBuilder(mockApi, indicator);
       const expected = expectedDimensions.map(([organisationUnit, period, value]) => ({
         dataElement: 'TestAnalytics',
         organisationUnit,
@@ -178,7 +185,7 @@ export const testBuildAnalytics = () => {
         value,
       }));
 
-      expect(builder.buildAnalytics(analyticsRepo, {})).toIncludeSameMembers(expected);
+      return expect(builder.buildAnalytics(fetchOptions)).resolves.toIncludeSameMembers(expected);
     });
   });
 };

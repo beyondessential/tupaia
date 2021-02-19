@@ -3,10 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { createJestMockInstance } from '@tupaia/utils';
 import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
 import { DbRecord } from '../../../types';
 
 export const testConfigValidation = () => {
+  const mockApi = createJestMockInstance('@tupaia/indicators', 'IndicatorApi');
+
   describe('invalid config', () => {
     const testData: [string, DbRecord, RegExp | string][] = [
       ['undefined formula', { aggregation: {} }, /Error .*formula.* empty/],
@@ -119,7 +122,7 @@ export const testConfigValidation = () => {
 
     it.each(testData)('%s', (_, config, expectedError) => {
       const indicator = { code: 'test', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(indicator);
+      const builder = new ArithmeticBuilder(mockApi, indicator);
       return expect(() => builder.validateConfig()).toThrow(expectedError);
     });
   });
@@ -197,7 +200,7 @@ export const testConfigValidation = () => {
 
     it.each(testData)('%s', (_, config) => {
       const indicator = { code: 'test', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(indicator);
+      const builder = new ArithmeticBuilder(mockApi, indicator);
       return expect(() => builder.validateConfig()).not.toThrow();
     });
   });

@@ -3,10 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  adjustFetchOptionsToAggregationList,
-  adjustFetchOptionsToAggregationLists,
-} from '../../../../analytics/aggregateAnalytics/adjustFetchOptionsToAggregationList';
+import { adjustFetchOptionsToAggregationList } from '../../../../analytics/aggregateAnalytics/adjustFetchOptionsToAggregationList';
 
 const getOffsetMonthsAgg = offset => ({
   type: 'OFFSET_PERIOD',
@@ -51,59 +48,5 @@ describe('adjustFetchOptionsToAggregationList()', () => {
 
   it.each(testData)('%s', (_, aggregations, expected) => {
     expect(adjustFetchOptionsToAggregationList(fetchOptions, aggregations)).toStrictEqual(expected);
-  });
-});
-
-describe('adjustFetchOptionsToAggregationLists()', () => {
-  const fetchOptions = {
-    startDate: '2020-01-01',
-    endDate: '2020-02-29',
-    period: '202001;202002',
-  };
-  const testData = [
-    ['empty aggregation lists', [], fetchOptions],
-    ['no aggregation list needs expansion', [['FINAL_EACH_MONTH'], ['SUM']], fetchOptions],
-    [
-      'same adjustment for all lists',
-      [[getOffsetMonthsAgg(-1)], [getOffsetMonthsAgg(-1)]],
-      {
-        startDate: '2020-02-01',
-        endDate: '2020-03-31',
-        period: '202002;202003',
-      },
-    ],
-    [
-      'adjustment in the same direction for all lists, but to a different extent',
-      [[getOffsetMonthsAgg(-1)], [getOffsetMonthsAgg(-2)]],
-      {
-        startDate: '2020-02-01',
-        endDate: '2020-04-30',
-        period: '202002;202003;202004',
-      },
-    ],
-    [
-      'a list needs adjustment, another not',
-      [[getOffsetMonthsAgg(-1)], ['SUM']],
-      {
-        startDate: '2020-01-01',
-        endDate: '2020-03-31',
-        period: '202001;202002;202003',
-      },
-    ],
-    [
-      'lists need adjustment in opposite directions',
-      [[getOffsetMonthsAgg(-1)], [getOffsetMonthsAgg(1)]],
-      {
-        startDate: '2019-12-01',
-        endDate: '2020-03-31',
-        period: '201912;202001;202002;202003',
-      },
-    ],
-  ];
-
-  it.each(testData)('%s', (_, aggregations, expected) => {
-    expect(adjustFetchOptionsToAggregationLists(fetchOptions, aggregations)).toStrictEqual(
-      expected,
-    );
   });
 });

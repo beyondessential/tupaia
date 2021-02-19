@@ -228,7 +228,6 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
 ];
 
 export const arithmeticAnalyticsFixtures = {
-  description: 'Arithmetic analytics',
   setup: {
     dbRecords: {
       entity: ENTITIES,

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { compareAsc, compareDesc, convertDateRangeToPeriodString } from '@tupaia/utils';
+import { convertDateRangeToPeriodString } from '@tupaia/utils';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import { getDateRangeForOffsetPeriod } from './aggregations/offsetPeriod';
 import { getDateRangeForSumPreviousPerPeriod } from './aggregations/sumPreviousPerPeriod';
@@ -28,15 +28,6 @@ const getAdjustedPeriod = (originalOptions, adjustedOptions) => {
     : convertDateRangeToPeriodString(adjustedOptions.startDate, adjustedOptions.endDate);
 };
 
-/**
- * Returns the minimum startDate and the maximum endDate in the provided ranges
- */
-const getDateRangeExtremes = dateRanges => {
-  const [startDate] = dateRanges.map(dr => dr.startDate).sort(compareAsc);
-  const [endDate] = dateRanges.map(dr => dr.endDate).sort(compareDesc);
-  return { startDate, endDate };
-};
-
 const adjustDateRangeToAggregationList = (dateRange, aggregationList) =>
   aggregationList.reduce((currentRange, aggregation) => {
     const getDateRange = AGGREGATION_TYPE_TO_DATE_RANGE_GETTER[aggregation.type];
@@ -55,29 +46,6 @@ export const adjustFetchOptionsToAggregationList = (fetchOptions, aggregationLis
   }
 
   const { startDate, endDate } = adjustDateRangeToAggregationList(fetchOptions, aggregationList);
-  const period = getAdjustedPeriod(fetchOptions, { startDate, endDate });
-
-  return { ...fetchOptions, startDate, endDate, period };
-};
-
-/**
- * Algorithm
- * ---------
- * 1. Adjust the fetch options for each aggregation list
- * 2. Return the widest values among the adjusted options, so that all additional data required by
- * each aggregation list (eg past/future data) can be fetched in one go
- *
- * @param {Object[][]} aggregationLists
- */
-export const adjustFetchOptionsToAggregationLists = (fetchOptions, aggregationLists) => {
-  if (aggregationLists.length === 0) {
-    return fetchOptions;
-  }
-
-  const adjustedDateRanges = aggregationLists.map(aggregationList =>
-    adjustDateRangeToAggregationList(fetchOptions, aggregationList),
-  );
-  const { startDate, endDate } = getDateRangeExtremes(adjustedDateRanges);
   const period = getAdjustedPeriod(fetchOptions, { startDate, endDate });
 
   return { ...fetchOptions, startDate, endDate, period };
