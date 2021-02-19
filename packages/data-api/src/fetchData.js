@@ -35,10 +35,10 @@ const getA1WhereClause = conditions => {
         clause = `${clause} event_id = ?`;
         break;
       case 'startDate':
-        clause = `${clause} date > ?`;
+        clause = `${clause} date >= ?`;
         break;
       case 'endDate':
-        clause = `${clause} date < ?`;
+        clause = `${clause} date <= ?`;
         break;
       default:
         throw new Error(`Unknown condition in fetch data where clause: ${condition}`);
@@ -150,7 +150,7 @@ const generateBaseSqlQuery = ({
       .concat(surveyCode ? [surveyCode] : [])
       .concat(eventId ? [eventId] : [])
       .concat(startDate ? [utcMoment(startDate).startOf('day').toISOString()] : [])
-      .concat(endDate ? [utcMoment(endDate).startOf('day').toISOString()] : []),
+      .concat(endDate ? [utcMoment(endDate).endOf('day').toISOString()] : []),
   );
 
   sqlQuery.addOrderByClause('date');
