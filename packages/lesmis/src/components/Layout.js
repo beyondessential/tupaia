@@ -14,6 +14,8 @@ const desktopWidth = '768px';
  * Wrapping container
  */
 export const Container = styled(MuiContainer)`
+  min-height: 85vh;
+  padding-top: 5%;
   //display: grid;
   //grid-template-columns: 2fr 1fr;
   //grid-gap: 40px;

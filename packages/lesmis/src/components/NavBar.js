@@ -6,11 +6,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import { LightIconButton, HomeButton } from '@tupaia/ui-components';
-import MenuIcon from '@material-ui/icons/Menu';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import { FlexSpaceBetween } from './Layout';
+import { HomeButton } from '@tupaia/ui-components';
+import { FlexSpaceBetween, FlexStart } from './Layout';
 import { ProfileButton } from './ProfileButton';
+import { MainMenu } from './MainMenu';
+import { FavouritesMenu } from './FavouritesMenu';
+import { SearchBar } from './SearchBar';
 import { NAVBAR_HEIGHT } from '../constants';
 
 /**
@@ -25,7 +26,9 @@ const Container = styled.nav`
   background-color: ${props => props.theme.palette.primary.main};
 
   img {
-    height: 50px;
+    position: relative;
+    top: -1px;
+    height: 53px;
   }
 `;
 
@@ -33,16 +36,8 @@ const Inner = styled(FlexSpaceBetween)`
   height: ${NAVBAR_HEIGHT};
 `;
 
-const Left = styled.nav`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Center = styled.nav`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const Left = styled(FlexStart)`
+  height: 100%;
 `;
 
 const Right = styled.nav`
@@ -51,33 +46,17 @@ const Right = styled.nav`
   justify-content: space-between;
 `;
 
-const SearchBar = styled.div`
-  height: 45px;
-  overflow: hidden;
-  background: white;
-
-  width: 390px;
-  background: #ffffff;
-  border-radius: 43px;
-`;
-
 export const NavBar = () => (
   <Container>
-    <MuiContainer>
+    <MuiContainer maxWidth="lg">
       <Inner>
         <Left>
-          <LightIconButton>
-            <MenuIcon />
-          </LightIconButton>
+          <MainMenu />
           <HomeButton homeUrl="/" source="/lesmis-logo-white.svg" />
         </Left>
-        <Center>
-          <SearchBar />
-        </Center>
+        <SearchBar />
         <Right>
-          <LightIconButton>
-            <FavoriteBorderIcon />
-          </LightIconButton>
+          <FavouritesMenu />
           <ProfileButton />
         </Right>
       </Inner>
