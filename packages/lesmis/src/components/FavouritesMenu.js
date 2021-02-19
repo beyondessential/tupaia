@@ -11,7 +11,8 @@ import { Close, Favorite } from '@material-ui/icons';
 import { FlexStart } from './Layout';
 
 /** =================================
- * PLACEHOLDER
+ * Todo: Make Favourites Menu
+ * @see https://github.com/beyondessential/tupaia-backlog/issues/2290
  * ================================= */
 
 export const FavoritesButton = styled(IconButton)`
@@ -24,21 +25,21 @@ export const FavoritesButton = styled(IconButton)`
 `;
 
 const StyledList = styled(List)`
-  width: 480px;
+  width: 30rem;
 
   .MuiListItem-gutters {
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 `;
 
 const MenuTray = styled(FlexStart)`
-  padding: 6px 0 0 6px;
+  padding: 0.375rem 0 0 0.375rem;
 `;
 
 const MenuHeading = styled(Typography)`
   font-weight: normal;
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 140%;
   margin-bottom: 0.5rem;
 `;

@@ -14,36 +14,22 @@ import { FavouritesMenu } from './FavouritesMenu';
 import { SearchBar } from './SearchBar';
 import { NAVBAR_HEIGHT } from '../constants';
 
-/**
- * === PLACEHOLDER NAVIGATION ===
- *
- * Waiting for designs to be completed. @see https://github.com/beyondessential/tupaia-backlog/issues/2234
- *
- * ================================
- */
-
 const Container = styled.nav`
   background-color: ${props => props.theme.palette.primary.main};
-
-  img {
-    position: relative;
-    top: -1px;
-    height: 53px;
-  }
 `;
 
 const Inner = styled(FlexSpaceBetween)`
   height: ${NAVBAR_HEIGHT};
 `;
 
-const Left = styled(FlexStart)`
-  height: 100%;
+const StyledHomeButton = styled(HomeButton)`
+  position: relative;
+  top: -1px;
+  height: 53px;
 `;
 
-const Right = styled.nav`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const Left = styled(FlexStart)`
+  height: 100%;
 `;
 
 export const NavBar = () => (
@@ -52,13 +38,13 @@ export const NavBar = () => (
       <Inner>
         <Left>
           <MainMenu />
-          <HomeButton homeUrl="/" source="/lesmis-logo-white.svg" />
+          <StyledHomeButton homeUrl="/" source="/lesmis-logo-white.svg" />
         </Left>
         <SearchBar />
-        <Right>
+        <FlexStart>
           <FavouritesMenu />
           <ProfileButton />
-        </Right>
+        </FlexStart>
       </Inner>
     </MuiContainer>
   </Container>

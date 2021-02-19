@@ -7,7 +7,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 /** =================================
- * PLACEHOLDER
+ * Todo: Make search bar component.
+ * @see https://github.com/beyondessential/tupaia-backlog/issues/2275
  * ================================= */
 
 const PlaceholderSearchField = styled.div`

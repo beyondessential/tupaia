@@ -17,31 +17,28 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
-
 import { Link as RouterLink } from 'react-router-dom';
 import { Home, ImportContacts, ContactMail, Close, Menu } from '@material-ui/icons';
 import { LightIconButton } from '@tupaia/ui-components';
 import { FlexEnd } from './Layout';
 
 const StyledList = styled(List)`
-  width: 360px;
+  width: 22.5rem;
 
   .MuiListItem-gutters {
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
   .MuiListItemIcon-root {
-    min-width: 40px;
+    min-width: 2.5rem;
   }
 
   .MuiListItemText-primary {
-    font-size: 18px;
+    font-size: 1.125rem;
     line-height: 140%;
   }
 `;
-
-const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
 
 const MenuSection = styled.div`
   display: flex;
@@ -58,27 +55,29 @@ const MenuSection = styled.div`
 `;
 
 const MenuTray = styled(FlexEnd)`
-  padding: 6px 6px 0 0;
-  margin-bottom: -6px;
-`;
-
-const StyledDivider = styled(Divider)`
-  margin: 6px 30px;
+  padding: 0.375rem 0.375rem 0 0;
+  margin-bottom: -0.375rem;
 `;
 
 const MenuHeading = styled(Typography)`
   font-weight: normal;
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 140%;
   margin-bottom: 0.5rem;
 `;
 
+const StyledDivider = styled(Divider)`
+  margin: 0.375rem 1.875rem;
+`;
+
 const TupaiaText = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
-  margin-top: 8px;
-  font-size: 12px;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
   line-height: 140%;
 `;
+
+const ListItemLink = props => <ListItem button component={RouterLink} {...props} />;
 
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
