@@ -343,3 +343,12 @@ export const constrainDate = (date, min, max) => {
   if (d > max) d = max;
   return d;
 };
+
+const DATE_FORMAT = 'YYYY-MM-DD';
+
+export const formatDateForApi = (date, timezone) => {
+  if (!date) return undefined;
+  const dateAsMoment = moment(date);
+  if (timezone) dateAsMoment.tz(timezone);
+  return dateAsMoment.format(DATE_FORMAT);
+};
