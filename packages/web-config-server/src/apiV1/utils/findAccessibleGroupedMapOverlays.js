@@ -7,7 +7,9 @@ import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
 
 const { AND, RAW } = QUERY_CONJUNCTIONS;
-
+const INFO = 'info';
+const REFERENCE = 'reference';
+const REFERENCE_PATH = [INFO, REFERENCE];
 /**
  * Recursively find the nested grouped MapOverlays.
  */
@@ -56,52 +58,64 @@ const findNestedGroupedMapOverlays = async (
       const mapOverlayGroupRelation = mapOverlayGroupRelations[i];
       const name = mapOverlayGroupIdToName[mapOverlayGroupRelation.child_id];
       const childMapOverlayGroupRelations = await mapOverlayGroupRelation.findChildRelations();
-      const children = await findNestedGroupedMapOverlays(
+      const mapOverlays = await findNestedGroupedMapOverlays(
         models,
         childMapOverlayGroupRelations,
         accessibleMapOverlays,
       );
-
-      mapOverlayGroupResults.push({
+      const mapOverlayGroupResult = integrateMapOverlayReference({
+        mapOverlays,
         id: mapOverlayGroupRelation.child_id,
-        name,
-        children,
+        groupName: name,
       });
+      mapOverlayGroupResults.push(mapOverlayGroupResult);
     }
   }
-  console.log(mapOverlayResults);
-
-  const getReference = mapOverlay => get(mapOverlay, ['info', 'reference']);
-
-  // Only display reference info on map overlay group if all map overlays have same reference.
-  // const firstReference = getReference(mapOverlayResults[0]);
-  // if (firstReference) {
-  //   const referencesAreNotTheSame = mapOverlayResults.find(
-  //     mapOverlay =>
-  //       !(getReference(mapOverlay) && isEqual(getReference(mapOverlay), firstReference)),
-  //   );
-
-  //   // All map overlays have same reference
-  //   if (!referencesAreNotTheSame) {
-  //     // Delete all the same references
-  //     const noReferenceMapOverlayResults = mapOverlayResults.map(m => {
-  //       const { info, restValues } = m;
-  //       delete info.reference;
-  //       return { ...restValues, info };
-  //     });
-
-  //     // Add reference to map overlay group
-  //   }
-  // }
   const sortedMapOverlayResults = sortMapOverlayItems(
     mapOverlayGroupResults.concat(mapOverlayResults),
     mapOverlayItemRelations,
   );
   return sortedMapOverlayResults.map(item => {
-    //id was added only for sorting purposes, remove it because it is not required in the front end
+    // id was added only for sorting purposes, remove it because it is not required in the front end
     const { id, ...itemToReturn } = item;
     return itemToReturn;
   });
+};
+
+// Only display reference info on map overlay group if all map overlays have same reference.
+const integrateMapOverlayReference = ({ mapOverlays, id, groupName }) => {
+  const mapOverlayGroupResult = {
+    id,
+    name: groupName,
+  };
+
+  const getReference = mapOverlay => get(mapOverlay, REFERENCE_PATH);
+  const firstReference = getReference(mapOverlays[0]);
+  if (firstReference) {
+    const referencesAreNotTheSame = mapOverlays.find(
+      mapOverlay =>
+        !(getReference(mapOverlay) && isEqual(getReference(mapOverlay), firstReference)),
+    );
+
+    // All map overlays have same reference
+    if (!referencesAreNotTheSame) {
+      // Delete all the same references
+      const noReferenceMapOverlayResult = mapOverlays.map(mapOverlay => {
+        const { [INFO]: info, ...restValues } = mapOverlay;
+        delete info[REFERENCE];
+        return { ...restValues, info };
+      });
+      return {
+        ...mapOverlayGroupResult,
+        children: noReferenceMapOverlayResult,
+        [INFO]: { [REFERENCE]: firstReference },
+      };
+    }
+  }
+  return {
+    ...mapOverlayGroupResult,
+    children: mapOverlays,
+  };
 };
 
 const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
@@ -142,7 +156,7 @@ const translateOverlaysForResponse = mapOverlays =>
       const idString = [id, ...(linkedMeasures || [])].sort().join(',');
 
       return {
-        id, //just for sorting purpose, will be removed later
+        id, // just for sorting purpose, will be removed later
         measureId: idString,
         name,
         ...presentationOptions,
@@ -209,11 +223,11 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
 
     if (isNonEmptyMapOverlayGroup) {
       accessibleRelations.push(worldRelationById[groupId]);
-      const accessibleOverlayGroup = {
+      const accessibleOverlayGroup = integrateMapOverlayReference({
+        mapOverlays: nestedMapOverlayGroups,
         id: groupId,
-        name,
-        children: nestedMapOverlayGroups,
-      };
+        groupName: name,
+      });
       accessibleOverlayGroups.push(accessibleOverlayGroup);
     }
   }
