@@ -51,7 +51,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'question',
+      editEndpoint: 'questions',
       fields: QUESTION_FIELDS,
     },
   },
@@ -79,7 +79,7 @@ const OPTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'option',
+      editEndpoint: 'options',
       fields: OPTION_FIELDS,
     },
   },
@@ -88,7 +88,7 @@ const OPTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Options',
-    endpoint: 'optionSet/{option_set_id}/options',
+    endpoint: 'optionSets/{option_set_id}/options',
     columns: OPTION_COLUMNS,
   },
 ];

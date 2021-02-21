@@ -63,7 +63,7 @@ export const SurveyResponsesExportModal = () => {
           helperText="Please enter the names of the countries to be exported."
           reduxId="countryCode"
           onChange={inputValue => handleValueChange('countryCode', inputValue)}
-          endpoint="country"
+          endpoint="countries"
           optionLabelKey="name"
           optionValueKey="code"
         />
@@ -73,7 +73,7 @@ export const SurveyResponsesExportModal = () => {
           helperText="Please enter the names of the entities to be exported."
           reduxId="entityIds"
           onChange={inputValue => handleValueChange('entityIds', inputValue)}
-          endpoint="entity"
+          endpoint="entities"
           optionLabelKey="name"
           optionValueKey="id"
           allowMultipleValues

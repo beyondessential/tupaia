@@ -18,5 +18,6 @@ export { DataGroupsPage, DataElementsPage } from './DataSourcesPage';
 export { AccessRequestsPage } from './AccessRequestsPage';
 export { DashboardReportsPage } from './DashboardReportsPage';
 export { MapOverlaysPage } from './MapOverlaysPage';
+export { IndicatorsPage } from './IndicatorsPage';
 export { DashboardGroupsPage } from './DashboardGroupsPage';
 export { ProjectsPage } from './ProjectsPage';

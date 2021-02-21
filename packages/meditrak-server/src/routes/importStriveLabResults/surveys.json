@@ -25,7 +25,10 @@
     "Sample": "entityCode",
     "CQ": "STR_K13C03",
     "SQ": "STR_K13C04",
-    "Positive result": "STR_K13C05"
+    "Positive result": "STR_K13C05",
+    "Successful sequence": "STR_K13C06",
+    "Sequence result": "STR_K13C07",
+    "Sequence result other": "STR_K13C08"
   },
   "STRIVE PCR Pf": {
     "Well": "STR_PF01",

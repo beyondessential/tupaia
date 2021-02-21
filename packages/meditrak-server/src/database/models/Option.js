@@ -42,6 +42,26 @@ class OptionType extends DatabaseType {
         return null;
       },
     ]);
+
+  async getSurveyIds() {
+    const surveyScreens = await this.database.executeSql(
+      `
+      SELECT survey_screen.survey_id
+      FROM survey_screen
+      INNER JOIN survey_screen_component
+        ON survey_screen_component.screen_id = survey_screen.id
+      INNER JOIN question
+        ON question.id = survey_screen_component.question_id
+      INNER JOIN option_set
+        ON option_set.id = question.option_set_id
+      INNER JOIN option
+        ON option.option_set_id = option_set.id
+      WHERE option.id = ?
+    `,
+      this.id,
+    );
+    return surveyScreens.map(s => s.survey_id);
+  }
 }
 
 export class OptionModel extends DatabaseModel {

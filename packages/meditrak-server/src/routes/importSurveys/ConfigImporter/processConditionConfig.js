@@ -69,7 +69,7 @@ const translateConditions = async (models, conditionsConfig, defaultValuesConfig
     ),
   ];
 
-  const questionCodeToId = await models.question.findCodeToId(codes);
+  const questionCodeToId = await models.question.findIdByCode(codes);
   // Translate the defaultValues (optional)
   for (const defaultValue of defaultValues) {
     const [key, value] = splitStringOn(defaultValue, ':');
