@@ -18,7 +18,7 @@ import {
 } from '@tupaia/ui-components';
 import { ModalContentProvider, InputField } from '../widgets';
 import { api } from '../api';
-import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
+import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
 
 const STATUS = {
   IDLE: 'idle',
@@ -29,7 +29,15 @@ const STATUS = {
 };
 
 export const ImportModalComponent = React.memo(
-  ({ title, subtitle, queryParameters, actionConfig, changeRequest, changeSuccess }) => {
+  ({
+    title,
+    subtitle,
+    queryParameters,
+    actionConfig,
+    changeRequest,
+    changeSuccess,
+    changeError,
+  }) => {
     const [status, setStatus] = useState(STATUS.IDLE);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -75,6 +83,7 @@ export const ImportModalComponent = React.memo(
       } catch (error) {
         setStatus(STATUS.ERROR);
         setErrorMessage(error.message);
+        changeError();
       }
     };
 
@@ -172,6 +181,7 @@ ImportModalComponent.propTypes = {
   actionConfig: PropTypes.object,
   changeRequest: PropTypes.func.isRequired,
   changeSuccess: PropTypes.func.isRequired,
+  changeError: PropTypes.func.isRequired,
 };
 
 ImportModalComponent.defaultProps = {
@@ -184,6 +194,7 @@ ImportModalComponent.defaultProps = {
 const mapDispatchToProps = dispatch => ({
   changeRequest: () => dispatch({ type: DATA_CHANGE_REQUEST }),
   changeSuccess: () => dispatch({ type: DATA_CHANGE_SUCCESS }),
+  changeError: () => dispatch({ type: DATA_CHANGE_ERROR }),
 });
 
 export const ImportModal = connect(null, mapDispatchToProps)(ImportModalComponent);
