@@ -22,7 +22,7 @@ const NoDataMessageText = styled.p`
 export const NoDataMessage = ({ viewContent }) => {
   let message = 'No data';
 
-  if (viewContent.noDataMessage) {
+  if ('noDataMessage' in viewContent) {
     message = viewContent.noDataMessage;
   } else if (viewContent.source === 'mSupply') {
     message = 'Requires mSupply';

@@ -1,5 +1,4 @@
-import moment from 'moment';
-import {addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
+import { addExportedDateAndOriginAtTheSheetBottom, formatDataValueByType } from '@tupaia/utils';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
@@ -27,7 +26,7 @@ export const formatMatrixDataForExcel = (
   { columns, categories: rowCategories, rows, name: reportName, organisationUnitCode },
   timeZone,
   configIn,
-  outputFormat = 'aoa'
+  outputFormat = 'aoa',
 ) => {
   // Create the empty array of objects to build the data into
   let formattedData = [];
@@ -40,10 +39,13 @@ export const formatMatrixDataForExcel = (
         columnCategories.map(({ columns: columnsInCategory }) => {
           // Add an empty column to start each category, with just the header filled as the title of the category
           // Iterate through each of the columns in the category, and add the relevant row data
-          return ['', ...columnsInCategory.map(col => addValueOrEmpty(row[col.key]))];
+          return [
+            '',
+            ...columnsInCategory.map(col => addValueOrEmpty(row[col.key], row.valueType)),
+          ];
         })
       : // This table has no column categories, just one set of columns
-        columns.map(col => addValueOrEmpty(row[col.key]));
+        columns.map(col => addValueOrEmpty(row[col.key], row.valueType));
 
     // prepend dataElementHeader
     rowData.unshift(row.dataElement);
@@ -67,7 +69,8 @@ export const formatMatrixDataForExcel = (
   };
 
   // Add title row (report name) to the top of the sheet
-  formattedData.push([`${reportName}, ${organisationUnitCode}`]);
+  if (reportName && organisationUnitCode)
+    formattedData.push([`${reportName}, ${organisationUnitCode}`]);
 
   // Add headers row to the second top of the sheet
   const headersRow = buildHeadersRow();
@@ -124,12 +127,15 @@ const convertAoaToAoo = data => {
 
 const isEmpty = data => data === undefined || data === null;
 
-const addValueOrEmpty = value => {
+const addValueOrEmpty = (value, valueType) => {
   if (isEmpty(value)) return '';
 
   if (typeof value === 'object') {
+    if (valueType) {
+      return formatDataValueByType(value, valueType);
+    }
     return isEmpty(value.value) ? '' : value.value;
   }
 
   return value;
-}
+};
