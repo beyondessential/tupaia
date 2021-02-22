@@ -205,7 +205,7 @@ export class EntityType extends DatabaseType {
             sort: ['entity_hierarchy.name ASC'],
           },
         ),
-      hierarchiesIncludingEntity.length > 0,
+      v => v.length > 0,
     );
     if (hierarchiesIncludingEntity.length === 0) {
       throw new Error(`The entity with id ${this.id} is not included in any hierarchy`);
