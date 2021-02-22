@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-
 import { RadioQuestion } from './RadioQuestion';
 
-export const BinaryQuestion = props => <RadioQuestion options={['Yes', 'No']} {...props} />;
+export const BinaryQuestion = ({ options = [], ...restOfProps }) => (
+  <RadioQuestion options={options.length ? options : ['Yes', 'No']} {...restOfProps} />
+);

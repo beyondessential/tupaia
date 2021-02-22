@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import groupBy from 'lodash.groupby';
+
 import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import { stripFields } from '@tupaia/utils';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
@@ -80,17 +82,31 @@ export class ArithmeticBuilder extends Builder {
   private getVariables = () => Object.keys(this.config.aggregation);
 
   private fetchAnalytics = async (fetchOptions: FetchOptions) => {
-    const formulaAnalytics = await fetchAnalytics(
-      this.api.getAggregator(),
-      stripFields(this.config.aggregation, Object.keys(this.paramBuildersByCode)),
-      fetchOptions,
-    );
-    const parameterAnalytics = await this.api.buildAnalyticsForBuilders(
-      this.paramBuilders,
-      fetchOptions,
-    );
-
+    const formulaAnalytics = await this.fetchFormulaAnalytics(fetchOptions);
+    const parameterAnalytics = await this.fetchParameterAnalytics(fetchOptions);
     return [...formulaAnalytics, ...parameterAnalytics];
+  };
+
+  private fetchFormulaAnalytics = async (fetchOptions: FetchOptions) => {
+    const aggregationLisByElement = stripFields(
+      this.config.aggregation,
+      Object.keys(this.paramBuildersByCode),
+    );
+    return fetchAnalytics(this.api.getAggregator(), aggregationLisByElement, fetchOptions);
+  };
+
+  private fetchParameterAnalytics = async (fetchOptions: FetchOptions) => {
+    const analytics = await this.api.buildAnalyticsForBuilders(this.paramBuilders, fetchOptions);
+    const analyticsByElement = groupBy(analytics, 'dataElement');
+
+    return Object.entries(analyticsByElement)
+      .map(([element, analyticsForElement]) => {
+        const aggregationList = this.config.aggregation[element];
+        return this.api
+          .getAggregator()
+          .aggregateAnalytics(analyticsForElement, aggregationList, fetchOptions.period);
+      })
+      .flat();
   };
 
   private buildAnalyticClusters = (analytics: Analytic[]) => {

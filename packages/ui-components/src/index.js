@@ -9,6 +9,7 @@ export * from './components/Breadcrumbs';
 export * from './components/Button';
 export * from './components/CardTabs';
 export * from './components/Card';
+export * from './components/Chart';
 export * from './components/CircleMeter';
 export * from './components/ConfirmDeleteModal';
 export * from './components/Dialog';

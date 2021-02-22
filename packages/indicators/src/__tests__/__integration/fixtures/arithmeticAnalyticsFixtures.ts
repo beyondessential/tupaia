@@ -32,7 +32,7 @@ const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
   ['Births', 'GR', '2019-01-01', { Female: '1', Male: '2' }],
   ['Births', 'GR', '2020-11-30', { Female: '3', Male: '4' }],
   ['Births', 'GR', '2020-12-29', { Female: '60', Male: '80' }],
-  ['Births', 'GR', '2020-12-30', { Female: '6', Male: '8' }],
+  ['Births', 'GR', '2020-12-31', { Female: '6', Male: '8' }],
   // IT
   ['Births', 'IT', '2019-06-05', { Female: '10', Male: '20' }],
   ['Births', 'IT', '2020-07-07', { Female: '30', Male: '40' }],
@@ -152,27 +152,27 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Evaluates an arithmetic formula',
     ['MonthlyBirths'],
     ['2019-01-01', '2019-01-31', ['GR']],
-    [['MonthlyBirths', 'GR', '20190101', 3]],
+    [['MonthlyBirths', 'GR', '201901', 3]],
   ],
   [
     'Evaluates a boolean formula (result: true)',
     ['MaleGtFemale'],
     ['2019-01-01', '2019-01-31', ['GR']],
-    [['MaleGtFemale', 'GR', '20190101', 1]],
+    [['MaleGtFemale', 'GR', '201901', 1]],
   ],
   [
     'Evaluates a boolean formula (result: false)',
     ['FemaleGtMale'],
     ['2019-01-01', '2019-01-31', ['GR']],
-    [['FemaleGtMale', 'GR', '20190101', 0]],
+    [['FemaleGtMale', 'GR', '201901', 0]],
   ],
   [
     'Applies correct aggregation (string format)',
     ['MonthlyBirths'],
     ['2020-01-01', '2020-12-31', ['GR']],
     [
-      ['MonthlyBirths', 'GR', '20201130', 7],
-      ['MonthlyBirths', 'GR', '20201230', 14],
+      ['MonthlyBirths', 'GR', '202011', 7],
+      ['MonthlyBirths', 'GR', '202012', 14],
     ],
   ],
   [
@@ -185,7 +185,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Applies correct aggregation (object format)',
     ['MonthlyBirthIncreaseRate'],
     ['2020-12-01', '2020-12-31', ['GR']],
-    [['MonthlyBirthIncreaseRate', 'GR', '20201230', (14 - 7) / 7]],
+    [['MonthlyBirthIncreaseRate', 'GR', '202012', (14 - 7) / 7]],
   ],
   [
     'Nested indicator + inline indicator (parameter)',
@@ -197,15 +197,15 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Skips calculation if an element is not defined in a specific org unit/date range combo',
     ['MonthlyBirths'],
     ['2020-01-01', '2020-12-31', ['ES']],
-    [['MonthlyBirths', 'ES', '20200202', 350]],
+    [['MonthlyBirths', 'ES', '202002', 350]],
   ],
   [
     'Uses default values if provided',
     ['MonthlyBirthsZeroDefaults'],
     ['2020-01-01', '2020-12-31', ['ES']],
     [
-      ['MonthlyBirthsZeroDefaults', 'ES', '20200101', 100],
-      ['MonthlyBirthsZeroDefaults', 'ES', '20200202', 350],
+      ['MonthlyBirthsZeroDefaults', 'ES', '202001', 100],
+      ['MonthlyBirthsZeroDefaults', 'ES', '202002', 350],
     ],
   ],
   [
@@ -223,7 +223,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     'Applies correct aggregation in nested indicators',
     ['AverageOf3QuarterlyIncreases'],
     ['2019-10-01', '2019-12-31', ['ES']],
-    [['AverageOf3QuarterlyIncreases', 'ES', '20191001', (12 - 6 + (9 - 12) + (18 - 9)) / 3]],
+    [['AverageOf3QuarterlyIncreases', 'ES', '2019Q4', (12 - 6 + (9 - 12) + (18 - 9)) / 3]],
   ],
 ];
 
