@@ -10,6 +10,8 @@ import { ProvinceView } from '../views/ProvinceView';
 import { DistrictView } from '../views/DistrictView';
 import { SchoolView } from '../views/SchoolView';
 import { ProfileView } from '../views/ProfileView';
+import { AboutView } from '../views/AboutView';
+import { ContactView } from '../views/ContactView';
 import { NotFoundView } from '../views/NotFoundView';
 
 /**
@@ -23,6 +25,12 @@ export const PageRoutes = React.memo(() => (
     </Route>
     <Route path="/profile">
       <ProfileView />
+    </Route>
+    <Route path="/about">
+      <AboutView />
+    </Route>
+    <Route path="/contact">
+      <ContactView />
     </Route>
     <Route exact path="/:province">
       <ProvinceView />

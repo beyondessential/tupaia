@@ -12,9 +12,14 @@ import { FOOTER_HEIGHT } from '../constants';
 const footerFontColor = '#c4c4c4';
 
 const Container = styled.footer`
+  display: flex;
+  align-items: center;
   height: ${FOOTER_HEIGHT};
   background: #283238;
-  padding: 1rem;
+
+  .MuiContainer-root {
+    display: flex;
+  }
 
   span,
   a {

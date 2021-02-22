@@ -92,13 +92,13 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '0.9375rem',
+    fontSize: '1rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '0.875rem',
+    fontSize: '1.2rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -119,4 +119,21 @@ const overrides = {
   },
 };
 
-export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
+const breakpoints = {
+  values: {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1440,
+    xl: 1920,
+  },
+};
+
+export const theme = createMuiTheme({
+  palette,
+  themeName,
+  typography,
+  shape,
+  overrides,
+  breakpoints,
+});
