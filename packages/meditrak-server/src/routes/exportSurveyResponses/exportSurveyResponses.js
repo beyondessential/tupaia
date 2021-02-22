@@ -226,7 +226,7 @@ export async function exportSurveyResponses(req, res) {
         exportData.unshift([`${reportName} - ${currentSurvey.name}, ${country.name}`]);
       }
 
-      // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
+      // Exclude 'SubmissionDate'/'DateOfData' and 'PrimaryEntity' rows from survey response export since these have no answers
       const questionsForExport = questions.filter(
         ({ type: questionType }) =>
           !NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType) ||

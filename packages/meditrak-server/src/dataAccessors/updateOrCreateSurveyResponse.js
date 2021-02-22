@@ -3,10 +3,12 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import momentTimezone from 'moment-timezone';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
 import { getEntityIdFromClinicId } from '../database/utilities';
+import { stripTimezoneFromDate } from '../utilities';
 
 async function saveAnswer(models, answer, surveyResponseId) {
   const answerDocument = {
@@ -57,10 +59,28 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
   try {
     await createEntities(models, entitiesCreated, surveyResponseObject.survey_id);
     await createOptions(models, optionsCreated);
+
+    // Ensure entity_id is populated, supporting legacy versions of MediTrak
     if (clinicId) {
       const entityId = await getEntityIdFromClinicId(models, clinicId);
       surveyResponseProperties.entity_id = entityId;
     }
+
+    // Ensure data_time is populated, supporting legacy versions of MediTrak
+    const {
+      data_time: suppliedDataTime,
+      submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
+      end_time: endTime, // prior to v1.7.87 fall back to end_time
+      timezone = 'Pacific/Auckland', // if no timezone provided, use db default
+    } = surveyResponseObject;
+    const dataTime = suppliedDataTime || submissionTime || endTime;
+
+    // Convert to the original timezone, then strip timezone suffix, so it ends up in db as it
+    // appeared to the original survey submitter
+    surveyResponseProperties.data_time = stripTimezoneFromDate(
+      momentTimezone(dataTime).tz(timezone).format(),
+    );
+
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {
         id: surveyResponseId,
@@ -70,11 +90,6 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
         ...surveyResponseProperties,
       },
     );
-    if (!surveyResponse.submission_time) {
-      // Survey responses from older versions of Tupaia MediTrak may not have a submission time
-      surveyResponse.submission_time = surveyResponse.end_time;
-      await surveyResponse.save();
-    }
   } catch (error) {
     throw new DatabaseError(`creating/updating survey response with id ${surveyResponseId}`, error);
   }
