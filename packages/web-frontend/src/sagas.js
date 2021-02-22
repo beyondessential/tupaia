@@ -594,7 +594,22 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
       includeCountryData: organisationUnitCode !== projectCode, // We should pull in all country data if we are within a project
     };
     const requestResourceUrl = `organisationUnit?${queryString.stringify(urlParameters)}`;
-    const orgUnitData = yield call(request, requestResourceUrl);
+
+    let orgUnitData = yield call(request, requestResourceUrl);
+
+    const state = yield select();
+
+    // If it's a project, use the map bounds from the map
+    if (orgUnitData.type === 'Project' && state.map.position.bounds) {
+      orgUnitData = {
+        ...orgUnitData,
+        location: {
+          ...orgUnitData.location,
+          bounds: state.map.position.bounds,
+        },
+      };
+    }
+
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
