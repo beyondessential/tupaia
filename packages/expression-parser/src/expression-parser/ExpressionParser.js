@@ -22,6 +22,12 @@ const average = (...argumentList) => {
   return sum / existingValues.length;
 };
 
+/**
+ * List of built in functions in math.js
+ * This list is here because when extracting variables for an expression by traversing the node tree,
+ * the built in functions are also considered as Symbol Node (which is similar to variables).
+ * So we want to exclude them when getting the variables.
+ */
 const BUILT_IN_FUNCTIONS = ['equalText'];
 
 export class ExpressionParser {
