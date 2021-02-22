@@ -10,10 +10,16 @@ export class AnalyticsRefresher {
     this.database = database;
     this.models = models;
     this.scheduledRefreshTimeout = null;
+    this.changeHandlerCancellers = [];
   }
 
   listenForChanges() {
-    this.changeHandlers = [this.models.answer.addChangeHandler(this.handleAnswerChange)];
+    this.changeHandlerCancellers = [this.models.answer.addChangeHandler(this.handleAnswerChange)];
+  }
+
+  stopListeningForChanges() {
+    this.changeHandlerCancellers.forEach(c => c());
+    this.changeHandlerCancellers = [];
   }
 
   handleAnswerChange = () => {
