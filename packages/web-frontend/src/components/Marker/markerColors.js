@@ -11,11 +11,13 @@ import { SCALE_TYPES } from '../../constants';
 
 const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
 const DEFAULT_COLOR_SCHEME = 'default';
+const REVERSE_DEFAULT_COLOR_SCHEME = 'default-reverse';
 const PERFORMANCE_COLOR_SCHEME = 'performance';
 const TIME_COLOR_SCHEME = 'time';
 
 const COLOR_SCHEME_TO_FUNCTION = {
   [DEFAULT_COLOR_SCHEME]: getHeatmapColor,
+  [REVERSE_DEFAULT_COLOR_SCHEME]: getReverseHeatmapColor,
   [PERFORMANCE_COLOR_SCHEME]: getPerformanceHeatmapColor,
   [TIME_COLOR_SCHEME]: getTimeHeatmapColor,
 };
@@ -24,8 +26,21 @@ const SCALE_TYPE_TO_COLOR_SCHEME = {
   [SCALE_TYPES.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
   [SCALE_TYPES.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
   [SCALE_TYPES.NEUTRAL]: DEFAULT_COLOR_SCHEME,
+  [SCALE_TYPES.NEUTRAL_REVERSE]: REVERSE_DEFAULT_COLOR_SCHEME,
   [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
 };
+
+const HEATMAP_DEFAULT_RGB_SET = [
+  [255, 255, 204],
+  [255, 237, 160],
+  [254, 217, 118],
+  [254, 178, 76],
+  [253, 141, 60],
+  [252, 78, 42],
+  [227, 26, 28],
+  [118, 0, 38],
+  [128, 0, 38],
+];
 
 /**
  * Helper function just to point the spectrum type to the correct colours
@@ -59,6 +74,7 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
 
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.NEUTRAL:
+    case SCALE_TYPES.NEUTRAL_REVERSE:
     default:
       return valueToColor((value || value === 0) && normaliseToPercentage(value, min, max));
   }
@@ -107,22 +123,27 @@ export function getTimeHeatmapColor(value, noDataColour) {
  * https://commons.wikimedia.org/wiki/File:South_Africa_2011_population_density_map.svg
  *
  * @param {number} value A value in the range [0..1] representing a percentage
+ * @param {default} if default is true, return lightest to darkest colour, otherwise return darkest to lightest
  * @returns {style} css rgb string, e.g. `rgb(0,0,0)`
  */
-export function getHeatmapColor(value) {
-  let rgb = [0, 0, 0];
+function getHeatmapColorByOrder(value, swapColor) {
+  const difference = value - 0.15;
+  const index = difference < 0 ? 0 : Math.floor(difference / 0.1) + 1;
+  const indexInRange =
+    index > HEATMAP_DEFAULT_RGB_SET.length - 1 ? HEATMAP_DEFAULT_RGB_SET.length - 1 : index;
 
-  if (value < 0.15) rgb = [255, 255, 204];
-  else if (value >= 0.15 && value < 0.25) rgb = [255, 237, 160];
-  else if (value >= 0.25 && value < 0.35) rgb = [254, 217, 118];
-  else if (value >= 0.35 && value < 0.45) rgb = [254, 178, 76];
-  else if (value >= 0.45 && value < 0.55) rgb = [253, 141, 60];
-  else if (value >= 0.55 && value < 0.65) rgb = [252, 78, 42];
-  else if (value >= 0.65 && value < 0.75) rgb = [227, 26, 28];
-  else if (value >= 0.75 && value < 0.85) rgb = [118, 0, 38];
-  else if (value >= 0.85) rgb = [128, 0, 38];
-
+  const rgb = !swapColor
+    ? HEATMAP_DEFAULT_RGB_SET[indexInRange]
+    : HEATMAP_DEFAULT_RGB_SET[HEATMAP_DEFAULT_RGB_SET.length - indexInRange - 1];
   return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+}
+
+export function getHeatmapColor(value) {
+  return getHeatmapColorByOrder(value, false);
+}
+
+export function getReverseHeatmapColor(value) {
+  return getHeatmapColorByOrder(value, true);
 }
 
 export const BREWER_AUTO = [
