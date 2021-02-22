@@ -70,6 +70,7 @@ export class Aggregator {
     const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, {
       ...restOfFetchOptions,
       ...temporalDimensions,
+      ...aggregationOptions,
     });
 
     return {
