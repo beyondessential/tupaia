@@ -27,3 +27,5 @@ export { addExportedDateAndOriginAtTheSheetBottom } from './addExportDateAndOrig
 export { getBrowserTimeZone } from './getBrowserTimeZone';
 export { formatDataValueByType } from './formatDataValueByType';
 export { VALUE_TYPES } from './constant';
+export { fetchPatiently } from './fetchPatiently';
+export { oneSecondSleep, sleep } from './sleep';

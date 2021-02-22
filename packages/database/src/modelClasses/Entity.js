@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { fetchPatiently } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -105,6 +106,11 @@ export class EntityType extends DatabaseType {
     return !this.isOrganisationUnit();
   }
 
+  // returns the dhis id if exists, or waits some time for it to be populated
+  async getDhisIdPatiently() {
+    return fetchPatiently(this.getDhisId);
+  }
+
   getDhisId() {
     return this.metadata && this.metadata.dhis && this.metadata.dhis.id;
   }
@@ -182,17 +188,21 @@ export class EntityType extends DatabaseType {
    * the first hierarchy it is a member of, alphabetically
    */
   async fetchDefaultEntityHierarchyId() {
-    const hierarchiesIncludingEntity = await this.otherModels.entityHierarchy.find(
-      {
-        ancestor_id: this.id,
-        [QUERY_CONJUNCTIONS.OR]: {
-          descendant_id: this.id,
-        },
-      },
-      {
-        joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
-        sort: ['entity_hierarchy.name ASC'],
-      },
+    const hierarchiesIncludingEntity = await fetchPatiently(
+      async () =>
+        this.otherModels.entityHierarchy.find(
+          {
+            ancestor_id: this.id,
+            [QUERY_CONJUNCTIONS.OR]: {
+              descendant_id: this.id,
+            },
+          },
+          {
+            joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+            sort: ['entity_hierarchy.name ASC'],
+          },
+        ),
+      hierarchiesIncludingEntity.length > 0,
     );
     if (hierarchiesIncludingEntity.length === 0) {
       throw new Error(`The entity with id ${this.id} is not included in any hierarchy`);
