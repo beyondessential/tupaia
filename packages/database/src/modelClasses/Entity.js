@@ -108,7 +108,10 @@ export class EntityType extends DatabaseType {
 
   // returns the dhis id if exists, or waits some time for it to be populated
   async getDhisIdPatiently() {
-    return fetchPatiently(this.getDhisId);
+    return fetchPatiently(async () => {
+      const refreshedEntity = await this.model.findById(this.id);
+      return refreshedEntity.getDhisId();
+    });
   }
 
   getDhisId() {
