@@ -599,7 +599,7 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
 
     const state = yield select();
 
-    // If it's a project, use the map bounds from the map
+    // If it's a project, use the map bounds from the store that we already have as they are more precise
     if (orgUnitData.type === 'Project' && state.map.position.bounds) {
       orgUnitData = {
         ...orgUnitData,
