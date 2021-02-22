@@ -4,6 +4,7 @@
  */
 
 export * from './modelClasses';
+export { AnalyticsRefresher } from './analytics';
 export { EntityHierarchyCacher } from './cachers';
 export { generateId, getHighestPossibleIdForGivenTime } from './utilities/generateId';
 export { TupaiaDatabase, QUERY_CONJUNCTIONS, JOIN_TYPES } from './TupaiaDatabase';
