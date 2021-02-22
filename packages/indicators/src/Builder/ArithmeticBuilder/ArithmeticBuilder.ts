@@ -9,7 +9,7 @@ import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { AggregationList, Analytic, AnalyticCluster, FetchOptions, Indicator } from '../../types';
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
-import { fetchAnalytics, validateConfig } from '../helpers';
+import { fetchAnalytics, validateConfig, evaluateFormulaToNumber } from '../helpers';
 import {
   ArithmeticConfig,
   configValidators,
@@ -115,18 +115,11 @@ export class ArithmeticBuilder extends Builder {
 
   buildAnalyticValuesFromClusters = (analyticClusters: AnalyticCluster[]) => {
     const parser = getExpressionParserInstance();
-    const calculateValue = (dataValues: Record<string, number>) => {
-      parser.setScope(dataValues);
-      const value = parser.evaluateToNumber(this.config.formula);
-      parser.clearScope();
-      return value;
-    };
-
     return analyticClusters
       .map(({ organisationUnit, period, dataValues }) => ({
         organisationUnit,
         period,
-        value: calculateValue(dataValues),
+        value: evaluateFormulaToNumber(parser, this.config.formula, dataValues),
       }))
       .filter(({ value }) => isFinite(value));
   };

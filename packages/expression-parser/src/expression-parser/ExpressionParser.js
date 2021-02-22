@@ -22,6 +22,7 @@ const average = (...argumentList) => {
   return sum / existingValues.length;
 };
 
+const BUILT_IN_FUNCTIONS = ['equalText'];
 export class ExpressionParser {
   constructor() {
     this.math = create(all, {});
@@ -38,10 +39,15 @@ export class ExpressionParser {
   getVariables(expression) {
     this.validate(expression);
     const nodeTree = this.math.parse(expression);
-    const result = nodeTree
-      .filter(node => node.isSymbolNode && !Object.keys(this.customFunctions).includes(node.name))
+    const variables = nodeTree
+      .filter(
+        node =>
+          node.isSymbolNode &&
+          !Object.keys(this.customFunctions).includes(node.name) &&
+          !BUILT_IN_FUNCTIONS.includes(node.name),
+      )
       .map(({ name }) => name);
-    return result;
+    return [...new Set(variables)]; // remove duplications
   }
 
   /**

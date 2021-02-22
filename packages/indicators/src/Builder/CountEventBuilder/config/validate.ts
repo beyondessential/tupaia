@@ -1,24 +1,16 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  constructIsArrayOf,
-  constructIsEmptyOrSync,
-  hasContent,
-  isAString,
-  isPlainObject,
-  ObjectValidator,
-} from '@tupaia/utils';
+import { constructIsEmptyOrSync, hasContent, isAString, isPlainObject } from '@tupaia/utils';
 import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
 import { assertDefaultValuesHaveAllowedTypesOrUndefined } from '../../validators';
-import { validateAggregation } from './aggregation';
-import { ArithmeticConfig } from './types';
+import { CountEventConfig } from './types';
 
 const assertAllDefaultsAreCodesInFormula = (
   defaultValues: Record<string, unknown>,
-  config: ArithmeticConfig,
+  config: CountEventConfig,
 ) => {
   const parser = getExpressionParserInstance();
   const variables = parser.getVariables(config.formula);
@@ -29,23 +21,13 @@ const assertAllDefaultsAreCodesInFormula = (
   });
 };
 
-const parameterValidator = new ObjectValidator({
-  code: [hasContent, isAString],
-  builder: [hasContent, isAString],
-  config: [isPlainObject],
-});
-
-const validateParameters = (parameters: Record<string, unknown>[]) =>
-  parameters.forEach(p => parameterValidator.validateSync(p));
-
 const assertDefaultValuesHaveAppropriateTypes = (defaultValues: Record<string, unknown>) => {
-  assertDefaultValuesHaveAllowedTypesOrUndefined(defaultValues, ['number']);
+  assertDefaultValuesHaveAllowedTypesOrUndefined(defaultValues, ['number', 'string']);
 };
 
 export const configValidators = {
   formula: [hasContent, isAString],
-  aggregation: [validateAggregation],
-  parameters: [constructIsEmptyOrSync([constructIsArrayOf('object'), validateParameters])],
+  programCode: [hasContent, isAString],
   defaultValues: [
     constructIsEmptyOrSync([
       isPlainObject,

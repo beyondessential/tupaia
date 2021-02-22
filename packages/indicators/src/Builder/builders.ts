@@ -4,7 +4,9 @@
  */
 
 import { ArithmeticBuilder } from './ArithmeticBuilder';
+import { CountEventBuilder } from './CountEventBuilder';
 
 export const builders = {
-  arithmetic: ArithmeticBuilder,
+  arithmeticAnalytic: ArithmeticBuilder,
+  countEvent: CountEventBuilder
 };
