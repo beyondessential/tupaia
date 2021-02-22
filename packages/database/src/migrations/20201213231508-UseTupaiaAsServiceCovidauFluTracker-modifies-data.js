@@ -42,6 +42,13 @@ const findOrCreateDataSource = async (db, dataSourceData) => {
   );
   const [dataSource] = dataSourceResults.rows;
   if (dataSource) {
+    if (dataSource.service_type === 'tupaia') {
+      return dataSource.id;
+    }
+
+    await db.runSql(
+      `UPDATE data_source SET "service_type" = 'tupaia', config = '{}' WHERE id = '${dataSource.id}'`,
+    );
     return dataSource.id;
   }
 
@@ -78,15 +85,10 @@ const insertDataSources = async (db, questions, surveyCode) => {
   const dataGroupId = await findAndUpdateDataSource(db, surveyCode);
 
   for (let i = 0; i < questions.length; i++) {
-    const dataElementId = await findOrCreateDataSource(db, {
+    await findOrCreateDataSource(db, {
       code: questions[i].code,
       type: 'dataElement',
       service_type: 'tupaia',
-    });
-    await insertObject(db, 'data_element_data_group', {
-      id: generateId(),
-      data_element_id: dataElementId,
-      data_group_id: dataGroupId,
     });
   }
 };
