@@ -14,6 +14,12 @@ const desktopWidth = '768px';
  * Wrapping container
  */
 export const Container = styled(MuiContainer)`
+  min-height: 85vh;
+  padding-top: 5%;
+
+  // Todo: Make page layouts
+  // @see https://github.com/beyondessential/tupaia-backlog/issues/2279
+
   //display: grid;
   //grid-template-columns: 2fr 1fr;
   //grid-gap: 40px;
