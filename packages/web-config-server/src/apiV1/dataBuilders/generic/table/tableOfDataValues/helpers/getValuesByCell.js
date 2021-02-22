@@ -12,7 +12,6 @@ import {
   divideValues,
   calculateOperationForAnalytics,
 } from '/apiV1/dataBuilders/helpers';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 const groupByMetadata = (groupedResults, metadataField) => {
   const newResults = {};
@@ -72,7 +71,7 @@ export const getCalculatedValuesByCell = async (models, cells, results, config) 
     cells.map(async cell => {
       if (typeof cell === 'string') {
         const analyticForCell = results.find(result => result.dataElement === cell) || {};
-        calculatedValuesByCell[cell] = analyticForCell.value ?? NO_DATA_AVAILABLE;
+        calculatedValuesByCell[cell] = analyticForCell.value ?? config.noDataValue;
       } else {
         calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(models, results, {
           ...cell,

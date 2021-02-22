@@ -8,7 +8,7 @@ import flattenDeep from 'lodash.flattendeep';
 
 import { getCalculatedValuesByCell } from './helpers/getValuesByCell';
 import { getDataElementsFromCalculateOperationConfig } from '/apiV1/dataBuilders/helpers';
-import { ORG_UNIT_COLUMNS_KEYS_SET } from '/apiV1/dataBuilders/constants';
+import { ORG_UNIT_COLUMNS_KEYS_SET, NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
@@ -33,8 +33,10 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
 
   async buildValuesByCell() {
     const hierarchyId = await this.fetchEntityHierarchyId();
-    const filterKeys = ['dataElement'];
+    const noDataValue = this.config.noDataValue ?? NO_DATA_AVAILABLE;
+
     // Add `key` to each cell if columns are programmatically generated
+    const filterKeys = ['dataElement'];
     if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.config.columns)) {
       this.columns = await this.buildColumns();
       this.tableConfig.cells.forEach((cell, rowKey) => {
@@ -49,6 +51,7 @@ class TableOfCalculatedValuesBuilder extends TableOfDataValuesBuilder {
 
     return getCalculatedValuesByCell(this.models, flatten(this.tableConfig.cells), this.results, {
       hierarchyId,
+      noDataValue,
       filterKeys,
     });
   }

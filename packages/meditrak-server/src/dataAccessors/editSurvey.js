@@ -3,7 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { assertCanAddDataElementInGroup } from '../database';
-import { NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
+
+const RESOURCE_TYPES = {
+  DATA_GROUP: 'dataGroup',
+  DATA_ELEMENT: 'dataElement',
+  SURVEY: 'survey',
+};
 
 class SurveyEditor {
   constructor(models) {
@@ -13,16 +18,14 @@ class SurveyEditor {
   async edit(recordId, updatedFields) {
     this.survey = await this.models.survey.findById(recordId);
     this.dataGroup = await this.survey.dataGroup();
-    this.updatedFieldsByDbType = this.getUpdatedFieldsByDbType(updatedFields);
+    this.updatedFieldsByResource = this.createUpdatedFieldsByResource(updatedFields);
 
-    // Check for performance reasons
-    if (this.shouldUpdateDataGroupsAndElements()) {
-      await this.updateDataGroupAndElements();
-    }
+    await this.updateDataElements();
+    await this.updateDataGroup();
     await this.updateSurvey();
   }
 
-  getUpdatedFieldsByDbType = updatedFields => {
+  createUpdatedFieldsByResource = updatedFields => {
     const {
       'data_source.service_type': serviceType,
       'data_source.config': config,
@@ -30,111 +33,52 @@ class SurveyEditor {
     } = updatedFields;
 
     return {
-      [this.models.dataSource.databaseType]: { service_type: serviceType, config },
-      [this.models.survey.databaseType]: updatedSurveyFields,
+      [RESOURCE_TYPES.DATA_GROUP]: {
+        code: updatedSurveyFields.code,
+        service_type: serviceType,
+        config,
+      },
+      [RESOURCE_TYPES.DATA_ELEMENT]: { service_type: serviceType, config },
+      [RESOURCE_TYPES.SURVEY]: updatedSurveyFields,
     };
   };
 
-  getUpdatedFieldsForModel = model => {
-    return this.updatedFieldsByDbType[model.databaseType];
-  };
+  isResourceUpdated = resourceType =>
+    Object.values(this.updatedFieldsByResource[resourceType]).some(field => field !== undefined);
 
-  shouldUpdateDataGroupsAndElements = () => {
-    const updatedFields = this.getUpdatedFieldsForModel(this.dataGroup);
-    return Object.values(updatedFields).some(field => field !== undefined);
-  };
+  updateDataElements = async () => {
+    // Check for performance reasons
+    if (!this.isResourceUpdated(RESOURCE_TYPES.DATA_ELEMENT)) {
+      return;
+    }
 
-  updateDataGroupAndElements = async () => {
-    const existingDataElements = await this.fetchDataElementsInGroup(this.dataGroup.code);
-
-    await this.updateDataElements(existingDataElements);
-    await this.updateDataGroup();
-    await this.createMissingDataElements(existingDataElements);
-    await this.createMissingDataElementToGroupAssociations();
-  };
-
-  fetchDataElementsInGroup = async () => {
-    // TODO Use `this.model.dataSource.getDataElementsInGroup()` method instead
-    // when tupaia-backlog#663 is implemented
-    const questions = await this.survey.questions();
-
-    return this.models.dataSource.find({
-      code: questions.map(({ code }) => code),
-      type: this.models.dataSource.getTypes().DATA_ELEMENT,
-    });
-  };
-
-  updateDataElements = async dataElements => {
-    const updatedFields = this.updatedFieldsByDbType[this.models.dataSource.databaseType];
-
+    const dataElements = await this.models.dataSource.getDataElementsInGroup(this.dataGroup.code);
     const updateDataElement = async dataElement => {
       await assertCanAddDataElementInGroup(
         this.models,
         dataElement.code,
         this.dataGroup.code,
-        updatedFields,
+        this.updatedFieldsByResource.dataElement,
       );
-      await this.updateResource(dataElement);
+      await this.updateResource(dataElement, RESOURCE_TYPES.DATA_ELEMENT);
     };
-    return Promise.all(dataElements.map(updateDataElement));
-  };
 
-  createMissingDataElements = async existingDataElements => {
-    // TODO delete this method when tupaia-backlog#663 is implemented
-    const questionCodeCondition =
-      existingDataElements.length > 0
-        ? ` AND q.code NOT IN (${existingDataElements.map(() => '?')})`
-        : '';
-
-    const missingDataElements = await this.models.database.executeSql(
-      `
-      SELECT q.code, 'dataElement' AS type, ds.service_type, ds.config
-      FROM question q
-      JOIN survey_screen_component ssc ON ssc.question_id = q.id
-      JOIN survey_screen ss ON ss.id = ssc.screen_id 
-      JOIN survey s ON s.id = ss.survey_id
-      JOIN data_source ds ON ds.id = s.data_source_id
-      WHERE
-        ds.code = ? AND
-        ds.type = 'dataGroup' AND
-        q.type NOT IN (${NON_DATA_ELEMENT_ANSWER_TYPES.map(type => `'${type}'`).join(',')})
-        ${questionCodeCondition}
-    `,
-      [this.dataGroup.code, ...existingDataElements.map(({ code }) => code)],
-    );
-
-    const createMissingDataElement = async dataElement => {
-      const { id } = await this.models.dataSource.create(dataElement);
-      await this.models.question.update({ code: dataElement.code }, { data_source_id: id });
-    };
-    return Promise.all(missingDataElements.map(createMissingDataElement));
-  };
-
-  createMissingDataElementToGroupAssociations = async () => {
-    // TODO delete this method when tupaia-backlog#663 is implemented
-    const dataElements = await this.fetchDataElementsInGroup();
-
-    const createAssociation = dataElement =>
-      this.models.dataElementDataGroup.findOrCreate({
-        data_element_id: dataElement.id,
-        data_group_id: this.dataGroup.id,
-      });
-    return Promise.all(dataElements.map(createAssociation));
+    await Promise.all(dataElements.map(updateDataElement));
   };
 
   updateDataGroup = async () => {
-    return this.updateResource(this.dataGroup);
+    await this.dataGroup.deleteSurveyDateElement();
+    await this.updateResource(this.dataGroup, RESOURCE_TYPES.DATA_GROUP);
+    await this.dataGroup.upsertSurveyDateElement();
   };
 
-  updateSurvey = async () => {
-    return this.updateResource(this.survey);
-  };
+  updateSurvey = async () => this.updateResource(this.survey, RESOURCE_TYPES.SURVEY);
 
   /**
    * @param {DatabaseModel} model - mutated
    */
-  updateResource = async model => {
-    const updatedFields = this.getUpdatedFieldsForModel(model);
+  updateResource = async (model, resourceType) => {
+    const updatedFields = this.updatedFieldsByResource[resourceType];
     const isDataSource = model.databaseType === this.models.dataSource.databaseType;
 
     Object.entries(updatedFields).forEach(([fieldName, fieldValue]) => {

@@ -28,6 +28,7 @@ export class ExpressionParser {
     this.parser = this.math.parser();
     this.customFunctions = this.getCustomFunctions();
     this.math.import(this.customFunctions);
+    this.validExpressionCache = new Set();
   }
 
   /**
@@ -48,6 +49,10 @@ export class ExpressionParser {
    * @param {*} expression
    */
   validate(expression) {
+    if (this.validExpressionCache.has(expression)) {
+      return;
+    }
+
     const nodeTree = this.math.parse(expression);
     nodeTree.traverse(node => {
       if (node.isOperatorNode && node.op === '*' && node.implicit) {
@@ -56,6 +61,7 @@ export class ExpressionParser {
         );
       }
     });
+    this.validExpressionCache.add(expression);
   }
 
   /**

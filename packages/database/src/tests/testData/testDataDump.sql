@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.8
--- Dumped by pg_dump version 11.8
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -82,7 +82,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'school',
     'catchment',
     'sub_catchment',
-    'field_station'
+    'field_station',
+    'city',
+    'individual'
 );
 
 
@@ -136,6 +138,21 @@ CREATE FUNCTION public.generate_object_id() RETURNS character varying
 
 
 --
+-- Name: immutable_table(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.immutable_table() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+        IF TG_OP = 'UPDATE' AND OLD <> NEW THEN
+          RAISE EXCEPTION 'Cannot update immutable table';
+        END IF;
+      END
+    $$;
+
+
+--
 -- Name: notification(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -143,50 +160,68 @@ CREATE FUNCTION public.notification() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
     DECLARE
-    json_record TEXT;
+    new_json_record JSONB;
+    old_json_record JSONB;
+    record_id TEXT;
+    change_type TEXT;
     BEGIN
+
+    -- if nothing has changed, no need to trigger a notification
     IF TG_OP = 'UPDATE' AND OLD = NEW THEN
       RETURN NULL;
     END IF;
+
+    -- set the change_type from the less readable TG_OP
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-      json_record := to_jsonb(NEW);
-      PERFORM pg_notify(
-        'change',
-        json_build_object(
-          'record_type',
-          TG_TABLE_NAME,
-          'record_id',
-          NEW.id,
-          'type',
-          'update',
-          'record',
-          public.scrub_geo_data(
-            json_record::jsonb,
-            TG_TABLE_NAME
-          )
-        )::text
-    );
-      RETURN NEW;
+      change_type := 'update';
+    ELSE
+      change_type := 'delete';
     END IF;
-    IF TG_OP = 'DELETE' THEN
-      json_record := to_jsonb(OLD);
-      PERFORM pg_notify(
+
+    -- set up the old and new records
+    IF TG_OP <> 'INSERT' THEN
+      old_json_record := public.scrub_geo_data(
+        to_jsonb(OLD),
+        TG_TABLE_NAME
+      );
+    END IF;
+    IF TG_OP <> 'DELETE' THEN
+      new_json_record := public.scrub_geo_data(
+        to_jsonb(NEW),
+        TG_TABLE_NAME
+      );
+    END IF;
+
+    IF change_type = 'update' THEN
+      record_id := NEW.id;
+    ELSE
+      record_id := OLD.id;
+    END IF;
+
+    -- publish change notification
+    PERFORM pg_notify(
       'change',
       json_build_object(
         'record_type',
         TG_TABLE_NAME,
         'record_id',
-        OLD.id,
+        record_id,
         'type',
-        'delete',
-        'record',
-        public.scrub_geo_data(
-          json_record::jsonb,
-          TG_TABLE_NAME
-        )
-    )::text);
+        change_type,
+        'old_record',
+        old_json_record,
+        'new_record',
+        new_json_record
+      )::text
+    );
+
+    -- return the appropriate record to allow the trigger to pass
+    IF change_type = 'update' THEN
+      RETURN NEW;
+    ELSE
       RETURN OLD;
     END IF;
+
     END;
     $$;
 
@@ -268,28 +303,15 @@ CREATE TABLE public.access_request (
 
 
 --
--- Name: alert; Type: TABLE; Schema: public; Owner: -
+-- Name: ancestor_descendant_relation; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.alert (
+CREATE TABLE public.ancestor_descendant_relation (
     id text NOT NULL,
-    entity_id text,
-    data_element_id text,
-    start_time timestamp with time zone DEFAULT now() NOT NULL,
-    end_time timestamp with time zone,
-    event_confirmed_time timestamp with time zone,
-    archived boolean DEFAULT false
-);
-
-
---
--- Name: alert_comment; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.alert_comment (
-    id text NOT NULL,
-    alert_id text,
-    comment_id text
+    entity_hierarchy_id text NOT NULL,
+    ancestor_id text NOT NULL,
+    descendant_id text NOT NULL,
+    generational_distance integer NOT NULL
 );
 
 
@@ -548,7 +570,8 @@ CREATE TABLE public.entity (
 
 CREATE TABLE public.entity_hierarchy (
     id text NOT NULL,
-    name text NOT NULL
+    name text NOT NULL,
+    canonical_types text[] DEFAULT '{}'::text[]
 );
 
 
@@ -632,7 +655,6 @@ CREATE TABLE public."mapOverlay" (
     "dataElementCode" text NOT NULL,
     "isDataRegional" boolean DEFAULT true,
     "linkedMeasures" text[],
-    "sortOrder" real DEFAULT 0 NOT NULL,
     "measureBuilderConfig" jsonb,
     "measureBuilder" character varying,
     "presentationOptions" jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -679,7 +701,8 @@ CREATE TABLE public.map_overlay_group_relation (
     id text NOT NULL,
     map_overlay_group_id text NOT NULL,
     child_id text NOT NULL,
-    child_type text NOT NULL
+    child_type text NOT NULL,
+    sort_order integer
 );
 
 
@@ -795,7 +818,8 @@ CREATE TABLE public.option (
     value text NOT NULL,
     label text,
     sort_order integer,
-    option_set_id text NOT NULL
+    option_set_id text NOT NULL,
+    attributes jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -835,7 +859,22 @@ CREATE TABLE public.project (
     user_groups text[],
     logo_url text,
     entity_id text,
-    entity_hierarchy_id text
+    entity_hierarchy_id text,
+    tile_sets text
+);
+
+
+--
+-- Name: psss_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.psss_session (
+    id text NOT NULL,
+    email text NOT NULL,
+    access_policy jsonb NOT NULL,
+    access_token text NOT NULL,
+    access_token_expiry bigint NOT NULL,
+    refresh_token text NOT NULL
 );
 
 
@@ -868,6 +907,18 @@ CREATE TABLE public.refresh_token (
     token text NOT NULL,
     expiry double precision,
     meditrak_device_id text
+);
+
+
+--
+-- Name: report; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.report (
+    id text NOT NULL,
+    code text NOT NULL,
+    config jsonb NOT NULL,
+    permission_group_id text NOT NULL
 );
 
 
@@ -924,6 +975,17 @@ CREATE TABLE public.survey_response (
     submission_time timestamp with time zone,
     timezone text DEFAULT 'Pacific/Auckland'::text,
     entity_id text NOT NULL
+);
+
+
+--
+-- Name: survey_response_comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.survey_response_comment (
+    id text NOT NULL,
+    survey_response_id text NOT NULL,
+    comment_id text NOT NULL
 );
 
 
@@ -986,7 +1048,8 @@ CREATE TABLE public.user_account (
     mobile_number text,
     password_hash text NOT NULL,
     password_salt text NOT NULL,
-    verified_email public.verified_email DEFAULT 'new_user'::public.verified_email
+    verified_email public.verified_email DEFAULT 'new_user'::public.verified_email,
+    profile_image text
 );
 
 
@@ -1040,19 +1103,11 @@ ALTER TABLE ONLY public.access_request
 
 
 --
--- Name: alert_comment alert_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ancestor_descendant_relation ancestor_descendant_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert_comment
-    ADD CONSTRAINT alert_comment_pkey PRIMARY KEY (id);
-
-
---
--- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.ancestor_descendant_relation
+    ADD CONSTRAINT ancestor_descendant_relation_pkey PRIMARY KEY (id);
 
 
 --
@@ -1496,6 +1551,14 @@ ALTER TABLE ONLY public.project
 
 
 --
+-- Name: psss_session psss_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.psss_session
+    ADD CONSTRAINT psss_session_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: question question_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1525,6 +1588,22 @@ ALTER TABLE ONLY public.refresh_token
 
 ALTER TABLE ONLY public.refresh_token
     ADD CONSTRAINT refresh_token_user_id_device_unique UNIQUE (user_id, device);
+
+
+--
+-- Name: report report_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.report
+    ADD CONSTRAINT report_code_key UNIQUE (code);
+
+
+--
+-- Name: report report_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.report
+    ADD CONSTRAINT report_pkey PRIMARY KEY (id);
 
 
 --
@@ -1581,6 +1660,14 @@ ALTER TABLE ONLY public.survey
 
 ALTER TABLE ONLY public.survey
     ADD CONSTRAINT survey_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: survey_response_comment survey_response_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey_response_comment
+    ADD CONSTRAINT survey_response_comment_pkey PRIMARY KEY (id);
 
 
 --
@@ -1664,6 +1751,20 @@ ALTER TABLE ONLY public.user_reward
 
 
 --
+-- Name: ancestor_descendant_relation_ancestor_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX ancestor_descendant_relation_ancestor_id_idx ON public.ancestor_descendant_relation USING btree (ancestor_id);
+
+
+--
+-- Name: ancestor_descendant_relation_descendant_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX ancestor_descendant_relation_descendant_id_idx ON public.ancestor_descendant_relation USING btree (descendant_id);
+
+
+--
 -- Name: answer_question_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1738,6 +1839,13 @@ CREATE INDEX dhis_sync_queue_record_type_idx ON public.dhis_sync_queue USING btr
 --
 
 CREATE INDEX entity_code ON public.entity USING btree (code);
+
+
+--
+-- Name: entity_parent_id_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX entity_parent_id_key ON public.entity USING btree (parent_id);
 
 
 --
@@ -1979,17 +2087,10 @@ CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public
 
 
 --
--- Name: alert_comment alert_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: ancestor_descendant_relation ancestor_descendant_relation_immutable_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER alert_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER ancestor_descendant_relation_immutable_trigger AFTER UPDATE ON public.ancestor_descendant_relation FOR EACH ROW EXECUTE PROCEDURE public.immutable_table();
 
 
 --
@@ -2210,6 +2311,13 @@ CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.
 
 
 --
+-- Name: report report_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER report_trigger AFTER INSERT OR DELETE OR UPDATE ON public.report FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: setting setting_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2221,6 +2329,13 @@ CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.settin
 --
 
 CREATE TRIGGER survey_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: survey_response_comment survey_response_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER survey_response_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2313,35 +2428,27 @@ ALTER TABLE ONLY public.access_request
 
 
 --
--- Name: alert_comment alert_comment_alert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: ancestor_descendant_relation ancestor_descendant_relation_ancestor_id_entity_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert_comment
-    ADD CONSTRAINT alert_comment_alert_id_fkey FOREIGN KEY (alert_id) REFERENCES public.alert(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: alert_comment alert_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert_comment
-    ADD CONSTRAINT alert_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.ancestor_descendant_relation
+    ADD CONSTRAINT ancestor_descendant_relation_ancestor_id_entity_id_fk FOREIGN KEY (ancestor_id) REFERENCES public.entity(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: ancestor_descendant_relation ancestor_descendant_relation_descendant_id_entity_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+ALTER TABLE ONLY public.ancestor_descendant_relation
+    ADD CONSTRAINT ancestor_descendant_relation_descendant_id_entity_id_fk FOREIGN KEY (descendant_id) REFERENCES public.entity(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: ancestor_descendant_relation ancestor_descendant_relation_entity_hierarchy_id_entity_hierarc; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+ALTER TABLE ONLY public.ancestor_descendant_relation
+    ADD CONSTRAINT ancestor_descendant_relation_entity_hierarchy_id_entity_hierarc FOREIGN KEY (entity_hierarchy_id) REFERENCES public.entity_hierarchy(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2593,6 +2700,14 @@ ALTER TABLE ONLY public.refresh_token
 
 
 --
+-- Name: report report_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.report
+    ADD CONSTRAINT report_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
 -- Name: survey survey_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2606,6 +2721,22 @@ ALTER TABLE ONLY public.survey
 
 ALTER TABLE ONLY public.survey
     ADD CONSTRAINT survey_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: survey_response_comment survey_response_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey_response_comment
+    ADD CONSTRAINT survey_response_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: survey_response_comment survey_response_comment_survey_response_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey_response_comment
+    ADD CONSTRAINT survey_response_comment_survey_response_id_fkey FOREIGN KEY (survey_response_id) REFERENCES public.survey_response(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2705,6 +2836,14 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 
 
 --
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT ALL ON SCHEMA public TO tupaia;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -2712,8 +2851,8 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.8
--- Dumped by pg_dump version 11.8
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -3638,6 +3777,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 863	/20200810005228-AddTongaHpuRateOfTobaccoNonComplianceDashboard-modifies-data	2020-08-27 22:13:12.399
 864	/20200812034926-UpdateHP02NCDRiskFactorsScreeningEventsDashboard-modifies-data	2020-08-27 22:13:12.462
 865	/20200814011117-FixUNFPAReportShowingOver100Percent-modifies-data	2020-08-27 22:13:12.724
+935	/20201009061046-UpdateLaosEocEntities-modifies-data	2020-10-15 22:56:41.849
 866	/20200814062713-DeprecateSpecificSumPerPeriodDatabuildersAndReplaceWithGeneric-modifies-data	2020-08-27 22:13:13.055
 867	/20200817000740-AddTongaHpuReportNcdRiskFactorsByAgeAndGender-modifies-data	2020-08-27 22:13:13.183
 868	/20200817045557-AddTongaHpuNumberOfInspectedAreasForTobaccoComplianceDashboard-modifies-data	2020-08-27 22:13:13.272
@@ -3665,19 +3805,128 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 890	/20200911061955-ClampLaosSchoolTextbookRatioOverlayScale-modifies-data	2020-09-17 22:49:03.335
 891	/20200911065646-AddLaosSchoolsPolygonOverlaysStudentNumbers-modifies-data	2020-09-17 22:49:04.121
 892	/20200921010041-FixLaosSchoolsSchoolIndicatorsEiESubNationalLevelsMapOverlaysEntityAggregation-modifies-data	2020-09-22 04:16:40.457
-893	/20200720231712-AddIndicatorDataSourceType-modifies-schema	2020-09-22 15:05:07.979
-894	/20200804033230-AddIndicatorTable-modifies-schema	2020-09-22 15:05:09.05
-895	/20200826215112-UseAnalyticsPerPerPeriodBuilder-modifies-data	2020-09-22 15:05:09.61
-896	/20200826215113-UseIndicatorsInStriveVisualisations-modifies-data	2020-09-22 15:05:15.74
-897	/20200912130823-AddMoreLaosSchoolsSchoolIndicatorsEiEMapOverlays-modifies-data	2020-09-22 15:05:16.241
-898	/20200914013333-UpdateLaosSchoolsSchoolIndicatorsEiEFunctioningTVMapOverlay-modifies-data	2020-09-22 15:05:16.327
-899	/20200914025424-UpdateLaosSchoolsSchoolIndicatorsEiEMapOverlaysWithMultipleValues-modifies-data	2020-09-22 15:05:16.436
-900	/20200914043218-AddLaosSchoolsSchoolIndicatorsEiEDevelopmentPartnerSupportMapOverlayOtherResponse-modifies-data	2020-09-22 15:05:16.521
-901	/20200914045259-RemoveSomeLaosSchoolsSchoolIndicatorsEiEMapOverlays-modifies-data	2020-09-22 15:05:16.569
-902	/20200916082733-UpdateLaosSchoolsSchoolIndicatorsEiEUpdateAccessToWaterSupplyMapOverlay-modifies-data	2020-09-22 15:05:16.644
-903	/20200914013941-AddTextbookStudentRatioOverlaysDistrictAndProvinceLevel-modifies-data	2020-09-22 23:42:57.868
-904	/20200820022356-AddServiceTypeWeather-modifies-schema	2020-09-24 10:47:49.681
-905	/20200910004911-AddWeatherDataElements-modifies-data	2020-09-24 10:47:49.77
+893	/20200720231712-AddIndicatorDataSourceType-modifies-schema	2020-09-25 00:25:59.955
+894	/20200804033230-AddIndicatorTable-modifies-schema	2020-09-25 00:26:00.024
+895	/20200826215112-UseAnalyticsPerPerPeriodBuilder-modifies-data	2020-09-25 00:26:00.186
+896	/20200826215113-UseIndicatorsInStriveVisualisations-modifies-data	2020-09-25 00:26:01.41
+897	/20200912130823-AddMoreLaosSchoolsSchoolIndicatorsEiEMapOverlays-modifies-data	2020-09-25 00:26:01.914
+898	/20200914013333-UpdateLaosSchoolsSchoolIndicatorsEiEFunctioningTVMapOverlay-modifies-data	2020-09-25 00:26:02.098
+899	/20200914013941-AddTextbookStudentRatioOverlaysDistrictAndProvinceLevel-modifies-data	2020-09-25 00:26:03.065
+900	/20200914025424-UpdateLaosSchoolsSchoolIndicatorsEiEMapOverlaysWithMultipleValues-modifies-data	2020-09-25 00:26:03.314
+901	/20200914043218-AddLaosSchoolsSchoolIndicatorsEiEDevelopmentPartnerSupportMapOverlayOtherResponse-modifies-data	2020-09-25 00:26:03.429
+902	/20200914045259-RemoveSomeLaosSchoolsSchoolIndicatorsEiEMapOverlays-modifies-data	2020-09-25 00:26:03.502
+903	/20200914080738-AddLaosSchoolsSchoolLevelICTFacilitiesDashboardReport-modifies-data	2020-09-25 00:26:03.564
+904	/20200915040216-FixSamoaEntities-modifies-data	2020-09-25 00:26:04.348
+905	/20200915054805-AddNcdReportsToCommunityHealthGroup-modifies-data	2020-09-25 00:26:04.413
+906	/20200916061846-UpdateLaosSchoolsSchoolIndicatorsEiEFunctioningHandWashingFacilitiesMapOverlay-modifies-data	2020-09-25 00:26:04.475
+907	/20200916082733-UpdateLaosSchoolsSchoolIndicatorsEiEUpdateAccessToWaterSupplyMapOverlay-modifies-data	2020-09-25 00:26:04.573
+908	/20200920042029-AddLaosSchoolsPrePrimarySchoolLevelStudentNumbersTableDashboardReport-modifies-data	2020-09-25 00:26:04.611
+909	/20200920055340-AddLaosSchoolsPrimarySchoolLevelStudentNumbersTableDashboardReport-modifies-data	2020-09-25 00:26:04.668
+910	/20200920055441-AddLaosSchoolsSecondarySchoolLevelStudentNumbersTableDashboardReport-modifies-data	2020-09-25 00:26:04.722
+911	/20200820022356-AddServiceTypeWeather-modifies-schema	2020-10-01 22:38:45.442
+912	/20200910004911-AddWeatherDataElements-modifies-data	2020-10-01 22:38:46.733
+913	/20200915004954-AddCovid19SchoolLevelReportLaos-modifies-data	2020-10-01 22:38:46.894
+914	/20200916065711-AddWASHSchoolLevelReportLaos-modifies-data	2020-10-01 22:38:47.036
+915	/20200917071431-AddTeachingAndLearningSchoolLevelDashboardLaos-modifies-data	2020-10-01 22:38:47.114
+916	/20200925004629-AddSchoolDetailsTablesLaosSchools-modifies-data	2020-10-08 23:03:48.147
+917	/20200926083458-CreateLaosSchoolsICTFacilitiesBarGraphDashboardReport-modifies-data	2020-10-08 23:03:48.303
+918	/20200928022356-AddEntityTypeCity-modifies-schema	2020-10-08 23:03:52.994
+919	/20200928061046-AddLaosEocEntities-modifies-data	2020-10-08 23:03:58.193
+920	/20200928061654-CreateLaosSchoolsCOVID19BarGraphDashboardReport-modifies-data	2020-10-08 23:03:58.32
+921	/20200928063927-CreateLaosSchoolsWASHBarGraphDashboardReport-modifies-data	2020-10-08 23:03:58.468
+922	/20200928065206-CreateLaosSchoolsTeachingAndLearningBarGraphDashboardReport-modifies-data	2020-10-08 23:03:58.637
+923	/20200910024211-CreateNewCovidDashboardSamoa-modifies-data	2020-10-15 22:56:34.161
+924	/20200923065724-ConvertOverlaySortOrderToInteger-modifies-data	2020-10-15 22:56:34.266
+925	/20200924001437-AddSortOrderToMapOverlayGroupRelationTable-modifies-schema	2020-10-15 22:56:34.317
+926	/20200924001940-MigrateSortOrderDataFromMapOverlayTableToMapOverlayGroupRelationTable-modifies-data	2020-10-15 22:56:34.837
+927	/20200924004521-DropSortOrderColumnFromMapOverlayTable-modifies-schema	2020-10-15 22:56:34.937
+928	/20200924035244-DeleteOrphanMapOverlayRelations-modifies-data	2020-10-15 22:56:34.987
+929	/20200925011104-CreateRootMapOverlay-modifies-data	2020-10-15 22:56:35.026
+930	/20200925012948-ConnectTopLevelMapOverlayGroupsToWorldMapOverlayGroup-modifies-data	2020-10-15 22:56:35.176
+931	/20200925051137-ReorderLaosSchoolsSchoolIndicatorsMapOverlays-modifies-data	2020-10-15 22:56:35.414
+932	/20200925064855-ReorderLaosSchoolsOverlayGroups-modifies-data	2020-10-15 22:56:35.512
+933	/20200929223403-AddTileSetsToProject-modifies-schema	2020-10-15 22:56:35.556
+934	/20201002022840-AddProfileImageToUserAccount-modifies-schema	2020-10-15 22:56:35.594
+936	/20201015015257-DeleteAnswerWith9998-modifies-data	2020-10-15 22:56:42.781
+937	/20201019011335-RemoveRedundantDataInFijiEntity-modifies-data	2020-10-22 21:05:09.326
+938	/20201026223059-UpdateLinkOnFeedItems-modifies-data	2020-10-29 21:35:21.235
+939	/20200925020630-AddStackedBarGraphsBySchoolTypeLaosSchools-modifies-data	2020-11-06 00:18:41.417
+940	/20200930141002-AddLaosSchoolsNumberOfSchoolsSupportedByDevelopmentPartnersDashboardReport-modifies-data	2020-11-06 00:18:41.935
+941	/20201002053523-AddDistrictDetailsTablesLaosSchools-modifies-data	2020-11-06 00:18:42.139
+942	/20201005040334-AddProvinceAndNationalDetailsTablesLaosSchools-modifies-data	2020-11-06 00:18:42.27
+943	/20201008065400-AddLaosSchoolsNumberOfStudentsMatrix-modifies-data	2020-11-06 00:18:42.337
+944	/20201021060652-AddAttributesColumnIntoOptionTable-modifies-schema	2020-11-06 00:18:42.494
+945	/20201103092344-AddPSSSProject-modifies-data	2020-11-06 00:18:42.916
+946	/20200824014037-CreateEntityHierarchyCache-modifies-schema	2020-11-13 00:26:44.1
+947	/20201002193222-AddEntityParentIdIndex-modifies-schema	2020-11-13 00:26:44.561
+948	/20201006211507-BuildAncestorDescendantRelationCache-modifies-data	2020-11-13 00:27:45.26
+949	/20201008205444-IncludeOldRecordInChangeNotifications-modifies-schema	2020-11-13 00:27:45.304
+950	/20201009035426-AddImmutableTableTrigger-modifies-schema	2020-11-13 00:27:45.324
+951	/20201026232410-DeleteEntityPublicHealthService-modifies-data	2020-11-13 00:27:46.03
+952	/20201105014950-AddEntityTypesToHierarchy-modifies-schema	2020-11-13 00:27:46.077
+953	/20201105015339-AddCasesAsCanonicalInSomeHierarchies-modifies-data	2020-11-13 00:27:46.098
+954	/20201110210258-AddFijiDistrictsToEntityRelation-modifies-data	2020-11-13 00:27:46.161
+955	/20201006024935-AddLaosSchoolsTextbookStudentRatioBarGraph-modifies-data	2020-11-19 23:41:00.749
+956	/20201110234830-DeleteOldLaosSchoolsTextbookData-modifies-data	2020-11-19 23:41:09.874
+957	/20201116002004-ChangeUNFPADefaultMeasure-modifies-data	2020-11-19 23:41:09.903
+958	/20201117025041-DeleteTestDistrictEntity-modifies-data	2020-11-19 23:41:10.278
+959	/20201008010413-AddLaosEocHistoricMapOverlays-modifies-data	2020-11-27 00:20:09.645
+960	/20201009010413-AddLaosEocForecastMapOverlays-modifies-data	2020-11-27 00:20:09.986
+961	/20201012010424-AddLaosEocWeatherDashboards-modifies-data	2020-11-27 00:20:10.128
+962	/20201014220808-AddLaosEocAggregateForecastMapOverlays-modifies-data	2020-11-27 00:20:10.254
+963	/20201028234713-AddReportsTable-modifies-schema	2020-11-27 00:20:10.322
+964	/20201104032225-AddDashboardGroupForMS1Administration-modifies-data	2020-11-27 00:20:10.383
+965	/20201123002611-AddNZToPSSSProject-modifies-data	2020-11-27 00:20:10.46
+966	/20201123061122-AddConfirmedWeeklyDataReportForPSSS-modifies-data	2020-11-27 00:20:10.503
+967	/20201124054820-AddPsssSessionTable-modifies-schema	2020-11-27 00:20:10.523
+968	/20201117053359-AddPsssWoWIncreaseIndicators-modifies-data	2020-12-04 01:26:07.217
+969	/20201118022314-ChangePeriodGraularityInUnfpaPriorityMedicinesMatrixDashboardReport-modifies-data	2020-12-04 01:26:07.743
+970	/20201118220905-ReorderRowsToMosAmcSohTablesForUnfpa-modifies-data	2020-12-04 01:26:08.149
+971	/20201125021221-AddPsssAlertThresholdIndicators-modifies-data	2020-12-04 01:26:09.126
+972	/20201125204230-removeToDeliveryServiceStockReport-modifies-data	2020-12-04 01:26:09.32
+973	/20201126060032-AddUnconfirmedWeeklyDataReportForPSSS-modifies-data	2020-12-04 01:26:09.581
+974	/20201129051349-DropPSSSSessionNotifyChangesTrigger-modifies-schema	2020-12-04 01:26:09.631
+975	/20201201022321-AddPSSSTotalSitesIndicator-modifies-data	2020-12-04 01:26:09.866
+976	/20201201033216-AddProjectCovid19Samoa-modifies-data	2020-12-04 01:26:10.165
+977	/20201111013312-RemoveItemsFromLineChartsInUnfpaDashboard-modifies-data	2020-12-11 02:55:22.949
+978	/20201116013159-AddMinMaxValuestoMOSReport-modifies-data	2020-12-11 02:55:22.998
+979	/20201116024506-RemoveMapOverlayUNFPA-modifies-data	2020-12-11 02:55:23.088
+980	/20201120051651-RemoveItemsFromMapOverLayGroupsRelationInUnfpa-modifies-data	2020-12-11 02:55:23.289
+981	/20201120051938-DeleteItemsInUnfpaStockMosByPercentCountries-modifies-data	2020-12-11 02:55:23.402
+982	/20201120052316-DeleteItemsFromUnfpaPriorityMedicinesTable-modifies-data	2020-12-11 02:55:23.596
+983	/20201208010502-AddPSSSWeekyCasesReport-modifies-data	2020-12-11 02:55:23.703
+984	/20201208234222-SplitLaosSchoolsDashboardGroups-modifies-data	2020-12-11 02:55:23.929
+985	/20201209001056-ChangePSSSReportsToUseLastPerPeriodPerOrgUnit-modifies-data	2020-12-11 02:55:23.997
+986	/20201209052048-EditWoWIndicatorsToGiveRelativeIncrease-modifies-data	2020-12-11 02:55:24.067
+987	/20201209232802-EditSiteAverageIndicatorsToSupportDivByZero-modifies-data	2020-12-11 02:55:24.397
+988	/20201213223856-AddCanonicalTypesToSamoaCovid-modifies-data	2020-12-17 02:16:55.857
+989	/20201214000845-ChangeDotMatrixViewSchema-modifies-data	2020-12-17 02:16:56.08
+990	/20201214000945-AddLegendsToUNFPAMatricies-modifies-data	2020-12-17 02:16:56.19
+991	/20201215080555-UpdateFormulaAndDefaultValuesForPreviousWeeksToAlertThresholdLevelIndicators-modifies-data	2020-12-17 02:16:56.27
+992	/20201126030925-AddPngRawDataDownloadSurveyPermissions-modifies-data	2021-01-07 23:09:19.224
+993	/20201201082830-AddProjectPalauOlangch-modifies-data	2021-01-07 23:09:19.466
+994	/20201208103439-AddPalauEntities-modifies-data	2021-01-07 23:09:20.319
+995	/20201213223857-AddTotalRepatriatedPassengersCovid19ReportSoamoa-modifies-data	2021-01-07 23:09:20.421
+996	/20201214092416-LaosSchoolsAddMoesGroup-modifies-data	2021-01-07 23:09:20.445
+997	/20210105024922-AddDateSeletorHpu-modifies-data	2021-01-07 23:09:20.603
+998	/20210107010710-AddPgToDiaSurveyCountryIds-modifies-data	2021-01-07 23:09:20.674
+999	/20210107015502-SamoaUseBcdsSurveyForRawDataDownload-modifies-data	2021-01-07 23:09:20.71
+1000	/20201216050328-AddCovidSamoaAgeByFlightMatrix-modifies-data	2021-01-14 22:37:18.017
+1001	/20201220233030-ConvertAlertsToSurveyResponses-modifies-schema	2021-01-14 22:37:18.092
+1002	/20210120051444-ResyncSubmissionsAfterRelease70-modifies-data	2021-01-21 04:35:14.832
+1003	/20210106000258-HeatmapOfVillageConfirmedAndSuspectedCases-modifies-data	2021-01-21 21:32:43.153
+1004	/20210110220114-AddCovidSamoaDemoIndivQuarhealthCond-modifies-data	2021-01-21 21:32:43.253
+1005	/20210114103503-AddCovidSamoaDemoIndivQuarSex-modifies-data	2021-01-21 21:32:43.315
+1006	/20210114125216-AddCovidSamoaClearanceDocuments-modifies-data	2021-01-21 21:32:43.368
+1007	/20210118014114-CreateIndividualEntityType-modifies-schema	2021-01-21 21:32:45.157
+1008	/20210118040638-AddFetpProject-modifies-data	2021-01-21 21:32:45.3
+1009	/20201123014943-IntegrateInconsistentAnswersForHotelNames-modifies-data	2021-01-26 15:09:16.242
+1010	/20210114131303-AddCovidSamoaQuarantineSiteByFlight-modifies-data	2021-01-26 15:09:16.522
+1011	/20201117224102-DeleteUNFPAStaffTrainedLines-modifies-data	2021-01-28 12:15:06.757
+1012	/20201117224832-AddUNFPAStaffTrainedMatrix-modifies-data	2021-01-28 12:15:06.774
+1013	/20201204224102-DeleteUNFPAStaffTrainedLinesCountry-modifies-data	2021-01-28 12:15:06.78
+1014	/20201204224832-AddUNFPAStaffTrainedMatrixCountry-modifies-data	2021-01-28 12:15:06.793
+1015	/20210127010108-AddMissingDataElements-modifies-data	2021-01-28 12:15:44.788
 \.
 
 
@@ -3685,7 +3934,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 905, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1015, true);
 
 
 --

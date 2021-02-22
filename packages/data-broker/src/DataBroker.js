@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { lower } from 'case';
 import groupBy from 'lodash.groupby';
 
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-import { countDistinct } from '@tupaia/utils';
+import { countDistinct, toArray } from '@tupaia/utils';
 import { createService } from './services';
-import { modelClasses } from './modelClasses';
 
 let database;
 
@@ -21,7 +21,7 @@ const getDatabaseInstance = () => {
 
 export class DataBroker {
   constructor() {
-    this.models = new ModelRegistry(getDatabaseInstance(), modelClasses);
+    this.models = new ModelRegistry(getDatabaseInstance());
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,
       [this.getDataSourceTypes().DATA_GROUP]: this.mergeEvents,
@@ -37,15 +37,22 @@ export class DataBroker {
   }
 
   async fetchDataSources(dataSourceSpec) {
-    const errorMessage = 'Please provide at least one existing data source code';
-
-    const { code } = dataSourceSpec;
+    const { code, type } = dataSourceSpec;
     if (!code || (Array.isArray(code) && code.length === 0)) {
-      throw new Error(errorMessage);
+      throw new Error('Please provide at least one existing data source code');
     }
-    const dataSources = await this.models.dataSource.findOrDefault(dataSourceSpec);
+    const dataSources = await this.models.dataSource.find(dataSourceSpec);
+    const typeDescription = `${lower(type)}s`;
     if (dataSources.length === 0) {
-      throw new Error(errorMessage);
+      throw new Error(`None of the following ${typeDescription} exist: ${code}`);
+    }
+
+    const codesRequested = toArray(code);
+    const codesFound = dataSources.map(ds => ds.code);
+    const codesNotFound = codesRequested.filter(c => !codesFound.includes(c));
+    if (codesNotFound.length > 0) {
+      // eslint-disable-next-line no-console
+      console.warn(`Could not find the following ${typeDescription}: ${codesNotFound}`);
     }
 
     return dataSources;

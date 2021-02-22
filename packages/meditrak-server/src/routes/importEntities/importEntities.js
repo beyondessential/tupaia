@@ -7,6 +7,8 @@ import { respond, DatabaseError, UploadError } from '@tupaia/utils';
 import { populateCoordinatesForCountry } from './populateCoordinatesForCountry';
 import { updateCountryEntities } from './updateCountryEntities';
 import { extractEntitiesByCountryName } from './extractEntitiesByCountryName';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertCanImportEntities } from './assertCanImportEntities';
 
 /**
  * Responds to POST requests to the /import/entities endpoint
@@ -20,6 +22,13 @@ export async function importEntities(req, res) {
     } catch (error) {
       throw new UploadError(error);
     }
+
+    const importEntitiesPermissionsChecker = async accessPolicy =>
+      assertCanImportEntities(accessPolicy, entitiesByCountryName);
+
+    await req.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, importEntitiesPermissionsChecker]),
+    );
 
     await models.wrapInTransaction(async transactingModels => {
       for (const countryEntries of Object.entries(entitiesByCountryName)) {

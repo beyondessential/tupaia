@@ -5,7 +5,8 @@
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { transformValue } from 'apiV1/dataBuilders/transform';
+import { transformValue } from '/apiV1/dataBuilders/transform';
+import { translateEventEntityIdsToNames } from '/apiV1/dataBuilders/helpers/translateEventEntityIdsToNames';
 
 export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
@@ -69,7 +70,7 @@ export class DataBuilder {
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
     const eventsProgramCode = overridenProgramCode || programCode;
 
-    return this.aggregator.fetchEvents(eventsProgramCode, {
+    const events = await this.aggregator.fetchEvents(eventsProgramCode, {
       dataServices,
       entityAggregation,
       dataSourceEntityFilter,
@@ -80,6 +81,16 @@ export class DataBuilder {
       eventId,
       ...additionalQueryConfig,
     });
+
+    if (additionalQueryConfig.entityIdToNameElements) {
+      return translateEventEntityIdsToNames(
+        this.models,
+        events,
+        additionalQueryConfig.entityIdToNameElements,
+      );
+    }
+
+    return events;
   }
 
   async fetchDataElements(codes) {
