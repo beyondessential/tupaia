@@ -29,7 +29,7 @@ declare
     INNER JOIN
       question ON question.id = answer.question_id
     INNER JOIN 
-      data_source ON data_source.code = question.code
+      data_source ON data_source.id = question.data_source_id
     WHERE data_source.service_type = ''tupaia''';
 
 begin 
