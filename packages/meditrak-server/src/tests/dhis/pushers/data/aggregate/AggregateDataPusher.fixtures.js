@@ -38,7 +38,6 @@ export const QUESTION = {
 export const SURVEY_RESPONSE = {
   id: generateTestId(),
   entity_id: ENTITY.id,
-  submission_time: '2019-05-20T10:05:00.000Z',
   end_time: '2019-04-10T10:05:00.000Z',
   data_time: '2019-05-20T10:05:00.000',
   survey_id: SURVEY.id,
@@ -76,7 +75,7 @@ export const BASELINE_TEST_DATA = {
   dhisSyncQueue: [ANSWER_CHANGE, SURVEY_RESPONSE_CHANGE],
 };
 
-const PERIOD = moment(SURVEY_RESPONSE.submission_time).format('YYYYMMDD');
+const PERIOD = moment(SURVEY_RESPONSE.data_time).format('YYYYMMDD');
 const STORED_BY = `${USER.first_name} ${USER.last_name}`;
 
 export const ANSWER_DATA_VALUE_DIMENSIONS = {
