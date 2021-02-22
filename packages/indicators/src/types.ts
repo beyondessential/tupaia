@@ -18,12 +18,14 @@ export interface Analytic extends AnalyticValue {
 export interface DataValues {
   [key: string]: DbValue 
 }
+
 export interface EventValue {
   readonly orgUnit: string;
   readonly orgUnitName: string;
   readonly period: string;
   readonly dataValues: DataValues;
 }
+
 export interface Event extends EventValue {
   readonly event: string;
   readonly eventDate: string;
