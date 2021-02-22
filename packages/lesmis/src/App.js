@@ -4,7 +4,11 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { ExampleComponent, MaterialUIPalette } from './components';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { NavBar, Footer } from './components';
+import { LoginView } from './views/LoginView';
+import { PrivateRoute } from './routes/PrivateRoute';
+import { PageRoutes } from './routes/PageRoutes';
 
 export const Container = styled.main`
   height: 100vh;
@@ -15,11 +19,17 @@ export const Container = styled.main`
   text-align: center;
 `;
 
-const App = () => (
-  <Container>
-    <ExampleComponent title="LESMIS" />
-    <MaterialUIPalette />
-  </Container>
+export const App = () => (
+  <Router>
+    <Switch>
+      <Route exact path="/login">
+        <LoginView />
+      </Route>
+      <PrivateRoute path="/">
+        <NavBar />
+        <PageRoutes />
+        <Footer />
+      </PrivateRoute>
+    </Switch>
+  </Router>
 );
-
-export default App;
