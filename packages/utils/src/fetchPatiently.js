@@ -5,8 +5,8 @@
 
 import { sleep } from './sleep';
 
-const DEFAULT_RETRIES = 100;
-const DEFAULT_RETRY_PERIOD_MS = 100;
+const DEFAULT_RETRIES = 20;
+const DEFAULT_RETRY_PERIOD_MS = 500; // 20 x 0.5 seconds = total of 10 seconds waiting patiently
 
 // run some function, and continue retrying the same function until its return value meets some
 // criteria or we run out of time
