@@ -23,6 +23,7 @@ const average = (...argumentList) => {
 };
 
 const BUILT_IN_FUNCTIONS = ['equalText'];
+
 export class ExpressionParser {
   constructor() {
     this.math = create(all, {});
