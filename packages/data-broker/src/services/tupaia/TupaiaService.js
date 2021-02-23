@@ -43,7 +43,7 @@ export class TupaiaService extends Service {
       ...translateOptionsForApi(options),
       dataElementCodes,
     });
-    const dataElements = await this.pullDataElementMetadata(dataSources);
+    const dataElements = await this.pullDataElementMetadata(dataSources, options);
 
     return {
       results: translateAnalyticsForConsumer(analytics),
@@ -63,27 +63,28 @@ export class TupaiaService extends Service {
     return this.api.fetchEvents({ ...translateOptionsForApi(options), surveyCode });
   }
 
-  async pullMetadata(dataSources, type) {
+  async pullMetadata(dataSources, type, options = {}) {
     const pullMetadata = this.metadataPullers[type];
-    return pullMetadata(dataSources);
+    return pullMetadata(dataSources, options);
   }
 
-  async pullDataElementMetadata(dataSources) {
+  async pullDataElementMetadata(dataSources, options) {
+    const { includeOptions } = options;
     const dataElementCodes = dataSources.map(({ code }) => code);
-    return this.api.fetchDataElements(dataElementCodes);
+    return this.api.fetchDataElements(dataElementCodes, { includeOptions });
   }
 
-  async pullDataGroupMetadata(dataSources) {
+  async pullDataGroupMetadata(dataSources, options) {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull metadata from multiple programs at the same time');
     }
-
+    const { includeOptions } = options;
     const [dataSource] = dataSources;
     const { code: dataGroupCode } = dataSource;
     const dataElementDataSources = await this.models.dataSource.getDataElementsInGroup(
       dataGroupCode,
     );
     const dataElementCodes = dataElementDataSources.map(({ code }) => code);
-    return this.api.fetchDataGroup(dataGroupCode, dataElementCodes);
+    return this.api.fetchDataGroup(dataGroupCode, dataElementCodes, { includeOptions });
   }
 }

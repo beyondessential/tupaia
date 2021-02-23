@@ -9,11 +9,8 @@ import {
   buildAndInsertSurveyResponses,
   findOrCreateDummyRecord,
 } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
-import { resetTestData } from '../testUtilities';
+import { resetTestData, TestableApp } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp } from '../TestableApp';
-import { prepareStubAndAuthenticate } from './utilities/prepareStubAndAuthenticate';
 
 describe('Permissions checker for GETSurveyResponses', async () => {
   const DEFAULT_POLICY = {
@@ -122,19 +119,19 @@ describe('Permissions checker for GETSurveyResponses', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('GET /surveyResponses/:id', async () => {
     it("Sufficient permissions: Return a requested survey response if we have permission for the survey in the response's country", async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyResponses/${vanuatuAdminResponseId}`);
 
       expect(result.id).to.equal(vanuatuAdminResponseId);
     });
 
     it('Sufficient permissions: Return a requested survey response if we have BES admin access anywhere', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`surveyResponses/${laosAdminResponseId}`);
 
       expect(result.id).to.equal(laosAdminResponseId);
@@ -148,7 +145,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP /* 'Admin' */],
         LA: ['Admin'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`surveyResponses/${vanuatuAdminResponseId}`);
 
       expect(result).to.have.keys('error');
@@ -157,14 +154,14 @@ describe('Permissions checker for GETSurveyResponses', async () => {
 
   describe('GET /surveyResponses', async () => {
     it('Sufficient permissions: Return only survey responses we have permissions to the survey in the response country', async () => {
-      await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+      await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members([laosAdminResponseId, vanuatuAdminResponseId]);
     });
 
     it('Sufficient permissions: Always return all survey responses if we have BES admin access', async () => {
-      await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
       expect(results.map(r => r.id)).to.have.members([
@@ -179,7 +176,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const policy = {
         DL: ['Public'],
       };
-      await prepareStubAndAuthenticate(app, policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
       expect(results).to.be.empty;
