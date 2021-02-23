@@ -213,7 +213,7 @@ export const testPullAnalytics = () => {
             programCodes: ['POP01', 'DIFF_GROUP', 'CODE_NOT_IN_SYSTEM'],
             useDeprecatedApi: false,
           }),
-        ).rejects.toThrowError(/.*CODE_NOT_IN_SYSTEM.*/g);
+        ).toBeRejectedWith(/.*CODE_NOT_IN_SYSTEM.*/g);
       });
 
       it('multiple programs', async () => {
