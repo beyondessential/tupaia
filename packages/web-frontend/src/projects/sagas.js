@@ -3,15 +3,8 @@ import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 import request from '../utils/request';
 import { setProjects, fetchProjectsError } from './actions';
 
+import { SET_PROJECT, setDashboardGroup, setOrgUnit, FETCH_LOGOUT_SUCCESS } from '../actions';
 import {
-  SET_PROJECT,
-  changeBounds,
-  setDashboardGroup,
-  setOrgUnit,
-  FETCH_LOGOUT_SUCCESS,
-} from '../actions';
-import {
-  selectAdjustedProjectBounds,
   selectProjectByCode,
   selectCurrentOrgUnitCode,
   selectIsDashboardGroupCodeDefined,
@@ -40,7 +33,6 @@ function* loadProject(action) {
   // If the project was set in the url, preserve the other parameters if they are
   // also set
   const forceUpdate = !(action.meta && action.meta.preventHistoryUpdate);
-  yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
 
   const project = selectProjectByCode(state, action.projectCode);
 
