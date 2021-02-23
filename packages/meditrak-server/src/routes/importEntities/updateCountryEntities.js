@@ -118,6 +118,14 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         dataServiceEntityToUpsert,
       );
     }
+    const entity = await transactingModels.entity.findOne({ code });
+    const metadata =
+      entity && entity.metadata
+        ? entity.metadata // we don't want to override the metadata if the entity already exists
+        : {
+            dhis: { isDataRegional: true },
+          };
+
     await transactingModels.entity.updateOrCreate(
       { code },
       {
@@ -126,9 +134,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         type: entityType,
         country_code: country.code,
         image_url: imageUrl,
-        metadata: {
-          dhis: { isDataRegional: true },
-        },
+        metadata,
         attributes,
       },
     );

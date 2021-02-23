@@ -107,23 +107,29 @@ export class EntityType extends DatabaseType {
     return !this.isOrganisationUnit();
   }
 
-  getDhisId() {
-    return this.metadata && this.metadata.dhis && this.metadata.dhis.id;
+  getDhisTrackedEntityId() {
+    return this.metadata && this.metadata.dhis && this.metadata.dhis.trackedEntityId;
   }
 
-  async setDhisId(dhisId) {
+  async setDhisTrackedEntityId(trackedEntityId) {
     if (!this.metadata) {
       this.metadata = {};
     }
     if (!this.metadata.dhis) {
       this.metadata.dhis = {};
     }
-    this.metadata.dhis.id = dhisId;
+    this.metadata.dhis.trackedEntityId = trackedEntityId;
     return this.save();
   }
 
-  hasDhisId() {
-    return !!this.getDhisId();
+  hasDhisTrackedEntityId() {
+    return !!this.getDhisTrackedEntityId();
+  }
+
+  allowsPush() {
+    const { dhis = {} } = this.metadata || {};
+    const { push = true } = dhis; // by default push = true, if an entity shouldn't be pushed to DHIS2, set it to false
+    return push;
   }
 
   async countryEntity() {
