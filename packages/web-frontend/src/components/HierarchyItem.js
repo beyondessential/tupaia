@@ -69,6 +69,7 @@ export class HierarchyItem extends Component {
       onClick,
       isLoading,
       hasNestedItems,
+      info,
       ...otherProps
     } = this.props;
     const { isOpen } = this.state;
@@ -82,7 +83,12 @@ export class HierarchyItem extends Component {
         <UnSelectedIcon style={styles.buttonIcon} />
       );
     }
-
+    const referenceTooltip = reference => (
+      <ReferenceTooltip
+        reference={reference}
+        iconStyleOption={TOOLTIP_ICON_STYLE_OPTIONS.MAP_OVERLAY}
+      />
+    );
     const loadingSpinner = <CircularProgress style={styles.buttonIcon} size={24} thickness={3} />;
     const childItem = isLoading ? loadingSpinner : nestedItems;
     return (
@@ -97,10 +103,7 @@ export class HierarchyItem extends Component {
             {Icon && <Icon style={styles.buttonIcon} />}
             {selectionIcon}
             <div style={styles.buttonLabel}>{label}</div>
-            <ReferenceTooltip
-              reference={{ name: 'tes', link: 'www' }}
-              iconStyleOption={TOOLTIP_ICON_STYLE_OPTIONS.MAP_OVERLAY}
-            />
+            {info && info.reference && referenceTooltip(info.reference)}
           </div>
         </FlatButton>
         {isOpen ? childItem : null}
