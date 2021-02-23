@@ -83,10 +83,12 @@ export const TileButton = ({ tileSet, isActive, onChange }) => (
     <Thumbnail style={{ backgroundImage: `url(${tileSet.thumbnail})` }} />
     <TileLabel>
       {tileSet.label}
-      <ReferenceTooltip
-        reference={tileSet.reference}
-        iconStyleOption={TOOLTIP_ICON_STYLE_OPTIONS.TILE_SET}
-      />
+      {tileSet.reference && (
+        <ReferenceTooltip
+          reference={tileSet.reference}
+          iconStyleOption={TOOLTIP_ICON_STYLE_OPTIONS.TILE_SET}
+        />
+      )}
     </TileLabel>
   </StyledButton>
 );
