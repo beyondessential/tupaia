@@ -595,20 +595,7 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     };
     const requestResourceUrl = `organisationUnit?${queryString.stringify(urlParameters)}`;
 
-    let orgUnitData = yield call(request, requestResourceUrl);
-
-    const state = yield select();
-
-    // If it's a project, use the map bounds from the store that we already have as they are more precise
-    if (orgUnitData.type === 'Project' && state.map.position.bounds) {
-      orgUnitData = {
-        ...orgUnitData,
-        location: {
-          ...orgUnitData.location,
-          bounds: state.map.position.bounds,
-        },
-      };
-    }
+    const orgUnitData = yield call(request, requestResourceUrl);
 
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
