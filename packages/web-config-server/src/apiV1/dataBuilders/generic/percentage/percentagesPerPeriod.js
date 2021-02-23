@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { PERIOD_TYPES, convertToPeriod, periodToTimestamp } from '@tupaia/utils';
+import { PERIOD_TYPES, periodToTimestamp } from '@tupaia/utils';
 import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,
@@ -87,7 +87,7 @@ const percentagesPerPeriod = async (
   const metricDataByPeriod = {};
   const facilityInfo = {};
   const incrementMetricByPeriod = ({ period, numerator, denominator, facilityId }, metricKey) => {
-    const timestamp = periodToTimestamp(convertToPeriod(period, periodType));
+    const timestamp = periodToTimestamp(period);
     if (!metricDataByPeriod[timestamp]) {
       // Set up object to hold data for the period, e.g. { 1547680904662: {} }
       metricDataByPeriod[timestamp] = {};

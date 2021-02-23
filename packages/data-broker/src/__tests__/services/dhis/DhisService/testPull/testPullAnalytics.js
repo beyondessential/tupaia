@@ -255,6 +255,28 @@ export const testPullAnalytics = () => {
         expect(dhisApi.getEventAnalytics).toHaveBeenCalledTimes(2);
       });
 
+      it('program with org unit code', async () => {
+        await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
+          programCodes: ['POP01'],
+          useDeprecatedApi: false,
+          organisationUnitCode: 'TO',
+        });
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
+          expect.objectContaining({ organisationUnitCodes: ['TO'] }),
+        );
+      });
+
+      it('program with org unit codes', async () => {
+        await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
+          programCodes: ['POP01'],
+          useDeprecatedApi: false,
+          organisationUnitCodes: ['TO', 'XY'],
+        });
+        expect(dhisApi.getEventAnalytics).toHaveBeenCalledWith(
+          expect.objectContaining({ organisationUnitCodes: ['TO', 'XY'] }),
+        );
+      });
+
       it('simple data elements', () =>
         assertEventAnalyticsApiWasInvokedOnceWith({
           dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],

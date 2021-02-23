@@ -244,13 +244,21 @@ export class DhisService extends Service {
   });
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
-    const { programCodes, period, startDate, endDate, organisationUnitCodes } = options;
+    const {
+      programCodes,
+      period,
+      startDate,
+      endDate,
+      organisationUnitCode,
+      organisationUnitCodes,
+    } = options;
 
     await this.validateProgramCodesExist(programCodes);
 
     const baseQuery = {
       organisationUnitCodes,
       dataElementIdScheme: 'code',
+      organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
       period,
       startDate,
       endDate,
