@@ -115,7 +115,7 @@ export class DhisChangeValidator extends ChangeValidator {
     if (entityIds.length === 0) return [];
 
     const entities = await this.models.entity.findManyById(entityIds);
-    return entities.filter(e => e.allowsPush()).map(e => e.id);
+    return entities.filter(e => e.allowsPushingToDhis()).map(e => e.id);
   };
 
   getValidUpdates = async changes => {

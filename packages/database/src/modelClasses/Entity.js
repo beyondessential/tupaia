@@ -126,7 +126,7 @@ export class EntityType extends DatabaseType {
     return !!this.getDhisTrackedEntityId();
   }
 
-  allowsPush() {
+  allowsPushingToDhis() {
     const { dhis = {} } = this.metadata || {};
     const { push = true } = dhis; // by default push = true, if an entity shouldn't be pushed to DHIS2, set it to false
     return push;
