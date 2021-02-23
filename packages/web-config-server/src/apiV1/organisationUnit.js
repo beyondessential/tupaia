@@ -12,18 +12,6 @@ const translateDescendantForFrontEnd = (descendant, childIdToParentId, entityIdT
   parent: entityIdToCode[childIdToParentId[descendant.id]],
 });
 
-async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
-  return Promise.all(
-    entities.map(async ({ id, name, code, bounds }) => ({
-      id,
-      name,
-      code,
-      bounds,
-      hasAccess: await Promise.all(userGroups.map(u => req.userHasAccess(code, u))),
-    })),
-  );
-}
-
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
 
@@ -35,21 +23,14 @@ export default class extends RouteHandler {
     if (this.entity.isProject()) {
       const orgUnits = await this.entity.getNearestOrgUnitDescendants();
 
-      const accessByEntity = await Promise.all(
-        orgUnits.map(async orgUnit => {
-          const { id, name, code, bounds } = orgUnit;
-          return {
-            id,
-            name,
-            code,
-            bounds,
-            hasAccess: await this.checkUserHasEntityAccess(orgUnit),
-          };
-        }),
+      const entitiesWithAccessInfo = await Promise.all(
+        orgUnits.map(async orgUnit => ({
+          ...orgUnit,
+          hasAccess: await this.checkUserHasEntityAccess(orgUnit),
+        })),
       );
 
-      const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess);
-      this.entity.entitiesWithAccess = entitiesWithAccess;
+      this.entity.entitiesWithAccess = entitiesWithAccessInfo.filter(e => e.hasAccess);
     }
 
     return includeCountryData === 'true'
