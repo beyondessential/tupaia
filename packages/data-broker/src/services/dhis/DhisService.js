@@ -256,7 +256,6 @@ export class DhisService extends Service {
     await this.validateProgramCodesExist(programCodes);
 
     const baseQuery = {
-      organisationUnitCodes,
       dataElementIdScheme: 'code',
       organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
       period,
