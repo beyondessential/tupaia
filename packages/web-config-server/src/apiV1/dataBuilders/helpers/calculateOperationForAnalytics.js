@@ -120,7 +120,7 @@ const combineBinaryIndicatorsToString = (analytics, config) => {
         stringValue = displayString;
       }
     } else {
-      stringValue = value === 'Yes' ? dataElementToString[dataElement] : '';
+      stringValue = value === 1 ? dataElementToString[dataElement] : '';
     }
 
     if (stringValue) {
