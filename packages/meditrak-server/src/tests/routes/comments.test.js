@@ -5,15 +5,15 @@
 
 import { expect } from 'chai';
 import { generateTestId } from '@tupaia/database';
-import { TestableApp } from '../TestableApp';
 import {
+  resetTestData,
+  TestableApp,
   upsertEntity,
   upsertDataSource,
   upsertSurvey,
   upsertSurveyResponse,
   upsertComment,
   upsertSurveyResponseComment,
-  resetTestData,
 } from '../testUtilities';
 
 const createSurveyResponse = async () => {

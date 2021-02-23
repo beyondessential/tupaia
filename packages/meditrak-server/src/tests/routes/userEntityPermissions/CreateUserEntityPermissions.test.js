@@ -5,13 +5,11 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
-import { Authenticator } from '@tupaia/auth';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp } from '../../TestableApp';
-import { prepareStubAndAuthenticate } from '../utilities/prepareStubAndAuthenticate';
+import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for CreateUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
@@ -63,7 +61,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
   });
 
   afterEach(() => {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    app.revokeAccess();
   });
 
   describe('POST /userEntityPermissions', async () => {
@@ -72,7 +70,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
         const policy = {
           DL: ['Public'],
         };
-        await prepareStubAndAuthenticate(app, policy);
+        await app.grantAccess(policy);
         const { body: result } = await app.post(`userEntityPermissions`, {
           body: {
             user_id: userAccountId,
@@ -85,7 +83,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
       });
 
       it('Throw an exception when trying to create a user entity permission for an entity we do not have permissions for', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.post(`userEntityPermissions`, {
           body: {
             user_id: userAccountId,
@@ -98,7 +96,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
       });
 
       it('Throw an exception when trying to create a user entity permission with BES admin access when we lack BES admin access', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.post(`userEntityPermissions`, {
           body: {
             user_id: userAccountId,
@@ -113,7 +111,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
 
     describe('Sufficient permission', async () => {
       it('Allow creation of user entity permission for entity we have permission for', async () => {
-        await prepareStubAndAuthenticate(app, DEFAULT_POLICY);
+        await app.grantAccess(DEFAULT_POLICY);
         await app.post(`userEntityPermissions`, {
           body: {
             user_id: userAccountId,
@@ -131,7 +129,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
       });
 
       it('Allow creation of any user entity permission for BES admin user', async () => {
-        await prepareStubAndAuthenticate(app, BES_ADMIN_POLICY);
+        await app.grantAccess(BES_ADMIN_POLICY);
         await app.post(`userEntityPermissions`, {
           body: {
             user_id: userAccountId,

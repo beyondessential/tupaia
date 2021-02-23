@@ -3,40 +3,51 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
+
+import { buildAndInsertSurveys } from './buildAndInsertSurveys';
 import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
 
-const buildAndInsertAnswer = async (models, surveyResponse, questionCode, answerText) => {
-  const question = await findOrCreateDummyRecord(models.question, { code: questionCode });
-  return upsertDummyRecord(models.answer, {
+const buildAndInsertAnswer = async (models, surveyResponse, question, answerText) =>
+  upsertDummyRecord(models.answer, {
     question_id: question.id,
     survey_response_id: surveyResponse.id,
     text: answerText,
   });
-};
 
 const buildAndInsertSurveyResponse = async (
   models,
   user,
-  { answers: answerData, entityCode, surveyCode, ...surveyResponseProperties },
+  { answers: answerData, entityCode, surveyCode, ...surveyResponseFields },
 ) => {
   const entity = await findOrCreateDummyRecord(models.entity, { code: entityCode });
-  const survey = await findOrCreateDummyRecord(models.survey, { code: surveyCode });
+
+  const surveyConfig = {
+    code: surveyCode,
+    questions: Object.keys(answerData).map(code => ({ code })),
+  };
+  const [{ survey, questions }] = await buildAndInsertSurveys(models, [surveyConfig]);
+
   const surveyResponse = await upsertDummyRecord(models.surveyResponse, {
-    user_id: user.id, // may be overridden by the properties passed in
+    user_id: user.id, // may be overridden by the fields passed in
     entity_id: entity.id,
     survey_id: survey.id,
-    ...surveyResponseProperties,
+    ...surveyResponseFields,
   });
 
-  const processAnswer = async ([questionCode, answerText]) =>
-    buildAndInsertAnswer(models, surveyResponse, questionCode, answerText);
+  const questionsByCode = keyBy(questions, 'code');
+  const processAnswer = async ([questionCode, answerText]) => {
+    const question = questionsByCode[questionCode];
+    return buildAndInsertAnswer(models, surveyResponse, question, answerText);
+  };
   const answers = await Promise.all(Object.entries(answerData).map(processAnswer));
 
   return { surveyResponse, answers };
 };
 
 /**
- * Will create a survey response with the provided properties, containing the provided answers.
+ * Will create a survey response with the provided fields, containing the provided answers.
+ *
  * Usage example:
  * ```js
  * await buildAndInsertSurveyResponses([
@@ -52,8 +63,6 @@ const buildAndInsertSurveyResponse = async (
  *   ..., // can handle more than one survey response
  * ]);
  * ```
- *
- * @returns {Array<{ surveyResponse, answers }>}
  */
 export const buildAndInsertSurveyResponses = async (models, surveyResponses) => {
   const user = await upsertDummyRecord(models.user);

@@ -17,6 +17,6 @@ export const pushAggregateData = async (aggregator, dataValues) => {
       winston.info('Succesfully posted data values', { count: dataValues.length });
     }
   } catch (error) {
-    winston.error('Error while posting data values', { error });
+    winston.error(`Error while posting data values: ${error.message}`);
   }
 };
