@@ -594,9 +594,7 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
       includeCountryData: organisationUnitCode !== projectCode, // We should pull in all country data if we are within a project
     };
     const requestResourceUrl = `organisationUnit?${queryString.stringify(urlParameters)}`;
-
     const orgUnitData = yield call(request, requestResourceUrl);
-
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
   } catch (error) {
