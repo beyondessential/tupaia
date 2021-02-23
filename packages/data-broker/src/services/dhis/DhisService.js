@@ -217,14 +217,16 @@ export class DhisService extends Service {
   };
 
   validateProgramCodesExist = async programCodes => {
-    const validateProgramCode = async programCode => {
-      const programDataSource = await this.models.dataSource.findOne({
-        code: programCode,
-        type: this.dataSourceTypes.DATA_GROUP,
-      });
-      if (!programDataSource) throw new Error(`Program not found: ${programCode}`);
-    };
-    return Promise.all(programCodes.map(programCode => validateProgramCode(programCode)));
+    const validProgramDataSources = await this.models.dataSource.find({
+      code: programCodes,
+      type: this.dataSourceTypes.DATA_GROUP,
+    });
+    const validProgramCodes = validProgramDataSources.map(({ code }) => code);
+
+    programCodes.forEach(programCode => {
+      if (!validProgramCodes.includes(programCode))
+        throw new Error(`Program not found: ${programCode}`);
+    });
   };
 
   mergeAnalytics = analytics => ({
