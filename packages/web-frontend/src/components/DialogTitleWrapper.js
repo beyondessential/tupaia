@@ -9,7 +9,7 @@ import React from 'react';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
-import { DARK_BLUE, WHITE } from '../styles';
+import { WHITE } from '../styles';
 import { ReferenceTooltip } from './ReferenceTooltip';
 
 const renderReferenceTooltip = reference => {
@@ -17,7 +17,7 @@ const renderReferenceTooltip = reference => {
 };
 
 export const DialogTitleWrapper = props => {
-  const { titleText, periodGranularity, isExporting, renderPeriodSelector, reference } = props;
+  const { titleText, periodGranularity, color, renderPeriodSelector, reference } = props;
   const styles = {
     titleText: {
       display: 'flex',
@@ -30,7 +30,7 @@ export const DialogTitleWrapper = props => {
     },
     dialogTitle: {
       textAlign: 'center',
-      color: isExporting ? DARK_BLUE : WHITE,
+      color,
     },
   };
 
@@ -48,14 +48,14 @@ export const DialogTitleWrapper = props => {
 DialogTitleWrapper.propTypes = {
   titleText: PropTypes.string,
   periodGranularity: PropTypes.string,
-  isExporting: PropTypes.bool,
+  color: PropTypes.string,
   reference: PropTypes.object,
   renderPeriodSelector: PropTypes.func,
 };
 DialogTitleWrapper.defaultProps = {
   titleText: '',
   periodGranularity: null,
-  isExporting: false,
+  color: WHITE,
   reference: null,
   renderPeriodSelector: () => {},
 };

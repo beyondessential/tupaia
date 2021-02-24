@@ -115,7 +115,7 @@ export class EnlargedDialogContent extends PureComponent {
       <DialogTitleWrapper
         titleText={titleText}
         periodGranularity={periodGranularity}
-        isExporting={isExporting}
+        color={isExporting ? DARK_BLUE : WHITE}
         renderPeriodSelector={this.renderPeriodSelector}
         reference={reference}
       />
@@ -311,13 +311,6 @@ export class EnlargedDialogContent extends PureComponent {
 }
 
 const styles = {
-  titleText: {
-    display: 'inline-block',
-    textAlign: 'center',
-    color: 'inherit',
-    marginTop: '18px',
-    marginBottom: '10px',
-  },
   chartContent: {
     display: 'flex',
     justifyContent: 'center',
