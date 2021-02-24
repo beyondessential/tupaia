@@ -1,5 +1,4 @@
 import { respond } from '@tupaia/utils';
-import { calculateBoundsFromEntities } from '/utils/geoJson';
 
 async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   return Promise.all(
@@ -75,7 +74,6 @@ async function buildProjectDataForFrontend(project, req) {
     imageUrl,
     logoUrl,
     names,
-    bounds: calculateBoundsFromEntities(entitiesWithAccess),
     hasAccess,
     hasPendingAccess,
     homeEntityCode,
