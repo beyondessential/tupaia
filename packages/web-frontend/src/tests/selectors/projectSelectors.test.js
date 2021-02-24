@@ -147,8 +147,11 @@ describe('projectSelectors', () => {
       project: {
         projects: [
           { code: 'explore' },
-          { code: 'disaster', tileSets: 'osm,satellite,waterways,roads,ethnicity,terrain' },
-          { code: 'unfpa', tileSets: 'roads,waterways,eth, terrain' }, // testing typos in the config
+          {
+            code: 'disaster',
+            config: { tileSets: 'osm,satellite,waterways,roads,ethnicity,terrain' },
+          },
+          { code: 'unfpa', config: { tileSets: 'roads,waterways,eth, terrain' } }, // testing typos in the config
         ],
       },
       routing: {

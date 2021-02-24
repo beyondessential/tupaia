@@ -35,8 +35,8 @@ export const selectCurrentProject = createSelector(
 export const selectTileSets = createSelector(selectCurrentProject, project => {
   let tileSetKeys = ['osm', 'satellite'];
 
-  if (project.tileSets) {
-    const customSetKeys = project.tileSets.split(',').map(item => item.trim());
+  if (project.config && project.config.tileSets) {
+    const customSetKeys = project.config.tileSets.split(',').map(item => item.trim());
     tileSetKeys = [...tileSetKeys, ...customSetKeys];
   }
 
@@ -50,4 +50,9 @@ export const selectActiveTileSet = createSelector(
   (tileSets, activeTileSetKey) => {
     return tileSets.find(tileSet => tileSet.key === activeTileSetKey);
   },
+);
+
+export const selectAreRegionLabelsPermanent = createSelector(
+  selectCurrentProject,
+  project => project.config && project.config.permanentRegionLabels,
 );

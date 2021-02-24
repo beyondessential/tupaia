@@ -45,7 +45,7 @@ async function buildProjectDataForFrontend(project, req) {
     entity_ids: entityIds,
     dashboard_group_name: dashboardGroupName,
     default_measure: defaultMeasure,
-    tile_sets: tileSets,
+    config,
   } = project;
 
   const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id)));
@@ -78,7 +78,7 @@ async function buildProjectDataForFrontend(project, req) {
     homeEntityCode,
     dashboardGroupName,
     defaultMeasure,
-    tileSets,
+    config,
   };
 }
 

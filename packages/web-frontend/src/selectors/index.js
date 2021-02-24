@@ -38,6 +38,7 @@ export {
   selectProjectByCode,
   selectTileSets,
   selectActiveTileSet,
+  selectAreRegionLabelsPermanent,
 } from './projectSelectors';
 
 export {
