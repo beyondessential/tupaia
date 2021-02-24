@@ -267,7 +267,7 @@ const nationalAndProvincialLevelDashboardReportConfig = {
   },
 
   viewJson: {
-    name: 'RH Products Stock Availability (HFRSA and Spot Check Survey Data) With Percentage',
+    name: 'RH Products Stock Availability (HFRSA and Spot Check Survey Data)',
     type: 'matrix',
     placeholder: '/static/media/PEHSMatrixPlaceholder.png',
     periodGranularity: 'one_year_at_a_time',
