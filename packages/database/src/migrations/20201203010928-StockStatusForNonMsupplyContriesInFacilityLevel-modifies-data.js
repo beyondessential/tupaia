@@ -415,7 +415,7 @@ const nationalAndProvincialLevelLineGraphReportConfig = {
     },
   },
   viewJson: {
-    name: 'RH Products Stock Availability (HFRSA and Spot Check Survey Data)',
+    name: 'RH Product Availability: % Facilities Out of Stock (HFRSA and Spot Check Survey Data)',
     type: 'chart',
     chartType: 'line',
     labelType: 'fractionAndPercentage',
