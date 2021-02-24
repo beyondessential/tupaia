@@ -28,6 +28,7 @@ export {
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
+  selectCurrentOrgUnitBounds,
 } from './orgUnitSelectors';
 
 export {

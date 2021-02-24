@@ -67,22 +67,6 @@ describe('projectSelectors', () => {
       });
     });
 
-    describe('selectAdjustedProjectBounds', () => {
-      it('recomputes by code or by state change', () => {
-        selectAdjustedProjectBounds(testState1, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(1);
-
-        selectAdjustedProjectBounds({ ...testState1, someOtherState: 'irrelevant' }, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
-
-        selectAdjustedProjectBounds(testState2, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(2); // Projects array has changed, recompute
-
-        selectAdjustedProjectBounds(testState2, 'PROJECT_2');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(3); // Code has changed, recompute
-      });
-    });
-
     describe('selectCurrentProject', () => {
       it('recomputes by code or by state change', () => {
         const routing1 = {
