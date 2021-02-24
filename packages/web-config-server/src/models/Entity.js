@@ -42,7 +42,7 @@ class EntityType extends CommonEntityType {
       type,
       point: translatePointForFrontend(point),
 
-      // When possible return the bounds for an entity based on the enetities the user has access to
+      // When possible return the bounds for an entity based on the entities the user has access to
       bounds: this.entitiesWithAccess
         ? calculateBoundsFromEntities(this.entitiesWithAccess)
         : translateBoundsForFrontend(bounds),
