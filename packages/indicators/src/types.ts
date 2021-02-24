@@ -15,20 +15,15 @@ export interface Analytic extends AnalyticValue {
   readonly dataElement: string;
 }
 
-export interface DataValues {
-  [key: string]: DbValue 
-}
+export type DataValues = Record<string, DbValue>;
 
-export interface EventValue {
+export interface Event {
+  readonly event: string;
+  readonly eventDate: string;
   readonly orgUnit: string;
   readonly orgUnitName: string;
   readonly period: string;
   readonly dataValues: DataValues;
-}
-
-export interface Event extends EventValue {
-  readonly event: string;
-  readonly eventDate: string;
 }
 
 export interface AnalyticCluster {

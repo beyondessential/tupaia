@@ -11,23 +11,8 @@ import {
   isPlainObject,
   ObjectValidator,
 } from '@tupaia/utils';
-import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
-import { assertDefaultValuesHaveAllowedTypesOrUndefined } from '../../validators';
+import { assertAllDefaultsAreCodesInFormula, assertDefaultValuesHaveAllowedTypesOrUndefined } from '../../validators';
 import { validateAggregation } from './aggregation';
-import { ArithmeticConfig } from './types';
-
-const assertAllDefaultsAreCodesInFormula = (
-  defaultValues: Record<string, unknown>,
-  config: ArithmeticConfig,
-) => {
-  const parser = getExpressionParserInstance();
-  const variables = parser.getVariables(config.formula);
-  Object.keys(defaultValues).forEach(code => {
-    if (!variables.includes(code)) {
-      throw new Error(`'${code}' is in defaultValues but not referenced in the formula`);
-    }
-  });
-};
 
 const parameterValidator = new ObjectValidator({
   code: [hasContent, isAString],

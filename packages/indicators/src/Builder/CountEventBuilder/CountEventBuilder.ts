@@ -6,7 +6,7 @@
 import { utcMoment, PERIOD_TYPES, momentToPeriod } from '@tupaia/utils';
 
 import { Builder } from '../Builder';
-import { FetchOptions, Event } from '../../types';
+import { FetchOptions, Event, DataValues } from '../../types';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { CountEventConfig, DefaultValue, configValidators } from './config';
 import { validateConfig, evaluateFormulaToNumber } from '../helpers';
@@ -56,7 +56,8 @@ export class CountEventBuilder extends Builder {
   private buildAnalyticValuesFromEvents = (events: Event[]) => {
     const { defaultValues, formula } = this.config;
     const parser = getExpressionParserInstance();
-    const calculateValue = (dataValues: Record<string, any>) => {
+    const calculateValue = (eventDataValues: DataValues) => {
+      const dataValues = { ...eventDataValues };
       Object.keys(defaultValues).forEach(code => {
         dataValues[code] = dataValues[code] ?? defaultValues[code];
       });

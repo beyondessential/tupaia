@@ -54,7 +54,7 @@ export class ExpressionParser {
           !BUILT_IN_FUNCTIONS.includes(node.name),
       )
       .map(({ name }) => name);
-    return [...new Set(variables)]; // remove duplications
+    return [...new Set(variables)];
   }
 
   /**
