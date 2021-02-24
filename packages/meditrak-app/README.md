@@ -21,8 +21,8 @@ To work on Tupaia MediTrak, first you'll need to install the following
     - `export PATH=${JAVA_HOME}/bin:$PATH` (i.e. add the place you installed the JDK to the PATH)
 - Android SDK
   - Look for 'get just the command line tools' at the bottom of [the Android Studio Download page](https://developer.android.com/studio/index.html)
-    - Note: since new updates from android, to make it works, after unzipping the `command line tools` package, you'll get a folder named `cmdline-tools`. Rename the unpacked directory from `cmdline-tools` to `tools`, and place it under `~/android-sdk/cmdline-tools/`. Now it will look like `~/android-sdk/cmdline-tools/tools/bin/`
-  - Once downloaded and installed run `sdkmanager --update` and accept the licenses `sdkmanager --licenses`. 
+    - Note: since new updates from android, after unzipping the `command line tools` package, you'll get a folder named `cmdline-tools`. To make it works, rename the unpacked directory from `cmdline-tools` to `tools`, and place it under `~/android-sdk/cmdline-tools/`. Now it should look like `~/android-sdk/cmdline-tools/tools/bin/`
+  - Once downloaded and installed run `sdkmanager --update` and accept the licenses `sdkmanager --licenses`
   - Add the following to your .bash_profile
     - `export ANDROID_HOME=/Users/YourUsernameHere/Library/Android/sdk` (or wherever the Android SDK is installed)
 - A phone you can debug on and/or the Android Emulator (e.g. Genymotion) and/or the iOS Simulator (only works on mac)
