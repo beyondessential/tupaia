@@ -1,5 +1,4 @@
 {
-  "baseUrl": "http://localhost:8088",
   "experimentalFetchPolyfill": true,
   "ignoreTestFiles": "snapshots.js",
   "integrationFolder": "cypress/e2e",
