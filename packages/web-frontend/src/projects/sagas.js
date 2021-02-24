@@ -7,7 +7,6 @@ import { SET_PROJECT, setDashboardGroup, setOrgUnit, FETCH_LOGOUT_SUCCESS } from
 import {
   selectProjectByCode,
   selectCurrentOrgUnitCode,
-  selectIsDashboardGroupCodeDefined,
 } from '../selectors';
 
 export function* fetchProjectData() {
@@ -35,10 +34,6 @@ function* loadProject(action) {
   const forceUpdate = !(action.meta && action.meta.preventHistoryUpdate);
 
   const project = selectProjectByCode(state, action.projectCode);
-
-  if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
-    yield put(setDashboardGroup(project.dashboardGroupName));
-  }
 
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   if (!organisationUnitCode || forceUpdate) {

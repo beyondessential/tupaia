@@ -169,6 +169,17 @@ export function addReportToGroups(db, reportId, groupCodes) {
   `);
 }
 
+async function addReportToGroupsOnTop(db, reportId, groupCodes) {
+  return db.runSql(`
+    UPDATE
+      "dashboardGroup"
+    SET
+      "dashboardReports" = '{"${reportId}"}' || "dashboardReports" 
+    WHERE
+      "code" IN (${arrayToDbString(groupCodes)});
+  `);
+}
+
 // Remove a dashboard report from a dashboard group
 export function removeReportFromGroups(db, reportId, groupCodes) {
   return db.runSql(`
@@ -177,7 +188,7 @@ export function removeReportFromGroups(db, reportId, groupCodes) {
     SET
       "dashboardReports" = array_remove("dashboardReports", '${reportId}')
     WHERE
-      "code" IN (${groupCodes.map(code => `'${code}'`).join(',')});
+      "code" IN (${arrayToDbString(groupCodes)});
   `);
 }
 
