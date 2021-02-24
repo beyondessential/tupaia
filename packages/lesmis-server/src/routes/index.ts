@@ -4,3 +4,5 @@
  */
 
 export { TestRoute } from './TestRoute';
+export { LoginRoute } from './LoginRoute';
+export { LogoutRoute } from './LogoutRoute';

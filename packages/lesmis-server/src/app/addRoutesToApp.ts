@@ -6,7 +6,7 @@
 import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { LesmisRequest } from '../types';
-import { TestRoute } from '../routes';
+import { TestRoute, LoginRoute, LogoutRoute } from '../routes';
 import { Route } from '../routes/Route';
 
 const handleWith = (RouteClass: typeof Route) => (
@@ -43,6 +43,8 @@ export function addRoutesToApp(app: Express) {
   /**
    * POST routes
    */
+  app.post('/v1/login', handleWith(LoginRoute));
+  app.post('/v1/logout', handleWith(LogoutRoute));
 
   /**
    * PUT routes

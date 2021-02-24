@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 
 export const useUser = () => {
-  const query = useQuery('test', () => get('test'), {
+  const query = useQuery('getUser', () => get('getUser'), {
     retry: 0,
     // should be refetched in the background every hour
     staleTime: 1000 * 60 * 60 * 1,
