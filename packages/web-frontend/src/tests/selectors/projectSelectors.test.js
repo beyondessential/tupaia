@@ -11,7 +11,6 @@ import {
   selectIsProject,
   selectActiveTileSet,
 } from '../../selectors';
-import { DEFAULT_BOUNDS } from '../../defaults';
 import { state } from './selectors.test.fixtures';
 import { TILE_SETS } from '../../constants';
 
