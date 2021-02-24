@@ -46,9 +46,9 @@ export class Route {
     // function, causing error handling middleware to be fired. Otherwise, async errors will be
     // swallowed.
     try {
-      // const session = await this.verifyAuth();
-      // this.meditrakConnection = new MeditrakConnection(session);
-      // this.reportConnection = new ReportConnection(session);
+      const session = await this.verifyAuth();
+      this.meditrakConnection = new MeditrakConnection(session);
+      this.reportConnection = new ReportConnection(session);
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {

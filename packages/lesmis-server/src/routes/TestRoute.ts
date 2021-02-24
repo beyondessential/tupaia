@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Route } from './Route';
+import { UnauthenticatedRoute } from './UnauthenticatedRoute';
 
-export class TestRoute extends Route {
+export class TestRoute extends UnauthenticatedRoute {
   async buildResponse() {
     return { hello: 'world' };
   }
