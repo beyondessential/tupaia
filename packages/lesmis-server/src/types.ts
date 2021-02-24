@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
-import { PsssSessionModel, PsssSessionType } from './models';
+import { LesmisSessionModel, LesmisSessionType } from './models';
 
 export type AccessPolicyObject = Record<string, string[]>;
 
@@ -15,15 +15,20 @@ export interface SessionCookie {
   reset?: () => void;
 }
 
-type PsssRequestBody = Record<string, unknown>;
+type LesmisRequestBody = Record<string, unknown>;
 
-export interface PsssRequest<>extends Request<ParamsDictionary, unknown, PsssRequestBody, Query> {
-  sessionModel: PsssSessionModel;
+export interface LesmisRequest<>extends Request<
+    ParamsDictionary,
+    unknown,
+    LesmisRequestBody,
+    Query
+  > {
+  sessionModel: LesmisSessionModel;
   sessionCookie?: SessionCookie;
-  session?: PsssSessionType;
+  session?: LesmisSessionType;
 }
 
-export interface PsssResponseBody {
+export interface LesmisResponseBody {
   accessPolicy?: AccessPolicyObject;
   error?: string;
 }

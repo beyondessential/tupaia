@@ -11,12 +11,12 @@ import errorHandler from 'api-error-handler';
 import { addRoutesToApp } from './addRoutesToApp';
 import { sessionCookie } from './sessionCookie';
 import { attachSessionModel } from './attachSessionModel';
-import { PsssSessionModel } from '../models';
+import { LesmisSessionModel } from '../models';
 
 /**
  * Set up express server with middleware,
  */
-export function createApp(sessionModel: PsssSessionModel) {
+export function createApp(sessionModel: LesmisSessionModel) {
   const app = express();
 
   /**

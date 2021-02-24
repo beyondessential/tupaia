@@ -11,13 +11,13 @@ import { TupaiaDatabase } from '@tupaia/database';
 
 import { createApp } from './app';
 import winston from './log';
-import { PsssSessionModel } from './models';
+import { LesmisSessionModel } from './models';
 
 /**
  * Set up database
  */
 const database = new TupaiaDatabase();
-const sessionModel = new PsssSessionModel(database);
+const sessionModel = new LesmisSessionModel(database);
 
 /**
  * Set up app with routes etc.
