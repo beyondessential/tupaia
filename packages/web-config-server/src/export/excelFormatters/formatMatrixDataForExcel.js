@@ -1,5 +1,4 @@
-import moment from 'moment';
-import { addExportedDateAndOriginAtTheSheetBottom } from '@tupaia/utils';
+import { addExportedDateAndOriginAtTheSheetBottom, formatDataValueByType } from '@tupaia/utils';
 
 const DEFAULT_CONFIG = {
   dataElementHeader: 'Data Element',
@@ -40,10 +39,13 @@ export const formatMatrixDataForExcel = (
         columnCategories.map(({ columns: columnsInCategory }) => {
           // Add an empty column to start each category, with just the header filled as the title of the category
           // Iterate through each of the columns in the category, and add the relevant row data
-          return ['', ...columnsInCategory.map(col => addValueOrEmpty(row[col.key]))];
+          return [
+            '',
+            ...columnsInCategory.map(col => addValueOrEmpty(row[col.key], row.valueType)),
+          ];
         })
       : // This table has no column categories, just one set of columns
-        columns.map(col => addValueOrEmpty(row[col.key]));
+        columns.map(col => addValueOrEmpty(row[col.key], row.valueType));
 
     // prepend dataElementHeader
     rowData.unshift(row.dataElement);
@@ -125,10 +127,13 @@ const convertAoaToAoo = data => {
 
 const isEmpty = data => data === undefined || data === null;
 
-const addValueOrEmpty = value => {
+const addValueOrEmpty = (value, valueType) => {
   if (isEmpty(value)) return '';
 
   if (typeof value === 'object') {
+    if (valueType) {
+      return formatDataValueByType(value, valueType);
+    }
     return isEmpty(value.value) ? '' : value.value;
   }
 
