@@ -134,9 +134,10 @@ export async function exportSurveyResponses(req, res) {
         exportData[1].push(currentEntity.code);
         exportData[2].push(responseName);
         exportData[3].push(dateString);
-        const answers = nestedAnswers
-          ? nestedAnswers[currentSurveyResponse.id]
-          : await findAnswersInSurveyResponse(models, currentSurveyResponse.id);
+        const answers =
+          nestedAnswers && nestedAnswers[currentSurveyResponse.id]
+            ? nestedAnswers[currentSurveyResponse.id]
+            : await findAnswersInSurveyResponse(models, currentSurveyResponse.id);
         const answersByQuestionId = {};
         answers.forEach(({ 'question.id': questionId, text }) => {
           answersByQuestionId[questionId] = text;
@@ -189,7 +190,7 @@ export async function exportSurveyResponses(req, res) {
           { columns: [{ [`${TYPES.SURVEY_RESPONSE}.id`]: 'survey_response.id' }], sort: [] },
         );
         const nestedAnswers = groupBy(answers, 'survey_response.id');
-
+        console.log(nestedAnswers);
         for (const response of surveyResponses) {
           await processSurveyResponse(
             response,
