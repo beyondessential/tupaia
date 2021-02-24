@@ -6,7 +6,6 @@
  */
 
 import { createSelector } from 'reselect';
-import { DEFAULT_BOUNDS } from '../defaults';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { selectLocation } from './utils';
 import { TILE_SETS } from '../constants';
@@ -31,16 +30,6 @@ export const selectProjectByCode = createSelector(
 export const selectCurrentProject = createSelector(
   [state => selectProjectByCode(state, selectCurrentProjectCode(state))],
   currentProject => currentProject,
-);
-
-export const selectAdjustedProjectBounds = createSelector(
-  [selectProjectByCode, (_, code) => code],
-  (project, code) => {
-    if (code === 'explore' || code === 'disaster') {
-      return DEFAULT_BOUNDS;
-    }
-    return project && project.bounds;
-  },
 );
 
 export const selectTileSets = createSelector(selectCurrentProject, project => {

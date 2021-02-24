@@ -9,7 +9,6 @@ import {
   selectProjectByCode,
   selectCurrentProject,
   selectIsProject,
-  selectAdjustedProjectBounds,
   selectActiveTileSet,
 } from '../../selectors';
 import { DEFAULT_BOUNDS } from '../../defaults';
@@ -136,24 +135,6 @@ describe('projectSelectors', () => {
 
       it('returns `false` for a project which does not exist', () => {
         expect(selectIsProject(state, 'DOES_NOT_EXIST')).toEqual(false);
-      });
-    });
-
-    describe('selectAdjustedProjectBounds', () => {
-      it('can select bounds for a project which exists', () => {
-        expect(selectAdjustedProjectBounds(state, 'covidau')).toEqual(
-          state.project.projects[1].bounds,
-        );
-      });
-
-      it('can select bounds for the `explore` and `disaster` projects', () => {
-        expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(DEFAULT_BOUNDS);
-
-        expect(selectAdjustedProjectBounds(state, 'disaster')).toEqual(DEFAULT_BOUNDS);
-      });
-
-      it('can select bounds for a project which does not exist', () => {
-        expect(selectAdjustedProjectBounds(state, 'DOES_NOT_EXIST')).toEqual(undefined);
       });
     });
 
