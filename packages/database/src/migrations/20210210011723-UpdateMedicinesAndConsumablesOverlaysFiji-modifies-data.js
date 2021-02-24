@@ -7,6 +7,8 @@ var dbm;
 var type;
 var seed;
 
+const FIRST_MEDICINE_OVERLAY_SORT_ORDER = 13;
+
 const LAST_MEDICINE_OVERLAY_SORT_ORDER = 62;
 
 const ORIGINAL_CONSUMABLE_START_ORDER = 63; // Male condoms
@@ -29,7 +31,6 @@ const OVERLAYS_TO_REMOVE_FIJI_ACCESS = [
   '40', // Jadelle
   '41', // LVGLXXXXTAB000
   '43', // MDPA2500TAB000
-  '44', // MDZLXXXXXXX000
   '45', // MDZLXXXXINJ000
   '46', // MDZLXXXXTAB000
   '48', // NFPNXXXXCIR000
@@ -42,7 +43,7 @@ const OVERLAYS_TO_REMOVE_FIJI_ACCESS = [
   '63', // ZNSF0020SOD000
 ];
 
-const FIJI_MEDICINES_OVERLAYS = [
+const NEW_FIJI_MEDICINES_OVERLAYS = [
   {
     code: '36f7d4bf',
     name: 'Atenolol 50mg cap/tab',
@@ -361,6 +362,138 @@ const FIJI_MEDICINES_OVERLAYS = [
   },
 ];
 
+const GLOBAL_MEDICINE_OVERLAY_ORDERS_BY_DATA_ELEMENT_CODES = [
+  'FijiBCSC50',
+  'FijiBCSC51',
+  'AMXCXXXXSOD000',
+  'AMXCXXXXPOL005',
+  'AMPCXXXXPFI004',
+  'ACSA1000TAB000',
+  'ADZL4000TCW000',
+  '36f7d4bf',
+  'FijiBCSC57',
+  'FijiBCSC58',
+  'FijiBCSC59',
+  'FijiBCSC60',
+  'FijiBCSC61',
+  'FijiBCSC62',
+  'FijiBCSC63',
+  'FijiBCSC64',
+  'FijiBCSC65',
+  'FijiBCSC66',
+  'FijiBCSC67',
+  'FijiBCSC68',
+  'FijiBCSC69',
+  'FijiBCSC70',
+  'AMLM2012TAB000',
+  'ARSNXXXXRDF000',
+  'BZPNXXXXPFI000',
+  'CAGNXXXXINJ000',
+  'CFXNXXXXPFI000',
+  'SXTP4008TAB000',
+  'FijiBCSC72',
+  'DEXA0040INJ006',
+  'DZPM0050TAB000',
+  'FijiBCSC74',
+  'FijiBCSC75',
+  'FijiBCSC76',
+  'FijiBCSC77',
+  'ENPL0050TAB000',
+  'FRSFXXXXTAB000',
+  'CLXNXXXXCAP004',
+  'FijiBCSC81',
+  'CLXNXXXXPOL0005',
+  'FijiBCSC83',
+  'FijiBCSC84',
+  'FijiBCSC85',
+  'FijiBCSC86',
+  'FijiBCSC87',
+  'GMCN0040INJ002',
+  'GLIB0050TAB000',
+  'FijiBCSC89',
+  'FijiBCSC90',
+  'FijiBCSC91',
+  'FijiBCSC92',
+  'FijiBCSC93',
+  'FijiBCSC94',
+  'FijiBCSC95',
+  'HEPB0000VAC000',
+  'HYDZXXXXXXX001',
+  'HTHZ0250SOD000',
+  'FijiBCSC98',
+  'FijiBCSC99',
+  'FijiBCSC100',
+  'IBFNXXXXTAB000',
+  'FijiBCSC102',
+  'FijiBCSC103',
+  'INSN1010INJ000',
+  'FijiBCSC105',
+  'FijiBCSC106',
+  'FijiBCSC107',
+  'FijiBCSC108',
+  'FijiBCSC109',
+  'MGSFXXXXINJ002',
+  'MXPAXXXXINJ000',
+  'Jadelle',
+  'LVGLXXXXTAB000',
+  'FijiBCSC111',
+  'FijiBCSC112',
+  'FijiBCSC113',
+  'MTFN0500TAB001',
+  'MDPA2500TAB000',
+  'MDZLXXXXXXX000',
+  'MDZLXXXXINJ000',
+  'MDZLXXXXTAB000',
+  'MUMP0000VAC000',
+  'NFPNXXXXCIR000',
+  'FijiBCSC116',
+  'FijiBCSC117',
+  'FijiBCSC118',
+  'FijiBCSC119',
+  'FijiBCSC120',
+  'FijiBCSC121',
+  'Opioid',
+  'ETLEXXXXTAB000',
+  'ORHS1000PFD000',
+  'FijiBCSC123',
+  'OXYT0010INJ000',
+  'FijiBCSC125',
+  'PCML0024SUS000',
+  'PCML1000TAB000',
+  'PCBZXXXXPFI000',
+  'FijiBCSC130',
+  'FijiBCSC131',
+  'FijiBCSC132',
+  'FijiBCSC134',
+  'FijiBCSC135',
+  'FijiBCSC136',
+  'FijiBCSC137',
+  'FijiBCSC138',
+  'FijiBCSC139',
+  'FijiBCSC140',
+  'SBML1000MDI002',
+  'NACL0009INS000',
+  'NALC0000INS000',
+  'FijiBCSC142',
+  'FijiBCSC143',
+  'FijiBCSC144',
+  'FijiBCSC145',
+  'FijiBCSC146',
+  '650f14bf',
+  'FijiBCSC148',
+  'FijiBCSC149',
+  'FijiBCSC150',
+  'FijiBCSC151',
+  'FijiBCSC152',
+  'FijiBCSC153',
+  'FijiBCSC154',
+  'AZMNXXXXCAP000',
+  'BCGV0000VAC000',
+  'TETN0000VAC000',
+  'RTNLXXXXCAP007',
+  'ZNSF0020SOD000',
+];
+
 const FIJI_VACCINES_OVERLAYS = [
   {
     code: 'FijiBCSC157',
@@ -467,7 +600,7 @@ const shiftConsumablesOverlayOrders = async db => {
   );
 
   const consumableOverlayStartSortOrder =
-    LAST_MEDICINE_OVERLAY_SORT_ORDER + FIJI_MEDICINES_OVERLAYS.length;
+    LAST_MEDICINE_OVERLAY_SORT_ORDER + NEW_FIJI_MEDICINES_OVERLAYS.length;
 
   for (let i = 0; i < CONSUMABLE_OVERLAY_IDS.length; i++) {
     const consumableOverlayId = CONSUMABLE_OVERLAY_IDS[i];
@@ -513,8 +646,8 @@ const addFijiMedicinesOverlays = async db => {
     MEDICINES_AND_CONSUMABLES_OVERLAY_GROUP_CODE,
   );
 
-  for (let i = 0; i < FIJI_MEDICINES_OVERLAYS.length; i++) {
-    const { code, name } = FIJI_MEDICINES_OVERLAYS[i];
+  for (let i = 0; i < NEW_FIJI_MEDICINES_OVERLAYS.length; i++) {
+    const { code, name } = NEW_FIJI_MEDICINES_OVERLAYS[i];
     const overlayObject = {
       ...BASE_FIJI_OVERLAY,
       userGroup: 'Admin',
@@ -532,6 +665,54 @@ const addFijiMedicinesOverlays = async db => {
 
     await insertObject(db, 'mapOverlay', overlayObject);
     await insertObject(db, 'map_overlay_group_relation', overlayRelation);
+  }
+};
+
+const updateSortOrderIfOverlayExists = async (db, dataElementCode, sortOrder, groupId) => {
+  const overlay = (
+    await db.runSql(`
+      select "mapOverlay".* from "mapOverlay"
+      inner join map_overlay_group_relation on "mapOverlay".id = map_overlay_group_relation.child_id
+      inner join map_overlay_group on map_overlay_group.id = map_overlay_group_relation.map_overlay_group_id
+      where map_overlay_group.id = '${groupId}'
+      and "mapOverlay"."dataElementCode" = '${dataElementCode}';
+    `)
+  ).rows[0];
+
+  if (overlay) {
+    await db.runSql(`
+      update map_overlay_group_relation
+      set sort_order = ${sortOrder}
+      where child_id = '${overlay.id}'
+      and map_overlay_group_id = '${groupId}';
+    `);
+
+    return true;
+  }
+
+  return false;
+};
+
+const reorderAllMedicineOverlays = async db => {
+  let sortOrder = FIRST_MEDICINE_OVERLAY_SORT_ORDER;
+  const medicinesAndConsumablesGroupId = await codeToId(
+    db,
+    'map_overlay_group',
+    MEDICINES_AND_CONSUMABLES_OVERLAY_GROUP_CODE,
+  );
+
+  for (let i = 0; i < GLOBAL_MEDICINE_OVERLAY_ORDERS_BY_DATA_ELEMENT_CODES.length; i++) {
+    const dataElementCode = GLOBAL_MEDICINE_OVERLAY_ORDERS_BY_DATA_ELEMENT_CODES[i];
+    const updated = await updateSortOrderIfOverlayExists(
+      db,
+      dataElementCode,
+      sortOrder,
+      medicinesAndConsumablesGroupId,
+    );
+
+    if (updated) {
+      sortOrder++;
+    }
   }
 };
 
@@ -573,8 +754,8 @@ const addFijiVaccinesOverlays = async db => {
 };
 
 const removeFijiMedicinesOverlays = async db => {
-  for (let i = 0; i < FIJI_MEDICINES_OVERLAYS.length; i++) {
-    const { name } = FIJI_MEDICINES_OVERLAYS[i];
+  for (let i = 0; i < NEW_FIJI_MEDICINES_OVERLAYS.length; i++) {
+    const { name } = NEW_FIJI_MEDICINES_OVERLAYS[i];
     const overlayId = generateMapOverlayIdFromName(name);
 
     await db.runSql(`
@@ -612,6 +793,8 @@ exports.up = async function (db) {
 
   await addFijiMedicinesOverlays(db);
 
+  await reorderAllMedicineOverlays(db);
+
   await addFijiVaccinesOverlays(db);
 
   await shiftConsumablesOverlayOrders(db);
@@ -626,6 +809,8 @@ exports.down = async function (db) {
  `);
 
   await removeFijiMedicinesOverlays(db);
+
+  await reorderAllMedicineOverlays(db);
 
   await removeFijiVaccinesOverlays(db);
 
