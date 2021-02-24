@@ -10,6 +10,7 @@ import {
   periodToType,
   periodTypeToMomentUnit,
   periodTypeToFormat,
+  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
@@ -102,8 +103,8 @@ export class AggregateDataPusher extends DataPusher {
     };
     const momentUnit = periodTypeToMomentUnit(periodType);
     const dataTime = await getDataTime();
-    const minimumTime = dataTime.clone().startOf(momentUnit).format();
-    const maximumTime = dataTime.clone().endOf(momentUnit).format();
+    const minimumTime = stripTimezoneFromDate(dataTime.clone().startOf(momentUnit).format());
+    const maximumTime = stripTimezoneFromDate(dataTime.clone().endOf(momentUnit).format());
     return [minimumTime, maximumTime];
   }
 
@@ -266,7 +267,7 @@ export class AggregateDataPusher extends DataPusher {
     const baseDataValue = this.isSurveyResponse
       ? {
           code: `${survey.code}SurveyDate`,
-          value: surveyResponse.dataTime().format(),
+          value: stripTimezoneFromDate(surveyResponse.dataTime().format()),
         }
       : await generateDataValue(this.models, answer);
 

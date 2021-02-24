@@ -15,9 +15,9 @@ import {
   respond,
   takesIdForm,
   UploadError,
+  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import { getArrayQueryParameter, extractTabNameFromQuery } from '../utilities';
-import { stripTimezoneFromDate } from '../../utilities';
 import { ANSWER_TYPES } from '../../database/models/Answer';
 import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
 import {

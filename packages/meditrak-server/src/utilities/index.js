@@ -6,5 +6,4 @@
 export { getApiUrl } from './getApiUrl';
 export { resourceToRecordType } from './resourceToRecordType';
 export { sendEmail } from './sendEmail';
-export { stripTimezoneFromDate } from './stripTimezoneFromDate';
 export { cache, CACHE_KEY_GENERATORS } from './cache';

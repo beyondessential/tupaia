@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { utcMoment } from '@tupaia/utils';
+import { utcMoment, stripTimezoneFromDate } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
 
@@ -38,12 +38,12 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
   // Add start and end date, which are inclusive
   if (startDate) {
     sqlQuery.addClause(`AND survey_response.data_time >= ?`, [
-      utcMoment(startDate).startOf('day').toISOString(),
+      stripTimezoneFromDate(utcMoment(startDate).startOf('day').toISOString()),
     ]);
   }
   if (endDate) {
     sqlQuery.addClause(`AND survey_response.data_time <= ?`, [
-      utcMoment(endDate).endOf('day').toISOString(),
+      stripTimezoneFromDate(utcMoment(endDate).endOf('day').toISOString()),
     ]);
   }
 

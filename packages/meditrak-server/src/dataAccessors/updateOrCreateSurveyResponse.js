@@ -4,11 +4,10 @@
  */
 
 import momentTimezone from 'moment-timezone';
-import { DatabaseError, UploadError } from '@tupaia/utils';
+import { DatabaseError, UploadError, stripTimezoneFromDate } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
 import { getEntityIdFromClinicId } from '../database/utilities';
-import { stripTimezoneFromDate } from '../utilities';
 
 async function saveAnswer(models, answer, surveyResponseId) {
   const answerDocument = {
