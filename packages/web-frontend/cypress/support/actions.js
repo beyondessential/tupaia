@@ -4,14 +4,14 @@
  */
 
 import { TEST_USER } from '../constants';
-import { TestUserPasswordUndefinedError } from './helpers';
 
-const getTestUserPassword = () => {
-  const password = Cypress.env('TEST_USER_PASSWORD');
-  if (!password) {
-    throw new TestUserPasswordUndefinedError();
+const requireCyEnv = variable => {
+  const unprefixedVariable = variable.replace(/^CYPRESS_/, '');
+  const value = Cypress.env(unprefixedVariable);
+  if (value === undefined) {
+    throw new Error(`Could not load Cypress env variable 'CYPRESS_${unprefixedVariable}'`);
   }
-  return password;
+  return value;
 };
 
 export const submitLoginForm = () => {
@@ -24,7 +24,7 @@ export const submitLoginForm = () => {
     .type(TEST_USER.email);
   cy.get('@loginForm')
     .findByLabelText(/password/i)
-    .type(getTestUserPassword(), { log: false });
+    .type(requireCyEnv('TEST_USER_PASSWORD'), { log: false });
 
   cy.get('@loginForm').findByTextI('Sign in').click();
 };

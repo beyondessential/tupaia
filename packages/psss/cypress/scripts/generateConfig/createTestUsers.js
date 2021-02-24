@@ -4,15 +4,11 @@
  */
 
 import { hashAndSaltPassword } from '@tupaia/auth';
-import { TEST_USER_1, TEST_USER_2 } from '../constants';
-import { TestUserPasswordUndefinedError } from '../support/helpers';
+import { requireEnv } from '@tupaia/utils';
+import { TEST_USER_1, TEST_USER_2 } from '../../constants';
 
 const upsertTestUserRecord = async ({ database, user }) => {
-  const password = process.env.CYPRESS_TEST_USER_PASSWORD;
-  if (!password) {
-    throw new TestUserPasswordUndefinedError();
-  }
-
+  const password = requireEnv('CYPRESS_TEST_USER_PASSWORD');
   return database.updateOrCreate(
     'user_account',
     { email: user.email },
@@ -44,9 +40,9 @@ const grantPermissionsToTestUser = async ({ database, user, entities }) => {
   );
 };
 
-export const createTestUsers = async ({ database, logger }) => {
-  await upsertTestUserRecord({ database, logger, user: TEST_USER_1 });
-  await upsertTestUserRecord({ database, logger, user: TEST_USER_2 });
+export const createTestUsers = async ({ database }) => {
+  await upsertTestUserRecord({ database, user: TEST_USER_1 });
+  await upsertTestUserRecord({ database, user: TEST_USER_2 });
   await grantPermissionsToTestUser({ database, user: TEST_USER_1, entities: "'TO'" });
   await grantPermissionsToTestUser({ database, user: TEST_USER_2, entities: "'TO', 'WS'" });
 };
