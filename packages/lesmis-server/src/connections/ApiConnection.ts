@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 import { FetchConfig, QueryParameters, RequestBody } from '../types';
 

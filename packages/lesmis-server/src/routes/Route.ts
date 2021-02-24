@@ -7,6 +7,7 @@ import { respond, PermissionsError, UnauthenticatedError } from '@tupaia/utils';
 
 import { LesmisRequest, LesmisResponseBody, SessionCookie } from '../types';
 import { LesmisSessionModel, LesmisSessionType } from '../models';
+import { MeditrakConnection, ReportConnection } from '../connections';
 import { LESMIS_PERMISSION_GROUP } from '../constants';
 
 export class Route {
@@ -16,7 +17,7 @@ export class Route {
 
   next: NextFunction;
 
-  sessionModel: LEsmisSessionModel;
+  sessionModel: LesmisSessionModel;
 
   sessionCookie?: SessionCookie;
 
@@ -45,9 +46,9 @@ export class Route {
     // function, causing error handling middleware to be fired. Otherwise, async errors will be
     // swallowed.
     try {
-      const session = await this.verifyAuth();
-      this.meditrakConnection = new MeditrakConnection(session);
-      this.reportConnection = new ReportConnection(session);
+      // const session = await this.verifyAuth();
+      // this.meditrakConnection = new MeditrakConnection(session);
+      // this.reportConnection = new ReportConnection(session);
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
@@ -56,6 +57,7 @@ export class Route {
   }
 
   async getSession() {
+    console.log('this.sessionCookie', this.sessionCookie);
     const sessionId = this.sessionCookie?.id;
     if (!sessionId) {
       throw new UnauthenticatedError('User not authenticated');
@@ -69,7 +71,7 @@ export class Route {
     return session;
   }
 
-  async verifyAuth(): Promise<LesmissSessionType> {
+  async verifyAuth(): Promise<LesmisSessionType> {
     const session = await this.getSession();
     const { accessPolicy } = session;
     const authorized = accessPolicy.allowsAnywhere(LESMIS_PERMISSION_GROUP);
