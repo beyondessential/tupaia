@@ -57,6 +57,10 @@
       "path": "packages/lesmis"
     },
     {
+       "name": "lesmis-server",
+       "path": "packages/lesmis-server"
+    },
+    {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
     },
