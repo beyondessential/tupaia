@@ -161,8 +161,7 @@ describe('Question hooks', () => {
         expect(spy2.called).to.be.true;
       });
 
-      // TODO: Re-enable this test when data_time writes are implemented
-      xit('Should not run a hook for a backdated value', async () => {
+      it.only('Should not run a hook for a backdated value', async () => {
         const spy = createHookSpy('backdateTestHook');
 
         await app.post('surveyResponse', {

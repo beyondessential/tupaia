@@ -63,7 +63,7 @@ export class SurveyResponseModel extends DatabaseModel {
   updateById(id, fieldsToUpdate) {
     // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
     // the new entity/date (no need to async/await, just set it going)
-    if (fieldsToUpdate.entity_id || fieldsToUpdate.submission_time) {
+    if (fieldsToUpdate.entity_id || fieldsToUpdate.data_time) {
       this.otherModels.answer.markAsChanged({
         survey_response_id: id,
       });

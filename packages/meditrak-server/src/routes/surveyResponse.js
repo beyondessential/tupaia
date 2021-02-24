@@ -13,6 +13,7 @@ import {
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
   constructIsEmptyOr,
+  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsInSurvey } from '../dataAccessors';
@@ -83,7 +84,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
     survey_id: surveyId,
     user_id: user.id,
     entity_id: entityId || entitiesByCode[entityCode].id,
-    submission_time: time,
+    data_time: stripTimezoneFromDate(time),
     start_time: time,
     end_time: time,
     timezone: timezoneName,
