@@ -264,8 +264,8 @@ async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmi
   const currentDataTime = surveyResponse.data_time;
   const isInExportFormat = moment(newSubmissionTimeString, EXPORT_DATE_FORMAT, true).isValid();
   const newDataTime = isInExportFormat
-    ? moment(newSubmissionTimeString, EXPORT_DATE_FORMAT)
-    : moment(newSubmissionTimeString);
+    ? stripTimezoneFromDate(moment(newSubmissionTimeString, EXPORT_DATE_FORMAT))
+    : stripTimezoneFromDate(moment(newSubmissionTimeString));
 
   if (!moment(currentDataTime).isSame(newDataTime, 'minute')) {
     await models.surveyResponse.updateById(surveyResponseId, {
