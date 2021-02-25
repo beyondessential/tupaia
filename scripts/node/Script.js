@@ -8,9 +8,7 @@ const { existsSync, readdirSync } = require('fs');
 const { platform } = require('os');
 const yargs = require('yargs');
 
-const { getLoggerInstance } = require('./utilities');
-
-const logger = getLoggerInstance();
+const { getLoggerInstance } = require('@tupaia/utils');
 
 /**
  * @abstract
@@ -20,6 +18,8 @@ class Script {
     SUCCESS: 0,
     ERROR: 1,
   };
+
+  logger;
 
   /**
    * @protected Override in child class
@@ -37,6 +37,10 @@ class Script {
   config = {};
 
   args;
+
+  constructor() {
+    this.logger = getLoggerInstance();
+  }
 
   run() {
     this.parseConfig();
@@ -63,31 +67,31 @@ class Script {
   }
 
   logError = (message = '') => {
-    logger.error(message);
+    this.logger.error(message);
   };
 
   logWarning = (message = '') => {
-    logger.warn(message);
+    this.logger.warn(message);
   };
 
   logSuccess = (message = '') => {
-    logger.success(message);
+    this.logger.success(message);
   };
 
   logInfo = (message = '') => {
-    logger.info(message);
+    this.logger.info(message);
   };
 
   logVerbose = (message = '') => {
-    logger.verbose(message);
+    this.logger.verbose(message);
   };
 
   logDebug = (message = '') => {
-    logger.debug(message);
+    this.logger.debug(message);
   };
 
   log = (message = '') => {
-    logger.verbose(message);
+    this.logger.verbose(message);
   };
 
   /**

@@ -5,9 +5,15 @@
 
 import { snake } from 'case';
 
-import { compareAsc, filterEntities, filterValues, toArray } from '@tupaia/utils';
-import orgUnitMap from '../config/orgUnitMap.json';
-import { CONFIG_ROOT } from '../constants';
+import {
+  compareAsc,
+  filterEntities,
+  filterValues,
+  getLoggerInstance,
+  toArray,
+} from '@tupaia/utils';
+import orgUnitMap from '../../config/orgUnitMap.json';
+import { CONFIG_ROOT } from '../../constants';
 
 const ORG_UNIT_MAP_PATH = `${CONFIG_ROOT}/orgUnitMap.json`;
 
@@ -27,7 +33,8 @@ const WARNING_TYPE_TO_MESSAGE = {
   [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `No compatible org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
 };
 
-const logWarningsForSkippedReports = (logger, skippedReports) => {
+const logWarningsForSkippedReports = skippedReports => {
+  const logger = getLoggerInstance();
   logger.warn(`Skipping the following reports:`);
   Object.entries(skippedReports).forEach(([warnType, reportIds]) => {
     const message = WARNING_TYPE_TO_MESSAGE[warnType];
@@ -152,13 +159,14 @@ const getDashboardReportIdToGroups = async database => {
  * 3. For each dashboard group, use an organisation unit from the orgUnitMap config
  * that matches the group's org unit code and level
  */
-export const generateDashboardReportConfig = async ({ database, logger }) => {
+export const generateDashboardReportConfig = async ({ database }) => {
+  const logger = getLoggerInstance();
   const reports = await database.executeSql('SELECT * from "dashboardReport"');
   const reportIdToGroups = await getDashboardReportIdToGroups(database);
   const { urls, skippedReports } = await getUrlsForReports(database, reports, reportIdToGroups);
   const skippedReportsExist = Object.keys(skippedReports).length > 0;
   if (skippedReportsExist) {
-    logWarningsForSkippedReports(logger, skippedReports);
+    logWarningsForSkippedReports(skippedReports);
   }
   logger.info(`Report urls created: ${urls.length}, skipped: ${reports.length - urls.length}`);
 
