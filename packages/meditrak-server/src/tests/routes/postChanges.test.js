@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import moment from 'moment';
 import { expect, assert } from 'chai';
 import { fetchWithTimeout, oneSecondSleep } from '@tupaia/utils';
 import {
@@ -33,7 +34,7 @@ const getQuestionId = (questionNumber = 0) => {
 };
 let userId = null; // will be determined in 'before' phase
 
-const generateDummySurveyResponse = () => ({
+const generateDummySurveyResponse = (extraFields = {}) => ({
   id: generateTestId(),
   assessor_name: generateValueOfType('text'),
   start_time: generateValueOfType('date'),
@@ -43,6 +44,7 @@ const generateDummySurveyResponse = () => ({
   survey_id: surveyId,
   user_id: userId,
   entities_created: [],
+  ...extraFields,
 });
 
 const generateDummySurveyResponseAgainstFacility = () => {
@@ -61,6 +63,11 @@ const generateDummyAnswer = questionNumber => ({
 });
 
 const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
+
+const PSQL_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+const formatDateAsPSQLString = date => {
+  return moment.parseZone(date).format(PSQL_DATE_FORMAT);
+};
 
 function expectEqualStrings(a, b) {
   try {
@@ -458,6 +465,86 @@ describe('POST /changes', async () => {
         });
 
         expect(response).to.have.property('statusCode', 200);
+      });
+    });
+
+    describe('Backwards compatibility for time fields', async () => {
+      it('data_time should override all others', async () => {
+        const surveyResponseObject = generateDummySurveyResponse({
+          data_time: generateValueOfType('date'),
+          submission_time: generateValueOfType('date'),
+        });
+
+        const response = await app.post('changes', {
+          body: [
+            {
+              action: 'SubmitSurveyResponse',
+              payload: surveyResponseObject,
+            },
+          ],
+        });
+
+        expect(response).to.have.property('statusCode', 200);
+        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
+        expect(surveyResponse.data_time).to.equal(
+          formatDateAsPSQLString(surveyResponseObject.data_time),
+        );
+      });
+
+      it('Use submission_time if data_time is missing', async () => {
+        const surveyResponseObject = generateDummySurveyResponse({
+          submission_time: generateValueOfType('date'),
+        });
+
+        const response = await app.post('changes', {
+          body: [
+            {
+              action: 'SubmitSurveyResponse',
+              payload: surveyResponseObject,
+            },
+          ],
+        });
+
+        expect(response).to.have.property('statusCode', 200);
+        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
+        expect(surveyResponse.data_time).to.equal(
+          formatDateAsPSQLString(surveyResponseObject.submission_time),
+        );
+      });
+
+      it('Use end_time if data_time and submission_time are missing', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+
+        const response = await app.post('changes', {
+          body: [
+            {
+              action: 'SubmitSurveyResponse',
+              payload: surveyResponseObject,
+            },
+          ],
+        });
+
+        expect(response).to.have.property('statusCode', 200);
+        const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
+        expect(surveyResponse.data_time).to.equal(
+          formatDateAsPSQLString(surveyResponseObject.end_time),
+        );
+      });
+
+      it('Error if no time value is given', async () => {
+        const surveyResponseObject = generateDummySurveyResponse();
+        delete surveyResponseObject.end_time;
+
+        const response = await app.post('changes', {
+          body: [
+            {
+              action: 'SubmitSurveyResponse',
+              payload: surveyResponseObject,
+            },
+          ],
+        });
+
+        expect(response).to.have.property('statusCode', 400);
       });
     });
   });
