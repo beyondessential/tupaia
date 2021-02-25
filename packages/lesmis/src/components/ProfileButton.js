@@ -21,9 +21,11 @@ export const ProfileButton = () => {
   const { data: user } = useUser();
   const queryClient = useQueryClient();
 
+  console.log('user', user);
+
   const handleLogout = async () => {
     await get('logout');
-    queryClient.invalidateQueries('getUser');
+    queryClient.invalidateQueries('user');
   };
 
   return (

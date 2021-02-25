@@ -57,7 +57,6 @@ export class Route {
   }
 
   async getSession() {
-    console.log('this.sessionCookie', this.sessionCookie);
     const sessionId = this.sessionCookie?.id;
     if (!sessionId) {
       throw new UnauthenticatedError('User not authenticated');

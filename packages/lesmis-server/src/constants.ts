@@ -4,4 +4,4 @@
  *
  */
 
-export const LESMIS_PERMISSION_GROUP = 'LESMIS';
+export const LESMIS_PERMISSION_GROUP = 'PSSS';

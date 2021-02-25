@@ -65,6 +65,8 @@ const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 export const LoginView = () => {
   const { isLoggedIn, isLoading } = useUser();
 
+  console.log('isLogged In', isLoggedIn);
+
   if (isLoggedIn) {
     return <Redirect to="/" />;
   }

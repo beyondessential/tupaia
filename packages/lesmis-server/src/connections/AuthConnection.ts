@@ -28,7 +28,7 @@ export class AuthConnection extends ApiConnection {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
-      { emailAddress, password, deviceName: `PSSS-SERVER: ${deviceName}` },
+      { emailAddress, password, deviceName: `LESMIS-SERVER: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
   }
