@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ArrayTestCase, arrayToTestCase } from './helpers';
+import { ArrayTestCase, arrayToTestCase } from '../helpers';
 
 const SURVEYS = [
   {
@@ -75,7 +75,7 @@ const INDICATORS = [
 
 const ARRAY_TEST_CASES: ArrayTestCase[] = [
   [
-    'fetches data for multiple indicators',
+    'fetches data for multiple analytic arithmetic indicators',
     ['AllColours', 'RedAgainstBlue'],
     ['2020-01-01', '2020-12-31', ['AU']],
     [
@@ -91,7 +91,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
   ],
 ];
 
-export const indicatorApiFixtures = {
+export const analyticArithmeticIndicatorApiFixtures = {
   setup: {
     dbRecords: {
       entity: [{ code: 'AU', name: 'Australia', type: 'country' }],

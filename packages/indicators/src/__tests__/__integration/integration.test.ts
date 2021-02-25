@@ -9,7 +9,8 @@ import { DataBroker } from '@tupaia/data-broker';
 import { getTestModels, setupTest } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
 import { Analytic, FetchOptions } from '../../types';
-import { arithmeticAnalyticsFixtures, indicatorApiFixtures } from './fixtures';
+import { arithmeticAnalyticsFixtures, analyticArithmeticIndicatorApiFixtures } from './fixtures/analyticArithmetic';
+import { eventCountFixtures, eventCountIndicatorApiFixtures } from './fixtures/eventCount';
 
 interface TestCase {
   input: {
@@ -40,8 +41,8 @@ describe('Integration tests', () => {
     await dataBroker.close();
   });
 
-  describe('Indicator API features', () => {
-    const { setup, testCases } = indicatorApiFixtures;
+  describe('Analytic Arithmetic Indicator API features', () => {
+    const { setup, testCases } = analyticArithmeticIndicatorApiFixtures;
 
     beforeAll(async () => {
       await setupTest(models, setup);
@@ -54,8 +55,37 @@ describe('Integration tests', () => {
     });
   });
 
+  describe('Event Count Indicator API features', () => {
+    const { setup, testCases } = eventCountIndicatorApiFixtures;
+
+    beforeAll(async () => {
+      await setupTest(models, setup);
+    });
+
+    testCases.forEach(testCase => {
+      it(testCase.description, async () => {
+        await runTestCase(testCase);
+      });
+    });
+  });
+
+
   describe('Arithmetic analytics', () => {
     const { setup, testCases } = arithmeticAnalyticsFixtures;
+
+    beforeAll(async () => {
+      await setupTest(models, setup);
+    });
+
+    testCases.forEach(testCase => {
+      it(testCase.description, async () => {
+        await runTestCase(testCase);
+      });
+    });
+  });
+
+  describe('Event count', () => {
+    const { setup, testCases } = eventCountFixtures;
 
     beforeAll(async () => {
       await setupTest(models, setup);
