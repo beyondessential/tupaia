@@ -24,7 +24,7 @@ export const submitLoginForm = () => {
     .type(TEST_USER.email);
   cy.get('@loginForm')
     .findByLabelText(/password/i)
-    .type(requireCyEnv('TEST_USER_PASSWORD'), { log: false });
+    .type(requireCyEnv('CYPRESS_TEST_USER_PASSWORD'), { log: false });
 
   cy.get('@loginForm').findByTextI('Sign in').click();
 };
