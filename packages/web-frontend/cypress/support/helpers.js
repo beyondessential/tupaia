@@ -23,13 +23,6 @@ export class EmptyConfigError extends Error {
   }
 }
 
-export class TestUserPasswordUndefinedError extends Error {
-  constructor() {
-    super('Please specify a value for CYPRESS_TEST_USER_PASSWORD in packages/web-frontend/.env');
-    this.name = 'TestUserPasswordUndefinedError';
-  }
-}
-
 /**
  * Preserve user session cookies, which are set during log in
  *
