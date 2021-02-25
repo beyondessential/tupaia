@@ -1,7 +1,6 @@
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import isEqual from 'lodash.isequal';
-import get from 'lodash.get';
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
@@ -9,7 +8,6 @@ import { reduceToDictionary, getSortByKey } from '@tupaia/utils';
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 const INFO = 'info';
 const REFERENCE = 'reference';
-const REFERENCE_PATH = [INFO, REFERENCE];
 /**
  * Recursively find the nested grouped MapOverlays.
  */
@@ -58,15 +56,15 @@ const findNestedGroupedMapOverlays = async (
       const mapOverlayGroupRelation = mapOverlayGroupRelations[i];
       const name = mapOverlayGroupIdToName[mapOverlayGroupRelation.child_id];
       const childMapOverlayGroupRelations = await mapOverlayGroupRelation.findChildRelations();
-      const mapOverlays = await findNestedGroupedMapOverlays(
+      const children = await findNestedGroupedMapOverlays(
         models,
         childMapOverlayGroupRelations,
         accessibleMapOverlays,
       );
       const mapOverlayGroupResult = integrateMapOverlayReference({
-        mapOverlays,
         id: mapOverlayGroupRelation.child_id,
         groupName: name,
+        children,
       });
       mapOverlayGroupResults.push(mapOverlayGroupResult);
     }
@@ -83,24 +81,25 @@ const findNestedGroupedMapOverlays = async (
 };
 
 // Only display reference info on map overlay group if all map overlays have same reference.
-const integrateMapOverlayReference = ({ mapOverlays, id, groupName }) => {
+const integrateMapOverlayReference = ({ id, groupName, children }) => {
   const mapOverlayGroupResult = {
     id,
     name: groupName,
   };
-
-  const getReference = mapOverlay => get(mapOverlay, REFERENCE_PATH);
-  const firstReference = getReference(mapOverlays[0]);
+  const getReference = mapOverlay => {
+    if (mapOverlay[INFO] && mapOverlay[INFO][REFERENCE]) return mapOverlay[INFO][REFERENCE];
+    return null;
+  };
+  const firstReference = Array.isArray(children) && children[0] && getReference(children[0]);
   if (firstReference) {
-    const referencesAreNotTheSame = mapOverlays.find(
-      mapOverlay =>
-        !(getReference(mapOverlay) && isEqual(getReference(mapOverlay), firstReference)),
+    const referencesAreTheSame = children.every(
+      mapOverlay => getReference(mapOverlay) && isEqual(getReference(mapOverlay), firstReference),
     );
 
     // All map overlays have same reference
-    if (!referencesAreNotTheSame) {
+    if (referencesAreTheSame) {
       // Delete all the same references
-      const noReferenceMapOverlayResult = mapOverlays.map(mapOverlay => {
+      const noReferenceMapOverlayResult = children.map(mapOverlay => {
         const { [INFO]: info, ...restValues } = mapOverlay;
         delete info[REFERENCE];
         return { ...restValues, info };
@@ -114,7 +113,7 @@ const integrateMapOverlayReference = ({ mapOverlays, id, groupName }) => {
   }
   return {
     ...mapOverlayGroupResult,
-    children: mapOverlays,
+    children,
   };
 };
 
@@ -204,7 +203,7 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
   );
   const relationsByGroupId = groupBy(mapOverlayGroupRelations, 'map_overlay_group_id');
   const worldToTopLevelGroupRelations = await models.mapOverlayGroupRelation.findTopLevelMapOverlayGroupRelations();
-  const worldRelationById = keyBy(worldToTopLevelGroupRelations, 'child_id'); //child_id should be unique because these are top level overlay groups
+  const worldRelationById = keyBy(worldToTopLevelGroupRelations, 'child_id'); // child_id should be unique because these are top level overlay groups
   const groupIds = Object.keys(relationsByGroupId);
   const accessibleOverlayGroups = [];
   const accessibleRelations = [];
@@ -224,9 +223,9 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
     if (isNonEmptyMapOverlayGroup) {
       accessibleRelations.push(worldRelationById[groupId]);
       const accessibleOverlayGroup = integrateMapOverlayReference({
-        mapOverlays: nestedMapOverlayGroups,
         id: groupId,
         groupName: name,
+        children: nestedMapOverlayGroups,
       });
       accessibleOverlayGroups.push(accessibleOverlayGroup);
     }
