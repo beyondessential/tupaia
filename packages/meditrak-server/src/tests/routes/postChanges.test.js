@@ -66,7 +66,7 @@ const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
 const PSQL_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 const formatDateAsPSQLString = date => {
-  return moment.parseZone(date).format(PSQL_DATE_FORMAT);
+  return moment(date).format(PSQL_DATE_FORMAT);
 };
 
 function expectEqualStrings(a, b) {
