@@ -126,4 +126,19 @@ describe('EventBuilder', () => {
       });
     });
   });
+
+  describe('Timezone agnosticism', () => {
+    it('Should store data_time without any timezone information', async () => {
+      const [{ surveyResponse }] = await buildAndInsertSurveyResponses(models, [
+        {
+          surveyCode: 'DEFAULT_OU',
+          entityCode: 'ORG_UNIT',
+          answers: [{ DEFAULT_OU1: 'Leprosy' }],
+          data_time: '2019-07-15T06:25:05',
+        },
+      ]);
+      const event = await new EventBuilder(dhisApi, models, surveyResponse).build();
+      expect(event.eventDate).to.equal('2019-07-15T06:25:05');
+    });
+  });
 });
