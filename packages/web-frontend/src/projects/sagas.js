@@ -3,11 +3,8 @@ import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 import request from '../utils/request';
 import { setProjects, fetchProjectsError } from './actions';
 
-import { SET_PROJECT, setDashboardGroup, setOrgUnit, FETCH_LOGOUT_SUCCESS } from '../actions';
-import {
-  selectProjectByCode,
-  selectCurrentOrgUnitCode,
-} from '../selectors';
+import { SET_PROJECT, setOrgUnit, FETCH_LOGOUT_SUCCESS } from '../actions';
+import { selectProjectByCode, selectCurrentOrgUnitCode } from '../selectors';
 
 export function* fetchProjectData() {
   try {
@@ -37,7 +34,7 @@ function* loadProject(action) {
 
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   if (!organisationUnitCode || forceUpdate) {
-    yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
+    yield put(setOrgUnit(project.homeEntityCode || action.projectCode));
   }
 }
 
