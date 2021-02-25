@@ -161,7 +161,7 @@ describe('Question hooks', () => {
         expect(spy2.called).to.be.true;
       });
 
-      it.only('Should not run a hook for a backdated value', async () => {
+      it('Should not run a hook for a backdated value', async () => {
         const spy = createHookSpy('backdateTestHook');
 
         await app.post('surveyResponse', {
