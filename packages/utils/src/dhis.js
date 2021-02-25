@@ -41,6 +41,9 @@ const getServerName = (entityCode, isDataRegional) => {
     : REGIONAL_SERVER_NAME; // If the country does not have a dhis2 server, use the regional server
 };
 
+const getServerVariable = (serverName, variableName) =>
+    process.env[`${serverName.toUpperCase()}_${variableName}`] || process.env[variableName];
+
 /**
  * Returns configuration for creating an api instance connected to the dhis server.
  * The country containing the given entityCode will be used. If either none is passed in or the data
@@ -67,6 +70,6 @@ export const getDhisConfig = ({
   }
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   const serverUrl = getServerUrlFromName(serverName);
-
-  return { serverName, serverUrl };
+  const serverPushEnable = getServerVariable(serverName, 'PUSH_ENABLE');
+  return { serverName, serverUrl, serverPushEnable };
 };
