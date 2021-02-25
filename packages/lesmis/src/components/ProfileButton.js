@@ -21,8 +21,6 @@ export const ProfileButton = () => {
   const { data: user } = useUser();
   const queryClient = useQueryClient();
 
-  console.log('user', user);
-
   const handleLogout = async () => {
     await get('logout');
     queryClient.invalidateQueries('user');
@@ -30,7 +28,7 @@ export const ProfileButton = () => {
 
   return (
     <StyledProfileButton
-      user={user}
+      user={{ ...user, name: `${user.firstName} ${user.lastName}` }}
       MenuOptions={() => (
         <ProfileButtonItem button onClick={handleLogout}>
           Logout

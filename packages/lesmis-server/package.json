@@ -33,6 +33,7 @@
     "@tupaia/utils": "1.0.0",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
+    "camelcase-keys": "^6.2.2",
     "client-sessions": "^0.8.0",
     "cors": "^2.8.5",
     "express": "^4.16.2",
