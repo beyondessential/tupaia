@@ -29,7 +29,7 @@ const SURVEY_RESPONSES = [
 const INDICATORS = [
   {
     code: 'AllColours',
-    builder: 'arithmetic',
+    builder: 'analyticArithmetic',
     config: {
       formula: 'Red + Blue',
       aggregation: 'RAW',
@@ -37,7 +37,7 @@ const INDICATORS = [
   },
   {
     code: 'RedAgainstBlue',
-    builder: 'arithmetic',
+    builder: 'analyticArithmetic',
     config: {
       formula: 'Red / Blue',
       aggregation: 'RAW',
@@ -49,7 +49,7 @@ const INDICATORS = [
   },
   {
     code: 'SelfReferencing',
-    builder: 'arithmetic',
+    builder: 'analyticArithmetic',
     config: {
       formula: 'SelfReferencing - 1',
       aggregation: 'RAW',
@@ -57,7 +57,7 @@ const INDICATORS = [
   },
   {
     code: 'CircularReference_A',
-    builder: 'arithmetic',
+    builder: 'analyticArithmetic',
     config: {
       formula: 'CircularReference_B',
       aggregation: 'RAW',
@@ -65,7 +65,7 @@ const INDICATORS = [
   },
   {
     code: 'CircularReference_B',
-    builder: 'arithmetic',
+    builder: 'analyticArithmetic',
     config: {
       formula: 'CircularReference_A',
       aggregation: 'RAW',

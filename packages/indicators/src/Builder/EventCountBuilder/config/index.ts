@@ -3,5 +3,5 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export { CountEventConfig, DefaultValue } from './types';
+export { EventCountConfig, DefaultValue } from './types';
 export { configValidators } from './validate';

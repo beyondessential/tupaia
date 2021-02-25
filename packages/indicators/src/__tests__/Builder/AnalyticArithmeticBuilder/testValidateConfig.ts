@@ -4,7 +4,7 @@
  */
 
 import { createJestMockInstance } from '@tupaia/utils';
-import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
+import { AnalyticArithmeticBuilder } from '../../../Builder/AnalyticArithmeticBuilder/AnalyticArithmeticBuilder';
 import { DbRecord } from '../../../types';
 
 export const testConfigValidation = () => {
@@ -95,7 +95,7 @@ export const testConfigValidation = () => {
       [
         'a default value must be a number or "undefined"',
         { formula: 'A + 1', aggregation: { A: 'SUM' }, defaultValues: { A: '10' } },
-        /Value 'A' in defaultValues is not a number or 'undefined': 10/,
+        /Value 'A' in defaultValues is not in allowed types \(number\) or 'undefined': 10/,
       ],
       [
         'parameters must be an array of objects',
@@ -122,7 +122,7 @@ export const testConfigValidation = () => {
 
     it.each(testData)('%s', (_, config, expectedError) => {
       const indicator = { code: 'test', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(mockApi, indicator);
+      const builder = new AnalyticArithmeticBuilder(mockApi, indicator);
       return expect(() => builder.validateConfig()).toThrow(expectedError);
     });
   });
@@ -200,7 +200,7 @@ export const testConfigValidation = () => {
 
     it.each(testData)('%s', (_, config) => {
       const indicator = { code: 'test', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(mockApi, indicator);
+      const builder = new AnalyticArithmeticBuilder(mockApi, indicator);
       return expect(() => builder.validateConfig()).not.toThrow();
     });
   });

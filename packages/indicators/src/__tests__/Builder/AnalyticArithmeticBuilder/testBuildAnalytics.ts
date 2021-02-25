@@ -4,10 +4,10 @@
  */
 
 import { createJestMockInstance } from '@tupaia/utils';
-import { ArithmeticBuilder } from '../../../Builder/ArithmeticBuilder/ArithmeticBuilder';
+import { AnalyticArithmeticBuilder } from '../../../Builder/AnalyticArithmeticBuilder/AnalyticArithmeticBuilder';
 import { DbRecord } from '../../../types';
 import { createAggregator } from '../stubs';
-import { AGGREGATOR_ANALYTICS } from './ArithmeticBuilder.fixtures';
+import { AGGREGATOR_ANALYTICS } from './AnalyticArithmeticBuilder.fixtures';
 
 export const testBuildAnalytics = () => {
   const aggregator = createAggregator(AGGREGATOR_ANALYTICS);
@@ -41,7 +41,7 @@ export const testBuildAnalytics = () => {
     it.each(testData)('%s', async (_, formula, expectedValues) => {
       const config = { formula, aggregation: 'RAW' };
       const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(mockApi, indicator);
+      const builder = new AnalyticArithmeticBuilder(mockApi, indicator);
       const expected = valuesToAnalytics(expectedValues);
 
       return expect(builder.buildAnalytics(fetchOptions)).resolves.toIncludeSameMembers(expected);
@@ -83,7 +83,7 @@ export const testBuildAnalytics = () => {
     it.each(testData)('%s', (_, formula, expectedValues) => {
       const config = { formula, aggregation: 'RAW' };
       const indicator = { code: 'TestAnalytics', builder: 'arithmetic', config };
-      const builder = new ArithmeticBuilder(mockApi, indicator);
+      const builder = new AnalyticArithmeticBuilder(mockApi, indicator);
       const expected = valuesToAnalytics(expectedValues);
 
       return expect(builder.buildAnalytics(fetchOptions)).resolves.toIncludeSameMembers(expected);
@@ -177,7 +177,7 @@ export const testBuildAnalytics = () => {
         builder: 'arithmetic',
         config: { aggregation: 'RAW', ...config },
       };
-      const builder = new ArithmeticBuilder(mockApi, indicator);
+      const builder = new AnalyticArithmeticBuilder(mockApi, indicator);
       const expected = expectedDimensions.map(([organisationUnit, period, value]) => ({
         dataElement: 'TestAnalytics',
         organisationUnit,

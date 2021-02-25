@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   await db.runSql(`
     UPDATE indicator
-    SET builder = 'arithmeticAnalytic'
+    SET builder = 'analyticArithmetic'
     WHERE builder = 'arithmetic';
   `);
 };
@@ -26,7 +26,7 @@ exports.down = async function (db) {
   await db.runSql(`
     UPDATE indicator
     SET builder = 'arithmetic'
-    WHERE builder = 'arithmeticAnalytic';
+    WHERE builder = 'analyticArithmetic';
   `);
 };
 

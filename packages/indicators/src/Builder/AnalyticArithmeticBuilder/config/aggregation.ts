@@ -4,16 +4,16 @@
  */
 
 import { toArray } from '@tupaia/utils';
-import { Aggregation, AggregationList } from '../../../types';
+import { AggregationList } from '../../../types';
 import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
-import { AggregationDescriptor, AggregationSpecs, ArithmeticConfig } from './types';
+import { AggregationDescriptor, AggregationSpecs, AnalyticArithmeticConfig } from './types';
 
 enum AggregationType {
   String, // 'SUM'
   Array, // ['SUM', 'MOST_RECENT']
   Object, // { type: 'OFFSET_PERIOD', config: { periodType: 'week' }}
-  // Dictionary keys are data elements included in `ArithmeticConfig.formula`
-  // or `ArithmeticConfig.parameters`
+  // Dictionary keys are data elements included in `AnalyticArithmeticConfig.formula`
+  // or `AnalyticArithmeticConfig.parameters`
   Dictionary, // { BCD1: 'SUM', BCD2: ['COUNT', 'FINAL_EACH_WEEK' ] }
 }
 
@@ -122,7 +122,7 @@ export const validateAggregation = (
 const descriptorToAggregation = (descriptor: AggregationDescriptor) =>
   typeof descriptor === 'object' ? descriptor : { type: descriptor };
 
-const getAggregationDictionary = (config: ArithmeticConfig): Record<string, AggregationSpecs> => {
+const getAggregationDictionary = (config: AnalyticArithmeticConfig): Record<string, AggregationSpecs> => {
   const { aggregation, formula } = config;
 
   const aggregationType = getAggregationType(aggregation);
@@ -136,7 +136,7 @@ const getAggregationDictionary = (config: ArithmeticConfig): Record<string, Aggr
 };
 
 export const getAggregationListByCode = (
-  config: ArithmeticConfig,
+  config: AnalyticArithmeticConfig,
 ): Record<string, AggregationList> => {
   const aggregationDictionary = getAggregationDictionary(config);
 

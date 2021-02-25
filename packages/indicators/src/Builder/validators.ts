@@ -12,7 +12,7 @@ export const assertDefaultValuesHaveAllowedTypesOrUndefined = (
   Object.entries(defaultValues).forEach(([code, value]) => {
     if (!allowedTypes.includes(typeof value) && value !== 'undefined') {
       throw new Error(
-        `Value '${code}' in defaultValues is not in types ${allowedTypes.toString()} or 'undefined': ${value}`,
+        `Value '${code}' in defaultValues is not in allowed types (${allowedTypes.toString()}) or 'undefined': ${value}`,
       );
     }
   });
