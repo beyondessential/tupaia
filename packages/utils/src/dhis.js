@@ -70,6 +70,8 @@ export const getDhisConfig = ({
   }
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   const serverUrl = getServerUrlFromName(serverName);
-  const serverPushEnable = getServerVariable(serverName, 'PUSH_ENABLE');
-  return { serverName, serverUrl, serverPushEnable };
+  const serverSyncEnableParam = getServerVariable(serverName, 'DHIS_SYNC_ENABLE');
+  const serverSyncEnable = serverSyncEnableParam ? serverSyncEnableParam === 'true' : true;
+
+  return { serverName, serverUrl, serverSyncEnable };
 };

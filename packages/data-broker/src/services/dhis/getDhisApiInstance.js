@@ -10,12 +10,12 @@ import { DhisInputSchemeResolvingApiProxy } from './DhisInputSchemeResolvingApiP
 const instances = {};
 
 export const getDhisApiInstance = (options, models) => {
-  const { serverName, serverUrl, serverPushEnable } = getDhisConfig(options);
+  const { serverName, serverUrl, serverSyncEnable } = getDhisConfig(options);
   if (!instances[serverName]) {
     // Having a subclass of DhisApi causes some sort of circular dependency issue here, so we
     // have to extend it using an object proxy, which intercepts overridden method calls and passes
     // the rest through.
-    const api = new DhisApi(serverName, serverUrl, serverPushEnable);
+    const api = new DhisApi(serverName, serverUrl, serverSyncEnable);
     const apiExtension = new DhisInputSchemeResolvingApiProxy(models, api);
     instances[serverName] = createClassExtendingProxy(api, apiExtension);
   }

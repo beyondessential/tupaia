@@ -9,9 +9,9 @@ import { getDhisConfig } from '@tupaia/utils';
 const instances = {};
 
 export const getDhisApiInstance = options => {
-  const { serverName, serverUrl, serverPushEnable } = getDhisConfig(options);
+  const { serverName, serverUrl, serverSyncEnable } = getDhisConfig(options);
   if (!instances[serverName]) {
-    instances[serverName] = new DhisApi(serverName, serverUrl, serverPushEnable);
+    instances[serverName] = new DhisApi(serverName, serverUrl, serverSyncEnable);
   }
   return instances[serverName];
 };
