@@ -7,3 +7,5 @@
 export { ApiConnection } from './ApiConnection';
 export { AuthConnection } from './AuthConnection';
 export { SessionModel, SessionType } from './Session';
+export { Route } from './Route';
+export { UnauthenticatedRoute } from './UnauthenticatedRoute';

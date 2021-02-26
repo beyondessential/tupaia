@@ -29,7 +29,7 @@ export class AuthConnection extends ApiConnection {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
-      { emailAddress, password, deviceName: `LESMIS-SERVER: ${deviceName}` },
+      { emailAddress, password, deviceName: `TUPAIA-SERVER: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
   }

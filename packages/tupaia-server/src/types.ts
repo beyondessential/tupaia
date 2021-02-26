@@ -1,7 +1,6 @@
-/*
+/**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
  */
 
 import { Request } from 'express';
@@ -16,12 +15,12 @@ export interface SessionCookie {
   reset?: () => void;
 }
 
-type LesmisRequestBody = Record<string, unknown>;
+type TupaiaRequestBody = Record<string, unknown>;
 
-export interface LesmisRequest<>extends Request<
+export interface TupaiaRequest<>extends Request<
     ParamsDictionary,
     unknown,
-    LesmisRequestBody,
+    TupaiaRequestBody,
     Query
   > {
   sessionModel: SessionModel;
@@ -29,7 +28,7 @@ export interface LesmisRequest<>extends Request<
   session?: SessionType;
 }
 
-export interface LesmisResponseBody {
+export interface TupaiaResponseBody {
   accessPolicy?: AccessPolicyObject;
   error?: string;
 }

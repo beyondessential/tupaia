@@ -4,9 +4,8 @@
  */
 
 import { PermissionsError } from '@tupaia/utils';
-import { AuthConnection } from '@tupaia/tupaia-server';
+import { AuthConnection, UnauthenticatedRoute } from '@tupaia/tupaia-server';
 import { Credentials } from '../types';
-import { UnauthenticatedRoute } from './UnauthenticatedRoute';
 import { LESMIS_PERMISSION_GROUP } from '../constants';
 
 export class LoginRoute extends UnauthenticatedRoute {
