@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import momentTimezone from 'moment-timezone';
+import moment from 'moment';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
@@ -395,17 +395,17 @@ describe('surveyResponse endpoint', () => {
 
     const { surveyResponseId } = body.results[0];
     const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
-    expect(momentTimezone.tz(dbResponse.submission_time, dbResponse.timezone).format()).to.be.oneOf(
-      [
-        '2019-07-31T06:48:00+13:00',
-        // While 'Antarctica/McMurdo' is in DST time, it will be selected as the timezone,
-        // however the timestamp is hardcoded to a date outside of DST time for McMurdo, so it will be
-        // parsed with it's non-DST +12 offset.
-        '2019-07-31T05:48:00+12:00',
-      ],
-    );
+    expect(moment.utc(dbResponse.data_time).tz(dbResponse.timezone).format()).to.be.oneOf([
+      '2019-07-31T06:48:00+13:00',
+      // While 'Antarctica/McMurdo' is in DST time, it will be selected as the timezone,
+      // however the timestamp is hardcoded to a date outside of DST time for McMurdo, so it will be
+      // parsed with it's non-DST +12 offset.
+      '2019-07-31T05:48:00+12:00',
+    ]);
     expect(dbResponse.timezone).to.be.oneOf(timezones);
-    expect(dbResponse.submission_time.toISOString()).to.equal('2019-07-30T17:48:00.000Z');
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+      '2019-07-30T17:48:00.000',
+    );
   });
 
   describe('Update entity for existing survey response', async function () {
