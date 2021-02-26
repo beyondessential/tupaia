@@ -25,7 +25,7 @@ const matchingFields = [
   'event_id',
 ];
 
-describe.only('AnalyticsRefresher', () => {
+describe('AnalyticsRefresher', () => {
   const database = getTestDatabase();
   const models = getTestModels();
   const analyticsRefresher = new AnalyticsRefresher(database, models);
