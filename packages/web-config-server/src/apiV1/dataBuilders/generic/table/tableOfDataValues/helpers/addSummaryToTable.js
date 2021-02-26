@@ -6,13 +6,13 @@
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
 const percentageOfConditions = (valueSet, config) => {
-  const valueNotAllUndefined = valueSet.some(value => value !== undefined);
-  if (valueSet.length === 0 || !valueNotAllUndefined) return false;
+  const cleanedValueSet = valueSet.filter(value => value !== undefined);
+  if (cleanedValueSet.length === 0) return false;
   const { numerator: numeratorConfig } = config;
-  const numerator = valueSet.filter(value =>
+  const numerator = cleanedValueSet.filter(value =>
     checkValueSatisfiesCondition(value, numeratorConfig.condition),
   ).length;
-  const denominator = valueSet.length;
+  const denominator = cleanedValueSet.length;
   return `${((numerator / denominator) * 100).toFixed(0)}%`;
 };
 
