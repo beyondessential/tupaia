@@ -4,3 +4,4 @@
  */
 
 export { AnalyticsRefresher } from './AnalyticsRefresher';
+export { MaterializedViewLogDatabaseModel } from './MaterializedViewLogDatabaseModel';

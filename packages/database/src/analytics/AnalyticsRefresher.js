@@ -10,6 +10,8 @@ export class AnalyticsRefresher {
     this.database = database;
     this.models = models;
     this.scheduledRefreshTimeout = null;
+    this.scheduledRefreshPromise = null;
+    this.scheduledRefreshPromiseResolve = null;
     this.changeHandlerCancellers = [];
   }
 
@@ -32,20 +34,27 @@ export class AnalyticsRefresher {
       clearTimeout(this.scheduledRefreshTimeout);
     }
 
+    if (!this.scheduledRefreshPromise) {
+      this.scheduledRefreshPromise = new Promise(resolve => {
+        this.scheduledRefreshPromiseResolve = resolve;
+      });
+    }
+
     // schedule the rebuild to happen after an adequate period of debouncing
     this.scheduledRefreshTimeout = setTimeout(this.refreshAnalytics, REFRESH_DEBOUNCE_TIME);
+    return this.scheduledRefreshPromise;
   }
 
   refreshAnalytics = async () => {
     // remove timeout so any jobs added now get scheduled anew
+    const existingResolve = this.scheduledRefreshPromiseResolve;
     this.scheduledRefreshTimeout = null;
+    this.scheduledRefreshPromise = null;
 
     // get the subtrees to delete, then run the delete
-    const start = Date.now();
     await this.database.executeSql(
       `SELECT mv$refreshMaterializedView('analytics', 'public', true);`,
     );
-    const end = Date.now();
-    console.log(`Refreshed analytics table, took: ${end - start}ms`);
+    existingResolve();
   };
 }
