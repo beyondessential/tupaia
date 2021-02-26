@@ -81,6 +81,10 @@
       "path": "packages/report-server"
     },
     {
+      "name": "tupaia-server",
+      "path": "packages/tupaia-server"
+    },
+    {
       "name": "ui-components",
       "path": "packages/ui-components"
     },

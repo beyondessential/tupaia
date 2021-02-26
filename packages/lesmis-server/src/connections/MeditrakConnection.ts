@@ -4,7 +4,7 @@
  */
 import camelcaseKeys from 'camelcase-keys';
 
-import { ApiConnection } from './ApiConnection';
+import { ApiConnection } from '@tupaia/tupaia-server';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 

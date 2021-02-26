@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ApiConnection } from './ApiConnection';
+import { ApiConnection } from '@tupaia/tupaia-server';
 
 const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 

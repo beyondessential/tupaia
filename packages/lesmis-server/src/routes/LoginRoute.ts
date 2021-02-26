@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { AuthConnection } from '../connections/AuthConnection';
+import { PermissionsError } from '@tupaia/utils';
+import { AuthConnection } from '@tupaia/tupaia-server';
 import { Credentials } from '../types';
 import { UnauthenticatedRoute } from './UnauthenticatedRoute';
-import { PermissionsError } from '@tupaia/utils';
 import { LESMIS_PERMISSION_GROUP } from '../constants';
 
 export class LoginRoute extends UnauthenticatedRoute {

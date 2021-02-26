@@ -27,7 +27,7 @@
   "overrides": [
     // TypeScript packages
     {
-      "files": ["packages/indicators/**", "packages/psss-server/**", "packages/report-server/**"],
+      "files": ["packages/indicators/**", "packages/psss-server/**", "packages/lesmis-server/**", "packages/tupaia-server/**","packages/report-server/**"],
       "extends": "@beyondessential/ts",
       "parserOptions": {
         "project": "tsconfig.json"
