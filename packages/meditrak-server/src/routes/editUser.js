@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { DatabaseError } from '@tupaia/utils';
-import { editRecord } from './editRecord';
+import { EditUserAccounts } from './userAccounts';
 
 export async function editUser(req, res, next) {
   const { models, userId } = req;
@@ -15,10 +15,11 @@ export async function editUser(req, res, next) {
 
   try {
     req.params = {
-      id: userId,
-      resource: 'user',
+      recordId: userId,
     };
-    await editRecord(req, res);
+    req.endpoint = '/users';
+    const editUserAccountHandlerClass = new EditUserAccounts(req, res);
+    await editUserAccountHandlerClass.handle();
   } catch (error) {
     next(error);
   }

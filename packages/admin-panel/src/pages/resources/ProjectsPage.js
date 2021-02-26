@@ -22,7 +22,7 @@ const FIELDS = [
     source: 'dashboard_group_name',
     type: 'tooltip',
     editConfig: {
-      optionsEndpoint: 'dashboardGroup',
+      optionsEndpoint: 'dashboardGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
       sourceKey: 'dashboard_group_name',
@@ -51,10 +51,11 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Tile Sets',
-    source: 'tile_sets',
-    secondaryLabel: 'Comma separated list (eg. osm,satellite,terrain).',
-    type: 'tooltip',
+    Header: 'Config',
+    source: 'config',
+    type: 'jsonTooltip',
+    editConfig: { type: 'jsonEditor' },
+    secondaryLabel: 'eg. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
   },
   {
     Header: 'Sort',
@@ -70,7 +71,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'project',
+      editEndpoint: 'projects',
       fields: FIELDS,
     },
   },
@@ -83,7 +84,7 @@ const EDIT_CONFIG = {
 export const ProjectsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Projects"
-    endpoint="project"
+    endpoint="projects"
     columns={COLUMNS}
     editConfig={EDIT_CONFIG}
     getHeaderEl={getHeaderEl}
