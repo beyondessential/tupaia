@@ -38,6 +38,7 @@ export {
   selectAdjustedProjectBounds,
   selectTileSets,
   selectActiveTileSet,
+  selectAreRegionLabelsPermanent,
 } from './projectSelectors';
 
 export {

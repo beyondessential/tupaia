@@ -21,6 +21,7 @@ import {
   selectAllMeasuresWithDisplayInfo,
   selectCurrentMeasureId,
   selectOrgUnitChildren,
+  selectAreRegionLabelsPermanent,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
 
@@ -61,7 +62,13 @@ class ConnectedPolygon extends Component {
   }
 
   getTooltip(name) {
-    const { isChildArea, hasMeasureData, orgUnitMeasureData, measureOptions } = this.props;
+    const {
+      isChildArea,
+      hasMeasureData,
+      orgUnitMeasureData,
+      measureOptions,
+      permanentLabels,
+    } = this.props;
     const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
 
     // don't render tooltips if we have a measure loaded
@@ -72,7 +79,13 @@ class ConnectedPolygon extends Component {
       ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
       : name;
 
-    return <AreaTooltip permanent={isChildArea && !hasMeasureValue} text={text} />;
+    return (
+      <AreaTooltip
+        permanent={permanentLabels && isChildArea && !hasMeasureValue}
+        sticky={!permanentLabels}
+        text={text}
+      />
+    );
   }
 
   render() {
@@ -138,6 +151,7 @@ ConnectedPolygon.propTypes = {
   }).isRequired,
   measureId: PropTypes.string,
   isActive: PropTypes.bool,
+  permanentLabels: PropTypes.bool,
   isChildArea: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func,
   coordinates: PropTypes.arrayOf(
@@ -158,6 +172,7 @@ ConnectedPolygon.propTypes = {
 ConnectedPolygon.defaultProps = {
   measureId: '',
   isActive: false,
+  permanentLabels: true,
   isChildArea: false,
   onChangeOrgUnit: () => {},
   coordinates: undefined,
@@ -205,6 +220,7 @@ const mapStateToProps = (state, givenProps) => {
   const coordinates = orgUnit ? orgUnit.location.region : undefined;
 
   return {
+    permanentLabels: selectAreRegionLabelsPermanent(state),
     measureId,
     coordinates,
     hasShadedChildren,
