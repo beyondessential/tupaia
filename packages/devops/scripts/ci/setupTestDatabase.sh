@@ -9,5 +9,11 @@ echo "Deleting migrations that target data modifications, as there is no data to
 rm packages/database/src/migrations/*modifies-data.js
 yarn migrate
 echo "Installing Analytics table"
-yarn workspace @tupaia/data-api install-mv-refresh
-yarn workspace @tupaia/data-api build-analytics-table
+export DB_URL=$CI_TEST_DB_URL
+export DB_USER=$CI_TEST_DB_USER
+export DB_NAME=$CI_TEST_DB_NAME
+export DB_PASSWORD=$CI_TEST_DB_PASSWORD
+cd packages/data-api
+(scripts/installMvRefreshModule.sh)
+(scripts/buildAnalyticsMaterializedView.sh)
+cd ../..
