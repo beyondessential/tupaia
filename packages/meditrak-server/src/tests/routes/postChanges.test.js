@@ -32,6 +32,7 @@ const getQuestionId = (questionNumber = 0) => {
   const id = `4705c02a7_question_${questionNumber}_test`;
   return id.substring(id.length - 24); // Cut off excess for questions > 9
 };
+const defaultTimezone = 'Pacific/Auckland';
 let userId = null; // will be determined in 'before' phase
 
 const generateDummySurveyResponse = (extraFields = {}) => ({
@@ -44,6 +45,7 @@ const generateDummySurveyResponse = (extraFields = {}) => ({
   survey_id: surveyId,
   user_id: userId,
   entities_created: [],
+  timezone: defaultTimezone,
   ...extraFields,
 });
 
@@ -66,7 +68,7 @@ const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
 const PSQL_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 const formatDateAsPSQLString = date => {
-  return moment.parseZone(date).format(PSQL_DATE_FORMAT);
+  return moment(date).tz(defaultTimezone).format(PSQL_DATE_FORMAT);
 };
 
 function expectEqualStrings(a, b) {
