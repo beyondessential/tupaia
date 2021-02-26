@@ -1,3 +1,3 @@
-# @tupaia/lesmi-server
+# @tupaia/tupaia-server
 
-Back end server for the LESMIS web app.
+Back end server boilerplate.

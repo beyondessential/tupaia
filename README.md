@@ -42,6 +42,7 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 - [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
+- [tupaia-server](https://github.com/beyondessential/tupaia/blob/dev/packages/tupaia-server/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
 ## Getting started
