@@ -126,7 +126,8 @@ export async function exportSurveyResponses(req, res) {
       }
       let exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
       const surveyResponseAnswers = [];
-      const processSurveyResponse = async (currentSurveyResponse, currentEntity, nestedAnswers) => {
+
+      const processSurveyResponse = (currentSurveyResponse, currentEntity, answers) => {
         const surveyDate = currentSurveyResponse.timezoneAwareSubmissionTime();
         const responseName = truncateString(currentEntity.name, 30);
         const dateString = moment(surveyDate).format(EXPORT_DATE_FORMAT);
@@ -134,20 +135,20 @@ export async function exportSurveyResponses(req, res) {
         exportData[1].push(currentEntity.code);
         exportData[2].push(responseName);
         exportData[3].push(dateString);
-        const answers =
-          nestedAnswers && nestedAnswers[currentSurveyResponse.id]
-            ? nestedAnswers[currentSurveyResponse.id]
-            : await findAnswersInSurveyResponse(models, currentSurveyResponse.id);
+
         const answersByQuestionId = {};
-        answers.forEach(({ 'question.id': questionId, text }) => {
-          answersByQuestionId[questionId] = text;
-        });
-        surveyResponseAnswers.push(answersByQuestionId);
+        if (answers) {
+          answers.forEach(({ 'question.id': questionId, text }) => {
+            answersByQuestionId[questionId] = text;
+          });
+          surveyResponseAnswers.push(answersByQuestionId);
+        }
       };
 
       if (surveyResponse) {
         const entity = await models.entity.findById(surveyResponse.entity_id);
-        await processSurveyResponse(surveyResponse, entity);
+        const answers = await findAnswersInSurveyResponse(models, surveyResponse.id);
+        processSurveyResponse(surveyResponse, entity, answers);
       } else {
         const surveyResponseFindConditions = {
           survey_id: currentSurvey.id,
@@ -180,7 +181,7 @@ export async function exportSurveyResponses(req, res) {
           surveyResponseFindConditions,
           sortAndLimitSurveyResponses,
         );
-        const nestedEntitiesById = keyBy(entities, 'id');
+        const entitiesById = keyBy(entities, 'id');
         // Fetch all answers of all survey responses for further use in 'processSurveyResponse()'.
         const surveyResponseIds = surveyResponses.map(response => response.id);
         const answers = await findAnswersInSurveyResponse(
@@ -189,13 +190,14 @@ export async function exportSurveyResponses(req, res) {
           {},
           { columns: [{ [`${TYPES.SURVEY_RESPONSE}.id`]: 'survey_response.id' }], sort: [] },
         );
-        const nestedAnswers = groupBy(answers, 'survey_response.id');
-        console.log(nestedAnswers);
+        const answersByResponseId = groupBy(answers, 'survey_response.id');
         for (const response of surveyResponses) {
-          await processSurveyResponse(
+          const answersByCurrentResponseId =
+            answersByResponseId && answersByResponseId[response.id];
+          processSurveyResponse(
             response,
-            nestedEntitiesById[response.entity_id],
-            nestedAnswers,
+            entitiesById[response.entity_id],
+            answersByCurrentResponseId,
           );
         }
       }
