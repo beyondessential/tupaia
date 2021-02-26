@@ -61,7 +61,7 @@ const findNestedGroupedMapOverlays = async (
         childMapOverlayGroupRelations,
         accessibleMapOverlays,
       );
-      const mapOverlayGroupResult = integrateMapOverlayReference({
+      const mapOverlayGroupResult = integrateMapOverlayItemsReference({
         id: mapOverlayGroupRelation.child_id,
         groupName: name,
         children,
@@ -80,33 +80,41 @@ const findNestedGroupedMapOverlays = async (
   });
 };
 
-// Only display reference info on map overlay group if all map overlays have same reference.
-const integrateMapOverlayReference = ({ id, groupName, children }) => {
+/**
+ * We will only display reference info on topper level map overlay group, if all `mapOverlayItem` have same reference.
+ *
+ * In this function, variable `mapOverlayItem` is an abstract item that can be either map overlay or map overlay group
+ *
+ * @param children an array of variable `mapOverlayItem`
+ */
+const integrateMapOverlayItemsReference = ({ id, groupName, children }) => {
   const mapOverlayGroupResult = {
     id,
     name: groupName,
   };
-  const getReference = mapOverlay => {
-    if (mapOverlay[INFO] && mapOverlay[INFO][REFERENCE]) return mapOverlay[INFO][REFERENCE];
+  const getReference = mapOverlayItem => {
+    if (mapOverlayItem[INFO] && mapOverlayItem[INFO][REFERENCE])
+      return mapOverlayItem[INFO][REFERENCE];
     return null;
   };
   const firstReference = Array.isArray(children) && children[0] && getReference(children[0]);
   if (firstReference) {
     const referencesAreTheSame = children.every(
-      mapOverlay => getReference(mapOverlay) && isEqual(getReference(mapOverlay), firstReference),
+      mapOverlayItem =>
+        getReference(mapOverlayItem) && isEqual(getReference(mapOverlayItem), firstReference),
     );
 
     // All map overlays have same reference
     if (referencesAreTheSame) {
       // Delete all the same references
-      const noReferenceMapOverlayResult = children.map(mapOverlay => {
-        const { [INFO]: info, ...restValues } = mapOverlay;
+      const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
+        const { [INFO]: info, ...restValues } = mapOverlayItem;
         delete info[REFERENCE];
         return { ...restValues, info };
       });
       return {
         ...mapOverlayGroupResult,
-        children: noReferenceMapOverlayResult,
+        children: noReferenceMapOverlayItems,
         [INFO]: { [REFERENCE]: firstReference },
       };
     }
@@ -222,7 +230,7 @@ export const findAccessibleGroupedMapOverlays = async (models, accessibleMapOver
 
     if (isNonEmptyMapOverlayGroup) {
       accessibleRelations.push(worldRelationById[groupId]);
-      const accessibleOverlayGroup = integrateMapOverlayReference({
+      const accessibleOverlayGroup = integrateMapOverlayItemsReference({
         id: groupId,
         groupName: name,
         children: nestedMapOverlayGroups,
