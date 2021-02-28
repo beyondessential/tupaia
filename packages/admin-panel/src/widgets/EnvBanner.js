@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyledBanner = styled.div`
-  background: #1abc9c;
+  background: '#f39c12';
   color: white;
   font-size: 14px;
   font-weight: 500;
