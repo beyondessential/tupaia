@@ -304,7 +304,7 @@ export const getDataElementsFromCalculateOperationConfig = config =>
   (config.dataElementToString && Object.keys(config.dataElementToString)) || // COMBINE_BINARY_AS_STRING
   [];
 
-export const calculateOperationForAnalytics = (models, analytics, config) => {
+export const calculateOperationForAnalytics = async (models, analytics, config) => {
   const { operator } = config;
   if (SINGLE_ANALYTIC_OPERATORS.includes(operator)) {
     return performSingleAnalyticOperation(analytics, config, models);
