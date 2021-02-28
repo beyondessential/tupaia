@@ -8,7 +8,10 @@ import { kebab as convertToKebabCase } from 'case';
 import { getCountryNameFromCode } from './getCountryNameFromCode';
 
 const REGIONAL_SERVER_NAME = 'regional';
-const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, 'tonga', 'lao-peoples-democratic-republic']);
+const TONGA_SERVER_NAME = 'tonga';
+const LAOS_DHIS_SERVER_NAME = 'lao-peoples-democratic-republic';
+const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, TONGA_SERVER_NAME, LAOS_DHIS_SERVER_NAME]);
+const READ_ONLY_SERVERS = new Set([LAOS_DHIS_SERVER_NAME]);
 
 const getServerUrlFromName = serverName => {
   const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
@@ -41,9 +44,6 @@ const getServerName = (entityCode, isDataRegional) => {
     : REGIONAL_SERVER_NAME; // If the country does not have a dhis2 server, use the regional server
 };
 
-const getServerVariable = (serverName, variableName) =>
-    process.env[`${serverName.toUpperCase()}_${variableName}`] || process.env[variableName];
-
 /**
  * Returns configuration for creating an api instance connected to the dhis server.
  * The country containing the given entityCode will be used. If either none is passed in or the data
@@ -70,8 +70,7 @@ export const getDhisConfig = ({
   }
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   const serverUrl = getServerUrlFromName(serverName);
-  const serverSyncEnableParam = getServerVariable(serverName, 'DHIS_SYNC_ENABLE');
-  const serverSyncEnable = serverSyncEnableParam ? serverSyncEnableParam === 'true' : true;
+  const serverReadOnly = READ_ONLY_SERVERS.has(serverName);
 
-  return { serverName, serverUrl, serverSyncEnable };
+  return { serverName, serverUrl, serverReadOnly };
 };
