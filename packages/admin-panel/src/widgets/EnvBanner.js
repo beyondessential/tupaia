@@ -13,7 +13,7 @@ const StyledBanner = styled.div`
   font-weight: 500;
   padding: 14px;
   text-transform: capitalize;
-  text-align: right;
+  text-align: center;
 `;
 
 export const EnvBanner = () => {
