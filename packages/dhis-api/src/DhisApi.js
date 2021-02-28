@@ -34,9 +34,10 @@ const {
 const LATEST_LOOKBACK_PERIOD = '600d';
 
 export class DhisApi {
-  constructor(serverName, serverUrl) {
+  constructor(serverName, serverUrl, serverReadOnly = false) {
     this.serverName = serverName;
     this.serverUrl = serverUrl;
+    this.serverReadOnly = serverReadOnly;
     this.fetcher = new DhisFetcher(serverName, serverUrl, this.constructError);
     this.deleteEvent = this.deleteEvent.bind(this);
   }
@@ -132,6 +133,10 @@ export class DhisApi {
   }
 
   async post(endpoint, data, queryParameters) {
+    if (this.serverReadOnly) {
+      throw new Error(`Attempted to push data to ${this.serverName} that should not be pushed`);
+    }
+
     return this.fetch(endpoint, queryParameters, {
       body: JSON.stringify(data),
       method: 'POST',
@@ -139,6 +144,10 @@ export class DhisApi {
   }
 
   async put(endpoint, data, queryParameters) {
+    if (this.serverReadOnly) {
+      throw new Error(`Attempted to push data to ${this.serverName} that should not be pushed`);
+    }
+
     return this.fetch(endpoint, queryParameters, {
       body: JSON.stringify(data),
       method: 'PUT',
@@ -146,6 +155,10 @@ export class DhisApi {
   }
 
   async delete(endpoint, queryParameters) {
+    if (this.serverReadOnly) {
+      throw new Error(`Attempted to delete data to ${this.serverName} that should not be deleted`);
+    }
+
     return this.fetch(endpoint, queryParameters, { method: 'DELETE' });
   }
 
