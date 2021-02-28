@@ -11,3 +11,4 @@ export { Header } from './Header';
 export { PageBody } from './PageBody';
 export { Footer } from './Footer';
 export { ModalContentProvider } from './ModalContentProvider';
+export { EnvBanner } from './EnvBanner';
