@@ -55,6 +55,16 @@ const IMPORT_CONFIG = {
   actionConfig: {
     importEndpoint: 'entities',
   },
+  queryParameters: [
+    {
+      label: 'Push new entities to DHIS2 server',
+      parameterKey: 'pushToDhis',
+      type: 'boolean',
+      editConfig: {
+        type: 'boolean',
+      },
+    },
+  ]
 };
 
 export const EntitiesPage = ({ getHeaderEl }) => (
