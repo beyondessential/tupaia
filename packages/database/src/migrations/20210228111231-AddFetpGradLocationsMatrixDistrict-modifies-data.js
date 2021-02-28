@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const reportConfig = {
-  id: 'FETP_PG_graduate_locations',
+  id: 'FETP_PG_graduate_locations_district',
   dataBuilder: 'tableOfCalculatedValues',
   dataValues: [
     'HEO = Health Extension Officer',
@@ -31,13 +31,10 @@ const reportConfig = {
   ],
 
   columns: {
-    National: {
-      parentCode: 'PG_National Capital District', // 'National Capital District',
-    },
-    Provinces: {
+    'Provincial Level': {
       parentType: 'district',
     },
-    Districts: {
+    'District Level': {
       parentType: 'sub_district',
     },
   },
@@ -69,7 +66,7 @@ const reportConfig = {
     };
   },
 };
-const dashboardGroups = ['PG_FETP_Country_Public'];
+const dashboardGroups = ['PG_FETP_District_Public'];
 
 const buildReport = report => {
   const dataBuilderConfig = {

@@ -23,7 +23,7 @@ const valueToGroup = (value, config) => {
   return defaultValue;
 };
 
-const performSingleAnalyticOperation = (analytics, config) => {
+const performSingleAnalyticOperation = (analytics, config, models) => {
   const { operator, dataElement } = config;
   const filteredAnalytics = analytics.filter(({ dataElement: de }) => de === dataElement);
   if (filteredAnalytics.length > 1) {
@@ -31,20 +31,60 @@ const performSingleAnalyticOperation = (analytics, config) => {
   } else if (filteredAnalytics.length === 0) {
     return NO_DATA_AVAILABLE;
   }
-  return OPERATORS[operator](filteredAnalytics[0].value, config);
+  return OPERATORS[operator](filteredAnalytics[0].value, config, models);
 };
 
-const sumDataValues = (analytics, dataValues, filter = {}) => {
-  let sum; // Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
-  const { organisationUnit: organisationUnitFilter } = filter;
+const filterAnalytics = async (analytics, filter, models) => {
+  const {
+    organisationUnit: organisationUnitFilter,
+    parentType: organisationUnitParentType,
+    parentCode: organisationUnitParentCode,
+  } = filter;
 
-  analytics.forEach(({ dataElement, value, organisationUnit }) => {
+  if (!(organisationUnitFilter || organisationUnitParentType || organisationUnitParentCode))
+    return analytics;
+
+  // if filtering on parent lets pre-build a orgUnit-parent map
+  const organisationUnitParentMap = await buildOrganisationUnitParentValue(analytics, models);
+
+  return analytics.filter(a => {
+    if (
+      organisationUnitParentCode &&
+      !checkOrganisationUnitParentValue(
+        organisationUnitParentMap,
+        a.organisationUnit,
+        'code',
+        organisationUnitParentCode,
+      )
+    )
+      return false;
+
+    if (
+      organisationUnitParentType &&
+      !checkOrganisationUnitParentValue(
+        organisationUnitParentMap,
+        a.organisationUnit,
+        'type',
+        organisationUnitParentType,
+      )
+    )
+      return false;
+
     if (
       organisationUnitFilter &&
-      !checkValueSatisfiesCondition(organisationUnit, organisationUnitFilter)
+      !checkValueSatisfiesCondition(a.organisationUnit, organisationUnitFilter)
     )
-      return;
+      return false;
 
+    return true;
+  });
+};
+
+const sumDataValues = async (analytics, dataValues, filter = {}, models) => {
+  let sum; // Keep sum undefined so that if there's no data values then we can distinguish between No data and 0
+
+  const filteredAnalytics = await filterAnalytics(analytics, filter, models);
+  filteredAnalytics.forEach(({ dataElement, value }) => {
     if (dataValues.includes(dataElement)) {
       sum = (sum || 0) + (value || 0);
     }
@@ -53,7 +93,7 @@ const sumDataValues = (analytics, dataValues, filter = {}) => {
   return sum;
 };
 
-const countDataValues = (analytics, dataValues, filter, config) => {
+const countDataValues = async (analytics, dataValues, filter, config, models) => {
   return sumDataValues(
     analytics.map(a => ({
       ...a,
@@ -61,7 +101,50 @@ const countDataValues = (analytics, dataValues, filter, config) => {
     })),
     dataValues,
     filter,
+    models,
   );
+};
+
+const buildOrganisationUnitParentValue = async (analytics, models) => {
+  const orgUnitCodes = [...new Set(analytics.map(a => a.organisationUnit))];
+  const parentIdMap = {};
+  const orgUnitParentMap = {};
+
+  const orgUnits = await models.entity.find({ code: orgUnitCodes });
+  const orgUnitParentIds = [...new Set(orgUnits.map(o => o.parent_id))];
+  const orgUnitParents = await models.entity.find({ id: orgUnitParentIds });
+  orgUnitParents.forEach(p => {
+    parentIdMap[p.id] = { code: p.code, type: p.type };
+  });
+
+  orgUnits.forEach(orgUnit => {
+    orgUnitParentMap[orgUnit.code] = parentIdMap[orgUnit.parent_id];
+  });
+  return orgUnitParentMap;
+};
+
+const checkOrganisationUnitParentValue = (
+  organisationUnitParentMap,
+  organisationUnitCode,
+  property,
+  value,
+) => {
+  if (!value || value === '*') return true;
+
+  const parent = organisationUnitParentMap[organisationUnitCode];
+  if (!parent) return false;
+
+  switch (property) {
+    case 'code': {
+      return parent.code === value;
+    }
+    case 'type': {
+      return parent.type === value;
+    }
+    default: {
+      return parent[property] === value;
+    }
+  }
 };
 
 const AGGREGATIONS = {
@@ -69,19 +152,25 @@ const AGGREGATIONS = {
   COUNT: countDataValues,
 };
 
-const performArithmeticOperation = (analytics, arithmeticConfig) => {
+const performArithmeticOperation = async (analytics, arithmeticConfig, models) => {
   const { operator, operands: operandConfigs, filter } = arithmeticConfig;
 
   if (!operandConfigs || operandConfigs.length < 2) {
     throw new Error(`Must have 2 or more operands`);
   }
 
-  const operands = operandConfigs.map(
-    ({ dataValues, aggregationType = 'SUM', aggregationConfig }) => {
+  const operands = await Promise.all(
+    operandConfigs.map(({ dataValues, aggregationType = 'SUM', aggregationConfig }) => {
       if (aggregationType && !AGGREGATIONS[aggregationType])
         throw new Error(`aggregation not found: ${aggregationType}`);
-      return AGGREGATIONS[aggregationType](analytics, dataValues, filter, aggregationConfig);
-    },
+      return AGGREGATIONS[aggregationType](
+        analytics,
+        dataValues,
+        filter,
+        aggregationConfig,
+        models,
+      );
+    }),
   );
 
   let result = operands[0];
@@ -175,11 +264,27 @@ const staticValueOrNoData = (analytics, config) => {
   return analyticsCount > 0 ? value : noDataValue;
 };
 
+const countCondition = async (analytics, config, models) => {
+  const { value, dataElement, filter, aggregationConfig } = config;
+  if (!dataElement) return value;
+
+  const analyticsCount = await countDataValues(
+    analytics,
+    dataElement,
+    filter,
+    aggregationConfig,
+    models,
+  );
+
+  return analyticsCount;
+};
+
 const OPERATORS = {
   DIVIDE: divideValues,
   FRACTION_AND_PERCENTAGE: fractionAndPercentage,
   SUBTRACT: subtractValues,
   CHECK_CONDITION: checkCondition,
+  COUNT_CONDITION: countCondition,
   GROUP: valueToGroup,
   FORMAT: formatString,
   COMBINE_BINARY_AS_STRING: combineBinaryIndicatorsToString,
@@ -199,13 +304,13 @@ export const getDataElementsFromCalculateOperationConfig = config =>
   (config.dataElementToString && Object.keys(config.dataElementToString)) || // COMBINE_BINARY_AS_STRING
   [];
 
-export const calculateOperationForAnalytics = async (models, analytics, config) => {
+export const calculateOperationForAnalytics = (models, analytics, config) => {
   const { operator } = config;
   if (SINGLE_ANALYTIC_OPERATORS.includes(operator)) {
-    return performSingleAnalyticOperation(analytics, config);
+    return performSingleAnalyticOperation(analytics, config, models);
   }
   if (ARITHMETIC_OPERATORS.includes(operator)) {
-    return performArithmeticOperation(analytics, config);
+    return performArithmeticOperation(analytics, config, models);
   }
   if (Object.keys(OPERATORS).includes(operator)) {
     return OPERATORS[operator](analytics, config, models);
