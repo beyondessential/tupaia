@@ -25,7 +25,7 @@ exports.up = async function (db) {
   `)
   ).rows;
 
-  const sbDashboardGroups = dashboardGroups
+  const sbDashboardGroupCodes = dashboardGroups
     .filter(r => r.organisationUnitCode === 'SB')
     .map(dg => dg.code);
 
@@ -34,7 +34,7 @@ exports.up = async function (db) {
   const results = await Promise.all(
     pgDashboardGroups.map(dg => {
       const sbCodeToCheck = `SB${dg.code.substring(2)}`;
-      if (sbDashboardGroups.includes(sbCodeToCheck))
+      if (sbDashboardGroupCodes.includes(sbCodeToCheck))
         return updateValues(
           db,
           'dashboardGroup',
