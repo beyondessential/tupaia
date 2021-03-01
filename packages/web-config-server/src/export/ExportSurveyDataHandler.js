@@ -1,6 +1,7 @@
 import xlsx from 'xlsx';
 import fs from 'fs';
-import moment from 'moment';
+import { truncateString } from 'sussol-utilities';
+import { getExportDatesString } from '@tupaia/utils';
 
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
@@ -50,13 +51,15 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
     const sheetNames = [];
     const sheets = {};
-    const {name: organisationUnitName} = await this.models.entity.findOne({code: data.organisationUnitCode});
+    const { name: organisationUnitName } = await this.models.entity.findOne({
+      code: data.organisationUnitCode,
+    });
     const reportTitle = `${data.name}, ${organisationUnitName}`;
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
       const header = surveyData.data.columns.length
-        ? `Data ${this.getExportDatesString(startDate, endDate)}`
-        : `No data for ${surveyName} ${this.getExportDatesString(startDate, endDate)}`;
+        ? `Data ${getExportDatesString(startDate, endDate)}`
+        : `No data for ${surveyName} ${getExportDatesString(startDate, endDate)}`;
 
       const titleAndHeaderData = [[`${reportTitle}: ${surveyName}`], [header]];
       // Using array of arrays (aoa) input as transformations like mergeSurveys
@@ -73,11 +76,13 @@ export class ExportSurveyDataHandler extends RouteHandler {
       // Formatted data using array of arrays input
       sheet = xlsx.utils.sheet_add_aoa(sheet, formattedData, {
         skipHeader,
-        origin: 'A2',
+        origin: -1, // Append to bottom of worksheet starting on first column
       });
 
-      sheetNames.push(surveyName);
-      sheets[surveyName] = sheet;
+      const sheetName = truncateString(surveyName, 31);
+
+      sheetNames.push(sheetName);
+      sheets[sheetName] = sheet;
     });
 
     const workbook = {
@@ -93,21 +98,4 @@ export class ExportSurveyDataHandler extends RouteHandler {
     xlsx.writeFile(workbook, filePath);
     this.res.download(filePath);
   }
-
-  getExportDatesString = (startDate, endDate) => {
-    const format = 'D-M-YY';
-    let dateString = '';
-
-    if (startDate && endDate) {
-      dateString = `between ${moment(startDate).format(format)} and ${moment(endDate).format(
-        format,
-      )} `;
-    } else if (startDate) {
-      dateString = `after ${moment(startDate).format(format)} `;
-    } else if (endDate) {
-      dateString = `before ${moment(endDate).format(format)} `;
-    }
-
-    return `${dateString}as of ${moment().format(format)}`;
-  };
 }

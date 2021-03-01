@@ -12,8 +12,14 @@ import {
   ValidationError,
   TypeValidationError,
 } from '@tupaia/utils';
-import { extractTabNameFromQuery, getArrayQueryParameter } from './utilities';
-import { convertCellToJson } from './importSurveys/utilities';
+import { extractTabNameFromQuery, getArrayQueryParameter } from '../utilities';
+import { convertCellToJson } from '../importSurveys/utilities';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertTupaiaAdminPanelAccess,
+} from '../../permissions';
+import { assertOptionSetEditPermissions } from './assertOptionSetPermissions';
 
 /**
  * Responds to POST requests to the /import/optionSets endpoint
@@ -34,10 +40,24 @@ export async function importOptionSets(req, res) {
         const [tabName, sheet] = optionSetSheet;
         const optionSetName = extractTabNameFromQuery(tabName, optionSetNames);
 
-        // Find optionSet by name, create if it doesn't exist.
-        const optionSet = await transactingModels.optionSet.findOrCreate({
+        // If optionSet already exists, check we have permission to edit
+        // Otherwise just check we have Tupaia Admin Panel access
+        let optionSet = await transactingModels.optionSet.findOne({
           name: optionSetName,
         });
+        if (optionSet) {
+          const optionSetChecker = accessPolicy =>
+            assertOptionSetEditPermissions(accessPolicy, transactingModels, optionSet.id);
+          await req.assertPermissions(
+            assertAnyPermissions([assertBESAdminAccess, optionSetChecker]),
+          );
+        } else {
+          await req.assertPermissions(
+            assertAnyPermissions([assertBESAdminAccess, assertTupaiaAdminPanelAccess]),
+          );
+          optionSet = await transactingModels.optionSet.create({ name: optionSetName });
+        }
+
         if (!optionSet) {
           throw new DatabaseError('creating option set, check format of import file');
         }
