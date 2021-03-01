@@ -190,7 +190,7 @@ export class EntityType extends DatabaseType {
    * Will prefer the "explore" hierarchy, but if the entity isn't a member of that, will choose
    * the first hierarchy it is a member of, alphabetically
    */
-  async fetchDefaultEntityHierarchyId() {
+  async fetchDefaultEntityHierarchyIdPatiently() {
     const hierarchiesIncludingEntity = await fetchPatiently(
       async () =>
         this.otherModels.entityHierarchy.find(
@@ -225,7 +225,7 @@ export class EntityType extends DatabaseType {
     // if this is an org unit, don't worry about going deeper
     if (orgUnitEntityTypes.has(this.type)) return this;
     // if no hierarchy id was passed in, default to a hierarchy this entity is a part of
-    const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyId());
+    const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyIdPatiently());
     // get ancestors and return the first that is an org unit type
     // we rely on ancestors being returned in order of proximity to this entity
     const ancestors = await this.getAncestors(entityHierarchyId);
