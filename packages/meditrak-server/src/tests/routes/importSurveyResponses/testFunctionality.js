@@ -10,7 +10,12 @@ import {
   buildAndInsertSurveys,
 } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
-import { setupDummySyncQueue, TestableApp, upsertEntity } from '../../testUtilities';
+import {
+  setupDummySyncQueue,
+  TestableApp,
+  upsertEntity,
+  upsertQuestion,
+} from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
@@ -104,17 +109,13 @@ export const testFunctionality = async () => {
       // Import the baseline data
       await app.grantFullAccess();
 
-      const addQuestion = (id, type, options) =>
-        models.question.updateOrCreate(
-          {
-            id,
-          },
-          {
-            text: `Test question ${id}`,
-            type,
-            options: options && options.map(value => ({ value, label: value })),
-          },
-        );
+      const addQuestion = async (id, type, options) =>
+        upsertQuestion({
+          id,
+          text: `Test question ${id}`,
+          type,
+          options: options && options.map(value => ({ value, label: value })),
+        });
 
       await Promise.all([
         addQuestion('fdfcc42a44705c032a8_test', 'FreeText'),
