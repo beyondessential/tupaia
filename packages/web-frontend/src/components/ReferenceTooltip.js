@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { Typography, Tooltip, withStyles, Link } from '@material-ui/core';
+import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
@@ -60,9 +60,9 @@ export const ReferenceTooltip = props => {
       title={
         <Typography variant="caption" style={styles.typography}>
           <span>Source: </span>
-          <Link style={styles.link} href={reference.link} target="_blank" rel="noopener">
+          <a style={styles.link} href={reference.link} target="_blank" rel="noopener noreferrer">
             {reference.name}
-          </Link>
+          </a>
         </Typography>
       }
     >
