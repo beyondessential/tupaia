@@ -1,11 +1,12 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
 
 import momentTimezone from 'moment-timezone';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+
 class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 
@@ -49,7 +50,7 @@ class SurveyResponseType extends DatabaseType {
   }
 }
 
-export class SurveyResponseModel extends DatabaseModel {
+export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateUserReward];
 
   get DatabaseTypeClass() {
