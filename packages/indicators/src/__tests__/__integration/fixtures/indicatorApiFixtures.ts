@@ -101,7 +101,7 @@ const INDICATORS = [
   },
   {
     code: 'MaleWeightLessThan4',
-    builder: 'eventCheckCondition',
+    builder: 'eventCheckConditions',
     config: {
       formula: "equalText(Gender, 'Male') and Weight < 4",
       programCode: 'Births',

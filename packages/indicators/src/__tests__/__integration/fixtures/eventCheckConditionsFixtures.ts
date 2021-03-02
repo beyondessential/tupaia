@@ -9,12 +9,11 @@ import {
   arrayToSurveyResponse,
   arrayToTestCase,
 } from './helpers';
-import { entriesToEventCheckConditionIndicators } from './helpers';
+import { entriesToEventCheckConditionsIndicators } from './helpers';
 
 const ENTITIES = [
   { code: 'AU', name: 'Australia', type: 'country' },
   { code: 'NZ', name: 'New Zealand', type: 'country' },
-  { code: 'US', name: 'America', type: 'country' },
 ];
 
 const SURVEYS = [
@@ -40,9 +39,9 @@ const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
   ['Covid_19_Cases', 'NZ', '2020-04-30', { Quarantine_Place: 'Home', Age: '23' }], // Missing Positive
 ];
 
-const EVENT_COUNT_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
-  EventCheckConditionEmptyConfig: {},
-  EventCheckConditionNoProgramCodeConfig: {
+const EVENT_CHECK_CONDITIONS_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
+  EventCheckConditionsEmptyConfig: {},
+  EventCheckConditionsNoProgramCodeConfig: {
     formula: "equalText(Quarantine_Place, 'Home')",
   },
   NoneQuarantineDefault: {
@@ -66,13 +65,13 @@ const EVENT_COUNT_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
 const ARRAY_TEST_CASES: ArrayTestCase[] = [
   [
     'Throws if config is empty',
-    ['EventCheckConditionEmptyConfig'],
+    ['EventCheckConditionsEmptyConfig'],
     ['2020-01-01', '2020-12-31', ['TO']],
     'Should not be empty',
   ],
   [
     'Throws if config has no programCode',
-    ['EventCheckConditionNoProgramCodeConfig'],
+    ['EventCheckConditionsNoProgramCodeConfig'],
     ['2020-01-01', '2020-12-31', ['NZ']],
     "Error in field 'programCode': Should not be empty",
   ],
@@ -122,11 +121,11 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
   ],
 ];
 
-export const eventCheckConditionFixtures = {
+export const eventCheckConditionsFixtures = {
   setup: {
     dbRecords: {
       entity: ENTITIES,
-      indicator: entriesToEventCheckConditionIndicators(EVENT_COUNT_INDICATOR_ENTRIES),
+      indicator: entriesToEventCheckConditionsIndicators(EVENT_CHECK_CONDITIONS_INDICATOR_ENTRIES),
     },
     surveys: SURVEYS,
     surveyResponses: ARRAY_SURVEY_RESPONSES.map(arrayToSurveyResponse),

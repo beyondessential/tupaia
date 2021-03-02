@@ -55,9 +55,9 @@ export const entriesToArithmeticIndicators = (entries: IndicatorEntries) =>
     return { code, builder: 'analyticArithmetic', config: newConfig };
   });
 
-export const entriesToEventCheckConditionIndicators = (entries: IndicatorEntries) =>
+export const entriesToEventCheckConditionsIndicators = (entries: IndicatorEntries) =>
   Object.entries(entries).map(([code, config]) => ({
     code,
-    builder: 'eventCheckCondition',
+    builder: 'eventCheckConditions',
     config,
   }));

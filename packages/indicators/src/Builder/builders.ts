@@ -4,9 +4,9 @@
  */
 
 import { AnalyticArithmeticBuilder } from './AnalyticArithmeticBuilder';
-import { EventCheckConditionBuilder } from './EventCheckConditionBuilder';
+import { EventCheckConditionsBuilder } from './EventCheckConditionsBuilder';
 
 export const builders = {
   analyticArithmetic: AnalyticArithmeticBuilder,
-  eventCheckCondition: EventCheckConditionBuilder
+  eventCheckConditions: EventCheckConditionsBuilder
 };
