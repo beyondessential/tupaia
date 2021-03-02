@@ -5,6 +5,7 @@
 
 import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
+import { ExpressionParser } from '@tupaia/expression-parser';
 import groupBy from 'lodash.groupby';
 import { Aggregation, Analytic, FetchOptions } from '../types';
 
@@ -41,4 +42,15 @@ export const fetchAnalytics = async (
   );
 
   return analytics;
+};
+
+export const evaluateFormulaToNumber = (
+  parser: ExpressionParser,
+  formula: string,
+  dataValues: Record<string, any>,
+) => {
+  parser.setScope(dataValues);
+  const value = parser.evaluateToNumber(formula);
+  parser.clearScope();
+  return value;
 };

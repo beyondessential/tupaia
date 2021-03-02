@@ -4,5 +4,5 @@
  */
 
 export { getAggregationListByCode } from './aggregation';
-export { ArithmeticConfig, DefaultValue } from './types';
+export { AnalyticArithmeticConfig, DefaultValue } from './types';
 export { configValidators } from './validate';

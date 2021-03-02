@@ -24,7 +24,7 @@ export type DefaultValue = number | 'undefined';
 /**
  * A flexible config schema that can be provided as an input to the indicator
  */
-export type ArithmeticConfig = {
+export type AnalyticArithmeticConfig = {
   readonly formula: string;
   // If `AggregationSpecs` (and not a Record) is passed, it will be applied to all elements in `formula`
   readonly aggregation: AggregationSpecs | Record<string, AggregationSpecs>;
