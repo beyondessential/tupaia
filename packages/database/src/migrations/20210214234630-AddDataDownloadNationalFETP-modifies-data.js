@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DATA_ELEMENT_CODE = 'FGDS';
+const SURVEY_CODE = 'FGDS';
 const BASE_CODE = '_FETP_Raw_Data_Downloads_Country';
 const REPORT_ID = 'FETP_Raw_Data_Graduate_Survey';
 
@@ -27,7 +27,7 @@ const dataBuilderConfig = {
   surveys: [
     {
       name: 'FETP Graduate Data Survey',
-      code: DATA_ELEMENT_CODE,
+      code: SURVEY_CODE,
     },
   ],
   exportDataBuilder: {
@@ -35,7 +35,7 @@ const dataBuilderConfig = {
     dataBuilderConfig: {
       skipHeader: false,
       surveysConfig: {
-        [DATA_ELEMENT_CODE]: {
+        [SURVEY_CODE]: {
           entityAggregation: {
             dataSourceEntityType: 'individual',
           },
