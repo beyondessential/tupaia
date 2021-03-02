@@ -19,15 +19,18 @@ export class IndicatorApi {
     this.aggregator = new Aggregator(dataBroker);
   }
 
-  getAggregator = () => this.aggregator;
+  public getAggregator = () => this.aggregator;
 
-  async buildAnalytics(indicatorCodes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
+  public async buildAnalytics(
+    indicatorCodes: string[],
+    fetchOptions: FetchOptions,
+  ): Promise<Analytic[]> {
     const indicators = await this.models.indicator.find({ code: indicatorCodes });
     const builders = indicators.map(indicator => createBuilder(this, indicator));
     return this.buildAnalyticsForBuilders(builders, fetchOptions);
   }
 
-  async buildAnalyticsForBuilders(
+  public async buildAnalyticsForBuilders(
     builders: Builder[],
     fetchOptions: FetchOptions,
   ): Promise<Analytic[]> {
