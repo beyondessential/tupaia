@@ -45,6 +45,15 @@ const OVERLAYS_TO_REMOVE_FIJI_ACCESS = [
   '59', // AZMNXXXXCAP000
   '62', // RTNLXXXXCAP007
   '63', // ZNSF0020SOD000
+  '117', //	"SS172"
+  '118', //	"SS173"
+  '119', //	"SS174"
+  '120', //	"SS175"
+  '121', //	"SS176"
+  '122', //	"SS177"
+  '123', //	"SS178"
+  '124', //	"SS179"
+  '125', //	"SS180"
 ];
 
 const NEW_FIJI_MEDICINES_OVERLAYS = [
@@ -864,12 +873,6 @@ exports.up = async function (db) {
   await reorderAllVaccineOverlays(db);
 
   await shiftConsumablesOverlayOrders(db);
-
-  await db.runSql(`
-    UPDATE "mapOverlay"
-    SET "name" = 'Tetanus'
-    WHERE id = '119';
-  `);
 };
 
 exports.down = async function (db) {
@@ -895,12 +898,6 @@ exports.down = async function (db) {
   await reorderAllVaccineOverlays(db);
 
   await resetConsumablesOverlayOrders(db);
-
-  await db.runSql(`
-    UPDATE "mapOverlay"
-    SET "name" = 'Tetanus vaccine'
-    WHERE id = '119';
-  `);
 };
 
 exports._meta = {
