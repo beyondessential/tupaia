@@ -57,6 +57,7 @@ export const ReferenceTooltip = props => {
       arrow
       interactive
       placement="top"
+      enterTouchDelay="50"
       title={
         <Typography variant="caption" style={styles.typography}>
           <span>Source: </span>
