@@ -13,7 +13,7 @@ export const pushSnapshots = async (snapshotRepo, branch, snapshots) => {
   await snapshotRepo.createBranchIfNotExists(branch);
   await snapshotRepo.createBranch(updateBranch, branch);
 
-  const commitFiles = [{ path: SNAPSHOTS.repoPath, content: snapshots.toString() }];
+  const commitFiles = [{ path: SNAPSHOTS.pathInRepo, content: snapshots.toString() }];
   await snapshotRepo.commitFilesToBranch(updateBranch, commitFiles, 'Update snapshots');
   const prTitle = `Update snapshots (${moment(date).utc().format()})`;
 

@@ -11,7 +11,8 @@ export const SNAPSHOTS = {
   path: `${integrationFolder}/snapshots.js`,
   key: 'snapshot',
   newKey: 'newSnapshot',
-  repoPath: 'snapshots/web-frontend.json',
+  repoUrl: 'git@github.com:beyondessential/tupaia-e2e-snapshots.git',
+  pathInRepo: 'snapshots/web-frontend.json',
 };
 export const TEST_USER = {
   email: 'test_e2e@beyondessential.com.au',

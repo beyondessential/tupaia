@@ -22,6 +22,6 @@ const selectPullBranch = async (snapshotRepo, branch) => {
 
 export const pullSnapshots = async (snapshotRepo, branch) => {
   const pullBranch = await selectPullBranch(snapshotRepo, branch);
-  const snapshotTree = await snapshotRepo.getFile(pullBranch, SNAPSHOTS.repoPath);
+  const snapshotTree = await snapshotRepo.getFile(pullBranch, SNAPSHOTS.pathInRepo);
   return new Snapshots(snapshotTree);
 };

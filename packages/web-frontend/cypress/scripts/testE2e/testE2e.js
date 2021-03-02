@@ -42,8 +42,7 @@ export const getSnapshotBranch = () => {
 
 export const getSnapshotRepo = () => {
   const gitHub = new GithubApi({ token: requireEnv('GITHUB_ACCESS_TOKEN') });
-  const url = requireEnv('CYPRESS_SNAPSHOT_REPO_URL');
-  return RemoteGitRepo.connect(gitHub, url);
+  return RemoteGitRepo.connect(gitHub, SNAPSHOTS.repoUrl);
 };
 
 /**
@@ -57,10 +56,10 @@ export const testE2e = async () => {
   const logger = getLoggerInstance();
   logger.success('Running e2e tests for web-frontend');
 
-  const repoUrl = requireEnv('CYPRESS_SNAPSHOT_REPO_URL');
   const repo = getSnapshotRepo();
   const branch = getSnapshotBranch();
 
+  const { repoUrl } = SNAPSHOTS;
   logger.success(`Pulling snapshots from ${repoUrl}...`);
   const snapshots = await pullSnapshots(repo, branch);
   // Store snapshots so that they can be used during tests
