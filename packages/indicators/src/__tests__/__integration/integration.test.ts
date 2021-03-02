@@ -67,7 +67,7 @@ describe('Integration tests', () => {
     });
   });
 
-  describe('Event count', () => {
+  describe('Event check condition', () => {
     const { setup, testCases } = eventCheckConditionFixtures;
 
     beforeAll(async () => {
