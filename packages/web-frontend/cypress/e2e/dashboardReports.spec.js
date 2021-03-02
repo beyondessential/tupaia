@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { EmptyConfigError, preserveUserSession } from '../support';
 import config from '../config/dashboardReports.json';
+import { SNAPSHOTS } from '../constants';
+import { EmptyConfigError, preserveUserSession } from '../support';
 
 const urlToRouteRegex = url => {
   const queryParams = url.split('?').slice(1).join('');
@@ -36,7 +37,8 @@ describe('Dashboard reports', () => {
 
       cy.visit(url);
       cy.wait('@report');
-      cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
+      cy.findByTestId('enlarged-dialog').snapshotHtml({ name: SNAPSHOTS.key });
+      cy.findByTestId('enlarged-dialog').snapshotHtml({ name: SNAPSHOTS.newKey });
     });
   });
 });

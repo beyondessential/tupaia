@@ -8,7 +8,7 @@ export const runScriptSync = (script, cleanup) => {
     script();
   } catch (error) {
     exitCode = 1;
-    logger.error(error.message);
+    logger.error(error.stack);
   } finally {
     if (cleanup) {
       cleanup();
@@ -26,7 +26,7 @@ export const runScript = (script, cleanup) => {
 
   script()
     .catch(error => {
-      logger.error(error.message);
+      logger.error(error.stack);
       process.exit(1);
     })
     .then(() => {
