@@ -1,3 +1,8 @@
+/**
+ * Tupaia Config Server
+ * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import {
   checkValueSatisfiesCondition,
   replaceValues,
@@ -5,6 +10,8 @@ import {
   asyncEvery,
 } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+
+import some from 'lodash.some';
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
 import { translatePointForFrontend } from '/utils/geoJson';
@@ -24,8 +31,11 @@ const valueToGroup = (value, config) => {
 };
 
 const performSingleAnalyticOperation = (analytics, config) => {
-  const { operator, dataElement } = config;
-  const filteredAnalytics = analytics.filter(({ dataElement: de }) => de === dataElement);
+  const { operator } = config;
+  // filterKeys could be ['dataElement', 'organisationUnit'] for multiple matching key options
+  const filterKeys = config.filterKeys ?? [config.dataElement];
+  const filterValueMap = Object.fromEntries(filterKeys.map(key => [key, config[key]]));
+  const filteredAnalytics = analytics.filter(analytic => some([analytic], filterValueMap));
   if (filteredAnalytics.length > 1) {
     throw new Error(`Too many results passed to checkConditions (calculateOperationForAnalytics)`);
   } else if (filteredAnalytics.length === 0) {

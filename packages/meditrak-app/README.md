@@ -112,15 +112,16 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 
 ### Making a release build
 
+**Very important**: Please make sure the environment variable `BETA_BRANCH` is set correctly. If releasing to production, it should be set to nothing (`BETA_BRANCH=`). If building for testing against dev or a feature deployment, this should be set to the url prefix (`BETA_BRANCH="dev"`).
+
 #### Android
 
 - If you've previously followed the iOS steps, rm -rf third-party && rm -rf node_modules && yarn
 - Create gradle.properties within the /android directory, using the contents found on LastPass
 - Copy meditrak-release-key.keystore from lastpass (follow instructions to save and decode) and save under /android/app
 - Uncomment the line `signingConfig signingConfigs.release` in android/app/build.gradle (don't commit this change, it will break CI builds)
-- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`
-- If building an aab for the Google Play store: `cd android && ./gradlew bundleRelease`
-- You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
+- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`. You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
+- If building an aab for the Google Play store, first check your `BETA_BRANCH` in `.env`, then: `cd android && ./gradlew bundleRelease`. You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/bundle/release/app_release.aab`
 
 ### Beta builds (Android)
 
