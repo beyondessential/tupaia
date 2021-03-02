@@ -7,7 +7,7 @@ import { Aggregator } from '@tupaia/aggregator';
 import { ObjectValidator } from '@tupaia/utils';
 import { ExpressionParser } from '@tupaia/expression-parser';
 import groupBy from 'lodash.groupby';
-import { Aggregation, Analytic, FetchOptions } from '../types';
+import { Aggregation, Analytic, DataValues, FetchOptions } from '../types';
 
 export function validateConfig<T extends Record<string, unknown>>(
   config: Record<string, unknown>,
@@ -47,7 +47,7 @@ export const fetchAnalytics = async (
 export const evaluateFormulaToNumber = (
   parser: ExpressionParser,
   formula: string,
-  dataValues: Record<string, any>,
+  dataValues: DataValues,
 ) => {
   parser.setScope(dataValues);
   const value = parser.evaluateToNumber(formula);
