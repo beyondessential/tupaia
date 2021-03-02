@@ -31,14 +31,14 @@ const buildAndInsertQuestion = async (
 const buildAndInsertDataGroup = async (models, fields) =>
   findOrCreateDummyRecord(
     models.dataSource,
-    { service_type: 'dhis', ...fields, type: 'dataGroup' },
+    { service_type: 'tupaia', ...fields, type: 'dataGroup' },
     { config: { isDataRegional: true } },
   );
 
 const buildAndInsertDataElement = async (models, fields) =>
   findOrCreateDummyRecord(
     models.dataSource,
-    { service_type: 'dhis', ...fields, type: 'dataElement' },
+    { service_type: 'tupaia', ...fields, type: 'dataElement' },
     { config: { isDataRegional: true } },
   );
 

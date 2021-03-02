@@ -11,13 +11,13 @@ declare
       question.code as data_element_code,
       survey.code as survey_code,
       survey_response.id as event_id,
-      date_trunc(''day'', survey_response.end_time) as "day_period",
-      date_trunc(''week'', survey_response.end_time) as "week_period",
-      date_trunc(''month'', survey_response.end_time) as "month_period",
-      date_trunc(''year'', survey_response.end_time) as "year_period",
+      date_trunc(''day'', survey_response.submission_time) as "day_period",
+      date_trunc(''week'', survey_response.submission_time) as "week_period",
+      date_trunc(''month'', survey_response.submission_time) as "month_period",
+      date_trunc(''year'', survey_response.submission_time) as "year_period",
       answer.text as value,
       answer.type as answer_type,
-      survey_response.end_time as "date"
+      survey_response.submission_time as "date"
     FROM
       survey_response
     INNER JOIN

@@ -43,12 +43,12 @@ export const testFetchAnalytics = () => {
       [undefined, /provide options/],
       [null, /provide options/],
       [{}, /Invalid content/],
-      [{ dataElementCodes: ['BCD1', 'BCD325'] }, /Invalid content.*organisationUnitCodes/], // no organisationUnitCodes
+      [{ dataElementCodes: ['BCD1TEST', 'BCD325TEST'] }, /Invalid content.*organisationUnitCodes/], // no organisationUnitCodes
       [{ organisationUnitCodes: ['NZ_AK', 'NZ_WG'] }, /Invalid content.*dataElementCodes/], // no dataElementCodes
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
           startDate: 'January first, 2020',
         },
         /Invalid content.*startDate/,
@@ -64,7 +64,7 @@ export const testFetchAnalytics = () => {
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -87,7 +87,7 @@ export const testFetchAnalytics = () => {
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1'],
+          dataElementCodes: ['BCD1TEST'],
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -110,7 +110,7 @@ export const testFetchAnalytics = () => {
       [
         {
           organisationUnitCodes: ['NZ_AK'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         [BCD_RESPONSE_AUCKLAND],
       ],

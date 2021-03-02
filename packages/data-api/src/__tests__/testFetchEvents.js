@@ -46,29 +46,29 @@ export const testFetchEvents = () => {
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         /Invalid content.*surveyCode/,
       ], // no surveyCode
       [
         {
-          surveyCode: 'BCD',
-          dataElementCodes: ['BCD1', 'BCD325'],
+          surveyCode: 'BCDTEST',
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         /Invalid content.*organisationUnitCodes/,
       ], // no organisationUnitCodes
       [
         {
-          surveyCode: 'BCD',
+          surveyCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
         },
         /Invalid content.*dataElementCodes/,
       ], // no dataElementCodes
       [
         {
-          surveyCode: 'BCD',
+          surveyCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
           startDate: 'January first, 2020',
         },
         /Invalid content.*startDate/,
@@ -84,9 +84,9 @@ export const testFetchEvents = () => {
     const testData = [
       [
         {
-          surveyCode: 'BCD',
+          surveyCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -108,9 +108,9 @@ export const testFetchEvents = () => {
     const testData = [
       [
         {
-          surveyCode: 'BCD',
+          surveyCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1'],
+          dataElementCodes: ['BCD1TEST'],
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -132,9 +132,9 @@ export const testFetchEvents = () => {
     const testData = [
       [
         {
-          surveyCode: 'BCD',
+          surveyCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         [BCD_RESPONSE_AUCKLAND],
       ],
