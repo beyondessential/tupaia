@@ -11,11 +11,15 @@ const FIRST_MEDICINE_OVERLAY_SORT_ORDER = 13;
 
 const LAST_MEDICINE_OVERLAY_SORT_ORDER = 62;
 
+const FIRST_VACCINE_OVERLAY_SORT_ORDER = 171;
+
 const ORIGINAL_CONSUMABLE_START_ORDER = 63; // Male condoms
 
 const MEDICINES_AND_CONSUMABLES_OVERLAY_GROUP_CODE = 'Medicines_Consumables';
 
 const COLD_CHAIN_IMMUNISATION_OVERLAY_GROUP_CODE = 'Cold_ChainImmunisation';
+
+const OVERLAYS_TO_MOVE_TO_VACCINES = ['60', '61', '47'];
 
 const OVERLAYS_TO_REMOVE_FIJI_ACCESS = [
   '15', // ADZL4000TCW000
@@ -444,7 +448,6 @@ const GLOBAL_MEDICINE_OVERLAY_ORDERS_BY_DATA_ELEMENT_CODES = [
   'MDZLXXXXXXX000',
   'MDZLXXXXINJ000',
   'MDZLXXXXTAB000',
-  'MUMP0000VAC000',
   'NFPNXXXXCIR000',
   'FijiBCSC116',
   'FijiBCSC117',
@@ -488,8 +491,6 @@ const GLOBAL_MEDICINE_OVERLAY_ORDERS_BY_DATA_ELEMENT_CODES = [
   'FijiBCSC153',
   'FijiBCSC154',
   'AZMNXXXXCAP000',
-  'BCGV0000VAC000',
-  'TETN0000VAC000',
   'RTNLXXXXCAP007',
   'ZNSF0020SOD000',
 ];
@@ -511,6 +512,16 @@ const FIJI_VACCINES_OVERLAYS = [
     code: 'FijiBCSC161',
     name: 'Polio Vaccine 10 doses',
   },
+];
+
+const NEW_VACCINES_OVERLAY_ORDER_BY_DATA_ELEMENT_CODES = [
+  'BCGV0000VAC000',
+  'FijiBCSC157',
+  'FijiBCSC158',
+  'FijiBCSC159',
+  'MUMP0000VAC000',
+  'FijiBCSC161',
+  'TETN0000VAC000',
 ];
 
 const CONSUMABLE_OVERLAY_IDS = [
@@ -716,6 +727,53 @@ const reorderAllMedicineOverlays = async db => {
   }
 };
 
+const reorderAllVaccineOverlays = async db => {
+  let sortOrder = FIRST_VACCINE_OVERLAY_SORT_ORDER;
+  const coldChainImmunisationGroupId = await codeToId(
+    db,
+    'map_overlay_group',
+    COLD_CHAIN_IMMUNISATION_OVERLAY_GROUP_CODE,
+  );
+
+  for (let i = 0; i < NEW_VACCINES_OVERLAY_ORDER_BY_DATA_ELEMENT_CODES.length; i++) {
+    const dataElementCode = NEW_VACCINES_OVERLAY_ORDER_BY_DATA_ELEMENT_CODES[i];
+    const updated = await updateSortOrderIfOverlayExists(
+      db,
+      dataElementCode,
+      sortOrder,
+      coldChainImmunisationGroupId,
+    );
+
+    if (updated) {
+      sortOrder++;
+    }
+  }
+};
+
+const moveOverlaysFromMedicinesToVaccines = async (db, oldGroupCode, newGroupCode) => {
+  let { largestSortOrder: sortOrder } = (
+    await getLargestSortOrderOfOverlayInGroup(db, newGroupCode)
+  ).rows[0];
+
+  const newGroupId = await codeToId(db, 'map_overlay_group', newGroupCode);
+
+  const oldGroupId = await codeToId(db, 'map_overlay_group', oldGroupCode);
+
+  for (const overlayId of OVERLAYS_TO_MOVE_TO_VACCINES) {
+    sortOrder++;
+
+    await db.runSql(`
+      UPDATE map_overlay_group_relation
+      SET map_overlay_group_id = '${newGroupId}',
+      sort_order = ${sortOrder}
+      WHERE child_id = '${overlayId}'
+      AND map_overlay_group_id = '${oldGroupId}';
+  `);
+
+    sortOrder++;
+  }
+};
+
 /**
  * Add the Vaccine Overlay at the bottom of 'Cold Chain/Immunisation' group.
  * @param {*} db
@@ -795,9 +853,23 @@ exports.up = async function (db) {
 
   await reorderAllMedicineOverlays(db);
 
+  await moveOverlaysFromMedicinesToVaccines(
+    db,
+    MEDICINES_AND_CONSUMABLES_OVERLAY_GROUP_CODE,
+    COLD_CHAIN_IMMUNISATION_OVERLAY_GROUP_CODE,
+  );
+
   await addFijiVaccinesOverlays(db);
 
+  await reorderAllVaccineOverlays(db);
+
   await shiftConsumablesOverlayOrders(db);
+
+  await db.runSql(`
+    UPDATE "mapOverlay"
+    SET "name" = 'Tetanus'
+    WHERE id = '119';
+  `);
 };
 
 exports.down = async function (db) {
@@ -812,9 +884,23 @@ exports.down = async function (db) {
 
   await reorderAllMedicineOverlays(db);
 
+  await moveOverlaysFromMedicinesToVaccines(
+    db,
+    COLD_CHAIN_IMMUNISATION_OVERLAY_GROUP_CODE,
+    MEDICINES_AND_CONSUMABLES_OVERLAY_GROUP_CODE,
+  );
+
   await removeFijiVaccinesOverlays(db);
 
+  await reorderAllVaccineOverlays(db);
+
   await resetConsumablesOverlayOrders(db);
+
+  await db.runSql(`
+    UPDATE "mapOverlay"
+    SET "name" = 'Tetanus vaccine'
+    WHERE id = '119';
+  `);
 };
 
 exports._meta = {
