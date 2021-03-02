@@ -12,7 +12,7 @@ export type DefaultValue = number | string | 'undefined';
 /**
  * A flexible config schema that can be provided as an input to the indicator
  */
-export type EventCountConfig = {
+export type EventCheckConditionConfig = {
   readonly formula: string;
   readonly programCode: string;
   readonly defaultValues?: Record<string, DefaultValue>;

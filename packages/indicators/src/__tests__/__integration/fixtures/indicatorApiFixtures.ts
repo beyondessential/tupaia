@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ArrayTestCase, arrayToTestCase } from '../helpers';
+import { ArrayTestCase, arrayToTestCase } from './helpers';
 
 const SURVEYS = [
   {
@@ -11,6 +11,14 @@ const SURVEYS = [
     questions: [
       { code: 'Red', type: 'Number' },
       { code: 'Blue', type: 'Number' },
+    ],
+  },
+  {
+    code: 'Births',
+    questions: [
+      { code: 'Name', type: 'FreeText' },
+      { code: 'Weight', type: 'Number' },
+      { code: 'Gender', type: 'Radio' },
     ],
   },
 ];
@@ -22,6 +30,26 @@ const SURVEY_RESPONSES = [
     answers: {
       Red: '10',
       Blue: '20',
+    },
+  },
+  {
+    surveyCode: 'Births',
+    entityCode: 'AU',
+    submission_time: '2020-12-11T15:00:00Z',
+    answers: {
+      Name: 'John',
+      Weight: '3',
+      Gender: 'Male',
+    },
+  },
+  {
+    surveyCode: 'Births',
+    entityCode: 'AU',
+    submission_time: '2020-12-12T15:00:00Z',
+    answers: {
+      Name: 'Lisa',
+      Weight: '4',
+      Gender: 'Female',
     },
   },
 ];
@@ -71,6 +99,14 @@ const INDICATORS = [
       aggregation: 'RAW',
     },
   },
+  {
+    code: 'MaleWeightLessThan4',
+    builder: 'eventCheckCondition',
+    config: {
+      formula: "equalText(Gender, 'Male') and Weight < 4",
+      programCode: 'Births',
+    },
+  },
 ];
 
 const ARRAY_TEST_CASES: ArrayTestCase[] = [
@@ -84,6 +120,16 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
     ],
   ],
   [
+    'fetches data for multiple types of indicators',
+    ['AllColours', 'MaleWeightLessThan4'],
+    ['2020-01-01', '2020-12-31', ['AU']],
+    [
+      ['AllColours', 'AU', '20201210', 10 + 20],
+      ['MaleWeightLessThan4', 'AU', '20201211', 1],
+      ['MaleWeightLessThan4', 'AU', '20201212', 0],
+    ],
+  ],
+  [
     'throws if a requested indicator builder does not exist',
     ['NonExistingBuilder'],
     ['2019-01-01', '2019-12-31', ['TO']],
@@ -91,7 +137,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
   ],
 ];
 
-export const analyticArithmeticIndicatorApiFixtures = {
+export const indicatorApiFixtures = {
   setup: {
     dbRecords: {
       entity: [{ code: 'AU', name: 'Australia', type: 'country' }],

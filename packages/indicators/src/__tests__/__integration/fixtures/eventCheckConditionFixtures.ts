@@ -8,8 +8,8 @@ import {
   ArrayTestCase,
   arrayToSurveyResponse,
   arrayToTestCase,
-} from '../helpers';
-import { entriesToEventCountIndicators } from './helpers';
+} from './helpers';
+import { entriesToEventCheckConditionIndicators } from './helpers';
 
 const ENTITIES = [
   { code: 'AU', name: 'Australia', type: 'country' },
@@ -37,21 +37,12 @@ const ARRAY_SURVEY_RESPONSES: ArraySurveyResponse[] = [
   // NZ
   ['Covid_19_Cases', 'NZ', '2020-03-01', { Quarantine_Place: 'Hotel', Positive: 'Yes', Age: '35' }],
   ['Covid_19_Cases', 'NZ', '2020-03-30', { Quarantine_Place: 'Home', Positive: 'No', Age: '23' }],
-  ['Covid_19_Cases', 'NZ', '2020-04-30', { Quarantine_Place: 'Home', Age: '23' }], // Missing Quarantine_Place
-  // US
-  ['Covid_19_Cases', 'US', '2020-03-01', { Quarantine_Place: 'Hotel', Positive: 'Yes', Age: '22' }],
-  ['Covid_19_Cases', 'US', '2020-04-30', { Quarantine_Place: 'Home', Positive: 'No', Age: '23' }],
-  ['Covid_19_Cases', 'US', '2020-05-29', { Quarantine_Place: 'Hotel', Positive: 'Yes', Age: '38' }],
-  ['Covid_19_Cases', 'US', '2020-06-25', { Quarantine_Place: 'Home', Positive: 'No', Age: '45' }],
-  ['Covid_19_Cases', 'US', '2020-07-01', { Quarantine_Place: 'Hotel', Positive: 'Yes', Age: '19' }],
-  ['Covid_19_Cases', 'US', '2020-08-30', { Quarantine_Place: 'Home', Positive: 'No', Age: '26' }],
-  ['Covid_19_Cases', 'US', '2020-09-29', { Quarantine_Place: 'Hotel', Positive: 'Yes', Age: '35' }],
-  ['Covid_19_Cases', 'US', '2020-10-31', { Quarantine_Place: 'Home', Positive: 'Yes', Age: '47' }],
+  ['Covid_19_Cases', 'NZ', '2020-04-30', { Quarantine_Place: 'Home', Age: '23' }], // Missing Positive
 ];
 
 const EVENT_COUNT_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
-  EventCountEmptyConfig: {},
-  EventCountNoProgramCodeConfig: {
+  EventCheckConditionEmptyConfig: {},
+  EventCheckConditionNoProgramCodeConfig: {
     formula: "equalText(Quarantine_Place, 'Home')",
   },
   NoneQuarantineDefault: {
@@ -75,13 +66,13 @@ const EVENT_COUNT_INDICATOR_ENTRIES: Record<string, Record<string, unknown>> = {
 const ARRAY_TEST_CASES: ArrayTestCase[] = [
   [
     'Throws if config is empty',
-    ['EventCountEmptyConfig'],
+    ['EventCheckConditionEmptyConfig'],
     ['2020-01-01', '2020-12-31', ['TO']],
     'Should not be empty',
   ],
   [
     'Throws if config has no programCode',
-    ['EventCountNoProgramCodeConfig'],
+    ['EventCheckConditionNoProgramCodeConfig'],
     ['2020-01-01', '2020-12-31', ['NZ']],
     "Error in field 'programCode': Should not be empty",
   ],
@@ -131,11 +122,11 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
   ],
 ];
 
-export const eventCountFixtures = {
+export const eventCheckConditionFixtures = {
   setup: {
     dbRecords: {
       entity: ENTITIES,
-      indicator: entriesToEventCountIndicators(EVENT_COUNT_INDICATOR_ENTRIES),
+      indicator: entriesToEventCheckConditionIndicators(EVENT_COUNT_INDICATOR_ENTRIES),
     },
     surveys: SURVEYS,
     surveyResponses: ARRAY_SURVEY_RESPONSES.map(arrayToSurveyResponse),

@@ -8,7 +8,7 @@ import { utcMoment, PERIOD_TYPES, momentToPeriod } from '@tupaia/utils';
 import { Builder } from '../Builder';
 import { FetchOptions, Event, DataValues } from '../../types';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
-import { EventCountConfig, DefaultValue, configValidators } from './config';
+import { EventCheckConditionConfig, DefaultValue, configValidators } from './config';
 import { validateConfig, evaluateFormulaToNumber } from '../helpers';
 
 type BuilderConfig = {
@@ -17,7 +17,7 @@ type BuilderConfig = {
   readonly defaultValues: Record<string, DefaultValue>;
 };
 
-const indicatorToBuilderConfig = (indicatorConfig: EventCountConfig): BuilderConfig => {
+const indicatorToBuilderConfig = (indicatorConfig: EventCheckConditionConfig): BuilderConfig => {
   const { defaultValues = {}, ...otherFields } = indicatorConfig;
 
   return {
@@ -26,7 +26,7 @@ const indicatorToBuilderConfig = (indicatorConfig: EventCountConfig): BuilderCon
   };
 };
 
-export class EventCountBuilder extends Builder {
+export class EventCheckConditionBuilder extends Builder {
   private configCache: BuilderConfig | null = null;
 
   buildAnalyticValues = async (fetchOptions: FetchOptions) => {
@@ -36,7 +36,7 @@ export class EventCountBuilder extends Builder {
 
   private get config() {
     if (!this.configCache) {
-      validateConfig<EventCountConfig>(this.indicator.config, configValidators);
+      validateConfig<EventCheckConditionConfig>(this.indicator.config, configValidators);
       this.configCache = indicatorToBuilderConfig(this.indicator.config);
     }
     return this.configCache;

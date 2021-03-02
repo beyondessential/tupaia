@@ -10,3 +10,5 @@ afterAll(async () => {
   await clearTestData(database);
   await database.closeConnections();
 });
+
+jest.setTimeout(30000);

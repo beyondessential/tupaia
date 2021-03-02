@@ -8,7 +8,7 @@ import {
   ArrayTestCase,
   arrayToSurveyResponse,
   arrayToTestCase,
-} from '../helpers';
+} from './helpers';
 import {
   entriesToArithmeticIndicators,
 } from './helpers';
@@ -229,7 +229,7 @@ const ARRAY_TEST_CASES: ArrayTestCase[] = [
   ],
 ];
 
-export const arithmeticAnalyticsFixtures = {
+export const arithmeticAnalyticFixtures = {
   setup: {
     dbRecords: {
       entity: ENTITIES,

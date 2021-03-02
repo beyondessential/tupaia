@@ -15,7 +15,7 @@ export interface Analytic extends AnalyticValue {
   readonly dataElement: string;
 }
 
-export type DataValues = Record<string, DbValue>;
+export type DataValues = Record<string, string|number>;
 
 export interface Event {
   readonly event: string;
