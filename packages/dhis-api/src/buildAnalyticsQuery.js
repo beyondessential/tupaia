@@ -83,3 +83,29 @@ export const buildEventAnalyticsQuery = queryInput => {
   const query = { dimension: [...dataElementIds, `ou:${organisationUnitIds.join(';')}`] };
   return addTemporalDimension(query, queryInput);
 };
+
+export const buildEventAnalyticsQueries = queryInput => {
+  const { dataElementIds = [], organisationUnitIds } = queryInput;
+
+  if (!dataElementIds || dataElementIds.length === 0) {
+    throw new Error('Event analytics require at least one data element id');
+  }
+  if (!organisationUnitIds || organisationUnitIds.length === 0) {
+    throw new Error('Event analytics require at least one organisation unit id');
+  }
+
+  // Fetch data in batches to avoid "Request-URI Too Large" errors
+  const queries = [];
+  for (let dxIndex = 0; dxIndex < dataElementIds.length; dxIndex += DX_BATCH_SIZE) {
+    for (let ouIndex = 0; ouIndex < organisationUnitIds.length; ouIndex += OU_BATCH_SIZE) {
+      queries.push(
+        buildEventAnalyticsQuery({
+          ...queryInput,
+          dataElementIds: dataElementIds.slice(dxIndex, dxIndex + DX_BATCH_SIZE),
+          organisationUnitIds: organisationUnitIds.slice(ouIndex, ouIndex + OU_BATCH_SIZE),
+        }),
+      );
+    }
+  }
+  return queries;
+}
