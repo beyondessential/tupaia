@@ -5,6 +5,8 @@
 
 import xlsx from 'xlsx';
 import moment from 'moment';
+import keyBy from 'lodash.keyby';
+import groupBy from 'lodash.groupby';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
 import {
@@ -12,6 +14,7 @@ import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
 } from '@tupaia/utils';
+import { TYPES } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../dataAccessors';
 import { allowNoPermissions, hasBESAdminAccess } from '../../permissions';
@@ -123,7 +126,8 @@ export async function exportSurveyResponses(req, res) {
       }
       let exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
       const surveyResponseAnswers = [];
-      const processSurveyResponse = async (currentSurveyResponse, currentEntity) => {
+
+      const processSurveyResponse = (currentSurveyResponse, currentEntity, answers) => {
         const surveyDate = currentSurveyResponse.timezoneAwareSubmissionTime();
         const responseName = truncateString(currentEntity.name, 30);
         const dateString = moment(surveyDate).format(EXPORT_DATE_FORMAT);
@@ -131,57 +135,70 @@ export async function exportSurveyResponses(req, res) {
         exportData[1].push(currentEntity.code);
         exportData[2].push(responseName);
         exportData[3].push(dateString);
-        const answers = await findAnswersInSurveyResponse(models, currentSurveyResponse.id);
+
         const answersByQuestionId = {};
-        answers.forEach(({ 'question.id': questionId, text }) => {
-          answersByQuestionId[questionId] = text;
-        });
-        surveyResponseAnswers.push(answersByQuestionId);
+        if (answers) {
+          answers.forEach(({ 'question.id': questionId, text }) => {
+            answersByQuestionId[questionId] = text;
+          });
+          surveyResponseAnswers.push(answersByQuestionId);
+        }
       };
 
       if (surveyResponse) {
         const entity = await models.entity.findById(surveyResponse.entity_id);
-        await processSurveyResponse(surveyResponse, entity);
+        const answers = await findAnswersInSurveyResponse(models, surveyResponse.id);
+        processSurveyResponse(surveyResponse, entity, answers);
       } else {
-        for (let entityIndex = 0; entityIndex < entities.length; entityIndex++) {
-          const entity = entities[entityIndex];
-          const surveyResponseFindConditions = {
-            survey_id: currentSurvey.id,
-            entity_id: entity.id,
-          };
-          if (startDate && endDate) {
-            surveyResponseFindConditions.submission_time = {
-              comparisonType: 'whereBetween',
-              args: [
-                [
-                  new Date(moment(startDate).subtract(1, 'day')),
-                  new Date(moment(endDate).add(1, 'day')),
-                ],
+        const surveyResponseFindConditions = {
+          survey_id: currentSurvey.id,
+        };
+        if (startDate && endDate) {
+          surveyResponseFindConditions.submission_time = {
+            comparisonType: 'whereBetween',
+            args: [
+              [
+                new Date(moment(startDate).subtract(1, 'day')),
+                new Date(moment(endDate).add(1, 'day')),
               ],
-            };
-          } else if (startDate) {
-            surveyResponseFindConditions.submission_time = {
-              comparator: '>=',
-              comparisonValue: new Date(startDate),
-            };
-          } else if (endDate) {
-            surveyResponseFindConditions.submission_time = {
-              comparator: '<=',
-              comparisonValue: new Date(endDate),
-            };
-          }
-          const surveyResponses = await models.surveyResponse.find(
-            surveyResponseFindConditions,
-            sortAndLimitSurveyResponses,
-          );
+            ],
+          };
+        } else if (startDate) {
+          surveyResponseFindConditions.submission_time = {
+            comparator: '>=',
+            comparisonValue: new Date(startDate),
+          };
+        } else if (endDate) {
+          surveyResponseFindConditions.submission_time = {
+            comparator: '<=',
+            comparisonValue: new Date(endDate),
+          };
+        }
+        const entityIdsGroup = entities.map(entity => entity.id);
+        surveyResponseFindConditions.entity_id = entityIdsGroup;
 
-          for (
-            let surveyResponseIndex = 0;
-            surveyResponseIndex < surveyResponses.length;
-            surveyResponseIndex++
-          ) {
-            await processSurveyResponse(surveyResponses[surveyResponseIndex], entity);
-          }
+        const surveyResponses = await models.surveyResponse.find(
+          surveyResponseFindConditions,
+          sortAndLimitSurveyResponses,
+        );
+        const entitiesById = keyBy(entities, 'id');
+        // Fetch all answers of all survey responses for further use in 'processSurveyResponse()'.
+        const surveyResponseIds = surveyResponses.map(response => response.id);
+        const answers = await findAnswersInSurveyResponse(
+          models,
+          surveyResponseIds,
+          {},
+          { columns: [{ [`${TYPES.SURVEY_RESPONSE}.id`]: 'survey_response.id' }], sort: [] },
+        );
+        const answersByResponseId = groupBy(answers, 'survey_response.id');
+        for (const response of surveyResponses) {
+          const answersByCurrentResponseId =
+            answersByResponseId && answersByResponseId[response.id];
+          processSurveyResponse(
+            response,
+            entitiesById[response.entity_id],
+            answersByCurrentResponseId,
+          );
         }
       }
 
