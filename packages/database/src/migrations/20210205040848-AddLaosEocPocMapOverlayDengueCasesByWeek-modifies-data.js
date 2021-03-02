@@ -30,7 +30,7 @@ const MAP_OVERLAY = {
   measureBuilderConfig: {
     programCodes: ['NCLE_Communicable_Disease'],
     dataSourceType: 'custom',
-    aggregationType: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
+    aggregationType: 'COUNT_PER_ORG_GROUP',
     dataElementCode: 'NCLE_Disease_Name',
     aggregationConfig: {
       condition: {
@@ -41,6 +41,7 @@ const MAP_OVERLAY = {
     entityAggregation: {
       dataSourceEntityType: 'facility',
       aggregationEntityType: 'district',
+      aggregationOrder: 'BEFORE',
     },
   },
   isDataRegional: false,
