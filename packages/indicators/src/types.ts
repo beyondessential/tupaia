@@ -15,6 +15,17 @@ export interface Analytic extends AnalyticValue {
   readonly dataElement: string;
 }
 
+export type DataValues = Record<string, string|number>;
+
+export interface Event {
+  readonly event: string;
+  readonly eventDate: string;
+  readonly orgUnit: string;
+  readonly orgUnitName: string;
+  readonly period: string;
+  readonly dataValues: DataValues;
+}
+
 export interface AnalyticCluster {
   organisationUnit: Analytic['organisationUnit'];
   period: Analytic['period'];

@@ -9,8 +9,7 @@ import { DataBroker } from '@tupaia/data-broker';
 import { getTestModels, setupTest } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
 import { Analytic, FetchOptions } from '../../types';
-import { arithmeticAnalyticsFixtures, indicatorApiFixtures } from './fixtures';
-
+import { indicatorApiFixtures, arithmeticAnalyticFixtures, eventCheckConditionsFixtures } from './fixtures';
 interface TestCase {
   input: {
     indicatorCodes: string[];
@@ -55,7 +54,21 @@ describe('Integration tests', () => {
   });
 
   describe('Arithmetic analytics', () => {
-    const { setup, testCases } = arithmeticAnalyticsFixtures;
+    const { setup, testCases } = arithmeticAnalyticFixtures;
+
+    beforeAll(async () => {
+      await setupTest(models, setup);
+    });
+
+    testCases.forEach(testCase => {
+      it(testCase.description, async () => {
+        await runTestCase(testCase);
+      });
+    });
+  });
+
+  describe('Event check conditions', () => {
+    const { setup, testCases } = eventCheckConditionsFixtures;
 
     beforeAll(async () => {
       await setupTest(models, setup);

@@ -11,9 +11,9 @@ import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { AggregationList, Analytic, AnalyticCluster, FetchOptions, Indicator } from '../../types';
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
-import { fetchAnalytics, validateConfig } from '../helpers';
+import { fetchAnalytics, validateConfig, evaluateFormulaToNumber } from '../helpers';
 import {
-  ArithmeticConfig,
+  AnalyticArithmeticConfig,
   configValidators,
   DefaultValue,
   getAggregationListByCode,
@@ -30,7 +30,7 @@ type BuilderConfig = {
   readonly defaultValues: Record<string, DefaultValue>;
 };
 
-const indicatorToBuilderConfig = (indicatorConfig: ArithmeticConfig): BuilderConfig => {
+const indicatorToBuilderConfig = (indicatorConfig: AnalyticArithmeticConfig): BuilderConfig => {
   const { defaultValues = {}, parameters = [], ...otherFields } = indicatorConfig;
 
   return {
@@ -41,7 +41,7 @@ const indicatorToBuilderConfig = (indicatorConfig: ArithmeticConfig): BuilderCon
   };
 };
 
-export class ArithmeticBuilder extends Builder {
+export class AnalyticArithmeticBuilder extends Builder {
   private configCache: BuilderConfig | null = null;
 
   private paramBuildersByCodeCache: Record<string, Builder> | null = null;
@@ -69,7 +69,7 @@ export class ArithmeticBuilder extends Builder {
 
   validateConfig = () => {
     const { config } = this.indicator;
-    validateConfig<ArithmeticConfig>(config, configValidators);
+    validateConfig<AnalyticArithmeticConfig>(config, configValidators);
     return config;
   };
 
@@ -131,18 +131,11 @@ export class ArithmeticBuilder extends Builder {
 
   buildAnalyticValuesFromClusters = (analyticClusters: AnalyticCluster[]) => {
     const parser = getExpressionParserInstance();
-    const calculateValue = (dataValues: Record<string, number>) => {
-      parser.setScope(dataValues);
-      const value = parser.evaluateToNumber(this.config.formula);
-      parser.clearScope();
-      return value;
-    };
-
     return analyticClusters
       .map(({ organisationUnit, period, dataValues }) => ({
         organisationUnit,
         period,
-        value: calculateValue(dataValues),
+        value: evaluateFormulaToNumber(parser, this.config.formula, dataValues),
       }))
       .filter(({ value }) => isFinite(value));
   };
