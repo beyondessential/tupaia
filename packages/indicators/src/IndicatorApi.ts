@@ -10,9 +10,9 @@ import { Builder, createBuilder } from './Builder';
 import { Analytic, FetchOptions, ModelRegistry } from './types';
 
 export class IndicatorApi {
-  private models: ModelRegistry;
+  private readonly models: ModelRegistry;
 
-  private aggregator: Aggregator;
+  private readonly aggregator: Aggregator;
 
   constructor(models: ModelRegistry, dataBroker: DataBroker) {
     this.models = models;
