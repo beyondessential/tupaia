@@ -72,7 +72,7 @@ const AutocompleteComponent = React.memo(
         getOptionSelected={(option, selected) =>
           option[optionLabelKey] === selected[optionLabelKey]
         }
-        getOptionLabel={option => (option ? option[optionLabelKey] : '')}
+        getOptionLabel={option => (option && option[optionLabelKey] ? option[optionLabelKey] : '')}
         loading={isLoading}
         onChange={onChangeSelection}
         onInputChange={throttle((event, newValue) => onChangeSearchTerm(newValue), 50)}
