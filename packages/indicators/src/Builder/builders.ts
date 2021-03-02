@@ -8,5 +8,5 @@ import { EventCheckConditionsBuilder } from './EventCheckConditionsBuilder';
 
 export const builders = {
   analyticArithmetic: AnalyticArithmeticBuilder,
-  eventCheckConditions: EventCheckConditionsBuilder
+  eventCheckConditions: EventCheckConditionsBuilder,
 };
