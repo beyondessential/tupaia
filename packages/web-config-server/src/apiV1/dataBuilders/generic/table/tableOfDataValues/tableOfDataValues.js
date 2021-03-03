@@ -10,14 +10,22 @@ import { reduceToDictionary, reduceToSet, getSortByKey } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { TableConfig } from './TableConfig';
-import { getValuesByCell } from './getValuesByCell';
 import { TotalCalculator } from './TotalCalculator';
+
+import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
+import { getValuesByCell } from './helpers/getValuesByCell';
+import { buildColumnSummary, buildRowSummary } from './helpers/addSummaryToTable';
+import {
+  ORG_UNIT_COL_KEY,
+  ORG_UNIT_WITH_TYPE_COL_KEY,
+  ORG_UNIT_COLUMNS_KEYS_SET,
+} from '/apiV1/dataBuilders/constants';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
 const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
-const ORG_UNIT_COL_KEY = '$orgUnit';
-const ORG_UNIT_WITH_TYPE_COL_KEY = '$orgUnitTypeName';
+const EXCLUDED_VALUE = 'excludedValue';
+
 const CATEGORY_AGGREGATION_TYPES = {
   AVERAGE: '$average',
 };
@@ -31,29 +39,54 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
     this.rowsToDescriptions = {};
 
-    const columns = await this.buildColumns();
+    const columns = this.columns || (await this.buildColumns());
     const rows = await this.buildRows(columns);
     const data = { columns, rows, period };
 
+    return this.buildFromExtraConfig(data);
+  }
+
+  /**
+   * @param {{ rows, columns }} data
+   */
+  async buildFromExtraConfig(data) {
+    let newData = { ...data };
+    const { rows } = newData;
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
 
       if (this.config.categoryAggregator) {
         const categoryData = this.buildCategoryData(Object.values(rows));
-        data.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
+        newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {
-        data.rows = [...rows, ...categories];
+        newData.rows = [...rows, ...categories];
       }
     }
 
-    if (
-      this.tableConfig.columnType === ORG_UNIT_COL_KEY ||
-      this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY
-    ) {
+    if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.tableConfig.columnType)) {
       const columns = await this.replaceOrgUnitCodesWithNames(data.columns);
-      data.columns = columns.sort(getSortByKey('title'));
+      newData.columns = columns.sort(getSortByKey('title'));
     }
-    return data;
+
+    if (EXCLUDED_VALUE in this.config) {
+      const excludedValue = this.config[EXCLUDED_VALUE];
+      newData.rows.forEach(row => {
+        Object.entries(row).forEach(([key, value]) => {
+          // eslint-disable-next-line no-param-reassign
+          if (value === excludedValue) delete row[key];
+        });
+      });
+    }
+
+    if (this.config.columnSummary) {
+      newData = buildColumnSummary(newData, this.config.columnSummary);
+    }
+
+    if (this.config.rowSummary) {
+      const skipRowForColumnSummary = !!this.config.columnSummary;
+      newData = buildRowSummary(newData, { ...this.config.rowSummary, skipRowForColumnSummary });
+    }
+    return newData;
   }
 
   async fetchAnalyticsAndMetadata() {
@@ -94,6 +127,11 @@ export class TableOfDataValuesBuilder extends DataBuilder {
    * @returns {{ dataElement: string, categoryId: (string:undefined) }}
    */
   async buildBaseRows() {
+    // Build orgUnit base rows
+    if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.config.columns)) {
+      return buildBaseRowsForOrgUnit(this.tableConfig.rows, undefined, 0, this.config);
+    }
+
     if (this.tableConfig.hasRowCategories()) {
       if (this.tableConfig.hasRowDescriptions()) await this.buildRowDescriptions();
       if (this.tableConfig.hasRowDataElements()) {

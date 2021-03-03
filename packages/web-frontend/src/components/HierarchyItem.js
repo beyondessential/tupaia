@@ -28,6 +28,7 @@ import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
 import SelectedIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
 import UnSelectedIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { ReferenceTooltip, TOOLTIP_ICON_STYLE_OPTIONS } from './ReferenceTooltip';
 
 export class HierarchyItem extends Component {
   constructor(props) {
@@ -68,6 +69,7 @@ export class HierarchyItem extends Component {
       onClick,
       isLoading,
       hasNestedItems,
+      info,
       ...otherProps
     } = this.props;
     const { isOpen } = this.state;
@@ -81,7 +83,12 @@ export class HierarchyItem extends Component {
         <UnSelectedIcon style={styles.buttonIcon} />
       );
     }
-
+    const referenceTooltip = reference => (
+      <ReferenceTooltip
+        reference={reference}
+        iconStyleOption={TOOLTIP_ICON_STYLE_OPTIONS.MAP_OVERLAY}
+      />
+    );
     const loadingSpinner = <CircularProgress style={styles.buttonIcon} size={24} thickness={3} />;
     const childItem = isLoading ? loadingSpinner : nestedItems;
     return (
@@ -96,7 +103,7 @@ export class HierarchyItem extends Component {
             {Icon && <Icon style={styles.buttonIcon} />}
             {selectionIcon}
             <div style={styles.buttonLabel}>{label}</div>
-            <div style={styles.spacer} />
+            {info && info.reference && referenceTooltip(info.reference)}
           </div>
         </FlatButton>
         {isOpen ? childItem : null}
