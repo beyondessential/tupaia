@@ -83,9 +83,9 @@ const newConfig = {
           value: 0,
           operator: '=',
         },
-        '>5': {
+        '>=5': {
           value: 5,
-          operator: '>',
+          operator: '>=',
         },
         '1-2': {
           value: [1, 2],
@@ -117,9 +117,9 @@ const newConfig = {
           value: '3-4',
         },
         {
-          name: '>5',
+          name: '⩾5',
           color: 'Green',
-          value: '>5',
+          value: '>=5',
         },
         {
           name: 'No data',
@@ -142,9 +142,9 @@ const newConfig = {
           value: 0,
           operator: '=',
         },
-        '>5': {
+        '>=5': {
           value: 5,
-          operator: '>',
+          operator: '>=',
         },
         '1-2': {
           value: [1, 2],
@@ -176,9 +176,9 @@ const newConfig = {
           value: '3-4',
         },
         {
-          name: '>5',
+          name: '⩾5',
           color: 'Green',
-          value: '>5',
+          value: '>=5',
         },
         {
           name: 'No data',
