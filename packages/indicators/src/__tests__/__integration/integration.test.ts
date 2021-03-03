@@ -9,7 +9,12 @@ import { DataBroker } from '@tupaia/data-broker';
 import { getTestModels, setupTest } from '@tupaia/database';
 import { IndicatorApi } from '../../IndicatorApi';
 import { Analytic, FetchOptions } from '../../types';
-import { indicatorApiFixtures, arithmeticAnalyticFixtures, eventCheckConditionsFixtures } from './fixtures';
+import {
+  arithmeticAnalyticFixtures,
+  eventCheckConditionsFixtures,
+  indicatorApiFixtures,
+} from './fixtures';
+
 interface TestCase {
   input: {
     indicatorCodes: string[];

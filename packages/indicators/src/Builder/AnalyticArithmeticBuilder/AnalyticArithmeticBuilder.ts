@@ -67,13 +67,13 @@ export class AnalyticArithmeticBuilder extends Builder {
     return Object.values(this.paramBuildersByCode);
   }
 
-  validateConfig = () => {
+  public validateConfig = () => {
     const { config } = this.indicator;
     validateConfig<AnalyticArithmeticConfig>(config, configValidators);
     return config;
   };
 
-  buildAnalyticValues = async (fetchOptions: FetchOptions) => {
+  protected buildAnalyticValues = async (fetchOptions: FetchOptions) => {
     const analytics = await this.fetchAnalytics(fetchOptions);
     const clusters = this.buildAnalyticClusters(analytics);
     return this.buildAnalyticValuesFromClusters(clusters);
@@ -129,7 +129,7 @@ export class AnalyticArithmeticBuilder extends Builder {
     return clusters.map(replaceAnalyticValuesWithDefaults).filter(checkClusterIncludesAllVariables);
   };
 
-  buildAnalyticValuesFromClusters = (analyticClusters: AnalyticCluster[]) => {
+  private buildAnalyticValuesFromClusters = (analyticClusters: AnalyticCluster[]) => {
     const parser = getExpressionParserInstance();
     return analyticClusters
       .map(({ organisationUnit, period, dataValues }) => ({

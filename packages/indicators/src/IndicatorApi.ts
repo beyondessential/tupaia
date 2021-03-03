@@ -10,24 +10,27 @@ import { Builder, createBuilder } from './Builder';
 import { Analytic, FetchOptions, ModelRegistry } from './types';
 
 export class IndicatorApi {
-  private models: ModelRegistry;
+  private readonly models: ModelRegistry;
 
-  private aggregator: Aggregator;
+  private readonly aggregator: Aggregator;
 
   constructor(models: ModelRegistry, dataBroker: DataBroker) {
     this.models = models;
     this.aggregator = new Aggregator(dataBroker);
   }
 
-  getAggregator = () => this.aggregator;
+  public getAggregator = () => this.aggregator;
 
-  async buildAnalytics(indicatorCodes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
+  public async buildAnalytics(
+    indicatorCodes: string[],
+    fetchOptions: FetchOptions,
+  ): Promise<Analytic[]> {
     const indicators = await this.models.indicator.find({ code: indicatorCodes });
     const builders = indicators.map(indicator => createBuilder(this, indicator));
     return this.buildAnalyticsForBuilders(builders, fetchOptions);
   }
 
-  async buildAnalyticsForBuilders(
+  public async buildAnalyticsForBuilders(
     builders: Builder[],
     fetchOptions: FetchOptions,
   ): Promise<Analytic[]> {
