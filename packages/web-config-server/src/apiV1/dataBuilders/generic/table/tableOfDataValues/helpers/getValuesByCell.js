@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 import zipObject from 'lodash.zipobject';
 
-import { addPrefixToCell } from './TableConfig';
+import { addPrefixToCell } from '/apiV1/dataBuilders/generic/table/tableOfDataValues/TableConfig';
 import {
   countAnalyticsThatSatisfyConditions,
   divideValues,
@@ -65,23 +65,17 @@ export const getPercentageCountOfValuesByCell = (cells, results) => {
   return percentageCountOfValuesByCell;
 };
 
-export const getCalculatedValuesByCell = async (
-  models,
-  cells,
-  results,
-  hierarchyId,
-  noDataValue,
-) => {
+export const getCalculatedValuesByCell = async (models, cells, results, config) => {
   const calculatedValuesByCell = {};
   await Promise.all(
     cells.map(async cell => {
       if (typeof cell === 'string') {
         const analyticForCell = results.find(result => result.dataElement === cell) || {};
-        calculatedValuesByCell[cell] = analyticForCell.value ?? noDataValue;
+        calculatedValuesByCell[cell] = analyticForCell.value ?? config.noDataValue;
       } else {
         calculatedValuesByCell[cell.key] = await calculateOperationForAnalytics(models, results, {
           ...cell,
-          hierarchyId,
+          ...config,
         });
       }
     }),
