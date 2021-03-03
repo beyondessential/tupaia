@@ -7,13 +7,23 @@
 
 import React from 'react';
 
-import { Typography, Tooltip, withStyles, Link } from '@material-ui/core';
+import { Typography, Tooltip, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
 import { BLUE } from '../styles';
 
+const DEFAULT = 'default';
+const TILE_SET = 'tileSet';
+const MAP_OVERLAY = 'mayOverlay';
+export const TOOLTIP_ICON_STYLE_OPTIONS = {
+  DEFAULT,
+  TILE_SET,
+  MAP_OVERLAY,
+};
+
 const IconButton = styled(InfoRoundedIcon)`
+  fontsize: 16px;
   color: grey;
   transition: color 0.2s ease;
   &:hover {
@@ -23,7 +33,11 @@ const IconButton = styled(InfoRoundedIcon)`
 `;
 const styles = {
   link: { color: BLUE },
-  defaultIconButton: { fontSize: '16px' },
+  iconButton: {
+    [DEFAULT]: { fontSize: '16px' },
+    [TILE_SET]: { fontSize: '16px', marginBottom: '-1px' },
+    [MAP_OVERLAY]: { fontSize: '20px', marginTop: '3px' },
+  },
   typography: { backgroundColor: 'black' },
 };
 const StyledToolTip = withStyles(theme => ({
@@ -36,32 +50,39 @@ const StyledToolTip = withStyles(theme => ({
 }))(Tooltip);
 
 export const ReferenceTooltip = props => {
-  const { reference, iconStyle } = props;
+  const { reference, iconStyleOption } = props;
 
   return (
     <StyledToolTip
       arrow
       interactive
       placement="top"
+      enterTouchDelay="50"
       title={
         <Typography variant="caption" style={styles.typography}>
           <span>Source: </span>
-          <Link style={styles.link} href={reference.link} target="_blank" rel="noopener">
+          <a style={styles.link} href={reference.link} target="_blank" rel="noopener noreferrer">
             {reference.name}
-          </Link>
+          </a>
         </Typography>
       }
     >
-      <IconButton style={iconStyle ? { ...iconStyle } : styles.defaultIconButton} />
+      <IconButton
+        style={
+          iconStyleOption && styles.iconButton[iconStyleOption]
+            ? styles.iconButton[iconStyleOption]
+            : styles.iconButton[DEFAULT]
+        }
+      />
     </StyledToolTip>
   );
 };
 
 ReferenceTooltip.propTypes = {
   reference: PropTypes.object,
-  iconStyle: PropTypes.object,
+  iconStyleOption: PropTypes.string,
 };
 ReferenceTooltip.defaultProps = {
-  iconStyle: null,
+  iconStyleOption: null,
   reference: null,
 };
