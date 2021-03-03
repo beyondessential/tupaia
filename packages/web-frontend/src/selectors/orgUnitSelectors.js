@@ -10,7 +10,8 @@ import createCachedSelector from 're-reselect';
 
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { getOrgUnitFromCountry, safeGet, selectLocation } from './utils';
-import { selectCurrentProjectCode } from './projectSelectors';
+import { selectCurrentProjectCode, selectProjectByCode } from './projectSelectors';
+import { DEFAULT_BOUNDS } from '../defaults';
 
 /**
  * Private caches
@@ -184,6 +185,23 @@ export const selectActiveProjectCountries = createSelector(
       })
       .filter((org = {}) => org.type === 'Country' && org.parent === activeProjectCode);
     return orgUnits;
+  },
+);
+
+export const selectCurrentOrgUnitBounds = createSelector(
+  [selectCurrentOrgUnit],
+  ({ type, organisationUnitCode, location }) => {
+    if (type === 'Project') {
+      if (organisationUnitCode === 'explore' || organisationUnitCode === 'disaster') {
+        return DEFAULT_BOUNDS;
+      }
+    }
+
+    if (location && location.bounds) {
+      return location.bounds;
+    }
+
+    return DEFAULT_BOUNDS;
   },
 );
 
