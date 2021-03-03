@@ -30,7 +30,11 @@ export class Aggregator extends BaseAggregator {
       hierarchyId,
     );
 
-    return super.fetchAnalytics(dataElementCodes, { ...fetchOptions, useDeprecatedApi: false }, aggregationOptions);
+    return super.fetchAnalytics(
+      dataElementCodes,
+      { ...fetchOptions, useDeprecatedApi: false },
+      aggregationOptions,
+    );
   }
 
   async fetchEvents(programCode, originalQuery, replacementValues) {
