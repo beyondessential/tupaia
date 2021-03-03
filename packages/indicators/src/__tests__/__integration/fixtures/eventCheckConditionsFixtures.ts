@@ -8,8 +8,8 @@ import {
   ArrayTestCase,
   arrayToSurveyResponse,
   arrayToTestCase,
+  entriesToEventCheckConditionsIndicators,
 } from './helpers';
-import { entriesToEventCheckConditionsIndicators } from './helpers';
 
 const ENTITIES = [
   { code: 'AU', name: 'Australia', type: 'country' },

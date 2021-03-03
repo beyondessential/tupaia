@@ -15,7 +15,7 @@ export interface Analytic extends AnalyticValue {
   readonly dataElement: string;
 }
 
-export type DataValues = Record<string, string|number>;
+export type DataValues = Readonly<Record<string, string | number>>;
 
 export interface Event {
   readonly event: string;
@@ -27,9 +27,9 @@ export interface Event {
 }
 
 export interface AnalyticCluster {
-  organisationUnit: Analytic['organisationUnit'];
-  period: Analytic['period'];
-  dataValues: Record<Analytic['dataElement'], Analytic['value']>;
+  readonly organisationUnit: Analytic['organisationUnit'];
+  readonly period: Analytic['period'];
+  readonly dataValues: Record<Analytic['dataElement'], Analytic['value']>;
 }
 
 type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: DbValue };
@@ -81,9 +81,9 @@ export interface Aggregation {
 export type AggregationList = Aggregation[];
 
 export type FetchOptions = Readonly<{
-  organisationUnit?: string;
-  organisationUnitCodes?: string[];
-  startDate: string;
-  endDate: string;
-  period?: string;
+  readonly organisationUnit?: string;
+  readonly organisationUnitCodes?: string[];
+  readonly startDate: string;
+  readonly endDate: string;
+  readonly period?: string;
 }>;

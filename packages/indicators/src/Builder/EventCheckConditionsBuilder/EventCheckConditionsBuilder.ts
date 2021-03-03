@@ -29,7 +29,7 @@ const indicatorToBuilderConfig = (indicatorConfig: EventCheckConditionsConfig): 
 export class EventCheckConditionsBuilder extends Builder {
   private configCache: BuilderConfig | null = null;
 
-  buildAnalyticValues = async (fetchOptions: FetchOptions) => {
+  protected buildAnalyticValues = async (fetchOptions: FetchOptions) => {
     const events = await this.fetchEvents(fetchOptions);
     return this.buildAnalyticValuesFromEvents(events);
   };
@@ -61,7 +61,7 @@ export class EventCheckConditionsBuilder extends Builder {
       Object.keys(defaultValues).forEach(code => {
         dataValues[code] = dataValues[code] ?? defaultValues[code];
       });
-      return evaluateFormulaToNumber(parser, formula, dataValues)
+      return evaluateFormulaToNumber(parser, formula, dataValues);
     };
 
     return events

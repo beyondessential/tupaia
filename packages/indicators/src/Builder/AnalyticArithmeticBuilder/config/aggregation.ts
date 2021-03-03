@@ -122,7 +122,9 @@ export const validateAggregation = (
 const descriptorToAggregation = (descriptor: AggregationDescriptor) =>
   typeof descriptor === 'object' ? descriptor : { type: descriptor };
 
-const getAggregationDictionary = (config: AnalyticArithmeticConfig): Record<string, AggregationSpecs> => {
+const getAggregationDictionary = (
+  config: AnalyticArithmeticConfig,
+): Record<string, AggregationSpecs> => {
   const { aggregation, formula } = config;
 
   const aggregationType = getAggregationType(aggregation);

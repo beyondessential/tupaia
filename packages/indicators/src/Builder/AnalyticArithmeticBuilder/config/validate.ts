@@ -11,7 +11,10 @@ import {
   isPlainObject,
   ObjectValidator,
 } from '@tupaia/utils';
-import { assertAllDefaultsAreCodesInFormula, assertDefaultValuesHaveAllowedTypesOrUndefined } from '../../validators';
+import {
+  assertAllDefaultsAreCodesInFormula,
+  assertDefaultValuesHaveAllowedTypesOrUndefined,
+} from '../../validators';
 import { validateAggregation } from './aggregation';
 
 const parameterValidator = new ObjectValidator({
