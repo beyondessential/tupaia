@@ -10,6 +10,7 @@ import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import { EnvBanner } from '../src/widgets';
 import 'react-table/react-table.css';
 
 import { theme } from './theme';
@@ -23,6 +24,7 @@ renderReactApp(
         <MuiThemeProvider theme={theme}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
+            <EnvBanner />
             <App />
           </ThemeProvider>
         </MuiThemeProvider>
