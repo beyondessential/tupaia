@@ -16,16 +16,18 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await db.runSql(`
-    UPDATE indicator
-    SET builder = 'analyticArithmetic'
+    UPDATE indicator i
+    SET builder = 'analyticArithmetic',
+    config = regexp_replace(i."config"::text, '\\"builder\\"\\: \\"arithmetic\\"','"builder": "analyticArithmetic"','g')::jsonb 
     WHERE builder = 'arithmetic';
   `);
 };
 
 exports.down = async function (db) {
   await db.runSql(`
-    UPDATE indicator
-    SET builder = 'arithmetic'
+    UPDATE indicator i
+    SET builder = 'arithmetic',
+    config = regexp_replace(i."config"::text, '\\"builder\\"\\: \\"analyticArithmetic\\"','"builder": "arithmetic"','g')::jsonb 
     WHERE builder = 'analyticArithmetic';
   `);
 };
