@@ -28,6 +28,9 @@
             - name: test-report-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
+            - name: test-entity-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
         - type: parallel
           name: test-batch-2
           steps:
