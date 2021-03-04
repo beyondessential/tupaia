@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { UnauthenticatedRoute } from '@tupaia/tupaia-server';
+import { UnauthenticatedRoute } from '@tupaia/server-boilderplate';
 
 export class LogoutRoute extends UnauthenticatedRoute {
   async buildResponse() {

@@ -4,7 +4,7 @@
  */
 
 import { PermissionsError } from '@tupaia/utils';
-import { AuthConnection, UnauthenticatedRoute } from '@tupaia/tupaia-server';
+import { AuthConnection, UnauthenticatedRoute } from '@tupaia/server-boilderplate';
 import { Credentials } from '../types';
 import { LESMIS_PERMISSION_GROUP } from '../constants';
 

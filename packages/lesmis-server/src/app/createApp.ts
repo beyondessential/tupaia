@@ -7,7 +7,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
-import { attachSessionModel } from '@tupaia/tupaia-server';
+import { attachSessionModel } from '@tupaia/server-boilderplate';
 
 import { addRoutesToApp } from './addRoutesToApp';
 import { sessionCookie } from './sessionCookie';

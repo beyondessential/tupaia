@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { PermissionsError } from '@tupaia/utils';
-import { Route as BaseRoute } from '@tupaia/tupaia-server';
+import { Route as BaseRoute } from '@tupaia/server-boilderplate';
 
 import { LesmisSessionType } from '../models';
 import { MeditrakConnection, ReportConnection } from '../connections';
