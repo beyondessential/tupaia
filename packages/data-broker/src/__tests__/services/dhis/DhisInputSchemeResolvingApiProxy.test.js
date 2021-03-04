@@ -60,7 +60,8 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
         dataElementIdScheme: 'id',
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitIds: ['dhisId_ou1'],
-        programId: 'dhisId_g1',
+        programIds: ['dhisId_g1'],
+        inputIdScheme: 'uid' // added if all data elements, org units, program swapped to ids
       });
     });
 
@@ -74,7 +75,7 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
         dataElementIdScheme: 'id',
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitCodes: ['ORG1', 'ORG2'],
-        programId: 'dhisId_g1',
+        programIds: ['dhisId_g1'],
       });
     });
 
@@ -110,7 +111,7 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
         dataElementIdScheme: 'id',
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitCodes: ['SOME_PARENT_ORG_UNIT'],
-        programId: 'dhisId_g1',
+        programIds: ['dhisId_g1'],
       });
       await expect(response).toMatchObject({
         rows: [['ORG1', 'dhisId_ou1', '7.1']],
