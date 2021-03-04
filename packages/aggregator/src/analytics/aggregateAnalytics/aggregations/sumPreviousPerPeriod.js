@@ -5,13 +5,7 @@
 
 import groupBy from 'lodash.groupby';
 
-import {
-  convertToPeriod,
-  EARLIEST_DATA_DATE,
-  getPeriodsInRange,
-  momentToPeriod,
-  utcMoment,
-} from '@tupaia/utils';
+import { convertToPeriod, EARLIEST_DATA_DATE_STRING, getPeriodsInRange } from '@tupaia/utils';
 import { getContinuousPeriodsForAnalytics } from './utils';
 
 export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
@@ -95,12 +89,7 @@ const calculatePeriodsFromAnalytics = (analytics, aggregationPeriod, requestedPe
   return getPeriodsInRange(startPeriod, endPeriod);
 };
 
-export const getDateRangeForSumPreviousPerPeriod = (dateRange, _, periodType) => {
-  const startDateMoment = EARLIEST_DATA_DATE.date(1);
-  const endDateMoment = utcMoment(dateRange.endDate) || utcMoment().endOf('month');
-
-  return {
-    startDate: momentToPeriod(startDateMoment, periodType),
-    endDate: momentToPeriod(endDateMoment, periodType),
-  };
-};
+export const getDateRangeForSumPreviousPerPeriod = dateRange => ({
+  startDate: EARLIEST_DATA_DATE_STRING,
+  endDate: dateRange.endDate,
+});

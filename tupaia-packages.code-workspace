@@ -127,6 +127,7 @@
       "groupby",
       "heatmap",
       "imms",
+      "isequal",
       "keyby",
       "migrator",
       "oucode",

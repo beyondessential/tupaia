@@ -67,6 +67,7 @@
     "@types/express": "^4.17.8",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash.groupby": "^4.6.0",
+    "@types/lodash.keyby": "^4.6.6",
     "@types/mathjs": "^6.0.5",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",

@@ -44,6 +44,7 @@
     "lodash.difference": "^4.5.0",
     "lodash.flatten": "^4.4.0",
     "lodash.flattendeep": "^4.4.0",
+    "lodash.some": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.groupby": "^4.6.0",
     "lodash.has": "^4.5.2",
