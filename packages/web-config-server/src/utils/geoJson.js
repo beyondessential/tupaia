@@ -51,16 +51,10 @@ export const calculateBoundsFromEntities = entities => {
     return null;
   }
 
+  const points = bounds.reduce((values, bound) => [...values, ...bound], []);
+
   return [
-    [
-      // topLeft
-      Math.max(...bounds.map(b => b[0][0])),
-      Math.min(...bounds.map(b => b[0][1])),
-    ],
-    [
-      // bottomRight
-      Math.min(...bounds.map(b => b[1][0])),
-      Math.max(...bounds.map(b => b[1][1])),
-    ],
+    [Math.min(...points.map(point => point[0])), Math.min(...points.map(point => point[1]))],
+    [Math.max(...points.map(point => point[0])), Math.max(...points.map(point => point[1]))],
   ];
 };
