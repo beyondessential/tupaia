@@ -12,6 +12,7 @@ import {
   CROP_RESPONSE_AUCKLAND_2020,
   CROP_RESPONSE_WELLINGTON_2019,
 } from './TupaiaDataApi.fixtures';
+import { testFetchAnalyticsAggregations } from './aggregations';
 
 const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
   const analytics = [];
@@ -196,4 +197,6 @@ export const testFetchAnalytics = () => {
       [CROP_RESPONSE_AUCKLAND_2019],
     );
   });
+
+  describe('aggregation', testFetchAnalyticsAggregations(assertCorrectResponse));
 };
