@@ -46,6 +46,8 @@ export class Snapshots {
     return this.toString() === snapshots.toString();
   };
 
+  isEmpty = () => Object.keys(this.snapshotTree).length === 0;
+
   extractSnapshotsByKey = (key, options = {}) => {
     const extractedTree = {};
     this.extractionConfig = {

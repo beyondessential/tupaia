@@ -74,10 +74,12 @@ export const testE2e = async () => {
     renameKey: SNAPSHOTS.key,
   });
 
-  if (newSnapshots.equals(snapshots)) {
+  if (newSnapshots.isEmpty()) {
+    logger.info('New snapshots are empty. Probably something went very wrong, skipping push');
+  } else if (newSnapshots.equals(snapshots)) {
     logger.info('No changes in snapshots, skipping push');
   } else {
-    logger.success(`Pushing snapshots to ${repoUrl}...`);
+    logger.success(`Pushing new snapshots to ${repoUrl}...`);
     const { pullRequestUrl } = await pushSnapshots(repo, branch, newSnapshots);
     logger.info(`PR created: ${pullRequestUrl}`);
   }
