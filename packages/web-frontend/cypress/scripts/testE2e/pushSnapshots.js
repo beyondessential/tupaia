@@ -15,7 +15,7 @@ export const pushSnapshots = async (snapshotRepo, branch, snapshots) => {
 
   const commitFiles = [{ path: SNAPSHOTS.pathInRepo, content: snapshots.toString() }];
   await snapshotRepo.commitFilesToBranch(updateBranch, commitFiles, 'Update snapshots');
-  const prTitle = `Update snapshots (${moment(date).utc().format()})`;
+  const prTitle = `${branch} snapshot update (${moment(date).utc().format()})`;
 
   const { html_url: pullRequestUrl } = await snapshotRepo.createPullRequest({
     base: branch,
