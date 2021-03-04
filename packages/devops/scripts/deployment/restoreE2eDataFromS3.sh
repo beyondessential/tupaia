@@ -22,8 +22,8 @@ echo "Restoring answers"
 psql -U tupaia tupaia -c "\copy answer from 'dumps/answer.csv' delimiter ',' csv header"
 
 echo "Re-enabling notification triggers"
-psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;"
-psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER answer_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE survey_response ENABLE TRIGGER survey_response_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE answer ENABLE TRIGGER answer_trigger;"
 
 echo "Cleaning up"
 rm -rf dumps*
