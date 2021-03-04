@@ -104,7 +104,7 @@ const newConfig = {
         {
           name: '0',
           color: 'Red',
-          value: '0',
+          value: ['0', 'null'],
         },
         {
           name: '1-2',
@@ -120,11 +120,6 @@ const newConfig = {
           name: '⩾5',
           color: 'Green',
           value: '>=5',
-        },
-        {
-          name: 'No data',
-          color: 'Grey',
-          value: 'null',
         },
       ],
       displayType: 'shading',
@@ -163,7 +158,7 @@ const newConfig = {
         {
           name: '0',
           color: 'Red',
-          value: '0',
+          value: ['0', 'null'],
         },
         {
           name: '1-2',
@@ -179,11 +174,6 @@ const newConfig = {
           name: '⩾5',
           color: 'Green',
           value: '>=5',
-        },
-        {
-          name: 'No data',
-          color: 'Grey',
-          value: 'null',
         },
       ],
       displayType: 'shading',
