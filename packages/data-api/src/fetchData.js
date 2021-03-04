@@ -6,16 +6,40 @@ import { utcMoment } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
 
-const SUPPORTED_AGGREGATIONS = [
-  'FINAL_EACH_DAY',
-  'FINAL_EACH_WEEK',
-  'FINAL_EACH_MONTH',
-  'FINAL_EACH_YEAR',
-  'MOST_RECENT',
-];
+const AGGREGATIONS = {
+  FINAL_EACH_DAY: {
+    periodColumns: ['day_period'],
+    useA2Join: true,
+  },
+  FINAL_EACH_WEEK: {
+    periodColumns: ['week_period'],
+    useA2Join: true,
+  },
+  FINAL_EACH_MONTH: {
+    periodColumns: ['month_period'],
+    useA2Join: true,
+  },
+  FINAL_EACH_YEAR: {
+    periodColumns: ['year_period'],
+    useA2Join: true,
+  },
+  MOST_RECENT: {
+    periodColumns: [],
+    useA2Join: true,
+  },
+  DEFAULT: {
+    useA2Join: false,
+  },
+};
 
-const COMMON_FIELDS = 'data_element_code, entity_code, entity_name';
-const ANSWER_SPECIFIC_FIELDS = 'date, event_id, value, answer_type';
+const COMMON_FIELDS = ['data_element_code', 'entity_code']; // Fields which may be grouped by for aggregation purposes
+const ANSWER_SPECIFIC_FIELDS = ['entity_name', 'date', 'event_id', 'value', 'answer_type']; // Fields unique to each answer
+
+const getA1Select = firstAggregation => {
+  return `SELECT ${COMMON_FIELDS.concat(
+    firstAggregation.useA2Join ? firstAggregation.periodColumns : ANSWER_SPECIFIC_FIELDS,
+  ).join(', ')}`;
+};
 
 const getA1WhereClause = conditions => {
   let hasAnyCondition = false;
@@ -49,63 +73,24 @@ const getA1WhereClause = conditions => {
   return clause;
 };
 
-const getA1GroupByClause = firstAggregationType => {
-  switch (firstAggregationType) {
-    case 'FINAL_EACH_DAY':
-      return `GROUP BY ${COMMON_FIELDS}, day_period`;
-    case 'FINAL_EACH_WEEK':
-      return `GROUP BY ${COMMON_FIELDS}, week_period`;
-    case 'FINAL_EACH_MONTH':
-      return `GROUP BY ${COMMON_FIELDS}, month_period`;
-    case 'FINAL_EACH_YEAR':
-      return `GROUP BY ${COMMON_FIELDS}, year_period`;
-    case 'MOST_RECENT':
-      return `GROUP BY ${COMMON_FIELDS}`;
-    default:
-      return '';
-  }
+const getA1GroupByClause = firstAggregation => {
+  return firstAggregation.useA2Join
+    ? `GROUP BY ${COMMON_FIELDS.concat(firstAggregation.periodColumns).join(', ')}`
+    : '';
 };
 
-const getA2FinalWhereClause = firstAggregationType => {
-  switch (firstAggregationType) {
-    case 'FINAL_EACH_DAY':
-      return 'AND day_period = a1.day_period';
-    case 'FINAL_EACH_WEEK':
-      return 'AND week_period = a1.week_period';
-    case 'FINAL_EACH_MONTH':
-      return 'AND month_period = a1.month_period';
-    case 'FINAL_EACH_YEAR':
-      return 'AND year_period = a1.year_period';
-    default:
-      return '';
-  }
+const getA2WhereClause = firstAggregation => {
+  return `WHERE ${COMMON_FIELDS.concat(firstAggregation.periodColumns)
+    .map(field => `${field} = a1.${field}`)
+    .join('\n      AND ')}`;
 };
 
-const getA1Select = firstAggregationType => {
-  switch (firstAggregationType) {
-    case 'FINAL_EACH_DAY':
-      return `SELECT ${COMMON_FIELDS}, day_period`;
-    case 'FINAL_EACH_WEEK':
-      return `SELECT ${COMMON_FIELDS}, week_period`;
-    case 'FINAL_EACH_MONTH':
-      return `SELECT ${COMMON_FIELDS}, month_period`;
-    case 'FINAL_EACH_YEAR':
-      return `SELECT ${COMMON_FIELDS}, year_period`;
-    case 'MOST_RECENT':
-      return `SELECT ${COMMON_FIELDS}`;
-    default:
-      return `SELECT ${COMMON_FIELDS}, ${ANSWER_SPECIFIC_FIELDS}`;
-  }
-};
-
-const getA2Join = firstAggregationType => {
-  return SUPPORTED_AGGREGATIONS.includes(firstAggregationType)
+const getA2Join = firstAggregation => {
+  return firstAggregation.useA2Join
     ? `CROSS JOIN LATERAL (
       SELECT ${ANSWER_SPECIFIC_FIELDS}
       FROM analytics
-      WHERE entity_code = a1.entity_code
-      AND data_element_code = a1.data_element_code
-      ${getA2FinalWhereClause(firstAggregationType)}
+      ${getA2WhereClause(firstAggregation)}
       order by date desc
       limit 1
     ) as a2`
@@ -121,7 +106,7 @@ const generateBaseSqlQuery = ({
   endDate,
   aggregations,
 }) => {
-  const firstAggregationType = aggregations && aggregations[0] && aggregations[0].type;
+  const firstAggregation = AGGREGATIONS[aggregations?.[0]?.type] || AGGREGATIONS.DEFAULT;
   const sqlQuery = new SqlQuery(
     `
     SELECT 
@@ -133,7 +118,7 @@ const generateBaseSqlQuery = ({
       value AS "value",
       answer_type AS "type"
     FROM (
-      ${getA1Select(firstAggregationType)}
+      ${getA1Select(firstAggregation)}
       FROM analytics
       INNER JOIN (
         ${SqlQuery.parameteriseValues(dataElementCodes)}
@@ -142,9 +127,9 @@ const generateBaseSqlQuery = ({
         ${SqlQuery.parameteriseValues(organisationUnitCodes)}
       ) entity_codes(code) ON entity_codes.code = analytics.entity_code
         ${getA1WhereClause({ surveyCode, eventId, startDate, endDate })}
-        ${getA1GroupByClause(firstAggregationType)}
+        ${getA1GroupByClause(firstAggregation)}
     ) as a1
-    ${getA2Join(firstAggregationType)}
+    ${getA2Join(firstAggregation)}
   `,
     [...dataElementCodes, ...organisationUnitCodes]
       .concat(surveyCode ? [surveyCode] : [])
