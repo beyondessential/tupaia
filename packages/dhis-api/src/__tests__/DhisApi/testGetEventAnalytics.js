@@ -54,12 +54,12 @@ const dhisApi = createDhisApi({
 
 export const testGetEventAnalytics = () => {
   beforeAll(() => {
-    jest.spyOn(BuildAnalyticsQuery, 'buildEventAnalyticsQuery').mockResolvedValue(QUERY.fetch);
+    jest.spyOn(BuildAnalyticsQuery, 'buildEventAnalyticsQueries').mockResolvedValue([QUERY.fetch]);
   });
 
   it('translates codes to ids in the provided query', async () => {
     await dhisApi.getEventAnalytics(QUERY.originalInput);
-    return expect(BuildAnalyticsQuery.buildEventAnalyticsQuery).toHaveBeenCalledOnceWith(
+    return expect(BuildAnalyticsQuery.buildEventAnalyticsQueries).toHaveBeenCalledOnceWith(
       QUERY.idsReplacedWithCodes,
     );
   });
@@ -71,7 +71,7 @@ export const testGetEventAnalytics = () => {
     await dhisApi.getEventAnalytics({
       ...QUERY.originalInput,
       ...{
-        programId: ['dhis_program_id'],
+        programId: ['program_dhisId'],
         dataElementIds: ['femalePopulation_dhisId', 'malePopulation_dhisId'],
         organisationUnitIds: ['to_dhisId', 'pg_dhisId'],
         dataElementIdScheme: 'id', // prevent conversion after the main api call to allow for accurate test
@@ -79,7 +79,7 @@ export const testGetEventAnalytics = () => {
     });
     // fetcher being called once means fetch(dataElements), fetch(orgUnits) has not been called
     return expect(dhisApi.fetcher.fetch).toHaveBeenCalledOnceWith(
-      'analytics/events/query/dhis_program_id',
+      'analytics/events/query/program_dhisId',
       QUERY.fetch,
       undefined,
     );
