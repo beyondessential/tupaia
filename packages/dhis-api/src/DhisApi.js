@@ -341,7 +341,7 @@ export class DhisApi {
   }
 
   async getAnalytics(originalQuery) {
-    const queries = buildEventAnalyticsQueries(originalQuery);
+    const queries = buildDataValueAnalyticsQueries(originalQuery);
     return this.fetchAnalyticsQueries(queries, 'analytics/rawData.json');
   }
 
