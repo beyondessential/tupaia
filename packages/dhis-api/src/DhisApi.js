@@ -15,7 +15,11 @@ import {
   translateElementKeysInEventAnalytics,
 } from './translateDataElementKeys';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
-import { buildDataValueAnalyticsQueries, buildEventAnalyticsQuery } from './buildAnalyticsQuery';
+import {
+  buildDataValueAnalyticsQueries,
+  buildEventAnalyticsQueries,
+  buildEventAnalyticsQuery,
+} from './buildAnalyticsQuery';
 
 const {
   CATEGORY_OPTION_COMBO,
@@ -338,31 +342,15 @@ export class DhisApi {
 
   async getAnalytics(originalQuery) {
     const queries = buildDataValueAnalyticsQueries(originalQuery);
-
-    let headers;
-    let rows = [];
-    let metaData;
-    await Promise.all(
-      queries.map(async query => {
-        const { headers: newHeaders, rows: newRows, metaData: newMetadata } = await this.fetch(
-          'analytics/rawData.json',
-          query,
-        );
-
-        // Only the final batch's headers and metadata will be used in the result
-        headers = newHeaders;
-        metaData = newMetadata;
-        rows = rows.concat(newRows);
-      }),
-    );
-
-    return { headers, rows, metaData };
+    return this.fetchAnalyticsQueries(queries, 'analytics/rawData.json');
   }
 
   async getEventAnalytics(originalQuery) {
     const {
       programId,
+      programIds,
       programCode,
+      programCodes,
       dataElementIds,
       dataElementCodes,
       organisationUnitIds,
@@ -371,9 +359,17 @@ export class DhisApi {
       period,
       startDate,
       endDate,
+      ...restOfOriginalQuery
     } = originalQuery;
 
-    const endpoint = await this.buildEventAnalyticsEndpoint(programId, programCode);
+    if (programCodes && programCodes.length > 1) {
+      throw new Error('Maximum of one program code can be specified');
+    }
+    if (programIds && programIds.length > 1) {
+      throw new Error('Maximum of one program id can be specified');
+    }
+
+    const endpoint = await this.buildEventAnalyticsEndpoint(programIds ? programIds[0] : programId, programCodes ? programCodes[0] : programCode);
 
     let resolvedDataElementIds = dataElementIds;
     if (!dataElementIds) {
@@ -389,15 +385,16 @@ export class DhisApi {
     const resolvedOrganisationUnitIds =
       organisationUnitIds || (await this.codesToIds(ORGANISATION_UNIT, organisationUnitCodes));
 
-    const query = await buildEventAnalyticsQuery({
+    const queries = await buildEventAnalyticsQueries({
       dataElementIds: resolvedDataElementIds,
       organisationUnitIds: resolvedOrganisationUnitIds,
       period,
       startDate,
       endDate,
+      ...restOfOriginalQuery,
     });
 
-    const response = await this.fetch(endpoint, query);
+    const response = await this.fetchAnalyticsQueries(queries, endpoint);
     if (dataElementIdScheme !== 'code') {
       return response;
     }
@@ -406,6 +403,32 @@ export class DhisApi {
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementIdToCode = reduceToDictionary(dataElements, 'id', 'code');
     return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
+  }
+
+  /**
+   * @private
+   */
+  async fetchAnalyticsQueries(queries, endpoint) {
+    let headers;
+    let rows = [];
+    let metaData;
+
+    await Promise.all(
+      queries.map(async query => {
+
+        const { headers: newHeaders, rows: newRows, metaData: newMetadata } = await this.fetch(
+          endpoint,
+          query,
+        );
+
+        // Only the final batch's headers and metadata will be used in the result
+        headers = newHeaders;
+        metaData = newMetadata;
+        rows = rows.concat(newRows);
+      }),
+    );
+
+    return { headers, rows, metaData };
   }
 
   async buildEventAnalyticsEndpoint(programId, programCode) {

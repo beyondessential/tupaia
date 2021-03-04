@@ -4,6 +4,8 @@
  */
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { reduceToDictionary } from '@tupaia/utils';
 
 export class DhisInputSchemeResolvingApiProxy {
   constructor(models, api) {
@@ -38,48 +40,46 @@ export class DhisInputSchemeResolvingApiProxy {
     // DhisApi#getEventAnalytics does not need to make these code-to-id conversion calls.
     const { dataElementIdScheme = 'code' } = query;
 
-    const modifyDataElementsToUseDhisId = await this.allDataElementsHaveDhisId(query);
+    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(query);
+    const allProgramsHaveDhisId = await this.allProgramsHaveDhisId(query);
+    const allOrgUnitsHaveDhisId = await this.allOrgUnitsHaveDhisId(query);
 
-    if (modifyDataElementsToUseDhisId) {
+    if (allDataElementsHaveDhisId) {
       modifiedQuery = await this.replaceDataElementCodesWithIds(modifiedQuery);
       modifiedQuery.dataElementIdScheme = 'id';
     }
 
-    if (await this.allProgramsHaveDhisId(query)) {
+    if (allProgramsHaveDhisId) {
       modifiedQuery = await this.replaceProgramCodesWithIds(modifiedQuery);
     }
 
-    if (await this.allOrgUnitsHaveDhisId(query)) {
+    if (allOrgUnitsHaveDhisId) {
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
+    }
+
+    if (allDataElementsHaveDhisId && allProgramsHaveDhisId && allOrgUnitsHaveDhisId) {
+      modifiedQuery.inputIdScheme = 'uid';
     }
 
     const response = await this.api.getEventAnalytics(modifiedQuery);
 
-    if (dataElementIdScheme !== 'code') {
-      return response;
-    }
+    let translatedResponse = { ...response };
 
     // The api response will contain data elements with ids, and DhisApi will not be able to translate these
     // back into codes (because the codes are not set in dhis). So, we have to do it ourselves using the internal
     // mapping.
-    if (!modifyDataElementsToUseDhisId) {
-      return response;
+    if (allDataElementsHaveDhisId && dataElementIdScheme === 'code') {
+      translatedResponse = await this.translateDataElementIdsToCodesInResponse(
+        translatedResponse,
+        query.dataElementCodes,
+      );
     }
 
-    const dataElementIdToCode = {};
+    // It's a little bit more complex with org units, as dhis may return
+    // different org units than were requested
+    translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(translatedResponse);
 
-    const dataElements = await this.models.dataSource.find({
-      code: query.dataElementCodes,
-      type: 'dataElement',
-    });
-
-    for (const dataElement of dataElements) {
-      if (dataElement.config.dhisId) {
-        dataElementIdToCode[dataElement.config.dhisId] = dataElement.code;
-      }
-    }
-
-    return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
+    return translatedResponse;
   }
 
   /**
@@ -134,9 +134,9 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   allProgramsHaveDhisId = async query => {
-    const { programCode } = query;
+    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
 
-    const dataGroups = await this.models.dataSource.find({ code: programCode, type: 'dataGroup' });
+    const dataGroups = await this.models.dataSource.find({ code: programCodes, type: 'dataGroup' });
 
     for (const dataGroup of dataGroups) {
       if (!dataGroup.config.dhisId) {
@@ -185,6 +185,64 @@ export class DhisInputSchemeResolvingApiProxy {
   };
 
   /**
+   * @param response {*}
+   * @param dataElementCodes {*}
+   * @returns {*}
+   * @private
+   */
+  translateDataElementIdsToCodesInResponse = async (response, dataElementCodes) => {
+    const dataElementIdToCode = {};
+
+    const dataElements = await this.models.dataSource.find({
+      code: dataElementCodes,
+      type: 'dataElement',
+    });
+
+    for (const dataElement of dataElements) {
+      if (dataElement.config.dhisId) {
+        dataElementIdToCode[dataElement.config.dhisId] = dataElement.code;
+      }
+    }
+
+    return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
+  };
+
+  /**
+   * @param response {*}
+   * @returns {*}
+   * @private
+   */
+  translateOrgUnitIdsToCodesInResponse = async response => {
+    if (!response.rows.length) return response;
+
+    const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
+    const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
+    if (orgUnitIdIndex === -1 || orgUnitCodeIndex === -1)
+      throw new Error("Can't read org unit id/code from dhis");
+
+    const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
+
+    const mappings = await this.models.dataServiceEntity.find({
+      [QUERY_CONJUNCTIONS.RAW]: {
+        sql: `config->>'dhis_id' in (${dhisIds.map(() => '?')})`,
+        parameters: dhisIds,
+      },
+    });
+
+    const mappingsByDhisId = reduceToDictionary(mappings, el => el.config.dhis_id, 'entity_code');
+
+    const newRows = response.rows.map(row => {
+      const newRow = [...row];
+      const dhisId = row[orgUnitIdIndex];
+      const entityCode = mappingsByDhisId[dhisId];
+      if (entityCode) newRow[orgUnitCodeIndex] = entityCode;
+      return newRow;
+    });
+
+    return { ...response, rows: newRows };
+  };
+
+  /**
    * @param query {*}
    * @returns {*}
    * @private
@@ -227,27 +285,40 @@ export class DhisInputSchemeResolvingApiProxy {
   replaceProgramCodesWithIds = async query => {
     const modifiedQuery = { ...query };
 
-    const { programCode } = query;
+    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
 
-    const dataGroup = await this.models.dataSource.findOne({
-      code: programCode,
+    if (programCodes.length === 0) {
+      throw new Error('No program codes to replace');
+    }
+
+    const dataGroups = await this.models.dataSource.find({
+      code: programCodes,
       type: 'dataGroup',
     });
 
-    if (!dataGroup) {
-      throw new Error(
-        'Program/DataGroup not found in data_source, attempted to replace its code with an id',
-      );
+    const programIds = [];
+
+    for (const programCode of programCodes) {
+      const dataGroup = dataGroups.find(d => d.code === programCode);
+
+      if (!dataGroup) {
+        throw new Error(
+          `Program/DataGroup ${programCode} not found in data_source, attempted to replace its code with an id`,
+        );
+      }
+
+      if (!dataGroup.config.dhisId) {
+        throw new Error(
+          `Program/DataGroup ${programCode} does not have a dhisId, attempted to replace its code with the id`,
+        );
+      }
+
+      programIds.push(dataGroup.config.dhisId);
     }
 
-    if (!dataGroup.config.dhisId) {
-      throw new Error(
-        'Program/DataGroup does not have a dhisId, attempted to replace its code with the id',
-      );
-    }
-
-    modifiedQuery.programId = dataGroup.config.dhisId;
+    modifiedQuery.programIds = programIds;
     delete modifiedQuery.programCode;
+    delete modifiedQuery.programCodes;
     return modifiedQuery;
   };
 }
