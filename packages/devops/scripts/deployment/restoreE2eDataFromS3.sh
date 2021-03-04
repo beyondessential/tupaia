@@ -12,9 +12,8 @@ echo "Disabling notification triggers"
 psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;"
 psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER answer_trigger;"
 
-echo "Clearing survey response and data tables"
-psql -U tupaia tupaia -c "TRUNCATE TABLE answer;"
-psql -U tupaia tupaia -c "TRUNCATE TABLE survey_response;"
+echo "Clearing survey response and answer tables"
+psql -U tupaia tupaia -c "TRUNCATE TABLE survey_response CASCADE;"
 
 echo "Restoring survey responses"
 psql -U tupaia tupaia < ./dumps/survey_response.sql
