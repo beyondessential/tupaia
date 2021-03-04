@@ -151,7 +151,7 @@ export class RemoteGitRepo {
   };
 
   getBranch = async branch => {
-    validateRequiredFnInput('createPullRequest', { branch });
+    validateRequiredFnInput('getBranch', { branch });
     return this.handleReq(this.api.getBranch(branch));
   };
 
@@ -169,7 +169,7 @@ export class RemoteGitRepo {
   };
 
   hasBranch = async branch => {
-    validateRequiredFnInput('createTreeFromFiles', { branch });
+    validateRequiredFnInput('hasBranch', { branch });
     const branches = await this.listBranches();
     return branches.some(b => b.name === branch);
   };
