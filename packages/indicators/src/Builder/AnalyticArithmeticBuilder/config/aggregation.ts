@@ -4,20 +4,18 @@
  */
 
 import { toArray } from '@tupaia/utils';
-import { getExpressionParserInstance } from '../../getExpressionParserInstance';
-import { ArithmeticConfig, AggregationDescriptor, AggregationSpecs } from './types';
+import { AggregationList } from '../../../types';
+import { getExpressionParserInstance } from '../../../getExpressionParserInstance';
+import { AggregationDescriptor, AggregationSpecs, AnalyticArithmeticConfig } from './types';
 
 enum AggregationType {
   String, // 'SUM'
   Array, // ['SUM', 'MOST_RECENT']
   Object, // { type: 'OFFSET_PERIOD', config: { periodType: 'week' }}
-  // Dictionary keys are data elements included in `ArithmeticConfig.formula`
-  // or `ArithmeticConfig.parameters`
+  // Dictionary keys are data elements included in `AnalyticArithmeticConfig.formula`
+  // or `AnalyticArithmeticConfig.parameters`
   Dictionary, // { BCD1: 'SUM', BCD2: ['COUNT', 'FINAL_EACH_WEEK' ] }
 }
-
-const isParameterCode = (parameters: { code: string }[], code: string) =>
-  !!parameters.find(p => p.code === code);
 
 const getAggregationType = (aggregation: unknown): AggregationType => {
   const invalidTypeError = new Error(
@@ -52,7 +50,7 @@ const validateAggregationDescriptor = (descriptor: unknown) => {
       return;
     case 'object':
       if (descriptor !== null) {
-        const type = descriptor?.type;
+        const type = (descriptor as Record<string, unknown>)?.type;
         if (!type || typeof type !== 'string') {
           throw new Error("Aggregation object requires a non empty string as a 'type'");
         }
@@ -80,13 +78,13 @@ const validateAggregationDictionary = (
   aggregation: Record<string, unknown>,
   config: { formula: 'string'; parameters: { code: 'string' }[] },
 ) => {
-  const { formula, parameters = [] } = config;
+  const { formula } = config;
 
   // Validate keys
   const parser = getExpressionParserInstance();
-  parser.getVariables(formula).forEach(code => {
-    if (!(code in aggregation) && !isParameterCode(parameters, code)) {
-      throw new Error(`'${code}' is referenced in the formula but has no aggregation defined`);
+  parser.getVariables(formula).forEach(variable => {
+    if (!(variable in aggregation)) {
+      throw new Error(`'${variable}' is referenced in the formula but has no aggregation defined`);
     }
   });
 
@@ -124,8 +122,10 @@ export const validateAggregation = (
 const descriptorToAggregation = (descriptor: AggregationDescriptor) =>
   typeof descriptor === 'object' ? descriptor : { type: descriptor };
 
-const getAggregationDictionary = (config: ArithmeticConfig): Record<string, AggregationSpecs> => {
-  const { formula, aggregation, parameters = [] } = config;
+const getAggregationDictionary = (
+  config: AnalyticArithmeticConfig,
+): Record<string, AggregationSpecs> => {
+  const { aggregation, formula } = config;
 
   const aggregationType = getAggregationType(aggregation);
   if (aggregationType === AggregationType.Dictionary) {
@@ -133,19 +133,19 @@ const getAggregationDictionary = (config: ArithmeticConfig): Record<string, Aggr
   }
 
   const parser = getExpressionParserInstance();
-  const elementCodes = parser
-    .getVariables(formula)
-    .filter(code => !isParameterCode(parameters, code));
-  return Object.fromEntries(elementCodes.map(code => [code, aggregation as AggregationSpecs]));
+  const variables = parser.getVariables(formula);
+  return Object.fromEntries(variables.map(variable => [variable, aggregation as AggregationSpecs]));
 };
 
-export const getAggregationsByCode = (config: ArithmeticConfig) => {
+export const getAggregationListByCode = (
+  config: AnalyticArithmeticConfig,
+): Record<string, AggregationList> => {
   const aggregationDictionary = getAggregationDictionary(config);
 
   return Object.fromEntries(
     Object.entries(aggregationDictionary).map(([code, aggregationSpecs]) => {
-      const aggregations = toArray(aggregationSpecs).map(descriptorToAggregation);
-      return [code, aggregations];
+      const aggregationList = toArray(aggregationSpecs).map(descriptorToAggregation);
+      return [code, aggregationList];
     }),
   );
 };
