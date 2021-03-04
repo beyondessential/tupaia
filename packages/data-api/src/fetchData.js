@@ -41,7 +41,7 @@ const getA1Select = firstAggregation => {
   ).join(', ')}`;
 };
 
-const getA1WhereClause = conditions => {
+const getA1WhereClause = (conditions, paramsArray) => {
   let hasAnyCondition = false;
   let clause = '';
   for (const [condition, value] of Object.entries(conditions)) {
@@ -54,15 +54,19 @@ const getA1WhereClause = conditions => {
     switch (condition) {
       case 'surveyCode':
         clause = `${clause} survey_code = ?`;
+        paramsArray.push(value);
         break;
       case 'eventId':
         clause = `${clause} event_id = ?`;
+        paramsArray.push(value);
         break;
       case 'startDate':
         clause = `${clause} date >= ?`;
+        paramsArray.push(utcMoment(value).startOf('day').toISOString());
         break;
       case 'endDate':
         clause = `${clause} date <= ?`;
+        paramsArray.push(utcMoment(value).endOf('day').toISOString());
         break;
       default:
         throw new Error(`Unknown condition in fetch data where clause: ${condition}`);
@@ -79,18 +83,27 @@ const getA1GroupByClause = firstAggregation => {
     : '';
 };
 
-const getA2WhereClause = firstAggregation => {
-  return `WHERE ${COMMON_FIELDS.concat(firstAggregation.periodColumns)
-    .map(field => `${field} = a1.${field}`)
-    .join('\n      AND ')}`;
+const getA2WhereClause = (firstAggregation, startDate, endDate, paramsArray) => {
+  const whereClauses = COMMON_FIELDS.concat(firstAggregation.periodColumns).map(
+    field => `${field} = a1.${field}`,
+  );
+  if (startDate) {
+    whereClauses.push('date >= ?');
+    paramsArray.push(utcMoment(startDate).startOf('day').toISOString());
+  }
+  if (endDate) {
+    whereClauses.push('date <= ?');
+    paramsArray.push(utcMoment(endDate).endOf('day').toISOString());
+  }
+  return `WHERE ${whereClauses.join('\n      AND ')}`;
 };
 
-const getA2Join = firstAggregation => {
+const getA2Join = (firstAggregation, startDate, endDate, paramsArray) => {
   return firstAggregation.useA2Join
     ? `CROSS JOIN LATERAL (
       SELECT ${ANSWER_SPECIFIC_FIELDS}
       FROM analytics
-      ${getA2WhereClause(firstAggregation)}
+      ${getA2WhereClause(firstAggregation, startDate, endDate, paramsArray)}
       order by date desc
       limit 1
     ) as a2`
@@ -107,6 +120,7 @@ const generateBaseSqlQuery = ({
   aggregations,
 }) => {
   const firstAggregation = AGGREGATIONS[aggregations?.[0]?.type] || AGGREGATIONS.DEFAULT;
+  const paramsArray = [];
   const sqlQuery = new SqlQuery(
     `
     SELECT 
@@ -121,21 +135,17 @@ const generateBaseSqlQuery = ({
       ${getA1Select(firstAggregation)}
       FROM analytics
       INNER JOIN (
-        ${SqlQuery.parameteriseValues(dataElementCodes)}
+        ${SqlQuery.parameteriseValues(dataElementCodes, paramsArray)}
       ) data_element_codes(code) ON data_element_codes.code = analytics.data_element_code
       INNER JOIN (
-        ${SqlQuery.parameteriseValues(organisationUnitCodes)}
+        ${SqlQuery.parameteriseValues(organisationUnitCodes, paramsArray)}
       ) entity_codes(code) ON entity_codes.code = analytics.entity_code
-        ${getA1WhereClause({ surveyCode, eventId, startDate, endDate })}
+        ${getA1WhereClause({ surveyCode, eventId, startDate, endDate }, paramsArray)}
         ${getA1GroupByClause(firstAggregation)}
     ) as a1
-    ${getA2Join(firstAggregation)}
+    ${getA2Join(firstAggregation, startDate, endDate, paramsArray)}
   `,
-    [...dataElementCodes, ...organisationUnitCodes]
-      .concat(surveyCode ? [surveyCode] : [])
-      .concat(eventId ? [eventId] : [])
-      .concat(startDate ? [utcMoment(startDate).startOf('day').toISOString()] : [])
-      .concat(endDate ? [utcMoment(endDate).endOf('day').toISOString()] : []),
+    paramsArray,
   );
 
   sqlQuery.addOrderByClause('date');

@@ -6,7 +6,10 @@
 export class SqlQuery {
   static parameteriseArray = arr => `(${arr.map(() => '?').join(',')})`;
 
-  static parameteriseValues = arr => `VALUES (${arr.map(() => `?`).join('), (')})`;
+  static parameteriseValues = (values, paramsArray) => {
+    if (paramsArray) paramsArray.push(...values);
+    return `VALUES (${values.map(() => `?`).join('), (')})`;
+  };
 
   constructor(baseQuery, baseParameters = []) {
     this.query = baseQuery;
