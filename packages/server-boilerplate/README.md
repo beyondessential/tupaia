@@ -1,3 +1,3 @@
-# @tupaia/tupaia-server
+# @tupaia/server-boilerplate
 
 Back end server boilerplate.
