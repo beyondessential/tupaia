@@ -16,10 +16,10 @@ echo "Clearing survey response and answer tables"
 psql -U tupaia tupaia -c "TRUNCATE TABLE survey_response CASCADE;"
 
 echo "Restoring survey responses"
-psql -U tupaia tupaia < ./dumps/survey_response.sql
+psql -U tupaia tupaia -c "\copy 'dumps/survey_response.csv' to survey_response csv header"
 
 echo "Restoring answers"
-psql -U tupaia tupaia < ./dumps/answer.sql
+psql -U tupaia tupaia -c "\copy 'dumps/answer.csv' to answer csv header"
 
 echo "Re-enabling notification triggers"
 psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;"
