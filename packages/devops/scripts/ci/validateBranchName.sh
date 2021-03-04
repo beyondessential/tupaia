@@ -4,6 +4,7 @@ DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?')
+RESERVED_NAMES=(e2e)
 SUBDOMAIN_SUFFIXES=(admin aggregation api config export mobile psss psss-api report-api tonga-aggregation www)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
@@ -20,6 +21,17 @@ function get_branch_name() {
     fi
 
     echo $branch_name
+}
+
+function check_name_is_not_reserved() {
+    local $branch_name=$1
+
+    for reserved_name in ${RESERVED_NAMES[@]}; do
+        if [[ "$branch_name" == "$reserved_name" ]]; then
+            log_error "❌ Branch name is reserved"
+            exit 1
+        fi
+    done
 }
 
 function validate_name_ending() {
@@ -60,6 +72,7 @@ function validate_name_chars() {
 }
 
 branch_name=$(get_branch_name)
+check_name_is_not_reserved $branch_name
 validate_name_ending $branch_name
 validate_name_length $branch_name
 validate_name_chars $branch_name
