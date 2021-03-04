@@ -27,7 +27,23 @@ function getDefaultTypeDetails(type) {
   return { categoryCode, typeName };
 }
 
-export async function updateCountryEntities(transactingModels, countryName, entityObjects) {
+const getEntityMetadata = async (transactingModels, code, pushToDhis) => {
+  const defaultMetadata = {
+    dhis: { isDataRegional: true },
+  };
+  
+  // Only assign push = false, by default all entities will be pushed to dhis
+  if (!pushToDhis) {
+    defaultMetadata.dhis.push = pushToDhis;
+  }
+
+  const entity = await transactingModels.entity.findOne({ code });
+  return entity && entity.metadata
+      ? entity.metadata // we don't want to override the metadata if the entity already exists
+      : defaultMetadata;
+}
+
+export async function updateCountryEntities(transactingModels, countryName, entityObjects, pushToDhis = true) {
   const countryCode = getCountryCode(countryName, entityObjects);
   const country = await transactingModels.country.findOrCreate(
     { name: countryName },
@@ -36,6 +52,8 @@ export async function updateCountryEntities(transactingModels, countryName, enti
   const { id: worldId } = await transactingModels.entity.findOne({
     type: transactingModels.entity.types.WORLD,
   });
+  
+  const countryEntityMetadata = await getEntityMetadata(transactingModels, countryCode, pushToDhis);
   await transactingModels.entity.findOrCreate(
     { code: countryCode },
     {
@@ -43,9 +61,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       country_code: countryCode,
       type: transactingModels.entity.types.COUNTRY,
       parent_id: worldId,
-      metadata: {
-        dhis: { isDataRegional: true },
-      },
+      metadata: countryEntityMetadata,
     },
   );
   const codes = []; // An array to hold all facility codes, allowing duplicate checking
@@ -118,14 +134,8 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         dataServiceEntityToUpsert,
       );
     }
-    const entity = await transactingModels.entity.findOne({ code });
-    const metadata =
-      entity && entity.metadata
-        ? entity.metadata // we don't want to override the metadata if the entity already exists
-        : {
-            dhis: { isDataRegional: true },
-          };
 
+    const entityMetadata = await getEntityMetadata(transactingModels, code, pushToDhis);
     await transactingModels.entity.updateOrCreate(
       { code },
       {
@@ -134,7 +144,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         type: entityType,
         country_code: country.code,
         image_url: imageUrl,
-        metadata,
+        metadata: entityMetadata,
         attributes,
       },
     );
