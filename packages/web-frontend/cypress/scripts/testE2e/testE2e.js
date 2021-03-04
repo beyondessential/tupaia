@@ -47,10 +47,11 @@ export const getSnapshotRepo = () => {
 
 /**
  * Runs e2e tests using the following steps:
- * 1. Pull snapshots
+ * 1. Pull snapshots from the snapshot repo
  * 2. Generate config
  * 3. Run tests using the pulled snapshots
- * 4. If new snapshots were captured during tests, push them
+ * 4. Push snapshots that were captured during tests, if they are non empty and different
+ * than the ones pulled from the repo
  */
 export const testE2e = async () => {
   const logger = getLoggerInstance();

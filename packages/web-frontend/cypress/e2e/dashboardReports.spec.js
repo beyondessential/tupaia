@@ -34,11 +34,16 @@ describe('Dashboard reports', () => {
     it(url, () => {
       cy.server();
       cy.route(urlToRouteRegex(url)).as('report');
-
       cy.visit(url);
       cy.wait('@report');
-      cy.findByTestId('enlarged-dialog').snapshotHtml({ name: SNAPSHOTS.key });
-      cy.findByTestId('enlarged-dialog').snapshotHtml({ name: SNAPSHOTS.newKey });
+
+      cy.findByTestId('enlarged-dialog').as('enlargedDialog');
+      // Capture and store the snapshot using the "new" key, to avoid comparison with existing snapshots.
+      // We want to store the new snapshots no matter what: a failed comparison would prevent that
+      cy.get('@enlargedDialog').snapshotHtml({ name: SNAPSHOTS.newKey });
+      // Then, use the "standard" key to trigger a comparison with existing snapshots.
+      // This way we check for regression
+      cy.get('@enlargedDialog').snapshotHtml({ name: SNAPSHOTS.key });
     });
   });
 });

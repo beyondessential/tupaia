@@ -28,7 +28,7 @@ function check_name_is_not_reserved() {
 
     for reserved_name in ${RESERVED_NAMES[@]}; do
         if [[ "$branch_name" == "$reserved_name" ]]; then
-            log_error "❌ Branch name is reserved"
+            log_error "❌ Reserved branch name: '$branch_name'"
             exit 1
         fi
     done
