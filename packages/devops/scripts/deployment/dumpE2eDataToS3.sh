@@ -14,10 +14,10 @@ if [[ "$STAGE" == "e2e" ]]; then
   mkdir -p dumps
 
   echo "Dumping survey_response"
-  psql -U tupaia tupaia -c "\copy survey_response to 'dumps/survey_response.csv' csv header"
+  psql -U tupaia tupaia -c "\copy survey_response to 'dumps/survey_response.csv' delimiter ',' csv header"
 
   echo "Dumping answer"
-  psql -U tupaia tupaia -c "\copy answer to 'dumps/answer.csv' csv header"
+  psql -U tupaia tupaia -c "\copy answer to 'dumps/answer.csv' delimiter ',' csv header"
 
   echo "Compressing dumps"
   tar cfz dumps.tgz dumps/*
