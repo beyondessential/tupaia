@@ -4,6 +4,7 @@
  */
 
 import autobind from 'react-autobind';
+import { types as pgTypes } from 'pg';
 import knex from 'knex';
 import winston from 'winston';
 import { Multilock } from '@tupaia/utils';
@@ -50,6 +51,10 @@ const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
+
+// turn off parsing of timestamp (not timestamptz), so that it stays as a sort of "universal time"
+// string, independent of timezones, rather than being converted to local time
+pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
 export class TupaiaDatabase {
   constructor(transactingConnection) {
