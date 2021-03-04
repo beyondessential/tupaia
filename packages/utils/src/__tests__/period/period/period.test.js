@@ -16,6 +16,7 @@ import {
   momentToPeriod,
   parsePeriodType,
   PERIOD_TYPES,
+  periodToDateString,
   periodToTimestamp,
   periodToType,
 } from '../../../period/period';
@@ -121,6 +122,40 @@ describe('period utilities', () => {
       wrongValues.map(wrongValue =>
         expect(() => parsePeriodType(wrongValue)).toThrowError('Period type'),
       );
+    });
+  });
+
+  describe('periodToDateString', () => {
+    it('uses start period by default', () => {
+      expect(periodToDateString('2020')).toBe(periodToDateString('2020', false));
+    });
+
+    describe('start periods', () => {
+      const testData = [
+        ['year', '2020', '2020-01-01'],
+        ['quarter', '2020Q2', '2020-04-01'],
+        ['month', '202002', '2020-02-01'],
+        ['week', '2020W01', '2019-12-30'],
+        ['day', '20200131', '2020-01-31'],
+      ];
+
+      it.each(testData)('%s', (_, period, expected) => {
+        expect(periodToDateString(period, false)).toBe(expected);
+      });
+    });
+
+    describe('end periods', () => {
+      const testData = [
+        ['year', '2020', '2020-12-31'],
+        ['quarter', '2020Q2', '2020-06-30'],
+        ['month', '202002', '2020-02-29'],
+        ['week', '2020W01', '2020-01-05'],
+        ['day', '20200131', '2020-01-31'],
+      ];
+
+      it.each(testData)('%s', (_, period, expected) => {
+        expect(periodToDateString(period, true)).toBe(expected);
+      });
     });
   });
 

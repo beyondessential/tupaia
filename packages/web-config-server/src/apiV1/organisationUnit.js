@@ -18,6 +18,21 @@ export default class extends RouteHandler {
   async buildResponse() {
     const { includeCountryData } = this.query;
     const project = await this.fetchProject();
+
+    // If this is a project entity, get entitiesWithAccess and set them on the entity
+    if (this.entity.isProject()) {
+      const orgUnits = await this.entity.getNearestOrgUnitDescendants();
+
+      const entitiesWithAccessInfo = await Promise.all(
+        orgUnits.map(async orgUnit => ({
+          ...orgUnit,
+          hasAccess: await this.checkUserHasEntityAccess(orgUnit),
+        })),
+      );
+
+      this.entity.entitiesWithAccess = entitiesWithAccessInfo.filter(e => e.hasAccess);
+    }
+
     return includeCountryData === 'true'
       ? this.getEntityAndCountryDataByCode(project)
       : this.getEntityAndChildrenByCode(project);
