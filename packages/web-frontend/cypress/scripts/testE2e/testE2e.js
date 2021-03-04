@@ -25,7 +25,7 @@ const runTestsAndCatchErrors = () => {
   } catch (error) {
     // Note: ideally we would only catch test assertion errors,
     // and still throw runtime/syntax errors etc.
-    // Unfortunately we haven't found a eay to distinguish between the two in this occasion
+    // Unfortunately we haven't found an easy way to distinguish between the two in this occasion
     cypressError = error;
   }
 
