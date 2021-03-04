@@ -7,6 +7,23 @@ import fs from 'fs';
 import { isPlainObject, set } from 'lodash';
 import { extname } from 'path';
 
+import { compareAsc } from '@tupaia/utils';
+
+/**
+ * NodePath is an array of two elements:
+ * NodePath[0]: array of paths to reach a certain node in a tree
+ * NodePath[1]: value of the node
+ *
+ * @typedef {[string[], any]} NodePath
+ */
+
+const nodePathsToTree = nodePaths =>
+  nodePaths.reduce((agg, entry) => {
+    const [path, value] = entry;
+    set(agg, path, value);
+    return agg;
+  }, {});
+
 const isJs = path => extname(path) === '.js';
 
 export class Snapshots {
@@ -37,7 +54,7 @@ export class Snapshots {
     fs.writeFileSync(path, contents);
   };
 
-  toString = () => JSON.stringify(this.snapshotTree);
+  toString = () => JSON.stringify(this.snapshotTree, undefined, 2);
 
   equals = snapshots => {
     if (!(snapshots instanceof Snapshots)) {
@@ -49,27 +66,31 @@ export class Snapshots {
   isEmpty = () => Object.keys(this.snapshotTree).length === 0;
 
   extractSnapshotsByKey = (key, options = {}) => {
-    const extractedTree = {};
+    const extractedNodePaths = [];
     this.extractionConfig = {
       sourceKey: key,
       targetKey: options.renameKey || key,
     };
-    this.recursivelyExtractSnapshots(this.snapshotTree, extractedTree);
+    this.recursivelyExtractSnapshotNodePaths(this.snapshotTree, extractedNodePaths);
+
+    extractedNodePaths.sort(([pathA], [pathB]) => compareAsc(pathA, pathB));
+    const extractedTree = nodePathsToTree(extractedNodePaths);
     return new Snapshots(extractedTree);
   };
 
   /**
    * @private
-   * @param {Object<string, any>} resultTree New snapshots will be recursively extracted and stored here
+   * @param {NodePath[]} nodePathsResults NodePaths for extracted snapshots will be recursively
+   * stored here
    */
-  recursivelyExtractSnapshots = (snapshotTree, resultTree, paths = []) => {
+  recursivelyExtractSnapshotNodePaths = (snapshotTree, nodePathsResults, paths = []) => {
     Object.entries(snapshotTree).forEach(([key, subtree]) => {
       if (key === this.extractionConfig.sourceKey) {
-        set(resultTree, [...paths, this.extractionConfig.targetKey], subtree);
+        nodePathsResults.push([[...paths, this.extractionConfig.targetKey], subtree]);
       } else if (!isPlainObject(subtree)) {
         // Leaf node and no match found, do not traverse deeper
       } else {
-        this.recursivelyExtractSnapshots(subtree, resultTree, [...paths, key]);
+        this.recursivelyExtractSnapshotNodePaths(subtree, nodePathsResults, [...paths, key]);
       }
     });
   };
