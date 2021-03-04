@@ -52,6 +52,9 @@ const VALID_COMPARISON_TYPES = ['where', 'whereBetween', 'whereIn', 'orWhere'];
 const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
+  /**
+   * @param {*} [transactingConnection]
+   */
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};

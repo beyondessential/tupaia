@@ -89,6 +89,7 @@ export class MeasureBar extends Component {
       return (
         <HierarchyItem
           label={childObject.name}
+          info={childObject.info}
           isSelected={
             childObject.children ? null : childObject.measureId === currentMeasure.measureId
           }
@@ -103,7 +104,7 @@ export class MeasureBar extends Component {
   renderHierarchy() {
     const { measureHierarchy, defaultMeasure } = this.props;
 
-    const items = measureHierarchy.map(({ name: groupName, children }) => {
+    const items = measureHierarchy.map(({ name: groupName, children, info }) => {
       if (!Array.isArray(children)) return null;
       const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
@@ -111,6 +112,7 @@ export class MeasureBar extends Component {
         <HierarchyItem
           nestedMargin="0px"
           label={groupName}
+          info={info}
           nestedItems={nestedItems}
           key={groupName}
         />
