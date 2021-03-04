@@ -40,19 +40,25 @@ export class DhisInputSchemeResolvingApiProxy {
     // DhisApi#getEventAnalytics does not need to make these code-to-id conversion calls.
     const { dataElementIdScheme = 'code' } = query;
 
-    const modifyDataElementsToUseDhisId = await this.allDataElementsHaveDhisId(query);
+    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(query);
+    const allProgramsHaveDhisId = await this.allProgramsHaveDhisId(query);
+    const allOrgUnitsHaveDhisId = await this.allOrgUnitsHaveDhisId(query);
 
-    if (modifyDataElementsToUseDhisId) {
+    if (allDataElementsHaveDhisId) {
       modifiedQuery = await this.replaceDataElementCodesWithIds(modifiedQuery);
       modifiedQuery.dataElementIdScheme = 'id';
     }
 
-    if (await this.allProgramsHaveDhisId(query)) {
+    if (allProgramsHaveDhisId) {
       modifiedQuery = await this.replaceProgramCodesWithIds(modifiedQuery);
     }
 
-    if (await this.allOrgUnitsHaveDhisId(query)) {
+    if (allOrgUnitsHaveDhisId) {
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
+    }
+
+    if (allDataElementsHaveDhisId && allProgramsHaveDhisId && allOrgUnitsHaveDhisId) {
+      modifiedQuery.inputIdScheme = 'uid';
     }
 
     const response = await this.api.getEventAnalytics(modifiedQuery);
@@ -62,7 +68,7 @@ export class DhisInputSchemeResolvingApiProxy {
     // The api response will contain data elements with ids, and DhisApi will not be able to translate these
     // back into codes (because the codes are not set in dhis). So, we have to do it ourselves using the internal
     // mapping.
-    if (modifyDataElementsToUseDhisId && dataElementIdScheme === 'code') {
+    if (allDataElementsHaveDhisId && dataElementIdScheme === 'code') {
       translatedResponse = await this.translateDataElementIdsToCodesInResponse(
         translatedResponse,
         query.dataElementCodes,
@@ -128,9 +134,9 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   allProgramsHaveDhisId = async query => {
-    const { programCode } = query;
+    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
 
-    const dataGroups = await this.models.dataSource.find({ code: programCode, type: 'dataGroup' });
+    const dataGroups = await this.models.dataSource.find({ code: programCodes, type: 'dataGroup' });
 
     for (const dataGroup of dataGroups) {
       if (!dataGroup.config.dhisId) {
@@ -279,27 +285,40 @@ export class DhisInputSchemeResolvingApiProxy {
   replaceProgramCodesWithIds = async query => {
     const modifiedQuery = { ...query };
 
-    const { programCode } = query;
+    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
 
-    const dataGroup = await this.models.dataSource.findOne({
-      code: programCode,
+    if (programCodes.length === 0) {
+      throw new Error('No program codes to replace');
+    }
+
+    const dataGroups = await this.models.dataSource.find({
+      code: programCodes,
       type: 'dataGroup',
     });
 
-    if (!dataGroup) {
-      throw new Error(
-        'Program/DataGroup not found in data_source, attempted to replace its code with an id',
-      );
+    const programIds = [];
+
+    for (const programCode of programCodes) {
+      const dataGroup = dataGroups.find(d => d.code === programCode);
+
+      if (!dataGroup) {
+        throw new Error(
+          `Program/DataGroup ${programCode} not found in data_source, attempted to replace its code with an id`,
+        );
+      }
+
+      if (!dataGroup.config.dhisId) {
+        throw new Error(
+          `Program/DataGroup ${programCode} does not have a dhisId, attempted to replace its code with the id`,
+        );
+      }
+
+      programIds.push(dataGroup.config.dhisId);
     }
 
-    if (!dataGroup.config.dhisId) {
-      throw new Error(
-        'Program/DataGroup does not have a dhisId, attempted to replace its code with the id',
-      );
-    }
-
-    modifiedQuery.programId = dataGroup.config.dhisId;
+    modifiedQuery.programIds = programIds;
     delete modifiedQuery.programCode;
+    delete modifiedQuery.programCodes;
     return modifiedQuery;
   };
 }
