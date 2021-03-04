@@ -80,17 +80,17 @@ export class Snapshots {
 
   /**
    * @private
-   * @param {NodePath[]} nodePathsResults NodePaths for extracted snapshots will be recursively
+   * @param {NodePath[]} nodePathResults NodePaths for extracted snapshots will be recursively
    * stored here
    */
-  recursivelyExtractSnapshotNodePaths = (snapshotTree, nodePathsResults, paths = []) => {
+  recursivelyExtractSnapshotNodePaths = (snapshotTree, nodePathResults, paths = []) => {
     Object.entries(snapshotTree).forEach(([key, subtree]) => {
       if (key === this.extractionConfig.sourceKey) {
-        nodePathsResults.push([[...paths, this.extractionConfig.targetKey], subtree]);
+        nodePathResults.push([[...paths, this.extractionConfig.targetKey], subtree]);
       } else if (!isPlainObject(subtree)) {
         // Leaf node and no match found, do not traverse deeper
       } else {
-        this.recursivelyExtractSnapshotNodePaths(subtree, nodePathsResults, [...paths, key]);
+        this.recursivelyExtractSnapshotNodePaths(subtree, nodePathResults, [...paths, key]);
       }
     });
   };
