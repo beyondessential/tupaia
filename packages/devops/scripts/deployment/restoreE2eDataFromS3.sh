@@ -8,17 +8,23 @@ aws s3 cp s3://tupaia/dumps/e2e/dumps.tgz .
 echo "Decompressing dumps"
 tar xf dumps.tgz
 
-echo "Restoring survey responses"
-psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER ALL;"
+echo "Disabling notification triggers"
+psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER answer_trigger;"
+
+echo "Clearing survey response and data tables"
+psql -U tupaia tupaia -c "TRUNCATE TABLE answer;"
 psql -U tupaia tupaia -c "TRUNCATE TABLE survey_response;"
+
+echo "Restoring survey responses"
 psql -U tupaia tupaia < ./dumps/survey_response.sql
-psql -U tupaia tupaia -c "ALTER TABLE survey_response ENABLE TRIGGER ALL;"
 
 echo "Restoring answers"
-psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER ALL;"
-psql -U tupaia tupaia -c "TRUNCATE TABLE answer;"
 psql -U tupaia tupaia < ./dumps/answer.sql
-psql -U tupaia tupaia -c "ALTER TABLE answer ENABLE TRIGGER ALL;"
+
+echo "Re-enabling notification triggers"
+psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER answer_trigger;"
 
 echo "Cleaning up"
 rm -rf dumps*
