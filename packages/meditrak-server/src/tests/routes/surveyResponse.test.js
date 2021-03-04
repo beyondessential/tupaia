@@ -369,45 +369,6 @@ describe('surveyResponse endpoint', () => {
     expectError(response, /Should not be empty/);
   });
 
-  it('Should handle timezones correctly', async () => {
-    const timezones = [
-      'Etc/GMT-13',
-      'Pacific/Apia',
-      'Pacific/Enderbury',
-      'Pacific/Fakaofo',
-      'Pacific/Tongatapu',
-      'Antarctica/McMurdo', // +13 during DST
-    ];
-    const timestamp = '2019-07-31T06:48:00+13:00';
-    const response = await app.post('surveyResponse', {
-      body: {
-        survey_id: surveyId,
-        entity_id: ENTITY_ID,
-        timestamp,
-        answers: {
-          [questionCode(1)]: '123',
-        },
-      },
-    });
-
-    const { body } = response;
-    expectSuccess(response);
-
-    const { surveyResponseId } = body.results[0];
-    const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
-    expect(moment.utc(dbResponse.data_time).tz(dbResponse.timezone).format()).to.be.oneOf([
-      '2019-07-31T06:48:00+13:00',
-      // While 'Antarctica/McMurdo' is in DST time, it will be selected as the timezone,
-      // however the timestamp is hardcoded to a date outside of DST time for McMurdo, so it will be
-      // parsed with it's non-DST +12 offset.
-      '2019-07-31T05:48:00+12:00',
-    ]);
-    expect(dbResponse.timezone).to.be.oneOf(timezones);
-    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
-      '2019-07-30T17:48:00.000',
-    );
-  });
-
   describe('Update entity for existing survey response', async function () {
     let syncQueue;
     let surveyResponseId;
