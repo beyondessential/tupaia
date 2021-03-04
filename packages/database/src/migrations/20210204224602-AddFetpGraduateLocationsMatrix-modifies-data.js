@@ -36,9 +36,11 @@ const reportConfig = {
     },
     Provinces: {
       parentType: 'district',
+      parentExcludeCode: 'PG_National Capital District',
     },
     Districts: {
       parentType: 'sub_district',
+      parentExcludeCode: 'PG_National Capital District_NCD',
     },
   },
   viewJson: {
@@ -54,6 +56,7 @@ const reportConfig = {
     const columnConfig = report.columns[column];
     if (columnConfig.parentType) filter.parentType = columnConfig.parentType;
     if (columnConfig.parentCode) filter.parentCode = columnConfig.parentCode;
+    if (columnConfig.parentExcludeCode) filter.parentExcludeCode = columnConfig.parentExcludeCode;
     return {
       key: `${column}_${value}_count`,
       filter,

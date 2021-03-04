@@ -49,6 +49,7 @@ const filterAnalytics = async (analytics, filter, models) => {
     organisationUnit: organisationUnitFilter,
     parentType: organisationUnitParentType,
     parentCode: organisationUnitParentCode,
+    parentExcludeCode: organisationUnitParentExcludeCode,
   } = filter;
 
   if (!(organisationUnitFilter || organisationUnitParentType || organisationUnitParentCode))
@@ -65,6 +66,17 @@ const filterAnalytics = async (analytics, filter, models) => {
         a.organisationUnit,
         'code',
         organisationUnitParentCode,
+      )
+    )
+      return false;
+
+    if (
+      organisationUnitParentExcludeCode &&
+      !checkOrganisationUnitParentValue(
+        organisationUnitParentMap,
+        a.organisationUnit,
+        'excludeCode',
+        organisationUnitParentExcludeCode,
       )
     )
       return false;
@@ -147,6 +159,9 @@ const checkOrganisationUnitParentValue = (
   switch (property) {
     case 'code': {
       return parent.code === value;
+    }
+    case 'excludeCode': {
+      return parent.code !== value;
     }
     case 'type': {
       return parent.type === value;
