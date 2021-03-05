@@ -13,6 +13,7 @@ describe('TupaiaDataApi', () => {
   const models = getTestModels();
 
   beforeAll(async () => {
+    jest.setTimeout(30000); // Extend default jest timeout as these tests can take a while
     await setupTest(models, SETUP);
   });
 
