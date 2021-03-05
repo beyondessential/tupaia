@@ -7,14 +7,43 @@ import { execSync } from 'child_process';
 import {} from 'dotenv/config';
 import GithubApi from 'github-api';
 
-import { getLoggerInstance, RemoteGitRepo, requireEnv } from '@tupaia/utils';
+import { getArgs, getLoggerInstance, RemoteGitRepo, requireEnv } from '@tupaia/utils';
 import { SNAPSHOTS } from '../../constants';
 import { pullSnapshots } from './pullSnapshots';
 import { pushSnapshots } from './pushSnapshots';
 import { Snapshots } from './Snapshots';
 
+const scriptConfig = {
+  options: {
+    push: {
+      type: 'boolean',
+      description:
+        'Push snapshots that were captured during the test run, if different than the existing ones',
+    },
+  },
+};
+
 const runPackageScript = script =>
   execSync(`yarn workspace @tupaia/web-frontend ${script}`, { stdio: 'inherit' });
+
+const pushSnapshotsIfDiffThanExisting = async (repo, branch, existingSnapshots) => {
+  const logger = getLoggerInstance();
+
+  const allSnapshots = Snapshots.import(SNAPSHOTS.path);
+  const newSnapshots = allSnapshots.extractSnapshotsByKey(SNAPSHOTS.newKey, {
+    renameKey: SNAPSHOTS.key,
+  });
+
+  if (newSnapshots.isEmpty()) {
+    logger.info('New snapshots are empty. Probably something went very wrong, skipping push');
+  } else if (newSnapshots.equals(existingSnapshots)) {
+    logger.info('No changes in snapshots, skipping push');
+  } else {
+    logger.success(`Pushing new snapshots to ${SNAPSHOTS.repoUrl}...`);
+    const { pullRequestUrl } = await pushSnapshots(repo, branch, newSnapshots);
+    logger.info(`PR created: ${pullRequestUrl}`);
+  }
+};
 
 const runTestsAndCatchErrors = () => {
   const record = !!process.env.CYPRESS_RECORD_KEY;
@@ -54,6 +83,7 @@ export const getSnapshotRepo = () => {
  * than the ones pulled from the repo
  */
 export const testE2e = async () => {
+  const args = getArgs(scriptConfig);
   const logger = getLoggerInstance();
   logger.success('Running e2e tests for web-frontend');
 
@@ -62,27 +92,17 @@ export const testE2e = async () => {
 
   const { repoUrl } = SNAPSHOTS;
   logger.success(`Pulling snapshots from ${repoUrl}...`);
-  const snapshots = await pullSnapshots(repo, branch);
+  const existingSnapshots = await pullSnapshots(repo, branch);
   // Store snapshots so that they can be used during tests
-  snapshots.export(SNAPSHOTS.path);
+  existingSnapshots.export(SNAPSHOTS.path);
 
   runPackageScript('cypress:generate-config');
 
   // Hold error throwing so that snapshots can be pushed
   const testError = runTestsAndCatchErrors();
-  const snapshotsAfterTest = Snapshots.import(SNAPSHOTS.path);
-  const newSnapshots = snapshotsAfterTest.extractSnapshotsByKey(SNAPSHOTS.newKey, {
-    renameKey: SNAPSHOTS.key,
-  });
 
-  if (newSnapshots.isEmpty()) {
-    logger.info('New snapshots are empty. Probably something went very wrong, skipping push');
-  } else if (newSnapshots.equals(snapshots)) {
-    logger.info('No changes in snapshots, skipping push');
-  } else {
-    logger.success(`Pushing new snapshots to ${repoUrl}...`);
-    const { pullRequestUrl } = await pushSnapshots(repo, branch, newSnapshots);
-    logger.info(`PR created: ${pullRequestUrl}`);
+  if (args.push) {
+    pushSnapshotsIfDiffThanExisting(repo, branch, existingSnapshots);
   }
 
   if (testError) {

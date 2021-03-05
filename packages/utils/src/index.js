@@ -23,7 +23,7 @@ export * from './object';
 export * from './request';
 export { replaceValues } from './replaceValues';
 export { respond } from './respond';
-export * from './runScript';
+export * from './script';
 export * from './string';
 export * from './validation';
 export { WorkBookParser } from './WorkBookParser';
