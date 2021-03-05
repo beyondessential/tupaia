@@ -205,6 +205,17 @@ export const constructIsEmptyOr = validators => async (value, object, key) => {
   }
 };
 
+/**
+ * @param {Function|Function[]} validators
+ */
+export const constructIsEmptyOrSync = validators => (value, object, key) => {
+  if (value !== undefined && value !== null && value !== '') {
+    toArray(validators).forEach(validatorFunction => {
+      validatorFunction(value, object, key);
+    });
+  }
+};
+
 export const constructIsNotPresentOr = validatorFunction => (value, object, key) => {
   return !object.hasOwnProperty(key) || validatorFunction(value, object, key);
 };

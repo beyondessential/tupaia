@@ -10,6 +10,7 @@ import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { PRIMARY_BLUE } from '../../../styles';
 import { tileSetShape } from '../contants';
+import { ReferenceTooltip, TOOLTIP_ICON_STYLE_OPTIONS } from '../../../components/ReferenceTooltip';
 
 const StyledButton = styled(Button)`
   position: relative;
@@ -62,7 +63,7 @@ const Thumbnail = styled.div`
 
 const TileLabel = styled(Typography)`
   font-weight: normal;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 19px;
   color: white;
   position: absolute;
@@ -73,12 +74,22 @@ const TileLabel = styled(Typography)`
   background: #2b2d38;
   padding: 8px 12px;
   opacity: 0.9;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const TileButton = ({ tileSet, isActive, onChange }) => (
   <StyledButton onClick={() => onChange(tileSet.key)} className={isActive ? 'active' : ''}>
     <Thumbnail style={{ backgroundImage: `url(${tileSet.thumbnail})` }} />
-    <TileLabel>{tileSet.label}</TileLabel>
+    <TileLabel>
+      {tileSet.label}
+      {tileSet.reference && (
+        <ReferenceTooltip
+          reference={tileSet.reference}
+          iconStyleOption={TOOLTIP_ICON_STYLE_OPTIONS.TILE_SET}
+        />
+      )}
+    </TileLabel>
   </StyledButton>
 );
 
