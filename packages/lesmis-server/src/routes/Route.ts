@@ -13,19 +13,10 @@ export class Route extends BaseRoute {
 
   reportConnection?: ReportConnection;
 
-  async handle() {
-    // All routes will be wrapped with an error catcher that simply passes the error to the next()
-    // function, causing error handling middleware to be fired. Otherwise, async errors will be
-    // swallowed.
-    try {
-      const session = await this.verifyAuth();
-      this.meditrakConnection = new MeditrakConnection(session);
-      this.reportConnection = new ReportConnection(session);
-      const response = await this.buildResponse();
-      this.respond(response, 200);
-    } catch (error) {
-      this.next(error);
-    }
+  async setupConnections() {
+    const session = await this.getSession();
+    this.meditrakConnection = new MeditrakConnection(session);
+    this.reportConnection = new ReportConnection(session);
   }
 
   async verifyAuth(): Promise<LesmisSessionType> {

@@ -9,7 +9,7 @@ import { respond, UnauthenticatedError } from '@tupaia/utils';
 import { TupaiaRequest, TupaiaResponseBody, SessionCookie } from '../types';
 import { SessionModel, SessionType } from '../models/Session';
 
-export class Route {
+export abstract class Route {
   req: TupaiaRequest;
 
   res: Response;
@@ -40,6 +40,7 @@ export class Route {
     // swallowed.
     try {
       await this.verifyAuth();
+      this.setupConnections();
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
@@ -61,7 +62,9 @@ export class Route {
     return session;
   }
 
-  abstract async verifyAuth(): Promise<SessionType>;
-
   abstract async buildResponse(): Promise<Record<string, unknown>>;
+
+  abstract async setupConnections(): Promise<Record<string, unknown>>;
+
+  abstract async verifyAuth(): Promise<SessionType>;
 }
