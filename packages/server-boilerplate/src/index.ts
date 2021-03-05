@@ -5,8 +5,6 @@
  */
 
 export { attachSessionModel } from './attachSessionModel';
-export { ApiConnection } from './ApiConnection';
-export { AuthConnection } from './AuthConnection';
-export { Route } from './Route';
-export { SessionModel, SessionType } from './Session';
-export { UnauthenticatedRoute } from './UnauthenticatedRoute';
+export { SessionModel, SessionType } from './models';
+export { LoginRoute, LogoutRoute, Route, TestRoute, UnauthenticatedRoute } from './routes';
+export { ApiConnection, AuthConnection } from './connections';

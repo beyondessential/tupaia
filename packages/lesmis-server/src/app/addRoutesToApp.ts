@@ -5,8 +5,9 @@
 
 import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
+import { TestRoute, LoginRoute, LogoutRoute } from '@tupaia/server-boilerplate';
 import { LesmisRequest } from '../types';
-import { TestRoute, UserRoute, LoginRoute, LogoutRoute } from '../routes';
+import { UserRoute } from '../routes';
 import { Route } from '../routes/Route';
 
 const handleWith = (RouteClass: typeof Route) => (

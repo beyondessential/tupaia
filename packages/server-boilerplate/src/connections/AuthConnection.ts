@@ -4,7 +4,7 @@
  *
  */
 
-import { AuthResponse, Credentials } from './types';
+import { AuthResponse, Credentials } from '../types';
 import { ApiConnection } from './ApiConnection';
 
 const {

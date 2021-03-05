@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
-import { SessionModel, SessionType } from './Session';
+import { SessionModel, SessionType } from './models/Session';
 
 export type AccessPolicyObject = Record<string, string[]>;
 

@@ -6,7 +6,7 @@
 
 import { Route } from './Route';
 
-export class UnauthenticatedRoute extends Route {
+export abstract class UnauthenticatedRoute extends Route {
   async verifyAuth() {
     return undefined;
   }

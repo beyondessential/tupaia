@@ -8,9 +8,8 @@
 import jwt from 'jsonwebtoken';
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
-
-import { AccessPolicyObject, SessionFields, SessionDetails } from './types';
-import { AuthConnection } from './AuthConnection';
+import { AccessPolicyObject, SessionFields, SessionDetails } from '../types';
+import { AuthConnection } from '../connections/AuthConnection';
 
 const getTokenExpiry = (accessToken: string) => {
   const { exp: expiryAuthServerClock, iat: issuedAtAuthServerClock } = jwt.decode(accessToken);

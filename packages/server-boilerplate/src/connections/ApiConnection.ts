@@ -4,7 +4,7 @@
  *
  */
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
-import { FetchConfig, QueryParameters, RequestBody } from './types';
+import { FetchConfig, QueryParameters, RequestBody } from '../types';
 
 interface AuthHandler {
   email?: string;

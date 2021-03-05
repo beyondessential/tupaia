@@ -4,7 +4,7 @@
  *
  */
 import { Response, NextFunction } from 'express';
-import { SessionModel } from './Session';
+import { SessionModel } from './models/Session';
 import { TupaiaRequest } from './types';
 
 /**
