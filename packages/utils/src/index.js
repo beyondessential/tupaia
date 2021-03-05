@@ -5,6 +5,7 @@
 
 export * from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
+export * from './compare';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';

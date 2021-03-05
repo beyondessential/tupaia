@@ -7,6 +7,7 @@ import { pascal } from 'case';
 import { EntityType as CommonEntityType, EntityModel as CommonEntityModel } from '@tupaia/database';
 
 import {
+  calculateBoundsFromEntities,
   translateBoundsForFrontend,
   translatePointForFrontend,
   translateRegionForFrontend,
@@ -40,7 +41,11 @@ class EntityType extends CommonEntityType {
     return {
       type,
       point: translatePointForFrontend(point),
-      bounds: translateBoundsForFrontend(bounds),
+
+      // When possible return the bounds for an entity based on the entities the user has access to
+      bounds: this.entitiesWithAccess
+        ? calculateBoundsFromEntities(this.entitiesWithAccess)
+        : translateBoundsForFrontend(bounds),
       region: translateRegionForFrontend(region),
     };
   }
