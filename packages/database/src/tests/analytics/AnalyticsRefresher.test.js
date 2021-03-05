@@ -52,7 +52,7 @@ describe('AnalyticsRefresher', () => {
 
   beforeEach(async () => {
     await populateTestData(models, TEST_DATA);
-    await AnalyticsRefresher.executeRefresh();
+    await AnalyticsRefresher.executeRefresh(database);
     analyticsRefresher.listenForChanges();
   });
 
