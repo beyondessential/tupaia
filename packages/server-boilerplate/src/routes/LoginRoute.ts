@@ -18,11 +18,6 @@ export class LoginRoute extends Route {
 
     const { id, email, accessPolicy } = await this.sessionModel.createSession(response);
 
-    // const authorized = accessPolicy.allowsAnywhere(LESMIS_PERMISSION_GROUP);
-    // if (!authorized) {
-    //   throw new PermissionsError('User not authorized for Lesmis');
-    // }
-
     // in the login route the verify auth method is optional and
     // after the build response so that the user is logged in already
     this.verifyAuth(accessPolicy);
