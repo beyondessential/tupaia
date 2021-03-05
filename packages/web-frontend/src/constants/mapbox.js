@@ -122,6 +122,11 @@ export const TILE_SETS = [
         label: 'Yuang',
       },
     ],
+    reference: {
+      name: 'opendevelopmentmekong',
+      link:
+        'https://data.opendevelopmentmekong.net/dataset/geo-referencing-of-ethnic-groups-of-laos?type=dataset',
+    },
   },
   {
     key: 'terrain',
@@ -135,5 +140,9 @@ export const TILE_SETS = [
     thumbnail:
       'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/population-tile-thumbnail.png',
     url: makeMapboxStyleUrl({ styleId: 'ckhmxvdza02m919tfa95rsfyh' }),
+    reference: {
+      name: 'worldpop',
+      link: 'https://www.worldpop.org/geodata/listing?id=69',
+    },
   },
 ];

@@ -1,0 +1,1 @@
+export { countIndividualsByDistrict } from './countIndividualsByDistrict';

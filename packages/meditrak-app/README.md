@@ -21,7 +21,8 @@ To work on Tupaia MediTrak, first you'll need to install the following
     - `export PATH=${JAVA_HOME}/bin:$PATH` (i.e. add the place you installed the JDK to the PATH)
 - Android SDK
   - Look for 'get just the command line tools' at the bottom of [the Android Studio Download page](https://developer.android.com/studio/index.html)
-  - Once downloaded and installed run `sdkmanager --update` and accept the licenses
+    - Note: since new updates from android, after unzipping the `command-line-tools.zip` package, you'll get a folder named `cmdline-tools`. To make it works, you should rename the unpacked directory from `cmdline-tools` to `tools`, and place it under `~/android-sdk/cmdline-tools/`. Now it should look like `~/android-sdk/cmdline-tools/tools/bin/` (Environment: Ubuntu 20.04.2 LTS)
+  - Once downloaded and installed run `sdkmanager --update` and accept the licenses `sdkmanager --licenses`
   - Add the following to your .bash_profile
     - `export ANDROID_HOME=/Users/YourUsernameHere/Library/Android/sdk` (or wherever the Android SDK is installed)
 - A phone you can debug on and/or the Android Emulator (e.g. Genymotion) and/or the iOS Simulator (only works on mac)
@@ -112,15 +113,16 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 
 ### Making a release build
 
+**Very important**: Please make sure the environment variable `BETA_BRANCH` is set correctly. If releasing to production, it should be set to nothing (`BETA_BRANCH=`). If building for testing against dev or a feature deployment, this should be set to the url prefix (`BETA_BRANCH="dev"`).
+
 #### Android
 
 - If you've previously followed the iOS steps, rm -rf third-party && rm -rf node_modules && yarn
 - Create gradle.properties within the /android directory, using the contents found on LastPass
 - Copy meditrak-release-key.keystore from lastpass (follow instructions to save and decode) and save under /android/app
 - Uncomment the line `signingConfig signingConfigs.release` in android/app/build.gradle (don't commit this change, it will break CI builds)
-- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`
-- If building an aab for the Google Play store: `cd android && ./gradlew bundleRelease`
-- You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
+- If building an apk for local installation or distribution to team members: `cd android && ./gradlew assembleRelease`. You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/apk/release/app_release.apk`
+- If building an aab for the Google Play store, first check your `BETA_BRANCH` in `.env`, then: `cd android && ./gradlew bundleRelease`. You will find the build inside `tupaia/packages/meditrak-app/android/app/build/outputs/bundle/release/app_release.aab`
 
 ### Beta builds (Android)
 
