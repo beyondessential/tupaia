@@ -51,16 +51,17 @@ const BMI_INDICATOR = {
   code: 'TO_BMI_At_Risk_In_Screened_Population',
   builder: 'eventCheckConditions',
   config: {
-    formula: 'HP75n >= 25 or (HP75n < 18 and HP75n > 0)',
+    formula: 'HP35n >= 19 and (HP75n >= 25 or (HP75n < 18 and HP75n > 0))',
     programCode: 'HP02',
     defaultValues: {
       HP75n: 0,
+      HP35n: 0,
     },
   },
 };
 
 const DENOMINATOR = {
-  dataValues: ['HP36n'], // mandatory Age question. So the count of this data element will be = the number of survey responses
+  dataValues: ['HP36n'], // mandatory Sex question. So the count of this data element will be = the number of survey responses
   valueOfInterest: '*',
 };
 
