@@ -4,12 +4,11 @@
  *
  */
 
-import { PermissionsError } from '@tupaia/utils';
 import { AuthConnection } from '../connections/AuthConnection';
-import { Route } from './Route';
+import { UnauthenticatedRoute } from './UnauthenticatedRoute';
 import { Credentials, AccessPolicyObject } from '../types';
 
-export class LoginRoute extends Route {
+export class LoginRoute extends UnauthenticatedRoute {
   async buildResponse() {
     const credentials: Credentials = this.req.body;
 
@@ -18,9 +17,7 @@ export class LoginRoute extends Route {
 
     const { id, email, accessPolicy } = await this.sessionModel.createSession(response);
 
-    // in the login route the verify auth method is optional and
-    // after the build response so that the user is logged in already
-    this.verifyAuth(accessPolicy);
+    this.verifyLoginAuth(accessPolicy);
 
     // set sessionId cookie
     this.req.sessionCookie = { id, email };
@@ -28,5 +25,6 @@ export class LoginRoute extends Route {
     return { user: response.user };
   }
 
-  protected verifyAuth(accessPolicy: AccessPolicyObject): void {}
+  // optional method to check if user has permission for the app when logging in
+  verifyLoginAuth(accessPolicy: AccessPolicyObject): void {}
 }

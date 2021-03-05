@@ -15,7 +15,7 @@ export interface SessionCookie {
   reset?: () => void;
 }
 
-type TupaiaRequestBody = Record<string, unknown>;
+export type TupaiaRequestBody = Record<string, unknown>;
 
 export interface TupaiaRequest<>extends Request<
     ParamsDictionary,
@@ -54,7 +54,7 @@ export interface FetchConfig {
   body?: string;
 }
 
-interface AuthResponseUser {
+export interface AuthResponseUser {
   email: string;
   accessPolicy: AccessPolicyObject;
 }

@@ -64,7 +64,8 @@ export abstract class Route {
 
   abstract async buildResponse(): Promise<Record<string, unknown>>;
 
-  abstract async setupConnections(): Promise<Record<string, unknown>>;
-
   abstract async verifyAuth(): Promise<SessionType>;
+
+  // optional method to setup additional api connections
+  setupConnections(): void {}
 }
