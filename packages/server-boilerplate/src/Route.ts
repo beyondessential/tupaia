@@ -9,7 +9,7 @@ import { respond, UnauthenticatedError } from '@tupaia/utils';
 import { TupaiaRequest, TupaiaResponseBody, SessionCookie } from './types';
 import { SessionModel, SessionType } from './Session';
 
-export class Route {
+export abstract class Route {
   req: TupaiaRequest;
 
   res: Response;
@@ -39,7 +39,7 @@ export class Route {
     // function, causing error handling middleware to be fired. Otherwise, async errors will be
     // swallowed.
     try {
-      const session = await this.verifyAuth();
+      await this.verifyAuth();
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
@@ -61,11 +61,7 @@ export class Route {
     return session;
   }
 
-  async verifyAuth(): Promise<SessionType> {
-    return this.getSession();
-  }
+  abstract async verifyAuth(): Promise<SessionType>;
 
-  async buildResponse(): Promise<Record<string, unknown>> {
-    throw new Error('Any Route must implement "buildResponse"');
-  }
+  abstract async buildResponse(): Promise<Record<string, unknown>>;
 }
