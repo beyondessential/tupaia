@@ -33,7 +33,6 @@
     "api-error-handler": "^1.0.0",
     "async": "^2.6.2",
     "aws-sdk": "^2.451.0",
-    "basic-auth": "^1.1.0",
     "body-parser": "^1.18.3",
     "cached": "^4.3.2",
     "case": "^1.6.1",

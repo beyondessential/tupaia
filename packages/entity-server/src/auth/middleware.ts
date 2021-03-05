@@ -1,15 +1,14 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { NextFunction, Response } from 'express';
+import { Request, NextFunction, Response } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { getUserIDFromToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
-import { ReportsRequest } from '../types';
 
-const authenticateUser = async (req: ReportsRequest) => {
+const authenticateUser = async (req: Request) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -39,13 +38,13 @@ const authenticateBearerAuthHeader = async (authHeader: string) => {
   throw new UnauthenticatedError('Could not authenticate with the provided access token');
 };
 
-const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: string) => {
+const authenticateBasicAuthHeader = async (req: Request, authHeader: string) => {
   const { username, password } = getUserAndPassFromBasicAuth(authHeader);
   const { authenticator } = req;
   const { user } = await authenticator.authenticatePassword({
     emailAddress: username,
     password,
-    deviceName: 'reports',
+    deviceName: 'entities',
   });
   if (user) {
     return user.id;
@@ -54,11 +53,7 @@ const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: stri
   throw new UnauthenticatedError('Could not find user');
 };
 
-export const authenticationMiddleware = async (
-  req: ReportsRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+export const authenticationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = await authenticateUser(req);
     if (userId) {
