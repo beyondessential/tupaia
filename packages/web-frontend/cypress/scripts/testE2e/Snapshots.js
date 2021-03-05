@@ -30,11 +30,6 @@ export class Snapshots {
   snapshotTree;
 
   /**
-   * Method-specific, used during snapshot extraction
-   */
-  extractionConfig = {};
-
-  /**
    * @param {Object<string, any>} snapshotTree
    */
   constructor(snapshotTree) {
@@ -67,11 +62,11 @@ export class Snapshots {
 
   extractSnapshotsByKey = (key, options = {}) => {
     const extractedNodePaths = [];
-    this.extractionConfig = {
+    const config = {
       sourceKey: key,
       targetKey: options.renameKey || key,
     };
-    this.recursivelyExtractSnapshotNodePaths(this.snapshotTree, extractedNodePaths);
+    this.recursivelyExtractSnapshotNodePaths(this.snapshotTree, config, extractedNodePaths);
 
     extractedNodePaths.sort(([pathA], [pathB]) => compareAsc(pathA, pathB));
     const extractedTree = nodePathsToTree(extractedNodePaths);
@@ -80,17 +75,26 @@ export class Snapshots {
 
   /**
    * @private
-   * @param {NodePath[]} nodePathResults NodePaths for extracted snapshots will be recursively
-   * stored here
+   * @param {NodePath[]} extractedNodePaths NodePaths for extracted snapshots are recursively stored here
+   * @param {string[]} currentPaths The paths we have traversed so far are recursively stored here
    */
-  recursivelyExtractSnapshotNodePaths = (snapshotTree, nodePathResults, paths = []) => {
+  recursivelyExtractSnapshotNodePaths = (
+    snapshotTree,
+    config,
+    extractedNodePaths,
+    currentPaths = [],
+  ) => {
+    const { sourceKey, targetKey } = config;
     Object.entries(snapshotTree).forEach(([key, subtree]) => {
-      if (key === this.extractionConfig.sourceKey) {
-        nodePathResults.push([[...paths, this.extractionConfig.targetKey], subtree]);
+      if (key === sourceKey) {
+        extractedNodePaths.push([[...currentPaths, targetKey], subtree]);
       } else if (!isPlainObject(subtree)) {
         // Leaf node and no match found, do not traverse deeper
       } else {
-        this.recursivelyExtractSnapshotNodePaths(subtree, nodePathResults, [...paths, key]);
+        this.recursivelyExtractSnapshotNodePaths(subtree, config, extractedNodePaths, [
+          ...currentPaths,
+          key,
+        ]);
       }
     });
   };

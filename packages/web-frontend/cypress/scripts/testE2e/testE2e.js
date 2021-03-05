@@ -17,6 +17,7 @@ const scriptConfig = {
   options: {
     push: {
       type: 'boolean',
+      default: true,
       description:
         'Push snapshots that were captured during the test run, if different than the existing ones',
     },
@@ -102,7 +103,7 @@ export const testE2e = async () => {
   const testError = runTestsAndCatchErrors();
 
   if (args.push) {
-    pushSnapshotsIfDiffThanExisting(repo, branch, existingSnapshots);
+    await pushSnapshotsIfDiffThanExisting(repo, branch, existingSnapshots);
   }
 
   if (testError) {
