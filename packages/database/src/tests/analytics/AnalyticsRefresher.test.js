@@ -21,7 +21,7 @@ const matchingFields = [
   'entity_code',
   'entity_name',
   'data_element_code',
-  'survey_code',
+  'data_group_code',
   'event_id',
 ];
 
@@ -94,7 +94,7 @@ describe('AnalyticsRefresher', () => {
           entity_code: 'E001',
           entity_name: 'Happy Land',
           data_element_code: 'Q001',
-          survey_code: 'S001',
+          data_group_code: 'S001',
           event_id: 'create_test_survey_response',
           year_period: '2020-01-01 00:00:00',
           month_period: '2020-01-01 00:00:00',
@@ -108,7 +108,7 @@ describe('AnalyticsRefresher', () => {
           entity_code: 'E001',
           entity_name: 'Happy Land',
           data_element_code: 'Q002',
-          survey_code: 'S001',
+          data_group_code: 'S001',
           event_id: 'create_test_survey_response',
           year_period: '2020-01-01 00:00:00',
           month_period: '2020-01-01 00:00:00',

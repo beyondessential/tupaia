@@ -9,7 +9,7 @@ declare
       entity.code as entity_code,
       entity.name as entity_name,
       question.code as data_element_code,
-      survey.code as survey_code,
+      survey.code as data_group_code,
       survey_response.id as event_id,
       date_trunc(''day'', survey_response.submission_time) as "day_period",
       date_trunc(''week'', survey_response.submission_time) as "week_period",
