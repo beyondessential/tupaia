@@ -17,39 +17,24 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const createSelectCasesQuery = () => {
-  return `
+const selectCasesForResync = async db => {
+  const query = `
     SELECT e.*
     FROM entity e
     LEFT JOIN dhis_sync_queue dsq ON e.id = record_id
     WHERE
         dsq.id IS NULL and
         e.type = 'case';
-  `;
-};
-
-const selectCasesForResync = async db => {
-  const query = createSelectCasesQuery();
+`;
   const { rows } = await db.runSql(query);
   return rows;
 };
 
-const createSelectSurveyResponsesQuery = () => {
-  return `
+const selectSurveyResponsesForResync = async (db, entityIds) => {
+  const query = `
     SELECT * FROM survey_response
-    WHERE entity_id in
-    (SELECT e.id
-    FROM entity e
-    LEFT JOIN dhis_sync_queue dsq ON e.id = record_id
-    WHERE
-        dsq.id IS NULL and
-        e.type = 'case'
-    );
+    WHERE entity_id IN (${arrayToDbString(entityIds)})
 `;
-};
-
-const selectSurveyResponsesForResync = async db => {
-  const query = createSelectSurveyResponsesQuery();
   const { rows } = await db.runSql(query);
   return rows;
 };
@@ -70,7 +55,10 @@ exports.up = async function (db) {
   try {
     // n.b. this requires a meditrak-server instance to be running and listening for the changes
     const cases = await selectCasesForResync(db);
-    const surveyResponses = await selectSurveyResponsesForResync(db);
+    const surveyResponses = await selectSurveyResponsesForResync(
+      db,
+      cases.map(c => c.id),
+    );
     const surveyResponseIds = surveyResponses.map(sr => sr.id);
     await markRecordsForResync(changeChannel, 'entity', cases);
     await updateSyncQueueForSurveyResponses(db, surveyResponseIds);
