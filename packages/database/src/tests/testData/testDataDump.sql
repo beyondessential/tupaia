@@ -860,7 +860,7 @@ CREATE TABLE public.project (
     logo_url text,
     entity_id text,
     entity_hierarchy_id text,
-    tile_sets text
+    config jsonb DEFAULT '{"permanentRegionLabels": true}'::jsonb
 );
 
 
@@ -892,7 +892,8 @@ CREATE TABLE public.question (
     detail text,
     option_set_id character varying,
     hook text,
-    data_source_id text
+    data_source_id text,
+    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_source_id IS NOT NULL)))
 );
 
 
@@ -2841,6 +2842,407 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO tupaia;
+GRANT USAGE ON SCHEMA public TO tupaia_read;
+
+
+--
+-- Name: TABLE access_request; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.access_request TO tupaia_read;
+
+
+--
+-- Name: TABLE ancestor_descendant_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ancestor_descendant_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE answer; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.answer TO tupaia_read;
+
+
+--
+-- Name: TABLE api_client; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_client TO tupaia_read;
+
+
+--
+-- Name: TABLE api_request_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.api_request_log TO tupaia_read;
+
+
+--
+-- Name: TABLE clinic; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.clinic TO tupaia_read;
+
+
+--
+-- Name: TABLE comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.comment TO tupaia_read;
+
+
+--
+-- Name: TABLE country; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.country TO tupaia_read;
+
+
+--
+-- Name: TABLE "dashboardGroup"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."dashboardGroup" TO tupaia_read;
+
+
+--
+-- Name: TABLE "dashboardReport"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."dashboardReport" TO tupaia_read;
+
+
+--
+-- Name: TABLE data_element_data_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_element_data_group TO tupaia_read;
+
+
+--
+-- Name: TABLE data_source; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.data_source TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE dhis_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dhis_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE disaster; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.disaster TO tupaia_read;
+
+
+--
+-- Name: TABLE "disasterEvent"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."disasterEvent" TO tupaia_read;
+
+
+--
+-- Name: TABLE entity; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_hierarchy; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_hierarchy TO tupaia_read;
+
+
+--
+-- Name: TABLE entity_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.entity_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE error_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.error_log TO tupaia_read;
+
+
+--
+-- Name: TABLE feed_item; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.feed_item TO tupaia_read;
+
+
+--
+-- Name: TABLE geographical_area; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geographical_area TO tupaia_read;
+
+
+--
+-- Name: TABLE geography_columns; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geography_columns TO tupaia_read;
+
+
+--
+-- Name: TABLE geometry_columns; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.geometry_columns TO tupaia_read;
+
+
+--
+-- Name: TABLE indicator; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.indicator TO tupaia_read;
+
+
+--
+-- Name: TABLE "mapOverlay"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."mapOverlay" TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group TO tupaia_read;
+
+
+--
+-- Name: TABLE map_overlay_group_relation; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.map_overlay_group_relation TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_device; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_device TO tupaia_read;
+
+
+--
+-- Name: TABLE meditrak_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.meditrak_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE migrations; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.migrations TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_log; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_log TO tupaia_read;
+
+
+--
+-- Name: TABLE ms1_sync_queue; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.ms1_sync_queue TO tupaia_read;
+
+
+--
+-- Name: TABLE one_time_login; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.one_time_login TO tupaia_read;
+
+
+--
+-- Name: TABLE option; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option TO tupaia_read;
+
+
+--
+-- Name: TABLE option_set; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.option_set TO tupaia_read;
+
+
+--
+-- Name: TABLE permission_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.permission_group TO tupaia_read;
+
+
+--
+-- Name: TABLE project; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.project TO tupaia_read;
+
+
+--
+-- Name: TABLE psss_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.psss_session TO tupaia_read;
+
+
+--
+-- Name: TABLE question; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.question TO tupaia_read;
+
+
+--
+-- Name: TABLE raster_columns; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.raster_columns TO tupaia_read;
+
+
+--
+-- Name: TABLE raster_overviews; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.raster_overviews TO tupaia_read;
+
+
+--
+-- Name: TABLE refresh_token; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.refresh_token TO tupaia_read;
+
+
+--
+-- Name: TABLE report; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.report TO tupaia_read;
+
+
+--
+-- Name: TABLE setting; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.setting TO tupaia_read;
+
+
+--
+-- Name: TABLE spatial_ref_sys; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.spatial_ref_sys TO tupaia_read;
+
+
+--
+-- Name: TABLE survey; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_group; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_group TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_response_comment; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_response_comment TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen TO tupaia_read;
+
+
+--
+-- Name: TABLE survey_screen_component; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.survey_screen_component TO tupaia_read;
+
+
+--
+-- Name: TABLE "userSession"; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public."userSession" TO tupaia_read;
+
+
+--
+-- Name: TABLE user_account; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_account TO tupaia_read;
+
+
+--
+-- Name: TABLE user_entity_permission; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_entity_permission TO tupaia_read;
+
+
+--
+-- Name: TABLE user_reward; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.user_reward TO tupaia_read;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public REVOKE ALL ON TABLES  FROM tupaia;
+ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public GRANT SELECT ON TABLES  TO tupaia_read;
 
 
 --
@@ -3920,13 +4322,61 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1006	/20210114125216-AddCovidSamoaClearanceDocuments-modifies-data	2021-01-21 21:32:43.368
 1007	/20210118014114-CreateIndividualEntityType-modifies-schema	2021-01-21 21:32:45.157
 1008	/20210118040638-AddFetpProject-modifies-data	2021-01-21 21:32:45.3
-1009	/20201123014943-IntegrateInconsistentAnswersForHotelNames-modifies-data	2021-01-26 15:09:16.242
-1010	/20210114131303-AddCovidSamoaQuarantineSiteByFlight-modifies-data	2021-01-26 15:09:16.522
-1011	/20201117224102-DeleteUNFPAStaffTrainedLines-modifies-data	2021-01-28 12:15:06.757
-1012	/20201117224832-AddUNFPAStaffTrainedMatrix-modifies-data	2021-01-28 12:15:06.774
-1013	/20201204224102-DeleteUNFPAStaffTrainedLinesCountry-modifies-data	2021-01-28 12:15:06.78
-1014	/20201204224832-AddUNFPAStaffTrainedMatrixCountry-modifies-data	2021-01-28 12:15:06.793
-1015	/20210127010108-AddMissingDataElements-modifies-data	2021-01-28 12:15:44.788
+1009	/20210125010541-ResyncDelayedSubmissionsAfterRelease70-modifies-data	2021-01-27 05:47:35.825
+1010	/20201117224102-DeleteUNFPAStaffTrainedLines-modifies-data	2021-01-28 22:30:09.496
+1011	/20201117224832-AddUNFPAStaffTrainedMatrix-modifies-data	2021-01-28 22:30:09.568
+1012	/20201123014943-IntegrateInconsistentAnswersForHotelNames-modifies-data	2021-01-28 22:30:10.729
+1013	/20201204224102-DeleteUNFPAStaffTrainedLinesCountry-modifies-data	2021-01-28 22:30:10.823
+1014	/20201204224832-AddUNFPAStaffTrainedMatrixCountry-modifies-data	2021-01-28 22:30:11.098
+1015	/20210114131303-AddCovidSamoaQuarantineSiteByFlight-modifies-data	2021-01-28 22:30:11.186
+1016	/20210121213045-MigrateStriveCanonicalToAlternateHeirarchy-modifies-data	2021-01-28 22:30:11.443
+1017	/20210125033426-MigrateFijiSurveyDataElementsFromDHISToTupaia-modifies-data	2021-01-28 22:30:11.923
+1018	/20210107004358-AddSwapColorForLegendInLaoSchool-modifies-data	2021-02-04 22:20:14.056
+1019	/20210125051145-AddGeneralDashboardToPalau-modifies-data	2021-02-04 22:20:14.143
+1020	/20210125061447-AddK13PCRResultsBarGraph-modifies-data	2021-02-04 22:20:14.247
+1021	/20210126013657-AddK13C580YPositiveMapOverlay-modifies-data	2021-02-04 22:20:14.457
+1022	/20210129022440-AddFacilityTypeOverlayForFiji-modifies-data	2021-02-04 22:20:14.611
+1023	/20210201230429-MoveServiceTypeOverlayGroupToTheTop-modifies-data	2021-02-04 22:20:14.686
+1024	/20210125025423-ChangePermissionInSamoaToCovid19Senior-modifies-data	2021-02-12 00:34:03.53
+1025	/20210125042225-SamoaCovidSurveyHierarchyUpdate-modifies-data	2021-02-12 00:34:07.715
+1026	/20210126234710-HeatmapHomeVillageOfQuarantinePassengers-modifies-data	2021-02-12 00:34:07.932
+1027	/20210127010108-AddMissingDataElements-modifies-data	2021-02-12 00:34:45.786
+1028	/20210127064624-MedicalCertificateLegendColorChange-modifies-data	2021-02-12 00:34:46.507
+1029	/20210128033137-AddSurveyDateElementsForDhisSurveys-modifies-data	2021-02-12 00:34:56.045
+1030	/20210128033138-AddPreaggregatedDataElements-modifies-data	2021-02-12 00:34:56.843
+1031	/20210128033139-AddMissingDataElementDataGroups-modifies-data	2021-02-12 00:35:24.249
+1032	/20210201040026-AddDataSourceIdNotNullConstraints-modifies-schema	2021-02-12 00:35:24.489
+1033	/20210202053553-AddIndividualToFetpCanonicalTypes-modifies-data	2021-02-12 00:35:24.623
+1034	/20210202204715-AddPalauDashboardGroupSupplyChain-modifies-data	2021-02-12 00:35:24.687
+1035	/20210209030539-AddMissingDataGroups-modifies-data	2021-02-12 00:35:24.947
+1036	/20210119053017-SomoaCovidCustomisedRawDataDownload-modifies-data	2021-02-18 22:21:40.842
+1037	/20210202061216-AddFetpGraduateIndividualProfiles-modifies-data	2021-02-18 22:21:40.991
+1038	/20210204025332-CreateFetpDashboardGroupsForProvDistrict-modifies-data	2021-02-18 22:21:41.08
+1039	/20210204211247-AddFetpDashboardGraduatesBySex-modifies-data	2021-02-18 22:21:41.123
+1040	/20210207040642-AddFETPActiveGraduatesMapOverlays-modifies-data	2021-02-18 22:21:41.308
+1041	/20210208025858-RemoveSurveyFromRawDataDownload-modifies-data	2021-02-18 22:21:41.372
+1042	/20210209005053-RenameCaseEntityToIndividualEntity-modifies-data	2021-02-18 22:21:42.216
+1043	/20210209044534-MapOverlayAndDashboardToSupportIndividualFromCase-modifies-data	2021-02-18 22:21:42.596
+1044	/20210210031149-SamoaRawDataDownloadDashboardGroup-modifies-data	2021-02-18 22:21:42.793
+1045	/20210211025858-UpdateFETPGraduateProfileReports-modifies-data	2021-02-18 22:21:42.916
+1046	/20210123065802-MigrateRadioQuestionsToBinaryQuestionsInLaosSchools-modifies-data	2021-02-25 23:10:49.214
+1047	/20210123071051-MigrateLaosSchoolsDashboardsBinaryDataToZeroOne-modifies-data	2021-02-25 23:10:49.343
+1048	/20210123120226-MigrateLaosSchoolsMapOverlaysBinaryDataToZeroOne-modifies-data	2021-02-25 23:10:49.81
+1049	/20210124013906-FixLaosSchoolsDevelopmentPartnerSupportMapOverlay-modifies-data	2021-02-25 23:10:49.911
+1050	/20210124014513-UpdateLaosSchoolsDevPartnersMapOverlays-modifies-data	2021-02-25 23:10:50.003
+1051	/20210124020024-UpdateLaosSchoolsSpecialMapOverlays-modifies-data	2021-02-25 23:10:50.269
+1052	/20210124055714-ConvertDhisSurveysIntoTupaia-modifies-data	2021-02-25 23:10:51.767
+1053	/20210124063304-ConvertSurveyRawDataDownloadToCustomDataDownload-modifies-data	2021-02-25 23:10:51.858
+1054	/20210124073946-FixUNFPAPercentagesOfFacilitiesOfferingServicesReports-modifies-data	2021-02-25 23:10:52.071
+1055	/20210124115954-FixUNFPAContraceptivesOfferedReport-modifies-data	2021-02-25 23:10:52.164
+1056	/20210128102520-PalauFacilityOpeningHoursDashboard-modifies-data	2021-02-25 23:10:52.297
+1057	/20210202031622-NutritionCounsellingTotalNewAndExistingClients-modifies-data	2021-02-25 23:10:52.508
+1058	/20210205033535-AddSTRIVEMolecularDataOverlays-modifies-data	2021-02-25 23:10:52.708
+1059	/20210216014736-UpdateCountryCodeForIndividuals-modifies-data	2021-02-25 23:10:52.88
+1060	/20210216073210-AddFetpDashboardGradByDistrict-modifies-data	2021-02-25 23:10:53.005
+1061	/20210217053158-ChangeElementsServiceTypeToTupaia-modifies-data	2021-02-25 23:10:53.098
+1062	/20210224014424-AddConfigToProjects-modifies-schema	2021-02-25 23:10:53.351
+1063	/20201203010928-StockStatusForNonMsupplyContriesInFacilityLevel-modifies-data	2021-03-02 15:09:22.031
 \.
 
 
@@ -3934,7 +4384,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1015, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1063, true);
 
 
 --
@@ -3943,6 +4393,13 @@ SELECT pg_catalog.setval('public.migrations_id_seq', 1015, true);
 
 ALTER TABLE ONLY public.migrations
     ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: TABLE migrations; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.migrations TO tupaia_read;
 
 
 --
