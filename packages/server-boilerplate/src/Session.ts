@@ -16,8 +16,8 @@ const getTokenExpiry = (accessToken: string) => {
   const { exp: expiryAuthServerClock, iat: issuedAtAuthServerClock } = jwt.decode(accessToken);
   // subtract 3 seconds to account for latency since generation on the auth server
   const validForSeconds = expiryAuthServerClock - issuedAtAuthServerClock - 3;
-  const expiryLemisServerClock = Date.now() + validForSeconds * 1000;
-  return expiryLemisServerClock;
+  const expiryServerClock = Date.now() + validForSeconds * 1000;
+  return expiryServerClock;
 };
 
 export class SessionType extends DatabaseType {

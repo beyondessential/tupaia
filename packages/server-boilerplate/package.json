@@ -2,7 +2,7 @@
   "name": "@tupaia/server-boilerplate",
   "version": "1.0.0",
   "private": true,
-  "description": "Backend server for boilerplate",
+  "description": "Generic boilerplate for back end orchestration servers",
   "homepage": "https://github.com/beyondessential/tupaia",
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"

@@ -8,7 +8,7 @@ import { SessionModel } from './Session';
 import { TupaiaRequest } from './types';
 
 /**
- * Attach lesmis session model to the request
+ * Attach session model to the request
  */
 export const attachSessionModel = (sessionModel: SessionModel) => (
   req: TupaiaRequest,
