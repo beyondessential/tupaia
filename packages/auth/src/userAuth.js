@@ -35,7 +35,13 @@ export function getUserIDFromToken(authHeader) {
 }
 
 export function getUserAndPassFromBasicAuth(authHeader) {
-  const usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
+  let usernamePassword;
+  try {
+    usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
+  } catch (error) {
+    throw new UnauthenticatedError('Invalid Basic auth credentials');
+  }
+
   if (!usernamePassword.includes(':')) {
     throw new UnauthenticatedError('Invalid Basic auth credentials');
   }
