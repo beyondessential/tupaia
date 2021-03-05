@@ -4,7 +4,6 @@
  */
 
 import { ApiConnection } from '@tupaia/server-boilerplate';
-
 const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 
 type ReportObject = {

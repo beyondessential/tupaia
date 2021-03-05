@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import camelcaseKeys from 'camelcase-keys';
-
 import { ApiConnection } from '@tupaia/server-boilerplate';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;

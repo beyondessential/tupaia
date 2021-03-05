@@ -4,7 +4,6 @@
  */
 import { PermissionsError } from '@tupaia/utils';
 import { Route as BaseRoute } from '@tupaia/server-boilerplate';
-
 import { LesmisSessionType } from '../models';
 import { MeditrakConnection, ReportConnection } from '../connections';
 import { LESMIS_PERMISSION_GROUP } from '../constants';

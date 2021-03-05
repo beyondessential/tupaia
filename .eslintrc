@@ -44,6 +44,7 @@
         "packages/dhis-api/**",
         "packages/expression-parser/**",
         "packages/indicators/**",
+        "packages/lesmis-server/**",
         "packages/meditrak-app/**",
         "packages/psss/**",
         "packages/psss-server/**",
