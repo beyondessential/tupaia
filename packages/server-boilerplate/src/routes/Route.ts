@@ -9,7 +9,7 @@ import { respond, UnauthenticatedError } from '@tupaia/utils';
 import { TupaiaRequest, TupaiaResponseBody, SessionCookie } from '../types';
 import { SessionModel, SessionType } from '../models/Session';
 
-export abstract class Route {
+export class Route {
   req: TupaiaRequest;
 
   res: Response;

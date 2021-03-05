@@ -4,8 +4,8 @@
  *
  */
 import { Response, NextFunction } from 'express';
-import { SessionModel } from './models/Session';
-import { TupaiaRequest } from './types';
+import { SessionModel } from '../models/Session';
+import { TupaiaRequest } from '../types';
 
 /**
  * Attach session model to the request

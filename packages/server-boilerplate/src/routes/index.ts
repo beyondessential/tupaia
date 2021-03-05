@@ -4,8 +4,8 @@
  *
  */
 
-export { LoginRoute } from './LoginRoute';
-export { LogoutRoute } from './LogoutRoute';
-export { Route } from './Route';
-export { TestRoute } from './TestRoute';
-export { UnauthenticatedRoute } from './UnauthenticatedRoute';
+export * from './LoginRoute';
+export * from './LogoutRoute';
+export * from './Route';
+export * from './TestRoute';
+export * from './UnauthenticatedRoute';
