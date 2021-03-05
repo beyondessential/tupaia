@@ -48,25 +48,22 @@ const getA1WhereClause = (conditions, paramsArray) => {
     if (!value) {
       continue;
     }
+    paramsArray.push(value);
 
     clause = `${clause}
               ${hasAnyCondition ? 'AND' : 'WHERE'}`;
     switch (condition) {
-      case 'surveyCode':
-        clause = `${clause} survey_code = ?`;
-        paramsArray.push(value);
+      case 'dataGroupCode':
+        clause = `${clause} data_group_code = ?`;
         break;
       case 'eventId':
         clause = `${clause} event_id = ?`;
-        paramsArray.push(value);
         break;
       case 'startDate':
         clause = `${clause} date >= ?`;
-        paramsArray.push(utcMoment(value).startOf('day').toISOString());
         break;
       case 'endDate':
         clause = `${clause} date <= ?`;
-        paramsArray.push(utcMoment(value).endOf('day').toISOString());
         break;
       default:
         throw new Error(`Unknown condition in fetch data where clause: ${condition}`);
@@ -89,11 +86,11 @@ const getA2WhereClause = (firstAggregation, startDate, endDate, paramsArray) => 
   );
   if (startDate) {
     whereClauses.push('date >= ?');
-    paramsArray.push(utcMoment(startDate).startOf('day').toISOString());
+    paramsArray.push(startDate);
   }
   if (endDate) {
     whereClauses.push('date <= ?');
-    paramsArray.push(utcMoment(endDate).endOf('day').toISOString());
+    paramsArray.push(endDate);
   }
   return `WHERE ${whereClauses.join('\n      AND ')}`;
 };
@@ -113,12 +110,16 @@ const getA2Join = (firstAggregation, startDate, endDate, paramsArray) => {
 const generateBaseSqlQuery = ({
   dataElementCodes,
   organisationUnitCodes,
-  surveyCode,
+  dataGroupCode,
   eventId,
   startDate,
   endDate,
   aggregations,
 }) => {
+  const adjustedStartDate = startDate
+    ? utcMoment(startDate).startOf('day').toISOString()
+    : undefined;
+  const adjustedEndDate = endDate ? utcMoment(endDate).endOf('day').toISOString() : undefined;
   const firstAggregation = AGGREGATIONS[aggregations?.[0]?.type] || AGGREGATIONS.DEFAULT;
   const paramsArray = [];
   const sqlQuery = new SqlQuery(
@@ -140,10 +141,13 @@ const generateBaseSqlQuery = ({
       INNER JOIN (
         ${SqlQuery.parameteriseValues(organisationUnitCodes, paramsArray)}
       ) entity_codes(code) ON entity_codes.code = analytics.entity_code
-        ${getA1WhereClause({ surveyCode, eventId, startDate, endDate }, paramsArray)}
+        ${getA1WhereClause(
+          { dataGroupCode, eventId, startDate: adjustedStartDate, endDate: adjustedEndDate },
+          paramsArray,
+        )}
         ${getA1GroupByClause(firstAggregation)}
     ) as a1
-    ${getA2Join(firstAggregation, startDate, endDate, paramsArray)}
+    ${getA2Join(firstAggregation, adjustedStartDate, adjustedEndDate, paramsArray)}
   `,
     paramsArray,
   );

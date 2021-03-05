@@ -308,3 +308,11 @@ export const SURVEY_RESPONSES = [
   KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
   KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23,
 ];
+
+export const SETUP = {
+  dbRecords: {
+    entity: ENTITIES,
+  },
+  surveys: SURVEYS,
+  surveyResponses: SURVEY_RESPONSES,
+};

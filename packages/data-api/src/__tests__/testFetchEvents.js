@@ -48,25 +48,25 @@ export const testFetchEvents = () => {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
-        /Invalid content.*surveyCode/,
-      ], // no surveyCode
+        /Invalid content.*dataGroupCode/,
+      ], // no dataGroupCode
       [
         {
-          surveyCode: 'BCDTEST',
+          dataGroupCode: 'BCDTEST',
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         /Invalid content.*organisationUnitCodes/,
       ], // no organisationUnitCodes
       [
         {
-          surveyCode: 'BCDTEST',
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
         },
         /Invalid content.*dataElementCodes/,
       ], // no dataElementCodes
       [
         {
-          surveyCode: 'BCDTEST',
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
           startDate: 'January first, 2020',
@@ -84,7 +84,7 @@ export const testFetchEvents = () => {
     const testData = [
       [
         {
-          surveyCode: 'BCDTEST',
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
@@ -92,7 +92,7 @@ export const testFetchEvents = () => {
       ],
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
         },
@@ -108,7 +108,7 @@ export const testFetchEvents = () => {
     const testData = [
       [
         {
-          surveyCode: 'BCDTEST',
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['BCD1TEST'],
         },
@@ -116,7 +116,7 @@ export const testFetchEvents = () => {
       ],
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_2'],
         },
@@ -132,7 +132,7 @@ export const testFetchEvents = () => {
     const testData = [
       [
         {
-          surveyCode: 'BCDTEST',
+          dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK'],
           dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
@@ -140,7 +140,7 @@ export const testFetchEvents = () => {
       ],
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
         },
@@ -157,7 +157,7 @@ export const testFetchEvents = () => {
       // start date only
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2020-01-01',
@@ -167,7 +167,7 @@ export const testFetchEvents = () => {
       // end date only
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           endDate: '2019-12-31',
@@ -177,7 +177,7 @@ export const testFetchEvents = () => {
       // start and end dates
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-12-01',
@@ -188,7 +188,7 @@ export const testFetchEvents = () => {
       // start and end dates, check inclusivity of start date
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-11-21',
@@ -199,7 +199,7 @@ export const testFetchEvents = () => {
       // start and end dates, check inclusivity of end date
       [
         {
-          surveyCode: 'CROP',
+          dataGroupCode: 'CROP',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
           dataElementCodes: ['CROP_1', 'CROP_2'],
           startDate: '2019-12-01',
@@ -216,7 +216,7 @@ export const testFetchEvents = () => {
   it('should limit results when an event id is passed in', async () => {
     await assertCorrectResponse(
       {
-        surveyCode: 'CROP',
+        dataGroupCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
         dataElementCodes: ['CROP_1', 'CROP_2'],
         eventId: CROP_RESPONSE_AUCKLAND_2019.id,
@@ -228,7 +228,7 @@ export const testFetchEvents = () => {
   it('should limit results by a combination of parameters', async () => {
     await assertCorrectResponse(
       {
-        surveyCode: 'CROP',
+        dataGroupCode: 'CROP',
         organisationUnitCodes: ['NZ_AK'],
         dataElementCodes: ['CROP_1'],
         startDate: '2019-01-01',

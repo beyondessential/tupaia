@@ -22,11 +22,11 @@ export class TupaiaDataApi {
   async fetchEvents(options) {
     await validateEventOptions(options);
     const results = await fetchData(this.database, options);
-    const resultsBySurveyResponse = groupBy(results, 'eventId');
-    return Object.values(resultsBySurveyResponse)
-      .map(resultsForSurveyResponse => {
-        const { eventId, date, entityCode, entityName } = resultsForSurveyResponse[0];
-        const dataValues = resultsForSurveyResponse.reduce(
+    const resultsByEventId = groupBy(results, 'eventId');
+    return Object.values(resultsByEventId)
+      .map(resultsForEvent => {
+        const { eventId, date, entityCode, entityName } = resultsForEvent[0];
+        const dataValues = resultsForEvent.reduce(
           (values, { dataElementCode, type, value }) => ({
             ...values,
             [dataElementCode]: sanitizeDataValue(value, type),
