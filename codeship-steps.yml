@@ -55,7 +55,9 @@
   service: deployment
   steps:
     - name: reinstate SSH Private Key File
-      command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
+      # Need to use 'sed' here to remove open/close quotes, see: https://github.com/docker/compose/issues/2854
+      # Note: this issue is fixed in more recent versions of docker-compose (1.26+) but codeship still uses an older version
+      command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY | sed -e 's/^"//' -e 's/"$//' >> /root/.ssh/id_rsa"
     - name: chmod id_rsa
       command: chmod 600 /root/.ssh/id_rsa
     - name: pull latest and install dependencies
