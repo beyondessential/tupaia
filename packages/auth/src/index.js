@@ -7,4 +7,4 @@ export { Authenticator } from './Authenticator';
 export { AccessPolicyBuilder } from './AccessPolicyBuilder';
 export * from './utils';
 export { getJwtToken, extractRefreshTokenFromReq, generateSecretKey } from './security';
-export { getUserIDFromToken } from './userAuth';
+export { getUserIDFromToken, getUserAndPassFromBasicAuth } from './userAuth';

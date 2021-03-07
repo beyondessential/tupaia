@@ -53,7 +53,7 @@ const HANDLER_DEBOUNCE_DURATION = 250;
 
 export class TupaiaDatabase {
   /**
-   * @param {*} [transactingConnection]
+   * @param {TupaiaDatabase} [transactingConnection]
    */
   constructor(transactingConnection) {
     autobind(this);
