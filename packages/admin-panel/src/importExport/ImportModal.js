@@ -57,6 +57,8 @@ export const ImportModalComponent = React.memo(
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      // Deselect file when dismissing an error, this avoids an error when editing selected files
+      // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
       setFile(null);
       setFileName('No File chosen');
     };
@@ -90,18 +92,11 @@ export const ImportModalComponent = React.memo(
       }
     };
 
-    // Handle case of the file changing since it was uploaded
-    // This is a workaround to handle an edge case in the file field error states
-    // For more details see the tech debt issue. @see https://github.com/beyondessential/tupaia-backlog/issues/1211
-    useEffect(() => {
-      if (errorMessage === 'Failed to fetch') {
-        setFile(null);
-      }
-    }, [errorMessage]);
-
+    // Print a more descriptive network timeout error
+    // TODO: Remove this after https://github.com/beyondessential/tupaia-backlog/issues/1009 is fixed
     const fileErrorMessage =
-      errorMessage === 'Failed to fetch' || errorMessage === 'Network request timed out'
-        ? 'Failed to upload, probably because the import file has been edited. Please reselect it and try again.'
+      errorMessage === 'Network request timed out'
+        ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
         : errorMessage;
 
     const checkVisibilityCriteriaAreMet = visibilityCriteria => {
