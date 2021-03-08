@@ -51,7 +51,7 @@ export class TupaiaDataApi {
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      date: moment(date).format(ANALYTICS_DATE_FORMAT),
+      date: momentToDateString(moment(date)),
       value: sanitizeDataValue(value, type),
     }));
   }
