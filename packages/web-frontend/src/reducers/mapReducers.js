@@ -35,8 +35,15 @@ function position(state = { bounds: DEFAULT_BOUNDS }, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
-        const { location } = action.organisationUnit;
+        const { location, organisationUnitCode } = action.organisationUnit;
+
         if (location) {
+          if (organisationUnitCode === 'explore' || organisationUnitCode === 'disaster') {
+            return {
+              bounds: DEFAULT_BOUNDS,
+            };
+          }
+
           if (location.bounds) {
             return {
               bounds: location.bounds,

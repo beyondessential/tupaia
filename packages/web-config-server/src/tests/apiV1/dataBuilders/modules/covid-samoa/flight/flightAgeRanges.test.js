@@ -62,16 +62,16 @@ describe('flightAgeRanges', () => {
 
     flight.events = [
       {
-        dataValues: { QMIA031: 'Yes' },
+        dataValues: { QMIA031: 1 },
       },
       {
-        dataValues: { QMIA031: 'Yes' },
+        dataValues: { QMIA031: 1 },
       },
       {
-        dataValues: { QMIA031: 'No', QMIA032: 'Yes' },
+        dataValues: { QMIA031: 0, QMIA032: 1 },
       },
       {
-        dataValues: { QMIA033: 'No' },
+        dataValues: { QMIA033: 0 },
       },
     ];
 
@@ -97,7 +97,7 @@ describe('flightAgeRanges', () => {
         dataValues: { QMIA009: 'F' },
       },
       {
-        dataValues: { QMIA009: 'F', QMIA032: 'Yes' },
+        dataValues: { QMIA009: 'F', QMIA032: 1 },
       },
       {
         dataValues: { QMIA009: 'F' },

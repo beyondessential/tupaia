@@ -41,6 +41,10 @@
       "path": "packages/dhis-api"
     },
     {
+      "name": "entity-server",
+      "path": "packages/entity-server"
+    },
+    {
       "name": "eslint-config-typescript",
       "path": "packages/eslint-config-typescript"
     },
@@ -51,6 +55,10 @@
     {
       "name": "indicators",
       "path": "packages/indicators"
+    },
+    {
+      "name": "lesmis",
+      "path": "packages/lesmis"
     },
     {
       "name": "meditrak-app",
@@ -119,6 +127,7 @@
       "groupby",
       "heatmap",
       "imms",
+      "isequal",
       "keyby",
       "migrator",
       "oucode",
@@ -142,6 +151,10 @@
     "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {
       "packages/": true
+    },
+    "search.exclude": {
+      "**/logfile*.log": true,
+      "**/yarn-1.18.0.js": true
     }
   },
   "extensions": {

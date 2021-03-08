@@ -57,6 +57,9 @@ const HANDLER_DEBOUNCE_DURATION = 250;
 pgTypes.setTypeParser(pgTypes.builtins.TIMESTAMP, val => val);
 
 export class TupaiaDatabase {
+  /**
+   * @param {TupaiaDatabase} [transactingConnection]
+   */
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};

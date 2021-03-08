@@ -6,7 +6,8 @@
 import { convertDateRangeToPeriods } from './convertDateRangeToPeriods';
 import { utcMoment } from '../datetime';
 
-export const EARLIEST_DATA_DATE = utcMoment('2017-01-01'); // Tupaia started in 2017
+export const EARLIEST_DATA_DATE_STRING = '2017-01-01'; // Tupaia started in 2017
+export const EARLIEST_DATA_DATE = utcMoment(EARLIEST_DATA_DATE_STRING);
 const MAXIMUM_MONTHS_TO_LOOK_BACK = 60; // Last 5 years
 
 // Assemble a default date range using monthly granularity.

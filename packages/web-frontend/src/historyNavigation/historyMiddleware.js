@@ -45,6 +45,7 @@ export const historyMiddleware = store => next => action => {
       break;
     case SET_ORG_UNIT:
       dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
+      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, '');
       break;
     case SET_DASHBOARD_GROUP:
       dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, encodeURIComponent(action.name));

@@ -1,10 +1,11 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
 export * from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
+export * from './compare';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';
@@ -26,3 +27,5 @@ export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
 export { addExportedDateAndOriginAtTheSheetBottom } from './addExportDateAndOriginInExcelExportData';
 export { getBrowserTimeZone } from './getBrowserTimeZone';
 export { stripTimezoneFromDate } from './stripTimezoneFromDate';
+export { formatDataValueByType } from './formatDataValueByType';
+export { VALUE_TYPES } from './constant';
