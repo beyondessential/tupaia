@@ -25,21 +25,21 @@ const FileName = styled.span`
   margin-left: 0.8rem;
 `;
 
-export const FileUploadField = ({ onChange, name }) => {
+export const FileUploadField = ({ onChange, name, fileName }) => {
   const inputEl = useRef(null);
-  const [fileName, setFileName] = useState('No File chosen');
+  // const [fileName, setFileName] = useState('No File chosen');
 
   const handleChange = event => {
-    let newName;
-    const input = inputEl.current;
+    // let newName;
+    // const input = inputEl.current;
 
-    if (input.files && input.files.length > 1) {
-      newName = `${input.files.length} files selected`;
-    } else {
-      newName = event.target.value.split('\\').pop();
-    }
+    // if (input.files && input.files.length > 1) {
+    //   newName = `${input.files.length} files selected`;
+    // } else {
+    //   newName = event.target.value.split('\\').pop();
+    // }
 
-    setFileName(newName);
+    // setFileName(newName);
     onChange(event);
   };
 
@@ -64,8 +64,10 @@ export const FileUploadField = ({ onChange, name }) => {
 FileUploadField.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
+  fileName: PropTypes.string,
 };
 
 FileUploadField.defaultProps = {
   onChange: () => {},
+  fileName: 'No File chosen',
 };

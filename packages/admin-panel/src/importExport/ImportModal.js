@@ -43,6 +43,7 @@ export const ImportModalComponent = React.memo(
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState('No File chosen');
 
     const handleOpen = () => setIsOpen(true);
 
@@ -56,6 +57,8 @@ export const ImportModalComponent = React.memo(
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setFile(null);
+      setFileName('No File chosen');
     };
 
     const handleCancel = () => {
@@ -144,9 +147,17 @@ export const ImportModalComponent = React.memo(
                 })}
               <FileUploadField
                 onChange={({ target }) => {
+                  let newName;
+                  if (target.files && target.files.length > 1) {
+                    newName = `${target.files.length} files selected`;
+                  } else {
+                    newName = target.value.split('\\').pop();
+                  }
+                  setFileName(newName);
                   setFile(target.files[0]);
                 }}
                 name="file-upload"
+                fileName={fileName}
               />
             </ModalContentProvider>
             <DialogFooter>
