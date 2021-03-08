@@ -28,7 +28,12 @@
   "overrides": [
     // TypeScript packages
     {
-      "files": ["packages/indicators/**", "packages/psss-server/**", "packages/report-server/**"],
+      "files": [
+        "packages/indicators/**",
+        "packages/entity-server/**",
+        "packages/psss-server/**",
+        "packages/report-server/**"
+      ],
       "extends": "@beyondessential/ts",
       "parserOptions": {
         "project": "tsconfig.json"
@@ -44,6 +49,7 @@
         "packages/data-broker/**",
         "packages/dhis-api/**",
         "packages/expression-parser/**",
+        "packages/entity-server/**",
         "packages/indicators/**",
         "packages/meditrak-app/**",
         "packages/psss/**",

@@ -30,6 +30,9 @@
             - name: test-report-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
+            - name: test-entity-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
         - type: parallel
           name: test-batch-2
           steps:
@@ -82,6 +85,8 @@
               exclude: -e2e$
             - name: deploy-report-server
               command: './packages/devops/scripts/ci/deployBackend.sh report-server'
+            - name: deploy-entity-server
+              command: './packages/devops/scripts/ci/deployBackend.sh entity-server'
         # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
         - name: run db migrations
           command: './packages/devops/scripts/ci/runMigrations.sh'
