@@ -16,15 +16,6 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-async function deleteItemByOneCondition(db, table, condition) {
-  const [key, value] = Object.entries(condition)[0];
-  return db.runSql(`
-    DELETE FROM
-      "${table}"
-    WHERE
-      "${key}" = '${value}';
-  `);
-}
 const indicator = {
   id: generateId(),
   code: 'COVID_SAMOA_Confirmed_Cases',
@@ -33,13 +24,6 @@ const indicator = {
     formula:
       "WS_COVID19_Clinsurv_137 == 1 or equalText(WS_COVID19_Clinsurv_75, '1. Positive') or equalText(WS_COVID19_Clinsurv_79, '1. Positive') or equalText(WS_COVID19_Clinsurv_83, '1. IgG positive only') or equalText(WS_COVID19_Clinsurv_83, '2. IgM positive only') or equalText(WS_COVID19_Clinsurv_83, '3. IgM / IgG positive') or equalText(WS_COVID19_Clinsurv_87, '1. Positive')",
     programCode: 'SC1CS',
-    defaultValues: {
-      WS_COVID19_Clinsurv_137: 0,
-      WS_COVID19_Clinsurv_75: 'undefined',
-      WS_COVID19_Clinsurv_79: 'undefined',
-      WS_COVID19_Clinsurv_83: 'undefined',
-      WS_COVID19_Clinsurv_87: 'undefined',
-    },
   },
 };
 const mapOverlay = {
@@ -65,13 +49,14 @@ const mapOverlay = {
   countryCodes: '{WS}',
   projectCodes: '{covid_samoa}',
 };
+
 exports.up = async function (db) {
   await insertObject(db, 'mapOverlay', mapOverlay);
 
-  const mapOverLayGroupId = await codeToId(db, 'map_overlay_group', 'COVID19_Samoa');
+  const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', 'COVID19_Samoa');
   await insertObject(db, 'map_overlay_group_relation', {
     id: generateId(),
-    map_overlay_group_id: mapOverLayGroupId,
+    map_overlay_group_id: mapOverlayGroupId,
     child_id: mapOverlay.id,
     child_type: 'mapOverlay',
   });
@@ -84,6 +69,16 @@ exports.up = async function (db) {
     type: 'dataElement',
     service_type: 'indicator',
   });
+};
+
+const deleteItemByOneCondition = async (db, table, condition) => {
+  const [key, value] = Object.entries(condition)[0];
+  return db.runSql(`
+    DELETE FROM
+      "${table}"
+    WHERE
+      "${key}" = '${value}';
+  `);
 };
 
 exports.down = async function (db) {
