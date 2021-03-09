@@ -16,16 +16,6 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-async function deleteItemByOneCondition(db, table, condition) {
-  const [key, value] = Object.entries(condition)[0];
-  return db.runSql(`
-    DELETE FROM
-      "${table}"
-    WHERE
-      "${key}" = '${value}';
-  `);
-}
-
 const DASHBOARD_GROUP_CODES = [
   'TO_Health_Promotion_Unit_Country',
   'TO_Health_Promotion_Unit_District',
@@ -206,6 +196,16 @@ exports.up = async function (db) {
     WHERE code IN (${arrayToDbString(DASHBOARD_GROUP_CODES)});
   `);
 };
+
+async function deleteItemByOneCondition(db, table, condition) {
+  const [key, value] = Object.entries(condition)[0];
+  return db.runSql(`
+    DELETE FROM
+      "${table}"
+    WHERE
+      "${key}" = '${value}';
+  `);
+}
 
 exports.down = async function (db) {
   await deleteItemByOneCondition(db, 'indicator', { code: WAIST_CIRCUMFERENCE_INDICATOR.code });
