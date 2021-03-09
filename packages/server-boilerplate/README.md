@@ -11,14 +11,14 @@ See lesmis-server for a typical example of implementation.
 eg. `app.use(attachSessionModel(sessionModel));`
  
 #### addRoutesToApp
-- When adding the routes to the app, you will need to wrap the routes with the the `handleRoute` util for the routes to work properly.
+- When adding the routes to the app, you will need to wrap the routes with the `handleWith` util for the routes to work properly.
 eg. `app.get('/v1/test', handleWith(TestRoute));`
 
-- You also need to add the error hanlder as the fallback route.
+- You also need to add the error handler as the fallback route.
 eg. `app.use(handleError);`
 
 ## Routes
-- Includes Route which is base class with useful functionality for handling responses. Route is an abstract class which must be extended to custom routes.
+- Includes `Route` which is base class with useful functionality for handling responses. `Route` is an abstract class which must be extended to custom routes.
 - Includes some commonly used routes for handling logging in and logging out etc.
 
 ## Environment variables
