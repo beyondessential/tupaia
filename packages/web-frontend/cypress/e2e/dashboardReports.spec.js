@@ -7,6 +7,9 @@ import config from '../config/dashboardReports.json';
 import { SNAPSHOTS } from '../constants';
 import { EmptyConfigError, preserveUserSession } from '../support';
 
+const checkResponseHasData = response =>
+  response?.body?.value !== undefined || response?.body?.data?.length > 0;
+
 const urlToRouteRegex = url => {
   const queryParams = url.split('?').slice(1).join('');
   const viewId = new URLSearchParams(queryParams).get('report');
@@ -21,6 +24,7 @@ describe('Dashboard reports', () => {
   if (config.length === 0) {
     throw new EmptyConfigError('dashboardReports');
   }
+  const requireData = Cypress.config('tupaia_requireNonEmptyVisualisations');
 
   before(() => {
     cy.login();
@@ -35,7 +39,12 @@ describe('Dashboard reports', () => {
       cy.server();
       cy.route(urlToRouteRegex(url)).as('report');
       cy.visit(url);
-      cy.wait('@report');
+      cy.wait('@report').then(({ response }) => {
+        if (requireData) {
+          const failureMessage = `Report '${url}' is empty`;
+          expect(checkResponseHasData(response), failureMessage).to.be.true;
+        }
+      });
 
       cy.findByTestId('enlarged-dialog').as('enlargedDialog');
       // Capture and store the snapshot using the "new" key, to avoid comparison with existing snapshots.
