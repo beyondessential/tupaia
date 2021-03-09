@@ -39,6 +39,8 @@ RUN mkdir -p ./packages/indicators
 COPY packages/indicators/package.json ./packages/indicators
 RUN mkdir -p ./packages/entity-server
 COPY packages/entity-server/package.json ./packages/entity-server
+RUN mkdir -p ./packages/lesmis-server
+COPY packages/lesmis-server/package.json ./packages/lesmis-server
 RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
 RUN mkdir -p ./packages/psss-server
