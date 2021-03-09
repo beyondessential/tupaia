@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import yargs from 'yargs';
-
 import { getLoggerInstance } from './getLoggerInstance';
 
 export const runScriptSync = (script, cleanup) => {
@@ -66,6 +64,7 @@ export const runScript = (script, cleanup) => {
 export const getArgs = scriptConfig => {
   const allowedYargsKeys = ['command', 'options', 'usage', 'version'];
 
+  const yargs = require('yargs');
   yargs.strict();
   Object.entries(scriptConfig).forEach(([key, value]) => {
     if (allowedYargsKeys.includes(key)) {
