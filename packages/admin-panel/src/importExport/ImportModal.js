@@ -141,13 +141,7 @@ export const ImportModalComponent = React.memo(
                   );
                 })}
               <FileUploadField
-                onChange={({ target }) => {
-                  let newName;
-                  if (target.files && target.files.length > 1) {
-                    newName = `${target.files.length} files selected`;
-                  } else {
-                    newName = target.value.split('\\').pop();
-                  }
+                onChange={({ target }, newName) => {
                   setFileName(newName);
                   setFile(target.files[0]);
                 }}

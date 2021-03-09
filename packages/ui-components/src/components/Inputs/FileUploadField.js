@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { GreyButton } from '../Button';
@@ -27,20 +27,18 @@ const FileName = styled.span`
 
 export const FileUploadField = ({ onChange, name, fileName }) => {
   const inputEl = useRef(null);
-  // const [fileName, setFileName] = useState('No File chosen');
 
   const handleChange = event => {
-    // let newName;
-    // const input = inputEl.current;
+    let newName;
+    const input = inputEl.current;
 
-    // if (input.files && input.files.length > 1) {
-    //   newName = `${input.files.length} files selected`;
-    // } else {
-    //   newName = event.target.value.split('\\').pop();
-    // }
+    if (input.files && input.files.length > 1) {
+      newName = `${input.files.length} files selected`;
+    } else {
+      newName = event.target.value.split('\\').pop();
+    }
 
-    // setFileName(newName);
-    onChange(event);
+    onChange(event, newName);
   };
 
   return (
