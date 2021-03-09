@@ -17,6 +17,11 @@ export class Authenticator {
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
   }
 
+  /**
+   * Authenticate by email/password
+   * @param {{ emailAddress, password, deviceName }} authDetails
+   * @param {*} [meditrakDeviceDetails]
+   */
   async authenticatePassword({ emailAddress, password, deviceName }, meditrakDeviceDetails) {
     const user = await this.getAuthenticatedUser({ emailAddress, password, deviceName });
     const meditrakDevice =
@@ -101,6 +106,8 @@ export class Authenticator {
   /**
    * Returns a plain old javascript object representation of the user's policy. Consumers should
    * parse into an instance of AccessPolicy to use functions like `accessPolicy.allowsSome`
+   * @param {string} userId
+   * @param {*} [meditrakDevice]
    */
   async getAccessPolicyForUser(userId, meditrakDevice) {
     if (!meditrakDevice) return this.accessPolicyBuilder.getPolicyForUser(userId);

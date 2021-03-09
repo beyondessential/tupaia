@@ -54,3 +54,14 @@ export const evaluateFormulaToNumber = (
   parser.clearScope();
   return value;
 };
+
+export const replaceDataValuesWithDefaults = (
+  dataValues: DataValues,
+  defaultValues: DataValues,
+) => {
+  const newDataValues = { ...dataValues };
+  Object.keys(defaultValues).forEach(code => {
+    newDataValues[code] = newDataValues[code] ?? defaultValues[code];
+  });
+  return newDataValues;
+};
