@@ -75,6 +75,8 @@
           steps:
             - name: deploy-web-config-server
               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
+            - name: deploy-lesmis-server
+              command: './packages/devops/scripts/ci/deployBackend.sh lesmis-server'
             - name: deploy-meditrak-server
               command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
             - name: deploy-psss-server
