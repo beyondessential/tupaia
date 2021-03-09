@@ -5,6 +5,7 @@
   "projectId": "pty5cc",
   "requestTimeout": 30000,
   "responseTimeout": 60000,
+  "tupaia_requireNonEmptyVisualisations": false,
   "useRelativeSnapshots": true,
   "viewportHeight": 900,
   "viewportWidth": 1400
