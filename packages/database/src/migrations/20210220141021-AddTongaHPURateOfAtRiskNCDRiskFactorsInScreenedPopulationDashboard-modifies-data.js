@@ -39,10 +39,6 @@ const WAIST_CIRCUMFERENCE_INDICATOR = {
     formula:
       "(equalText(HP36n, 'Male') and HP45n >= 100) or (equalText(HP36n, 'Female') and HP45n >= 90)",
     programCode: 'HP02',
-    defaultValues: {
-      HP36n: 'undefined',
-      HP45n: 0,
-    },
   },
 };
 
@@ -53,10 +49,6 @@ const BMI_INDICATOR = {
   config: {
     formula: 'HP35n >= 19 and (HP75n >= 25 or (HP75n < 18 and HP75n > 0))',
     programCode: 'HP02',
-    defaultValues: {
-      HP75n: 0,
-      HP35n: 0,
-    },
   },
 };
 
