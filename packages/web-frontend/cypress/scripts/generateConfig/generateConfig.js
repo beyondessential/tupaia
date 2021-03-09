@@ -9,7 +9,7 @@ import { TupaiaDatabase } from '@tupaia/database';
 import { getLoggerInstance } from '@tupaia/utils';
 import { getConfigPath } from '../../support/helpers';
 import { createTestUser } from './createTestUser';
-import { generateDashboardReportConfig } from './generateDashboardReportConfig';
+import { generateReportConfig } from './generateReportConfig';
 
 const writeConfigFile = (fileName, contents) =>
   writeFileSync(getConfigPath(fileName), JSON.stringify(contents, null, 2));
@@ -24,7 +24,7 @@ export const generateConfig = async () => {
   logger.success(`✔ Test user`);
 
   logger.success('Generating dashboard report config...');
-  const dashboardReportConfig = await generateDashboardReportConfig({ database });
+  const dashboardReportConfig = await generateReportConfig({ database });
   writeConfigFile('dashboardReports', dashboardReportConfig);
   logger.success(`✔ Dashboard reports`);
 };
