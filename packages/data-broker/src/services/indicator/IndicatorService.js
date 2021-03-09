@@ -38,7 +38,8 @@ export class IndicatorService extends Service {
     };
   }
 
-  async pullMetadata() {
-    throw new Error('Metadata pulling is not supported in IndicatorService');
+  async pullMetadata(dataSources) {
+    // TODO: Implement properly in #tupaia-backlog/issues/2137
+    return dataSources.map(dataSource => ({ code: dataSource.code, name: undefined }));
   }
 }

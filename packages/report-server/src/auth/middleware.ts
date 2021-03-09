@@ -6,7 +6,7 @@
 import { NextFunction, Response } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { getUserIDFromToken } from '@tupaia/auth';
+import { getUserIDFromToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { ReportsRequest } from '../types';
 
 const authenticateUser = async (req: ReportsRequest) => {
@@ -40,14 +40,7 @@ const authenticateBearerAuthHeader = async (authHeader: string) => {
 };
 
 const authenticateBasicAuthHeader = async (req: ReportsRequest, authHeader: string) => {
-  const usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
-  if (!usernamePassword.includes(':')) {
-    throw new UnauthenticatedError('Invalid Basic auth credentials');
-  }
-
-  // Split on first occurrence because password can contain ':'
-  const username = usernamePassword.split(':')[0];
-  const password = usernamePassword.substring(username.length + 1, usernamePassword.length);
+  const { username, password } = getUserAndPassFromBasicAuth(authHeader);
   const { authenticator } = req;
   const { user } = await authenticator.authenticatePassword({
     emailAddress: username,

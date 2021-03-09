@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Aggregator } from '@tupaia/aggregator';
 import { DatabaseType as BaseDatabaseType } from '@tupaia/database';
 
 export interface AnalyticValue {
@@ -16,52 +15,62 @@ export interface Analytic extends AnalyticValue {
   readonly dataElement: string;
 }
 
-export interface AnalyticCluster {
-  organisationUnit: Analytic['organisationUnit'];
-  period: Analytic['period'];
-  dataValues: Record<Analytic['dataElement'], Analytic['value']>;
+export type DataValues = Readonly<Record<string, string | number>>;
+
+export interface Event {
+  readonly event: string;
+  readonly eventDate: string;
+  readonly orgUnit: string;
+  readonly orgUnitName: string;
+  readonly period: string;
+  readonly dataValues: DataValues;
 }
 
-type TypeFields = Record<string, string | number | Record<string, unknown>>;
+export interface AnalyticCluster {
+  readonly organisationUnit: Analytic['organisationUnit'];
+  readonly period: Analytic['period'];
+  readonly dataValues: Record<Analytic['dataElement'], Analytic['value']>;
+}
 
-type DatabaseType<F extends TypeFields> = BaseDatabaseType & F;
+type DbValue = string | number | boolean | null | DbValue[] | { [key: string]: DbValue };
 
-type DbConditions<F extends TypeFields> = Partial<
-  Record<keyof F, number | number[] | string | string[]>
+export type DbRecord = Record<string, DbValue>;
+
+type DatabaseType<T extends DbRecord> = BaseDatabaseType & T;
+
+type DbConditions<T extends DbRecord> = Partial<
+  Record<keyof T, number | number[] | string | string[]>
 >;
 
-interface DatabaseModel<F extends TypeFields, T extends DatabaseType<F>> {
-  find: (dbConditions: DbConditions<F>) => Promise<T[]>;
+interface DatabaseModel<T extends DbRecord> {
+  find: (dbConditions: DbConditions<T>) => Promise<DatabaseType<T>[]>;
 }
 
 export type Indicator = {
   code: string;
   builder: string;
-  config: Record<string, unknown>;
+  config: { [key: string]: DbValue };
 };
 
-type IndicatorFields = Indicator & { id: string };
+type IndicatorRecord = Indicator & { id: string };
 
-export type IndicatorType = DatabaseType<IndicatorFields>;
+type DataSourceRecord = {
+  id: string;
+  code: string;
+  type: 'dataElement' | 'dataGroup';
+  service_type: 'dhis' | 'indicator' | 'tupaia' | 'weather';
+  config: Record<string, DbValue>;
+};
+
+export type DataSourceType = DatabaseType<DataSourceRecord>;
+
+export type IndicatorType = DatabaseType<IndicatorRecord>;
+
+type DataSourceModel = DatabaseModel<DataSourceRecord>;
 
 export interface ModelRegistry {
-  readonly indicator: DatabaseModel<IndicatorFields, IndicatorType>;
-}
-
-export interface IndicatorApiInterface {
-  getAggregator: () => Aggregator;
-  buildAnalyticsForIndicators: (
-    indicators: Indicator[],
-    fetchOptions: FetchOptions,
-  ) => Promise<Analytic[]>;
-}
-
-export interface Builder {
-  (input: {
-    api: IndicatorApiInterface;
-    config: IndicatorFields['config'];
-    fetchOptions: FetchOptions;
-  }): Promise<AnalyticValue[]>;
+  readonly dataSource: DataSourceModel;
+  readonly indicator: DatabaseModel<IndicatorRecord>;
 }
 
 export interface Aggregation {
@@ -69,4 +78,12 @@ export interface Aggregation {
   readonly config?: Record<string, unknown>;
 }
 
-export type FetchOptions = Readonly<Record<string, unknown>>;
+export type AggregationList = Aggregation[];
+
+export type FetchOptions = Readonly<{
+  readonly organisationUnit?: string;
+  readonly organisationUnitCodes?: string[];
+  readonly startDate: string;
+  readonly endDate: string;
+  readonly period?: string;
+}>;
