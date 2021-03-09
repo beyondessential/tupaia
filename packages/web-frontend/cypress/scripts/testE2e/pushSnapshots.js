@@ -9,7 +9,7 @@ import { SNAPSHOTS } from '../../constants';
 
 export const pushSnapshots = async (snapshotRepo, branch, snapshots) => {
   const date = Date.now();
-  const updateBranch = `tupaiabot/snapshot-update/${branch}_${date}`;
+  const updateBranch = `beyondessential-bot/snapshot-update/${branch}_${date}`;
   await snapshotRepo.createBranchIfNotExists(branch);
   await snapshotRepo.createBranch(updateBranch, branch);
 
