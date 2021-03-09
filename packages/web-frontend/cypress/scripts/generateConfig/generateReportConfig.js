@@ -137,7 +137,7 @@ const getUrlsForReports = async (database, reports, reportIdToGroups) => {
   };
 };
 
-const getDashboardReportIdToGroups = async database => {
+const getReportIdToGroups = async database => {
   const dashboardGroups = await database.executeSql(`SELECT * from "dashboardGroup"`);
 
   const reportIdToGroups = {};
@@ -159,10 +159,10 @@ const getDashboardReportIdToGroups = async database => {
  * 3. For each dashboard group, use an organisation unit from the orgUnitMap config
  * that matches the group's org unit code and level
  */
-export const generateDashboardReportConfig = async ({ database }) => {
+export const generateReportConfig = async ({ database }) => {
   const logger = getLoggerInstance();
   const reports = await database.executeSql('SELECT * from "dashboardReport"');
-  const reportIdToGroups = await getDashboardReportIdToGroups(database);
+  const reportIdToGroups = await getReportIdToGroups(database);
   const { urls, skippedReports } = await getUrlsForReports(database, reports, reportIdToGroups);
   const skippedReportsExist = Object.keys(skippedReports).length > 0;
   if (skippedReportsExist) {
