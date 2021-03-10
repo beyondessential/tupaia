@@ -16,11 +16,6 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const malariaMapOverlayGroup = {
-  id: generateId(),
-  name: 'Malaria',
-  code: 'LAOS_EOC_Malaria',
-};
 const malariaBaseMapOverlay = {
   userGroup: 'Laos EOC User',
   isDataRegional: false,
@@ -60,6 +55,11 @@ const malariaDeathMapOverlay = {
   name: '	Malaria Deaths by Sub District',
   dataElementCode: 'Total_Malaria_Deaths',
 };
+const malariaMapOverlayGroup = {
+  id: generateId(),
+  name: 'Malaria',
+  code: 'LAOS_EOC_Malaria',
+};
 const mapOverlayGroupRelation = {
   map_overlay_group_id: malariaMapOverlayGroup.id,
   child_type: 'mapOverlay',
@@ -95,7 +95,6 @@ exports.down = async function (db) {
     });
     await deleteObject(db, 'mapOverlay', { id: mapOverlay.id });
   }
-
   await deleteObject(db, 'map_overlay_group', { code: malariaMapOverlayGroup.code });
 };
 
