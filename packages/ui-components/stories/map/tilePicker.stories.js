@@ -10,6 +10,7 @@ import { MapContainer, TileLayer, TilePicker as TilePickerComponent } from '../.
 
 const Container = styled.div`
   position: relative;
+  height: 500px;
 `;
 
 export default {

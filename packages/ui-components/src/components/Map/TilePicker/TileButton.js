@@ -19,9 +19,9 @@ const StyledButton = styled(Button)`
   overflow: hidden;
   padding: 0;
   text-transform: none;
-  width: 160px;
-  height: 140px;
-  min-height: 140px;
+  width: 1orem;
+  height: 8.75rem;
+  min-height: 8.75rem;
   background-size: cover;
   transition: none;
 
@@ -62,8 +62,8 @@ const Thumbnail = styled.div`
 
 const TileLabel = styled(Typography)`
   font-weight: normal;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 1rem;
+  line-height: 1.2rem;
   color: white;
   position: absolute;
   bottom: 0;
@@ -71,7 +71,7 @@ const TileLabel = styled(Typography)`
   right: 0;
   display: flex;
   background: #2b2d38;
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   opacity: 0.9;
 `;
 

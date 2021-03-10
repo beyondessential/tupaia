@@ -20,23 +20,23 @@ const StyledButton = styled(Button)`
   background: ${props =>
     props.active === 'true' ? 'rgba(43, 45, 56, 0.94)' : 'rgba(43, 45, 56, 0.8)'};
   color: white;
-  margin-top: 10px;
+  margin-top: 0.6rem;
   margin-bottom: 1rem;
   border-radius: 3px;
-  padding: 5px 15px 5px 5px;
+  padding: 0.3125rem 0.9rem 0.3125rem 0.3125rem;
   font-weight: 500;
-  font-size: 12px;
-  line-height: 14px;
+  font-size: 0.75rem;
+  line-height: 0.85rem;
   border: none;
   text-transform: none;
 
   img {
-    height: 25px;
-    margin-right: 8px;
+    height: 1.5rem;
+    margin-right: 0.5rem;
   }
 
   .MuiSvgIcon-root {
-    margin-right: -15px;
+    margin-right: -0.9rem;
     color: white;
     transition: color 0.3s ease;
   }
@@ -52,15 +52,15 @@ const StyledButton = styled(Button)`
 `;
 
 const Label = styled.span`
-  width: 75px;
+  width: 4.75rem;
   text-align: left;
 `;
 
 const Divider = styled.span`
   opacity: 0.2;
   border-right: 1px solid #ffffff;
-  height: 25px;
-  margin-left: 5px;
+  height: 1.5rem;
+  margin-left: 0.3rem;
 `;
 
 const Legend = styled.div`
@@ -70,18 +70,18 @@ const Legend = styled.div`
 
 const LegendColor = styled.div`
   border-radius: 50%;
-  width: 12px;
-  height: 12px;
+  width: 0.75rem;
+  height: 0.75rem;
   background: ${item => item.color};
-  margin-right: 5px;
+  margin-right: 0.3rem;
 `;
 
 const LegendLabel = styled(Typography)`
-  font-size: 12px;
-  line-height: 14px;
+  font-size: 0.75rem;
+  line-height: 0.85rem;
   color: white;
   text-transform: none;
-  margin-bottom: 5px;
+  margin-bottom: 0.3rem;
 `;
 
 export const TileControl = ({ tileSet, isActive, ...props }) => (

@@ -60,7 +60,7 @@ const TileList = styled.div`
     animation-timing-function: linear;
 
     > button {
-      transform: translate(10px, 100px);
+      transform: translate(0.6rem, 6.25rem);
     }
   }
 `;
