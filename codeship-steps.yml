@@ -31,9 +31,6 @@
             - name: test-report-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
-            - name: test-server-boilerplate
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh server-boilerplate'
             - name: test-entity-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh entity-server'
