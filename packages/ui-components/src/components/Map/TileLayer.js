@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { TileLayer as LeafletTileLayer, LayerGroup, AttributionControl } from 'react-leaflet';
 
@@ -15,7 +15,7 @@ const attribution =
 export const TileLayer = ({ tileSetUrl }) => {
   const tileLayer = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (tileLayer) {
       tileLayer.current.setUrl(tileSetUrl);
     }
