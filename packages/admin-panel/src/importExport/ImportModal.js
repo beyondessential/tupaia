@@ -28,6 +28,8 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
+const noFileMessage = 'No file chosen';
+
 export const ImportModalComponent = React.memo(
   ({
     title,
@@ -43,7 +45,7 @@ export const ImportModalComponent = React.memo(
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [file, setFile] = useState(null);
-    const [fileName, setFileName] = useState('No File chosen');
+    const [fileName, setFileName] = useState(noFileMessage);
 
     const handleOpen = () => setIsOpen(true);
 
@@ -60,7 +62,7 @@ export const ImportModalComponent = React.memo(
       // Deselect file when dismissing an error, this avoids an error when editing selected files
       // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
       setFile(null);
-      setFileName('No File chosen');
+      setFileName(noFileMessage);
     };
 
     const handleCancel = () => {
