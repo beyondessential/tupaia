@@ -51,16 +51,14 @@ describe('AnalyticsRefresher', () => {
   };
 
   beforeEach(async () => {
-    // start listening for changes
-    analyticsRefresher.listenForChanges();
     await populateTestData(models, TEST_DATA);
-    await models.database.waitForAllChangeHandlers();
+    await AnalyticsRefresher.executeRefresh(database);
+    analyticsRefresher.listenForChanges();
   });
 
   afterEach(async () => {
-    await clearTestData(models.database);
-    await models.database.waitForAllChangeHandlers();
     analyticsRefresher.stopListeningForChanges();
+    await clearTestData(models.database);
   });
 
   it('refreshes analytics table if answers are added', async () => {

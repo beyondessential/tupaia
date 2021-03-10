@@ -52,9 +52,11 @@ export class AnalyticsRefresher {
     this.scheduledRefreshPromise = null;
 
     // get the subtrees to delete, then run the delete
-    await this.database.executeSql(
-      `SELECT mv$refreshMaterializedView('analytics', 'public', true);`,
-    );
+    await AnalyticsRefresher.executeRefresh(this.database);
     existingResolve();
   };
+
+  static async executeRefresh(database) {
+    await database.executeSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`);
+  }
 }

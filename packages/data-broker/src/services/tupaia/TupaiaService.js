@@ -58,9 +58,9 @@ export class TupaiaService extends Service {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
     const [dataSource] = dataSources;
-    const { code: surveyCode } = dataSource;
+    const { code: dataGroupCode } = dataSource;
 
-    return this.api.fetchEvents({ ...translateOptionsForApi(options), surveyCode });
+    return this.api.fetchEvents({ ...translateOptionsForApi(options), dataGroupCode });
   }
 
   async pullMetadata(dataSources, type, options = {}) {
