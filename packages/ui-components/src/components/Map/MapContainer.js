@@ -13,7 +13,7 @@ import { LeafletStyles } from './LeafletStyles';
 const StyledMapContainer = styled(LeafletMapContainer)`
   ${LeafletStyles};
   width: auto;
-  height: 500px;
+  height: 100%; // leaflet container needs to have a height set to work
 `;
 
 export const MapContainer = ({
