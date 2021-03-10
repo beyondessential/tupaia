@@ -47,6 +47,8 @@ RUN mkdir -p ./packages/psss-server
 COPY packages/psss-server/package.json ./packages/psss-server
 RUN mkdir -p ./packages/report-server
 COPY packages/report-server/package.json ./packages/report-server
+RUN mkdir -p ./packages/server-boilerplate
+COPY packages/server-boilerplate/package.json ./packages/server-boilerplate
 RUN mkdir -p ./packages/expression-parser
 COPY packages/expression-parser/package.json ./packages/expression-parser
 RUN mkdir -p ./packages/ui-components
@@ -76,6 +78,7 @@ COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/indicators/. ./packages/indicators
 COPY packages/psss-server/. ./packages/psss-server
 COPY packages/report-server/. ./packages/report-server
+COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/utils/. ./packages/utils
