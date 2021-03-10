@@ -9,12 +9,7 @@ import { MapContainer, TileLayer } from '../../src';
 
 const Container = styled.div`
   position: relative;
-
-  > button {
-    top: 2rem;
-    right: 2rem;
-    z-index: 9999;
-  }
+  height: 500px;
 `;
 
 export default {
