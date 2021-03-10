@@ -22,7 +22,7 @@
    yarn workspace @tupaia/web-frontend cypress:generate-config
    ```
 
-   You can also use custom config by manually populating those files, see the `\*.example.jsonc` files for more information.
+   You can also use custom config by manually populating those files.
 
 ## Running the tests locally
 
