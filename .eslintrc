@@ -27,7 +27,14 @@
   "overrides": [
     // TypeScript packages
     {
-      "files": ["packages/indicators/**", "packages/psss-server/**", "packages/report-server/**"],
+      "files": [
+        "packages/indicators/**",
+        "packages/entity-server/**",
+        "packages/psss-server/**",
+        "packages/report-server/**",
+        "packages/lesmis-server/**",
+        "packages/server-boilerplate/**",
+      ],
       "extends": "@beyondessential/ts",
       "parserOptions": {
         "project": "tsconfig.json"
@@ -43,7 +50,9 @@
         "packages/data-broker/**",
         "packages/dhis-api/**",
         "packages/expression-parser/**",
+        "packages/entity-server/**",
         "packages/indicators/**",
+        "packages/lesmis-server/**",
         "packages/meditrak-app/**",
         "packages/psss/**",
         "packages/psss-server/**",
@@ -66,7 +75,7 @@
         "browser": true
       }
     },
-    // Rule overrides
+    // Overrides per rule/env
     {
       "files": [
         "packages/database/src/modelClasses/**",
@@ -76,7 +85,13 @@
         "max-classes-per-file": ["error", 2]
       }
     },
-    // File pattern overrides
+    {
+      "files": "packages/database/src/testUtilities/**",
+      "env": {
+        "jest": true
+      }
+    },
+    // Overrides per file pattern
     {
       "files": "**/cypress/**",
       "extends": "plugin:cypress/recommended",
@@ -87,6 +102,12 @@
       "rules": {
         "cypress/no-force": "error",
         "jest/expect-expect": "off"
+      }
+    },
+    {
+      "files": "**/__integration/**",
+      "rules": {
+        "jest/no-standalone-expect": "off"
       }
     },
     {

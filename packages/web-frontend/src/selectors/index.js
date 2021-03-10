@@ -28,6 +28,7 @@ export {
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
+  selectCurrentOrgUnitBounds,
 } from './orgUnitSelectors';
 
 export {
@@ -35,7 +36,6 @@ export {
   selectCurrentProject,
   selectIsProject,
   selectProjectByCode,
-  selectAdjustedProjectBounds,
   selectTileSets,
   selectActiveTileSet,
   selectAreRegionLabelsPermanent,
