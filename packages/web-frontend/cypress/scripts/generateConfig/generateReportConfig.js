@@ -14,9 +14,8 @@ import {
   stringifyQuery,
   toArray,
 } from '@tupaia/utils';
-import dateRanges from '../../config/datesByGranularity.json';
+import datesByGranularity from '../../config/datesByGranularity.json';
 import orgUnitMap from '../../config/orgUnitMap.json';
-import { CONFIG_ROOT } from '../../constants';
 import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 
 const WARNING_TYPES = {
@@ -32,7 +31,7 @@ const WARNING_TYPE_TO_MESSAGE = {
   [WARNING_TYPES.NO_DATA_BUILDER]: `No data builder`,
   [WARNING_TYPES.NO_GROUP]: 'Not attached to any dashboard group',
   [WARNING_TYPES.NO_PROJECT]: 'Not attached to any projects',
-  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `No compatible org unit map entry found in '${CONFIG_ROOT}/orgUnitMap.json'`,
+  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: 'No compatible org unit map entry found',
 };
 
 const logWarningsForSkippedReports = skippedReports => {
@@ -70,10 +69,10 @@ const selectReportPeriod = viewJson => {
     return undefined;
   }
 
-  const dateInput = dateRanges[periodGranularity];
+  const dateInput = datesByGranularity[periodGranularity];
   if (!dateInput) {
     throw new Error(
-      `Please specify a non empty entry for '${periodGranularity}' in '${CONFIG_ROOT}/datesByGranularity.json'`,
+      `Please add a non empty entry for '${periodGranularity}' in datesByGranularity.json`,
     );
   }
 

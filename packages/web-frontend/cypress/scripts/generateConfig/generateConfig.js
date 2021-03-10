@@ -7,12 +7,10 @@ import { writeFileSync } from 'fs';
 
 import { TupaiaDatabase } from '@tupaia/database';
 import { getLoggerInstance } from '@tupaia/utils';
-import { getConfigPath } from '../../support/helpers';
 import { createTestUser } from './createTestUser';
 import { generateReportConfig } from './generateReportConfig';
 
-const writeConfigFile = (fileName, contents) =>
-  writeFileSync(getConfigPath(fileName), JSON.stringify(contents, null, 2));
+const REPORT_CONFIG_PATH = 'cypress/config/dashboardReports.json';
 
 export const generateConfig = async () => {
   const logger = getLoggerInstance();
@@ -24,7 +22,7 @@ export const generateConfig = async () => {
   logger.success(`✔ Test user`);
 
   logger.success('Generating dashboard report config...');
-  const dashboardReportConfig = await generateReportConfig({ database });
-  writeConfigFile('dashboardReports', dashboardReportConfig);
+  const reportConfig = await generateReportConfig({ database });
+  writeFileSync(REPORT_CONFIG_PATH, JSON.stringify(reportConfig, null, 2));
   logger.success(`✔ Dashboard reports`);
 };

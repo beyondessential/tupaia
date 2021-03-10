@@ -5,7 +5,6 @@
 
 import { integrationFolder } from '../cypress.json';
 
-export const CONFIG_ROOT = 'cypress/config';
 export const PUBLIC_USER = 'public';
 export const SNAPSHOTS = {
   path: `${integrationFolder}/snapshots.js`,
