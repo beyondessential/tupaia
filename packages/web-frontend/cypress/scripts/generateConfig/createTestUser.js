@@ -7,9 +7,9 @@ import { hashAndSaltPassword } from '@tupaia/auth';
 import { requireEnv } from '@tupaia/utils';
 import { TEST_USER } from '../../constants';
 
-const upsertTestUserRecord = async ({ database, user }) => {
+const upsertTestUserRecord = async (db, user) => {
   const password = requireEnv('CYPRESS_TEST_USER_PASSWORD');
-  return database.updateOrCreate(
+  return db.updateOrCreate(
     'user_account',
     { email: user.email },
     {
@@ -24,10 +24,10 @@ const upsertTestUserRecord = async ({ database, user }) => {
 /**
  * Grants permissions for every country and top-level permission group
  */
-const grantAllPermissionsToTestUser = async database => {
+const grantAllPermissionsToTestUser = async db => {
   // TODO use ON CONFLICT ON CONSTRAINT (...) DO NOTHING
   // after https://github.com/beyondessential/tupaia-backlog/issues/1469 is implemented
-  await database.executeSql(
+  await db.executeSql(
     `
     INSERT INTO user_entity_permission
     SELECT generate_object_id() as id, ua.id as user_id, e.id as entity_id, pg.id as permission_group_id FROM user_account ua
@@ -40,7 +40,7 @@ const grantAllPermissionsToTestUser = async database => {
   );
 };
 
-export const createTestUser = async ({ database }) => {
-  await upsertTestUserRecord({ database, user: TEST_USER });
-  await grantAllPermissionsToTestUser(database);
+export const createTestUser = async db => {
+  await upsertTestUserRecord(db, TEST_USER);
+  await grantAllPermissionsToTestUser(db);
 };

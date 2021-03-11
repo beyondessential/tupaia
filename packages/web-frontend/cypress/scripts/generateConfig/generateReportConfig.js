@@ -86,19 +86,19 @@ const selectReportPeriod = viewJson => {
 /**
  * @returns {Promise<string|undefined>}
  */
-const selectOrgUnitCode = async (database, orgUnitCodes, entityConditions) => {
+const selectOrgUnitCode = async (db, orgUnitCodes, entityConditions) => {
   if (orgUnitCodes.length === 0 || !entityConditions) {
     return orgUnitCodes[0];
   }
 
-  const entities = await database.executeSql(
+  const entities = await db.executeSql(
     `SELECT * FROM entity WHERE code IN (${orgUnitCodes.map(() => '?').join(',')})`,
     orgUnitCodes,
   );
   return filterEntities(entities, entityConditions)[0]?.code;
 };
 
-const selectUrlParams = async (database, report, dashboardGroups) => {
+const selectUrlParams = async (db, report, dashboardGroups) => {
   const viewJson = report.viewJson || {};
 
   for (const dashboardGroup of dashboardGroups) {
@@ -110,7 +110,7 @@ const selectUrlParams = async (database, report, dashboardGroups) => {
     const level = snake(dashboardLevel);
     const orgUnitCodes = toArray(orgUnitMap?.[dashboardOrgUnitCode]?.[level]);
     const orgUnitCode = await selectOrgUnitCode(
-      database,
+      db,
       orgUnitCodes,
       viewJson.displayOnEntityConditions,
     );
@@ -125,7 +125,7 @@ const selectUrlParams = async (database, report, dashboardGroups) => {
   return undefined;
 };
 
-const getUrlsForReports = async (database, reports, reportIdToGroups) => {
+const getUrlsForReports = async (db, reports, reportIdToGroups) => {
   const skippedReports = Object.fromEntries(
     Object.values(WARNING_TYPES).map(warnType => [warnType, []]),
   );
@@ -152,7 +152,7 @@ const getUrlsForReports = async (database, reports, reportIdToGroups) => {
       addSkippedReport(WARNING_TYPES.NO_PROJECT, report.id);
       return null;
     }
-    const urlParams = await selectUrlParams(database, report, groupsForReport);
+    const urlParams = await selectUrlParams(db, report, groupsForReport);
     if (!urlParams) {
       addSkippedReport(WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY, report.id);
       return null;
@@ -168,8 +168,8 @@ const getUrlsForReports = async (database, reports, reportIdToGroups) => {
   };
 };
 
-const getReportIdToGroups = async database => {
-  const dashboardGroups = await database.executeSql(`SELECT * from "dashboardGroup"`);
+const getReportIdToGroups = async db => {
+  const dashboardGroups = await db.executeSql(`SELECT * from "dashboardGroup"`);
 
   const reportIdToGroups = {};
   dashboardGroups.forEach(dashboardGroup => {
@@ -190,11 +190,11 @@ const getReportIdToGroups = async database => {
  * 3. For each dashboard group, use an organisation unit from the orgUnitMap config
  * that matches the group's org unit code and level
  */
-export const generateReportConfig = async ({ database }) => {
+export const generateReportConfig = async db => {
   const logger = getLoggerInstance();
-  const reports = await database.executeSql('SELECT * from "dashboardReport"');
-  const reportIdToGroups = await getReportIdToGroups(database);
-  const { urls, skippedReports } = await getUrlsForReports(database, reports, reportIdToGroups);
+  const reports = await db.executeSql('SELECT * from "dashboardReport"');
+  const reportIdToGroups = await getReportIdToGroups(db);
+  const { urls, skippedReports } = await getUrlsForReports(db, reports, reportIdToGroups);
   const skippedReportsExist = Object.keys(skippedReports).length > 0;
   if (skippedReportsExist) {
     logWarningsForSkippedReports(skippedReports);

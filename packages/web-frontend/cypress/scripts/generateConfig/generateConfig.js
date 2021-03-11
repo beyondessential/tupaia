@@ -14,15 +14,15 @@ const REPORT_CONFIG_PATH = 'cypress/config/dashboardReports.json';
 
 export const generateConfig = async () => {
   const logger = getLoggerInstance();
-  const database = new TupaiaDatabase();
+  const db = new TupaiaDatabase();
 
   logger.success('Start e2e test config generation');
   logger.success('Creating test user...');
-  await createTestUser({ database, logger });
+  await createTestUser(db);
   logger.success(`✔ Test user`);
 
   logger.success('Generating dashboard report config...');
-  const reportConfig = await generateReportConfig({ database });
+  const reportConfig = await generateReportConfig(db);
   writeFileSync(REPORT_CONFIG_PATH, JSON.stringify(reportConfig, null, 2));
   logger.success(`✔ Dashboard reports`);
 };
