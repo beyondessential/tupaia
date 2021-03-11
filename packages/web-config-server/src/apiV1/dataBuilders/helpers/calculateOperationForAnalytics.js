@@ -111,10 +111,12 @@ const countDataValues = async (analytics, dataValues, filter, config, models) =>
 };
 
 const buildOrgUnitParentMapForAnalytics = async (analytics, models) => {
-  const orgUnitCodes = [...new Set(analytics.map(a => a.organisationUnit))];
-  const orgUnits = await models.entity.find({ code: orgUnitCodes });
-  const orgUnitParentIds = [...new Set(orgUnits.map(o => o.parent_id))];
-  const orgUnitParents = await models.entity.find({ id: orgUnitParentIds });
+  const orgUnits = await models.entity.find({
+    code: [...new Set(analytics.map(a => a.organisationUnit))],
+  });
+  const orgUnitParents = await models.entity.find({
+    id: [...new Set(orgUnits.map(o => o.parent_id))],
+  });
   const parentIdMap = keyBy(orgUnitParents, 'id');
   const orgUnitParentMap = {};
   orgUnits.forEach(orgUnit => {
