@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const malariaBaseMapOverlay = {
+const malariaBaseMapOverlayBySubDistrict = {
   userGroup: 'Laos EOC User',
   isDataRegional: false,
   measureBuilderConfig: {
@@ -43,17 +43,67 @@ const malariaBaseMapOverlay = {
   countryCodes: '{"LA"}',
   projectCodes: '{"laos_eoc"}',
 };
-const malariaCaseMapOverlay = {
-  ...malariaBaseMapOverlay,
+const malariaCaseMapOverlayBySubDistrict = {
+  ...malariaBaseMapOverlayBySubDistrict,
   id: 'LAOS_EOC_Total_Malaria_Cases_By_Sub_District',
   name: 'Malaria Cases by Sub District',
   dataElementCode: 'Total_Positive_Malaria_Cases',
 };
-const malariaDeathMapOverlay = {
-  ...malariaBaseMapOverlay,
+const malariaDeathMapOverlayBySubDistrict = {
+  ...malariaBaseMapOverlayBySubDistrict,
   id: 'LAOS_EOC_Total_Malaria_Deaths_By_Sub_District',
   name: '	Malaria Deaths by Sub District',
   dataElementCode: 'Total_Malaria_Deaths',
+};
+const malariaBaseMapOverlayByFacility = {
+  userGroup: 'Laos EOC User',
+  isDataRegional: false,
+  measureBuilderConfig: {
+    aggregationType: 'SUM',
+    programCodes: ['Malaria_Case_Reporting'],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
+  },
+  measureBuilder: 'valueForOrgGroup',
+  presentationOptions: {
+    values: [
+      {
+        color: 'blue',
+        value: 'other',
+      },
+      {
+        color: 'grey',
+        value: null,
+      },
+    ],
+    defaultTimePeriod: {
+      unit: 'day',
+      offset: 0,
+    },
+    displayType: 'radius',
+    measureLevel: 'Facility',
+    hideFromLegend: true,
+    periodGranularity: 'one_day_at_a_time',
+    hideByDefault: {
+      null: true,
+    },
+  },
+
+  countryCodes: '{"LA"}',
+  projectCodes: '{"laos_eoc"}',
+};
+const malariaCaseMapOverlayByFacility = {
+  ...malariaBaseMapOverlayByFacility,
+  id: 'LAOS_EOC_Total_Malaria_Cases_By_Facility',
+  name: 'Malaria Cases by Facility',
+  dataElementCode: 'Total_Positive_Malaria_Cases',
+};
+const malariaDeathMapOverlayByFacility = {
+  ...malariaBaseMapOverlayByFacility,
+  id: 'LAOS_EOC_Total_Malaria_Deaths_By_Facility',
+  name: 'Malaria Deaths by Facility',
+  dataElementCode: 'Total_Positive_Malaria_Cases',
 };
 const malariaMapOverlayGroup = {
   id: generateId(),
@@ -75,7 +125,12 @@ const mapOverlayGroupToRootRelation = {
 exports.up = async function (db) {
   await insertObject(db, 'map_overlay_group', malariaMapOverlayGroup);
 
-  for (const mapOverlay of [malariaCaseMapOverlay, malariaDeathMapOverlay]) {
+  for (const mapOverlay of [
+    malariaCaseMapOverlayBySubDistrict,
+    malariaDeathMapOverlayBySubDistrict,
+    malariaCaseMapOverlayByFacility,
+    malariaDeathMapOverlayByFacility,
+  ]) {
     await insertObject(db, 'mapOverlay', mapOverlay);
     mapOverlayGroupRelation.id = generateId();
     mapOverlayGroupRelation.child_id = mapOverlay.id;
@@ -89,7 +144,12 @@ exports.down = async function (db) {
   await deleteObject(db, 'map_overlay_group_relation', {
     child_id: mapOverlayGroupToRootRelation.child_id,
   });
-  for (const mapOverlay of [malariaCaseMapOverlay, malariaDeathMapOverlay]) {
+  for (const mapOverlay of [
+    malariaCaseMapOverlayBySubDistrict,
+    malariaDeathMapOverlayBySubDistrict,
+    malariaCaseMapOverlayByFacility,
+    malariaDeathMapOverlayByFacility,
+  ]) {
     await deleteObject(db, 'map_overlay_group_relation', {
       child_id: mapOverlay.id,
     });
