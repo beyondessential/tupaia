@@ -12,6 +12,8 @@ import {
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 import some from 'lodash.some';
+import keyBy from 'lodash.keyby';
+import isPlainObject from 'lodash.isplainobject';
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
 import { translatePointForFrontend } from '/utils/geoJson';
@@ -45,55 +47,36 @@ const performSingleAnalyticOperation = (analytics, config, models) => {
 };
 
 const filterAnalytics = async (analytics, filter, models) => {
-  const {
-    organisationUnit: organisationUnitFilter,
-    parentType: organisationUnitParentType,
-    parentCode: organisationUnitParentCode,
-    parentExcludeCode: organisationUnitParentExcludeCode,
-  } = filter;
+  const { organisationUnit: organisationUnitFilter } = filter;
+  const { parent: parentFilter } = organisationUnitFilter;
 
-  if (!(organisationUnitFilter || organisationUnitParentType || organisationUnitParentCode))
-    return analytics;
+  if (!(organisationUnitFilter || parentFilter)) return analytics;
 
   // if filtering on parent lets pre-build a orgUnit-parent map
-  const organisationUnitParentMap = await buildOrganisationUnitParentValue(analytics, models);
+  const orgUnitParentMap = parentFilter
+    ? await buildOrgUnitParentMapForAnalytics(analytics, models)
+    : {};
 
   return analytics.filter(a => {
-    if (
-      organisationUnitParentCode &&
-      !checkOrganisationUnitParentValue(
-        organisationUnitParentMap,
-        a.organisationUnit,
-        'code',
-        organisationUnitParentCode,
-      )
-    )
-      return false;
-
-    if (
-      organisationUnitParentExcludeCode &&
-      !checkOrganisationUnitParentValue(
-        organisationUnitParentMap,
-        a.organisationUnit,
-        'excludeCode',
-        organisationUnitParentExcludeCode,
-      )
-    )
-      return false;
-
-    if (
-      organisationUnitParentType &&
-      !checkOrganisationUnitParentValue(
-        organisationUnitParentMap,
-        a.organisationUnit,
-        'type',
-        organisationUnitParentType,
-      )
-    )
-      return false;
+    if (parentFilter) {
+      const parent = orgUnitParentMap[a.organisationUnit];
+      const parentSatisfiesConditions = Object.entries(parentFilter).every(
+        ([field, thisFilter]) => {
+          return checkValueSatisfiesCondition(parent[field], thisFilter);
+        },
+      );
+      if (!parentSatisfiesConditions) {
+        return false;
+      }
+    }
 
     if (
       organisationUnitFilter &&
+      !(
+        isPlainObject(organisationUnitFilter) &&
+        Object.keys(organisationUnitFilter).length === 1 &&
+        Object.keys(organisationUnitFilter)[0] === 'parent'
+      ) &&
       !checkValueSatisfiesCondition(a.organisationUnit, organisationUnitFilter)
     )
       return false;
@@ -127,49 +110,17 @@ const countDataValues = async (analytics, dataValues, filter, config, models) =>
   );
 };
 
-const buildOrganisationUnitParentValue = async (analytics, models) => {
+const buildOrgUnitParentMapForAnalytics = async (analytics, models) => {
   const orgUnitCodes = [...new Set(analytics.map(a => a.organisationUnit))];
-  const parentIdMap = {};
-  const orgUnitParentMap = {};
-
   const orgUnits = await models.entity.find({ code: orgUnitCodes });
   const orgUnitParentIds = [...new Set(orgUnits.map(o => o.parent_id))];
   const orgUnitParents = await models.entity.find({ id: orgUnitParentIds });
-  orgUnitParents.forEach(p => {
-    parentIdMap[p.id] = { code: p.code, type: p.type };
-  });
-
+  const parentIdMap = keyBy(orgUnitParents, 'id');
+  const orgUnitParentMap = {};
   orgUnits.forEach(orgUnit => {
     orgUnitParentMap[orgUnit.code] = parentIdMap[orgUnit.parent_id];
   });
   return orgUnitParentMap;
-};
-
-const checkOrganisationUnitParentValue = (
-  organisationUnitParentMap,
-  organisationUnitCode,
-  property,
-  value,
-) => {
-  if (!value || value === '*') return true;
-
-  const parent = organisationUnitParentMap[organisationUnitCode];
-  if (!parent) return false;
-
-  switch (property) {
-    case 'code': {
-      return parent.code === value;
-    }
-    case 'excludeCode': {
-      return parent.code !== value;
-    }
-    case 'type': {
-      return parent.type === value;
-    }
-    default: {
-      return parent[property] === value;
-    }
-  }
 };
 
 const AGGREGATIONS = {
