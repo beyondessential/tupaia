@@ -33,3 +33,21 @@ export function getUserIDFromToken(authHeader) {
 
   return tokenClaims.userId;
 }
+
+export function getUserAndPassFromBasicAuth(authHeader) {
+  let usernamePassword;
+  try {
+    usernamePassword = Buffer.from(authHeader.split(' ')[1], 'base64').toString();
+  } catch (error) {
+    throw new UnauthenticatedError('Invalid Basic auth credentials');
+  }
+
+  if (!usernamePassword.includes(':')) {
+    throw new UnauthenticatedError('Invalid Basic auth credentials');
+  }
+
+  // Split on first occurrence because password can contain ':'
+  const username = usernamePassword.split(':')[0];
+  const password = usernamePassword.substring(username.length + 1, usernamePassword.length);
+  return { username, password };
+}

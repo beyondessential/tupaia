@@ -860,7 +860,7 @@ CREATE TABLE public.project (
     logo_url text,
     entity_id text,
     entity_hierarchy_id text,
-    tile_sets text
+    config jsonb DEFAULT '{"permanentRegionLabels": true}'::jsonb
 );
 
 
@@ -892,7 +892,8 @@ CREATE TABLE public.question (
     detail text,
     option_set_id character varying,
     hook text,
-    data_source_id text
+    data_source_id text,
+    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_source_id IS NOT NULL)))
 );
 
 
@@ -3920,13 +3921,67 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1006	/20210114125216-AddCovidSamoaClearanceDocuments-modifies-data	2021-01-21 21:32:43.368
 1007	/20210118014114-CreateIndividualEntityType-modifies-schema	2021-01-21 21:32:45.157
 1008	/20210118040638-AddFetpProject-modifies-data	2021-01-21 21:32:45.3
-1009	/20201123014943-IntegrateInconsistentAnswersForHotelNames-modifies-data	2021-01-26 15:09:16.242
-1010	/20210114131303-AddCovidSamoaQuarantineSiteByFlight-modifies-data	2021-01-26 15:09:16.522
-1011	/20201117224102-DeleteUNFPAStaffTrainedLines-modifies-data	2021-01-28 12:15:06.757
-1012	/20201117224832-AddUNFPAStaffTrainedMatrix-modifies-data	2021-01-28 12:15:06.774
-1013	/20201204224102-DeleteUNFPAStaffTrainedLinesCountry-modifies-data	2021-01-28 12:15:06.78
-1014	/20201204224832-AddUNFPAStaffTrainedMatrixCountry-modifies-data	2021-01-28 12:15:06.793
-1015	/20210127010108-AddMissingDataElements-modifies-data	2021-01-28 12:15:44.788
+1009	/20210125010541-ResyncDelayedSubmissionsAfterRelease70-modifies-data	2021-01-27 05:47:35.825
+1010	/20201117224102-DeleteUNFPAStaffTrainedLines-modifies-data	2021-01-28 22:30:09.496
+1011	/20201117224832-AddUNFPAStaffTrainedMatrix-modifies-data	2021-01-28 22:30:09.568
+1012	/20201123014943-IntegrateInconsistentAnswersForHotelNames-modifies-data	2021-01-28 22:30:10.729
+1013	/20201204224102-DeleteUNFPAStaffTrainedLinesCountry-modifies-data	2021-01-28 22:30:10.823
+1014	/20201204224832-AddUNFPAStaffTrainedMatrixCountry-modifies-data	2021-01-28 22:30:11.098
+1015	/20210114131303-AddCovidSamoaQuarantineSiteByFlight-modifies-data	2021-01-28 22:30:11.186
+1016	/20210121213045-MigrateStriveCanonicalToAlternateHeirarchy-modifies-data	2021-01-28 22:30:11.443
+1017	/20210125033426-MigrateFijiSurveyDataElementsFromDHISToTupaia-modifies-data	2021-01-28 22:30:11.923
+1018	/20210107004358-AddSwapColorForLegendInLaoSchool-modifies-data	2021-02-04 22:20:14.056
+1019	/20210125051145-AddGeneralDashboardToPalau-modifies-data	2021-02-04 22:20:14.143
+1020	/20210125061447-AddK13PCRResultsBarGraph-modifies-data	2021-02-04 22:20:14.247
+1021	/20210126013657-AddK13C580YPositiveMapOverlay-modifies-data	2021-02-04 22:20:14.457
+1022	/20210129022440-AddFacilityTypeOverlayForFiji-modifies-data	2021-02-04 22:20:14.611
+1023	/20210201230429-MoveServiceTypeOverlayGroupToTheTop-modifies-data	2021-02-04 22:20:14.686
+1024	/20210125025423-ChangePermissionInSamoaToCovid19Senior-modifies-data	2021-02-12 00:34:03.53
+1025	/20210125042225-SamoaCovidSurveyHierarchyUpdate-modifies-data	2021-02-12 00:34:07.715
+1026	/20210126234710-HeatmapHomeVillageOfQuarantinePassengers-modifies-data	2021-02-12 00:34:07.932
+1027	/20210127010108-AddMissingDataElements-modifies-data	2021-02-12 00:34:45.786
+1028	/20210127064624-MedicalCertificateLegendColorChange-modifies-data	2021-02-12 00:34:46.507
+1029	/20210128033137-AddSurveyDateElementsForDhisSurveys-modifies-data	2021-02-12 00:34:56.045
+1030	/20210128033138-AddPreaggregatedDataElements-modifies-data	2021-02-12 00:34:56.843
+1031	/20210128033139-AddMissingDataElementDataGroups-modifies-data	2021-02-12 00:35:24.249
+1032	/20210201040026-AddDataSourceIdNotNullConstraints-modifies-schema	2021-02-12 00:35:24.489
+1033	/20210202053553-AddIndividualToFetpCanonicalTypes-modifies-data	2021-02-12 00:35:24.623
+1034	/20210202204715-AddPalauDashboardGroupSupplyChain-modifies-data	2021-02-12 00:35:24.687
+1035	/20210209030539-AddMissingDataGroups-modifies-data	2021-02-12 00:35:24.947
+1036	/20210119053017-SomoaCovidCustomisedRawDataDownload-modifies-data	2021-02-18 22:21:40.842
+1037	/20210202061216-AddFetpGraduateIndividualProfiles-modifies-data	2021-02-18 22:21:40.991
+1038	/20210204025332-CreateFetpDashboardGroupsForProvDistrict-modifies-data	2021-02-18 22:21:41.08
+1039	/20210204211247-AddFetpDashboardGraduatesBySex-modifies-data	2021-02-18 22:21:41.123
+1040	/20210207040642-AddFETPActiveGraduatesMapOverlays-modifies-data	2021-02-18 22:21:41.308
+1041	/20210208025858-RemoveSurveyFromRawDataDownload-modifies-data	2021-02-18 22:21:41.372
+1042	/20210209005053-RenameCaseEntityToIndividualEntity-modifies-data	2021-02-18 22:21:42.216
+1043	/20210209044534-MapOverlayAndDashboardToSupportIndividualFromCase-modifies-data	2021-02-18 22:21:42.596
+1044	/20210210031149-SamoaRawDataDownloadDashboardGroup-modifies-data	2021-02-18 22:21:42.793
+1045	/20210211025858-UpdateFETPGraduateProfileReports-modifies-data	2021-02-18 22:21:42.916
+1046	/20210123065802-MigrateRadioQuestionsToBinaryQuestionsInLaosSchools-modifies-data	2021-02-25 23:10:49.214
+1047	/20210123071051-MigrateLaosSchoolsDashboardsBinaryDataToZeroOne-modifies-data	2021-02-25 23:10:49.343
+1048	/20210123120226-MigrateLaosSchoolsMapOverlaysBinaryDataToZeroOne-modifies-data	2021-02-25 23:10:49.81
+1049	/20210124013906-FixLaosSchoolsDevelopmentPartnerSupportMapOverlay-modifies-data	2021-02-25 23:10:49.911
+1050	/20210124014513-UpdateLaosSchoolsDevPartnersMapOverlays-modifies-data	2021-02-25 23:10:50.003
+1051	/20210124020024-UpdateLaosSchoolsSpecialMapOverlays-modifies-data	2021-02-25 23:10:50.269
+1052	/20210124055714-ConvertDhisSurveysIntoTupaia-modifies-data	2021-02-25 23:10:51.767
+1053	/20210124063304-ConvertSurveyRawDataDownloadToCustomDataDownload-modifies-data	2021-02-25 23:10:51.858
+1054	/20210124073946-FixUNFPAPercentagesOfFacilitiesOfferingServicesReports-modifies-data	2021-02-25 23:10:52.071
+1055	/20210124115954-FixUNFPAContraceptivesOfferedReport-modifies-data	2021-02-25 23:10:52.164
+1056	/20210128102520-PalauFacilityOpeningHoursDashboard-modifies-data	2021-02-25 23:10:52.297
+1057	/20210202031622-NutritionCounsellingTotalNewAndExistingClients-modifies-data	2021-02-25 23:10:52.508
+1058	/20210205033535-AddSTRIVEMolecularDataOverlays-modifies-data	2021-02-25 23:10:52.708
+1059	/20210216014736-UpdateCountryCodeForIndividuals-modifies-data	2021-02-25 23:10:52.88
+1060	/20210216073210-AddFetpDashboardGradByDistrict-modifies-data	2021-02-25 23:10:53.005
+1061	/20210217053158-ChangeElementsServiceTypeToTupaia-modifies-data	2021-02-25 23:10:53.098
+1062	/20210224014424-AddConfigToProjects-modifies-schema	2021-02-25 23:10:53.351
+1063	/20201203010928-StockStatusForNonMsupplyContriesInFacilityLevel-modifies-data	2021-03-04 15:09:15.631
+1064	/20210211051517-RenameArithmeticIndicators-modifies-data	2021-03-04 15:09:15.832
+1065	/20210216015237-AddWeatherSourceToDashboardTitle-modifies-data	2021-03-04 15:09:16.349
+1066	/20210223002537-AddReferenceToMapOverlays-modifies-data	2021-03-04 15:09:16.567
+1067	/20210225033329-RemoveLaosOxygenConcentratorsProject-modifies-data	2021-03-04 15:09:35.867
+1068	/20210301123426-AddFetpDashboardsToSolomonIs-modifies-data	2021-03-04 15:09:35.974
+1069	/20210303020040-removeStriveMapOverlaysFromExplore-modifies-data	2021-03-04 15:09:36.101
 \.
 
 
@@ -3934,7 +3989,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1015, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1069, true);
 
 
 --
