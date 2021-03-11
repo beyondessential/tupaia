@@ -55,7 +55,7 @@ const malariaDeathMapOverlayBySubDistrict = {
   name: '	Malaria Deaths by Sub District',
   dataElementCode: 'Total_Malaria_Deaths',
 };
-const malariaBaseMapOverlayByFacility = {
+const malariaBaseMapOverlayByFacility = color => ({
   userGroup: 'Laos EOC User',
   isDataRegional: false,
   measureBuilderConfig: {
@@ -69,7 +69,7 @@ const malariaBaseMapOverlayByFacility = {
   presentationOptions: {
     values: [
       {
-        color: 'blue',
+        color,
         value: 'other',
       },
       {
@@ -89,23 +89,21 @@ const malariaBaseMapOverlayByFacility = {
       null: true,
     },
   },
-
   countryCodes: '{"LA"}',
   projectCodes: '{"laos_eoc"}',
-};
+});
 const malariaCaseMapOverlayByFacility = {
-  ...malariaBaseMapOverlayByFacility,
+  ...malariaBaseMapOverlayByFacility('blue'),
   id: 'LAOS_EOC_Total_Malaria_Cases_By_Facility',
   name: 'Malaria Cases by Facility',
   dataElementCode: 'Total_Positive_Malaria_Cases',
 };
 const malariaDeathMapOverlayByFacility = {
-  ...malariaBaseMapOverlayByFacility,
+  ...malariaBaseMapOverlayByFacility('red'),
   id: 'LAOS_EOC_Total_Malaria_Deaths_By_Facility',
   name: 'Malaria Deaths by Facility',
   dataElementCode: 'Total_Positive_Malaria_Cases',
 };
-malariaDeathMapOverlayByFacility.presentationOptions.values[0].color = 'red';
 const malariaMapOverlayGroup = {
   id: generateId(),
   name: 'Malaria',
