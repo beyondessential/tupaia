@@ -23,7 +23,6 @@ const WARNING_TYPES = {
   NO_DATA_BUILDER: 'noDataBuilder',
   NO_GROUP: 'noGroup',
   NO_PROJECT: 'noProject',
-  NO_ORG_UNIT_MAP_ENTRY: 'noOrgUnitMapEntry',
 };
 
 const WARNING_TYPE_TO_MESSAGE = {
@@ -31,7 +30,6 @@ const WARNING_TYPE_TO_MESSAGE = {
   [WARNING_TYPES.NO_DATA_BUILDER]: `No data builder`,
   [WARNING_TYPES.NO_GROUP]: 'Not attached to any dashboard group',
   [WARNING_TYPES.NO_PROJECT]: 'Not attached to any projects',
-  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: 'No compatible org unit map entry found',
 };
 
 const logWarningsForSkippedReports = skippedReports => {
@@ -100,6 +98,7 @@ const selectOrgUnitCode = async (db, orgUnitCodes, entityConditions) => {
 const selectUrlParams = async (db, report, dashboardGroups) => {
   const viewJson = report.viewJson || {};
 
+  const attemptedMapEntries = [];
   for (const dashboardGroup of dashboardGroups) {
     const {
       organisationUnitCode: dashboardOrgUnitCode,
@@ -109,6 +108,8 @@ const selectUrlParams = async (db, report, dashboardGroups) => {
     const level = snake(dashboardLevel);
     const [entity] = await selectEntities(db, [dashboardOrgUnitCode]);
     const orgUnitMapKey = entity.country_code || entity.code;
+    attemptedMapEntries.push({ key: orgUnitMapKey, level });
+
     const orgUnitCodes = toArray(orgUnitMap?.[orgUnitMapKey]?.[level]);
     const orgUnitCode = await selectOrgUnitCode(
       db,
@@ -123,7 +124,14 @@ const selectUrlParams = async (db, report, dashboardGroups) => {
     }
   }
 
-  return undefined;
+  // No compatible entry found, throw error
+  throw new Error(
+    [
+      `No compatible org unit map entry found for report '${report.id}'`,
+      'Try using one of the following entries:',
+      ...attemptedMapEntries.map(({ key, level }) => `* Key: '${key}', level: '${level}'`),
+    ].join('\n'),
+  );
 };
 
 const getUrlsForReports = async (db, reports, reportIdToGroups) => {
@@ -154,10 +162,6 @@ const getUrlsForReports = async (db, reports, reportIdToGroups) => {
       return null;
     }
     const urlParams = await selectUrlParams(db, report, groupsForReport);
-    if (!urlParams) {
-      addSkippedReport(WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY, report.id);
-      return null;
-    }
 
     return createUrl(report, urlParams);
   };

@@ -83,7 +83,8 @@
     "sub_district": "LA_Anouvong District",
     "facility": "LA_ATPHO",
     "village": "LA_vil_1001002",
-    "school": ["LA_sch_1001001", "LA_sch_10101002", "LA_sch_20101001"]
+    "school": ["LA_sch_1001001", "LA_sch_10101002", "LA_sch_20101001"],
+    "city": "LA_PROV_CAPITAL_ANOUVONG"
   },
   "MH": {
     "country": "MH",
@@ -111,7 +112,8 @@
     "country": "PG",
     "district": "PG_Madang",
     "facility": "PG_MADANG01",
-    "village": "PG_ALO_ABV"
+    "village": "PG_ALO_ABV",
+    "individual": "FETP_iADuu85"
   },
   "PH": {
     "country": "PH",
@@ -123,7 +125,9 @@
     "country": "PI"
   },
   "PW": {
-    "country": "PW"
+    "country": "PW",
+    "district": "PW_Angaur",
+    "facility": "PW_AngaurCHC"
   },
   "SB": {
     "country": "SB",
@@ -134,6 +138,9 @@
     "country": "TK",
     "district": "TK_Atafu",
     "facility": "TK_Ataf"
+  },
+  "TL": {
+    "country": "TL"
   },
   "TO": {
     "country": "TO",
