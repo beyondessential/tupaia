@@ -6,3 +6,4 @@
 export * from './MapContainer';
 export * from './TileLayer';
 export * from './TilePicker';
+export * from './PolygonLayer';
