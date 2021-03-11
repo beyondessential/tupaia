@@ -26,17 +26,28 @@
 
 ## Running the tests locally
 
-We first need to start the servers locally, then run the e2e tests. The following scripts take care of both tasks:
+We first need to start the servers locally, then run the e2e tests. We can run the tests in either UI or terminal (headless) mode.
+
+### 🍎 MacOS
+
+- UI mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
+- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
+
+### ⊞ Windows
+
+Run the following in **WSL**:
 
 ```bash
-# We can run the tests in either UI or terminal mode
-
-# UI Mode
-yarn workspace @tupaia/web-frontend test:cypress:open
-
-# Terminal (headless) mode
-yarn workspace @tupaia/web-frontend test:cypress:run
+# In one terminal
+yarn workspace @tupaia/web-config-server start
+# In another terminal
+yarn workspace @tupaia/web-frontend start
 ```
+
+Then, run one of the following commands in a **Windows terminal**:
+
+- UI mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
+- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
 
 ## Limitations
 
