@@ -105,6 +105,7 @@ const malariaDeathMapOverlayByFacility = {
   name: 'Malaria Deaths by Facility',
   dataElementCode: 'Total_Positive_Malaria_Cases',
 };
+malariaDeathMapOverlayByFacility.presentationOptions.values[0].color = 'red';
 const malariaMapOverlayGroup = {
   id: generateId(),
   name: 'Malaria',
