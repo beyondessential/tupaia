@@ -32,7 +32,9 @@
         "packages/indicators/**",
         "packages/entity-server/**",
         "packages/psss-server/**",
-        "packages/report-server/**"
+        "packages/report-server/**",
+        "packages/lesmis-server/**",
+        "packages/server-boilerplate/**"
       ],
       "extends": "@beyondessential/ts",
       "parserOptions": {

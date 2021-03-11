@@ -61,6 +61,10 @@
       "path": "packages/lesmis"
     },
     {
+       "name": "lesmis-server",
+       "path": "packages/lesmis-server"
+    },
+    {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
     },
@@ -79,6 +83,10 @@
     {
       "name": "report-server",
       "path": "packages/report-server"
+    },
+    {
+      "name": "server-boilerplate",
+      "path": "packages/server-boilerplate"
     },
     {
       "name": "ui-components",
