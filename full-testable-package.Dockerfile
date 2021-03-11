@@ -37,12 +37,18 @@ RUN mkdir -p ./packages/dhis-api
 COPY packages/dhis-api/package.json ./packages/dhis-api
 RUN mkdir -p ./packages/indicators
 COPY packages/indicators/package.json ./packages/indicators
+RUN mkdir -p ./packages/entity-server
+COPY packages/entity-server/package.json ./packages/entity-server
+RUN mkdir -p ./packages/lesmis-server
+COPY packages/lesmis-server/package.json ./packages/lesmis-server
 RUN mkdir -p ./packages/meditrak-server
 COPY packages/meditrak-server/package.json ./packages/meditrak-server
 RUN mkdir -p ./packages/psss-server
 COPY packages/psss-server/package.json ./packages/psss-server
 RUN mkdir -p ./packages/report-server
 COPY packages/report-server/package.json ./packages/report-server
+RUN mkdir -p ./packages/server-boilerplate
+COPY packages/server-boilerplate/package.json ./packages/server-boilerplate
 RUN mkdir -p ./packages/expression-parser
 COPY packages/expression-parser/package.json ./packages/expression-parser
 RUN mkdir -p ./packages/ui-components
@@ -72,6 +78,7 @@ COPY packages/dhis-api/. ./packages/dhis-api
 COPY packages/indicators/. ./packages/indicators
 COPY packages/psss-server/. ./packages/psss-server
 COPY packages/report-server/. ./packages/report-server
+COPY packages/server-boilerplate/. ./packages/server-boilerplate
 COPY packages/expression-parser/. ./packages/expression-parser
 COPY packages/ui-components/. ./packages/ui-components
 COPY packages/utils/. ./packages/utils
