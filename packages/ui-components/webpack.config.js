@@ -7,6 +7,11 @@ const path = require('path');
 module.exports = {
   entry: './src/index.js',
   mode: 'production',
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  },
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
@@ -36,6 +41,17 @@ module.exports = {
         use: {
           loader: 'babel-loader',
         },
+      },
+      {
+        test: [/\.svg$/],
+        use: [
+          {
+            loader: require.resolve('babel-loader'),
+          },
+          {
+            loader: require.resolve('react-svg-loader'),
+          },
+        ],
       },
     ],
   },
