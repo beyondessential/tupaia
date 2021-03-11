@@ -28,7 +28,7 @@ const dengueBaseMapOverlay = {
   dataElementCode: 'value',
   measureBuilder: 'sumLatestPerOrgUnit',
   presentationOptions: {
-    values: [{ color: 'grey', value: null }],
+    values: [{ color: 'green', value: 0 }],
     scaleType: 'performanceDesc',
     displayType: 'shaded-spectrum',
     scaleBounds: { left: { max: 0 } },
