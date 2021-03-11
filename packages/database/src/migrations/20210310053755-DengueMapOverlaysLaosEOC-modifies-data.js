@@ -22,7 +22,7 @@ const deleteObject = async (db, table, condition) => {
       WHERE ${key} = '${value}'
   `);
 };
-const dengueBaseMapOverlay = {
+const dengueBaseMapOverlayBySubDistrict = {
   userGroup: 'Laos EOC User',
   isDataRegional: false,
   dataElementCode: 'value',
@@ -42,25 +42,8 @@ const dengueBaseMapOverlay = {
   countryCodes: '{"LA"}',
   projectCodes: '{"laos_eoc"}',
 };
-const dengueDeathMapOverlay = {
-  ...dengueBaseMapOverlay,
-  id: 'LAOS_EOC_Total_Dengue_Deaths_By_Sub_District',
-  name: 'Dengue Deaths by District',
-  measureBuilderConfig: {
-    programCodes: ['NCLE_Communicable_Disease'],
-    dataElementCodes: [
-      'Dengue_Fever_Without_Warning_Signs_Death',
-      'Dengue_Fever_With_Warning_Signs_Death',
-      'Severe_Dengue_Death',
-    ],
-    entityAggregation: {
-      dataSourceEntityType: 'facility',
-      aggregationEntityType: 'sub_district',
-    },
-  },
-};
-const dengueCaseMapOverlay = {
-  ...dengueBaseMapOverlay,
+const dengueCaseMapOverlayBySubDistrict = {
+  ...dengueBaseMapOverlayBySubDistrict,
   id: 'LAOS_EOC_Total_Dengue_Cases_By_Sub_District',
   name: 'Dengue Cases by District',
   measureBuilderConfig: {
@@ -76,7 +59,81 @@ const dengueCaseMapOverlay = {
     },
   },
 };
-
+const dengueDeathMapOverlayBySubDistrict = {
+  ...dengueBaseMapOverlayBySubDistrict,
+  id: 'LAOS_EOC_Total_Dengue_Deaths_By_Sub_District',
+  name: 'Dengue Deaths by District',
+  measureBuilderConfig: {
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataElementCodes: [
+      'Dengue_Fever_Without_Warning_Signs_Death',
+      'Dengue_Fever_With_Warning_Signs_Death',
+      'Severe_Dengue_Death',
+    ],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+      aggregationEntityType: 'sub_district',
+    },
+  },
+};
+const dengueBaseMapOverlayByFacility = color => ({
+  ...dengueBaseMapOverlayBySubDistrict,
+  presentationOptions: {
+    values: [
+      {
+        color,
+        value: 'other',
+      },
+      {
+        color: 'grey',
+        value: null,
+      },
+    ],
+    defaultTimePeriod: {
+      unit: 'day',
+      offset: 0,
+    },
+    displayType: 'radius',
+    measureLevel: 'Facility',
+    hideFromLegend: true,
+    periodGranularity: 'one_day_at_a_time',
+    hideByDefault: {
+      '0, null': true,
+    },
+  },
+});
+const dengueCaseMapOverlayByFacility = {
+  ...dengueBaseMapOverlayByFacility('blue'),
+  id: 'LAOS_EOC_Total_Dengue_Cases_By_Facility',
+  name: 'Dengue Cases by Facility',
+  measureBuilderConfig: {
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataElementCodes: [
+      'Dengue_Fever_Without_Warning_Signs_Case',
+      'Dengue_Fever_With_Warning_Signs_Case',
+      'Severe_Dengue_Case',
+    ],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
+  },
+};
+const dengueDeathMapOverlayByFacility = {
+  ...dengueBaseMapOverlayByFacility('red'),
+  id: 'LAOS_EOC_Total_Dengue_Deaths_By_Facility',
+  name: 'Dengue Deaths by Facility',
+  measureBuilderConfig: {
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataElementCodes: [
+      'Dengue_Fever_Without_Warning_Signs_Death',
+      'Dengue_Fever_With_Warning_Signs_Death',
+      'Severe_Dengue_Death',
+    ],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
+  },
+};
 const dengueMapOverlayGroup = {
   id: generateId(),
   name: 'Dengue',
@@ -97,7 +154,12 @@ const mapOverlayGroupToRootRelation = {
 exports.up = async function (db) {
   await insertObject(db, 'map_overlay_group', dengueMapOverlayGroup);
 
-  for (const mapOverlay of [dengueCaseMapOverlay, dengueDeathMapOverlay]) {
+  for (const mapOverlay of [
+    dengueCaseMapOverlayBySubDistrict,
+    dengueDeathMapOverlayBySubDistrict,
+    dengueCaseMapOverlayByFacility,
+    dengueDeathMapOverlayByFacility,
+  ]) {
     await insertObject(db, 'mapOverlay', mapOverlay);
     mapOverlayGroupRelation.id = generateId();
     mapOverlayGroupRelation.child_id = mapOverlay.id;
@@ -111,7 +173,12 @@ exports.down = async function (db) {
   await deleteObject(db, 'map_overlay_group_relation', {
     child_id: mapOverlayGroupToRootRelation.child_id,
   });
-  for (const mapOverlay of [dengueCaseMapOverlay, dengueDeathMapOverlay]) {
+  for (const mapOverlay of [
+    dengueCaseMapOverlayBySubDistrict,
+    dengueDeathMapOverlayBySubDistrict,
+    dengueCaseMapOverlayByFacility,
+    dengueDeathMapOverlayByFacility,
+  ]) {
     await deleteObject(db, 'map_overlay_group_relation', {
       child_id: mapOverlay.id,
     });
