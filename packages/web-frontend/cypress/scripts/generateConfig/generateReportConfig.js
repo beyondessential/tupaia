@@ -83,6 +83,8 @@ const selectReportPeriod = viewJson => {
   });
 };
 
+const selectEntities = async (db, codes) =>
+  db.executeSql(`SELECT * FROM entity WHERE code IN (${codes.map(() => '?').join(',')})`, codes);
 /**
  * @returns {Promise<string|undefined>}
  */
@@ -91,10 +93,7 @@ const selectOrgUnitCode = async (db, orgUnitCodes, entityConditions) => {
     return orgUnitCodes[0];
   }
 
-  const entities = await db.executeSql(
-    `SELECT * FROM entity WHERE code IN (${orgUnitCodes.map(() => '?').join(',')})`,
-    orgUnitCodes,
-  );
+  const entities = await selectEntities(db, orgUnitCodes);
   return filterEntities(entities, entityConditions)[0]?.code;
 };
 
@@ -108,7 +107,9 @@ const selectUrlParams = async (db, report, dashboardGroups) => {
     } = dashboardGroup;
 
     const level = snake(dashboardLevel);
-    const orgUnitCodes = toArray(orgUnitMap?.[dashboardOrgUnitCode]?.[level]);
+    const [entity] = await selectEntities(db, [dashboardOrgUnitCode]);
+    const orgUnitMapKey = entity.country_code || entity.code;
+    const orgUnitCodes = toArray(orgUnitMap?.[orgUnitMapKey]?.[level]);
     const orgUnitCode = await selectOrgUnitCode(
       db,
       orgUnitCodes,
