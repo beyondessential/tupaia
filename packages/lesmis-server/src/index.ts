@@ -27,7 +27,7 @@ const app = createApp(sessionModel);
 /**
  * Start the server
  */
-const port = process.env.PORT || 8040;
+const port = process.env.PORT || 8060;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
 
