@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class ProjectType extends DatabaseType {
+export class ProjectType extends DatabaseType {
   static databaseType = TYPES.PROJECT;
 
   async permissionGroups() {

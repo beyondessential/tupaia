@@ -5,10 +5,13 @@
 
 import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
-import { TestRoute, FetchEntityRoute } from '../routes';
-import { Route } from '../routes/Route';
 import { authenticationMiddleware } from '../auth';
-import { attachEntityToRequest, attachFormatterToResponse } from '../entity/middleware';
+import { Route, TestRoute } from '../routes';
+import { SingleEntityRoute } from '../routes/hierarchy';
+import {
+  attachEntityAndHierarchyToRequest,
+  attachFormatterToResponse,
+} from '../routes/hierarchy/middleware';
 
 const handleWith = <Req extends Request, T extends Route<Req>>(
   RouteClass: new (req: Req, res: Response, next: NextFunction) => T,
@@ -47,9 +50,9 @@ export function addRoutesToApp(app: Express) {
   /**
    * Entity Request routes
    */
-  app.use('/v1/:projectCode/:entityCode', attachEntityToRequest);
-  app.use('/v1/:projectCode/:entityCode', attachFormatterToResponse);
-  app.get('/v1/:projectCode/:entityCode', handleWith(FetchEntityRoute));
+  app.use('/v1/hierarchy/:projectCode/:entityCode', attachEntityAndHierarchyToRequest);
+  app.use('/v1/hierarchy/*', attachFormatterToResponse);
+  app.get('/v1/hierarchy/:projectCode/:entityCode', handleWith(SingleEntityRoute));
 
   app.use(handleError);
 }

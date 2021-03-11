@@ -5,13 +5,11 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { EntityModel } from './entity';
-
-export { EntityModel, EntityFields } from './entity';
-export { FetchEntityRequest, FetchEntityResponse, EntityResponseObject } from './routes';
+import { EntityModel, ProjectModel } from './models';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
   readonly entity: EntityModel;
+  readonly project: ProjectModel;
 }
 
 export type Context<T> = {

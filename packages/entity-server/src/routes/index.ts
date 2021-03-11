@@ -5,6 +5,3 @@
 
 export { Route } from './Route';
 export { TestRoute } from './TestRoute';
-export { FetchEntityRoute } from './FetchEntityRoute';
-export { FetchEntityRequest, EntityResponseObject } from './requests';
-export { FetchEntityResponse } from './responses';

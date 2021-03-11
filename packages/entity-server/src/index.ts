@@ -18,7 +18,7 @@ import winston from './log';
 dotenv.config(); // Load the environment variables into process.env
 
 /**
- * Set up models for Authenticator
+ * Set up models for entity-server
  */
 const models = new ModelRegistry(new TupaiaDatabase()) as EntityServerModelRegistry;
 
