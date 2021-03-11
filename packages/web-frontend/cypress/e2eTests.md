@@ -22,7 +22,7 @@
    yarn workspace @tupaia/web-frontend cypress:generate-config
    ```
 
-   You can also use custom config by manually populating those files.
+   You can also use custom config by manually populating those files. See the [config docs](config/e2eTestsConfig.md) for more details
 
 ## Running the tests locally
 
