@@ -55,7 +55,7 @@ const reportConfig = {
           type: 'sub_district',
           code: {
             operator: '<>',
-            value: 'PG_National Capital District', // 'National Capital District'
+            value: 'PG_National Capital District_NCD', // 'National Capital District (sub_district)'
           },
         },
       },
