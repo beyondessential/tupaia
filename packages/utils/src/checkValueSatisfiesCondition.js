@@ -32,6 +32,9 @@ export const checkValueSatisfiesCondition = (value, condition) => {
     return (condition === ANY_VALUE_CONDITION && value !== '') || value === condition;
   }
 
+  // Handle empty condition Object {}
+  if (Object.keys(condition).length < 1) return true;
+
   const { operator, value: targetValue } = condition;
 
   const checkValue = OPERATOR_TO_VALUE_CHECK[operator];

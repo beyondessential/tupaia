@@ -47,10 +47,11 @@ const performSingleAnalyticOperation = (analytics, config, models) => {
 };
 
 const filterAnalytics = async (analytics, filter, models) => {
-  const { organisationUnit: organisationUnitFilter } = filter;
-  const { parent: parentFilter } = organisationUnitFilter;
+  const { parent: parentFilter, ...orgUnitFilters } = filter.organisationUnit || {};
+  const orgUnitFilter =
+    typeof filter.organisationUnit === 'string' ? filter.organisationUnit : orgUnitFilters;
 
-  if (!(organisationUnitFilter || parentFilter)) return analytics;
+  if (!(orgUnitFilter || parentFilter)) return analytics;
 
   // if filtering on parent lets pre-build a orgUnit-parent map
   const orgUnitParentMap = parentFilter
@@ -70,15 +71,7 @@ const filterAnalytics = async (analytics, filter, models) => {
       }
     }
 
-    if (
-      organisationUnitFilter &&
-      !(
-        isPlainObject(organisationUnitFilter) &&
-        Object.keys(organisationUnitFilter).length === 1 &&
-        Object.keys(organisationUnitFilter)[0] === 'parent'
-      ) &&
-      !checkValueSatisfiesCondition(a.organisationUnit, organisationUnitFilter)
-    )
+    if (orgUnitFilter && !checkValueSatisfiesCondition(a.organisationUnit, orgUnitFilter))
       return false;
 
     return true;
