@@ -32,10 +32,18 @@ const reportConfig = {
 
   columns: {
     'Provincial Level': {
-      parentType: 'district',
+      organisationUnit: {
+        parent: {
+          type: 'district',
+        },
+      },
     },
     'District Level': {
-      parentType: 'sub_district',
+      organisationUnit: {
+        parent: {
+          type: 'sub_district',
+        },
+      },
     },
   },
   viewJson: {
@@ -46,11 +54,7 @@ const reportConfig = {
   },
   dataServices: [{ isDataRegional: true }],
 
-  cellConfig: (column, value, report) => {
-    const filter = {};
-    const columnConfig = report.columns[column];
-    if (columnConfig.parentType) filter.parentType = columnConfig.parentType;
-    if (columnConfig.parentCode) filter.parentCode = columnConfig.parentCode;
+  cellConfig: (column, value, filter) => {
     return {
       key: `${column}_${value}_count`,
       filter,
@@ -73,7 +77,7 @@ const buildReport = report => {
     rows: report.dataValues.map(dv => dv.split(' = ')[1]),
     columns: Object.keys(report.columns),
     cells: report.dataValues.map(dv =>
-      Object.keys(report.columns).map(col => report.cellConfig(col, dv, report)),
+      Object.keys(report.columns).map(col => report.cellConfig(col, dv, report.columns[col])),
     ),
     entityAggregation: {
       dataSourceEntityType: ['individual'],

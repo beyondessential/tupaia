@@ -32,15 +32,33 @@ const reportConfig = {
 
   columns: {
     National: {
-      parentCode: 'PG_National Capital District', // 'National Capital District',
+      organisationUnit: {
+        parent: {
+          code: 'PG_National Capital District', // 'National Capital District'
+        },
+      },
     },
     Provinces: {
-      parentType: 'district',
-      parentExcludeCode: 'PG_National Capital District',
+      organisationUnit: {
+        parent: {
+          type: 'district',
+          code: {
+            operator: '<>',
+            value: 'PG_National Capital District', // 'National Capital District'
+          },
+        },
+      },
     },
     Districts: {
-      parentType: 'sub_district',
-      parentExcludeCode: 'PG_National Capital District_NCD',
+      organisationUnit: {
+        parent: {
+          type: 'sub_district',
+          code: {
+            operator: '<>',
+            value: 'PG_National Capital District', // 'National Capital District'
+          },
+        },
+      },
     },
   },
   viewJson: {
@@ -51,12 +69,7 @@ const reportConfig = {
   },
   dataServices: [{ isDataRegional: true }],
 
-  cellConfig: (column, value, report) => {
-    const filter = {};
-    const columnConfig = report.columns[column];
-    if (columnConfig.parentType) filter.parentType = columnConfig.parentType;
-    if (columnConfig.parentCode) filter.parentCode = columnConfig.parentCode;
-    if (columnConfig.parentExcludeCode) filter.parentExcludeCode = columnConfig.parentExcludeCode;
+  cellConfig: (column, value, filter) => {
     return {
       key: `${column}_${value}_count`,
       filter,
@@ -79,7 +92,7 @@ const buildReport = report => {
     rows: report.dataValues.map(dv => dv.split(' = ')[1]),
     columns: Object.keys(report.columns),
     cells: report.dataValues.map(dv =>
-      Object.keys(report.columns).map(col => report.cellConfig(col, dv, report)),
+      Object.keys(report.columns).map(col => report.cellConfig(col, dv, report.columns[col])),
     ),
     entityAggregation: {
       dataSourceEntityType: ['individual'],
