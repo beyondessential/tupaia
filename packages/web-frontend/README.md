@@ -57,4 +57,4 @@ The default is http://localhost:8080/api/v1/.
 
 ### e2e tests
 
-e2e tests are available for this package: check the [e2e test docs](/cypress/README.md) for more information.
+e2e tests are available for this package: check the [e2e test docs](/cypress/e2eTests.md) for more information.
