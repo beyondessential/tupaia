@@ -32,19 +32,19 @@ const ActiveSegment = styled.span`
 
 const Link = props => <MuiLink color="inherit" {...props} component={RouterLink} />;
 
-const getSegments = (orgUnits, orgUnitCode, heirarchy = []) => {
+const getSegments = (orgUnits, orgUnitCode, hierarchy = []) => {
   const orgUnit = orgUnits.find(entity => entity.organisationUnitCode === orgUnitCode);
 
   if (!orgUnit) {
     return [];
   }
 
-  const newHeirarchy = [...heirarchy, orgUnit];
+  const newHierarchy = [...hierarchy, orgUnit];
 
   if (orgUnit.type === 'Country') {
-    return newHeirarchy.reverse();
+    return newHierarchy.reverse();
   }
-  return getSegments(orgUnits, orgUnit.parent, newHeirarchy);
+  return getSegments(orgUnits, orgUnit.parent, newHierarchy);
 };
 
 const useBreadcrumbs = () => {
