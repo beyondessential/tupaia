@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
+import Skeleton from '@material-ui/lab/Skeleton';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
@@ -32,6 +33,12 @@ const ActiveSegment = styled.span`
 
 const Link = props => <MuiLink color="inherit" {...props} component={RouterLink} />;
 
+const Loader = () => (
+  <Skeleton animation="wave">
+    <MuiLink>Loading</MuiLink>
+  </Skeleton>
+);
+
 const getSegments = (orgUnits, orgUnitCode, hierarchy = []) => {
   const orgUnit = orgUnits.find(entity => entity.organisationUnitCode === orgUnitCode);
 
@@ -39,43 +46,47 @@ const getSegments = (orgUnits, orgUnitCode, hierarchy = []) => {
     return [];
   }
 
-  const newHierarchy = [...hierarchy, orgUnit];
+  const newHierarchy = [orgUnit, ...hierarchy];
 
   if (orgUnit.type === 'Country') {
-    return newHierarchy.reverse();
+    return newHierarchy;
   }
   return getSegments(orgUnits, orgUnit.parent, newHierarchy);
 };
 
 const useBreadcrumbs = () => {
-  const query = useCurrentOrgUnitData({ includeCountryData: true });
+  const orgUnitResponse = useCurrentOrgUnitData({ includeCountryData: true });
 
-  if (!query.data) {
-    return { ...query, segments: [] };
+  if (!orgUnitResponse.data) {
+    return { ...orgUnitResponse, breadcrumbs: [] };
   }
 
-  const { countryHierarchy, organisationUnitCode } = query.data;
-  const segments = getSegments(countryHierarchy, organisationUnitCode);
+  const { countryHierarchy, organisationUnitCode } = orgUnitResponse.data;
+  const breadcrumbs = getSegments(countryHierarchy, organisationUnitCode);
 
-  return { ...query, segments };
+  return { ...orgUnitResponse, breadcrumbs };
 };
 
 export const Breadcrumbs = () => {
-  const { segments } = useBreadcrumbs();
+  const { breadcrumbs, isLoading } = useBreadcrumbs();
 
   return (
     <StyledBreadcrumbs separator={<NavigateNextIcon />}>
       <Link to="/">Home</Link>
-      {segments.map(({ name, organisationUnitCode }, index) => {
-        const last = index === segments.length - 1;
-        return last ? (
-          <ActiveSegment key={organisationUnitCode}>{name}</ActiveSegment>
-        ) : (
-          <Link to={`/${organisationUnitCode}`} key={organisationUnitCode}>
-            {name}
-          </Link>
-        );
-      })}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        breadcrumbs.map(({ name, organisationUnitCode }, index) => {
+          const last = index === breadcrumbs.length - 1;
+          return last ? (
+            <ActiveSegment key={organisationUnitCode}>{name}</ActiveSegment>
+          ) : (
+            <Link to={`/${organisationUnitCode}`} key={organisationUnitCode}>
+              {name}
+            </Link>
+          );
+        })
+      )}
     </StyledBreadcrumbs>
   );
 };
