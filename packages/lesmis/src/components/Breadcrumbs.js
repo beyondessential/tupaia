@@ -10,7 +10,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { useCurrentOrgUnitData } from '../api';
+import { useOrgUnitData } from '../api';
+import { useUrlParams } from '../utils';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   font-size: 0.75rem;
@@ -55,13 +56,15 @@ const getSegments = (orgUnits, orgUnitCode, hierarchy = []) => {
 };
 
 const useBreadcrumbs = () => {
-  const orgUnitResponse = useCurrentOrgUnitData({ includeCountryData: true });
+  const { organisationUnitCode } = useUrlParams();
+  // Todo: update data fetch to use entity server country hierarcy endpoint
+  const orgUnitResponse = useOrgUnitData({ organisationUnitCode: 'LA', includeCountryData: true });
 
   if (!orgUnitResponse.data) {
     return { ...orgUnitResponse, breadcrumbs: [] };
   }
 
-  const { countryHierarchy, organisationUnitCode } = orgUnitResponse.data;
+  const { countryHierarchy } = orgUnitResponse.data;
   const breadcrumbs = getSegments(countryHierarchy, organisationUnitCode);
 
   return { ...orgUnitResponse, breadcrumbs };
