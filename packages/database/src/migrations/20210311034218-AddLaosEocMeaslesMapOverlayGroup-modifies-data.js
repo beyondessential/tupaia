@@ -21,7 +21,7 @@ const mapOverlayGroup = {
 const mapOverlayGroupToRootRelation = {
   id: generateId(),
   map_overlay_group_id: '5f88d3a361f76a2d3f000004',
-  child_id: mapOverlayGroup.code,
+  child_id: mapOverlayGroup.id,
   child_type: 'mapOverlayGroup',
 };
 
@@ -37,9 +37,12 @@ exports.up = async function (db) {
   return null;
 };
 
-exports.down = function (db) {
+exports.down = async function (db) {
+  const mapOverlayGroupId = (
+    await db.runSql(`select id from map_overlay_group where code = '${mapOverlayGroup.code}'`)
+  ).rows[0].id;
   return db.runSql(`
-    delete from map_overlay_group_relation where id = '${mapOverlayGroupToRootRelation.id}';
+    delete from map_overlay_group_relation where child_id = '${mapOverlayGroupId}';
     delete from map_overlay_group where code = '${mapOverlayGroup.code}';
   `);
 };
