@@ -76,32 +76,38 @@ const dengueDeathMapOverlayBySubDistrict = {
     },
   },
 };
-const dengueBaseMapOverlayByFacility = color => ({
-  ...dengueBaseMapOverlayBySubDistrict,
-  presentationOptions: {
-    values: [
-      {
-        color,
-        value: 'other',
+const dengueBaseMapOverlayByFacility = (color, hideFromPopup) => {
+  const config = {
+    ...dengueBaseMapOverlayBySubDistrict,
+    presentationOptions: {
+      values: [
+        {
+          color,
+          value: 'other',
+        },
+        {
+          color: 'grey',
+          value: null,
+        },
+      ],
+      defaultTimePeriod: {
+        unit: 'day',
+        offset: 0,
       },
-      {
-        color: 'grey',
-        value: null,
+      displayType: 'radius',
+      measureLevel: 'Facility',
+      hideFromLegend: true,
+      periodGranularity: 'one_day_at_a_time',
+      hideByDefault: {
+        '0, null': true,
       },
-    ],
-    defaultTimePeriod: {
-      unit: 'day',
-      offset: 0,
     },
-    displayType: 'radius',
-    measureLevel: 'Facility',
-    hideFromLegend: true,
-    periodGranularity: 'one_day_at_a_time',
-    hideByDefault: {
-      '0, null': true,
-    },
-  },
-});
+  };
+  if (hideFromPopup) {
+    config.presentationOptions.hideFromPopup = hideFromPopup;
+  }
+  return config;
+};
 const dengueCaseMapOverlayByFacility = {
   ...dengueBaseMapOverlayByFacility('blue'),
   id: 'LAOS_EOC_Total_Dengue_Cases_By_Facility',
@@ -117,6 +123,67 @@ const dengueCaseMapOverlayByFacility = {
       dataSourceEntityType: 'facility',
     },
   },
+};
+const dengueSevereCaseMapOverlayByFacility = {
+  ...dengueBaseMapOverlayByFacility('blue'),
+  id: 'LAOS_EOC_Total_Dengue_Cases_Severe_V_Other_By_Facility_Severe',
+  name: 'Dengue Cases (severe)',
+  measureBuilderConfig: {
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataElementCodes: ['Severe_Dengue_Case'],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
+  },
+};
+const dengueOtherCaseMapOverlayByFacility = {
+  ...dengueBaseMapOverlayByFacility('blue'),
+  id: 'LAOS_EOC_Total_Dengue_Cases_Severe_V_Other_By_Facility_Other',
+  name: 'Dengue Cases (other)',
+  measureBuilderConfig: {
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataElementCodes: [
+      'Dengue_Fever_Without_Warning_Signs_Case',
+      'Dengue_Fever_With_Warning_Signs_Case',
+    ],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
+  },
+};
+const dengueTotalCaseMapOverlayByFacility = {
+  ...dengueBaseMapOverlayByFacility('blue'),
+  id: 'LAOS_EOC_Total_Dengue_Cases_Severe_V_Other_By_Facility_Total',
+  name: 'Total Dengue Cases',
+  measureBuilderConfig: {
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataElementCodes: [
+      'Dengue_Fever_Without_Warning_Signs_Case',
+      'Dengue_Fever_With_Warning_Signs_Case',
+      'Severe_Dengue_Case',
+    ],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
+  },
+};
+// dengue Severe Case Vs Other MapOverlay By Facility
+const dengueSevereCaseVsOtherMapOverlayByFacility = {
+  ...dengueBaseMapOverlayByFacility('blue', true),
+  id: 'LAOS_EOC_Total_Dengue_Cases_Severe_V_Other_By_Facility',
+  name: 'Dengue Cases by Facility: Severe v Other',
+  measureBuilderConfig: {
+    programCodes: ['NCLE_Communicable_Disease'],
+    dataElementCodes: [
+      'Dengue_Fever_Without_Warning_Signs_Case',
+      'Dengue_Fever_With_Warning_Signs_Case',
+      'Severe_Dengue_Case',
+    ],
+    entityAggregation: {
+      dataSourceEntityType: 'facility',
+    },
+  },
+  linkedMeasures: `{"${dengueSevereCaseMapOverlayByFacility.id}","${dengueOtherCaseMapOverlayByFacility.id}","${dengueTotalCaseMapOverlayByFacility.id}"}`,
 };
 const dengueDeathMapOverlayByFacility = {
   ...dengueBaseMapOverlayByFacility('red'),
@@ -159,14 +226,22 @@ exports.up = async function (db) {
     dengueDeathMapOverlayBySubDistrict,
     dengueCaseMapOverlayByFacility,
     dengueDeathMapOverlayByFacility,
+    dengueSevereCaseVsOtherMapOverlayByFacility,
   ]) {
     await insertObject(db, 'mapOverlay', mapOverlay);
     mapOverlayGroupRelation.id = generateId();
     mapOverlayGroupRelation.child_id = mapOverlay.id;
     await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupRelation);
   }
-
   await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupToRootRelation);
+
+  for (const mapOverlay of [
+    dengueSevereCaseMapOverlayByFacility,
+    dengueOtherCaseMapOverlayByFacility,
+    dengueTotalCaseMapOverlayByFacility,
+  ]) {
+    await insertObject(db, 'mapOverlay', mapOverlay);
+  }
 };
 
 exports.down = async function (db) {
@@ -178,6 +253,7 @@ exports.down = async function (db) {
     dengueDeathMapOverlayBySubDistrict,
     dengueCaseMapOverlayByFacility,
     dengueDeathMapOverlayByFacility,
+    dengueSevereCaseVsOtherMapOverlayByFacility,
   ]) {
     await deleteObject(db, 'map_overlay_group_relation', {
       child_id: mapOverlay.id,
@@ -185,6 +261,14 @@ exports.down = async function (db) {
     await deleteObject(db, 'mapOverlay', { id: mapOverlay.id });
   }
   await deleteObject(db, 'map_overlay_group', { code: dengueMapOverlayGroup.code });
+
+  for (const mapOverlay of [
+    dengueSevereCaseMapOverlayByFacility,
+    dengueOtherCaseMapOverlayByFacility,
+    dengueTotalCaseMapOverlayByFacility,
+  ]) {
+    await deleteObject(db, 'mapOverlay', { id: mapOverlay.id });
+  }
 };
 
 exports._meta = {
