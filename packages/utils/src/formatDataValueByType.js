@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+
 import numeral from 'numeral';
 import { VALUE_TYPES } from './constant';
 
@@ -36,37 +37,12 @@ const numberAndPercentage = (value, { numerator, denominator }) => {
 
 const text = value => String(value);
 
-const boolean = value => {
-  console.log('utils...formatDataValueByType...boolean...', value);
-  return value;
-};
-
-// const boolean = (value, { presentationOptions = {} }) => {
-//   const isPositive = value > 0;
-//   const Icon = isPositive ? PositiveIcon : NegativeIcon;
-//   const colorKey = isPositive ? 'yes' : 'no';
-//   const defaultColors = { yes: BLUE, no: GREY };
-//   const color = presentationOptions[colorKey]
-//     ? presentationOptions[colorKey].color
-//     : defaultColors[colorKey];
-//   const iconStyle = {
-//     height: 50,
-//     color,
-//   };
-//   return (
-//     <div
-//       style={{
-//         display: 'flex',
-//         flexDirection: 'row',
-//         height: '20px',
-//         justifyContent: 'flex-end',
-//         alignItems: 'center',
-//       }}
-//     >
-//       <Icon style={iconStyle} />
-//     </div>
-//   );
-// };
+/**
+ * Note: boolean types are no return a react component
+ * The MultiValueWrapper component needs to be updated to handle this when tupaia is moved to use ui-components
+ * @see: https://github.com/beyondessential/tupaia-backlog/issues/2156
+ */
+const boolean = value => value > 0;
 
 const percentage = value => {
   if (isNaN(value)) {
@@ -118,6 +94,6 @@ const VALUE_TYPE_TO_FORMATTER = {
 };
 
 export const formatDataValueByType = ({ value, metadata = {} }, valueType) => {
-  const formatter = VALUE_TYPE_TO_FORMATTER[valueType];
+  const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
   return formatter(value, metadata);
 };
