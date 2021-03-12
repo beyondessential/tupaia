@@ -13,17 +13,17 @@ const TOP_BAR_HEIGHT = 60; // is this needed?
 
 const Heading = styled.h2`
   margin: 0;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: bold;
 `;
 
 const Content = styled.div`
-  font-size: 16px;
+  font-size: 1rem;
   text-align: center;
 `;
 
 const ContentItem = styled.div`
-  margin: 0 0 20px 0;
+  margin: 0 0 1.25rem 0;
 `;
 
 const Button = styled.button`
@@ -32,8 +32,8 @@ const Button = styled.button`
   border: 0;
   text-transform: uppercase;
   font-weight: bold;
-  padding: 8px 15px;
-  font-size: 14;
+  padding: 0.5rem 0.9375rem;
+  font-size: 0.875rem;
   outline: 0;
   cursor: pointer;
 `;
