@@ -136,10 +136,10 @@ const setMeaslesMapOverlayGroupId = async db => {
     measlesMapOverlayGroup.id = measlesMapOverlayGroup;
   } else {
     measlesMapOverlayGroup.id = generateId();
-    mapOverlayGroupRelation.map_overlay_group_id = measlesMapOverlayGroup.id;
-    mapOverlayGroupToRootRelation.child_id = measlesMapOverlayGroup.id;
     await insertObject(db, 'map_overlay_group', measlesMapOverlayGroup);
   }
+  mapOverlayGroupRelation.map_overlay_group_id = measlesMapOverlayGroup.id;
+  mapOverlayGroupToRootRelation.child_id = measlesMapOverlayGroup.id;
 };
 
 const insertOverlays = async db => {
