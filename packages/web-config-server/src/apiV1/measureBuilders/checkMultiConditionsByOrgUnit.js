@@ -7,6 +7,15 @@ import groupBy from 'lodash.groupby';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
+import {
+  fetchAggregatedAnalyticsByDhisIds,
+  checkAllDataElementsAreDhisIndicators,
+} from '/apiV1/utils';
+
+const CONDITION_TYPE = {
+  AND: 'every',
+  OR: 'some',
+};
 
 /**
  * Example conditions config:
@@ -23,30 +32,49 @@ class CheckMultiConditionsByOrgUnit extends DataBuilder {
     const { conditions, dataElementCodes: configDataCodes } = this.config;
 
     const dataElementCodes = configDataCodes || [queryDataCode];
-    const { period, results } = await this.fetchAnalytics(dataElementCodes);
+    const { period, results } = await this.fetchResults(dataElementCodes);
 
     const measureData = [];
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
     Object.entries(analyticsByOrgUnit).forEach(([organisationUnitCode, analytics]) => {
-      const orgUnitMeasureData = Object.entries(conditions)
-        .filter(([displayValue, valueConditions]) => {
-          return Object.entries(valueConditions).every(([dataElement, condition]) => {
+      const [displayValue] = Object.entries(conditions).find(([_, conditionConfig]) => {
+        const { conditionType = 'AND', condition: conditionValues } = conditionConfig;
+        return Object.entries(conditionValues)[CONDITION_TYPE[conditionType]](
+          ([dataElement, condition]) => {
             const analytic = analytics.find(a => a.dataElement === dataElement);
-            return checkValueSatisfiesCondition(analytic.value, condition);
-          });
-        })
-        .map(([displayValue]) => {
-          return { organisationUnitCode, value: displayValue };
-        });
+            return analytic ? checkValueSatisfiesCondition(analytic.value, condition) : false;
+          },
+        );
+      }) || [];
 
-      measureData.push(...orgUnitMeasureData);
+      if (displayValue) {
+        measureData.push({ organisationUnitCode, value: displayValue });
+      }
     });
 
     return {
       data: measureData,
       period,
     };
+  }
+
+  async fetchResults(dataElementCodes) {
+    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
+      this.models,
+      dataElementCodes,
+    );
+    if (allDataElementsAreDhisIndicators) {
+      const { entityAggregation } = this.config;
+      return fetchAggregatedAnalyticsByDhisIds(
+        this.models,
+        this.dhisApi,
+        dataElementCodes,
+        this.query,
+        entityAggregation,
+      );
+    }
+    return this.fetchAnalytics(dataElementCodes);
   }
 }
 
