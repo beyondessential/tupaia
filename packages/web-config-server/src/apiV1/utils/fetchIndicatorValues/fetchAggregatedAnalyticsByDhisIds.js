@@ -9,7 +9,7 @@
 // After that remove this file and anything related to it
 
 import { periodFromAnalytics } from '@tupaia/aggregator';
-import { convertDateRangeToPeriodQueryString } from '../../../utils';
+import { convertDateRangeToPeriodQueryString, getDefaultPeriod } from '../../../utils';
 import { translateElementInDhisAggregatedAnalytics } from './translateDhisAggregatedAnalytics';
 import { buildAnalyticsFromDhisAnalytics } from './buildAnalyticsFromDhisAggregatedAnalytics';
 
