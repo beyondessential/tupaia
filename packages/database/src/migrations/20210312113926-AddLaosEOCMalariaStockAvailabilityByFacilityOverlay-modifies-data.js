@@ -61,19 +61,19 @@ const MAP_OVERLAYS = [
       conditions: {
         'All in stock': {
           condition: {
-            MAL_ACT_6x1: {
+            MAL_3645d4bf: {
               operator: '>',
               value: 0,
             },
-            MAL_ACT_6x2: {
+            MAL_199ffeec: {
               operator: '>',
               value: 0,
             },
-            MAL_ACT_6x3: {
+            MAL_46cfdeec: {
               operator: '>',
               value: 0,
             },
-            MAL_ACT_6x4: {
+            MAL_566bceec: {
               operator: '>',
               value: 0,
             },
@@ -82,19 +82,19 @@ const MAP_OVERLAYS = [
         'At least 1 item out of stock': {
           conditionType: 'OR',
           condition: {
-            MAL_ACT_6x1: {
+            MAL_3645d4bf: {
               operator: '>',
               value: 0,
             },
-            MAL_ACT_6x2: {
+            MAL_199ffeec: {
               operator: '>',
               value: 0,
             },
-            MAL_ACT_6x3: {
+            MAL_46cfdeec: {
               operator: '>',
               value: 0,
             },
-            MAL_ACT_6x4: {
+            MAL_566bceec: {
               operator: '>',
               value: 0,
             },
@@ -102,14 +102,14 @@ const MAP_OVERLAYS = [
         },
         'All out of stock': {
           condition: {
-            MAL_ACT_6x1: 0,
-            MAL_ACT_6x2: 0,
-            MAL_ACT_6x3: 0,
-            MAL_ACT_6x4: 0,
+            MAL_3645d4bf: 0,
+            MAL_199ffeec: 0,
+            MAL_46cfdeec: 0,
+            MAL_566bceec: 0,
           },
         },
       },
-      dataElementCodes: ['MAL_ACT_6x1', 'MAL_ACT_6x2', 'MAL_ACT_6x3', 'MAL_ACT_6x4'],
+      dataElementCodes: ['MAL_3645d4bf', 'MAL_199ffeec', 'MAL_46cfdeec', 'MAL_566bceec'],
       entityAggregation: {
         dataSourceEntityType: 'facility',
       },
@@ -123,11 +123,11 @@ const MAP_OVERLAYS = [
       conditions: {
         'All in stock': {
           condition: {
-            MAL_Primaquine_15_mg: {
+            MAL_5de7d4bf: {
               operator: '>',
               value: 0,
             },
-            MAL_Primaquine_7_5_mg: {
+            MAL_5de2a4bf: {
               operator: '>',
               value: 0,
             },
@@ -136,11 +136,11 @@ const MAP_OVERLAYS = [
         'At least 1 item out of stock': {
           conditionType: 'OR',
           condition: {
-            MAL_Primaquine_15_mg: {
+            MAL_5de7d4bf: {
               operator: '>',
               value: 0,
             },
-            MAL_Primaquine_7_5_mg: {
+            MAL_5de2a4bf: {
               operator: '>',
               value: 0,
             },
@@ -148,12 +148,12 @@ const MAP_OVERLAYS = [
         },
         'All out of stock': {
           condition: {
-            MAL_Primaquine_15_mg: 0,
-            MAL_Primaquine_7_5_mg: 0,
+            MAL_5de7d4bf: 0,
+            MAL_5de2a4bf: 0,
           },
         },
       },
-      dataElementCodes: ['MAL_Primaquine_15_mg', 'MAL_Primaquine_7_5_mg'],
+      dataElementCodes: ['MAL_5de7d4bf', 'MAL_5de2a4bf'],
       entityAggregation: {
         dataSourceEntityType: 'facility',
       },
@@ -167,7 +167,7 @@ const MAP_OVERLAYS = [
       conditions: {
         'In stock': {
           condition: {
-            MAL_RDT: {
+            MAL_47b2b43e: {
               operator: '>',
               value: 0,
             },
@@ -175,11 +175,11 @@ const MAP_OVERLAYS = [
         },
         'Out of stock': {
           condition: {
-            MAL_RDT: 0,
+            MAL_47b2b43e: 0,
           },
         },
       },
-      dataElementCodes: ['MAL_RDT'],
+      dataElementCodes: ['MAL_47b2b43e'],
       entityAggregation: {
         dataSourceEntityType: 'facility',
       },
@@ -219,7 +219,7 @@ const MAP_OVERLAYS = [
       conditions: {
         'In stock': {
           condition: {
-            MAL_Paracetamol: {
+            MAL_Paracetemol: {
               operator: '>',
               value: 0,
             },
@@ -227,11 +227,11 @@ const MAP_OVERLAYS = [
         },
         'Out of stock': {
           condition: {
-            MAL_Paracetamol: 0,
+            MAL_Paracetemol: 0,
           },
         },
       },
-      dataElementCodes: ['MAL_Paracetamol'],
+      dataElementCodes: ['MAL_Paracetemol'],
       entityAggregation: {
         dataSourceEntityType: 'facility',
       },
@@ -245,7 +245,7 @@ const MAP_OVERLAYS = [
       conditions: {
         'In stock': {
           condition: {
-            MAL_G6PD_RDT: {
+            MAL_47bb143e: {
               operator: '>',
               value: 0,
             },
@@ -253,11 +253,11 @@ const MAP_OVERLAYS = [
         },
         'Out of stock': {
           condition: {
-            MAL_G6PD_RDT: 0,
+            MAL_47bb143e: 0,
           },
         },
       },
-      dataElementCodes: ['MAL_G6PD_RDT'],
+      dataElementCodes: ['MAL_47bb143e'],
       entityAggregation: {
         dataSourceEntityType: 'facility',
       },
