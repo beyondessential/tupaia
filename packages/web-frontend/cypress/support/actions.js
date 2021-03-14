@@ -3,16 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TEST_USER } from '../constants';
+import { requireCyEnv } from '@tupaia/utils';
 
-const requireCyEnv = variable => {
-  const unprefixedVariable = variable.replace(/^CYPRESS_/, '');
-  const value = Cypress.env(unprefixedVariable);
-  if (value === undefined) {
-    throw new Error(`Could not load Cypress env variable 'CYPRESS_${unprefixedVariable}'`);
-  }
-  return value;
-};
+import { TEST_USER } from '../constants';
 
 export const submitLoginForm = () => {
   cy.findAllByText(/Sign in/)

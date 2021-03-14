@@ -1,4 +1,4 @@
-# tupaia.org end-to-end tests
+# e2e Tests
 
 [Cypress](https://www.cypress.io/) is used as the end-to-end test framework. This is the root folder of the test code and its configuration.
 
@@ -8,64 +8,46 @@
 
    ⚠️: In **Step 2. Install node dependencies** you need to run the commands under a Windows terminal, see the note in that section.
 
-2. Point `web-frontend` to a local instance of `web-config-server`. In `packages/web-frontend/.env`, set
+2. Make sure that you have a valid `.env` file under `packages/web-frontend` - see [.env.example](../.env.example) for the required variables.
 
-   ```bash
-   REACT_APP_CONFIG_SERVER_BASE_URL=http://localhost:8000/api/v1/
-   ```
+   > If you want to point to a local backend, set the following in `.env`:
+   >
+   > ```bash
+   > REACT_APP_CONFIG_SERVER_BASE_URL=http://localhost:8000/api/v1/
+   > ```
 
 3. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
 
    ```bash
-   # ⊞ Windows users should run this under WSL
    yarn workspace @tupaia/web-frontend cypress:generate-config
    ```
 
-   You can also use custom config by manually populating those files, see the `\*.example.jsonc` files for more information.
+   You can also use custom config by manually populating those files. See the [config docs](config/e2eTestsConfig.md) for more details
 
 ## Running the tests locally
 
-We first need to run the servers locally, then run the end-to-end tests. First, `cd` in the root folder of this project. You can run the tests in either UI or terminal mode.
+We first need to start the servers locally, then run the e2e tests. We can run the tests in either UI or terminal (headless) mode.
 
-🍎 MacOS
+### 🍎 MacOS
 
-- UI mode
+- UI mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
+- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
 
-```bash
-yarn workspace @tupaia/web-frontend test:cypress:open
-```
-
-- Terminal (headless) mode
-
-```bash
-yarn workspace @tupaia/web-frontend test:cypress:run
-```
-
-⊞ Windows
+### ⊞ Windows
 
 Run the following in **WSL**:
 
 ```bash
 # In one terminal
 yarn workspace @tupaia/web-config-server start
-
 # In another terminal
 yarn workspace @tupaia/web-frontend start
 ```
 
-Then, in a **Windows terminal**:
+Then, run one of the following commands in a **Windows terminal**:
 
-- UI mode
-
-```bash
-yarn workspace @tupaia/web-frontend cypress:open
-```
-
-- Terminal (headless) mode
-
-```bash
-yarn workspace @tupaia/web-frontend cypress:run
-```
+- UI mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
+- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
 
 ## Limitations
 

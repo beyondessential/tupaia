@@ -76,7 +76,7 @@
     },
     // Overrides per file pattern
     {
-      "files": "**/cypress/**",
+      "files": ["**/cypress/**", "packages/utils/src/cypress.js"],
       "extends": "plugin:cypress/recommended",
       "env": {
         "browser": true,
