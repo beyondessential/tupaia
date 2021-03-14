@@ -26,10 +26,10 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   });
   // Need to find all the data source org unit levels for the aggregated analytics endpoint,
   // otherwise all the data will be aggregated to the org unit
-  const dataSourceEntities = await dhisApi.fetchDataSourceEntities(
+  const dataSourceEntities = entityAggregation ? (await dhisApi.fetchDataSourceEntities(
     query.organisationUnitCode,
     entityAggregation,
-  );
+  )) : [(await models.entity.findOne({code: query.organisationUnitCode}))];
   const entityCodes = dataSourceEntities.map(({ code }) => code);
   const mappings = await models.dataServiceEntity.find({ entity_code: entityCodes });
   const entityIdToCode = {};
