@@ -26,17 +26,17 @@ const DATA_BUILDER_CONFIG = {
     value: {
       numerator: {
         dataValues: [
-          'MAL_ACT_6x1',
-          'MAL_ACT_6x2',
-          'MAL_ACT_6x3',
-          'MAL_ACT_6x4',
-          'MAL_G6PD_RDT',
+          'MAL_3645d4bf',
+          'MAL_199ffeec',
+          'MAL_46cfdeec',
+          'MAL_566bceec',
+          'MAL_47bb143e',
           'MAL_ORS',
-          'MAL_Primaquine_15_mg',
-          'MAL_Primaquine_7_5_mg',
-          'MAL_RDT',
+          'MAL_5de7d4bf',
+          'MAL_5de2a4bf',
+          'MAL_47b2b43e',
           'MAL_Artesunate',
-          'MAL_Paracetamol',
+          'MAL_Paracetemol',
         ],
         valueOfInterest: {
           operator: '>',
