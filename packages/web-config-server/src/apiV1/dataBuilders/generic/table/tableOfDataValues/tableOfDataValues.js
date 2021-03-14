@@ -48,9 +48,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const rows = await this.buildRows(columns);
     const data = { columns, rows, period };
 
-    const result = await this.buildFromExtraConfig(data);
-    console.log('result', result);
-    return result;
+    return this.buildFromExtraConfig(data);
   }
 
   /**
