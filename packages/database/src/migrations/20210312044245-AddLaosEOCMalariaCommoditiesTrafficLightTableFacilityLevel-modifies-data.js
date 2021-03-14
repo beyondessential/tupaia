@@ -62,7 +62,7 @@ const DATA_BUILDER_CONFIG = {
     ['MAL_Artesunate'],
     ['MAL_Paracetemol'],
   ],
-  columns: ['Status'],
+  columns: ['Stock Status'],
 };
 
 const VIEW_JSON = {
