@@ -9,7 +9,7 @@
 // After that remove this file and anything related to it
 
 import { periodFromAnalytics } from '@tupaia/aggregator';
-import { convertDateRangeToPeriodQueryString } from '../../../utils';
+import { convertDateRangeToPeriodQueryString, getDefaultPeriod } from '../../../utils';
 import { translateElementInDhisAggregatedAnalytics } from './translateDhisAggregatedAnalytics';
 import { buildAnalyticsFromDhisAnalytics } from './buildAnalyticsFromDhisAggregatedAnalytics';
 
@@ -26,10 +26,10 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
   });
   // Need to find all the data source org unit levels for the aggregated analytics endpoint,
   // otherwise all the data will be aggregated to the org unit
-  const dataSourceEntities = await dhisApi.fetchDataSourceEntities(
+  const dataSourceEntities = entityAggregation ? (await dhisApi.fetchDataSourceEntities(
     query.organisationUnitCode,
     entityAggregation,
-  );
+  )) : [(await models.entity.findOne({code: query.organisationUnitCode}))];
   const entityCodes = dataSourceEntities.map(({ code }) => code);
   const mappings = await models.dataServiceEntity.find({ entity_code: entityCodes });
   const entityIdToCode = {};

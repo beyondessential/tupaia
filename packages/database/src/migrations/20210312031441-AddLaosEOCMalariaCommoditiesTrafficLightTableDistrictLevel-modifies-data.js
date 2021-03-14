@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const REPORT_ID = 'Laos_EOC_Malaria_Stock_Availability';
+const REPORT_ID = 'Laos_EOC_Malaria_Stock_Availability_Sub_District';
 
 const DATA_BUILDER_CONFIG = {
   rows: [
@@ -50,17 +50,17 @@ const DATA_BUILDER_CONFIG = {
     },
   ],
   cells: [
-    'MAL_ACT_6x1',
-    'MAL_ACT_6x2',
-    'MAL_ACT_6x3',
-    'MAL_ACT_6x4',
-    'MAL_G6PD_RDT',
+    'MAL_3645d4bf',
+    'MAL_199ffeec',
+    'MAL_46cfdeec',
+    'MAL_566bceec',
+    'MAL_47bb143e',
     'MAL_ORS',
-    'MAL_Primaquine_15_mg',
-    'MAL_Primaquine_7_5_mg',
-    'MAL_RDT',
+    'MAL_5de7d4bf',
+    'MAL_5de2a4bf',
+    'MAL_47b2b43e',
     'MAL_Artesunate',
-    'MAL_Paracetamol',
+    'MAL_Paracetemol',
   ],
   columns: '$orgUnit',
   entityAggregation: {
@@ -107,26 +107,26 @@ const REPORT = {
   dataServices: [{ isDataRegional: false }],
 };
 
-const DASHBOARD_GROUP = {
-  organisationLevel: 'SubDistrict',
-  userGroup: 'Laos EOC User',
-  organisationUnitCode: 'LA',
-  dashboardReports: `{${REPORT.id}}`,
-  name: 'Dengue',
-  code: 'LAOS_EOC_Malaria_Sub_District',
-  projectCodes: '{laos_eoc}',
-};
+const DASHBOARD_GROUP_CODE = 'LAOS_EOC_Malaria_Sub_District';
 
 exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
-  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP);
+
+  await db.runSql(`
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = "dashboardReports" || '{${REPORT.id}}'
+    WHERE "code" = '${DASHBOARD_GROUP_CODE}';
+  `);
 };
 
-exports.down = function (db) {
-  return db.runSql(`
-    DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
-    DELETE FROM "dashboardGroup" WHERE code = '${DASHBOARD_GROUP.code}';
-  `);
+exports.down = async function (db) {
+  await db.runSql(`
+     DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
+
+     UPDATE "dashboardGroup"
+     SET "dashboardReports" = array_remove("dashboardReports", '${REPORT.id}')
+     WHERE "code" = '${DASHBOARD_GROUP_CODE}';
+   `);
 };
 
 exports._meta = {
