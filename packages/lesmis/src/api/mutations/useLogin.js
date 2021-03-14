@@ -20,7 +20,7 @@ export const useLogin = () => {
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('getUser');
+        queryClient.invalidateQueries('user');
       },
     },
   );
