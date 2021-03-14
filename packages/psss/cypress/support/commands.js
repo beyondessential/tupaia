@@ -2,16 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
+import '@testing-library/cypress/add-commands';
+
 import { TEST_USER_1, TEST_USER_2 } from '../constants';
-
-const login = user => {
-  const password = Cypress.env('testUserPassword');
-
-  cy.visit('/login');
-  cy.findByPlaceholderText(/email/i).type(user.email);
-  cy.findByPlaceholderText(/password/i).type(password);
-  cy.findByRole('button', { name: /login*/i }).click();
-};
+import { login } from './actions';
 
 Cypress.Commands.add('loginTestUser1', () => {
   login(TEST_USER_1);

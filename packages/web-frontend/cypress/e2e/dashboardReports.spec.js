@@ -5,7 +5,7 @@
 
 import config from '../config/dashboardReports.json';
 import { SNAPSHOTS } from '../constants';
-import { EmptyConfigError, preserveUserSession } from '../support';
+import { preserveUserSession } from '../support';
 
 const checkResponseHasData = response =>
   response?.body?.value !== undefined || response?.body?.data?.length > 0;
@@ -22,7 +22,7 @@ const urlToRouteRegex = url => {
 
 describe('Dashboard reports', () => {
   if (config.length === 0) {
-    throw new EmptyConfigError('dashboardReports');
+    throw new Error('Dashboard reports config is empty');
   }
   const requireData = Cypress.config('tupaia_requireNonEmptyVisualisations');
 

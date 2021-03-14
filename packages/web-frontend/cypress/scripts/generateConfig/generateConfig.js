@@ -7,24 +7,22 @@ import { writeFileSync } from 'fs';
 
 import { TupaiaDatabase } from '@tupaia/database';
 import { getLoggerInstance } from '@tupaia/utils';
-import { getConfigPath } from '../../support/helpers';
 import { createTestUser } from './createTestUser';
 import { generateReportConfig } from './generateReportConfig';
 
-const writeConfigFile = (fileName, contents) =>
-  writeFileSync(getConfigPath(fileName), JSON.stringify(contents, null, 2));
+const REPORT_CONFIG_PATH = 'cypress/config/dashboardReports.json';
 
 export const generateConfig = async () => {
   const logger = getLoggerInstance();
-  const database = new TupaiaDatabase();
+  const db = new TupaiaDatabase();
 
   logger.success('Start e2e test config generation');
   logger.success('Creating test user...');
-  await createTestUser({ database, logger });
+  await createTestUser(db);
   logger.success(`✔ Test user`);
 
   logger.success('Generating dashboard report config...');
-  const dashboardReportConfig = await generateReportConfig({ database });
-  writeConfigFile('dashboardReports', dashboardReportConfig);
+  const reportConfig = await generateReportConfig(db);
+  writeFileSync(REPORT_CONFIG_PATH, JSON.stringify(reportConfig, null, 2));
   logger.success(`✔ Dashboard reports`);
 };
