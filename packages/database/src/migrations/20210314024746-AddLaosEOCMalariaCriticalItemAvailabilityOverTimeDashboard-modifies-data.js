@@ -64,6 +64,20 @@ const VIEW_JSON = {
   labelType: 'fractionAndPercentage',
   valueType: 'percentage',
   periodGranularity: 'month',
+  chartConfig: {
+    $all: {
+      yAxisDomain: {
+        max: {
+          type: 'number',
+          value: 1,
+        },
+        min: {
+          type: 'number',
+          value: 0,
+        },
+      },
+    },
+  },
 };
 
 const REPORT = {
