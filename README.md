@@ -1,7 +1,7 @@
 # Tupaia
 
 [![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
-
+ 
 > This is a [mono-repo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md)
 
 It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can
@@ -16,9 +16,12 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 ### Main packages
 
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
+- [lesmis](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
+- [lesmis-server](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis-server/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
 - [meditrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-server/README.md)
 - [psss](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
+- [psss-server](https://github.com/beyondessential/tupaia/blob/dev/packages/psss-server/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
 - [web-frontend](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md)
 
@@ -39,6 +42,7 @@ if you prefer to pre-build internal dependencies, add `--skip-internal` to the a
 - [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
 - [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
+- [server-boilerplate](https://github.com/beyondessential/tupaia/blob/dev/packages/server-boilerplate/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
 ## Getting started
