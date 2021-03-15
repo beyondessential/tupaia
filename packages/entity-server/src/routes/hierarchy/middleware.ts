@@ -6,64 +6,14 @@
 import { NextFunction, Response } from 'express';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { PermissionsError } from '@tupaia/utils';
-import { EntityServerModelRegistry } from '../../types';
 import { HierarchyRequest, HierarchyResponse } from './types';
-import { EntityType, EntityFields, ProjectType } from '../../models';
+import { EntityType, EntityFields, EntityHierarchyType } from '../../models';
 
-export const attachEntityAndHierarchyToRequest = async (
-  req: HierarchyRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { entityCode, projectCode } = req.params;
-
-    const project = await req.models.project.findOne({ code: projectCode });
-    if (!project || !(await userHasAccessToProject(req.models, project, req.accessPolicy))) {
-      throw new PermissionsError(`No access to requested project: ${projectCode}`);
-    }
-
-    const entity = await req.models.entity.findOne({ code: entityCode });
-    if (!entity || !(await userHasAccessToEntity(entity, req.accessPolicy))) {
-      throw new PermissionsError(`No access to requested entity: ${entityCode}`);
-    }
-
-    req.context.entity = entity;
-    req.context.entityHierarchyId = project.entity_hierarchy_id;
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const attachFormatterToResponse = async (
-  req: HierarchyRequest,
-  res: HierarchyResponse,
-  next: NextFunction,
-) => {
-  try {
-    res.context.formatEntityForResponse = mapEntityToFields(
-      extractFieldsFromQuery(req.query.fields),
-    );
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
-
-const userHasAccessToProject = async (
-  models: EntityServerModelRegistry,
-  project: ProjectType,
+const userHasAccessToEntity = async (
+  entity: EntityType,
+  hierarchy: EntityHierarchyType,
   accessPolicy: AccessPolicy,
 ) => {
-  const projectEntity = await models.entity.findOne({ code: project.code });
-  const projectChildren = await projectEntity.getChildrenViaHierarchy(project.entity_hierarchy_id);
-
-  return accessPolicy.allowsSome(projectChildren.map(c => c.country_code));
-};
-
-const userHasAccessToEntity = async (entity: EntityType, accessPolicy: AccessPolicy) => {
   // Timor-Leste is temporarily turned off
   // Note: Remove this check as part of: https://github.com/beyondessential/tupaia-backlog/issues/2456
   if (entity.country_code === 'TL') {
@@ -71,7 +21,8 @@ const userHasAccessToEntity = async (entity: EntityType, accessPolicy: AccessPol
   }
 
   if (entity.isProject()) {
-    return true; // Already checked this in userHasAccessToProject
+    const projectChildren = await entity.getChildren(hierarchy.id); // User has project access if they have access to any children countries
+    return accessPolicy.allowsSome(projectChildren.map(c => c.country_code));
   }
 
   return accessPolicy.allows(entity.country_code);
@@ -105,4 +56,46 @@ const extractFieldsFromQuery = (queryFields?: string) => {
     }
   });
   return Array.from(fields);
+};
+
+export const attachEntityAndHierarchyToRequest = async (
+  req: HierarchyRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { entityCode, hierarchyName } = req.params;
+
+    const hierarchy = await req.models.entityHierarchy.findOne({ name: hierarchyName });
+    const entity = await req.models.entity.findOne({ code: entityCode });
+    if (
+      !hierarchy ||
+      !entity ||
+      !(await userHasAccessToEntity(entity, hierarchy, req.accessPolicy))
+    ) {
+      throw new PermissionsError(`No access to requested entity: ${entityCode}`);
+    }
+
+    req.context.entity = entity;
+    req.context.hierarchyId = hierarchy.id;
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const attachFormatterToResponse = async (
+  req: HierarchyRequest,
+  res: HierarchyResponse,
+  next: NextFunction,
+) => {
+  try {
+    res.context.formatEntityForResponse = mapEntityToFields(
+      extractFieldsFromQuery(req.query.fields),
+    );
+    next();
+  } catch (error) {
+    next(error);
+  }
 };

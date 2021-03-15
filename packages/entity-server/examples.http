@@ -4,6 +4,6 @@ content-type: application/json
 Authorization: Basic <email>:<password>
 
 ### Fetch a single entity
-GET http://localhost:8050/v1/explore/TO?fields=code,country_code HTTP/1.1
+GET http://localhost:8050/v1/hierarchy/explore/TO?fields=code,country_code HTTP/1.1
 content-type: application/json
 Authorization: Basic <email>:<password>

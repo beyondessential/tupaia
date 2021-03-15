@@ -5,9 +5,16 @@
 import { Request, NextFunction, Response } from 'express';
 import { respond } from '@tupaia/utils';
 
-type ResBody<Type> = Type extends Response<infer Body> ? Body : null; // Infers body of response type
+// Infers type arguments from request type
+type Params<Type> = Type extends Request<infer P, any, any, any> ? P : null;
+type ResBody<Type> = Type extends Request<any, infer sBody, any, any> ? sBody : null;
+type ReqBody<Type> = Type extends Request<any, any, infer qBody, any> ? qBody : null;
+type Query<Type> = Type extends Request<any, any, any, infer Q> ? Q : null;
 
-export class Route<Req extends Request = Request, Res extends Response = Response> {
+export class Route<
+  Req extends Request<Params<Req>, ResBody<Req>, ReqBody<Req>, Query<Req>> = Request,
+  Res extends Response<ResBody<Req>> = Response
+> {
   readonly req: Req;
 
   readonly res: Res;
@@ -36,7 +43,7 @@ export class Route<Req extends Request = Request, Res extends Response = Respons
     }
   }
 
-  async buildResponse(): Promise<ResBody<Res>> {
+  async buildResponse(): Promise<ResBody<Req>> {
     throw new Error('Any Route must implement "buildResponse"');
   }
 }

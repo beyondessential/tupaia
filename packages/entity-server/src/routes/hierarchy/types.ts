@@ -3,17 +3,16 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ParamsDictionary, Query } from 'express-serve-static-core';
 import { Request, Response } from 'express';
 import { Context } from '../../types';
 import { EntityFields, EntityType } from '../../models';
 
-interface HierarchyRequestParams extends ParamsDictionary {
-  projectCode: string;
+interface HierarchyRequestParams {
+  hierarchyName: string;
   entityCode: string;
 }
 
-interface HierarchyRequestQuery extends Query {
+interface HierarchyRequestQuery {
   fields?: string;
 }
 
@@ -25,10 +24,10 @@ export type EntityResponseObject = {
 export interface HierarchyRequest<
   P = HierarchyRequestParams,
   ResBody = EntityResponseObject,
-  ReqBody = Record<string, never>,
+  ReqBody = Record<string, unknown>,
   ReqQuery = HierarchyRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
-  context: Context<{ entity: EntityType; entityHierarchyId: string }>;
+  context: Context<{ entity: EntityType; hierarchyId: string }>;
 }
 
 export interface HierarchyResponse<ResBody = EntityResponseObject> extends Response<ResBody> {

@@ -4,4 +4,4 @@
  */
 
 export { EntityModel, EntityType, EntityFields } from './Entity';
-export { ProjectModel, ProjectType } from './Project';
+export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';

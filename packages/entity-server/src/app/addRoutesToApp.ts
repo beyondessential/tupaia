@@ -13,9 +13,10 @@ import {
   attachFormatterToResponse,
 } from '../routes/hierarchy/middleware';
 
-const handleWith = <Req extends Request, T extends Route<Req>>(
-  RouteClass: new (req: Req, res: Response, next: NextFunction) => T,
-) => (req: Req, res: Response, next: NextFunction) => {
+type ReqOfRoute<T> = T extends Route<infer Req> ? Req : never;
+const handleWith = <T extends { handle: () => Promise<void> }>(
+  RouteClass: new (req: ReqOfRoute<T>, res: Response, next: NextFunction) => T,
+) => (req: ReqOfRoute<T>, res: Response, next: NextFunction) => {
   const route = new RouteClass(req, res, next);
   return route.handle();
 };
@@ -50,9 +51,9 @@ export function addRoutesToApp(app: Express) {
   /**
    * Entity Request routes
    */
-  app.use('/v1/hierarchy/:projectCode/:entityCode', attachEntityAndHierarchyToRequest);
+  app.use('/v1/hierarchy/:hierarchyName/:entityCode', attachEntityAndHierarchyToRequest);
   app.use('/v1/hierarchy/*', attachFormatterToResponse);
-  app.get('/v1/hierarchy/:projectCode/:entityCode', handleWith(SingleEntityRoute));
+  app.get('/v1/hierarchy/:hierarchyName/:entityCode', handleWith(SingleEntityRoute));
 
   app.use(handleError);
 }

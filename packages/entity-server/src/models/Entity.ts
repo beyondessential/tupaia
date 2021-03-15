@@ -13,8 +13,6 @@ export interface EntityFields {
 
 export interface EntityType extends BaseEntityType, EntityFields {
   getChildren: (hierarchyId: string) => Promise<EntityType[]>;
-  getChildrenViaHierarchy: (hierarchyId: string) => Promise<EntityType[]>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityType> {}
