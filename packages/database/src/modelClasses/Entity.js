@@ -96,6 +96,9 @@ export class EntityType extends DatabaseType {
     return this.type === WORLD;
   }
 
+  /**
+   * @returns {boolean} If the entity is a project
+   */
   isProject() {
     return this.type === PROJECT;
   }
