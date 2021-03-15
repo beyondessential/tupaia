@@ -58,7 +58,7 @@ const DATA_BUILDER_CONFIG = {
 };
 
 const VIEW_JSON = {
-  name: 'Malaria Critical Item Availability Over Time',
+  name: 'Malaria Critical Item Availability',
   type: 'view',
   viewType: 'singleValue',
   labelType: 'fractionAndPercentage',
