@@ -4,6 +4,8 @@
  *
  */
 export * from './MapContainer';
+export * from './PolygonLayer';
+export * from './Markers';
+export * from './MarkerLayer';
 export * from './TileLayer';
 export * from './TilePicker';
-export * from './PolygonLayer';
