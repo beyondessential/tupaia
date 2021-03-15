@@ -20,7 +20,6 @@ export type EntityResponseObject = {
   [field in keyof EntityFields]?: EntityFields[field];
 };
 
-// eslint-disable-next-line @typescript-eslint/comma-dangle
 export interface HierarchyRequest<
   P = HierarchyRequestParams,
   ResBody = EntityResponseObject,
