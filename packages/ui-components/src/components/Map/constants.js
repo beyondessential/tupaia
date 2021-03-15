@@ -30,3 +30,11 @@ export const TILE_SETS = [
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`,
   },
 ];
+
+export const SCALE_TYPES = {
+  PERFORMANCE: 'performance',
+  PERFORMANCE_DESC: 'performanceDesc',
+  NEUTRAL: 'neutral',
+  NEUTRAL_REVERSE: 'neutralReverse',
+  TIME: 'time',
+};

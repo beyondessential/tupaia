@@ -5,8 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MapContainer, TileLayer, PolygonLayer } from '../../src';
+import { MapContainer, TileLayer, MarkerLayer, PolygonLayer } from '../../src';
 import orgUnitData from './data/orgUnitData.json';
+import measureData from './data/measureData.json';
 
 const Container = styled.div`
   position: relative;
@@ -34,5 +35,15 @@ export const SimplePolygonLayer = () => (
   <MapContainer location={orgUnitData?.location}>
     <TileLayer />
     <PolygonLayer data={orgUnitData} />
+  </MapContainer>
+);
+
+export const SimpleMarkerLayer = () => (
+  <MapContainer location={orgUnitData?.location}>
+    <TileLayer />
+    <MarkerLayer
+      measureData={measureData?.measureData}
+      measureOptions={measureData?.measureOptions}
+    />
   </MapContainer>
 );
