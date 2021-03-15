@@ -26,6 +26,7 @@ const constructEntityFieldValidators = models => ({
     },
   ],
   attributes: [constructIsEmptyOr(isPlainObject)],
+  data_service_entity: [constructIsEmptyOr(isPlainObject)],
 });
 
 const constructSpecificEntityTypeValidators = (entityType, models) => {
