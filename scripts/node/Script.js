@@ -6,11 +6,8 @@
 const { execSync } = require('child_process');
 const { existsSync, readdirSync } = require('fs');
 const { platform } = require('os');
-const yargs = require('yargs');
 
-const { getLoggerInstance } = require('./utilities');
-
-const logger = getLoggerInstance();
+const { getArgs, getLoggerInstance } = require('@tupaia/utils');
 
 /**
  * @abstract
@@ -21,22 +18,15 @@ class Script {
     ERROR: 1,
   };
 
-  /**
-   * @protected Override in child class
-   *
-   * @property {string} [command] Use '*' or '$0' to refer to the default command
-   *   This field is useful for
-   *   1. Defining subcommands, eg 'push <branch_name>'
-   *   2. Defining positional arguments in the default command, eg '* <path>'
-   * @property {Object} [options]
-   * @property {string} [usage]
-   * @property {string} [version]
-   *
-   * @see https://github.com/yargs/yargs/blob/master/docs/api.md
-   */
+  logger;
+
   config = {};
 
   args;
+
+  constructor() {
+    this.logger = getLoggerInstance();
+  }
 
   run() {
     this.parseConfig();
@@ -44,15 +34,7 @@ class Script {
   }
 
   parseConfig() {
-    const supportedConfigKeys = ['command', 'options', 'usage', 'version'];
-
-    yargs.strict();
-    Object.entries(this.config).forEach(([key, value]) => {
-      if (supportedConfigKeys.includes(key)) {
-        yargs[key](value);
-      }
-    });
-    this.args = yargs.argv;
+    this.args = getArgs(this.config);
   }
 
   /**
@@ -63,31 +45,31 @@ class Script {
   }
 
   logError = (message = '') => {
-    logger.error(message);
+    this.logger.error(message);
   };
 
   logWarning = (message = '') => {
-    logger.warn(message);
+    this.logger.warn(message);
   };
 
   logSuccess = (message = '') => {
-    logger.success(message);
+    this.logger.success(message);
   };
 
   logInfo = (message = '') => {
-    logger.info(message);
+    this.logger.info(message);
   };
 
   logVerbose = (message = '') => {
-    logger.verbose(message);
+    this.logger.verbose(message);
   };
 
   logDebug = (message = '') => {
-    logger.debug(message);
+    this.logger.debug(message);
   };
 
   log = (message = '') => {
-    logger.verbose(message);
+    this.logger.verbose(message);
   };
 
   /**
