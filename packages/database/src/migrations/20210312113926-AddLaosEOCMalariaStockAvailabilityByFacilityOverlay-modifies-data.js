@@ -82,22 +82,10 @@ const MAP_OVERLAYS = [
         'At least 1 item out of stock': {
           conditionType: 'OR',
           condition: {
-            MAL_3645d4bf: {
-              operator: '>',
-              value: 0,
-            },
-            MAL_199ffeec: {
-              operator: '>',
-              value: 0,
-            },
-            MAL_46cfdeec: {
-              operator: '>',
-              value: 0,
-            },
-            MAL_566bceec: {
-              operator: '>',
-              value: 0,
-            },
+            MAL_3645d4bf: 0,
+            MAL_199ffeec: 0,
+            MAL_46cfdeec: 0,
+            MAL_566bceec: 0,
           },
         },
         'All out of stock': {
@@ -136,14 +124,8 @@ const MAP_OVERLAYS = [
         'At least 1 item out of stock': {
           conditionType: 'OR',
           condition: {
-            MAL_5de7d4bf: {
-              operator: '>',
-              value: 0,
-            },
-            MAL_5de2a4bf: {
-              operator: '>',
-              value: 0,
-            },
+            MAL_5de7d4bf: 0,
+            MAL_5de2a4bf: 0,
           },
         },
         'All out of stock': {
@@ -162,7 +144,7 @@ const MAP_OVERLAYS = [
   },
   {
     id: 'Laos_EOC_Malaria_RDT',
-    name: 'Malaria Rapid Diagnostic Test (RDT)',
+    name: 'RDT',
     measureBuilderConfig: {
       conditions: {
         'In stock': {
@@ -188,7 +170,7 @@ const MAP_OVERLAYS = [
   },
   {
     id: 'Laos_EOC_Malaria_Artesunate',
-    name: 'Artesunate 60mg',
+    name: 'Artesunate',
     measureBuilderConfig: {
       conditions: {
         'In stock': {
