@@ -31,7 +31,7 @@ const getEntityMetadata = async (transactingModels, code, pushToDhis) => {
   const defaultMetadata = {
     dhis: { isDataRegional: true },
   };
-  
+
   // Only assign push = false, by default all entities will be pushed to dhis
   if (!pushToDhis) {
     defaultMetadata.dhis.push = pushToDhis;
@@ -39,11 +39,16 @@ const getEntityMetadata = async (transactingModels, code, pushToDhis) => {
 
   const entity = await transactingModels.entity.findOne({ code });
   return entity && entity.metadata
-      ? entity.metadata // we don't want to override the metadata if the entity already exists
-      : defaultMetadata;
-}
+    ? entity.metadata // we don't want to override the metadata if the entity already exists
+    : defaultMetadata;
+};
 
-export async function updateCountryEntities(transactingModels, countryName, entityObjects, pushToDhis = true) {
+export async function updateCountryEntities(
+  transactingModels,
+  countryName,
+  entityObjects,
+  pushToDhis = true,
+) {
   const countryCode = getCountryCode(countryName, entityObjects);
   const country = await transactingModels.country.findOrCreate(
     { name: countryName },
@@ -52,7 +57,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
   const { id: worldId } = await transactingModels.entity.findOne({
     type: transactingModels.entity.types.WORLD,
   });
-  
+
   const countryEntityMetadata = await getEntityMetadata(transactingModels, countryCode, pushToDhis);
   await transactingModels.entity.findOrCreate(
     { code: countryCode },
@@ -102,6 +107,10 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       country,
     );
     if (entityType === transactingModels.entity.types.FACILITY) {
+      if (!parentGeographicalArea)
+        throw new Error(
+          `Parent entity of facility must have geographical area, parent entity code: ${parentEntity.code}`,
+        );
       const defaultTypeDetails = getDefaultTypeDetails(facilityType);
       const facilityToUpsert = {
         type: facilityType,
