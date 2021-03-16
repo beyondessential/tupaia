@@ -17,8 +17,8 @@ import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
 
 const LegendFrame = styled.div`
-  padding: 5px;
-  margin: 10px auto;
+  padding: 0.3rem;
+  margin: 0.625rem auto;
   border-radius: 3px;
   cursor: auto;
   color: #eeeeee;

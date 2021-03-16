@@ -27,7 +27,7 @@ const Container = styled.div`
   > button {
     top: 2rem;
     right: 2rem;
-    z-index: 9999;
+    z-index: 999;
   }
 `;
 
@@ -52,7 +52,7 @@ const TilePicker = styled(TilePickerComponent)`
   position: absolute;
   right: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: 999;
 `;
 
 const Legend = styled(LegendComponent)`
