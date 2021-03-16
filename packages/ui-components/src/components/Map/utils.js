@@ -256,7 +256,6 @@ export function getFormattedInfo(orgUnitData, measureOption) {
   };
 }
 
-// Todo: refactor hidden measures
 export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
   const displayInfo = {};
 
