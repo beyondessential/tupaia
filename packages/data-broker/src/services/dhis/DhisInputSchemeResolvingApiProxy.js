@@ -224,6 +224,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
     let mappings = [];
     // need to batch this query because we can get an SQL error if we do too many
+    // TODO convert to using `runDatabaseFunctionInBatches` or one of its wrappers
     const SQL_BIND_CHUNK_SIZE = 1000;
     for (let i = 0; i < dhisIds.length; i += SQL_BIND_CHUNK_SIZE) {
       const chunkDhisIds = dhisIds.slice(i, i + SQL_BIND_CHUNK_SIZE);
