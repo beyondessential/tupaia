@@ -110,9 +110,17 @@ export class DhisChangeValidator extends ChangeValidator {
     return this.queryValidSurveyResponseIds(surveyResponseIds);
   };
 
+  getValidEntityUpdates = async updateChanges => {
+    const entityIds = this.getIdsFromChangesForModel(updateChanges, this.models.entity);
+    if (entityIds.length === 0) return [];
+
+    const entities = await this.models.entity.findManyById(entityIds);
+    return entities.filter(e => e.allowsPushingToDhis()).map(e => e.id);
+  };
+
   getValidUpdates = async changes => {
     const updateChanges = this.getUpdateChanges(changes);
-    const validEntityIds = this.getIdsFromChangesForModel(updateChanges, this.models.entity); // all entity updates are valid
+    const validEntityIds = await this.getValidEntityUpdates(updateChanges);
     const validAnswerIds = await this.getValidAnswerUpdates(updateChanges);
     const validSurveyResponseIds = await this.getValidSurveyResponseUpdates(updateChanges);
     return this.filterChangesWithMatchingIds(changes, [
