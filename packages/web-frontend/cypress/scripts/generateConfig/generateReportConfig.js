@@ -4,19 +4,25 @@
  */
 
 import { snake } from 'case';
+import moment from 'moment';
 
-import { compareAsc, filterEntities, filterValues, toArray } from '@tupaia/utils';
-import orgUnitMap from '../config/orgUnitMap.json';
-import { CONFIG_ROOT } from '../constants';
-
-const ORG_UNIT_MAP_PATH = `${CONFIG_ROOT}/orgUnitMap.json`;
+import {
+  compareAsc,
+  filterEntities,
+  filterValues,
+  getLoggerInstance,
+  stringifyQuery,
+  toArray,
+} from '@tupaia/utils';
+import datesByGranularity from '../../config/datesByGranularity.json';
+import orgUnitMap from '../../config/orgUnitMap.json';
+import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
 
 const WARNING_TYPES = {
   DRILL_DOWN: 'drillDown',
   NO_DATA_BUILDER: 'noDataBuilder',
   NO_GROUP: 'noGroup',
   NO_PROJECT: 'noProject',
-  NO_ORG_UNIT_MAP_ENTRY: 'noOrgUnitMapEntry',
 };
 
 const WARNING_TYPE_TO_MESSAGE = {
@@ -24,10 +30,10 @@ const WARNING_TYPE_TO_MESSAGE = {
   [WARNING_TYPES.NO_DATA_BUILDER]: `No data builder`,
   [WARNING_TYPES.NO_GROUP]: 'Not attached to any dashboard group',
   [WARNING_TYPES.NO_PROJECT]: 'Not attached to any projects',
-  [WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY]: `No compatible org unit map entry found in '${ORG_UNIT_MAP_PATH}'`,
 };
 
-const logWarningsForSkippedReports = (logger, skippedReports) => {
+const logWarningsForSkippedReports = skippedReports => {
+  const logger = getLoggerInstance();
   logger.warn(`Skipping the following reports:`);
   Object.entries(skippedReports).forEach(([warnType, reportIds]) => {
     const message = WARNING_TYPE_TO_MESSAGE[warnType];
@@ -42,28 +48,57 @@ const logWarningsForSkippedReports = (logger, skippedReports) => {
 };
 
 const createUrl = (report, urlParams) => {
-  const { projectCode, orgUnitCode, dashboardGroup } = urlParams;
-  return `/${projectCode}/${orgUnitCode}/${dashboardGroup.name}?report=${report.id}`;
+  const { projectCode, orgUnitCode, dashboardGroup, reportPeriod } = urlParams;
+  const path = [projectCode, orgUnitCode, dashboardGroup.name].join('/');
+  const queryParams = {
+    report: report.id,
+    reportPeriod,
+  };
+
+  return stringifyQuery('', path, queryParams);
 };
 
 /**
  * @returns {string|undefined}
  */
-const selectOrgUnitCode = async (database, orgUnitCodes, entityConditions) => {
+const selectReportPeriod = viewJson => {
+  const { periodGranularity } = viewJson;
+  if (!periodGranularity) {
+    return undefined;
+  }
+
+  const dateInput = datesByGranularity[periodGranularity];
+  if (!dateInput) {
+    throw new Error(
+      `Please add a non empty entry for '${periodGranularity}' in datesByGranularity.json`,
+    );
+  }
+
+  const [startDate, endDate] = Array.isArray(dateInput) ? dateInput : [dateInput, dateInput];
+  return convertDateRangeToUrlPeriodString({
+    startDate: moment(startDate),
+    endDate: moment(endDate),
+  });
+};
+
+const selectEntities = async (db, codes) =>
+  db.executeSql(`SELECT * FROM entity WHERE code IN (${codes.map(() => '?').join(',')})`, codes);
+/**
+ * @returns {Promise<string|undefined>}
+ */
+const selectOrgUnitCode = async (db, orgUnitCodes, entityConditions) => {
   if (orgUnitCodes.length === 0 || !entityConditions) {
     return orgUnitCodes[0];
   }
 
-  const entities = await database.executeSql(
-    `SELECT * FROM entity WHERE code IN (${orgUnitCodes.map(() => '?').join(',')})`,
-    orgUnitCodes,
-  );
+  const entities = await selectEntities(db, orgUnitCodes);
   return filterEntities(entities, entityConditions)[0]?.code;
 };
 
-const selectUrlParams = async (database, report, dashboardGroups) => {
-  const { viewJson } = report;
+const selectUrlParams = async (db, report, dashboardGroups) => {
+  const viewJson = report.viewJson || {};
 
+  const attemptedMapEntries = [];
   for (const dashboardGroup of dashboardGroups) {
     const {
       organisationUnitCode: dashboardOrgUnitCode,
@@ -71,23 +106,35 @@ const selectUrlParams = async (database, report, dashboardGroups) => {
     } = dashboardGroup;
 
     const level = snake(dashboardLevel);
-    const orgUnitCodes = toArray(orgUnitMap?.[dashboardOrgUnitCode]?.[level]);
+    const [entity] = await selectEntities(db, [dashboardOrgUnitCode]);
+    const orgUnitMapKey = entity.country_code || entity.code;
+    attemptedMapEntries.push({ key: orgUnitMapKey, level });
+
+    const orgUnitCodes = toArray(orgUnitMap?.[orgUnitMapKey]?.[level]);
     const orgUnitCode = await selectOrgUnitCode(
-      database,
+      db,
       orgUnitCodes,
-      (viewJson || {}).displayOnEntityConditions,
+      viewJson.displayOnEntityConditions,
     );
     const [projectCode] = dashboardGroup.projectCodes;
 
     if (orgUnitCode && projectCode) {
-      return { dashboardGroup, orgUnitCode, projectCode };
+      const reportPeriod = selectReportPeriod(viewJson);
+      return { dashboardGroup, orgUnitCode, projectCode, reportPeriod };
     }
   }
 
-  return undefined;
+  // No compatible entry found, throw error
+  throw new Error(
+    [
+      `No compatible org unit map entry found for report '${report.id}'`,
+      'Try using one of the following entries:',
+      ...attemptedMapEntries.map(({ key, level }) => `* Key: '${key}', level: '${level}'`),
+    ].join('\n'),
+  );
 };
 
-const getUrlsForReports = async (database, reports, reportIdToGroups) => {
+const getUrlsForReports = async (db, reports, reportIdToGroups) => {
   const skippedReports = Object.fromEntries(
     Object.values(WARNING_TYPES).map(warnType => [warnType, []]),
   );
@@ -114,11 +161,7 @@ const getUrlsForReports = async (database, reports, reportIdToGroups) => {
       addSkippedReport(WARNING_TYPES.NO_PROJECT, report.id);
       return null;
     }
-    const urlParams = await selectUrlParams(database, report, groupsForReport);
-    if (!urlParams) {
-      addSkippedReport(WARNING_TYPES.NO_ORG_UNIT_MAP_ENTRY, report.id);
-      return null;
-    }
+    const urlParams = await selectUrlParams(db, report, groupsForReport);
 
     return createUrl(report, urlParams);
   };
@@ -130,8 +173,8 @@ const getUrlsForReports = async (database, reports, reportIdToGroups) => {
   };
 };
 
-const getDashboardReportIdToGroups = async database => {
-  const dashboardGroups = await database.executeSql(`SELECT * from "dashboardGroup"`);
+const getReportIdToGroups = async db => {
+  const dashboardGroups = await db.executeSql(`SELECT * from "dashboardGroup"`);
 
   const reportIdToGroups = {};
   dashboardGroups.forEach(dashboardGroup => {
@@ -152,13 +195,14 @@ const getDashboardReportIdToGroups = async database => {
  * 3. For each dashboard group, use an organisation unit from the orgUnitMap config
  * that matches the group's org unit code and level
  */
-export const generateDashboardReportConfig = async ({ database, logger }) => {
-  const reports = await database.executeSql('SELECT * from "dashboardReport"');
-  const reportIdToGroups = await getDashboardReportIdToGroups(database);
-  const { urls, skippedReports } = await getUrlsForReports(database, reports, reportIdToGroups);
+export const generateReportConfig = async db => {
+  const logger = getLoggerInstance();
+  const reports = await db.executeSql('SELECT * from "dashboardReport"');
+  const reportIdToGroups = await getReportIdToGroups(db);
+  const { urls, skippedReports } = await getUrlsForReports(db, reports, reportIdToGroups);
   const skippedReportsExist = Object.keys(skippedReports).length > 0;
   if (skippedReportsExist) {
-    logWarningsForSkippedReports(logger, skippedReports);
+    logWarningsForSkippedReports(skippedReports);
   }
   logger.info(`Report urls created: ${urls.length}, skipped: ${reports.length - urls.length}`);
 

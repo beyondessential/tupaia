@@ -112,10 +112,8 @@ export async function getOrCreateParentEntity(transactingModels, entityObject, c
       parentEntity,
       transactingModels,
     );
-    if (!parentGeographicalArea)
-      throw new Error(
-        `Parent entity must have geographical area, parent entity code: ${parentCode}`,
-      );
+    if (!parentGeographicalArea) return { parentEntity };
+
     return { parentEntity, parentGeographicalArea };
   }
   // no explicit parent code provided, use either subdistrict or district as parent entity

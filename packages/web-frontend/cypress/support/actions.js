@@ -3,16 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TEST_USER } from '../constants';
-import { TestUserPasswordUndefinedError } from './helpers';
+import { requireCyEnv } from '@tupaia/utils';
 
-const getTestUserPassword = () => {
-  const password = Cypress.env('TEST_USER_PASSWORD');
-  if (!password) {
-    throw new TestUserPasswordUndefinedError();
-  }
-  return password;
-};
+import { TEST_USER } from '../constants';
 
 export const submitLoginForm = () => {
   cy.findAllByText(/Sign in/)
@@ -24,7 +17,7 @@ export const submitLoginForm = () => {
     .type(TEST_USER.email);
   cy.get('@loginForm')
     .findByLabelText(/password/i)
-    .type(getTestUserPassword(), { log: false });
+    .type(requireCyEnv('CYPRESS_TEST_USER_PASSWORD'), { log: false });
 
   cy.get('@loginForm').findByTextI('Sign in').click();
 };
