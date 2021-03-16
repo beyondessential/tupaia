@@ -97,7 +97,7 @@ export class DhisInputSchemeResolvingApiProxy {
 
     for (const dataElementCode of dataElementCodes) {
       const dataElement = dataElements.find(d => d.code === dataElementCode);
-      if (!dataElement.config.dhisId) {
+      if (!dataElement?.config?.dhisId) {
         return false;
       }
     }

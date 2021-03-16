@@ -51,7 +51,6 @@ export async function updateCountryEntities(
     countryCode,
     pushToDhis,
   );
-
   await transactingModels.entity.findOrCreate(
     { code: countryCode },
     {
@@ -101,6 +100,10 @@ export async function updateCountryEntities(
       pushToDhis,
     );
     if (entityType === transactingModels.entity.types.FACILITY) {
+      if (!parentGeographicalArea)
+        throw new Error(
+          `Parent entity of facility must have geographical area, parent entity code: ${parentEntity.code}`,
+        );
       const defaultTypeDetails = getDefaultTypeDetails(facilityType);
       const facilityToUpsert = {
         type: facilityType,
