@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { buildEventAnalyticsQuery } from '../buildAnalyticsQuery';
+import { buildDataValueAnalyticsQueries, buildEventAnalyticsQuery } from '../buildAnalyticsQuery';
 import { assertDhisDimensionHasMembers } from './helpers';
 
 const assertArrayHasDimensionWithMembers = (array, dimensionKey, members) => {
@@ -105,6 +105,36 @@ describe('buildAnalyticsQuery', () => {
         'pe:20200422',
       ]);
       assertArrayHasDimensionWithMembers(results.dimension, 'ou', ['pg_dhisId', 'to_dhisId']);
+    });
+  });
+
+  describe('buildDataValueAnalyticsQueries()', () => {
+    it('simple case', () => {
+      const queries = buildDataValueAnalyticsQueries({
+        dataElementCodes: ['POP01'],
+        organisationUnitCodes: ['TO'],
+      });
+
+      expect(queries.length).toBe(1);
+
+      const [query] = queries;
+
+      expect(query).toHaveProperty('dimension');
+      expect(query.dimension).toIncludeAllMembers(['dx:POP01', 'ou:TO']);
+    });
+
+    it('works with ids', () => {
+      const queries = buildDataValueAnalyticsQueries({
+        dataElementIds: ['pop01_dhisId'],
+        organisationUnitIds: ['tonga_dhisId'],
+      });
+
+      expect(queries.length).toBe(1);
+
+      const [query] = queries;
+
+      expect(query).toHaveProperty('dimension');
+      expect(query.dimension).toIncludeAllMembers(['dx:pop01_dhisId', 'ou:tonga_dhisId']);
     });
   });
 });
