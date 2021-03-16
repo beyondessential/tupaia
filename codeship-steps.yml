@@ -10,12 +10,17 @@
         - name: validate tests
           service: validation
           command: './packages/devops/scripts/ci/validateTests.sh'
+          exclude: -e2e$
     - type: serial
       name: test
+      exclude: -e2e$
       steps:
         - type: parallel
           name: test-batch-1 # they're in sandboxed containers, but share a db which can't handle all at once
           steps:
+            - name: test-lesmis-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
             - name: test-meditrak-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
@@ -28,6 +33,9 @@
             - name: test-report-server
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh report-server'
+            - name: test-entity-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
         - type: parallel
           name: test-batch-2
           steps:
@@ -40,6 +48,9 @@
             - name: test-auth
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh auth'
+            - name: test-indicators
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh indicators'
             - name: test-internal-dependencies
               service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
@@ -69,12 +80,18 @@
           steps:
             - name: deploy-web-config-server
               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
+            - name: deploy-lesmis-server
+              command: './packages/devops/scripts/ci/deployBackend.sh lesmis-server'
             - name: deploy-meditrak-server
               command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+              exclude: -e2e$
             - name: deploy-psss-server
               command: './packages/devops/scripts/ci/deployBackend.sh psss-server'
+              exclude: -e2e$
             - name: deploy-report-server
               command: './packages/devops/scripts/ci/deployBackend.sh report-server'
+            - name: deploy-entity-server
+              command: './packages/devops/scripts/ci/deployBackend.sh entity-server'
         # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
         - name: run db migrations
           command: './packages/devops/scripts/ci/runMigrations.sh'
@@ -88,3 +105,12 @@
           command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
         - name: deploy-psss
           command: './packages/devops/scripts/ci/deployFrontend.sh psss'
+          exclude: -e2e$
+
+- type: parallel
+  name: e2e-test
+  service: deployment
+  tag: -e2e$
+  steps:
+    - name: e2e-test-web-frontend
+      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'

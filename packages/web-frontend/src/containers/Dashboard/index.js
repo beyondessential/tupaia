@@ -27,7 +27,7 @@ import { DropDownMenu } from '../../components/DropDownMenu';
 import {
   selectCurrentDashboardGroupCode,
   selectCurrentOrgUnit,
-  selectAdjustedProjectBounds,
+  selectCurrentOrgUnitBounds,
 } from '../../selectors';
 import { DEFAULT_BOUNDS } from '../../defaults';
 
@@ -261,20 +261,14 @@ const mapStateToProps = state => {
   const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  let currentOrganisationUnitBounds = DEFAULT_BOUNDS;
-  if (currentOrganisationUnit.type === 'Project') {
-    currentOrganisationUnitBounds = selectAdjustedProjectBounds(
-      state,
-      currentOrganisationUnit.organisationUnitCode,
-    );
-  } else if (currentOrganisationUnit.location && currentOrganisationUnit.location.bounds) {
-    currentOrganisationUnitBounds = currentOrganisationUnit.location.bounds;
-  }
+  const currentOrganisationUnitBounds = selectCurrentOrgUnitBounds(state);
+  const currentDashboardGroupCode = selectCurrentDashboardGroupCode(state);
+
   return {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
     sections: dashboardConfig,
-    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
+    currentDashboardGroupCode,
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,

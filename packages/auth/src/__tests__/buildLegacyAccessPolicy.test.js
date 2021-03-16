@@ -6,12 +6,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import { hasAccess } from '@beyondessential/tupaia-access-policy';
-import {
-  getTestDatabase,
-  getTestModels,
-  upsertDummyRecord,
-  findOrCreateDummyRecord,
-} from '@tupaia/database';
+import { getTestModels, upsertDummyRecord, findOrCreateDummyRecord } from '@tupaia/database';
 import { buildLegacyAccessPolicy } from '../buildLegacyAccessPolicy';
 
 describe('buildLegacyAccessPolicy', () => {
