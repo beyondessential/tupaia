@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'react-leaflet';
 
-export const AreaTooltip = ({ permanent, onMouseOver, onMouseOut, text, sticky }) => (
+export const AreaTooltip = React.memo(({ permanent, onMouseOver, onMouseOut, text, sticky }) => (
   <Tooltip
     pane="tooltipPane"
     direction="auto"
@@ -23,7 +23,7 @@ export const AreaTooltip = ({ permanent, onMouseOver, onMouseOut, text, sticky }
   >
     <span>{text}</span>
   </Tooltip>
-);
+));
 
 AreaTooltip.propTypes = {
   permanent: PropTypes.bool,

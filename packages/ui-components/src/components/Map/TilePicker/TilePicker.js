@@ -65,7 +65,7 @@ const TileList = styled.div`
   }
 `;
 
-export const TilePicker = ({ tileSets, activeTileSet, onChange, className }) => {
+export const TilePicker = React.memo(({ tileSets, activeTileSet, onChange, className }) => {
   const [open, setOpen] = useState(false);
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -90,7 +90,7 @@ export const TilePicker = ({ tileSets, activeTileSet, onChange, className }) => 
       </Container>
     </ClickAwayListener>
   );
-};
+});
 
 TilePicker.propTypes = {
   tileSets: PropTypes.arrayOf(PropTypes.shape(tileSetShape)).isRequired,
