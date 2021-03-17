@@ -104,45 +104,23 @@ const measlesDeathMapOverlayByFacility = {
   name: 'Measles Deaths by Facility',
   dataElementCode: 'Total_Positive_Measles_Cases',
 };
-const measlesMapOverlayGroup = {
-  name: 'Measles',
-  code: 'LAOS_EOC_Measles',
-};
-
-const mapOverlayGroupRelation = {
-  child_type: 'mapOverlay',
-};
-
-// Root
-const mapOverlayGroupToRootRelation = {
-  id: generateId(),
-  map_overlay_group_id: '5f88d3a361f76a2d3f000004',
-  child_type: 'mapOverlayGroup',
-};
 
 const getMeaslesMapOverlayGroupId = async db => {
   const { rows } = await db.runSql(
     `
     SELECT id from map_overlay_group 
-    WHERE code = '${measlesMapOverlayGroup.code}'
+    WHERE code = 'LAOS_EOC_Measles'
     `,
   );
-  return rows.length ? rows.id : false;
+  return rows[0].id;
 };
 
-const setMeaslesMapOverlayGroupId = async db => {
-  const measlesMapOverlayGroupId = await getMeaslesMapOverlayGroupId(db);
-  if (measlesMapOverlayGroupId) {
-    measlesMapOverlayGroup.id = measlesMapOverlayGroup;
-  } else {
-    measlesMapOverlayGroup.id = generateId();
-    await insertObject(db, 'map_overlay_group', measlesMapOverlayGroup);
-  }
-  mapOverlayGroupRelation.map_overlay_group_id = measlesMapOverlayGroup.id;
-  mapOverlayGroupToRootRelation.child_id = measlesMapOverlayGroup.id;
-};
+exports.up = async function (db) {
+  const mapOverlayGroupRelation = {
+    child_type: 'mapOverlay',
+    map_overlay_group_id: await getMeaslesMapOverlayGroupId(db),
+  };
 
-const insertOverlays = async db => {
   for (const mapOverlay of [
     measlesCaseMapOverlayBySubDistrict,
     measlesDeathMapOverlayBySubDistrict,
@@ -156,30 +134,8 @@ const insertOverlays = async db => {
   }
 };
 
-exports.up = async function (db) {
-  await setMeaslesMapOverlayGroupId(db);
-
-  await insertOverlays(db);
-
-  await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupToRootRelation);
-};
-
-exports.down = async function (db) {
-  await deleteObject(db, 'map_overlay_group_relation', {
-    child_id: mapOverlayGroupToRootRelation.child_id,
-  });
-  for (const mapOverlay of [
-    measlesCaseMapOverlayBySubDistrict,
-    measlesDeathMapOverlayBySubDistrict,
-    measlesCaseMapOverlayByFacility,
-    measlesDeathMapOverlayByFacility,
-  ]) {
-    await deleteObject(db, 'map_overlay_group_relation', {
-      child_id: mapOverlay.id,
-    });
-    await deleteObject(db, 'mapOverlay', { id: mapOverlay.id });
-  }
-  await deleteObject(db, 'map_overlay_group', { code: measlesMapOverlayGroup.code });
+exports.down = function (db) {
+  return null;
 };
 
 exports._meta = {
