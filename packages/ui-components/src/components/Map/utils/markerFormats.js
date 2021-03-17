@@ -5,7 +5,7 @@
  */
 
 import { formatDataValueByType } from '@tupaia/utils';
-import { resolveSpectrumColour } from './mapColors';
+import { resolveSpectrumColour } from './markerColors';
 import {
   YES_COLOR,
   NO_COLOR,
@@ -348,6 +348,6 @@ export const calculateRadiusScaleFactor = measureData => {
 
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
-function flattenNumericalMeasureData(measureData, key) {
+export function flattenNumericalMeasureData(measureData, key) {
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
