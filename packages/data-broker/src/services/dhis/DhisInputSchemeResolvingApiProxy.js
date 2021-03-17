@@ -242,8 +242,12 @@ export class DhisInputSchemeResolvingApiProxy {
 
     const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
     const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
-    if (orgUnitIdIndex === -1 || orgUnitCodeIndex === -1)
-      throw new Error("Can't read org unit id/code from dhis");
+
+    if (orgUnitIdIndex === -1) {
+      throw new Error('Can\'t read org unit id from dhis');
+    }
+
+    const hasOuCode = orgUnitCodeIndex !== -1;
 
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
 
@@ -263,6 +267,22 @@ export class DhisInputSchemeResolvingApiProxy {
     }
 
     const mappingsByDhisId = reduceToDictionary(mappings, el => el.config.dhis_id, 'entity_code');
+
+    if (!hasOuCode) {
+      // we need to modify the response to add org unit codes in
+      // TODO: clean up in #2504
+      // Normally with code based api/analytics/rawData.json call, the response includes the code. We need the dhisId in the
+      // response for each org unit, so we have to change the outputIdScheme to uid, which means org unit code no longer comes
+      // back. So we add it back in manually.
+      response.headers.push({
+        name: 'oucode'
+      });
+      const newOrgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
+      // set org unit code to UNKNOWN, which will be the default if we dont have the mapping in the next block
+      response.rows.map(row => {
+        row[newOrgUnitCodeIndex] = 'UNKNOWN';
+      });
+    }
 
     const newRows = response.rows.map(row => {
       const newRow = [...row];
