@@ -46,13 +46,13 @@ const measlesBaseMapOverlayBySubDistrict = {
 const measlesCaseMapOverlayBySubDistrict = {
   ...measlesBaseMapOverlayBySubDistrict,
   id: 'LAOS_EOC_Total_Measles_Cases_By_Sub_District',
-  name: 'Measles Cases by Sub District',
+  name: 'Measles Cases by District',
   dataElementCode: 'Total_Positive_Measles_Cases',
 };
 const measlesDeathMapOverlayBySubDistrict = {
   ...measlesBaseMapOverlayBySubDistrict,
   id: 'LAOS_EOC_Total_Measles_Deaths_By_Sub_District',
-  name: '	Measles Deaths by Sub District',
+  name: '	Measles Deaths by District',
   dataElementCode: 'Total_Measles_Deaths',
 };
 const measlesBaseMapOverlayByFacility = color => ({
