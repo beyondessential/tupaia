@@ -5,7 +5,7 @@
  */
 
 import { formatDataValueByType } from '@tupaia/utils';
-import { resolveSpectrumColour } from './color';
+import { resolveSpectrumColour } from './mapColors';
 import {
   YES_COLOR,
   NO_COLOR,
