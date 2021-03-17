@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { UNKNOWN_COLOR } from '../Markers/markerColors';
+import { UNKNOWN_COLOR } from '../constants';
 import {
   DEFAULT_ICON,
   HIDDEN_ICON,

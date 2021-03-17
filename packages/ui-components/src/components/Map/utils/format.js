@@ -5,16 +5,16 @@
  */
 
 import { formatDataValueByType } from '@tupaia/utils';
+import { resolveSpectrumColour } from './color';
 import {
   YES_COLOR,
   NO_COLOR,
   BREWER_AUTO,
   UNKNOWN_COLOR,
-  resolveSpectrumColour,
   MAP_COLORS,
-} from './Markers/markerColors';
-import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from './Markers/markerIcons';
-import { SCALE_TYPES } from './constants';
+  SCALE_TYPES,
+} from '../constants';
+import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../Markers/markerIcons';
 
 export const MEASURE_TYPE_ICON = 'icon';
 export const MEASURE_TYPE_COLOR = 'color';

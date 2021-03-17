@@ -8,7 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { resolveSpectrumColour } from '../Markers/markerColors';
+import { resolveSpectrumColour } from '../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { SCALE_TYPES } from '../constants';
 import { LegendEntry } from './LegendEntry';
