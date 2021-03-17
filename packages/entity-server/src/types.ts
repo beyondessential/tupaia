@@ -4,9 +4,10 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { EntityModel, EntityHierarchyModel } from './models';
+import { AncestorDescendantRelationModel, EntityModel, EntityHierarchyModel } from './models';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
+  readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
 }
