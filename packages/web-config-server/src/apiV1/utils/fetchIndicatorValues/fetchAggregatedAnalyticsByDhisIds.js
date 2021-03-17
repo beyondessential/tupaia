@@ -55,7 +55,7 @@ export const fetchAggregatedAnalyticsByDhisIds = async (
 
   const analyticResults = await getAggregatedAnalytics(query, dhisApi, dataElementIdToCode, entityIdToCode);
 
-  if (entityAggregation.aggregationEntityType) {
+  if (entityAggregation && entityAggregation.aggregationEntityType) {
     if (!hierarchyId) {
       throw new Error('Cannot perform entity aggregation without hierarchyId');
     }
