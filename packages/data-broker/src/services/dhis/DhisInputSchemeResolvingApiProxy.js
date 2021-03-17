@@ -3,7 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
+import {
+  translateElementKeysInEventAnalytics,
+  translateElementsKeysAndCodeInAnalytics,
+} from '@tupaia/dhis-api';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
@@ -16,18 +19,37 @@ export class DhisInputSchemeResolvingApiProxy {
   async getAnalytics(query) {
     let modifiedQuery = { ...query };
 
-    if (
-      (await this.allDataElementsHaveDhisId(query)) &&
-      (await this.allOrgUnitsHaveDhisId(query))
-    ) {
+    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(query);
+    const allOrgUnitsHaveDhisId = await this.allOrgUnitsHaveDhisId(query);
+
+    if (allDataElementsHaveDhisId && allOrgUnitsHaveDhisId) {
       // the endpoint used /api/analytics/rawData.json only allows a single "inputIdScheme", which means
       // both the dataElements and orgUnits need to be ids
       modifiedQuery = await this.replaceDataElementCodesWithIds(modifiedQuery);
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
       modifiedQuery.inputIdScheme = 'uid';
+      modifiedQuery.outputIdScheme = 'uid';
     }
 
-    return this.api.getAnalytics(modifiedQuery);
+    const response = await this.api.getAnalytics(modifiedQuery);
+
+    let translatedResponse = { ...response };
+
+    // The api response will contain data elements with ids, and DhisApi will not be able to translate these
+    // back into codes (because the codes are not set in dhis). So, we have to do it ourselves using the internal
+    // mapping.
+    if (allDataElementsHaveDhisId) {
+      translatedResponse = await this.translateDataElementIdsToCodesInResponse(
+        translatedResponse,
+        query.dataElementCodes,
+        false,
+      );
+    }
+
+    // It's a little bit more complex with org units, as dhis may return
+    // different org units than were requested
+    translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(translatedResponse);
+    return translatedResponse;
   }
 
   async getEventAnalytics(query) {
@@ -72,6 +94,7 @@ export class DhisInputSchemeResolvingApiProxy {
       translatedResponse = await this.translateDataElementIdsToCodesInResponse(
         translatedResponse,
         query.dataElementCodes,
+        true,
       );
     }
 
@@ -134,7 +157,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   allProgramsHaveDhisId = async query => {
-    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
+    const programCodes = query.programCode ? [query.programCode] : query.programCodes || [];
 
     const dataGroups = await this.models.dataSource.find({ code: programCodes, type: 'dataGroup' });
 
@@ -190,7 +213,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @returns {*}
    * @private
    */
-  translateDataElementIdsToCodesInResponse = async (response, dataElementCodes) => {
+  translateDataElementIdsToCodesInResponse = async (response, dataElementCodes, isEventBased) => {
     const dataElementIdToCode = {};
 
     const dataElements = await this.models.dataSource.find({
@@ -204,7 +227,9 @@ export class DhisInputSchemeResolvingApiProxy {
       }
     }
 
-    return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
+    return isEventBased
+      ? translateElementKeysInEventAnalytics(response, dataElementIdToCode)
+      : translateElementsKeysAndCodeInAnalytics(response, dataElementIdToCode);
   };
 
   /**
@@ -293,7 +318,7 @@ export class DhisInputSchemeResolvingApiProxy {
   replaceProgramCodesWithIds = async query => {
     const modifiedQuery = { ...query };
 
-    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
+    const programCodes = query.programCode ? [query.programCode] : query.programCodes || [];
 
     if (programCodes.length === 0) {
       throw new Error('No program codes to replace');
