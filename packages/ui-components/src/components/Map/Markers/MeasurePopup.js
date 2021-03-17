@@ -20,7 +20,7 @@ const buildHeaderText = (measureData, popupHeaderFormat) => {
   );
 };
 
-export const MeasurePopup = ({ measureData, measureOptions }) => {
+export const MeasurePopup = React.memo(({ measureData, measureOptions }) => {
   const { coordinates } = measureData;
   const { popupHeaderFormat = '{name}' } = measureOptions.reduce(
     (all, mo) => ({ ...all, ...mo }),
@@ -46,7 +46,7 @@ export const MeasurePopup = ({ measureData, measureOptions }) => {
         })}
     </PopupMarker>
   );
-};
+});
 
 MeasurePopup.propTypes = {
   measureData: PropTypes.shape({

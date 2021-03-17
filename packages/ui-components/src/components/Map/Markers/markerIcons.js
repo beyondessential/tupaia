@@ -8,9 +8,7 @@ import L from 'leaflet';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-
 import styled from 'styled-components';
-
 import Warning from '@material-ui/icons/Warning';
 import Help from '@material-ui/icons/Help';
 import CheckBox from '@material-ui/icons/CheckBox';
@@ -21,8 +19,7 @@ import Earthquake from './images/earthquake.svg';
 import Tsunami from './images/tsunami.svg';
 import Volcano from './images/volcano.svg';
 import Flood from './images/flood.svg';
-
-import { BREWER_PALETTE, WHITE } from './markerColors';
+import { BREWER_PALETTE, WHITE } from '../constants';
 
 // allows passing a color to a material icon & scales it down a bit
 const wrapMaterialIcon = Base => ({ color }) => <Base htmlColor={color} viewBox="-3 -3 29 29" />;
