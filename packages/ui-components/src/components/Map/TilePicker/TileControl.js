@@ -84,7 +84,7 @@ const LegendLabel = styled(Typography)`
   margin-bottom: 0.3rem;
 `;
 
-export const TileControl = ({ tileSet, isActive, ...props }) => (
+export const TileControl = React.memo(({ tileSet, isActive, ...props }) => (
   <StyledButton variant="contained" active={isActive.toString()} {...props}>
     <Box display="flex" alignItems="center">
       <img src={tileSet.thumbnail} alt="tile" />
@@ -104,7 +104,7 @@ export const TileControl = ({ tileSet, isActive, ...props }) => (
       </Box>
     )}
   </StyledButton>
-);
+));
 
 TileControl.propTypes = {
   tileSet: PropTypes.shape(tileSetShape).isRequired,

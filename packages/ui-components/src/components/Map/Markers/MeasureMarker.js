@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { IconMarker } from './IconMarker';
 import { CircleProportionMarker } from './CircleProportionMarker';
 
-export const MeasureMarker = props => {
+export const MeasureMarker = React.memo(props => {
   const { icon, radius, displayPolygons } = props;
 
   if (displayPolygons) {
@@ -38,7 +38,7 @@ export const MeasureMarker = props => {
     return <CircleProportionMarker {...props} />;
   }
   return <IconMarker {...props} />;
-};
+});
 
 MeasureMarker.propTypes = {
   icon: PropTypes.string.isRequired,

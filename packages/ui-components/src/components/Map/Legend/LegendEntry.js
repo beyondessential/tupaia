@@ -17,22 +17,16 @@ const Key = styled.div`
   ${p => (p.hidden ? 'opacity: 0.5;' : '')}
 `;
 
-export const LegendEntry = ({
-  marker,
-  label,
-  value,
-  dataKey,
-  hideByDefault,
-  onClick,
-  unClickable,
-}) => (
-  <Key
-    onClick={unClickable || !onClick ? null : () => onClick(dataKey, value, !hideByDefault)}
-    hidden={hideByDefault}
-  >
-    {marker}
-    <div>{label}</div>
-  </Key>
+export const LegendEntry = React.memo(
+  ({ marker, label, value, dataKey, hideByDefault, onClick, unClickable }) => (
+    <Key
+      onClick={unClickable || !onClick ? null : () => onClick(dataKey, value, !hideByDefault)}
+      hidden={hideByDefault}
+    >
+      {marker}
+      <div>{label}</div>
+    </Key>
+  ),
 );
 
 LegendEntry.propTypes = {

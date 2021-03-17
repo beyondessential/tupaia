@@ -38,42 +38,44 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-export const PopupMarker = ({
-  onDetailButtonClick,
-  onOpen,
-  onClose,
-  sidePanelWidth,
-  buttonText,
-  headerText,
-  coordinates,
-  children,
-  popupRef,
-}) => {
-  const displayCoordinates = coordinates.map(c => c.toFixed(5)).join(', ');
-  return (
-    <Popup
-      pane="popupPane"
-      autoPanPaddingTopLeft={[0, TOP_BAR_HEIGHT]}
-      autoPanPaddingBottomRight={[sidePanelWidth, TOP_BAR_HEIGHT]}
-      minWidth={300}
-      maxWidth={300}
-      onOpen={onOpen}
-      onClose={onClose}
-      ref={popupRef}
-    >
-      <Content>
-        <Heading>{headerText}</Heading>
-        {coordinates && <ContentItem>({displayCoordinates})</ContentItem>}
-        <ContentItem>{children}</ContentItem>
-        {onDetailButtonClick && buttonText && (
-          <Button type="button" onClick={onDetailButtonClick}>
-            {buttonText}
-          </Button>
-        )}
-      </Content>
-    </Popup>
-  );
-};
+export const PopupMarker = React.memo(
+  ({
+    onDetailButtonClick,
+    onOpen,
+    onClose,
+    sidePanelWidth,
+    buttonText,
+    headerText,
+    coordinates,
+    children,
+    popupRef,
+  }) => {
+    const displayCoordinates = coordinates.map(c => c.toFixed(5)).join(', ');
+    return (
+      <Popup
+        pane="popupPane"
+        autoPanPaddingTopLeft={[0, TOP_BAR_HEIGHT]}
+        autoPanPaddingBottomRight={[sidePanelWidth, TOP_BAR_HEIGHT]}
+        minWidth={300}
+        maxWidth={300}
+        onOpen={onOpen}
+        onClose={onClose}
+        ref={popupRef}
+      >
+        <Content>
+          <Heading>{headerText}</Heading>
+          {coordinates && <ContentItem>({displayCoordinates})</ContentItem>}
+          <ContentItem>{children}</ContentItem>
+          {onDetailButtonClick && buttonText && (
+            <Button type="button" onClick={onDetailButtonClick}>
+              {buttonText}
+            </Button>
+          )}
+        </Content>
+      </Popup>
+    );
+  },
+);
 
 PopupMarker.propTypes = {
   coordinates: PropTypes.arrayOf(PropTypes.number),

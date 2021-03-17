@@ -8,23 +8,17 @@ import PropTypes from 'prop-types';
 import { Marker } from 'react-leaflet';
 import { getMarkerForValue, ICON_VALUES } from './markerIcons';
 
-export const IconMarker = ({
-  icon,
-  color,
-  children,
-  coordinates,
-  markerRef,
-  scale,
-  handleClick,
-}) => (
-  <Marker
-    position={coordinates}
-    icon={getMarkerForValue(icon, color, scale)}
-    ref={markerRef}
-    onClick={handleClick}
-  >
-    {children}
-  </Marker>
+export const IconMarker = React.memo(
+  ({ icon, color, children, coordinates, markerRef, scale, handleClick }) => (
+    <Marker
+      position={coordinates}
+      icon={getMarkerForValue(icon, color, scale)}
+      ref={markerRef}
+      onClick={handleClick}
+    >
+      {children}
+    </Marker>
+  ),
 );
 
 IconMarker.propTypes = {

@@ -75,12 +75,12 @@ const TileLabel = styled(Typography)`
   opacity: 0.9;
 `;
 
-export const TileButton = ({ tileSet, isActive, onChange }) => (
+export const TileButton = React.memo(({ tileSet, isActive, onChange }) => (
   <StyledButton onClick={() => onChange(tileSet.key)} className={isActive ? 'active' : ''}>
     <Thumbnail style={{ backgroundImage: `url(${tileSet.thumbnail})` }} />
     <TileLabel>{tileSet.label}</TileLabel>
   </StyledButton>
-);
+));
 
 TileButton.propTypes = {
   tileSet: PropTypes.shape(tileSetShape).isRequired,
