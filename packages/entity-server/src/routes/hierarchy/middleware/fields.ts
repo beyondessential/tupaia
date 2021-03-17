@@ -4,7 +4,7 @@
  */
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
-import { EntityType, EntityFields, AncestorDescendantRelationType } from '../../../models';
+import { EntityType, EntityFields } from '../../../models';
 import {
   HierarchyRequest,
   HierarchyContext,
@@ -65,33 +65,14 @@ export const mapEntityToFields = (fields: (keyof ExtendedEntityFields)[]) => asy
   return mappedEntity;
 };
 
-const buildRelationRecordsAndEntityIdToCodeMap = async (
-  req: HierarchyRequest,
-  fields: (keyof ExtendedEntityFields)[],
-  entities: EntityType[],
-  context: HierarchyContext,
-): Promise<[AncestorDescendantRelationType[], Record<string, string>]> => {
-  if (!fields.includes('parent_code') && !fields.includes('children_codes')) {
-    return [[], {}];
-  }
-  const relationRecords = await req.models.ancestorDescendantRelation.find({
-    entity_hierarchy_id: context.hierarchyId,
-    generational_distance: 1,
-  });
-  const entityIdToCodeMap = reduceToDictionary(entities, 'id', 'code');
-  return [relationRecords, entityIdToCodeMap];
-};
-
 export const mapEntitiesToFields = (
   req: HierarchyRequest,
   fields: (keyof ExtendedEntityFields)[],
 ) => async (entities: EntityType[], context: HierarchyContext) => {
-  const [relationRecords, entityIdToCodeMap] = await buildRelationRecordsAndEntityIdToCodeMap(
-    req,
-    fields,
-    entities,
-    context,
-  );
+  const relationRecords =
+    fields.includes('parent_code') || fields.includes('children_codes')
+      ? await req.models.ancestorDescendantRelation.getImmediateRelations(context.hierarchyId)
+      : [];
   const mappedEntities: Writable<EntityResponseObject>[] = new Array(entities.length)
     .fill(0)
     .map(() => ({})); // fill array with empty objects
@@ -106,28 +87,23 @@ export const mapEntitiesToFields = (
         case 'parent_code': {
           const childToParentMap = reduceToDictionary(
             relationRecords,
-            'descendant_id',
-            'ancestor_id',
+            'descendant_code',
+            'ancestor_code',
           );
           entities.forEach((entity, index) => {
-            mappedEntities[index].parent_code = getParentCodeBulk(
-              entity,
-              entityIdToCodeMap,
-              childToParentMap,
-            );
+            mappedEntities[index].parent_code = getParentCodeBulk(entity, childToParentMap);
           });
           break;
         }
         case 'children_codes': {
           const parentToChildrenMap = reduceToArrayDictionary(
             relationRecords,
-            'ancestor_id',
-            'descendant_id',
+            'ancestor_code',
+            'descendant_code',
           );
           entities.forEach((entity, index) => {
             mappedEntities[index].children_codes = getChildrenCodesBulk(
               entity,
-              entityIdToCodeMap,
               parentToChildrenMap,
             );
           });

@@ -154,7 +154,7 @@ export class EntityType extends DatabaseType {
 
   async getParent(hierarchyId) {
     const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 1 });
-    return ancestors ?? ancestors.length > 0 ? ancestors[0] : undefined;
+    return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
   }
 
   async hasCountryParent() {
