@@ -4,7 +4,7 @@
  *
  */
 
-import { getHeatmapColor, getReverseHeatmapColor } from '../mapColors';
+import { getHeatmapColor, getReverseHeatmapColor } from '../utils';
 
 describe('getHeatmapColorByOrder()', () => {
   it('getHeatmapColor() should return expected rgb', () => {
