@@ -213,7 +213,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   translateOrgUnitIdsToCodesInResponse = async response => {
-    if (!response.rows.length) return response;
+    if (!response?.rows?.length) return response;
 
     const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
     const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
