@@ -23,6 +23,7 @@ const queryClient = new QueryClient();
 
 const Container = styled.div`
   position: relative;
+  height: 500px;
 
   > button {
     top: 2rem;
@@ -57,7 +58,9 @@ const TilePicker = styled(TilePickerComponent)`
 
 const Legend = styled(LegendComponent)`
   position: absolute;
-  bottom: -60px;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 999;
 `;
 

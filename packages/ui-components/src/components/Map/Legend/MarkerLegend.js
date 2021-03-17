@@ -24,16 +24,18 @@ import {
 import { LegendEntry } from './LegendEntry';
 import { FlexStart } from '../../Layout';
 
-// Icon layers can be set to hide some values from the map entirely - but if we're showing
-// radius values for them, we should still put them in the legend!
-// If a specific value has been set, assume that it's intentional that it's been hidden,
-// and hide the radius as well. But, if the hidden icon is 'other', go ahead and add it to
-// the legend and show the radius.
-function isHiddenOtherIcon({ value, icon }) {
+/**
+ * Icon layers can be set to hide some values from the map entirely - but if we're showing
+ * radius values for them, we should still put them in the legend!
+ * If a specific value has been set, assume that it's intentional that it's been hidden,
+ * and hide the radius as well. But, if the hidden icon is 'other', go ahead and add it to
+ * the legend and show the radius.
+ */
+const isHiddenOtherIcon = ({ value, icon }) => {
   return value === MEASURE_VALUE_OTHER && icon === HIDDEN_ICON;
-}
+};
 
-function getMarkerColor(value, type, hasColorLayer) {
+const getMarkerColor = (value, type, hasColorLayer) => {
   if (type === MEASURE_TYPE_COLOR) {
     // if this layer is providing color, of course show the color
     return value.color;
@@ -45,11 +47,10 @@ function getMarkerColor(value, type, hasColorLayer) {
 
   // if we have a color that isn't being overridden elsewhere, show it
   return value.color || UNKNOWN_COLOR;
-}
+};
 
-function getLegendMarkerForValue(value, type, hasIconLayer, hasRadiusLayer, hasColorLayer) {
+const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasColorLayer) => {
   const { icon } = value;
-
   const color = getMarkerColor(value, type, hasColorLayer);
 
   if (type === MEASURE_TYPE_ICON) {
@@ -78,12 +79,11 @@ function getLegendMarkerForValue(value, type, hasIconLayer, hasRadiusLayer, hasC
   }
   // color is the only measure here - show pins
   return getMarkerForOption(DEFAULT_ICON, color);
-}
+};
 
 export const MarkerLegend = React.memo(
   ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
     const { type, values, key: dataKey, valueMapping } = measureOptions;
-
     const keys = values
       .filter(v => !v.hideFromLegend)
       .filter(v => hasRadiusLayer || !isHiddenOtherIcon(v)) // only show hidden icons in legend if paired with radius
@@ -147,12 +147,13 @@ export const MarkerLegend = React.memo(
 );
 
 MarkerLegend.propTypes = {
-  measureOptions: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    }),
-  ).isRequired,
+  measureOptions: PropTypes.shape({
+    name: PropTypes.string,
+    key: PropTypes.string,
+    type: PropTypes.string,
+    values: PropTypes.array,
+    valueMapping: PropTypes.object,
+  }).isRequired,
   hasIconLayer: PropTypes.bool.isRequired,
   hasRadiusLayer: PropTypes.bool.isRequired,
   hasColorLayer: PropTypes.bool.isRequired,

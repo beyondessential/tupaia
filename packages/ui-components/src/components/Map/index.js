@@ -10,3 +10,4 @@ export * from './MarkerLayer';
 export * from './PolygonLayer';
 export * from './TileLayer';
 export * from './TilePicker';
+export * from './utils';

@@ -7,7 +7,7 @@ import moment from 'moment';
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { formatDataValue } from '@tupaia/utils';
+import { formatDataValueByType } from '@tupaia/utils';
 import { resolveSpectrumColour } from '../Markers/markerColors';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { SCALE_TYPES } from '../constants';
@@ -20,11 +20,11 @@ const SpectrumSliver = styled.div`
 `;
 
 const LabelLeft = styled.div`
-  margin-right: 10px;
+  margin-right: 0.625rem;
 `;
 
 const LabelRight = styled.div`
-  margin-left: 10px;
+  margin-left: 0.625rem;
 `;
 
 const getSpectrumLabels = (scaleType, min, max, valueType) => {
@@ -32,7 +32,10 @@ const getSpectrumLabels = (scaleType, min, max, valueType) => {
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.PERFORMANCE_DESC:
     case SCALE_TYPES.NEUTRAL:
-      return { left: formatDataValue(min, valueType), right: formatDataValue(max, valueType) };
+      return {
+        left: formatDataValueByType({ value: min }, valueType),
+        right: formatDataValueByType({ value: max }, valueType),
+      };
     case SCALE_TYPES.TIME:
       return { left: '0 days', right: `${moment(max).diff(min, 'days')} days old` };
     default:
@@ -100,8 +103,8 @@ export const SpectrumLegend = React.memo(({ measureOptions }) => {
     scaleType,
     key,
     hideByDefault,
-    scaleColorScheme, // missing?
-    valueType, // missing?
+    scaleColorScheme,
+    valueType,
   } = measureOptions;
 
   const { value } = valueMapping.null;
@@ -125,9 +128,13 @@ export const SpectrumLegend = React.memo(({ measureOptions }) => {
 SpectrumLegend.propTypes = {
   measureOptions: PropTypes.shape({
     valueMapping: PropTypes.object,
+    scaleColorScheme: PropTypes.object,
     min: PropTypes.number,
     max: PropTypes.number,
     scaleType: PropTypes.string,
+    key: PropTypes.string,
+    hideByDefault: PropTypes.bool,
+    valueType: PropTypes.string,
     noDataColour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
 };

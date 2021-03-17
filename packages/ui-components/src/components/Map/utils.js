@@ -4,7 +4,7 @@
  *
  */
 
-import { formatDataValue } from '@tupaia/utils';
+import { formatDataValueByType } from '@tupaia/utils';
 import {
   YES_COLOR,
   NO_COLOR,
@@ -109,7 +109,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
       if (scaleType === SCALE_TYPES.TIME) {
         return `last submission on ${submissionDate}`;
       }
-      return formatDataValue(value, valueType);
+      return formatDataValueByType({ value }, valueType);
     case MEASURE_TYPE_RADIUS:
     case MEASURE_TYPE_ICON:
     case MEASURE_TYPE_COLOR:
@@ -229,10 +229,9 @@ export function getFormattedInfo(orgUnitData, measureOption) {
     (orgUnitData[displayedValueKey] || orgUnitData[displayedValueKey] === 0)
   ) {
     return {
-      formattedValue: formatDataValue(
-        orgUnitData[displayedValueKey],
+      formattedValue: formatDataValueByType(
+        { value: orgUnitData[displayedValueKey], metadata: orgUnitData.metadata },
         valueType,
-        orgUnitData.metadata,
       ),
       valueInfo,
     };

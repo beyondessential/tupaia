@@ -27,7 +27,7 @@ export const LegendEntry = ({
   unClickable,
 }) => (
   <Key
-    onClick={unClickable ? null : () => onClick(dataKey, value, !hideByDefault)}
+    onClick={unClickable || !onClick ? null : () => onClick(dataKey, value, !hideByDefault)}
     hidden={hideByDefault}
   >
     {marker}
@@ -38,7 +38,7 @@ export const LegendEntry = ({
 LegendEntry.propTypes = {
   marker: PropTypes.element.isRequired,
   label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
   dataKey: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   hideByDefault: PropTypes.bool,
@@ -49,4 +49,5 @@ LegendEntry.defaultProps = {
   unClickable: false,
   hideByDefault: false,
   onClick: null,
+  value: null,
 };
