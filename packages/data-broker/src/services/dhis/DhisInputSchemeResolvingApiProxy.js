@@ -216,7 +216,7 @@ export class DhisInputSchemeResolvingApiProxy {
     if (!response?.rows?.length) return response;
 
     const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
-    const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
+    let orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
 
     if (orgUnitIdIndex === -1) {
       throw new Error('Can\'t read org unit id from dhis');
@@ -252,10 +252,10 @@ export class DhisInputSchemeResolvingApiProxy {
       response.headers.push({
         name: 'oucode'
       });
-      const newOrgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
+      orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
       // set org unit code to UNKNOWN, which will be the default if we dont have the mapping in the next block
       response.rows.map(row => {
-        row[newOrgUnitCodeIndex] = 'UNKNOWN';
+        row[orgUnitCodeIndex] = 'UNKNOWN';
       });
     }
 
