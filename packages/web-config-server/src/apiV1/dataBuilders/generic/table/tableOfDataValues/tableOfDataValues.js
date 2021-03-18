@@ -7,6 +7,7 @@ import flatten from 'lodash.flatten';
 import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToSet, getSortByKey } from '@tupaia/utils';
+
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { TableConfig } from './TableConfig';
@@ -15,6 +16,10 @@ import { TotalCalculator } from './TotalCalculator';
 import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
 import { getValuesByCell } from './helpers/getValuesByCell';
 import { buildColumnSummary, buildRowSummary } from './helpers/addSummaryToTable';
+import {
+  fetchAggregatedAnalyticsByDhisIds,
+  checkAllDataElementsAreDhisIndicators,
+} from '../../../../../apiV1/utils';
 import {
   ORG_UNIT_COL_KEY,
   ORG_UNIT_WITH_TYPE_COL_KEY,
@@ -94,6 +99,23 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     // There are some valid configs which don't fetch any data
     if (dataElementCodes.length === 0) return { results: [] };
 
+    // TODO: This if block is to implement a hacky approach to fetch indicator values
+    // because the normal analytics/rawData.json endpoint does not return any data for indicators.
+    // Will have to implement this properly with #tupaia-backlog/issues/2412
+    // After that remove this file and anything related to it
+    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
+      this.models,
+      dataElementCodes,
+    );
+    if (allDataElementsAreDhisIndicators) {
+      const { results, period } = await this.fetchAnalyticsByDhisApi(dataElementCodes);
+      const resultsWithMetadata = results.map(result => ({
+        ...result,
+        metadata: { code: result.dataElement },
+      }));
+      return { results: resultsWithMetadata, period };
+    }
+
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
@@ -101,8 +123,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       ...result,
       metadata: dataElementByCode[result.dataElement] || {},
     }));
-
     return { results: resultsWithMetadata, period };
+  }
+
+  async fetchAnalyticsByDhisApi(dataElementCodes) {
+    const { entityAggregation } = this.config;
+    return fetchAggregatedAnalyticsByDhisIds(
+      this.models,
+      this.dhisApi,
+      dataElementCodes,
+      this.query,
+      entityAggregation,
+    );
   }
 
   buildDataElementCodes() {
