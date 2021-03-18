@@ -4,18 +4,30 @@
  */
 
 import { EntityModel as BaseEntityModel, EntityType as BaseEntityType } from '@tupaia/database';
-import { Model } from './types';
+import { Model, DbConditional } from './types';
 
 export type EntityFields = Readonly<{
   id: string;
   code: string;
-  country_code: string;
+  name: string;
+  country_code: string | null;
+  type: string | null;
+  image_url: string | null;
+  region: string | null;
+  point: string | null;
+  bounds: string | null;
 }>;
 
 export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
-  getChildren: (hierarchyId: string) => Promise<EntityType[]>;
+  getChildren: (
+    hierarchyId: string,
+    criteria?: DbConditional<EntityFields>,
+  ) => Promise<EntityType[]>;
   getParent: (hierarchyId: string) => Promise<EntityType | undefined>;
-  getDescendants: (hierarchyId: string) => Promise<EntityType[]>;
+  getDescendants: (
+    hierarchyId: string,
+    criteria?: DbConditional<EntityFields>,
+  ) => Promise<EntityType[]>;
 }
 
 export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityType> {}

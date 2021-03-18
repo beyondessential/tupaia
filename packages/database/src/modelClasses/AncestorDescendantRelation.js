@@ -32,8 +32,9 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
     return AncestorDescendantRelationType;
   }
 
-  async getImmediateRelations(hierarchyId) {
+  async getImmediateRelations(hierarchyId, criteria) {
     return this.find({
+      ...criteria,
       entity_hierarchy_id: hierarchyId,
       generational_distance: 1,
     });

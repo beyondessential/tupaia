@@ -18,7 +18,9 @@ export class EntityDescendantsRoute extends Route<
   async buildResponse() {
     return this.res.context.formatEntitiesForResponse(
       [this.req.context.entity].concat(
-        await this.req.context.entity.getDescendants(this.req.context.hierarchyId),
+        await this.req.context.entity.getDescendants(this.req.context.hierarchyId, {
+          country_code: this.req.context.allowedCountries,
+        }),
       ),
     );
   }

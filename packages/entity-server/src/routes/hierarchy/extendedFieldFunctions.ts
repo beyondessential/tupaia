@@ -3,6 +3,12 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import {
+  translatePoint,
+  translateRegion,
+  translateBounds,
+  calculateOuterBounds,
+} from '@tupaia/utils';
 import { EntityType } from '../../models';
 
 const getParentCode = async (
@@ -27,10 +33,13 @@ const getChildrenCodes = async (
   entity: EntityType,
   context: {
     hierarchyId: string;
+    allowedCountries: string[];
   },
 ) => {
-  const { hierarchyId } = context;
-  return (await entity.getChildren(hierarchyId)).map(child => child.code);
+  const { hierarchyId, allowedCountries } = context;
+  return (await entity.getChildren(hierarchyId, { country_code: allowedCountries })).map(
+    child => child.code,
+  );
 };
 
 /**
@@ -44,7 +53,37 @@ export const getChildrenCodesBulk = (
   return parentToChildrenMap[entity.code];
 };
 
+const getLocationType = (entity: EntityType) => {
+  if (entity.region) return 'area';
+  if (entity.point) return 'point';
+  return 'no-coordinates';
+};
+
+const getPoint = (entity: EntityType) => {
+  return translatePoint(entity.point);
+};
+
+const getRegion = (entity: EntityType) => {
+  return translateRegion(entity.region);
+};
+
+const getBounds = async (
+  entity: EntityType,
+  context: { hierarchyId: string; allowedCountries: string[] },
+) => {
+  const { hierarchyId, allowedCountries } = context;
+  const children = await entity.getChildren(hierarchyId, { country_code: allowedCountries });
+  if (children.length > 0) {
+    return calculateOuterBounds(children.map(child => child.bounds));
+  }
+  return translateBounds(entity.bounds);
+};
+
 export const extendedFieldFunctions = {
   parent_code: getParentCode,
   children_codes: getChildrenCodes,
+  location_type: getLocationType,
+  point: getPoint,
+  region: getRegion,
+  bounds: getBounds,
 };

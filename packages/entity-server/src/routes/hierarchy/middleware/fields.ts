@@ -5,6 +5,7 @@
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityType, EntityFields } from '../../../models';
+import { Resolved } from '../../../types';
 import {
   HierarchyRequest,
   HierarchyContext,
@@ -20,8 +21,10 @@ import {
 const validFields: (keyof EntityFields)[] = ['code', 'country_code'];
 const isEntityField = (field: string): field is keyof EntityFields =>
   (validFields as string[]).includes(field);
+const isExtendedField = (field: string): field is keyof typeof extendedFieldFunctions =>
+  Object.keys(extendedFieldFunctions).includes(field);
 const validateField = (field: string): field is keyof ExtendedEntityFields =>
-  isEntityField(field) || Object.keys(extendedFieldFunctions).includes(field);
+  isEntityField(field) || isExtendedField(field);
 
 const allFields = [
   ...validFields,
@@ -46,6 +49,30 @@ export const extractFieldsFromQuery = (queryFields?: string) => {
 };
 
 type Writable<T> = { -readonly [field in keyof T]?: T[field] };
+
+const assignExtendedFieldToResponseObject = async (
+  entity: EntityType,
+  responseObject: Writable<EntityResponseObject>,
+  field: keyof typeof extendedFieldFunctions,
+  context: HierarchyContext,
+) => {
+  /* eslint-disable no-param-reassign */
+  (responseObject[field] as Resolved<
+    ReturnType<typeof extendedFieldFunctions[typeof field]>
+  >) = await extendedFieldFunctions[field](entity, context);
+  /* eslint-enable no-param-reassign */
+};
+
+const assignBasicFieldToResponseObject = async (
+  entity: EntityType,
+  responseObject: Writable<EntityResponseObject>,
+  field: keyof EntityFields,
+) => {
+  /* eslint-disable no-param-reassign */
+  (responseObject[field] as typeof entity[typeof field]) = entity[field];
+  /* eslint-enable no-param-reassign */
+};
+
 export const mapEntityToFields = (fields: (keyof ExtendedEntityFields)[]) => async (
   entity: EntityType,
   context: HierarchyContext,
@@ -53,13 +80,10 @@ export const mapEntityToFields = (fields: (keyof ExtendedEntityFields)[]) => asy
   const mappedEntity: Writable<EntityResponseObject> = {};
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
-    if (isEntityField(field)) {
-      mappedEntity[field] = entity[field];
+    if (isExtendedField(field)) {
+      await assignExtendedFieldToResponseObject(entity, mappedEntity, field, context);
     } else {
-      (mappedEntity[field] as string | string[] | undefined) = await extendedFieldFunctions[field](
-        entity,
-        context,
-      );
+      assignBasicFieldToResponseObject(entity, mappedEntity, field);
     }
   }
   return mappedEntity;
@@ -71,18 +95,16 @@ export const mapEntitiesToFields = (
 ) => async (entities: EntityType[], context: HierarchyContext) => {
   const relationRecords =
     fields.includes('parent_code') || fields.includes('children_codes')
-      ? await req.models.ancestorDescendantRelation.getImmediateRelations(context.hierarchyId)
+      ? await req.models.ancestorDescendantRelation.getImmediateRelations(context.hierarchyId, {
+          'descendant.country_code': req.context.allowedCountries,
+        })
       : [];
   const mappedEntities: Writable<EntityResponseObject>[] = new Array(entities.length)
     .fill(0)
     .map(() => ({})); // fill array with empty objects
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
-    if (isEntityField(field)) {
-      entities.forEach((entity, index) => {
-        mappedEntities[index][field] = entity[field];
-      });
-    } else {
+    if (isExtendedField(field)) {
       switch (field) {
         case 'parent_code': {
           const childToParentMap = reduceToDictionary(
@@ -110,9 +132,22 @@ export const mapEntitiesToFields = (
           break;
         }
         default: {
-          throw new Error(`Unknown extended entity field requested: ${field}`);
+          await Promise.all(
+            entities.map((entity, index) => {
+              return assignExtendedFieldToResponseObject(
+                entity,
+                mappedEntities[index],
+                field,
+                context,
+              );
+            }),
+          );
         }
       }
+    } else {
+      entities.forEach((entity, index) => {
+        assignBasicFieldToResponseObject(entity, mappedEntities[index], field);
+      });
     }
   }
   return mappedEntities;

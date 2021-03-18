@@ -253,8 +253,8 @@ export class EntityType extends DatabaseType {
     return ancestors.map(a => a.code);
   }
 
-  async getChildren(hierarchyId) {
-    return this.getDescendants(hierarchyId, { generational_distance: 1 });
+  async getChildren(hierarchyId, criteria) {
+    return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
   async getChildrenViaHierarchy(hierarchyId) {

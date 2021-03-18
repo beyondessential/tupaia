@@ -6,6 +6,7 @@
 import { Request, Response } from 'express';
 import { EntityFields, EntityType } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
+import { Resolved } from '../../types';
 
 export interface HierarchyRequestParams {
   hierarchyName: string;
@@ -18,7 +19,6 @@ export interface HierarchyRequestQuery {
   fields?: string;
 }
 
-type Resolved<T> = T extends Promise<infer R> ? R : T; // Returns resolved type if type is promise
 export type ExtendedFieldFunctions = Readonly<
   {
     [field in keyof typeof extendedFieldFunctions]: Resolved<
@@ -39,6 +39,7 @@ export interface HierarchyContext {
   fields: (keyof ExtendedEntityFields)[];
   formatEntityForResponse: (entity: EntityType) => Promise<EntityResponseObject>;
   formatEntitiesForResponse: (entities: EntityType[]) => Promise<EntityResponseObject[]>;
+  allowedCountries: string[];
 }
 
 export interface HierarchyRequest<

@@ -14,11 +14,11 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch a single entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO?fields=code,country_code,parent_code,children_codes HTTP/1.1
+GET http://{{host}}/{{version}}/hierarchy/explore/explore?fields=code,country_code,parent_code,children_codes,bounds,region HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch descendants of an entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=code,country_code,parent_code,children_codes HTTP/1.1
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=code,country_code,parent_code,children_codes,region HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}

@@ -5,13 +5,12 @@
 
 import { pascal } from 'case';
 import { EntityType as CommonEntityType, EntityModel as CommonEntityModel } from '@tupaia/database';
-
 import {
-  calculateBoundsFromEntities,
-  translateBoundsForFrontend,
-  translatePointForFrontend,
-  translateRegionForFrontend,
-} from '/utils/geoJson';
+  calculateOuterBounds,
+  translateBounds,
+  translatePoint,
+  translateRegion,
+} from '@tupaia/utils';
 
 class EntityType extends CommonEntityType {
   getOrganisationLevel() {
@@ -40,13 +39,13 @@ class EntityType extends CommonEntityType {
 
     return {
       type,
-      point: translatePointForFrontend(point),
+      point: translatePoint(point),
 
       // When possible return the bounds for an entity based on the entities the user has access to
       bounds: this.entitiesWithAccess
-        ? calculateBoundsFromEntities(this.entitiesWithAccess)
-        : translateBoundsForFrontend(bounds),
-      region: translateRegionForFrontend(region),
+        ? calculateOuterBounds(this.entitiesWithAccess.map(entity => entity.bounds))
+        : translateBounds(bounds),
+      region: translateRegion(region),
     };
   }
 }

@@ -8,13 +8,13 @@ import {
   replaceValues,
   asyncFilter,
   asyncEvery,
+  translatePoint,
 } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 import some from 'lodash.some';
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
-import { translatePointForFrontend } from '/utils/geoJson';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
@@ -160,7 +160,7 @@ const getValueFromEntity = async (entity, config) => {
     case 'subType':
       return entity.attributes.type;
     case 'coordinates': {
-      const [lat, long] = translatePointForFrontend(entity.point);
+      const [lat, long] = translatePoint(entity.point);
       return `${lat}, ${long}`;
     }
     case '$countDescendantsMatchingConditions': {
