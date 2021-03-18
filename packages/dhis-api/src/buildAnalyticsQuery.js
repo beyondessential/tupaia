@@ -43,13 +43,14 @@ const buildDataValueAnalyticsQuery = queryInput => {
     inputIdScheme = 'code',
     outputIdScheme = 'uid',
     includeMetadataDetails = true,
+    additionalDimensions = ['co'],
   } = queryInput;
 
   const query = {
     inputIdScheme,
     outputIdScheme,
     includeMetadataDetails,
-    dimension: [`dx:${dx.join(';')}`, `ou:${ou.join(';')}`, 'co'],
+    dimension: [`dx:${dx.join(';')}`, `ou:${ou.join(';')}`, ...additionalDimensions],
   };
   return addTemporalDimension(query, queryInput);
 };

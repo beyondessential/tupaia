@@ -11,6 +11,7 @@ describe('weekly reports', () => {
 
     // select country
     cy.findByTestId('countries-table').within(() => {
+      // eslint-disable-next-line cypress/no-force
       cy.findAllByRole('link').first().click({ force: true }); // https://github.com/cypress-io/cypress/issues/7306
     });
 

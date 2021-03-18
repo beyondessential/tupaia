@@ -1,10 +1,11 @@
 {
-  "baseUrl": "http://localhost:8088",
   "experimentalFetchPolyfill": true,
-  "ignoreTestFiles": "snapshots.js",
+  "testFiles": "*.spec.js",
   "integrationFolder": "cypress/e2e",
+  "projectId": "pty5cc",
   "requestTimeout": 30000,
   "responseTimeout": 60000,
+  "tupaia_requireNonEmptyVisualisations": false,
   "useRelativeSnapshots": true,
   "viewportHeight": 900,
   "viewportWidth": 1400
