@@ -46,13 +46,13 @@ const malariaBaseMapOverlayBySubDistrict = {
 const malariaCaseMapOverlayBySubDistrict = {
   ...malariaBaseMapOverlayBySubDistrict,
   id: 'LAOS_EOC_Total_Malaria_Cases_By_Sub_District',
-  name: 'Malaria Cases by Sub District',
+  name: 'Malaria Cases by District',
   dataElementCode: 'Total_Positive_Malaria_Cases',
 };
 const malariaDeathMapOverlayBySubDistrict = {
   ...malariaBaseMapOverlayBySubDistrict,
   id: 'LAOS_EOC_Total_Malaria_Deaths_By_Sub_District',
-  name: '	Malaria Deaths by Sub District',
+  name: '	Malaria Deaths by District',
   dataElementCode: 'Total_Malaria_Deaths',
 };
 const malariaBaseMapOverlayByFacility = color => ({
