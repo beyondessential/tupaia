@@ -26,7 +26,6 @@ export class DhisInputSchemeResolvingApiProxy {
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
       modifiedQuery.inputIdScheme = 'uid';
       modifiedQuery.outputIdScheme = 'uid';
-      modifiedQuery.additionalDimensions = [];
     }
 
     const response = await this.api.getAnalytics(modifiedQuery);
