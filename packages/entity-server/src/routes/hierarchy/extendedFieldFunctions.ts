@@ -71,11 +71,14 @@ const getBounds = async (
   entity: EntityType,
   context: { hierarchyId: string; allowedCountries: string[] },
 ) => {
-  const { hierarchyId, allowedCountries } = context;
-  const children = await entity.getChildren(hierarchyId, { country_code: allowedCountries });
-  if (children.length > 0) {
-    return calculateOuterBounds(children.map(child => child.bounds));
+  if (entity.isProject()) {
+    const { hierarchyId, allowedCountries } = context;
+    const children = await entity.getChildren(hierarchyId, { country_code: allowedCountries });
+    if (children.length > 0) {
+      return calculateOuterBounds(children.map(child => child.bounds));
+    }
   }
+
   return translateBounds(entity.bounds);
 };
 

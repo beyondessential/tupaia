@@ -8,8 +8,7 @@ import { EntityType } from '../../../models';
 import { HierarchyRequest } from '../types';
 import { extractFieldsFromQuery, mapEntityToFields, mapEntitiesToFields } from './fields';
 
-const isNotUndefined = <T>(value: T | undefined): value is Exclude<T, undefined> =>
-  value !== undefined;
+const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
 
 const throwNoAccessError = (hierarchyName: string, entityCode: string) => {
   throw new PermissionsError(
@@ -32,9 +31,9 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
       : await req.models.entity.findOne({ code: hierarchy.name });
 
     const allowedCountries = (await rootEntity.getChildren(hierarchy.id))
-      .filter(e => req.accessPolicy.allows(e.country_code))
+      .filter(e => req.accessPolicy.allows(e.country_code || undefined))
       .map(e => e.country_code)
-      .filter(isNotUndefined);
+      .filter(notNull);
 
     if (allowedCountries.length < 1) {
       throwNoAccessError(hierarchyName, entityCode);
@@ -42,7 +41,7 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
 
     if (
       !entity.isProject() &&
-      (!isNotUndefined(entity.country_code) || !allowedCountries.includes(entity.country_code))
+      (!notNull(entity.country_code) || !allowedCountries.includes(entity.country_code))
     ) {
       throwNoAccessError(hierarchyName, entityCode);
     }
