@@ -16,15 +16,32 @@ export class DhisInputSchemeResolvingApiProxy {
   async getAnalytics(query) {
     let modifiedQuery = { ...query };
 
-    if (
-      (await this.allDataElementsHaveDhisId(query)) &&
-      (await this.allOrgUnitsHaveDhisId(query))
-    ) {
+    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(query);
+    const allOrgUnitsHaveDhisId = await this.allOrgUnitsHaveDhisId(query);
+
+    if (allDataElementsHaveDhisId && allOrgUnitsHaveDhisId) {
       // the endpoint used /api/analytics/rawData.json only allows a single "inputIdScheme", which means
       // both the dataElements and orgUnits need to be ids
       modifiedQuery = await this.replaceDataElementCodesWithIds(modifiedQuery);
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
       modifiedQuery.inputIdScheme = 'uid';
+      modifiedQuery.outputIdScheme = 'uid';
+      modifiedQuery.additionalDimensions = [];
+    }
+
+    const response = await this.api.getAnalytics(modifiedQuery);
+
+    let translatedResponse = { ...response };
+
+    // The api response will contain data elements with ids, and DhisApi will not be able to translate these
+    // back into codes (because the codes are not set in dhis). So, we have to do it ourselves using the internal
+    // mapping.
+    if (allDataElementsHaveDhisId) {
+      translatedResponse = await this.translateDataElementIdsToCodesInResponse(
+        translatedResponse,
+        query.dataElementCodes,
+        false,
+      );
     }
 
     return this.api.getAnalytics(modifiedQuery);
