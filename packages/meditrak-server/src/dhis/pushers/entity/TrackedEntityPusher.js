@@ -24,9 +24,9 @@ export class TrackedEntityPusher extends EntityPusher {
     const record = await this.buildRecord(entity);
     const diagnostics = await this.api.updateRecord(TRACKED_ENTITY_INSTANCE, record);
 
-    if (!entity.hasDhisId()) {
-      const dhisId = diagnostics.references[0];
-      await entity.setDhisId(dhisId);
+    if (!entity.hasDhisTrackedEntityId()) {
+      const trackedEntityId = diagnostics.references[0];
+      await entity.setDhisTrackedEntityId(trackedEntityId);
     }
 
     const data = await entity.getData();
@@ -38,8 +38,9 @@ export class TrackedEntityPusher extends EntityPusher {
    */
   async delete() {
     const entityData = await this.fetchDataFromSyncLog();
-    const dhisId = entityData.metadata && entityData.metadata.dhis && entityData.metadata.dhis.id;
-    const diagnostics = await this.api.deleteRecordById(TRACKED_ENTITY_INSTANCE, dhisId);
+    const trackedEntityId =
+      entityData.metadata && entityData.metadata.dhis && entityData.metadata.dhis.trackedEntityId;
+    const diagnostics = await this.api.deleteRecordById(TRACKED_ENTITY_INSTANCE, trackedEntityId);
 
     return diagnostics;
   }
@@ -55,8 +56,8 @@ export class TrackedEntityPusher extends EntityPusher {
       orgUnit,
       attributes,
     };
-    if (entity.hasDhisId()) {
-      record.id = entity.getDhisId();
+    if (entity.hasDhisTrackedEntityId()) {
+      record.id = entity.getDhisTrackedEntityId();
     }
 
     return record;

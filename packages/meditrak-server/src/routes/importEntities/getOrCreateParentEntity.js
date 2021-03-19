@@ -7,6 +7,28 @@ function getGeographicalAreaCode(name, country, district) {
   return `${district ? district.code : country.code}_${name.replace("'", '')}`;
 }
 
+async function getGeographicalAreaFromEntity(entity, models) {
+  if (entity.type === 'country') {
+    return models.geographicalArea.findOne({
+      name: entity.name,
+      level_code: 'country',
+    });
+  }
+  if (entity.type === 'district') {
+    return models.geographicalArea.findOne({
+      name: entity.name,
+      level_code: 'district',
+    });
+  }
+  if (entity.type === 'sub_district') {
+    return models.geographicalArea.findOne({
+      name: entity.name,
+      level_code: 'sub_district',
+    });
+  }
+  return null;
+}
+
 export async function getOrCreateParentEntity(transactingModels, entityObject, country) {
   const {
     district: districtName,
@@ -86,7 +108,13 @@ export async function getOrCreateParentEntity(transactingModels, entityObject, c
   if (parentCode) {
     const parentEntity = await transactingModels.entity.findOne({ code: parentCode });
     if (!parentEntity) throw new Error(`No entity matching parent code ${parentCode}`);
-    return { parentEntity };
+    const parentGeographicalArea = await getGeographicalAreaFromEntity(
+      parentEntity,
+      transactingModels,
+    );
+    if (!parentGeographicalArea) return { parentEntity };
+
+    return { parentEntity, parentGeographicalArea };
   }
   // no explicit parent code provided, use either subdistrict or district as parent entity
   if (subDistrict) return { parentGeographicalArea: subDistrict, parentEntity: subDistrictEntity };
