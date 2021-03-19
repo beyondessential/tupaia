@@ -343,6 +343,12 @@ export class Matrix extends PureComponent {
       ...this.props.presentationOptions,
       ...this.props.categoryPresentationOptions,
     };
+    const selectedCellValueInString =
+      typeof selectedCellValue === 'object'
+        ? Object.entries(selectedCellValue)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join('\\n')
+        : selectedCellValue;
     const { mainTitle, label, description, color } = selectedPresentationOption;
 
     return (
@@ -350,7 +356,7 @@ export class Matrix extends PureComponent {
         mainTitle={mainTitle}
         header={label}
         body={`${description || ''} ${
-          allPresentationOptions.showRawValue ? selectedCellValue : ''
+          allPresentationOptions.showRawValue ? selectedCellValueInString : ''
         }`}
         color={color}
         styles={this.props.calculatedStyles}

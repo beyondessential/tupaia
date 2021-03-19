@@ -13,9 +13,14 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { TableConfig } from './TableConfig';
 import { TotalCalculator } from './TotalCalculator';
 
-import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
-import { getValuesByCell } from './helpers/getValuesByCell';
-import { buildColumnSummary, buildRowSummary } from './helpers/addSummaryToTable';
+import {
+  buildBaseRowsForOrgUnit,
+  getValuesByCell,
+  buildColumnSummary,
+  buildRowSummary,
+  buildCategoryData,
+} from './helpers';
+
 import {
   fetchAggregatedAnalyticsByDhisIds,
   checkAllDataElementsAreDhisIndicators,
@@ -28,12 +33,7 @@ import {
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
-const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
 const EXCLUDED_VALUE = 'excludedValue';
-
-const CATEGORY_AGGREGATION_TYPES = {
-  AVERAGE: '$average',
-};
 
 export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
@@ -61,7 +61,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       const categories = await this.buildRowCategories();
 
       if (this.config.categoryAggregator) {
-        const categoryData = this.buildCategoryData(Object.values(rows));
+        const categoryData = buildCategoryData(Object.values(rows), this.config.categoryAggregator);
         newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {
         newData.rows = [...rows, ...categories];
@@ -371,44 +371,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const orgUnitCodeToName = reduceToDictionary(orgUnits, 'code', 'name');
 
     return code => orgUnitCodeToName[code];
-  };
-
-  buildCategoryData(rows) {
-    const totals = this.calculateCategoryTotals(rows);
-
-    if (this.config.categoryAggregator === CATEGORY_AGGREGATION_TYPES.AVERAGE) {
-      const categoryRowLengths = rows.reduce(
-        (lengths, row) => ({ ...lengths, [row.categoryId]: lengths[row.categoryId] + 1 || 1 }),
-        {},
-      );
-
-      return Object.entries(totals).reduce((averages, [category, columns]) => {
-        const averagedColumns = {};
-
-        Object.keys(columns).forEach(column => {
-          averagedColumns[column] = Math.round(columns[column] / categoryRowLengths[category]);
-        });
-
-        return { ...averages, [category]: averagedColumns };
-      }, {});
-    }
-
-    return totals;
-  }
-
-  calculateCategoryTotals = rows => {
-    const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
-    return rows.reduce((columnAggregates, row) => {
-      const { categoryId } = row;
-      const categoryTotals = columnAggregates[categoryId] || {};
-      Object.keys(row).forEach(key => {
-        if (!rowKeysToIgnore.has(key)) {
-          categoryTotals[key] = (categoryTotals[key] || 0) + (row[key] || 0);
-        }
-      });
-
-      return { ...columnAggregates, [categoryId]: categoryTotals };
-    }, {});
   };
 
   buildOrgsFromResults() {

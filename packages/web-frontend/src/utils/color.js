@@ -12,7 +12,10 @@ export const hexToRgba = (hex, opacity) => {
 const PRESENTATION_TYPES = {
   RANGE: 'range',
   CONDITION: 'condition',
+  OBJECT_CONDITION: 'objectCondition',
 };
+
+const OBJECT_CONDITION_TYPE_SOME = 'some';
 
 const CONDITION_TYPE = {
   '=': (value, filterValue) => value === filterValue,
@@ -32,24 +35,57 @@ const getPresentationOptionFromRange = (options, value) => {
 
 const getPresentationOptionFromKey = (options, value) => findByKey(options, value, false) || null;
 
+// Check if the value satisfies all the conditions if condition is an object
+const satisfyAllConditions = (conditions, value, opposite) => {
+  return Object.entries(conditions).every(([operator, conditionalValue]) => {
+    const checkConditionMethod = CONDITION_TYPE[operator];
+    if (checkConditionMethod) {
+      const result = checkConditionMethod(value, conditionalValue);
+      return opposite ? !result : result;
+    }
+    return false;
+  });
+};
+
 const getPresentationOptionFromCondition = (options, value) => {
   const { conditions = [] } = options;
 
   const option = conditions.find(({ condition }) => {
     if (typeof condition === 'object') {
-      // Check if the value satisfies all the conditions if condition is an object
-      return Object.entries(condition).every(([operator, conditionalValue]) => {
-        const checkConditionMethod = CONDITION_TYPE[operator];
-
-        return checkConditionMethod ? checkConditionMethod(value, conditionalValue) : false;
-      });
+      return satisfyAllConditions(condition, value);
     }
 
     // If condition is not an object, assume its the value we want to check (with '=' operator)
     const checkConditionMethod = CONDITION_TYPE['='];
     return checkConditionMethod(value, condition);
   });
+  return option;
+};
 
+const getPresentationOptionFromObjectCondition = (options, object) => {
+  const { conditions = [] } = options;
+  if (!object) return null;
+
+  const option = conditions.find(({ condition }) => {
+    if (typeof condition === 'object') {
+      if (condition[OBJECT_CONDITION_TYPE_SOME]) {
+        // Check at least one item meets condition, but not all
+        const conditionsInSome = condition[OBJECT_CONDITION_TYPE_SOME];
+        const someMeetCondition = Object.values(object).some(value =>
+          satisfyAllConditions(conditionsInSome, value),
+        );
+        const someMeetOppositeCondition = Object.values(object).some(value =>
+          satisfyAllConditions(conditionsInSome, value, true),
+        );
+        return someMeetCondition && someMeetOppositeCondition;
+      }
+      return Object.values(object).every(value => satisfyAllConditions(condition, value));
+    }
+
+    throw new Error(
+      `Please specify condition as object when using 'type: ${PRESENTATION_TYPES.OBJECT_CONDITION}' in presentation config`,
+    );
+  });
   return option;
 };
 
@@ -59,6 +95,8 @@ export const getPresentationOption = (options, value) => {
       return getPresentationOptionFromRange(options, value);
     case PRESENTATION_TYPES.CONDITION:
       return getPresentationOptionFromCondition(options, value);
+    case PRESENTATION_TYPES.OBJECT_CONDITION:
+      return getPresentationOptionFromObjectCondition(options, value);
     default:
       return getPresentationOptionFromKey(options.conditions, value);
   }
