@@ -71,6 +71,7 @@ export const ImportModalComponent = React.memo(
       setIsOpen(false);
       setValues({});
       setFile(null);
+      setFileName(noFileMessage);
     };
 
     const handleSubmit = async event => {
