@@ -3,6 +3,7 @@
 # Get latest code and dependencies
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
 cd ${HOME_DIRECTORY}
+git remote prune origin
 git fetch --all
 git checkout dev # Ensure we have dev as our default, if the specified branch doesn't exist
 git reset --hard origin/dev
