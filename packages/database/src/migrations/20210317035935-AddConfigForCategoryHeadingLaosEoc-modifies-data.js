@@ -28,10 +28,12 @@ const categoryPresentationOptions = {
   type: 'objectCondition',
   conditions: [
     {
-      key: 'red',
+      key: 'default',
       color: '#b71c1c',
       label: '',
-      condition: { '=': 0 },
+      condition: {
+        '=': 0,
+      },
       legendLabel: 'Stock out',
     },
     {
@@ -50,7 +52,64 @@ const categoryPresentationOptions = {
       condition: {
         some: { '>': 0 },
       },
+      legendLabel: 'At least 1 item out of stock',
+    },
+  ],
+  showRawValue: true,
+};
+
+const previousPresentationOptions = {
+  type: 'condition',
+  conditions: [
+    {
+      key: 'red',
+      color: '#b71c1c',
+      label: '',
+      condition: 0,
+      description: 'Stock number: ',
+      legendLabel: 'Stock out',
+    },
+    {
+      key: 'green',
+      color: '#33691e',
+      label: '',
+      condition: {
+        '>': 0,
+      },
+      description: 'Stock number: ',
       legendLabel: 'In stock',
+    },
+  ],
+  showRawValue: true,
+};
+
+const newPresentationOptions = {
+  type: 'condition',
+  conditions: [
+    {
+      key: 'red',
+      color: '#b71c1c',
+      label: 'Stock number: 0',
+      condition: {
+        '=': null,
+      },
+      legendLabel: 'Stock out',
+    },
+    {
+      key: 'green',
+      color: '#33691e',
+      label: '',
+      condition: {
+        '>': 0,
+      },
+      description: 'Stock number: ',
+      legendLabel: 'In stock',
+    },
+    {
+      key: 'orange',
+      color: 'orange',
+      label: '',
+      legendLabel: 'At least 1 item out of stock',
     },
   ],
   showRawValue: true,
@@ -66,7 +125,11 @@ exports.up = async function (db) {
     const dashboard = await getDashboardReportById(db, id);
     const { dataBuilderConfig, viewJson } = dashboard;
     const newDataBuilderConfig = { ...dataBuilderConfig, categoryAggregator: '$listAll' };
-    const newViewJson = { ...viewJson, categoryPresentationOptions };
+    const newViewJson = {
+      ...viewJson,
+      categoryPresentationOptions,
+      presentationOptions: newPresentationOptions,
+    };
     await updateValues(db, 'dashboardReport', { dataBuilderConfig: newDataBuilderConfig }, { id });
     await updateValues(db, 'dashboardReport', { viewJson: newViewJson }, { id });
   }
@@ -78,6 +141,7 @@ exports.down = async function (db) {
     const { dataBuilderConfig, viewJson } = dashboard;
     delete dataBuilderConfig.categoryAggregator;
     delete viewJson.categoryPresentationOptions;
+    viewJson.presentationOptions = previousPresentationOptions;
     await updateValues(db, 'dashboardReport', { dataBuilderConfig }, { id });
     await updateValues(db, 'dashboardReport', { viewJson }, { id });
   }

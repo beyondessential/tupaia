@@ -37,15 +37,24 @@ const average = rows => {
   }, {});
 };
 
-const listAllByCategoryId = rows => {
+const listAllByCategoryId = (rowsWithData, rowsInConfig) => {
+  const initialCategoryList = Object.fromEntries(
+    rowsInConfig.map(row => {
+      const { rows, category } = row;
+      const categoryList = {};
+      rows.forEach(r => {
+        categoryList[r] = null;
+      });
+      return [category, categoryList];
+    }),
+  );
   const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
-  return rows.reduce((columnAggregates, row) => {
+  return rowsWithData.reduce((columnAggregates, row) => {
     const { categoryId } = row;
     const categoryList = columnAggregates[categoryId] || {};
-    // row = {categoryId: "ACT", dataElement:"ACT 6x1", Col1:1, Col:2, Col:3}
     Object.keys(row).forEach(key => {
       if (!rowKeysToIgnore.has(key)) {
-        const value = categoryList[key] && categoryList[key].value;
+        const value = categoryList[key] ? categoryList[key].value : initialCategoryList[categoryId];
         categoryList[key] = { value: { ...value, [row.dataElement]: row[key] } };
       }
     });
@@ -54,8 +63,8 @@ const listAllByCategoryId = rows => {
   }, {});
 };
 
-const listAll = rows => {
-  const itemListByCategoryId = listAllByCategoryId(rows);
+const listAll = (rows, rowsInConfig) => {
+  const itemListByCategoryId = listAllByCategoryId(rows, rowsInConfig);
   return Object.entries(itemListByCategoryId).reduce(
     (categoryList, [categoryId, columns]) => ({
       ...categoryList,
@@ -70,7 +79,7 @@ const categoryAggregators = {
   [CATEGORY_AGGREGATION_TYPES.LIST_ALL]: listAll,
 };
 
-export const buildCategoryData = (rows, categoryAggregatorCode) => {
+export const buildCategoryData = (rows, categoryAggregatorCode, rowsInConfig) => {
   const categoryAggregator = categoryAggregators[categoryAggregatorCode];
-  return categoryAggregator(rows);
+  return categoryAggregator(rows, rowsInConfig);
 };

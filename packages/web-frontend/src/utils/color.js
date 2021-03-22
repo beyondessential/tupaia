@@ -64,10 +64,11 @@ const getPresentationOptionFromCondition = (options, value) => {
 
 const getPresentationOptionFromObjectCondition = (options, object) => {
   const { conditions = [] } = options;
-  if (!object) return null;
+  if (!object) return conditions.find(condition => condition.key === 'default') ?? null;
 
   const option = conditions.find(({ condition }) => {
     if (typeof condition === 'object') {
+      // For config 'some', e.g. condition: { some: { '>': 0 } }, which checks if some elements (not all) satisfy conditions
       if (condition[OBJECT_CONDITION_TYPE_SOME]) {
         // Check at least one item meets condition, but not all
         const conditionsInSome = condition[OBJECT_CONDITION_TYPE_SOME];
