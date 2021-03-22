@@ -62,23 +62,26 @@ const getPresentationOptionFromCondition = (options, value) => {
   return option;
 };
 
+const satisfyAllConditionsForSomeItems = (object, condition) => {
+  // Check at least one item meets condition, but not all
+  const conditionsInSome = condition[OBJECT_CONDITION_TYPE_SOME];
+  const someMeetCondition = Object.values(object).some(value =>
+    satisfyAllConditions(conditionsInSome, value),
+  );
+  const someMeetOppositeCondition = Object.values(object).some(value =>
+    satisfyAllConditions(conditionsInSome, value, true),
+  );
+  return someMeetCondition && someMeetOppositeCondition;
+};
+
 const getPresentationOptionFromObjectCondition = (options, object) => {
+  if (!object) return null;
   const { conditions = [] } = options;
-  if (!object) return conditions.find(condition => condition.key === 'default') ?? null;
 
   const option = conditions.find(({ condition }) => {
     if (typeof condition === 'object') {
-      // For config 'some', e.g. condition: { some: { '>': 0 } }, which checks if some elements (not all) satisfy conditions
       if (condition[OBJECT_CONDITION_TYPE_SOME]) {
-        // Check at least one item meets condition, but not all
-        const conditionsInSome = condition[OBJECT_CONDITION_TYPE_SOME];
-        const someMeetCondition = Object.values(object).some(value =>
-          satisfyAllConditions(conditionsInSome, value),
-        );
-        const someMeetOppositeCondition = Object.values(object).some(value =>
-          satisfyAllConditions(conditionsInSome, value, true),
-        );
-        return someMeetCondition && someMeetOppositeCondition;
+        return satisfyAllConditionsForSomeItems(object, condition);
       }
       return Object.values(object).every(value => satisfyAllConditions(condition, value));
     }

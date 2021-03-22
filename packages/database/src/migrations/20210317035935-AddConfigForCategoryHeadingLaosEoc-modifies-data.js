@@ -28,11 +28,10 @@ const categoryPresentationOptions = {
   type: 'objectCondition',
   conditions: [
     {
-      key: 'default',
+      key: 'red',
       color: '#b71c1c',
-      label: '',
       condition: {
-        '=': 0,
+        '=': null,
       },
       legendLabel: 'Stock out',
     },
@@ -91,7 +90,7 @@ const newPresentationOptions = {
       color: '#b71c1c',
       label: 'Stock number: 0',
       condition: {
-        '=': null,
+        '=': '',
       },
       legendLabel: 'Stock out',
     },

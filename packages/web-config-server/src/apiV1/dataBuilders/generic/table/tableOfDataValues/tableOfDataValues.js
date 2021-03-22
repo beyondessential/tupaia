@@ -48,13 +48,13 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const rows = await this.buildRows(columns);
     const data = { columns, rows, period };
 
-    return this.buildFromExtraConfig(data);
+    return this.buildFromExtraConfig(data, columns);
   }
 
   /**
    * @param {{ rows, columns }} data
    */
-  async buildFromExtraConfig(data) {
+  async buildFromExtraConfig(data, columns) {
     let newData = { ...data };
     const { rows } = newData;
     if (this.tableConfig.hasRowCategories()) {
@@ -65,8 +65,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
           Object.values(rows),
           this.config.categoryAggregator,
           this.config.rows,
+          columns,
         );
-        newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
+        newData.rows = [...rows, ...categoryData];
       } else {
         newData.rows = [...rows, ...categories];
       }

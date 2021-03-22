@@ -37,41 +37,32 @@ const average = rows => {
   }, {});
 };
 
-const listAllByCategoryId = (rowsWithData, rowsInConfig) => {
-  const initialCategoryList = Object.fromEntries(
-    rowsInConfig.map(row => {
-      const { rows, category } = row;
-      const categoryList = {};
-      rows.forEach(r => {
-        categoryList[r] = null;
-      });
-      return [category, categoryList];
-    }),
-  );
-  const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
-  return rowsWithData.reduce((columnAggregates, row) => {
-    const { categoryId } = row;
-    const categoryList = columnAggregates[categoryId] || {};
-    Object.keys(row).forEach(key => {
-      if (!rowKeysToIgnore.has(key)) {
-        const value = categoryList[key] ? categoryList[key].value : initialCategoryList[categoryId];
-        categoryList[key] = { value: { ...value, [row.dataElement]: row[key] } };
-      }
+const listAll = (rowsWithData, rowsInConfig, columnsInConfig) => {
+  const categoryList = rowsInConfig.map(row => {
+    const { rows, category } = row;
+    const itemList = {};
+    rows.forEach(r => {
+      itemList[r] = null;
+    });
+    const formattedCategoryList = {};
+    columnsInConfig.forEach(column => {
+      formattedCategoryList[column.key] = { value: itemList };
     });
 
-    return { ...columnAggregates, [categoryId]: categoryList };
-  }, {});
-};
+    return { category, ...formattedCategoryList, valueType: 'object' };
+  });
 
-const listAll = (rows, rowsInConfig) => {
-  const itemListByCategoryId = listAllByCategoryId(rows, rowsInConfig);
-  return Object.entries(itemListByCategoryId).reduce(
-    (categoryList, [categoryId, columns]) => ({
-      ...categoryList,
-      [categoryId]: { ...columns, valueType: 'object' },
-    }),
-    {},
-  );
+  rowsWithData.forEach(row => {
+    const { categoryId } = row;
+    Object.keys(row).forEach(key => {
+      if (!METADATA_ROW_KEYS.includes(key)) {
+        const index = categoryList.findIndex(category => category.category === categoryId);
+        categoryList[index][key].value[row.dataElement] = row[key];
+      }
+    });
+  });
+
+  return categoryList;
 };
 
 const categoryAggregators = {
@@ -79,7 +70,7 @@ const categoryAggregators = {
   [CATEGORY_AGGREGATION_TYPES.LIST_ALL]: listAll,
 };
 
-export const buildCategoryData = (rows, categoryAggregatorCode, rowsInConfig) => {
+export const buildCategoryData = (rows, categoryAggregatorCode, rowsInConfig, columnsInConfig) => {
   const categoryAggregator = categoryAggregators[categoryAggregatorCode];
-  return categoryAggregator(rows, rowsInConfig);
+  return categoryAggregator(rows, rowsInConfig, columnsInConfig);
 };
