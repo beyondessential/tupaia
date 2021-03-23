@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { NavBar, Footer } from '../components';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
 import { AboutView } from '../views/AboutView';
@@ -19,22 +20,33 @@ import { NotFoundView } from '../views/NotFoundView';
 export const PageRoutes = React.memo(() => (
   <Switch>
     <Route exact path="/">
+      <NavBar />
       <HomeView />
     </Route>
     <Route path="/profile">
+      <NavBar />
       <ProfileView />
+      <Footer />
     </Route>
     <Route path="/about">
+      <NavBar />
       <AboutView />
+      <Footer />
     </Route>
     <Route path="/contact">
+      <NavBar />
       <ContactView />
+      <Footer />
     </Route>
     <Route path="/:organisationUnitCode/:view?">
+      <NavBar />
       <EntityView />
+      <Footer />
     </Route>
     <Route>
+      <NavBar />
       <NotFoundView />
+      <Footer />
     </Route>
   </Switch>
 ));

@@ -220,7 +220,7 @@ export const SearchBar = ({ linkType, className }) => {
       ) : (
         showNoResults && (
           <NoResultsBox>
-            <img src="/no-results-icon.svg" alt="no results" />
+            <img src="/images/no-results-icon.svg" alt="no results" />
             <NoResultsText>No results found for the search</NoResultsText>
             <NoResultsValue>&quot;{inputValue}&quot;</NoResultsValue>
           </NoResultsBox>
