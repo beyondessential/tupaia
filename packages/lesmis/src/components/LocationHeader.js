@@ -110,7 +110,7 @@ export const LocationHeader = () => {
             <ToggleButton
               value="dashboard"
               component={Link}
-              to={makeEntityLink('dashboard')}
+              to={makeEntityLink(organisationUnitCode, 'dashboard')}
               aria-label="dashboard"
             >
               <Dashboard /> Dashboard
