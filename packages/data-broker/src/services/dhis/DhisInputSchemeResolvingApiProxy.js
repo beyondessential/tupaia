@@ -43,7 +43,19 @@ export class DhisInputSchemeResolvingApiProxy {
       );
     }
 
-    return this.api.getAnalytics(modifiedQuery);
+    // It's a little bit more complex with org units, as dhis may return
+    // different org units than were requested
+    translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(translatedResponse);
+
+    // We need to translate co from "lmbxvugTvKr" to "default"
+    // TODO: change this to a configuration
+    const coTranslations = { lmbxvugTvKr: 'default' };
+    translatedResponse = await this.translateDefaultCoInResponse(
+      translatedResponse,
+      coTranslations,
+    );
+
+    return translatedResponse;
   }
 
   async getEventAnalytics(query) {
@@ -235,7 +247,7 @@ export class DhisInputSchemeResolvingApiProxy {
     let orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
 
     if (orgUnitIdIndex === -1) {
-      throw new Error('Can\'t read org unit id from dhis');
+      throw new Error("Can't read org unit id from dhis");
     }
 
     const hasOuCode = orgUnitCodeIndex !== -1;
@@ -260,19 +272,13 @@ export class DhisInputSchemeResolvingApiProxy {
     const mappingsByDhisId = reduceToDictionary(mappings, el => el.config.dhis_id, 'entity_code');
 
     if (!hasOuCode) {
-      // we need to modify the response to add org unit codes in
-      // TODO: clean up in #2504
-      // Normally with code based api/analytics/rawData.json call, the response includes the code. We need the dhisId in the
-      // response for each org unit, so we have to change the outputIdScheme to uid, which means org unit code no longer comes
-      // back. So we add it back in manually.
-      response.headers.push({
-        name: 'oucode'
+      // we have no ouCode treat as analytics and update item code
+      orgUnitCodeIndex = orgUnitIdIndex;
+      const { items } = response.metaData;
+      Object.keys(items).forEach(item => {
+        if (mappingsByDhisId[item.uid]) items[item].code = mappingsByDhisId[item.uid];
       });
-      orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
-      // set org unit code to UNKNOWN, which will be the default if we dont have the mapping in the next block
-      response.rows.map(row => {
-        row[orgUnitCodeIndex] = 'UNKNOWN';
-      });
+      response.metaData.items = items;
     }
 
     const newRows = response.rows.map(row => {
@@ -284,6 +290,33 @@ export class DhisInputSchemeResolvingApiProxy {
     });
 
     return { ...response, rows: newRows };
+  };
+
+  /**
+   * @param response {*}
+   * @param translations {*}
+   * @returns {*}
+   * @private
+   */
+  translateDefaultCoInResponse = (response, translations) => {
+    if (!response?.rows?.length) return response;
+    const coIndex = response.headers.findIndex(({ name }) => name === 'co');
+    if (coIndex < 0) return response;
+
+    // const translatedRows = response.rows.map(row => {
+    //   const newRow = [...row];
+    //   newRow[coIndex] = translations[row[coIndex]] ?? row[coIndex];
+    //   return newRow;
+    // });
+    // also add co code to metadata items
+    const { metaData } = response;
+    Object.keys(translations).forEach(coId => {
+      if (metaData.dimensions.co.includes(coId)) {
+        metaData.items[coId].code = translations[coId];
+        metaData.items.co.code = metaData.items[coId].code;
+      }
+    });
+    return { ...response, metaData };
   };
 
   /**

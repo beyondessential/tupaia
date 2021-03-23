@@ -59,3 +59,48 @@ export const translateElementKeysInEventAnalytics = async (
     ...otherProps,
   };
 };
+
+export const translateElementsKeysAndCodeInAnalytics = async (analytics, dataElementKeyMapping) => {
+  const { headers, metaData, rows, ...otherProps } = analytics;
+
+  const translatedHeaders = headers.map(({ name, ...otherHeaderProps }) => {
+    const isDataElement = !!dataElementKeyMapping[name];
+    const translatedName = isDataElement ? dataElementKeyMapping[name] : name;
+
+    return {
+      ...otherHeaderProps,
+      name: translatedName,
+    };
+  });
+
+  // Need to also change the code Analytics
+  const { items } = metaData;
+  Object.keys(items).forEach(key => {
+    items[key].code = dataElementKeyMapping[key] ?? items[key].code;
+  });
+
+  const dataIdIndex = headers.findIndex(({ name }) => name === 'dx');
+
+  const translatedRows = rows.map(([...row]) => {
+    const translatedRow = [...row];
+    translatedRow[dataIdIndex] =
+      dataElementKeyMapping[row[dataIdIndex]] ?? items[row[dataIdIndex]].code ?? row[dataIdIndex];
+    return translatedRow;
+  });
+  const translatedMetaData = {
+    ...metaData,
+    items: mapKeys(items, dataElementKeyMapping, {
+      defaultToExistingKeys: true,
+    }),
+    dimensions: mapKeys(metaData.dimensions, dataElementKeyMapping, {
+      defaultToExistingKeys: true,
+    }),
+  };
+
+  return {
+    headers: translatedHeaders,
+    metaData: translatedMetaData,
+    rows: translatedRows,
+    ...otherProps,
+  };
+};
