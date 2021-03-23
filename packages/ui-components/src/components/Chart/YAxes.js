@@ -55,6 +55,11 @@ const calculateYAxisDomain = ({ min, max }) => {
 
 const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
+const displayDecimals = valueType => {
+  if (valueType === 'number') return false;
+  return true;
+};
+
 const YAxis = ({ config = {}, viewContent, isExporting }) => {
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
@@ -69,6 +74,7 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
+      allowDecimals={displayDecimals(valueType)}
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}

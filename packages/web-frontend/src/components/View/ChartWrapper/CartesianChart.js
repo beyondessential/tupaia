@@ -359,6 +359,11 @@ export class CartesianChart extends PureComponent {
     );
   };
 
+  displayDecimals = valueType => {
+    if (valueType === 'number') return false;
+    return true;
+  };
+
   renderYAxes = () => {
     const { chartConfig = {} } = this.state;
 
@@ -395,6 +400,7 @@ export class CartesianChart extends PureComponent {
       <YAxis
         key={yAxisId}
         ticks={viewContent.ticks}
+        allowDecimals={this.displayDecimals(valueType)}
         yAxisId={yAxisId}
         orientation={orientation}
         domain={this.calculateYAxisDomain(yAxisDomain)}
