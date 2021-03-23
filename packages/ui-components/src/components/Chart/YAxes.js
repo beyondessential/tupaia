@@ -9,7 +9,7 @@ import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE, VALUE_TYPES } from './constants';
 import { formatDataValue } from './utils';
 
-const { PERCENTAGE } = VALUE_TYPES;
+const { PERCENTAGE, NUMBER } = VALUE_TYPES;
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -55,11 +55,6 @@ const calculateYAxisDomain = ({ min, max }) => {
 
 const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
-const displayDecimals = valueType => {
-  if (valueType === 'number') return false;
-  return true;
-};
-
 const YAxis = ({ config = {}, viewContent, isExporting }) => {
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
@@ -74,7 +69,6 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
-      allowDecimals={displayDecimals(valueType)}
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
@@ -82,7 +76,9 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
       label={data.yName}
       tickFormatter={value =>
-        formatDataValue(value, valueType || axisValueType, { presentationOptions })
+        formatDataValue(value, (valueType !== NUMBER ? valueType : 'default') || axisValueType, {
+          presentationOptions,
+        })
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
       stroke={isExporting ? DARK_BLUE : 'white'}
