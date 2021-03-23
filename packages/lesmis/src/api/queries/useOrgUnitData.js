@@ -5,7 +5,7 @@
  */
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { PROJECT_CODE } from '../../constants';
+import { PROJECT_CODE, COUNTRY_CODE } from '../../constants';
 import { useUrlParams } from '../../utils';
 
 // Todo: update org Unit data fetch once EntityServer is ready
@@ -35,3 +35,6 @@ export const useCurrentOrgUnitData = ({ includeCountryData = false } = {}) => {
   const { organisationUnitCode } = useUrlParams();
   return useOrgUnitData({ organisationUnitCode, includeCountryData });
 };
+
+export const useCountryHeirarchyData = () =>
+  useOrgUnitData({ organisationUnitCode: COUNTRY_CODE, includeCountryData: true });

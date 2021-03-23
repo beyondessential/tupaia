@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { generatePath, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiToggleButton from '@material-ui/lab/ToggleButton';
@@ -14,7 +14,7 @@ import { StarBorder, GetApp, Phone, Email, Map, Dashboard } from '@material-ui/i
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
 import { useOrgUnitData } from '../api/queries';
-import { useUrlParams } from '../utils';
+import { useUrlParams, makeEntityLink } from '../utils';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
@@ -85,12 +85,6 @@ export const LocationHeader = () => {
     organisationUnitCode,
   });
 
-  const makeLink = newView =>
-    generatePath('/:organisationUnitCode/:view', {
-      organisationUnitCode,
-      view: newView,
-    });
-
   return (
     <Wrapper>
       <Container maxWidth={false}>
@@ -116,12 +110,17 @@ export const LocationHeader = () => {
             <ToggleButton
               value="dashboard"
               component={Link}
-              to={makeLink('dashboard')}
+              to={makeEntityLink('dashboard')}
               aria-label="dashboard"
             >
               <Dashboard /> Dashboard
             </ToggleButton>
-            <ToggleButton value="map" component={Link} to={makeLink('map')} aria-label="map">
+            <ToggleButton
+              value="map"
+              component={Link}
+              to={makeEntityLink(organisationUnitCode, 'map')}
+              aria-label="map"
+            >
               <Map /> Map
             </ToggleButton>
           </ToggleButtonGroup>
