@@ -42,17 +42,19 @@ const palette = {
 };
 
 const typography = {
-  fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+  fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
   h1: {
-    fontSize: '3.125rem',
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    fontSize: '2rem',
     fontWeight: 500,
-    lineHeight: 1.18,
+    lineHeight: 1.4,
     letterSpacing: 0,
   },
   h2: {
-    fontSize: '2rem',
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    fontSize: '1.75rem',
     fontWeight: 600,
-    lineHeight: 1.18,
+    lineHeight: 1.5,
     letterSpacing: 0,
   },
   h3: {
@@ -62,19 +64,19 @@ const typography = {
     letterSpacing: 0,
   },
   h4: {
-    fontSize: '1.3125rem',
+    fontSize: '1.3rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h5: {
-    fontSize: '1.3125rem',
+    fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h6: {
-    fontSize: '1.125rem',
+    fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -98,7 +100,7 @@ const typography = {
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '1.2rem',
+    fontSize: '1rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,

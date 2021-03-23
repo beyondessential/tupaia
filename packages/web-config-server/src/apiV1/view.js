@@ -1,9 +1,10 @@
-import { convertDateRangeToPeriods, CustomError, replaceValues } from '@tupaia/utils';
-import { getDhisApiInstance } from '/dhis';
-import { isSingleValue } from './utils';
+import { CustomError, replaceValues } from '@tupaia/utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { DashboardPermissionsChecker } from './permissions';
+import { isSingleValue } from './utils';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
+import { getDhisApiInstance } from '/dhis';
+import { convertDateRangeToPeriodQueryString } from '/utils';
 
 const viewFail = {
   type: 'View Error',
@@ -22,18 +23,6 @@ const noDataBuilder = {
     status: 'viewError',
     details: 'No data builder defined for current view',
   },
-};
-
-const convertDateRangeToPeriodQueryString = (startDate, endDate) => {
-  if (!startDate) {
-    return null;
-  }
-
-  if (startDate && !endDate) {
-    return convertDateRangeToPeriods(startDate, startDate)[0];
-  }
-
-  return convertDateRangeToPeriods(startDate, endDate).join(';');
 };
 
 const getIsValidDate = dateString => !Number.isNaN(Date.parse(dateString));

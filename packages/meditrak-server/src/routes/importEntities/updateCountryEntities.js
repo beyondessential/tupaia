@@ -6,6 +6,7 @@
 import { ImportValidationError, getCountryCode } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
+import { getEntityMetadata } from './getEntityMetadata';
 
 const DEFAULT_TYPE_NAMES = {
   1: 'Hospital',
@@ -27,7 +28,12 @@ function getDefaultTypeDetails(type) {
   return { categoryCode, typeName };
 }
 
-export async function updateCountryEntities(transactingModels, countryName, entityObjects) {
+export async function updateCountryEntities(
+  transactingModels,
+  countryName,
+  entityObjects,
+  pushToDhis = true,
+) {
   const countryCode = getCountryCode(countryName, entityObjects);
   const country = await transactingModels.country.findOrCreate(
     { name: countryName },
@@ -36,6 +42,15 @@ export async function updateCountryEntities(transactingModels, countryName, enti
   const { id: worldId } = await transactingModels.entity.findOne({
     type: transactingModels.entity.types.WORLD,
   });
+  const defaultMetadata = {
+    dhis: { isDataRegional: true },
+  };
+  const countryEntityMetadata = await getEntityMetadata(
+    transactingModels,
+    defaultMetadata,
+    countryCode,
+    pushToDhis,
+  );
   await transactingModels.entity.findOrCreate(
     { code: countryCode },
     {
@@ -43,9 +58,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       country_code: countryCode,
       type: transactingModels.entity.types.COUNTRY,
       parent_id: worldId,
-      metadata: {
-        dhis: { isDataRegional: true },
-      },
+      metadata: countryEntityMetadata,
     },
   );
   const codes = []; // An array to hold all facility codes, allowing duplicate checking
@@ -64,6 +77,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       longitude,
       latitude,
       geojson,
+      data_service_entity: dataServiceEntity,
       type_name: typeName,
       screen_bounds: screenBounds,
       category_code: categoryCode,
@@ -83,8 +97,13 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       transactingModels,
       entityObject,
       country,
+      pushToDhis,
     );
     if (entityType === transactingModels.entity.types.FACILITY) {
+      if (!parentGeographicalArea)
+        throw new Error(
+          `Parent entity of facility must have geographical area, parent entity code: ${parentEntity.code}`,
+        );
       const defaultTypeDetails = getDefaultTypeDetails(facilityType);
       const facilityToUpsert = {
         type: facilityType,
@@ -106,6 +125,24 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       }
       await newFacility.save();
     }
+    if (dataServiceEntity) {
+      const dataServiceEntityToUpsert = {
+        entity_code: code,
+        config: dataServiceEntity,
+      };
+
+      await transactingModels.dataServiceEntity.updateOrCreate(
+        { entity_code: code },
+        dataServiceEntityToUpsert,
+      );
+    }
+
+    const entityMetadata = await getEntityMetadata(
+      transactingModels,
+      defaultMetadata,
+      code,
+      pushToDhis,
+    );
     await transactingModels.entity.updateOrCreate(
       { code },
       {
@@ -114,9 +151,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         type: entityType,
         country_code: country.code,
         image_url: imageUrl,
-        metadata: {
-          dhis: { isDataRegional: true },
-        },
+        metadata: entityMetadata,
         attributes,
       },
     );

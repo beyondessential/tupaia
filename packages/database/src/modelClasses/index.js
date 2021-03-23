@@ -39,6 +39,7 @@ import { SurveyScreenModel } from './SurveyScreen';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { UserSessionModel } from './UserSession';
+import { DataServiceEntityModel } from './DataServiceEntity';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -52,6 +53,7 @@ export const modelClasses = {
   DashboardReport: DashboardReportModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
+  DataServiceEntity: DataServiceEntityModel,
   Disaster: DisasterModel,
   DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
@@ -86,7 +88,7 @@ export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataSourceModel, DataSourceType } from './DataSource';
 export { EntityModel, EntityType } from './Entity';
-export { EntityHierarchyModel } from './EntityHierarchy';
+export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
 export { FacilityModel } from './Facility';
 export { GeographicalAreaModel } from './GeographicalArea';
