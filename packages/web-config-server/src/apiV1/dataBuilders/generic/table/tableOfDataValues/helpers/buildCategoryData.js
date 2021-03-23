@@ -38,26 +38,38 @@ const average = rows => {
 };
 
 const listAll = (rowsWithData, rowsInConfig, columnsInConfig) => {
-  const categoryList = rowsInConfig.map(row => {
-    const { rows, category } = row;
-    const itemList = {};
-    rows.forEach(r => {
-      itemList[r] = null;
-    });
-    const formattedCategoryList = {};
-    columnsInConfig.forEach(column => {
-      formattedCategoryList[column.key] = { value: itemList };
-    });
+  // Initial category list format to be:
+  // e.g. {  ACT: {
+  //            Col1: {
+  //               value: {
+  //                    ACT 6x1 (Coartem): null,
+  //                    ACT 6x2 (Coartem): null
+  //                      }
+  //                },
+  //            Col2: { value: [Object] },
+  //            valueType: 'object'
+  //         }
+  //      }
+  const categoryList = Object.fromEntries(
+    rowsInConfig.map(row => {
+      const { rows, category } = row;
+      const itemList = {};
+      rows.forEach(r => {
+        itemList[r] = null;
+      });
+      const formattedCategoryList = {};
+      columnsInConfig.forEach(column => {
+        formattedCategoryList[column.key] = { value: itemList };
+      });
 
-    return { category, ...formattedCategoryList, valueType: 'object' };
-  });
-
+      return [category, { ...formattedCategoryList, valueType: 'object' }];
+    }),
+  );
   rowsWithData.forEach(row => {
     const { categoryId } = row;
     Object.keys(row).forEach(key => {
       if (!METADATA_ROW_KEYS.includes(key)) {
-        const index = categoryList.findIndex(category => category.category === categoryId);
-        categoryList[index][key].value[row.dataElement] = row[key];
+        categoryList[categoryId][key].value[row.dataElement] = row[key];
       }
     });
   });

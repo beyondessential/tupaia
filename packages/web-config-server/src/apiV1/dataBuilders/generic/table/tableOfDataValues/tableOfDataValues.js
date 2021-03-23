@@ -67,7 +67,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
           this.config.rows,
           columns,
         );
-        newData.rows = [...rows, ...categoryData];
+        newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {
         newData.rows = [...rows, ...categories];
       }
