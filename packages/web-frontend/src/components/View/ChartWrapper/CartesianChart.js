@@ -359,11 +359,6 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  displayDecimals = valueType => {
-    if (valueType === 'number') return false;
-    return true;
-  };
-
   renderYAxes = () => {
     const { chartConfig = {} } = this.state;
 
