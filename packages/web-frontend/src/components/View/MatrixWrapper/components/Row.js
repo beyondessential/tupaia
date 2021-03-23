@@ -11,7 +11,7 @@ import PrevIcon from 'material-ui/svg-icons/navigation/chevron-left';
 import NextIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import shallowEqual from 'shallowequal';
 
-import { Cell } from './Cell';
+import Cell from './Cell';
 import { getPresentationOption } from '../../../../utils';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
 

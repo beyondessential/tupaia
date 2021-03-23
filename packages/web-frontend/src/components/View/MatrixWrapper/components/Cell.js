@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Cell = ({
+const Cell = ({
   onMouseEnter,
   onMouseLeave,
   onClick,
@@ -45,3 +45,10 @@ export const Cell = ({
     </div>
   );
 };
+
+export default React.memo(Cell, (currentProps, nextProps) => {
+  if (currentProps.isActive !== nextProps.isActive) {
+    return false;
+  }
+  return true;
+});

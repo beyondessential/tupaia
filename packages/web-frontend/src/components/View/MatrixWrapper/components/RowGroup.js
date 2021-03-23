@@ -11,7 +11,7 @@ import DropDownArrowIcon from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import shallowEqual from 'shallowequal';
 import { getPresentationOption } from '../../../../utils';
 
-import { Cell } from './Cell';
+import Cell from './Cell';
 
 export default class RowGroup extends Component {
   shouldComponentUpdate(nextProps) {
