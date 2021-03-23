@@ -32,7 +32,7 @@ import CustomTooltip from './Tooltip';
 import VerticalTick from './VerticalTick';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
-const { PERCENTAGE } = VALUE_TYPES;
+const { PERCENTAGE, NUMBER } = VALUE_TYPES;
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -400,7 +400,6 @@ export class CartesianChart extends PureComponent {
       <YAxis
         key={yAxisId}
         ticks={viewContent.ticks}
-        allowDecimals={this.displayDecimals(valueType)}
         yAxisId={yAxisId}
         orientation={orientation}
         domain={this.calculateYAxisDomain(yAxisDomain)}
@@ -408,7 +407,9 @@ export class CartesianChart extends PureComponent {
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
         tickFormatter={value =>
-          formatDataValue(value, valueType || axisValueType, { presentationOptions })
+          formatDataValue(value, (valueType !== NUMBER ? valueType : 'default') || axisValueType, {
+            presentationOptions,
+          })
         }
         interval={isExporting ? 0 : 'preserveStartEnd'}
         stroke={isExporting ? DARK_BLUE : 'white'}
