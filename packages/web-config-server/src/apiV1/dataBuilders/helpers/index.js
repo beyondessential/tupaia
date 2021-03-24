@@ -5,6 +5,7 @@
 
 export { mapAnalyticsToCountries } from './mapAnalyticsToCountries';
 export { divideValues } from './divideValues';
+export { multiplyValues } from './multiplyValues';
 export { subtractValues } from './subtractValues';
 export {
   calculateOperationForAnalytics,

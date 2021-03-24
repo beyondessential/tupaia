@@ -54,19 +54,40 @@ const dhisApi = createDhisApi({
 
 export const testGetEventAnalytics = () => {
   beforeAll(() => {
-    jest.spyOn(BuildAnalyticsQuery, 'buildEventAnalyticsQuery').mockResolvedValue(QUERY.fetch);
+    jest.spyOn(BuildAnalyticsQuery, 'buildEventAnalyticsQueries').mockResolvedValue([QUERY.fetch]);
   });
 
   it('translates codes to ids in the provided query', async () => {
     await dhisApi.getEventAnalytics(QUERY.originalInput);
-    expect(BuildAnalyticsQuery.buildEventAnalyticsQuery).toHaveBeenCalledOnceWith(
+    return expect(BuildAnalyticsQuery.buildEventAnalyticsQueries).toHaveBeenCalledOnceWith(
       QUERY.idsReplacedWithCodes,
+    );
+  });
+
+  it('does not translate codes to ids if ids are provided', async () => {
+    // Some dhis configurations do not have codes against their data elements or programs etc. The way
+    // to work with these is to send ids instead, and if we specify ids we must make sure not to attempt
+    // to retrieve ids from the codes we pass in (because they will be not be defined).
+    await dhisApi.getEventAnalytics({
+      ...QUERY.originalInput,
+      ...{
+        programId: ['program_dhisId'],
+        dataElementIds: ['femalePopulation_dhisId', 'malePopulation_dhisId'],
+        organisationUnitIds: ['to_dhisId', 'pg_dhisId'],
+        dataElementIdScheme: 'id', // prevent conversion after the main api call to allow for accurate test
+      },
+    });
+    // fetcher being called once means fetch(dataElements), fetch(orgUnits) has not been called
+    return expect(dhisApi.fetcher.fetch).toHaveBeenCalledOnceWith(
+      'analytics/events/query/program_dhisId',
+      QUERY.fetch,
+      undefined,
     );
   });
 
   it('Invokes DhisFetcher.fetch() with the correct args', async () => {
     await dhisApi.getEventAnalytics(QUERY.originalInput);
-    expect(dhisApi.fetcher.fetch).toHaveBeenCalledWith(
+    return expect(dhisApi.fetcher.fetch).toHaveBeenCalledWith(
       `analytics/events/query/${PROGRAM.id}`,
       QUERY.fetch,
       undefined,

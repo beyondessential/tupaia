@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import { FileUploadField } from '../../src';
@@ -18,14 +18,33 @@ const Container = styled(MuiBox)`
   padding: 1rem;
 `;
 
-export const Simple = () => (
-  <Container>
-    <FileUploadField name="file-upload" />
-  </Container>
-);
+export const Simple = () => {
+  const [fileName, setFileName] = useState('No File chosen');
+  return (
+    <Container>
+      <FileUploadField
+        onChange={(event, newName) => {
+          setFileName(newName);
+        }}
+        name="file-upload"
+        fileName={fileName}
+      />
+    </Container>
+  );
+};
 
-export const Multiple = () => (
-  <Container>
-    <FileUploadField name="file-upload" multiple />
-  </Container>
-);
+export const Multiple = () => {
+  const [fileName, setFileName] = useState('No File chosen');
+  return (
+    <Container>
+      <FileUploadField
+        onChange={(event, newName) => {
+          setFileName(newName);
+        }}
+        name="file-upload"
+        fileName={fileName}
+        multiple
+      />
+    </Container>
+  );
+};
