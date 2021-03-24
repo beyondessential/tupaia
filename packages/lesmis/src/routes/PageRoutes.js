@@ -30,7 +30,7 @@ export const PageRoutes = React.memo(() => (
     <Route path="/contact">
       <ContactView />
     </Route>
-    <Route exact path="/:organisationUnitCode/:view?">
+    <Route path="/:organisationUnitCode/:view?">
       <EntityView />
     </Route>
     <Route>
