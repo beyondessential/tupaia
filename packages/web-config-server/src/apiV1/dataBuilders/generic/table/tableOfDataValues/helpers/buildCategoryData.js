@@ -53,7 +53,7 @@ const listAll = (rowsWithData, rowsInConfig, columnsInConfig, categoryPresentati
   //            valueType: 'object'
   //         }
   //      }
-  const categoryList = Object.fromEntries(
+  const categoryListWithNoValue = Object.fromEntries(
     rowsInConfig.map(row => {
       const { rows, category } = row;
       const itemList = {};
@@ -65,17 +65,23 @@ const listAll = (rowsWithData, rowsInConfig, columnsInConfig, categoryPresentati
         formattedCategoryList[column.key] = { value: itemList };
       });
 
-      return [category, { ...formattedCategoryList, valueType: 'returnWithMetaData' }];
+      return [category, { ...formattedCategoryList }];
     }),
   );
-  rowsWithData.forEach(row => {
-    const { categoryId } = row;
-    Object.keys(row).forEach(rowKey => {
-      if (!METADATA_ROW_KEYS.includes(rowKey)) {
-        categoryList[categoryId][rowKey].value[row.dataElement] = row[rowKey];
-      }
-    });
-  });
+
+  const categoryList = {};
+  for (const row of rowsWithData) {
+    const { categoryId, dataElement, ...columns } = row;
+    const groupByCategoryId = {
+      ...(categoryList[categoryId] || categoryListWithNoValue[categoryId]),
+    };
+    for (const [columnKey, columnValue] of Object.entries(columns)) {
+      const newColValues = { ...groupByCategoryId[columnKey]?.value, [dataElement]: columnValue };
+      groupByCategoryId[columnKey] = { value: newColValues };
+    }
+    categoryList[categoryId] = groupByCategoryId;
+  }
+
   // Pre calculation for presentation options
   if (Object.values(PRESENTATION_TYPES).includes(categoryPresentationOptions.type)) {
     const categoryListWithConditionKey = { ...categoryList };
@@ -88,6 +94,7 @@ const listAll = (rowsWithData, rowsInConfig, columnsInConfig, categoryPresentati
           };
         }
       });
+      categoryListWithConditionKey[categoryId].valueType = 'returnWithMetaData';
     });
     return categoryListWithConditionKey;
   }
