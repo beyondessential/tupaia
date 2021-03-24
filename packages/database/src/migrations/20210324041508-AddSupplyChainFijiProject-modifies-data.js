@@ -71,6 +71,7 @@ exports.up = async function (db) {
   await insertObject(db, 'entity_hierarchy', {
     id: generateId(),
     name: projectCode,
+    canonical_types: '{country,district,village,facility}',
   });
 
   await Promise.all(countryCodes.map(countryCode => addCountryToProject(db, countryCode)));
@@ -93,7 +94,7 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   const hierarchyId = await hierarchyNameToId(db, projectCode);
 
-  await db.runSql(`DELETE FROM "dashboardGroup" WHERE name = '${projectName}'`);
+  await db.runSql(`DELETE FROM "dashboardGroup" WHERE name = '${dashboardGroupName}'`);
   await db.runSql(`DELETE FROM project WHERE code = '${projectCode}'`);
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE name = '${projectCode}'`);
