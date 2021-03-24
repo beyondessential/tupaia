@@ -40,7 +40,6 @@ export const InputField = ({
   getJsonFieldSchema,
   parentRecord,
   variant,
-  format,
 }) => {
   const inputType = getInputType({ options, optionsEndpoint, type });
   let inputComponent;
@@ -158,8 +157,8 @@ export const InputField = ({
           helperText={secondaryLabel}
           format="yyyy-MM-dd HH:mm"
           value={
-            value && moment(value, format).isValid
-              ? moment.utc(value, format).format('YYYY-MM-DDTHH:mm')
+            value && moment(value).isValid
+              ? moment.utc(value).format('YYYY-MM-DDTHH:mm')
               : new Date()
           }
           onChange={date => {

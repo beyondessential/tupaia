@@ -40,7 +40,7 @@ const dateOfData = {
   filterable: false,
   editConfig: {
     type: 'datetime-utc',
-    format: 'ddd, MMM Do YYYY, HH:mm:ss',
+    accessor: record => moment.parseZone(record.data_time).toString(),
   },
 };
 

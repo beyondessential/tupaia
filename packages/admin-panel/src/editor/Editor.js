@@ -30,7 +30,15 @@ export const Editor = ({ fields, recordData, onEditField }) => {
             inputKey={source}
             label={Header}
             onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
-            value={accessor ? accessor(recordData) : recordData[source]}
+            value={(() => {
+              if (editConfig.accessor) {
+                return editConfig.accessor(recordData);
+              }
+              if (accessor) {
+                return accessor(recordData);
+              }
+              return recordData[source];
+            })()}
             disabled={!editable}
             recordData={recordData}
             {...editConfig}
