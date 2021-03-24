@@ -22,6 +22,16 @@ const average = (...argumentList) => {
   return sum / existingValues.length;
 };
 
+const firstExistingValue = (...argumentList) => {
+  for (const value of argumentList) {
+    if (value !== 'undefined') {
+      return value;
+    }
+  }
+
+  return undefined; // Should make sure that at least 1 value exists
+};
+
 /**
  * List of built in functions in math.js
  * This list is here because when extracting variables for an expression by traversing the node tree,
@@ -128,6 +138,7 @@ export class ExpressionParser {
   getCustomFunctions() {
     return {
       avg: average,
+      firstExistingValue,
     };
   }
 }

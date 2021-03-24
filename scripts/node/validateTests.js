@@ -8,7 +8,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const { executeCommand, getLoggerInstance } = require('./utilities');
+const { getLoggerInstance } = require('@tupaia/utils');
+const { executeCommand } = require('./utilities');
 
 /**
  * @typedef {Array<{ fileName, text }>} ExclusiveTest

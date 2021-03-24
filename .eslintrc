@@ -16,6 +16,7 @@
           "**/packages/psss/src/api/FakeApi.js",
           "**/packages/psss/src/utils/test-utils.js",
           "**/packages/ui-components/helpers/testingRenderer.js",
+          "**/packages/utils/src/script.js",
           "**/packages/web-frontend/config/**",
           "**/packages/web-frontend/scripts/**"
         ],
@@ -31,7 +32,9 @@
         "packages/indicators/**",
         "packages/entity-server/**",
         "packages/psss-server/**",
-        "packages/report-server/**"
+        "packages/report-server/**",
+        "packages/lesmis-server/**",
+        "packages/server-boilerplate/**"
       ],
       "extends": "@beyondessential/ts",
       "parserOptions": {
@@ -40,24 +43,7 @@
     },
     // Packages using jest
     {
-      "files": [
-        "packages/access-policy/**",
-        "packages/aggregator/**",
-        "packages/auth/**",
-        "packages/data-api/**",
-        "packages/data-broker/**",
-        "packages/dhis-api/**",
-        "packages/expression-parser/**",
-        "packages/entity-server/**",
-        "packages/indicators/**",
-        "packages/meditrak-app/**",
-        "packages/psss/**",
-        "packages/psss-server/**",
-        "packages/report-server/**",
-        "packages/ui-components/**",
-        "packages/utils/**",
-        "packages/web-frontend/**"
-      ],
+      "files": ["packages/**/__tests__/**", "packages/web-frontend/src/tests/**"],
       "extends": "@beyondessential/jest"
     },
     // Frontend packages
@@ -90,7 +76,7 @@
     },
     // Overrides per file pattern
     {
-      "files": "**/cypress/**",
+      "files": ["**/cypress/**", "packages/utils/src/cypress.js"],
       "extends": "plugin:cypress/recommended",
       "env": {
         "browser": true,
@@ -98,7 +84,7 @@
       },
       "rules": {
         "cypress/no-force": "error",
-        "jest/expect-expect": "off"
+        "no-unused-expressions": "off"
       }
     },
     {
