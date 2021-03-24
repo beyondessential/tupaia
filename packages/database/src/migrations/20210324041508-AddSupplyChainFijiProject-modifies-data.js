@@ -24,7 +24,6 @@ const projectDescription = 'Strengthening health supply chains in Fiji';
 const dashboardGroupName = 'COVID-19 Fiji';
 const userGroups = ['Donor'];
 
-const projectDashboardGroupCode = 'SUPPLYCHAIN_FIJI_Project';
 const imageUrl =
   'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/supplychain_fiji_background.png';
 const logoUrl = 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/supplychain_fiji_logo.png';
