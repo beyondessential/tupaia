@@ -99,13 +99,13 @@ const categoryAggregators = {
   [CATEGORY_AGGREGATION_TYPES.LIST_ALL]: listAll,
 };
 
-export const buildCategoryData = (
+export const buildCategoryData = ({
   rows,
   categoryAggregatorCode,
   rowsInConfig,
   columnsInConfig,
-  viewJson,
-) => {
+  viewJson = {},
+}) => {
   if (!viewJson.categoryPresentationOptions)
     throw new Error(`Couldn't find 'categoryPresentationOptions' in 'viewJson'`);
   const categoryAggregator = categoryAggregators[categoryAggregatorCode];

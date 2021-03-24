@@ -45,7 +45,9 @@ const getPresentationOptionFromObjectCondition = (options, object) => {
   return option;
 };
 
-// Pre calculation for viewJson's presentation option, which will return a specific condition,
+// This functions the same as @web-frontend condition checking in 'color.js'
+//
+// This pre calculation is for complex logic condition matching,
 // which can reduce the frontend loading and calculation time.
 export const getPresentationOption = (options, value) => {
   switch (options.type) {
