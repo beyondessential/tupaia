@@ -36,10 +36,10 @@ const dateOfData = {
   Header: 'Date of Data',
   source: 'data_time',
   type: 'tooltip',
-  accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
+  accessor: row => moment.parseZone(row.data_time).toString(),
   filterable: false,
   editConfig: {
-    type: 'datetime-local',
+    type: 'datetime-utc',
   },
 };
 
