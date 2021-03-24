@@ -91,7 +91,7 @@ export default class RowGroup extends Component {
           {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
             const value = columnData ? columnData[column.key] : '';
-
+            const { metadata = {} } = value;
             return (
               <div
                 style={column.isGroupHeader ? styles.gridCellChangerActive : styles.gridCell}
@@ -103,7 +103,8 @@ export default class RowGroup extends Component {
                   onMouseLeave={() => onCellMouseLeave()}
                   onCellClick={onCellClick}
                   presentationOptions={presentationOptions}
-                  value={value}
+                  value={value.value || value}
+                  metadata={metadata}
                   columnActiveStripStyle={styles.columnActiveStrip}
                   isActive={isCellActive}
                   dotStyle={styles.cellIndicator}

@@ -15,8 +15,6 @@ const PRESENTATION_TYPES = {
   OBJECT_CONDITION: 'objectCondition',
 };
 
-const OBJECT_CONDITION_TYPE_SOME = 'some';
-
 const CONDITION_TYPE = {
   '=': (value, filterValue) => value === filterValue,
   '>': (value, filterValue) => value > filterValue,
@@ -34,6 +32,9 @@ const getPresentationOptionFromRange = (options, value) => {
 };
 
 const getPresentationOptionFromKey = (options, value) => findByKey(options, value, false) || null;
+
+const getPresentationOptionFromConditionKey = (options, key) =>
+  options.find(option => option.key === key) || null;
 
 // Check if the value satisfies all the conditions if condition is an object
 const satisfyAllConditions = (conditions, value, opposite) => {
@@ -62,45 +63,15 @@ const getPresentationOptionFromCondition = (options, value) => {
   return option;
 };
 
-const satisfyAllConditionsForSomeItems = (object, condition) => {
-  // Check at least one item meets condition, but not all
-  const conditionsInSome = condition[OBJECT_CONDITION_TYPE_SOME];
-  const someMeetCondition = Object.values(object).some(value =>
-    satisfyAllConditions(conditionsInSome, value),
-  );
-  const someMeetOppositeCondition = Object.values(object).some(value =>
-    satisfyAllConditions(conditionsInSome, value, true),
-  );
-  return someMeetCondition && someMeetOppositeCondition;
-};
-
-const getPresentationOptionFromObjectCondition = (options, object) => {
-  if (!object) return null;
-  const { conditions = [] } = options;
-
-  const option = conditions.find(({ condition }) => {
-    if (typeof condition === 'object') {
-      if (condition[OBJECT_CONDITION_TYPE_SOME]) {
-        return satisfyAllConditionsForSomeItems(object, condition);
-      }
-      return Object.values(object).every(value => satisfyAllConditions(condition, value));
-    }
-
-    throw new Error(
-      `Please specify condition as object when using 'type: ${PRESENTATION_TYPES.OBJECT_CONDITION}' in presentation config`,
-    );
-  });
-  return option;
-};
-
-export const getPresentationOption = (options, value) => {
+export const getPresentationOption = (options, target, metadata = {}) => {
+  const value = metadata.hasOwnProperty('conditionKey') ? metadata.conditionKey : target;
   switch (options.type) {
     case PRESENTATION_TYPES.RANGE:
       return getPresentationOptionFromRange(options, value);
     case PRESENTATION_TYPES.CONDITION:
       return getPresentationOptionFromCondition(options, value);
     case PRESENTATION_TYPES.OBJECT_CONDITION:
-      return getPresentationOptionFromObjectCondition(options, value);
+      return getPresentationOptionFromConditionKey(options.conditions, value);
     default:
       return getPresentationOptionFromKey(options.conditions, value);
   }

@@ -3,10 +3,10 @@ import { getPresentationOption } from '../../../../utils';
 
 const ROW_INFO_KEY = '$rowInfo';
 
-const getPresentationVariables = (presentationOptions, value, extraConfig) => {
+const getPresentationVariables = ({ presentationOptions, value, metadata, extraConfig }) => {
   if (extraConfig) {
     const { description, rowInfo } = extraConfig;
-    let presentation = getPresentationOption(presentationOptions, value);
+    let presentation = getPresentationOption(presentationOptions, value, metadata);
     // if presentation is null, we should not show the DescriptionOverlay popup.
     // So, only add the `main title` to the presentation object if presentation != null
     if (presentation) {
@@ -25,7 +25,7 @@ const getPresentationVariables = (presentationOptions, value, extraConfig) => {
     return { color, onCellClickVariables };
   }
   // For Cells in RowGroup
-  const presentation = getPresentationOption(presentationOptions, value);
+  const presentation = getPresentationOption(presentationOptions, value, metadata);
   const color = presentation ? presentation.color : { color: '' };
   const onCellClickVariables = [presentation, value];
   return { color, onCellClickVariables };
@@ -43,14 +43,16 @@ const Cell = ({
   isActive,
   cellKey,
   value = '',
+  metadata,
   isUsingDots,
   extraConfig, // only exists if in Row, which also indicates different logic to get 'presentation'
 }) => {
-  const { color, onCellClickVariables } = getPresentationVariables(
+  const { color, onCellClickVariables } = getPresentationVariables({
     presentationOptions,
     value,
+    metadata,
     extraConfig,
-  );
+  });
   const linesOfText = value.toString().split('\n');
   const contents = isUsingDots ? (
     <span

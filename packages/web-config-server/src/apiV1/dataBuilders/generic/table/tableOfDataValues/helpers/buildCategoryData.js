@@ -1,3 +1,5 @@
+import { getPresentationOption, PRESENTATION_TYPES } from '/apiV1/dataBuilders/helpers';
+
 const CATEGORY_AGGREGATION_TYPES = {
   AVERAGE: '$average',
   LIST_ALL: '$listAll',
@@ -37,14 +39,15 @@ const average = rows => {
   }, {});
 };
 
-const listAll = (rowsWithData, rowsInConfig, columnsInConfig) => {
+const listAll = (rowsWithData, rowsInConfig, columnsInConfig, categoryPresentationOptions) => {
   // Initial category list format to be:
   // e.g. {  ACT: {
   //            Col1: {
   //               value: {
   //                    ACT 6x1 (Coartem): null,
   //                    ACT 6x2 (Coartem): null
-  //                      }
+  //                      },
+  //               conditionKey: 'green'
   //                },
   //            Col2: { value: [Object] },
   //            valueType: 'object'
@@ -62,18 +65,32 @@ const listAll = (rowsWithData, rowsInConfig, columnsInConfig) => {
         formattedCategoryList[column.key] = { value: itemList };
       });
 
-      return [category, { ...formattedCategoryList, valueType: 'object' }];
+      return [category, { ...formattedCategoryList, valueType: 'returnWithMetaData' }];
     }),
   );
   rowsWithData.forEach(row => {
     const { categoryId } = row;
-    Object.keys(row).forEach(key => {
-      if (!METADATA_ROW_KEYS.includes(key)) {
-        categoryList[categoryId][key].value[row.dataElement] = row[key];
+    Object.keys(row).forEach(rowKey => {
+      if (!METADATA_ROW_KEYS.includes(rowKey)) {
+        categoryList[categoryId][rowKey].value[row.dataElement] = row[rowKey];
       }
     });
   });
-
+  // Pre calculation for presentation options
+  if (Object.values(PRESENTATION_TYPES).includes(categoryPresentationOptions.type)) {
+    const categoryListWithConditionKey = { ...categoryList };
+    Object.entries(categoryList).forEach(([categoryId, rows]) => {
+      Object.entries(rows).forEach(([rowKey, listValues]) => {
+        if (rowKey !== 'valueType') {
+          const presentation = getPresentationOption(categoryPresentationOptions, listValues.value);
+          categoryListWithConditionKey[categoryId][rowKey].metadata = {
+            conditionKey: presentation.key,
+          };
+        }
+      });
+    });
+    return categoryListWithConditionKey;
+  }
   return categoryList;
 };
 
@@ -82,7 +99,20 @@ const categoryAggregators = {
   [CATEGORY_AGGREGATION_TYPES.LIST_ALL]: listAll,
 };
 
-export const buildCategoryData = (rows, categoryAggregatorCode, rowsInConfig, columnsInConfig) => {
+export const buildCategoryData = (
+  rows,
+  categoryAggregatorCode,
+  rowsInConfig,
+  columnsInConfig,
+  viewJson,
+) => {
+  if (!viewJson.categoryPresentationOptions)
+    throw new Error(`Couldn't find 'categoryPresentationOptions' in 'viewJson'`);
   const categoryAggregator = categoryAggregators[categoryAggregatorCode];
-  return categoryAggregator(rows, rowsInConfig, columnsInConfig);
+  return categoryAggregator(
+    rows,
+    rowsInConfig,
+    columnsInConfig,
+    viewJson.categoryPresentationOptions,
+  );
 };

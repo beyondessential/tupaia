@@ -66,6 +66,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
           this.config.categoryAggregator,
           this.config.rows,
           columns,
+          this.viewJson,
         );
         newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {
@@ -74,8 +75,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }
 
     if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.tableConfig.columnType)) {
-      const columns = await this.replaceOrgUnitCodesWithNames(data.columns);
-      newData.columns = columns.sort(getSortByKey('title'));
+      const dataColumns = await this.replaceOrgUnitCodesWithNames(data.columns);
+      newData.columns = dataColumns.sort(getSortByKey('title'));
     }
 
     if (EXCLUDED_VALUE in this.config) {

@@ -7,6 +7,11 @@ import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
+  constructor(models, aggregator, dhisApi, config, query, entity, viewJson) {
+    super(models, aggregator, dhisApi, config, query, entity);
+    this.viewJson = viewJson;
+  }
+
   buildBaseRows() {
     return buildBaseRowsForOrgUnit(this.tableConfig.rows, undefined, 0, this.config);
   }
@@ -59,7 +64,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
 }
 
 export const tableOfValuesForOrgUnits = async (
-  { models, dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity, viewJson },
   aggregator,
   dhisApi,
 ) => {
@@ -70,6 +75,7 @@ export const tableOfValuesForOrgUnits = async (
     dataBuilderConfig,
     query,
     entity,
+    viewJson,
   );
   return builder.build();
 };

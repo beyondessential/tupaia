@@ -15,5 +15,5 @@ export const VALUE_TYPES = {
   TEXT: 'text',
   NUMBER: 'number',
   ONE_DECIMAL_PLACE: 'oneDecimalPlace',
-  OBJECT: 'object',
+  RETURN_WITH_METADATA: 'returnWithMetaData',
 };

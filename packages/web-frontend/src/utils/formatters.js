@@ -93,7 +93,8 @@ const number = (value, { presentationOptions = {} }) => {
   return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
 };
 
-const object = value => value;
+const returnWithMetaData = (value, metadata) => ({ value, metadata });
+
 const defaultFormatter = input =>
   Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(2)(input);
 
@@ -110,7 +111,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.BOOLEAN]: boolean,
   [VALUE_TYPES.NUMBER]: number,
   [VALUE_TYPES.ONE_DECIMAL_PLACE]: oneDecimalPlace,
-  [VALUE_TYPES.OBJECT]: object,
+  [VALUE_TYPES.RETURN_WITH_METADATA]: returnWithMetaData,
 };
 
 export const formatDataValue = (value, valueType, metadata = {}) => {
