@@ -5,7 +5,7 @@
  */
 import camelcaseKeys from 'camelcase-keys';
 import { ApiConnection } from '@tupaia/server-boilerplate';
-import { LESMIS_PROJECT_NAME, LESMIS_COUNTRY_ENTITY_CODE } from '../constants';
+import { LESMIS_PROJECT_NAME } from '../constants';
 
 const { ENTITY_SERVER_API_URL = 'http://localhost:8050/v1' } = process.env;
 
