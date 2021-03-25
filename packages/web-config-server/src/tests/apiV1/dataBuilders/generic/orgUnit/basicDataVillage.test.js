@@ -32,7 +32,7 @@ const assertResultDataIncludeMembers = async ({
   expect(results.data).to.deep.include.members(members);
 };
 
-describe.only('basicDataVillage', () => {
+describe('basicDataVillage', () => {
   it('should include the expected number of data', async () => {
     const entity = createEntity([null]);
     const results = await basicDataVillage({ entity, models, query: { projectCode: 'explore' } });
