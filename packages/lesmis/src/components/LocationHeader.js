@@ -82,7 +82,7 @@ const ToggleButton = styled(MuiToggleButton)`
 export const LocationHeader = () => {
   const { entityCode, view } = useUrlParams();
   const { data: entityData } = useEntityData({
-    entityCode: entityCode,
+    entityCode,
   });
 
   return (
