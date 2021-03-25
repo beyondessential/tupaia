@@ -33,7 +33,7 @@ const AGGREGATIONS = {
 };
 
 const COMMON_FIELDS = ['data_element_code', 'entity_code']; // Fields which may be grouped by for aggregation purposes
-const ANSWER_SPECIFIC_FIELDS = ['entity_name', 'date', 'event_id', 'value', 'answer_type']; // Fields unique to each answer
+const ANSWER_SPECIFIC_FIELDS = ['entity_name', 'date', 'event_id', 'value', 'type']; // Fields unique to each answer
 
 const getA1Select = firstAggregation => {
   return `SELECT ${COMMON_FIELDS.concat(
@@ -131,7 +131,7 @@ const generateBaseSqlQuery = ({
       data_element_code AS "dataElementCode",
       event_id AS "eventId",
       value AS "value",
-      answer_type AS "type"
+      type AS "type"
     FROM (
       ${getA1Select(firstAggregation)}
       FROM analytics

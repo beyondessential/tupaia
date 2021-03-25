@@ -7,70 +7,60 @@
 const ANSWER = [
   {
     id: 'answer001_test',
-    type: 'Number',
     text: '1',
     survey_response_id: 'surveyResponse001_test',
     question_id: 'question001_test',
   },
   {
     id: 'answer002_test',
-    type: 'Number',
     text: '2',
     survey_response_id: 'surveyResponse001_test',
     question_id: 'question002_test',
   },
   {
     id: 'answer003_test',
-    type: 'Number',
     text: '3',
     survey_response_id: 'surveyResponse002_test',
     question_id: 'question001_test',
   },
   {
     id: 'answer004_test',
-    type: 'Number',
     text: '4',
     survey_response_id: 'surveyResponse002_test',
     question_id: 'question002_test',
   },
   {
     id: 'answer005_test',
-    type: 'Number',
     text: '5',
     survey_response_id: 'surveyResponse003_test',
     question_id: 'question001_test',
   },
   {
     id: 'answer006_test',
-    type: 'Number',
     text: '6',
     survey_response_id: 'surveyResponse003_test',
     question_id: 'question002_test',
   },
   {
     id: 'answer007_test',
-    type: 'Number',
     text: '7',
     survey_response_id: 'surveyResponse004_test',
     question_id: 'question003_test',
   },
   {
     id: 'answer008_test',
-    type: 'Number',
     text: '8',
     survey_response_id: 'surveyResponse004_test',
     question_id: 'question004_test',
   },
   {
     id: 'answer009_test',
-    type: 'Number',
     text: '9',
     survey_response_id: 'surveyResponse005_test',
     question_id: 'question003_test',
   },
   {
     id: 'answer010_test',
-    type: 'Number',
     text: '10',
     survey_response_id: 'surveyResponse005_test',
     question_id: 'question004_test',
@@ -136,10 +126,10 @@ const ENTITY = [
 ];
 
 const QUESTION = [
-  { id: 'question001_test', code: 'Q001', data_source_id: 'dataSource001_test' },
-  { id: 'question002_test', code: 'Q002', data_source_id: 'dataSource002_test' },
-  { id: 'question003_test', code: 'Q003', data_source_id: 'dataSource003_test' },
-  { id: 'question004_test', code: 'Q004', data_source_id: 'dataSource004_test' },
+  { id: 'question001_test', code: 'Q001', type: 'Number', data_source_id: 'dataSource001_test' },
+  { id: 'question002_test', code: 'Q002', type: 'Number', data_source_id: 'dataSource002_test' },
+  { id: 'question003_test', code: 'Q003', type: 'Number', data_source_id: 'dataSource003_test' },
+  { id: 'question004_test', code: 'Q004', type: 'Number', data_source_id: 'dataSource004_test' },
 ];
 
 const DATA_SOURCE = [
@@ -163,7 +153,7 @@ export const TEST_DATA = {
 
 export const ANSWER001_TEST_ANALYTIC = {
   value: '1',
-  answer_type: 'Number',
+  type: 'Number',
   entity_code: 'E001',
   entity_name: 'Happy Land',
   data_element_code: 'Q001',
@@ -180,7 +170,7 @@ export const ANALYTICS = [
   ANSWER001_TEST_ANALYTIC,
   {
     value: '2',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E001',
     entity_name: 'Happy Land',
     data_element_code: 'Q002',
@@ -194,7 +184,7 @@ export const ANALYTICS = [
   },
   {
     value: '3',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E002',
     entity_name: 'Sad Land',
     data_element_code: 'Q001',
@@ -208,7 +198,7 @@ export const ANALYTICS = [
   },
   {
     value: '4',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E002',
     entity_name: 'Sad Land',
     data_element_code: 'Q002',
@@ -222,7 +212,7 @@ export const ANALYTICS = [
   },
   {
     value: '5',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E001',
     entity_name: 'Happy Land',
     data_element_code: 'Q001',
@@ -236,7 +226,7 @@ export const ANALYTICS = [
   },
   {
     value: '6',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E001',
     entity_name: 'Happy Land',
     data_element_code: 'Q002',
@@ -250,7 +240,7 @@ export const ANALYTICS = [
   },
   {
     value: '7',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E001',
     entity_name: 'Happy Land',
     data_element_code: 'Q003',
@@ -264,7 +254,7 @@ export const ANALYTICS = [
   },
   {
     value: '8',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E001',
     entity_name: 'Happy Land',
     data_element_code: 'Q004',
@@ -278,7 +268,7 @@ export const ANALYTICS = [
   },
   {
     value: '9',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E002',
     entity_name: 'Sad Land',
     data_element_code: 'Q003',
@@ -292,7 +282,7 @@ export const ANALYTICS = [
   },
   {
     value: '10',
-    answer_type: 'Number',
+    type: 'Number',
     entity_code: 'E002',
     entity_name: 'Sad Land',
     data_element_code: 'Q004',

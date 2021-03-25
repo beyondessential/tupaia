@@ -11,12 +11,12 @@ declare
       question.code as data_element_code,
       survey.code as data_group_code,
       survey_response.id as event_id,
+      answer.text as value,
+      question.type as type,
       date_trunc(''day'', survey_response.submission_time) as "day_period",
       date_trunc(''week'', survey_response.submission_time) as "week_period",
       date_trunc(''month'', survey_response.submission_time) as "month_period",
       date_trunc(''year'', survey_response.submission_time) as "year_period",
-      answer.text as value,
-      answer.type as answer_type,
       survey_response.submission_time as "date"
     FROM
       survey_response

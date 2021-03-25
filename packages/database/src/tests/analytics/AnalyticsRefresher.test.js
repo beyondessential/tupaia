@@ -17,7 +17,7 @@ import { TEST_DATA, ANALYTICS, ANSWER001_TEST_ANALYTIC } from './AnalyticsRefres
 
 const matchingFields = [
   'value',
-  'answer_type',
+  'type',
   'entity_code',
   'entity_name',
   'data_element_code',
@@ -88,7 +88,7 @@ describe('AnalyticsRefresher', () => {
       ANALYTICS.concat([
         {
           value: '7',
-          answer_type: 'Number',
+          type: 'Number',
           entity_code: 'E001',
           entity_name: 'Happy Land',
           data_element_code: 'Q001',
@@ -102,7 +102,7 @@ describe('AnalyticsRefresher', () => {
         },
         {
           value: '5',
-          answer_type: 'Number',
+          type: 'Number',
           entity_code: 'E001',
           entity_name: 'Happy Land',
           data_element_code: 'Q002',
