@@ -4,9 +4,10 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { EntityModel, EntityHierarchyModel } from './models';
+import { AncestorDescendantRelationModel, EntityModel, EntityHierarchyModel } from './models';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
+  readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
 }
@@ -14,3 +15,5 @@ export interface EntityServerModelRegistry extends ModelRegistry {
 export type Context<T> = {
   [field in keyof T]: T[field];
 };
+
+export type Resolved<T> = T extends Promise<infer R> ? R : T; // Returns resolved type if type is promise

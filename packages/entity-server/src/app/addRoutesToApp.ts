@@ -7,11 +7,8 @@ import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { authenticationMiddleware } from '../auth';
 import { Route, TestRoute } from '../routes';
-import { SingleEntityRoute } from '../routes/hierarchy';
-import {
-  attachEntityAndHierarchyToRequest,
-  attachFormatterToResponse,
-} from '../routes/hierarchy/middleware';
+import { SingleEntityRoute, EntityDescendantsRoute } from '../routes/hierarchy';
+import { attachContext } from '../routes/hierarchy/middleware';
 
 type ReqOfRoute<T> = T extends Route<infer Req> ? Req : never;
 const handleWith = <T extends { handle: () => Promise<void> }>(
@@ -51,9 +48,12 @@ export function addRoutesToApp(app: Express) {
   /**
    * Entity Request routes
    */
-  app.use('/v1/hierarchy/:hierarchyName/:entityCode', attachEntityAndHierarchyToRequest);
-  app.use('/v1/hierarchy/*', attachFormatterToResponse);
+  app.use('/v1/hierarchy/:hierarchyName/:entityCode', attachContext);
   app.get('/v1/hierarchy/:hierarchyName/:entityCode', handleWith(SingleEntityRoute));
+  app.get(
+    '/v1/hierarchy/:hierarchyName/:entityCode/descendants',
+    handleWith(EntityDescendantsRoute),
+  );
 
   app.use(handleError);
 }

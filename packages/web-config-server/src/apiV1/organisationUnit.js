@@ -70,7 +70,7 @@ export default class extends RouteHandler {
 
   async getEntityAndChildrenByCode(project) {
     // Don't check parent permission (as we already know we have permission for at least one of its children)
-    const parent = await this.entity.parent();
+    const parent = await this.entity.getParent(project.entity_hierarchy_id);
     const allChildren = await this.entity.getChildren(project.entity_hierarchy_id);
     const children = await this.filterForAccess(allChildren);
 
