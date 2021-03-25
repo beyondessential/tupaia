@@ -24,7 +24,9 @@ export class EntityDescendantsRoute extends Route<
 > {
   async buildResponse() {
     const { includeRootEntity = false } = this.req.query;
-    const descendants = await this.req.context.entity.getDescendants(this.req.context.hierarchyId);
+    const descendants = await this.req.context.entity.getDescendants(this.req.context.hierarchyId, {
+      country_code: this.req.context.allowedCountries,
+    });
     const responseEntities = includeRootEntity
       ? [this.req.context.entity].concat(descendants)
       : descendants;
