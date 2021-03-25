@@ -11,3 +11,4 @@ export * from './Footer';
 export * from './MainMenu';
 export * from './FullPageLoader';
 export * from './Breadcrumbs';
+export * from './LocationHeader';
