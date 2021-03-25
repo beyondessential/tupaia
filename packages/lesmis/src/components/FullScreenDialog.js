@@ -12,7 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const Header = styled.div`
   position: relative;
-  padding: 2.375rem 1.875rempx;
+  padding: 2.375rem 1.875rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 

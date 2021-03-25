@@ -9,6 +9,9 @@ export function createFilterOptions(config = {}) {
   const { limit, ignoreCase = true, stringify, trim = false } = config;
 
   return (options, { inputValue, getOptionLabel }) => {
+    const anyMatches = [];
+    const primaryMatches = [];
+
     if (inputValue === '') {
       // Todo: show recent searches
       //  @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2495
@@ -20,27 +23,23 @@ export function createFilterOptions(config = {}) {
       input = input.toLowerCase();
     }
 
-    const fromStartMatches = options.filter(option => {
+    for (const option of options) {
       let candidate = (stringify || getOptionLabel)(option);
       if (ignoreCase) {
         candidate = candidate.toLowerCase();
       }
 
-      return candidate.indexOf(input) === 0;
-    });
-
-    const anyMatches = options.filter(option => {
-      let candidate = (stringify || getOptionLabel)(option);
-      if (ignoreCase) {
-        candidate = candidate.toLowerCase();
+      if (candidate.startsWith(input)) {
+        primaryMatches.push(option); // Matches start
+      } else if (candidate.substring(1).indexOf(input) > -1) {
+        anyMatches.push(option); // Matches anywhere
       }
 
-      return candidate.substring(1).indexOf(input) > -1;
-    });
-
-    const filteredOptions = [...fromStartMatches, ...anyMatches];
-
-    return filteredOptions.slice(0, limit);
+      if (primaryMatches.length === limit) {
+        return primaryMatches;
+      }
+    }
+    return [...primaryMatches, ...anyMatches].slice(0, limit);
   };
 }
 
