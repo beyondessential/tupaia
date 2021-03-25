@@ -1,6 +1,5 @@
 do $$ 
 declare
-  iNewLogTableCount INTEGER := 0;
   tStartTime TIMESTAMP;
   source_table TEXT;
   source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_source'];
@@ -47,12 +46,10 @@ begin
       PERFORM mv$createMaterializedViewlog(source_table, 'public');
       RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
       EXECUTE 'CREATE TRIGGER ' || source_table || '_trigger' || ' AFTER INSERT OR UPDATE or DELETE ON ' || source_table || ' FOR EACH ROW EXECUTE PROCEDURE notification()';
-      iNewLogTableCount := iNewLogTableCount + 1;
     ELSE
       RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
     END IF;
   END LOOP;
-  RAISE NOTICE 'Created % Materialized View Logs', iNewLogTableCount;
 
 
   RAISE NOTICE 'Creating analytics materialized view...';
