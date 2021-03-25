@@ -41,11 +41,12 @@ export default class extends RouteHandler {
   async getEntityAndCountryDataByCode(project) {
     const projectEntity = await project.entity();
     const country = await this.entity.countryEntity();
+    const typesExcludedFromWebFrontend = await this.fetchTypesExcludedFromWebFrontend(project);
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id, {
           type: {
             comparator: 'not in',
-            comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+            comparisonValue: typesExcludedFromWebFrontend,
           },
         })
       : [];
