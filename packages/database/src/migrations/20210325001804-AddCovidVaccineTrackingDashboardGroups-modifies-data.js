@@ -22,21 +22,21 @@ const dashboardGroups = [
     organisationUnitCode: 'FJ',
     name: 'COVID-19 Fiji',
     code: 'FJ_Covid_Fiji_Country_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{supplychain_fiji}`,
   },
   {
     organisationLevel: 'District',
     organisationUnitCode: 'FJ',
     name: 'COVID-19 Fiji',
     code: 'FJ_Covid_Fiji_District_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{supplychain_fiji}`,
   },
   {
     organisationLevel: 'Village',
     organisationUnitCode: 'FJ',
     name: 'COVID-19 Fiji',
     code: 'FJ_Covid_Fiji_Village_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{supplychain_fiji}`,
   },
 
   // Samoa:
@@ -45,21 +45,21 @@ const dashboardGroups = [
     organisationUnitCode: 'WS',
     name: 'COVID-19 Samoa',
     code: 'WS_Covid_Samoa_Country_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{covid_samoa}`,
   },
   {
     organisationLevel: 'District',
     organisationUnitCode: 'WS',
     name: 'COVID-19 Samoa',
     code: 'WS_Covid_Samoa_District_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{covid_samoa}`,
   },
   {
     organisationLevel: 'Village',
     organisationUnitCode: 'WS',
     name: 'COVID-19 Samoa',
     code: 'WS_Covid_Samoa_Village_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{covid_samoa}`,
   },
 
   // Nauru:
@@ -68,21 +68,21 @@ const dashboardGroups = [
     organisationUnitCode: 'NR',
     name: 'COVID-19 Nauru',
     code: 'NR_Covid_Nauru_Country_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{ehealth_nauru}`,
   },
   {
     organisationLevel: 'District',
     organisationUnitCode: 'NR',
     name: 'COVID-19 Nauru',
     code: 'NR_Covid_Nauru_District_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{ehealth_nauru}`,
   },
   {
     organisationLevel: 'Village',
     organisationUnitCode: 'NR',
     name: 'COVID-19 Nauru',
     code: 'NR_Covid_Nauru_Village_COVID-19',
-    projectCodes: `{}`,
+    projectCodes: `{ehealth_nauru}`,
   },
 ];
 
