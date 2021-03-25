@@ -9,7 +9,14 @@ import { HierarchyRequest, HierarchyContext, ExtendedEntityFields } from '../typ
 import { extendedFieldFunctions } from '../extendedFieldFunctions';
 import { EntityResponseObjectBuilder } from './EntityResponseObjectBuilder';
 
-const validFields: (keyof EntityFields)[] = ['code', 'country_code'];
+const validFields: (keyof EntityFields)[] = [
+  'id',
+  'code',
+  'country_code',
+  'name',
+  'image_url',
+  'type',
+];
 const isEntityField = (field: string): field is keyof EntityFields =>
   (validFields as string[]).includes(field);
 const isExtendedField = (field: string): field is keyof typeof extendedFieldFunctions =>
