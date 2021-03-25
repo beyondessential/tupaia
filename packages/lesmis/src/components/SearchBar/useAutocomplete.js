@@ -6,7 +6,7 @@
 import useMuiAutocomplete from '@material-ui/lab/useAutocomplete';
 
 export function createFilterOptions(config = {}) {
-  const { limit, ignoreCase = true, stringify, trim = false } = config;
+  const { limit, ignoreCase = true, stringify = false, trim = false } = config;
 
   return (options, { inputValue, getOptionLabel }) => {
     const anyMatches = [];
