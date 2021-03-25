@@ -14,7 +14,7 @@ export class EntityConnection extends ApiConnection {
 
   async getEntities() {
     const response = await this.get(
-      `hierarchy/${LESMIS_PROJECT_NAME}/${LESMIS_COUNTRY_ENTITY_CODE}/descendants`,
+      `hierarchy/${LESMIS_PROJECT_NAME}/${LESMIS_PROJECT_NAME}/descendants`,
     );
     return camelcaseKeys(response);
   }
