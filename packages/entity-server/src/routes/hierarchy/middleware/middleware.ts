@@ -26,14 +26,14 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
       throwNoAccessError(hierarchyName, entityCode);
     }
 
-    const rootEntity = entity.isProject()
-      ? entity
-      : await req.models.entity.findOne({ code: hierarchy.name });
+    // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
+    const rootEntity = await entity.getAncestorOfType(hierarchy.id, 'project');
 
     const allowedCountries = (await rootEntity.getChildren(hierarchy.id))
-      .filter(e => req.accessPolicy.allows(e.country_code || undefined))
-      .map(e => e.country_code)
-      .filter(notNull);
+      .map(child => child.country_code)
+      .filter(notNull)
+      .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index) // De-duplicate countryCodes
+      .filter(countryCode => req.accessPolicy.allows(countryCode));
 
     if (allowedCountries.length < 1) {
       throwNoAccessError(hierarchyName, entityCode);

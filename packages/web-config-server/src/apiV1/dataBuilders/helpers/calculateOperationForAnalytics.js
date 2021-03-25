@@ -8,7 +8,6 @@ import {
   replaceValues,
   asyncFilter,
   asyncEvery,
-  translatePoint,
 } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
@@ -160,7 +159,7 @@ const getValueFromEntity = async (entity, config) => {
     case 'subType':
       return entity.attributes.type;
     case 'coordinates': {
-      const [lat, long] = translatePoint(entity.point);
+      const [lat, long] = entity.getPoint();
       return `${lat}, ${long}`;
     }
     case '$countDescendantsMatchingConditions': {

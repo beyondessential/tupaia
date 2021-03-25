@@ -27,7 +27,10 @@ export type ExtendedFieldFunctions = Readonly<
   }
 >;
 
-export type ExtendedEntityFields = EntityFields & ExtendedFieldFunctions;
+type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
+
+export type ExtendedEntityFields = ExcludeCommonFields<EntityFields, ExtendedFieldFunctions> &
+  ExtendedFieldFunctions;
 
 export type EntityResponseObject = {
   [field in keyof ExtendedEntityFields]?: ExtendedEntityFields[field];

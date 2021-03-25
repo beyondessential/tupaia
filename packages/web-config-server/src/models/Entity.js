@@ -5,12 +5,7 @@
 
 import { pascal } from 'case';
 import { EntityType as CommonEntityType, EntityModel as CommonEntityModel } from '@tupaia/database';
-import {
-  calculateOuterBounds,
-  translateBounds,
-  translatePoint,
-  translateRegion,
-} from '@tupaia/utils';
+import { calculateOuterBounds } from '@tupaia/utils';
 
 class EntityType extends CommonEntityType {
   getOrganisationLevel() {
@@ -29,7 +24,7 @@ class EntityType extends CommonEntityType {
   }
 
   translateLocationForFrontend() {
-    const { point, region, bounds } = this;
+    const { point, region } = this;
 
     const type = (() => {
       if (region) return 'area';
@@ -39,13 +34,13 @@ class EntityType extends CommonEntityType {
 
     return {
       type,
-      point: translatePoint(point),
+      point: this.getPoint(),
 
       // When possible return the bounds for an entity based on the entities the user has access to
       bounds: this.entitiesWithAccess
         ? calculateOuterBounds(this.entitiesWithAccess.map(entity => entity.bounds))
-        : translateBounds(bounds),
-      region: translateRegion(region),
+        : this.getBounds(),
+      region: this.getRegion(),
     };
   }
 }

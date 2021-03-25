@@ -28,6 +28,7 @@ export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
     hierarchyId: string,
     criteria?: DbConditional<EntityFields>,
   ) => Promise<EntityType[]>;
+  getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityType>;
 }
 
 export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityType> {}

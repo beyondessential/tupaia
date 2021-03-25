@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { fetchPatiently } from '@tupaia/utils';
+import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -146,6 +146,18 @@ export class EntityType extends DatabaseType {
 
   async countryEntity() {
     return this.model.findOne({ code: this.country_code });
+  }
+
+  getBounds() {
+    return translateBounds(this.bounds);
+  }
+
+  getPoint() {
+    return translatePoint(this.point);
+  }
+
+  getRegion() {
+    return translateRegion(this.region);
   }
 
   async getParent(hierarchyId) {

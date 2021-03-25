@@ -3,12 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  translatePoint,
-  translateRegion,
-  translateBounds,
-  calculateOuterBounds,
-} from '@tupaia/utils';
+import { calculateOuterBounds } from '@tupaia/utils';
 import { EntityType } from '../../models';
 
 const getParentCode = async (
@@ -41,11 +36,11 @@ const getLocationType = (entity: EntityType) => {
 };
 
 const getPoint = (entity: EntityType) => {
-  return translatePoint(entity.point);
+  return entity.getPoint();
 };
 
 const getRegion = (entity: EntityType) => {
-  return translateRegion(entity.region);
+  return entity.getRegion();
 };
 
 const getBounds = async (
@@ -60,7 +55,7 @@ const getBounds = async (
     }
   }
 
-  return translateBounds(entity.bounds);
+  return entity.getBounds();
 };
 
 export const extendedFieldFunctions = {
