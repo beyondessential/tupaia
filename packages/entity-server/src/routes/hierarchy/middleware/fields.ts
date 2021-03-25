@@ -11,11 +11,7 @@ import {
   ExtendedEntityFields,
   EntityResponseObject,
 } from '../types';
-import {
-  extendedFieldFunctions,
-  getParentCodeBulk,
-  getChildrenCodesBulk,
-} from '../extendedFieldFunctions';
+import { extendedFieldFunctions } from '../extendedFieldFunctions';
 
 const validFields: (keyof EntityFields)[] = ['code', 'country_code'];
 const isEntityField = (field: string): field is keyof EntityFields =>
@@ -70,7 +66,7 @@ export const mapEntitiesToFields = (
   fields: (keyof ExtendedEntityFields)[],
 ) => async (entities: EntityType[], context: HierarchyContext) => {
   const relationRecords =
-    fields.includes('parent_code') || fields.includes('children_codes')
+    fields.includes('parent_code') || fields.includes('child_codes')
       ? await req.models.ancestorDescendantRelation.getImmediateRelations(context.hierarchyId)
       : [];
   const mappedEntities: Writable<EntityResponseObject>[] = new Array(entities.length)
@@ -91,21 +87,18 @@ export const mapEntitiesToFields = (
             'ancestor_code',
           );
           entities.forEach((entity, index) => {
-            mappedEntities[index].parent_code = getParentCodeBulk(entity, childToParentMap);
+            mappedEntities[index].parent_code = childToParentMap[entity.code];
           });
           break;
         }
-        case 'children_codes': {
+        case 'child_codes': {
           const parentToChildrenMap = reduceToArrayDictionary(
             relationRecords,
             'ancestor_code',
             'descendant_code',
           );
           entities.forEach((entity, index) => {
-            mappedEntities[index].children_codes = getChildrenCodesBulk(
-              entity,
-              parentToChildrenMap,
-            );
+            mappedEntities[index].child_codes = parentToChildrenMap[entity.code];
           });
           break;
         }

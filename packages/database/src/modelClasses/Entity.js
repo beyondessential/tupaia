@@ -148,18 +148,9 @@ export class EntityType extends DatabaseType {
     return this.model.findOne({ code: this.country_code });
   }
 
-  async parent() {
-    return this.parent_id ? this.model.findById(this.parent_id) : undefined;
-  }
-
   async getParent(hierarchyId) {
     const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 1 });
     return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
-  }
-
-  async hasCountryParent() {
-    const parent = await this.parent();
-    return parent.type === COUNTRY;
   }
 
   async getAncestors(hierarchyId, criteria) {
