@@ -15,7 +15,9 @@ import { SearchBar } from './SearchBar';
 import { NAVBAR_HEIGHT } from '../constants';
 
 const Container = styled.nav`
+  position: relative;
   background-color: ${props => props.theme.palette.primary.main};
+  z-index: 10;
 `;
 
 const Inner = styled(FlexSpaceBetween)`
@@ -34,7 +36,7 @@ const Left = styled(FlexStart)`
 
 export const NavBar = () => (
   <Container>
-    <MuiContainer maxWidth="lg">
+    <MuiContainer maxWidth={false}>
       <Inner>
         <Left>
           <MainMenu />

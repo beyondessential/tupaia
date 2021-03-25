@@ -14,6 +14,7 @@ const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
+const SUB_FACILITY = 'sub_facility';
 const FIELD_STATION = 'field_station';
 const INDIVIDUAL = 'individual';
 const SCHOOL = 'school';
@@ -34,6 +35,7 @@ const ENTITY_TYPES = {
   DISASTER,
   DISTRICT,
   FACILITY,
+  SUB_FACILITY,
   FIELD_STATION,
   INDIVIDUAL,
   SCHOOL,
@@ -94,6 +96,9 @@ export class EntityType extends DatabaseType {
     return this.type === WORLD;
   }
 
+  /**
+   * @returns {boolean} If the entity is a project
+   */
   isProject() {
     return this.type === PROJECT;
   }
@@ -107,30 +112,36 @@ export class EntityType extends DatabaseType {
   }
 
   // returns the dhis id if exists, or waits some time for it to be populated
-  async getDhisIdPatiently() {
+  async getDhisTrackedEntityIdPatiently() {
     return fetchPatiently(async () => {
       const refreshedEntity = await this.model.findById(this.id);
-      return refreshedEntity.getDhisId();
+      return refreshedEntity.getDhisTrackedEntityId();
     });
   }
 
-  getDhisId() {
-    return this.metadata && this.metadata.dhis && this.metadata.dhis.id;
+  getDhisTrackedEntityId() {
+    return this.metadata && this.metadata.dhis && this.metadata.dhis.trackedEntityId;
   }
 
-  async setDhisId(dhisId) {
+  async setDhisTrackedEntityId(trackedEntityId) {
     if (!this.metadata) {
       this.metadata = {};
     }
     if (!this.metadata.dhis) {
       this.metadata.dhis = {};
     }
-    this.metadata.dhis.id = dhisId;
+    this.metadata.dhis.trackedEntityId = trackedEntityId;
     return this.save();
   }
 
-  hasDhisId() {
-    return !!this.getDhisId();
+  hasDhisTrackedEntityId() {
+    return !!this.getDhisTrackedEntityId();
+  }
+
+  allowsPushingToDhis() {
+    const { dhis = {} } = this.metadata || {};
+    const { push = true } = dhis; // by default push = true, if an entity shouldn't be pushed to DHIS2, set it to false
+    return push;
   }
 
   async countryEntity() {

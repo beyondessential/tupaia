@@ -7,9 +7,14 @@ import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
   divideValues,
+  multiplyValues,
   countAnalyticsThatSatisfyConditions,
   countAnalyticsGroupsThatSatisfyConditions,
 } from '/apiV1/dataBuilders/helpers';
+import {
+  fetchAggregatedAnalyticsByDhisIds,
+  checkAllDataElementsAreDhisIndicators,
+} from '/apiV1/utils';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
 const COMPARISON_TYPES = {
@@ -120,20 +125,52 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     } = this.getAggregationType();
 
     let numeratorResults = [];
+    let denominatorResults = [];
+
     if (numeratorCodes.length > 0) {
-      numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
+      const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
+        this.models,
+        numeratorCodes,
+      );
+      if (allDataElementsAreDhisIndicators) {
+        const { entityAggregation } = this.config;
+        numeratorResults = (await fetchAggregatedAnalyticsByDhisIds(
+          this.models,
+          this.dhisApi,
+          numeratorCodes,
+          this.query,
+          entityAggregation,
+        )).results;
+      } else {
+        numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
         .results;
+      }
     }
 
     if (denominatorCodes.length === 0) {
       return numeratorResults;
     }
 
-    const { results: denominatorResults } = await this.fetchAnalytics(
+    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
+      this.models,
       denominatorCodes,
-      {},
-      denominatorAggregationType,
     );
+    if (allDataElementsAreDhisIndicators) {
+      const { entityAggregation } = this.config;
+      denominatorResults = (await fetchAggregatedAnalyticsByDhisIds(
+        this.models,
+        this.dhisApi,
+        denominatorCodes,
+        this.query,
+        entityAggregation,
+      )).results;
+    } else {
+      denominatorResults = (await this.fetchAnalytics(
+        denominatorCodes,
+        {},
+        denominatorAggregationType,
+      )).results;
+    }
 
     const getResultMapKey = ({ organisationUnit, dataElement, value, period }) =>
       `${organisationUnit}|${dataElement}|${value}|${period}`;
@@ -181,6 +218,20 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return dataClasses;
   }
 
+  operateOrgUnitCount = (orgUnitCount, config) => {
+    const orgUnitCountOperators = {
+      MULTIPLY: multiplyValues,
+    };
+    const { operationConfig } = config;
+    const { operator, value } = operationConfig;
+  
+    if (!orgUnitCountOperators[operator]) {
+      throw new Error('Cannot find this operator for org unit count operation');
+    }
+  
+    return orgUnitCountOperators[operator](orgUnitCount, value);
+  };
+
   calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
       const filterAnalyticsFunction = buildFilterAnalyticsFunction(fraction);
@@ -198,8 +249,14 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       const groupedAnalytics = groupBy(analytics, fraction.groupBy);
       return countAnalyticsGroupsThatSatisfyConditions(groupedAnalytics, fraction);
     }
-    if (fraction === ORG_UNIT_COUNT) {
-      return [...new Set(analytics.map(data => data.organisationUnit))].length;
+    if (fraction === ORG_UNIT_COUNT || fraction.key === ORG_UNIT_COUNT) {
+      const orgUnitCount = [...new Set(analytics.map(data => data.organisationUnit))].length;
+
+      if (fraction.key === ORG_UNIT_COUNT) {
+        return this.operateOrgUnitCount(orgUnitCount, fraction);
+      }
+
+      return orgUnitCount;
     }
 
     return countAnalyticsThatSatisfyConditions(analytics, fraction);

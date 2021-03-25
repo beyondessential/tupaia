@@ -9,14 +9,14 @@ import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
-import { ModelRegistry } from '@tupaia/database';
+import { EntityServerModelRegistry } from '../types';
 
 import { addRoutesToApp } from './addRoutesToApp';
 
 /**
  * Set up express server with middleware,
  */
-export function createApp(models: ModelRegistry) {
+export function createApp(models: EntityServerModelRegistry) {
   const app = express();
 
   /**
@@ -36,7 +36,10 @@ export function createApp(models: ModelRegistry) {
    */
   const authenticator = new Authenticator(models);
   app.use((req: Request, res: Response, next: NextFunction) => {
+    req.models = models;
     req.authenticator = authenticator;
+    req.context = {};
+    res.context = {};
     next();
   });
 
