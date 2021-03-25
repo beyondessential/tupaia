@@ -8,20 +8,28 @@ import {
   HierarchyRequest,
   HierarchyResponse,
   HierarchyRequestParams,
+  HierarchyRequestBody,
+  HierarchyRequestQuery,
   EntityResponseObject,
 } from './types';
 
 export class EntityDescendantsRoute extends Route<
-  HierarchyRequest<HierarchyRequestParams, EntityResponseObject[]>,
+  HierarchyRequest<
+    HierarchyRequestParams,
+    EntityResponseObject[],
+    HierarchyRequestBody,
+    HierarchyRequestQuery & { includeRootEntity?: boolean }
+  >,
   HierarchyResponse<EntityResponseObject[]>
 > {
   async buildResponse() {
-    return this.res.context.formatEntitiesForResponse(
-      [this.req.context.entity].concat(
-        await this.req.context.entity.getDescendants(this.req.context.hierarchyId, {
-          country_code: this.req.context.allowedCountries,
-        }),
-      ),
-    );
+    const { includeRootEntity = false } = this.req.query;
+    const descendants = await this.req.context.entity.getDescendants(this.req.context.hierarchyId, {
+      country_code: this.req.context.allowedCountries,
+    });
+    const responseEntities = includeRootEntity
+      ? [this.req.context.entity].concat(descendants)
+      : descendants;
+    return this.res.context.formatEntitiesForResponse(responseEntities);
   }
 }
