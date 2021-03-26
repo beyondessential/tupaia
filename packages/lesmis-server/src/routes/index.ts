@@ -4,3 +4,6 @@
  */
 
 export * from './UserRoute';
+export * from './LoginRoute';
+export * from './EntitiesRoute';
+export * from './EntityRoute';

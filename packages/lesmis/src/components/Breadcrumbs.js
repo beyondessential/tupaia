@@ -10,7 +10,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { useCountryHeirarchyData } from '../api';
+import { useEntitiesData } from '../api';
 import { useUrlParams } from '../utils';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
@@ -36,38 +36,30 @@ const Link = props => <MuiLink color="inherit" {...props} component={RouterLink}
 
 const Loader = () => (
   <Skeleton animation="wave">
-    <MuiLink>Loading</MuiLink>
+    <MuiLink>breadcrumbsLoading</MuiLink>
   </Skeleton>
 );
 
-const getSegments = (orgUnits, orgUnitCode, hierarchy = []) => {
-  const orgUnit = orgUnits.find(entity => entity.organisationUnitCode === orgUnitCode);
+const getHierarchy = (entities, entityCode, hierarchy = []) => {
+  const entity = entities.find(entity => entity.code === entityCode);
 
-  if (!orgUnit) {
+  if (!entity) {
     return [];
   }
 
-  const newHierarchy = [orgUnit, ...hierarchy];
+  const newHierarchy = [entity, ...hierarchy];
 
-  if (orgUnit.type === 'Country') {
+  if (entity.type === 'country') {
     return newHierarchy;
   }
-  return getSegments(orgUnits, orgUnit.parent, newHierarchy);
+  return getHierarchy(entities, entity.parentCode, newHierarchy);
 };
 
 const useBreadcrumbs = () => {
-  const { organisationUnitCode } = useUrlParams();
-  // Todo: update data fetch to use entity server country hierarcy endpoint
-  const orgUnitResponse = useCountryHeirarchyData();
-
-  if (!orgUnitResponse.data) {
-    return { ...orgUnitResponse, breadcrumbs: [] };
-  }
-
-  const { countryHierarchy } = orgUnitResponse.data;
-  const breadcrumbs = getSegments(countryHierarchy, organisationUnitCode);
-
-  return { ...orgUnitResponse, breadcrumbs };
+  const { entityCode } = useUrlParams();
+  const { isLoading, data: entities = [] } = useEntitiesData();
+  const breadcrumbs = getHierarchy(entities, entityCode);
+  return { isLoading, breadcrumbs };
 };
 
 export const Breadcrumbs = () => {
@@ -79,12 +71,13 @@ export const Breadcrumbs = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        breadcrumbs.map(({ name, organisationUnitCode }, index) => {
+        breadcrumbs.map(({ name, code }, index) => {
           const last = index === breadcrumbs.length - 1;
           return last ? (
-            <ActiveSegment key={organisationUnitCode}>{name}</ActiveSegment>
+            <ActiveSegment key={code}>{name}</ActiveSegment>
           ) : (
-            <Link to={`/${organisationUnitCode}`} key={organisationUnitCode}>
+            // Todo: update to use make link
+            <Link to={`/${code}`} key={code}>
               {name}
             </Link>
           );

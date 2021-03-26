@@ -5,8 +5,8 @@
  */
 import { generatePath } from 'react-router-dom';
 
-export const makeEntityLink = (organisationUnitCode, view = 'dashboard') =>
-  generatePath('/:organisationUnitCode/:view', {
-    organisationUnitCode,
+export const makeEntityLink = (entityCode, view = 'dashboard') =>
+  generatePath('/:entityCode/:view', {
+    entityCode,
     view,
   });
