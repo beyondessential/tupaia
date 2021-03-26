@@ -40,7 +40,7 @@ export abstract class Route {
     // swallowed.
     try {
       await this.verifyAuth();
-      this.setupConnections();
+      await this.setupConnections();
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
