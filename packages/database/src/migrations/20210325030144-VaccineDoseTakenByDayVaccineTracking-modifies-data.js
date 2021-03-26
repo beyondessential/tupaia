@@ -18,43 +18,70 @@ exports.setup = function (options, seedLink) {
 
 const dashboardGroups = [
   //  Fiji
-  { code: 'FJ_Covid_Fiji_Country_COVID-19', hierarchyLevel: 'country' },
-  { code: 'FJ_Covid_Fiji_District_COVID-19', hierarchyLevel: 'district' },
+  {
+    code: 'FJ_Covid_Fiji_Country_COVID-19',
+    aggregationEntityType: 'country',
+    dataSourceEntityType: 'district',
+  },
+  {
+    code: 'FJ_Covid_Fiji_District_COVID-19',
+    dataSourceEntityType: 'district',
+  },
   // // Samoa:
-  { code: 'WS_Covid_Samoa_Country_COVID-19', hierarchyLevel: 'country' },
+  {
+    code: 'WS_Covid_Samoa_Country_COVID-19',
+    aggregationEntityType: 'country',
+    dataSourceEntityType: 'village',
+  },
   // // Nauru:
-  { code: 'NR_Covid_Nauru_Country_COVID-19', hierarchyLevel: 'country' },
-  { code: 'NR_Covid_Nauru_District_COVID-19', hierarchyLevel: 'district' },
+  {
+    code: 'NR_Covid_Nauru_Country_COVID-19',
+    aggregationEntityType: 'country',
+    dataSourceEntityType: 'district',
+  },
+  {
+    code: 'NR_Covid_Nauru_District_COVID-19',
+    dataSourceEntityType: 'district',
+  },
 ];
 
 const dataElements = [
   { code: 'COVIDVac4', name: '1st' },
   { code: 'COVIDVac8', name: '2nd' },
-  { code: 'RHS6UNFPA1207', name: 'test' },
 ];
 
-const generateReport = (dashboardGroupCode, hierarchyLevel, doseName, dataElementCode) => ({
-  id: `${dashboardGroupCode}_Num_Of_${doseName}_Vaccine_Dose_Taken`, //
-  dataBuilder: 'sumPerPeriod',
-  dataBuilderConfig: {
-    dataClasses: {
-      value: {
-        codes: [dataElementCode],
+const generateReport = (
+  dashboardGroupCode,
+  aggregationEntityType,
+  dataSourceEntityType,
+  doseName,
+  dataElementCode,
+) => {
+  const entityAggregation = {
+    dataSourceEntityType,
+  };
+  if (aggregationEntityType) entityAggregation.aggregationEntityType = aggregationEntityType;
+
+  return {
+    id: `${dashboardGroupCode}_Num_Of_${doseName}_Vaccine_Dose_Taken`, //
+    dataBuilder: 'sumPerPeriod',
+    dataBuilderConfig: {
+      dataClasses: {
+        value: {
+          codes: [dataElementCode],
+        },
       },
+      aggregationType: 'FINAL_EACH_DAY',
+      entityAggregation,
     },
-    aggregationType: 'FINAL_EACH_DAY',
-    entityAggregation: {
-      dataSourceEntityType: 'village',
-      aggregationEntityType: hierarchyLevel, //
+    viewJson: {
+      name: `Number of people received ${doseName} dose of COVID-19 vaccine by day`,
+      type: 'chart',
+      chartType: 'bar',
+      periodGranularity: 'day',
     },
-  },
-  viewJson: {
-    name: `Number of people received ${doseName} dose of COVID-19 vaccine by day`,
-    type: 'chart',
-    chartType: 'bar',
-    periodGranularity: 'day',
-  },
-});
+  };
+};
 
 exports.up = async function (db) {
   for (const { code: dashboardGroupCode, hierarchyLevel } of dashboardGroups) {
