@@ -7,16 +7,20 @@ import { Route as BaseRoute } from '@tupaia/server-boilerplate';
 import { LesmisSessionType } from '../models';
 import { MeditrakConnection, ReportConnection } from '../connections';
 import { LESMIS_PERMISSION_GROUP } from '../constants';
+import { EntityConnection } from '../connections/EntityConnection';
 
 export class Route extends BaseRoute {
   meditrakConnection?: MeditrakConnection;
 
   reportConnection?: ReportConnection;
 
+  entityConnection?: EntityConnection;
+
   async setupConnections() {
     const session = await this.getSession();
     this.meditrakConnection = new MeditrakConnection(session);
     this.reportConnection = new ReportConnection(session);
+    this.entityConnection = new EntityConnection(session);
   }
 
   async verifyAuth(): Promise<LesmisSessionType> {

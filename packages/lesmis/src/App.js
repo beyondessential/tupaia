@@ -5,7 +5,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { NavBar, Footer } from './components';
 import { LoginView } from './views/LoginView';
 import { PrivateRoute } from './routes/PrivateRoute';
 import { PageRoutes } from './routes/PageRoutes';
@@ -26,9 +25,7 @@ export const App = () => (
         <LoginView />
       </Route>
       <PrivateRoute path="/">
-        <NavBar />
         <PageRoutes />
-        <Footer />
       </PrivateRoute>
     </Switch>
   </Router>
