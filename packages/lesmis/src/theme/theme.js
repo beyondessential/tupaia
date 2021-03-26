@@ -58,24 +58,28 @@ const typography = {
     letterSpacing: 0,
   },
   h3: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1.5rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h4: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1.3rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h5: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h6: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,

@@ -93,7 +93,6 @@ export const MainMenu = () => {
           <Menu />
         </LightIconButton>
       </MenuSection>
-
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
         <MenuTray>
           <IconButton color="inherit" onClick={toggleDrawer(false)}>
