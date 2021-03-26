@@ -19,16 +19,27 @@ exports.setup = function (options, seedLink) {
 
 const getDashboardConfig = () => ({
   id: 'COVID_TRACKING_By_Gender',
-  dataBuilder: 'sumLatestPerMetric',
+  dataBuilder: 'composeDataPerOrgUnit',
   dataBuilderConfig: {
-    periodType: 'day',
-    labels: {
-      COVIDVac6: 'Female',
-      COVIDVac5: 'Male',
-    },
-    dataElementCodes: ['COVIDVac5', 'COVIDVac6'],
-    entityAggregation: {
-      dataSourceEntityType: 'village',
+    dataBuilders: {
+      Males: {
+        dataBuilder: 'sumByOrgUnit',
+        dataBuilderConfig: {
+          dataElementCodes: ['COVIDVac5'],
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+      },
+      Females: {
+        dataBuilder: 'sumByOrgUnit',
+        dataBuilderConfig: {
+          dataElementCodes: ['COVIDVac6'],
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+      },
     },
   },
   viewJson: {
