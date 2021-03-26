@@ -21,27 +21,38 @@ const dashboardGroups = [
   {
     code: 'FJ_Covid_Fiji_Country_COVID-19',
     aggregationEntityType: 'country',
-    dataSourceEntityType: 'district',
+    dataSourceEntityType: 'village',
   },
   {
     code: 'FJ_Covid_Fiji_District_COVID-19',
-    dataSourceEntityType: 'district',
+    aggregationEntityType: 'district',
+    dataSourceEntityType: 'village',
   },
-  // // Samoa:
+  // Samoa
   {
     code: 'WS_Covid_Samoa_Country_COVID-19',
     aggregationEntityType: 'country',
     dataSourceEntityType: 'village',
   },
-  // // Nauru:
+  {
+    code: 'WS_Covid_Samoa_District_COVID-19',
+    aggregationEntityType: 'district',
+    dataSourceEntityType: 'village',
+  },
+  {
+    code: 'WS_Covid_Samoa_Village_COVID-19',
+    dataSourceEntityType: 'village',
+  },
+  // Nauru
   {
     code: 'NR_Covid_Nauru_Country_COVID-19',
     aggregationEntityType: 'country',
-    dataSourceEntityType: 'district',
+    dataSourceEntityType: 'village',
   },
   {
     code: 'NR_Covid_Nauru_District_COVID-19',
-    dataSourceEntityType: 'district',
+    aggregationEntityType: 'district',
+    dataSourceEntityType: 'village',
   },
 ];
 
@@ -79,40 +90,62 @@ const generateReport = (
       type: 'chart',
       chartType: 'bar',
       periodGranularity: 'day',
+      presentationOptions: { hideAverage: true },
     },
   };
 };
 
 exports.up = async function (db) {
-  for (const { code: dashboardGroupCode, hierarchyLevel } of dashboardGroups) {
+  for (const {
+    code: dashboardGroupCode,
+    aggregationEntityType,
+    dataSourceEntityType,
+  } of dashboardGroups) {
     for (const { code: dataElementCode, name: doseName } of dataElements) {
-      const report = generateReport(dashboardGroupCode, hierarchyLevel, doseName, dataElementCode);
+      const report = generateReport(
+        dashboardGroupCode,
+        aggregationEntityType,
+        dataSourceEntityType,
+        doseName,
+        dataElementCode,
+      );
       await insertObject(db, 'dashboardReport', report);
       await db.runSql(`
-      UPDATE
-        "dashboardGroup"
-      SET
-        "dashboardReports" = "dashboardReports" || '{ ${report.id} }'
-      WHERE
-        "code" = '${dashboardGroupCode}';
-    `);
+        UPDATE
+          "dashboardGroup"
+        SET
+          "dashboardReports" = "dashboardReports" || '{ ${report.id} }'
+        WHERE
+          "code" = '${dashboardGroupCode}';
+      `);
     }
   }
 };
 
 exports.down = async function (db) {
-  for (const { code: dashboardGroupCode, hierarchyLevel } of dashboardGroups) {
+  for (const {
+    code: dashboardGroupCode,
+    aggregationEntityType,
+    dataSourceEntityType,
+  } of dashboardGroups) {
     for (const { code: dataElementCode, name: doseName } of dataElements) {
-      const report = generateReport(dashboardGroupCode, hierarchyLevel, doseName, dataElementCode);
+      const report = generateReport(
+        dashboardGroupCode,
+        aggregationEntityType,
+        dataSourceEntityType,
+        doseName,
+        dataElementCode,
+      );
       await db.runSql(`
-     DELETE FROM "dashboardReport" WHERE id = '${report.id}';
-     UPDATE
-       "dashboardGroup"
-     SET
-       "dashboardReports" = array_remove("dashboardReports", '${report.id}')
-     WHERE
-       "code" = '${dashboardGroupCode}';
-   `);
+        DELETE FROM "dashboardReport" WHERE id = '${report.id}';
+
+        UPDATE
+          "dashboardGroup"
+        SET
+          "dashboardReports" = array_remove("dashboardReports", '${report.id}')
+        WHERE
+          "code" = '${dashboardGroupCode}';
+      `);
     }
   }
 };
