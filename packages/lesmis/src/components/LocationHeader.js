@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { generatePath, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiToggleButton from '@material-ui/lab/ToggleButton';
@@ -13,8 +13,8 @@ import MuiContainer from '@material-ui/core/Container';
 import { StarBorder, GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
-import { useOrgUnitData } from '../api/queries';
-import { useUrlParams } from '../utils';
+import { useEntityData } from '../api';
+import { useUrlParams, makeEntityLink } from '../utils';
 
 const Wrapper = styled.section`
   padding-top: 1rem;
@@ -80,22 +80,16 @@ const ToggleButton = styled(MuiToggleButton)`
 `;
 
 export const LocationHeader = () => {
-  const { organisationUnitCode, view } = useUrlParams();
-  const { data: orgUnitData } = useOrgUnitData({
-    organisationUnitCode,
+  const { entityCode, view } = useUrlParams();
+  const { data: entityData } = useEntityData({
+    entityCode,
   });
-
-  const makeLink = newView =>
-    generatePath('/:organisationUnitCode/:view', {
-      organisationUnitCode,
-      view: newView,
-    });
 
   return (
     <Wrapper>
       <Container maxWidth={false}>
         <div>
-          <Heading variant="h2">{orgUnitData?.name}</Heading>
+          <Heading variant="h2">{entityData?.name}</Heading>
           <FlexStart>
             <ContactItem>
               <Phone />
@@ -116,12 +110,17 @@ export const LocationHeader = () => {
             <ToggleButton
               value="dashboard"
               component={Link}
-              to={makeLink('dashboard')}
+              to={makeEntityLink(entityCode, 'dashboard')}
               aria-label="dashboard"
             >
               <Dashboard /> Dashboard
             </ToggleButton>
-            <ToggleButton value="map" component={Link} to={makeLink('map')} aria-label="map">
+            <ToggleButton
+              value="map"
+              component={Link}
+              to={makeEntityLink(entityCode, 'map')}
+              aria-label="map"
+            >
               <Map /> Map
             </ToggleButton>
           </ToggleButtonGroup>

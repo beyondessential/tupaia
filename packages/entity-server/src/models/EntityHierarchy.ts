@@ -9,10 +9,10 @@ import {
 } from '@tupaia/database';
 import { Model } from './types';
 
-export interface EntityHierarchyFields {
-  readonly name: string;
-  readonly id: string;
-}
+export type EntityHierarchyFields = Readonly<{
+  name: string;
+  id: string;
+}>;
 
 export interface EntityHierarchyType
   extends EntityHierarchyFields,
