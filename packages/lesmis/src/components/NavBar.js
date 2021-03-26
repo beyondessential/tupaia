@@ -12,10 +12,9 @@ import { HomeButton } from '@tupaia/ui-components';
 import { FlexSpaceBetween, FlexStart } from './Layout';
 import { ProfileButton } from './ProfileButton';
 import { MainMenu } from './MainMenu';
-import { FavouritesMenu } from './FavouritesMenu';
 import { SearchBar } from './SearchBar';
 import { NAVBAR_HEIGHT } from '../constants';
-import { useUser } from '../api/queries';
+import { useUser } from '../api';
 import { useUrlParams } from '../utils';
 
 const Container = styled.nav`
@@ -64,9 +63,7 @@ export const NavBar = () => {
           </Left>
           {pathname !== '/' && <Search linkType={view} />}
           <FlexStart>
-            {isLoggedIn ? (
-              <FavouritesMenu />
-            ) : (
+            {isLoggedIn ? null : ( //@see https://github.com/beyondessential/tupaia-backlog/issues/2290 //Todo: add Favourites Menu
               <TextButton href="https://tupaia.org" target="_blank">
                 Sign up
               </TextButton>
