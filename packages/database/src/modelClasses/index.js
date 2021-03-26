@@ -84,6 +84,10 @@ export const modelClasses = {
 
 // export any models and types that are extended in other packages
 export { AccessRequestModel } from './AccessRequest';
+export {
+  AncestorDescendantRelationModel,
+  AncestorDescendantRelationType,
+} from './AncestorDescendantRelation';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataSourceModel, DataSourceType } from './DataSource';
