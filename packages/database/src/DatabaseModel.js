@@ -115,9 +115,9 @@ export class DatabaseModel {
     if (this.joins.length > 0) {
       options.multiJoin = this.joins;
 
-      this.joins.forEach(({ joinWith, fields: joinFields }) =>
+      this.joins.forEach(({ joinWith, joinAs = joinWith, fields: joinFields }) =>
         Object.keys(joinFields).forEach(fieldName =>
-          options.columns.push(`${joinWith}.${fieldName} as ${joinFields[fieldName]}`),
+          options.columns.push(`${joinAs}.${fieldName} as ${joinFields[fieldName]}`),
         ),
       );
     }
