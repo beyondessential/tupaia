@@ -4,5 +4,4 @@
  *
  */
 
-export * from './AuthConnection';
-export * from './ApiConnection';
+export { ApiConnection } from './ApiConnection';

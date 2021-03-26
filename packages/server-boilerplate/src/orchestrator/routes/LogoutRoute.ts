@@ -4,18 +4,19 @@
  *
  */
 
-import { UnauthenticatedRoute } from './UnauthenticatedRoute';
+import { Route } from './Route';
 
-export class LogoutRoute extends UnauthenticatedRoute {
+export class LogoutRoute extends Route {
   async buildResponse() {
-    const sessionId = this.sessionCookie?.id;
+    const { sessionCookie } = this;
+    const sessionId = sessionCookie?.id;
 
     if (sessionId && this.sessionModel) {
       await this.sessionModel.deleteById(sessionId);
     }
 
-    if (this.sessionCookie) {
-      this.sessionCookie.reset();
+    if (sessionCookie !== undefined) {
+      sessionCookie.reset?.();
     }
 
     return { success: true };

@@ -8,7 +8,7 @@ import { LesmisSessionType } from '../models';
 import { MeditrakConnection, ReportConnection } from '../connections';
 import { LESMIS_PERMISSION_GROUP } from '../constants';
 
-export class Route extends BaseRoute {
+export abstract class Route extends BaseRoute {
   meditrakConnection?: MeditrakConnection;
 
   reportConnection?: ReportConnection;

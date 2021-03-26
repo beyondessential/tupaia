@@ -1,12 +1,10 @@
 {
+  "extends": "../../tsconfig-ts.dependency.json",
   "compilerOptions": {
-    "allowUnreachableCode": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "CommonJS",
-    "noEmit": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "ES2019"
-  }
+    "typeRoots": ["src/orchestrator/@types", "node_modules/@types", "../../node_modules/@types"],
+    // "typeRoots": ["node_modules/@types", "../../node_modules/@types"],
+    "outDir": "dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/orchestrator/@types"]
 }

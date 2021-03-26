@@ -5,6 +5,7 @@
  */
 
 export * from './connections';
-export * from './models';
 export * from './routes';
 export * from './utils';
+export * from './types';
+export * as orchestrator from './orchestrator';
