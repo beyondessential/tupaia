@@ -4,3 +4,4 @@
  *
  */
 export * from './useUrlParams';
+export * from './makeEntityLink';

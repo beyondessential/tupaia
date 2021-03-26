@@ -7,9 +7,9 @@ import { useRouteMatch } from 'react-router-dom';
 
 export const useUrlParams = () => {
   const { params } = useRouteMatch();
-  const { organisationUnitCode, view } = params;
+  const { entityCode, view } = params;
   return {
-    organisationUnitCode,
+    entityCode,
     view,
   };
 };

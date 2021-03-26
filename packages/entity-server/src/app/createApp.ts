@@ -38,8 +38,11 @@ export function createApp(models: EntityServerModelRegistry) {
   app.use((req: Request, res: Response, next: NextFunction) => {
     req.models = models;
     req.authenticator = authenticator;
-    req.context = {};
-    res.context = {};
+
+    const context = {}; // context is shared between request and response
+    req.context = context;
+    res.context = context;
+
     next();
   });
 

@@ -469,8 +469,12 @@ function dashboard(
   action,
 ) {
   switch (action.type) {
-    case FETCH_INFO_VIEW_DATA:
-      return state;
+    case FETCH_INFO_VIEW_DATA: {
+      const { infoViewKey } = action;
+      const viewResponses = { ...state.viewResponses };
+      viewResponses[infoViewKey] = null; // Clear view prior to fetch
+      return { ...state, viewResponses };
+    }
     case FETCH_INFO_VIEW_DATA_SUCCESS: {
       const { infoViewKey, response } = action;
       const viewResponses = { ...state.viewResponses };
