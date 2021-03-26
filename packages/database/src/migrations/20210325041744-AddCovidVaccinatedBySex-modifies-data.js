@@ -26,8 +26,10 @@ const getDashboardConfig = () => ({
         dataBuilder: 'sumByOrgUnit',
         dataBuilderConfig: {
           dataElementCodes: ['COVIDVac5'],
+          aggregationType: 'SUM_PER_ORG_GROUP',
           entityAggregation: {
             dataSourceEntityType: 'village',
+            aggregationEntityType: 'district',
           },
         },
       },
@@ -35,8 +37,39 @@ const getDashboardConfig = () => ({
         dataBuilder: 'sumByOrgUnit',
         dataBuilderConfig: {
           dataElementCodes: ['COVIDVac6'],
+          aggregationType: 'SUM_PER_ORG_GROUP',
           entityAggregation: {
             dataSourceEntityType: 'village',
+            aggregationEntityType: 'district',
+          },
+        },
+      },
+      Total: {
+        dataBuilder: 'composeDataPerOrgUnit',
+        dataBuilderConfig: {
+          dataBuilders: {
+            Males: {
+              dataBuilder: 'sumByOrgUnit',
+              dataBuilderConfig: {
+                dataElementCodes: ['COVIDVac5'],
+                aggregationType: 'SUM_PER_ORG_GROUP',
+                entityAggregation: {
+                  dataSourceEntityType: 'village',
+                  aggregationEntityType: 'country',
+                },
+              },
+            },
+            Females: {
+              dataBuilder: 'sumByOrgUnit',
+              dataBuilderConfig: {
+                dataElementCodes: ['COVIDVac6'],
+                aggregationType: 'SUM_PER_ORG_GROUP',
+                entityAggregation: {
+                  dataSourceEntityType: 'village',
+                  aggregationEntityType: 'country',
+                },
+              },
+            },
           },
         },
       },
@@ -54,7 +87,7 @@ const getDashboardConfig = () => ({
         stackId: 2,
       },
     },
-    periodGranularity: 'one_day_at_a_time',
+    periodGranularity: 'day',
   },
   dataServices: [{ isDataRegional: true }],
 });
