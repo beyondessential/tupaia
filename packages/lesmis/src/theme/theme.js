@@ -42,38 +42,44 @@ const palette = {
 };
 
 const typography = {
-  fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+  fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
   h1: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '2rem',
     fontWeight: 500,
     lineHeight: 1.4,
     letterSpacing: 0,
   },
   h2: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1.75rem',
     fontWeight: 600,
     lineHeight: 1.5,
     letterSpacing: 0,
   },
   h3: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1.5rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h4: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1.3rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h5: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h6: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,

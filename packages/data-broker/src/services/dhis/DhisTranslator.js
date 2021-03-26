@@ -52,8 +52,12 @@ export class DhisTranslator {
       includeOptions: true,
       additionalFields: ['valueType'],
     });
-    if (dataElements.length !== dataElementCodes.length) {
-      throw new Error('Not all data elements attempting to be pushed could be found on DHIS2');
+    const codesFound = dataElements.map(de => de.code);
+    const codesNotFound = dataElementCodes.filter(c => !codesFound.includes(c));
+    if (codesNotFound.length > 0) {
+      throw new Error(
+        `The following data elements were not found on DHIS2 during push: ${codesNotFound}`,
+      );
     }
     // invert options from { code: name } to { name: code }, and transform the name to lower case,
     // because that's the way they're used during outbound translation
