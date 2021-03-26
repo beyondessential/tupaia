@@ -12,11 +12,11 @@ declare global {
       accessPolicy: AccessPolicy;
       authenticator: Authenticator;
       models: EntityServerModelRegistry;
-      context: Context;
+      ctx: Context;
     }
 
     export interface Response {
-      context: Context;
+      ctx: Context;
     }
   }
 }

@@ -4,6 +4,7 @@
  */
 import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator } from '@tupaia/auth';
+import { ModelRegistry } from '@tupaia/database';
 import { Context } from '../../../types';
 
 declare global {
@@ -11,11 +12,12 @@ declare global {
     export interface Request {
       accessPolicy: AccessPolicy;
       authenticator: Authenticator;
-      context: Context;
+      models: ModelRegistry;
+      ctx: Context;
     }
 
     export interface Response {
-      context: Context;
+      ctx: Context;
     }
   }
 }

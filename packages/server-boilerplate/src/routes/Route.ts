@@ -15,7 +15,7 @@ export type MatchingRequest<Req> = Request<Params<Req>, ResBody<Req>, ReqBody<Re
 export type MatchingResponse<Req> = Response<ResBody<Req>>;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-export abstract class Route<
+export class Route<
   Req extends MatchingRequest<Req> = Request,
   Res extends MatchingResponse<Req> = Response
 > {
