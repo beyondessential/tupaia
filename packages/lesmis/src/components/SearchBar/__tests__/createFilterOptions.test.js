@@ -48,7 +48,7 @@ describe('Search Bar createFilterOptions', () => {
     expect(getFilterResults('Åland')[0].name).toBe('Åland Islands');
   });
 
-  it('Returns options that start with the serach first', () => {
+  it('Returns options that start with the search first', () => {
     expect(getFilterResults('an')[0].name).toBe('AndorrA');
     expect(getFilterResults('an')[5].name).toBe('Afghanistan');
   });

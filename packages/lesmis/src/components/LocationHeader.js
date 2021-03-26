@@ -13,7 +13,7 @@ import MuiContainer from '@material-ui/core/Container';
 import { StarBorder, GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
-import { useOrgUnitData } from '../api/queries';
+import { useEntityData } from '../api';
 import { useUrlParams, makeEntityLink } from '../utils';
 
 const Wrapper = styled.section`
@@ -80,16 +80,16 @@ const ToggleButton = styled(MuiToggleButton)`
 `;
 
 export const LocationHeader = () => {
-  const { organisationUnitCode, view } = useUrlParams();
-  const { data: orgUnitData } = useOrgUnitData({
-    organisationUnitCode,
+  const { entityCode, view } = useUrlParams();
+  const { data: entityData } = useEntityData({
+    entityCode,
   });
 
   return (
     <Wrapper>
       <Container maxWidth={false}>
         <div>
-          <Heading variant="h2">{orgUnitData?.name}</Heading>
+          <Heading variant="h2">{entityData?.name}</Heading>
           <FlexStart>
             <ContactItem>
               <Phone />
@@ -110,7 +110,7 @@ export const LocationHeader = () => {
             <ToggleButton
               value="dashboard"
               component={Link}
-              to={makeEntityLink(organisationUnitCode, 'dashboard')}
+              to={makeEntityLink(entityCode, 'dashboard')}
               aria-label="dashboard"
             >
               <Dashboard /> Dashboard
@@ -118,7 +118,7 @@ export const LocationHeader = () => {
             <ToggleButton
               value="map"
               component={Link}
-              to={makeEntityLink(organisationUnitCode, 'map')}
+              to={makeEntityLink(entityCode, 'map')}
               aria-label="map"
             >
               <Map /> Map

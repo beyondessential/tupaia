@@ -5,9 +5,10 @@
  */
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography, IconButton, Drawer, List, ListItem } from '@material-ui/core';
-import { Close, Favorite } from '@material-ui/icons';
+import { Typography, IconButton, Drawer } from '@material-ui/core';
+import { Close, StarBorder } from '@material-ui/icons';
 import { FlexStart } from './Layout';
 
 /** =================================
@@ -24,25 +25,83 @@ export const FavoritesButton = styled(IconButton)`
   }
 `;
 
-const StyledList = styled(List)`
-  width: 30rem;
+const GUTTER_WIDTH = '30px';
 
-  .MuiListItem-gutters {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+const List = styled.div`
+  width: 30rem;
 `;
 
-const MenuTray = styled(FlexStart)`
+const Tray = styled(FlexStart)`
   padding: 0.375rem 0 0 0.375rem;
 `;
 
-const MenuHeading = styled(Typography)`
+const Headings = styled.div`
+  padding: 1rem ${GUTTER_WIDTH} 2rem;
+`;
+
+const Heading = styled(Typography)`
   font-weight: normal;
   font-size: 2rem;
   line-height: 140%;
   margin-bottom: 0.5rem;
 `;
+
+const StyledCard = styled(Link)`
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: initial;
+  text-decoration: none;
+  padding: 1.8rem ${GUTTER_WIDTH};
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  border-left: 5px solid transparent;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: none;
+    border-left-color: ${props => props.theme.palette.primary.main};
+  }
+`;
+
+const CardMedia = styled.div`
+  height: 110px;
+  width: 110px;
+  background-size: cover;
+  border-radius: 3px;
+  background-repeat: no-repeat;
+  background-image: url('/images/school.png');
+  margin-right: 1rem;
+`;
+
+const CardContent = styled.div`
+  padding-top: 10px;
+  padding-bottom: 5px;
+`;
+
+const favourites = [
+  { title: 'Tonga', url: '/TO' },
+  { title: 'Vavau', url: '/TO_Vavau' },
+  {
+    title: 'Tongatapu',
+    url: '/TO_Tongatapu',
+  },
+  {
+    title: 'Niuas',
+    url: '/TO_Niuas',
+  },
+  {
+    title: 'Niuafoou',
+    url: '/TO_Nfoouhc',
+  },
+  {
+    title: 'Niuas Alele',
+    url: '/TO_Niuas_Alele',
+  },
+  {
+    title: 'Mayparkngum Secondary School',
+    url: '/MayparkngumSchool',
+  },
+];
 
 export const FavouritesMenu = () => {
   const [open, setOpen] = useState(false);
@@ -58,19 +117,31 @@ export const FavouritesMenu = () => {
   return (
     <>
       <FavoritesButton onClick={toggleDrawer(true)}>
-        <Favorite />
+        <StarBorder />
       </FavoritesButton>
       <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-        <MenuTray>
+        <Tray>
           <IconButton color="inherit" onClick={toggleDrawer(false)}>
             <Close />
           </IconButton>
-        </MenuTray>
-        <StyledList onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
-          <ListItem>
-            <MenuHeading variant="h3">Saved</MenuHeading>
-          </ListItem>
-        </StyledList>
+        </Tray>
+        <Headings>
+          <Heading variant="h3">Favourite Dashboards</Heading>
+          <Typography variant="h6">6 Locations</Typography>
+        </Headings>
+        <List>
+          {favourites.map(({ title, url }) => (
+            <StyledCard key={title} onClick={toggleDrawer(false)} to={url}>
+              <CardMedia />
+              <CardContent>
+                <Typography gutterBottom variant="h6">
+                  {title}
+                </Typography>
+                <Typography>Mayparkngum District</Typography>
+              </CardContent>
+            </StyledCard>
+          ))}
+        </List>
       </Drawer>
     </>
   );

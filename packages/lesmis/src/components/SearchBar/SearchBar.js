@@ -17,7 +17,7 @@ import MuiSearchIcon from '@material-ui/icons/Search';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
-import { useCountryHeirarchyData } from '../../api/queries';
+import { useEntitiesData } from '../../api';
 import { getPlaceIcon, getOptionText } from './utils';
 import { makeEntityLink } from '../../utils';
 
@@ -141,9 +141,7 @@ export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
-  const { data: orgUnitData, isLoading } = useCountryHeirarchyData();
-
-  const options = orgUnitData ? orgUnitData.countryHierarchy : [];
+  const { data: options = [], isLoading } = useEntitiesData();
 
   const {
     getRootProps,
@@ -161,8 +159,8 @@ export const SearchBar = ({ linkType, className }) => {
     options,
     limit: inputValue && expanded ? EXPANDED_LIMIT : DEFAULT_LIMIT,
     onChange: (event, option) => {
-      if (option && option.organisationUnitCode) {
-        history.push(makeEntityLink(option.organisationUnitCode, linkType));
+      if (option && option.code) {
+        history.push(makeEntityLink(option.code, linkType));
       }
     },
   });
@@ -199,7 +197,7 @@ export const SearchBar = ({ linkType, className }) => {
           {groupedOptions.map((option, index) => (
             <ResultsItem
               key={option.name}
-              to={makeEntityLink(option.organisationUnitCode, linkType)}
+              to={makeEntityLink(option.code, linkType)}
               {...getOptionProps({ option, index })}
             >
               {getPlaceIcon(option.type)}
@@ -220,7 +218,7 @@ export const SearchBar = ({ linkType, className }) => {
       ) : (
         showNoResults && (
           <NoResultsBox>
-            <img src="/no-results-icon.svg" alt="no results" />
+            <img src="/images/no-results-icon.svg" alt="no results" />
             <NoResultsText>No results found for the search</NoResultsText>
             <NoResultsValue>&quot;{inputValue}&quot;</NoResultsValue>
           </NoResultsBox>

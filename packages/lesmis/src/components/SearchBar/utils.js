@@ -13,11 +13,11 @@ import { ReactComponent as School } from '../icons/school.svg';
  */
 export const getPlaceIcon = type => {
   switch (type) {
-    case 'Province':
+    case 'province':
       return <Province />;
-    case 'District':
+    case 'district':
       return <District />;
-    case 'Village':
+    case 'village':
       return <School />;
     default:
       return <District />;
@@ -27,20 +27,20 @@ export const getPlaceIcon = type => {
 /**
  * Get the display text for search results
  */
-export const getOptionText = (option, countryHeirarchy, hierarchy = []) => {
-  const { type, name, parent } = option;
+export const getOptionText = (option, entities, hierarchy = []) => {
+  const { type, name, parentCode } = option;
 
   const newHierarchy = [...hierarchy, name];
 
-  if (type === 'Country') {
+  if (type === 'country') {
     return newHierarchy.join(', ');
   }
 
-  const parentOrgUnit = countryHeirarchy.find(entity => entity.organisationUnitCode === parent);
+  const parentEntity = entities.find(entity => entity.entityCode === parentCode);
 
-  if (!parentOrgUnit) {
+  if (!parentEntity) {
     return newHierarchy.join(', ');
   }
 
-  return getOptionText(parentOrgUnit, countryHeirarchy, newHierarchy);
+  return getOptionText(parentEntity, entities, newHierarchy);
 };
