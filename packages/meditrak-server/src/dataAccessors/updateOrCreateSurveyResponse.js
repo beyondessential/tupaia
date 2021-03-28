@@ -7,7 +7,7 @@ import momentTimezone from 'moment-timezone';
 import { DatabaseError, UploadError, stripTimezoneFromDate } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
-import { getEntityIdFromClinicId } from '../database/utilities';
+import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../database';
 
 async function saveAnswer(models, answer, surveyResponseId) {
   const answerDocument = {
@@ -70,7 +70,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
       data_time: suppliedDataTime,
       submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
       end_time: endTime, // prior to v1.7.87 fall back to end_time
-      timezone = 'Pacific/Auckland', // if no timezone provided, use db default
+      timezone = DEFAULT_DATABASE_TIMEZONE, // if no timezone provided, use db default
     } = surveyResponseObject;
     const dataTime = suppliedDataTime || submissionTime || endTime;
 

@@ -19,6 +19,7 @@ import {
 } from '@tupaia/utils';
 import { getArrayQueryParameter, extractTabNameFromQuery } from '../utilities';
 import { ANSWER_TYPES } from '../../database/models/Answer';
+import { DEFAULT_DATABASE_TIMEZONE } from '../../database';
 import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
 import {
   EXPORT_DATE_FORMAT,
@@ -38,6 +39,7 @@ export async function importSurveyResponses(req, res) {
       throw new UploadError();
     }
     const surveyNames = getArrayQueryParameter(req?.query?.surveyNames);
+    const timeZone = req?.query?.timeZone || DEFAULT_DATABASE_TIMEZONE;
     const { models } = req;
     await models.wrapInTransaction(async transactingModels => {
       const workbook = xlsx.readFile(req.file.path);
@@ -81,7 +83,7 @@ export async function importSurveyResponses(req, res) {
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
                 const user = await transactingModels.user.findById(req.userId);
-                const surveyDate = getDateForColumn(sheet, columnIndex);
+                const surveyDate = getDateForColumn(sheet, columnIndex, timeZone);
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
                   survey_id: survey.id, // All survey responses within a sheet should be for the same survey
                   assessor_name: `${user.first_name} ${user.last_name}`,
@@ -90,6 +92,7 @@ export async function importSurveyResponses(req, res) {
                   start_time: surveyDate,
                   end_time: surveyDate,
                   data_time: stripTimezoneFromDate(surveyDate),
+                  timezone: timeZone,
                 });
                 newSurveyResponseIds[columnIndex] = newSurveyResponse.id;
               } else {
@@ -278,9 +281,9 @@ function getDateStringForColumn(sheet, columnIndex) {
   return getInfoForColumn(sheet, columnIndex, 'Date');
 }
 
-function getDateForColumn(sheet, columnIndex) {
+function getDateForColumn(sheet, columnIndex, timeZone) {
   const dateString = getDateStringForColumn(sheet, columnIndex);
-  return moment.utc(dateString, EXPORT_DATE_FORMAT).toDate();
+  return moment.tz(dateString, EXPORT_DATE_FORMAT, timeZone).toDate();
 }
 
 function checkIsCellEmpty(cellValue) {
