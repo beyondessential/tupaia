@@ -24,6 +24,13 @@ const indicator = {
     formula:
       "WS_COVID19_Clinsurv_137 == 1 or equalText(WS_COVID19_Clinsurv_75, '1. Positive') or equalText(WS_COVID19_Clinsurv_79, '1. Positive') or equalText(WS_COVID19_Clinsurv_83, '1. IgG positive only') or equalText(WS_COVID19_Clinsurv_83, '2. IgM positive only') or equalText(WS_COVID19_Clinsurv_83, '3. IgM / IgG positive') or equalText(WS_COVID19_Clinsurv_87, '1. Positive')",
     programCode: 'SC1CS',
+    defaultValues: {
+      WS_COVID19_Clinsurv_137: 0,
+      WS_COVID19_Clinsurv_75: 'undefined',
+      WS_COVID19_Clinsurv_79: 'undefined',
+      WS_COVID19_Clinsurv_83: 'undefined',
+      WS_COVID19_Clinsurv_87: 'undefined',
+    },
   },
 };
 const mapOverlay = {
