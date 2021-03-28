@@ -8,7 +8,10 @@ import { kebab as convertToKebabCase } from 'case';
 import { getCountryNameFromCode } from './getCountryNameFromCode';
 
 const REGIONAL_SERVER_NAME = 'regional';
-const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, 'tonga']);
+const TONGA_SERVER_NAME = 'tonga';
+const LAOS_DHIS_SERVER_NAME = 'lao-peoples-democratic-republic';
+const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, TONGA_SERVER_NAME, LAOS_DHIS_SERVER_NAME]);
+const READ_ONLY_SERVERS = new Set([LAOS_DHIS_SERVER_NAME]);
 
 const getServerUrlFromName = serverName => {
   const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
@@ -18,6 +21,13 @@ const getServerUrlFromName = serverName => {
       'The environment variable AGGREGATION_URL_PREFIX is required in non-production environments. The default should be "dev-".',
     );
   }
+
+  const dhisApiUrl = process.env[`${serverName.toUpperCase()}_DHIS_API_URL`];
+
+  if (dhisApiUrl) {
+    return dhisApiUrl;
+  }
+
   const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
   return `https://${urlPrefix}${specificServerPrefix}aggregation.tupaia.org`;
 };
@@ -60,6 +70,7 @@ export const getDhisConfig = ({
   }
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   const serverUrl = getServerUrlFromName(serverName);
+  const serverReadOnly = READ_ONLY_SERVERS.has(serverName);
 
-  return { serverName, serverUrl };
+  return { serverName, serverUrl, serverReadOnly };
 };

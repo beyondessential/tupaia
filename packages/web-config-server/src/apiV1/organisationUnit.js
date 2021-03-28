@@ -41,11 +41,12 @@ export default class extends RouteHandler {
   async getEntityAndCountryDataByCode(project) {
     const projectEntity = await project.entity();
     const country = await this.entity.countryEntity();
+    const typesExcludedFromWebFrontend = await this.fetchTypesExcludedFromWebFrontend(project);
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id, {
           type: {
             comparator: 'not in',
-            comparisonValue: this.models.entity.typesExcludedFromWebFrontend,
+            comparisonValue: typesExcludedFromWebFrontend,
           },
         })
       : [];
@@ -70,7 +71,7 @@ export default class extends RouteHandler {
 
   async getEntityAndChildrenByCode(project) {
     // Don't check parent permission (as we already know we have permission for at least one of its children)
-    const parent = await this.entity.parent();
+    const parent = await this.entity.getParent(project.entity_hierarchy_id);
     const allChildren = await this.entity.getChildren(project.entity_hierarchy_id);
     const children = await this.filterForAccess(allChildren);
 

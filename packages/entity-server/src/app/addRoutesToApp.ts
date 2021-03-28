@@ -5,15 +5,15 @@
 
 import { Express, Request, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
-import { TestRoute } from '../routes';
-import { Route } from '../routes/Route';
 import { authenticationMiddleware } from '../auth';
+import { Route, TestRoute } from '../routes';
+import { SingleEntityRoute, EntityDescendantsRoute } from '../routes/hierarchy';
+import { attachContext } from '../routes/hierarchy/middleware';
 
-const handleWith = (RouteClass: typeof Route) => (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+type ReqOfRoute<T> = T extends Route<infer Req> ? Req : never;
+const handleWith = <T extends { handle: () => Promise<void> }>(
+  RouteClass: new (req: ReqOfRoute<T>, res: Response, next: NextFunction) => T,
+) => (req: ReqOfRoute<T>, res: Response, next: NextFunction) => {
   const route = new RouteClass(req, res, next);
   return route.handle();
 };
@@ -44,6 +44,16 @@ export function addRoutesToApp(app: Express) {
    * GET routes
    */
   app.get('/v1/test', handleWith(TestRoute));
+
+  /**
+   * Entity Request routes
+   */
+  app.use('/v1/hierarchy/:hierarchyName/:entityCode', attachContext);
+  app.get('/v1/hierarchy/:hierarchyName/:entityCode', handleWith(SingleEntityRoute));
+  app.get(
+    '/v1/hierarchy/:hierarchyName/:entityCode/descendants',
+    handleWith(EntityDescendantsRoute),
+  );
 
   app.use(handleError);
 }
