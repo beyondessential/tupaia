@@ -4,3 +4,4 @@
  */
 
 export { SingleEntityRoute } from './SingleEntityRoute';
+export { EntityDescendantsRoute } from './EntityDescendantsRoute';

@@ -597,12 +597,13 @@ function addJoin(baseQuery, recordType, joinOptions) {
   // e.g. survey_response.id = answer.survey_response_id
   const {
     joinWith,
+    joinAs = joinWith,
     joinType = JOIN_TYPES.DEFAULT,
-    joinCondition = [`${recordType}.id`, `${joinWith}.${recordType}_id`],
+    joinCondition = [`${recordType}.id`, `${joinAs}.${recordType}_id`],
     joinConditions = [joinCondition],
   } = joinOptions;
   const joinMethod = joinType ? `${joinType}Join` : 'join';
-  return baseQuery[joinMethod](joinWith, function () {
+  return baseQuery[joinMethod](`${joinWith} as ${joinAs}`, function () {
     const joining = this.on(...joinConditions[0]);
     for (
       let joinConditionIndex = 1;

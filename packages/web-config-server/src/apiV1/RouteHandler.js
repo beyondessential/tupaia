@@ -58,4 +58,6 @@ export class RouteHandler {
     this.models.project.findOne({ code: this.query.projectCode || 'explore' });
 
   fetchHierarchyId = async () => (await this.fetchProject()).entity_hierarchy_id;
+
+  fetchTypesExcludedFromWebFrontend = project => project?.config?.frontendExcludedTypes ?? this.models.entity.typesExcludedFromWebFrontend;
 }

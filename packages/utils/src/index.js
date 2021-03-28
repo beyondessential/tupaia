@@ -14,6 +14,7 @@ export { Multilock } from './Multilock';
 export * from './period';
 export * from './testUtilities';
 export { filterEntities } from './filterEntities';
+export * from './geoJson';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { getCountryCode } from './getCountryCode';
 export { requireEnv } from './requireEnv';
