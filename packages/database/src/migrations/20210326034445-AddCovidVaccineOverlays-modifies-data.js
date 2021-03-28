@@ -41,18 +41,29 @@ const MAP_OVERLAY_TEMPLATES = {
     name: 'Total number of people received 1st dose of COVID-19 vaccine',
     userGroup: 'COVID-19',
     dataElementCode: 'COVIDVac4',
-    measureBuilderConfig: {"entityAggregation": {"aggregationType": "REPLACE_ORG_UNIT_WITH_ORG_GROUP", "dataSourceEntityType": "village", "aggregationEntityType": "village"}},
     measureBuilder: 'sumAllPerOrgUnit',
-    presentationOptions: {"scaleType": "neutral", "displayType": "spectrum", "measureLevel": "Village"},
+    measureBuilderConfig: null, // see MAP_OVERLAY_CONFIG_TEMPLATES
+    presentationOptions: null, // see MAP_OVERLAY_CONFIG_TEMPLATES
   },
   Total_Number_Of_People_2nd_Dose_Covid_Vaccine: {
     name: 'Total number of people received 2nd dose of COVID-19 vaccine',
     userGroup: 'COVID-19',
     dataElementCode: 'COVIDVac8',
-    measureBuilderConfig: {"entityAggregation": {"aggregationType": "REPLACE_ORG_UNIT_WITH_ORG_GROUP", "dataSourceEntityType": "village", "aggregationEntityType": "village"}},
     measureBuilder: 'sumAllPerOrgUnit',
+    measureBuilderConfig: null, // see MAP_OVERLAY_CONFIG_TEMPLATES
+    presentationOptions: null, // see MAP_OVERLAY_CONFIG_TEMPLATES
+  },
+}
+
+const MAP_OVERLAY_CONFIG_TEMPLATES = {
+  BY_VILLAGE: {
+    measureBuilderConfig: {"entityAggregation": {"aggregationType": "REPLACE_ORG_UNIT_WITH_ORG_GROUP", "dataSourceEntityType": "village", "aggregationEntityType": "village"}},
     presentationOptions: {"scaleType": "neutral", "displayType": "spectrum", "measureLevel": "Village"},
   },
+  BY_DISTRICT: {
+    measureBuilderConfig: {"entityAggregation": {"aggregationType": "REPLACE_ORG_UNIT_WITH_ORG_GROUP", "dataSourceEntityType": "district", "aggregationEntityType": "district"}},
+    presentationOptions: {"scaleType": "performanceDesc", "valueType": "number", "displayType": "shaded-spectrum", "measureLevel": "District"},
+  }
 }
 
 const MAP_OVERLAYS_BY_COUNTRY = {
@@ -61,13 +72,15 @@ const MAP_OVERLAYS_BY_COUNTRY = {
       id: 'COVID_WS_Total_Number_Of_People_1st_Dose_Covid_Vaccine',
       countryCodes: '{WS}',
       projectCodes: '{covid_samoa}',
-      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_1st_Dose_Covid_Vaccine
+      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_1st_Dose_Covid_Vaccine,
+      ...MAP_OVERLAY_CONFIG_TEMPLATES.BY_VILLAGE,
     },
     {
       id: 'COVID_WS_Total_Number_Of_People_2nd_Dose_Covid_Vaccine',
       countryCodes: '{WS}',
       projectCodes: '{covid_samoa}',
-      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_2nd_Dose_Covid_Vaccine
+      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_2nd_Dose_Covid_Vaccine,
+      ...MAP_OVERLAY_CONFIG_TEMPLATES.BY_VILLAGE,
     },
   ],
   FJ: [
@@ -75,13 +88,15 @@ const MAP_OVERLAYS_BY_COUNTRY = {
       id: 'COVID_FJ_Total_Number_Of_People_1st_Dose_Covid_Vaccine',
       countryCodes: '{FJ}',
       projectCodes: '{supplychain_fiji}',
-      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_1st_Dose_Covid_Vaccine
+      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_1st_Dose_Covid_Vaccine,
+      ...MAP_OVERLAY_CONFIG_TEMPLATES.BY_DISTRICT,
     },
     {
       id: 'COVID_FJ_Total_Number_Of_People_2nd_Dose_Covid_Vaccine',
       countryCodes: '{FJ}',
       projectCodes: '{supplychain_fiji}',
-      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_2nd_Dose_Covid_Vaccine
+      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_2nd_Dose_Covid_Vaccine,
+      ...MAP_OVERLAY_CONFIG_TEMPLATES.BY_DISTRICT,
     },
   ],
   NR: [
@@ -89,13 +104,15 @@ const MAP_OVERLAYS_BY_COUNTRY = {
       id: 'COVID_NR_Total_Number_Of_People_1st_Dose_Covid_Vaccine',
       countryCodes: '{NR}',
       projectCodes: '{ehealth_nauru}',
-      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_1st_Dose_Covid_Vaccine
+      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_1st_Dose_Covid_Vaccine,
+      ...MAP_OVERLAY_CONFIG_TEMPLATES.BY_DISTRICT,
     },
     {
       id: 'COVID_NR_Total_Number_Of_People_2nd_Dose_Covid_Vaccine',
       countryCodes: '{NR}',
       projectCodes: '{ehealth_nauru}',
-      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_2nd_Dose_Covid_Vaccine
+      ...MAP_OVERLAY_TEMPLATES.Total_Number_Of_People_2nd_Dose_Covid_Vaccine,
+      ...MAP_OVERLAY_CONFIG_TEMPLATES.BY_DISTRICT,
     },
   ],
 };
