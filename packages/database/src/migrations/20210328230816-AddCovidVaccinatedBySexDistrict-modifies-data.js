@@ -18,7 +18,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const getDashboardConfig = () => ({
-  id: 'COVID_TRACKING_By_Gender',
+  id: 'COVID_TRACKING_By_Gender_by_district',
   dataBuilder: 'composeDataPerOrgUnit',
   dataBuilderConfig: {
     dataBuilders: {
@@ -26,10 +26,8 @@ const getDashboardConfig = () => ({
         dataBuilder: 'sumByOrgUnit',
         dataBuilderConfig: {
           dataElementCodes: ['COVIDVac5'],
-          aggregationType: 'SUM_PER_ORG_GROUP',
           entityAggregation: {
-            dataSourceEntityType: 'village',
-            aggregationEntityType: 'district',
+            dataSourceEntityType: 'district',
           },
         },
       },
@@ -37,10 +35,8 @@ const getDashboardConfig = () => ({
         dataBuilder: 'sumByOrgUnit',
         dataBuilderConfig: {
           dataElementCodes: ['COVIDVac6'],
-          aggregationType: 'SUM_PER_ORG_GROUP',
           entityAggregation: {
-            dataSourceEntityType: 'village',
-            aggregationEntityType: 'district',
+            dataSourceEntityType: 'district',
           },
         },
       },
@@ -54,7 +50,7 @@ const getDashboardConfig = () => ({
                 dataElementCodes: ['COVIDVac5'],
                 aggregationType: 'SUM_PER_ORG_GROUP',
                 entityAggregation: {
-                  dataSourceEntityType: 'village',
+                  dataSourceEntityType: 'district',
                   aggregationEntityType: 'country',
                 },
               },
@@ -65,7 +61,7 @@ const getDashboardConfig = () => ({
                 dataElementCodes: ['COVIDVac6'],
                 aggregationType: 'SUM_PER_ORG_GROUP',
                 entityAggregation: {
-                  dataSourceEntityType: 'village',
+                  dataSourceEntityType: 'district',
                   aggregationEntityType: 'country',
                 },
               },
@@ -93,8 +89,10 @@ const getDashboardConfig = () => ({
 });
 
 const dashboardGroupCodes = [
-  // Samoa
-  'WS_Covid_Samoa_Country_COVID-19',
+  // Fiji
+  'FJ_Covid_Fiji_Country_COVID-19',
+  // Nauru
+  'NR_Covid_Nauru_Country_COVID-19',
 ];
 
 exports.up = async function (db) {
