@@ -2,7 +2,6 @@
   "extends": "../../tsconfig-ts.dependency.json",
   "compilerOptions": {
     "typeRoots": ["src/orchestrator/@types", "node_modules/@types", "../../node_modules/@types"],
-    // "typeRoots": ["node_modules/@types", "../../node_modules/@types"],
     "outDir": "dist"
   },
   "include": ["src/**/*"],

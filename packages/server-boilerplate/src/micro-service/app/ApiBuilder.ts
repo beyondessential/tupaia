@@ -16,7 +16,7 @@ import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { MatchingRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 
-export class AppBuilder {
+export class ApiBuilder {
   private readonly app: Express;
 
   private readonly models: ModelRegistry;

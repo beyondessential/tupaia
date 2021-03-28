@@ -3,4 +3,4 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export { AppBuilder } from './AppBuilder';
+export { ApiBuilder } from './ApiBuilder';

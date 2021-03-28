@@ -9,4 +9,4 @@ export * from './routes';
 export * from './utils';
 export * from './types';
 export * as orchestrator from './orchestrator';
-export { AppBuilder as MicroServiceAppBuilder } from './micro-service';
+export { ApiBuilder as MicroServiceApiBuilder } from './micro-service';
