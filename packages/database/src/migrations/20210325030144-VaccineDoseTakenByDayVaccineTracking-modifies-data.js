@@ -21,12 +21,11 @@ const dashboardGroups = [
   {
     code: 'FJ_Covid_Fiji_Country_COVID-19',
     aggregationEntityType: 'country',
-    dataSourceEntityType: 'village',
+    dataSourceEntityType: 'district',
   },
   {
     code: 'FJ_Covid_Fiji_District_COVID-19',
-    aggregationEntityType: 'district',
-    dataSourceEntityType: 'village',
+    dataSourceEntityType: 'district',
   },
   // Samoa
   {
@@ -47,12 +46,11 @@ const dashboardGroups = [
   {
     code: 'NR_Covid_Nauru_Country_COVID-19',
     aggregationEntityType: 'country',
-    dataSourceEntityType: 'village',
+    dataSourceEntityType: 'district',
   },
   {
     code: 'NR_Covid_Nauru_District_COVID-19',
-    aggregationEntityType: 'district',
-    dataSourceEntityType: 'village',
+    dataSourceEntityType: 'district',
   },
 ];
 
