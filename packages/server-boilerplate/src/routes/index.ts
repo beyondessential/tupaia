@@ -4,5 +4,5 @@
  *
  */
 
-export * from './Route';
-export * from './TestRoute';
+export { Route } from './Route';
+export { TestRoute } from './TestRoute';

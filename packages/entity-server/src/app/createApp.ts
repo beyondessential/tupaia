@@ -4,7 +4,7 @@
  */
 
 import { MicroServiceAppBuilder, handleWith } from '@tupaia/server-boilerplate';
-import { EntityServerModelRegistry } from '../types';
+import { TupaiaDatabase } from '@tupaia/database';
 import {
   HierarchyRequest,
   SingleEntityRoute,
@@ -16,8 +16,9 @@ import { attachContext } from '../routes/hierarchy/middleware';
 /**
  * Set up express server with middleware,
  */
-export function createApp(models: EntityServerModelRegistry) {
-  return new MicroServiceAppBuilder(models)
+export function createApp() {
+  return new MicroServiceAppBuilder(new TupaiaDatabase())
+    .useBasicBearerAuth('entity-server')
     .use<HierarchyRequest>('/v1/hierarchy/:hierarchyName/:entityCode', attachContext)
     .get<HierarchyRequest>(
       '/v1/hierarchy/:hierarchyName/:entityCode',

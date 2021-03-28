@@ -9,17 +9,20 @@ import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 
 import { Authenticator } from '@tupaia/auth';
-import { ModelRegistry } from '@tupaia/database';
+import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
 import { handleWith, handleError } from '../../utils';
-import { authenticationMiddleware } from '../auth';
+import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { MatchingRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 
 export class AppBuilder {
   private readonly app: Express;
 
-  constructor(models: ModelRegistry) {
+  private readonly models: ModelRegistry;
+
+  constructor(transactingConnection: TupaiaDatabase) {
+    this.models = new ModelRegistry(transactingConnection);
     this.app = express();
 
     /**
@@ -37,10 +40,8 @@ export class AppBuilder {
     /**
      * Add singletons to be attached to req for every route
      */
-    const authenticator = new Authenticator(models);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      req.authenticator = authenticator;
-      req.models = models;
+      req.models = this.models;
 
       const context = {}; // context is shared between request and response
       req.ctx = context;
@@ -50,14 +51,15 @@ export class AppBuilder {
     });
 
     /**
-     * Attach authentication to each endpoint
-     */
-    this.app.use(authenticationMiddleware);
-
-    /**
-     * GET routes
+     * Test Route
      */
     this.app.get('/v1/test', handleWith(TestRoute));
+  }
+
+  useBasicBearerAuth(apiName: string) {
+    const authenticator = new Authenticator(this.models);
+    this.app.use(buildBasicBearerAuthMiddleware(apiName, authenticator));
+    return this;
   }
 
   use<T extends MatchingRequest<T>>(
