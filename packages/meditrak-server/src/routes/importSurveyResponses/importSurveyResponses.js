@@ -19,6 +19,7 @@ import {
 } from '@tupaia/utils';
 import { getArrayQueryParameter, extractTabNameFromQuery } from '../utilities';
 import { ANSWER_TYPES } from '../../database/models/Answer';
+import { DEFAULT_DATABASE_TIMEZONE } from '../../database';
 import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
 import {
   EXPORT_DATE_FORMAT,
@@ -38,6 +39,7 @@ export async function importSurveyResponses(req, res) {
       throw new UploadError();
     }
     const surveyNames = getArrayQueryParameter(req?.query?.surveyNames);
+    const timeZone = req?.query?.timeZone || DEFAULT_DATABASE_TIMEZONE;
     const { models } = req;
     await models.wrapInTransaction(async transactingModels => {
       const workbook = xlsx.readFile(req.file.path);
@@ -81,15 +83,18 @@ export async function importSurveyResponses(req, res) {
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
                 const user = await transactingModels.user.findById(req.userId);
+                // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
                 const surveyDate = getDateForColumn(sheet, columnIndex);
+                const importDate = moment();
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
                   survey_id: survey.id, // All survey responses within a sheet should be for the same survey
                   assessor_name: `${user.first_name} ${user.last_name}`,
                   user_id: user.id,
                   entity_id: entity.id,
-                  start_time: surveyDate,
-                  end_time: surveyDate,
+                  start_time: importDate,
+                  end_time: importDate,
                   data_time: stripTimezoneFromDate(surveyDate),
+                  timezone: timeZone,
                 });
                 newSurveyResponseIds[columnIndex] = newSurveyResponse.id;
               } else {

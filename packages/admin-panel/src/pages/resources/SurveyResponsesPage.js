@@ -136,6 +136,9 @@ const IMPORT_CONFIG = {
   title: 'Import Survey Responses',
   actionConfig: {
     importEndpoint: 'surveyResponses',
+    extraQueryParameters: {
+      timeZone: getBrowserTimeZone(),
+    },
   },
   queryParameters: [
     {
