@@ -209,16 +209,13 @@ export function processMeasureInfo(response) {
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
 
-      // A grey no data colour looks like part of the neutral scale
-      const noDataColour = scaleType === SCALE_TYPES.NEUTRAL ? 'black' : MAP_COLORS.NO_DATA;
-
       return {
         ...measureOption,
         values,
         valueMapping,
         min,
         max,
-        noDataColour,
+        noDataColour: MAP_COLORS.NO_DATA,
       };
     }
 
