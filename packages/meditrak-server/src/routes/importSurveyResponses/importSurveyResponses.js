@@ -83,8 +83,8 @@ export async function importSurveyResponses(req, res) {
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
                 const user = await transactingModels.user.findById(req.userId);
-                // Pull data_time from spreadsheet, set end_time to current time
-                const surveyDate = getDateForColumn(sheet, columnIndex, timeZone);
+                // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
+                const surveyDate = getDateForColumn(sheet, columnIndex);
                 const importDate = moment();
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
                   survey_id: survey.id, // All survey responses within a sheet should be for the same survey
@@ -283,9 +283,9 @@ function getDateStringForColumn(sheet, columnIndex) {
   return getInfoForColumn(sheet, columnIndex, 'Date');
 }
 
-function getDateForColumn(sheet, columnIndex, timeZone) {
+function getDateForColumn(sheet, columnIndex) {
   const dateString = getDateStringForColumn(sheet, columnIndex);
-  return moment.tz(dateString, EXPORT_DATE_FORMAT, timeZone).toDate();
+  return moment.utc(dateString, EXPORT_DATE_FORMAT).toDate();
 }
 
 function checkIsCellEmpty(cellValue) {
