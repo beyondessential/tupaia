@@ -83,14 +83,16 @@ export async function importSurveyResponses(req, res) {
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
                 const user = await transactingModels.user.findById(req.userId);
+                // Pull data_time from spreadsheet, set end_time to current time
                 const surveyDate = getDateForColumn(sheet, columnIndex, timeZone);
+                const importDate = moment();
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
                   survey_id: survey.id, // All survey responses within a sheet should be for the same survey
                   assessor_name: `${user.first_name} ${user.last_name}`,
                   user_id: user.id,
                   entity_id: entity.id,
-                  start_time: surveyDate,
-                  end_time: surveyDate,
+                  start_time: importDate,
+                  end_time: importDate,
                   data_time: stripTimezoneFromDate(surveyDate),
                   timezone: timeZone,
                 });
