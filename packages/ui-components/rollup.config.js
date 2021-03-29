@@ -15,25 +15,6 @@ import del from 'rollup-plugin-delete';
 import svg from 'rollup-plugin-svg';
 import pkg from './package.json';
 
-const plugins = [
-  builtins(),
-  nodeResolve(),
-  external(),
-  json({
-    compact: true,
-  }),
-  svg(),
-  babel({
-    exclude: 'node_modules/**',
-    configFile: './.babelrc.js',
-  }),
-  commonjs(),
-  analyze({ summaryOnly: true }),
-  del({ targets: ['dist'] }),
-];
-
-const externals = Object.keys(pkg.peerDependencies || {});
-
 export default [
   {
     input: pkg.source,
@@ -41,7 +22,22 @@ export default [
       { file: pkg.main, format: 'esm', plugins: [terser()] },
       { file: pkg.module, format: 'cjs', plugins: [terser()] },
     ],
-    plugins,
-    external: externals,
+    plugins: [
+      builtins(),
+      nodeResolve(),
+      external(),
+      json({
+        compact: true,
+      }),
+      svg(),
+      babel({
+        exclude: 'node_modules/**',
+        configFile: './.babelrc.js',
+      }),
+      commonjs(),
+      analyze({ summaryOnly: true }),
+      del({ targets: ['dist'] }),
+    ],
+    external: [/node_modules/],
   },
 ];
