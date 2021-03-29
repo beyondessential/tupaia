@@ -33,7 +33,9 @@ export const testFunctionality = async () => {
 
   const importFile = (filename, surveyNames = []) =>
     app
-      .post(`import/surveyResponses?${surveyNames.map(s => `surveyNames=${s}`).join('&')}`)
+      .post(
+        `import/surveyResponses?${surveyNames.map(s => `surveyNames=${s}`).join('&')}&timeZone=UTC`,
+      )
       .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
 
   const deletedSurveyResponseId = '1125f5e462d7a74a5a2_test';
