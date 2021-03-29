@@ -24,7 +24,7 @@ function get_branch_name() {
 }
 
 function check_name_is_not_reserved() {
-    local $branch_name=$1
+    local branch_name=$1
 
     for reserved_name in ${RESERVED_NAMES[@]}; do
         if [[ "$branch_name" == "$reserved_name" ]]; then
