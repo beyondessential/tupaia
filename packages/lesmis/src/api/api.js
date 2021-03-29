@@ -5,7 +5,7 @@
  */
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_CONFIG_SERVER_BASE_URL;
+const API_URL = process.env.REACT_APP_LESMIS_API_URL;
 const timeout = 45 * 1000; // 45 seconds
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
@@ -19,11 +19,28 @@ axios.defaults.withCredentials = true;
  * @param options
  * @returns {AxiosPromise}
  */
-const request = (endpoint, options) =>
-  axios(`${API_URL}${endpoint}`, {
-    timeout,
-    ...options,
-  }).then(res => res.data);
+const request = async (endpoint, options) => {
+  try {
+    const response = await axios(`${API_URL}${endpoint}`, {
+      timeout,
+      ...options,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      const { data } = error.response;
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      if (data.message) {
+        throw new Error(data.message);
+      }
+    }
+    throw new Error(error);
+  }
+};
 
 export const get = (endpoint, options) => request(endpoint, { method: 'get', ...options });
 
