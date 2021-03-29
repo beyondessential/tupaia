@@ -32,30 +32,24 @@ const getPresentationOptionFromRange = (options, value) => {
 
 const getPresentationOptionFromKey = (options, value) => findByKey(options, value, false) || null;
 
-// Check if the value satisfies all the conditions if condition is an object
-const satisfyAllConditions = (conditions, value, opposite) => {
-  return Object.entries(conditions).every(([operator, conditionalValue]) => {
-    const checkConditionMethod = CONDITION_TYPE[operator];
-    if (checkConditionMethod) {
-      const result = checkConditionMethod(value, conditionalValue);
-      return opposite ? !result : result;
-    }
-    return false;
-  });
-};
-
 const getPresentationOptionFromCondition = (options, value) => {
   const { conditions = [] } = options;
 
   const option = conditions.find(({ condition }) => {
     if (typeof condition === 'object') {
-      return satisfyAllConditions(condition, value);
+      // Check if the value satisfies all the conditions if condition is an object
+      return Object.entries(condition).every(([operator, conditionalValue]) => {
+        const checkConditionMethod = CONDITION_TYPE[operator];
+
+        return checkConditionMethod ? checkConditionMethod(value, conditionalValue) : false;
+      });
     }
 
     // If condition is not an object, assume its the value we want to check (with '=' operator)
     const checkConditionMethod = CONDITION_TYPE['='];
     return checkConditionMethod(value, condition);
   });
+
   return option;
 };
 
