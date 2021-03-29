@@ -4,15 +4,17 @@
  *
  */
 
-import { Route } from './Route';
+import { Request } from 'express';
+import { Route } from '../../routes';
+import { EmptyObject } from '../../types';
 
-export class LogoutRoute extends Route {
+export class LogoutRoute extends Route<Request<EmptyObject, { success: boolean }>> {
   async buildResponse() {
-    const { sessionCookie } = this;
+    const { sessionCookie } = this.req;
     const sessionId = sessionCookie?.id;
 
-    if (sessionId && this.sessionModel) {
-      await this.sessionModel.deleteById(sessionId);
+    if (sessionId && this.req.sessionModel) {
+      await this.req.sessionModel.deleteById(sessionId);
     }
 
     if (sessionCookie !== undefined) {

@@ -62,7 +62,7 @@ export class ApiBuilder {
     return this;
   }
 
-  use<T extends MatchingRequest<T>>(
+  use<T extends MatchingRequest<T> = Request>(
     path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
@@ -70,7 +70,7 @@ export class ApiBuilder {
     return this;
   }
 
-  get<T extends MatchingRequest<T>>(
+  get<T extends MatchingRequest<T> = Request>(
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {

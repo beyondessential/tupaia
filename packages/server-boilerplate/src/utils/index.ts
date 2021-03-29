@@ -3,5 +3,5 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-export * from './handleError';
-export * from './handleWith';
+export { handleError } from './handleError';
+export { handleWith } from './handleWith';
