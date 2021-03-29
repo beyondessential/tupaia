@@ -66,9 +66,10 @@ export default class RowGroup extends Component {
       highlightedColumn,
       startColumn,
       numberOfColumnsPerPage,
+      childRows,
+      category,
     } = this.props;
     const displayedColumnCount = startColumn + numberOfColumnsPerPage;
-
     return (
       <div style={isExpanded ? styles.categorySectionExpanded : null}>
         <div
@@ -91,25 +92,25 @@ export default class RowGroup extends Component {
           {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
             const value = columnData ? columnData[column.key] : '';
-            const { metadata = {} } = value;
             return (
               <div
                 style={column.isGroupHeader ? styles.gridCellChangerActive : styles.gridCell}
                 key={`${rowId}-empty-${index}`}
               >
                 <Cell
-                  cellKey={index}
+                  cellKey={column.key}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
                   onCellClick={onCellClick}
                   presentationOptions={presentationOptions}
-                  value={value.value || value}
-                  metadata={metadata}
+                  value={value}
                   columnActiveStripStyle={styles.columnActiveStrip}
                   isActive={isCellActive}
                   dotStyle={styles.cellIndicator}
                   dotStyleActive={styles.cellIndicatorActive}
                   isUsingDots={isUsingDots}
+                  childRows={childRows}
+                  category={category}
                 />
               </div>
             );

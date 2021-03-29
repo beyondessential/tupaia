@@ -25,36 +25,24 @@ async function getDashboardReportById(db, id) {
 }
 
 const categoryPresentationOptions = {
-  type: 'objectCondition',
-  conditions: [
-    {
-      key: 'red',
+  conditions: {
+    red: {
       color: '#b71c1c',
-      condition: {
-        '=': null,
-      },
       legendLabel: 'Stock out',
     },
-    {
-      key: 'green',
+    green: {
       color: '#33691e',
       label: '',
-      condition: {
-        '>': 0,
-      },
       legendLabel: 'In stock',
     },
-    {
-      key: 'orange',
+    orange: {
       color: 'orange',
       label: '',
-      condition: {
-        some: { '>': 0 },
-      },
       legendLabel: 'At least 1 item out of stock',
     },
-  ],
+  },
   showRawValue: true,
+  showNestedRows: true,
 };
 
 const previousPresentationOptions = {
@@ -114,6 +102,30 @@ const newPresentationOptions = {
   showRawValue: true,
 };
 
+const categoryAggregator = {
+  type: '$condition',
+  conditions: [
+    {
+      key: 'red',
+      condition: {
+        '=': null,
+      },
+    },
+    {
+      key: 'green',
+      condition: {
+        '>': 0,
+      },
+    },
+    {
+      key: 'orange',
+      condition: {
+        some: { '>': 0 },
+      },
+    },
+  ],
+};
+
 const dashboardReportIds = [
   'Laos_EOC_Malaria_Stock_Availability_Facility',
   'Laos_EOC_Malaria_Stock_Availability_Sub_District',
@@ -123,7 +135,7 @@ exports.up = async function (db) {
   for (const id of dashboardReportIds) {
     const dashboard = await getDashboardReportById(db, id);
     const { dataBuilderConfig, viewJson } = dashboard;
-    const newDataBuilderConfig = { ...dataBuilderConfig, categoryAggregator: '$listAll' };
+    const newDataBuilderConfig = { ...dataBuilderConfig, categoryAggregator };
     const newViewJson = {
       ...viewJson,
       categoryPresentationOptions,

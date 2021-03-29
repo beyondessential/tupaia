@@ -24,4 +24,4 @@ export {
 } from './checkAgainstConditions';
 export { uniqueValueFromEvents } from './uniqueValues';
 export { translateEventEntityIdsToNames } from './translateEventEntityIdsToNames';
-export { getPresentationOption, PRESENTATION_TYPES } from './getPresentationOption';
+export { getPresentationOption } from './getPresentationOption';

@@ -12,7 +12,6 @@ export const hexToRgba = (hex, opacity) => {
 const PRESENTATION_TYPES = {
   RANGE: 'range',
   CONDITION: 'condition',
-  OBJECT_CONDITION: 'objectCondition',
 };
 
 const CONDITION_TYPE = {
@@ -32,9 +31,6 @@ const getPresentationOptionFromRange = (options, value) => {
 };
 
 const getPresentationOptionFromKey = (options, value) => findByKey(options, value, false) || null;
-
-const getPresentationOptionFromConditionKey = (options, key) =>
-  options.find(option => option.key === key) || null;
 
 // Check if the value satisfies all the conditions if condition is an object
 const satisfyAllConditions = (conditions, value, opposite) => {
@@ -63,15 +59,12 @@ const getPresentationOptionFromCondition = (options, value) => {
   return option;
 };
 
-export const getPresentationOption = (options, target, metadata = {}) => {
-  const value = metadata.hasOwnProperty('conditionKey') ? metadata.conditionKey : target;
+export const getPresentationOption = (options, value) => {
   switch (options.type) {
     case PRESENTATION_TYPES.RANGE:
       return getPresentationOptionFromRange(options, value);
     case PRESENTATION_TYPES.CONDITION:
       return getPresentationOptionFromCondition(options, value);
-    case PRESENTATION_TYPES.OBJECT_CONDITION:
-      return getPresentationOptionFromConditionKey(options.conditions, value);
     default:
       return getPresentationOptionFromKey(options.conditions, value);
   }

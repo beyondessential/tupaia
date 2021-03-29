@@ -1,10 +1,10 @@
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
 
-export const PRESENTATION_TYPES = {
-  OBJECT_CONDITION: 'objectCondition',
+const PRESENTATION_TYPES = {
+  CONDITIONS: '$condition',
 };
 
-const OBJECT_CONDITION_TYPE_SOME = 'some';
+const CONDITION_TYPE_SOME = 'some';
 
 // Check if the value satisfies all the conditions if condition is an object
 const satisfyAllConditions = (conditions, value, opposite) => {
@@ -14,46 +14,43 @@ const satisfyAllConditions = (conditions, value, opposite) => {
   });
 };
 
-const satisfyAllConditionsForSomeItems = (object, condition) => {
+const satisfyAllConditionsForSomeItems = (values, condition) => {
   // Check at least one item meets condition, but not all
-  const conditionsInSome = condition[OBJECT_CONDITION_TYPE_SOME];
-  const someMeetCondition = Object.values(object).some(value =>
-    satisfyAllConditions(conditionsInSome, value),
-  );
-  const someMeetOppositeCondition = Object.values(object).some(value =>
+  const conditionsInSome = condition[CONDITION_TYPE_SOME];
+  const someMeetCondition = values.some(value => satisfyAllConditions(conditionsInSome, value));
+  const someMeetOppositeCondition = values.some(value =>
     satisfyAllConditions(conditionsInSome, value, true),
   );
   return someMeetCondition && someMeetOppositeCondition;
 };
 
-const getPresentationOptionFromObjectCondition = (options, object) => {
-  if (!object) return { key: '' };
-  const { conditions = [] } = options;
-
+const getPresentationOptionFromCondition = (config, values) => {
+  if (!values) return null;
+  const { conditions = [] } = config;
   const option = conditions.find(({ condition }) => {
     if (typeof condition === 'object') {
-      if (condition[OBJECT_CONDITION_TYPE_SOME]) {
-        return satisfyAllConditionsForSomeItems(object, condition);
+      if (condition[CONDITION_TYPE_SOME]) {
+        return satisfyAllConditionsForSomeItems(values, condition);
       }
-      return Object.values(object).every(value => satisfyAllConditions(condition, value));
+      return values.every(value => satisfyAllConditions(condition, value));
     }
 
     throw new Error(
-      `Please specify condition as object when using 'type: ${PRESENTATION_TYPES.OBJECT_CONDITION}' in presentation config`,
+      `Please specify condition as object when using 'type: ${PRESENTATION_TYPES.CONDITION}' in 'dataBuilderConfig'`,
     );
   });
-  return option;
+  return option.key;
 };
 
-// This functions the same as @web-frontend condition checking in 'color.js'
+// This function has same structure as @web-frontend condition checking in 'color.js'
 //
-// This pre calculation is for complex logic condition matching,
+// It performs condition matching for frontend presentation option,
 // which can reduce the frontend loading and calculation time.
-export const getPresentationOption = (options, value) => {
-  switch (options.type) {
-    case PRESENTATION_TYPES.OBJECT_CONDITION:
-      return getPresentationOptionFromObjectCondition(options, value);
+export const getPresentationOption = (categoryAggregatorConfig, values) => {
+  switch (categoryAggregatorConfig.type) {
+    case PRESENTATION_TYPES.CONDITIONS:
+      return getPresentationOptionFromCondition(categoryAggregatorConfig, values);
     default:
-      return { key: '' };
+      return null;
   }
 };

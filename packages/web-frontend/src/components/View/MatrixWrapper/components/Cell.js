@@ -3,10 +3,23 @@ import { getPresentationOption } from '../../../../utils';
 
 const ROW_INFO_KEY = '$rowInfo';
 
-const getPresentationVariables = ({ presentationOptions, value, metadata, extraConfig }) => {
+// Nested row values will be used in `DescriptionOverlay.js`
+const getNestedRowsValue = ({ childRows, category, cellKey }) => {
+  const rowsByCategoryId = childRows.filter(row => row.categoryId === category);
+  return rowsByCategoryId.map(data => `${data.description}: ${data[cellKey] || null}`).join('\\n');
+};
+
+const getPresentationVariables = ({
+  presentationOptions,
+  value,
+  extraConfig,
+  childRows,
+  category,
+  cellKey,
+}) => {
   if (extraConfig) {
     const { description, rowInfo } = extraConfig;
-    let presentation = getPresentationOption(presentationOptions, value, metadata);
+    let presentation = getPresentationOption(presentationOptions, value);
     // if presentation is null, we should not show the DescriptionOverlay popup.
     // So, only add the `main title` to the presentation object if presentation != null
     if (presentation) {
@@ -24,10 +37,14 @@ const getPresentationVariables = ({ presentationOptions, value, metadata, extraC
     ];
     return { color, onCellClickVariables };
   }
+
   // For Cells in RowGroup
-  const presentation = getPresentationOption(presentationOptions, value, metadata);
+  const presentation = getPresentationOption(presentationOptions, value);
   const color = presentation ? presentation.color : { color: '' };
-  const onCellClickVariables = [presentation, value];
+  const updatedValue = presentationOptions.showNestedRows
+    ? getNestedRowsValue({ childRows, category, cellKey })
+    : value;
+  const onCellClickVariables = [presentation, updatedValue];
   return { color, onCellClickVariables };
 };
 
@@ -43,15 +60,18 @@ const Cell = ({
   isActive,
   cellKey,
   value = '',
-  metadata,
   isUsingDots,
-  extraConfig, // only exists if in Row, which also indicates different logic to get 'presentation'
+  childRows,
+  category,
+  extraConfig, // extra config if cell is in Row, which also indicates different logic to get 'presentation'
 }) => {
   const { color, onCellClickVariables } = getPresentationVariables({
     presentationOptions,
     value,
-    metadata,
     extraConfig,
+    childRows,
+    category,
+    cellKey,
   });
   const linesOfText = value.toString().split('\n');
   const contents = isUsingDots ? (

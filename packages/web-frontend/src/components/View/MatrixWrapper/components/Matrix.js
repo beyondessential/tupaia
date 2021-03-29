@@ -256,6 +256,8 @@ export class Matrix extends PureComponent {
               onCellClick={this.onCellClick}
               presentationOptions={categoryPresentationOptions}
               isUsingDots={this.getIsUsingDots(categoryPresentationOptions)}
+              childRows={childRows}
+              category={category}
             >
               {children}
             </RowGroup>
@@ -343,12 +345,6 @@ export class Matrix extends PureComponent {
       ...this.props.presentationOptions,
       ...this.props.categoryPresentationOptions,
     };
-    const selectedCellValueInString =
-      typeof selectedCellValue === 'object'
-        ? Object.entries(selectedCellValue)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join('\\n')
-        : selectedCellValue;
     const { mainTitle, label, description, color } = selectedPresentationOption;
 
     return (
@@ -356,7 +352,7 @@ export class Matrix extends PureComponent {
         mainTitle={mainTitle}
         header={label}
         body={`${description || ''} ${
-          allPresentationOptions.showRawValue ? selectedCellValueInString : ''
+          allPresentationOptions.showRawValue ? selectedCellValue : ''
         }`}
         color={color}
         styles={this.props.calculatedStyles}
