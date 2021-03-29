@@ -19,8 +19,8 @@ export default [
   {
     input: pkg.source,
     output: [
-      { file: pkg.main, format: 'esm', plugins: [terser()] },
-      { file: pkg.module, format: 'cjs', plugins: [terser()] },
+      { file: pkg.main, format: 'cjs', plugins: [terser()] },
+      { file: pkg.module, format: 'esm', plugins: [terser()] },
     ],
     plugins: [
       builtins(),
@@ -38,6 +38,6 @@ export default [
       analyze({ summaryOnly: true }),
       del({ targets: ['dist'] }),
     ],
-    external: [/node_modules/],
+    external: [/node_modules/, '@tupaia/utils'],
   },
 ];
