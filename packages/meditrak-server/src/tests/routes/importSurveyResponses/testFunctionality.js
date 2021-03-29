@@ -4,6 +4,7 @@
  */
 
 import { expect } from 'chai';
+import moment from 'moment';
 import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
@@ -263,7 +264,8 @@ export const testFunctionality = async () => {
       for (const addedResponse of surveyResponsesAdded) {
         const surveyResponse = await models.surveyResponse.findOne({
           entity_id: addedResponse.entityId,
-          end_time: addedResponse.date,
+          // Convert date to data_time format
+          data_time: moment.utc(addedResponse.date).format('YYYY-MM-DD HH:mm:ss'),
         });
         expect(surveyResponse, 'added survey response').to.exist;
         for (const [questionId, answerValue] of Object.entries(addedResponse.answers)) {
