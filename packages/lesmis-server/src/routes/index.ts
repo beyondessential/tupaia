@@ -4,3 +4,5 @@
  */
 
 export { UserRoute } from './UserRoute';
+export { EntityRoute, EntityRequest } from './EntityRoute';
+export { EntitiesRoute } from './EntitiesRoute';

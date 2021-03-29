@@ -25,7 +25,7 @@ const Container = styled(MuiContainer)`
 
 export const EntityView = () => {
   const match = useRouteMatch();
-  const { organisationUnitCode } = match.params;
+  const { entityCode } = match.params;
 
   return (
     <>
@@ -43,7 +43,7 @@ export const EntityView = () => {
         <Route path={`${match.path}/map`}>
           <MapView />
         </Route>
-        <Redirect to={`/${organisationUnitCode}/dashboard`} />
+        <Redirect to={`/${entityCode}/dashboard`} />
       </Switch>
     </>
   );

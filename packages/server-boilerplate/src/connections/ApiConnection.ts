@@ -32,7 +32,7 @@ export class ApiConnection {
     this.authHandler = authHandler;
   }
 
-  get(endpoint: string, queryParameters: QueryParameters) {
+  get(endpoint: string, queryParameters: QueryParameters = {}) {
     return this.request('GET', endpoint, queryParameters);
   }
 
