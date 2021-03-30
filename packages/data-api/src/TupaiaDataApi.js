@@ -111,7 +111,9 @@ export class TupaiaDataApi {
         dataElementCodes,
       );
 
-      sqlQuery.orderBy('survey_screen.screen_number, survey_screen_component.component_number');
+      sqlQuery.addOrderByClause(
+        'survey_screen.screen_number, survey_screen_component.component_number',
+      );
 
       const dataElementsMetadata = await this.fetchDataElementsMetadataFromSqlQuery(
         sqlQuery,
