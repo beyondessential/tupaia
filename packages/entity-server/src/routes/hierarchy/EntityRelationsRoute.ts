@@ -71,19 +71,19 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
       return ancestorCodeToDescendantCodes;
     }
 
+    const ancestorsWithDescendantsCodes = Object.keys(ancestorCodeToDescendantCodes);
     const ancestors =
       entity.type === ancestorType
         ? [entity]
         : await entity.getDescendants(hierarchyId, {
-            type: ancestorType,
+            code: ancestorsWithDescendantsCodes,
             country_code: allowedCountries,
           });
 
     const formattedEntitiesByCode = await this.buildFormattedEntitiesByCode(ancestors, descendants);
-    const ancestorsWithDescendantsCodes = Object.keys(ancestorCodeToDescendantCodes);
-    return ancestorsWithDescendantsCodes.map(ancestorCode => ({
-      ...formattedEntitiesByCode[ancestorCode],
-      descendants: ancestorCodeToDescendantCodes[ancestorCode].map(
+    return ancestors.map(ancestor => ({
+      ...formattedEntitiesByCode[ancestor.code],
+      descendants: ancestorCodeToDescendantCodes[ancestor.code].map(
         descendantCode => formattedEntitiesByCode[descendantCode],
       ),
     }));
@@ -106,11 +106,12 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
       return descendantCodeToAncestorCode;
     }
 
+    const ancestorsWithDescendantsCodes = Object.values(descendantCodeToAncestorCode);
     const ancestors =
       entity.type === ancestorType
         ? [entity]
         : await entity.getDescendants(hierarchyId, {
-            type: ancestorType,
+            code: ancestorsWithDescendantsCodes,
             country_code: allowedCountries,
           });
 
