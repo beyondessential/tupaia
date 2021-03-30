@@ -8,7 +8,7 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { NAVBAR_HEIGHT } from '../constants';
-import { SearchBar, FlexSpaceBetween, FlexStart } from '../components';
+import { SearchBar, FlexEnd, FlexStart } from '../components';
 
 const Wrapper = styled.div`
   position: relative;
@@ -25,6 +25,11 @@ const Container = styled(MuiContainer)`
   justify-content: space-between;
   padding-bottom: 3rem;
   height: 100%;
+
+  @media screen and (min-width: 600px) {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
 `;
 
 const Main = styled.div`
@@ -86,12 +91,14 @@ const Footer = styled(MuiContainer)`
   right: 0;
 `;
 
-const FooterInner = styled(FlexSpaceBetween)`
+const FooterInner = styled(FlexEnd)`
   color: white;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1rem;
   padding-bottom: 1rem;
 `;
+
+const INFO_LINK = 'https://info.tupaia.org';
 
 export const HomeView = React.memo(() => (
   // The background image is applied here instead of the styled component as it creates a flicker when added there
@@ -120,12 +127,9 @@ export const HomeView = React.memo(() => (
       </Info>
       <Footer maxWidth={false}>
         <FooterInner>
-          <Link color="inherit" href="https://info.tupaia.org/">
-            Copyright
-          </Link>
           <Typography>
             Powered by{' '}
-            <Link href="https://info.tupaia.org/" color="inherit" underline="always">
+            <Link href={INFO_LINK} color="inherit" underline="always">
               Tupaia
             </Link>
           </Typography>
