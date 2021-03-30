@@ -5,4 +5,4 @@
  */
 export * from './useUrlParams';
 export * from './makeEntityLink';
-export * from './useBreadcrumbs';
+export * from './useEntityBreadcrumbs';

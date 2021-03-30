@@ -13,6 +13,10 @@ import { Breadcrumbs, Toolbar } from '../components';
 import * as COLORS from '../constants';
 import { contentPageTheme } from '../theme';
 
+const Container = styled(MuiContainer)`
+  max-width: 780px;
+`;
+
 const TemplateBody = styled.section`
   background: ${COLORS.GREY_F9};
   padding-top: 3rem;
@@ -35,27 +39,29 @@ const Title = styled(Typography)`
 
 export const PageView = ({ content }) => {
   const { title, body, urlSegment } = content;
-  const breadcrumbs = [{ name: title, code: urlSegment }];
+  const breadcrumbs = [{ name: title, urlSegment }];
 
   return (
-    <MuiThemeProvider theme={contentPageTheme}>
+    <>
       <Toolbar>
         <Breadcrumbs breadcrumbs={breadcrumbs} />
       </Toolbar>
       <TitleContainer>
         <Title variant="h1">{title}</Title>
       </TitleContainer>
-      <TemplateBody>
-        <MuiContainer maxWidth="md">{body}</MuiContainer>
-      </TemplateBody>
-    </MuiThemeProvider>
+      <MuiThemeProvider theme={contentPageTheme}>
+        <TemplateBody>
+          <Container>{body}</Container>
+        </TemplateBody>
+      </MuiThemeProvider>
+    </>
   );
 };
 
 PageView.propTypes = {
   content: PropTypes.shape({
     title: PropTypes.string,
-    body: PropTypes.string,
+    body: PropTypes.node,
     urlSegment: PropTypes.string,
   }).isRequired,
 };

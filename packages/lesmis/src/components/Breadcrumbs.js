@@ -46,12 +46,12 @@ export const Breadcrumbs = ({ isLoading, breadcrumbs }) => (
     {isLoading ? (
       <Loader />
     ) : (
-      breadcrumbs.map(({ name, code }, index) => {
+      breadcrumbs.map(({ name, urlSegment }, index) => {
         const last = index === breadcrumbs.length - 1;
         return last ? (
-          <ActiveSegment key={code}>{name}</ActiveSegment>
+          <ActiveSegment key={urlSegment}>{name}</ActiveSegment>
         ) : (
-          <Link to={makeEntityLink(code)} key={code}>
+          <Link to={makeEntityLink(urlSegment)} key={urlSegment}>
             {name}
           </Link>
         );
@@ -61,7 +61,12 @@ export const Breadcrumbs = ({ isLoading, breadcrumbs }) => (
 );
 
 Breadcrumbs.propTypes = {
-  breadcrumbs: PropTypes.array.isRequired,
+  breadcrumbs: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      urlSegment: PropTypes.string,
+    }),
+  ).isRequired,
   isLoading: PropTypes.bool,
 };
 

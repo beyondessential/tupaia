@@ -8,11 +8,11 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import { LocationHeader, Toolbar, Breadcrumbs } from '../components';
 import { DashboardView } from './DashboardView';
 import { MapView } from './MapView';
-import { useBreadcrumbs } from '../utils';
+import { useEntityBreadcrumbs } from '../utils';
 
 export const EntityView = () => {
   const match = useRouteMatch();
-  const { breadcrumbs, isLoading } = useBreadcrumbs();
+  const { breadcrumbs, isLoading } = useEntityBreadcrumbs();
   const { entityCode } = match.params;
 
   return (

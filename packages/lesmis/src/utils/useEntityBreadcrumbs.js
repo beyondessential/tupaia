@@ -13,7 +13,7 @@ const getHierarchy = (entities, entityCode, hierarchy = []) => {
     return [];
   }
 
-  const newHierarchy = [entity, ...hierarchy];
+  const newHierarchy = [{ name: entity.name, urlSegment: entity.code }, ...hierarchy];
 
   if (entity.type === 'country') {
     return newHierarchy;
@@ -21,7 +21,7 @@ const getHierarchy = (entities, entityCode, hierarchy = []) => {
   return getHierarchy(entities, entity.parentCode, newHierarchy);
 };
 
-export const useBreadcrumbs = () => {
+export const useEntityBreadcrumbs = () => {
   const { entityCode } = useUrlParams();
   const { isLoading, data: entities = [] } = useEntitiesData();
   const breadcrumbs = getHierarchy(entities, entityCode);
