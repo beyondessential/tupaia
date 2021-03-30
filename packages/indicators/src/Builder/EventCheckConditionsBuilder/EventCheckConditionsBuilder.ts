@@ -9,7 +9,7 @@ import { Builder } from '../Builder';
 import { FetchOptions, Event, DataValues } from '../../types';
 import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { EventCheckConditionsConfig, DefaultValue, configValidators } from './config';
-import { validateConfig, evaluateFormulaToNumber } from '../helpers';
+import { validateConfig, evaluateFormulaToNumber, replaceDataValuesWithDefaults } from '../helpers';
 
 type BuilderConfig = {
   readonly formula: string;
@@ -56,19 +56,21 @@ export class EventCheckConditionsBuilder extends Builder {
   private buildAnalyticValuesFromEvents = (events: Event[]) => {
     const { defaultValues, formula } = this.config;
     const parser = getExpressionParserInstance();
-    const calculateValue = (eventDataValues: DataValues) => {
-      const dataValues = { ...eventDataValues };
-      Object.keys(defaultValues).forEach(code => {
-        dataValues[code] = dataValues[code] ?? defaultValues[code];
-      });
-      return evaluateFormulaToNumber(parser, formula, dataValues);
-    };
+    const variables = parser.getVariables(formula);
+    const replaceEventValuesWithDefaults = (event: Event) => ({
+      ...event,
+      dataValues: replaceDataValuesWithDefaults(event.dataValues, defaultValues),
+    });
+    const checkEventIncludesAllVariables = (event: Event) =>
+      variables.every((variable: string) => variable in event.dataValues);
 
     return events
+      .map(replaceEventValuesWithDefaults)
+      .filter(checkEventIncludesAllVariables)
       .map(({ orgUnit, eventDate, dataValues }) => ({
         organisationUnit: orgUnit,
         period: momentToPeriod(utcMoment(eventDate), PERIOD_TYPES.DAY),
-        value: calculateValue(dataValues),
+        value: evaluateFormulaToNumber(parser, formula, dataValues),
       }))
       .filter(({ value }) => isFinite(value));
   };
