@@ -10,6 +10,8 @@ import {
   SingleEntityRoute,
   DescendantsRequest,
   EntityDescendantsRoute,
+  RelationsRequest,
+  EntityRelationsRoute,
 } from '../routes';
 import { attachContext } from '../routes/hierarchy/middleware';
 
@@ -27,6 +29,10 @@ export function createApp() {
     .get<DescendantsRequest>(
       '/v1/hierarchy/:hierarchyName/:entityCode/descendants',
       handleWith(EntityDescendantsRoute),
+    )
+    .get<RelationsRequest>(
+      '/v1/hierarchy/:hierarchyName/:entityCode/relations',
+      handleWith(EntityRelationsRoute),
     )
     .build();
 }

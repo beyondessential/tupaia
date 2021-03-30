@@ -6,7 +6,6 @@
 import { Route } from '@tupaia/server-boilerplate';
 import {
   HierarchyRequest,
-  HierarchyResponse,
   HierarchyRequestParams,
   HierarchyRequestBody,
   HierarchyRequestQuery,
@@ -19,10 +18,7 @@ export type DescendantsRequest = HierarchyRequest<
   HierarchyRequestBody,
   HierarchyRequestQuery & { includeRootEntity?: boolean }
 >;
-export class EntityDescendantsRoute extends Route<
-  DescendantsRequest,
-  HierarchyResponse<EntityResponseObject[]>
-> {
+export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {
     const { includeRootEntity = false } = this.req.query;
     const descendants = await this.req.ctx.entity.getDescendants(this.req.ctx.hierarchyId, {

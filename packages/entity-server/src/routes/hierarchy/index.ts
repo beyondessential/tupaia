@@ -6,3 +6,4 @@
 export { HierarchyRequest } from './types';
 export { SingleEntityRoute } from './SingleEntityRoute';
 export { EntityDescendantsRoute, DescendantsRequest } from './EntityDescendantsRoute';
+export { EntityRelationsRoute, RelationsRequest } from './EntityRelationsRoute';
