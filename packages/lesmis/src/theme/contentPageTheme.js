@@ -6,7 +6,7 @@
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from '../constants/colors';
-import { palette, shape } from './theme';
+import { breakpoints, palette, shape, overrides } from './theme';
 
 const themeName = 'LESMIS-content';
 
@@ -44,24 +44,12 @@ const typography = {
   },
 };
 
-export const overrides = {
+export const newOverrides = {
+  ...overrides,
   MuiTypography: {
     gutterBottom: {
       marginBottom: '0.8em',
     },
-  },
-  MuiCard: {
-    root: {
-      borderColor: COLORS.GREY_DE,
-    },
-  },
-};
-
-export const breakpoints = {
-  values: {
-    xs: 0,
-    sm: 600,
-    md: 780,
   },
 };
 
@@ -70,6 +58,6 @@ export const contentPageTheme = createMuiTheme({
   themeName,
   typography,
   shape,
-  overrides,
+  overrides: newOverrides,
   breakpoints,
 });
