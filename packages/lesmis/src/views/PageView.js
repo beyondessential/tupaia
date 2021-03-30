@@ -29,8 +29,8 @@ const TitleContainer = styled.section`
 
 const Title = styled(Typography)`
   font-weight: 600;
-  font-size: 28px;
-  line-height: 42px;
+  font-size: 1.75rem;
+  line-height: 2.6rem;
 `;
 
 export const PageView = ({ content }) => {
