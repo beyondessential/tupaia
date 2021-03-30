@@ -14,7 +14,7 @@ import * as COLORS from '../constants';
 import { contentPageTheme } from '../theme';
 
 const Container = styled(MuiContainer)`
-  max-width: 780px;
+  max-width: 48rem;
 `;
 
 const TemplateBody = styled.section`
