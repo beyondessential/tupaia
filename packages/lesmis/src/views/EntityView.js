@@ -5,36 +5,21 @@
  */
 import React from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
-import styled from 'styled-components';
-import MuiContainer from '@material-ui/core/Container';
-import { Breadcrumbs, LocationHeader } from '../components';
+import { LocationHeader, Toolbar, Breadcrumbs } from '../components';
 import { DashboardView } from './DashboardView';
 import { MapView } from './MapView';
-
-const ToolbarWrapper = styled.section`
-  padding-top: 1.1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-`;
-
-const Container = styled(MuiContainer)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+import { useBreadcrumbs } from '../utils';
 
 export const EntityView = () => {
   const match = useRouteMatch();
+  const { breadcrumbs, isLoading } = useBreadcrumbs();
   const { entityCode } = match.params;
 
   return (
     <>
-      <ToolbarWrapper>
-        <Container maxWidth={false}>
-          <Breadcrumbs />
-          <span>English</span>
-        </Container>
-      </ToolbarWrapper>
+      <Toolbar>
+        <Breadcrumbs breadcrumbs={breadcrumbs} isLoading={isLoading} />
+      </Toolbar>
       <LocationHeader />
       <Switch>
         <Route path={`${match.path}/dashboard`}>

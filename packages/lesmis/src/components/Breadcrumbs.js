@@ -4,14 +4,14 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
 import Skeleton from '@material-ui/lab/Skeleton';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { useEntitiesData } from '../api';
-import { useUrlParams } from '../utils';
+import { makeEntityLink } from '../utils';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   font-size: 0.75rem;
@@ -40,49 +40,31 @@ const Loader = () => (
   </Skeleton>
 );
 
-const getHierarchy = (entities, entityCode, hierarchy = []) => {
-  const entity = entities.find(entity => entity.code === entityCode);
+export const Breadcrumbs = ({ isLoading, breadcrumbs }) => (
+  <StyledBreadcrumbs separator={<NavigateNextIcon />}>
+    <Link to="/">Home</Link>
+    {isLoading ? (
+      <Loader />
+    ) : (
+      breadcrumbs.map(({ name, code }, index) => {
+        const last = index === breadcrumbs.length - 1;
+        return last ? (
+          <ActiveSegment key={code}>{name}</ActiveSegment>
+        ) : (
+          <Link to={makeEntityLink(code)} key={code}>
+            {name}
+          </Link>
+        );
+      })
+    )}
+  </StyledBreadcrumbs>
+);
 
-  if (!entity) {
-    return [];
-  }
-
-  const newHierarchy = [entity, ...hierarchy];
-
-  if (entity.type === 'country') {
-    return newHierarchy;
-  }
-  return getHierarchy(entities, entity.parentCode, newHierarchy);
+Breadcrumbs.propTypes = {
+  breadcrumbs: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool,
 };
 
-const useBreadcrumbs = () => {
-  const { entityCode } = useUrlParams();
-  const { isLoading, data: entities = [] } = useEntitiesData();
-  const breadcrumbs = getHierarchy(entities, entityCode);
-  return { isLoading, breadcrumbs };
-};
-
-export const Breadcrumbs = () => {
-  const { breadcrumbs, isLoading } = useBreadcrumbs();
-
-  return (
-    <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      <Link to="/">Home</Link>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        breadcrumbs.map(({ name, code }, index) => {
-          const last = index === breadcrumbs.length - 1;
-          return last ? (
-            <ActiveSegment key={code}>{name}</ActiveSegment>
-          ) : (
-            // Todo: update to use make link
-            <Link to={`/${code}`} key={code}>
-              {name}
-            </Link>
-          );
-        })
-      )}
-    </StyledBreadcrumbs>
-  );
+Breadcrumbs.defaultProps = {
+  isLoading: false,
 };
