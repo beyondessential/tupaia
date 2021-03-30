@@ -14,18 +14,18 @@ import {
   EntityResponseObject,
 } from './types';
 
-type AncestorResponseObject = EntityResponseObject &
-  ({ descendants: EntityResponseObject[] } | { ancestor: EntityResponseObject });
-
 export type RelationsRequest = HierarchyRequest<
   HierarchyRequestParams,
-  AncestorResponseObject[] | Record<string, string> | Record<string, string[]>,
+  | (EntityResponseObject & { descendants: EntityResponseObject[] })[] // groupBy: ancestor, flattenToCode: false
+  | (EntityResponseObject & { ancestor: EntityResponseObject })[] // groupBy: descendant, flattenToCode: false
+  | Record<string, string[]> // groupBy: ancestor, flattenToCode: true
+  | Record<string, string>, // groupBy: descendant, flattenToCode: true
   HierarchyRequestBody,
   HierarchyRequestQuery & {
     ancestorType?: string;
     descendantType?: string;
     groupBy?: 'ancestor' | 'descendant';
-    flattenToCode?: string;
+    flattenToCode?: 'true' | 'false';
   }
 >;
 
