@@ -5,9 +5,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { formatDataValueByType } from '@tupaia/utils';
 import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE, VALUE_TYPES } from './constants';
-import { formatDataValue } from './utils';
 
 const { PERCENTAGE } = VALUE_TYPES;
 
@@ -76,7 +76,10 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
       label={data.yName}
       tickFormatter={value =>
-        formatDataValue(value, valueType || axisValueType, { presentationOptions })
+        formatDataValueByType(
+          { value, metadata: { presentationOptions } },
+          valueType || axisValueType,
+        )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
       stroke={isExporting ? DARK_BLUE : 'white'}
