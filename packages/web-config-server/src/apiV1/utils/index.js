@@ -41,3 +41,7 @@ export {
   findAccessibleMapOverlays,
   findAccessibleGroupedMapOverlays,
 } from './findAccessibleGroupedMapOverlays';
+export {
+  fetchAggregatedAnalyticsByDhisIds,
+  checkAllDataElementsAreDhisIndicators,
+} from './fetchIndicatorValues';

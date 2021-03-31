@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { get } from 'lodash';
+import get from 'lodash.get';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';

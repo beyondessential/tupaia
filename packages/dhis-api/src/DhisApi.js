@@ -345,6 +345,11 @@ export class DhisApi {
     return this.fetchAnalyticsQueries(queries, 'analytics/rawData.json');
   }
 
+  async getAggregatedAnalytics(originalQuery) {
+    const queries = buildDataValueAnalyticsQueries(originalQuery);
+    return this.fetchAnalyticsQueries(queries, 'analytics.json');
+  }
+
   async getEventAnalytics(originalQuery) {
     const {
       programId,

@@ -10,7 +10,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -19,14 +19,6 @@ exports.setup = function(options, seedLink) {
 const DASHBOARD_GROUP_CODE = 'WISH_Export_Surveys';
 const DATA_BUILDER_CONFIG = {
   surveys: [
-    // {
-    //   code: 'WISH_2GM',
-    //   name: '2 - Government mapping',
-    // },
-    // {
-    //   code: 'WISH_2GMM',
-    //   name: '2 - Government mapping methods',
-    // },
     {
       code: 'WISH_3CM',
       name: '3 - Community mapping',
@@ -80,17 +72,6 @@ const DATA_BUILDER_CONFIG = {
     dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
       surveysConfig: {
-        // WISH_2GM: {
-        //   entityAggregation: {
-        //     dataSourceEntityType: 'village',
-        //   },
-        //   excludeCodes: ['WFIGM2'],
-        // },
-        // WISH_2GMM: {
-        //   entityAggregation: {
-        //     dataSourceEntityType: 'village',
-        //   },
-        // },
         WISH_3CM: {
           entityAggregation: {
             dataSourceEntityType: 'village',
@@ -190,7 +171,7 @@ const REPORT = {
   viewJson: VIEW_JSON,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
 
   return db.runSql(`
@@ -203,7 +184,7 @@ exports.up = async function(db) {
    `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
      DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
      UPDATE

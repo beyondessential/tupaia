@@ -21,6 +21,8 @@ export const useLogin = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('user');
+        queryClient.invalidateQueries('entity');
+        queryClient.invalidateQueries('entities');
       },
     },
   );
