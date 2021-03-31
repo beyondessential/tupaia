@@ -94,7 +94,7 @@ const ListItemText = styled(Typography)`
   }
 `;
 
-const ListItemLink = props => <ListItemText button component={RouterLink} {...props} />;
+const ListItemLink = props => <ListItemText component={RouterLink} {...props} />;
 
 const getEntitiesByCodes = (entities, codes) => entities.filter(e => codes.includes(e.code));
 
@@ -154,7 +154,7 @@ ListItemComponent.propTypes = {
 
 export const EntityMenu = React.memo(({ buttonText }) => {
   const [open, setOpen] = useState(false);
-  const { data: entities = [], isLoading } = useEntitiesData();
+  const { data: entities = [], isSuccess } = useEntitiesData();
   const country = entities.find(e => e.type === 'country');
 
   const handleClickOpen = () => {
@@ -171,7 +171,7 @@ export const EntityMenu = React.memo(({ buttonText }) => {
       <Dialog fullScreen open={open} onClose={handleClose}>
         <DialogHeader handleClose={handleClose} title="All Locations" />
         <Body>
-          {isLoading ? null : (
+          {isSuccess && country && (
             <ContainerList>
               {getEntitiesByCodes(entities, country.childCodes).map(e => (
                 <ListItemComponent
