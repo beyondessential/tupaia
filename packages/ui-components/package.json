@@ -12,9 +12,9 @@
   "source": "src/index.js",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
+  "files": ["lib"],
   "scripts": {
     "build": "rollup -c",
-    "build:webpack": "cross-env NODE_ENV=production webpack",
     "lint": "eslint --ignore-path ../../.gitignore .",
     "lint:fix": "yarn lint --fix",
     "storybook": "start-storybook -s ./public -p 6006",
@@ -42,7 +42,6 @@
     "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-multi-entry": "^4.0.0",
-    "@rollup/plugin-node-resolve": "^11.2.1",
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
     "faker": "^4.1.0",
