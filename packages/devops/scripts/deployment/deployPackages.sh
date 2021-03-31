@@ -20,6 +20,9 @@ fi
 PACKAGES=("meditrak-server" "web-config-server" "psss-server" "lesmis-server" "report-server" "entity-server" "web-frontend" "admin-panel" "psss")
 # For each package, get the latest and deploy it
 for PACKAGE in ${PACKAGES[@]}; do
+    # reset cwd back to `/tupaia`
+    cd ${HOME_DIRECTORY}
+
     # Set up .env to match the environment variables stored in SSM parameter store
     yarn download-parameter-store-env-vars --package-name $PACKAGE --environment $ENVIRONMENT
 
@@ -42,10 +45,10 @@ for PACKAGE in ${PACKAGES[@]}; do
         yarn build
     fi
 
-    # reset cwd back to `/tupaia`
-    cd ${HOME_DIRECTORY}
-
     if [[ $PACKAGE == 'meditrak-server' ]]; then
+        # reset cwd back to `/tupaia`
+        cd ${HOME_DIRECTORY}
+        
         # now that meditrak-server is up and listening for changes, we can run any migrations
         # if run earlier when meditrak-server isn't listening, changes will be missed from the
         # sync queues
