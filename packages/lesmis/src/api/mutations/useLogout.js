@@ -11,10 +11,9 @@ export const useLogout = () => {
 
   const query = useMutation(() => post('logout'), {
     onSuccess: () => {
-      console.log('logout success');
-      queryClient.invalidateQueries('user');
-      queryClient.invalidateQueries('entity');
-      queryClient.invalidateQueries('entities');
+      queryClient.resetQueries('user');
+      queryClient.resetQueries('entity');
+      queryClient.resetQueries('entities');
     },
   });
 
