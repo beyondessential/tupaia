@@ -26,6 +26,7 @@ const getDashboardConfig = () => ({
         dataBuilder: 'sumByOrgUnit',
         dataBuilderConfig: {
           dataElementCodes: ['COVIDVac5'],
+          aggregationType: 'RAW',
           entityAggregation: {
             dataSourceEntityType: 'district',
           },
@@ -35,6 +36,7 @@ const getDashboardConfig = () => ({
         dataBuilder: 'sumByOrgUnit',
         dataBuilderConfig: {
           dataElementCodes: ['COVIDVac6'],
+          aggregationType: 'RAW',
           entityAggregation: {
             dataSourceEntityType: 'district',
           },
