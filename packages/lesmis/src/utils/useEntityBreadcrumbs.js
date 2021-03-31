@@ -5,6 +5,7 @@
  */
 import { useUrlParams } from './useUrlParams';
 import { useEntitiesData } from '../api';
+import { makeEntityLink } from './makeEntityLink';
 
 const getHierarchy = (entities, entityCode, hierarchy = []) => {
   const entity = entities.find(e => e.code === entityCode);
@@ -12,8 +13,8 @@ const getHierarchy = (entities, entityCode, hierarchy = []) => {
   if (!entity) {
     return [];
   }
-
-  const newHierarchy = [{ name: entity.name, urlSegment: entity.code }, ...hierarchy];
+  const url = makeEntityLink(entity.code);
+  const newHierarchy = [{ name: entity.name, url }, ...hierarchy];
 
   if (entity.type === 'country') {
     return newHierarchy;

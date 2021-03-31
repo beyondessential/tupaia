@@ -38,8 +38,8 @@ const Title = styled(Typography)`
 `;
 
 export const PageView = ({ content }) => {
-  const { title, body, urlSegment } = content;
-  const breadcrumbs = [{ name: title, urlSegment }];
+  const { title, body, url } = content;
+  const breadcrumbs = [{ name: title, url }];
 
   return (
     <>
@@ -62,6 +62,6 @@ PageView.propTypes = {
   content: PropTypes.shape({
     title: PropTypes.string,
     body: PropTypes.node,
-    urlSegment: PropTypes.string,
+    url: PropTypes.string,
   }).isRequired,
 };

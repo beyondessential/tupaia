@@ -9,7 +9,7 @@ import Box from '@material-ui/core/Box';
 
 export const ABOUT_PAGE = {
   title: 'About LESMIS',
-  urlSegment: 'about',
+  url: 'about',
   body: (
     <>
       <Typography variant="h1" gutterBottom>
@@ -25,7 +25,7 @@ export const ABOUT_PAGE = {
 
 export const CONTACT_PAGE = {
   title: 'Contact Us',
-  urlSegment: 'contact',
+  url: 'contact',
   body: (
     <>
       <Typography variant="h1" gutterBottom>
