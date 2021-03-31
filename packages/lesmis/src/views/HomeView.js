@@ -7,8 +7,10 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { NAVBAR_HEIGHT } from '../constants';
 import { SearchBar, FlexEnd, FlexStart } from '../components';
+import { useEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
   position: relative;
@@ -100,41 +102,46 @@ const FooterInner = styled(FlexEnd)`
 
 const INFO_LINK = 'https://info.tupaia.org';
 
-export const HomeView = React.memo(() => (
-  // The background image is applied here instead of the styled component as it creates a flicker when added there
-  <Wrapper style={{ backgroundImage: "url('/images/home-cover.png')" }}>
-    <Container maxWidth={false}>
-      <Main>
-        <Title variant="h1">
-          Find a location <br />
-          to <YellowTitle>start viewing data</YellowTitle>
-        </Title>
-        <SearchBar />
-      </Main>
-      <Info>
-        <InfoSection>
-          <InfoHeading variant="h5">About LESMIS</InfoHeading>
-          <InfoText>
-            A system to improve data quality, management and utilisation for the Ministry of
-            Education and Sports
-          </InfoText>
-        </InfoSection>
-        <InfoSection>
-          <InfoHeading variant="h5">Contact us</InfoHeading>
-          <InfoText>Ph: +856 20 54 015 004</InfoText>
-          <InfoText>Website: www.moes.edu.la</InfoText>
-        </InfoSection>
-      </Info>
-      <Footer maxWidth={false}>
-        <FooterInner>
-          <Typography>
-            Powered by{' '}
-            <Link href={INFO_LINK} color="inherit" underline="always">
-              Tupaia
-            </Link>
-          </Typography>
-        </FooterInner>
-      </Footer>
-    </Container>
-  </Wrapper>
-));
+export const HomeView = React.memo(() => {
+  const { isLoading } = useEntitiesData();
+
+  return (
+    // The background image is applied here instead of the styled component as it creates a flicker when added there
+    <Wrapper style={{ backgroundImage: "url('/images/home-cover.png')" }}>
+      <Container maxWidth={false}>
+        <Main>
+          <Title variant="h1">
+            Find a location <br />
+            to <YellowTitle>start viewing data</YellowTitle>
+          </Title>
+          {isLoading && <CircularProgress size={60} />}
+          <SearchBar />
+        </Main>
+        <Info>
+          <InfoSection>
+            <InfoHeading variant="h5">About LESMIS</InfoHeading>
+            <InfoText>
+              A system to improve data quality, management and utilisation for the Ministry of
+              Education and Sports
+            </InfoText>
+          </InfoSection>
+          <InfoSection>
+            <InfoHeading variant="h5">Contact us</InfoHeading>
+            <InfoText>Ph: +856 20 54 015 004</InfoText>
+            <InfoText>Website: www.moes.edu.la</InfoText>
+          </InfoSection>
+        </Info>
+        <Footer maxWidth={false}>
+          <FooterInner>
+            <Typography>
+              Powered by{' '}
+              <Link href={INFO_LINK} color="inherit" underline="always">
+                Tupaia
+              </Link>
+            </Typography>
+          </FooterInner>
+        </Footer>
+      </Container>
+    </Wrapper>
+  );
+});
