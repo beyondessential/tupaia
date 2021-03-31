@@ -11,7 +11,12 @@ import { getExpressionParserInstance } from '../../getExpressionParserInstance';
 import { AggregationList, Analytic, AnalyticCluster, FetchOptions, Indicator } from '../../types';
 import { Builder } from '../Builder';
 import { createBuilder } from '../createBuilder';
-import { fetchAnalytics, validateConfig, evaluateFormulaToNumber } from '../helpers';
+import {
+  fetchAnalytics,
+  validateConfig,
+  evaluateFormulaToNumber,
+  replaceDataValuesWithDefaults,
+} from '../helpers';
 import {
   AnalyticArithmeticConfig,
   configValidators,
@@ -116,13 +121,10 @@ export class AnalyticArithmeticBuilder extends Builder {
     const checkClusterIncludesAllVariables = (cluster: AnalyticCluster) =>
       variables.every(variable => variable in cluster.dataValues);
 
-    const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster) => {
-      const dataValues = { ...cluster.dataValues };
-      Object.keys(defaultValues).forEach(code => {
-        dataValues[code] = dataValues[code] ?? defaultValues[code];
-      });
-      return { ...cluster, dataValues };
-    };
+    const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster) => ({
+      ...cluster,
+      dataValues: replaceDataValuesWithDefaults(cluster.dataValues, defaultValues),
+    });
 
     const clusters = analyticsToAnalyticClusters(analytics);
     // Remove clusters that do not include all specified elements
