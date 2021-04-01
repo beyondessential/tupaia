@@ -14,10 +14,10 @@ export const checkAllDataElementsAreDhisIndicators = async (models, dataElementC
 
   for (const dataElementCode of dataElementCodes) {
     const dataElement = dataElements.find(d => d.code === dataElementCode);
-    if (dataElement?.config?.dhisId && dataElement?.config?.dhisDataType === 'Indicator') {
-      return true;
+    if (!(dataElement?.config?.dhisId && dataElement?.config?.dhisDataType === 'Indicator')) {
+      return false;
     }
   }
 
-  return false;
+  return true;
 };
