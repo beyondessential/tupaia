@@ -64,8 +64,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
         const categoryData = buildCategoryData({
           rows: Object.values(rows),
           categoryAggregatorConfig: this.config.categoryAggregator,
-          rowsInConfig: this.config.rows,
-          columnsInConfig: columns,
+          columns,
         });
         newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {

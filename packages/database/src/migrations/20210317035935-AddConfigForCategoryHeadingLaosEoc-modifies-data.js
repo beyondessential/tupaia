@@ -28,6 +28,7 @@ const categoryPresentationOptions = {
   conditions: {
     red: {
       color: '#b71c1c',
+      label: '',
       legendLabel: 'Stock out',
     },
     green: {
@@ -108,7 +109,7 @@ const categoryAggregator = {
     {
       key: 'red',
       condition: {
-        '=': null,
+        in: [null, 0],
       },
     },
     {
@@ -120,7 +121,7 @@ const categoryAggregator = {
     {
       key: 'orange',
       condition: {
-        some: { '>': 0 },
+        someNotAll: { '>': 0 },
       },
     },
   ],

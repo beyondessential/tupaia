@@ -126,7 +126,7 @@ export default class Row extends Component {
               onMouseEnter={() => onCellMouseEnter(index, rowKey)}
               onMouseLeave={() => onCellMouseLeave()}
               presentationOptions={presentationOptions}
-              onCellClick={onCellClick}
+              onClick={onCellClick}
               value={cellValue}
               style={styles.gridCell}
               columnActiveStripStyle={styles.columnActiveStrip}
@@ -134,7 +134,7 @@ export default class Row extends Component {
               dotStyle={styles.cellIndicator}
               dotStyleActive={styles.cellIndicatorActive}
               isUsingDots={isUsingDots && applyDotStyle}
-              extraConfig={{ description, rowInfo }}
+              presentationConfigIfInRow={{ description, rowInfo }}
             />
           );
         })}

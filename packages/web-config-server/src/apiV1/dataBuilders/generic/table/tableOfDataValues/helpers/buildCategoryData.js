@@ -1,11 +1,11 @@
-import { getPresentationOption } from '/apiV1/dataBuilders/helpers';
+import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers';
 
 import groupBy from 'lodash.groupby';
 
-const CATEGORY_AGGREGATION_TYPES = {
-  AVERAGE: '$average',
-  CONDITION: '$condition',
-};
+const AVERAGE = '$average';
+const CONDITION = '$condition';
+const CATEGORY_AGGREGATION_TYPES = [AVERAGE, CONDITION];
+
 const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
 
 const calculateCategoryTotals = rows => {
@@ -41,17 +41,14 @@ const average = rows => {
   }, {});
 };
 
-const condition = (rowsWithData, columnsInConfig, categoryAggregatorConfig) => {
-  if (!categoryAggregatorConfig.conditions) {
-    throw new Error(`Couldn't find 'conditions' in 'categoryAggregator'`);
-  }
+const condition = (rows, columns, config) => {
   const categoryList = {};
-  const rowsWithDataByCategoryId = groupBy(rowsWithData, 'categoryId');
+  const rowsWithDataByCategoryId = groupBy(rows, 'categoryId');
   Object.entries(rowsWithDataByCategoryId).forEach(([categoryId, datas]) => {
-    for (const { key: columnId } of columnsInConfig) {
-      const values = datas.map(data => data[columnId] || null);
+    for (const { key: columnId } of columns) {
+      const values = datas.map(data => data[columnId] ?? null);
       // Pre calculation for presentation options
-      const presentationKey = getPresentationOption(categoryAggregatorConfig, values);
+      const presentationKey = getCategoryPresentationOption(config, values);
       categoryList[categoryId] = { ...categoryList[categoryId], [columnId]: presentationKey };
     }
   });
@@ -59,17 +56,19 @@ const condition = (rowsWithData, columnsInConfig, categoryAggregatorConfig) => {
 };
 
 const categoryAggregators = {
-  [CATEGORY_AGGREGATION_TYPES.AVERAGE]: average,
-  [CATEGORY_AGGREGATION_TYPES.CONDITION]: condition,
+  [AVERAGE]: average,
+  [CONDITION]: condition,
 };
 
-export const buildCategoryData = ({ rows, categoryAggregatorConfig, columnsInConfig }) => {
-  // if (!viewJson.categoryPresentationOptions)
-  //   throw new Error(`Couldn't find 'categoryPresentationOptions' in 'viewJson'`);
+export const buildCategoryData = ({ rows, categoryAggregatorConfig, columns }) => {
   const categoryAggregatorType =
-    categoryAggregatorConfig === 'string'
+    typeof categoryAggregatorConfig === 'string'
       ? categoryAggregatorConfig
       : categoryAggregatorConfig.type;
+
+  if (!CATEGORY_AGGREGATION_TYPES.includes(categoryAggregatorType))
+    throw new Error(`Couldn't find ${categoryAggregatorType} in 'categoryAggregator'`);
+
   const categoryAggregator = categoryAggregators[categoryAggregatorType];
-  return categoryAggregator(rows, columnsInConfig, categoryAggregatorConfig);
+  return categoryAggregator(rows, columns, categoryAggregatorConfig);
 };

@@ -101,7 +101,7 @@ export default class RowGroup extends Component {
                   cellKey={column.key}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
-                  onCellClick={onCellClick}
+                  onClick={onCellClick}
                   presentationOptions={presentationOptions}
                   value={value}
                   columnActiveStripStyle={styles.columnActiveStrip}

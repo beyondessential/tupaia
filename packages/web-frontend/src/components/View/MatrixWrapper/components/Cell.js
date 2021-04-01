@@ -5,53 +5,55 @@ const ROW_INFO_KEY = '$rowInfo';
 
 // Nested row values will be used in `DescriptionOverlay.js`
 const getNestedRowsValue = ({ childRows, category, cellKey }) => {
-  const rowsByCategoryId = childRows.filter(row => row.categoryId === category);
-  return rowsByCategoryId.map(data => `${data.description}: ${data[cellKey] || null}`).join('\\n');
+  const rowsByCategory = childRows.filter(row => row.categoryId === category);
+  return rowsByCategory.map(data => `${data.description}: ${data[cellKey] ?? null}`).join('\\n');
 };
 
-const getPresentationVariables = ({
+const getPresentation = (presentationOptions, value, presentationConfigIfInRow) => {
+  const presentation = getPresentationOption(presentationOptions, value);
+  if (presentationConfigIfInRow) {
+    const { description } = presentationConfigIfInRow;
+    // if presentation is null, we should not show the DescriptionOverlay popup.
+    // So, only add the `main title` to the presentation object if presentation != null
+    presentation.mainTitle = description;
+  }
+  return presentation;
+};
+
+const getColor = (presentation, presentationConfigIfInRow) => {
+  if (presentationConfigIfInRow) {
+    return presentation ? presentation.color : '';
+  }
+  return presentation ? presentation.color : { color: '' };
+};
+
+const getOnCellClickVariables = ({
   presentationOptions,
+  presentation,
+  presentationConfigIfInRow,
   value,
-  extraConfig,
   childRows,
   category,
   cellKey,
 }) => {
-  if (extraConfig) {
-    const { description, rowInfo } = extraConfig;
-    let presentation = getPresentationOption(presentationOptions, value);
-    // if presentation is null, we should not show the DescriptionOverlay popup.
-    // So, only add the `main title` to the presentation object if presentation != null
-    if (presentation) {
-      presentation = {
-        ...presentation,
-        mainTitle: description,
-      };
-    }
-    const color = presentation ? presentation.color : '';
-    const onCellClickVariables = [
+  if (presentationConfigIfInRow) {
+    const { rowInfo } = presentationConfigIfInRow;
+    const updatedPresentation =
       presentation && presentation.description === ROW_INFO_KEY
         ? { ...presentation, description: rowInfo }
-        : presentation,
-      value,
-    ];
-    return { color, onCellClickVariables };
+        : presentation;
+    return [updatedPresentation, value];
   }
-
-  // For Cells in RowGroup
-  const presentation = getPresentationOption(presentationOptions, value);
-  const color = presentation ? presentation.color : { color: '' };
   const updatedValue = presentationOptions.showNestedRows
     ? getNestedRowsValue({ childRows, category, cellKey })
     : value;
-  const onCellClickVariables = [presentation, updatedValue];
-  return { color, onCellClickVariables };
+  return [presentation, updatedValue];
 };
 
 const Cell = ({
   onMouseEnter,
   onMouseLeave,
-  onCellClick,
+  onClick,
   style,
   columnActiveStripStyle,
   dotStyle,
@@ -63,12 +65,15 @@ const Cell = ({
   isUsingDots,
   childRows,
   category,
-  extraConfig, // extra config if cell is in Row, which also indicates different logic to get 'presentation'
+  presentationConfigIfInRow,
 }) => {
-  const { color, onCellClickVariables } = getPresentationVariables({
+  const presentation = getPresentation(presentationOptions, value, presentationConfigIfInRow);
+  const color = getColor(presentation, presentationConfigIfInRow);
+  const onCellClickVariables = getOnCellClickVariables({
     presentationOptions,
+    presentation,
+    presentationConfigIfInRow,
     value,
-    extraConfig,
     childRows,
     category,
     cellKey,
@@ -96,7 +101,7 @@ const Cell = ({
       style={style}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={() => onCellClick(...onCellClickVariables)}
+      onClick={() => onClick(...onCellClickVariables)}
       key={cellKey}
     >
       {activeIndicator}
@@ -105,9 +110,13 @@ const Cell = ({
   );
 };
 
-export default React.memo(Cell, (currentProps, nextProps) => {
-  if (currentProps.isActive !== nextProps.isActive) {
-    return false;
+const memoDependency = (currentProps, nextProps, dependencies) => {
+  for (const dependency of dependencies) {
+    if (currentProps[dependency] !== nextProps[dependency]) return false;
   }
   return true;
-});
+};
+
+export default React.memo(Cell, (currentProps, nextProps) =>
+  memoDependency(currentProps, nextProps, ['isActive', 'value', 'style']),
+);
