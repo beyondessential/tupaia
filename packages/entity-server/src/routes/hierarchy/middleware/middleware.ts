@@ -50,12 +50,10 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
     req.ctx.hierarchyId = hierarchy.id;
     req.ctx.allowedCountries = allowedCountries;
     req.ctx.fields = extractFieldsFromQuery(req.query.fields);
-    req.ctx.formatEntityForResponse = (entityToFormat: EntityType) => {
-      return mapEntityToFields(req.ctx.fields)(entityToFormat, req.ctx);
-    };
-    req.ctx.formatEntitiesForResponse = (entitiesToFormat: EntityType[]) => {
-      return mapEntitiesToFields(req, req.ctx.fields)(entitiesToFormat, req.ctx);
-    };
+    req.ctx.formatEntityForResponse = (entityToFormat: EntityType) =>
+      mapEntityToFields(req.ctx.fields)(entityToFormat, req.ctx);
+    req.ctx.formatEntitiesForResponse = (entitiesToFormat: EntityType[]) =>
+      mapEntitiesToFields(req, req.ctx.fields)(entitiesToFormat, req.ctx);
 
     next();
   } catch (error) {
