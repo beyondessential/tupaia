@@ -9,7 +9,7 @@ import { LoginRoute as BaseLoginRoute } from '@tupaia/server-boilerplate';
 import { LESMIS_PERMISSION_GROUP } from '../constants';
 
 export class LoginRoute extends BaseLoginRoute {
-  verifyAuth(accessPolicy) {
+  verifyLoginAuth(accessPolicy) {
     const authorized = accessPolicy.allowsAnywhere(LESMIS_PERMISSION_GROUP);
     if (!authorized) {
       throw new PermissionsError('User not authorized for Lesmis');
