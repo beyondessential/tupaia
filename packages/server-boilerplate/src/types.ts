@@ -17,12 +17,8 @@ export interface SessionCookie {
 
 export type TupaiaRequestBody = Record<string, unknown>;
 
-export interface TupaiaRequest<>extends Request<
-    ParamsDictionary,
-    unknown,
-    TupaiaRequestBody,
-    Query
-  > {
+export interface TupaiaRequest
+  extends Request<ParamsDictionary, unknown, TupaiaRequestBody, Query> {
   sessionModel: SessionModel;
   sessionCookie?: SessionCookie;
   session?: SessionType;

@@ -4,3 +4,5 @@
  *
  */
 export * from './useUser';
+export * from './useEntitiesData';
+export * from './useEntityData';

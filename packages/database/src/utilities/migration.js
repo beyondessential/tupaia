@@ -17,6 +17,14 @@ class RequiredParameterError extends Error {
 export const insertObject = async (db, table, data, onError) =>
   db.insert(table, Object.keys(data), Object.values(data), onError);
 
+export const deleteObject = async (db, table, condition) => {
+  const [key, value] = Object.entries(condition)[0];
+  return db.runSql(`
+      DELETE FROM "${table}"
+      WHERE ${key} = '${value}'
+  `);
+};
+
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 export const arrayToDoubleQuotedDbString = array => array.map(item => `"${item}"`).join(', '); // For formatting Postgres text[]
 

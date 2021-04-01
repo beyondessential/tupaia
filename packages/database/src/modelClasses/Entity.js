@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { fetchPatiently } from '@tupaia/utils';
+import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -96,6 +96,9 @@ export class EntityType extends DatabaseType {
     return this.type === WORLD;
   }
 
+  /**
+   * @returns {boolean} If the entity is a project
+   */
   isProject() {
     return this.type === PROJECT;
   }
@@ -145,13 +148,21 @@ export class EntityType extends DatabaseType {
     return this.model.findOne({ code: this.country_code });
   }
 
-  async parent() {
-    return this.parent_id ? this.model.findById(this.parent_id) : undefined;
+  getBounds() {
+    return translateBounds(this.bounds);
   }
 
-  async hasCountryParent() {
-    const parent = await this.parent();
-    return parent.type === COUNTRY;
+  getPoint() {
+    return translatePoint(this.point);
+  }
+
+  getRegion() {
+    return translateRegion(this.region);
+  }
+
+  async getParent(hierarchyId) {
+    const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 1 });
+    return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
   }
 
   async getAncestors(hierarchyId, criteria) {
@@ -245,8 +256,8 @@ export class EntityType extends DatabaseType {
     return ancestors.map(a => a.code);
   }
 
-  async getChildren(hierarchyId) {
-    return this.getDescendants(hierarchyId, { generational_distance: 1 });
+  async getChildren(hierarchyId, criteria) {
+    return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
   async getChildrenViaHierarchy(hierarchyId) {

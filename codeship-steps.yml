@@ -10,8 +10,10 @@
         - name: validate tests
           service: validation
           command: './packages/devops/scripts/ci/validateTests.sh'
+          exclude: -e2e$
     - type: serial
       name: test
+      exclude: -e2e$
       steps:
         - type: parallel
           name: test-batch-1 # they're in sandboxed containers, but share a db which can't handle all at once
@@ -82,8 +84,10 @@
               command: './packages/devops/scripts/ci/deployBackend.sh lesmis-server'
             - name: deploy-meditrak-server
               command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+              exclude: -e2e$
             - name: deploy-psss-server
               command: './packages/devops/scripts/ci/deployBackend.sh psss-server'
+              exclude: -e2e$
             - name: deploy-report-server
               command: './packages/devops/scripts/ci/deployBackend.sh report-server'
             - name: deploy-entity-server
@@ -101,3 +105,15 @@
           command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
         - name: deploy-psss
           command: './packages/devops/scripts/ci/deployFrontend.sh psss'
+          exclude: -e2e$
+        - name: deploy-lesmis
+          command: './packages/devops/scripts/ci/deployFrontend.sh lesmis'
+          exclude: -e2e$
+
+- type: parallel
+  name: e2e-test
+  service: deployment
+  tag: -e2e$
+  steps:
+    - name: e2e-test-web-frontend
+      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'
