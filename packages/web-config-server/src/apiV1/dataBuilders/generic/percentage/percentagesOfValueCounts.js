@@ -283,10 +283,11 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   };
 }
 
-export const percentagesOfValueCounts = async (
+const basicPercentagesOfValueCounts = (
   { models, dataBuilderConfig, query, organisationUnitInfo },
   aggregator,
   dhisApi,
+  aggregationType,
 ) => {
   const builder = new PercentagesOfValueCountsBuilder(
     models,
@@ -295,7 +296,20 @@ export const percentagesOfValueCounts = async (
     dataBuilderConfig,
     query,
     organisationUnitInfo,
+    aggregationType,
   );
 
   return builder.build();
-};
+}
+
+export const percentagesOfValueCounts = async (
+  queryConfig,
+  aggregator,
+  dhisApi,
+) => basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi);
+
+export const percentagesOfAllValueCounts = async (
+  queryConfig,
+  aggregator,
+  dhisApi,
+) => basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi, aggregator.aggregationTypes.RAW);
