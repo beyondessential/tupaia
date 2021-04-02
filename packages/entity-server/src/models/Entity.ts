@@ -16,6 +16,9 @@ export type EntityFields = Readonly<{
   region: string | null;
   point: string | null;
   bounds: string | null;
+  attributes: {
+    type?: string;
+  };
 }>;
 
 export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
