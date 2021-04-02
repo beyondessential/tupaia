@@ -4,9 +4,9 @@
  */
 
 import { Request, Response } from 'express';
-import { EntityFields, EntityType } from '../../models';
+import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
-import { Resolved } from '../../types';
+import { Resolved, ObjectLikeKeys } from '../../types';
 
 export interface HierarchyRequestParams {
   hierarchyName: string;
@@ -19,24 +19,31 @@ type FlattenAndPrefix<T, K extends keyof T & string> = {
   [V in K]: { [field in keyof T[V] & string as `${V}.${field}`]: T[V][field] };
 }[K];
 
-type ObjectLikeKeys<T> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [K in keyof T]: T[K] extends Record<string, any> ? K : never;
-}[keyof T];
-
 type SimpleFieldKeys<T> = {
   [K in keyof T]: T[K] extends string | number | symbol ? K : never;
 }[keyof T];
 
-type EntityFilterQuery = Partial<
-  Omit<EntityFields, ObjectLikeKeys<EntityFields>> &
-    FlattenAndPrefix<EntityFields, ObjectLikeKeys<EntityFields>>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+  ? I
+  : never;
+
+export type NestedFilterQueryFields = UnionToIntersection<
+  FlattenAndPrefix<EntityFields, ObjectLikeKeys<EntityFields>>
 >;
 
-export interface HierarchyRequestQuery extends EntityFilterQuery {
+type StringValues<T> = {
+  [field in keyof T]: string;
+};
+
+export type EntityFilterQuery = Partial<
+  StringValues<Omit<EntityFields, ObjectLikeKeys<EntityFields>> & NestedFilterQueryFields>
+>;
+
+export type HierarchyRequestQuery = {
   fields?: string;
   field?: string;
-}
+} & EntityFilterQuery;
 
 export type ExtendedFieldFunctions = Readonly<
   {
@@ -66,6 +73,7 @@ export interface HierarchyContext {
   hierarchyId: string;
   allowedCountries: string[];
   fields: (keyof ExtendedEntityFields)[];
+  filter: EntityFilter;
   flat?: keyof FlattableEntityFields;
 }
 

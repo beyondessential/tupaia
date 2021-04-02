@@ -21,16 +21,12 @@ export type EntityFields = Readonly<{
   };
 }>;
 
+export type EntityFilter = DbConditional<EntityFields>;
+
 export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
-  getChildren: (
-    hierarchyId: string,
-    criteria?: DbConditional<EntityFields>,
-  ) => Promise<EntityType[]>;
+  getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
   getParent: (hierarchyId: string) => Promise<EntityType | undefined>;
-  getDescendants: (
-    hierarchyId: string,
-    criteria?: DbConditional<EntityFields>,
-  ) => Promise<EntityType[]>;
+  getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
   getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityType>;
 }
 

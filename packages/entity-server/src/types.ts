@@ -12,4 +12,13 @@ export interface EntityServerModelRegistry extends ModelRegistry {
   readonly entityHierarchy: EntityHierarchyModel;
 }
 
-export type Resolved<T> = T extends Promise<infer R> ? R : T; // Returns resolved type if type is promise
+// Returns resolved type if type is promise
+export type Resolved<T> = T extends Promise<infer R> ? R : T;
+
+// Extracts keys that have object-like values from type T
+export type ObjectLikeKeys<T> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [K in keyof T]: T[K] extends Record<string, any> ? K : never;
+}[keyof T];
+
+export type Writable<T> = { -readonly [field in keyof T]?: T[field] };

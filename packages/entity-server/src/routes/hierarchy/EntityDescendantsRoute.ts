@@ -21,9 +21,10 @@ export type DescendantsRequest = HierarchyRequest<
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {
-    const { hierarchyId, entity, allowedCountries, fields, flat } = this.req.ctx;
+    const { hierarchyId, entity, allowedCountries, fields, flat, filter } = this.req.ctx;
     const { includeRootEntity = false } = this.req.query;
     const descendants = await entity.getDescendants(hierarchyId, {
+      ...filter,
       country_code: allowedCountries,
     });
     const responseEntities = includeRootEntity ? [entity].concat(descendants) : descendants;
