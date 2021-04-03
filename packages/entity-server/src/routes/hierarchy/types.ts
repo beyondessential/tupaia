@@ -16,7 +16,7 @@ export interface HierarchyRequestParams {
 export type HierarchyRequestBody = Record<string, unknown>;
 
 type FlattenAndPrefix<T, K extends keyof T & string> = {
-  [V in K]: { [field in keyof T[V] & string as `${V}.${field}`]: T[V][field] };
+  [V in K]: { [field in keyof T[V] & string as `${V}_${field}`]: T[V][field] };
 }[K];
 
 type SimpleFieldKeys<T> = {

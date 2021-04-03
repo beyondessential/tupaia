@@ -4,7 +4,7 @@
  */
 
 import { Writable } from '../../../types';
-import { EntityFields, EntityFilter } from '../../../models';
+import { EntityFilter } from '../../../models';
 import { EntityFilterQuery, NestedFilterQueryFields } from '../types';
 
 const filterableFields: (keyof EntityFilterQuery)[] = [
@@ -14,21 +14,21 @@ const filterableFields: (keyof EntityFilterQuery)[] = [
   'name',
   'image_url',
   'type',
-  'attributes.type',
+  'attributes_type',
 ];
 const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
   (filterableFields as string[]).includes(field);
 
-const nestedFields: (keyof NestedFilterQueryFields)[] = ['attributes.type'];
+const nestedFields: (keyof NestedFilterQueryFields)[] = ['attributes_type'];
 const isNestedField = (field: keyof EntityFilterQuery): field is keyof NestedFilterQueryFields =>
   (nestedFields as (keyof EntityFilterQuery)[]).includes(field);
 
-type FieldAndKey<T extends keyof NestedFilterQueryFields> = T extends `${infer Field}.${infer Key}`
+type FieldAndKey<T extends keyof NestedFilterQueryFields> = T extends `${infer Field}_${infer Key}`
   ? [Field, Key]
   : T;
 
 const fieldAndKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): FieldAndKey<T> => {
-  return nestedField.split('.') as FieldAndKey<T>;
+  return nestedField.split('_') as FieldAndKey<T>;
 };
 
 export const extractFilterFromQuery = (queryFilter?: EntityFilterQuery) => {
@@ -36,7 +36,8 @@ export const extractFilterFromQuery = (queryFilter?: EntityFilterQuery) => {
     return {};
   }
 
-  const filter: Writable<Partial<EntityFields>> = {};
+  const filter: Writable<EntityFilter> = {};
+
   Object.entries(queryFilter).forEach(([field, value]) => {
     if (value === undefined) {
       return;
@@ -46,18 +47,20 @@ export const extractFilterFromQuery = (queryFilter?: EntityFilterQuery) => {
       return;
     }
 
+    const parsedValue = value.includes(',') ? value.split(',') : value;
+
     if (!isNestedField(field)) {
-      filter[field] = value;
+      filter[field] = parsedValue;
       return;
     }
 
     const [unNestedField, key] = fieldAndKey(field);
     const existing = filter[unNestedField];
     if (existing) {
-      const updated = { ...existing, [key]: value };
+      const updated = { ...existing, [key]: parsedValue };
       filter[unNestedField] = updated;
     } else {
-      filter[unNestedField] = { [key]: value };
+      filter[unNestedField] = { [key]: parsedValue };
     }
   });
 

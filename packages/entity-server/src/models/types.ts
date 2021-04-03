@@ -5,7 +5,12 @@
 
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 
-export type DbConditional<T> = { [field in keyof T]?: T[field] | T[field][] };
+export type DbConditional<T> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [field in keyof T]?: T[field] extends Record<any, any>
+    ? DbConditional<T[field]>
+    : T[field] | T[field][];
+};
 
 export type Joined<T, U extends string> = {
   [field in keyof T as field extends string ? `${U}.${field}` : never]: T[field];
