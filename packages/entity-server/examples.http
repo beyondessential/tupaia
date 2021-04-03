@@ -23,6 +23,11 @@ GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?field=code&incl
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
+### Fetch filtered descendants of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&type=district,facility HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
 ### Fetch relations of an entity
 GET http://{{host}}/{{version}}/hierarchy/explore/TO/relations?ancestorType=facility&descendantType=village&fields=code&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}

@@ -6,7 +6,7 @@
 import { Request, Response } from 'express';
 import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
-import { Resolved, ObjectLikeKeys } from '../../types';
+import { Resolved, ObjectLikeKeys, Flatten } from '../../types';
 
 export interface HierarchyRequestParams {
   hierarchyName: string;
@@ -15,21 +15,13 @@ export interface HierarchyRequestParams {
 
 export type HierarchyRequestBody = Record<string, unknown>;
 
-type FlattenAndPrefix<T, K extends keyof T & string> = {
-  [V in K]: { [field in keyof T[V] & string as `${V}_${field}`]: T[V][field] };
-}[K];
-
 type SimpleFieldKeys<T> = {
   [K in keyof T]: T[K] extends string | number | symbol ? K : never;
 }[keyof T];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void
-  ? I
-  : never;
-
-export type NestedFilterQueryFields = UnionToIntersection<
-  FlattenAndPrefix<EntityFields, ObjectLikeKeys<EntityFields>>
+export type NestedFilterQueryFields = Flatten<
+  Pick<EntityFields, ObjectLikeKeys<EntityFields>>,
+  '_'
 >;
 
 type StringValues<T> = {

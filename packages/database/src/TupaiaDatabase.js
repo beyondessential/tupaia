@@ -581,7 +581,10 @@ function addWhereClause(connection, baseQuery, where) {
     if (!VALID_COMPARISON_TYPES.includes(comparisonType)) {
       throw new Error(`Cannot compare using ${comparisonType}`);
     }
-    const columnSelector = castAs ? connection.raw(`??::${castAs}`, [key]) : key;
+
+    const columnKey = key.includes('->>') ? connection.raw(`??->>?`, key.split('->>')) : key;
+    const columnSelector = castAs ? connection.raw(`??::${castAs}`, [columnKey]) : columnKey;
+
     const { args = [comparator, comparisonValue] } = value;
     return querySoFar[comparisonType](columnSelector, ...args);
   }, baseQuery);

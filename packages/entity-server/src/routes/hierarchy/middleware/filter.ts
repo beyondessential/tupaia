@@ -23,12 +23,13 @@ const nestedFields: (keyof NestedFilterQueryFields)[] = ['attributes_type'];
 const isNestedField = (field: keyof EntityFilterQuery): field is keyof NestedFilterQueryFields =>
   (nestedFields as (keyof EntityFilterQuery)[]).includes(field);
 
-type FieldAndKey<T extends keyof NestedFilterQueryFields> = T extends `${infer Field}_${infer Key}`
-  ? [Field, Key]
+type JsonBKey<T extends keyof NestedFilterQueryFields> = T extends `${infer Field}_${infer Key}`
+  ? `${Field}->>${Key}`
   : T;
 
-const fieldAndKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): FieldAndKey<T> => {
-  return nestedField.split('_') as FieldAndKey<T>;
+const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): JsonBKey<T> => {
+  const [field, value] = nestedField.split('_');
+  return [field, value].join('->>') as JsonBKey<T>;
 };
 
 export const extractFilterFromQuery = (queryFilter?: EntityFilterQuery) => {
@@ -54,14 +55,8 @@ export const extractFilterFromQuery = (queryFilter?: EntityFilterQuery) => {
       return;
     }
 
-    const [unNestedField, key] = fieldAndKey(field);
-    const existing = filter[unNestedField];
-    if (existing) {
-      const updated = { ...existing, [key]: parsedValue };
-      filter[unNestedField] = updated;
-    } else {
-      filter[unNestedField] = { [key]: parsedValue };
-    }
+    const jsonBKey = toJsonBKey(field);
+    filter[jsonBKey] = parsedValue;
   });
 
   return filter as EntityFilter;
