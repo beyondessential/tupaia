@@ -29,6 +29,11 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch relations of an entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO/relations?ancestorType=facility&descendantType=village&fields=code&groupBy=descendant HTTP/1.1
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/relations?ancestor_type=facility&descendant_type=village&ancestor_field=code&descendant_fields=code,name&groupBy=ancestor HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relations of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA/relations?ancestor_type=sub_district&descendant_type=school&field=code&descendant_attributes_type=Secondary&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
