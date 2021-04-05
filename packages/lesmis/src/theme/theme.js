@@ -6,9 +6,9 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from '../constants/colors';
 
-const themeName = 'Tupaia';
+const themeName = 'LESMIS';
 
-const palette = {
+export const palette = {
   primary: {
     main: COLORS.RED,
     light: COLORS.LIGHT_RED,
@@ -41,7 +41,7 @@ const palette = {
   },
 };
 
-const typography = {
+export const typography = {
   fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
   h1: {
     fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
@@ -115,9 +115,9 @@ const typography = {
   },
 };
 
-const shape = { borderRadius: 3 };
+export const shape = { borderRadius: 3 };
 
-const overrides = {
+export const overrides = {
   MuiCard: {
     root: {
       borderColor: COLORS.GREY_DE,
@@ -125,7 +125,7 @@ const overrides = {
   },
 };
 
-const breakpoints = {
+export const breakpoints = {
   values: {
     xs: 0,
     sm: 600,
