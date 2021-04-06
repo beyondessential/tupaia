@@ -3,5 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+export { HierarchyRequest } from './types';
 export { SingleEntityRoute } from './SingleEntityRoute';
-export { EntityDescendantsRoute } from './EntityDescendantsRoute';
+export { EntityDescendantsRoute, DescendantsRequest } from './EntityDescendantsRoute';

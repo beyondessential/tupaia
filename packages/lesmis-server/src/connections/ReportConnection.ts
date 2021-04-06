@@ -4,6 +4,7 @@
  */
 
 import { ApiConnection } from '@tupaia/server-boilerplate';
+
 const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 
 type ReportObject = {
@@ -18,7 +19,7 @@ export class ReportConnection extends ApiConnection {
     periods: string[] = [],
   ): Promise<ReportObject> {
     if (!orgUnitCodes || !orgUnitCodes.length) {
-      throw new Error(`No organisationUnitCodes provided`);
+      throw new Error('No organisationUnitCodes provided');
     }
 
     return this.get(`fetchReport/${reportCode}`, {
