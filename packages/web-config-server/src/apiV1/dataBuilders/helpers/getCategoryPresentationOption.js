@@ -1,7 +1,8 @@
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
+import { CONDITION } from '/apiV1/dataBuilders/constants';
 
 const PRESENTATION_TYPES = {
-  CONDITION: '$condition',
+  CONDITION,
 };
 
 const CONDITION_TYPE_SOME_NOT_ALL = 'someNotAll';

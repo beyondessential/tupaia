@@ -1,9 +1,7 @@
 import { getCategoryPresentationOption } from '/apiV1/dataBuilders/helpers';
-
+import { CONDITION, AVERAGE } from '/apiV1/dataBuilders/constants';
 import groupBy from 'lodash.groupby';
 
-const AVERAGE = '$average';
-const CONDITION = '$condition';
 const CATEGORY_AGGREGATION_TYPES = [AVERAGE, CONDITION];
 
 const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
