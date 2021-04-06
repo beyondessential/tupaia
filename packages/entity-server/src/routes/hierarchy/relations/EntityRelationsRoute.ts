@@ -11,6 +11,7 @@ import {
   EntityResponseObject,
   EntityResponse,
   FlattableEntityFields,
+  FlattenedEntity,
   ExtendedEntityFields,
 } from '../types';
 import { RelationsRequest } from './types';
@@ -65,7 +66,7 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
   async formatEntitiesByCode(
     entities: EntityType[],
     flat: keyof FlattableEntityFields,
-  ): Promise<Record<string, FlattableEntityFields[keyof FlattableEntityFields]>>;
+  ): Promise<Record<string, FlattenedEntity>>;
   async formatEntitiesByCode(
     entities: EntityType[],
     fields: (keyof ExtendedEntityFields)[],

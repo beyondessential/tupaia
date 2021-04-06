@@ -8,8 +8,8 @@ import {
   HierarchyRequestBody,
   HierarchyRequestQuery,
   EntityResponseObject,
+  FlattenedEntity,
   EntityResponse,
-  FlattableEntityFields,
 } from '../types';
 
 export type Prefix<T, P extends string> = {
@@ -26,8 +26,8 @@ export interface RelationsRequest
     HierarchyRequestParams,
     | (EntityResponseObject & { ancestor: EntityResponse })[] // groupBy: descendant, flat: false
     | (EntityResponseObject & { descendants: EntityResponse[] })[] // groupBy: ancestor, flat: false
-    | Record<FlattableEntityFields[keyof FlattableEntityFields], EntityResponse>[] // groupBy: descendant, flat: true
-    | Record<FlattableEntityFields[keyof FlattableEntityFields], EntityResponse[]>[], // groupBy: ancestor, flat: true
+    | Record<FlattenedEntity, EntityResponse>[] // groupBy: descendant, flat: true
+    | Record<FlattenedEntity, EntityResponse[]>[], // groupBy: ancestor, flat: true
     HierarchyRequestBody,
     RelationsQuery
   > {

@@ -56,9 +56,9 @@ export type EntityResponseObject = {
   [field in keyof ExtendedEntityFields]?: ExtendedEntityFields[field];
 };
 
-export type EntityResponse =
-  | EntityResponseObject
-  | FlattableEntityFields[keyof FlattableEntityFields];
+export type FlattenedEntity = FlattableEntityFields[keyof FlattableEntityFields];
+
+export type EntityResponse = EntityResponseObject | FlattenedEntity;
 
 export interface HierarchyContext {
   entity: EntityType;
