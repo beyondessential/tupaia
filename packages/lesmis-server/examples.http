@@ -21,6 +21,12 @@ content-type: {{contentType}}
 
 ###
 
+# @name logout
+POST http://{{host}}/{{version}}/logout HTTP/1.1
+content-type: {{contentType}}
+
+###
+
 @sessionCookie = {{login.response.headers.Set-Cookie}}
 
 

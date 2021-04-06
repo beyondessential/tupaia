@@ -63,8 +63,9 @@ export class ApiBuilder {
   }
 
   useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
+    const sessionModel = new SessionModelClass(this.database);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      req.sessionModel = new SessionModelClass(this.database);
+      req.sessionModel = sessionModel;
       next();
     });
     return this;
@@ -76,14 +77,18 @@ export class ApiBuilder {
       next();
     };
     this.verifyLoginMiddleware = (req: Request, res: Response, next: NextFunction) => {
-      const { session } = req;
-      if (!session) {
-        throw new UnauthenticatedError('Session not attached to request');
+      try {
+        const { session } = req;
+        if (!session) {
+          throw new UnauthenticatedError('Session not attached to request');
+        }
+
+        verify(session.accessPolicy);
+
+        next();
+      } catch (error) {
+        next(error);
       }
-
-      verify(session.accessPolicy);
-
-      next();
     };
     return this;
   }
