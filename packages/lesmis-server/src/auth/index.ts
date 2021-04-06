@@ -4,3 +4,4 @@
  */
 
 export { verifyLogin } from './verifyLogin';
+export { attachSession } from './attachSession';
