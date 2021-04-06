@@ -41,8 +41,8 @@
       "path": "packages/dhis-api"
     },
     {
-      "name": "eslint-config-typescript",
-      "path": "packages/eslint-config-typescript"
+      "name": "entity-server",
+      "path": "packages/entity-server"
     },
     {
       "name": "expression-parser",
@@ -55,6 +55,10 @@
     {
       "name": "lesmis",
       "path": "packages/lesmis"
+    },
+    {
+      "name": "lesmis-server",
+      "path": "packages/lesmis-server"
     },
     {
       "name": "meditrak-app",
@@ -75,6 +79,10 @@
     {
       "name": "report-server",
       "path": "packages/report-server"
+    },
+    {
+      "name": "server-boilerplate",
+      "path": "packages/server-boilerplate"
     },
     {
       "name": "ui-components",
@@ -123,6 +131,7 @@
       "groupby",
       "heatmap",
       "imms",
+      "isequal",
       "keyby",
       "migrator",
       "oucode",

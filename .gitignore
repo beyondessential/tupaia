@@ -6,6 +6,7 @@
 **/builds
 **/build
 **/dist
+**/lib
 *.log*
 .nyc_output
 *.aes

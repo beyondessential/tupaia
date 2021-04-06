@@ -7,16 +7,18 @@ import {
   filterValues,
   flattenToObject,
   getKeysSortedByValues,
+  getUniqueObjects,
   mapKeys,
   mapValues,
   reduceToDictionary,
+  reduceToArrayDictionary,
   reduceToSet,
   getSortByKey,
   stripFields,
 } from '../object';
 
 describe('object', () => {
-  describe('getKeysSortedByValues', () => {
+  describe('getKeysSortedByValues()', () => {
     const testData = [
       [
         'should sort the keys of an object containing string values',
@@ -222,6 +224,57 @@ describe('object', () => {
     });
   });
 
+  describe('reduceToArrayDictionary()', () => {
+    const object1 = { id: 'id1', value: 10 };
+    const object2 = { id: 'id2', value: 20 };
+    const object3 = { id: 'id2', value: 30 };
+
+    it('should accept either an array or a dictionary of objects as input', () => {
+      expect(reduceToArrayDictionary([object1, object2, object3], 'id', 'value')).toStrictEqual(
+        reduceToArrayDictionary({ id1: object1, id2: object2, id3: object3 }, 'id', 'value'),
+      );
+    });
+
+    describe('key mappers', () => {
+      it('string', () => {
+        const result = reduceToArrayDictionary([object1, object2, object3], 'id', 'value');
+        expect(Object.keys(result)).toStrictEqual(['id1', 'id2']);
+      });
+
+      it('function', () => {
+        const result = reduceToArrayDictionary(
+          [object1, object2, object3],
+          object => object.value % 10,
+          'id',
+        );
+        expect(Object.keys(result)).toStrictEqual(['0']);
+      });
+    });
+
+    describe('value mappers', () => {
+      it('string', () => {
+        const result = reduceToArrayDictionary([object1, object2, object3], 'id', 'value');
+        expect(Object.values(result)).toStrictEqual([[10], [20, 30]]);
+      });
+
+      it('function', () => {
+        const result = reduceToArrayDictionary(
+          [object1, object2, object3],
+          'id',
+          object => object.value / 100,
+        );
+        expect(Object.values(result)).toStrictEqual([[0.1], [0.2, 0.3]]);
+      });
+    });
+
+    it('should combine key and value mappers into an object', () => {
+      expect(reduceToArrayDictionary([object1, object2, object3], 'id', 'value')).toStrictEqual({
+        id1: [10],
+        id2: [20, 30],
+      });
+    });
+  });
+
   describe('flattenToObject()', () => {
     const object1 = { id: 'id1', value: 10 };
     const object2 = { id: 'id2', value: 20 };
@@ -410,5 +463,38 @@ describe('object', () => {
         expect(stripFields(obj, fieldsToStrip)).toStrictEqual({});
       },
     );
+  });
+
+  describe('getUniqueObjects', () => {
+    const testData = [
+      ['one empty object', [{}], [{}]],
+      ['one non empty object', [{ a: 1 }], [{ a: 1 }]],
+      ['different objects', [{ a: 1 }, { b: 2 }], [{ a: 1 }, { b: 2 }]],
+      [
+        'same objects - same key order (keys are sorted)',
+        [
+          { b: 2, a: 1 },
+          { b: 2, a: 1 },
+        ],
+        [{ a: 1, b: 2 }],
+      ],
+      [
+        'same objects - different key order',
+        [
+          { b: 2, a: 1 },
+          { a: 1, b: 2 },
+        ],
+        [{ a: 1, b: 2 }],
+      ],
+      [
+        'mix of different and same objects',
+        [{ b: 2, a: 1 }, { a: 1, b: 2 }, { a: 1 }],
+        [{ a: 1, b: 2 }, { a: 1 }],
+      ],
+    ];
+
+    it.each(testData)('%s', (_, objects, expected) => {
+      expect(getUniqueObjects(objects)).toStrictEqual(expected);
+    });
   });
 });

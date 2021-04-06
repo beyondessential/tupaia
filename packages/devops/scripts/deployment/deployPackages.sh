@@ -17,7 +17,7 @@ else
     ENVIRONMENT="dev"
 fi
 
-PACKAGES=("meditrak-server" "web-config-server" "psss-server" "report-server" "web-frontend" "admin-panel" "psss")
+PACKAGES=("meditrak-server" "web-config-server" "psss-server" "lesmis-server" "report-server" "entity-server" "web-frontend" "admin-panel" "psss" "lesmis")
 # For each package, get the latest and deploy it
 for PACKAGE in ${PACKAGES[@]}; do
     # Set up .env to match the environment variables stored in SSM parameter store

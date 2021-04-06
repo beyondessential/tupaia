@@ -6,9 +6,9 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from '../constants/colors';
 
-const themeName = 'Tupaia';
+const themeName = 'LESMIS';
 
-const palette = {
+export const palette = {
   primary: {
     main: COLORS.RED,
     light: COLORS.LIGHT_RED,
@@ -41,40 +41,46 @@ const palette = {
   },
 };
 
-const typography = {
-  fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+export const typography = {
+  fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
   h1: {
-    fontSize: '3.125rem',
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    fontSize: '2rem',
     fontWeight: 500,
-    lineHeight: 1.18,
+    lineHeight: 1.4,
     letterSpacing: 0,
   },
   h2: {
-    fontSize: '2rem',
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    fontSize: '1.75rem',
     fontWeight: 600,
-    lineHeight: 1.18,
+    lineHeight: 1.5,
     letterSpacing: 0,
   },
   h3: {
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
     fontSize: '1.5rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h4: {
-    fontSize: '1.3125rem',
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    fontSize: '1.3rem',
     fontWeight: 600,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h5: {
-    fontSize: '1.3125rem',
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   h6: {
-    fontSize: '1.125rem',
+    fontFamily: ['Poppins', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(','),
+    fontSize: '1rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -98,7 +104,7 @@ const typography = {
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '1.2rem',
+    fontSize: '1rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -109,9 +115,9 @@ const typography = {
   },
 };
 
-const shape = { borderRadius: 3 };
+export const shape = { borderRadius: 3 };
 
-const overrides = {
+export const overrides = {
   MuiCard: {
     root: {
       borderColor: COLORS.GREY_DE,
@@ -119,7 +125,7 @@ const overrides = {
   },
 };
 
-const breakpoints = {
+export const breakpoints = {
   values: {
     xs: 0,
     sm: 600,

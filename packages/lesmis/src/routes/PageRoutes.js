@@ -5,44 +5,48 @@
  */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { NavBar, Footer } from '../components';
 import { HomeView } from '../views/HomeView';
-import { ProvinceView } from '../views/ProvinceView';
-import { DistrictView } from '../views/DistrictView';
-import { SchoolView } from '../views/SchoolView';
 import { ProfileView } from '../views/ProfileView';
-import { AboutView } from '../views/AboutView';
-import { ContactView } from '../views/ContactView';
+import { PageView } from '../views/PageView';
+import { EntityView } from '../views/EntityView';
 import { NotFoundView } from '../views/NotFoundView';
+import { ABOUT_PAGE, CONTACT_PAGE } from '../constants';
 
 /**
  * Main Page Routes
- * eg. /vientiane-capital/mayparkngum/mayparkngum
+ * eg. /en/TO/dashboard
  */
 export const PageRoutes = React.memo(() => (
   <Switch>
     <Route exact path="/">
+      <NavBar />
       <HomeView />
     </Route>
     <Route path="/profile">
+      <NavBar />
       <ProfileView />
+      <Footer />
     </Route>
     <Route path="/about">
-      <AboutView />
+      <NavBar />
+      <PageView content={ABOUT_PAGE} />
+      <Footer />
     </Route>
     <Route path="/contact">
-      <ContactView />
+      <NavBar />
+      <PageView content={CONTACT_PAGE} />
+      <Footer />
     </Route>
-    <Route exact path="/:province">
-      <ProvinceView />
-    </Route>
-    <Route exact path="/:province/:district">
-      <DistrictView />
-    </Route>
-    <Route exact path="/:province/:district/:school">
-      <SchoolView />
+    <Route path="/:entityCode/:view?">
+      <NavBar />
+      <EntityView />
+      <Footer />
     </Route>
     <Route>
+      <NavBar />
       <NotFoundView />
+      <Footer />
     </Route>
   </Switch>
 ));

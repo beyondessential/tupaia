@@ -1,0 +1,24 @@
+@hostname = localhost
+@port = 8050
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables 
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+### Test
+GET http://{{host}}/{{version}}/test HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch a single entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO?fields=id,name,code,country_code,type,image_url,parent_code,child_codes,bounds,point,region HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch descendants of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=code,country_code,parent_code,child_codes,region&includeRootEntity=true HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}

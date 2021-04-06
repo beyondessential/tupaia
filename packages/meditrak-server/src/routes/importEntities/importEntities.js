@@ -17,6 +17,8 @@ export async function importEntities(req, res) {
   try {
     const { models } = req;
     let entitiesByCountryName;
+    const pushToDhis = req?.query?.pushToDhis ? req?.query?.pushToDhis === 'true' : true;
+
     try {
       entitiesByCountryName = extractEntitiesByCountryName(req.file.path);
     } catch (error) {
@@ -35,7 +37,7 @@ export async function importEntities(req, res) {
         const [countryName, entities] = countryEntries;
 
         // Create the entities, along with matching country, geographical_area, and clinic records
-        const country = await updateCountryEntities(transactingModels, countryName, entities);
+        const country = await updateCountryEntities(transactingModels, countryName, entities, pushToDhis);
 
         // Go through country and all district/subdistricts, and if any are missing coordinates,
         // attempt to fetch them and populate the database
