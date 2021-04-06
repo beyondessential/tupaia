@@ -15,7 +15,10 @@ const getPresentation = (presentationOptions, value, presentationConfigIfInRow) 
     const { description } = presentationConfigIfInRow;
     // if presentation is null, we should not show the DescriptionOverlay popup.
     // So, only add the `main title` to the presentation object if presentation != null
-    presentation.mainTitle = description;
+    return {
+      ...presentation,
+      mainTitle: description,
+    };
   }
   return presentation;
 };
