@@ -23,7 +23,14 @@ const DEFAULT_CONFIG = {
 // ]
 // See https://docs.sheetjs.com/#array-of-objects-input for more
 export const formatMatrixDataForExcel = (
-  { columns, categories: rowCategories, rows, name: reportName, organisationUnitCode },
+  {
+    columns,
+    categories: rowCategories,
+    rows,
+    name: reportName,
+    organisationUnitCode,
+    categoryPresentationOptions,
+  },
   timeZone,
   configIn,
   outputFormat = 'aoa',
@@ -90,7 +97,11 @@ export const formatMatrixDataForExcel = (
     });
   } else {
     // This table has no row categories, just one set of rows
-    formattedData.push(...rows.map(formatRowData));
+    formattedData.push(
+      ...rows
+        .filter(row => (categoryPresentationOptions?.showNestedRows ? !row.category : true))
+        .map(formatRowData),
+    );
   }
 
   // Add export date and origin to the bottom of the sheet
