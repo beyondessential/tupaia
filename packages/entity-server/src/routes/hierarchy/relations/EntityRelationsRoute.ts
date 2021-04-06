@@ -7,15 +7,12 @@ import { Route } from '@tupaia/server-boilerplate';
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityType } from '../../../models';
 import { formatEntitiesForResponse } from '../format';
-import { EntityResponseObject, FlattenedEntity } from '../types';
 import { RelationsRequest } from './types';
 
 type Pair = {
   descendant: string;
   ancestor: string;
 };
-
-type UnArray<T> = T extends (infer U)[] ? U : never;
 
 export class EntityRelationsRoute extends Route<RelationsRequest> {
   async buildAncestorCodesAndPairs(descendants: EntityType[]): Promise<[string[], Pair[]]> {
@@ -49,15 +46,23 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
         });
   }
 
-  formattedEntitiesByCode<T extends FlattenedEntity[] | EntityResponseObject[]>(
-    unformatted: EntityType[],
-    formatted: T,
-  ) {
-    const formattedByCode: Record<string, UnArray<T>> = {};
-    unformatted.forEach((unformattedEntity, index) => {
-      formattedByCode[unformattedEntity.code] = formatted[index] as UnArray<T>;
+  async getFormattedEntitiesByCode(ancestors: EntityType[], descendants: EntityType[]) {
+    const { models, ctx } = this.req;
+    const { flat: ancestorFlat } = ctx.ancestor;
+    const { flat: descendantFlat } = ctx.descendant;
+
+    const formattedEntities =
+      ancestorFlat === descendantFlat
+        ? await formatEntitiesForResponse(models, ctx, [...ancestors, ...descendants], ancestorFlat)
+        : [
+            ...(await formatEntitiesForResponse(models, ctx, ancestors, ancestorFlat)),
+            ...(await formatEntitiesForResponse(models, ctx, descendants, descendantFlat)),
+          ];
+    const formattedEntitiesByCode: Record<string, string> = {};
+    [...ancestors, ...descendants].forEach((entity, index) => {
+      formattedEntitiesByCode[entity.code] = formattedEntities[index];
     });
-    return formattedByCode;
+    return formattedEntitiesByCode;
   }
 
   shouldPerformFastResponse() {
@@ -71,117 +76,45 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
   }
 
   async groupByAncestorResponse(descendants: EntityType[]) {
-    const { models, ctx } = this.req;
-    const { fields: ancestorFields, flat: ancestorFlat } = ctx.ancestor;
-    const { fields: descendantFields, flat: descendantFlat } = ctx.descendant;
-
     const [ancestorCodes, pairs] = await this.buildAncestorCodesAndPairs(descendants);
     const ancestorToDescendants = reduceToArrayDictionary(pairs, 'ancestor', 'descendant');
 
     if (this.shouldPerformFastResponse()) {
-      return Object.entries(ancestorToDescendants).map(([ancestorCode, descendantCodes]) => ({
-        [ancestorCode]: descendantCodes,
-      }));
+      return ancestorToDescendants;
     }
 
     const ancestors = await this.getAncestors(ancestorCodes);
+    const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
 
-    const formattedDescendants = descendantFlat
-      ? await formatEntitiesForResponse(models, ctx, descendants, descendantFlat)
-      : await formatEntitiesForResponse(models, ctx, descendants, descendantFields);
-    const formattedDescendantsByCode = this.formattedEntitiesByCode(
-      descendants,
-      formattedDescendants,
-    );
-
-    if (ancestorFlat) {
-      const formattedAncestors = await formatEntitiesForResponse(
-        models,
-        ctx,
-        ancestors,
-        ancestorFlat,
+    const getFormattedAncestor = (ancestor: EntityType) => formattedEntitiesByCode[ancestor.code];
+    const getFormattedDescendants = (ancestor: EntityType) =>
+      ancestorToDescendants[ancestor.code].map(
+        descendantCode => formattedEntitiesByCode[descendantCode],
       );
-      const formattedAncestorsByCode = this.formattedEntitiesByCode(ancestors, formattedAncestors);
-      return ancestors.map(ancestor => ({
-        [formattedAncestorsByCode[ancestor.code]]: ancestorToDescendants[ancestor.code].map(
-          descendantCode => formattedDescendantsByCode[descendantCode],
-        ),
-      }));
-    }
-
-    const formattedAncestors = await formatEntitiesForResponse(
-      models,
-      ctx,
-      ancestors,
-      ancestorFields,
-    );
-    const formattedAncestorsByCode = this.formattedEntitiesByCode(ancestors, formattedAncestors);
-
-    return ancestors.map(ancestor => ({
-      ...formattedAncestorsByCode[ancestor.code],
-      descendants: ancestorToDescendants[ancestor.code].map(
-        descendantCode => formattedDescendantsByCode[descendantCode],
-      ),
-    }));
+    return reduceToDictionary(ancestors, getFormattedAncestor, getFormattedDescendants);
   }
 
   async groupByDescendantResponse(descendants: EntityType[]) {
-    const { models, ctx } = this.req;
-    const { fields: ancestorFields, flat: ancestorFlat } = ctx.ancestor;
-    const { fields: descendantFields, flat: descendantFlat } = ctx.descendant;
-
     const [ancestorCodes, pairs] = await this.buildAncestorCodesAndPairs(descendants);
     const descendantToAncestor = reduceToDictionary(pairs, 'descendant', 'ancestor');
 
     if (this.shouldPerformFastResponse()) {
-      return Object.entries(descendantToAncestor).map(([descendantCode, ancestorCode]) => ({
-        [descendantCode]: ancestorCode,
-      }));
+      return descendantToAncestor;
     }
 
     const ancestors = await this.getAncestors(ancestorCodes);
+    const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
 
-    const formattedAncestors = ancestorFlat
-      ? await formatEntitiesForResponse(models, ctx, ancestors, ancestorFlat)
-      : await formatEntitiesForResponse(models, ctx, ancestors, ancestorFields);
-    const formattedAncestorsByCode = this.formattedEntitiesByCode(descendants, formattedAncestors);
-
-    if (descendantFlat) {
-      const formattedDescendants = await formatEntitiesForResponse(
-        models,
-        ctx,
-        descendants,
-        descendantFlat,
-      );
-      const formattedDescendantsByCode = this.formattedEntitiesByCode(
-        descendants,
-        formattedDescendants,
-      );
-      return descendants
-        .filter(descendant => formattedAncestorsByCode[descendantToAncestor[descendant.code]])
-        .map(descendant => ({
-          [formattedDescendantsByCode[descendant.code]]:
-            formattedAncestorsByCode[descendantToAncestor[descendant.code]],
-        }));
-    }
-
-    const formattedDescendants = await formatEntitiesForResponse(
-      models,
-      ctx,
-      descendants,
-      descendantFields,
+    const getFormattedAncestor = (descendant: EntityType) =>
+      formattedEntitiesByCode[descendantToAncestor[descendant.code]];
+    const getFormattedDescendant = (descendant: EntityType) => [
+      formattedEntitiesByCode[descendant.code],
+    ];
+    return reduceToDictionary(
+      descendants.filter(getFormattedAncestor),
+      getFormattedDescendant,
+      getFormattedAncestor,
     );
-    const formattedDescendantsByCode = this.formattedEntitiesByCode(
-      descendants,
-      formattedDescendants,
-    );
-
-    return descendants
-      .filter(descendant => formattedAncestorsByCode[descendantToAncestor[descendant.code]])
-      .map(descendant => ({
-        ...formattedDescendantsByCode[descendant.code],
-        ancestor: formattedAncestorsByCode[descendantToAncestor[descendant.code]],
-      }));
   }
 
   async buildResponse() {
