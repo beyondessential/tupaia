@@ -8,6 +8,6 @@ import { HierarchyRequest } from './types';
 
 export class SingleEntityRoute extends Route<HierarchyRequest> {
   async buildResponse() {
-    return this.res.ctx.formatEntityForResponse(this.req.ctx.entity);
+    return this.req.ctx.formatEntityForResponse(this.req.ctx.entity);
   }
 }

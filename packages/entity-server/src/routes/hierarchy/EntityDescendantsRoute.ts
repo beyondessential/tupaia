@@ -27,6 +27,6 @@ export class EntityDescendantsRoute extends Route<DescendantsRequest> {
     const responseEntities = includeRootEntity
       ? [this.req.ctx.entity].concat(descendants)
       : descendants;
-    return this.res.ctx.formatEntitiesForResponse(responseEntities);
+    return this.req.ctx.formatEntitiesForResponse(responseEntities);
   }
 }
