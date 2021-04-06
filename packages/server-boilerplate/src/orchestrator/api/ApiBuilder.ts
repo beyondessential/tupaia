@@ -8,28 +8,28 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 
-import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
 
 import { handleWith, handleError } from '../../utils';
 import { TestRoute } from '../../routes';
 import { LoginRoute, LoginRequest, LogoutRoute, attachSession } from '../routes';
-import { MatchingRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
+import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
 
 export class ApiBuilder {
   private readonly app: Express;
 
-  private readonly models: ModelRegistry;
+  private readonly database: TupaiaDatabase;
 
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
 
   private verifyLoginMiddleware?: (req: Request, res: Response, next: NextFunction) => void;
 
   constructor(transactingConnection: TupaiaDatabase) {
-    this.models = new ModelRegistry(transactingConnection);
+    this.database = transactingConnection;
     this.app = express();
 
     /**
@@ -49,8 +49,6 @@ export class ApiBuilder {
      * Add singletons to be attached to req for every route
      */
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      req.models = this.models;
-
       const context = {}; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
@@ -64,9 +62,9 @@ export class ApiBuilder {
     this.app.get('/v1/test', handleWith(TestRoute));
   }
 
-  useSessionModel(sessionModel: SessionModel) {
+  useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      req.sessionModel = sessionModel;
+      req.sessionModel = new SessionModelClass(this.database);
       next();
     });
     return this;
@@ -90,7 +88,7 @@ export class ApiBuilder {
     return this;
   }
 
-  use<T extends MatchingRequest<T> = Request>(
+  use<T extends ExpressRequest<T> = Request>(
     path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
@@ -98,7 +96,7 @@ export class ApiBuilder {
     return this;
   }
 
-  get<T extends MatchingRequest<T> = Request>(
+  get<T extends ExpressRequest<T> = Request>(
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {

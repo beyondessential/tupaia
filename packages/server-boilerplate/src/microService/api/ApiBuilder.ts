@@ -14,7 +14,7 @@ import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { handleWith, handleError } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
-import { MatchingRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
+import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 
 export class ApiBuilder {
   private readonly app: Express;
@@ -62,7 +62,7 @@ export class ApiBuilder {
     return this;
   }
 
-  use<T extends MatchingRequest<T> = Request>(
+  use<T extends ExpressRequest<T> = Request>(
     path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
@@ -70,7 +70,7 @@ export class ApiBuilder {
     return this;
   }
 
-  get<T extends MatchingRequest<T> = Request>(
+  get<T extends ExpressRequest<T> = Request>(
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {

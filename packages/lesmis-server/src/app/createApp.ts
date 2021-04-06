@@ -13,9 +13,8 @@ import { verifyLogin } from '../auth';
  * Set up express server with middleware,
  */
 export function createApp() {
-  const database = new TupaiaDatabase();
-  return new OrchestratorApiBuilder(database)
-    .useSessionModel(new LesmisSessionModel(database))
+  return new OrchestratorApiBuilder(new TupaiaDatabase())
+    .useSessionModel(LesmisSessionModel)
     .verifyLogin(verifyLogin)
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities', handleWith(EntitiesRoute))
