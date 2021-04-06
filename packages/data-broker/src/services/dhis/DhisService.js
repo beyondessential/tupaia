@@ -59,13 +59,10 @@ export class DhisService extends Service {
   getApiForValue = (dataSource, dataValue) => {
     const { isDataRegional } = dataSource.config;
     const { orgUnit: entityCode } = dataValue;
-    return getDhisApiInstance({ entityCode, isDataRegional });
+    return getDhisApiInstance({ entityCode, isDataRegional }, this.models);
   };
 
   validatePushData(dataSources, dataValues) {
-    if (dataSources.length !== dataValues.length) {
-      throw new Error('Different number of data sources and values provided to push');
-    }
     const { serverName } = this.getApiForValue(dataSources[0], dataValues[0]);
     if (
       dataSources.some(
@@ -103,7 +100,7 @@ export class DhisService extends Service {
 
   async delete(dataSource, data, { serverName } = {}) {
     const api = serverName
-      ? getDhisApiInstance({ serverName })
+      ? getDhisApiInstance({ serverName }, this.models)
       : this.getApiForValue(dataSource, data);
     const deleteData = this.deleters[dataSource.type];
     return deleteData(api, data, dataSource);
@@ -129,7 +126,7 @@ export class DhisService extends Service {
     const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCodes, isDataRegional }),
+      getDhisApiInstance({ entityCodes, isDataRegional }, this.models),
     );
 
     return pullData(apis, dataSources, options);
@@ -227,7 +224,14 @@ export class DhisService extends Service {
   };
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
-    const { programCodes = [], period, startDate, endDate } = options;
+    const {
+      programCodes = [],
+      period,
+      startDate,
+      endDate,
+      organisationUnitCode,
+      organisationUnitCodes,
+    } = options;
     const dataElementCodes = dataSources.map(({ code }) => code);
     const dhisElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
 
@@ -235,6 +239,7 @@ export class DhisService extends Service {
       programCodes,
       dataElementCodes: dhisElementCodes,
       dataElementIdScheme: 'code',
+      organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
       period,
       startDate,
       endDate,
@@ -327,7 +332,7 @@ export class DhisService extends Service {
   pullEventsForApi = async (api, programCode, options) => {
     const { dataElementCodes = [], organisationUnitCodes, period, startDate, endDate } = options;
 
-    const dataElementSources = await this.models.dataSource.findOrDefault({
+    const dataElementSources = await this.models.dataSource.find({
       code: dataElementCodes,
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
@@ -378,7 +383,7 @@ export class DhisService extends Service {
     const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }),
+      getDhisApiInstance({ entityCode, isDataRegional }, this.models),
     );
 
     const results = [];

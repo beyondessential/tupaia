@@ -16,6 +16,7 @@
           "**/packages/psss/src/api/FakeApi.js",
           "**/packages/psss/src/utils/test-utils.js",
           "**/packages/ui-components/helpers/testingRenderer.js",
+          "**/packages/utils/src/script.js",
           "**/packages/web-frontend/config/**",
           "**/packages/web-frontend/scripts/**"
         ],
@@ -27,7 +28,14 @@
   "overrides": [
     // TypeScript packages
     {
-      "files": ["packages/indicators/**", "packages/psss-server/**", "packages/report-server/**"],
+      "files": [
+        "packages/indicators/**",
+        "packages/entity-server/**",
+        "packages/psss-server/**",
+        "packages/report-server/**",
+        "packages/lesmis-server/**",
+        "packages/server-boilerplate/**"
+      ],
       "extends": "@beyondessential/ts",
       "parserOptions": {
         "project": "tsconfig.json"
@@ -35,23 +43,7 @@
     },
     // Packages using jest
     {
-      "files": [
-        "packages/access-policy/**",
-        "packages/aggregator/**",
-        "packages/auth/**",
-        "packages/data-api/**",
-        "packages/data-broker/**",
-        "packages/dhis-api/**",
-        "packages/expression-parser/**",
-        "packages/indicators/**",
-        "packages/meditrak-app/**",
-        "packages/psss/**",
-        "packages/psss-server/**",
-        "packages/report-server/**",
-        "packages/ui-components/**",
-        "packages/utils/**",
-        "packages/web-frontend/**"
-      ],
+      "files": ["packages/**/__tests__/**", "packages/web-frontend/src/tests/**"],
       "extends": "@beyondessential/jest"
     },
     // Frontend packages
@@ -66,7 +58,7 @@
         "browser": true
       }
     },
-    // Rule overrides
+    // Overrides per rule/env
     {
       "files": [
         "packages/database/src/modelClasses/**",
@@ -76,9 +68,15 @@
         "max-classes-per-file": ["error", 2]
       }
     },
-    // File pattern overrides
     {
-      "files": "**/cypress/**",
+      "files": "packages/database/src/testUtilities/**",
+      "env": {
+        "jest": true
+      }
+    },
+    // Overrides per file pattern
+    {
+      "files": ["**/cypress/**", "packages/utils/src/cypress.js"],
       "extends": "plugin:cypress/recommended",
       "env": {
         "browser": true,
@@ -86,7 +84,13 @@
       },
       "rules": {
         "cypress/no-force": "error",
-        "jest/expect-expect": "off"
+        "no-unused-expressions": "off"
+      }
+    },
+    {
+      "files": "**/__integration/**",
+      "rules": {
+        "jest/no-standalone-expect": "off"
       }
     },
     {

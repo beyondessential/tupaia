@@ -3,22 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { compareAsc, compareDesc } from './compare';
+import { getUniqueEntries } from './getUniqueEntries';
+
 /**
  * @typedef {Object<string, any>[] | Object<string, Object<string, any>>} ObjectCollection
  */
-
-const compareAsc = (a, b) => {
-  if (typeof a === 'string' && typeof b === 'string') {
-    return a.localeCompare(b, undefined, { numeric: true });
-  }
-
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
-};
-
-const compareDesc = (a, b) => compareAsc(a, b) * -1;
 
 /**
  * Sorts the keys in the provided object by their corresponding values
@@ -96,6 +86,12 @@ export const flattenToObject = objectCollection => {
   );
 };
 
+const buildKeyAndValueFunctions = (keyMapper, valueMapper) => {
+  const keyOf = typeof keyMapper === 'function' ? keyMapper : object => object[keyMapper];
+  const valueOf = typeof valueMapper === 'function' ? valueMapper : object => object[valueMapper];
+  return [keyOf, valueOf];
+};
+
 /**
  * Creates a dictionary which maps the values of a selected field to another field
  * Available field (key/value) mapper types:
@@ -109,13 +105,38 @@ export const flattenToObject = objectCollection => {
  */
 export const reduceToDictionary = (objectCollection, keyMapper, valueMapper) => {
   const objects = collectionToArray(objectCollection);
-  const getFieldValue = (object, fieldMapper) =>
-    typeof fieldMapper === 'function' ? fieldMapper(object) : object[fieldMapper];
-
+  const [keyOf, valueOf] = buildKeyAndValueFunctions(keyMapper, valueMapper);
   const dictionary = {};
   // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
   objects.forEach(object => {
-    dictionary[getFieldValue(object, keyMapper)] = getFieldValue(object, valueMapper);
+    dictionary[keyOf(object)] = valueOf(object);
+  });
+  return dictionary;
+};
+
+/**
+ * Creates a dictionary which maps the values of a selected field to an array of matching values another field
+ * Use this function when you expect multiple objects in the collection to map to the same key, otherwise use reduceToDictionary
+ * Available field (key/value) mapper types:
+ * * `string`: uses the provided string as the field key
+ * * `Function`, will receive the object as its input eg object => object.value * 2
+ *
+ * @param {ObjectCollection} objectCollection
+ * @param {string|Function} keyMapper
+ * @param {string|Function} valueMapper
+ * @return {Object<string, string[]>}
+ */
+export const reduceToArrayDictionary = (objectCollection, keyMapper, valueMapper) => {
+  const objects = collectionToArray(objectCollection);
+  const [keyOf, valueOf] = buildKeyAndValueFunctions(keyMapper, valueMapper);
+  const dictionary = {};
+  // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
+  objects.forEach(object => {
+    if (dictionary[keyOf(object)]) {
+      dictionary[keyOf(object)].push(valueOf(object));
+    } else {
+      dictionary[keyOf(object)] = [valueOf(object)];
+    }
   });
   return dictionary;
 };
@@ -192,3 +213,17 @@ export const filterValues = (object, valueFilter) =>
 
 export const stripFields = (object = {}, fieldsToExclude = []) =>
   Object.fromEntries(Object.entries(object).filter(([key]) => !fieldsToExclude.includes(key)));
+
+/**
+ * Note: this only guarantees insertion order for properties in the new object.
+ * Enumeration order is not guaranteed before ES2015
+ */
+const sortFields = object => {
+  const sortedEntries = Object.entries(object).sort(([keyA], [keyB]) => compareAsc(keyA, keyB));
+  return Object.fromEntries(sortedEntries);
+};
+
+export const getUniqueObjects = objects => {
+  const jsonStrings = objects.map(o => JSON.stringify(sortFields(o)));
+  return getUniqueEntries(jsonStrings).map(JSON.parse);
+};

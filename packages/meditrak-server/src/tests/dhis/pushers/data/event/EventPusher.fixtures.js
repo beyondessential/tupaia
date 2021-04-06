@@ -35,7 +35,7 @@ export const QUESTION = {
 export const SURVEY_RESPONSE = {
   id: generateTestId(),
   entity_id: ENTITY.id,
-  submission_time: '2019-05-20T13:05+00',
+  data_time: '2019-05-20T13:05',
   survey_id: SURVEY.id,
   user_id: USER.id,
 };
@@ -59,7 +59,6 @@ export const BASELINE_TEST_DATA = {
   user: [USER],
   entity: [ENTITY],
   surveyResponse: [SURVEY_RESPONSE],
-  question: [QUESTION],
   answer: [ANSWER],
   dhisSyncQueue: [CHANGE],
 };

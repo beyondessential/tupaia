@@ -3,8 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { EmptyConfigError, preserveUserSession } from '../support';
 import config from '../config/dashboardReports.json';
+import { SNAPSHOTS } from '../constants';
+import { preserveUserSession } from '../support';
+
+const checkResponseHasData = response =>
+  response?.body?.value !== undefined || response?.body?.data?.length > 0;
 
 const urlToRouteRegex = url => {
   const queryParams = url.split('?').slice(1).join('');
@@ -13,13 +17,14 @@ const urlToRouteRegex = url => {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`view?.*viewId=${viewId}`);
+  return new RegExp(`view?.*\\WisExpanded=true&.*viewId=${viewId}[&$]`);
 };
 
 describe('Dashboard reports', () => {
   if (config.length === 0) {
-    throw new EmptyConfigError('dashboardReports');
+    throw new Error('Dashboard reports config is empty');
   }
+  const requireData = Cypress.config('tupaia_requireNonEmptyVisualisations');
 
   before(() => {
     cy.login();
@@ -33,10 +38,21 @@ describe('Dashboard reports', () => {
     it(url, () => {
       cy.server();
       cy.route(urlToRouteRegex(url)).as('report');
-
       cy.visit(url);
-      cy.wait('@report');
-      cy.findByTestId('enlarged-dialog').snapshotHtml({ name: 'html' });
+      cy.wait('@report').then(({ response }) => {
+        if (requireData) {
+          const failureMessage = `Report '${url}' is empty`;
+          expect(checkResponseHasData(response), failureMessage).to.be.true;
+        }
+      });
+
+      cy.findByTestId('enlarged-dialog').as('enlargedDialog');
+      // Capture and store the snapshot using the "new" key, to avoid comparison with existing snapshots.
+      // We want to store the new snapshots no matter what: a failed comparison would prevent that
+      cy.get('@enlargedDialog').snapshotHtml({ name: SNAPSHOTS.newKey });
+      // Then, use the "standard" key to trigger a comparison with existing snapshots.
+      // This way we check for regression
+      cy.get('@enlargedDialog').snapshotHtml({ name: SNAPSHOTS.key });
     });
   });
 });

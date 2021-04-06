@@ -4,13 +4,19 @@
  */
 
 import { expect } from 'chai';
+import moment from 'moment';
 import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
   buildAndInsertSurveys,
 } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
-import { setupDummySyncQueue, TestableApp, upsertEntity } from '../../testUtilities';
+import {
+  setupDummySyncQueue,
+  TestableApp,
+  upsertEntity,
+  upsertQuestion,
+} from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 
@@ -28,7 +34,9 @@ export const testFunctionality = async () => {
 
   const importFile = (filename, surveyNames = []) =>
     app
-      .post(`import/surveyResponses?${surveyNames.map(s => `surveyNames=${s}`).join('&')}`)
+      .post(
+        `import/surveyResponses?${surveyNames.map(s => `surveyNames=${s}`).join('&')}&timeZone=UTC`,
+      )
       .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
 
   const deletedSurveyResponseId = '1125f5e462d7a74a5a2_test';
@@ -104,17 +112,13 @@ export const testFunctionality = async () => {
       // Import the baseline data
       await app.grantFullAccess();
 
-      const addQuestion = (id, type, options) =>
-        models.question.updateOrCreate(
-          {
-            id,
-          },
-          {
-            text: `Test question ${id}`,
-            type,
-            options: options && options.map(value => ({ value, label: value })),
-          },
-        );
+      const addQuestion = async (id, type, options) =>
+        upsertQuestion({
+          id,
+          text: `Test question ${id}`,
+          type,
+          options: options && options.map(value => ({ value, label: value })),
+        });
 
       await Promise.all([
         addQuestion('fdfcc42a44705c032a8_test', 'FreeText'),
@@ -260,7 +264,8 @@ export const testFunctionality = async () => {
       for (const addedResponse of surveyResponsesAdded) {
         const surveyResponse = await models.surveyResponse.findOne({
           entity_id: addedResponse.entityId,
-          end_time: addedResponse.date,
+          // Convert date to data_time format
+          data_time: moment.utc(addedResponse.date).format('YYYY-MM-DD HH:mm:ss'),
         });
         expect(surveyResponse, 'added survey response').to.exist;
         for (const [questionId, answerValue] of Object.entries(addedResponse.answers)) {

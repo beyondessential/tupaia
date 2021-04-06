@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -13,6 +14,7 @@ const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
+const SUB_FACILITY = 'sub_facility';
 const FIELD_STATION = 'field_station';
 const INDIVIDUAL = 'individual';
 const SCHOOL = 'school';
@@ -24,6 +26,8 @@ const WORLD = 'world';
 const PROJECT = 'project';
 const CITY = 'city';
 
+// Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`,
+// a corresponding tracked entity type must be created in DHIS
 const ENTITY_TYPES = {
   CASE,
   CASE_CONTACT,
@@ -31,6 +35,7 @@ const ENTITY_TYPES = {
   DISASTER,
   DISTRICT,
   FACILITY,
+  SUB_FACILITY,
   FIELD_STATION,
   INDIVIDUAL,
   SCHOOL,
@@ -91,6 +96,9 @@ export class EntityType extends DatabaseType {
     return this.type === WORLD;
   }
 
+  /**
+   * @returns {boolean} If the entity is a project
+   */
   isProject() {
     return this.type === PROJECT;
   }
@@ -103,36 +111,58 @@ export class EntityType extends DatabaseType {
     return !this.isOrganisationUnit();
   }
 
-  getDhisId() {
-    return this.metadata && this.metadata.dhis && this.metadata.dhis.id;
+  // returns the dhis id if exists, or waits some time for it to be populated
+  async getDhisTrackedEntityIdPatiently() {
+    return fetchPatiently(async () => {
+      const refreshedEntity = await this.model.findById(this.id);
+      return refreshedEntity.getDhisTrackedEntityId();
+    });
   }
 
-  async setDhisId(dhisId) {
+  getDhisTrackedEntityId() {
+    return this.metadata && this.metadata.dhis && this.metadata.dhis.trackedEntityId;
+  }
+
+  async setDhisTrackedEntityId(trackedEntityId) {
     if (!this.metadata) {
       this.metadata = {};
     }
     if (!this.metadata.dhis) {
       this.metadata.dhis = {};
     }
-    this.metadata.dhis.id = dhisId;
+    this.metadata.dhis.trackedEntityId = trackedEntityId;
     return this.save();
   }
 
-  hasDhisId() {
-    return !!this.getDhisId();
+  hasDhisTrackedEntityId() {
+    return !!this.getDhisTrackedEntityId();
+  }
+
+  allowsPushingToDhis() {
+    const { dhis = {} } = this.metadata || {};
+    const { push = true } = dhis; // by default push = true, if an entity shouldn't be pushed to DHIS2, set it to false
+    return push;
   }
 
   async countryEntity() {
     return this.model.findOne({ code: this.country_code });
   }
 
-  async parent() {
-    return this.parent_id ? this.model.findById(this.parent_id) : undefined;
+  getBounds() {
+    return translateBounds(this.bounds);
   }
 
-  async hasCountryParent() {
-    const parent = await this.parent();
-    return parent.type === COUNTRY;
+  getPoint() {
+    return translatePoint(this.point);
+  }
+
+  getRegion() {
+    return translateRegion(this.region);
+  }
+
+  async getParent(hierarchyId) {
+    const ancestors = await this.getAncestors(hierarchyId, { generational_distance: 1 });
+    return ancestors && ancestors.length > 0 ? ancestors[0] : undefined;
   }
 
   async getAncestors(hierarchyId, criteria) {
@@ -179,18 +209,22 @@ export class EntityType extends DatabaseType {
    * Will prefer the "explore" hierarchy, but if the entity isn't a member of that, will choose
    * the first hierarchy it is a member of, alphabetically
    */
-  async fetchDefaultEntityHierarchyId() {
-    const hierarchiesIncludingEntity = await this.otherModels.entityHierarchy.find(
-      {
-        ancestor_id: this.id,
-        [QUERY_CONJUNCTIONS.OR]: {
-          descendant_id: this.id,
-        },
-      },
-      {
-        joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
-        sort: ['entity_hierarchy.name ASC'],
-      },
+  async fetchDefaultEntityHierarchyIdPatiently() {
+    const hierarchiesIncludingEntity = await fetchPatiently(
+      async () =>
+        this.otherModels.entityHierarchy.find(
+          {
+            ancestor_id: this.id,
+            [QUERY_CONJUNCTIONS.OR]: {
+              descendant_id: this.id,
+            },
+          },
+          {
+            joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+            sort: ['entity_hierarchy.name ASC'],
+          },
+        ),
+      v => v.length > 0,
     );
     if (hierarchiesIncludingEntity.length === 0) {
       throw new Error(`The entity with id ${this.id} is not included in any hierarchy`);
@@ -210,7 +244,7 @@ export class EntityType extends DatabaseType {
     // if this is an org unit, don't worry about going deeper
     if (orgUnitEntityTypes.has(this.type)) return this;
     // if no hierarchy id was passed in, default to a hierarchy this entity is a part of
-    const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyId());
+    const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyIdPatiently());
     // get ancestors and return the first that is an org unit type
     // we rely on ancestors being returned in order of proximity to this entity
     const ancestors = await this.getAncestors(entityHierarchyId);
@@ -222,8 +256,8 @@ export class EntityType extends DatabaseType {
     return ancestors.map(a => a.code);
   }
 
-  async getChildren(hierarchyId) {
-    return this.getDescendants(hierarchyId, { generational_distance: 1 });
+  async getChildren(hierarchyId, criteria) {
+    return this.getDescendants(hierarchyId, { ...criteria, generational_distance: 1 });
   }
 
   async getChildrenViaHierarchy(hierarchyId) {

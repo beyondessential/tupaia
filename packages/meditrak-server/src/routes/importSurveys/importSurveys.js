@@ -170,6 +170,10 @@ export async function importSurveys(req, res) {
         // We will re-create the ones required by the survey while processing its questions
         await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
 
+        // Refresh SurveyDate element
+        await dataGroup.deleteSurveyDateElement();
+        await dataGroup.upsertSurveyDateElement();
+
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(
           {
@@ -304,7 +308,7 @@ export async function importSurveys(req, res) {
             name,
             text,
             detail,
-            options: processOptions(options, optionLabels, optionColors),
+            options: processOptions(options, optionLabels, optionColors, type),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
             data_source_id: dataElement && dataElement.id,
           };
@@ -402,34 +406,44 @@ async function processOptionSetName(models, name) {
   return null;
 }
 
-function processOptions(optionValuesString, optionLabelsString, optionColorsString) {
-  const optionValues = splitOnNewLinesOrCommas(optionValuesString);
+const processOptionValues = (optionValuesString, type) => {
+  switch (type) {
+    case 'Binary':
+      return ['Yes', 'No'];
+    default:
+      return splitOnNewLinesOrCommas(optionValuesString);
+  }
+};
+
+function processOptions(optionValuesString, optionLabelsString, optionColorsString, type) {
+  const optionValues = processOptionValues(optionValuesString, type);
   const optionLabels = splitOnNewLinesOrCommas(optionLabelsString);
   const optionColors = splitOnNewLinesOrCommas(optionColorsString);
-  return optionValues.map((value, i) => {
+  const options = [];
+  optionValues.forEach((value, i) => {
     const color = optionColors[i];
     const label = optionLabels[i];
 
     if (color) {
       // Use full object, using value as label if none defined
-      return {
+      options[i] = {
         value,
         color,
         label: label || value, // Use option text as the label if no explicit label defined
       };
-    }
-
-    if (label) {
+    } else if (label) {
       // Leave color undefined - default will be added by meditrak through destructuring
-      return {
+      options[i] = {
         value,
         label,
       };
+    } else if (type !== 'Binary') {
+      // Neither label or color defined, use simple text string
+      options[i] = value;
     }
-
-    // Neither label or color defined, use simple text string
-    return value;
   });
+
+  return options;
 }
 
 /**

@@ -18,7 +18,7 @@ import {
 } from '@tupaia/ui-components';
 import { ModalContentProvider, InputField } from '../widgets';
 import { api } from '../api';
-import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
+import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
 
 const STATUS = {
   IDLE: 'idle',
@@ -28,13 +28,24 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
+const noFileMessage = 'No file chosen';
+
 export const ImportModalComponent = React.memo(
-  ({ title, subtitle, queryParameters, actionConfig, changeRequest, changeSuccess }) => {
+  ({
+    title,
+    subtitle,
+    queryParameters,
+    actionConfig,
+    changeRequest,
+    changeSuccess,
+    changeError,
+  }) => {
     const [status, setStatus] = useState(STATUS.IDLE);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState(noFileMessage);
 
     const handleOpen = () => setIsOpen(true);
 
@@ -48,6 +59,10 @@ export const ImportModalComponent = React.memo(
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      // Deselect file when dismissing an error, this avoids an error when editing selected files
+      // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
+      setFile(null);
+      setFileName(noFileMessage);
     };
 
     const handleCancel = () => {
@@ -56,6 +71,7 @@ export const ImportModalComponent = React.memo(
       setIsOpen(false);
       setValues({});
       setFile(null);
+      setFileName(noFileMessage);
     };
 
     const handleSubmit = async event => {
@@ -68,28 +84,25 @@ export const ImportModalComponent = React.memo(
       const endpoint = `import/${recordType}`;
 
       try {
-        await api.upload(endpoint, recordType, file, values);
+        await api.upload(endpoint, recordType, file, {
+          ...values,
+          ...actionConfig.extraQueryParameters,
+        });
         setIsOpen(false);
         setStatus(STATUS.SUCCESS);
         changeSuccess();
       } catch (error) {
         setStatus(STATUS.ERROR);
         setErrorMessage(error.message);
+        changeError();
       }
     };
 
-    // Handle case of the file changing since it was uploaded
-    // This is a workaround to handle an edge case in the file field error states
-    // For more details see the tech debt issue. @see https://github.com/beyondessential/tupaia-backlog/issues/1211
-    useEffect(() => {
-      if (errorMessage === 'Failed to fetch') {
-        setFile(null);
-      }
-    }, [errorMessage]);
-
+    // Print a more descriptive network timeout error
+    // TODO: Remove this after https://github.com/beyondessential/tupaia-backlog/issues/1009 is fixed
     const fileErrorMessage =
-      errorMessage === 'Failed to fetch' || errorMessage === 'Network request timed out'
-        ? 'Failed to upload, probably because the import file has been edited. Please reselect it and try again.'
+      errorMessage === 'Network request timed out'
+        ? 'Request timed out, but may have still succeeded. Please wait 2 minutes and check to see if the data has changed'
         : errorMessage;
 
     const checkVisibilityCriteriaAreMet = visibilityCriteria => {
@@ -134,10 +147,12 @@ export const ImportModalComponent = React.memo(
                   );
                 })}
               <FileUploadField
-                onChange={({ target }) => {
+                onChange={({ target }, newName) => {
+                  setFileName(newName);
                   setFile(target.files[0]);
                 }}
                 name="file-upload"
+                fileName={fileName}
               />
             </ModalContentProvider>
             <DialogFooter>
@@ -172,6 +187,7 @@ ImportModalComponent.propTypes = {
   actionConfig: PropTypes.object,
   changeRequest: PropTypes.func.isRequired,
   changeSuccess: PropTypes.func.isRequired,
+  changeError: PropTypes.func.isRequired,
 };
 
 ImportModalComponent.defaultProps = {
@@ -184,6 +200,7 @@ ImportModalComponent.defaultProps = {
 const mapDispatchToProps = dispatch => ({
   changeRequest: () => dispatch({ type: DATA_CHANGE_REQUEST }),
   changeSuccess: () => dispatch({ type: DATA_CHANGE_SUCCESS }),
+  changeError: () => dispatch({ type: DATA_CHANGE_ERROR }),
 });
 
 export const ImportModal = connect(null, mapDispatchToProps)(ImportModalComponent);

@@ -39,7 +39,8 @@ const dateOfData = {
   accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
   filterable: false,
   editConfig: {
-    type: 'datetime-local',
+    type: 'datetime-utc',
+    accessor: record => moment.parseZone(record.data_time).toString(),
   },
 };
 
@@ -135,6 +136,9 @@ const IMPORT_CONFIG = {
   title: 'Import Survey Responses',
   actionConfig: {
     importEndpoint: 'surveyResponses',
+    extraQueryParameters: {
+      timeZone: getBrowserTimeZone(),
+    },
   },
   queryParameters: [
     {

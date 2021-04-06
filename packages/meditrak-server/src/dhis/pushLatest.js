@@ -10,21 +10,18 @@ export async function pushLatest(models, syncQueue, dataBroker, batchSize) {
   // Get the latest changes for this aggregation server
   const latestChanges = await syncQueue.get(batchSize);
   const pushedChanges = [];
-  try {
-    for (let i = 0; i < latestChanges.length; i += 1) {
-      const change = latestChanges[i];
-      // Get appropriate aggregation server api, or create it if this is the first use
-      const dhisApi = getDhisApiInstanceForChange(change);
-      const successfullyPushed = await pushChange(models, change, dhisApi, dataBroker);
-      // If it has synced to DHIS2, remove the change from the sync queue
-      if (successfullyPushed) {
-        await syncQueue.use(change);
-      } else {
-        await syncQueue.deprioritise(change);
-      }
+  for (let i = 0; i < latestChanges.length; i += 1) {
+    const change = latestChanges[i];
+    // Get appropriate aggregation server api, or create it if this is the first use
+    const dhisApi = getDhisApiInstanceForChange(change);
+    const successfullyPushed = await pushChange(models, change, dhisApi, dataBroker);
+    // If it has synced to DHIS2, remove the change from the sync queue
+    if (successfullyPushed) {
+      await syncQueue.use(change);
+    } else {
+      await syncQueue.deprioritise(change);
     }
-  } catch (error) {
-    throw error; // Any error while pushing should be thrown up
   }
+
   return pushedChanges;
 }

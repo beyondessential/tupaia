@@ -17,6 +17,14 @@ class RequiredParameterError extends Error {
 export const insertObject = async (db, table, data, onError) =>
   db.insert(table, Object.keys(data), Object.values(data), onError);
 
+export const deleteObject = async (db, table, condition) => {
+  const [key, value] = Object.entries(condition)[0];
+  return db.runSql(`
+      DELETE FROM "${table}"
+      WHERE ${key} = '${value}'
+  `);
+};
+
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 export const arrayToDoubleQuotedDbString = array => array.map(item => `"${item}"`).join(', '); // For formatting Postgres text[]
 
@@ -74,6 +82,34 @@ export async function removeArrayValue(db, table, column, value, condition) {
   );
 }
 
+/**
+ * @param {string} db
+ * @param {string} table
+ * @param {string} column The name of the column. must be of `Array` type
+ * @param {DbValue} value
+ * @param {string} condition
+ * @returns {Promise}
+ * @throws {RequiredParameterError}
+ */
+export async function addArrayValue(db, table, column, value, condition) {
+  assertParamsAreDefined({ db, table, column, value, condition }, 'addArrayValue');
+
+  return db.runSql(
+    `UPDATE "${table}" SET "${column}" = array_append("${column}", ?) WHERE ${condition}`,
+    [value],
+  );
+}
+
+/**
+ * @param {string} db
+ * @param {string} table
+ * @param {string} column The name of the column. must be of `Array` type
+ * @param {DbValue} oldValue
+ * @param {DbValue|DbValue[]} newValueInput
+ * @param {string} condition
+ * @returns {Promise}
+ * @throws {RequiredParameterError}
+ */
 export async function replaceArrayValue(db, table, column, oldValue, newValueInput, condition) {
   assertParamsAreDefined(
     { db, table, column, oldValue, newValueInput, condition },
@@ -169,6 +205,17 @@ export function addReportToGroups(db, reportId, groupCodes) {
   `);
 }
 
+async function addReportToGroupsOnTop(db, reportId, groupCodes) {
+  return db.runSql(`
+    UPDATE
+      "dashboardGroup"
+    SET
+      "dashboardReports" = '{"${reportId}"}' || "dashboardReports" 
+    WHERE
+      "code" IN (${arrayToDbString(groupCodes)});
+  `);
+}
+
 // Remove a dashboard report from a dashboard group
 export function removeReportFromGroups(db, reportId, groupCodes) {
   return db.runSql(`
@@ -177,7 +224,7 @@ export function removeReportFromGroups(db, reportId, groupCodes) {
     SET
       "dashboardReports" = array_remove("dashboardReports", '${reportId}')
     WHERE
-      "code" IN (${groupCodes.map(code => `'${code}'`).join(',')});
+      "code" IN (${arrayToDbString(groupCodes)});
   `);
 }
 
