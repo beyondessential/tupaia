@@ -4,7 +4,7 @@
  */
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
 export class DhisInputSchemeResolvingApiProxy {
@@ -134,7 +134,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   allProgramsHaveDhisId = async query => {
-    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
+    const programCodes = query.programCode ? [query.programCode] : query.programCodes || [];
 
     const dataGroups = await this.models.dataSource.find({ code: programCodes, type: 'dataGroup' });
 
@@ -221,13 +221,14 @@ export class DhisInputSchemeResolvingApiProxy {
       throw new Error("Can't read org unit id/code from dhis");
 
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
-
-    const mappings = await this.models.dataServiceEntity.find({
-      [QUERY_CONJUNCTIONS.RAW]: {
-        sql: `config->>'dhis_id' in (${dhisIds.map(() => '?')})`,
-        parameters: dhisIds,
-      },
-    });
+    const mappings = await runDatabaseFunctionInBatches(dhisIds, async batchOfRecords =>
+      this.models.dataServiceEntity.find({
+        [QUERY_CONJUNCTIONS.RAW]: {
+          sql: `config->>'dhis_id' in (${batchOfRecords.map(() => '?')})`,
+          parameters: batchOfRecords,
+        },
+      }),
+    );
 
     const mappingsByDhisId = reduceToDictionary(mappings, el => el.config.dhis_id, 'entity_code');
 
@@ -285,7 +286,7 @@ export class DhisInputSchemeResolvingApiProxy {
   replaceProgramCodesWithIds = async query => {
     const modifiedQuery = { ...query };
 
-    const programCodes = query.programCode ? [query.programCode] : (query.programCodes || []);
+    const programCodes = query.programCode ? [query.programCode] : query.programCodes || [];
 
     if (programCodes.length === 0) {
       throw new Error('No program codes to replace');

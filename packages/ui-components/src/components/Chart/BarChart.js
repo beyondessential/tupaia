@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Bar, LabelList } from 'recharts';
-import { formatDataValue } from './utils';
+import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE, CHART_TYPES } from './constants';
 
 export const BarChart = ({
@@ -42,7 +42,7 @@ export const BarChart = ({
           dataKey={dataKey}
           position="insideTop"
           offset={chartConfig ? -15 : -12}
-          formatter={value => formatDataValue(value, valueType)}
+          formatter={value => formatDataValueByType({ value }, valueType)}
         />
       )}
     </Bar>

@@ -4,15 +4,15 @@
  */
 
 import React from 'react';
-import { get } from 'lodash';
+import get from 'lodash.get';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-
+import { formatDataValueByType } from '@tupaia/utils';
 import { VALUE_TYPES, CHART_TYPES, PRESENTATION_OPTIONS_SHAPE } from './constants';
-import { formatTimestampForChart, getIsTimeSeries, formatDataValue } from './utils';
+import { formatTimestampForChart, getIsTimeSeries } from './utils';
 
 function formatLabelledValue(label, value, valueType, metadata) {
-  const valueText = formatDataValue(value, valueType, metadata);
+  const valueText = formatDataValueByType({ value, metadata }, valueType);
   if (label) {
     return `${label}: ${valueText}`;
   }
@@ -86,7 +86,7 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
         <div>
           <p>{formatTimestampForChart(timestamp, periodGranularity)}</p>
-          {formatDataValue(value, valueTypeForLabel, metadata)}
+          {formatDataValueByType({ value, metadata }, valueTypeForLabel)}
         </div>
       ) : (
         formatLabelledValue(name, value, valueTypeForLabel, metadata)
