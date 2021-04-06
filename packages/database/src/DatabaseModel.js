@@ -72,8 +72,10 @@ export class DatabaseModel {
     return this.fieldNames;
   }
 
-  // This method must be overridden by every subclass, so that the model knows what DatabaseType to
-  // generate when returning results
+  /**
+   * This method must be overridden by every subclass, so that the model knows what DatabaseType to generate when returning results
+   * @returns {*} DatabaseTypeClass
+   */
   get DatabaseTypeClass() {
     throw new TypeError('get DatabaseTypeClass was called on object that has not implemented it');
   }

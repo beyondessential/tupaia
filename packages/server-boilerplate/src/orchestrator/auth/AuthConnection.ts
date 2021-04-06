@@ -4,8 +4,9 @@
  *
  */
 
-import { AuthResponse, Credentials } from '../types';
-import { ApiConnection } from './ApiConnection';
+import { AccessPolicyObject } from '../../types';
+import { Credentials } from '../types';
+import { ApiConnection } from '../../connections';
 
 const {
   MEDITRAK_API_CLIENT_NAME,
@@ -17,6 +18,15 @@ const BASIC_AUTH_HEADER = `Basic ${Buffer.from(MEDITRAK_API_CREDENTIALS).toStrin
 const basicAuthHandler = {
   getAuthHeader: async () => BASIC_AUTH_HEADER,
 };
+
+export interface AuthResponse {
+  accessToken?: string;
+  refreshToken?: string;
+  user?: {
+    email: string;
+    accessPolicy: AccessPolicyObject;
+  };
+}
 
 export class AuthConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL; // auth server is actually just meditrak server
