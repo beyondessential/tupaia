@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Add node to the path
-PATH=$PATH:/home/ubuntu/.nvm/versions/node/v9.11.0/bin
+PATH=$PATH:/home/ubuntu/.nvm/versions/node/v12.18.3/bin
 
 # Get script directory so that yarn knows where the root package.json is, no matter where it's called from
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
