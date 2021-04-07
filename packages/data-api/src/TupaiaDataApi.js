@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
-import { getSortByKey, momentToDateString, utcMoment } from '@tupaia/utils';
+import { getSortByKey, momentToDateString } from '@tupaia/utils';
 import { fetchData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
