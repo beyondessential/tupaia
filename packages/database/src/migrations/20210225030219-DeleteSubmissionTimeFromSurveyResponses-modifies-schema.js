@@ -15,7 +15,7 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  return db.runSql(`ALTER TABLE survey_response DROP COLUMN submission_time`);
+  return db.runSql(`ALTER TABLE survey_response DROP COLUMN IF EXISTS submission_time`);
 };
 
 exports.down = async function (db) {
