@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { utcMoment, stripTimezoneFromDate } from '@tupaia/utils';
+import { utcMoment } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
 
-<<<<<<< HEAD
 const AGGREGATIONS = {
   FINAL_EACH_DAY: {
     periodColumns: ['day_period'],
@@ -80,59 +79,18 @@ const getA1GroupByClause = firstAggregation => {
     ? `GROUP BY ${COMMON_FIELDS.concat(firstAggregation.periodColumns).join(', ')}`
     : '';
 };
-=======
-const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDate, endDate }) => {
-  const sqlQuery = new SqlQuery(
-    `
-    SELECT
-      survey_response.id as "surveyResponseId",
-      survey_response.data_time as "date",
-      entity.code as "entityCode",
-      entity.name as "entityName",
-      question.code as "dataElementCode",
-      question.type as "type",
-      answer.text as "value"
-    FROM
-      survey_response
-    JOIN
-      answer ON answer.survey_response_id = survey_response.id
-    JOIN
-      entity ON entity.id = survey_response.entity_id
-    JOIN
-      question ON question.id = answer.question_id
-    JOIN
-      survey ON survey.id = survey_response.survey_id
-    WHERE
-      question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
-    AND
-      entity.code IN ${SqlQuery.parameteriseArray(organisationUnitCodes)}
-  `,
-    [...dataElementCodes, ...organisationUnitCodes],
-  );
->>>>>>> origin/dev
 
 const getA2WhereClause = (firstAggregation, startDate, endDate, paramsArray) => {
   const whereClauses = COMMON_FIELDS.concat(firstAggregation.periodColumns).map(
     field => `${field} = a1.${field}`,
   );
   if (startDate) {
-<<<<<<< HEAD
     whereClauses.push('date >= ?');
     paramsArray.push(startDate);
   }
   if (endDate) {
     whereClauses.push('date <= ?');
     paramsArray.push(endDate);
-=======
-    sqlQuery.addClause(`AND survey_response.data_time >= ?`, [
-      stripTimezoneFromDate(utcMoment(startDate).startOf('day').toISOString()),
-    ]);
-  }
-  if (endDate) {
-    sqlQuery.addClause(`AND survey_response.data_time <= ?`, [
-      stripTimezoneFromDate(utcMoment(endDate).endOf('day').toISOString()),
-    ]);
->>>>>>> origin/dev
   }
   return `WHERE ${whereClauses.join('\n      AND ')}`;
 };
@@ -166,7 +124,7 @@ const generateBaseSqlQuery = ({
   const paramsArray = [];
   const sqlQuery = new SqlQuery(
     `
-    SELECT 
+    SELECT
       date AS "date",
       entity_code AS "entityCode",
       entity_name AS "entityName",
@@ -194,11 +152,7 @@ const generateBaseSqlQuery = ({
     paramsArray,
   );
 
-<<<<<<< HEAD
   sqlQuery.addOrderByClause('date');
-=======
-  sqlQuery.orderBy('survey_response.data_time');
->>>>>>> origin/dev
 
   return sqlQuery;
 };

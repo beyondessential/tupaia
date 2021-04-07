@@ -130,13 +130,10 @@ export const CROP_RESPONSE_AUCKLAND_2020 = {
   id: generateTestId(),
   surveyCode: CROP_SURVEY.code,
   entityCode: auckland.code,
-<<<<<<< HEAD
-  submission_time: '2020-11-21T09:00:00Z',
-  answers: { [CROP_2.code]: '55' },
-=======
   data_time: '2020-11-21T09:00:00',
-  answers: { CROP_2: '55' },
->>>>>>> origin/dev
+  answers: {
+    [CROP_2.code]: '55',
+  },
 };
 
 export const CROP_RESPONSE_WELLINGTON_2019 = {

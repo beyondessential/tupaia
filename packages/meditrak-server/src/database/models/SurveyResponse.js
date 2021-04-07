@@ -6,11 +6,7 @@
 import momentTimezone from 'moment-timezone';
 import moment from 'moment';
 
-<<<<<<< HEAD
 import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
-=======
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
->>>>>>> origin/dev
 
 class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;

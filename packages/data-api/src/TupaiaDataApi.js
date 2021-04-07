@@ -35,13 +35,8 @@ export class TupaiaDataApi {
           {},
         );
         return {
-<<<<<<< HEAD
           event: eventId,
-          eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
-=======
-          event: surveyResponseId,
           eventDate: moment(date).format(EVENT_DATE_FORMAT),
->>>>>>> origin/dev
           orgUnit: entityCode,
           orgUnitName: entityName,
           dataValues,
