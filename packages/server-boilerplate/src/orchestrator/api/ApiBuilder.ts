@@ -24,21 +24,23 @@ import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Ro
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
 
+type Middleware = (req: Request, res: Response, next: NextFunction) => void;
+
 export class ApiBuilder {
   private readonly app: Express;
 
   private readonly database: TupaiaDatabase;
 
-  private readonly attachSession: (req: Request, res: Response, next: NextFunction) => void;
+  private attachSession: Middleware;
 
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
 
-  private verifyLoginMiddleware?: (req: Request, res: Response, next: NextFunction) => void;
+  private verifyLoginMiddleware?: Middleware;
 
-  constructor(transactingConnection: TupaiaDatabase, attachSession = defaultAttachSession) {
+  constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
     this.app = express();
-    this.attachSession = attachSession;
+    this.attachSession = defaultAttachSession;
 
     /**
      * Add middleware
@@ -68,6 +70,11 @@ export class ApiBuilder {
      * Test Route
      */
     this.app.get('/v1/test', handleWith(TestRoute));
+  }
+
+  useAttachSession(attachSession: Middleware) {
+    this.attachSession = attachSession;
+    return this;
   }
 
   useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {

@@ -13,8 +13,9 @@ import { attachSession } from '../auth';
  * Set up express server with middleware,
  */
 export function createApp() {
-  return new OrchestratorApiBuilder(new TupaiaDatabase(), attachSession)
+  return new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(LesmisSessionModel)
+    .useAttachSession(attachSession)
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities', handleWith(EntitiesRoute))
     .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
