@@ -1,4 +1,4 @@
-do $$ 
+do $$
 declare
   tStartTime TIMESTAMP;
   source_table TEXT;
@@ -12,11 +12,11 @@ declare
       survey_response.id as event_id,
       answer.text as value,
       question.type as type,
-      date_trunc(''day'', survey_response.submission_time) as "day_period",
-      date_trunc(''week'', survey_response.submission_time) as "week_period",
-      date_trunc(''month'', survey_response.submission_time) as "month_period",
-      date_trunc(''year'', survey_response.submission_time) as "year_period",
-      survey_response.submission_time as "date"
+      date_trunc(''day'', survey_response.data_time) as "day_period",
+      date_trunc(''week'', survey_response.data_time) as "week_period",
+      date_trunc(''month'', survey_response.data_time) as "month_period",
+      date_trunc(''year'', survey_response.data_time) as "year_period",
+      survey_response.data_time as "date"
     FROM
       survey_response
     INNER JOIN
@@ -27,19 +27,19 @@ declare
       survey ON survey.id = survey_response.survey_id
     INNER JOIN
       question ON question.id = answer.question_id
-    INNER JOIN 
+    INNER JOIN
       data_source ON data_source.id = question.data_source_id
     WHERE data_source.service_type = ''tupaia''';
 
-begin 
+begin
   RAISE NOTICE 'Creating Materialized View Logs...';
 
   FOREACH source_table IN ARRAY source_tables_array LOOP
     IF (SELECT NOT EXISTS (
-      SELECT FROM pg_tables 
+      SELECT FROM pg_tables
       WHERE schemaname = 'public'
       AND tablename   = 'log$_' || source_table
-    )) 
+    ))
     THEN
       EXECUTE 'DROP TRIGGER IF EXISTS ' || source_table || '_trigger' || ' ON ' || source_table;
       tStartTime := clock_timestamp();
@@ -54,7 +54,7 @@ begin
 
   RAISE NOTICE 'Creating analytics materialized view...';
   IF (SELECT NOT EXISTS (
-    SELECT FROM pg_tables 
+    SELECT FROM pg_tables
     WHERE schemaname = 'public'
     AND tablename   = 'analytics'
   ))

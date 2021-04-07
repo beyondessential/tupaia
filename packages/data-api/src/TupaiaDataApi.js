@@ -6,7 +6,7 @@
 import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
-import { getSortByKey, momentToDateString, utcMoment } from '@tupaia/utils';
+import { getSortByKey, momentToDateString } from '@tupaia/utils';
 import { fetchData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
@@ -35,13 +35,8 @@ export class TupaiaDataApi {
           {},
         );
         return {
-<<<<<<< HEAD
           event: eventId,
-          eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
-=======
-          event: surveyResponseId,
           eventDate: moment(date).format(EVENT_DATE_FORMAT),
->>>>>>> origin/dev
           orgUnit: entityCode,
           orgUnitName: entityName,
           dataValues,
