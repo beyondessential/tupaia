@@ -126,9 +126,8 @@ export async function exportSurveyResponses(req, res) {
       }
       let exportData = getBaseExport(infoColumnHeaders).map(innerArray => innerArray.slice());
       const surveyResponseAnswers = [];
-
       const processSurveyResponse = (currentSurveyResponse, currentEntity, answers) => {
-        const surveyDate = currentSurveyResponse.timezoneAwareSubmissionTime();
+        const surveyDate = currentSurveyResponse.dataTime();
         const responseName = truncateString(currentEntity.name, 30);
         const dateString = moment(surveyDate).format(EXPORT_DATE_FORMAT);
         if (!easyReadingMode) exportData[0].push(currentSurveyResponse.id);
@@ -154,24 +153,21 @@ export async function exportSurveyResponses(req, res) {
           survey_id: currentSurvey.id,
         };
         if (startDate && endDate) {
-          surveyResponseFindConditions.submission_time = {
+          surveyResponseFindConditions.data_time = {
             comparisonType: 'whereBetween',
             args: [
-              [
-                new Date(moment(startDate).subtract(1, 'day')),
-                new Date(moment(endDate).add(1, 'day')),
-              ],
+              [new Date(moment(startDate).startOf('day')), new Date(moment(endDate).endOf('day'))],
             ],
           };
         } else if (startDate) {
-          surveyResponseFindConditions.submission_time = {
+          surveyResponseFindConditions.data_time = {
             comparator: '>=',
-            comparisonValue: new Date(startDate),
+            comparisonValue: new Date(moment(startDate).startOf('day')),
           };
         } else if (endDate) {
-          surveyResponseFindConditions.submission_time = {
+          surveyResponseFindConditions.data_time = {
             comparator: '<=',
-            comparisonValue: new Date(endDate),
+            comparisonValue: new Date(moment(endDate).endOf('day')),
           };
         }
         const entityIdsGroup = entities.map(entity => entity.id);
@@ -238,7 +234,7 @@ export async function exportSurveyResponses(req, res) {
         exportData.unshift([`${reportName} - ${currentSurvey.name}, ${country.name}`]);
       }
 
-      // Exclude 'SubmissionDate' and 'PrimaryEntity' rows from survey response export since these have no answers
+      // Exclude 'SubmissionDate'/'DateOfData' and 'PrimaryEntity' rows from survey response export since these have no answers
       const questionsForExport = questions.filter(
         ({ type: questionType }) =>
           !NON_DATA_ELEMENT_ANSWER_TYPES.includes(questionType) ||

@@ -45,6 +45,7 @@ const QUESTION_TYPES = {
   MonthsSince: MonthsSinceQuestion,
   YearsSince: YearsSinceQuestion,
   SubmissionDate: DateQuestion,
+  DateOfData: DateQuestion,
   Entity: EntityQuestion,
   PrimaryEntity: PrimaryEntityQuestion,
   CodeGenerator: CodeGeneratorQuestion,

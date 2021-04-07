@@ -1,0 +1,36 @@
+@hostname = localhost
+@port = 8060
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+
+### Test
+GET http://{{host}}/{{version}}/test HTTP/1.1
+content-type: {{contentType}}
+
+###
+
+# @name login
+POST http://{{host}}/{{version}}/login HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}"
+}
+
+###
+
+# @name logout
+POST http://{{host}}/{{version}}/logout HTTP/1.1
+content-type: {{contentType}}
+
+###
+
+@sessionCookie = {{login.response.headers.Set-Cookie}}
+
+
+### Fetch user
+GET http://{{host}}/{{version}}/user HTTP/1.1
+content-type: {{contentType}}
+Cookie: {{sessionCookie}}
