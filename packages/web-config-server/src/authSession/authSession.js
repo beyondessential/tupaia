@@ -1,44 +1,45 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
 
+import { getUserFromBasicAuth } from './getUserFromBasicAuth';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
 
 const allowedUnauthRoutes = ['/login', '/version'];
 
 // auth is a middleware that runs on every request
-const auth = () => (req, res, next) => {
-  if (
-    (req.session && req.session.userJson && req.session.userJson.userName) ||
-    checkAllowedUnauthRoutes(req)
-  ) {
-    // if logged in or loggin in continue
+const auth = () => async (req, res, next) => {
+  // if using basic auth, check credentials and set access policy for that user
+  const basicAuthUserName = await getUserFromBasicAuth(req);
+  if (basicAuthUserName) {
+    req.accessPolicy = await getAccessPolicyForUser(req.models, basicAuthUserName);
     next();
-    // else check if this is the first request after user logged out
-    // and send 440 or authenticate as public user
-  } else if (req.lastuser && req.lastuser.userName && req.lastuser.userName !== PUBLIC_USER_NAME) {
+    return;
+  }
+
+  // if logged in or logging in continue
+  const userName = req.session?.userJson?.userName;
+  if (!!userName || checkAllowedUnauthRoutes(req)) {
+    req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(req.models, userName));
+    next();
+    return;
+  }
+
+  // check if this is the first request after user logged out and send 440
+  if (req.lastuser?.userName !== PUBLIC_USER_NAME) {
     req.lastuser.reset();
     res.sendStatus(440);
-  } else {
-    authPublicUser(req, res, next);
+    return;
   }
-};
 
-const authPublicUser = (req, res, next) => {
+  // no previous login, authenticate as public user
   setSession(req, { userName: PUBLIC_USER_NAME }); // store new session as public user
+  req.accessPolicy = await getAccessPolicyForUser(req.models, PUBLIC_USER_NAME);
   next();
 };
 
 const checkAllowedUnauthRoutes = req =>
   allowedUnauthRoutes.some(allowedRoute => req.originalUrl.endsWith(allowedRoute));
-
-const getUserAccessPolicyFromSession = async req => {
-  if (!req.accessPolicy) {
-    const { userName } = req.session.userJson;
-    req.accessPolicy = getAccessPolicyForUser(req.models, userName);
-  }
-  return req.accessPolicy;
-};
 
 export const setSession = (req, userInfo) => {
   req.accessPolicy = null; // reset access policy cache so it is rebuilt
@@ -48,7 +49,7 @@ export const setSession = (req, userInfo) => {
 
 const addUserAccessHelper = (req, res, next) => {
   req.userHasAccess = async (entityOrCode, permissionGroup = '') => {
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    const { accessPolicy } = req;
     if (!accessPolicy) {
       return false;
     }
@@ -88,7 +89,7 @@ const addUserAccessHelper = (req, res, next) => {
       return ['Public']; // At this stage, all users have Public access to the World dashboard
     }
 
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    const { accessPolicy } = req;
     if (!accessPolicy) {
       return [];
     }
