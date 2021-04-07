@@ -10,9 +10,9 @@ const allowedUnauthRoutes = ['/login', '/version'];
 // auth is a middleware that runs on every request
 const auth = () => async (req, res, next) => {
   // if using basic auth, check credentials and set access policy for that user
-  const basicAuthUserName = await getUserFromBasicAuth(req);
-  if (basicAuthUserName) {
-    req.accessPolicy = await getAccessPolicyForUser(req.models, basicAuthUserName);
+  const basicAuthUser = await getUserFromBasicAuth(req);
+  if (basicAuthUser) {
+    req.accessPolicy = await getAccessPolicyForUser(req.models, basicAuthUser.fullName);
     next();
     return;
   }

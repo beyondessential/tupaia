@@ -19,7 +19,7 @@ export const getUserFromBasicAuth = async req => {
       password,
       deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME,
     });
-    return user.fullName;
+    return user;
   } catch (e) {
     return null;
   }
