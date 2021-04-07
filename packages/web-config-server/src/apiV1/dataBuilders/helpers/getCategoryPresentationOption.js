@@ -39,7 +39,7 @@ const getPresentationOptionFromCondition = (config, values) => {
       checkValueSatisfiesAllConditions(value, { operator: '=', value: condition }),
     );
   });
-  return option.key;
+  return option?.key;
 };
 
 // This function has same structure as @web-frontend condition checking in 'color.js'
