@@ -7,17 +7,20 @@
 import { ApiConnection, AuthHandler, SessionType } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 
-class SessionSwitchingAuthHandler implements AuthHandler {
-  defaultAuthHeader = '';
+const {
+  MICROSERVICE_CLIENT_USERNAME,
+  MICROSERVICE_CLIENT_PASSWORD,
+} = process.env;
+const DEFAULT_AUTH_HEADER = createBasicHeader(
+  MICROSERVICE_CLIENT_USERNAME,
+  MICROSERVICE_CLIENT_PASSWORD,
+);
 
+class SessionSwitchingAuthHandler implements AuthHandler {
   session?: SessionType;
 
   constructor(session?: SessionType) {
     this.session = session;
-  }
-
-  setDefaultAuthHeader(header: string) {
-    this.defaultAuthHeader = header;
   }
 
   async getAuthHeader() {
@@ -25,7 +28,7 @@ class SessionSwitchingAuthHandler implements AuthHandler {
       return this.session.getAuthHeader();
     }
 
-    return this.defaultAuthHeader;
+    return DEFAULT_AUTH_HEADER;
   }
 }
 
@@ -35,20 +38,6 @@ export abstract class SessionHandlingApiConnection extends ApiConnection {
   constructor(session?: SessionType) {
     const authHandler = new SessionSwitchingAuthHandler(session);
     super(authHandler);
-    authHandler.setDefaultAuthHeader(this.getDefaultAuthHeader());
     this.authHandler = authHandler;
-  }
-
-  getDefaultAuthHeader(): string {
-    const {
-      MICROSERVICE_CLIENT_USERNAME: username,
-      MICROSERVICE_CLIENT_PASSWORD: password,
-    } = process.env;
-    if (!username || !password) {
-      throw new Error(
-        'Default credentials for LESMIS Server must be defined as environment variables',
-      );
-    }
-    return createBasicHeader(username, password);
   }
 }
