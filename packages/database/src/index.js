@@ -5,7 +5,11 @@
 
 export * from './modelClasses';
 export { EntityHierarchyCacher } from './cachers';
-export { generateId, getHighestPossibleIdForGivenTime } from './utilities/generateId';
+export {
+  generateId,
+  getHighestPossibleIdForGivenTime,
+  runDatabaseFunctionInBatches,
+} from './utilities';
 export { TupaiaDatabase, QUERY_CONJUNCTIONS, JOIN_TYPES } from './TupaiaDatabase';
 export { TYPES } from './types';
 export { ModelRegistry } from './ModelRegistry';

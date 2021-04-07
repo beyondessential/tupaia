@@ -89,7 +89,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         {
           surveyCode: survey1.code,
           entityCode: vanuatuCountry.code,
-          submission_time: new Date(),
+          data_time: new Date(),
           answers: {
             question_1_test: 'question_1_test answer',
             question_2_test: 'question_2_test answer',
@@ -98,7 +98,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         {
           surveyCode: survey1.code,
           entityCode: vanuatuCountry.code,
-          submission_time: new Date(),
+          data_time: new Date(),
           answers: {
             question_3_test: 'question_3_test answer',
             question_4_test: 'question_4_test answer',
@@ -107,7 +107,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         {
           surveyCode: survey2.code,
           entityCode: vanuatuCountry.code,
-          submission_time: new Date(),
+          data_time: new Date(),
           answers: {
             question_5_test: 'question_5_test answer',
             question_6_test: 'question_6_test answer',
@@ -116,7 +116,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         {
           surveyCode: survey2.code,
           entityCode: kiribatiCountry.code,
-          submission_time: new Date(),
+          data_time: new Date(),
           answers: {
             question_7_test: 'question_7_test answer',
             question_8_test: 'question_8_test answer',

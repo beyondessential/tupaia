@@ -32,6 +32,7 @@ export { WorkBookParser } from './WorkBookParser';
 export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
 export { addExportedDateAndOriginAtTheSheetBottom } from './addExportDateAndOriginInExcelExportData';
 export { getBrowserTimeZone } from './getBrowserTimeZone';
+export { stripTimezoneFromDate } from './stripTimezoneFromDate';
 export { VALUE_TYPES, formatDataValueByType } from './formatDataValueByType';
 export { createClassExtendingProxy } from './proxy';
 export { fetchPatiently } from './fetchPatiently';

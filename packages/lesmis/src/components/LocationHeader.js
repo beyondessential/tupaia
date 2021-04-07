@@ -103,8 +103,10 @@ export const LocationHeader = () => {
         </div>
         <FlexEnd>
           <FlexStart>
-            <IconButton startIcon={<GetApp />}>Export</IconButton>
-            <IconButton startIcon={<StarBorder />}>Add</IconButton>
+            {/* Todo: add exports @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2511 */}
+            {/*<IconButton startIcon={<GetApp />}>Export</IconButton>*/}
+            {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493*/}
+            {/*<IconButton startIcon={<StarBorder />}>Add</IconButton>*/}
           </FlexStart>
           <ToggleButtonGroup value={view} aria-label="page layout" exclusive>
             <ToggleButton

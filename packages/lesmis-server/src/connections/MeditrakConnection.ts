@@ -11,7 +11,7 @@ export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
   async getUser() {
-    const user = await this.get('me');
+    const user = await this.get('me', {});
     return camelcaseKeys(user);
   }
 }
