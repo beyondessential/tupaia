@@ -11,42 +11,48 @@ import { fetchData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
+import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 const DEFAULT_BINARY_OPTIONS = ['Yes', 'No'];
+
+const buildEventDataValues = resultsForEvent =>
+  resultsForEvent.reduce(
+    (values, { dataElementCode, type, value }) => ({
+      ...values,
+      [dataElementCode]: sanitizeDataValue(value, type),
+    }),
+    {},
+  );
 
 export class TupaiaDataApi {
   constructor(database) {
     this.database = database;
   }
 
-  async fetchEvents(options) {
-    await validateEventOptions(options);
+  async fetchEvents(optionsInput) {
+    await validateEventOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput);
     const results = await fetchData(this.database, options);
     const resultsByEventId = groupBy(results, 'eventId');
+    const hasElements = options.dataElementCodes.length > 0;
     return Object.values(resultsByEventId)
       .map(resultsForEvent => {
-        const { eventId, date, entityCode, entityName } = resultsForEvent[0];
-        const dataValues = resultsForEvent.reduce(
-          (values, { dataElementCode, type, value }) => ({
-            ...values,
-            [dataElementCode]: sanitizeDataValue(value, type),
-          }),
-          {},
-        );
+        const [{ eventId, date, entityCode, entityName }] = resultsForEvent;
         return {
           event: eventId,
           eventDate: moment(date).format(EVENT_DATE_FORMAT),
           orgUnit: entityCode,
           orgUnitName: entityName,
-          dataValues,
+          dataValues: hasElements ? buildEventDataValues(resultsForEvent) : {},
         };
       })
       .sort(getSortByKey('eventDate'));
   }
 
-  async fetchAnalytics(options) {
-    await validateAnalyticsOptions(options);
+  async fetchAnalytics(optionsInput) {
+    await validateAnalyticsOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput);
     const results = await fetchData(this.database, options);
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
