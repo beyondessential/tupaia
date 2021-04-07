@@ -29,11 +29,6 @@ class SessionSwitchingAuthHandler implements AuthHandler {
   }
 }
 
-type Credentials = {
-  username: string;
-  password: string;
-};
-
 export abstract class SessionHandlingApiConnection extends ApiConnection {
   authHandler: SessionSwitchingAuthHandler;
 
@@ -44,10 +39,16 @@ export abstract class SessionHandlingApiConnection extends ApiConnection {
     this.authHandler = authHandler;
   }
 
-  abstract getDefaultCredentials(): Credentials;
-
   getDefaultAuthHeader(): string {
-    const { username, password } = this.getDefaultCredentials();
+    const {
+      MICROSERVICE_CLIENT_USERNAME: username,
+      MICROSERVICE_CLIENT_PASSWORD: password,
+    } = process.env;
+    if (!username || !password) {
+      throw new Error(
+        'Default credentials for LESMIS Server must be defined as environment variables',
+      );
+    }
     return createBasicHeader(username, password);
   }
 }
