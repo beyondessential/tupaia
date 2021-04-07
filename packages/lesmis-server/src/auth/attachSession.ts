@@ -14,6 +14,7 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
       // within lesmis-server, not having a session means the route handlers will use the default
       // public lesmis server user auth header
       next();
+      return;
     }
 
     const session: SessionType = await req.sessionModel.findById(sessionId);
@@ -24,6 +25,7 @@ export const attachSession = async (req: Request, res: Response, next: NextFunct
     req.session = session;
 
     next();
+    return;
   } catch (error) {
     next(error);
   }
