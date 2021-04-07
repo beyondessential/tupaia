@@ -12,8 +12,8 @@ export const getUserFromBasicAuth = async req => {
     return null;
   }
 
-  const { username: emailAddress, password } = getUserAndPassFromBasicAuth(authHeader);
   try {
+    const { username: emailAddress, password } = getUserAndPassFromBasicAuth(authHeader);
     const { user } = await authenticator.authenticatePassword({
       emailAddress,
       password,
