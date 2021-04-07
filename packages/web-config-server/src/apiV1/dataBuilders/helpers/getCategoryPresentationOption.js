@@ -7,7 +7,7 @@ const PRESENTATION_TYPES = {
 
 const CONDITION_TYPE_SOME_NOT_ALL = 'someNotAll';
 
-const checkValueSatisfiesAllConditions = (conditions, value) => {
+const checkValueSatisfiesAllConditions = (value, conditions) => {
   return Object.entries(conditions).every(([operator, conditionalValue]) =>
     checkValueSatisfiesCondition(value, { operator, value: conditionalValue }),
   );
@@ -17,10 +17,10 @@ const satisfyAllConditionsForSomeItems = (values, condition) => {
   // Check at least one item meets condition, but not all
   const conditionsInSome = condition[CONDITION_TYPE_SOME_NOT_ALL];
   const someMeetCondition = values.some(value =>
-    checkValueSatisfiesAllConditions(conditionsInSome, value),
+    checkValueSatisfiesAllConditions(value, conditionsInSome),
   );
   const someMeetOppositeCondition = !values.every(value =>
-    checkValueSatisfiesAllConditions(conditionsInSome, value),
+    checkValueSatisfiesAllConditions(value, conditionsInSome),
   );
   return someMeetCondition && someMeetOppositeCondition;
 };
@@ -32,11 +32,11 @@ const getPresentationOptionFromCondition = (config, values) => {
       if (condition[CONDITION_TYPE_SOME_NOT_ALL]) {
         return satisfyAllConditionsForSomeItems(values, condition);
       }
-      return values.every(value => checkValueSatisfiesAllConditions(condition, value));
+      return values.every(value => checkValueSatisfiesAllConditions(value, condition));
     }
 
     return values.every(value =>
-      checkValueSatisfiesAllConditions({ operator: '=', value: condition }, value),
+      checkValueSatisfiesAllConditions(value, { operator: '=', value: condition }),
     );
   });
   return option.key;

@@ -5,13 +5,13 @@ const ROW_INFO_KEY = '$rowInfo';
 
 // Nested row values will be used in `DescriptionOverlay.js`
 const getNestedRowsValue = ({ childRows, category, cellKey }) => {
-  const rowsByCategory = childRows.filter(row => row.categoryId === category);
-  return rowsByCategory.map(data => `${data.description}: ${data[cellKey] ?? null}`).join('\\n');
+  const rowsInCategory = childRows.filter(row => row.categoryId === category);
+  return rowsInCategory.map(data => `${data.description}: ${data[cellKey] ?? null}`).join('\\n');
 };
 
 const getPresentation = (presentationOptions, value, presentationConfigIfInRow) => {
   const presentation = getPresentationOption(presentationOptions, value);
-  if (presentationConfigIfInRow) {
+  if (presentation && presentationConfigIfInRow) {
     const { description } = presentationConfigIfInRow;
     // if presentation is null, we should not show the DescriptionOverlay popup.
     // So, only add the `main title` to the presentation object if presentation != null
