@@ -71,8 +71,9 @@ export class ApiBuilder {
   }
 
   useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
+    const sessionModel = new SessionModelClass(this.database);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      req.sessionModel = new SessionModelClass(this.database);
+      req.sessionModel = sessionModel;
       next();
     });
     return this;
