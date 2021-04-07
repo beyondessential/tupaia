@@ -7,7 +7,7 @@ import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { LesmisSessionModel } from '../models';
 import { UserRoute, EntityRequest, EntityRoute, EntitiesRoute } from '../routes';
-import { attachSession } from '../auth';
+import { attachSession } from '../session';
 
 /**
  * Set up express server with middleware,
