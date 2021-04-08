@@ -14,7 +14,17 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const cleanDhisMetadataForStriveCases = async db => {
+const deleteDhisSyncTableRecordsForStriveCases = async (db, table) =>
+  db.runSql(`
+    DELETE FROM ${table}
+    USING survey_response sr
+    JOIN survey s on s.id = sr.survey_id
+    WHERE
+      sr.entity_id = ${table}.record_id AND
+      s.code = 'SCRF';
+`);
+
+const cleanEntityDhisMetadataForStriveCases = async db => {
   await db.runSql(`ALTER TABLE entity DISABLE TRIGGER entity_trigger;`);
 
   await db.runSql(`
@@ -45,7 +55,9 @@ const updateStriveCaseReportFormExport = async db => {
 
 exports.up = async function (db) {
   await updateStriveCaseReportFormExport(db);
-  await cleanDhisMetadataForStriveCases(db);
+  await deleteDhisSyncTableRecordsForStriveCases(db, 'dhis_sync_queue');
+  await deleteDhisSyncTableRecordsForStriveCases(db, 'dhis_sync_log');
+  await cleanEntityDhisMetadataForStriveCases(db);
 };
 
 exports.down = async function (db) {
