@@ -25,7 +25,6 @@ export class ReportRoute extends Route {
     switch(type) {
       case 'view':
         return this.webConfigConnection.getDashboardReport({ viewId: reportCode, ...this.req.query });
-        break;
       case 'measureData':
         return this.webConfigConnection.getMapOverlay({ measureId: reportCode, ...this.req.query });
       case 'report':

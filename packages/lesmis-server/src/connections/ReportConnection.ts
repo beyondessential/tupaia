@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ApiConnection } from '@tupaia/server-boilerplate';
+import { ApiConnection, QueryParameters } from '@tupaia/server-boilerplate';
 
 const { REPORT_API_URL = 'http://localhost:8030/v2' } = process.env;
 
@@ -28,7 +28,7 @@ export class ReportConnection extends ApiConnection {
     });
   }
 
-  async forwardReportQuery(reportCode: string, query: Object) {
+  async forwardReportQuery(reportCode: string, query: QueryParameters) {
     return this.get(`fetchReport/${reportCode}`, query);
   }
 }
