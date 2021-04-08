@@ -60,15 +60,6 @@
     },
     // Overrides per rule/env
     {
-      "files": [
-        "packages/database/src/modelClasses/**",
-        "packages/meditrak-server/src/database/models/**"
-      ],
-      "rules": {
-        "max-classes-per-file": ["error", 2]
-      }
-    },
-    {
       "files": "packages/database/src/testUtilities/**",
       "env": {
         "jest": true

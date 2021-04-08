@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 /**
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
@@ -7,10 +6,7 @@
 import { ApiConnection, AuthHandler, SessionType } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 
-const {
-  MICROSERVICE_CLIENT_USERNAME,
-  MICROSERVICE_CLIENT_PASSWORD,
-} = process.env;
+const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_PASSWORD } = process.env;
 const DEFAULT_AUTH_HEADER = createBasicHeader(
   MICROSERVICE_CLIENT_USERNAME,
   MICROSERVICE_CLIENT_PASSWORD,
