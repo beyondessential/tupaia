@@ -1,7 +1,7 @@
 export { annualPercentages, monthlyPercentages } from './percentagesPerPeriod';
 export { percentagesOfEventCounts } from './percentagesOfEventCounts';
 export { percentagesOfEventCountsPerPeriod } from './percentagesOfEventCountsPerPeriod';
-export { percentagesOfValueCounts } from './percentagesOfValueCounts';
+export { percentagesOfValueCounts, percentagesOfAllValueCounts } from './percentagesOfValueCounts';
 export { percentagesOfValueCountsPerPeriod } from './percentagesOfValueCountsPerPeriod';
 export { percentagesPerDataClass, percentagesPerDataClassByMonth } from './percentagesPerDataClass';
 export { percentagesByNominatedPairs } from './percentagesByNominatedPairs';

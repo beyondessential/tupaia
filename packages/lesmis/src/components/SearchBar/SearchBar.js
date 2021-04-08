@@ -15,6 +15,7 @@ import MuiDivider from '@material-ui/core/Divider';
 import MuiIconButton from '@material-ui/core/IconButton';
 import MuiSearchIcon from '@material-ui/icons/Search';
 import CancelIcon from '@material-ui/icons/Cancel';
+import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
 import { useEntitiesData } from '../../api';
@@ -165,10 +166,6 @@ export const SearchBar = ({ linkType, className }) => {
     },
   });
 
-  if (isLoading) {
-    return null;
-  }
-
   const clearProps = getClearProps();
 
   const handleClear = () => {
@@ -180,51 +177,53 @@ export const SearchBar = ({ linkType, className }) => {
   const showNoResults = popupOpen && inputValue && focused && !dirty;
 
   return (
-    <SearchContainer className={className}>
-      <SearchBox {...getRootProps()} elevation={0}>
-        <SearchIcon color={focused ? 'primary' : 'inherit'} />
-        <Input placeholder="Search location" inputProps={{ ...getInputProps() }} />
-        {inputValue && (
-          <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
-            <CancelIcon />
-          </ClearButton>
-        )}
-        <Divider orientation="vertical" />
-        <EntityMenu buttonText="or view all" />
-      </SearchBox>
-      {groupedOptions.length > 0 ? (
-        <ResultsBox elevation={3} {...getListboxProps()}>
-          {groupedOptions.map((option, index) => (
-            <ResultsItem
-              key={option.name}
-              to={makeEntityLink(option.code, linkType)}
-              {...getOptionProps({ option, index })}
-            >
-              {getPlaceIcon(option.type)}
-              <span>{getOptionText(option, options)}</span>
-            </ResultsItem>
-          ))}
-          {showExpandButton && (
-            <OutlinedButton
-              variant="outlined"
-              fullWidth
-              color="primary"
-              onClick={() => setExpanded(true)}
-            >
-              Load more results
-            </OutlinedButton>
+    <Fade in={!isLoading}>
+      <SearchContainer className={className}>
+        <SearchBox {...getRootProps()} elevation={0}>
+          <SearchIcon color={focused ? 'primary' : 'inherit'} />
+          <Input placeholder="Search location" inputProps={{ ...getInputProps() }} />
+          {inputValue && (
+            <ClearButton {...clearProps} onClick={handleClear} aria-label="clear">
+              <CancelIcon />
+            </ClearButton>
           )}
-        </ResultsBox>
-      ) : (
-        showNoResults && (
-          <NoResultsBox>
-            <img src="/images/no-results-icon.svg" alt="no results" />
-            <NoResultsText>No results found for the search</NoResultsText>
-            <NoResultsValue>&quot;{inputValue}&quot;</NoResultsValue>
-          </NoResultsBox>
-        )
-      )}
-    </SearchContainer>
+          <Divider orientation="vertical" />
+          <EntityMenu buttonText="or view all" />
+        </SearchBox>
+        {groupedOptions.length > 0 ? (
+          <ResultsBox elevation={3} {...getListboxProps()}>
+            {groupedOptions.map((option, index) => (
+              <ResultsItem
+                key={option.name}
+                to={makeEntityLink(option.code, linkType)}
+                {...getOptionProps({ option, index })}
+              >
+                {getPlaceIcon(option.type)}
+                <span>{getOptionText(option, options)}</span>
+              </ResultsItem>
+            ))}
+            {showExpandButton && (
+              <OutlinedButton
+                variant="outlined"
+                fullWidth
+                color="primary"
+                onClick={() => setExpanded(true)}
+              >
+                Load more results
+              </OutlinedButton>
+            )}
+          </ResultsBox>
+        ) : (
+          showNoResults && (
+            <NoResultsBox>
+              <img src="/images/no-results-icon.svg" alt="no results" />
+              <NoResultsText>No results found for the search</NoResultsText>
+              <NoResultsValue>&quot;{inputValue}&quot;</NoResultsValue>
+            </NoResultsBox>
+          )
+        )}
+      </SearchContainer>
+    </Fade>
   );
 };
 

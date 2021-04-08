@@ -108,6 +108,9 @@
         - name: deploy-psss
           command: './packages/devops/scripts/ci/deployFrontend.sh psss'
           exclude: -e2e$
+        - name: deploy-lesmis
+          command: './packages/devops/scripts/ci/deployFrontend.sh lesmis'
+          exclude: -e2e$
 
 - type: parallel
   name: e2e-test

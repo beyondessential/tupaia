@@ -69,7 +69,7 @@ export const mapEntitiesToFields = (
   const relationRecords =
     fields.includes('parent_code') || fields.includes('child_codes')
       ? await req.models.ancestorDescendantRelation.getImmediateRelations(context.hierarchyId, {
-          'descendant.country_code': req.context.allowedCountries,
+          'descendant.country_code': req.ctx.allowedCountries,
         })
       : [];
   const responseBuilders: EntityResponseObjectBuilder[] = new Array(entities.length)

@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { utcMoment } from '@tupaia/utils';
+import { utcMoment, stripTimezoneFromDate } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
 
@@ -117,14 +117,16 @@ const generateBaseSqlQuery = ({
   aggregations,
 }) => {
   const adjustedStartDate = startDate
-    ? utcMoment(startDate).startOf('day').toISOString()
+    ? stripTimezoneFromDate(utcMoment(startDate).startOf('day').toISOString())
     : undefined;
-  const adjustedEndDate = endDate ? utcMoment(endDate).endOf('day').toISOString() : undefined;
+  const adjustedEndDate = endDate
+    ? stripTimezoneFromDate(utcMoment(endDate).endOf('day').toISOString())
+    : undefined;
   const firstAggregation = AGGREGATIONS[aggregations?.[0]?.type] || AGGREGATIONS.DEFAULT;
   const paramsArray = [];
   const sqlQuery = new SqlQuery(
     `
-    SELECT 
+    SELECT
       date AS "date",
       entity_code AS "entityCode",
       entity_name AS "entityName",
