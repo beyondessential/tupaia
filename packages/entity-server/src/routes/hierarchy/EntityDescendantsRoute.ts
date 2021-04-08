@@ -4,29 +4,32 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
+import { formatEntitiesForResponse } from './format';
 import {
   HierarchyRequest,
   HierarchyRequestParams,
   HierarchyRequestBody,
   HierarchyRequestQuery,
-  EntityResponseObject,
+  EntityResponse,
 } from './types';
 
 export type DescendantsRequest = HierarchyRequest<
   HierarchyRequestParams,
-  EntityResponseObject[],
+  EntityResponse[],
   HierarchyRequestBody,
   HierarchyRequestQuery & { includeRootEntity?: boolean }
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {
+    const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
     const { includeRootEntity = false } = this.req.query;
-    const descendants = await this.req.ctx.entity.getDescendants(this.req.ctx.hierarchyId, {
-      country_code: this.req.ctx.allowedCountries,
+    const descendants = await entity.getDescendants(hierarchyId, {
+      ...filter,
     });
-    const responseEntities = includeRootEntity
-      ? [this.req.ctx.entity].concat(descendants)
-      : descendants;
-    return this.req.ctx.formatEntitiesForResponse(responseEntities);
+    const responseEntities = includeRootEntity ? [entity].concat(descendants) : descendants;
+    if (field) {
+      return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, field);
+    }
+    return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, fields);
   }
 }
