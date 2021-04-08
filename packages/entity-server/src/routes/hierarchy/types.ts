@@ -51,9 +51,9 @@ export interface HierarchyRequest<
   ReqBody = HierarchyRequestBody,
   ReqQuery = HierarchyRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
-  context: HierarchyContext;
+  ctx: HierarchyContext;
 }
 
 export interface HierarchyResponse<ResBody = EntityResponseObject> extends Response<ResBody> {
-  context: HierarchyContext;
+  ctx: HierarchyContext;
 }

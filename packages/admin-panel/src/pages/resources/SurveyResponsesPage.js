@@ -27,22 +27,20 @@ const date = {
   Header: 'Date of Survey',
   source: 'end_time',
   type: 'tooltip',
-  accessor: row => moment(row.end_time).local().toString(),
+  accessor: row => moment(row.end_time).local().format('ddd, MMM Do YYYY, HH:mm:ss ZZ'),
   filterable: false,
   editable: false,
 };
 
 const dateOfData = {
   Header: 'Date of Data',
-  source: 'submission_time',
+  source: 'data_time',
   type: 'tooltip',
-  accessor: row =>
-    moment(row.submission_time || row.end_time)
-      .local()
-      .toString(),
+  accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
   filterable: false,
   editConfig: {
-    type: 'datetime-local',
+    type: 'datetime-utc',
+    accessor: record => moment.parseZone(record.data_time).toString(),
   },
 };
 
@@ -138,6 +136,9 @@ const IMPORT_CONFIG = {
   title: 'Import Survey Responses',
   actionConfig: {
     importEndpoint: 'surveyResponses',
+    extraQueryParameters: {
+      timeZone: getBrowserTimeZone(),
+    },
   },
   queryParameters: [
     {
@@ -164,7 +165,7 @@ export const SurveyResponsesPage = ({ getHeaderEl }) => (
     title="Survey Responses"
     endpoint="surveyResponses"
     columns={COLUMNS}
-    defaultSorting={[{ id: 'submission_time', desc: true }]}
+    defaultSorting={[{ id: 'data_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}

@@ -15,10 +15,9 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
-import { getPlaceIcon } from './SearchBar/utils';
 import { DialogHeader } from './FullScreenDialog';
 import { useEntitiesData } from '../api/queries';
-import { makeEntityLink } from '../utils';
+import { makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
 import * as COLORS from '../constants';
 
 const TextButton = styled(MuiButton)`
@@ -71,6 +70,12 @@ const ListItem = styled(MuiListItem)`
   padding: 0 1.875rem 0 0;
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 
+  img {
+    border-radius: 3px;
+    width: 3.75rem;
+    height: 3.75rem;
+  }
+
   svg.place-icon {
     width: 3.75rem;
     height: 3.75rem;
@@ -96,9 +101,23 @@ const ListItemText = styled(Typography)`
 
 const ListItemLink = props => <ListItemText component={RouterLink} {...props} />;
 
-const getEntitiesByCodes = (entities, codes) => entities.filter(e => codes.includes(e.code));
+const getEntitiesByCodes = (entities, codes) =>
+  entities
+    .filter(e => codes.includes(e.code))
+    .sort((a, b) => {
+      const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+      const nameB = b.name.toUpperCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
 
-const ListItemComponent = React.memo(({ entities, entity, onMenuClose }) => {
+      return 0;
+    });
+
+const ListItemComponent = React.memo(({ entities, entity, onMenuClose, view }) => {
   const [open, setOpen] = useState(false);
   const hasChildren = Array.isArray(entity.childCodes);
   const PlaceIcon = getPlaceIcon(entity.type);
@@ -115,9 +134,9 @@ const ListItemComponent = React.memo(({ entities, entity, onMenuClose }) => {
   return (
     <>
       <ListItem>
-        {PlaceIcon}
-        <ListItemLink to={makeEntityLink(entity.code)} onClick={handleMenuClose}>
-          {entity.name}
+        {entity.imageUrl ? <img src={entity.imageUrl} alt="place" /> : PlaceIcon}
+        <ListItemLink to={makeEntityLink(entity.code, view)} onClick={handleMenuClose}>
+          {getOptionText(entity, entities)}
         </ListItemLink>
         {hasChildren && (
           <IconButton onClick={handleOpen}>
@@ -133,6 +152,7 @@ const ListItemComponent = React.memo(({ entities, entity, onMenuClose }) => {
               entities={entities}
               entity={e}
               onMenuClose={onMenuClose}
+              view={view}
             />
           ))}
         </List>
@@ -143,17 +163,24 @@ const ListItemComponent = React.memo(({ entities, entity, onMenuClose }) => {
 
 ListItemComponent.propTypes = {
   entities: PropTypes.array.isRequired,
+  view: PropTypes.string,
   onMenuClose: PropTypes.func.isRequired,
   entity: PropTypes.shape({
     name: PropTypes.string,
     code: PropTypes.string,
     type: PropTypes.string,
+    imageUrl: PropTypes.string,
     childCodes: PropTypes.array,
   }).isRequired,
 };
 
+ListItemComponent.defaultProps = {
+  view: 'dashboard',
+};
+
 export const EntityMenu = React.memo(({ buttonText }) => {
   const [open, setOpen] = useState(false);
+  const { view } = useUrlParams();
   const { data: entities = [], isSuccess } = useEntitiesData();
   const country = entities.find(e => e.type === 'country');
 
@@ -179,6 +206,7 @@ export const EntityMenu = React.memo(({ buttonText }) => {
                   entities={entities}
                   entity={e}
                   onMenuClose={handleClose}
+                  view={view}
                 />
               ))}
             </ContainerList>
