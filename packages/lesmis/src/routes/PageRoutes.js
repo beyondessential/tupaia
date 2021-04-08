@@ -8,10 +8,10 @@ import { Switch, Route } from 'react-router-dom';
 import { NavBar, Footer } from '../components';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
-import { AboutView } from '../views/AboutView';
-import { ContactView } from '../views/ContactView';
+import { PageView } from '../views/PageView';
 import { EntityView } from '../views/EntityView';
 import { NotFoundView } from '../views/NotFoundView';
+import { ABOUT_PAGE, CONTACT_PAGE } from '../constants';
 
 /**
  * Main Page Routes
@@ -30,12 +30,12 @@ export const PageRoutes = React.memo(() => (
     </Route>
     <Route path="/about">
       <NavBar />
-      <AboutView />
+      <PageView content={ABOUT_PAGE} />
       <Footer />
     </Route>
     <Route path="/contact">
       <NavBar />
-      <ContactView />
+      <PageView content={CONTACT_PAGE} />
       <Footer />
     </Route>
     <Route path="/:entityCode/:view?">
