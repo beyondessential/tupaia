@@ -6,7 +6,7 @@
 import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { LesmisSessionModel } from '../models';
-import { UserRoute, EntityRequest, EntityRoute, EntitiesRoute } from '../routes';
+import { UserRoute, ReportRoute, EntityRequest, EntityRoute, EntitiesRoute } from '../routes';
 import { verifyLogin } from '../auth';
 
 /**
@@ -19,5 +19,6 @@ export function createApp() {
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities', handleWith(EntitiesRoute))
     .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
+    .get('/v1/reportData/:reportCode', handleWith(ReportRoute))
     .build();
 }

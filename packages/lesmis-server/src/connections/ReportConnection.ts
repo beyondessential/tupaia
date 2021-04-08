@@ -27,4 +27,8 @@ export class ReportConnection extends ApiConnection {
       period: periods.join(';'),
     });
   }
+
+  async forwardReportQuery(reportCode: string, query: Object) {
+    return this.get(`fetchReport/${reportCode}`, query);
+  }
 }
