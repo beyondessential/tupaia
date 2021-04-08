@@ -4,4 +4,4 @@
  *
  */
 
-export { ApiConnection } from './ApiConnection';
+export { ApiConnection, AuthHandler } from './ApiConnection';
