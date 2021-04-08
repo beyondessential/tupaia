@@ -31,10 +31,10 @@ const getSubQuery = (query: RelationsQuery, from: 'ancestor' | 'descendant'): Re
 };
 
 const getSubContext = (req: RelationsRequest, from: 'ancestor' | 'descendant') => {
-  const { field: baseField } = req.ctx;
+  const { field: baseField, allowedCountries } = req.ctx;
   const { field: queryField, filter: queryFilter } = getSubQuery(req.query, from);
   const field = (queryField ? extractFieldFromQuery(queryField) : baseField) || 'code';
-  const filter = extractFilterFromQuery(queryFilter);
+  const filter = extractFilterFromQuery(allowedCountries, queryFilter);
   const { type, ...restOfFilter } = filter;
   if (!type || Array.isArray(type)) {
     throw new Error(`${from}_filter must contain a single type constraint`);

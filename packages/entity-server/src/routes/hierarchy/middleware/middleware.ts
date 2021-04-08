@@ -53,7 +53,7 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
     const { fields, field, filter } = req.query;
     req.ctx.fields = extractFieldsFromQuery(fields);
     req.ctx.field = extractFieldFromQuery(field);
-    req.ctx.filter = extractFilterFromQuery(filter);
+    req.ctx.filter = extractFilterFromQuery(allowedCountries, filter);
 
     next();
   } catch (error) {

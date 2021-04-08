@@ -35,14 +35,23 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
   }
 
   async getAncestors(ancestorsWithDescendantsCodes: string[]) {
-    const { entity, hierarchyId, allowedCountries } = this.req.ctx;
+    const { entity, hierarchyId } = this.req.ctx;
     const { type: ancestorType, filter } = this.req.ctx.ancestor;
+    const { code: filterCode } = filter;
+    let codesToUse: string[];
+    if (!filterCode) {
+      codesToUse = ancestorsWithDescendantsCodes;
+    } else {
+      codesToUse = Array.isArray(filterCode)
+        ? ancestorsWithDescendantsCodes.filter(code => filterCode.includes(code))
+        : ancestorsWithDescendantsCodes.filter(code => filterCode === code);
+    }
+
     return entity.type === ancestorType
       ? [entity]
       : entity.getDescendants(hierarchyId, {
-          code: ancestorsWithDescendantsCodes,
           ...filter,
-          country_code: allowedCountries,
+          code: codesToUse,
         });
   }
 

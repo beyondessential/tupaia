@@ -20,6 +20,10 @@ type NestedFilterQueryFields = Flatten<
 type EntityFilterQuery = Partial<
   Omit<EntityFields, ObjectLikeKeys<EntityFields>> & NestedFilterQueryFields
 >;
+type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;
+type NotNullValues<T> = {
+  [field in keyof T]: NotNull<T[field]>;
+};
 
 const filterableFields: (keyof EntityFilterQuery)[] = [
   'id',
@@ -63,20 +67,39 @@ const toFilterClause = (queryClause: string) => {
   return [formattedField, value] as [typeof formattedField, typeof value];
 };
 
-export const extractFilterFromQuery = (queryFilter?: string) => {
+const buildCountryCodeFilter = (allowedCountries: string[], value?: string | string[]) => {
+  if (!value) {
+    return allowedCountries;
+  }
+
+  const filteredAllowedCountries = Array.isArray(value)
+    ? allowedCountries.filter(country => value.includes(country))
+    : allowedCountries.filter(country => value === country);
+
+  if (filteredAllowedCountries.length < 1) {
+    throw new Error('No access to any countries due to user permissions and country_code filter');
+  }
+
+  return filteredAllowedCountries;
+};
+
+export const extractFilterFromQuery = (allowedCountries: string[], queryFilter?: string) => {
   if (!queryFilter) {
-    return {};
+    return { country_code: allowedCountries };
   }
 
   const filterClauses = queryFilter.split(CLAUSE_DELIMITER).map(toFilterClause);
-  const filter: Writable<EntityFilter> = {};
+  const filter: Writable<NotNullValues<EntityFilter>> = {};
 
   filterClauses.forEach(([field, value]) => {
     const parsedValue = value.includes(MULTIPLE_VALUES_DELIMITER)
       ? value.split(MULTIPLE_VALUES_DELIMITER)
       : value;
+
     filter[field] = parsedValue;
   });
+
+  filter.country_code = buildCountryCodeFilter(allowedCountries, filter.country_code);
 
   return filter as EntityFilter;
 };
