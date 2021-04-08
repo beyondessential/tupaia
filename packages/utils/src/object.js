@@ -132,10 +132,11 @@ export const reduceToArrayDictionary = (objectCollection, keyMapper, valueMapper
   const dictionary = {};
   // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
   objects.forEach(object => {
-    if (dictionary[keyOf(object)]) {
-      dictionary[keyOf(object)].push(valueOf(object));
+    const keyOfObject = keyOf(object);
+    if (dictionary[keyOfObject]) {
+      dictionary[keyOfObject].push(valueOf(object));
     } else {
-      dictionary[keyOf(object)] = [valueOf(object)];
+      dictionary[keyOfObject] = [valueOf(object)];
     }
   });
   return dictionary;

@@ -4,7 +4,7 @@
  */
 
 import { Request, Response } from 'express';
-import { EntityFields, EntityType } from '../../models';
+import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
 import { Resolved } from '../../types';
 
@@ -15,28 +15,15 @@ export interface HierarchyRequestParams {
 
 export type HierarchyRequestBody = Record<string, unknown>;
 
-type FlattenAndPrefix<T, K extends keyof T & string> = {
-  [V in K]: { [field in keyof T[V] & string as `${V}.${field}`]: T[V][field] };
-}[K];
-
-type ObjectLikeKeys<T> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [K in keyof T]: T[K] extends Record<string, any> ? K : never;
-}[keyof T];
-
 type SimpleFieldKeys<T> = {
   [K in keyof T]: T[K] extends string | number | symbol ? K : never;
 }[keyof T];
 
-type EntityFilterQuery = Partial<
-  Omit<EntityFields, ObjectLikeKeys<EntityFields>> &
-    FlattenAndPrefix<EntityFields, ObjectLikeKeys<EntityFields>>
->;
-
-export interface HierarchyRequestQuery extends EntityFilterQuery {
+export type HierarchyRequestQuery = {
   fields?: string;
   field?: string;
-}
+  filter?: string;
+};
 
 export type ExtendedFieldFunctions = Readonly<
   {
@@ -57,16 +44,17 @@ export type EntityResponseObject = {
   [field in keyof ExtendedEntityFields]?: ExtendedEntityFields[field];
 };
 
-export type EntityResponse =
-  | EntityResponseObject
-  | FlattableEntityFields[keyof FlattableEntityFields];
+export type FlattenedEntity = FlattableEntityFields[keyof FlattableEntityFields];
+
+export type EntityResponse = EntityResponseObject | FlattenedEntity;
 
 export interface HierarchyContext {
   entity: EntityType;
   hierarchyId: string;
   allowedCountries: string[];
   fields: (keyof ExtendedEntityFields)[];
-  flat?: keyof FlattableEntityFields;
+  filter: EntityFilter;
+  field?: keyof FlattableEntityFields;
 }
 
 export interface HierarchyRequest<
