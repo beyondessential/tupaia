@@ -26,7 +26,7 @@ const auth = () => async (req, res, next) => {
   }
 
   // check if this is the first request after user logged out and send 440
-  if (req.lastuser?.userName !== PUBLIC_USER_NAME) {
+  if (req.lastuser?.userName && req.lastuser?.userName !== PUBLIC_USER_NAME) {
     req.lastuser.reset();
     res.sendStatus(440);
     return;
