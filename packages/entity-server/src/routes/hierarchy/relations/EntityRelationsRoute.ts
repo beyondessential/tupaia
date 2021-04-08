@@ -75,51 +75,13 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
     );
   }
 
-  async groupByAncestorResponse(descendants: EntityType[]) {
-    const [ancestorCodes, pairs] = await this.buildAncestorCodesAndPairs(descendants);
-    const ancestorToDescendants = reduceToArrayDictionary(pairs, 'ancestor', 'descendant');
-
-    if (this.shouldPerformFastResponse()) {
-      return ancestorToDescendants;
-    }
-
-    const ancestors = await this.getAncestors(ancestorCodes);
-    const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
-
-    const getFormattedAncestor = (ancestor: EntityType) => formattedEntitiesByCode[ancestor.code];
-    const getFormattedDescendants = (ancestor: EntityType) =>
-      ancestorToDescendants[ancestor.code].map(
-        descendantCode => formattedEntitiesByCode[descendantCode],
-      );
-    return reduceToDictionary(ancestors, getFormattedAncestor, getFormattedDescendants);
-  }
-
-  async groupByDescendantResponse(descendants: EntityType[]) {
-    const [ancestorCodes, pairs] = await this.buildAncestorCodesAndPairs(descendants);
-    const descendantToAncestor = reduceToDictionary(pairs, 'descendant', 'ancestor');
-
-    if (this.shouldPerformFastResponse()) {
-      return descendantToAncestor;
-    }
-
-    const ancestors = await this.getAncestors(ancestorCodes);
-    const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
-
-    const getFormattedAncestor = (descendant: EntityType) =>
-      formattedEntitiesByCode[descendantToAncestor[descendant.code]];
-    const getFormattedDescendant = (descendant: EntityType) => [
-      formattedEntitiesByCode[descendant.code],
-    ];
-    return reduceToDictionary(
-      descendants.filter(getFormattedAncestor),
-      getFormattedDescendant,
-      getFormattedAncestor,
-    );
+  buildMap(pairs: Pair[]) {
+    return this.req.query.groupBy === 'ancestor'
+      ? reduceToArrayDictionary(pairs, 'ancestor', 'descendant')
+      : reduceToDictionary(pairs, 'descendant', 'ancestor');
   }
 
   async buildResponse() {
-    const { groupBy = 'ancestor' } = this.req.query;
-
     const { entity, hierarchyId, allowedCountries } = this.req.ctx;
     const { type: descendantType, filter } = this.req.ctx.descendant;
 
@@ -129,8 +91,21 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
       country_code: allowedCountries,
     });
 
-    return groupBy === 'ancestor'
-      ? this.groupByAncestorResponse(descendants)
-      : this.groupByDescendantResponse(descendants);
+    const [ancestorCodes, pairs] = await this.buildAncestorCodesAndPairs(descendants);
+
+    if (this.shouldPerformFastResponse()) {
+      return this.buildMap(pairs);
+    }
+
+    const ancestors = await this.getAncestors(ancestorCodes);
+    const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
+    const formattedPairs = pairs
+      .filter(pair => formattedEntitiesByCode[pair.ancestor])
+      .map(pair => ({
+        ancestor: formattedEntitiesByCode[pair.ancestor],
+        descendant: formattedEntitiesByCode[pair.descendant],
+      }));
+
+    return this.buildMap(formattedPairs);
   }
 }

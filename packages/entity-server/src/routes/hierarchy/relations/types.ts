@@ -2,9 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
+import { Request } from 'express';
 import { EntityFilter } from '../../../models';
 import {
-  HierarchyRequest,
   HierarchyRequestParams,
   HierarchyRequestBody,
   HierarchyRequestQuery,
@@ -30,14 +30,14 @@ type RelationsSubContext = {
   type: string;
 };
 export interface RelationsRequest
-  extends HierarchyRequest<
+  extends Request<
     HierarchyRequestParams,
     | Record<FlattenedEntity, EntityResponse> // groupBy: descendant
     | Record<FlattenedEntity, EntityResponse[]>, // groupBy: ancestor
     HierarchyRequestBody,
     RelationsQuery
   > {
-  ctx: HierarchyContext & {
+  ctx: Omit<HierarchyContext, 'fields'> & {
     ancestor: RelationsSubContext;
     descendant: RelationsSubContext;
   };
