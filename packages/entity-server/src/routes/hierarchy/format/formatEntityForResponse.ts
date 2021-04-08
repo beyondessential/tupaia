@@ -6,35 +6,32 @@
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityType } from '../../../models';
 import { EntityServerModelRegistry } from '../../../types';
-import {
-  HierarchyContext,
-  ExtendedEntityFields,
-  FlattableEntityFields,
-  EntityResponseObject,
-} from '../types';
+import { ExtendedEntityFields, FlattableEntityFields, EntityResponseObject } from '../types';
 import { extendedFieldFunctions, isExtendedField } from '../extendedFieldFunctions';
 import { EntityResponseObjectBuilder } from './EntityResponseObjectBuilder';
 
+type FormatContext = { hierarchyId: string; allowedCountries: string[] };
+
 export async function formatEntityForResponse(
-  ctx: HierarchyContext,
+  ctx: FormatContext,
+  entity: EntityType,
+  field: keyof FlattableEntityFields,
+): Promise<EntityType[typeof field]>;
+export async function formatEntityForResponse(
+  ctx: FormatContext,
   entity: EntityType,
   fields: (keyof ExtendedEntityFields)[],
 ): Promise<EntityResponseObject>;
 export async function formatEntityForResponse(
-  ctx: HierarchyContext,
+  ctx: FormatContext,
   entity: EntityType,
-  flat: keyof FlattableEntityFields,
-): Promise<EntityType[typeof flat]>;
-export async function formatEntityForResponse(
-  ctx: HierarchyContext,
-  entity: EntityType,
-  fieldsOrFlat: (keyof ExtendedEntityFields)[] | keyof FlattableEntityFields,
+  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
 ) {
-  if (!Array.isArray(fieldsOrFlat)) {
-    const flat = fieldsOrFlat;
-    return entity[flat];
+  if (!Array.isArray(fieldOrFields)) {
+    const field = fieldOrFields;
+    return entity[field];
   }
-  const fields = fieldsOrFlat;
+  const fields = fieldOrFields;
   const responseBuilder = new EntityResponseObjectBuilder();
   for (let i = 0; i < fields.length; i++) {
     const field = fields[i];
@@ -49,28 +46,28 @@ export async function formatEntityForResponse(
 
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
-  ctx: HierarchyContext,
+  ctx: FormatContext,
+  entities: EntityType[],
+  field: keyof FlattableEntityFields,
+): Promise<EntityType[typeof field][]>;
+export async function formatEntitiesForResponse(
+  models: EntityServerModelRegistry,
+  ctx: FormatContext,
   entities: EntityType[],
   fields: (keyof ExtendedEntityFields)[],
 ): Promise<EntityResponseObject[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
-  ctx: HierarchyContext,
+  ctx: FormatContext,
   entities: EntityType[],
-  flat: keyof FlattableEntityFields,
-): Promise<EntityType[typeof flat][]>;
-export async function formatEntitiesForResponse(
-  models: EntityServerModelRegistry,
-  ctx: HierarchyContext,
-  entities: EntityType[],
-  fieldsOrFlat: (keyof ExtendedEntityFields)[] | keyof FlattableEntityFields,
+  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
 ) {
-  if (!Array.isArray(fieldsOrFlat)) {
-    const flat = fieldsOrFlat;
-    return Promise.all(entities.map(entity => formatEntityForResponse(ctx, entity, flat)));
+  if (!Array.isArray(fieldOrFields)) {
+    const field = fieldOrFields;
+    return Promise.all(entities.map(entity => formatEntityForResponse(ctx, entity, field)));
   }
 
-  const fields = fieldsOrFlat;
+  const fields = fieldOrFields;
   const { hierarchyId } = ctx;
   const relationRecords =
     fields.includes('parent_code') || fields.includes('child_codes')

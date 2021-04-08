@@ -9,9 +9,9 @@ import { HierarchyRequest } from './types';
 
 export class SingleEntityRoute extends Route<HierarchyRequest> {
   async buildResponse() {
-    const { entity, flat, fields } = this.req.ctx;
-    if (flat) {
-      return formatEntityForResponse(this.req.ctx, entity, flat);
+    const { entity, field, fields } = this.req.ctx;
+    if (field) {
+      return formatEntityForResponse(this.req.ctx, entity, field);
     }
     return formatEntityForResponse(this.req.ctx, entity, fields);
   }
