@@ -7,6 +7,24 @@ import { EntityFields } from '../../../models';
 import { ExtendedEntityFields, FlattableEntityFields } from '../types';
 import { extendedFieldFunctions, isExtendedField } from '../extendedFieldFunctions';
 
+const flattableFields: (keyof FlattableEntityFields)[] = ['id', 'code', 'name'];
+const isFlattableField = (field: string): field is keyof FlattableEntityFields =>
+  (flattableFields as string[]).includes(field);
+
+export const extractFieldFromQuery = (queryField?: string) => {
+  if (!queryField) {
+    return undefined;
+  }
+
+  if (isFlattableField(queryField)) {
+    return queryField;
+  }
+
+  throw new Error(
+    `Invalid single field requested ${queryField}, must be one of: ${flattableFields}`,
+  );
+};
+
 const validFields: (keyof EntityFields)[] = [
   'id',
   'code',
@@ -41,22 +59,4 @@ export const extractFieldsFromQuery = (queryFields?: string) => {
     }
   });
   return Array.from(fields);
-};
-
-const flattableFields: (keyof FlattableEntityFields)[] = ['id', 'code', 'name'];
-const isFlattableField = (field: string): field is keyof FlattableEntityFields =>
-  (flattableFields as string[]).includes(field);
-
-export const extractFlatFromQuery = (queryField?: string) => {
-  if (!queryField) {
-    return undefined;
-  }
-
-  if (isFlattableField(queryField)) {
-    return queryField;
-  }
-
-  throw new Error(
-    `Invalid single field requested ${queryField}, must be one of: ${flattableFields}`,
-  );
 };

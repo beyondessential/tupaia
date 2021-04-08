@@ -5,7 +5,7 @@
 import { NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
 import { HierarchyRequest } from '../types';
-import { extractFieldsFromQuery, extractFlatFromQuery } from './fields';
+import { extractFieldsFromQuery, extractFieldFromQuery } from './fields';
 import { extractFilterFromQuery } from './filter';
 
 const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
@@ -52,7 +52,7 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
 
     const { fields, field, ...restOfQuery } = req.query;
     req.ctx.fields = extractFieldsFromQuery(req.query.fields);
-    req.ctx.flat = extractFlatFromQuery(req.query.field);
+    req.ctx.field = extractFieldFromQuery(req.query.field);
     req.ctx.filter = extractFilterFromQuery(restOfQuery);
 
     next();

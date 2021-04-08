@@ -48,15 +48,20 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
 
   async getFormattedEntitiesByCode(ancestors: EntityType[], descendants: EntityType[]) {
     const { models, ctx } = this.req;
-    const { flat: ancestorFlat } = ctx.ancestor;
-    const { flat: descendantFlat } = ctx.descendant;
+    const { field: ancestorField } = ctx.ancestor;
+    const { field: descendantField } = ctx.descendant;
 
     const formattedEntities =
-      ancestorFlat === descendantFlat
-        ? await formatEntitiesForResponse(models, ctx, [...ancestors, ...descendants], ancestorFlat)
+      ancestorField === descendantField
+        ? await formatEntitiesForResponse(
+            models,
+            ctx,
+            [...ancestors, ...descendants],
+            ancestorField,
+          )
         : [
-            ...(await formatEntitiesForResponse(models, ctx, ancestors, ancestorFlat)),
-            ...(await formatEntitiesForResponse(models, ctx, descendants, descendantFlat)),
+            ...(await formatEntitiesForResponse(models, ctx, ancestors, ancestorField)),
+            ...(await formatEntitiesForResponse(models, ctx, descendants, descendantField)),
           ];
     const formattedEntitiesByCode: Record<string, string> = {};
     [...ancestors, ...descendants].forEach((entity, index) => {
@@ -66,11 +71,11 @@ export class EntityRelationsRoute extends Route<RelationsRequest> {
   }
 
   shouldPerformFastResponse() {
-    const { flat: ancestorFlat, filter: ancestorFilter } = this.req.ctx.ancestor;
-    const { flat: descendantFlat } = this.req.ctx.descendant;
+    const { field: ancestorField, filter: ancestorFilter } = this.req.ctx.ancestor;
+    const { field: descendantField } = this.req.ctx.descendant;
     return (
-      ancestorFlat === 'code' &&
-      descendantFlat === 'code' &&
+      ancestorField === 'code' &&
+      descendantField === 'code' &&
       Object.keys(ancestorFilter).length === 0
     );
   }

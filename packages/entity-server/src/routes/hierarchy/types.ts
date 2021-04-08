@@ -66,7 +66,7 @@ export interface HierarchyContext {
   allowedCountries: string[];
   fields: (keyof ExtendedEntityFields)[];
   filter: EntityFilter;
-  flat?: keyof FlattableEntityFields;
+  field?: keyof FlattableEntityFields;
 }
 
 export interface HierarchyRequest<

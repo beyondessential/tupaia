@@ -4,7 +4,7 @@
  */
 import { NextFunction, Response } from 'express';
 import { Writable } from '../../../types';
-import { extractFlatFromQuery } from '../middleware/fields';
+import { extractFieldFromQuery } from '../middleware/fields';
 import { extractFilterFromQuery } from '../middleware/filter';
 import { RelationsRequest, RelationsQuery, RelationsSubQuery, Prefix } from './types';
 
@@ -31,15 +31,15 @@ const getSubQuery = (query: RelationsQuery, from: 'ancestor' | 'descendant'): Re
 };
 
 const getSubContext = (req: RelationsRequest, from: 'ancestor' | 'descendant') => {
-  const { flat: baseFlat } = req.ctx;
+  const { field: baseField } = req.ctx;
   const { field: queryField, ...restOfQuery } = getSubQuery(req.query, from);
-  const flat = (queryField ? extractFlatFromQuery(queryField) : baseFlat) || 'code';
+  const field = (queryField ? extractFieldFromQuery(queryField) : baseField) || 'code';
   const filter = extractFilterFromQuery(restOfQuery);
   const { type, ...restOfFilter } = filter;
   if (!type || Array.isArray(type)) {
     throw new Error(`Must provide single ${from}_type url parameter`);
   }
-  return { type, flat, filter: restOfFilter };
+  return { type, field, filter: restOfFilter };
 };
 
 export const attachRelationsContext = async (

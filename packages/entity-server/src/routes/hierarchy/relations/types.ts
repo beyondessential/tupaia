@@ -26,7 +26,7 @@ export type RelationsQuery = RelationsSubQuery & {
 
 type RelationsSubContext = {
   filter: EntityFilter;
-  flat: keyof FlattableEntityFields;
+  field: keyof FlattableEntityFields;
   type: string;
 };
 export interface RelationsRequest

@@ -21,15 +21,15 @@ export type DescendantsRequest = HierarchyRequest<
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {
-    const { hierarchyId, entity, allowedCountries, fields, flat, filter } = this.req.ctx;
+    const { hierarchyId, entity, allowedCountries, fields, field, filter } = this.req.ctx;
     const { includeRootEntity = false } = this.req.query;
     const descendants = await entity.getDescendants(hierarchyId, {
       ...filter,
       country_code: allowedCountries,
     });
     const responseEntities = includeRootEntity ? [entity].concat(descendants) : descendants;
-    if (flat) {
-      return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, flat);
+    if (field) {
+      return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, field);
     }
     return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, fields);
   }
