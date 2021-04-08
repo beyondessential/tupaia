@@ -4,7 +4,7 @@
  */
 
 import { generateId } from '@tupaia/database';
-import { convertPeriodStringToDateRange } from '@tupaia/utils';
+import { convertPeriodStringToDateRange, stripTimezoneFromDate } from '@tupaia/utils';
 import { ApiConnection } from './ApiConnection';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -14,7 +14,7 @@ const PSSS_SURVEY_RESPONSE_ANSWER_TYPE = 'Number'; // All survey response answer
 type SurveyResponseObject = {
   'entity.code': string;
   'survey.code': string;
-  submission_time: string;
+  data_time: string;
   id: string;
 };
 
@@ -46,17 +46,17 @@ export class MeditrakConnection extends ApiConnection {
     const results = (await this.get(`surveyResponses/`, {
       page: '0',
       pageSize: '1',
-      columns: `["entity.code","survey.code","submission_time","id"]`,
+      columns: `["entity.code","survey.code","data_time","id"]`,
       filter: JSON.stringify({
         'survey.code': { comparisonValue: surveyCode },
         'entity.code': { comparisonValue: orgUnitCode },
-        submission_time: {
+        data_time: {
           comparator: 'BETWEEN',
           comparisonValue: [startDate, endDate],
           castAs: 'date',
         },
       }),
-      sort: '["submission_time DESC"]',
+      sort: '["data_time DESC"]',
     })) as SurveyResponseObject[];
 
     return results.length > 0 ? results[0] : undefined;
@@ -86,7 +86,7 @@ export class MeditrakConnection extends ApiConnection {
         action: 'SubmitSurveyResponse',
         payload: {
           id: surveyResponse.id,
-          submission_time: surveyResponse.submission_time,
+          data_time: surveyResponse.data_time,
           entity_code: surveyResponse['entity.code'],
           survey_code: surveyResponse['survey.code'],
           user_email: this.authHandler.email,
@@ -120,7 +120,7 @@ export class MeditrakConnection extends ApiConnection {
         action: 'SubmitSurveyResponse',
         payload: {
           id: generateId(),
-          submission_time: new Date(endDate).toISOString(),
+          data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
           survey_code: surveyCode,
           entity_code: organisationUnitCode,
           user_email: this.authHandler.email,
