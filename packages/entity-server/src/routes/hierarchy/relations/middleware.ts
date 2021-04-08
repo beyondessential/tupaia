@@ -32,12 +32,12 @@ const getSubQuery = (query: RelationsQuery, from: 'ancestor' | 'descendant'): Re
 
 const getSubContext = (req: RelationsRequest, from: 'ancestor' | 'descendant') => {
   const { field: baseField } = req.ctx;
-  const { field: queryField, ...restOfQuery } = getSubQuery(req.query, from);
+  const { field: queryField, filter: queryFilter } = getSubQuery(req.query, from);
   const field = (queryField ? extractFieldFromQuery(queryField) : baseField) || 'code';
-  const filter = extractFilterFromQuery(restOfQuery);
+  const filter = extractFilterFromQuery(queryFilter);
   const { type, ...restOfFilter } = filter;
   if (!type || Array.isArray(type)) {
-    throw new Error(`Must provide single ${from}_type url parameter`);
+    throw new Error(`${from}_filter must contain a single type constraint`);
   }
   return { type, field, filter: restOfFilter };
 };

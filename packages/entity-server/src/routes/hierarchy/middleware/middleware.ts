@@ -50,10 +50,10 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
     req.ctx.hierarchyId = hierarchy.id;
     req.ctx.allowedCountries = allowedCountries;
 
-    const { fields, field, ...restOfQuery } = req.query;
-    req.ctx.fields = extractFieldsFromQuery(req.query.fields);
-    req.ctx.field = extractFieldFromQuery(req.query.field);
-    req.ctx.filter = extractFilterFromQuery(restOfQuery);
+    const { fields, field, filter } = req.query;
+    req.ctx.fields = extractFieldsFromQuery(fields);
+    req.ctx.field = extractFieldFromQuery(field);
+    req.ctx.filter = extractFilterFromQuery(filter);
 
     next();
   } catch (error) {
