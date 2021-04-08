@@ -19,9 +19,11 @@ const deleteDhisSyncTableRecordsForStriveCases = async (db, table) =>
     DELETE FROM ${table}
     USING survey_response sr
     JOIN survey s on s.id = sr.survey_id
+    JOIN entity e on e.id = sr.entity_id
     WHERE
       sr.entity_id = ${table}.record_id AND
-      s.code = 'SCRF';
+      s.code = 'SCRF' AND
+      e.type = 'case';
 `);
 
 const cleanEntityDhisMetadataForStriveCases = async db => {
@@ -33,6 +35,7 @@ const cleanEntityDhisMetadataForStriveCases = async db => {
     JOIN survey s on s.id = sr.survey_id
     WHERE
       e.id = sr.entity_id AND
+      e.type = 'case' AND
       s.code = 'SCRF';
   `);
 
