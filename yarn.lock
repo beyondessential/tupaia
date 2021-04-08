@@ -4158,10 +4158,10 @@
     eslint-plugin-jest "^24.0.1"
     eslint-plugin-jest-formatting "^2.0.0"
 
-"@beyondessential/eslint-config-js@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-js/-/eslint-config-js-1.0.0.tgz#56d6bcaf2738a285ee192d7651a5520b986b5400"
-  integrity sha512-lfLK/uKviKL6RCT4IkoyDSnQf6fn8/Sqxwdtzj5hh6Vwu5NqHiYHzs/OVBylf0E/USwYenZToReGObDnoAs3Ag==
+"@beyondessential/eslint-config-js@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-js/-/eslint-config-js-1.1.0.tgz#d6e6e6927479807f4fa2d84ee31aafe378530925"
+  integrity sha512-HFuUfjcyY8vqGbDedqBgNiEUwX3cC/5Z03yDWRRPj0H/sCB8fEo9Kf85DSkmMP3k01G0mP+H70QeG2CIRYFhSg==
   dependencies:
     eslint-config-airbnb "^18.2.0"
     eslint-config-prettier "^6.11.0"
@@ -4173,10 +4173,10 @@
     prop-types "^15.0"
     react "^16.13.1"
 
-"@beyondessential/eslint-config-ts@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-ts/-/eslint-config-ts-1.2.0.tgz#b04123f76151db3486e371d9fd11ff853d69ef6a"
-  integrity sha512-oTMJOUQmYiMvLPdsjyxFRd5w6dZbsR27H9OQfS91hXtw1spQ10H4ziaA+MtwP4+gJ++kVzQRNrCUmomt4ZZLSw==
+"@beyondessential/eslint-config-ts@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-ts/-/eslint-config-ts-1.3.0.tgz#b2da524f278afadf41bce0f7730b0561d4f029d1"
+  integrity sha512-S71Ut0YnoiCHFCiiipZ9z/0oTkf6SUIomN9NkP9JbI7C/3mOqWo/mJzRk39JFlGHp4LJOsBI9vgmYEnIdvoEUA==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^4.18.0"
     "@typescript-eslint/parser" "^4.18.0"

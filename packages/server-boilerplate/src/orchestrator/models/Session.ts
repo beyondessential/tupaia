@@ -4,7 +4,6 @@
  *
  */
 
-/* eslint-disable max-classes-per-file */
 import jwt from 'jsonwebtoken';
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';

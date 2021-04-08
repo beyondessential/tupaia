@@ -7,7 +7,7 @@ import { LesmisSessionType } from '../../models';
 declare global {
   namespace Express {
     export interface Request {
-      session: LesmisSessionType;
+      session?: LesmisSessionType;
       ctx: Record<string, unknown>;
     }
 

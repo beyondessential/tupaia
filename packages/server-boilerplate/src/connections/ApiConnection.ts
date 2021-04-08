@@ -18,7 +18,7 @@ interface FetchConfig {
   body?: string;
 }
 
-interface AuthHandler {
+export interface AuthHandler {
   email?: string;
   getAuthHeader: () => Promise<string>;
 }

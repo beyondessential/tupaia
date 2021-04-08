@@ -7,7 +7,7 @@ import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { LesmisSessionModel } from '../models';
 import { UserRoute, ReportRoute, EntityRequest, EntityRoute, EntitiesRoute } from '../routes';
-import { verifyLogin } from '../auth';
+import { attachSession } from '../session';
 
 /**
  * Set up express server with middleware,
@@ -15,7 +15,7 @@ import { verifyLogin } from '../auth';
 export function createApp() {
   return new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(LesmisSessionModel)
-    .verifyLogin(verifyLogin)
+    .useAttachSession(attachSession)
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities', handleWith(EntitiesRoute))
     .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
