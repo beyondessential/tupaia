@@ -49,7 +49,7 @@ const logWarningsForSkippedReports = skippedReports => {
 
 const createUrl = (report, urlParams) => {
   const { projectCode, orgUnitCode, dashboardGroup, reportPeriod } = urlParams;
-  const path = [projectCode, orgUnitCode, dashboardGroup.name].join('/');
+  const path = [projectCode, orgUnitCode, dashboardGroup.name].map(encodeURIComponent).join('/');
   const queryParams = {
     report: report.id,
     reportPeriod,
@@ -61,7 +61,7 @@ const createUrl = (report, urlParams) => {
 /**
  * @returns {string|undefined}
  */
-const selectReportPeriod = viewJson => {
+const selectPeriod = viewJson => {
   const { periodGranularity } = viewJson;
   if (!periodGranularity) {
     return undefined;
@@ -119,7 +119,7 @@ const selectUrlParams = async (db, report, dashboardGroups) => {
     const [projectCode] = dashboardGroup.projectCodes;
 
     if (orgUnitCode && projectCode) {
-      const reportPeriod = selectReportPeriod(viewJson);
+      const reportPeriod = selectPeriod(viewJson);
       return { dashboardGroup, orgUnitCode, projectCode, reportPeriod };
     }
   }
