@@ -32,13 +32,9 @@
     "@tupaia/database": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
     "@tupaia/utils": "1.0.0",
-    "api-error-handler": "^1.0.0",
-    "body-parser": "^1.18.3",
     "camelcase-keys": "^6.2.2",
-    "client-sessions": "^0.8.0",
-    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.16.2",
-    "jsonwebtoken": "^8.5.1",
     "winston": "^3.2.1"
   }
 }

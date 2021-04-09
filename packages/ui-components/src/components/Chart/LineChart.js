@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Line, LabelList } from 'recharts';
-import { formatDataValue } from './utils';
+import { formatDataValueByType } from '@tupaia/utils';
 import { BLUE, DARK_BLUE } from './constants';
 
 export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isExporting }) => {
@@ -29,7 +29,7 @@ export const LineChart = ({ color, dataKey, yAxisId, valueType, isEnlarged, isEx
           position="insideTopRight"
           offset={-20}
           angle="50"
-          formatter={value => formatDataValue(value, valueType)}
+          formatter={value => formatDataValueByType({ value }, valueType)}
         />
       )}
     </Line>

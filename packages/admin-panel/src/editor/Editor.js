@@ -20,6 +20,16 @@ export const Editor = ({ fields, recordData, onEditField }) => {
     onEditField(inputKey, inputValue);
   };
 
+  const selectValue = (editConfig, accessor, source) => {
+    if (editConfig.accessor) {
+      return editConfig.accessor(recordData);
+    }
+    if (accessor) {
+      return accessor(recordData);
+    }
+    return recordData[source];
+  };
+
   return (
     <div>
       {fields
@@ -30,7 +40,7 @@ export const Editor = ({ fields, recordData, onEditField }) => {
             inputKey={source}
             label={Header}
             onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
-            value={accessor ? accessor(recordData) : recordData[source]}
+            value={selectValue(editConfig, accessor, source)}
             disabled={!editable}
             recordData={recordData}
             {...editConfig}

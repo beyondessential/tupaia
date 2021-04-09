@@ -4,8 +4,14 @@
  */
 
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
+import { ObjectLikeKeys, Flatten } from '../types';
 
-export type DbConditional<T> = { [field in keyof T]?: T[field] | T[field][] };
+type PartialOrArray<T> = {
+  [field in keyof T]?: T[field] | T[field][];
+};
+
+export type DbConditional<T> = PartialOrArray<Omit<T, ObjectLikeKeys<T>>> &
+  PartialOrArray<Flatten<Pick<T, ObjectLikeKeys<T>>, '->>'>>;
 
 export type Joined<T, U extends string> = {
   [field in keyof T as field extends string ? `${U}.${field}` : never]: T[field];

@@ -3,38 +3,21 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import errorHandler from 'api-error-handler';
-import { sessionCookie, attachSessionModel } from '@tupaia/server-boilerplate';
-import { addRoutesToApp } from './addRoutesToApp';
+import { TupaiaDatabase } from '@tupaia/database';
+import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { LesmisSessionModel } from '../models';
+import { UserRoute, EntityRequest, EntityRoute, EntitiesRoute } from '../routes';
+import { attachSession } from '../session';
 
 /**
  * Set up express server with middleware,
  */
-export function createApp(sessionModel: LesmisSessionModel) {
-  const app = express();
-
-  /**
-   * Add middleware
-   */
-  app.use(
-    cors({
-      origin: true,
-      credentials: true, // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
-    }),
-  );
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(errorHandler());
-  app.use(sessionCookie());
-  app.use(attachSessionModel(sessionModel));
-
-  /**
-   * Add all routes to the app
-   */
-  addRoutesToApp(app);
-
-  return app;
+export function createApp() {
+  return new OrchestratorApiBuilder(new TupaiaDatabase())
+    .useSessionModel(LesmisSessionModel)
+    .useAttachSession(attachSession)
+    .get('/v1/user', handleWith(UserRoute))
+    .get('/v1/entities', handleWith(EntitiesRoute))
+    .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
+    .build();
 }

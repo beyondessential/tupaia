@@ -66,3 +66,6 @@ export const extendedFieldFunctions = {
   region: getRegion,
   bounds: getBounds,
 };
+
+export const isExtendedField = (field: string): field is keyof typeof extendedFieldFunctions =>
+  Object.keys(extendedFieldFunctions).includes(field);

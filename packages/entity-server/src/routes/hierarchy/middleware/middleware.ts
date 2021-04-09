@@ -4,9 +4,9 @@
  */
 import { NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { EntityType } from '../../../models';
 import { HierarchyRequest } from '../types';
-import { extractFieldsFromQuery, mapEntityToFields, mapEntitiesToFields } from './fields';
+import { extractFieldsFromQuery, extractFieldFromQuery } from './fields';
+import { extractFilterFromQuery } from './filter';
 
 const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
 
@@ -46,16 +46,14 @@ export const attachContext = async (req: HierarchyRequest, res: Response, next: 
       throwNoAccessError(hierarchyName, entityCode);
     }
 
-    req.context.entity = entity;
-    req.context.hierarchyId = hierarchy.id;
-    req.context.allowedCountries = allowedCountries;
-    req.context.fields = extractFieldsFromQuery(req.query.fields);
-    req.context.formatEntityForResponse = (entityToFormat: EntityType) => {
-      return mapEntityToFields(req.context.fields)(entityToFormat, req.context);
-    };
-    req.context.formatEntitiesForResponse = (entitiesToFormat: EntityType[]) => {
-      return mapEntitiesToFields(req, req.context.fields)(entitiesToFormat, req.context);
-    };
+    req.ctx.entity = entity;
+    req.ctx.hierarchyId = hierarchy.id;
+    req.ctx.allowedCountries = allowedCountries;
+
+    const { fields, field, filter } = req.query;
+    req.ctx.fields = extractFieldsFromQuery(fields);
+    req.ctx.field = extractFieldFromQuery(field);
+    req.ctx.filter = extractFilterFromQuery(allowedCountries, filter);
 
     next();
   } catch (error) {
