@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { DhisInputSchemeResolvingApiProxy } from '../../../services/dhis/DhisInputSchemeResolvingApiProxy';
 
 const DATA_SOURCES = [
@@ -27,9 +26,9 @@ const createModelsStub = () => ({
   },
   dataServiceEntity: {
     find: async filter =>
-      filter[QUERY_CONJUNCTIONS.RAW]
+      filter['config->>dhis_id']
         ? DATA_SERVICE_ENTITIES.filter(mapping =>
-            filter[QUERY_CONJUNCTIONS.RAW].parameters.includes(mapping.config.dhis_id),
+            filter['config->>dhis_id'].includes(mapping.config.dhis_id),
           )
         : DATA_SERVICE_ENTITIES.filter(mapping => filter.entity_code.includes(mapping.entity_code)),
   },

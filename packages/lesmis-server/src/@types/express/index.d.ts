@@ -8,11 +8,13 @@ declare global {
   namespace Express {
     export interface Request {
       session?: LesmisSessionType;
-      ctx: Record<string, unknown>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ctx: any;
     }
 
     export interface Response {
-      ctx: Record<string, unknown>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ctx: any;
     }
   }
 }
