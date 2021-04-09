@@ -17,8 +17,7 @@ export type Resolved<T> = T extends Promise<infer R> ? R : T;
 
 // Extracts keys that have object-like values from type T
 export type ObjectLikeKeys<T> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [K in keyof T]: T[K] extends Record<string, any> ? K : never;
+  [K in keyof T]: T[K] extends Record<string, unknown> ? K : never;
 }[keyof T];
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
