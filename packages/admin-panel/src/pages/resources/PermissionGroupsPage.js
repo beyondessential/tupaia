@@ -38,6 +38,7 @@ export const PermissionGroupsPage = ({ getHeaderEl }) => (
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    defaultSorting={[{ id: 'name', desc: false }]}
   />
 );
 
