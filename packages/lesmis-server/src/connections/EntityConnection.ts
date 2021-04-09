@@ -4,12 +4,12 @@
  *
  */
 import camelcaseKeys from 'camelcase-keys';
-import { ApiConnection } from '@tupaia/server-boilerplate';
+import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
 const { ENTITY_SERVER_API_URL = 'http://localhost:8050/v1' } = process.env;
 
-export class EntityConnection extends ApiConnection {
+export class EntityConnection extends SessionHandlingApiConnection {
   baseUrl = ENTITY_SERVER_API_URL;
 
   async getEntities() {
