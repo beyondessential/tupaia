@@ -14,22 +14,7 @@ type ReportObject = {
 export class ReportConnection extends SessionHandlingApiConnection {
   baseUrl = REPORT_API_URL;
 
-  async fetchReport(
-    reportCode: string,
-    orgUnitCodes: string[],
-    periods: string[] = [],
-  ): Promise<ReportObject> {
-    if (!orgUnitCodes || !orgUnitCodes.length) {
-      throw new Error('No organisationUnitCodes provided');
-    }
-
-    return this.get(`fetchReport/${reportCode}`, {
-      organisationUnitCodes: orgUnitCodes.join(','),
-      period: periods.join(';'),
-    });
-  }
-
-  async forwardReportQuery(reportCode: string, query: QueryParameters) {
+  async fetchReport(reportCode: string, query: QueryParameters) {
     return this.get(`fetchReport/${reportCode}`, query);
   }
 }

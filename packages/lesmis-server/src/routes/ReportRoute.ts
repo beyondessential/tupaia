@@ -24,12 +24,11 @@ export class ReportRoute extends Route {
     const { type } = this.req.query;
     switch(type) {
       case 'view':
-        return this.webConfigConnection.getDashboardReport({ viewId: reportCode, ...this.req.query });
+        return this.webConfigConnection.fetchDashboardReport({ viewId: reportCode, ...this.req.query });
       case 'measureData':
-        return this.webConfigConnection.getMapOverlay({ measureId: reportCode, ...this.req.query });
-      case 'report':
+        return this.webConfigConnection.fetchMapOverlay({ measureId: reportCode, ...this.req.query });
       default:
-        return this.reportConnection.forwardReportQuery(reportCode, this.req.query);
+        return this.reportConnection.fetchReport(reportCode, this.req.query);
     }
   }
 }
