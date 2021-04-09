@@ -22,28 +22,28 @@ export class ReportRoute extends Route {
 
   async buildResponse() {
     const { entityCode, reportCode } = this.req.params;
-    const {type} = this.req.query;
-    switch(type) {
+    const { type } = this.req.query;
+    switch (type) {
       case 'view':
         return this.webConfigConnection.fetchDashboardReport({
           viewId: reportCode,
           organisationUnitCode: entityCode,
           projectCode: LESMIS_PROJECT_NAME,
-          ...this.req.query
+          ...this.req.query,
         });
       case 'measureData':
         return this.webConfigConnection.fetchMapOverlay({
           measureId: reportCode,
           organisationUnitCode: entityCode,
           projectCode: LESMIS_PROJECT_NAME,
-          ...this.req.query
+          ...this.req.query,
         });
       default:
         return this.reportConnection.fetchReport(reportCode, {
           // Report server can accept arrays so the parameters are plural
           organisationUnitCodes: entityCode,
           projectCodes: LESMIS_PROJECT_NAME,
-          ...this.req.query
+          ...this.req.query,
         });
     }
   }
