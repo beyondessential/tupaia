@@ -7,6 +7,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { ReportConnection, WebConfigConnection } from '../connections';
+import { LESMIS_PROJECT_NAME } from '../constants';
 
 export class ReportRoute extends Route {
   private readonly reportConnection: ReportConnection;
@@ -20,15 +21,30 @@ export class ReportRoute extends Route {
   }
 
   async buildResponse() {
-    const { reportCode } = this.req.params;
-    const { type } = this.req.query;
+    const { entityCode, reportCode } = this.req.params;
+    const {type} = this.req.query;
     switch(type) {
       case 'view':
-        return this.webConfigConnection.fetchDashboardReport({ viewId: reportCode, ...this.req.query });
+        return this.webConfigConnection.fetchDashboardReport({
+          viewId: reportCode,
+          organisationUnitCode: entityCode,
+          projectCode: LESMIS_PROJECT_NAME,
+          ...this.req.query
+        });
       case 'measureData':
-        return this.webConfigConnection.fetchMapOverlay({ measureId: reportCode, ...this.req.query });
+        return this.webConfigConnection.fetchMapOverlay({
+          measureId: reportCode,
+          organisationUnitCode: entityCode,
+          projectCode: LESMIS_PROJECT_NAME,
+          ...this.req.query
+        });
       default:
-        return this.reportConnection.fetchReport(reportCode, this.req.query);
+        return this.reportConnection.fetchReport(reportCode, {
+          // Report server can accept arrays so the parameters are plural
+          organisationUnitCodes: entityCode,
+          projectCodes: LESMIS_PROJECT_NAME,
+          ...this.req.query
+        });
     }
   }
 }
