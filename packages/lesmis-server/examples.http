@@ -27,6 +27,13 @@ content-type: {{contentType}}
 
 ###
 
+# @name entities
+
+GET http://{{host}}/{{version}}/entities HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
 @sessionCookie = {{login.response.headers.Set-Cookie}}
 
 

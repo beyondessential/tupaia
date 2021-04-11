@@ -14,23 +14,33 @@ import { UnauthenticatedError } from '@tupaia/utils';
 
 import { handleWith, handleError } from '../../utils';
 import { TestRoute } from '../../routes';
-import { LoginRoute, LoginRequest, LogoutRoute, attachSession } from '../routes';
+import {
+  LoginRoute,
+  LoginRequest,
+  LogoutRoute,
+  attachSession as defaultAttachSession,
+} from '../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
+
+type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
 export class ApiBuilder {
   private readonly app: Express;
 
   private readonly database: TupaiaDatabase;
 
+  private attachSession: Middleware;
+
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
 
-  private verifyLoginMiddleware?: (req: Request, res: Response, next: NextFunction) => void;
+  private verifyLoginMiddleware?: Middleware;
 
   constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
     this.app = express();
+    this.attachSession = defaultAttachSession;
 
     /**
      * Add middleware
@@ -60,6 +70,11 @@ export class ApiBuilder {
      * Test Route
      */
     this.app.get('/v1/test', handleWith(TestRoute));
+  }
+
+  useAttachSession(attachSession: Middleware) {
+    this.attachSession = attachSession;
+    return this;
   }
 
   useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
@@ -97,7 +112,7 @@ export class ApiBuilder {
     path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
-    this.app.use(path, attachSession, middleware);
+    this.app.use(path, this.attachSession, middleware);
     return this;
   }
 
@@ -106,9 +121,9 @@ export class ApiBuilder {
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
     if (this.verifyLoginMiddleware) {
-      this.app.get(path, attachSession, this.verifyLoginMiddleware, handler);
+      this.app.get(path, this.attachSession, this.verifyLoginMiddleware, handler);
     } else {
-      this.app.get(path, attachSession, handler);
+      this.app.get(path, this.attachSession, handler);
     }
     return this;
   }

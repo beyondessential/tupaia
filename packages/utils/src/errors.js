@@ -3,8 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable max-classes-per-file */
-
 import winston from 'winston';
 import { respond } from './respond';
 

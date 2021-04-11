@@ -4,8 +4,8 @@
  *
  */
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
+import { QueryParameters } from '../types';
 
-type QueryParameters = Record<string, string>;
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 interface FetchHeaders {
   Authorization: string;
@@ -18,7 +18,7 @@ interface FetchConfig {
   body?: string;
 }
 
-interface AuthHandler {
+export interface AuthHandler {
   email?: string;
   getAuthHeader: () => Promise<string>;
 }
