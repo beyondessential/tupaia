@@ -223,10 +223,7 @@ export class DhisInputSchemeResolvingApiProxy {
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
     const mappings = await runDatabaseFunctionInBatches(dhisIds, async batchOfRecords =>
       this.models.dataServiceEntity.find({
-        [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `config->>'dhis_id' in (${batchOfRecords.map(() => '?')})`,
-          parameters: batchOfRecords,
-        },
+        'config->>dhis_id': batchOfRecords,
       }),
     );
 
