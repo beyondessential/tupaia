@@ -12,7 +12,7 @@ export class LatestDataValueBuilder extends DataBuilder {
     const { dataElementCodes } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
     const [ result ] = results;
-    return { value: result.value };
+    return { value: result?.value ?? null };
   }
 }
 
