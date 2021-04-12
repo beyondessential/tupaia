@@ -53,6 +53,20 @@ export class EntityConnection extends ApiConnection {
     dataSourceEntityType,
     dataSourceEntityFilter = {},
   ) {
+    if (aggregationEntityType === 'requested') {
+      const dataSourceEntities = await this.getDataSourceEntities(
+        hierarchyName,
+        baseEntity,
+        dataSourceEntityType,
+        dataSourceEntityFilter,
+      );
+      const formattedRelations = {};
+      dataSourceEntities.forEach(descendant => {
+        formattedRelations[descendant] = { code: baseEntity };
+      });
+      return [dataSourceEntities, formattedRelations];
+    }
+
     const builtFilter = buildFilter(dataSourceEntityFilter);
     const url = `hierarchy/${hierarchyName}/${baseEntity}/relations?field=code&groupBy=descendant&ancestor_filter=type:${aggregationEntityType}&descendant_filter=type:${dataSourceEntityType}${
       builtFilter ? `;${builtFilter}` : ''

@@ -32,7 +32,7 @@ export class Aggregator extends BaseAggregator {
         endDate,
         dataServices: [{ isDataRegional: true }],
       },
-      aggregationOptions,
+      aggregationOptions || { aggregationType: 'RAW' },
     );
   }
 

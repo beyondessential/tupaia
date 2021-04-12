@@ -35,12 +35,12 @@ const getAdjustedDateRange = (dateRange, aggregationList) =>
     return getDateRange ? getDateRange(currentRange, aggregation.config) : currentRange;
   }, dateRange);
 
-const shouldFetchDataSourceEntities = ({ config: { dataSourceEntityType } } = {}) =>
+const shouldFetchDataSourceEntities = ({ config: { dataSourceEntityType } = {} } = {}) =>
   dataSourceEntityType;
 
 const shouldFetchRelations = ({
   type,
-  config: { aggregationEntityType, dataSourceEntityType },
+  config: { aggregationEntityType, dataSourceEntityType } = {},
 } = {}) => aggregationEntityType && dataSourceEntityType && !(type === AGGREGATION_TYPES.RAW);
 
 const getAdjustedOrganisationUnitsAndAggregations = async (
@@ -114,9 +114,9 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
  * @param {Object[]} aggregationList
  */
 export const adjustOptionsToAggregationList = async (context, fetchOptions, aggregationOptions) => {
-  const { aggregations: aggregationList } = aggregationOptions;
+  const { aggregations: aggregationList = [] } = aggregationOptions;
   if (aggregationList.length === 0) {
-    return fetchOptions;
+    return [fetchOptions, aggregationOptions];
   }
 
   const { startDate, endDate } = getAdjustedDateRange(fetchOptions, aggregationList);
