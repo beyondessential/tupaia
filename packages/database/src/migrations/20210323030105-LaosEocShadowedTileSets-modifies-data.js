@@ -24,6 +24,7 @@ const previousConfig = {
 const newConfig = {
   tileSets:
     'laosOpenStreets,laosSatellite,laosWaterways,laosRoads,laosEthnicity,laosTerrain,laosPopulation',
+  includeDefaultTileSets: false,
   permanentRegionLabels: false,
 };
 
