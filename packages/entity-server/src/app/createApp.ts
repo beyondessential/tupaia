@@ -6,14 +6,21 @@
 import { MicroServiceApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
-  HierarchyRequest,
+  SingleEntityRequest,
+  MultiEntityRequest,
   SingleEntityRoute,
   DescendantsRequest,
   EntityDescendantsRoute,
   RelationsRequest,
   EntityRelationsRoute,
+  MultiEntityRelationsRequest,
+  MultiEntityRelationsRoute,
 } from '../routes';
-import { attachContext } from '../routes/hierarchy/middleware';
+import {
+  attachCommonContext,
+  attachSingleEntityContext,
+  attachMultiEntityContext,
+} from '../routes/hierarchy/middleware';
 import { attachRelationsContext } from '../routes/hierarchy/relations/middleware';
 
 /**
@@ -22,8 +29,21 @@ import { attachRelationsContext } from '../routes/hierarchy/relations/middleware
 export function createApp() {
   return new MicroServiceApiBuilder(new TupaiaDatabase())
     .useBasicBearerAuth('entity-server')
-    .use<HierarchyRequest>('/v1/hierarchy/:hierarchyName/:entityCode', attachContext)
-    .get<HierarchyRequest>(
+    .use<SingleEntityRequest | MultiEntityRequest>(
+      '/v1/hierarchy/:hierarchyName',
+      attachCommonContext,
+    )
+    .use<MultiEntityRequest>(['/v1/hierarchy/:hierarchyName/relations'], attachMultiEntityContext)
+    .use<MultiEntityRelationsRequest>(
+      '/v1/hierarchy/:hierarchyName/relations',
+      attachRelationsContext,
+    )
+    .get<MultiEntityRelationsRequest>(
+      '/v1/hierarchy/:hierarchyName/relations',
+      handleWith(MultiEntityRelationsRoute),
+    )
+    .use<SingleEntityRequest>('/v1/hierarchy/:hierarchyName/:entityCode', attachSingleEntityContext)
+    .get<SingleEntityRequest>(
       '/v1/hierarchy/:hierarchyName/:entityCode',
       handleWith(SingleEntityRoute),
     )

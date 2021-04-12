@@ -6,18 +6,18 @@
 import { Route } from '@tupaia/server-boilerplate';
 import { formatEntitiesForResponse } from './format';
 import {
-  HierarchyRequest,
-  HierarchyRequestParams,
-  HierarchyRequestBody,
-  HierarchyRequestQuery,
+  SingleEntityRequest,
+  SingleEntityRequestParams,
+  RequestBody,
+  SingleEntityRequestQuery,
   EntityResponse,
 } from './types';
 
-export type DescendantsRequest = HierarchyRequest<
-  HierarchyRequestParams,
+export type DescendantsRequest = SingleEntityRequest<
+  SingleEntityRequestParams,
   EntityResponse[],
-  HierarchyRequestBody,
-  HierarchyRequestQuery & { includeRootEntity?: boolean }
+  RequestBody,
+  SingleEntityRequestQuery & { includeRootEntity?: boolean }
 >;
 export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {

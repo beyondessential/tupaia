@@ -37,3 +37,8 @@ Authorization: {{authorization}}
 GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA/relations?ancestor_filter=type:sub_district&descendant_filter=type:school;attributes_type:Secondary&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
+
+### Fetch relations of multiple entities
+GET http://{{host}}/{{version}}/hierarchy/explore/relations?entities=TO,PG&ancestor_filter=type:district&descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}

@@ -63,7 +63,7 @@ export class ApiBuilder {
   }
 
   use<T extends ExpressRequest<T> = Request>(
-    path: string,
+    path: string | string[],
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
     this.app.use(path, middleware);
