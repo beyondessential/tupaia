@@ -222,10 +222,6 @@ exports.up = async function (db) {
     UPDATE entity 
     SET code = '${newEntityCodes(i)}'
     where code = '${originalEntityCodes(i)}';
-
-    UPDATE clinic 
-    SET code = '${newEntityCodes(i)}'
-    where code = '${originalEntityCodes(i)}';
   `);
   }
 
