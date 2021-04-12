@@ -20,7 +20,7 @@ const urls = {
   // Laos EOC project
   laosOpenStreets: makeMapboxStyleUrl({ styleId: 'ckn9vp2ge1csu17moehpyw1tf' }),
   laosSatellite: makeMapboxStyleUrl({ styleId: 'ckma1ax5u4yyi17o7k01f7k2h' }),
-  laosWaterways: makeMapboxStyleUrl({ styleId: 'ckm5o375h43a017qym8ic3sgh' }),
+  laosWaterways: makeMapboxStyleUrl({ styleId: 'ckm5nzs0g0ikm17k6tp7d50kd' }),
   laosRoads: makeMapboxStyleUrl({ styleId: 'ckm5o3b9c82li17r166w0bj2g' }),
   laosEthnicity: makeMapboxStyleUrl({ styleId: 'ckm5nv5rv82j217qka0kylmsu' }),
   laosTerrain: makeMapboxStyleUrl({ styleId: 'ckm5o375h43a017qym8ic3sgh' }),
