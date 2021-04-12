@@ -12,7 +12,7 @@ export const GREEN = '#02B851';
 // Font
 export const FONT_DARKGREY = '#2C3236';
 export const FONT_MIDGREY = '#5D676C';
-export const FONT_LIGHTGREY = '#B7C0C5';
+export const FONT_LIGHTGREY = '#A1AAAF';
 
 // Greys (based on first 2 letters of hex code)
 export const GREY_DE = '#DEDEE0'; // borders
