@@ -12,3 +12,5 @@ export * from './MainMenu';
 export * from './FullPageLoader';
 export * from './Breadcrumbs';
 export * from './LocationHeader';
+export * from './SearchBar';
+export * from './EntityMenu';

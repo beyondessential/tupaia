@@ -10,7 +10,7 @@ export type ArraySurveyResponse = [string, string, string, Record<string, string
 
 export const arrayToSurveyResponse = (arrayResponse: ArraySurveyResponse) => {
   const [surveyCode, entityCode, date, answers] = arrayResponse;
-  return { surveyCode, entityCode, submission_time: `${date}T15:00:00Z`, answers };
+  return { surveyCode, entityCode, data_time: `${date}T15:00:00`, answers };
 };
 
 // startDate, endDate, organisationUnitCodes

@@ -9,23 +9,15 @@ import * as dotenv from 'dotenv';
 
 import http from 'http';
 
-import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
-import { EntityServerModelRegistry } from './types';
-
 import { createApp } from './app';
 import winston from './log';
 
 dotenv.config(); // Load the environment variables into process.env
 
 /**
- * Set up models for entity-server
- */
-const models = new ModelRegistry(new TupaiaDatabase()) as EntityServerModelRegistry;
-
-/**
  * Set up app with routes etc.
  */
-const app = createApp(models);
+const app = createApp();
 
 /**
  * Start the server
