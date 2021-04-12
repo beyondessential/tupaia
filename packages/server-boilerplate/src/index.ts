@@ -14,3 +14,4 @@ export {
   SessionType,
   SessionCookie,
 } from './orchestrator';
+export { QueryParameters } from './types';
