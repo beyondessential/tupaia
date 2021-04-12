@@ -1,7 +1,7 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
 
-import { getUserFromBasicAuth } from './getUserFromBasicAuth';
+import { getUserFromAuthHeader } from './getUserFromAuthHeader';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
 
@@ -9,10 +9,10 @@ const allowedUnauthRoutes = ['/login', '/version'];
 
 // auth is a middleware that runs on every request
 const auth = () => async (req, res, next) => {
-  // if using basic auth, check credentials and set access policy for that user
-  const basicAuthUser = await getUserFromBasicAuth(req);
-  if (basicAuthUser) {
-    req.accessPolicy = await getAccessPolicyForUser(req.models, basicAuthUser.fullName);
+  // if using basic or bearer auth, check credentials and set access policy for that user
+  const authHeaderUser = await getUserFromAuthHeader(req);
+  if (authHeaderUser) {
+    req.accessPolicy = await getAccessPolicyForUser(req.models, authHeaderUser.fullName);
     next();
     return;
   }
