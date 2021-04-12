@@ -11,6 +11,7 @@ import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
 export interface FetchReportQuery extends Query {
   organisationUnitCodes: string;
+  hierarchy?: string;
   period?: string;
   startDate?: string;
   endDate?: string;

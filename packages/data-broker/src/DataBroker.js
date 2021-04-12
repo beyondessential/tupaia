@@ -20,7 +20,8 @@ const getDatabaseInstance = () => {
 };
 
 export class DataBroker {
-  constructor() {
+  constructor(context) {
+    this.context = context;
     this.models = new ModelRegistry(getDatabaseInstance());
     this.resultMergers = {
       [this.getDataSourceTypes().DATA_ELEMENT]: this.mergeAnalytics,

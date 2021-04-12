@@ -17,19 +17,22 @@ export class Aggregator extends BaseAggregator {
   async fetchAnalytics(
     dataElementCodes: string[],
     organisationUnitCodes: string,
+    hierarchy: string | undefined,
     periodParams: PeriodParams,
+    aggregationOptions: unknown,
   ) {
     const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
     return super.fetchAnalytics(
       dataElementCodes,
       {
         organisationUnitCodes: organisationUnitCodes.split(','),
+        hierarchy,
         period,
         startDate,
         endDate,
         dataServices: [{ isDataRegional: true }],
       },
-      { aggregationType: 'RAW' },
+      aggregationOptions,
     );
   }
 
