@@ -11,6 +11,8 @@ import {
   SingleEntityRoute,
   DescendantsRequest,
   EntityDescendantsRoute,
+  MultiEntityDescendantsRequest,
+  MultiEntityDescendantsRoute,
   RelationsRequest,
   EntityRelationsRoute,
   MultiEntityRelationsRequest,
@@ -33,7 +35,14 @@ export function createApp() {
       '/v1/hierarchy/:hierarchyName',
       attachCommonContext,
     )
-    .use<MultiEntityRequest>(['/v1/hierarchy/:hierarchyName/relations'], attachMultiEntityContext)
+    .use<MultiEntityRequest>(
+      ['/v1/hierarchy/:hierarchyName/relations', '/v1/hierarchy/:hierarchyName/descendants'],
+      attachMultiEntityContext,
+    )
+    .get<MultiEntityDescendantsRequest>(
+      '/v1/hierarchy/:hierarchyName/descendants',
+      handleWith(MultiEntityDescendantsRoute),
+    )
     .use<MultiEntityRelationsRequest>(
       '/v1/hierarchy/:hierarchyName/relations',
       attachRelationsContext,

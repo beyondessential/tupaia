@@ -9,6 +9,8 @@ export {
   SingleEntityRoute,
   EntityDescendantsRoute,
   DescendantsRequest,
+  MultiEntityDescendantsRoute,
+  MultiEntityDescendantsRequest,
   EntityRelationsRoute,
   RelationsRequest,
   MultiEntityRelationsRoute,
