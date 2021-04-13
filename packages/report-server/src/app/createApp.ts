@@ -9,6 +9,7 @@ import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 import { Authenticator } from '@tupaia/auth';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+import { buildBasicBearerAuthMiddleware } from '@tupaia/server-boilerplate';
 
 import { addRoutesToApp } from './addRoutesToApp';
 
@@ -37,6 +38,11 @@ export function createApp(database: TupaiaDatabase, models: ModelRegistry) {
     req.authenticator = authenticator;
     next();
   });
+
+  /**
+   * Attach authentication to each endpoint
+   */
+  app.use(buildBasicBearerAuthMiddleware('report-server', authenticator));
 
   /**
    * Add all routes to the app
