@@ -12,6 +12,7 @@ import {
   TestRoute,
   FetchConfirmedWeeklyReportRoute,
   FetchConfirmedCountryWeeklyReportRoute,
+  FetchCountries,
   FetchCountryWeeklyReportRoute,
   ConfirmCountryWeeklyReportRoute,
   SaveCountryWeeklyReportRoute,
@@ -54,6 +55,7 @@ export function addRoutesToApp(app: Express) {
     '/v1/confirmedWeeklyReport/:organisationUnitCode',
     handleWith(FetchConfirmedCountryWeeklyReportRoute),
   );
+  app.get('/v1/country', handleWith(FetchCountries));
   app.get('/v1/weeklyReport/:organisationUnitCode', handleWith(FetchCountryWeeklyReportRoute));
 
   /**

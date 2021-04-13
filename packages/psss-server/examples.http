@@ -39,7 +39,7 @@ content-type: application/json
 DELETE http://localhost:8040/v1/weeklyReport/TO?week=2021W07 HTTP/2.0
 
 ### Fetch Confirmed Weekly Report Data
-GET http://localhost:8040/v1/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+GET http://localhost:8040/v1/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07&orgUnitCodes=TO,FJ HTTP/2.0
 
 ### Fetch Country Confirmed Weekly Report Data
 GET http://localhost:8040/v1/confirmedWeeklyReport/TO?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
