@@ -17,7 +17,7 @@ type Pair = {
 export class RelationsResponseBuilder {
   private readonly models: EntityServerModelRegistry;
 
-  private readonly ctx: RelationsContext;
+  private readonly ctx: RelationsContext & { ancestor: { type: string } };
 
   private readonly groupBy: 'ancestor' | 'descendant';
 
@@ -27,8 +27,17 @@ export class RelationsResponseBuilder {
     groupBy: 'ancestor' | 'descendant' = 'ancestor',
   ) {
     this.models = models;
-    this.ctx = ctx;
     this.groupBy = groupBy;
+
+    const ancestorType = ctx.ancestor.type || ctx.entity.type;
+    if (ancestorType === null) {
+      throw new Error('No explicit ancestorType provided and entity type is null');
+    }
+
+    this.ctx = {
+      ...ctx,
+      ancestor: { ...ctx.ancestor, type: ancestorType },
+    };
   }
 
   private async buildAncestorCodesAndPairs(descendants: EntityType[]): Promise<[string[], Pair[]]> {

@@ -26,10 +26,16 @@ export type RelationsQuery = RelationsSubQuery & {
 } & Partial<Prefix<RelationsSubQuery, 'ancestor'>> &
   Partial<Prefix<RelationsSubQuery, 'descendant'>>;
 
-type RelationsSubContext = {
+type DescendantSubContext = {
   filter: EntityFilter;
   field: keyof FlattableEntityFields;
   type: string;
+};
+
+type AncestorSubContext = {
+  filter: EntityFilter;
+  field: keyof FlattableEntityFields;
+  type?: string;
 };
 
 export type RelationsResponseBody =
@@ -37,8 +43,8 @@ export type RelationsResponseBody =
   | Record<FlattenedEntity, EntityResponse[]>; // groupBy: ancestor
 
 export type RelationsContext = Omit<SingleEntityContext, 'fields'> & {
-  ancestor: RelationsSubContext;
-  descendant: RelationsSubContext;
+  ancestor: AncestorSubContext;
+  descendant: DescendantSubContext;
 };
 
 export interface RelationsRequest
@@ -54,7 +60,7 @@ export interface MultiEntityRelationsRequest
     RelationsQuery & { entities?: string }
   > {
   ctx: Omit<MultiEntityContext, 'fields'> & {
-    ancestor: RelationsSubContext;
-    descendant: RelationsSubContext;
+    ancestor: AncestorSubContext;
+    descendant: DescendantSubContext;
   };
 }

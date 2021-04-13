@@ -45,8 +45,8 @@ const getSubContext = (
   const field = (queryField ? extractFieldFromQuery(queryField) : baseField) || 'code';
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
   const { type, ...restOfFilter } = filter;
-  if (!type || Array.isArray(type)) {
-    throw new Error(`${from}_filter must contain a single type constraint`);
+  if (type === null || Array.isArray(type)) {
+    throw new Error(`${from}_filter:type must be a single, not null type constraint`);
   }
   return { type, field, filter: restOfFilter };
 };
@@ -58,7 +58,13 @@ export const attachRelationsContext = async (
 ) => {
   try {
     req.ctx.ancestor = getSubContext(req, 'ancestor');
-    req.ctx.descendant = getSubContext(req, 'descendant');
+
+    const { type, ...restOfDescendantSubContext } = getSubContext(req, 'descendant');
+    if (type === undefined) {
+      throw new Error('descendant_filter:type url parameter must be present');
+    }
+    req.ctx.descendant = { ...restOfDescendantSubContext, type };
+
     next();
   } catch (error) {
     next(error);

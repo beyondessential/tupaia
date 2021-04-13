@@ -34,7 +34,7 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch relations of an entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO/relations?ancestor_filter=type:facility&descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/relations?descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
@@ -44,6 +44,6 @@ content-type: {{contentType}}
 Authorization: {{authorization}}
 
 ### Fetch relations of multiple entities
-GET http://{{host}}/{{version}}/hierarchy/explore/relations?entities=TO,PG&ancestor_filter=type:district&descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
+GET http://{{host}}/{{version}}/hierarchy/explore/relations?entities=TO,PG&descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
