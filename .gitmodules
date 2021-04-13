@@ -1,0 +1,3 @@
+[submodule "packages/data-api/scripts/pg-mv-fast-refresh"]
+	path = packages/data-api/scripts/pg-mv-fast-refresh
+	url = ../pg-mv-fast-refresh.git

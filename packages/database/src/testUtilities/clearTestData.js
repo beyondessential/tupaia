@@ -4,6 +4,7 @@
  */
 
 import moment from 'moment';
+import { AnalyticsRefresher } from '..';
 
 const COMPARISON = `LIKE '%_test%'`;
 const getDeleteStatement = (table, mainCondition = `id ${COMPARISON}`, extraConditions = []) => {
@@ -57,7 +58,7 @@ const TABLES_TO_CLEAR = [
   'mapOverlay',
 ];
 
-export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
+export async function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
   const mainConditions = {
     dashboardGroup: `code ${COMPARISON}`, // id of dashboard group is still Integer, so have the mainCondition test on code rather than id
   };
@@ -80,5 +81,6 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
       `${acc}\n${getDeleteStatement(table, mainConditions[table], extraConditions[table])}`,
     '',
   );
-  return db.executeSql(sql);
+  await db.executeSql(sql);
+  await AnalyticsRefresher.executeRefresh(db);
 }
