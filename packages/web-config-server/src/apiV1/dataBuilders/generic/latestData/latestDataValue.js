@@ -23,7 +23,7 @@ export const latestDataValue = async ({ models, dataBuilderConfig, query, entity
     dataBuilderConfig,
     query,
     entity,
-    aggregator.aggregationTypes. MOST_RECENT,
+    aggregator.aggregationTypes.MOST_RECENT,
   );
   return builder.build();
 };
