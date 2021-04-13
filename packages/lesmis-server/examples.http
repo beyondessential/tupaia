@@ -34,16 +34,15 @@ Content-Type: {{contentType}}
 
 ###
 
-@sessionCookie = {{login.response.headers.Set-Cookie}}
-
-
 ### Fetch user
 GET http://{{host}}/{{version}}/user HTTP/1.1
 content-type: {{contentType}}
-Cookie: {{sessionCookie}}
 
 
-### Logged in reports fetch
+### Public report
 GET http://{{host}}/{{version}}/reportData/LA_Phonhong%20District/Laos_Schools_Number_Of_Schools_By_Type_Table?type=view&dashboardGroupId=337 HTTP/1.1
 content-type: {{contentType}}
-Cookie: {{sessionCookie}}
+
+### MoES only report
+GET http://{{host}}/{{version}}/reportData/LA_Phonhong%20District/Laos_Schools_Language_Of_Students?type=view&dashboardGroupId=359 HTTP/1.1
+content-type: {{contentType}}
