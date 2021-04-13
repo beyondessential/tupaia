@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.dependency.json",
+  "extends": "../../tsconfig-js.json",
   "compilerOptions": {
     "outDir": "dist"
   },

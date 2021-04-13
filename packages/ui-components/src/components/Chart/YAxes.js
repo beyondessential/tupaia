@@ -9,7 +9,7 @@ import { formatDataValueByType } from '@tupaia/utils';
 import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE, VALUE_TYPES } from './constants';
 
-const { PERCENTAGE } = VALUE_TYPES;
+const { PERCENTAGE, NUMBER } = VALUE_TYPES;
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -90,8 +90,11 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
       label={renderYAxisLabel(yName || yAxisLabel, orientation)}
       tickFormatter={value =>
         formatDataValueByType(
-          { value, metadata: { presentationOptions } },
-          valueType || axisValueType,
+          {
+            value,
+            metadata: { presentationOptions },
+          },
+          (valueType !== NUMBER ? valueType : 'default') || axisValueType,
         )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}

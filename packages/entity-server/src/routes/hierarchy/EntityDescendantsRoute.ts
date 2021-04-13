@@ -3,33 +3,33 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { Route } from '../Route';
+import { Route } from '@tupaia/server-boilerplate';
+import { formatEntitiesForResponse } from './format';
 import {
   HierarchyRequest,
-  HierarchyResponse,
   HierarchyRequestParams,
   HierarchyRequestBody,
   HierarchyRequestQuery,
-  EntityResponseObject,
+  EntityResponse,
 } from './types';
 
-export class EntityDescendantsRoute extends Route<
-  HierarchyRequest<
-    HierarchyRequestParams,
-    EntityResponseObject[],
-    HierarchyRequestBody,
-    HierarchyRequestQuery & { includeRootEntity?: boolean }
-  >,
-  HierarchyResponse<EntityResponseObject[]>
-> {
+export type DescendantsRequest = HierarchyRequest<
+  HierarchyRequestParams,
+  EntityResponse[],
+  HierarchyRequestBody,
+  HierarchyRequestQuery & { includeRootEntity?: boolean }
+>;
+export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {
+    const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
     const { includeRootEntity = false } = this.req.query;
-    const descendants = await this.req.context.entity.getDescendants(this.req.context.hierarchyId, {
-      country_code: this.req.context.allowedCountries,
+    const descendants = await entity.getDescendants(hierarchyId, {
+      ...filter,
     });
-    const responseEntities = includeRootEntity
-      ? [this.req.context.entity].concat(descendants)
-      : descendants;
-    return this.res.context.formatEntitiesForResponse(responseEntities);
+    const responseEntities = includeRootEntity ? [entity].concat(descendants) : descendants;
+    if (field) {
+      return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, field);
+    }
+    return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, fields);
   }
 }

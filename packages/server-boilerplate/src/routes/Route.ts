@@ -1,36 +1,37 @@
-/*
+/**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { NextFunction, Response } from 'express';
-import { respond, UnauthenticatedError } from '@tupaia/utils';
+import { Request, NextFunction, Response } from 'express';
+import { respond } from '@tupaia/utils';
 
-import { TupaiaRequest, TupaiaResponseBody, SessionCookie } from '../types';
-import { SessionModel, SessionType } from '../models/Session';
+// Infers type arguments from request type
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type Params<Type> = Type extends Request<infer P, any, any, any> ? P : never;
+export type ResBody<Type> = Type extends Request<any, infer sBody, any, any> ? sBody : never;
+export type ReqBody<Type> = Type extends Request<any, any, infer qBody, any> ? qBody : never;
+export type Query<Type> = Type extends Request<any, any, any, infer Q> ? Q : never;
+export type ExpressRequest<Req> = Request<Params<Req>, ResBody<Req>, ReqBody<Req>, Query<Req>>;
+export type ExpressResponse<Req> = Response<ResBody<Req>>;
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
-export abstract class Route {
-  req: TupaiaRequest;
+export class Route<
+  Req extends ExpressRequest<Req> = Request,
+  Res extends ExpressResponse<Req> = Response<ResBody<Req>>
+> {
+  readonly req: Req;
 
-  res: Response;
+  readonly res: Res;
 
-  next: NextFunction;
+  readonly next: NextFunction;
 
-  sessionModel: SessionModel;
-
-  sessionCookie?: SessionCookie;
-
-  constructor(req: TupaiaRequest, res: Response, next: NextFunction) {
+  constructor(req: Req, res: Res, next: NextFunction) {
     this.req = req;
     this.res = res;
     this.next = next;
-
-    const { sessionModel, sessionCookie } = req;
-    this.sessionModel = sessionModel;
-    this.sessionCookie = sessionCookie;
   }
 
-  respond(responseBody: TupaiaResponseBody, statusCode: number) {
+  respond(responseBody: ResBody<Req>, statusCode: number) {
     respond(this.res, responseBody, statusCode);
   }
 
@@ -39,8 +40,6 @@ export abstract class Route {
     // function, causing error handling middleware to be fired. Otherwise, async errors will be
     // swallowed.
     try {
-      await this.verifyAuth();
-      await this.setupConnections();
       const response = await this.buildResponse();
       this.respond(response, 200);
     } catch (error) {
@@ -48,24 +47,7 @@ export abstract class Route {
     }
   }
 
-  async getSession() {
-    const sessionId = this.sessionCookie?.id;
-    if (!sessionId) {
-      throw new UnauthenticatedError('User not authenticated');
-    }
-
-    const session: SessionType = await this.sessionModel.findById(sessionId);
-    if (!session) {
-      throw new UnauthenticatedError('Session not found in database');
-    }
-
-    return session;
+  async buildResponse(): Promise<ResBody<Req>> {
+    throw new Error('Any Route must implement "buildResponse"');
   }
-
-  abstract async buildResponse(): Promise<Record<string, unknown>>;
-
-  abstract async verifyAuth(): Promise<SessionType>;
-
-  // optional method to setup additional api connections
-  setupConnections(): void {}
 }

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import momentTimezone from 'moment-timezone';
+import moment from 'moment';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep } from '@tupaia/utils';
@@ -102,6 +102,7 @@ describe('surveyResponse endpoint', () => {
           { code: questionCode('Photo'), type: 'Photo' },
           { code: questionCode('Radio'), type: 'Radio', options: ['RadioA', 'RadioB'] },
           { code: questionCode('SubmissionDate'), type: 'SubmissionDate' },
+          { code: questionCode('DateOfData'), type: 'DateOfData' },
         ],
       },
     ]);
@@ -394,17 +395,10 @@ describe('surveyResponse endpoint', () => {
 
     const { surveyResponseId } = body.results[0];
     const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
-    expect(momentTimezone.tz(dbResponse.submission_time, dbResponse.timezone).format()).to.be.oneOf(
-      [
-        '2019-07-31T06:48:00+13:00',
-        // While 'Antarctica/McMurdo' is in DST time, it will be selected as the timezone,
-        // however the timestamp is hardcoded to a date outside of DST time for McMurdo, so it will be
-        // parsed with it's non-DST +12 offset.
-        '2019-07-31T05:48:00+12:00',
-      ],
-    );
     expect(dbResponse.timezone).to.be.oneOf(timezones);
-    expect(dbResponse.submission_time.toISOString()).to.equal('2019-07-30T17:48:00.000Z');
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+      '2019-07-30T17:48:00.000',
+    );
   });
 
   describe('Update entity for existing survey response', async function () {
@@ -472,7 +466,7 @@ describe('surveyResponse endpoint', () => {
           answers: {
             [questionCode('Binary')]: 'Yes',
             [questionCode('Date')]: '2019-01-01',
-            [questionCode('SubmissionDate')]: '2019-02-02',
+            [questionCode('DateOfData')]: '2019-02-02',
 
             [questionCode('Instruction')]: '',
             [questionCode('Number')]: '123',
@@ -532,6 +526,11 @@ describe('surveyResponse endpoint', () => {
 
     it('Should reject an invalid SubmissionDate answer', async () => {
       const response = await postTypeCheck('SubmissionDate', '1/1/2019');
+      expectError(response, /Dates should be in ISO 8601 format/);
+    });
+
+    it('Should reject an invalid DateOfData answer', async () => {
+      const response = await postTypeCheck('DateOfData', '1/1/2019');
       expectError(response, /Dates should be in ISO 8601 format/);
     });
   });

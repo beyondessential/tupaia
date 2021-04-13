@@ -5,7 +5,6 @@
 
 import xlsx from 'xlsx';
 import moment from 'moment';
-import momentTimezone from 'moment-timezone';
 import {
   constructIsOneOf,
   constructRecordExistsWithId,
@@ -16,9 +15,11 @@ import {
   respond,
   takesIdForm,
   UploadError,
+  stripTimezoneFromDate,
 } from '@tupaia/utils';
 import { getArrayQueryParameter, extractTabNameFromQuery } from '../utilities';
 import { ANSWER_TYPES } from '../../database/models/Answer';
+import { DEFAULT_DATABASE_TIMEZONE } from '../../database';
 import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
 import {
   EXPORT_DATE_FORMAT,
@@ -38,6 +39,7 @@ export async function importSurveyResponses(req, res) {
       throw new UploadError();
     }
     const surveyNames = getArrayQueryParameter(req?.query?.surveyNames);
+    const timeZone = req?.query?.timeZone || DEFAULT_DATABASE_TIMEZONE;
     const { models } = req;
     await models.wrapInTransaction(async transactingModels => {
       const workbook = xlsx.readFile(req.file.path);
@@ -81,15 +83,18 @@ export async function importSurveyResponses(req, res) {
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
                 const user = await transactingModels.user.findById(req.userId);
+                // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
                 const surveyDate = getDateForColumn(sheet, columnIndex);
+                const importDate = moment();
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
                   survey_id: survey.id, // All survey responses within a sheet should be for the same survey
                   assessor_name: `${user.first_name} ${user.last_name}`,
                   user_id: user.id,
                   entity_id: entity.id,
-                  start_time: surveyDate,
-                  end_time: surveyDate,
-                  submission_time: surveyDate,
+                  start_time: importDate,
+                  end_time: importDate,
+                  data_time: stripTimezoneFromDate(surveyDate),
+                  timezone: timeZone,
                 });
                 newSurveyResponseIds[columnIndex] = newSurveyResponse.id;
               } else {
@@ -181,9 +186,12 @@ export async function importSurveyResponses(req, res) {
                   survey_response_id: surveyResponseId,
                   question_id: questionId,
                 });
-              } else if (rowType === ANSWER_TYPES.SUBMISSION_DATE) {
-                // Don't save an answer for submission date rows, instead update the submission date
-                // of the survey response. Note that this will override what is in the Date info row
+              } else if (
+                rowType === ANSWER_TYPES.DATE_OF_DATA ||
+                rowType === ANSWER_TYPES.SUBMISSION_DATE
+              ) {
+                // Don't save an answer for date of data rows, instead update the date_time of the
+                // survey response. Note that this will override what is in the Date info row
                 await updateSubmissionTimeIfRequired(
                   transactingModels,
                   surveyResponseId,
@@ -258,16 +266,15 @@ const getMaxRowColumnIndex = sheet => {
 async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmissionTimeString) {
   const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
   if (!surveyResponse) return; // Survey response is probably deleted
-  const currentSubmissionTime = surveyResponse.submission_time;
+  const currentDataTime = surveyResponse.data_time;
   const isInExportFormat = moment(newSubmissionTimeString, EXPORT_DATE_FORMAT, true).isValid();
-  const newSubmissionTimeWithTimezone = isInExportFormat
-    ? momentTimezone.tz(newSubmissionTimeString, EXPORT_DATE_FORMAT, surveyResponse.timezone)
-    : momentTimezone.tz(newSubmissionTimeString, surveyResponse.timezone);
-  const newSubmissionTimeInUtc = newSubmissionTimeWithTimezone.utc().format();
+  const newDataTime = isInExportFormat
+    ? stripTimezoneFromDate(moment(newSubmissionTimeString, EXPORT_DATE_FORMAT).toDate())
+    : stripTimezoneFromDate(moment(newSubmissionTimeString).toDate());
 
-  if (!moment(currentSubmissionTime).isSame(newSubmissionTimeInUtc, 'minute')) {
+  if (!moment(currentDataTime).isSame(newDataTime, 'minute')) {
     await models.surveyResponse.updateById(surveyResponseId, {
-      submission_time: newSubmissionTimeInUtc,
+      data_time: stripTimezoneFromDate(newDataTime),
     });
   }
 }

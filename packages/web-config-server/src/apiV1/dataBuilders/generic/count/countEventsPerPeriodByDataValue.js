@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable max-classes-per-file */
-
 import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
@@ -42,7 +40,7 @@ class DataByValueBuilder extends DataBuilder {
       let label = value;
       if (valuesOfInterest && valuesOfInterestLabelByValue[value]) {
         label = valuesOfInterestLabelByValue[value];
-      } else if (optionCodeToName && optionCodeToName[value]){
+      } else if (optionCodeToName && optionCodeToName[value]) {
         label = optionCodeToName[value];
       }
 

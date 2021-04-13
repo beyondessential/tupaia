@@ -26,7 +26,7 @@ const SURVEY_RESPONSES = [
   {
     surveyCode: 'FavouriteColour',
     entityCode: 'AU',
-    submission_time: '2020-12-10T15:00:00Z',
+    data_time: '2020-12-10T15:00:00',
     answers: {
       Red: '10',
       Blue: '20',
@@ -35,7 +35,7 @@ const SURVEY_RESPONSES = [
   {
     surveyCode: 'Births',
     entityCode: 'AU',
-    submission_time: '2020-12-11T15:00:00Z',
+    data_time: '2020-12-11T15:00:00',
     answers: {
       Name: 'John',
       Weight: '3',
@@ -45,7 +45,7 @@ const SURVEY_RESPONSES = [
   {
     surveyCode: 'Births',
     entityCode: 'AU',
-    submission_time: '2020-12-12T15:00:00Z',
+    data_time: '2020-12-12T15:00:00',
     answers: {
       Name: 'Lisa',
       Weight: '4',

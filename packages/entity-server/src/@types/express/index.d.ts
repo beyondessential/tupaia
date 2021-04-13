@@ -3,20 +3,20 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { AccessPolicy } from '@tupaia/access-policy';
-import { Authenticator } from '@tupaia/auth';
-import { EntityServerModelRegistry, Context } from '../../types';
+import { EntityServerModelRegistry } from '../../types';
 
 declare global {
   namespace Express {
     export interface Request {
       accessPolicy: AccessPolicy;
-      authenticator: Authenticator;
       models: EntityServerModelRegistry;
-      context: Context;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ctx: any;
     }
 
     export interface Response {
-      context: Context;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ctx: any;
     }
   }
 }
