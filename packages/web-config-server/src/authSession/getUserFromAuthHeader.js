@@ -2,21 +2,18 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { getUserAndPassFromBasicAuth, getUserIDFromToken } from '@tupaia/auth';
-import { TUPAIA_CONFIG_SERVER_DEVICE_NAME } from './constants';
+import { encryptPassword, getUserAndPassFromBasicAuth, getUserIDFromToken } from '@tupaia/auth';
 
-const getUserFromBasicAuth = async (authenticator, authHeader) => {
-  try {
-    const { username: emailAddress, password } = getUserAndPassFromBasicAuth(authHeader);
-    const { user } = await authenticator.authenticatePassword({
-      emailAddress,
-      password,
-      deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME,
-    });
-    return user;
-  } catch (e) {
-    return null;
-  }
+const getApiClientUserFromBasicAuth = async (models, authHeader) => {
+  const { username, password: secretKey } = getUserAndPassFromBasicAuth(authHeader);
+
+  // first attempt to authenticate as an api client, in case a secret key was used in the auth header
+  const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
+  const apiClient = await models.apiClient.findOne({
+    username,
+    secret_key_hash: secretKeyHash,
+  });
+  return apiClient && apiClient.getUser();
 };
 
 const getUserFromBearerAuth = async (models, authHeader) => {
@@ -29,14 +26,14 @@ const getUserFromBearerAuth = async (models, authHeader) => {
 };
 
 export const getUserFromAuthHeader = async req => {
-  const { authenticator, headers, models } = req;
+  const { headers, models } = req;
   const authHeader = headers.authorization || headers.Authorization;
   if (!authHeader) {
     return null;
   }
 
   if (authHeader.startsWith('Basic ')) {
-    return getUserFromBasicAuth(authenticator, authHeader);
+    return getApiClientUserFromBasicAuth(models, authHeader);
   }
 
   if (authHeader.startsWith('Bearer ')) {

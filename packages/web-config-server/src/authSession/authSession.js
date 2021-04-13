@@ -9,18 +9,20 @@ const allowedUnauthRoutes = ['/login', '/version'];
 
 // auth is a middleware that runs on every request
 const auth = () => async (req, res, next) => {
+  const { authenticator } = req;
+
   // if using basic or bearer auth, check credentials and set access policy for that user
   const authHeaderUser = await getUserFromAuthHeader(req);
   if (authHeaderUser) {
-    req.accessPolicy = await getAccessPolicyForUser(req.models, authHeaderUser.fullName);
+    req.accessPolicy = await getAccessPolicyForUser(authenticator, authHeaderUser.id);
     next();
     return;
   }
 
   // if logged in or logging in continue
-  const userName = req.session?.userJson?.userName;
-  if (!!userName || checkAllowedUnauthRoutes(req)) {
-    req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(req.models, userName));
+  const userId = req.session?.userJson?.userId;
+  if (!!userId || checkAllowedUnauthRoutes(req)) {
+    req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
     next();
     return;
   }
@@ -34,7 +36,7 @@ const auth = () => async (req, res, next) => {
 
   // no previous login, authenticate as public user
   setSession(req, { userName: PUBLIC_USER_NAME }); // store new session as public user
-  req.accessPolicy = await getAccessPolicyForUser(req.models, PUBLIC_USER_NAME);
+  req.accessPolicy = await getAccessPolicyForUser(authenticator, PUBLIC_USER_NAME);
   next();
 };
 
