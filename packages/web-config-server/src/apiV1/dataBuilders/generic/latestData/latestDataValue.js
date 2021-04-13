@@ -4,7 +4,6 @@
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { AGGREGATION_TYPES } from '@tupaia/aggregator/dist/aggregationTypes';
 
 
 export class LatestDataValueBuilder extends DataBuilder {
