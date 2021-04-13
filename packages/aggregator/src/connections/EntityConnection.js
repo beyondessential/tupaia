@@ -7,22 +7,22 @@ import { ApiConnection } from '@tupaia/server-boilerplate';
 
 const { ENTITY_SERVER_API_URL = 'http://localhost:8050/v1' } = process.env;
 
-const buildUrlParam = (key, value, prefix) =>
-  prefix ? `${prefix}_${key}:${value}` : `${key}:${value}`;
+const createDescendantsUrl = (hierarchyName, entityCodes, dataSourceEntityType) =>
+  `hierarchy/${hierarchyName}/descendants?entities=${entityCodes.join(
+    ',',
+  )}&field=code&descendant_filter=type:${dataSourceEntityType}`;
 
-const convertObjectToUrlParams = (object, prefix) => {
-  const paramsArray = [];
-  Object.entries(object).forEach(([key, value]) => {
-    if (typeof value === 'object' && value !== null) {
-      paramsArray.push(...convertObjectToUrlParams(value, prefix ? `${prefix}_${key}` : key));
-    } else {
-      paramsArray.push(buildUrlParam(key, value, prefix));
-    }
-  });
-  return paramsArray;
-};
-
-const buildFilter = filter => convertObjectToUrlParams(filter).join(';');
+const createRelationsUrl = (
+  hierarchyName,
+  entityCodes,
+  aggregationEntityType,
+  dataSourceEntityType,
+) =>
+  `hierarchy/${hierarchyName}/relations?entities=${entityCodes.join(
+    ',',
+  )}&field=code&groupBy=descendant&${
+    aggregationEntityType === 'requested' ? '' : `ancestor_filter=type:${aggregationEntityType}`
+  }&descendant_filter=type:${dataSourceEntityType}`;
 
 export class EntityConnection extends ApiConnection {
   baseUrl = ENTITY_SERVER_API_URL;
@@ -34,44 +34,23 @@ export class EntityConnection extends ApiConnection {
 
   async getDataSourceEntities(
     hierarchyName,
-    baseEntity,
+    entityCodes,
     dataSourceEntityType,
-    dataSourceEntityFilter = {},
+    dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
-    const builtFilter = buildFilter(dataSourceEntityFilter);
-    return this.get(
-      `hierarchy/${hierarchyName}/${baseEntity}/descendants?field=code&descendant_filter=type:${dataSourceEntityType}${
-        builtFilter ? `;${builtFilter}` : ''
-      }`,
-    );
+    return this.get(createDescendantsUrl(hierarchyName, entityCodes, dataSourceEntityType));
   }
 
   async getDataSourceEntitiesAndRelations(
     hierarchyName,
-    baseEntity,
+    entityCodes,
     aggregationEntityType,
     dataSourceEntityType,
-    dataSourceEntityFilter = {},
+    dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
-    if (aggregationEntityType === 'requested') {
-      const dataSourceEntities = await this.getDataSourceEntities(
-        hierarchyName,
-        baseEntity,
-        dataSourceEntityType,
-        dataSourceEntityFilter,
-      );
-      const formattedRelations = {};
-      dataSourceEntities.forEach(descendant => {
-        formattedRelations[descendant] = { code: baseEntity };
-      });
-      return [dataSourceEntities, formattedRelations];
-    }
-
-    const builtFilter = buildFilter(dataSourceEntityFilter);
-    const url = `hierarchy/${hierarchyName}/${baseEntity}/relations?field=code&groupBy=descendant&ancestor_filter=type:${aggregationEntityType}&descendant_filter=type:${dataSourceEntityType}${
-      builtFilter ? `;${builtFilter}` : ''
-    }`;
-    const response = await this.get(url);
+    const response = await this.get(
+      createRelationsUrl(hierarchyName, entityCodes, aggregationEntityType, dataSourceEntityType),
+    );
     const formattedRelations = {};
     Object.entries(response).forEach(([descendant, ancestor]) => {
       formattedRelations[descendant] = { code: ancestor };

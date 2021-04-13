@@ -53,7 +53,6 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
     return [organisationUnitCodes, aggregationList];
   }
 
-  const entityCode = organisationUnitCodes[0]; // Only support single entity request for now
   const { session } = context;
 
   let adjustedOrganisationUnitCodes;
@@ -70,7 +69,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
         const { dataSourceEntityType, dataSourceEntityFilter } = aggregation.config;
         adjustedOrganisationUnitCodes = await entityConnection.getDataSourceEntities(
           hierarchy,
-          entityCode,
+          organisationUnitCodes,
           dataSourceEntityType,
           dataSourceEntityFilter,
         );
@@ -88,7 +87,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
         relations,
       ] = await entityConnection.getDataSourceEntitiesAndRelations(
         hierarchy,
-        entityCode,
+        organisationUnitCodes,
         aggregationEntityType,
         dataSourceEntityType,
         dataSourceEntityFilter,
