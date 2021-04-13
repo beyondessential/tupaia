@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import faker from 'faker';
-import { getCountryName } from '../utils';
 
 export const FakeAPI = {
   sleep(delay = 0) {
@@ -205,19 +204,6 @@ export const FakeAPI = {
         department: faker.name.jobTitle(),
         email: faker.internet.email(),
       },
-      syndromes: this.syndromes(),
-    };
-  },
-
-  country(countryCode) {
-    return {
-      id: faker.random.uuid(),
-      name: getCountryName(countryCode),
-      countryCode: countryCode,
-      sitesReported: faker.random.number({
-        min: 0,
-        max: 30,
-      }),
       syndromes: this.syndromes(),
     };
   },

@@ -4,12 +4,14 @@
  */
 
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import MuiLink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import { Link as RouterLink } from 'react-router-dom';
-import { countryFlagImage, getCountryName } from '../../../utils';
+import { getCountryName } from '../../../store';
+import { countryFlagImage } from '../../../utils';
 import * as COLORS from '../../../constants/colors';
 
 const CountryTitle = styled(MuiLink)`
@@ -48,11 +50,15 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
-export const CountryNameLinkCell = ({ organisationUnit }) => (
-  <CountryTitle to={`weekly-reports/${organisationUnit}`} component={RouterLink}>
-    <Avatar src={countryFlagImage(organisationUnit)} /> {getCountryName(organisationUnit)}
-  </CountryTitle>
-);
+export const CountryNameLinkCell = ({ organisationUnit }) => {
+  const countryName = useSelector(state => getCountryName(state, organisationUnit));
+
+  return (
+    <CountryTitle to={`weekly-reports/${organisationUnit}`} component={RouterLink}>
+      <Avatar src={countryFlagImage(organisationUnit)} /> {countryName}
+    </CountryTitle>
+  );
+};
 
 CountryNameLinkCell.propTypes = {
   organisationUnit: PropTypes.string.isRequired,

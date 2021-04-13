@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
@@ -27,7 +28,8 @@ import {
 } from '../../components';
 import { CreateOutbreakModal } from '../Modals';
 import { NotesTab } from '../NotesTab';
-import { countryFlagImage, getCountryName } from '../../utils';
+import { getCountryName } from '../../store';
+import { countryFlagImage } from '../../utils';
 import { useFetch } from '../../hooks';
 
 const Option = styled.span`
@@ -75,6 +77,7 @@ export const AlertsPanel = React.memo(({ isOpen, handleClose }) => {
   const notesState = useFetch(getAlertsMessages);
   const activityState = useFetch(getActivityFeed);
   const { countryCode } = useParams();
+  const countryName = useSelector(state => getCountryName(state, countryCode));
 
   const handleChange = option => {
     // todo handle changes other than creating an outbreak
@@ -88,7 +91,7 @@ export const AlertsPanel = React.memo(({ isOpen, handleClose }) => {
         date="Week 9 Feb 25 - Mar 1, 2021"
         dateText="Triggered on:"
         avatarUrl={countryFlagImage('as')}
-        subheading={getCountryName(countryCode)}
+        subheading={countryName}
         heading="Acute Fever and Rash (AFR)"
         DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
       />

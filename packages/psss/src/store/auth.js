@@ -4,9 +4,9 @@
  */
 
 import { createSelector } from 'reselect';
-import { AccessPolicy } from '@tupaia/access-policy';
-import { loginUser, logoutUser, updateUser, getUser } from '../api';
+import { getCountries, loginUser, logoutUser, updateUser, getUser } from '../api';
 import { createReducer } from '../utils/createReducer';
+import { clearCountries, getCountryCodes, setCountries } from './entities';
 
 // actions
 const LOGIN_START = 'LOGIN_START';
@@ -21,14 +21,17 @@ export const login = ({ email, password }) => async dispatch => {
 
   dispatch({ type: LOGIN_START });
   try {
-    const user = await loginUser({
+    const { user } = await loginUser({
       emailAddress: email,
       password,
       deviceName,
     });
+    const { data: countries } = await getCountries(user);
+
+    dispatch(setCountries(countries));
     dispatch({
       type: LOGIN_SUCCESS,
-      ...user,
+      user,
     });
   } catch (error) {
     dispatch({
@@ -46,6 +49,7 @@ export const logout = (error = null) => async dispatch => {
     });
   }
 
+  dispatch(clearCountries());
   dispatch({
     type: LOGOUT,
   });
@@ -69,33 +73,18 @@ export const checkIsError = ({ auth }) => auth.status === 'error';
 export const getError = ({ auth }) => auth.error;
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && state.auth.isLoggedIn;
 
-const PSSS_PERMISSION_GROUP = 'PSSS';
-
 export const canUserViewCountry = (entities, match) =>
   entities.some(entityCode => entityCode === match.params.countryCode);
 
 export const canUserViewMultipleCountries = entities => entities.length > 1;
 
-const getEntitiesAllowedByUser = user => {
-  if (!user) {
-    return [];
-  }
-
-  const entities = new AccessPolicy(user.accessPolicy).getEntitiesAllowed(PSSS_PERMISSION_GROUP);
-  return entities.filter(e => e !== 'DL'); // don't show demo land in psss
-};
-
-export const getEntitiesAllowed = createSelector(getCurrentUser, user =>
-  getEntitiesAllowedByUser(user),
-);
-
 export const checkIsMultiCountryUser = createSelector(
-  getEntitiesAllowed,
-  entities => entities.length > 1,
+  getCountryCodes,
+  countryCodes => countryCodes.length > 1,
 );
 
 export const getHomeUrl = state =>
-  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getEntitiesAllowed(state)[0]}`;
+  checkIsMultiCountryUser(state) ? '/' : `/weekly-reports/${getCountryCodes(state)[0]}`;
 
 // reducer
 const defaultState = {

@@ -10,10 +10,12 @@ import storage from 'redux-persist/lib/storage';
 import { apiErrorInterceptor } from '../api/apiErrorInterceptor';
 
 import { auth } from './auth';
+import { entities } from './entities';
 import { weeklyReports } from './weeklyReports';
 
 const rootReducer = combineReducers({
   auth: persistReducer({ key: 'auth', storage, whitelist: ['user', 'isLoggedIn'] }, auth),
+  entities,
   weeklyReports,
 });
 

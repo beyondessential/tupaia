@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
 import { ProfileButton } from './ProfileButton';
-import { getEntitiesAllowed, getHomeUrl, checkIsMultiCountryUser } from '../store';
+import { getCountryCodes, getHomeUrl, checkIsMultiCountryUser } from '../store';
 
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
@@ -47,17 +47,17 @@ NavBarComponent.defaultProps = {
 };
 
 const makeLinks = state => {
-  const entities = getEntitiesAllowed(state);
+  const countryCodes = getCountryCodes(state);
   const multiCountry = checkIsMultiCountryUser(state);
   return [
     {
       label: 'Weekly Reports',
-      to: multiCountry ? '/' : `/weekly-reports/${entities[0]}`,
+      to: multiCountry ? '/' : `/weekly-reports/${countryCodes[0]}`,
       icon: <Dashboard />,
     },
     {
       label: 'Alerts & Outbreaks',
-      to: multiCountry ? '/alerts' : `/alerts/${entities[0]}`,
+      to: multiCountry ? '/alerts' : `/alerts/${countryCodes[0]}`,
       icon: <WarningCloud />,
     },
   ];

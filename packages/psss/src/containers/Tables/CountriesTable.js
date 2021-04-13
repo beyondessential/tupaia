@@ -2,15 +2,16 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { useConfirmedWeeklyReport } from '../../api';
 import { AlertCell, SitesReportedCell, CountryNameLinkCell } from '../../components';
-import { getLatestViewableWeek, getEntitiesAllowed } from '../../store';
-import { connect } from 'react-redux';
+import { getCountryCodes, getLatestViewableWeek } from '../../store';
 
 const countriesTableColumns = [
   {
@@ -79,12 +80,12 @@ export const CountriesTableComponent = ({ period, countryCodes }) => {
 
 CountriesTableComponent.propTypes = {
   period: PropTypes.string.isRequired,
-  countryCodes: PropTypes.array.isRequired,
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const mapStateToProps = state => ({
   period: getLatestViewableWeek(state),
-  countryCodes: getEntitiesAllowed(state),
+  countryCodes: getCountryCodes(state),
 });
 
 export const CountriesTable = connect(mapStateToProps)(CountriesTableComponent);
