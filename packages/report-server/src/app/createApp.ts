@@ -31,18 +31,16 @@ export function createApp(database: TupaiaDatabase, models: ModelRegistry) {
   /**
    * Add singletons to be attached to req for every route
    */
-  const authenticator = new Authenticator(models);
   app.use((req: ReportsRequest, res, next) => {
     req.database = database;
     req.models = models;
-    req.authenticator = authenticator;
     next();
   });
 
   /**
    * Attach authentication to each endpoint
    */
-  app.use(buildBasicBearerAuthMiddleware('report-server', authenticator));
+  app.use(buildBasicBearerAuthMiddleware('report-server', new Authenticator(models)));
 
   /**
    * Add all routes to the app

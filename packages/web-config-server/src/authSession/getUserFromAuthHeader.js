@@ -13,7 +13,7 @@ const getApiClientUserFromBasicAuth = async (models, authHeader) => {
     username,
     secret_key_hash: secretKeyHash,
   });
-  return apiClient && apiClient.getUser();
+  return apiClient?.getUser();
 };
 
 const getUserFromBearerAuth = async (models, authHeader) => {
