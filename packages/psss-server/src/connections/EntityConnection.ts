@@ -6,7 +6,7 @@
 import { PSSS_ENTITY, PSSS_HIERARCHY } from '../constants';
 import { ApiConnection } from './ApiConnection';
 
-const { ENTITY_URL = 'http://localhost:8050/v1' } = process.env;
+const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
 type EntityObject = {
   id: string;
@@ -24,7 +24,7 @@ const buildFilter = (fields: EntityFilter) =>
     .join(';');
 
 export class EntityConnection extends ApiConnection {
-  baseUrl = ENTITY_URL;
+  baseUrl = ENTITY_API_URL;
 
   fetchCountries = async (): Promise<EntityObject[]> => {
     const filter = buildFilter({ type: 'country' });

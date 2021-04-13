@@ -7,7 +7,7 @@ import keyBy from 'lodash.keyby';
 import { useTableData } from './useTableData';
 
 export const useConfirmedWeeklyReport = (period, orgUnitCodes) => {
-  const params = { startWeek: period, orgUnitCodes };
+  const params = { startWeek: period, orgUnitCodes: orgUnitCodes.join(',') };
   const query = useTableData('confirmedWeeklyReport', { params });
 
   // Fill empty data if required so that every org unit renders as a row in the table
