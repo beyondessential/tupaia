@@ -10,7 +10,8 @@ export const useConfirmedCountries = countryCodes => {
   const period = getCurrentPeriod();
   const currentWeekNumber = getWeekNumberByPeriod(period);
 
-  const query = useData('confirmedWeeklyReport', { params: { startWeek: period } });
+  const params = { startWeek: period, orgUnitCodes: countryCodes };
+  const query = useData('confirmedWeeklyReport', { params });
   const sites = countryCodes.length;
   const sitesReported = query?.data.length;
 

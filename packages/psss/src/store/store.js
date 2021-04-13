@@ -15,7 +15,7 @@ import { weeklyReports } from './weeklyReports';
 
 const rootReducer = combineReducers({
   auth: persistReducer({ key: 'auth', storage, whitelist: ['user', 'isLoggedIn'] }, auth),
-  entities,
+  entities: persistReducer({ key: 'entities', storage }, entities),
   weeklyReports,
 });
 
