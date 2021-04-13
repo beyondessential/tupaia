@@ -363,6 +363,13 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
   }
 
+  /**
+   * Fetches descendant => ancestor map in given hierarchy
+   * @param {string[]} descendantCodes
+   * @param {string} hierarchyId
+   * @param {string} ancestorType
+   * @returns {Promise<Record<string, { code: string, name: string }>>} Map of descendant code to ancestor (code, name)
+   */
   async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
     const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
     // in testing this function, there was no issue with many bound parameters, and reducing the

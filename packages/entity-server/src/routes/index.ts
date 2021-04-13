@@ -8,4 +8,6 @@ export {
   SingleEntityRoute,
   EntityDescendantsRoute,
   DescendantsRequest,
+  EntityRelationsRoute,
+  RelationsRequest,
 } from './hierarchy';

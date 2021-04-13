@@ -17,7 +17,7 @@ export type ExpressResponse<Req> = Response<ResBody<Req>>;
 
 export class Route<
   Req extends ExpressRequest<Req> = Request,
-  Res extends ExpressResponse<Req> = Response
+  Res extends ExpressResponse<Req> = Response<ResBody<Req>>
 > {
   readonly req: Req;
 
