@@ -17,7 +17,6 @@ export class GETUserForMe extends GETUserAccounts {
 
   // no assertion needed as "/me" endpoints are self enforcing - the user returned will be that
   // associated with the auth header
-  // eslint-disable-next-line no-empty-function
   async assertPermissions() {
     return super.assertPermissions(() => true);
   }
