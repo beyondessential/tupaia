@@ -7,3 +7,4 @@ export { UserRoute } from './UserRoute';
 export { ReportRoute } from './ReportRoute';
 export { EntityRoute, EntityRequest } from './EntityRoute';
 export { EntitiesRoute } from './EntitiesRoute';
+export { MeasuresRoute } from './MeasuresRoute';
