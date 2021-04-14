@@ -69,9 +69,9 @@ const getA1Join = (options, paramsArray) => {
   const { dataElementCodes, organisationUnitCodes } = options;
 
   const createJoin = (codes, columnName) => `
-       INNER JOIN (
-         ${SqlQuery.parameteriseValues(codes, paramsArray)}
-       ) ${columnName}s(code) ON ${columnName}s.code = analytics.${columnName}`;
+        INNER JOIN (
+          ${SqlQuery.parameteriseValues(codes, paramsArray)}
+        ) ${columnName}s(code) ON ${columnName}s.code = analytics.${columnName}`;
 
   const joins = [createJoin(organisationUnitCodes, 'entity_code')];
   if (hasElements(options)) {
@@ -132,12 +132,12 @@ const getA2WhereClause = (firstAggregation, options, paramsArray) => {
 const getA2Join = (firstAggregation, options, paramsArray) =>
   firstAggregation.useA2Join
     ? `CROSS JOIN LATERAL (
-      SELECT ${ANSWER_SPECIFIC_FIELDS}
-      FROM analytics
-      ${getA2WhereClause(firstAggregation, options, paramsArray)}
-      order by date desc
-      limit 1
-    ) as a2`
+       SELECT ${ANSWER_SPECIFIC_FIELDS}
+       FROM analytics
+       ${getA2WhereClause(firstAggregation, options, paramsArray)}
+       order by date desc
+       limit 1
+     ) as a2`
     : '';
 
 const generateBaseSqlQuery = options => {
@@ -146,15 +146,15 @@ const generateBaseSqlQuery = options => {
 
   const sqlQuery = new SqlQuery(
     `
-    SELECT ${getAliasedColumns(options)}
-    FROM (
-      ${getA1Select(firstAggregation, options)}
-      FROM analytics
-       ${getA1Join(options, paramsArray)}
-       ${getA1WhereClause(options, paramsArray)}
-       ${getA1GroupByClause(firstAggregation, options)}
-    ) as a1
-    ${getA2Join(firstAggregation, options, paramsArray)}`,
+     SELECT ${getAliasedColumns(options)}
+     FROM (
+       ${getA1Select(firstAggregation, options)}
+       FROM analytics
+        ${getA1Join(options, paramsArray)}
+        ${getA1WhereClause(options, paramsArray)}
+        ${getA1GroupByClause(firstAggregation, options)}
+     ) as a1
+     ${getA2Join(firstAggregation, options, paramsArray)}`,
     paramsArray,
   );
   sqlQuery.addOrderByClause('date');

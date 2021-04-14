@@ -256,6 +256,8 @@ export class Matrix extends PureComponent {
               onCellClick={this.onCellClick}
               presentationOptions={categoryPresentationOptions}
               isUsingDots={this.getIsUsingDots(categoryPresentationOptions)}
+              childRows={childRows}
+              category={category}
             >
               {children}
             </RowGroup>

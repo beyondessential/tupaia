@@ -69,10 +69,10 @@ export class TupaiaDataApi {
     }
     const sqlQuery = new SqlQuery(
       `
-      SELECT code, name, options, option_set_id, type
-      FROM question
-      WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
-    `,
+       SELECT code, name, options, option_set_id, type
+       FROM question
+       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
+     `,
       dataElementCodes,
     );
 
@@ -87,10 +87,10 @@ export class TupaiaDataApi {
 
     const dataGroups = await new SqlQuery(
       `
-      SELECT code, name
-      FROM survey
-      WHERE survey.code = '${dataGroupCode}'
-    `,
+       SELECT code, name
+       FROM survey
+       WHERE survey.code = '${dataGroupCode}'
+     `,
     ).executeOnDatabase(this.database);
 
     const dataGroup = dataGroups[0];
@@ -107,14 +107,14 @@ export class TupaiaDataApi {
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
       const sqlQuery = await new SqlQuery(
         `
-        SELECT question.code, question.name, question.text, question.options, question.option_set_id, question.type
-        FROM question
-        JOIN survey_screen_component on question.id = survey_screen_component.question_id
-        JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
-        JOIN survey on survey_screen.survey_id = survey.id
-        WHERE survey.code = '${dataGroupCode}'
-        AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
-      `,
+         SELECT question.code, question.name, question.text, question.options, question.option_set_id, question.type
+         FROM question
+         JOIN survey_screen_component on question.id = survey_screen_component.question_id
+         JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
+         JOIN survey on survey_screen.survey_id = survey.id
+         WHERE survey.code = '${dataGroupCode}'
+         AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+       `,
         dataElementCodes,
       );
 
@@ -175,10 +175,10 @@ export class TupaiaDataApi {
 
     const options = await new SqlQuery(
       `
-      SELECT option.value, option.label, option.option_set_id
-      FROM option
-      WHERE option.option_set_id IN ${SqlQuery.parameteriseArray(optionSetIds)}
-      `,
+       SELECT option.value, option.label, option.option_set_id
+       FROM option
+       WHERE option.option_set_id IN ${SqlQuery.parameteriseArray(optionSetIds)}
+       `,
       optionSetIds,
     ).executeOnDatabase(this.database);
 
