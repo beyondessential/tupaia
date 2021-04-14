@@ -14,11 +14,11 @@ export class WebConfigConnection extends SessionHandlingApiConnection {
     return this.get('view', query);
   }
 
-  async fetchMapOverlay(query: QueryParameters) {
+  async fetchMapOverlayData(query: QueryParameters) {
     return this.get('measureData', query);
   }
 
-  async fetchMeasures(query: QueryParameters) {
+  async fetchMapOverlays(query: QueryParameters) {
     return this.get('measures', query);
   }
 }

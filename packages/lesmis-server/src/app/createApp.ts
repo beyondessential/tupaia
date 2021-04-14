@@ -12,7 +12,7 @@ import {
   EntityRequest,
   EntityRoute,
   EntitiesRoute,
-  MeasuresRoute,
+  MapOverlaysRoute,
 } from '../routes';
 import { attachSession } from '../session';
 
@@ -25,8 +25,8 @@ export function createApp() {
     .useAttachSession(attachSession)
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities', handleWith(EntitiesRoute))
-    .get('/v1/measures/:entityCode', handleWith(MeasuresRoute))
+    .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))
     .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
-    .get('/v1/reportData/:entityCode/:reportCode', handleWith(ReportRoute))
+    .get('/v1/report-data/:entityCode/:reportCode', handleWith(ReportRoute))
     .build();
 }

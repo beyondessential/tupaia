@@ -9,11 +9,11 @@ import { Route } from '@tupaia/server-boilerplate';
 import { WebConfigConnection } from '../connections';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
-export type MeasuresRequest = Request<{ entityCode: string }>;
-export class MeasuresRoute extends Route<MeasuresRequest> {
+export type MapOverlaysRequest = Request<{ entityCode: string }>;
+export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   private readonly webConfigConnection: WebConfigConnection;
 
-  constructor(req: MeasuresRequest, res: Response, next: NextFunction) {
+  constructor(req: MapOverlaysRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.webConfigConnection = new WebConfigConnection(req.session);
@@ -21,7 +21,7 @@ export class MeasuresRoute extends Route<MeasuresRequest> {
 
   async buildResponse() {
     const { entityCode } = this.req.params;
-    return this.webConfigConnection.fetchMeasures({
+    return this.webConfigConnection.fetchMapOverlays({
       organisationUnitCode: entityCode,
       projectCode: LESMIS_PROJECT_NAME,
     });
