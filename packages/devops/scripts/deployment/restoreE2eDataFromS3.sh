@@ -33,7 +33,7 @@ echo "Clearing survey response and answer tables"
 psql -U tupaia tupaia -c "TRUNCATE TABLE survey_response CASCADE;"
 
 restore_table survey_response
-restore_table answers
+restore_table answer
 
 echo "Re-enabling notification triggers"
 psql -U tupaia tupaia -c "ALTER TABLE survey_response ENABLE TRIGGER survey_response_trigger;"
