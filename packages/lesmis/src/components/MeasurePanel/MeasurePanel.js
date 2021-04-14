@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { RadioGroup } from './RadioGroup';
+import { MeasureGroup } from './MeasureGroup';
 import { Loader } from './Loader';
 import { MeasurePanelContainer as Container } from './MeasurePanelContainer';
 
@@ -23,7 +23,7 @@ export const MeasurePanel = ({ measures, isLoading, measureId, setMeasureId }) =
           <Loader />
         ) : (
           measures.map(({ name, children }, index) => (
-            <RadioGroup
+            <MeasureGroup
               key={name}
               name={name}
               options={children}

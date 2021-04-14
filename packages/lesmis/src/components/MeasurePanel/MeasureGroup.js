@@ -4,7 +4,7 @@
  *
  */
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import MuiRadio from '@material-ui/core/Radio';
 import MuiRadioGroup from '@material-ui/core/RadioGroup';
@@ -15,7 +15,27 @@ import OpenIcon from '@material-ui/icons/AddBox';
 import CloseIcon from '@material-ui/icons/IndeterminateCheckBox';
 import * as COLORS from '../../constants';
 
-const middle = '29px';
+const DASH_OFFSET = '1.18rem';
+
+const HorizontalDash = css`
+  position: absolute;
+  content: '';
+  border-top: 1px dashed ${COLORS.GREY_CC};
+`;
+
+const VerticalDash = css`
+  position: absolute;
+  content: '';
+  border-left: 1px dashed ${COLORS.GREY_CC};
+`;
+
+const HorizontalHighlight = css`
+  border-top: 1px solid ${props => props.theme.palette.primary.main};
+`;
+
+const VerticalHighlight = css`
+  border-left: 1px solid ${props => props.theme.palette.primary.main};
+`;
 
 const FormControl = styled(MuiFormControl)`
   position: relative;
@@ -38,7 +58,7 @@ const FormControl = styled(MuiFormControl)`
     padding-left: 2rem;
   }
 
-  // Nested Control Container
+  // Nested Form Control
   .MuiFormControl-root {
     position: relative;
     background: white;
@@ -49,18 +69,15 @@ const FormControl = styled(MuiFormControl)`
       display: block;
     }
 
-    // horizontal dash
     &:before {
-      position: absolute;
-      top: ${middle};
-      width: 20px;
-      left: -20px;
-      content: '';
-      border-top: 1px dashed ${COLORS.GREY_CC};
+      ${HorizontalDash};
+      top: ${DASH_OFFSET};
+      width: 1.25rem;
+      left: -1.25rem;
     }
 
     &.selected:before {
-      border-top: 1px solid ${props => props.theme.palette.primary.main};
+      ${HorizontalHighlight};
     }
 
     // last bottom dash
@@ -71,8 +88,8 @@ const FormControl = styled(MuiFormControl)`
     // Nested Label
     .MuiFormLabel-root {
       font-weight: normal;
-      font-size: 16px;
-      line-height: 19px;
+      font-size: 1rem;
+      line-height: 1.18rem;
     }
   }
 `;
@@ -82,66 +99,56 @@ const Border = styled.div`
   top: 0;
   bottom: 0;
 
-  // top vertical dash
   &:before {
-    position: absolute;
+    ${VerticalDash};
     top: 0;
-    left: -21px;
-    height: ${middle};
-    content: '';
-    border-left: 1px dashed ${COLORS.GREY_CC};
+    left: -1.3rem;
+    height: ${DASH_OFFSET};
   }
 
-  // bottom vertical dash
   &:after {
-    position: absolute;
-    top: ${middle};
-    height: calc(100% - 29px);
-    left: -21px;
-    content: '';
-    border-left: 1px dashed ${COLORS.GREY_CC};
+    ${VerticalDash};
+    top: ${DASH_OFFSET};
+    height: calc(100% - 1.18rem);
+    left: -1.3rem;
   }
 
   &.active {
     &:after,
     &:before {
-      border-left: 1px solid ${props => props.theme.palette.primary.main};
+      ${VerticalHighlight};
     }
   }
 
   &.selected {
     &:before {
-      border-left: 1px solid ${props => props.theme.palette.primary.main};
+      ${VerticalHighlight};
     }
   }
 `;
 
-// Label
 const FormLabel = styled(MuiFormLabel)`
   position: relative;
   display: flex;
   align-items: flex-start;
   color: ${props => props.theme.palette.text.primary};
   font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 1rem;
+  line-height: 1.18rem;
   padding-top: 1.25rem;
   padding-right: 1rem;
   padding-bottom: 1.25rem;
 
-  // vertical dash
   &.open:after {
-    position: absolute;
-    top: 42px;
-    height: calc(100% - 42px);
-    left: 11px;
-    content: '';
-    border-left: 1px dashed ${COLORS.GREY_CC};
+    ${VerticalDash};
+    top: 2.6rem;
+    height: calc(100% - 2.6rem);
+    left: 0.68rem;
   }
 
   &.selected {
     &:after {
-      border-left: 1px solid ${props => props.theme.palette.primary.main};
+      ${VerticalHighlight};
     }
   }
 
@@ -156,8 +163,8 @@ const FormLabel = styled(MuiFormLabel)`
   .MuiSvgIcon-root {
     position: relative;
     color: ${props => props.theme.palette.text.tertiary};
-    margin-right: 10px;
-    margin-top: -5px;
+    margin-right: 0.625rem;
+    margin-top: -0.3rem;
     top: 2px;
   }
 
@@ -172,53 +179,44 @@ const FormLabel = styled(MuiFormLabel)`
 
 const FormControlLabel = styled(MuiFormControlLabel)`
   position: relative;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: ${props => props.theme.palette.text.secondary};
 
-  // horizontal dash
   .MuiRadio-root:before {
-    position: absolute;
+    ${HorizontalDash};
     top: 50%;
-    width: 18px;
-    left: -9px;
-    content: '';
-    border-top: 1px dashed ${COLORS.GREY_CC};
+    width: 1.125rem;
+    left: -0.56rem;
   }
 
-  // top vertical dash
   &:before {
-    position: absolute;
-    content: '';
+    ${VerticalDash};
     top: 0;
     height: 50%;
-    left: -10px;
-    border-left: 1px dashed ${COLORS.GREY_CC};
+    left: -0.625rem;
   }
 
-  // bottom vertical dash
   &:after {
-    position: absolute;
-    content: '';
+    ${VerticalDash};
     top: 50%;
     height: 50%;
-    left: -10px;
-    border-left: 1px dashed ${COLORS.GREY_CC};
+    left: -0.625rem;
   }
 
   &.active {
     &:after,
     &:before {
-      border-left: 1px solid ${props => props.theme.palette.primary.main};
+      ${VerticalHighlight};
     }
   }
 
   &.selected {
     .MuiRadio-root:before {
-      border-top: 1px solid ${props => props.theme.palette.primary.main};
+      ${HorizontalHighlight};
     }
 
     &:before {
-      border-left: 1px solid ${props => props.theme.palette.primary.main};
+      ${VerticalHighlight};
     }
   }
 
@@ -245,10 +243,14 @@ const Radio = styled(MuiRadio)`
   }
 
   .MuiSvgIcon-root {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 `;
 
+/**
+ * Calculates whether the measure group is the selected one or is part of the
+ * path to the selected one
+ */
 const getActiveClass = (path, selectedPath) => {
   for (let i = 0; i < path.length; i++) {
     const current = path[i];
@@ -274,7 +276,7 @@ const getActiveClass = (path, selectedPath) => {
   return '';
 };
 
-export const RadioGroup = ({
+export const MeasureGroup = ({
   name,
   options,
   value,
@@ -308,7 +310,7 @@ export const RadioGroup = ({
         >
           {options.map((option, index) =>
             option.children ? (
-              <RadioGroup
+              <MeasureGroup
                 key={option.name}
                 name={option.name}
                 options={option.children}
@@ -337,7 +339,7 @@ export const RadioGroup = ({
   );
 };
 
-RadioGroup.propTypes = {
+MeasureGroup.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   value: PropTypes.string.isRequired,
