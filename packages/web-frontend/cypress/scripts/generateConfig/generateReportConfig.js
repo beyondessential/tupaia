@@ -144,25 +144,29 @@ const getUrlsForReports = async (db, reports, reportIdToGroups) => {
 
   const getUrlForReport = async report => {
     const { dataBuilder, drillDownLevel } = report;
+
     if (drillDownLevel) {
       addSkippedReport(WARNING_TYPES.DRILL_DOWN, `${report.id} - level ${drillDownLevel}`);
       return null;
     }
+
     if (!dataBuilder) {
       addSkippedReport(WARNING_TYPES.NO_DATA_BUILDER, report.id);
       return null;
     }
+
     const groupsForReport = reportIdToGroups[report.id];
     if (!groupsForReport) {
       addSkippedReport(WARNING_TYPES.NO_GROUP, report.id);
       return null;
     }
+
     if (!groupsForReport.some(dg => dg.projectCodes)) {
       addSkippedReport(WARNING_TYPES.NO_PROJECT, report.id);
       return null;
     }
-    const urlParams = await selectUrlParams(db, report, groupsForReport);
 
+    const urlParams = await selectUrlParams(db, report, groupsForReport);
     return createUrl(report, urlParams);
   };
   const urls = await Promise.all(reports.map(getUrlForReport));
