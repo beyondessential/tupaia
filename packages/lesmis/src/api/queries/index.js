@@ -6,4 +6,4 @@
 export * from './useUser';
 export * from './useEntitiesData';
 export * from './useEntityData';
-export * from './useMeasuresData';
+export * from './useMapOverlaysData';

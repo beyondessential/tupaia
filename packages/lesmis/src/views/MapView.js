@@ -5,7 +5,7 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useMeasuresData } from '../api';
+import { useMapOverlaysData } from '../api';
 import { useUrlParams } from '../utils';
 import { MeasurePanel } from '../components';
 
@@ -29,7 +29,7 @@ export const MapView = () => {
   const { entityCode } = useUrlParams();
   const [measureId, setMeasureId] = useState(DEFAULT_MEASURE_ID);
 
-  const { data: measuresData, isLoading } = useMeasuresData({ entityCode });
+  const { data: measuresData, isLoading } = useMapOverlaysData({ entityCode });
 
   return (
     <Container>

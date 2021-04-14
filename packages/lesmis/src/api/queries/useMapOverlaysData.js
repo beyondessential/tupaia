@@ -6,8 +6,8 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
-export const useMeasuresData = ({ entityCode }) =>
-  useQuery(['measures', entityCode], () => get(`measures/${entityCode}`), {
+export const useMapOverlaysData = ({ entityCode }) =>
+  useQuery(['measures', entityCode], () => get(`map-overlays/${entityCode}`), {
     staleTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
