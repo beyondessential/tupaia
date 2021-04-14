@@ -6,7 +6,7 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
-export const useMeasures = ({ entityCode }) =>
+export const useMeasuresData = ({ entityCode }) =>
   useQuery(['measures', entityCode], () => get(`measures/${entityCode}`), {
     staleTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,

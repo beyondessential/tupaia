@@ -4,6 +4,7 @@
  *
  */
 import styled from 'styled-components';
+import * as COLORS from '../../constants';
 
 export const MeasurePanelContainer = styled.div`
   display: flex;
@@ -12,4 +13,5 @@ export const MeasurePanelContainer = styled.div`
   width: 22.5rem;
   background: white;
   overflow: auto;
+  background: ${COLORS.GREY_F9};
 `;
