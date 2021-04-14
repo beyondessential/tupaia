@@ -11,11 +11,8 @@ import PrevIcon from 'material-ui/svg-icons/navigation/chevron-left';
 import NextIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import shallowEqual from 'shallowequal';
 
-import { Cell } from './Cell';
-import { getPresentationOption } from '../../../../utils';
+import Cell from './Cell';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
-
-const ROW_INFO_KEY = '$rowInfo';
 
 export default class Row extends Component {
   shouldComponentUpdate(nextProps) {
@@ -112,17 +109,6 @@ export default class Row extends Component {
             return <div style={style} key={index} />;
           }
 
-          let presentation = getPresentationOption(presentationOptions, cellValue);
-
-          // if presentation is null, we should not show the DescriptionOverlay popup.
-          // So, only add the `main title` to the presentation object if presentation != null
-          if (presentation) {
-            presentation = {
-              ...presentation,
-              mainTitle: description,
-            };
-          }
-
           let applyDotStyle = true;
 
           if (
@@ -139,15 +125,8 @@ export default class Row extends Component {
               cellKey={index}
               onMouseEnter={() => onCellMouseEnter(index, rowKey)}
               onMouseLeave={() => onCellMouseLeave()}
-              onClick={() =>
-                onCellClick(
-                  presentation && presentation.description === ROW_INFO_KEY
-                    ? { ...presentation, description: rowInfo }
-                    : presentation,
-                  cellValue,
-                )
-              }
-              color={presentation ? presentation.color : ''}
+              presentationOptions={presentationOptions}
+              onClick={onCellClick}
               value={cellValue}
               style={styles.gridCell}
               columnActiveStripStyle={styles.columnActiveStrip}
@@ -155,6 +134,7 @@ export default class Row extends Component {
               dotStyle={styles.cellIndicator}
               dotStyleActive={styles.cellIndicatorActive}
               isUsingDots={isUsingDots && applyDotStyle}
+              presentationConfigIfInRow={{ description, rowInfo }}
             />
           );
         })}

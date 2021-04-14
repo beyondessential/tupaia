@@ -3,7 +3,8 @@ FROM node:12.18.3-alpine3.11
 # install features not available in base alpine distro
 RUN apk --no-cache add \
   bash \
-  postgresql-client
+  postgresql-client \
+  git
 
 # set the workdir so that all following commands run within /tupaia
 WORKDIR /tupaia

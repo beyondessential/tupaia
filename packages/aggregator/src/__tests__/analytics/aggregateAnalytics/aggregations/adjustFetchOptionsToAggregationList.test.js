@@ -46,7 +46,16 @@ describe('adjustFetchOptionsToAggregationList()', () => {
     ],
   ];
 
-  it.each(testData)('%s', (_, aggregations, expected) => {
-    expect(adjustFetchOptionsToAggregationList(fetchOptions, aggregations)).toStrictEqual(expected);
+  it.each(testData)('%s', (_, aggregations, adjustedOptions) => {
+    if (aggregations.length === 0) {
+      expect(adjustFetchOptionsToAggregationList(fetchOptions, aggregations)).toStrictEqual(
+        adjustedOptions,
+      );
+    } else {
+      expect(adjustFetchOptionsToAggregationList(fetchOptions, aggregations)).toStrictEqual({
+        ...adjustedOptions,
+        aggregations,
+      });
+    }
   });
 });

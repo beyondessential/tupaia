@@ -31,7 +31,7 @@
     "refresh-database": "node scripts/node/refreshDatabase.js",
     "test-all": "node ./scripts/node/testAll --silent",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
-    "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh",
+    "download-parameter-store-env-vars": "./scripts/bash/syncDotEnvWithParameterStore.sh --download",
     "validate": "./scripts/bash/validate.sh"
   },
   "resolutions": {
