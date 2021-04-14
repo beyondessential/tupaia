@@ -303,9 +303,7 @@ export const MapOverlayGroup = ({
 
   // set the first overlay as active
   useEffect(() => {
-    console.log('path', path);
     if (path.length === 1 && path[0] === 0) {
-      console.log('option', options[0]);
       setSelectedOverlay(options[0].code);
       setSelectedPath([0, 0]);
       setOpen(true);
