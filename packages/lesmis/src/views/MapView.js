@@ -25,7 +25,7 @@ const Main = styled.div`
 
 export const MapView = () => {
   const { entityCode } = useUrlParams();
-  const [overlayId, setOverylayId] = useState(null);
+  const [selectedOverlay, setSelectedOverlay] = useState(null);
 
   const { data: overlaysData, isLoading } = useMapOverlaysData({ entityCode });
 
@@ -33,9 +33,9 @@ export const MapView = () => {
     <Container>
       <MapOverlaysPanel
         isLoading={isLoading}
-        overlays={overlaysData?.measures}
-        overlayId={overlayId}
-        setOverylayId={setOverylayId}
+        overlays={overlaysData}
+        selectedOverlay={selectedOverlay}
+        setSelectedOverlay={setSelectedOverlay}
       />
       <Main>Map</Main>
     </Container>

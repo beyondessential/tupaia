@@ -14,7 +14,7 @@ const Body = styled.div`
   padding: 0.2rem 0 2rem;
 `;
 
-export const MapOverlaysPanel = ({ overlays, isLoading, overlayId, setOverylayId }) => {
+export const MapOverlaysPanel = ({ overlays, isLoading, selectedOverlay, setSelectedOverlay }) => {
   const [selectedPath, setSelectedPath] = useState(null);
   return (
     <Container>
@@ -22,13 +22,13 @@ export const MapOverlaysPanel = ({ overlays, isLoading, overlayId, setOverylayId
         {isLoading ? (
           <MapOverlaysLoader />
         ) : (
-          overlays.map(({ name, children }, index) => (
+          overlays.map(({ name, code, children }, index) => (
             <MapOverlayGroup
               key={name}
               name={name}
               options={children}
-              overlayId={overlayId}
-              setOverylayId={setOverylayId}
+              selectedOverlay={selectedOverlay}
+              setSelectedOverlay={setSelectedOverlay}
               selectedPath={selectedPath}
               setSelectedPath={setSelectedPath}
               path={[index]}
@@ -43,12 +43,12 @@ export const MapOverlaysPanel = ({ overlays, isLoading, overlayId, setOverylayId
 MapOverlaysPanel.propTypes = {
   overlays: PropTypes.array,
   isLoading: PropTypes.bool,
-  overlayId: PropTypes.string,
-  setOverylayId: PropTypes.func.isRequired,
+  selectedOverlay: PropTypes.string,
+  setSelectedOverlay: PropTypes.func.isRequired,
 };
 
 MapOverlaysPanel.defaultProps = {
   overlays: [],
   isLoading: false,
-  overlayId: null,
+  selectedOverlay: null,
 };

@@ -130,7 +130,7 @@ const Border = styled.div`
 const FormLabel = styled(MuiFormLabel)`
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   color: ${props => props.theme.palette.text.primary};
   font-weight: 500;
   font-size: 1rem;
@@ -141,12 +141,16 @@ const FormLabel = styled(MuiFormLabel)`
 
   &.open:after {
     ${VerticalDash};
-    top: 2.6rem;
-    height: calc(100% - 2.6rem);
+    top: calc(50% + 0.625rem);
+    height: calc(50% - 0.5rem);
     left: 0.68rem;
   }
 
   &.selected {
+    .MuiSvgIcon-root {
+      color: ${props => props.theme.palette.primary.main};
+    }
+
     &:after {
       ${VerticalHighlight};
     }
@@ -156,16 +160,17 @@ const FormLabel = styled(MuiFormLabel)`
     cursor: pointer;
 
     .MuiSvgIcon-root {
-      color: ${props => props.theme.palette.text.secondary};
+      opacity: 0.8;
+      color: ${props => props.theme.palette.primary.main};
     }
   }
 
   .MuiSvgIcon-root {
     position: relative;
     color: ${props => props.theme.palette.text.tertiary};
-    margin-right: 0.625rem;
-    margin-top: -0.3rem;
-    top: 2px;
+    margin-right: 0.6rem;
+    top: -1px;
+    z-index: 1;
   }
 
   .MuiSvgIcon-root.MuiSvgIcon-colorPrimary {
@@ -226,6 +231,7 @@ const FormControlLabel = styled(MuiFormControlLabel)`
 
   &:hover {
     cursor: pointer;
+    color: ${props => props.theme.palette.primary.main};
 
     .MuiSvgIcon-root {
       color: ${props => props.theme.palette.primary.main};
@@ -283,8 +289,8 @@ const getActiveClass = (path, selectedPath) => {
 export const MapOverlayGroup = ({
   name,
   options,
-  overlayId,
-  setOverylayId,
+  selectedOverlay,
+  setSelectedOverlay,
   selectedPath,
   setSelectedPath,
   path,
@@ -297,12 +303,14 @@ export const MapOverlayGroup = ({
 
   // set the first overlay as active
   useEffect(() => {
+    console.log('path', path);
     if (path.length === 1 && path[0] === 0) {
-      setOverylayId(options[0].measureId);
+      console.log('option', options[0]);
+      setSelectedOverlay(options[0].code);
       setSelectedPath([0, 0]);
       setOpen(true);
     }
-  }, [setOverylayId, setSelectedPath]);
+  }, [setSelectedOverlay, setSelectedPath]);
 
   const activeClassName = getActiveClass(path, selectedPath);
 
@@ -310,25 +318,25 @@ export const MapOverlayGroup = ({
     <FormControl key={name} component="fieldset" className={[open && 'open', activeClassName]}>
       <Border className={['border', activeClassName]} />
       <FormLabel onClick={handleOpen} className={[open && 'open', activeClassName]}>
-        {open ? <CloseIcon color="primary" /> : <OpenIcon />}
-        {name}
+        {open ? <CloseIcon /> : <OpenIcon />}
+        <span>{name}</span>
       </FormLabel>
       {open && (
         <MuiRadioGroup
           name="mapOverlays"
-          value={overlayId}
+          value={selectedOverlay}
           onChange={(event, newValue) => {
-            setOverylayId(newValue);
+            setSelectedOverlay(newValue);
           }}
         >
-          {options.map((option, index) =>
-            option.children ? (
+          {options.map(({ name: label, code, children }, index) =>
+            children ? (
               <MapOverlayGroup
-                key={option.name}
-                name={option.name}
-                options={option.children}
-                overlayId={overlayId}
-                setOverylayId={setOverylayId}
+                key={label}
+                name={label}
+                options={children}
+                selectedOverlay={selectedOverlay}
+                setSelectedOverlay={setSelectedOverlay}
                 selectedPath={selectedPath}
                 setSelectedPath={setSelectedPath}
                 path={[...path, index]}
@@ -336,9 +344,9 @@ export const MapOverlayGroup = ({
             ) : (
               <FormControlLabel
                 control={<Radio />}
-                key={option.measureId}
-                value={option.measureId}
-                label={option.name}
+                key={code}
+                value={code}
+                label={label}
                 className={getActiveClass([...path, index], selectedPath)}
                 onChange={() => {
                   setSelectedPath([...path, index]);
@@ -355,8 +363,8 @@ export const MapOverlayGroup = ({
 MapOverlayGroup.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
-  overlayId: PropTypes.string,
-  setOverylayId: PropTypes.func.isRequired,
+  selectedOverlay: PropTypes.string,
+  setSelectedOverlay: PropTypes.func.isRequired,
   setSelectedPath: PropTypes.func.isRequired,
   path: PropTypes.array.isRequired,
   selectedPath: PropTypes.array,
@@ -364,5 +372,5 @@ MapOverlayGroup.propTypes = {
 
 MapOverlayGroup.defaultProps = {
   selectedPath: null,
-  overlayId: null,
+  selectedOverlay: null,
 };
