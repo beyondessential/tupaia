@@ -89,6 +89,16 @@ describe('Aggregator', () => {
       assertDataBrokerPullIsInvokedCorrectly({ codeInput: codes });
     });
 
+    it('passes aggregations through to data source', async () => {
+      const codes = ['POP01', 'POP02'];
+
+      await aggregator.fetchAnalytics(codes, fetchOptions, aggregationOptions);
+      assertDataBrokerPullIsInvokedCorrectly(
+        { codeInput: codes },
+        { aggregations: aggregationOptions.aggregations },
+      );
+    });
+
     it('returns data for just organisationUnitCode', async () => {
       const codes = ['POP01', 'POP02'];
 
