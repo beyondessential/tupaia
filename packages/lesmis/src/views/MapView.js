@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useMapOverlaysData } from '../api';
 import { useUrlParams } from '../utils';
-import { MeasurePanel } from '../components';
+import { MapOverlaysPanel } from '../components';
 
 const Container = styled.div`
   position: relative;
@@ -23,21 +23,19 @@ const Main = styled.div`
   height: 100%;
 `;
 
-const DEFAULT_MEASURE_ID = 'Laos_Schools_School_Type';
-
 export const MapView = () => {
   const { entityCode } = useUrlParams();
-  const [measureId, setMeasureId] = useState(DEFAULT_MEASURE_ID);
+  const [overlayId, setOverylayId] = useState(null);
 
-  const { data: measuresData, isLoading } = useMapOverlaysData({ entityCode });
+  const { data: overlaysData, isLoading } = useMapOverlaysData({ entityCode });
 
   return (
     <Container>
-      <MeasurePanel
+      <MapOverlaysPanel
         isLoading={isLoading}
-        measures={measuresData ? measuresData.measures : null}
-        measureId={measureId}
-        setMeasureId={setMeasureId}
+        overlays={overlaysData?.measures}
+        overlayId={overlayId}
+        setOverylayId={setOverylayId}
       />
       <Main>Map</Main>
     </Container>

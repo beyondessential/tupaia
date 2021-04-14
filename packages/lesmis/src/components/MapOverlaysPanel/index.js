@@ -3,5 +3,5 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-export * from './MeasurePanel';
-export * from './MeasurePanelContainer';
+export * from './MapOverlaysPanel';
+export * from './MapOverlaysPanelContainer';

@@ -9,7 +9,7 @@ import Box from '@material-ui/core/Box';
 
 const BigSkeleton = () => <Skeleton animation="wave" height={36} style={{ marginBottom: 18 }} />;
 const SmallSkeleton = () => <Skeleton animation="wave" height={32} />;
-export const Loader = () => (
+export const MapOverlaysLoader = () => (
   <Box pl={3} pr={5} py={2}>
     <BigSkeleton />
     <Skeleton animation="wave" height={36} />

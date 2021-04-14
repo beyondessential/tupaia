@@ -6,7 +6,7 @@
 import styled from 'styled-components';
 import * as COLORS from '../../constants';
 
-export const MeasurePanelContainer = styled.div`
+export const MapOverlaysPanelContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;

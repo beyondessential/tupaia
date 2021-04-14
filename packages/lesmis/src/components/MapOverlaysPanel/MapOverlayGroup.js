@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import MuiRadio from '@material-ui/core/Radio';
@@ -15,7 +15,7 @@ import OpenIcon from '@material-ui/icons/AddBox';
 import CloseIcon from '@material-ui/icons/IndeterminateCheckBox';
 import * as COLORS from '../../constants';
 
-const DASH_OFFSET = '1.18rem';
+const DASH_OFFSET = '1.8rem';
 
 const HorizontalDash = css`
   position: absolute;
@@ -109,7 +109,7 @@ const Border = styled.div`
   &:after {
     ${VerticalDash};
     top: ${DASH_OFFSET};
-    height: calc(100% - 1.18rem);
+    height: calc(100% - 1.81rem);
     left: -1.3rem;
   }
 
@@ -248,10 +248,14 @@ const Radio = styled(MuiRadio)`
 `;
 
 /**
- * Calculates whether the measure group is the selected one or is part of the
+ * Calculates whether the map overlay group is the selected one or is part of the
  * path to the selected one
  */
 const getActiveClass = (path, selectedPath) => {
+  if (!selectedPath) {
+    return '';
+  }
+
   for (let i = 0; i < path.length; i++) {
     const current = path[i];
     const selected = selectedPath[i];
@@ -276,11 +280,11 @@ const getActiveClass = (path, selectedPath) => {
   return '';
 };
 
-export const MeasureGroup = ({
+export const MapOverlayGroup = ({
   name,
   options,
-  value,
-  setValue,
+  overlayId,
+  setOverylayId,
   selectedPath,
   setSelectedPath,
   path,
@@ -290,6 +294,15 @@ export const MeasureGroup = ({
   const handleOpen = () => {
     setOpen(openState => openState !== true);
   };
+
+  // set the first overlay as active
+  useEffect(() => {
+    if (path.length === 1 && path[0] === 0) {
+      setOverylayId(options[0].measureId);
+      setSelectedPath([0, 0]);
+      setOpen(true);
+    }
+  }, [setOverylayId, setSelectedPath]);
 
   const activeClassName = getActiveClass(path, selectedPath);
 
@@ -302,20 +315,20 @@ export const MeasureGroup = ({
       </FormLabel>
       {open && (
         <MuiRadioGroup
-          name="measureId"
-          value={value}
+          name="mapOverlays"
+          value={overlayId}
           onChange={(event, newValue) => {
-            setValue(newValue);
+            setOverylayId(newValue);
           }}
         >
           {options.map((option, index) =>
             option.children ? (
-              <MeasureGroup
+              <MapOverlayGroup
                 key={option.name}
                 name={option.name}
                 options={option.children}
-                value={value}
-                setValue={setValue}
+                overlayId={overlayId}
+                setOverylayId={setOverylayId}
                 selectedPath={selectedPath}
                 setSelectedPath={setSelectedPath}
                 path={[...path, index]}
@@ -339,12 +352,17 @@ export const MeasureGroup = ({
   );
 };
 
-MeasureGroup.propTypes = {
+MapOverlayGroup.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
-  value: PropTypes.string.isRequired,
-  selectedPath: PropTypes.string.isRequired,
+  overlayId: PropTypes.string,
+  setOverylayId: PropTypes.func.isRequired,
   setSelectedPath: PropTypes.func.isRequired,
-  setValue: PropTypes.func.isRequired,
   path: PropTypes.array.isRequired,
+  selectedPath: PropTypes.array,
+};
+
+MapOverlayGroup.defaultProps = {
+  selectedPath: null,
+  overlayId: null,
 };
