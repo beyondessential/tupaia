@@ -19,6 +19,7 @@ export class WebConfigConnection extends SessionHandlingApiConnection {
   }
 
   async fetchMapOverlays(query: QueryParameters) {
-    return this.get('measures', query);
+    const response = await this.get('measures', query);
+    return response.measures;
   }
 }
