@@ -27,6 +27,6 @@ export function createApp() {
     .get('/v1/entities', handleWith(EntitiesRoute))
     .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))
     .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
-    .get('/v1/report-data/:entityCode/:reportCode', handleWith(ReportRoute))
+    .get('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
     .build();
 }
