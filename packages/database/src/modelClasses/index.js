@@ -7,6 +7,7 @@ import { AnalyticsModel } from './Analytics';
 import { AccessRequestModel } from './AccessRequest';
 import { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
 import { AnswerModel } from './Answer';
+import { APIClientModel } from './APIClient';
 import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardGroupModel } from './DashboardGroup';
@@ -47,6 +48,7 @@ export const modelClasses = {
   AccessRequest: AccessRequestModel,
   AncestorDescendantRelation: AncestorDescendantRelationModel,
   Answer: AnswerModel,
+  ApiClient: APIClientModel,
   Comment: CommentModel,
   Country: CountryModel,
   DashboardGroup: DashboardGroupModel,
