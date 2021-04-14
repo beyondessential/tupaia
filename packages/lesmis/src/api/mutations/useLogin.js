@@ -5,11 +5,12 @@
  */
 import { useMutation, useQueryClient } from 'react-query';
 import { post } from '../api';
+import { useUser } from '../queries';
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
 
-  const query = useMutation(
+  const loginQuery = useMutation(
     ({ email, password }) =>
       post('login', {
         data: {
@@ -27,5 +28,11 @@ export const useLogin = () => {
     },
   );
 
-  return query;
+  const userQuery = useUser({ enabled: loginQuery.isSuccess });
+
+  if (loginQuery.isSuccess) {
+    return { ...loginQuery, ...userQuery };
+  }
+
+  return loginQuery;
 };
