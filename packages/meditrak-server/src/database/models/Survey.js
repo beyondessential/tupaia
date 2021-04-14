@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class SurveyType extends DatabaseType {
   static databaseType = TYPES.SURVEY;
@@ -45,7 +45,7 @@ class SurveyType extends DatabaseType {
   }
 }
 
-export class SurveyModel extends DatabaseModel {
+export class SurveyModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataGroup];
 
   get DatabaseTypeClass() {

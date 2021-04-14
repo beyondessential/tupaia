@@ -9,7 +9,7 @@ import { testNoCategories } from './testNoCategories';
 import { testOrgUnitCategories } from './testOrgUnitCategories';
 import { testTotals } from './testTotals';
 import { testOptions } from './testOptions';
-import * as CheckAllDataElementsAreDhisIndicators from '../../../../../apiV1/utils/fetchIndicatorValues/checkAllDataElementsAreDhisIndicators';
+import * as CheckAllDataElementsAreDhisIndicators from '/apiV1/utils/fetchIndicatorValues/checkAllDataElementsAreDhisIndicators';
 
 describe('tableOfDataValues', () => {
   before(async () => {
