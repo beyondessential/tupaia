@@ -18,15 +18,12 @@ const getFilterFromReq = (req: ReportsRequest): FetchReportQuery => {
 };
 
 class FetchReportRouteHandler {
-  private aggregator: Aggregator;
-
-  constructor() {
-    this.aggregator = createAggregator(Aggregator);
-  }
-
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
     const { params, models, accessPolicy, body } = req;
     const filter = getFilterFromReq(req);
+    const aggregator = createAggregator(Aggregator, {
+      session: { getAuthHeader: () => req.headers.authorization },
+    });
     const reportBuilder = new ReportBuilder();
     if (body.testConfig) {
       reportBuilder.setConfig(body.testConfig);
@@ -45,7 +42,7 @@ class FetchReportRouteHandler {
       reportBuilder.setTestData(body.testData);
     }
 
-    const data = await reportBuilder.build(this.aggregator, filter);
+    const data = await reportBuilder.build(aggregator, filter);
     respond(res, data, 200);
   };
 }
