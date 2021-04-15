@@ -231,7 +231,7 @@ export class TupaiaApi {
     };
     if (body) fetchConfig.body = body;
     try {
-      const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
+      const response = await fetchWithTimeout(queryUrl, fetchConfig);
       // If server responded with 401, i.e. not authenticated, refresh token and try once more
       if (
         shouldReauthenticateIfUnauthorized &&
@@ -279,10 +279,26 @@ export class TupaiaApi {
 }
 
 // Create a promise that rejects after the request has taken too long
-const createTimeoutPromise = () =>
-  new Promise((resolve, reject) => {
+const createTimeoutPromise = () => {
+  let cleanup;
+  const promise = new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject({ message: 'Network request timed out' });
+      reject(new Error('Network request timed out'));
     }, TIMEOUT_INTERVAL);
+    cleanup = () => {
+      clearTimeout(id);
+      resolve();
+    };
   });
+  return { promise, cleanup };
+};
+export const fetchWithTimeout = async (url, config) => {
+  const { cleanup, promise: timeoutPromise } = createTimeoutPromise();
+  try {
+    const response = await Promise.race([fetch(url, config), timeoutPromise]);
+    return response;
+  } finally {
+    cleanup();
+  }
+};
