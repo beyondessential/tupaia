@@ -17,8 +17,8 @@ const HoverCircle = styled(CircleMarker)`
 `;
 
 export const CircleProportionMarker = React.memo(
-  ({ radius, radiusScaleFactor, children, coordinates, markerRef, color }) => {
-    if (coordinates.length !== 2) return null;
+  ({ radius, radiusScaleFactor, children, coordinates, color }) => {
+    if (coordinates?.length !== 2) return null;
 
     const AREA_MULTIPLIER = 100; // just tuned by hand
     const numberValue = (parseFloat(radius) || 0) * radiusScaleFactor;
@@ -31,7 +31,6 @@ export const CircleProportionMarker = React.memo(
       <HoverCircle
         center={coordinates}
         radius={displayRadius}
-        innerRef={markerRef}
         color={colorValue}
         fillColor={colorValue}
       >
@@ -43,8 +42,7 @@ export const CircleProportionMarker = React.memo(
 
 CircleProportionMarker.propTypes = {
   coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
-  children: PropTypes.node.isRequired,
-  markerRef: PropTypes.func.isRequired,
+  children: PropTypes.node,
   radius: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   radiusScaleFactor: PropTypes.number,
   color: PropTypes.string.isRequired,
@@ -52,4 +50,5 @@ CircleProportionMarker.propTypes = {
 
 CircleProportionMarker.defaultProps = {
   radiusScaleFactor: 1,
+  children: null,
 };
