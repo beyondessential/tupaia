@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { Writable } from '../../../types';
 import { EntityResponseObject, ExtendedEntityFields } from '../types';
 
-type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 export class EntityResponseObjectBuilder {
   private readonly responseObject: Writable<EntityResponseObject> = {};
 

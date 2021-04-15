@@ -38,15 +38,17 @@ const adjustDateRangeToAggregationList = (dateRange, aggregationList) =>
  * Each aggregation in the list may require the original fetch option dimensions (dates, org units etc)
  * to be adjusted, eg when we need to take into account past/future data
  *
- * @param {Object[]} aggregationList
+ * Also, append the aggregations list to the fetchOptions as they may be used in dataFetch aggregation
+ *
+ * @param {Object[]} aggregations
  */
-export const adjustFetchOptionsToAggregationList = (fetchOptions, aggregationList) => {
-  if (aggregationList.length === 0) {
+export const adjustFetchOptionsToAggregationList = (fetchOptions, aggregations) => {
+  if (aggregations.length === 0) {
     return fetchOptions;
   }
 
-  const { startDate, endDate } = adjustDateRangeToAggregationList(fetchOptions, aggregationList);
+  const { startDate, endDate } = adjustDateRangeToAggregationList(fetchOptions, aggregations);
   const period = getAdjustedPeriod(fetchOptions, { startDate, endDate });
 
-  return { ...fetchOptions, startDate, endDate, period };
+  return { ...fetchOptions, startDate, endDate, period, aggregations };
 };
