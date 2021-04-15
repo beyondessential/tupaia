@@ -5,6 +5,8 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from 'styled-components';
+import MuiBox from '@material-ui/core/Box';
 import { UNKNOWN_COLOR } from '../constants';
 import {
   DEFAULT_ICON,
@@ -22,7 +24,12 @@ import {
   MEASURE_VALUE_OTHER,
 } from '../utils';
 import { LegendEntry } from './LegendEntry';
-import { FlexStart } from '../../Layout';
+
+const FlexStart = styled(MuiBox)`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
 
 /**
  * Icon layers can be set to hide some values from the map entirely - but if we're showing
@@ -82,8 +89,16 @@ const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasC
 };
 
 export const MarkerLegend = React.memo(
-  ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
-    const { type, values, key: dataKey, valueMapping } = measureOptions;
+  ({
+    measureOptions,
+    setHiddenMeasures,
+    hiddenMeasures,
+    hasIconLayer,
+    hasRadiusLayer,
+    hasColorLayer,
+  }) => {
+    const { type, values, valueMapping } = measureOptions;
+
     const keys = values
       .filter(v => !v.hideFromLegend)
       .filter(v => hasRadiusLayer || !isHiddenOtherIcon(v)) // only show hidden icons in legend if paired with radius
@@ -99,10 +114,11 @@ export const MarkerLegend = React.memo(
         return (
           <LegendEntry
             key={v.name}
-            dataKey={dataKey}
             marker={marker}
             label={v.name}
             value={v.value}
+            hiddenMeasures={hiddenMeasures}
+            onClick={setHiddenMeasures}
           />
         );
       });
@@ -131,7 +147,7 @@ export const MarkerLegend = React.memo(
             hasColorLayer,
           )}
           label={nullItem.name}
-          dataKey={dataKey}
+          hiddenMeasures={hiddenMeasures}
           value={null}
         />
       );
@@ -155,6 +171,8 @@ MarkerLegend.propTypes = {
     valueMapping: PropTypes.object,
   }).isRequired,
   hasIconLayer: PropTypes.bool.isRequired,
+  setHiddenMeasures: PropTypes.func.isRequired,
+  hiddenMeasures: PropTypes.array.isRequired,
   hasRadiusLayer: PropTypes.bool.isRequired,
   hasColorLayer: PropTypes.bool.isRequired,
 };

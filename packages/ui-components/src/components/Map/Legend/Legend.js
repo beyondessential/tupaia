@@ -46,37 +46,43 @@ const getLegendComponent = measureType => {
   }
 };
 
-export const Legend = React.memo(({ measureOptions, className }) => {
-  if (!measureOptions) {
-    return null;
-  }
+export const Legend = React.memo(
+  ({ measureOptions, className, setHiddenMeasures, hiddenMeasures }) => {
+    if (!measureOptions) {
+      return null;
+    }
 
-  const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
-  const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
-  const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
-  const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
+    const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+    const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
+    const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
+    const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
 
-  return (
-    <LegendFrame className={className}>
-      {displayedLegends.map(measureOption => {
-        const { type } = measureOption;
-        const LegendComponent = getLegendComponent(type);
+    return (
+      <LegendFrame className={className}>
+        {displayedLegends.map(measureOption => {
+          const { type } = measureOption;
+          const LegendComponent = getLegendComponent(type);
 
-        return (
-          <LegendComponent
-            key={measureOption.key}
-            hasIconLayer={hasIconLayer}
-            hasRadiusLayer={hasRadiusLayer}
-            hasColorLayer={hasColorLayer}
-            measureOptions={measureOption}
-          />
-        );
-      })}
-    </LegendFrame>
-  );
-});
+          return (
+            <LegendComponent
+              key={measureOption.key}
+              hasIconLayer={hasIconLayer}
+              hasRadiusLayer={hasRadiusLayer}
+              hasColorLayer={hasColorLayer}
+              measureOptions={measureOption}
+              setHiddenMeasures={setHiddenMeasures}
+              hiddenMeasures={hiddenMeasures}
+            />
+          );
+        })}
+      </LegendFrame>
+    );
+  },
+);
 
 Legend.propTypes = {
+  setHiddenMeasures: PropTypes.func.isRequired,
+  hiddenMeasures: PropTypes.array.isRequired,
   measureOptions: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
