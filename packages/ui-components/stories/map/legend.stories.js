@@ -6,7 +6,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Legend } from '../../src';
+import { Legend } from '../../src/components/Map';
 import measureOptions from './data/measureOptions.json';
 import spectrumMeasureOptions from './data/spectrumMeasureOptions.json';
 

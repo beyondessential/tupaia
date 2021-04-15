@@ -6,13 +6,19 @@
 import moment from 'moment';
 import React from 'react';
 import PropTypes from 'prop-types';
+import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { resolveSpectrumColour } from '../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { SCALE_TYPES } from '../constants';
 import { LegendEntry } from './LegendEntry';
-import { FlexCenter } from '../../Layout';
+
+const FlexCenter = styled(MuiBox)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const SpectrumSliver = styled.div`
   width: 2px;
