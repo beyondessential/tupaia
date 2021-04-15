@@ -8,13 +8,12 @@
 
    ⚠️: In **Step 2. Install node dependencies** you need to run the commands under a Windows terminal, see the note in that section.
 
-2. Make sure that you have a valid `.env` file under `packages/web-frontend` - see [.env.example](../.env.example) for the required variables.
+2. Make sure that you have a valid `.env` file under `packages/web-frontend` - see [.env.example](../.env.example) for the required variables. Then, add/update the following:
 
-   > If you want to point to a local backend, set the following in `.env`:
-   >
-   > ```bash
-   > REACT_APP_CONFIG_SERVER_BASE_URL=http://localhost:8000/api/v1/
-   > ```
+   ```bash
+   CYPRESS_BASE_URL=http://localhost:8088
+   REACT_APP_CONFIG_SERVER_BASE_URL=http://localhost:8000/api/v1/
+   ```
 
 3. The tests depend on `.json` configuration files that must be placed under `cypress/config`. To generate the default config:
 

@@ -26,9 +26,10 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { formatDataValueByType } from '@tupaia/utils';
 import { PieChart as BasePieChart, Pie, Cell, Legend, ResponsiveContainer, Sector } from 'recharts';
 import { OFF_WHITE, CHART_BLUES, CHART_COLOR_PALETTE, DARK_BLUE } from './constants';
-import { isMobile, formatDataValue } from './utils';
+import { isMobile } from './utils';
 
 const chartColorAtIndex = (colorArray, index) => {
   return colorArray[index % colorArray.length];
@@ -144,7 +145,7 @@ const renderActiveShape = (shapeProps, viewContent) => {
         textAnchor={textAnchor}
         fill="#999"
       >
-        {formatDataValue(value, valueTypeForLabel, metadataForLabel)}
+        {formatDataValueByType({ value, metadata: metadataForLabel }, valueTypeForLabel)}
       </text>
     </g>
   );
@@ -183,7 +184,9 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
         if (!label) label = name;
 
         const shouldShowValue = isMobile() && isEnlarged;
-        const labelSuffix = shouldShowValue ? ` (${formatDataValue(item.value, valueType)})` : '';
+        const labelSuffix = shouldShowValue
+          ? ` (${formatDataValueByType({ value: item.value }, valueType)})`
+          : '';
 
         return {
           name: label + labelSuffix,

@@ -4,31 +4,68 @@
  */
 
 import { Request, Response } from 'express';
-import { Context } from '../../types';
-import { EntityFields, EntityType } from '../../models';
+import { EntityFields, EntityType, EntityFilter } from '../../models';
+import { extendedFieldFunctions } from './extendedFieldFunctions';
+import { Resolved } from '../../types';
 
-interface HierarchyRequestParams {
+export interface HierarchyRequestParams {
   hierarchyName: string;
   entityCode: string;
 }
 
-interface HierarchyRequestQuery {
+export type HierarchyRequestBody = Record<string, unknown>;
+
+type SimpleFieldKeys<T> = {
+  [K in keyof T]: T[K] extends string | number | symbol ? K : never;
+}[keyof T];
+
+export type HierarchyRequestQuery = {
   fields?: string;
-}
+  field?: string;
+  filter?: string;
+};
+
+export type ExtendedFieldFunctions = Readonly<
+  {
+    [field in keyof typeof extendedFieldFunctions]: Resolved<
+      ReturnType<typeof extendedFieldFunctions[field]>
+    >;
+  }
+>;
+
+type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
+
+export type FlattableEntityFields = Pick<EntityFields, SimpleFieldKeys<EntityFields>>;
+
+export type ExtendedEntityFields = ExcludeCommonFields<EntityFields, ExtendedFieldFunctions> &
+  ExtendedFieldFunctions;
 
 export type EntityResponseObject = {
-  [field in keyof EntityFields]?: EntityFields[field];
+  [field in keyof ExtendedEntityFields]?: ExtendedEntityFields[field];
 };
+
+export type FlattenedEntity = FlattableEntityFields[keyof FlattableEntityFields];
+
+export type EntityResponse = EntityResponseObject | FlattenedEntity;
+
+export interface HierarchyContext {
+  entity: EntityType;
+  hierarchyId: string;
+  allowedCountries: string[];
+  fields: (keyof ExtendedEntityFields)[];
+  filter: EntityFilter;
+  field?: keyof FlattableEntityFields;
+}
 
 export interface HierarchyRequest<
   P = HierarchyRequestParams,
-  ResBody = EntityResponseObject,
-  ReqBody = Record<string, unknown>,
+  ResBody = EntityResponse,
+  ReqBody = HierarchyRequestBody,
   ReqQuery = HierarchyRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
-  context: Context<{ entity: EntityType; hierarchyId: string }>;
+  ctx: HierarchyContext;
 }
 
-export interface HierarchyResponse<ResBody = EntityResponseObject> extends Response<ResBody> {
-  context: Context<{ formatEntityForResponse: (entity: EntityType) => EntityResponseObject }>;
+export interface HierarchyResponse<ResBody = EntityResponse> extends Response<ResBody> {
+  ctx: HierarchyContext;
 }

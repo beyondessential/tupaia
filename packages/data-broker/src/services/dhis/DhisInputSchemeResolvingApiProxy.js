@@ -7,7 +7,7 @@ import {
   translateElementKeysInEventAnalytics,
   translateElementsKeysAndCodeInAnalytics,
 } from '@tupaia/dhis-api';
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
 export class DhisInputSchemeResolvingApiProxy {
@@ -49,6 +49,17 @@ export class DhisInputSchemeResolvingApiProxy {
     // It's a little bit more complex with org units, as dhis may return
     // different org units than were requested
     translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(translatedResponse);
+
+    // We need to translate co categoryCombos which we don't have for Laos
+    // but return id which we need to convert to code "lmbxvugTvKr" to "default"
+    // for later doen the pipe in InboundAggregateDataTranslator
+    // TODO: change this to a configuration - somewhere where it feels less hardcoded?
+    const coTranslations = { lmbxvugTvKr: 'default' };
+    translatedResponse = await this.translateDefaultCoInResponse(
+      translatedResponse,
+      coTranslations,
+    );
+
     return translatedResponse;
   }
 
@@ -244,44 +255,28 @@ export class DhisInputSchemeResolvingApiProxy {
     let orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
 
     if (orgUnitIdIndex === -1) {
-      throw new Error('Can\'t read org unit id from dhis');
+      throw new Error("Can't read org unit id from dhis");
     }
 
     const hasOuCode = orgUnitCodeIndex !== -1;
 
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
-
-    let mappings = [];
-    // need to batch this query because we can get an SQL error if we do too many
-    // TODO convert to using `runDatabaseFunctionInBatches` or one of its wrappers
-    const SQL_BIND_CHUNK_SIZE = 1000;
-    for (let i = 0; i < dhisIds.length; i += SQL_BIND_CHUNK_SIZE) {
-      const chunkDhisIds = dhisIds.slice(i, i + SQL_BIND_CHUNK_SIZE);
-      const chunkMappings = await this.models.dataServiceEntity.find({
-        [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `config->>'dhis_id' in (${chunkDhisIds.map(() => '?')})`,
-          parameters: chunkDhisIds,
-        },
-      });
-      mappings = [...mappings, ...chunkMappings];
-    }
+    const mappings = await runDatabaseFunctionInBatches(dhisIds, async batchOfRecords =>
+      this.models.dataServiceEntity.find({
+        'config->>dhis_id': batchOfRecords,
+      }),
+    );
 
     const mappingsByDhisId = reduceToDictionary(mappings, el => el.config.dhis_id, 'entity_code');
 
     if (!hasOuCode) {
-      // we need to modify the response to add org unit codes in
-      // TODO: clean up in #2504
-      // Normally with code based api/analytics/rawData.json call, the response includes the code. We need the dhisId in the
-      // response for each org unit, so we have to change the outputIdScheme to uid, which means org unit code no longer comes
-      // back. So we add it back in manually.
-      response.headers.push({
-        name: 'oucode'
+      // we have no ouCode treat as analytics and update item code
+      orgUnitCodeIndex = orgUnitIdIndex;
+      const { items } = response.metaData;
+      Object.keys(items).forEach(item => {
+        if (mappingsByDhisId[item.uid]) items[item].code = mappingsByDhisId[item.uid];
       });
-      orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
-      // set org unit code to UNKNOWN, which will be the default if we dont have the mapping in the next block
-      response.rows.map(row => {
-        row[orgUnitCodeIndex] = 'UNKNOWN';
-      });
+      response.metaData.items = items;
     }
 
     const newRows = response.rows.map(row => {
@@ -293,6 +288,27 @@ export class DhisInputSchemeResolvingApiProxy {
     });
 
     return { ...response, rows: newRows };
+  };
+
+  /**
+   * @param response {*}
+   * @param translations {*}
+   * @returns {*}
+   * @private
+   */
+  translateDefaultCoInResponse = (response, translations) => {
+    if (!response?.rows?.length) return response;
+    const coIndex = response.headers.findIndex(({ name }) => name === 'co');
+    if (coIndex < 0) return response;
+
+    const { metaData } = response;
+    Object.keys(translations).forEach(coId => {
+      if (metaData.dimensions.co.includes(coId)) {
+        metaData.items[coId].code = translations[coId];
+        metaData.items.co.code = metaData.items[coId].code;
+      }
+    });
+    return { ...response, metaData };
   };
 
   /**

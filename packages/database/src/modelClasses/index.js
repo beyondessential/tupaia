@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { AnalyticsModel } from './Analytics';
 import { AccessRequestModel } from './AccessRequest';
 import { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
 import { AnswerModel } from './Answer';
@@ -42,6 +43,7 @@ import { DataServiceEntityModel } from './DataServiceEntity';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
+  Analytics: AnalyticsModel,
   AccessRequest: AccessRequestModel,
   AncestorDescendantRelation: AncestorDescendantRelationModel,
   Answer: AnswerModel,
@@ -82,6 +84,10 @@ export const modelClasses = {
 
 // export any models and types that are extended in other packages
 export { AccessRequestModel } from './AccessRequest';
+export {
+  AncestorDescendantRelationModel,
+  AncestorDescendantRelationType,
+} from './AncestorDescendantRelation';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataSourceModel, DataSourceType } from './DataSource';

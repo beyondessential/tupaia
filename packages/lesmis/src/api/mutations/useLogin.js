@@ -20,7 +20,9 @@ export const useLogin = () => {
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('user');
+        queryClient.resetQueries('user');
+        queryClient.resetQueries('entity');
+        queryClient.resetQueries('entities');
       },
     },
   );

@@ -17,17 +17,16 @@ else
     ENVIRONMENT="dev"
 fi
 
-PACKAGES=("meditrak-server" "web-config-server" "psss-server" "lesmis-server" "report-server" "entity-server" "web-frontend" "admin-panel" "psss")
+PACKAGES=("meditrak-server" "web-config-server" "psss-server" "lesmis-server" "report-server" "entity-server" "web-frontend" "admin-panel" "psss" "lesmis")
 # For each package, get the latest and deploy it
 for PACKAGE in ${PACKAGES[@]}; do
+    # reset cwd back to `/tupaia`
+    cd ${HOME_DIRECTORY}
+
     # Set up .env to match the environment variables stored in SSM parameter store
+    yarn download-parameter-store-env-vars --package-name $PACKAGE --environment $ENVIRONMENT
+
     cd ${HOME_DIRECTORY}/packages/$PACKAGE
-    rm .env
-    echo "Checking out ${ENVIRONMENT} environment variables for ${PACKAGE}"
-    SSM_PATH="/${PACKAGE}/${ENVIRONMENT}"
-    $(aws ssm get-parameters-by-path --with-decryption --path $SSM_PATH |
-        jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  ' |
-        sed -e "s~${SSM_PATH}/~~" >.env)
 
     # Replace any instances of the placeholder [branch-name] in the .env file with the actual branch
     # name (e.g. [branch-name]-api.tupaia.org -> specific-branch-api.tupaia.org)
@@ -41,20 +40,26 @@ for PACKAGE in ${PACKAGES[@]}; do
         yarn build
         pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time
     else
-        # It's a static site, build it
+        # It's a static package, build it
         echo "Building ${PACKAGE}"
         yarn build
     fi
 
-    # reset cwd back to `/tupaia`
-    cd ${HOME_DIRECTORY}
-
     if [[ $PACKAGE == 'meditrak-server' ]]; then
+        # reset cwd back to `/tupaia`
+        cd ${HOME_DIRECTORY}
+        
         # now that meditrak-server is up and listening for changes, we can run any migrations
         # if run earlier when meditrak-server isn't listening, changes will be missed from the
         # sync queues
         echo "Migrating the database"
         yarn migrate
+
+        # After running migrations it's good to ensure that the analytics table is fully built
+        yarn download-parameter-store-env-vars --package-name data-api --environment $ENVIRONMENT
+        echo "Building analytics table"
+        yarn workspace @tupaia/data-api install-mv-refresh
+        yarn workspace @tupaia/data-api build-analytics-table
     fi
 done
 

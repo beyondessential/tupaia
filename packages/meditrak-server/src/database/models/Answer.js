@@ -7,7 +7,7 @@
 
 import winston from 'winston';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
@@ -18,6 +18,7 @@ export const ANSWER_TYPES = {
   CODE_GENERATOR: 'CodeGenerator',
   DATE_TIME: 'DateTime',
   DATE: 'Date',
+  DATE_OF_DATA: 'DateOfData',
   DAYS_SINCE: 'DaysSince',
   ENTITY: 'Entity',
   FREE_TEXT: 'FreeText',
@@ -38,6 +39,7 @@ export const ANSWER_TYPES = {
 // these answer types are not stored as data, because they either don't take any answer, or their data
 // is used as metadata for the survey response rather than being stored as a standard answer
 export const NON_DATA_ELEMENT_ANSWER_TYPES = [
+  ANSWER_TYPES.DATE_OF_DATA,
   ANSWER_TYPES.INSTRUCTION,
   ANSWER_TYPES.PRIMARY_ENTITY,
   ANSWER_TYPES.SUBMISSION_DATE,
@@ -63,9 +65,9 @@ class AnswerType extends DatabaseType {
     // - there are no other answers for this question (count === 0, this.question_id)
     // - for this entity (response.entity_id)
     //  - (accounting that one or both could be null, which is a no-match)
-    // - that have a newer timestamp (response.submission_time)
+    // - that have a newer timestamp (response.data_time)
     const { question_id } = this;
-    const { entity_id, submission_time } = surveyResponse;
+    const { entity_id, data_time } = surveyResponse;
 
     const result = await this.database.executeSql(
       `
@@ -78,10 +80,10 @@ class AnswerType extends DatabaseType {
         WHERE
           question_id = ?
           AND entity_id is not null and entity_id = ?
-          AND submission_time > ?
+          AND data_time > ?
       );
     `,
-      [question_id, entity_id, submission_time],
+      [question_id, entity_id, data_time],
     );
 
     return !result[0].exists;
@@ -118,7 +120,7 @@ class AnswerType extends DatabaseType {
   }
 }
 
-export class AnswerModel extends DatabaseModel {
+export class AnswerModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeRunQuestionHook];
 
   get DatabaseTypeClass() {

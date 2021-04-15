@@ -71,6 +71,7 @@ export const ImportModalComponent = React.memo(
       setIsOpen(false);
       setValues({});
       setFile(null);
+      setFileName(noFileMessage);
     };
 
     const handleSubmit = async event => {
@@ -83,7 +84,10 @@ export const ImportModalComponent = React.memo(
       const endpoint = `import/${recordType}`;
 
       try {
-        await api.upload(endpoint, recordType, file, values);
+        await api.upload(endpoint, recordType, file, {
+          ...values,
+          ...actionConfig.extraQueryParameters,
+        });
         setIsOpen(false);
         setStatus(STATUS.SUCCESS);
         changeSuccess();

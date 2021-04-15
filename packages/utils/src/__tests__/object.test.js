@@ -11,6 +11,7 @@ import {
   mapKeys,
   mapValues,
   reduceToDictionary,
+  reduceToArrayDictionary,
   reduceToSet,
   getSortByKey,
   stripFields,
@@ -219,6 +220,57 @@ describe('object', () => {
       expect(reduceToDictionary([object1, object2], 'id', 'value')).toStrictEqual({
         id1: 10,
         id2: 20,
+      });
+    });
+  });
+
+  describe('reduceToArrayDictionary()', () => {
+    const object1 = { id: 'id1', value: 10 };
+    const object2 = { id: 'id2', value: 20 };
+    const object3 = { id: 'id2', value: 30 };
+
+    it('should accept either an array or a dictionary of objects as input', () => {
+      expect(reduceToArrayDictionary([object1, object2, object3], 'id', 'value')).toStrictEqual(
+        reduceToArrayDictionary({ id1: object1, id2: object2, id3: object3 }, 'id', 'value'),
+      );
+    });
+
+    describe('key mappers', () => {
+      it('string', () => {
+        const result = reduceToArrayDictionary([object1, object2, object3], 'id', 'value');
+        expect(Object.keys(result)).toStrictEqual(['id1', 'id2']);
+      });
+
+      it('function', () => {
+        const result = reduceToArrayDictionary(
+          [object1, object2, object3],
+          object => object.value % 10,
+          'id',
+        );
+        expect(Object.keys(result)).toStrictEqual(['0']);
+      });
+    });
+
+    describe('value mappers', () => {
+      it('string', () => {
+        const result = reduceToArrayDictionary([object1, object2, object3], 'id', 'value');
+        expect(Object.values(result)).toStrictEqual([[10], [20, 30]]);
+      });
+
+      it('function', () => {
+        const result = reduceToArrayDictionary(
+          [object1, object2, object3],
+          'id',
+          object => object.value / 100,
+        );
+        expect(Object.values(result)).toStrictEqual([[0.1], [0.2, 0.3]]);
+      });
+    });
+
+    it('should combine key and value mappers into an object', () => {
+      expect(reduceToArrayDictionary([object1, object2, object3], 'id', 'value')).toStrictEqual({
+        id1: [10],
+        id2: [20, 30],
       });
     });
   });

@@ -24,3 +24,4 @@ export {
 } from './checkAgainstConditions';
 export { uniqueValueFromEvents } from './uniqueValues';
 export { translateEventEntityIdsToNames } from './translateEventEntityIdsToNames';
+export { getCategoryPresentationOption } from './getCategoryPresentationOption';

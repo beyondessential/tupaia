@@ -61,7 +61,7 @@ export const translateElementKeysInEventAnalytics = async (
 };
 
 export const translateElementsKeysAndCodeInAnalytics = async (analytics, dataElementKeyMapping) => {
-  const { headers, metaData, ...otherProps } = analytics;
+  const { headers, metaData, rows, ...otherProps } = analytics;
 
   const translatedHeaders = headers.map(({ name, ...otherHeaderProps }) => {
     const isDataElement = !!dataElementKeyMapping[name];
@@ -79,6 +79,14 @@ export const translateElementsKeysAndCodeInAnalytics = async (analytics, dataEle
     items[key].code = dataElementKeyMapping[key] ?? items[key].code;
   });
 
+  const dataIdIndex = headers.findIndex(({ name }) => name === 'dx');
+
+  const translatedRows = rows.map(([...row]) => {
+    const translatedRow = [...row];
+    translatedRow[dataIdIndex] =
+      dataElementKeyMapping[row[dataIdIndex]] ?? items[row[dataIdIndex]].code ?? row[dataIdIndex];
+    return translatedRow;
+  });
   const translatedMetaData = {
     ...metaData,
     items: mapKeys(items, dataElementKeyMapping, {
@@ -92,6 +100,7 @@ export const translateElementsKeysAndCodeInAnalytics = async (analytics, dataEle
   return {
     headers: translatedHeaders,
     metaData: translatedMetaData,
+    rows: translatedRows,
     ...otherProps,
   };
 };

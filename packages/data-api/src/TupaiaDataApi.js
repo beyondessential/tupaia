@@ -5,8 +5,9 @@
 
 import groupBy from 'lodash.groupby';
 
-import { getSortByKey, momentToDateString, utcMoment } from '@tupaia/utils';
-import { fetchEventData, fetchAnalyticData } from './fetchData';
+import moment from 'moment';
+import { getSortByKey, momentToDateString } from '@tupaia/utils';
+import { fetchData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
@@ -21,12 +22,12 @@ export class TupaiaDataApi {
 
   async fetchEvents(options) {
     await validateEventOptions(options);
-    const results = await fetchEventData(this.database, options);
-    const resultsBySurveyResponse = groupBy(results, 'surveyResponseId');
-    return Object.values(resultsBySurveyResponse)
-      .map(resultsForSurveyResponse => {
-        const { surveyResponseId, date, entityCode, entityName } = resultsForSurveyResponse[0];
-        const dataValues = resultsForSurveyResponse.reduce(
+    const results = await fetchData(this.database, options);
+    const resultsByEventId = groupBy(results, 'eventId');
+    return Object.values(resultsByEventId)
+      .map(resultsForEvent => {
+        const { eventId, date, entityCode, entityName } = resultsForEvent[0];
+        const dataValues = resultsForEvent.reduce(
           (values, { dataElementCode, type, value }) => ({
             ...values,
             [dataElementCode]: sanitizeDataValue(value, type),
@@ -34,8 +35,8 @@ export class TupaiaDataApi {
           {},
         );
         return {
-          event: surveyResponseId,
-          eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
+          event: eventId,
+          eventDate: moment(date).format(EVENT_DATE_FORMAT),
           orgUnit: entityCode,
           orgUnitName: entityName,
           dataValues,
@@ -46,11 +47,11 @@ export class TupaiaDataApi {
 
   async fetchAnalytics(options) {
     await validateAnalyticsOptions(options);
-    const results = await fetchAnalyticData(this.database, options);
+    const results = await fetchData(this.database, options);
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      date: momentToDateString(utcMoment(date)),
+      date: momentToDateString(moment(date)),
       value: sanitizeDataValue(value, type),
     }));
   }
@@ -111,7 +112,9 @@ export class TupaiaDataApi {
         dataElementCodes,
       );
 
-      sqlQuery.orderBy('survey_screen.screen_number, survey_screen_component.component_number');
+      sqlQuery.addOrderByClause(
+        'survey_screen.screen_number, survey_screen_component.component_number',
+      );
 
       const dataElementsMetadata = await this.fetchDataElementsMetadataFromSqlQuery(
         sqlQuery,

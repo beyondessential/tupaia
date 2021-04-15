@@ -4,9 +4,21 @@
  *
  */
 import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
-import { FetchConfig, QueryParameters, RequestBody } from '../types';
+import { QueryParameters } from '../types';
 
-interface AuthHandler {
+type RequestBody = Record<string, unknown> | Record<string, unknown>[];
+interface FetchHeaders {
+  Authorization: string;
+  'Content-Type'?: string;
+}
+
+interface FetchConfig {
+  method: string;
+  headers: FetchHeaders;
+  body?: string;
+}
+
+export interface AuthHandler {
   email?: string;
   getAuthHeader: () => Promise<string>;
 }
@@ -20,7 +32,7 @@ export class ApiConnection {
     this.authHandler = authHandler;
   }
 
-  get(endpoint: string, queryParameters: QueryParameters) {
+  get(endpoint: string, queryParameters: QueryParameters = {}) {
     return this.request('GET', endpoint, queryParameters);
   }
 

@@ -31,7 +31,7 @@ const StyledButton = styled(Button)`
 
 export const LoginForm = () => {
   const { handleSubmit, register, errors } = useForm();
-  const { mutate: login, user, isError, isLoading, error } = useLogin();
+  const { mutate: login, user, isError, isLoading, isSuccess, error } = useLogin();
 
   return (
     <form onSubmit={handleSubmit(({ email, password }) => login({ email, password }))} noValidate>
@@ -70,7 +70,7 @@ export const LoginForm = () => {
       {/*  inputRef={register}*/}
       {/*  defaultValue={false}*/}
       {/*/>*/}
-      <StyledButton type="submit" fullWidth isLoading={isLoading}>
+      <StyledButton type="submit" fullWidth isLoading={isLoading || isSuccess}>
         Login to your account
       </StyledButton>
     </form>

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
 class QuestionType extends DatabaseType {
@@ -28,7 +28,7 @@ class QuestionType extends DatabaseType {
 
 const HOOKS_BY_ID_CACHE_KEY = 'hooksByQuestionId';
 
-export class QuestionModel extends DatabaseModel {
+export class QuestionModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataElement];
 
   get DatabaseTypeClass() {

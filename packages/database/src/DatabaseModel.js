@@ -72,8 +72,10 @@ export class DatabaseModel {
     return this.fieldNames;
   }
 
-  // This method must be overridden by every subclass, so that the model knows what DatabaseType to
-  // generate when returning results
+  /**
+   * This method must be overridden by every subclass, so that the model knows what DatabaseType to generate when returning results
+   * @returns {*} DatabaseTypeClass
+   */
   get DatabaseTypeClass() {
     throw new TypeError('get DatabaseTypeClass was called on object that has not implemented it');
   }
@@ -115,9 +117,9 @@ export class DatabaseModel {
     if (this.joins.length > 0) {
       options.multiJoin = this.joins;
 
-      this.joins.forEach(({ joinWith, fields: joinFields }) =>
+      this.joins.forEach(({ joinWith, joinAs = joinWith, fields: joinFields }) =>
         Object.keys(joinFields).forEach(fieldName =>
-          options.columns.push(`${joinWith}.${fieldName} as ${joinFields[fieldName]}`),
+          options.columns.push(`${joinAs}.${fieldName} as ${joinFields[fieldName]}`),
         ),
       );
     }
