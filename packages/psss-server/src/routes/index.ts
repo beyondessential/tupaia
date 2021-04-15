@@ -6,6 +6,7 @@
 export { LoginRoute } from './LoginRoute';
 export { LogoutRoute } from './LogoutRoute';
 export { TestRoute } from './TestRoute';
+export { FetchCountries } from './country';
 export {
   FetchConfirmedWeeklyReportRoute,
   FetchConfirmedCountryWeeklyReportRoute,

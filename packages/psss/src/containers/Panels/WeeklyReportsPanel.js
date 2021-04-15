@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import Collapse from '@material-ui/core/Collapse';
@@ -22,16 +22,16 @@ import {
   AlertCreatedModal,
   ComingSoon,
 } from '../../components';
-import { closeWeeklyReportsPanel, checkWeeklyReportsPanelIsOpen, getActiveWeek } from '../../store';
+import {
+  closeWeeklyReportsPanel,
+  checkWeeklyReportsPanelIsOpen,
+  getActiveWeek,
+  getCountryName,
+} from '../../store';
 import * as COLORS from '../../constants/colors';
 import { REPORT_STATUSES, TABLE_STATUSES } from '../../constants';
 import { CountryReportTable, SiteReportTable } from '../Tables';
-import {
-  countryFlagImage,
-  getCountryName,
-  getWeekNumberByPeriod,
-  getDisplayDatesByPeriod,
-} from '../../utils';
+import { countryFlagImage, getWeekNumberByPeriod, getDisplayDatesByPeriod } from '../../utils';
 import {
   useTableQuery,
   useConfirmWeeklyReport,
@@ -105,6 +105,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { countryCode } = useParams();
+    const countryName = useSelector(state => getCountryName(state, countryCode));
     const options = {
       countryCode,
       activeWeek,
@@ -158,7 +159,7 @@ export const WeeklyReportsPanelComponent = React.memo(
         <DrawerTray heading="Upcoming report" onClose={handleClose} />
         <DrawerHeader
           trayHeading="Upcoming report"
-          heading={getCountryName(countryCode)}
+          heading={countryName}
           date={date}
           avatarUrl={countryFlagImage(countryCode)}
         />

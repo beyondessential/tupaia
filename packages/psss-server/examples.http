@@ -50,7 +50,7 @@ DELETE http://{{host}}/{{version}}/weeklyReport/TO?week=2021W07 HTTP/2.0
 Cookie: {{sessionCookie}}
 
 ### Fetch Confirmed Weekly Report Data
-GET http://{{host}}/{{version}}/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07 HTTP/2.0
+GET http://{{host}}/{{version}}/confirmedWeeklyReport?startWeek=2021W07&endWeek=2021W07&orgUnitCodes=TO,FJ  HTTP/2.0
 Cookie: {{sessionCookie}}
 
 ### Fetch Country Confirmed Weekly Report Data

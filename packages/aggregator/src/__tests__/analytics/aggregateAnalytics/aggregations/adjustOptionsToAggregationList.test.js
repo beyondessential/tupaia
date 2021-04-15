@@ -58,9 +58,21 @@ describe('adjustOptionsToAggregationList()', () => {
       expectedFetchOptions,
       expectedAggregationOptions = aggregationOptions,
     ) => {
-      expect(
-        await adjustOptionsToAggregationList(context, fetchOptions, aggregationOptions),
-      ).toStrictEqual([expectedFetchOptions, expectedAggregationOptions]);
+      if (!aggregationOptions.aggregations || aggregationOptions.aggregations.length === 0) {
+        expect(
+          adjustOptionsToAggregationList(context, fetchOptions, aggregationOptions),
+        ).toStrictEqual([expectedFetchOptions, expectedAggregationOptions]);
+      } else {
+        expect(
+          adjustOptionsToAggregationList(context, fetchOptions, aggregationOptions),
+        ).toStrictEqual([
+          {
+            ...expectedFetchOptions,
+            aggregations: expectedAggregationOptions.aggregations,
+          },
+          expectedAggregationOptions,
+        ]);
+      }
     },
   );
 });

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
-import { DatabaseModel } from '../DatabaseModel';
+import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
@@ -282,7 +282,7 @@ export class EntityType extends DatabaseType {
   }
 }
 
-export class EntityModel extends DatabaseModel {
+export class EntityModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
     return EntityType;
   }

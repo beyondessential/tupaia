@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { CircleMeter, Card, CardContent, CardHeader } from '@tupaia/ui-components';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { useConfirmedCountries } from '../api/queries';
-import { getEntitiesAllowed } from '../store';
+import { getCountryCodes } from '../store';
 
 const StyledCardContent = styled(CardContent)`
   display: flex;
@@ -42,11 +42,11 @@ export const ReportsSubmittedCardComponent = React.memo(({ countryCodes }) => {
 });
 
 ReportsSubmittedCardComponent.propTypes = {
-  countryCodes: PropTypes.array.isRequired,
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const mapStateToProps = state => ({
-  countryCodes: getEntitiesAllowed(state),
+  countryCodes: getCountryCodes(state),
 });
 
 export const ConfirmedCountriesCard = connect(mapStateToProps)(ReportsSubmittedCardComponent);

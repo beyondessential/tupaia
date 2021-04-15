@@ -14,15 +14,15 @@ import { PrivateRoute } from './PrivateRoute';
 import { UnauthorisedView } from '../views/UnauthorisedView';
 import { ProfileView } from '../views/ProfileView';
 import { NotFoundView } from '../views/NotFoundView';
-import { getEntitiesAllowed, canUserViewMultipleCountries, canUserViewCountry } from '../store';
+import { canUserViewMultipleCountries, canUserViewCountry, getCountryCodes } from '../store';
 
-export const PageRoutesComponent = React.memo(({ allowedEntities }) => (
+export const PageRoutesComponent = React.memo(({ countryCodes }) => (
   <Switch>
     <PrivateRoute
       exact
       path="/"
-      authCheck={() => canUserViewMultipleCountries(allowedEntities)}
-      redirectTo={`/weekly-reports/${allowedEntities[0]}`}
+      authCheck={() => canUserViewMultipleCountries(countryCodes)}
+      redirectTo={`/weekly-reports/${countryCodes[0]}`}
     >
       <CountriesReportsView />
     </PrivateRoute>
@@ -31,18 +31,18 @@ export const PageRoutesComponent = React.memo(({ allowedEntities }) => (
     </Route>
     <PrivateRoute
       path="/weekly-reports/:countryCode"
-      authCheck={match => canUserViewCountry(allowedEntities, match)}
+      authCheck={match => canUserViewCountry(countryCodes, match)}
     >
       <CountryReportsView />
     </PrivateRoute>
-    {canUserViewMultipleCountries(allowedEntities) ? (
+    {canUserViewMultipleCountries(countryCodes) ? (
       <PrivateRoute path="/alerts">
         <AlertsOutbreaksView />
       </PrivateRoute>
     ) : (
       <PrivateRoute
         path="/alerts/:countryCode"
-        authCheck={match => canUserViewCountry(allowedEntities, match)}
+        authCheck={match => canUserViewCountry(countryCodes, match)}
       >
         <AlertsOutbreaksView />
       </PrivateRoute>
@@ -57,11 +57,11 @@ export const PageRoutesComponent = React.memo(({ allowedEntities }) => (
 ));
 
 PageRoutesComponent.propTypes = {
-  allowedEntities: PropTypes.array.isRequired,
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const mapStateToProps = state => ({
-  allowedEntities: getEntitiesAllowed(state),
+  countryCodes: getCountryCodes(state),
 });
 
 export const PageRoutes = connect(mapStateToProps)(PageRoutesComponent);

@@ -129,7 +129,7 @@ export const adjustOptionsToAggregationList = async (context, fetchOptions, aggr
   );
 
   return [
-    { ...fetchOptions, organisationUnitCodes, startDate, endDate, period },
+    { ...fetchOptions, organisationUnitCodes, startDate, endDate, period, aggregations },
     { ...aggregationOptions, aggregations },
   ];
 };
