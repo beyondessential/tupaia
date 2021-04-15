@@ -11,13 +11,10 @@ import { ReportBuilder } from '../reportBuilder';
 import { ReportsRequest } from '../types';
 
 class FetchReportRouteHandler {
-  private aggregator: Aggregator;
-
-  constructor() {
-    this.aggregator = createAggregator(Aggregator);
-  }
-
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
+    const aggregator = createAggregator(Aggregator, {
+      session: { getAuthHeader: () => req.headers.authorization },
+    });
     const { query, params, models, accessPolicy, body } = req;
     const reportBuilder = new ReportBuilder();
     if (body.testConfig) {
@@ -37,7 +34,7 @@ class FetchReportRouteHandler {
       reportBuilder.setTestData(body.testData);
     }
 
-    const data = await reportBuilder.build(this.aggregator, query);
+    const data = await reportBuilder.build(aggregator, query);
     respond(res, data, 200);
   };
 }
