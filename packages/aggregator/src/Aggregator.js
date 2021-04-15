@@ -4,7 +4,7 @@
  */
 
 import {
-  adjustFetchOptionsToAggregationList,
+  adjustOptionsToAggregationList,
   aggregateAnalytics,
   filterAnalytics,
   periodFromAnalytics,
@@ -17,6 +17,7 @@ export class Aggregator {
 
   constructor(dataBroker) {
     this.dataBroker = dataBroker;
+    this.context = dataBroker.context;
   }
 
   async close() {
@@ -60,12 +61,15 @@ export class Aggregator {
 
     const code = Array.isArray(codeInput) ? codeInput : [codeInput];
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
-    const { aggregations = [] } = aggregationOptions;
-    const adjustedFetchOptions = adjustFetchOptionsToAggregationList(fetchOptions, aggregations);
+    const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
+      this.context,
+      fetchOptions,
+      aggregationOptions,
+    );
     const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
 
     return {
-      results: this.processAnalytics(results, aggregationOptions, fetchOptions.period),
+      results: this.processAnalytics(results, adjustedAggregationOptions, fetchOptions.period),
       metadata,
       period: periodFromAnalytics(results, fetchOptions),
     };
