@@ -81,8 +81,8 @@ export const Legend = React.memo(
 );
 
 Legend.propTypes = {
-  setHiddenMeasures: PropTypes.func.isRequired,
-  hiddenMeasures: PropTypes.array.isRequired,
+  setHiddenMeasures: PropTypes.func,
+  hiddenMeasures: PropTypes.array,
   measureOptions: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
@@ -95,4 +95,6 @@ Legend.propTypes = {
 Legend.defaultProps = {
   measureOptions: null,
   className: null,
+  hiddenMeasures: [],
+  setHiddenMeasures: null,
 };
