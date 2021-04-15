@@ -15,20 +15,13 @@ const fetchAnalytics = async (
   aggregator: Aggregator,
   query: FetchReportQuery,
   params: DataElementFetchParams,
-  aggregationOptions: unknown,
 ): Promise<FetchResponse> => {
   const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
-  return aggregator.fetchAnalytics(
-    params.dataElementCodes,
-    organisationUnitCodes,
-    hierarchy,
-    {
-      period,
-      startDate,
-      endDate,
-    },
-    aggregationOptions,
-  );
+  return aggregator.fetchAnalytics(params.dataElementCodes, organisationUnitCodes, hierarchy, {
+    period,
+    startDate,
+    endDate,
+  });
 };
 
 const buildParams = (params: unknown): DataElementFetchParams => {
@@ -49,8 +42,8 @@ const buildParams = (params: unknown): DataElementFetchParams => {
   };
 };
 
-export const buildDataElementFetch = (params: unknown, aggregationOptions: unknown) => {
+export const buildDataElementFetch = (params: unknown) => {
   const builtDataElementsFetchParams = buildParams(params);
   return (aggregator: Aggregator, query: FetchReportQuery) =>
-    fetchAnalytics(aggregator, query, builtDataElementsFetchParams, aggregationOptions);
+    fetchAnalytics(aggregator, query, builtDataElementsFetchParams);
 };

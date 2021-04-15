@@ -25,13 +25,11 @@ const buildParams = (params: unknown): FetchParams => {
     throw new Error(`Expected object but got ${params}`);
   }
 
-  const { aggregation, ...fetchParams } = params;
-
-  if (Object.keys(fetchParams).length > 1) {
+  if (Object.keys(params).length > 1) {
     throw new Error(`Expected fetch params to contain a single key`);
   }
 
-  const fetchFunction = Object.keys(fetchParams)[0];
+  const fetchFunction = Object.keys(params)[0];
 
   if (!(fetchFunction in fetchBuilders)) {
     throw new Error(
@@ -40,10 +38,7 @@ const buildParams = (params: unknown): FetchParams => {
   }
 
   return {
-    call: fetchBuilders[fetchFunction as keyof typeof fetchBuilders](
-      fetchParams[fetchFunction],
-      aggregation,
-    ),
+    call: fetchBuilders[fetchFunction as keyof typeof fetchBuilders](params[fetchFunction]),
   };
 };
 

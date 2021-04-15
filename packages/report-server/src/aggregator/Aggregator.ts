@@ -19,7 +19,6 @@ export class Aggregator extends BaseAggregator {
     organisationUnitCodes: string,
     hierarchy: string | undefined,
     periodParams: PeriodParams,
-    aggregationOptions: unknown,
   ) {
     const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
     return super.fetchAnalytics(
@@ -32,7 +31,7 @@ export class Aggregator extends BaseAggregator {
         endDate,
         dataServices: [{ isDataRegional: true }],
       },
-      aggregationOptions || { aggregationType: 'RAW' },
+      { aggregationType: 'RAW' },
     );
   }
 
