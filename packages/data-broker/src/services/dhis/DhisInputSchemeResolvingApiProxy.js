@@ -50,8 +50,10 @@ export class DhisInputSchemeResolvingApiProxy {
     // different org units than were requested
     translatedResponse = await this.translateOrgUnitIdsToCodesInResponse(translatedResponse);
 
-    // We need to translate co from "lmbxvugTvKr" to "default"
-    // TODO: change this to a configuration
+    // We need to translate co categoryCombos which we don't have for Laos
+    // but return id which we need to convert to code "lmbxvugTvKr" to "default"
+    // for later doen the pipe in InboundAggregateDataTranslator
+    // TODO: change this to a configuration - somewhere where it feels less hardcoded?
     const coTranslations = { lmbxvugTvKr: 'default' };
     translatedResponse = await this.translateDefaultCoInResponse(
       translatedResponse,
