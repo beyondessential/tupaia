@@ -1,10 +1,11 @@
 #!/bin/bash
 
 function restore_table() {
-  local table="$1"
+  local user="$1"
+  local table="$2"
 
   echo "Restoring $table"
-  psql -U tupaia tupaia -c "\copy $table from 'dumps/$table.csv' delimiter ',' csv header"
+  psql -U "$user" tupaia -c "\copy $table from 'dumps/$table.csv' delimiter ',' csv header"
 }
 
 s3_folder="dumps/e2e"
@@ -27,17 +28,23 @@ tar xf "$dump_file"
 
 echo "Disabling notification triggers"
 psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER survey_response_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER trig\$_survey_response;"
 psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER answer_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER trig\$_answer;"
 
-echo "Clearing survey response and answer tables"
+echo "Clearing tables: survey_response, answer, analytisc"
 psql -U tupaia tupaia -c "TRUNCATE TABLE survey_response CASCADE;"
+psql -U mvrefresh tupaia -c "TRUNCATE TABLE analytics;"
 
-restore_table survey_response
-restore_table answer
+restore_table tupaia survey_response
+restore_table tupaia answer
+restore_table mvrefresh analytics
 
 echo "Re-enabling notification triggers"
 psql -U tupaia tupaia -c "ALTER TABLE survey_response ENABLE TRIGGER survey_response_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE survey_response ENABLE TRIGGER trig\$_survey_response;"
 psql -U tupaia tupaia -c "ALTER TABLE answer ENABLE TRIGGER answer_trigger;"
+psql -U tupaia tupaia -c "ALTER TABLE answer ENABLE TRIGGER trig\$_answer;"
 
 echo "Cleaning up"
 rm -rf dumps

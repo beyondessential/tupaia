@@ -26,6 +26,7 @@ if [[ "$STAGE" == "e2e" || $force == true ]]; then
 
   dump_table survey_response
   dump_table answer
+  dump_table analytics
 
   dump_file="${STAGE}_$(date '+%s')_dumps.tgz"
 
