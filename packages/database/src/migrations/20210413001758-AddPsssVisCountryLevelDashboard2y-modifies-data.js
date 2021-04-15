@@ -167,6 +167,9 @@ const getDashboardReport = (id, thingName, thingDataElementCode) => {
         },
       },
       periodGranularity: 'week',
+      presentationOptions: {
+        periodTickFormat: '[W]w',
+      },
     },
   };
 };
