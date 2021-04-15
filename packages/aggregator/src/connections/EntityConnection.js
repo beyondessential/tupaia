@@ -7,13 +7,6 @@ import { ApiConnection } from '@tupaia/server-boilerplate';
 
 const { ENTITY_SERVER_API_URL = 'http://localhost:8050/v1' } = process.env;
 
-const queryParams = (entityCodes, dataSourceEntityType) => ({
-  entities: entityCodes.join(','),
-  descendant_filter: `type:${dataSourceEntityType}`,
-  field: 'code',
-  groupBy: 'descendant',
-});
-
 export class EntityConnection extends ApiConnection {
   baseUrl = ENTITY_SERVER_API_URL;
 
@@ -28,10 +21,11 @@ export class EntityConnection extends ApiConnection {
     dataSourceEntityType,
     dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
-    return this.get(
-      `hierarchy/${hierarchyName}/descendants`,
-      queryParams(entityCodes, dataSourceEntityType),
-    );
+    return this.get(`hierarchy/${hierarchyName}/descendants`, {
+      entities: entityCodes.join(','),
+      descendant_filter: `type:${dataSourceEntityType}`,
+      field: 'code',
+    });
   }
 
   async getDataSourceEntitiesAndRelations(
@@ -41,14 +35,19 @@ export class EntityConnection extends ApiConnection {
     dataSourceEntityType,
     dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
-    const params = queryParams(entityCodes, dataSourceEntityType);
+    const query = {
+      entities: entityCodes.join(','),
+      descendant_filter: `type:${dataSourceEntityType}`,
+      field: 'code',
+      groupBy: 'descendant',
+    };
 
     // Omitting ancestor_type returns descendants to requested entities map
     if (aggregationEntityType !== 'requested') {
-      params.ancestor_filter = `type:${aggregationEntityType}`;
+      query.ancestor_filter = `type:${aggregationEntityType}`;
     }
 
-    const response = await this.get(`hierarchy/${hierarchyName}/relations`, params);
+    const response = await this.get(`hierarchy/${hierarchyName}/relations`, query);
 
     const formattedRelations = {};
     Object.entries(response).forEach(([descendant, ancestor]) => {
