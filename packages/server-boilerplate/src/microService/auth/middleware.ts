@@ -6,7 +6,13 @@
 import { Request, NextFunction, Response } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { Authenticator, getUserIDFromToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
+import {
+  Authenticator,
+  encryptPassword,
+  getUserIDFromToken,
+  getUserAndPassFromBasicAuth,
+} from '@tupaia/auth';
+import { ModelRegistry } from '@tupaia/database';
 
 const authenticateBearerAuthHeader = async (authHeader: string) => {
   // Use the user account provided in the auth header if present
@@ -15,15 +21,39 @@ const authenticateBearerAuthHeader = async (authHeader: string) => {
     return tokenUserID;
   }
 
-  throw new UnauthenticatedError('Could not pass auth token');
+  throw new UnauthenticatedError('Could not authenticate with the provided access token');
+};
+
+const attemptApiClientAuthentication = async (
+  models: ModelRegistry,
+  { username, secretKey }: { username: string; secretKey: string },
+) => {
+  const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
+  const apiClient = await models.apiClient.findOne({
+    username,
+    secret_key_hash: secretKeyHash,
+  });
+  return apiClient && apiClient.getUser();
 };
 
 const authenticateBasicAuthHeader = async (
+  models: ModelRegistry,
   authenticator: Authenticator,
   authHeader: string,
   apiName: string,
 ) => {
   const { username, password } = getUserAndPassFromBasicAuth(authHeader);
+
+  // first attempt to authenticate as an api client, in case a secret key was used in the auth header
+  const apiClientUser = await attemptApiClientAuthentication(models, {
+    username,
+    secretKey: password,
+  });
+  if (apiClientUser) {
+    return apiClientUser.id;
+  }
+
+  // api client auth failed, attempt to authenticate as a regular user
   const { user } = await authenticator.authenticatePassword({
     emailAddress: username,
     password,
@@ -53,7 +83,7 @@ export const buildBasicBearerAuthMiddleware = (
     if (authHeader.startsWith('Bearer')) {
       userId = await authenticateBearerAuthHeader(authHeader);
     } else if (authHeader.startsWith('Basic')) {
-      userId = await authenticateBasicAuthHeader(authenticator, authHeader, apiName);
+      userId = await authenticateBasicAuthHeader(req.models, authenticator, authHeader, apiName);
     } else {
       throw new UnauthenticatedError('Could not authenticate with the provided access token');
     }

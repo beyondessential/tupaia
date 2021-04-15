@@ -4,6 +4,7 @@
  */
 
 export const TYPES = {
+  ANALYTICS: 'analytics',
   ANCESTOR_DESCENDANT_RELATION: 'ancestor_descendant_relation',
   ANSWER: 'answer',
   ACCESS_REQUEST: 'access_request',
