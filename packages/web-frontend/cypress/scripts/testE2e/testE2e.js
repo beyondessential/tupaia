@@ -15,6 +15,11 @@ import { Snapshots } from './Snapshots';
 
 const scriptConfig = {
   options: {
+    ciBuildId: {
+      type: 'string',
+      description:
+        'Used to associate multiple CI machines to one test run, see https://docs.cypress.io/guides/guides/parallelization#Linking-CI-machines-for-parallelization-or-grouping',
+    },
     push: {
       type: 'boolean',
       default: true,
@@ -46,12 +51,16 @@ const pushSnapshotsIfDiffThanExisting = async (repo, branch, existingSnapshots) 
   }
 };
 
-const runTestsAndCatchErrors = () => {
+const runTestsAndCatchErrors = ciBuildId => {
   const record = !!process.env.CYPRESS_RECORD_KEY;
 
   let cypressError;
   try {
-    runPackageScript(`cypress:run --record ${record}`);
+    let command = `cypress:run --record ${record}`;
+    if (ciBuildId) {
+      command = `${command} --parallel --ci-build-id ${ciBuildId}`;
+    }
+    runPackageScript(command);
   } catch (error) {
     // Note: ideally we would only catch test assertion errors,
     // and still throw runtime/syntax errors etc.
@@ -100,7 +109,7 @@ export const testE2e = async () => {
   runPackageScript('cypress:generate-config');
 
   // Hold error throwing so that snapshots can be pushed
-  const testError = runTestsAndCatchErrors();
+  const testError = runTestsAndCatchErrors(args.ciBuildId);
 
   if (args.push) {
     await pushSnapshotsIfDiffThanExisting(repo, branch, existingSnapshots);
