@@ -60,11 +60,11 @@ describe('adjustOptionsToAggregationList()', () => {
     ) => {
       if (!aggregationOptions.aggregations || aggregationOptions.aggregations.length === 0) {
         expect(
-          adjustOptionsToAggregationList(context, fetchOptions, aggregationOptions),
+          await adjustOptionsToAggregationList(context, fetchOptions, aggregationOptions),
         ).toStrictEqual([expectedFetchOptions, expectedAggregationOptions]);
       } else {
         expect(
-          adjustOptionsToAggregationList(context, fetchOptions, aggregationOptions),
+          await adjustOptionsToAggregationList(context, fetchOptions, aggregationOptions),
         ).toStrictEqual([
           {
             ...expectedFetchOptions,
