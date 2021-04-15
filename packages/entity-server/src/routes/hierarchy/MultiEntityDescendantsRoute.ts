@@ -34,9 +34,12 @@ export class MultiEntityDescendantsRoute extends Route<MultiEntityDescendantsReq
         responseEntities.push(...entitiesToUse);
       }),
     );
-    if (field) {
-      return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, field);
-    }
-    return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, fields);
+
+    return formatEntitiesForResponse(
+      this.req.models,
+      this.req.ctx,
+      responseEntities,
+      field || fields,
+    );
   }
 }

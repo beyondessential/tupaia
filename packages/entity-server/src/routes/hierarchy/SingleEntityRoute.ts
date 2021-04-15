@@ -10,9 +10,6 @@ import { SingleEntityRequest } from './types';
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   async buildResponse() {
     const { entity, field, fields } = this.req.ctx;
-    if (field) {
-      return formatEntityForResponse(this.req.ctx, entity, field);
-    }
-    return formatEntityForResponse(this.req.ctx, entity, fields);
+    return formatEntityForResponse(this.req.ctx, entity, field || fields);
   }
 }

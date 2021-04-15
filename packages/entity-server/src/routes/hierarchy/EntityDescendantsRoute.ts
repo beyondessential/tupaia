@@ -27,9 +27,12 @@ export class EntityDescendantsRoute extends Route<DescendantsRequest> {
       ...filter,
     });
     const responseEntities = includeRootEntity ? [entity].concat(descendants) : descendants;
-    if (field) {
-      return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, field);
-    }
-    return formatEntitiesForResponse(this.req.models, this.req.ctx, responseEntities, fields);
+
+    return formatEntitiesForResponse(
+      this.req.models,
+      this.req.ctx,
+      responseEntities,
+      field || fields,
+    );
   }
 }

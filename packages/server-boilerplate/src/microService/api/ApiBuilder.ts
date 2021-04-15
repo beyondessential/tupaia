@@ -21,9 +21,13 @@ export class ApiBuilder {
 
   private readonly models: ModelRegistry;
 
+  private version: string;
+
   constructor(transactingConnection: TupaiaDatabase) {
     this.models = new ModelRegistry(transactingConnection);
     this.app = express();
+
+    this.version = 'v1'; // Default version
 
     /**
      * Add middleware
@@ -49,11 +53,10 @@ export class ApiBuilder {
 
       next();
     });
+  }
 
-    /**
-     * Test Route
-     */
-    this.app.get('/v1/test', handleWith(TestRoute));
+  setVersion(version: string) {
+    this.version = version;
   }
 
   useBasicBearerAuth(apiName: string) {
@@ -63,10 +66,10 @@ export class ApiBuilder {
   }
 
   use<T extends ExpressRequest<T> = Request>(
-    path: string | string[],
+    path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
-    this.app.use(path, middleware);
+    this.app.use(this.formatPath(path), middleware);
     return this;
   }
 
@@ -74,12 +77,21 @@ export class ApiBuilder {
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
-    this.app.get(path, handler);
+    this.app.get(this.formatPath(path), handler);
     return this;
   }
 
   build() {
+    /**
+     * Test Route
+     */
+    this.get('test', handleWith(TestRoute));
+
     this.app.use(handleError);
     return this.app;
+  }
+
+  private formatPath(path: string) {
+    return `/${this.version}/${path}`;
   }
 }
