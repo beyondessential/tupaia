@@ -3,11 +3,27 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useMapOverlaysData } from '../api';
+import L from 'leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  MarkerLayer,
+  PolygonLayer,
+  Polygon,
+  Legend as LegendComponent,
+  TilePicker as TilePickerComponent,
+} from '@tupaia/ui-components/lib/map';
+import { MapOverlaysPanel, EntityPolygonLink, MapOverlaysPanelContainer } from '../components';
+import {
+  useEntitiesData,
+  useEntityData,
+  useMapOverlayReportData,
+  useMapOverlaysData,
+} from '../api';
+import { TILE_SETS } from '../constants';
 import { useUrlParams } from '../utils';
-import { MapOverlaysPanel } from '../components';
 
 const Container = styled.div`
   position: relative;
@@ -17,27 +33,137 @@ const Container = styled.div`
   min-height: 600px;
 `;
 
+const Map = styled(MapContainer)`
+  flex: 1;
+  height: 100%;
+`;
+
 const Main = styled.div`
   position: relative;
   flex: 1;
   height: 100%;
 `;
 
+const EmptyPanel = styled(MapOverlaysPanelContainer)`
+  padding: 2rem;
+`;
+
+const Legend = styled(LegendComponent)`
+  position: absolute;
+  bottom: 5px;
+  z-index: 999;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const TilePicker = styled(TilePickerComponent)`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  pointer-events: none;
+`;
+
+const useProvinceData = () => {
+  const query = useEntitiesData();
+  let provinces = [];
+
+  if (query.data) {
+    provinces = query.data.filter(entity => entity.parentCode === 'LA');
+  }
+
+  return { ...query, data: provinces };
+};
+
 export const MapView = () => {
   const { entityCode } = useUrlParams();
+  const [activeTileSetKey, setActiveTileSetKey] = useState(TILE_SETS[0].key);
+  const [hiddenMeasures, setHiddenMeasures] = useState([]);
   const [selectedOverlay, setSelectedOverlay] = useState(null);
+
+  useEffect(() => {
+    setHiddenMeasures([]);
+  }, [setHiddenMeasures, selectedOverlay]);
+
+  const { data: entityData } = useEntityData({
+    entityCode,
+  });
+
+  const { data: overlayReportData } = useMapOverlayReportData({
+    entityCode,
+    mapOverlayCode: selectedOverlay,
+    hiddenMeasures,
+  });
 
   const { data: overlaysData, isLoading } = useMapOverlaysData({ entityCode });
 
+  const { data: provicesData } = useProvinceData();
+
+  const handleLocationChange = (map, bounds) => {
+    const mapBoxBounds = L.latLngBounds(bounds);
+    const maxBounds = mapBoxBounds.pad(2);
+    map.setMaxBounds(maxBounds);
+  };
+
+  const handleSetHiddenMeasures = value => {
+    const exists = hiddenMeasures.includes(value);
+
+    if (exists) {
+      const newHiddenMeasures = hiddenMeasures.filter(m => m !== value);
+      setHiddenMeasures(newHiddenMeasures);
+    } else {
+      const newHiddenMeasures = [...hiddenMeasures, value];
+      setHiddenMeasures(newHiddenMeasures);
+    }
+  };
+
+  const activeTileSet = TILE_SETS.find(tileSet => tileSet.key === activeTileSetKey);
+  const isCountry = entityData?.type === 'country';
+
   return (
     <Container>
-      <MapOverlaysPanel
-        isLoading={isLoading}
-        overlays={overlaysData}
-        selectedOverlay={selectedOverlay}
-        setSelectedOverlay={setSelectedOverlay}
-      />
-      <Main>Map</Main>
+      {isCountry ? (
+        <EmptyPanel>Select a province from the map to view data.</EmptyPanel>
+      ) : (
+        <MapOverlaysPanel
+          isLoading={isLoading}
+          overlays={overlaysData}
+          selectedOverlay={selectedOverlay}
+          setSelectedOverlay={setSelectedOverlay}
+        />
+      )}
+      <Main>
+        <Map
+          bounds={entityData ? entityData.bounds : null}
+          onLocationChange={handleLocationChange}
+          dragging
+        >
+          <TileLayer tileSetUrl={activeTileSet.url} />
+          {isCountry ? (
+            <PolygonLayer entities={provicesData} Polygon={EntityPolygonLink} />
+          ) : (
+            <>
+              <MarkerLayer
+                measureData={overlayReportData ? overlayReportData.measureData : null}
+                measureOptions={overlayReportData ? overlayReportData.measureOptions : null}
+              />
+              <Polygon entity={entityData} />
+            </>
+          )}
+        </Map>
+        <TilePicker
+          tileSets={TILE_SETS}
+          activeTileSet={activeTileSet}
+          onChange={setActiveTileSetKey}
+        />
+        {!isCountry && (
+          <Legend
+            measureOptions={overlayReportData?.measureOptions}
+            setHiddenMeasures={handleSetHiddenMeasures}
+            hiddenMeasures={hiddenMeasures}
+          />
+        )}
+      </Main>
     </Container>
   );
 };
