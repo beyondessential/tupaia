@@ -21,7 +21,7 @@ const COMMON_OPTIONS = {
 };
 
 const EVENT_OPTIONS = {
-  surveyCode: [hasContent, isAString],
+  dataGroupCode: [hasContent, isAString],
   eventId: [constructIsEmptyOr(takesIdForm)],
 };
 

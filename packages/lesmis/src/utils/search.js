@@ -4,15 +4,18 @@
  *
  */
 import React from 'react';
-import { ReactComponent as Province } from '../icons/province.svg';
-import { ReactComponent as District } from '../icons/district.svg';
-import { ReactComponent as School } from '../icons/school.svg';
+import { ReactComponent as Laos } from '../components/icons/laos.svg';
+import { ReactComponent as Province } from '../components/icons/province.svg';
+import { ReactComponent as District } from '../components/icons/district.svg';
+import { ReactComponent as School } from '../components/icons/school.svg';
 
 /**
  * Get the display icon for search results
  */
 export const getPlaceIcon = type => {
   switch (type) {
+    case 'country':
+      return <Laos />;
     case 'province':
       return <Province />;
     case 'district':
@@ -30,13 +33,17 @@ export const getPlaceIcon = type => {
 export const getOptionText = (option, entities, hierarchy = []) => {
   const { type, name, parentCode } = option;
 
-  const newHierarchy = [...hierarchy, name];
-
   if (type === 'country') {
-    return newHierarchy.join(', ');
+    if (hierarchy.length === 0) {
+      return name; // Return the country name
+    }
+
+    return hierarchy.join(', ');
   }
 
-  const parentEntity = entities.find(entity => entity.entityCode === parentCode);
+  const newHierarchy = [...hierarchy, name];
+
+  const parentEntity = entities.find(entity => entity.code === parentCode);
 
   if (!parentEntity) {
     return newHierarchy.join(', ');

@@ -5,7 +5,7 @@
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
 
-// surveyCode, entityCode, submissionTime, answers
+// surveyCode, entityCode, data_time, answers
 export type ArraySurveyResponse = [string, string, string, Record<string, string>];
 
 export const arrayToSurveyResponse = (arrayResponse: ArraySurveyResponse) => {

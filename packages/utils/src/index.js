@@ -6,6 +6,7 @@
 export * from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
 export * from './compare';
+export * from './createBasicHeader';
 export * from './cypress';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
