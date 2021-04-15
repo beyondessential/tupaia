@@ -4,10 +4,20 @@
  *
  */
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { LayerGroup } from 'react-leaflet';
+import { LayerGroup, Polygon } from 'react-leaflet';
 import { MeasureMarker, MeasurePopup } from './Markers';
+import { AreaTooltip } from './AreaTooltip';
 import { MEASURE_TYPE_RADIUS } from './utils';
+
+const ShadedPolygon = styled(Polygon)`
+  weight: 1;
+  fill-opacity: 0.5;
+  :hover {
+    fill-opacity: 0.8;
+  }
+`;
 
 export const MarkerLayer = ({ measureData, measureOptions }) => {
   if (!measureData || !measureOptions) return null;
@@ -21,18 +31,17 @@ export const MarkerLayer = ({ measureData, measureOptions }) => {
 
   return (
     <LayerGroup>
-      {measureData
-        .filter(m => m?.coordinates.length === 2)
-        .map(measure => (
-          <MeasureMarker
-            key={measure.organisationUnitCode}
-            radiusScaleFactor={1}
-            displayPolygons
-            {...measure}
-          >
+      {measureData.map(measure =>
+        measure.region ? (
+          <ShadedPolygon key={measure.code} positions={measure.region} {...measure}>
+            <AreaTooltip text={`${measure.name}: ${measure.originalValue}`} />
+          </ShadedPolygon>
+        ) : (
+          <MeasureMarker key={measure.code} {...measure}>
             <MeasurePopup measureData={measure} measureOptions={measureOptions} />
           </MeasureMarker>
-        ))}
+        ),
+      )}
     </LayerGroup>
   );
 };
