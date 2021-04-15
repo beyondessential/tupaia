@@ -28,11 +28,21 @@ export const useLogin = () => {
     },
   );
 
+  /**
+   * After the login fetch returns successfully, attempt to get the user and
+   * overwrite the login query state with the user query. This ensures that the user is
+   * not fully logged in until we have fetched a valid user and ensures any errors related to the
+   * getting a valid user are displayed at login.
+   */
   const userQuery = useUser({ enabled: loginQuery.isSuccess });
 
   if (loginQuery.isSuccess) {
     return { ...loginQuery, ...userQuery };
   }
 
+  /**
+   * If the login was not successful simply return the errors and fetching state related
+   * to the login query
+   */
   return loginQuery;
 };
