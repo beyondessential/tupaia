@@ -135,7 +135,11 @@ export class DhisService extends Service {
     const { programCodes } = options;
 
     if (programCodes) {
-      return this.pullAnalyticsFromEventsForApi;
+      // TODO remove `useDeprecatedApi` option as soon as `pullAnalyticsFromEventsForApi_Deprecated()` is deleted
+      const { useDeprecatedApi = true } = options;
+      return useDeprecatedApi
+        ? this.pullAnalyticsFromEventsForApi_Deprecated
+        : this.pullAnalyticsFromEventsForApi;
     }
 
     return this.pullAnalyticsForApi;
@@ -151,6 +155,41 @@ export class DhisService extends Service {
     );
 
     return events;
+  };
+
+  /**
+   * This is a deprecated method which invokes a slow DHIS2 api ('/events').
+   * It is invoked using the `options.useDeprecatedApi` flag
+   *
+   * TODO Delete this method as soon as all its past consumers have migrated over to
+   * the new (non-deprecated) method
+   */
+  pullAnalyticsFromEventsForApi_Deprecated = async (api, dataSources, options) => {
+    const {
+      organisationUnitCodes = [],
+      startDate,
+      endDate,
+      programCodes,
+      eventId,
+      trackedEntityInstance,
+    } = options;
+
+    const query = {
+      organisationUnitCode: organisationUnitCodes[0],
+      dataElementIdScheme: 'code',
+      startDate,
+      endDate,
+      programCodes,
+      eventId,
+      trackedEntityInstance,
+    };
+    const events = await this.fetchEventsForPrograms(api, programCodes, query);
+    const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
+    const dataElements = await this.pullDataElementMetadata(api, dataSources, {
+      additionalFields: ['valueType'],
+    });
+
+    return buildAnalyticsFromEvents(translatedEvents, dataElements);
   };
 
   translateDhisEventAnalytics = async (dhisAnalytics, dataSources) => {
@@ -206,7 +245,6 @@ export class DhisService extends Service {
     },
   });
 
-  // Note: this method doesn't support useDeprecatedApi (it always uses event analytics)
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
     const {
       programCodes,
