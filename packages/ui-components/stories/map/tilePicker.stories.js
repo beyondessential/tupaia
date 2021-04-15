@@ -6,7 +6,11 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { MapContainer, TileLayer, TilePicker as TilePickerComponent } from '../../src';
+import {
+  MapContainer,
+  TileLayer,
+  TilePicker as TilePickerComponent,
+} from '../../src/components/Map';
 
 const Container = styled.div`
   position: relative;
