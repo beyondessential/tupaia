@@ -109,7 +109,9 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
  * Each aggregation in the list may require the original fetch option dimensions (dates, org units etc)
  * to be adjusted, eg when we need to take into account past/future data
  *
- * @param {Object[]} aggregationList
+ * @param {Object} context
+ * @param {Object} fetchOptions
+ * @param {Object} aggregationOptions
  */
 export const adjustOptionsToAggregationList = async (context, fetchOptions, aggregationOptions) => {
   const { aggregations: aggregationList = [] } = aggregationOptions;

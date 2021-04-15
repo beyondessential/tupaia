@@ -7,22 +7,12 @@ import { ApiConnection } from '@tupaia/server-boilerplate';
 
 const { ENTITY_SERVER_API_URL = 'http://localhost:8050/v1' } = process.env;
 
-const createDescendantsUrl = (hierarchyName, entityCodes, dataSourceEntityType) =>
-  `hierarchy/${hierarchyName}/descendants?entities=${entityCodes.join(
-    ',',
-  )}&field=code&descendant_filter=type:${dataSourceEntityType}`;
-
-const createRelationsUrl = (
-  hierarchyName,
-  entityCodes,
-  aggregationEntityType,
-  dataSourceEntityType,
-) =>
-  `hierarchy/${hierarchyName}/relations?entities=${entityCodes.join(
-    ',',
-  )}&field=code&groupBy=descendant&${
-    aggregationEntityType === 'requested' ? '' : `ancestor_filter=type:${aggregationEntityType}`
-  }&descendant_filter=type:${dataSourceEntityType}`;
+const queryParams = (entityCodes, dataSourceEntityType) => ({
+  entities: entityCodes.join(','),
+  descendant_filter: `type:${dataSourceEntityType}`,
+  field: 'code',
+  groupBy: 'descendant',
+});
 
 export class EntityConnection extends ApiConnection {
   baseUrl = ENTITY_SERVER_API_URL;
@@ -38,7 +28,10 @@ export class EntityConnection extends ApiConnection {
     dataSourceEntityType,
     dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
-    return this.get(createDescendantsUrl(hierarchyName, entityCodes, dataSourceEntityType));
+    return this.get(
+      `hierarchy/${hierarchyName}/descendants`,
+      queryParams(entityCodes, dataSourceEntityType),
+    );
   }
 
   async getDataSourceEntitiesAndRelations(
@@ -48,9 +41,15 @@ export class EntityConnection extends ApiConnection {
     dataSourceEntityType,
     dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
-    const response = await this.get(
-      createRelationsUrl(hierarchyName, entityCodes, aggregationEntityType, dataSourceEntityType),
-    );
+    const params = queryParams(entityCodes, dataSourceEntityType);
+
+    // Omitting ancestor_type returns descendants to requested entities map
+    if (aggregationEntityType !== 'requested') {
+      params.ancestor_filter = `type:${aggregationEntityType}`;
+    }
+
+    const response = await this.get(`hierarchy/${hierarchyName}/relations`, params);
+
     const formattedRelations = {};
     Object.entries(response).forEach(([descendant, ancestor]) => {
       formattedRelations[descendant] = { code: ancestor };
