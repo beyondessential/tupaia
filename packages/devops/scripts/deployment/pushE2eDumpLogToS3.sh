@@ -18,8 +18,6 @@ s3_folder_uri="s3://tupaia/dumps/e2e"
 
 if [[ "$STAGE" == "e2e" || $force == true ]]; then
     s3_log=$(sed -En "s|.*$s3_folder_uri/(.*).tgz|\1.log|p" $local_log)
-
-    echo "Pushing $remote_log to S3"
     aws s3 cp "$local_log" "$s3_folder_uri/$s3_log"
 fi
 

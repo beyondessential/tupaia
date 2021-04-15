@@ -18,6 +18,7 @@ s3_dump_path=$(
     --bucket tupaia \
     --prefix $s3_folder/ \
     --query 'reverse(sort_by(Contents[?ends_with(Key, `.tgz`)], &LastModified))[:1].Key' \
+    --no-paginate \
     --output=text
 )
 aws s3 cp "s3://tupaia/$s3_dump_path" .
@@ -32,7 +33,7 @@ psql -U tupaia tupaia -c "ALTER TABLE survey_response DISABLE TRIGGER trig\$_sur
 psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER answer_trigger;"
 psql -U tupaia tupaia -c "ALTER TABLE answer DISABLE TRIGGER trig\$_answer;"
 
-echo "Clearing tables: survey_response, answer, analytisc"
+echo "Clearing tables: survey_response, answer, analytics"
 psql -U tupaia tupaia -c "TRUNCATE TABLE survey_response CASCADE;"
 psql -U mvrefresh tupaia -c "TRUNCATE TABLE analytics;"
 
