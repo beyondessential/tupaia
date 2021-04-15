@@ -3,7 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
+import {
+  translateElementKeysInEventAnalytics,
+  translateElementsKeysAndCodeInAnalytics,
+} from '@tupaia/dhis-api';
 import { QUERY_CONJUNCTIONS, runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
@@ -100,6 +103,7 @@ export class DhisInputSchemeResolvingApiProxy {
       translatedResponse = await this.translateDataElementIdsToCodesInResponse(
         translatedResponse,
         query.dataElementCodes,
+        true,
       );
     }
 
@@ -218,7 +222,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @returns {*}
    * @private
    */
-  translateDataElementIdsToCodesInResponse = async (response, dataElementCodes) => {
+  translateDataElementIdsToCodesInResponse = async (response, dataElementCodes, isEventBased) => {
     const dataElementIdToCode = {};
 
     const dataElements = await this.models.dataSource.find({
@@ -232,7 +236,9 @@ export class DhisInputSchemeResolvingApiProxy {
       }
     }
 
-    return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
+    return isEventBased
+      ? translateElementKeysInEventAnalytics(response, dataElementIdToCode)
+      : translateElementsKeysAndCodeInAnalytics(response, dataElementIdToCode);
   };
 
   /**
@@ -293,12 +299,6 @@ export class DhisInputSchemeResolvingApiProxy {
     const coIndex = response.headers.findIndex(({ name }) => name === 'co');
     if (coIndex < 0) return response;
 
-    // const translatedRows = response.rows.map(row => {
-    //   const newRow = [...row];
-    //   newRow[coIndex] = translations[row[coIndex]] ?? row[coIndex];
-    //   return newRow;
-    // });
-    // also add co code to metadata items
     const { metaData } = response;
     Object.keys(translations).forEach(coId => {
       if (metaData.dimensions.co.includes(coId)) {
