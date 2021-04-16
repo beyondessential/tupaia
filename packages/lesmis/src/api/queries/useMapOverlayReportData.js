@@ -15,7 +15,7 @@ import {
 import { useEntitiesData } from './useEntitiesData';
 import { get } from '../api';
 
-export const useMapOverlayReportData = ({ entityCode, mapOverlayCode, hiddenMeasures = {} }) => {
+export const useMapOverlayReportData = ({ entityCode, mapOverlayCode, hiddenValues = {} }) => {
   const { data: entitiesData, isSuccess } = useEntitiesData();
 
   const params = {
@@ -24,7 +24,7 @@ export const useMapOverlayReportData = ({ entityCode, mapOverlayCode, hiddenMeas
   };
 
   const { data: measureData, ...query } = useQuery(
-    ['mapOverlay', entityCode, mapOverlayCode, hiddenMeasures, params],
+    ['mapOverlay', entityCode, mapOverlayCode, params],
     () =>
       get(`report/${entityCode}/${mapOverlayCode}`, {
         params,
@@ -47,7 +47,7 @@ export const useMapOverlayReportData = ({ entityCode, mapOverlayCode, hiddenMeas
           entitiesData,
           measureOptions: processedMeasureInfo.measureOptions,
           mapOverlayCode,
-          hiddenMeasures,
+          hiddenValues,
         })
       : null;
 
@@ -62,10 +62,10 @@ function processMeasureData({
   entitiesData,
   measureOptions,
   mapOverlayCode,
-  hiddenMeasures,
+  hiddenValues,
 }) {
   const measureEntities = measureData
-    .filter(measure => !hiddenMeasures.includes(measure[mapOverlayCode]))
+    .filter(measure => !hiddenValues.includes(measure[mapOverlayCode]))
     .map(m => m.organisationUnitCode);
 
   return entitiesData

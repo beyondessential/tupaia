@@ -78,12 +78,12 @@ const useProvinceData = () => {
 export const MapView = () => {
   const { entityCode } = useUrlParams();
   const [activeTileSetKey, setActiveTileSetKey] = useState(TILE_SETS[0].key);
-  const [hiddenMeasures, setHiddenMeasures] = useState([]);
+  const [hiddenValues, setHiddenValues] = useState([]);
   const [selectedOverlay, setSelectedOverlay] = useState(null);
 
   useEffect(() => {
-    setHiddenMeasures([]);
-  }, [setHiddenMeasures, selectedOverlay]);
+    setHiddenValues([]);
+  }, [setHiddenValues, selectedOverlay]);
 
   const { data: entityData } = useEntityData({
     entityCode,
@@ -92,7 +92,7 @@ export const MapView = () => {
   const { data: overlayReportData } = useMapOverlayReportData({
     entityCode,
     mapOverlayCode: selectedOverlay,
-    hiddenMeasures,
+    hiddenValues,
   });
 
   const { data: overlaysData, isLoading } = useMapOverlaysData({ entityCode });
@@ -105,16 +105,12 @@ export const MapView = () => {
     map.setMaxBounds(maxBounds);
   };
 
-  const handleSetHiddenMeasures = value => {
-    const exists = hiddenMeasures.includes(value);
-
-    if (exists) {
-      const newHiddenMeasures = hiddenMeasures.filter(m => m !== value);
-      setHiddenMeasures(newHiddenMeasures);
-    } else {
-      const newHiddenMeasures = [...hiddenMeasures, value];
-      setHiddenMeasures(newHiddenMeasures);
-    }
+  const handlesetHiddenValues = value => {
+    const exists = hiddenValues.includes(value);
+    const newHiddenValues = exists
+      ? hiddenValues.filter(m => m !== value)
+      : [...hiddenValues, value];
+    setHiddenValues(newHiddenValues);
   };
 
   const activeTileSet = TILE_SETS.find(tileSet => tileSet.key === activeTileSetKey);
@@ -159,8 +155,8 @@ export const MapView = () => {
         {!isCountry && (
           <Legend
             measureOptions={overlayReportData?.measureOptions}
-            setHiddenMeasures={handleSetHiddenMeasures}
-            hiddenMeasures={hiddenMeasures}
+            setHiddenValues={handlesetHiddenValues}
+            hiddenValues={hiddenValues}
           />
         )}
       </Main>
