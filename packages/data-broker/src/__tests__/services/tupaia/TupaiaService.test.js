@@ -127,10 +127,10 @@ describe('TupaiaService', () => {
           tupaiaService.pull([DATA_SOURCES.POP01_GROUP, DATA_SOURCES.POP02_GROUP], 'dataGroup', {}),
         ).toBeRejectedWith(/Cannot .*multiple programs/));
 
-      it('uses the data group code as `surveyCode`', () =>
+      it('uses the data group code as `dataGroupCode`', () =>
         assertEventApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.POP01_GROUP],
-          invocationArgs: expect.objectContaining({ surveyCode: 'POP01' }),
+          invocationArgs: expect.objectContaining({ dataGroupCode: 'POP01' }),
         }));
 
       it('converts period to start and end dates', async () => {

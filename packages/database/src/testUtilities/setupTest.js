@@ -6,10 +6,11 @@
 import { buildAndInsertSurveyResponses } from './buildAndInsertSurveyResponses';
 import { buildAndInsertSurveys } from './buildAndInsertSurveys';
 import { findOrCreateRecords } from './upsertDummyRecord';
+import { AnalyticsRefresher } from '..';
 
-export const setupTest = async (models, setup) => {
-  const { dbRecords = [], surveys = [], surveyResponses = [] } = setup;
+export const setupTest = async (models, { dbRecords = {}, surveys = [], surveyResponses = [] }) => {
   await findOrCreateRecords(models, dbRecords);
   await buildAndInsertSurveys(models, surveys);
   await buildAndInsertSurveyResponses(models, surveyResponses);
+  await AnalyticsRefresher.executeRefresh(models.database);
 };

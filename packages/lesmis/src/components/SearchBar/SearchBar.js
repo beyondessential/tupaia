@@ -19,8 +19,7 @@ import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
 import { useEntitiesData } from '../../api';
-import { getPlaceIcon, getOptionText } from './utils';
-import { makeEntityLink } from '../../utils';
+import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
 
 const SearchContainer = styled.div`
   position: relative;
