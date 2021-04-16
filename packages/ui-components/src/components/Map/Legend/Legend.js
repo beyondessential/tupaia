@@ -46,43 +46,41 @@ const getLegendComponent = measureType => {
   }
 };
 
-export const Legend = React.memo(
-  ({ measureOptions, className, setHiddenMeasures, hiddenMeasures }) => {
-    if (!measureOptions) {
-      return null;
-    }
+export const Legend = React.memo(({ measureOptions, className, setHiddenValues, hiddenValues }) => {
+  if (!measureOptions) {
+    return null;
+  }
 
-    const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
-    const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
-    const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
-    const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
+  const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+  const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
+  const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
+  const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
 
-    return (
-      <LegendFrame className={className}>
-        {displayedLegends.map(measureOption => {
-          const { type } = measureOption;
-          const LegendComponent = getLegendComponent(type);
+  return (
+    <LegendFrame className={className}>
+      {displayedLegends.map(measureOption => {
+        const { type } = measureOption;
+        const LegendComponent = getLegendComponent(type);
 
-          return (
-            <LegendComponent
-              key={measureOption.key}
-              hasIconLayer={hasIconLayer}
-              hasRadiusLayer={hasRadiusLayer}
-              hasColorLayer={hasColorLayer}
-              measureOptions={measureOption}
-              setHiddenMeasures={setHiddenMeasures}
-              hiddenMeasures={hiddenMeasures}
-            />
-          );
-        })}
-      </LegendFrame>
-    );
-  },
-);
+        return (
+          <LegendComponent
+            key={measureOption.key}
+            hasIconLayer={hasIconLayer}
+            hasRadiusLayer={hasRadiusLayer}
+            hasColorLayer={hasColorLayer}
+            measureOptions={measureOption}
+            setHiddenValues={setHiddenValues}
+            hiddenValues={hiddenValues}
+          />
+        );
+      })}
+    </LegendFrame>
+  );
+});
 
 Legend.propTypes = {
-  setHiddenMeasures: PropTypes.func,
-  hiddenMeasures: PropTypes.array,
+  setHiddenValues: PropTypes.func,
+  hiddenValues: PropTypes.array,
   measureOptions: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
@@ -95,6 +93,6 @@ Legend.propTypes = {
 Legend.defaultProps = {
   measureOptions: null,
   className: null,
-  hiddenMeasures: [],
-  setHiddenMeasures: null,
+  hiddenValues: [],
+  setHiddenValues: null,
 };
