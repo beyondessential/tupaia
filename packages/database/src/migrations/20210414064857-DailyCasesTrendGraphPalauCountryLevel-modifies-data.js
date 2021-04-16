@@ -18,32 +18,32 @@ exports.setup = function (options, seedLink) {
 
 const THINGS = {
   AFR: {
-    dataElement: 'PSSS_Confirmed_AFR_Cases',
+    dataElement: 'PSSS_AFR_Daily_Cases',
     name: 'Acute fever and rash',
     color: '#F0965BFF', // orange
   },
   Diarrhoea: {
-    dataElement: 'PSSS_Confirmed_DIA_Cases',
+    dataElement: 'PSSS_DIA_Daily_Cases',
     name: 'Diarrhoea',
     color: '#81DEE4FF', // aqua
   },
   ILI: {
-    dataElement: 'PSSS_Confirmed_ILI_Cases',
+    dataElement: 'PSSS_ILI_Daily_Cases',
     name: 'Influenza like illness',
     color: '#4DA347FF', // green
   },
   PF: {
-    dataElement: 'PSSS_Confirmed_PF_Cases',
+    dataElement: 'PSSS_PF_Daily_Cases',
     name: 'Prolonged fever',
     color: '#1C49A7FF', // blue
   },
   DLI: {
-    dataElement: 'PSSS_Confirmed_DLI_Cases',
+    dataElement: 'PSSS_DLI_Daily_Cases',
     name: 'Dengue like illness',
     color: '#8455F6', // purple
   },
   Conjunctivitis: {
-    dataElement: 'PSSS_Confirmed_DLI_Cases',
+    dataElement: 'PSSS_CON_Daily_Cases',
     name: 'Conjunctivitis',
     color: '#BE72E0', // pink
   },
@@ -66,7 +66,7 @@ const getDashboardReport = (id, thingName, thingDataElementCode, color) => {
       },
       aggregationType: 'FINAL_EACH_WEEK',
       entityAggregation: {
-        dataSourceEntityType: 'country',
+        dataSourceEntityType: 'facility',
         aggregationEntityType: 'country',
       },
     },
