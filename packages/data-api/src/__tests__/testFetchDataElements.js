@@ -15,48 +15,50 @@ export const testFetchDataElements = () => {
   });
 
   it('returns a single data element in the correct format', async () => {
-    await expect(api.fetchDataElements(['BCD1'], { includeOptions: false })).resolves.toStrictEqual(
-      [
-        {
-          code: 'BCD1',
-          name: 'Facility Status',
-        },
-      ],
-    );
+    await expect(
+      api.fetchDataElements(['BCD1TEST'], { includeOptions: false }),
+    ).resolves.toStrictEqual([
+      {
+        code: 'BCD1TEST',
+        name: 'Facility Status',
+      },
+    ]);
   });
 
   it('returns a single data element with options metadata included', async () => {
-    await expect(api.fetchDataElements(['BCD57'], { includeOptions: true })).resolves.toStrictEqual(
-      [
-        {
-          code: 'BCD57',
-          name: 'Foundation',
-          options: {
-            'Concrete slab': 'Concrete slab',
-            'Concrete stumps': 'Concrete stumps',
-            'Timber stumps': 'Timber stumps',
-            'Timber on ground': 'Timber on ground',
-            Earth: 'Earth',
-            Other: 'Other',
-          },
+    await expect(
+      api.fetchDataElements(['BCD57TEST'], { includeOptions: true }),
+    ).resolves.toStrictEqual([
+      {
+        code: 'BCD57TEST',
+        name: 'Foundation',
+        options: {
+          'Concrete slab': 'Concrete slab',
+          'Concrete stumps': 'Concrete stumps',
+          'Timber stumps': 'Timber stumps',
+          'Timber on ground': 'Timber on ground',
+          Earth: 'Earth',
+          Other: 'Other',
         },
-      ],
-    );
+      },
+    ]);
   });
 
   it('returns multiple data elements in the correct format', async () => {
     await expect(
-      api.fetchDataElements(['BCD1', 'BCD57', 'CROP_1', 'CROP_2'], { includeOptions: false }),
+      api.fetchDataElements(['BCD1TEST', 'BCD57TEST', 'CROP_1', 'CROP_2'], {
+        includeOptions: false,
+      }),
       {
         includeOptions: false,
       },
     ).resolves.toIncludeSameMembers([
       {
-        code: 'BCD1',
+        code: 'BCD1TEST',
         name: 'Facility Status',
       },
       {
-        code: 'BCD57',
+        code: 'BCD57TEST',
         name: 'Foundation',
       },
       {
@@ -71,16 +73,16 @@ export const testFetchDataElements = () => {
   });
 
   it('returns multiple data elements with options metadata included', async () => {
-    await expect(api.fetchDataElements(['BCD1', 'BCD57', 'CROP_1', 'CROP_2']), {
+    await expect(api.fetchDataElements(['BCD1TEST', 'BCD57TEST', 'CROP_1', 'CROP_2']), {
       includeOptions: false,
     }).resolves.toIncludeSameMembers([
       {
-        code: 'BCD1',
+        code: 'BCD1TEST',
         name: 'Facility Status',
         options: undefined,
       },
       {
-        code: 'BCD57',
+        code: 'BCD57TEST',
         name: 'Foundation',
         options: {
           'Concrete slab': 'Concrete slab',

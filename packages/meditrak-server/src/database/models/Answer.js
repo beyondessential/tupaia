@@ -7,7 +7,7 @@
 
 import winston from 'winston';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
@@ -120,7 +120,7 @@ class AnswerType extends DatabaseType {
   }
 }
 
-export class AnswerModel extends DatabaseModel {
+export class AnswerModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeRunQuestionHook];
 
   get DatabaseTypeClass() {
