@@ -7,29 +7,40 @@ export PATH=/home/ubuntu/.local/bin:/home/ubuntu/.yarn/bin:/home/ubuntu/.config/
 
 DIR=$(dirname "$0")
 export STAGE=$(${DIR}/../utility/getEC2TagValue.sh Stage)
+INSTANCE_NAME=$(${DIR}/../utility/getEC2TagValue.sh Name)
 
-# Set the branch based on STAGE
-if [[ "$STAGE" == "e2e" ]]; then
-  echo "Dumping E2E data from E2E baseline instance to S3"
-  mkdir -p dumps
+function dump_table() {
+  local table="$1"
 
-  echo "Dumping survey_response"
-  psql -U tupaia tupaia -c "\copy survey_response to 'dumps/survey_response.csv' delimiter ',' csv header"
+  echo "Dumping $table"
+  psql -U tupaia tupaia -c "\copy $table to 'dumps/$table.csv' delimiter ',' csv header"
+}
 
-  echo "Dumping answer"
-  psql -U tupaia tupaia -c "\copy answer to 'dumps/answer.csv' delimiter ',' csv header"
-
-  echo "Compressing dumps"
-  tar cfz dumps.tgz dumps/*
-
-  echo "Pushing dumps to S3"
-  aws s3 cp dumps.tgz s3://tupaia/dumps/e2e/dumps.tgz
-
-  echo "Cleaning up"
-  rm -rf dumps*
-
-  echo "Finished dumping E2E data"
+if [[ $1 == "--force" ]]; then
+  force=true
 fi
 
+if [[ "$STAGE" == "e2e" || $force == true ]]; then
+  echo "Dumping E2E data from '$INSTANCE_NAME' to S3"
+  mkdir -p dumps
 
+  dump_table survey_response
+  dump_table answer
+  dump_table analytics
 
+  dump_file="${STAGE}_$(date '+%s')_dumps.tgz"
+
+  echo "Compressing dumps"
+  tar cfz $dump_file dumps/*
+
+  echo "Pushing dumps to S3"
+  aws s3 cp $dump_file "s3://tupaia/dumps/e2e/$dump_file"
+
+  echo "Cleaning up"
+  rm -rf dumps
+  rm -rf "$dump_file"
+
+  echo "Finished dumping E2E data"
+else
+  echo "Stage of current instance is not 'e2e', skipping E2E data dump"
+fi
