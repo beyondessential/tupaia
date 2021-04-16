@@ -43,7 +43,7 @@ const buildDataValueAnalyticsQuery = queryInput => {
     inputIdScheme = 'code',
     outputIdScheme = 'uid',
     includeMetadataDetails = true,
-    additionalDimensions = ['co'],
+    additionalDimensions = [],
   } = queryInput;
 
   const query = {
@@ -120,4 +120,4 @@ export const buildEventAnalyticsQueries = queryInput => {
     }
   }
   return queries;
-}
+};

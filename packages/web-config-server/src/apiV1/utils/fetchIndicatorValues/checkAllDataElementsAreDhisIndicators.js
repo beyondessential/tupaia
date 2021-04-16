@@ -9,14 +9,13 @@
 export const checkAllDataElementsAreDhisIndicators = async (models, dataElementCodes) => {
   const dataElements = await models.dataSource.find({
     code: dataElementCodes,
-    type: 'dataElement',
   });
 
   for (const dataElementCode of dataElementCodes) {
     const dataElement = dataElements.find(d => d.code === dataElementCode);
     if (
       !dataElement.config.dhisId ||
-      !['Indicator', 'ProgramIndicator'].includes(dataElement.config.dhisDataType)
+      !['ProgramIndicator'].includes(dataElement.config.dhisDataType)
     ) {
       return false;
     }

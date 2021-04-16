@@ -5,14 +5,14 @@
 
 import { convertDateRangeToPeriods } from '@tupaia/utils';
 
-export const convertDateRangeToPeriodQueryString = (startDate, endDate) => {
+export const convertDateRangeToPeriodQueryString = (startDate, endDate, targetType) => {
   if (!startDate) {
     return null;
   }
 
   if (startDate && !endDate) {
-    return convertDateRangeToPeriods(startDate, startDate)[0];
+    return convertDateRangeToPeriods(startDate, startDate, targetType)[0];
   }
 
-  return convertDateRangeToPeriods(startDate, endDate).join(';');
+  return convertDateRangeToPeriods(startDate, endDate, targetType).join(';');
 };

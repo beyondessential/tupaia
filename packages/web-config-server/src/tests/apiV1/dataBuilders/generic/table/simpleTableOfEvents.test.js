@@ -75,6 +75,7 @@ fetchAnalytics
       dataServices,
       entityAggregation: undefined,
       dataSourceEntityFilter: undefined,
+      dataPeriodType: undefined,
       programCodes: ['WSRS'],
     },
     query,

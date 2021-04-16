@@ -4,6 +4,7 @@
  */
 
 import keyBy from 'lodash.keyby';
+import groupBy from 'lodash.groupby';
 
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
@@ -17,6 +18,10 @@ import {
 
 const DEFAULT_DATA_SERVICE = { isDataRegional: true };
 const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
+const DHIS_DATA_ELEMENT_TYPES = {
+  DATA_ELEMENT: 'DataElement',
+  INDICATOR: 'Indicator',
+};
 
 export class DhisService extends Service {
   constructor(models) {
@@ -133,7 +138,7 @@ export class DhisService extends Service {
   }
 
   getPullAnalyticsForApiMethod = options => {
-    const { programCodes } = options;
+    const { programCodes, dhisDataType } = options;
 
     if (programCodes) {
       // TODO remove `useDeprecatedApi` option as soon as `pullAnalyticsFromEventsForApi_Deprecated()` is deleted
@@ -143,7 +148,9 @@ export class DhisService extends Service {
         : this.pullAnalyticsFromEventsForApi;
     }
 
-    return this.pullAnalyticsForApi;
+    return dhisDataType === DHIS_DATA_ELEMENT_TYPES.INDICATOR
+      ? this.pullAggregatedAnalyticsForApi
+      : this.pullAnalyticsForApi;
   };
 
   fetchEventsForPrograms = async (api, programCodes, query) => {
@@ -254,29 +261,49 @@ export class DhisService extends Service {
     return buildAnalyticsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
   };
 
-  pullAnalyticsForApi = async (api, dataSources, options) => {
+  getAnalyticsQueryParameters = (dataSources, options) => {
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { organisationUnitCode, organisationUnitCodes, period, startDate, endDate } = options;
-
-    const aggregateData = await api.getAnalytics({
+    const {
+      organisationUnitCode,
+      organisationUnitCodes,
+      period,
+      startDate,
+      endDate,
+      additionalDimensions,
+    } = options;
+    return {
       dataElementCodes,
       outputIdScheme: 'code',
       organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
       period,
       startDate,
       endDate,
-    });
+      additionalDimensions,
+    };
+  };
 
+  pullAnalyticsForApi = async (api, dataSources, options) => {
+    const queryInput = this.getAnalyticsQueryParameters(dataSources, {
+      ...options,
+      additionalDimensions: ['co'],
+    });
+    const rawData = await api.getAnalytics(queryInput);
+    const translatedData = this.translator.translateInboundAggregateData(rawData, dataSources);
+    return buildAnalyticsFromDhisAnalytics(translatedData);
+  };
+
+  pullAggregatedAnalyticsForApi = async (api, dataSources, options) => {
+    const queryInput = this.getAnalyticsQueryParameters(dataSources, options);
+    const aggregateData = await api.getAggregatedAnalytics(queryInput);
     const translatedData = this.translator.translateInboundAggregateData(
       aggregateData,
       dataSources,
     );
-
     return buildAnalyticsFromDhisAnalytics(translatedData);
   };
 
-  pullAnalytics = async (apis, dataSources, options) => {
-    const pullAnalyticsForApi = this.getPullAnalyticsForApiMethod(options);
+  pullAnalyticsForDhisDataType = async (apis, dataSources, options, dhisDataType) => {
+    const pullAnalyticsForApi = this.getPullAnalyticsForApiMethod({ ...options, dhisDataType });
 
     const response = {
       results: [],
@@ -287,11 +314,51 @@ export class DhisService extends Service {
     const pullForApi = async api => {
       const { results, metadata } = await pullAnalyticsForApi(api, dataSources, options);
       response.results.push(...results);
-      // Only the final query's metadata will be used in the result
-      response.metadata = metadata;
+      response.metadata = {
+        dataElementCodeToName: {
+          ...(response.metadata?.dataElementCodeToName || {}),
+          ...(metadata?.dataElementCodeToName || {}),
+        },
+      };
     };
 
     await Promise.all(apis.map(pullForApi));
+    return response;
+  };
+
+  groupDataSourcesByDhisDataType = dataSources =>
+    groupBy(dataSources, d => d.config?.dhisDataType || DHIS_DATA_ELEMENT_TYPES.DATA_ELEMENT);
+
+  pullAnalytics = async (apis, dataSources, options) => {
+    const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
+    const response = {
+      results: [],
+      metadata: {
+        dataElementCodeToName: {},
+      },
+    };
+    // To support pulling analytics for both DataElement and Indicator at the same time
+    const pullForDhisDataType = async (dhisDataType, groupedDataSources) => {
+      const { results, metadata } = await this.pullAnalyticsForDhisDataType(
+        apis,
+        groupedDataSources,
+        options,
+        dhisDataType,
+      );
+      response.results.push(...results);
+      response.metadata = {
+        dataElementCodeToName: {
+          ...(response.metadata?.dataElementCodeToName || {}),
+          ...(metadata?.dataElementCodeToName || {}),
+        },
+      };
+    };
+
+    await Promise.all(
+      Object.entries(dataSourcesByDhisType).map(([dhisDataType, groupedDataSources]) =>
+        pullForDhisDataType(dhisDataType, groupedDataSources),
+      ),
+    );
     return response;
   };
 
@@ -397,12 +464,29 @@ export class DhisService extends Service {
   }
 
   async pullDataElementMetadata(api, dataSources, options) {
-    const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { additionalFields, includeOptions } = options;
-    const dataElements = await api.fetchDataElements(dataElementCodes, {
-      additionalFields,
-      includeOptions,
-    });
-    return this.translator.translateInboundDataElements(dataElements, dataSources);
+    const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
+    const metadata = [];
+
+    for (const entry of Object.entries(dataSourcesByDhisType)) {
+      const [dhisDataType, groupedDataSources] = entry;
+      const dataElementCodes = groupedDataSources.map(({ dataElementCode }) => dataElementCode);
+      if (dhisDataType === DHIS_DATA_ELEMENT_TYPES.INDICATOR) {
+        const indicators = await api.fetchIndicators({ dataElementCodes });
+        metadata.push(
+          ...this.translator.translateInboundIndicators(indicators, groupedDataSources),
+        );
+      } else {
+        const { additionalFields, includeOptions } = options;
+        const dataElements = await api.fetchDataElements(dataElementCodes, {
+          additionalFields,
+          includeOptions,
+        });
+        metadata.push(
+          ...this.translator.translateInboundDataElements(dataElements, groupedDataSources),
+        );
+      }
+    }
+
+    return metadata;
   }
 }

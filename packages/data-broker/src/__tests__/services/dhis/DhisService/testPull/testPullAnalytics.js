@@ -86,6 +86,7 @@ export const testPullAnalytics = () => {
           period: '20200822',
           startDate: '20200731',
           endDate: '20200904',
+          additionalDimensions: ['co'],
         };
 
         return assertAnalyticsApiWasInvokedCorrectly({

@@ -103,7 +103,12 @@ export class InboundAggregateDataTranslator {
       this.dataSources,
       ({ dataElementCode }) => dataElementCode,
     );
-
+    // We can't always guarantee that dhis data elements can have codes (eg: Laos DHIS).
+    // So we should also have mapping between dhisId and data sources.
+    const dhisIdToDataSources = groupBy(
+      this.dataSources.filter(d => d.config.dhisId !== undefined),
+      ({ config }) => config.dhisId,
+    );
     const translatedItems = {};
     const translatedDx = [];
     Object.values(items).forEach(item => {
@@ -122,6 +127,7 @@ export class InboundAggregateDataTranslator {
       const { items: newItems, dx: newDx } = this.getTranslatedDataElementItemAndDx(
         item,
         dataElementCodeToDataSources,
+        dhisIdToDataSources,
         coCombosByCode,
       );
       Object.assign(translatedItems, newItems);
@@ -131,18 +137,25 @@ export class InboundAggregateDataTranslator {
     return { items: translatedItems, dx: translatedDx };
   }
 
-  getTranslatedDataElementItemAndDx(item, dataElementCodeToDataSources, coCombosByCode) {
-    const { uid, code, name } = item;
+  getTranslatedDataElementItemAndDx(
+    item,
+    dataElementCodeToDataSources,
+    dhisIdToDataSources,
+    coCombosByCode,
+  ) {
+    const { uid, code: dhisCode, name } = item;
 
     const translatedItems = {};
     const translatedDx = [];
-    const dataSourcesForElement = dataElementCodeToDataSources[code];
+    // if dhis data element have no codes, find it by uids instead
+    const dataSourcesForElement =
+      dataElementCodeToDataSources[dhisCode] || dhisIdToDataSources[uid];
     dataSourcesForElement.forEach(dataSource => {
       const coComboCode = dataSource.config.categoryOptionCombo;
       const { name: coComboName } = coCombosByCode[coComboCode] || {};
       const translatedId = createDataElementKey(uid, coComboCode);
       translatedDx.push(translatedId);
-      const dataElementKey = createDataElementKey(code, coComboCode);
+      const dataElementKey = createDataElementKey(dhisCode, coComboCode);
       translatedItems[translatedId] = {
         ...item,
         uid: translatedId,

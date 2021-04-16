@@ -59,3 +59,34 @@ export const translateElementKeysInEventAnalytics = async (
     ...otherProps,
   };
 };
+
+export const translateDimensionsInAnalytics = (response, dimensionKeyMapping, dimension) => {
+  const { metaData, rows, ...otherProps } = response;
+  const { dimensions } = metaData;
+  const dxIndex = response.headers.findIndex(({ name }) => name === dimension);
+
+  const translatedDimension = dimensions.dx.map(d => dimensionKeyMapping[d] || d);
+  const translatedRows = rows.map(row => {
+    const newRow = row;
+    const dxId = row[dxIndex];
+    newRow[dxIndex] = dimensionKeyMapping[dxId] || dxId;
+    return newRow;
+  });
+
+  const translatedMetaData = {
+    ...metaData,
+    items: mapKeys(metaData.items, dimensionKeyMapping, {
+      defaultToExistingKeys: true,
+    }),
+    dimensions: {
+      ...dimensions,
+      [dimension]: translatedDimension,
+    },
+  };
+
+  return {
+    ...otherProps,
+    metaData: translatedMetaData,
+    rows: translatedRows,
+  };
+};

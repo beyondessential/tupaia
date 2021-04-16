@@ -202,4 +202,21 @@ export class DhisTranslator {
       return translatedDataElement;
     });
   };
+
+  translateInboundIndicators = (indicators, dataSources) => {
+    const dataElementToSourceCode = reduceToDictionary(dataSources, 'dataElementCode', 'code');
+    const indicatorIdToSourceCode = reduceToDictionary(dataSources, d => d.config?.dhisId, 'code');
+
+    return indicators.map(({ code, ...restOfIndicators }) => {
+      const translatedIndicators = { ...restOfIndicators };
+      const { id } = translatedIndicators;
+      if (code) {
+        translatedIndicators.code = dataElementToSourceCode[code];
+      }
+      if (!translatedIndicators.code && id) {
+        translatedIndicators.code = indicatorIdToSourceCode[id];
+      }
+      return translatedIndicators;
+    });
+  };
 }
