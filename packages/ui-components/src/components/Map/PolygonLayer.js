@@ -11,7 +11,7 @@ export const PolygonLayer = ({ entities, Polygon }) => {
   if (!entities) return null;
 
   return entities
-    ?.filter(e => Array.isArray(e.region))
+    .filter(e => Array.isArray(e.region))
     .map(e => <Polygon key={`${e.type}-${e.name}`} entity={e} />);
 };
 
