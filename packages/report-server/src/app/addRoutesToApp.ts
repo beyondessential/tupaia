@@ -6,7 +6,6 @@
 import { Express, Response, NextFunction } from 'express';
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { fetchReport } from '../routes';
-import { authenticationMiddleware } from '../auth';
 import { ReportsRequest } from '../types';
 
 /**
@@ -25,11 +24,6 @@ const wrappedFetchReportWithAsyncCatch = (
 };
 
 export function addRoutesToApp(app: Express) {
-  /**
-   * Attach authentication to each endpoint
-   */
-  app.use(authenticationMiddleware);
-
   /**
    * POST routes
    */

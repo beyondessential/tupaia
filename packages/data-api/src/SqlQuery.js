@@ -6,31 +6,31 @@
 export class SqlQuery {
   static parameteriseArray = arr => `(${arr.map(() => '?').join(',')})`;
 
-  constructor(baseQuery, baseParameters) {
+  static parameteriseValues = (values, paramsArray) => {
+    if (paramsArray) paramsArray.push(...values);
+    return `VALUES (${values.map(() => `?`).join('), (')})`;
+  };
+
+  constructor(baseQuery, baseParameters = []) {
     this.query = baseQuery;
     this.parameters = baseParameters;
-    this.orderByClause = null;
   }
 
-  addClause(clause, parameters) {
+  addOrderByClause(orderByClause) {
     this.query = `
       ${this.query}
-      ${clause}
+      ORDER BY ${orderByClause}
     `;
-    this.parameters = this.parameters.concat(parameters);
-  }
-
-  orderBy(orderByClause) {
-    this.orderByClause = orderByClause;
   }
 
   async executeOnDatabase(database) {
-    return database.executeSql(
-      `
-      ${this.query}
-      ${this.orderByClause ? `ORDER BY ${this.orderByClause}` : ''};
-    `,
-      this.parameters,
-    );
+    return database.executeSql(this.query, this.parameters);
+  }
+
+  loggableQuery() {
+    const replacementIterator = this.parameters
+      .map(param => param.replace(/'/g, "''"))
+      [Symbol.iterator]();
+    return this.query.replace(/\?/g, () => `'${replacementIterator.next().value}'`);
   }
 }
