@@ -255,7 +255,7 @@ export function getFormattedInfo(orgUnitData, measureOption) {
   };
 }
 
-export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
+export function getMeasureDisplayInfo(measureData, measureOptions, hiddenValues = {}) {
   const displayInfo = {};
 
   measureOptions.forEach(({ color, icon, radius }) => {
@@ -283,7 +283,7 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
     }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
-        ...hiddenMeasures[key],
+        ...hiddenValues[key],
       });
       switch (type) {
         case MEASURE_TYPE_ICON:
