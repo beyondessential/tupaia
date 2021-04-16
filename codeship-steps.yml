@@ -1,62 +1,62 @@
-- type: parallel
-  name: validate-and-test
-  steps:
-    - type: parallel
-      name: validate
-      steps:
-        - name: validate branch name
-          service: validation
-          command: './packages/devops/scripts/ci/validateBranchName.sh'
-        - name: validate tests
-          service: validation
-          command: './packages/devops/scripts/ci/validateTests.sh'
-          exclude: -e2e$
-    - type: serial
-      name: test
-      exclude: -e2e$
-      steps:
-        - type: parallel
-          name: test-batch-1 # they're in sandboxed containers, but share a db which can't handle all at once
-          steps:
-            - name: test-lesmis-server
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
-            - name: test-meditrak-server
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
-            - name: test-web-config-server
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
-            - name: test-psss-server
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh psss-server'
-            - name: test-report-server
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh report-server'
-            - name: test-entity-server
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
-        - type: parallel
-          name: test-batch-2
-          steps:
-            - name: test-database
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh database'
-            - name: test-data-api
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh data-api'
-            - name: test-auth
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh auth'
-            - name: test-indicators
-              service: testing
-              command: './packages/devops/scripts/ci/testBackend.sh indicators'
-            - name: test-internal-dependencies
-              service: testing
-              command: './packages/devops/scripts/ci/testInternalDependencies.sh'
-            - name: test-web-frontend
-              service: testing
-              command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
+#- type: parallel
+#  name: validate-and-test
+#  steps:
+#    - type: parallel
+#      name: validate
+#      steps:
+#        - name: validate branch name
+#          service: validation
+#          command: './packages/devops/scripts/ci/validateBranchName.sh'
+#        - name: validate tests
+#          service: validation
+#          command: './packages/devops/scripts/ci/validateTests.sh'
+#          exclude: -e2e$
+#    - type: serial
+#      name: test
+#      exclude: -e2e$
+#      steps:
+#        - type: parallel
+#          name: test-batch-1 # they're in sandboxed containers, but share a db which can't handle all at once
+#          steps:
+#            - name: test-lesmis-server
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh lesmis-server'
+#            - name: test-meditrak-server
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
+#            - name: test-web-config-server
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+#            - name: test-psss-server
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh psss-server'
+#            - name: test-report-server
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh report-server'
+#            - name: test-entity-server
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh entity-server'
+#        - type: parallel
+#          name: test-batch-2
+#          steps:
+#            - name: test-database
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh database'
+#            - name: test-data-api
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh data-api'
+#            - name: test-auth
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh auth'
+#            - name: test-indicators
+#              service: testing
+#              command: './packages/devops/scripts/ci/testBackend.sh indicators'
+#            - name: test-internal-dependencies
+#              service: testing
+#              command: './packages/devops/scripts/ci/testInternalDependencies.sh'
+#            - name: test-web-frontend
+#              service: testing
+#              command: './packages/devops/scripts/ci/testFrontend.sh web-frontend'
 
 - type: serial
   name: enable deployment lock
