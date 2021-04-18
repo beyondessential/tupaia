@@ -15,6 +15,7 @@ import {
   MapOverlaysRoute,
 } from '../routes';
 import { attachSession } from '../session';
+import { verifyLoginAccess } from '../utils';
 
 /**
  * Set up express server with middleware,
@@ -23,6 +24,7 @@ export function createApp() {
   return new OrchestratorApiBuilder(new TupaiaDatabase())
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
+    .verifyLogin(verifyLoginAccess)
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities', handleWith(EntitiesRoute))
     .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))

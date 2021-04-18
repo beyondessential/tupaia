@@ -18,8 +18,8 @@ const Header = styled.div`
 
 const CloseButton = styled(IconButton)`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 0.625rem;
+  right: 0.625rem;
 `;
 
 export const DialogHeader = ({ title, handleClose, className }) => (
