@@ -17,6 +17,7 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   'ancestor_descendant_relation',
   'psss_session',
   'lesmis_session',
+  'analytics',
 ];
 
 // tables that should only have records created and deleted, and will throw an error if an update is
@@ -35,6 +36,7 @@ const getSelectForTablesWithoutTriggers = triggerSuffix => `
     AND privileges.privilege_type = 'TRIGGER'
     AND t.table_schema = 'public'
     AND t.table_type != 'VIEW'
+    AND t.table_name NOT LIKE 'log$_%'
 `;
 
 export const runPostMigration = async driver => {
