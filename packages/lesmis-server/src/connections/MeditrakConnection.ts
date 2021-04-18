@@ -13,9 +13,9 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   async getUser() {
     // if user is not logged in, return null rather than fetching the api client user details
     if (!this.hasSession) {
-      return { user: null };
+      return {};
     }
-    const user = await this.get('me', {});
+    const user = await this.get('me');
     return camelcaseKeys(user);
   }
 }
