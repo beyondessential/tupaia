@@ -35,7 +35,7 @@ export class ApiBuilder {
 
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
 
-  private verifyLoginMiddleware?: Middleware;
+  private verifyAuthMiddleware?: Middleware;
 
   constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
@@ -86,12 +86,8 @@ export class ApiBuilder {
     return this;
   }
 
-  verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
-    this.attachVerifyLogin = (req: LoginRequest, res: Response, next: NextFunction) => {
-      req.ctx.verifyLogin = verify;
-      next();
-    };
-    this.verifyLoginMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
+    this.verifyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
       try {
         const { session } = req;
         if (!session) {
@@ -108,6 +104,14 @@ export class ApiBuilder {
     return this;
   }
 
+  verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
+    this.attachVerifyLogin = (req: LoginRequest, res: Response, next: NextFunction) => {
+      req.ctx.verifyLogin = verify;
+      next();
+    };
+    return this;
+  }
+
   use<T extends ExpressRequest<T> = Request>(
     path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
@@ -120,8 +124,8 @@ export class ApiBuilder {
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
-    if (this.verifyLoginMiddleware) {
-      this.app.get(path, this.attachSession, this.verifyLoginMiddleware, handler);
+    if (this.verifyAuthMiddleware) {
+      this.app.get(path, this.attachSession, this.verifyAuthMiddleware, handler);
     } else {
       this.app.get(path, this.attachSession, handler);
     }
