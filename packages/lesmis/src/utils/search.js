@@ -8,6 +8,7 @@ import { ReactComponent as Laos } from '../components/icons/laos.svg';
 import { ReactComponent as Province } from '../components/icons/province.svg';
 import { ReactComponent as District } from '../components/icons/district.svg';
 import { ReactComponent as School } from '../components/icons/school.svg';
+import { ReactComponent as Facility } from '../components/icons/facility.svg';
 
 /**
  * Get the display icon for search results
@@ -18,6 +19,8 @@ export const getPlaceIcon = type => {
       return <Laos />;
     case 'province':
       return <Province />;
+    case 'facility':
+      return <Facility />;
     case 'district':
       return <District />;
     case 'village':
