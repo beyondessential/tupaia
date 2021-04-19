@@ -31,11 +31,11 @@ export const EntityPolygonLink = ({ entity }) => {
 
   const eventHandlers = useMemo(
     () => ({
-      click() {
+      click: () => {
         history.push(makeEntityLink(code, 'map'));
       },
     }),
-    [],
+    [code],
   );
 
   return (
