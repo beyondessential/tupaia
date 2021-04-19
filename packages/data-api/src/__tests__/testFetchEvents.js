@@ -13,7 +13,7 @@ import {
   CROP_RESPONSE_WELLINGTON_2019,
 } from './TupaiaDataApi.fixtures';
 
-const getEventsFromResponses = (responses, dataElementsToInclude) =>
+const getEventsFromResponses = (responses, dataElementsToInclude = []) =>
   responses.map(r => ({
     event: r.id,
     orgUnit: r.entityCode,
@@ -61,9 +61,10 @@ export const testFetchEvents = () => {
         {
           dataGroupCode: 'BCDTEST',
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 1],
         },
         /Invalid content.*dataElementCodes/,
-      ], // no dataElementCodes
+      ], // data element code is not a string
       [
         {
           dataGroupCode: 'BCDTEST',
@@ -102,6 +103,15 @@ export const testFetchEvents = () => {
     for (const [options, responses] of testData) {
       await assertCorrectResponse(options, responses);
     }
+  });
+
+  it('includes empty data values if no data elements are specified', async () => {
+    const options = {
+      dataGroupCode: 'BCDTEST',
+      organisationUnitCodes: ['NZ_AK'],
+    };
+    const responses = [BCD_RESPONSE_AUCKLAND];
+    await assertCorrectResponse(options, responses);
   });
 
   it('should limit results by data element codes', async () => {
