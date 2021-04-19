@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import config from '../config/dashboardReports.json';
+import reportUrls from '../config/dashboardReports.json';
 import { SNAPSHOTS } from '../constants';
 import { preserveUserSession } from '../support';
 
@@ -21,8 +21,8 @@ const urlToRouteRegex = url => {
 };
 
 describe('Dashboard reports', () => {
-  if (config.length === 0) {
-    throw new Error('Dashboard reports config is empty');
+  if (reportUrls.length === 0) {
+    throw new Error('Dashboard report url list is empty');
   }
   const requireData = Cypress.config('tupaia_requireNonEmptyVisualisations');
 
@@ -34,7 +34,7 @@ describe('Dashboard reports', () => {
     preserveUserSession();
   });
 
-  config.forEach(url => {
+  reportUrls.forEach(url => {
     it(url, () => {
       cy.server();
       cy.route(urlToRouteRegex(url)).as('report');

@@ -151,8 +151,8 @@ export const SearchBar = ({ linkType, className }) => {
     groupedOptions,
     focused,
     getClearProps,
-    dirty,
     popupOpen,
+    value,
   } = useAutocomplete({
     inputValue,
     setInputValue,
@@ -173,7 +173,7 @@ export const SearchBar = ({ linkType, className }) => {
   };
 
   const showExpandButton = !expanded && inputValue && groupedOptions.length === DEFAULT_LIMIT;
-  const showNoResults = popupOpen && inputValue && focused && !dirty;
+  const showNoResults = popupOpen && inputValue && focused && (!value || inputValue !== value.name);
 
   return (
     <Fade in={!isLoading}>
