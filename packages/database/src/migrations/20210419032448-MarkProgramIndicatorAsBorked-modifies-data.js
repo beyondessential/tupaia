@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  await db.runSql(`update data_source SET config = config || '{"wrappingBug": true}' WHERE code = 'Total_Positive_Malaria_Cases';`);
+  await db.runSql(`update data_source SET config = config || '{"dhisIndicatorWrappingBug": true}' WHERE code = 'Total_Positive_Malaria_Cases';`);
 };
 
 exports.down = function(db) {

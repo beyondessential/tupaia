@@ -14,13 +14,17 @@ export const shouldUseFetchIndicatorValues = async (models, dataElementCodes) =>
 
   for (const dataElementCode of dataElementCodes) {
     const dataElement = dataElements.find(d => d.code === dataElementCode);
-    if (
-      !dataElement.config.dhisId ||
-      !['ProgramIndicator'].includes(dataElement.config.dhisDataType)
-    ) {
+    if (!dataElement.config.dhisId) {
+      return false;
+    }
+    if (!isBuggedProgramIndicator(dataElement)) {
       return false;
     }
   }
 
   return true;
 };
+
+const isBuggedProgramIndicator = dataElement =>
+  dataElement.config.dhisDataType === 'ProgramIndicator' &&
+  dataElement.config.dhisIndicatorWrappingBug;
