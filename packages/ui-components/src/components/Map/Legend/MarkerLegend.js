@@ -173,12 +173,12 @@ MarkerLegend.propTypes = {
   }).isRequired,
   hasIconLayer: PropTypes.bool.isRequired,
   setHiddenValues: PropTypes.func,
-  hiddenValues: PropTypes.array,
+  hiddenValues: PropTypes.object,
   hasRadiusLayer: PropTypes.bool.isRequired,
   hasColorLayer: PropTypes.bool.isRequired,
 };
 
 MarkerLegend.defaultProps = {
-  hiddenValues: [],
+  hiddenValues: {},
   setHiddenValues: null,
 };
