@@ -25,13 +25,13 @@ else
     export BRANCH="$STAGE"
 fi
 
+# Fetch the latest code
+${HOME_DIRECTORY}/packages/devops/scripts/deployment/checkoutLatest.sh
+
 # If this is an E2E instance, restore E2E test data
 if [[ "$STAGE" == *e2e ]]; then
     ${HOME_DIRECTORY}/packages/devops/scripts/deployment/restoreE2eDataFromS3.sh
 fi
-
-# Fetch the latest code
-${HOME_DIRECTORY}/packages/devops/scripts/deployment/checkoutLatest.sh
 
 # Deploy each package based on the stage, including injecting environment variables from parameter
 # store into the .env file

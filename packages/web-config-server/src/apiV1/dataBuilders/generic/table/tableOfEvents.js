@@ -19,6 +19,16 @@ import {
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';
 
+// TODO event.dataValues can be (array|object)
+// Should be able to delete this method after https://github.com/beyondessential/tupaia-backlog/issues/451
+// is implemented, since the modern event api uses object dataValues
+const getEventValuesByElement = event => {
+  const { dataValues } = event;
+  return Array.isArray(dataValues)
+    ? reduceToDictionary(dataValues, 'dataElement', 'value')
+    : dataValues;
+};
+
 class TableOfEventsBuilder extends DataBuilder {
   /**
    * @type {Object<string, {id, name, options: (Object|undefined)}>}
@@ -53,7 +63,9 @@ class TableOfEventsBuilder extends DataBuilder {
   }
 
   async fetchEvents() {
+    const { dataElementCodes } = this.config;
     const { organisationUnitCode, trackedEntityInstance } = this.query;
+
     const getOrganisationUnitCode = () => {
       // if we're fetching all data for a specific tracked entity instance, just limit it by country
       // as the data could have occurred within org units other than its direct parent
@@ -63,9 +75,11 @@ class TableOfEventsBuilder extends DataBuilder {
       }
       return organisationUnitCode;
     };
+
     const events = await super.fetchEvents({
       organisationUnitCode: getOrganisationUnitCode(),
       dataValueFormat: 'object',
+      dataElementCodes,
     });
 
     const { metadata } = this.getKeysBySourceType();
@@ -123,7 +137,7 @@ class TableOfEventsBuilder extends DataBuilder {
 
   buildCellValues = async (event, primaryKey, additionalKeys) => {
     const keys = [primaryKey].concat(additionalKeys);
-    const values = pick(reduceToDictionary(event.dataValues, 'dataElement', 'value'), keys);
+    const values = pick(getEventValuesByElement(event), keys);
     const { transformation } = this.config.columns[primaryKey];
 
     return transformation ? transformObject(this.models, transformation, values) : values;

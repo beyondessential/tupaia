@@ -37,24 +37,20 @@ export class TupaiaApi {
   }
 
   async reauthenticate(loginCredentials) {
-    try {
-      const response = await this.post(
-        AUTH_API_ENDPOINT,
-        null,
-        JSON.stringify(loginCredentials),
-        CLIENT_BASIC_AUTH_HEADER,
-        false,
-      );
-      if (response.error) return response;
-      const { accessToken, refreshToken, user } = response;
-      if (!accessToken || !refreshToken || !user) {
-        return { error: 'Invalid response from auth server' };
-      }
-      this.setAuthTokens(accessToken, refreshToken);
-      return response;
-    } catch (error) {
-      throw error; // Throw error up
+    const response = await this.post(
+      AUTH_API_ENDPOINT,
+      null,
+      JSON.stringify(loginCredentials),
+      CLIENT_BASIC_AUTH_HEADER,
+      false,
+    );
+    if (response.error) return response;
+    const { accessToken, refreshToken, user } = response;
+    if (!accessToken || !refreshToken || !user) {
+      return { error: 'Invalid response from auth server' };
     }
+    this.setAuthTokens(accessToken, refreshToken);
+    return response;
   }
 
   setAuthTokens(accessToken = this.accessToken, refreshToken = this.refreshToken) {
@@ -121,7 +117,7 @@ export class TupaiaApi {
       return; // Silently swallow network errors etc, they will be picked up by the outer request
     }
     if (!response.accessToken) {
-      this.reduxStore && this.reduxStore.dispatch(logoutWithError(response.error));
+      if (this.reduxStore) this.reduxStore.dispatch(logoutWithError(response.error));
       return;
     }
     this.reduxStore.dispatch(receiveUpdatedAccessPolicy(response.user));
@@ -129,19 +125,15 @@ export class TupaiaApi {
   }
 
   async createUser(userFields) {
-    try {
-      const response = await this.post(
-        CREATE_USER_ENDPOINT,
-        null,
-        JSON.stringify(userFields),
-        CLIENT_BASIC_AUTH_HEADER,
-        false,
-      );
+    const response = await this.post(
+      CREATE_USER_ENDPOINT,
+      null,
+      JSON.stringify(userFields),
+      CLIENT_BASIC_AUTH_HEADER,
+      false,
+    );
 
-      return response;
-    } catch (error) {
-      throw error; // Throw error up
-    }
+    return response;
   }
 
   async changeUserPassword(oldPassword, newPassword, newPasswordConfirm) {
@@ -230,59 +222,67 @@ export class TupaiaApi {
       },
     };
     if (body) fetchConfig.body = body;
-    try {
-      const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
-      // If server responded with 401, i.e. not authenticated, refresh token and try once more
-      if (
-        shouldReauthenticateIfUnauthorized &&
-        response.status === 401 &&
-        this.refreshToken !== null
-      ) {
-        try {
-          await this.refreshAccessToken();
-          return this.request(requestMethod, apiEndpoint, queryParameters, body, null, false);
-        } catch (error) {
-          throw error;
-        }
-      }
-
-      const responseJson = await response.json();
-      // If server responded with 410, i.e. old API version, log the user out and get them to update
-      if (response.status === 410 && this.reduxStore) {
-        this.reduxStore.dispatch(logoutWithError(responseJson.error));
-      }
-      // If the server responded with any other error code but failed to supply an error, add one
-      if (
-        (response.status < 200 ||
-          response.status >= 300 ||
-          (responseJson.status && (responseJson.status < 200 || responseJson.status >= 300))) &&
-        !responseJson.error
-      ) {
-        responseJson.error = responseJson.message || `Network error ${response.status}`;
-
-        analytics.trackEvent('Request failed', {
-          requestMethod,
-          apiEndpoint,
-          error: responseJson.error,
-        });
-      } else {
-        analytics.trackEvent('Request succeeded', {
-          requestMethod,
-          apiEndpoint,
-        });
-      }
-      return responseJson;
-    } catch (error) {
-      throw error;
+    const response = await fetchWithTimeout(queryUrl, fetchConfig);
+    // If server responded with 401, i.e. not authenticated, refresh token and try once more
+    if (
+      shouldReauthenticateIfUnauthorized &&
+      response.status === 401 &&
+      this.refreshToken !== null
+    ) {
+      await this.refreshAccessToken();
+      return this.request(requestMethod, apiEndpoint, queryParameters, body, null, false);
     }
+
+    const responseJson = await response.json();
+    // If server responded with 410, i.e. old API version, log the user out and get them to update
+    if (response.status === 410 && this.reduxStore) {
+      this.reduxStore.dispatch(logoutWithError(responseJson.error));
+    }
+    // If the server responded with any other error code but failed to supply an error, add one
+    if (
+      (response.status < 200 ||
+        response.status >= 300 ||
+        (responseJson.status && (responseJson.status < 200 || responseJson.status >= 300))) &&
+      !responseJson.error
+    ) {
+      responseJson.error = responseJson.message || `Network error ${response.status}`;
+
+      analytics.trackEvent('Request failed', {
+        requestMethod,
+        apiEndpoint,
+        error: responseJson.error,
+      });
+    } else {
+      analytics.trackEvent('Request succeeded', {
+        requestMethod,
+        apiEndpoint,
+      });
+    }
+    return responseJson;
   }
 }
 
 // Create a promise that rejects after the request has taken too long
-const createTimeoutPromise = () =>
-  new Promise((resolve, reject) => {
+const createTimeoutPromise = () => {
+  let cleanup;
+  const promise = new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
-      reject({ message: 'Network request timed out' });
+      reject(new Error('Network request timed out'));
     }, TIMEOUT_INTERVAL);
+    cleanup = () => {
+      clearTimeout(id);
+      resolve();
+    };
   });
+  return { promise, cleanup };
+};
+export const fetchWithTimeout = async (url, config) => {
+  const { cleanup, promise: timeoutPromise } = createTimeoutPromise();
+  try {
+    const response = await Promise.race([fetch(url, config), timeoutPromise]);
+    return response;
+  } finally {
+    cleanup();
+  }
+};
