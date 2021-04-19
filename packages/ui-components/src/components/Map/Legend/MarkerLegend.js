@@ -92,7 +92,7 @@ const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasC
 export const MarkerLegend = React.memo(
   ({
     measureOptions,
-    setHiddenValues,
+    setValueHidden,
     hiddenValues,
     hasIconLayer,
     hasRadiusLayer,
@@ -119,7 +119,7 @@ export const MarkerLegend = React.memo(
             label={v.name}
             value={v.value}
             hiddenValues={hiddenValues}
-            onClick={setHiddenValues}
+            onClick={setValueHidden}
           />
         );
       });
@@ -172,7 +172,7 @@ MarkerLegend.propTypes = {
     valueMapping: PropTypes.object,
   }).isRequired,
   hasIconLayer: PropTypes.bool.isRequired,
-  setHiddenValues: PropTypes.func,
+  setValueHidden: PropTypes.func,
   hiddenValues: PropTypes.object,
   hasRadiusLayer: PropTypes.bool.isRequired,
   hasColorLayer: PropTypes.bool.isRequired,
@@ -180,5 +180,5 @@ MarkerLegend.propTypes = {
 
 MarkerLegend.defaultProps = {
   hiddenValues: {},
-  setHiddenValues: null,
+  setValueHidden: null,
 };

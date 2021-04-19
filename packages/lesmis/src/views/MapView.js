@@ -70,7 +70,7 @@ export const MapView = () => {
     data: overlayReportData,
     entityData,
     hiddenValues,
-    setHiddenValues,
+    setValueHidden,
     selectedOverlay,
     setSelectedOverlay,
   } = useMapOverlayReportData(entityCode);
@@ -112,7 +112,7 @@ export const MapView = () => {
             {overlayReportData && overlayReportData.measureOptions && (
               <Legend
                 measureOptions={overlayReportData.measureOptions}
-                setHiddenValues={setHiddenValues}
+                setValueHidden={setValueHidden}
                 hiddenValues={hiddenValues}
               />
             )}

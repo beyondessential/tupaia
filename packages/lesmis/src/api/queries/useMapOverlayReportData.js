@@ -144,7 +144,7 @@ export const useMapOverlayReportData = entityCode => {
     setHiddenValues(hiddenByDefault);
   }, [setHiddenValues, measureData]);
 
-  const handleSetHiddenValues = useCallback(
+  const setValueHidden = useCallback(
     (key, value, hidden) => {
       setHiddenValues(state => ({
         ...state,
@@ -174,7 +174,7 @@ export const useMapOverlayReportData = entityCode => {
     data: { ...measureData, ...processedMeasureInfo, measureData: processedMeasureData },
     entityData,
     hiddenValues,
-    setHiddenValues: handleSetHiddenValues,
+    setValueHidden,
     selectedOverlay,
     setSelectedOverlay,
   };
