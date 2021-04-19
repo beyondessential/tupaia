@@ -28,7 +28,8 @@ import { LegendEntry } from './LegendEntry';
 const FlexStart = styled(MuiBox)`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
 `;
 
 /**
@@ -97,7 +98,7 @@ export const MarkerLegend = React.memo(
     hasRadiusLayer,
     hasColorLayer,
   }) => {
-    const { type, values, valueMapping } = measureOptions;
+    const { type, values, dataKey, valueMapping } = measureOptions;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
@@ -114,6 +115,7 @@ export const MarkerLegend = React.memo(
         return (
           <LegendEntry
             key={v.name}
+            dataKey={dataKey}
             marker={marker}
             label={v.name}
             value={v.value}
@@ -147,8 +149,10 @@ export const MarkerLegend = React.memo(
             hasColorLayer,
           )}
           label={nullItem.name}
-          hiddenValues={hiddenValues}
           value={null}
+          dataKey={dataKey}
+          hiddenValues={hiddenValues}
+          onClick={setHiddenValues}
         />
       );
     }
@@ -166,18 +170,19 @@ MarkerLegend.propTypes = {
   measureOptions: PropTypes.shape({
     name: PropTypes.string,
     key: PropTypes.string,
+    dataKey: PropTypes.string,
     type: PropTypes.string,
     values: PropTypes.array,
     valueMapping: PropTypes.object,
   }).isRequired,
   hasIconLayer: PropTypes.bool.isRequired,
   setHiddenValues: PropTypes.func,
-  hiddenValues: PropTypes.array,
+  hiddenValues: PropTypes.object,
   hasRadiusLayer: PropTypes.bool.isRequired,
   hasColorLayer: PropTypes.bool.isRequired,
 };
 
 MarkerLegend.defaultProps = {
-  hiddenValues: [],
+  hiddenValues: {},
   setHiddenValues: null,
 };
