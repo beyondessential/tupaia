@@ -63,7 +63,7 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
           codes: [dataElementCode],
         },
       },
-      aggregationType: 'FINAL_EACH_WEEK',
+      aggregationType: 'FINAL_EACH_DAY',
       entityAggregation: {
         dataSourceEntityType: 'facility',
         aggregationEntityType: 'country',
@@ -80,15 +80,15 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
       },
       defaultTimePeriod: {
         end: {
-          unit: 'week',
+          unit: 'day',
           offset: 0,
         },
         start: {
-          unit: 'week',
-          offset: -52,
+          unit: 'day',
+          offset: -30,
         },
       },
-      periodGranularity: 'week',
+      periodGranularity: 'day',
     },
   };
 };
