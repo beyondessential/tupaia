@@ -22,6 +22,8 @@ const getIsOverlayVisible = (overlay, entityType) => {
 
 const getOverlays = (child, entityType) => {
   if (!child.children) {
+    // leaf node, i.e. overlay rather than group
+    // check if it is visible at this entity level
     return getIsOverlayVisible(child, entityType) ? child : null;
   }
 
