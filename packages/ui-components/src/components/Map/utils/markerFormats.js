@@ -218,6 +218,11 @@ function getValueInfo(value, valueMapping, hiddenValues = {}) {
   };
 }
 
+// For situations where we can only show one value, just show the value
+// of the first measure.
+export const getSingleFormattedValue = (entity, measureOptions) =>
+  getFormattedInfo(entity, measureOptions[0]).formattedValue;
+
 export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
@@ -255,7 +260,7 @@ export function getFormattedInfo(orgUnitData, measureOption) {
   };
 }
 
-export function getMeasureDisplayInfo(measureData, measureOptions, hiddenValues = {}) {
+export function getMeasureDisplayInfo(measureData = {}, measureOptions, hiddenValues = {}) {
   const displayInfo = {};
 
   measureOptions.forEach(({ color, icon, radius }) => {
@@ -283,8 +288,11 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenValues 
     }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
-        ...hiddenValues[key],
+        ...hiddenValues,
       });
+
+      displayInfo.isHidden = !!valueInfo.isHidden;
+
       switch (type) {
         case MEASURE_TYPE_ICON:
           displayInfo.icon = valueInfo.icon;
@@ -315,9 +323,6 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenValues 
         default:
           displayInfo.color = valueInfo.color;
           break;
-      }
-      if (valueInfo.isHidden) {
-        displayInfo.isHidden = true;
       }
     },
   );

@@ -28,7 +28,8 @@ import { LegendEntry } from './LegendEntry';
 const FlexStart = styled(MuiBox)`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
 `;
 
 /**
