@@ -80,7 +80,7 @@ export const Legend = React.memo(({ measureOptions, className, setHiddenValues, 
 
 Legend.propTypes = {
   setHiddenValues: PropTypes.func,
-  hiddenValues: PropTypes.object,
+  hiddenValues: PropTypes.array,
   measureOptions: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
@@ -93,6 +93,6 @@ Legend.propTypes = {
 Legend.defaultProps = {
   measureOptions: null,
   className: null,
-  hiddenValues: {},
+  hiddenValues: [],
   setHiddenValues: null,
 };

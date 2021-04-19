@@ -8,10 +8,11 @@ import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { EntityConnection } from '../connections';
 
-export class EntityRoute extends Route {
+export type EntityRequest = Request<{ entityCode: string }>;
+export class EntityRoute extends Route<EntityRequest> {
   private readonly entityConnection: EntityConnection;
 
-  constructor(req: Request, res: Response, next: NextFunction) {
+  constructor(req: EntityRequest, res: Response, next: NextFunction) {
     super(req, res, next);
 
     this.entityConnection = new EntityConnection(req.session);

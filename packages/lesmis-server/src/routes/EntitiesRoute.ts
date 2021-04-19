@@ -18,8 +18,6 @@ export class EntitiesRoute extends Route {
   }
 
   async buildResponse() {
-    const { entityCode } = this.req.params;
-    const queryParameters = this.req.query;
-    return this.entityConnection.getEntities(entityCode, queryParameters);
+    return this.entityConnection.getEntities();
   }
 }

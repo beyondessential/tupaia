@@ -64,6 +64,7 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
         marker={getMarkerForOption(LEGEND_SHADING_ICON, colour)}
         label={label}
         value={min}
+        dataKey={null}
         unClickable
       />
     );
@@ -106,6 +107,8 @@ export const SpectrumLegend = React.memo(({ measureOptions }) => {
     min,
     max,
     scaleType,
+    key,
+    hideByDefault,
     scaleColorScheme,
     valueType,
   } = measureOptions;
@@ -120,7 +123,8 @@ export const SpectrumLegend = React.memo(({ measureOptions }) => {
           marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour)}
           label="No data"
           value={value}
-          unClickable
+          dataKey={key}
+          hideByDefault={hideByDefault}
         />
       )}
     </FlexCenter>
@@ -134,6 +138,8 @@ SpectrumLegend.propTypes = {
     min: PropTypes.number,
     max: PropTypes.number,
     scaleType: PropTypes.string,
+    key: PropTypes.string,
+    hideByDefault: PropTypes.bool,
     valueType: PropTypes.string,
     noDataColour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
