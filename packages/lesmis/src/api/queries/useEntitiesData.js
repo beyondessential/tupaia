@@ -12,7 +12,7 @@ const DEFAULT_PARAMS = { includeRootEntity: true };
 
 export const useEntitiesData = (entityCode, params = DEFAULT_PARAMS) => {
   const query = useQuery(
-    ['entities', entityCode],
+    ['entities', entityCode, params],
     () => get(`entities/${entityCode}`, { params }),
     {
       staleTime: 1000 * 60 * 60 * 1,
@@ -25,9 +25,21 @@ export const useEntitiesData = (entityCode, params = DEFAULT_PARAMS) => {
   return { ...query, entitiesByCode };
 };
 
-const DEFAULT_PROJECT_PARAMS = {
+const PROJECT_PARAMS = {
   fields: 'id,child_codes,code,country_code,image_url,name,type,parent_code',
 };
 
-export const useProjectEntitiesData = (params = DEFAULT_PROJECT_PARAMS) =>
-  useEntitiesData(PROJECT_CODE, params);
+export const useProjectEntitiesData = () => {
+  const query = useQuery(
+    'entities',
+    () => get(`entities/${PROJECT_CODE}`, { params: PROJECT_PARAMS }),
+    {
+      staleTime: 1000 * 60 * 60 * 1,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  );
+
+  const entitiesByCode = keyBy(query.data, 'code');
+  return { ...query, entitiesByCode };
+};
