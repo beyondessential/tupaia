@@ -105,7 +105,9 @@ export const useMapOverlayReportData = entityCode => {
   const [hiddenValues, setHiddenValues] = useState({});
   const [selectedOverlay, setSelectedOverlay] = useState(null);
 
-  const { data: entitiesData, entitiesByCode } = useEntitiesData(entityCode);
+  const { data: entitiesData, entitiesByCode, isLoading: entitiesLoading } = useEntitiesData(
+    entityCode,
+  );
 
   const entityData = entitiesByCode[entityCode];
 
@@ -114,7 +116,7 @@ export const useMapOverlayReportData = entityCode => {
     type: 'mapOverlay',
   };
 
-  const { data: measureData } = useQuery(
+  const { data: measureData, isLoading: measureDataLoading } = useQuery(
     ['mapOverlay', entityCode, selectedOverlay, params],
     () =>
       get(`report/${entityCode}/${selectedOverlay}`, {
@@ -171,6 +173,7 @@ export const useMapOverlayReportData = entityCode => {
       : null;
 
   return {
+    isLoading: entitiesLoading || measureDataLoading,
     data: { ...measureData, ...processedMeasureInfo, measureData: processedMeasureData },
     entityData,
     hiddenValues,
