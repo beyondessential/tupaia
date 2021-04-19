@@ -9,31 +9,31 @@ import { get } from '../api';
 import { useEntitiesData } from './useEntitiesData';
 
 // Todo: refine which map overlays are supported on which level @see https://github.com/beyondessential/tupaia-backlog/issues/2682
-const getVisibleChildren = (options, entityType) =>
-  options.filter(option => {
-    if (entityType !== camelCase('country')) {
-      return true;
-    }
-
-    return (
-      option.displayOnLevel === undefined ||
-      camelCase(option.displayOnLevel) === camelCase(entityType)
-    );
-  });
-
-const getOverylays = (child, entityType) => {
-  if (!child.children) {
-    return child;
+const getIsOverlayVisible = (overlay, entityType) => {
+  if (entityType !== camelCase('country')) {
+    return true;
   }
 
-  const visibleChildren = getVisibleChildren(child.children, entityType);
-  return { ...child, children: visibleChildren.map(overlay => getOverylays(overlay, entityType)) };
+  return (
+    overlay.displayOnLevel === undefined ||
+    camelCase(overlay.displayOnLevel) === camelCase(entityType)
+  );
+};
+
+const getOverlays = (child, entityType) => {
+  if (!child.children) {
+    return getIsOverlayVisible(child, entityType) ? child : null;
+  }
+
+  const children = child.children.map(overlay => getOverlays(overlay, entityType)).filter(o => !!o);
+  if (children.length === 0) {
+    return null; // this has no visible children, so don't show
+  }
+  return { ...child, children };
 };
 
 const processOverlaysData = (data, entityType) =>
-  data
-    .filter(overlay => getVisibleChildren(overlay.children, entityType).length > 0)
-    .map(overlay => getOverylays(overlay, entityType));
+  data.map(overlay => getOverlays(overlay, entityType)).filter(o => !!o);
 
 export const useMapOverlaysData = ({ entityCode }) => {
   const { entitiesByCode, isLoading: entitiesLoading } = useEntitiesData(entityCode);
