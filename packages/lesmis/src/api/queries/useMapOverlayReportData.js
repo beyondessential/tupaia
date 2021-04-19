@@ -4,7 +4,9 @@
  *
  */
 
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from 'react-query';
+import camelCase from 'camelcase';
 import {
   autoAssignColors,
   createValueMapping,
@@ -15,78 +17,7 @@ import {
 import { useEntitiesData } from './useEntitiesData';
 import { get } from '../api';
 
-export const useMapOverlayReportData = ({ entityCode, mapOverlayCode, hiddenValues = {} }) => {
-  const { data: entitiesData, isSuccess } = useEntitiesData();
-
-  const params = {
-    shouldShowAllParentCountryResults: false,
-    type: 'mapOverlay',
-  };
-
-  const { data: measureData, ...query } = useQuery(
-    ['mapOverlay', entityCode, mapOverlayCode, params],
-    () =>
-      get(`report/${entityCode}/${mapOverlayCode}`, {
-        params,
-      }),
-    {
-      staleTime: 60 * 60 * 1000,
-      refetchOnWindowFocus: false,
-      enabled: isSuccess && !!entitiesData,
-    },
-  );
-
-  // processMeasureInfo
-  const processedMeasureInfo = measureData ? processMeasureInfo(measureData) : null;
-
-  // processMeasureData
-  const processedMeasureData =
-    measureData && entitiesData
-      ? processMeasureData({
-          measureData: measureData.measureData,
-          entitiesData,
-          measureOptions: processedMeasureInfo.measureOptions,
-          mapOverlayCode,
-          hiddenValues,
-        })
-      : null;
-
-  return {
-    ...query,
-    data: { ...measureData, ...processedMeasureInfo, measureData: processedMeasureData },
-  };
-};
-
-function processMeasureData({
-  measureData,
-  entitiesData,
-  measureOptions,
-  mapOverlayCode,
-  hiddenValues,
-}) {
-  const measureEntities = measureData
-    .filter(measure => !hiddenValues.includes(measure[mapOverlayCode]))
-    .map(m => m.organisationUnitCode);
-
-  return entitiesData
-    .filter(entity => measureEntities.includes(entity.code))
-    .map(entity => {
-      const measure = measureData.find(e => e.organisationUnitCode === entity.code);
-      const displayInfo = getMeasureDisplayInfo(measure, measureOptions);
-
-      return {
-        ...entity,
-        ...measure,
-        coordinates: entity.point,
-        region: entity.region,
-        color: displayInfo.color,
-        icon: displayInfo.icon,
-        originalValue: displayInfo.originalValue,
-      };
-    });
-}
-
-function processMeasureInfo({ measureOptions, measureData, ...rest }) {
+const processMeasureInfo = ({ measureOptions, measureData, ...rest }) => {
   const processedOptions = measureOptions.map(measureOption => {
     const { values: mapOptionValues, type, scaleType } = measureOption;
 
@@ -126,4 +57,125 @@ function processMeasureInfo({ measureOptions, measureData, ...rest }) {
     measureData,
     ...rest,
   };
-}
+};
+
+const processMeasureData = ({
+  entityType,
+  measureData,
+  entitiesData,
+  measureOptions,
+  hiddenValues,
+  measureLevel,
+}) => {
+  // Todo: refine which map overlays are supported on which level @see https://github.com/beyondessential/tupaia-backlog/issues/2682
+  const displayOnLevel = measureOptions.find(option => option.displayOnLevel);
+  if (
+    camelCase(entityType) === 'country' &&
+    displayOnLevel &&
+    camelCase(entityType) !== camelCase(displayOnLevel.displayOnLevel)
+  ) {
+    return [];
+  }
+
+  return entitiesData
+    .filter(entity => camelCase(entity.type) === camelCase(measureLevel))
+    .map(entity => {
+      const measure = measureData.find(e => e.organisationUnitCode === entity.code);
+      const { color, icon, originalValue, isHidden } = getMeasureDisplayInfo(
+        measure,
+        measureOptions,
+        hiddenValues,
+      );
+
+      return {
+        ...entity,
+        ...measure,
+        isHidden,
+        coordinates: entity.point,
+        region: entity.region,
+        color,
+        icon,
+        originalValue,
+      };
+    })
+    .filter(({ isHidden }) => !isHidden);
+};
+
+export const useMapOverlayReportData = entityCode => {
+  const [hiddenValues, setHiddenValues] = useState({});
+  const [selectedOverlay, setSelectedOverlay] = useState(null);
+
+  const { data: entitiesData, entitiesByCode } = useEntitiesData(entityCode);
+
+  const entityData = entitiesByCode[entityCode];
+
+  const params = {
+    shouldShowAllParentCountryResults: false,
+    type: 'mapOverlay',
+  };
+
+  const { data: measureData } = useQuery(
+    ['mapOverlay', entityCode, selectedOverlay, params],
+    () =>
+      get(`report/${entityCode}/${selectedOverlay}`, {
+        params,
+      }),
+    {
+      staleTime: 60 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      enabled: !!entityCode && !!selectedOverlay,
+    },
+  );
+
+  useEffect(() => {
+    setHiddenValues({}); // reset when changing overlay
+  }, [setHiddenValues, selectedOverlay, entityCode]);
+
+  useEffect(() => {
+    setSelectedOverlay(null);
+  }, [setSelectedOverlay, entityCode]);
+
+  useEffect(() => {
+    const options = measureData ? measureData.measureOptions : [];
+    const hiddenByDefault = options.reduce((values, { hideByDefault }) => {
+      return { ...values, ...hideByDefault };
+    }, {});
+
+    setHiddenValues(hiddenByDefault);
+  }, [setHiddenValues, measureData]);
+
+  const handleSetHiddenValues = useCallback(
+    (key, value, hidden) => {
+      setHiddenValues(state => ({
+        ...state,
+        [value]: hidden,
+      }));
+    },
+    [setHiddenValues],
+  );
+
+  // processMeasureInfo
+  const processedMeasureInfo = measureData ? processMeasureInfo(measureData) : null;
+
+  // processMeasureData
+  const processedMeasureData =
+    measureData && entitiesData
+      ? processMeasureData({
+          entityType: entityData.type,
+          measureLevel: measureData.measureLevel,
+          measureData: measureData.measureData,
+          entitiesData,
+          measureOptions: processedMeasureInfo.measureOptions,
+          hiddenValues,
+        })
+      : null;
+
+  return {
+    data: { ...measureData, ...processedMeasureInfo, measureData: processedMeasureData },
+    entityData,
+    hiddenValues,
+    setHiddenValues: handleSetHiddenValues,
+    selectedOverlay,
+    setSelectedOverlay,
+  };
+};
