@@ -19,6 +19,10 @@ class SessionSwitchingAuthHandler implements AuthHandler {
     this.session = session;
   }
 
+  get hasSession() {
+    return !!this.session;
+  }
+
   async getAuthHeader() {
     if (this.session) {
       return this.session.getAuthHeader();
@@ -35,5 +39,9 @@ export abstract class SessionHandlingApiConnection extends ApiConnection {
     const authHandler = new SessionSwitchingAuthHandler(session);
     super(authHandler);
     this.authHandler = authHandler;
+  }
+
+  get hasSession() {
+    return this.authHandler.hasSession;
   }
 }
