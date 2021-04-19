@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const THINGS = {
+const DISEASE_DATA_ELEMENTS = {
   AFR: {
     dataElement: 'PSSS_AFR_Daily_Cases',
     name: 'Acute fever and rash',
@@ -52,20 +52,20 @@ const THINGS = {
 const DASHBOARD_GROUP_TEMPLATE = {
   organisationLevel: 'Facility',
   userGroup: 'PSSS Tupaia',
-  organisationUnitCode: 'NR',
+  organisationUnitCode: 'PW',
   dashboardReports: null,
   name: 'Syndromic Surveillance',
-  code: 'NR_PSSS_Syndromic_Surveillance_Facility',
+  code: 'PW_PSSS_Syndromic_Surveillance_Facility',
   projectCodes: '{psss}',
 };
 
-const getDashboardReportId = thingName => `PSSS_NR_${thingName}_Daily_Case_Trend_Graph_Facility`;
+const getDashboardReportId = diseaseName =>
+  `PSSS_PW_${diseaseName}_Daily_Case_Trend_Graph_Facility`;
 
-const getDashboardReport = (id, thingName, dataElement, color) => ({
+const getDashboardReport = (id, diseaseName, dataElement, color) => ({
   id,
   dataBuilder: 'sumPerPeriod',
   dataBuilderConfig: {
-    periodType: 'week',
     dataClasses: {
       value: {
         codes: [dataElement],
@@ -77,7 +77,7 @@ const getDashboardReport = (id, thingName, dataElement, color) => ({
     },
   },
   viewJson: {
-    name: `${thingName} Daily Case Number Trend Graph`,
+    name: `${diseaseName} Daily Case Number Trend Graph`,
     type: 'chart',
     chartType: 'line',
     chartConfig: {
@@ -102,8 +102,8 @@ const getDashboardReport = (id, thingName, dataElement, color) => ({
 exports.up = async function (db) {
   const dashboardReportIds = [];
 
-  for (const [thingName, { dataElement, name, color }] of Object.entries(THINGS)) {
-    const dashboardReportId = getDashboardReportId(thingName);
+  for (const [diseaseName, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
+    const dashboardReportId = getDashboardReportId(diseaseName);
     dashboardReportIds.push(dashboardReportId);
     const dashboardReport = getDashboardReport(dashboardReportId, name, dataElement, color);
     await insertObject(db, 'dashboardReport', dashboardReport);

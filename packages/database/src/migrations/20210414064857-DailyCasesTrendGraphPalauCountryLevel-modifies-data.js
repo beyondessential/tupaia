@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const THINGS = {
+const DISEASE_DATA_ELEMENTS = {
   AFR: {
     dataElement: 'PSSS_AFR_Daily_Cases',
     name: 'Acute fever and rash',
@@ -49,19 +49,18 @@ const THINGS = {
   },
 };
 
-const getDashboardReportId = thingName => `PSSS_NR_${thingName}_Daily_Case_Trend_Graph_Country`;
+const getDashboardReportId = diseaseName => `PSSS_PW_${diseaseName}_Daily_Case_Trend_Graph_Country`;
 
-const dashboardGroupCode = 'NR_PSSS_Syndromic_Surveillance';
+const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance';
 
-const getDashboardReport = (id, thingName, thingDataElementCode, color) => {
+const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
   return {
     id,
     dataBuilder: 'sumPerPeriod',
     dataBuilderConfig: {
-      periodType: 'week',
       dataClasses: {
         value: {
-          codes: [thingDataElementCode],
+          codes: [dataElementCode],
         },
       },
       aggregationType: 'FINAL_EACH_WEEK',
@@ -71,7 +70,7 @@ const getDashboardReport = (id, thingName, thingDataElementCode, color) => {
       },
     },
     viewJson: {
-      name: `${thingName} Daily Case Number Trend Graph`,
+      name: `${diseaseName} Daily Case Number Trend Graph`,
       type: 'chart',
       chartType: 'line',
       chartConfig: {
@@ -97,8 +96,8 @@ const getDashboardReport = (id, thingName, thingDataElementCode, color) => {
 exports.up = async function (db) {
   const dashboardReportIds = [];
 
-  for (const [thingName, { dataElement, name, color }] of Object.entries(THINGS)) {
-    const dashboardReportId = getDashboardReportId(thingName);
+  for (const [diseaseName, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
+    const dashboardReportId = getDashboardReportId(diseaseName);
     dashboardReportIds.push(dashboardReportId);
 
     const dashboardReport = getDashboardReport(dashboardReportId, name, dataElement, color);
