@@ -86,6 +86,12 @@ export const runPostMigration = async driver => {
     ),
   );
 
+  // Refresh analytics in case they've been impacted by migrations
+  const start = Date.now();
+  await driver.runSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`);
+  const end = Date.now();
+  console.log(`Analytics refresh took: ${end - start}ms`);
+
   driver.close(err => {
     if (tablesWithoutNotifier.length > 0) {
       console.log(`Created change notification triggers for ${tablesWithoutNotifier.join(', ')}`);
