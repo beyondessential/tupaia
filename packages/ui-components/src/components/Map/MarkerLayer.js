@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { LayerGroup, Polygon } from 'react-leaflet';
 import { MeasureMarker, MeasurePopup } from './Markers';
 import { AreaTooltip } from './AreaTooltip';
-import { MEASURE_TYPE_RADIUS } from './utils';
+import { getSingleFormattedValue, MEASURE_TYPE_RADIUS } from './utils';
 
 const ShadedPolygon = styled(Polygon)`
   weight: 1;
@@ -18,6 +18,17 @@ const ShadedPolygon = styled(Polygon)`
     fill-opacity: 0.8;
   }
 `;
+
+const getText = (measure, measureOptions) => {
+  const { name } = measure;
+  const hasMeasureValue = measure || measure === 0;
+
+  const text = hasMeasureValue
+    ? `${name}: ${getSingleFormattedValue(measure, measureOptions)}`
+    : name;
+
+  return text;
+};
 
 export const MarkerLayer = ({ measureData, measureOptions }) => {
   if (!measureData || !measureOptions) return null;
@@ -34,7 +45,7 @@ export const MarkerLayer = ({ measureData, measureOptions }) => {
       {measureData.map(measure =>
         measure.region ? (
           <ShadedPolygon key={measure.code} positions={measure.region} {...measure}>
-            <AreaTooltip text={`${measure.name}: ${measure.originalValue}`} />
+            <AreaTooltip text={getText(measure, measureOptions)} />
           </ShadedPolygon>
         ) : (
           <MeasureMarker key={measure.code} {...measure}>
