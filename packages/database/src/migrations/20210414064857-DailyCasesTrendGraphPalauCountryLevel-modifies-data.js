@@ -51,7 +51,7 @@ const DISEASE_DATA_ELEMENTS = {
 
 const getDashboardReportId = diseaseName => `PSSS_PW_${diseaseName}_Daily_Case_Trend_Graph_Country`;
 
-const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance';
+const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance_National_Data_Country';
 
 const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
   return {
