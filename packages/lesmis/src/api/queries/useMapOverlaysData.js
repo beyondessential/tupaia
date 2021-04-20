@@ -10,7 +10,7 @@ import { useEntitiesData } from './useEntitiesData';
 
 // Todo: refine which map overlays are supported on which level @see https://github.com/beyondessential/tupaia-backlog/issues/2682
 const getIsOverlayVisible = (overlay, entityType) => {
-  if (entityType !== camelCase('country')) {
+  if (camelCase(entityType) !== 'country') {
     return true;
   }
 

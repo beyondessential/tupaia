@@ -17,7 +17,7 @@ import {
 import { useEntitiesData } from './useEntitiesData';
 import { get } from '../api';
 
-const processMeasureInfo = ({ measureOptions: measureSeries, measureData, ...rest }) => {
+const processMeasureInfo = ({ measureSeries, measureData, ...rest }) => {
   const processedSeries = measureSeries.map(series => {
     const { values: mapOptionValues, type, scaleType } = series;
 
