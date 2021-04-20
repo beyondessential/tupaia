@@ -98,7 +98,7 @@ export const MarkerLegend = React.memo(
     hasRadiusLayer,
     hasColorLayer,
   }) => {
-    const { type, values, valueMapping } = measureOptions;
+    const { type, values, key: dataKey, valueMapping } = measureOptions;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
@@ -115,6 +115,7 @@ export const MarkerLegend = React.memo(
         return (
           <LegendEntry
             key={v.name}
+            dataKey={dataKey}
             marker={marker}
             label={v.name}
             value={v.value}
@@ -147,8 +148,10 @@ export const MarkerLegend = React.memo(
             hasRadiusLayer,
             hasColorLayer,
           )}
+          dataKey={dataKey}
           label={nullItem.name}
           hiddenValues={hiddenValues}
+          onClick={setValueHidden}
           value={null}
         />
       );

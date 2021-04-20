@@ -19,7 +19,7 @@ const Key = styled.div`
 
 export const LegendEntry = React.memo(
   ({ marker, label, value, dataKey, onClick, hiddenValues, unClickable }) => {
-    const hidden = (hiddenValues || {})[value];
+    const hidden = (hiddenValues[dataKey] || {})[value];
 
     const handleClick = () => {
       if (!unClickable && onClick) {

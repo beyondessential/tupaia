@@ -129,18 +129,21 @@ export const useMapOverlayReportData = entityCode => {
     },
   );
 
+  // reset hidden values when changing overlay or entity
   useEffect(() => {
-    setHiddenValues({}); // reset when changing overlay
+    setHiddenValues({});
   }, [setHiddenValues, selectedOverlay, entityCode]);
 
+  // reset selected overlay when changing entity
   useEffect(() => {
     setSelectedOverlay(null);
   }, [setSelectedOverlay, entityCode]);
 
+  // set default hidden measures when measure data changes
   useEffect(() => {
     const options = measureData ? measureData.measureOptions : [];
-    const hiddenByDefault = options.reduce((values, { hideByDefault }) => {
-      return { ...values, ...hideByDefault };
+    const hiddenByDefault = options.reduce((values, { hideByDefault, key }) => {
+      return { ...values, [key]: hideByDefault };
     }, {});
 
     setHiddenValues(hiddenByDefault);
@@ -148,9 +151,9 @@ export const useMapOverlayReportData = entityCode => {
 
   const setValueHidden = useCallback(
     (key, value, hidden) => {
-      setHiddenValues(state => ({
-        ...state,
-        [value]: hidden,
+      setHiddenValues(currentState => ({
+        ...currentState,
+        [key]: { ...currentState[key], [value]: hidden },
       }));
     },
     [setHiddenValues],

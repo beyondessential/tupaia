@@ -288,7 +288,7 @@ export function getMeasureDisplayInfo(measureData = {}, measureOptions, hiddenVa
     }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
-        ...hiddenValues,
+        ...hiddenValues[key],
       });
 
       displayInfo.isHidden = !!valueInfo.isHidden;
