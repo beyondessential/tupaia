@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
-const Entry = styled.div`
+const Key = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -18,20 +18,20 @@ const Entry = styled.div`
 `;
 
 export const LegendEntry = React.memo(
-  ({ marker, label, value, onClick, hiddenValues, unClickable }) => {
-    const hidden = hiddenValues.includes(value);
+  ({ marker, label, value, dataKey, onClick, hiddenValues, unClickable }) => {
+    const hidden = (hiddenValues[dataKey] || {})[value];
 
     const handleClick = () => {
       if (!unClickable && onClick) {
-        onClick(value);
+        onClick(dataKey, value, !hidden);
       }
     };
 
     return (
-      <Entry onClick={handleClick} hidden={hidden}>
+      <Key onClick={handleClick} hidden={hidden}>
         {marker}
         <div>{label}</div>
-      </Entry>
+      </Key>
     );
   },
 );
@@ -40,14 +40,16 @@ LegendEntry.propTypes = {
   marker: PropTypes.element.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
-  hiddenValues: PropTypes.array,
+  dataKey: PropTypes.string,
+  hiddenValues: PropTypes.object,
   onClick: PropTypes.func,
   unClickable: PropTypes.bool,
 };
 
 LegendEntry.defaultProps = {
-  hiddenValues: [],
+  hiddenValues: {},
   unClickable: false,
   onClick: null,
   value: null,
+  dataKey: null,
 };

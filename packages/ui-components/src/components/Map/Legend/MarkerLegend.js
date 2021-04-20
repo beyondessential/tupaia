@@ -28,7 +28,8 @@ import { LegendEntry } from './LegendEntry';
 const FlexStart = styled(MuiBox)`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
 `;
 
 /**
@@ -89,15 +90,8 @@ const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasC
 };
 
 export const MarkerLegend = React.memo(
-  ({
-    measureOptions,
-    setHiddenValues,
-    hiddenValues,
-    hasIconLayer,
-    hasRadiusLayer,
-    hasColorLayer,
-  }) => {
-    const { type, values, valueMapping } = measureOptions;
+  ({ series, setValueHidden, hiddenValues, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
+    const { type, values, key: dataKey, valueMapping } = series;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
@@ -114,11 +108,12 @@ export const MarkerLegend = React.memo(
         return (
           <LegendEntry
             key={v.name}
+            dataKey={dataKey}
             marker={marker}
             label={v.name}
             value={v.value}
             hiddenValues={hiddenValues}
-            onClick={setHiddenValues}
+            onClick={setValueHidden}
           />
         );
       });
@@ -146,8 +141,10 @@ export const MarkerLegend = React.memo(
             hasRadiusLayer,
             hasColorLayer,
           )}
+          dataKey={dataKey}
           label={nullItem.name}
           hiddenValues={hiddenValues}
+          onClick={setValueHidden}
           value={null}
         />
       );
@@ -163,7 +160,7 @@ export const MarkerLegend = React.memo(
 );
 
 MarkerLegend.propTypes = {
-  measureOptions: PropTypes.shape({
+  series: PropTypes.shape({
     name: PropTypes.string,
     key: PropTypes.string,
     type: PropTypes.string,
@@ -171,13 +168,13 @@ MarkerLegend.propTypes = {
     valueMapping: PropTypes.object,
   }).isRequired,
   hasIconLayer: PropTypes.bool.isRequired,
-  setHiddenValues: PropTypes.func,
-  hiddenValues: PropTypes.array,
+  setValueHidden: PropTypes.func,
+  hiddenValues: PropTypes.object,
   hasRadiusLayer: PropTypes.bool.isRequired,
   hasColorLayer: PropTypes.bool.isRequired,
 };
 
 MarkerLegend.defaultProps = {
-  hiddenValues: [],
-  setHiddenValues: null,
+  hiddenValues: {},
+  setValueHidden: null,
 };

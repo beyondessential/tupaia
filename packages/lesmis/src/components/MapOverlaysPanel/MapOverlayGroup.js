@@ -185,7 +185,13 @@ const FormLabel = styled(MuiFormLabel)`
 const FormControlLabel = styled(MuiFormControlLabel)`
   position: relative;
   font-size: 0.875rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
   color: ${props => props.theme.palette.text.secondary};
+
+  .MuiTypography-root {
+    line-height: 1.4;
+  }
 
   .MuiRadio-root:before {
     ${HorizontalDash};
@@ -303,12 +309,18 @@ export const MapOverlayGroup = ({
 
   // set the first overlay as active
   useEffect(() => {
-    if (path.length === 1 && path[0] === 0) {
-      setSelectedOverlay(options[0].code);
-      setSelectedPath([0, 0]);
-      setOpen(true);
+    if (!selectedOverlay && path.every(node => node === 0)) {
+      options.forEach(option => {
+        if (option.children) {
+          setOpen(true);
+        } else {
+          setOpen(true);
+          setSelectedOverlay(options[0].code);
+          setSelectedPath([...path, 0]);
+        }
+      });
     }
-  }, [setSelectedOverlay, setSelectedPath]);
+  }, [setSelectedOverlay, setSelectedPath, options, setOpen, path, selectedOverlay]);
 
   const activeClassName = getActiveClass(path, selectedPath);
 

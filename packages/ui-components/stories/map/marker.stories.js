@@ -64,7 +64,7 @@ const measureData = {
   name: 'Universal Clinic & Pharmacy',
 };
 
-const measureOptions = [
+const mapOverlaySerieses = [
   {
     customColors: 'RoyalBlue,RoyalBlue,OrangeRed,OrangeRed',
     measureLevel: 'Facility',
@@ -152,6 +152,6 @@ export const PopupMarker = () => (
     icon="circle"
     color="blue"
   >
-    <MeasurePopup measureData={measureData} measureOptions={measureOptions} />
+    <MeasurePopup measureData={measureData} serieses={mapOverlaySerieses} />
   </MeasureMarker>
 );
