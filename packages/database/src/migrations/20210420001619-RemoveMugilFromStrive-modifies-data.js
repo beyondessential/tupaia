@@ -72,65 +72,65 @@ exports.up = async function (db) {
     WHERE id IN (${arrayToDbString(facilityIdsToInsert)});
   `);
 
-  // // 2. Add entity filters to dashboard reports
-  // const updateConfig = config => {
-  //   if (!config.entityAggregation) {
-  //     // eslint-disable-next-line no-param-reassign
-  //     config.entityAggregation = {};
-  //   }
-  //   // don't override if already set
-  //   if (!config.entityAggregation.dataSourceEntityType) {
-  //     // eslint-disable-next-line no-param-reassign
-  //     config.entityAggregation.dataSourceEntityType = 'facility';
-  //   }
-  // };
-  //
-  // const dashboardsResult = await db.runSql(
-  //   `SELECT id, "dataBuilderConfig" FROM "dashboardReport" WHERE id LIKE 'PG_Strive_PNG_%';`,
-  // );
-  // for (const dashboardRow of dashboardsResult.rows) {
-  //   const { dataBuilderConfig } = dashboardRow;
-  //
-  //   if (dataBuilderConfig.dataBuilders) {
-  //     // composed config, need to update nested configs
-  //     for (const nestedConfigKey of Object.keys(dataBuilderConfig.dataBuilders)) {
-  //       updateConfig(dataBuilderConfig.dataBuilders[nestedConfigKey].dataBuilderConfig);
-  //     }
-  //   } else {
-  //     // simple case
-  //     updateConfig(dataBuilderConfig);
-  //   }
-  //
-  //   await db.runSql(
-  //     `UPDATE "dashboardReport" SET "dataBuilderConfig" = '${JSON.stringify(
-  //       dataBuilderConfig,
-  //     )}' WHERE id = '${dashboardRow.id}';`,
-  //   );
-  // }
-  //
-  // // 3. Add entity filters to map overlays
-  // const mapOverlaysResult = await db.runSql(
-  //   `SELECT id, "measureBuilderConfig" FROM "mapOverlay" WHERE id LIKE 'STRIVE_%';`,
-  // );
-  // for (const mapOverlayRow of mapOverlaysResult.rows) {
-  //   const { measureBuilderConfig } = mapOverlayRow;
-  //
-  //   if (measureBuilderConfig.measureBuilders) {
-  //     // composed config, need to update nested configs
-  //     for (const nestedConfigKey of Object.keys(measureBuilderConfig.measureBuilders)) {
-  //       updateConfig(measureBuilderConfig.measureBuilders[nestedConfigKey].measureBuilderConfig);
-  //     }
-  //   } else {
-  //     // simple case
-  //     updateConfig(measureBuilderConfig);
-  //   }
-  //
-  //   await db.runSql(
-  //     `UPDATE "mapOverlay" SET "measureBuilderConfig" = '${JSON.stringify(
-  //       measureBuilderConfig,
-  //     )}' WHERE id = '${mapOverlayRow.id}';`,
-  //   );
-  // }
+  // 2. Add entity filters to dashboard reports
+  const updateConfig = config => {
+    if (!config.entityAggregation) {
+      // eslint-disable-next-line no-param-reassign
+      config.entityAggregation = {};
+    }
+    // don't override if already set
+    if (!config.entityAggregation.dataSourceEntityType) {
+      // eslint-disable-next-line no-param-reassign
+      config.entityAggregation.dataSourceEntityType = 'facility';
+    }
+  };
+
+  const dashboardsResult = await db.runSql(
+    `SELECT id, "dataBuilderConfig" FROM "dashboardReport" WHERE id LIKE 'PG_Strive_PNG_%';`,
+  );
+  for (const dashboardRow of dashboardsResult.rows) {
+    const { dataBuilderConfig } = dashboardRow;
+
+    if (dataBuilderConfig.dataBuilders) {
+      // composed config, need to update nested configs
+      for (const nestedConfigKey of Object.keys(dataBuilderConfig.dataBuilders)) {
+        updateConfig(dataBuilderConfig.dataBuilders[nestedConfigKey].dataBuilderConfig);
+      }
+    } else {
+      // simple case
+      updateConfig(dataBuilderConfig);
+    }
+
+    await db.runSql(
+      `UPDATE "dashboardReport" SET "dataBuilderConfig" = '${JSON.stringify(
+        dataBuilderConfig,
+      )}' WHERE id = '${dashboardRow.id}';`,
+    );
+  }
+
+  // 3. Add entity filters to map overlays
+  const mapOverlaysResult = await db.runSql(
+    `SELECT id, "measureBuilderConfig" FROM "mapOverlay" WHERE id LIKE 'STRIVE_%';`,
+  );
+  for (const mapOverlayRow of mapOverlaysResult.rows) {
+    const { measureBuilderConfig } = mapOverlayRow;
+
+    if (measureBuilderConfig.measureBuilders) {
+      // composed config, need to update nested configs
+      for (const nestedConfigKey of Object.keys(measureBuilderConfig.measureBuilders)) {
+        updateConfig(measureBuilderConfig.measureBuilders[nestedConfigKey].measureBuilderConfig);
+      }
+    } else {
+      // simple case
+      updateConfig(measureBuilderConfig);
+    }
+
+    await db.runSql(
+      `UPDATE "mapOverlay" SET "measureBuilderConfig" = '${JSON.stringify(
+        measureBuilderConfig,
+      )}' WHERE id = '${mapOverlayRow.id}';`,
+    );
+  }
 
   return null;
 };
