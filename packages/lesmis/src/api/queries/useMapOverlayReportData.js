@@ -18,7 +18,7 @@ import { useEntitiesData } from './useEntitiesData';
 import { get } from '../api';
 
 const processMeasureInfo = ({ measureOptions: measureSeries, measureData, ...rest }) => {
-  const processedOptions = measureSeries.map(series => {
+  const processedSeries = measureSeries.map(series => {
     const { values: mapOptionValues, type, scaleType } = series;
 
     // assign colors
@@ -53,7 +53,7 @@ const processMeasureInfo = ({ measureOptions: measureSeries, measureData, ...res
   });
 
   return {
-    measureSeries: processedOptions,
+    measureSeries: processedSeries,
     measureData,
     ...rest,
   };
@@ -68,7 +68,7 @@ const processMeasureData = ({
   measureLevel,
 }) => {
   // Todo: refine which map overlays are supported on which level @see https://github.com/beyondessential/tupaia-backlog/issues/2682
-  const displayOnLevel = measureSeries.find(option => option.displayOnLevel);
+  const displayOnLevel = measureSeries.find(series => series.displayOnLevel);
   if (
     camelCase(entityType) === 'country' &&
     displayOnLevel &&
@@ -141,8 +141,8 @@ export const useMapOverlayReportData = entityCode => {
 
   // set default hidden measures when measure data changes
   useEffect(() => {
-    const options = measureData ? measureData.measureSeries : [];
-    const hiddenByDefault = options.reduce((values, { hideByDefault, key }) => {
+    const series = measureData ? measureData.measureSeries : [];
+    const hiddenByDefault = series.reduce((values, { hideByDefault, key }) => {
       return { ...values, [key]: hideByDefault };
     }, {});
 
