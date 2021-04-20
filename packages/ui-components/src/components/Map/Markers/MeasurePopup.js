@@ -20,22 +20,19 @@ const buildHeaderText = (measureData, popupHeaderFormat) => {
   );
 };
 
-export const MeasurePopup = React.memo(({ measureData, measureOptions }) => {
+export const MeasurePopup = React.memo(({ measureData, serieses }) => {
   const { coordinates } = measureData;
-  const { popupHeaderFormat = '{name}' } = measureOptions.reduce(
-    (all, mo) => ({ ...all, ...mo }),
-    {},
-  );
+  const { popupHeaderFormat = '{name}' } = serieses.reduce((all, mo) => ({ ...all, ...mo }), {});
   return (
     <PopupMarker
       headerText={buildHeaderText(measureData, popupHeaderFormat)}
       coordinates={coordinates}
     >
-      {measureOptions
-        .filter(measureOption => !measureOption.hideFromPopup)
-        .map(measureOption => {
-          const { key, name } = measureOption;
-          const { formattedValue, valueInfo } = getFormattedInfo(measureData, measureOption);
+      {serieses
+        .filter(series => !series.hideFromPopup)
+        .map(series => {
+          const { key, name } = series;
+          const { formattedValue, valueInfo } = getFormattedInfo(measureData, series);
 
           return valueInfo.hideFromPopup ? null : (
             <div key={key}>
@@ -56,7 +53,7 @@ MeasurePopup.propTypes = {
     organisationUnitCode: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
-  measureOptions: PropTypes.arrayOf(
+  serieses: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

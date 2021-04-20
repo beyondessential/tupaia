@@ -22,7 +22,7 @@ export const MapOverlaysPanel = ({ overlays, isLoading, selectedOverlay, setSele
         {isLoading ? (
           <MapOverlaysLoader />
         ) : (
-          overlays.map(({ name, code, children }, index) => (
+          overlays.map(({ name, children }, index) => (
             <MapOverlayGroup
               key={name}
               name={name}

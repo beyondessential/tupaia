@@ -4,7 +4,7 @@
  *
  */
 import { useUrlParams } from './useUrlParams';
-import { useEntitiesData } from '../api';
+import { useProjectEntitiesData } from '../api';
 import { makeEntityLink } from './makeEntityLink';
 
 const getHierarchy = (entities, entityCode, view, hierarchy = []) => {
@@ -24,7 +24,7 @@ const getHierarchy = (entities, entityCode, view, hierarchy = []) => {
 
 export const useEntityBreadcrumbs = () => {
   const { entityCode, view } = useUrlParams();
-  const { isLoading, data: entities = [] } = useEntitiesData();
+  const { isLoading, data: entities = [] } = useProjectEntitiesData();
   const breadcrumbs = getHierarchy(entities, entityCode, view);
   return { isLoading, breadcrumbs };
 };
