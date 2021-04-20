@@ -46,29 +46,29 @@ const getLegendComponent = measureType => {
   }
 };
 
-export const Legend = React.memo(({ measureOptions, className, setValueHidden, hiddenValues }) => {
-  if (!measureOptions) {
+export const Legend = React.memo(({ measureSeries, className, setValueHidden, hiddenValues }) => {
+  if (!measureSeries) {
     return null;
   }
 
-  const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
-  const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
-  const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
-  const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
+  const displayedLegends = measureSeries.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+  const hasIconLayer = measureSeries.some(l => l.type === MEASURE_TYPE_ICON);
+  const hasRadiusLayer = measureSeries.some(l => l.type === MEASURE_TYPE_RADIUS);
+  const hasColorLayer = measureSeries.some(l => coloredMeasureTypes.includes(l.type));
 
   return (
     <LegendFrame className={className}>
-      {displayedLegends.map(measureOption => {
-        const { type } = measureOption;
+      {displayedLegends.map(series => {
+        const { type } = series;
         const LegendComponent = getLegendComponent(type);
 
         return (
           <LegendComponent
-            key={measureOption.key}
+            key={series.key}
             hasIconLayer={hasIconLayer}
             hasRadiusLayer={hasRadiusLayer}
             hasColorLayer={hasColorLayer}
-            measureOptions={measureOption}
+            measureSeries={series}
             setValueHidden={setValueHidden}
             hiddenValues={hiddenValues}
           />
@@ -81,7 +81,7 @@ export const Legend = React.memo(({ measureOptions, className, setValueHidden, h
 Legend.propTypes = {
   setValueHidden: PropTypes.func,
   hiddenValues: PropTypes.object,
-  measureOptions: PropTypes.arrayOf(
+  measureSeries: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -91,7 +91,7 @@ Legend.propTypes = {
 };
 
 Legend.defaultProps = {
-  measureOptions: null,
+  measureSeries: null,
   className: null,
   hiddenValues: {},
   setValueHidden: null,

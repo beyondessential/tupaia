@@ -91,14 +91,14 @@ const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasC
 
 export const MarkerLegend = React.memo(
   ({
-    measureOptions,
+    measureSeries,
     setValueHidden,
     hiddenValues,
     hasIconLayer,
     hasRadiusLayer,
     hasColorLayer,
   }) => {
-    const { type, values, key: dataKey, valueMapping } = measureOptions;
+    const { type, values, key: dataKey, valueMapping } = measureSeries;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
@@ -167,7 +167,7 @@ export const MarkerLegend = React.memo(
 );
 
 MarkerLegend.propTypes = {
-  measureOptions: PropTypes.shape({
+  measureSeries: PropTypes.shape({
     name: PropTypes.string,
     key: PropTypes.string,
     type: PropTypes.string,

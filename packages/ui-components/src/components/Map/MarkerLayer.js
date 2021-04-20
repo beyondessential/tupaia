@@ -19,22 +19,22 @@ const ShadedPolygon = styled(Polygon)`
   }
 `;
 
-const getText = (measure, measureOptions) => {
+const getText = (measure, measureSeries) => {
   const { name } = measure;
   const hasMeasureValue = measure || measure === 0;
 
   const text = hasMeasureValue
-    ? `${name}: ${getSingleFormattedValue(measure, measureOptions)}`
+    ? `${name}: ${getSingleFormattedValue(measure, measureSeries)}`
     : name;
 
   return text;
 };
 
-export const MarkerLayer = ({ measureData, measureOptions }) => {
-  if (!measureData || !measureOptions) return null;
+export const MarkerLayer = ({ measureData, measureSeries }) => {
+  if (!measureData || !measureSeries) return null;
 
   // for radius overlay sort desc radius to place smaller circles over larger circles
-  if (measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS)) {
+  if (measureSeries.some(l => l.type === MEASURE_TYPE_RADIUS)) {
     measureData.sort((a, b) => {
       return Number(b.radius) - Number(a.radius);
     });
@@ -45,11 +45,11 @@ export const MarkerLayer = ({ measureData, measureOptions }) => {
       {measureData.map(measure =>
         measure.region ? (
           <ShadedPolygon key={measure.code} positions={measure.region} {...measure}>
-            <AreaTooltip text={getText(measure, measureOptions)} />
+            <AreaTooltip text={getText(measure, measureSeries)} />
           </ShadedPolygon>
         ) : (
           <MeasureMarker key={measure.code} {...measure}>
-            <MeasurePopup measureData={measure} measureOptions={measureOptions} />
+            <MeasurePopup measureData={measure} measureSeries={measureSeries} />
           </MeasureMarker>
         ),
       )}
@@ -59,7 +59,7 @@ export const MarkerLayer = ({ measureData, measureOptions }) => {
 
 MarkerLayer.propTypes = {
   measureData: PropTypes.array,
-  measureOptions: PropTypes.arrayOf(
+  measureSeries: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -69,5 +69,5 @@ MarkerLayer.propTypes = {
 
 MarkerLayer.defaultProps = {
   measureData: null,
-  measureOptions: null,
+  measureSeries: null,
 };

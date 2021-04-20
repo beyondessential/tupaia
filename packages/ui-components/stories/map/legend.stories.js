@@ -7,8 +7,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Legend } from '../../src/components/Map';
-import measureOptions from './data/measureOptions.json';
-import spectrumMeasureOptions from './data/spectrumMeasureOptions.json';
+import measureSerires from './data/measureSeries.json';
+import spectrumMeasureSeries from './data/spectrumMeasureSeries.json';
 
 const Container = styled.div`
   padding: 1rem;
@@ -25,6 +25,6 @@ export default {
   ],
 };
 
-export const SimpleLegend = () => <Legend measureOptions={measureOptions} />;
+export const SimpleLegend = () => <Legend measureSerires={measureSerires} />;
 
-export const SpectrumLegend = () => <Legend measureOptions={spectrumMeasureOptions} />;
+export const SpectrumLegend = () => <Legend measureSerires={spectrumMeasureSeries} />;

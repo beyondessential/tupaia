@@ -123,8 +123,8 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
   }
 }
 
-export const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, startDate, endDate } = measureOption;
+export const getSpectrumScaleValues = (measureData, series) => {
+  const { key, scaleType, startDate, endDate } = series;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -137,13 +137,13 @@ export const getSpectrumScaleValues = (measureData, measureOption) => {
   const dataMin = Math.min(...flattenedMeasureData);
   const dataMax = Math.max(...flattenedMeasureData);
 
-  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, measureOption);
+  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, series);
 
   return { min, max };
 };
 
-const clampScaleValues = (dataBounds, measureOption) => {
-  const { valueType, scaleBounds = {} } = measureOption;
+const clampScaleValues = (dataBounds, series) => {
+  const { valueType, scaleBounds = {} } = series;
 
   const defaultScale =
     valueType === 'percentage' ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT : SPECTRUM_SCALE_DEFAULT;
@@ -220,11 +220,11 @@ function getValueInfo(value, valueMapping, hiddenValues = {}) {
 
 // For situations where we can only show one value, just show the value
 // of the first measure.
-export const getSingleFormattedValue = (entity, measureOptions) =>
-  getFormattedInfo(entity, measureOptions[0]).formattedValue;
+export const getSingleFormattedValue = (entity, measureSeries) =>
+  getFormattedInfo(entity, measureSeries[0]).formattedValue;
 
-export function getFormattedInfo(orgUnitData, measureOption) {
-  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
+export function getFormattedInfo(orgUnitData, series) {
+  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
 
   const value = orgUnitData[key];
   const valueInfo = getValueInfo(value, valueMapping);
@@ -260,10 +260,10 @@ export function getFormattedInfo(orgUnitData, measureOption) {
   };
 }
 
-export function getMeasureDisplayInfo(measureData = {}, measureOptions, hiddenValues = {}) {
+export function getMeasureDisplayInfo(measureData = {}, measureSeries, hiddenValues = {}) {
   const displayInfo = {};
 
-  measureOptions.forEach(({ color, icon, radius }) => {
+  measureSeries.forEach(({ color, icon, radius }) => {
     if (color) {
       displayInfo.color = color;
     }
@@ -274,7 +274,7 @@ export function getMeasureDisplayInfo(measureData = {}, measureOptions, hiddenVa
       displayInfo.radius = radius;
     }
   });
-  measureOptions.forEach(
+  measureSeries.forEach(
     ({
       key,
       type,

@@ -17,9 +17,9 @@ import {
 import { useEntitiesData } from './useEntitiesData';
 import { get } from '../api';
 
-const processMeasureInfo = ({ measureOptions, measureData, ...rest }) => {
-  const processedOptions = measureOptions.map(measureOption => {
-    const { values: mapOptionValues, type, scaleType } = measureOption;
+const processMeasureInfo = ({ measureOptions: measureSeries, measureData, ...rest }) => {
+  const processedOptions = measureSeries.map(series => {
+    const { values: mapOptionValues, type, scaleType } = series;
 
     // assign colors
     const values = autoAssignColors(mapOptionValues);
@@ -30,13 +30,13 @@ const processMeasureInfo = ({ measureOptions, measureData, ...rest }) => {
     if (SPECTRUM_MEASURE_TYPES.includes(type)) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
-      const { min, max } = getSpectrumScaleValues(measureData, measureOption);
+      const { min, max } = getSpectrumScaleValues(measureData, series);
 
       // A grey no data colour looks like part of the neutral scale
       const noDataColour = scaleType === 'neutral' ? 'black' : '#c7c7c7';
 
       return {
-        ...measureOption,
+        ...series,
         values,
         valueMapping,
         min,
@@ -46,14 +46,14 @@ const processMeasureInfo = ({ measureOptions, measureData, ...rest }) => {
     }
 
     return {
-      ...measureOption,
+      ...series,
       values,
       valueMapping,
     };
   });
 
   return {
-    measureOptions: processedOptions,
+    measureSeries: processedOptions,
     measureData,
     ...rest,
   };
@@ -63,12 +63,12 @@ const processMeasureData = ({
   entityType,
   measureData,
   entitiesData,
-  measureOptions,
+  measureSeries,
   hiddenValues,
   measureLevel,
 }) => {
   // Todo: refine which map overlays are supported on which level @see https://github.com/beyondessential/tupaia-backlog/issues/2682
-  const displayOnLevel = measureOptions.find(option => option.displayOnLevel);
+  const displayOnLevel = measureSeries.find(option => option.displayOnLevel);
   if (
     camelCase(entityType) === 'country' &&
     displayOnLevel &&
@@ -83,7 +83,7 @@ const processMeasureData = ({
       const measure = measureData.find(e => e.organisationUnitCode === entity.code);
       const { color, icon, originalValue, isHidden } = getMeasureDisplayInfo(
         measure,
-        measureOptions,
+        measureSeries,
         hiddenValues,
       );
 
@@ -141,7 +141,7 @@ export const useMapOverlayReportData = entityCode => {
 
   // set default hidden measures when measure data changes
   useEffect(() => {
-    const options = measureData ? measureData.measureOptions : [];
+    const options = measureData ? measureData.measureSeries : [];
     const hiddenByDefault = options.reduce((values, { hideByDefault, key }) => {
       return { ...values, [key]: hideByDefault };
     }, {});
@@ -170,7 +170,7 @@ export const useMapOverlayReportData = entityCode => {
           measureLevel: measureData.measureLevel,
           measureData: measureData.measureData,
           entitiesData,
-          measureOptions: processedMeasureInfo.measureOptions,
+          measureSeries: processedMeasureInfo.measureSeries,
           hiddenValues,
         })
       : null;

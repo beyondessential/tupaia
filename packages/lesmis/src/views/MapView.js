@@ -103,15 +103,15 @@ export const MapView = () => {
           <TileLayer tileSetUrl={activeTileSet.url} />
           <MarkerLayer
             measureData={overlayReportData ? overlayReportData.measureData : null}
-            measureOptions={overlayReportData ? overlayReportData.measureOptions : null}
+            measureSeries={overlayReportData ? overlayReportData.measureSeries : null}
           />
           <Polygon entity={entityData} />
         </Map>
         <MapInner>
           <LegendContainer>
-            {overlayReportData && overlayReportData.measureOptions && (
+            {overlayReportData && overlayReportData.measureSeries && (
               <Legend
-                measureOptions={overlayReportData.measureOptions}
+                measureSeries={overlayReportData.measureSeries}
                 setValueHidden={setValueHidden}
                 hiddenValues={hiddenValues}
               />

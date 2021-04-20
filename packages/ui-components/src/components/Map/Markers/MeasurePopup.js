@@ -20,9 +20,9 @@ const buildHeaderText = (measureData, popupHeaderFormat) => {
   );
 };
 
-export const MeasurePopup = React.memo(({ measureData, measureOptions }) => {
+export const MeasurePopup = React.memo(({ measureData, measureSeries }) => {
   const { coordinates } = measureData;
-  const { popupHeaderFormat = '{name}' } = measureOptions.reduce(
+  const { popupHeaderFormat = '{name}' } = measureSeries.reduce(
     (all, mo) => ({ ...all, ...mo }),
     {},
   );
@@ -31,11 +31,11 @@ export const MeasurePopup = React.memo(({ measureData, measureOptions }) => {
       headerText={buildHeaderText(measureData, popupHeaderFormat)}
       coordinates={coordinates}
     >
-      {measureOptions
-        .filter(measureOption => !measureOption.hideFromPopup)
-        .map(measureOption => {
-          const { key, name } = measureOption;
-          const { formattedValue, valueInfo } = getFormattedInfo(measureData, measureOption);
+      {measureSeries
+        .filter(series => !series.hideFromPopup)
+        .map(series => {
+          const { key, name } = series;
+          const { formattedValue, valueInfo } = getFormattedInfo(measureData, series);
 
           return valueInfo.hideFromPopup ? null : (
             <div key={key}>
@@ -56,7 +56,7 @@ MeasurePopup.propTypes = {
     organisationUnitCode: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
-  measureOptions: PropTypes.arrayOf(
+  measureSeries: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
