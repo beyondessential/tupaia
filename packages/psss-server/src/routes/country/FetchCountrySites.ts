@@ -12,6 +12,8 @@ export class FetchCountrySites extends Route {
     const { countryCode } = this.req.params;
 
     const sites = await this.entityConnection.fetchSites(countryCode, { fields });
+    // TODO get sorted response from `entityConnection`:
+    // https://github.com/beyondessential/tupaia-backlog/issues/2658
     const data = sites.sort(getSortByKey('name'));
 
     return { data };
