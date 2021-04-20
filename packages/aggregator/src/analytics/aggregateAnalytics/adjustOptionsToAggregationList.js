@@ -116,7 +116,9 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
 export const adjustOptionsToAggregationList = async (context, fetchOptions, aggregationOptions) => {
   const { aggregations: aggregationList = [] } = aggregationOptions;
   if (aggregationList.length === 0) {
-    return [fetchOptions, aggregationOptions];
+    // Trim off any pre-existing aggregations from fetch options
+    const { aggregations, ...restOfFetchOptions } = fetchOptions;
+    return [restOfFetchOptions, aggregationOptions];
   }
 
   const { startDate, endDate } = getAdjustedDateRange(fetchOptions, aggregationList);
