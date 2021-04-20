@@ -13,6 +13,7 @@ import {
   FetchConfirmedWeeklyReportRoute,
   FetchConfirmedCountryWeeklyReportRoute,
   FetchCountries,
+  FetchCountrySites,
   FetchCountryWeeklyReportRoute,
   ConfirmCountryWeeklyReportRoute,
   SaveCountryWeeklyReportRoute,
@@ -45,6 +46,11 @@ const handleError = (
   error.respond(res);
 };
 
+const useSites = (req: Request, res: Response, next: NextFunction) => {
+  req.useSites = true;
+  next();
+};
+
 export function addRoutesToApp(app: Express) {
   /**
    * GET routes
@@ -56,7 +62,13 @@ export function addRoutesToApp(app: Express) {
     handleWith(FetchConfirmedCountryWeeklyReportRoute),
   );
   app.get('/v1/country', handleWith(FetchCountries));
+  app.get('/v1/country/:countryCode/sites', handleWith(FetchCountrySites));
   app.get('/v1/weeklyReport/:organisationUnitCode', handleWith(FetchCountryWeeklyReportRoute));
+  app.use('/v1/weeklyReport/:organisationUnitCode/sites', useSites);
+  app.get(
+    '/v1/weeklyReport/:organisationUnitCode/sites',
+    handleWith(FetchCountryWeeklyReportRoute),
+  );
 
   /**
    * POST routes

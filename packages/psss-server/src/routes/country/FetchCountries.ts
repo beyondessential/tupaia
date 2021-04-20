@@ -9,14 +9,13 @@ import { Route } from '../Route';
 
 export class FetchCountries extends Route {
   async buildResponse() {
-    const countries = await this.entityConnection.fetchCountries();
+    const { fields } = this.req.query;
+
+    const countries = await this.entityConnection.fetchCountries({ fields });
     const { accessPolicy } = await this.getSession();
     const allowedEntities = accessPolicy.getEntitiesAllowed(PSSS_PERMISSION_GROUP);
 
-    const countryData = countries
-      .filter(c => allowedEntities.includes(c.code))
-      .sort(getSortByKey('name'));
-
-    return { data: countryData };
+    const data = countries.filter(c => allowedEntities.includes(c.code)).sort(getSortByKey('name'));
+    return { data };
   }
 }
