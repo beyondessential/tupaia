@@ -220,8 +220,8 @@ function getValueInfo(value, valueMapping, hiddenValues = {}) {
 
 // For situations where we can only show one value, just show the value
 // of the first measure.
-export const getSingleFormattedValue = (entity, measureSeries) =>
-  getFormattedInfo(entity, measureSeries[0]).formattedValue;
+export const getSingleFormattedValue = (entity, series) =>
+  getFormattedInfo(entity, series[0]).formattedValue;
 
 export function getFormattedInfo(orgUnitData, series) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
@@ -260,10 +260,10 @@ export function getFormattedInfo(orgUnitData, series) {
   };
 }
 
-export function getMeasureDisplayInfo(measureData = {}, measureSeries, hiddenValues = {}) {
+export function getMeasureDisplayInfo(measureData = {}, series, hiddenValues = {}) {
   const displayInfo = {};
 
-  measureSeries.forEach(({ color, icon, radius }) => {
+  series.forEach(({ color, icon, radius }) => {
     if (color) {
       displayInfo.color = color;
     }
@@ -274,7 +274,7 @@ export function getMeasureDisplayInfo(measureData = {}, measureSeries, hiddenVal
       displayInfo.radius = radius;
     }
   });
-  measureSeries.forEach(
+  series.forEach(
     ({
       key,
       type,

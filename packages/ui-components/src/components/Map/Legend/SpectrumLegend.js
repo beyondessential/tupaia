@@ -99,16 +99,8 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
   );
 };
 
-export const SpectrumLegend = React.memo(({ measureSeries }) => {
-  const {
-    valueMapping,
-    noDataColour,
-    min,
-    max,
-    scaleType,
-    scaleColorScheme,
-    valueType,
-  } = measureSeries;
+export const SpectrumLegend = React.memo(({ series }) => {
+  const { valueMapping, noDataColour, min, max, scaleType, scaleColorScheme, valueType } = series;
 
   const { value } = valueMapping.null;
 
@@ -128,7 +120,7 @@ export const SpectrumLegend = React.memo(({ measureSeries }) => {
 });
 
 SpectrumLegend.propTypes = {
-  measureSeries: PropTypes.shape({
+  series: PropTypes.shape({
     valueMapping: PropTypes.object,
     scaleColorScheme: PropTypes.object,
     min: PropTypes.number,

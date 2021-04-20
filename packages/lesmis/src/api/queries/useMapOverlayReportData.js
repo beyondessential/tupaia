@@ -17,8 +17,8 @@ import {
 import { useEntitiesData } from './useEntitiesData';
 import { get } from '../api';
 
-const processMeasureInfo = ({ measureSeries, measureData, ...rest }) => {
-  const processedSeries = measureSeries.map(series => {
+const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
+  const processedSerieses = serieses.map(series => {
     const { values: mapOptionValues, type, scaleType } = series;
 
     // assign colors
@@ -53,7 +53,7 @@ const processMeasureInfo = ({ measureSeries, measureData, ...rest }) => {
   });
 
   return {
-    measureSeries: processedSeries,
+    serieses: processedSerieses,
     measureData,
     ...rest,
   };
@@ -63,12 +63,12 @@ const processMeasureData = ({
   entityType,
   measureData,
   entitiesData,
-  measureSeries,
+  serieses,
   hiddenValues,
   measureLevel,
 }) => {
   // Todo: refine which map overlays are supported on which level @see https://github.com/beyondessential/tupaia-backlog/issues/2682
-  const displayOnLevel = measureSeries.find(series => series.displayOnLevel);
+  const displayOnLevel = serieses.find(series => series.displayOnLevel);
   if (
     camelCase(entityType) === 'country' &&
     displayOnLevel &&
@@ -83,7 +83,7 @@ const processMeasureData = ({
       const measure = measureData.find(e => e.organisationUnitCode === entity.code);
       const { color, icon, originalValue, isHidden } = getMeasureDisplayInfo(
         measure,
-        measureSeries,
+        serieses,
         hiddenValues,
       );
 
@@ -141,7 +141,7 @@ export const useMapOverlayReportData = entityCode => {
 
   // set default hidden measures when measure data changes
   useEffect(() => {
-    const series = measureData ? measureData.measureSeries : [];
+    const series = measureData ? measureData.serieses : [];
     const hiddenByDefault = series.reduce((values, { hideByDefault, key }) => {
       return { ...values, [key]: hideByDefault };
     }, {});
@@ -170,7 +170,7 @@ export const useMapOverlayReportData = entityCode => {
           measureLevel: measureData.measureLevel,
           measureData: measureData.measureData,
           entitiesData,
-          measureSeries: processedMeasureInfo.measureSeries,
+          serieses: processedMeasureInfo.serieses,
           hiddenValues,
         })
       : null;

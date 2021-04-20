@@ -46,15 +46,15 @@ const getLegendComponent = measureType => {
   }
 };
 
-export const Legend = React.memo(({ measureSeries, className, setValueHidden, hiddenValues }) => {
-  if (!measureSeries) {
+export const Legend = React.memo(({ serieses, className, setValueHidden, hiddenValues }) => {
+  if (!serieses) {
     return null;
   }
 
-  const displayedLegends = measureSeries.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
-  const hasIconLayer = measureSeries.some(l => l.type === MEASURE_TYPE_ICON);
-  const hasRadiusLayer = measureSeries.some(l => l.type === MEASURE_TYPE_RADIUS);
-  const hasColorLayer = measureSeries.some(l => coloredMeasureTypes.includes(l.type));
+  const displayedLegends = serieses.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+  const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
+  const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);
+  const hasColorLayer = serieses.some(l => coloredMeasureTypes.includes(l.type));
 
   return (
     <LegendFrame className={className}>
@@ -68,7 +68,7 @@ export const Legend = React.memo(({ measureSeries, className, setValueHidden, hi
             hasIconLayer={hasIconLayer}
             hasRadiusLayer={hasRadiusLayer}
             hasColorLayer={hasColorLayer}
-            measureSeries={series}
+            series={series}
             setValueHidden={setValueHidden}
             hiddenValues={hiddenValues}
           />
@@ -81,7 +81,7 @@ export const Legend = React.memo(({ measureSeries, className, setValueHidden, hi
 Legend.propTypes = {
   setValueHidden: PropTypes.func,
   hiddenValues: PropTypes.object,
-  measureSeries: PropTypes.arrayOf(
+  serieses: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -91,7 +91,7 @@ Legend.propTypes = {
 };
 
 Legend.defaultProps = {
-  measureSeries: null,
+  serieses: null,
   className: null,
   hiddenValues: {},
   setValueHidden: null,
