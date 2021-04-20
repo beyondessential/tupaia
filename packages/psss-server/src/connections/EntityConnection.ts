@@ -18,6 +18,10 @@ interface EntityFilter {
   type?: string | string[];
 }
 
+interface FetchOptions {
+  fields?: string;
+}
+
 const buildFilter = (fields: EntityFilter) =>
   Object.entries(fields)
     .map(([key, value]) => `${key}:${value}`)
@@ -26,10 +30,17 @@ const buildFilter = (fields: EntityFilter) =>
 export class EntityConnection extends ApiConnection {
   baseUrl = ENTITY_API_URL;
 
-  fetchCountries = async (): Promise<EntityObject[]> => {
+  fetchCountries = async (options: FetchOptions = {}): Promise<EntityObject[]> => {
+    const { fields } = options;
     const filter = buildFilter({ type: 'country' });
-    return this.get(`hierarchy/${PSSS_HIERARCHY}/${PSSS_ENTITY}/descendants`, {
-      filter,
-    });
+
+    return this.get(`hierarchy/${PSSS_HIERARCHY}/${PSSS_ENTITY}/descendants`, { fields, filter });
+  };
+
+  fetchSites = async (countryCode: string, options: FetchOptions = {}): Promise<EntityObject[]> => {
+    const { fields } = options;
+    const filter = buildFilter({ type: 'facility' });
+
+    return this.get(`hierarchy/${PSSS_HIERARCHY}/${countryCode}/descendants`, { fields, filter });
   };
 }
