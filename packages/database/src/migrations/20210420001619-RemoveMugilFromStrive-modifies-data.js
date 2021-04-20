@@ -32,8 +32,8 @@ const getEntityIdByCode = async (db, code) => {
   throw new Error(`Entity with code ${code} Not found`);
 };
 
-const getEntityIdsByParentId = async (db, parentId) => {
-  const results = await db.runSql(`SELECT id FROM entity WHERE parent_id = '${parentId}';`);
+const getEntityIdsByParentId = async (db, parentId, type) => {
+  const results = await db.runSql(`SELECT id FROM entity WHERE parent_id = '${parentId}' AND type = '${type}';`);
   return results.rows.map(row => row.id);
 };
 
@@ -47,11 +47,11 @@ exports.up = async function (db) {
   };
 
   // 1.1. generate list of facilities to insert
-  const districtIds = await getEntityIdsByParentId(db, entityIds.PG);
+  const districtIds = await getEntityIdsByParentId(db, entityIds.PG, 'district');
 
   const facilityIdsToInsert = [];
   for (const districtId of districtIds) {
-    const facilityIds = await getEntityIdsByParentId(db, districtId);
+    const facilityIds = await getEntityIdsByParentId(db, districtId, 'facility');
     for (const facilityId of facilityIds) {
       if (facilityId === entityIds.Mugil) {
         continue;
@@ -72,65 +72,65 @@ exports.up = async function (db) {
     WHERE id IN (${arrayToDbString(facilityIdsToInsert)});
   `);
 
-  // 2. Add entity filters to dashboard reports
-  const updateConfig = config => {
-    if (!config.entityAggregation) {
-      // eslint-disable-next-line no-param-reassign
-      config.entityAggregation = {};
-    }
-    // don't override if already set
-    if (!config.entityAggregation.dataSourceEntityType) {
-      // eslint-disable-next-line no-param-reassign
-      config.entityAggregation.dataSourceEntityType = 'facility';
-    }
-  };
-
-  const dashboardsResult = await db.runSql(
-    `SELECT id, "dataBuilderConfig" FROM "dashboardReport" WHERE id LIKE 'PG_Strive_PNG_%';`,
-  );
-  for (const dashboardRow of dashboardsResult.rows) {
-    const { dataBuilderConfig } = dashboardRow;
-
-    if (dataBuilderConfig.dataBuilders) {
-      // composed config, need to update nested configs
-      for (const nestedConfigKey of Object.keys(dataBuilderConfig.dataBuilders)) {
-        updateConfig(dataBuilderConfig.dataBuilders[nestedConfigKey].dataBuilderConfig);
-      }
-    } else {
-      // simple case
-      updateConfig(dataBuilderConfig);
-    }
-
-    await db.runSql(
-      `UPDATE "dashboardReport" SET "dataBuilderConfig" = '${JSON.stringify(
-        dataBuilderConfig,
-      )}' WHERE id = '${dashboardRow.id}';`,
-    );
-  }
-
-  // 3. Add entity filters to map overlays
-  const mapOverlaysResult = await db.runSql(
-    `SELECT id, "measureBuilderConfig" FROM "mapOverlay" WHERE id LIKE 'STRIVE_%';`,
-  );
-  for (const mapOverlayRow of mapOverlaysResult.rows) {
-    const { measureBuilderConfig } = mapOverlayRow;
-
-    if (measureBuilderConfig.measureBuilders) {
-      // composed config, need to update nested configs
-      for (const nestedConfigKey of Object.keys(measureBuilderConfig.measureBuilders)) {
-        updateConfig(measureBuilderConfig.measureBuilders[nestedConfigKey].measureBuilderConfig);
-      }
-    } else {
-      // simple case
-      updateConfig(measureBuilderConfig);
-    }
-
-    await db.runSql(
-      `UPDATE "mapOverlay" SET "measureBuilderConfig" = '${JSON.stringify(
-        measureBuilderConfig,
-      )}' WHERE id = '${mapOverlayRow.id}';`,
-    );
-  }
+  // // 2. Add entity filters to dashboard reports
+  // const updateConfig = config => {
+  //   if (!config.entityAggregation) {
+  //     // eslint-disable-next-line no-param-reassign
+  //     config.entityAggregation = {};
+  //   }
+  //   // don't override if already set
+  //   if (!config.entityAggregation.dataSourceEntityType) {
+  //     // eslint-disable-next-line no-param-reassign
+  //     config.entityAggregation.dataSourceEntityType = 'facility';
+  //   }
+  // };
+  //
+  // const dashboardsResult = await db.runSql(
+  //   `SELECT id, "dataBuilderConfig" FROM "dashboardReport" WHERE id LIKE 'PG_Strive_PNG_%';`,
+  // );
+  // for (const dashboardRow of dashboardsResult.rows) {
+  //   const { dataBuilderConfig } = dashboardRow;
+  //
+  //   if (dataBuilderConfig.dataBuilders) {
+  //     // composed config, need to update nested configs
+  //     for (const nestedConfigKey of Object.keys(dataBuilderConfig.dataBuilders)) {
+  //       updateConfig(dataBuilderConfig.dataBuilders[nestedConfigKey].dataBuilderConfig);
+  //     }
+  //   } else {
+  //     // simple case
+  //     updateConfig(dataBuilderConfig);
+  //   }
+  //
+  //   await db.runSql(
+  //     `UPDATE "dashboardReport" SET "dataBuilderConfig" = '${JSON.stringify(
+  //       dataBuilderConfig,
+  //     )}' WHERE id = '${dashboardRow.id}';`,
+  //   );
+  // }
+  //
+  // // 3. Add entity filters to map overlays
+  // const mapOverlaysResult = await db.runSql(
+  //   `SELECT id, "measureBuilderConfig" FROM "mapOverlay" WHERE id LIKE 'STRIVE_%';`,
+  // );
+  // for (const mapOverlayRow of mapOverlaysResult.rows) {
+  //   const { measureBuilderConfig } = mapOverlayRow;
+  //
+  //   if (measureBuilderConfig.measureBuilders) {
+  //     // composed config, need to update nested configs
+  //     for (const nestedConfigKey of Object.keys(measureBuilderConfig.measureBuilders)) {
+  //       updateConfig(measureBuilderConfig.measureBuilders[nestedConfigKey].measureBuilderConfig);
+  //     }
+  //   } else {
+  //     // simple case
+  //     updateConfig(measureBuilderConfig);
+  //   }
+  //
+  //   await db.runSql(
+  //     `UPDATE "mapOverlay" SET "measureBuilderConfig" = '${JSON.stringify(
+  //       measureBuilderConfig,
+  //     )}' WHERE id = '${mapOverlayRow.id}';`,
+  //   );
+  // }
 
   return null;
 };
@@ -138,12 +138,16 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   const hierarchyId = await getHierarchyId(db);
 
-  // 1. Undo Create alternative project hierarchy without Mugil (delete all hierarchy rows except project > country)
+  // 1. Undo Create alternative project hierarchy without Mugil
+  // Restore entity_relation to previous state: strive > PG and PG > district relations
   const entityIdPG = await getEntityIdByCode(db, 'PG');
-  await db.runSql(
-    `DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}' AND child_id <> '${entityIdPG}'`,
-  );
-
+  const entityIdStrive = await getEntityIdByCode(db, 'strive');
+  await db.runSql(`
+    DELETE FROM entity_relation 
+    WHERE entity_hierarchy_id = '${hierarchyId}' 
+    AND parent_id <> '${entityIdStrive}'
+    AND parent_id <> '${entityIdPG}'
+  `);
   return null;
 };
 
