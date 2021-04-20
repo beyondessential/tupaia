@@ -220,8 +220,8 @@ exports.up = async function (db) {
   for (let i = 0; i < originalEntityCodes.length; i++) {
     await db.runSql(`
     UPDATE entity 
-    SET code = '${newEntityCodes(i)}'
-    where code = '${originalEntityCodes(i)}';
+    SET code = '${newEntityCodes[i]}'
+    where code = '${originalEntityCodes[i]}';
   `);
   }
 
