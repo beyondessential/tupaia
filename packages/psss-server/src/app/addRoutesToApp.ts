@@ -64,9 +64,9 @@ export function addRoutesToApp(app: Express) {
   app.get('/v1/country', handleWith(FetchCountries));
   app.get('/v1/country/:countryCode/sites', handleWith(FetchCountrySites));
   app.get('/v1/weeklyReport/:organisationUnitCode', handleWith(FetchCountryWeeklyReportRoute));
-  app.use('/v1/weeklyReport/:organisationUnitCode/sites', useSites);
   app.get(
     '/v1/weeklyReport/:organisationUnitCode/sites',
+    useSites,
     handleWith(FetchCountryWeeklyReportRoute),
   );
 
