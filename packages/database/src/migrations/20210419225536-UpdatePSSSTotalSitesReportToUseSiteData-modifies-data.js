@@ -22,10 +22,17 @@ const oldConfig = {
 };
 
 const newConfig = {
-  formula: `firstExistingValue(PSSS_Sites_Reported, PSSS_Site_Reported)`,
+  formula: `firstExistingValue(PSSS_Sites_Reported, PSSS_Site_Weekly_Survey_Completed, PSSS_Site_Daily_Survey_Completed)`,
   aggregation: {
     PSSS_Sites_Reported: 'FINAL_EACH_WEEK',
-    PSSS_Site_Reported: [
+    PSSS_Site_Weekly_Survey_Completed: [
+      'FINAL_EACH_WEEK',
+      {
+        type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
+        config: { dataSourceEntityType: 'facility', aggregationEntityType: 'country' },
+      },
+    ],
+    PSSS_Site_Daily_Survey_Completed: [
       'FINAL_EACH_WEEK',
       {
         type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
@@ -35,16 +42,26 @@ const newConfig = {
   },
   defaultValues: {
     PSSS_Sites_Reported: 'undefined',
-    PSSS_Site_Reported: 'undefined',
+    PSSS_Site_Weekly_Survey_Completed: 'undefined',
+    PSSS_Site_Daily_Survey_Completed: 'undefined',
   },
 };
 
-const PSSS_SITE_REPORTED = {
-  code: 'PSSS_Site_Reported',
+const PSSS_SITE_REPORTED_WEEKLY = {
+  code: 'PSSS_Site_Weekly_Survey_Completed',
   builder: 'eventCheckConditions',
   config: {
     formula: 'true',
     programCode: 'PSSS_WSR',
+  },
+};
+
+const PSSS_SITE_REPORTED_DAILY = {
+  code: 'PSSS_Site_Daily_Survey_Completed',
+  builder: 'eventCheckConditions',
+  config: {
+    formula: 'true',
+    programCode: 'PSSS_DSR',
   },
 };
 
@@ -81,13 +98,15 @@ const updateIndicator = async (db, code, config) => {
 };
 
 exports.up = async function (db) {
-  await insertIndicator(db, PSSS_SITE_REPORTED);
+  await insertIndicator(db, PSSS_SITE_REPORTED_WEEKLY);
+  await insertIndicator(db, PSSS_SITE_REPORTED_DAILY);
   await updateIndicator(db, 'PSSS_Total_Sites_Reported', newConfig);
 };
 
 exports.down = async function (db) {
   await updateIndicator(db, 'PSSS_Total_Sites_Reported', oldConfig);
-  await deleteIndicator(db, PSSS_SITE_REPORTED);
+  await deleteIndicator(db, PSSS_SITE_REPORTED_DAILY);
+  await deleteIndicator(db, PSSS_SITE_REPORTED_WEEKLY);
 };
 
 exports._meta = {
