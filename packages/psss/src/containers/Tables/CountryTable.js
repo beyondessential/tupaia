@@ -46,7 +46,7 @@ NameCell.propTypes = {
 const countryColumns = [
   {
     title: 'Date ',
-    key: 'weekNumber',
+    key: 'period',
     width: '190px', // must be same width as SiteSummaryTable name column to align
     align: 'left',
     CellComponent: NameCell,

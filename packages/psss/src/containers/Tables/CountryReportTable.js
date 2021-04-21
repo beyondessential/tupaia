@@ -20,6 +20,8 @@ import {
   Table,
 } from '@tupaia/ui-components';
 import {
+  EditableCell,
+  EditableTableContext,
   FlexStart,
   FlexSpaceBetween,
   FlexEnd,
@@ -28,7 +30,6 @@ import {
 } from '../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { useSaveCountryReport } from '../../api';
-import { EditableCell, EditableTableContext } from '../../components/EditableTable';
 import { TABLE_STATUSES } from '../../constants';
 
 const FormRow = styled(FlexStart)`
