@@ -11,6 +11,7 @@ const permissionGroupNameToId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
+const INDICATOR_CODE = 'LESMIS_Student_Count';
 const SCHOOL_REPORT_CODE = 'LESMIS_school_vitals';
 const MULTI_SCHOOL_REPORT_CODE = 'LESMIS_multi_school_vitals';
 const DISTRICT_REPORT_CODE = 'LESMIS_sub_district_vitals';
@@ -26,42 +27,57 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
+  await insertObject(db, 'indicator', {
+    id: generateId(),
+    code: INDICATOR_CODE,
+    builder: 'analyticArithmetic',
+    config: {
+      formula:
+        'SchPop009 + SchPop010 + SchPop011 + SchPop012 + SchPop013 + SchPop014 + SchPop015 + SchPop016 + SchPop017 + SchPop018 + SchPop019 + SchPop020 + SchPop021 + SchPop022 + SchPop023 + SchPop024 + SchPop025 + SchPop026 + SchPop027 + SchPop028 + SchPop029 + SchPop030 + SchPop031 + SchPop032 + SchPop033 + SchPop034',
+      aggregation: 'SUM_EACH_MONTH',
+      defaultValues: {
+        SchPop009: 0,
+        SchPop010: 0,
+        SchPop011: 0,
+        SchPop012: 0,
+        SchPop013: 0,
+        SchPop014: 0,
+        SchPop015: 0,
+        SchPop016: 0,
+        SchPop017: 0,
+        SchPop018: 0,
+        SchPop019: 0,
+        SchPop020: 0,
+        SchPop021: 0,
+        SchPop022: 0,
+        SchPop023: 0,
+        SchPop024: 0,
+        SchPop025: 0,
+        SchPop026: 0,
+        SchPop027: 0,
+        SchPop028: 0,
+        SchPop029: 0,
+        SchPop030: 0,
+        SchPop031: 0,
+        SchPop032: 0,
+        SchPop033: 0,
+        SchPop034: 0,
+      },
+    },
+  });
+  await insertObject(db, 'data_source', {
+    id: generateId(),
+    code: INDICATOR_CODE,
+    type: 'dataElement',
+    service_type: 'indicator',
+  });
+
   await insertObject(db, 'report', {
     id: generateId(),
     code: SCHOOL_REPORT_CODE,
     config: {
       fetch: {
-        dataElements: [
-          'SchPop009',
-          'SchPop010',
-          'SchPop011',
-          'SchPop012',
-          'SchPop013',
-          'SchPop014',
-          'SchPop015',
-          'SchPop016',
-          'SchPop017',
-          'SchPop018',
-          'SchPop019',
-          'SchPop020',
-          'SchPop021',
-          'SchPop022',
-          'SchPop023',
-          'SchPop024',
-          'SchPop025',
-          'SchPop026',
-          'SchPop027',
-          'SchPop028',
-          'SchPop029',
-          'SchPop030',
-          'SchPop031',
-          'SchPop032',
-          'SchPop033',
-          'SchPop034',
-          'SchDISmr',
-          'SchCVD026b',
-          'SchFDpho',
-        ],
+        dataElements: [INDICATOR_CODE, 'SchDISmr', 'SchCVD026b', 'SchFDpho'],
       },
       transform: [
         'keyValueByDataElementName',
@@ -71,8 +87,7 @@ exports.up = async function (db) {
           '...': ['organisationUnit'],
           "'Photo'": '$row.SchFDpho',
           "'ContactNumber'": '$row.SchCVD026b',
-          "'NumberOfStudents'":
-            'sum([$row.SchPop009,$row.SchPop010,$row.SchPop011,$row.SchPop012,$row.SchPop013,$row.SchPop014,$row.SchPop015,$row.SchPop016,$row.SchPop017,$row.SchPop018,$row.SchPop019,$row.SchPop020,$row.SchPop021,$row.SchPop022,$row.SchPop023,$row.SchPop024,$row.SchPop025,$row.SchPop026,$row.SchPop027,$row.SchPop028,$row.SchPop029,$row.SchPop030,$row.SchPop031,$row.SchPop032,$row.SchPop033,$row.SchPop034])',
+          "'NumberOfStudents'": `$row.${INDICATOR_CODE}`,
           "'DistanceToMainRoad'": '$row.SchDISmr',
         },
       ],
@@ -86,32 +101,7 @@ exports.up = async function (db) {
     config: {
       fetch: {
         dataElements: [
-          'SchPop009',
-          'SchPop010',
-          'SchPop011',
-          'SchPop012',
-          'SchPop013',
-          'SchPop014',
-          'SchPop015',
-          'SchPop016',
-          'SchPop017',
-          'SchPop018',
-          'SchPop019',
-          'SchPop020',
-          'SchPop021',
-          'SchPop022',
-          'SchPop023',
-          'SchPop024',
-          'SchPop025',
-          'SchPop026',
-          'SchPop027',
-          'SchPop028',
-          'SchPop029',
-          'SchPop030',
-          'SchPop031',
-          'SchPop032',
-          'SchPop033',
-          'SchPop034',
+          INDICATOR_CODE,
 
           'SchDP_AEAL',
           'SchDP_CRS',
@@ -132,8 +122,7 @@ exports.up = async function (db) {
         'mostRecentValuePerOrgUnit',
         {
           transform: 'select',
-          "'NumberOfStudents'":
-            'sum([$row.SchPop009,$row.SchPop010,$row.SchPop011,$row.SchPop012,$row.SchPop013,$row.SchPop014,$row.SchPop015,$row.SchPop016,$row.SchPop017,$row.SchPop018,$row.SchPop019,$row.SchPop020,$row.SchPop021,$row.SchPop022,$row.SchPop023,$row.SchPop024,$row.SchPop025,$row.SchPop026,$row.SchPop027,$row.SchPop028,$row.SchPop029,$row.SchPop030,$row.SchPop031,$row.SchPop032,$row.SchPop033,$row.SchPop034])',
+          "'NumberOfStudents'": `$row.${INDICATOR_CODE}`,
           "'NumberOfSchools'": '1',
           "'AEAL'": 'exists($row.SchDP_AEAL)',
           "'CRS'": 'exists($row.SchDP_CRS)',
@@ -197,6 +186,10 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
+  await db.runSql(`
+    DELETE FROM indicator
+    WHERE code = '${INDICATOR_CODE}';
+  `);
   await db.runSql(`
     DELETE FROM report
     WHERE code = '${SCHOOL_REPORT_CODE}';
