@@ -11,7 +11,7 @@ const permissionGroupNameToId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
-const INDICATOR_CODE = 'LESMIS_Student_Count';
+const STUDENT_COUNT_INDICATOR_CODE = 'LESMIS_Student_Count';
 const SCHOOL_REPORT_CODE = 'LESMIS_school_vitals';
 const MULTI_SCHOOL_REPORT_CODE = 'LESMIS_multi_school_vitals';
 const DISTRICT_REPORT_CODE = 'LESMIS_sub_district_vitals';
@@ -29,7 +29,7 @@ exports.setup = function (options, seedLink) {
 exports.up = async function (db) {
   await insertObject(db, 'indicator', {
     id: generateId(),
-    code: INDICATOR_CODE,
+    code: STUDENT_COUNT_INDICATOR_CODE,
     builder: 'analyticArithmetic',
     config: {
       formula:
@@ -67,7 +67,7 @@ exports.up = async function (db) {
   });
   await insertObject(db, 'data_source', {
     id: generateId(),
-    code: INDICATOR_CODE,
+    code: STUDENT_COUNT_INDICATOR_CODE,
     type: 'dataElement',
     service_type: 'indicator',
   });
@@ -77,7 +77,7 @@ exports.up = async function (db) {
     code: SCHOOL_REPORT_CODE,
     config: {
       fetch: {
-        dataElements: [INDICATOR_CODE, 'SchDISmr', 'SchCVD026b', 'SchFDpho'],
+        dataElements: [STUDENT_COUNT_INDICATOR_CODE, 'SchDISmr', 'SchCVD026b', 'SchFDpho'],
       },
       transform: [
         'keyValueByDataElementName',
@@ -87,7 +87,7 @@ exports.up = async function (db) {
           '...': ['organisationUnit'],
           "'Photo'": '$row.SchFDpho',
           "'ContactNumber'": '$row.SchCVD026b',
-          "'NumberOfStudents'": `$row.${INDICATOR_CODE}`,
+          "'NumberOfStudents'": `$row.${STUDENT_COUNT_INDICATOR_CODE}`,
           "'DistanceToMainRoad'": '$row.SchDISmr',
         },
       ],
@@ -101,7 +101,7 @@ exports.up = async function (db) {
     config: {
       fetch: {
         dataElements: [
-          INDICATOR_CODE,
+          STUDENT_COUNT_INDICATOR_CODE,
 
           'SchDP_AEAL',
           'SchDP_CRS',
@@ -122,7 +122,7 @@ exports.up = async function (db) {
         'mostRecentValuePerOrgUnit',
         {
           transform: 'select',
-          "'NumberOfStudents'": `$row.${INDICATOR_CODE}`,
+          "'NumberOfStudents'": `$row.${STUDENT_COUNT_INDICATOR_CODE}`,
           "'NumberOfSchools'": '1',
           "'AEAL'": 'exists($row.SchDP_AEAL)',
           "'CRS'": 'exists($row.SchDP_CRS)',
@@ -188,7 +188,7 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM indicator
-    WHERE code = '${INDICATOR_CODE}';
+    WHERE code = '${STUDENT_COUNT_INDICATOR_CODE}';
   `);
   await db.runSql(`
     DELETE FROM report
