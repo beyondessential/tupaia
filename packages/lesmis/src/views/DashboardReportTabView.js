@@ -17,7 +17,6 @@ import {
   TabBarTabs,
   TabBarTab,
   TabPanel,
-  YearSelector,
 } from '../components';
 
 const DashboardSection = styled(FlexCenter)`
@@ -44,7 +43,8 @@ export const DashboardReportTabView = ({
           <TabBarLoader />
         ) : (
           <>
-            <YearSelector selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+            {/* Todo: add year selector @see https://github.com/beyondessential/tupaia-backlog/issues/2286*/}
+            {/*<YearSelector selectedYear={selectedYear} setSelectedYear={setSelectedYear} />*/}
             <TabBarTabs
               value={selectedDashboard}
               onChange={handleChangeDashboard}

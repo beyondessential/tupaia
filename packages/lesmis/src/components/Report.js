@@ -10,12 +10,13 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import BarChartIcon from '@material-ui/icons/BarChart';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import { Chart } from '@tupaia/ui-components/lib/chart';
 import { useViewData } from '../api';
 import { FetchLoader } from './FetchLoader';
 import { FlexSpaceBetween } from './Layout';
-import { ToggleButton, ToggleButtonGroup } from './ToggleButton';
+import { ToggleButton } from './ToggleButton';
 import * as COLORS from '../constants';
 
 const Container = styled.div`
