@@ -60,28 +60,39 @@ export const translateElementKeysInEventAnalytics = async (
   };
 };
 
-export const translateDimensionsInAnalytics = (response, dimensionKeyMapping, dimension) => {
+export const translateMetadataInAnalytics = (
+  response,
+  metadataMapping,
+  dimension,
+  mappedValueType,
+) => {
   const { metaData, rows, ...otherProps } = response;
-  const { dimensions } = metaData;
-  const dxIndex = response.headers.findIndex(({ name }) => name === dimension);
-
-  const translatedDimension = dimensions.dx.map(d => dimensionKeyMapping[d] || d);
+  const dimensionIndex = response.headers.findIndex(({ name }) => name === dimension);
   const translatedRows = rows.map(row => {
     const newRow = row;
-    const dxId = row[dxIndex];
-    newRow[dxIndex] = dimensionKeyMapping[dxId] || dxId;
+    const dimensionId = row[dimensionIndex];
+    newRow[dimensionIndex] = metadataMapping[dimensionId] || dimensionId;
     return newRow;
+  });
+  const translatedItems = {};
+
+  Object.entries(metaData.items).forEach(([key, item]) => {
+    if (metadataMapping.hasOwnProperty(key)) {
+      const newItem = mappedValueType
+        ? {
+            ...item,
+            [mappedValueType]: metadataMapping[key],
+          }
+        : item;
+      translatedItems[key] = newItem;
+    } else {
+      translatedItems[key] = item;
+    }
   });
 
   const translatedMetaData = {
     ...metaData,
-    items: mapKeys(metaData.items, dimensionKeyMapping, {
-      defaultToExistingKeys: true,
-    }),
-    dimensions: {
-      ...dimensions,
-      [dimension]: translatedDimension,
-    },
+    items: translatedItems,
   };
 
   return {

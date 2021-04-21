@@ -15,7 +15,11 @@ import {
   translateElementKeysInEventAnalytics,
 } from './translateDataElementKeys';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
-import { buildDataValueAnalyticsQueries, buildEventAnalyticsQueries } from './buildAnalyticsQuery';
+import {
+  buildDataValueAnalyticsQueries,
+  buildAggregatedDataValueAnalyticsQueries,
+  buildEventAnalyticsQueries,
+} from './buildAnalyticsQuery';
 
 const {
   CATEGORY_OPTION_COMBO,
@@ -343,7 +347,7 @@ export class DhisApi {
   }
 
   async getAggregatedAnalytics(originalQuery) {
-    const queries = buildDataValueAnalyticsQueries(originalQuery);
+    const queries = buildAggregatedDataValueAnalyticsQueries(originalQuery);
     return this.fetchAnalyticsQueries(queries, 'analytics.json');
   }
 

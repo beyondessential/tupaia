@@ -55,14 +55,12 @@ export class DataBuilder {
       entityAggregation,
       dataSourceEntityFilter,
       filter = {},
-      dataPeriodType
     } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
       entityAggregation,
       dataSourceEntityFilter,
-      dataPeriodType,
       ...additionalQueryConfig,
     };
 

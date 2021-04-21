@@ -5,7 +5,7 @@
 
 import {
   translateElementKeysInEventAnalytics,
-  translateDimensionsInAnalytics,
+  translateMetadataInAnalytics,
 } from '@tupaia/dhis-api';
 import { runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
@@ -76,10 +76,11 @@ export class DhisInputSchemeResolvingApiProxy {
     // So we are translate them from ids to our internal data element codes here.
     if (allDataElementsHaveDhisId) {
       const dataElementIdToCode = await this.getDataElementDhisIdToCode(dataElementCodes);
-      translatedResponse = translateDimensionsInAnalytics(
+      translatedResponse = translateMetadataInAnalytics(
         translatedResponse,
         dataElementIdToCode,
         'dx',
+        'code',
       );
     }
 
@@ -88,11 +89,31 @@ export class DhisInputSchemeResolvingApiProxy {
       const entityIdToCode = await this.getEntityDhisIdToCode(orgUnitCodes);
       // It's a little bit more complex with org units, as dhis may return
       // different org units than were requested
-      translatedResponse = translateDimensionsInAnalytics(translatedResponse, entityIdToCode, 'ou');
+      translatedResponse = translateMetadataInAnalytics(
+        translatedResponse,
+        entityIdToCode,
+        'ou',
+        'code',
+      );
     }
 
-    return translatedResponse;
+    return this.translateDefaultCoInResponse(translatedResponse);
   }
+
+  translateDefaultCoInResponse = response => {
+    if (!response?.rows?.length) return response;
+    const coIndex = response.headers.findIndex(({ name }) => name === 'co');
+    if (coIndex < 0) return response;
+
+    const { metaData } = response;
+    const defaultCoItem = Object.values(metaData.items).find(item => item.name === 'default');
+    if (defaultCoItem) {
+      const { uid: coId } = defaultCoItem;
+      metaData.items[coId].code = 'default';
+    }
+
+    return { ...response, metaData };
+  };
 
   async getEntityDhisIdToCode(orgUnitCodes) {
     const orgUnitIdToCode = {};
