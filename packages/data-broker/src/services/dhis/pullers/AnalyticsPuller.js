@@ -45,6 +45,7 @@ export class AnalyticsPuller {
       period,
       startDate,
       endDate,
+      dataPeriodType,
       additionalDimensions,
     } = options;
     return {
@@ -54,6 +55,7 @@ export class AnalyticsPuller {
       period,
       startDate,
       endDate,
+      dataPeriodType,
       additionalDimensions,
     };
   };
