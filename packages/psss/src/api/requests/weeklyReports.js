@@ -7,16 +7,6 @@ import { get, post, put, remove } from '../api';
 
 export const getWeeklyReports = options => get('weekly-reports', options);
 
-// Return empty sites data until real endpoint is complete
-// @see https://github.com/beyondessential/tupaia-backlog/issues/1501
-export const getSitesMetaData = () => ({
-  name: '',
-  sites: [],
-  code: '',
-  coords: [],
-  contactDetails: {},
-});
-
 export const saveSiteReport = data => post('site-report', { data });
 
 export const saveCountryReport = data => post('country-report', { data });

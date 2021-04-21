@@ -14,7 +14,12 @@ import {
   GreyOutlinedButton,
   Button,
 } from '@tupaia/ui-components';
-import { DottedTableBody, GreyTableHeader } from '../../components';
+import {
+  DottedTableBody,
+  EditableCell,
+  GreyTableHeader,
+  PercentageChangeCell,
+} from '../../components';
 import { useSaveSiteReport } from '../../api';
 import { TABLE_STATUSES } from '../../constants';
 
@@ -48,8 +53,29 @@ const StyledEditableTable = styled(EditableTable)`
   padding-right: 1.2rem;
 `;
 
-export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNumber }) => {
-  const { fields } = useContext(EditableTableContext);
+const columns = [
+  {
+    title: 'Syndromes',
+    key: 'title',
+    sortable: false,
+  },
+  {
+    title: '',
+    key: 'percentageChange',
+    CellComponent: PercentageChangeCell,
+    sortable: false,
+    width: '80px',
+  },
+  {
+    title: 'Total Cases',
+    key: 'totalCases',
+    sortable: false,
+    width: '80px',
+  },
+];
+
+export const SiteReportTable = React.memo(({ data, weekNumber }) => {
+  const { tableStatus, setTableStatus, fields } = useContext(EditableTableContext);
   const { countryCode } = useParams();
   const [saveReport] = useSaveSiteReport({ countryCode, weekNumber });
 
@@ -77,7 +103,12 @@ export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNu
           Edit
         </GreyOutlinedButton>
       </HeadingRow>
-      <StyledEditableTable Header={GreyTableHeader} Body={DottedTableBody} />
+      <StyledEditableTable
+        Header={GreyTableHeader}
+        Body={DottedTableBody}
+        data={data}
+        columns={columns}
+      />
       {tableStatus === TABLE_STATUSES.EDITABLE && (
         <ActionsRow>
           <Button
@@ -96,12 +127,6 @@ export const SiteReportTable = React.memo(({ tableStatus, setTableStatus, weekNu
 });
 
 SiteReportTable.propTypes = {
-  tableStatus: PropTypes.PropTypes.oneOf([
-    TABLE_STATUSES.STATIC,
-    TABLE_STATUSES.EDITABLE,
-    TABLE_STATUSES.LOADING,
-    TABLE_STATUSES.SAVING,
-  ]).isRequired,
-  setTableStatus: PropTypes.func.isRequired,
-  weekNumber: PropTypes.number.isRequired,
+  data: PropTypes.array.isRequired,
+  weekNumber: PropTypes.string.isRequired,
 };
