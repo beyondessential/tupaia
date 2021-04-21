@@ -9,7 +9,7 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { useUrlParams } from '../utils';
 import { useVitalsData } from '../api';
-import { EntityVitalsItem } from '../components';
+import { EntityVitalsItem, getPartnerSupportItems } from '../components';
 
 const Wrapper = styled.section`
   padding: 0, 0, 0, 0;
@@ -76,7 +76,10 @@ export const DashboardView = () => {
             </WrapContainer>
             <img src="/images/school.png" alt="place" />
             <WrapContainer>
-              <Typography>Development Partner Support</Typography>
+              <TitleContainer>
+                <Typography>Development Partner Support</Typography>
+              </TitleContainer>
+              {getPartnerSupportItems(vitals)}
             </WrapContainer>
           </Container>
         </Wrapper>
@@ -110,7 +113,10 @@ export const DashboardView = () => {
             </WrapContainer>
             <img src="/images/school.png" alt="place" />
             <WrapContainer>
-              <Typography>Development Partner Support</Typography>
+              <TitleContainer>
+                <Typography>Development Partner Support</Typography>
+              </TitleContainer>
+              {getPartnerSupportItems(vitals)}
             </WrapContainer>
           </Container>
         </Wrapper>
