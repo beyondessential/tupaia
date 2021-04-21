@@ -96,11 +96,12 @@ describe('removeAt', () => {
       ['non empty array, remove at start', [['a', 'b', 'c'], 0], ['b', 'c']],
       ['non empty array, remove at middle', [['a', 'b', 'c'], 1], ['a', 'c']],
       [
-        'non empty array, remove at middle (multilpe elements)',
+        'non empty array, remove at middle (multiple elements)',
         [['a', 'b', 'c', 'd'], 1],
         ['a', 'c', 'd'],
       ],
       ['non empty array, remove at end', [['a', 'b', 'c'], 2], ['a', 'b']],
+      ['non empty array, out of bounds index', [['a', 'b', 'c'], 3], ['a', 'b', 'c']],
     ];
 
     it.each(testData)('%s', (_, input, expected) => {
