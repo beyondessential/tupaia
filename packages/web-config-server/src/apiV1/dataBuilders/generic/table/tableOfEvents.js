@@ -7,7 +7,7 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
 
-import { getSortByKey, utcMoment, reduceToDictionary, stripFromString } from '@tupaia/utils';
+import { getSortByKey, utcMoment, stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { transformObject } from '/apiV1/dataBuilders/transform';
 import {
@@ -19,14 +19,15 @@ import {
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';
 
-// TODO event.dataValues can be (array|object)
-// Should be able to delete this method after https://github.com/beyondessential/tupaia-backlog/issues/451
-// is implemented, since the modern event api uses object dataValues
+// TODO event.dataValues can be (Record<string, Object> (legacy) | Record<string, string> (modern))
+// Simplify this method after https://github.com/beyondessential/tupaia-backlog/issues/451
+// is implemented
 const getEventValuesByElement = event => {
-  const { dataValues } = event;
-  return Array.isArray(dataValues)
-    ? reduceToDictionary(dataValues, 'dataElement', 'value')
-    : dataValues;
+  const entries = Object.entries(event.dataValues).map(([dataElement, dataValue]) => [
+    dataElement,
+    dataValue.value ?? dataValue,
+  ]);
+  return Object.fromEntries(entries);
 };
 
 class TableOfEventsBuilder extends DataBuilder {
