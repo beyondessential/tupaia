@@ -9,11 +9,12 @@ export class FetchCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
     const { organisationUnitCode: countryCode } = this.req.params;
-    const reportData = await this.reportConnection?.fetchReport(
-      'PSSS_Weekly_Report',
-      [countryCode],
-      [startWeek, endWeek], // period list will be converted to startDate/endDate using convertPeriodStringToDateRange()
-    );
+
+    const entityCodes = await this.buildEntityCodes();
+    const reportData = await this.reportConnection?.fetchReport('PSSS_Weekly_Report', entityCodes, [
+      startWeek,
+      endWeek,
+    ]);
 
     return {
       startWeek,
@@ -22,4 +23,12 @@ export class FetchCountryWeeklyReportRoute extends Route {
       data: reportData,
     };
   }
+
+  buildEntityCodes = async () => {
+    const { useSites } = this.req;
+    const { organisationUnitCode: countryCode } = this.req.params;
+    const sites = useSites ? await this.entityConnection.fetchSites(countryCode) : [];
+
+    return [countryCode, ...sites.map(s => s.code)];
+  };
 }
