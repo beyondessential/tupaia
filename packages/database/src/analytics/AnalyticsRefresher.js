@@ -18,7 +18,10 @@ export class AnalyticsRefresher {
   }
 
   listenForChanges() {
-    this.changeHandlerCancellers = [this.models.answer.addChangeHandler(this.handleAnswerChange)];
+    this.changeHandlerCancellers = [
+      this.models.answer.addChangeHandler(this.handleSourceTableChange),
+      this.models.surveyResponse.addChangeHandler(this.handleSourceTableChange),
+    ];
   }
 
   stopListeningForChanges() {
@@ -26,7 +29,7 @@ export class AnalyticsRefresher {
     this.changeHandlerCancellers = [];
   }
 
-  handleAnswerChange = () => {
+  handleSourceTableChange = () => {
     return this.scheduleAnalyticsRefresh();
   };
 
