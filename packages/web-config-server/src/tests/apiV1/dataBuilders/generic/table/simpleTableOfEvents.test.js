@@ -79,6 +79,7 @@ fetchAnalytics
     },
     query,
     {
+      aggregations: undefined,
       aggregationType: 'FINAL_EACH_YEAR',
       aggregationConfig: {},
       filter: {},
