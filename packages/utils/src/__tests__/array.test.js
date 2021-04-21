@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { countDistinct, min, max, toArray } from '../array';
+import { countDistinct, min, max, removeAt, toArray } from '../array';
 
 describe('countDistinct', () => {
   const testData = [
@@ -70,5 +70,48 @@ describe('toArray', () => {
   it('non array input', () => {
     expect(toArray('a')).toStrictEqual(['a']);
     expect(toArray(undefined)).toStrictEqual([undefined]);
+  });
+});
+
+describe('removeAt', () => {
+  describe('throws for invalid index', () => {
+    const testData = [
+      ['string', '1'],
+      ['array', [1, 2]],
+      ['negative number', -1],
+      ['+Infinity', Number.POSITIVE_INFINITY],
+      ['-Infinity', Number.NEGATIVE_INFINITY],
+    ];
+
+    it.each(testData)('%s', (_, input) => {
+      const array = [];
+      const index = input;
+      expect(() => removeAt(array, index)).toThrow('not a positive integer');
+    });
+  });
+
+  describe('removes the item at the specified index', () => {
+    const testData = [
+      ['empty array', [[], 0], []],
+      ['non empty array, remove at start', [['a', 'b', 'c'], 0], ['b', 'c']],
+      ['non empty array, remove at middle', [['a', 'b', 'c'], 1], ['a', 'c']],
+      [
+        'non empty array, remove at middle (multilpe elements)',
+        [['a', 'b', 'c', 'd'], 1],
+        ['a', 'c', 'd'],
+      ],
+      ['non empty array, remove at end', [['a', 'b', 'c'], 2], ['a', 'b']],
+    ];
+
+    it.each(testData)('%s', (_, input, expected) => {
+      const [array, index] = input;
+      expect(removeAt(array, index)).toStrictEqual(expected);
+    });
+  });
+
+  it('does not mutate the provided array', () => {
+    const array = ['a', 'b'];
+    removeAt(array, 1);
+    expect(array).toBe(array);
   });
 });
