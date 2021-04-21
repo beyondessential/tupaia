@@ -5,7 +5,9 @@
 
 export * from './useConfirmedWeeklyReport';
 export * from './useCountryConfirmedWeeklyReport';
+export * from './useCountrySitesWeeklyReport';
 export * from './useCountryWeeklyReport';
 export * from './useUpcomingReport';
 export * from './useSingleWeeklyReport';
+export * from './useSitesSingleWeeklyReport';
 export * from './useConfirmedCountries';
