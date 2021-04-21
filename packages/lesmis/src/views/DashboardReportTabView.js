@@ -67,7 +67,14 @@ export const DashboardReportTabView = ({
                   const views = groupValue.views.filter(report => report.type === 'chart');
                   return views.length > 0 ? (
                     views.map(report => (
-                    // Todo: add report component
+                      <Report
+                        key={report.viewId}
+                        name={report.name}
+                        entityCode={entityCode}
+                        dashboardGroupId={groupValue.dashboardGroupId.toString()}
+                        reportId={report.viewId}
+                        periodGranularity={report.periodGranularity}
+                      />
                     ))
                   ) : (
                     <SmallAlert key={groupName} severity="info" variant="standard">
