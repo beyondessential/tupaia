@@ -27,10 +27,10 @@ GET http://{{host}}/{{version}}/test HTTP/2.0
 Cookie: {{sessionCookie}}
 
 ### Fetch Countries
-GET http://{{host}}/{{version}}/country?fields=code,name HTTP/2.0
+GET http://{{host}}/{{version}}/country HTTP/2.0
 
 ### Fetch Country Sites
-GET http://{{host}}/{{version}}/country/TO/sites?fields=code,name HTTP/2.0
+GET http://{{host}}/{{version}}/country/TO/sites HTTP/2.0
 
 ### Fetch Country Weekly Report Data
 GET http://{{host}}/{{version}}/weeklyReport/TO?startWeek=2016W07&endWeek=2021W07 HTTP/2.0
