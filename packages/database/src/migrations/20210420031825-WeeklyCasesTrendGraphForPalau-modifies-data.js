@@ -70,7 +70,7 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
     },
   },
   viewJson: {
-    name: `${diseaseName} Daily Case Number Trend Graph`,
+    name: `${diseaseName} Weekly Case Number Trend Graph`,
     type: 'chart',
     chartType: 'line',
     chartConfig: {
@@ -87,6 +87,9 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
         unit: 'week',
         offset: -52,
       },
+    },
+    presentationOptions: {
+      periodTickFormat: '[W]w',
     },
     periodGranularity: 'week',
   },
