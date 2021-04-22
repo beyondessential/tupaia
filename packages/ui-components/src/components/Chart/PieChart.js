@@ -37,7 +37,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import { OFF_WHITE, CHART_BLUES, CHART_COLOR_PALETTE } from './constants';
+import { OFF_WHITE, CHART_BLUES, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from './constants';
 import { getPieLegend } from './Legend';
 import { isMobile } from './utils';
 import { TooltipContainer } from './TooltipContainer';
@@ -88,17 +88,12 @@ const chartColorAtIndex = (colorArray, index) => {
 export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  // Disable tapping charts to reveal legend labels on mobile as they do not fit and are awkwardly cropped
   const handleMouseEnter = (event, index) => {
-    if (!isMobile()) {
-      setActiveIndex(index);
-    }
+    setActiveIndex(index);
   };
 
   const handleMouseOut = () => {
-    if (!isMobile()) {
-      setActiveIndex(-1);
-    }
+    setActiveIndex(-1);
   };
 
   const getPresentationOption = (key, option) => {
@@ -167,7 +162,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
         </Pie>
         <Tooltip content={makeCustomTooltip(viewContent)} />
         <Legend
-          content={getPieLegend()}
+          content={getPieLegend({ chartConfig: viewContent.chartConfig })}
           onMouseOver={handleMouseEnter}
           onMouseOut={handleMouseOut}
           verticalAlign="top"
@@ -179,7 +174,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
 };
 
 PieChart.propTypes = {
-  viewContent: PropTypes.shape({}).isRequired,
+  viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE).isRequired,
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   onItemClick: PropTypes.func,
