@@ -88,7 +88,6 @@ const chartColorAtIndex = (colorArray, index) => {
 export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  // Disable tapping charts to reveal legend labels on mobile as they do not fit and are awkwardly cropped
   const handleMouseEnter = (event, index) => {
     setActiveIndex(index);
   };
