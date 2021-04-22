@@ -5,22 +5,31 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
 import MuiTabs from '@material-ui/core/Tabs';
 import Skeleton from '@material-ui/lab/Skeleton';
 import MuiTab from '@material-ui/core/Tab';
-import * as COLORS from '../constants';
 import { FlexStart } from './Layout';
 
-export const TabBar = styled(FlexStart)`
-  min-height: 5.5rem;
+const LoadingTab = () => <Skeleton width={100} height={20} style={{ marginLeft: 30 }} />;
+
+export const TabBar = styled(MuiContainer)`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-const LoadingTab = () => <Skeleton width={100} height={20} style={{ marginLeft: 30 }} />;
+export const TabBarSection = styled(FlexStart)`
+  min-height: 5.5rem;
+  margin-right: 0.4rem;
+  padding-right: 0.4rem;
+  border-right: 1px solid ${props => props.theme.palette.grey['400']};
+`;
 
-export const TabBarLoader = () => (
+export const TabsLoader = () => (
   <>
     <LoadingTab />
     <LoadingTab />
@@ -29,14 +38,14 @@ export const TabBarLoader = () => (
   </>
 );
 
-export const TabBarTabs = styled(MuiTabs)`
+export const Tabs = styled(MuiTabs)`
   .MuiTabs-indicator {
     height: 5px;
     background-color: ${props => props.theme.palette.primary.main};
   }
 `;
 
-export const TabBarTab = styled(MuiTab)`
+export const Tab = styled(MuiTab)`
   min-width: auto;
   padding: 2rem 0;
   margin: 0 1rem;
@@ -45,46 +54,6 @@ export const TabBarTab = styled(MuiTab)`
   opacity: 1;
 
   &.Mui-selected {
-    color: ${props => props.theme.palette.primary.main};
-  }
-`;
-
-export const Tabs = styled(MuiTabs)`
-  overflow: visible;
-  background: ${COLORS.GREY_F9};
-
-  .MuiTabs-scroller {
-    overflow: visible !important; // overwrite the mui element style
-  }
-
-  .MuiTabs-indicator {
-    display: none;
-  }
-`;
-
-export const Tab = styled(MuiTab)`
-  position: relative;
-  text-transform: capitalize;
-  opacity: 1;
-  top: 1px;
-  font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.5rem;
-  color: ${props => props.theme.palette.text.secondary};
-  background: ${COLORS.GREY_F9};
-  border-right: 1px solid ${props => props.theme.palette.grey['400']};
-  border-top: 1px solid ${props => props.theme.palette.grey['400']};
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  width: 220px;
-  height: 75px;
-
-  &:last-child {
-    border-top-right-radius: 3px;
-  }
-
-  &.Mui-selected {
-    background: white;
-    border-bottom-color: white;
     color: ${props => props.theme.palette.primary.main};
   }
 `;

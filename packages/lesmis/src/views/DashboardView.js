@@ -5,12 +5,13 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
-import { Tabs, Tab, TabPanel } from '../components';
+import { Select } from '@tupaia/ui-components';
+import { TabPanel, TabBar, TabBarSection } from '../components';
 import { useUrlParams } from '../utils';
-import { DEFAULT_DASHBOARD_GROUP } from '../constants';
 import { DashboardReportTabView } from './DashboardReportTabView';
 import * as COLORS from '../constants';
 import { useEntityData } from '../api/queries';
@@ -21,43 +22,59 @@ const TemplateBody = styled.section`
   min-height: 300px;
 `;
 
-const YEARS = ['2015', '2016', '2017', '2018', '2019', '2020', '2021'];
+const StyledSelect = styled(Select)`
+  margin: 0 1rem 0 0;
+  width: 14rem;
+  text-transform: capitalize;
+`;
 
-const EarlyChildhoodTab = () => (
-  <MuiBox p={5} minHeight={500}>
-    ESSDP Early Childhood Education Tab
-  </MuiBox>
+const TabTemplate = ({ TabSelector, Body }) => (
+  <>
+    <TabBar>
+      <TabBarSection>{TabSelector}</TabBarSection>
+    </TabBar>
+    <MuiBox p={5} minHeight={500}>
+      {Body}
+    </MuiBox>
+  </>
 );
 
-const PrimaryTab = () => (
-  <MuiBox p={5} minHeight={500}>
-    ESSDP Primary Tab
-  </MuiBox>
-);
+TabTemplate.propTypes = {
+  TabSelector: PropTypes.node.isRequired,
+  Body: PropTypes.node.isRequired,
+};
 
-const TABS = [
+const makeTabOptions = entityType => [
   {
-    key: 'profile',
-    getLabel: entityType => (entityType ? `${entityType} Profile` : 'Profile'),
+    value: 'profile',
+    label: entityType ? `${entityType} Profile` : 'Profile',
     Component: DashboardReportTabView,
   },
   {
-    key: 'earlyChildhood',
-    getLabel: () => 'ESSDP Early Childhood Education',
-    Component: EarlyChildhoodTab,
+    value: 'earlyChildhood',
+    label: 'ESSDP Early Childhood Education',
+    Component: TabTemplate,
+    Body: 'ESSDP Early Childhood Education',
   },
-  { key: 'primary', getLabel: () => 'ESSDP Primary', Component: PrimaryTab },
+  { value: 'primary', label: 'ESSDP Primary', Component: TabTemplate, Body: 'ESSDP Primary' },
+  {
+    value: 'indicatorSelection',
+    label: 'Free Indicator Selection',
+    Component: TabTemplate,
+    Body: 'Free Indicator Selection',
+  },
 ];
 
 export const DashboardView = () => {
   const { entityCode } = useUrlParams();
-  const [selectedTab, setSelectedTab] = useState(TABS[0].key);
-  const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
-  const [selectedYear, setSelectedYear] = useState(YEARS[0]);
   const { data: entityData } = useEntityData(entityCode);
 
-  const handleChangeTab = (event, newValue) => {
-    setSelectedTab(newValue);
+  const tabOptions = makeTabOptions(entityData?.type);
+
+  const [selectedTab, setSelectedTab] = useState(tabOptions[0].value);
+
+  const handleChangeTab = event => {
+    setSelectedTab(event.target.value);
   };
 
   return (
@@ -67,19 +84,22 @@ export const DashboardView = () => {
           <Typography>Dashboard View</Typography>
         </MuiContainer>
       </TemplateBody>
-      <Tabs value={selectedTab} onChange={handleChangeTab}>
-        {TABS.map(({ getLabel, key }) => (
-          <Tab key={key} label={getLabel(entityData?.type)} value={key} />
-        ))}
-      </Tabs>
-      {TABS.map(({ key, Component }) => (
-        <TabPanel key={key} isSelected={key === selectedTab} Panel={React.Fragment}>
+      {tabOptions.map(({ value, Body, Component }) => (
+        <TabPanel key={value} isSelected={value === selectedTab} Panel={React.Fragment}>
           <Component
             entityCode={entityCode}
-            selectedDashboard={selectedDashboard}
-            setSelectedDashboard={setSelectedDashboard}
-            selectedYear={selectedYear}
-            setSelectedYear={setSelectedYear}
+            Body={Body}
+            TabSelector={
+              <StyledSelect
+                id="dashboardtab"
+                options={tabOptions}
+                value={selectedTab}
+                onChange={handleChangeTab}
+                SelectProps={{
+                  MenuProps: { disablePortal: true },
+                }}
+              />
+            }
           />
         </TabPanel>
       ))}

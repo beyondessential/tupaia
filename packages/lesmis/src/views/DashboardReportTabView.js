@@ -3,34 +3,30 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { SmallAlert } from '@tupaia/ui-components';
 import { useDashboardData } from '../api/queries';
 import {
   FetchLoader,
-  TabBar,
-  TabBarLoader,
+  TabsLoader,
+  TabBarSection,
   FlexCenter,
   Report,
-  TabBarTabs,
-  TabBarTab,
+  TabBar,
+  Tabs,
+  Tab,
   TabPanel,
-  YearSelector,
 } from '../components';
+import { DEFAULT_DASHBOARD_GROUP } from '../constants';
 
 const DashboardSection = styled(FlexCenter)`
   min-height: 31rem;
 `;
 
-export const DashboardReportTabView = ({
-  entityCode,
-  selectedDashboard,
-  setSelectedDashboard,
-  selectedYear,
-  setSelectedYear,
-}) => {
+export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
+  const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
 
   const handleChangeDashboard = (event, newValue) => {
@@ -40,22 +36,24 @@ export const DashboardReportTabView = ({
   return (
     <>
       <TabBar>
+        <TabBarSection>
+          {TabSelector}
+          {/* Todo: add year selector */}
+        </TabBarSection>
         {isLoading ? (
-          <TabBarLoader />
+          <TabsLoader />
         ) : (
           <>
-            {/* Todo: add year selector @see https://github.com/beyondessential/tupaia-backlog/issues/2286*/}
-            {/*<YearSelector selectedYear={selectedYear} setSelectedYear={setSelectedYear} />*/}
-            <TabBarTabs
+            <Tabs
               value={selectedDashboard}
               onChange={handleChangeDashboard}
               variant="scrollable"
               scrollButtons="auto"
             >
               {Object.entries(data).map(([heading]) => (
-                <TabBarTab key={heading} label={heading} value={heading} />
+                <Tab key={heading} label={heading} value={heading} />
               ))}
-            </TabBarTabs>
+            </Tabs>
           </>
         )}
       </TabBar>
@@ -63,10 +61,12 @@ export const DashboardReportTabView = ({
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {data &&
             Object.entries(data).map(([heading, dashboardGroup]) => (
-              <TabPanel key={heading} isSelected={key === selectedTab}>
+              <TabPanel key={heading} isSelected={heading === selectedDashboard}>
                 {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
                   // Todo: support other report types
-                  const dashboardReports = groupValue.views.filter(report => report.type === 'chart');
+                  const dashboardReports = groupValue.views.filter(
+                    report => report.type === 'chart',
+                  );
                   return dashboardReports.length > 0 ? (
                     dashboardReports.map(report => (
                       <Report
@@ -94,8 +94,5 @@ export const DashboardReportTabView = ({
 
 DashboardReportTabView.propTypes = {
   entityCode: PropTypes.string.isRequired,
-  selectedDashboard: PropTypes.string.isRequired,
-  setSelectedDashboard: PropTypes.func.isRequired,
-  selectedYear: PropTypes.string.isRequired,
-  setSelectedYear: PropTypes.func.isRequired,
+  TabSelector: PropTypes.node.isRequired,
 };
