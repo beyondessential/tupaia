@@ -13,9 +13,10 @@ import {
 } from '../buildAnalytics';
 
 export class AnalyticsPuller {
-  constructor(dataSourceModel, translator) {
+  constructor(dataSourceModel, translator, dataElementsMetadataPuller) {
     this.dataSourceModel = dataSourceModel;
     this.translator = translator;
+    this.dataElementsMetadataPuller = dataElementsMetadataPuller;
   }
 
   groupDataSourcesByDhisDataType = dataSources =>
@@ -162,7 +163,7 @@ export class AnalyticsPuller {
     };
     const events = await this.fetchEventsForPrograms(api, programCodes, query);
     const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
-    const dataElements = await this.pullDataElementMetadata(api, dataSources, {
+    const dataElements = await this.dataElementsMetadataPuller.pull(api, dataSources, {
       additionalFields: ['valueType'],
     });
 

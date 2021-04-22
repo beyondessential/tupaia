@@ -2,12 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
- import groupBy from 'lodash.groupby';
-
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
-import { AnalyticsPuller, EventsPuller } from './pullers';
+import { AnalyticsPuller, EventsPuller, DataElementsMetadataPuller } from './pullers';
 
 const DEFAULT_DATA_SERVICE = { isDataRegional: true };
 const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
@@ -17,7 +15,15 @@ export class DhisService extends Service {
     super(models);
 
     this.translator = new DhisTranslator(this.models);
-    this.analyticsPuller = new AnalyticsPuller(this.models.dataSource, this.translator);
+    this.dataElementsMetadataPuller = new DataElementsMetadataPuller(
+      this.models.dataSource,
+      this.translator,
+    );
+    this.analyticsPuller = new AnalyticsPuller(
+      this.models.dataSource,
+      this.translator,
+      this.dataElementsMetadataPuller,
+    );
     this.eventsPuller = new EventsPuller(this.models.dataSource, this.translator);
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
@@ -48,7 +54,7 @@ export class DhisService extends Service {
 
   getMetadataPullers() {
     return {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
+      [this.dataSourceTypes.DATA_ELEMENT]: this.dataElementsMetadataPuller.pull.bind(this),
     };
   }
 
@@ -113,12 +119,6 @@ export class DhisService extends Service {
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  groupDataSourcesByDhisDataType = dataSources =>
-    groupBy(
-      dataSources,
-      d => d.config?.dhisDataType || this.models.dataSource.getDhisDataTypes().DATA_ELEMENT,
-    );
-
   async pull(dataSources, type, options = {}) {
     const {
       organisationUnitCode,
@@ -149,32 +149,5 @@ export class DhisService extends Service {
     await Promise.all(apis.map(pullForApi));
 
     return results;
-  }
-
-  async pullDataElementMetadata(api, dataSources, options) {
-    const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
-    const metadata = [];
-
-    for (const entry of Object.entries(dataSourcesByDhisType)) {
-      const [dhisDataType, groupedDataSources] = entry;
-      const dataElementCodes = groupedDataSources.map(({ dataElementCode }) => dataElementCode);
-      if (dhisDataType === this.models.dataSource.getDhisDataTypes().INDICATOR) {
-        const indicators = await api.fetchIndicators({ dataElementCodes });
-        metadata.push(
-          ...this.translator.translateInboundIndicators(indicators, groupedDataSources),
-        );
-      } else {
-        const { additionalFields, includeOptions } = options;
-        const dataElements = await api.fetchDataElements(dataElementCodes, {
-          additionalFields,
-          includeOptions,
-        });
-        metadata.push(
-          ...this.translator.translateInboundDataElements(dataElements, groupedDataSources),
-        );
-      }
-    }
-
-    return metadata;
   }
 }
