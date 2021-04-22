@@ -7,7 +7,7 @@ import { TupaiaDatabase } from '@tupaia/database';
 import { OrchestratorApiBuilder, handleWith } from '@tupaia/server-boilerplate';
 import { LesmisSessionModel } from '../models';
 import {
-  DashboardRoute,
+  EntityRequest,
   EntityRoute,
   EntitiesRoute,
   MapOverlaysRoute,
@@ -25,7 +25,6 @@ export function createApp() {
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
     .verifyLogin(verifyLoginAccess)
-    .get('/v1/dashboard/:entityCode', handleWith(DashboardRoute))
     .get('/v1/user', handleWith(UserRoute))
     .get('/v1/entities/:entityCode', handleWith(EntitiesRoute))
     .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))

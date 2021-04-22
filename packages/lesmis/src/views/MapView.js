@@ -53,7 +53,7 @@ const MapInner = styled.div`
 const LegendContainer = styled.div`
   display: flex;
   flex: 1;
-  margin: 0 0.6rem 0.375rem;
+  margin: 0px 0.6rem 0.375rem;
 `;
 
 const TilePicker = styled(TilePickerComponent)`
