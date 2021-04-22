@@ -74,6 +74,22 @@ const chartHasData = ({ chartType, data }) => {
   return data && data.length > 0;
 };
 
+const getNoDataString = ({ noDataMessage, source, startDate, endDate }) => {
+  if (noDataMessage) {
+    return noDataMessage;
+  }
+
+  if (source === 'mSupply') {
+    return 'Requires mSupply';
+  }
+
+  if (startDate && endDate) {
+    return `No data for ${startDate} to ${endDate}`;
+  }
+
+  return 'No data for selected dates';
+};
+
 export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
   const { chartType } = viewContent;
 
@@ -84,7 +100,7 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => 
   if (!chartHasData(viewContent)) {
     return (
       <NoData severity="info" variant="standard">
-        No data for selected dates
+        {getNoDataString(viewContent)}
       </NoData>
     );
   }

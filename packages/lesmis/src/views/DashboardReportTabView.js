@@ -44,7 +44,8 @@ export const DashboardReportTabView = ({
           <TabBarLoader />
         ) : (
           <>
-            <YearSelector selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+            {/* Todo: add year selector @see https://github.com/beyondessential/tupaia-backlog/issues/2286*/}
+            {/*<YearSelector selectedYear={selectedYear} setSelectedYear={setSelectedYear} />*/}
             <TabBarTabs
               value={selectedDashboard}
               onChange={handleChangeDashboard}
@@ -68,7 +69,14 @@ export const DashboardReportTabView = ({
                   const dashboardReports = groupValue.views.filter(report => report.type === 'chart');
                   return dashboardReports.length > 0 ? (
                     dashboardReports.map(report => (
-                    // Todo: add report component
+                      <Report
+                        key={report.viewId}
+                        name={report.name}
+                        entityCode={entityCode}
+                        dashboardGroupId={groupValue.dashboardGroupId.toString()}
+                        reportId={report.viewId}
+                        periodGranularity={report.periodGranularity}
+                      />
                     ))
                   ) : (
                     <SmallAlert key={groupName} severity="info" variant="standard">

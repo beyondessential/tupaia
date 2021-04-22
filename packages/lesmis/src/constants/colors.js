@@ -5,6 +5,7 @@
 
 // Primary & Secondary colors
 export const RED = '#D13333';
+export const DARK_RED = '#B22B2B';
 export const LIGHT_RED = '#FEE2E2';
 export const YELLOW = '#FFF22E';
 export const GREEN = '#02B851';

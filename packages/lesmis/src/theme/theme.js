@@ -32,6 +32,7 @@ export const palette = {
     secondary: COLORS.FONT_MIDGREY,
     tertiary: COLORS.FONT_LIGHTGREY,
   },
+  contrastText: COLORS.FONT_MIDGREY,
   grey: {
     400: COLORS.GREY_DE,
   },

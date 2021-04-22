@@ -6,7 +6,7 @@
 import { useQuery, useQueryClient } from 'react-query';
 import { get } from '../api';
 
-export const useEntityData = ({ entityCode }) => {
+export const useEntityData = entityCode => {
   const queryClient = useQueryClient();
   return useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), {
     staleTime: 1000 * 60 * 60 * 1,
