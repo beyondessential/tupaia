@@ -17,3 +17,4 @@ export { sumAcrossPeriods } from './sumAcrossPeriods';
 export { sumEachDataElement } from './sumEachDataElement';
 export { sumPreviousPerPeriod } from './sumPreviousPerPeriod';
 export { replaceOrgUnitWithOrgGroup } from './replaceOrgUnitWithOrgGroup';
+export { layerYearOnYear } from './layerYearOnYear';

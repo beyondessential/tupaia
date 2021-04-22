@@ -28,3 +28,16 @@ export const getTimezoneNameFromTimestamp = timestamp =>
  * @returns {Moment}
  */
 export const utcMoment = (...args) => moment.utc(...args);
+
+/**
+ *  @param {string} date 'YYYY-MM-DD'
+ *  @param  {number} amount eg. 4
+ *  @param {string} unit 'years' see momentjs
+ *  @returns {string} 'YYYY-MM-DD'
+ */
+export const dateShift = (date, amount, unit) => {
+  if (date) {
+    return moment(date).add(amount, unit).format('YYYY-MM-DD');
+  }
+  return date;
+};

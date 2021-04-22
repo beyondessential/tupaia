@@ -8,7 +8,7 @@ export { AsyncTaskQueue } from './AsyncTaskQueue';
 export * from './compare';
 export * from './createBasicHeader';
 export * from './cypress';
-export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
+export { getTimezoneNameFromTimestamp, utcMoment, dateShift } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';
 export { Multilock } from './Multilock';
