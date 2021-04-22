@@ -62,11 +62,12 @@ export const DashboardReportTabView = ({
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {data &&
             Object.entries(data).map(([heading, dashboardGroup]) => (
-              <TabPanel key={heading} dataKey={heading} value={selectedDashboard}>
+              <TabPanel key={heading} isSelected={key === selectedTab}>
                 {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
-                  const views = groupValue.views.filter(report => report.type === 'chart');
-                  return views.length > 0 ? (
-                    views.map(report => (
+                  // Todo: support other report types
+                  const dashboardReports = groupValue.views.filter(report => report.type === 'chart');
+                  return dashboardReports.length > 0 ? (
+                    dashboardReports.map(report => (
                     // Todo: add report component
                     ))
                   ) : (
