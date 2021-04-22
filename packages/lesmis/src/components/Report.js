@@ -64,6 +64,7 @@ export const Report = ({
   periodGranularity,
   defaultTimePeriod,
   onItemClick,
+  year,
 }) => {
   const [value, setValue] = useState('chart');
   const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
@@ -71,6 +72,7 @@ export const Report = ({
     dashboardGroupId,
     reportId,
     periodGranularity,
+    year,
     defaultTimePeriod,
   });
 
@@ -115,6 +117,7 @@ Report.propTypes = {
   name: PropTypes.string.isRequired,
   reportId: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
+  year: PropTypes.string,
   dashboardGroupId: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
   defaultTimePeriod: PropTypes.object,
@@ -123,6 +126,7 @@ Report.propTypes = {
 
 Report.defaultProps = {
   defaultTimePeriod: null,
+  year: null,
   periodGranularity: null,
   onItemClick: null,
 };
