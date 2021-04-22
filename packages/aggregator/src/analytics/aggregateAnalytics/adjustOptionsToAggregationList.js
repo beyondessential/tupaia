@@ -48,11 +48,11 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
   aggregationList,
 ) => {
   const { hierarchy, organisationUnitCodes } = fetchOptions;
-  if (!aggregationList.some(shouldFetchDataSourceEntities)) {
+  const { session } = context;
+  // TODO: Remove this check for session when implementing https://github.com/beyondessential/tupaia-backlog/issues/2697
+  if (!aggregationList.some(shouldFetchDataSourceEntities) || !session) {
     return [organisationUnitCodes, aggregationList];
   }
-
-  const { session } = context;
 
   let adjustedOrganisationUnitCodes;
   const adjustedAggregations = [];
