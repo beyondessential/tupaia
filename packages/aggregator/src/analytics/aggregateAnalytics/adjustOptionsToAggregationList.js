@@ -72,8 +72,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
           dataSourceEntityType,
           dataSourceEntityFilter,
         );
-        adjustedOrganisationUnitCodes =
-          dataSourceEntities.length > 0 ? dataSourceEntities : organisationUnitCodes;
+        adjustedOrganisationUnitCodes = dataSourceEntities;
         adjustedAggregations.push(aggregation);
         return;
       }
@@ -95,15 +94,13 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
       );
 
       if (!adjustedOrganisationUnitCodes) {
-        adjustedOrganisationUnitCodes =
-          dataSourceEntities.length > 0 ? dataSourceEntities : organisationUnitCodes;
+        adjustedOrganisationUnitCodes = dataSourceEntities;
       }
-      if (Object.keys(relations).length > 0) {
-        adjustedAggregations.push({
-          ...aggregation,
-          config: { ...aggregation.config, orgUnitMap: relations },
-        });
-      }
+
+      adjustedAggregations.push({
+        ...aggregation,
+        config: { ...aggregation.config, orgUnitMap: relations },
+      });
     }),
   );
 
