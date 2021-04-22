@@ -66,13 +66,12 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
 
       if (!adjustedOrganisationUnitCodes && !shouldFetchRelations(aggregation)) {
         const { dataSourceEntityType, dataSourceEntityFilter } = aggregation.config;
-        const dataSourceEntities = await entityConnection.getDataSourceEntities(
+        adjustedOrganisationUnitCodes = await entityConnection.getDataSourceEntities(
           hierarchy,
           organisationUnitCodes,
           dataSourceEntityType,
           dataSourceEntityFilter,
         );
-        adjustedOrganisationUnitCodes = dataSourceEntities;
         adjustedAggregations.push(aggregation);
         return;
       }
@@ -96,7 +95,6 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
       if (!adjustedOrganisationUnitCodes) {
         adjustedOrganisationUnitCodes = dataSourceEntities;
       }
-
       adjustedAggregations.push({
         ...aggregation,
         config: { ...aggregation.config, orgUnitMap: relations },
