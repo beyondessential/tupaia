@@ -4,11 +4,25 @@
  */
 import * as BuildAnalytics from '../../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
+import { AnalyticsPuller } from '../../../../../services/dhis/pullers/AnalyticsPuller';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
-import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import {
+  buildDhisAnalyticsResponse,
+  createModelsStub,
+  createDataSourceModelsStub,
+  stubDhisApi,
+} from '../DhisService.stubs';
 import { testPullAnalyticsFromEvents_Deprecated } from './testPullAnalyticsFromEvents_Deprecated';
 
 const dhisService = new DhisService(createModelsStub());
+const analyticsPuller = new AnalyticsPuller(
+  createDataSourceModelsStub(),
+  dhisService.translator,
+  dhisService.dataElementsMetadataPuller,
+);
+dhisService.analyticsPuller = analyticsPuller;
+dhisService.pullers.dataElement = analyticsPuller.pull;
+
 let dhisApi;
 
 export const testPullAnalytics = () => {
@@ -18,10 +32,10 @@ export const testPullAnalytics = () => {
   });
 
   describe('data source selection', () => {
-    const analyticsSpy = jest.spyOn(dhisService, 'pullAnalyticsForApi');
-    const analyticsFromEventsSpy = jest.spyOn(dhisService, 'pullAnalyticsFromEventsForApi');
+    const analyticsSpy = jest.spyOn(analyticsPuller, 'pullAnalyticsForApi');
+    const analyticsFromEventsSpy = jest.spyOn(analyticsPuller, 'pullAnalyticsFromEventsForApi');
     const analyticsFromEvents_DeprecatedSpy = jest.spyOn(
-      dhisService,
+      analyticsPuller,
       'pullAnalyticsFromEventsForApi_Deprecated',
     );
 

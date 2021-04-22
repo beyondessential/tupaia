@@ -1,9 +1,9 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { convertDateRangeToPeriods } from '@tupaia/utils';
+import { convertDateRangeToPeriods } from './convertDateRangeToPeriods';
 
 export const convertDateRangeToPeriodQueryString = (startDate, endDate, targetType) => {
   if (!startDate) {

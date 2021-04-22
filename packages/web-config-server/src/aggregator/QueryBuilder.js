@@ -2,7 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getDefaultPeriod, convertDateRangeToPeriodQueryString } from '/utils';
+import { convertDateRangeToPeriodQueryString } from '@tupaia/utils';
+import { getDefaultPeriod } from '/utils';
 
 export class QueryBuilder {
   constructor(originalQuery, replacementValues = {}, routeHandler) {
@@ -61,18 +62,9 @@ export class QueryBuilder {
     // Make standard replacements if required
     this.query.startDate = this.getQueryParameter('startDate');
     this.query.endDate = this.getQueryParameter('endDate');
-    const dataPeriodType = this.getQueryParameter('dataPeriodType');
-    // Define the period, based on the query, the preconfigured period, or the default
 
-    // 'dataPeriodType' is used when you want to force converting the periods to a specific period type. 
-    // Eg, if 'dataPeriodType' = 'MONTH', force converting to MONTHLY periods '201701;201702;201703;201704;...'
-    
-    // This is useful in the scenario when you are fetching indicator values which has to request the aggregate `analytics.json` endpoint
-    // and we have to send the correct period type that the data is submitted. Normally this is taken care of if the visualisation has the correct time selector,
-    // but if it does not, we have to manually convert the periods to the right type so that `analytics.json` can return the correct data without aggregation.
-    if (this.query.startDate && this.query.endDate && dataPeriodType) {
-      this.query.period = convertDateRangeToPeriodQueryString(this.query.startDate, this.query.endDate, dataPeriodType);
-    } else if (this.replacementValues.period) {
+    // Define the period, based on the query, the preconfigured period, or the default
+    if (this.replacementValues.period) {
       // If a the api consumer defined a period to use in query parameters, use that
       this.query.period = this.replacementValues.period;
     } else if (!this.query.period) {

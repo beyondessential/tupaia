@@ -6,5 +6,5 @@ export { DHIS2_DIMENSIONS } from './dimensions';
 export { combineDiagnostics } from './responseUtils';
 export {
   translateElementKeysInEventAnalytics,
-  translateDimensionsInAnalytics,
+  translateMetadataInAnalytics,
 } from './translateDataElementKeys';

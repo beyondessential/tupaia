@@ -9,6 +9,7 @@
 export const checkAllDataElementsAreDhisIndicators = async (models, dataElementCodes) => {
   const dataElements = await models.dataSource.find({
     code: dataElementCodes,
+    type: 'dataElement',
   });
 
   for (const dataElementCode of dataElementCodes) {

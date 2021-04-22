@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getUniqueEntries } from '@tupaia/utils';
+import { getUniqueEntries, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 
 const DX_BATCH_SIZE = 400;
 const OU_BATCH_SIZE = 400;
@@ -73,6 +73,26 @@ export const buildDataValueAnalyticsQueries = queryInput => {
     }
   }
   return queries;
+};
+
+export const buildAggregatedDataValueAnalyticsQueries = queryInput => {
+  const newQueryInput = { ...queryInput };
+
+  // 'dataPeriodType' is used when you want to force converting the periods to a specific period type.
+  // Eg, if 'dataPeriodType' = 'MONTH', force converting to MONTHLY periods '201701;201702;201703;201704;...'
+
+  // This is useful in the scenario when you are fetching indicator values which has to request the aggregate `analytics.json` endpoint
+  // and we have to send the correct period type that the data is submitted. Normally this is taken care of if the visualisation has the correct time selector,
+  // but if it does not, we have to manually convert the periods to the right type so that `analytics.json` can return the correct data without aggregation.
+  if (newQueryInput.startDate && newQueryInput.endDate && newQueryInput.dataPeriodType) {
+    newQueryInput.period = convertDateRangeToPeriodQueryString(
+      newQueryInput.startDate,
+      newQueryInput.endDate,
+      newQueryInput.dataPeriodType,
+    );
+  }
+
+  return buildDataValueAnalyticsQueries(newQueryInput);
 };
 
 export const buildEventAnalyticsQuery = queryInput => {
