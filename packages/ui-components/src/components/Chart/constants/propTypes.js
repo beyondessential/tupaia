@@ -14,7 +14,7 @@ export const VIEW_CONTENT_SHAPE = {
   chartType: PropTypes.string, // Required if type = 'chart'
   name: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object),
-  periodGranularity: PropTypes.object,
+  periodGranularity: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 export const CONDITIONAL_MATRIX_CONDITION_SHAPE = {

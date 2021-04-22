@@ -1,0 +1,22 @@
+{
+  "data": [
+    { "name": "Pre-School" },
+    {
+      "Filtered or boiled water (from stream, pond, etc.)": 0.75,
+      "Bringing clean (filtered or boiled) drinking water from home": 0.25,
+      "name": "Primary"
+    },
+    { "Bottled water provided by school": 1, "name": "Secondary" }
+  ],
+  "viewId": "Laos_Schools_Drinking_Water_Source_By_School_Type",
+  "organisationUnitCode": "LA",
+  "dashboardGroupId": "340",
+  "name": "Clean Drinking Water Source, % of Schools",
+  "type": "chart",
+  "chartType": "bar",
+  "valueType": "percentage",
+  "chartConfig": { "$all": { "stackId": 1 } },
+  "description": "This report is calculated based on the number of ‘School COVID-19 Response Laos’ survey responses",
+  "presentationOptions": { "hideAverage": true },
+  "renderLegendForOneItem": true
+}
