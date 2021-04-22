@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { PSSS_HIERARCHY } from '../constants';
+import { removeAt } from '@tupaia/utils';
+import { PSSS_ENTITY, PSSS_HIERARCHY } from '../constants';
 import { ApiConnection } from './ApiConnection';
 
 const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
@@ -74,15 +75,52 @@ const getRelationParams = (options: RelationOptions) => {
 export class EntityConnection extends ApiConnection {
   baseUrl = ENTITY_API_URL;
 
-  fetchDescendants = async <T extends EntityOptions>(
+  public fetchCountries = async () =>
+    this.fetchDescendants(PSSS_ENTITY, {
+      filter: { type: 'country' },
+    });
+
+  public fetchCountryAndSites = async (countryCode: string) => {
+    const entities = await this.fetchDescendants(countryCode, {
+      filter: { type: 'facility' },
+      includeRootEntity: true,
+    });
+
+    const countryIndex = entities.findIndex(e => e.code === countryCode);
+    if (countryIndex === -1) {
+      throw new Error(`Requested country '${countryCode}' is missing in the descendant response`);
+    }
+    const country = entities[countryIndex];
+    const sites = removeAt(entities, countryIndex);
+
+    return { country, sites };
+  };
+
+  public fetchSiteCodes = async (entityCode: string) =>
+    this.fetchDescendants(entityCode, {
+      field: 'code',
+      filter: { type: 'facility' },
+    });
+
+  public fetchSiteCodeToDistrictName = async (entityCode: string) =>
+    this.fetchRelations(entityCode, {
+      ancestor: { filter: { type: 'district' }, field: 'name' },
+      descendant: { filter: { type: 'facility' }, field: 'code' },
+      groupBy: 'descendant',
+    });
+
+  private fetchDescendants = async <T extends EntityOptions>(
     entityCode: string,
     options: T,
   ): Promise<ResponseEntity<T>[]> => {
-    const params = getEntityParams(options);
+    const params = getEntityParams({
+      fields: ['id', 'code', 'name', 'type'],
+      ...options,
+    });
     return this.get(`hierarchy/${PSSS_HIERARCHY}/${entityCode}/descendants`, params);
   };
 
-  fetchRelations = async (
+  private fetchRelations = async (
     entityCode: string,
     options: RelationOptions,
   ): Promise<Record<string, string> | Record<string, string[]>> => {

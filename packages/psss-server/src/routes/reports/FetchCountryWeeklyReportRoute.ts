@@ -10,7 +10,9 @@ export class FetchCountryWeeklyReportRoute extends Route {
     const { startWeek, endWeek } = this.req.query;
     const { organisationUnitCode: countryCode } = this.req.params;
 
-    const entityCodes = this.req.useSites ? await this.fetchSiteCodes() : [countryCode];
+    const entityCodes = this.req.useSites
+      ? await this.entityConnection.fetchSiteCodes(countryCode)
+      : [countryCode];
     const reportData = await this.reportConnection?.fetchReport('PSSS_Weekly_Report', entityCodes, [
       startWeek,
       endWeek,
@@ -23,10 +25,4 @@ export class FetchCountryWeeklyReportRoute extends Route {
       data: reportData,
     };
   }
-
-  fetchSiteCodes = async () =>
-    this.entityConnection.fetchDescendants(this.req.params.organisationUnitCode, {
-      field: 'code',
-      filter: { type: 'facility' },
-    });
 }
