@@ -199,6 +199,10 @@ exports.down = async function (db) {
     WHERE code = '${STUDENT_COUNT_INDICATOR_CODE}';
   `);
   await db.runSql(`
+    DELETE FROM data_source
+    WHERE code = '${STUDENT_COUNT_INDICATOR_CODE}';
+  `);
+  await db.runSql(`
     DELETE FROM report
     WHERE code = '${SCHOOL_REPORT_CODE}';
   `);
