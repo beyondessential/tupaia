@@ -33,9 +33,17 @@ exports.up = async function (db) {
     builder: 'analyticArithmetic',
     config: {
       formula:
-        'SchPop009 + SchPop010 + SchPop011 + SchPop012 + SchPop013 + SchPop014 + SchPop015 + SchPop016 + SchPop017 + SchPop018 + SchPop019 + SchPop020 + SchPop021 + SchPop022 + SchPop023 + SchPop024 + SchPop025 + SchPop026 + SchPop027 + SchPop028 + SchPop029 + SchPop030 + SchPop031 + SchPop032 + SchPop033 + SchPop034',
+        'SchPop001 + SchPop002 + SchPop003 + SchPop004 + SchPop005 + SchPop006 + SchPop007 + SchPop008 + SchPop009 + SchPop010 + SchPop011 + SchPop012 + SchPop013 + SchPop014 + SchPop015 + SchPop016 + SchPop017 + SchPop018 + SchPop019 + SchPop020 + SchPop021 + SchPop022 + SchPop023 + SchPop024 + SchPop025 + SchPop026 + SchPop027 + SchPop028 + SchPop029 + SchPop030 + SchPop031 + SchPop032 + SchPop033 + SchPop034',
       aggregation: 'MOST_RECENT',
       defaultValues: {
+        SchPop001: 0,
+        SchPop002: 0,
+        SchPop003: 0,
+        SchPop004: 0,
+        SchPop005: 0,
+        SchPop006: 0,
+        SchPop007: 0,
+        SchPop008: 0,
         SchPop009: 0,
         SchPop010: 0,
         SchPop011: 0,
