@@ -37,10 +37,17 @@ exports.up = async function (db) {
     builder: 'analyticArithmetic',
     config: CONFIG('CON'),
   });
+  await insertObject(db, 'data_source', {
+    id: generateId(),
+    code: CODE,
+    type: 'dataElement',
+    service_type: 'indicator',
+  });
 };
 
 exports.down = async function (db) {
   await deleteObject(db, 'indicator', { code: CODE });
+  await deleteObject(db, 'data_source', { code: CODE });
 };
 
 exports._meta = {
