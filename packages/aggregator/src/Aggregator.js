@@ -47,7 +47,15 @@ export class Aggregator {
     }, analytics);
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
-    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
+    const code = Array.isArray(codeInput) ? codeInput : [codeInput];
+    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
+    const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
+      this.context,
+      fetchOptions,
+      aggregationOptions,
+    );
+
+    const { organisationUnitCode, organisationUnitCodes } = adjustedFetchOptions;
     if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
       // No organisation unit code, return empty response
       return {
@@ -59,13 +67,6 @@ export class Aggregator {
       };
     }
 
-    const code = Array.isArray(codeInput) ? codeInput : [codeInput];
-    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
-    const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
-      this.context,
-      fetchOptions,
-      aggregationOptions,
-    );
     const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
 
     return {
