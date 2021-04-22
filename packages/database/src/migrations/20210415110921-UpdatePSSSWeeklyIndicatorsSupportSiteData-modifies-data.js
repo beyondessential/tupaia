@@ -1,5 +1,7 @@
 'use strict';
 
+import { insertObject, generateId, deleteObject } from '../utilities';
+
 var dbm;
 var type;
 var seed;
@@ -81,13 +83,13 @@ const newConfig = syndromeCode => ({
   },
 });
 
-const SYNDROME_CODES = ['AFR', 'DIA', 'DLI', 'ILI', 'PF'];
-const INDICATORS = SYNDROME_CODES.map(syndromeCode => ({
+const SYNDROME_CODES = [['AFR'], ['DIA'], ['DLI'], ['ILI'], ['PF'], ['CON', true]];
+const INDICATORS = SYNDROME_CODES.map(([syndromeCode, newIndicator]) => ({
   code: `PSSS_${syndromeCode}_Total_Cases`,
   oldConfig: oldConfig(syndromeCode),
   newConfig: newConfig(syndromeCode),
+  newIndicator,
 }));
-
 const updateIndicator = async (db, code, config) => {
   return db.runSql(`
     UPDATE
@@ -98,11 +100,23 @@ const updateIndicator = async (db, code, config) => {
     "code" = '${code}';
   `);
 };
+const insertIndicator = async (db, code, config) => {
+  return insertObject(db, 'indicator', {
+    id: generateId(),
+    code,
+    builder: 'analyticArithmetic',
+    config,
+  });
+};
+const deleteIndicator = async (db, code) => {
+  return deleteObject(db, 'indicator', { code });
+};
 
 exports.up = async function (db) {
   await Promise.all(
     INDICATORS.map(indicator => {
-      const { code, newConfig: newConf } = indicator;
+      const { code, newConfig: newConf, newIndicator } = indicator;
+      if (newIndicator) return insertIndicator(db, code, newConf);
       return updateIndicator(db, code, newConf);
     }),
   );
@@ -111,7 +125,8 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   await Promise.all(
     INDICATORS.map(indicator => {
-      const { code, oldConfig: oldConf } = indicator;
+      const { code, oldConfig: oldConf, newIndicator } = indicator;
+      if (newIndicator) return deleteIndicator(db, code);
       return updateIndicator(db, code, oldConf);
     }),
   );
