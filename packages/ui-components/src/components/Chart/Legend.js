@@ -39,19 +39,14 @@ const Text = styled.span`
   line-height: 1.4;
 `;
 
-const getDisplayValue = (chartConfig, value) => {
-  if (value in chartConfig && 'label' in chartConfig[value]) {
-    return chartConfig[value].label;
-  }
-  return value;
-};
+const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || value;
 
-export const getPieLegend = () => ({ payload }) => (
+export const getPieLegend = ({ chartConfig = {} }) => ({ payload }) => (
   <LegendContainer style={{ padding: 0, marginBottom: -10 }}>
     {payload.map(({ color, value }) => (
       <LegendItem key={value} disabled>
         <Box style={{ background: color }} />
-        <Text>{value}</Text>
+        <Text>{getDisplayValue(chartConfig, value)}</Text>
       </LegendItem>
     ))}
   </LegendContainer>

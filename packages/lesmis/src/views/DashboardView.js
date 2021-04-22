@@ -73,7 +73,7 @@ export const DashboardView = () => {
         ))}
       </Tabs>
       {TABS.map(({ key, Component }) => (
-        <TabPanel key={key} dataKey={key} value={selectedTab} Panel={React.Fragment}>
+        <TabPanel key={key} isSelected={key === selectedTab} Panel={React.Fragment}>
           <Component
             entityCode={entityCode}
             selectedDashboard={selectedDashboard}

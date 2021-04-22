@@ -97,8 +97,8 @@ const PanelComponent = styled.div`
   margin-bottom: 2rem;
 `;
 
-export const TabPanel = React.memo(({ children, value, dataKey, Panel }) => {
-  if (value !== dataKey) {
+export const TabPanel = React.memo(({ children, isSelected, Panel }) => {
+  if (!isSelected) {
     return null;
   }
   return <Panel>{children}</Panel>;
@@ -106,11 +106,11 @@ export const TabPanel = React.memo(({ children, value, dataKey, Panel }) => {
 
 TabPanel.propTypes = {
   children: PropTypes.node.isRequired,
-  value: PropTypes.string.isRequired,
-  dataKey: PropTypes.string.isRequired,
+  isSelected: PropTypes.bool,
   Panel: PropTypes.any,
 };
 
 TabPanel.defaultProps = {
   Panel: PanelComponent,
+  isSelected: false,
 };
