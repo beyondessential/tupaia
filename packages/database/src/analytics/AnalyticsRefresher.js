@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import winston from 'winston';
+
 const REFRESH_DEBOUNCE_TIME = 1000; // wait 1 second after changes before refreshing, to avoid double-up
 
 export class AnalyticsRefresher {
@@ -16,7 +18,10 @@ export class AnalyticsRefresher {
   }
 
   listenForChanges() {
-    this.changeHandlerCancellers = [this.models.answer.addChangeHandler(this.handleAnswerChange)];
+    this.changeHandlerCancellers = [
+      this.models.answer.addChangeHandler(this.handleSourceTableChange),
+      this.models.surveyResponse.addChangeHandler(this.handleSourceTableChange),
+    ];
   }
 
   stopListeningForChanges() {
@@ -24,7 +29,7 @@ export class AnalyticsRefresher {
     this.changeHandlerCancellers = [];
   }
 
-  handleAnswerChange = () => {
+  handleSourceTableChange = () => {
     return this.scheduleAnalyticsRefresh();
   };
 
@@ -57,6 +62,13 @@ export class AnalyticsRefresher {
   };
 
   static async executeRefresh(database) {
-    await database.executeSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`);
+    try {
+      const start = Date.now();
+      await database.executeSql(`SELECT mv$refreshMaterializedView('analytics', 'public', true);`);
+      const end = Date.now();
+      winston.info(`Analytics table refresh took: ${end - start}ms`);
+    } catch (error) {
+      winston.error(`Analytics table refresh failed: ${error.message}`);
+    }
   }
 }

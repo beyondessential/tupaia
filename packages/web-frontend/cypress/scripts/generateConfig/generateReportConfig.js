@@ -49,7 +49,7 @@ const logWarningsForSkippedReports = skippedReports => {
 
 const createUrl = (report, urlParams) => {
   const { projectCode, orgUnitCode, dashboardGroup, reportPeriod } = urlParams;
-  const path = [projectCode, orgUnitCode, dashboardGroup.name].join('/');
+  const path = [projectCode, orgUnitCode, dashboardGroup.name].map(encodeURIComponent).join('/');
   const queryParams = {
     report: report.id,
     reportPeriod,
@@ -61,7 +61,7 @@ const createUrl = (report, urlParams) => {
 /**
  * @returns {string|undefined}
  */
-const selectReportPeriod = viewJson => {
+const selectPeriod = viewJson => {
   const { periodGranularity } = viewJson;
   if (!periodGranularity) {
     return undefined;
@@ -119,7 +119,7 @@ const selectUrlParams = async (db, report, dashboardGroups) => {
     const [projectCode] = dashboardGroup.projectCodes;
 
     if (orgUnitCode && projectCode) {
-      const reportPeriod = selectReportPeriod(viewJson);
+      const reportPeriod = selectPeriod(viewJson);
       return { dashboardGroup, orgUnitCode, projectCode, reportPeriod };
     }
   }
@@ -144,25 +144,29 @@ const getUrlsForReports = async (db, reports, reportIdToGroups) => {
 
   const getUrlForReport = async report => {
     const { dataBuilder, drillDownLevel } = report;
+
     if (drillDownLevel) {
       addSkippedReport(WARNING_TYPES.DRILL_DOWN, `${report.id} - level ${drillDownLevel}`);
       return null;
     }
+
     if (!dataBuilder) {
       addSkippedReport(WARNING_TYPES.NO_DATA_BUILDER, report.id);
       return null;
     }
+
     const groupsForReport = reportIdToGroups[report.id];
     if (!groupsForReport) {
       addSkippedReport(WARNING_TYPES.NO_GROUP, report.id);
       return null;
     }
+
     if (!groupsForReport.some(dg => dg.projectCodes)) {
       addSkippedReport(WARNING_TYPES.NO_PROJECT, report.id);
       return null;
     }
-    const urlParams = await selectUrlParams(db, report, groupsForReport);
 
+    const urlParams = await selectUrlParams(db, report, groupsForReport);
     return createUrl(report, urlParams);
   };
   const urls = await Promise.all(reports.map(getUrlForReport));

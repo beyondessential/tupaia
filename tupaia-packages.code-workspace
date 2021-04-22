@@ -138,6 +138,7 @@
       "keyby",
       "migrator",
       "oucode",
+      "parameterise",
       "postgresql",
       "preaggregate",
       "preaggregated",
