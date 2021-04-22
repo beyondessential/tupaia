@@ -24,6 +24,7 @@ import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';
 import { getCartesianLegend } from './Legend';
+import { isMobile } from './utils';
 import { XAxis as XAxisComponent } from './XAxis';
 import { YAxes } from './YAxes';
 import { ReferenceLines } from './ReferenceLines';
@@ -145,8 +146,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
   } = viewContent;
 
   const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
-  // const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
-  const aspect = undefined;
+  const aspect = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
   const config = Object.keys(chartConfig).length > 0 ? chartConfig : { [DEFAULT_DATA_KEY]: {} };
 
