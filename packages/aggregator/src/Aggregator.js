@@ -91,9 +91,16 @@ export class Aggregator {
       return [];
     }
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
-    const events = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
 
-    return this.processEvents(events, aggregationOptions);
+    const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
+      this.context,
+      fetchOptions,
+      aggregationOptions,
+    );
+
+    const events = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
+
+    return this.processEvents(events, adjustedAggregationOptions);
   }
 
   async fetchDataElements(codes, fetchOptions) {
