@@ -34,7 +34,7 @@ exports.up = async function (db) {
     config: {
       formula:
         'SchPop009 + SchPop010 + SchPop011 + SchPop012 + SchPop013 + SchPop014 + SchPop015 + SchPop016 + SchPop017 + SchPop018 + SchPop019 + SchPop020 + SchPop021 + SchPop022 + SchPop023 + SchPop024 + SchPop025 + SchPop026 + SchPop027 + SchPop028 + SchPop029 + SchPop030 + SchPop031 + SchPop032 + SchPop033 + SchPop034',
-      aggregation: 'SUM_EACH_MONTH',
+      aggregation: 'MOST_RECENT',
       defaultValues: {
         SchPop009: 0,
         SchPop010: 0,
