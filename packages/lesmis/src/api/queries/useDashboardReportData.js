@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { getDefaultDates, formatDateForApi } from '@tupaia/ui-components/lib/chart';
 import { get } from '../api';
 
-export const useViewData = ({
+export const useDashboardReportData = ({
   entityCode,
   dashboardGroupId,
   reportId,

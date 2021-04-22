@@ -13,7 +13,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import { Chart } from '@tupaia/ui-components/lib/chart';
-import { useViewData } from '../api';
+import { useDashboardReportData } from '../api';
 import { FetchLoader } from './FetchLoader';
 import { FlexSpaceBetween } from './Layout';
 import { ToggleButton } from './ToggleButton';
@@ -66,7 +66,7 @@ export const Report = ({
   onItemClick,
 }) => {
   const [value, setValue] = useState('chart');
-  const { data: viewContent, isLoading, isError, error } = useViewData({
+  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
     entityCode,
     dashboardGroupId,
     reportId,
