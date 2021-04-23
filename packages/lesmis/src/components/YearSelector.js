@@ -10,20 +10,22 @@ import { Select } from '@tupaia/ui-components';
 import { MIN_DATA_YEAR, ALL_DATES_VALUE } from '../constants';
 
 const getYearOptions = () => {
-  const currentYear = new Date().getFullYear();
   const years = [
     {
       label: 'All Data',
       value: ALL_DATES_VALUE,
     },
   ];
-  let year = MIN_DATA_YEAR;
-  while (year <= currentYear) {
+
+  const startYear = parseInt(MIN_DATA_YEAR);
+  let endYear = new Date().getFullYear();
+
+  while (startYear <= endYear) {
     years.push({
-      label: year.toString(),
-      value: year.toString(),
+      label: endYear.toString(),
+      value: endYear.toString(),
     });
-    year++;
+    endYear--;
   }
   return years;
 };
@@ -49,6 +51,7 @@ export const YearSelector = ({ value, onChange, id, label, className }) => {
       options={yearOptions}
       value={value}
       onChange={handleChangeYear}
+      showPlaceholder={false}
     />
   );
 };

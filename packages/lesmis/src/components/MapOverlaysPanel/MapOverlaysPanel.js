@@ -45,7 +45,7 @@ export const MapOverlaysPanel = ({
     <Container>
       <Header>
         <Typography variant="h5" gutterBottom>
-          Select period
+          Select Period:
         </Typography>
         <FlexStart>
           {YearSelector}
