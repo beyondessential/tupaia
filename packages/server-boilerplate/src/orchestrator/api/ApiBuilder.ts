@@ -132,6 +132,18 @@ export class ApiBuilder {
     return this;
   }
 
+  post<T extends ExpressRequest<T> = Request>(
+    path: string,
+    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+  ) {
+    if (this.verifyAuthMiddleware) {
+      this.app.post(path, this.attachSession, this.verifyAuthMiddleware, handler);
+    } else {
+      this.app.post(path, this.attachSession, handler);
+    }
+    return this;
+  }
+
   build() {
     if (this.attachVerifyLogin) {
       this.app.post('/v1/login', this.attachVerifyLogin, handleWith(LoginRoute));

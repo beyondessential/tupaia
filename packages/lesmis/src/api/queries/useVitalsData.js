@@ -4,7 +4,7 @@
  *
  */
 import { useQuery } from 'react-query';
-import { get } from '../api';
+import { get, post } from '../api';
 import { useEntityData } from './useEntityData';
 import { useEntitiesData } from './useEntitiesData';
 
@@ -46,14 +46,16 @@ const useDecendantSchoolInformation = (entities, entityCode) => {
   return useQuery(
     ['vitals', 'multi_school', entityCode],
     () =>
-      get(`reportData/${entityCode}/LESMIS_multi_school_vitals`, {
-        params: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
+      post(`reportData/${entityCode}/LESMIS_multi_school_vitals`, {
+        data: {
+          queryOverride: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
+        },
       }),
     {
       staleTime: 1000 * 60 * 60 * 1,
       refetchOnWindowFocus: false,
       retry: 1,
-      enabled: true,
+      enabled: decendants.length > 0,
     },
   );
 };
@@ -79,14 +81,16 @@ const useDecendantDistrictInformation = (entities, entityCode) => {
   return useQuery(
     ['vitals', 'province', entityCode],
     () =>
-      get(`reportData/${entityCode}/LESMIS_sub_district_vitals`, {
-        params: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
+      post(`reportData/${entityCode}/LESMIS_sub_district_vitals`, {
+        data: {
+          queryOverride: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
+        },
       }),
     {
       staleTime: 1000 * 60 * 60 * 1,
       refetchOnWindowFocus: false,
       retry: 1,
-      enabled: true,
+      enabled: decendants.length > 0,
     },
   );
 };
