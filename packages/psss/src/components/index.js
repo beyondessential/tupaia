@@ -9,6 +9,7 @@ export * from './Header';
 export * from './Table';
 export * from './Drawer';
 export * from './DateToolbar/DateToolbar';
+export * from './EditableTable';
 export * from './DropdownMenu';
 export * from './SiteAddress';
 export * from './ActivityTab';

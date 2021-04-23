@@ -4,7 +4,6 @@
  */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -19,6 +18,7 @@ import {
   DrawerFooter,
   DrawerTray,
   DrawerHeader,
+  EditableTableProvider,
   AlertCreatedModal,
   ComingSoon,
 } from '../../components';
@@ -33,12 +33,10 @@ import { REPORT_STATUSES, TABLE_STATUSES } from '../../constants';
 import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage, getWeekNumberByPeriod, getDisplayDatesByPeriod } from '../../utils';
 import {
-  useTableQuery,
   useConfirmWeeklyReport,
-  getSitesMetaData,
   useSingleWeeklyReport,
+  useSitesSingleWeeklyReport,
 } from '../../api';
-import { EditableTableProvider } from '../../components/EditableTable';
 
 const SiteReportsSection = styled.section`
   position: relative;
@@ -106,22 +104,22 @@ export const WeeklyReportsPanelComponent = React.memo(
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { countryCode } = useParams();
     const countryName = useSelector(state => getCountryName(state, countryCode));
-    const options = {
-      countryCode,
-      activeWeek,
-    };
-    const { data: sitesData } = useTableQuery('sites', options);
-    const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
 
     const {
       isFetching,
       isLoading,
-      data: countryWeekData,
+      data: countryData,
       syndromes: countrySyndromesData,
       reportStatus,
       unVerifiedAlerts,
       error: countryWeekError,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
+    const { data: siteData } = useSitesSingleWeeklyReport(
+      countryCode,
+      activeWeek,
+      verifiedStatuses,
+      pageQueryKey,
+    );
 
     const [confirmReport, { isLoading: isConfirming, reset, error }] = useConfirmWeeklyReport(
       countryCode,
@@ -144,8 +142,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     };
 
     const isVerified = isFetching || unVerifiedAlerts.length === 0;
-    const showSites =
-      activeWeek !== null && sitesMetaData?.data?.sites.length > 0 && sitesData?.data?.length > 0;
+    const showSites = activeWeek !== null && siteData.length > 0;
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
@@ -177,24 +174,23 @@ export const WeeklyReportsPanelComponent = React.memo(
               data={countrySyndromesData}
               fetchError={countryWeekError && countryWeekError.message}
               isFetching={isLoading || isFetching}
-              sitesReported={countryWeekData['Sites Reported']}
-              totalSites={countryWeekData.Sites}
+              sitesReported={countryData['Sites Reported']}
+              totalSites={countryData.Sites}
               weekNumber={activeWeek}
             />
           </EditableTableProvider>
         </CountryReportsSection>
         {showSites && (
           <SiteReportsSection disabled={isSaving} data-testid="site-reports">
-            <ComingSoon text="The Sentinel Case data section will allow you to explore sentinel site data." />
             <ButtonSelect
               id="active-site"
-              options={sitesData.data}
+              options={siteData}
               onChange={setActiveSiteIndex}
               index={activeSiteIndex}
             />
             <SiteAddress
-              address={sitesData.data[activeSiteIndex].address}
-              contact={sitesData.data[activeSiteIndex].contact}
+              address={siteData[activeSiteIndex].address}
+              contact={siteData[activeSiteIndex].contact}
             />
             <Card variant="outlined" mb={3}>
               <EditableTableProvider
@@ -202,7 +198,7 @@ export const WeeklyReportsPanelComponent = React.memo(
                 setTableStatus={setSitesTableStatus}
               >
                 <SiteReportTable
-                  data={sitesData.data[activeSiteIndex].syndromes}
+                  data={siteData[activeSiteIndex].syndromes}
                   weekNumber={activeWeek}
                 />
               </EditableTableProvider>

@@ -8,13 +8,24 @@ import { Route } from '../Route';
 
 export class FetchCountrySites extends Route {
   async buildResponse() {
-    const { fields } = this.req.query;
     const { countryCode } = this.req.params;
 
-    const sites = await this.entityConnection.fetchSites(countryCode, { fields });
+    const { country, sites } = await this.entityConnection.fetchCountryAndSites(countryCode);
+    const siteCodeToDistrictName = await this.entityConnection.fetchSiteCodeToDistrictName(
+      countryCode,
+    );
+
+    const buildSiteAddress = (site: typeof sites[number]) => ({
+      name: site.name,
+      district: siteCodeToDistrictName[site.code],
+      country: country.name,
+    });
+
     // TODO get sorted response from `entityConnection`:
     // https://github.com/beyondessential/tupaia-backlog/issues/2658
-    const data = sites.sort(getSortByKey('name'));
+    const data = sites
+      .map(site => ({ ...site, address: buildSiteAddress(site), contact: {} }))
+      .sort(getSortByKey('name'));
 
     return { data };
   }

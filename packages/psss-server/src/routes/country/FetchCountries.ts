@@ -9,9 +9,7 @@ import { Route } from '../Route';
 
 export class FetchCountries extends Route {
   async buildResponse() {
-    const { fields } = this.req.query;
-
-    const countries = await this.entityConnection.fetchCountries({ fields });
+    const countries = await this.entityConnection.fetchCountries();
     const { accessPolicy } = await this.getSession();
     const allowedEntities = accessPolicy.getEntitiesAllowed(PSSS_PERMISSION_GROUP);
 
