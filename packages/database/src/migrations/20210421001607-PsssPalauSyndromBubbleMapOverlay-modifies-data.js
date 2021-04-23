@@ -54,20 +54,19 @@ const syndromes = [
 const syndromeBaseMapOverlay = {
   userGroup: 'PSSS Tupaia',
   isDataRegional: true,
-  dataElementCode: null,
+  dataElementCode: 'value',
   measureBuilder: 'sumLatestPerOrgUnit',
   countryCodes: '{"PW"}',
   projectCodes: '{"psss"}',
 };
 
-const syndromeRadiusMapOverlay = (SyndromeName, dateElement, SyndromeCode, customLabel) => ({
+const syndromeRadiusMapOverlay = (syndromeName, dateElement, syndromeCode, customLabel) => ({
   ...syndromeBaseMapOverlay,
-  id: `PSSS_PW_${SyndromeCode}_Syndrome_Bubble_Radius`,
-  name: SyndromeName,
+  id: `PSSS_PW_${syndromeCode}_Syndrome_Bubble_Radius`,
+  name: syndromeName,
   measureBuilderConfig: {
     dataElementCodes: [dateElement],
     entityAggregation: {
-      aggregationType: 'SUM_PER_ORG_GROUP',
       dataSourceEntityType: 'facility',
     },
   },
@@ -84,14 +83,13 @@ const syndromeRadiusMapOverlay = (SyndromeName, dateElement, SyndromeCode, custo
   },
 });
 
-const syndromeHeatMapOverlay = (syndromeName, dateElement, SyndromeCode, customLabel) => ({
+const syndromeHeatMapOverlay = (syndromeName, dateElement, syndromeCode, customLabel) => ({
   ...syndromeBaseMapOverlay,
-  id: `PSSS_PW_${SyndromeCode}_Syndrome_Heat_Map`,
+  id: `PSSS_PW_${syndromeCode}_Syndrome_Heat_Map`,
   name: syndromeName,
   measureBuilderConfig: {
     dataElementCodes: [dateElement],
     entityAggregation: {
-      aggregationType: 'SUM_PER_ORG_GROUP',
       dataSourceEntityType: 'facility',
     },
   },
@@ -162,10 +160,10 @@ exports.down = async function (db) {
       DELETE FROM "map_overlay_group_relation" r
       USING "map_overlay_group" g 
       WHERE g.id = r.map_overlay_group_id
-      AND g.code in ('${radiusMapOverlayGroup.code}','${radiusMapOverlayGroup.code}');
+      AND g.code in ('${radiusMapOverlayGroup.code}','${heatMapOverlayGroup.code}');
 
       DELETE FROM "map_overlay_group"
-      WHERE code in ('${radiusMapOverlayGroup.code}','${radiusMapOverlayGroup.code}');
+      WHERE code in ('${radiusMapOverlayGroup.code}','${heatMapOverlayGroup.code}');
     `,
   );
 
@@ -176,7 +174,7 @@ exports.down = async function (db) {
       await db.runSql(
         `
           DELETE FROM "mapOverlay"
-          WHERE id in ('${mapOverlay.id}','${mapOverlay.id}');
+          WHERE id in ('${mapOverlay.id}');
         `,
       );
     }
