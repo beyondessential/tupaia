@@ -18,8 +18,12 @@ class FetchReportRouteHandler {
   }
 
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
-    const { query, params, models, accessPolicy, body } = req;
+    const { params, models, accessPolicy, body } = req;
+    let { query } = req;
     const reportBuilder = new ReportBuilder();
+    if (body.queryOverride) {
+      query = body.queryOverride;
+    }
     if (body.testConfig) {
       reportBuilder.setConfig(body.testConfig);
     } else {

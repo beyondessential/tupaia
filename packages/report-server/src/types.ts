@@ -30,6 +30,7 @@ export interface ReportConfig {
 interface ReportsRequestBody {
   testConfig?: ReportConfig;
   testData?: Record<string, string | number>[];
+  queryOverride?: FetchReportQuery;
 }
 
 export interface ReportsRequest<
