@@ -6,3 +6,5 @@
 export const PSSS_ENTITY = 'psss';
 export const PSSS_HIERARCHY = 'psss';
 export const PSSS_PERMISSION_GROUP = 'PSSS';
+export const WEEKLY_SURVEY_COUNTRY = 'PSSS_WNR';
+export const WEEKLY_SURVEY_SITE = 'PSSS_WSR';

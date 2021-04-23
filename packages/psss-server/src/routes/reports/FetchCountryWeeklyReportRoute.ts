@@ -8,7 +8,7 @@ import { Route } from '../Route';
 export class FetchCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
-    const { organisationUnitCode: countryCode } = this.req.params;
+    const { countryCode } = this.req.params;
 
     const entityCodes = this.req.useSites
       ? await this.entityConnection.fetchSiteCodes(countryCode)

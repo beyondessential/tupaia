@@ -8,7 +8,7 @@ import { Route } from '../Route';
 export class FetchConfirmedCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
-    const { organisationUnitCode: countryCode } = this.req.params;
+    const { countryCode } = this.req.params;
     const reportData = await this.reportConnection?.fetchReport(
       'PSSS_Confirmed_Weekly_Report',
       [countryCode],

@@ -5,13 +5,12 @@
 
 import { RespondingError } from '@tupaia/utils';
 import { Route } from '../Route';
+import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
 
-const SURVEY_CODE = 'PSSS_WNR';
-
 type WeeklyReportAnswers = {
-  PSSS_Sites: number;
-  PSSS_Sites_Reported: number;
+  PSSS_Sites?: number;
+  PSSS_Sites_Reported?: number;
   PSSS_AFR_Cases: number;
   PSSS_DIA_Cases: number;
   PSSS_ILI_Cases: number;
@@ -19,22 +18,24 @@ type WeeklyReportAnswers = {
   PSSS_DLI_Cases: number;
 };
 
-export class SaveCountryWeeklyReportRoute extends Route {
+export class SaveWeeklyReportRoute extends Route {
   async buildResponse() {
     const { week } = this.req.query;
-    const { organisationUnitCode } = this.req.params;
-    const answers = mapReqBodyToAnswers(this.req.body);
+    const { countryCode, siteCode } = this.req.params;
+
+    const isSiteSurvey = !!siteCode;
+    const answers = mapReqBodyToAnswers(this.req.body, isSiteSurvey);
 
     return this.meditrakConnection?.updateOrCreateSurveyResponse(
-      SURVEY_CODE,
-      organisationUnitCode,
+      isSiteSurvey ? WEEKLY_SURVEY_SITE : WEEKLY_SURVEY_COUNTRY,
+      isSiteSurvey ? siteCode : countryCode,
       week,
       answers,
     );
   }
 }
 
-const mapReqBodyToAnswers = (body: Record<string, unknown>): WeeklyReportAnswers => {
+const mapReqBodyToAnswers = (body: Record<string, unknown>, isSiteSurvey: boolean) => {
   const { sites, sitesReported, afr, dia, ili, pf, dli } = body;
 
   const errorHandler = (field: string) => (value: unknown) =>
@@ -43,13 +44,17 @@ const mapReqBodyToAnswers = (body: Record<string, unknown>): WeeklyReportAnswers
       500,
     );
 
-  return {
-    PSSS_Sites: validateIsNumber(sites, errorHandler('sites')),
-    PSSS_Sites_Reported: validateIsNumber(sitesReported, errorHandler('sitesReported')),
+  const answers: WeeklyReportAnswers = {
     PSSS_AFR_Cases: validateIsNumber(afr, errorHandler('afr')),
     PSSS_DIA_Cases: validateIsNumber(dia, errorHandler('dia')),
     PSSS_ILI_Cases: validateIsNumber(ili, errorHandler('ili')),
     PSSS_PF_Cases: validateIsNumber(pf, errorHandler('pf')),
     PSSS_DLI_Cases: validateIsNumber(dli, errorHandler('dli')),
   };
+  if (!isSiteSurvey) {
+    answers.PSSS_Sites = validateIsNumber(sites, errorHandler('sites'));
+    answers.PSSS_Sites_Reported = validateIsNumber(sitesReported, errorHandler('sitesReported'));
+  }
+
+  return answers;
 };
