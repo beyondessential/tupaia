@@ -7,8 +7,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Legend } from '../../src/components/Map';
-import mapOverlaySerieses from './data/mapOverlaySeries.json';
-import spectrumMapOverlaySeries from './data/spectrumMapOverlaySeries.json';
+import mapOverlaySerieses from './data/mapOverlaySerieses.json';
+import spectrumMapOverlaySeries from './data/spectrumMapOverlaySerieses.json';
 
 const Container = styled.div`
   padding: 1rem;

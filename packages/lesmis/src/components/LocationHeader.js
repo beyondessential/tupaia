@@ -26,6 +26,11 @@ const Container = styled(MuiContainer)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const Heading = styled(Typography)`
@@ -39,6 +44,13 @@ const IconButton = styled(ButtonComponent)`
   font-weight: 500;
   margin-right: 0.5rem;
   color: ${props => props.theme.palette.text.secondary};
+`;
+
+const Contacts = styled(FlexStart)`
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const ContactItem = styled(FlexStart)`
@@ -81,16 +93,14 @@ const ToggleButton = styled(MuiToggleButton)`
 
 export const LocationHeader = () => {
   const { entityCode, view } = useUrlParams();
-  const { data: entityData } = useEntityData({
-    entityCode,
-  });
+  const { data: entityData } = useEntityData(entityCode);
 
   return (
     <Wrapper>
       <Container maxWidth={false}>
         <div>
           <Heading variant="h2">{entityData?.name}</Heading>
-          <FlexStart>
+          <Contacts>
             <ContactItem>
               <Phone />
               <Typography>0457 0547 074</Typography>
@@ -99,7 +109,7 @@ export const LocationHeader = () => {
               <Email />
               <Typography>mayparkngumsecondaryschool@laopdr.com</Typography>
             </ContactItem>
-          </FlexStart>
+          </Contacts>
         </div>
         <FlexEnd>
           <FlexStart>

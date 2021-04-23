@@ -124,11 +124,14 @@ export const GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT = {
   [SINGLE_YEAR]: YEAR,
 };
 
-export function roundStartEndDates(granularity, startDate = moment(), endDate = moment()) {
+export function roundStartEndDates(granularity, startDate, endDate) {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
+  const momentStartDate = moment.isMoment(startDate) ? startDate : moment(startDate);
+  const momentEndDate = moment.isMoment(endDate) ? endDate : moment(endDate);
+
   return {
-    startDate: startDate.clone().startOf(momentUnit),
-    endDate: endDate.clone().endOf(momentUnit),
+    startDate: momentStartDate.clone().startOf(momentUnit),
+    endDate: momentEndDate.clone().endOf(momentUnit),
   };
 }
 
@@ -348,7 +351,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const formatDateForApi = (date, timezone) => {
   if (!date) return undefined;
-  const dateAsMoment = moment(date);
+  const dateAsMoment = moment.isMoment(date) ? date : moment(date);
   if (timezone) dateAsMoment.tz(timezone);
   return dateAsMoment.format(DATE_FORMAT);
 };

@@ -82,7 +82,7 @@ export const Select = ({ value, onChange, options, placeholder, defaultValue, ..
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
   defaultValue: PropTypes.any,
@@ -94,6 +94,7 @@ Select.defaultProps = {
   placeholder: 'Please select',
   defaultValue: '',
   value: '',
+  label: null,
   onChange: null,
 };
 
