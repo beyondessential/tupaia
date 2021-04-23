@@ -1,9 +1,13 @@
-# Fetch Reports
+@hostname = localhost
+@port = 8030
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables 
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
 
-POST http://localhost:8030/v1/fetchReport/8?organisationUnitCode=TO HTTP/1.1
-content-type: application/json
-
-{
-    "emailAddress": "username",
-    "password": "password"
-}
+### Fetch PSSS Weekly Report
+GET http://{{host}}/{{version}}/fetchReport/PSSS_Weekly_Report?organisationUnitCodes=TO&hierarchy=psss&period=2020 HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
