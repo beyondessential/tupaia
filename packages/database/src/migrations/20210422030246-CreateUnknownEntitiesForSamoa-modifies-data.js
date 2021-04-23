@@ -50,18 +50,15 @@ const NEW_UNKNOWN_VILLAGE_ENTITY = {
   attributes: '{}',
 };
 
-// TODO: change the const name and the id when finished testing
-// this will affect the down migration, just get real specific with it i guess
-
-const TEST_ENTITY_RELATION_UPOLO = {
-  id: 'TEST_ENTITY_RELATION_UPOLO',
+const ENTITY_RELATION_UPOLU_EXPLORE = {
+  id: generateId(),
   parent_id: '5df1b88c61f76a485cd1ca09',
   child_id: '5df1b88c61f76a485cd7815a',
   entity_hierarchy_id: '5e9d06e261f76a30c400001b',
 };
 
-const TEST_ENTITY_RELATION_SAVAII = {
-  id: 'TEST_ENTITY_RELATION_SAVAII',
+const ENTITY_RELATION_SAVAII_EXPLORE = {
+  id: generateId(),
   parent_id: '5df1b88c61f76a485cd1ca09',
   child_id: '5df1b88c61f76a485ce4e6b1',
   entity_hierarchy_id: '5e9d06e261f76a30c400001b',
@@ -71,18 +68,22 @@ exports.up = async function(db) {
   await insertObject(db, 'entity', NEW_UNKNOWN_DISTRICT_ENTITY);
   await insertObject(db, 'entity', NEW_UNKNOWN_FACILITY_ENTITY);
   await insertObject(db, 'entity', NEW_UNKNOWN_VILLAGE_ENTITY);
-  await insertObject(db, 'entity_relation', TEST_ENTITY_RELATION_UPOLO);
-  await insertObject(db, 'entity_relation', TEST_ENTITY_RELATION_SAVAII);
+  await insertObject(db, 'entity_relation', ENTITY_RELATION_UPOLU_EXPLORE);
+  await insertObject(db, 'entity_relation', ENTITY_RELATION_SAVAII_EXPLORE);
 };
 
 exports.down = async function(db) {
   await db.runSql(`
     DELETE FROM "entity_relation"
-    WHERE "id" = 'TEST_ENTITY_RELATION_UPOLO';
+    WHERE "parent_id" = '${ENTITY_RELATION_UPOLU_EXPLORE.parent_id}'
+    AND "child_id" = '${ENTITY_RELATION_UPOLU_EXPLORE.child_id}'
+    AND "entity_hierarchy_id" = '${ENTITY_RELATION_UPOLU_EXPLORE.entity_hierarchy_id}';
   `);
   await db.runSql(`
     DELETE FROM "entity_relation"
-    WHERE "id" = 'TEST_ENTITY_RELATION_SAVAII';
+    WHERE "parent_id" = '${ENTITY_RELATION_SAVAII_EXPLORE.parent_id}'
+    AND "child_id" = '${ENTITY_RELATION_SAVAII_EXPLORE.child_id}'
+    AND "entity_hierarchy_id" = '${ENTITY_RELATION_SAVAII_EXPLORE.entity_hierarchy_id}';
   `);
   await db.runSql(`
     DELETE FROM "entity"
