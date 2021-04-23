@@ -4,20 +4,16 @@
  *
  */
 import { useQuery } from 'react-query';
-import { roundStartEndDates, formatDateForApi } from '@tupaia/ui-components/lib/chart';
 import { get } from '../api';
-import { SINGLE_YEAR_GRANULARITY, MIN_DATA_YEAR } from '../../constants';
+import { yearToApiDates } from './utils';
 
 export const useDashboardReportData = ({ entityCode, dashboardGroupId, year, reportId }) => {
-  const currentYear = new Date().getFullYear().toString();
-  const startYear = !year || year === 'all' ? MIN_DATA_YEAR : year;
-  const endYear = !year || year === 'all' ? currentYear : year;
-  const { startDate, endDate } = roundStartEndDates(SINGLE_YEAR_GRANULARITY, startYear, endYear);
+  const { startDate, endDate } = yearToApiDates(year);
 
   const params = {
     dashboardGroupId,
-    startDate: formatDateForApi(startDate),
-    endDate: formatDateForApi(endDate),
+    startDate,
+    endDate,
     type: 'dashboard',
   };
 

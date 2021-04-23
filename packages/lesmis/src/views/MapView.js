@@ -14,9 +14,9 @@ import {
   Legend,
   TilePicker as TilePickerComponent,
 } from '@tupaia/ui-components/lib/map';
-import { MapOverlaysPanel } from '../components';
+import { YearSelector, MapOverlaysPanel } from '../components';
 import { useMapOverlayReportData, useMapOverlaysData } from '../api';
-import { TILE_SETS } from '../constants';
+import { ALL_DATES_VALUE, TILE_SETS } from '../constants';
 import { useUrlParams } from '../utils';
 
 const Container = styled.div`
@@ -71,18 +71,20 @@ const getDefaultTileSet = () => {
 
 export const MapView = () => {
   const { entityCode } = useUrlParams();
+  const [selectedYear, setSelectedYear] = useState(ALL_DATES_VALUE);
   const [activeTileSetKey, setActiveTileSetKey] = useState(getDefaultTileSet());
 
-  const { data: overlaysData, isLoading } = useMapOverlaysData({ entityCode });
+  const { data: overlaysData, isLoading: isLoadingOverlays } = useMapOverlaysData({ entityCode });
 
   const {
+    isLoading,
     data: overlayReportData,
     entityData,
     hiddenValues,
     setValueHidden,
     selectedOverlay,
     setSelectedOverlay,
-  } = useMapOverlayReportData(entityCode);
+  } = useMapOverlayReportData({ entityCode, year: selectedYear });
 
   const handleLocationChange = useCallback(
     (map, bounds) => {
@@ -98,10 +100,12 @@ export const MapView = () => {
   return (
     <Container>
       <MapOverlaysPanel
-        isLoading={isLoading}
+        isLoadingOverlays={isLoadingOverlays}
+        isLoadingData={isLoading}
         overlays={overlaysData}
         selectedOverlay={selectedOverlay}
         setSelectedOverlay={setSelectedOverlay}
+        YearSelector={<YearSelector value={selectedYear} onChange={setSelectedYear} />}
       />
       <Main>
         <Map

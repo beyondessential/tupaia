@@ -15,6 +15,7 @@ import {
   getMeasureDisplayInfo,
 } from '@tupaia/ui-components/lib/map';
 import { useEntitiesData } from './useEntitiesData';
+import { yearToApiDates } from './utils';
 import { get } from '../api';
 
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
@@ -101,7 +102,7 @@ const processMeasureData = ({
     .filter(({ isHidden }) => !isHidden);
 };
 
-export const useMapOverlayReportData = entityCode => {
+export const useMapOverlayReportData = ({ entityCode, year }) => {
   const [hiddenValues, setHiddenValues] = useState({});
   const [selectedOverlay, setSelectedOverlay] = useState(null);
 
@@ -111,7 +112,11 @@ export const useMapOverlayReportData = entityCode => {
 
   const entityData = entitiesByCode[entityCode];
 
+  const { startDate, endDate } = yearToApiDates(year);
+
   const params = {
+    startDate,
+    endDate,
     shouldShowAllParentCountryResults: false,
     type: 'mapOverlay',
   };
