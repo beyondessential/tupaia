@@ -4,41 +4,42 @@
  */
 
 import { queryCache, useMutation } from 'react-query';
-import { saveSiteReport } from './requests';
 import { put, post } from './api';
-import { FakeAPI } from './FakeApi';
 
-export const useSaveSiteReport = params =>
-  useMutation(saveSiteReport, {
-    onSuccess: () => queryCache.invalidateQueries('country-weeks', params),
-  });
-
-export const useConfirmWeeklyReport = (orgUnit, period) =>
+export const useConfirmWeeklyReport = (countryCode, period) =>
   useMutation(
     () =>
-      post(`confirmedWeeklyReport/${orgUnit}`, {
+      post(`confirmedWeeklyReport/${countryCode}`, {
         params: { week: period },
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
-        queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
-        queryCache.invalidateQueries(`confirmedWeeklyReport`);        
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
+        queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
+        queryCache.invalidateQueries(`confirmedWeeklyReport`);
       },
     },
   );
 
-export const useSaveCountryReport = (orgUnit, period) =>
-  useMutation(
+export const useSaveWeeklyReport = ({ countryCode, siteCode, week }) => {
+  const isSiteSurvey = !!siteCode;
+  const weeklyReportEndpoint = isSiteSurvey
+    ? `weeklyReport/${countryCode}/${siteCode}`
+    : `weeklyReport/${countryCode}`;
+
+  return useMutation(
     data =>
-      put(`weeklyReport/${orgUnit}`, {
-        params: { week: period },
+      put(weeklyReportEndpoint, {
+        params: { week },
         data,
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
-        queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
+        queryCache.invalidateQueries(weeklyReportEndpoint);
+        if (!isSiteSurvey) {
+          queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
+        }
       },
     },
   );
+};
