@@ -50,6 +50,9 @@ const NEW_UNKNOWN_VILLAGE_ENTITY = {
   attributes: '{}',
 };
 
+// TODO: change the const name and the id when finished testing
+// this will affect the down migration, just get real specific with it i guess
+
 const TEST_ENTITY_RELATION_UPOLO = {
   id: 'TEST_ENTITY_RELATION_UPOLO',
   parent_id: '5df1b88c61f76a485cd1ca09',
