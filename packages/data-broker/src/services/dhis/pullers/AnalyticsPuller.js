@@ -123,6 +123,8 @@ export class AnalyticsPuller {
     return buildAnalyticsFromDhisAnalytics(translatedData);
   };
 
+  // This method is to support a deprecated way of getting analytics by fetching events then converting it.
+  // See main method pullAnalyticsFromEventsForApi_Deprecated
   fetchEventsForPrograms = async (api, programCodes, query) => {
     const events = [];
     await Promise.all(

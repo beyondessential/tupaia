@@ -80,10 +80,20 @@ export const buildAggregatedDataValueAnalyticsQueries = queryInput => {
 
   // 'dataPeriodType' is used when you want to force converting the periods to a specific period type.
   // Eg, if 'dataPeriodType' = 'MONTH', force converting to MONTHLY periods '201701;201702;201703;201704;...'
+  // We want to use this when fetching aggregated data because:
 
-  // This is useful in the scenario when you are fetching indicator values which has to request the aggregate `analytics.json` endpoint
-  // and we have to send the correct period type that the data is submitted. Normally this is taken care of if the visualisation has the correct time selector,
-  // but if it does not, we have to manually convert the periods to the right type so that `analytics.json` can return the correct data without aggregation.
+  // All data in dhis has a date granularity,
+  // e.g. you can submit an event against a full date, or just December 2018.
+
+  // When we are fetching raw data, we can ignore this, because if we request data for 2015-2021
+  // it will return all data, including an event at December 2018 because it is within that range.
+
+  // But when we fetch aggregated data, the API behaves differently. If we request data for 2015-2021
+  // it will NOT return an event at December 2018. To get the event, we have to request data for 201810 specifically.
+
+  // This is true for both fetching data element values and fetching indicator values,
+  // however, we use the raw data API endpoint most of the time, and we only use the aggregated API endpoint for indicators.
+  // So practically, this is an indicator problem, but technically it's for both.
   if (newQueryInput.startDate && newQueryInput.endDate && newQueryInput.dataPeriodType) {
     newQueryInput.period = convertDateRangeToPeriodQueryString(
       newQueryInput.startDate,
