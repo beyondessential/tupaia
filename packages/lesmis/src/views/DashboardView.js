@@ -56,23 +56,15 @@ export const DashboardView = () => {
       // "Province" in lesmis context
       return (
         <Wrapper>
-          <Container>
+          <Container maxWidth={false}>
             <WrapContainer>
               <TitleContainer>
                 <RedTitle variant="h4">Province Profile:</RedTitle>
               </TitleContainer>
-              <EntityVitalsItem name="Province Code" value={vitals.code} icon="PinDrop" />
-              <EntityVitalsItem
-                name="Province Population"
-                value={vitals.Population}
-                icon="People"
-              />
+              <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
+              <EntityVitalsItem name="Province Population" value={vitals.Population} icon="Group" />
               <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-              <EntityVitalsItem
-                name="No. Students"
-                value={vitals.NumberOfStudents}
-                icon="LocalLibrary"
-              />
+              <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
             </WrapContainer>
             <img src="/images/school.png" alt="place" />
             <WrapContainer>
@@ -90,23 +82,15 @@ export const DashboardView = () => {
               <TitleContainer>
                 <RedTitle variant="h4">District Profile:</RedTitle>
               </TitleContainer>
-              <EntityVitalsItem name="District Code" value={vitals.code} icon="PinDrop" />
-              <EntityVitalsItem
-                name="District Population"
-                value={vitals.Population}
-                icon="People"
-              />
+              <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
+              <EntityVitalsItem name="District Population" value={vitals.Population} icon="Group" />
               <EntityVitalsItem
                 name="Priority District"
                 value={vitals.priorityDistrict ? 'Yes' : 'No'}
-                icon="Assignment"
+                icon="Notepad"
               />
               <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-              <EntityVitalsItem
-                name="No. Students"
-                value={vitals.NumberOfStudents}
-                icon="LocalLibrary"
-              />
+              <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
             </WrapContainer>
             <img src="/images/school.png" alt="place" />
             <WrapContainer>
@@ -118,24 +102,28 @@ export const DashboardView = () => {
     case 'school':
       return (
         <Wrapper>
-          <Container>
+          <Container maxWidth={false}>
             <WrapContainer>
               <TitleContainer>
                 <RedTitle variant="h4">School Profile:</RedTitle>
               </TitleContainer>
-              <EntityVitalsItem name="School Code" value={vitals.code} icon="PinDrop" />
+              <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
               <EntityVitalsItem
                 name="Number of Students"
                 value={vitals.NumberOfStudents}
-                icon="LocalLibrary"
+                icon="Study"
               />
-              <EntityVitalsItem name="Completed School" value="Yes" icon="Assignment" />
+              <EntityVitalsItem name="Completed School" value="Yes" icon="Notepad" />
               <EntityVitalsItem
                 name="Distance to Main Road"
                 value={vitals.DistanceToMainRoad}
-                icon="Map"
+                icon="Road"
               />
-              <EntityVitalsItem name="Location" value={vitals.point} icon="LocationOn" />
+              <EntityVitalsItem
+                name="Location"
+                value={vitals.point.map(x => x.toFixed(3)).join()}
+                icon="PushPin"
+              />
             </WrapContainer>
             <img src="/images/school.png" alt="place" />
           </Container>
@@ -151,5 +139,3 @@ export const DashboardView = () => {
       );
   }
 };
-
-// <Typography>${JSON.stringify(vitals)}</Typography>
