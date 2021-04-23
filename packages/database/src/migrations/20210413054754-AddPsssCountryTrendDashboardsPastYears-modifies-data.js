@@ -68,6 +68,24 @@ const getDashboardReport = (id, thingName) => {
     id,
     dataBuilder: 'analyticsPerPeriod',
     dataBuilderConfig: {
+      layerYearOnYearSeries: [
+        {
+          seriesKey: 2021,
+          dataElementCode: 'PSSS_Confirmed_ILI_Cases',
+        },
+        {
+          seriesKey: 2020,
+          dataElementCode: 'PSSS_Confirmed_ILI_Cases_1_yr_ago',
+        },
+        {
+          seriesKey: 2019,
+          dataElementCode: 'PSSS_Confirmed_ILI_Cases_2_yr_ago',
+        },
+        {
+          seriesKey: 2018,
+          dataElementCode: 'PSSS_Confirmed_ILI_Cases_3_yr_ago',
+        },
+      ],
       periodType: 'week',
       aggregationType: ['FINAL_EACH_WEEK', 'YEAR_ON_YEAR'],
       dataElementCode: THINGS[thingName],

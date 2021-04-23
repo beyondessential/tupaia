@@ -4,8 +4,7 @@
  */
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
-// import { PERIOD_TYPES } from '@tupaia/utils';
-import { layerYearOnYear } from '../../../../analytics/aggregateAnalytics/aggregations/layerYearOnYear';
+import { layerYearOnYear } from '../../../../apiV1/utils/layerYearOnYear';
 
 describe('layerYearOnYear()', () => {
   it('layers the years on previous years', () => {
@@ -49,21 +48,4 @@ describe('layerYearOnYear()', () => {
     const expected = arrayToAnalytics([]);
     expect(layerYearOnYear(analytics)).toEqual(expected);
   });
-
-  // it('it can layer halfway through the year', () => {
-  //   //   'YYYYW01' eg
-  //   const analytics = arrayToAnalytics([
-  //     ['BCD1', 'TO', '2020W10', 1],
-  //     ['BCD1', 'TO', '2020W11', 2],
-  //     ['BCD1', 'TO', '2018W10', 3],
-  //     ['BCD1', 'TO', '2018W11', 4],
-  //   ]);
-  //   const expected = arrayToAnalytics([
-  //     ['BCD1', 'TO', '2020W10', 1],
-  //     ['BCD1', 'TO', '2020W11', 2],
-  //     ['BCD1_2_yr_ago', 'TO', '2020W10', 3],
-  //     ['BCD1_2_yr_ago', 'TO', '2020W11', 4], // this is folded into latest year's data
-  //   ]);
-  //   expect(layerYearOnYear(analytics)).toEqual(expected);
-  // });
 });

@@ -104,6 +104,7 @@ const buildKeyAndValueFunctions = (keyMapper, valueMapper) => {
  * @return {Object<string, string>}
  */
 export const reduceToDictionary = (objectCollection, keyMapper, valueMapper) => {
+  console.log(objectCollection, keyMapper, valueMapper);
   const objects = collectionToArray(objectCollection);
   const [keyOf, valueOf] = buildKeyAndValueFunctions(keyMapper, valueMapper);
   const dictionary = {};
