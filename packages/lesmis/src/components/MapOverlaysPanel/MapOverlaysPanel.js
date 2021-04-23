@@ -49,6 +49,7 @@ export const MapOverlaysPanel = ({
         </Typography>
         <FlexStart>
           {YearSelector}
+          {/* Todo: add better loader @see https://github.com/beyondessential/tupaia-backlog/issues/2681 */}
           <Box>{isLoadingData && <CircularProgress size={30} />}</Box>
         </FlexStart>
       </Header>

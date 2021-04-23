@@ -23,7 +23,7 @@ const Container = styled.div`
   position: relative;
   z-index: 1; // make sure the map is under the site menus & search
   display: flex;
-  height: calc(100vh - 265px);
+  height: calc(100vh - 219px);
   min-height: 600px;
 `;
 
