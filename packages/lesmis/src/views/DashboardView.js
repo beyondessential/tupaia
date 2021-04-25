@@ -51,6 +51,12 @@ const makeTabOptions = entityType => [
     Component: DashboardReportTabView,
   },
   {
+    value: 'indicators',
+    label: 'Free Indicator Selection',
+    Component: TabTemplate,
+    Body: 'Free Indicator Selection',
+  },
+  {
     value: 'essdpPlan',
     label: 'ESSDP Plan 2021-25 M&E Framework',
     Component: TabTemplate,
