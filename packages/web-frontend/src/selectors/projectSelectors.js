@@ -37,7 +37,8 @@ export const selectTileSets = createSelector(selectCurrentProject, project => {
 
   if (project.config && project.config.tileSets) {
     const customSetKeys = project.config.tileSets.split(',').map(item => item.trim());
-    tileSetKeys = [...tileSetKeys, ...customSetKeys];
+    const { includeDefaultTileSets = true } = project.config;
+    tileSetKeys = includeDefaultTileSets ? [...tileSetKeys, ...customSetKeys] : customSetKeys;
   }
 
   return TILE_SETS.filter(tileSet => tileSetKeys.includes(tileSet.key));
@@ -48,7 +49,7 @@ export const selectActiveTileSetKey = state => state.map.activeTileSetKey;
 export const selectActiveTileSet = createSelector(
   [selectTileSets, selectActiveTileSetKey],
   (tileSets, activeTileSetKey) => {
-    return tileSets.find(tileSet => tileSet.key === activeTileSetKey);
+    return tileSets.find(tileSet => tileSet.key === activeTileSetKey) || tileSets[0];
   },
 );
 
