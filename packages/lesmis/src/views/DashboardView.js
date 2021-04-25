@@ -51,17 +51,46 @@ const makeTabOptions = entityType => [
     Component: DashboardReportTabView,
   },
   {
-    value: 'earlyChildhood',
-    label: 'ESSDP Early Childhood Education',
-    Component: TabTemplate,
-    Body: 'ESSDP Early Childhood Education',
-  },
-  { value: 'primary', label: 'ESSDP Primary', Component: TabTemplate, Body: 'ESSDP Primary' },
-  {
-    value: 'indicatorSelection',
+    value: 'indicators',
     label: 'Free Indicator Selection',
     Component: TabTemplate,
     Body: 'Free Indicator Selection',
+  },
+  {
+    value: 'essdpPlan',
+    label: 'ESSDP Plan 2021-25 M&E Framework',
+    Component: TabTemplate,
+    Body: '9th Education Sector and Sports Development Plan 2021-25 M&E Framework',
+  },
+  {
+    value: 'earlyChildhood',
+    label: 'ESSDP Early childhood education sub-sector',
+    Component: TabTemplate,
+    Body: 'ESSDP Early childhood education sub-sector',
+  },
+  {
+    value: 'primary',
+    label: 'ESSDP Primary sub-sector',
+    Component: TabTemplate,
+    Body: 'ESSDP Primary sub-sector',
+  },
+  {
+    value: 'secondary',
+    label: 'ESSDP Lower secondary sub-sector',
+    Component: TabTemplate,
+    Body: 'ESSDP Lower secondary sub-sector',
+  },
+  {
+    value: 'emergency',
+    label: 'Emergency in Education/COVID-19',
+    Component: TabTemplate,
+    Body: 'Emergency in Education/COVID-19',
+  },
+  {
+    value: 'international',
+    label: 'International reporting on SDGs',
+    Component: TabTemplate,
+    Body: 'International reporting on SDGs',
   },
 ];
 
@@ -95,6 +124,7 @@ export const DashboardView = () => {
                 options={tabOptions}
                 value={selectedTab}
                 onChange={handleChangeTab}
+                showPlaceholder={false}
                 SelectProps={{
                   MenuProps: { disablePortal: true },
                 }}

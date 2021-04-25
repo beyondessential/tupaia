@@ -19,3 +19,4 @@ export * from './EntityPolygonLink';
 export * from './Tabs';
 export * from './FetchLoader';
 export * from './Report';
+export * from './YearSelector';
