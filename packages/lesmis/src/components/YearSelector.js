@@ -18,14 +18,14 @@ const getYearOptions = () => {
   ];
 
   const startYear = parseInt(MIN_DATA_YEAR);
-  let endYear = new Date().getFullYear();
+  let year = new Date().getFullYear();
 
-  while (startYear <= endYear) {
+  while (year >= startYear) {
     years.push({
-      label: endYear.toString(),
-      value: endYear.toString(),
+      label: year.toString(),
+      value: year.toString(),
     });
-    endYear--;
+    year--;
   }
   return years;
 };
