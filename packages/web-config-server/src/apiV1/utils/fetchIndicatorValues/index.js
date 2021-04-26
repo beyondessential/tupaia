@@ -4,4 +4,4 @@
  */
 
 export { fetchAggregatedAnalyticsByDhisIds } from './fetchAggregatedAnalyticsByDhisIds';
-export { checkAllDataElementsAreDhisIndicators } from './checkAllDataElementsAreDhisIndicators';
+export { shouldUseFetchIndicatorValues } from './shouldUseFetchIndicatorValues';

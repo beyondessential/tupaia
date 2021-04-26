@@ -6,7 +6,7 @@
 // because the normal analytics/rawData.json endpoint does not return any data for indicators.
 // Will have to implement this properly with #tupaia-backlog/issues/2412
 // After that remove this file and anything related to it
-export const checkAllDataElementsAreDhisIndicators = async (models, dataElementCodes) => {
+export const shouldUseFetchIndicatorValues = async (models, dataElementCodes) => {
   const dataElements = await models.dataSource.find({
     code: dataElementCodes,
     type: 'dataElement',
@@ -14,13 +14,17 @@ export const checkAllDataElementsAreDhisIndicators = async (models, dataElementC
 
   for (const dataElementCode of dataElementCodes) {
     const dataElement = dataElements.find(d => d.code === dataElementCode);
-    if (
-      !dataElement.config.dhisId ||
-      !['ProgramIndicator'].includes(dataElement.config.dhisDataType)
-    ) {
+    if (!dataElement.config.dhisId) {
+      return false;
+    }
+    if (!isBuggedProgramIndicator(dataElement)) {
       return false;
     }
   }
 
   return true;
 };
+
+const isBuggedProgramIndicator = dataElement =>
+  dataElement.config.dhisDataType === 'ProgramIndicator' &&
+  dataElement.config.dhisIndicatorWrappingBug;
