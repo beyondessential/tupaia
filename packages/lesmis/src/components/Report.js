@@ -160,5 +160,5 @@ Report.defaultProps = {
   defaultTimePeriod: null,
   year: null,
   periodGranularity: null,
-  onItemClick: null,
+  onItemClick: () => {},
 };
