@@ -18,6 +18,7 @@ import {
   sumPerOrgGroup,
   sumPerPeriodPerOrgGroup,
   sumPreviousPerPeriod,
+  fillEmptyPeriodsWithValue,
 } from './aggregations';
 
 export const aggregateAnalytics = (
@@ -82,6 +83,8 @@ export const aggregateAnalytics = (
         },
         QUARTER,
       );
+    case AGGREGATION_TYPES.FILL_EMPTY_PERIODS_WITH_PREDEFINED_VALUE:
+      return getFinalValuePerPeriod(analytics, { defaultValue: null, ...aggregationConfig }, DAY);
     case AGGREGATION_TYPES.SUM_EACH_QUARTER:
       return getSumValuePerPeriod(analytics, aggregationConfig, QUARTER);
     case AGGREGATION_TYPES.FINAL_EACH_YEAR:

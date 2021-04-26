@@ -32,8 +32,6 @@ class SumPerPeriodBuilder extends DataBuilder {
     const dataElements = this.getAllDataElements();
 
     const { results, period } = await this.fetchAnalytics(dataElements);
-    // console.log(results);
-    // console.log(period);
 
     const dataElementToDataClass = this.getDataElementToDataClass();
     const dataByPeriod = {};
@@ -57,20 +55,6 @@ class SumPerPeriodBuilder extends DataBuilder {
       dataByPeriod[convertPeriod][dataClass] =
         (dataByPeriod[convertPeriod][dataClass] || 0) + value;
     });
-
-    for (const timestamp of period.requested.split(';')) {
-      const convertPeriod = configPeriodType // Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
-        ? convertToPeriod(timestamp, configPeriodType)
-        : timestamp;
-      if (!dataByPeriod[convertPeriod]) {
-        dataByPeriod[convertPeriod] = {
-          timestamp: periodToTimestamp(convertPeriod),
-          name: periodToDisplayString(convertPeriod, configPeriodType),
-          value: null,
-        };
-      }
-    }
-    console.log(dataByPeriod);
 
     return { data: Object.values(dataByPeriod), period };
   }

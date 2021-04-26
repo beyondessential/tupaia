@@ -137,6 +137,29 @@ class FinalValueAggregator {
 
     return values;
   }
+
+  getFilledValues(analytics, aggregationPeriod, defaultValue) {
+    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, true);
+
+    const values = [];
+    this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
+      let mostRecentValue;
+
+      periods.forEach(period => {
+        // value can be null
+        mostRecentValue = organisationUnitCache.hasOwnProperty(period)
+          ? organisationUnitCache[period]
+          : defaultValue;
+
+        values.push({
+          ...mostRecentValue,
+          period,
+        });
+      });
+    });
+
+    return values;
+  }
 }
 
 export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
@@ -148,6 +171,10 @@ export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregation
   const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
+
+  if (options.hasOwnProperty('defaultValue')) {
+    return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
+  }
 
   return options.fillEmptyPeriodsTilNow
     ? valueAggregator.getContinuousValues(analytics, aggregationPeriod)
