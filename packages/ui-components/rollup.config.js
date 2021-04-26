@@ -56,7 +56,7 @@ export default [
     external: externals,
   },
   {
-    input: 'src/components/map/index.js',
+    input: 'src/components/Map/index.js',
     output: [
       { file: 'lib/map/index.js', format: 'cjs', plugins: [terser()] },
       { file: 'lib/map/index.esm.js', format: 'esm', plugins: [terser()] },

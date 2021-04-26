@@ -30,7 +30,7 @@ We first need to start the servers locally, then run the e2e tests. We can run t
 ### 🍎 MacOS
 
 - UI mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
-- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
+- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:run`
 
 ### ⊞ Windows
 
@@ -45,8 +45,8 @@ yarn workspace @tupaia/web-frontend start
 
 Then, run one of the following commands in a **Windows terminal**:
 
-- UI mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
-- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
+- UI mode: `yarn workspace @tupaia/web-frontend cypress:open`
+- Terminal mode: `yarn workspace @tupaia/web-frontend cypress:run`
 
 ## Limitations
 
