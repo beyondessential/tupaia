@@ -184,6 +184,7 @@ const table11 = {
     prefix: 'CH',
     start: 452,
     end: 604,
+    skipCells: [544],
   }),
   id: 'TO_CH_Validation_CH11',
 };
