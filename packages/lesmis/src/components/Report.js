@@ -111,8 +111,6 @@ export const Report = React.memo(
       }
     };
 
-    const chartType = viewContent?.chartType;
-
     return (
       <Container>
         <Header>
