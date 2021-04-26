@@ -9,13 +9,13 @@ import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
 
 type WeeklyReportAnswers = {
-  PSSS_Sites?: number;
-  PSSS_Sites_Reported?: number;
   PSSS_AFR_Cases: number;
   PSSS_DIA_Cases: number;
   PSSS_ILI_Cases: number;
   PSSS_PF_Cases: number;
   PSSS_DLI_Cases: number;
+  PSSS_Sites?: number;
+  PSSS_Sites_Reported?: number;
 };
 
 export class SaveWeeklyReportRoute extends Route {
