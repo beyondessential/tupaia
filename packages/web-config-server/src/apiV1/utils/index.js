@@ -43,5 +43,5 @@ export {
 } from './findAccessibleGroupedMapOverlays';
 export {
   fetchAggregatedAnalyticsByDhisIds,
-  checkAllDataElementsAreDhisIndicators,
+  shouldUseFetchIndicatorValues,
 } from './fetchIndicatorValues';

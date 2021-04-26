@@ -6,7 +6,7 @@ import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
 import {
   fetchAggregatedAnalyticsByDhisIds,
-  checkAllDataElementsAreDhisIndicators,
+  shouldUseFetchIndicatorValues,
 } from '/apiV1/utils';
 
 export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
@@ -20,7 +20,7 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   }
 
   async fetchResults(dataElementCodes) {
-    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
+    const useFetchIndicatorValues = await shouldUseFetchIndicatorValues(
       this.models,
       dataElementCodes,
     );
@@ -28,7 +28,7 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
     // because the normal analytics/rawData.json endpoint does not return any data for indicators.
     // Will have to implement this properly with #tupaia-backlog/issues/2412
     // After that remove this file and anything related to it
-    if (allDataElementsAreDhisIndicators) {
+    if (useFetchIndicatorValues) {
       const { entityAggregation } = this.config;
       const hierarchyId = await this.fetchEntityHierarchyId();
       const result = await fetchAggregatedAnalyticsByDhisIds(
