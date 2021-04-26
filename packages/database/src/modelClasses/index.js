@@ -3,9 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { AnalyticsModel } from './Analytics';
 import { AccessRequestModel } from './AccessRequest';
 import { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
 import { AnswerModel } from './Answer';
+import { APIClientModel } from './APIClient';
 import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardGroupModel } from './DashboardGroup';
@@ -42,9 +44,11 @@ import { DataServiceEntityModel } from './DataServiceEntity';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
+  Analytics: AnalyticsModel,
   AccessRequest: AccessRequestModel,
   AncestorDescendantRelation: AncestorDescendantRelationModel,
   Answer: AnswerModel,
+  ApiClient: APIClientModel,
   Comment: CommentModel,
   Country: CountryModel,
   DashboardGroup: DashboardGroupModel,
@@ -82,11 +86,15 @@ export const modelClasses = {
 
 // export any models and types that are extended in other packages
 export { AccessRequestModel } from './AccessRequest';
+export {
+  AncestorDescendantRelationModel,
+  AncestorDescendantRelationType,
+} from './AncestorDescendantRelation';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataSourceModel, DataSourceType } from './DataSource';
 export { EntityModel, EntityType } from './Entity';
-export { EntityHierarchyModel } from './EntityHierarchy';
+export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
 export { FacilityModel } from './Facility';
 export { GeographicalAreaModel } from './GeographicalArea';

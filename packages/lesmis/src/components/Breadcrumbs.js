@@ -4,14 +4,14 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
 import Skeleton from '@material-ui/lab/Skeleton';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { useOrgUnitData } from '../api';
-import { useUrlParams } from '../utils';
+import { makeEntityLink } from '../utils';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   font-size: 0.75rem;
@@ -36,60 +36,40 @@ const Link = props => <MuiLink color="inherit" {...props} component={RouterLink}
 
 const Loader = () => (
   <Skeleton animation="wave">
-    <MuiLink>Loading</MuiLink>
+    <MuiLink>breadcrumbsLoading</MuiLink>
   </Skeleton>
 );
 
-const getSegments = (orgUnits, orgUnitCode, hierarchy = []) => {
-  const orgUnit = orgUnits.find(entity => entity.organisationUnitCode === orgUnitCode);
+export const Breadcrumbs = ({ isLoading, breadcrumbs }) => (
+  <StyledBreadcrumbs separator={<NavigateNextIcon />}>
+    <Link to="/">Home</Link>
+    {isLoading ? (
+      <Loader />
+    ) : (
+      breadcrumbs.map(({ name, url }, index) => {
+        const last = index === breadcrumbs.length - 1;
+        return last ? (
+          <ActiveSegment key={url}>{name}</ActiveSegment>
+        ) : (
+          <Link to={url} key={url}>
+            {name}
+          </Link>
+        );
+      })
+    )}
+  </StyledBreadcrumbs>
+);
 
-  if (!orgUnit) {
-    return [];
-  }
-
-  const newHierarchy = [orgUnit, ...hierarchy];
-
-  if (orgUnit.type === 'Country') {
-    return newHierarchy;
-  }
-  return getSegments(orgUnits, orgUnit.parent, newHierarchy);
+Breadcrumbs.propTypes = {
+  breadcrumbs: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      url: PropTypes.string,
+    }),
+  ).isRequired,
+  isLoading: PropTypes.bool,
 };
 
-const useBreadcrumbs = () => {
-  const { organisationUnitCode } = useUrlParams();
-  // Todo: update data fetch to use entity server country hierarcy endpoint
-  const orgUnitResponse = useOrgUnitData({ organisationUnitCode: 'LA', includeCountryData: true });
-
-  if (!orgUnitResponse.data) {
-    return { ...orgUnitResponse, breadcrumbs: [] };
-  }
-
-  const { countryHierarchy } = orgUnitResponse.data;
-  const breadcrumbs = getSegments(countryHierarchy, organisationUnitCode);
-
-  return { ...orgUnitResponse, breadcrumbs };
-};
-
-export const Breadcrumbs = () => {
-  const { breadcrumbs, isLoading } = useBreadcrumbs();
-
-  return (
-    <StyledBreadcrumbs separator={<NavigateNextIcon />}>
-      <Link to="/">Home</Link>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        breadcrumbs.map(({ name, organisationUnitCode }, index) => {
-          const last = index === breadcrumbs.length - 1;
-          return last ? (
-            <ActiveSegment key={organisationUnitCode}>{name}</ActiveSegment>
-          ) : (
-            <Link to={`/${organisationUnitCode}`} key={organisationUnitCode}>
-              {name}
-            </Link>
-          );
-        })
-      )}
-    </StyledBreadcrumbs>
-  );
+Breadcrumbs.defaultProps = {
+  isLoading: false,
 };

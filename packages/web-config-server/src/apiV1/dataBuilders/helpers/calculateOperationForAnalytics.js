@@ -16,7 +16,6 @@ import keyBy from 'lodash.keyby';
 import isPlainObject from 'lodash.isplainobject';
 import { divideValues, fractionAndPercentage } from './divideValues';
 import { subtractValues } from './subtractValues';
-import { translatePointForFrontend } from '/utils/geoJson';
 
 const checkCondition = (value, config) =>
   valueToGroup(value, { groups: { Yes: config.condition }, defaultValue: 'No' });
@@ -210,7 +209,7 @@ const getValueFromEntity = async (entity, config) => {
     case 'subType':
       return entity.attributes.type;
     case 'coordinates': {
-      const [lat, long] = translatePointForFrontend(entity.point);
+      const [lat, long] = entity.getPoint();
       return `${lat}, ${long}`;
     }
     case '$countDescendantsMatchingConditions': {

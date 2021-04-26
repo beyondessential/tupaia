@@ -1,5 +1,39 @@
-# Test
+@hostname = localhost
+@port = 8050
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
 
-GET http://localhost:8050/v1/test HTTP/1.1
-content-type: application/json
-Authorization: Basic <email>:<password>
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables 
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+### Test
+GET http://{{host}}/{{version}}/test HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch a single entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch descendants of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?field=code&includeRootEntity=true HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered descendants of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/descendants?fields=type,code&filter=type:district,facility HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch relations of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/relations?ancestor_filter=type:facility&descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Fetch filtered relations of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA/relations?ancestor_filter=type:sub_district&descendant_filter=type:school;attributes_type:Secondary&groupBy=descendant HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}

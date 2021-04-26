@@ -149,7 +149,7 @@ ProfileButton.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
-  MenuOptions: PropTypes.element.isRequired,
+  MenuOptions: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
   className: PropTypes.string,
 };
 

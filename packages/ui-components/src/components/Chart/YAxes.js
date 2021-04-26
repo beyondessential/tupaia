@@ -5,11 +5,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { formatDataValueByType } from '@tupaia/utils';
 import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE, VALUE_TYPES } from './constants';
-import { formatDataValue } from './utils';
 
-const { PERCENTAGE } = VALUE_TYPES;
+const { PERCENTAGE, NUMBER } = VALUE_TYPES;
 
 const Y_AXIS_IDS = {
   left: 0,
@@ -55,15 +55,28 @@ const calculateYAxisDomain = ({ min, max }) => {
 
 const containsClamp = ({ min, max }) => min.type === 'clamp' || max.type === 'clamp';
 
+const renderYAxisLabel = (label, orientation) => {
+  if (label)
+    return {
+      value: label,
+      angle: -90,
+      fill: 'white',
+      style: { textAnchor: 'middle' },
+      position: orientation === 'right' ? 'insideRight' : 'insideLeft',
+    };
+  return null;
+};
+
 const YAxis = ({ config = {}, viewContent, isExporting }) => {
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
     yAxisDomain = getDefaultYAxisDomain(viewContent),
     valueType: axisValueType,
+    yName: yAxisLabel,
   } = config;
 
-  const { data, valueType, presentationOptions, ticks } = viewContent;
+  const { yName, valueType, presentationOptions, ticks } = viewContent;
 
   return (
     <YAxisComponent
@@ -74,9 +87,15 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
       domain={calculateYAxisDomain(yAxisDomain)}
       allowDataOverflow={valueType === PERCENTAGE || containsClamp(yAxisDomain)}
       // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
-      label={data.yName}
+      label={renderYAxisLabel(yName || yAxisLabel, orientation)}
       tickFormatter={value =>
-        formatDataValue(value, valueType || axisValueType, { presentationOptions })
+        formatDataValueByType(
+          {
+            value,
+            metadata: { presentationOptions },
+          },
+          (valueType !== NUMBER ? valueType : 'default') || axisValueType,
+        )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
       stroke={isExporting ? DARK_BLUE : 'white'}
@@ -104,11 +123,14 @@ export const YAxes = ({ viewContent, isExporting }) => {
   };
 
   Object.entries(chartConfig).forEach(
-    ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain }]) => {
+    ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain, yName }]) => {
       const axisId = Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
       axisPropsById[axisId].dataKeys.push(dataKey);
       if (valueType) {
         axisPropsById[axisId].valueType = valueType;
+      }
+      if (yName) {
+        axisPropsById[axisId].yName = yName;
       }
       axisPropsById[axisId].yAxisDomain = yAxisDomain;
     },

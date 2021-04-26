@@ -12,6 +12,7 @@ import {
   CROP_RESPONSE_AUCKLAND_2020,
   CROP_RESPONSE_WELLINGTON_2019,
 } from './TupaiaDataApi.fixtures';
+import { testFetchAnalyticsAggregations } from './aggregations';
 
 const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
   const analytics = [];
@@ -23,7 +24,7 @@ const getAnalyticsFromResponses = (responses, dataElementsToInclude) => {
           dataElement: questionCode,
           organisationUnit: r.entityCode,
           value: isNaN(answer) ? answer : parseFloat(answer),
-          date: r.submission_time.substring(0, 10), // just the YYYY-MM-DD bit
+          date: r.data_time.substring(0, 10), // just the YYYY-MM-DD bit
         });
       });
   });
@@ -43,12 +44,12 @@ export const testFetchAnalytics = () => {
       [undefined, /provide options/],
       [null, /provide options/],
       [{}, /Invalid content/],
-      [{ dataElementCodes: ['BCD1', 'BCD325'] }, /Invalid content.*organisationUnitCodes/], // no organisationUnitCodes
+      [{ dataElementCodes: ['BCD1TEST', 'BCD325TEST'] }, /Invalid content.*organisationUnitCodes/], // no organisationUnitCodes
       [{ organisationUnitCodes: ['NZ_AK', 'NZ_WG'] }, /Invalid content.*dataElementCodes/], // no dataElementCodes
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
           startDate: 'January first, 2020',
         },
         /Invalid content.*startDate/,
@@ -64,7 +65,7 @@ export const testFetchAnalytics = () => {
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -87,7 +88,7 @@ export const testFetchAnalytics = () => {
       [
         {
           organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
-          dataElementCodes: ['BCD1'],
+          dataElementCodes: ['BCD1TEST'],
         },
         [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
       ],
@@ -110,7 +111,7 @@ export const testFetchAnalytics = () => {
       [
         {
           organisationUnitCodes: ['NZ_AK'],
-          dataElementCodes: ['BCD1', 'BCD325'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST'],
         },
         [BCD_RESPONSE_AUCKLAND],
       ],
@@ -196,4 +197,6 @@ export const testFetchAnalytics = () => {
       [CROP_RESPONSE_AUCKLAND_2019],
     );
   });
+
+  describe('aggregation', testFetchAnalyticsAggregations(assertCorrectResponse));
 };

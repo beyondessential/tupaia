@@ -6,7 +6,6 @@
 import { Request } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { Authenticator } from '@tupaia/auth';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
 export interface FetchReportQuery extends Query {
@@ -40,7 +39,6 @@ export interface ReportsRequest<
   ReqQuery = FetchReportQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   accessPolicy: AccessPolicy;
-  authenticator: Authenticator;
   database: TupaiaDatabase;
   models: ModelRegistry;
 }

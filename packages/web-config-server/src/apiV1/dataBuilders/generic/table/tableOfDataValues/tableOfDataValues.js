@@ -7,14 +7,24 @@ import flatten from 'lodash.flatten';
 import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToSet, getSortByKey } from '@tupaia/utils';
+
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { TableConfig } from './TableConfig';
 import { TotalCalculator } from './TotalCalculator';
 
-import { buildBaseRowsForOrgUnit } from './helpers/buildBaseRowsForOrgUnit';
-import { getValuesByCell } from './helpers/getValuesByCell';
-import { buildColumnSummary, buildRowSummary } from './helpers/addSummaryToTable';
+import {
+  buildBaseRowsForOrgUnit,
+  getValuesByCell,
+  buildColumnSummary,
+  buildRowSummary,
+  buildCategoryData,
+} from './helpers';
+
+import {
+  fetchAggregatedAnalyticsByDhisIds,
+  checkAllDataElementsAreDhisIndicators,
+} from '../../../../../apiV1/utils';
 import {
   ORG_UNIT_COL_KEY,
   ORG_UNIT_WITH_TYPE_COL_KEY,
@@ -23,12 +33,7 @@ import {
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
-const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
 const EXCLUDED_VALUE = 'excludedValue';
-
-const CATEGORY_AGGREGATION_TYPES = {
-  AVERAGE: '$average',
-};
 
 export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
@@ -43,20 +48,24 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const rows = await this.buildRows(columns);
     const data = { columns, rows, period };
 
-    return this.buildFromExtraConfig(data);
+    return this.buildFromExtraConfig(data, columns);
   }
 
   /**
    * @param {{ rows, columns }} data
    */
-  async buildFromExtraConfig(data) {
+  async buildFromExtraConfig(data, columns) {
     let newData = { ...data };
     const { rows } = newData;
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
 
       if (this.config.categoryAggregator) {
-        const categoryData = this.buildCategoryData(Object.values(rows));
+        const categoryData = buildCategoryData({
+          rows: Object.values(rows),
+          categoryAggregatorConfig: this.config.categoryAggregator,
+          columns,
+        });
         newData.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {
         newData.rows = [...rows, ...categories];
@@ -64,8 +73,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }
 
     if (ORG_UNIT_COLUMNS_KEYS_SET.includes(this.tableConfig.columnType)) {
-      const columns = await this.replaceOrgUnitCodesWithNames(data.columns);
-      newData.columns = columns.sort(getSortByKey('title'));
+      const dataColumns = await this.replaceOrgUnitCodesWithNames(data.columns);
+      newData.columns = dataColumns.sort(getSortByKey('title'));
     }
 
     if (EXCLUDED_VALUE in this.config) {
@@ -94,6 +103,23 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     // There are some valid configs which don't fetch any data
     if (dataElementCodes.length === 0) return { results: [] };
 
+    // TODO: This if block is to implement a hacky approach to fetch indicator values
+    // because the normal analytics/rawData.json endpoint does not return any data for indicators.
+    // Will have to implement this properly with #tupaia-backlog/issues/2412
+    // After that remove this file and anything related to it
+    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
+      this.models,
+      dataElementCodes,
+    );
+    if (allDataElementsAreDhisIndicators) {
+      const { results, period } = await this.fetchAnalyticsByDhisApi(dataElementCodes);
+      const resultsWithMetadata = results.map(result => ({
+        ...result,
+        metadata: { code: result.dataElement },
+      }));
+      return { results: resultsWithMetadata, period };
+    }
+
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
@@ -101,8 +127,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       ...result,
       metadata: dataElementByCode[result.dataElement] || {},
     }));
-
     return { results: resultsWithMetadata, period };
+  }
+
+  async fetchAnalyticsByDhisApi(dataElementCodes) {
+    const { entityAggregation } = this.config;
+    return fetchAggregatedAnalyticsByDhisIds(
+      this.models,
+      this.dhisApi,
+      dataElementCodes,
+      this.query,
+      entityAggregation,
+    );
   }
 
   buildDataElementCodes() {
@@ -339,44 +375,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const orgUnitCodeToName = reduceToDictionary(orgUnits, 'code', 'name');
 
     return code => orgUnitCodeToName[code];
-  };
-
-  buildCategoryData(rows) {
-    const totals = this.calculateCategoryTotals(rows);
-
-    if (this.config.categoryAggregator === CATEGORY_AGGREGATION_TYPES.AVERAGE) {
-      const categoryRowLengths = rows.reduce(
-        (lengths, row) => ({ ...lengths, [row.categoryId]: lengths[row.categoryId] + 1 || 1 }),
-        {},
-      );
-
-      return Object.entries(totals).reduce((averages, [category, columns]) => {
-        const averagedColumns = {};
-
-        Object.keys(columns).forEach(column => {
-          averagedColumns[column] = Math.round(columns[column] / categoryRowLengths[category]);
-        });
-
-        return { ...averages, [category]: averagedColumns };
-      }, {});
-    }
-
-    return totals;
-  }
-
-  calculateCategoryTotals = rows => {
-    const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
-    return rows.reduce((columnAggregates, row) => {
-      const { categoryId } = row;
-      const categoryTotals = columnAggregates[categoryId] || {};
-      Object.keys(row).forEach(key => {
-        if (!rowKeysToIgnore.has(key)) {
-          categoryTotals[key] = (categoryTotals[key] || 0) + (row[key] || 0);
-        }
-      });
-
-      return { ...columnAggregates, [categoryId]: categoryTotals };
-    }, {});
   };
 
   buildOrgsFromResults() {

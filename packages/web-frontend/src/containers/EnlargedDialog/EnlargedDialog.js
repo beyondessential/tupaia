@@ -4,6 +4,7 @@
  */
 
 import Dialog from '@material-ui/core/Dialog';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
@@ -174,8 +175,8 @@ const EnlargedDialogComponent = ({
           projectCode,
           viewContent: baseViewContent,
           organisationUnitName,
-          startDate,
-          endDate,
+          startDate: moment.isMoment(startDate) ? startDate.utc().toISOString() : startDate,
+          endDate: moment.isMoment(endDate) ? endDate.utc().toISOString() : endDate,
           timeZone: getBrowserTimeZone(),
           filename,
         });

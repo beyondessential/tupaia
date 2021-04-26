@@ -5,6 +5,7 @@
 
 export { mapAnalyticsToCountries } from './mapAnalyticsToCountries';
 export { divideValues } from './divideValues';
+export { multiplyValues } from './multiplyValues';
 export { subtractValues } from './subtractValues';
 export {
   calculateOperationForAnalytics,
@@ -23,3 +24,4 @@ export {
 } from './checkAgainstConditions';
 export { uniqueValueFromEvents } from './uniqueValues';
 export { translateEventEntityIdsToNames } from './translateEventEntityIdsToNames';
+export { getCategoryPresentationOption } from './getCategoryPresentationOption';
