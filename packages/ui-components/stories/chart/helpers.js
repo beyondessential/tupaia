@@ -10,7 +10,7 @@ import { Chart, Table } from '../../src/components/Chart';
 const LightContainer = styled.div`
   //padding: 3rem 4rem;
   width: 750px;
-  height: 600px;
+  //height: 600px;
   background: #f9f9f9;
   border-radius: 3px;
   border: 1px solid #dedee0;

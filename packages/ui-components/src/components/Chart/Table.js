@@ -91,7 +91,8 @@ const getColumns = rawData => {
     Object.keys(row)
       .filter(key => key !== 'name' && key !== 'timestamp')
       .forEach(key => {
-        if (!columns.includes(key)) {
+        // add the key as a table colunm but filter out object values such as metadata
+        if (!columns.includes(key) && typeof row[key] !== 'object') {
           columns.push(key);
         }
       });
@@ -100,9 +101,19 @@ const getColumns = rawData => {
   return columns;
 };
 
-export const Table = ({ viewContent }) => {
-  const { data, xName, periodGranularity, valueType, labelType } = viewContent;
+const getValueTypeForLabel = ({ labelType, valueType }) => {
   const valueTypeForLabel = labelType || valueType;
+
+  if (valueTypeForLabel === 'fractionAndPercentage') {
+    return 'percentage';
+  }
+
+  return valueTypeForLabel;
+};
+
+export const Table = ({ viewContent }) => {
+  const { data, xName, periodGranularity } = viewContent;
+  const valueTypeForLabel = getValueTypeForLabel(viewContent);
   const columns = getColumns(data);
   const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
@@ -121,7 +132,7 @@ export const Table = ({ viewContent }) => {
         </MuiTableHead>
         <MuiTableBody>
           {data.map(row => (
-            <MuiTableRow key={row.timestamp}>
+            <MuiTableRow key={row.timestamp || row.name}>
               <MuiTableCell component="th" scope="row">
                 {dataIsTimeSeries
                   ? formatTimestampForChart(row.timestamp, periodGranularity)
@@ -129,6 +140,7 @@ export const Table = ({ viewContent }) => {
               </MuiTableCell>
               {columns.map(column => {
                 const value = row[column];
+
                 const rowValue =
                   value === undefined ? '-' : formatDataValueByType({ value }, valueTypeForLabel);
 
