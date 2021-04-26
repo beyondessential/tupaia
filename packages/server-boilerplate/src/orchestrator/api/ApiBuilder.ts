@@ -120,28 +120,31 @@ export class ApiBuilder {
     return this;
   }
 
-  get<T extends ExpressRequest<T> = Request>(
+  addRoute<T extends ExpressRequest<T> = Request>(
+    method: 'get' | 'post',
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
     if (this.verifyAuthMiddleware) {
-      this.app.get(path, this.attachSession, this.verifyAuthMiddleware, handler);
+      this.app[method](path, this.attachSession, this.verifyAuthMiddleware, handler);
     } else {
-      this.app.get(path, this.attachSession, handler);
+      this.app[method](path, this.attachSession, handler);
     }
     return this;
+  }
+
+  get<T extends ExpressRequest<T> = Request>(
+    path: string,
+    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+  ) {
+    return this.addRoute('get', path, handler);
   }
 
   post<T extends ExpressRequest<T> = Request>(
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
-    if (this.verifyAuthMiddleware) {
-      this.app.post(path, this.attachSession, this.verifyAuthMiddleware, handler);
-    } else {
-      this.app.post(path, this.attachSession, handler);
-    }
-    return this;
+    return this.addRoute('post', path, handler);
   }
 
   build() {
