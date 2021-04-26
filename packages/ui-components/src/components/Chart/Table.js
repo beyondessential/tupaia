@@ -119,10 +119,10 @@ export const Table = ({ viewContent }) => {
 
   return (
     <TableContainer>
-      <StyledTable>
+      <StyledTable style={{ minWidth: columns.length * 100 + 250 }}>
         <MuiTableHead>
           <MuiTableRow>
-            <MuiTableCell width={250}>{xName || 'Name'}</MuiTableCell>
+            <MuiTableCell width={250}>{xName || 'Description'}</MuiTableCell>
             {columns.map(column => (
               <MuiTableCell key={column}>
                 <Label>{column}</Label>
