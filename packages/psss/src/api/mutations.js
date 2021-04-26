@@ -4,7 +4,7 @@
  */
 
 import { queryCache, useMutation } from 'react-query';
-import { put, post } from './api';
+import { remove, put, post } from './api';
 
 export const useConfirmWeeklyReport = (countryCode, period) =>
   useMutation(
@@ -14,32 +14,42 @@ export const useConfirmWeeklyReport = (countryCode, period) =>
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
         queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
-        queryCache.invalidateQueries(`confirmedWeeklyReport`);
+        // regional (multi-country) level
+        queryCache.invalidateQueries('confirmedWeeklyReport', { exact: true });
       },
     },
   );
 
-export const useSaveWeeklyReport = ({ countryCode, siteCode, week }) => {
-  const isSiteSurvey = !!siteCode;
-  const weeklyReportEndpoint = isSiteSurvey
-    ? `weeklyReport/${countryCode}/${siteCode}`
-    : `weeklyReport/${countryCode}`;
-
-  return useMutation(
+export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) =>
+  useMutation(
     data =>
-      put(weeklyReportEndpoint, {
+      put(`weeklyReport/${countryCode}/${siteCode}`, {
         params: { week },
         data,
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(weeklyReportEndpoint);
-        if (!isSiteSurvey) {
-          queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
-        }
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}/${siteCode}`);
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}`, { exact: true });
       },
     },
   );
-};
+
+export const useDeleteWeeklyReport = ({ countryCode, week }) =>
+  useMutation(
+    () =>
+      remove(`weeklyReport/${countryCode}`, {
+        params: { week },
+      }),
+    {
+      onSuccess: () => {
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
+      },
+    },
+  );
+
+export const combineMutationResults = results => ({
+  isError: !!results.find(r => r.isError),
+  error: results.find(r => r.error)?.error ?? null,
+});

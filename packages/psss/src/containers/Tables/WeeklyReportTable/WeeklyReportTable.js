@@ -15,15 +15,17 @@ import {
   SmallAlert,
   Table,
 } from '@tupaia/ui-components';
+import MuiLink from '@material-ui/core/Link';
 import {
   EditableCell,
   EditableTableContext,
   FlexEnd,
+  FlexSpaceBetween,
   PercentageChangeCell,
   BorderlessTableRow,
 } from '../../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
-import { useSaveWeeklyReport } from '../../../api';
+import { combineMutationResults, useDeleteWeeklyReport, useSaveWeeklyReport } from '../../../api';
 import { TABLE_STATUSES } from '../../../constants';
 import { WeeklyReportTableHeading } from './WeeklyReportTableHeading';
 
@@ -52,13 +54,6 @@ const StyledTh = styled.th`
   padding: 11px 20px;
 `;
 
-const SiteActionsRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 1rem;
-`;
-
 const TableHeader = () => (
   <thead>
     <tr>
@@ -78,11 +73,11 @@ const VerifiableBody = props => {
 /* eslint-disable react/prop-types */
 const ActionsRow = ({ children, isSiteReport }) =>
   isSiteReport ? (
-    <SiteActionsRow>{children}</SiteActionsRow>
+    <FlexEnd p={2}>{children}</FlexEnd>
   ) : (
-    <FlexEnd pt={3} mt={3} borderTop={1} borderColor="grey.400">
+    <FlexSpaceBetween pl={3} pt={3} mt={3} borderTop={1} borderColor="grey.400">
       {children}
-    </FlexEnd>
+    </FlexSpaceBetween>
   );
 /* eslint-enable react/prop-types */
 
@@ -122,11 +117,16 @@ export const WeeklyReportTable = React.memo(
     const { tableStatus, setTableStatus } = useContext(EditableTableContext);
     const { countryCode } = useParams();
     const { handleSubmit, ...methods } = useForm();
-    const [saveReport, { error, isError }] = useSaveWeeklyReport({
+    const [saveReport, saveResults] = useSaveWeeklyReport({
       countryCode,
       siteCode,
       week: weekNumber,
     });
+    const [deleteReport, deleteResults] = useDeleteWeeklyReport({
+      countryCode,
+      week: weekNumber,
+    });
+    const { error, isError } = combineMutationResults([saveResults, deleteResults]);
 
     const onSubmit = async formData => {
       setTableStatus(TABLE_STATUSES.SAVING);
@@ -159,6 +159,17 @@ export const WeeklyReportTable = React.memo(
       setTableStatus(TABLE_STATUSES.STATIC);
     }, [setTableStatus]);
 
+    const handleReset = async () => {
+      setTableStatus(TABLE_STATUSES.SAVING);
+
+      try {
+        await deleteReport();
+        setTableStatus(TABLE_STATUSES.STATIC);
+      } catch (e) {
+        setTableStatus(TABLE_STATUSES.ERROR);
+      }
+    };
+
     return (
       <LoadingContainer
         isLoading={isFetching || tableStatus === TABLE_STATUSES.SAVING}
@@ -189,7 +200,16 @@ export const WeeklyReportTable = React.memo(
             <Table Header={TableHeader} Body={VerifiableBody} data={data} columns={columns} />
             {tableStatus === TABLE_STATUSES.EDITABLE && (
               <ActionsRow isSiteReport={isSiteReport}>
-                {/*<MuiLink underline="always">Reset and use Sentinel data</MuiLink>*/}
+                {!isSiteReport && (
+                  <MuiLink
+                    component="button"
+                    variant="body2"
+                    underline="always"
+                    onClick={handleReset}
+                  >
+                    Reset and use Sentinel data
+                  </MuiLink>
+                )}
                 <div>
                   <Button variant="outlined" type="button" onClick={handleCancel}>
                     Cancel

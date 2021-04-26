@@ -7,7 +7,7 @@ import { GreyOutlinedButton, TextField, Tooltip } from '@tupaia/ui-components';
 
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { EditableTableContext, FlexSpaceBetween, FlexStart } from '../../../components';
 import { TABLE_STATUSES } from '../../../constants';
@@ -76,7 +76,7 @@ const CountryHeadingRow = ({ children }) => <FlexSpaceBetween pb={2}>{children}<
 
 const CountryHeading = ({ EditButton, sitesReported, totalSites }) => {
   const { tableStatus } = useContext(EditableTableContext);
-  const { errors, register } = useForm();
+  const { errors, register } = useFormContext();
 
   if (tableStatus !== TABLE_STATUSES.EDITABLE) {
     return (
