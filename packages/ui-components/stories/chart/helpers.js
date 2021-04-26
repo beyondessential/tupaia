@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Chart } from '../../src/components/Chart';
+import { Chart, Table } from '../../src/components/Chart';
 
 const LightContainer = styled.div`
   padding: 3rem 4rem;
@@ -14,11 +14,21 @@ const LightContainer = styled.div`
   background: #f9f9f9;
   border-radius: 3px;
   border: 1px solid #dedee0;
+
+  // temp
+  display: flex;
+  width: 1150px;
+  overflow: auto;
+
+  > div {
+    margin-right: 4rem;
+  }
 `;
 
 export const LightThemeChartTemplate = args => (
   <LightContainer>
     <Chart {...args} />
+    <Table {...args} />
   </LightContainer>
 );
 
