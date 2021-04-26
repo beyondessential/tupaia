@@ -12,7 +12,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart } from '@tupaia/ui-components/lib/chart';
+import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import { useDashboardReportData } from '../api';
 import { FetchLoader } from './FetchLoader';
 import { FlexSpaceBetween } from './Layout';
@@ -39,12 +39,22 @@ const Title = styled(Typography)`
   line-height: 1.3rem;
 `;
 
-const Inner = styled.div`
+const Body = styled.div`
   display: flex;
-  padding: 1.25rem 1.875rem 0;
   background: ${COLORS.GREY_F9};
-  height: 26rem;
   min-height: 21rem;
+  max-height: 40rem;
+
+  .MuiTable-root {
+    min-height: 100%;
+  }
+`;
+
+const ChartWrapper = styled.div`
+  display: flex;
+  height: 26rem;
+  padding: 1.25rem 1.875rem 0;
+  width: 100%;
 `;
 
 const Footer = styled.div`
@@ -82,28 +92,34 @@ export const Report = ({
     }
   };
 
+  const chartType = viewContent?.chartType;
+
   return (
     <Container>
       <Header>
         <Title>{name}</Title>
-        <ToggleButtonGroup onChange={handleChange} value={value} exclusive>
-          <ToggleButton value="table">
-            <GridOnIcon />
-          </ToggleButton>
-          <ToggleButton value="chart">
-            <BarChartIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Header>
-      <Inner>
-        {value === 'chart' ? (
-          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-            <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
-          </FetchLoader>
-        ) : (
-          <div>Table</div>
+        {chartType !== 'pie' && (
+          <ToggleButtonGroup onChange={handleChange} value={value} exclusive>
+            <ToggleButton value="table">
+              <GridOnIcon />
+            </ToggleButton>
+            <ToggleButton value="chart">
+              <BarChartIcon />
+            </ToggleButton>
+          </ToggleButtonGroup>
         )}
-      </Inner>
+      </Header>
+      <Body>
+        {chartType !== 'pie' && value === 'table' ? (
+          <Table viewContent={viewContent} />
+        ) : (
+          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+            <ChartWrapper>
+              <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
+            </ChartWrapper>
+          </FetchLoader>
+        )}
+      </Body>
       <Footer>
         <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
           More Insights

@@ -15,10 +15,18 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import { formatDataValueByType } from '@tupaia/utils';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 
+const TableContainer = styled(MuiTableContainer)`
+  overflow: auto;
+`;
+
 const StyledTable = styled(MuiTable)`
+  table-layout: fixed;
+  overflow: hidden;
+
   // table head
   thead {
     text-transform: capitalize;
+    border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 
     tr {
       background: none;
@@ -26,14 +34,11 @@ const StyledTable = styled(MuiTable)`
 
     th {
       position: relative;
-      background: none;
-      padding: 0;
-      width: 200px;
-      height: 200px;
-      transform: rotate(-45deg);
+      height: 7.5rem;
       text-align: left;
       border: none;
       font-weight: 400;
+      vertical-align: bottom;
     }
   }
 
@@ -47,24 +52,37 @@ const StyledTable = styled(MuiTable)`
       &:nth-of-type(odd) {
         background: #f1f1f1;
       }
+      &:last-child th,
+      &:last-child td {
+        border-bottom: none;
+      }
     }
   }
 
   th,
   td {
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding-top: 1.125rem;
+    padding-bottom: 1.125rem;
     color: ${props => props.theme.palette.text.primary};
-    border: 1px solid ${props => props.theme.palette.grey['400']};
-
-    &:first-child {
-      border-left: none;
-    }
+    border-right: 1px solid ${props => props.theme.palette.grey['400']};
 
     &:last-child {
       border-right: none;
     }
   }
+
+  td {
+    text-align: center;
+  }
+`;
+
+const Label = styled.span`
+  position: absolute;
+  transform: rotate(-45deg);
+  transform-origin: bottom left;
+  width: 6.25rem;
+  bottom: 0.95rem;
+  left: calc(50%);
 `;
 
 const getColumns = rawData => {
@@ -89,13 +107,15 @@ export const Table = ({ viewContent }) => {
   const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
 
   return (
-    <MuiTableContainer>
+    <TableContainer>
       <StyledTable>
         <MuiTableHead>
           <MuiTableRow>
-            <MuiTableCell width={200}>{xName || 'Name'}</MuiTableCell>
+            <MuiTableCell width={250}>{xName || 'Name'}</MuiTableCell>
             {columns.map(column => (
-              <MuiTableCell key={column}>{column}</MuiTableCell>
+              <MuiTableCell key={column}>
+                <Label>{column}</Label>
+              </MuiTableCell>
             ))}
           </MuiTableRow>
         </MuiTableHead>
@@ -110,15 +130,15 @@ export const Table = ({ viewContent }) => {
               {columns.map(column => {
                 const value = row[column];
                 const rowValue =
-                  value === undefined ? ' -' : formatDataValueByType({ value }, valueTypeForLabel);
+                  value === undefined ? '-' : formatDataValueByType({ value }, valueTypeForLabel);
 
-                return <MuiTableCell>{rowValue}</MuiTableCell>;
+                return <MuiTableCell key={column}>{rowValue}</MuiTableCell>;
               })}
             </MuiTableRow>
           ))}
         </MuiTableBody>
       </StyledTable>
-    </MuiTableContainer>
+    </TableContainer>
   );
 };
 
