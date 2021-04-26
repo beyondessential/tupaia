@@ -86,14 +86,11 @@ export const MapView = () => {
     setSelectedOverlay,
   } = useMapOverlayReportData({ entityCode, year: selectedYear });
 
-  const handleLocationChange = useCallback(
-    (map, bounds) => {
-      const mapBoxBounds = Leaflet.latLngBounds(bounds);
-      const maxBounds = mapBoxBounds.pad(2);
-      map.setMaxBounds(maxBounds);
-    },
-    [Leaflet],
-  );
+  const handleLocationChange = useCallback((map, bounds) => {
+    const mapBoxBounds = Leaflet.latLngBounds(bounds);
+    const maxBounds = mapBoxBounds.pad(2);
+    map.setMaxBounds(maxBounds);
+  }, []);
 
   const activeTileSet = TILE_SETS.find(tileSet => tileSet.key === activeTileSetKey);
 

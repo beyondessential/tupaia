@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import MuiToggleButton from '@material-ui/lab/ToggleButton';
 import MuiToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import MuiContainer from '@material-ui/core/Container';
-import { StarBorder, GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
+import { GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData } from '../api';

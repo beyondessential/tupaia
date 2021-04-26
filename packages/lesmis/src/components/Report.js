@@ -55,6 +55,11 @@ const ChartWrapper = styled.div`
   height: 26rem;
   padding: 1.25rem 1.875rem 0;
   width: 100%;
+
+  .MuiAlert-root {
+    position: relative;
+    top: -0.625rem; // offset the chart wrapper padding
+  }
 `;
 
 const Footer = styled.div`
@@ -66,68 +71,83 @@ const Footer = styled.div`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const Report = ({
-  reportId,
-  name,
-  entityCode,
-  dashboardGroupId,
-  periodGranularity,
-  defaultTimePeriod,
-  onItemClick,
-  year,
-}) => {
-  const [value, setValue] = useState('chart');
-  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+export const CHART_TYPES = {
+  AREA: 'area',
+  BAR: 'bar',
+  COMPOSED: 'composed',
+  LINE: 'line',
+  PIE: 'pie',
+};
+
+export const TABS = {
+  CHART: 'chart',
+  TABLE: 'table',
+};
+
+export const Report = React.memo(
+  ({
+    reportId,
+    name,
     entityCode,
     dashboardGroupId,
-    reportId,
     periodGranularity,
-    year,
     defaultTimePeriod,
-  });
+    onItemClick,
+    year,
+  }) => {
+    const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+    const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+      entityCode,
+      dashboardGroupId,
+      reportId,
+      periodGranularity,
+      year,
+      defaultTimePeriod,
+    });
 
-  const handleChange = (event, newValue) => {
-    if (newValue !== null) {
-      setValue(newValue);
-    }
-  };
+    const handleTabChange = (event, newValue) => {
+      if (newValue !== null) {
+        setSelectedTab(newValue);
+      }
+    };
 
-  const chartType = viewContent?.chartType;
+    const chartType = viewContent?.chartType;
 
-  return (
-    <Container>
-      <Header>
-        <Title>{name}</Title>
-        {chartType !== 'pie' && (
-          <ToggleButtonGroup onChange={handleChange} value={value} exclusive>
-            <ToggleButton value="table">
-              <GridOnIcon />
-            </ToggleButton>
-            <ToggleButton value="chart">
-              <BarChartIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        )}
-      </Header>
-      <Body>
-        <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-          {chartType !== 'pie' && value === 'table' ? (
-            <Table viewContent={viewContent} />
-          ) : (
-            <ChartWrapper>
-              <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
-            </ChartWrapper>
+    return (
+      <Container>
+        <Header>
+          <Title>{name}</Title>
+          {chartType !== CHART_TYPES.PIE && (
+            <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
+              <ToggleButton value={TABS.TABLE}>
+                <GridOnIcon />
+              </ToggleButton>
+              <ToggleButton value={TABS.CHART}>
+                <BarChartIcon />
+              </ToggleButton>
+            </ToggleButtonGroup>
           )}
-        </FetchLoader>
-      </Body>
-      <Footer>
-        <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
-          More Insights
-        </Button>
-      </Footer>
-    </Container>
-  );
-};
+        </Header>
+        <Body>
+          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+            {chartType !== CHART_TYPES.PIE && selectedTab === TABS.TABLE ? (
+              <Table viewContent={viewContent} />
+            ) : (
+              <ChartWrapper>
+                <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
+              </ChartWrapper>
+            )}
+          </FetchLoader>
+        </Body>
+        <Footer>
+          <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
+            More Insights
+          </Button>
+        </Footer>
+      </Container>
+    );
+  },
+);
 
 Report.propTypes = {
   name: PropTypes.string.isRequired,
