@@ -86,6 +86,12 @@ const Label = styled.span`
   left: calc(50%);
 `;
 
+const NoData = styled(SmallAlert)`
+  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
 const getColumns = rawData => {
   const columns = [];
   rawData.forEach(row => {
@@ -102,11 +108,10 @@ const getColumns = rawData => {
   return columns;
 };
 
-const NoData = styled(SmallAlert)`
-  align-self: center;
-  margin-left: auto;
-  margin-right: auto;
-`;
+// For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
+// we don't want to show multiple values a table cell
+const parseValueType = valueType =>
+  valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 
 export const Table = ({ viewContent }) => {
   const { data, xName, periodGranularity, valueType } = viewContent;
@@ -145,9 +150,10 @@ export const Table = ({ viewContent }) => {
               {columns.map(column => {
                 const value = row[column];
 
-                // Just use the valueType for the rowData and ignore labelType as we don't want to show compound values in the table
                 const rowValue =
-                  value === undefined ? 'No Data' : formatDataValueByType({ value }, valueType);
+                  value === undefined
+                    ? 'No Data'
+                    : formatDataValueByType({ value }, parseValueType(valueType));
 
                 return <MuiTableCell key={column}>{rowValue}</MuiTableCell>;
               })}

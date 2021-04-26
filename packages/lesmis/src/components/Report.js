@@ -117,25 +117,23 @@ export const Report = React.memo(
       <Container>
         <Header>
           <Title>{name}</Title>
-          {chartType !== CHART_TYPES.PIE && (
-            <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
-              <ToggleButton value={TABS.TABLE}>
-                <GridOnIcon />
-              </ToggleButton>
-              <ToggleButton value={TABS.CHART}>
-                <BarChartIcon />
-              </ToggleButton>
-            </ToggleButtonGroup>
-          )}
+          <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
+            <ToggleButton value={TABS.TABLE}>
+              <GridOnIcon />
+            </ToggleButton>
+            <ToggleButton value={TABS.CHART}>
+              <BarChartIcon />
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Header>
         <Body>
           <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-            {chartType !== CHART_TYPES.PIE && selectedTab === TABS.TABLE ? (
-              <Table viewContent={viewContent} />
-            ) : (
+            {selectedTab === TABS.CHART ? (
               <ChartWrapper>
                 <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
               </ChartWrapper>
+            ) : (
+              <Table viewContent={viewContent} />
             )}
           </FetchLoader>
         </Body>
