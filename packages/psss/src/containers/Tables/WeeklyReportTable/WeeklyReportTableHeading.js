@@ -6,9 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import { GreyOutlinedButton, TextField, Tooltip } from '@tupaia/ui-components';
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { FlexSpaceBetween, FlexStart } from '../../../components';
+import { EditableTableContext, FlexSpaceBetween, FlexStart } from '../../../components';
 import { TABLE_STATUSES } from '../../../constants';
 
 const FormRow = styled(FlexStart)`
@@ -73,7 +74,10 @@ const SiteHeading = ({ EditButton }) => (
 
 const CountryHeadingRow = ({ children }) => <FlexSpaceBetween pb={2}>{children}</FlexSpaceBetween>;
 
-const CountryHeading = ({ EditButton, tableStatus, methods, sitesReported, totalSites }) => {
+const CountryHeading = ({ EditButton, sitesReported, totalSites }) => {
+  const { tableStatus } = useContext(EditableTableContext);
+  const { errors, register } = useForm();
+
   if (tableStatus !== TABLE_STATUSES.EDITABLE) {
     return (
       <CountryHeadingRow>
@@ -85,45 +89,33 @@ const CountryHeading = ({ EditButton, tableStatus, methods, sitesReported, total
     );
   }
 
+  const numberFieldConfig = {
+    required: 'Required',
+    pattern: {
+      value: /^\d+$/,
+      message: 'Invalid character',
+    },
+  };
+
   return (
     <CountryHeadingRow>
       <FormRow>
         <ReportedSites variant="h6">Reported Sites:</ReportedSites>
-        <ErrorTooltip
-          title={methods.errors.sitesReported ? methods.errors.sitesReported.message : ''}
-          placement="left"
-          open
-        >
+        <ErrorTooltip title={errors.sitesReported?.message || ''} placement="left" open>
           <StyledTextField
             defaultValue={sitesReported}
-            error={!!methods.errors.sitesReported}
+            error={!!errors.sitesReported}
             name="sitesReported"
-            inputRef={methods.register({
-              required: 'Required',
-              pattern: {
-                value: /^\d+$/,
-                message: 'Invalid character',
-              },
-            })}
+            inputRef={register(numberFieldConfig)}
           />
         </ErrorTooltip>
         <ReportedSites variant="h5"> / Total Sites: </ReportedSites>
-        <ErrorTooltip
-          title={methods.errors.totalSites ? methods.errors.totalSites.message : ''}
-          placement="left"
-          open
-        >
+        <ErrorTooltip title={errors.totalSites?.message || ''} placement="left" open>
           <StyledTextField
             defaultValue={totalSites}
-            error={!!methods.errors.totalSites}
+            error={!!errors.totalSites}
             name="totalSites"
-            inputRef={methods.register({
-              required: 'Required',
-              pattern: {
-                value: /^\d+$/,
-                message: 'Invalid character',
-              },
-            })}
+            inputRef={register(numberFieldConfig)}
           />
         </ErrorTooltip>
       </FormRow>
@@ -134,14 +126,13 @@ const CountryHeading = ({ EditButton, tableStatus, methods, sitesReported, total
 /* eslint-enable react/prop-types */
 
 export const WeeklyReportTableHeading = ({
-  tableStatus,
-  methods,
   isSiteReport,
   siteCode,
   sitesReported,
   totalSites,
   onEdit,
 }) => {
+  const { tableStatus } = useContext(EditableTableContext);
   const EditButton = () => (
     <GreyOutlinedButton
       onClick={onEdit}
@@ -153,12 +144,10 @@ export const WeeklyReportTableHeading = ({
   );
 
   return isSiteReport ? (
-    <SiteHeading EditButton={EditButton} tableStatus={tableStatus} onEdit={onEdit} />
+    <SiteHeading EditButton={EditButton} onEdit={onEdit} />
   ) : (
     <CountryHeading
       EditButton={EditButton}
-      tableStatus={tableStatus}
-      methods={methods}
       siteCode={siteCode}
       sitesReported={sitesReported}
       totalSites={totalSites}
@@ -168,11 +157,6 @@ export const WeeklyReportTableHeading = ({
 };
 
 WeeklyReportTableHeading.propTypes = {
-  tableStatus: PropTypes.oneOf(Object.values(TABLE_STATUSES)).isRequired,
-  methods: PropTypes.shape({
-    errors: PropTypes.object.isRequired,
-    register: PropTypes.func.isRequired,
-  }).isRequired,
   isSiteReport: PropTypes.bool.isRequired,
   siteCode: PropTypes.string,
   sitesReported: PropTypes.number,

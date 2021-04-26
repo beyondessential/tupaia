@@ -168,8 +168,6 @@ export const WeeklyReportTable = React.memo(
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <WeeklyReportTableHeading
-              tableStatus={tableStatus}
-              methods={methods}
               sitesReported={sitesReported}
               totalSites={totalSites}
               isSiteReport={!!isSiteReport}
