@@ -140,6 +140,8 @@ class FinalValueAggregator {
 
   getFilledValues(analytics, aggregationPeriod, defaultValue) {
     const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, true);
+    console.log('analytics');
+    console.log(analytics);
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
@@ -152,12 +154,12 @@ class FinalValueAggregator {
           : defaultValue;
 
         values.push({
-          ...mostRecentValue,
+          value: mostRecentValue,
           period,
         });
       });
     });
-
+    // console.log(values);
     return values;
   }
 }
@@ -167,10 +169,12 @@ export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregation
     fillEmptyPeriodsTilNow: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
-
+  console.log(aggregationConfig);
   const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
+  console.log(options);
+  // return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
 
   if (options.hasOwnProperty('defaultValue')) {
     return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
