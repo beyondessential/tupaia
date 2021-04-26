@@ -25,20 +25,32 @@ export const stringifyQuery = (baseUrl, endpoint, queryParams) => {
     : `${baseUrl}/${endpoint}`;
 };
 
-// Create a promise that rejects after the request has taken too long
-const createTimeoutPromise = maxWaitTime =>
-  new Promise((resolve, reject) => {
+/**
+ * Wrapper around node-fetch that adds timeout
+ */
+const createTimeoutPromise = maxWaitTime => {
+  let cleanup;
+  const promise = new Promise((resolve, reject) => {
     const id = setTimeout(() => {
       clearTimeout(id);
       reject(new Error('Network request timed out'));
     }, maxWaitTime);
+    cleanup = () => {
+      clearTimeout(id);
+      resolve();
+    };
   });
-
-/**
- * Wrapper around node-fetch that adds timeout
- */
-export const fetchWithTimeout = (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) =>
-  Promise.race([nodeFetch(url, config), createTimeoutPromise(maxWaitTime)]);
+  return { promise, cleanup };
+};
+export const fetchWithTimeout = async (url, config, maxWaitTime = DEFAULT_MAX_WAIT_TIME) => {
+  const { cleanup, promise: timeoutPromise } = createTimeoutPromise(maxWaitTime);
+  try {
+    const response = await Promise.race([nodeFetch(url, config), timeoutPromise]);
+    return response;
+  } finally {
+    cleanup();
+  }
+};
 
 /**
  * Takes in an object specification in the form

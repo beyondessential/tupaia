@@ -8,7 +8,12 @@ import '@babel/polyfill';
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 
 import http from 'http';
-import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '@tupaia/database';
+import {
+  TupaiaDatabase,
+  ModelRegistry,
+  EntityHierarchyCacher,
+  AnalyticsRefresher,
+} from '@tupaia/database';
 
 import { createMeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
@@ -34,6 +39,10 @@ createMeditrakSyncQueue(models);
 const entityHierarchyCacher = new EntityHierarchyCacher(models);
 entityHierarchyCacher.listenForChanges();
 
+// Add listener to refresh analytics table
+const analyticsRefresher = new AnalyticsRefresher(database, models);
+analyticsRefresher.listenForChanges();
+
 /**
  * Set up actual app with routes etc.
  */
@@ -45,6 +54,8 @@ const app = createApp(database, models);
 const port = 8090;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
+const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
+winston.info(`Connected to ${aggregationDescription} aggregation`);
 
 /**
  * Regularly sync data to the aggregation servers

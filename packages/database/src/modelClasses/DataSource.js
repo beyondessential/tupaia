@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseModel } from '../DatabaseModel';
+import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
@@ -92,7 +92,7 @@ export class DataSourceType extends DatabaseType {
   };
 }
 
-export class DataSourceModel extends DatabaseModel {
+export class DataSourceModel extends MaterializedViewLogDatabaseModel {
   static types = DATA_SOURCE_TYPES;
 
   SERVICE_TYPES = SERVICE_TYPES;

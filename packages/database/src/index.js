@@ -4,6 +4,7 @@
  */
 
 export * from './modelClasses';
+export { AnalyticsRefresher, MaterializedViewLogDatabaseModel } from './analytics';
 export { EntityHierarchyCacher } from './cachers';
 export {
   generateId,
