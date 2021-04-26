@@ -12,9 +12,9 @@ import {
   TableRowExpansionContainer,
   WarningButton,
 } from '@tupaia/ui-components';
-import { BorderlessTableRowStyles } from '../../components/Table';
-import * as COLORS from '../../constants/colors';
-import { getVerifiedStatus, updateVerifiedStatus } from '../../store';
+import { BorderlessTableRowStyles } from '../../../components/Table';
+import * as COLORS from '../../../constants/colors';
+import { getVerifiedStatus, updateVerifiedStatus } from '../../../store';
 
 const VerifiedAlert = styled.div`
   background-color: ${props => props.theme.palette.warning.light};
