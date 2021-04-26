@@ -13,7 +13,8 @@ import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableHead from '@material-ui/core/TableHead';
 import MuiTableRow from '@material-ui/core/TableRow';
 import { formatDataValueByType } from '@tupaia/utils';
-import { formatTimestampForChart, getIsTimeSeries } from './utils';
+import { formatTimestampForChart, getIsTimeSeries, getIsChartData, getNoDataString } from './utils';
+import { SmallAlert } from '../Alert';
 
 const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
@@ -50,7 +51,7 @@ const StyledTable = styled(MuiTable)`
 
     tr {
       &:nth-of-type(odd) {
-        background: #f1f1f1;
+        background: ${props => props.theme.palette.grey['100']};
       }
       &:last-child th,
       &:last-child td {
@@ -101,21 +102,24 @@ const getColumns = rawData => {
   return columns;
 };
 
-const getValueTypeForLabel = ({ labelType, valueType }) => {
-  const valueTypeForLabel = labelType || valueType;
-
-  if (valueTypeForLabel === 'fractionAndPercentage') {
-    return 'percentage';
-  }
-
-  return valueTypeForLabel;
-};
+const NoData = styled(SmallAlert)`
+  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+`;
 
 export const Table = ({ viewContent }) => {
-  const { data, xName, periodGranularity } = viewContent;
-  const valueTypeForLabel = getValueTypeForLabel(viewContent);
+  const { data, xName, periodGranularity, valueType } = viewContent;
   const columns = getColumns(data);
   const dataIsTimeSeries = getIsTimeSeries(data) && periodGranularity;
+
+  if (!getIsChartData(viewContent)) {
+    return (
+      <NoData severity="info" variant="standard">
+        {getNoDataString(viewContent)}
+      </NoData>
+    );
+  }
 
   return (
     <TableContainer>
@@ -141,8 +145,9 @@ export const Table = ({ viewContent }) => {
               {columns.map(column => {
                 const value = row[column];
 
+                // Just use the valueType for the rowData and ignore labelType as we don't want to show compound values in the table
                 const rowValue =
-                  value === undefined ? '-' : formatDataValueByType({ value }, valueTypeForLabel);
+                  value === undefined ? 'No Data' : formatDataValueByType({ value }, valueType);
 
                 return <MuiTableCell key={column}>{rowValue}</MuiTableCell>;
               })}

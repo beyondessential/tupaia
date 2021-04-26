@@ -11,7 +11,7 @@ import { CartesianChart } from './CartesianChart';
 import { PieChart } from './PieChart';
 import { CHART_TYPES } from './constants';
 import { parseChartConfig } from './parseChartConfig';
-import { getIsTimeSeries, isDataKey } from './utils';
+import { getIsTimeSeries, isDataKey, getIsChartData, getNoDataString } from './utils';
 import { SmallAlert } from '../Alert';
 
 const UnknownChartTitle = styled(Typography)`
@@ -65,31 +65,6 @@ const getViewContent = viewContent => {
     : { ...viewContent, data: massagedData };
 };
 
-const chartHasData = ({ chartType, data }) => {
-  // If all segments of a pie chart are "0", display the no data message
-  if (chartType === CHART_TYPES.PIE && data && data.every(segment => segment.value === 0)) {
-    return false;
-  }
-
-  return data && data.length > 0;
-};
-
-const getNoDataString = ({ noDataMessage, source, startDate, endDate }) => {
-  if (noDataMessage) {
-    return noDataMessage;
-  }
-
-  if (source === 'mSupply') {
-    return 'Requires mSupply';
-  }
-
-  if (startDate && endDate) {
-    return `No data for ${startDate} to ${endDate}`;
-  }
-
-  return 'No data for selected dates';
-};
-
 export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => {
   const { chartType } = viewContent;
 
@@ -97,7 +72,7 @@ export const Chart = ({ viewContent, isExporting, isEnlarged, onItemClick }) => 
     return <UnknownChart />;
   }
 
-  if (!chartHasData(viewContent)) {
+  if (!getIsChartData(viewContent)) {
     return (
       <NoData severity="info" variant="standard">
         {getNoDataString(viewContent)}

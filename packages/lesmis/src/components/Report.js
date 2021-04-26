@@ -42,7 +42,7 @@ const Title = styled(Typography)`
 const Body = styled.div`
   display: flex;
   background: ${COLORS.GREY_F9};
-  min-height: 21rem;
+  min-height: 26rem;
   max-height: 40rem;
 
   .MuiTable-root {
@@ -110,15 +110,15 @@ export const Report = ({
         )}
       </Header>
       <Body>
-        {chartType !== 'pie' && value === 'table' ? (
-          <Table viewContent={viewContent} />
-        ) : (
-          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+        <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+          {chartType !== 'pie' && value === 'table' ? (
+            <Table viewContent={viewContent} />
+          ) : (
             <ChartWrapper>
               <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
             </ChartWrapper>
-          </FetchLoader>
-        )}
+          )}
+        </FetchLoader>
       </Body>
       <Footer>
         <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
