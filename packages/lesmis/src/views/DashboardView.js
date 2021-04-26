@@ -12,40 +12,31 @@ import { useVitalsData } from '../api';
 import { EntityVitalsItem } from '../components';
 
 const Wrapper = styled.section`
-  padding: 0, 0, 0, 0;
   min-height: 50vh;
   background: #fbfbfb;
 `;
 
 const Container = styled(MuiContainer)`
-  margin-left: 0;
-  padding: 0, 0, 0, 0;
-  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  height: 100%;
 `;
 
-const WrapContainer = styled(MuiContainer)`
-  padding-top: 0.5rem;
-  padding-left: 0;
-  position: relative;
+const FlexRow = styled.div`
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
   justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
   height: 100%;
 `;
 
-const TitleContainer = styled(MuiContainer)`
-  margin-left: 0;
-  padding-left: 0;
+const TitleContainer = styled.div`
   width: 100%;
 `;
 
 const RedTitle = styled(Typography)`
   color: ${props => props.theme.palette.primary.main};
+  padding-top: 50px;
 `;
 
 export const DashboardView = () => {
@@ -57,7 +48,7 @@ export const DashboardView = () => {
       return (
         <Wrapper>
           <Container maxWidth={false}>
-            <WrapContainer>
+            <FlexRow>
               <TitleContainer>
                 <RedTitle variant="h4">Province Profile:</RedTitle>
               </TitleContainer>
@@ -65,11 +56,11 @@ export const DashboardView = () => {
               <EntityVitalsItem name="Province Population" value={vitals.Population} icon="Group" />
               <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
               <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
-            </WrapContainer>
+            </FlexRow>
             <img src="/images/school.png" alt="place" />
-            <WrapContainer>
+            <FlexRow>
               <Typography>Development Partner Support</Typography>
-            </WrapContainer>
+            </FlexRow>
           </Container>
         </Wrapper>
       );
@@ -78,7 +69,7 @@ export const DashboardView = () => {
       return (
         <Wrapper>
           <Container>
-            <WrapContainer>
+            <FlexRow>
               <TitleContainer>
                 <RedTitle variant="h4">District Profile:</RedTitle>
               </TitleContainer>
@@ -91,11 +82,11 @@ export const DashboardView = () => {
               />
               <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
               <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
-            </WrapContainer>
+            </FlexRow>
             <img src="/images/school.png" alt="place" />
-            <WrapContainer>
+            <FlexRow>
               <Typography>Development Partner Support</Typography>
-            </WrapContainer>
+            </FlexRow>
           </Container>
         </Wrapper>
       );
@@ -103,7 +94,7 @@ export const DashboardView = () => {
       return (
         <Wrapper>
           <Container maxWidth={false}>
-            <WrapContainer>
+            <FlexRow>
               <TitleContainer>
                 <RedTitle variant="h4">School Profile:</RedTitle>
               </TitleContainer>
@@ -124,7 +115,7 @@ export const DashboardView = () => {
                 value={vitals.point.map(x => x.toFixed(3)).join()}
                 icon="PushPin"
               />
-            </WrapContainer>
+            </FlexRow>
             <img src="/images/school.png" alt="place" />
           </Container>
         </Wrapper>

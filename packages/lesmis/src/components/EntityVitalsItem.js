@@ -23,11 +23,7 @@ const Wrapper = styled.section`
 
 const Container = styled(FlexStart)`
   width: 200px;
-  .MuiSvgIcon-root {
-    padding-top: 0.5rem;
-    font-size: 2.5rem;
-    color: ${props => props.theme.palette.text.secondary};
-  }
+  height: 70px;
 `;
 
 const VitalName = styled(Typography)`

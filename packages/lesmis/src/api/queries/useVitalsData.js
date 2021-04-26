@@ -25,8 +25,8 @@ const getDecendantsOfType = (entities, rootEntityCode, type) => {
   return entity.childCodes.map(c => getDecendantsOfType(entities, c, type)).flat();
 };
 
-const useSchoolInformation = entityCode => {
-  return useQuery(
+const useSchoolInformation = entityCode =>
+  useQuery(
     ['vitals', 'school', entityCode],
     () =>
       get(`reportData/${entityCode}/LESMIS_school_vitals`, {
@@ -39,12 +39,11 @@ const useSchoolInformation = entityCode => {
       enabled: true,
     },
   );
-};
 
 const useDecendantSchoolInformation = (entities, entityCode) => {
   const decendants = getDecendantsOfType(entities, entityCode, 'school');
   return useQuery(
-    ['vitals', 'multi_school', entityCode],
+    ['vitals', 'multiSchool', entityCode],
     () =>
       get(`reportData/${entityCode}/LESMIS_multi_school_vitals`, {
         params: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
@@ -58,9 +57,9 @@ const useDecendantSchoolInformation = (entities, entityCode) => {
   );
 };
 
-const useDistrictInformation = entityCode => {
-  return useQuery(
-    ['vitals', 'sub_district', entityCode],
+const useDistrictInformation = entityCode =>
+  useQuery(
+    ['vitals', 'subDistrict', entityCode],
     () =>
       get(`reportData/${entityCode}/LESMIS_sub_district_vitals`, {
         params: { endDate: '2021-01-01' },
@@ -72,7 +71,6 @@ const useDistrictInformation = entityCode => {
       enabled: true,
     },
   );
-};
 
 const useDecendantDistrictInformation = (entities, entityCode) => {
   const decendants = getDecendantsOfType(entities, entityCode, 'sub_district');
@@ -92,13 +90,14 @@ const useDecendantDistrictInformation = (entities, entityCode) => {
 };
 
 export const useVitalsData = entityCode => {
-  const { data: entityData } = useEntityData({ entityCode });
-  const { data: entities = [] } = useEntitiesData();
+  const { data: entities = [], ...entitiesQuery } = useEntitiesData();
+  const entityData = entities.find(e => e.code === entityCode);
   const { data: schoolData } = useSchoolInformation(entityCode);
   const { data: districtData } = useDistrictInformation(entityCode);
   const { data: subSchoolsData } = useDecendantSchoolInformation(entities, entityCode);
   const { data: provinceData } = useDecendantDistrictInformation(entities, entityCode);
   return {
+    ...entitiesQuery,
     ...schoolData?.results[0],
     ...districtData?.results[0],
     ...subSchoolsData?.results[0],
