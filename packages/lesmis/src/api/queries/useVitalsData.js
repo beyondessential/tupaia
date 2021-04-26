@@ -47,9 +47,7 @@ const useDecendantSchoolInformation = (entities, entityCode) => {
     ['vitals', 'multi_school', entityCode],
     () =>
       post(`reportData/${entityCode}/LESMIS_multi_school_vitals`, {
-        data: {
-          queryOverride: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
-        },
+        data: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
       }),
     {
       staleTime: 1000 * 60 * 60 * 1,
@@ -82,9 +80,7 @@ const useDecendantDistrictInformation = (entities, entityCode) => {
     ['vitals', 'province', entityCode],
     () =>
       post(`reportData/${entityCode}/LESMIS_sub_district_vitals`, {
-        data: {
-          queryOverride: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
-        },
+        data: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
       }),
     {
       staleTime: 1000 * 60 * 60 * 1,
