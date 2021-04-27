@@ -17,13 +17,11 @@ exports.setup = function (options, seedLink) {
 };
 
 const CONFIG = syndromeCode => ({
-  formula: `firstExistingValue(PSSS_${syndromeCode}_Cases, PSSS_${syndromeCode}_Daily_Cases)`,
+  formula: `firstExistingValue(PSSS_${syndromeCode}_Daily_Cases)`,
   aggregation: {
-    [`PSSS_${syndromeCode}_Cases`]: 'FINAL_EACH_WEEK',
     [`PSSS_${syndromeCode}_Daily_Cases`]: ['SUM_EACH_WEEK', 'FINAL_EACH_WEEK'],
   },
   defaultValues: {
-    [`PSSS_${syndromeCode}_Cases`]: 'undefined',
     [`PSSS_${syndromeCode}_Daily_Cases`]: 'undefined',
   },
 });
