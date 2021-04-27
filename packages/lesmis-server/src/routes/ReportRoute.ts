@@ -44,7 +44,7 @@ export class ReportRoute extends Route {
           organisationUnitCodes: entityCode,
           projectCodes: LESMIS_PROJECT_NAME,
           ...this.req.query,
-        });
+        }, this.req.body);
     }
   }
 }
