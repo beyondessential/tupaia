@@ -97,7 +97,6 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
 
 exports.up = async function (db) {
   const dashboardReportIds = [];
-  console.log(1);
   for (const [diseaseName, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
     const dashboardReportId = getDashboardReportId(diseaseName);
     dashboardReportIds.push(dashboardReportId);
@@ -107,7 +106,6 @@ exports.up = async function (db) {
   }
 
   const newDashboardReportIdsArray = `{${dashboardReportIds.join(',')}}`;
-  console.log(2);
   await db.runSql(
     `UPDATE "dashboardGroup" SET "dashboardReports" = "dashboardReports" || '${newDashboardReportIdsArray}' WHERE code = '${dashboardGroupCode}';`,
   );
