@@ -19,10 +19,10 @@ export const useSitesSingleWeeklyReport = (countryCode, period, pageQueryKey) =>
   const query = combineQueries([siteQuery, reportQuery]);
   const rowsByOrgUnit = keyBy(report, 'organisationUnit');
   const data = sites.map(site => {
-    const { id, name, address, contact } = site;
+    const { id, code, name, address, contact } = site;
     const row = rowsByOrgUnit[site.code] || {};
 
-    return { id, name, address, contact, syndromes: getSyndromeData(row) };
+    return { id, code, name, address, contact, syndromes: getSyndromeData(row) };
   });
 
   return {

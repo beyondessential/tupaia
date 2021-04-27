@@ -7,5 +7,5 @@ export { FetchConfirmedWeeklyReportRoute } from './FetchConfirmedWeeklyReportRou
 export { FetchConfirmedCountryWeeklyReportRoute } from './FetchConfirmedCountryWeeklyReportRoute';
 export { FetchCountryWeeklyReportRoute } from './FetchCountryWeeklyReportRoute';
 export { ConfirmCountryWeeklyReportRoute } from './ConfirmCountryWeeklyReportRoute';
-export { SaveCountryWeeklyReportRoute } from './SaveCountryWeeklyReportRoute';
-export { DeleteCountryWeeklyReportRoute } from './DeleteCountryWeeklyReportRoute';
+export { SaveWeeklyReportRoute } from './SaveWeeklyReportRoute';
+export { DeleteWeeklyReportRoute } from './DeleteWeeklyReportRoute';

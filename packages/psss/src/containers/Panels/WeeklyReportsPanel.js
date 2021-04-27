@@ -30,7 +30,7 @@ import {
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { REPORT_STATUSES, TABLE_STATUSES } from '../../constants';
-import { CountryReportTable, SiteReportTable } from '../Tables';
+import { WeeklyReportTable } from '../Tables';
 import { countryFlagImage, getWeekNumberByPeriod, getDisplayDatesByPeriod } from '../../utils';
 import {
   useConfirmWeeklyReport,
@@ -143,6 +143,7 @@ export const WeeklyReportsPanelComponent = React.memo(
 
     const isVerified = isFetching || unVerifiedAlerts.length === 0;
     const showSites = activeWeek !== null && siteData.length > 0;
+    const selectedSite = siteData[activeSiteIndex];
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
     const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
@@ -170,7 +171,7 @@ export const WeeklyReportsPanelComponent = React.memo(
             tableStatus={countryTableStatus}
             setTableStatus={setCountryTableStatus}
           >
-            <CountryReportTable
+            <WeeklyReportTable
               data={countrySyndromesData}
               fetchError={countryWeekError && countryWeekError.message}
               isFetching={isLoading || isFetching}
@@ -188,17 +189,16 @@ export const WeeklyReportsPanelComponent = React.memo(
               onChange={setActiveSiteIndex}
               index={activeSiteIndex}
             />
-            <SiteAddress
-              address={siteData[activeSiteIndex].address}
-              contact={siteData[activeSiteIndex].contact}
-            />
+            <SiteAddress address={selectedSite.address} contact={selectedSite.contact} />
             <Card variant="outlined" mb={3}>
               <EditableTableProvider
                 tableStatus={sitesTableStatus}
                 setTableStatus={setSitesTableStatus}
               >
-                <SiteReportTable
-                  data={siteData[activeSiteIndex].syndromes}
+                <WeeklyReportTable
+                  data={selectedSite.syndromes}
+                  isSiteReport
+                  siteCode={selectedSite.code}
                   weekNumber={activeWeek}
                 />
               </EditableTableProvider>

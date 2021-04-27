@@ -4,41 +4,52 @@
  */
 
 import { queryCache, useMutation } from 'react-query';
-import { saveSiteReport } from './requests';
-import { put, post } from './api';
-import { FakeAPI } from './FakeApi';
+import { remove, put, post } from './api';
 
-export const useSaveSiteReport = params =>
-  useMutation(saveSiteReport, {
-    onSuccess: () => queryCache.invalidateQueries('country-weeks', params),
-  });
-
-export const useConfirmWeeklyReport = (orgUnit, period) =>
+export const useConfirmWeeklyReport = (countryCode, period) =>
   useMutation(
     () =>
-      post(`confirmedWeeklyReport/${orgUnit}`, {
+      post(`confirmedWeeklyReport/${countryCode}`, {
         params: { week: period },
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
-        queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
-        queryCache.invalidateQueries(`confirmedWeeklyReport`);        
+        queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
+        // regional (multi-country) level
+        queryCache.invalidateQueries('confirmedWeeklyReport', { exact: true });
       },
     },
   );
 
-export const useSaveCountryReport = (orgUnit, period) =>
+export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) =>
   useMutation(
     data =>
-      put(`weeklyReport/${orgUnit}`, {
-        params: { week: period },
+      put(`weeklyReport/${countryCode}/${siteCode}`, {
+        params: { week },
         data,
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(`weeklyReport/${orgUnit}`);
-        queryCache.invalidateQueries(`confirmedWeeklyReport/${orgUnit}`);
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}/${siteCode}`);
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}`, { exact: true });
       },
     },
   );
+
+export const useDeleteWeeklyReport = ({ countryCode, week }) =>
+  useMutation(
+    () =>
+      remove(`weeklyReport/${countryCode}`, {
+        params: { week },
+      }),
+    {
+      onSuccess: () => {
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
+      },
+    },
+  );
+
+export const combineMutationResults = results => ({
+  isError: !!results.find(r => r.isError),
+  error: results.find(r => r.error)?.error ?? null,
+});

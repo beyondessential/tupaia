@@ -23,17 +23,13 @@ type ConfirmedWeeklyReportAnswers = {
 export class ConfirmCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { week } = this.req.query;
-    const { organisationUnitCode } = this.req.params;
+    const { countryCode } = this.req.params;
 
-    const report = await this.reportConnection?.fetchReport(
-      REPORT_CODE,
-      [organisationUnitCode],
-      [week],
-    );
+    const report = await this.reportConnection?.fetchReport(REPORT_CODE, [countryCode], [week]);
 
     if (!report || report.results.length === 0) {
       throw new RespondingError(
-        `Cannot confirm weekly data: no weekly data found for ${organisationUnitCode} - ${week}`,
+        `Cannot confirm weekly data: no weekly data found for ${countryCode} - ${week}`,
         500,
       );
     }
@@ -42,7 +38,7 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
 
     return this.meditrakConnection?.updateOrCreateSurveyResponse(
       SURVEY_CODE,
-      organisationUnitCode,
+      countryCode,
       week,
       answers,
     );

@@ -6,36 +6,28 @@ import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
-import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import {
   LoadingContainer,
   TableBody,
-  GreyOutlinedButton,
   Button,
-  TextField,
   FakeHeader,
   SmallAlert,
   Table,
 } from '@tupaia/ui-components';
+import MuiLink from '@material-ui/core/Link';
 import {
   EditableCell,
   EditableTableContext,
-  FlexStart,
-  FlexSpaceBetween,
   FlexEnd,
+  FlexSpaceBetween,
   PercentageChangeCell,
   BorderlessTableRow,
-} from '../../components';
+} from '../../../components';
 import { VerifiableTableRow } from './VerifiableTableRow';
-import { useSaveCountryReport } from '../../api';
-import { TABLE_STATUSES } from '../../constants';
-
-const FormRow = styled(FlexStart)`
-  flex: 1;
-  padding-left: 1rem;
-`;
+import { combineMutationResults, useDeleteWeeklyReport, useSaveWeeklyReport } from '../../../api';
+import { TABLE_STATUSES } from '../../../constants';
+import { WeeklyReportTableHeading } from './WeeklyReportTableHeading';
 
 const GreyHeader = styled(FakeHeader)`
   border: none;
@@ -50,25 +42,6 @@ const GreyAlert = styled(SmallAlert)`
   font-weight: 500;
   color: white;
   margin-bottom: 1.2rem;
-`;
-
-const ReportedSites = styled(Typography)`
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-  font-weight: 400;
-  color: ${props => props.theme.palette.text.primary};
-`;
-
-const StyledTextField = styled(TextField)`
-  width: 2.4rem;
-  margin: 0 0.6rem;
-
-  .MuiInputBase-input {
-    font-size: 15px;
-    line-height: 18px;
-    padding: 0.5rem 0;
-    text-align: center;
-  }
 `;
 
 const StyledTh = styled.th`
@@ -97,6 +70,17 @@ const VerifiableBody = props => {
   return <TableBody TableRow={Row} {...props} />;
 };
 
+/* eslint-disable react/prop-types */
+const ActionsRow = ({ children, isSiteReport }) =>
+  isSiteReport ? (
+    <FlexEnd p={2}>{children}</FlexEnd>
+  ) : (
+    <FlexSpaceBetween pl={3} pt={3} mt={3} borderTop={1} borderColor="grey.400">
+      {children}
+    </FlexSpaceBetween>
+  );
+/* eslint-enable react/prop-types */
+
 const columns = [
   {
     title: 'Syndromes',
@@ -119,38 +103,48 @@ const columns = [
   },
 ];
 
-const ErrorTooltip = styled(Tooltip)`
-  & .MuiTooltip-tooltip {
-    background: ${props => props.theme.palette.error.main};
-
-    .MuiTooltip-arrow {
-      color: ${props => props.theme.palette.error.main};
-    }
-  }
-`;
-
-export const CountryReportTable = React.memo(
-  ({ isFetching, data, fetchError, sitesReported, totalSites, weekNumber }) => {
+export const WeeklyReportTable = React.memo(
+  ({
+    isFetching,
+    data,
+    fetchError,
+    sitesReported,
+    totalSites,
+    isSiteReport,
+    siteCode,
+    weekNumber,
+  }) => {
     const { tableStatus, setTableStatus } = useContext(EditableTableContext);
     const { countryCode } = useParams();
-
     const { handleSubmit, ...methods } = useForm();
-
-    const [saveReport, { error, isError }] = useSaveCountryReport(countryCode, weekNumber);
+    const [saveReport, saveResults] = useSaveWeeklyReport({
+      countryCode,
+      siteCode,
+      week: weekNumber,
+    });
+    const [deleteReport, deleteResults] = useDeleteWeeklyReport({
+      countryCode,
+      week: weekNumber,
+    });
+    const { error, isError } = combineMutationResults([saveResults, deleteResults]);
 
     const onSubmit = async formData => {
       setTableStatus(TABLE_STATUSES.SAVING);
 
       try {
-        await saveReport({
+        const reportData = {
           afr: parseInt(formData.AFR),
           dia: parseInt(formData.DIA),
           ili: parseInt(formData.ILI),
           pf: parseInt(formData.PF),
           dli: parseInt(formData.DLI),
-          sitesReported: parseInt(formData.sitesReported),
-          sites: parseInt(formData.totalSites),
-        });
+        };
+        if (!isSiteReport) {
+          reportData.sitesReported = parseInt(formData.sitesReported);
+          reportData.sites = parseInt(formData.totalSites);
+        }
+
+        await saveReport(reportData);
         setTableStatus(TABLE_STATUSES.STATIC);
       } catch (e) {
         setTableStatus(TABLE_STATUSES.ERROR);
@@ -165,6 +159,17 @@ export const CountryReportTable = React.memo(
       setTableStatus(TABLE_STATUSES.STATIC);
     }, [setTableStatus]);
 
+    const handleReset = async () => {
+      setTableStatus(TABLE_STATUSES.SAVING);
+
+      try {
+        await deleteReport();
+        setTableStatus(TABLE_STATUSES.STATIC);
+      } catch (e) {
+        setTableStatus(TABLE_STATUSES.ERROR);
+      }
+    };
+
     return (
       <LoadingContainer
         isLoading={isFetching || tableStatus === TABLE_STATUSES.SAVING}
@@ -173,61 +178,13 @@ export const CountryReportTable = React.memo(
       >
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FlexSpaceBetween pb={2}>
-              {tableStatus === TABLE_STATUSES.EDITABLE ? (
-                <FormRow>
-                  <ReportedSites variant="h6">Reported Sites:</ReportedSites>
-                  <ErrorTooltip
-                    title={methods.errors.sitesReported ? methods.errors.sitesReported.message : ''}
-                    placement="left"
-                    open
-                  >
-                    <StyledTextField
-                      defaultValue={sitesReported}
-                      error={!!methods.errors.sitesReported}
-                      name="sitesReported"
-                      inputRef={methods.register({
-                        required: 'Required',
-                        pattern: {
-                          value: /^\d+$/,
-                          message: 'Invalid character',
-                        },
-                      })}
-                    />
-                  </ErrorTooltip>
-                  <ReportedSites variant="h5"> / Total Sites: </ReportedSites>
-                  <ErrorTooltip
-                    title={methods.errors.totalSites ? methods.errors.totalSites.message : ''}
-                    placement="left"
-                    open
-                  >
-                    <StyledTextField
-                      defaultValue={totalSites}
-                      error={!!methods.errors.totalSites}
-                      name="totalSites"
-                      inputRef={methods.register({
-                        required: 'Required',
-                        pattern: {
-                          value: /^\d+$/,
-                          message: 'Invalid character',
-                        },
-                      })}
-                    />
-                  </ErrorTooltip>
-                </FormRow>
-              ) : (
-                <Typography variant="h5">
-                  {sitesReported}/{totalSites} Sites Reported
-                </Typography>
-              )}
-              <GreyOutlinedButton
-                onClick={handleEdit}
-                type="button"
-                disabled={tableStatus === TABLE_STATUSES.EDITABLE}
-              >
-                Edit
-              </GreyOutlinedButton>
-            </FlexSpaceBetween>
+            <WeeklyReportTableHeading
+              sitesReported={sitesReported}
+              totalSites={totalSites}
+              isSiteReport={!!isSiteReport}
+              siteCode={siteCode}
+              onEdit={handleEdit}
+            />
             {isError && error && (
               <Alert severity="error" variant="standard">
                 {error.message}
@@ -242,15 +199,24 @@ export const CountryReportTable = React.memo(
             {/*</GreyHeader>*/}
             <Table Header={TableHeader} Body={VerifiableBody} data={data} columns={columns} />
             {tableStatus === TABLE_STATUSES.EDITABLE && (
-              <FlexEnd pt={3} mt={3} borderTop={1} borderColor="grey.400">
-                {/*<MuiLink underline="always">Reset and use Sentinel data</MuiLink>*/}
+              <ActionsRow isSiteReport={isSiteReport}>
+                {!isSiteReport && (
+                  <MuiLink
+                    component="button"
+                    variant="body2"
+                    underline="always"
+                    onClick={handleReset}
+                  >
+                    Reset and use Sentinel data
+                  </MuiLink>
+                )}
                 <div>
                   <Button variant="outlined" type="button" onClick={handleCancel}>
                     Cancel
                   </Button>
                   <Button type="submit">Save</Button>
                 </div>
-              </FlexEnd>
+              </ActionsRow>
             )}
           </form>
         </FormProvider>
@@ -259,16 +225,22 @@ export const CountryReportTable = React.memo(
   },
 );
 
-CountryReportTable.propTypes = {
+WeeklyReportTable.propTypes = {
   isFetching: PropTypes.bool,
   data: PropTypes.array.isRequired,
   fetchError: PropTypes.string,
-  sitesReported: PropTypes.number.isRequired,
+  sitesReported: PropTypes.number,
+  totalSites: PropTypes.number,
+  isSiteReport: PropTypes.bool,
+  siteCode: PropTypes.string,
   weekNumber: PropTypes.string.isRequired,
-  totalSites: PropTypes.number.isRequired,
 };
 
-CountryReportTable.defaultProps = {
+WeeklyReportTable.defaultProps = {
   isFetching: false,
   fetchError: null,
+  sitesReported: undefined,
+  totalSites: undefined,
+  isSiteReport: false,
+  siteCode: '',
 };
