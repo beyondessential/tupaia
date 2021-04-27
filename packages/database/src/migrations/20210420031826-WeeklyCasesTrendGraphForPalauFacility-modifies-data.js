@@ -1,0 +1,120 @@
+'use strict';
+
+import { insertObject } from '../utilities';
+
+var dbm;
+var type;
+var seed;
+
+/**
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
+  dbm = options.dbmigrate;
+  type = dbm.dataType;
+  seed = seedLink;
+};
+
+const DISEASE_DATA_ELEMENTS = {
+  AFR: {
+    dataElement: 'PSSS_AFR_Total_Cases',
+    name: 'Acute fever and rash',
+    color: '#F0965BFF', // orange
+  },
+  Diarrhoea: {
+    dataElement: 'PSSS_DIA_Total_Cases',
+    name: 'Diarrhoea',
+    color: '#81DEE4FF', // aqua
+  },
+  ILI: {
+    dataElement: 'PSSS_ILI_Total_Cases',
+    name: 'Influenza like illness',
+    color: '#4DA347FF', // green
+  },
+  PF: {
+    dataElement: 'PSSS_PF_Total_Cases',
+    name: 'Prolonged fever',
+    color: '#1C49A7FF', // blue
+  },
+  DLI: {
+    dataElement: 'PSSS_DLI_Total_Cases',
+    name: 'Dengue like illness',
+    color: '#8455F6', // purple
+  },
+  Conjunctivitis: {
+    dataElement: 'PSSS_CON_Total_Cases',
+    name: 'Conjunctivitis',
+    color: '#BE72E0', // pink
+  },
+};
+
+const getDashboardReportId = diseaseName =>
+  `PSSS_PW_${diseaseName}_Weekly_Case_Trend_Graph_Facility`;
+
+const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance_National_Data_Facility';
+
+const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
+  id,
+  dataBuilder: 'sumPerPeriod',
+  dataBuilderConfig: {
+    dataClasses: {
+      value: {
+        codes: [dataElementCode],
+      },
+    },
+    aggregationType: 'FILL_EMPTY_WEEK_WITH_NULL',
+    entityAggregation: {
+      aggregationOrder: 'BEFORE',
+      dataSourceEntityType: 'facility',
+    },
+  },
+  viewJson: {
+    name: `${diseaseName} Weekly Case Number Trend Graph`,
+    type: 'chart',
+    chartType: 'line',
+    chartConfig: {
+      value: {
+        color,
+      },
+    },
+    defaultTimePeriod: {
+      end: {
+        unit: 'week',
+        offset: 0,
+      },
+      start: {
+        unit: 'week',
+        offset: -52,
+      },
+    },
+    presentationOptions: {
+      periodTickFormat: '[W]w',
+    },
+    periodGranularity: 'week',
+  },
+});
+
+exports.up = async function (db) {
+  const dashboardReportIds = [];
+  console.log(1);
+  for (const [diseaseName, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
+    const dashboardReportId = getDashboardReportId(diseaseName);
+    dashboardReportIds.push(dashboardReportId);
+
+    const dashboardReport = getDashboardReport(dashboardReportId, name, dataElement, color);
+    await insertObject(db, 'dashboardReport', dashboardReport);
+  }
+
+  const newDashboardReportIdsArray = `{${dashboardReportIds.join(',')}}`;
+  console.log(2);
+  await db.runSql(
+    `UPDATE "dashboardGroup" SET "dashboardReports" = "dashboardReports" || '${newDashboardReportIdsArray}' WHERE code = '${dashboardGroupCode}';`,
+  );
+};
+
+exports.down = function (db) {};
+
+exports._meta = {
+  version: 1,
+};
