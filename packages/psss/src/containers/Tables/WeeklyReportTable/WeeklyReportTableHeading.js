@@ -36,10 +36,7 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const SiteHeadingRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const SiteHeadingRow = styled(FlexSpaceBetween)`
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
   margin-left: 1.5rem;
