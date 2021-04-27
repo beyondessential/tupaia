@@ -82,12 +82,8 @@ export const aggregateAnalytics = (
         },
         QUARTER,
       );
-    case AGGREGATION_TYPES.FILL_EMPTY_WEEK_WITH_PREDEFINED_VALUE:
-      return getFinalValuePerPeriod(
-        analytics,
-        { defaultValue: null, ...aggregationConfig, preferredPeriodType: WEEK },
-        WEEK,
-      );
+    case AGGREGATION_TYPES.FILL_EMPTY_WEEK_WITH_NULL:
+      return getFinalValuePerPeriod(analytics, { defaultValue: null, ...aggregationConfig }, WEEK);
     case AGGREGATION_TYPES.SUM_EACH_QUARTER:
       return getSumValuePerPeriod(analytics, aggregationConfig, QUARTER);
     case AGGREGATION_TYPES.FINAL_EACH_YEAR:
