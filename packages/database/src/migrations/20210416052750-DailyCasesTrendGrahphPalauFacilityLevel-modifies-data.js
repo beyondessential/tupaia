@@ -22,7 +22,7 @@ const DISEASE_DATA_ELEMENTS = {
     name: 'Acute fever and rash',
     color: '#F0965BFF', // orange
   },
-  Diarrhoea: {
+  DIA: {
     dataElement: 'PSSS_DIA_Daily_Cases',
     name: 'Diarrhoea',
     color: '#81DEE4FF', // aqua
@@ -42,7 +42,7 @@ const DISEASE_DATA_ELEMENTS = {
     name: 'Dengue like illness',
     color: '#8455F6', // purple
   },
-  Conjunctivitis: {
+  CON: {
     dataElement: 'PSSS_CON_Daily_Cases',
     name: 'Conjunctivitis',
     color: '#BE72E0', // pink
@@ -59,8 +59,8 @@ const DASHBOARD_GROUP_TEMPLATE = {
   projectCodes: '{psss}',
 };
 
-const getDashboardReportId = diseaseName =>
-  `PSSS_PW_${diseaseName}_Daily_Case_Trend_Graph_Facility`;
+const getDashboardReportId = diseaseCode =>
+  `PSSS_PW_${diseaseCode}_Daily_Case_Trend_Graph_Facility`;
 
 const getDashboardReport = (id, diseaseName, dataElement, color) => ({
   id,
@@ -102,8 +102,8 @@ const getDashboardReport = (id, diseaseName, dataElement, color) => ({
 exports.up = async function (db) {
   const dashboardReportIds = [];
 
-  for (const [diseaseName, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
-    const dashboardReportId = getDashboardReportId(diseaseName);
+  for (const [diseaseCode, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
+    const dashboardReportId = getDashboardReportId(diseaseCode);
     dashboardReportIds.push(dashboardReportId);
     const dashboardReport = getDashboardReport(dashboardReportId, name, dataElement, color);
     await insertObject(db, 'dashboardReport', dashboardReport);
