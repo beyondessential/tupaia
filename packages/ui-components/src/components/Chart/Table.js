@@ -35,8 +35,8 @@ const StyledTable = styled(MuiTable)`
 
     th {
       position: relative;
-      height: 7.5rem;
-      text-align: left;
+      height: 7rem;
+      text-align: center;
       border: none;
       font-weight: 400;
       vertical-align: bottom;
@@ -75,15 +75,6 @@ const StyledTable = styled(MuiTable)`
   td {
     text-align: center;
   }
-`;
-
-const Label = styled.span`
-  position: absolute;
-  transform: rotate(-45deg);
-  transform-origin: bottom left;
-  width: 6.25rem;
-  bottom: 0.95rem;
-  left: calc(50%);
 `;
 
 const NoData = styled(SmallAlert)`
@@ -128,14 +119,12 @@ export const Table = ({ viewContent }) => {
 
   return (
     <TableContainer>
-      <StyledTable style={{ minWidth: columns.length * 100 + 250 }}>
+      <StyledTable style={{ minWidth: columns.length * 140 + 250 }}>
         <MuiTableHead>
           <MuiTableRow>
             <MuiTableCell width={250}>{xName || null}</MuiTableCell>
             {columns.map(column => (
-              <MuiTableCell key={column}>
-                <Label>{column}</Label>
-              </MuiTableCell>
+              <MuiTableCell key={column}>{column}</MuiTableCell>
             ))}
           </MuiTableRow>
         </MuiTableHead>
