@@ -63,9 +63,9 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
         codes: [dataElementCode],
       },
     },
-    aggregationType: 'FILL_EMPTY_PERIODS_WITH_PREDEFINED_VALUE',
+    aggregationType: 'FILL_EMPTY_WEEK_WITH_NULL',
     entityAggregation: {
-      defaultValue: null,
+      aggregationOrder: 'BEFORE',
       dataSourceEntityType: 'facility',
       aggregationEntityType: 'country',
     },
@@ -98,7 +98,6 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
 
 exports.up = async function (db) {
   const dashboardReportIds = [];
-
   for (const [diseaseName, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
     const dashboardReportId = getDashboardReportId(diseaseName);
     dashboardReportIds.push(dashboardReportId);
