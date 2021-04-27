@@ -16,18 +16,19 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP = {
-  organisationLevel: 'Country',
+const DASHBOARD_GROUP = organisationLevel => ({
+  organisationLevel,
   userGroup: 'Public',
   dashboardReports: '{}',
   name: 'Syndromic Surveillance National Data',
   projectCodes: '{psss}',
   organisationUnitCode: 'PW',
-  code: 'PW_PSSS_Syndromic_Surveillance_National_Data_Country',
-};
+  code: `PW_PSSS_Syndromic_Surveillance_National_Data_${organisationLevel}_Public`,
+});
 
 exports.up = async function (db) {
-  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP);
+  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP('Country'));
+  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP('Facility'));
 };
 
 exports.down = function (db) {

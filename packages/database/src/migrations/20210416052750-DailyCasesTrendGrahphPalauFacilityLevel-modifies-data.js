@@ -51,11 +51,11 @@ const DISEASE_DATA_ELEMENTS = {
 
 const DASHBOARD_GROUP_TEMPLATE = {
   organisationLevel: 'Facility',
-  userGroup: 'Public',
+  userGroup: 'PSSS Tupaia',
   organisationUnitCode: 'PW',
   dashboardReports: null,
   name: 'Syndromic Surveillance National Data',
-  code: 'PW_PSSS_Syndromic_Surveillance_National_Data_Facility',
+  code: 'PW_PSSS_Syndromic_Surveillance_National_Data_Facility_PSSS_Tupaia',
   projectCodes: '{psss}',
 };
 
