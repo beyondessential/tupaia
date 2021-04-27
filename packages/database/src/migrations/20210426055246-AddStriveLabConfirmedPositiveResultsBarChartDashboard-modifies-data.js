@@ -56,6 +56,7 @@ const REPORT = {
       key: codeToSeriesName(code),
       dataElementCode: codeToIndicatorCode(code),
     })),
+    aggregationType: 'RAW',
     entityAggregation: {
       dataSourceEntityType: 'case',
       aggregationEntityType: 'facility',
