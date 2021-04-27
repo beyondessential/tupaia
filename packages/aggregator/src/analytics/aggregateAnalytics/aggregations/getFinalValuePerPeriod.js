@@ -138,28 +138,25 @@ class FinalValueAggregator {
     return values;
   }
 
+  // Fill no data period with provided value
   getFilledValues(analytics, aggregationPeriod, defaultValue) {
-    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, true);
-    console.log('analytics');
-    console.log(analytics);
+    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, false);
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
       let mostRecentValue;
 
       periods.forEach(period => {
-        // value can be null
         mostRecentValue = organisationUnitCache.hasOwnProperty(period)
           ? organisationUnitCache[period]
           : defaultValue;
 
         values.push({
-          value: mostRecentValue,
+          ...mostRecentValue,
           period,
         });
       });
     });
-    // console.log(values);
     return values;
   }
 }
@@ -169,13 +166,11 @@ export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregation
     fillEmptyPeriodsTilNow: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
-  console.log(aggregationConfig);
   const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
-  console.log(options);
-  // return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
 
+  // `defaultValue` can be null
   if (options.hasOwnProperty('defaultValue')) {
     return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
   }
