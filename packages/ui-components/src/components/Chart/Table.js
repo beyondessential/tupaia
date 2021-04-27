@@ -98,7 +98,7 @@ const getColumns = rawData => {
     Object.keys(row)
       .filter(key => key !== 'name' && key !== 'timestamp')
       .forEach(key => {
-        // add the key as a table colunm but filter out object values such as metadata
+        // add the key as a table column but filter out object values such as metadata
         if (!columns.includes(key) && typeof row[key] !== 'object') {
           columns.push(key);
         }
@@ -110,7 +110,7 @@ const getColumns = rawData => {
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
-const parseValueType = valueType =>
+const sanitizeValueType = valueType =>
   valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 
 export const Table = ({ viewContent }) => {
@@ -153,7 +153,7 @@ export const Table = ({ viewContent }) => {
                 const rowValue =
                   value === undefined
                     ? 'No Data'
-                    : formatDataValueByType({ value }, parseValueType(valueType));
+                    : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
                 return <MuiTableCell key={column}>{rowValue}</MuiTableCell>;
               })}
