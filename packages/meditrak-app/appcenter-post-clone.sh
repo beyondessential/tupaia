@@ -15,5 +15,5 @@ cd ../..
 yarn
 
 # move to native folder and fix local dependencies
-cd packages/meditrak-app && node scripts/appcenter-postclone.js
+cd packages/meditrak-app && node scripts/fixLocalDepsForAppcenter.js
 
