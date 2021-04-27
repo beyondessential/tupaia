@@ -8,12 +8,13 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const StyledLogo = styled.div`
+  margin: 5px;
   width: 55px;
   height: 55px;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
-  border: 1px solid #dedee0;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 5px;
 `;
 
@@ -35,10 +36,11 @@ const LOGO_MAP = {
   WV: 'WV.png',
 };
 
-const Logo = image => (
-  <StyledLogo style={{ backgroundImage: `url('/images/partnerLogos/${image}')` }} />
-);
+export const PartnerLogo = ({ code }) =>
+  code in LOGO_MAP ? (
+    <StyledLogo style={{ backgroundImage: `url('/images/partnerLogos/${LOGO_MAP[code]}')` }} />
+  ) : null;
 
-export const getPartnerSupportItems = vitals => {
-  return Object.keys(LOGO_MAP).map(partner => (vitals[partner] ? Logo(LOGO_MAP[partner]) : null));
+PartnerLogo.propTypes = {
+  code: PropTypes.string.isRequired,
 };

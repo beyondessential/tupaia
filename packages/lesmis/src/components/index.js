@@ -15,4 +15,4 @@ export * from './LocationHeader';
 export * from './SearchBar';
 export * from './EntityMenu';
 export * from './EntityVitalsItem';
-export * from './getPartnerSupportItems';
+export * from './PartnerLogo';
