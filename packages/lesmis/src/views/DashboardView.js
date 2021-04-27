@@ -9,7 +9,7 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { useUrlParams } from '../utils';
 import { useVitalsData } from '../api';
-import { EntityVitalsItem } from '../components';
+import { EntityVitalsItem, PartnerLogo } from '../components';
 
 const Wrapper = styled.section`
   min-height: 50vh;
@@ -59,7 +59,14 @@ export const DashboardView = () => {
             </FlexRow>
             <img src="/images/school.png" alt="place" />
             <FlexRow>
-              <Typography>Development Partner Support</Typography>
+              <TitleContainer>
+                <Typography>Development Partner Support</Typography>
+              </TitleContainer>
+              {Object.entries(vitals)
+                .filter(([, value]) => value === true)
+                .map(([key]) => (
+                  <PartnerLogo code={key} />
+                ))}
             </FlexRow>
           </Container>
         </Wrapper>
@@ -85,7 +92,14 @@ export const DashboardView = () => {
             </FlexRow>
             <img src="/images/school.png" alt="place" />
             <FlexRow>
-              <Typography>Development Partner Support</Typography>
+              <TitleContainer>
+                <Typography>Development Partner Support</Typography>
+              </TitleContainer>
+              {Object.entries(vitals)
+                .filter(([, value]) => value === true)
+                .map(([key]) => (
+                  <PartnerLogo code={key} />
+                ))}
             </FlexRow>
           </Container>
         </Wrapper>
