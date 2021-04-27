@@ -22,5 +22,6 @@ export function createApp() {
     .get('/v1/entities', handleWith(EntitiesRoute))
     .get<EntityRequest>('/v1/entity/:entityCode', handleWith(EntityRoute))
     .get('/v1/reportData/:entityCode/:reportCode', handleWith(ReportRoute))
+    .post('/v1/reportData/:entityCode/:reportCode', handleWith(ReportRoute))
     .build();
 }
