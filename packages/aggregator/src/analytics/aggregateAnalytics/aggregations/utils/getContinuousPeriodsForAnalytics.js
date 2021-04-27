@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { convertToPeriod, getCurrentPeriod, getPeriodsInRange } from '@tupaia/utils';
+import { convertToPeriod, getCurrentPeriod, getPeriodsInRange, compareAsc } from '@tupaia/utils';
 
 /**
  * Calculates an array of continuous period strings from the first period in the analytics until the last
@@ -21,13 +21,14 @@ export const getContinuousPeriodsForAnalytics = (
   const periodsInAnalytics = analytics.map(analytic =>
     convertToPeriod(analytic.period, aggregationPeriod),
   );
+  const sortedPeriodsInAnalytics = periodsInAnalytics.sort(compareAsc);
   const endPeriod =
     !continueTilCurrentPeriod && periodsInAnalytics.length
-      ? Math.max(...periodsInAnalytics).toString()
+      ? sortedPeriodsInAnalytics[sortedPeriodsInAnalytics.length - 1].toString() // Max
       : getCurrentPeriod(aggregationPeriod);
 
   const startPeriod = periodsInAnalytics.length
-    ? Math.min(...periodsInAnalytics).toString()
+    ? sortedPeriodsInAnalytics[0].toString() // Min
     : endPeriod;
 
   return getPeriodsInRange(startPeriod, endPeriod);
