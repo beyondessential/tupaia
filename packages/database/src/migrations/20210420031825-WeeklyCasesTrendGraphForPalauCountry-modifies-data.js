@@ -19,7 +19,7 @@ exports.setup = function (options, seedLink) {
 const DISEASE_DATA_ELEMENTS = {
   AFR: {
     dataElement: 'PSSS_AFR_Total_Cases',
-    name: 'Acute fever and rash',
+    name: 'Acute Fever and Rash',
     color: '#F0965BFF', // orange
   },
   DIA: {
@@ -29,17 +29,17 @@ const DISEASE_DATA_ELEMENTS = {
   },
   ILI: {
     dataElement: 'PSSS_ILI_Total_Cases',
-    name: 'Influenza like illness',
+    name: 'Influenza Like Illness',
     color: '#4DA347FF', // green
   },
   PF: {
     dataElement: 'PSSS_PF_Total_Cases',
-    name: 'Prolonged fever',
+    name: 'Prolonged Fever',
     color: '#1C49A7FF', // blue
   },
   DLI: {
     dataElement: 'PSSS_DLI_Total_Cases',
-    name: 'Dengue like illness',
+    name: 'Dengue Like Illness',
     color: '#8455F6', // purple
   },
   CON: {
