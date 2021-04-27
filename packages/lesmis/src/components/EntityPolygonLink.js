@@ -35,7 +35,7 @@ export const EntityPolygonLink = ({ entity }) => {
         history.push(makeEntityLink(code, 'map'));
       },
     }),
-    [code],
+    [history, code],
   );
 
   return (

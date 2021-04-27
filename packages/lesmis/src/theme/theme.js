@@ -34,6 +34,7 @@ export const palette = {
   },
   contrastText: COLORS.FONT_MIDGREY,
   grey: {
+    100: COLORS.GREY_F1,
     400: COLORS.GREY_DE,
   },
   background: {

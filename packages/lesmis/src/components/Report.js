@@ -12,7 +12,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart } from '@tupaia/ui-components/lib/chart';
+import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import { useDashboardReportData } from '../api';
 import { FetchLoader } from './FetchLoader';
 import { FlexSpaceBetween } from './Layout';
@@ -39,12 +39,27 @@ const Title = styled(Typography)`
   line-height: 1.3rem;
 `;
 
-const Inner = styled.div`
+const Body = styled.div`
   display: flex;
-  padding: 1.25rem 1.875rem 0;
   background: ${COLORS.GREY_F9};
+  min-height: 26rem;
+  max-height: 40rem;
+
+  .MuiTable-root {
+    min-height: 100%;
+  }
+`;
+
+const ChartWrapper = styled.div`
+  display: flex;
   height: 26rem;
-  min-height: 21rem;
+  padding: 1.25rem 1.875rem 0;
+  width: 100%;
+
+  .MuiAlert-root {
+    position: relative;
+    top: -0.625rem; // offset the chart wrapper padding
+  }
 `;
 
 const Footer = styled.div`
@@ -56,62 +71,79 @@ const Footer = styled.div`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const Report = ({
-  reportId,
-  name,
-  entityCode,
-  dashboardGroupId,
-  periodGranularity,
-  defaultTimePeriod,
-  onItemClick,
-  year,
-}) => {
-  const [value, setValue] = useState('chart');
-  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+export const CHART_TYPES = {
+  AREA: 'area',
+  BAR: 'bar',
+  COMPOSED: 'composed',
+  LINE: 'line',
+  PIE: 'pie',
+};
+
+export const TABS = {
+  CHART: 'chart',
+  TABLE: 'table',
+};
+
+export const Report = React.memo(
+  ({
+    reportId,
+    name,
     entityCode,
     dashboardGroupId,
-    reportId,
     periodGranularity,
-    year,
     defaultTimePeriod,
-  });
+    onItemClick,
+    year,
+  }) => {
+    const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+    const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+      entityCode,
+      dashboardGroupId,
+      reportId,
+      periodGranularity,
+      year,
+      defaultTimePeriod,
+    });
 
-  const handleChange = (event, newValue) => {
-    if (newValue !== null) {
-      setValue(newValue);
-    }
-  };
+    const handleTabChange = (event, newValue) => {
+      if (newValue !== null) {
+        setSelectedTab(newValue);
+      }
+    };
 
-  return (
-    <Container>
-      <Header>
-        <Title>{name}</Title>
-        <ToggleButtonGroup onChange={handleChange} value={value} exclusive>
-          <ToggleButton value="table">
-            <GridOnIcon />
-          </ToggleButton>
-          <ToggleButton value="chart">
-            <BarChartIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Header>
-      <Inner>
-        {value === 'chart' ? (
+    return (
+      <Container>
+        <Header>
+          <Title>{name}</Title>
+          <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
+            <ToggleButton value={TABS.TABLE}>
+              <GridOnIcon />
+            </ToggleButton>
+            <ToggleButton value={TABS.CHART}>
+              <BarChartIcon />
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Header>
+        <Body>
           <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-            <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
+            {selectedTab === TABS.CHART ? (
+              <ChartWrapper>
+                <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
+              </ChartWrapper>
+            ) : (
+              <Table viewContent={viewContent} />
+            )}
           </FetchLoader>
-        ) : (
-          <div>Table</div>
-        )}
-      </Inner>
-      <Footer>
-        <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
-          More Insights
-        </Button>
-      </Footer>
-    </Container>
-  );
-};
+        </Body>
+        <Footer>
+          <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
+            More Insights
+          </Button>
+        </Footer>
+      </Container>
+    );
+  },
+);
 
 Report.propTypes = {
   name: PropTypes.string.isRequired,
@@ -128,5 +160,5 @@ Report.defaultProps = {
   defaultTimePeriod: null,
   year: null,
   periodGranularity: null,
-  onItemClick: null,
+  onItemClick: () => {},
 };

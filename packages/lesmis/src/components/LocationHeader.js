@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import MuiToggleButton from '@material-ui/lab/ToggleButton';
 import MuiToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import MuiContainer from '@material-ui/core/Container';
-import { StarBorder, GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
+import { GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData } from '../api';
@@ -113,8 +113,9 @@ export const LocationHeader = () => {
         </div>
         <FlexEnd>
           <FlexStart>
-            {/* Todo: add exports @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2511 */}
-            {/*<IconButton startIcon={<GetApp />}>Export</IconButton>*/}
+            {/*Todo: add exports @see*/}
+            {/*https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2511*/}
+            <IconButton startIcon={<GetApp />}>Export</IconButton>
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493*/}
             {/*<IconButton startIcon={<StarBorder />}>Add</IconButton>*/}
           </FlexStart>
