@@ -51,8 +51,6 @@ const DISEASE_DATA_ELEMENTS = {
 
 const getDashboardReportId = diseaseCode => `PSSS_PW_${diseaseCode}_Daily_Case_Trend_Graph_Country`;
 
-const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance_National_Data_Country';
-
 const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
   return {
     id,
@@ -93,6 +91,16 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
   };
 };
 
+const DASHBOARD_GROUP_TEMPLATE = {
+  organisationLevel: 'Country',
+  userGroup: 'PSSS Tupaia',
+  organisationUnitCode: 'PW',
+  dashboardReports: null,
+  name: 'Syndromic Surveillance National Data',
+  code: 'PW_PSSS_Syndromic_Surveillance_National_Data_Country_PSSS_Tupaia',
+  projectCodes: '{psss}',
+};
+
 exports.up = async function (db) {
   const dashboardReportIds = [];
 
@@ -106,9 +114,10 @@ exports.up = async function (db) {
 
   const newDashboardReportIdsArray = `{${dashboardReportIds.join(',')}}`;
 
-  await db.runSql(
-    `UPDATE "dashboardGroup" SET "dashboardReports" = "dashboardReports" || '${newDashboardReportIdsArray}' WHERE code = '${dashboardGroupCode}';`,
-  );
+  await insertObject(db, 'dashboardGroup', {
+    ...DASHBOARD_GROUP_TEMPLATE,
+    dashboardReports: newDashboardReportIdsArray,
+  });
 };
 
 exports.down = function (db) {};
