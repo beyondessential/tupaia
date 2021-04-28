@@ -1,6 +1,8 @@
 const fs = require('fs');
 
-const fixLocalDepsForAppcenter = () => {
+// This will redirect package.json entries for any '@tupaia' package to look at the local filesystem,
+// rather than relying on yarn workspaces, which isn't supported on appcenter
+const fixInternalDepsAppcenter = () => {
   console.log(
     'Fixing local dependencies for appcenter (see https://github.com/microsoft/appcenter/issues/278)',
   );
@@ -20,4 +22,4 @@ const fixLocalDepsForAppcenter = () => {
   });
 };
 
-fixLocalDepsForAppcenter();
+fixInternalDepsAppcenter();
