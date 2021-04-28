@@ -59,7 +59,10 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { isMobile } from '../../../utils/mobile';
 import { VIEW_STYLES } from '../../../styles';
 import { PRESENTATION_OPTIONS_SHAPE } from '../propTypes';
-import matrixPlaceholder from '../../../images/matrix-placeholder.png';
+import dotOnlyMatrixPlaceholder from '../../../images/matrix-placeholder-dot-only.png';
+import textOnlyMatrixPlaceholder from '../../../images/matrix-placeholder-text-only.png';
+import mixMatrixPlaceholder from '../../../images/matrix-placeholder-mix.png';
+
 import { DateRangePicker } from '../../DateRangePicker';
 import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles';
 import { Matrix } from './components';
@@ -152,6 +155,12 @@ const buildMatrixDataFromViewContent = viewContent => {
     categoryPresentationOptions,
     hideColumnTitles,
   };
+};
+
+const getPlaceholder = (presentationOptions, categoryPresentationOptions) => {
+  if (!presentationOptions && !categoryPresentationOptions) return textOnlyMatrixPlaceholder;
+  if (presentationOptions?.applyLocation?.columnIndexes) return mixMatrixPlaceholder;
+  return dotOnlyMatrixPlaceholder;
 };
 
 export class MatrixWrapper extends Component {
@@ -296,8 +305,9 @@ export class MatrixWrapper extends Component {
   }
 
   render() {
-    const { isEnlarged, isExporting } = this.props;
-
+    const { isEnlarged, isExporting, viewContent } = this.props;
+    const { presentationOptions, categoryPresentationOptions } = viewContent;
+    const matrixPlaceholder = getPlaceholder(presentationOptions, categoryPresentationOptions);
     if (isEnlarged || isExporting) {
       return (
         <div style={styles.matrixRef} ref={this.updateWrapper}>
