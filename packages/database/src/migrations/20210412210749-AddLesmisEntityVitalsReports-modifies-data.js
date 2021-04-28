@@ -15,6 +15,7 @@ const STUDENT_COUNT_INDICATOR_CODE = 'LESMIS_Student_Count';
 const SCHOOL_REPORT_CODE = 'LESMIS_school_vitals';
 const MULTI_SCHOOL_REPORT_CODE = 'LESMIS_multi_school_vitals';
 const DISTRICT_REPORT_CODE = 'LESMIS_sub_district_vitals';
+const VILLAGE_REPORT_CODE = 'LESMIS_village_vitals';
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -170,6 +171,25 @@ exports.up = async function (db) {
     },
     permission_group_id: await permissionGroupNameToId(db, 'Public'),
   });
+
+  await insertObject(db, 'report', {
+    id: generateId(),
+    code: VILLAGE_REPORT_CODE,
+    config: {
+      fetch: {
+        dataElements: ['SVP001'],
+      },
+      transform: [
+        'keyValueByDataElementName',
+        'mostRecentValuePerOrgUnit',
+        {
+          transform: 'select',
+          "'Population'": '$row.SVP001',
+        },
+      ],
+    },
+    permission_group_id: await permissionGroupNameToId(db, 'Public'),
+  });
 };
 
 exports.down = async function (db) {
@@ -192,6 +212,10 @@ exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM report
     WHERE code = '${DISTRICT_REPORT_CODE}';
+  `);
+  await db.runSql(`
+    DELETE FROM report
+    WHERE code = '${VILLAGE_REPORT_CODE}';
   `);
 };
 
