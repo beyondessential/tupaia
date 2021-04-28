@@ -6,8 +6,6 @@
 echo "Setting up environment variables"
 env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 
-#!/usr/bin/env bash
-
 # move to the root folder
 cd ../..
 
