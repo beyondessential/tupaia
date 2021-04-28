@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
+import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import { ReactComponent as LocationPin } from './icons/location-pin.svg';
 import { ReactComponent as PushPin } from './icons/push-pin.svg';
@@ -62,7 +63,7 @@ export const EntityVitalsItem = ({ name, value, icon }) => (
     <VitalsIcon icon={icon} />
     <Wrapper>
       <VitalName>{name}</VitalName>
-      <VitalContent>{value}</VitalContent>
+      {value ? <VitalContent>{value}</VitalContent> : <Skeleton animation="wave" />}
     </Wrapper>
   </Container>
 );
