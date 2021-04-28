@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject } from '../utilities';
+import { codeToId, insertObject } from '../utilities';
 import { generateId } from '../utilities/generateId';
 
 var dbm;
@@ -20,7 +20,6 @@ exports.setup = function(options, seedLink) {
 const NEW_UNKNOWN_DISTRICT_ENTITY = {
   id: generateId(),
   code: 'WS_Unknown_District',
-  parent_id: '5df1b88c61f76a485cd1ca09',
   name: 'Unknown District',
   type: 'district',
   country_code: 'WS',
@@ -50,40 +49,51 @@ const NEW_UNKNOWN_VILLAGE_ENTITY = {
   attributes: '{}',
 };
 
-const ENTITY_RELATION_UPOLU_EXPLORE = {
-  id: generateId(),
-  parent_id: '5df1b88c61f76a485cd1ca09',
-  child_id: '5df1b88c61f76a485cd7815a',
-  entity_hierarchy_id: '5e9d06e261f76a30c400001b',
-};
-
-const ENTITY_RELATION_SAVAII_EXPLORE = {
-  id: generateId(),
-  parent_id: '5df1b88c61f76a485cd1ca09',
-  child_id: '5df1b88c61f76a485ce4e6b1',
-  entity_hierarchy_id: '5e9d06e261f76a30c400001b',
-};
-
 exports.up = async function(db) {
-  await insertObject(db, 'entity', NEW_UNKNOWN_DISTRICT_ENTITY);
+  const SELECT_EXPLORE_ENTITY_HIERARCHY = await db.runSql(`
+    SELECT id FROM entity_hierarchy WHERE name = 'explore';
+  `);
+  const [EXPLORE_ENTITY_HIERARCHY] = SELECT_EXPLORE_ENTITY_HIERARCHY.rows;
+  const EXPLORE_ENTITY_HIERARCHY_ID = EXPLORE_ENTITY_HIERARCHY.id;
+
+  await insertObject(db, 'entity', {
+    ...NEW_UNKNOWN_DISTRICT_ENTITY,
+    parent_id: await codeToId(db, 'entity', 'WS'),
+  });
   await insertObject(db, 'entity', NEW_UNKNOWN_FACILITY_ENTITY);
   await insertObject(db, 'entity', NEW_UNKNOWN_VILLAGE_ENTITY);
-  await insertObject(db, 'entity_relation', ENTITY_RELATION_UPOLU_EXPLORE);
-  await insertObject(db, 'entity_relation', ENTITY_RELATION_SAVAII_EXPLORE);
+  await insertObject(db, 'entity_relation', {
+    id: generateId(),
+    parent_id: await codeToId(db, 'entity', 'WS'),
+    child_id: await codeToId(db, 'entity', 'WS_Upolu'),
+    entity_hierarchy_id: EXPLORE_ENTITY_HIERARCHY_ID,
+  });
+  await insertObject(db, 'entity_relation', {
+    id: generateId(),
+    parent_id: await codeToId(db, 'entity', 'WS'),
+    child_id: await codeToId(db, 'entity', 'WS_Savaii'),
+    entity_hierarchy_id: EXPLORE_ENTITY_HIERARCHY_ID,
+  });
 };
 
 exports.down = async function(db) {
+  const SELECT_EXPLORE_ENTITY_HIERARCHY = await db.runSql(`
+    SELECT id FROM entity_hierarchy WHERE name = 'explore';
+  `);
+  const [EXPLORE_ENTITY_HIERARCHY] = SELECT_EXPLORE_ENTITY_HIERARCHY.rows;
+  const EXPLORE_ENTITY_HIERARCHY_ID = EXPLORE_ENTITY_HIERARCHY.id;
+
   await db.runSql(`
     DELETE FROM "entity_relation"
-    WHERE "parent_id" = '${ENTITY_RELATION_UPOLU_EXPLORE.parent_id}'
-    AND "child_id" = '${ENTITY_RELATION_UPOLU_EXPLORE.child_id}'
-    AND "entity_hierarchy_id" = '${ENTITY_RELATION_UPOLU_EXPLORE.entity_hierarchy_id}';
+    WHERE "parent_id" = '${await codeToId(db, 'entity', 'WS')}'
+    AND "child_id" = '${await codeToId(db, 'entity', 'WS_Upolu')}'
+    AND "entity_hierarchy_id" = '${EXPLORE_ENTITY_HIERARCHY_ID}';
   `);
   await db.runSql(`
     DELETE FROM "entity_relation"
-    WHERE "parent_id" = '${ENTITY_RELATION_SAVAII_EXPLORE.parent_id}'
-    AND "child_id" = '${ENTITY_RELATION_SAVAII_EXPLORE.child_id}'
-    AND "entity_hierarchy_id" = '${ENTITY_RELATION_SAVAII_EXPLORE.entity_hierarchy_id}';
+    WHERE "parent_id" = '${await codeToId(db, 'entity', 'WS')}'
+    AND "child_id" = '${await codeToId(db, 'entity', 'WS_Savaii')}'
+    AND "entity_hierarchy_id" = '${EXPLORE_ENTITY_HIERARCHY_ID}';
   `);
   await db.runSql(`
     DELETE FROM "entity"
