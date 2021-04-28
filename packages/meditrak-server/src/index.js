@@ -54,6 +54,8 @@ const app = createApp(database, models);
 const port = 8090;
 http.createServer(app).listen(port);
 winston.info(`Running on port ${port}`);
+const aggregationDescription = process.env.AGGREGATION_URL_PREFIX || 'production';
+winston.info(`Connected to ${aggregationDescription} aggregation`);
 
 /**
  * Regularly sync data to the aggregation servers
