@@ -11,9 +11,15 @@ env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 # move to the root folder
 cd ../..
 
-# install dependencies & build internal dependencies
-yarn
+# install root dependencies
+SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
-# move to native folder and fix local dependencies
-cd packages/meditrak-app && node scripts/fixLocalDepsForAppcenter.js
+# move to meditrak folder
+cd packages/meditrak-app
+
+# build internal dependencies of meditrak
+../../scripts/bash/buildInternalDependencies.sh -package_json_path ./package.json
+
+# fix local dependencies
+node scripts/fixInternalDepsAppcenter.js
 
