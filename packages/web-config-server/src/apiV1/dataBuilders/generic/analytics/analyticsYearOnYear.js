@@ -3,36 +3,23 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { layerYearOnYear } from '../../../utils/layerYearOnYear';
+import { formatLayeredDataElementCode, layerYearOnYear } from '../../../utils/layerYearOnYear';
 import { AnalyticsPerPeriodBuilder } from './analyticsPerPeriod';
-import { reduceToDictionary } from '@tupaia/utils';
+import { periodToMoment, reduceToDictionary } from '@tupaia/utils';
+import moment from 'moment';
 
 class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
-  // modify query on class before calling fetch analytics
-
-  // "method signature", "super method"
   async fetchAnalytics(
     dataElementCodes,
     additionalQueryConfig,
     aggregationType = this.aggregationType,
     aggregationConfig = this.config.aggregationConfig ?? {},
   ) {
-    // store the original start/end dates
-
     const originalStartDate = this.query.startDate;
     const originalEndDate = this.query.endDate;
-    // this is always going to latest year jan 01 (default)
 
-    /// intercept/overrride the change the start date by the shift amoutn YYYY-MM-DD
-
-    //
-    this.query.startDate = '2016-01-01';
-    // data from the first day of 2016 || four years from today's date..
-
-    // end date?
-    this.query.endDate = '2021-04-22';
-    //moment().format('YYYY-MM-DD')
-    // call original fetchAnalytics
+    this.query.endDate = this.getDataEndDate().format('YYYY-MM-DD');
+    this.query.startDate = this.getDataStartDate().format('YYYY-MM-DD');
 
     const response = await super.fetchAnalytics(
       dataElementCodes,
@@ -40,44 +27,60 @@ class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
       aggregationType,
       aggregationConfig,
     );
-
-    // once w have response, we need to do the layers of year on year
-    // layerYearOnYear util/library function
+    // console.log(response.results);
 
     const layeredAnalytics = layerYearOnYear(response.results);
-
-    response.results = layeredAnalytics;
+    response.results = this.filterLayeredAnalytics(
+      originalStartDate,
+      originalEndDate,
+      layeredAnalytics,
+    );
 
     this.query.startDate = originalStartDate;
     this.query.endDate = originalEndDate;
+
     return response;
-
-    /// deal with how analyticsPerPeiod deals with data element codes
-
-    // date picker limits, FE task
+  }
+  // @TODO - name this method
+  // this will need return to the original start/end dates as it is changed during laterYearOnYear to jan 01 - dec 31
+  filterLayeredAnalytics(originalStartDate, originalEndDate, layeredAnalytics) {
+    let filteredAnalytics = layeredAnalytics.filter(layeredAnalytic => {
+      let analytic = periodToMoment(layeredAnalytic.period);
+      analytic = analytic.format('YYYY-MM-DD');
+      return moment(analytic).isBetween(originalStartDate, originalEndDate); // true
+    });
+    return filteredAnalytics;
+    //within the range return true @TODO
   }
 
-  // '2021W51': { name: '20th Dec 2021', undefined: 3 },
+  getDataEndDate() {
+    return moment();
+  }
+
+  getDataStartDate() {
+    return moment(this.query.startDate)
+      .subtract(this.config.layerYearOnYearSeries.pastYears, 'years')
+      .month('january')
+      .date(1);
+  }
+
+  getLayerYearOnYearSeries() {
+    let series = [];
+    for (let year = this.getDataEndDate().year(); year >= this.getDataStartDate().year(); year--) {
+      let yearsAgo = this.getDataEndDate().year() - year;
+      series.push({
+        seriesKey: year,
+        dataElementCode: formatLayeredDataElementCode(this.config.dataElementCode, yearsAgo),
+      });
+    }
+    return series;
+  }
 
   getGroupingMapDataElementCodes(layeredDataElementCode) {
-    // layeredDataElementCode latest- {3}
-
-    const series = this.config.layerYearOnYearSeries;
-
-    // || [
-    //   { seriesKey: layeredDataElementCode, dataElementCode: layeredDataElementCode,
-    //    },
-    // ];
+    const series = this.getLayerYearOnYearSeries(layeredDataElementCode);
     const dataElementMap = reduceToDictionary(series, 'dataElementCode', 'seriesKey');
 
     return dataElementMap[layeredDataElementCode];
-
-    // let prefix = dataElementName;
-
-    // const series = this.config.series || [
-    //   { key: 'value', dataElementCode: this.config.dataElementCode },
-    // ];
-    /// this is where the values becomes the renamed data element codes  (make a map withe prefixed dec)
   }
 }
 export const analyticsYearOnYear = (
@@ -97,3 +100,7 @@ export const analyticsYearOnYear = (
   );
   return builder.build();
 };
+
+// @TODO
+// date picker limits, FE task & default date range
+// zooming

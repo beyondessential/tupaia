@@ -8,7 +8,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -20,8 +20,8 @@ const reportIds = [
 ];
 const dashboardGroupCode = 'Tonga_Community_Health_Country';
 
-exports.up = function(db) {
-  console.log(reportIds.join(','));
+exports.up = function (db) {
+  // console.log(reportIds.join(','));
   return db.runSql(`
       UPDATE "dashboardGroup"
       SET "dashboardReports" = "dashboardReports" || '{${reportIds.join(',')}}'
@@ -36,7 +36,7 @@ const removeReportFromGroup = (db, reportId) =>
   WHERE "code" = '${dashboardGroupCode}';
   `);
 
-exports.down = function(db) {
+exports.down = function (db) {
   return Promise.all(reportIds.map(reportId => removeReportFromGroup(db, reportId)));
 };
 

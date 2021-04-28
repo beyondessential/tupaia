@@ -66,26 +66,11 @@ const getDashboardGroupCode = country => `${country}_PSSS_Syndromic_Surveillance
 const getDashboardReport = (id, thingName) => {
   return {
     id,
-    dataBuilder: 'analyticsPerPeriod',
+    dataBuilder: 'analyticsYearOnYear',
     dataBuilderConfig: {
-      layerYearOnYearSeries: [
-        {
-          seriesKey: 2021,
-          dataElementCode: 'PSSS_Confirmed_ILI_Cases',
-        },
-        {
-          seriesKey: 2020,
-          dataElementCode: 'PSSS_Confirmed_ILI_Cases_1_yr_ago',
-        },
-        {
-          seriesKey: 2019,
-          dataElementCode: 'PSSS_Confirmed_ILI_Cases_2_yr_ago',
-        },
-        {
-          seriesKey: 2018,
-          dataElementCode: 'PSSS_Confirmed_ILI_Cases_3_yr_ago',
-        },
-      ],
+      layerYearOnYearSeries: {
+        pastYears: 4,
+      },
       periodType: 'week',
       aggregationType: ['FINAL_EACH_WEEK', 'YEAR_ON_YEAR'],
       dataElementCode: THINGS[thingName],
@@ -106,27 +91,36 @@ const getDashboardReport = (id, thingName) => {
       datePickerLimits: {
         end: {
           unit: 'week',
-          offset: 0,
+          modifier: 'end_of',
+          modifierUnit: 'year',
         },
         start: {
           unit: 'week',
-          offset: -52,
+          modifier: 'start_of',
+          modifierUnit: 'year',
         },
       },
       defaultTimePeriod: {
         end: {
           unit: 'week',
-          offset: 0,
+          modifier: 'end_of',
+          modifierUnit: 'year',
         },
         start: {
           unit: 'week',
-          offset: -52,
+          modifier: 'start_of',
+          modifierUnit: 'year',
         },
       },
       periodGranularity: 'week',
+      presentationOptions: {
+        periodTickFormat: '[W]w',
+      },
     },
   };
 };
+
+// start of
 
 exports.up = async function (db) {
   const dashboardReportIds = [];

@@ -61,7 +61,6 @@ export class AnalyticsPerPeriodBuilder extends DataBuilder {
       }
       resultsPerPeriod[convertPeriod][seriesKey] = value;
     });
-    console.log(resultsPerPeriod);
     return resultsPerPeriod;
   };
 }

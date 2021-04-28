@@ -28,7 +28,10 @@ export const layerYearOnYear = analytics => {
 
     if (yearsAgo > 0) {
       // 2. Modify name of data elements yr_ago
-      modifiedAnalytic.dataElement = `${modifiedAnalytic.dataElement}_${yearsAgo}_yr_ago`;
+      modifiedAnalytic.dataElement = formatLayeredDataElementCode(
+        modifiedAnalytic.dataElement,
+        yearsAgo,
+      );
 
       // 3. Make all periods return the latest year
       analyticMoment = analyticMoment.year(latestYear);
@@ -39,4 +42,8 @@ export const layerYearOnYear = analytics => {
   });
 
   return layeredAnalytics;
+};
+
+export const formatLayeredDataElementCode = (dataElementCode, yearsAgo) => {
+  return yearsAgo > 0 ? `${dataElementCode}_${yearsAgo}_yr_ago` : dataElementCode;
 };
