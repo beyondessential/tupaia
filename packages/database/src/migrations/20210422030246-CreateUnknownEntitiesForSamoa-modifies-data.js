@@ -50,11 +50,11 @@ const NEW_UNKNOWN_VILLAGE_ENTITY = {
 };
 
 exports.up = async function(db) {
-  const SELECT_EXPLORE_ENTITY_HIERARCHY = await db.runSql(`
+  const selectExploreEntityHierarchy = await db.runSql(`
     SELECT id FROM entity_hierarchy WHERE name = 'explore';
   `);
-  const [EXPLORE_ENTITY_HIERARCHY] = SELECT_EXPLORE_ENTITY_HIERARCHY.rows;
-  const EXPLORE_ENTITY_HIERARCHY_ID = EXPLORE_ENTITY_HIERARCHY.id;
+  const [exploreEntityHierarchy] = selectExploreEntityHierarchy.rows;
+  const exploreEntityHierarchyId = exploreEntityHierarchy.id;
 
   await insertObject(db, 'entity', {
     ...NEW_UNKNOWN_DISTRICT_ENTITY,
@@ -66,34 +66,34 @@ exports.up = async function(db) {
     id: generateId(),
     parent_id: await codeToId(db, 'entity', 'WS'),
     child_id: await codeToId(db, 'entity', 'WS_Upolu'),
-    entity_hierarchy_id: EXPLORE_ENTITY_HIERARCHY_ID,
+    entity_hierarchy_id: exploreEntityHierarchyId,
   });
   await insertObject(db, 'entity_relation', {
     id: generateId(),
     parent_id: await codeToId(db, 'entity', 'WS'),
     child_id: await codeToId(db, 'entity', 'WS_Savaii'),
-    entity_hierarchy_id: EXPLORE_ENTITY_HIERARCHY_ID,
+    entity_hierarchy_id: exploreEntityHierarchyId,
   });
 };
 
 exports.down = async function(db) {
-  const SELECT_EXPLORE_ENTITY_HIERARCHY = await db.runSql(`
+  const selectExploreEntityHierarchy = await db.runSql(`
     SELECT id FROM entity_hierarchy WHERE name = 'explore';
   `);
-  const [EXPLORE_ENTITY_HIERARCHY] = SELECT_EXPLORE_ENTITY_HIERARCHY.rows;
-  const EXPLORE_ENTITY_HIERARCHY_ID = EXPLORE_ENTITY_HIERARCHY.id;
+  const [exploreEntityHierarchy] = selectExploreEntityHierarchy.rows;
+  const exploreEntityHierarchyId = exploreEntityHierarchy.id;
 
   await db.runSql(`
     DELETE FROM "entity_relation"
     WHERE "parent_id" = '${await codeToId(db, 'entity', 'WS')}'
     AND "child_id" = '${await codeToId(db, 'entity', 'WS_Upolu')}'
-    AND "entity_hierarchy_id" = '${EXPLORE_ENTITY_HIERARCHY_ID}';
+    AND "entity_hierarchy_id" = '${exploreEntityHierarchyId}';
   `);
   await db.runSql(`
     DELETE FROM "entity_relation"
     WHERE "parent_id" = '${await codeToId(db, 'entity', 'WS')}'
     AND "child_id" = '${await codeToId(db, 'entity', 'WS_Savaii')}'
-    AND "entity_hierarchy_id" = '${EXPLORE_ENTITY_HIERARCHY_ID}';
+    AND "entity_hierarchy_id" = '${exploreEntityHierarchyId}';
   `);
   await db.runSql(`
     DELETE FROM "entity"
