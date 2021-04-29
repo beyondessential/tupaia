@@ -18,17 +18,16 @@ export const getContinuousPeriodsForAnalytics = (
   aggregationPeriod,
   continueTilCurrentPeriod,
 ) => {
-  const periodsInAnalytics = analytics.map(analytic =>
-    convertToPeriod(analytic.period, aggregationPeriod),
-  );
-  const sortedPeriodsInAnalytics = periodsInAnalytics.sort(compareAsc);
+  const periodsInAnalytics = analytics
+    .map(analytic => convertToPeriod(analytic.period, aggregationPeriod))
+    .sort(compareAsc);
   const endPeriod =
     !continueTilCurrentPeriod && periodsInAnalytics.length
-      ? sortedPeriodsInAnalytics[sortedPeriodsInAnalytics.length - 1].toString() // Max
+      ? periodsInAnalytics[periodsInAnalytics.length - 1].toString() // Max
       : getCurrentPeriod(aggregationPeriod);
 
   const startPeriod = periodsInAnalytics.length
-    ? sortedPeriodsInAnalytics[0].toString() // Min
+    ? periodsInAnalytics[0].toString() // Min
     : endPeriod;
 
   return getPeriodsInRange(startPeriod, endPeriod);
