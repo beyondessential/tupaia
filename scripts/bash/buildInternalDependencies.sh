@@ -10,7 +10,7 @@ OUT_DIR="dist"
 
 watch=false
 with_types=false
-package_path=false
+package_path=""
 while [ "$1" != "" ]; do
     case $1 in
     --watch)
