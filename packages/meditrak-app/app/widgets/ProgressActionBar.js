@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, ViewPropTypes } from 'react-native';
 
-import { Text, Icon, TouchableOpacity } from '.';
+import { Text } from './Text';
+import { Icon } from './Icon';
+import { TouchableOpacity } from './Touchable';
 import {
   getThemeColorOneFaded,
   BORDER_RADIUS,

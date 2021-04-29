@@ -10,6 +10,7 @@ OUT_DIR="dist"
 
 watch=false
 with_types=false
+package_path=""
 while [ "$1" != "" ]; do
     case $1 in
     --watch)
@@ -19,6 +20,10 @@ while [ "$1" != "" ]; do
     --withTypes)
         shift
         with_types=true
+        ;;
+    -p | --packagePath)
+        shift
+        package_path=$1
         shift
         ;;
     -h | --help)
@@ -38,8 +43,10 @@ done
 build_commands=()
 delete_command="rm -rf"
 
+
+
 # Build dependencies
-for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
+for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
     delete_command="${delete_command} packages/${PACKAGE}/${OUT_DIR}"
     build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
 done
