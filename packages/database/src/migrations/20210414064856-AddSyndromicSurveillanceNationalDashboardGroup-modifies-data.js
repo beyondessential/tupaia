@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP = organisationLevel => ({
+const createDashboardGroup = organisationLevel => ({
   organisationLevel,
   userGroup: 'Public',
   dashboardReports: '{}',
@@ -27,8 +27,8 @@ const DASHBOARD_GROUP = organisationLevel => ({
 });
 
 exports.up = async function (db) {
-  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP('Country'));
-  await insertObject(db, 'dashboardGroup', DASHBOARD_GROUP('Facility'));
+  await insertObject(db, 'dashboardGroup', createDashboardGroup('Country'));
+  await insertObject(db, 'dashboardGroup', createDashboardGroup('Facility'));
 };
 
 exports.down = function (db) {
