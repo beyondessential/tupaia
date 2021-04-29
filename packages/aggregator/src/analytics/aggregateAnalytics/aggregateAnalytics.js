@@ -48,7 +48,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
+          fillEmptyPeriodsWith: 'previous',
         },
         DAY,
       );
@@ -67,7 +67,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
+          fillEmptyPeriodsWith: 'previous',
         },
         MONTH,
       );
@@ -78,12 +78,16 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
+          fillEmptyPeriodsWith: 'previous',
         },
         QUARTER,
       );
-    case AGGREGATION_TYPES.FILL_EMPTY_WEEK_WITH_NULL:
-      return getFinalValuePerPeriod(analytics, { defaultValue: null, ...aggregationConfig }, WEEK);
+    case AGGREGATION_TYPES.FINAL_EACH_WEEK_FILL_EMPTY_WEEKS_WITH_NULL:
+      return getFinalValuePerPeriod(
+        analytics,
+        { fillEmptyPeriodsWith: null, ...aggregationConfig },
+        WEEK,
+      );
     case AGGREGATION_TYPES.SUM_EACH_QUARTER:
       return getSumValuePerPeriod(analytics, aggregationConfig, QUARTER);
     case AGGREGATION_TYPES.FINAL_EACH_YEAR:
@@ -93,7 +97,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyPeriodsTilNow: true,
+          fillEmptyPeriodsWith: 'previous',
         },
         YEAR,
       );

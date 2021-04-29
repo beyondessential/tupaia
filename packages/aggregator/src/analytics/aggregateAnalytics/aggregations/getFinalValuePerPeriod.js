@@ -163,19 +163,19 @@ class FinalValueAggregator {
 
 export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
   const defaultOptions = {
-    fillEmptyPeriodsTilNow: false,
+    fillEmptyPeriodsWith: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
   const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 
-  // `defaultValue` can be null
-  if (options.hasOwnProperty('defaultValue')) {
-    return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
+  switch (options.fillEmptyPeriodsWith) {
+    case 'previous':
+      return valueAggregator.getContinuousValues(analytics, aggregationPeriod);
+    case false:
+      return valueAggregator.getDistinctValues();
+    default:
+      return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
   }
-
-  return options.fillEmptyPeriodsTilNow
-    ? valueAggregator.getContinuousValues(analytics, aggregationPeriod)
-    : valueAggregator.getDistinctValues();
 };

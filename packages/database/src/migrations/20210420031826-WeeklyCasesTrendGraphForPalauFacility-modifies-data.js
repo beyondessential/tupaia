@@ -63,7 +63,7 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
         codes: [dataElementCode],
       },
     },
-    aggregationType: 'FILL_EMPTY_WEEK_WITH_NULL',
+    aggregationType: 'FINAL_EACH_WEEK_FILL_EMPTY_WEEKS_WITH_NULL',
     entityAggregation: {
       aggregationOrder: 'BEFORE',
       dataSourceEntityType: 'facility',
