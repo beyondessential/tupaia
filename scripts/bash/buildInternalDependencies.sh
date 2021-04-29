@@ -10,7 +10,7 @@ OUT_DIR="dist"
 
 watch=false
 with_types=false
-package_json_path=false
+package_path=false
 while [ "$1" != "" ]; do
     case $1 in
     --watch)
@@ -21,9 +21,9 @@ while [ "$1" != "" ]; do
         shift
         with_types=true
         ;;
-    -p | --packageJsonPath)
+    -p | --packagePath)
         shift
-        package_json_path=$1
+        package_path=$1
         shift
         ;;
     -h | --help)
@@ -46,14 +46,14 @@ delete_command="rm -rf"
 
 
 # Build dependencies
-for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_json_path}); do
+for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
     delete_command="${delete_command} packages/${PACKAGE}/${OUT_DIR}"
     build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
 done
 
 # Build types
 if [ $with_types == "true" ]; then
-    for PACKAGE in $(${DIR}/getTypedInternalDependencies.sh ${package_json_path}); do
+    for PACKAGE in $(${DIR}/getTypedInternalDependencies.sh); do
         build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build:ts $build_ts_args\"")
     done
 fi
