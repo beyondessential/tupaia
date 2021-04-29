@@ -49,11 +49,11 @@ if [[ ${skip_internal} == true ]]; then
     eval ${start_server}
 else
     echo "Internal dependencies are under watch for hot reload (use --skip-internal or -s for faster startup times)"
-    for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
+    for PACKAGE in $(${DIR}/getInternalDependencies.sh .); do
         watch_flags="${watch_flags} --watch ../${PACKAGE}/dist"
     done
     # add the watch flags to the server start process, as well as a 1 second delay to debounce the
     # many restarts that otherwise happen during the initial build of internal dependencies
     start_server="${start_server} --delay 1 ${watch_flags}"
-    yarn concurrently "${DIR}/buildInternalDependencies.sh --watch --withTypes" "eval ${start_server}"
+    yarn concurrently "${DIR}/buildInternalDependencies.sh --watch --packagePath ." "eval ${start_server}"
 fi
