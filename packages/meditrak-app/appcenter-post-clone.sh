@@ -21,7 +21,7 @@ SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 cd packages/meditrak-app
 
 # build internal dependencies of meditrak
-../../scripts/bash/buildInternalDependencies.sh --packageJsonPath ./package.json
+../../scripts/bash/buildInternalDependencies.sh --packagePath .
 
 # redirect package.json entries for internal dependencies to look locally
 node scripts/fixInternalDepsAppcenter.js
