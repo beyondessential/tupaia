@@ -85,7 +85,7 @@ export const aggregateAnalytics = (
     case AGGREGATION_TYPES.FINAL_EACH_WEEK_FILL_EMPTY_WEEKS_WITH_NULL:
       return getFinalValuePerPeriod(
         analytics,
-        { fillEmptyPeriodsWith: null, ...aggregationConfig },
+        { ...aggregationConfig, fillEmptyPeriodsWith: 'null' },
         WEEK,
       );
     case AGGREGATION_TYPES.SUM_EACH_QUARTER:

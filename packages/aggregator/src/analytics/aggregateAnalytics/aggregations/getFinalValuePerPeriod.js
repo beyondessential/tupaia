@@ -106,25 +106,26 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
-  getContinuousValues(analytics, aggregationPeriod) {
-    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, true);
+  getFilledValues(analytics, aggregationPeriod, fillEmptyPeriodsWith) {
+    const checkIfFillingContinuousValues = fillEmptyPeriodsWith === 'previous';
+    const periods = getContinuousPeriodsForAnalytics(
+      analytics,
+      aggregationPeriod,
+      checkIfFillingContinuousValues,
+    );
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
       let mostRecentValue;
 
       periods.forEach(period => {
-        const valueForPeriod = organisationUnitCache[period];
-
-        if (valueForPeriod !== undefined) {
-          mostRecentValue = valueForPeriod;
-        }
-        if (mostRecentValue !== undefined) {
-          values.push({
-            ...mostRecentValue,
-            period,
-          });
-        }
+        const valueForPeriodFromCache = organisationUnitCache[period];
+        values.push({
+          ...(checkIfFillingContinuousValues && mostRecentValue),
+          ...valueForPeriodFromCache,
+          period,
+        });
+        if (valueForPeriodFromCache) mostRecentValue = valueForPeriodFromCache;
       });
     });
 
@@ -135,28 +136,6 @@ class FinalValueAggregator {
     const values = [];
     this.cache.iterate(value => values.push(value));
 
-    return values;
-  }
-
-  // Fill no data period with provided value
-  getFilledValues(analytics, aggregationPeriod, defaultValue) {
-    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, false);
-
-    const values = [];
-    this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
-      let mostRecentValue;
-
-      periods.forEach(period => {
-        mostRecentValue = organisationUnitCache.hasOwnProperty(period)
-          ? organisationUnitCache[period]
-          : defaultValue;
-
-        values.push({
-          ...mostRecentValue,
-          period,
-        });
-      });
-    });
     return values;
   }
 }
@@ -170,12 +149,10 @@ export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregation
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 
-  switch (options.fillEmptyPeriodsWith) {
-    case 'previous':
-      return valueAggregator.getContinuousValues(analytics, aggregationPeriod);
-    case false:
-      return valueAggregator.getDistinctValues();
-    default:
-      return valueAggregator.getFilledValues(analytics, aggregationPeriod, options.defaultValue);
-  }
+  if (options.fillEmptyPeriodsWith === false) return valueAggregator.getDistinctValues();
+  return valueAggregator.getFilledValues(
+    analytics,
+    aggregationPeriod,
+    options.fillEmptyPeriodsWith,
+  );
 };
