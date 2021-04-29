@@ -81,8 +81,8 @@ const percentage = value => {
   return `${Math.round(percentageValue * floatNormalizer) / floatNormalizer}%`;
 };
 
-const number = (value, { presentationOptions = {} }) => {
-  const { valueFormat = '0,0' } = presentationOptions;
+const number = (value, { presentationOptions }) => {
+  const valueFormat = presentationOptions?.dataValueFormat ? valueFormat : '0,0';
   return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
 };
 
