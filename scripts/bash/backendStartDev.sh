@@ -26,9 +26,13 @@ while [ "$2" != "" ]; do
         type_script=true
         shift
         ;;
-    -s | --skip-internal)
+    -i | --include-internal)
         skip_internal=true
         shift
+        ;;
+    -s | --skip-internal)
+        echo "Skipping internal dependencies is now done by default. Remove the -s | --skip-internal flag, and if you want to include internal dependencies, add a -i (do try it - it's a lot faster than it used to be, because it only builds those relevant to the current package!)"
+        exit 1
         ;;
     *)
         echo $USAGE
@@ -44,10 +48,7 @@ fi
 
 echo "Starting server"
 
-if [[ ${skip_internal} == true ]]; then
-    echo "Skipping internal dependency build and watch"
-    eval ${start_server}
-else
+if [[ ${inclue_internal} == true ]]; then
     echo "Internal dependencies are under watch for hot reload (use --skip-internal or -s for faster startup times)"
     for PACKAGE in $(${DIR}/getInternalDependencies.sh .); do
         watch_flags="${watch_flags} --watch ../${PACKAGE}/dist"
@@ -56,4 +57,7 @@ else
     # many restarts that otherwise happen during the initial build of internal dependencies
     start_server="${start_server} --delay 1 ${watch_flags}"
     yarn concurrently "${DIR}/buildInternalDependencies.sh --watch --packagePath ." "eval ${start_server}"
+else
+    echo "Starting server without internal dependency build and watch. To include internal dependencies, add the -i flag - it's much faster than it used to be!"
+    eval ${start_server}
 fi
