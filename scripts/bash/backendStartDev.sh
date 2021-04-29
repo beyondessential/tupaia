@@ -27,7 +27,7 @@ while [ "$2" != "" ]; do
         shift
         ;;
     -i | --include-internal)
-        skip_internal=true
+        include_internal=true
         shift
         ;;
     -s | --skip-internal)
