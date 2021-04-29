@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { TextInput } from '.';
+import { TextInput } from './TextInput';
 import { BORDER_RADIUS } from '../globalStyles';
 
 export const MultilineTextInput = props => (

@@ -9,7 +9,10 @@ import PropTypes from 'prop-types';
 
 import { THEME_FONT_SIZE_THREE } from '../globalStyles';
 
-import { Button, Checkbox, TextInput, MultilineTextInput } from '.';
+import { Button } from './Button';
+import { Checkbox } from './Checkbox';
+import { TextInput } from './TextInput';
+import { MultilineTextInput } from './MultilineTextInput';
 
 export const FIELD_TYPES = {
   TEXT: 'TEXT',
