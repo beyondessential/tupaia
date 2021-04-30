@@ -30,7 +30,7 @@ const mapBoxBounds = L.latLngBounds(bounds);
 const maxBounds = mapBoxBounds.pad(1);
 
 export const SimplePolygonLayer = () => (
-  <MapContainer bounds={maxBounds}>
+  <MapContainer location={{ bounds: maxBounds }}>
     <TileLayer />
     <PolygonLayer entities={entityData} />
   </MapContainer>

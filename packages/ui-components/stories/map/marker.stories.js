@@ -28,7 +28,7 @@ export default {
   decorators: [
     Story => (
       <Container>
-        <MapContainer style={{ height: 500 }} bounds={DEFAULT_BOUNDS}>
+        <MapContainer style={{ height: 500 }} location={{ bounds: DEFAULT_BOUNDS }}>
           <LayerGroup>
             <AttributionControl position="bottomleft" prefix="" />
             <LeafletTileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
