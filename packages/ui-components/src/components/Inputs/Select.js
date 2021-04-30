@@ -47,15 +47,7 @@ const MenuItem = styled(MuiMenuItem)`
   padding-bottom: 0.5rem;
 `;
 
-export const Select = ({
-  value,
-  onChange,
-  options,
-  showPlaceholder,
-  placeholder,
-  defaultValue,
-  ...props
-}) => {
+export const Select = ({ value, onChange, options, placeholder, defaultValue, ...props }) => {
   const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
@@ -76,12 +68,9 @@ export const Select = ({
       }}
       {...props}
     >
-      {showPlaceholder && (
-        <MenuItem value="" disabled>
-          {placeholder}
-        </MenuItem>
-      )}
-
+      <MenuItem value="" disabled>
+        {placeholder}
+      </MenuItem>
       {options.map(option => (
         <MenuItem key={option.value} value={option.value}>
           {option.label}
@@ -93,10 +82,9 @@ export const Select = ({
 
 Select.propTypes = {
   id: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
-  showPlaceholder: PropTypes.bool,
   defaultValue: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
@@ -104,10 +92,8 @@ Select.propTypes = {
 
 Select.defaultProps = {
   placeholder: 'Please select',
-  showPlaceholder: true,
   defaultValue: '',
   value: '',
-  label: null,
   onChange: null,
 };
 
