@@ -205,6 +205,13 @@ export const EntityMenu = React.memo(({ buttonText }) => {
         <Body>
           {isSuccess && country && (
             <ContainerList>
+              {/* Manually add the country link at the top of the list */}
+              <ListItem>
+                {getPlaceIcon('country')}
+                <ListItemLink to={makeEntityLink(country.code, view)} onClick={handleClose}>
+                  {getOptionText(country, entities)}
+                </ListItemLink>
+              </ListItem>
               {getEntitiesByCodes(entities, country.childCodes).map(e => (
                 <ListItemComponent
                   key={e.code}

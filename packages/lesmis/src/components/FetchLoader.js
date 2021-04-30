@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { SmallAlert } from '@tupaia/ui-components';
+import { ErrorBoundary } from './ErrorBoundary';
 import { FlexCenter } from './Layout';
 
 const SpinningLoader = () => (
@@ -30,7 +31,7 @@ export const FetchLoader = ({ isLoading, isError, error, children, Loader }) => 
     );
   }
 
-  return children;
+  return <ErrorBoundary>{children}</ErrorBoundary>;
 };
 
 FetchLoader.propTypes = {

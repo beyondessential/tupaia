@@ -19,6 +19,7 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
 
 const StyledTextField = styled(TextField)`
   .MuiSelect-root {
+    padding-right: 1.8rem;
     color: ${props => props.theme.palette.text.primary};
 
     &:focus {
