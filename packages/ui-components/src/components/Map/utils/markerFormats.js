@@ -260,7 +260,12 @@ export function getFormattedInfo(orgUnitData, series) {
   };
 }
 
-export function getMeasureDisplayInfo(measureData = {}, series, hiddenValues = {}) {
+export function getMeasureDisplayInfo(
+  measureData = {},
+  series,
+  hiddenValues = {},
+  radiusScaleFactor = 1,
+) {
   const displayInfo = {};
 
   series.forEach(({ color, icon, radius }) => {
@@ -299,7 +304,7 @@ export function getMeasureDisplayInfo(measureData = {}, series, hiddenValues = {
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_RADIUS:
-          displayInfo.radius = valueInfo.value || 0;
+          displayInfo.radius = valueInfo.value * radiusScaleFactor || 0;
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_SPECTRUM:

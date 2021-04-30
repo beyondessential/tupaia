@@ -39,7 +39,7 @@ export const MeasureMarker = React.memo(props => {
 
 MeasureMarker.propTypes = {
   icon: PropTypes.string,
-  radius: PropTypes.string,
+  radius: PropTypes.number,
 };
 
 MeasureMarker.defaultProps = {
