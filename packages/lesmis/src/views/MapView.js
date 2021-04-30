@@ -24,7 +24,7 @@ const Container = styled.div`
   z-index: 1; // make sure the map is under the site menus & search
   display: flex;
   height: calc(100vh - 219px);
-  min-height: 600px;
+  min-height: 500px;
 `;
 
 const Main = styled.div`
@@ -88,7 +88,7 @@ export const MapView = () => {
 
   const handleLocationChange = useCallback((map, bounds) => {
     const mapBoxBounds = Leaflet.latLngBounds(bounds);
-    const maxBounds = mapBoxBounds.pad(2);
+    const maxBounds = mapBoxBounds.pad(1);
     map.setMaxBounds(maxBounds);
   }, []);
 
