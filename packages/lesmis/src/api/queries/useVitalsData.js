@@ -51,7 +51,7 @@ const useSchoolReport = entity =>
   useReport(
     entity,
     'LESMIS_school_vitals',
-    { params: { endDate: '2022-01-01' } },
+    { params: { endDate: new Date() } },
     entity?.type === 'school',
   );
 
@@ -59,7 +59,7 @@ const useVillageReport = entity =>
   useReport(
     entity,
     'LESMIS_village_vitals',
-    { params: { endDate: '2022-01-01' } },
+    { params: { endDate: new Date() } },
     entity?.type === 'village',
   );
 
@@ -67,7 +67,7 @@ const useDistrictReport = entity =>
   useReport(
     entity,
     'LESMIS_sub_district_vitals',
-    { params: { endDate: '2022-01-01' } },
+    { params: { endDate: new Date() } },
     entity?.type === 'sub_district',
   );
 
@@ -76,7 +76,7 @@ const useMultiSchoolReport = (entities, rootEntity) => {
   return useReport(
     rootEntity,
     'LESMIS_multi_school_vitals',
-    { data: { endDate: '2022-01-01', organisationUnitCodes: decendants.join() } },
+    { data: { endDate: new Date(), organisationUnitCodes: decendants.join() } },
     decendants.length > 0,
   );
 };
@@ -86,7 +86,7 @@ const useMultiDistrictReport = (entities, rootEntity) => {
   return useReport(
     rootEntity,
     'LESMIS_sub_district_vitals',
-    { data: { endDate: '2022-01-01', organisationUnitCodes: decendants.join() } },
+    { data: { endDate: new Date(), organisationUnitCodes: decendants.join() } },
     decendants.length > 0,
   );
 };
