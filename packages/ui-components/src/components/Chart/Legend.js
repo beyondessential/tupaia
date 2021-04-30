@@ -4,69 +4,36 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
-import MuiButton from '@material-ui/core/Button';
+import { Legend as LegendComponent } from 'recharts';
+import PropTypes from 'prop-types';
 
-const LegendContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 0 2rem 0;
-`;
+export const Legend = ({ chartConfig, onClick, getIsActiveKey, isExporting }) => {
+  const formatLegend = (value, { color }) => {
+    const isActive = getIsActiveKey(value);
+    return (
+      <span style={{ color, textDecoration: isActive ? '' : 'line-through' }}>
+        {chartConfig[value].label || value}
+      </span>
+    );
+  };
 
-const LegendItem = styled(MuiButton)`
-  margin-right: 1.2rem;
-  font-size: 0.75rem;
+  return (
+    <LegendComponent
+      onClick={onClick}
+      formatter={formatLegend}
+      verticalAlign={isExporting ? 'top' : 'bottom'}
+      wrapperStyle={isExporting ? { top: '-20px' } : {}}
+    />
+  );
+};
 
-  .MuiButton-label {
-    display: flex;
-    align-items: center;
-  }
+Legend.propTypes = {
+  chartConfig: PropTypes.object.isRequired,
+  onClick: PropTypes.func.isRequired,
+  getIsActiveKey: PropTypes.func.isRequired,
+  isExporting: PropTypes.bool,
+};
 
-  &.Mui-disabled {
-    color: inherit;
-  }
-`;
-
-const Box = styled.span`
-  display: block;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-right: 0.625rem;
-  border-radius: 3px;
-`;
-
-const Text = styled.span`
-  line-height: 1.4;
-`;
-
-const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || value;
-
-export const getPieLegend = ({ chartConfig = {} }) => ({ payload }) => (
-  <LegendContainer style={{ padding: 0, marginBottom: -10 }}>
-    {payload.map(({ color, value }) => (
-      <LegendItem key={value} disabled>
-        <Box style={{ background: color }} />
-        <Text>{getDisplayValue(chartConfig, value)}</Text>
-      </LegendItem>
-    ))}
-  </LegendContainer>
-);
-
-export const getCartesianLegend = ({ chartConfig, onClick, getIsActiveKey, isExporting }) => ({
-  payload,
-}) => (
-  <LegendContainer>
-    {payload.map(({ color, value, dataKey }) => {
-      return (
-        <LegendItem
-          key={value}
-          onClick={() => onClick(dataKey)}
-          style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
-        >
-          <Box style={{ background: color }} />
-          <Text>{getDisplayValue(chartConfig, value)}</Text>
-        </LegendItem>
-      );
-    })}
-  </LegendContainer>
-);
+Legend.defaultProps = {
+  isExporting: false,
+};
