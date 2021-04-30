@@ -47,7 +47,6 @@
     "@tupaia/utils": "1.0.0",
     "axios": "^0.21.1",
     "faker": "^4.1.0",
-    "fast-glob": "^3.2.5",
     "moment": "^2.29.1",
     "numeral": "^2.0.6",
     "prop-types": "^15.7.2",
