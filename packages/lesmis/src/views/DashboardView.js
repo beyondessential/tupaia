@@ -86,8 +86,18 @@ const CountryView = ({ vitals }) => {
         <TitleContainer>
           <RedTitle variant="h4">Country Profile:</RedTitle>
         </TitleContainer>
-        <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-        <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
       </VitalsSection>
       <img src="/images/school.png" alt="place" width="510" height="370" />
       <PartnersContainer>
@@ -95,7 +105,7 @@ const CountryView = ({ vitals }) => {
           <GreyTitle>Development Partner Support</GreyTitle>
         </TitleContainer>
         {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} /> : null,
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
     </Container>
@@ -109,10 +119,30 @@ const ProvinceView = ({ vitals }) => {
         <TitleContainer>
           <RedTitle variant="h4">Province Profile:</RedTitle>
         </TitleContainer>
-        <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
-        <EntityVitalsItem name="Province Population" value={vitals.Population} icon="Group" />
-        <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-        <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
+        <EntityVitalsItem
+          name="Province Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Province Population"
+          value={vitals.Population}
+          icon="Group"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
       </VitalsSection>
       <img src="/images/school.png" alt="place" width="510" height="370" />
       <PartnersContainer>
@@ -120,7 +150,7 @@ const ProvinceView = ({ vitals }) => {
           <GreyTitle>Development Partner Support</GreyTitle>
         </TitleContainer>
         {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} /> : null,
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
     </Container>
@@ -134,22 +164,51 @@ const DistrictView = ({ vitals }) => {
         <TitleContainer>
           <RedTitle variant="h4">District Profile:</RedTitle>
         </TitleContainer>
-        <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
-        <EntityVitalsItem name="District Population" value={vitals.Population} icon="Group" />
+        <EntityVitalsItem
+          name="District Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="District Population"
+          value={vitals.Population}
+          icon="Group"
+          isLoading={vitals.isLoading}
+        />
         <EntityVitalsItem
           name="Priority District"
           value={vitals.priorityDistrict ? 'Yes' : 'No'}
           icon="Notepad"
+          isLoading={vitals.isLoading}
         />
-        <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-        <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
         <HorizontalDivider />
         <FlexRow>
           <TitleContainer>
             <RedTitle variant="h4">Province</RedTitle>
           </TitleContainer>
-          <EntityVitalsItem name="Province Code" value={vitals.parentProvince?.code} />
-          <EntityVitalsItem name="Province Population" value={vitals.parentProvince?.Population} />
+          <EntityVitalsItem
+            name="Province Code"
+            value={vitals.parentProvince?.code}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="Province Population"
+            value={vitals.parentProvince?.Population}
+            isLoading={vitals.isLoading}
+          />
         </FlexRow>
       </VitalsSection>
       <img src="/images/school.png" alt="place" width="510" height="370" />
@@ -158,7 +217,7 @@ const DistrictView = ({ vitals }) => {
           <GreyTitle>Development Partner Support</GreyTitle>
         </TitleContainer>
         {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} /> : null,
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
     </Container>
@@ -172,10 +231,30 @@ const VillageView = ({ vitals }) => {
         <TitleContainer>
           <RedTitle variant="h4">Village Profile:</RedTitle>
         </TitleContainer>
-        <EntityVitalsItem name="Village Code" value={vitals.code} icon="LocationPin" />
-        <EntityVitalsItem name="Village Population" value={vitals.Population} icon="Group" />
-        <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-        <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
+        <EntityVitalsItem
+          name="Village Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Village Population"
+          value={vitals.Population}
+          icon="Group"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
       </VitalsSection>
       <img src="/images/school.png" alt="place" width="510" height="370" />
       <PartnersContainer>
@@ -183,7 +262,7 @@ const VillageView = ({ vitals }) => {
           <GreyTitle>Development Partner Support</GreyTitle>
         </TitleContainer>
         {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} /> : null,
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
     </Container>
@@ -197,18 +276,35 @@ const SchoolView = ({ vitals }) => {
         <TitleContainer>
           <RedTitle variant="h4">School Profile:</RedTitle>
         </TitleContainer>
-        <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
-        <EntityVitalsItem name="Number of Students" value={vitals.NumberOfStudents} icon="Study" />
-        <EntityVitalsItem name="Completed School" value="Yes" icon="Notepad" />
+        <EntityVitalsItem
+          name="School Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Number of Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Completed School"
+          value="Yes"
+          icon="Notepad"
+          isLoading={vitals.isLoading}
+        />
         <EntityVitalsItem
           name="Distance to Main Road"
           value={vitals.DistanceToMainRoad}
           icon="Road"
+          isLoading={vitals.isLoading}
         />
         <EntityVitalsItem
           name="Location"
           value={vitals.point.map(x => x.toFixed(3)).join()}
           icon="PushPin"
+          isLoading={vitals.isLoading}
         />
         <HorizontalDivider />
         <FlexRow>
@@ -216,14 +312,20 @@ const SchoolView = ({ vitals }) => {
             <TitleContainer>
               <RedTitle variant="h4">District:</RedTitle>
             </TitleContainer>
-            <EntityVitalsItem name="District Code" value={vitals.parentDistrict?.code} />
+            <EntityVitalsItem
+              name="District Code"
+              value={vitals.parentDistrict?.code}
+              isLoading={vitals.isLoading}
+            />
             <EntityVitalsItem
               name="District Population"
               value={vitals.parentDistrict?.Population}
+              isLoading={vitals.isLoading}
             />
             <EntityVitalsItem
               name="Priority District"
               value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+              isLoading={vitals.isLoading}
             />
           </ParentDistrict>
           <VerticalDivider orientation="vertical" />
@@ -231,7 +333,11 @@ const SchoolView = ({ vitals }) => {
             <TitleContainer>
               <RedTitle variant="h4">Village:</RedTitle>
             </TitleContainer>
-            <EntityVitalsItem name="Village Population" value={vitals.parentVillage?.Population} />
+            <EntityVitalsItem
+              name="Village Population"
+              value={vitals.parentVillage?.Population}
+              isLoading={vitals.isLoading}
+            />
           </ParentVillage>
         </FlexRow>
       </VitalsSection>

@@ -58,22 +58,25 @@ const VitalsIcon = ({ icon }) => {
   }
 };
 
-export const EntityVitalsItem = ({ name, value, icon }) => (
+export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (
   <Container>
     <VitalsIcon icon={icon} />
     <Wrapper>
       <VitalName>{name}</VitalName>
-      {value ? <VitalContent>{value}</VitalContent> : <Skeleton animation="wave" />}
+      {isLoading ? <Skeleton animation="wave" /> : <VitalContent>{value || '-'}</VitalContent>}
     </Wrapper>
   </Container>
 );
 
 EntityVitalsItem.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   icon: PropTypes.string,
+  isLoading: PropTypes.bool,
 };
 
 EntityVitalsItem.defaultProps = {
+  value: '-',
   icon: '',
+  isLoading: false,
 };
