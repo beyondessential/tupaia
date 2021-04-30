@@ -34,6 +34,7 @@ const FlexRow = styled.div`
 `;
 
 const VitalsSection = styled(FlexRow)`
+  margin-right: 10px;
   flex: 1;
 `;
 

@@ -19,11 +19,11 @@ import { ReactComponent as Notepad } from './icons/notepad.svg';
 import { FlexStart } from './Layout';
 
 const Wrapper = styled.section`
+  margin-left: 10px;
   padding-top: 0.5rem;
 `;
 
 const Container = styled(FlexStart)`
-  width: 200px;
   height: 70px;
 `;
 
@@ -35,27 +35,41 @@ const VitalName = styled(Typography)`
 const VitalContent = styled(Typography)`
   color: ${props => props.theme.palette.text.primary};
   font-weight: bold;
+  width: 120px;
+`;
+
+const IconContainer = styled.div`
+  width: 30px;
 `;
 
 const VitalsIcon = ({ icon }) => {
-  switch (icon) {
-    case 'LocationPin':
-      return <LocationPin />;
-    case 'Group':
-      return <Group />;
-    case 'School':
-      return <School />;
-    case 'Study':
-      return <Study />;
-    case 'Road':
-      return <Road />;
-    case 'PushPin':
-      return <PushPin />;
-    case 'Notepad':
-      return <Notepad />;
-    default:
-      return null;
+  if (icon) {
+    return (
+      <IconContainer>
+        {(() => {
+          switch (icon) {
+            case 'LocationPin':
+              return <LocationPin />;
+            case 'Group':
+              return <Group />;
+            case 'School':
+              return <School />;
+            case 'Study':
+              return <Study />;
+            case 'Road':
+              return <Road />;
+            case 'PushPin':
+              return <PushPin />;
+            case 'Notepad':
+              return <Notepad />;
+            default:
+              return null;
+          }
+        })()}
+      </IconContainer>
+    );
   }
+  return null;
 };
 
 export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (
@@ -63,7 +77,11 @@ export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (
     <VitalsIcon icon={icon} />
     <Wrapper>
       <VitalName>{name}</VitalName>
-      {isLoading ? <Skeleton animation="wave" /> : <VitalContent>{value || '-'}</VitalContent>}
+      {isLoading ? (
+        <Skeleton animation="wave" />
+      ) : (
+        <VitalContent noWrap>{value || '-'}</VitalContent>
+      )}
     </Wrapper>
   </Container>
 );
