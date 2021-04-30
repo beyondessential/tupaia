@@ -29,7 +29,6 @@ const plugins = [
   analyze({ summaryOnly: true }),
 ];
 
-// https://stackoverflow.com/questions/63373804/rollup-watch-include-directory
 const externals = [
   ...Object.keys(pkg.devDependencies || {}),
   ...Object.keys(pkg.dependencies || {}),
