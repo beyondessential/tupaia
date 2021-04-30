@@ -123,8 +123,8 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
   }
 }
 
-export const getSpectrumScaleValues = (measureData, series) => {
-  const { key, scaleType, startDate, endDate } = series;
+export const getSpectrumScaleValues = (measureData, measureOption) => {
+  const { key, scaleType, startDate, endDate } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -137,13 +137,13 @@ export const getSpectrumScaleValues = (measureData, series) => {
   const dataMin = Math.min(...flattenedMeasureData);
   const dataMax = Math.max(...flattenedMeasureData);
 
-  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, series);
+  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, measureOption);
 
   return { min, max };
 };
 
-const clampScaleValues = (dataBounds, series) => {
-  const { valueType, scaleBounds = {} } = series;
+const clampScaleValues = (dataBounds, measureOption) => {
+  const { valueType, scaleBounds = {} } = measureOption;
 
   const defaultScale =
     valueType === 'percentage' ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT : SPECTRUM_SCALE_DEFAULT;
@@ -218,13 +218,8 @@ function getValueInfo(value, valueMapping, hiddenValues = {}) {
   };
 }
 
-// For situations where we can only show one value, just show the value
-// of the first measure.
-export const getSingleFormattedValue = (entity, series) =>
-  getFormattedInfo(entity, series[0]).formattedValue;
-
-export function getFormattedInfo(orgUnitData, series) {
-  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
+export function getFormattedInfo(orgUnitData, measureOption) {
+  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
   const value = orgUnitData[key];
   const valueInfo = getValueInfo(value, valueMapping);
@@ -260,10 +255,10 @@ export function getFormattedInfo(orgUnitData, series) {
   };
 }
 
-export function getMeasureDisplayInfo(measureData = {}, series, hiddenValues = {}) {
+export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
   const displayInfo = {};
 
-  series.forEach(({ color, icon, radius }) => {
+  measureOptions.forEach(({ color, icon, radius }) => {
     if (color) {
       displayInfo.color = color;
     }
@@ -274,7 +269,7 @@ export function getMeasureDisplayInfo(measureData = {}, series, hiddenValues = {
       displayInfo.radius = radius;
     }
   });
-  series.forEach(
+  measureOptions.forEach(
     ({
       key,
       type,
@@ -288,11 +283,8 @@ export function getMeasureDisplayInfo(measureData = {}, series, hiddenValues = {
     }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
-        ...hiddenValues[key],
+        ...hiddenMeasures[key],
       });
-
-      displayInfo.isHidden = !!valueInfo.isHidden;
-
       switch (type) {
         case MEASURE_TYPE_ICON:
           displayInfo.icon = valueInfo.icon;
@@ -323,6 +315,9 @@ export function getMeasureDisplayInfo(measureData = {}, series, hiddenValues = {
         default:
           displayInfo.color = valueInfo.color;
           break;
+      }
+      if (valueInfo.isHidden) {
+        displayInfo.isHidden = true;
       }
     },
   );
