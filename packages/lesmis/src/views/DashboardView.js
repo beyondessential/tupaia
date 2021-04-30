@@ -76,7 +76,6 @@ const HorizontalDivider = styled(MuiDivider)`
 
 const VerticalDivider = styled(MuiDivider)`
   margin-top: 2.5rem;
-  margin-right: 2rem;
   height: 7rem;
   background: ${props => props.theme.palette.text.tertiary};
 `;
@@ -323,7 +322,7 @@ const SchoolView = ({ vitals }) => {
         <FlexRow>
           <ParentDistrict>
             <TitleContainer>
-              <RedTitle variant="h4">District:</RedTitle>
+              <RedTitle variant="h4">District</RedTitle>
             </TitleContainer>
             <EntityVitalsItem
               name="District Code"
@@ -344,7 +343,7 @@ const SchoolView = ({ vitals }) => {
           <VerticalDivider orientation="vertical" />
           <ParentVillage>
             <TitleContainer>
-              <RedTitle variant="h4">Village:</RedTitle>
+              <RedTitle variant="h4">Village</RedTitle>
             </TitleContainer>
             <EntityVitalsItem
               name="Village Population"

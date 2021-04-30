@@ -21,6 +21,7 @@ import { FlexStart } from './Layout';
 const Wrapper = styled.section`
   margin-left: 10px;
   padding-top: 0.5rem;
+  width: 120px;
 `;
 
 const Container = styled(FlexStart)`
@@ -35,11 +36,14 @@ const VitalName = styled(Typography)`
 const VitalContent = styled(Typography)`
   color: ${props => props.theme.palette.text.primary};
   font-weight: bold;
-  width: 120px;
+`;
+
+const GreenVital = styled(VitalContent)`
+  color: ${props => props.theme.palette.success.main};
 `;
 
 const IconContainer = styled.div`
-  width: 30px;
+  width: 40px;
 `;
 
 const VitalsIcon = ({ icon }) => {
@@ -72,16 +76,22 @@ const VitalsIcon = ({ icon }) => {
   return null;
 };
 
+const VitalValue = ({ value, isLoading }) => {
+  if (isLoading) {
+    return <Skeleton animation="wave" />;
+  }
+  if (value === 'Yes') {
+    return <GreenVital noWrap>{value}</GreenVital>;
+  }
+  return <VitalContent noWrap>{value || '-'}</VitalContent>;
+};
+
 export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (
   <Container>
     <VitalsIcon icon={icon} />
     <Wrapper>
       <VitalName>{name}</VitalName>
-      {isLoading ? (
-        <Skeleton animation="wave" />
-      ) : (
-        <VitalContent noWrap>{value || '-'}</VitalContent>
-      )}
+      <VitalValue value={value} isLoading={isLoading}/>
     </Wrapper>
   </Container>
 );
