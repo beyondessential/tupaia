@@ -18,7 +18,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
-import { useProjectEntitiesData } from '../../api';
+import { useEntitiesData } from '../../api';
 import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
 
 const SearchContainer = styled.div`
@@ -141,7 +141,7 @@ export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
-  const { data: options = [], isLoading } = useProjectEntitiesData();
+  const { data: options = [], isLoading } = useEntitiesData();
 
   const {
     getRootProps,

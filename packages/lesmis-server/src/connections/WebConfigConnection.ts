@@ -10,20 +10,11 @@ const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 export class WebConfigConnection extends SessionHandlingApiConnection {
   baseUrl = WEB_CONFIG_API_URL;
 
-  async fetchDashboard(query: QueryParameters) {
-    return this.get('dashboard', query);
-  }
-
   async fetchDashboardReport(query: QueryParameters) {
-    return this.get('view', query);
+    return this.get(`view`, query);
   }
 
-  async fetchMapOverlayData(query: QueryParameters) {
-    return this.get('measureData', query);
-  }
-
-  async fetchMapOverlays(query: QueryParameters) {
-    const response = await this.get('measures', query);
-    return response.measures;
+  async fetchMapOverlay(query: QueryParameters) {
+    return this.get(`measureData`, query);
   }
 }

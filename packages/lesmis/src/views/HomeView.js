@@ -10,7 +10,7 @@ import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { NAVBAR_HEIGHT } from '../constants';
 import { SearchBar, FlexEnd, FlexStart } from '../components';
-import { useProjectEntitiesData } from '../api/queries';
+import { useEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
   position: relative;
@@ -103,7 +103,7 @@ const FooterInner = styled(FlexEnd)`
 const INFO_LINK = 'https://info.tupaia.org';
 
 export const HomeView = React.memo(() => {
-  const { isLoading } = useProjectEntitiesData();
+  const { isLoading } = useEntitiesData();
 
   return (
     // The background image is applied here instead of the styled component as it creates a flicker when added there

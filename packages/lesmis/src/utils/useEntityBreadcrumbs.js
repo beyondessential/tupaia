@@ -4,27 +4,27 @@
  *
  */
 import { useUrlParams } from './useUrlParams';
-import { useProjectEntitiesData } from '../api';
+import { useEntitiesData } from '../api';
 import { makeEntityLink } from './makeEntityLink';
 
-const getHierarchy = (entities, entityCode, view, hierarchy = []) => {
+const getHierarchy = (entities, entityCode, hierarchy = []) => {
   const entity = entities.find(e => e.code === entityCode);
 
   if (!entity) {
     return [];
   }
-  const url = makeEntityLink(entity.code, view);
+  const url = makeEntityLink(entity.code);
   const newHierarchy = [{ name: entity.name, url }, ...hierarchy];
 
   if (entity.type === 'country') {
     return newHierarchy;
   }
-  return getHierarchy(entities, entity.parentCode, view, newHierarchy);
+  return getHierarchy(entities, entity.parentCode, newHierarchy);
 };
 
 export const useEntityBreadcrumbs = () => {
-  const { entityCode, view } = useUrlParams();
-  const { isLoading, data: entities = [] } = useProjectEntitiesData();
-  const breadcrumbs = getHierarchy(entities, entityCode, view);
+  const { entityCode } = useUrlParams();
+  const { isLoading, data: entities = [] } = useEntitiesData();
+  const breadcrumbs = getHierarchy(entities, entityCode);
   return { isLoading, breadcrumbs };
 };

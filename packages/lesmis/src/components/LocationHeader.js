@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import MuiToggleButton from '@material-ui/lab/ToggleButton';
 import MuiToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import MuiContainer from '@material-ui/core/Container';
-import { GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
+import { StarBorder, GetApp, Phone, Email, Map, Dashboard } from '@material-ui/icons';
 import ButtonComponent from '@material-ui/core/Button';
 import { FlexStart, FlexEnd } from './Layout';
 import { useEntityData } from '../api';
@@ -26,11 +26,6 @@ const Container = styled(MuiContainer)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  @media screen and (max-width: 800px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 `;
 
 const Heading = styled(Typography)`
@@ -44,13 +39,6 @@ const IconButton = styled(ButtonComponent)`
   font-weight: 500;
   margin-right: 0.5rem;
   color: ${props => props.theme.palette.text.secondary};
-`;
-
-const Contacts = styled(FlexStart)`
-  @media screen and (max-width: 800px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 `;
 
 const ContactItem = styled(FlexStart)`
@@ -93,14 +81,16 @@ const ToggleButton = styled(MuiToggleButton)`
 
 export const LocationHeader = () => {
   const { entityCode, view } = useUrlParams();
-  const { data: entityData } = useEntityData(entityCode);
+  const { data: entityData } = useEntityData({
+    entityCode,
+  });
 
   return (
     <Wrapper>
       <Container maxWidth={false}>
         <div>
           <Heading variant="h2">{entityData?.name}</Heading>
-          <Contacts>
+          <FlexStart>
             <ContactItem>
               <Phone />
               <Typography>0457 0547 074</Typography>
@@ -109,13 +99,12 @@ export const LocationHeader = () => {
               <Email />
               <Typography>mayparkngumsecondaryschool@laopdr.com</Typography>
             </ContactItem>
-          </Contacts>
+          </FlexStart>
         </div>
         <FlexEnd>
           <FlexStart>
-            {/*Todo: add exports @see*/}
-            {/*https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2511*/}
-            <IconButton startIcon={<GetApp />}>Export</IconButton>
+            {/* Todo: add exports @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2511 */}
+            {/*<IconButton startIcon={<GetApp />}>Export</IconButton>*/}
             {/* Todo: add favourites @see https://app.zenhub.com/workspaces/active-sprints-5eea9d3de8519e0019186490/issues/beyondessential/tupaia-backlog/2493*/}
             {/*<IconButton startIcon={<StarBorder />}>Add</IconButton>*/}
           </FlexStart>
