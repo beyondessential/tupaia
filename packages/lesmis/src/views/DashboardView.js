@@ -22,6 +22,7 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding-right: 0;
 `;
 
 const FlexRow = styled.div`
@@ -79,6 +80,17 @@ const VerticalDivider = styled(MuiDivider)`
   background: ${props => props.theme.palette.text.tertiary};
 `;
 
+const PlaceholderBox = styled.div`
+  width: 510px;
+  height: 370px;
+  background: grey;
+`;
+const MapPlaceholder = () => (
+  <PlaceholderBox>
+    <Typography>TODO: Map</Typography>
+  </PlaceholderBox>
+);
+
 const CountryView = ({ vitals }) => {
   return (
     <Container maxWidth={false}>
@@ -99,7 +111,7 @@ const CountryView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <img src="/images/school.png" alt="place" width="510" height="370" />
+      <MapPlaceholder />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -144,7 +156,7 @@ const ProvinceView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <img src="/images/school.png" alt="place" width="510" height="370" />
+      <MapPlaceholder />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -211,7 +223,7 @@ const DistrictView = ({ vitals }) => {
           />
         </FlexRow>
       </VitalsSection>
-      <img src="/images/school.png" alt="place" width="510" height="370" />
+      <MapPlaceholder />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -256,7 +268,7 @@ const VillageView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <img src="/images/school.png" alt="place" width="510" height="370" />
+      <MapPlaceholder />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -341,7 +353,7 @@ const SchoolView = ({ vitals }) => {
           </ParentVillage>
         </FlexRow>
       </VitalsSection>
-      <img src={vitals.Photo || '/images/school.png'} alt="place" width="720px" />
+      {vitals.Photo ? <img src={vitals.Photo} alt="place" width="720px" /> : <MapPlaceholder />}
     </Container>
   );
 };
