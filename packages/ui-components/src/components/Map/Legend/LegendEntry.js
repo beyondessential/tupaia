@@ -18,38 +18,30 @@ const Key = styled.div`
 `;
 
 export const LegendEntry = React.memo(
-  ({ marker, label, value, dataKey, onClick, hiddenValues, unClickable }) => {
-    const hidden = (hiddenValues[dataKey] || {})[value];
-
-    const handleClick = () => {
-      if (!unClickable && onClick) {
-        onClick(dataKey, value, !hidden);
-      }
-    };
-
-    return (
-      <Key onClick={handleClick} hidden={hidden}>
-        {marker}
-        <div>{label}</div>
-      </Key>
-    );
-  },
+  ({ marker, label, value, dataKey, hideByDefault, onClick, unClickable }) => (
+    <Key
+      onClick={unClickable || !onClick ? null : () => onClick(dataKey, value, !hideByDefault)}
+      hidden={hideByDefault}
+    >
+      {marker}
+      <div>{label}</div>
+    </Key>
+  ),
 );
 
 LegendEntry.propTypes = {
   marker: PropTypes.element.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array]),
-  dataKey: PropTypes.string,
-  hiddenValues: PropTypes.object,
+  dataKey: PropTypes.string.isRequired,
   onClick: PropTypes.func,
+  hideByDefault: PropTypes.bool,
   unClickable: PropTypes.bool,
 };
 
 LegendEntry.defaultProps = {
-  hiddenValues: {},
   unClickable: false,
+  hideByDefault: false,
   onClick: null,
   value: null,
-  dataKey: null,
 };

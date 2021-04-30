@@ -5,8 +5,6 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import styled from 'styled-components';
-import MuiBox from '@material-ui/core/Box';
 import { UNKNOWN_COLOR } from '../constants';
 import {
   DEFAULT_ICON,
@@ -24,13 +22,7 @@ import {
   MEASURE_VALUE_OTHER,
 } from '../utils';
 import { LegendEntry } from './LegendEntry';
-
-const FlexStart = styled(MuiBox)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
+import { FlexStart } from '../../Layout';
 
 /**
  * Icon layers can be set to hide some values from the map entirely - but if we're showing
@@ -90,9 +82,8 @@ const getLegendMarkerForValue = (value, type, hasIconLayer, hasRadiusLayer, hasC
 };
 
 export const MarkerLegend = React.memo(
-  ({ series, setValueHidden, hiddenValues, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
-    const { type, values, key: dataKey, valueMapping } = series;
-
+  ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorLayer }) => {
+    const { type, values, key: dataKey, valueMapping } = measureOptions;
     const keys = values
       .filter(v => !v.hideFromLegend)
       .filter(v => hasRadiusLayer || !isHiddenOtherIcon(v)) // only show hidden icons in legend if paired with radius
@@ -112,8 +103,6 @@ export const MarkerLegend = React.memo(
             marker={marker}
             label={v.name}
             value={v.value}
-            hiddenValues={hiddenValues}
-            onClick={setValueHidden}
           />
         );
       });
@@ -141,10 +130,8 @@ export const MarkerLegend = React.memo(
             hasRadiusLayer,
             hasColorLayer,
           )}
-          dataKey={dataKey}
           label={nullItem.name}
-          hiddenValues={hiddenValues}
-          onClick={setValueHidden}
+          dataKey={dataKey}
           value={null}
         />
       );
@@ -160,7 +147,7 @@ export const MarkerLegend = React.memo(
 );
 
 MarkerLegend.propTypes = {
-  series: PropTypes.shape({
+  measureOptions: PropTypes.shape({
     name: PropTypes.string,
     key: PropTypes.string,
     type: PropTypes.string,
@@ -168,13 +155,6 @@ MarkerLegend.propTypes = {
     valueMapping: PropTypes.object,
   }).isRequired,
   hasIconLayer: PropTypes.bool.isRequired,
-  setValueHidden: PropTypes.func,
-  hiddenValues: PropTypes.object,
   hasRadiusLayer: PropTypes.bool.isRequired,
   hasColorLayer: PropTypes.bool.isRequired,
-};
-
-MarkerLegend.defaultProps = {
-  hiddenValues: {},
-  setValueHidden: null,
 };

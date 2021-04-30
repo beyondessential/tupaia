@@ -6,19 +6,13 @@
 import moment from 'moment';
 import React from 'react';
 import PropTypes from 'prop-types';
-import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { resolveSpectrumColour } from '../utils';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { SCALE_TYPES } from '../constants';
 import { LegendEntry } from './LegendEntry';
-
-const FlexCenter = styled(MuiBox)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+import { FlexCenter } from '../../Layout';
 
 const SpectrumSliver = styled.div`
   width: 2px;
@@ -64,6 +58,7 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
         marker={getMarkerForOption(LEGEND_SHADING_ICON, colour)}
         label={label}
         value={min}
+        dataKey={null}
         unClickable
       />
     );
@@ -99,8 +94,18 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
   );
 };
 
-export const SpectrumLegend = React.memo(({ series }) => {
-  const { valueMapping, noDataColour, min, max, scaleType, scaleColorScheme, valueType } = series;
+export const SpectrumLegend = React.memo(({ measureOptions }) => {
+  const {
+    valueMapping,
+    noDataColour,
+    min,
+    max,
+    scaleType,
+    key,
+    hideByDefault,
+    scaleColorScheme,
+    valueType,
+  } = measureOptions;
 
   const { value } = valueMapping.null;
 
@@ -112,7 +117,8 @@ export const SpectrumLegend = React.memo(({ series }) => {
           marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour)}
           label="No data"
           value={value}
-          unClickable
+          dataKey={key}
+          hideByDefault={hideByDefault}
         />
       )}
     </FlexCenter>
@@ -120,12 +126,14 @@ export const SpectrumLegend = React.memo(({ series }) => {
 });
 
 SpectrumLegend.propTypes = {
-  series: PropTypes.shape({
+  measureOptions: PropTypes.shape({
     valueMapping: PropTypes.object,
     scaleColorScheme: PropTypes.object,
     min: PropTypes.number,
     max: PropTypes.number,
     scaleType: PropTypes.string,
+    key: PropTypes.string,
+    hideByDefault: PropTypes.bool,
     valueType: PropTypes.string,
     noDataColour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
