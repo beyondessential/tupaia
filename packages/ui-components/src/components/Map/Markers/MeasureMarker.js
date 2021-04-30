@@ -9,7 +9,11 @@ import { IconMarker } from './IconMarker';
 import { CircleProportionMarker } from './CircleProportionMarker';
 
 export const MeasureMarker = React.memo(props => {
-  const { icon, radius } = props;
+  const { icon, radius, displayPolygons } = props;
+
+  if (displayPolygons) {
+    return <IconMarker {...props} />;
+  }
 
   if (parseInt(radius, 10) === 0) {
     if (icon) {
@@ -24,7 +28,7 @@ export const MeasureMarker = React.memo(props => {
   if (radius && icon) {
     return (
       <>
-        <CircleProportionMarker {...props} />
+        <CircleProportionMarker markerRef={() => null} {...props} />
         <IconMarker {...props} />
       </>
     );
@@ -33,16 +37,12 @@ export const MeasureMarker = React.memo(props => {
   if (radius) {
     return <CircleProportionMarker {...props} />;
   }
-
   return <IconMarker {...props} />;
 });
 
 MeasureMarker.propTypes = {
-  icon: PropTypes.string,
-  radius: PropTypes.string,
-};
-
-MeasureMarker.defaultProps = {
-  icon: null,
-  radius: null,
+  icon: PropTypes.string.isRequired,
+  radius: PropTypes.string.isRequired,
+  region: PropTypes.string.isRequired,
+  displayPolygons: PropTypes.string.isRequired,
 };
