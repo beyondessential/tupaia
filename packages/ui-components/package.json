@@ -12,9 +12,7 @@
   "source": "src/index.js",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint --ignore-path ../../.gitignore .",
