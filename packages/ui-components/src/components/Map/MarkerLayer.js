@@ -42,7 +42,11 @@ export const MarkerLayer = ({ measureData, serieses }) => {
     <LayerGroup>
       {measureData.map(measure =>
         measure.region ? (
-          <ShadedPolygon key={measure.code} positions={measure.region} {...measure}>
+          <ShadedPolygon
+            key={`${measure.code}-${measure.color}`}
+            positions={measure.region}
+            {...measure}
+          >
             <AreaTooltip text={getText(measure, serieses)} />
           </ShadedPolygon>
         ) : (
