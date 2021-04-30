@@ -19,6 +19,4 @@ export const parameters = {
   },
 };
 
-addDecorator((story, context) => (
-  <AppProviders params={context.parameters}>{story()}</AppProviders>
-));
+addDecorator(storyFn => <AppProviders>{storyFn()}</AppProviders>);
