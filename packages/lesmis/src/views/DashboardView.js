@@ -93,7 +93,7 @@ const MapPlaceholder = () => (
 
 const CountryView = ({ vitals }) => {
   return (
-    <Container maxWidth={false}>
+    <>
       <VitalsSection>
         <TitleContainer>
           <RedTitle variant="h4">Country Profile:</RedTitle>
@@ -120,13 +120,13 @@ const CountryView = ({ vitals }) => {
           value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
-    </Container>
+    </>
   );
 };
 
 const ProvinceView = ({ vitals }) => {
   return (
-    <Container maxWidth={false}>
+    <>
       <VitalsSection>
         <TitleContainer>
           <RedTitle variant="h4">Province Profile:</RedTitle>
@@ -165,13 +165,13 @@ const ProvinceView = ({ vitals }) => {
           value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
-    </Container>
+    </>
   );
 };
 
 const DistrictView = ({ vitals }) => {
   return (
-    <Container maxWidth={false}>
+    <>
       <VitalsSection>
         <TitleContainer>
           <RedTitle variant="h4">District Profile:</RedTitle>
@@ -232,13 +232,13 @@ const DistrictView = ({ vitals }) => {
           value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
-    </Container>
+    </>
   );
 };
 
 const VillageView = ({ vitals }) => {
   return (
-    <Container maxWidth={false}>
+    <>
       <VitalsSection>
         <TitleContainer>
           <RedTitle variant="h4">Village Profile:</RedTitle>
@@ -277,13 +277,13 @@ const VillageView = ({ vitals }) => {
           value === true ? <PartnerLogo code={key} key={key} /> : null,
         )}
       </PartnersContainer>
-    </Container>
+    </>
   );
 };
 
 const SchoolView = ({ vitals }) => {
   return (
-    <Container maxWidth={false}>
+    <>
       <VitalsSection>
         <TitleContainer>
           <RedTitle variant="h4">School Profile:</RedTitle>
@@ -354,7 +354,7 @@ const SchoolView = ({ vitals }) => {
         </FlexRow>
       </VitalsSection>
       {vitals.Photo ? <img src={vitals.Photo} alt="place" width="720px" /> : <MapPlaceholder />}
-    </Container>
+    </>
   );
 };
 
@@ -364,22 +364,24 @@ export const DashboardView = () => {
 
   return (
     <Wrapper>
-      {(() => {
-        switch (vitals.type) {
-          case 'country':
-            return <CountryView vitals={vitals} />;
-          case 'district':
-            return <ProvinceView vitals={vitals} />;
-          case 'sub_district':
-            return <DistrictView vitals={vitals} />;
-          case 'village':
-            return <VillageView vitals={vitals} />;
-          case 'school':
-            return <SchoolView vitals={vitals} />;
-          default:
-            return null;
-        }
-      })()}
+      <Container maxWidth={false}>
+        {(() => {
+          switch (vitals.type) {
+            case 'country':
+              return <CountryView vitals={vitals} />;
+            case 'district':
+              return <ProvinceView vitals={vitals} />;
+            case 'sub_district':
+              return <DistrictView vitals={vitals} />;
+            case 'village':
+              return <VillageView vitals={vitals} />;
+            case 'school':
+              return <SchoolView vitals={vitals} />;
+            default:
+              return null;
+          }
+        })()}
+      </Container>
     </Wrapper>
   );
 };
