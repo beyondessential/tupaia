@@ -22,6 +22,7 @@ const Wrapper = styled.section`
   margin-left: 10px;
   padding-top: 0.5rem;
   width: 120px;
+  margin-right: 1rem;
 `;
 
 const Container = styled(FlexStart)`
@@ -91,7 +92,7 @@ export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (
     <VitalsIcon icon={icon} />
     <Wrapper>
       <VitalName>{name}</VitalName>
-      <VitalValue value={value} isLoading={isLoading}/>
+      <VitalValue value={value} isLoading={isLoading} />
     </Wrapper>
   </Container>
 );
