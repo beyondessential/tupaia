@@ -4,9 +4,11 @@
  *
  */
 import { useQuery } from 'react-query';
-import { get, post } from '../api';
-import { useEntityData } from './useEntityData';
+import { utcMoment } from '@tupaia/utils';
+import { post } from '../api';
 import { useEntitiesData } from './useEntitiesData';
+
+const endDateFormat = 'YYYY-MM-DD';
 
 const getParentOfType = (entities, rootEntityCode, type) => {
   const entity = entities.find(e => e.code === rootEntityCode);
@@ -37,7 +39,7 @@ const getDecendantCodesOfType = (entities, rootEntityCode, type) => {
 
 const useReport = (entity, reportName, options, enabled) =>
   useQuery(
-    [reportName, entity?.code],
+    [reportName, entity?.code, options],
     () => post(`reportData/${entity?.code}/${reportName}`, options),
     {
       staleTime: 1000 * 60 * 60 * 1,
@@ -51,7 +53,7 @@ const useSchoolReport = entity =>
   useReport(
     entity,
     'LESMIS_school_vitals',
-    { params: { endDate: new Date() } },
+    { params: { endDate: utcMoment().format(endDateFormat) } },
     entity?.type === 'school',
   );
 
@@ -59,7 +61,7 @@ const useVillageReport = entity =>
   useReport(
     entity,
     'LESMIS_village_vitals',
-    { params: { endDate: new Date() } },
+    { params: { endDate: utcMoment().format(endDateFormat) } },
     entity?.type === 'village',
   );
 
@@ -67,7 +69,7 @@ const useDistrictReport = entity =>
   useReport(
     entity,
     'LESMIS_sub_district_vitals',
-    { params: { endDate: new Date() } },
+    { params: { endDate: utcMoment().format(endDateFormat) } },
     entity?.type === 'sub_district',
   );
 
@@ -76,7 +78,9 @@ const useMultiSchoolReport = (entities, rootEntity) => {
   return useReport(
     rootEntity,
     'LESMIS_multi_school_vitals',
-    { data: { endDate: new Date(), organisationUnitCodes: decendants.join() } },
+    {
+      data: { endDate: utcMoment().format(endDateFormat), organisationUnitCodes: decendants.join() },
+    },
     decendants.length > 0,
   );
 };
@@ -86,7 +90,9 @@ const useMultiDistrictReport = (entities, rootEntity) => {
   return useReport(
     rootEntity,
     'LESMIS_sub_district_vitals',
-    { data: { endDate: new Date(), organisationUnitCodes: decendants.join() } },
+    {
+      data: { endDate: utcMoment().format(endDateFormat), organisationUnitCodes: decendants.join() },
+    },
     decendants.length > 0,
   );
 };
