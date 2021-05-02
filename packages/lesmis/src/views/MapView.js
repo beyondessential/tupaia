@@ -24,7 +24,7 @@ const Container = styled.div`
   z-index: 1; // make sure the map is under the site menus & search
   display: flex;
   height: calc(100vh - 219px);
-  min-height: 600px;
+  min-height: 350px; // below which the map is basically unusable
 `;
 
 const Main = styled.div`
