@@ -50,7 +50,7 @@ MeasurePopup.propTypes = {
     coordinates: PropTypes.arrayOf(PropTypes.number),
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     photoUrl: PropTypes.string,
-    organisationUnitCode: PropTypes.string,
+    code: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
   serieses: PropTypes.arrayOf(
