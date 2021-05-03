@@ -12,6 +12,5 @@ export const MapOverlaysPanelContainer = styled.div`
   position: relative;
   width: 22.5rem;
   background: white;
-  overflow: auto;
   background: ${COLORS.GREY_F9};
 `;

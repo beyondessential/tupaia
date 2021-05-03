@@ -21,6 +21,7 @@ const Header = styled.div`
 
 const Body = styled.div`
   padding: 0.2rem 0 2rem;
+  overflow: auto;
 `;
 
 const Box = styled(MuiBox)`
