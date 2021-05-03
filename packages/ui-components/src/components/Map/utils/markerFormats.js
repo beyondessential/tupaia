@@ -225,7 +225,6 @@ export const getSingleFormattedValue = (entity, series) =>
 
 export function getFormattedInfo(orgUnitData, series) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
-
   const value = orgUnitData[key];
   const valueInfo = getValueInfo(value, valueMapping);
 
@@ -297,6 +296,7 @@ export function getMeasureDisplayInfo(
       });
 
       displayInfo.isHidden = !!valueInfo.isHidden;
+      displayInfo.originalValue = measureData.originalValue;
 
       switch (type) {
         case MEASURE_TYPE_ICON:
