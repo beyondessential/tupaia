@@ -58,7 +58,7 @@ export const CombinedMarker = () => (
   />
 );
 
-const measureData = {
+const markerData = {
   coordinates: [-21.1399512, 184.7934707],
   organisationUnitCode: 'TO_UniversalHC',
   name: 'Universal Clinic & Pharmacy',
@@ -152,6 +152,6 @@ export const PopupMarker = () => (
     icon="circle"
     color="blue"
   >
-    <MeasurePopup measureData={measureData} serieses={mapOverlaySerieses} />
+    <MeasurePopup markerData={markerData} serieses={mapOverlaySerieses} />
   </MeasureMarker>
 );

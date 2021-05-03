@@ -13,6 +13,7 @@ import {
   getSpectrumScaleValues,
   SPECTRUM_MEASURE_TYPES,
   getMeasureDisplayInfo,
+  calculateRadiusScaleFactor,
 } from '@tupaia/ui-components/lib/map';
 import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
@@ -78,20 +79,24 @@ const processMeasureData = ({
     return [];
   }
 
+  const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
+
   return entitiesData
     .filter(entity => camelCase(entity.type) === camelCase(measureLevel))
     .map(entity => {
       const measure = measureData.find(e => e.organisationUnitCode === entity.code);
-      const { color, icon, originalValue, isHidden } = getMeasureDisplayInfo(
+      const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
         measure,
         serieses,
         hiddenValues,
+        radiusScaleFactor,
       );
 
       return {
         ...entity,
         ...measure,
         isHidden,
+        radius,
         coordinates: entity.point,
         region: entity.region,
         color,

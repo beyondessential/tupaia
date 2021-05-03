@@ -99,8 +99,17 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }) =>
   );
 };
 
-export const SpectrumLegend = React.memo(({ series }) => {
-  const { valueMapping, noDataColour, min, max, scaleType, scaleColorScheme, valueType } = series;
+export const SpectrumLegend = React.memo(({ series, setValueHidden, hiddenValues }) => {
+  const {
+    valueMapping,
+    noDataColour,
+    min,
+    max,
+    scaleType,
+    scaleColorScheme,
+    valueType,
+    key: dataKey,
+  } = series;
 
   const { value } = valueMapping.null;
 
@@ -111,8 +120,10 @@ export const SpectrumLegend = React.memo(({ series }) => {
         <LegendEntry
           marker={getMarkerForOption(LEGEND_SHADING_ICON, noDataColour)}
           label="No data"
+          dataKey={dataKey}
+          hiddenValues={hiddenValues}
+          onClick={setValueHidden}
           value={value}
-          unClickable
         />
       )}
     </FlexCenter>
@@ -127,6 +138,14 @@ SpectrumLegend.propTypes = {
     max: PropTypes.number,
     scaleType: PropTypes.string,
     valueType: PropTypes.string,
+    dataKey: PropTypes.string,
     noDataColour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
+  setValueHidden: PropTypes.func,
+  hiddenValues: PropTypes.object,
+};
+
+SpectrumLegend.defaultProps = {
+  hiddenValues: {},
+  setValueHidden: null,
 };
