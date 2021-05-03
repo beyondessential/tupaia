@@ -68,6 +68,7 @@ import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles'
 import { Matrix } from './components';
 import { formatDataValue } from '../../../utils';
 import { getLimits } from '../../../utils/periodGranularities';
+import { checkIfApplyDotStyle, getIsUsingDots } from '../utils';
 
 const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
@@ -157,9 +158,11 @@ const buildMatrixDataFromViewContent = viewContent => {
   };
 };
 
-const getPlaceholder = (presentationOptions, categoryPresentationOptions) => {
-  if (!presentationOptions && !categoryPresentationOptions) return textOnlyMatrixPlaceholder;
-  if (presentationOptions?.applyLocation?.columnIndexes) return mixMatrixPlaceholder;
+const getPlaceholder = viewContent => {
+  const { presentationOptions = {}, categoryPresentationOptions = {} } = viewContent;
+  if (!getIsUsingDots(presentationOptions) && !getIsUsingDots(categoryPresentationOptions))
+    return textOnlyMatrixPlaceholder;
+  if (checkIfApplyDotStyle(presentationOptions)) return mixMatrixPlaceholder;
   return dotOnlyMatrixPlaceholder;
 };
 
@@ -306,8 +309,7 @@ export class MatrixWrapper extends Component {
 
   render() {
     const { isEnlarged, isExporting, viewContent } = this.props;
-    const { presentationOptions, categoryPresentationOptions } = viewContent;
-    const matrixPlaceholder = getPlaceholder(presentationOptions, categoryPresentationOptions);
+    const matrixPlaceholder = getPlaceholder(viewContent);
     if (isEnlarged || isExporting) {
       return (
         <div style={styles.matrixRef} ref={this.updateWrapper}>
