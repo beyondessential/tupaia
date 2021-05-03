@@ -115,6 +115,12 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary="About LESMIS" />
           </ListItemLink>
+          <ListItemLink to="/fundamental-quality-standards">
+            <ListItemIcon>
+              <ContactMail />
+            </ListItemIcon>
+            <ListItemText primary="Fundamental Quality Standards" />
+          </ListItemLink>
           <ListItemLink to="/contact">
             <ListItemIcon>
               <ContactMail />
