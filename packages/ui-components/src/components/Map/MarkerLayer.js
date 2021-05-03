@@ -19,19 +19,16 @@ const ShadedPolygon = styled(Polygon)`
   }
 `;
 
-const getText = ({ name, ...measure }, serieses) => {
-  const hasMeasureValue = measure || measure === 0;
-  return hasMeasureValue ? `${name}: ${getSingleFormattedValue(measure, serieses)}` : name;
-};
+// remove name from the measure data as it's not expected in getSingleFormattedValue
+const getTooltipText = ({ name, ...markerData }, serieses) =>
+  `${name}: ${getSingleFormattedValue(markerData, serieses)}`;
 
 export const MarkerLayer = ({ measureData, serieses }) => {
   if (!measureData || !serieses) return null;
 
   // for radius overlay sort desc radius to place smaller circles over larger circles
   if (serieses.some(l => l.type === MEASURE_TYPE_RADIUS)) {
-    measureData.sort((a, b) => {
-      return Number(b.radius) - Number(a.radius);
-    });
+    measureData.sort((a, b) => Number(b.radius) - Number(a.radius));
   }
 
   return (
@@ -43,11 +40,11 @@ export const MarkerLayer = ({ measureData, serieses }) => {
             positions={measure.region}
             {...measure}
           >
-            <AreaTooltip text={getText(measure, serieses)} />
+            <AreaTooltip text={getTooltipText(measure, serieses)} />
           </ShadedPolygon>
         ) : (
           <MeasureMarker key={measure.code} {...measure}>
-            <MeasurePopup measureData={measure} serieses={serieses} />
+            <MeasurePopup markerData={measure} serieses={serieses} />
           </MeasureMarker>
         ),
       )}

@@ -191,13 +191,12 @@ export function flattenMeasureHierarchy(measureHierarchy) {
 }
 
 function getValueInfo(value, valueMapping, hiddenValues = {}) {
+  // use 'no data' value if value is null and there is a null mapping defined
   if (!value && typeof value !== 'number' && valueMapping.null) {
-    // use 'no data' value
-    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
-
+    const isHidden = hiddenValues.null || hiddenValues[valueMapping.null.value];
     return {
       ...valueMapping.null,
-      isHidden: nullValue,
+      isHidden,
     };
   }
 
@@ -220,21 +219,18 @@ function getValueInfo(value, valueMapping, hiddenValues = {}) {
 
 // For situations where we can only show one value, just show the value
 // of the first measure.
-export const getSingleFormattedValue = (entity, series) =>
-  getFormattedInfo(entity, series[0]).formattedValue;
+export const getSingleFormattedValue = (markerData, series) =>
+  getFormattedInfo(markerData, series[0]).formattedValue;
 
-export function getFormattedInfo(orgUnitData, series) {
+export function getFormattedInfo(markerData, series) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
-  const value = orgUnitData[key];
+  const value = markerData[key];
   const valueInfo = getValueInfo(value, valueMapping);
 
-  if (
-    displayedValueKey &&
-    (orgUnitData[displayedValueKey] || orgUnitData[displayedValueKey] === 0)
-  ) {
+  if (displayedValueKey && (markerData[displayedValueKey] || markerData[displayedValueKey] === 0)) {
     return {
       formattedValue: formatDataValueByType(
-        { value: orgUnitData[displayedValueKey], metadata: orgUnitData.metadata },
+        { value: markerData[displayedValueKey], metadata: markerData.metadata },
         valueType,
       ),
       valueInfo,
@@ -253,7 +249,7 @@ export function getFormattedInfo(orgUnitData, series) {
       valueInfo,
       scaleType,
       valueType,
-      orgUnitData.submissionDate,
+      markerData.submissionDate,
     ),
     valueInfo,
   };
