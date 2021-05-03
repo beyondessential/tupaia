@@ -9,9 +9,9 @@ import { getFormattedInfo } from '../utils';
 import { PopupMarker } from './PopupMarker';
 
 const buildHeaderText = (measureData, popupHeaderFormat) => {
-  const { organisationUnitCode, name } = measureData;
+  const { code, name } = measureData;
   const replacements = {
-    code: organisationUnitCode,
+    code,
     name,
   };
   return Object.entries(replacements).reduce(
