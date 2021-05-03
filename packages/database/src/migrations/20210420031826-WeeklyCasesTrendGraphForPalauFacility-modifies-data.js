@@ -56,14 +56,17 @@ const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance_National_Data_Facilit
 
 const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
   id,
-  dataBuilder: 'sumPerPeriod',
+  dataBuilder: 'analyticsPerPeriod',
   dataBuilderConfig: {
-    dataClasses: {
-      value: {
-        codes: [dataElementCode],
+    dataElementCode,
+    aggregations: [
+      {
+        type: 'FINAL_EACH_WEEK_FILL_EMPTY_WEEKS',
+        config: {
+          fillEmptyPeriodsWith: null,
+        },
       },
-    },
-    aggregationType: 'FINAL_EACH_WEEK_FILL_EMPTY_WEEKS_WITH_NULL',
+    ],
     entityAggregation: {
       aggregationOrder: 'BEFORE',
       dataSourceEntityType: 'facility',

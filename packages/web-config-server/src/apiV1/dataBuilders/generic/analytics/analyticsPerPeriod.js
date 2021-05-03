@@ -30,6 +30,7 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
   }
 
   getResultsPerPeriod = results => {
+    if (!results) return [];
     const configPeriodType = this.config.periodType
       ? parsePeriodType(this.config.periodType)
       : null;
