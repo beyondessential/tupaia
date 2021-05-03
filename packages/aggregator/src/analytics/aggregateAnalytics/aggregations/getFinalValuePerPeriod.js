@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import uniq from 'lodash.uniq';
 import { PERIOD_TYPES, convertToPeriod, periodToType } from '@tupaia/utils';
 import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
 
@@ -106,6 +107,46 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
+  getContinuousValues(organisationUnitCache, periods) {
+    let mostRecentValue;
+
+    return periods.map(period => {
+      mostRecentValue = organisationUnitCache[period] || mostRecentValue;
+      return {
+        ...mostRecentValue,
+        period,
+      };
+    });
+  }
+
+  fillWithPresetValues(organisationUnitCache, periods, value) {
+    const values = [];
+    const dataElements = uniq(Object.values(organisationUnitCache).map(data => data.dataElement));
+    const organisationUnits = uniq(
+      Object.values(organisationUnitCache).map(data => data.organisationUnit),
+    );
+
+    periods.forEach(period => {
+      const valueForPeriodFromCache = organisationUnitCache[period];
+      if (valueForPeriodFromCache) {
+        values.push(valueForPeriodFromCache);
+      } else {
+        // Assign empty period with value for each dataElement mapping each orgUnit that existed in results.
+        dataElements.forEach(dataElement => {
+          organisationUnits.forEach(organisationUnit => {
+            values.push({
+              dataElement,
+              organisationUnit,
+              value,
+              period,
+            });
+          });
+        });
+      }
+    });
+    return values;
+  }
+
   getFilledValues(analytics, aggregationPeriod, fillEmptyPeriodsWith) {
     const checkIfFillingContinuousValues = fillEmptyPeriodsWith === 'previous';
     const periods = getContinuousPeriodsForAnalytics(
@@ -114,21 +155,12 @@ class FinalValueAggregator {
       checkIfFillingContinuousValues,
     );
 
-    const values = [];
+    let values;
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
-      let mostRecentValue;
-
-      periods.forEach(period => {
-        const valueForPeriodFromCache = organisationUnitCache[period];
-        values.push({
-          ...(checkIfFillingContinuousValues && mostRecentValue),
-          ...valueForPeriodFromCache,
-          period,
-        });
-        if (valueForPeriodFromCache) mostRecentValue = valueForPeriodFromCache;
-      });
+      values = checkIfFillingContinuousValues
+        ? this.getContinuousValues(organisationUnitCache, periods)
+        : this.fillWithPresetValues(organisationUnitCache, periods, fillEmptyPeriodsWith);
     });
-
     return values;
   }
 
@@ -142,17 +174,13 @@ class FinalValueAggregator {
 
 export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
   const defaultOptions = {
-    fillEmptyPeriodsWith: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
   const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 
-  if (options.fillEmptyPeriodsWith === false) return valueAggregator.getDistinctValues();
-  return valueAggregator.getFilledValues(
-    analytics,
-    aggregationPeriod,
-    options.fillEmptyPeriodsWith,
-  );
+  return options.hasOwnProperty('fillEmptyPeriodsWith')
+    ? valueAggregator.getFilledValues(analytics, aggregationPeriod, options.fillEmptyPeriodsWith)
+    : valueAggregator.getDistinctValues();
 };
