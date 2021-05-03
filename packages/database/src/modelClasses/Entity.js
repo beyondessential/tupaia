@@ -292,7 +292,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   // Note: we don't use ancestor_descendant_relation as the dependency, as adding change triggers
   // to that table slows down the rebuilds considerably (40s -> 200s for full initial build)
   get cacheDependencies() {
-    return [TYPES.ENTITY_RELATION];
+    return [TYPES.ENTITY_RELATION, TYPES.ENTITY_HIERARCHY];
   }
 
   customColumnSelectors = {
