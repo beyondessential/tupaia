@@ -18,7 +18,7 @@ exports.setup = function (options, seedLink) {
 
 // Note: Laos Eoc District is a sub_district entity
 const mapOverlay = {
-  id: 'LA_EOC_Dengue_Cases_By_Week_District',
+  id: 'LAOS_EOC_Dengue_Cases_By_Week_District',
   name: 'Total Weekly Dengue Cases by District',
   userGroup: 'Laos EOC User',
   dataElementCode: 'NCLE_Disease_Name',
