@@ -41,7 +41,6 @@ export const PageRoutes = React.memo(() => (
     <Route path="/:entityCode/:view?">
       <NavBar />
       <EntityView />
-      <Footer />
     </Route>
     <Route>
       <NavBar />
