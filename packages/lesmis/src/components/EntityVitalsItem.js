@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
+import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import { ReactComponent as LocationPin } from './icons/location-pin.svg';
 import { ReactComponent as PushPin } from './icons/push-pin.svg';
@@ -18,11 +19,13 @@ import { ReactComponent as Notepad } from './icons/notepad.svg';
 import { FlexStart } from './Layout';
 
 const Wrapper = styled.section`
+  margin-left: 10px;
   padding-top: 0.5rem;
+  width: 120px;
+  margin-right: 1rem;
 `;
 
 const Container = styled(FlexStart)`
-  width: 200px;
   height: 70px;
 `;
 
@@ -36,43 +39,73 @@ const VitalContent = styled(Typography)`
   font-weight: bold;
 `;
 
+const GreenVital = styled(VitalContent)`
+  color: ${props => props.theme.palette.success.main};
+`;
+
+const IconContainer = styled.div`
+  width: 40px;
+`;
+
 const VitalsIcon = ({ icon }) => {
-  switch (icon) {
-    case 'LocationPin':
-      return <LocationPin />;
-    case 'Group':
-      return <Group />;
-    case 'School':
-      return <School />;
-    case 'Study':
-      return <Study />;
-    case 'Road':
-      return <Road />;
-    case 'PushPin':
-      return <PushPin />;
-    case 'Notepad':
-      return <Notepad />;
-    default:
-      return null;
+  if (icon) {
+    return (
+      <IconContainer>
+        {(() => {
+          switch (icon) {
+            case 'LocationPin':
+              return <LocationPin />;
+            case 'Group':
+              return <Group />;
+            case 'School':
+              return <School />;
+            case 'Study':
+              return <Study />;
+            case 'Road':
+              return <Road />;
+            case 'PushPin':
+              return <PushPin />;
+            case 'Notepad':
+              return <Notepad />;
+            default:
+              return null;
+          }
+        })()}
+      </IconContainer>
+    );
   }
+  return null;
 };
 
-export const EntityVitalsItem = ({ name, value, icon }) => (
+const VitalValue = ({ value, isLoading }) => {
+  if (isLoading) {
+    return <Skeleton animation="wave" />;
+  }
+  if (value === 'Yes') {
+    return <GreenVital noWrap>{value}</GreenVital>;
+  }
+  return <VitalContent noWrap>{value || '-'}</VitalContent>;
+};
+
+export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (
   <Container>
     <VitalsIcon icon={icon} />
     <Wrapper>
       <VitalName>{name}</VitalName>
-      <VitalContent>{value}</VitalContent>
+      <VitalValue value={value} isLoading={isLoading} />
     </Wrapper>
   </Container>
 );
 
 EntityVitalsItem.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   icon: PropTypes.string,
+  isLoading: PropTypes.bool,
 };
 
 EntityVitalsItem.defaultProps = {
+  value: '-',
   icon: '',
+  isLoading: false,
 };

@@ -4,104 +4,220 @@
  *
  */
 import { useQuery } from 'react-query';
-import { get, post } from '../api';
-import { useEntityData } from './useEntityData';
+import { utcMoment } from '@tupaia/utils';
+import { post } from '../api';
 import { useEntitiesData } from './useEntitiesData';
 
-const getDecendantsOfType = (entities, rootEntityCode, type) => {
-  const entity = entities.find(e => e.code === rootEntityCode);
+const endDateFormat = 'YYYY-MM-DD';
 
+const getParentOfType = (entities, rootEntityCode, type) => {
+  const entity = entities.find(e => e.code === rootEntityCode);
+  if (!entity) {
+    return undefined;
+  }
+  if (entity.type === type) {
+    return entity;
+  }
+  if (!entity.parentCode) {
+    return undefined;
+  }
+  return getParentOfType(entities, entity.parentCode, type);
+};
+const getDecendantCodesOfType = (entities, rootEntityCode, type) => {
+  const entity = entities?.find(e => e.code === rootEntityCode);
   if (!entity) {
     return [];
   }
-
   if (entity.type === type) {
-    return [entity.code];
+    return [entity?.code];
   }
-
   if (!entity.childCodes) {
     return [];
   }
-  return entity.childCodes.map(c => getDecendantsOfType(entities, c, type)).flat();
+  return entity.childCodes.map(c => getDecendantCodesOfType(entities, c, type)).flat();
 };
 
-const useSchoolInformation = entityCode =>
+const useReport = (entity, reportName, options, enabled) =>
   useQuery(
-    ['vitals', 'school', entityCode],
-    () =>
-      get(`reportData/${entityCode}/LESMIS_school_vitals`, {
-        params: { endDate: '2021-01-01' },
-      }),
+    [reportName, entity?.code, options],
+    () => post(`reportData/${entity?.code}/${reportName}`, options),
     {
       staleTime: 1000 * 60 * 60 * 1,
       refetchOnWindowFocus: false,
       retry: 1,
-      enabled: true,
+      enabled: !!entity && enabled,
     },
   );
 
-const useDecendantSchoolInformation = (entities, entityCode) => {
-  const decendants = getDecendantsOfType(entities, entityCode, 'school');
-  return useQuery(
-    ['vitals', 'multiSchool', entityCode],
-    () =>
-      post(`reportData/${entityCode}/LESMIS_multi_school_vitals`, {
-        data: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
-      }),
+const useSchoolReport = entity =>
+  useReport(
+    entity,
+    'LESMIS_school_vitals',
+    { params: { endDate: utcMoment().format(endDateFormat) } },
+    entity?.type === 'school',
+  );
+
+const useVillageReport = entity =>
+  useReport(
+    entity,
+    'LESMIS_village_vitals',
+    { params: { endDate: utcMoment().format(endDateFormat) } },
+    entity?.type === 'village',
+  );
+
+const useDistrictReport = entity =>
+  useReport(
+    entity,
+    'LESMIS_sub_district_vitals',
+    { params: { endDate: utcMoment().format(endDateFormat) } },
+    entity?.type === 'sub_district',
+  );
+
+const useMultiSchoolReport = (entities, rootEntity) => {
+  const decendants = getDecendantCodesOfType(entities, rootEntity?.code, 'school');
+  return useReport(
+    rootEntity,
+    'LESMIS_multi_school_vitals',
     {
-      staleTime: 1000 * 60 * 60 * 1,
-      refetchOnWindowFocus: false,
-      retry: 1,
-      enabled: decendants.length > 0,
+      data: { endDate: utcMoment().format(endDateFormat), organisationUnitCodes: decendants.join() },
     },
+    decendants.length > 0,
   );
 };
 
-const useDistrictInformation = entityCode =>
-  useQuery(
-    ['vitals', 'subDistrict', entityCode],
-    () =>
-      get(`reportData/${entityCode}/LESMIS_sub_district_vitals`, {
-        params: { endDate: '2021-01-01' },
-      }),
+const useMultiDistrictReport = (entities, rootEntity) => {
+  const decendants = getDecendantCodesOfType(entities, rootEntity?.code, 'sub_district');
+  return useReport(
+    rootEntity,
+    'LESMIS_sub_district_vitals',
     {
-      staleTime: 1000 * 60 * 60 * 1,
-      refetchOnWindowFocus: false,
-      retry: 1,
-      enabled: true,
+      data: { endDate: utcMoment().format(endDateFormat), organisationUnitCodes: decendants.join() },
     },
+    decendants.length > 0,
+  );
+};
+
+const useSchoolInformation = (entities, rootEntity) => {
+  const parentVillage = getParentOfType(entities, rootEntity?.code, 'village');
+  const parentDistrict = getParentOfType(entities, rootEntity?.code, 'sub_district');
+  const { data: schoolData, isLoading: schoolLoading } = useSchoolReport(rootEntity);
+  const { data: villageData, isLoading: villageLoading } = useVillageReport(parentVillage);
+  const { data: districtData, isLoading: districtLoading } = useDistrictReport(parentDistrict);
+
+  return {
+    data: {
+      ...schoolData?.results[0],
+      parentVillage: { ...villageData?.results[0], code: parentVillage?.code },
+      parentDistrict: { ...districtData?.results[0], code: parentDistrict?.code },
+    },
+    isLoading: schoolLoading || villageLoading || districtLoading,
+  };
+};
+
+const useVillageInformation = (entities, rootEntity) => {
+  const { data: villageData, isLoading: villageLoading } = useVillageReport(rootEntity);
+  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
+    entities,
+    rootEntity,
   );
 
-const useDecendantDistrictInformation = (entities, entityCode) => {
-  const decendants = getDecendantsOfType(entities, entityCode, 'sub_district');
-  return useQuery(
-    ['vitals', 'province', entityCode],
-    () =>
-      post(`reportData/${entityCode}/LESMIS_sub_district_vitals`, {
-        data: { endDate: '2021-01-01', organisationUnitCodes: decendants.join() },
-      }),
-    {
-      staleTime: 1000 * 60 * 60 * 1,
-      refetchOnWindowFocus: false,
-      retry: 1,
-      enabled: decendants.length > 0,
+  return {
+    data: {
+      ...villageData?.results[0],
+      ...subSchoolsData?.results[0],
     },
+    isLoading: villageLoading || subSchoolsLoading,
+  };
+};
+
+const useDistrictInformation = (entities, rootEntity) => {
+  const parentProvince = getParentOfType(entities, rootEntity?.code, 'district');
+  const { data: districtData, isLoading: districtLoading } = useDistrictReport(rootEntity);
+  const { data: provinceData, isLoading: provinceLoading } = useMultiDistrictReport(
+    entities,
+    parentProvince,
   );
+  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
+    entities,
+    rootEntity,
+  );
+
+  return {
+    data: {
+      ...districtData?.results[0],
+      ...subSchoolsData?.results[0],
+      parentProvince: { ...provinceData?.results[0], code: parentProvince?.code },
+    },
+    isLoading: districtLoading || provinceLoading || subSchoolsLoading,
+  };
+};
+
+const useProvinceInformation = (entities, rootEntity) => {
+  const { data: provinceData, isLoading: provinceLoading } = useMultiDistrictReport(
+    entities,
+    rootEntity,
+  );
+  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
+    entities,
+    rootEntity,
+  );
+
+  return {
+    data: {
+      ...provinceData?.results[0],
+      ...subSchoolsData?.results[0],
+    },
+    isLoading: provinceLoading || subSchoolsLoading,
+  };
+};
+
+const useCountryInformation = (entities, rootEntity) => {
+  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
+    entities,
+    rootEntity,
+  );
+
+  return {
+    data: {
+      ...subSchoolsData?.results[0],
+    },
+    isLoading: subSchoolsLoading,
+  };
 };
 
 export const useVitalsData = entityCode => {
   const { data: entities = [], ...entitiesQuery } = useEntitiesData();
   const entityData = entities.find(e => e.code === entityCode);
-  const { data: schoolData } = useSchoolInformation(entityCode);
-  const { data: districtData } = useDistrictInformation(entityCode);
-  const { data: subSchoolsData } = useDecendantSchoolInformation(entities, entityCode);
-  const { data: provinceData } = useDecendantDistrictInformation(entities, entityCode);
+
+  const { data: schoolData, isLoading: schoolLoading } = useSchoolInformation(entities, entityData);
+  const { data: villageData, isLoading: villageLoading } = useVillageInformation(
+    entities,
+    entityData,
+  );
+  const { data: districtData, isLoading: districtLoading } = useDistrictInformation(
+    entities,
+    entityData,
+  );
+  const { data: provinceData, isLoading: provinceLoading } = useProvinceInformation(
+    entities,
+    entityData,
+  );
+  const { data: countryData, isLoading: countryLoading } = useCountryInformation(
+    entities,
+    entityData,
+  );
+
   return {
     ...entitiesQuery,
-    ...schoolData?.results[0],
-    ...districtData?.results[0],
-    ...subSchoolsData?.results[0],
-    ...provinceData?.results[0],
     ...entityData,
+
+    ...schoolData,
+    ...villageData,
+    ...districtData,
+    ...provinceData,
+    ...countryData,
+
+    isLoading:
+      schoolLoading || villageLoading || districtLoading || provinceLoading || countryLoading,
   };
 };

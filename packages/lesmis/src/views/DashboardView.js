@@ -4,8 +4,10 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
+import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { useUrlParams } from '../utils';
 import { useVitalsData } from '../api';
@@ -20,14 +22,34 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding-right: 0;
 `;
 
 const FlexRow = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  alignitems: center;
   flex-wrap: wrap;
   height: 100%;
+`;
+
+const VitalsSection = styled(FlexRow)`
+  margin-right: 10px;
+  flex: 1;
+`;
+
+const PartnersContainer = styled(FlexRow)`
+  width: 320px;
+  padding-left: 25px;
+`;
+
+const ParentDistrict = styled(FlexRow)`
+  width: 60%;
+`;
+
+const ParentVillage = styled(FlexRow)`
+  padding-left: 30px;
+  width: 30%;
 `;
 
 const TitleContainer = styled.div`
@@ -39,108 +61,343 @@ const RedTitle = styled(Typography)`
   padding-top: 50px;
 `;
 
+const GreyTitle = styled(Typography)`
+  color: ${props => props.theme.palette.text.secondary};
+  font-weight: bold;
+  padding-top: 30px;
+  padding-left: 5px;
+`;
+
+const HorizontalDivider = styled(MuiDivider)`
+  width: 90%;
+  margin-top: 1.5rem;
+  background: ${props => props.theme.palette.text.tertiary};
+`;
+
+const VerticalDivider = styled(MuiDivider)`
+  margin-top: 2.5rem;
+  height: 7rem;
+  background: ${props => props.theme.palette.text.tertiary};
+`;
+
+const PlaceholderBox = styled.div`
+  width: 510px;
+  height: 370px;
+  background: grey;
+`;
+const MapPlaceholder = () => (
+  <PlaceholderBox>
+    <Typography>TODO: Map</Typography>
+  </PlaceholderBox>
+);
+
+const CountryView = ({ vitals }) => {
+  return (
+    <>
+      <VitalsSection>
+        <TitleContainer>
+          <RedTitle variant="h4">Country Profile:</RedTitle>
+        </TitleContainer>
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
+      </VitalsSection>
+      <MapPlaceholder />
+      <PartnersContainer>
+        <TitleContainer>
+          <GreyTitle>Development Partner Support</GreyTitle>
+        </TitleContainer>
+        {Object.entries(vitals).map(([key, value]) =>
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
+        )}
+      </PartnersContainer>
+    </>
+  );
+};
+
+const ProvinceView = ({ vitals }) => {
+  return (
+    <>
+      <VitalsSection>
+        <TitleContainer>
+          <RedTitle variant="h4">Province Profile:</RedTitle>
+        </TitleContainer>
+        <EntityVitalsItem
+          name="Province Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Province Population"
+          value={vitals.Population}
+          icon="Group"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
+      </VitalsSection>
+      <MapPlaceholder />
+      <PartnersContainer>
+        <TitleContainer>
+          <GreyTitle>Development Partner Support</GreyTitle>
+        </TitleContainer>
+        {Object.entries(vitals).map(([key, value]) =>
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
+        )}
+      </PartnersContainer>
+    </>
+  );
+};
+
+const DistrictView = ({ vitals }) => {
+  return (
+    <>
+      <VitalsSection>
+        <TitleContainer>
+          <RedTitle variant="h4">District Profile:</RedTitle>
+        </TitleContainer>
+        <EntityVitalsItem
+          name="District Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="District Population"
+          value={vitals.Population}
+          icon="Group"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Priority District"
+          value={vitals.priorityDistrict ? 'Yes' : 'No'}
+          icon="Notepad"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
+        <HorizontalDivider />
+        <FlexRow>
+          <TitleContainer>
+            <RedTitle variant="h4">Province</RedTitle>
+          </TitleContainer>
+          <EntityVitalsItem
+            name="Province Code"
+            value={vitals.parentProvince?.code}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="Province Population"
+            value={vitals.parentProvince?.Population}
+            isLoading={vitals.isLoading}
+          />
+        </FlexRow>
+      </VitalsSection>
+      <MapPlaceholder />
+      <PartnersContainer>
+        <TitleContainer>
+          <GreyTitle>Development Partner Support</GreyTitle>
+        </TitleContainer>
+        {Object.entries(vitals).map(([key, value]) =>
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
+        )}
+      </PartnersContainer>
+    </>
+  );
+};
+
+const VillageView = ({ vitals }) => {
+  return (
+    <>
+      <VitalsSection>
+        <TitleContainer>
+          <RedTitle variant="h4">Village Profile:</RedTitle>
+        </TitleContainer>
+        <EntityVitalsItem
+          name="Village Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Village Population"
+          value={vitals.Population}
+          icon="Group"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Schools"
+          value={vitals.NumberOfSchools}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="No. Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
+      </VitalsSection>
+      <MapPlaceholder />
+      <PartnersContainer>
+        <TitleContainer>
+          <GreyTitle>Development Partner Support</GreyTitle>
+        </TitleContainer>
+        {Object.entries(vitals).map(([key, value]) =>
+          value === true ? <PartnerLogo code={key} key={key} /> : null,
+        )}
+      </PartnersContainer>
+    </>
+  );
+};
+
+const SchoolView = ({ vitals }) => {
+  return (
+    <>
+      <VitalsSection>
+        <TitleContainer>
+          <RedTitle variant="h4">School Profile:</RedTitle>
+        </TitleContainer>
+        <EntityVitalsItem
+          name="School Code"
+          value={vitals.code}
+          icon="LocationPin"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Number of Students"
+          value={vitals.NumberOfStudents}
+          icon="Study"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Completed School"
+          value="Yes"
+          icon="Notepad"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Distance to Main Road"
+          value={vitals.DistanceToMainRoad}
+          icon="Road"
+          isLoading={vitals.isLoading}
+        />
+        <EntityVitalsItem
+          name="Location"
+          value={vitals.point.map(x => x.toFixed(3)).join()}
+          icon="PushPin"
+          isLoading={vitals.isLoading}
+        />
+        <HorizontalDivider />
+        <FlexRow>
+          <ParentDistrict>
+            <TitleContainer>
+              <RedTitle variant="h4">District</RedTitle>
+            </TitleContainer>
+            <EntityVitalsItem
+              name="District Code"
+              value={vitals.parentDistrict?.code}
+              isLoading={vitals.isLoading}
+            />
+            <EntityVitalsItem
+              name="District Population"
+              value={vitals.parentDistrict?.Population}
+              isLoading={vitals.isLoading}
+            />
+            <EntityVitalsItem
+              name="Priority District"
+              value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+              isLoading={vitals.isLoading}
+            />
+          </ParentDistrict>
+          <VerticalDivider orientation="vertical" />
+          <ParentVillage>
+            <TitleContainer>
+              <RedTitle variant="h4">Village</RedTitle>
+            </TitleContainer>
+            <EntityVitalsItem
+              name="Village Population"
+              value={vitals.parentVillage?.Population}
+              isLoading={vitals.isLoading}
+            />
+          </ParentVillage>
+        </FlexRow>
+      </VitalsSection>
+      {vitals.Photo ? <img src={vitals.Photo} alt="place" width="720px" /> : <MapPlaceholder />}
+    </>
+  );
+};
+
 export const DashboardView = () => {
   const { entityCode } = useUrlParams();
   const vitals = useVitalsData(entityCode);
-  switch (vitals.type) {
-    case 'district':
-      // "Province" in lesmis context
-      return (
-        <Wrapper>
-          <Container maxWidth={false}>
-            <FlexRow>
-              <TitleContainer>
-                <RedTitle variant="h4">Province Profile:</RedTitle>
-              </TitleContainer>
-              <EntityVitalsItem name="Province Code" value={vitals.code} icon="LocationPin" />
-              <EntityVitalsItem name="Province Population" value={vitals.Population} icon="Group" />
-              <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-              <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
-            </FlexRow>
-            <img src="/images/school.png" alt="place" />
-            <FlexRow>
-              <TitleContainer>
-                <Typography>Development Partner Support</Typography>
-              </TitleContainer>
-              {Object.entries(vitals)
-                .filter(([, value]) => value === true)
-                .map(([key]) => (
-                  <PartnerLogo code={key} />
-                ))}
-            </FlexRow>
-          </Container>
-        </Wrapper>
-      );
-    case 'sub_district':
-      // "District" in lesmis context
-      return (
-        <Wrapper>
-          <Container>
-            <FlexRow>
-              <TitleContainer>
-                <RedTitle variant="h4">District Profile:</RedTitle>
-              </TitleContainer>
-              <EntityVitalsItem name="District Code" value={vitals.code} icon="LocationPin" />
-              <EntityVitalsItem name="District Population" value={vitals.Population} icon="Group" />
-              <EntityVitalsItem
-                name="Priority District"
-                value={vitals.priorityDistrict ? 'Yes' : 'No'}
-                icon="Notepad"
-              />
-              <EntityVitalsItem name="No. Schools" value={vitals.NumberOfSchools} icon="School" />
-              <EntityVitalsItem name="No. Students" value={vitals.NumberOfStudents} icon="Study" />
-            </FlexRow>
-            <img src="/images/school.png" alt="place" />
-            <FlexRow>
-              <TitleContainer>
-                <Typography>Development Partner Support</Typography>
-              </TitleContainer>
-              {Object.entries(vitals)
-                .filter(([, value]) => value === true)
-                .map(([key]) => (
-                  <PartnerLogo code={key} />
-                ))}
-            </FlexRow>
-          </Container>
-        </Wrapper>
-      );
-    case 'school':
-      return (
-        <Wrapper>
-          <Container maxWidth={false}>
-            <FlexRow>
-              <TitleContainer>
-                <RedTitle variant="h4">School Profile:</RedTitle>
-              </TitleContainer>
-              <EntityVitalsItem name="School Code" value={vitals.code} icon="LocationPin" />
-              <EntityVitalsItem
-                name="Number of Students"
-                value={vitals.NumberOfStudents}
-                icon="Study"
-              />
-              <EntityVitalsItem name="Completed School" value="Yes" icon="Notepad" />
-              <EntityVitalsItem
-                name="Distance to Main Road"
-                value={vitals.DistanceToMainRoad}
-                icon="Road"
-              />
-              <EntityVitalsItem
-                name="Location"
-                value={vitals.point.map(x => x.toFixed(3)).join()}
-                icon="PushPin"
-              />
-            </FlexRow>
-            <img src="/images/school.png" alt="place" />
-          </Container>
-        </Wrapper>
-      );
-    default:
-      return (
-        <Wrapper>
-          <MuiContainer>
-            <Typography>Dashboard View</Typography>
-          </MuiContainer>
-        </Wrapper>
-      );
-  }
+
+  return (
+    <Wrapper>
+      <Container maxWidth={false}>
+        {(() => {
+          switch (vitals.type) {
+            case 'country':
+              return <CountryView vitals={vitals} />;
+            case 'district':
+              return <ProvinceView vitals={vitals} />;
+            case 'sub_district':
+              return <DistrictView vitals={vitals} />;
+            case 'village':
+              return <VillageView vitals={vitals} />;
+            case 'school':
+              return <SchoolView vitals={vitals} />;
+            default:
+              return null;
+          }
+        })()}
+      </Container>
+    </Wrapper>
+  );
+};
+
+CountryView.propTypes = {
+  vitals: PropTypes.object.isRequired,
+};
+ProvinceView.propTypes = {
+  vitals: PropTypes.object.isRequired,
+};
+DistrictView.propTypes = {
+  vitals: PropTypes.object.isRequired,
+};
+VillageView.propTypes = {
+  vitals: PropTypes.object.isRequired,
+};
+SchoolView.propTypes = {
+  vitals: PropTypes.object.isRequired,
 };
