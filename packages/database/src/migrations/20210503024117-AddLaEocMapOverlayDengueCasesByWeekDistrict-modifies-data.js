@@ -72,16 +72,31 @@ const getMapOverlayGroupId = async function (db, code) {
   throw new Error('MapOverlayGroup not found');
 };
 
+// update existing province overlay name;
+const existingOverlayNameToUpdate = {
+  id: 'LA_EOC_Dengue_Cases_By_Week',
+  oldName: 'Total weekly dengue cases by province',
+  newName: 'Total Weekly Dengue Cases by Province',
+};
+
 exports.up = async function (db) {
   await insertObject(db, 'mapOverlay', mapOverlay);
   const mapOverlayGroupId = await getMapOverlayGroupId(db, mapOverlayGroupCode);
   await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupRelation(mapOverlayGroupId));
+
+  await db.runSql(
+    `update "mapOverlay" set "name" = '${existingOverlayNameToUpdate.newName}' 
+      where id = '${existingOverlayNameToUpdate.id}';`,
+  );
 };
 
 exports.down = function (db) {
   return db.runSql(`
-    DELETE FROM map_overlay_group_relation WHERE child_id = '${mapOverlay.id}';
-    DELETE FROM "mapOverlay" WHERE id = '${mapOverlay.id}';
+    delete from "map_overlay_group_relation" where "child_id" = '${mapOverlay.id}';
+    delete from "mapOverlay" where id = '${mapOverlay.id}';
+
+    update "mapOverlay" set "name" = '${existingOverlayNameToUpdate.oldName}' 
+      where "id" = '${existingOverlayNameToUpdate.id}';
   `);
 };
 
