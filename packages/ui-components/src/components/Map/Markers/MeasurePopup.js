@@ -8,10 +8,10 @@ import PropTypes from 'prop-types';
 import { getFormattedInfo } from '../utils';
 import { PopupMarker } from './PopupMarker';
 
-const buildHeaderText = (measureData, popupHeaderFormat) => {
-  const { organisationUnitCode, name } = measureData;
+const buildHeaderText = (markerData, popupHeaderFormat) => {
+  const { code, name } = markerData;
   const replacements = {
-    code: organisationUnitCode,
+    code,
     name,
   };
   return Object.entries(replacements).reduce(
@@ -20,19 +20,19 @@ const buildHeaderText = (measureData, popupHeaderFormat) => {
   );
 };
 
-export const MeasurePopup = React.memo(({ measureData, serieses }) => {
-  const { coordinates } = measureData;
+export const MeasurePopup = React.memo(({ markerData, serieses }) => {
+  const { coordinates } = markerData;
   const { popupHeaderFormat = '{name}' } = serieses.reduce((all, mo) => ({ ...all, ...mo }), {});
   return (
     <PopupMarker
-      headerText={buildHeaderText(measureData, popupHeaderFormat)}
+      headerText={buildHeaderText(markerData, popupHeaderFormat)}
       coordinates={coordinates}
     >
       {serieses
         .filter(series => !series.hideFromPopup)
         .map(series => {
           const { key, name } = series;
-          const { formattedValue, valueInfo } = getFormattedInfo(measureData, series);
+          const { formattedValue, valueInfo } = getFormattedInfo(markerData, series);
 
           return valueInfo.hideFromPopup ? null : (
             <div key={key}>
@@ -46,11 +46,11 @@ export const MeasurePopup = React.memo(({ measureData, serieses }) => {
 });
 
 MeasurePopup.propTypes = {
-  measureData: PropTypes.shape({
+  markerData: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     photoUrl: PropTypes.string,
-    organisationUnitCode: PropTypes.string,
+    code: PropTypes.string,
     name: PropTypes.string,
   }).isRequired,
   serieses: PropTypes.arrayOf(
