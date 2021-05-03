@@ -31,6 +31,7 @@ const fetchAnalytics = sinon.stub();
 fetchAnalytics
   .returns({ results: [] })
   .withArgs(sinon.match.any, sinon.match({ dataServices }), query, {
+    aggregations: undefined,
     aggregationConfig,
     aggregationType,
     filter,
