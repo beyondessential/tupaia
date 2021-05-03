@@ -21,7 +21,7 @@ const ShadedPolygon = styled(Polygon)`
 
 // remove name from the measure data as it's not expected in getSingleFormattedValue
 const getTooltipText = ({ name, ...measure }, serieses) =>
-  measure ? `${name}: ${getSingleFormattedValue(measure, serieses)}` : name;
+  `${name}: ${getSingleFormattedValue(measure, serieses)}`;
 
 export const MarkerLayer = ({ measureData, serieses }) => {
   if (!measureData || !serieses) return null;
