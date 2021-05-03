@@ -19,13 +19,9 @@ const ShadedPolygon = styled(Polygon)`
   }
 `;
 
-const getText = (measure, serieses) => {
-  const { name } = measure;
+const getText = ({ name, ...measure }, serieses) => {
   const hasMeasureValue = measure || measure === 0;
-
-  const text = hasMeasureValue ? `${name}: ${getSingleFormattedValue(measure, serieses)}` : name;
-
-  return text;
+  return hasMeasureValue ? `${name}: ${getSingleFormattedValue(measure, serieses)}` : name;
 };
 
 export const MarkerLayer = ({ measureData, serieses }) => {
