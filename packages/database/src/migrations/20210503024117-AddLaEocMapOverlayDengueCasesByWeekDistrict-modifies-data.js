@@ -30,7 +30,6 @@ const mapOverlay = {
     entityAggregation: {
       dataSourceEntityType: 'facility',
       aggregationEntityType: 'sub_district',
-      aggregationOrder: 'BEFORE',
       aggregationType: 'COUNT_PER_ORG_GROUP',
       aggregationConfig: {
         condition: {
