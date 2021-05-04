@@ -69,7 +69,7 @@ const getDashboardReport = (id, syndrome) => {
     dataBuilder: 'analyticsYearOnYear',
     dataBuilderConfig: {
       layerYearOnYearSeries: {
-        pastYears: 4,
+        yearRange: 4,
       },
       periodType: 'week',
       aggregationType: ['FINAL_EACH_WEEK', 'YEAR_ON_YEAR'],
