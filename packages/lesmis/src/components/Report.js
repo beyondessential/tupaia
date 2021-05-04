@@ -51,7 +51,6 @@ const Body = styled.div`
 
 const ChartWrapper = styled.div`
   display: flex;
-  //height: 26rem;
   padding: 1.25rem 1.875rem 0;
   width: 100%;
 
@@ -84,16 +83,7 @@ export const TABS = {
 };
 
 export const Report = React.memo(
-  ({
-    reportId,
-    name,
-    entityCode,
-    dashboardGroupId,
-    periodGranularity,
-    defaultTimePeriod,
-    onItemClick,
-    year,
-  }) => {
+  ({ reportId, name, entityCode, dashboardGroupId, periodGranularity, year }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
     const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
       entityCode,
@@ -101,7 +91,6 @@ export const Report = React.memo(
       reportId,
       periodGranularity,
       year,
-      defaultTimePeriod,
     });
 
     const handleTabChange = (event, newValue) => {
@@ -109,18 +98,6 @@ export const Report = React.memo(
         setSelectedTab(newValue);
       }
     };
-
-    const ReportComponent = () => (
-      <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-        {selectedTab === TABS.CHART ? (
-          <ChartWrapper>
-            <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
-          </ChartWrapper>
-        ) : (
-          <Table viewContent={viewContent} />
-        )}
-      </FetchLoader>
-    );
 
     return (
       <Container>
@@ -136,12 +113,25 @@ export const Report = React.memo(
           </ToggleButtonGroup>
         </Header>
         <Body>
-          <ReportComponent />
+          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+            {selectedTab === TABS.CHART ? (
+              <ChartWrapper>
+                <Chart viewContent={viewContent} isEnlarged />
+              </ChartWrapper>
+            ) : (
+              <Table viewContent={viewContent} />
+            )}
+          </FetchLoader>
         </Body>
         <Footer>
-          <DashboardReportModal buttonText="More Insights">
-            <ReportComponent />
-          </DashboardReportModal>
+          <DashboardReportModal
+            buttonText="More Insights"
+            entityCode={entityCode}
+            dashboardGroupId={dashboardGroupId}
+            reportId={reportId}
+            periodGranularity={periodGranularity}
+            year={year}
+          />
         </Footer>
       </Container>
     );
@@ -155,13 +145,9 @@ Report.propTypes = {
   year: PropTypes.string,
   dashboardGroupId: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
-  defaultTimePeriod: PropTypes.object,
-  onItemClick: PropTypes.func,
 };
 
 Report.defaultProps = {
-  defaultTimePeriod: null,
   year: null,
   periodGranularity: null,
-  onItemClick: () => {},
 };
