@@ -26,11 +26,12 @@ const renameDashboardGroups = async function (db, orgLevel, from, to) {
 
 const createEmptyDashboardGroup = async function (db, orgLevel, name) {
   await db.runSql(`
-    INSERT INTO "dashboardGroup"("organisationLevel","userGroup","organisationUnitCode","dashboardReports","name","code")
+    INSERT INTO "dashboardGroup"("organisationLevel","userGroup","organisationUnitCode","dashboardReports","name","code","projectCodes")
     VALUES
-    (${orgLevel},'LESMIS Public','LA','{}',${name},'LA_${name
+    ('${orgLevel}','LESMIS Public','LA','{}','${name}','LA_${name
     .split(' ')
-    .join('_')}_${orgLevel}_LESMIS_Public')
+    .join('_')}_${orgLevel}_LESMIS_Public',
+    '{laos_schools}')
   `);
 };
 
@@ -46,7 +47,7 @@ const deleteDashboardGroup = async function (db, orgLevel, name) {
 const addReportToGroup = async function (db, orgLevel, group, report) {
   await db.runSql(`
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_append("dashboardReports", ${report})
+    SET "dashboardReports" = array_append("dashboardReports", '${report}')
     WHERE 'laos_schools' = ANY("projectCodes")
     AND "organisationLevel" = '${orgLevel}'
     AND "name" = '${group}'
@@ -56,7 +57,7 @@ const addReportToGroup = async function (db, orgLevel, group, report) {
 const removeReportFromGroup = async function (db, orgLevel, group, report) {
   await db.runSql(`
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", ${report})
+    SET "dashboardReports" = array_remove("dashboardReports", '${report}')
     WHERE 'laos_schools' = ANY("projectCodes")
     AND "organisationLevel" = '${orgLevel}'
     AND "name" = '${group}'
@@ -64,7 +65,7 @@ const removeReportFromGroup = async function (db, orgLevel, group, report) {
 };
 
 const updateOrgLevel = async function (db, orgLevel) {
-  await renameDashboardGroups(db, orgLevel, 'Student / Schools', 'Student Outcomes');
+  await renameDashboardGroups(db, orgLevel, 'Students / Schools', 'Student Outcomes');
   await renameDashboardGroups(db, orgLevel, 'ICT and Utility Data', 'ICT Facilities');
   await renameDashboardGroups(
     db,
@@ -150,7 +151,7 @@ const downdateOrgLevel = async function (db, orgLevel) {
   await deleteDashboardGroup(db, orgLevel, 'FQS');
   await deleteDashboardGroup(db, orgLevel, 'Student Enrolment');
 
-  await renameDashboardGroups(db, orgLevel, 'Student Outcomes', 'Student / Schools');
+  await renameDashboardGroups(db, orgLevel, 'Student Outcomes', 'Students / Schools');
   await renameDashboardGroups(db, orgLevel, 'ICT Facilities', 'ICT and Utility Data');
   await renameDashboardGroups(
     db,
