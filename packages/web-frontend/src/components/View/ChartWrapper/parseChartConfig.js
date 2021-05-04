@@ -1,4 +1,5 @@
 import { COLOR_PALETTES } from '../../../styles';
+import { getLayeredOpacity } from '../../../utils';
 import { CHART_TYPES } from './chartTypes';
 import { isDataKey } from './helpers';
 
@@ -12,13 +13,32 @@ export const parseChartConfig = viewContent => {
     ? createDynamicConfig(restOfConfig, configForAllKeys, data)
     : restOfConfig;
 
-  return addDefaultColorsToConfig(sortChartConfigByLegendOrder(baseConfig), paletteName, chartType);
+  return setOpacityValues(
+    addDefaultColorsToConfig(sortChartConfigByLegendOrder(baseConfig), paletteName, chartType),
+  );
+};
+
+/**
+ * Sets numeric values for each chart config opacity
+ */
+const setOpacityValues = chartConfig => {
+  const newConfig = {};
+
+  Object.entries(chartConfig).forEach(([key, configItem], index, array) => {
+    const { opacity } = configItem;
+    if (!opacity || typeof opacity === 'number') {
+      newConfig[key] = configItem;
+      return;
+    }
+    const newOpacity = getLayeredOpacity(array.length, index, opacity === 'ascending');
+    newConfig[key] = { ...configItem, opacity: newOpacity };
+  });
+  return newConfig;
 };
 
 // Adds default colors for every element with no color defined
 const addDefaultColorsToConfig = (chartConfig, paletteName, chartType) => {
   const newConfig = {};
-
   const palette = paletteName || getDefaultPaletteName(chartType, Object.keys(chartConfig).length);
   const colors = Object.values(COLOR_PALETTES[palette]);
 
@@ -29,7 +49,6 @@ const addDefaultColorsToConfig = (chartConfig, paletteName, chartType) => {
       color = colors[colorId];
       colorId = (colorId + 1) % colors.length;
     }
-
     newConfig[key] = { ...configItem, color };
   });
 

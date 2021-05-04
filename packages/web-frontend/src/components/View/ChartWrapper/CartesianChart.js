@@ -621,7 +621,7 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  renderLine = ({ color, dataKey, yAxisId }) => {
+  renderLine = ({ color, dataKey, yAxisId, opacity }) => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { valueType } = viewContent;
     const defaultColor = isExporting ? DARK_BLUE : BLUE;
@@ -634,6 +634,7 @@ export class CartesianChart extends PureComponent {
         yAxisId={yAxisId}
         stroke={color || defaultColor}
         strokeWidth={isEnlarged ? 3 : 1}
+        strokeOpacity={opacity}
         fill={color || defaultColor}
         isAnimationActive={isEnlarged && !isExporting}
       >
