@@ -39,6 +39,11 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
   },
 };
 
+const DHIS_DATA_TYPES = {
+  DATA_ELEMENT: 'DataElement',
+  INDICATOR: 'Indicator',
+};
+
 export class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
 
@@ -102,6 +107,8 @@ export class DataSourceModel extends MaterializedViewLogDatabaseModel {
   }
 
   getTypes = () => DataSourceModel.types;
+
+  getDhisDataTypes = () => DHIS_DATA_TYPES;
 
   async getDataElementsInGroup(dataGroupCode) {
     const dataGroup = await this.findOne({
