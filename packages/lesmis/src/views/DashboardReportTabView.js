@@ -14,7 +14,7 @@ import {
   TabBarSection,
   FlexCenter,
   Report,
-  TabBar,
+  StickyTabBar,
   Tabs,
   Tab,
   TabPanel,
@@ -53,7 +53,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
 
   return (
     <>
-      <TabBar>
+      <StickyTabBar>
         <TabBarSection>
           {TabSelector}
           <YearSelector value={selectedYear} onChange={setSelectedYear} />
@@ -74,7 +74,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
             </Tabs>
           </>
         )}
-      </TabBar>
+      </StickyTabBar>
       <DashboardSection>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {data &&

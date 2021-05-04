@@ -15,16 +15,20 @@ import { FlexStart } from './Layout';
 
 const LoadingTab = () => <Skeleton width={100} height={20} style={{ marginLeft: 30 }} />;
 
-export const TabBar = styled(MuiContainer)`
+const TabBar = styled(MuiContainer)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  position: sticky;
-  top: ${NAVBAR_HEIGHT};
   background: white;
   z-index: 9999;
+`;
+
+// sticks on scroll, sitting below the nav bar
+export const StickyTabBar = styled(TabBar)`
+  position: sticky;
+  top: ${NAVBAR_HEIGHT};
 `;
 
 export const TabBarSection = styled(FlexStart)`
