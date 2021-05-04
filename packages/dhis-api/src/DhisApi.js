@@ -17,8 +17,8 @@ import {
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import {
   buildDataValueAnalyticsQueries,
+  buildAggregatedDataValueAnalyticsQueries,
   buildEventAnalyticsQueries,
-  buildEventAnalyticsQuery,
 } from './buildAnalyticsQuery';
 
 const {
@@ -33,6 +33,7 @@ const {
   OPTION_SET,
   ORGANISATION_UNIT,
   PROGRAM,
+  INDICATOR,
 } = DHIS2_RESOURCE_TYPES;
 
 const LATEST_LOOKBACK_PERIOD = '600d';
@@ -346,7 +347,7 @@ export class DhisApi {
   }
 
   async getAggregatedAnalytics(originalQuery) {
-    const queries = buildDataValueAnalyticsQueries(originalQuery);
+    const queries = buildAggregatedDataValueAnalyticsQueries(originalQuery);
     return this.fetchAnalyticsQueries(queries, 'analytics.json');
   }
 
@@ -374,7 +375,10 @@ export class DhisApi {
       throw new Error('Maximum of one program id can be specified');
     }
 
-    const endpoint = await this.buildEventAnalyticsEndpoint(programIds ? programIds[0] : programId, programCodes ? programCodes[0] : programCode);
+    const endpoint = await this.buildEventAnalyticsEndpoint(
+      programIds ? programIds[0] : programId,
+      programCodes ? programCodes[0] : programCode,
+    );
 
     let resolvedDataElementIds = dataElementIds;
     if (!dataElementIds) {
@@ -420,7 +424,6 @@ export class DhisApi {
 
     await Promise.all(
       queries.map(async query => {
-
         const { headers: newHeaders, rows: newRows, metaData: newMetadata } = await this.fetch(
           endpoint,
           query,
@@ -536,6 +539,30 @@ export class DhisApi {
       });
     }
     return dataElements;
+  }
+
+  buildFetchIndicatorsQuery = queryInput => {
+    const { dataElementIds, dataElementCodes } = queryInput;
+
+    if (!dataElementIds && !dataElementCodes) {
+      throw new Error(
+        'At least one of the following must be provided: dataElementIds, dataElementCodes',
+      );
+    }
+
+    if (dataElementIds) {
+      return { ids: dataElementIds };
+    }
+
+    return { codes: dataElementCodes };
+  };
+
+  async fetchIndicators(queryInput) {
+    const query = this.buildFetchIndicatorsQuery(queryInput);
+    return this.getRecords({
+      type: INDICATOR,
+      ...query,
+    });
   }
 
   getOptionSetOptions = async ({ code, id }) => {
