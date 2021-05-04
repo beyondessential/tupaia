@@ -4,42 +4,57 @@
  *
  */
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { LayerGroup } from 'react-leaflet';
+import { LayerGroup, Polygon } from 'react-leaflet';
 import { MeasureMarker, MeasurePopup } from './Markers';
-import { MEASURE_TYPE_RADIUS } from './utils';
+import { AreaTooltip } from './AreaTooltip';
+import { getSingleFormattedValue, MEASURE_TYPE_RADIUS } from './utils';
 
-export const MarkerLayer = ({ measureData, measureOptions }) => {
-  if (!measureData || !measureOptions) return null;
+const ShadedPolygon = styled(Polygon)`
+  weight: 1;
+  fill-opacity: 0.5;
+  :hover {
+    fill-opacity: 0.8;
+  }
+`;
+
+// remove name from the measure data as it's not expected in getSingleFormattedValue
+const getTooltipText = ({ name, ...markerData }, serieses) =>
+  `${name}: ${getSingleFormattedValue(markerData, serieses)}`;
+
+export const MarkerLayer = ({ measureData, serieses }) => {
+  if (!measureData || !serieses) return null;
 
   // for radius overlay sort desc radius to place smaller circles over larger circles
-  if (measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS)) {
-    measureData.sort((a, b) => {
-      return Number(b.radius) - Number(a.radius);
-    });
+  if (serieses.some(l => l.type === MEASURE_TYPE_RADIUS)) {
+    measureData.sort((a, b) => Number(b.radius) - Number(a.radius));
   }
 
   return (
     <LayerGroup>
-      {measureData
-        .filter(m => m?.coordinates.length === 2)
-        .map(measure => (
-          <MeasureMarker
-            key={measure.organisationUnitCode}
-            radiusScaleFactor={1}
-            displayPolygons
+      {measureData.map(measure =>
+        measure.region ? (
+          <ShadedPolygon
+            key={`${measure.code}-${measure.color}`}
+            positions={measure.region}
             {...measure}
           >
-            <MeasurePopup measureData={measure} measureOptions={measureOptions} />
+            <AreaTooltip text={getTooltipText(measure, serieses)} />
+          </ShadedPolygon>
+        ) : (
+          <MeasureMarker key={measure.code} {...measure}>
+            <MeasurePopup markerData={measure} serieses={serieses} />
           </MeasureMarker>
-        ))}
+        ),
+      )}
     </LayerGroup>
   );
 };
 
 MarkerLayer.propTypes = {
   measureData: PropTypes.array,
-  measureOptions: PropTypes.arrayOf(
+  serieses: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -49,5 +64,5 @@ MarkerLayer.propTypes = {
 
 MarkerLayer.defaultProps = {
   measureData: null,
-  measureOptions: null,
+  serieses: null,
 };
