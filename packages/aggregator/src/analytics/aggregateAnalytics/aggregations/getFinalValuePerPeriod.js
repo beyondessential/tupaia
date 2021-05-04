@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import uniq from 'lodash.uniq';
 import { PERIOD_TYPES, convertToPeriod, periodToType } from '@tupaia/utils';
 import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
 
@@ -107,46 +106,6 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
-  getContinuousValues(organisationUnitCache, periods) {
-    let mostRecentValue;
-
-    return periods.map(period => {
-      mostRecentValue = organisationUnitCache[period] || mostRecentValue;
-      return {
-        ...mostRecentValue,
-        period,
-      };
-    });
-  }
-
-  fillWithPresetValues(organisationUnitCache, periods, value) {
-    const values = [];
-    const dataElements = uniq(Object.values(organisationUnitCache).map(data => data.dataElement));
-    const organisationUnits = uniq(
-      Object.values(organisationUnitCache).map(data => data.organisationUnit),
-    );
-
-    periods.forEach(period => {
-      const valueForPeriodFromCache = organisationUnitCache[period];
-      if (valueForPeriodFromCache) {
-        values.push(valueForPeriodFromCache);
-      } else {
-        // Assign empty period with value for each dataElement mapping each orgUnit that existed in results.
-        dataElements.forEach(dataElement => {
-          organisationUnits.forEach(organisationUnit => {
-            values.push({
-              dataElement,
-              organisationUnit,
-              value,
-              period,
-            });
-          });
-        });
-      }
-    });
-    return values;
-  }
-
   getFilledValues(analytics, aggregationPeriod, fillEmptyPeriodsWith) {
     const checkIfFillingContinuousValues = fillEmptyPeriodsWith === 'previous';
     const periods = getContinuousPeriodsForAnalytics(
@@ -155,12 +114,28 @@ class FinalValueAggregator {
       checkIfFillingContinuousValues,
     );
 
-    let values;
+    const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
-      values = checkIfFillingContinuousValues
-        ? this.getContinuousValues(organisationUnitCache, periods)
-        : this.fillWithPresetValues(organisationUnitCache, periods, fillEmptyPeriodsWith);
+      let mostRecentValue;
+
+      periods.forEach(period => {
+        const valueForPeriod = organisationUnitCache[period];
+
+        if (valueForPeriod !== undefined) {
+          mostRecentValue = valueForPeriod;
+        }
+        if (mostRecentValue !== undefined) {
+          const valueForOneOrgUnit = {
+            ...mostRecentValue,
+            period,
+          };
+          if (!checkIfFillingContinuousValues && !valueForPeriod)
+            valueForOneOrgUnit.value = fillEmptyPeriodsWith;
+          values.push(valueForOneOrgUnit);
+        }
+      });
     });
+
     return values;
   }
 

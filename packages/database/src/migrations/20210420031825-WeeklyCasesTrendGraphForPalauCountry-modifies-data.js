@@ -68,9 +68,7 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
       },
     ],
     entityAggregation: {
-      aggregationOrder: 'BEFORE',
-      dataSourceEntityType: 'facility',
-      aggregationEntityType: 'country',
+      dataSourceEntityType: 'country',
     },
   },
   viewJson: {
