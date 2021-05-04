@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import MuiTabs from '@material-ui/core/Tabs';
 import Skeleton from '@material-ui/lab/Skeleton';
 import MuiTab from '@material-ui/core/Tab';
+import { NAVBAR_HEIGHT } from '../constants';
 import { FlexStart } from './Layout';
 
 const LoadingTab = () => <Skeleton width={100} height={20} style={{ marginLeft: 30 }} />;
@@ -20,6 +21,10 @@ export const TabBar = styled(MuiContainer)`
   justify-content: flex-start;
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  position: sticky;
+  top: ${NAVBAR_HEIGHT};
+  background: white;
+  z-index: 9999;
 `;
 
 export const TabBarSection = styled(FlexStart)`
