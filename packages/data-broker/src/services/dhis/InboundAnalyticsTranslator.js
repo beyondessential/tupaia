@@ -15,7 +15,7 @@ const DIMENSIONS = {
 const createDataElementKey = (dataElement, categoryOptionCombo) =>
   categoryOptionCombo ? `${dataElement}:${categoryOptionCombo}` : dataElement;
 
-export class InboundAggregateDataTranslator {
+export class InboundAnalyticsTranslator {
   findDimensionRowIndex = dimension => this.headers.findIndex(({ name }) => name === dimension);
 
   getDimensionIds = dimension => this.metadata.dimensions[dimension] || [];

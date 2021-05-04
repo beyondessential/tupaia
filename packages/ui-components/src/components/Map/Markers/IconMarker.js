@@ -9,11 +9,10 @@ import { Marker } from 'react-leaflet';
 import { getMarkerForValue, ICON_VALUES } from './markerIcons';
 
 export const IconMarker = React.memo(
-  ({ icon, color, children, coordinates, markerRef, scale, handleClick }) => (
+  ({ icon, color, children, coordinates, scale, handleClick }) => (
     <Marker
       position={coordinates}
       icon={getMarkerForValue(icon, color, scale)}
-      ref={markerRef}
       onClick={handleClick}
     >
       {children}
@@ -27,7 +26,6 @@ IconMarker.propTypes = {
   icon: PropTypes.oneOf(ICON_VALUES).isRequired,
   color: PropTypes.string.isRequired,
   scale: PropTypes.number,
-  markerRef: PropTypes.func.isRequired,
   handleClick: PropTypes.func,
 };
 

@@ -31,16 +31,26 @@ const renamePermissionGroup = async function (db, from, to) {
   `);
 };
 
+const updateProject = async function (db, userGroup) {
+  await db.runSql(`
+    UPDATE "project"
+    SET "user_groups" = '{"${userGroup}"}'
+    WHERE "code" = 'laos_schools'
+  `);
+};
+
 exports.up = async function (db) {
   await renamePermissionGroup(db, 'Laos Schools User', 'LESMIS Public');
   await updateUserGroup(db, 'mapOverlay', 'Public', 'LESMIS Public');
   await updateUserGroup(db, 'dashboardGroup', 'Public', 'LESMIS Public');
+  await updateProject(db, 'LESMIS Public');
 };
 
 exports.down = async function (db) {
   await renamePermissionGroup(db, 'LESMIS Public', 'Laos Schools User');
   await updateUserGroup(db, 'mapOverlay', 'LESMIS Public', 'Public');
   await updateUserGroup(db, 'dashboardGroup', 'LESMIS Public', 'Public');
+  await updateProject(db, 'Laos Schools User');
 };
 
 exports._meta = {

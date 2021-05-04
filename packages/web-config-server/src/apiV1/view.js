@@ -1,10 +1,9 @@
-import { CustomError, replaceValues } from '@tupaia/utils';
+import { CustomError, replaceValues, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { DashboardPermissionsChecker } from './permissions';
 import { isSingleValue } from './utils';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { convertDateRangeToPeriodQueryString } from '/utils';
 
 const viewFail = {
   type: 'View Error',
