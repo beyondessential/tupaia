@@ -5,5 +5,3 @@
 
 export * from './FakeApi';
 export * from './connectApi';
-export * from './queries/useMeasureData';
-export * from './queries/useOrgUnitData';
