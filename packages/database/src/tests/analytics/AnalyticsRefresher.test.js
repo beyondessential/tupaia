@@ -23,6 +23,11 @@ const matchingFields = [
   'data_element_code',
   'data_group_code',
   'event_id',
+  'year_period',
+  'month_period',
+  'week_period',
+  'day_period',
+  'date',
 ];
 
 describe('AnalyticsRefresher', () => {
@@ -35,19 +40,35 @@ describe('AnalyticsRefresher', () => {
     const analyticsInDb = await models.analytics.find({
       data_element_code: TEST_DATA.question.map(q => q.code),
     });
+    const formattedAnalyticsInDb = analyticsInDb.map(analytic => {
+      const formattedAnalytic = {};
+      matchingFields.forEach(field => {
+        formattedAnalytic[field] = analytic[field];
+      });
+      return formattedAnalytic;
+    });
+
     let matchedAnalytics = [];
-    let remainingAnalytics = analyticsInDb;
+    let remainingAnalytics = formattedAnalyticsInDb;
     expectedAnalytics.forEach(expectedAnalytic => {
       const matchingAnalytics = remainingAnalytics.filter(analytic =>
         matchingFields.every(field => analytic[field] === expectedAnalytic[field]),
       );
-      expect(matchingAnalytics.length).to.equal(1); // Just one single matching analytic, no more or less
+      expect(matchingAnalytics.length).to.equal(
+        1,
+        `No matching analytic found.\nExpected:\n${JSON.stringify(
+          expectedAnalytic,
+        )}\nRemaining:\n${remainingAnalytics.map(JSON.stringify)}`,
+      ); // Just one single matching analytic, no more or less
       remainingAnalytics = remainingAnalytics.filter(
         analytic => !matchingAnalytics.includes(analytic),
       );
       matchedAnalytics = matchedAnalytics.concat(matchingAnalytics);
     });
-    expect(remainingAnalytics.length).to.equal(0); // All analytics were matched
+    expect(remainingAnalytics.length).to.equal(
+      0,
+      `Unexpected analytics remaining: ${remainingAnalytics.map(JSON.stringify)}`,
+    ); // All analytics were matched
   };
 
   beforeEach(async () => {
@@ -65,7 +86,7 @@ describe('AnalyticsRefresher', () => {
     // Add an answer, make sure analytic is populated
     await upsertDummyRecord(models.surveyResponse, {
       id: 'create_test_survey_response',
-      end_time: '2020-01-01 11:58:23',
+      data_time: '2020-01-01 11:58:23',
       survey_id: 'survey001_test',
       entity_id: 'entity001_test',
       user_id: 'user001_test',
@@ -96,7 +117,7 @@ describe('AnalyticsRefresher', () => {
           event_id: 'create_test_survey_response',
           year_period: '2020-01-01 00:00:00',
           month_period: '2020-01-01 00:00:00',
-          week_period: '2020-01-01 00:00:00',
+          week_period: '2019-12-30 00:00:00',
           day_period: '2020-01-01 00:00:00',
           date: '2020-01-01 11:58:23',
         },
@@ -110,7 +131,7 @@ describe('AnalyticsRefresher', () => {
           event_id: 'create_test_survey_response',
           year_period: '2020-01-01 00:00:00',
           month_period: '2020-01-01 00:00:00',
-          week_period: '2020-01-01 00:00:00',
+          week_period: '2019-12-30 00:00:00',
           day_period: '2020-01-01 00:00:00',
           date: '2020-01-01 11:58:23',
         },
@@ -138,6 +159,30 @@ describe('AnalyticsRefresher', () => {
         return {
           ...analytic,
           value: '14',
+        };
+      }
+      return analytic;
+    });
+    await assertAnalyticsMatch(updatedAnalytics);
+  });
+
+  it('refreshes analytics table if survey responses are updated', async () => {
+    // Update an answer, make sure analytic is updated
+    await models.surveyResponse.update(
+      {
+        id: 'surveyResponse001_test',
+      },
+      { data_time: '2020-02-02 11:58:23' },
+    );
+    const updatedAnalytics = ANALYTICS.map(analytic => {
+      if (analytic.event_id === 'surveyResponse001_test') {
+        return {
+          ...analytic,
+          year_period: '2020-01-01 00:00:00',
+          month_period: '2020-02-01 00:00:00',
+          week_period: '2020-01-27 00:00:00',
+          day_period: '2020-02-02 00:00:00',
+          date: '2020-02-02 11:58:23',
         };
       }
       return analytic;

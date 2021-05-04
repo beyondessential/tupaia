@@ -11,6 +11,7 @@ import {
   BarChart,
   ComposedChart,
   LineChart,
+  Legend,
   ReferenceArea,
   ResponsiveContainer,
   Tooltip,
@@ -18,12 +19,12 @@ import {
 } from 'recharts';
 
 import { CHART_BLUES, CHART_TYPES, VIEW_CONTENT_SHAPE } from './constants';
-import { isMobile } from './utils';
 import { Tooltip as CustomTooltip } from './Tooltip';
 import { BarChart as BarChartComponent } from './BarChart';
 import { LineChart as LineChartComponent } from './LineChart';
 import { AreaChart as AreaChartComponent } from './AreaChart';
-import { Legend } from './Legend';
+import { getCartesianLegend } from './Legend';
+import { isMobile } from './utils';
 import { XAxis as XAxisComponent } from './XAxis';
 import { YAxes } from './YAxes';
 import { ReferenceLines } from './ReferenceLines';
@@ -99,9 +100,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     }
   };
 
-  const onLegendClick = event => {
-    const legendDatakey = event.dataKey;
-
+  const onLegendClick = legendDatakey => {
     const actionWillSelectAllKeys =
       activeDataKeys.length + 1 >= getRealDataKeys(chartConfig).length &&
       !activeDataKeys.includes(legendDatakey);
@@ -165,7 +164,11 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
     <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
       <Chart.Container
         data={filterDisabledData(data)}
-        margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
+        margin={
+          isExporting
+            ? { left: 20, right: 20, top: 20, bottom: 20 }
+            : { left: 0, right: 0, top: 0, bottom: 20 }
+        }
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
@@ -183,14 +186,18 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
             />
           }
         />
-        {(hasDataSeries || renderLegendForOneItem) &&
-          isEnlarged &&
-          Legend({
-            chartConfig,
-            getIsActiveKey,
-            isExporting,
-            onClick: onLegendClick,
-          })}
+        {(hasDataSeries || renderLegendForOneItem) && isEnlarged && (
+          <Legend
+            verticalAlign="top"
+            align="left"
+            content={getCartesianLegend({
+              chartConfig,
+              getIsActiveKey,
+              isExporting,
+              onClick: onLegendClick,
+            })}
+          />
+        )}
         {sortedChartConfig
           .filter(([, { hideFromLegend }]) => !hideFromLegend)
           .map(([dataKey]) => {

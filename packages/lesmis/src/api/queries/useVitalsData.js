@@ -6,7 +6,7 @@
 import { useQuery } from 'react-query';
 import { utcMoment } from '@tupaia/utils';
 import { post } from '../api';
-import { useEntitiesData } from './useEntitiesData';
+import { useProjectEntitiesData } from './useEntitiesData';
 
 const endDateFormat = 'YYYY-MM-DD';
 
@@ -40,7 +40,7 @@ const getDecendantCodesOfType = (entities, rootEntityCode, type) => {
 const useReport = (entity, reportName, options, enabled) =>
   useQuery(
     [reportName, entity?.code, options],
-    () => post(`reportData/${entity?.code}/${reportName}`, options),
+    () => post(`report/${entity?.code}/${reportName}`, options),
     {
       staleTime: 1000 * 60 * 60 * 1,
       refetchOnWindowFocus: false,
@@ -79,7 +79,10 @@ const useMultiSchoolReport = (entities, rootEntity) => {
     rootEntity,
     'LESMIS_multi_school_vitals',
     {
-      data: { endDate: utcMoment().format(endDateFormat), organisationUnitCodes: decendants.join() },
+      data: {
+        endDate: utcMoment().format(endDateFormat),
+        organisationUnitCodes: decendants.join(),
+      },
     },
     decendants.length > 0,
   );
@@ -91,7 +94,10 @@ const useMultiDistrictReport = (entities, rootEntity) => {
     rootEntity,
     'LESMIS_sub_district_vitals',
     {
-      data: { endDate: utcMoment().format(endDateFormat), organisationUnitCodes: decendants.join() },
+      data: {
+        endDate: utcMoment().format(endDateFormat),
+        organisationUnitCodes: decendants.join(),
+      },
     },
     decendants.length > 0,
   );
@@ -186,7 +192,7 @@ const useCountryInformation = (entities, rootEntity) => {
 };
 
 export const useVitalsData = entityCode => {
-  const { data: entities = [], ...entitiesQuery } = useEntitiesData();
+  const { data: entities = [], ...entitiesQuery } = useProjectEntitiesData();
   const entityData = entities.find(e => e.code === entityCode);
 
   const { data: schoolData, isLoading: schoolLoading } = useSchoolInformation(entities, entityData);

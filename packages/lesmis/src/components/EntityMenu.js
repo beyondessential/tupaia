@@ -16,7 +16,7 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
 import { DialogHeader } from './FullScreenDialog';
-import { useEntitiesData } from '../api/queries';
+import { useProjectEntitiesData } from '../api/queries';
 import { makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
 import * as COLORS from '../constants';
 
@@ -186,7 +186,7 @@ const ContainerList = styled(MuiList)`
 export const EntityMenu = React.memo(({ buttonText }) => {
   const [open, setOpen] = useState(false);
   const { view } = useUrlParams();
-  const { data: entities = [], isSuccess } = useEntitiesData();
+  const { data: entities = [], isSuccess } = useProjectEntitiesData();
   const country = entities.find(e => e.type === 'country');
 
   const handleClickOpen = () => {
@@ -205,6 +205,13 @@ export const EntityMenu = React.memo(({ buttonText }) => {
         <Body>
           {isSuccess && country && (
             <ContainerList>
+              {/* Manually add the country link at the top of the list */}
+              <ListItem>
+                {getPlaceIcon('country')}
+                <ListItemLink to={makeEntityLink(country.code, view)} onClick={handleClose}>
+                  {getOptionText(country, entities)}
+                </ListItemLink>
+              </ListItem>
               {getEntitiesByCodes(entities, country.childCodes).map(e => (
                 <ListItemComponent
                   key={e.code}

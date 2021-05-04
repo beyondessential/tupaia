@@ -4,12 +4,29 @@
  *
  */
 import React from 'react';
-import { Polygon } from './Polygon';
+import PropTypes from 'prop-types';
+import { Polygon as PolygonComponent } from './Polygon';
 
-export const PolygonLayer = ({ data }) => {
-  if (!data) return null;
+export const PolygonLayer = ({ entities, Polygon }) => {
+  if (!entities) return null;
 
-  return data.countryHierarchy
-    ?.filter(item => item?.location?.region)
-    .map(orgUnit => <Polygon key={`${orgUnit.type}-${orgUnit.name}`} orgUnit={orgUnit} />);
+  return entities
+    .filter(e => Array.isArray(e.region))
+    .map(e => <Polygon key={`${e.type}-${e.name}`} entity={e} />);
+};
+
+PolygonLayer.propTypes = {
+  Polygon: PropTypes.func,
+  entities: PropTypes.arrayOf(
+    PropTypes.shape({
+      code: PropTypes.string,
+      name: PropTypes.string,
+      region: PropTypes.array,
+    }),
+  ),
+};
+
+PolygonLayer.defaultProps = {
+  entities: [],
+  Polygon: PolygonComponent,
 };
