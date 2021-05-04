@@ -114,8 +114,6 @@ export const aggregateAnalytics = (
       return countPerPeriodPerOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP:
       return replaceOrgUnitWithOrgGroup(analytics, aggregationConfig);
-    case AGGREGATION_TYPES.YEAR_ON_YEAR:
-      return layerYearOnYear(analytics, aggregationConfig);
     case AGGREGATION_TYPES.RAW:
     default:
       return analytics;
