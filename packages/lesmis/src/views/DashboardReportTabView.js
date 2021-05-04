@@ -20,7 +20,7 @@ import {
   TabPanel,
   YearSelector,
 } from '../components';
-import { DEFAULT_DASHBOARD_GROUP, ALL_DATES_VALUE } from '../constants';
+import { DEFAULT_DASHBOARD_GROUP, DEFAULT_DATA_YEAR } from '../constants';
 
 const DashboardSection = styled(FlexCenter)`
   min-height: 31rem;
@@ -37,7 +37,7 @@ const setDefaultDashboard = (data, setSelectedDashboard) => {
 };
 
 export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
-  const [selectedYear, setSelectedYear] = useState(ALL_DATES_VALUE);
+  const [selectedYear, setSelectedYear] = useState(DEFAULT_DATA_YEAR);
   const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
 
