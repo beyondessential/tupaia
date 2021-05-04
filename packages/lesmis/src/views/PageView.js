@@ -79,11 +79,11 @@ PageView.propTypes = {
 
 const TwoColumnContainer = styled(MuiContainer)`
   display: flex;
-  max-width: 1200px;
+  max-width: 75rem;
 `;
 
 const LeftCol = styled(Container)`
-  padding-right: 48px;
+  padding-right: 3rem;
 `;
 
 const RightCol = styled.div`
@@ -93,26 +93,26 @@ const RightCol = styled.div`
 const Card = styled.div`
   background: white;
   border-radius: 3px;
-  margin-bottom: 30px;
+  margin-bottom: 1.875rem;
 `;
 
 const CardHeader = styled.div`
-  padding: 20px;
+  padding: 1.25rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
 const CardBody = styled.div`
-  padding: 20px 20px 8px;
+  padding: 1.25rem 1.25rem 0.5rem;
 `;
 
 const Link = styled(MuiLink)`
   display: flex;
   align-items: center;
-  margin-bottom: 19px;
+  margin-bottom: 1.2rem;
 
   svg {
-    font-size: 16px;
-    margin-right: 6px;
+    font-size: 1rem;
+    margin-right: 0.3rem;
   }
 `;
 

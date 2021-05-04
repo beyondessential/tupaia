@@ -108,11 +108,11 @@ export const FQS_PAGE = {
         <List>
           <ListItem component="li">
             those standards that are achieved, some of which may be considered strengths or “good
-            practices” that could be shared with other cluster schools
+            practices” that could be shared with other cluster schools.
           </ListItem>
           <ListItem component="li">
             those standards that need improvement -> priorities for improvement to be included in
-            the school development plan
+            the school development plan.
           </ListItem>
         </List>
         <Typography gutterBottom>
@@ -168,8 +168,7 @@ export const FQS_PAGE = {
           The school development planning process is made up of four Steps. Preparations by the
           School Development Planning Taskforce (Step 1) start in early December. The school
           development plan should be completed by second week of January the latest to be able to
-          inform the district education costed annual action plan (ACEP). For more information on
-          when to do what Step in the process <Link href="">click here</Link>
+          inform the district education costed annual action plan (ACEP).
         </Typography>
         <Image src="/images/fqs-planning-diagram.png" />
       </Box>
@@ -183,7 +182,7 @@ export const FQS_PAGE = {
           for allocating schools in one of the three School Support Categories. Schools that do less
           well will receive more support from the DESB. The ‘support package’ is quantified in the
           number of days of support (school visits) by pedagogical advisors and/or other DESB staff
-          each year
+          each year.
         </Typography>
       </Box>
     </>
