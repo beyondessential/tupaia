@@ -26,18 +26,18 @@ const mapOverlay = {
   measureBuilderConfig: {
     programCodes: ['NCLE_Communicable_Disease'],
     dataSourceType: 'custom',
-    aggregationType: 'COUNT_PER_ORG_GROUP',
     dataElementCode: 'NCLE_Disease_Name',
-    aggregationConfig: {
-      condition: {
-        value: ['7.1', '7.2', '7.3'],
-        operator: 'in',
-      },
-    },
     entityAggregation: {
       dataSourceEntityType: 'facility',
       aggregationEntityType: 'sub_district',
       aggregationOrder: 'BEFORE',
+      aggregationType: 'COUNT_PER_ORG_GROUP',
+      aggregationConfig: {
+        condition: {
+          value: ['7.1', '7.2', '7.3'],
+          operator: 'in',
+        },
+      },
     },
   },
   measureBuilder: 'valueForOrgGroup',
