@@ -4,7 +4,9 @@
  *
  */
 import React from 'react';
+import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 
 export const ABOUT_PAGE = {
@@ -43,6 +45,22 @@ export const CONTACT_PAGE = {
   ),
 };
 
+const List = styled.ul`
+  margin-bottom: 1.2rem;
+`;
+
+const ListItem = styled(Typography)`
+  margin-bottom: 0.8rem;
+`;
+
+const Image = styled.img`
+  max-width: 100%;
+  width: 100%;
+  margin: 0.5rem 0;
+  border-radius: 3px;
+  overflow: hidden;
+`;
+
 export const FQS_PAGE = {
   title: 'Fundamental Quality Standards (FQS)',
   url: 'fundamental-quality-standards',
@@ -79,19 +97,34 @@ export const FQS_PAGE = {
         <Typography variant="h2" gutterBottom>
           Fundamental Quality Standards-based school development
         </Typography>
-        <Typography>
+        <Typography gutterBottom>
           The MoES Primary Fundamental Quality Standards (FQS) aim to support schools in their
-          development efforts; ultimately aimed at enhancing student learning. The FQS define what a
-          school should aim to achieve. The FQS-based school self-assessment and development
-          planning process supports schools in identifying: • those standards that are achieved,
-          some of which may be considered strengths or “good practices” that could be shared with
-          other cluster schools • those standards that need improvement -> priorities for
-          improvement to be included in the school development plan The FQS-based school development
-          process is ICT-enabled, meaning it promotes the use of online questionnaires to support
-          schools in their self-assessment and development planning. The online submitted data on
-          your school will be presented on the LESMIS platform in easy-to-understand formats, like
-          the School profile. This will allow for better targeting of support to schools (see School
-          Support Categories below).
+          development efforts; ultimately aimed at enhancing student learning.
+        </Typography>
+        <Typography>
+          The FQS define what a school should aim to achieve. The FQS-based school self-assessment
+          and development planning process supports schools in identifying:
+        </Typography>
+        <List>
+          <ListItem component="li">
+            those standards that are achieved, some of which may be considered strengths or “good
+            practices” that could be shared with other cluster schools
+          </ListItem>
+          <ListItem component="li">
+            those standards that need improvement -> priorities for improvement to be included in
+            the school development plan
+          </ListItem>
+        </List>
+        <Typography gutterBottom>
+          The FQS-based school development process is ICT-enabled, meaning it promotes the use of
+          online questionnaires to support schools in their self-assessment and development
+          planning.
+        </Typography>
+        <Typography>
+          The online submitted data on your school will be presented on the LESMIS platform in
+          easy-to-understand formats, like the School profile. This will allow for better targeting
+          of support to schools (see{' '}
+          <Link href="#school-support-categories">School Support Categories</Link> below).
         </Typography>
       </Box>
       <Box mb={3}>
@@ -99,13 +132,22 @@ export const FQS_PAGE = {
           Learn more about the Primary Fundamental Quality Standards
         </Typography>
         <Typography>
-          The Fundamental Quality Standards (FQS) for primary schools consists of three parts: • The
-          FQS – Part 1 consists of 27 “input” standards (e.g. textbooks or blackboard). • The FQS –
-          Part 2 consist of 23 “processes & “behaviors” to support the holistic development of the
-          school and improvements in teaching and student learning. • FQS – Part 3 on student
-          outcomes consist of 20 curriculum standards for Lao language and mathematics, for all
-          Grades. To learn more about these standards click on the interactive Figure on the right.
+          The Fundamental Quality Standards (FQS) for primary schools consists of three parts:
         </Typography>
+        <List>
+          <ListItem component="li">
+            The FQS – Part 1 consists of 27 “input” standards (e.g. textbooks or blackboard).
+          </ListItem>
+          <ListItem component="li">
+            The FQS – Part 2 consist of 23 “processes & “behaviors” to support the holistic
+            development of the school and improvements in teaching and student learning.
+          </ListItem>
+          <ListItem component="li">
+            FQS – Part 3 on student outcomes consist of 20 curriculum standards for Lao language and
+            mathematics, for all Grades.
+          </ListItem>
+        </List>
+        <Image src="/images/fqs-overview-diagram.png" />
       </Box>
       <Box mb={3}>
         <Typography variant="h2" gutterBottom>
@@ -114,24 +156,24 @@ export const FQS_PAGE = {
         <Typography>
           The successful development of your school depends on the strong participation and
           responsibility of all concerned stakeholders, including parents and communities, the DESB
-          and other cluster schools. To learn more about the roles and responsibilities of each of
-          these partners click on the interactive Figure on the right
+          and other cluster schools.
         </Typography>
+        <Image src="/images/fqs-school-improvement-diagram.png" />
       </Box>
       <Box mb={3}>
         <Typography variant="h2" gutterBottom>
           FQS-based school development planning process
         </Typography>
         <Typography>
-          The school development planning process is made up of four Steps. Click on the interactive
-          Figure on the right to learn more about these Steps. Preparations by the School
-          Development Planning Taskforce (Step 1) start in early December. The school development
-          plan should be completed by second week of January the latest to be able to inform the
-          district education costed annual action plan (ACEP). For more information on when to do
-          what Step in the process click here
+          The school development planning process is made up of four Steps. Preparations by the
+          School Development Planning Taskforce (Step 1) start in early December. The school
+          development plan should be completed by second week of January the latest to be able to
+          inform the district education costed annual action plan (ACEP). For more information on
+          when to do what Step in the process <Link href="">click here</Link>
         </Typography>
+        <Image src="/images/fqs-planning-diagram.png" />
       </Box>
-      <Box mb={3}>
+      <Box mb={3} id="school-support-categories">
         <Typography variant="h2" gutterBottom>
           School Support Categories
         </Typography>

@@ -127,13 +127,13 @@ export const TwoColumnPageView = ({ content }) => {
             <LeftCol>{body}</LeftCol>
             <RightCol>
               {linkSections.map(({ heading, links }) => (
-                <Card>
+                <Card key={heading}>
                   <CardHeader>
                     <Typography variant="h3">{heading}</Typography>
                   </CardHeader>
                   <CardBody>
                     {links.map(({ name, link }) => (
-                      <Link href={link}>
+                      <Link key={name} href={link}>
                         <ArrowForwardIcon />
                         {name}
                       </Link>
