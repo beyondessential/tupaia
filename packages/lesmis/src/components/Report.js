@@ -6,9 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import GridOnIcon from '@material-ui/icons/GridOn';
@@ -17,6 +15,7 @@ import { useDashboardReportData } from '../api';
 import { FetchLoader } from './FetchLoader';
 import { FlexSpaceBetween } from './Layout';
 import { ToggleButton } from './ToggleButton';
+import { DashboardReportModal } from './DashboardReportModal';
 import * as COLORS from '../constants';
 
 const Container = styled.div`
@@ -52,7 +51,7 @@ const Body = styled.div`
 
 const ChartWrapper = styled.div`
   display: flex;
-  height: 26rem;
+  //height: 26rem;
   padding: 1.25rem 1.875rem 0;
   width: 100%;
 
@@ -111,6 +110,18 @@ export const Report = React.memo(
       }
     };
 
+    const ReportComponent = () => (
+      <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+        {selectedTab === TABS.CHART ? (
+          <ChartWrapper>
+            <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
+          </ChartWrapper>
+        ) : (
+          <Table viewContent={viewContent} />
+        )}
+      </FetchLoader>
+    );
+
     return (
       <Container>
         <Header>
@@ -125,20 +136,12 @@ export const Report = React.memo(
           </ToggleButtonGroup>
         </Header>
         <Body>
-          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-            {selectedTab === TABS.CHART ? (
-              <ChartWrapper>
-                <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
-              </ChartWrapper>
-            ) : (
-              <Table viewContent={viewContent} />
-            )}
-          </FetchLoader>
+          <ReportComponent />
         </Body>
         <Footer>
-          <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
-            More Insights
-          </Button>
+          <DashboardReportModal buttonText="More Insights">
+            <ReportComponent />
+          </DashboardReportModal>
         </Footer>
       </Container>
     );
