@@ -180,7 +180,7 @@ exports.up = async function (db) {
         'mostRecentValuePerOrgUnit',
         {
           transform: 'select',
-          "'Population'": '$row.SDP001',
+          "'Population'": 'exists($row.SDP001) ? $row.SDP001 : 0',
           "'PriorityDistrict'": '$row.SPD001',
         },
         {
