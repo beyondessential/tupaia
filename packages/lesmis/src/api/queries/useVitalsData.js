@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import { utcMoment } from '@tupaia/utils';
 import { post } from '../api';
 import { useProjectEntitiesData } from './useEntitiesData';
+import { useEntityData } from './useEntityData';
 
 const endDateFormat = 'YYYY-MM-DD';
 
@@ -179,7 +180,7 @@ const useProvinceInformation = (entities, rootEntity) => {
 
 export const useVitalsData = entityCode => {
   const { data: entities = [], ...entitiesQuery } = useProjectEntitiesData();
-  const entityData = entities.find(e => e.code === entityCode);
+  const { data: entityData } = useEntityData(entityCode);
 
   const { data: schoolData, isLoading: schoolLoading } = useSchoolInformation(entities, entityData);
   const { data: villageData, isLoading: villageLoading } = useVillageInformation(
