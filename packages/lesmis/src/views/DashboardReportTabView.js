@@ -55,20 +55,27 @@ const setDefaultDashboard = (data, setSelectedDashboard) => {
   }
 };
 
+const useStickyBarsHeight = () => {
+  const [stickyBarsHeight, setStickyBarsHeight] = useState(0);
+
+  const measureTabBarHeight = useCallback(tabBarNode => {
+    if (tabBarNode !== null) {
+      const tabBarHeight = tabBarNode.getBoundingClientRect().height;
+      setStickyBarsHeight(tabBarHeight + NAVBAR_HEIGHT_INT);
+    }
+  }, []);
+
+  return [stickyBarsHeight, measureTabBarHeight];
+};
+
 export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const [selectedYear, setSelectedYear] = useState(DEFAULT_DATA_YEAR);
   const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
-  const [tabBarHeight, setTabBarHeight] = useState(0);
+  const [stickyBarsHeight, measureTabBarHeight] = useStickyBarsHeight();
   const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
 
   const topRef = useRef();
-  const measureTabBarHeight = useCallback(tabBarNode => {
-    if (tabBarNode !== null) {
-      setTabBarHeight(tabBarNode.getBoundingClientRect().height);
-    }
-  }, []);
-  const stickyBarsHeight = useMemo(() => NAVBAR_HEIGHT_INT + tabBarHeight, [tabBarHeight]);
 
   useEffect(() => {
     const detectScrolledPastTop = () =>
