@@ -49,7 +49,7 @@ export const ChartTable = ({
     <FetchLoader isLoading={isLoading} isError={isError} error={error}>
       {selectedTab === TABS.CHART ? (
         <ChartWrapper>
-          <Chart viewContent={viewContent} isEnlarged />
+          <Chart viewContent={viewContent} />
         </ChartWrapper>
       ) : (
         <Wrapper>

@@ -8,7 +8,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import { GridOn, KeyboardArrowRight, BarChart } from '@material-ui/icons';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import GridOnIcon from '@material-ui/icons/GridOn';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
   useMediaQuery,
   Slide,
@@ -90,7 +92,7 @@ export const DashboardReportModal = ({
 
   return (
     <>
-      <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRight />} color="primary">
+      <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
         {buttonText}
       </MuiButton>
       <MuiDialog
@@ -113,10 +115,10 @@ export const DashboardReportModal = ({
             <FlexEnd>
               <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
                 <ToggleButton value={TABS.TABLE}>
-                  <GridOn />
+                  <GridOnIcon />
                 </ToggleButton>
                 <ToggleButton value={TABS.CHART}>
-                  <BarChart />
+                  <BarChartIcon />
                 </ToggleButton>
               </ToggleButtonGroup>
             </FlexEnd>
