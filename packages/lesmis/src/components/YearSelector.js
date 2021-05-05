@@ -7,15 +7,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Select } from '@tupaia/ui-components';
-import { MIN_DATA_YEAR, ALL_DATES_VALUE } from '../constants';
+import { MIN_DATA_YEAR } from '../constants';
 
 const getYearOptions = () => {
-  const years = [
-    {
-      label: 'All Data',
-      value: ALL_DATES_VALUE,
-    },
-  ];
+  const years = [];
 
   const startYear = parseInt(MIN_DATA_YEAR);
   let year = new Date().getFullYear();
