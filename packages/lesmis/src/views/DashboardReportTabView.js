@@ -89,8 +89,8 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const scrollToTop = useCallback(() => {
     // if the top of the dashboards container is above the sticky dashboard header, scroll to the top
     if (isScrolledPastTop) {
-      topRef.current.scrollIntoView();
-      window.scrollTo({ top: window.pageYOffset - stickyBarsHeight, behavior: 'smooth' });
+      const newTop = topRef.current.offsetTop - stickyBarsHeight;
+      window.scrollTo({ top: newTop, behavior: 'smooth' });
     }
   }, [isScrolledPastTop, stickyBarsHeight]);
 
