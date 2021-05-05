@@ -182,13 +182,13 @@ const CountryView = ({ vitals }) => {
         </TitleContainer>
         <EntityVitalsItem
           name="No. Schools"
-          value={vitals.NumberOfSchools}
+          value="13849"
           icon="School"
           isLoading={vitals.isLoading}
         />
         <EntityVitalsItem
           name="No. Students"
-          value={vitals.NumberOfStudents}
+          value="1659117"
           icon="Study"
           isLoading={vitals.isLoading}
         />
