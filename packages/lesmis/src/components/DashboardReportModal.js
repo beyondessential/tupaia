@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
@@ -75,6 +75,10 @@ export const DashboardReportModal = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+
+  useEffect(() => {
+    setSelectedYear(year);
+  }, [open]);
 
   const handleClickOpen = () => {
     setOpen(true);
