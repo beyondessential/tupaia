@@ -6,10 +6,10 @@
 import { useQuery, useQueryClient } from 'react-query';
 import { get } from '../api';
 
-export const useEntityData = (entityCode, requiresGeoData = false) => {
+export const useEntityData = entityCode => {
   const queryClient = useQueryClient();
   return useQuery(
-    ['entity', entityCode, requiresGeoData],
+    ['entity', entityCode],
     () => {
       return get(`entity/${entityCode}`);
     },
@@ -20,7 +20,7 @@ export const useEntityData = (entityCode, requiresGeoData = false) => {
       initialData: () =>
         queryClient
           .getQueryData('entities')
-          ?.find(entity => entity.code === entityCode && (!requiresGeoData || !!entity.bounds)),
+          ?.find(entity => entity.code === entityCode && !!entity.bounds), // check the entity exists and isn't "lean"/geo-data free
     },
   );
 };
