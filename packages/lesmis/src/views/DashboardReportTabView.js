@@ -22,9 +22,10 @@ import {
 } from '../components';
 import { DEFAULT_DASHBOARD_GROUP, DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
 
-const StickyTabBar = styled(TabBar)`
+const StickyTabBarContainer = styled.div`
   position: sticky;
   top: ${NAVBAR_HEIGHT_INT}px;
+  z-index: 9999;
 `;
 
 const DashboardSection = styled(FlexCenter)`
@@ -112,28 +113,30 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
 
   return (
     <>
-      <StickyTabBar ref={measureTabBarHeight}>
-        <TabBarSection>
-          {TabSelector}
-          <YearSelector value={selectedYear} onChange={setSelectedYear} />
-        </TabBarSection>
-        {isLoading ? (
-          <TabsLoader />
-        ) : (
-          <>
-            <Tabs
-              value={selectedDashboard}
-              onChange={handleChangeDashboard}
-              variant="scrollable"
-              scrollButtons="auto"
-            >
-              {Object.keys(data).map(heading => (
-                <Tab key={heading} label={heading} value={heading} />
-              ))}
-            </Tabs>
-          </>
-        )}
-      </StickyTabBar>
+      <StickyTabBarContainer ref={measureTabBarHeight}>
+        <TabBar>
+          <TabBarSection>
+            {TabSelector}
+            <YearSelector value={selectedYear} onChange={setSelectedYear} />
+          </TabBarSection>
+          {isLoading ? (
+            <TabsLoader />
+          ) : (
+            <>
+              <Tabs
+                value={selectedDashboard}
+                onChange={handleChangeDashboard}
+                variant="scrollable"
+                scrollButtons="auto"
+              >
+                {Object.keys(data).map(heading => (
+                  <Tab key={heading} label={heading} value={heading} />
+                ))}
+              </Tabs>
+            </>
+          )}
+        </TabBar>
+      </StickyTabBarContainer>
       <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {data &&

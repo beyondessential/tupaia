@@ -18,7 +18,6 @@ const TabBarOuterContainer = styled.div`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   background: white;
-  z-index: 9999;
 `;
 
 const TabBarInnerContainer = styled(MuiContainer)`
