@@ -12,16 +12,16 @@ import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { Select } from '@tupaia/ui-components';
 import { DashboardReportTabView } from './DashboardReportTabView';
-import { TabPanel, TabBar, TabBarSection, EntityVitalsItem, PartnerLogo } from '../components';
+import {
+  MiniMap,
+  TabPanel,
+  TabBar,
+  TabBarSection,
+  EntityVitalsItem,
+  PartnerLogo,
+} from '../components';
 import { useUrlParams } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
-import * as COLORS from '../constants';
-
-// const TemplateBody = styled.section`
-//   background: ${COLORS.GREY_F9};
-//   padding-top: 1rem;
-//   min-height: 300px;
-// `;
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -96,7 +96,6 @@ const makeTabOptions = entityType => [
 ];
 
 const Wrapper = styled.section`
-  min-height: 50vh;
   background: #fbfbfb;
 `;
 
@@ -162,17 +161,6 @@ const VerticalDivider = styled(MuiDivider)`
   background: ${props => props.theme.palette.text.tertiary};
 `;
 
-const PlaceholderBox = styled.div`
-  width: 510px;
-  height: 370px;
-  background: grey;
-`;
-const MapPlaceholder = () => (
-  <PlaceholderBox>
-    <Typography>TODO: Map</Typography>
-  </PlaceholderBox>
-);
-
 const CountryView = ({ vitals }) => {
   return (
     <>
@@ -193,7 +181,7 @@ const CountryView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MapPlaceholder />
+      <MiniMap entityCode={vitals.code} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -238,7 +226,7 @@ const ProvinceView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MapPlaceholder />
+      <MiniMap entityCode={vitals.code} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -305,7 +293,7 @@ const DistrictView = ({ vitals }) => {
           />
         </FlexRow>
       </VitalsSection>
-      <MapPlaceholder />
+      <MiniMap entityCode={vitals.code} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -350,7 +338,7 @@ const VillageView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MapPlaceholder />
+      <MiniMap entityCode={vitals.code} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -435,7 +423,11 @@ const SchoolView = ({ vitals }) => {
           </ParentVillage>
         </FlexRow>
       </VitalsSection>
-      {vitals.Photo ? <img src={vitals.Photo} alt="place" width="720px" /> : <MapPlaceholder />}
+      {vitals.Photo ? (
+        <img src={vitals.Photo} alt="place" width="720px" />
+      ) : (
+        <MiniMap entityCode={vitals.code} />
+      )}
     </>
   );
 };
