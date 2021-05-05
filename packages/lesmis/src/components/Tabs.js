@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
@@ -15,21 +15,33 @@ import { FlexStart } from './Layout';
 
 const LoadingTab = () => <Skeleton width={100} height={20} style={{ marginLeft: 30 }} />;
 
-const TabBar = styled(MuiContainer)`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+const TabBarOuterContainer = styled.div`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   background: white;
   z-index: 9999;
 `;
 
-// sticks on scroll, sitting below the nav bar
-export const StickyTabBar = styled(TabBar)`
+const StickyTabBarOuterContainer = styled(TabBarOuterContainer)`
   position: sticky;
   top: ${NAVBAR_HEIGHT};
 `;
+
+const TabBarInnerContainer = styled(MuiContainer)`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+// sticks on scroll, sitting below the nav bar
+export const StickyTabBar = forwardRef(({ children }, ref) => (
+  <StickyTabBarOuterContainer ref={ref}>
+    <TabBarInnerContainer>{children}</TabBarInnerContainer>
+  </StickyTabBarOuterContainer>
+));
+StickyTabBar.propTypes = {
+  children: PropTypes.arrayOf(PropTypes.element).isRequired,
+};
 
 export const TabBarSection = styled(FlexStart)`
   min-height: 5.5rem;
