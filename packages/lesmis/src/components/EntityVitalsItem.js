@@ -21,12 +21,14 @@ import { FlexStart } from './Layout';
 const Wrapper = styled.section`
   margin-left: 10px;
   padding-top: 0.5rem;
-  width: 120px;
+  width: 140px;
   margin-right: 1rem;
 `;
 
 const Container = styled(FlexStart)`
+  padding-top: 0.5rem;
   height: 70px;
+  align-items: flex-start;
 `;
 
 const VitalName = styled(Typography)`
@@ -37,6 +39,7 @@ const VitalName = styled(Typography)`
 const VitalContent = styled(Typography)`
   color: ${props => props.theme.palette.text.primary};
   font-weight: bold;
+  hyphens: auto;
 `;
 
 const GreenVital = styled(VitalContent)`
@@ -82,9 +85,9 @@ const VitalValue = ({ value, isLoading }) => {
     return <Skeleton animation="wave" />;
   }
   if (value === 'Yes') {
-    return <GreenVital noWrap>{value}</GreenVital>;
+    return <GreenVital>{value}</GreenVital>;
   }
-  return <VitalContent noWrap>{value || '-'}</VitalContent>;
+  return <VitalContent>{value || '-'}</VitalContent>;
 };
 
 export const EntityVitalsItem = ({ name, value, icon, isLoading }) => (

@@ -113,8 +113,8 @@ const useSchoolInformation = (entities, rootEntity) => {
   return {
     data: {
       ...schoolData?.results[0],
-      parentVillage: { ...villageData?.results[0], code: parentVillage?.code },
-      parentDistrict: { ...districtData?.results[0], code: parentDistrict?.code },
+      parentVillage: { ...villageData?.results[0], ...parentVillage },
+      parentDistrict: { ...districtData?.results[0], ...parentDistrict },
     },
     isLoading: schoolLoading || villageLoading || districtLoading,
   };
@@ -152,7 +152,7 @@ const useDistrictInformation = (entities, rootEntity) => {
     data: {
       ...districtData?.results[0],
       ...subSchoolsData?.results[0],
-      parentProvince: { ...provinceData?.results[0], code: parentProvince?.code },
+      parentProvince: { ...provinceData?.results[0], ...parentProvince },
     },
     isLoading: districtLoading || provinceLoading || subSchoolsLoading,
   };
