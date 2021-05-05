@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { SmallAlert } from '@tupaia/ui-components';
@@ -20,7 +20,7 @@ import {
   TabPanel,
   YearSelector,
 } from '../components';
-import { DEFAULT_DASHBOARD_GROUP, DEFAULT_DATA_YEAR } from '../constants';
+import { DEFAULT_DASHBOARD_GROUP, DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
 
 const DashboardSection = styled(FlexCenter)`
   min-height: 31rem;
@@ -41,6 +41,9 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
 
+  const topRef = useRef();
+  const tabBarRef = useRef();
+
   useEffect(() => {
     if (data) {
       setDefaultDashboard(data, setSelectedDashboard);
@@ -48,12 +51,19 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   }, [data, setSelectedDashboard]);
 
   const handleChangeDashboard = (event, newValue) => {
+    // if the top of the dashboards container is above the sticky dashboard header, scroll to the top
+    const stickyBarsHeight = NAVBAR_HEIGHT_INT + tabBarRef.current.getBoundingClientRect().height;
+    if (topRef.current.getBoundingClientRect().top < stickyBarsHeight) {
+      topRef.current.scrollIntoView();
+      window.scrollTo({ top: window.pageYOffset - stickyBarsHeight, behavior: 'smooth' });
+    }
+
     setSelectedDashboard(newValue);
   };
 
   return (
     <>
-      <StickyTabBar>
+      <StickyTabBar ref={tabBarRef}>
         <TabBarSection>
           {TabSelector}
           <YearSelector value={selectedYear} onChange={setSelectedYear} />
@@ -75,7 +85,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
           </>
         )}
       </StickyTabBar>
-      <DashboardSection>
+      <DashboardSection ref={topRef}>
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {data &&
             Object.entries(data).map(([heading, dashboardGroup]) => (
