@@ -14,13 +14,18 @@ import {
   TabBarSection,
   FlexCenter,
   Report,
-  StickyTabBar,
+  TabBar,
   Tabs,
   Tab,
   TabPanel,
   YearSelector,
 } from '../components';
 import { DEFAULT_DASHBOARD_GROUP, DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
+
+const StickyTabBar = styled(TabBar)`
+  position: sticky;
+  top: ${NAVBAR_HEIGHT_INT}px;
+`;
 
 const DashboardSection = styled(FlexCenter)`
   min-height: 31rem;

@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { forwardRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
 import MuiTabs from '@material-ui/core/Tabs';
 import Skeleton from '@material-ui/lab/Skeleton';
 import MuiTab from '@material-ui/core/Tab';
-import { NAVBAR_HEIGHT } from '../constants';
 import { FlexStart } from './Layout';
 
 const LoadingTab = () => <Skeleton width={100} height={20} style={{ marginLeft: 30 }} />;
@@ -22,24 +21,20 @@ const TabBarOuterContainer = styled.div`
   z-index: 9999;
 `;
 
-const StickyTabBarOuterContainer = styled(TabBarOuterContainer)`
-  position: sticky;
-  top: ${NAVBAR_HEIGHT};
-`;
-
 const TabBarInnerContainer = styled(MuiContainer)`
   display: flex;
   align-items: center;
   justify-content: flex-start;
 `;
 
-// sticks on scroll, sitting below the nav bar
-export const StickyTabBar = forwardRef(({ children }, ref) => (
-  <StickyTabBarOuterContainer ref={ref}>
-    <TabBarInnerContainer>{children}</TabBarInnerContainer>
-  </StickyTabBarOuterContainer>
-));
-StickyTabBar.propTypes = {
+export const TabBar = ({ children, ...props }) => {
+  return (
+    <TabBarOuterContainer {...props}>
+      <TabBarInnerContainer>{children}</TabBarInnerContainer>
+    </TabBarOuterContainer>
+  );
+};
+TabBar.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element).isRequired,
 };
 

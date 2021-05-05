@@ -10,7 +10,7 @@ import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
 import { Select } from '@tupaia/ui-components';
-import { TabPanel, StickyTabBar, TabBarSection } from '../components';
+import { TabPanel, TabBar, TabBarSection } from '../components';
 import { useUrlParams } from '../utils';
 import { DashboardReportTabView } from './DashboardReportTabView';
 import * as COLORS from '../constants';
@@ -30,9 +30,9 @@ const StyledSelect = styled(Select)`
 
 const TabTemplate = ({ TabSelector, Body }) => (
   <>
-    <StickyTabBar>
+    <TabBar>
       <TabBarSection>{TabSelector}</TabBarSection>
-    </StickyTabBar>
+    </TabBar>
     <MuiBox p={5} minHeight={500}>
       {Body}
     </MuiBox>
