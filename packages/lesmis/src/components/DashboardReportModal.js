@@ -55,6 +55,7 @@ const Header = styled(FlexSpaceBetween)`
 const Heading = styled(Typography)`
   font-size: 1.25rem;
   line-height: 1.4rem;
+  font-weight: 500;
 `;
 
 export const DashboardReportModal = ({
@@ -104,7 +105,7 @@ export const DashboardReportModal = ({
         <Wrapper>
           <Container maxWidth={false}>
             <Header>
-              <Heading>{name}</Heading>
+              <Heading variant="h3">{name}</Heading>
               <FlexStart>
                 <YearSelector value={selectedYear} onChange={setSelectedYear} />
               </FlexStart>
