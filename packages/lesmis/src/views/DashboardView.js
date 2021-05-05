@@ -110,7 +110,7 @@ const Container = styled(MuiContainer)`
 const FlexRow = styled.div`
   display: flex;
   justify-content: flex-start;
-  alignitems: center;
+  align-items: center;
   flex-wrap: wrap;
   height: 100%;
 `;
@@ -294,6 +294,11 @@ const DistrictView = ({ vitals }) => {
             <RedTitle variant="h4">Province</RedTitle>
           </TitleContainer>
           <EntityVitalsItem
+            name="Name of Province"
+            value={vitals.parentProvince?.name}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
             name="Province Code"
             value={vitals.parentProvince?.code}
             isLoading={vitals.isLoading}
@@ -382,15 +387,10 @@ const SchoolView = ({ vitals }) => {
           icon="Study"
           isLoading={vitals.isLoading}
         />
-        <EntityVitalsItem
-          name="Completed School"
-          value="Yes"
-          icon="Notepad"
-          isLoading={vitals.isLoading}
-        />
+        <EntityVitalsItem name="Complete School" icon="Notepad" isLoading={vitals.isLoading} />
         <EntityVitalsItem
           name="Distance to Main Road"
-          value={vitals.DistanceToMainRoad}
+          value={`${vitals.DistanceToMainRoad || '-'} km`}
           icon="Road"
           isLoading={vitals.isLoading}
         />
@@ -400,6 +400,12 @@ const SchoolView = ({ vitals }) => {
           icon="PushPin"
           isLoading={vitals.isLoading}
         />
+        <EntityVitalsItem
+          name="School Type"
+          value={vitals.attributes?.type}
+          icon="School"
+          isLoading={vitals.isLoading}
+        />
         <HorizontalDivider />
         <FlexRow>
           <ParentDistrict>
@@ -407,8 +413,8 @@ const SchoolView = ({ vitals }) => {
               <RedTitle variant="h4">District</RedTitle>
             </TitleContainer>
             <EntityVitalsItem
-              name="District Code"
-              value={vitals.parentDistrict?.code}
+              name="Name of District"
+              value={vitals.parentDistrict?.name}
               isLoading={vitals.isLoading}
             />
             <EntityVitalsItem
