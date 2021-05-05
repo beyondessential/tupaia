@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { SmallAlert } from '@tupaia/ui-components';
@@ -26,6 +26,29 @@ const DashboardSection = styled(FlexCenter)`
   min-height: 31rem;
 `;
 
+const ScrollToTopButtonContainer = styled.div`
+  position: sticky;
+  bottom: 29px;
+  padding-right: 32px;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const ScrollToTopButtonImg = styled.img`
+  width: 40px;
+  height: 40px;
+`;
+
+const ScrollToTopButton = React.memo(({ onClick }) => (
+  <ScrollToTopButtonContainer onClick={onClick}>
+    <ScrollToTopButtonImg src="/images/up-arrow.svg" alt="back to top" />
+  </ScrollToTopButtonContainer>
+));
+ScrollToTopButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
+
 const setDefaultDashboard = (data, setSelectedDashboard) => {
   const dashboardNames = Object.keys(data);
 
@@ -39,10 +62,34 @@ const setDefaultDashboard = (data, setSelectedDashboard) => {
 export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const [selectedYear, setSelectedYear] = useState(DEFAULT_DATA_YEAR);
   const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
+  const [tabBarHeight, setTabBarHeight] = useState(0);
+  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
 
   const topRef = useRef();
-  const tabBarRef = useRef();
+  const measureTabBarHeight = useCallback(tabBarNode => {
+    if (tabBarNode !== null) {
+      setTabBarHeight(tabBarNode.getBoundingClientRect().height);
+    }
+  }, []);
+  const stickyBarsHeight = useMemo(() => NAVBAR_HEIGHT_INT + tabBarHeight, [tabBarHeight]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolledPastTop(topRef.current.getBoundingClientRect().top < stickyBarsHeight);
+    };
+    window.addEventListener('scroll', onScroll);
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [stickyBarsHeight]);
+
+  const scrollToTop = useCallback(() => {
+    // if the top of the dashboards container is above the sticky dashboard header, scroll to the top
+    if (isScrolledPastTop) {
+      topRef.current.scrollIntoView();
+      window.scrollTo({ top: window.pageYOffset - stickyBarsHeight, behavior: 'smooth' });
+    }
+  }, [isScrolledPastTop, stickyBarsHeight]);
 
   useEffect(() => {
     if (data) {
@@ -51,19 +98,13 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   }, [data, setSelectedDashboard]);
 
   const handleChangeDashboard = (event, newValue) => {
-    // if the top of the dashboards container is above the sticky dashboard header, scroll to the top
-    const stickyBarsHeight = NAVBAR_HEIGHT_INT + tabBarRef.current.getBoundingClientRect().height;
-    if (topRef.current.getBoundingClientRect().top < stickyBarsHeight) {
-      topRef.current.scrollIntoView();
-      window.scrollTo({ top: window.pageYOffset - stickyBarsHeight, behavior: 'smooth' });
-    }
-
     setSelectedDashboard(newValue);
+    scrollToTop();
   };
 
   return (
     <>
-      <StickyTabBar ref={tabBarRef}>
+      <StickyTabBar ref={measureTabBarHeight}>
         <TabBarSection>
           {TabSelector}
           <YearSelector value={selectedYear} onChange={setSelectedYear} />
@@ -117,6 +158,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
             ))}
         </FetchLoader>
       </DashboardSection>
+      {isScrolledPastTop && <ScrollToTopButton onClick={scrollToTop} />}
     </>
   );
 };
