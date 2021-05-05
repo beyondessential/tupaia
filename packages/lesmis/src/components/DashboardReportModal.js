@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled(MuiContainer)`
-  padding: 20px 100px 100px;
+  padding: 1.25rem 6.25rem 6.25rem;
   padding-bottom: 10vh;
   height: 100%;
   display: flex;
@@ -47,21 +47,24 @@ const Container = styled(MuiContainer)`
 `;
 
 const Header = styled(FlexSpaceBetween)`
-  min-height: 90px;
+  min-height: 5.625rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  margin-bottom: 30px;
+  margin-bottom: 1.8rem;
+
+  .MuiTextField-root {
+    margin-right: 0;
+  }
 `;
 
 const Heading = styled(Typography)`
-  font-size: 20px;
-  line-height: 23px;
+  font-size: 1.25rem;
+  line-height: 1.4rem;
 `;
 
 const ChartWrapper = styled.div`
   flex: 1;
   display: flex;
   padding: 1.25rem 1.875rem 0;
-  width: 100%;
 
   .MuiAlert-root {
     position: relative;
@@ -69,26 +72,9 @@ const ChartWrapper = styled.div`
   }
 `;
 
-const WhiteButton = styled(MuiButton)`
-  background: white;
-  border: 1px solid ${props => props.theme.palette.grey['400']};
-  font-size: 16px;
-  line-height: 19px;
-  color: #5d676c;
-  font-weight: 400;
-  height: 54px;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  min-width: 50px;
-  margin-right: 1rem;
-
-  &:last-child {
-    margin: 0;
-  }
-
-  .MuiSvgIcon-root {
-    color: #a1aaaf;
-  }
+const TableWrapper = styled.div`
+  display: flex;
+  flex: 1;
 `;
 
 export const DashboardReportModal = ({
@@ -139,7 +125,7 @@ export const DashboardReportModal = ({
         open={open}
         onClose={handleClose}
         TransitionComponent={Transition}
-        style={{ left: fullScreen ? '0' : '100px' }}
+        style={{ left: fullScreen ? '0' : '6.25rem' }}
       >
         <DialogHeader handleClose={handleClose} title={dashboardGroupName} />
         <Wrapper>
@@ -147,7 +133,6 @@ export const DashboardReportModal = ({
             <Header>
               <Heading>{name}</Heading>
               <FlexStart>
-                <WhiteButton startIcon={<GetAppIcon />}>Export</WhiteButton>
                 <YearSelector value={selectedYear} onChange={setSelectedYear} />
               </FlexStart>
             </Header>
@@ -167,7 +152,9 @@ export const DashboardReportModal = ({
                   <Chart viewContent={viewContent} isEnlarged />
                 </ChartWrapper>
               ) : (
-                <Table viewContent={viewContent} />
+                <TableWrapper>
+                  <Table viewContent={viewContent} />
+                </TableWrapper>
               )}
             </FetchLoader>
           </Container>
