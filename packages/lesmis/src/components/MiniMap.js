@@ -22,7 +22,7 @@ const Map = styled(MapContainer)`
   height: 370px;
 `;
 
-export const MiniMap = ({ entityCode, theme }) => {
+export const MiniMap = ({ entityCode }) => {
   const { data: entityData, isFetching: isLoadingEntityData } = useEntityData(entityCode);
 
   return isLoadingEntityData ? null : (
