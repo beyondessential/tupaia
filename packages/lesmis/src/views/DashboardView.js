@@ -47,7 +47,7 @@ TabTemplate.propTypes = {
 const makeTabOptions = entityType => [
   {
     value: 'profile',
-    label: entityType ? `${entityType} Profile` : 'Profile',
+    label: entityType ? `${entityType.replace(/_/g, ' ')} Profile` : 'Profile',
     Component: DashboardReportTabView,
   },
   {
