@@ -8,22 +8,25 @@ import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import Slide from '@material-ui/core/Slide';
-import Button from '@material-ui/core/Button';
+import MuiButton from '@material-ui/core/Button';
+import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import Typography from '@material-ui/core/Typography';
 import { useTheme } from '@material-ui/core/styles';
 import MuiDialog from '@material-ui/core/Dialog';
 import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import * as COLORS from '../constants';
-import { FlexSpaceBetween, FlexEnd } from './Layout';
+import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { FetchLoader } from './FetchLoader';
 import { TABS } from './Report';
 import { useDashboardReportData } from '../api/queries';
 import { ToggleButton } from './ToggleButton';
+import { YearSelector } from './YearSelector';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -35,9 +38,9 @@ const Wrapper = styled.div`
   background: ${COLORS.GREY_F9};
 `;
 
-const Container = styled.div`
-  max-width: 1130px;
+const Container = styled(MuiContainer)`
   padding: 20px 100px 100px;
+  padding-bottom: 10vh;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -50,7 +53,6 @@ const Header = styled(FlexSpaceBetween)`
 `;
 
 const Heading = styled(Typography)`
-  font-weight: 500;
   font-size: 20px;
   line-height: 23px;
 `;
@@ -67,7 +69,31 @@ const ChartWrapper = styled.div`
   }
 `;
 
+const WhiteButton = styled(MuiButton)`
+  background: white;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  font-size: 16px;
+  line-height: 19px;
+  color: #5d676c;
+  font-weight: 400;
+  height: 54px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  min-width: 50px;
+  margin-right: 1rem;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  .MuiSvgIcon-root {
+    color: #a1aaaf;
+  }
+`;
+
 export const DashboardReportModal = ({
+  name,
+  dashboardGroupName,
   buttonText,
   entityCode,
   dashboardGroupId,
@@ -76,6 +102,7 @@ export const DashboardReportModal = ({
   year,
 }) => {
   const [open, setOpen] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(year);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
@@ -84,7 +111,7 @@ export const DashboardReportModal = ({
     dashboardGroupId,
     reportId,
     periodGranularity,
-    year,
+    year: selectedYear,
   });
 
   const handleClickOpen = () => {
@@ -103,9 +130,9 @@ export const DashboardReportModal = ({
 
   return (
     <>
-      <Button onClick={handleClickOpen} endIcon={<ArrowRightIcon />} color="primary">
+      <MuiButton onClick={handleClickOpen} endIcon={<ArrowRightIcon />} color="primary">
         {buttonText}
-      </Button>
+      </MuiButton>
       <MuiDialog
         scroll="paper"
         fullScreen
@@ -114,11 +141,15 @@ export const DashboardReportModal = ({
         TransitionComponent={Transition}
         style={{ left: fullScreen ? '0' : '100px' }}
       >
-        <DialogHeader handleClose={handleClose} title="Textbooks & teacher guides" />
+        <DialogHeader handleClose={handleClose} title={dashboardGroupName} />
         <Wrapper>
-          <Container>
+          <Container maxWidth={false}>
             <Header>
-              <Heading>Textbook Shortage: by Grade and Subject</Heading>
+              <Heading>{name}</Heading>
+              <FlexStart>
+                <WhiteButton startIcon={<GetAppIcon />}>Export</WhiteButton>
+                <YearSelector value={selectedYear} onChange={setSelectedYear} />
+              </FlexStart>
             </Header>
             <FlexEnd>
               <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
@@ -147,12 +178,14 @@ export const DashboardReportModal = ({
 };
 
 DashboardReportModal.propTypes = {
+  name: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
   reportId: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
   year: PropTypes.string,
   dashboardGroupId: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
+  dashboardGroupName: PropTypes.string.isRequired,
 };
 
 DashboardReportModal.defaultProps = {

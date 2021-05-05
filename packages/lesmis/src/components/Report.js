@@ -83,7 +83,15 @@ export const TABS = {
 };
 
 export const Report = React.memo(
-  ({ reportId, name, entityCode, dashboardGroupId, periodGranularity, year }) => {
+  ({
+    reportId,
+    name,
+    entityCode,
+    dashboardGroupId,
+    dashboardGroupName,
+    periodGranularity,
+    year,
+  }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
     const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
       entityCode,
@@ -126,6 +134,8 @@ export const Report = React.memo(
         <Footer>
           <DashboardReportModal
             buttonText="More Insights"
+            name={name}
+            dashboardGroupName={dashboardGroupName}
             entityCode={entityCode}
             dashboardGroupId={dashboardGroupId}
             reportId={reportId}
@@ -144,6 +154,7 @@ Report.propTypes = {
   entityCode: PropTypes.string.isRequired,
   year: PropTypes.string,
   dashboardGroupId: PropTypes.string.isRequired,
+  dashboardGroupName: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
 };
 
