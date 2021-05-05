@@ -23,7 +23,7 @@ export const MiniMap = ({ entityCode }) => {
   return isLoadingEntityData ? null : (
     <Map bounds={entityData?.bounds} dragging={false} zoomControl={false}>
       <TileLayer tileSetUrl={TILE_SET_URL} />
-      <InversePolygonMask polygon={entityData.region} />
+      <InversePolygonMask region={entityData?.region} />
     </Map>
   );
 };
