@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import { SmallAlert } from '@tupaia/ui-components';
 import { useDashboardData } from '../api/queries';
 import {
@@ -32,28 +33,17 @@ const DashboardSection = styled(FlexCenter)`
   min-height: 31rem;
 `;
 
-const ScrollToTopButtonContainer = styled.div`
-  position: sticky;
+const ScrollToTopButton = styled(ArrowUpward)`
+  position: fixed;
   bottom: 29px;
-  padding-right: 32px;
+  right: 32px;
   cursor: pointer;
-  display: flex;
-  justify-content: flex-end;
+  font-size: 50px;
+  color: white;
+  padding: 10px;
+  background: ${props => props.theme.palette.text.primary};
+  border-radius: 3px;
 `;
-
-const ScrollToTopButtonImg = styled.img`
-  width: 40px;
-  height: 40px;
-`;
-
-const ScrollToTopButton = React.memo(({ onClick }) => (
-  <ScrollToTopButtonContainer onClick={onClick}>
-    <ScrollToTopButtonImg src="/images/up-arrow.svg" alt="back to top" />
-  </ScrollToTopButtonContainer>
-));
-ScrollToTopButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
 
 const setDefaultDashboard = (data, setSelectedDashboard) => {
   const dashboardNames = Object.keys(data);
