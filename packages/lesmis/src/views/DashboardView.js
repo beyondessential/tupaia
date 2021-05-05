@@ -182,13 +182,13 @@ const CountryView = ({ vitals }) => {
         </TitleContainer>
         <EntityVitalsItem
           name="No. Schools"
-          value="13849"
+          value="13849" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
           icon="School"
           isLoading={vitals.isLoading}
         />
         <EntityVitalsItem
           name="No. Students"
-          value="1659117"
+          value="1659117" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
           icon="Study"
           isLoading={vitals.isLoading}
         />
