@@ -25,8 +25,7 @@ const DASHBOARD_GROUP_CODES = [
 const getDataBuilderConfig = doseNum => ({
   series: {
     value: {
-      xyz: {
-        // The value of this key is not important
+      xyz: { // The value of this key (xyz) is not important
         operands: [
           {
             dataValues: [doseNum === 1 ? 'COVIDVac4' : 'COVIDVac8'],
