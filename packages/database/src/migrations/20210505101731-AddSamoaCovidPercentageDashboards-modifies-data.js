@@ -24,7 +24,7 @@ const DASHBOARD_GROUP_CODES = [
 
 const getDataBuilderConfig = doseNum => ({
   series: {
-    value: {
+    value: { // The value of this key (value) IS important
       xyz: { // The value of this key (xyz) is not important
         operands: [
           {
