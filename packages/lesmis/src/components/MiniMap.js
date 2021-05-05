@@ -6,11 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { MapContainer, Polygon, TileLayer } from '@tupaia/ui-components/lib/map';
+import { MapContainer, TileLayer, InversePolygonMask } from '@tupaia/ui-components/lib/map';
 import { TILE_SETS } from '../constants';
 import { useEntityData } from '../api';
 
-const TILE_SET_URL = TILE_SETS[1].url;
+const TILE_SET_URL = TILE_SETS.find(t => t.key === 'satellite').url;
 
 const Map = styled(MapContainer)`
   width: 510px;
@@ -18,12 +18,12 @@ const Map = styled(MapContainer)`
 `;
 
 export const MiniMap = ({ entityCode }) => {
-  const { data: entityData, isFetching: isLoadingEntityData } = useEntityData(entityCode);
+  const { data: entityData, isFetching: isLoadingEntityData } = useEntityData(entityCode, true);
 
   return isLoadingEntityData ? null : (
     <Map bounds={entityData?.bounds} dragging={false} zoomControl={false}>
       <TileLayer tileSetUrl={TILE_SET_URL} />
-      <Polygon entity={entityData} />
+      <InversePolygonMask polygon={entityData.region} />
     </Map>
   );
 };
