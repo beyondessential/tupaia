@@ -6,8 +6,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { MapContainer, TileLayer, InversePolygonMask } from '@tupaia/ui-components/lib/map';
-import { TILE_SETS } from '../constants';
+import {
+  MapContainer,
+  TileLayer,
+  InversePolygonMask,
+  IconMarker,
+} from '@tupaia/ui-components/lib/map';
+import { TILE_SETS, RED } from '../constants';
 import { useEntityData } from '../api';
 
 const TILE_SET_URL = TILE_SETS.find(t => t.key === 'satellite').url;
@@ -17,13 +22,14 @@ const Map = styled(MapContainer)`
   height: 370px;
 `;
 
-export const MiniMap = ({ entityCode }) => {
+export const MiniMap = ({ entityCode, theme }) => {
   const { data: entityData, isFetching: isLoadingEntityData } = useEntityData(entityCode);
 
   return isLoadingEntityData ? null : (
     <Map bounds={entityData?.bounds} dragging={false} zoomControl={false}>
       <TileLayer tileSetUrl={TILE_SET_URL} />
-      <InversePolygonMask region={entityData?.region} />
+      {entityData?.region && <InversePolygonMask region={entityData?.region} />}
+      {entityData?.point && <IconMarker coordinates={entityData?.point} color={RED} />}
     </Map>
   );
 };
