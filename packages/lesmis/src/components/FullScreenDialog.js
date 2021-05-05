@@ -15,7 +15,7 @@ const Header = styled.div`
   padding: 2.375rem 1.875rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 
-  h2 {
+  .MuiTypography-h2 {
     line-height: 1.4;
   }
 `;

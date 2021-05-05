@@ -5,28 +5,24 @@
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import ArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import Slide from '@material-ui/core/Slide';
-import MuiButton from '@material-ui/core/Button';
-import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import GridOnIcon from '@material-ui/icons/GridOn';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import Typography from '@material-ui/core/Typography';
 import { useTheme } from '@material-ui/core/styles';
-import MuiDialog from '@material-ui/core/Dialog';
-import { Chart, Table } from '@tupaia/ui-components/lib/chart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { GridOn, KeyboardArrowRight, BarChart } from '@material-ui/icons';
+import {
+  useMediaQuery,
+  Slide,
+  Typography,
+  Dialog as MuiDialog,
+  Container as MuiContainer,
+  Button as MuiButton,
+} from '@material-ui/core';
 import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
-import { FetchLoader } from './FetchLoader';
-import { TABS } from './Report';
-import { useDashboardReportData } from '../api/queries';
 import { ToggleButton } from './ToggleButton';
 import { YearSelector } from './YearSelector';
+import { ChartTable, TABS } from './ChartTable';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -61,22 +57,6 @@ const Heading = styled(Typography)`
   line-height: 1.4rem;
 `;
 
-const ChartWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  padding: 1.25rem 1.875rem 0;
-
-  .MuiAlert-root {
-    position: relative;
-    top: -0.625rem; // offset the chart wrapper padding
-  }
-`;
-
-const TableWrapper = styled.div`
-  display: flex;
-  flex: 1;
-`;
-
 export const DashboardReportModal = ({
   name,
   dashboardGroupName,
@@ -92,13 +72,6 @@ export const DashboardReportModal = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
-  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
-    entityCode,
-    dashboardGroupId,
-    reportId,
-    periodGranularity,
-    year: selectedYear,
-  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -116,7 +89,7 @@ export const DashboardReportModal = ({
 
   return (
     <>
-      <MuiButton onClick={handleClickOpen} endIcon={<ArrowRightIcon />} color="primary">
+      <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRight />} color="primary">
         {buttonText}
       </MuiButton>
       <MuiDialog
@@ -139,24 +112,21 @@ export const DashboardReportModal = ({
             <FlexEnd>
               <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
                 <ToggleButton value={TABS.TABLE}>
-                  <GridOnIcon />
+                  <GridOn />
                 </ToggleButton>
                 <ToggleButton value={TABS.CHART}>
-                  <BarChartIcon />
+                  <BarChart />
                 </ToggleButton>
               </ToggleButtonGroup>
             </FlexEnd>
-            <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-              {selectedTab === TABS.CHART ? (
-                <ChartWrapper>
-                  <Chart viewContent={viewContent} isEnlarged />
-                </ChartWrapper>
-              ) : (
-                <TableWrapper>
-                  <Table viewContent={viewContent} />
-                </TableWrapper>
-              )}
-            </FetchLoader>
+            <ChartTable
+              entityCode={entityCode}
+              dashboardGroupId={dashboardGroupId}
+              reportId={reportId}
+              periodGranularity={periodGranularity}
+              year={selectedYear}
+              selectedTab={selectedTab}
+            />
           </Container>
         </Wrapper>
       </MuiDialog>

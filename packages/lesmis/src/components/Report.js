@@ -10,12 +10,10 @@ import Typography from '@material-ui/core/Typography';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart, Table } from '@tupaia/ui-components/lib/chart';
-import { useDashboardReportData } from '../api';
-import { FetchLoader } from './FetchLoader';
 import { FlexSpaceBetween } from './Layout';
 import { ToggleButton } from './ToggleButton';
 import { DashboardReportModal } from './DashboardReportModal';
+import { ChartTable, TABS } from './ChartTable';
 import * as COLORS from '../constants';
 
 const Container = styled.div`
@@ -49,17 +47,6 @@ const Body = styled.div`
   }
 `;
 
-const ChartWrapper = styled.div`
-  display: flex;
-  padding: 1.25rem 1.875rem 0;
-  width: 100%;
-
-  .MuiAlert-root {
-    position: relative;
-    top: -0.625rem; // offset the chart wrapper padding
-  }
-`;
-
 const Footer = styled.div`
   display: flex;
   align-items: center;
@@ -77,11 +64,6 @@ export const CHART_TYPES = {
   PIE: 'pie',
 };
 
-export const TABS = {
-  CHART: 'chart',
-  TABLE: 'table',
-};
-
 export const Report = React.memo(
   ({
     reportId,
@@ -93,13 +75,6 @@ export const Report = React.memo(
     year,
   }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
-    const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
-      entityCode,
-      dashboardGroupId,
-      reportId,
-      periodGranularity,
-      year,
-    });
 
     const handleTabChange = (event, newValue) => {
       if (newValue !== null) {
@@ -121,15 +96,14 @@ export const Report = React.memo(
           </ToggleButtonGroup>
         </Header>
         <Body>
-          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-            {selectedTab === TABS.CHART ? (
-              <ChartWrapper>
-                <Chart viewContent={viewContent} isEnlarged />
-              </ChartWrapper>
-            ) : (
-              <Table viewContent={viewContent} />
-            )}
-          </FetchLoader>
+          <ChartTable
+            entityCode={entityCode}
+            dashboardGroupId={dashboardGroupId}
+            reportId={reportId}
+            periodGranularity={periodGranularity}
+            year={year}
+            selectedTab={selectedTab}
+          />
         </Body>
         <Footer>
           <DashboardReportModal
