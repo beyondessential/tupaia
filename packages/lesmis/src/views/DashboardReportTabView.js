@@ -75,12 +75,15 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const stickyBarsHeight = useMemo(() => NAVBAR_HEIGHT_INT + tabBarHeight, [tabBarHeight]);
 
   useEffect(() => {
-    const onScroll = () => {
+    const detectScrolledPastTop = () =>
       setIsScrolledPastTop(topRef.current.getBoundingClientRect().top < stickyBarsHeight);
-    };
-    window.addEventListener('scroll', onScroll);
 
-    return () => window.removeEventListener('scroll', onScroll);
+    // detect once when the effect is run
+    detectScrolledPastTop();
+    // and again on scroll events
+    window.addEventListener('scroll', detectScrolledPastTop);
+
+    return () => window.removeEventListener('scroll', detectScrolledPastTop);
   }, [stickyBarsHeight]);
 
   const scrollToTop = useCallback(() => {
