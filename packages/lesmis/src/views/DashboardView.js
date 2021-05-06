@@ -103,6 +103,7 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: stretch;
   padding-right: 0;
 `;
 
@@ -116,7 +117,9 @@ const FlexRow = styled.div`
 
 const VitalsSection = styled(FlexRow)`
   margin-right: 10px;
+  padding-bottom: 1rem;
   flex: 1;
+  min-width: 500px;
 `;
 
 const PartnersContainer = styled(FlexRow)`
@@ -138,27 +141,27 @@ const TitleContainer = styled.div`
 `;
 
 const RedTitle = styled(Typography)`
+  font-weight: 500;
   color: ${props => props.theme.palette.primary.main};
-  padding-top: 50px;
+  padding-top: 30px;
 `;
 
 const GreyTitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
-  font-weight: bold;
+  font-weight: 500;
   padding-top: 30px;
+  padding-bottom: 10px;
   padding-left: 5px;
 `;
 
 const HorizontalDivider = styled(MuiDivider)`
   width: 90%;
-  margin-top: 1.5rem;
-  background: ${props => props.theme.palette.text.tertiary};
+  margin-top: 1rem;
 `;
 
 const VerticalDivider = styled(MuiDivider)`
   margin-top: 2.5rem;
   height: 7rem;
-  background: ${props => props.theme.palette.text.tertiary};
 `;
 
 const CountryView = ({ vitals }) => {
