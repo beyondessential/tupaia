@@ -12,6 +12,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import {
+  Box,
   useMediaQuery,
   Slide,
   Typography,
@@ -25,6 +26,7 @@ import { DialogHeader } from './FullScreenDialog';
 import { ToggleButton } from './ToggleButton';
 import { YearSelector } from './YearSelector';
 import { ChartTable, TABS } from './ChartTable';
+import { useDashboardReportData } from '../api/queries';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -32,22 +34,23 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const Wrapper = styled.div`
   height: 100%;
-  overflow: auto;
   background: ${COLORS.GREY_F9};
+  min-height: 720px;
 `;
 
 const Container = styled(MuiContainer)`
-  padding: 1.25rem 6.25rem 6.25rem;
-  padding-bottom: 10vh;
+  padding: 0 6.25rem 3rem;
+  padding-bottom: 5vh;
   height: 100%;
   display: flex;
   flex-direction: column;
 `;
 
 const Header = styled(FlexSpaceBetween)`
-  min-height: 5.625rem;
+  padding-top: 2.2rem;
+  padding-bottom: 1.6rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  margin-bottom: 1.8rem;
+  margin-bottom: 1.6rem;
 
   .MuiTextField-root {
     margin-right: 0;
@@ -58,6 +61,13 @@ const Heading = styled(Typography)`
   font-size: 1.25rem;
   line-height: 1.4rem;
   font-weight: 500;
+`;
+
+const Description = styled(Typography)`
+  font-size: 1rem;
+  line-height: 1.4rem;
+  color: ${props => props.theme.palette.text.secondary};
+  margin-top: 0.625rem;
 `;
 
 export const DashboardReportModal = ({
@@ -75,6 +85,13 @@ export const DashboardReportModal = ({
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+    entityCode,
+    dashboardGroupId,
+    reportId,
+    periodGranularity,
+    year,
+  });
 
   useEffect(() => {
     setSelectedYear(year);
@@ -111,7 +128,10 @@ export const DashboardReportModal = ({
         <Wrapper>
           <Container maxWidth={false}>
             <Header>
-              <Heading variant="h3">{name}</Heading>
+              <Box maxWidth={580}>
+                <Heading variant="h3">{name}</Heading>
+                {viewContent?.description && <Description>{viewContent.description}</Description>}
+              </Box>
               <FlexStart>
                 <YearSelector value={selectedYear} onChange={setSelectedYear} />
               </FlexStart>
@@ -127,11 +147,10 @@ export const DashboardReportModal = ({
               </ToggleButtonGroup>
             </FlexEnd>
             <ChartTable
-              entityCode={entityCode}
-              dashboardGroupId={dashboardGroupId}
-              reportId={reportId}
-              periodGranularity={periodGranularity}
-              year={selectedYear}
+              viewContent={viewContent}
+              isLoading={isLoading}
+              isError={isError}
+              error={error}
               selectedTab={selectedTab}
             />
           </Container>

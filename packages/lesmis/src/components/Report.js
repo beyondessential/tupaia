@@ -15,6 +15,7 @@ import { ToggleButton } from './ToggleButton';
 import { DashboardReportModal } from './DashboardReportModal';
 import { ChartTable, TABS } from './ChartTable';
 import * as COLORS from '../constants';
+import { useDashboardReportData } from '../api/queries';
 
 const Container = styled.div`
   width: 55rem;
@@ -41,6 +42,7 @@ const Body = styled.div`
   background: ${COLORS.GREY_F9};
   min-height: 26rem;
   max-height: 40rem;
+  padding-top: 1rem;
 
   .MuiTable-root {
     min-height: 100%;
@@ -75,6 +77,13 @@ export const Report = React.memo(
     year,
   }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+    const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+      entityCode,
+      dashboardGroupId,
+      reportId,
+      periodGranularity,
+      year,
+    });
 
     const handleTabChange = (event, newValue) => {
       if (newValue !== null) {
@@ -97,11 +106,10 @@ export const Report = React.memo(
         </Header>
         <Body>
           <ChartTable
-            entityCode={entityCode}
-            dashboardGroupId={dashboardGroupId}
-            reportId={reportId}
-            periodGranularity={periodGranularity}
-            year={year}
+            viewContent={viewContent}
+            isLoading={isLoading}
+            isError={isError}
+            error={error}
             selectedTab={selectedTab}
           />
         </Body>
