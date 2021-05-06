@@ -5,6 +5,8 @@
 
 export * from './Breadcrumbs';
 export * from './EntityMenu';
+export * from './EntityVitalsItem';
+export * from './PartnerLogo';
 export * from './EntityPolygonLink';
 export * from './EntityVitalsItem';
 export * from './FetchLoader';

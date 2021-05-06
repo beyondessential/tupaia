@@ -39,6 +39,7 @@ const VitalContent = styled(Typography)`
   color: ${props => props.theme.palette.text.primary};
   font-weight: 500;
   hyphens: auto;
+  word-break: break-word;
 `;
 
 const GreenVital = styled(VitalContent)`

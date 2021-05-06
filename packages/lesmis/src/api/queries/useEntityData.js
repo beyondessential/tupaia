@@ -7,14 +7,8 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 
 export const useEntityData = entityCode => {
-  return useQuery(
-    ['entity', entityCode],
-    () => {
-      return get(`entity/${entityCode}`);
-    },
-    {
-      staleTime: 1000 * 60 * 60 * 1,
-      refetchOnWindowFocus: false,
-    },
-  );
+  return useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), {
+    staleTime: 1000 * 60 * 60 * 1,
+    refetchOnWindowFocus: false,
+  });
 };

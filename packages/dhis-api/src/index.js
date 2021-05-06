@@ -4,4 +4,7 @@ export { groupAnalyticsByPeriod, groupEventsByPeriod, groupEventsByOrgUnit } fro
 export { DHIS2_RESOURCE_TYPES } from './types';
 export { DHIS2_DIMENSIONS } from './dimensions';
 export { combineDiagnostics } from './responseUtils';
-export { translateElementKeysInEventAnalytics } from './translateDataElementKeys';
+export {
+  translateElementKeysInEventAnalytics,
+  translateMetadataInAnalytics,
+} from './translateDataElementKeys';

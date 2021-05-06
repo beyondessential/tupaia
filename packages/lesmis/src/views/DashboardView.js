@@ -12,14 +12,7 @@ import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { Select } from '@tupaia/ui-components';
 import { DashboardReportTabView } from './DashboardReportTabView';
-import {
-  MiniMap,
-  TabPanel,
-  TabBar,
-  TabBarSection,
-  EntityVitalsItem,
-  PartnerLogo,
-} from '../components';
+import { MiniMap, TabPanel, TabBar, TabBarSection, EntityVitalsItem, PartnerLogo } from '../components';
 import { useUrlParams } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
 

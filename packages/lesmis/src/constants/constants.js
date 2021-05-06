@@ -13,7 +13,7 @@ export const DEFAULT_DASHBOARD_GROUP = 'Students / Schools';
 export const SINGLE_YEAR_GRANULARITY = 'one_year_at_a_time';
 export const MIN_DATA_DATE = '20150101';
 export const MIN_DATA_YEAR = '2015';
-export const ALL_DATES_VALUE = 'all';
+export const DEFAULT_DATA_YEAR = '2020';
 
 // Layout Constants
 export const NAVBAR_HEIGHT = '70px';

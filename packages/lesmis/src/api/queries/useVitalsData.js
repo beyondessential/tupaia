@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import { utcMoment } from '@tupaia/utils';
 import { post } from '../api';
 import { useProjectEntitiesData } from './useEntitiesData';
+import { useEntityData } from './useEntityData';
 
 const endDateFormat = 'YYYY-MM-DD';
 
@@ -31,7 +32,7 @@ const getDecendantCodesOfType = (entities, rootEntityCode, type) => {
   if (entity.type === type) {
     return [entity?.code];
   }
-  if (!entity.childCodes) {
+  if (!entity.childCodes || entity.type === 'country') {
     return [];
   }
   return entity.childCodes.map(c => getDecendantCodesOfType(entities, c, type)).flat();
@@ -177,23 +178,9 @@ const useProvinceInformation = (entities, rootEntity) => {
   };
 };
 
-const useCountryInformation = (entities, rootEntity) => {
-  const { data: subSchoolsData, isLoading: subSchoolsLoading } = useMultiSchoolReport(
-    entities,
-    rootEntity,
-  );
-
-  return {
-    data: {
-      ...subSchoolsData?.results[0],
-    },
-    isLoading: subSchoolsLoading,
-  };
-};
-
 export const useVitalsData = entityCode => {
   const { data: entities = [], ...entitiesQuery } = useProjectEntitiesData();
-  const entityData = entities.find(e => e.code === entityCode);
+  const { data: entityData } = useEntityData(entityCode);
 
   const { data: schoolData, isLoading: schoolLoading } = useSchoolInformation(entities, entityData);
   const { data: villageData, isLoading: villageLoading } = useVillageInformation(
@@ -208,10 +195,6 @@ export const useVitalsData = entityCode => {
     entities,
     entityData,
   );
-  const { data: countryData, isLoading: countryLoading } = useCountryInformation(
-    entities,
-    entityData,
-  );
 
   return {
     ...entitiesQuery,
@@ -221,9 +204,7 @@ export const useVitalsData = entityCode => {
     ...villageData,
     ...districtData,
     ...provinceData,
-    ...countryData,
 
-    isLoading:
-      schoolLoading || villageLoading || districtLoading || provinceLoading || countryLoading,
+    isLoading: schoolLoading || villageLoading || districtLoading || provinceLoading,
   };
 };

@@ -16,7 +16,7 @@ import {
 } from '@tupaia/ui-components/lib/map';
 import { YearSelector, MapOverlaysPanel } from '../components';
 import { useMapOverlayReportData, useMapOverlaysData } from '../api';
-import { ALL_DATES_VALUE, TILE_SETS } from '../constants';
+import { TILE_SETS, DEFAULT_DATA_YEAR } from '../constants';
 import { useUrlParams } from '../utils';
 
 const Container = styled.div`
@@ -71,7 +71,7 @@ const getDefaultTileSet = () => {
 
 export const MapView = () => {
   const { entityCode } = useUrlParams();
-  const [selectedYear, setSelectedYear] = useState(ALL_DATES_VALUE);
+  const [selectedYear, setSelectedYear] = useState(DEFAULT_DATA_YEAR);
   const [activeTileSetKey, setActiveTileSetKey] = useState(getDefaultTileSet());
 
   const { data: overlaysData, isLoading: isLoadingOverlays } = useMapOverlaysData({ entityCode });
