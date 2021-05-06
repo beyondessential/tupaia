@@ -44,7 +44,7 @@ const RegionPolygon = ({ entityData }) => {
 };
 
 const PointMarker = ({ entityData }) =>
-  entityData?.point && <IconMarker coordinates={entityData?.point} color={RED} />;
+  entityData?.point && <IconMarker coordinates={entityData?.point} color={RED} scale={1.5} />;
 /* eslint-enable react/prop-types */
 
 export const MiniMap = ({ entityCode }) => {
