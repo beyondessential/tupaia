@@ -19,7 +19,8 @@ const TILE_SET_URL = TILE_SETS.find(t => t.key === 'satellite').url;
 
 const Map = styled(MapContainer)`
   width: 510px;
-  height: 370px;
+  min-height: 370px;
+  height: auto;
 `;
 
 export const MiniMap = ({ entityCode }) => {
