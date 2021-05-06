@@ -24,7 +24,7 @@ const Map = styled(MapContainer)`
 `;
 
 export const MiniMap = ({ entityCode }) => {
-  const { data: entityData, isFetching: isLoadingEntityData } = useEntityData(entityCode);
+  const { data: entityData, isLoading: isLoadingEntityData } = useEntityData(entityCode);
 
   return isLoadingEntityData ? null : (
     <Map bounds={entityData?.bounds} dragging={false} zoomControl={false}>
