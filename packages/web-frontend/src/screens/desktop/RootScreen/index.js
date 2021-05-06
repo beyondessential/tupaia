@@ -42,8 +42,8 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
         <SessionExpiredDialog />
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       </OverlayContainer>
-      <Map />
       <LoadingScreen isLoading={isLoading} />
+      <Map />
     </div>
   );
 };
