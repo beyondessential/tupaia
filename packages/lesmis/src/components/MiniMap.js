@@ -6,13 +6,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Polygon as PolygonComponent } from 'react-leaflet';
 import {
   MapContainer,
   TileLayer,
   InversePolygonMask,
   IconMarker,
 } from '@tupaia/ui-components/lib/map';
-import { TILE_SETS, RED } from '../constants';
+import { TILE_SETS, RED, COUNTRY_CODE } from '../constants';
 import { useEntityData } from '../api';
 
 const TILE_SET_URL = TILE_SETS.find(t => t.key === 'satellite').url;
@@ -24,14 +25,38 @@ const Map = styled(MapContainer)`
   height: auto;
 `;
 
+const BasicPolygon = styled(PolygonComponent)`
+  fill: ${RED};
+  fill-opacity: 0.3;
+  stroke: ${RED};
+`;
+
+/* eslint-disable react/prop-types */
+const CountryMask = ({ countryData }) => {
+  return <InversePolygonMask region={countryData?.region} />;
+};
+
+const RegionPolygon = ({ entityData }) => {
+  if (!entityData?.region) return null;
+  if (entityData?.type === 'country') return null; // country is fine without, as it has the mask
+
+  return <BasicPolygon positions={entityData?.region} />;
+};
+
+const PointMarker = ({ entityData }) =>
+  entityData?.point && <IconMarker coordinates={entityData?.point} color={RED} />;
+/* eslint-enable react/prop-types */
+
 export const MiniMap = ({ entityCode }) => {
+  const { data: countryData, isLoading: isLoadingCountryData } = useEntityData(COUNTRY_CODE);
   const { data: entityData, isLoading: isLoadingEntityData } = useEntityData(entityCode);
 
-  return isLoadingEntityData ? null : (
+  return isLoadingCountryData || isLoadingEntityData ? null : (
     <Map bounds={entityData?.bounds} dragging={false} zoomControl={false}>
       <TileLayer tileSetUrl={TILE_SET_URL} />
-      {entityData?.region && <InversePolygonMask region={entityData?.region} />}
-      {entityData?.point && <IconMarker coordinates={entityData?.point} color={RED} />}
+      <CountryMask countryData={countryData} />
+      <RegionPolygon entityData={entityData} />
+      <PointMarker entityData={entityData} />
     </Map>
   );
 };
