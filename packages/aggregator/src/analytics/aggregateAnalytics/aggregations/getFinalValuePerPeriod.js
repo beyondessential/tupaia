@@ -111,7 +111,7 @@ class FinalValueAggregator {
     const periods = getContinuousPeriodsForAnalytics(
       analytics,
       aggregationPeriod,
-      checkIfFillingContinuousValues,
+      checkIfFillingContinuousValues, // To get a continuous period till now, we need to set true for this option config (continueTilCurrentPeriod). This can be a new option config in the future.
     );
 
     const values = [];
