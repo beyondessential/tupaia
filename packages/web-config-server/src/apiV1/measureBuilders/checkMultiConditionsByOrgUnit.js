@@ -7,10 +7,6 @@ import groupBy from 'lodash.groupby';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { checkValueSatisfiesCondition } from '@tupaia/utils';
-import {
-  fetchAggregatedAnalyticsByDhisIds,
-  checkAllDataElementsAreDhisIndicators,
-} from '/apiV1/utils';
 
 const CONDITION_TYPE = {
   AND: 'every',
@@ -32,7 +28,7 @@ class CheckMultiConditionsByOrgUnit extends DataBuilder {
     const { conditions, dataElementCodes: configDataCodes } = this.config;
 
     const dataElementCodes = configDataCodes || [queryDataCode];
-    const { period, results } = await this.fetchResults(dataElementCodes);
+    const { period, results } = await this.fetchAnalytics(dataElementCodes);
 
     const measureData = [];
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
@@ -57,24 +53,6 @@ class CheckMultiConditionsByOrgUnit extends DataBuilder {
       data: measureData,
       period,
     };
-  }
-
-  async fetchResults(dataElementCodes) {
-    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
-      this.models,
-      dataElementCodes,
-    );
-    if (allDataElementsAreDhisIndicators) {
-      const { entityAggregation } = this.config;
-      return fetchAggregatedAnalyticsByDhisIds(
-        this.models,
-        this.dhisApi,
-        dataElementCodes,
-        this.query,
-        entityAggregation,
-      );
-    }
-    return this.fetchAnalytics(dataElementCodes);
   }
 }
 

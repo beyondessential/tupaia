@@ -10,14 +10,14 @@ import Link from '@material-ui/core/Link';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { NAVBAR_HEIGHT } from '../constants';
 import { SearchBar, FlexEnd, FlexStart } from '../components';
-import { useEntitiesData } from '../api/queries';
+import { useProjectEntitiesData } from '../api/queries';
 
 const Wrapper = styled.div`
   position: relative;
   height: 800px; // fallback height for older browsers
   height: calc(100vh - ${NAVBAR_HEIGHT});
   background-size: cover;
-  background-position: center;
+  background-position: right top;
 `;
 
 const Container = styled(MuiContainer)`
@@ -103,7 +103,7 @@ const FooterInner = styled(FlexEnd)`
 const INFO_LINK = 'https://info.tupaia.org';
 
 export const HomeView = React.memo(() => {
-  const { isLoading } = useEntitiesData();
+  const { isLoading } = useProjectEntitiesData();
 
   return (
     // The background image is applied here instead of the styled component as it creates a flicker when added there

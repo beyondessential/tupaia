@@ -165,6 +165,7 @@ const translateOverlaysForResponse = mapOverlays =>
       return {
         id, // just for sorting purpose, will be removed later
         measureId: idString,
+        code: idString,
         name,
         ...presentationOptions,
       };

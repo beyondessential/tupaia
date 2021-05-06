@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getUniqueEntries } from '@tupaia/utils';
+import { getUniqueEntries, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 
 const DX_BATCH_SIZE = 400;
 const OU_BATCH_SIZE = 400;
@@ -43,7 +43,7 @@ const buildDataValueAnalyticsQuery = queryInput => {
     inputIdScheme = 'code',
     outputIdScheme = 'uid',
     includeMetadataDetails = true,
-    additionalDimensions = ['co'],
+    additionalDimensions = [],
   } = queryInput;
 
   const query = {
@@ -73,6 +73,36 @@ export const buildDataValueAnalyticsQueries = queryInput => {
     }
   }
   return queries;
+};
+
+export const buildAggregatedDataValueAnalyticsQueries = queryInput => {
+  const newQueryInput = { ...queryInput };
+
+  // 'dataPeriodType' is used when you want to force converting the periods to a specific period type.
+  // Eg, if 'dataPeriodType' = 'MONTH', force converting to MONTHLY periods '201701;201702;201703;201704;...'
+  // We want to use this when fetching aggregated data because:
+
+  // All data in dhis has a date granularity,
+  // e.g. you can submit an event against a full date, or just December 2018.
+
+  // When we are fetching raw data, we can ignore this, because if we request data for 2015-2021
+  // it will return all data, including an event at December 2018 because it is within that range.
+
+  // But when we fetch aggregated data, the API behaves differently. If we request data for 2015-2021
+  // it will NOT return an event at December 2018. To get the event, we have to request data for 201810 specifically.
+
+  // This is true for both fetching data element values and fetching indicator values,
+  // however, we use the raw data API endpoint most of the time, and we only use the aggregated API endpoint for indicators.
+  // So practically, this is an indicator problem, but technically it's for both.
+  if (newQueryInput.startDate && newQueryInput.endDate && newQueryInput.dataPeriodType) {
+    newQueryInput.period = convertDateRangeToPeriodQueryString(
+      newQueryInput.startDate,
+      newQueryInput.endDate,
+      newQueryInput.dataPeriodType,
+    );
+  }
+
+  return buildDataValueAnalyticsQueries(newQueryInput);
 };
 
 export const buildEventAnalyticsQuery = queryInput => {
@@ -120,4 +150,4 @@ export const buildEventAnalyticsQueries = queryInput => {
     }
   }
   return queries;
-}
+};
