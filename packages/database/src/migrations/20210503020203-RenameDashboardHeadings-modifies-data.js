@@ -74,6 +74,7 @@ const updateOrgLevel = async function (db, orgLevel) {
     'Development Partners and Finance',
   );
 
+  await createEmptyDashboardGroup(db, orgLevel, 'Schools');
   await createEmptyDashboardGroup(db, orgLevel, 'Textbooks & Teacher Guides');
   await createEmptyDashboardGroup(db, orgLevel, 'Staff');
   await createEmptyDashboardGroup(db, orgLevel, 'FQS');
@@ -146,6 +147,7 @@ const downdateOrgLevel = async function (db, orgLevel) {
     'LA_Laos_Schools_Resources_Percentage_Secondary',
   );
 
+  await deleteDashboardGroup(db, orgLevel, 'Schools');
   await deleteDashboardGroup(db, orgLevel, 'Textbooks & Teacher Guides');
   await deleteDashboardGroup(db, orgLevel, 'Staff');
   await deleteDashboardGroup(db, orgLevel, 'FQS');
@@ -181,9 +183,29 @@ exports.up = async function (db) {
   await updateOrgLevel(db, 'District');
   // Country
   await updateOrgLevel(db, 'Country');
+
+  // Extra stuff where org levels are different
+  // Province
+  await db.runSql(`
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = '{SchDP_Partner_Assistance_Types,Laos_Schools_Number_Of_Pre_Schools_Supported_Development_Partners,Laos_Schools_Number_Of_Primary_Schools_Supported_Development_Partners,Laos_Schools_Number_Of_Secondary_Schools_Supported_Development_Partners}'
+    WHERE 'laos_schools' = ANY("projectCodes")
+    AND "organisationLevel" = 'District'
+    AND "name" = 'Development Partners and Finance'
+  `);
 };
 
 exports.down = async function (db) {
+  // Extra stuff where org levels are different
+  // Province
+  await db.runSql(`
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = '{SchDP_Partner_Assistance_Types}'
+    WHERE 'laos_schools' = ANY("projectCodes")
+    AND "organisationLevel" = 'District'
+    AND "name" = 'Development Partners and Finance'
+  `);
+
   // School
   await deleteDashboardGroup(db, 'School', 'Teachers');
   await deleteDashboardGroup(db, 'School', 'FQS');
