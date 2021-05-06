@@ -45,10 +45,24 @@ TabTemplate.propTypes = {
   Body: PropTypes.node.isRequired,
 };
 
+const getProfileLabel = entityType => {
+  if (!entityType) {
+    return 'Profile';
+  }
+  switch (entityType) {
+    case 'district':
+      return 'Province Profile';
+    case 'sub_district':
+      return 'District Profile';
+    default:
+      return `${entityType} Profile`;
+  }
+};
+
 const makeTabOptions = entityType => [
   {
     value: 'profile',
-    label: entityType ? `${entityType} Profile` : 'Profile',
+    label: getProfileLabel(entityType),
     Component: DashboardReportTabView,
   },
   {
