@@ -11,8 +11,5 @@ export const useEntityData = entityCode => {
   return useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), {
     staleTime: 1000 * 60 * 60 * 1,
     refetchOnWindowFocus: false,
-    // pre-poluate the query data from the cached entites data if it's available
-    initialData: () =>
-      queryClient.getQueryData('entities')?.find(entity => entity.code === entityCode),
   });
 };

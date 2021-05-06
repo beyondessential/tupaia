@@ -15,6 +15,8 @@ export * from './MapOverlaysPanel';
 export * from './LocationHeader';
 export * from './SearchBar';
 export * from './EntityMenu';
+export * from './EntityVitalsItem';
+export * from './PartnerLogo';
 export * from './EntityPolygonLink';
 export * from './Tabs';
 export * from './FetchLoader';
