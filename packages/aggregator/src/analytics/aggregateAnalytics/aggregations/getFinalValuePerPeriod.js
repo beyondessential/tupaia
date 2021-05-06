@@ -116,7 +116,9 @@ class FinalValueAggregator {
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
-      let mostRecentValue;
+      let mostRecentValue = checkIfFillingContinuousValues
+        ? undefined
+        : Object.values(organisationUnitCache)[0];
 
       periods.forEach(period => {
         const valueForPeriod = organisationUnitCache[period];
