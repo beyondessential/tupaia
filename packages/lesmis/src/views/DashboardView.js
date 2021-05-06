@@ -12,7 +12,14 @@ import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { Select } from '@tupaia/ui-components';
 import { DashboardReportTabView } from './DashboardReportTabView';
-import { MiniMap, TabPanel, TabBar, TabBarSection, EntityVitalsItem, PartnerLogo } from '../components';
+import {
+  MiniMap,
+  TabPanel,
+  TabBar,
+  TabBarSection,
+  EntityVitalsItem,
+  PartnerLogo,
+} from '../components';
 import { useUrlParams } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
 
@@ -166,13 +173,13 @@ const CountryView = ({ vitals }) => {
         </TitleContainer>
         <EntityVitalsItem
           name="No. Schools"
-          value={vitals.NumberOfSchools}
+          value="13849" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
           icon="School"
           isLoading={vitals.isLoading}
         />
         <EntityVitalsItem
           name="No. Students"
-          value={vitals.NumberOfStudents}
+          value="1659117" // TODO: Remove hardcoded values https://github.com/beyondessential/tupaia-backlog/issues/2765
           icon="Study"
           isLoading={vitals.isLoading}
         />
