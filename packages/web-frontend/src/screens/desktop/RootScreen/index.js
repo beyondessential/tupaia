@@ -32,7 +32,6 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
   return (
     <div>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
-      <LoadingScreen isLoading={isLoading} />
       <OverlayContainer>
         <TopBar />
         <div style={styles.contentWrapper}>
@@ -44,6 +43,7 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       </OverlayContainer>
       <Map />
+      <LoadingScreen isLoading={isLoading} />
     </div>
   );
 };
