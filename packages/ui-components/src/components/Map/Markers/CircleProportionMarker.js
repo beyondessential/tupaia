@@ -16,40 +16,35 @@ const HoverCircle = styled(CircleMarker)`
   }
 `;
 
-export const CircleProportionMarker = React.memo(
-  ({ radius, radiusScaleFactor, children, coordinates, markerRef, color }) => {
-    if (coordinates.length !== 2) return null;
+export const CircleProportionMarker = React.memo(({ radius, children, coordinates, color }) => {
+  if (coordinates?.length !== 2) return null;
 
-    const AREA_MULTIPLIER = 100; // just tuned by hand
-    const numberValue = (parseFloat(radius) || 0) * radiusScaleFactor;
-    const area = Math.max(numberValue, 1) * AREA_MULTIPLIER;
+  const AREA_MULTIPLIER = 100; // just tuned by hand
+  const numberValue = parseFloat(radius) || 0;
+  const area = Math.max(numberValue, 1) * AREA_MULTIPLIER;
 
-    const displayRadius = Math.sqrt(area / Math.PI);
-    const colorValue = getColor(color);
+  const displayRadius = Math.sqrt(area / Math.PI);
+  const colorValue = getColor(color);
 
-    return (
-      <HoverCircle
-        center={coordinates}
-        radius={displayRadius}
-        innerRef={markerRef}
-        color={colorValue}
-        fillColor={colorValue}
-      >
-        {children}
-      </HoverCircle>
-    );
-  },
-);
+  return (
+    <HoverCircle
+      center={coordinates}
+      radius={displayRadius}
+      color={colorValue}
+      fillColor={colorValue}
+    >
+      {children}
+    </HoverCircle>
+  );
+});
 
 CircleProportionMarker.propTypes = {
   coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
-  children: PropTypes.node.isRequired,
-  markerRef: PropTypes.func.isRequired,
+  children: PropTypes.node,
   radius: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  radiusScaleFactor: PropTypes.number,
   color: PropTypes.string.isRequired,
 };
 
 CircleProportionMarker.defaultProps = {
-  radiusScaleFactor: 1,
+  children: null,
 };
