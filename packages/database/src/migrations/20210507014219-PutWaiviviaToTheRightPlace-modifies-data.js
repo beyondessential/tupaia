@@ -23,25 +23,30 @@ const hierarchyNameToId = async (db, name) => {
 
 const WAIVIVIA_CODE = 'FJ_WAV';
 const BURETA_CODE = 'FJ_CATCH_Bureta';
+const FIJI_CODE = 'FJ';
 const EASTERN_CODE = 'FJ_Eastern';
 const projectCode = 'wish';
 
 exports.up = async function (db) {
   const WAIVIVIA_ID = await codeToId(db, 'entity', WAIVIVIA_CODE);
   const BURETA_ID = await codeToId(db, 'entity', BURETA_CODE);
+  const FIJI_ID = await codeToId(db, 'entity', FIJI_CODE);
 
   await db.runSql(`
     UPDATE entity 
-    SET parent_id = '${BURETA_ID}'
+    SET parent_id = '${FIJI_ID}'
     WHERE code = '${WAIVIVIA_CODE}';
   `);
 
-  await insertObject(db, 'entity_relation', {
-    id: generateId(),
-    parent_id: BURETA_ID,
-    child_id: WAIVIVIA_ID,
-    entity_hierarchy_id: await hierarchyNameToId(db, projectCode),
-  });
+  const hierarchyId = await hierarchyNameToId(db, projectCode);
+  if (hierarchyId) {
+    await insertObject(db, 'entity_relation', {
+      id: generateId(),
+      parent_id: BURETA_ID,
+      child_id: WAIVIVIA_ID,
+      entity_hierarchy_id: hierarchyId,
+    });
+  }
 };
 
 exports.down = async function (db) {
