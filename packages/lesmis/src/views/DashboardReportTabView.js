@@ -20,28 +20,37 @@ import {
   TabPanel,
   YearSelector,
 } from '../components';
-import { DEFAULT_DASHBOARD_GROUP, ALL_DATES_VALUE } from '../constants';
+import { DEFAULT_DATA_YEAR } from '../constants';
 
 const DashboardSection = styled(FlexCenter)`
   min-height: 31rem;
 `;
+
+export const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
+export const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 
 const setDefaultDashboard = (data, setSelectedDashboard) => {
   const dashboardNames = Object.keys(data);
 
   if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
     setSelectedDashboard(DEFAULT_DASHBOARD_GROUP);
+  } else if (dashboardNames.includes(SCHOOL_DEFAULT_DASHBOARD_GROUP)) {
+    setSelectedDashboard(SCHOOL_DEFAULT_DASHBOARD_GROUP);
   } else {
     setSelectedDashboard(dashboardNames[0]);
   }
 };
 
 export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
-  const [selectedYear, setSelectedYear] = useState(ALL_DATES_VALUE);
-  const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
+  const [selectedYear, setSelectedYear] = useState(DEFAULT_DATA_YEAR);
+  const [selectedDashboard, setSelectedDashboard] = useState(false);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
 
   useEffect(() => {
+    // unset the selected dashboard when the data changes
+    // in case the selected one doesn't exist in the new data
+    setSelectedDashboard(false);
+
     if (data) {
       setDefaultDashboard(data, setSelectedDashboard);
     }

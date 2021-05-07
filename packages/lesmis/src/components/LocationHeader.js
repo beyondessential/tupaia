@@ -103,11 +103,11 @@ export const LocationHeader = () => {
           <Contacts>
             <ContactItem>
               <Phone />
-              <Typography>0457 0547 074</Typography>
+              <Typography>TBC</Typography>
             </ContactItem>
             <ContactItem>
               <Email />
-              <Typography>mayparkngumsecondaryschool@laopdr.com</Typography>
+              <Typography>TBC@laopdr.com</Typography>
             </ContactItem>
           </Contacts>
         </div>

@@ -31,5 +31,6 @@ export function createApp() {
     .get('/v1/map-overlays/:entityCode', handleWith(MapOverlaysRoute))
     .get('/v1/entity/:entityCode', handleWith(EntityRoute))
     .get('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
+    .post('/v1/report/:entityCode/:reportCode', handleWith(ReportRoute))
     .build();
 }
