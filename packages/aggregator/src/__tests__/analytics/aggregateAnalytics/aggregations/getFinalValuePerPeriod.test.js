@@ -35,9 +35,10 @@ describe('getFinalValuePerPeriod()', () => {
   });
 
   describe('getFilledValues()', () => {
-    const getExpectedArray = (startDate, aggregationPeriod, defaultVariables) => {
+    const getExpectedArray = (aggregationPeriod, defaultVariables, startDate, endDate) => {
       const startPeriod = convertToPeriod(startDate, aggregationPeriod);
-      const endPeriod = getCurrentPeriod(aggregationPeriod);
+      // const endPeriod = getCurrentPeriod(aggregationPeriod);
+      const endPeriod = convertToPeriod(endDate, aggregationPeriod);
       const periods = getPeriodsInRange(startPeriod, endPeriod);
       return periods.map(period => ({
         ...defaultVariables,
@@ -45,22 +46,37 @@ describe('getFinalValuePerPeriod()', () => {
       }));
     };
 
-    it('Filling continuous values', () => {
-      const defaultVariables = { dataElement: 'element1', organisationUnit: 'org1', value: 1 };
+    it('filling continuous values till current period', () => {
+      const defaultVariables = { dataElement: 'element1', organisationUnit: 'org1' };
 
-      const startDate = '20210101';
-      const aggregationPeriod = 'WEEK';
-      const testAnalytics = [{ ...defaultVariables, period: startDate }];
+      const aggregationPeriod = 'DAY';
+      const testAnalytics = [
+        { ...defaultVariables, value: 11, period: '20210101' },
+        { ...defaultVariables, value: 1, period: '20210104' },
+      ];
       const aggregationConfig = {
         fillEmptyPeriodsWith: 'previous',
       };
 
       expect(
         getFinalValuePerPeriod(testAnalytics, aggregationConfig, aggregationPeriod),
-      ).toStrictEqual(getExpectedArray(startDate, aggregationPeriod, defaultVariables));
+      ).toStrictEqual([
+        ...getExpectedArray(
+          aggregationPeriod,
+          { ...defaultVariables, value: 11 },
+          '20210101',
+          '20210103',
+        ),
+        ...getExpectedArray(
+          aggregationPeriod,
+          { ...defaultVariables, value: 1 },
+          '20210104',
+          getCurrentPeriod('DAY'),
+        ),
+      ]);
     });
 
-    it('Filling continuous values for two elements', () => {
+    it('filling continuous values for two data elements', () => {
       const defaultVariablesForOrg1 = {
         dataElement: 'element1',
         organisationUnit: 'org1',
@@ -87,12 +103,22 @@ describe('getFinalValuePerPeriod()', () => {
       expect(
         getFinalValuePerPeriod(testAnalytics, aggregationConfig, aggregationPeriod),
       ).toStrictEqual([
-        ...getExpectedArray(startDateOrg1, aggregationPeriod, defaultVariablesForOrg1),
-        ...getExpectedArray(startDateOrg2, aggregationPeriod, defaultVariablesForOrg2),
+        ...getExpectedArray(
+          aggregationPeriod,
+          defaultVariablesForOrg1,
+          startDateOrg1,
+          getCurrentPeriod('DAY'),
+        ),
+        ...getExpectedArray(
+          aggregationPeriod,
+          defaultVariablesForOrg2,
+          startDateOrg2,
+          getCurrentPeriod('DAY'),
+        ),
       ]);
     });
 
-    it(`Filling preset value by 'fillEmptyPeriodsWith'`, () => {
+    it(`filling preset value by 'fillEmptyPeriodsWith'`, () => {
       const testAnalytics = [
         { dataElement: 'element1', organisationUnit: 'org1', period: '20210101', value: 1 },
         { dataElement: 'element1', organisationUnit: 'org1', period: '20210104', value: 2 },
