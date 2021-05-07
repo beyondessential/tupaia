@@ -186,7 +186,7 @@ const XIcon = ({ color, scale }) => (
   </IconContainer>
 );
 
-const HIcon = ({ color, h = 0.24, v = 0.2, scale = { scale } }) => (
+const HIcon = ({ color, h = 0.24, v = 0.2, scale }) => (
   <IconContainer viewBox="-1.5 -1.5 3 3" scale={scale}>
     <path
       d={`
@@ -300,11 +300,6 @@ export const LEGEND_COLOR_ICON = 'circle';
 export const LEGEND_SHADING_ICON = 'square';
 export const LEGEND_RADIUS_ICON = 'radius';
 export const HIDDEN_ICON = 'hidden';
-
-const scAnchor = (anchor = [0.5 * ICON_BASE_SIZE, 0.5 * ICON_BASE_SIZE], scale = 1) => {
-  const scaledIconAnchor = [anchor[0] * scale, anchor[1] * scale];
-  return scaledIconAnchor;
-};
 
 function toLeaflet(icon, color, scale) {
   const {
