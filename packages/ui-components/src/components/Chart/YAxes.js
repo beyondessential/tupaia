@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { YAxis as YAxisComponent } from 'recharts';
 import { DARK_BLUE, VALUE_TYPES } from './constants';
+import { getContrastTextColor } from './utils';
 
 const { PERCENTAGE, NUMBER } = VALUE_TYPES;
 
@@ -68,6 +69,8 @@ const renderYAxisLabel = (label, orientation) => {
 };
 
 const YAxis = ({ config = {}, viewContent, isExporting }) => {
+  const fillColor = getContrastTextColor();
+
   const {
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
@@ -82,6 +85,7 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
     <YAxisComponent
       key={yAxisId}
       ticks={ticks}
+      tickSize={10}
       yAxisId={yAxisId}
       orientation={orientation}
       domain={calculateYAxisDomain(yAxisDomain)}
@@ -98,7 +102,7 @@ const YAxis = ({ config = {}, viewContent, isExporting }) => {
         )
       }
       interval={isExporting ? 0 : 'preserveStartEnd'}
-      stroke={isExporting ? DARK_BLUE : 'white'}
+      stroke={isExporting ? DARK_BLUE : fillColor}
     />
   );
 };

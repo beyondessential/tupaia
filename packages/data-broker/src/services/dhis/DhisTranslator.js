@@ -7,13 +7,13 @@ import keyBy from 'lodash.keyby';
 
 import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { reduceToDictionary } from '@tupaia/utils';
-import { InboundAggregateDataTranslator } from './InboundAggregateDataTranslator';
+import { InboundAnalyticsTranslator } from './InboundAnalyticsTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
 
 export class DhisTranslator {
   constructor(models) {
     this.models = models;
-    this.inboundAggregateDataTranslator = new InboundAggregateDataTranslator();
+    this.inboundAnalyticsTranslator = new InboundAnalyticsTranslator();
     this.dataElementsByCode = {};
   }
 
@@ -136,8 +136,8 @@ export class DhisTranslator {
     return { ...restOfEvent, dataValues: translatedDataValues };
   }
 
-  translateInboundAggregateData = (response, dataSources) => {
-    return this.inboundAggregateDataTranslator.translate(response, dataSources);
+  translateInboundAnalytics = (response, dataSources) => {
+    return this.inboundAnalyticsTranslator.translate(response, dataSources);
   };
 
   translateInboundEventDataValues = (dataValues, dataElementToSourceCode) => {
@@ -200,6 +200,19 @@ export class DhisTranslator {
         translatedDataElement.code = dataElementToSourceCode[code];
       }
       return translatedDataElement;
+    });
+  };
+
+  translateInboundIndicators = (indicators, dataSources) => {
+    const indicatorIdToSourceCode = reduceToDictionary(dataSources, d => d.config?.dhisId, 'code');
+
+    return indicators.map(({ code, ...restOfIndicators }) => {
+      const translatedIndicators = { ...restOfIndicators };
+      const { id } = translatedIndicators;
+      if (!translatedIndicators.code && id) {
+        translatedIndicators.code = indicatorIdToSourceCode[id];
+      }
+      return translatedIndicators;
     });
   };
 }

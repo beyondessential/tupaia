@@ -4,18 +4,19 @@
  *
  */
 
+const path = require('path');
+
 /**
  * The doc doesn't really mention using webpack.config.js, but .storybook/main.js instead.
  *
  * Nevertheless, configuring the webpack.config.js seems to work fine.
  *
  * @param config
- * @param mode
  * @return {Promise<*>}
  * @see https://storybook.js.org/docs/react/configure/webpack
  * @see https://storybook.js.org/docs/react/configure/webpack#using-your-existing-config
  */
-module.exports = async ({ config, mode }) => {
+module.exports = async ({ config }) => {
   /**
    * Fixes npm packages that depend on `fs` module, etc.
    *
@@ -29,6 +30,11 @@ module.exports = async ({ config, mode }) => {
     net: 'empty',
     module: 'empty',
     console: true,
+  };
+
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    yargs: path.resolve(__dirname, 'yargsMock.js'),
   };
 
   return config;

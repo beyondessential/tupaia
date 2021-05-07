@@ -5,10 +5,14 @@
 
 import * as BuildEvents from '../../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
+import { EventsPuller } from '../../../../../services/dhis/pullers/EventsPuller';
 import { DATA_SOURCES } from '../DhisService.fixtures';
-import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
+import { createModelsStub, createDataSourceModelsStub, stubDhisApi } from '../DhisService.stubs';
 
 const dhisService = new DhisService(createModelsStub());
+const eventsPuller = new EventsPuller(createDataSourceModelsStub(), dhisService.translator);
+dhisService.analyticsPuller = eventsPuller;
+dhisService.pullers.dataGroup = eventsPuller.pull;
 let dhisApi;
 
 export const testPullEvents = () => {
@@ -22,8 +26,8 @@ export const testPullEvents = () => {
     ).toBeRejectedWith(/Cannot .*multiple programs/));
 
   it('invokes the deprecated event api by default', async () => {
-    const eventApiSpy = jest.spyOn(dhisService, 'pullEventsForApi');
-    const deprecatedEventApiSpy = jest.spyOn(dhisService, 'pullEventsForApi_Deprecated');
+    const eventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi');
+    const deprecatedEventApiSpy = jest.spyOn(eventsPuller, 'pullEventsForApi_Deprecated');
 
     await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', {});
     expect(eventApiSpy).not.toHaveBeenCalled();

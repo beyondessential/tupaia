@@ -8,10 +8,10 @@ import { Switch, Route } from 'react-router-dom';
 import { NavBar, Footer } from '../components';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
-import { PageView } from '../views/PageView';
+import { PageView, TwoColumnPageView } from '../views/PageView';
 import { EntityView } from '../views/EntityView';
 import { NotFoundView } from '../views/NotFoundView';
-import { ABOUT_PAGE, CONTACT_PAGE } from '../constants';
+import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
 /**
  * Main Page Routes
@@ -33,6 +33,11 @@ export const PageRoutes = React.memo(() => (
       <PageView content={ABOUT_PAGE} />
       <Footer />
     </Route>
+    <Route path="/fundamental-quality-standards">
+      <NavBar />
+      <TwoColumnPageView content={FQS_PAGE} />
+      <Footer />
+    </Route>
     <Route path="/contact">
       <NavBar />
       <PageView content={CONTACT_PAGE} />
@@ -41,7 +46,6 @@ export const PageRoutes = React.memo(() => (
     <Route path="/:entityCode/:view?">
       <NavBar />
       <EntityView />
-      <Footer />
     </Route>
     <Route>
       <NavBar />
