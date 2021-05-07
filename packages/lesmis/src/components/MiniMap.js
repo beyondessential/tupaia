@@ -6,8 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Polygon as PolygonComponent } from 'react-leaflet';
 import {
+  Polygon,
   MapContainer,
   TileLayer,
   InversePolygonMask,
@@ -25,7 +25,7 @@ const Map = styled(MapContainer)`
   height: auto;
 `;
 
-const BasicPolygon = styled(PolygonComponent)`
+const BasicPolygon = styled(Polygon)`
   fill: ${RED};
   fill-opacity: 0.3;
   stroke: ${RED};
@@ -40,7 +40,7 @@ const RegionPolygon = ({ entityData }) => {
   if (!entityData?.region) return null;
   if (entityData?.type === 'country') return null; // country is fine without, as it has the mask
 
-  return <BasicPolygon positions={entityData?.region} />;
+  return <BasicPolygon positions={entityData?.region} interactive={false} />;
 };
 
 const PointMarker = ({ entityData }) =>
