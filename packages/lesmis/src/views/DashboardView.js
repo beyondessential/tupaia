@@ -178,6 +178,14 @@ const VerticalDivider = styled(MuiDivider)`
   height: 7rem;
 `;
 
+const PhotoOrMap = ({ vitals }) => {
+  if (vitals.isLoading) return null;
+
+  if (vitals.Photo) return <img src={vitals.Photo} alt="place" width="720px" />;
+
+  return <MiniMap entityCode={vitals.code} />;
+};
+
 const CountryView = ({ vitals }) => {
   return (
     <>
@@ -198,7 +206,7 @@ const CountryView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MiniMap entityCode={vitals.code} />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -243,7 +251,7 @@ const ProvinceView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MiniMap entityCode={vitals.code} />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -315,7 +323,7 @@ const DistrictView = ({ vitals }) => {
           />
         </FlexRow>
       </VitalsSection>
-      <MiniMap entityCode={vitals.code} />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -360,7 +368,7 @@ const VillageView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MiniMap entityCode={vitals.code} />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -446,11 +454,7 @@ const SchoolView = ({ vitals }) => {
           </ParentVillage>
         </FlexRow>
       </VitalsSection>
-      {vitals.Photo ? (
-        <img src={vitals.Photo} alt="place" width="720px" />
-      ) : (
-        <MiniMap entityCode={vitals.code} />
-      )}
+      <PhotoOrMap vitals={vitals} />
     </>
   );
 };
@@ -514,6 +518,9 @@ export const DashboardView = () => {
   );
 };
 
+PhotoOrMap.propTypes = {
+  vitals: PropTypes.object.isRequired,
+};
 CountryView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
