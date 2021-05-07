@@ -106,19 +106,18 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
-  getFilledValues(analytics, aggregationPeriod, fillEmptyPeriodsWith) {
+  getFilledValues(aggregationPeriod, fillEmptyPeriodsWith) {
     const checkIfFillingContinuousValues = fillEmptyPeriodsWith === 'previous';
-    const periods = getContinuousPeriodsForAnalytics(
-      analytics,
-      aggregationPeriod,
-      checkIfFillingContinuousValues, // To get a continuous period till now, we need to set true for this option config (continueTilCurrentPeriod). This can be a new option config in the future.
-    );
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
-      let mostRecentValue = checkIfFillingContinuousValues
-        ? undefined
-        : Object.values(organisationUnitCache)[0];
+      const analyticsPerOrgUnit = Object.values(organisationUnitCache);
+      const periods = getContinuousPeriodsForAnalytics(
+        analyticsPerOrgUnit,
+        aggregationPeriod,
+        checkIfFillingContinuousValues, // To get a continuous period till now, we need to set true for this option config (continueTilCurrentPeriod). This can be a new option config in the future.
+      );
+      let mostRecentValue = checkIfFillingContinuousValues ? undefined : analyticsPerOrgUnit[0];
 
       periods.forEach(period => {
         const valueForPeriod = organisationUnitCache[period];
@@ -158,6 +157,6 @@ export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregation
   const valueAggregator = new FinalValueAggregator(cache);
 
   return options.hasOwnProperty('fillEmptyPeriodsWith')
-    ? valueAggregator.getFilledValues(analytics, aggregationPeriod, options.fillEmptyPeriodsWith)
+    ? valueAggregator.getFilledValues(aggregationPeriod, options.fillEmptyPeriodsWith)
     : valueAggregator.getDistinctValues();
 };
