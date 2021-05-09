@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   height: 800px; // fallback height for older browsers
   height: calc(100vh - ${NAVBAR_HEIGHT});
   background-size: cover;
-  background-position: center;
+  background-position: right top;
 `;
 
 const Container = styled(MuiContainer)`

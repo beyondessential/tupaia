@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -21,7 +21,10 @@ import {
   TabPanel,
   YearSelector,
 } from '../components';
-import { DEFAULT_DASHBOARD_GROUP, DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
+import { DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
+
+export const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
+export const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -50,6 +53,8 @@ const setDefaultDashboard = (data, setSelectedDashboard) => {
 
   if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
     setSelectedDashboard(DEFAULT_DASHBOARD_GROUP);
+  } else if (dashboardNames.includes(SCHOOL_DEFAULT_DASHBOARD_GROUP)) {
+    setSelectedDashboard(SCHOOL_DEFAULT_DASHBOARD_GROUP);
   } else {
     setSelectedDashboard(dashboardNames[0]);
   }
@@ -98,6 +103,10 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   }, [isScrolledPastTop, stickyBarsHeight]);
 
   useEffect(() => {
+    // unset the selected dashboard when the data changes
+    // in case the selected one doesn't exist in the new data
+    setSelectedDashboard(false);
+
     if (data) {
       setDefaultDashboard(data, setSelectedDashboard);
     }
@@ -150,6 +159,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                         key={report.viewId}
                         name={report.name}
                         entityCode={entityCode}
+                        dashboardGroupName={heading}
                         dashboardGroupId={groupValue.dashboardGroupId.toString()}
                         reportId={report.viewId}
                         year={selectedYear}
