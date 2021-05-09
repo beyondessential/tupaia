@@ -26,7 +26,7 @@ import { DEFAULT_DASHBOARD_GROUP, DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '.
 const StickyTabBarContainer = styled.div`
   position: sticky;
   top: ${NAVBAR_HEIGHT_INT}px;
-  z-index: 9999;
+  z-index: 2;
 `;
 
 const DashboardSection = styled(FlexCenter)`
