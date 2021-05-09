@@ -26,9 +26,9 @@ const Map = styled(MapContainer)`
 `;
 
 const BasicPolygon = styled(Polygon)`
-  fill: ${RED};
+  fill: ${props => props.theme.palette.primary.main};
   fill-opacity: 0.3;
-  stroke: ${RED};
+  stroke: ${props => props.theme.palette.primary.main};
 `;
 
 /* eslint-disable react/prop-types */
