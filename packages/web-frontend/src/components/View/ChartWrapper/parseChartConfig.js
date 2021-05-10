@@ -63,6 +63,8 @@ const sortChartConfigByLegendOrder = chartConfig => {
     );
 };
 
+// @TODO still just trying things
+
 const createDynamicConfig = (chartConfig, dynamicChartConfig, data) => {
   // Just find keys. Doesn't include keys which end in _metadata.
   const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
