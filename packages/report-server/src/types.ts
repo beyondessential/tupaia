@@ -8,7 +8,7 @@ import { ParamsDictionary, Query } from 'express-serve-static-core';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
-export interface FetchReportQuery extends Query {
+export interface FetchReportFilter {
   organisationUnitCodes: string;
   hierarchy?: string;
   period?: string;
@@ -16,7 +16,14 @@ export interface FetchReportQuery extends Query {
   endDate?: string;
 }
 
-export interface FetchReportParams extends ParamsDictionary {
+export interface FetchReportQuery extends Query, FetchReportFilter {}
+
+interface ReportsRequestBody extends FetchReportFilter {
+  testConfig?: ReportConfig;
+  testData?: Record<string, string | number>[];
+}
+
+interface FetchReportUrlParams extends ParamsDictionary {
   reportCode: string;
 }
 
@@ -28,13 +35,8 @@ export interface ReportConfig {
   transform: (string | Record<string, unknown>)[];
 }
 
-interface ReportsRequestBody {
-  testConfig?: ReportConfig;
-  testData?: Record<string, string | number>[];
-}
-
 export interface ReportsRequest<
-  P = FetchReportParams,
+  P = FetchReportUrlParams,
   ResBody = unknown,
   ReqBody = ReportsRequestBody,
   ReqQuery = FetchReportQuery

@@ -6,4 +6,3 @@
 export { getDefaultPeriod, EARLIEST_DATA_DATE } from './getDefaultPeriod';
 export { handleError } from './handleError';
 export { getIsProductionEnvironment } from './getIsProductionEnvironment';
-export { convertDateRangeToPeriodQueryString } from './convertDateRangeToPeriodQueryString';

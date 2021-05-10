@@ -2,7 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getDefaultPeriod, convertDateRangeToPeriodQueryString } from '/utils';
+import { convertDateRangeToPeriodQueryString } from '@tupaia/utils';
+import { getDefaultPeriod } from '/utils';
 
 export class QueryBuilder {
   constructor(originalQuery, replacementValues = {}, routeHandler) {

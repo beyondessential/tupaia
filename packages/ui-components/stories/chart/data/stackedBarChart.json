@@ -1,0 +1,67 @@
+{
+  "data": [
+    {
+      "name": "Functioning hand washing facilities",
+      "Secondary_metadata": { "numerator": 0, "denominator": 0 },
+      "Secondary": "No data",
+      "Primary_metadata": { "numerator": 0, "denominator": 0 },
+      "Primary": "No data",
+      "Pre-School_metadata": { "numerator": 0, "denominator": 0 },
+      "Pre-School": "No data"
+    },
+    {
+      "name": "Access to water supply",
+      "Secondary_metadata": { "numerator": 121, "denominator": 142 },
+      "Secondary": 0.852112676056338,
+      "Primary_metadata": { "numerator": 561, "denominator": 714 },
+      "Primary": 0.7857142857142857,
+      "Pre-School_metadata": { "numerator": 280, "denominator": 355 },
+      "Pre-School": 0.7887323943661971
+    },
+    {
+      "name": "Access to water supply all year round",
+      "Secondary_metadata": { "numerator": 77, "denominator": 142 },
+      "Secondary": 0.5422535211267606,
+      "Primary_metadata": { "numerator": 394, "denominator": 714 },
+      "Primary": 0.5518207282913166,
+      "Pre-School_metadata": { "numerator": 172, "denominator": 355 },
+      "Pre-School": 0.48450704225352115
+    },
+    {
+      "name": "Access to clean drinking water",
+      "Secondary_metadata": { "numerator": 0, "denominator": 0 },
+      "Secondary": "No data",
+      "Primary_metadata": { "numerator": 0, "denominator": 0 },
+      "Primary": "No data",
+      "Pre-School_metadata": { "numerator": 0, "denominator": 0 },
+      "Pre-School": "No data"
+    },
+    {
+      "name": "Hygiene promotion training in last 3 years",
+      "Secondary_metadata": { "numerator": 0, "denominator": 0 },
+      "Secondary": "No data",
+      "Primary_metadata": { "numerator": 0, "denominator": 0 },
+      "Primary": "No data",
+      "Pre-School_metadata": { "numerator": 0, "denominator": 0 },
+      "Pre-School": "No data"
+    }
+  ],
+  "viewId": "Laos_Schools_WASH_Bar_Graph",
+  "organisationUnitCode": "LA_Houaphanh",
+  "dashboardGroupId": "341",
+  "startDate": "2015-01-01",
+  "endDate": "2021-12-31",
+  "name": "Water, Sanitation and Hygiene (WASH), % Availability",
+  "type": "chart",
+  "chartType": "bar",
+  "labelType": "fractionAndPercentage",
+  "valueType": "percentage",
+  "chartConfig": {
+    "Primary": { "legendOrder": 2 },
+    "Secondary": { "legendOrder": 3 },
+    "Pre-School": { "legendOrder": 1 }
+  },
+  "description": "This report is calculated based on the number of ‘School COVID-19 Response Laos’ survey responses",
+  "periodGranularity": "month",
+  "presentationOptions": { "hideAverage": true }
+}
