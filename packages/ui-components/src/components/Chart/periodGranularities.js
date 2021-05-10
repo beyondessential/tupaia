@@ -124,16 +124,22 @@ export const GRANULARITIES_WITH_ONE_DATE_VALID_OFFSET_UNIT = {
   [SINGLE_YEAR]: YEAR,
 };
 
-export function roundStartEndDates(granularity, startDate, endDate) {
+export const roundStartDate = (granularity, startDate) => {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   const momentStartDate = moment.isMoment(startDate) ? startDate : moment(startDate);
-  const momentEndDate = moment.isMoment(endDate) ? endDate : moment(endDate);
+  return momentStartDate.clone().startOf(momentUnit);
+};
 
-  return {
-    startDate: momentStartDate.clone().startOf(momentUnit),
-    endDate: momentEndDate.clone().endOf(momentUnit),
-  };
-}
+export const roundEndDate = (granularity, endDate) => {
+  const { momentUnit } = GRANULARITY_CONFIG[granularity];
+  const momentEndDate = moment.isMoment(endDate) ? endDate : moment(endDate);
+  return momentEndDate.clone().startOf(momentUnit);
+};
+
+export const roundStartEndDates = (granularity, startDate, endDate) => ({
+  startDate: roundStartDate(granularity, startDate),
+  endDate: roundEndDate(granularity, endDate),
+});
 
 export const momentToDateString = (date, granularity, format) =>
   granularity === WEEK || granularity === SINGLE_WEEK
