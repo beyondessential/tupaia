@@ -100,7 +100,7 @@ const reports = [
   {
     config: {
       id: 'Laos_EOC_Measles_Stock_Availability_Facility',
-      dataBuilder: 'tableOfValuesForOrgUnits',
+      dataBuilder: 'tableOfDataValues',
       dataBuilderConfig: getDatabuilderConfig(['Stock Status']),
       viewJson,
       dataServices: [{ isDataRegional: false }],
