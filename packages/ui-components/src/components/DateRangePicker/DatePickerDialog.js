@@ -18,11 +18,13 @@ import { YearPicker } from './YearPicker';
 import { WeekPicker } from './WeekPicker';
 import { QuarterPicker } from './QuarterPicker';
 import {
+  DEFAULT_MIN_DATE,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_SHAPE,
   roundStartEndDates,
 } from '../Chart';
+import moment from 'moment';
 
 export const Error = styled.div`
   color: red;
@@ -105,20 +107,24 @@ const StyledDateRow = styled.div`
   margin-top: 30px;
 `;
 
-const DatePickerDialog = ({
+export const DatePickerDialog = ({
   isOpen,
   onClose,
   granularity,
   startDate,
   endDate,
-  minMomentDate,
-  maxMomentDate,
+  minDate,
+  maxDate,
   onSetNewDates,
 }) => {
-  const [selectedStartDate, setSelectedStartDate] = useState(startDate);
-  const [selectedEndDate, setSelectedEndDate] = useState(endDate);
-  const [errorMessage, setErrorMessage] = useState('');
+  const momentStartDate = moment(startDate);
+  const momentEndDate = moment(endDate);
+  const minMomentDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
+  const maxMomentDate = maxDate ? moment(maxDate) : moment();
 
+  const [selectedStartDate, setSelectedStartDate] = useState(momentStartDate);
+  const [selectedEndDate, setSelectedEndDate] = useState(momentEndDate);
+  const [errorMessage, setErrorMessage] = useState('');
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
 
   const onCancelDateSelection = () => {
@@ -138,7 +144,10 @@ const DatePickerDialog = ({
     );
 
     // Only update if the dates have actually changed by at least one day
-    if (!startDate.isSame(roundedStartDate, 'day') || !endDate.isSame(roundedEndDate, 'day')) {
+    if (
+      !momentStartDate.isSame(roundedStartDate, 'day') ||
+      !momentEndDate.isSame(roundedEndDate, 'day')
+    ) {
       // Update the external control values!
       onSetNewDates(roundedStartDate, roundedEndDate);
     }
@@ -186,11 +195,14 @@ DatePickerDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   granularity: GRANULARITY_SHAPE.isRequired,
-  startDate: PropTypes.object.isRequired,
-  endDate: PropTypes.object.isRequired,
-  minMomentDate: PropTypes.object.isRequired,
-  maxMomentDate: PropTypes.object.isRequired,
+  startDate: PropTypes.string.isRequired,
+  endDate: PropTypes.string.isRequired,
   onSetNewDates: PropTypes.func.isRequired,
+  minDate: PropTypes.string,
+  maxDate: PropTypes.string,
 };
 
-export default DatePickerDialog;
+DatePickerDialog.defaultProps = {
+  minDate: null,
+  maxDate: null,
+};

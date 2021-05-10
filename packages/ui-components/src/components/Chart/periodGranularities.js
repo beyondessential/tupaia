@@ -133,7 +133,7 @@ export const roundStartDate = (granularity, startDate) => {
 export const roundEndDate = (granularity, endDate) => {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   const momentEndDate = moment.isMoment(endDate) ? endDate : moment(endDate);
-  return momentEndDate.clone().startOf(momentUnit);
+  return momentEndDate.clone().endOf(momentUnit);
 };
 
 export const roundStartEndDates = (granularity, startDate, endDate) => ({
@@ -353,11 +353,17 @@ export const constrainDate = (date, min, max) => {
   return d;
 };
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const formatDateForApi = (date, timezone) => {
   if (!date) return undefined;
   const dateAsMoment = moment.isMoment(date) ? date : moment(date);
   if (timezone) dateAsMoment.tz(timezone);
+  return dateAsMoment.format(DATE_FORMAT);
+};
+
+export const toStandardDateString = date => {
+  if (!date) return undefined;
+  const dateAsMoment = moment.isMoment(date) ? date : moment(date);
   return dateAsMoment.format(DATE_FORMAT);
 };

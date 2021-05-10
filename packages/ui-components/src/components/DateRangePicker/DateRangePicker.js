@@ -13,10 +13,10 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiIconButton from '@material-ui/core/IconButton';
-import DatePickerDialog from './DatePickerDialog';
+import { DatePickerDialog } from './DatePickerDialog';
 import { FlexSpaceBetween, FlexStart } from '../Layout';
 import { GRANULARITIES, GRANULARITY_SHAPE } from '../Chart';
-import { useDatePicker } from './useDateRangePicker';
+import { useDateRangePicker } from './useDateRangePicker';
 
 const hoverBlue = '#2196f3';
 
@@ -74,8 +74,8 @@ const ResetLabel = styled(Link)`
 export const DateRangePicker = ({
   startDate,
   endDate,
-  min,
-  max,
+  minDate,
+  maxDate,
   granularity,
   onSetDates,
   isLoading,
@@ -92,13 +92,11 @@ export const DateRangePicker = ({
     nextDisabled,
     prevDisabled,
     labelText,
-    minMomentDate,
-    maxMomentDate,
-  } = useDatePicker({
+  } = useDateRangePicker({
     startDate,
     endDate,
-    min,
-    max,
+    minDate,
+    maxDate,
     granularity,
     onSetDates,
   });
@@ -144,8 +142,8 @@ export const DateRangePicker = ({
           granularity={granularity}
           startDate={currentStartDate}
           endDate={currentEndDate}
-          minMomentDate={minMomentDate}
-          maxMomentDate={maxMomentDate}
+          minDate={minDate}
+          maxDate={maxDate}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           onSetNewDates={handleDateChange}
@@ -155,13 +153,11 @@ export const DateRangePicker = ({
   );
 };
 
-const stringOrMoment = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
-
 DateRangePicker.propTypes = {
-  startDate: stringOrMoment,
-  endDate: stringOrMoment,
-  min: stringOrMoment,
-  max: stringOrMoment,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  minDate: PropTypes.string,
+  maxDate: PropTypes.string,
   granularity: GRANULARITY_SHAPE,
   onSetDates: PropTypes.func,
   isLoading: PropTypes.bool,
@@ -170,8 +166,8 @@ DateRangePicker.propTypes = {
 DateRangePicker.defaultProps = {
   startDate: null,
   endDate: null,
-  min: null,
-  max: null,
+  minDate: null,
+  maxDate: null,
   granularity: GRANULARITIES.DAY,
   onSetDates: () => {},
   isLoading: false,

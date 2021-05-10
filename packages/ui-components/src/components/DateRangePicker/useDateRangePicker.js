@@ -8,7 +8,6 @@ import moment from 'moment';
 import {
   constrainDate,
   DEFAULT_MIN_DATE,
-  formatDateForApi,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
@@ -16,6 +15,7 @@ import {
   roundStartEndDates,
   roundStartDate,
   roundEndDate,
+  toStandardDateString,
 } from '../Chart';
 
 const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];
@@ -75,25 +75,32 @@ const getCurrentDates = (granularity, startDate, endDate, defaultStartDate, defa
  *
  * @param startDate
  * @param endDate
- * @param min
- * @param max
+ * @param minDate
+ * @param maxDate
  * @param granularity
  * @param onSetDates
- * @returns {{handleReset: handleReset, handleDateChange: handleDateChange, nextDisabled: boolean, labelText: (*|string), isSingleDate: boolean, currentStartDate: (*|moment.Moment), currentEndDate: (*|moment.Moment), prevDisabled: boolean, minMomentDate: moment.Moment, changePeriod: changePeriod, maxMomentDate: moment.Moment}}
+ * @returns {{handleReset: handleReset, handleDateChange: handleDateChange, nextDisabled: boolean, labelText: (*|string), isSingleDate: boolean, currentStartDate: (*|moment.Moment), currentEndDate: (*|moment.Moment), prevDisabled: boolean, changePeriod: changePeriod}}
  */
-export const useDatePickerDates = ({ startDate, endDate, min, max, granularity, onSetDates }) => {
+export const useDateRangePicker = ({
+  startDate,
+  endDate,
+  minDate,
+  maxDate,
+  granularity,
+  onSetDates,
+}) => {
   /**
    * Call the on change handler prop using iso formatted date
    */
   const handleDateChange = (start, end) => {
-    onSetDates(formatDateForApi(start), formatDateForApi(end));
+    onSetDates(toStandardDateString(start), toStandardDateString(end));
   };
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
   const { momentShorthand } = GRANULARITY_CONFIG[granularity];
 
-  const minMomentDate = min ? moment(min) : moment(DEFAULT_MIN_DATE);
-  const maxMomentDate = max ? moment(max) : moment();
+  const minMomentDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
+  const maxMomentDate = maxDate ? moment(maxDate) : moment();
 
   const { defaultStartDate, defaultEndDate } = getDefaultDates(
     isSingleDate,
@@ -152,10 +159,8 @@ export const useDatePickerDates = ({ startDate, endDate, min, max, granularity, 
 
   return {
     isSingleDate,
-    minMomentDate,
-    maxMomentDate,
-    currentStartDate,
-    currentEndDate,
+    currentStartDate: toStandardDateString(currentStartDate),
+    currentEndDate: toStandardDateString(currentEndDate),
     handleReset,
     handleDateChange,
     changePeriod,
