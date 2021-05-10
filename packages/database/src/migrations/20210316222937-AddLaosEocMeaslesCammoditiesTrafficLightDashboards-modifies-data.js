@@ -27,7 +27,7 @@ exports.setup = function (options, seedLink) {
 // Mkqu5ZVE3C1	Retinol 100,000 IU soft get cap Code: SOH_61d3f4bf
 // QaC3fjHFJvN	Retinol 200,000 IU soft get cap Code: SOH_61fe94bf
 
-const getDatabuilderConfig = columns => ({
+const getDatabuilderConfig = (columns, cells) => ({
   rows: [
     {
       rows: [
@@ -45,8 +45,7 @@ const getDatabuilderConfig = columns => ({
       category: 'Retinol Soft Gel Cap',
     },
   ],
-  // cells: ['SOH_f8cf15e9', 'SOH_85ea65e9'],
-  cells: ['SOH_f8cf15e9', 'SOH_85ea65e9', 'LA_SOH_41e9d4bf', 'LA_SOH_61d3f4bf', 'LA_SOH_61fe94bf'],
+  cells,
   columns,
   entityAggregation: {
     dataSourceEntityType: 'facility',
@@ -90,7 +89,13 @@ const reports = [
     config: {
       id: 'Laos_EOC_Measles_Stock_Availability_Sub_District',
       dataBuilder: 'tableOfValuesForOrgUnits',
-      dataBuilderConfig: getDatabuilderConfig('$orgUnit'),
+      dataBuilderConfig: getDatabuilderConfig('$orgUnit', [
+        'SOH_f8cf15e9',
+        'SOH_85ea65e9',
+        'LA_SOH_41e9d4bf',
+        'LA_SOH_61d3f4bf',
+        'LA_SOH_61fe94bf',
+      ]),
       viewJson,
       dataServices: [{ isDataRegional: false }],
     },
@@ -101,7 +106,16 @@ const reports = [
     config: {
       id: 'Laos_EOC_Measles_Stock_Availability_Facility',
       dataBuilder: 'tableOfDataValues',
-      dataBuilderConfig: getDatabuilderConfig(['Stock Status']),
+      dataBuilderConfig: getDatabuilderConfig(
+        ['Stock Status'],
+        [
+          ['SOH_f8cf15e9'],
+          ['SOH_85ea65e9'],
+          ['LA_SOH_41e9d4bf'],
+          ['LA_SOH_61d3f4bf'],
+          ['LA_SOH_61fe94bf'],
+        ],
+      ),
       viewJson,
       dataServices: [{ isDataRegional: false }],
     },
