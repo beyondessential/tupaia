@@ -9,8 +9,8 @@ import { Flight, getTotalNumPassengers, FLIGHT_DATE } from './flight';
 export class TotalNumOfPassengerByFlightDate extends DataBuilder {
   async build() {
     const dataElementCodes = [FLIGHT_DATE];
-    const { startDate, endDate } = this.query;
-    this.query.startDate = undefined;
+    const { startDate, endDate } = this.query; // Selected period is not for event's response time, but to filter data element 'FLIGHT_DATE'.
+    this.query.startDate = undefined; // Set to undefined to fetch all result.
     this.query.endDate = undefined;
     const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
     const flights = Flight.fromEvents(events);
