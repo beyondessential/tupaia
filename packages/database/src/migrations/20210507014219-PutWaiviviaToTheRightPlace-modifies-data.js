@@ -31,6 +31,9 @@ exports.up = async function (db) {
   const WAIVIVIA_ID = await codeToId(db, 'entity', WAIVIVIA_CODE);
   const BURETA_ID = await codeToId(db, 'entity', BURETA_CODE);
   const FIJI_ID = await codeToId(db, 'entity', FIJI_CODE);
+  if (!(WAIVIVIA_ID && BURETA_ID)) {
+    throw new Error('Entities not found');
+  }
 
   await db.runSql(`
     UPDATE entity 
@@ -52,6 +55,10 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   const WAIVIVIA_ID = await codeToId(db, 'entity', WAIVIVIA_CODE);
   const EASTERN_ID = await codeToId(db, 'entity', EASTERN_CODE);
+
+  if (!(WAIVIVIA_ID && EASTERN_ID)) {
+    throw new Error('Entities not found');
+  }
 
   await db.runSql(`
     UPDATE entity 
