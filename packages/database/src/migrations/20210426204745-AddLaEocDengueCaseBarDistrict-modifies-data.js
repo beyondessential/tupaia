@@ -48,7 +48,8 @@ const dashboardReport = {
       },
     ],
     entityAggregation: {
-      dataSourceEntityType: 'sub_district',
+      dataSourceEntityType: 'facility',
+      aggregationEntityType: 'sub_district',
     },
   },
   viewJson: {
