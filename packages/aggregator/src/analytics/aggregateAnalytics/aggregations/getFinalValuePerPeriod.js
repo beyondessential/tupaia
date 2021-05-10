@@ -107,7 +107,7 @@ class FinalValueAggregator {
   }
 
   getFilledValues(aggregationPeriod, fillEmptyPeriodsWith) {
-    const checkIfFillingContinuousValues = fillEmptyPeriodsWith === 'previous';
+    const fillingPreviousValues = fillEmptyPeriodsWith === 'previous';
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
@@ -115,9 +115,9 @@ class FinalValueAggregator {
       const periods = getContinuousPeriodsForAnalytics(
         analyticsPerOrgUnit,
         aggregationPeriod,
-        checkIfFillingContinuousValues, // To get a continuous period till now, we need to set true for this option config (continueTilCurrentPeriod). This can be a new option config in the future.
+        fillingPreviousValues, // To get a continuous period till now, we need to set true for this option config (continueTilCurrentPeriod). This can be a new option config in the future.
       );
-      let mostRecentValue = checkIfFillingContinuousValues ? undefined : analyticsPerOrgUnit[0];
+      let mostRecentValue = fillingPreviousValues ? undefined : analyticsPerOrgUnit[0];
 
       periods.forEach(period => {
         const valueForPeriod = organisationUnitCache[period];
@@ -130,8 +130,9 @@ class FinalValueAggregator {
             ...mostRecentValue,
             period,
           };
-          if (!checkIfFillingContinuousValues && !valueForPeriod)
+          if (!fillingPreviousValues && !valueForPeriod) {
             valueForOneOrgUnit.value = fillEmptyPeriodsWith;
+          }
           values.push(valueForOneOrgUnit);
         }
       });
