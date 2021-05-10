@@ -106,7 +106,7 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   viewContent: null,
-  isEnlarged: false,
+  isEnlarged: true,
   isExporting: false,
   onItemClick: () => {},
 };
