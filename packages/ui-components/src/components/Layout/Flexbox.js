@@ -29,3 +29,9 @@ export const FlexEnd = styled(MuiBox)`
   justify-content: flex-end;
   align-items: center;
 `;
+
+export const FlexR = styled(MuiBox)`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;

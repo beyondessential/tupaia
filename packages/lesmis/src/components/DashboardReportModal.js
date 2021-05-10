@@ -11,6 +11,8 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { DateRangePicker } from '@tupaia/ui-components';
+import { formatDateForApi } from '@tupaia/ui-components/lib/chart';
 import {
   Box,
   useMediaQuery,
@@ -27,6 +29,7 @@ import { ToggleButton } from './ToggleButton';
 import { YearSelector } from './YearSelector';
 import { ChartTable, TABS } from './ChartTable';
 import { useDashboardReportData } from '../api/queries';
+import { yearToApiDates } from '../api/queries/utils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -70,6 +73,8 @@ const Description = styled(Typography)`
   margin-top: 0.625rem;
 `;
 
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 export const DashboardReportModal = ({
   name,
   dashboardGroupName,
@@ -81,21 +86,31 @@ export const DashboardReportModal = ({
   year,
 }) => {
   const [open, setOpen] = useState(false);
-  const [selectedYear, setSelectedYear] = useState(year);
+
+  const { startDate: start, endDate: end } = yearToApiDates(year);
+  const [startDate, setStartDate] = useState(start);
+  const [endDate, setEndDate] = useState(end);
+  const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [selectedTab, setSelectedTab] = useState(TABS.CHART);
   const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
     entityCode,
     dashboardGroupId,
     reportId,
     periodGranularity,
-    year,
+    startDate,
+    endDate,
   });
 
-  useEffect(() => {
-    setSelectedYear(year);
-  }, [open]);
+  // useEffect(() => {
+  //   setStartDate(year);
+  // }, [open]);
+
+  const handleDatesChange = (start, end) => {
+    setStartDate(formatDateForApi(start));
+    setEndDate(formatDateForApi(end));
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -133,7 +148,13 @@ export const DashboardReportModal = ({
                 {viewContent?.description && <Description>{viewContent.description}</Description>}
               </Box>
               <FlexStart>
-                <YearSelector value={selectedYear} onChange={setSelectedYear} />
+                <DateRangePicker
+                  isLoading={isLoading}
+                  startDate={viewContent?.startDate}
+                  endDate={viewContent?.endDate}
+                  granularity={viewContent?.granularity}
+                  onSetDates={handleDatesChange}
+                />
               </FlexStart>
             </Header>
             <FlexEnd>
