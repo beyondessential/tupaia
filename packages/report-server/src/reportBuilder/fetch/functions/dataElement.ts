@@ -7,6 +7,10 @@ import { Aggregator } from '../../../aggregator';
 import { FetchReportQuery } from '../../../types';
 import { FetchResponse } from '../types';
 
+type DataElementParams = {
+  dataElements: unknown;
+};
+
 type DataElementFetchParams = {
   dataElementCodes: string[];
 };
@@ -24,25 +28,29 @@ const fetchAnalytics = async (
   });
 };
 
-const buildParams = (params: unknown): DataElementFetchParams => {
-  if (!Array.isArray(params)) {
-    throw new Error(`Expected an array of data element codes but got ${params}`);
+const buildParams = (params: DataElementParams): DataElementFetchParams => {
+  const { dataElements } = params;
+  validateDataElements(dataElements);
+
+  return {
+    dataElementCodes: dataElements,
+  };
+};
+
+function validateDataElements(dataElements: unknown): asserts dataElements is string[] {
+  if (!Array.isArray(dataElements)) {
+    throw new Error(`Expected an array of data element codes but got ${dataElements}`);
   }
 
-  const nonStringDataElementCode = params.find(param => typeof param !== 'string');
-
+  const nonStringDataElementCode = dataElements.find(param => typeof param !== 'string');
   if (nonStringDataElementCode) {
     throw new Error(
       `Expected all data element codes to be strings, but got ${nonStringDataElementCode}`,
     );
   }
+}
 
-  return {
-    dataElementCodes: params,
-  };
-};
-
-export const buildDataElementFetch = (params: unknown) => {
+export const buildDataElementFetch = (params: DataElementParams) => {
   const builtDataElementsFetchParams = buildParams(params);
   return (aggregator: Aggregator, query: FetchReportQuery) =>
     fetchAnalytics(aggregator, query, builtDataElementsFetchParams);

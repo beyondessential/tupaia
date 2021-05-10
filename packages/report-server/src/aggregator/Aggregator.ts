@@ -37,12 +37,14 @@ export class Aggregator extends BaseAggregator {
     programCode: string,
     organisationUnitCodes: string,
     periodParams: PeriodParams,
+    dataElementCodes?: string[],
   ): Promise<Event[]> {
     const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
     return super.fetchEvents(
       programCode,
       {
         organisationUnitCodes: organisationUnitCodes.split(','),
+        dataElementCodes,
         period,
         startDate,
         endDate,
