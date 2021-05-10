@@ -32,7 +32,7 @@ const QUESTION_FIELDS = [
     source: 'options',
     type: 'tooltip',
     editConfig: {
-      type: 'textArray',
+      type: 'jsonArray',
     },
   },
   {

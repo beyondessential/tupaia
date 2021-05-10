@@ -100,7 +100,7 @@ export const InputField = ({
         />
       );
       break;
-    case 'textArray':
+    case 'jsonArray':
       inputComponent = (
         <JsonEditor
           label={label}
