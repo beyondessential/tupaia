@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Polygon as PolygonComponent, useMap } from 'react-leaflet';
+import { Polygon as PolygonComponent } from 'react-leaflet';
 import styled from 'styled-components';
 import { blue } from '@material-ui/core/colors';
 import { AreaTooltip } from './AreaTooltip';
@@ -23,43 +23,27 @@ const BasicPolygon = styled(PolygonComponent)`
   }
 `;
 
-export const Polygon = ({ orgUnit }) => {
-  const coordinates = orgUnit.location.region;
+export const Polygon = ({ entity }) => {
+  if (!entity || !Array.isArray(entity.region)) {
+    return null;
+  }
+
+  const { name, region } = entity;
 
   return (
-    <BasicPolygon positions={coordinates} interactive={false}>
-      <AreaTooltip permanent text={orgUnit.name} />
+    <BasicPolygon positions={region} interactive={false}>
+      <AreaTooltip text={name} />
     </BasicPolygon>
   );
 };
 
 Polygon.propTypes = {
-  orgUnit: PropTypes.shape({
+  entity: PropTypes.shape({
     name: PropTypes.string,
-    location: PropTypes.object,
-  }).isRequired,
+    region: PropTypes.array,
+  }),
 };
 
-export const ConnectedPolygon = ({ orgUnit }) => {
-  const map = useMap();
-  const coordinates = orgUnit.location.region;
-
-  const eventHandlers = useMemo(
-    () => ({
-      click() {
-        map.fitBounds(orgUnit.location.bounds);
-      },
-    }),
-    [],
-  );
-
-  return <Polygon positions={coordinates} eventHandlers={eventHandlers} />;
-};
-
-ConnectedPolygon.propTypes = {
-  orgUnit: PropTypes.shape({
-    name: PropTypes.string,
-    location: PropTypes.object,
-    bounds: PropTypes.array,
-  }).isRequired,
+Polygon.defaultProps = {
+  entity: null,
 };

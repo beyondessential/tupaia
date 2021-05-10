@@ -1,0 +1,177 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *
+ */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { useTheme } from '@material-ui/core/styles';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import GridOnIcon from '@material-ui/icons/GridOn';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import {
+  Box,
+  useMediaQuery,
+  Slide,
+  Typography,
+  Dialog as MuiDialog,
+  Container as MuiContainer,
+  Button as MuiButton,
+} from '@material-ui/core';
+import * as COLORS from '../constants';
+import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
+import { DialogHeader } from './FullScreenDialog';
+import { ToggleButton } from './ToggleButton';
+import { YearSelector } from './YearSelector';
+import { ChartTable, TABS } from './ChartTable';
+import { useDashboardReportData } from '../api/queries';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="left" ref={ref} {...props} />;
+});
+
+const Wrapper = styled.div`
+  height: 100%;
+  background: ${COLORS.GREY_F9};
+  min-height: 720px;
+`;
+
+const Container = styled(MuiContainer)`
+  padding: 0 6.25rem 3rem;
+  padding-bottom: 5vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Header = styled(FlexSpaceBetween)`
+  padding-top: 2.2rem;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  margin-bottom: 1.6rem;
+
+  .MuiTextField-root {
+    margin-right: 0;
+  }
+`;
+
+const Heading = styled(Typography)`
+  font-size: 1.25rem;
+  line-height: 1.4rem;
+  font-weight: 500;
+`;
+
+const Description = styled(Typography)`
+  font-size: 1rem;
+  line-height: 1.4rem;
+  color: ${props => props.theme.palette.text.secondary};
+  margin-top: 0.625rem;
+`;
+
+export const DashboardReportModal = ({
+  name,
+  dashboardGroupName,
+  buttonText,
+  entityCode,
+  dashboardGroupId,
+  reportId,
+  periodGranularity,
+  year,
+}) => {
+  const [open, setOpen] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(year);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+  const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+    entityCode,
+    dashboardGroupId,
+    reportId,
+    periodGranularity,
+    year,
+  });
+
+  useEffect(() => {
+    setSelectedYear(year);
+  }, [open]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    if (newValue !== null) {
+      setSelectedTab(newValue);
+    }
+  };
+
+  return (
+    <>
+      <MuiButton onClick={handleClickOpen} endIcon={<KeyboardArrowRightIcon />} color="primary">
+        {buttonText}
+      </MuiButton>
+      <MuiDialog
+        scroll="paper"
+        fullScreen
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        style={{ left: fullScreen ? '0' : '6.25rem' }}
+      >
+        <DialogHeader handleClose={handleClose} title={dashboardGroupName} />
+        <Wrapper>
+          <Container maxWidth={false}>
+            <Header>
+              <Box maxWidth={580}>
+                <Heading variant="h3">{name}</Heading>
+                {viewContent?.description && <Description>{viewContent.description}</Description>}
+              </Box>
+              <FlexStart>
+                <YearSelector value={selectedYear} onChange={setSelectedYear} />
+              </FlexStart>
+            </Header>
+            <FlexEnd>
+              <ToggleButtonGroup onChange={handleTabChange} value={selectedTab} exclusive>
+                <ToggleButton value={TABS.TABLE}>
+                  <GridOnIcon />
+                </ToggleButton>
+                <ToggleButton value={TABS.CHART}>
+                  <BarChartIcon />
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </FlexEnd>
+            <ChartTable
+              viewContent={viewContent}
+              isLoading={isLoading}
+              isError={isError}
+              error={error}
+              selectedTab={selectedTab}
+            />
+          </Container>
+        </Wrapper>
+      </MuiDialog>
+    </>
+  );
+};
+
+DashboardReportModal.propTypes = {
+  name: PropTypes.string.isRequired,
+  buttonText: PropTypes.string.isRequired,
+  reportId: PropTypes.string.isRequired,
+  entityCode: PropTypes.string.isRequired,
+  year: PropTypes.string,
+  dashboardGroupId: PropTypes.string.isRequired,
+  periodGranularity: PropTypes.string,
+  dashboardGroupName: PropTypes.string.isRequired,
+};
+
+DashboardReportModal.defaultProps = {
+  year: null,
+  periodGranularity: null,
+};

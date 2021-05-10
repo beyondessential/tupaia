@@ -28,6 +28,7 @@ export function addRoutesToApp(app: Express) {
    * POST routes
    */
   app.post('(/v[0-9]+)?/testFetchReport/:reportCode', wrappedFetchReportWithAsyncCatch); // POST endpoint for testing fetching a report (able to provide test data and config in request body)
+  app.post('(/v[0-9]+)?/fetchReport/:reportCode', wrappedFetchReportWithAsyncCatch);
 
   /**
    * GET routes
