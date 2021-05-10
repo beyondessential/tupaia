@@ -20,9 +20,6 @@ export const useDashboardReportData = ({
     type: 'dashboard',
   };
 
-  console.log('use data start date', startDate);
-  console.log('end date', endDate);
-
   return useQuery(
     ['dashboardReport', entityCode, reportId, params],
     () =>

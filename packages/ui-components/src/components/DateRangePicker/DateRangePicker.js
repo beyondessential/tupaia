@@ -25,6 +25,7 @@ import {
   GRANULARITY_SHAPE,
   roundStartEndDates,
   constrainDate,
+  formatDateForApi,
 } from '../Chart';
 
 const hoverBlue = '#2196f3';
@@ -133,7 +134,7 @@ export const DateRangePicker = ({
   useEffect(() => {
     // Prevent set dates to the same dates
     if (!(initialStartDate && initialEndDate)) {
-      onSetDates(currentStartDate, currentEndDate);
+      handleDateChange(currentStartDate, currentEndDate);
     }
   }, []);
 
@@ -152,11 +153,16 @@ export const DateRangePicker = ({
       newEndDate,
     );
 
-    onSetDates(roundedStartDate, roundedEndDate);
+    handleDateChange(roundedStartDate, roundedEndDate);
   };
 
   const handleReset = () => {
-    onSetDates(defaultStartDate, defaultEndDate);
+    handleDateChange(defaultStartDate, defaultEndDate);
+  };
+
+  // call the on change handler prop using iso formatted date
+  const handleDateChange = (start, end) => {
+    onSetDates(formatDateForApi(start), formatDateForApi(end));
   };
 
   const nextDisabled = currentEndDate.isSameOrAfter(maxMomentDate);
@@ -220,7 +226,7 @@ export const DateRangePicker = ({
           maxMomentDate={maxMomentDate}
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          onSetNewDates={onSetDates}
+          onSetNewDates={handleDateChange}
         />
       )}
     </>

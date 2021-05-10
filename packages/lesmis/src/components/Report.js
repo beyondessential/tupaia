@@ -79,7 +79,6 @@ export const Report = React.memo(
   }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
     const { startDate, endDate } = yearToApiDates(year);
-    console.log('report...', startDate, endDate);
     const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
       entityCode,
       dashboardGroupId,
@@ -126,7 +125,6 @@ export const Report = React.memo(
             dashboardGroupId={dashboardGroupId}
             reportId={reportId}
             periodGranularity={periodGranularity}
-            year={year}
           />
         </Footer>
       </Container>
