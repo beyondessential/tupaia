@@ -50,43 +50,43 @@ const dashboardReport = {
     entityAggregation: {
       dataSourceEntityType: 'sub_district',
     },
-    viewJson: {
-      name: 'Total Dengue Cases by Week',
-      type: 'chart',
-      chartType: 'bar',
-      valueType: 'number',
-      chartConfig: {
-        'Severe dengue cases': {
-          color: '#fee906',
-          label: 'Severe dengue cases',
-          stackId: 1,
-          legendOrder: 3,
-        },
-        'Dengue fever with warning signs cases': {
-          color: '#fb0301',
-          label: 'Dengue fever with warning signs cases',
-          stackId: 1,
-          legendOrder: 2,
-        },
-        'Dengue fever without warning signs cases': {
-          color: '#2bb0f0',
-          label: 'Dengue fever without warning signs cases',
-          stackId: 1,
-          legendOrder: 1,
-        },
+  },
+  viewJson: {
+    name: 'Total Dengue Cases by Week',
+    type: 'chart',
+    chartType: 'bar',
+    valueType: 'number',
+    chartConfig: {
+      'Severe dengue cases': {
+        color: '#fee906',
+        label: 'Severe dengue cases',
+        stackId: 1,
+        legendOrder: 3,
       },
-      defaultTimePeriod: {
-        end: {
-          unit: 'week',
-          offset: 0,
-        },
-        start: {
-          unit: 'week',
-          offset: -52,
-        },
+      'Dengue fever with warning signs cases': {
+        color: '#fb0301',
+        label: 'Dengue fever with warning signs cases',
+        stackId: 1,
+        legendOrder: 2,
       },
-      periodGranularity: 'week',
+      'Dengue fever without warning signs cases': {
+        color: '#2bb0f0',
+        label: 'Dengue fever without warning signs cases',
+        stackId: 1,
+        legendOrder: 1,
+      },
     },
+    defaultTimePeriod: {
+      end: {
+        unit: 'week',
+        offset: 0,
+      },
+      start: {
+        unit: 'week',
+        offset: -52,
+      },
+    },
+    periodGranularity: 'week',
   },
   dataServices: [{ isDataRegional: false }],
 };
