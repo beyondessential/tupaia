@@ -10,7 +10,7 @@ import {
   MapContainer,
   TileLayer,
   MarkerLayer,
-  Polygon,
+  EntityPolygon,
   Legend,
   TilePicker as TilePickerComponent,
 } from '@tupaia/ui-components/lib/map';
@@ -115,7 +115,7 @@ export const MapView = () => {
             measureData={overlayReportData ? overlayReportData.measureData : null}
             serieses={overlayReportData ? overlayReportData.serieses : null}
           />
-          <Polygon entity={entityData} />
+          <EntityPolygon entity={entityData} />
         </Map>
         <MapInner>
           <LegendContainer>
