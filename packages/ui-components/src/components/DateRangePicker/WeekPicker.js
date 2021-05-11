@@ -4,9 +4,9 @@
  *
  */
 import React from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
 import { GRANULARITY_CONFIG, GRANULARITIES } from '../Chart';
 

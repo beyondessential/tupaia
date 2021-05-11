@@ -43,7 +43,7 @@ SelectField.propTypes = {
   SelectProps: PropTypes.object.isRequired,
 };
 
-const MenuItem = styled(MuiMenuItem)`
+export const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
 `;

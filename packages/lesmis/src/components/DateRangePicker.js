@@ -1,6 +1,7 @@
 /*
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *
  */
 
 import React, { useState } from 'react';
@@ -13,12 +14,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiButton from '@material-ui/core/Button';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
 import MuiIconButton from '@material-ui/core/IconButton';
-import { DatePickerDialog } from './DatePickerDialog';
-import { FlexStart } from '../Layout';
-import { GRANULARITIES, GRANULARITY_SHAPE } from '../Chart';
-import { useDateRangePicker } from './useDateRangePicker';
+import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/ui-components/lib/chart';
+import { useDateRangePicker, DatePickerDialog } from '@tupaia/ui-components';
+import { FlexStart } from './Layout';
 
 const IconButton = styled(MuiIconButton)`
+  background: white;
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
   padding: 0.7rem 0.8rem;
@@ -31,6 +32,7 @@ const IconButton = styled(MuiIconButton)`
 `;
 
 const Button = styled(MuiButton)`
+  background: white;
   padding: 0.7rem;
   font-size: 1rem;
   min-height: 3.1rem;
@@ -60,7 +62,7 @@ export const DateRangePicker = ({
   onSetDates,
   isLoading,
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const {
     isSingleDate,
     currentStartDate,

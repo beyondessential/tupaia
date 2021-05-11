@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import MenuItem from '@material-ui/core/MenuItem';
 import moment from 'moment';
+import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
 
 export const YearPicker = ({

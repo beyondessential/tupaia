@@ -11,7 +11,6 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import { DateRangePicker } from '@tupaia/ui-components';
 import {
   Box,
   useMediaQuery,
@@ -25,6 +24,7 @@ import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { ToggleButton } from './ToggleButton';
+import { DateRangePicker } from './DateRangePicker';
 import { ChartTable, TABS } from './ChartTable';
 import { useDashboardReportData } from '../api/queries';
 import { useURLSearchParams } from '../utils';

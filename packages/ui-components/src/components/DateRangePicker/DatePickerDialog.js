@@ -8,7 +8,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import styled from 'styled-components';
-import MuiBox from '@material-ui/core/Box';
 import { Dialog, DialogHeader, DialogContent, DialogFooter } from '../Dialog';
 import { DayPicker } from './DayPicker';
 import { MonthPicker } from './MonthPicker';
@@ -36,40 +35,52 @@ const {
   SINGLE_YEAR,
 } = GRANULARITIES;
 
+const Container = styled.div`
+  display: flex;
+  margin-top: 1rem;
+
+  .MuiFormControl-root {
+    margin-right: 1rem;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+`;
+
 const DateRow = ({ granularity, ...props }) => {
   switch (granularity) {
     default:
     case DAY:
       return (
-        <>
+        <Container>
           <DayPicker {...props} />
           <MonthPicker {...props} />
           <YearPicker {...props} />
-        </>
+        </Container>
       );
     case SINGLE_WEEK:
     case WEEK:
       return (
-        <>
+        <Container>
           <WeekPicker {...props} />
           <YearPicker {...props} isIsoYear />
-        </>
+        </Container>
       );
     case MONTH:
     case SINGLE_MONTH:
       return (
-        <>
+        <Container>
           <MonthPicker {...props} />
           <YearPicker {...props} />
-        </>
+        </Container>
       );
     case QUARTER:
     case SINGLE_QUARTER:
       return (
-        <>
+        <Container>
           <QuarterPicker {...props} />
           <YearPicker {...props} />
-        </>
+        </Container>
       );
     case YEAR:
     case SINGLE_YEAR:
@@ -94,10 +105,15 @@ const getLabelText = granularity => {
   }
 };
 
-export const Error = styled.div`
+const Error = styled.div`
   color: ${props => props.theme.palette.error.main};
   font-size: 0.75rem;
   margin-top: 0.3rem;
+`;
+
+const StyledDialogContent = styled(DialogContent)`
+  text-align: left;
+  padding-top: 1.5rem;
 `;
 
 export const DatePickerDialog = ({
@@ -151,29 +167,25 @@ export const DatePickerDialog = ({
   return (
     <Dialog modal="true" open={isOpen} PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}>
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
-      <DialogContent>
+      <StyledDialogContent>
         {!isSingleDate && (
-          <MuiBox display="flex" mt={3}>
-            <DateRow
-              granularity={granularity}
-              momentDateValue={selectedStartDate}
-              minMomentDate={minMomentDate}
-              maxMomentDate={maxMomentDate}
-              onChange={setSelectedStartDate}
-            />
-          </MuiBox>
-        )}
-        <MuiBox display="flex" mt={3}>
           <DateRow
             granularity={granularity}
-            momentDateValue={selectedEndDate}
+            momentDateValue={selectedStartDate}
             minMomentDate={minMomentDate}
             maxMomentDate={maxMomentDate}
-            onChange={setSelectedEndDate}
+            onChange={setSelectedStartDate}
           />
-        </MuiBox>
+        )}
+        <DateRow
+          granularity={granularity}
+          momentDateValue={selectedEndDate}
+          minMomentDate={minMomentDate}
+          maxMomentDate={maxMomentDate}
+          onChange={setSelectedEndDate}
+        />
         {errorMessage ? <Error>{errorMessage}</Error> : null}
-      </DialogContent>
+      </StyledDialogContent>
       <DialogFooter>
         <OutlinedButton onClick={onCancelDateSelection}>Cancel</OutlinedButton>
         <Button color="primary" onClick={onSubmit} variant="contained">
