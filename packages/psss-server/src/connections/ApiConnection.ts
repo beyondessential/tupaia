@@ -32,8 +32,8 @@ export class ApiConnection {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  delete(endpoint: string) {
-    return this.request('DELETE', endpoint);
+  delete(endpoint: string, queryParameters: QueryParameters) {
+    return this.request('DELETE', endpoint, queryParameters);
   }
 
   async request(

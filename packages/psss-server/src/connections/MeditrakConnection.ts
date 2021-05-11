@@ -135,6 +135,6 @@ export class MeditrakConnection extends ApiConnection {
   }
 
   async deleteSurveyResponse(surveyResponse: SurveyResponseObject) {
-    return this.delete(`surveyResponses/${surveyResponse.id}`);
+    return this.delete(`surveyResponses/${surveyResponse.id}`, { waitForAnalyticsRebuild: 'true' });
   }
 }
