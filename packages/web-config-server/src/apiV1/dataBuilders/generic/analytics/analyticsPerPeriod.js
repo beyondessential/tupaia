@@ -29,7 +29,7 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
     return reduceToDictionary(series, 'dataElementCode', 'key');
   }
 
-  getResultsPerPeriod = results => {
+  getResultsPerPeriod = (results = []) => {
     const configPeriodType = this.config.periodType
       ? parsePeriodType(this.config.periodType)
       : null;

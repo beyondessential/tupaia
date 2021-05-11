@@ -19,39 +19,37 @@ exports.setup = function (options, seedLink) {
 const DISEASE_DATA_ELEMENTS = {
   AFR: {
     dataElement: 'PSSS_AFR_Daily_Cases',
-    name: 'Acute fever and rash',
+    name: 'Acute Fever and Rash',
     color: '#F0965BFF', // orange
   },
-  Diarrhoea: {
+  DIA: {
     dataElement: 'PSSS_DIA_Daily_Cases',
     name: 'Diarrhoea',
     color: '#81DEE4FF', // aqua
   },
   ILI: {
     dataElement: 'PSSS_ILI_Daily_Cases',
-    name: 'Influenza like illness',
+    name: 'Influenza Like Illness',
     color: '#4DA347FF', // green
   },
   PF: {
     dataElement: 'PSSS_PF_Daily_Cases',
-    name: 'Prolonged fever',
+    name: 'Prolonged Fever',
     color: '#1C49A7FF', // blue
   },
   DLI: {
     dataElement: 'PSSS_DLI_Daily_Cases',
-    name: 'Dengue like illness',
+    name: 'Dengue Like Illness',
     color: '#8455F6', // purple
   },
-  Conjunctivitis: {
+  CON: {
     dataElement: 'PSSS_CON_Daily_Cases',
     name: 'Conjunctivitis',
     color: '#BE72E0', // pink
   },
 };
 
-const getDashboardReportId = diseaseName => `PSSS_PW_${diseaseName}_Daily_Case_Trend_Graph_Country`;
-
-const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance';
+const getDashboardReportId = diseaseCode => `PSSS_PW_${diseaseCode}_Daily_Case_Trend_Graph_Country`;
 
 const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
   return {
@@ -93,11 +91,21 @@ const getDashboardReport = (id, diseaseName, dataElementCode, color) => {
   };
 };
 
+const DASHBOARD_GROUP_TEMPLATE = {
+  organisationLevel: 'Country',
+  userGroup: 'PSSS Tupaia',
+  organisationUnitCode: 'PW',
+  dashboardReports: null,
+  name: 'Syndromic Surveillance National Data',
+  code: 'PW_PSSS_Syndromic_Surveillance_National_Data_Country_PSSS_Tupaia',
+  projectCodes: '{psss}',
+};
+
 exports.up = async function (db) {
   const dashboardReportIds = [];
 
-  for (const [diseaseName, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
-    const dashboardReportId = getDashboardReportId(diseaseName);
+  for (const [diseaseCode, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
+    const dashboardReportId = getDashboardReportId(diseaseCode);
     dashboardReportIds.push(dashboardReportId);
 
     const dashboardReport = getDashboardReport(dashboardReportId, name, dataElement, color);
@@ -106,9 +114,10 @@ exports.up = async function (db) {
 
   const newDashboardReportIdsArray = `{${dashboardReportIds.join(',')}}`;
 
-  await db.runSql(
-    `UPDATE "dashboardGroup" SET "dashboardReports" = "dashboardReports" || '${newDashboardReportIdsArray}' WHERE code = '${dashboardGroupCode}';`,
-  );
+  await insertObject(db, 'dashboardGroup', {
+    ...DASHBOARD_GROUP_TEMPLATE,
+    dashboardReports: newDashboardReportIdsArray,
+  });
 };
 
 exports.down = function (db) {};

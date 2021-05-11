@@ -18,66 +18,61 @@ exports.setup = function (options, seedLink) {
 
 const DISEASE_DATA_ELEMENTS = {
   AFR: {
-    dataElement: 'PSSS_AFR_Daily_Cases',
+    dataElement: 'PSSS_AFR_Total_Cases',
     name: 'Acute Fever and Rash',
     color: '#F0965BFF', // orange
   },
   DIA: {
-    dataElement: 'PSSS_DIA_Daily_Cases',
+    dataElement: 'PSSS_DIA_Total_Cases',
     name: 'Diarrhoea',
     color: '#81DEE4FF', // aqua
   },
   ILI: {
-    dataElement: 'PSSS_ILI_Daily_Cases',
+    dataElement: 'PSSS_ILI_Total_Cases',
     name: 'Influenza Like Illness',
     color: '#4DA347FF', // green
   },
   PF: {
-    dataElement: 'PSSS_PF_Daily_Cases',
+    dataElement: 'PSSS_PF_Total_Cases',
     name: 'Prolonged Fever',
     color: '#1C49A7FF', // blue
   },
   DLI: {
-    dataElement: 'PSSS_DLI_Daily_Cases',
+    dataElement: 'PSSS_DLI_Total_Cases',
     name: 'Dengue Like Illness',
     color: '#8455F6', // purple
   },
   CON: {
-    dataElement: 'PSSS_CON_Daily_Cases',
+    dataElement: 'PSSS_CON_Total_Cases',
     name: 'Conjunctivitis',
     color: '#BE72E0', // pink
   },
 };
 
-const DASHBOARD_GROUP_TEMPLATE = {
-  organisationLevel: 'Facility',
-  userGroup: 'PSSS Tupaia',
-  organisationUnitCode: 'PW',
-  dashboardReports: null,
-  name: 'Syndromic Surveillance National Data',
-  code: 'PW_PSSS_Syndromic_Surveillance_National_Data_Facility_PSSS_Tupaia',
-  projectCodes: '{psss}',
-};
-
 const getDashboardReportId = diseaseCode =>
-  `PSSS_PW_${diseaseCode}_Daily_Case_Trend_Graph_Facility`;
+  `PSSS_PW_${diseaseCode}_Weekly_Case_Trend_Graph_Country`;
 
-const getDashboardReport = (id, diseaseName, dataElement, color) => ({
+const dashboardGroupCode = 'PW_PSSS_Syndromic_Surveillance_National_Data_Country_Public';
+
+const getDashboardReport = (id, diseaseName, dataElementCode, color) => ({
   id,
-  dataBuilder: 'sumPerPeriod',
+  dataBuilder: 'analyticsPerPeriod',
   dataBuilderConfig: {
-    dataClasses: {
-      value: {
-        codes: [dataElement],
+    dataElementCode,
+    aggregations: [
+      {
+        type: 'FINAL_EACH_WEEK_FILL_EMPTY_WEEKS',
+        config: {
+          fillEmptyPeriodsWith: null,
+        },
       },
-    },
-    aggregationType: 'FINAL_EACH_DAY',
+    ],
     entityAggregation: {
-      dataSourceEntityType: 'facility',
+      dataSourceEntityType: 'country',
     },
   },
   viewJson: {
-    name: `${diseaseName} Daily Case Number Trend Graph`,
+    name: `${diseaseName} Weekly Case Number Trend Graph`,
     type: 'chart',
     chartType: 'line',
     chartConfig: {
@@ -87,33 +82,36 @@ const getDashboardReport = (id, diseaseName, dataElement, color) => ({
     },
     defaultTimePeriod: {
       end: {
-        unit: 'day',
+        unit: 'week',
         offset: 0,
       },
       start: {
-        unit: 'day',
-        offset: -30,
+        unit: 'week',
+        offset: -52,
       },
     },
-    periodGranularity: 'day',
+    presentationOptions: {
+      periodTickFormat: '[W]w',
+    },
+    periodGranularity: 'week',
   },
 });
 
 exports.up = async function (db) {
   const dashboardReportIds = [];
-
   for (const [diseaseCode, { dataElement, name, color }] of Object.entries(DISEASE_DATA_ELEMENTS)) {
     const dashboardReportId = getDashboardReportId(diseaseCode);
     dashboardReportIds.push(dashboardReportId);
+
     const dashboardReport = getDashboardReport(dashboardReportId, name, dataElement, color);
     await insertObject(db, 'dashboardReport', dashboardReport);
   }
 
   const newDashboardReportIdsArray = `{${dashboardReportIds.join(',')}}`;
-  await insertObject(db, 'dashboardGroup', {
-    ...DASHBOARD_GROUP_TEMPLATE,
-    dashboardReports: newDashboardReportIdsArray,
-  });
+
+  await db.runSql(
+    `UPDATE "dashboardGroup" SET "dashboardReports" = "dashboardReports" || '${newDashboardReportIdsArray}' WHERE code = '${dashboardGroupCode}';`,
+  );
 };
 
 exports.down = function (db) {};
