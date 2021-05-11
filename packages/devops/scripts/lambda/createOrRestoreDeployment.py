@@ -51,6 +51,12 @@ def get_instances(filters):
 
 async def restore_instance(account_ids, instance):
     print('Restoring instance {}'.format(instance['InstanceId']))
+    # Check it's not protected
+    protected = get_tag(instance, 'Protected')
+    name = get_tag(instance, 'Name')
+    if protected == 'true':
+        raise Exception('The instance ' + name + ' is protected and cannot be wiped and restored')
+
     # Get snapshot to restore volume from
     restore_code = get_tag(instance, 'RestoreFrom')
     snapshot_id = get_latest_snapshot_id(account_ids, restore_code)
