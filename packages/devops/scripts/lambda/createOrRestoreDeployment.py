@@ -116,8 +116,8 @@ def build_record_set_change(domain, subdomain, stage, ip_address):
         }
     }
 
-def create_instance(account_ids, restore_code, stage):
-    print('Creating new instance for branch ' + stage + ' of ' + restore_code)
+def create_instance(account_ids, restore_code, stage, instance_type):
+    print('Creating new ' + instance_type + ' instance for branch ' + stage + ' of ' + restore_code)
 
     # Get the (production) instance to base this new instance on
     base_instance_filters = [
@@ -145,7 +145,7 @@ def create_instance(account_ids, restore_code, stage):
     # Create the instance
     instance_creation_config = {
       'ImageId' : base_instance['ImageId'],
-      'InstanceType' : base_instance['InstanceType'],
+      'InstanceType' : instance_type,
       'SubnetId' : base_instance['SubnetId'],
       'Placement' : base_instance['Placement'],
       'SecurityGroupIds' : security_group_ids,
@@ -227,7 +227,9 @@ def lambda_handler(event, context):
 
     # If there isn't an existing ec2 instance matching the restore code and branch, create it
     if len(instances) == 0 and 'RestoreFrom' in event and 'Branch' in event:
-      new_instance = create_instance(account_ids, event['RestoreFrom'], event['Branch'])
+      if 'InstanceType' not in event:
+          raise Exception('You must include the key "InstanceType" in the lambda config. We recommend "t3a.medium" unless you need more speed.')
+      new_instance = create_instance(account_ids, event['RestoreFrom'], event['Branch'], event['InstanceType'])
       instances = [new_instance]
       print('Finished creating new instance')
 
