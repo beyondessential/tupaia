@@ -9,7 +9,7 @@ import { FetchResponse } from '../types';
 
 type DataGroupParams = {
   dataGroups: unknown;
-  dataElements: undefined;
+  dataElements: unknown;
 };
 
 type DataGroupFetchParams = {
