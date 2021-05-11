@@ -84,6 +84,7 @@ export class MeditrakConnection extends ApiConnection {
     return this.post(`changes`, {}, [
       {
         action: 'SubmitSurveyResponse',
+        waitForAnalyticsRebuild: true,
         payload: {
           id: surveyResponse.id,
           data_time: surveyResponse.data_time,
@@ -118,6 +119,7 @@ export class MeditrakConnection extends ApiConnection {
     return this.post(`changes`, {}, [
       {
         action: 'SubmitSurveyResponse',
+        waitForAnalyticsRebuild: true,
         payload: {
           id: generateId(),
           data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
