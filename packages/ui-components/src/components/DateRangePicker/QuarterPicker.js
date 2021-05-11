@@ -9,9 +9,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { GRANULARITY_CONFIG, GRANULARITIES } from '../Chart';
 
-const { pickerFormat: FORMAT } = GRANULARITY_CONFIG[GRANULARITIES.QUARTER];
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 
 export const QuarterPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onChange }) => {
@@ -43,7 +41,6 @@ export const QuarterPicker = ({ momentDateValue, minMomentDate, maxMomentDate, o
       selectedValue={momentDateValue.quarter()}
       menuItems={menuItems}
       onChange={e => onChange(moment(momentDateValue).quarter(e.target.value))}
-      getFormattedValue={quarterNumber => moment().quarter(quarterNumber).format(FORMAT)}
     />
   );
 };

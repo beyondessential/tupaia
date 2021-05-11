@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { MenuItem } from '../Inputs';
+import { SelectField, MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
 
 export const DayPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onChange }) => {
@@ -27,9 +27,9 @@ export const DayPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onCha
   }
 
   return (
-    <DatePicker
+    <SelectField
       label="Day"
-      selectedValue={momentDateValue.date()}
+      value={momentDateValue.date()}
       onChange={e => onChange(momentDateValue.clone().date(e.target.value))}
       menuItems={dayOptions}
     />

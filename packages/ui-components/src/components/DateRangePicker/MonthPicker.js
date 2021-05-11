@@ -9,9 +9,6 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
-import { GRANULARITY_CONFIG, GRANULARITIES } from '../Chart';
-
-const { pickerFormat: FORMAT } = GRANULARITY_CONFIG[GRANULARITIES.MONTH];
 
 export const MonthPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onChange }) => {
   const minAvailableMonthIndex = momentDateValue.isSame(minMomentDate, 'year')
@@ -37,7 +34,6 @@ export const MonthPicker = ({ momentDateValue, minMomentDate, maxMomentDate, onC
       selectedValue={momentDateValue.month()}
       menuItems={menuItems}
       onChange={e => onChange(moment(momentDateValue).month(e.target.value))}
-      getFormattedValue={monthIndex => moment().month(monthIndex).format(FORMAT)}
     />
   );
 };

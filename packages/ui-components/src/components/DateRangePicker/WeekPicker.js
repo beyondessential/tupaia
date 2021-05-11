@@ -43,7 +43,6 @@ export const WeekPicker = props => {
       selectedValue={date.isoWeek()}
       menuItems={menuItems}
       onChange={e => onChange(date.clone().isoWeek(e.target.value))}
-      getFormattedValue={weekIndex => date.isoWeek(weekIndex).format(FORMAT)}
     />
   );
 };

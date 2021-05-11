@@ -45,6 +45,12 @@ const Button = styled(MuiButton)`
   .MuiSvgIcon-root {
     color: ${props => props.theme.palette.text.tertiary};
   }
+
+  &.Mui-disabled {
+    .MuiSvgIcon-root {
+      color: ${props => props.theme.palette.grey['300']};
+    }
+  }
 `;
 
 const Label = styled(Button)`

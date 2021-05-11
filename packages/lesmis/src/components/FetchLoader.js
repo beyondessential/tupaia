@@ -4,16 +4,22 @@
  *
  */
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { SmallAlert } from '@tupaia/ui-components';
 import { ErrorBoundary } from './ErrorBoundary';
 import { FlexCenter } from './Layout';
 
+const Container = styled(FlexCenter)`
+  width: 100%;
+  height: 100%;
+`;
+
 const SpinningLoader = () => (
-  <FlexCenter>
+  <Container>
     <CircularProgress size={50} />
-  </FlexCenter>
+  </Container>
 );
 
 export const FetchLoader = ({ isLoading, isError, error, children, Loader }) => {

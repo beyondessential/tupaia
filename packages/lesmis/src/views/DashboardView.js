@@ -455,6 +455,23 @@ const SchoolView = ({ vitals }) => {
   );
 };
 
+const VitalsView = ({ vitals }) => {
+  switch (vitals.type) {
+    case 'country':
+      return <CountryView vitals={vitals} />;
+    case 'district':
+      return <ProvinceView vitals={vitals} />;
+    case 'sub_district':
+      return <DistrictView vitals={vitals} />;
+    case 'village':
+      return <VillageView vitals={vitals} />;
+    case 'school':
+      return <SchoolView vitals={vitals} />;
+    default:
+      return null;
+  }
+};
+
 export const DashboardView = () => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
@@ -472,22 +489,7 @@ export const DashboardView = () => {
     <>
       <Wrapper>
         <Container maxWidth={false}>
-          {(() => {
-            switch (vitals.type) {
-              case 'country':
-                return <CountryView vitals={vitals} />;
-              case 'district':
-                return <ProvinceView vitals={vitals} />;
-              case 'sub_district':
-                return <DistrictView vitals={vitals} />;
-              case 'village':
-                return <VillageView vitals={vitals} />;
-              case 'school':
-                return <SchoolView vitals={vitals} />;
-              default:
-                return null;
-            }
-          })()}
+          <VitalsView vitals={vitals} />
         </Container>
       </Wrapper>
       {tabOptions.map(({ value, Body, Component }) => (

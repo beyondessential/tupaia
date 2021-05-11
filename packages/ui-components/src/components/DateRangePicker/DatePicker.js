@@ -7,13 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { SelectField } from '../Inputs';
 
-export const DatePicker = ({ label, selectedValue, onChange, menuItems, getFormattedValue }) => (
-  <SelectField
-    label={label}
-    value={selectedValue}
-    onChange={onChange}
-    renderValue={value => <span>{getFormattedValue(value)}</span>}
-  >
+export const DatePicker = ({ label, selectedValue, onChange, menuItems }) => (
+  <SelectField label={label} value={selectedValue} onChange={onChange}>
     {menuItems}
   </SelectField>
 );
@@ -23,9 +18,4 @@ DatePicker.propTypes = {
   selectedValue: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   menuItems: PropTypes.array.isRequired,
-  getFormattedValue: PropTypes.func,
-};
-
-DatePicker.defaultProps = {
-  getFormattedValue: value => value,
 };

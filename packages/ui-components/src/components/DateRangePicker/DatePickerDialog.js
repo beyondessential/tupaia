@@ -84,7 +84,11 @@ const DateRow = ({ granularity, ...props }) => {
       );
     case YEAR:
     case SINGLE_YEAR:
-      return <YearPicker {...props} />;
+      return (
+        <Container>
+          <YearPicker {...props} />
+        </Container>
+      );
   }
 };
 

@@ -40,7 +40,11 @@ export const SelectField = ({ SelectProps, ...props }) => (
 );
 
 SelectField.propTypes = {
-  SelectProps: PropTypes.object.isRequired,
+  SelectProps: PropTypes.object,
+};
+
+SelectField.defaultProps = {
+  SelectProps: null,
 };
 
 export const MenuItem = styled(MuiMenuItem)`
