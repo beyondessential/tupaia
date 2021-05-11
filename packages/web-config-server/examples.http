@@ -1,0 +1,29 @@
+@hostname = localhost
+@port = 8000
+@host = {{hostname}}:{{port}}
+@version = v1
+@contentType = application/json
+
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables 
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+# @name login
+POST http://{{host}}/api/{{version}}/login HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}"
+}
+
+###
+
+# @name logout
+POST http://{{host}}/api/{{version}}/logout HTTP/1.1
+content-type: {{contentType}}
+
+
+### Fetch descendants of an entity
+GET http://{{host}}/api/{{version}}/view?dashboardGroupId=301&viewId=28&organisationUnitCode=explore&projectCode=explore HTTP/1.1
+content-type: {{contentType}}
