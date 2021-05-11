@@ -14,9 +14,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiButton from '@material-ui/core/Button';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
 import MuiIconButton from '@material-ui/core/IconButton';
-import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/ui-components/lib/chart';
-import { useDateRangePicker, DatePickerDialog } from '@tupaia/ui-components';
-import { FlexStart } from './Layout';
+import { GRANULARITIES, GRANULARITY_SHAPE } from '../Chart';
+import { useDateRangePicker } from './useDateRangePicker';
+import { DatePickerDialog } from './DatePickerDialog';
+import { FlexStart } from '../Layout';
 
 const IconButton = styled(MuiIconButton)`
   background: white;

@@ -20,11 +20,11 @@ import {
   Container as MuiContainer,
   Button as MuiButton,
 } from '@material-ui/core';
+import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { ToggleButton } from './ToggleButton';
-import { DateRangePicker } from './DateRangePicker';
 import { ChartTable, TABS } from './ChartTable';
 import { useDashboardReportData } from '../api/queries';
 import { useURLSearchParams } from '../utils';
