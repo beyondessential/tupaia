@@ -31,7 +31,7 @@ export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) =>
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(`weeklyReport/${countryCode}/${siteCode}`);
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}/sites`);
         // Even though we only changed one week of data, we need to re-fetch the complete list because
         // the data for a specific week is dependant on previous weeks, even across pages.
         queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
