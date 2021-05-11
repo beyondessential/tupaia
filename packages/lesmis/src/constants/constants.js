@@ -15,7 +15,8 @@ export const MIN_DATA_YEAR = '2015';
 export const DEFAULT_DATA_YEAR = '2020';
 
 // Layout Constants
-export const NAVBAR_HEIGHT = '70px';
+export const NAVBAR_HEIGHT_INT = 70;
+export const NAVBAR_HEIGHT = `${NAVBAR_HEIGHT_INT}px`;
 export const FOOTER_HEIGHT = '48px';
 
 // Map Constants
