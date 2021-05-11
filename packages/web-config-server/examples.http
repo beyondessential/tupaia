@@ -1,0 +1,19 @@
+@hostname = localhost
+@port = 8000
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+# In order to setup your credentials, please set 'email' and 'password' in your restClient environement variables
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+### Login
+POST http://{{host}}/api/v1/login
+content-type: {{contentType}}
+
+{
+  "emailAddress": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Fetch Laos Schools students by gender chart
+GET http://{{host}}/api/v1/view?projectCode=laos_schools&organisationUnitCode=LA&dashboardGroupId=415&viewId=Laos_Schools_Male_Female&startDate=2015-01-01&endDate=2021-05-11&timeZone=Pacific%2FAuckland
+content-type: {{contentType}}
