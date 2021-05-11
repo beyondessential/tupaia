@@ -17,15 +17,16 @@ exports.setup = function (options, seedLink) {
 };
 
 const getMeasureBuilderConfig = dataElementCode => ({
-  aggregations: [
-    {
-      type: 'FINAL_EACH_DAY',
-    },
-  ],
+  dataSourceType: 'custom',
   measureBuilders: {
     numerator: {
       measureBuilder: 'sumAllPerOrgUnit',
       measureBuilderConfig: {
+        aggregations: [
+          {
+            type: 'FINAL_EACH_DAY',
+          },
+        ],
         dataElementCodes: [dataElementCode],
         entityAggregation: {
           dataSourceEntityType: 'village',
@@ -35,6 +36,11 @@ const getMeasureBuilderConfig = dataElementCode => ({
     denominator: {
       measureBuilder: 'sumAllPerOrgUnit',
       measureBuilderConfig: {
+        aggregations: [
+          {
+            type: 'FINAL_EACH_DAY',
+          },
+        ],
         dataElementCodes: ['population_WS001'],
         entityAggregation: {
           dataSourceEntityType: 'village',
@@ -68,7 +74,7 @@ const getPresentationOptions = () => ({
 const getMeasure = ({ id, name, dataElementCode }) => ({
   id,
   name,
-  dataElementCode: 'COVIDVac4', // Internal server error: None of the following data elements exist: value
+  dataElementCode: 'value',
   measureBuilder: 'composePercentagePerOrgUnit',
   measureBuilderConfig: getMeasureBuilderConfig(dataElementCode),
   presentationOptions: getPresentationOptions(),
