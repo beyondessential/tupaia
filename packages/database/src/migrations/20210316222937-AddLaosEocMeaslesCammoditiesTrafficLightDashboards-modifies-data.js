@@ -31,8 +31,8 @@ const getDatabuilderConfig = (columns, cells) => ({
   rows: [
     {
       rows: [
-        'Measles and Rubella Vaccine, 10 doses / vial',
         'Measles and Rubella Vaccine, 5 doses / vial',
+        'Measles and Rubella Vaccine, 10 doses / vial',
       ],
       category: 'Measles and Rubella Vaccine',
     },
