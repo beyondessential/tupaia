@@ -6,17 +6,16 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import styled from 'styled-components';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
+import MuiBox from '@material-ui/core/Box';
+import { Dialog, DialogHeader, DialogContent, DialogFooter } from '../Dialog';
 import { DayPicker } from './DayPicker';
 import { MonthPicker } from './MonthPicker';
 import { YearPicker } from './YearPicker';
 import { WeekPicker } from './WeekPicker';
 import { QuarterPicker } from './QuarterPicker';
+import { Button, OutlinedButton } from '../Button';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITIES,
@@ -24,13 +23,6 @@ import {
   GRANULARITY_SHAPE,
   roundStartEndDates,
 } from '../Chart';
-import moment from 'moment';
-
-export const Error = styled.div`
-  color: red;
-  font-size: 12px;
-  margin-top: 5px;
-`;
 
 const {
   DAY,
@@ -102,9 +94,10 @@ const getLabelText = granularity => {
   }
 };
 
-const StyledDateRow = styled.div`
-  display: flex;
-  margin-top: 30px;
+export const Error = styled.div`
+  color: ${props => props.theme.palette.error.main};
+  font-size: 0.75rem;
+  margin-top: 0.3rem;
 `;
 
 export const DatePickerDialog = ({
@@ -157,10 +150,10 @@ export const DatePickerDialog = ({
 
   return (
     <Dialog modal="true" open={isOpen} PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}>
-      <DialogTitle>{getLabelText(granularity)}</DialogTitle>
+      <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <DialogContent>
         {!isSingleDate && (
-          <StyledDateRow>
+          <MuiBox display="flex" mt={3}>
             <DateRow
               granularity={granularity}
               momentDateValue={selectedStartDate}
@@ -168,9 +161,9 @@ export const DatePickerDialog = ({
               maxMomentDate={maxMomentDate}
               onChange={setSelectedStartDate}
             />
-          </StyledDateRow>
+          </MuiBox>
         )}
-        <StyledDateRow>
+        <MuiBox display="flex" mt={3}>
           <DateRow
             granularity={granularity}
             momentDateValue={selectedEndDate}
@@ -178,15 +171,15 @@ export const DatePickerDialog = ({
             maxMomentDate={maxMomentDate}
             onChange={setSelectedEndDate}
           />
-        </StyledDateRow>
+        </MuiBox>
         {errorMessage ? <Error>{errorMessage}</Error> : null}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onCancelDateSelection}>Cancel</Button>
+      <DialogFooter>
+        <OutlinedButton onClick={onCancelDateSelection}>Cancel</OutlinedButton>
         <Button color="primary" onClick={onSubmit} variant="contained">
           Submit
         </Button>
-      </DialogActions>
+      </DialogFooter>
     </Dialog>
   );
 };

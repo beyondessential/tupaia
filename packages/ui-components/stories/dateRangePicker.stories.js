@@ -18,7 +18,6 @@ export default {
 
 const Container = styled.div`
   padding: 1rem;
-  background: black;
 `;
 
 export const SimpleDateRangePicker = () => {

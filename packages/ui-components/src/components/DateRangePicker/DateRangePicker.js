@@ -6,69 +6,49 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Link from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import MuiButton from '@material-ui/core/Button';
+import MuiButtonGroup from '@material-ui/core/ButtonGroup';
 import MuiIconButton from '@material-ui/core/IconButton';
 import { DatePickerDialog } from './DatePickerDialog';
-import { FlexSpaceBetween, FlexStart } from '../Layout';
+import { FlexStart } from '../Layout';
 import { GRANULARITIES, GRANULARITY_SHAPE } from '../Chart';
 import { useDateRangePicker } from './useDateRangePicker';
 
-const hoverBlue = '#2196f3';
-
 const IconButton = styled(MuiIconButton)`
-  //color: white;
-  transition: color 0.2s ease;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-radius: 3px;
+  padding: 0.7rem 0.8rem;
+  margin-left: 0.9rem;
+  min-height: 3.1rem;
 
   .MuiSvgIcon-root {
-    font-size: 22px;
-  }
-
-  &:hover {
-    background-color: initial;
-    color: ${hoverBlue};
+    color: ${props => props.theme.palette.text.tertiary};
   }
 `;
 
-const ArrowButton = styled(MuiIconButton)`
-  //color: white;
-  border-radius: 3px;
-  padding: 0;
-  background: rgba(0, 0, 0, 0.2);
-  margin-left: 5px;
-  transition: color 0.2s ease;
+const Button = styled(MuiButton)`
+  padding: 0.7rem;
+  font-size: 1rem;
+  min-height: 3.1rem;
+  line-height: 1.2rem;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.secondary};
+  border-color: ${props => props.theme.palette.grey['400']};
 
-  &:hover {
-    background: rgba(0, 0, 0, 0.2);
-    color: ${hoverBlue};
+  .MuiSvgIcon-root {
+    color: ${props => props.theme.palette.text.tertiary};
   }
 `;
 
-const Label = styled(Typography)`
-  //color: white;
-  font-size: 16px;
-  line-height: 19px;
-`;
-
-const LabelContainer = styled.div`
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  padding-left: 12px;
-  padding-right: 10px;
-`;
-
-const ResetLabel = styled(Link)`
-  //color: rgba(255, 255, 255, 0.6);
-  font-size: 12px;
-  line-height: 14px;
-  margin-top: 3px;
-
-  //&:hover {
-  //  color: white;
-  //}
+const Label = styled(Button)`
+  padding-left: 1rem;
+  padding-right: 1rem;
+  min-width: 11.25rem;
+  pointer-events: none;
 `;
 
 export const DateRangePicker = ({
@@ -80,14 +60,12 @@ export const DateRangePicker = ({
   onSetDates,
   isLoading,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+  const [isOpen, setIsOpen] = useState(true);
   const {
     isSingleDate,
     currentStartDate,
     currentEndDate,
     handleDateChange,
-    handleReset,
     changePeriod,
     nextDisabled,
     prevDisabled,
@@ -101,42 +79,43 @@ export const DateRangePicker = ({
     onSetDates,
   });
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
-      <FlexSpaceBetween>
-        <ArrowButton
-          type="button"
-          aria-label="prev"
-          onClick={() => changePeriod(-1)}
-          disabled={isLoading || prevDisabled}
-        >
-          <KeyboardArrowLeftIcon />
-        </ArrowButton>
-        <FlexStart>
-          <IconButton onClick={() => setIsOpen(true)} aria-label="open">
-            {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
-          </IconButton>
-          <LabelContainer>
-            <Label aria-label="active-date">{labelText}</Label>
-            <ResetLabel component="button" onClick={handleReset}>
-              Reset to default
-            </ResetLabel>
-          </LabelContainer>
-        </FlexStart>
-        {isSingleDate && (
-          <FlexStart>
-            <ArrowButton
+      <FlexStart>
+        <MuiButtonGroup>
+          {isSingleDate && (
+            <Button
+              aria-label="prev"
+              onClick={() => changePeriod(-1)}
+              disabled={isLoading || prevDisabled}
+            >
+              <KeyboardArrowLeftIcon />
+            </Button>
+          )}
+          <Label aria-label="active-date">{labelText}</Label>
+          {isSingleDate && (
+            <Button
               type="button"
               aria-label="next"
               onClick={() => changePeriod(1)}
               disabled={isLoading || nextDisabled}
             >
               <KeyboardArrowRightIcon />
-            </ArrowButton>
-          </FlexStart>
-        )}
-      </FlexSpaceBetween>
-      {/* Bug in Mui that doesn't unmount modal */}
+            </Button>
+          )}
+        </MuiButtonGroup>
+        <IconButton onClick={handleOpen}>
+          {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
+        </IconButton>
+      </FlexStart>
       {isOpen && (
         <DatePickerDialog
           granularity={granularity}
@@ -145,7 +124,7 @@ export const DateRangePicker = ({
           minDate={minDate}
           maxDate={maxDate}
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={handleClose}
           onSetNewDates={handleDateChange}
         />
       )}
