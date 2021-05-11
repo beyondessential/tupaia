@@ -14,7 +14,7 @@ export const parseChartConfig = viewContent => {
 
   return addDefaultColorsToConfig(sortChartConfigByLegendOrder(baseConfig), paletteName, chartType);
 };
-
+// @TODO TEST
 // Adds default colors for every element with no color defined
 const addDefaultColorsToConfig = (chartConfig, paletteName, chartType) => {
   const newConfig = {};
