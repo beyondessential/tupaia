@@ -26,8 +26,8 @@ const END_OF_PERIOD = 'end_of';
 
 const CONFIG = {
   [DAY]: {
-    chartFormat: 'Do MMMM YYYY',
-    rangeFormat: 'Do MMMM YYYY',
+    chartFormat: 'Do MMM YYYY',
+    rangeFormat: 'Do MMM YYYY',
     pickerFormat: 'D',
     urlFormat: 'Do_MMM_YYYY',
     momentShorthand: 'd',
