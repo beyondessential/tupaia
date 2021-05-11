@@ -70,7 +70,7 @@ export const StyledTableRow = styled(MuiTableRow)`
 `;
 
 export const TableRow = React.memo(({ columns, rowData, className, onRowClick }) => (
-  <StyledTableRow className={className} onClick={onRowClick}>
+  <StyledTableRow className={className} onClick={e => onRowClick(e, rowData)}>
     <TableRowCells columns={columns} rowData={rowData} />
   </StyledTableRow>
 ));
