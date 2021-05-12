@@ -4,6 +4,7 @@
  */
 
 export { FetchActiveAlertsReportRoute } from './FetchActiveAlertsReportRoute';
+export { FetchArchivedAlertsReportRoute } from './FetchArchivedAlertsReportRoute';
 export { FetchConfirmedWeeklyReportRoute } from './FetchConfirmedWeeklyReportRoute';
 export { FetchConfirmedCountryWeeklyReportRoute } from './FetchConfirmedCountryWeeklyReportRoute';
 export { FetchCountryWeeklyReportRoute } from './FetchCountryWeeklyReportRoute';

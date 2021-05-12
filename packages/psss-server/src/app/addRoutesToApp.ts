@@ -11,6 +11,7 @@ import {
   LogoutRoute,
   TestRoute,
   FetchActiveAlertsReportRoute,
+  FetchArchivedAlertsReportRoute,
   FetchConfirmedWeeklyReportRoute,
   FetchConfirmedCountryWeeklyReportRoute,
   FetchCountries,
@@ -58,6 +59,7 @@ export function addRoutesToApp(app: Express) {
    */
   app.get('/v1/test', handleWith(TestRoute));
   app.get('/v1/activeAlertsReport', handleWith(FetchActiveAlertsReportRoute));
+  app.get('/v1/archivedAlertsReport', handleWith(FetchArchivedAlertsReportRoute));
   app.get('/v1/confirmedWeeklyReport', handleWith(FetchConfirmedWeeklyReportRoute));
   app.get(
     '/v1/confirmedWeeklyReport/:countryCode',
