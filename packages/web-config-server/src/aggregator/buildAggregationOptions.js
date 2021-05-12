@@ -15,8 +15,10 @@ export const buildAggregationOptions = async (
   entityAggregationOptions,
   hierarchyId,
 ) => {
+  // default to using the single aggregationType if no series of aggregations is defined
+  const defaultAggregation = { type: aggregationType, config: aggregationConfig };
   const {
-    aggregations,
+    aggregations: inputAggregations = [defaultAggregation],
     aggregationType,
     aggregationConfig,
     ...restOfOptions
@@ -28,12 +30,13 @@ export const buildAggregationOptions = async (
     aggregationOrder: entityAggregationOrder = DEFAULT_ENTITY_AGGREGATION_ORDER,
   } = entityAggregationOptions;
 
-  // Note aggregationType and aggregationConfig might be undefined
-  const inputAggregations = aggregations || [{ type: aggregationType, config: aggregationConfig }];
+  // filter out any undefined aggregation types - most commonly the default single aggregation type
+  // was not defined
+  const aggregations = inputAggregations.filter(a => !!a.type);
 
   if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType, entityAggregationType)) {
     return {
-      aggregations: inputAggregations,
+      aggregations,
       ...restOfOptions,
     };
   }
@@ -50,8 +53,8 @@ export const buildAggregationOptions = async (
   return {
     aggregations:
       entityAggregationOrder === ENTITY_AGGREGATION_ORDER_AFTER
-        ? [...inputAggregations, entityAggregation]
-        : [entityAggregation, ...inputAggregations],
+        ? [...aggregations, entityAggregation]
+        : [entityAggregation, ...aggregations],
     ...restOfOptions,
   };
 };
