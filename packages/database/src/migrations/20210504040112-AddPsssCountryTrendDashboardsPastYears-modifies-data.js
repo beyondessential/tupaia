@@ -44,7 +44,7 @@ const PSSS_COUNTRIES = [
 
 const SYNDROMES = {
   AFR: 'PSSS_Confirmed_AFR_Cases',
-  Diarrhoea: 'PSSS_Confirmed_DIA_Cases',
+  DIA: 'PSSS_Confirmed_DIA_Cases',
   ILI: 'PSSS_Confirmed_ILI_Cases',
   PF: 'PSSS_Confirmed_PF_Cases',
   DLI: 'PSSS_Confirmed_DLI_Cases',
@@ -52,7 +52,7 @@ const SYNDROMES = {
 
 const COLOURS = {
   AFR: '#F0965BFF', // orange
-  Diarrhoea: '#81DEE4FF', // aqua
+  DIA: '#81DEE4FF', // aqua
   ILI: '#4DA347FF', // green
   PF: '#1C49A7FF', // blue
   DLI: '#8455F6', // purple
@@ -72,7 +72,7 @@ const getDashboardReport = (id, syndrome) => {
         yearRange: 4,
       },
       periodType: 'week',
-      aggregationType: ['FINAL_EACH_WEEK', 'YEAR_ON_YEAR'],
+      aggregationType: ['FINAL_EACH_WEEK'],
       dataElementCode: SYNDROMES[syndrome],
       entityAggregation: {
         dataSourceEntityType: 'country',

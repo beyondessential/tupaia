@@ -18,7 +18,6 @@ import {
   sumPerOrgGroup,
   sumPerPeriodPerOrgGroup,
   sumPreviousPerPeriod,
-  layerYearOnYear,
 } from './aggregations';
 
 export const aggregateAnalytics = (
