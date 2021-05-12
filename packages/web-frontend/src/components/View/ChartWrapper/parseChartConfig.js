@@ -13,9 +13,14 @@ export const parseChartConfig = viewContent => {
     ? createDynamicConfig(restOfConfig, configForAllKeys, data)
     : restOfConfig;
 
-  return setOpacityValues(
-    addDefaultColorsToConfig(sortChartConfigByLegendOrder(baseConfig), paletteName, chartType),
-  );
+  const addDefaultColors = config => addDefaultColorsToConfig(config, paletteName, chartType);
+
+  const chartConfigs = [baseConfig];
+
+  return chartConfigs
+    .map(sortChartConfigByLegendOrder)
+    .map(addDefaultColors)
+    .map(setOpacityValues)[0]; // must remove from array after mapping
 };
 
 /**
