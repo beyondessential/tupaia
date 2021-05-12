@@ -20,6 +20,7 @@ export default {
     granularity: GRANULARITIES.DAY,
     startDate: null,
     endDate: null,
+    isLoading: false,
     onSetDates: () => {},
   },
 };

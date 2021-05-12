@@ -28,6 +28,7 @@ const IconButton = styled(MuiIconButton)`
   padding: 0.7rem 0.8rem;
   margin-left: 0.9rem;
   min-height: 3.1rem;
+  min-width: 3.25rem;
 
   .MuiSvgIcon-root {
     color: ${props => props.theme.palette.text.tertiary};

@@ -169,7 +169,7 @@ export const DatePickerDialog = ({
   };
 
   return (
-    <Dialog modal="true" open={isOpen} PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}>
+    <Dialog modal="true" open={isOpen} maxWidth="sm">
       <DialogHeader title={getLabelText(granularity)} onClose={onCancelDateSelection} />
       <StyledDialogContent>
         {!isSingleDate && (

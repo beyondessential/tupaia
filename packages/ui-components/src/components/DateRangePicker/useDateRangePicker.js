@@ -92,8 +92,8 @@ export const useDateRangePicker = ({
   /**
    * Call the on change handler prop using iso formatted date
    */
-  const handleDateChange = (start, end) => {
-    onSetDates(toStandardDateString(start), toStandardDateString(end));
+  const handleDateChange = (newStartDate, newEndDate) => {
+    onSetDates(toStandardDateString(newStartDate), toStandardDateString(newEndDate));
   };
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);

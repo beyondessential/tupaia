@@ -26,6 +26,6 @@ export const useDashboardReportData = ({
       get(`report/${entityCode}/${reportId}`, {
         params,
       }),
-    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false },
+    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false, keepPreviousData: true },
   );
 };
