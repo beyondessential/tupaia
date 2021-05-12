@@ -8,6 +8,8 @@ import { Aggregator } from '../../aggregator';
 import { FetchResponse } from './types';
 import { fetchBuilders } from './functions';
 
+const FETCH_PARAM_KEYS = ['dataGroups', 'dataElements'];
+
 type FetchParams = {
   call: (aggregator: Aggregator, query: FetchReportQuery) => Promise<FetchResponse>;
 };
@@ -25,11 +27,13 @@ const buildParams = (params: unknown): FetchParams => {
     throw new Error(`Expected object but got ${params}`);
   }
 
-  if (Object.keys(params).length > 1) {
-    throw new Error(`Expected fetch params to contain a single key`);
-  }
+  Object.keys(params).forEach(p => {
+    if (!FETCH_PARAM_KEYS.includes(p)) {
+      throw new Error(`Invalid fetch param key ${p}, must be one of ${FETCH_PARAM_KEYS}`);
+    }
+  });
 
-  const fetchFunction = Object.keys(params)[0];
+  const fetchFunction = 'dataGroups' in params ? 'dataGroups' : 'dataElements';
 
   if (!(fetchFunction in fetchBuilders)) {
     throw new Error(
@@ -38,7 +42,7 @@ const buildParams = (params: unknown): FetchParams => {
   }
 
   return {
-    call: fetchBuilders[fetchFunction as keyof typeof fetchBuilders](params[fetchFunction]),
+    call: fetchBuilders[fetchFunction as keyof typeof fetchBuilders](params),
   };
 };
 
