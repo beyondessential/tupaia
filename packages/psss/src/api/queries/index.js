@@ -4,6 +4,7 @@
  */
 
 export * from './useActiveAlerts';
+export * from './useArchivedAlerts';
 export * from './useConfirmedWeeklyReport';
 export * from './useCountryConfirmedWeeklyReport';
 export * from './useCountrySitesWeeklyReport';
