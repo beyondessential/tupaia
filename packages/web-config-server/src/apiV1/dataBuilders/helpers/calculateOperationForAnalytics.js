@@ -3,7 +3,7 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-import groupBy from 'lodash.groupBy';
+import groupBy from 'lodash.groupby';
 import {
   checkValueSatisfiesCondition,
   comparePeriods,
