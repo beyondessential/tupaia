@@ -128,18 +128,16 @@ export const DateRangePicker = ({
           {isLoading ? <CircularProgress size={21} /> : <DateRangeIcon />}
         </IconButton>
       </FlexStart>
-      {isOpen && (
-        <DatePickerDialog
-          granularity={granularity}
-          startDate={currentStartDate}
-          endDate={currentEndDate}
-          minDate={minDate}
-          maxDate={maxDate}
-          isOpen={isOpen}
-          onClose={handleClose}
-          onSetNewDates={handleDateChange}
-        />
-      )}
+      <DatePickerDialog
+        granularity={granularity}
+        startDate={currentStartDate}
+        endDate={currentEndDate}
+        minDate={minDate}
+        maxDate={maxDate}
+        isOpen={isOpen}
+        onClose={handleClose}
+        onSetNewDates={handleDateChange}
+      />
     </>
   );
 };
