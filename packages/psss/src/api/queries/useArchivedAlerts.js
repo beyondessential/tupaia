@@ -19,5 +19,8 @@ export const useArchivedAlerts = orgUnitCodes => {
     syndromeName: SYNDROMES[reportRow.syndrome.toUpperCase()],
   }));
 
-  return { ...query, data };
+  return {
+    ...query,
+    data,
+  };
 };
