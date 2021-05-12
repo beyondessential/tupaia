@@ -3,6 +3,7 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
 import {
   checkValueSatisfiesCondition,
   comparePeriods,
@@ -74,18 +75,22 @@ const countDataValues = (analytics, dataValues, filter, config) => {
   );
 };
 
-const getLatestDataValue = (analytics, dataValues) => {
-  const sortedAnalytics =
-    analytics
-      .filter(({ dataElement }) => dataValues.includes(dataElement))
-      .sort(({ period: p1 }, { period: p2 }) => comparePeriods(p2, p1));
-  return sortedAnalytics[0]?.value;
+const sumLatestDataValuePerOrgUnit = (analytics, dataValues) => {
+  const analyticsByOrgUnit =
+    keyBy(analytics.filter(({ dataElement }) => dataValues.includes(dataElement)), 'organisationUnit');
+
+  const latestAnalyticByOrgUnit = analyticsByOrgUnit.map(
+    analyticsForOrgUnit => analyticsForOrgUnit.sort(({ period: p1 }, { period: p2 }) => comparePeriods(p2, p1))[0]
+  );
+
+  // Sum starts as undefined so that if there's no data values then we can distinguish between No data and 0
+  return latestAnalyticByOrgUnit.reduce((sum, { value }) => (sum || 0) + value, undefined);
 };
 
 const AGGREGATIONS = {
   SUM: sumDataValues,
   COUNT: countDataValues,
-  LATEST: getLatestDataValue,
+  SUM_LATEST_PER_ORG_UNIT: sumLatestDataValuePerOrgUnit,
 };
 
 const performArithmeticOperation = (analytics, arithmeticConfig) => {
