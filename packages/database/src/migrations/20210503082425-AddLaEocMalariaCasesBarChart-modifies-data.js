@@ -42,7 +42,7 @@ const buildReportConfig = (id, entityType) => ({
     periodType: 'week',
   },
   viewJson: {
-    name: 'WeeklyTotal Malaria Cases by Week',
+    name: 'Total Malaria Cases by Week',
     type: 'chart',
     chartType: 'bar',
     periodGranularity: 'one_week_at_a_time',
