@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
 import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
 import {
   CardTabList,
@@ -29,7 +28,7 @@ import {
 import { CreateOutbreakModal } from '../Modals';
 import { NotesTab } from '../NotesTab';
 import { getCountryName } from '../../store';
-import { countryFlagImage } from '../../utils';
+import { countryFlagImage, getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
 import { useFetch } from '../../hooks';
 
 const Option = styled.span`
@@ -70,60 +69,72 @@ const menuOptions = [
 
 const TabsContext = React.createContext(null);
 
-export const AlertsPanel = React.memo(({ isOpen, handleClose }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const sitesState = useFetch(getAffectedSites);
-  const notesState = useFetch(getAlertsMessages);
-  const activityState = useFetch(getActivityFeed);
-  const { countryCode } = useParams();
-  const countryName = useSelector(state => getCountryName(state, countryCode));
+export const AlertsPanel = React.memo(
+  ({ countryCode, period, syndromeName, isOpen, handleClose }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const sitesState = useFetch(getAffectedSites);
+    const notesState = useFetch(getAlertsMessages);
+    const activityState = useFetch(getActivityFeed);
+    const countryName = useSelector(state => getCountryName(state, countryCode));
 
-  const handleChange = option => {
-    // todo handle changes other than creating an outbreak
-    setIsModalOpen(true);
-  };
+    const handleChange = option => {
+      // todo handle changes other than creating an outbreak
+      setIsModalOpen(true);
+    };
 
-  return (
-    <Drawer open={isOpen} onClose={handleClose}>
-      <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
-      <AlertsDrawerHeader
-        date="Week 9 Feb 25 - Mar 1, 2021"
-        dateText="Triggered on:"
-        avatarUrl={countryFlagImage('as')}
-        subheading={countryName}
-        heading="Acute Fever and Rash (AFR)"
-        DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
-      />
-      <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
-        <CardTabList Context={TabsContext}>
-          <CardTab>
-            <LocationOn /> Affected Sites
-          </CardTab>
-          <CardTab>
-            <SpeakerNotes />
-            Notes ({notesState.count})
-          </CardTab>
-          <CardTab>
-            <List />
-            Activity
-          </CardTab>
-        </CardTabList>
-        <CardTabPanels Context={TabsContext}>
-          <AffectedSitesTab state={sitesState} />
-          <NotesTab state={notesState} />
-          <ActivityTab
-            state={activityState}
-            NotesTabLink={<LinkButton onClick={() => setActiveIndex(1)}>note</LinkButton>}
+    return (
+      <Drawer open={isOpen} onClose={handleClose}>
+        <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
+        {period && countryCode && (
+          <AlertsDrawerHeader
+            dateText={`Triggered on: W${getWeekNumberByPeriod(period)}`}
+            date={getDisplayDatesByPeriod(period)}
+            avatarUrl={countryFlagImage(countryCode)}
+            subheading={countryName}
+            heading={syndromeName}
+            DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
           />
-        </CardTabPanels>
-      </TabsContext.Provider>
-      <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
-    </Drawer>
-  );
-});
+        )}
+        <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
+          <CardTabList Context={TabsContext}>
+            <CardTab>
+              <LocationOn /> Affected Sites
+            </CardTab>
+            <CardTab>
+              <SpeakerNotes />
+              Notes ({notesState.count})
+            </CardTab>
+            <CardTab>
+              <List />
+              Activity
+            </CardTab>
+          </CardTabList>
+          <CardTabPanels Context={TabsContext}>
+            <AffectedSitesTab state={sitesState} />
+            <NotesTab state={notesState} />
+            <ActivityTab
+              state={activityState}
+              NotesTabLink={<LinkButton onClick={() => setActiveIndex(1)}>note</LinkButton>}
+            />
+          </CardTabPanels>
+        </TabsContext.Provider>
+        <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+      </Drawer>
+    );
+  },
+);
 
 AlertsPanel.propTypes = {
+  period: PropTypes.string,
+  countryCode: PropTypes.string,
+  syndromeName: PropTypes.string,
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+};
+
+AlertsPanel.defaultProps = {
+  period: '',
+  countryCode: '',
+  syndromeName: '',
 };
