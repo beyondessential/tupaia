@@ -33,9 +33,7 @@ const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, series);
-
-      // A grey no data colour looks like part of the neutral scale
-      const noDataColour = scaleType === 'neutral' ? 'black' : '#c7c7c7';
+      const noDataColour = '#c7c7c7';
 
       return {
         ...series,

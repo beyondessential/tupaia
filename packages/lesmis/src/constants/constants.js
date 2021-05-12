@@ -7,7 +7,6 @@
 // Project Data Constants
 export const PROJECT_CODE = 'laos_schools';
 export const COUNTRY_CODE = 'LA';
-export const DEFAULT_DASHBOARD_GROUP = 'Students / Schools';
 
 // Date Constants
 export const SINGLE_YEAR_GRANULARITY = 'one_year_at_a_time';
@@ -16,7 +15,8 @@ export const MIN_DATA_YEAR = '2015';
 export const DEFAULT_DATA_YEAR = '2020';
 
 // Layout Constants
-export const NAVBAR_HEIGHT = '70px';
+export const NAVBAR_HEIGHT_INT = 70;
+export const NAVBAR_HEIGHT = `${NAVBAR_HEIGHT_INT}px`;
 export const FOOTER_HEIGHT = '48px';
 
 // Map Constants

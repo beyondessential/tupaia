@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React from 'react';
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
+import { LoadingScreen } from '../../LoadingScreen';
 import Map from '../../../containers/Map';
 import { MapDiv } from '../../../components/MapDiv';
 import TopBar from '../../../containers/TopBar';
@@ -27,7 +28,7 @@ import { OverlayContainer } from '../../../utils';
 import { TOP_BAR_HEIGHT } from '../../../styles';
 import './desktop-styles.css';
 
-export const RootScreen = ({ enlargedDialogIsVisible }) => {
+export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
   return (
     <div>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
@@ -41,6 +42,7 @@ export const RootScreen = ({ enlargedDialogIsVisible }) => {
         <SessionExpiredDialog />
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       </OverlayContainer>
+      <LoadingScreen isLoading={isLoading} />
       <Map />
     </div>
   );
@@ -48,10 +50,12 @@ export const RootScreen = ({ enlargedDialogIsVisible }) => {
 
 RootScreen.propTypes = {
   enlargedDialogIsVisible: PropTypes.bool,
+  isLoading: PropTypes.bool,
 };
 
 RootScreen.defaultProps = {
   enlargedDialogIsVisible: false,
+  isLoading: false,
 };
 
 const styles = {
@@ -64,6 +68,7 @@ const styles = {
 
 const mapStateToProps = state => ({
   enlargedDialogIsVisible: !!selectIsEnlargedDialogVisible(state),
+  isLoading: state.global.isLoadingOrganisationUnit,
 });
 
 export default connect(mapStateToProps)(RootScreen);
