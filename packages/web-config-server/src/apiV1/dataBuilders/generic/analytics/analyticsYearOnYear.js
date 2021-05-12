@@ -18,7 +18,7 @@ class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
     const originalStartDate = this.query.startDate;
     const originalEndDate = this.query.endDate;
 
-    this.query.endDate = this.getTodayDataEndDate().format('YYYY-MM-DD');
+    this.query.endDate = this.getDataEndDate().format('YYYY-MM-DD');
     this.query.startDate = this.getDataStartDate().format('YYYY-MM-DD');
 
     const response = await super.fetchAnalytics(
@@ -50,7 +50,7 @@ class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
     return filteredAnalytics;
   }
 
-  getTodayDataEndDate() {
+  getDataEndDate() {
     return moment();
   }
 
@@ -63,12 +63,8 @@ class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
 
   getLayerYearOnYearSeries() {
     let series = [];
-    for (
-      let year = this.getTodayDataEndDate().year();
-      year >= this.getDataStartDate().year();
-      year--
-    ) {
-      let yearsAgo = this.getTodayDataEndDate().year() - year;
+    for (let year = this.getDataEndDate().year(); year >= this.getDataStartDate().year(); year--) {
+      let yearsAgo = this.getDataEndDate().year() - year;
       series.push({
         seriesKey: year,
         dataElementCode: formatLayeredDataElementCode(this.config.dataElementCode, yearsAgo),
