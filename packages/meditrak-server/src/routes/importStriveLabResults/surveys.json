@@ -136,7 +136,7 @@
     "ec5_parent_uuid":	"STRVEC_LHS01",
     "ec5_uuid":	"STRVEC_LHS02",
     "sentinel_code":	"entityCode",
-    "30_sentinel_site":	"STRVEC_LHS09",
+    "30_sentinel_site":	"STRVEC_LHS03",
     "latitude":	"STRVEC_LHS26",
     "longitude":	"STRVEC_LHS27",
     "accuracy":	"STRVEC_LHS28",
