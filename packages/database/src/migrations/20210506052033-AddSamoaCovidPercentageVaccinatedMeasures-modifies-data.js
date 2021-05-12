@@ -34,13 +34,8 @@ const getMeasureBuilderConfig = dataElementCode => ({
       },
     },
     denominator: {
-      measureBuilder: 'sumAllPerOrgUnit',
+      measureBuilder: 'sumLatestPerOrgUnit', // should take latest population
       measureBuilderConfig: {
-        aggregations: [
-          {
-            type: 'FINAL_EACH_DAY',
-          },
-        ],
         dataElementCodes: ['population_WS001'],
         entityAggregation: {
           dataSourceEntityType: 'village',
