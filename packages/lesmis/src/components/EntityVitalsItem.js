@@ -6,7 +6,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiContainer from '@material-ui/core/Container';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import { ReactComponent as LocationPin } from './icons/location-pin.svg';
@@ -19,7 +18,6 @@ import { ReactComponent as Notepad } from './icons/notepad.svg';
 import { FlexStart } from './Layout';
 
 const Wrapper = styled.section`
-  margin-left: 10px;
   padding-top: 0.5rem;
   width: 140px;
   margin-right: 1rem;
@@ -38,7 +36,7 @@ const VitalName = styled(Typography)`
 
 const VitalContent = styled(Typography)`
   color: ${props => props.theme.palette.text.primary};
-  font-weight: bold;
+  font-weight: 500;
   hyphens: auto;
   word-break: break-word;
 `;
@@ -49,6 +47,7 @@ const GreenVital = styled(VitalContent)`
 
 const IconContainer = styled.div`
   width: 40px;
+  margin-right: 10px;
 `;
 
 const VitalsIcon = ({ icon }) => {

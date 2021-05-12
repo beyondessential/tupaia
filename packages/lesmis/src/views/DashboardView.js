@@ -12,16 +12,16 @@ import MuiDivider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { Select } from '@tupaia/ui-components';
 import { DashboardReportTabView } from './DashboardReportTabView';
-import { TabPanel, TabBar, TabBarSection, EntityVitalsItem, PartnerLogo } from '../components';
+import {
+  MiniMap,
+  TabPanel,
+  TabBar,
+  TabBarSection,
+  EntityVitalsItem,
+  PartnerLogo,
+} from '../components';
 import { useUrlParams } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
-import * as COLORS from '../constants';
-
-// const TemplateBody = styled.section`
-//   background: ${COLORS.GREY_F9};
-//   padding-top: 1rem;
-//   min-height: 300px;
-// `;
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -110,7 +110,6 @@ const makeTabOptions = entityType => [
 ];
 
 const Wrapper = styled.section`
-  min-height: 50vh;
   background: #fbfbfb;
 `;
 
@@ -118,6 +117,7 @@ const Container = styled(MuiContainer)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: stretch;
   padding-right: 0;
 `;
 
@@ -131,7 +131,9 @@ const FlexRow = styled.div`
 
 const VitalsSection = styled(FlexRow)`
   margin-right: 10px;
+  padding-bottom: 1rem;
   flex: 1;
+  min-width: 500px;
 `;
 
 const PartnersContainer = styled(FlexRow)`
@@ -153,39 +155,36 @@ const TitleContainer = styled.div`
 `;
 
 const RedTitle = styled(Typography)`
+  font-weight: 500;
   color: ${props => props.theme.palette.primary.main};
-  padding-top: 50px;
+  padding-top: 30px;
 `;
 
 const GreyTitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
-  font-weight: bold;
+  font-weight: 500;
   padding-top: 30px;
+  padding-bottom: 10px;
   padding-left: 5px;
 `;
 
 const HorizontalDivider = styled(MuiDivider)`
   width: 90%;
-  margin-top: 1.5rem;
-  background: ${props => props.theme.palette.text.tertiary};
+  margin-top: 1rem;
 `;
 
 const VerticalDivider = styled(MuiDivider)`
   margin-top: 2.5rem;
   height: 7rem;
-  background: ${props => props.theme.palette.text.tertiary};
 `;
 
-const PlaceholderBox = styled.div`
-  width: 510px;
-  height: 370px;
-  background: grey;
-`;
-const MapPlaceholder = () => (
-  <PlaceholderBox>
-    <Typography>TODO: Map</Typography>
-  </PlaceholderBox>
-);
+const PhotoOrMap = ({ vitals }) => {
+  if (vitals.isLoading) return null;
+
+  if (vitals.Photo) return <img src={vitals.Photo} alt="place" width="720px" />;
+
+  return <MiniMap entityCode={vitals.code} />;
+};
 
 const CountryView = ({ vitals }) => {
   return (
@@ -207,7 +206,7 @@ const CountryView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MapPlaceholder />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -252,7 +251,7 @@ const ProvinceView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MapPlaceholder />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -324,7 +323,7 @@ const DistrictView = ({ vitals }) => {
           />
         </FlexRow>
       </VitalsSection>
-      <MapPlaceholder />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -369,7 +368,7 @@ const VillageView = ({ vitals }) => {
           isLoading={vitals.isLoading}
         />
       </VitalsSection>
-      <MapPlaceholder />
+      <PhotoOrMap vitals={vitals} />
       <PartnersContainer>
         <TitleContainer>
           <GreyTitle>Development Partner Support</GreyTitle>
@@ -455,7 +454,7 @@ const SchoolView = ({ vitals }) => {
           </ParentVillage>
         </FlexRow>
       </VitalsSection>
-      {vitals.Photo ? <img src={vitals.Photo} alt="place" width="720px" /> : <MapPlaceholder />}
+      <PhotoOrMap vitals={vitals} />
     </>
   );
 };
@@ -519,6 +518,9 @@ export const DashboardView = () => {
   );
 };
 
+PhotoOrMap.propTypes = {
+  vitals: PropTypes.object.isRequired,
+};
 CountryView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
