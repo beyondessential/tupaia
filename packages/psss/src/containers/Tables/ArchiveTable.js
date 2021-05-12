@@ -92,5 +92,5 @@ ArchiveTable.propTypes = {
 };
 
 ArchiveTable.defaultProps = {
-  countryCode: null,
+  countryCode: '',
 };

@@ -82,5 +82,5 @@ OutbreaksTable.propTypes = {
 };
 
 OutbreaksTable.defaultProps = {
-  countryCode: null,
+  countryCode: '',
 };
