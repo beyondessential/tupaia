@@ -5,6 +5,7 @@
 
 import {
   checkValueSatisfiesCondition,
+  comparePeriods,
   replaceValues,
   asyncFilter,
   asyncEvery,
@@ -73,9 +74,18 @@ const countDataValues = (analytics, dataValues, filter, config) => {
   );
 };
 
+const getLatestDataValue = (analytics, dataValues) => {
+  const sortedAnalytics =
+    analytics
+      .filter(({ dataElement }) => dataValues.includes(dataElement))
+      .sort(({ period: p1 }, { period: p2 }) => comparePeriods(p2, p1));
+  return sortedAnalytics[0]?.value;
+};
+
 const AGGREGATIONS = {
   SUM: sumDataValues,
   COUNT: countDataValues,
+  LATEST: getLatestDataValue,
 };
 
 const performArithmeticOperation = (analytics, arithmeticConfig) => {

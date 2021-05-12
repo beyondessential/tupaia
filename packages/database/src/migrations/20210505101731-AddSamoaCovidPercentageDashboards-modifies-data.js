@@ -31,6 +31,7 @@ const getDataBuilderConfig = doseNum => ({
             dataValues: [doseNum === 1 ? 'COVIDVac4' : 'COVIDVac8'],
           },
           {
+            aggregationType: 'LATEST',
             dataValues: ['population_WS001'],
           },
         ],
