@@ -3,7 +3,7 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
+import groupBy from 'lodash.groupBy';
 import {
   checkValueSatisfiesCondition,
   comparePeriods,
@@ -77,9 +77,9 @@ const countDataValues = (analytics, dataValues, filter, config) => {
 
 const sumLatestDataValuePerOrgUnit = (analytics, dataValues) => {
   const analyticsByOrgUnit =
-    keyBy(analytics.filter(({ dataElement }) => dataValues.includes(dataElement)), 'organisationUnit');
+    groupBy(analytics.filter(({ dataElement }) => dataValues.includes(dataElement)), 'organisationUnit');
 
-  const latestAnalyticByOrgUnit = analyticsByOrgUnit.map(
+  const latestAnalyticByOrgUnit = Object.values(analyticsByOrgUnit).map(
     analyticsForOrgUnit => analyticsForOrgUnit.sort(({ period: p1 }, { period: p2 }) => comparePeriods(p2, p1))[0]
   );
 
