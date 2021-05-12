@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Polygon as PolygonComponent } from './Polygon';
+import { EntityPolygon } from './EntityPolygon';
 
 export const PolygonLayer = ({ entities, Polygon }) => {
   if (!entities) return null;
@@ -28,5 +28,5 @@ PolygonLayer.propTypes = {
 
 PolygonLayer.defaultProps = {
   entities: [],
-  Polygon: PolygonComponent,
+  Polygon: EntityPolygon,
 };

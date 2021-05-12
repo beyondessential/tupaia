@@ -7,3 +7,4 @@
 export * from './MeasureMarker';
 export * from './PopupMarker';
 export * from './MeasurePopup';
+export * from './IconMarker';

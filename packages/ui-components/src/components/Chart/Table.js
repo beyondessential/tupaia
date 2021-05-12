@@ -35,7 +35,7 @@ const StyledTable = styled(MuiTable)`
 
     th {
       position: relative;
-      height: 7rem;
+      height: 6rem;
       text-align: center;
       border: none;
       font-weight: 400;

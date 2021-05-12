@@ -23,7 +23,7 @@ const BasicPolygon = styled(PolygonComponent)`
   }
 `;
 
-export const Polygon = ({ entity }) => {
+export const EntityPolygon = ({ entity }) => {
   if (!entity || !Array.isArray(entity.region)) {
     return null;
   }
@@ -37,13 +37,13 @@ export const Polygon = ({ entity }) => {
   );
 };
 
-Polygon.propTypes = {
+EntityPolygon.propTypes = {
   entity: PropTypes.shape({
     name: PropTypes.string,
     region: PropTypes.array,
   }),
 };
 
-Polygon.defaultProps = {
+EntityPolygon.defaultProps = {
   entity: null,
 };

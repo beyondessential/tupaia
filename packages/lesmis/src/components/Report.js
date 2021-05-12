@@ -6,18 +6,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import GridOnIcon from '@material-ui/icons/GridOn';
-import { Chart, Table } from '@tupaia/ui-components/lib/chart';
-import { useDashboardReportData } from '../api';
-import { FetchLoader } from './FetchLoader';
 import { FlexSpaceBetween } from './Layout';
 import { ToggleButton } from './ToggleButton';
+import { DashboardReportModal } from './DashboardReportModal';
+import { ChartTable, TABS } from './ChartTable';
 import * as COLORS from '../constants';
+import { useDashboardReportData } from '../api/queries';
 
 const Container = styled.div`
   width: 55rem;
@@ -44,21 +42,10 @@ const Body = styled.div`
   background: ${COLORS.GREY_F9};
   min-height: 26rem;
   max-height: 40rem;
+  padding-top: 1rem;
 
   .MuiTable-root {
     min-height: 100%;
-  }
-`;
-
-const ChartWrapper = styled.div`
-  display: flex;
-  height: 26rem;
-  padding: 1.25rem 1.875rem 0;
-  width: 100%;
-
-  .MuiAlert-root {
-    position: relative;
-    top: -0.625rem; // offset the chart wrapper padding
   }
 `;
 
@@ -79,20 +66,14 @@ export const CHART_TYPES = {
   PIE: 'pie',
 };
 
-export const TABS = {
-  CHART: 'chart',
-  TABLE: 'table',
-};
-
 export const Report = React.memo(
   ({
     reportId,
     name,
     entityCode,
     dashboardGroupId,
+    dashboardGroupName,
     periodGranularity,
-    defaultTimePeriod,
-    onItemClick,
     year,
   }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
@@ -102,7 +83,6 @@ export const Report = React.memo(
       reportId,
       periodGranularity,
       year,
-      defaultTimePeriod,
     });
 
     const handleTabChange = (event, newValue) => {
@@ -125,20 +105,25 @@ export const Report = React.memo(
           </ToggleButtonGroup>
         </Header>
         <Body>
-          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
-            {selectedTab === TABS.CHART ? (
-              <ChartWrapper>
-                <Chart viewContent={viewContent} onItemClick={onItemClick} isEnlarged />
-              </ChartWrapper>
-            ) : (
-              <Table viewContent={viewContent} />
-            )}
-          </FetchLoader>
+          <ChartTable
+            viewContent={viewContent}
+            isLoading={isLoading}
+            isError={isError}
+            error={error}
+            selectedTab={selectedTab}
+          />
         </Body>
         <Footer>
-          <Button endIcon={<KeyboardArrowRightIcon />} color="primary">
-            More Insights
-          </Button>
+          <DashboardReportModal
+            buttonText="More Insights"
+            name={name}
+            dashboardGroupName={dashboardGroupName}
+            entityCode={entityCode}
+            dashboardGroupId={dashboardGroupId}
+            reportId={reportId}
+            periodGranularity={periodGranularity}
+            year={year}
+          />
         </Footer>
       </Container>
     );
@@ -151,14 +136,11 @@ Report.propTypes = {
   entityCode: PropTypes.string.isRequired,
   year: PropTypes.string,
   dashboardGroupId: PropTypes.string.isRequired,
+  dashboardGroupName: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
-  defaultTimePeriod: PropTypes.object,
-  onItemClick: PropTypes.func,
 };
 
 Report.defaultProps = {
-  defaultTimePeriod: null,
   year: null,
   periodGranularity: null,
-  onItemClick: () => {},
 };
