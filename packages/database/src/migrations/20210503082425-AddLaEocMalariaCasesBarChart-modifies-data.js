@@ -45,7 +45,7 @@ const buildReportConfig = (id, entityType) => ({
     name: 'Total Malaria Cases by Week',
     type: 'chart',
     chartType: 'bar',
-    periodGranularity: 'one_week_at_a_time',
+    periodGranularity: 'week',
     defaultTimePeriod: {
       end: {
         unit: 'week',
