@@ -13,6 +13,7 @@ import shallowEqual from 'shallowequal';
 
 import Cell from './Cell';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
+import { checkIfApplyDotStyle } from '../../utils';
 
 export default class Row extends Component {
   shouldComponentUpdate(nextProps) {
@@ -109,15 +110,9 @@ export default class Row extends Component {
             return <div style={style} key={index} />;
           }
 
-          let applyDotStyle = true;
-
-          if (
-            presentationOptions &&
-            presentationOptions.applyLocation &&
-            presentationOptions.applyLocation.columnIndexes
-          ) {
-            applyDotStyle = presentationOptions.applyLocation.columnIndexes.includes(index);
-          }
+          const applyDotStyle = checkIfApplyDotStyle(presentationOptions)
+            ? presentationOptions.applyLocation.columnIndexes.includes(index)
+            : true;
 
           return (
             <Cell

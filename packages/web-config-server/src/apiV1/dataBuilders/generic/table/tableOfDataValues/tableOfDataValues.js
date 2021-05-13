@@ -22,10 +22,6 @@ import {
 } from './helpers';
 
 import {
-  fetchAggregatedAnalyticsByDhisIds,
-  checkAllDataElementsAreDhisIndicators,
-} from '../../../../../apiV1/utils';
-import {
   ORG_UNIT_COL_KEY,
   ORG_UNIT_WITH_TYPE_COL_KEY,
   ORG_UNIT_COLUMNS_KEYS_SET,
@@ -103,23 +99,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     // There are some valid configs which don't fetch any data
     if (dataElementCodes.length === 0) return { results: [] };
 
-    // TODO: This if block is to implement a hacky approach to fetch indicator values
-    // because the normal analytics/rawData.json endpoint does not return any data for indicators.
-    // Will have to implement this properly with #tupaia-backlog/issues/2412
-    // After that remove this file and anything related to it
-    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
-      this.models,
-      dataElementCodes,
-    );
-    if (allDataElementsAreDhisIndicators) {
-      const { results, period } = await this.fetchAnalyticsByDhisApi(dataElementCodes);
-      const resultsWithMetadata = results.map(result => ({
-        ...result,
-        metadata: { code: result.dataElement },
-      }));
-      return { results: resultsWithMetadata, period };
-    }
-
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
@@ -128,17 +107,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       metadata: dataElementByCode[result.dataElement] || {},
     }));
     return { results: resultsWithMetadata, period };
-  }
-
-  async fetchAnalyticsByDhisApi(dataElementCodes) {
-    const { entityAggregation } = this.config;
-    return fetchAggregatedAnalyticsByDhisIds(
-      this.models,
-      this.dhisApi,
-      dataElementCodes,
-      this.query,
-      entityAggregation,
-    );
   }
 
   buildDataElementCodes() {

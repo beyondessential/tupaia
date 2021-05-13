@@ -6,10 +6,12 @@
 import React from 'react';
 import get from 'lodash.get';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { VALUE_TYPES, CHART_TYPES, PRESENTATION_OPTIONS_SHAPE } from './constants';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
+import { TooltipContainer } from './TooltipContainer';
 
 function formatLabelledValue(label, value, valueType, metadata) {
   const valueText = formatDataValueByType({ value, metadata }, valueType);
@@ -19,10 +21,23 @@ function formatLabelledValue(label, value, valueType, metadata) {
   return valueText;
 }
 
-const TooltipContainer = styled.div`
-  color: rgba(255, 255, 255, 0.87);
-  background: rgba(0, 0, 0, 0.7);
-  padding: 15px 10px 15px 5px;
+const Heading = styled(Typography)`
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1rem;
+  margin-bottom: 0.5rem;
+`;
+
+const List = styled.ul`
+  padding: 0;
+  margin: 0;
+`;
+
+const ListItem = styled.li`
+  list-style: none;
+  font-size: 0.875rem;
+  line-height: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const MultiValueTooltip = ({
@@ -46,7 +61,7 @@ const MultiValueTooltip = ({
     }
   }
 
-  const valueLabels = payload.map(({ dataKey, value }) => {
+  const valueLabels = payload.map(({ dataKey, value, color }) => {
     const options = chartConfig && chartConfig[dataKey];
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel = labelType || valueType || get(chartConfig, [dataKey, 'valueType']);
@@ -54,22 +69,24 @@ const MultiValueTooltip = ({
     const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`] || {};
 
     return (
-      <li key={dataKey}>
+      <ListItem key={dataKey} style={{ color }}>
         {formatLabelledValue(label, value, valueTypeForLabel, {
           presentationOptions,
           ...metadata,
         })}
-      </li>
+      </ListItem>
     );
   });
 
   return (
     <TooltipContainer>
-      {headline ||
-        (getIsTimeSeries([data]) &&
-          periodGranularity &&
-          formatTimestampForChart(timestamp, periodGranularity))}
-      <ul>{valueLabels}</ul>
+      <Heading>
+        {headline ||
+          (getIsTimeSeries([data]) &&
+            periodGranularity &&
+            formatTimestampForChart(timestamp, periodGranularity))}
+      </Heading>
+      <List>{valueLabels}</List>
     </TooltipContainer>
   );
 };

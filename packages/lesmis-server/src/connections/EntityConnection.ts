@@ -4,6 +4,7 @@
  *
  */
 import camelcaseKeys from 'camelcase-keys';
+import { QueryParameters } from '@tupaia/server-boilerplate';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { LESMIS_PROJECT_NAME } from '../constants';
 
@@ -12,9 +13,10 @@ const { ENTITY_SERVER_API_URL = 'http://localhost:8050/v1' } = process.env;
 export class EntityConnection extends SessionHandlingApiConnection {
   baseUrl = ENTITY_SERVER_API_URL;
 
-  async getEntities() {
+  async getEntities(entityCode: string, queryParameters: QueryParameters = {}) {
     const response = await this.get(
-      `hierarchy/${LESMIS_PROJECT_NAME}/${LESMIS_PROJECT_NAME}/descendants`,
+      `hierarchy/${LESMIS_PROJECT_NAME}/${entityCode}/descendants`,
+      queryParameters,
     );
     return camelcaseKeys(response);
   }

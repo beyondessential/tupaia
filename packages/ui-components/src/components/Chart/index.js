@@ -4,3 +4,5 @@
  */
 
 export { Chart } from './Chart';
+export { Table } from './Table';
+export * from './periodGranularities';

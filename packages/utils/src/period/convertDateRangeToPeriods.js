@@ -33,9 +33,13 @@ const getDateData = date => {
  * @param {Moment|string} endDate
  * @returns {string[]}
  */
-export const convertDateRangeToPeriods = (startDate, endDate) => {
+export const convertDateRangeToPeriods = (startDate, endDate, targetType) => {
   const start = getDateData(startDate);
   const end = getDateData(endDate);
+  if (targetType) {
+    return getPeriodsInRange(start.dayPeriod, end.dayPeriod, targetType);
+  }
+
   const monthsInRange = getPeriodsInRange(start.monthPeriod, end.monthPeriod);
   const lastDayOfEndMonth = end.moment.endOf('month').date();
 

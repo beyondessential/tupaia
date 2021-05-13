@@ -17,7 +17,7 @@ const StyledMapContainer = styled(LeafletMapContainer)`
 `;
 
 export const MapContainer = ({
-  location,
+  bounds,
   className,
   defaultBounds,
   onLocationChange,
@@ -27,15 +27,15 @@ export const MapContainer = ({
   const [map, setMap] = useState(null);
 
   useEffect(() => {
-    if (map && location) {
-      map.fitBounds(location.bounds);
+    if (map && bounds) {
+      map.fitBounds(bounds);
 
       // provide a hook to handle location change with custom behaviour
       if (onLocationChange) {
-        onLocationChange(map, location);
+        onLocationChange(map, bounds);
       }
     }
-  }, [location, map]);
+  }, [bounds, map]);
 
   return (
     <StyledMapContainer
@@ -52,7 +52,7 @@ export const MapContainer = ({
 };
 
 MapContainer.propTypes = {
-  location: PropTypes.object,
+  bounds: PropTypes.array,
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
   defaultBounds: PropTypes.array,
@@ -60,7 +60,7 @@ MapContainer.propTypes = {
 };
 
 MapContainer.defaultProps = {
-  location: null,
+  bounds: null,
   className: null,
   onLocationChange: null,
   defaultBounds: DEFAULT_BOUNDS,
