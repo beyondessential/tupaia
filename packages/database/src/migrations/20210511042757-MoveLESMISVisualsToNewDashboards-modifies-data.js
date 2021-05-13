@@ -43,7 +43,6 @@ const createDashboardsFromDashboardGroups = async db => {
                   ELSE LOWER("organisationLevel")
                 END) AS entity_types,
       array_cat_agg(distinct "projectCodes") AS project_codes,
-      array_agg(distinct "userGroup") AS base_permission_groups,
       concat("organisationUnitCode", '_', REPLACE(name, ' ', '_'), '_', REPLACE((array_agg(distinct "userGroup"))[1], ' ', '_')) as code
     FROM "dashboardGroup"
     WHERE 'laos_schools' = ANY("projectCodes")
@@ -59,12 +58,50 @@ const createDashboardsFromDashboardGroups = async db => {
   }
 };
 
+const createLegacyDashboardItems = async db => {
+  const dashboardReports = await db.runSql(`
+    SELECT * from "dashboardReport"
+    WHERE id IN
+      (SELECT unnest("dashboardReports") from "dashboardGroup"
+       WHERE 'laos_schools' = ANY("projectCodes"));
+  `);
+
+  for (const currentReport of dashboardReports.rows) {
+    const { id: code, viewJson: config, drillDownLevel, ...legacyObject } = currentReport;
+    const legacyId = generateId();
+    const permissionGroups = await db.runSql(`
+      SELECT array_agg(DISTINCT "userGroup") as permission_groups
+      FROM "dashboardGroup"
+      WHERE '${code}' = ANY("dashboardReports");
+    `);
+    await db.runSql(`
+      INSERT INTO legacy_report
+      VALUES ('${legacyId}',
+               ${drillDownLevel},
+              '${JSON.stringify(currentReport.dataBuilder)}',
+              '${JSON.stringify(currentReport.dataBuilderConfig)}',
+              '${JSON.stringify(currentReport.dataServices)}'
+      )
+    `);
+    await db.runSql(`
+      INSERT INTO dashboard_item
+      VALUES (
+        '${generateId()}',
+        '${code}',
+        '${JSON.stringify(config).replace(/'/g, "''")}',
+        '{${permissionGroups.rows[0].permission_groups}}',
+        '${legacyId}',
+         ${true}
+      )
+    `);
+  }
+};
+
 const createDashboardRelationsFromDashboardGroups = async db => {
   const dashboardRelations = await db.runSql(`
     SELECT
       dashboard.id AS dashboard_id,
-      unnest("dashboardReports") AS child_id,
-      'dashboardReport' AS child_type
+      unnest("dashboardReports") AS child_id
     FROM "dashboardGroup"
     INNER JOIN dashboard
       ON dashboard.name = "dashboardGroup".name
@@ -72,15 +109,30 @@ const createDashboardRelationsFromDashboardGroups = async db => {
   `);
 
   for (const currentDashboardRelation of dashboardRelations.rows) {
+    const childId = await db.runSql(`
+      SELECT id FROM dashboard_item
+      WHERE code = '${currentDashboardRelation.child_id}'
+    `);
     await insertObject(db, 'dashboard_relation', {
       id: generateId(),
       ...currentDashboardRelation,
+      child_id: childId.rows[0].id,
     });
+    // await db.runSql(`
+    //   INSERT INTO dashboard_relation
+    //   VALUE (
+    //     '${generateId()}',
+    //     '${currentDashboardRelation.dashboard_id}',
+    //     '${childId}',
+    //     ${null}
+    //   )
+    // `);
   }
 };
 
 exports.up = async function (db) {
   await createDashboardsFromDashboardGroups(db);
+  await createLegacyDashboardItems(db);
   await createDashboardRelationsFromDashboardGroups(db);
 };
 
