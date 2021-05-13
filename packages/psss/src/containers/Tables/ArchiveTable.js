@@ -13,8 +13,9 @@ import {
   WeekAndDateCell,
   StartDateCell,
 } from '../../components';
-import { useArchivedAlerts } from '../../api';
+import { useAlerts } from '../../api';
 import { getCountryCodes } from '../../store';
+import { getPeriodByDate } from '../../utils';
 
 // TODO uncomment the commented out lines in column config after outbreaks are added
 // https://github.com/beyondessential/tupaia-backlog/issues/1512
@@ -76,7 +77,8 @@ const getColumns = isSingleCountry =>
 const ArchiveTableComponent = React.memo(({ countryCode, countryCodes }) => {
   const isSingleCountry = !!countryCode;
   const orgUnitCodes = isSingleCountry ? [countryCode] : countryCodes;
-  const { data, isLoading, error, isFetching } = useArchivedAlerts(orgUnitCodes);
+  const period = getPeriodByDate(new Date());
+  const { data, isLoading, error, isFetching } = useAlerts(period, orgUnitCodes, 'archived');
   const columns = getColumns(isSingleCountry);
 
   return (

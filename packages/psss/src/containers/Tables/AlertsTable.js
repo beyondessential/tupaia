@@ -12,7 +12,7 @@ import {
   SyndromeCell,
   WeekAndDateCell,
 } from '../../components';
-import { useActiveAlerts } from '../../api';
+import { useAlerts } from '../../api';
 import { getCountryCodes } from '../../store';
 
 const countryColumn = {
@@ -64,7 +64,7 @@ const AlertsTableComponent = React.memo(({ onRowClick, countryCode, countryCodes
   const isSingleCountry = !!countryCode;
   const orgUnitCodes = isSingleCountry ? [countryCode] : countryCodes;
   const columns = getColumns(isSingleCountry);
-  const { data, isLoading, error, isFetching } = useActiveAlerts(period, orgUnitCodes);
+  const { data, isLoading, error, isFetching } = useAlerts(period, orgUnitCodes, 'active');
 
   const handleRowClick = useCallback(
     (_, rowData) => {
