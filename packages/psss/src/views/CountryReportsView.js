@@ -27,7 +27,7 @@ const links = [
   },
 ];
 
-export const CountryReportsViewComponent = ({ backButtonConfig }) => {
+const CountryReportsViewComponent = ({ backButtonConfig }) => {
   const { countryCode } = useParams();
   const countryName = useSelector(state => getCountryName(state, countryCode));
 

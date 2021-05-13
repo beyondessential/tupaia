@@ -10,8 +10,16 @@ import { ExpandableTable, ExpandableTableBody } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { useConfirmedWeeklyReport } from '../../api';
-import { AlertCell, SitesReportedCell, CountryNameLinkCell } from '../../components';
+import { AlertCell, CountryLinkCell, SitesReportedCell } from '../../components';
 import { getCountryCodes, getLatestViewableWeek } from '../../store';
+
+/* eslint-disable react/prop-types */
+const CountryCell = ({ organisationUnit }) => (
+  <CountryLinkCell target={`weekly-reports/${organisationUnit}`} countryCode={organisationUnit} />
+);
+CountryCell.propTypes = {
+  organisationUnit: PropTypes.string.isRequired,
+};
 
 const countriesTableColumns = [
   {
@@ -20,7 +28,7 @@ const countriesTableColumns = [
     width: '30%', // must be same as CountrySummaryTable name column to align
     align: 'left',
     sortable: false,
-    CellComponent: CountryNameLinkCell,
+    CellComponent: CountryCell,
   },
   {
     title: 'Sites Reported',

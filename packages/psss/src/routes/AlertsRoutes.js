@@ -6,7 +6,6 @@
 import React from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { AlertsTabView } from '../views/Tabs/AlertsTabView';
-import { ArchiveTabView } from '../views/Tabs/ArchiveTabView';
 import { OutbreaksTabView } from '../views/Tabs/OutbreaksTabView';
 
 export const AlertsRoutes = React.memo(() => {
@@ -15,13 +14,13 @@ export const AlertsRoutes = React.memo(() => {
   return (
     <Switch>
       <Route exact path={match.path}>
-        <AlertsTabView />
+        <AlertsTabView alertStatus="active" />
       </Route>
-      <Route path={`${match.path}/outbreaks`}>
+      <Route exact path={`${match.path}/outbreaks`}>
         <OutbreaksTabView />
       </Route>
-      <Route path={`${match.path}/archive`}>
-        <ArchiveTabView />
+      <Route exact path={`${match.path}/archive`}>
+        <AlertsTabView alertStatus="archived" />
       </Route>
       <Redirect to={match.path} />
     </Switch>

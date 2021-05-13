@@ -2,28 +2,34 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useCallback } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Table } from '@tupaia/ui-components';
-import {
-  AlertMenuCell,
-  CountryNameLinkCell,
-  SyndromeCell,
-  WeekAndDateCell,
-} from '../../components';
+import { AlertMenuCell, CountryLinkCell, SyndromeCell, WeekAndDateCell } from '../../components';
 import { useAlerts } from '../../api';
 import { getCountryCodes } from '../../store';
 
-const countryColumn = {
+/* eslint-disable react/prop-types */
+const ActiveAlertCountryCell = ({ organisationUnit }) => (
+  <CountryLinkCell target={`alerts/${organisationUnit}`} countryCode={organisationUnit} />
+);
+
+const ArchivedAlertCountryCell = ({ organisationUnit }) => (
+  <CountryLinkCell target={`alerts/archive/${organisationUnit}`} countryCode={organisationUnit} />
+);
+/* eslint-enable react/prop-types */
+
+const getCountryColumn = alertStatus => ({
   title: 'Country',
-  key: 'countryCode',
+  key: 'organisationUnit',
   width: '28%',
   align: 'left',
-  CellComponent: CountryNameLinkCell,
-};
+  CellComponent: alertStatus === 'archived' ? ArchivedAlertCountryCell : ActiveAlertCountryCell,
+});
 
-const alertColumns = [
+const activeColumns = [
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -57,21 +63,57 @@ const alertColumns = [
   },
 ];
 
-const getColumns = isSingleCountry =>
-  isSingleCountry ? alertColumns : [countryColumn, ...alertColumns];
+const archivedColumns = [
+  {
+    title: 'Syndrome',
+    key: 'syndrome',
+    align: 'left',
+    CellComponent: SyndromeCell,
+  },
+  {
+    title: 'Alert Start Date',
+    key: 'period',
+    align: 'left',
+    width: '200px',
+    CellComponent: WeekAndDateCell,
+  },
+  {
+    title: 'Cases Since Alert Began',
+    key: 'totalCases',
+    align: 'left',
+    width: '115px',
+  },
+  // {
+  //   title: 'Outbreak Start Date',
+  //   key: 'outbreakStartDate',
+  //   align: 'left',
+  //   CellComponent: StartDateCell,
+  // },
+  {
+    title: 'Diagnosis',
+    key: 'diagnosis',
+    align: 'left',
+  },
+  {
+    title: '',
+    key: 'id',
+    sortable: false,
+    CellComponent: AlertMenuCell,
+    width: '45px',
+  },
+];
 
-const AlertsTableComponent = React.memo(({ onRowClick, countryCode, countryCodes, period }) => {
+const getColumns = (alertStatus, isSingleCountry) => {
+  const baseColumns = alertStatus === 'archived' ? archivedColumns : activeColumns;
+  return isSingleCountry ? baseColumns : [getCountryColumn(), ...baseColumns];
+};
+
+const AlertsTableComponent = React.memo(({ countryCodes, period, alertStatus }) => {
+  const { countryCode } = useParams();
   const isSingleCountry = !!countryCode;
   const orgUnitCodes = isSingleCountry ? [countryCode] : countryCodes;
-  const columns = getColumns(isSingleCountry);
-  const { data, isLoading, error, isFetching } = useAlerts(period, orgUnitCodes, 'active');
-
-  const handleRowClick = useCallback(
-    (_, rowData) => {
-      onRowClick(rowData);
-    },
-    [onRowClick],
-  );
+  const columns = getColumns(alertStatus, isSingleCountry);
+  const { data, isLoading, error, isFetching } = useAlerts(period, orgUnitCodes, alertStatus);
 
   return (
     <Table
@@ -80,20 +122,14 @@ const AlertsTableComponent = React.memo(({ onRowClick, countryCode, countryCodes
       isFetching={!isLoading && isFetching}
       errorMessage={error && error.message}
       columns={columns}
-      onRowClick={handleRowClick}
     />
   );
 });
 
 AlertsTableComponent.propTypes = {
-  countryCode: PropTypes.string,
   countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   period: PropTypes.string.isRequired,
-  onRowClick: PropTypes.func.isRequired,
-};
-
-AlertsTableComponent.defaultProps = {
-  countryCode: '',
+  alertStatus: PropTypes.oneOf(['active', 'archived']).isRequired,
 };
 
 const mapStateToProps = state => ({
