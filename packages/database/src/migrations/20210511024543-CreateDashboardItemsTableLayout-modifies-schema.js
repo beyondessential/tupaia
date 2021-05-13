@@ -22,7 +22,16 @@ exports.up = async function (db) {
       config JSONB NOT NULL DEFAULT '{}',
       permission_groups TEXT[] NOT NULL CONSTRAINT permission_groups_not_empty CHECK (permission_groups <> '{}'),
       report_code TEXT NOT NULL,
-      FOREIGN KEY (report_code) REFERENCES report (code) ON UPDATE CASCADE ON DELETE RESTRICT
+      legacy BOOLEAN NOT NULL DEFAULT 'false'
+    );
+  `);
+  await db.runSql(`
+    CREATE TABLE legacy_report (
+      id TEXT PRIMARY KEY,
+      "drillDownLevel" INTEGER,
+      "dataBuilder" TEXT,
+      "dataBuilderConfig" JSONB,
+      "dataServices" JSONB DEFAULT '[{"isDataRegional": true}]'
     );
   `);
   await db.runSql(`
@@ -33,21 +42,17 @@ exports.up = async function (db) {
       entity_types entity_type[] NOT NULL CONSTRAINT entity_types_not_empty CHECK (entity_types <> '{}'),
       root_entity_code TEXT NOT NULL,
       project_codes TEXT[] NOT NULL CONSTRAINT project_codes_not_empty CHECK (project_codes <> '{}'),
-      base_permission_groups TEXT[] NOT NULL CONSTRAINT base_permission_groups_not_empty CHECK (base_permission_groups <> '{}'),
       FOREIGN KEY (root_entity_code) REFERENCES entity (code) ON UPDATE CASCADE ON DELETE RESTRICT
     );
-  `);
-  await db.runSql(`
-    CREATE TYPE dashboard_child_type AS ENUM ('dashboard_item', 'dashboardReport')
   `);
   await db.runSql(`
     CREATE TABLE dashboard_relation (
       id TEXT PRIMARY KEY,
       dashboard_id TEXT NOT NULL,
       child_id TEXT NOT NULL,
-      child_type dashboard_child_type NOT NULL,
       sort_order INTEGER,
-      FOREIGN KEY (dashboard_id) REFERENCES dashboard (id) ON UPDATE CASCADE ON DELETE RESTRICT
+      FOREIGN KEY (dashboard_id) REFERENCES dashboard (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+      FOREIGN KEY (child_id) REFERENCES dashboard_item (id) ON UPDATE CASCADE ON DELETE RESTRICT
     );
   `);
 };
@@ -55,8 +60,8 @@ exports.up = async function (db) {
 exports.down = async function (db) {
   await db.runSql(`
     DROP TABLE dashboard_relation;
-    DROP TYPE dashboard_child_type;
     DROP TABLE dashboard;
+    DROP TABLE legacy_report;
     DROP TABLE dashboard_item;
   `);
 };
