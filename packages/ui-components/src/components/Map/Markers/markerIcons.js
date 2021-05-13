@@ -50,14 +50,24 @@ const IconContainer = ({ children, scale, ...props }) => (
   </svg>
 );
 
+IconContainer.propTypes = {
+  children: PropTypes.any,
+  scale: PropTypes.number,
+};
+
+IconContainer.defaultProps = {
+  children: null,
+  scale: 1,
+};
+
 const PinIcon = ({ color, scale }) => {
   return (
-    <IconContainer fill={color} scale={scale} viewBox="0 0 24 33">
-      <circle cx="12" cy="12" r="7" fill="#F9F9F9" />
+    <IconContainer fill={color} scale={scale} viewBox="0 0 27 39">
       <path
-        d="M12 0C5.37429 0 0 5.17275 0 11.55C0 20.2125 12 33 12 33C12 33 24 20.2125 24 11.55C24 5.17275 18.6257 0 12 0ZM12 15.675C9.63429 15.675 7.71429 13.827 7.71429 11.55C7.71429 9.273 9.63429 7.425 12 7.425C14.3657 7.425 16.2857 9.273 16.2857 11.55C16.2857 13.827 14.3657 15.675 12 15.675Z"
+        d="M13.5 0.631592C6.04607 0.631592 0 6.64584 0 14.0605C0 24.1322 13.5 39 13.5 39C13.5 39 27 24.1322 27 14.0605C27 6.64584 20.9539 0.631592 13.5 0.631592Z"
         fill={color}
       />
+      <circle cx="13.5" cy="14.1316" r="6.39474" fill="white" fillOpacity="0.2" />
     </IconContainer>
   );
 };
