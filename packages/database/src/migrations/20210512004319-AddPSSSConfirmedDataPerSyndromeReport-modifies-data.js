@@ -23,9 +23,9 @@ exports.setup = function (options, seedLink) {
 
 const SYNDROMES = ['AFR', 'DIA', 'ILI', 'PF', 'DLI'];
 
-const getReportCode = syndrome => `PSSS_${syndrome}_Alert_Confirmed_Data`;
+const getReportCode = syndrome => `PSSS_${syndrome}_Confirmed_Report`;
 
-const getTotalConfirmedCasesIndicator = syndrome => `PSSS_Total_${syndrome}_Confirmed_Cases`;
+const getTotalConfirmedCasesIndicator = syndrome => `PSSS_Accumulated_${syndrome}_Confirmed_Cases`;
 
 const getReport = (syndrome, permissionGroupId) => {
   const reportCode = getReportCode(syndrome);
@@ -36,28 +36,22 @@ const getReport = (syndrome, permissionGroupId) => {
     code: reportCode,
     config: {
       fetch: {
-        dataElements: [
-          totalConfirmedCasesIndicator,
-          'PSSS_Most_Recent_Confirmed_Sites',
-          'PSSS_Most_Recent_Confirmed_Sites_Reported',
-        ],
+        dataElements: [totalConfirmedCasesIndicator],
       },
       transform: [
         'keyValueByDataElementName',
-        'convertPeriodToWeek',
         'mostRecentValuePerOrgUnit',
         {
           // change key names
           transform: 'select',
           "'totalCases'": `$row.${totalConfirmedCasesIndicator}`,
-          "'sites'": '$row.PSSS_Most_Recent_Confirmed_Sites',
-          "'sitesReported'": '$row.PSSS_Most_Recent_Confirmed_Sites_Reported',
         },
       ],
     },
     permission_group_id: permissionGroupId,
   };
 };
+
 exports.up = async function (db) {
   const permissionGroupId = await permissionGroupNameToId(db, 'PSSS');
   for (const syndrome of SYNDROMES) {

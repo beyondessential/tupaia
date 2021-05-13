@@ -18,11 +18,13 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const getIndicatorCode = syndrome => `PSSS_Accumulated_${syndrome}_Confirmed_Cases`;
+
 exports.up = async function (db) {
   for (const syndrome of SYNDROMES) {
     const indicator = {
       id: generateId(),
-      code: `PSSS_Total_${syndrome}_Confirmed_Cases`,
+      code: getIndicatorCode(syndrome),
       builder: 'analyticArithmetic',
       config: {
         formula: `PSSS_Confirmed_${syndrome}_Cases`,
@@ -37,7 +39,7 @@ exports.up = async function (db) {
 };
 
 exports.down = async function (db) {
-  const indicatorCodes = SYNDROMES.map(syndrome => `PSSS_Total_${syndrome}_Confirmed_Cases`);
+  const indicatorCodes = SYNDROMES.map(getIndicatorCode);
 
   await db.runSql(`
     DELETE FROM indicator
