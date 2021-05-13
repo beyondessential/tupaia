@@ -10,6 +10,7 @@ import {
   LoginRoute,
   LogoutRoute,
   TestRoute,
+  FetchAlertsRoute,
   FetchConfirmedWeeklyReportRoute,
   FetchConfirmedCountryWeeklyReportRoute,
   FetchCountries,
@@ -56,6 +57,7 @@ export function addRoutesToApp(app: Express) {
    * GET routes
    */
   app.get('/v1/test', handleWith(TestRoute));
+  app.get('/v1/alerts/:status', handleWith(FetchAlertsRoute));
   app.get('/v1/confirmedWeeklyReport', handleWith(FetchConfirmedWeeklyReportRoute));
   app.get(
     '/v1/confirmedWeeklyReport/:countryCode',

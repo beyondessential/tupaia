@@ -218,7 +218,7 @@ export const FakeAPI = {
       name: faker.address.country(),
       countryCode: faker.address.countryCode(),
       syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DLI']),
-      syndromeDisplayName: faker.random.arrayElement([
+      syndromeName: faker.random.arrayElement([
         'Acute Fever and Rash (AFR)',
         'Diarrhoea (DIA)',
         'Influenza-like Illness (ILI)',
