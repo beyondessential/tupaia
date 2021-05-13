@@ -3,54 +3,59 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Table } from '@tupaia/ui-components';
 import {
   SyndromeCell,
   AlertMenuCell,
-  CountryNameCell,
+  CountryNameLinkCell,
   WeekAndDateCell,
   StartDateCell,
 } from '../../components';
-import { useTableQuery } from '../../api';
+import { useAlerts } from '../../api';
+import { getCountryCodes } from '../../store';
+import { getPeriodByDate } from '../../utils';
 
-const createColumns = isForMultipleCountries => [
-  ...(isForMultipleCountries
-    ? [
-        {
-          title: 'Country',
-          key: 'name',
-          width: '25%',
-          align: 'left',
-          CellComponent: CountryNameCell,
-        },
-      ]
-    : []),
+// TODO uncomment the commented out lines in column config after outbreaks are added
+// https://github.com/beyondessential/tupaia-backlog/issues/1512
+const countryColumn = {
+  title: 'Country',
+  key: 'countryCode',
+  width: '28%',
+  // width: '285',
+  align: 'left',
+  CellComponent: CountryNameLinkCell,
+};
+
+const archiveColumns = [
   {
     title: 'Syndrome',
     key: 'syndrome',
     align: 'left',
-    width: '100px',
+    // width: '100px',
     CellComponent: SyndromeCell,
   },
   {
     title: 'Alert Start Date',
-    key: 'weekNumber',
+    key: 'period',
     align: 'left',
-    width: '220px',
+    width: '200px',
+    // width: '220px',
     CellComponent: WeekAndDateCell,
   },
   {
     title: 'Cases Since Alert Began',
     key: 'totalCases',
     align: 'left',
+    width: '115px', // TODO comment out after https://github.com/beyondessential/tupaia-backlog/issues/1512
   },
-  {
-    title: 'Outbreak Start Date',
-    key: 'outbreakStartDate',
-    align: 'left',
-    CellComponent: StartDateCell,
-  },
+  // {
+  //   title: 'Outbreak Start Date',
+  //   key: 'outbreakStartDate',
+  //   align: 'left',
+  //   CellComponent: StartDateCell,
+  // },
   {
     title: 'Diagnosis',
     key: 'diagnosis',
@@ -61,36 +66,46 @@ const createColumns = isForMultipleCountries => [
     key: 'id',
     sortable: false,
     CellComponent: AlertMenuCell,
-    width: '70px',
+    // width: '70px',
+    width: '45px',
   },
 ];
 
-export const ArchiveTable = React.memo(({ countryCode }) => {
-  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
-    'archive',
-  );
+const getColumns = isSingleCountry =>
+  isSingleCountry ? archiveColumns : [countryColumn, ...archiveColumns];
+
+const ArchiveTableComponent = React.memo(({ countryCode, countryCodes }) => {
+  const isSingleCountry = !!countryCode;
+  const orgUnitCodes = isSingleCountry ? [countryCode] : countryCodes;
+  const period = getPeriodByDate(new Date());
+  const { data, isLoading, error, isFetching } = useAlerts(period, orgUnitCodes, 'archived');
+  const columns = getColumns(isSingleCountry);
 
   return (
     <>
       <Table
-        order={order}
-        orderBy={orderBy}
-        onChangeOrderBy={handleChangeOrderBy}
-        data={data ? data.data : 0}
-        count={data ? data.count : 0}
+        data={data}
         isLoading={isLoading}
+        isFetching={!isLoading && isFetching}
         errorMessage={error && error.message}
-        columns={createColumns(!countryCode)}
+        columns={columns}
       />
       {isFetching && 'Fetching...'}
     </>
   );
 });
 
-ArchiveTable.propTypes = {
+ArchiveTableComponent.propTypes = {
   countryCode: PropTypes.string,
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-ArchiveTable.defaultProps = {
+ArchiveTableComponent.defaultProps = {
   countryCode: '',
 };
+
+const mapStateToProps = state => ({
+  countryCodes: getCountryCodes(state),
+});
+
+export const ArchiveTable = connect(mapStateToProps)(ArchiveTableComponent);

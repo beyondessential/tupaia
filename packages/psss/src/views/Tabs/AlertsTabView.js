@@ -34,7 +34,6 @@ export const AlertsTabView = React.memo(() => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [rowData, setRowData] = useState({});
   const [period, setPeriod] = useState(getCurrentPeriod());
-  const { organisationUnit: countryCode, syndromeName } = rowData;
 
   const handleTableRowClick = useCallback(
     data => {
@@ -64,30 +63,28 @@ export const AlertsTabView = React.memo(() => {
   );
 
   return (
-    <div style={{ position: 'relative' }}>
-      <Container>
-        <Main>
-          <AlertsTable period={period} onRowClick={handleTableRowClick} />
-          <AlertsPanel
-            countryCode={countryCode}
-            period={period}
-            syndromeName={syndromeName}
-            isOpen={isPanelOpen}
-            handleClose={handlePanelClose}
-          />
-        </Main>
-        <Sidebar>
-          <Card variant="outlined">
-            <CardHeader color="primary" title="Current Week" label={DatePicker} />
-            <CardContent>
-              <Typography variant="h4">{`Week ${getWeekNumberByPeriod(period)}`}</Typography>
-              <DateSubtitle variant="subtitle2" gutterBottom>
-                {getDisplayDatesByPeriod(period)}
-              </DateSubtitle>
-            </CardContent>
-          </Card>
-        </Sidebar>
-      </Container>
-    </div>
+    <Container>
+      <Main>
+        <AlertsTable period={period} onRowClick={handleTableRowClick} />
+        <AlertsPanel
+          countryCode={rowData.organisationUnit}
+          period={rowData.period}
+          syndromeName={rowData.syndromeName}
+          isOpen={isPanelOpen}
+          handleClose={handlePanelClose}
+        />
+      </Main>
+      <Sidebar>
+        <Card variant="outlined">
+          <CardHeader color="primary" title="Current Week" label={DatePicker} />
+          <CardContent>
+            <Typography variant="h4">{`Week ${getWeekNumberByPeriod(period)}`}</Typography>
+            <DateSubtitle variant="subtitle2" gutterBottom>
+              {getDisplayDatesByPeriod(period)}
+            </DateSubtitle>
+          </CardContent>
+        </Card>
+      </Sidebar>
+    </Container>
   );
 });
