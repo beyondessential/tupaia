@@ -59,4 +59,10 @@ export const LeafletStyles = css`
   .leaflet-tooltip-right:before {
     border-right-color: #555;
   }
+  .leaflet-bottom.leaflet-right {
+    display: none;
+  }
+  .leaflet-control.leaflet-control-attribution {
+    background: none;
+  }
 `;
