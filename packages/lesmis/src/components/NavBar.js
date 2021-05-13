@@ -18,7 +18,8 @@ import { useUser } from '../api';
 import { useUrlParams } from '../utils';
 
 const Container = styled.nav`
-  position: relative;
+  position: sticky;
+  top: 0;
   background-color: ${props => props.theme.palette.primary.main};
   z-index: 10;
 `;
