@@ -30,7 +30,6 @@ export class DataFetchQuery {
     this.build();
 
     const sqlQuery = new SqlQuery(this.query, this.paramsArray);
-    console.log(sqlQuery.loggableQuery());
     return sqlQuery.executeOnDatabase(this.database);
   }
 
