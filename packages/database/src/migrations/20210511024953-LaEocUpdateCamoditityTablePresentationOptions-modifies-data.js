@@ -44,6 +44,12 @@ const newPresentationOptions = {
       description: 'Stock number: ',
       legendLabel: 'In stock',
     },
+    {
+      key: 'orange',
+      color: 'orange',
+      label: '',
+      legendLabel: 'At least 1 item out of stock',
+    },
   ],
   showRawValue: true,
 };
