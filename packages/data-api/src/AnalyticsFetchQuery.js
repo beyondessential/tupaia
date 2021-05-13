@@ -27,6 +27,7 @@ const AGGREGATIONS = {
   },
   SUM_PER_ORG_GROUP: {
     sum: true,
+    aggregateEntities: true,
   },
 };
 
@@ -36,11 +37,17 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     this.firstAggregation = AGGREGATIONS[options.aggregations?.[0]?.type];
     this.isAggregating = !!this.firstAggregation;
     this.entityMap = this.firstAggregation?.entityAggregation?.orgUnitMap;
-    this.isAggregatingEntities = !!this.entityMap;
+    this.validate();
+  }
+
+  validate() {
+    if (this.firstAggregation.aggregateEntities && !this.entityMap) {
+      throw new Error('When using entity aggregation you must provide an entity map');
+    }
   }
 
   getEntityCodeField() {
-    return this.isAggregatingEntities ? 'aggregation_entity_code' : 'entity_code';
+    return this.firstAggregation.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
   }
 
   getCommonFields() {
@@ -49,8 +56,9 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
 
   getEntityCommonTableExpression() {
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
-    const columns = this.isAggregatingEntities ? ['code', 'aggregation_entity_code'] : ['code'];
-    const rows = this.isAggregatingEntities
+    const isAggregatingEntities = this.firstAggregation.aggregateEntities;
+    const columns = isAggregatingEntities ? ['code', 'aggregation_entity_code'] : ['code'];
+    const rows = isAggregatingEntities
       ? Object.entries(this.entityMap).map(([key, value]) => [key, value.code])
       : this.entityCodes.map(entityCode => [entityCode]);
 
