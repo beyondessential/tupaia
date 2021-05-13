@@ -41,13 +41,13 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
   }
 
   validate() {
-    if (this.firstAggregation.aggregateEntities && !this.entityMap) {
+    if (this.firstAggregation?.aggregateEntities && !this.entityMap) {
       throw new Error('When using entity aggregation you must provide an entity map');
     }
   }
 
   getEntityCodeField() {
-    return this.firstAggregation.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
+    return this.firstAggregation?.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
   }
 
   getCommonFields() {
@@ -56,7 +56,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
 
   getEntityCommonTableExpression() {
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
-    const isAggregatingEntities = this.firstAggregation.aggregateEntities;
+    const isAggregatingEntities = this.firstAggregation?.aggregateEntities;
     const columns = isAggregatingEntities ? ['code', 'aggregation_entity_code'] : ['code'];
     const rows = isAggregatingEntities
       ? Object.entries(this.entityMap).map(([key, value]) => [key, value.code])
@@ -143,7 +143,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     // add where condition for each non-calculated table selected in a1
     const joinFields = [...this.getCommonFields()];
     const { groupByPeriodField } = this.firstAggregation;
-    if (groupByPeriodField) joinConditions.push(groupByPeriodField);
+    if (groupByPeriodField) joinFields.push(groupByPeriodField);
     const joinConditions = joinFields.map(field => `${field} = a1.${field}`);
 
     // add start/end date clauses to limit results and speed things up
