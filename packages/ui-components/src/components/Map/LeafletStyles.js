@@ -59,7 +59,7 @@ export const LeafletStyles = css`
   .leaflet-tooltip-right:before {
     border-right-color: #555;
   }
-  .leaflet-bottom.leaflet-right {
+  .leaflet-bottom.leaflet-right .leaflet-control-attribution {
     display: none;
   }
   .leaflet-control.leaflet-control-attribution {
