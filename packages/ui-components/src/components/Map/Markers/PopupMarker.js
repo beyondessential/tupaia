@@ -11,6 +11,17 @@ import { Popup } from 'react-leaflet';
 
 const TOP_BAR_HEIGHT = 60; // is this needed?
 
+const StyledPopup = styled(Popup)`
+  .leaflet-popup-content-wrapper {
+    background: ${({ theme }) => (theme.palette.type === 'light' ? 'white' : 'rgb(43,45,56)')};
+    color: ${({ theme }) =>
+      theme.palette.type === 'light' ? theme.palette.text.secondary : 'white'};
+    border: 1px solid
+      ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.grey['400'] : '#555')};
+    border-radius: 3px;
+  }
+`;
+
 const Heading = styled.h2`
   margin: 0;
   font-size: 1.25rem;
@@ -52,7 +63,7 @@ export const PopupMarker = React.memo(
   }) => {
     const displayCoordinates = coordinates.map(c => c.toFixed(5)).join(', ');
     return (
-      <Popup
+      <StyledPopup
         pane="popupPane"
         autoPanPaddingTopLeft={[0, TOP_BAR_HEIGHT]}
         autoPanPaddingBottomRight={[sidePanelWidth, TOP_BAR_HEIGHT]}
@@ -72,7 +83,7 @@ export const PopupMarker = React.memo(
             </Button>
           )}
         </Content>
-      </Popup>
+      </StyledPopup>
     );
   },
 );
