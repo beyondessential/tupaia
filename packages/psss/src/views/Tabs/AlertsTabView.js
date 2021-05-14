@@ -20,7 +20,7 @@ import {
 
 const CalendarButton = styled(IconButton)`
   &:hover {
-    background-color: ${props => props.theme.palette.grey['300']};
+    background-color: ${props => props.theme.palette.grey['200']};
   }
 `;
 
