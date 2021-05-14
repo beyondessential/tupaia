@@ -9,31 +9,39 @@ import { WarningCloud, TabsToolbar, Virus } from '@tupaia/ui-components';
 import { Archive } from '@material-ui/icons';
 import { Header, HeaderTitle, HeaderTitleWithSubHeading } from '../components';
 import { AlertsExportModal, OutbreaksExportModal } from '../containers/Modals';
-import { AlertsRoutes } from '../routes/AlertsRoutes';
 import { getCountryName } from '../store';
 import { countryFlagImage } from '../utils';
+import { AlertsTabView } from './Tabs/AlertsTabView';
 
-const links = [
-  {
-    label: 'Alerts',
-    to: '',
-    icon: <WarningCloud />,
-  },
-  {
-    label: 'Outbreaks',
-    to: '/outbreaks',
-    icon: <Virus />,
-  },
-  {
-    label: 'Archive',
-    to: '/archive',
-    icon: <Archive />,
-  },
-];
+const makeLinks = countryCode => {
+  const categoryLink = category => ['/alerts', category, countryCode].filter(x => x).join('/');
 
-export const AlertsOutbreaksView = () => {
+  return [
+    {
+      label: 'Alerts',
+      exact: true,
+      to: categoryLink('active'),
+      icon: <WarningCloud />,
+    },
+    {
+      label: 'Outbreaks',
+      exact: true,
+      to: categoryLink('outbreaks'),
+      icon: <Virus />,
+    },
+    {
+      label: 'Archive',
+      exact: true,
+      to: categoryLink('archive'),
+      icon: <Archive />,
+    },
+  ];
+};
+
+export const AlertsOutbreaksView = React.memo(() => {
   const location = useLocation();
   const { countryCode } = useParams();
+  const links = makeLinks(countryCode);
   const countryName = useSelector(state => getCountryName(state, countryCode));
 
   const ExportModal = location.pathname.includes('outbreak')
@@ -56,7 +64,7 @@ export const AlertsOutbreaksView = () => {
     <>
       <Header Title={Title} ExportModal={ExportModal} />
       <TabsToolbar links={links} />
-      <AlertsRoutes />
+      <AlertsTabView />
     </>
   );
-};
+});

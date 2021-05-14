@@ -5,27 +5,27 @@
 
 import { Route } from '../Route';
 
-const REPORT_BY_STATUS = {
-  archived: 'PSSS_Archived_Alerts',
+const CATEGORY_TO_REPORT = {
+  archive: 'PSSS_Archived_Alerts',
   active: 'PSSS_Active_Alerts',
 };
 
-type Status = keyof typeof REPORT_BY_STATUS;
+type AlertCategory = keyof typeof CATEGORY_TO_REPORT;
 
-function validateStatus(status: string): asserts status is Status {
-  const statuses = Object.keys(REPORT_BY_STATUS);
-  if (!statuses.includes(status)) {
-    throw new Error(`Invalid alert status ${status}, must be one of ${statuses}`);
+function validateStatus(category: string): asserts category is AlertCategory {
+  const categories = Object.keys(CATEGORY_TO_REPORT);
+  if (!categories.includes(category)) {
+    throw new Error(`Invalid alert category '${category}', must be one of ${categories}`);
   }
 }
 
 export class FetchAlertsRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek, orgUnitCodes } = this.req.query;
-    const { status } = this.req.params;
+    const { category } = this.req.params;
 
-    validateStatus(status);
-    const reportCode = REPORT_BY_STATUS[status];
+    validateStatus(category);
+    const reportCode = CATEGORY_TO_REPORT[category];
 
     const reportData = await this.reportConnection?.fetchReport(
       reportCode,
