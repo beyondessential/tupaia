@@ -6,26 +6,29 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { Popup } from 'react-leaflet';
 
-const TOP_BAR_HEIGHT = 60; // is this needed?
+const TOP_BAR_HEIGHT = 60;
 
 const StyledPopup = styled(Popup)`
   .leaflet-popup-content-wrapper {
-    background: ${({ theme }) => (theme.palette.type === 'light' ? 'white' : 'rgb(43,45,56)')};
+    background: ${({ theme }) => (theme.palette.type === 'light' ? '#F9F9F9' : 'rgb(43,45,56)')};
     color: ${({ theme }) =>
-      theme.palette.type === 'light' ? theme.palette.text.secondary : 'white'};
-    border: 1px solid
-      ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.grey['400'] : '#555')};
+      theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
     border-radius: 3px;
+    padding-top: 0.5rem;
+    border-width: 0;
+    border-color: 1px solid
+      ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.grey['400'] : '#555')};
   }
 `;
 
-const Heading = styled.h2`
+const Heading = styled(Typography)`
   margin: 0;
   font-size: 1.25rem;
-  font-weight: bold;
+  font-weight: 600;
 `;
 
 const Content = styled.div`
@@ -42,7 +45,7 @@ const Button = styled.button`
   border-radius: 2;
   border: 0;
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600;
   padding: 0.5rem 0.9375rem;
   font-size: 0.875rem;
   outline: 0;
@@ -74,7 +77,7 @@ export const PopupMarker = React.memo(
         ref={popupRef}
       >
         <Content>
-          <Heading>{headerText}</Heading>
+          <Heading variant="h2">{headerText}</Heading>
           {coordinates && <ContentItem>({displayCoordinates})</ContentItem>}
           <ContentItem>{children}</ContentItem>
           {onDetailButtonClick && buttonText && (
