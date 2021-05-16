@@ -11,17 +11,25 @@ import styled from 'styled-components';
 import { Popup } from 'react-leaflet';
 
 const TOP_BAR_HEIGHT = 60;
+const DARK_BACKGROUND_COLOR = 'rgb(43,45,56)';
+const LIGHT_BACKGROUND_COLOR = '#F9F9F9';
 
 const StyledPopup = styled(Popup)`
   .leaflet-popup-content-wrapper {
-    background: ${({ theme }) => (theme.palette.type === 'light' ? '#F9F9F9' : 'rgb(43,45,56)')};
+    background: ${({ theme }) =>
+      theme.palette.type === 'light' ? LIGHT_BACKGROUND_COLOR : DARK_BACKGROUND_COLOR};
     color: ${({ theme }) =>
       theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
     border-radius: 3px;
     padding-top: 0.5rem;
-    border-width: 0;
-    border-color: 1px solid
-      ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.grey['400'] : '#555')};
+    border: none;
+  }
+
+  .leaflet-popup-tip {
+    border-color: ${({ theme }) =>
+      theme.palette.type === 'light' ? LIGHT_BACKGROUND_COLOR : DARK_BACKGROUND_COLOR};
+    background-color: ${({ theme }) =>
+      theme.palette.type === 'light' ? LIGHT_BACKGROUND_COLOR : DARK_BACKGROUND_COLOR};
   }
 `;
 

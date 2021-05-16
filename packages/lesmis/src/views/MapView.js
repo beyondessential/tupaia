@@ -130,12 +130,7 @@ export const MapView = () => {
           dragging
         >
           <TileLayer tileSetUrl={activeTileSet.url} />
-          <ZoomControl
-            position="bottomright"
-            className="tom"
-            id="test"
-            style={{ backgroundColor: 'red' }}
-          />
+          <ZoomControl position="bottomright" />
           <MarkerLayer
             measureData={overlayReportData ? overlayReportData.measureData : null}
             serieses={overlayReportData ? overlayReportData.serieses : null}
