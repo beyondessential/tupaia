@@ -13,7 +13,6 @@ import { useConfirmedWeeklyReport } from '../../api';
 import { AlertCell, CountryLinkCell, SitesReportedCell } from '../../components';
 import { getCountryCodes, getLatestViewableWeek } from '../../store';
 
-/* eslint-disable react/prop-types */
 const CountryCell = ({ organisationUnit }) => (
   <CountryLinkCell target={`weekly-reports/${organisationUnit}`} countryCode={organisationUnit} />
 );
