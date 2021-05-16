@@ -60,6 +60,8 @@ export const LeafletStyles = css`
     border-right-color: #555;
   }
   .leaflet-bottom.leaflet-right .leaflet-control-attribution {
+    // Leaflet attribution is manually added in the TileLayer along side
+    // the mapbox attribution to keep all the attributions in one place
     display: none;
   }
   .leaflet-control.leaflet-control-attribution {
