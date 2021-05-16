@@ -6,7 +6,7 @@
 import { useEffect } from 'react';
 import moment from 'moment';
 import {
-  constrainDate,
+  getDefaultDates,
   DEFAULT_MIN_DATE,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
@@ -34,27 +34,6 @@ const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
   const formattedEndDate = momentToDateString(endDate, granularity, rangeFormat);
 
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
-};
-
-/**
- *
- * @param isSingleDate
- * @param granularity
- * @param minMomentDate
- * @param maxMomentDate
- * @returns {{defaultEndDate: moment.Moment, defaultStartDate: moment.Moment}}
- */
-const getDefaultDates = (isSingleDate, granularity, minMomentDate, maxMomentDate) => {
-  const defaultStartDate = isSingleDate
-    ? constrainDate(moment(), minMomentDate, maxMomentDate)
-    : minMomentDate;
-
-  const defaultEndDate = isSingleDate ? defaultStartDate : maxMomentDate;
-
-  return {
-    defaultStartDate: roundStartDate(granularity, defaultStartDate),
-    defaultEndDate: roundEndDate(granularity, defaultEndDate),
-  };
 };
 
 /**
@@ -102,12 +81,9 @@ export const useDateRangePicker = ({
   const minMomentDate = minDate ? moment(minDate) : moment(DEFAULT_MIN_DATE);
   const maxMomentDate = maxDate ? moment(maxDate) : moment();
 
-  const { defaultStartDate, defaultEndDate } = getDefaultDates(
-    isSingleDate,
-    granularity,
-    minMomentDate,
-    maxMomentDate,
-  );
+  const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates({
+    periodGranularity: granularity,
+  });
 
   const { currentStartDate, currentEndDate } = getCurrentDates(
     granularity,
@@ -149,9 +125,9 @@ export const useDateRangePicker = ({
     handleDateChange(defaultStartDate, defaultEndDate);
   };
 
-  // set the current dates when the hook is first mounted
+  // When mounting the component, check if the initial currentDates are different from
+  // the start and end dates passed to props. If they are, then trigger a date change
   useEffect(() => {
-    // Prevent set dates to the same dates
     if (!(startDate && endDate)) {
       handleDateChange(currentStartDate, currentEndDate);
     }

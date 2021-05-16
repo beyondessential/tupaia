@@ -27,7 +27,7 @@ import { DialogHeader } from './FullScreenDialog';
 import { ToggleButton } from './ToggleButton';
 import { ChartTable, TABS } from './ChartTable';
 import { useDashboardReportData } from '../api/queries';
-import { useURLSearchParams } from '../utils';
+import { useUrlSearchParams } from '../utils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -81,7 +81,7 @@ export const DashboardReportModal = ({
   periodGranularity,
 }) => {
   const [open, setOpen] = useState(false);
-  const [params, setParams] = useURLSearchParams();
+  const [params, setParams] = useUrlSearchParams();
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));

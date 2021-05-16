@@ -6,5 +6,5 @@
 export * from './makeEntityLink';
 export * from './search';
 export * from './useUrlParams';
-export * from './useURLSearchParams';
+export * from './useUrlSearchParams';
 export * from './useEntityBreadcrumbs';

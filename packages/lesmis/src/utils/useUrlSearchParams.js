@@ -5,14 +5,14 @@
  */
 import { useHistory, useLocation } from 'react-router-dom';
 
-export const useURLSearchParams = () => {
+export const useUrlSearchParams = () => {
   const history = useHistory();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
   const setParams = newParams => {
     Object.entries(newParams).forEach(([key, param]) => {
-      if (!param) {
+      if (param === null || param === undefined) {
         params.delete(key);
       } else {
         params.set(key, param.toString());
