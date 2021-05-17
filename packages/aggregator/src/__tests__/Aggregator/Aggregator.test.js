@@ -40,7 +40,7 @@ const aggregationOptions = {
   aggregations: [
     {
       type: 'MOST_RECENT',
-      config: { orgUnitToGroupKeys: [], requestedPeriod: '20200214;20200215' },
+      config: { orgUnitMap: {}, requestedPeriod: '20200214;20200215' },
     },
   ],
   filter: { value: 3 },

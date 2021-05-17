@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { mapOrgUnitToGroupCodes } from '/apiV1/utils/mapOrgUnitToGroupCodes';
+import { mapOrgUnitCodeToGroup } from '/apiV1/utils/mapOrgUnitCodeToGroup';
 
 const organisationUnits = [
   {
@@ -34,9 +34,9 @@ const organisationUnits = [
   },
 ];
 
-describe('mapOrgUnitToGroupCodes', () => {
-  it('should map org unit ids to group codes', () => {
-    expect(mapOrgUnitToGroupCodes(organisationUnits)).to.deep.equal({
+describe('mapOrgUnitCodeToGroup', () => {
+  it('should map org unit codes to group info', () => {
+    expect(mapOrgUnitCodeToGroup(organisationUnits)).to.deep.equal({
       'SB_Guadalcanal Province': 'SB_Guadalcanal Province',
       SB_10503: 'SB_Guadalcanal Province',
       SB_10203: 'SB_Guadalcanal Province',
