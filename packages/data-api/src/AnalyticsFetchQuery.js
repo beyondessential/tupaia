@@ -5,7 +5,7 @@
 
 import { DataFetchQuery, ANSWER_SPECIFIC_FIELDS } from './DataFetchQuery';
 
-const AGGREGATIONS = {
+const AGGREGATION_CONFIGS = {
   FINAL_EACH_DAY: {
     groupByPeriodField: 'day_period',
     getLatestPerPeriod: true,
@@ -35,28 +35,27 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
   constructor(database, options) {
     super(database, options);
 
+    // if first aggregation is supported in the db, pull out internal aggregation switches
     const firstAggregation = options.aggregations?.[0];
-    this.isAggregating = firstAggregation;
+    this.aggregationConfig = AGGREGATION_CONFIGS[firstAggregation?.type];
+    this.isAggregating = !!this.aggregationConfig;
 
     if (this.isAggregating) {
-      // add internal config, fixed per aggregation type
-      this.firstAggregation = AGGREGATIONS[firstAggregation.type];
-
       // add any external config, supplied by client
-      this.firstAggregation.config = firstAggregation.config;
+      this.aggregationConfig = { ...this.aggregationConfig, ...firstAggregation.config };
     }
 
     this.validate();
   }
 
   validate() {
-    if (this.firstAggregation?.aggregateEntities && !this.firstAggregation.config.orgUnitMap) {
+    if (this.aggregationConfig?.aggregateEntities && !this.aggregationConfig.orgUnitMap) {
       throw new Error('When using entity aggregation you must provide an org unit map');
     }
   }
 
   getEntityCodeField() {
-    return this.firstAggregation?.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
+    return this.aggregationConfig?.aggregateEntities ? 'aggregation_entity_code' : 'entity_code';
   }
 
   getCommonFields() {
@@ -65,8 +64,8 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
 
   getEntityCommonTableExpression() {
     // if mapping from one set of entities to another, include the mapped codes as "aggregation_entity_code"
-    const isAggregatingEntities = this.firstAggregation?.aggregateEntities;
-    const entityMap = isAggregatingEntities && this.firstAggregation.config.orgUnitMap;
+    const isAggregatingEntities = this.isAggregating && this.aggregationConfig.aggregateEntities;
+    const entityMap = isAggregatingEntities && this.aggregationConfig.orgUnitMap;
     const columns = isAggregatingEntities ? ['code', 'aggregation_entity_code'] : ['code'];
     const rows = isAggregatingEntities
       ? Object.entries(entityMap).map(([key, value]) => [key, value.code])
@@ -92,7 +91,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     if (!this.isAggregating) {
       return `SELECT ${[...this.getCommonFields(), ...ANSWER_SPECIFIC_FIELDS].join(', ')}`;
     }
-    const { groupByPeriodField, sum } = this.firstAggregation;
+    const { groupByPeriodField, sum } = this.aggregationConfig;
     const fields = [...this.getCommonFields()];
 
     if (groupByPeriodField) {
@@ -142,17 +141,17 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     if (!this.isAggregating) return '';
 
     const groupByFields = [...this.getCommonFields()];
-    const { groupByPeriodField } = this.firstAggregation;
+    const { groupByPeriodField } = this.aggregationConfig;
     if (groupByPeriodField) groupByFields.push(groupByPeriodField);
     return `GROUP BY ${groupByFields.join(', ')}`;
   };
 
   getLatestPerPeriodClause() {
-    if (!this.isAggregating || !this.firstAggregation.getLatestPerPeriod) return '';
+    if (!this.isAggregating || !this.aggregationConfig.getLatestPerPeriod) return '';
 
     // add where condition for each non-calculated table selected in a1
     const joinFields = [...this.getCommonFields()];
-    const { groupByPeriodField } = this.firstAggregation;
+    const { groupByPeriodField } = this.aggregationConfig;
     if (groupByPeriodField) joinFields.push(groupByPeriodField);
     const joinConditions = joinFields.map(field => `${field} = a1.${field}`);
 
@@ -162,7 +161,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
 
     const conditions = [...joinConditions, ...periodConditions];
 
-    const fields = this.firstAggregation.sum
+    const fields = this.aggregationConfig.sum
       ? ANSWER_SPECIFIC_FIELDS.filter(field => field !== 'value')
       : ANSWER_SPECIFIC_FIELDS;
 
