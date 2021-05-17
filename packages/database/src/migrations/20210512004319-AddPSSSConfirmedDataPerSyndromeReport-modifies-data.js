@@ -25,18 +25,19 @@ const SYNDROMES = ['AFR', 'DIA', 'ILI', 'PF', 'DLI'];
 
 const getReportCode = syndrome => `PSSS_${syndrome}_Confirmed_Report`;
 
-const getTotalConfirmedCasesIndicator = syndrome => `PSSS_Accumulated_${syndrome}_Confirmed_Cases`;
+const getConfirmedCasesCode = syndrome => `PSSS_Confirmed_${syndrome}_Cases`;
 
 const getReport = (syndrome, permissionGroupId) => {
   const reportCode = getReportCode(syndrome);
-  const totalConfirmedCasesIndicator = getTotalConfirmedCasesIndicator(syndrome);
+  const confirmedCasesCode = getConfirmedCasesCode(syndrome);
 
   return {
     id: generateId(),
     code: reportCode,
     config: {
       fetch: {
-        dataElements: [totalConfirmedCasesIndicator],
+        dataElements: [confirmedCasesCode],
+        aggregations: ['FINAL_EACH_WEEK', 'SUM_PER_ORG_GROUP'],
       },
       transform: [
         'keyValueByDataElementName',
@@ -44,7 +45,7 @@ const getReport = (syndrome, permissionGroupId) => {
         {
           // change key names
           transform: 'select',
-          "'totalCases'": `$row.${totalConfirmedCasesIndicator}`,
+          "'totalCases'": `$row.${confirmedCasesCode}`,
         },
       ],
     },
