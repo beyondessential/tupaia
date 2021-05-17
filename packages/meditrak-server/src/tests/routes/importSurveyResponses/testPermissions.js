@@ -34,7 +34,7 @@ export const testPermissions = async () => {
   const importFile = (filename, surveyNames) => {
     const surveyNamesParam = surveyNames.map(s => `surveyNames=${s}`).join('&');
     return app
-      .post(`import/surveyResponses?${surveyNamesParam}`)
+      .post(`import/surveyResponses?${surveyNamesParam}&timeZone=Australia%2FMelbourne`)
       .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
   };
 

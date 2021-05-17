@@ -14,6 +14,7 @@ export const useConfirmWeeklyReport = (countryCode, period) =>
       }),
     {
       onSuccess: () => {
+        // Same as useSaveWeeklyReport, we need to invalidate all weekly data
         queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
         // regional (multi-country) level
         queryCache.invalidateQueries('confirmedWeeklyReport', { exact: true });
@@ -30,8 +31,10 @@ export const useSaveWeeklyReport = ({ countryCode, siteCode = '', week }) =>
       }),
     {
       onSuccess: () => {
-        queryCache.invalidateQueries(`weeklyReport/${countryCode}/${siteCode}`);
-        queryCache.invalidateQueries(`weeklyReport/${countryCode}`, { exact: true });
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}/sites`);
+        // Even though we only changed one week of data, we need to re-fetch the complete list because
+        // the data for a specific week is dependant on previous weeks, even across pages.
+        queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
       },
     },
   );
@@ -44,6 +47,7 @@ export const useDeleteWeeklyReport = ({ countryCode, week }) =>
       }),
     {
       onSuccess: () => {
+        // Same as useSaveWeeklyReport, we need to invalidate all weekly data
         queryCache.invalidateQueries(`weeklyReport/${countryCode}`);
       },
     },

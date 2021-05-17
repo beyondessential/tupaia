@@ -114,7 +114,11 @@ export const WeeklyReportsPanelComponent = React.memo(
       unVerifiedAlerts,
       error: countryWeekError,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
-    const { data: siteData } = useSitesSingleWeeklyReport(
+
+    const {
+      isFetching: isSiteDataFetching,
+      data: siteData
+    } = useSitesSingleWeeklyReport(
       countryCode,
       activeWeek,
       verifiedStatuses,
@@ -197,6 +201,7 @@ export const WeeklyReportsPanelComponent = React.memo(
               >
                 <WeeklyReportTable
                   data={selectedSite.syndromes}
+                  isFetching={isSiteDataFetching}
                   isSiteReport
                   siteCode={selectedSite.code}
                   weekNumber={activeWeek}

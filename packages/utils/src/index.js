@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { reformatDateStringWithoutTz } from './stripTimezoneFromDate';
+
 export * from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
 export * from './compare';
@@ -33,7 +35,7 @@ export { WorkBookParser } from './WorkBookParser';
 export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
 export { addExportedDateAndOriginAtTheSheetBottom } from './addExportDateAndOriginInExcelExportData';
 export { getBrowserTimeZone } from './getBrowserTimeZone';
-export { stripTimezoneFromDate } from './stripTimezoneFromDate';
+export { stripTimezoneFromDate, reformatDateStringWithoutTz } from './stripTimezoneFromDate';
 export { VALUE_TYPES, formatDataValueByType } from './formatDataValueByType';
 export { createClassExtendingProxy } from './proxy';
 export { fetchPatiently } from './fetchPatiently';
