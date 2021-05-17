@@ -5,15 +5,18 @@
 
 import { Route } from '../Route';
 
-export class FetchConfirmedCountryWeeklyReportRoute extends Route {
+export class FetchWeeklyReportRoute extends Route {
   async buildResponse() {
     const { startWeek, endWeek } = this.req.query;
     const { countryCode } = this.req.params;
-    const reportData = await this.reportConnection?.fetchReport(
-      'PSSS_Confirmed_Weekly_Report',
-      [countryCode],
-      [startWeek, endWeek],
-    );
+
+    const entityCodes = this.req.useSites
+      ? await this.entityConnection.fetchSiteCodes(countryCode)
+      : [countryCode];
+    const reportData = await this.reportConnection?.fetchReport('PSSS_Weekly_Report', entityCodes, [
+      startWeek,
+      endWeek,
+    ]);
 
     return {
       startWeek,
