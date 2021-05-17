@@ -141,7 +141,7 @@ const getDataTime = surveyResponseObject => {
     if (suppliedTimezone) {
       // Timezone specified, strip it
       return stripTimezoneFromDate(
-        momentTimezone(suppliedDataTime, suppliedTimezone).format(),
+        momentTimezone(suppliedDataTime).tz(suppliedTimezone).format(),
       );
     }
 
