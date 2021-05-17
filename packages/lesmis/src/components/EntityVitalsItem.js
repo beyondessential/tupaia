@@ -6,7 +6,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiContainer from '@material-ui/core/Container';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Typography from '@material-ui/core/Typography';
 import { ReactComponent as LocationPin } from './icons/location-pin.svg';
