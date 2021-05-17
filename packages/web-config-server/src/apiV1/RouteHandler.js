@@ -39,7 +39,7 @@ export class RouteHandler {
 
   async handleRequest() {
     // Fetch permissions
-    const { organisationUnitCode: entityCode } = this.query;
+    const entityCode = this.query?.entityCode || this.query?.organisationUnitCode;
     this.entity = await this.models.entity.findOne({ code: entityCode });
     if (!this.entity) {
       throw new ValidationError(`Entity ${entityCode} could not be found`);
@@ -59,5 +59,6 @@ export class RouteHandler {
 
   fetchHierarchyId = async () => (await this.fetchProject()).entity_hierarchy_id;
 
-  fetchTypesExcludedFromWebFrontend = project => project?.config?.frontendExcludedTypes ?? this.models.entity.typesExcludedFromWebFrontend;
+  fetchTypesExcludedFromWebFrontend = project =>
+    project?.config?.frontendExcludedTypes ?? this.models.entity.typesExcludedFromWebFrontend;
 }
