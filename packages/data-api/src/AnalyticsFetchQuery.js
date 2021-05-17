@@ -29,6 +29,11 @@ const AGGREGATION_SWITCHES = {
     sum: true,
     aggregateEntities: true,
   },
+  SUM_PER_PERIOD_PER_ORG_GROUP: {
+    sum: true,
+    aggregateEntities: true,
+    groupByPeriodField: 'day_period', // can assume first internal aggregation period type is daily
+  },
   MOST_RECENT_PER_ORG_GROUP: {
     getLatestPerPeriod: true,
     aggregateEntities: true,
