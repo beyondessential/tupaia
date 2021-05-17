@@ -291,7 +291,9 @@ export function getMeasureDisplayInfo(
         ...hiddenValues[key],
       });
 
-      displayInfo.isHidden = !!valueInfo.isHidden;
+      if (valueInfo.isHidden) {
+        displayInfo.isHidden = true;
+      }
       displayInfo.originalValue = measureData.originalValue;
 
       switch (type) {
