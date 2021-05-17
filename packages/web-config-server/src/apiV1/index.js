@@ -24,6 +24,7 @@ import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
+import DashboardsesHandler from './dashboardses';
 import { disasters } from './disasters';
 
 import { getProjects } from './projects';
@@ -60,6 +61,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/projects', catchAsyncErrors(getProjects));
+  api.get('/dashboardses', handleWith(DashboardsesHandler));
 
   return api;
 };
