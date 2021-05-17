@@ -99,9 +99,11 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     }
 
     if (sum) {
-      fields.push(
-        ...['SUM(value::NUMERIC)::text as value', 'MAX(date) as date', 'MAX(type) as type'],
-      );
+      fields.push('SUM(value::NUMERIC)::text as value');
+      fields.push('MAX(type) as type');
+      if (!groupByPeriodField) {
+        fields.push('MAX(date) as date');
+      }
     }
     return `SELECT ${fields.join(', ')}`;
   }

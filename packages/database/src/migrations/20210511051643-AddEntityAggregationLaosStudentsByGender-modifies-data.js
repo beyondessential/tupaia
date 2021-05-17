@@ -37,8 +37,13 @@ exports.up = async function (db) {
   newJson.entityAggregation = {
     dataSourceEntityType: 'school',
     aggregationEntityType: 'country',
-    aggregationType: 'SUM_PER_ORG_GROUP',
+    aggregationType: 'MOST_RECENT_PER_ORG_GROUP',
   };
+  newJson.aggregations = [
+    {
+      aggregationType: 'SUM_PER_ORG_GROUP',
+    },
+  ];
   await updateBuilderConfigByReportId(db, newJson, REPORT_ID);
 };
 
