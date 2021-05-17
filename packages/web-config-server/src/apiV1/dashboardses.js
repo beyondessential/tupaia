@@ -14,7 +14,7 @@ export default class extends RouteHandler {
     const { code: entityCode } = entity;
     const userGroups = await this.req.getUserGroups(entityCode);
     const hierarchyId = await this.fetchHierarchyId();
-    const returnObject = {};
+    const returnArray = [];
     // Fetch dashboards
     const dashboards = await this.models.dashboard.getDashboards(
       entity,
@@ -23,14 +23,27 @@ export default class extends RouteHandler {
     );
     // Fetch dashboard items
     await Promise.all(
-      Object.values(dashboards).map(async dashboard => {
+      Object.values(dashboards).map(async (dashboard, index) => {
         const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
           dashboard.id,
           userGroups,
         );
-        returnObject[dashboard.name] = Object.values(dashboardItems).map(item => item.code);
+        returnArray[index] = {
+          dashboardName: dashboard.name,
+          dashboardId: dashboard.id,
+          dashboardCode: dashboard.code,
+          entityType: entity.type,
+          entityCode,
+          entityName: entity.name,
+          items: Object.values(dashboardItems).map(item => ({
+            itemCode: item.code,
+            legacy: item.legacy,
+            reportCode: item.report_code,
+            ...item.config,
+          })),
+        };
       }),
     );
-    return returnObject;
+    return returnArray;
   };
 }
