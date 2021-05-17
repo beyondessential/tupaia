@@ -14,13 +14,22 @@ type PeriodParams = {
 };
 
 export class Aggregator extends BaseAggregator {
+  aggregationToAggregationConfig = (aggregation: string ) => ({
+    type: aggregation
+  });
+
   async fetchAnalytics(
     dataElementCodes: string[],
+    aggregationList: string[] | undefined,
     organisationUnitCodes: string,
     hierarchy: string | undefined,
     periodParams: PeriodParams,
   ) {
     const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
+    const aggregations = aggregationList
+      ? aggregationList.map(this.aggregationToAggregationConfig)
+      : [{ type: 'RAW' }];
+
     return super.fetchAnalytics(
       dataElementCodes,
       {
@@ -31,7 +40,7 @@ export class Aggregator extends BaseAggregator {
         endDate,
         dataServices: [{ isDataRegional: true }],
       },
-      { aggregationType: 'RAW' },
+      { aggregations: aggregations },
     );
   }
 

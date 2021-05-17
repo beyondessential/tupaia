@@ -30,6 +30,8 @@ const useCachedQuery = (endpoint, period, queryKey) => {
     },
     {
       initialData: () => {
+        // If we have a page of data, and we open a detail for a specific week, we don't want
+        // to re-fetch the data for that week, so we get the specific week data from the cache
         const cachedQuery = queryCache.getQueryData([endpoint, queryKey]);
         const results = cachedQuery?.data?.results;
 

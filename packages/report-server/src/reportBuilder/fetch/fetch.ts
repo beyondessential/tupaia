@@ -8,7 +8,7 @@ import { Aggregator } from '../../aggregator';
 import { FetchResponse } from './types';
 import { fetchBuilders } from './functions';
 
-const FETCH_PARAM_KEYS = ['dataGroups', 'dataElements'];
+const FETCH_PARAM_KEYS = ['dataGroups', 'dataElements', 'aggregations'];
 
 type FetchParams = {
   call: (aggregator: Aggregator, query: FetchReportQuery) => Promise<FetchResponse>;
@@ -37,7 +37,7 @@ const buildParams = (params: unknown): FetchParams => {
 
   if (!(fetchFunction in fetchBuilders)) {
     throw new Error(
-      `Expected transform to be one of ${Object.keys(fetchBuilders)} but got ${fetchFunction}`,
+      `Expected fetch to be one of ${Object.keys(fetchBuilders)} but got ${fetchFunction}`,
     );
   }
 
