@@ -5,11 +5,14 @@
  */
 import { useQuery } from 'react-query';
 import { get } from '../api';
-import { yearToApiDates } from './utils';
 
-export const useDashboardReportData = ({ entityCode, dashboardGroupId, year, reportId }) => {
-  const { startDate, endDate } = yearToApiDates(year);
-
+export const useDashboardReportData = ({
+  entityCode,
+  dashboardGroupId,
+  reportId,
+  startDate,
+  endDate,
+}) => {
   const params = {
     dashboardGroupId,
     startDate,
@@ -23,6 +26,6 @@ export const useDashboardReportData = ({ entityCode, dashboardGroupId, year, rep
       get(`report/${entityCode}/${reportId}`, {
         params,
       }),
-    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false },
+    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false, keepPreviousData: true },
   );
 };
