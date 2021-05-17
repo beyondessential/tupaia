@@ -10,6 +10,8 @@ import { AnswerModel } from './Answer';
 import { APIClientModel } from './APIClient';
 import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
+import { DashboardModel } from './Dashboard';
+import { DashboardItemModel } from './DashboardItem';
 import { DashboardGroupModel } from './DashboardGroup';
 import { DashboardReportModel } from './DashboardReport';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
@@ -51,6 +53,8 @@ export const modelClasses = {
   ApiClient: APIClientModel,
   Comment: CommentModel,
   Country: CountryModel,
+  Dashboard: DashboardModel,
+  DashboardItem: DashboardItemModel,
   DashboardGroup: DashboardGroupModel,
   DashboardReport: DashboardReportModel,
   DataElementDataGroup: DataElementDataGroupModel,
