@@ -82,7 +82,7 @@ EditModalComponent.propTypes = {
 
 EditModalComponent.defaultProps = {
   errorMessage: null,
-  title: 'Hello',
+  title: 'Edit',
   recordData: null,
   fields: null,
   isUnchanged: false,
