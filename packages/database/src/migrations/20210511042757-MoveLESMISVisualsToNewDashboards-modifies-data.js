@@ -105,7 +105,8 @@ const createDashboardRelationsFromDashboardGroups = async db => {
     FROM "dashboardGroup"
     INNER JOIN dashboard
       ON dashboard.name = "dashboardGroup".name
-    WHERE 'laos_schools' = ANY("projectCodes");
+    WHERE 'laos_schools' = ANY("projectCodes")
+    GROUP BY dashboard.id, child_id;
   `);
 
   for (const currentDashboardRelation of dashboardRelations.rows) {
@@ -118,15 +119,6 @@ const createDashboardRelationsFromDashboardGroups = async db => {
       ...currentDashboardRelation,
       child_id: childId.rows[0].id,
     });
-    // await db.runSql(`
-    //   INSERT INTO dashboard_relation
-    //   VALUE (
-    //     '${generateId()}',
-    //     '${currentDashboardRelation.dashboard_id}',
-    //     '${childId}',
-    //     ${null}
-    //   )
-    // `);
   }
 };
 
@@ -144,6 +136,30 @@ exports.down = async function (db) {
   await db.runSql(`
     DELETE FROM dashboard
     WHERE 'laos_schools' = ANY(project_codes)
+  `);
+  await db.runSql(`
+    DELETE FROM dashboard_item
+    WHERE NOT EXISTS (
+      SELECT * FROM dashboard_relation
+      WHERE dashboard_relation.id = dashboard_item.id
+    )
+  `);
+  await db.runSql(`
+    -- Drop trigger because this change notification can blow out the size limit on pg_notify
+    DROP TRIGGER IF EXISTS legacy_report_trigger
+      ON legacy_report;
+
+    DELETE FROM legacy_report
+    WHERE NOT EXISTS (
+      SELECT * FROM dashboard_item
+      WHERE dashboard_item.report_code = legacy_report.id
+    );
+
+    -- Recreate triggers
+    CREATE TRIGGER legacy_report_trigger
+      AFTER INSERT OR UPDATE or DELETE
+      ON legacy_report
+      FOR EACH ROW EXECUTE PROCEDURE notification();
   `);
 };
 
