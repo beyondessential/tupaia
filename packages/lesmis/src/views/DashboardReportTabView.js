@@ -22,6 +22,7 @@ import {
   YearSelector,
 } from '../components';
 import { DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
+import { useUrlSearchParam } from '../utils';
 
 export const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
 export const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
@@ -74,8 +75,11 @@ const useStickyBarsHeight = () => {
 };
 
 export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
-  const [selectedYear, setSelectedYear] = useState(DEFAULT_DATA_YEAR);
-  const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
+  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam(
+    'dashboard',
+    DEFAULT_DASHBOARD_GROUP,
+  );
   const [stickyBarsHeight, measureTabBarHeight] = useStickyBarsHeight();
   const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
@@ -102,15 +106,15 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
     }
   }, [isScrolledPastTop, stickyBarsHeight]);
 
-  useEffect(() => {
-    // unset the selected dashboard when the data changes
-    // in case the selected one doesn't exist in the new data
-    setSelectedDashboard(false);
-
-    if (data) {
-      setDefaultDashboard(data, setSelectedDashboard);
-    }
-  }, [data, setSelectedDashboard]);
+  // useEffect(() => {
+  //   // unset the selected dashboard when the data changes
+  //   // in case the selected one doesn't exist in the new data
+  //   setSelectedDashboard(null);
+  //
+  //   if (data) {
+  //     setDefaultDashboard(data, setSelectedDashboard);
+  //   }
+  // }, [data, setSelectedDashboard]);
 
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);

@@ -23,3 +23,22 @@ export const useUrlSearchParams = () => {
 
   return [params, setParams];
 };
+
+/**
+ * Todo:
+ * query string params for dashboard: year, report, dashboard
+ * - handle setting true, false in url
+ * - handle setting default dashboard
+ * - handle opening modal if there is a report set
+ */
+export const useUrlSearchParam = (param, defaultValue) => {
+  const [params, setParams] = useUrlSearchParams();
+
+  const setSelectedParam = newValue => {
+    setParams({ [param]: newValue });
+  };
+
+  const selectedParam = params.get(param) || defaultValue;
+
+  return [selectedParam, setSelectedParam];
+};
