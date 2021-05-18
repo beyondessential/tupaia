@@ -1,6 +1,5 @@
 import moment from 'moment';
 
-
 export const FLIGHT_DATE = 'QMIA028';
 const TIMEZONE_SAMOA = 'Pacific/Apia';
 
@@ -21,14 +20,13 @@ export class Flight {
    * @param {string} key
    * @returns {Flight}
    */
-  static getFlightByKey = (flights, key) => flights
-    .find(f => f.key === key);
+  static getFlightByKey = (flights, key) => flights.find(f => f.key === key);
 
   /**
    * @param events
    * @returns {Flight[]}
    */
-  static fromEvents = (events) => {
+  static fromEvents = events => {
     const eventsByFlightDate = {};
 
     // See comment in Flight class on property key
@@ -55,7 +53,7 @@ export class Flight {
     const toProcess = Object.keys(eventsByFlightDate);
     toProcess.sort(); // make sure dates are chronological
 
-    while(toProcess.length > 0) {
+    while (toProcess.length > 0) {
       const flightDate = toProcess.shift();
 
       const flight = new Flight();
@@ -66,6 +64,14 @@ export class Flight {
     }
 
     return flights;
-  }
+  };
 
+  /**
+   * @param {Flight[]} flights
+   * @param {string} startDate
+   * @param {string} endDate
+   * @returns {Flight}
+   */
+  static filterFlightByPeriod = (flights, startDate, endDate) =>
+    flights.filter(f => f.date >= startDate && f.date <= endDate);
 }
