@@ -30,13 +30,14 @@ exports.up = async function (db) {
     config: {
       fetch: {
         dataGroups: ['PSSS_Alert'],
-        dataElements: ['PSSS_Alert_Syndrome', 'PSSS_Alert_Archived'],
+        dataElements: ['PSSS_Alert_Syndrome', 'PSSS_Alert_Archived', 'PSSS_Outbreak_Date'],
       },
       transform: [
         {
           // filter active alerts
           transform: 'filter',
-          where: "eq($row['PSSS_Alert_Archived'], 0) or notExists($row['PSSS_Alert_Archived'])",
+          where:
+            "(eq($row['PSSS_Alert_Archived'], 0) or notExists($row['PSSS_Alert_Archived'])) and notExists($row['PSSS_Outbreak_Date'])",
         },
         'convertEventDateToWeek',
         {
