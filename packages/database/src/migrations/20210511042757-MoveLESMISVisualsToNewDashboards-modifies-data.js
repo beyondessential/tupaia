@@ -75,13 +75,23 @@ const createLegacyDashboardItems = async db => {
       WHERE '${code}' = ANY("dashboardReports");
     `);
     await db.runSql(`
+      -- Drop trigger because this change notification can blow out the size limit on pg_notify
+      DROP TRIGGER IF EXISTS legacy_report_trigger
+      ON legacy_report;
+
       INSERT INTO legacy_report
       VALUES ('${legacyId}',
                ${drillDownLevel},
-              '${JSON.stringify(currentReport.dataBuilder)}',
+              '${currentReport.dataBuilder}',
               '${JSON.stringify(currentReport.dataBuilderConfig)}',
               '${JSON.stringify(currentReport.dataServices)}'
-      )
+      );
+
+      -- Recreate triggers
+      CREATE TRIGGER legacy_report_trigger
+        AFTER INSERT OR UPDATE or DELETE
+        ON legacy_report
+        FOR EACH ROW EXECUTE PROCEDURE notification();
     `);
     await db.runSql(`
       INSERT INTO dashboard_item
