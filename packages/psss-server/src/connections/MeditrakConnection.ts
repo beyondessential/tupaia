@@ -23,6 +23,8 @@ type AnswerObject = {
   id: string;
 };
 
+type Answers = Record<string, string | number>
+
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
@@ -30,7 +32,7 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     orgUnitCode: string,
     period: string,
-    answers: Record<string, number>,
+    answers: Answers,
   ) {
     const existingSurveyResponse = await this.findSurveyResponse(surveyCode, orgUnitCode, period);
 
@@ -41,11 +43,11 @@ export class MeditrakConnection extends ApiConnection {
     return this.createSurveyResponse(surveyCode, orgUnitCode, period, answers);
   }
 
-  async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
+  async findSurveyResponses(surveyCode: string, orgUnitCode: string, period: string, pageSize?: string | undefined) {
     const [startDate, endDate] = convertPeriodStringToDateRange(period);
     const results = (await this.get(`surveyResponses/`, {
       page: '0',
-      pageSize: '1',
+      pageSize,
       columns: `["entity.code","survey.code","data_time","id"]`,
       filter: JSON.stringify({
         'survey.code': { comparisonValue: surveyCode },
@@ -59,12 +61,17 @@ export class MeditrakConnection extends ApiConnection {
       sort: '["data_time DESC"]',
     })) as SurveyResponseObject[];
 
+    return results;
+  } 
+
+  async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
+    const results = await this.findSurveyResponses(surveyCode, orgUnitCode, period, '1');
     return results.length > 0 ? results[0] : undefined;
   }
 
   async updateSurveyResponse(
     surveyResponse: SurveyResponseObject,
-    answers: Record<string, number>,
+    answers: Answers,
   ) {
     const existingAnswers = (await this.get(`surveyResponses/${surveyResponse.id}/answers`, {
       columns: `["question.code","id"]`,
@@ -103,7 +110,8 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     organisationUnitCode: string,
     period: string,
-    answers: Record<string, number>,
+    answers: Answers,
+    surveyResponseId?: string | undefined,
   ) {
     const [_, endDate] = convertPeriodStringToDateRange(period);
 
@@ -121,7 +129,7 @@ export class MeditrakConnection extends ApiConnection {
         action: 'SubmitSurveyResponse',
         waitForAnalyticsRebuild: true,
         payload: {
-          id: generateId(),
+          id: surveyResponseId || generateId(),
           data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
           survey_code: surveyCode,
           entity_code: organisationUnitCode,

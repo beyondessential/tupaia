@@ -102,6 +102,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [alerts, setAlerts] = useState([]);
     const { countryCode } = useParams();
     const countryName = useSelector(state => getCountryName(state, countryCode));
 
@@ -115,10 +116,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       error: countryWeekError,
     } = useSingleWeeklyReport(countryCode, activeWeek, verifiedStatuses, pageQueryKey);
 
-    const {
-      isFetching: isSiteDataFetching,
-      data: siteData
-    } = useSitesSingleWeeklyReport(
+    const { isFetching: isSiteDataFetching, data: siteData } = useSitesSingleWeeklyReport(
       countryCode,
       activeWeek,
       verifiedStatuses,
@@ -139,7 +137,11 @@ export const WeeklyReportsPanelComponent = React.memo(
 
     const handleSubmit = async isVerified => {
       if (isVerified) {
-        confirmReport();
+        const response = await confirmReport();
+        setAlerts(response.alertData?.createdAlerts);
+        if (response?.alertData?.createdAlerts?.length > 0) {
+          setIsModalOpen(true);
+        }
       } else {
         setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
       }
@@ -237,12 +239,11 @@ export const WeeklyReportsPanelComponent = React.memo(
             </>
           )}
         </DrawerFooter>
-        {/*Removed as not part of MVP
         <AlertCreatedModal
           isOpen={isModalOpen}
           alerts={alerts}
           handleClose={() => setIsModalOpen(false)}
-        />*/}
+        />
       </StyledDrawer>
     );
   },

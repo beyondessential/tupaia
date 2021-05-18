@@ -4,11 +4,15 @@
  */
 
 import { RespondingError } from '@tupaia/utils';
+import { generateId } from '@tupaia/database';
 import { Route } from '../Route';
 import { validateIsNumber } from '../../utils';
 
-const SURVEY_CODE = 'PSSS_Confirmed_WNR';
-const REPORT_CODE = 'PSSS_Weekly_Cases';
+const CONFIRMED_WEEKLY_SURVEY_CODE = 'PSSS_Confirmed_WNR';
+const ALERT_SURVEY_CODE = 'PSSS_Alert';
+const WEEKLY_REPORT_CODE = 'PSSS_Weekly_Cases';
+const CONFIRMED_WEEKLY_REPORT_CODE = 'PSSS_Confirmed_Weekly_Report';
+const SYNDROME_CODES = ['AFR', 'DIA', 'ILI', 'PF', 'DLI'];
 
 type ConfirmedWeeklyReportAnswers = {
   PSSS_Confirmed_Sites: number;
@@ -24,8 +28,18 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
   async buildResponse() {
     const { week } = this.req.query;
     const { countryCode } = this.req.params;
+    const confirmedData = await this.confirmData(countryCode, week);
+    const alertData = await this.createAlerts(countryCode, week);
 
-    const report = await this.reportConnection?.fetchReport(REPORT_CODE, [countryCode], [week]);
+    return { confirmedData, alertData };
+  }
+
+  async confirmData(countryCode: string, week: string) {
+    const report = await this.reportConnection?.fetchReport(
+      WEEKLY_REPORT_CODE,
+      [countryCode],
+      [week],
+    );
 
     if (!report || report.results.length === 0) {
       throw new RespondingError(
@@ -37,11 +51,67 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
     const answers = mapUnconfirmedReportToConfirmedAnswers(report.results[0]);
 
     return this.meditrakConnection?.updateOrCreateSurveyResponse(
-      SURVEY_CODE,
+      CONFIRMED_WEEKLY_SURVEY_CODE,
       countryCode,
       week,
       answers,
     );
+  }
+
+  async createAlerts(countryCode: string, week: string) {
+    const report = await this.reportConnection?.fetchReport(
+      CONFIRMED_WEEKLY_REPORT_CODE,
+      [countryCode],
+      [week],
+    );
+
+    if (!report || report.results.length === 0) {
+      throw new RespondingError(
+        `Cannot create alerts: no confirmed weekly data found for ${countryCode} - ${week}`,
+        500,
+      );
+    }
+
+    const [result] = report.results;
+    const response: any = {
+      createdAlerts: [],
+    };
+    const previousAlertResponses = await this.meditrakConnection?.findSurveyResponses(
+      ALERT_SURVEY_CODE,
+      countryCode,
+      week,
+    );
+
+    for (const syndromeCode of SYNDROME_CODES) {
+      if (result[`${syndromeCode} Threshold Crossed`] === true) {
+        const surveyResponseId = generateId();
+        await this.meditrakConnection?.createSurveyResponse(
+          ALERT_SURVEY_CODE,
+          countryCode,
+          week,
+          {
+            PSSS_Alert_Syndrome: syndromeCode,
+            PSSS_Alert_Archived: 'No',
+          },
+          surveyResponseId,
+        );
+
+        response.createdAlerts.push({
+          id: surveyResponseId,
+          title: syndromeCode,
+        });
+      }
+    }
+
+    if (previousAlertResponses && previousAlertResponses.length) {
+      // delete the old alerts in case the weekly data is
+      // re-confirmed and there have been some alerts created before
+      for (const alertResponse of previousAlertResponses) {
+        await this.meditrakConnection?.deleteSurveyResponse(alertResponse);
+      }
+    }
+
+    return response;
   }
 }
 
