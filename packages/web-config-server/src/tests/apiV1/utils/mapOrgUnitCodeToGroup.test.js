@@ -34,7 +34,7 @@ const organisationUnits = [
   },
 ];
 
-describe.only('mapOrgUnitCodeToGroup', () => {
+describe('mapOrgUnitCodeToGroup', () => {
   it('should map org unit codes to group info', () => {
     expect(mapOrgUnitCodeToGroup(organisationUnits)).to.deep.equal({
       'SB_Guadalcanal Province': { code: 'SB_Guadalcanal Province', name: 'Guadalcanal Province' },
