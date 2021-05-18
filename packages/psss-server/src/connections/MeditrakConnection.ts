@@ -23,7 +23,7 @@ type AnswerObject = {
   id: string;
 };
 
-type Answers = Record<string, string | number>
+type Answers = Record<string, string | number>;
 
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
@@ -43,9 +43,14 @@ export class MeditrakConnection extends ApiConnection {
     return this.createSurveyResponse(surveyCode, orgUnitCode, period, answers);
   }
 
-  async findSurveyResponses(surveyCode: string, orgUnitCode: string, period: string, pageSize?: string | undefined) {
+  async findSurveyResponses(
+    surveyCode: string,
+    orgUnitCode: string,
+    period: string,
+    pageSize?: string | undefined,
+  ) {
     const [startDate, endDate] = convertPeriodStringToDateRange(period);
-    const results = (await this.get(`surveyResponses/`, {
+    return (await this.get(`surveyResponses/`, {
       page: '0',
       pageSize,
       columns: `["entity.code","survey.code","data_time","id"]`,
@@ -60,23 +65,27 @@ export class MeditrakConnection extends ApiConnection {
       }),
       sort: '["data_time DESC"]',
     })) as SurveyResponseObject[];
+  }
 
-    return results;
-  } 
+  async findSurveyResponseById(surveyResponseId: string) {
+    return this.get(`surveyResponses/${surveyResponseId}`, {
+      columns: `["entity.code","survey.code","data_time","id"]`,
+    });
+  }
 
   async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
     const results = await this.findSurveyResponses(surveyCode, orgUnitCode, period, '1');
     return results.length > 0 ? results[0] : undefined;
   }
 
-  async updateSurveyResponse(
-    surveyResponse: SurveyResponseObject,
-    answers: Answers,
-  ) {
-    const existingAnswers = (await this.get(`surveyResponses/${surveyResponse.id}/answers`, {
+  async findAnswers(surveyResponse: SurveyResponseObject) {
+    return (await this.get(`surveyResponses/${surveyResponse.id}/answers`, {
       columns: `["question.code","id"]`,
     })) as AnswerObject[];
+  }
 
+  async updateSurveyResponse(surveyResponse: SurveyResponseObject, answers: Answers) {
+    const existingAnswers = await this.findAnswers(surveyResponse);
     const newAnswers = existingAnswers.map(existingAnswer => {
       const questionCode = existingAnswer['question.code'];
       return {

@@ -3,16 +3,21 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { RespondingError } from '@tupaia/utils';
+import groupBy from 'lodash.groupby';
+import { RespondingError, dateStringToPeriod } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { Route } from '../Route';
 import { validateIsNumber } from '../../utils';
+import {
+  MIN_DATE,
+  SYNDROME_CODES,
+  CONFIRMED_WEEKLY_SURVEY_COUNTRY,
+  ALERT_SURVEY,
+} from '../../constants';
 
-const CONFIRMED_WEEKLY_SURVEY_CODE = 'PSSS_Confirmed_WNR';
-const ALERT_SURVEY_CODE = 'PSSS_Alert';
 const WEEKLY_REPORT_CODE = 'PSSS_Weekly_Cases';
+const ACTIVE_ALERTS_REPORT_CODE = 'PSSS_Active_Alerts';
 const CONFIRMED_WEEKLY_REPORT_CODE = 'PSSS_Confirmed_Weekly_Report';
-const SYNDROME_CODES = ['AFR', 'DIA', 'ILI', 'PF', 'DLI'];
 
 type ConfirmedWeeklyReportAnswers = {
   PSSS_Confirmed_Sites: number;
@@ -51,7 +56,7 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
     const answers = mapUnconfirmedReportToConfirmedAnswers(report.results[0]);
 
     return this.meditrakConnection?.updateOrCreateSurveyResponse(
-      CONFIRMED_WEEKLY_SURVEY_CODE,
+      CONFIRMED_WEEKLY_SURVEY_COUNTRY,
       countryCode,
       week,
       answers,
@@ -76,17 +81,33 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
     const response: any = {
       createdAlerts: [],
     };
-    const previousAlertResponses = await this.meditrakConnection?.findSurveyResponses(
-      ALERT_SURVEY_CODE,
-      countryCode,
-      week,
+    const startWeek = dateStringToPeriod(MIN_DATE, 'WEEK');
+    const activeAlertsData = await this.reportConnection?.fetchReport(
+      ACTIVE_ALERTS_REPORT_CODE,
+      [countryCode],
+      [startWeek, week],
     );
 
+    if (!activeAlertsData) {
+      // should not be undefined even if there is no data
+      throw new RespondingError(
+        `Cannot create alerts: no active alerts data found for ${countryCode} - ${week}`,
+        500,
+      );
+    }
+
+    const { results: alerts } = activeAlertsData;
+    const alertsBySyndrome = groupBy(alerts, 'syndrome');
+
     for (const syndromeCode of SYNDROME_CODES) {
-      if (result[`${syndromeCode} Threshold Crossed`] === true) {
+      const syndromeAlerts = alertsBySyndrome[syndromeCode];
+
+      // If there is no existing active alert for this syndrome,
+      // and the threshold is crossed for this syndrome, create a new one
+      if (!syndromeAlerts && result[`${syndromeCode} Threshold Crossed`] === true) {
         const surveyResponseId = generateId();
         await this.meditrakConnection?.createSurveyResponse(
-          ALERT_SURVEY_CODE,
+          ALERT_SURVEY,
           countryCode,
           week,
           {
@@ -100,14 +121,24 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
           id: surveyResponseId,
           title: syndromeCode,
         });
-      }
-    }
 
-    if (previousAlertResponses?.length) {
-      // delete the old alerts in case the weekly data is
-      // re-confirmed and there have been some alerts created before
-      for (const alertResponse of previousAlertResponses) {
-        await this.meditrakConnection?.deleteSurveyResponse(alertResponse);
+        continue;
+      }
+
+      const currentWeekSyndromeAlert =
+        syndromeAlerts && syndromeAlerts.find(a => a.period === week);
+
+      // If there is an existing alert triggered in the selected week,
+      // and now for the selected week, the threshold is no longer crossed (because of reconfirming changed data),
+      // archive the existing alert triggered in the selected week
+      if (currentWeekSyndromeAlert && result[`${syndromeCode} Threshold Crossed`] === false) {
+        const alertSurveyResponse = await this.meditrakConnection?.findSurveyResponseById(
+          currentWeekSyndromeAlert.id,
+        );
+        await this.meditrakConnection?.updateSurveyResponse(alertSurveyResponse, {
+          PSSS_Alert_Syndrome: syndromeCode,
+          PSSS_Alert_Archived: 'Yes',
+        });
       }
     }
 
