@@ -138,8 +138,8 @@ export const WeeklyReportsPanelComponent = React.memo(
     const handleSubmit = async isVerified => {
       if (isVerified) {
         const response = await confirmReport();
-        setAlerts(response.alertData?.createdAlerts);
         if (response?.alertData?.createdAlerts?.length > 0) {
+          setAlerts(response?.alertData?.createdAlerts);
           setIsModalOpen(true);
         }
       } else {
