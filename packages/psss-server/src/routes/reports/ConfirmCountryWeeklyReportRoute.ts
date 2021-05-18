@@ -103,7 +103,7 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
       }
     }
 
-    if (previousAlertResponses && previousAlertResponses.length) {
+    if (previousAlertResponses?.length) {
       // delete the old alerts in case the weekly data is
       // re-confirmed and there have been some alerts created before
       for (const alertResponse of previousAlertResponses) {
