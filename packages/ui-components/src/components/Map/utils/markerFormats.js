@@ -276,18 +276,6 @@ export function getFormattedInfo(markerData, series) {
   };
 }
 
-const getColor = serieses => {
-  return true;
-};
-
-const getOriginalValue = serieses => {
-  return true;
-};
-
-const getIcon = serieses => {
-  return true;
-};
-
 export function getMeasureDisplayInfo(
   measureData = {},
   serieses,
@@ -310,6 +298,7 @@ export function getMeasureDisplayInfo(
       displayInfo.radius = radius;
     }
   });
+
   serieses.forEach(
     ({ key, type, valueMapping, noDataColour, scaleType, scaleColorScheme, min, max }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping);
