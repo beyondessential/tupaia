@@ -25,6 +25,7 @@ import MeasuresDataHandler from './measureData';
 import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
 import DashboardsesHandler from './dashboardses';
+import LegacyReportHandler from './legacyReport';
 import { disasters } from './disasters';
 
 import { getProjects } from './projects';
@@ -62,6 +63,7 @@ export const getRoutesForApiV1 = () => {
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/projects', catchAsyncErrors(getProjects));
   api.get('/dashboardses', handleWith(DashboardsesHandler));
+  api.get('/legacyReport', handleWith(LegacyReportHandler));
 
   return api;
 };
