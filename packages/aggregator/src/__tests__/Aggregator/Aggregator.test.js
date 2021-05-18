@@ -23,6 +23,7 @@ FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 const { DATA_ELEMENT, DATA_GROUP } = DATA_SOURCE_TYPES;
 
 const dataBroker = createJestMockInstance('@tupaia/data-broker', 'DataBroker', {
+  context: {},
   getDataSourceTypes: () => DATA_SOURCE_TYPES,
   pull: ({ type }) => RESPONSE_BY_SOURCE_TYPE[type],
 });
