@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiToggleButton from '@material-ui/lab/ToggleButton';
@@ -93,6 +93,7 @@ const ToggleButton = styled(MuiToggleButton)`
 
 export const LocationHeader = () => {
   const { entityCode, view } = useUrlParams();
+  const { search } = useLocation();
   const { data: entityData } = useEntityData(entityCode);
 
   return (
@@ -123,7 +124,7 @@ export const LocationHeader = () => {
             <ToggleButton
               value="dashboard"
               component={Link}
-              to={makeEntityLink(entityCode, 'dashboard')}
+              to={`${makeEntityLink(entityCode, 'dashboard')}${search}`}
               aria-label="dashboard"
             >
               <Dashboard /> Dashboard
@@ -131,7 +132,7 @@ export const LocationHeader = () => {
             <ToggleButton
               value="map"
               component={Link}
-              to={makeEntityLink(entityCode, 'map')}
+              to={`${makeEntityLink(entityCode, 'map')}${search}`}
               aria-label="map"
             >
               <Map /> Map

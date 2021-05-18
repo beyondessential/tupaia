@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
@@ -27,7 +27,7 @@ import { DialogHeader } from './FullScreenDialog';
 import { ToggleButton } from './ToggleButton';
 import { ChartTable, TABS } from './ChartTable';
 import { useDashboardReportData } from '../api/queries';
-import { useUrlSearchParams, useUrlSearchParam } from '../utils';
+import { useUrlSearchParams } from '../utils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -80,10 +80,9 @@ export const DashboardReportModal = ({
   reportId,
   periodGranularity,
 }) => {
-  const [selectedReportId, setSelectedReportId] = useUrlSearchParam('report', null);
+  const [{ startDate, endDate, reportId: selectedReportId }, setParams] = useUrlSearchParams();
   const isOpen = reportId === selectedReportId;
   const [open, setOpen] = useState(isOpen);
-  const [params, setParams] = useUrlSearchParams();
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -93,32 +92,31 @@ export const DashboardReportModal = ({
     dashboardGroupId,
     reportId,
     periodGranularity,
-    startDate: params.get('startDate'),
-    endDate: params.get('endDate'),
+    startDate,
+    endDate,
   });
 
-  useEffect(() => {
+  const handleDatesChange = (newStartDate, newEndDate) => {
     setParams({
-      startDate: null,
-      endDate: null,
-    });
-
-    setSelectedReportId(open ? reportId : null);
-  }, [open]);
-
-  const handleDatesChange = (startDate, endDate) => {
-    setParams({
-      startDate,
-      endDate,
+      startDate: newStartDate,
+      endDate: newEndDate,
     });
   };
 
   const handleClickOpen = () => {
     setOpen(true);
+    setParams({
+      reportId,
+    });
   };
 
   const handleClose = () => {
     setOpen(false);
+    setParams({
+      startDate: null,
+      endDate: null,
+      reportId: null,
+    });
   };
 
   const handleTabChange = (event, newValue) => {

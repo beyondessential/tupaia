@@ -5,32 +5,40 @@
  */
 import { useHistory, useLocation } from 'react-router-dom';
 
-export const useUrlSearchParams = () => {
-  const history = useHistory();
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-
-  const setParams = newParams => {
-    Object.entries(newParams).forEach(([key, param]) => {
-      if (param === null || param === undefined) {
-        params.delete(key);
-      } else {
-        params.set(key, param.toString());
-      }
-    });
-    history.push({ ...history.location, search: params.toString() });
-  };
-
-  return [params, setParams];
-};
-
 /**
  * Todo:
  * query string params for dashboard: year, report, dashboard
  * - handle setting true, false in url
- * - handle setting default dashboard
- * - handle opening modal if there is a report set
+   - handle keeping switching tabs
  */
+export const useUrlSearchParams = () => {
+  const history = useHistory();
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+
+  const setParams = newParams => {
+    Object.entries(newParams).forEach(([key, param]) => {
+      if (param === null || param === undefined) {
+        urlParams.delete(key);
+      } else {
+        urlParams.set(key, param.toString());
+      }
+    });
+
+    if (location.search !== urlParams.toString()) {
+      history.push({ ...location, search: urlParams.toString() });
+    }
+  };
+
+  const params = {};
+
+  urlParams.forEach((value, key) => {
+    params[key] = value;
+  });
+
+  return [params, setParams];
+};
+
 export const useUrlSearchParam = (param, defaultValue) => {
   const [params, setParams] = useUrlSearchParams();
 
@@ -38,7 +46,7 @@ export const useUrlSearchParam = (param, defaultValue) => {
     setParams({ [param]: newValue });
   };
 
-  const selectedParam = params.get(param) || defaultValue;
+  const selectedParam = params[param] || defaultValue;
 
   return [selectedParam, setSelectedParam];
 };

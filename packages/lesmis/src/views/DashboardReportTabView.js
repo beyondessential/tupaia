@@ -114,7 +114,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   //   if (data) {
   //     setDefaultDashboard(data, setSelectedDashboard);
   //   }
-  // }, [data, setSelectedDashboard]);
+  // }, [data]); // setting setSelectedDashboard here causes infinite loop
 
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
