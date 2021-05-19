@@ -264,5 +264,50 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
         ],
       );
     });
+
+    describe('SUM_PER_ORG_GROUP', () => {
+      it('should return correct results across a number of data_elements, entities, and periods', async () => {
+        const cropResponses = [
+          CROP_RESPONSE_AUCKLAND_2019,
+          CROP_RESPONSE_AUCKLAND_2020,
+          CROP_RESPONSE_WELLINGTON_2019,
+        ];
+        const sumAnswers = answerCode =>
+          cropResponses.reduce(
+            (sum, { answers }) => sum + (answers[answerCode] ? parseFloat(answers[answerCode]) : 0),
+            0,
+          );
+
+        const CROP_1_SUMMED_RESPONSE = {
+          ...CROP_RESPONSE_AUCKLAND_2019, // doesn't matter which, just using as a base
+          data_time: CROP_RESPONSE_WELLINGTON_2019.data_time, // most recent data time for a CROP_1 answer
+          answers: {
+            CROP_1: sumAnswers('CROP_1'),
+          },
+        };
+
+        const CROP_2_SUMMED_RESPONSE = {
+          ...CROP_RESPONSE_AUCKLAND_2019, // doesn't matter which, just using as a base
+          data_time: CROP_RESPONSE_AUCKLAND_2020.data_time, // most recent data time for a CROP_2 answer
+          answers: {
+            CROP_2: sumAnswers('CROP_2'),
+          },
+        };
+
+        await assertCorrectResponse(
+          {
+            organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+            dataElementCodes: ['CROP_1', 'CROP_2'],
+            aggregations: [
+              { type: 'SUM_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
+            ],
+          },
+          [
+            setResponseEntityCode(CROP_1_SUMMED_RESPONSE, 'NZ'),
+            setResponseEntityCode(CROP_2_SUMMED_RESPONSE, 'NZ'),
+          ],
+        );
+      });
+    });
   });
 };
