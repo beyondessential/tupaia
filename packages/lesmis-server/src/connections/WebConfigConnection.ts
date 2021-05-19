@@ -11,11 +11,11 @@ export class WebConfigConnection extends SessionHandlingApiConnection {
   baseUrl = WEB_CONFIG_API_URL;
 
   async fetchDashboard(query: QueryParameters) {
-    return this.get('dashboard', query);
+    return this.get('dashboardses', query);
   }
 
   async fetchDashboardReport(query: QueryParameters) {
-    return this.get('view', query);
+    return this.get('legacyReport', query);
   }
 
   async fetchMapOverlayData(query: QueryParameters) {

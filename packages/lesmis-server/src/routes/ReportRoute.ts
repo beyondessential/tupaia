@@ -26,7 +26,7 @@ export class ReportRoute extends Route {
     switch (type) {
       case 'dashboard':
         return this.webConfigConnection.fetchDashboardReport({
-          viewId: reportCode,
+          itemCode: reportCode,
           organisationUnitCode: entityCode,
           projectCode: LESMIS_PROJECT_NAME,
           ...this.req.query,
