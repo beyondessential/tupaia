@@ -11,10 +11,6 @@ import {
   countAnalyticsThatSatisfyConditions,
   countAnalyticsGroupsThatSatisfyConditions,
 } from '/apiV1/dataBuilders/helpers';
-import {
-  fetchAggregatedAnalyticsByDhisIds,
-  checkAllDataElementsAreDhisIndicators,
-} from '/apiV1/utils';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
 const COMPARISON_TYPES = {
@@ -128,49 +124,17 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     let denominatorResults = [];
 
     if (numeratorCodes.length > 0) {
-      const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
-        this.models,
-        numeratorCodes,
-      );
-      if (allDataElementsAreDhisIndicators) {
-        const { entityAggregation } = this.config;
-        numeratorResults = (await fetchAggregatedAnalyticsByDhisIds(
-          this.models,
-          this.dhisApi,
-          numeratorCodes,
-          this.query,
-          entityAggregation,
-        )).results;
-      } else {
-        numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
+      numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
         .results;
-      }
     }
 
     if (denominatorCodes.length === 0) {
       return numeratorResults;
     }
 
-    const allDataElementsAreDhisIndicators = await checkAllDataElementsAreDhisIndicators(
-      this.models,
-      denominatorCodes,
-    );
-    if (allDataElementsAreDhisIndicators) {
-      const { entityAggregation } = this.config;
-      denominatorResults = (await fetchAggregatedAnalyticsByDhisIds(
-        this.models,
-        this.dhisApi,
-        denominatorCodes,
-        this.query,
-        entityAggregation,
-      )).results;
-    } else {
-      denominatorResults = (await this.fetchAnalytics(
-        denominatorCodes,
-        {},
-        denominatorAggregationType,
-      )).results;
-    }
+    denominatorResults = (
+      await this.fetchAnalytics(denominatorCodes, {}, denominatorAggregationType)
+    ).results;
 
     const getResultMapKey = ({ organisationUnit, dataElement, value, period }) =>
       `${organisationUnit}|${dataElement}|${value}|${period}`;
@@ -200,20 +164,20 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     Object.entries(this.config.dataClasses)
       .sort(([key1, config1], [key2, config2]) => getSortOrder(config1) - getSortOrder(config2))
       .forEach(([name, dataClass]) => {
-      const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
-      const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
+        const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
+        const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
 
-      const data = {
-        value: divideValues(numerator, denominator),
-        name,
-        [`${name}_metadata`]: {
-          numerator,
-          denominator,
-        },
-      };
+        const data = {
+          value: divideValues(numerator, denominator),
+          name,
+          [`${name}_metadata`]: {
+            numerator,
+            denominator,
+          },
+        };
 
-      dataClasses.push(data);
-    });
+        dataClasses.push(data);
+      });
 
     return dataClasses;
   }
@@ -224,11 +188,11 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     };
     const { operationConfig } = config;
     const { operator, value } = operationConfig;
-  
+
     if (!orgUnitCountOperators[operator]) {
       throw new Error('Cannot find this operator for org unit count operation');
     }
-  
+
     return orgUnitCountOperators[operator](orgUnitCount, value);
   };
 
@@ -300,16 +264,10 @@ const basicPercentagesOfValueCounts = (
   );
 
   return builder.build();
-}
+};
 
-export const percentagesOfValueCounts = async (
-  queryConfig,
-  aggregator,
-  dhisApi,
-) => basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi);
+export const percentagesOfValueCounts = async (queryConfig, aggregator, dhisApi) =>
+  basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi);
 
-export const percentagesOfAllValueCounts = async (
-  queryConfig,
-  aggregator,
-  dhisApi,
-) => basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi, aggregator.aggregationTypes.RAW);
+export const percentagesOfAllValueCounts = async (queryConfig, aggregator, dhisApi) =>
+  basicPercentagesOfValueCounts(queryConfig, aggregator, dhisApi, aggregator.aggregationTypes.RAW);

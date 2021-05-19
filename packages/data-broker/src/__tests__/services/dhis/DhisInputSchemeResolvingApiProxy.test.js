@@ -23,6 +23,7 @@ describe('DhisInputSchemeResolvingApiProxy', () => {
         dataElementIds: ['dhisId_el1', 'dhisId_el2'],
         organisationUnitIds: ['dhisId_ou1'],
         inputIdScheme: 'uid',
+        outputIdScheme: 'uid',
       });
     });
 

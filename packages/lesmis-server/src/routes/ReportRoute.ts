@@ -24,15 +24,15 @@ export class ReportRoute extends Route {
     const { entityCode, reportCode } = this.req.params;
     const { type } = this.req.query;
     switch (type) {
-      case 'view':
+      case 'dashboard':
         return this.webConfigConnection.fetchDashboardReport({
           viewId: reportCode,
           organisationUnitCode: entityCode,
           projectCode: LESMIS_PROJECT_NAME,
           ...this.req.query,
         });
-      case 'measureData':
-        return this.webConfigConnection.fetchMapOverlay({
+      case 'mapOverlay':
+        return this.webConfigConnection.fetchMapOverlayData({
           measureId: reportCode,
           organisationUnitCode: entityCode,
           projectCode: LESMIS_PROJECT_NAME,
@@ -44,7 +44,7 @@ export class ReportRoute extends Route {
           organisationUnitCodes: entityCode,
           projectCodes: LESMIS_PROJECT_NAME,
           ...this.req.query,
-        });
+        }, this.req.body);
     }
   }
 }

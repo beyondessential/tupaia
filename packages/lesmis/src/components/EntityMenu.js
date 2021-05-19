@@ -16,35 +16,9 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import MuiList from '@material-ui/core/List';
 import MuiListItem from '@material-ui/core/ListItem';
 import { DialogHeader } from './FullScreenDialog';
-import { useEntitiesData } from '../api/queries';
+import { useProjectEntitiesData } from '../api/queries';
 import { makeEntityLink, useUrlParams, getOptionText, getPlaceIcon } from '../utils';
 import * as COLORS from '../constants';
-
-const TextButton = styled(MuiButton)`
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1rem;
-  letter-spacing: 0;
-  color: ${props => props.theme.palette.text.secondary};
-  padding: 0.375rem 1.18rem 0.372rem 0.625rem;
-`;
-
-const Body = styled.div`
-  height: 100%;
-`;
-
-const ContainerList = styled(MuiList)`
-  padding: 0;
-  background: ${COLORS.GREY_F9};
-
-  > li {
-    padding-left: 1.875rem;
-  }
-
-  > li:first-child {
-    border-top: none;
-  }
-`;
 
 const List = styled(MuiList)`
   background: white;
@@ -69,6 +43,10 @@ const ListItem = styled(MuiListItem)`
   align-items: center;
   padding: 0 1.875rem 0 0;
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
+
+  &.open {
+    background: white;
+  }
 
   img {
     border-radius: 3px;
@@ -133,7 +111,7 @@ const ListItemComponent = React.memo(({ entities, entity, onMenuClose, view }) =
 
   return (
     <>
-      <ListItem>
+      <ListItem className={open && 'open'}>
         {entity.imageUrl ? <img src={entity.imageUrl} alt="place" /> : PlaceIcon}
         <ListItemLink to={makeEntityLink(entity.code, view)} onClick={handleMenuClose}>
           {getOptionText(entity, entities)}
@@ -178,10 +156,37 @@ ListItemComponent.defaultProps = {
   view: 'dashboard',
 };
 
+const TextButton = styled(MuiButton)`
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+  letter-spacing: 0;
+  color: ${props => props.theme.palette.text.secondary};
+  padding: 0.375rem 1.18rem 0.372rem 0.625rem;
+`;
+
+const Body = styled.div`
+  height: 100%;
+  overflow: auto;
+`;
+
+const ContainerList = styled(MuiList)`
+  padding: 0;
+  background: ${COLORS.GREY_F9};
+
+  > li {
+    padding-left: 1.875rem;
+  }
+
+  > li:first-child {
+    border-top: none;
+  }
+`;
+
 export const EntityMenu = React.memo(({ buttonText }) => {
   const [open, setOpen] = useState(false);
   const { view } = useUrlParams();
-  const { data: entities = [], isSuccess } = useEntitiesData();
+  const { data: entities = [], isSuccess } = useProjectEntitiesData();
   const country = entities.find(e => e.type === 'country');
 
   const handleClickOpen = () => {
@@ -195,11 +200,18 @@ export const EntityMenu = React.memo(({ buttonText }) => {
   return (
     <>
       <TextButton onClick={handleClickOpen}>{buttonText}</TextButton>
-      <Dialog fullScreen open={open} onClose={handleClose}>
+      <Dialog scroll="paper" fullScreen open={open} onClose={handleClose}>
         <DialogHeader handleClose={handleClose} title="All Locations" />
         <Body>
           {isSuccess && country && (
             <ContainerList>
+              {/* Manually add the country link at the top of the list */}
+              <ListItem>
+                {getPlaceIcon('country')}
+                <ListItemLink to={makeEntityLink(country.code, view)} onClick={handleClose}>
+                  {getOptionText(country, entities)}
+                </ListItemLink>
+              </ListItem>
               {getEntitiesByCodes(entities, country.childCodes).map(e => (
                 <ListItemComponent
                   key={e.code}

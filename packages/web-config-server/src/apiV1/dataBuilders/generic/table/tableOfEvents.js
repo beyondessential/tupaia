@@ -7,7 +7,7 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
 
-import { getSortByKey, utcMoment, reduceToDictionary, stripFromString } from '@tupaia/utils';
+import { getSortByKey, utcMoment, stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { transformObject } from '/apiV1/dataBuilders/transform';
 import {
@@ -18,6 +18,17 @@ import {
 
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';
+
+// TODO event.dataValues can be (Record<string, Object> (legacy) | Record<string, string> (modern))
+// Simplify this method after https://github.com/beyondessential/tupaia-backlog/issues/451
+// is implemented
+const getEventValuesByElement = event => {
+  const entries = Object.entries(event.dataValues).map(([dataElement, dataValue]) => [
+    dataElement,
+    dataValue.value ?? dataValue,
+  ]);
+  return Object.fromEntries(entries);
+};
 
 class TableOfEventsBuilder extends DataBuilder {
   /**
@@ -53,7 +64,9 @@ class TableOfEventsBuilder extends DataBuilder {
   }
 
   async fetchEvents() {
+    const { dataElementCodes } = this.config;
     const { organisationUnitCode, trackedEntityInstance } = this.query;
+
     const getOrganisationUnitCode = () => {
       // if we're fetching all data for a specific tracked entity instance, just limit it by country
       // as the data could have occurred within org units other than its direct parent
@@ -63,9 +76,11 @@ class TableOfEventsBuilder extends DataBuilder {
       }
       return organisationUnitCode;
     };
+
     const events = await super.fetchEvents({
       organisationUnitCode: getOrganisationUnitCode(),
       dataValueFormat: 'object',
+      dataElementCodes,
     });
 
     const { metadata } = this.getKeysBySourceType();
@@ -123,7 +138,7 @@ class TableOfEventsBuilder extends DataBuilder {
 
   buildCellValues = async (event, primaryKey, additionalKeys) => {
     const keys = [primaryKey].concat(additionalKeys);
-    const values = pick(reduceToDictionary(event.dataValues, 'dataElement', 'value'), keys);
+    const values = pick(getEventValuesByElement(event), keys);
     const { transformation } = this.config.columns[primaryKey];
 
     return transformation ? transformObject(this.models, transformation, values) : values;

@@ -18,7 +18,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Fade from '@material-ui/core/Fade';
 import { EntityMenu } from '../EntityMenu';
 import { useAutocomplete } from './useAutocomplete';
-import { useEntitiesData } from '../../api';
+import { useProjectEntitiesData } from '../../api';
 import { getPlaceIcon, getOptionText, makeEntityLink } from '../../utils';
 
 const SearchContainer = styled.div`
@@ -141,7 +141,7 @@ export const SearchBar = ({ linkType, className }) => {
   const history = useHistory();
   const [inputValue, setInputValue] = useState('');
   const [expanded, setExpanded] = useState(false);
-  const { data: options = [], isLoading } = useEntitiesData();
+  const { data: options = [], isLoading } = useProjectEntitiesData();
 
   const {
     getRootProps,
@@ -151,8 +151,8 @@ export const SearchBar = ({ linkType, className }) => {
     groupedOptions,
     focused,
     getClearProps,
-    dirty,
     popupOpen,
+    value,
   } = useAutocomplete({
     inputValue,
     setInputValue,
@@ -173,7 +173,7 @@ export const SearchBar = ({ linkType, className }) => {
   };
 
   const showExpandButton = !expanded && inputValue && groupedOptions.length === DEFAULT_LIMIT;
-  const showNoResults = popupOpen && inputValue && focused && !dirty;
+  const showNoResults = popupOpen && inputValue && focused && (!value || inputValue !== value.name);
 
   return (
     <Fade in={!isLoading}>

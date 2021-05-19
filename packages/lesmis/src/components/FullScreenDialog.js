@@ -12,14 +12,18 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const Header = styled.div`
   position: relative;
-  padding: 2.375rem 1.875rem;
+  padding: 2.2rem 1.875rem 2.4rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+
+  .MuiTypography-h2 {
+    line-height: 1.4;
+  }
 `;
 
 const CloseButton = styled(IconButton)`
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 0.625rem;
+  right: 0.625rem;
 `;
 
 export const DialogHeader = ({ title, handleClose, className }) => (

@@ -49,7 +49,7 @@ const X_AXIS_PADDING = {
   },
   preview: {
     dataLengthThreshold: 9,
-    base: 4,
+    base: 6,
     offset: 10,
     minimum: 10,
   },
@@ -361,17 +361,19 @@ export class CartesianChart extends PureComponent {
 
   renderYAxes = () => {
     const { chartConfig = {} } = this.state;
-
     const axisPropsById = {
       [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
       [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
     };
     Object.entries(chartConfig).forEach(
-      ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain }]) => {
+      ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain, yName }]) => {
         const axisId = Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
         axisPropsById[axisId].dataKeys.push(dataKey);
         if (valueType) {
           axisPropsById[axisId].valueType = valueType;
+        }
+        if (yName) {
+          axisPropsById[axisId].yName = yName;
         }
         axisPropsById[axisId].yAxisDomain = yAxisDomain;
       },
@@ -382,15 +384,27 @@ export class CartesianChart extends PureComponent {
     return axesProps.length > 0 ? axesProps.map(this.renderYAxis) : this.renderYAxis();
   };
 
+  renderYAxisLabel = (label, orientation) => {
+    if (label)
+      return {
+        value: label,
+        angle: -90,
+        fill: 'white',
+        style: { textAnchor: 'middle' },
+        position: orientation === 'right' ? 'insideRight' : 'insideLeft',
+      };
+    return null;
+  };
+
   renderYAxis = ({
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
     yAxisDomain = this.getDefaultYAxisDomain(),
     valueType: axisValueType,
+    yName: yAxisLabel,
   } = {}) => {
     const { isExporting, viewContent } = this.props;
-    const { data, valueType, presentationOptions } = viewContent;
-
+    const { yName, valueType, presentationOptions } = viewContent;
     return (
       <YAxis
         key={yAxisId}
@@ -400,7 +414,7 @@ export class CartesianChart extends PureComponent {
         domain={this.calculateYAxisDomain(yAxisDomain)}
         allowDataOverflow={valueType === PERCENTAGE || this.containsClamp(yAxisDomain)}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
-        label={data.yName}
+        label={this.renderYAxisLabel(yName || yAxisLabel, orientation)}
         tickFormatter={value =>
           formatDataValue(value, (valueType !== NUMBER ? valueType : 'default') || axisValueType, {
             presentationOptions,

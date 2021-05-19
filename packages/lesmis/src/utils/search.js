@@ -16,11 +16,13 @@ export const getPlaceIcon = type => {
   switch (type) {
     case 'country':
       return <Laos />;
-    case 'province':
-      return <Province />;
     case 'district':
+      return <Province />;
+    case 'sub_district':
       return <District />;
     case 'village':
+      return <District />;
+    case 'school':
       return <School />;
     default:
       return <District />;
