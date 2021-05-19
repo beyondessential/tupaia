@@ -61,7 +61,7 @@ class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
   }
 
   getLayerYearOnYearSeries() {
-    let series = [];
+    const series = [];
     for (let year = this.getDataEndDate().year(); year >= this.getDataStartDate().year(); year--) {
       const yearsAgo = this.getDataEndDate().year() - year;
       series.push({
