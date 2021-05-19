@@ -67,26 +67,20 @@ const getDefaultDashboard = data => {
 const useStickyBarsHeight = () => {
   const [stickyBarsHeight, setStickyBarsHeight] = useState(0);
 
-  const measureTabBarHeight = useCallback(tabBarNode => {
+  const onLoadTabBar = useCallback(tabBarNode => {
     if (tabBarNode !== null) {
       const tabBarHeight = tabBarNode.getBoundingClientRect().height;
       setStickyBarsHeight(tabBarHeight + NAVBAR_HEIGHT_INT);
     }
   }, []);
 
-  return [stickyBarsHeight, measureTabBarHeight];
+  return [stickyBarsHeight, onLoadTabBar];
 };
 
-export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
-  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('dashboard');
-  const [stickyBarsHeight, measureTabBarHeight] = useStickyBarsHeight();
-  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
-  const { data, isLoading, isError, error } = useDashboardData(entityCode);
-
-  const activeDashboard = selectedDashboard || getDefaultDashboard(data);
-
+const useStickyBar = () => {
   const topRef = useRef();
+  const [stickyBarsHeight, onLoadTabBar] = useStickyBarsHeight();
+  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
 
   useEffect(() => {
     const detectScrolledPastTop = () =>
@@ -108,6 +102,21 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
     }
   }, [isScrolledPastTop, stickyBarsHeight]);
 
+  return {
+    scrollToTop,
+    topRef,
+    isScrolledPastTop,
+    onLoadTabBar,
+  };
+};
+
+export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
+  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('dashboard');
+  const { data, isLoading, isError, error } = useDashboardData(entityCode);
+  const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
+  const activeDashboard = selectedDashboard || getDefaultDashboard(data);
+
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
     scrollToTop();
@@ -115,7 +124,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
 
   return (
     <>
-      <StickyTabBarContainer ref={measureTabBarHeight}>
+      <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
           <TabBarSection>
             {TabSelector}
