@@ -24,9 +24,6 @@ import {
 import { DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
 import { useUrlSearchParam } from '../utils';
 
-export const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
-export const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
-
 const StickyTabBarContainer = styled.div`
   position: sticky;
   top: ${NAVBAR_HEIGHT_INT}px;
@@ -49,16 +46,22 @@ const ScrollToTopButton = styled(ArrowUpward)`
   border-radius: 3px;
 `;
 
-const setDefaultDashboard = (data, setSelectedDashboard) => {
-  const dashboardNames = Object.keys(data);
+const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
+const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 
-  if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
-    setSelectedDashboard(DEFAULT_DASHBOARD_GROUP);
-  } else if (dashboardNames.includes(SCHOOL_DEFAULT_DASHBOARD_GROUP)) {
-    setSelectedDashboard(SCHOOL_DEFAULT_DASHBOARD_GROUP);
-  } else {
-    setSelectedDashboard(dashboardNames[0]);
+const getDefaultDashboard = data => {
+  if (!data) {
+    return null;
   }
+
+  const dashboardNames = Object.keys(data);
+  if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
+    return DEFAULT_DASHBOARD_GROUP;
+  }
+  if (dashboardNames.includes(SCHOOL_DEFAULT_DASHBOARD_GROUP)) {
+    return SCHOOL_DEFAULT_DASHBOARD_GROUP;
+  }
+  return dashboardNames[0];
 };
 
 const useStickyBarsHeight = () => {
@@ -76,13 +79,12 @@ const useStickyBarsHeight = () => {
 
 export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam(
-    'dashboard',
-    DEFAULT_DASHBOARD_GROUP,
-  );
+  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('dashboard');
   const [stickyBarsHeight, measureTabBarHeight] = useStickyBarsHeight();
   const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
+
+  const activeDashboard = selectedDashboard || getDefaultDashboard(data);
 
   const topRef = useRef();
 
@@ -106,16 +108,6 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
     }
   }, [isScrolledPastTop, stickyBarsHeight]);
 
-  // useEffect(() => {
-  //   // unset the selected dashboard when the data changes
-  //   // in case the selected one doesn't exist in the new data
-  //   setSelectedDashboard(null);
-  //
-  //   if (data) {
-  //     setDefaultDashboard(data, setSelectedDashboard);
-  //   }
-  // }, [data]); // setting setSelectedDashboard here causes infinite loop
-
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
     scrollToTop();
@@ -134,7 +126,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
           ) : (
             <>
               <Tabs
-                value={selectedDashboard}
+                value={activeDashboard}
                 onChange={handleChangeDashboard}
                 variant="scrollable"
                 scrollButtons="auto"
@@ -151,7 +143,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
         <FetchLoader isLoading={isLoading} isError={isError} error={error}>
           {data &&
             Object.entries(data).map(([heading, dashboardGroup]) => (
-              <TabPanel key={heading} isSelected={heading === selectedDashboard}>
+              <TabPanel key={heading} isSelected={heading === activeDashboard}>
                 {Object.entries(dashboardGroup).map(([groupName, groupValue]) => {
                   // Todo: support other report types (including "component" types)
                   const dashboardReports = groupValue.views.filter(

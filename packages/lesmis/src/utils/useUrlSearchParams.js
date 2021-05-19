@@ -33,7 +33,7 @@ export const useUrlSearchParams = () => {
   return [params, setParams];
 };
 
-export const useUrlSearchParam = (param, defaultValue) => {
+export const useUrlSearchParam = (param, defaultValue = null) => {
   const [params, setParams] = useUrlSearchParams();
 
   const setSelectedParam = newValue => {
