@@ -14,7 +14,10 @@ import { AlertCell, CountryLinkCell, SitesReportedCell } from '../../components'
 import { getCountryCodes, getLatestViewableWeek } from '../../store';
 
 const CountryCell = ({ organisationUnit }) => (
-  <CountryLinkCell target={`weekly-reports/${organisationUnit}`} countryCode={organisationUnit} />
+  <CountryLinkCell
+    target={`weekly-reports/${organisationUnit}`}
+    organisationUnit={organisationUnit}
+  />
 );
 CountryCell.propTypes = {
   organisationUnit: PropTypes.string.isRequired,

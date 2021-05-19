@@ -4,6 +4,7 @@
  */
 
 export * from './AlertsTable';
+export * from './ArchiveTable';
 export * from './CountriesTable';
 export * from './CountrySummaryTable';
 export * from './CountryTable';

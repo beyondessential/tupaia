@@ -36,10 +36,7 @@ export const PageRoutes = React.memo(() => {
       <PrivateRoute path="/weekly-reports/:countryCode" authCheck={checkCountry}>
         <CountryReportsView />
       </PrivateRoute>
-      <PrivateRoute path="/alerts/:category/:countryCode" authCheck={checkCountry}>
-        <AlertsOutbreaksView />
-      </PrivateRoute>
-      <PrivateRoute path="/alerts/:category" authCheck={checkCountries}>
+      <PrivateRoute path="/alerts">
         <AlertsOutbreaksView />
       </PrivateRoute>
       <Route path="/unauthorised">
