@@ -42,7 +42,7 @@ class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
   }
 
   filterLayeredAnalytics(originalStartDate, originalEndDate, layeredAnalytics) {
-    let filteredAnalytics = layeredAnalytics.filter(layeredAnalytic => {
+    const filteredAnalytics = layeredAnalytics.filter(layeredAnalytic => {
       const formattedAnalyticPeriod = periodToMoment(layeredAnalytic.period).format('YYYY-MM-DD');
       return moment(analytic).isBetween(originalStartDate, originalEndDate);
     });
