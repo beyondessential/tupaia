@@ -179,9 +179,13 @@ const VerticalDivider = styled(MuiDivider)`
 `;
 
 const PhotoOrMap = ({ vitals }) => {
+  const [validImage, setValidImage] = useState(true);
   if (vitals.isLoading) return null;
 
-  if (vitals.Photo) return <img src={vitals.Photo} alt="place" width="720px" />;
+  if (vitals.Photo && validImage)
+    return (
+      <img src={vitals.Photo} alt="place" width="720px" onError={() => setValidImage(false)} />
+    );
 
   return <MiniMap entityCode={vitals.code} />;
 };
