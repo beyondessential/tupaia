@@ -4,7 +4,7 @@
  */
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
-import { layerYearOnYear } from '../../../../apiV1/utils/layerYearOnYear';
+import { layerYearOnYear } from '../../../apiV1/utils/layerYearOnYear';
 
 describe('layerYearOnYear()', () => {
   it('layers the years on previous years', () => {
