@@ -300,13 +300,15 @@ export const MapOverlayGroup = ({
   selectedPath,
   path,
 }) => {
-  const [open, setOpen] = useState(false);
+  const activeClassName = getActiveClass(path, selectedPath);
+  const initialIsOpen = activeClassName === 'selected';
+  const [open, setOpen] = useState(initialIsOpen);
 
   const handleOpen = () => {
     setOpen(openState => openState !== true);
   };
 
-  // set the first overlay as active
+  // Set the first overlay as active by default
   useEffect(() => {
     if (!selectedOverlay && path.every(node => node === 0)) {
       options.forEach(option => {
@@ -319,8 +321,6 @@ export const MapOverlayGroup = ({
       });
     }
   }, [setSelectedOverlay, options, setOpen, path, selectedOverlay]);
-
-  const activeClassName = getActiveClass(path, selectedPath);
 
   return (
     <FormControl key={name} component="fieldset" className={[open && 'open', activeClassName]}>

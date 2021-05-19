@@ -48,6 +48,7 @@ const searchOverlays = (result, child, path, selectedOverlay) => {
   );
 };
 
+// Get the path to the selected overlay so that it can be highlighted with styles
 const getSelectedPath = (overlays, selectedOverlay) =>
   overlays.reduce(
     (result, overlay, index) => searchOverlays(result, overlay, [index], selectedOverlay),

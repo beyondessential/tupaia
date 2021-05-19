@@ -143,11 +143,6 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
     setHiddenValues({});
   }, [setHiddenValues, selectedOverlay, entityCode]);
 
-  // reset selected overlay when changing entity
-  useEffect(() => {
-    setSelectedOverlay(null);
-  }, [entityCode]); // setSelectedOverlay = infinite loop
-
   // set default hidden measures when measure data changes
   useEffect(() => {
     const series = measureData ? measureData.serieses : [];
