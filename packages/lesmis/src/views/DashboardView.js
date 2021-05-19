@@ -20,7 +20,7 @@ import {
   EntityVitalsItem,
   PartnerLogo,
 } from '../components';
-import { useUrlParams } from '../utils';
+import { useUrlParams, useUrlSearchParam, useUrlSearchParams } from '../utils';
 import { useVitalsData, useEntityData } from '../api/queries';
 
 const StyledSelect = styled(Select)`
@@ -479,14 +479,14 @@ const VitalsView = ({ vitals }) => {
 export const DashboardView = () => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
-  const vitals = useVitalsData(entityCode);
-
   const tabOptions = makeTabOptions(entityData?.type);
+  const [params, setParams] = useUrlSearchParams();
 
-  const [selectedTab, setSelectedTab] = useState(tabOptions[0].value);
+  const vitals = useVitalsData(entityCode);
+  const selectedTab = params.entityTab || tabOptions[0].value;
 
   const handleChangeTab = event => {
-    setSelectedTab(event.target.value);
+    setParams({ entityTab: event.target.value, dashboard: null, year: null });
   };
 
   return (

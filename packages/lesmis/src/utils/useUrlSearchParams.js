@@ -5,12 +5,6 @@
  */
 import { useHistory, useLocation } from 'react-router-dom';
 
-/**
- * Todo:
- * query string params for dashboard: year, report, dashboard
- * - handle setting true, false in url
-   - handle keeping switching tabs
- */
 export const useUrlSearchParams = () => {
   const history = useHistory();
   const location = useLocation();
