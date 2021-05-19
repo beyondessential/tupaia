@@ -27,16 +27,20 @@ const getReportCode = syndrome => `PSSS_${syndrome}_Confirmed_Weekly_Report`;
 
 const getSyndromeWoWIncreaseIndicatorCode = syndrome => `PSSS_Confirmed_${syndrome}_WoW_Increase`;
 
+const getSyndromeConfirmedCases = syndrome => `PSSS_Confirmed_${syndrome}_Cases`;
+
 const getReport = (syndrome, permissionGroupId) => {
   const reportCode = getReportCode(syndrome);
   const syndromeWowIncreaseIndicatorCode = getSyndromeWoWIncreaseIndicatorCode(syndrome);
+  const syndromeConfirmedCases = getSyndromeConfirmedCases(syndrome);
 
   return {
     id: generateId(),
     code: reportCode,
     config: {
       fetch: {
-        dataElements: [syndromeWowIncreaseIndicatorCode],
+        dataElements: [syndromeWowIncreaseIndicatorCode, syndromeConfirmedCases],
+        aggregations: ['FINAL_EACH_WEEK'],
       },
       transform: [
         'keyValueByDataElementName',
@@ -46,6 +50,7 @@ const getReport = (syndrome, permissionGroupId) => {
           // change key names
           transform: 'select',
           "'percentageChange'": `$row.${syndromeWowIncreaseIndicatorCode}`,
+          "'weeklyCases'": `$row.${syndromeConfirmedCases}`,
           '...': ['period', 'organisationUnit'],
         },
       ],
