@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
@@ -32,6 +32,28 @@ const Box = styled(MuiBox)`
   margin-left: 1rem;
 `;
 
+const searchOverlays = (result, child, path, selectedOverlay) => {
+  if (!child.children) {
+    if (child.code === selectedOverlay) {
+      return path;
+    }
+
+    return result;
+  }
+
+  return child.children.reduce(
+    (nextResult, overlay, index) =>
+      searchOverlays(nextResult, overlay, [...path, index], selectedOverlay),
+    result,
+  );
+};
+
+const getSelectedPath = (overlays, selectedOverlay) =>
+  overlays.reduce(
+    (result, overlay, index) => searchOverlays(result, overlay, [index], selectedOverlay),
+    null,
+  );
+
 export const MapOverlaysPanel = ({
   overlays,
   isLoadingOverlays,
@@ -40,7 +62,10 @@ export const MapOverlaysPanel = ({
   isLoadingData,
   YearSelector,
 }) => {
-  const [selectedPath, setSelectedPath] = useState(null);
+  const selectedPath = useCallback(getSelectedPath(overlays, selectedOverlay), [
+    overlays,
+    selectedOverlay,
+  ]);
 
   return (
     <Container>
@@ -66,7 +91,6 @@ export const MapOverlaysPanel = ({
               selectedOverlay={selectedOverlay}
               setSelectedOverlay={setSelectedOverlay}
               selectedPath={selectedPath}
-              setSelectedPath={setSelectedPath}
               path={[index]}
             />
           ))
