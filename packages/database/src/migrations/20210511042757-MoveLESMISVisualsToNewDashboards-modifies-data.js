@@ -67,7 +67,7 @@ const createLegacyDashboardItems = async db => {
   `);
 
   for (const currentReport of dashboardReports.rows) {
-    const { id: code, viewJson: config, drillDownLevel, ...legacyObject } = currentReport;
+    const { id: code, viewJson: config, ...legacyObject } = currentReport;
     const legacyId = generateId();
     const permissionGroups = await db.runSql(`
       SELECT array_agg(DISTINCT "userGroup") as permission_groups
@@ -81,7 +81,6 @@ const createLegacyDashboardItems = async db => {
 
       INSERT INTO legacy_report
       VALUES ('${legacyId}',
-               ${drillDownLevel},
               '${currentReport.dataBuilder}',
               '${JSON.stringify(currentReport.dataBuilderConfig)}',
               '${JSON.stringify(currentReport.dataServices)}'
