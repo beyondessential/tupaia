@@ -6,6 +6,7 @@
 import {
   BCD_RESPONSE_AUCKLAND,
   BCD_RESPONSE_WELLINGTON,
+  CITY_TO_COUNTRY_MAP,
   CROP_RESPONSE_WELLINGTON_2019,
   CROP_RESPONSE_AUCKLAND_2019,
   CROP_RESPONSE_AUCKLAND_2020,
@@ -23,8 +24,13 @@ import {
   KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23,
 } from '../TupaiaDataApi.fixtures';
 
+const setResponseEntityCode = (response, entityCode) => ({
+  ...response,
+  entityCode,
+});
+
 export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
-  it('should not perform any aggregation is an unsupported aggregation is supplied', async () => {
+  it('should not perform any aggregation if an unsupported aggregation is supplied', async () => {
     await assertCorrectResponse(
       {
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -217,7 +223,7 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
           startDate: '2019-01-01',
           endDate: '2022-01-01',
-          aggregations: [{ type: 'MOST_RECENT' }],
+          aggregations: [{ type: 'MOST_RECENT', config: { orgUnitMap: {} } }],
         },
         [
           CROP_RESPONSE_WELLINGTON_2019,
@@ -227,6 +233,34 @@ export const testFetchAnalyticsAggregations = assertCorrectResponse => () => {
           CROP_RESPONSE_AUCKLAND_2020,
           KITTY_RESPONSE_WELLINGTON_MORNING_20210219W7,
           KITTY_RESPONSE_AUCKLAND_MORNING_20210608W23,
+        ],
+      );
+    });
+  });
+
+  describe('MOST_RECENT_PER_ORG_GROUP', () => {
+    it('should return correct results across a number of data_elements, entities, and periods', async () => {
+      // crop 2 will come from Auckland's more recent 2020 response, but as that doesn't contain crop 1, get
+      // that from Wellington's next most recent 2019 response
+      const CROP_RESPONSE_WELLINGTON_2019_SANS_CROP_2 = {
+        ...CROP_RESPONSE_WELLINGTON_2019,
+        answers: {
+          CROP_1: CROP_RESPONSE_WELLINGTON_2019.answers.CROP_1,
+        },
+      };
+      await assertCorrectResponse(
+        {
+          organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+          dataElementCodes: ['BCD1TEST', 'BCD325TEST', 'CROP_1', 'CROP_2', 'KITTY_1', 'KITTY_2'],
+          aggregations: [
+            { type: 'MOST_RECENT_PER_ORG_GROUP', config: { orgUnitMap: CITY_TO_COUNTRY_MAP } },
+          ],
+        },
+        [
+          setResponseEntityCode(BCD_RESPONSE_WELLINGTON, 'NZ'),
+          setResponseEntityCode(CROP_RESPONSE_WELLINGTON_2019_SANS_CROP_2, 'NZ'),
+          setResponseEntityCode(CROP_RESPONSE_AUCKLAND_2020, 'NZ'),
+          setResponseEntityCode(KITTY_RESPONSE_AUCKLAND_MORNING_20220608W23, 'NZ'),
         ],
       );
     });
