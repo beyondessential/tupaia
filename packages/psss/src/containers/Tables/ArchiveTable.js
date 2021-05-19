@@ -59,11 +59,12 @@ const createColumns = isSingleCountry => [
     key: 'diagnosis',
     align: 'left',
   },
-  {
-    title: 'Total Lab Confirmed Cases',
-    key: 'diagnosis',
-    align: 'left',
-  },
+  // TODO uncomment when outbreak functionality is added
+  // {
+  //   title: 'Total Lab Confirmed Cases',
+  //   key: 'diagnosis',
+  //   align: 'left',
+  // },
   {
     title: '',
     key: 'id',
