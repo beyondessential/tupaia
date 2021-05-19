@@ -4,11 +4,10 @@
  */
 
 import ViewRouteHandler from './view';
-import { NoPermissionRequiredChecker } from './permissions';
+import { DashboardItemPermissionChecker } from './permissions';
 
 export default class extends ViewRouteHandler {
-  // TODO: Actually check permissions
-  static PermissionsChecker = NoPermissionRequiredChecker;
+  static PermissionsChecker = DashboardItemPermissionChecker;
 
   fetchReport = async ({ itemCode, drillDownLevel }) => {
     const baseDashboardItem = await this.models.dashboardItem.findOne({
