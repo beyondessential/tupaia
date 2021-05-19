@@ -149,8 +149,8 @@ export const DashboardReportModal = ({
               <FlexStart>
                 <DateRangePicker
                   isLoading={isLoading}
-                  startDate={viewContent?.startDate}
-                  endDate={viewContent?.endDate}
+                  startDate={startDate}
+                  endDate={endDate}
                   granularity={viewContent?.granularity}
                   onSetDates={handleDatesChange}
                 />

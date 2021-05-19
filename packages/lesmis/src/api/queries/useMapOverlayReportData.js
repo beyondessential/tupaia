@@ -21,7 +21,7 @@ import { get } from '../api';
 
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
   const processedSerieses = serieses.map(series => {
-    const { values: mapOptionValues, type, scaleType } = series;
+    const { values: mapOptionValues, type } = series;
 
     // assign colors
     const values = autoAssignColors(mapOptionValues);

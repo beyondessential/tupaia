@@ -64,7 +64,10 @@ const getDefaultDashboard = data => {
   return dashboardNames[0];
 };
 
-const useStickyBarsHeight = () => {
+// Utility for sticking the tab bar to the top of the page and scrolling up to the tab bar
+const useStickyBar = () => {
+  const topRef = useRef();
+  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
   const [stickyBarsHeight, setStickyBarsHeight] = useState(0);
 
   const onLoadTabBar = useCallback(tabBarNode => {
@@ -73,14 +76,6 @@ const useStickyBarsHeight = () => {
       setStickyBarsHeight(tabBarHeight + NAVBAR_HEIGHT_INT);
     }
   }, []);
-
-  return [stickyBarsHeight, onLoadTabBar];
-};
-
-const useStickyBar = () => {
-  const topRef = useRef();
-  const [stickyBarsHeight, onLoadTabBar] = useStickyBarsHeight();
-  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
 
   useEffect(() => {
     const detectScrolledPastTop = () =>
