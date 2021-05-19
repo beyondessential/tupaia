@@ -5,52 +5,59 @@
 
 import groupBy from 'lodash.groupby';
 
-import { getSortByKey, momentToDateString, utcMoment } from '@tupaia/utils';
-import { fetchEventData, fetchAnalyticData } from './fetchData';
+import moment from 'moment';
+import { getSortByKey, momentToDateString } from '@tupaia/utils';
+import { fetchData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
+import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 const DEFAULT_BINARY_OPTIONS = ['Yes', 'No'];
+
+const buildEventDataValues = resultsForEvent =>
+  resultsForEvent.reduce(
+    (values, { dataElementCode, type, value }) => ({
+      ...values,
+      [dataElementCode]: sanitizeDataValue(value, type),
+    }),
+    {},
+  );
 
 export class TupaiaDataApi {
   constructor(database) {
     this.database = database;
   }
 
-  async fetchEvents(options) {
-    await validateEventOptions(options);
-    const results = await fetchEventData(this.database, options);
-    const resultsBySurveyResponse = groupBy(results, 'surveyResponseId');
-    return Object.values(resultsBySurveyResponse)
-      .map(resultsForSurveyResponse => {
-        const { surveyResponseId, date, entityCode, entityName } = resultsForSurveyResponse[0];
-        const dataValues = resultsForSurveyResponse.reduce(
-          (values, { dataElementCode, type, value }) => ({
-            ...values,
-            [dataElementCode]: sanitizeDataValue(value, type),
-          }),
-          {},
-        );
+  async fetchEvents(optionsInput) {
+    await validateEventOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput);
+    const results = await fetchData(this.database, options);
+    const resultsByEventId = groupBy(results, 'eventId');
+    const hasElements = options.dataElementCodes.length > 0;
+    return Object.values(resultsByEventId)
+      .map(resultsForEvent => {
+        const [{ eventId, date, entityCode, entityName }] = resultsForEvent;
         return {
-          event: surveyResponseId,
-          eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
+          event: eventId,
+          eventDate: moment(date).format(EVENT_DATE_FORMAT),
           orgUnit: entityCode,
           orgUnitName: entityName,
-          dataValues,
+          dataValues: hasElements ? buildEventDataValues(resultsForEvent) : {},
         };
       })
       .sort(getSortByKey('eventDate'));
   }
 
-  async fetchAnalytics(options) {
-    await validateAnalyticsOptions(options);
-    const results = await fetchAnalyticData(this.database, options);
+  async fetchAnalytics(optionsInput) {
+    await validateAnalyticsOptions(optionsInput);
+    const options = sanitiseFetchDataOptions(optionsInput);
+    const results = await fetchData(this.database, options);
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      date: momentToDateString(utcMoment(date)),
+      date: momentToDateString(moment(date)),
       value: sanitizeDataValue(value, type),
     }));
   }
@@ -62,10 +69,10 @@ export class TupaiaDataApi {
     }
     const sqlQuery = new SqlQuery(
       `
-      SELECT code, name, options, option_set_id, type
-      FROM question
-      WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
-    `,
+       SELECT code, name, options, option_set_id, type
+       FROM question
+       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
+     `,
       dataElementCodes,
     );
 
@@ -80,10 +87,10 @@ export class TupaiaDataApi {
 
     const dataGroups = await new SqlQuery(
       `
-      SELECT code, name
-      FROM survey
-      WHERE survey.code = '${dataGroupCode}'
-    `,
+       SELECT code, name
+       FROM survey
+       WHERE survey.code = '${dataGroupCode}'
+     `,
     ).executeOnDatabase(this.database);
 
     const dataGroup = dataGroups[0];
@@ -100,18 +107,20 @@ export class TupaiaDataApi {
     if (dataElementCodes && Array.isArray(dataElementCodes)) {
       const sqlQuery = await new SqlQuery(
         `
-        SELECT question.code, question.name, question.text, question.options, question.option_set_id, question.type
-        FROM question
-        JOIN survey_screen_component on question.id = survey_screen_component.question_id
-        JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
-        JOIN survey on survey_screen.survey_id = survey.id
-        WHERE survey.code = '${dataGroupCode}'
-        AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
-      `,
+         SELECT question.code, question.name, question.text, question.options, question.option_set_id, question.type
+         FROM question
+         JOIN survey_screen_component on question.id = survey_screen_component.question_id
+         JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
+         JOIN survey on survey_screen.survey_id = survey.id
+         WHERE survey.code = '${dataGroupCode}'
+         AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+       `,
         dataElementCodes,
       );
 
-      sqlQuery.orderBy('survey_screen.screen_number, survey_screen_component.component_number');
+      sqlQuery.addOrderByClause(
+        'survey_screen.screen_number, survey_screen_component.component_number',
+      );
 
       const dataElementsMetadata = await this.fetchDataElementsMetadataFromSqlQuery(
         sqlQuery,
@@ -166,10 +175,10 @@ export class TupaiaDataApi {
 
     const options = await new SqlQuery(
       `
-      SELECT option.value, option.label, option.option_set_id
-      FROM option
-      WHERE option.option_set_id IN ${SqlQuery.parameteriseArray(optionSetIds)}
-      `,
+       SELECT option.value, option.label, option.option_set_id
+       FROM option
+       WHERE option.option_set_id IN ${SqlQuery.parameteriseArray(optionSetIds)}
+       `,
       optionSetIds,
     ).executeOnDatabase(this.database);
 

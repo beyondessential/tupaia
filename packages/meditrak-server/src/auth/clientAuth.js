@@ -3,10 +3,10 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { UnauthenticatedError, DatabaseError } from '@tupaia/utils';
+import { UnauthenticatedError } from '@tupaia/utils';
 import { encryptPassword, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 
-async function getAPIClient(authHeader, apiClientModel) {
+export async function getAPIClientUser(authHeader, models) {
   const { username, password: secretKey } = getUserAndPassFromBasicAuth(authHeader);
   if (!username || !secretKey) {
     throw new UnauthenticatedError('The provided basic authorization header is invalid');
@@ -28,31 +28,12 @@ async function getAPIClient(authHeader, apiClientModel) {
 
   // We always need a valid client; throw if none is found
   const secretKeyHash = encryptPassword(secretKey, API_CLIENT_SALT);
-  const apiClient = await apiClientModel.findOne({
+  const apiClient = await models.apiClient.findOne({
     username,
     secret_key_hash: secretKeyHash,
   });
   if (!apiClient) {
     throw new UnauthenticatedError('Incorrect client username or secret');
   }
-  return apiClient;
-}
-
-export async function getAPIClientUser(authHeader, models) {
-  const apiClient = await getAPIClient(authHeader, models.apiClient);
-
-  const userId = apiClient.user_account_id;
-
-  // If the api client is not associated with a user, e.g. meditrak api client,
-  // the consuming function should auth the user separately
-  if (!userId) return null;
-
-  const user = await models.user.findOne({ id: userId });
-  if (!user) {
-    // This isn't an authentication error - the client has provided the correct
-    // name and key, but the api client record has an invalid user ID attached!
-    throw new DatabaseError('API user does not exist');
-  }
-
-  return user;
+  return apiClient.getUser();
 }

@@ -59,3 +59,45 @@ export const translateElementKeysInEventAnalytics = async (
     ...otherProps,
   };
 };
+
+export const translateMetadataInAnalytics = (
+  response,
+  metadataMapping,
+  dimension,
+  mappedValueType,
+) => {
+  const { metaData, rows, ...otherProps } = response;
+  const dimensionIndex = response.headers.findIndex(({ name }) => name === dimension);
+  const translatedRows = rows.map(row => {
+    const newRow = row;
+    const dimensionId = row[dimensionIndex];
+    newRow[dimensionIndex] = metadataMapping[dimensionId] || dimensionId;
+    return newRow;
+  });
+  const translatedItems = {};
+
+  Object.entries(metaData.items).forEach(([key, item]) => {
+    if (metadataMapping.hasOwnProperty(key)) {
+      const newItem = mappedValueType
+        ? {
+            ...item,
+            [mappedValueType]: metadataMapping[key],
+          }
+        : item;
+      translatedItems[key] = newItem;
+    } else {
+      translatedItems[key] = item;
+    }
+  });
+
+  const translatedMetaData = {
+    ...metaData,
+    items: translatedItems,
+  };
+
+  return {
+    ...otherProps,
+    metaData: translatedMetaData,
+    rows: translatedRows,
+  };
+};

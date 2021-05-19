@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
-import { DatabaseModel } from '../DatabaseModel';
+import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
@@ -282,7 +282,7 @@ export class EntityType extends DatabaseType {
   }
 }
 
-export class EntityModel extends DatabaseModel {
+export class EntityModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
     return EntityType;
   }
@@ -292,7 +292,7 @@ export class EntityModel extends DatabaseModel {
   // Note: we don't use ancestor_descendant_relation as the dependency, as adding change triggers
   // to that table slows down the rebuilds considerably (40s -> 200s for full initial build)
   get cacheDependencies() {
-    return [TYPES.ENTITY_RELATION];
+    return [TYPES.ENTITY_RELATION, TYPES.ENTITY_HIERARCHY];
   }
 
   customColumnSelectors = {
@@ -363,6 +363,13 @@ export class EntityModel extends DatabaseModel {
     );
   }
 
+  /**
+   * Fetches descendant => ancestor map in given hierarchy
+   * @param {string[]} descendantCodes
+   * @param {string} hierarchyId
+   * @param {string} ancestorType
+   * @returns {Promise<Record<string, { code: string, name: string }>>} Map of descendant code to ancestor (code, name)
+   */
   async fetchAncestorDetailsByDescendantCode(descendantCodes, hierarchyId, ancestorType) {
     const cacheKey = this.getCacheKey(this.fetchAncestorDetailsByDescendantCode.name, arguments);
     // in testing this function, there was no issue with many bound parameters, and reducing the

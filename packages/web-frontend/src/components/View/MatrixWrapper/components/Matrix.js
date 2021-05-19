@@ -18,6 +18,7 @@ import FooterRow from './FooterRow';
 import { CATEGORY_INDENT } from '../styles';
 
 import './matrix.css';
+import { getIsUsingDots } from '../../utils';
 
 const getCategoryKey = (categoryId, index) => `${categoryId}_${index}`;
 
@@ -139,22 +140,18 @@ export class Matrix extends PureComponent {
     return this.columnKeys;
   }
 
-  getIsUsingDots(presentationOptions) {
-    return Object.keys(presentationOptions).length > 0;
-  }
-
-  shouldRenderFooter() {
-    if (!this.getIsUsingDots(this.props.presentationOptions)) {
-      return false;
-    }
-    const conditions = this.props.presentationOptions.conditions || [];
-    return conditions.filter(condition => !!condition.legendLabel).length > 0;
-  }
-
   setRowRef(rowElement) {
     if (!this.rowElements.includes(rowElement)) {
       this.rowElements.push(rowElement);
     }
+  }
+
+  shouldRenderFooter() {
+    if (!getIsUsingDots(this.props.presentationOptions)) {
+      return false;
+    }
+    const conditions = this.props.presentationOptions.conditions || [];
+    return conditions.filter(condition => !!condition.legendLabel).length > 0;
   }
 
   moveColumn(distance) {
@@ -255,7 +252,9 @@ export class Matrix extends PureComponent {
               onCellMouseLeave={this.onCellMouseLeave}
               onCellClick={this.onCellClick}
               presentationOptions={categoryPresentationOptions}
-              isUsingDots={this.getIsUsingDots(categoryPresentationOptions)}
+              isUsingDots={getIsUsingDots(categoryPresentationOptions)}
+              childRows={childRows}
+              category={category}
             >
               {children}
             </RowGroup>
@@ -295,7 +294,7 @@ export class Matrix extends PureComponent {
             presentationOptions={presentationOptions}
             isNextColumnEnabled={this.isNextColumnEnabled()}
             isPreviousColumnEnabled={this.isPreviousColumnEnabled()}
-            isUsingDots={this.getIsUsingDots(presentationOptions)}
+            isUsingDots={getIsUsingDots(presentationOptions)}
             styles={styles}
             rowInfo={rowInfo}
           />

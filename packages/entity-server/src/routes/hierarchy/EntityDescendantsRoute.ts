@@ -4,33 +4,35 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
+import { formatEntitiesForResponse } from './format';
 import {
-  HierarchyRequest,
-  HierarchyResponse,
-  HierarchyRequestParams,
-  HierarchyRequestBody,
-  HierarchyRequestQuery,
-  EntityResponseObject,
+  SingleEntityRequest,
+  SingleEntityRequestParams,
+  RequestBody,
+  SingleEntityRequestQuery,
+  EntityResponse,
 } from './types';
 
-export type DescendantsRequest = HierarchyRequest<
-  HierarchyRequestParams,
-  EntityResponseObject[],
-  HierarchyRequestBody,
-  HierarchyRequestQuery & { includeRootEntity?: boolean }
+export type DescendantsRequest = SingleEntityRequest<
+  SingleEntityRequestParams,
+  EntityResponse[],
+  RequestBody,
+  SingleEntityRequestQuery & { includeRootEntity?: boolean }
 >;
-export class EntityDescendantsRoute extends Route<
-  DescendantsRequest,
-  HierarchyResponse<EntityResponseObject[]>
-> {
+export class EntityDescendantsRoute extends Route<DescendantsRequest> {
   async buildResponse() {
+    const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
     const { includeRootEntity = false } = this.req.query;
-    const descendants = await this.req.ctx.entity.getDescendants(this.req.ctx.hierarchyId, {
-      country_code: this.req.ctx.allowedCountries,
+    const descendants = await entity.getDescendants(hierarchyId, {
+      ...filter,
     });
-    const responseEntities = includeRootEntity
-      ? [this.req.ctx.entity].concat(descendants)
-      : descendants;
-    return this.res.ctx.formatEntitiesForResponse(responseEntities);
+    const responseEntities = includeRootEntity ? [entity].concat(descendants) : descendants;
+
+    return formatEntitiesForResponse(
+      this.req.models,
+      this.req.ctx,
+      responseEntities,
+      field || fields,
+    );
   }
 }

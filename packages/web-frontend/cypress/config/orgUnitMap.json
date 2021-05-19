@@ -81,7 +81,7 @@
     "country": "LA",
     "district": "LA_Attapue",
     "sub_district": "LA_Anouvong District",
-    "facility": "LA_ATPHO",
+    "facility": "LA-XS-01 DW",
     "village": "LA_vil_1001002",
     "school": ["LA_sch_1001001", "LA_sch_10101002", "LA_sch_20101001"],
     "city": "LA_PROV_CAPITAL_ANOUVONG"
@@ -160,7 +160,7 @@
     "country": "VU",
     "district": "VU_Malampa",
     "sub_district": "VU_Malampa_MAL01",
-    "facility": "VU_1180"
+    "facility": "VU_1667"
   },
   "WF": {
     "country": "WF"

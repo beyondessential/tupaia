@@ -68,13 +68,13 @@ describe('Permissions checker for GETAnswers', async () => {
       {
         surveyCode: 'TEST_SURVEY_1',
         entityCode: vanuatuEntity.code,
-        submission_time: '2020-01-31T09:00:00Z',
+        data_time: '2020-01-31T09:00:00',
         answers: { TEST_SURVEY_11: 'Scary' },
       },
       {
         surveyCode: 'TEST_SURVEY_2',
         entityCode: vanuatuEntity.code,
-        submission_time: '2020-01-31T09:00:00Z',
+        data_time: '2020-01-31T09:00:00',
         answers: { TEST_SURVEY_21: 'Sporty' },
       },
     ]);

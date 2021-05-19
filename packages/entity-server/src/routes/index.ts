@@ -4,8 +4,15 @@
  */
 
 export {
-  HierarchyRequest,
+  SingleEntityRequest,
+  MultiEntityRequest,
   SingleEntityRoute,
   EntityDescendantsRoute,
   DescendantsRequest,
+  MultiEntityDescendantsRoute,
+  MultiEntityDescendantsRequest,
+  EntityRelationsRoute,
+  RelationsRequest,
+  MultiEntityRelationsRoute,
+  MultiEntityRelationsRequest,
 } from './hierarchy';

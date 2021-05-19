@@ -3,8 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
-import { QUERY_CONJUNCTIONS, runDatabaseFunctionInBatches } from '@tupaia/database';
+import {
+  translateElementKeysInEventAnalytics,
+  translateMetadataInAnalytics,
+} from '@tupaia/dhis-api';
+import { runDatabaseFunctionInBatches } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
 export class DhisInputSchemeResolvingApiProxy {
@@ -13,21 +16,138 @@ export class DhisInputSchemeResolvingApiProxy {
     this.api = api;
   }
 
+  async getAnalyticsByMethod(query, getAnalyticsMethod) {
+    const { dataElementCodes } = query;
+    const { organisationUnitCode, organisationUnitCodes } = query;
+    const orgUnitCodes = organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes;
+    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(dataElementCodes);
+    const allOrgUnitsHaveDhisId = await this.allOrgUnitsHaveDhisId(orgUnitCodes);
+    const modifiedQuery = await this.getModifiedAnalyticsQuery(
+      query,
+      allDataElementsHaveDhisId,
+      allOrgUnitsHaveDhisId,
+    );
+    const response = await getAnalyticsMethod(modifiedQuery);
+
+    return this.getTranslatedAnalyticsResponse(
+      response,
+      dataElementCodes,
+      orgUnitCodes,
+      allDataElementsHaveDhisId,
+      allOrgUnitsHaveDhisId,
+    );
+  }
+
   async getAnalytics(query) {
+    const getAnalyticsMethod = this.api.getAnalytics.bind(this);
+    return this.getAnalyticsByMethod(query, getAnalyticsMethod);
+  }
+
+  async getAggregatedAnalytics(query) {
+    const getAnalyticsMethod = this.api.getAggregatedAnalytics.bind(this);
+    return this.getAnalyticsByMethod(query, getAnalyticsMethod);
+  }
+
+  async getModifiedAnalyticsQuery(query, allDataElementsHaveDhisId, allOrgUnitsHaveDhisId) {
     let modifiedQuery = { ...query };
 
-    if (
-      (await this.allDataElementsHaveDhisId(query)) &&
-      (await this.allOrgUnitsHaveDhisId(query))
-    ) {
-      // the endpoint used /api/analytics/rawData.json only allows a single "inputIdScheme", which means
+    if (allDataElementsHaveDhisId && allOrgUnitsHaveDhisId) {
+      // the analytics endpoints only allow a single "inputIdScheme", which means
       // both the dataElements and orgUnits need to be ids
       modifiedQuery = await this.replaceDataElementCodesWithIds(modifiedQuery);
       modifiedQuery = await this.replaceOrgUnitCodesWithIds(modifiedQuery);
       modifiedQuery.inputIdScheme = 'uid';
+      modifiedQuery.outputIdScheme = 'uid';
     }
 
-    return this.api.getAnalytics(modifiedQuery);
+    return modifiedQuery;
+  }
+
+  async getTranslatedAnalyticsResponse(
+    response,
+    dataElementCodes,
+    orgUnitCodes,
+    allDataElementsHaveDhisId,
+    allOrgUnitsHaveDhisId,
+  ) {
+    let translatedResponse = { ...response };
+
+    // If all data elements have dhisId, it implies that we are using internal mapping and likely there are no data element codes on DHIS2
+    // So we are translate them from ids to our internal data element codes here.
+    if (allDataElementsHaveDhisId) {
+      const dataElementIdToCode = await this.getDataElementDhisIdToCode(dataElementCodes);
+      translatedResponse = translateMetadataInAnalytics(
+        translatedResponse,
+        dataElementIdToCode,
+        'dx',
+        'code',
+      );
+    }
+
+    // Similar to data elements above, translating org unit ids to our internal entity codes.
+    if (allOrgUnitsHaveDhisId) {
+      const entityIdToCode = await this.getEntityDhisIdToCode(orgUnitCodes);
+      // It's a little bit more complex with org units, as dhis may return
+      // different org units than were requested
+      translatedResponse = translateMetadataInAnalytics(
+        translatedResponse,
+        entityIdToCode,
+        'ou',
+        'code',
+      );
+    }
+
+    return this.translateDefaultCoInResponse(translatedResponse);
+  }
+
+  translateDefaultCoInResponse = response => {
+    if (!response?.rows?.length) return response;
+    const coIndex = response.headers.findIndex(({ name }) => name === 'co');
+    if (coIndex < 0) return response;
+
+    const { metaData } = response;
+    const defaultCoItem = Object.values(metaData.items).find(item => item.name === 'default');
+    if (defaultCoItem) {
+      const { uid: coId } = defaultCoItem;
+      metaData.items[coId].code = 'default';
+    }
+
+    return { ...response, metaData };
+  };
+
+  async getEntityDhisIdToCode(orgUnitCodes) {
+    const orgUnitIdToCode = {};
+    const mappings = await this.models.dataServiceEntity.find({ entity_code: orgUnitCodes });
+
+    for (const orgUnitCode of orgUnitCodes) {
+      const mapping = mappings.find(m => m.entity_code === orgUnitCode);
+      if (!mapping) {
+        throw new Error('Org Unit not found in data_service_entity');
+      }
+      if (!mapping.config.dhis_id) {
+        throw new Error('Mapping config in data_service_entity does not include required dhis_id');
+      }
+      orgUnitIdToCode[mapping.config.dhis_id] = orgUnitCode;
+    }
+
+    return orgUnitIdToCode;
+  }
+
+  async getDataElementDhisIdToCode(dataElementCodes) {
+    const dataElementIdToCode = {};
+    const dataElements = await this.models.dataSource.find({
+      code: dataElementCodes,
+      type: 'dataElement',
+    });
+
+    for (const dataElement of dataElements) {
+      if (!dataElement.config.dhisId) {
+        throw new Error('Data element does not have dhisId');
+      }
+      dataElementIdToCode[dataElement.config.dhisId] = dataElement.code;
+    }
+
+    return dataElementIdToCode;
   }
 
   async getEventAnalytics(query) {
@@ -38,11 +158,13 @@ export class DhisInputSchemeResolvingApiProxy {
     // setups where the Data Elements do not have codes, this api call will give us no new information.
     // To prevent this, we pre-emptively swap out codes for ids, using our internal mapping, so that
     // DhisApi#getEventAnalytics does not need to make these code-to-id conversion calls.
-    const { dataElementIdScheme = 'code' } = query;
-
-    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(query);
-    const allProgramsHaveDhisId = await this.allProgramsHaveDhisId(query);
-    const allOrgUnitsHaveDhisId = await this.allOrgUnitsHaveDhisId(query);
+    const { dataElementCodes, dataElementIdScheme = 'code' } = query;
+    const programCodes = query.programCode ? [query.programCode] : query.programCodes || [];
+    const { organisationUnitCode, organisationUnitCodes } = query;
+    const orgUnitCodes = organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes;
+    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(dataElementCodes);
+    const allProgramsHaveDhisId = await this.allProgramsHaveDhisId(programCodes);
+    const allOrgUnitsHaveDhisId = await this.allOrgUnitsHaveDhisId(orgUnitCodes);
 
     if (allDataElementsHaveDhisId) {
       modifiedQuery = await this.replaceDataElementCodesWithIds(modifiedQuery);
@@ -69,7 +191,7 @@ export class DhisInputSchemeResolvingApiProxy {
     // back into codes (because the codes are not set in dhis). So, we have to do it ourselves using the internal
     // mapping.
     if (allDataElementsHaveDhisId && dataElementIdScheme === 'code') {
-      translatedResponse = await this.translateDataElementIdsToCodesInResponse(
+      translatedResponse = await this.translateDataElementIdsToCodesInEventAnalyticResponse(
         translatedResponse,
         query.dataElementCodes,
       );
@@ -87,9 +209,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @returns bool
    * @private
    */
-  allDataElementsHaveDhisId = async query => {
-    const { dataElementCodes } = query;
-
+  allDataElementsHaveDhisId = async dataElementCodes => {
     const dataElements = await this.models.dataSource.find({
       code: dataElementCodes,
       type: 'dataElement',
@@ -110,11 +230,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @returns bool
    * @private
    */
-  allOrgUnitsHaveDhisId = async query => {
-    const { organisationUnitCode, organisationUnitCodes } = query;
-
-    const orgUnitCodes = organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes;
-
+  allOrgUnitsHaveDhisId = async orgUnitCodes => {
     const mappings = await this.models.dataServiceEntity.find({ entity_code: orgUnitCodes });
 
     for (const orgUnitCode of orgUnitCodes) {
@@ -133,9 +249,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @returns bool
    * @private
    */
-  allProgramsHaveDhisId = async query => {
-    const programCodes = query.programCode ? [query.programCode] : query.programCodes || [];
-
+  allProgramsHaveDhisId = async programCodes => {
     const dataGroups = await this.models.dataSource.find({ code: programCodes, type: 'dataGroup' });
 
     for (const dataGroup of dataGroups) {
@@ -190,7 +304,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @returns {*}
    * @private
    */
-  translateDataElementIdsToCodesInResponse = async (response, dataElementCodes) => {
+  translateDataElementIdsToCodesInEventAnalyticResponse = async (response, dataElementCodes) => {
     const dataElementIdToCode = {};
 
     const dataElements = await this.models.dataSource.find({
@@ -213,7 +327,7 @@ export class DhisInputSchemeResolvingApiProxy {
    * @private
    */
   translateOrgUnitIdsToCodesInResponse = async response => {
-    if (!response.rows.length) return response;
+    if (!response?.rows?.length) return response;
 
     const orgUnitIdIndex = response.headers.findIndex(({ name }) => name === 'ou');
     const orgUnitCodeIndex = response.headers.findIndex(({ name }) => name === 'oucode');
@@ -223,10 +337,7 @@ export class DhisInputSchemeResolvingApiProxy {
     const dhisIds = response.rows.map(row => row[orgUnitIdIndex]);
     const mappings = await runDatabaseFunctionInBatches(dhisIds, async batchOfRecords =>
       this.models.dataServiceEntity.find({
-        [QUERY_CONJUNCTIONS.RAW]: {
-          sql: `config->>'dhis_id' in (${batchOfRecords.map(() => '?')})`,
-          parameters: batchOfRecords,
-        },
+        'config->>dhis_id': batchOfRecords,
       }),
     );
 
@@ -322,4 +433,16 @@ export class DhisInputSchemeResolvingApiProxy {
     delete modifiedQuery.programCodes;
     return modifiedQuery;
   };
+
+  async fetchIndicators(query) {
+    let modifiedQuery = { ...query };
+    const { dataElementCodes } = query;
+    const allDataElementsHaveDhisId = await this.allDataElementsHaveDhisId(dataElementCodes);
+
+    if (allDataElementsHaveDhisId) {
+      modifiedQuery = await this.replaceDataElementCodesWithIds(modifiedQuery);
+    }
+
+    return this.api.fetchIndicators(modifiedQuery);
+  }
 }

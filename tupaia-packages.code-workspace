@@ -110,6 +110,8 @@
     "cSpell.words": [
       "Codeship",
       "DHIS",
+      "Flattable",
+      "jsonb",
       "Lesmis",
       "MediTrak",
       "PSSS",
@@ -136,6 +138,7 @@
       "keyby",
       "migrator",
       "oucode",
+      "parameterise",
       "postgresql",
       "preaggregate",
       "preaggregated",

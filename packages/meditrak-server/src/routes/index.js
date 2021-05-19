@@ -45,6 +45,7 @@ import {
   RegisterUserAccounts,
   EditUserAccounts,
   GETUserAccounts,
+  GETUserForMe,
 } from './userAccounts';
 import {
   CreateUserEntityPermissions,
@@ -64,7 +65,6 @@ import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { getSocialFeed } from './getSocialFeed';
 import { getUserRewards } from './getUserRewards';
-import { getUser } from './getUser';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
@@ -183,7 +183,7 @@ export default {
   requestCountryAccess: allowAnyone(requestCountryAccess),
   getSocialFeed: catchAsyncErrors(getSocialFeed),
   getUserRewards: allowAnyone(getUserRewards),
-  getUser: catchAsyncErrors(getUser),
+  getUser: useRouteHandler(GETUserForMe),
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
   getCountryAccessList: allowAnyone(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),

@@ -4,10 +4,12 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { HierarchyRequest, HierarchyResponse } from './types';
+import { formatEntityForResponse } from './format';
+import { SingleEntityRequest } from './types';
 
-export class SingleEntityRoute extends Route<HierarchyRequest, HierarchyResponse> {
+export class SingleEntityRoute extends Route<SingleEntityRequest> {
   async buildResponse() {
-    return this.res.ctx.formatEntityForResponse(this.req.ctx.entity);
+    const { entity, field, fields } = this.req.ctx;
+    return formatEntityForResponse(this.req.ctx, entity, field || fields);
   }
 }

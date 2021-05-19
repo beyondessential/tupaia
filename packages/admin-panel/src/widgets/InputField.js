@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { TextField, DatePicker, DateTimePicker, RadioGroup, Select } from '@tupaia/ui-components';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
@@ -99,6 +100,18 @@ export const InputField = ({
         />
       );
       break;
+    case 'jsonArray':
+      inputComponent = (
+        <JsonEditor
+          label={label}
+          inputKey={inputKey}
+          value={value}
+          onChange={onChange}
+          helperText={secondaryLabel}
+          stringify={false}
+        />
+      );
+      break;
     case 'boolean':
       inputComponent = (
         <RadioGroup
@@ -143,6 +156,26 @@ export const InputField = ({
           onChange={date => {
             if (date && moment(date).isValid()) {
               onChange(inputKey, moment(date).toISOString());
+            }
+          }}
+          disabled={disabled}
+        />
+      );
+      break;
+    case 'datetime-utc':
+      inputComponent = (
+        <DateTimePicker
+          label={label}
+          helperText={secondaryLabel}
+          format="yyyy-MM-dd HH:mm"
+          value={
+            value && moment(value).isValid
+              ? moment.utc(value).format('YYYY-MM-DDTHH:mm')
+              : new Date()
+          }
+          onChange={date => {
+            if (date && moment(date).isValid()) {
+              onChange(inputKey, stripTimezoneFromDate(date));
             }
           }}
           disabled={disabled}

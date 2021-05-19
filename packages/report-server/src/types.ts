@@ -6,17 +6,24 @@
 import { Request } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { Authenticator } from '@tupaia/auth';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
-export interface FetchReportQuery extends Query {
+export interface FetchReportFilter {
   organisationUnitCodes: string;
+  hierarchy?: string;
   period?: string;
   startDate?: string;
   endDate?: string;
 }
 
-export interface FetchReportParams extends ParamsDictionary {
+export interface FetchReportQuery extends Query, FetchReportFilter {}
+
+interface ReportsRequestBody extends FetchReportFilter {
+  testConfig?: ReportConfig;
+  testData?: Record<string, string | number>[];
+}
+
+interface FetchReportUrlParams extends ParamsDictionary {
   reportCode: string;
 }
 
@@ -28,19 +35,13 @@ export interface ReportConfig {
   transform: (string | Record<string, unknown>)[];
 }
 
-interface ReportsRequestBody {
-  testConfig?: ReportConfig;
-  testData?: Record<string, string | number>[];
-}
-
 export interface ReportsRequest<
-  P = FetchReportParams,
+  P = FetchReportUrlParams,
   ResBody = unknown,
   ReqBody = ReportsRequestBody,
   ReqQuery = FetchReportQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   accessPolicy: AccessPolicy;
-  authenticator: Authenticator;
   database: TupaiaDatabase;
   models: ModelRegistry;
 }

@@ -36,6 +36,7 @@ for those changes to be transpiled down and reflected in other packages
 
 1. Run `yarn run migrate`.
 2. You can verify that a migration has run by checking the `migrations` table in the database.
+3. To debug what's actually run add a `--verbose` flag
 
 #### Note
 

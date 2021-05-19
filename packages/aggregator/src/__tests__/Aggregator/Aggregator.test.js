@@ -23,6 +23,7 @@ FilterAnalytics.filterAnalytics.mockReturnValue(FILTERED_ANALYTICS);
 const { DATA_ELEMENT, DATA_GROUP } = DATA_SOURCE_TYPES;
 
 const dataBroker = createJestMockInstance('@tupaia/data-broker', 'DataBroker', {
+  context: {},
   getDataSourceTypes: () => DATA_SOURCE_TYPES,
   pull: ({ type }) => RESPONSE_BY_SOURCE_TYPE[type],
 });
@@ -87,6 +88,16 @@ describe('Aggregator', () => {
 
       await aggregator.fetchAnalytics(codes, fetchOptions);
       assertDataBrokerPullIsInvokedCorrectly({ codeInput: codes });
+    });
+
+    it('passes aggregations through to data source', async () => {
+      const codes = ['POP01', 'POP02'];
+
+      await aggregator.fetchAnalytics(codes, fetchOptions, aggregationOptions);
+      assertDataBrokerPullIsInvokedCorrectly(
+        { codeInput: codes },
+        { aggregations: aggregationOptions.aggregations },
+      );
     });
 
     it('returns data for just organisationUnitCode', async () => {

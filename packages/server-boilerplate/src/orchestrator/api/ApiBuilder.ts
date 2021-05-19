@@ -14,23 +14,33 @@ import { UnauthenticatedError } from '@tupaia/utils';
 
 import { handleWith, handleError } from '../../utils';
 import { TestRoute } from '../../routes';
-import { LoginRoute, LoginRequest, LogoutRoute, attachSession } from '../routes';
+import {
+  LoginRoute,
+  LoginRequest,
+  LogoutRoute,
+  attachSession as defaultAttachSession,
+} from '../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
+
+type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
 export class ApiBuilder {
   private readonly app: Express;
 
   private readonly database: TupaiaDatabase;
 
+  private attachSession: Middleware;
+
   private attachVerifyLogin?: (req: LoginRequest, res: Response, next: NextFunction) => void;
 
-  private verifyLoginMiddleware?: (req: Request, res: Response, next: NextFunction) => void;
+  private verifyAuthMiddleware?: Middleware;
 
   constructor(transactingConnection: TupaiaDatabase) {
     this.database = transactingConnection;
     this.app = express();
+    this.attachSession = defaultAttachSession;
 
     /**
      * Add middleware
@@ -62,6 +72,11 @@ export class ApiBuilder {
     this.app.get('/v1/test', handleWith(TestRoute));
   }
 
+  useAttachSession(attachSession: Middleware) {
+    this.attachSession = attachSession;
+    return this;
+  }
+
   useSessionModel(SessionModelClass: new (database: TupaiaDatabase) => SessionModel) {
     const sessionModel = new SessionModelClass(this.database);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
@@ -71,12 +86,8 @@ export class ApiBuilder {
     return this;
   }
 
-  verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
-    this.attachVerifyLogin = (req: LoginRequest, res: Response, next: NextFunction) => {
-      req.ctx.verifyLogin = verify;
-      next();
-    };
-    this.verifyLoginMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  verifyAuth(verify: (accessPolicy: AccessPolicy) => void) {
+    this.verifyAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
       try {
         const { session } = req;
         if (!session) {
@@ -93,11 +104,32 @@ export class ApiBuilder {
     return this;
   }
 
+  verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
+    this.attachVerifyLogin = (req: LoginRequest, res: Response, next: NextFunction) => {
+      req.ctx.verifyLogin = verify;
+      next();
+    };
+    return this;
+  }
+
   use<T extends ExpressRequest<T> = Request>(
     path: string,
     middleware: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
-    this.app.use(path, attachSession, middleware);
+    this.app.use(path, this.attachSession, middleware);
+    return this;
+  }
+
+  addRoute<T extends ExpressRequest<T> = Request>(
+    method: 'get' | 'post',
+    path: string,
+    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+  ) {
+    if (this.verifyAuthMiddleware) {
+      this.app[method](path, this.attachSession, this.verifyAuthMiddleware, handler);
+    } else {
+      this.app[method](path, this.attachSession, handler);
+    }
     return this;
   }
 
@@ -105,12 +137,14 @@ export class ApiBuilder {
     path: string,
     handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
   ) {
-    if (this.verifyLoginMiddleware) {
-      this.app.get(path, attachSession, this.verifyLoginMiddleware, handler);
-    } else {
-      this.app.get(path, attachSession, handler);
-    }
-    return this;
+    return this.addRoute('get', path, handler);
+  }
+
+  post<T extends ExpressRequest<T> = Request>(
+    path: string,
+    handler: RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+  ) {
+    return this.addRoute('post', path, handler);
   }
 
   build() {

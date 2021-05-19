@@ -8,17 +8,22 @@ import { createAggregator } from '@tupaia/aggregator';
 import { Response } from 'express';
 import { Aggregator } from '../aggregator';
 import { ReportBuilder } from '../reportBuilder';
-import { ReportsRequest } from '../types';
+import { ReportsRequest, FetchReportQuery } from '../types';
+
+const getFilterFromReq = (req: ReportsRequest): FetchReportQuery => {
+  const { query, body } = req;
+  const { testConfig, testData, ...restOfBody } = body; // remove test fields from the filter
+  const filter = { ...query, ...restOfBody };
+  return filter;
+};
 
 class FetchReportRouteHandler {
-  private aggregator: Aggregator;
-
-  constructor() {
-    this.aggregator = createAggregator(Aggregator);
-  }
-
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
-    const { query, params, models, accessPolicy, body } = req;
+    const { params, models, accessPolicy, body } = req;
+    const filter = getFilterFromReq(req);
+    const aggregator = createAggregator(Aggregator, {
+      session: { getAuthHeader: () => req.headers.authorization },
+    });
     const reportBuilder = new ReportBuilder();
     if (body.testConfig) {
       reportBuilder.setConfig(body.testConfig);
@@ -28,7 +33,7 @@ class FetchReportRouteHandler {
         models,
         accessPolicy,
         report,
-        query.organisationUnitCodes.split(','),
+        filter.organisationUnitCodes.split(','),
       );
       reportBuilder.setConfig(report.config);
     }
@@ -37,7 +42,7 @@ class FetchReportRouteHandler {
       reportBuilder.setTestData(body.testData);
     }
 
-    const data = await reportBuilder.build(this.aggregator, query);
+    const data = await reportBuilder.build(aggregator, filter);
     respond(res, data, 200);
   };
 }

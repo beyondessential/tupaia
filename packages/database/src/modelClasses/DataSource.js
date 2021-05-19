@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseModel } from '../DatabaseModel';
+import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
@@ -37,6 +37,11 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
     [SERVICE_TYPES.TUPAIA]: {},
     [SERVICE_TYPES.INDICATOR]: {},
   },
+};
+
+const DHIS_DATA_TYPES = {
+  DATA_ELEMENT: 'DataElement',
+  INDICATOR: 'Indicator',
 };
 
 export class DataSourceType extends DatabaseType {
@@ -92,7 +97,7 @@ export class DataSourceType extends DatabaseType {
   };
 }
 
-export class DataSourceModel extends DatabaseModel {
+export class DataSourceModel extends MaterializedViewLogDatabaseModel {
   static types = DATA_SOURCE_TYPES;
 
   SERVICE_TYPES = SERVICE_TYPES;
@@ -102,6 +107,8 @@ export class DataSourceModel extends DatabaseModel {
   }
 
   getTypes = () => DataSourceModel.types;
+
+  getDhisDataTypes = () => DHIS_DATA_TYPES;
 
   async getDataElementsInGroup(dataGroupCode) {
     const dataGroup = await this.findOne({

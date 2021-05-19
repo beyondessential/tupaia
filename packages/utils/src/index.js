@@ -6,6 +6,7 @@
 export * from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
 export * from './compare';
+export * from './createBasicHeader';
 export * from './cypress';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
@@ -32,6 +33,7 @@ export { WorkBookParser } from './WorkBookParser';
 export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
 export { addExportedDateAndOriginAtTheSheetBottom } from './addExportDateAndOriginInExcelExportData';
 export { getBrowserTimeZone } from './getBrowserTimeZone';
+export { stripTimezoneFromDate } from './stripTimezoneFromDate';
 export { VALUE_TYPES, formatDataValueByType } from './formatDataValueByType';
 export { createClassExtendingProxy } from './proxy';
 export { fetchPatiently } from './fetchPatiently';
