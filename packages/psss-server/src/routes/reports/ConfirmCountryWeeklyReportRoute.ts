@@ -136,7 +136,6 @@ export class ConfirmCountryWeeklyReportRoute extends Route {
           currentWeekSyndromeAlert.id,
         );
         await this.meditrakConnection?.updateSurveyResponse(alertSurveyResponse, {
-          PSSS_Alert_Syndrome: syndromeCode,
           PSSS_Alert_Archived: 'Yes',
         });
       }

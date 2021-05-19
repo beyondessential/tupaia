@@ -94,7 +94,8 @@ export class MeditrakConnection extends ApiConnection {
         question_code: questionCode,
         body: answers[questionCode],
       };
-    });
+    }).filter(a => a.body !== undefined);
+
     const currentDate = new Date().toISOString();
 
     return this.post(`changes`, {}, [
