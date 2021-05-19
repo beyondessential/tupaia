@@ -4,6 +4,7 @@
  */
 
 export { DashboardPermissionsChecker } from './DashboardPermissionsChecker';
+export { DashboardItemPermissionChecker } from './DashboardItemPermissionChecker';
 export { ExportSurveyResponsesPermissionsChecker } from './ExportSurveyResponsesPermissionsChecker';
 export { MapOverlayPermissionsChecker } from './MapOverlayPermissionsChecker';
 export { NoPermissionRequiredChecker } from './NoPermissionRequiredChecker';
