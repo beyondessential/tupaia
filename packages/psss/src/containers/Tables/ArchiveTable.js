@@ -37,7 +37,7 @@ const createColumns = isSingleCountry => [
   },
   {
     title: 'Alert Start Date',
-    key: 'weekNumber',
+    key: 'period',
     align: 'left',
     width: '220px',
     CellComponent: WeekAndDateCell,

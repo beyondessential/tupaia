@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { CalendarToday } from '@material-ui/icons';
@@ -19,7 +18,6 @@ const DateSubtitle = styled(Typography)`
 `;
 
 export const AlertsTabView = React.memo(() => {
-  const { category: alertsCategory } = useParams();
   const period = getCurrentPeriod();
 
   return (
@@ -30,23 +28,21 @@ export const AlertsTabView = React.memo(() => {
           <AlertsPanel />
         </AlertsPanelProvider>
       </Main>
-      {alertsCategory !== 'outbreaks' && (
-        <Sidebar>
-          <Card variant="outlined">
-            <CardHeader
-              color="primary"
-              title="Selected Week"
-              label={<CalendarToday color="primary" />}
-            />
-            <CardContent>
-              <Typography variant="h4">{`Week ${getWeekNumberByPeriod(period)}`}</Typography>
-              <DateSubtitle variant="subtitle2" gutterBottom>
-                {getDisplayDatesByPeriod(period)}
-              </DateSubtitle>
-            </CardContent>
-          </Card>
-        </Sidebar>
-      )}
+      <Sidebar>
+        <Card variant="outlined">
+          <CardHeader
+            color="primary"
+            title="Selected Week"
+            label={<CalendarToday color="primary" />}
+          />
+          <CardContent>
+            <Typography variant="h4">{`Week ${getWeekNumberByPeriod(period)}`}</Typography>
+            <DateSubtitle variant="subtitle2" gutterBottom>
+              {getDisplayDatesByPeriod(period)}
+            </DateSubtitle>
+          </CardContent>
+        </Card>
+      </Sidebar>
     </Container>
   );
 });
