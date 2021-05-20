@@ -16,6 +16,8 @@ const SESSION_COOKIE_CONFIG = {
   secret: process.env.SESSION_COOKIE_SECRET || 'localCookieSecret123',
   duration: INITIAL_EXPIRY,
   activeDuration: EXTENSION_ON_USE,
+  // Need to set sameSite: none and secure: true for lesmis.la to connect to tupaia's apis
+  // @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
   cookie: {
     secure: true,
     sameSite: 'none',
