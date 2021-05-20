@@ -16,8 +16,8 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const columns = this.flattenColumnCategories(columnsRaw);
     const { filterEmptyRows } = this.config;
     const rowData = [...baseRows];
-    this.results.forEach(({ value, organisationUnit, metadata }) => {
-      const dataCode = metadata.code;
+    this.results.forEach(({ value, organisationUnit, metadata, dataElement }) => {
+      const dataCode = metadata.code || dataElement;
       const orgUnit = columns.find(col => col.title === organisationUnit);
       if (orgUnit) {
         rowData
