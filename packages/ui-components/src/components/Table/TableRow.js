@@ -84,7 +84,7 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   className: '',
-  onRowClick: null,
+  onRowClick: () => {},
 };
 
 const condensedRowBackgroundColor = '#EFEFEF';

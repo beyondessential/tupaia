@@ -33,33 +33,48 @@ const CountryTitle = styled(MuiLink)`
   }
 `;
 
-export const CountryNameCell = ({ handleClick, name, countryCode }) => (
-  <CountryTitle onClick={handleClick} component="button">
+export const FakeCountryNameCell = ({ name, countryCode }) => (
+  <CountryTitle component="button">
     <Avatar src={countryFlagImage(countryCode)} /> {name}
   </CountryTitle>
 );
 
-CountryNameCell.propTypes = {
-  handleClick: PropTypes.func,
+FakeCountryNameCell.propTypes = {
   name: PropTypes.string.isRequired,
-  countryCode: PropTypes.string,
+  countryCode: PropTypes.string.isRequired,
 };
 
-CountryNameCell.defaultProps = {
-  handleClick: null,
-  countryCode: null,
-};
-
-export const CountryNameLinkCell = ({ organisationUnit }) => {
+export const CountryNameCell = ({ handleClick, organisationUnit }) => {
   const countryName = useSelector(state => getCountryName(state, organisationUnit));
 
   return (
-    <CountryTitle to={`weekly-reports/${organisationUnit}`} component={RouterLink}>
+    <CountryTitle onClick={handleClick} component="button">
       <Avatar src={countryFlagImage(organisationUnit)} /> {countryName}
     </CountryTitle>
   );
 };
 
-CountryNameLinkCell.propTypes = {
+CountryNameCell.propTypes = {
+  handleClick: PropTypes.func,
+  organisationUnit: PropTypes.string,
+};
+
+CountryNameCell.defaultProps = {
+  handleClick: () => {},
+  organisationUnit: '',
+};
+
+export const CountryLinkCell = ({ target, organisationUnit }) => {
+  const countryName = useSelector(state => getCountryName(state, organisationUnit));
+
+  return (
+    <CountryTitle to={target} component={RouterLink}>
+      <Avatar src={countryFlagImage(organisationUnit)} /> {countryName}
+    </CountryTitle>
+  );
+};
+
+CountryLinkCell.propTypes = {
+  target: PropTypes.string.isRequired,
   organisationUnit: PropTypes.string.isRequired,
 };

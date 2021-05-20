@@ -9,31 +9,14 @@ import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupa
 import { ProfileButton } from './ProfileButton';
 import { getCountryCodes, getHomeUrl, checkIsMultiCountryUser } from '../store';
 
-/*
- * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
- */
-const HOME_ALIAS = 'weekly-reports';
-
-/*
- * Used to determine if a router link is active
- */
-const isTabActive = (match, location) => {
-  if (!match) {
-    return false;
-  }
-  if (match.url === '') {
-    const pathSegments = location.pathname.split('/').filter(x => x);
-    return pathSegments[0] === HOME_ALIAS;
-  }
-  return location.pathname.indexOf(match.url) !== -1;
-};
+const constructIsActive = tabDirectories => (_, location) =>
+  tabDirectories.some(dir => location.pathname.split('/')[1] === dir);
 
 export const NavBarComponent = ({ homeUrl, links }) => (
   <BaseNavBar
     HomeButton={<HomeButton homeUrl={homeUrl} source="/psss-logo-white.svg" />}
     links={links}
     Profile={ProfileButton}
-    isTabActive={isTabActive}
   />
 );
 
@@ -53,11 +36,13 @@ const makeLinks = state => {
     {
       label: 'Weekly Reports',
       to: multiCountry ? '/' : `/weekly-reports/${countryCodes[0]}`,
+      isActive: constructIsActive(['', 'weekly-reports']),
       icon: <Dashboard />,
     },
     {
       label: 'Alerts & Outbreaks',
-      to: multiCountry ? '/alerts' : `/alerts/${countryCodes[0]}`,
+      to: multiCountry ? '/alerts/active' : `/alerts/active/${countryCodes[0]}`,
+      isActive: constructIsActive(['alerts']),
       icon: <WarningCloud />,
     },
   ];

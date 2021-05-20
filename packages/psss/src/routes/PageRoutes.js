@@ -4,10 +4,8 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
-import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
@@ -15,53 +13,38 @@ import { UnauthorisedView } from '../views/UnauthorisedView';
 import { ProfileView } from '../views/ProfileView';
 import { NotFoundView } from '../views/NotFoundView';
 import { canUserViewMultipleCountries, canUserViewCountry, getCountryCodes } from '../store';
+import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
 
-export const PageRoutesComponent = React.memo(({ countryCodes }) => (
-  <Switch>
-    <PrivateRoute
-      exact
-      path="/"
-      authCheck={() => canUserViewMultipleCountries(countryCodes)}
-      redirectTo={`/weekly-reports/${countryCodes[0]}`}
-    >
-      <CountriesReportsView />
-    </PrivateRoute>
-    <Route path="/profile">
-      <ProfileView />
-    </Route>
-    <PrivateRoute
-      path="/weekly-reports/:countryCode"
-      authCheck={match => canUserViewCountry(countryCodes, match)}
-    >
-      <CountryReportsView />
-    </PrivateRoute>
-    {canUserViewMultipleCountries(countryCodes) ? (
+export const PageRoutes = React.memo(() => {
+  const countryCodes = useSelector(state => getCountryCodes(state));
+  const checkCountries = () => canUserViewMultipleCountries(countryCodes);
+  const checkCountry = match => canUserViewCountry(countryCodes, match);
+
+  return (
+    <Switch>
+      <PrivateRoute
+        exact
+        path="/"
+        authCheck={checkCountries}
+        redirectTo={`/weekly-reports/${countryCodes[0]}`}
+      >
+        <CountriesReportsView />
+      </PrivateRoute>
+      <Route path="/profile">
+        <ProfileView />
+      </Route>
+      <PrivateRoute path="/weekly-reports/:countryCode" authCheck={checkCountry}>
+        <CountryReportsView />
+      </PrivateRoute>
       <PrivateRoute path="/alerts">
         <AlertsOutbreaksView />
       </PrivateRoute>
-    ) : (
-      <PrivateRoute
-        path="/alerts/:countryCode"
-        authCheck={match => canUserViewCountry(countryCodes, match)}
-      >
-        <AlertsOutbreaksView />
-      </PrivateRoute>
-    )}
-    <Route path="/unauthorised">
-      <UnauthorisedView />
-    </Route>
-    <Route>
-      <NotFoundView />
-    </Route>
-  </Switch>
-));
-
-PageRoutesComponent.propTypes = {
-  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
-};
-
-const mapStateToProps = state => ({
-  countryCodes: getCountryCodes(state),
+      <Route path="/unauthorised">
+        <UnauthorisedView />
+      </Route>
+      <Route>
+        <NotFoundView />
+      </Route>
+    </Switch>
+  );
 });
-
-export const PageRoutes = connect(mapStateToProps)(PageRoutesComponent);

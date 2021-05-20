@@ -2,28 +2,27 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Table } from '@tupaia/ui-components';
-import {
-  AlertMenuCell,
-  CountryNameLinkCell,
-  SyndromeCell,
-  WeekAndDateCell,
-} from '../../components';
+import PropTypes from 'prop-types';
+import React, { useCallback, useContext } from 'react';
+import { connect } from 'react-redux';
 import { useAlerts } from '../../api';
+import { SyndromeCell, AlertMenuCell, CountryNameCell, WeekAndDateCell } from '../../components';
 import { getCountryCodes } from '../../store';
+import { AlertsPanelContext } from '../Panels';
 
-const countryColumn = {
-  title: 'Country',
-  key: 'countryCode',
-  width: '28%',
-  align: 'left',
-  CellComponent: CountryNameLinkCell,
-};
-
-const alertColumns = [
+const createColumns = isSingleCountry => [
+  ...(isSingleCountry
+    ? []
+    : [
+        {
+          title: 'Country',
+          key: 'organisationUnit',
+          width: '28%',
+          align: 'left',
+          CellComponent: CountryNameCell,
+        },
+      ]),
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -43,11 +42,12 @@ const alertColumns = [
     align: 'left',
     width: '115px',
   },
-  {
-    title: 'Sites Reported',
-    key: 'sitesReported',
-    align: 'left',
-  },
+  // TODO uncomment when reported sites is calculated
+  // {
+  //   title: 'Sites Reported',
+  //   key: 'sitesReported',
+  //   align: 'left',
+  // },
   {
     title: '',
     key: 'id',
@@ -57,20 +57,18 @@ const alertColumns = [
   },
 ];
 
-const getColumns = isSingleCountry =>
-  isSingleCountry ? alertColumns : [countryColumn, ...alertColumns];
-
-const AlertsTableComponent = React.memo(({ onRowClick, countryCode, countryCodes, period }) => {
-  const isSingleCountry = !!countryCode;
-  const orgUnitCodes = isSingleCountry ? [countryCode] : countryCodes;
-  const columns = getColumns(isSingleCountry);
-  const { data, isLoading, error, isFetching } = useAlerts(period, orgUnitCodes, 'active');
+const AlertsTableComponent = React.memo(({ countryCodes, period }) => {
+  const { setIsOpen, setData } = useContext(AlertsPanelContext);
+  const isSingleCountry = countryCodes.length === 1;
+  const columns = createColumns(isSingleCountry);
+  const { data, isLoading, error, isFetching } = useAlerts(period, countryCodes, 'active');
 
   const handleRowClick = useCallback(
     (_, rowData) => {
-      onRowClick(rowData);
+      setData(rowData);
+      setIsOpen(true);
     },
-    [onRowClick],
+    [setData, setIsOpen],
   );
 
   return (
@@ -86,14 +84,8 @@ const AlertsTableComponent = React.memo(({ onRowClick, countryCode, countryCodes
 });
 
 AlertsTableComponent.propTypes = {
-  countryCode: PropTypes.string,
   countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   period: PropTypes.string.isRequired,
-  onRowClick: PropTypes.func.isRequired,
-};
-
-AlertsTableComponent.defaultProps = {
-  countryCode: '',
 };
 
 const mapStateToProps = state => ({

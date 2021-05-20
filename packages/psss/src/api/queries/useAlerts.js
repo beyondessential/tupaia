@@ -5,17 +5,17 @@
 
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';
-import { useReport } from './helpers';
+import { useData } from './helpers';
 
-export const useAlerts = (period, orgUnitCodes, status) => {
+export const useAlerts = (period, orgUnitCodes, alertCategory) => {
   const params = {
     startWeek: getPeriodByDate(MIN_DATE),
     endWeek: period,
     orgUnitCodes: orgUnitCodes.join(','),
   };
 
-  const query = useReport(`alerts/${status}`, { params });
-  const data = query.data.map(reportRow => ({
+  const { data: alertData = [], ...query } = useData(`alerts/${alertCategory}`, { params });
+  const data = alertData.map(reportRow => ({
     ...reportRow,
     syndromeName: SYNDROMES[reportRow.syndrome.toUpperCase()],
   }));

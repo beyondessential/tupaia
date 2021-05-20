@@ -9,12 +9,12 @@ import { AlertsTabView } from '../views/Tabs/AlertsTabView';
 import { ArchiveTabView } from '../views/Tabs/ArchiveTabView';
 import { OutbreaksTabView } from '../views/Tabs/OutbreaksTabView';
 
-export const AlertsRoutes = React.memo(() => {
+export const AlertRoutes = React.memo(() => {
   const match = useRouteMatch();
 
   return (
     <Switch>
-      <Route exact path={match.path}>
+      <Route path={`${match.path}/active`}>
         <AlertsTabView />
       </Route>
       <Route path={`${match.path}/outbreaks`}>
@@ -23,7 +23,7 @@ export const AlertsRoutes = React.memo(() => {
       <Route path={`${match.path}/archive`}>
         <ArchiveTabView />
       </Route>
-      <Redirect to={match.path} />
+      <Redirect to={`${match.path}/active`} />
     </Switch>
   );
 });
