@@ -32,7 +32,7 @@ export const AlertsTabView = React.memo(() => {
         <Card variant="outlined">
           <CardHeader
             color="primary"
-            title="Selected Week"
+            title="Current Week"
             label={<CalendarToday color="primary" />}
           />
           <CardContent>
