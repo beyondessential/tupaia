@@ -79,6 +79,7 @@ export const DashboardReportModal = ({
   reportId,
   periodGranularity,
   year,
+  viewConfig,
 }) => {
   const [open, setOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState(year);
@@ -91,6 +92,7 @@ export const DashboardReportModal = ({
     reportId,
     periodGranularity,
     year,
+    legacy: viewConfig.legacy,
   });
 
   useEffect(() => {
@@ -130,7 +132,7 @@ export const DashboardReportModal = ({
             <Header>
               <Box maxWidth={580}>
                 <Heading variant="h3">{name}</Heading>
-                {viewContent?.description && <Description>{viewContent.description}</Description>}
+                {viewConfig?.description && <Description>{viewConfig.description}</Description>}
               </Box>
               <FlexStart>
                 <YearSelector value={selectedYear} onChange={setSelectedYear} />
@@ -147,7 +149,7 @@ export const DashboardReportModal = ({
               </ToggleButtonGroup>
             </FlexEnd>
             <ChartTable
-              viewContent={viewContent}
+              viewContent={{ ...viewConfig, data: viewContent }}
               isLoading={isLoading}
               isError={isError}
               error={error}
@@ -169,6 +171,7 @@ DashboardReportModal.propTypes = {
   dashboardGroupId: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
   dashboardGroupName: PropTypes.string.isRequired,
+  viewConfig: PropTypes.object.isRequired,
 };
 
 DashboardReportModal.defaultProps = {

@@ -22,15 +22,26 @@ export class ReportRoute extends Route {
 
   async buildResponse() {
     const { entityCode, reportCode } = this.req.params;
-    const { type } = this.req.query;
+    const { type, legacy } = this.req.query;
     switch (type) {
-      case 'dashboard':
-        return this.webConfigConnection.fetchDashboardReport({
+      case 'dashboard': {
+        if (legacy) {
+          const legacyReport = await this.webConfigConnection.fetchDashboardReport({
+            itemCode: reportCode,
+            organisationUnitCode: entityCode,
+            projectCode: LESMIS_PROJECT_NAME,
+            ...this.req.query,
+          });
+          return legacyReport.data;
+        }
+        const report = await this.reportConnection.fetchReport(reportCode, {
           itemCode: reportCode,
           organisationUnitCode: entityCode,
           projectCode: LESMIS_PROJECT_NAME,
           ...this.req.query,
-        });
+        }, this.req.body);
+        return report.results;
+      }
       case 'mapOverlay':
         return this.webConfigConnection.fetchMapOverlayData({
           measureId: reportCode,

@@ -75,14 +75,14 @@ export const Report = React.memo(
     dashboardGroupName,
     periodGranularity,
     year,
+    viewConfig,
   }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
     const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
       entityCode,
-      dashboardGroupId,
-      reportId,
-      periodGranularity,
       year,
+      reportId,
+      legacy: viewConfig.legacy,
     });
 
     const handleTabChange = (event, newValue) => {
@@ -106,7 +106,7 @@ export const Report = React.memo(
         </Header>
         <Body>
           <ChartTable
-            viewContent={viewContent}
+            viewContent={{ ...viewConfig, data: viewContent }}
             isLoading={isLoading}
             isError={isError}
             error={error}
@@ -123,6 +123,7 @@ export const Report = React.memo(
             reportId={reportId}
             periodGranularity={periodGranularity}
             year={year}
+            viewConfig={viewConfig}
           />
         </Footer>
       </Container>
@@ -138,6 +139,7 @@ Report.propTypes = {
   dashboardGroupId: PropTypes.string.isRequired,
   dashboardGroupName: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
+  viewConfig: PropTypes.object.isRequired,
 };
 
 Report.defaultProps = {

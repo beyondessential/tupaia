@@ -7,14 +7,14 @@ import { useQuery } from 'react-query';
 import { get } from '../api';
 import { yearToApiDates } from './utils';
 
-export const useDashboardReportData = ({ entityCode, dashboardGroupId, year, reportId }) => {
+export const useDashboardReportData = ({ entityCode, year, reportId, legacy }) => {
   const { startDate, endDate } = yearToApiDates(year);
 
   const params = {
-    dashboardGroupId,
     startDate,
     endDate,
-    type: 'dashboard',
+    legacy,
+    type: 'dashboard', // TODO: Replace this
   };
 
   return useQuery(

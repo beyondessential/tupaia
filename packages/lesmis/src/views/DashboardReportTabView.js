@@ -167,6 +167,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                         reportId={report.itemCode}
                         year={selectedYear}
                         periodGranularity={report.periodGranularity}
+                        viewConfig={report}
                       />
                     ))
                   ) : (
