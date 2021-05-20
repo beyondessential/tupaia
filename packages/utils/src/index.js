@@ -21,6 +21,7 @@ export { getCountryCode } from './getCountryCode';
 export { requireEnv } from './requireEnv';
 export { getUniqueEntries } from './getUniqueEntries';
 export { getLoggerInstance } from './getLoggerInstance';
+export { getTokenExpiry } from './getTokenExpiry';
 export { RemoteGitRepo } from './RemoteGitRepo';
 export * from './object';
 export * from './request';
