@@ -5,7 +5,7 @@
 
 export * from './AlertCell';
 export * from './PercentageChangeCell';
-export * from './CountryNameCell';
+export * from './CountryLinkCell';
 export * from './WeekAndDateCell';
 export * from './SitesReportedCell';
 export * from './AlertMenuCell';
