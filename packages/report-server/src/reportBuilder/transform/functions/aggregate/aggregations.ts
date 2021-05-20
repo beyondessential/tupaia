@@ -3,29 +3,46 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Row, FieldValue } from '../../../types';
+import { FieldValue } from '../../../types';
 
 const isUndefined = (value: FieldValue): value is undefined => {
   return value === undefined;
 };
 
-const group = (existingRow: Row, field: string, value: FieldValue) => {
-  existingRow[field] = value;
+const isNum = (value: FieldValue): value is number => {
+  return typeof value === 'number';
 };
 
-const sum = (existingRow: Row, field: string, value: FieldValue) => {
-  if (typeof value === 'number') {
-    existingRow[field] = ((existingRow[field] as number) || 0) + value;
-  } else {
-    throw new Error(`Expected number, got '${typeof value}'.`);
+const group = (values: FieldValue[]): FieldValue => {
+  return values[0];
+};
+
+const sum = (values: FieldValue[]): FieldValue => {
+  if (values.length !== 0) {
+    return values.reduce((a, b) => {
+      if (isNum(a) && isNum(b)) {
+        return a + b;
+      }
+      throw new Error(`Expected number, got '${typeof a}' and '${typeof b}'.`);
+    });
   }
+  return undefined;
 };
 
-const count = (existingRow: Row, field: string, value: FieldValue) => {
-  existingRow[field] = ((existingRow[field] as number) || 0) + 1;
+const avg = (values: FieldValue[]): FieldValue => {
+  const numerator = sum(values);
+  const denominator = count(values);
+  if (isNum(numerator) && isNum(denominator)) {
+    return numerator / denominator;
+  }
+  return undefined;
 };
 
-const max = (existingRow: Row, field: string, value: FieldValue) => {
+const count = (values: FieldValue[]): FieldValue => {
+  return values.length;
+};
+
+const max = (values: FieldValue[]): FieldValue => {
   const existingValue: FieldValue = existingRow[field];
   if (!isUndefined(value)) {
     if (isUndefined(existingValue)) {
@@ -36,7 +53,7 @@ const max = (existingRow: Row, field: string, value: FieldValue) => {
   }
 };
 
-const min = (existingRow: Row, field: string, value: FieldValue) => {
+const min = (values: FieldValue[]): FieldValue => {
   const existingValue: FieldValue = existingRow[field];
   if (!isUndefined(value)) {
     if (isUndefined(existingValue)) {
@@ -47,7 +64,7 @@ const min = (existingRow: Row, field: string, value: FieldValue) => {
   }
 };
 
-const unique = (existingRow: Row, field: string, value: FieldValue) => {
+const unique = (values: FieldValue[]): FieldValue => {
   if (!isUndefined(existingRow[field]) && existingRow[field] !== value) {
     existingRow[field] = 'NO_UNIQUE_VALUE';
   } else {
@@ -55,23 +72,24 @@ const unique = (existingRow: Row, field: string, value: FieldValue) => {
   }
 };
 
-const drop = (existingRow: Row, field: string, value: FieldValue) => {
+const drop = (values: FieldValue[]): FieldValue => {
   // Do nothing, don't add the field to the existing row
 };
 
-const first = (existingRow: Row, field: string, value: FieldValue) => {
+const first = (values: FieldValue[]): FieldValue => {
   if (isUndefined(existingRow[field])) {
     existingRow[field] = value;
   }
 };
 
-const last = (existingRow: Row, field: string, value: FieldValue) => {
+const last = (values: FieldValue[]): FieldValue => {
   existingRow[field] = value;
 };
 
 export const aggregations = {
   group,
   sum,
+  avg,
   count,
   max,
   min,

@@ -6,7 +6,7 @@
 import { TransformParser } from '../../parser';
 import { aggregations } from './aggregations';
 import { buildWhere } from '../where';
-import { Row } from '../../../types';
+import { Row, FieldValue } from '../../../types';
 import { buildCreateGroupKey } from './createGroupKey';
 import { buildGetFieldAggregation } from './getFieldAggregation';
 import { functions } from '../../../functions';
@@ -17,19 +17,22 @@ type AggregateParams = {
   where: (parser: TransformParser) => boolean;
 };
 
-const merge = (mergedRow: Row, newRow: Row, params: AggregateParams): Row => {
-  Object.keys(newRow).forEach((field: string) => {
-    const aggregation = params.getFieldAggregation(field);
-    aggregations[aggregation](mergedRow, field, newRow[field]);
-  });
-  return mergedRow;
+type RowFields = {
+  [fieldKey: string]: FieldValue[];
 };
 
-const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
-  const groupedRows: { [groupKey: string]: Row } = {};
+type GroupRowFields = {
+  [groupKey: string]: RowFields;
+};
+
+const getGroupRowFields = (
+  rows: Row[],
+  params: AggregateParams,
+): { groupRowFields: GroupRowFields; otherRows: Row[] } => {
+  const groupRowFields: GroupRowFields = {};
+  const parser = new TransformParser(rows, functions);
   const otherRows: Row[] = [];
 
-  const parser = new TransformParser(rows, functions);
   rows.forEach((row: Row) => {
     if (!params.where(parser)) {
       otherRows.push(row);
@@ -37,11 +40,38 @@ const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
       return;
     }
     const groupKey = params.createGroupKey(row);
-    groupedRows[groupKey] = merge(groupedRows[groupKey] || {}, row, params);
+    groupRowFields[groupKey] = merge(groupRowFields[groupKey] || {}, row);
     parser.next();
   });
 
-  return Object.values(groupedRows).concat(otherRows);
+  return { groupRowFields, otherRows };
+};
+
+const merge = (previousRow: RowFields, newRow: Row): RowFields => {
+  const mergedRow: RowFields = previousRow;
+  Object.keys(newRow).forEach((field: string) => {
+    mergedRow[field] = [...(mergedRow[field] || []), newRow[field]];
+  });
+  return mergedRow;
+};
+
+const getAggregatedRows = (groupRowFields: GroupRowFields, params: AggregateParams): Row[] => {
+  Object.keys(groupRowFields).forEach((groupKey: string) => {
+    Object.keys(groupRowFields[groupKey]).forEach((fieldKey: string) => {
+      const aggregation = params.getFieldAggregation(fieldKey);
+      groupRowFields[groupKey][fieldKey] = aggregations[aggregation](
+        groupRowFields[groupKey][fieldKey],
+      );
+    });
+  });
+  return mergedRow;
+};
+
+const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
+  const { groupRowFields, otherRows } = getGroupRowFields(rows, params);
+  console.log(groupRowFields);
+  const aggregatedRows = getAggregatedRows(groupRowFields, params);
+  return Object.values(aggregatedRows).concat(otherRows);
 };
 
 const buildParams = (params: unknown): AggregateParams => {
