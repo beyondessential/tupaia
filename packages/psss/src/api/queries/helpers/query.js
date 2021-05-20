@@ -53,9 +53,16 @@ export const usePaginatedReport = (endpoint, apiOptions = {}, queryOptions = {})
   return { ...query, data };
 };
 
-export const combineQueries = queries => ({
-  isLoading: !!queries.find(q => q.isLoading),
-  isFetching: !!queries.find(q => q.isFetching),
-  error: queries.find(q => q.error)?.error ?? null,
-  data: queries.map(q => q.data),
-});
+/**
+ * @param {Record<string, any>} queryObject
+ */
+export const combineQueries = queryObject => {
+  const queries = Object.values(queryObject);
+
+  return {
+    isLoading: !!queries.find(q => q.isLoading),
+    isFetching: !!queries.find(q => q.isFetching),
+    error: queries.find(q => q.error)?.error ?? null,
+    data: Object.fromEntries(Object.entries(queryObject).map(([key, q]) => [key, q.data])),
+  };
+};
