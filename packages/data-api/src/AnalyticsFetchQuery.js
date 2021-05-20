@@ -105,7 +105,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     if (!this.isAggregating) {
       return `SELECT ${[...this.getCommonFields(), ...ANSWER_SPECIFIC_FIELDS].join(', ')}`;
     }
-    const { groupByPeriodField, sum, count } = this.aggregation.switches;
+    const { groupByPeriodField, sum, count, getLatestPerPeriod } = this.aggregation.switches;
     const fields = [...this.getCommonFields()];
 
     if (groupByPeriodField) {
@@ -115,7 +115,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     if (sum || count) {
       fields.push(`${sum ? 'SUM(value::NUMERIC)::text' : '1'} as value`);
       fields.push('MAX(type) as type');
-      if (!groupByPeriodField) {
+      if (!getLatestPerPeriod) {
         fields.push('MAX(date) as date');
       }
     }
