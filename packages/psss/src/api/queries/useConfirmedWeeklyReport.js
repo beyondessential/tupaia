@@ -7,7 +7,7 @@ import keyBy from 'lodash.keyby';
 import { usePaginatedReport } from './helpers';
 
 export const useConfirmedWeeklyReport = (period, orgUnitCodes) => {
-  const params = { startWeek: period, orgUnitCodes: orgUnitCodes.join(',') };
+  const params = { startWeek: period, endWeek: period, orgUnitCodes: orgUnitCodes.join(',') };
   const query = usePaginatedReport('confirmedWeeklyReport', { params });
 
   // Fill empty data if required so that every org unit renders as a row in the table
