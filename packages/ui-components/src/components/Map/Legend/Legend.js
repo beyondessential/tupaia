@@ -21,7 +21,7 @@ const LegendFrame = styled.div`
   margin: 0.6rem auto;
   cursor: auto;
   background-color: ${({ theme }) =>
-    theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(43, 45, 56, 0.7)'};
+    theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(43, 45, 56, 0.85)'};
   border-radius: 3px;
 `;
 
