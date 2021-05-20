@@ -4,17 +4,19 @@
  */
 
 import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery } from '../../../types';
+import { FetchReportQuery, AggregationObject } from '../../../types';
 import { FetchResponse } from '../types';
 
 type DataGroupParams = {
   dataGroups: unknown;
   dataElements: undefined;
+  aggregations?: unknown;
 };
 
 type DataGroupFetchParams = {
   dataGroupCode: string;
   dataElementCodes?: string[];
+  aggregations?: (string | AggregationObject)[];
 };
 
 const fetchEvents = async (
@@ -22,11 +24,13 @@ const fetchEvents = async (
   query: FetchReportQuery,
   params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
-  const { dataGroupCode, dataElementCodes } = params;
-  const { organisationUnitCodes, period, startDate, endDate } = query;
+  const { dataGroupCode, dataElementCodes, aggregations } = params;
+  const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
   const response = await aggregator.fetchEvents(
     dataGroupCode,
+    aggregations,
     organisationUnitCodes,
+    hierarchy,
     {
       period,
       startDate,
@@ -44,14 +48,16 @@ const fetchEvents = async (
 };
 
 const buildParams = (params: DataGroupParams): DataGroupFetchParams => {
-  const { dataGroups, dataElements } = params;
+  const { dataGroups, dataElements, aggregations } = params;
 
   validateDataGroups(dataGroups);
   validateDataElements(dataElements);
+  validateAggregations(aggregations);
 
   return {
     dataGroupCode: dataGroups[0],
     dataElementCodes: dataElements,
+    aggregations,
   };
 };
 
@@ -77,6 +83,31 @@ function validateDataElements(dataElements: unknown): asserts dataElements is un
   }
 }
 
+function validateAggregations(
+  aggregations: unknown,
+): asserts aggregations is undefined | (string | AggregationObject)[] {
+  if (aggregations === undefined) {
+    return;
+  }
+
+  if (!Array.isArray(aggregations)) {
+    throw new Error(`Expected an array of aggregations but got ${aggregations}`);
+  }
+
+  aggregations.forEach(aggregation => {
+    if (typeof aggregation === 'string') {
+      return;
+    }
+
+    if (typeof aggregation === 'object') {
+      return;
+    }
+
+    throw new Error(
+      'Expected all aggregations to be either a string, or { type: string, config: object }',
+    );
+  });
+}
 export const buildDataGroupFetch = (params: DataGroupParams) => {
   const builtDataGroupsFetchParams = buildParams(params);
   return (aggregator: Aggregator, query: FetchReportQuery) =>
