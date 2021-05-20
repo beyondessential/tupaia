@@ -5,7 +5,7 @@
 
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';
-import { useReport } from './helpers';
+import { useData } from './helpers';
 
 export const useAlerts = (period, orgUnitCodes, alertCategory) => {
   const params = {
@@ -14,9 +14,8 @@ export const useAlerts = (period, orgUnitCodes, alertCategory) => {
     orgUnitCodes: orgUnitCodes.join(','),
   };
 
-  const endpoint = `alerts/${alertCategory}`;
-  const query = useReport(endpoint, { params });
-  const data = query.data.map(reportRow => ({
+  const { data: alertData = [], ...query } = useData(`alerts/${alertCategory}`, { params });
+  const data = alertData.map(reportRow => ({
     ...reportRow,
     syndromeName: SYNDROMES[reportRow.syndrome.toUpperCase()],
   }));
