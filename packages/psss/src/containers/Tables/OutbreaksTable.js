@@ -46,7 +46,6 @@ const createColumns = isForMultipleCountries => [
   {
     title: 'Cases Since Alert Began',
     key: 'totalCases',
-    align: 'left',
     width: '125px',
   },
   {
