@@ -4,7 +4,6 @@
  */
 
 import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
 import { reduceToDictionary } from '@tupaia/utils';
 import { getPeriodByDate } from '../../utils';
 import { combineQueries, useData, useReport } from './helpers';
@@ -28,11 +27,10 @@ export const useWeeklyReportForAlert = alert => {
   });
 
   const { countryReport, siteReport, sites = [] } = query.data;
-  const countryDataByWeek = keyBy(countryReport, 'period');
   const siteDataByWeek = groupBy(siteReport, 'period');
   const orgUnitCodeToName = reduceToDictionary(sites, 'code', 'name');
 
-  const data = Object.values(countryDataByWeek).map(countryData => {
+  const data = countryReport.map(countryData => {
     const siteData = (siteDataByWeek[countryData.period] ?? []).map(site => ({
       ...site,
       name: orgUnitCodeToName[site.organisationUnit],
