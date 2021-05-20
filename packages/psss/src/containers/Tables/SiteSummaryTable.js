@@ -20,7 +20,7 @@ const siteWeekColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '190px', // must be same width as CountryTable period column to align
+    width: COLUMN_WIDTHS.WEEKLY_REPORT_DATE,
     align: 'left',
   },
   {
@@ -56,7 +56,7 @@ const siteWeekColumns = [
   {
     title: 'Status',
     key: 'status',
-    width: '110px',
+    width: '165px',
   },
 ];
 

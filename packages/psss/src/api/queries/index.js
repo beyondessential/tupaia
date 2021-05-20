@@ -5,6 +5,7 @@
 
 export * from './useAlerts';
 export * from './useConfirmedWeeklyReport';
+export * from './useWeeklyReportForAlert';
 export * from './useCountryConfirmedWeeklyReport';
 export * from './useCountrySitesWeeklyReport';
 export * from './useCountryWeeklyReport';

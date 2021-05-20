@@ -6,10 +6,10 @@
 import { FakeAPI } from '../FakeApi';
 import { post } from '../api';
 
-export const getAffectedSites = FakeAPI.get('affected-sites');
+export const getAffectedSites = () => FakeAPI.get('affected-sites');
 
-export const getAlertsMessages = FakeAPI.get('messages');
+export const getAlertsMessages = () => FakeAPI.get('messages');
 
-export const getActivityFeed = FakeAPI.get('activity-feed');
+export const getActivityFeed = () => FakeAPI.get('activity-feed');
 
 export const createOutbreak = () => post();

@@ -16,7 +16,7 @@ import {
   Virus,
   LinkButton,
 } from '@tupaia/ui-components';
-import { getAffectedSites, getAlertsMessages, getActivityFeed } from '../../api';
+import { getAlertsMessages, getActivityFeed } from '../../api';
 import {
   Drawer,
   DropdownMenu,
@@ -88,10 +88,11 @@ AlertsPanelProvider.propTypes = {
 
 export const AlertsPanel = React.memo(() => {
   const { data: panelData, isOpen, setIsOpen } = useContext(AlertsPanelContext);
-  const { organisationUnit: countryCode, period, syndromeName } = panelData;
+  const { organisationUnit: countryCode, period, syndrome, syndromeName } = panelData;
+  const alert = { period, organisationUnit: countryCode, syndrome };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const sitesState = useFetch(getAffectedSites);
   const notesState = useFetch(getAlertsMessages);
   const activityState = useFetch(getActivityFeed);
   const countryName = useSelector(state => getCountryName(state, countryCode));
@@ -133,7 +134,7 @@ export const AlertsPanel = React.memo(() => {
           </CardTab>
         </CardTabList>
         <CardTabPanels Context={TabsContext}>
-          <AffectedSitesTab state={sitesState} />
+          <AffectedSitesTab alert={alert} />
           <NotesTab state={notesState} />
           <ActivityTab
             state={activityState}
