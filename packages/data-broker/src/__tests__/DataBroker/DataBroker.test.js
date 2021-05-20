@@ -18,6 +18,10 @@ jest.mock('@tupaia/database', () => ({
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
 }));
 
+jest.mock('@tupaia/server-boilerplate', () => ({
+  ApiConnection: jest.fn().mockImplementation(() => {}),
+}));
+
 describe('DataBroker', () => {
   const SERVICES = {
     test: createServiceStub(DATA_BY_SERVICE.test),

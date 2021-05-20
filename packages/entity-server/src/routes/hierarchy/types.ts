@@ -3,27 +3,31 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { EntityFields, EntityType, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
 import { Resolved } from '../../types';
 
-export interface HierarchyRequestParams {
+export interface SingleEntityRequestParams {
   hierarchyName: string;
   entityCode: string;
 }
 
-export type HierarchyRequestBody = Record<string, unknown>;
+export interface MultiEntityRequestParams {
+  hierarchyName: string;
+}
 
-type SimpleFieldKeys<T> = {
-  [K in keyof T]: T[K] extends string | number | symbol ? K : never;
-}[keyof T];
+export type RequestBody = Record<string, unknown>;
 
-export type HierarchyRequestQuery = {
+export interface SingleEntityRequestQuery {
   fields?: string;
   field?: string;
   filter?: string;
-};
+}
+
+export interface MultiEntityRequestQuery extends SingleEntityRequestQuery {
+  entities?: string;
+}
 
 export type ExtendedFieldFunctions = Readonly<
   {
@@ -33,9 +37,13 @@ export type ExtendedFieldFunctions = Readonly<
   }
 >;
 
-type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
+type SimpleFieldKeys<T> = {
+  [K in keyof T]: T[K] extends string | number | symbol ? K : never;
+}[keyof T];
 
 export type FlattableEntityFields = Pick<EntityFields, SimpleFieldKeys<EntityFields>>;
+
+type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
 
 export type ExtendedEntityFields = ExcludeCommonFields<EntityFields, ExtendedFieldFunctions> &
   ExtendedFieldFunctions;
@@ -48,24 +56,36 @@ export type FlattenedEntity = FlattableEntityFields[keyof FlattableEntityFields]
 
 export type EntityResponse = EntityResponseObject | FlattenedEntity;
 
-export interface HierarchyContext {
-  entity: EntityType;
+export type CommonContext = {
   hierarchyId: string;
   allowedCountries: string[];
   fields: (keyof ExtendedEntityFields)[];
   filter: EntityFilter;
   field?: keyof FlattableEntityFields;
+};
+
+export interface SingleEntityContext extends CommonContext {
+  entity: EntityType;
 }
 
-export interface HierarchyRequest<
-  P = HierarchyRequestParams,
+export interface MultiEntityContext extends CommonContext {
+  entities: EntityType[];
+}
+
+export interface SingleEntityRequest<
+  P = SingleEntityRequestParams,
   ResBody = EntityResponse,
-  ReqBody = HierarchyRequestBody,
-  ReqQuery = HierarchyRequestQuery
+  ReqBody = RequestBody,
+  ReqQuery = SingleEntityRequestQuery
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
-  ctx: HierarchyContext;
+  ctx: SingleEntityContext;
 }
 
-export interface HierarchyResponse<ResBody = EntityResponse> extends Response<ResBody> {
-  ctx: HierarchyContext;
+export interface MultiEntityRequest<
+  P = MultiEntityRequestParams,
+  ResBody = EntityResponse,
+  ReqBody = RequestBody,
+  ReqQuery = MultiEntityRequestQuery
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
+  ctx: MultiEntityContext;
 }
