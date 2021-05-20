@@ -37,7 +37,7 @@ const getDatabuilderConfig = (columns, cells) => ({
       category: 'Measles and Rubella Vaccine',
     },
     {
-      rows: ['Ferrous sulfate 60mg + folic acid 0.4mg Code'],
+      rows: ['Ferrous sulfate 60mg + folic acid 0.4mg'],
       category: 'Iron / Folic Acid',
     },
     {
