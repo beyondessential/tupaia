@@ -309,6 +309,8 @@ const dataServiceEntities = [
   { dhis_id: 'CBDW21YlLnB', code: 'LA_Xieng ngeun District' },
   { dhis_id: 'X8kOf41v0rx', code: 'LA_Sone District' },
   { dhis_id: 'hc9BFIWxmCY', code: 'LA_Xonbuly District' },
+  { dhis_id: 'cKqBHq6eOea', code: 'LA_Beng District' },
+  { dhis_id: 'XdubcbI8tyT', code: 'LA_Phongsaly District' },
 ];
 
 exports.setup = function (options, seedLink) {
