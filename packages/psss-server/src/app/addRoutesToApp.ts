@@ -12,11 +12,10 @@ import {
   TestRoute,
   FetchAlertsRoute,
   FetchConfirmedWeeklyReportRoute,
-  FetchConfirmedCountryWeeklyReportRoute,
   FetchCountries,
   FetchCountrySites,
-  FetchCountryWeeklyReportRoute,
-  ConfirmCountryWeeklyReportRoute,
+  FetchWeeklyReportRoute,
+  ConfirmWeeklyReportRoute,
   SaveWeeklyReportRoute,
   DeleteWeeklyReportRoute,
 } from '../routes';
@@ -57,27 +56,19 @@ export function addRoutesToApp(app: Express) {
    * GET routes
    */
   app.get('/v1/test', handleWith(TestRoute));
-  app.get('/v1/alerts/:status', handleWith(FetchAlertsRoute));
-  app.get('/v1/confirmedWeeklyReport', handleWith(FetchConfirmedWeeklyReportRoute));
-  app.get(
-    '/v1/confirmedWeeklyReport/:countryCode',
-    handleWith(FetchConfirmedCountryWeeklyReportRoute),
-  );
+  app.get('/v1/alerts/:category', handleWith(FetchAlertsRoute));
+  app.get('/v1/confirmedWeeklyReport/:countryCode?', handleWith(FetchConfirmedWeeklyReportRoute));
   app.get('/v1/country', handleWith(FetchCountries));
   app.get('/v1/country/:countryCode/sites', handleWith(FetchCountrySites));
-  app.get('/v1/weeklyReport/:countryCode', handleWith(FetchCountryWeeklyReportRoute));
-  app.get(
-    '/v1/weeklyReport/:countryCode/sites',
-    useSites,
-    handleWith(FetchCountryWeeklyReportRoute),
-  );
+  app.get('/v1/weeklyReport/:countryCode', handleWith(FetchWeeklyReportRoute));
+  app.get('/v1/weeklyReport/:countryCode/sites', useSites, handleWith(FetchWeeklyReportRoute));
 
   /**
    * POST routes
    */
   app.post('/v1/login', handleWith(LoginRoute));
   app.post('/v1/logout', handleWith(LogoutRoute));
-  app.post('/v1/confirmedWeeklyReport/:countryCode', handleWith(ConfirmCountryWeeklyReportRoute));
+  app.post('/v1/confirmedWeeklyReport/:countryCode', handleWith(ConfirmWeeklyReportRoute));
 
   /**
    * PUT routes
