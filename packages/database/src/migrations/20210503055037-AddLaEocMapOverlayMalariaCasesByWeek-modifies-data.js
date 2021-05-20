@@ -26,8 +26,7 @@ const mapOverlay = {
   measureBuilderConfig: {
     programCodes: ['Malaria_Case_Reporting'],
     entityAggregation: {
-      dataSourceEntityType: 'facility',
-      aggregationEntityType: 'district',
+      dataSourceEntityType: 'district',
     },
   },
   measureBuilder: 'sumLatestPerOrgUnit',
