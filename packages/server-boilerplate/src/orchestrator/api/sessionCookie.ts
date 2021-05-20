@@ -16,6 +16,10 @@ const SESSION_COOKIE_CONFIG = {
   secret: process.env.SESSION_COOKIE_SECRET || 'localCookieSecret123',
   duration: INITIAL_EXPIRY,
   activeDuration: EXTENSION_ON_USE,
+  cookie: {
+    secure: true,
+    sameSite: 'none',
+  },
 };
 
 export const sessionCookie = () => sessions(SESSION_COOKIE_CONFIG);
