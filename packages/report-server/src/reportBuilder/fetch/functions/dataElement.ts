@@ -16,8 +16,8 @@ const fetchAnalytics = async (
   query: FetchReportQuery,
   params: DataElementFetchParams,
 ): Promise<FetchResponse> => {
-  const { organisationUnitCodes, period, startDate, endDate } = query;
-  return aggregator.fetchAnalytics(params.dataElementCodes, organisationUnitCodes, {
+  const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
+  return aggregator.fetchAnalytics(params.dataElementCodes, organisationUnitCodes, hierarchy, {
     period,
     startDate,
     endDate,

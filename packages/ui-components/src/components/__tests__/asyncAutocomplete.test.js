@@ -6,9 +6,9 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render } from '../../helpers/testingRenderer';
-import { FakeAPI } from '../../stories/story-utils/api';
-import { AsyncAutocomplete } from '..';
+import { render } from '../../../helpers/testingRenderer';
+import { FakeAPI } from '../../../stories/story-utils/api';
+import { AsyncAutocomplete } from '../Inputs';
 
 const API = new FakeAPI();
 

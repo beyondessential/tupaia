@@ -68,5 +68,10 @@ export const FlexCenter = styled(MuiBox)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+`;
+
+export const FlexRow = styled(MuiBox)`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 `;
