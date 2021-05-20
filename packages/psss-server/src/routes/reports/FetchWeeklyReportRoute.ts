@@ -4,16 +4,22 @@
  */
 
 import { Route } from '../Route';
+import { validateSyndrome } from './helpers';
 
 export class FetchWeeklyReportRoute extends Route {
   async buildResponse() {
-    const { startWeek, endWeek } = this.req.query;
+    const { startWeek, endWeek, syndrome } = this.req.query;
     const { countryCode } = this.req.params;
+
+    if (syndrome) {
+      validateSyndrome(syndrome);
+    }
 
     const entityCodes = this.req.useSites
       ? await this.entityConnection.fetchSiteCodes(countryCode)
       : [countryCode];
-    const reportData = await this.reportConnection?.fetchReport('PSSS_Weekly_Report', entityCodes, [
+    const report = syndrome ? `PSSS_${syndrome}_Weekly_Report` : 'PSSS_Weekly_Report';
+    const reportData = await this.reportConnection?.fetchReport(report, entityCodes, [
       startWeek,
       endWeek,
     ]);
