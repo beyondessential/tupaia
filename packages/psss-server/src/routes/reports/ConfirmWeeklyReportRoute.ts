@@ -5,7 +5,6 @@
 
 import groupBy from 'lodash.groupby';
 import { RespondingError, dateStringToPeriod } from '@tupaia/utils';
-import { generateId } from '@tupaia/database';
 import { Route } from '../Route';
 import { validateIsNumber } from '../../utils';
 import {
@@ -29,12 +28,19 @@ type ConfirmedWeeklyReportAnswers = {
   PSSS_Confirmed_DLI_Cases: number;
 };
 
+type AlertResponseData = {
+  createdAlerts: {
+    id: string;
+    title: string;
+  }[];
+};
+
 export class ConfirmWeeklyReportRoute extends Route {
   async buildResponse() {
     const { week } = this.req.query;
     const { countryCode } = this.req.params;
     const confirmedData = await this.confirmData(countryCode, week);
-    const alertData = await this.createAlerts(countryCode, week);
+    const alertData = await this.updateAlerts(countryCode, week);
 
     return { confirmedData, alertData };
   }
@@ -63,7 +69,7 @@ export class ConfirmWeeklyReportRoute extends Route {
     );
   }
 
-  async createAlerts(countryCode: string, week: string) {
+  async updateAlerts(countryCode: string, week: string) {
     const report = await this.reportConnection?.fetchReport(
       CONFIRMED_WEEKLY_REPORT_CODE,
       [countryCode],
@@ -78,7 +84,7 @@ export class ConfirmWeeklyReportRoute extends Route {
     }
 
     const [result] = report.results;
-    const response: any = {
+    const response: AlertResponseData = {
       createdAlerts: [],
     };
     const startWeek = dateStringToPeriod(MIN_DATE, 'WEEK');
@@ -91,7 +97,7 @@ export class ConfirmWeeklyReportRoute extends Route {
     if (!activeAlertsData) {
       // should not be undefined even if there is no data
       throw new RespondingError(
-        `Cannot create alerts: no active alerts data found for ${countryCode} - ${week}`,
+        `Cannot create alerts: could not fetch pre-existing alert data`,
         500,
       );
     }
@@ -105,18 +111,7 @@ export class ConfirmWeeklyReportRoute extends Route {
       // If there is no existing active alert for this syndrome,
       // and the threshold is crossed for this syndrome, create a new one
       if (!syndromeAlerts && result[`${syndromeCode} Threshold Crossed`] === true) {
-        const surveyResponseId = generateId();
-        await this.meditrakConnection?.createSurveyResponse(
-          ALERT_SURVEY,
-          countryCode,
-          week,
-          {
-            PSSS_Alert_Syndrome: syndromeCode,
-            PSSS_Alert_Archived: 'No',
-          },
-          surveyResponseId,
-        );
-
+        const { surveyResponseId } = await this.createAlert(countryCode, week, syndromeCode);
         response.createdAlerts.push({
           id: surveyResponseId,
           title: syndromeCode,
@@ -132,16 +127,30 @@ export class ConfirmWeeklyReportRoute extends Route {
       // and now for the selected week, the threshold is no longer crossed (because of reconfirming changed data),
       // archive the existing alert triggered in the selected week
       if (currentWeekSyndromeAlert && result[`${syndromeCode} Threshold Crossed`] === false) {
-        const alertSurveyResponse = await this.meditrakConnection?.findSurveyResponseById(
-          currentWeekSyndromeAlert.id,
-        );
-        await this.meditrakConnection?.updateSurveyResponse(alertSurveyResponse, {
-          PSSS_Alert_Archived: 'Yes',
-        });
+        await this.archiveAlert(currentWeekSyndromeAlert.id, countryCode, week);
       }
     }
 
     return response;
+  }
+
+  async createAlert(countryCode: string, week: string, syndromeCode: string) {
+    return this.meditrakConnection?.createSurveyResponse(ALERT_SURVEY, countryCode, week, {
+      PSSS_Alert_Syndrome: syndromeCode,
+      PSSS_Alert_Archived: 'No',
+    });
+  }
+
+  async archiveAlert(alertId: string, countryCode: string, week: string) {
+    return this.meditrakConnection?.updateSurveyResponse(
+      alertId,
+      countryCode,
+      ALERT_SURVEY,
+      week,
+      {
+        PSSS_Alert_Archived: 'Yes',
+      },
+    );
   }
 }
 
