@@ -40,10 +40,14 @@ export const SelectField = ({ SelectProps, ...props }) => (
 );
 
 SelectField.propTypes = {
-  SelectProps: PropTypes.object.isRequired,
+  SelectProps: PropTypes.object,
 };
 
-const MenuItem = styled(MuiMenuItem)`
+SelectField.defaultProps = {
+  SelectProps: null,
+};
+
+export const MenuItem = styled(MuiMenuItem)`
   padding-top: 0.75rem;
   padding-bottom: 0.5rem;
 `;

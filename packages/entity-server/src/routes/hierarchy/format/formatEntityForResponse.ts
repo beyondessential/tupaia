@@ -6,7 +6,12 @@
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityType } from '../../../models';
 import { EntityServerModelRegistry } from '../../../types';
-import { ExtendedEntityFields, FlattableEntityFields, EntityResponseObject } from '../types';
+import {
+  ExtendedEntityFields,
+  FlattableEntityFields,
+  EntityResponseObject,
+  FlattenedEntity,
+} from '../types';
 import { extendedFieldFunctions, isExtendedField } from '../extendedFieldFunctions';
 import { EntityResponseObjectBuilder } from './EntityResponseObjectBuilder';
 
@@ -16,12 +21,17 @@ export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityType,
   field: keyof FlattableEntityFields,
-): Promise<EntityType[typeof field]>;
+): Promise<FlattenedEntity>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityType,
   fields: (keyof ExtendedEntityFields)[],
 ): Promise<EntityResponseObject>;
+export async function formatEntityForResponse(
+  ctx: FormatContext,
+  entity: EntityType,
+  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
+): Promise<FlattenedEntity | EntityResponseObject>;
 export async function formatEntityForResponse(
   ctx: FormatContext,
   entity: EntityType,
@@ -49,13 +59,19 @@ export async function formatEntitiesForResponse(
   ctx: FormatContext,
   entities: EntityType[],
   field: keyof FlattableEntityFields,
-): Promise<EntityType[typeof field][]>;
+): Promise<FlattenedEntity[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,
   entities: EntityType[],
   fields: (keyof ExtendedEntityFields)[],
 ): Promise<EntityResponseObject[]>;
+export async function formatEntitiesForResponse(
+  models: EntityServerModelRegistry,
+  ctx: FormatContext,
+  entities: EntityType[],
+  fieldOrFields: keyof FlattableEntityFields | (keyof ExtendedEntityFields)[],
+): Promise<FlattenedEntity[] | EntityResponseObject[]>;
 export async function formatEntitiesForResponse(
   models: EntityServerModelRegistry,
   ctx: FormatContext,

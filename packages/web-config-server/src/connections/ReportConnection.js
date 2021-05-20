@@ -28,12 +28,20 @@ export class ReportConnection extends ApiConnection {
         return PUBLIC_USER_AUTH_HEADER;
       }
 
-      const { refreshToken } = await req.models.userSession.findOne({
+      const {
+        accessToken,
+        access_token_expiry: accessTokenExpiry,
+        refreshToken,
+      } = await req.models.userSession.findOne({
         userName,
       });
-      // TODO: Make getting access token smart so we don't constantly refresh
-      const newAccessToken = await refreshAndSaveAccessToken(req.models, refreshToken, userName);
-      return `Bearer ${newAccessToken}`;
+
+      const validAccessToken =
+        accessTokenExpiry > Date.now() // Is accessToken still valid?
+          ? accessToken
+          : await refreshAndSaveAccessToken(req.models, refreshToken, userName);
+
+      return `Bearer ${validAccessToken}`;
     };
 
     super({ getAuthHeader });
