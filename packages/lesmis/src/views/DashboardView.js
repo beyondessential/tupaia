@@ -489,7 +489,7 @@ export const DashboardView = () => {
               case 'school':
                 return <SchoolView vitals={vitals} />;
               default:
-                return null;
+                return <></>;
             }
           })()}
         </Container>
