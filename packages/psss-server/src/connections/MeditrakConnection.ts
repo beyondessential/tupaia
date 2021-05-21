@@ -23,6 +23,8 @@ type AnswerObject = {
   id: string;
 };
 
+type Answers = Record<string, string | number>;
+
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
@@ -30,22 +32,27 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     orgUnitCode: string,
     period: string,
-    answers: Record<string, number>,
+    answers: Answers,
   ) {
     const existingSurveyResponse = await this.findSurveyResponse(surveyCode, orgUnitCode, period);
 
     if (existingSurveyResponse) {
-      return this.updateSurveyResponse(existingSurveyResponse, answers);
+      return this.updateSurveyResponseByObject(existingSurveyResponse, answers);
     }
 
     return this.createSurveyResponse(surveyCode, orgUnitCode, period, answers);
   }
 
-  async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
+  async findSurveyResponses(
+    surveyCode: string,
+    orgUnitCode: string,
+    period: string,
+    pageSize?: string | undefined,
+  ) {
     const [startDate, endDate] = convertPeriodStringToDateRange(period);
-    const results = (await this.get(`surveyResponses/`, {
+    return (await this.get(`surveyResponses/`, {
       page: '0',
-      pageSize: '1',
+      pageSize,
       columns: `["entity.code","survey.code","data_time","id"]`,
       filter: JSON.stringify({
         'survey.code': { comparisonValue: surveyCode },
@@ -58,27 +65,51 @@ export class MeditrakConnection extends ApiConnection {
       }),
       sort: '["data_time DESC"]',
     })) as SurveyResponseObject[];
+  }
 
+  async findSurveyResponse(surveyCode: string, orgUnitCode: string, period: string) {
+    const results = await this.findSurveyResponses(surveyCode, orgUnitCode, period, '1');
     return results.length > 0 ? results[0] : undefined;
   }
 
-  async updateSurveyResponse(
-    surveyResponse: SurveyResponseObject,
-    answers: Record<string, number>,
-  ) {
-    const existingAnswers = (await this.get(`surveyResponses/${surveyResponse.id}/answers`, {
+  async findAnswers(surveyResponseId: string) {
+    return (await this.get(`surveyResponses/${surveyResponseId}/answers`, {
       columns: `["question.code","id"]`,
     })) as AnswerObject[];
+  }
 
-    const newAnswers = existingAnswers.map(existingAnswer => {
-      const questionCode = existingAnswer['question.code'];
-      return {
-        id: existingAnswer.id,
-        type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
-        question_code: questionCode,
-        body: answers[questionCode],
-      };
-    });
+  async updateSurveyResponse(
+    id: string,
+    entityCode: string,
+    surveyCode: string,
+    period: string,
+    answers: Answers,
+  ) {
+    const [_, endDate] = convertPeriodStringToDateRange(period);
+    const surveyResponse = {
+      id,
+      'entity.code': entityCode,
+      'survey.code': surveyCode,
+      data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
+    }
+
+    return this.updateSurveyResponseByObject(surveyResponse, answers);
+  }
+
+  async updateSurveyResponseByObject(surveyResponse: SurveyResponseObject, answers: Answers) {
+    const existingAnswers = await this.findAnswers(surveyResponse.id);
+    const newAnswers = existingAnswers
+      .map(existingAnswer => {
+        const questionCode = existingAnswer['question.code'];
+        return {
+          id: existingAnswer.id,
+          type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
+          question_code: questionCode,
+          body: answers[questionCode],
+        };
+      })
+      .filter(a => a.body !== undefined);
+
     const currentDate = new Date().toISOString();
 
     return this.post(`changes`, {}, [
@@ -103,7 +134,7 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     organisationUnitCode: string,
     period: string,
-    answers: Record<string, number>,
+    answers: Answers,
   ) {
     const [_, endDate] = convertPeriodStringToDateRange(period);
 
@@ -115,13 +146,13 @@ export class MeditrakConnection extends ApiConnection {
     }));
 
     const date = new Date().toISOString();
-
-    return this.post(`changes`, {}, [
+    const surveyResponseId = generateId();
+    const response = await this.post(`changes`, {}, [
       {
         action: 'SubmitSurveyResponse',
         waitForAnalyticsRebuild: true,
         payload: {
-          id: generateId(),
+          id: surveyResponseId,
           data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
           survey_code: surveyCode,
           entity_code: organisationUnitCode,
@@ -132,6 +163,8 @@ export class MeditrakConnection extends ApiConnection {
         },
       },
     ]);
+
+    return { surveyResponseId, ...response };
   }
 
   async deleteSurveyResponse(surveyResponse: SurveyResponseObject) {

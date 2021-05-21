@@ -4,6 +4,7 @@
  */
 
 import { cloneDeep } from 'lodash';
+import { AnalyticsRefresher } from '@tupaia/database';
 import {
   respond,
   ValidationError,
@@ -28,7 +29,6 @@ import {
   translateUserEmailToIdAndAssessorName,
   translateQuestionCodeToId,
 } from './utilities';
-import { AnalyticsRefresher } from '@tupaia/database';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
