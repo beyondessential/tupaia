@@ -100,8 +100,8 @@ const syndromeHeatMapOverlay = (syndromeName, dateElement, syndromeCode, customL
         value: null,
       },
     ],
-    scaleType: 'neutral',
-    displayType: 'spectrum',
+    scaleType: 'performanceDesc',
+    displayType: 'shaded-spectrum',
     measureLevel: 'Facility',
     defaultTimePeriod: {
       unit: 'day',
