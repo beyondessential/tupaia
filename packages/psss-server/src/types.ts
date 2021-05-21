@@ -17,7 +17,7 @@ export interface SessionCookie {
 
 type PsssRequestBody = Record<string, unknown>;
 
-export interface PsssRequest<>extends Request<ParamsDictionary, unknown, PsssRequestBody, Query> {
+export interface PsssRequest extends Request<ParamsDictionary, unknown, PsssRequestBody, Query> {
   sessionModel: PsssSessionModel;
   sessionCookie?: SessionCookie;
   session?: PsssSessionType;
