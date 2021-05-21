@@ -24,7 +24,36 @@ const permissionGroupNameToId = async (db, name) => {
 const REPORT = {
   id: generateId(),
   code: 'STRIVE_Average_Mortality_AE_IR',
-  config: { fetch: { dataElements: ['STRVEC_AE-IR09', 'STRVEC_AE-IR02'] }, transform: [] },
+  config: {
+    fetch: {
+      dataGroups: ['SI'],
+      aggregations: [
+        {
+          type: 'RAW',
+          config: {
+            dataSourceEntityType: 'facility',
+          },
+        },
+      ],
+      dataElements: ['STRVEC_AE-IR09', 'STRVEC_AE-IR02'],
+    },
+    transform: [
+      {
+        where: "exists($row['STRVEC_AE-IR09'],$row['STRVEC-AE_IR02'])",
+        transform: 'filter',
+      },
+      {
+        '...': ['orgUnit', 'STRVEC_AE-IR02', 'STRVEC_AE-IR09'],
+        transform: 'select',
+      },
+      {
+        orgUnit: 'group',
+        transform: 'aggregate',
+        'STRVEC_AE-IR02': 'group',
+        'STRVEC_AE-IR09': 'avg',
+      },
+    ],
+  },
 };
 
 exports.up = async function (db) {
