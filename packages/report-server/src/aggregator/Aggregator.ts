@@ -89,7 +89,7 @@ const buildPeriodQueryParams = ({ period, startDate, endDate }: PeriodParams) =>
     builtEndDate = endDate;
   } else if (!period && !startDate && !endDate) {
     builtPeriod = getDefaultPeriod();
-    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(period);
+    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(builtPeriod);
   } else if (!startDate && !endDate) {
     builtPeriod = period;
     [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(period);
