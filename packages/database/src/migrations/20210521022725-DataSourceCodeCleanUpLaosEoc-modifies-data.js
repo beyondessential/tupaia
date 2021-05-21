@@ -38,6 +38,7 @@ const DATA_SOURCES = {
   ...dengueNoWarningDeath,
   ...dengueWithWarningDeath,
   ...dengueSevereDeath,
+  ...malariaCase,
   ...malariaDeath,
   ...measlesCase,
   ...measlesDeath,
