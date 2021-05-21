@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const reportId = 'LAOS_EOC_Dengue_Cases_By_Week_District';
-const dataBuilderConfig = {
+const newMeasureBuilderConfig = {
   programCodes: ['NCLE_Communicable_Disease'],
   dataSourceType: 'custom',
   aggregationType: 'COUNT_PER_ORG_GROUP',
@@ -36,7 +36,12 @@ const dataBuilderConfig = {
 };
 
 exports.up = function (db) {
-  return updateValues(db, 'dashboardReport', { dataBuilderConfig }, { id: reportId });
+  return updateValues(
+    db,
+    'mapOverlay',
+    { measureBuilderConfig: newMeasureBuilderConfig },
+    { id: reportId },
+  );
 };
 
 exports.down = function (db) {
