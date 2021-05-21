@@ -24,6 +24,9 @@ class FetchReportRouteHandler {
     });
     const { params, models, accessPolicy, body } = req;
     const filter = getFilterFromReq(req);
+    const aggregator = createAggregator(Aggregator, {
+      session: { getAuthHeader: () => req.headers.authorization },
+    });
     const reportBuilder = new ReportBuilder();
     if (body.testConfig) {
       reportBuilder.setConfig(body.testConfig);
