@@ -21,6 +21,7 @@ const SESSION_COOKIE_CONFIG = {
   cookie: {
     secure: true,
     sameSite: 'none',
+    secureProxy: true,
   },
 };
 
