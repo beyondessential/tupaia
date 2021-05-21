@@ -83,7 +83,7 @@ const getAggregatedRows = (groupRowFields: GroupRowFields, params: AggregatePara
 const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
   const { groupRowFields, otherRows } = getGroupRowFields(rows, params);
   const aggregatedRows = getAggregatedRows(groupRowFields, params);
-  return Object.values(aggregatedRows).concat(otherRows);
+  return aggregatedRows.concat(otherRows);
 };
 
 const buildParams = (params: unknown): AggregateParams => {
