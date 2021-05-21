@@ -13,11 +13,18 @@ export const useConfirmWeeklyReport = (countryCode, period) =>
         params: { week: period },
       }),
     {
-      onSuccess: () => {
+      onSuccess: response => {
         // Same as useSaveWeeklyReport, we need to invalidate all weekly data
         queryCache.invalidateQueries(`confirmedWeeklyReport/${countryCode}`);
         // regional (multi-country) level
         queryCache.invalidateQueries('confirmedWeeklyReport', { exact: true });
+
+        if (response?.alertData?.createdAlerts?.length > 0) {
+          queryCache.invalidateQueries(`alerts/active`);
+        }
+        if (response?.alertData?.alertsArchived) {
+          queryCache.invalidateQueries(`alerts/archive`);
+        }
       },
     },
   );

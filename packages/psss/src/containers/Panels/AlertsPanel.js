@@ -25,7 +25,7 @@ import {
   ActivityTab,
   DrawerTray,
 } from '../../components';
-import { CreateOutbreakModal } from '../Modals';
+import { CreateOutbreakModal, ArchiveAlertModal } from '../Modals';
 import { NotesTab } from '../NotesTab';
 import { getCountryName } from '../../store';
 import { countryFlagImage, getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
@@ -88,10 +88,10 @@ AlertsPanelProvider.propTypes = {
 
 export const AlertsPanel = React.memo(() => {
   const { data: panelData, isOpen, setIsOpen } = useContext(AlertsPanelContext);
-  const { organisationUnit: countryCode, period, syndrome, syndromeName } = panelData;
+  const { id: alertId, organisationUnit: countryCode, period, syndrome, syndromeName } = panelData;
   const alert = { period, organisationUnit: countryCode, syndrome };
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isArchiveAlertModalOpen, setIsArchiveAlertModalOpen] = useState(false);
+  const [isCreateOutbreakModalOpen, setIsCreateOutBreakModalOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const notesState = useFetch(getAlertsMessages);
   const activityState = useFetch(getActivityFeed);
@@ -99,12 +99,29 @@ export const AlertsPanel = React.memo(() => {
 
   const handleChange = option => {
     // TODO handle changes other than creating an outbreak
-    setIsModalOpen(true);
+    switch (option.value) {
+      case 'Outbreak':
+        setIsCreateOutBreakModalOpen(true);
+        break;
+      case 'Archive':
+        setIsArchiveAlertModalOpen(true);
+        break;
+      default:
+        throw new Error('Option not valid');
+    }
   };
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
   }, [setIsOpen]);
+
+  const handleCreateOutbreakModalCLose = useCallback(() => {
+    setIsCreateOutBreakModalOpen(false);
+  }, [setIsCreateOutBreakModalOpen]);
+
+  const handleArchiveAlertModalCLose = useCallback(() => {
+    setIsArchiveAlertModalOpen(false);
+  }, [setIsArchiveAlertModalOpen]);
 
   return (
     <Drawer open={isOpen} onClose={handleClose}>
@@ -142,7 +159,15 @@ export const AlertsPanel = React.memo(() => {
           />
         </CardTabPanels>
       </TabsContext.Provider>
-      <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+      <CreateOutbreakModal
+        isOpen={isCreateOutbreakModalOpen}
+        handleClose={handleCreateOutbreakModalCLose}
+      />
+      <ArchiveAlertModal
+        isOpen={isArchiveAlertModalOpen}
+        handleClose={handleArchiveAlertModalCLose}
+        alertId={alertId}
+      />
     </Drawer>
   );
 });

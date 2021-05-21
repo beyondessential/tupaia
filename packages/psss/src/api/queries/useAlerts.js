@@ -2,10 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+import { queryCache, useMutation } from 'react-query';
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';
 import { useData } from './helpers';
+import { put } from '../api';
 
 export const useAlerts = (period, orgUnitCodes, alertCategory) => {
   const params = {
@@ -25,3 +26,12 @@ export const useAlerts = (period, orgUnitCodes, alertCategory) => {
     data,
   };
 };
+
+export const useArchiveAlert = alertId =>
+  useMutation(() => put(`alerts/${alertId}/archive`), {
+    onSuccess: () => {
+      queryCache.invalidateQueries(`alerts/active`);
+      queryCache.invalidateQueries(`alerts/archive`);
+    },
+    throwOnError: true,
+  });
