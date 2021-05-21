@@ -9,67 +9,92 @@ const isUndefined = (value: FieldValue): value is undefined => {
   return value === undefined;
 };
 
-const isNum = (value: FieldValue): value is number => {
-  return typeof value === 'number';
+const filterUndefinedAndNull = (values: FieldValue[]): NonNullable<FieldValue[]> => {
+  const filteredValues: NonNullable<FieldValue[]> = [];
+  values.forEach(value => {
+    if (value !== undefined && value !== null) {
+      filteredValues.push(value);
+    }
+  });
+  return filteredValues;
+};
+
+const checkIsNum = (values: FieldValue[]): number[] => {
+  const filteredUndefinedAndNullValues = filterUndefinedAndNull(values);
+  const checkedValues: number[] = [];
+  filteredUndefinedAndNullValues.forEach(value => {
+    if (typeof value !== 'number') {
+      throw new Error(`Expected number, got '${typeof value}'.`);
+    }
+    checkedValues.push(value);
+  });
+  return checkedValues;
 };
 
 const group = (values: FieldValue[]): FieldValue => {
-  return values[0];
+  if (values.length !== 0) {
+    return values[0];
+  }
+  return undefined;
 };
 
-const sum = (values: FieldValue[]): FieldValue => {
+const sum = (values: FieldValue[]): number | undefined => {
   if (values.length !== 0) {
-    return values.reduce((a, b) => {
-      if (isNum(a) && isNum(b)) {
-        return a + b;
-      }
-      throw new Error(`Expected number, got '${typeof a}' and '${typeof b}'.`);
+    const checkedValues: number[] = checkIsNum(values);
+    return checkedValues.reduce((a, b) => {
+      return a + b;
     });
   }
   return undefined;
 };
 
-const avg = (values: FieldValue[]): FieldValue => {
-  const numerator = sum(values);
-  const denominator = count(values);
-  if (isNum(numerator) && isNum(denominator)) {
+const avg = (values: FieldValue[]): number | undefined => {
+  const numerator: number | undefined = sum(values);
+  const denominator: number = count(values);
+  if (!isUndefined(numerator) && !isUndefined(denominator) && denominator !== 0) {
     return numerator / denominator;
   }
   return undefined;
 };
 
-const count = (values: FieldValue[]): FieldValue => {
+const count = (values: FieldValue[]): number => {
   return values.length;
 };
 
-const max = (values: FieldValue[]): FieldValue => {
-  const existingValue: FieldValue = existingRow[field];
-  if (!isUndefined(value)) {
-    if (isUndefined(existingValue)) {
-      existingRow[field] = value;
-    } else if (value > existingValue) {
-      existingRow[field] = value;
-    }
+const max = (values: FieldValue[]): number | undefined => {
+  const checkedValues: number[] = checkIsNum(values);
+  if (checkedValues.length !== 0) {
+    let maxValue: number = checkedValues[0];
+    checkedValues.forEach(value => {
+      if (value > maxValue) maxValue = value;
+    });
+    return maxValue;
   }
+  return undefined;
 };
 
-const min = (values: FieldValue[]): FieldValue => {
-  const existingValue: FieldValue = existingRow[field];
-  if (!isUndefined(value)) {
-    if (isUndefined(existingValue)) {
-      existingRow[field] = value;
-    } else if (value < existingValue) {
-      existingRow[field] = value;
-    }
+const min = (values: FieldValue[]): number | undefined => {
+  const checkedValues: number[] = checkIsNum(values);
+  if (checkedValues.length !== 0) {
+    let minValue: number = checkedValues[0];
+    checkedValues.forEach(value => {
+      if (value < minValue) minValue = value;
+    });
+    return minValue;
   }
+  return undefined;
 };
 
 const unique = (values: FieldValue[]): FieldValue => {
-  if (!isUndefined(existingRow[field]) && existingRow[field] !== value) {
-    existingRow[field] = 'NO_UNIQUE_VALUE';
-  } else {
-    existingRow[field] = value;
+  if (values.length !== 0) {
+    for (let i = 0; i < values.length - 1; i++) {
+      if (values[i] !== values[i + 1]) {
+        return 'NO_UNIQUE_VALUE';
+      }
+    }
+    return values[0];
   }
+  return undefined;
 };
 
 const drop = (values: FieldValue[]): FieldValue => {
@@ -77,13 +102,21 @@ const drop = (values: FieldValue[]): FieldValue => {
 };
 
 const first = (values: FieldValue[]): FieldValue => {
-  if (isUndefined(existingRow[field])) {
-    existingRow[field] = value;
+  for (let i = 0; i < values.length; i++) {
+    if (!isUndefined(values[i])) {
+      return values[i];
+    }
   }
+  return undefined;
 };
 
 const last = (values: FieldValue[]): FieldValue => {
-  existingRow[field] = value;
+  for (let i = values.length; i > 0; i--) {
+    if (!isUndefined(values[i])) {
+      return values[i];
+    }
+  }
+  return undefined;
 };
 
 export const aggregations = {

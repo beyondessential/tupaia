@@ -25,6 +25,14 @@ type GroupRowFields = {
   [groupKey: string]: RowFields;
 };
 
+type AggregatedFields = {
+  [fieldKey: string]: FieldValue;
+};
+
+type AggregatedRowFields = {
+  [groupKey: string]: AggregatedFields;
+};
+
 const getGroupRowFields = (
   rows: Row[],
   params: AggregateParams,
@@ -56,20 +64,24 @@ const merge = (previousRow: RowFields, newRow: Row): RowFields => {
 };
 
 const getAggregatedRows = (groupRowFields: GroupRowFields, params: AggregateParams): Row[] => {
+  const aggregatedRowFields: AggregatedRowFields = {};
   Object.keys(groupRowFields).forEach((groupKey: string) => {
     Object.keys(groupRowFields[groupKey]).forEach((fieldKey: string) => {
       const aggregation = params.getFieldAggregation(fieldKey);
-      groupRowFields[groupKey][fieldKey] = aggregations[aggregation](
-        groupRowFields[groupKey][fieldKey],
-      );
+      const fieldValue: FieldValue = aggregations[aggregation](groupRowFields[groupKey][fieldKey]);
+      if (fieldValue === undefined) {
+        throw new Error(
+          `Do not accept an empty array or an array of 'undefined' in field '${fieldKey}'`,
+        );
+      }
+      aggregatedRowFields[groupKey] = { ...aggregatedRowFields[groupKey], [fieldKey]: fieldValue };
     });
   });
-  return mergedRow;
+  return Object.values(aggregatedRowFields);
 };
 
 const aggregate = (rows: Row[], params: AggregateParams): Row[] => {
   const { groupRowFields, otherRows } = getGroupRowFields(rows, params);
-  console.log(groupRowFields);
   const aggregatedRows = getAggregatedRows(groupRowFields, params);
   return Object.values(aggregatedRows).concat(otherRows);
 };
