@@ -5,6 +5,7 @@
 
 import { arrayToAnalytics } from '@tupaia/data-broker';
 import { layerYearOnYear } from '../../../apiV1/utils/layerYearOnYear';
+import { expect } from 'chai';
 
 describe('layerYearOnYear()', () => {
   it('layers the years on previous years', () => {
@@ -21,7 +22,7 @@ describe('layerYearOnYear()', () => {
       ['BCD1_3_yr_ago', 'TO', '20200101', 3],
       ['BCD1_3_yr_ago', 'TO', '20200102', 4], // this is folded into latest year's data
     ]);
-    expect(layerYearOnYear(analytics)).toEqual(expected);
+    expect(layerYearOnYear(analytics)).to.deep.equal(expected);
   });
 
   it('it works with different period types', () => {
@@ -39,13 +40,13 @@ describe('layerYearOnYear()', () => {
       ['BCD1_2_yr_ago', 'TO', '2021W09', 3],
       ['BCD1_2_yr_ago', 'TO', '2021W10', 4], // this is folded into latest year's data
     ]);
-    expect(layerYearOnYear(analytics)).toEqual(expected);
+    expect(layerYearOnYear(analytics)).to.deep.equal(expected);
   });
 
   it('it can handle empty input', () => {
     //   'YYYYW01' eg
     const analytics = arrayToAnalytics([]);
     const expected = arrayToAnalytics([]);
-    expect(layerYearOnYear(analytics)).toEqual(expected);
+    expect(layerYearOnYear(analytics)).to.deep.equal(expected);
   });
 });
