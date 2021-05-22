@@ -9,16 +9,16 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import {
   Authenticator,
   encryptPassword,
-  getUserIDFromToken,
+  getTokenClaimsFromBearerAuth,
   getUserAndPassFromBasicAuth,
 } from '@tupaia/auth';
 import { ModelRegistry } from '@tupaia/database';
 
 const authenticateBearerAuthHeader = async (authHeader: string) => {
   // Use the user account provided in the auth header if present
-  const tokenUserID = getUserIDFromToken(authHeader);
-  if (tokenUserID) {
-    return tokenUserID;
+  const { userId } = getTokenClaimsFromBearerAuth(authHeader);
+  if (userId) {
+    return userId;
   }
 
   throw new UnauthenticatedError('Could not authenticate with the provided access token');

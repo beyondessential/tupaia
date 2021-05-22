@@ -2,7 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { encryptPassword, getUserAndPassFromBasicAuth, getUserIDFromToken } from '@tupaia/auth';
+import {
+  encryptPassword,
+  getUserAndPassFromBasicAuth,
+  getTokenClaimsFromBearerAuth,
+} from '@tupaia/auth';
 
 const getApiClientUserFromBasicAuth = async (models, authHeader) => {
   const { username, password: secretKey } = getUserAndPassFromBasicAuth(authHeader);
@@ -18,7 +22,7 @@ const getApiClientUserFromBasicAuth = async (models, authHeader) => {
 
 const getUserFromBearerAuth = async (models, authHeader) => {
   try {
-    const userId = getUserIDFromToken(authHeader);
+    const { userId } = getTokenClaimsFromBearerAuth(authHeader);
     return models.user.findById(userId);
   } catch (e) {
     return null;

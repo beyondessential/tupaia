@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import jwt from 'jsonwebtoken';
+import { constructAccessToken } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
 
@@ -12,7 +12,6 @@ const GRANT_TYPES = {
   REFRESH_TOKEN: 'refresh_token',
   ONE_TIME_LOGIN: 'one_time_login',
 };
-const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
 // Get the permission group ids for each country the user has access to
 // This is to support legacy meditrak app versions 1.7.81 (oldest supported) and 1.7.85 (only other
@@ -43,16 +42,10 @@ const extractPermissionGroupsIfLegacy = async (models, accessPolicy) => {
 
 const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permissionGroups }) => {
   // Generate JWT
-  const accessToken = jwt.sign(
-    {
-      userId: user.id,
-      refreshToken,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS,
-    },
-  );
+  const accessToken = constructAccessToken({
+    userId: user.id,
+    refreshToken,
+  });
 
   // Assemble and return authorization object
   const userDetails = {
