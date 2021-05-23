@@ -41,11 +41,11 @@ begin
       AND tablename   = 'log$_' || source_table
     ))
     THEN
-      EXECUTE 'DROP TRIGGER IF EXISTS ' || source_table || '_trigger' || ' ON ' || source_table;
+      EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
       tStartTime := clock_timestamp();
       PERFORM mv$createMaterializedViewlog(source_table, 'public');
       RAISE NOTICE 'Created Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
-      EXECUTE 'CREATE TRIGGER ' || source_table || '_trigger' || ' AFTER INSERT OR UPDATE or DELETE ON ' || source_table || ' FOR EACH ROW EXECUTE PROCEDURE notification()';
+      EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
     ELSE
       RAISE NOTICE 'Materialized View Log for % table already exists, skipping', source_table;
     END IF;
