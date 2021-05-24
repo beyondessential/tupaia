@@ -8,6 +8,7 @@ export * from './ExpandableTable';
 export * from './ExpandableTableHeader';
 export * from './ExpandableTableBody';
 export * from './ExpandableTableRow';
+export * from './FetchedTable';
 export * from './tableColumnShape';
 export * from './TableHeader';
 export * from './TableBody';

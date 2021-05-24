@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import orderBy from 'lodash.orderby';
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';
 import { useData } from './helpers';
@@ -19,9 +20,14 @@ export const useAlerts = (period, orgUnitCodes, alertCategory) => {
     ...reportRow,
     syndromeName: SYNDROMES[reportRow.syndrome.toUpperCase()],
   }));
+  const sortedData = orderBy(
+    data,
+    ['organisationUnit', 'period', 'syndrome'],
+    ['asc', 'desc', 'asc'],
+  );
 
   return {
     ...query,
-    data,
+    data: sortedData,
   };
 };

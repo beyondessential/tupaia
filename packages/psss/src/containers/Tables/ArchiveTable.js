@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table } from '@tupaia/ui-components';
+import { FetchedTable } from '@tupaia/ui-components';
 import {
   SyndromeCell,
   AlertMenuCell,
@@ -80,7 +80,7 @@ export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
   const { data, isLoading, error, isFetching } = useAlerts(period, countryCodes, 'archive');
 
   return (
-    <Table
+    <FetchedTable
       data={data}
       isLoading={isLoading}
       isFetching={!isLoading && isFetching}

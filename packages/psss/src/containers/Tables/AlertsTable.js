@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { Table } from '@tupaia/ui-components';
+import { FetchedTable } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext } from 'react';
 import { connect } from 'react-redux';
@@ -72,7 +72,7 @@ const AlertsTableComponent = React.memo(({ countryCodes, period }) => {
   );
 
   return (
-    <Table
+    <FetchedTable
       data={data}
       isLoading={isLoading}
       isFetching={!isLoading && isFetching}
