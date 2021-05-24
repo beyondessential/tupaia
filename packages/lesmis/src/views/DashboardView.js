@@ -179,9 +179,13 @@ const VerticalDivider = styled(MuiDivider)`
 `;
 
 const PhotoOrMap = ({ vitals }) => {
+  const [validImage, setValidImage] = useState(true);
   if (vitals.isLoading) return null;
 
-  if (vitals.Photo) return <img src={vitals.Photo} alt="place" width="720px" />;
+  if (vitals.Photo && validImage)
+    return (
+      <img src={vitals.Photo} alt="place" width="720px" onError={() => setValidImage(false)} />
+    );
 
   return <MiniMap entityCode={vitals.code} />;
 };
@@ -459,6 +463,23 @@ const SchoolView = ({ vitals }) => {
   );
 };
 
+const VitalsView = ({ vitals }) => {
+  switch (vitals.type) {
+    case 'country':
+      return <CountryView vitals={vitals} />;
+    case 'district':
+      return <ProvinceView vitals={vitals} />;
+    case 'sub_district':
+      return <DistrictView vitals={vitals} />;
+    case 'village':
+      return <VillageView vitals={vitals} />;
+    case 'school':
+      return <SchoolView vitals={vitals} />;
+    default:
+      return null;
+  }
+};
+
 export const DashboardView = () => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
@@ -476,22 +497,7 @@ export const DashboardView = () => {
     <>
       <Wrapper>
         <Container maxWidth={false}>
-          {(() => {
-            switch (vitals.type) {
-              case 'country':
-                return <CountryView vitals={vitals} />;
-              case 'district':
-                return <ProvinceView vitals={vitals} />;
-              case 'sub_district':
-                return <DistrictView vitals={vitals} />;
-              case 'village':
-                return <VillageView vitals={vitals} />;
-              case 'school':
-                return <SchoolView vitals={vitals} />;
-              default:
-                return <></>;
-            }
-          })()}
+          <VitalsView vitals={vitals} />
         </Container>
       </Wrapper>
       {tabOptions.map(({ value, Body, Component }) => (

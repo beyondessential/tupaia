@@ -20,13 +20,14 @@ import {
   Container as MuiContainer,
   Button as MuiButton,
 } from '@material-ui/core';
+import { DateRangePicker } from '@tupaia/ui-components';
 import * as COLORS from '../constants';
 import { FlexSpaceBetween, FlexEnd, FlexStart } from './Layout';
 import { DialogHeader } from './FullScreenDialog';
 import { ToggleButton } from './ToggleButton';
-import { YearSelector } from './YearSelector';
 import { ChartTable, TABS } from './ChartTable';
 import { useDashboardReportData } from '../api/queries';
+import { useUrlSearchParams } from '../utils';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -82,10 +83,11 @@ export const DashboardReportModal = ({
   viewConfig,
 }) => {
   const [open, setOpen] = useState(false);
-  const [selectedYear, setSelectedYear] = useState(year);
+  const [params, setParams] = useUrlSearchParams();
+  const [selectedTab, setSelectedTab] = useState(TABS.CHART);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+
   const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
     entityCode,
     dashboardGroupId,
@@ -93,11 +95,23 @@ export const DashboardReportModal = ({
     periodGranularity,
     year,
     legacy: viewConfig.legacy,
+    startDate: params.get('startDate'),
+    endDate: params.get('endDate'),
   });
 
   useEffect(() => {
-    setSelectedYear(year);
+    setParams({
+      startDate: null,
+      endDate: null,
+    });
   }, [open]);
+
+  const handleDatesChange = (startDate, endDate) => {
+    setParams({
+      startDate,
+      endDate,
+    });
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -135,7 +149,13 @@ export const DashboardReportModal = ({
                 {viewConfig?.description && <Description>{viewConfig.description}</Description>}
               </Box>
               <FlexStart>
-                <YearSelector value={selectedYear} onChange={setSelectedYear} />
+                <DateRangePicker
+                  isLoading={isLoading}
+                  startDate={viewContent?.startDate}
+                  endDate={viewContent?.endDate}
+                  granularity={viewContent?.granularity}
+                  onSetDates={handleDatesChange}
+                />
               </FlexStart>
             </Header>
             <FlexEnd>
@@ -167,7 +187,6 @@ DashboardReportModal.propTypes = {
   buttonText: PropTypes.string.isRequired,
   reportId: PropTypes.string.isRequired,
   entityCode: PropTypes.string.isRequired,
-  year: PropTypes.string,
   dashboardGroupId: PropTypes.string.isRequired,
   periodGranularity: PropTypes.string,
   dashboardGroupName: PropTypes.string.isRequired,
@@ -175,6 +194,5 @@ DashboardReportModal.propTypes = {
 };
 
 DashboardReportModal.defaultProps = {
-  year: null,
   periodGranularity: null,
 };

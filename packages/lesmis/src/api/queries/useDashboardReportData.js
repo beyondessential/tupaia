@@ -9,7 +9,6 @@ import { yearToApiDates } from './utils';
 
 export const useDashboardReportData = ({ entityCode, year, reportId, legacy }) => {
   const { startDate, endDate } = yearToApiDates(year);
-
   const params = {
     startDate,
     endDate,
@@ -23,6 +22,6 @@ export const useDashboardReportData = ({ entityCode, year, reportId, legacy }) =
       get(`report/${entityCode}/${reportId}`, {
         params,
       }),
-    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false },
+    { staleTime: 60 * 60 * 1000, refetchOnWindowFocus: false, keepPreviousData: true },
   );
 };

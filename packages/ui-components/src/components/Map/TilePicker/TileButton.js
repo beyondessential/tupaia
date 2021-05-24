@@ -19,7 +19,6 @@ const StyledButton = styled(Button)`
   overflow: hidden;
   padding: 0;
   text-transform: none;
-  width: 1orem;
   height: 8.75rem;
   min-height: 8.75rem;
   background-size: cover;
@@ -32,14 +31,17 @@ const StyledButton = styled(Button)`
   }
 
   &.active {
-    border: 2px solid #2196f3;
+    border: 2px solid
+      ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.primary.main : '#2196f3')};
 
     div {
       opacity: 1;
     }
 
     p {
-      background: #2196f3;
+      background: ${({ theme }) =>
+        theme.palette.type === 'light' ? theme.palette.primary.main : '#2196f3'};
+      color: white;
     }
   }
 
@@ -55,24 +57,24 @@ const Thumbnail = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  opacity: 0.85;
+  opacity: 0.9;
   background-size: cover;
   transition: opacity 0.3s ease;
 `;
 
 const TileLabel = styled(Typography)`
+  display: flex;
+  position: absolute;
   font-weight: normal;
   font-size: 1rem;
   line-height: 1.2rem;
-  color: white;
-  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
-  background: #2b2d38;
+  color: ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.text.primary : 'white')};
+  background: ${({ theme }) =>
+    theme.palette.type === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(43, 45, 56, 0.9)'};
   padding: 0.5rem 0.75rem;
-  opacity: 0.9;
 `;
 
 export const TileButton = React.memo(({ tileSet, isActive, onChange }) => (

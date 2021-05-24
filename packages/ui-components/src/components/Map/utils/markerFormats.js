@@ -190,13 +190,36 @@ export function flattenMeasureHierarchy(measureHierarchy) {
   return results;
 }
 
-function getValueInfo(value, valueMapping, hiddenValues = {}) {
+const getIsHidden = (measureData, serieses, allHiddenValues) =>
+  serieses
+    .map(({ key, valueMapping, hideByDefault }) => {
+      const value = measureData[key];
+      const hiddenValues = {
+        ...hideByDefault,
+        ...allHiddenValues[key],
+      };
+
+      // use 'no data' value if value is null and there is a null mapping defined
+      if (!value && typeof value !== 'number' && valueMapping.null) {
+        return hiddenValues.null || hiddenValues[valueMapping.null.value];
+      }
+
+      const matchedValue = valueMapping[value];
+
+      if (!matchedValue) {
+        // use 'other' value
+        return hiddenValues.other;
+      }
+
+      return hiddenValues[matchedValue.value];
+    })
+    .some(isHidden => isHidden);
+
+function getValueInfo(value, valueMapping) {
   // use 'no data' value if value is null and there is a null mapping defined
   if (!value && typeof value !== 'number' && valueMapping.null) {
-    const isHidden = hiddenValues.null || hiddenValues[valueMapping.null.value];
     return {
       ...valueMapping.null,
-      isHidden,
     };
   }
 
@@ -206,14 +229,12 @@ function getValueInfo(value, valueMapping, hiddenValues = {}) {
     // use 'other' value
     return {
       ...valueMapping.other,
-      isHidden: hiddenValues.other,
       value,
     };
   }
 
   return {
     ...matchedValue,
-    isHidden: hiddenValues[matchedValue.value],
   };
 }
 
@@ -257,13 +278,16 @@ export function getFormattedInfo(markerData, series) {
 
 export function getMeasureDisplayInfo(
   measureData = {},
-  series,
+  serieses,
   hiddenValues = {},
   radiusScaleFactor = 1,
 ) {
-  const displayInfo = {};
+  const isHidden = getIsHidden(measureData, serieses, hiddenValues);
+  const displayInfo = {
+    isHidden,
+  };
 
-  series.forEach(({ color, icon, radius }) => {
+  serieses.forEach(({ color, icon, radius }) => {
     if (color) {
       displayInfo.color = color;
     }
@@ -274,24 +298,11 @@ export function getMeasureDisplayInfo(
       displayInfo.radius = radius;
     }
   });
-  series.forEach(
-    ({
-      key,
-      type,
-      valueMapping,
-      noDataColour,
-      scaleType,
-      scaleColorScheme,
-      min,
-      max,
-      hideByDefault,
-    }) => {
-      const valueInfo = getValueInfo(measureData[key], valueMapping, {
-        ...hideByDefault,
-        ...hiddenValues[key],
-      });
 
-      displayInfo.isHidden = !!valueInfo.isHidden;
+  serieses.forEach(
+    ({ key, type, valueMapping, noDataColour, scaleType, scaleColorScheme, min, max }) => {
+      const valueInfo = getValueInfo(measureData[key], valueMapping);
+
       displayInfo.originalValue = measureData.originalValue;
 
       switch (type) {

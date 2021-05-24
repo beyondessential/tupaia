@@ -16,6 +16,7 @@ import { DashboardReportModal } from './DashboardReportModal';
 import { ChartTable, TABS } from './ChartTable';
 import * as COLORS from '../constants';
 import { useDashboardReportData } from '../api/queries';
+import { yearToApiDates } from '../api/queries/utils';
 
 const Container = styled.div`
   width: 55rem;
@@ -78,11 +79,17 @@ export const Report = React.memo(
     viewConfig,
   }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
+    const { startDate, endDate } = yearToApiDates(year);
     const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
       entityCode,
       year,
       reportId,
       legacy: viewConfig.legacy,
+      dashboardGroupId,
+      reportId,
+      periodGranularity,
+      startDate,
+      endDate,
     });
 
     const handleTabChange = (event, newValue) => {
@@ -115,15 +122,18 @@ export const Report = React.memo(
         </Body>
         <Footer>
           <DashboardReportModal
-            buttonText="More Insights"
+            buttonText="See More"
             name={name}
             dashboardGroupName={dashboardGroupName}
             entityCode={entityCode}
             dashboardGroupId={dashboardGroupId}
             reportId={reportId}
             periodGranularity={periodGranularity}
+<<<<<<< HEAD
             year={year}
             viewConfig={viewConfig}
+=======
+>>>>>>> dev
           />
         </Footer>
       </Container>

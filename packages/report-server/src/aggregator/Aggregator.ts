@@ -17,6 +17,7 @@ export class Aggregator extends BaseAggregator {
   async fetchAnalytics(
     dataElementCodes: string[],
     organisationUnitCodes: string,
+    hierarchy: string | undefined,
     periodParams: PeriodParams,
   ) {
     const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
@@ -24,6 +25,7 @@ export class Aggregator extends BaseAggregator {
       dataElementCodes,
       {
         organisationUnitCodes: organisationUnitCodes.split(','),
+        hierarchy,
         period,
         startDate,
         endDate,
@@ -67,10 +69,10 @@ const buildPeriodQueryParams = ({ period, startDate, endDate }: PeriodParams) =>
     builtEndDate = endDate;
   } else if (!period && !startDate && !endDate) {
     builtPeriod = getDefaultPeriod();
-    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(period);
+    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(builtPeriod);
   } else if (!startDate && !endDate) {
     builtPeriod = period;
-    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(period);
+    [builtStartDate, builtEndDate] = convertPeriodStringToDateRange(builtPeriod);
   } else if (startDate) {
     builtStartDate = startDate;
     [, builtEndDate] = convertPeriodStringToDateRange(period || getDefaultPeriod());
