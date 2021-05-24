@@ -4,11 +4,32 @@
  *
  */
 import { useQuery } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import { get } from '../api';
+import { useUser } from './useUser';
+
+const useValidatedQuery = query => {
+  const history = useHistory();
+  console.log('history', history);
+  const { isLoggedIn } = useUser();
+
+  // add referer
+  if (query.isError && query.error.code === 403) {
+    if (isLoggedIn) {
+      history.push('/not-found');
+    } else {
+      history.push('/login');
+    }
+  }
+  return query;
+};
 
 export const useEntityData = entityCode => {
-  return useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), {
-    staleTime: 1000 * 60 * 60 * 1,
-    refetchOnWindowFocus: false,
-  });
+  return useValidatedQuery(
+    useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), {
+      staleTime: 1000 * 60 * 60 * 1,
+      refetchOnWindowFocus: false,
+      retry: 2,
+    }),
+  );
 };
