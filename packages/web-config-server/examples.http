@@ -24,6 +24,6 @@ POST http://{{host}}/api/{{version}}/logout HTTP/1.1
 content-type: {{contentType}}
 
 
-### Fetch descendants of an entity
+### Fetch a specific dashboard item
 GET http://{{host}}/api/{{version}}/view?dashboardGroupId=301&viewId=28&organisationUnitCode=explore&projectCode=explore HTTP/1.1
 content-type: {{contentType}}

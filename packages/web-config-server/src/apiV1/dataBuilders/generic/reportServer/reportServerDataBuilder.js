@@ -6,17 +6,16 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { ReportConnection } from '/connections';
 
-class ReportServerBuilder extends DataBuilder {
+export class ReportServerBuilder extends DataBuilder {
   /**
    * @param {Request} req
-   * @param {Aggregator} aggregator
-   * @param {DhisApi} dhisApi
+   * @param {ModelRegistry} models
    * @param {?Object} config
    * @param {Object} query
    * @param {Entity} [entity]
    */
-  constructor(req, models, aggregator, dhisApi, config, query, entity) {
-    super(models, aggregator, dhisApi, config, query, entity);
+  constructor(req, models, config, query, entity) {
+    super(models, undefined, undefined, config, query, entity);
     this.reportConnection = new ReportConnection(req);
   }
 
@@ -24,30 +23,27 @@ class ReportServerBuilder extends DataBuilder {
     const hierarchyName = (
       await this.models.entityHierarchy.findById(await this.fetchEntityHierarchyId())
     ).name;
-    const response = await this.reportConnection.fetchReport(this.config.reportCode, {
-      startDate: this.query.startDate,
-      endDate: this.query.endDate,
+
+    const requestQuery = {
       organisationUnitCodes: this.entity.code,
       hierarchy: hierarchyName,
-    });
+    };
+
+    if (this.query.startDate) {
+      requestQuery.startDate = this.query.startDate;
+    }
+
+    if (this.query.endDate) {
+      requestQuery.endDate = this.query.endDate;
+    }
+
+    const response = await this.reportConnection.fetchReport(this.config.reportCode, requestQuery);
 
     return { data: response.results };
   }
 }
 
-export const reportServer = async (
-  { req, models, dataBuilderConfig, query, entity },
-  aggregator,
-  dhisApi,
-) => {
-  const builder = new ReportServerBuilder(
-    req,
-    models,
-    aggregator,
-    dhisApi,
-    dataBuilderConfig,
-    query,
-    entity,
-  );
+export const reportServer = async ({ req, models, dataBuilderConfig, query, entity }) => {
+  const builder = new ReportServerBuilder(req, models, dataBuilderConfig, query, entity);
   return builder.build();
 };
