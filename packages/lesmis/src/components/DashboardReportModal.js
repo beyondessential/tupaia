@@ -110,7 +110,6 @@ export const DashboardReportModal = ({
   // set reportId param after the modal render is rendered to improve the responsiveness
   // of the modal transition
   const onRendered = () => {
-    setRendered(true);
     setParams({
       reportId,
     });
