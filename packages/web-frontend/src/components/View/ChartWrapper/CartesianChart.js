@@ -49,7 +49,7 @@ const X_AXIS_PADDING = {
   },
   preview: {
     dataLengthThreshold: 9,
-    base: 4,
+    base: 6,
     offset: 10,
     minimum: 10,
   },

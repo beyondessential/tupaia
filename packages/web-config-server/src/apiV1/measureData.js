@@ -223,6 +223,7 @@ export default class extends DataAggregatingRouteHandler {
         .join(','),
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
+      serieses: measureOptions,
       measureData,
       period,
     };

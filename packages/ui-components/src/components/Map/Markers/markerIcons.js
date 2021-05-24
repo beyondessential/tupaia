@@ -37,22 +37,43 @@ const wrapSvgIcon = Base => ({ color }) => (
 );
 
 const ICON_BASE_SIZE = 20;
-const ICON_BASE_SIZE_PX = `${ICON_BASE_SIZE}px`;
 
-const IconContainer = ({ children, ...props }) => (
+const IconContainer = ({ children, scale, ...props }) => (
   <svg
-    width={ICON_BASE_SIZE_PX}
-    height={ICON_BASE_SIZE_PX}
+    width={`${ICON_BASE_SIZE * scale}px`}
+    height={`${ICON_BASE_SIZE * scale}px`}
     viewBox="0 0 1000 1000"
-    style={{ marginRight: '0.2rem' }}
+    style={{ marginRight: '0.25rem' }}
     {...props}
   >
     {children}
   </svg>
 );
 
-const TupaiaPinIcon = ({ color }) => (
-  <IconContainer fill={color}>
+IconContainer.propTypes = {
+  children: PropTypes.any,
+  scale: PropTypes.number,
+};
+
+IconContainer.defaultProps = {
+  children: null,
+  scale: 1,
+};
+
+const PinIcon = ({ color, scale }) => {
+  return (
+    <IconContainer fill={color} scale={scale} viewBox="0 0 27 39">
+      <path
+        d="M13.5 0.631592C6.04607 0.631592 0 6.64584 0 14.0605C0 24.1322 13.5 39 13.5 39C13.5 39 27 24.1322 27 14.0605C27 6.64584 20.9539 0.631592 13.5 0.631592Z"
+        fill={color}
+      />
+      <circle cx="13.5" cy="14.1316" r="6.39474" fill="black" fillOpacity="0.2" />
+    </IconContainer>
+  );
+};
+
+const HealthPinIcon = ({ color, scale }) => (
+  <IconContainer fill={color} scale={scale}>
     <ellipse ry="271" rx="270" id="svg_6" cy="397" cx="501" stroke="#000" fill={WHITE} />
     <g>
       <g transform="translate(0.000000,511.000000) scale(0.100000,-0.100000)">
@@ -63,14 +84,14 @@ const TupaiaPinIcon = ({ color }) => (
   </IconContainer>
 );
 
-const CircleIcon = ({ color }) => (
-  <IconContainer>
+const CircleIcon = ({ color, scale }) => (
+  <IconContainer scale={scale}>
     <circle cx="500" cy="500" r="400" stroke={WHITE} strokeWidth="80" fill={color} />
   </IconContainer>
 );
 
-const RadiusIcon = ({ color }) => (
-  <IconContainer>
+const RadiusIcon = ({ color, scale }) => (
+  <IconContainer scale={scale}>
     <circle
       cx="500"
       cy="500"
@@ -83,8 +104,8 @@ const RadiusIcon = ({ color }) => (
   </IconContainer>
 );
 
-const DottedCircle = ({ color }) => (
-  <IconContainer>
+const DottedCircle = ({ color, scale }) => (
+  <IconContainer scale={scale}>
     <circle
       cx="500"
       cy="500"
@@ -97,8 +118,8 @@ const DottedCircle = ({ color }) => (
   </IconContainer>
 );
 
-const SquareIcon = ({ color }) => (
-  <IconContainer>
+const SquareIcon = ({ color, scale }) => (
+  <IconContainer scale={scale}>
     <rect
       width="800"
       height="800"
@@ -113,8 +134,8 @@ const SquareIcon = ({ color }) => (
   </IconContainer>
 );
 
-const RingIcon = ({ color }) => (
-  <IconContainer>
+const RingIcon = ({ color, scale }) => (
+  <IconContainer scale={scale}>
     <path
       d="M 500, 500
       m 0, -400
@@ -149,21 +170,21 @@ function makePolygon(numberOfPoints, radius) {
 }
 
 const pentagonPath = makePolygon(5, 3);
-const PentagonIcon = ({ color }) => (
-  <IconContainer viewBox="-4 -4 8 8">
+const PentagonIcon = ({ color, scale }) => (
+  <IconContainer viewBox="-4 -4 8 8" scale={scale}>
     <path d={pentagonPath} fill={color} stroke={WHITE} strokeWidth="0.4" />
   </IconContainer>
 );
 
 const trianglePath = makePolygon(3, 3);
-const TriangleIcon = ({ color }) => (
-  <IconContainer viewBox="-4 -4 8 8">
+const TriangleIcon = ({ color, scale }) => (
+  <IconContainer viewBox="-4 -4 8 8" scale={scale}>
     <path d={trianglePath} fill={color} stroke={WHITE} strokeWidth="0.4" />
   </IconContainer>
 );
 
-const XIcon = ({ color }) => (
-  <IconContainer viewBox="-4 -4 8 8">
+const XIcon = ({ color, scale }) => (
+  <IconContainer viewBox="-4 -4 8 8" scale={scale}>
     <g transform="rotate(45)">
       <path
         d="M1,-3 L1,-1 L3,-1 L3,1 L1,1 L1,3 L-1,3 L-1,1 L-3,1 L-3,-1 L-1,-1 L-1,-3 L1,-3"
@@ -175,8 +196,8 @@ const XIcon = ({ color }) => (
   </IconContainer>
 );
 
-const HIcon = ({ color, h = 0.24, v = 0.2 }) => (
-  <IconContainer viewBox="-1.5 -1.5 3 3">
+const HIcon = ({ color, h = 0.24, v = 0.2, scale }) => (
+  <IconContainer viewBox="-1.5 -1.5 3 3" scale={scale}>
     <path
       d={`
         M-1,-1 L-${h},-1 L-${h},-${v} L${h},-${v} L${h},-1 L1,-1
@@ -190,7 +211,7 @@ const HIcon = ({ color, h = 0.24, v = 0.2 }) => (
   </IconContainer>
 );
 
-const FadedCircle = ({ color }) => {
+const FadedCircle = ({ color, scale }) => {
   // Each color needs its own id - even though we're defining a new svg, the
   // ids we refer to them by are in document scope, not svg scope.
   // We replace non-word characters (punctuation and spaces) with '-' so that
@@ -198,7 +219,7 @@ const FadedCircle = ({ color }) => {
   const gradientId = `fade-${color}`.replace(/\W/g, '-');
 
   return (
-    <IconContainer>
+    <IconContainer scale={scale}>
       <defs>
         <radialGradient id={gradientId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
           <stop style={{ stopColor: color, stopOpacity: 1 }} offset="0%" />
@@ -213,7 +234,12 @@ const FadedCircle = ({ color }) => {
 
 const icons = {
   pin: {
-    Component: TupaiaPinIcon,
+    Component: PinIcon,
+    iconAnchor: [10, 24],
+    popupAnchor: [0, -30],
+  },
+  healthPin: {
+    Component: HealthPinIcon,
     iconAnchor: [12, 24],
     popupAnchor: [0, -30],
   },
@@ -286,14 +312,23 @@ export const LEGEND_RADIUS_ICON = 'radius';
 export const HIDDEN_ICON = 'hidden';
 
 function toLeaflet(icon, color, scale) {
-  const { Component, ...params } = icon;
+  const {
+    Component,
+    iconAnchor = [0.5 * ICON_BASE_SIZE, 0.5 * ICON_BASE_SIZE], // default to center point
+    popupAnchor = [1, -3], // default tuned by hand
+    ...params
+  } = icon;
+  const scaledIconSize = ICON_BASE_SIZE * scale;
+  const scaledIconAnchor = [iconAnchor[0] * scale, iconAnchor[1] * scale];
+  const scaledPopupAnchor = [popupAnchor[0] * scale, popupAnchor[1] * scale];
+
   return L.divIcon({
-    iconSize: [ICON_BASE_SIZE * scale, ICON_BASE_SIZE * scale],
-    iconAnchor: [0.5 * ICON_BASE_SIZE * scale, 0.5 * ICON_BASE_SIZE * scale], // center point
-    popupAnchor: [1, -3], // just tuned by hand
+    iconSize: [scaledIconSize, scaledIconSize],
+    iconAnchor: scaledIconAnchor,
+    popupAnchor: scaledPopupAnchor,
     className: 'tupaia-simple',
     ...params,
-    html: ReactDOMServer.renderToStaticMarkup(<Component color={color} />),
+    html: ReactDOMServer.renderToStaticMarkup(<Component color={color} scale={scale} />),
   });
 }
 
@@ -313,14 +348,29 @@ export function getMarkerForValue(iconKey, colorName, scale = 1) {
 
 const iconPropTypes = {
   color: PropTypes.string.isRequired,
+  scale: PropTypes.number,
+};
+const iconDefaultProps = {
+  scale: 1,
 };
 
-TupaiaPinIcon.propTypes = iconPropTypes;
+PinIcon.propTypes = iconPropTypes;
+PinIcon.defaultProps = iconDefaultProps;
+HealthPinIcon.propTypes = iconPropTypes;
+HealthPinIcon.defaultProps = iconDefaultProps;
 CircleIcon.propTypes = iconPropTypes;
+CircleIcon.defaultProps = iconDefaultProps;
 TriangleIcon.propTypes = iconPropTypes;
+TriangleIcon.defaultProps = iconDefaultProps;
 SquareIcon.propTypes = iconPropTypes;
+SquareIcon.defaultProps = iconDefaultProps;
 PentagonIcon.propTypes = iconPropTypes;
+PentagonIcon.defaultProps = iconDefaultProps;
 RingIcon.propTypes = iconPropTypes;
+RingIcon.defaultProps = iconDefaultProps;
 XIcon.propTypes = iconPropTypes;
+XIcon.defaultProps = iconDefaultProps;
 DottedCircle.propTypes = iconPropTypes;
+DottedCircle.defaultProps = iconDefaultProps;
 FadedCircle.propTypes = iconPropTypes;
+FadedCircle.defaultProps = iconDefaultProps;

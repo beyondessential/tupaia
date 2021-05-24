@@ -3,5 +3,5 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './adjustFetchOptionsToAggregationList';
+export * from './adjustOptionsToAggregationList';
 export { aggregateAnalytics } from './aggregateAnalytics';

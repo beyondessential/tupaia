@@ -17,13 +17,12 @@ import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
 
 const LegendFrame = styled.div`
-  padding: 0.3rem;
-  margin: 0.625rem auto;
-  border-radius: 3px;
+  padding: 0.6rem;
+  margin: 0.6rem auto;
   cursor: auto;
-  color: #eeeeee;
-  background-color: rgba(43, 45, 56, 0.8);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+  background-color: ${({ theme }) =>
+    theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(43, 45, 56, 0.85)'};
+  border-radius: 3px;
 `;
 
 const coloredMeasureTypes = [
@@ -46,29 +45,31 @@ const getLegendComponent = measureType => {
   }
 };
 
-export const Legend = React.memo(({ measureOptions, className }) => {
-  if (!measureOptions) {
+export const Legend = React.memo(({ serieses, className, setValueHidden, hiddenValues }) => {
+  if (!serieses) {
     return null;
   }
 
-  const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
-  const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
-  const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
-  const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
+  const displayedLegends = serieses.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
+  const hasIconLayer = serieses.some(l => l.type === MEASURE_TYPE_ICON);
+  const hasRadiusLayer = serieses.some(l => l.type === MEASURE_TYPE_RADIUS);
+  const hasColorLayer = serieses.some(l => coloredMeasureTypes.includes(l.type));
 
   return (
     <LegendFrame className={className}>
-      {displayedLegends.map(measureOption => {
-        const { type } = measureOption;
+      {displayedLegends.map(series => {
+        const { type } = series;
         const LegendComponent = getLegendComponent(type);
 
         return (
           <LegendComponent
-            key={measureOption.key}
+            key={series.key}
             hasIconLayer={hasIconLayer}
             hasRadiusLayer={hasRadiusLayer}
             hasColorLayer={hasColorLayer}
-            measureOptions={measureOption}
+            series={series}
+            setValueHidden={setValueHidden}
+            hiddenValues={hiddenValues}
           />
         );
       })}
@@ -77,7 +78,9 @@ export const Legend = React.memo(({ measureOptions, className }) => {
 });
 
 Legend.propTypes = {
-  measureOptions: PropTypes.arrayOf(
+  setValueHidden: PropTypes.func,
+  hiddenValues: PropTypes.object,
+  serieses: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -87,6 +90,8 @@ Legend.propTypes = {
 };
 
 Legend.defaultProps = {
-  measureOptions: null,
+  serieses: null,
   className: null,
+  hiddenValues: {},
+  setValueHidden: null,
 };

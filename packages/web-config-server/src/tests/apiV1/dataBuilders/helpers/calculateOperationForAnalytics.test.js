@@ -25,6 +25,10 @@ const analytics = [
   { dataElement: 'Best_Superhero1', value: 'SuperGirl' },
   { dataElement: 'Best_Superhero2', value: 'Black Widow' },
   { dataElement: 'Best_Superhero3', value: 'My Sister' },
+  { dataElement: 'population', value: 10, period: '19990101', organisationUnit: 'Melbourne' },
+  { dataElement: 'population', value: 100, period: '20050101', organisationUnit: 'Melbourne' },
+  { dataElement: 'population', value: 20, period: '20100101', organisationUnit: 'Sydney' },
+  { dataElement: 'population', value: 200, period: '20050101', organisationUnit: 'Sydney' },
 ];
 
 describe('calculateOperationForAnalytics', () => {
@@ -125,6 +129,23 @@ describe('calculateOperationForAnalytics', () => {
           createSubtractionConfig(['height', 'width'], ['temperature']),
         ),
       ).to.eventually.equal(1);
+    });
+
+    it('should handle SUM_LATEST_PER_ORG_UNIT aggregation', () => {
+      expect(
+        calculateOperationForAnalytics(models, analytics, {
+          operator: 'SUBTRACT',
+          operands: [
+            {
+              dataValues: ['temperature'],
+            },
+            {
+              dataValues: ['population'],
+              aggregationType: 'SUM_LATEST_PER_ORG_UNIT',
+            },
+          ],
+        }),
+      ).to.eventually.equal(-104); // (2 + 5 + 7 + 2) - (100 + 20)
     });
   });
 

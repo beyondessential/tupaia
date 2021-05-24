@@ -22,6 +22,7 @@ const PROGRAM = 'programs';
 const TRACKED_ENTITY_ATTRIBUTE = 'trackedEntityAttributes';
 const TRACKED_ENTITY_INSTANCE = 'trackedEntityInstances';
 const TRACKED_ENTITY_TYPE = 'trackedEntityTypes';
+const INDICATOR = 'indicators';
 
 export const DHIS2_RESOURCE_TYPES = {
   CATEGORY_OPTION_COMBO,
@@ -42,4 +43,5 @@ export const DHIS2_RESOURCE_TYPES = {
   TRACKED_ENTITY_ATTRIBUTE,
   TRACKED_ENTITY_INSTANCE,
   TRACKED_ENTITY_TYPE,
+  INDICATOR,
 };

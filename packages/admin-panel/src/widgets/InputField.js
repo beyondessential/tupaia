@@ -100,6 +100,18 @@ export const InputField = ({
         />
       );
       break;
+    case 'jsonArray':
+      inputComponent = (
+        <JsonEditor
+          label={label}
+          inputKey={inputKey}
+          value={value}
+          onChange={onChange}
+          helperText={secondaryLabel}
+          stringify={false}
+        />
+      );
+      break;
     case 'boolean':
       inputComponent = (
         <RadioGroup

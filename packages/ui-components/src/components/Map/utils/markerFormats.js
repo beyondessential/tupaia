@@ -123,8 +123,8 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
   }
 }
 
-export const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, startDate, endDate } = measureOption;
+export const getSpectrumScaleValues = (measureData, series) => {
+  const { key, scaleType, startDate, endDate } = series;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -137,13 +137,13 @@ export const getSpectrumScaleValues = (measureData, measureOption) => {
   const dataMin = Math.min(...flattenedMeasureData);
   const dataMax = Math.max(...flattenedMeasureData);
 
-  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, measureOption);
+  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, series);
 
   return { min, max };
 };
 
-const clampScaleValues = (dataBounds, measureOption) => {
-  const { valueType, scaleBounds = {} } = measureOption;
+const clampScaleValues = (dataBounds, series) => {
+  const { valueType, scaleBounds = {} } = series;
 
   const defaultScale =
     valueType === 'percentage' ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT : SPECTRUM_SCALE_DEFAULT;
@@ -190,14 +190,36 @@ export function flattenMeasureHierarchy(measureHierarchy) {
   return results;
 }
 
-function getValueInfo(value, valueMapping, hiddenValues = {}) {
-  if (!value && typeof value !== 'number' && valueMapping.null) {
-    // use 'no data' value
-    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
+const getIsHidden = (measureData, serieses, allHiddenValues) =>
+  serieses
+    .map(({ key, valueMapping, hideByDefault }) => {
+      const value = measureData[key];
+      const hiddenValues = {
+        ...hideByDefault,
+        ...allHiddenValues[key],
+      };
 
+      // use 'no data' value if value is null and there is a null mapping defined
+      if (!value && typeof value !== 'number' && valueMapping.null) {
+        return hiddenValues.null || hiddenValues[valueMapping.null.value];
+      }
+
+      const matchedValue = valueMapping[value];
+
+      if (!matchedValue) {
+        // use 'other' value
+        return hiddenValues.other;
+      }
+
+      return hiddenValues[matchedValue.value];
+    })
+    .some(isHidden => isHidden);
+
+function getValueInfo(value, valueMapping) {
+  // use 'no data' value if value is null and there is a null mapping defined
+  if (!value && typeof value !== 'number' && valueMapping.null) {
     return {
       ...valueMapping.null,
-      isHidden: nullValue,
     };
   }
 
@@ -207,30 +229,29 @@ function getValueInfo(value, valueMapping, hiddenValues = {}) {
     // use 'other' value
     return {
       ...valueMapping.other,
-      isHidden: hiddenValues.other,
       value,
     };
   }
 
   return {
     ...matchedValue,
-    isHidden: hiddenValues[matchedValue.value],
   };
 }
 
-export function getFormattedInfo(orgUnitData, measureOption) {
-  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
+// For situations where we can only show one value, just show the value
+// of the first measure.
+export const getSingleFormattedValue = (markerData, series) =>
+  getFormattedInfo(markerData, series[0]).formattedValue;
 
-  const value = orgUnitData[key];
+export function getFormattedInfo(markerData, series) {
+  const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = series;
+  const value = markerData[key];
   const valueInfo = getValueInfo(value, valueMapping);
 
-  if (
-    displayedValueKey &&
-    (orgUnitData[displayedValueKey] || orgUnitData[displayedValueKey] === 0)
-  ) {
+  if (displayedValueKey && (markerData[displayedValueKey] || markerData[displayedValueKey] === 0)) {
     return {
       formattedValue: formatDataValueByType(
-        { value: orgUnitData[displayedValueKey], metadata: orgUnitData.metadata },
+        { value: markerData[displayedValueKey], metadata: markerData.metadata },
         valueType,
       ),
       valueInfo,
@@ -249,16 +270,24 @@ export function getFormattedInfo(orgUnitData, measureOption) {
       valueInfo,
       scaleType,
       valueType,
-      orgUnitData.submissionDate,
+      markerData.submissionDate,
     ),
     valueInfo,
   };
 }
 
-export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
-  const displayInfo = {};
+export function getMeasureDisplayInfo(
+  measureData = {},
+  serieses,
+  hiddenValues = {},
+  radiusScaleFactor = 1,
+) {
+  const isHidden = getIsHidden(measureData, serieses, hiddenValues);
+  const displayInfo = {
+    isHidden,
+  };
 
-  measureOptions.forEach(({ color, icon, radius }) => {
+  serieses.forEach(({ color, icon, radius }) => {
     if (color) {
       displayInfo.color = color;
     }
@@ -269,29 +298,20 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
       displayInfo.radius = radius;
     }
   });
-  measureOptions.forEach(
-    ({
-      key,
-      type,
-      valueMapping,
-      noDataColour,
-      scaleType,
-      scaleColorScheme,
-      min,
-      max,
-      hideByDefault,
-    }) => {
-      const valueInfo = getValueInfo(measureData[key], valueMapping, {
-        ...hideByDefault,
-        ...hiddenMeasures[key],
-      });
+
+  serieses.forEach(
+    ({ key, type, valueMapping, noDataColour, scaleType, scaleColorScheme, min, max }) => {
+      const valueInfo = getValueInfo(measureData[key], valueMapping);
+
+      displayInfo.originalValue = measureData.originalValue;
+
       switch (type) {
         case MEASURE_TYPE_ICON:
           displayInfo.icon = valueInfo.icon;
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_RADIUS:
-          displayInfo.radius = valueInfo.value || 0;
+          displayInfo.radius = valueInfo.value * radiusScaleFactor || 0;
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_SPECTRUM:
@@ -315,9 +335,6 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
         default:
           displayInfo.color = valueInfo.color;
           break;
-      }
-      if (valueInfo.isHidden) {
-        displayInfo.isHidden = true;
       }
     },
   );
