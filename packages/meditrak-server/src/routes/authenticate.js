@@ -3,7 +3,13 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { constructAccessToken } from '@tupaia/auth';
+import winston from 'winston';
+
+import {
+  constructAccessToken,
+  getUserAndPassFromBasicAuth,
+  mergeAccessPolicies,
+} from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
 
@@ -40,12 +46,23 @@ const extractPermissionGroupsIfLegacy = async (models, accessPolicy) => {
   return permissionGroupsByCountryId;
 };
 
-const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permissionGroups }) => {
-  // Generate JWT
-  const accessToken = constructAccessToken({
+const getAuthorizationObject = async ({
+  accessPolicy,
+  refreshToken,
+  user,
+  apiClientUser,
+  permissionGroups,
+}) => {
+  const tokenClaims = {
     userId: user.id,
     refreshToken,
-  });
+  };
+
+  if (apiClientUser) {
+    tokenClaims.apiClientUserId = apiClientUser.id;
+  }
+  // Generate JWT
+  const accessToken = constructAccessToken(tokenClaims);
 
   // Assemble and return authorization object
   const userDetails = {
@@ -62,6 +79,9 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permis
   };
   if (permissionGroups) {
     userDetails.permissionGroups = permissionGroups;
+  }
+  if (permissionGroups) {
+    userDetails.apiClient = apiClientUser.email;
   }
   return {
     accessToken,
@@ -95,7 +115,7 @@ const getMeditrakDeviceDetails = req => {
   };
 };
 
-const checkAuthentication = async req => {
+const checkUserAuthentication = async req => {
   const { body, query, authenticator } = req;
   switch (query.grantType) {
     case GRANT_TYPES.REFRESH_TOKEN:
@@ -107,6 +127,22 @@ const checkAuthentication = async req => {
       const meditrakDeviceDetails = getMeditrakDeviceDetails(req);
       return authenticator.authenticatePassword(body, meditrakDeviceDetails);
     }
+  }
+};
+
+const checkApiClientAuthentication = async req => {
+  const { headers, authenticator } = req;
+  const { username, password: secretKey } = getUserAndPassFromBasicAuth(headers.authorization);
+
+  if (!username) {
+    return {};
+  }
+
+  try {
+    return await authenticator.authenticateApiClient({ username, secretKey });
+  } catch (error) {
+    winston.warn('Invalid Api Client Basic Auth header provided');
+    return {};
   }
 };
 
@@ -123,16 +159,26 @@ const checkAuthentication = async req => {
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
 
-  const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
+  const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
+  const {
+    user: apiClientUser,
+    accessPolicy: apiClientAccessPolicy,
+  } = await checkApiClientAuthentication(req);
+
+  const mergedAccessPolicy = apiClientUser
+    ? mergeAccessPolicies(accessPolicy, apiClientAccessPolicy)
+    : accessPolicy;
+
   const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
     req.models,
-    accessPolicy,
+    mergedAccessPolicy,
   );
   const authorizationObject = await getAuthorizationObject({
     refreshToken,
     user,
-    accessPolicy,
+    apiClientUser,
     permissionGroups: permissionGroupsByCountryId,
+    accessPolicy: mergedAccessPolicy,
   });
 
   respond(res, authorizationObject);

@@ -7,6 +7,8 @@ import compareVersions from 'semver-compare';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
+import { mergeAccessPolicies } from './mergeAccessPolicies';
+import { encryptPassword } from './utils';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
@@ -15,6 +17,39 @@ export class Authenticator {
   constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
     this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
+  }
+
+  /**
+   * Authenticate by access token claims
+   * @param {{ userId: string, apiClientUserId?: string }} accessTokenClaims
+   */
+  async authenticateAccessToken({ userId, apiClientUserId }) {
+    const user = await this.models.user.findById(userId);
+    const userAccessPolicy = await this.getAccessPolicyForUser(user.id);
+
+    if (!apiClientUserId) {
+      return { user, accessPolicy: userAccessPolicy };
+    }
+
+    const apiClientAccessPolicy = await this.getAccessPolicyForUser(apiClientUserId);
+    return { user, accessPolicy: mergeAccessPolicies(userAccessPolicy, apiClientAccessPolicy) };
+  }
+
+  /**
+   * Authenticate an api client user
+   * @param {{ username: string, secretKey: string }} apiClientCredentials
+   */
+  async authenticateApiClient({ username, secretKey }) {
+    const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
+    const apiClient = await this.models.apiClient.findOne({
+      username,
+      secret_key_hash: secretKeyHash,
+    });
+    if (!apiClient) {
+      throw new UnauthenticatedError('Could not authenticate Api Client');
+    }
+    const user = apiClient.getUser();
+    return { user, accessPolicy: await this.getAccessPolicyForUser(user.id) };
   }
 
   /**

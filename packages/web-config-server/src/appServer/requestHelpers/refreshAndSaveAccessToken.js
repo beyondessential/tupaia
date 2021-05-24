@@ -16,9 +16,10 @@ export const refreshAndSaveAccessToken = async (models, refreshToken, userName) 
       throw new TupaiaAppAuthorisationError();
     } else {
       const tokenExpiry = getTokenExpiry(response.accessToken);
+      const { accessPolicy } = response.user;
       await models.userSession.updateOrCreate(
         { userName },
-        { ...response, access_token_expiry: tokenExpiry },
+        { ...response, access_token_expiry: tokenExpiry, accessPolicy },
       ); // Save tokens for user
       return response.accessToken;
     }

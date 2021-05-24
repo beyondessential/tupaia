@@ -12,3 +12,4 @@ export {
   getUserAndPassFromBasicAuth,
   constructAccessToken,
 } from './userAuth';
+export { mergeAccessPolicies } from './mergeAccessPolicies';
