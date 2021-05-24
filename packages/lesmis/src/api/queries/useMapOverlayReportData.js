@@ -17,6 +17,7 @@ import {
 } from '@tupaia/ui-components/lib/map';
 import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
+import { useUrlSearchParam } from '../../utils';
 import { get } from '../api';
 
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
@@ -107,7 +108,7 @@ const processMeasureData = ({
 
 export const useMapOverlayReportData = ({ entityCode, year }) => {
   const [hiddenValues, setHiddenValues] = useState({});
-  const [selectedOverlay, setSelectedOverlay] = useState(null);
+  const [selectedOverlay, setSelectedOverlay] = useUrlSearchParam('overlay', null);
 
   const { data: entitiesData, entitiesByCode, isLoading: entitiesLoading } = useEntitiesData(
     entityCode,
@@ -141,11 +142,6 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   useEffect(() => {
     setHiddenValues({});
   }, [setHiddenValues, selectedOverlay, entityCode]);
-
-  // reset selected overlay when changing entity
-  useEffect(() => {
-    setSelectedOverlay(null);
-  }, [setSelectedOverlay, entityCode]);
 
   // set default hidden measures when measure data changes
   useEffect(() => {
