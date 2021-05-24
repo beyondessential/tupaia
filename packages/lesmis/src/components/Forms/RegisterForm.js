@@ -10,7 +10,7 @@ import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
-import { useLogin } from '../../api';
+import { useRegister } from '../../api';
 
 const ErrorMessage = styled.p`
   color: ${COLORS.RED};
@@ -41,10 +41,10 @@ const StyledButton = styled(Button)`
 
 export const RegisterForm = () => {
   const { handleSubmit, register, errors } = useForm();
-  const { mutate: login, isError, isLoading, isSuccess, error } = useLogin();
+  const { mutate, isError, isLoading, error } = useRegister();
 
   return (
-    <form onSubmit={handleSubmit(({ email, password }) => login({ email, password }))} noValidate>
+    <form onSubmit={handleSubmit(fields => mutate(fields))} noValidate>
       <Heading variant="h4">Register for an account</Heading>
       {isError && <ErrorMessage>{error.message}</ErrorMessage>}
       <FieldSet>
@@ -113,7 +113,6 @@ export const RegisterForm = () => {
           })}
         />
       </FieldSet>
-
       <TextField
         label="Password *"
         name="password"
@@ -134,7 +133,7 @@ export const RegisterForm = () => {
           required: 'Required',
         })}
       />
-      <StyledButton type="submit" fullWidth isLoading={isLoading || isSuccess}>
+      <StyledButton type="submit" fullWidth isLoading={isLoading}>
         Register account now
       </StyledButton>
     </form>
