@@ -19,9 +19,6 @@ const getFilterFromReq = (req: ReportsRequest): FetchReportQuery => {
 
 class FetchReportRouteHandler {
   fetchReport = async (req: ReportsRequest, res: Response): Promise<void> => {
-    const aggregator = createAggregator(Aggregator, {
-      session: { getAuthHeader: () => req.headers.authorization },
-    });
     const { params, models, accessPolicy, body } = req;
     const filter = getFilterFromReq(req);
     const aggregator = createAggregator(Aggregator, {
