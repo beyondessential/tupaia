@@ -107,7 +107,7 @@ const useStickyBar = () => {
 
 export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
-  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('dashboard');
+  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
   const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
   const activeDashboard = selectedDashboard || getDefaultDashboard(data);
