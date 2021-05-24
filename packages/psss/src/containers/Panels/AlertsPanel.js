@@ -57,14 +57,14 @@ const menuOptions = [
       </Option>
     ),
   },
-  {
-    value: 'Outbreak',
-    label: (
-      <Option>
-        <Virus /> Create Outbreak
-      </Option>
-    ),
-  },
+  // {
+  //   value: 'Outbreak',
+  //   label: (
+  //     <Option>
+  //       <Virus /> Create Outbreak
+  //     </Option>
+  //   ),
+  // },
 ];
 
 const TabsContext = createContext(null);
@@ -100,14 +100,10 @@ export const AlertsPanel = React.memo(() => {
   const handleChange = option => {
     // TODO handle changes other than creating an outbreak
     switch (option.value) {
-      case 'Outbreak':
-        setIsCreateOutBreakModalOpen(true);
-        break;
       case 'Archive':
         setIsArchiveAlertModalOpen(true);
         break;
       default:
-        throw new Error('Option not valid');
     }
   };
 
@@ -133,7 +129,9 @@ export const AlertsPanel = React.memo(() => {
           avatarUrl={countryFlagImage(countryCode)}
           subheading={countryName}
           heading={syndromeName}
-          DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
+          DropdownMenu={
+            <DropdownMenu options={menuOptions} onChange={handleChange} readOnly="true" />
+          }
         />
       )}
       <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
