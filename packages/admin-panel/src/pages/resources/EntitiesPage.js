@@ -64,7 +64,11 @@ const IMPORT_CONFIG = {
         type: 'boolean',
       },
     },
-  ]
+  ],
+};
+
+const EDIT_CONFIG = {
+  title: 'Edit Answer',
 };
 
 export const EntitiesPage = ({ getHeaderEl }) => (
@@ -72,6 +76,7 @@ export const EntitiesPage = ({ getHeaderEl }) => (
     title="Entities"
     endpoint="entities"
     columns={COLUMNS}
+    editConfig={EDIT_CONFIG}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}

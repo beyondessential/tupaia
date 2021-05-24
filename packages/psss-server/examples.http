@@ -63,6 +63,7 @@ content-type: application/json
 ### Save Weekly Report Data (single site)
 PUT http://{{host}}/{{version}}/weeklyReport/TO/TO_Nukuhc?week=2021W07 HTTP/2.0
 content-type: application/json
+Cookie: {{sessionCookie}}
 
 {
     "afr": 7,

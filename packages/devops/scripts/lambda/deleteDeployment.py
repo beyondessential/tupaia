@@ -66,6 +66,11 @@ def lambda_handler(event, context):
     if not instance:
       raise Exception('No matching instance found')
 
+    # Check it's not protected
+    protected = get_tag(instance, 'Protected')
+    if protected == 'true':
+        raise Exception('The instance ' + event['InstanceName'] + ' is protected and cannot be deleted')
+
     # Get tagged details of instance
     stage = get_tag(instance, 'Stage')
     domain = get_tag(instance, 'DomainName')

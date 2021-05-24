@@ -87,17 +87,17 @@ export class Aggregator {
   };
 
   async fetchEvents(code, fetchOptions, aggregationOptions = {}) {
-    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
-    if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
-      return [];
-    }
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
-
     const [adjustedFetchOptions, adjustedAggregationOptions] = await adjustOptionsToAggregationList(
       this.context,
       fetchOptions,
       aggregationOptions,
     );
+
+    const { organisationUnitCode, organisationUnitCodes } = adjustedFetchOptions;
+    if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
+      return [];
+    }
 
     const events = await this.dataBroker.pull(dataSourceSpec, adjustedFetchOptions);
 
