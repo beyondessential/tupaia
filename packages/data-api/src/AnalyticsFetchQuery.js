@@ -63,7 +63,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
   }
 
   validate() {
-    if (this.aggregation.switches?.aggregateEntities && !this.aggregation.config.orgUnitMap) {
+    if (this.aggregation.switches?.aggregateEntities && !this.aggregation.config?.orgUnitMap) {
       throw new Error('When using entity aggregation you must provide an org unit map');
     }
   }
