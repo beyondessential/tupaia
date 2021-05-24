@@ -12,6 +12,7 @@ import {
   MarkerLayer,
   EntityPolygon,
   Legend,
+  ZoomControl,
   TilePicker as TilePickerComponent,
 } from '@tupaia/ui-components/lib/map';
 import { YearSelector, MapOverlaysPanel } from '../components';
@@ -36,6 +37,24 @@ const Main = styled.div`
 const Map = styled(MapContainer)`
   flex: 1;
   height: 100%;
+  z-index: 1;
+
+  // leaflet ZoomControl component doesn't pass down any props to the html
+  // so it's not possible to make a styled component of it
+  .leaflet-control-zoom {
+    z-index: 1;
+    border: none;
+    top: -52px;
+    right: 5px;
+
+    a {
+      color: ${props => props.theme.palette.text.secondary};
+
+      &:first-child {
+        border-color: ${props => props.theme.palette.grey['400']};
+      }
+    }
+  }
 `;
 
 const MapInner = styled.div`
@@ -111,6 +130,7 @@ export const MapView = () => {
           dragging
         >
           <TileLayer tileSetUrl={activeTileSet.url} />
+          <ZoomControl position="bottomright" />
           <MarkerLayer
             measureData={overlayReportData ? overlayReportData.measureData : null}
             serieses={overlayReportData ? overlayReportData.serieses : null}
