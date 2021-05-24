@@ -25,7 +25,7 @@ export class ReportRoute extends Route {
     const { type, legacy } = this.req.query;
     switch (type) {
       case 'dashboard': {
-        if (legacy) {
+        if (legacy === 'true') {
           const legacyReport = await this.webConfigConnection.fetchDashboardReport({
             itemCode: reportCode,
             organisationUnitCode: entityCode,
@@ -35,11 +35,10 @@ export class ReportRoute extends Route {
           return legacyReport.data;
         }
         const report = await this.reportConnection.fetchReport(reportCode, {
-          itemCode: reportCode,
-          organisationUnitCode: entityCode,
-          projectCode: LESMIS_PROJECT_NAME,
+          organisationUnitCodes: entityCode,
+          projectCodes: LESMIS_PROJECT_NAME,
           ...this.req.query,
-        }, this.req.body);
+        }, this.req.query);
         return report.results;
       }
       case 'mapOverlay':
