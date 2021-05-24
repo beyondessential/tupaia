@@ -105,6 +105,12 @@ export const DashboardReportModal = ({
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  // set reportId param after the modal render is rendered to improve the responsiveness
+  // of the modal transition
+  const onRendered = () => {
+    setRendered(true);
     setParams({
       reportId,
     });
@@ -131,6 +137,7 @@ export const DashboardReportModal = ({
         {buttonText}
       </MuiButton>
       <MuiDialog
+        onRendered={onRendered}
         scroll="paper"
         fullScreen
         open={open}
