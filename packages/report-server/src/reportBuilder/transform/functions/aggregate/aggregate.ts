@@ -69,12 +69,12 @@ const getAggregatedRows = (groupRowFields: GroupRowFields, params: AggregatePara
     Object.keys(groupRowFields[groupKey]).forEach((fieldKey: string) => {
       const aggregation = params.getFieldAggregation(fieldKey);
       const fieldValue: FieldValue = aggregations[aggregation](groupRowFields[groupKey][fieldKey]);
-      if (fieldValue === undefined) {
-        throw new Error(
-          `Do not accept an empty array or an array of 'undefined' in field '${fieldKey}'`,
-        );
+      if (fieldValue !== undefined) {
+        aggregatedRowFields[groupKey] = {
+          ...aggregatedRowFields[groupKey],
+          [fieldKey]: fieldValue,
+        };
       }
-      aggregatedRowFields[groupKey] = { ...aggregatedRowFields[groupKey], [fieldKey]: fieldValue };
     });
   });
   return Object.values(aggregatedRowFields);

@@ -61,24 +61,22 @@ const count = (values: FieldValue[]): number => {
   return values.length;
 };
 
-const max = (values: FieldValue[]): number | undefined => {
-  const checkedValues: number[] = checkIsNum(values);
-  if (checkedValues.length !== 0) {
-    let maxValue: number = checkedValues[0];
-    checkedValues.forEach(value => {
-      if (value > maxValue) maxValue = value;
+const max = (values: FieldValue[]): FieldValue => {
+  if (values.length !== 0) {
+    let maxValue: FieldValue = values[0];
+    values.forEach(value => {
+      if (!isUndefined(value) && !isUndefined(maxValue) && value > maxValue) maxValue = value;
     });
     return maxValue;
   }
   return undefined;
 };
 
-const min = (values: FieldValue[]): number | undefined => {
-  const checkedValues: number[] = checkIsNum(values);
-  if (checkedValues.length !== 0) {
-    let minValue: number = checkedValues[0];
-    checkedValues.forEach(value => {
-      if (value < minValue) minValue = value;
+const min = (values: FieldValue[]): FieldValue => {
+  if (values.length !== 0) {
+    let minValue: FieldValue = values[0];
+    values.forEach(value => {
+      if (!isUndefined(value) && !isUndefined(minValue) && value < minValue) minValue = value;
     });
     return minValue;
   }
