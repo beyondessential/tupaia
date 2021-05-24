@@ -8,8 +8,8 @@ import { TextField, Button } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
-import * as COLORS from '../constants';
-import { useLogin } from '../api/mutations';
+import * as COLORS from '../../constants';
+import { useLogin } from '../../api/mutations';
 
 const ErrorMessage = styled.p`
   color: ${COLORS.RED};

@@ -5,8 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { Link as RouterLink } from 'react-router-dom';
+import MuiButton from '@material-ui/core/Button';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
-import { LoginDialog } from './LoginDialog';
 import { useUser, useLogout } from '../api';
 
 const StyledProfileButton = styled(BaseProfileButton)`
@@ -26,6 +27,13 @@ const ProfileLinks = () => {
   );
 };
 
+const LoginLink = styled(MuiButton)`
+  color: white;
+  border-color: white;
+  padding: 0.5rem 2rem;
+  border-radius: 2.5rem;
+`;
+
 export const ProfileButton = () => {
   const { data: user, isLoggedIn } = useUser();
   return user && isLoggedIn ? (
@@ -34,6 +42,8 @@ export const ProfileButton = () => {
       MenuOptions={ProfileLinks}
     />
   ) : (
-    <LoginDialog buttonText="Log in" />
+    <LoginLink variant="outlined" component={RouterLink} to="/login">
+      Log in
+    </LoginLink>
   );
 };
