@@ -37,11 +37,6 @@ const NEW_AGGREGATIONS_BY_REPORT_ID = {
       aggregationType: 'MOST_RECENT_PER_ORG_GROUP',
       aggregationOrder: 'BEFORE',
     },
-    aggregations: [
-      {
-        type: 'SUM_PER_ORG_GROUP',
-      },
-    ],
   },
 };
 
