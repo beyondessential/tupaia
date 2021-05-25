@@ -48,8 +48,9 @@ export class Authenticator {
     if (!apiClient) {
       throw new UnauthenticatedError('Could not authenticate Api Client');
     }
-    const user = apiClient.getUser();
-    return { user, accessPolicy: await this.getAccessPolicyForUser(user.id) };
+    const user = await apiClient.getUser();
+    const accessPolicy = await this.getAccessPolicyForUser(user.id);
+    return { user, accessPolicy };
   }
 
   /**
