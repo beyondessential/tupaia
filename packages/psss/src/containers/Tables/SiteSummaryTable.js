@@ -82,16 +82,13 @@ const Link = styled(MuiLink)`
 
 export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) => {
   const { countryCode } = useParams();
-  const { period, Sites: totalSites = 0, 'Sites Reported': sitesReported = 0 } = rowData;
-  const { isLoading, isFetching, error, reportCount, data } = useCountrySitesWeeklyReport(
-    countryCode,
-    period,
-  );
-  const showSites = !isLoading && !isFetching && reportCount > 0;
+  const { period, Sites: totalSites = '', 'Sites Reported': sitesReported = '' } = rowData;
+  const { isLoading, isFetching, error, data } = useCountrySitesWeeklyReport(countryCode, period);
+  const isDataLoading = !isLoading && !isFetching;
 
   return (
     <>
-      {showSites && (
+      {isDataLoading && (
         <TableWrapper>
           <FakeHeader>
             <div>{`${sitesReported}/${totalSites} Sentinel Sites Reported`}</div>
