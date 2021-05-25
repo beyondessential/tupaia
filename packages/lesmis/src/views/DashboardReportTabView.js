@@ -50,17 +50,17 @@ const ScrollToTopButton = styled(ArrowUpward)`
 const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
 const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 
-const useDefaultDashboardTab = (selectedDashboard = null, data) => {
+// Gets the best default dashboard possible, and check if the selected dashboard is valid
+const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   const history = useHistory();
-  const { isLoggedIn, isFetching, status } = useUser();
+  const { isLoggedIn, isFetching } = useUser();
 
-  if (!data) {
+  if (!options) {
     return null;
   }
 
-  const dashboardNames = Object.keys(data);
+  const dashboardNames = Object.keys(options);
 
-  console.log('isLoading && isLoggedIn', isLoggedIn, status);
   if (selectedDashboard) {
     if (dashboardNames.includes(selectedDashboard)) {
       return selectedDashboard;

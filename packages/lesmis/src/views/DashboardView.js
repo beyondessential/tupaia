@@ -21,7 +21,7 @@ import {
   PartnerLogo,
 } from '../components';
 import { useUrlParams, useUrlSearchParams } from '../utils';
-import { useVitalsData, useEntityData } from '../api/queries';
+import { useVitalsData, useEntityData, useUser } from '../api/queries';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -480,6 +480,19 @@ const VitalsView = React.memo(({ vitals }) => {
   }
 });
 
+// Gets the best default dashboard possible, and check if the selected dashboard is valid
+const useDefaultDashboardTab = (selectedDashboard = null, options) => {
+  if (!options) {
+    return null;
+  }
+
+  if (selectedDashboard && options.find(option => option.value === selectedDashboard)) {
+    return selectedDashboard;
+  }
+
+  return options[0].value;
+};
+
 export const DashboardView = React.memo(() => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
@@ -487,7 +500,7 @@ export const DashboardView = React.memo(() => {
   const [params, setParams] = useUrlSearchParams();
 
   const vitals = useVitalsData(entityCode);
-  const selectedOption = params.dashboard || dropdownOptions[0].value;
+  const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
   const handleChange = event => {
     setParams({ dashboard: event.target.value, subDashboard: null, year: null });
