@@ -77,6 +77,7 @@ const AlertsTableComponent = React.memo(({ countryCodes, period }) => {
       isLoading={isLoading}
       isFetching={!isLoading && isFetching}
       errorMessage={error && error.message}
+      noDataMessage="No active alerts found"
       columns={columns}
       onRowClick={handleRowClick}
     />

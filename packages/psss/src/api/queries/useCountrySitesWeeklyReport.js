@@ -23,7 +23,6 @@ export const useCountrySitesWeeklyReport = (countryCode, period) => {
 
   return {
     ...query,
-    reportCount: report.length,
     data,
   };
 };
