@@ -5,7 +5,7 @@
 
 import { formatLayeredDataElementCode, layerYearOnYear } from '../../../utils/layerYearOnYear';
 import { AnalyticsPerPeriodBuilder } from './analyticsPerPeriod';
-import { momentToPeriod, periodToMoment, reduceToDictionary } from '@tupaia/utils';
+import { periodToMoment, reduceToDictionary } from '@tupaia/utils';
 import moment from 'moment';
 
 class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
@@ -44,7 +44,7 @@ class AnalyticsYearOnYearBuilder extends AnalyticsPerPeriodBuilder {
   filterLayeredAnalytics(originalStartDate, originalEndDate, layeredAnalytics) {
     const filteredAnalytics = layeredAnalytics.filter(layeredAnalytic => {
       const formattedAnalyticPeriod = periodToMoment(layeredAnalytic.period).format('YYYY-MM-DD');
-      return moment(analytic).isBetween(originalStartDate, originalEndDate);
+      return moment(formattedAnalyticPeriod).isBetween(originalStartDate, originalEndDate);
     });
     return filteredAnalytics;
   }
