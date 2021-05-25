@@ -9,8 +9,6 @@ import { ApiConnection } from './ApiConnection';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
-const PSSS_SURVEY_RESPONSE_ANSWER_TYPE = 'Number'; // All survey response answers are 'Number' in PSSS
-
 type SurveyResponseObject = {
   'entity.code': string;
   'survey.code': string;
@@ -20,10 +18,15 @@ type SurveyResponseObject = {
 
 type AnswerObject = {
   'question.code': string;
+  type: string;
   id: string;
 };
 
-type Answers = Record<string, string | number>;
+type Answer = {
+  type: string;
+  code: string;
+  value: string | number;
+};
 
 export class MeditrakConnection extends ApiConnection {
   baseUrl = MEDITRAK_API_URL;
@@ -32,7 +35,7 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     orgUnitCode: string,
     period: string,
-    answers: Answers,
+    answers: Answer[],
   ) {
     const existingSurveyResponse = await this.findSurveyResponse(surveyCode, orgUnitCode, period);
 
@@ -72,9 +75,15 @@ export class MeditrakConnection extends ApiConnection {
     return results.length > 0 ? results[0] : undefined;
   }
 
+  async findSurveyResponseById(surveyResponseId: string) {
+    return this.get(`surveyResponses/${surveyResponseId}`, {
+      columns: `["entity.code","survey.code","data_time","id"]`,
+    });
+  }
+
   async findAnswers(surveyResponseId: string) {
     return (await this.get(`surveyResponses/${surveyResponseId}/answers`, {
-      columns: `["question.code","id"]`,
+      columns: `["question.code","type","id"]`,
     })) as AnswerObject[];
   }
 
@@ -83,7 +92,7 @@ export class MeditrakConnection extends ApiConnection {
     entityCode: string,
     surveyCode: string,
     period: string,
-    answers: Answers,
+    answers: Answer[],
   ) {
     const [_, endDate] = convertPeriodStringToDateRange(period);
     const surveyResponse = {
@@ -96,16 +105,17 @@ export class MeditrakConnection extends ApiConnection {
     return this.updateSurveyResponseByObject(surveyResponse, answers);
   }
 
-  async updateSurveyResponseByObject(surveyResponse: SurveyResponseObject, answers: Answers) {
+  async updateSurveyResponseByObject(surveyResponse: SurveyResponseObject, answers: Answer[]) {
     const existingAnswers = await this.findAnswers(surveyResponse.id);
     const newAnswers = existingAnswers
       .map(existingAnswer => {
         const questionCode = existingAnswer['question.code'];
+        const answer = answers.find(a => a.code === questionCode)
         return {
           id: existingAnswer.id,
-          type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
+          type: existingAnswer.type,
           question_code: questionCode,
-          body: answers[questionCode],
+          body: answer?.value,
         };
       })
       .filter(a => a.body !== undefined);
@@ -134,14 +144,14 @@ export class MeditrakConnection extends ApiConnection {
     surveyCode: string,
     organisationUnitCode: string,
     period: string,
-    answers: Answers,
+    answers: Answer[],
   ) {
     const [_, endDate] = convertPeriodStringToDateRange(period);
 
-    const newAnswers = Object.entries(answers).map(([questionCode, value]) => ({
+    const newAnswers = answers.map(({type, code, value}) => ({
       id: generateId(),
-      type: PSSS_SURVEY_RESPONSE_ANSWER_TYPE,
-      question_code: questionCode,
+      type,
+      question_code: code,
       body: value,
     }));
 

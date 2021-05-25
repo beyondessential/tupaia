@@ -25,7 +25,7 @@ import {
   ActivityTab,
   DrawerTray,
 } from '../../components';
-import { CreateOutbreakModal } from '../Modals';
+import { CreateOutbreakModal, ArchiveAlertModal } from '../Modals';
 import { NotesTab } from '../NotesTab';
 import { getCountryName } from '../../store';
 import { countryFlagImage, getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../../utils';
@@ -57,14 +57,14 @@ const menuOptions = [
       </Option>
     ),
   },
-  {
-    value: 'Outbreak',
-    label: (
-      <Option>
-        <Virus /> Create Outbreak
-      </Option>
-    ),
-  },
+  // {
+  //   value: 'Outbreak',
+  //   label: (
+  //     <Option>
+  //       <Virus /> Create Outbreak
+  //     </Option>
+  //   ),
+  // },
 ];
 
 const TabsContext = createContext(null);
@@ -88,23 +88,38 @@ AlertsPanelProvider.propTypes = {
 
 export const AlertsPanel = React.memo(() => {
   const { data: panelData, isOpen, setIsOpen } = useContext(AlertsPanelContext);
-  const { organisationUnit: countryCode, period, syndrome, syndromeName } = panelData;
+  const { id: alertId, organisationUnit: countryCode, period, syndrome, syndromeName } = panelData;
   const alert = { period, organisationUnit: countryCode, syndrome };
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isArchiveAlertModalOpen, setIsArchiveAlertModalOpen] = useState(false);
+  const [isCreateOutbreakModalOpen, setIsCreateOutBreakModalOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const notesState = useFetch(getAlertsMessages);
   const activityState = useFetch(getActivityFeed);
   const countryName = useSelector(state => getCountryName(state, countryCode));
 
   const handleChange = option => {
-    // TODO handle changes other than creating an outbreak
-    setIsModalOpen(true);
+    switch (option.value) {
+      case 'Archive':
+        setIsArchiveAlertModalOpen(true);
+        break;
+      case 'Outbreak':
+        setIsCreateOutBreakModalOpen(true);
+        break;
+      default:
+    }
   };
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
   }, [setIsOpen]);
+
+  const handleCloseCreateOutbreakModal = useCallback(() => {
+    setIsCreateOutBreakModalOpen(false);
+  }, [setIsCreateOutBreakModalOpen]);
+
+  const handleCloseArchiveAlertModal = useCallback(() => {
+    setIsArchiveAlertModalOpen(false);
+  }, [setIsArchiveAlertModalOpen]);
 
   return (
     <Drawer open={isOpen} onClose={handleClose}>
@@ -116,7 +131,9 @@ export const AlertsPanel = React.memo(() => {
           avatarUrl={countryFlagImage(countryCode)}
           subheading={countryName}
           heading={syndromeName}
-          DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
+          DropdownMenu={
+            <DropdownMenu options={menuOptions} onChange={handleChange} readOnly="true" />
+          }
         />
       )}
       <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
@@ -142,7 +159,15 @@ export const AlertsPanel = React.memo(() => {
           />
         </CardTabPanels>
       </TabsContext.Provider>
-      <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+      <CreateOutbreakModal
+        isOpen={isCreateOutbreakModalOpen}
+        handleClose={handleCloseCreateOutbreakModal}
+      />
+      <ArchiveAlertModal
+        isOpen={isArchiveAlertModalOpen}
+        handleClose={handleCloseArchiveAlertModal}
+        alertId={alertId}
+      />
     </Drawer>
   );
 });
