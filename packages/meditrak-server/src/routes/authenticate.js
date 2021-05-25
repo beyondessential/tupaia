@@ -80,7 +80,7 @@ const getAuthorizationObject = async ({
   if (permissionGroups) {
     userDetails.permissionGroups = permissionGroups;
   }
-  if (permissionGroups) {
+  if (apiClientUser) {
     userDetails.apiClient = apiClientUser.email;
   }
   return {
