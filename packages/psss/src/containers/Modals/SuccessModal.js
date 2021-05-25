@@ -51,3 +51,7 @@ SuccessModal.propTypes = {
   mainText: PropTypes.string.isRequired,
   description: PropTypes.string,
 };
+
+SuccessModal.defaultProps = {
+  description: null,
+};
