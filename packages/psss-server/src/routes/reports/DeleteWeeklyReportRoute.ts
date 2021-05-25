@@ -19,7 +19,7 @@ export class DeleteWeeklyReportRoute extends Route {
     );
 
     if (existingSurveyResponse) {
-      return this.meditrakConnection?.deleteSurveyResponse(existingSurveyResponse);
+      return this.meditrakConnection?.deleteSurveyResponse(existingSurveyResponse.id);
     }
 
     return 'No existing survey response';

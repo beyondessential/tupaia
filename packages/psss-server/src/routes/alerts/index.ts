@@ -4,4 +4,5 @@
  */
 
 export { FetchAlertsRoute } from './FetchAlertsRoute';
-export { ArchiveAlertRoute } from './ArchiveAlertRoute';
+export { ProcessAlertActionRoute } from './ProcessAlertActionRoute';
+export { DeleteAlertRoute } from './DeleteAlertRoute';

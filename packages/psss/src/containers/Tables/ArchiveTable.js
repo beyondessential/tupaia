@@ -2,19 +2,20 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { createContext, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Table } from '@tupaia/ui-components';
 import {
   SyndromeCell,
-  AlertMenuCell,
+  ArchivedAlertMenuCell,
   CountryNameCell,
   WeekAndDateCell,
   StartDateCell,
 } from '../../components';
 import { useAlerts } from '../../api';
 import { getCountryCodes } from '../../store';
+import { RestoreArchivedAlertModal, DeleteAlertModal } from '../Modals';
 
 const createColumns = isSingleCountry => [
   ...(isSingleCountry
@@ -69,24 +70,50 @@ const createColumns = isSingleCountry => [
     title: '',
     key: 'id',
     sortable: false,
-    CellComponent: AlertMenuCell,
+    CellComponent: ArchivedAlertMenuCell,
     width: '70px',
   },
 ];
 
+export const ArchiveTableContext = createContext(null);
+
 export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [alertId, setAlertId] = useState(null);
   const isSingleCountry = countryCodes.length === 1;
   const columns = createColumns(isSingleCountry);
   const { data, isLoading, error, isFetching } = useAlerts(period, countryCodes, 'archive');
 
   return (
-    <Table
-      data={data}
-      isLoading={isLoading}
-      isFetching={!isLoading && isFetching}
-      errorMessage={error && error.message}
-      columns={columns}
-    />
+    <ArchiveTableContext.Provider
+      value={{
+        alertId,
+        setAlertId,
+        isRestoreModalOpen,
+        setIsRestoreModalOpen,
+        isDeleteModalOpen,
+        setIsDeleteModalOpen,
+      }}
+    >
+      <Table
+        data={data}
+        isLoading={isLoading}
+        isFetching={!isLoading && isFetching}
+        errorMessage={error && error.message}
+        columns={columns}
+      />
+      <RestoreArchivedAlertModal
+        isOpen={isRestoreModalOpen}
+        alertId={alertId}
+        handleClose={() => setIsRestoreModalOpen(false)}
+      />
+      <DeleteAlertModal
+        isOpen={isDeleteModalOpen}
+        alertId={alertId}
+        handleClose={() => setIsDeleteModalOpen(false)}
+      />
+    </ArchiveTableContext.Provider>
   );
 });
 
