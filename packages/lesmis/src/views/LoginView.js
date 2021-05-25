@@ -22,6 +22,9 @@ const StyledCard = styled(MuiCard)`
   padding: 2.5rem 3.5rem 3rem 3rem;
   margin: 0 auto 2rem;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  ${props => props.theme.breakpoints.down('sm')} {
+    box-shadow: none;
+  }
 `;
 
 const StyledImg = styled.img`

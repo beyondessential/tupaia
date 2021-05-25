@@ -36,6 +36,9 @@ const FieldSet = styled(MuiFormGroup)`
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   padding-bottom: 1rem;
   margin-bottom: 2rem;
+  ${props => props.theme.breakpoints.down('sm')} {
+    display: block;
+  }
 `;
 
 const StyledButton = styled(Button)`
@@ -46,7 +49,6 @@ const StyledButton = styled(Button)`
 export const RegisterForm = () => {
   const { handleSubmit, register, errors, watch, getValues } = useForm();
   const { mutate, isError, isLoading, error } = useRegister();
-
   const password = watch('password');
 
   return (
