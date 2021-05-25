@@ -22,3 +22,8 @@ content-type: {{contentType}}
 ### Fetch Laos Schools utility availability at primary school level
 GET {{host}}/api/v1/view?dashboardGroupId=344&endDate=2021-05-31&isExpanded=true&organisationUnitCode=LA&projectCode=laos_schools&startDate=2015-01-01&timeZone=Pacific%2FAuckland&viewId=LA_Laos_Schools_Service_Availability_Percentage_Primary
 content-type: {{contentType}}
+
+### Fetch Laos Schools age of functioning computers by school type
+GET {{host}}/api/v1/view?dashboardGroupId=344&organisationUnitCode=LA&projectCode=laos_schools&timeZone=Pacific%2FAuckland&viewId=Laos_Schools_Age_Of_Computers_By_School_Type
+content-type: {{contentType}}
+
