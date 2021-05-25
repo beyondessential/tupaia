@@ -10,7 +10,6 @@ import { useUser } from './useUser';
 
 const useValidatedQuery = query => {
   const history = useHistory();
-  console.log('history', history);
   const { isLoggedIn } = useUser();
 
   // add referer

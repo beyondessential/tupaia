@@ -23,7 +23,11 @@ export const useLogin = () => {
       }),
     {
       onSuccess: () => {
-        history.push('/');
+        if (history.action === 'PUSH') {
+          history.goBack();
+        } else {
+          history.push('/');
+        }
         queryClient.resetQueries('user');
         queryClient.resetQueries('entity');
         queryClient.resetQueries('entities');

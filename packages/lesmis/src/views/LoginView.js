@@ -46,8 +46,13 @@ const CloseButton = styled(IconButton)`
 
 export const LoginView = () => {
   const history = useHistory();
+
   const handleClose = () => {
-    history.goBack();
+    if (history.action === 'PUSH') {
+      history.goBack();
+    } else {
+      history.push('/');
+    }
   };
   return (
     <Container>
