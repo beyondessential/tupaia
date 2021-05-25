@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getCurrentPeriod } from '@tupaia/utils';
 import { Route } from '../Route';
 
 const CATEGORY_TO_REPORT = {
@@ -64,7 +65,7 @@ export class FetchAlertsRoute extends Route {
     const { results } = await this.reportConnection.fetchReport(
       `PSSS_${syndrome}_Confirmed_Report`,
       [organisationUnit],
-      [period],
+      [period, getCurrentPeriod('WEEK')],
     );
 
     return results[0];

@@ -18,6 +18,7 @@ import {
   ConfirmWeeklyReportRoute,
   SaveWeeklyReportRoute,
   DeleteWeeklyReportRoute,
+  ArchiveAlertRoute,
 } from '../routes';
 import { Route } from '../routes/Route';
 
@@ -74,6 +75,7 @@ export function addRoutesToApp(app: Express) {
    * PUT routes
    */
   app.put('/v1/weeklyReport/:countryCode/:siteCode?', handleWith(SaveWeeklyReportRoute));
+  app.put('/v1/alerts/:alertId/archive', handleWith(ArchiveAlertRoute));
 
   /**
    * DELETE routes

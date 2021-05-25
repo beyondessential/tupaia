@@ -4,3 +4,4 @@
  */
 
 export { FetchAlertsRoute } from './FetchAlertsRoute';
+export { ArchiveAlertRoute } from './ArchiveAlertRoute';

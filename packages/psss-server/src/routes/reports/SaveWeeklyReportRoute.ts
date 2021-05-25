@@ -8,14 +8,10 @@ import { Route } from '../Route';
 import { WEEKLY_SURVEY_COUNTRY, WEEKLY_SURVEY_SITE } from '../../constants';
 import { validateIsNumber } from '../../utils';
 
-type WeeklyReportAnswers = {
-  PSSS_AFR_Cases: number;
-  PSSS_DIA_Cases: number;
-  PSSS_ILI_Cases: number;
-  PSSS_PF_Cases: number;
-  PSSS_DLI_Cases: number;
-  PSSS_Sites?: number;
-  PSSS_Sites_Reported?: number;
+type WeeklyReportAnswer = {
+  type: string;
+  code: string;
+  value: number;
 };
 
 export class SaveWeeklyReportRoute extends Route {
@@ -44,16 +40,45 @@ const mapReqBodyToAnswers = (body: Record<string, unknown>, isSiteSurvey: boolea
       500,
     );
 
-  const answers: WeeklyReportAnswers = {
-    PSSS_AFR_Cases: validateIsNumber(afr, errorHandler('afr')),
-    PSSS_DIA_Cases: validateIsNumber(dia, errorHandler('dia')),
-    PSSS_ILI_Cases: validateIsNumber(ili, errorHandler('ili')),
-    PSSS_PF_Cases: validateIsNumber(pf, errorHandler('pf')),
-    PSSS_DLI_Cases: validateIsNumber(dli, errorHandler('dli')),
-  };
+  const answers: WeeklyReportAnswer[] = [
+    {
+      type: 'Number',
+      code: 'PSSS_AFR_Cases',
+      value: validateIsNumber(afr, errorHandler('afr')),
+    },
+    {
+      type: 'Number',
+      code: 'PSSS_DIA_Cases',
+      value: validateIsNumber(dia, errorHandler('dia')),
+    },
+    {
+      type: 'Number',
+      code: 'PSSS_ILI_Cases',
+      value: validateIsNumber(ili, errorHandler('ili')),
+    },
+    {
+      type: 'Number',
+      code: 'PSSS_PF_Cases',
+      value: validateIsNumber(pf, errorHandler('pf')),
+    },
+    {
+      type: 'Number',
+      code: 'PSSS_DLI_Cases',
+      value: validateIsNumber(dli, errorHandler('dli')),
+    },
+  ];
+
   if (!isSiteSurvey) {
-    answers.PSSS_Sites = validateIsNumber(sites, errorHandler('sites'));
-    answers.PSSS_Sites_Reported = validateIsNumber(sitesReported, errorHandler('sitesReported'));
+    answers.push({
+      type: 'Number',
+      code: 'PSSS_Sites',
+      value: validateIsNumber(sites, errorHandler('sites')),
+    });
+    answers.push({
+      type: 'Number',
+      code: 'PSSS_Sites_Reported',
+      value: validateIsNumber(sitesReported, errorHandler('sitesReported')),
+    });
   }
 
   return answers;
