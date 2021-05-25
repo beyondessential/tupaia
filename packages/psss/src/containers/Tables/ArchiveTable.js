@@ -85,6 +85,7 @@ export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
       isLoading={isLoading}
       isFetching={!isLoading && isFetching}
       errorMessage={error && error.message}
+      noDataMessage="No archived alerts found"
       columns={columns}
     />
   );
