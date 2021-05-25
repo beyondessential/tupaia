@@ -48,8 +48,8 @@ export const LoginView = () => {
   const history = useHistory();
 
   const handleClose = () => {
-    if (history.action === 'PUSH') {
-      history.goBack();
+    if (history.location?.state?.referer) {
+      history.push(history.location.state.referer);
     } else {
       history.push('/');
     }
@@ -59,7 +59,7 @@ export const LoginView = () => {
       <CloseButton color="inherit" onClick={handleClose} aria-label="close">
         <CloseIcon />
       </CloseButton>
-      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" to="/login" />
       <StyledCard>
         <LoginForm />
       </StyledCard>

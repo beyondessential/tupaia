@@ -23,8 +23,8 @@ export const useLogin = () => {
       }),
     {
       onSuccess: () => {
-        if (history.action === 'PUSH') {
-          history.goBack();
+        if (history.location?.state?.referer) {
+          history.push(history.location.state.referer);
         } else {
           history.push('/');
         }

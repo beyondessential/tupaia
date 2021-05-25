@@ -12,12 +12,11 @@ const useValidatedQuery = query => {
   const history = useHistory();
   const { isLoggedIn } = useUser();
 
-  // add referer
   if (query.isError && query.error.code === 403) {
     if (isLoggedIn) {
       history.push('/not-found');
     } else {
-      history.push('/login');
+      history.push('/login', { referer: history.location });
     }
   }
   return query;

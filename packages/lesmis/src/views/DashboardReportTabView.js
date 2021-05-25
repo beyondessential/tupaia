@@ -6,9 +6,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import { SmallAlert } from '@tupaia/ui-components';
-import { useDashboardData } from '../api/queries';
+import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
@@ -49,12 +50,26 @@ const ScrollToTopButton = styled(ArrowUpward)`
 const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
 const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 
-const getDefaultDashboard = data => {
+const useDefaultDashboardTab = (selectedDashboard = null, data) => {
+  const history = useHistory();
+  const { isLoggedIn, isFetching, status } = useUser();
+
   if (!data) {
     return null;
   }
 
   const dashboardNames = Object.keys(data);
+
+  console.log('isLoading && isLoggedIn', isLoggedIn, status);
+  if (selectedDashboard) {
+    if (dashboardNames.includes(selectedDashboard)) {
+      return selectedDashboard;
+    }
+    if (!isFetching && !isLoggedIn) {
+      return history.push('/login', { referer: history.location });
+    }
+  }
+
   if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
     return DEFAULT_DASHBOARD_GROUP;
   }
@@ -110,7 +125,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
   const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
-  const activeDashboard = selectedDashboard || getDefaultDashboard(data);
+  const activeDashboard = useDefaultDashboardTab(selectedDashboard, data);
 
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
