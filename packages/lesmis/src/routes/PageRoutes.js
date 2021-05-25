@@ -51,14 +51,14 @@ export const PageRoutes = React.memo(() => (
       <PageView content={CONTACT_PAGE} />
       <Footer />
     </Route>
-    <Route path="/:entityCode/:view?">
-      <NavBar />
-      <EntityView />
-    </Route>
-    <Route>
+    <Route path="/not-found">
       <NavBar />
       <NotFoundView />
       <Footer />
+    </Route>
+    <Route path="/:entityCode/:view?">
+      <NavBar />
+      <EntityView />
     </Route>
   </Switch>
 ));

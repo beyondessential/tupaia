@@ -4,6 +4,7 @@
  *
  */
 import axios from 'axios';
+import FetchError from './fetchError';
 
 const API_URL = process.env.REACT_APP_LESMIS_API_URL;
 const timeout = 45 * 1000; // 45 seconds
@@ -27,15 +28,16 @@ const request = async (endpoint, options) => {
     });
     return response.data;
   } catch (error) {
+    // normalise errors using fetch error class
     if (error.response) {
       const { data } = error.response;
 
       if (data.error) {
-        throw new Error(data.error);
+        throw new FetchError(data.error, error.response.status);
       }
 
       if (data.message) {
-        throw new Error(data.message);
+        throw new FetchError(data.message, data.code);
       }
     }
     throw new Error(error);

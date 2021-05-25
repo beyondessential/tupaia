@@ -4,15 +4,18 @@
  *
  */
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import MuiCard from '@material-ui/core/Card';
-import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
+import IconButton from '@material-ui/core/IconButton';
+import styled from 'styled-components';
+import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import { LoginForm, FlexCenter, FlexColumn } from '../components';
 
 const Container = styled(FlexColumn)`
   padding-top: 3rem;
-  height: 80vh;
+  min-height: 70vh;
 `;
 
 const StyledCard = styled(MuiCard)`
@@ -33,20 +36,40 @@ const Text = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
   text-decoration: none;
-  margin-right: 5px;
+  margin-right: 0.3rem;
 `;
 
-export const LoginView = () => (
-  <Container>
-    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
-    <StyledCard>
-      <LoginForm />
-    </StyledCard>
-    <FlexCenter mb={4}>
-      <Text color="textSecondary">Don&apos;t have access?</Text>
-      <Text component={RouterLink} to="register" color="primary">
-        Register here
-      </Text>
-    </FlexCenter>
-  </Container>
-);
+const CloseButton = styled(IconButton)`
+  position: absolute;
+  top: 0.3rem;
+  right: 0.6rem;
+`;
+
+export const LoginView = () => {
+  const history = useHistory();
+
+  const handleClose = () => {
+    if (history.location?.state?.referer) {
+      history.push(history.location.state.referer);
+    } else {
+      history.push('/');
+    }
+  };
+  return (
+    <Container>
+      <CloseButton color="inherit" onClick={handleClose} aria-label="close">
+        <CloseIcon />
+      </CloseButton>
+      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" to="/login" />
+      <StyledCard>
+        <LoginForm />
+      </StyledCard>
+      <FlexCenter mb={4}>
+        <Text color="textSecondary">Don&apos;t have access?</Text>
+        <Text component={RouterLink} to="register" color="primary">
+          Register here
+        </Text>
+      </FlexCenter>
+    </Container>
+  );
+};

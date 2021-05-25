@@ -4,10 +4,12 @@
  *
  */
 import { useMutation, useQueryClient } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import { post } from '../api';
 import { useUser } from '../queries';
 
 export const useLogin = () => {
+  const history = useHistory();
   const queryClient = useQueryClient();
 
   const loginQuery = useMutation(
@@ -21,9 +23,13 @@ export const useLogin = () => {
       }),
     {
       onSuccess: () => {
-        queryClient.resetQueries('user');
-        queryClient.resetQueries('entity');
-        queryClient.resetQueries('entities');
+        queryClient.clear();
+
+        if (history.location?.state?.referer) {
+          history.push(history.location.state.referer);
+        } else {
+          history.push('/');
+        }
       },
     },
   );

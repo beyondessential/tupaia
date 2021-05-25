@@ -20,8 +20,8 @@ import {
   EntityVitalsItem,
   PartnerLogo,
 } from '../components';
-import { useUrlParams } from '../utils';
-import { useVitalsData, useEntityData } from '../api/queries';
+import { useUrlParams, useUrlSearchParams } from '../utils';
+import { useVitalsData, useEntityData, useUser } from '../api/queries';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
@@ -59,7 +59,7 @@ const getProfileLabel = entityType => {
   }
 };
 
-const makeTabOptions = entityType => [
+const makeDropdownOptions = entityType => [
   {
     value: 'profile',
     label: getProfileLabel(entityType),
@@ -463,7 +463,7 @@ const SchoolView = ({ vitals }) => {
   );
 };
 
-const VitalsView = ({ vitals }) => {
+const VitalsView = React.memo(({ vitals }) => {
   switch (vitals.type) {
     case 'country':
       return <CountryView vitals={vitals} />;
@@ -478,19 +478,32 @@ const VitalsView = ({ vitals }) => {
     default:
       return null;
   }
+});
+
+// Gets the best default dashboard possible, and check if the selected dashboard is valid
+const useDefaultDashboardTab = (selectedDashboard = null, options) => {
+  if (!options) {
+    return null;
+  }
+
+  if (selectedDashboard && options.find(option => option.value === selectedDashboard)) {
+    return selectedDashboard;
+  }
+
+  return options[0].value;
 };
 
-export const DashboardView = () => {
+export const DashboardView = React.memo(() => {
   const { entityCode } = useUrlParams();
   const { data: entityData } = useEntityData(entityCode);
+  const dropdownOptions = makeDropdownOptions(entityData?.type);
+  const [params, setParams] = useUrlSearchParams();
+
   const vitals = useVitalsData(entityCode);
+  const selectedOption = useDefaultDashboardTab(params.dashboard, dropdownOptions);
 
-  const tabOptions = makeTabOptions(entityData?.type);
-
-  const [selectedTab, setSelectedTab] = useState(tabOptions[0].value);
-
-  const handleChangeTab = event => {
-    setSelectedTab(event.target.value);
+  const handleChange = event => {
+    setParams({ dashboard: event.target.value, subDashboard: null, year: null });
   };
 
   return (
@@ -500,17 +513,17 @@ export const DashboardView = () => {
           <VitalsView vitals={vitals} />
         </Container>
       </Wrapper>
-      {tabOptions.map(({ value, Body, Component }) => (
-        <TabPanel key={value} isSelected={value === selectedTab} Panel={React.Fragment}>
+      {dropdownOptions.map(({ value, Body, Component }) => (
+        <TabPanel key={value} isSelected={value === selectedOption} Panel={React.Fragment}>
           <Component
             entityCode={entityCode}
             Body={Body}
             TabSelector={
               <StyledSelect
                 id="dashboardtab"
-                options={tabOptions}
-                value={selectedTab}
-                onChange={handleChangeTab}
+                options={dropdownOptions}
+                value={selectedOption}
+                onChange={handleChange}
                 showPlaceholder={false}
                 SelectProps={{
                   MenuProps: { disablePortal: true },
@@ -522,7 +535,7 @@ export const DashboardView = () => {
       ))}
     </>
   );
-};
+});
 
 PhotoOrMap.propTypes = {
   vitals: PropTypes.object.isRequired,
