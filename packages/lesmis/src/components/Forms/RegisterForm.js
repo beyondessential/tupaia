@@ -3,14 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React from 'react';
-import { TextField, Button, Checkbox } from '@tupaia/ui-components';
+import React, { lazy } from 'react';
+import { TextField, Button, Checkbox, PasswordStrengthBar } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
 import { useRegister } from '../../api';
+
+// Lazy load the password strength library as it uses zxcvbn which is a large dependency.
+// For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
+const StrengthBarComponent = lazy(() => import('react-password-strength-bar'));
 
 const ErrorMessage = styled.p`
   color: ${COLORS.RED};
@@ -44,8 +48,6 @@ export const RegisterForm = () => {
   const { mutate, isError, isLoading, error } = useRegister();
 
   const password = watch('password');
-
-  console.log('errors', errors);
 
   return (
     <form onSubmit={handleSubmit(fields => mutate(fields))} noValidate>
@@ -139,6 +141,13 @@ export const RegisterForm = () => {
           minLength: { value: 9, message: 'Password must be over 8 characters long.' },
           validate: value => value === getValues('password') || 'Passwords do not match.',
         })}
+      />
+      <PasswordStrengthBar
+        password={password}
+        StrengthBarComponent={StrengthBarComponent}
+        helperText="New password must be over 8 characters long."
+        pt={1}
+        pb={3}
       />
       <Checkbox
         name="terms"
