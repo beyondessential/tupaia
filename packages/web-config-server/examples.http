@@ -21,7 +21,7 @@ content-type: {{contentType}}
 
 ### Logout
 # @name logout
-POST {{host}}/api/v1/logout HTTP/1.1
+GET {{host}}/api/v1/logout HTTP/1.1
 content-type: {{contentType}}
 
 
