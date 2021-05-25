@@ -29,31 +29,25 @@ async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
 
-const NEW_AGGREGATIONS_BY_REPORT_ID = {
+const ENTITY_AGGREGATIONS_BY_REPORT_ID = {
   Laos_Schools_Male_Female: {
-    entityAggregation: {
-      dataSourceEntityType: 'school',
-      aggregationEntityType: 'country',
-      aggregationType: 'MOST_RECENT_PER_ORG_GROUP',
-      aggregationOrder: 'BEFORE',
-    },
+    dataSourceEntityType: 'school',
+    aggregationEntityType: 'country',
+    aggregationType: 'MOST_RECENT_PER_ORG_GROUP',
+    aggregationOrder: 'BEFORE',
   },
 };
 
-const updateAggregationsForReport = async (db, reportId, entityAggregation, aggregations) => {
+const updateAggregationsForReport = async (db, reportId, entityAggregation) => {
   const dashboardReport = await getDashboardReportById(db, reportId);
   const newJson = dashboardReport.dataBuilderConfig;
-  delete newJson.aggregationType;
   newJson.entityAggregation = entityAggregation;
-  newJson.aggregations = aggregations;
   await updateBuilderConfigByReportId(db, newJson, reportId);
 };
 
 exports.up = async function (db) {
-  for (const [reportId, { entityAggregation, aggregations }] of Object.entries(
-    NEW_AGGREGATIONS_BY_REPORT_ID,
-  )) {
-    await updateAggregationsForReport(db, reportId, entityAggregation, aggregations);
+  for (const [reportId, entityAggregation] of Object.entries(ENTITY_AGGREGATIONS_BY_REPORT_ID)) {
+    await updateAggregationsForReport(db, reportId, entityAggregation);
   }
 };
 
