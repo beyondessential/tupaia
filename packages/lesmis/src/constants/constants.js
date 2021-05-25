@@ -5,8 +5,9 @@
  */
 
 // Project Data Constants
-export const PROJECT_CODE = 'laos_schools';
-export const COUNTRY_CODE = 'LA';
+// @Todo: Set back to lesmis
+export const PROJECT_CODE = 'fanafana';
+export const COUNTRY_CODE = 'TO';
 
 // Date Constants
 export const SINGLE_YEAR_GRANULARITY = 'one_year_at_a_time';
