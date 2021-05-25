@@ -17,7 +17,8 @@ export const Container = styled(FlexColumn)`
 `;
 
 const StyledCard = styled(MuiCard)`
-  max-width: 50rem;
+  width: 50rem;
+  max-width: 100%;
   padding: 2.5rem 3.5rem 3rem 3rem;
   margin: 0 auto 2rem;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
@@ -30,7 +31,6 @@ const StyledImg = styled.img`
 `;
 
 const Text = styled(Typography)`
-  font-weight: 500;
   font-size: 0.875rem;
   line-height: 1rem;
   text-decoration: none;

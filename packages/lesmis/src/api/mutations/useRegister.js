@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import { post } from '../api';
-import { useUser } from '../queries';
 
 export const useRegister = () => {
   const query = useMutation(
@@ -34,13 +33,10 @@ export const useRegister = () => {
       }),
     {
       onSuccess: () => {
-        // queryClient.resetQueries('user');
-        // queryClient.resetQueries('entity');
-        // queryClient.resetQueries('entities');
+        console.log('success');
       },
     },
   );
-  console.log('query', query);
 
   return query;
 };

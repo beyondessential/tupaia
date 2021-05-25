@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { TextField, Button } from '@tupaia/ui-components';
+import { TextField, Button, Checkbox } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
@@ -40,8 +40,12 @@ const StyledButton = styled(Button)`
 `;
 
 export const RegisterForm = () => {
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, errors, watch, getValues } = useForm();
   const { mutate, isError, isLoading, error } = useRegister();
+
+  const password = watch('password');
+
+  console.log('errors', errors);
 
   return (
     <form onSubmit={handleSubmit(fields => mutate(fields))} noValidate>
@@ -53,7 +57,7 @@ export const RegisterForm = () => {
           name="firstName"
           type="text"
           error={!!errors.firstName}
-          helperText={errors.firstName && errors.firstName.message}
+          helperText={errors?.firstName?.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -63,7 +67,7 @@ export const RegisterForm = () => {
           name="lastName"
           type="text"
           error={!!errors.lastName}
-          helperText={errors.lastName && errors.lastName.message}
+          helperText={errors?.lastName?.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -73,7 +77,7 @@ export const RegisterForm = () => {
           name="emailAddress"
           type="email"
           error={!!errors.emailAddress}
-          helperText={errors.emailAddress && errors.emailAddress.message}
+          helperText={errors?.emailAddress?.message}
           inputRef={register({
             required: 'Required',
             pattern: {
@@ -87,7 +91,7 @@ export const RegisterForm = () => {
           name="contactNumber"
           type="text"
           error={!!errors.contactNumber}
-          helperText={errors.contactNumber && errors.contactNumber.message}
+          helperText={errors?.contactNumber?.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -97,7 +101,7 @@ export const RegisterForm = () => {
           name="employer"
           type="text"
           error={!!errors.employer}
-          helperText={errors.employer && errors.employer.message}
+          helperText={errors?.employer?.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -107,7 +111,7 @@ export const RegisterForm = () => {
           name="position"
           type="text"
           error={!!errors.position}
-          helperText={errors.position && errors.position.message}
+          helperText={errors?.position?.message}
           inputRef={register({
             required: 'Required',
           })}
@@ -118,9 +122,10 @@ export const RegisterForm = () => {
         name="password"
         type="password"
         error={!!errors.password}
-        helperText={errors.password && errors.password.message}
+        helperText={errors?.password?.message}
         inputRef={register({
           required: 'Required',
+          minLength: { value: 9, message: 'Password must be over 8 characters long.' },
         })}
       />
       <TextField
@@ -128,9 +133,23 @@ export const RegisterForm = () => {
         name="passwordConfirm"
         type="password"
         error={!!errors.passwordConfirm}
-        helperText={errors.passwordConfirm && errors.passwordConfirm.message}
+        helperText={errors?.passwordConfirm?.message}
         inputRef={register({
           required: 'Required',
+          minLength: { value: 9, message: 'Password must be over 8 characters long.' },
+          validate: value => value === getValues('password') || 'Passwords do not match.',
+        })}
+      />
+      <Checkbox
+        name="terms"
+        color="primary"
+        label="I agree to the terms and conditions"
+        defaultValue={false}
+        error={true}
+        helperText="This is a required field"
+        inputRef={register({
+          required: 'Required',
+          message: 'Terms and conditions are required',
         })}
       />
       <StyledButton type="submit" fullWidth isLoading={isLoading}>

@@ -32,7 +32,6 @@ const StyledImg = styled.img`
 `;
 
 const Text = styled(Typography)`
-  font-weight: 500;
   font-size: 0.875rem;
   line-height: 1rem;
   text-decoration: none;
