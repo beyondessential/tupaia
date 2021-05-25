@@ -129,11 +129,8 @@ export const Report = React.memo(
             dashboardGroupId={dashboardGroupId}
             reportId={reportId}
             periodGranularity={periodGranularity}
-<<<<<<< HEAD
             year={year}
             viewConfig={viewConfig}
-=======
->>>>>>> dev
           />
         </Footer>
       </Container>
