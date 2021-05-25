@@ -63,7 +63,7 @@ export const AffectedSitesTab = ({ alert }) => {
     }
 
     return weeklyData.map(weekData => {
-      const { status, period, totalCases, percentageChange, sites: siteData } = weekData;
+      const { status, period, weeklyCases, percentageChange, sites: siteData } = weekData;
 
       return (
         <AlertsOutbreaksCard key={period} variant="outlined" mb={5}>
@@ -71,7 +71,7 @@ export const AffectedSitesTab = ({ alert }) => {
             type={status}
             heading={`Week ${getWeekNumberByPeriod(period)}`}
             subheading={getDisplayDatesByPeriod(period)}
-            detailText={`Total Cases for all Sites: ${totalCases || '-'}`}
+            detailText={`Total Cases for all Sites: ${weeklyCases || '-'}`}
             percentageChange={percentageChange}
           />
           <AlertsAndOutbreaksCardBody>
