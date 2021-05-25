@@ -23,14 +23,13 @@ export const useLogin = () => {
       }),
     {
       onSuccess: () => {
+        queryClient.clear();
+
         if (history.location?.state?.referer) {
           history.push(history.location.state.referer);
         } else {
           history.push('/');
         }
-        queryClient.resetQueries('user');
-        queryClient.resetQueries('entity');
-        queryClient.resetQueries('entities');
       },
     },
   );
