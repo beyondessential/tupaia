@@ -87,3 +87,8 @@ ConfirmModal.propTypes = {
   loadingText: PropTypes.string.isRequired,
   handleAction: PropTypes.func.isRequired,
 };
+
+ConfirmModal.defaultProps = {
+  description: null,
+  error: null,
+};

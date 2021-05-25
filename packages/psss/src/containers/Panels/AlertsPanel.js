@@ -98,10 +98,12 @@ export const AlertsPanel = React.memo(() => {
   const countryName = useSelector(state => getCountryName(state, countryCode));
 
   const handleChange = option => {
-    // TODO handle changes other than creating an outbreak
     switch (option.value) {
       case 'Archive':
         setIsArchiveAlertModalOpen(true);
+        break;
+      case 'Outbreak':
+        setIsCreateOutBreakModalOpen(true);
         break;
       default:
     }
@@ -111,11 +113,11 @@ export const AlertsPanel = React.memo(() => {
     setIsOpen(false);
   }, [setIsOpen]);
 
-  const handleCreateOutbreakModalCLose = useCallback(() => {
+  const handleCloseCreateOutbreakModal = useCallback(() => {
     setIsCreateOutBreakModalOpen(false);
   }, [setIsCreateOutBreakModalOpen]);
 
-  const handleArchiveAlertModalCLose = useCallback(() => {
+  const handleCloseArchiveAlertModal = useCallback(() => {
     setIsArchiveAlertModalOpen(false);
   }, [setIsArchiveAlertModalOpen]);
 
@@ -159,11 +161,11 @@ export const AlertsPanel = React.memo(() => {
       </TabsContext.Provider>
       <CreateOutbreakModal
         isOpen={isCreateOutbreakModalOpen}
-        handleClose={handleCreateOutbreakModalCLose}
+        handleClose={handleCloseCreateOutbreakModal}
       />
       <ArchiveAlertModal
         isOpen={isArchiveAlertModalOpen}
-        handleClose={handleArchiveAlertModalCLose}
+        handleClose={handleCloseArchiveAlertModal}
         alertId={alertId}
       />
     </Drawer>

@@ -158,3 +158,7 @@ DropdownMenu.propTypes = {
   onChange: PropTypes.func.isRequired,
   readOnly: PropTypes.bool,
 };
+
+DropdownMenu.defaultProps = {
+  readOnly: false,
+};
