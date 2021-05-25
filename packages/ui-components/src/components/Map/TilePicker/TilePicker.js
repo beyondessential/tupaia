@@ -27,7 +27,7 @@ const Controls = styled.div`
 const TileList = styled.div`
   display: flex;
   flex-direction: column;
-  background: #16161c;
+  background: ${({ theme }) => (theme.palette.type === 'light' ? '#f9f9f9' : '#16161c')};
   z-index: 1;
   overflow: auto;
   pointer-events: auto;

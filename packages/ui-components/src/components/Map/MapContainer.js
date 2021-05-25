@@ -43,6 +43,7 @@ export const MapContainer = ({
       bounds={defaultBounds}
       scrollWheelZoom={false}
       whenCreated={setMap}
+      zoomControl={false}
       // React Leaflet MapContainer supports all leaflet props for constructing a map. @see leaflet docs for more info
       {...props}
     >
