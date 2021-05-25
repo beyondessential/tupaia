@@ -6,15 +6,6 @@
 import { DataFetchQuery, ANSWER_SPECIFIC_FIELDS } from './DataFetchQuery';
 
 const AGGREGATION_SWITCHES = {
-  COUNT_PER_ORG_GROUP: {
-    aggregateEntities: true,
-    count: true,
-  },
-  COUNT_PER_PERIOD_PER_ORG_GROUP: {
-    aggregateEntities: true,
-    count: true,
-    groupByPeriodField: 'day_period', // can assume first internal aggregation period type is daily
-  },
   FINAL_EACH_DAY: {
     groupByPeriodField: 'day_period',
     getLatestPerPeriod: true,
@@ -105,15 +96,15 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     if (!this.isAggregating) {
       return `SELECT ${[...this.getCommonFields(), ...ANSWER_SPECIFIC_FIELDS].join(', ')}`;
     }
-    const { groupByPeriodField, sum, count, getLatestPerPeriod } = this.aggregation.switches;
+    const { groupByPeriodField, sum, getLatestPerPeriod } = this.aggregation.switches;
     const fields = [...this.getCommonFields()];
 
     if (groupByPeriodField) {
       fields.push(groupByPeriodField);
     }
 
-    if (sum || count) {
-      fields.push(`${sum ? 'SUM(value::NUMERIC)::text' : 'COUNT(value)'} as value`);
+    if (sum) {
+      fields.push('SUM(value::NUMERIC)::text');
       fields.push('MAX(type) as type');
       if (!getLatestPerPeriod) {
         fields.push('MAX(date) as date');
