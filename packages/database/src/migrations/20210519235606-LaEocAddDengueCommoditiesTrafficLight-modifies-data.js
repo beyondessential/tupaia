@@ -117,7 +117,7 @@ const getDatabuilderConfig = (columns, cells) => ({
     },
     {
       rows: [
-        'Oral Rehydration Salt 29g e',
+        'Oral Rehydration Salt 29g Powder',
         'Oral Rehydration Salt 27.9g Powder (Orange flavor)',
         'Oral Rehydration Salt 27.9g Powder',
       ],
@@ -143,7 +143,7 @@ const getDatabuilderConfig = (columns, cells) => ({
       {
         key: 'red',
         condition: {
-          in: [null, 0],
+          '=': 0,
         },
       },
       {
@@ -156,6 +156,12 @@ const getDatabuilderConfig = (columns, cells) => ({
         key: 'orange',
         condition: {
           someNotAll: { '>': 0 },
+        },
+      },
+      {
+        key: 'grey',
+        condition: {
+          '=': null,
         },
       },
     ],
@@ -211,6 +217,11 @@ const viewJson = {
         color: 'orange',
         label: '',
         legendLabel: 'At least 1 item out of stock',
+      },
+      grey: {
+        color: '',
+        label: '',
+        legendLabel: 'No Data',
       },
     },
     showRawValue: true,

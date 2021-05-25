@@ -41,6 +41,11 @@ const categoryPresentationOptions = {
       label: '',
       legendLabel: 'At least 1 item out of stock',
     },
+    grey: {
+      color: '',
+      label: '',
+      legendLabel: 'No Data',
+    },
   },
   showRawValue: true,
   showNestedRows: true,
@@ -109,7 +114,7 @@ const categoryAggregator = {
     {
       key: 'red',
       condition: {
-        in: [null, 0],
+        '=': 0,
       },
     },
     {
@@ -122,6 +127,12 @@ const categoryAggregator = {
       key: 'orange',
       condition: {
         someNotAll: { '>': 0 },
+      },
+    },
+    {
+      key: 'grey',
+      condition: {
+        '=': null,
       },
     },
   ],
