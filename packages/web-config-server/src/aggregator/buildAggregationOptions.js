@@ -16,7 +16,7 @@ export const buildAggregationOptions = async (
   hierarchyId,
 ) => {
   const {
-    aggregations: multiAggregations = [],
+    aggregations: multiAggregations,
     aggregationType,
     aggregationConfig,
     ...restOfOptions
@@ -28,10 +28,10 @@ export const buildAggregationOptions = async (
     aggregationOrder: entityAggregationOrder = DEFAULT_ENTITY_AGGREGATION_ORDER,
   } = entityAggregationOptions;
 
-  const singleAggregation = aggregationType && { type: aggregationType, config: aggregationConfig };
-
-  // filter out any undefined aggregations - most commonly the single aggregation was not defined
-  const aggregations = [...multiAggregations, singleAggregation].filter(a => !!a?.type);
+  // Note aggregationType and aggregationConfig might be undefined, in which case it will default
+  // to MOST_RECENT if no multi-aggregations are provided
+  const singleAggregation = [{ type: aggregationType, config: aggregationConfig }];
+  const aggregations = multiAggregations || singleAggregation;
 
   if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType, entityAggregationType)) {
     return {
