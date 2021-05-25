@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import MuiCheckbox from '@material-ui/core/Checkbox';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
@@ -24,12 +24,16 @@ const Wrapper = styled.div`
   margin-bottom: 1.25rem;
 `;
 
-export const Checkbox = ({ label, helperText, className, ...props }) => {
+const FormHelperText = styled(MuiFormHelperText)`
+  margin-top: -4px;
+`;
+
+export const Checkbox = ({ label, helperText, error, className, ...props }) => {
   if (label) {
     return (
       <Wrapper className={className}>
         <MuiFormControlLabel control={<StyledCheckbox {...props} />} label={label} />
-        <FormHelperText>helperText</FormHelperText>
+        {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
       </Wrapper>
     );
   }
@@ -39,11 +43,13 @@ export const Checkbox = ({ label, helperText, className, ...props }) => {
 
 Checkbox.propTypes = {
   label: PropTypes.string,
+  error: PropTypes.bool,
   className: PropTypes.string,
   helperText: PropTypes.string,
 };
 
 Checkbox.defaultProps = {
+  error: false,
   label: null,
   className: null,
   helperText: null,

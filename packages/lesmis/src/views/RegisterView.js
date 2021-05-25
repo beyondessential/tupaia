@@ -4,10 +4,12 @@
  *
  */
 import React from 'react';
-import MuiCard from '@material-ui/core/Card';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link as RouterLink } from 'react-router-dom';
+import IconButton from '@material-ui/core/IconButton';
+import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
 import { RegisterForm, FlexCenter, FlexColumn } from '../components';
 
 export const Container = styled(FlexColumn)`
@@ -37,17 +39,37 @@ const Text = styled(Typography)`
   margin-right: 5px;
 `;
 
-export const RegisterView = () => (
-  <Container>
-    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
-    <StyledCard>
-      <RegisterForm />
-    </StyledCard>
-    <FlexCenter mb={4}>
-      <Text color="textSecondary">Already have an account?</Text>
-      <Text component={RouterLink} to="login" color="primary">
-        Log in
-      </Text>
-    </FlexCenter>
-  </Container>
-);
+const CloseButton = styled(IconButton)`
+  position: absolute;
+  top: 0.3rem;
+  right: 0.6rem;
+`;
+
+export const RegisterView = () => {
+  const history = useHistory();
+
+  const handleClose = () => {
+    if (history.location?.state?.referer) {
+      history.push(history.location.state.referer);
+    } else {
+      history.push('/');
+    }
+  };
+  return (
+    <Container>
+      <CloseButton color="inherit" onClick={handleClose} aria-label="close">
+        <CloseIcon />
+      </CloseButton>
+      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+      <StyledCard>
+        <RegisterForm />
+      </StyledCard>
+      <FlexCenter mb={4}>
+        <Text color="textSecondary">Already have an account?</Text>
+        <Text component={RouterLink} to="login" color="primary">
+          Log in
+        </Text>
+      </FlexCenter>
+    </Container>
+  );
+};

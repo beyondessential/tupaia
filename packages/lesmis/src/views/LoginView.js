@@ -4,9 +4,8 @@
  *
  */
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import MuiCard from '@material-ui/core/Card';
-import { Link as RouterLink } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import styled from 'styled-components';
 import CloseIcon from '@material-ui/icons/Close';

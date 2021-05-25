@@ -145,8 +145,8 @@ export const RegisterForm = () => {
         color="primary"
         label="I agree to the terms and conditions"
         defaultValue={false}
-        error={true}
-        helperText="This is a required field"
+        error={!!errors.terms}
+        helperText={errors?.terms?.message}
         inputRef={register({
           required: 'Required',
           message: 'Terms and conditions are required',
