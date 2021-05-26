@@ -41,6 +41,8 @@ import {
 const SiteReportsSection = styled.section`
   position: relative;
   padding: 1.8rem 1.25rem;
+  pointer-events: ${props => (props.disabled ? 'none' : 'initial')};
+  opacity: ${props => (props.disabled ? '0.5' : 1)};
 
   &:after {
     display: ${props => (props.disabled ? 'block' : 'none')};
@@ -188,7 +190,10 @@ export const WeeklyReportsPanelComponent = React.memo(
           </EditableTableProvider>
         </CountryReportsSection>
         {showSites && (
-          <SiteReportsSection disabled={isSaving} data-testid="site-reports">
+          <SiteReportsSection
+            disabled={countryTableStatus === TABLE_STATUSES.EDITABLE || isSaving}
+            data-testid="site-reports"
+          >
             <ButtonSelect
               id="active-site"
               options={siteData}
