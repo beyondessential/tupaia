@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
+import { useTheme } from '@material-ui/core/styles';
 import MuiBox from '@material-ui/core/Box';
 import { UNKNOWN_COLOR } from '../constants';
 import {
@@ -44,13 +45,15 @@ const isHiddenOtherIcon = ({ value, icon }) => {
 };
 
 const getMarkerColor = (value, type, hasColorLayer) => {
+  const theme = useTheme();
+
   if (type === MEASURE_TYPE_COLOR) {
     // if this layer is providing color, of course show the color
     return value.color;
   }
   if (hasColorLayer) {
-    // if a different layer is providing color, always show legend icons in white
-    return 'white';
+    // if a different layer is providing color, show the legend icons as white or dark grey
+    return theme.palette.type === 'light' ? theme.palette.text.primary : 'white';
   }
 
   // if we have a color that isn't being overridden elsewhere, show it

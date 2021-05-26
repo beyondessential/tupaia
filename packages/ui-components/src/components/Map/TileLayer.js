@@ -10,7 +10,7 @@ import { TileLayer as LeafletTileLayer, LayerGroup, AttributionControl } from 'r
 
 // Taken from https://www.mapbox.com/help/how-attribution-works/#other-mapping-frameworks.
 const attribution =
-  '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>';
+  '<a href="https://leafletjs.com/">Leaflet</a> © <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>';
 
 export const TileLayer = ({ tileSetUrl }) => {
   const tileLayer = useRef(null);
