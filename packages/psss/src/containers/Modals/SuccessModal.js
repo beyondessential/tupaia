@@ -28,9 +28,9 @@ const TickIcon = styled(CheckCircle)`
   color: ${props => props.theme.palette.success.main};
 `;
 
-export const SuccessModal = ({ isOpen, handleClose, title, mainText, description }) => (
-  <Dialog onClose={handleClose} open={isOpen}>
-    <DialogHeader onClose={handleClose} title={title} />
+export const SuccessModal = ({ isOpen, onClose, title, mainText, description }) => (
+  <Dialog onClose={onClose} open={isOpen}>
+    <DialogHeader onClose={onClose} title={title} />
     <DialogContent>
       <TickIcon />
       <Typography variant="h6" gutterBottom>
@@ -39,14 +39,14 @@ export const SuccessModal = ({ isOpen, handleClose, title, mainText, description
       {description && <SuccessText>{description}</SuccessText>}
     </DialogContent>
     <DialogFooter>
-      <OutlinedButton onClick={handleClose}>Close</OutlinedButton>
+      <OutlinedButton onClick={onClose}>Close</OutlinedButton>
     </DialogFooter>
   </Dialog>
 );
 
 SuccessModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   mainText: PropTypes.string.isRequired,
   description: PropTypes.string,

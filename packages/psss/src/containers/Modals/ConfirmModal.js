@@ -36,7 +36,7 @@ const PositionedAlert = styled(Alert)`
 
 export const ConfirmModal = ({
   isOpen,
-  handleClose,
+  onClose,
   isLoading,
   title,
   mainText,
@@ -47,8 +47,8 @@ export const ConfirmModal = ({
   handleAction,
 }) => {
   return (
-    <Dialog onClose={handleClose} open={isOpen}>
-      <DialogHeader onClose={handleClose} title={title} />
+    <Dialog onClose={onClose} open={isOpen}>
+      <DialogHeader onClose={onClose} title={title} />
       <LoadingContainer isLoading={isLoading}>
         <DialogContent>
           <ConfirmIcon />
@@ -64,7 +64,7 @@ export const ConfirmModal = ({
         </DialogContent>
       </LoadingContainer>
       <DialogFooter>
-        <OutlinedButton onClick={handleClose} disabled={isLoading}>
+        <OutlinedButton onClick={onClose} disabled={isLoading}>
           Cancel
         </OutlinedButton>
         <Button isLoading={isLoading} loadingText={loadingText} onClick={handleAction}>
@@ -77,7 +77,7 @@ export const ConfirmModal = ({
 
 ConfirmModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   mainText: PropTypes.string.isRequired,

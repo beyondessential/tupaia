@@ -16,7 +16,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const DeleteAlertModal = ({ isOpen, handleClose, alertId }) => {
+export const DeleteAlertModal = ({ isOpen, onClose, alertId }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
   const [deleteAlert, { error }] = useDeleteAlert(alertId);
 
@@ -31,20 +31,25 @@ export const DeleteAlertModal = ({ isOpen, handleClose, alertId }) => {
     setStatus(STATUS.SUCCESS);
   }, [deleteAlert]);
 
+  const handleClose = useCallback(async () => {
+    setStatus(STATUS.INITIAL);
+    onClose();
+  }, [setStatus, onClose]);
+
   if (status === STATUS.SUCCESS) {
     return (
       <SuccessModal
         isOpen={isOpen}
         title="Delete Alert"
         mainText="Alert successfully deleted"
-        handleClose={handleClose}
+        onClose={handleClose}
       />
     );
   }
 
   return (
     <ConfirmModal
-      handleClose={handleClose}
+      onClose={handleClose}
       isOpen={isOpen}
       isLoading={status === STATUS.LOADING}
       title="Delete Alert"
@@ -59,6 +64,6 @@ export const DeleteAlertModal = ({ isOpen, handleClose, alertId }) => {
 
 DeleteAlertModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   alertId: PropTypes.string.isRequired,
 };

@@ -16,7 +16,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const RestoreArchivedAlertModal = ({ isOpen, handleClose, alertId }) => {
+export const RestoreArchivedAlertModal = ({ isOpen, onClose, alertId }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
   const [restoreArchivedAlert, { error }] = useRestoreArchivedAlert(alertId);
 
@@ -31,20 +31,25 @@ export const RestoreArchivedAlertModal = ({ isOpen, handleClose, alertId }) => {
     setStatus(STATUS.SUCCESS);
   }, [restoreArchivedAlert]);
 
+  const handleClose = useCallback(async () => {
+    setStatus(STATUS.INITIAL);
+    onClose();
+  }, [setStatus, onClose]);
+
   if (status === STATUS.SUCCESS) {
     return (
       <SuccessModal
         isOpen={isOpen}
         title="Restore Alert"
         mainText="Alert successfully restored"
-        handleClose={handleClose}
+        onClose={handleClose}
       />
     );
   }
 
   return (
     <ConfirmModal
-      handleClose={handleClose}
+      onClose={handleClose}
       isOpen={isOpen}
       isLoading={status === STATUS.LOADING}
       title="Archive Alert"
@@ -60,6 +65,6 @@ export const RestoreArchivedAlertModal = ({ isOpen, handleClose, alertId }) => {
 
 RestoreArchivedAlertModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   alertId: PropTypes.string.isRequired,
 };

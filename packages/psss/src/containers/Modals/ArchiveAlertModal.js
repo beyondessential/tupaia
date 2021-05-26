@@ -39,7 +39,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const ArchiveAlertModal = ({ isOpen, handleClose, alertId }) => {
+export const ArchiveAlertModal = ({ isOpen, onClose, alertId }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
   const { setIsOpen } = useContext(AlertsPanelContext);
   const [archiveAlert, { error }] = useArchiveAlert(alertId);
@@ -55,17 +55,17 @@ export const ArchiveAlertModal = ({ isOpen, handleClose, alertId }) => {
     setStatus(STATUS.SUCCESS);
   }, [archiveAlert]);
 
-  const onClose = useCallback(() => {
+  const handleClose = useCallback(() => {
     if (status === STATUS.SUCCESS) {
       setIsOpen(false);
     }
-    handleClose();
+    onClose();
   }, [status, setIsOpen]);
 
   if (status === STATUS.SUCCESS) {
     return (
-      <Dialog onClose={onClose} open={isOpen}>
-        <DialogHeader onClose={onClose} title="Archive Alert" />
+      <Dialog onClose={handleClose} open={isOpen}>
+        <DialogHeader onClose={handleClose} title="Archive Alert" />
         <DialogContent>
           <TickIcon />
           <Typography variant="h6" gutterBottom>
@@ -76,7 +76,7 @@ export const ArchiveAlertModal = ({ isOpen, handleClose, alertId }) => {
           </SuccessText>
         </DialogContent>
         <DialogFooter>
-          <OutlinedButton onClick={onClose}>Stay on Alerts</OutlinedButton>
+          <OutlinedButton onClick={handleClose}>Stay on Alerts</OutlinedButton>
           <Button to="/alerts/archive" component={RouterLink}>
             Go to Archive
           </Button>
@@ -87,7 +87,7 @@ export const ArchiveAlertModal = ({ isOpen, handleClose, alertId }) => {
 
   return (
     <ConfirmModal
-      handleClose={handleClose}
+      onClose={handleClose}
       isOpen={isOpen}
       isLoading={status === STATUS.LOADING}
       title="Archive Alert"
@@ -103,6 +103,6 @@ export const ArchiveAlertModal = ({ isOpen, handleClose, alertId }) => {
 
 ArchiveAlertModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   alertId: PropTypes.string.isRequired,
 };
