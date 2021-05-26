@@ -29,7 +29,6 @@ export const useSitesSingleWeeklyReport = (countryCode, period, pageQueryKey) =>
 
   return {
     ...query,
-    reportCount: report.length,
     data,
   };
 };

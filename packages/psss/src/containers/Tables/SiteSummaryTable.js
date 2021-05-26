@@ -82,32 +82,28 @@ const Link = styled(MuiLink)`
 
 export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) => {
   const { countryCode } = useParams();
-  const { period, Sites: totalSites = 0, 'Sites Reported': sitesReported = 0 } = rowData;
-  const { isLoading, isFetching, error, reportCount, data } = useCountrySitesWeeklyReport(
-    countryCode,
-    period,
-  );
-  const showSites = !isLoading && !isFetching && reportCount > 0;
+  const { period, Sites: totalSites = '', 'Sites Reported': sitesReported = '' } = rowData;
+  const { isLoading, isFetching, error, data } = useCountrySitesWeeklyReport(countryCode, period);
 
   return (
     <>
-      {showSites && (
-        <TableWrapper>
-          <FakeHeader>
-            <div>{`${sitesReported}/${totalSites} Sentinel Sites Reported`}</div>
-            <Link component="button" onClick={() => handleOpen(period)} underline="always">
-              Review and Confirm Now
-            </Link>
-          </FakeHeader>
-          <Table
-            errorMessage={error}
-            columns={siteWeekColumns}
-            data={data}
-            Header={false}
-            Body={CondensedTableBody}
-          />
-        </TableWrapper>
-      )}
+      <TableWrapper>
+        <FakeHeader>
+          <div>{`${sitesReported}/${totalSites} Sentinel Sites Reported`}</div>
+          <Link component="button" onClick={() => handleOpen(period)} underline="always">
+            Review and Confirm Now
+          </Link>
+        </FakeHeader>
+        <Table
+          isLoading={isLoading}
+          isFetching={!isLoading && isFetching}
+          errorMessage={error?.message}
+          columns={siteWeekColumns}
+          data={data}
+          Header={false}
+          Body={CondensedTableBody}
+        />
+      </TableWrapper>
       <TableFooter>
         <Text>Verify data to submit Weekly report to Regional</Text>
         <Button onClick={() => handleOpen(period)}>Review and Confirm Now</Button>

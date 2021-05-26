@@ -42,7 +42,7 @@ const columns = [
   },
   {
     title: 'Cases',
-    key: 'totalCases',
+    key: 'weeklyCases',
     align: 'right',
     sortable: false,
   },

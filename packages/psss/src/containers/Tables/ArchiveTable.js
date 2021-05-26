@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Table } from '@tupaia/ui-components';
@@ -101,6 +101,7 @@ export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
         isLoading={isLoading}
         isFetching={!isLoading && isFetching}
         errorMessage={error && error.message}
+        noDataMessage="No archived alerts found"
         columns={columns}
       />
       <RestoreArchivedAlertModal
