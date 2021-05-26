@@ -5,53 +5,44 @@
 
 import { FieldValue } from '../../../types';
 
-const isUndefined = (value: FieldValue): value is undefined => {
-  return value === undefined;
+const isNotUndefined = <T>(value: T): value is Exclude<T, undefined> => {
+  return value !== undefined;
 };
 
-const filterUndefinedAndNull = (values: FieldValue[]): NonNullable<FieldValue[]> => {
-  const filteredValues: NonNullable<FieldValue[]> = [];
-  values.forEach(value => {
-    if (value !== undefined && value !== null) {
-      filteredValues.push(value);
-    }
-  });
-  return filteredValues;
+const isNotNullAndUndefined = <T>(value: T): value is NonNullable<T> => {
+  return value !== undefined && value !== null;
 };
 
+// checkIsNum([1, 2, 3, null, undefined]) = 1, 2, 3]
 const checkIsNum = (values: FieldValue[]): number[] => {
-  const filteredUndefinedAndNullValues = filterUndefinedAndNull(values);
-  const checkedValues: number[] = [];
-  filteredUndefinedAndNullValues.forEach(value => {
+  const assertIsNumber = (value: FieldValue): value is number => {
     if (typeof value !== 'number') {
       throw new Error(`Expected number, got '${typeof value}'.`);
     }
-    checkedValues.push(value);
-  });
-  return checkedValues;
+    return true;
+  };
+  const filteredUndefinedAndNullValues = values.filter(isNotNullAndUndefined);
+  return filteredUndefinedAndNullValues.filter(assertIsNumber);
 };
 
 const group = (values: FieldValue[]): FieldValue => {
-  if (values.length !== 0) {
-    return values[0];
-  }
-  return undefined;
+  return values[0];
 };
 
 const sum = (values: FieldValue[]): number | undefined => {
-  if (values.length !== 0) {
-    const checkedValues: number[] = checkIsNum(values);
-    return checkedValues.reduce((a, b) => {
-      return a + b;
-    });
-  }
-  return undefined;
+  const checkedValues = checkIsNum(values);
+  return checkedValues.length === 0
+    ? undefined
+    : checkedValues.reduce((a, b) => {
+        return a + b;
+      });
 };
 
 const avg = (values: FieldValue[]): number | undefined => {
-  const numerator: number | undefined = sum(values);
-  const denominator: number = count(values);
-  if (!isUndefined(numerator) && !isUndefined(denominator) && denominator !== 0) {
+  const checkedValues = checkIsNum(values);
+  const numerator = sum(checkedValues);
+  const denominator = count(checkedValues);
+  if (isNotUndefined(numerator) && denominator !== 0) {
     return numerator / denominator;
   }
   return undefined;
@@ -61,38 +52,35 @@ const count = (values: FieldValue[]): number => {
   return values.length;
 };
 
-const max = (values: FieldValue[]): FieldValue => {
-  if (values.length !== 0) {
-    let maxValue: FieldValue = values[0];
-    values.forEach(value => {
-      if (!isUndefined(value) && !isUndefined(maxValue) && value > maxValue) maxValue = value;
-    });
-    return maxValue;
-  }
-  return undefined;
+// helper of max() and min(), e.g.: customSort([1, 2, 3, null]) = [null, 1, 2, 3]
+const customSort = (values: FieldValue[]): FieldValue[] => {
+  const filteredUndefinedValues = values.filter(isNotUndefined);
+  return filteredUndefinedValues.sort((a, b) => {
+    if (a === null) {
+      return -1;
+    }
+    if (b === null) {
+      return 1;
+    }
+    return a > b ? 1 : -1;
+  });
 };
 
+// max([1, 2, 3, null]) = 3; max([null, null]) = null
+const max = (values: FieldValue[]): FieldValue => {
+  const sortedValues = customSort(values);
+  return sortedValues.length !== 0 ? sortedValues.reverse()[0] : undefined;
+};
+
+// min([1, 2, 3, null]) = null; min([null, null]) = null
 const min = (values: FieldValue[]): FieldValue => {
-  if (values.length !== 0) {
-    let minValue: FieldValue = values[0];
-    values.forEach(value => {
-      if (!isUndefined(value) && !isUndefined(minValue) && value < minValue) minValue = value;
-    });
-    return minValue;
-  }
-  return undefined;
+  const sortedValues = customSort(values);
+  return sortedValues.length !== 0 ? sortedValues[0] : undefined;
 };
 
 const unique = (values: FieldValue[]): FieldValue => {
-  if (values.length !== 0) {
-    for (let i = 0; i < values.length - 1; i++) {
-      if (values[i] !== values[i + 1]) {
-        return 'NO_UNIQUE_VALUE';
-      }
-    }
-    return values[0];
-  }
-  return undefined;
+  const distinctValues = [...new Set(values.filter(isNotUndefined))];
+  return distinctValues.length === 1 ? distinctValues[0] : 'NO_UNIQUE_VALUE';
 };
 
 const drop = (values: FieldValue[]): FieldValue => {
@@ -100,21 +88,11 @@ const drop = (values: FieldValue[]): FieldValue => {
 };
 
 const first = (values: FieldValue[]): FieldValue => {
-  for (let i = 0; i < values.length; i++) {
-    if (!isUndefined(values[i])) {
-      return values[i];
-    }
-  }
-  return undefined;
+  return values.find(isNotUndefined);
 };
 
 const last = (values: FieldValue[]): FieldValue => {
-  for (let i = values.length; i > 0; i--) {
-    if (!isUndefined(values[i])) {
-      return values[i];
-    }
-  }
-  return undefined;
+  return values.reverse().find(isNotUndefined);
 };
 
 export const aggregations = {
