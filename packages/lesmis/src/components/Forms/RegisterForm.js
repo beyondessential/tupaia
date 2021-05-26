@@ -6,6 +6,8 @@
 import React, { lazy } from 'react';
 import { TextField, Button, Checkbox, PasswordStrengthBar } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import MuiLink from '@material-ui/core/Link';
+import MuiBox from '@material-ui/core/Box';
 import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
@@ -46,10 +48,48 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
+const Text = styled(Typography)`
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.8rem;
+`;
+
+const SuccessMessage = () => (
+  <MuiBox>
+    <Heading variant="h4">Register for an account</Heading>
+    <MuiBox mt={4}>
+      <Text>
+        Congratulations, you have successfully signed up to Tupaia. To activate your account please{' '}
+        <b>click the verification link in your email.</b> Once activated, you can use your new
+        account to log in to tupaia.org as well as our app, Tupaia Meditrak on{' '}
+        <MuiLink
+          href="https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537?mt=8"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          iOS
+        </MuiLink>{' '}
+        and{' '}
+        <MuiLink
+          href="https://play.google.com/store/apps/details?id=com.tupaiameditrak&hl=en"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          &nbsp;Android&nbsp;.
+        </MuiLink>
+      </Text>
+    </MuiBox>
+  </MuiBox>
+);
+
 export const RegisterForm = () => {
   const { handleSubmit, register, errors, watch, getValues } = useForm();
-  const { mutate, isError, isLoading, error } = useRegister();
+  const { mutate, isError, isLoading, isSuccess, error } = useRegister();
   const password = watch('password');
+
+  if (isSuccess) {
+    return <SuccessMessage />;
+  }
 
   return (
     <form onSubmit={handleSubmit(fields => mutate(fields))} noValidate>

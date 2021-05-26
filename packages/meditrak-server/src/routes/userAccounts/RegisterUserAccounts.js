@@ -75,6 +75,8 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
+      countryCode,
+      permissionGroupName,
     } = this.newRecordData;
 
     const { userId } = await this.createUserRecord({
@@ -86,6 +88,31 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       contactNumber,
       password,
     });
+
+    if (countryCode && permissionGroupName) {
+      const country = await this.models.entity.findOne({
+        code: countryCode,
+        type: 'country',
+      });
+
+      const permissionGroup = await this.models.permissionGroup.findOne({
+        name: permissionGroupName,
+      });
+
+      if (!permissionGroup) {
+        throw new Error(`No such permission group: ${permissionGroupName}`);
+      }
+
+      if (!country) {
+        throw new Error(`No such country: ${countryCode}`);
+      }
+
+      await this.models.userEntityPermission.findOrCreate({
+        user_id: userId,
+        entity_id: country.id,
+        permission_group_id: permissionGroup.id,
+      });
+    }
 
     sendVerifyEmail(this.req, userId);
 

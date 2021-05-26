@@ -4,8 +4,11 @@
  */
 import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
+import { LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUP } from '../constants';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
+
+type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
 export class MeditrakConnection extends SessionHandlingApiConnection {
   baseUrl = MEDITRAK_API_URL;
@@ -20,9 +23,7 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   }
 
   /*
-   * Function will attempt to create a new user on the TupaiaApp server
-   * and check that the results of an App create user response are valid,
-   * and throw an error if not
+   *  Attempt to create a new user
    *
    * Successful response should take the form of:
    * {
@@ -38,9 +39,15 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
    *   "error": "Please complete fields."
    * }
    */
-  async registerUser(query = {}, userFields) {
-    const user = await this.post('user', query, userFields);
-    console.log('user', user);
-    return 'success';
+  registerUser(userData: RequestBody) {
+    return this.post(
+      'user',
+      {},
+      {
+        countryCode: LESMIS_COUNTRY_CODE,
+        permissionGroupName: LESMIS_PERMISSION_GROUP,
+        ...userData,
+      },
+    );
   }
 }

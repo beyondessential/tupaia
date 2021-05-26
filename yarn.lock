@@ -25785,6 +25785,13 @@ react-password-strength-bar@^0.3.2:
   dependencies:
     zxcvbn "4.4.2"
 
+react-password-strength-bar@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/react-password-strength-bar/-/react-password-strength-bar-0.3.3.tgz#c6b7278f4ff550f2cd03174526ac5f7a0bc92365"
+  integrity sha512-VYi1LpVORBUgP/8ymnDhMKpRwcymyg0MAzoeGFyyrUo3m8rxzAYDfQyzfflWGKDw5o3XT6WlxWtt+0m8uncJEw==
+  dependencies:
+    zxcvbn "4.4.2"
+
 react-popper-tooltip@^2.11.0, react-popper-tooltip@^2.8.3:
   version "2.11.1"
   resolved "https://registry.yarnpkg.com/react-popper-tooltip/-/react-popper-tooltip-2.11.1.tgz#3c4bdfd8bc10d1c2b9a162e859bab8958f5b2644"

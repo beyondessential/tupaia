@@ -17,10 +17,7 @@ export class RegisterRoute extends Route {
     this.meditrakConnection = new MeditrakConnection(req.session);
   }
 
-  async buildResponse() {
-    const body = this.req.body;
-    const query = this.req.query;
-    console.log('body', body);
-    return this.meditrakConnection.registerUser(query, body);
+  buildResponse() {
+    return this.meditrakConnection.registerUser(this.req.body);
   }
 }
