@@ -33,7 +33,7 @@ const ENTITY_AGGREGATIONS_BY_REPORT_ID = {
   Laos_Schools_Male_Female: {
     dataSourceEntityType: 'school',
     aggregationEntityType: 'country',
-    aggregationType: 'MOST_RECENT_PER_ORG_GROUP',
+    aggregationType: 'SUM_PER_ORG_GROUP',
     aggregationOrder: 'BEFORE',
   },
 };
