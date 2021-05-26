@@ -11,7 +11,7 @@ export class DeleteAlertRoute extends Route {
     const { alertId } = this.req.params;
 
     // Just to validate if the alert exists
-    const surveyResponse = this.meditrakConnection?.findSurveyResponseById(alertId);
+    const surveyResponse = await this.meditrakConnection?.findSurveyResponseById(alertId);
 
     if (!surveyResponse) {
       throw new RespondingError('Alert cannot be found', 500);
