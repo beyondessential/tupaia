@@ -4,7 +4,7 @@
  */
 
 import groupBy from 'lodash.groupby';
-import { reduceToDictionary } from '@tupaia/utils';
+import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
 import { getPeriodByDate } from '../../utils';
 import { combineQueries, useData, useReport } from './helpers';
 
@@ -30,11 +30,13 @@ export const useWeeklyReportForAlert = alert => {
   const siteDataByWeek = groupBy(siteReport, 'period');
   const orgUnitCodeToName = reduceToDictionary(sites, 'code', 'name');
 
-  const data = countryReport.map(countryData => {
-    const siteData = (siteDataByWeek[countryData.period] ?? []).map(site => ({
-      ...site,
-      name: orgUnitCodeToName[site.organisationUnit],
-    }));
+  const data = countryReport.sort(getSortByKey('period', { ascending: false })).map(countryData => {
+    const siteData = (siteDataByWeek[countryData.period] ?? [])
+      .map(site => ({
+        ...site,
+        name: orgUnitCodeToName[site.organisationUnit],
+      }))
+      .sort(getSortByKey('name'));
 
     return { ...countryData, sites: siteData };
   });
