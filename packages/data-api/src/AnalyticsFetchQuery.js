@@ -104,7 +104,7 @@ export class AnalyticsFetchQuery extends DataFetchQuery {
     }
 
     if (sum) {
-      fields.push('SUM(value::NUMERIC)::text');
+      fields.push('SUM(value::NUMERIC)::text as value');
       fields.push('MAX(type) as type');
       if (!getLatestPerPeriod) {
         fields.push('MAX(date) as date');
