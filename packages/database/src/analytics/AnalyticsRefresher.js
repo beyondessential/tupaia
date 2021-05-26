@@ -14,6 +14,7 @@ export class AnalyticsRefresher {
     this.scheduledRefreshTimeout = null;
     this.scheduledRefreshPromise = null;
     this.scheduledRefreshPromiseResolve = null;
+    this.activeRefreshPromise = null;
     this.changeHandlerCancellers = [];
   }
 
@@ -33,7 +34,10 @@ export class AnalyticsRefresher {
     return this.scheduleAnalyticsRefresh();
   };
 
-  scheduleAnalyticsRefresh() {
+  async scheduleAnalyticsRefresh() {
+    // wait for any active refresh to finish before scheduling a new one
+    await this.activeRefreshPromise;
+
     // clear any previous scheduled rebuild, so that we debounce all changes in the same time period
     if (this.scheduledRefreshTimeout) {
       clearTimeout(this.scheduledRefreshTimeout);
@@ -46,7 +50,9 @@ export class AnalyticsRefresher {
     }
 
     // schedule the rebuild to happen after an adequate period of debouncing
-    this.scheduledRefreshTimeout = setTimeout(this.refreshAnalytics, REFRESH_DEBOUNCE_TIME);
+    this.scheduledRefreshTimeout = setTimeout(() => {
+      this.activeRefreshPromise = this.refreshAnalytics();
+    }, REFRESH_DEBOUNCE_TIME);
     return this.scheduledRefreshPromise;
   }
 
