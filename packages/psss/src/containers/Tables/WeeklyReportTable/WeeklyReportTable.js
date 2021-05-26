@@ -29,18 +29,7 @@ import { combineMutationResults, useDeleteWeeklyReport, useSaveWeeklyReport } fr
 import { TABLE_STATUSES } from '../../../constants';
 import { WeeklyReportTableHeading } from './WeeklyReportTableHeading';
 
-const GreyHeader = styled(FakeHeader)`
-  border: none;
-`;
-
 const Alert = styled(SmallAlert)`
-  margin-bottom: 1.2rem;
-`;
-
-const GreyAlert = styled(SmallAlert)`
-  background: ${props => props.theme.palette.text.secondary};
-  font-weight: 500;
-  color: white;
   margin-bottom: 1.2rem;
 `;
 
@@ -127,6 +116,8 @@ export const WeeklyReportTable = React.memo(
       week: weekNumber,
     });
     const { error, isError } = combineMutationResults([saveResults, deleteResults]);
+    const isCountryTableBeingEdited =
+      !isSiteReport && [TABLE_STATUSES.EDITABLE, TABLE_STATUSES.SAVING].includes(tableStatus);
 
     const onSubmit = async formData => {
       setTableStatus(TABLE_STATUSES.SAVING);
@@ -190,13 +181,12 @@ export const WeeklyReportTable = React.memo(
                 {error.message}
               </Alert>
             )}
-            {/*<GreyAlert severity="info" icon={<InfoIcon fontSize="inherit" />}>*/}
-            {/*Country level data has been manually edited, sentinel data will not be used.*/}
-            {/*</GreyAlert>*/}
-            {/*<GreyHeader>*/}
-            {/*  <span>SYNDROMES</span>*/}
-            {/*  <span>TOTAL CASES</span>*/}
-            {/*</GreyHeader>*/}
+            {isCountryTableBeingEdited && (
+              <Alert severity="error" variant="standard">
+                Updating aggregated data will be the source of truth. All individual Sentinel data
+                will be ignored.
+              </Alert>
+            )}
             <Table Header={TableHeader} Body={VerifiableBody} data={data} columns={columns} />
             {tableStatus === TABLE_STATUSES.EDITABLE && (
               <ActionsRow isSiteReport={isSiteReport}>

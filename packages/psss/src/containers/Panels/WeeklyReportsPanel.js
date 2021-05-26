@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
@@ -41,6 +41,8 @@ import {
 const SiteReportsSection = styled.section`
   position: relative;
   padding: 1.8rem 1.25rem;
+  pointer-events: ${props => (props.disabled ? 'none' : 'initial')};
+  opacity: ${props => (props.disabled ? '0.5' : 1)};
 
   &:after {
     display: ${props => (props.disabled ? 'block' : 'none')};
@@ -147,6 +149,14 @@ export const WeeklyReportsPanelComponent = React.memo(
       }
     };
 
+    const handleChangeSite = useCallback(
+      siteIndex => {
+        setActiveSiteIndex(siteIndex);
+        setSitesTableStatus(TABLE_STATUSES.STATIC);
+      },
+      [setActiveSiteIndex, setSitesTableStatus],
+    );
+
     const isVerified = isFetching || unVerifiedAlerts.length === 0;
     const showSites = activeWeek !== null && siteData.length > 0;
     const selectedSite = siteData[activeSiteIndex];
@@ -188,11 +198,14 @@ export const WeeklyReportsPanelComponent = React.memo(
           </EditableTableProvider>
         </CountryReportsSection>
         {showSites && (
-          <SiteReportsSection disabled={isSaving} data-testid="site-reports">
+          <SiteReportsSection
+            disabled={countryTableStatus === TABLE_STATUSES.EDITABLE || isSaving}
+            data-testid="site-reports"
+          >
             <ButtonSelect
               id="active-site"
               options={siteData}
-              onChange={setActiveSiteIndex}
+              onChange={handleChangeSite}
               index={activeSiteIndex}
             />
             <SiteAddress address={selectedSite.address} contact={selectedSite.contact} />
