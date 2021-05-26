@@ -60,10 +60,12 @@ export class EventsFetchQuery extends DataFetchQuery {
       params.push(this.eventId);
     }
 
-    if (conditions.length === 0) return '';
+    if (conditions.length === 0) {
+      return '';
+    }
 
     this.paramsArray.push(...params);
-    return conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    return `WHERE ${conditions.join(' AND ')}`;
   }
 
   build() {
