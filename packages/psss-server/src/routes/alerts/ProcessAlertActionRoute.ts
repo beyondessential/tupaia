@@ -9,7 +9,7 @@ import { Route } from '../Route';
 const ACTION_TO_ANSWER = {
   archive: 'Yes',
   unarchive: 'No',
-}
+};
 
 type AlertAction = keyof typeof ACTION_TO_ANSWER;
 
@@ -22,8 +22,8 @@ function validateAction(action: string): asserts action is AlertAction {
 
 export class ProcessAlertActionRoute extends Route {
   async buildResponse() {
-    const { alertId, action} = this.req.params;
-    
+    const { alertId, action } = this.req.params;
+
     validateAction(action);
 
     const alertSurveyResponse = await this.meditrakConnection?.findSurveyResponseById(alertId);
@@ -31,11 +31,13 @@ export class ProcessAlertActionRoute extends Route {
     if (!alertSurveyResponse) {
       throw new RespondingError('Alert cannot be found', 500);
     }
-    
-    return this.meditrakConnection?.updateSurveyResponseByObject(alertSurveyResponse, [{
-      type: 'Binary',
-      code: 'PSSS_Alert_Archived',
-      value: ACTION_TO_ANSWER[action],
-    }]);
+
+    return this.meditrakConnection?.updateSurveyResponseByObject(alertSurveyResponse, [
+      {
+        type: 'Binary',
+        code: 'PSSS_Alert_Archived',
+        value: ACTION_TO_ANSWER[action],
+      },
+    ]);
   }
 }
