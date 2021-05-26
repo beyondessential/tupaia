@@ -25,12 +25,8 @@ type GroupRowFields = {
   [groupKey: string]: RowFields;
 };
 
-type AggregatedFields = {
-  [fieldKey: string]: FieldValue;
-};
-
 type AggregatedRowFields = {
-  [groupKey: string]: AggregatedFields;
+  [groupKey: string]: Row;
 };
 
 const getGroupRowFields = (
@@ -56,7 +52,7 @@ const getGroupRowFields = (
 };
 
 const merge = (previousRow: RowFields, newRow: Row): RowFields => {
-  const mergedRow: RowFields = previousRow;
+  const mergedRow = { ...previousRow };
   Object.keys(newRow).forEach((field: string) => {
     mergedRow[field] = [...(mergedRow[field] || []), newRow[field]];
   });
@@ -65,14 +61,14 @@ const merge = (previousRow: RowFields, newRow: Row): RowFields => {
 
 const getAggregatedRows = (groupRowFields: GroupRowFields, params: AggregateParams): Row[] => {
   const aggregatedRowFields: AggregatedRowFields = {};
-  Object.keys(groupRowFields).forEach((groupKey: string) => {
-    Object.keys(groupRowFields[groupKey]).forEach((fieldKey: string) => {
+  Object.entries(groupRowFields).forEach(([groupKey, fieldValues]) => {
+    Object.entries(fieldValues).forEach(([fieldKey, fieldValue]) => {
       const aggregation = params.getFieldAggregation(fieldKey);
-      const fieldValue: FieldValue = aggregations[aggregation](groupRowFields[groupKey][fieldKey]);
-      if (fieldValue !== undefined) {
+      const aggregatedValue = aggregations[aggregation](fieldValue);
+      if (aggregatedValue !== undefined) {
         aggregatedRowFields[groupKey] = {
           ...aggregatedRowFields[groupKey],
-          [fieldKey]: fieldValue,
+          [fieldKey]: aggregatedValue,
         };
       }
     });
