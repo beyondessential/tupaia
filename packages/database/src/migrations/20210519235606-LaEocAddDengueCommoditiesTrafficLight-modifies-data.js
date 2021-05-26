@@ -141,12 +141,6 @@ const getDatabuilderConfig = (columns, cells) => ({
     type: '$condition',
     conditions: [
       {
-        key: 'red',
-        condition: {
-          '=': 0,
-        },
-      },
-      {
         key: 'green',
         condition: {
           '>': 0,
@@ -162,6 +156,12 @@ const getDatabuilderConfig = (columns, cells) => ({
         key: 'grey',
         condition: {
           '=': null,
+        },
+      },
+      {
+        key: 'red',
+        condition: {
+          in: [0, null],
         },
       },
     ],
@@ -220,7 +220,7 @@ const viewJson = {
       },
       grey: {
         color: '',
-        label: '',
+        label: 'No Data',
         legendLabel: 'No Data',
       },
     },

@@ -43,7 +43,7 @@ const categoryPresentationOptions = {
     },
     grey: {
       color: '',
-      label: '',
+      label: 'No Data',
       legendLabel: 'No Data',
     },
   },
@@ -112,12 +112,6 @@ const categoryAggregator = {
   type: '$condition',
   conditions: [
     {
-      key: 'red',
-      condition: {
-        '=': 0,
-      },
-    },
-    {
       key: 'green',
       condition: {
         '>': 0,
@@ -133,6 +127,12 @@ const categoryAggregator = {
       key: 'grey',
       condition: {
         '=': null,
+      },
+    },
+    {
+      key: 'red',
+      condition: {
+        in: [0, null],
       },
     },
   ],
