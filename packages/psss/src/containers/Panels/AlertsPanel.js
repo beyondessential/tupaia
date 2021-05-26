@@ -161,11 +161,11 @@ export const AlertsPanel = React.memo(() => {
       </TabsContext.Provider>
       <CreateOutbreakModal
         isOpen={isCreateOutbreakModalOpen}
-        handleClose={handleCloseCreateOutbreakModal}
+        onClose={handleCloseCreateOutbreakModal}
       />
       <ArchiveAlertModal
         isOpen={isArchiveAlertModalOpen}
-        handleClose={handleCloseArchiveAlertModal}
+        onClose={handleCloseArchiveAlertModal}
         alertId={alertId}
       />
     </Drawer>

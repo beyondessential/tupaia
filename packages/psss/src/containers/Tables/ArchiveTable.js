@@ -111,12 +111,12 @@ export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
       <RestoreArchivedAlertModal
         isOpen={isRestoreModalOpen}
         alertId={alertId}
-        handleClose={() => setIsRestoreModalOpen(false)}
+        onClose={() => setIsRestoreModalOpen(false)}
       />
       <DeleteAlertModal
         isOpen={isDeleteModalOpen}
         alertId={alertId}
-        handleClose={() => setIsDeleteModalOpen(false)}
+        onClose={() => setIsDeleteModalOpen(false)}
       />
     </ArchiveTableContext.Provider>
   );
