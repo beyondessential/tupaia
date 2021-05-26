@@ -8,7 +8,7 @@ import { queryCache, useMutation } from 'react-query';
 import { MIN_DATE, SYNDROMES } from '../../constants';
 import { getPeriodByDate } from '../../utils';
 import { useData } from './helpers';
-import { put } from '../api';
+import { put, remove } from '../api';
 
 export const useAlerts = (period, orgUnitCodes, alertCategory) => {
   const params = {
@@ -38,6 +38,23 @@ export const useArchiveAlert = alertId =>
   useMutation(() => put(`alerts/${alertId}/archive`), {
     onSuccess: () => {
       queryCache.invalidateQueries(`alerts/active`);
+      queryCache.invalidateQueries(`alerts/archive`);
+    },
+    throwOnError: true,
+  });
+
+export const useRestoreArchivedAlert = alertId =>
+  useMutation(() => put(`alerts/${alertId}/unarchive`), {
+    onSuccess: () => {
+      queryCache.invalidateQueries(`alerts/active`);
+      queryCache.invalidateQueries(`alerts/archive`);
+    },
+    throwOnError: true,
+  });
+
+export const useDeleteAlert = alertId =>
+  useMutation(() => remove(`alerts/${alertId}`), {
+    onSuccess: () => {
       queryCache.invalidateQueries(`alerts/archive`);
     },
     throwOnError: true,
