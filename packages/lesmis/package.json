@@ -28,6 +28,7 @@
   ],
   "dependencies": {
     "@material-ui/core": "^4.9.11",
+    "@material-ui/data-grid": "^4.0.0-alpha.29",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
@@ -43,8 +44,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.15.1",
-    "react-query": "^3.9.6",
     "react-password-strength-bar": "^0.3.3",
+    "react-query": "^3.9.6",
     "react-router-dom": "^5.2.0",
     "styled-components": "^5.1.0"
   }

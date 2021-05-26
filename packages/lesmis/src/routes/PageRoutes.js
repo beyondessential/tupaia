@@ -13,6 +13,7 @@ import { EntityView } from '../views/EntityView';
 import { NotFoundView } from '../views/NotFoundView';
 import { LoginView } from '../views/LoginView';
 import { RegisterView } from '../views/RegisterView';
+import { UsersView } from '../views/UsersView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
 /**
@@ -34,6 +35,11 @@ export const PageRoutes = React.memo(() => (
     <Route path="/profile">
       <NavBar />
       <ProfileView />
+      <Footer />
+    </Route>
+    <Route path="/admin">
+      <NavBar />
+      <UsersView />
       <Footer />
     </Route>
     <Route path="/about">
