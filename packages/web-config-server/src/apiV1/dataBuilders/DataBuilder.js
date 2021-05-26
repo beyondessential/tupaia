@@ -12,6 +12,7 @@ export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
 
   /**
+   * @param {ModelRegistry} models
    * @param {Aggregator} aggregator
    * @param {DhisApi} dhisApi
    * @param {?Object} config

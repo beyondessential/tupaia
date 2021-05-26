@@ -17,13 +17,12 @@ import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
 
 const LegendFrame = styled.div`
-  padding: 0.3rem;
-  margin: 0.625rem auto;
-  border-radius: 3px;
+  padding: 0.6rem;
+  margin: 0.6rem auto;
   cursor: auto;
-  color: #eeeeee;
-  background-color: rgba(43, 45, 56, 0.8);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+  background-color: ${({ theme }) =>
+    theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(43, 45, 56, 0.85)'};
+  border-radius: 3px;
 `;
 
 const coloredMeasureTypes = [
