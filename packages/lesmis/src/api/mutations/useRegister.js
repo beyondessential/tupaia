@@ -31,11 +31,6 @@ export const useRegister = () => {
           deviceName: window.navigator.userAgent,
         },
       }),
-    {
-      onSuccess: () => {
-        console.log('success');
-      },
-    },
   );
 
   return query;
