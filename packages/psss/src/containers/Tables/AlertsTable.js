@@ -2,10 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { Table } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext } from 'react';
 import { connect } from 'react-redux';
+import { Table, useTableSorting } from '@tupaia/ui-components';
 import { useAlerts } from '../../api';
 import { SyndromeCell, AlertMenuCell, CountryNameCell, WeekAndDateCell } from '../../components';
 import { getCountryCodes } from '../../store';
@@ -62,6 +62,7 @@ const AlertsTableComponent = React.memo(({ countryCodes, period }) => {
   const isSingleCountry = countryCodes.length === 1;
   const columns = createColumns(isSingleCountry);
   const { data, isLoading, error, isFetching } = useAlerts(period, countryCodes, 'active');
+  const { sortedData, order, orderBy, sortColumn } = useTableSorting(data);
 
   const handleRowClick = useCallback(
     (_, rowData) => {
@@ -73,7 +74,10 @@ const AlertsTableComponent = React.memo(({ countryCodes, period }) => {
 
   return (
     <Table
-      data={data}
+      data={sortedData}
+      orderBy={orderBy}
+      order={order}
+      onChangeOrderBy={sortColumn}
       isLoading={isLoading}
       isFetching={!isLoading && isFetching}
       errorMessage={error && error.message}

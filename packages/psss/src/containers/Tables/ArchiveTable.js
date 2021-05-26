@@ -5,7 +5,7 @@
 import React, { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table } from '@tupaia/ui-components';
+import { Table, useTableSorting } from '@tupaia/ui-components';
 import {
   SyndromeCell,
   ArchivedAlertMenuCell,
@@ -84,6 +84,7 @@ export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
   const isSingleCountry = countryCodes.length === 1;
   const columns = createColumns(isSingleCountry);
   const { data, isLoading, error, isFetching } = useAlerts(period, countryCodes, 'archive');
+  const { sortedData, order, orderBy, sortColumn } = useTableSorting(data);
 
   return (
     <ArchiveTableContext.Provider
@@ -97,7 +98,10 @@ export const ArchiveTableComponent = React.memo(({ countryCodes, period }) => {
       }}
     >
       <Table
-        data={data}
+        data={sortedData}
+        orderBy={orderBy}
+        order={order}
+        onChangeOrderBy={sortColumn}
         isLoading={isLoading}
         isFetching={!isLoading && isFetching}
         errorMessage={error && error.message}

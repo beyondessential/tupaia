@@ -46,25 +46,9 @@ export function getSortByKey(key, options) {
  * @returns { (a: Object<string, any>, b: Object<string, any> ) => number }
  */
 export function getSortByExtractedValue(valueExtractor, options) {
-  const compareValuesAscending = (a, b) => {
-    const valueA = valueExtractor(a);
-    const valueB = valueExtractor(b);
-
-    if (typeof valueA === 'string' && typeof valueB === 'string') {
-      return valueA.localeCompare(valueB, undefined, { numeric: true });
-    }
-
-    if (valueA < valueB) {
-      return -1;
-    }
-    return valueA > valueB ? 1 : 0;
-  };
-
   const { ascending = true } = options || {};
-  return (a, b) => {
-    const ascValue = compareValuesAscending(a, b);
-    return ascending ? ascValue : ascValue * -1;
-  };
+  const comparator = ascending ? compareAsc : compareDesc;
+  return (a, b) => comparator(valueExtractor(a), valueExtractor(b));
 }
 
 const collectionToArray = collection =>
