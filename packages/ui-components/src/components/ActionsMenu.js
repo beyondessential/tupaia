@@ -83,10 +83,11 @@ export const ActionsMenu = ({ options }) => {
           horizontal: -85,
         }}
       >
-        {options.map(({ label, action }) => (
+        {options.map(({ label, action, style }) => (
           <StyledMenuItem
             role="button"
             key={label}
+            style={style}
             onClick={() => {
               action();
               setAnchorEl(null);

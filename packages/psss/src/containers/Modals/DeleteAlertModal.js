@@ -31,20 +31,25 @@ export const DeleteAlertModal = ({ isOpen, handleClose, alertId }) => {
     setStatus(STATUS.SUCCESS);
   }, [deleteAlert]);
 
+  const onClose = useCallback(async () => {
+    setStatus(STATUS.INITIAL);
+    handleClose();
+  }, [setStatus, handleClose]);
+
   if (status === STATUS.SUCCESS) {
     return (
       <SuccessModal
         isOpen={isOpen}
         title="Delete Alert"
         mainText="Alert successfully deleted"
-        handleClose={handleClose}
+        handleClose={onClose}
       />
     );
   }
 
   return (
     <ConfirmModal
-      handleClose={handleClose}
+      handleClose={onClose}
       isOpen={isOpen}
       isLoading={status === STATUS.LOADING}
       title="Delete Alert"

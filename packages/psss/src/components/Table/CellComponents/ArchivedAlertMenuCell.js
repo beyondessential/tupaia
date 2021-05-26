@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { ActionsMenu } from '@tupaia/ui-components';
 import { ArchiveTableContext } from '../../../containers/Tables';
+import * as COLORS from '../../../constants/colors';
 
 export const ArchivedAlertMenuCell = React.memo(({ id }) => {
   const { setAlertId, setIsRestoreModalOpen, setIsDeleteModalOpen } = useContext(
@@ -25,6 +26,7 @@ export const ArchivedAlertMenuCell = React.memo(({ id }) => {
     {
       label: 'Delete',
       action: deleteAlert,
+      style: { color: COLORS.RED },
     },
   ];
 

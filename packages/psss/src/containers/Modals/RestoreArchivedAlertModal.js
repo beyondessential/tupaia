@@ -31,20 +31,25 @@ export const RestoreArchivedAlertModal = ({ isOpen, handleClose, alertId }) => {
     setStatus(STATUS.SUCCESS);
   }, [restoreArchivedAlert]);
 
+  const onClose = useCallback(async () => {
+    setStatus(STATUS.INITIAL);
+    handleClose();
+  }, [setStatus, handleClose]);
+
   if (status === STATUS.SUCCESS) {
     return (
       <SuccessModal
         isOpen={isOpen}
         title="Restore Alert"
         mainText="Alert successfully restored"
-        handleClose={handleClose}
+        handleClose={onClose}
       />
     );
   }
 
   return (
     <ConfirmModal
-      handleClose={handleClose}
+      handleClose={onClose}
       isOpen={isOpen}
       isLoading={status === STATUS.LOADING}
       title="Archive Alert"
