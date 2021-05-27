@@ -23,7 +23,22 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   }
 
   async getUsers() {
-    const users = await this.get('users', { pageSize: 1600 });
+    const users = await this.get('users', { pageSize: 20000 });
+
+    // const permissions = await this.get('userEntityPermissions', {
+    //   pageSize: 5000,
+    //   columns: JSON.stringify(['user_id', 'entity.name', 'entity.code', 'permission_group.name']),
+    //   filter: JSON.stringify({
+    //     'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
+    //     'permission_group.name.name': {
+    //       comparator: 'like',
+    //       comparisonValue: 'LESMIS Public',
+    //       castAs: 'text',
+    //     },
+    //   }),
+    // });
+    // console.log('users', users[0]);
+    // console.log('permissions', permissions.length);
     return camelcaseKeys(users);
   }
 
