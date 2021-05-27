@@ -8,12 +8,25 @@ import { DataGrid } from '@material-ui/data-grid';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Toolbar, Breadcrumbs } from '../components';
 import { useUsers } from '../api/queries';
+import * as COLORS from '../constants';
+import { Breadcrumbs, Toolbar } from '../components';
 
-const Container = styled(MuiContainer)`
+const Section = styled.section`
+  background: ${COLORS.GREY_F9};
   padding-top: 3rem;
+  padding-bottom: 3rem;
   min-height: 70vh;
+
+  .MuiDataGrid-root {
+    background: white;
+  }
+`;
+
+const TitleContainer = styled(MuiContainer)`
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
 const Title = styled(Typography)`
@@ -22,16 +35,14 @@ const Title = styled(Typography)`
   line-height: 2.6rem;
 `;
 
-const breadcrumbs = [{ name: 'admin', url: 'admin' }];
-
 const columns = [
-  { field: 'firstName', headerName: 'First Name', width: 150 },
-  { field: 'lastName', headerName: 'Last Name', width: 150 },
-  { field: 'email', headerName: 'Email', width: 150 },
-  { field: 'mobileNumber', headerName: 'Mobile Number', width: 150 },
-  { field: 'employer', headerName: 'Employer', width: 150 },
-  { field: 'position', headerName: 'Position', width: 150 },
-  { field: 'verifiedEmail', headerName: 'Verified', width: 150 },
+  { field: 'firstName', headerName: 'First Name', width: 180 },
+  { field: 'lastName', headerName: 'Last Name', width: 180 },
+  { field: 'email', headerName: 'Email', flex: 1 },
+  { field: 'mobileNumber', headerName: 'Mobile Number', width: 190 },
+  { field: 'employer', headerName: 'Employer', width: 180 },
+  { field: 'position', headerName: 'Position', width: 180 },
+  { field: 'verifiedEmail', headerName: 'Verified', type: 'boolean', width: 170 },
 ];
 
 export const UsersView = () => {
@@ -40,14 +51,27 @@ export const UsersView = () => {
   return (
     <>
       <Toolbar>
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
+        <Breadcrumbs breadcrumbs={[{ name: 'Admin', url: '/admin' }]} />
       </Toolbar>
-      <Container maxWidth="lg">
+      <TitleContainer maxWidth="lg">
         <Title variant="h1">Users and Permissions</Title>
-        <div style={{ height: 1000, width: '100%' }}>
-          {isLoading ? 'loading...' : <DataGrid rows={data} columns={columns} />}
-        </div>
-      </Container>
+      </TitleContainer>
+      <Section>
+        <MuiContainer maxWidth="lg">
+          {isLoading ? (
+            'loading...'
+          ) : (
+            <DataGrid
+              rows={data}
+              columns={columns}
+              autoHeight
+              pageSize={20}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+            />
+          )}
+        </MuiContainer>
+      </Section>
     </>
   );
 };

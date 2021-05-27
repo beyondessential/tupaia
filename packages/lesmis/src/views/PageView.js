@@ -41,7 +41,7 @@ const Title = styled(Typography)`
 `;
 
 /* eslint-disable react/prop-types */
-const PageHeader = ({ title, url }) => {
+export const PageHeader = ({ title, url }) => {
   const breadcrumbs = [{ name: title, url }];
   return (
     <>
@@ -55,6 +55,7 @@ const PageHeader = ({ title, url }) => {
   );
 };
 
+// Todo: Move to components
 export const PageView = ({ content }) => {
   const { title, body, url } = content;
   return (

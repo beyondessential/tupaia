@@ -23,7 +23,7 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   }
 
   async getUsers() {
-    const users = await this.get('users', { pageSize: 100 });
+    const users = await this.get('users', { pageSize: 1600 });
     return camelcaseKeys(users);
   }
 
