@@ -8,9 +8,10 @@ import winston from 'winston';
 const REFRESH_DEBOUNCE_TIME = 1000; // wait 1 second after changes before refreshing, to avoid double-up
 
 export class AnalyticsRefresher {
-  constructor(database, models) {
+  constructor(database, models, refreshDebounceTime = REFRESH_DEBOUNCE_TIME) {
     this.database = database;
     this.models = models;
+    this.refreshDebounceTime = refreshDebounceTime;
     this.scheduledRefreshTimeout = null;
     this.scheduledRefreshPromise = null;
     this.scheduledRefreshPromiseResolve = null;
@@ -52,7 +53,7 @@ export class AnalyticsRefresher {
     // schedule the rebuild to happen after an adequate period of debouncing
     this.scheduledRefreshTimeout = setTimeout(() => {
       this.activeRefreshPromise = this.refreshAnalytics();
-    }, REFRESH_DEBOUNCE_TIME);
+    }, this.refreshDebounceTime);
     return this.scheduledRefreshPromise;
   }
 
