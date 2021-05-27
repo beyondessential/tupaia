@@ -3,18 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import MuiButton from '@material-ui/core/Button';
 
-const Key = styled.div`
+const Button = styled(MuiButton)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.3rem;
+  padding: 0.2rem 0.3rem;
+  font-weight: 400;
+  letter-spacing: 0;
   pointer-events: auto;
+  margin-bottom: 0.1rem;
   cursor: pointer;
-  ${p => (p.hidden ? 'opacity: 0.5;' : '')}
+  opacity: ${props => (props.hidden ? '0.5' : '1')};
+`;
+
+const Label = styled.div`
+  font-size: 0.875rem;
 `;
 
 export const LegendEntry = React.memo(
@@ -28,10 +36,10 @@ export const LegendEntry = React.memo(
     };
 
     return (
-      <Key onClick={handleClick} hidden={hidden}>
+      <Button onClick={handleClick} hidden={hidden}>
         {marker}
-        <div>{label}</div>
-      </Key>
+        <Label>{label}</Label>
+      </Button>
     );
   },
 );

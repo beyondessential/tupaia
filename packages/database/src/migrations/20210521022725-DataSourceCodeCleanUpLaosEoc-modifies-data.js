@@ -38,6 +38,7 @@ const DATA_SOURCES = {
   ...dengueNoWarningDeath,
   ...dengueWithWarningDeath,
   ...dengueSevereDeath,
+  ...malariaCase,
   ...malariaDeath,
   ...measlesCase,
   ...measlesDeath,
@@ -95,7 +96,7 @@ const MAP_OVERLAYS_CHANGES_IN_DATA_ELEMENT_CODE = [
       'LAOS_EOC_Total_Measles_Deaths_By_Facility',
     ],
     renameMapping: {
-      ...malariaDeath,
+      ...measlesDeath,
     },
   },
   {
@@ -104,7 +105,7 @@ const MAP_OVERLAYS_CHANGES_IN_DATA_ELEMENT_CODE = [
       'LAOS_EOC_Total_Measles_Cases_By_Facility',
     ],
     renameMapping: {
-      ...malariaCase,
+      ...measlesCase,
     },
   },
 ];
