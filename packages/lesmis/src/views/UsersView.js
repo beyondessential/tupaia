@@ -4,13 +4,12 @@
  *
  */
 import React from 'react';
-import { useTable, useFilters } from 'react-table';
 import styled from 'styled-components';
-import { Table, Typography, Container, TableHead, TableRow, TableBody } from '@material-ui/core';
-import { TableCell, StyledTableRow, TextField } from '@tupaia/ui-components';
+import { Typography, Container } from '@material-ui/core';
 import { useUsers } from '../api/queries';
 import * as COLORS from '../constants';
 import { Breadcrumbs, Toolbar } from '../components';
+import { DataGrid } from '../components/DataGrid/DataGrid';
 
 const Section = styled.section`
   background: ${COLORS.GREY_F9};
@@ -35,115 +34,6 @@ const Title = styled(Typography)`
   font-size: 1.75rem;
   line-height: 2.6rem;
 `;
-
-const StyledTable = styled(Table)`
-  background: white;
-  border: 1px solid ${props => props.theme.palette.grey['400']};
-`;
-
-// Define a default UI for filtering
-function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
-  const count = preFilteredRows.length;
-
-  return (
-    <TextField
-      value={filterValue || ''}
-      onChange={e => {
-        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-      }}
-      placeholder="Search"
-    />
-  );
-}
-
-// eslint-disable-next-line react/prop-types
-const DataGrid = ({ data, columns }) => {
-  const filterTypes = React.useMemo(
-    () => ({
-      text: (rows, id, filterValue) => {
-        return rows.filter(row => {
-          const rowValue = row.values[id];
-          return rowValue !== undefined
-            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
-            : true;
-        });
-      },
-    }),
-    [],
-  );
-
-  const defaultColumn = React.useMemo(
-    () => ({
-      // Let's set up our default Filter UI
-      Filter: DefaultColumnFilter,
-    }),
-    [],
-  );
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
-    {
-      defaultColumn,
-      filterTypes,
-      columns,
-      data,
-    },
-    useFilters,
-  );
-
-  return (
-    <StyledTable {...getTableProps()}>
-      <TableHead>
-        {
-          // Loop over the header rows
-          headerGroups.map(headerGroup => (
-            // Apply the header row props
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {
-                // Loop over the headers in each row
-                headerGroup.headers.map(column => (
-                  // Apply the header cell props
-                  <TableCell {...column.getHeaderProps()}>
-                    {column.render('Header')}
-                    <div>{column.canFilter ? column.render('Filter') : null}</div>
-                  </TableCell>
-                ))
-              }
-            </TableRow>
-          ))
-        }
-      </TableHead>
-      {/* Apply the table body props */}
-      <TableBody {...getTableBodyProps()}>
-        {
-          // Loop over the table rows
-          rows.map(row => {
-            // Prepare the row for display
-            prepareRow(row);
-            return (
-              // Apply the row props
-              <StyledTableRow {...row.getRowProps()}>
-                {
-                  // Loop over the rows cells
-                  row.cells.map(cell => {
-                    // Apply the cell props
-                    return (
-                      <TableCell {...cell.getCellProps()}>
-                        {
-                          // Render the cell contents
-                          cell.render('Cell')
-                        }
-                      </TableCell>
-                    );
-                  })
-                }
-              </StyledTableRow>
-            );
-          })
-        }
-      </TableBody>
-    </StyledTable>
-  );
-};
 
 export const UsersView = () => {
   const { isLoading, data } = useUsers();
