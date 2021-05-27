@@ -4,22 +4,10 @@
  *
  */
 import React from 'react';
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridColumnsToolbarButton,
-  GridFilterToolbarButton,
-  GridToolbarExport,
-  GridDensitySelector,
-  useGridSlotComponentProps,
-  GridFilterForm,
-} from '@material-ui/data-grid';
-import { TextField } from '@tupaia/ui-components';
-import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import MuiContainer from '@material-ui/core/Container';
+import { useTable, useFilters } from 'react-table';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
+import { Table, Typography, Container, TableHead, TableRow, TableBody } from '@material-ui/core';
+import { TableCell, StyledTableRow, TextField } from '@tupaia/ui-components';
 import { useUsers } from '../api/queries';
 import * as COLORS from '../constants';
 import { Breadcrumbs, Toolbar } from '../components';
@@ -36,7 +24,7 @@ const Section = styled.section`
   }
 `;
 
-const TitleContainer = styled(MuiContainer)`
+const TitleContainer = styled(Container)`
   padding-top: 2rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
@@ -48,134 +36,127 @@ const Title = styled(Typography)`
   line-height: 2.6rem;
 `;
 
-const Wrapper = styled.div`
-  padding-top: 15px;
-`;
-
-const FilterHeader = () => {
-  return (
-    <Wrapper>
-      <TextField placeholder="Search" />
-    </Wrapper>
-  );
-};
-
-const columns = [
-  { field: 'firstName', headerName: 'First Name', width: 180, renderHeader: FilterHeader },
-  { field: 'lastName', headerName: 'Last Name', width: 180 },
-  { field: 'email', headerName: 'Email', flex: 1 },
-  { field: 'mobileNumber', headerName: 'Mobile Number', width: 190 },
-  { field: 'employer', headerName: 'Employer', width: 180 },
-  { field: 'position', headerName: 'Position', width: 180 },
-  { field: 'verifiedEmail', headerName: 'Verified', type: 'boolean', width: 170 },
-  // {
-  //   field: 'actions',
-  //   renderHeader: () => <span />,
-  //   renderCell: ({ row }) => {
-  //     const handleClick = () => {
-  //       console.log('data...', row);
-  //     };
-  //     return (
-  //       <strong>
-  //         <IconButton onClick={handleClick}>
-  //           <MoreVertIcon />
-  //         </IconButton>
-  //       </strong>
-  //     );
-  //   },
-  // },
-];
-
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridColumnsToolbarButton />
-      <GridFilterToolbarButton />
-      <GridDensitySelector />
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
-
-const Panel = styled.div`
-  position: absolute;
+const StyledTable = styled(Table)`
   background: white;
-  padding: 20px 20px 40px;
-  top: -175px;
-  border-radius: 3px;
   border: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-const CustomTitle = styled(Typography)`
-  font-weight: 600;
-  font-size: 1.2rem;
-  line-height: 1.6rem;
-  margin-bottom: 20px;
-`;
-
-function CustomPanel(props) {
-  const data = useGridSlotComponentProps();
-  const { children } = props;
-  return (
-    <Panel>
-      <CustomTitle>Search</CustomTitle>
-      <div>{children}</div>
-    </Panel>
-  );
-}
-
-function CustomFilterPanel(props) {
-  const { state: gridState, apiRef, ...rest } = useGridSlotComponentProps();
-  console.log('gridState', gridState);
-  console.log('rest', rest);
-
-  const applyFilter = React.useCallback(
-    item => {
-      apiRef.current.upsertFilter(item);
-    },
-    [apiRef],
-  );
-
-  const deleteFilter = React.useCallback(
-    item => {
-      apiRef.current.deleteFilter(item);
-    },
-    [apiRef],
-  );
-
-  const applyFilterLinkOperator = React.useCallback(
-    operator => {
-      apiRef.current.applyFilterLinkOperator(operator);
-    },
-    [apiRef],
-  );
-
-  const hasMultipleFilters = React.useMemo(() => gridState.filter.items.length > 1, [
-    gridState.filter.items.length,
-  ]);
-
-  const defaultForm = { columnField: 'firstName', operatorValue: 'contains' };
-
-  const item = gridState.filter.items.length > 0 ? gridState.filter.items[0] : defaultForm;
+// Define a default UI for filtering
+function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
+  const count = preFilteredRows.length;
 
   return (
-    <GridFilterForm
-      item={item}
-      applyFilterChanges={applyFilter}
-      deleteFilter={deleteFilter}
-      hasMultipleFilters={hasMultipleFilters}
-      showMultiFilterOperators={false}
-      // showMultiFilterOperators={index > 0}
-      multiFilterOperator={gridState.filter.linkOperator}
-      disableMultiFilterOperator
-      // disableMultiFilterOperator={index !== 1}
-      applyMultiFilterOperatorChanges={applyFilterLinkOperator}
+    <TextField
+      value={filterValue || ''}
+      onChange={e => {
+        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+      }}
+      placeholder="Search"
     />
   );
 }
 
+// eslint-disable-next-line react/prop-types
+const DataGrid = ({ data, columns }) => {
+  const filterTypes = React.useMemo(
+    () => ({
+      text: (rows, id, filterValue) => {
+        return rows.filter(row => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+            : true;
+        });
+      },
+    }),
+    [],
+  );
+
+  const defaultColumn = React.useMemo(
+    () => ({
+      // Let's set up our default Filter UI
+      Filter: DefaultColumnFilter,
+    }),
+    [],
+  );
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+    {
+      defaultColumn,
+      filterTypes,
+      columns,
+      data,
+    },
+    useFilters,
+  );
+
+  return (
+    <StyledTable {...getTableProps()}>
+      <TableHead>
+        {
+          // Loop over the header rows
+          headerGroups.map(headerGroup => (
+            // Apply the header row props
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {
+                // Loop over the headers in each row
+                headerGroup.headers.map(column => (
+                  // Apply the header cell props
+                  <TableCell {...column.getHeaderProps()}>
+                    {column.render('Header')}
+                    <div>{column.canFilter ? column.render('Filter') : null}</div>
+                  </TableCell>
+                ))
+              }
+            </TableRow>
+          ))
+        }
+      </TableHead>
+      {/* Apply the table body props */}
+      <TableBody {...getTableBodyProps()}>
+        {
+          // Loop over the table rows
+          rows.map(row => {
+            // Prepare the row for display
+            prepareRow(row);
+            return (
+              // Apply the row props
+              <StyledTableRow {...row.getRowProps()}>
+                {
+                  // Loop over the rows cells
+                  row.cells.map(cell => {
+                    // Apply the cell props
+                    return (
+                      <TableCell {...cell.getCellProps()}>
+                        {
+                          // Render the cell contents
+                          cell.render('Cell')
+                        }
+                      </TableCell>
+                    );
+                  })
+                }
+              </StyledTableRow>
+            );
+          })
+        }
+      </TableBody>
+    </StyledTable>
+  );
+};
+
 export const UsersView = () => {
   const { isLoading, data } = useUsers();
+
+  const columns = React.useMemo(() => [
+    { accessor: 'firstName', Header: 'First Name' },
+    { accessor: 'lastName', Header: 'Last Name' },
+    { accessor: 'email', Header: 'Email' },
+    { accessor: 'mobileNumber', Header: 'Mobile Number' },
+    { accessor: 'employer', Header: 'Employer' },
+    { accessor: 'position', Header: 'Position' },
+    { accessor: 'verifiedEmail', Header: 'Verified' },
+  ]);
 
   return (
     <>
@@ -186,24 +167,9 @@ export const UsersView = () => {
         <Title variant="h1">Users and Permissions</Title>
       </TitleContainer>
       <Section>
-        <MuiContainer maxWidth="lg">
-          {isLoading ? (
-            'loading...'
-          ) : (
-            <DataGrid
-              rows={data}
-              columns={columns}
-              // components={{
-              //   Panel: CustomPanel,
-              //   FilterPanel: CustomFilterPanel,
-              // }}
-              autoHeight
-              pageSize={20}
-              rowsPerPageOptions={[20, 50, 100]}
-              pagination
-            />
-          )}
-        </MuiContainer>
+        <Container maxWidth="lg">
+          {isLoading ? 'loading...' : <DataGrid data={data} columns={columns} />}
+        </Container>
       </Section>
     </>
   );
