@@ -233,7 +233,7 @@ describe('AnalyticsRefresher', () => {
       if (resolveOnRefreshStart) {
         resolveOnRefreshStart();
       }
-      expect(isRefreshRunning).to.equal(false);
+      expect(isRefreshRunning).to.equal(false); // assert against concurrent refreshes
       isRefreshRunning = true;
       refreshNumber++;
       // sleep for longer than the debounce time so that we're still refreshing when the next one
