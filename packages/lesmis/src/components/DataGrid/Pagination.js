@@ -14,7 +14,6 @@ import { FlexSpaceBetween, FlexStart } from '../Layout';
 
 const Container = styled(FlexSpaceBetween)`
   margin-top: 1rem;
-  margin-bottom: 1rem;
 `;
 
 const NavButton = styled(IconButton)`
@@ -38,7 +37,29 @@ const Text = styled(Typography)`
 `;
 
 const StyledSelect = styled(Select)`
-  width: 180px;
+  width: 170px;
+  margin: 0;
+
+  .MuiSvgIcon-root {
+    right: 0.5rem;
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+
+  .MuiSelect-root {
+    padding: 12px 0.6rem 12px 1rem;
+    color: ${props => props.theme.palette.text.secondary};
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    background: #f1f1f1;
+
+    &:focus {
+      background: #f1f1f1;
+    }
+  }
 `;
 
 export const Pagination = ({

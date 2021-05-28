@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTable, useFilters, useSortBy, usePagination } from 'react-table';
-import { Table, TableHead, TableRow, TableBody } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableBody, TableSortLabel } from '@material-ui/core';
 import { TableCell, StyledTableRow } from '@tupaia/ui-components';
 import { DefaultColumnFilter } from './DefaultColumnFilter';
 import { ColumnFilterCell } from './ColumnFilterCell';
@@ -35,7 +35,6 @@ export const DataGrid = ({ data, columns }) => {
 
   const defaultColumn = React.useMemo(
     () => ({
-      // Let's set up our default Filter UI
       Filter: DefaultColumnFilter,
     }),
     [],
@@ -79,7 +78,10 @@ export const DataGrid = ({ data, columns }) => {
               {headerGroup.headers.map(column => (
                 <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
-                  <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                  <TableSortLabel
+                    active={column.isSorted}
+                    direction={column.isSortedDesc ? 'asc' : 'desc'}
+                  />
                 </TableCell>
               ))}
             </TableRow>
@@ -97,9 +99,9 @@ export const DataGrid = ({ data, columns }) => {
             prepareRow(row);
             return (
               <StyledTableRow {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
-                })}
+                {row.cells.map(cell => (
+                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                ))}
               </StyledTableRow>
             );
           })}
