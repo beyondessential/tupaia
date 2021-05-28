@@ -66,11 +66,9 @@ const getAggregatedRows = (groupRowFields: GroupRowFields, params: AggregatePara
       const aggregation = params.getFieldAggregation(fieldKey);
       const aggregatedValue = aggregations[aggregation](fieldValue);
       if (aggregatedValue !== undefined) {
-        const formattedValue =
-          typeof aggregatedValue === 'object' ? aggregatedValue : { [fieldKey]: aggregatedValue };
         aggregatedRowFields[groupKey] = {
           ...aggregatedRowFields[groupKey],
-          ...formattedValue,
+          [fieldKey]: aggregatedValue,
         };
       }
     });

@@ -5,10 +5,6 @@
 
 import { FieldValue } from '../../../types';
 
-interface CountByRadioType {
-  [field: string]: number;
-}
-
 const isNotUndefined = <T>(value: T): value is Exclude<T, undefined> => {
   return value !== undefined;
 };
@@ -54,19 +50,6 @@ const avg = (values: FieldValue[]): number | undefined => {
 
 const count = (values: FieldValue[]): number => {
   return values.length;
-};
-
-const countByRadio = (values: FieldValue[]): CountByRadioType | undefined => {
-  if (values.length !== 0) {
-    const groupedValues: CountByRadioType = {};
-    values.forEach(value => {
-      const valueInString = String(value);
-      groupedValues[valueInString] ??= 0;
-      groupedValues[valueInString]++;
-    });
-    return groupedValues;
-  }
-  return undefined;
 };
 
 // helper of max() and min(), e.g.: customSort([1, 2, 3, null]) = [null, 1, 2, 3]
@@ -117,7 +100,6 @@ export const aggregations = {
   sum,
   avg,
   count,
-  countByRadio,
   max,
   min,
   unique,
