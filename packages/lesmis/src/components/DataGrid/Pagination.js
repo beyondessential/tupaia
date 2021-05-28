@@ -1,0 +1,89 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *
+ */
+import React from 'react';
+import Typography from '@material-ui/core/Typography';
+import styled from 'styled-components';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { Select } from '@tupaia/ui-components';
+import { FlexSpaceBetween, FlexStart } from '../Layout';
+
+const Container = styled(FlexSpaceBetween)`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const NavButton = styled(IconButton)`
+  background-color: ${props => props.theme.palette.grey['200']};
+  padding: 0.5rem;
+  border-radius: 3px;
+  color: ${props => (props.disabled ? props.theme.palette.text.secondary : 'inherit')};
+  margin-left: 0.5rem;
+
+  &:hover {
+    background-color: ${props =>
+      props.disabled ? props.theme.palette.grey['200'] : props.theme.palette.primary.main};
+    color: ${props => (props.disabled ? props.theme.palette.text.tertiary : 'white')};
+  }
+`;
+
+const Text = styled(Typography)`
+  font-size: 14px;
+  line-height: 16px;
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
+const StyledSelect = styled(Select)`
+  width: 180px;
+`;
+
+export const Pagination = ({
+  page,
+  canPreviousPage,
+  canNextPage,
+  pageOptions,
+  pageCount,
+  gotoPage,
+  nextPage,
+  previousPage,
+  setPageSize,
+  pageIndex,
+  pageSize,
+  totalCount,
+}) => {
+  const pageStart = pageIndex * pageSize + 1;
+  const pageEnd = (pageIndex + 1) * pageSize;
+  const overallPageEnd = pageEnd > totalCount ? totalCount : pageEnd;
+  return (
+    <Container>
+      <StyledSelect
+        value={pageSize}
+        onChange={e => {
+          setPageSize(Number(e.target.value));
+        }}
+        showPlaceholder={false}
+        options={[
+          { label: 'Rows per page: 10', value: 10 },
+          { label: 'Rows per page: 20', value: 20 },
+          { label: 'Rows per page: 50', value: 50 },
+          { label: 'Rows per page: 100', value: 100 },
+        ]}
+      />
+      <FlexStart>
+        <Text>
+          {pageStart}-{overallPageEnd} of {totalCount}
+        </Text>
+        <NavButton onClick={() => previousPage()} disabled={!canPreviousPage}>
+          <ChevronLeftIcon />
+        </NavButton>
+        <NavButton onClick={() => nextPage()} disabled={!canNextPage}>
+          <ChevronRightIcon />
+        </NavButton>
+      </FlexStart>
+    </Container>
+  );
+};

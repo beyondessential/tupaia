@@ -5,11 +5,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useTable, useFilters } from 'react-table';
+import { useTable, useFilters, useSortBy, usePagination } from 'react-table';
 import { Table, TableHead, TableRow, TableBody } from '@material-ui/core';
 import { TableCell, StyledTableRow } from '@tupaia/ui-components';
 import { DefaultColumnFilter } from './DefaultColumnFilter';
 import { ColumnFilterCell } from './ColumnFilterCell';
+import { Pagination } from './Pagination';
 
 const StyledTable = styled(Table)`
   background: white;
@@ -40,46 +41,84 @@ export const DataGrid = ({ data, columns }) => {
     [],
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
     {
       defaultColumn,
       filterTypes,
       columns,
       data,
+      initialState: { pageSize: 20 },
     },
     useFilters,
+    useSortBy,
+    usePagination,
   );
 
   return (
-    <StyledTable {...getTableProps()}>
-      <TableHead>
-        {headerGroups.map(headerGroup => (
-          <TableRow {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <TableCell {...column.getHeaderProps()}>{column.render('Header')}</TableCell>
-            ))}
-          </TableRow>
-        ))}
-        {headerGroups.map(headerGroup => (
-          <TableRow {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <ColumnFilterCell key={column.id} column={column} />
-            ))}
-          </TableRow>
-        ))}
-      </TableHead>
-      <TableBody {...getTableBodyProps()}>
-        {rows.map(row => {
-          prepareRow(row);
-          return (
-            <StyledTableRow {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
-              })}
-            </StyledTableRow>
-          );
-        })}
-      </TableBody>
-    </StyledTable>
+    <>
+      <StyledTable {...getTableProps()}>
+        <TableHead>
+          {headerGroups.map(headerGroup => (
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render('Header')}
+                  <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+          {headerGroups.map(headerGroup => (
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <ColumnFilterCell key={column.id} column={column} />
+              ))}
+            </TableRow>
+          ))}
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {page.map(row => {
+            prepareRow(row);
+            return (
+              <StyledTableRow {...row.getRowProps()}>
+                {row.cells.map(cell => {
+                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
+                })}
+              </StyledTableRow>
+            );
+          })}
+        </TableBody>
+      </StyledTable>
+      <Pagination
+        page={page}
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        pageOptions={pageOptions}
+        pageCount={pageCount}
+        gotoPage={gotoPage}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        setPageSize={setPageSize}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        totalCount={rows.length}
+      />
+    </>
   );
 };

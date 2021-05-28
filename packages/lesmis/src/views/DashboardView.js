@@ -21,7 +21,7 @@ import {
   PartnerLogo,
 } from '../components';
 import { useUrlParams, useUrlSearchParams } from '../utils';
-import { useVitalsData, useEntityData, useUser } from '../api/queries';
+import { useVitalsData, useEntityData } from '../api/queries';
 
 const StyledSelect = styled(Select)`
   margin: 0 1rem 0 0;
