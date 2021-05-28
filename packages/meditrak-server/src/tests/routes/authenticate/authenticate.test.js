@@ -6,7 +6,7 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
-import { encryptPassword, hashAndSaltPassword } from '@tupaia/auth';
+import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import { createBasicHeader } from '@tupaia/utils';
 
@@ -17,21 +17,15 @@ const { models } = app;
 const { VERIFIED } = models.user.emailVerifiedStatuses;
 
 const userAccountPassword = 'password';
-const simpleApiClientSecret = 'simple';
-const multiPermissionApiClientSecret = 'multiPermission';
+const apiClientSecret = 'api';
 
 let userAccount;
-let simpleApiUserAccount;
-let multiPermissionApiUserAccount;
+let apiClientUserAccount;
 
 describe('Authenticate', function () {
   before(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
-    });
-
-    const { entity: kiribatiEntity } = await findOrCreateDummyCountryEntity(models, {
-      code: 'KI',
     });
 
     const { entity: laosEntity } = await findOrCreateDummyCountryEntity(models, {
@@ -51,31 +45,17 @@ describe('Authenticate', function () {
       verified_email: VERIFIED,
     });
 
-    simpleApiUserAccount = await findOrCreateDummyRecord(models.user, {
-      first_name: 'simple',
-      last_name: 'api-client',
-      email: 'simple-api-client@pokemon.org',
+    apiClientUserAccount = await findOrCreateDummyRecord(models.user, {
+      first_name: 'api',
+      last_name: 'client',
+      email: 'api-client@pokemon.org',
       verified_email: VERIFIED,
     });
     await findOrCreateDummyRecord(models.apiClient, {
-      username: simpleApiUserAccount.email,
-      user_account_id: simpleApiUserAccount.id,
-      secret_key_hash: encryptPassword(simpleApiClientSecret, process.env.API_CLIENT_SALT),
+      username: apiClientUserAccount.email,
+      user_account_id: apiClientUserAccount.id,
+      secret_key_hash: encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
     });
-
-    multiPermissionApiUserAccount = await findOrCreateDummyRecord(models.user, {
-      first_name: 'multiPermission',
-      last_name: 'api-client',
-      email: 'multi-permission-api-client@pokemon.org',
-      verified_email: VERIFIED,
-    });
-    await findOrCreateDummyRecord(models.apiClient, {
-      username: multiPermissionApiUserAccount.email,
-      user_account_id: multiPermissionApiUserAccount.id,
-      secret_key_hash: encryptPassword(multiPermissionApiClientSecret, process.env.API_CLIENT_SALT),
-    });
-
-    // Give the test users some permissions
 
     // Public Demo Land Permission
     await findOrCreateDummyRecord(models.userEntityPermission, {
@@ -84,19 +64,8 @@ describe('Authenticate', function () {
       permission_group_id: publicPermissionGroup.id,
     });
     await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: simpleApiUserAccount.id,
+      user_id: apiClientUserAccount.id,
       entity_id: demoEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: userAccount.id,
-      entity_id: demoEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
-
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: multiPermissionApiUserAccount.id,
-      entity_id: kiribatiEntity.id,
       permission_group_id: publicPermissionGroup.id,
     });
 
@@ -106,25 +75,12 @@ describe('Authenticate', function () {
       entity_id: laosEntity.id,
       permission_group_id: publicPermissionGroup.id,
     });
-
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: multiPermissionApiUserAccount.id,
-      entity_id: laosEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
-
-    // Public all other country permissions
-    await findOrCreateDummyRecord(models.userEntityPermission, {
-      user_id: multiPermissionApiUserAccount.id,
-      entity_id: kiribatiEntity.id,
-      permission_group_id: publicPermissionGroup.id,
-    });
   });
 
   it('should return user details with apiClient and access policy', async function () {
     const authResponse = await app.post('auth?grantType=password', {
       headers: {
-        authorization: createBasicHeader(simpleApiUserAccount.email, simpleApiClientSecret),
+        authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
       },
       body: {
         emailAddress: userAccount.email,
@@ -139,36 +95,10 @@ describe('Authenticate', function () {
     expect(refreshToken).to.be.a('string');
     expect(userDetails.id).to.equal(userAccount.id);
     expect(userDetails.email).to.equal(userAccount.email);
-    expect(userDetails.apiClient).to.equal(simpleApiUserAccount.email);
+    expect(userDetails.apiClient).to.equal(apiClientUserAccount.email);
     expect(userDetails.accessPolicy).to.deep.equal({ DL: ['Public'], LA: ['Public'] });
-  });
-
-  it('should return user details with apiClient and merged access policy', async function () {
-    const authResponse = await app.post('auth?grantType=password', {
-      headers: {
-        authorization: createBasicHeader(
-          multiPermissionApiUserAccount.email,
-          multiPermissionApiClientSecret,
-        ),
-      },
-      body: {
-        emailAddress: userAccount.email,
-        password: userAccountPassword,
-        deviceName: 'test_device',
-      },
-    });
-
-    const { accessToken, refreshToken, user: userDetails } = authResponse.body;
-
-    expect(accessToken).to.be.a('string');
-    expect(refreshToken).to.be.a('string');
-    expect(userDetails.id).to.equal(userAccount.id);
-    expect(userDetails.email).to.equal(userAccount.email);
-    expect(userDetails.apiClient).to.equal(multiPermissionApiUserAccount.email);
-    expect(userDetails.accessPolicy).to.deep.equal({
-      DL: ['Public'],
-      LA: ['Public'],
-      KI: ['Public'],
-    }); // Merged Access Policy
+    const { userId, apiClientUserId } = getTokenClaims(accessToken);
+    expect(userId).to.equal(userAccount.id);
+    expect(apiClientUserId).to.equal(apiClientUserAccount.id);
   });
 });

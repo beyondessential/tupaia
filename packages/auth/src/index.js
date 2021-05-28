@@ -9,6 +9,7 @@ export * from './utils';
 export { getJwtToken, extractRefreshTokenFromReq, generateSecretKey } from './security';
 export {
   getTokenClaimsFromBearerAuth,
+  getTokenClaims,
   getUserAndPassFromBasicAuth,
   constructAccessToken,
 } from './userAuth';
