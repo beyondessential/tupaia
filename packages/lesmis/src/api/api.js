@@ -21,16 +21,15 @@ const getApiUrl = () => {
     return 'http://localhost:8060';
   }
 
-  const domainComponents = hostname.split('.');
-
   // lesmis.la becomes https://api.lesmis.la
+  const domainComponents = hostname.split('.');
   if (domainComponents.length === 2) {
     const [domain, tld] = domainComponents;
     return `https://api.${domain}.${tld}`;
   }
-  const [subdomain, domain, tld] = domainComponents;
 
   // www.lesmis.la becomes https://api.lesmis.la
+  const [subdomain, domain, tld] = domainComponents;
   if (subdomain === 'www') {
     return `https://api.${domain}.${tld}`;
   }
