@@ -57,7 +57,7 @@ export const PageRoutes = React.memo(() => (
       <PageView content={CONTACT_PAGE} />
       <Footer />
     </Route>
-    <Route path="/not-found">
+    <Route path="/page-not-found">
       <NavBar />
       <NotFoundView />
       <Footer />

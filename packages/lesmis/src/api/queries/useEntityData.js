@@ -14,7 +14,7 @@ const useValidatedQuery = query => {
 
   if (query.isError && query.error.code === 403) {
     if (isLoggedIn) {
-      history.push('/not-found');
+      history.push('/page-not-found');
     } else {
       history.push('/login', { referer: history.location });
     }
