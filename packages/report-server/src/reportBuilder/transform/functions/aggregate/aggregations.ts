@@ -9,7 +9,7 @@ const isNotUndefined = <T>(value: T): value is Exclude<T, undefined> => {
   return value !== undefined;
 };
 
-const isNotNullAndUndefined = <T>(value: T): value is NonNullable<T> => {
+const isNotNullOrUndefined = <T>(value: T): value is NonNullable<T> => {
   return value !== undefined && value !== null;
 };
 
@@ -21,7 +21,7 @@ const checkIsNum = (values: FieldValue[]): number[] => {
     }
     return true;
   };
-  const filteredUndefinedAndNullValues = values.filter(isNotNullAndUndefined);
+  const filteredUndefinedAndNullValues = values.filter(isNotNullOrUndefined);
   return filteredUndefinedAndNullValues.filter(assertIsNumber);
 };
 
@@ -69,7 +69,7 @@ const customSort = (values: FieldValue[]): FieldValue[] => {
 // max([1, 2, 3, null]) = 3; max([null, null]) = null
 const max = (values: FieldValue[]): FieldValue => {
   const sortedValues = customSort(values);
-  return sortedValues.length !== 0 ? sortedValues.reverse()[0] : undefined;
+  return sortedValues.length !== 0 ? sortedValues.slice().reverse()[0] : undefined;
 };
 
 // min([1, 2, 3, null]) = null; min([null, null]) = null
@@ -92,7 +92,7 @@ const first = (values: FieldValue[]): FieldValue => {
 };
 
 const last = (values: FieldValue[]): FieldValue => {
-  return values.reverse().find(isNotUndefined);
+  return values.slice().reverse().find(isNotUndefined);
 };
 
 export const aggregations = {
