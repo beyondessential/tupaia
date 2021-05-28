@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
-import { ReactComponent as NotFoundIcon } from '../components/icons/404.svg';
+import { ReactComponent as NotAuthorisedIcon } from '../components/icons/403.svg';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
 
@@ -23,17 +23,16 @@ const Text = styled(Typography)`
   margin-top: 3rem;
   margin-bottom: 2.5rem;
 `;
-
-export const NotFoundView = () => (
+export const NotAuthorisedView = () => (
   <>
     <PageHeader
-      title="Page not found"
-      breadcrumbs={[{ name: 'Page Not Found', url: '/page-not-found' }]}
+      title="Not Authorised"
+      breadcrumbs={[{ name: 'Not Authorised', url: '/not-authorised' }]}
       center
     />
     <Section>
-      <NotFoundIcon />
-      <Text variant="h4">The page you are looking for does not exist</Text>
+      <NotAuthorisedIcon />
+      <Text variant="h4">You are not authorised to view that page</Text>
       <Button component="a" href="/">
         Go back to home page
       </Button>

@@ -14,6 +14,7 @@ import { NotFoundView } from '../views/NotFoundView';
 import { LoginView } from '../views/LoginView';
 import { RegisterView } from '../views/RegisterView';
 import { UsersView } from '../views/UsersView';
+import { NotAuthorisedView } from '../views/NotAuthorisedView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
 /**
@@ -60,6 +61,11 @@ export const PageRoutes = React.memo(() => (
     <Route path="/page-not-found">
       <NavBar />
       <NotFoundView />
+      <Footer />
+    </Route>
+    <Route path="/not-authorised">
+      <NavBar />
+      <NotAuthorisedView />
       <Footer />
     </Route>
     <Route path="/:entityCode/:view?">
