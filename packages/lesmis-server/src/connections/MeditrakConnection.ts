@@ -10,6 +10,19 @@ const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
+const FIELDS = {
+  user_id: 'id',
+  'user.first_name': 'firstName',
+  'user.last_name': 'lastName',
+  'user.email': 'email',
+  'user.mobile_number': 'mobileNumber',
+  'user.employer': 'employer',
+  'user.position': 'position',
+  'entity.name': 'entityName',
+  'entity.code': 'entityCode',
+  'permission_group.name': 'permissionGroupName',
+};
+
 export class MeditrakConnection extends SessionHandlingApiConnection {
   baseUrl = MEDITRAK_API_URL;
 
@@ -23,23 +36,30 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
   }
 
   async getUsers() {
-    const users = await this.get('users', { pageSize: 100 });
+    const response = await this.get('userEntityPermissions', {
+      pageSize: 10000,
+      columns: JSON.stringify(Object.keys(FIELDS)),
+      filter: JSON.stringify({
+        'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
+        // 'permission_group.name.name': {
+        //   comparator: 'like',
+        //   comparisonValue: 'LESMIS Public',
+        //   castAs: 'text',
+        // },
+      }),
+    });
 
-    // const permissions = await this.get('userEntityPermissions', {
-    //   pageSize: 5000,
-    //   columns: JSON.stringify(['user_id', 'entity.name', 'entity.code', 'permission_group.name']),
-    //   filter: JSON.stringify({
-    //     'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
-    //     'permission_group.name.name': {
-    //       comparator: 'like',
-    //       comparisonValue: 'LESMIS Public',
-    //       castAs: 'text',
-    //     },
-    //   }),
-    // });
-    // console.log('users', users[0]);
-    // console.log('permissions', permissions.length);
-    return camelcaseKeys(users);
+    const users = response.map(user => {
+      const obj = {};
+      const keys = Object.keys(user);
+      keys.forEach(key => {
+        const newKey = FIELDS[key];
+        obj[newKey] = user[key];
+      });
+      return obj;
+    });
+
+    return users;
   }
 
   /*

@@ -82,6 +82,7 @@ export const Pagination = ({
   return (
     <Container>
       <StyledSelect
+        id="page"
         value={pageSize}
         onChange={e => {
           setPageSize(Number(e.target.value));

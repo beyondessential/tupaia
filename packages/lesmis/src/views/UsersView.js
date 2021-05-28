@@ -18,12 +18,11 @@ const Section = styled.section`
   min-height: 70vh;
 
   .MuiDataGrid-root {
-    //margin-top: 160px;
     background: white;
   }
 `;
 
-const TitleContainer = styled(Container)`
+const TitleContainer = styled.div`
   padding-top: 2rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
@@ -42,10 +41,10 @@ export const UsersView = () => {
     { accessor: 'firstName', Header: 'First Name' },
     { accessor: 'lastName', Header: 'Last Name' },
     { accessor: 'email', Header: 'Email' },
-    { accessor: 'mobileNumber', Header: 'Mobile Number' },
+    { accessor: 'mobileNumber', Header: 'Contact Number' },
     { accessor: 'employer', Header: 'Employer' },
     { accessor: 'position', Header: 'Position' },
-    { accessor: 'verifiedEmail', Header: 'Verified' },
+    { accessor: 'permissionGroupName', Header: 'Permissions' },
   ]);
 
   return (
@@ -53,8 +52,10 @@ export const UsersView = () => {
       <Toolbar>
         <Breadcrumbs breadcrumbs={[{ name: 'Admin', url: '/admin' }]} />
       </Toolbar>
-      <TitleContainer maxWidth="lg">
-        <Title variant="h1">Users and Permissions</Title>
+      <TitleContainer>
+        <Container maxWidth="lg">
+          <Title variant="h1">Users and Permissions</Title>
+        </Container>
       </TitleContainer>
       <Section>
         <Container maxWidth="lg">

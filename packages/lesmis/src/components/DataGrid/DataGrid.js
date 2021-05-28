@@ -107,20 +107,22 @@ export const DataGrid = ({ data, columns }) => {
           })}
         </TableBody>
       </StyledTable>
-      <Pagination
-        page={page}
-        canPreviousPage={canPreviousPage}
-        canNextPage={canNextPage}
-        pageOptions={pageOptions}
-        pageCount={pageCount}
-        gotoPage={gotoPage}
-        nextPage={nextPage}
-        previousPage={previousPage}
-        setPageSize={setPageSize}
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        totalCount={rows.length}
-      />
+      {rows.length > pageSize && (
+        <Pagination
+          page={page}
+          canPreviousPage={canPreviousPage}
+          canNextPage={canNextPage}
+          pageOptions={pageOptions}
+          pageCount={pageCount}
+          gotoPage={gotoPage}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          setPageSize={setPageSize}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          totalCount={rows.length}
+        />
+      )}
     </>
   );
 };
