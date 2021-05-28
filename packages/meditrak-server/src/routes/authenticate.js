@@ -5,11 +5,7 @@
 
 import winston from 'winston';
 
-import {
-  constructAccessToken,
-  getUserAndPassFromBasicAuth,
-  mergeAccessPolicies,
-} from '@tupaia/auth';
+import { constructAccessToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
 
@@ -160,25 +156,18 @@ export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
 
   const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
-  const {
-    user: apiClientUser,
-    accessPolicy: apiClientAccessPolicy,
-  } = await checkApiClientAuthentication(req);
-
-  const mergedAccessPolicy = apiClientUser
-    ? mergeAccessPolicies(accessPolicy, apiClientAccessPolicy)
-    : accessPolicy;
+  const { user: apiClientUser } = await checkApiClientAuthentication(req);
 
   const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
     req.models,
-    mergedAccessPolicy,
+    accessPolicy,
   );
   const authorizationObject = await getAuthorizationObject({
     refreshToken,
     user,
+    accessPolicy,
     apiClientUser,
     permissionGroups: permissionGroupsByCountryId,
-    accessPolicy: mergedAccessPolicy,
   });
 
   respond(res, authorizationObject);
