@@ -5,15 +5,16 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Typography, Container } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import { Container } from '@material-ui/core';
 import { useUsers } from '../api/queries';
 import * as COLORS from '../constants';
-import { Breadcrumbs, Toolbar } from '../components';
-import { DataGrid } from '../components/DataGrid/DataGrid';
+import { DataGrid, PageHeader, FetchLoader } from '../components';
 
 const Section = styled.section`
+  display: flex;
   background: ${COLORS.GREY_F9};
-  padding-top: 3rem;
+  padding-top: 1.6rem;
   padding-bottom: 3rem;
   min-height: 70vh;
 
@@ -22,44 +23,37 @@ const Section = styled.section`
   }
 `;
 
-const TitleContainer = styled.div`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+const Text = styled(Typography)`
+  font-size: 1.125rem;
+  line-height: 1.4rem;
+  margin-bottom: 1rem;
 `;
 
-const Title = styled(Typography)`
-  font-weight: 600;
-  font-size: 1.75rem;
-  line-height: 2.6rem;
-`;
+const columns = [
+  { accessor: 'firstName', Header: 'First Name' },
+  { accessor: 'lastName', Header: 'Last Name' },
+  { accessor: 'email', Header: 'Email' },
+  { accessor: 'mobileNumber', Header: 'Contact Number' },
+  { accessor: 'employer', Header: 'Employer' },
+  { accessor: 'position', Header: 'Position' },
+  { accessor: 'permissionGroupName', Header: 'Permissions' },
+];
 
 export const UsersView = () => {
-  const { isLoading, data } = useUsers();
-
-  const columns = React.useMemo(() => [
-    { accessor: 'firstName', Header: 'First Name' },
-    { accessor: 'lastName', Header: 'Last Name' },
-    { accessor: 'email', Header: 'Email' },
-    { accessor: 'mobileNumber', Header: 'Contact Number' },
-    { accessor: 'employer', Header: 'Employer' },
-    { accessor: 'position', Header: 'Position' },
-    { accessor: 'permissionGroupName', Header: 'Permissions' },
-  ]);
+  const { isLoading, isError, error, data } = useUsers();
 
   return (
     <>
-      <Toolbar>
-        <Breadcrumbs breadcrumbs={[{ name: 'Admin', url: '/admin' }]} />
-      </Toolbar>
-      <TitleContainer>
-        <Container maxWidth="lg">
-          <Title variant="h1">Users and Permissions</Title>
-        </Container>
-      </TitleContainer>
+      <PageHeader
+        title="Users and Permissions"
+        breadcrumbs={[{ name: 'Users and Permissions', url: '/users-and-permissions' }]}
+      />
       <Section>
         <Container maxWidth="lg">
-          {isLoading ? 'loading...' : <DataGrid data={data} columns={columns} />}
+          <FetchLoader isLoading={isLoading} isError={isError} error={error}>
+            <Text>{data?.length} users</Text>
+            <DataGrid data={data} columns={columns} />
+          </FetchLoader>
         </Container>
       </Section>
     </>

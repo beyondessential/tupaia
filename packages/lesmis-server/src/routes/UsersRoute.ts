@@ -3,10 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
+
+const FIELDS: Record<string, string> = {
+  user_id: 'id',
+  'user.first_name': 'firstName',
+  'user.last_name': 'lastName',
+  'user.email': 'email',
+  'user.mobile_number': 'mobileNumber',
+  'user.employer': 'employer',
+  'user.position': 'position',
+  'entity.name': 'entityName',
+  'entity.code': 'entityCode',
+  'permission_group.name': 'permissionGroupName',
+};
 
 export class UsersRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
@@ -18,6 +30,29 @@ export class UsersRoute extends Route {
   }
 
   async buildResponse() {
-    return this.meditrakConnection.getUsers();
+    const response = await this.meditrakConnection.userEntityPermissions({
+      pageSize: '10000',
+      columns: JSON.stringify(Object.keys(FIELDS)),
+      filter: JSON.stringify({
+        'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
+        // 'permission_group.name.name': {
+        //   comparator: 'like',
+        //   comparisonValue: 'LESMIS Public',
+        //   castAs: 'text',
+        // },
+      }),
+    });
+
+    const users = response.map((user: Record<string, string[]>) => {
+      const obj: Record<string, string[]> = {};
+      const keys = Object.keys(user);
+      keys.forEach(key => {
+        const newKey = FIELDS[key];
+        obj[newKey] = user[key];
+      });
+      return obj;
+    });
+
+    return users;
   }
 }

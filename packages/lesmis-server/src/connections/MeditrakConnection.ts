@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { QueryParameters } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUP } from '../constants';
@@ -9,19 +10,6 @@ import { LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUP } from '../constants';
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 type RequestBody = Record<string, unknown> | Record<string, unknown>[];
-
-const FIELDS = {
-  user_id: 'id',
-  'user.first_name': 'firstName',
-  'user.last_name': 'lastName',
-  'user.email': 'email',
-  'user.mobile_number': 'mobileNumber',
-  'user.employer': 'employer',
-  'user.position': 'position',
-  'entity.name': 'entityName',
-  'entity.code': 'entityCode',
-  'permission_group.name': 'permissionGroupName',
-};
 
 export class MeditrakConnection extends SessionHandlingApiConnection {
   baseUrl = MEDITRAK_API_URL;
@@ -35,31 +23,8 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
     return camelcaseKeys(user);
   }
 
-  async getUsers() {
-    const response = await this.get('userEntityPermissions', {
-      pageSize: 10000,
-      columns: JSON.stringify(Object.keys(FIELDS)),
-      filter: JSON.stringify({
-        'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
-        // 'permission_group.name.name': {
-        //   comparator: 'like',
-        //   comparisonValue: 'LESMIS Public',
-        //   castAs: 'text',
-        // },
-      }),
-    });
-
-    const users = response.map(user => {
-      const obj = {};
-      const keys = Object.keys(user);
-      keys.forEach(key => {
-        const newKey = FIELDS[key];
-        obj[newKey] = user[key];
-      });
-      return obj;
-    });
-
-    return users;
+  async userEntityPermissions(queryParams: QueryParameters) {
+    return this.get('userEntityPermissions', queryParams);
   }
 
   /*

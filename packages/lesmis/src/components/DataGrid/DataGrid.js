@@ -4,20 +4,24 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTable, useFilters, useSortBy, usePagination } from 'react-table';
 import { Table, TableHead, TableRow, TableBody, TableSortLabel } from '@material-ui/core';
 import { TableCell, StyledTableRow } from '@tupaia/ui-components';
 import { DefaultColumnFilter } from './DefaultColumnFilter';
-import { ColumnFilterCell } from './ColumnFilterCell';
-import { Pagination } from './Pagination';
+import { Paginator } from './Paginator';
 
 const StyledTable = styled(Table)`
   background: white;
   border: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-// eslint-disable-next-line react/prop-types
+const StyledTableCell = styled(TableCell)`
+  padding: 1.125rem 0.625rem 1.125rem 0;
+  background: ${props => props.theme.palette.grey['200']};
+`;
+
 export const DataGrid = ({ data, columns }) => {
   const filterTypes = React.useMemo(
     () => ({
@@ -49,9 +53,6 @@ export const DataGrid = ({ data, columns }) => {
     page,
     canPreviousPage,
     canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
     nextPage,
     previousPage,
     setPageSize,
@@ -89,7 +90,9 @@ export const DataGrid = ({ data, columns }) => {
           {headerGroups.map(headerGroup => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <ColumnFilterCell key={column.id} column={column} />
+                <StyledTableCell {...column.getHeaderProps()}>
+                  {column.canFilter ? column.render('Filter') : null}
+                </StyledTableCell>
               ))}
             </TableRow>
           ))}
@@ -108,21 +111,38 @@ export const DataGrid = ({ data, columns }) => {
         </TableBody>
       </StyledTable>
       {rows.length > pageSize && (
-        <Pagination
-          page={page}
-          canPreviousPage={canPreviousPage}
+        <Paginator
           canNextPage={canNextPage}
-          pageOptions={pageOptions}
-          pageCount={pageCount}
-          gotoPage={gotoPage}
+          canPreviousPage={canPreviousPage}
           nextPage={nextPage}
-          previousPage={previousPage}
-          setPageSize={setPageSize}
           pageIndex={pageIndex}
           pageSize={pageSize}
+          previousPage={previousPage}
+          setPageSize={setPageSize}
           totalCount={rows.length}
         />
       )}
     </>
   );
+};
+
+DataGrid.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      email: PropTypes.string,
+      permissionGroupName: PropTypes.string,
+    }),
+  ),
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      accessor: PropTypes.string,
+      Header: PropTypes.string,
+    }),
+  ).isRequired,
+};
+
+DataGrid.defaultProps = {
+  data: null,
 };

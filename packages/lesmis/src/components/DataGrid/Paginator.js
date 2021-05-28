@@ -4,6 +4,7 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import IconButton from '@material-ui/core/IconButton';
@@ -31,13 +32,13 @@ const NavButton = styled(IconButton)`
 `;
 
 const Text = styled(Typography)`
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 0.875rem;
+  line-height: 1rem;
   color: ${props => props.theme.palette.text.secondary};
 `;
 
 const StyledSelect = styled(Select)`
-  width: 170px;
+  width: 10.5rem;
   margin: 0;
 
   .MuiSvgIcon-root {
@@ -49,31 +50,27 @@ const StyledSelect = styled(Select)`
   }
 
   .MuiSelect-root {
-    padding: 12px 0.6rem 12px 1rem;
+    padding: 0.75rem 0.6rem 0.75rem 1rem;
     color: ${props => props.theme.palette.text.secondary};
     font-weight: 500;
-    font-size: 14px;
-    line-height: 16px;
-    background: #f1f1f1;
+    font-size: 0.875rem;
+    line-height: 1rem;
+    background: ${props => props.theme.palette.grey['200']};
 
     &:focus {
-      background: #f1f1f1;
+      background: ${props => props.theme.palette.grey['200']};
     }
   }
 `;
 
-export const Pagination = ({
-  page,
-  canPreviousPage,
+export const Paginator = ({
   canNextPage,
-  pageOptions,
-  pageCount,
-  gotoPage,
+  canPreviousPage,
   nextPage,
-  previousPage,
-  setPageSize,
   pageIndex,
   pageSize,
+  previousPage,
+  setPageSize,
   totalCount,
 }) => {
   const pageStart = pageIndex * pageSize + 1;
@@ -108,4 +105,15 @@ export const Pagination = ({
       </FlexStart>
     </Container>
   );
+};
+
+Paginator.propTypes = {
+  canNextPage: PropTypes.bool.isRequired,
+  canPreviousPage: PropTypes.bool.isRequired,
+  nextPage: PropTypes.func.isRequired,
+  pageIndex: PropTypes.number.isRequired,
+  pageSize: PropTypes.number.isRequired,
+  previousPage: PropTypes.func.isRequired,
+  setPageSize: PropTypes.func.isRequired,
+  totalCount: PropTypes.number.isRequired,
 };

@@ -37,7 +37,7 @@ export const PageRoutes = React.memo(() => (
       <ProfileView />
       <Footer />
     </Route>
-    <Route path="/admin">
+    <Route path="/users-and-permissions">
       <NavBar />
       <UsersView />
       <Footer />

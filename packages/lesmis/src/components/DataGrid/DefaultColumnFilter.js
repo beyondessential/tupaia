@@ -4,6 +4,7 @@
  *
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from '@tupaia/ui-components';
 
@@ -11,17 +12,19 @@ const StyledTextField = styled(TextField)`
   margin: 0;
 `;
 
-// eslint-disable-next-line react/prop-types
-export const DefaultColumnFilter = ({ column: { filterValue, preFilteredRows, setFilter } }) => {
-  const count = preFilteredRows.length;
+export const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => (
+  <StyledTextField
+    value={filterValue || ''}
+    onChange={e => {
+      setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+    }}
+    placeholder="Search"
+  />
+);
 
-  return (
-    <StyledTextField
-      value={filterValue || ''}
-      onChange={e => {
-        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
-      }}
-      placeholder="Search"
-    />
-  );
+DefaultColumnFilter.propTypes = {
+  column: PropTypes.shape({
+    filterValue: PropTypes.string,
+    setFilter: PropTypes.func,
+  }).isRequired,
 };
