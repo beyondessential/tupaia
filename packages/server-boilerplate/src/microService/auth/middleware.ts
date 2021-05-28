@@ -71,7 +71,7 @@ export const buildBasicBearerAuthMiddleware = (
     } else if (authHeader.startsWith('Basic')) {
       accessPolicyObject = await getBasicAccessPolicy(authenticator, authHeader, apiName);
     } else {
-      throw new UnauthenticatedError('Could not authenticate with the provided access token');
+      throw new UnauthenticatedError('Could not authenticate with the Authorization header');
     }
 
     req.accessPolicy = new AccessPolicy(accessPolicyObject);
