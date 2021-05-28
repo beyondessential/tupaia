@@ -36,7 +36,6 @@ export const constructAccessToken = ({ userId, apiClientUserId, refreshToken }) 
 /**
  * Validate that Bearer Auth Header has valid and current JWT token (accessToken)
  * @param {string} authHeader
- * @returns {{userId: string, refreshToken: string, apiClientUserId?: string}} Access Token claims
  */
 export function getTokenClaimsFromBearerAuth(authHeader) {
   let jwtToken;
@@ -47,6 +46,15 @@ export function getTokenClaimsFromBearerAuth(authHeader) {
     throw new UnauthenticatedError(error.message);
   }
 
+  return getTokenClaims(jwtToken);
+}
+
+/**
+ * Validate that Bearer Auth Header has valid and current JWT token (accessToken)
+ * @param {string} accessToken
+ * @returns {{userId?: string, refreshToken?: string, apiClientUserId?: string}} Access Token claims
+ */
+export function getTokenClaims(jwtToken) {
   let tokenClaims = {};
   try {
     tokenClaims = jwt.verify(jwtToken, process.env.JWT_SECRET);

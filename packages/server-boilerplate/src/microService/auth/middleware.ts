@@ -6,12 +6,7 @@
 import { Request, NextFunction, Response } from 'express';
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import {
-  Authenticator,
-  getTokenClaimsFromBearerAuth,
-  getUserAndPassFromBasicAuth,
-} from '@tupaia/auth';
-import { ModelRegistry } from '@tupaia/database';
+import { Authenticator, getUserAndPassFromBasicAuth, getJwtToken } from '@tupaia/auth';
 
 import { AccessPolicyObject } from '../../types';
 
@@ -20,17 +15,13 @@ const getBearerAccessPolicy = async (
   authHeader: string,
 ): Promise<AccessPolicyObject> => {
   // Use the user account provided in the auth header if present
-  const { userId, apiClientUserId } = getTokenClaimsFromBearerAuth(authHeader);
-  if (!userId) {
-    throw new UnauthenticatedError('Could not authenticate with the provided access token');
-  }
+  const accessToken = getJwtToken(authHeader);
 
-  const { accessPolicy } = await authenticator.authenticateAccessToken({ userId, apiClientUserId });
+  const { accessPolicy } = await authenticator.authenticateAccessToken(accessToken);
   return accessPolicy;
 };
 
 const getBasicAccessPolicy = async (
-  models: ModelRegistry,
   authenticator: Authenticator,
   authHeader: string,
   apiName: string,
@@ -78,12 +69,7 @@ export const buildBasicBearerAuthMiddleware = (
     if (authHeader.startsWith('Bearer')) {
       accessPolicyObject = await getBearerAccessPolicy(authenticator, authHeader);
     } else if (authHeader.startsWith('Basic')) {
-      accessPolicyObject = await getBasicAccessPolicy(
-        req.models,
-        authenticator,
-        authHeader,
-        apiName,
-      );
+      accessPolicyObject = await getBasicAccessPolicy(authenticator, authHeader, apiName);
     } else {
       throw new UnauthenticatedError('Could not authenticate with the provided access token');
     }

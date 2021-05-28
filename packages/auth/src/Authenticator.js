@@ -9,6 +9,7 @@ import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/ut
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
 import { encryptPassword } from './utils';
+import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
@@ -20,10 +21,16 @@ export class Authenticator {
   }
 
   /**
-   * Authenticate by access token claims
-   * @param {{ userId: string, apiClientUserId?: string }} accessTokenClaims
+   * Authenticate by access token string
+   * @param {string} accessToken
    */
-  async authenticateAccessToken({ userId, apiClientUserId }) {
+  async authenticateAccessToken(accessToken) {
+    const { userId, apiClientUserId } = getTokenClaims(accessToken);
+
+    if (!userId) {
+      throw new UnauthenticatedError('Could not authenticate access token');
+    }
+
     const user = await this.models.user.findById(userId);
     const userAccessPolicy = await this.getAccessPolicyForUser(user.id);
 
