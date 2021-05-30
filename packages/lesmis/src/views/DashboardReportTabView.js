@@ -53,7 +53,7 @@ const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
 const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   const history = useHistory();
-  const { isLoggedIn, isFetching } = useUser();
+  const { isLoggedIn, isFetching: isFetchingUser } = useUser();
 
   if (!options) {
     return null;
@@ -65,7 +65,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
     if (dashboardNames.includes(selectedDashboard)) {
       return selectedDashboard;
     }
-    if (!isFetching && !isLoggedIn) {
+    if (!isFetchingUser && !isLoggedIn) {
       return history.push('/login', { referer: history.location });
     }
   }
