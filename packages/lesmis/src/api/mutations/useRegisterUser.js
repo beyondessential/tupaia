@@ -6,7 +6,7 @@
 import { useMutation } from 'react-query';
 import { post } from '../api';
 
-export const useRegister = () => {
+export const useRegisterUser = () => {
   const query = useMutation(
     ({
       firstName,
