@@ -20,6 +20,13 @@ const FIELDS: Record<string, string> = {
   'permission_group.name': 'permissionGroupName',
 };
 
+const PERMISSION_GROUPS = [
+  'Admin',
+  'Laos Schools Admin',
+  'Laos Schools Super User',
+  'LESMIS Public',
+];
+
 export class UsersRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
 
@@ -35,14 +42,11 @@ export class UsersRoute extends Route {
       columns: JSON.stringify(Object.keys(FIELDS)),
       filter: JSON.stringify({
         'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
-        // 'permission_group.name.name': {
-        //   comparator: 'like',
-        //   comparisonValue: 'LESMIS Public',
-        //   castAs: 'text',
-        // },
+        'permission_group.name': { comparator: 'in', comparisonValue: PERMISSION_GROUPS },
       }),
     });
 
+    // Convert the response keys to keys for the front end
     const users = response.map((user: Record<string, string[]>) => {
       const obj: Record<string, string[]> = {};
       const keys = Object.keys(user);

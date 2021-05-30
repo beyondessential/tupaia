@@ -6,6 +6,7 @@ import { QueryParameters } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUP } from '../constants';
+import { isLesmisAdmin } from '../utils';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
@@ -20,7 +21,7 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
       return {};
     }
     const user = await this.get('me');
-    return camelcaseKeys(user);
+    return { ...camelcaseKeys(user), isLesmisAdmin: isLesmisAdmin(user.accessPolicy) };
   }
 
   async userEntityPermissions(queryParams: QueryParameters) {

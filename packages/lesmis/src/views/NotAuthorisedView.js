@@ -5,11 +5,13 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import { ReactComponent as NotAuthorisedIcon } from '../components/icons/403.svg';
 import { PageHeader } from '../components';
 import * as COLORS from '../constants';
+import { useUser } from '../api/queries';
 
 const Section = styled.section`
   background: ${COLORS.GREY_F9};
@@ -19,23 +21,50 @@ const Section = styled.section`
   min-height: 70vh;
 `;
 
-const Text = styled(Typography)`
+const Heading = styled(Typography)`
   margin-top: 3rem;
+  margin-bottom: 1rem;
+`;
+
+const Text = styled(Typography)`
+  color: ${props => props.theme.palette.text.secondary};
   margin-bottom: 2.5rem;
 `;
-export const NotAuthorisedView = () => (
-  <>
-    <PageHeader
-      title="Not Authorised"
-      breadcrumbs={[{ name: 'Not Authorised', url: '/not-authorised' }]}
-      center
-    />
-    <Section>
-      <NotAuthorisedIcon />
-      <Text variant="h4">You are not authorised to view that page</Text>
-      <Button component="a" href="/">
-        Go back to home page
-      </Button>
-    </Section>
-  </>
-);
+
+export const NotAuthorisedView = () => {
+  const history = useHistory();
+  const { isLoading, isLoggedIn } = useUser();
+
+  return (
+    <>
+      <PageHeader
+        title="Not Authorised"
+        breadcrumbs={[{ name: 'Not Authorised', url: '/not-authorised' }]}
+        center
+      />
+      <Section>
+        <NotAuthorisedIcon />
+        <Heading variant="h4">You are not authorised to view this page</Heading>
+        <Text>
+          If you would like access please contact a Tupaia administrator at info.tupaia.org/contact
+        </Text>
+        {isLoggedIn && (
+          <Button component={RouterLink} to="/">
+            Go back to home page
+          </Button>
+        )}
+        {!isLoggedIn && !isLoading && (
+          <Button
+            component={RouterLink}
+            to={{
+              pathname: '/login',
+              state: { referer: history.location },
+            }}
+          >
+            Login
+          </Button>
+        )}
+      </Section>
+    </>
+  );
+};

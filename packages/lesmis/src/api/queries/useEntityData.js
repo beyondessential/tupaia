@@ -4,23 +4,8 @@
  *
  */
 import { useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import { get } from '../api';
-import { useUser } from './useUser';
-
-const useValidatedQuery = query => {
-  const history = useHistory();
-  const { isLoggedIn } = useUser();
-
-  if (query.isError && query.error.code === 403) {
-    if (isLoggedIn) {
-      history.push('/page-not-found');
-    } else {
-      history.push('/login', { referer: history.location });
-    }
-  }
-  return query;
-};
+import { useValidatedQuery } from './useValidatedQuery';
 
 export const useEntityData = entityCode => {
   return useValidatedQuery(
