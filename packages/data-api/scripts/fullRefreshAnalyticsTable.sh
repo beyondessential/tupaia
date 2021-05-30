@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "Fully refreshing analytics table"
+
 source .env
 cd scripts
 export PGPASSWORD=$DB_MV_PASSWORD
