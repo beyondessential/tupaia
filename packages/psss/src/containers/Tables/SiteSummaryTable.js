@@ -98,6 +98,7 @@ export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) =>
           isLoading={isLoading}
           isFetching={!isLoading && isFetching}
           errorMessage={error?.message}
+          noDataMessage="No sentinel sites found"
           columns={siteWeekColumns}
           data={data}
           Header={false}
