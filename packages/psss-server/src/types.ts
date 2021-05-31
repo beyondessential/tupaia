@@ -34,7 +34,7 @@ export interface Credentials {
   deviceName: string;
 }
 
-export type QueryParameters = Record<string, string>;
+export type QueryParameters = Record<string, string | undefined>;
 
 export type RequestBody = Record<string, unknown> | Record<string, unknown>[];
 
