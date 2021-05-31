@@ -31,13 +31,17 @@ const reports = [
 
 const buildReportConfig = (id, entityType) => ({
   id,
-  dataBuilder: 'countEventsPerPeriod',
+  dataBuilder: 'sumPerPeriod',
   dataBuilderConfig: {
     programCode: ['Malaria_Case_Reporting'],
-    dataElement: 'Total_Positive_Malaria_Cases',
+    dataClasses: {
+      value: {
+        codes: ['Malaria_case'],
+      },
+    },
+    aggregationType: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
     entityAggregation: {
-      dataSourceEntityType: 'facility',
-      aggregationEntityType: entityType,
+      dataSourceEntityType: entityType,
     },
     periodType: 'week',
   },
