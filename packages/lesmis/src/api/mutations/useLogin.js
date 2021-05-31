@@ -25,9 +25,11 @@ export const useLogin = () => {
       onSuccess: () => {
         queryClient.clear();
 
+        // Send the user back to the previous page if there is one saved in referer
         if (history.location?.state?.referer) {
           history.push(history.location.state.referer);
         } else {
+          // Otherwise send them to the homepage
           history.push('/');
         }
       },

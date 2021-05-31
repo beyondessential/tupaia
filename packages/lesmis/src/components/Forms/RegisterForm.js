@@ -12,7 +12,7 @@ import MuiFormGroup from '@material-ui/core/FormGroup';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
 import * as COLORS from '../../constants';
-import { useRegister } from '../../api';
+import { useRegisterUser } from '../../api';
 
 // Lazy load the password strength library as it uses zxcvbn which is a large dependency.
 // For more about lazy loading components @see: https://reactjs.org/docs/code-splitting.html#reactlazy
@@ -59,24 +59,9 @@ const SuccessMessage = () => (
     <Heading variant="h4">Register for an account</Heading>
     <MuiBox mt={4}>
       <Text>
-        Congratulations, you have successfully signed up to Tupaia. To activate your account please{' '}
+        Congratulations, you have successfully signed up to LESMIS. To activate your account please{' '}
         <b>click the verification link in your email.</b> Once activated, you can use your new
-        account to log in to tupaia.org as well as our app, Tupaia Meditrak on{' '}
-        <MuiLink
-          href="https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537?mt=8"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          iOS
-        </MuiLink>{' '}
-        and{' '}
-        <MuiLink
-          href="https://play.google.com/store/apps/details?id=com.tupaiameditrak&hl=en"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          &nbsp;Android&nbsp;.
-        </MuiLink>
+        account to log in to lesmis.la.
       </Text>
     </MuiBox>
   </MuiBox>
@@ -84,7 +69,7 @@ const SuccessMessage = () => (
 
 export const RegisterForm = () => {
   const { handleSubmit, register, errors, watch, getValues } = useForm();
-  const { mutate, isError, isLoading, isSuccess, error } = useRegister();
+  const { mutate, isError, isLoading, isSuccess, error } = useRegisterUser();
   const password = watch('password');
 
   if (isSuccess) {

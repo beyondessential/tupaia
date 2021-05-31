@@ -482,7 +482,7 @@ const VitalsView = React.memo(({ vitals }) => {
 
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
 const useDefaultDashboardTab = (selectedDashboard = null, options) => {
-  if (!options) {
+  if (!options || options.length === 0) {
     return null;
   }
 
