@@ -25,7 +25,7 @@ export class Authenticator {
    * @param {string} accessToken
    */
   async authenticateAccessToken(accessToken) {
-    const { userId, apiClientUserId } = getTokenClaims(accessToken);
+    const { userId, apiClientUserId } = getTokenClaims(accessToken); // will throw if access token expired or invalid
 
     if (!userId) {
       throw new UnauthenticatedError('Could not authenticate access token');
