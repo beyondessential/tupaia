@@ -4,8 +4,12 @@
  */
 
 import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery } from '../../../types';
+import { FetchReportQuery, AggregationObject } from '../../../types';
 import { FetchResponse } from '../types';
+import {
+  validateDataElementsForAnalytics as validateDataElements,
+  validateAggregations,
+} from './helpers';
 
 type DataElementParams = {
   dataElements: unknown;
@@ -14,7 +18,7 @@ type DataElementParams = {
 
 type DataElementFetchParams = {
   dataElementCodes: string[];
-  aggregations?: string[];
+  aggregations?: (string | AggregationObject)[];
 };
 
 const fetchAnalytics = async (
@@ -46,28 +50,6 @@ const buildParams = (params: DataElementParams): DataElementFetchParams => {
     aggregations,
   };
 };
-
-function validateDataElements(dataElements: unknown): asserts dataElements is string[] {
-  if (!Array.isArray(dataElements)) {
-    throw new Error(`Expected an array of data element codes but got ${dataElements}`);
-  }
-
-  const nonStringDataElementCode = dataElements.find(param => typeof param !== 'string');
-  if (nonStringDataElementCode) {
-    throw new Error(
-      `Expected all data element codes to be strings, but got ${nonStringDataElementCode}`,
-    );
-  }
-}
-
-function validateAggregations(aggregations: unknown): asserts aggregations is undefined | string[] {
-  if (aggregations !== undefined && !Array.isArray(aggregations)) {
-    throw new Error(`Expected an array of aggregations but got ${aggregations}`);
-  }
-  if (aggregations !== undefined && !aggregations.every(a => typeof a === 'string')) {
-    throw new Error(`Expected all aggregations to be an array of strings`);
-  }
-}
 
 export const buildDataElementFetch = (params: DataElementParams) => {
   const builtDataElementsFetchParams = buildParams(params);

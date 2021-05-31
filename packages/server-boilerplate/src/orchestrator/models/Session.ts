@@ -4,9 +4,9 @@
  *
  */
 
-import jwt from 'jsonwebtoken';
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
+import { getTokenExpiry } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
 import { AuthConnection } from '../auth';
 
@@ -25,30 +25,6 @@ interface SessionFields {
   access_token_expiry: number;
   refresh_token: string;
 }
-
-const extractTokenDetails = (decodedToken: string | Record<string, unknown> | null) => {
-  if (decodedToken === null || typeof decodedToken === 'string') {
-    throw new Error('Got unexpected result from decoded jwt token');
-  }
-
-  if (!('exp' in decodedToken) || !('iat' in decodedToken)) {
-    throw new Error('Decoded jwt token missing expected fields');
-  }
-
-  const { exp, iat } = decodedToken;
-  return [exp, iat] as [number, number];
-};
-
-const getTokenExpiry = (accessToken: string) => {
-  const [expiryAuthServerClock, issuedAtAuthServerClock] = extractTokenDetails(
-    jwt.decode(accessToken),
-  );
-
-  // subtract 3 seconds to account for latency since generation on the auth server
-  const validForSeconds = expiryAuthServerClock - issuedAtAuthServerClock - 3;
-  const expiryServerClock = Date.now() + validForSeconds * 1000;
-  return expiryServerClock;
-};
 
 export class SessionType extends DatabaseType {
   id: string;

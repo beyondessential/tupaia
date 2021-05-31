@@ -23,6 +23,7 @@
     "countrynames": "^0.1.1",
     "lodash.get": "^4.4.2",
     "lodash.pickby": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "node-fetch": "^1.7.3",
