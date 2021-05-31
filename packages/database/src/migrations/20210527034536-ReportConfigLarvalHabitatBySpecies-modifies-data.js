@@ -35,22 +35,27 @@ const REPORT = {
           },
         },
       ],
-      dataElements: ['STRVEC_AE_IR09', 'STRVEC_AE_IR02'],
+      dataElements: ['STRVEC_LHS13', 'STRVEC_LHS36'],
     },
     transform: [
       {
         transform: 'filter',
-        where: "exists($row['STRVEC_AE_IR09'],$row['STRVEC_AE_IR02'])",
+        where: "exists($row['STRVEC_LHS13'],$row['STRVEC_LHS36'])",
       },
       {
         transform: 'select',
-        "'species'": '$row.STRVEC_AE_IR09',
-        "'name'": '$row.STRVEC_AE_IR02',
+        "'species'": '$row.STRVEC_LHS13',
+        "'name'": '$row.STRVEC_LHS36',
+      },
+      {
+        transform: 'select',
+        '$row.species': '1',
+        '...': ['name'],
       },
       {
         transform: 'aggregate',
-        species: 'countByRadio',
         name: 'group',
+        '...': 'sum',
       },
     ],
   },
