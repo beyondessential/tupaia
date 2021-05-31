@@ -22,21 +22,18 @@ const StyledTableCell = styled(TableCell)`
   background: ${props => props.theme.palette.grey['200']};
 `;
 
-export const DataGrid = ({ data, columns }) => {
-  const filterTypes = React.useMemo(
-    () => ({
-      text: (rows, id, filterValue) => {
-        return rows.filter(row => {
-          const rowValue = row.values[id];
-          return rowValue !== undefined
-            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
-            : true;
-        });
-      },
-    }),
-    [],
-  );
+const filterTypes = () => ({
+  text: (rows, id, filterValue) => {
+    return rows.filter(row => {
+      const rowValue = row.values[id];
+      return rowValue !== undefined
+        ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+        : true;
+    });
+  },
+});
 
+export const DataGrid = ({ data, columns }) => {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,

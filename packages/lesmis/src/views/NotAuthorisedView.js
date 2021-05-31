@@ -45,9 +45,7 @@ export const NotAuthorisedView = () => {
       <Section>
         <NotAuthorisedIcon />
         <Heading variant="h4">You are not authorised to view this page</Heading>
-        <Text>
-          If you would like access please contact a Tupaia administrator at info.tupaia.org/contact
-        </Text>
+        <Text>If you would like access please contact an administrator.</Text>
         {isLoggedIn && (
           <Button component={RouterLink} to="/">
             Go back to home page

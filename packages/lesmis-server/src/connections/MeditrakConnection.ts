@@ -56,4 +56,24 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
       },
     );
   }
+
+  async updateUserEntityPermissions(data: RequestBody) {
+    // @ts-ignore
+    const { userEntityPermissionId, permissionGroupName } = data;
+
+    // get permission_group byName
+    const permissionGroups = await this.get('permissionGroups', {
+      filter: JSON.stringify({
+        name: { comparator: 'like', comparisonValue: permissionGroupName },
+      }),
+    });
+
+    return this.put(
+      `userEntityPermissions/${userEntityPermissionId}`,
+      {},
+      {
+        permission_group_id: permissionGroups[0].id,
+      },
+    );
+  }
 }

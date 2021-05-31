@@ -8,6 +8,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
 
 const FIELDS: Record<string, string> = {
+  'user.creation_date': 'createdAt',
   user_id: 'id',
   'user.first_name': 'firstName',
   'user.last_name': 'lastName',
@@ -18,14 +19,10 @@ const FIELDS: Record<string, string> = {
   'entity.name': 'entityName',
   'entity.code': 'entityCode',
   'permission_group.name': 'permissionGroupName',
+  id: 'userEntityPermissionId',
 };
 
-const PERMISSION_GROUPS = [
-  'Admin',
-  'Laos Schools Admin',
-  'Laos Schools Super User',
-  'LESMIS Public',
-];
+const PERMISSION_GROUPS = ['Laos Schools Admin', 'Laos Schools Super User', 'LESMIS Public'];
 
 export class UsersRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;

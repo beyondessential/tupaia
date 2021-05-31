@@ -11,6 +11,7 @@ import { useUsers, useUser } from '../api/queries';
 import * as COLORS from '../constants';
 import { DataGrid, PageHeader, FetchLoader, FullPageLoader } from '../components';
 import { NotAuthorisedView } from './NotAuthorisedView';
+import { UserPermissionsCell } from '../components/DataGrid/UserPermissionsCell';
 
 const Section = styled.section`
   display: flex;
@@ -37,7 +38,12 @@ const columns = [
   { accessor: 'mobileNumber', Header: 'Contact Number' },
   { accessor: 'employer', Header: 'Employer' },
   { accessor: 'position', Header: 'Position' },
-  { accessor: 'permissionGroupName', Header: 'Permissions' },
+  {
+    accessor: 'permissionGroupName',
+    Header: 'Permissions',
+    Cell: UserPermissionsCell,
+    minWidth: 300,
+  },
 ];
 
 export const UsersView = () => {

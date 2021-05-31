@@ -9,6 +9,7 @@ import { get } from '../api';
 export const useUsers = options =>
   useQuery('users', () => get('users'), {
     retry: 0,
+    keepPreviousData: true,
     staleTime: 1000 * 60 * 60 * 1,
     refetchOnWindowFocus: false,
     ...options,
