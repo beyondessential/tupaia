@@ -55,7 +55,7 @@ const useDefaultDashboardTab = (selectedDashboard = null, options) => {
   const history = useHistory();
   const { isLoggedIn, isFetching: isFetchingUser } = useUser();
 
-  if (!options) {
+  if (!options || options.length === 0) {
     return null;
   }
 
