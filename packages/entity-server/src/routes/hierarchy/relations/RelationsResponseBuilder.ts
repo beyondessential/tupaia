@@ -48,7 +48,9 @@ export class RelationsResponseBuilder {
       hierarchyId,
       ancestorType,
     );
-    const ancestorCodes = Object.values(descendantAncestorMapping).map(ancestor => ancestor.code);
+    const ancestorCodes = [
+      ...new Set(Object.values(descendantAncestorMapping).map(ancestor => ancestor.code)),
+    ];
     const ancestorDescendantPairs = Object.entries(descendantAncestorMapping).map(
       ([descendant, { code: ancestor }]) => ({
         descendant,
@@ -59,7 +61,7 @@ export class RelationsResponseBuilder {
     return [ancestorCodes, ancestorDescendantPairs];
   }
 
-  private async getAncestors(ancestorsWithDescendantsCodes: string[]) {
+  private async getAncestorTypeRelatives(ancestorsWithDescendantsCodes: string[]) {
     const { entity, hierarchyId } = this.ctx;
     const { type: ancestorType, filter } = this.ctx.ancestor;
     const { code: filterCode } = filter;
@@ -72,12 +74,11 @@ export class RelationsResponseBuilder {
         : ancestorsWithDescendantsCodes.filter(code => filterCode === code);
     }
 
-    return entity.type === ancestorType
-      ? [entity]
-      : entity.getDescendants(hierarchyId, {
-          ...filter,
-          code: codesToUse,
-        });
+    return entity.getRelatives(hierarchyId, {
+      ...filter,
+      type: ancestorType,
+      code: codesToUse,
+    });
   }
 
   private async getFormattedEntitiesByCode(ancestors: EntityType[], descendants: EntityType[]) {
@@ -128,7 +129,7 @@ export class RelationsResponseBuilder {
     const { entity, hierarchyId, allowedCountries } = this.ctx;
     const { type: descendantType, filter } = this.ctx.descendant;
 
-    const descendants = await entity.getDescendants(hierarchyId, {
+    const descendants = await entity.getRelatives(hierarchyId, {
       ...filter,
       type: descendantType,
       country_code: allowedCountries,
@@ -140,7 +141,7 @@ export class RelationsResponseBuilder {
       return this.buildMap(pairs);
     }
 
-    const ancestors = await this.getAncestors(ancestorCodes);
+    const ancestors = await this.getAncestorTypeRelatives(ancestorCodes);
     const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
     const formattedPairs = pairs
       .filter(pair => formattedEntitiesByCode[pair.ancestor])
