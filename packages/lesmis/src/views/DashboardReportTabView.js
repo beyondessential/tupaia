@@ -6,9 +6,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import { SmallAlert } from '@tupaia/ui-components';
-import { useDashboardData } from '../api/queries';
+import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
@@ -49,12 +50,26 @@ const ScrollToTopButton = styled(ArrowUpward)`
 const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
 const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
 
-const getDefaultDashboard = data => {
-  if (!data) {
+// Gets the best default dashboard possible, and check if the selected dashboard is valid
+const useDefaultDashboardTab = (selectedDashboard = null, options) => {
+  const history = useHistory();
+  const { isLoggedIn, isFetching: isFetchingUser } = useUser();
+
+  if (!options || options.length === 0) {
     return null;
   }
 
-  const dashboardNames = Object.keys(data);
+  const dashboardNames = Object.keys(options);
+
+  if (selectedDashboard) {
+    if (dashboardNames.includes(selectedDashboard)) {
+      return selectedDashboard;
+    }
+    if (!isFetchingUser && !isLoggedIn) {
+      return history.push('/login', { referer: history.location });
+    }
+  }
+
   if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
     return DEFAULT_DASHBOARD_GROUP;
   }
@@ -110,7 +125,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
   const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
   const { data, isLoading, isError, error } = useDashboardData(entityCode);
   const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
-  const activeDashboard = selectedDashboard || getDefaultDashboard(data);
+  const activeDashboard = useDefaultDashboardTab(selectedDashboard, data);
 
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);

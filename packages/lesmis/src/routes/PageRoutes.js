@@ -11,6 +11,7 @@ import { ProfileView } from '../views/ProfileView';
 import { PageView, TwoColumnPageView } from '../views/PageView';
 import { EntityView } from '../views/EntityView';
 import { NotFoundView } from '../views/NotFoundView';
+import { LoginView } from '../views/LoginView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 
 /**
@@ -22,6 +23,9 @@ export const PageRoutes = React.memo(() => (
     <Route exact path="/">
       <NavBar />
       <HomeView />
+    </Route>
+    <Route path="/login">
+      <LoginView />
     </Route>
     <Route path="/profile">
       <NavBar />
@@ -43,14 +47,14 @@ export const PageRoutes = React.memo(() => (
       <PageView content={CONTACT_PAGE} />
       <Footer />
     </Route>
-    <Route path="/:entityCode/:view?">
-      <NavBar />
-      <EntityView />
-    </Route>
-    <Route>
+    <Route path="/not-found">
       <NavBar />
       <NotFoundView />
       <Footer />
+    </Route>
+    <Route path="/:entityCode/:view?">
+      <NavBar />
+      <EntityView />
     </Route>
   </Switch>
 ));
