@@ -4,15 +4,14 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { formatEntitiesForResponse } from '../format';
+import { formatEntitiesForResponse } from './format';
 import {
   SingleEntityRequest,
   SingleEntityRequestParams,
   RequestBody,
   SingleEntityRequestQuery,
   EntityResponse,
-} from '../types';
-import { getMatchingRelatives } from './getMatchingRelatives';
+} from './types';
 
 export type RelativesRequest = SingleEntityRequest<
   SingleEntityRequestParams,
@@ -22,10 +21,9 @@ export type RelativesRequest = SingleEntityRequest<
 >;
 export class EntityRelativesRoute extends Route<RelativesRequest> {
   async buildResponse() {
-    const { models, ctx } = this.req;
-    const { fields, field } = ctx;
+    const { hierarchyId, entity, fields, field, filter } = this.req.ctx;
 
-    const responseEntities = await getMatchingRelatives(models, ctx);
+    const responseEntities = await entity.getRelatives(hierarchyId, filter);
 
     return formatEntitiesForResponse(
       this.req.models,

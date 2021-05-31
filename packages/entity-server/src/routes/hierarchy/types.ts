@@ -57,6 +57,7 @@ export type FlattenedEntity = FlattableEntityFields[keyof FlattableEntityFields]
 export type EntityResponse = EntityResponseObject | FlattenedEntity;
 
 export type CommonContext = {
+  hierarchyRootEntity: EntityType;
   hierarchyId: string;
   allowedCountries: string[];
   fields: (keyof ExtendedEntityFields)[];

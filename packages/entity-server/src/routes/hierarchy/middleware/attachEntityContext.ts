@@ -29,9 +29,9 @@ const validateEntitiesAndBuildContext = async (
 
   const { hierarchyId } = req.ctx;
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
-  const rootEntity = await entities[0].getAncestorOfType(hierarchyId, 'project'); // Assuming all requested entities are in same hierarchy
+  const hierarchyRootEntity = await entities[0].getAncestorOfType(hierarchyId, 'project'); // Assuming all requested entities are in same hierarchy
 
-  const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
+  const allowedCountries = (await hierarchyRootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
     .filter(notNull)
     .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index) // De-duplicate countryCodes
@@ -47,7 +47,7 @@ const validateEntitiesAndBuildContext = async (
 
   const { filter: queryFilter } = req.query;
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
-  return { entities, allowedCountries, filter };
+  return { hierarchyRootEntity, entities, allowedCountries, filter };
 };
 
 export const attachSingleEntityContext = async (
@@ -60,6 +60,7 @@ export const attachSingleEntityContext = async (
 
     const context = await validateEntitiesAndBuildContext(req, [entityCode]);
 
+    req.ctx.hierarchyRootEntity = context.hierarchyRootEntity;
     [req.ctx.entity] = context.entities;
     req.ctx.allowedCountries = context.allowedCountries;
     req.ctx.filter = context.filter;
@@ -84,6 +85,7 @@ export const attachMultiEntityContext = async (
 
     const context = await validateEntitiesAndBuildContext(req, entityCodes);
 
+    req.ctx.hierarchyRootEntity = context.hierarchyRootEntity;
     req.ctx.entities = context.entities;
     req.ctx.allowedCountries = context.allowedCountries;
     req.ctx.filter = context.filter;
