@@ -21,7 +21,7 @@ const mapOverlay = {
   id: 'LAOS_EOC_Total_Malaria_Cases_By_Week_Province',
   name: 'Total Weekly Malaria Cases by Province',
   userGroup: 'Laos EOC User',
-  dataElementCode: 'Total_Positive_Malaria_Cases',
+  dataElementCode: 'Malaria_case',
   isDataRegional: false,
   measureBuilderConfig: {
     programCodes: ['Malaria_Case_Reporting'],
