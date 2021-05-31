@@ -5,7 +5,7 @@
 
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
 import { getDefaultPeriod, convertPeriodStringToDateRange } from '@tupaia/utils';
-import { Event } from '../types';
+import { Event, AggregationObject } from '../types';
 
 type PeriodParams = {
   period?: string;
@@ -14,13 +14,25 @@ type PeriodParams = {
 };
 
 export class Aggregator extends BaseAggregator {
+  aggregationToAggregationConfig = (aggregation: string | AggregationObject) =>
+    typeof aggregation === 'string'
+      ? {
+          type: aggregation,
+        }
+      : aggregation;
+
   async fetchAnalytics(
     dataElementCodes: string[],
+    aggregationList: (string | AggregationObject)[] | undefined,
     organisationUnitCodes: string,
     hierarchy: string | undefined,
     periodParams: PeriodParams,
   ) {
     const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
+    const aggregations = aggregationList
+      ? aggregationList.map(this.aggregationToAggregationConfig)
+      : [{ type: 'RAW' }];
+
     return super.fetchAnalytics(
       dataElementCodes,
       {
@@ -31,27 +43,35 @@ export class Aggregator extends BaseAggregator {
         endDate,
         dataServices: [{ isDataRegional: true }],
       },
-      { aggregationType: 'RAW' },
+      { aggregations },
     );
   }
 
   async fetchEvents(
     programCode: string,
+    aggregationList: (string | AggregationObject)[] | undefined,
     organisationUnitCodes: string,
+    hierarchy: string | undefined,
     periodParams: PeriodParams,
+    dataElementCodes?: string[],
   ): Promise<Event[]> {
     const { period, startDate, endDate } = buildPeriodQueryParams(periodParams);
+    const aggregations = aggregationList
+      ? aggregationList.map(this.aggregationToAggregationConfig)
+      : [{ type: 'RAW' }];
     return super.fetchEvents(
       programCode,
       {
         organisationUnitCodes: organisationUnitCodes.split(','),
+        hierarchy,
+        dataElementCodes,
         period,
         startDate,
         endDate,
         dataServices: [{ isDataRegional: true }],
         useDeprecatedApi: false,
       },
-      { aggregationType: 'RAW' },
+      { aggregations },
     );
   }
 }
