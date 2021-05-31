@@ -3,8 +3,10 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
+import groupBy from 'lodash.groupby';
 import {
   checkValueSatisfiesCondition,
+  comparePeriods,
   replaceValues,
   asyncFilter,
   asyncEvery,
@@ -116,10 +118,23 @@ const buildOrgUnitParentMapForAnalytics = async (analytics, models) => {
   });
   return orgUnitParentMap;
 };
+  
+const sumLatestDataValuePerOrgUnit = (analytics, dataValues) => {
+  const analyticsByOrgUnit =
+    groupBy(analytics.filter(({ dataElement }) => dataValues.includes(dataElement)), 'organisationUnit');
+
+  const latestAnalyticByOrgUnit = Object.values(analyticsByOrgUnit).map(
+    analyticsForOrgUnit => analyticsForOrgUnit.sort(({ period: p1 }, { period: p2 }) => comparePeriods(p2, p1))[0]
+  );
+
+  // Sum starts as undefined so that if there's no data values then we can distinguish between No data and 0
+  return latestAnalyticByOrgUnit.reduce((sum, { value }) => (sum || 0) + value, undefined);
+};
 
 const AGGREGATIONS = {
   SUM: sumDataValues,
   COUNT: countDataValues,
+  SUM_LATEST_PER_ORG_UNIT: sumLatestDataValuePerOrgUnit,
 };
 
 const performArithmeticOperation = async (analytics, arithmeticConfig, models) => {

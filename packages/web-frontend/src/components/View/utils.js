@@ -71,3 +71,11 @@ export const getIsMatrix = viewContent => {
 export const getIsDataDownload = viewContent => {
   return viewContent && viewContent.viewType === 'dataDownload';
 };
+
+export const checkIfApplyDotStyle = presentationOptions => {
+  return presentationOptions?.applyLocation?.columnIndexes;
+};
+
+export const getIsUsingDots = presentationOptions => {
+  return Object.keys(presentationOptions).length > 0;
+};

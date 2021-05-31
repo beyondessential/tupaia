@@ -4,11 +4,21 @@
  */
 
 import { Aggregator } from '../../../aggregator';
-import { FetchReportQuery } from '../../../types';
+import { FetchReportQuery, AggregationObject } from '../../../types';
 import { FetchResponse } from '../types';
+import {
+  validateDataElementsForAnalytics as validateDataElements,
+  validateAggregations,
+} from './helpers';
+
+type DataElementParams = {
+  dataElements: unknown;
+  aggregations?: unknown;
+};
 
 type DataElementFetchParams = {
   dataElementCodes: string[];
+  aggregations?: (string | AggregationObject)[];
 };
 
 const fetchAnalytics = async (
@@ -16,33 +26,32 @@ const fetchAnalytics = async (
   query: FetchReportQuery,
   params: DataElementFetchParams,
 ): Promise<FetchResponse> => {
-  const { organisationUnitCodes, period, startDate, endDate } = query;
-  return aggregator.fetchAnalytics(params.dataElementCodes, organisationUnitCodes, {
-    period,
-    startDate,
-    endDate,
-  });
+  const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
+  return aggregator.fetchAnalytics(
+    params.dataElementCodes,
+    params.aggregations,
+    organisationUnitCodes,
+    hierarchy,
+    {
+      period,
+      startDate,
+      endDate,
+    },
+  );
 };
 
-const buildParams = (params: unknown): DataElementFetchParams => {
-  if (!Array.isArray(params)) {
-    throw new Error(`Expected an array of data element codes but got ${params}`);
-  }
-
-  const nonStringDataElementCode = params.find(param => typeof param !== 'string');
-
-  if (nonStringDataElementCode) {
-    throw new Error(
-      `Expected all data element codes to be strings, but got ${nonStringDataElementCode}`,
-    );
-  }
+const buildParams = (params: DataElementParams): DataElementFetchParams => {
+  const { dataElements, aggregations } = params;
+  validateDataElements(dataElements);
+  validateAggregations(aggregations);
 
   return {
-    dataElementCodes: params,
+    dataElementCodes: dataElements,
+    aggregations,
   };
 };
 
-export const buildDataElementFetch = (params: unknown) => {
+export const buildDataElementFetch = (params: DataElementParams) => {
   const builtDataElementsFetchParams = buildParams(params);
   return (aggregator: Aggregator, query: FetchReportQuery) =>
     fetchAnalytics(aggregator, query, builtDataElementsFetchParams);

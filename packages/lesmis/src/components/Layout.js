@@ -63,3 +63,15 @@ export const FlexSpaceBetween = styled(MuiBox)`
   align-items: center;
   justify-content: space-between;
 `;
+
+export const FlexCenter = styled(MuiBox)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const FlexRow = styled(MuiBox)`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+`;

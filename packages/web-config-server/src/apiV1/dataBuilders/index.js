@@ -16,6 +16,7 @@ export * from './generic/sum';
 export * from './generic/calc';
 export * from './generic/table';
 export * from './generic/unique';
+export * from './generic/reportServer';
 
 /** Modules */
 export * from './modules/disaster';
