@@ -8,11 +8,6 @@ import axios from 'axios';
 const timeout = 45 * 1000; // 45 seconds
 
 const getApiUrl = () => {
-  // prefer any url set in the environment variables
-  if (process.env.REACT_APP_LESMIS_API_URL) {
-    return process.env.REACT_APP_LESMIS_API_URL;
-  }
-
   // if no env var, use sensible defaults based on the front end url
   const { hostname } = window.location; // eslint-disable-line no-undef
 
@@ -52,7 +47,7 @@ axios.defaults.withCredentials = true;
  */
 const request = async (endpoint, options) => {
   try {
-    const response = await axios(`${getApiUrl()}${endpoint}`, {
+    const response = await axios(`${getApiUrl()}/v1/${endpoint}`, {
       timeout,
       ...options,
     });
