@@ -15,6 +15,9 @@ const compareAscTestData = [
   ['number = number', [1, 1], 0],
   ['same starting digit', [1, 10], -1],
   ['string and number', [1000, 'a'], -1],
+  ['undefined < string', [undefined, 'a'], -1],
+  ['undefined < number', [undefined, 1], -1],
+  ['undefined = number', [undefined, undefined], 0],
 ];
 
 describe('compareAsc()', () => {
