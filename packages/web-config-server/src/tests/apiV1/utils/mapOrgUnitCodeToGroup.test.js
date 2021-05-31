@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { mapOrgUnitToGroupCodes } from '/apiV1/utils/mapOrgUnitToGroupCodes';
+import { mapOrgUnitCodeToGroup } from '/apiV1/utils/mapOrgUnitCodeToGroup';
 
 const organisationUnits = [
   {
@@ -34,18 +34,18 @@ const organisationUnits = [
   },
 ];
 
-describe('mapOrgUnitToGroupCodes', () => {
-  it('should map org unit ids to group codes', () => {
-    expect(mapOrgUnitToGroupCodes(organisationUnits)).to.deep.equal({
-      'SB_Guadalcanal Province': 'SB_Guadalcanal Province',
-      SB_10503: 'SB_Guadalcanal Province',
-      SB_10203: 'SB_Guadalcanal Province',
-      SB_10601: 'SB_Guadalcanal Province',
-      SB_Honiara: 'SB_Honiara',
-      SB_90201: 'SB_Honiara',
-      SB_90301: 'SB_Honiara',
-      SB_90305: 'SB_Honiara',
-      SB_90205: 'SB_Honiara',
+describe('mapOrgUnitCodeToGroup', () => {
+  it('should map org unit codes to group info', () => {
+    expect(mapOrgUnitCodeToGroup(organisationUnits)).to.deep.equal({
+      'SB_Guadalcanal Province': { code: 'SB_Guadalcanal Province', name: 'Guadalcanal Province' },
+      SB_10503: { code: 'SB_Guadalcanal Province', name: 'Guadalcanal Province' },
+      SB_10203: { code: 'SB_Guadalcanal Province', name: 'Guadalcanal Province' },
+      SB_10601: { code: 'SB_Guadalcanal Province', name: 'Guadalcanal Province' },
+      SB_Honiara: { code: 'SB_Honiara', name: 'Honiara' },
+      SB_90201: { code: 'SB_Honiara', name: 'Honiara' },
+      SB_90301: { code: 'SB_Honiara', name: 'Honiara' },
+      SB_90305: { code: 'SB_Honiara', name: 'Honiara' },
+      SB_90205: { code: 'SB_Honiara', name: 'Honiara' },
     });
   });
 });

@@ -7,8 +7,9 @@ import groupBy from 'lodash.groupby';
 
 import moment from 'moment';
 import { getSortByKey, momentToDateString } from '@tupaia/utils';
-import { fetchData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
+import { AnalyticsFetchQuery } from './AnalyticsFetchQuery';
+import { EventsFetchQuery } from './EventsFetchQuery';
 import { sanitizeDataValue } from './utils';
 import { validateEventOptions, validateAnalyticsOptions } from './validation';
 import { sanitiseFetchDataOptions } from './sanitiseFetchDataOptions';
@@ -33,7 +34,7 @@ export class TupaiaDataApi {
   async fetchEvents(optionsInput) {
     await validateEventOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput);
-    const results = await fetchData(this.database, options);
+    const results = await new EventsFetchQuery(this.database, options).fetch();
     const resultsByEventId = groupBy(results, 'eventId');
     const hasElements = options.dataElementCodes.length > 0;
     return Object.values(resultsByEventId)
@@ -53,7 +54,7 @@ export class TupaiaDataApi {
   async fetchAnalytics(optionsInput) {
     await validateAnalyticsOptions(optionsInput);
     const options = sanitiseFetchDataOptions(optionsInput);
-    const results = await fetchData(this.database, options);
+    const results = await new AnalyticsFetchQuery(this.database, options).fetch();
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
@@ -114,12 +115,9 @@ export class TupaiaDataApi {
          JOIN survey on survey_screen.survey_id = survey.id
          WHERE survey.code = '${dataGroupCode}'
          AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+         ORDER BY survey_screen.screen_number, survey_screen_component.component_number;
        `,
         dataElementCodes,
-      );
-
-      sqlQuery.addOrderByClause(
-        'survey_screen.screen_number, survey_screen_component.component_number',
       );
 
       const dataElementsMetadata = await this.fetchDataElementsMetadataFromSqlQuery(
