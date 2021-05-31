@@ -21,7 +21,7 @@ export class EntityConnection extends ApiConnection {
     dataSourceEntityType,
     dataSourceEntityFilter = {}, // TODO: Add support for dataSourceEntityFilter https://github.com/beyondessential/tupaia-backlog/issues/2660
   ) {
-    return this.get(`hierarchy/${hierarchyName}/descendants`, {
+    return this.get(`hierarchy/${hierarchyName}/relatives`, {
       entities: entityCodes.join(','),
       descendant_filter: `type:${dataSourceEntityType}`,
       field: 'code',
