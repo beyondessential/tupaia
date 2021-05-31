@@ -13,6 +13,10 @@ import {
   EntityDescendantsRoute,
   MultiEntityDescendantsRequest,
   MultiEntityDescendantsRoute,
+  RelativesRequest,
+  EntityRelativesRoute,
+  MultiEntityRelativesRequest,
+  MultiEntityRelativesRoute,
   RelationsRequest,
   EntityRelationsRoute,
   MultiEntityRelationsRequest,
@@ -33,10 +37,15 @@ export function createApp() {
     .useBasicBearerAuth('entity-server')
     .use<SingleEntityRequest | MultiEntityRequest>('hierarchy/:hierarchyName', attachCommonContext)
     .use<MultiEntityRequest>('hierarchy/:hierarchyName/descendants', attachMultiEntityContext)
+    .use<MultiEntityRequest>('hierarchy/:hierarchyName/relatives', attachMultiEntityContext)
     .use<MultiEntityRequest>('hierarchy/:hierarchyName/relations', attachMultiEntityContext)
     .get<MultiEntityDescendantsRequest>(
       'hierarchy/:hierarchyName/descendants',
       handleWith(MultiEntityDescendantsRoute),
+    )
+    .get<MultiEntityRelativesRequest>(
+      'hierarchy/:hierarchyName/relatives',
+      handleWith(MultiEntityRelativesRoute),
     )
     .use<MultiEntityRelationsRequest>('hierarchy/:hierarchyName/relations', attachRelationsContext)
     .get<MultiEntityRelationsRequest>(
@@ -48,6 +57,10 @@ export function createApp() {
     .get<DescendantsRequest>(
       'hierarchy/:hierarchyName/:entityCode/descendants',
       handleWith(EntityDescendantsRoute),
+    )
+    .get<RelativesRequest>(
+      'hierarchy/:hierarchyName/:entityCode/relatives',
+      handleWith(EntityRelativesRoute),
     )
     .use<RelationsRequest>('hierarchy/:hierarchyName/:entityCode/relations', attachRelationsContext)
     .get<RelationsRequest>(
