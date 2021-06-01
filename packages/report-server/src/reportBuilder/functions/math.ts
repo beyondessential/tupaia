@@ -7,7 +7,10 @@ import { sum as mathjsSum, divide as mathjsDivide } from 'mathjs';
 
 const isDefined = <T>(value: T): value is Exclude<T, undefined> => value !== undefined;
 
-export const sum = (...numbers: (number | undefined)[]): number | undefined => {
+export const sum = (
+  ...args: (number | undefined | (number | undefined)[])[]
+): number | undefined => {
+  const numbers = args.flat();
   const validNumbers = numbers.filter(isDefined);
 
   if (validNumbers.length === 0) {
@@ -17,7 +20,11 @@ export const sum = (...numbers: (number | undefined)[]): number | undefined => {
   return mathjsSum(validNumbers);
 };
 
-export const divide = (...numbers: (number | undefined)[]): number | undefined => {
+export const divide = (
+  ...args: (number | undefined | (number | undefined)[])[]
+): number | undefined => {
+  const numbers = args.flat();
+
   if (numbers.some(number => !isDefined(number))) {
     return undefined;
   }
