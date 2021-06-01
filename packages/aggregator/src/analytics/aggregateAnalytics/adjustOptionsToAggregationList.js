@@ -37,7 +37,7 @@ const getAdjustedDateRange = (dateRange, aggregationList) =>
 
 const shouldFetchDataSourceEntities = ({ config }) => config?.dataSourceEntityType;
 
-const shouldFetchRelations = ({ type, config }) =>
+const shouldFetchRelationships = ({ type, config }) =>
   config?.aggregationEntityType &&
   config?.dataSourceEntityType &&
   !(type === AGGREGATION_TYPES.RAW);
@@ -64,7 +64,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
         return;
       }
 
-      if (!adjustedOrganisationUnitCodes && !shouldFetchRelations(aggregation)) {
+      if (!adjustedOrganisationUnitCodes && !shouldFetchRelationships(aggregation)) {
         const { dataSourceEntityType, dataSourceEntityFilter } = aggregation.config;
         adjustedOrganisationUnitCodes = await entityConnection.getDataSourceEntities(
           hierarchy,
@@ -83,8 +83,8 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
       } = aggregation.config;
       const [
         dataSourceEntities,
-        relations,
-      ] = await entityConnection.getDataSourceEntitiesAndRelations(
+        relationships,
+      ] = await entityConnection.getDataSourceEntitiesAndRelationships(
         hierarchy,
         organisationUnitCodes,
         aggregationEntityType,
@@ -97,7 +97,7 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
       }
       adjustedAggregations.push({
         ...aggregation,
-        config: { ...aggregation.config, orgUnitMap: relations },
+        config: { ...aggregation.config, orgUnitMap: relationships },
       });
     }),
   );

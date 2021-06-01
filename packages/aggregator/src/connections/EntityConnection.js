@@ -28,7 +28,7 @@ export class EntityConnection extends ApiConnection {
     });
   }
 
-  async getDataSourceEntitiesAndRelations(
+  async getDataSourceEntitiesAndRelationships(
     hierarchyName,
     entityCodes,
     aggregationEntityType,
@@ -47,12 +47,12 @@ export class EntityConnection extends ApiConnection {
       query.ancestor_filter = `type:${aggregationEntityType}`;
     }
 
-    const response = await this.get(`hierarchy/${hierarchyName}/relations`, query);
+    const response = await this.get(`hierarchy/${hierarchyName}/relationships`, query);
 
-    const formattedRelations = {};
+    const formattedRelationships = {};
     Object.entries(response).forEach(([descendant, ancestor]) => {
-      formattedRelations[descendant] = { code: ancestor };
+      formattedRelationships[descendant] = { code: ancestor };
     });
-    return [Object.keys(formattedRelations), formattedRelations];
+    return [Object.keys(formattedRelationships), formattedRelationships];
   }
 }

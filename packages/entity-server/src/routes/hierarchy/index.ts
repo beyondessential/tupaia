@@ -16,8 +16,8 @@ export {
   MultiEntityRelativesRequest,
 } from './MultiEntityRelativesRoute';
 export {
-  EntityRelationsRoute,
-  RelationsRequest,
-  MultiEntityRelationsRoute,
-  MultiEntityRelationsRequest,
-} from './relations';
+  EntityRelationshipsRoute,
+  RelationshipsRequest,
+  MultiEntityRelationshipsRoute,
+  MultiEntityRelationshipsRequest,
+} from './relationships';

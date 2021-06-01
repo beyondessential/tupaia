@@ -48,17 +48,17 @@ GET http://{{host}}/{{version}}/hierarchy/explore/relatives?entities=TO_Tongatap
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch relations among relatives of an entity
-GET http://{{host}}/{{version}}/hierarchy/explore/TO/relations?descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
+### Fetch relationships among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/explore/TO/relationships?descendant_filter=type:village&ancestor_field=code&descendant_field=name&groupBy=ancestor HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch filtered relations among relatives of an entity
-GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relations?ancestor_filter=type:district&descendant_filter=type:school;attributes_type:Secondary&groupBy=descendant HTTP/1.1
+### Fetch filtered relationships among relatives of an entity
+GET http://{{host}}/{{version}}/hierarchy/laos_schools/LA_Park ou District/relationships?ancestor_filter=type:district&descendant_filter=type:school;attributes_type:Secondary&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}
 
-### Fetch relations among relatives of multiple entities
-GET http://{{host}}/{{version}}/hierarchy/explore/relations?entities=TO_Tongatapu_Haatafu,PG_Sau_ASP&descendant_filter=type:district&ancestor_filter=type:country&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
+### Fetch relationships among relatives of multiple entities
+GET http://{{host}}/{{version}}/hierarchy/explore/relationships?entities=TO_Tongatapu_Haatafu,PG_Sau_ASP&descendant_filter=type:district&ancestor_filter=type:country&ancestor_field=code&descendant_field=name&groupBy=descendant HTTP/1.1
 content-type: {{contentType}}
 Authorization: {{authorization}}

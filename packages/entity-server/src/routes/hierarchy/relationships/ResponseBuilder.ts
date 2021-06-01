@@ -7,23 +7,23 @@ import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityServerModelRegistry } from '../../../types';
 import { EntityType } from '../../../models';
 import { formatEntitiesForResponse } from '../format';
-import { RelationsContext } from './types';
+import { RelationshipsContext } from './types';
 
 type Pair = {
   descendant: string;
   ancestor: string;
 };
 
-export class RelationsResponseBuilder {
+export class ResponseBuilder {
   private readonly models: EntityServerModelRegistry;
 
-  private readonly ctx: RelationsContext & { ancestor: { type: string } };
+  private readonly ctx: RelationshipsContext & { ancestor: { type: string } };
 
   private readonly groupBy: 'ancestor' | 'descendant';
 
   constructor(
     models: EntityServerModelRegistry,
-    ctx: RelationsContext,
+    ctx: RelationshipsContext,
     groupBy: 'ancestor' | 'descendant' = 'ancestor',
   ) {
     this.models = models;

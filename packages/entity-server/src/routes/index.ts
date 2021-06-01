@@ -15,8 +15,8 @@ export {
   RelativesRequest,
   MultiEntityRelativesRoute,
   MultiEntityRelativesRequest,
-  EntityRelationsRoute,
-  RelationsRequest,
-  MultiEntityRelationsRoute,
-  MultiEntityRelationsRequest,
+  EntityRelationshipsRoute,
+  RelationshipsRequest,
+  MultiEntityRelationshipsRoute,
+  MultiEntityRelationshipsRequest,
 } from './hierarchy';
