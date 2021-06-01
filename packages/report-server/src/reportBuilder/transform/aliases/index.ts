@@ -13,7 +13,7 @@ import {
   firstValuePerPeriodPerOrgUnit,
   lastValuePerPeriodPerOrgUnit,
 } from './aggregateAliases';
-import { convertPeriodToWeek } from './periodConversionAliases';
+import { convertPeriodToWeek, convertEventDateToWeek } from './periodConversionAliases';
 
 export const aliases = {
   keyValueByDataElementName,
@@ -23,4 +23,5 @@ export const aliases = {
   firstValuePerPeriodPerOrgUnit,
   lastValuePerPeriodPerOrgUnit,
   convertPeriodToWeek,
+  convertEventDateToWeek,
 };

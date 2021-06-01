@@ -1,7 +1,11 @@
-import { CustomError, fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
+import { CustomError, fetchWithTimeout, stringifyQuery, createBasicHeader } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
 
-const DEFAULT_AUTH_HEADER = `Basic ${process.env.TUPAIA_APP_SERVER_AUTH}`;
+const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
+const DEFAULT_AUTH_HEADER = createBasicHeader(
+  MICROSERVICE_CLIENT_USERNAME,
+  MICROSERVICE_CLIENT_SECRET,
+);
 
 /**
  * Send request to Meditrak server and handle responses.

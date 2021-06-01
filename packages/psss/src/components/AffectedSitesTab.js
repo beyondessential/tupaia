@@ -4,21 +4,20 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
-import { CardTabPanel } from '@tupaia/ui-components';
-import {
-  createTotalCasesAccessor,
-  createPercentageChangeAccessor,
-  DottedTable,
-  PercentageChangeCell,
-} from './Table';
+import styled from 'styled-components';
+import { CardTabPanel, LoadingContainer } from '@tupaia/ui-components';
+import { DottedTable, PercentageChangeCell } from './Table';
 import {
   AlertsOutbreaksCard,
   AlertsOutbreaksCardHeader,
   AlertsAndOutbreaksCardBody,
 } from './AlertsOutbreaksCard';
-import { fetchStateShape } from '../hooks';
-import { FetchLoader } from './FetchLoader';
+import { useWeeklyReportForAlert } from '../api';
+import { getDisplayDatesByPeriod, getWeekNumberByPeriod } from '../utils';
+
+const TabContent = styled.div`
+  min-height: 300px;
+`;
 
 const PercentageChangeCellWrapper = ({ displayValue }) => (
   <PercentageChangeCell percentageChange={displayValue} />
@@ -39,48 +38,63 @@ const columns = [
     title: 'Prev. Week',
     key: 'percentageChange',
     CellComponent: PercentageChangeCellWrapper,
-    accessor: createPercentageChangeAccessor('afr'),
     sortable: false,
   },
   {
     title: 'Cases',
-    key: 'totalCases',
+    key: 'weeklyCases',
     align: 'right',
-    accessor: createTotalCasesAccessor('afr'),
     sortable: false,
   },
 ];
 
-export const AffectedSitesTab = ({ state }) => {
-  const { data: weeks } = state;
+export const AffectedSitesTab = ({ alert }) => {
+  const { data: weeklyData, isLoading, isFetching, error } = useWeeklyReportForAlert(alert);
+  const isDataLoading = isLoading || isFetching;
+  const noSitesAffected = !isDataLoading && weeklyData.length === 0;
+
+  const renderTabContent = () => {
+    if (error) {
+      return null;
+    }
+
+    if (noSitesAffected) {
+      return 'There are no affected sites to show';
+    }
+
+    return weeklyData.map(weekData => {
+      const { status, period, weeklyCases, percentageChange, sites: siteData } = weekData;
+
+      return (
+        <AlertsOutbreaksCard key={period} variant="outlined" mb={5}>
+          <AlertsOutbreaksCardHeader
+            type={status}
+            heading={`Week ${getWeekNumberByPeriod(period)}`}
+            subheading={getDisplayDatesByPeriod(period)}
+            detailText={`Total Cases for all Sites: ${weeklyCases || '-'}`}
+            percentageChange={percentageChange}
+          />
+          <AlertsAndOutbreaksCardBody>
+            <DottedTable columns={columns} data={siteData} />
+          </AlertsAndOutbreaksCardBody>
+        </AlertsOutbreaksCard>
+      );
+    });
+  };
 
   return (
     <CardTabPanel>
-      <FetchLoader state={state} noDataMessage="There are no affected sites to show">
-        {weeks.map(week => {
-          const startDate = format(week.startDate, 'LLL d');
-          const endDate = format(week.endDate, 'LLL d');
-          const year = format(week.endDate, 'yyyy');
-          return (
-            <AlertsOutbreaksCard key={week.id} variant="outlined" mb={5}>
-              <AlertsOutbreaksCardHeader
-                type={week.status}
-                heading={`Week ${week.weekNumber}`}
-                subheading={`${startDate} - ${endDate}, ${year}`}
-                detailText={`Total Cases for all Sites: ${week.totalCases}`}
-                percentageChange={week.percentageChange}
-              />
-              <AlertsAndOutbreaksCardBody>
-                <DottedTable columns={columns} data={week.sites} />
-              </AlertsAndOutbreaksCardBody>
-            </AlertsOutbreaksCard>
-          );
-        })}
-      </FetchLoader>
+      <LoadingContainer heading="Loading data" isLoading={isDataLoading} errorMessage={error}>
+        <TabContent>{renderTabContent()}</TabContent>
+      </LoadingContainer>
     </CardTabPanel>
   );
 };
 
 AffectedSitesTab.propTypes = {
-  state: PropTypes.shape(fetchStateShape).isRequired,
+  alert: PropTypes.shape({
+    period: PropTypes.string,
+    organisationUnit: PropTypes.string,
+    syndrome: PropTypes.string,
+  }).isRequired,
 };
