@@ -45,7 +45,7 @@ export const authenticationMiddleware = async (req, res, next) => {
   try {
     const { userId, apiClientId } = await authenticateUser(req);
     if (apiClientId) {
-      // req.apiClientId = apiClientId;
+      req.apiClientId = apiClientId;
     }
     if (userId) {
       req.userId = userId;
