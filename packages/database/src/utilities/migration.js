@@ -15,12 +15,7 @@ class RequiredParameterError extends Error {
 }
 
 export const insertObject = async (db, table, data, onError) =>
-  db.insert(
-    table,
-    Object.keys(data),
-    Object.values(data).map(x => (Array.isArray(x) ? `{${arrayToDoubleQuotedDbString(x)}}` : x)),
-    onError,
-  );
+  db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const deleteObject = async (db, table, condition) => {
   const [key, value] = Object.entries(condition)[0];
