@@ -41,6 +41,7 @@ exports.up = async function (db) {
       entity_types entity_type[] NOT NULL CONSTRAINT entity_types_not_empty CHECK (entity_types <> '{}'),
       root_entity_code TEXT NOT NULL,
       project_codes TEXT[] NOT NULL CONSTRAINT project_codes_not_empty CHECK (project_codes <> '{}'),
+      sort_order INTEGER,
       FOREIGN KEY (root_entity_code) REFERENCES entity (code) ON UPDATE CASCADE ON DELETE RESTRICT
     );
   `);
