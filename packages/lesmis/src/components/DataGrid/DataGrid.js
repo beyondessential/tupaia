@@ -95,7 +95,7 @@ export const DataGrid = ({ data, columns }) => {
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {page.map((row => {
+          {page.map(row => {
             prepareRow(row);
             return (
               <StyledTableRow {...row.getRowProps()}>

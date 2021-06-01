@@ -8,7 +8,6 @@ import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertTupaiaAdminPanelAccess,
-  assertLESMISAdminAccess,
 } from '../../permissions';
 import { assertUserEntityPermissionEditPermissions } from './assertUserEntityPermissionPermissions';
 
@@ -21,7 +20,7 @@ export class EditUserEntityPermissions extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertTupaiaAdminPanelAccess, assertLESMISAdminAccess],
+        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
         'You need either BES Admin or Tupaia Admin Panel access to edit user entity permissions',
       ),
     );
@@ -37,11 +36,7 @@ export class EditUserEntityPermissions extends EditHandler {
         this.updatedFields,
       );
     await this.assertPermissions(
-      assertAnyPermissions([
-        assertBESAdminAccess,
-        assertLESMISAdminAccess,
-        userEntityPermissionChecker,
-      ]),
+      assertAnyPermissions([assertBESAdminAccess, userEntityPermissionChecker]),
     );
 
     // Update Record
