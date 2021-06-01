@@ -27,10 +27,6 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
     return this.get('userEntityPermissions', queryParams);
   }
 
-  async getUsers(queryParams: QueryParameters) {
-    return this.get('users', queryParams);
-  }
-
   registerUser(userData: RequestBody) {
     return this.post('user', {}, userData);
   }

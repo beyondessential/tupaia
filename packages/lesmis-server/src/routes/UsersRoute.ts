@@ -4,6 +4,7 @@
  *
  */
 import { Request, Response, NextFunction } from 'express';
+import groupby from 'lodash.groupby';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
 
@@ -22,24 +23,29 @@ const FIELDS: Record<string, string> = {
   id: 'userEntityPermissionId',
 };
 
-const USER_FIELDS: Record<string, string> = {
-  'user_entity_permission.id': 'userEntityPermissionId',
-  id: 'id',
-  creation_date: 'createdAt',
-  first_name: 'firstName',
-  last_name: 'lastName',
-  email: 'email',
-  mobile_number: 'mobileNumber',
-  employer: 'employer',
-  position: 'position',
-  'permission_group.name': 'permissionGroupName',
-  'permission_group.id': 'permissionGroupId',
-  'entity.name': 'entityName',
-  'entity.country_code': 'countryCode',
-  'entity.code': 'entityCode',
-};
+const PERMISSION_GROUPS = ['Laos Schools Admin', 'LESMIS Public', 'Laos Schools Super User'];
 
-const PERMISSION_GROUPS = ['Laos Schools Admin', 'Laos Schools Super User', 'LESMIS Public'];
+const getProcessedUserData = (userData: any[]) => {
+  // Consolidate user entity permission redords into an array of users with an array of permissionGroupNames
+  const userDataByUserId = groupby(userData, 'user_id');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+  const users = Object.entries(userDataByUserId).map(([userId, userRecords]) => {
+    const permissions = userRecords.map(record => record['permission_group.name']);
+    return { ...userRecords[0], 'permission_group.name': [...new Set(permissions)] };
+  });
+
+  // Convert user keys to nice camelCase keys for the front end
+  return users.map((user: Record<string, string[]>) => {
+    const obj: Record<string, string[]> = {};
+    const keys = Object.keys(user);
+    keys.forEach(key => {
+      const newKey = FIELDS[key];
+      obj[newKey] = user[key];
+    });
+    return obj;
+  });
+};
 
 export class UsersRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
@@ -51,36 +57,16 @@ export class UsersRoute extends Route {
   }
 
   async buildResponse() {
-    const response = await this.meditrakConnection.getUsers({
-      columns: JSON.stringify(Object.keys(USER_FIELDS)),
-      sort: JSON.stringify(['creation_date DESC']),
+    const userData = await this.meditrakConnection.getUserEntityPermissions({
+      pageSize: '10000',
+      columns: JSON.stringify(Object.keys(FIELDS)),
+      sort: JSON.stringify(['user.creation_date DESC']),
       filter: JSON.stringify({
-        'entity.country_code': { comparator: 'ilike', comparisonValue: 'LA' },
+        'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
         'permission_group.name': { comparator: 'in', comparisonValue: PERMISSION_GROUPS },
       }),
     });
 
-    // const response = await this.meditrakConnection.getUserEntityPermissions({
-    //   pageSize: '10000',
-    //   columns: JSON.stringify(Object.keys(FIELDS)),
-    //   sort: JSON.stringify(['user.creation_date DESC']),
-    //   filter: JSON.stringify({
-    //     'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
-    //     'permission_group.name': { comparator: 'in', comparisonValue: PERMISSION_GROUPS },
-    //   }),
-    // });
-
-    // Convert the response keys to keys for the front end
-    const users = response.map((user: Record<string, string[]>) => {
-      const obj: Record<string, string[]> = {};
-      const keys = Object.keys(user);
-      keys.forEach(key => {
-        const newKey = USER_FIELDS[key];
-        obj[newKey] = user[key];
-      });
-      return obj;
-    });
-
-    return users;
+    return getProcessedUserData(userData);
   }
 }
