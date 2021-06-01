@@ -57,7 +57,7 @@ const buildReportConfig = (id, entityType) => ({
       },
       start: {
         unit: 'week',
-        offset: -52,
+        offset: -4,
       },
     },
     presentationOptions: { hideAverage: true },
