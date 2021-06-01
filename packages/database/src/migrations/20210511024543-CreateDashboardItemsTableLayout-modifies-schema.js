@@ -51,7 +51,7 @@ exports.up = async function (db) {
       child_id TEXT NOT NULL,
       sort_order INTEGER,
       FOREIGN KEY (dashboard_id) REFERENCES dashboard (id) ON UPDATE CASCADE ON DELETE RESTRICT,
-      FOREIGN KEY (child_id) REFERENCES dashboard_item (id) ON UPDATE CASCADE ON DELETE RESTRICT
+      FOREIGN KEY (child_id) REFERENCES dashboard_item (id) ON UPDATE CASCADE ON DELETE CASCADE
     );
   `);
 };

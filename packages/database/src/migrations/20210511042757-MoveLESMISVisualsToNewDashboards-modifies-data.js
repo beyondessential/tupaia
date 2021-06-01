@@ -1,7 +1,7 @@
 'use strict';
 
 import { insertObject } from '../utilities/migration';
-import { generateId } from '../utilities';
+import { generateId, arrayToDoubleQuotedDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -50,10 +50,13 @@ const createDashboardsFromDashboardGroups = async db => {
   `);
   await deleteArrayCatAgg(db);
 
+  // Array types need to be formated specifically for insertObject
   for (const currentDashboard of dashboards.rows) {
     await insertObject(db, 'dashboard', {
       id: generateId(),
       ...currentDashboard,
+      entity_types: `{${arrayToDoubleQuotedDbString(currentDashboard.entity_types)}}`,
+      project_codes: `{${arrayToDoubleQuotedDbString(currentDashboard.project_codes)}}`,
     });
   }
 };
