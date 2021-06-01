@@ -37,6 +37,7 @@ export class UsersRoute extends Route {
     const response = await this.meditrakConnection.userEntityPermissions({
       pageSize: '10000',
       columns: JSON.stringify(Object.keys(FIELDS)),
+      sort: JSON.stringify(['user.creation_date DESC']),
       filter: JSON.stringify({
         'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
         'permission_group.name': { comparator: 'in', comparisonValue: PERMISSION_GROUPS },

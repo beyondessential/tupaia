@@ -17,5 +17,5 @@ export const hasLesmisAccess = (policy: Record<string, string[]>) => {
 };
 
 export const isLesmisAdmin = (policy: Record<string, string[]>) => {
-  return new AccessPolicy(policy).allows(LESMIS_COUNTRY_CODE, 'Admin');
+  return new AccessPolicy(policy).allows(LESMIS_COUNTRY_CODE, 'Laos Schools Admin');
 };

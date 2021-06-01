@@ -4,10 +4,19 @@
  */
 
 import { GETHandler } from './GETHandler';
-import { assertTupaiaAdminPanelAccess } from '../permissions';
+import {
+  assertTupaiaAdminPanelAccess,
+  assertAnyPermissions,
+  assertLESMISAdminAccess,
+} from '../permissions';
 
 export class GETPermissionGroups extends GETHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertTupaiaAdminPanelAccess);
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertTupaiaAdminPanelAccess, assertLESMISAdminAccess],
+        'You need Tupaia Admin Panel access to permission groups',
+      ),
+    );
   }
 }

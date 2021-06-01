@@ -5,7 +5,6 @@
 import { QueryParameters } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
-import { LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUP } from '../constants';
 import { isLesmisAdmin } from '../utils';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -28,33 +27,8 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
     return this.get('userEntityPermissions', queryParams);
   }
 
-  /*
-   *  Attempt to create a new user
-   *
-   * Successful response should take the form of:
-   * {
-   *   "userId": "5a0ccc1ee54aa41b031c072b"
-   * }
-   *
-   * Unsuccessful response should take the form of:
-   * {
-   *   "error": "Existing user found with same email address."
-   * }
-   * or
-   * {
-   *   "error": "Please complete fields."
-   * }
-   */
   registerUser(userData: RequestBody) {
-    return this.post(
-      'user',
-      {},
-      {
-        countryCode: LESMIS_COUNTRY_CODE,
-        permissionGroupName: LESMIS_PERMISSION_GROUP,
-        ...userData,
-      },
-    );
+    return this.post('user', {}, userData);
   }
 
   async updateUserEntityPermissions(data: RequestBody) {

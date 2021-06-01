@@ -8,6 +8,7 @@ import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertTupaiaAdminPanelAccess,
+  assertLESMISAdminAccess,
 } from '../../permissions';
 import {
   assertUserEntityPermissionPermissions,
@@ -26,7 +27,7 @@ export class GETUserEntityPermissions extends GETHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
+        [assertBESAdminAccess, assertTupaiaAdminPanelAccess, assertLESMISAdminAccess],
         'You need either BES Admin or Tupaia Admin Panel access to user entity permissions',
       ),
     );
