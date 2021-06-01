@@ -91,16 +91,9 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     };
 
     // Get one of the non-default base permission groups if it exists
-
-    // const apiClientUser = await this.models.apiClient.findOne({
-    //   user_account_id: this.req.apiClientId,
-    // });
     const email = this.req?.apiClientUser?.email;
-    console.log('apiClientUser', this.req.apiClientUser);
-    console.log('email', email);
     if (email in BASE_PERMISSION_GROUPS) {
       const { permissionGroupName, countryName } = BASE_PERMISSION_GROUPS[email];
-      console.log('set', permissionGroupName, countryName);
       userData = { ...userData, permissionGroupName, countryName };
     }
 
