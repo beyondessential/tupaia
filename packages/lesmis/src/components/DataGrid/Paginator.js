@@ -92,17 +92,19 @@ export const Paginator = ({
           { label: 'Rows per page: 100', value: 100 },
         ]}
       />
-      <FlexStart>
-        <Text>
-          {pageStart}-{overallPageEnd} of {totalCount}
-        </Text>
-        <NavButton onClick={() => previousPage()} disabled={!canPreviousPage}>
-          <ChevronLeftIcon />
-        </NavButton>
-        <NavButton onClick={() => nextPage()} disabled={!canNextPage}>
-          <ChevronRightIcon />
-        </NavButton>
-      </FlexStart>
+      {totalCount > pageSize && (
+        <FlexStart>
+          <Text>
+            {pageStart}-{overallPageEnd} of {totalCount}
+          </Text>
+          <NavButton onClick={() => previousPage()} disabled={!canPreviousPage}>
+            <ChevronLeftIcon />
+          </NavButton>
+          <NavButton onClick={() => nextPage()} disabled={!canNextPage}>
+            <ChevronRightIcon />
+          </NavButton>
+        </FlexStart>
+      )}
     </Container>
   );
 };

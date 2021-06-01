@@ -95,7 +95,7 @@ export const DataGrid = ({ data, columns }) => {
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {page.map(row => {
+          {page.map((row => {
             prepareRow(row);
             return (
               <StyledTableRow {...row.getRowProps()}>
@@ -107,18 +107,16 @@ export const DataGrid = ({ data, columns }) => {
           })}
         </TableBody>
       </StyledTable>
-      {rows.length > pageSize && (
-        <Paginator
-          canNextPage={canNextPage}
-          canPreviousPage={canPreviousPage}
-          nextPage={nextPage}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          previousPage={previousPage}
-          setPageSize={setPageSize}
-          totalCount={rows.length}
-        />
-      )}
+      <Paginator
+        canNextPage={canNextPage}
+        canPreviousPage={canPreviousPage}
+        nextPage={nextPage}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        previousPage={previousPage}
+        setPageSize={setPageSize}
+        totalCount={rows.length}
+      />
     </>
   );
 };
