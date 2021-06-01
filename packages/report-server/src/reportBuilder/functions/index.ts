@@ -4,13 +4,17 @@
  */
 
 import { value, last, eq, notEq, exists, notExists, gt } from './basic';
-import { convertToPeriod, dateStringToPeriod, periodToTimestamp, periodToDisplayString } from './utils';
-import { sum } from './math';
+import {
+  convertToPeriod,
+  dateStringToPeriod,
+  periodToTimestamp,
+  periodToDisplayString,
+} from './utils';
+import { sum, divide } from './math';
 
 export const functions = {
   value,
   last,
-  sum,
   eq,
   notEq,
   gt,
@@ -20,4 +24,6 @@ export const functions = {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
+  sum,
+  divide,
 };
