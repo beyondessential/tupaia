@@ -15,7 +15,6 @@ import {
 import { CreateUserAccounts } from './CreateUserAccounts';
 import { sendVerifyEmail } from '../verifyEmail';
 import { allowNoPermissions } from '../../permissions';
-import { getAPIClientUser } from '../../auth/clientAuth';
 
 const BASE_PERMISSION_GROUPS = {
   'lesmis-server@tupaia.org': { permissionGroupName: 'LESMIS Public', countryName: 'Laos' },
@@ -92,9 +91,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     };
 
     // Get one of the non-default base permission groups if it exists
-    const authHeader = this.req.headers.authorization || this.req.headers.Authorization;
-    const apiClientUser = await getAPIClientUser(authHeader, this.req.models);
-    const { email } = apiClientUser;
+    const email = this.req?.apiClientUser?.email;
     if (email in BASE_PERMISSION_GROUPS) {
       const { permissionGroupName, countryName } = BASE_PERMISSION_GROUPS[email];
       userData = { ...userData, permissionGroupName, countryName };
