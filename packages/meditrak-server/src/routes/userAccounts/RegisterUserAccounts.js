@@ -15,12 +15,16 @@ import {
 import { CreateUserAccounts } from './CreateUserAccounts';
 import { sendVerifyEmail } from '../verifyEmail';
 import { allowNoPermissions } from '../../permissions';
+import { getAPIClientUser } from '../../auth/clientAuth';
+
+const BASE_PERMISSION_GROUPS = {
+  'lesmis-server@tupaia.org': { permissionGroupName: 'LESMIS Public', countryName: 'Laos' },
+};
 
 /**
  * Handles POST endpoint for registering user:
  * - /user
  */
-
 export class RegisterUserAccounts extends CreateUserAccounts {
   async assertUserHasAccess() {
     await this.assertPermissions(allowNoPermissions); // new registrations can be created by anyone
@@ -75,11 +79,9 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
-      countryCode,
-      permissionGroupName,
     } = this.newRecordData;
 
-    const { userId } = await this.createUserRecord({
+    let userData = {
       firstName,
       lastName,
       emailAddress,
@@ -87,32 +89,18 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
-    });
+    };
 
-    if (countryCode && permissionGroupName) {
-      const country = await this.models.entity.findOne({
-        code: countryCode,
-        type: 'country',
-      });
-
-      const permissionGroup = await this.models.permissionGroup.findOne({
-        name: permissionGroupName,
-      });
-
-      if (!permissionGroup) {
-        throw new Error(`No such permission group: ${permissionGroupName}`);
-      }
-
-      if (!country) {
-        throw new Error(`No such country: ${countryCode}`);
-      }
-
-      await this.models.userEntityPermission.findOrCreate({
-        user_id: userId,
-        entity_id: country.id,
-        permission_group_id: permissionGroup.id,
-      });
+    // Get one of the non-default base permission groups if it exists
+    const authHeader = this.req.headers.authorization || this.req.headers.Authorization;
+    const apiClientUser = await getAPIClientUser(authHeader, this.req.models);
+    const { email } = apiClientUser;
+    if (email in BASE_PERMISSION_GROUPS) {
+      const { permissionGroupName, countryName } = BASE_PERMISSION_GROUPS[email];
+      userData = { ...userData, permissionGroupName, countryName };
     }
+
+    const { userId } = await this.createUserRecord(userData);
 
     sendVerifyEmail(this.req, userId);
 
