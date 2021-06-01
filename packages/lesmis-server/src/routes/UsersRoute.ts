@@ -4,7 +4,7 @@
  *
  */
 import { Request, Response, NextFunction } from 'express';
-import groupby from 'lodash.groupby';
+import uniqby from 'lodash.uniqby';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
 
@@ -25,18 +25,15 @@ const FIELDS: Record<string, string> = {
 
 const PERMISSION_GROUPS = ['Laos Schools Admin', 'LESMIS Public', 'Laos Schools Super User'];
 
+// Remove duplicat records and convert user keys to nice camelCase keys for the front end
 const getProcessedUserData = (userData: any[]) => {
-  // Consolidate user entity permission redords into an array of users with an array of permissionGroupNames
-  const userDataByUserId = groupby(userData, 'user_id');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-  const users = Object.entries(userDataByUserId).map(([userId, userRecords]) => {
-    const permissions = userRecords.map(record => record['permission_group.name']);
-    return { ...userRecords[0], 'permission_group.name': [...new Set(permissions)] };
-  });
-
-  // Convert user keys to nice camelCase keys for the front end
-  return users.map((user: Record<string, string[]>) => {
+  const uniqUserData = uniqby(userData, 'user_id');
+  if (uniqUserData.length !== userData.length) {
+    console.warn(
+      `There are ${userData.length - uniqUserData.length} duplicate lesmis permission groups`,
+    );
+  }
+  return uniqUserData.map((user: Record<string, string[]>) => {
     const obj: Record<string, string[]> = {};
     const keys = Object.keys(user);
     keys.forEach(key => {
