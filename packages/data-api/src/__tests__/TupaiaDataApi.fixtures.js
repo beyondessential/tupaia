@@ -16,7 +16,19 @@ const wellington = {
   name: 'Wellington',
   type: 'district',
 };
+
+const nz = {
+  code: 'NZ',
+  name: 'New Zealand',
+  type: 'country',
+};
+
 export const ENTITIES = [auckland, wellington];
+
+export const CITY_TO_COUNTRY_MAP = {
+  [auckland.code]: nz,
+  [wellington.code]: nz,
+};
 
 const BCD1 = {
   code: 'BCD1TEST',
@@ -143,7 +155,7 @@ export const CROP_RESPONSE_WELLINGTON_2019 = {
   data_time: '2019-12-16T09:00:00',
   answers: {
     [CROP_1.code]: '5.1',
-    [CROP_2.code]: '55',
+    [CROP_2.code]: '66',
   },
 };
 
@@ -261,7 +273,7 @@ export const KITTY_RESPONSE_WELLINGTON_MORNING_20220608W23 = {
   id: generateTestId(),
   surveyCode: KITTY_SURVEY.code,
   entityCode: wellington.code,
-  data_time: '2022-06-08T09:00:00Z',
+  data_time: '2022-06-08T08:00:00Z',
   answers: {
     [KITTY_1.code]: '19.4',
     [KITTY_2.code]: '36',

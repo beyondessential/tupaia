@@ -4,6 +4,7 @@
  */
 
 import { cloneDeep } from 'lodash';
+import { AnalyticsRefresher } from '@tupaia/database';
 import {
   respond,
   ValidationError,
@@ -44,13 +45,13 @@ export async function postChanges(req, res) {
   const changes = req.body;
   const { models } = req;
   const translatedChanges = [];
-  for (const { action, payload } of changes) {
+  for (const { action, payload, ...rest } of changes) {
     if (!ACTION_HANDLERS[action]) {
       throw new ValidationError(`${action} is not a supported change action`);
     }
     const translatedPayload = await PAYLOAD_TRANSLATORS[action](models, payload);
     await PAYLOAD_VALIDATORS[action](models, translatedPayload);
-    translatedChanges.push({ action, translatedPayload });
+    translatedChanges.push({ action, translatedPayload, ...rest });
   }
 
   // Check permissions for survey responses
@@ -64,8 +65,17 @@ export async function postChanges(req, res) {
     assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
   );
 
-  for (const { action, translatedPayload } of translatedChanges) {
+  for (const { action, translatedPayload, ...rest } of translatedChanges) {
     await ACTION_HANDLERS[action](models, translatedPayload);
+
+    if (action === SUBMIT_SURVEY_RESPONSE) {
+      const { waitForAnalyticsRebuild } = rest;
+      if (waitForAnalyticsRebuild) {
+        const { database } = models;
+        await AnalyticsRefresher.executeRefresh(database);
+      }
+
+    }
   }
 
   // Reset the cache for the current users rewards.

@@ -2,16 +2,13 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import jwt from 'jsonwebtoken';
-
 import { respond, DatabaseError, UnauthenticatedError, ValidationError } from '@tupaia/utils';
-import { getJwtToken } from '@tupaia/auth';
+import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { sendEmail } from '../utilities';
 
 const checkUserPermission = (req, userId) => {
   const authHeader = req.headers.authorization;
-  const jwtToken = getJwtToken(authHeader);
-  const tokenClaims = jwt.verify(jwtToken, process.env.JWT_SECRET);
+  const tokenClaims = getTokenClaimsFromBearerAuth(authHeader);
 
   if (tokenClaims.userId !== userId) {
     throw new UnauthenticatedError('Permission to request access for given user is not available.');

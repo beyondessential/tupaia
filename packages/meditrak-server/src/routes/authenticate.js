@@ -3,7 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import jwt from 'jsonwebtoken';
+import winston from 'winston';
+
+import { constructAccessToken, getUserAndPassFromBasicAuth } from '@tupaia/auth';
 import { respond, reduceToDictionary } from '@tupaia/utils';
 import { allowNoPermissions } from '../permissions';
 
@@ -12,7 +14,6 @@ const GRANT_TYPES = {
   REFRESH_TOKEN: 'refresh_token',
   ONE_TIME_LOGIN: 'one_time_login',
 };
-const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
 // Get the permission group ids for each country the user has access to
 // This is to support legacy meditrak app versions 1.7.81 (oldest supported) and 1.7.85 (only other
@@ -41,18 +42,23 @@ const extractPermissionGroupsIfLegacy = async (models, accessPolicy) => {
   return permissionGroupsByCountryId;
 };
 
-const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permissionGroups }) => {
+const getAuthorizationObject = async ({
+  accessPolicy,
+  refreshToken,
+  user,
+  apiClientUser,
+  permissionGroups,
+}) => {
+  const tokenClaims = {
+    userId: user.id,
+    refreshToken,
+  };
+
+  if (apiClientUser) {
+    tokenClaims.apiClientUserId = apiClientUser.id;
+  }
   // Generate JWT
-  const accessToken = jwt.sign(
-    {
-      userId: user.id,
-      refreshToken,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: ACCESS_TOKEN_EXPIRY_SECONDS,
-    },
-  );
+  const accessToken = constructAccessToken(tokenClaims);
 
   // Assemble and return authorization object
   const userDetails = {
@@ -69,6 +75,9 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permis
   };
   if (permissionGroups) {
     userDetails.permissionGroups = permissionGroups;
+  }
+  if (apiClientUser) {
+    userDetails.apiClient = apiClientUser.email;
   }
   return {
     accessToken,
@@ -102,7 +111,7 @@ const getMeditrakDeviceDetails = req => {
   };
 };
 
-const checkAuthentication = async req => {
+const checkUserAuthentication = async req => {
   const { body, query, authenticator } = req;
   switch (query.grantType) {
     case GRANT_TYPES.REFRESH_TOKEN:
@@ -114,6 +123,22 @@ const checkAuthentication = async req => {
       const meditrakDeviceDetails = getMeditrakDeviceDetails(req);
       return authenticator.authenticatePassword(body, meditrakDeviceDetails);
     }
+  }
+};
+
+const checkApiClientAuthentication = async req => {
+  const { headers, authenticator } = req;
+  const { username, password: secretKey } = getUserAndPassFromBasicAuth(headers.authorization);
+
+  if (!username) {
+    return {};
+  }
+
+  try {
+    return await authenticator.authenticateApiClient({ username, secretKey });
+  } catch (error) {
+    winston.warn('Invalid Api Client Basic Auth header provided');
+    return {};
   }
 };
 
@@ -130,7 +155,9 @@ const checkAuthentication = async req => {
 export async function authenticate(req, res) {
   await req.assertPermissions(allowNoPermissions);
 
-  const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
+  const { refreshToken, user, accessPolicy } = await checkUserAuthentication(req);
+  const { user: apiClientUser } = await checkApiClientAuthentication(req);
+
   const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
     req.models,
     accessPolicy,
@@ -139,6 +166,7 @@ export async function authenticate(req, res) {
     refreshToken,
     user,
     accessPolicy,
+    apiClientUser,
     permissionGroups: permissionGroupsByCountryId,
   });
 
