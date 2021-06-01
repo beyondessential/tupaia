@@ -11,6 +11,6 @@ begin
 
   tStartTime := clock_timestamp();
   DROP INDEX IF EXISTS analytics_data_group_entity_event_date_idx;
-  RAISE NOTICE 'Dropped [data_element, entity, data_group, event, date] index, took %', clock_timestamp() - tStartTime;
+  RAISE NOTICE 'Dropped [data_group, entity, event, date] index, took %', clock_timestamp() - tStartTime;
 
 end $$;
