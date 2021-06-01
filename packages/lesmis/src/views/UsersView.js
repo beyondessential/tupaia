@@ -32,6 +32,7 @@ const Text = styled(Typography)`
 `;
 
 const columns = [
+  { accessor: 'id', Header: 'ID' },
   { accessor: 'firstName', Header: 'First Name' },
   { accessor: 'lastName', Header: 'Last Name' },
   { accessor: 'email', Header: 'Email' },
@@ -42,7 +43,6 @@ const columns = [
     accessor: 'permissionGroupName',
     Header: 'Permissions',
     Cell: UserPermissionsCell,
-    minWidth: 300,
   },
 ];
 

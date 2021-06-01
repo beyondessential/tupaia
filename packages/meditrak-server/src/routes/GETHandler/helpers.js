@@ -85,6 +85,7 @@ export const getQueryOptionsForColumns = (
   customJoinConditions = {},
   joinType = null,
 ) => {
+  console.log('customJoinConditions', customJoinConditions);
   if (columnNames.some(c => c.startsWith('_'))) {
     throw new ValidationError(
       'No columns start with "_", and conjunction operators are reserved for internal use only',
@@ -99,6 +100,7 @@ export const getQueryOptionsForColumns = (
       // is 'survey.name', split into 'survey' and 'name'
       const resource = columnName.split('.')[0];
       const recordType = resourceToRecordType(resource);
+      console.log('record type', recordType);
       if (!recordTypesInQuery.has(recordType)) {
         const joinCondition = customJoinConditions[recordType] || [
           `${recordType}.id`,
@@ -106,6 +108,8 @@ export const getQueryOptionsForColumns = (
         ];
         multiJoin.push({ joinWith: recordType, joinCondition, joinType });
         recordTypesInQuery.add(recordType);
+        console.log('joinCondition', joinCondition);
+        console.log('joinType', joinType);
       }
     });
   // Ensure every join table is added to the sort, so that queries are predictable during pagination

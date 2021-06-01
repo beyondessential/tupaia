@@ -23,8 +23,12 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
     return { ...camelcaseKeys(user), isLesmisAdmin: isLesmisAdmin(user.accessPolicy) };
   }
 
-  async userEntityPermissions(queryParams: QueryParameters) {
+  async getUserEntityPermissions(queryParams: QueryParameters) {
     return this.get('userEntityPermissions', queryParams);
+  }
+
+  async getUsers(queryParams: QueryParameters) {
+    return this.get('users', queryParams);
   }
 
   registerUser(userData: RequestBody) {
