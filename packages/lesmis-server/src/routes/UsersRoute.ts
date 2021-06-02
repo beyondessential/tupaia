@@ -28,13 +28,13 @@ const PERMISSION_GROUPS = ['Laos Schools Admin', 'LESMIS Public', 'Laos Schools 
 // Remove duplicat records and convert user keys to nice camelCase keys for the front end
 const getProcessedUserData = (userData: { user_id: number }[]) =>
   uniqby(userData, 'user_id').map((user: Record<string, string[]>) => {
-    const obj: Record<string, string[]> = {};
+    const newUser: Record<string, string[]> = {};
     const keys = Object.keys(user);
     keys.forEach(key => {
       const newKey = FIELDS[key];
-      obj[newKey] = user[key];
+      newUser[newKey] = user[key];
     });
-    return obj;
+    return newUser;
   });
 
 export class UsersRoute extends Route {
