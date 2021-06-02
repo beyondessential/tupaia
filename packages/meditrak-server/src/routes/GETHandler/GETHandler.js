@@ -58,7 +58,6 @@ export class GETHandler extends CRUDHandler {
   }
 
   async getDbQueryOptions() {
-    // Todo: add distinct
     const { sort: sortString, distinct = false } = this.req.query;
 
     // set up db query options
