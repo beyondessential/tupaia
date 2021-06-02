@@ -79,7 +79,6 @@ export const DashboardReportModal = ({
   dashboardGroupId,
   reportId,
   periodGranularity,
-  year,
   viewConfig,
 }) => {
   const [open, setOpen] = useState(false);
@@ -93,7 +92,6 @@ export const DashboardReportModal = ({
     dashboardGroupId,
     reportId,
     periodGranularity,
-    year,
     legacy: viewConfig.legacy,
     startDate: params.get('startDate'),
     endDate: params.get('endDate'),

@@ -5,10 +5,8 @@
  */
 import { useQuery } from 'react-query';
 import { get } from '../api';
-import { yearToApiDates } from './utils';
 
-export const useDashboardReportData = ({ entityCode, year, reportId, legacy }) => {
-  const { startDate, endDate } = yearToApiDates(year);
+export const useDashboardReportData = ({ entityCode, reportId, startDate, endDate, legacy }) => {
   const params = {
     startDate,
     endDate,

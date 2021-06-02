@@ -82,11 +82,8 @@ export const Report = React.memo(
     const { startDate, endDate } = yearToApiDates(year);
     const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
       entityCode,
-      year,
       reportId,
       legacy: viewConfig.legacy,
-      dashboardGroupId,
-      reportId,
       periodGranularity,
       startDate,
       endDate,
