@@ -40,7 +40,7 @@ export class GETUserAccounts extends GETHandler {
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
 
-    return userAccount;
+    return { ...userAccount, accessPolicy: this.accessPolicy.policy };
   }
 
   async getPermissionsFilter(criteria, options) {
