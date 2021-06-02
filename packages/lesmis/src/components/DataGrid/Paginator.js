@@ -75,7 +75,7 @@ export const Paginator = ({
 }) => {
   const pageStart = pageIndex * pageSize + 1;
   const pageEnd = (pageIndex + 1) * pageSize;
-  const overallPageEnd = pageEnd > totalCount ? totalCount : pageEnd;
+  const overallPageEnd = Math.min(pageEnd, totalCount);
   return (
     <Container>
       <StyledSelect

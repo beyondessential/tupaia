@@ -26,9 +26,9 @@ const StyledTableCell = styled(TableCell)`
 const filterTypes = () => ({
   text: (rows, id, filterValue) => {
     return rows.filter(row => {
-      const rowValue = row.values[id];
-      return rowValue !== undefined
-        ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+      const cellValue = row.values[id];
+      return cellValue !== undefined
+        ? String(cellValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
         : true;
     });
   },
