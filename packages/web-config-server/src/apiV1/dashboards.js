@@ -9,14 +9,17 @@ import { NoPermissionRequiredChecker } from './permissions';
 const sortByDbColumns = (array, columns) => {
   // Sorts an array of objects by properties in a prioritized order
   let sortedOutput = [];
+  let unsortedValues = array;
   columns.forEach(columnName => {
-    sortedOutput = sortedOutput.concat(array
-      .filter(item => !!item[columnName])
-      .sort((itemA, itemB) => itemA[columnName] > itemB[columnName] ? 1 : -1));
-    array = array.filter(item => !item[columnName]);
+    sortedOutput = sortedOutput.concat(
+      unsortedValues
+        .filter(item => !!item[columnName])
+        .sort((itemA, itemB) => (itemA[columnName] > itemB[columnName] ? 1 : -1)),
+    );
+    unsortedValues = unsortedValues.filter(item => !item[columnName]);
   });
-  return [...sortedOutput, ...array];
-}
+  return [...sortedOutput, ...unsortedValues];
+};
 
 export default class extends RouteHandler {
   static PermissionsChecker = NoPermissionRequiredChecker;
@@ -26,7 +29,6 @@ export default class extends RouteHandler {
     const { code: entityCode } = entity;
     const permissionGroups = await this.req.getUserGroups(entityCode);
     const hierarchyId = await this.fetchHierarchyId();
-    const returnArray = [];
     // Fetch dashboards
     const dashboards = await this.models.dashboard.getDashboards(
       entity,
@@ -36,7 +38,7 @@ export default class extends RouteHandler {
     const sortedDashboards = sortByDbColumns(dashboards, ['sort_order', 'name']);
     // Fetch dashboard items
     const dashboardsWithItems = await Promise.all(
-      Object.values(sortedDashboards).map(async (dashboard, index) => {
+      Object.values(sortedDashboards).map(async dashboard => {
         const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
           dashboard.id,
           permissionGroups,
