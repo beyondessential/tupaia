@@ -33,6 +33,7 @@ export interface ReportConfig {
     dataGroups?: string[];
   };
   transform: (string | Record<string, unknown>)[];
+  output: Record<string, unknown>[];
 }
 
 export interface ReportsRequest<
