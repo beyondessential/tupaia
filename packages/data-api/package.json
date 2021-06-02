@@ -18,6 +18,7 @@
     "test:coverage": "yarn test --coverage",
     "install-mv-refresh": "scripts/installMvRefreshModule.sh",
     "build-analytics-table": "scripts/buildAnalyticsMaterializedView.sh",
+    "refresh-analytics-table": "scripts/refreshAnalyticsTable.sh",
     "full-rebuild-analytics-table": "scripts/fullRebuildAnalyticsMaterializedView.sh"
   },
   "dependencies": {

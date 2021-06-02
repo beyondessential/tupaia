@@ -1,6 +1,6 @@
 import { UnauthenticatedError } from '@tupaia/utils';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { getUserIDFromToken } from '@tupaia/auth';
+import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { getAPIClientUser } from './clientAuth';
 
 async function authenticateUser(req) {
@@ -17,7 +17,8 @@ async function authenticateUser(req) {
     '/auth/verifyEmail',
     '/auth/resendEmail',
   ];
-  const tokenUserID = authHeader.startsWith('Bearer') && getUserIDFromToken(authHeader);
+  const { userId: tokenUserID } =
+    authHeader.startsWith('Bearer') && getTokenClaimsFromBearerAuth(authHeader);
 
   // Use the user account provided in the auth header if present
   if (tokenUserID) {

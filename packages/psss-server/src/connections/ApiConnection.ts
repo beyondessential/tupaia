@@ -20,7 +20,7 @@ export class ApiConnection {
     this.authHandler = authHandler;
   }
 
-  get(endpoint: string, queryParameters: QueryParameters) {
+  get(endpoint: string, queryParameters?: QueryParameters) {
     return this.request('GET', endpoint, queryParameters);
   }
 
@@ -32,8 +32,8 @@ export class ApiConnection {
     return this.request('PUT', endpoint, queryParameters, body);
   }
 
-  delete(endpoint: string) {
-    return this.request('DELETE', endpoint);
+  delete(endpoint: string, queryParameters: QueryParameters) {
+    return this.request('DELETE', endpoint, queryParameters);
   }
 
   async request(

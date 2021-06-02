@@ -89,13 +89,18 @@ export const SiteAddress = ({ address, contact }) => {
 
 SiteAddress.propTypes = {
   contact: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    department: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-  }).isRequired,
+    name: PropTypes.string,
+    department: PropTypes.string,
+    email: PropTypes.string,
+  }),
   address: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    district: PropTypes.string.isRequired,
-    country: PropTypes.string.isRequired,
-  }).isRequired,
+    name: PropTypes.string,
+    district: PropTypes.string,
+    country: PropTypes.string,
+  }),
+};
+
+SiteAddress.defaultProps = {
+  contact: {},
+  address: {},
 };
