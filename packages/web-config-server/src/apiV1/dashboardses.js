@@ -35,14 +35,14 @@ export default class extends RouteHandler {
     );
     const sortedDashboards = sortByDbColumns(dashboards, ['sort_order', 'name']);
     // Fetch dashboard items
-    await Promise.all(
+    const dashboardsWithItems = await Promise.all(
       Object.values(sortedDashboards).map(async (dashboard, index) => {
         const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
           dashboard.id,
           userGroups,
         );
         const sortedDashboardItems = sortByDbColumns(dashboardItems, ['sort_order', 'code']);
-        returnArray[index] = {
+        return {
           dashboardName: dashboard.name,
           dashboardId: dashboard.id,
           dashboardCode: dashboard.code,
@@ -58,6 +58,6 @@ export default class extends RouteHandler {
         };
       }),
     );
-    return returnArray;
+    return dashboardsWithItems;
   };
 }
