@@ -9,8 +9,8 @@ import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
 
 const FIELDS: Record<string, string> = {
-  'user.creation_date': 'createdAt',
   user_id: 'id',
+  'user.creation_date': 'createdAt',
   'user.first_name': 'firstName',
   'user.last_name': 'lastName',
   'user.email': 'email',
@@ -26,14 +26,8 @@ const FIELDS: Record<string, string> = {
 const PERMISSION_GROUPS = ['Laos Schools Admin', 'LESMIS Public', 'Laos Schools Super User'];
 
 // Remove duplicat records and convert user keys to nice camelCase keys for the front end
-const getProcessedUserData = (userData: any[]) => {
-  const uniqUserData = uniqby(userData, 'user_id');
-  if (uniqUserData.length !== userData.length) {
-    console.warn(
-      `There are ${userData.length - uniqUserData.length} duplicate lesmis permission groups`,
-    );
-  }
-  return uniqUserData.map((user: Record<string, string[]>) => {
+const getProcessedUserData = (userData: { user_id: number }[]) =>
+  uniqby(userData, 'user_id').map((user: Record<string, string[]>) => {
     const obj: Record<string, string[]> = {};
     const keys = Object.keys(user);
     keys.forEach(key => {
@@ -42,7 +36,6 @@ const getProcessedUserData = (userData: any[]) => {
     });
     return obj;
   });
-};
 
 export class UsersRoute extends Route {
   private readonly meditrakConnection: MeditrakConnection;
