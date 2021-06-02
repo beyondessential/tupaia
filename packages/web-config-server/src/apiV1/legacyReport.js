@@ -17,7 +17,9 @@ export default class extends ViewRouteHandler {
     if (!dashboardItem) {
       throw new Error(`No dashboard item exists with the code ${itemCode}`);
     }
-    const legacyReport = await this.models.legacyReport.findOne({ id: dashboardItem.report_code });
+    const legacyReport = await this.models.legacyReport.findOne({
+      code: dashboardItem.report_code,
+    });
     if (!legacyReport) {
       throw new Error(`No legacy report exists with id ${dashboardItem.report_code}`);
     }

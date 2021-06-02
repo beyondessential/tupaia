@@ -84,6 +84,7 @@ const createLegacyDashboardItems = async db => {
 
       INSERT INTO legacy_report
       VALUES ('${legacyId}',
+              '${code}',
               '${currentReport.dataBuilder}',
               '${JSON.stringify(currentReport.dataBuilderConfig)}',
               '${JSON.stringify(currentReport.dataServices)}'
@@ -102,7 +103,7 @@ const createLegacyDashboardItems = async db => {
         '${code}',
         '${JSON.stringify(config).replace(/'/g, "''")}',
         '{${permissionGroups.rows[0].permission_groups}}',
-        '${legacyId}',
+        '${code}',
          ${true}
       )
     `);

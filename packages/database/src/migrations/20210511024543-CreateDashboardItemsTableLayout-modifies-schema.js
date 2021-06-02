@@ -28,9 +28,10 @@ exports.up = async function (db) {
   await db.runSql(`
     CREATE TABLE legacy_report (
       id TEXT PRIMARY KEY,
-      "dataBuilder" TEXT,
-      "dataBuilderConfig" JSONB,
-      "dataServices" JSONB DEFAULT '[{"isDataRegional": true}]'
+      code TEXT NOT NULL UNIQUE,
+      data_builder TEXT,
+      data_builder_config JSONB,
+      data_services JSONB DEFAULT '[{"isDataRegional": true}]'
     );
   `);
   await db.runSql(`
