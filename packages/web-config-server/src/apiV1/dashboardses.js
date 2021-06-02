@@ -7,6 +7,7 @@ import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
 const sortByDbColumns = (array, columns) => {
+  // Sorts an array of objects by properties in a prioritized order
   let sortedOutput = [];
   columns.forEach(columnName => {
     sortedOutput = sortedOutput.concat(array
