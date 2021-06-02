@@ -10,7 +10,7 @@ import { LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUPS } from '../constants';
 export const hasLesmisAccess = (policy: Record<string, string[]>) => {
   const hasAccess = new AccessPolicy(policy).allows(
     LESMIS_COUNTRY_CODE,
-    LESMIS_PERMISSION_GROUPS.BASE_USER,
+    LESMIS_PERMISSION_GROUPS.PUBLIC,
   );
   if (!hasAccess) {
     throw new PermissionsError('Your permissions for Tupaia do not allow you to login to LESMIS');
@@ -20,5 +20,5 @@ export const hasLesmisAccess = (policy: Record<string, string[]>) => {
 };
 
 export const isLesmisAdmin = (policy: Record<string, string[]>) => {
-  return new AccessPolicy(policy).allows(LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUPS.ADMIN_USER);
+  return new AccessPolicy(policy).allows(LESMIS_COUNTRY_CODE, LESMIS_PERMISSION_GROUPS.ADMIN);
 };
