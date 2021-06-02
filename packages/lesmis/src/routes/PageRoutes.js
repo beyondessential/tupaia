@@ -6,6 +6,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { NavBar, Footer } from '../components';
+import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { HomeView } from '../views/HomeView';
 import { ProfileView } from '../views/ProfileView';
 import { PageView, TwoColumnPageView } from '../views/PageView';
@@ -40,7 +41,9 @@ export const PageRoutes = React.memo(() => (
     </Route>
     <Route path="/users-and-permissions">
       <NavBar />
-      <UsersView />
+      <LesmisAdminRoute path="*">
+        <UsersView />
+      </LesmisAdminRoute>
       <Footer />
     </Route>
     <Route path="/about">
