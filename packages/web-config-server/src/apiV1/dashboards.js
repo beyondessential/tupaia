@@ -24,7 +24,7 @@ export default class extends RouteHandler {
   buildResponse = async () => {
     const { entity, query } = this;
     const { code: entityCode } = entity;
-    const userGroups = await this.req.getUserGroups(entityCode);
+    const permissionGroups = await this.req.getUserGroups(entityCode);
     const hierarchyId = await this.fetchHierarchyId();
     const returnArray = [];
     // Fetch dashboards
@@ -39,7 +39,7 @@ export default class extends RouteHandler {
       Object.values(sortedDashboards).map(async (dashboard, index) => {
         const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
           dashboard.id,
-          userGroups,
+          permissionGroups,
         );
         const sortedDashboardItems = sortByDbColumns(dashboardItems, ['sort_order', 'code']);
         return {
