@@ -16,14 +16,14 @@ export class DashboardItemModel extends DatabaseModel {
     return DashboardItemType;
   }
 
-  async fetchItemsInDashboard(dashboardId, userGroups, criteria) {
+  async fetchItemsInDashboard(dashboardId, permissionGroups, criteria) {
     return this.find(
       {
         ...criteria,
         dashboard_id: dashboardId,
         permission_groups: {
           comparator: '&&', // User has ANY of the permission groups
-          comparisonValue: userGroups,
+          comparisonValue: permissionGroups,
         },
       },
       {
