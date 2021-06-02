@@ -7,6 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 import uniqby from 'lodash.uniqby';
 import { Route } from '@tupaia/server-boilerplate';
 import { MeditrakConnection } from '../connections';
+import { LESMIS_PERMISSION_GROUPS } from '../constants';
 
 const FIELDS: Record<string, string> = {
   user_id: 'id',
@@ -23,9 +24,7 @@ const FIELDS: Record<string, string> = {
   id: 'userEntityPermissionId',
 };
 
-const PERMISSION_GROUPS = ['Laos Schools Admin', 'LESMIS Public', 'Laos Schools Super User'];
-
-// Remove duplicat records and convert user keys to nice camelCase keys for the front end
+// Remove duplicate records and convert user keys to nice camelCase keys for the front end
 const getProcessedUserData = (userData: { user_id: number }[]) =>
   uniqby(userData, 'user_id').map((user: Record<string, string[]>) => {
     const newUser: Record<string, string[]> = {};
@@ -48,12 +47,15 @@ export class UsersRoute extends Route {
 
   async buildResponse() {
     const userData = await this.meditrakConnection.getUserEntityPermissions({
-      pageSize: '10000',
+      pageSize: '10000', // retrieve all entries, as we don't handle pagination
       columns: JSON.stringify(Object.keys(FIELDS)),
       sort: JSON.stringify(['user.creation_date DESC']),
       filter: JSON.stringify({
-        'entity.name': { comparator: 'like', comparisonValue: 'Laos', castAs: 'text' },
-        'permission_group.name': { comparator: 'in', comparisonValue: PERMISSION_GROUPS },
+        'entity.code': 'LA',
+        'permission_group.name': {
+          comparator: 'in',
+          comparisonValue: Object.values(LESMIS_PERMISSION_GROUPS),
+        },
       }),
     });
 
