@@ -11,6 +11,7 @@ import { Table, TableHead, TableRow, TableBody, TableSortLabel } from '@material
 import { TableCell, StyledTableRow } from '@tupaia/ui-components';
 import { DefaultColumnFilter } from './DefaultColumnFilter';
 import { Paginator } from './Paginator';
+import { NoDataRow } from './NoDataRow';
 
 const StyledTable = styled(Table)`
   background: white;
@@ -95,16 +96,20 @@ export const DataGrid = ({ data, columns }) => {
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {page.map(row => {
-            prepareRow(row);
-            return (
-              <StyledTableRow {...row.getRowProps()}>
-                {row.cells.map(cell => (
-                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                ))}
-              </StyledTableRow>
-            );
-          })}
+          {page.length === 0 ? (
+            <NoDataRow colspan={columns.length} />
+          ) : (
+            page.map(row => {
+              prepareRow(row);
+              return (
+                <StyledTableRow {...row.getRowProps()}>
+                  {row.cells.map(cell => (
+                    <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                  ))}
+                </StyledTableRow>
+              );
+            })
+          )}
         </TableBody>
       </StyledTable>
       <Paginator
