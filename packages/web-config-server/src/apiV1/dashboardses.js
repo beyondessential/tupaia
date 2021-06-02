@@ -6,6 +6,17 @@
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
+const sortByDbColumns = (array, columns) => {
+  let sortedOutput = [];
+  columns.forEach(columnName => {
+    sortedOutput = sortedOutput.concat(array
+      .filter(item => !!item[columnName])
+      .sort((itemA, itemB) => itemA[columnName] > itemB[columnName] ? 1 : -1));
+    array = array.filter(item => !item[columnName]);
+  });
+  return [...sortedOutput, ...array];
+}
+
 export default class extends RouteHandler {
   static PermissionsChecker = NoPermissionRequiredChecker;
 
@@ -21,13 +32,15 @@ export default class extends RouteHandler {
       hierarchyId,
       query.projectCode,
     );
+    const sortedDashboards = sortByDbColumns(dashboards, ['sort_order', 'name']);
     // Fetch dashboard items
     await Promise.all(
-      Object.values(dashboards).map(async (dashboard, index) => {
+      Object.values(sortedDashboards).map(async (dashboard, index) => {
         const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
           dashboard.id,
           userGroups,
         );
+        const sortedDashboardItems = sortByDbColumns(dashboardItems, ['sort_order', 'code']);
         returnArray[index] = {
           dashboardName: dashboard.name,
           dashboardId: dashboard.id,
@@ -35,7 +48,7 @@ export default class extends RouteHandler {
           entityType: entity.type,
           entityCode,
           entityName: entity.name,
-          items: Object.values(dashboardItems).map(item => ({
+          items: Object.values(sortedDashboardItems).map(item => ({
             itemCode: item.code,
             legacy: item.legacy,
             reportCode: item.report_code,
