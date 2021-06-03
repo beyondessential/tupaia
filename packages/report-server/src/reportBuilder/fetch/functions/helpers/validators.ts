@@ -2,15 +2,13 @@ import { AggregationObject } from '../../../../types';
 
 export function validateDataGroups(dataGroups: unknown): asserts dataGroups is [string] {
   if (!Array.isArray(dataGroups)) {
-    throw new Error(`Expected an array with a single data group code but got ${dataGroups}`);
+    throw new Error(`Expected an array with data group codes but got ${dataGroups}`);
   }
-  if (dataGroups.length > 1) {
-    throw new Error('Expected just a single data group code');
-  }
-  const [dataGroupCode] = dataGroups;
-  if (typeof dataGroupCode !== 'string') {
-    throw new Error(`Expected the data group code to be a string, but got ${dataGroupCode}`);
-  }
+  dataGroups.forEach(dataGroupCode => {
+    if (typeof dataGroupCode !== 'string') {
+      throw new Error(`Expected the data group code to be a string, but got ${dataGroupCode}`);
+    }
+  });
 }
 
 export function validateDataElementsForEvents(
