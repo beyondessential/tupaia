@@ -19,7 +19,7 @@ type DataGroupParams = {
 };
 
 type DataGroupFetchParams = {
-  dataGroupCodes: string[];
+  dataGroupCode: string;
   dataElementCodes?: string[];
   aggregations?: (string | AggregationObject)[];
 };
@@ -29,31 +29,26 @@ const fetchEvents = async (
   query: FetchReportQuery,
   params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
-  const { dataGroupCodes, dataElementCodes, aggregations } = params;
+  const { dataGroupCode, dataElementCodes, aggregations } = params;
   const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
-  const results = await Promise.all(
-    dataGroupCodes.map(async dataGroupCode => {
-      const response = await aggregator.fetchEvents(
-        dataGroupCode,
-        aggregations,
-        organisationUnitCodes,
-        hierarchy,
-        {
-          period,
-          startDate,
-          endDate,
-        },
-        dataElementCodes,
-      );
-      return response.map(event => {
-        const { dataValues, ...restOfEvent } = event;
-        return { ...dataValues, ...restOfEvent };
-      });
-    }),
+  const response = await aggregator.fetchEvents(
+    dataGroupCode,
+    aggregations,
+    organisationUnitCodes,
+    hierarchy,
+    {
+      period,
+      startDate,
+      endDate,
+    },
+    dataElementCodes,
   );
-
+  const rows = response.map(event => {
+    const { dataValues, ...restOfEvent } = event;
+    return { ...dataValues, ...restOfEvent };
+  });
   return {
-    results: results.flat(),
+    results: rows,
   };
 };
 
@@ -65,7 +60,7 @@ const buildParams = (params: DataGroupParams): DataGroupFetchParams => {
   validateAggregations(aggregations);
 
   return {
-    dataGroupCodes: dataGroups,
+    dataGroupCode: dataGroups[0],
     dataElementCodes: dataElements,
     aggregations,
   };

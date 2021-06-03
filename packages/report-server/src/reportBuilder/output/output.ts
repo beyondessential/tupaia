@@ -34,7 +34,7 @@ const buildParams = (params: unknown): OutputParams => {
     }
     return defaultType;
   }
-  throw new Error(`Expected output config as object but got ${JSON.stringify(params)}`);
+  throw new Error(`Expected output config as object but got ${params}`);
 };
 
 export const buildOutput = (params: unknown) => {

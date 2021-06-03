@@ -5,7 +5,7 @@
 
 import { Row } from '../../../types';
 import { MatrixBuilder } from './matrixBuilder';
-import { Matrix, MatrixParams } from './types';
+import { Matrix, MatrixColumnParams, MatrixParams } from './types';
 
 const matrix = (rows: Row[], params: MatrixParams): Matrix => {
   const matrixBuilder = new MatrixBuilder(rows, params);
@@ -18,33 +18,37 @@ const buildParams = (params: unknown): MatrixParams => {
     throw new Error(`Expected params object but got ${params}`);
   }
 
-  const { columns, categories, rowTitle } = params;
-
-  if (!Array.isArray(columns)) {
-    throw new Error(`Expected columns array but got ${columns}`);
-  } else {
-    columns.forEach((column: unknown) => {
+  const getPrefixColumns = (columns: unknown): MatrixColumnParams => {
+    if (columns === '*' || columns === undefined) {
+      return '*';
+    }
+    if (!Array.isArray(columns)) {
+      throw new Error(`Expected columns as string array or '*' but got ${columns}`);
+    }
+    if (columns.length === 0) {
+      return '*';
+    }
+    columns.forEach(column => {
       if (typeof column !== 'string') {
-        throw new Error(`Expected columns as array of strings but got ${columns}`);
+        throw new Error(`Expected columns as string array or '*' but got ${columns}`);
       }
     });
-  }
-  if (!Array.isArray(categories)) {
-    throw new Error(`Expected categories array but got ${categories}`);
-  } else {
-    categories.forEach((category: unknown) => {
-      if (typeof category !== 'string') {
-        throw new Error(`Expected categories as array of strings but got ${categories}`);
-      }
-    });
-  }
-  if (typeof rowTitle !== 'string') {
-    throw new Error(`Expected rowTitle string but got ${rowTitle}`);
+    return columns;
+  };
+  const { columns, categoryField, rowField } = params;
+
+  const prefixColumns = getPrefixColumns(columns);
+
+  if (typeof rowField !== 'string') {
+    throw new Error(`Expected rowField as string but got ${rowField}`);
   }
 
+  if (typeof categoryField !== 'string') {
+    throw new Error(`Expected categoryField as string but got ${categoryField}`);
+  }
   return {
-    columns: { prefixColumns: columns, nonColumnKeys: [...categories, rowTitle] },
-    rows: { category: categories[0], rowTitle },
+    columns: { prefixColumns, nonColumnKeys: [categoryField, rowField] },
+    rows: { categoryField, rowField },
   };
 };
 

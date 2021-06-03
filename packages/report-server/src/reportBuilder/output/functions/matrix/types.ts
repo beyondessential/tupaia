@@ -1,12 +1,15 @@
 import { Row } from '../../../types';
 
+export type MatrixColumnParams = string[] | '*';
+
 export type MatrixParams = {
-  columns: { prefixColumns: string[]; nonColumnKeys: string[] };
+  columns: { prefixColumns: MatrixColumnParams; nonColumnKeys: string[] };
   rows: {
-    rowTitle: string;
-    category: string;
+    rowField: string;
+    categoryField: string;
   };
 };
+
 export type Column = {
   key: string;
   title: string;

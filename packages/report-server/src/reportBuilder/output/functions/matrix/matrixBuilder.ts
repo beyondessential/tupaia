@@ -23,8 +23,18 @@ export class MatrixBuilder {
   }
 
   buildBaseColumns() {
+    const assignColumnSetToMatrixData = (columns: unknown[]) => {
+      this.assertIsString(columns);
+      this.matrixData.columns = columns.map(c => ({ key: c, title: c }));
+    };
+
     const { prefixColumns, nonColumnKeys } = this.params.columns;
-    const columns = prefixColumns.length > 0 ? new Set(prefixColumns) : new Set();
+    if (Array.isArray(prefixColumns)) {
+      assignColumnSetToMatrixData(prefixColumns);
+      return this;
+    }
+    // When prefixColumns === '*', get columns from rows data
+    const columns = new Set();
     this.rows.forEach(row => {
       Object.keys(row).forEach(key => {
         if (!nonColumnKeys.includes(key)) {
@@ -33,8 +43,7 @@ export class MatrixBuilder {
       });
     });
     const columnsInArray = Array.from(columns);
-    this.assertIsString(columnsInArray);
-    this.matrixData.columns = columnsInArray.map(c => ({ key: c, title: c }));
+    assignColumnSetToMatrixData(columnsInArray);
     return this;
   }
 
@@ -42,10 +51,10 @@ export class MatrixBuilder {
     const categories = new Set();
     const baseRows: Row[] = [];
 
-    const { rowTitle: rowTitleIndex, category: categoryIndex } = this.params.rows;
+    const { rowField, categoryField } = this.params.rows;
 
     this.rows.forEach(row => {
-      const { [categoryIndex]: categoryId, [rowTitleIndex]: dataElement, ...restOfRow } = row;
+      const { [categoryField]: categoryId, [rowField]: dataElement, ...restOfRow } = row;
       categories.add(categoryId);
       baseRows.push({ categoryId, dataElement, ...restOfRow });
     });
