@@ -29,7 +29,7 @@ const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelNam
   return {
     id: getOverlayId(doseNum, level),
     name: `% of Population Vaccinated COVID-19 Dose ${doseNum} (${overlayLevelName})`,
-    userGroup: 'COVID-19',
+    userGroup: 'Fiji Supply Chain',
     dataElementCode: 'value',
     measureBuilderConfig: {
       dataSourceType: 'custom',

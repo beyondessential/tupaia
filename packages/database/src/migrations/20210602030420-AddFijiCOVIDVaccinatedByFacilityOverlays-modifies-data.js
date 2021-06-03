@@ -19,7 +19,7 @@ exports.setup = function (options, seedLink) {
 const createMapOverlay = doseNum => ({
   id: `FJ_COVID_TRACKING_Dose_${doseNum}_Facility`,
   name: `COVID-19 Vaccine Dose ${doseNum} (Facility)`,
-  userGroup: 'COVID-19',
+  userGroup: 'Fiji Supply Chain',
   dataElementCode: doseNum === 1 ? 'COVIDVac4' : 'COVIDVac8',
   measureBuilderConfig: {
     aggregations: [
@@ -37,8 +37,8 @@ const createMapOverlay = doseNum => ({
     displayType: 'spectrum',
     scaleBounds: {
       left: {
-        max: 0,
-        min: 0,
+        max: 1,
+        min: 1,
       },
     },
     measureLevel: 'Facility',

@@ -21,7 +21,7 @@ const getOverlayId = (doseNum, level) => `FJ_COVID_TRACKING_Dose_${doseNum}_${le
 const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelName) => ({
   id: getOverlayId(doseNum, level),
   name: `COVID-19 Vaccine Dose ${doseNum} (${overlayLevelName})`,
-  userGroup: 'COVID-19',
+  userGroup: 'Fiji Supply Chain',
   dataElementCode: doseNum === 1 ? 'COVIDVac4' : 'COVIDVac8',
   measureBuilderConfig: {
     aggregations: [
@@ -40,8 +40,8 @@ const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelNam
     displayType: 'shaded-spectrum',
     scaleBounds: {
       left: {
-        max: 0,
-        min: 0,
+        max: 1,
+        min: 1,
       },
     },
     measureLevel: level,
