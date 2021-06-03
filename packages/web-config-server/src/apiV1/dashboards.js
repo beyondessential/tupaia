@@ -3,9 +3,23 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { getSortByMultiKey } from '@tupaia/utils';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
+
+const sortByDbColumns = (array, columns) => {
+  // Sorts an array of objects by properties in a prioritized order
+  let sortedOutput = [];
+  let unsortedValues = array;
+  columns.forEach(columnName => {
+    sortedOutput = sortedOutput.concat(
+      unsortedValues
+        .filter(item => !!item[columnName])
+        .sort((itemA, itemB) => (itemA[columnName] > itemB[columnName] ? 1 : -1)),
+    );
+    unsortedValues = unsortedValues.filter(item => !item[columnName]);
+  });
+  return [...sortedOutput, ...unsortedValues];
+};
 
 export default class extends RouteHandler {
   static PermissionsChecker = NoPermissionRequiredChecker;
@@ -21,15 +35,15 @@ export default class extends RouteHandler {
       hierarchyId,
       query.projectCode,
     );
-    dashboards.sort(getSortByMultiKey(['sort_order', 'name']));
+    const sortedDashboards = sortByDbColumns(dashboards, ['sort_order', 'name']);
     // Fetch dashboard items
     const dashboardsWithItems = await Promise.all(
-      Object.values(dashboards).map(async dashboard => {
+      Object.values(sortedDashboards).map(async dashboard => {
         const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
           dashboard.id,
           permissionGroups,
         );
-        dashboardItems.sort(getSortByMultiKey(['sort_order', 'code']));
+        const sortedDashboardItems = sortByDbColumns(dashboardItems, ['sort_order', 'code']);
         return {
           dashboardName: dashboard.name,
           dashboardId: dashboard.id,
@@ -37,7 +51,7 @@ export default class extends RouteHandler {
           entityType: entity.type,
           entityCode,
           entityName: entity.name,
-          items: Object.values(dashboardItems).map(item => ({
+          items: Object.values(sortedDashboardItems).map(item => ({
             itemCode: item.code,
             legacy: item.legacy,
             reportCode: item.report_code,

@@ -38,24 +38,6 @@ export function getSortByKey(key, options) {
 }
 
 /**
- * Returns a callback which compares two objects using a list of `keys`
- * Can be used in `Array.prototype.sort` for an array of objects
- *
- * @param {string[]} keys
- * @param {{ ascending: boolean }} [options]
- * @returns { (a: Object<string, any>, b: Object<string, any> ) => number }
- */
-export function getSortByMultiKey(keys, options) {
-  const { ascending = true } = options || {};
-  const comparator = ascending ? compareAsc : compareDesc;
-  return (a, b) =>
-    comparator(
-      keys.map(key => comparator(a[key], b[key])),
-      keys.map(key => comparator(b[key], a[key])),
-    );
-}
-
-/**
  * Returns a callback which compares two objects using the provided `function` .
  * Can be used in `Array.prototype.sort` for an array of objects
  *
