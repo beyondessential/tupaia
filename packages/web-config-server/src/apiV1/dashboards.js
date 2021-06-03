@@ -3,23 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import orderBy from 'lodash.orderby';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
-
-const sortByDbColumns = (array, columns) => {
-  // Sorts an array of objects by properties in a prioritized order
-  let sortedOutput = [];
-  let unsortedValues = array;
-  columns.forEach(columnName => {
-    sortedOutput = sortedOutput.concat(
-      unsortedValues
-        .filter(item => !!item[columnName])
-        .sort((itemA, itemB) => (itemA[columnName] > itemB[columnName] ? 1 : -1)),
-    );
-    unsortedValues = unsortedValues.filter(item => !item[columnName]);
-  });
-  return [...sortedOutput, ...unsortedValues];
-};
 
 export default class extends RouteHandler {
   static PermissionsChecker = NoPermissionRequiredChecker;
@@ -35,7 +21,7 @@ export default class extends RouteHandler {
       hierarchyId,
       query.projectCode,
     );
-    const sortedDashboards = sortByDbColumns(dashboards, ['sort_order', 'name']);
+    const sortedDashboards = orderBy(dashboards, ['sort_order', 'name']);
     // Fetch dashboard items
     const dashboardsWithItems = await Promise.all(
       Object.values(sortedDashboards).map(async dashboard => {
@@ -43,7 +29,7 @@ export default class extends RouteHandler {
           dashboard.id,
           permissionGroups,
         );
-        const sortedDashboardItems = sortByDbColumns(dashboardItems, ['sort_order', 'code']);
+        const sortedDashboardItems = orderBy(dashboardItems, ['sort_order', 'code']);
         return {
           dashboardName: dashboard.name,
           dashboardId: dashboard.id,
