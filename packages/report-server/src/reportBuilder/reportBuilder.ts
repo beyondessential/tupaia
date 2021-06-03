@@ -8,10 +8,11 @@ import { FetchReportQuery, ReportConfig } from '../types';
 import { buildFetch } from './fetch';
 import { buildTransform } from './transform';
 import { buildOutput } from './output';
-import { Row } from './types';
-import { Matrix } from './output/functions/matrix/types';
+import { Row, Matrix } from './types';
 
-type BuildReport = Row[] | Matrix;
+interface BuildReport {
+  results: Row[] | Matrix;
+}
 
 export class ReportBuilder {
   config?: ReportConfig;
@@ -35,6 +36,8 @@ export class ReportBuilder {
     const output = buildOutput(this.config.output);
 
     const data = this.testData ? { results: this.testData } : await fetch(aggregator, query);
-    return output(transform(data.results));
+    const transformedData = transform(data.results);
+    const outputData = output(transformedData);
+    return { results: outputData };
   };
 }

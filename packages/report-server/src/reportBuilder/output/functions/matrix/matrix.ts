@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Row } from '../../../types';
+import { Matrix, Row } from '../../../types';
 import { MatrixBuilder } from './matrixBuilder';
-import { Matrix, MatrixColumnParams, MatrixParams } from './types';
+import { MatrixColumnParams, MatrixParams } from './types';
 
 const matrix = (rows: Row[], params: MatrixParams): Matrix => {
   const matrixBuilder = new MatrixBuilder(rows, params);

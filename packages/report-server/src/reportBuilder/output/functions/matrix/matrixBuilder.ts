@@ -1,5 +1,5 @@
-import { Row } from '../../../types';
-import { Matrix, MatrixParams } from './types';
+import { Matrix, Row } from '../../../types';
+import { MatrixParams } from './types';
 
 export class MatrixBuilder {
   rows: Row[];
