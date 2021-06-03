@@ -14,7 +14,7 @@ var seed;
 const mapOverlayGroup = {
   id: generateId(),
   name: 'COVID-19 Vaccine',
-  code: 'COVID19_Fiji',
+  code: 'COVID19_Vaccine_Fiji',
 };
 
 // Root

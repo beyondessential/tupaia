@@ -16,9 +16,11 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const createMapOverlay = doseNum => ({
-  id: `FJ_COVID_TRACKING_Dose_${doseNum}_Facility`,
-  name: `COVID-19 Vaccine Dose ${doseNum} (Facility)`,
+const getOverlayId = (doseNum, level) => `FJ_COVID_TRACKING_Dose_${doseNum}_${level}`;
+
+const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelName) => ({
+  id: getOverlayId(doseNum, level),
+  name: `COVID-19 Vaccine Dose ${doseNum} (${overlayLevelName})`,
   userGroup: 'COVID-19',
   dataElementCode: doseNum === 1 ? 'COVIDVac4' : 'COVIDVac8',
   measureBuilderConfig: {
@@ -29,20 +31,21 @@ const createMapOverlay = doseNum => ({
     ],
     entityAggregation: {
       dataSourceEntityType: 'facility',
+      aggregationEntityType,
     },
   },
   measureBuilder: 'sumAllPerOrgUnit',
   presentationOptions: {
     scaleType: 'neutral',
     scaleColorScheme: 'default-reverse',
-    displayType: 'spectrum',
+    displayType: 'shaded-spectrum',
     scaleBounds: {
       left: {
         min: 0,
         max: 0,
       },
     },
-    measureLevel: 'Facility',
+    measureLevel: level,
     hideByDefault: {
       null: true,
     },
@@ -61,21 +64,41 @@ const insertOverlay = async (db, overlay, mapOverlayGroupId) => {
   });
 };
 
-const deleteOverlay = async (db, overlay) => {
+const deleteOverlay = async (db, overlayId) => {
   return db.runSql(`
-    delete from "mapOverlay" where "id" = '${overlay.id}';
-    delete from "map_overlay_group_relation" where "child_id" = '${overlay.id}';
+    delete from "mapOverlay" where "id" = '${overlayId}';
+    delete from "map_overlay_group_relation" where "child_id" = '${overlayId}';
   `);
 };
 
 exports.up = async function (db) {
   const mapOverlayGroupId = await codeToId(db, 'map_overlay_group', 'COVID19_Vaccine_Fiji');
 
-  await insertOverlay(db, createMapOverlay(1), mapOverlayGroupId);
-  await insertOverlay(db, createMapOverlay(2), mapOverlayGroupId);
+  await insertOverlay(
+    db,
+    createMapOverlay(1, 'sub_district', 'SubDistrict', 'Sub-Division'),
+    mapOverlayGroupId,
+  );
+  await insertOverlay(
+    db,
+    createMapOverlay(1, 'district', 'District', 'Division'),
+    mapOverlayGroupId,
+  );
+  await insertOverlay(
+    db,
+    createMapOverlay(2, 'sub_district', 'SubDistrict', 'Sub-Division'),
+    mapOverlayGroupId,
+  );
+  await insertOverlay(
+    db,
+    createMapOverlay(2, 'district', 'District', 'Division'),
+    mapOverlayGroupId,
+  );
 };
 
 exports.down = async function (db) {
-  await deleteOverlay(db, createMapOverlay(1));
-  await deleteOverlay(db, createMapOverlay(2));
+  await deleteOverlay(db, getOverlayId(1, 'SubDistrict'));
+  await deleteOverlay(db, getOverlayId(1, 'District'));
+  await deleteOverlay(db, getOverlayId(2, 'SubDistrict'));
+  await deleteOverlay(db, getOverlayId(2, 'District'));
 };
