@@ -4,6 +4,9 @@ export function validateDataGroups(dataGroups: unknown): asserts dataGroups is [
   if (!Array.isArray(dataGroups)) {
     throw new Error(`Expected an array with data group codes but got ${dataGroups}`);
   }
+  if (dataGroups.length === 0) {
+    throw new Error(`Expected data group codes but got empty array ${dataGroups}`);
+  }
   dataGroups.forEach(dataGroupCode => {
     if (typeof dataGroupCode !== 'string') {
       throw new Error(`Expected the data group code to be a string, but got ${dataGroupCode}`);
