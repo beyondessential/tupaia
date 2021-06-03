@@ -13,6 +13,7 @@ export const checkAllDataElementsAreDhisIndicators = async (models, dataElementC
     type: 'dataElement',
   });
 
+  console.log('dataElementCodes', dataElementCodes);
   if (dataElementCodes.length !== dataElements.length) {
     throw new Error('Could not find one of the data elements, please check each code');
   }

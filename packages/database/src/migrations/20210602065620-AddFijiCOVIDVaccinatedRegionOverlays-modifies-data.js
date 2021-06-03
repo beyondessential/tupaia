@@ -37,18 +37,15 @@ const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelNam
   measureBuilder: 'sumAllPerOrgUnit',
   presentationOptions: {
     scaleType: 'neutral',
-    scaleColorScheme: 'default-reverse',
     displayType: 'shaded-spectrum',
     scaleBounds: {
       left: {
-        min: 0,
         max: 0,
+        min: 0,
       },
     },
     measureLevel: level,
-    hideByDefault: {
-      null: true,
-    },
+    scaleColorScheme: 'default',
   },
   countryCodes: '{FJ}',
   projectCodes: '{supplychain_fiji}',

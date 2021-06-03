@@ -62,21 +62,22 @@ const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelNam
         },
       },
     },
-    measureBuilder: 'sumAllPerOrgUnit',
+    measureBuilder: 'composePercentagePerOrgUnit',
     presentationOptions: {
-      scaleType: 'neutral',
-      scaleColorScheme: 'default-reverse',
+      scaleType: 'performance',
+      valueType: 'percentage',
       displayType: 'shaded-spectrum',
       scaleBounds: {
         left: {
-          min: 0,
           max: 0,
+          min: 0,
+        },
+        right: {
+          max: 1,
+          min: 1,
         },
       },
       measureLevel: level,
-      hideByDefault: {
-        null: true,
-      },
     },
     countryCodes: '{FJ}',
     projectCodes: '{supplychain_fiji}',
