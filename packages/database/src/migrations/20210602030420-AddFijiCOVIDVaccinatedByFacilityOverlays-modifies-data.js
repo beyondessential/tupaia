@@ -43,6 +43,9 @@ const createMapOverlay = doseNum => ({
     },
     measureLevel: 'Facility',
     scaleColorScheme: 'default',
+    hideByDefault: {
+      null: true,
+    },
   },
   countryCodes: '{FJ}',
   projectCodes: '{supplychain_fiji}',
