@@ -4,36 +4,9 @@
  */
 
 import { queryCache } from 'react-query';
-import { useData } from './useData';
 import { calculateWeekStatus } from '../../utils';
-import { REPORT_STATUSES, SYNDROMES } from '../../constants';
-
-const getEmptySyndromeData = id => ({
-  id,
-  title: SYNDROMES[id],
-  percentageChange: undefined,
-  totalCases: null,
-});
-
-const getSyndromeData = (id, data) => ({
-  ...getEmptySyndromeData(id),
-  totalCases: data[id],
-  isAlert: data[`${id} Threshold Crossed`],
-  percentageChange: data[`${id} WoW Increase`],
-});
-
-/**
- *
- * @returns {{id: *, title: *, percentageChange: number, totalCases: number}[]}
- */
-const getEmptyTableData = () => Object.keys(SYNDROMES).map(getEmptySyndromeData);
-
-/**
- *
- * @param data
- * @returns {{id: *, title: *, percentageChange: number, totalCases: number,isAlert: *}[]}
- */
-const getTableData = data => Object.keys(SYNDROMES).map(id => getSyndromeData(id, data));
+import { REPORT_STATUSES } from '../../constants';
+import { EMPTY_SYNDROME_DATA, getSyndromeData, useReport } from './helpers';
 
 /**
  *
@@ -49,15 +22,17 @@ const getAlerts = row =>
     [],
   );
 
-const useCachedQuery = (endpoint, orgUnit, period, queryKey) => {
-  return useData(
-    `${endpoint}/${orgUnit}`,
+const useCachedQuery = (endpoint, period, queryKey) => {
+  return useReport(
+    endpoint,
     {
       params: { startWeek: period, endWeek: period },
     },
     {
       initialData: () => {
-        const cachedQuery = queryCache.getQueryData([`${endpoint}/${orgUnit}`, queryKey]);
+        // If we have a page of data, and we open a detail for a specific week, we don't want
+        // to re-fetch the data for that week, so we get the specific week data from the cache
+        const cachedQuery = queryCache.getQueryData([endpoint, queryKey]);
         const results = cachedQuery?.data?.results;
 
         if (!results) {
@@ -70,7 +45,7 @@ const useCachedQuery = (endpoint, orgUnit, period, queryKey) => {
 
         const record = results.filter(row => row.period === period);
 
-        // If there is no results in the cache,
+        // If there are no results in the cache,
         // don't try to populate the query with initial data
         if (record.length === 0) {
           return undefined;
@@ -83,10 +58,9 @@ const useCachedQuery = (endpoint, orgUnit, period, queryKey) => {
 };
 
 export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQueryKey) => {
-  const reportQuery = useCachedQuery('weeklyReport', orgUnit, period, pageQueryKey);
+  const reportQuery = useCachedQuery(`weeklyReport/${orgUnit}`, period, pageQueryKey);
   const confirmedReportQuery = useCachedQuery(
-    'confirmedWeeklyReport',
-    orgUnit,
+    `confirmedWeeklyReport/${orgUnit}`,
     period,
     pageQueryKey,
   );
@@ -98,7 +72,7 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
         Sites: 0,
         'Sites Reported': 0,
       },
-      syndromes: getEmptyTableData(),
+      syndromes: EMPTY_SYNDROME_DATA,
       alerts: [],
       unVerifiedAlerts: [],
       reportStatus: REPORT_STATUSES.OVERDUE,
@@ -114,7 +88,7 @@ export const useSingleWeeklyReport = (orgUnit, period, verifiedStatuses, pageQue
     ...reportQuery,
     data: report,
     reportStatus: calculateWeekStatus(report, confirmedReport),
-    syndromes: getTableData(report),
+    syndromes: getSyndromeData(report),
     alerts,
     unVerifiedAlerts,
   };

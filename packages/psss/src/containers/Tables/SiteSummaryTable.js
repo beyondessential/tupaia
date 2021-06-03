@@ -6,29 +6,22 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor, AlertCell } from '../../components';
+import { AlertCell } from '../../components';
 import { openWeeklyReportsPanel } from '../../store';
-import { useTableQuery, getSitesMetaData } from '../../api';
-
-// Todo: update placeholder
-const NameCell = data => {
-  return <span>{data.name}</span>;
-};
+import { useCountrySitesWeeklyReport } from '../../api';
 
 const siteWeekColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '190px', // must be same width as CountryTable weekNumber column to align
+    width: COLUMN_WIDTHS.WEEKLY_REPORT_DATE,
     align: 'left',
-    CellComponent: NameCell,
   },
   {
     title: 'Sites Reported',
@@ -63,7 +56,7 @@ const siteWeekColumns = [
   {
     title: 'Status',
     key: 'status',
-    width: '110px',
+    width: '165px',
   },
 ];
 
@@ -89,35 +82,29 @@ const Link = styled(MuiLink)`
 
 export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) => {
   const { countryCode } = useParams();
-  const { period, weekNumber } = rowData;
-  const options = {
-    countryCode,
-    weekNumber,
-  };
-  const { error, data } = useTableQuery('sites', options);
-  const { data: sitesMetaData } = useQuery(['sites-meta-data', options], getSitesMetaData);
-
-  const showSites = sitesMetaData?.sites.length > 0 && data?.data?.length > 0;
+  const { period, Sites: totalSites = '', 'Sites Reported': sitesReported = '' } = rowData;
+  const { isLoading, isFetching, error, data } = useCountrySitesWeeklyReport(countryCode, period);
 
   return (
     <>
-      {showSites && (
-        <TableWrapper>
-          <FakeHeader>
-            <div>10/30 Sentinel Sites Reported</div>
-            <Link component="button" onClick={handleOpen} underline="always">
-              Review and Confirm Now
-            </Link>
-          </FakeHeader>
-          <Table
-            errorMessage={error}
-            columns={siteWeekColumns}
-            data={data ? data.data : 0}
-            Header={false}
-            Body={CondensedTableBody}
-          />
-        </TableWrapper>
-      )}
+      <TableWrapper>
+        <FakeHeader>
+          <div>{`${sitesReported}/${totalSites} Sentinel Sites Reported`}</div>
+          <Link component="button" onClick={() => handleOpen(period)} underline="always">
+            Review and Confirm Now
+          </Link>
+        </FakeHeader>
+        <Table
+          isLoading={isLoading}
+          isFetching={!isLoading && isFetching}
+          errorMessage={error?.message}
+          noDataMessage="No sentinel sites found"
+          columns={siteWeekColumns}
+          data={data}
+          Header={false}
+          Body={CondensedTableBody}
+        />
+      </TableWrapper>
       <TableFooter>
         <Text>Verify data to submit Weekly report to Regional</Text>
         <Button onClick={() => handleOpen(period)}>Review and Confirm Now</Button>
@@ -129,7 +116,8 @@ export const SiteSummaryTableComponent = React.memo(({ rowData, handleOpen }) =>
 SiteSummaryTableComponent.propTypes = {
   handleOpen: PropTypes.func.isRequired,
   rowData: PropTypes.shape({
-    weekNumber: PropTypes.number,
+    Sites: PropTypes.number,
+    'Sites Reported': PropTypes.number,
     period: PropTypes.string,
   }).isRequired,
 };

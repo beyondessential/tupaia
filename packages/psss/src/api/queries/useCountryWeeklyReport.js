@@ -5,9 +5,9 @@
 
 import { useState } from 'react';
 import keyBy from 'lodash.keyby';
-import { useTableData } from './useTableData';
 import { subtractWeeksFromPeriod, calculateWeekStatus } from '../../utils';
 import { REPORT_STATUSES } from '../../constants';
+import { usePaginatedReport } from './helpers';
 import { useUpcomingReport } from './useUpcomingReport';
 
 /**
@@ -75,11 +75,11 @@ export const useCountryWeeklyReport = (orgUnit, period, count) => {
     rowsOnThisPage,
   } = usePagination(lastPeriod, count);
 
-  const confirmedQuery = useTableData(`confirmedWeeklyReport/${orgUnit}`, {
+  const confirmedQuery = usePaginatedReport(`confirmedWeeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek },
   });
 
-  const query = useTableData(`weeklyReport/${orgUnit}`, {
+  const query = usePaginatedReport(`weeklyReport/${orgUnit}`, {
     params: { startWeek, endWeek },
   });
 

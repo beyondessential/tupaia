@@ -4,7 +4,7 @@
  */
 
 import momentTimezone from 'moment-timezone';
-import { DatabaseError, UploadError, stripTimezoneFromDate } from '@tupaia/utils';
+import { DatabaseError, UploadError, stripTimezoneFromDate, reformatDateStringWithoutTz, ValidationError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
 import { DEFAULT_DATABASE_TIMEZONE, getEntityIdFromClinicId } from '../database';
@@ -66,19 +66,7 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
     }
 
     // Ensure data_time is populated, supporting legacy versions of MediTrak
-    const {
-      data_time: suppliedDataTime,
-      submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
-      end_time: endTime, // prior to v1.7.87 fall back to end_time
-      timezone = DEFAULT_DATABASE_TIMEZONE, // if no timezone provided, use db default
-    } = surveyResponseObject;
-    const dataTime = suppliedDataTime || submissionTime || endTime;
-
-    // Convert to the original timezone, then strip timezone suffix, so it ends up in db as it
-    // appeared to the original survey submitter
-    surveyResponseProperties.data_time = stripTimezoneFromDate(
-      momentTimezone(dataTime).tz(timezone).format(),
-    );
+    surveyResponseProperties.data_time = getDataTime(surveyResponseObject);
 
     surveyResponse = await models.surveyResponse.updateOrCreate(
       {
@@ -134,3 +122,49 @@ const createEntities = async (models, entitiesCreated, surveyId) => {
     ),
   );
 };
+
+/**
+ * @param surveyResponseObject
+ * @return {string}
+ * @throws ValidationError
+ */
+const getDataTime = surveyResponseObject => {
+  const {
+    data_time: suppliedDataTime,
+    submission_time: submissionTime, // v1.7.87 to v1.9.110 (inclusive) uses submission_time
+    end_time: endTime, // prior to v1.7.87 fall back to end_time
+    timezone: suppliedTimezone,
+  } = surveyResponseObject;
+
+  if (suppliedDataTime) {
+
+    if (suppliedTimezone) {
+      // Timezone specified, strip it
+      return stripTimezoneFromDate(
+        momentTimezone(suppliedDataTime).tz(suppliedTimezone).format(),
+      );
+    }
+
+    // No timezone specified. We are submitting the data_time explicitly without a tz.
+    //
+    // If the input is in a known format like ISO8601 without tz, we can use this directly, we just
+    // reformat it into our specific format without tz.
+    const reformattedDataTime = reformatDateStringWithoutTz(suppliedDataTime);
+    if (reformattedDataTime) {
+      return reformattedDataTime;
+    } else {
+      throw new ValidationError(`Unable to parse data_time ${suppliedDataTime} against known formats without timezone. Either use a known format or specify a timezone.`);
+    }
+  }
+
+  // Fallback for older versions
+  const dataTime = submissionTime || endTime;
+
+  const timezone = suppliedTimezone || DEFAULT_DATABASE_TIMEZONE; // if no timezone provided, use db default
+
+  // Convert to the original timezone, then strip timezone suffix, so it ends up in db as it
+  // appeared to the original survey submitter
+  return stripTimezoneFromDate(
+    momentTimezone(dataTime).tz(timezone).format(),
+  );
+}

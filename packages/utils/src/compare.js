@@ -13,6 +13,12 @@ export const compareAsc = (a, b) => {
     // Numbers are placed before strings
     return typeof a === 'number' ? -1 : 1;
   }
+  if (types.includes('undefined')) {
+    if (a === undefined && b === undefined) {
+      return 0;
+    }
+    return a === undefined ? -1 : 1;
+  }
 
   if (a < b) {
     return -1;
