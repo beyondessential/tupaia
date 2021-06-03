@@ -26,7 +26,7 @@ const REPORT = {
   code: 'STRIVE_Habitat_By_Species_LHS',
   config: {
     fetch: {
-      dataGroups: ['SI'],
+      dataGroups: ['STRVEC_LHS'],
       aggregations: [
         {
           type: 'RAW',
