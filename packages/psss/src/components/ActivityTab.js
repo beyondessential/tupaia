@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { format } from 'date-fns';
+import { Container } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { CardTabPanel, WarningCloud } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
@@ -13,6 +14,7 @@ import { FetchLoader } from './FetchLoader';
 import { FlexStart } from './Layout';
 import { fetchStateShape } from '../hooks';
 import * as COLORS from '../constants/colors';
+import { ComingSoon } from './ComingSoon';
 
 const InnerContainer = styled.div`
   padding: 1.25rem 0.7rem;
@@ -88,47 +90,50 @@ export const ActivityTab = React.memo(({ state, NotesTabLink }) => {
   const { data: feed } = state;
   const exampleDate = new Date();
   return (
-    <CardTabPanel>
-      <FetchLoader state={state}>
-        {feed.map(week => (
-          <article key={week.id}>
-            <HeaderContainer>
-              <Heading>
-                <DarkTextSpan>Week {week.week} - </DarkTextSpan>
-                {format(week.dateTime, 'EEEE, dd MMMM yyyy')}
-              </Heading>
-            </HeaderContainer>
-            {week.updates.map(update => (
-              <InnerContainer key={update.id}>
-                <Time>{format(update.dateTime, AM_PM_DATE_FORMAT)}</Time>
-                <FlexStart>
-                  <Avatar src={update.user.avatar} />
-                  <Text>
-                    <DarkTextSpan>{update.user.name}</DarkTextSpan>{' '}
-                    {update.type === 'note' ? (
-                      <LightTextSpan>Added a {NotesTabLink}</LightTextSpan>
-                    ) : (
-                      <>
-                        <LightTextSpan>changed alert status to</LightTextSpan> Outbreak
-                      </>
-                    )}
-                  </Text>
-                </FlexStart>
-              </InnerContainer>
-            ))}
-          </article>
-        ))}
-        <AlertContainer>
-          <Time>{format(exampleDate, AM_PM_DATE_FORMAT)}</Time>
-          <FlexStart>
-            <StyledWarningCloud />
-            <Text>
-              <DarkTextSpan>Alert created</DarkTextSpan>
-            </Text>
-          </FlexStart>
-        </AlertContainer>
-      </FetchLoader>
-    </CardTabPanel>
+    <Container style={{ position: 'relative' }}>
+      <ComingSoon text="Alert activity coming soon" />
+      <CardTabPanel>
+        <FetchLoader state={state}>
+          {feed.map(week => (
+            <article key={week.id}>
+              <HeaderContainer>
+                <Heading>
+                  <DarkTextSpan>Week {week.week} - </DarkTextSpan>
+                  {format(week.dateTime, 'EEEE, dd MMMM yyyy')}
+                </Heading>
+              </HeaderContainer>
+              {week.updates.map(update => (
+                <InnerContainer key={update.id}>
+                  <Time>{format(update.dateTime, AM_PM_DATE_FORMAT)}</Time>
+                  <FlexStart>
+                    <Avatar src={update.user.avatar} />
+                    <Text>
+                      <DarkTextSpan>{update.user.name}</DarkTextSpan>{' '}
+                      {update.type === 'note' ? (
+                        <LightTextSpan>Added a {NotesTabLink}</LightTextSpan>
+                      ) : (
+                        <>
+                          <LightTextSpan>changed alert status to</LightTextSpan> Outbreak
+                        </>
+                      )}
+                    </Text>
+                  </FlexStart>
+                </InnerContainer>
+              ))}
+            </article>
+          ))}
+          <AlertContainer>
+            <Time>{format(exampleDate, AM_PM_DATE_FORMAT)}</Time>
+            <FlexStart>
+              <StyledWarningCloud />
+              <Text>
+                <DarkTextSpan>Alert created</DarkTextSpan>
+              </Text>
+            </FlexStart>
+          </AlertContainer>
+        </FetchLoader>
+      </CardTabPanel>
+    </Container>
   );
 });
 

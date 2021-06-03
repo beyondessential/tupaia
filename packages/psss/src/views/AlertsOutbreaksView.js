@@ -2,36 +2,42 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import PropTypes from 'prop-types';
 import React from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { connect, useSelector } from 'react-redux';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import { WarningCloud, TabsToolbar, Virus } from '@tupaia/ui-components';
 import { Archive } from '@material-ui/icons';
 import { Header, HeaderTitle, HeaderTitleWithSubHeading } from '../components';
 import { AlertsExportModal, OutbreaksExportModal } from '../containers/Modals';
-import { AlertsRoutes } from '../routes/AlertsRoutes';
-import { countryFlagImage, getCountryName } from '../utils';
+import { AlertRoutes } from '../routes/AlertRoutes';
+import { getCountryCodes, getCountryName } from '../store';
+import { countryFlagImage } from '../utils';
 
-const links = [
+const makeLinks = path => [
   {
     label: 'Alerts',
-    to: '',
+    exact: true,
+    to: `${path}/active`,
     icon: <WarningCloud />,
   },
   {
     label: 'Outbreaks',
-    to: '/outbreaks',
+    exact: true,
+    to: `${path}/outbreaks`,
     icon: <Virus />,
   },
   {
     label: 'Archive',
-    to: '/archive',
+    exact: true,
+    to: `${path}/archive`,
     icon: <Archive />,
   },
 ];
 
-export const AlertsOutbreaksView = () => {
+export const AlertsOutbreaksViewComponent = React.memo(({ countryCodes }) => {
   const location = useLocation();
-  const { countryCode } = useParams();
+  const match = useRouteMatch();
 
   const ExportModal = location.pathname.includes('outbreak')
     ? OutbreaksExportModal
@@ -39,11 +45,14 @@ export const AlertsOutbreaksView = () => {
 
   let Title = <HeaderTitle title="Alerts & Outbreaks" />;
 
-  if (countryCode) {
+  if (countryCodes.length === 1) {
+    const [countryCode] = countryCodes;
+    const countryName = useSelector(state => getCountryName(state, countryCode));
+
     Title = (
       <HeaderTitleWithSubHeading
         title="Alerts & Outbreaks"
-        subHeading={getCountryName(countryCode)}
+        subHeading={countryName}
         avatarUrl={countryFlagImage(countryCode)}
       />
     );
@@ -52,8 +61,18 @@ export const AlertsOutbreaksView = () => {
   return (
     <>
       <Header Title={Title} ExportModal={ExportModal} />
-      <TabsToolbar links={links} />
-      <AlertsRoutes />
+      <TabsToolbar links={makeLinks(match.path)} />
+      <AlertRoutes />
     </>
   );
+});
+
+AlertsOutbreaksViewComponent.propTypes = {
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
+
+const mapStateToProps = state => ({
+  countryCodes: getCountryCodes(state),
+});
+
+export const AlertsOutbreaksView = connect(mapStateToProps)(AlertsOutbreaksViewComponent);

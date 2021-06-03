@@ -43,6 +43,13 @@ export const asyncFilter = async (array, predicate) =>
 export const asyncEvery = async (array, predicate) =>
   (await asyncFilter(array, predicate)).length === array.length;
 
+/**
+ *
+ * @template T
+ * @param {T} array
+ * @param {number} index
+ * @returns {T}
+ */
 export const removeAt = (array, index) => {
   if (typeof index !== 'number' || index < 0 || !Number.isFinite(index)) {
     throw new Error(`Index '${index}' is not a positive integer`);

@@ -68,7 +68,7 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
+export const CreateOutbreakModal = ({ isOpen, onClose }) => {
   const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
@@ -80,8 +80,8 @@ export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
 
   if (status === STATUS.SUCCESS) {
     return (
-      <Dialog onClose={handleClose} open={isOpen}>
-        <DialogHeader onClose={handleClose} title="Confirm Outbreak" />
+      <Dialog onClose={onClose} open={isOpen}>
+        <DialogHeader onClose={onClose} title="Confirm Outbreak" />
         <DialogContent>
           <TickIcon />
           <Typography variant="h6" gutterBottom>
@@ -92,7 +92,7 @@ export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
           </SuccessText>
         </DialogContent>
         <DialogFooter>
-          <OutlinedButton onClick={handleClose}>Stay on Alerts</OutlinedButton>
+          <OutlinedButton onClick={onClose}>Stay on Alerts</OutlinedButton>
           <Button to="/alerts/outbreaks" component={RouterLink}>
             Go to Outbreaks
           </Button>
@@ -102,9 +102,9 @@ export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
   }
 
   return (
-    <Dialog onClose={handleClose} open={isOpen}>
+    <Dialog onClose={onClose} open={isOpen}>
       <form onSubmit={handleSubmit(handleConfirm)} noValidate>
-        <DialogHeader onClose={handleClose} title="Confirm Outbreak" />
+        <DialogHeader onClose={onClose} title="Confirm Outbreak" />
         <LoadingContainer isLoading={status === STATUS.LOADING}>
           <Content>
             <Fields>
@@ -144,7 +144,7 @@ export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
           </Content>
         </LoadingContainer>
         <DialogFooter>
-          <OutlinedButton onClick={handleClose} disabled={status === STATUS.LOADING}>
+          <OutlinedButton onClick={onClose} disabled={status === STATUS.LOADING}>
             Cancel
           </OutlinedButton>
           <Button type="submit" isLoading={status === STATUS.LOADING} loadingText="Confirming">
@@ -158,5 +158,5 @@ export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
 
 CreateOutbreakModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

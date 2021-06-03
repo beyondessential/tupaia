@@ -53,3 +53,5 @@ export interface Event {
   orgUnit: string;
   dataValues?: Record<string, string | number>;
 }
+
+export type AggregationObject = { type: string; config: Record<string, string> };

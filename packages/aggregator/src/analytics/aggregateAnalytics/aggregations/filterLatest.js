@@ -13,15 +13,13 @@ import { getPreferredPeriod } from './utils';
  * @returns {Array}
  */
 export const filterLatest = (analytics, aggregationConfig) => {
-  const { orgUnitToGroupKeys } = aggregationConfig;
+  const { orgUnitMap } = aggregationConfig;
   const filteredAnalytics = [];
   // Hold on to a cache of the latest analytics found for each data element/organisation unit combo
   const latestAnalyticsCache = {};
   analytics.forEach(responseElement => {
     const { dataElement, organisationUnit, period } = responseElement;
-    const organisationUnitCode = orgUnitToGroupKeys
-      ? orgUnitToGroupKeys[organisationUnit]
-      : organisationUnit;
+    const organisationUnitCode = orgUnitMap?.[organisationUnit]?.code || organisationUnit;
     const dataElementOrganisationUnitKey = `${dataElement}_${organisationUnitCode}`;
     const mostRecentFoundSoFar = latestAnalyticsCache[dataElementOrganisationUnitKey] || {};
     // Use responseElement if we haven't already found a matching response element with a more recent period
