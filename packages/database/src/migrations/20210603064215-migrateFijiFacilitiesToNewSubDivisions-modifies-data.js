@@ -232,11 +232,12 @@ const facilitiesToMigrate = {
 };
 
 exports.up = async function (db) {
-  Object.keys(facilitiesToMigrate).map(async facility => {
+  Object.keys(facilitiesToMigrate).forEach(async facility => {
     const parentId = (
       await db.runSql(`select id from "entity" where code = '${facilitiesToMigrate[facility]}';`)
     ).rows[0].id;
-    db.runSql(`
+
+    await db.runSql(`
       update "entity" set parent_id = '${parentId}' where code = '${facility}';
     `);
   });
