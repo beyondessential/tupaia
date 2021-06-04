@@ -7,9 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { Container } from '@material-ui/core';
-import { useUsers } from '../api/queries';
+import { useUsers, useUser } from '../api/queries';
 import * as COLORS from '../constants';
-import { DataGrid, PageHeader, FetchLoader } from '../components';
+import { DataGrid, PageHeader, FetchLoader, FullPageLoader } from '../components';
+import { NotAuthorisedView } from './NotAuthorisedView';
+import { UserPermissionsCell } from '../components/DataGrid/UserPermissionsCell';
 
 const Section = styled.section`
   display: flex;
@@ -36,10 +38,24 @@ const columns = [
   { accessor: 'mobileNumber', Header: 'Contact Number' },
   { accessor: 'employer', Header: 'Employer' },
   { accessor: 'position', Header: 'Position' },
+  {
+    accessor: 'permissionGroupName',
+    Header: 'Permissions',
+    Cell: UserPermissionsCell,
+  },
 ];
 
 export const UsersView = () => {
   const { isLoading, isError, error, data } = useUsers();
+  const { isLoading: isUserLoading, isLesmisAdmin } = useUser();
+
+  if (isUserLoading) {
+    return <FullPageLoader />;
+  }
+
+  if (!isLesmisAdmin) {
+    return <NotAuthorisedView />;
+  }
 
   return (
     <>
