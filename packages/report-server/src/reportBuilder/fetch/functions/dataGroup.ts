@@ -19,7 +19,7 @@ type DataGroupParams = {
 };
 
 type DataGroupFetchParams = {
-  dataGroupCode: string;
+  dataGroupCodes: string[];
   dataElementCodes?: string[];
   aggregations?: (string | AggregationObject)[];
 };
@@ -29,26 +29,32 @@ const fetchEvents = async (
   query: FetchReportQuery,
   params: DataGroupFetchParams,
 ): Promise<FetchResponse> => {
-  const { dataGroupCode, dataElementCodes, aggregations } = params;
+  const { dataGroupCodes, dataElementCodes, aggregations } = params;
   const { organisationUnitCodes, hierarchy, period, startDate, endDate } = query;
-  const response = await aggregator.fetchEvents(
-    dataGroupCode,
-    aggregations,
-    organisationUnitCodes,
-    hierarchy,
-    {
-      period,
-      startDate,
-      endDate,
-    },
-    dataElementCodes,
+  // TODO: Eventually we want Aggregator to handle fetching multiple dataGroups
+  const results = await Promise.all(
+    dataGroupCodes.map(async dataGroupCode => {
+      const response = await aggregator.fetchEvents(
+        dataGroupCode,
+        aggregations,
+        organisationUnitCodes,
+        hierarchy,
+        {
+          period,
+          startDate,
+          endDate,
+        },
+        dataElementCodes,
+      );
+      return response.map(event => {
+        const { dataValues, ...restOfEvent } = event;
+        return { ...dataValues, ...restOfEvent };
+      });
+    }),
   );
-  const rows = response.map(event => {
-    const { dataValues, ...restOfEvent } = event;
-    return { ...dataValues, ...restOfEvent };
-  });
+
   return {
-    results: rows,
+    results: results.flat(),
   };
 };
 
@@ -60,7 +66,7 @@ const buildParams = (params: DataGroupParams): DataGroupFetchParams => {
   validateAggregations(aggregations);
 
   return {
-    dataGroupCode: dataGroups[0],
+    dataGroupCodes: dataGroups,
     dataElementCodes: dataElements,
     aggregations,
   };

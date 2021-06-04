@@ -43,6 +43,7 @@ export const PermissionGroupsPage = ({ getHeaderEl }) => (
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    defaultSorting={[{ id: 'name', desc: false }]}
   />
 );
 

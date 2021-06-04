@@ -27,11 +27,18 @@ describe('AccessPolicyBuilder', () => {
     },
     permissionGroup: {
       addChangeHandler: onPermissionGroupChanged => {
-       notifyPermissionGroupChange = () => onPermissionGroupChanged();
+        notifyPermissionGroupChange = () => onPermissionGroupChanged();
       },
     },
   };
   const userId = 'xxx';
+
+  it('throws error when userId is undefined', () => {
+    const builder = new AccessPolicyBuilder(models);
+    return expect(builder.getPolicyForUser(undefined)).rejects.toEqual(
+      new Error('Error building access policy for userId: undefined'),
+    );
+  });
 
   describe('selecting modern vs. legacy builder', () => {
     const testData = [
