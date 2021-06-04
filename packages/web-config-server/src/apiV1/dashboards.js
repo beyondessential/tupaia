@@ -38,7 +38,7 @@ export default class extends RouteHandler {
           entityCode,
           entityName: entity.name,
           items: Object.values(sortedDashboardItems).map(item => ({
-            itemCode: item.code,
+            code: item.code,
             legacy: item.legacy,
             reportCode: item.report_code,
             ...item.config,

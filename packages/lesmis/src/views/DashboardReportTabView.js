@@ -153,21 +153,19 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
               >
                 {(() => {
                   // Todo: support other report types (including "component" types)
-                  const dashboardReports = dashboard.items.filter(
-                    report => report.type === 'chart',
-                  );
-                  return dashboardReports.length > 0 ? (
-                    dashboardReports.map(report => (
+                  const dashboardItems = dashboard.items.filter(item => item.type === 'chart');
+                  return dashboardItems.length > 0 ? (
+                    dashboardItems.map(item => (
                       <Report
-                        key={report.itemCode}
-                        name={report.name}
+                        key={item.code}
+                        name={item.name}
                         entityCode={entityCode}
                         dashboardGroupName={dashboard.dashboardName}
                         dashboardGroupId={dashboard.dashboardId.toString()}
-                        reportId={report.itemCode}
+                        reportId={item.code}
                         year={selectedYear}
-                        periodGranularity={report.periodGranularity}
-                        viewConfig={report}
+                        periodGranularity={item.periodGranularity}
+                        viewConfig={item}
                       />
                     ))
                   ) : (
