@@ -35,7 +35,7 @@ const DASHBOARD_OBJECT = {
           dataElementCodes: ['COVIDVac5'],
           entityAggregation: {
             dataSourceEntityType: 'facility',
-            aggregationEntityType: 'country',
+            aggregationEntityType: 'district',
           },
         },
       },
@@ -75,7 +75,7 @@ const DASHBOARD_OBJECT = {
           dataElementCodes: ['COVIDVac6'],
           entityAggregation: {
             dataSourceEntityType: 'facility',
-            aggregationEntityType: 'country',
+            aggregationEntityType: 'district',
           },
         },
       },
@@ -106,7 +106,7 @@ exports.up = async function (db) {
 
   await db.runSql(`
     DELETE FROM "dashboardReport" 
-    WHERE id =  '${OLD_DASHBOARD_ID}';
+    WHERE id = '${OLD_DASHBOARD_ID}';
   `);
 
   await insertObject(db, 'dashboardReport', {
