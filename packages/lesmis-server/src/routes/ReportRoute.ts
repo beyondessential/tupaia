@@ -7,7 +7,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { ReportConnection, WebConfigConnection } from '../connections';
-import { LESMIS_PROJECT_NAME } from '../constants';
+import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 
 export class ReportRoute extends Route {
   private readonly reportConnection: ReportConnection;
@@ -37,7 +37,7 @@ export class ReportRoute extends Route {
         const report = await this.reportConnection.fetchReport(reportCode, {
           organisationUnitCodes: entityCode,
           projectCodes: LESMIS_PROJECT_NAME,
-          ...this.req.query,
+          hierarchy: LESMIS_HIERARCHY_NAME,
         }, this.req.query);
         return report.results;
       }

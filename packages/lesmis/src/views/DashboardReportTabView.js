@@ -162,7 +162,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                         entityCode={entityCode}
                         dashboardGroupName={dashboard.dashboardName}
                         dashboardGroupId={dashboard.dashboardId.toString()}
-                        reportId={item.code}
+                        reportId={item.reportCode}
                         year={selectedYear}
                         periodGranularity={item.periodGranularity}
                         viewConfig={item}

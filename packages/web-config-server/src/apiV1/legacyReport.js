@@ -25,9 +25,9 @@ export default class extends ViewRouteHandler {
     }
     return {
       viewJson: dashboardItem.config,
-      dataBuilder: legacyReport.dataBuilder,
-      dataBuilderConfig: legacyReport.dataBuilderConfig,
-      dataServices: legacyReport.dataServices,
+      dataBuilder: legacyReport.data_builder,
+      dataBuilderConfig: legacyReport.data_builder_config,
+      dataServices: legacyReport.data_services,
     };
   };
 }
