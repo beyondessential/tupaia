@@ -1,5 +1,7 @@
 'use strict';
 
+import { arrayToDbString } from '../utilities';
+
 var dbm;
 var type;
 var seed;
@@ -14,9 +16,14 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const DASHBOARD_GROUP_CODES = [
+  'NR_EHEALTH_NAURU_Country_Donor',
+  'FJ_SUPPLYCHAIN_FIJI_Country_Donor',
+];
+
 exports.up = function (db) {
   return db.runSql(`
-    DELETE FROM "dashboardGroup" WHERE code = 'FJ_SUPPLYCHAIN_FIJI_Country_Donor';
+    DELETE FROM "dashboardGroup" WHERE code IN (${arrayToDbString(DASHBOARD_GROUP_CODES)}) ;
   `);
 };
 
