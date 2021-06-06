@@ -54,26 +54,22 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
     return [organisationUnitCodes, aggregationList];
   }
 
-  let adjustedOrganisationUnitCodes;
-  const adjustedAggregations = [];
   const entityConnection = new EntityConnection(session);
-  await Promise.all(
+  const adjustedAggregationsAndDataSourceEntites = await Promise.all(
     aggregationList.map(async aggregation => {
       if (!shouldFetchDataSourceEntities(aggregation)) {
-        adjustedAggregations.push(aggregation);
-        return;
+        return [aggregation, undefined];
       }
 
-      if (!adjustedOrganisationUnitCodes && !shouldFetchRelationships(aggregation)) {
+      if (!shouldFetchRelationships(aggregation)) {
         const { dataSourceEntityType, dataSourceEntityFilter } = aggregation.config;
-        adjustedOrganisationUnitCodes = await entityConnection.getDataSourceEntities(
+        const dataSourceEntities = await entityConnection.getDataSourceEntities(
           hierarchy,
           organisationUnitCodes,
           dataSourceEntityType,
           dataSourceEntityFilter,
         );
-        adjustedAggregations.push(aggregation);
-        return;
+        return [aggregation, dataSourceEntities];
       }
 
       const {
@@ -92,17 +88,25 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
         dataSourceEntityFilter,
       );
 
-      if (!adjustedOrganisationUnitCodes) {
-        adjustedOrganisationUnitCodes = dataSourceEntities;
-      }
-      adjustedAggregations.push({
-        ...aggregation,
-        config: { ...aggregation.config, orgUnitMap: relationships },
-      });
+      return [
+        {
+          ...aggregation,
+          config: { ...aggregation.config, orgUnitMap: relationships },
+        },
+        dataSourceEntities,
+      ];
     }),
   );
 
-  return [adjustedOrganisationUnitCodes, adjustedAggregations];
+  const adjustedAggregations = adjustedAggregationsAndDataSourceEntites.map(
+    aggregationAndDataSourceEntities => aggregationAndDataSourceEntities[0],
+  );
+  const dataSourceEntities =
+    adjustedAggregationsAndDataSourceEntites
+      .map(aggregationAndDataSourceEntities => aggregationAndDataSourceEntities[1])
+      .find(dataSourceEntities => dataSourceEntities !== undefined) || organisationUnitCodes;
+
+  return [dataSourceEntities, adjustedAggregations];
 };
 
 /**
