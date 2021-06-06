@@ -112,10 +112,11 @@ export class ResponseBuilder {
   private shouldPerformFastResponse() {
     const { field: ancestorField, filter: ancestorFilter } = this.ctx.ancestor;
     const { field: descendantField } = this.ctx.descendant;
+    const { country_code, ...restOfAncestorFilter } = ancestorFilter;
     return (
       ancestorField === 'code' &&
       descendantField === 'code' &&
-      Object.keys(ancestorFilter).length === 0
+      Object.keys(restOfAncestorFilter).length === 0
     );
   }
 
@@ -126,13 +127,12 @@ export class ResponseBuilder {
   }
 
   async build() {
-    const { entity, hierarchyId, allowedCountries } = this.ctx;
+    const { entity, hierarchyId } = this.ctx;
     const { type: descendantType, filter } = this.ctx.descendant;
 
     const descendants = await entity.getRelatives(hierarchyId, {
       ...filter,
       type: descendantType,
-      country_code: allowedCountries,
     });
 
     const [ancestorCodes, pairs] = await this.buildAncestorCodesAndPairs(descendants);
