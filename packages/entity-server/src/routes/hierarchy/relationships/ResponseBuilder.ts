@@ -41,16 +41,24 @@ export class ResponseBuilder {
   }
 
   private async buildAncestorCodesAndPairs(descendants: EntityType[]): Promise<[string[], Pair[]]> {
-    const { hierarchyId } = this.ctx;
+    const { hierarchyId, entity } = this.ctx;
     const { type: ancestorType } = this.ctx.ancestor;
+    const descendantCodes = descendants.map(descendant => descendant.code);
     const descendantAncestorMapping = await this.models.entity.fetchAncestorDetailsByDescendantCode(
-      descendants.map(descendant => descendant.code),
+      descendantCodes,
       hierarchyId,
       ancestorType,
     );
+
+    // Add self to descendant<->ancestor mapping if matching requirements
+    if (descendantCodes.includes(entity.code) && entity.type === ancestorType) {
+      descendantAncestorMapping[entity.code] = { code: entity.code, name: entity.name };
+    }
+
     const ancestorCodes = [
       ...new Set(Object.values(descendantAncestorMapping).map(ancestor => ancestor.code)),
     ];
+
     const ancestorDescendantPairs = Object.entries(descendantAncestorMapping).map(
       ([descendant, { code: ancestor }]) => ({
         descendant,
