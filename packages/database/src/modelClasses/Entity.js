@@ -25,6 +25,7 @@ const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
 const CITY = 'city';
+const POSTCODE = 'postcode';
 
 // Note: if a new type is not included in `ORG_UNIT_ENTITY_TYPES`,
 // a corresponding tracked entity type must be created in DHIS
@@ -46,6 +47,7 @@ const ENTITY_TYPES = {
   WORLD,
   PROJECT,
   CITY,
+  POSTCODE,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
