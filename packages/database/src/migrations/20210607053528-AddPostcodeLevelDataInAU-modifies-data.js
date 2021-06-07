@@ -29,8 +29,6 @@ const STATES = {
 };
 
 const HIERARCHY_CODE = 'covidau';
-const getExploreHierarchyId = async db =>
-  db.runSql(`select id from entity_hierarchy where name = '${HIERARCHY_CODE}' limit 1;`);
 
 exports.up = async function (db) {
   for (const data of POSTCODE_ARRAY) {
@@ -38,15 +36,14 @@ exports.up = async function (db) {
     const { postcode, state, long, lat } = data;
     const entityCode = `AU_${state}_${postcode}`;
     const isExisted = await codeToId(db, 'entity', entityCode);
+    // There are same postcodes for multiple area from JSON, but they have similar latitude and longitude, we can pick one of them.
     if (isExisted) {
       continue;
     }
-    const parentId = await codeToId(db, 'entity', STATES[state]);
-    const entityId = generateId();
     const entity = {
-      id: entityId,
+      id: generateId(),
       code: entityCode,
-      parent_id: parentId,
+      parent_id: await codeToId(db, 'entity', STATES[state]),
       name: postcode,
       type: 'postcode',
       country_code: 'AU',
@@ -65,13 +62,9 @@ exports.up = async function (db) {
         where code = '${entity.code}';
     `);
     // Insert relationships into entity_relation table
-    //   const hierarchyId = (await getExploreHierarchyId(db)).rows[0].id;
-    //   await insertObject(db, 'entity_relation', {
-    //     id: generateId(),
-    //     parent_id: parentId,
-    //     child_id: entityId,
-    //     entity_hierarchy_id: hierarchyId,
-    //   });
+    await db.runSql(
+      `UPDATE entity_hierarchy SET canonical_types = '{country, district, sub_district, postcode}' WHERE name = '${HIERARCHY_CODE}';`,
+    );
   }
 };
 
