@@ -2,24 +2,27 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Table } from '@tupaia/ui-components';
-import { SyndromeCell, AlertMenuCell, WeekAndDateCell, CountryNameCell } from '../../components';
-import { useTableQuery } from '../../api';
+import React, { useCallback, useContext } from 'react';
+import { connect } from 'react-redux';
+import { Table, useTableSorting } from '@tupaia/ui-components';
+import { useAlerts } from '../../api';
+import { SyndromeCell, AlertMenuCell, CountryNameCell, WeekAndDateCell } from '../../components';
+import { getCountryCodes } from '../../store';
+import { AlertsPanelContext } from '../Panels';
 
-const createColumns = isForMultipleCountries => [
-  ...(isForMultipleCountries
-    ? [
+const createColumns = isSingleCountry => [
+  ...(isSingleCountry
+    ? []
+    : [
         {
           title: 'Country',
-          key: 'name',
+          key: 'organisationUnit',
           width: '28%',
           align: 'left',
           CellComponent: CountryNameCell,
         },
-      ]
-    : []),
+      ]),
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -28,7 +31,7 @@ const createColumns = isForMultipleCountries => [
   },
   {
     title: 'Alert Start Date',
-    key: 'weekNumber',
+    key: 'period',
     align: 'left',
     width: '200px',
     CellComponent: WeekAndDateCell,
@@ -39,11 +42,12 @@ const createColumns = isForMultipleCountries => [
     align: 'left',
     width: '115px',
   },
-  {
-    title: 'Sites Reported',
-    key: 'sitesReported',
-    align: 'left',
-  },
+  // TODO uncomment when reported sites is calculated
+  // {
+  //   title: 'Sites Reported',
+  //   key: 'sitesReported',
+  //   align: 'left',
+  // },
   {
     title: '',
     key: 'id',
@@ -53,34 +57,44 @@ const createColumns = isForMultipleCountries => [
   },
 ];
 
-export const AlertsTable = React.memo(({ handlePanelOpen, countryCode }) => {
-  const { isLoading, isFetching, error, data, order, orderBy, handleChangeOrderBy } = useTableQuery(
-    'alerts',
+const AlertsTableComponent = React.memo(({ countryCodes, period }) => {
+  const { setIsOpen, setData } = useContext(AlertsPanelContext);
+  const isSingleCountry = countryCodes.length === 1;
+  const columns = createColumns(isSingleCountry);
+  const { data, isLoading, error, isFetching } = useAlerts(period, countryCodes, 'active');
+  const { sortedData, order, orderBy, sortColumn } = useTableSorting(data);
+
+  const handleRowClick = useCallback(
+    (_, rowData) => {
+      setData(rowData);
+      setIsOpen(true);
+    },
+    [setData, setIsOpen],
   );
 
   return (
-    <>
-      <Table
-        order={order}
-        orderBy={orderBy}
-        onChangeOrderBy={handleChangeOrderBy}
-        data={data ? data.data : 0}
-        count={data ? data.count : 0}
-        isLoading={isLoading}
-        errorMessage={error && error.message}
-        columns={createColumns(!countryCode)}
-        onRowClick={handlePanelOpen}
-      />
-      {isFetching && 'Fetching...'}
-    </>
+    <Table
+      data={sortedData}
+      orderBy={orderBy}
+      order={order}
+      onChangeOrderBy={sortColumn}
+      isLoading={isLoading}
+      isFetching={!isLoading && isFetching}
+      errorMessage={error && error.message}
+      noDataMessage="No active alerts found"
+      columns={columns}
+      onRowClick={handleRowClick}
+    />
   );
 });
 
-AlertsTable.propTypes = {
-  handlePanelOpen: PropTypes.func.isRequired,
-  countryCode: PropTypes.string,
+AlertsTableComponent.propTypes = {
+  countryCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  period: PropTypes.string.isRequired,
 };
 
-AlertsTable.defaultProps = {
-  countryCode: null,
-};
+const mapStateToProps = state => ({
+  countryCodes: getCountryCodes(state),
+});
+
+export const AlertsTable = connect(mapStateToProps)(AlertsTableComponent);

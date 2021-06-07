@@ -238,6 +238,7 @@ export default class extends DataAggregatingRouteHandler {
       dataElementCode,
       presentationOptions,
       measureBuilderConfig,
+      name,
       ...restOfMapOverlay
     } = await mapOverlay.getData();
 
@@ -247,6 +248,7 @@ export default class extends DataAggregatingRouteHandler {
       hideFromMenu,
       hideFromLegend,
       hideFromPopup,
+      customLabel,
       ...restOfPresentationOptions
     } = presentationOptions;
 
@@ -258,6 +260,7 @@ export default class extends DataAggregatingRouteHandler {
     const baseOptions = {
       ...restOfPresentationOptions,
       ...restOfMapOverlay,
+      name: customLabel ?? name,
       type: displayType,
       key: id,
       periodGranularity,

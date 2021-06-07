@@ -4,13 +4,14 @@
  */
 
 import { getWeekNumberByPeriod, getCurrentPeriod } from '../../utils';
-import { useData } from './useData';
+import { useReport } from './helpers';
 
 export const useConfirmedCountries = countryCodes => {
   const period = getCurrentPeriod();
   const currentWeekNumber = getWeekNumberByPeriod(period);
 
-  const query = useData('confirmedWeeklyReport', { params: { startWeek: period } });
+  const params = { startWeek: period, endWeek: period, orgUnitCodes: countryCodes.join(',') };
+  const query = useReport('confirmedWeeklyReport', { params });
   const sites = countryCodes.length;
   const sitesReported = query?.data.length;
 
