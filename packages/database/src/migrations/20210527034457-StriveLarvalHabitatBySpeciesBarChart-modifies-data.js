@@ -68,8 +68,8 @@ const DATA_BUILDER_CONFIG = {
 
 const getChartConfig = () => {
   const chartConfig = {};
-  SPECIES.forEach((specie, index) => {
-    chartConfig[specie] = { color: COLOURS[index], stackId: 1, legendOrder: index + 1 };
+  SPECIES.forEach((species, index) => {
+    chartConfig[species] = { color: COLOURS[index], stackId: 1, legendOrder: index + 1 };
   });
   return chartConfig;
 };
