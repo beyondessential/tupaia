@@ -96,13 +96,14 @@ class SumPerPeriodBuilder extends DataBuilder {
     // Will have to implement this properly with #tupaia-backlog/issues/2412
     // After that remove this file and anything related to it
     if (allDataElementsAreDhisIndicators) {
-      const { entityAggregation } = this.config;
+      const { entityAggregation, periodType } = this.config;
+      const parsedPeriodType = parsePeriodType(periodType) ?? null;
       const hierarchyId = await this.fetchEntityHierarchyId();
       const result = await fetchAggregatedAnalyticsByDhisIds(
         this.models,
         this.dhisApi,
         dataElementCodes,
-        this.query,
+        { ...this.query, periodType: parsedPeriodType },
         entityAggregation,
         hierarchyId
       );
