@@ -63,7 +63,7 @@ const BASE_DASHBOARD_REPORT = {
 };
 
 const DATA_BUILDER_CONFIG = {
-  reportCode: 'STRIVE_Habitat_By_Species_LHS',
+  reportCode: 'PG_STRIVE_Habitat_By_Species',
 };
 
 const getChartConfig = () => {

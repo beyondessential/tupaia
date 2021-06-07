@@ -23,7 +23,7 @@ const permissionGroupNameToId = async (db, name) => {
 
 const REPORT = {
   id: generateId(),
-  code: 'STRIVE_Habitat_By_Species_LHS',
+  code: 'PG_STRIVE_Habitat_By_Species',
   config: {
     fetch: {
       dataGroups: ['STRVEC_LHS'],
