@@ -4,3 +4,4 @@
  *
  */
 export * from './DataGrid';
+export * from './UserPermissionsCell';
