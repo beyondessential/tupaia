@@ -37,7 +37,7 @@ const getAdjustedDateRange = (dateRange, aggregationList) =>
 
 const shouldFetchDataSourceEntities = ({ config }) => config?.dataSourceEntityType;
 
-const shouldFetchRelations = ({ type, config }) =>
+const shouldFetchRelationships = ({ type, config }) =>
   config?.aggregationEntityType &&
   config?.dataSourceEntityType &&
   !(type === AGGREGATION_TYPES.RAW);
@@ -54,26 +54,22 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
     return [organisationUnitCodes, aggregationList];
   }
 
-  let adjustedOrganisationUnitCodes;
-  const adjustedAggregations = [];
   const entityConnection = new EntityConnection(session);
-  await Promise.all(
+  const adjustedAggregationsAndDataSourceEntites = await Promise.all(
     aggregationList.map(async aggregation => {
       if (!shouldFetchDataSourceEntities(aggregation)) {
-        adjustedAggregations.push(aggregation);
-        return;
+        return [aggregation, undefined];
       }
 
-      if (!adjustedOrganisationUnitCodes && !shouldFetchRelations(aggregation)) {
+      if (!shouldFetchRelationships(aggregation)) {
         const { dataSourceEntityType, dataSourceEntityFilter } = aggregation.config;
-        adjustedOrganisationUnitCodes = await entityConnection.getDataSourceEntities(
+        const dataSourceEntities = await entityConnection.getDataSourceEntities(
           hierarchy,
           organisationUnitCodes,
           dataSourceEntityType,
           dataSourceEntityFilter,
         );
-        adjustedAggregations.push(aggregation);
-        return;
+        return [aggregation, dataSourceEntities];
       }
 
       const {
@@ -83,8 +79,8 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
       } = aggregation.config;
       const [
         dataSourceEntities,
-        relations,
-      ] = await entityConnection.getDataSourceEntitiesAndRelations(
+        relationships,
+      ] = await entityConnection.getDataSourceEntitiesAndRelationships(
         hierarchy,
         organisationUnitCodes,
         aggregationEntityType,
@@ -92,17 +88,25 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
         dataSourceEntityFilter,
       );
 
-      if (!adjustedOrganisationUnitCodes) {
-        adjustedOrganisationUnitCodes = dataSourceEntities;
-      }
-      adjustedAggregations.push({
-        ...aggregation,
-        config: { ...aggregation.config, orgUnitMap: relations },
-      });
+      return [
+        {
+          ...aggregation,
+          config: { ...aggregation.config, orgUnitMap: relationships },
+        },
+        dataSourceEntities,
+      ];
     }),
   );
 
-  return [adjustedOrganisationUnitCodes, adjustedAggregations];
+  const adjustedAggregations = adjustedAggregationsAndDataSourceEntites.map(
+    aggregationAndDataSourceEntities => aggregationAndDataSourceEntities[0],
+  );
+  const dataSourceEntities =
+    adjustedAggregationsAndDataSourceEntites
+      .map(aggregationAndDataSourceEntities => aggregationAndDataSourceEntities[1])
+      .find(dataSourceEntities => dataSourceEntities !== undefined) || organisationUnitCodes;
+
+  return [dataSourceEntities, adjustedAggregations];
 };
 
 /**
