@@ -125,6 +125,6 @@ export class EntityConnection extends ApiConnection {
     options: RelationOptions,
   ): Promise<Record<string, string> | Record<string, string[]>> => {
     const params = getRelationParams(options);
-    return this.get(`hierarchy/${PSSS_HIERARCHY}/${entityCode}/relations`, params);
+    return this.get(`hierarchy/${PSSS_HIERARCHY}/${entityCode}/relationships`, params);
   };
 }
