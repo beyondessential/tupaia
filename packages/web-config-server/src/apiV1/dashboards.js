@@ -19,17 +19,24 @@ export default class extends RouteHandler {
     const dashboards = await this.models.dashboard.getDashboards(
       entity,
       hierarchyId,
-      query.projectCode,
     );
     const sortedDashboards = orderBy(dashboards, ['sort_order', 'name']);
     // Fetch dashboard items
-    const dashboardsWithItems = await Promise.all(
+    const dashboardsWithItems = (await Promise.all(
       Object.values(sortedDashboards).map(async dashboard => {
         const dashboardItems = await this.models.dashboardItem.fetchItemsInDashboard(
           dashboard.id,
+          [entity.type],
           permissionGroups,
+          [query.projectCode],
         );
+
+        if (dashboardItems.length === 0) {
+          return null;
+        }
+
         const sortedDashboardItems = orderBy(dashboardItems, ['sort_order', 'code']);
+        
         return {
           dashboardName: dashboard.name,
           dashboardId: dashboard.id,
@@ -45,7 +52,8 @@ export default class extends RouteHandler {
           })),
         };
       }),
-    );
+    )).filter(d => d !== null);
+  
     return dashboardsWithItems;
   };
 }

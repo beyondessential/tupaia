@@ -16,26 +16,12 @@ export class DashboardModel extends DatabaseModel {
     return DashboardType;
   }
 
-  async getDashboards(entity, hierarchyId, projectCode, params) {
+  async getDashboards(entity, hierarchyId, params) {
     const ancestorCodes = await entity.getAncestorCodes(hierarchyId);
     const entityCodes = [...ancestorCodes, entity.code];
     return this.find({
       root_entity_code: entityCodes,
-      ...this.buildDashboardQueryParams(entity, projectCode, params),
-    });
-  }
-
-  buildDashboardQueryParams(entity, projectCode, params) {
-    return {
       ...params,
-      project_codes: {
-        comparator: '@>',
-        comparisonValue: [projectCode],
-      },
-      entity_types: {
-        comparator: '@>',
-        comparisonValue: [entity.type],
-      },
-    };
+    });
   }
 }
