@@ -2,8 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { QueryParameters } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
+import { isLesmisAdmin } from '../utils';
 
 const { MEDITRAK_API_URL = 'http://localhost:8090/v2' } = process.env;
 
@@ -18,7 +20,11 @@ export class MeditrakConnection extends SessionHandlingApiConnection {
       return {};
     }
     const user = await this.get('me');
-    return camelcaseKeys(user);
+    return { ...camelcaseKeys(user), isLesmisAdmin: isLesmisAdmin(user.accessPolicy) };
+  }
+
+  async getUserEntityPermissions(queryParams: QueryParameters) {
+    return this.get('userEntityPermissions', queryParams);
   }
 
   registerUser(userData: RequestBody) {
