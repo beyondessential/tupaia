@@ -23,7 +23,7 @@ const permissionGroupNameToId = async (db, name) => {
 
 const REPORT = {
   id: generateId(),
-  code: 'STRIVE_Mosquito_Species_Distribution_AE_AT',
+  code: 'PG_Strive_Mosquito_Species_Distribution_AE_AT',
   config: {
     fetch: {
       aggregations: [

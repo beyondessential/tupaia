@@ -33,7 +33,7 @@ const BASE_DASHBOARD_REPORT = {
 };
 
 const DATA_BUILDER_CONFIG = {
-  reportCode: 'STRIVE_Mosquito_Species_Distribution_AE_AT',
+  reportCode: 'PG_Strive_Mosquito_Species_Distribution_AE_AT',
 };
 
 const VIEW_JSON = {
