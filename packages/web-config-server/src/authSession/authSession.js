@@ -1,6 +1,8 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
 
+import { UnauthenticatedError } from '@tupaia/utils';
+
 import { getUserFromAuthHeader } from './getUserFromAuthHeader';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
@@ -11,32 +13,36 @@ const allowedUnauthRoutes = ['/login', '/version'];
 const auth = () => async (req, res, next) => {
   const { authenticator } = req;
 
-  // if using basic or bearer auth, check credentials and set access policy for that user
-  const authHeaderUser = await getUserFromAuthHeader(req);
-  if (authHeaderUser) {
-    req.accessPolicy = await getAccessPolicyForUser(authenticator, authHeaderUser.id);
-    next();
-    return;
-  }
+  try {
+    // if using basic or bearer auth, check credentials and set access policy for that user
+    const authHeaderUser = await getUserFromAuthHeader(req);
+    if (authHeaderUser) {
+      req.accessPolicy = await getAccessPolicyForUser(authenticator, authHeaderUser.id);
+      next();
+      return;
+    }
 
-  // if logged in or logging in continue
-  const userId = req.session?.userJson?.userId;
-  if (!!userId || checkAllowedUnauthRoutes(req)) {
-    req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
-    next();
-    return;
-  }
+    // if logged in or logging in continue
+    const userId = req.session?.userJson?.userId;
+    if (!!userId || checkAllowedUnauthRoutes(req)) {
+      req.accessPolicy = req.accessPolicy || (await getAccessPolicyForUser(authenticator, userId));
+      next();
+      return;
+    }
 
-  // check if this is the first request after user logged out and send 440
-  if (req.lastuser?.userName && req.lastuser?.userName !== PUBLIC_USER_NAME) {
-    req.lastuser.reset();
-    res.sendStatus(440);
-    return;
-  }
+    // check if this is the first request after user logged out and send 440
+    if (req.lastuser?.userName && req.lastuser?.userName !== PUBLIC_USER_NAME) {
+      req.lastuser.reset();
+      res.sendStatus(440);
+      return;
+    }
 
-  // no previous login, authenticate as public user
-  setSession(req, { userName: PUBLIC_USER_NAME }); // store new session as public user
-  req.accessPolicy = await getAccessPolicyForUser(authenticator, PUBLIC_USER_NAME);
+    // no previous login, authenticate as public user
+    setSession(req, { userName: PUBLIC_USER_NAME }); // store new session as public user
+    req.accessPolicy = await getAccessPolicyForUser(authenticator, PUBLIC_USER_NAME);
+  } catch (error) {
+    next(new UnauthenticatedError(error.message));
+  }
   next();
 };
 

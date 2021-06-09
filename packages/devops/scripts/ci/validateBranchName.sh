@@ -5,7 +5,7 @@ DIR=$(dirname "$0")
 
 INVALID_CHARS=('/' '\' '.' '&' '?')
 RESERVED_NAMES=(e2e)
-SUBDOMAIN_SUFFIXES=(admin aggregation api config export lesmis lesmis-api mobile psss psss-api report-api tonga-aggregation www)
+SUBDOMAIN_SUFFIXES=(admin aggregation api config export lesmis lesmis-api mobile psss psss-api report report-api entity entity-api tonga-aggregation www)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
 # to create deployment urls, eg {{branchName}}-tonga-aggregation.tupaia.org
