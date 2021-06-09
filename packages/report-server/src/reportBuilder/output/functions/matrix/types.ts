@@ -1,3 +1,5 @@
+import { Row } from '../../../types';
+
 export type MatrixColumnParams = string[] | '*';
 
 export type MatrixParams = {
@@ -6,4 +8,12 @@ export type MatrixParams = {
     rowField: string;
     categoryField: string;
   };
+};
+
+export type Matrix = {
+  columns: {
+    key: string;
+    title: string;
+  }[];
+  rows: Row[];
 };

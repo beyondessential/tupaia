@@ -8,11 +8,3 @@ export type FieldValue = string | number | boolean | undefined | null;
 export interface Row {
   [field: string]: FieldValue;
 }
-
-export interface Matrix {
-  columns: {
-    key: string;
-    title: string;
-  }[];
-  rows: Row[];
-}

@@ -8,10 +8,11 @@ import { FetchReportQuery, ReportConfig } from '../types';
 import { buildFetch } from './fetch';
 import { buildTransform } from './transform';
 import { buildOutput } from './output';
-import { Row, Matrix } from './types';
+import { Row } from './types';
+import { OutputType } from './output/functions/outputBuilders';
 
 interface BuildReport {
-  results: Row[] | Matrix;
+  results: OutputType;
 }
 
 export class ReportBuilder {

@@ -3,14 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Matrix, Row } from '../../../types';
+import { Row } from '../../../types';
 import { MatrixBuilder } from './matrixBuilder';
-import { MatrixColumnParams, MatrixParams } from './types';
+import { Matrix, MatrixColumnParams, MatrixParams } from './types';
 
 const matrix = (rows: Row[], params: MatrixParams): Matrix => {
-  const matrixBuilder = new MatrixBuilder(rows, params);
-  matrixBuilder.buildBaseColumns().buildBaseRows();
-  return matrixBuilder.getMatrixData();
+  return new MatrixBuilder(rows, params).build();
 };
 
 const buildParams = (params: unknown): MatrixParams => {
@@ -22,15 +20,13 @@ const buildParams = (params: unknown): MatrixParams => {
     if (columns === '*' || columns === undefined) {
       return '*';
     }
-    if (!Array.isArray(columns)) {
+    if (!Array.isArray(columns) || columns.length === 0) {
       throw new Error(`Expected columns as string array or '*' but got ${columns}`);
     }
-    if (columns.length === 0) {
-      return '*';
-    }
+
     columns.forEach(column => {
       if (typeof column !== 'string') {
-        throw new Error(`Expected columns as string array or '*' but got ${columns}`);
+        throw new Error(`Expected each column to be a string but got ${columns}`);
       }
     });
     return columns;
@@ -42,12 +38,15 @@ const buildParams = (params: unknown): MatrixParams => {
   if (typeof rowField !== 'string') {
     throw new Error(`Expected rowField as string but got ${rowField}`);
   }
-
-  if (typeof categoryField !== 'string') {
+  if (categoryField !== undefined && typeof categoryField !== 'string') {
     throw new Error(`Expected categoryField as string but got ${categoryField}`);
   }
+  const nonColumnKeys = categoryField ? [categoryField, rowField] : [rowField];
+  if (Array.isArray(prefixColumns) && prefixColumns.includes(rowField)) {
+    throw new Error(`rowField: ${rowField} is already defined as a column`);
+  }
   return {
-    columns: { prefixColumns, nonColumnKeys: [categoryField, rowField] },
+    columns: { prefixColumns, nonColumnKeys },
     rows: { categoryField, rowField },
   };
 };

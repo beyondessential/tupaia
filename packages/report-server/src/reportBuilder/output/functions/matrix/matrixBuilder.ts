@@ -1,5 +1,13 @@
-import { Matrix, Row } from '../../../types';
-import { MatrixParams } from './types';
+import { Row } from '../../../types';
+import { MatrixParams, Matrix } from './types';
+
+function assertIsString(values: unknown[]): asserts values is string[] {
+  values.forEach(value => {
+    if (typeof value !== 'string') {
+      throw new Error(`Expect value to be string, but got ${value}`);
+    }
+  });
+}
 
 export class MatrixBuilder {
   rows: Row[];
@@ -14,24 +22,22 @@ export class MatrixBuilder {
     this.matrixData = { columns: [], rows: [] };
   }
 
-  assertIsString(values: unknown[]): asserts values is string[] {
-    values.forEach(value => {
-      if (typeof value !== 'string') {
-        throw new Error(`Expect value to be string, but got ${value}`);
-      }
-    });
+  build() {
+    this.buildColumns();
+    this.buildRows();
+    return this.matrixData;
   }
 
-  buildBaseColumns() {
+  buildColumns() {
     const assignColumnSetToMatrixData = (columns: unknown[]) => {
-      this.assertIsString(columns);
+      assertIsString(columns);
       this.matrixData.columns = columns.map(c => ({ key: c, title: c }));
     };
 
     const { prefixColumns, nonColumnKeys } = this.params.columns;
     if (Array.isArray(prefixColumns)) {
       assignColumnSetToMatrixData(prefixColumns);
-      return this;
+      return;
     }
     // When prefixColumns === '*', get columns from rows data
     const columns = new Set();
@@ -44,29 +50,30 @@ export class MatrixBuilder {
     });
     const columnsInArray = Array.from(columns);
     assignColumnSetToMatrixData(columnsInArray);
-    return this;
   }
 
-  buildBaseRows() {
+  buildRows() {
     const categories = new Set();
-    const baseRows: Row[] = [];
+    const rows: Row[] = [];
 
     const { rowField, categoryField } = this.params.rows;
 
     this.rows.forEach(row => {
       const { [categoryField]: categoryId, [rowField]: dataElement, ...restOfRow } = row;
-      categories.add(categoryId);
-      baseRows.push({ categoryId, dataElement, ...restOfRow });
+      const newRows: Row = { dataElement, ...restOfRow };
+      if (categoryId) {
+        newRows.categoryId = categoryId;
+        categories.add(categoryId);
+      }
+      rows.push(newRows);
     });
-    const categoriesInArray = Array.from(categories);
-    this.assertIsString(categoriesInArray);
-    const formattedCategories: Row[] = categoriesInArray.map(category => ({ category }));
-    baseRows.push(...formattedCategories);
-    this.matrixData.rows = baseRows;
-    return this;
-  }
 
-  getMatrixData() {
-    return this.matrixData;
+    if (categories.size > 0) {
+      const categoriesInArray = Array.from(categories);
+      assertIsString(categoriesInArray);
+      const formattedCategories: Row[] = categoriesInArray.map(category => ({ category }));
+      rows.push(...formattedCategories);
+    }
+    this.matrixData.rows = rows;
   }
 }

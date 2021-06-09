@@ -19,20 +19,9 @@ const output = (rows: Row[], params: OutputParams) => {
 };
 
 const buildParams = (params: unknown): OutputParams => {
-  const defaultType = { type: 'default', config: undefined };
-
-  if (typeof params === 'undefined') {
-    return defaultType;
-  }
-  if (typeof params === 'object') {
-    if ('matrix' in params) {
-      const { matrix } = params;
-      if (typeof matrix !== 'object') {
-        throw new Error(`Expected matrix config to be an object but got ${matrix}`);
-      }
-      return { type: 'matrix', config: matrix };
-    }
-    return defaultType;
+  if (typeof params === 'object' && params !== null) {
+    const { type = 'default', ...restParams } = params;
+    return { type, config: restParams };
   }
   throw new Error(`Expected output config as object but got ${params}`);
 };

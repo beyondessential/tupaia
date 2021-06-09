@@ -6,6 +6,8 @@
 import { buildDefault } from './default';
 import { buildMatrix } from './matrix';
 
+export type OutputType = ReturnType<ReturnType<typeof outputBuilders[keyof typeof outputBuilders]>>;
+
 export const outputBuilders = {
   matrix: buildMatrix,
   default: buildDefault,
