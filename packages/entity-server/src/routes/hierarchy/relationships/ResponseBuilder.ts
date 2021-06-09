@@ -7,23 +7,23 @@ import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
 import { EntityServerModelRegistry } from '../../../types';
 import { EntityType } from '../../../models';
 import { formatEntitiesForResponse } from '../format';
-import { RelationsContext } from './types';
+import { RelationshipsContext } from './types';
 
 type Pair = {
   descendant: string;
   ancestor: string;
 };
 
-export class RelationsResponseBuilder {
+export class ResponseBuilder {
   private readonly models: EntityServerModelRegistry;
 
-  private readonly ctx: RelationsContext & { ancestor: { type: string } };
+  private readonly ctx: RelationshipsContext & { ancestor: { type: string } };
 
   private readonly groupBy: 'ancestor' | 'descendant';
 
   constructor(
     models: EntityServerModelRegistry,
-    ctx: RelationsContext,
+    ctx: RelationshipsContext,
     groupBy: 'ancestor' | 'descendant' = 'ancestor',
   ) {
     this.models = models;
@@ -41,14 +41,24 @@ export class RelationsResponseBuilder {
   }
 
   private async buildAncestorCodesAndPairs(descendants: EntityType[]): Promise<[string[], Pair[]]> {
-    const { hierarchyId } = this.ctx;
+    const { hierarchyId, entity } = this.ctx;
     const { type: ancestorType } = this.ctx.ancestor;
+    const descendantCodes = descendants.map(descendant => descendant.code);
     const descendantAncestorMapping = await this.models.entity.fetchAncestorDetailsByDescendantCode(
-      descendants.map(descendant => descendant.code),
+      descendantCodes,
       hierarchyId,
       ancestorType,
     );
-    const ancestorCodes = Object.values(descendantAncestorMapping).map(ancestor => ancestor.code);
+
+    // Add self to descendant<->ancestor mapping if matching requirements
+    if (descendantCodes.includes(entity.code) && entity.type === ancestorType) {
+      descendantAncestorMapping[entity.code] = { code: entity.code, name: entity.name };
+    }
+
+    const ancestorCodes = [
+      ...new Set(Object.values(descendantAncestorMapping).map(ancestor => ancestor.code)),
+    ];
+
     const ancestorDescendantPairs = Object.entries(descendantAncestorMapping).map(
       ([descendant, { code: ancestor }]) => ({
         descendant,
@@ -59,7 +69,7 @@ export class RelationsResponseBuilder {
     return [ancestorCodes, ancestorDescendantPairs];
   }
 
-  private async getAncestors(ancestorsWithDescendantsCodes: string[]) {
+  private async getAncestorTypeRelatives(ancestorsWithDescendantsCodes: string[]) {
     const { entity, hierarchyId } = this.ctx;
     const { type: ancestorType, filter } = this.ctx.ancestor;
     const { code: filterCode } = filter;
@@ -72,12 +82,11 @@ export class RelationsResponseBuilder {
         : ancestorsWithDescendantsCodes.filter(code => filterCode === code);
     }
 
-    return entity.type === ancestorType
-      ? [entity]
-      : entity.getDescendants(hierarchyId, {
-          ...filter,
-          code: codesToUse,
-        });
+    return entity.getRelatives(hierarchyId, {
+      ...filter,
+      type: ancestorType,
+      code: codesToUse,
+    });
   }
 
   private async getFormattedEntitiesByCode(ancestors: EntityType[], descendants: EntityType[]) {
@@ -111,10 +120,11 @@ export class RelationsResponseBuilder {
   private shouldPerformFastResponse() {
     const { field: ancestorField, filter: ancestorFilter } = this.ctx.ancestor;
     const { field: descendantField } = this.ctx.descendant;
+    const { country_code, ...restOfAncestorFilter } = ancestorFilter;
     return (
       ancestorField === 'code' &&
       descendantField === 'code' &&
-      Object.keys(ancestorFilter).length === 0
+      Object.keys(restOfAncestorFilter).length === 0
     );
   }
 
@@ -125,13 +135,12 @@ export class RelationsResponseBuilder {
   }
 
   async build() {
-    const { entity, hierarchyId, allowedCountries } = this.ctx;
+    const { entity, hierarchyId } = this.ctx;
     const { type: descendantType, filter } = this.ctx.descendant;
 
-    const descendants = await entity.getDescendants(hierarchyId, {
+    const descendants = await entity.getRelatives(hierarchyId, {
       ...filter,
       type: descendantType,
-      country_code: allowedCountries,
     });
 
     const [ancestorCodes, pairs] = await this.buildAncestorCodesAndPairs(descendants);
@@ -140,7 +149,7 @@ export class RelationsResponseBuilder {
       return this.buildMap(pairs);
     }
 
-    const ancestors = await this.getAncestors(ancestorCodes);
+    const ancestors = await this.getAncestorTypeRelatives(ancestorCodes);
     const formattedEntitiesByCode = await this.getFormattedEntitiesByCode(ancestors, descendants);
     const formattedPairs = pairs
       .filter(pair => formattedEntitiesByCode[pair.ancestor])
