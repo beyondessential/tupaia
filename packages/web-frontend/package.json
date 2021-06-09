@@ -40,6 +40,7 @@
     "@mapbox/polyline": "^0.2.0",
     "@material-ui/core": "^4.5.1",
     "@material-ui/icons": "^3.0.1",
+    "@tupaia/ui-components": "1.0",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.7.1",
     "dom-to-image": "2.6.0",

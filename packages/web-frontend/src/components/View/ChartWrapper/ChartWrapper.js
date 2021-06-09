@@ -5,20 +5,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-
-import { VIEW_STYLES } from '../../../styles';
+import Typography from '@material-ui/core/Typography';
+import { Chart } from '@tupaia/ui-components/lib/chart';
+import { VIEW_STYLES, darkWhite } from '../../../styles';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
-import { CartesianChart } from './CartesianChart';
 import { CHART_TYPES } from './chartTypes';
-import { PieChart } from './PieChart';
 import { parseChartConfig } from './parseChartConfig';
 import { getIsTimeSeries, isDataKey } from './helpers';
 
-const UnknownChart = () => (
-  <div style={VIEW_STYLES.newChartComing}>
-    <h2 style={VIEW_STYLES.title}>New chart coming soon</h2>
-  </div>
-);
+const ViewTitle = styled(Typography)`
+  position: relative;
+  color: ${darkWhite};
+  margin-top: 5;
+  margin-bottom: 15;
+  line-height: 130%;
+  text-align: center;
+`;
 
 const Container = styled.div`
   // recharts components doesn't pass nested styles so they need to be added on a wrapping component
@@ -54,16 +56,12 @@ const sortData = data =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
 export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick }) => {
-  const viewContentConfig = getViewContent();
+  const viewContentConfig = getViewContent({ viewContent });
   const { chartType } = viewContent;
 
   if (!Object.values(CHART_TYPES).includes(chartType)) {
-    return <UnknownChart />;
+    return <ViewTitle variant="h2">New chart coming soon</ViewTitle>;
   }
-
-  const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
-
-  console.log('viewContent!!!', viewContent);
 
   return (
     <div style={VIEW_STYLES.chartViewContainer}>
