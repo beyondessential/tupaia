@@ -49,12 +49,16 @@ export class ReportRoute extends Route {
           ...this.req.query,
         });
       default:
-        return this.reportConnection.fetchReport(reportCode, {
-          // Report server can accept arrays so the parameters are plural
-          organisationUnitCodes: entityCode,
-          projectCodes: LESMIS_PROJECT_NAME,
-          ...this.req.query,
-        }, this.req.body);
+        return this.reportConnection.fetchReport(
+          reportCode,
+          {
+            // Report server can accept arrays so the parameters are plural
+            organisationUnitCodes: entityCode,
+            projectCodes: LESMIS_PROJECT_NAME,
+            ...this.req.query,
+          },
+          this.req.body,
+        );
     }
   }
 }
