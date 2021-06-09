@@ -8,7 +8,7 @@ import { GETHandler } from '../GETHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import {
   assertAccessRequestPermissions,
@@ -29,7 +29,7 @@ export class GETAccessRequests extends GETHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
+        [assertBESAdminAccess, assertAdminPanelAccess],
         'You need either BES Admin or Tupaia Admin Panel access to view access requests',
       ),
     );
