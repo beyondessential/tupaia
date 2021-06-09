@@ -30,6 +30,7 @@ const mapOverlay = {
   presentationOptions: {
     values: [
       {
+        name: 'No data',
         color: 'grey',
         value: null,
       },
