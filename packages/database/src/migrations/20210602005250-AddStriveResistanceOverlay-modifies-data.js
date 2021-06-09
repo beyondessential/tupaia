@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const mapOverlay = {
-  id: 'PNG_STRIVE_Resistence',
+  id: 'PNG_STRIVE_Resistance',
   name: 'Resistance',
   userGroup: 'STRIVE User',
   dataElementCode: 'STRVEC_AE-IR11',
