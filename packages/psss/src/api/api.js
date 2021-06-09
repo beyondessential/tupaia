@@ -47,4 +47,4 @@ export const post = (endpoint, options) => request(endpoint, { method: 'post', .
 
 export const put = (endpoint, options) => request(endpoint, { method: 'put', ...options });
 
-export const remove = endpoint => request(endpoint, { method: 'delete' });
+export const remove = (endpoint, options) => request(endpoint, { method: 'delete', ...options });

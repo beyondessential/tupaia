@@ -224,7 +224,7 @@ class RawDataValuesBuilder extends DataBuilder {
                   dataElementCodeToOptions[dataKey] !== undefined &&
                   dataElementCodeToOptions[dataKey][dataValue] !== undefined
                     ? dataElementCodeToOptions[dataKey][dataValue]
-                    : value;
+                    : dataValue;
                 break;
               }
             }

@@ -65,6 +65,7 @@ export async function clearTestData(db, testStartTime = moment().format('YYYY-MM
 
   const extraConditions = {
     api_request_log: [`request_time >= '${testStartTime}'`],
+    api_client: [`id ${COMPARISON}`, `user_account_id ${COMPARISON}`],
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
     survey_screen_component: [`question_id ${COMPARISON}`],
