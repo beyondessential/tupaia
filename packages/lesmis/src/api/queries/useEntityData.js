@@ -4,16 +4,8 @@
  *
  */
 import { useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import { get } from '../api';
-
-const useValidatedQuery = query => {
-  const history = useHistory();
-  if (query.isError && query.error.code === 403) {
-    history.push('/not-found');
-  }
-  return query;
-};
+import { useValidatedQuery } from './useValidatedQuery';
 
 export const useEntityData = entityCode => {
   return useValidatedQuery(

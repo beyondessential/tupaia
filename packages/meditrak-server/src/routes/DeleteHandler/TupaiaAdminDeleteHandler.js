@@ -4,10 +4,10 @@
  */
 
 import { DeleteHandler } from './DeleteHandler';
-import { assertTupaiaAdminPanelAccess } from '../../permissions';
+import { assertAdminPanelAccess } from '../../permissions';
 
 export class TupaiaAdminDeleteHandler extends DeleteHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertTupaiaAdminPanelAccess);
+    await this.assertPermissions(assertAdminPanelAccess);
   }
 }

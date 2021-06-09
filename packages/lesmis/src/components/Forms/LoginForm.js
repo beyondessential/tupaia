@@ -35,7 +35,7 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(({ email, password }) => login({ email, password }))} noValidate>
-      <Heading component="h4">Enter your email and password</Heading>
+      <Heading variant="h4">Enter your email and password</Heading>
       {isError && <ErrorMessage>{error.message}</ErrorMessage>}
       <TextField
         name="email"

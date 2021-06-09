@@ -4,10 +4,10 @@
  */
 
 import { GETHandler } from './GETHandler';
-import { assertTupaiaAdminPanelAccess } from '../permissions';
+import { assertAdminPanelAccess } from '../permissions';
 
 export class GETPermissionGroups extends GETHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertTupaiaAdminPanelAccess);
+    await this.assertPermissions(assertAdminPanelAccess);
   }
 }

@@ -17,7 +17,7 @@ import { convertCellToJson } from '../importSurveys/utilities';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import { assertOptionSetEditPermissions } from './assertOptionSetPermissions';
 
@@ -53,7 +53,7 @@ export async function importOptionSets(req, res) {
           );
         } else {
           await req.assertPermissions(
-            assertAnyPermissions([assertBESAdminAccess, assertTupaiaAdminPanelAccess]),
+            assertAnyPermissions([assertBESAdminAccess, assertAdminPanelAccess]),
           );
           optionSet = await transactingModels.optionSet.create({ name: optionSetName });
         }
