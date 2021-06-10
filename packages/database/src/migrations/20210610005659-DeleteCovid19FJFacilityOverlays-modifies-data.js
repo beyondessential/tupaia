@@ -14,16 +14,15 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const deleteOverlay = async (db, id) => {
+const deleteOverlayRelation = async (db, id) => {
   return db.runSql(`
-    delete from "mapOverlay" where "id" = '${id}';
     delete from "map_overlay_group_relation" where "child_id" = '${id}';
   `);
 };
 
 exports.up = async function (db) {
-  await deleteOverlay(db, 'FJ_COVID_TRACKING_Dose_1_Facility');
-  await deleteOverlay(db, 'FJ_COVID_TRACKING_Dose_2_Facility');
+  await deleteOverlayRelation(db, 'FJ_COVID_TRACKING_Dose_1_Facility');
+  await deleteOverlayRelation(db, 'FJ_COVID_TRACKING_Dose_2_Facility');
 };
 
 exports.down = function (db) {
