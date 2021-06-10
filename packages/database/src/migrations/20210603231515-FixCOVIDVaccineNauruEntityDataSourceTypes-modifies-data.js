@@ -41,14 +41,14 @@ const updateBuilderConfigByReportId = async (db, newConfig, reportId) => {
 exports.up = async function (db) {
   for (const dashboardId of DISTRICT_DASHBOARD_IDS) {
     const dashboardReport = await getDashboardReportById(db, dashboardId);
-    dashboardReport.dataBuilderConfig.entityAggregation.dataSourceEntityType = 'facility';
+    dashboardReport.dataBuilderConfig.entityAggregation.dataSourceEntityType = 'sub_district';
     dashboardReport.dataBuilderConfig.entityAggregation.aggregationType = 'district';
     await updateBuilderConfigByReportId(db, dashboardReport.dataBuilderConfig, dashboardId);
   }
 
   for (const dashboardId of COUNTRY_DASHBOARD_IDS) {
     const dashboardReport = await getDashboardReportById(db, dashboardId);
-    dashboardReport.dataBuilderConfig.entityAggregation.dataSourceEntityType = 'facility';
+    dashboardReport.dataBuilderConfig.entityAggregation.dataSourceEntityType = 'sub_district';
     dashboardReport.dataBuilderConfig.entityAggregation.aggregationType = 'country';
     await updateBuilderConfigByReportId(db, dashboardReport.dataBuilderConfig, dashboardId);
   }
