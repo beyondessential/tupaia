@@ -11,7 +11,7 @@ export const useDashboardReportData = ({ entityCode, reportId, startDate, endDat
     startDate,
     endDate,
     legacy,
-    type: 'dashboard', // TODO: Replace this
+    type: 'dashboard',
   };
 
   return useQuery(
