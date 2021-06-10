@@ -5,8 +5,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
+import MuiButton from '@material-ui/core/Button';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
-import { LoginDialog } from './LoginDialog';
 import { useUser, useLogout } from '../api';
 
 const StyledProfileButton = styled(BaseProfileButton)`
@@ -19,14 +20,28 @@ const StyledProfileButton = styled(BaseProfileButton)`
 
 const ProfileLinks = () => {
   const { mutate: handleLogout } = useLogout();
+  const { isLesmisAdmin } = useUser();
   return (
-    <ProfileButtonItem button onClick={handleLogout}>
-      Logout
-    </ProfileButtonItem>
+    <>
+      {isLesmisAdmin && (
+        <ProfileButtonItem to="/users-and-permissions">Users and Permissions</ProfileButtonItem>
+      )}
+      <ProfileButtonItem button onClick={handleLogout}>
+        Logout
+      </ProfileButtonItem>
+    </>
   );
 };
 
+const LoginLink = styled(MuiButton)`
+  color: white;
+  border-color: white;
+  padding: 0.5rem 2rem;
+  border-radius: 2.5rem;
+`;
+
 export const ProfileButton = () => {
+  const history = useHistory();
   const { data: user, isLoggedIn } = useUser();
   return user && isLoggedIn ? (
     <StyledProfileButton
@@ -34,6 +49,15 @@ export const ProfileButton = () => {
       MenuOptions={ProfileLinks}
     />
   ) : (
-    <LoginDialog buttonText="Log in" />
+    <LoginLink
+      variant="outlined"
+      component={RouterLink}
+      to={{
+        pathname: '/login',
+        state: { referer: history.location },
+      }}
+    >
+      Log in
+    </LoginLink>
   );
 };
