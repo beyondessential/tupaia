@@ -8,7 +8,7 @@ import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import { assertUserAccountPermissions } from './assertUserAccountPermissions';
 import { uploadImage } from '../../s3';
@@ -22,7 +22,7 @@ export class EditUserAccounts extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
+        [assertBESAdminAccess, assertAdminPanelAccess],
         'You need either BES Admin or Tupaia Admin Panel access to edit user accounts',
       ),
     );

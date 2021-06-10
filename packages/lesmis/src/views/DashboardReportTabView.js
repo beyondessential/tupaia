@@ -6,9 +6,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import { SmallAlert } from '@tupaia/ui-components';
-import { useDashboardData } from '../api/queries';
+import { useDashboardData, useUser } from '../api/queries';
 import {
   FetchLoader,
   TabsLoader,
@@ -22,9 +23,7 @@ import {
   YearSelector,
 } from '../components';
 import { DEFAULT_DATA_YEAR, NAVBAR_HEIGHT_INT } from '../constants';
-
-export const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
-export const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
+import { useUrlSearchParam } from '../utils';
 
 const StickyTabBarContainer = styled.div`
   position: sticky;
@@ -48,39 +47,50 @@ const ScrollToTopButton = styled(ArrowUpward)`
   border-radius: 3px;
 `;
 
-const setDefaultDashboard = (data, setSelectedDashboard) => {
-  const dashboardNames = data.map(d => d.dashboardName);
+const DEFAULT_DASHBOARD_GROUP = 'Student Enrolment';
+const SCHOOL_DEFAULT_DASHBOARD_GROUP = 'Students';
+
+// Gets the best default dashboard possible, and check if the selected dashboard is valid
+const useDefaultDashboardTab = (selectedDashboard = null, options) => {
+  const history = useHistory();
+  const { isLoggedIn, isFetching: isFetchingUser } = useUser();
+
+  if (!options || options.length === 0) {
+    return null;
+  }
+
+  const dashboardNames = options.map(d => d.dashboardName);
+
+  if (selectedDashboard) {
+    if (dashboardNames.includes(selectedDashboard)) {
+      return selectedDashboard;
+    }
+    if (!isFetchingUser && !isLoggedIn) {
+      return history.push('/login', { referer: history.location });
+    }
+  }
 
   if (dashboardNames.includes(DEFAULT_DASHBOARD_GROUP)) {
-    setSelectedDashboard(DEFAULT_DASHBOARD_GROUP);
-  } else if (dashboardNames.includes(SCHOOL_DEFAULT_DASHBOARD_GROUP)) {
-    setSelectedDashboard(SCHOOL_DEFAULT_DASHBOARD_GROUP);
-  } else {
-    setSelectedDashboard(dashboardNames[0]);
+    return DEFAULT_DASHBOARD_GROUP;
   }
+  if (dashboardNames.includes(SCHOOL_DEFAULT_DASHBOARD_GROUP)) {
+    return SCHOOL_DEFAULT_DASHBOARD_GROUP;
+  }
+  return dashboardNames[0];
 };
 
-const useStickyBarsHeight = () => {
+// Utility for sticking the tab bar to the top of the page and scrolling up to the tab bar
+const useStickyBar = () => {
+  const topRef = useRef();
+  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
   const [stickyBarsHeight, setStickyBarsHeight] = useState(0);
 
-  const measureTabBarHeight = useCallback(tabBarNode => {
+  const onLoadTabBar = useCallback(tabBarNode => {
     if (tabBarNode !== null) {
       const tabBarHeight = tabBarNode.getBoundingClientRect().height;
       setStickyBarsHeight(tabBarHeight + NAVBAR_HEIGHT_INT);
     }
   }, []);
-
-  return [stickyBarsHeight, measureTabBarHeight];
-};
-
-export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
-  const [selectedYear, setSelectedYear] = useState(DEFAULT_DATA_YEAR);
-  const [selectedDashboard, setSelectedDashboard] = useState(DEFAULT_DASHBOARD_GROUP);
-  const [stickyBarsHeight, measureTabBarHeight] = useStickyBarsHeight();
-  const [isScrolledPastTop, setIsScrolledPastTop] = useState(false);
-  const { data, isLoading, isError, error } = useDashboardData(entityCode);
-
-  const topRef = useRef();
 
   useEffect(() => {
     const detectScrolledPastTop = () =>
@@ -102,15 +112,20 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
     }
   }, [isScrolledPastTop, stickyBarsHeight]);
 
-  useEffect(() => {
-    // unset the selected dashboard when the data changes
-    // in case the selected one doesn't exist in the new data
-    setSelectedDashboard(false);
+  return {
+    scrollToTop,
+    topRef,
+    isScrolledPastTop,
+    onLoadTabBar,
+  };
+};
 
-    if (data) {
-      setDefaultDashboard(data, setSelectedDashboard);
-    }
-  }, [data, setSelectedDashboard]);
+export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
+  const [selectedYear, setSelectedYear] = useUrlSearchParam('year', DEFAULT_DATA_YEAR);
+  const [selectedDashboard, setSelectedDashboard] = useUrlSearchParam('subDashboard');
+  const { data, isLoading, isError, error } = useDashboardData(entityCode);
+  const { scrollToTop, topRef, isScrolledPastTop, onLoadTabBar } = useStickyBar();
+  const activeDashboard = useDefaultDashboardTab(selectedDashboard, data);
 
   const handleChangeDashboard = (event, newValue) => {
     setSelectedDashboard(newValue);
@@ -119,7 +134,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
 
   return (
     <>
-      <StickyTabBarContainer ref={measureTabBarHeight}>
+      <StickyTabBarContainer ref={onLoadTabBar}>
         <TabBar>
           <TabBarSection>
             {TabSelector}
@@ -130,7 +145,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
           ) : (
             <>
               <Tabs
-                value={selectedDashboard}
+                value={activeDashboard}
                 onChange={handleChangeDashboard}
                 variant="scrollable"
                 scrollButtons="auto"
@@ -149,7 +164,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
             data.map(dashboard => (
               <TabPanel
                 key={dashboard.dashboardName}
-                isSelected={dashboard.dashboardName === selectedDashboard}
+                isSelected={dashboard.dashboardName === activeDashboard}
               >
                 {(() => {
                   // Todo: support other report types (including "component" types)
@@ -162,7 +177,7 @@ export const DashboardReportTabView = ({ entityCode, TabSelector }) => {
                         entityCode={entityCode}
                         dashboardGroupName={dashboard.dashboardName}
                         dashboardGroupId={dashboard.dashboardId.toString()}
-                        reportId={item.reportCode}
+                        reportId={item.legacy ? item.code : item.reportCode}
                         year={selectedYear}
                         periodGranularity={item.periodGranularity}
                         viewConfig={item}

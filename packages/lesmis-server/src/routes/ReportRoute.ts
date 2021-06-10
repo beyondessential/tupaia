@@ -27,6 +27,7 @@ export class ReportRoute extends Route {
       case 'dashboard': {
         if (legacy === 'true') {
           const legacyReport = await this.webConfigConnection.fetchDashboardReport({
+            // NOTE: Legacy items pass the dashboard_item.code not the legacy_report.code
             itemCode: reportCode,
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
@@ -49,12 +50,16 @@ export class ReportRoute extends Route {
           ...this.req.query,
         });
       default:
-        return this.reportConnection.fetchReport(reportCode, {
-          // Report server can accept arrays so the parameters are plural
-          organisationUnitCodes: entityCode,
-          projectCodes: LESMIS_PROJECT_NAME,
-          ...this.req.query,
-        }, this.req.body);
+        return this.reportConnection.fetchReport(
+          reportCode,
+          {
+            // Report server can accept arrays so the parameters are plural
+            organisationUnitCodes: entityCode,
+            projectCodes: LESMIS_PROJECT_NAME,
+            ...this.req.query,
+          },
+          this.req.body,
+        );
     }
   }
 }

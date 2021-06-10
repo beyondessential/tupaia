@@ -30,11 +30,11 @@ export const FetchLoader = ({ isLoading, isError, error, children, Loader }) => 
 
   if (isError) {
     return (
-      <FlexCenter>
+      <Container>
         <SmallAlert severity="error" variant="standard">
           {error.message}
         </SmallAlert>
-      </FlexCenter>
+      </Container>
     );
   }
 

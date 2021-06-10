@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useTheme } from '@material-ui/core/styles';
@@ -81,8 +81,9 @@ export const DashboardReportModal = ({
   periodGranularity,
   viewConfig,
 }) => {
-  const [open, setOpen] = useState(false);
-  const [params, setParams] = useUrlSearchParams();
+  const [{ startDate, endDate, reportId: selectedReportId }, setParams] = useUrlSearchParams();
+  const isOpen = reportId === selectedReportId;
+  const [open, setOpen] = useState(isOpen);
   const [selectedTab, setSelectedTab] = useState(TABS.CHART);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -93,21 +94,14 @@ export const DashboardReportModal = ({
     reportId,
     periodGranularity,
     legacy: viewConfig.legacy,
-    startDate: params.get('startDate'),
-    endDate: params.get('endDate'),
+    startDate,
+    endDate,
   });
 
-  useEffect(() => {
+  const handleDatesChange = (newStartDate, newEndDate) => {
     setParams({
-      startDate: null,
-      endDate: null,
-    });
-  }, [open]);
-
-  const handleDatesChange = (startDate, endDate) => {
-    setParams({
-      startDate,
-      endDate,
+      startDate: newStartDate,
+      endDate: newEndDate,
     });
   };
 
@@ -115,8 +109,21 @@ export const DashboardReportModal = ({
     setOpen(true);
   };
 
+  // set reportId param after the modal render is rendered to improve the responsiveness
+  // of the modal transition
+  const onRendered = () => {
+    setParams({
+      reportId,
+    });
+  };
+
   const handleClose = () => {
     setOpen(false);
+    setParams({
+      startDate: null,
+      endDate: null,
+      reportId: null,
+    });
   };
 
   const handleTabChange = (event, newValue) => {
@@ -131,6 +138,7 @@ export const DashboardReportModal = ({
         {buttonText}
       </MuiButton>
       <MuiDialog
+        onRendered={onRendered}
         scroll="paper"
         fullScreen
         open={open}
@@ -149,8 +157,8 @@ export const DashboardReportModal = ({
               <FlexStart>
                 <DateRangePicker
                   isLoading={isLoading}
-                  startDate={viewContent?.startDate}
-                  endDate={viewContent?.endDate}
+                  startDate={startDate}
+                  endDate={endDate}
                   granularity={viewContent?.granularity}
                   onSetDates={handleDatesChange}
                 />

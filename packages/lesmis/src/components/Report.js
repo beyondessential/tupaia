@@ -80,7 +80,7 @@ export const Report = React.memo(
   }) => {
     const [selectedTab, setSelectedTab] = useState(TABS.CHART);
     const { startDate, endDate } = yearToApiDates(year);
-    const { data: viewContent, isLoading, isError, error } = useDashboardReportData({
+    const { data, isLoading, isError, error } = useDashboardReportData({
       entityCode,
       reportId,
       legacy: viewConfig.legacy,
@@ -110,7 +110,7 @@ export const Report = React.memo(
         </Header>
         <Body>
           <ChartTable
-            viewContent={{ ...viewConfig, data: viewContent }}
+            viewContent={{ ...viewConfig, data }}
             isLoading={isLoading}
             isError={isError}
             error={error}
@@ -126,7 +126,6 @@ export const Report = React.memo(
             dashboardGroupId={dashboardGroupId}
             reportId={reportId}
             periodGranularity={periodGranularity}
-            year={year}
             viewConfig={viewConfig}
           />
         </Footer>
