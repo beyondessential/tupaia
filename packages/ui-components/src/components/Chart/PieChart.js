@@ -126,7 +126,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
       .sort((a, b) => b.value - a.value);
   };
 
-  const palette = isExporting || isEnlarged ? CHART_COLOR_PALETTE : CHART_BLUES;
+  const palette = CHART_COLOR_PALETTE;
   const chartColors = Object.values(palette);
   const validData = getValidData();
 

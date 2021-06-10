@@ -10,12 +10,17 @@ import MuiButton from '@material-ui/core/Button';
 const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding-bottom: ${props => (props.isEnlarged ? '2rem' : '0.5rem')};
+  padding-bottom: 1rem;
 `;
 
 const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />)`
-  font-size: ${({ isEnlarged }) => (isEnlarged ? '0.75rem' : '0.5rem')};
-  padding-bottom: ${({ isEnlarged }) => (isEnlarged ? '0.3rem' : '0')};
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  font-size: 0.75rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
   margin-right: 1.2rem;
 
   .MuiButton-label {
@@ -29,14 +34,42 @@ const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />
     color: ${({ theme }) =>
       theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
   }
+
+  // non enlarged styles
+  &.non-enlarged {
+    font-size: 0.5rem;
+    padding-bottom: 0.1rem;
+    padding-top: 0.1rem;
+    margin-right: 0;
+    width: 50%;
+
+    .MuiButton-label {
+      display: flex;
+      align-items: center;
+      color: ${({ theme }) =>
+        theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
+    }
+
+    &.Mui-disabled {
+      color: ${({ theme }) =>
+        theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
+    }
+  }
 `;
 
 const Box = styled.span`
   display: block;
-  width: ${({ isEnlarged }) => (isEnlarged ? '1.25rem' : '0.8rem')};
-  height: ${({ isEnlarged }) => (isEnlarged ? '1.25rem' : '0.8rem')};
-  margin-right: ${({ isEnlarged }) => (isEnlarged ? '0.625rem' : '0.3rem')};
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.625rem;
   border-radius: 3px;
+
+  // non enlarged styles
+  &.non-enlarged {
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-right: 0.4rem;
+  }
 `;
 
 const Text = styled.span`
@@ -46,10 +79,10 @@ const Text = styled.span`
 const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || value;
 
 export const getPieLegend = ({ chartConfig = {}, isEnlarged }) => ({ payload }) => (
-  <LegendContainer style={{ padding: 0, marginBottom: -10 }}>
+  <LegendContainer className={isEnlarged ? 'enlarged' : 'non-enlarged'}>
     {payload.map(({ color, value }) => (
-      <LegendItem key={value} isEnlarged={isEnlarged} disabled>
-        <Box style={{ background: color }} />
+      <LegendItem key={value} className={isEnlarged ? 'enlarged' : 'non-enlarged'} disabled>
+        <Box className={isEnlarged ? 'enlarged' : 'non-enlarged'} style={{ background: color }} />
         <Text>{getDisplayValue(chartConfig, value)}</Text>
       </LegendItem>
     ))}

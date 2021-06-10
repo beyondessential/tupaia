@@ -213,7 +213,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
             });
           })}
         {ReferenceLines({ viewContent, isExporting, isEnlarged })}
-        {chartType === BAR && data.length > 20 && !isExporting && (
+        {chartType === BAR && data.length > 20 && !isExporting && isEnlarged && (
           <Brush dataKey="name" height={20} stroke={CHART_BLUES[0]} fill={CHART_BLUES[1]} />
         )}
       </Chart.Container>
