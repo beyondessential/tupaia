@@ -7,6 +7,7 @@ import { buildOutput } from '../../../reportBuilder/output';
 import {
   MULTIPLE_TRANSFORMED_DATA,
   MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES,
+  MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS,
 } from './output.fixtures';
 
 describe('output', () => {
@@ -79,12 +80,26 @@ describe('output', () => {
       });
 
       it('can return only specified columns', () => {
-        const expectedDataForOnlySpecifiedColumns = {
-          ...expectedData,
+        const expectedDataForThisCase = {
           columns: [
             {
               key: 'Laos',
               title: 'Laos',
+            },
+          ],
+          rows: [
+            {
+              categoryId: 'medical center',
+              dataElement: 'hospital',
+              Laos: 3,
+            },
+            {
+              categoryId: 'medical center',
+              dataElement: 'clinic',
+              Laos: 4,
+            },
+            {
+              category: 'medical center',
             },
           ],
         };
@@ -94,8 +109,8 @@ describe('output', () => {
           rowField: 'FacilityType',
           columns: ['Laos'],
         });
-        expect(output(MULTIPLE_TRANSFORMED_DATA_WITH_CATEGORIES)).toEqual(
-          expectedDataForOnlySpecifiedColumns,
+        expect(output(MULTIPLE_TRANSFORMED_DATA_FOR_SPECIFIED_COLUMNS)).toEqual(
+          expectedDataForThisCase,
         );
       });
     });

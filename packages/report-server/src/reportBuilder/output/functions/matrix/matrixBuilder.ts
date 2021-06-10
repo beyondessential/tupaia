@@ -1,13 +1,11 @@
+import pick from 'lodash.pick';
 import { Row } from '../../../types';
 import { MatrixParams, Matrix } from './types';
 
-function assertIsString(values: unknown[]): asserts values is string[] {
-  values.forEach(value => {
-    if (typeof value !== 'string') {
-      throw new Error(`Expect value to be string, but got ${value}`);
-    }
-  });
-}
+/** TODO: currently we are using 'dataElement' as a key in rows to specify row field (name),
+ * eventually we want to change Tupaia front end logic to use 'rowField' instead of 'dataElement'
+ */
+const ROW_FIELD = 'dataElement';
 
 export class MatrixBuilder {
   rows: Row[];
@@ -25,12 +23,18 @@ export class MatrixBuilder {
   build() {
     this.buildColumns();
     this.buildRows();
+    this.modifyRowsByPrefixColumns();
+    this.buildCategories();
     return this.matrixData;
   }
 
   buildColumns() {
-    const assignColumnSetToMatrixData = (columns: unknown[]) => {
-      assertIsString(columns);
+    /** TODO: currently we are using columns data formatted as
+     *                  '[ { key: ${columnName}, title: ${columnName} } ]',
+     * eventually we want to refactor Tupaia frontend logic to render columns with an array formatted as
+     *                  '[ ${columnName} ]'
+     */
+    const assignColumnSetToMatrixData = (columns: string[]) => {
       this.matrixData.columns = columns.map(c => ({ key: c, title: c }));
     };
 
@@ -40,7 +44,7 @@ export class MatrixBuilder {
       return;
     }
     // When prefixColumns === '*', get columns from rows data
-    const columns = new Set();
+    const columns = new Set<string>();
     this.rows.forEach(row => {
       Object.keys(row).forEach(key => {
         if (!nonColumnKeys.includes(key)) {
@@ -53,27 +57,52 @@ export class MatrixBuilder {
   }
 
   buildRows() {
-    const categories = new Set();
     const rows: Row[] = [];
-
     const { rowField, categoryField } = this.params.rows;
 
     this.rows.forEach(row => {
-      const { [categoryField]: categoryId, [rowField]: dataElement, ...restOfRow } = row;
-      const newRows: Row = { dataElement, ...restOfRow };
+      const { [categoryField]: categoryId, [rowField]: rowFieldData, ...restOfRow } = row;
+      const newRows: Row = { [ROW_FIELD]: rowFieldData, ...restOfRow };
       if (categoryId) {
         newRows.categoryId = categoryId;
-        categories.add(categoryId);
       }
       rows.push(newRows);
     });
 
+    this.matrixData.rows = rows;
+  }
+
+  modifyRowsByPrefixColumns() {
+    const { prefixColumns } = this.params.columns;
+    const newRows: Row[] = [];
+    if (prefixColumns === '*') return;
+    this.matrixData.rows.forEach(row => {
+      const columnsDataFields = pick(row, prefixColumns);
+      if (Object.keys(columnsDataFields).length !== 0) {
+        const otherFields = pick(row, ['categoryId', ROW_FIELD]);
+        newRows.push({ ...otherFields, ...columnsDataFields });
+      }
+    });
+
+    this.matrixData.rows = newRows;
+  }
+
+  buildCategories() {
+    const categories = new Set<string>();
+    const newRows: Row[] = [...this.matrixData.rows];
+
+    this.matrixData.rows.forEach(row => {
+      const { categoryId } = row;
+      if (categoryId && typeof categoryId === 'string') {
+        categories.add(categoryId);
+      }
+    });
     if (categories.size > 0) {
       const categoriesInArray = Array.from(categories);
-      assertIsString(categoriesInArray);
       const formattedCategories: Row[] = categoriesInArray.map(category => ({ category }));
-      rows.push(...formattedCategories);
+      newRows.push(...formattedCategories);
     }
-    this.matrixData.rows = rows;
+
+    this.matrixData.rows = newRows;
   }
 }

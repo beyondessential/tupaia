@@ -12,10 +12,6 @@ const matrix = (rows: Row[], params: MatrixParams): Matrix => {
 };
 
 const buildParams = (params: unknown): MatrixParams => {
-  if (typeof params !== 'object' || params === null) {
-    throw new Error(`Expected params object but got ${params}`);
-  }
-
   const getPrefixColumns = (columns: unknown): MatrixColumnParams => {
     if (columns === '*' || columns === undefined) {
       return '*';
@@ -31,8 +27,11 @@ const buildParams = (params: unknown): MatrixParams => {
     });
     return columns;
   };
-  const { columns, categoryField, rowField } = params;
 
+  if (typeof params !== 'object' || params === null) {
+    throw new Error(`Expected params object but got ${params}`);
+  }
+  const { columns, categoryField, rowField } = params;
   const prefixColumns = getPrefixColumns(columns);
 
   if (typeof rowField !== 'string') {
@@ -41,10 +40,18 @@ const buildParams = (params: unknown): MatrixParams => {
   if (categoryField !== undefined && typeof categoryField !== 'string') {
     throw new Error(`Expected categoryField as string but got ${categoryField}`);
   }
-  const nonColumnKeys = categoryField ? [categoryField, rowField] : [rowField];
   if (Array.isArray(prefixColumns) && prefixColumns.includes(rowField)) {
     throw new Error(`rowField: ${rowField} is already defined as a column`);
   }
+  if (categoryField && Array.isArray(prefixColumns) && prefixColumns.includes(categoryField)) {
+    throw new Error(`categoryField: ${categoryField} is already defined as a column`);
+  }
+  if (categoryField && rowField && categoryField === rowField) {
+    throw new Error(`categoryField: ${categoryField} is already defined as the rowField`);
+  }
+
+  const nonColumnKeys = categoryField ? [categoryField, rowField] : [rowField];
+
   return {
     columns: { prefixColumns, nonColumnKeys },
     rows: { categoryField, rowField },

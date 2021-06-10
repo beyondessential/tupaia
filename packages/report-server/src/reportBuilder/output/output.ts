@@ -7,7 +7,7 @@ import { Row } from '../types';
 import { outputBuilders } from './functions/outputBuilders';
 
 type OutputParams = {
-  type: string;
+  type: keyof typeof outputBuilders;
   config: unknown;
 };
 
