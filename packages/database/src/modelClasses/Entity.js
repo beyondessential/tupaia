@@ -179,6 +179,20 @@ export class EntityType extends DatabaseType {
     });
   }
 
+  async getRelatives(hierarchyId, criteria) {
+    // getAncestors() comes sorted closest -> furthest, we want furthest -> closest
+    const ancestors = (await this.getAncestors(hierarchyId, criteria)).slice().reverse();
+
+    const self = await this.model.find({
+      ...criteria,
+      id: this.id, // Find an entity that matches the criteria AND this entity
+    });
+
+    const descendants = await this.getDescendants(hierarchyId, criteria);
+
+    return [...ancestors, ...self, ...descendants];
+  }
+
   async getAncestorOfType(hierarchyId, entityType) {
     if (this.type === entityType) return this;
     const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });
