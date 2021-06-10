@@ -63,8 +63,8 @@ export default [
   {
     input: 'src/components/Chart/index.js',
     output: [
-      { file: 'lib/chart/index.js', format: 'cjs', plugins: [terser()] },
-      { file: 'lib/chart/index.esm.js', format: 'esm', plugins: [terser()] },
+      { file: 'lib/chart/index.js', format: 'cjs' },
+      { file: 'lib/chart/index.esm.js', format: 'esm' },
     ],
     plugins: [...plugins, del({ targets: ['lib/chart'] }), externalWatch('src/**/*')],
     external: externals,

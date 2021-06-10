@@ -13,17 +13,19 @@ const LegendContainer = styled.div`
   padding: 0 0 2rem 0;
 `;
 
-const LegendItem = styled(MuiButton)`
+const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />)`
   margin-right: 1.2rem;
-  font-size: 0.75rem;
+  font-size: ${props => (props.isEnlarged ? '0.75rem' : '0.3rem')};
 
   .MuiButton-label {
     display: flex;
     align-items: center;
+    color: red;
   }
 
   &.Mui-disabled {
-    color: inherit;
+    color: ${({ theme }) =>
+      theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
   }
 `;
 
@@ -41,10 +43,10 @@ const Text = styled.span`
 
 const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || value;
 
-export const getPieLegend = ({ chartConfig = {} }) => ({ payload }) => (
+export const getPieLegend = ({ chartConfig = {}, isEnlarged }) => ({ payload }) => (
   <LegendContainer style={{ padding: 0, marginBottom: -10 }}>
     {payload.map(({ color, value }) => (
-      <LegendItem key={value} disabled>
+      <LegendItem key={value} isEnlarged={isEnlarged} disabled>
         <Box style={{ background: color }} />
         <Text>{getDisplayValue(chartConfig, value)}</Text>
       </LegendItem>

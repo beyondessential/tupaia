@@ -5,8 +5,6 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
 import {
   Chart as ChartComponent,
   CHART_TYPES,
@@ -14,24 +12,9 @@ import {
   getIsTimeSeries,
   isDataKey,
 } from '@tupaia/ui-components/lib/chart';
-import { VIEW_STYLES, darkWhite } from '../../styles';
 import { VIEW_CONTENT_SHAPE } from './propTypes';
-
-const ViewTitle = styled(Typography)`
-  position: relative;
-  color: ${darkWhite};
-  margin-top: 5;
-  margin-bottom: 15;
-  line-height: 130%;
-  text-align: center;
-`;
-
-const Container = styled.div`
-  // recharts components doesn't pass nested styles so they need to be added on a wrapping component
-  li.recharts-legend-item {
-    white-space: nowrap; // ensure there are no line breaks on the export legends
-  }
-`;
+import { ViewTitle } from './Typography';
+import { ChartContainer, ChartViewContainer } from './Layout';
 
 const removeNonNumericData = data =>
   data.map(dataSeries => {
@@ -68,16 +51,16 @@ export const Chart = ({ viewContent, isEnlarged, isExporting, onItemClick }) => 
   }
 
   return (
-    <div style={VIEW_STYLES.chartViewContainer}>
-      <Container style={VIEW_STYLES.chartContainer}>
+    <ChartViewContainer>
+      <ChartContainer>
         <ChartComponent
           isEnlarged={isEnlarged}
           isExporting={isExporting}
           viewContent={viewContentConfig}
           onItemClick={onItemClick}
         />
-      </Container>
-    </div>
+      </ChartContainer>
+    </ChartViewContainer>
   );
 };
 
