@@ -35,7 +35,7 @@ const buildParams = (params: unknown): OutputParams => {
     }
     return { type, config: restParams };
   }
-  throw new Error(`Expected output config as object but got ${params}`);
+  return { type: 'default', config: 'undefined' };
 };
 
 export const buildOutput = (params: unknown) => {
