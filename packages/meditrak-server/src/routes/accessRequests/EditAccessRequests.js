@@ -8,7 +8,7 @@ import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import { assertAccessRequestEditPermissions } from './assertAccessRequestPermissions';
 
@@ -21,7 +21,7 @@ export class EditAccessRequests extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
       assertAnyPermissions(
-        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
+        [assertBESAdminAccess, assertAdminPanelAccess],
         'You need either BES Admin or Tupaia Admin Panel access to edit user entity permissions',
       ),
     );

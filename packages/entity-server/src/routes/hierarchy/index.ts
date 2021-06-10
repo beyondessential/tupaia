@@ -10,9 +10,14 @@ export {
   MultiEntityDescendantsRoute,
   MultiEntityDescendantsRequest,
 } from './MultiEntityDescendantsRoute';
+export { EntityRelativesRoute, RelativesRequest } from './EntityRelativesRoute';
 export {
-  EntityRelationsRoute,
-  RelationsRequest,
-  MultiEntityRelationsRoute,
-  MultiEntityRelationsRequest,
-} from './relations';
+  MultiEntityRelativesRoute,
+  MultiEntityRelativesRequest,
+} from './MultiEntityRelativesRoute';
+export {
+  EntityRelationshipsRoute,
+  RelationshipsRequest,
+  MultiEntityRelationshipsRoute,
+  MultiEntityRelationshipsRequest,
+} from './relationships';

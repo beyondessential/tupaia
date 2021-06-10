@@ -7,7 +7,7 @@ import { GETHandler } from './GETHandler';
 import {
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
   hasBESAdminAccess,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../permissions';
@@ -46,7 +46,7 @@ export class GETDisasters extends GETHandler {
 
   async assertUserHasAccess() {
     return this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, assertTupaiaAdminPanelAccess]),
+      assertAnyPermissions([assertBESAdminAccess, assertAdminPanelAccess]),
       'You need either BES Admin or Tupaia Admin Panel access to view disasters',
     );
   }
