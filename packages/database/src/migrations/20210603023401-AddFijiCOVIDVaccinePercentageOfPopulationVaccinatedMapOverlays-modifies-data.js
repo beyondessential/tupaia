@@ -21,7 +21,7 @@ const getOverlayId = (doseNum, level) =>
 
 const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelName) => {
   const numeratorDataElementCode = doseNum === 1 ? 'COVIDVac4' : 'COVIDVac8';
-  const denominatorAggregationEntityType =
+  const newAggregationEntityType =
     aggregationEntityType === 'sub_district' ? undefined : aggregationEntityType;
   const denominatorAggregationType =
     aggregationEntityType === 'sub_district' ? undefined : 'SUM_PER_ORG_GROUP';
@@ -44,8 +44,8 @@ const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelNam
             ],
             dataElementCodes: [numeratorDataElementCode],
             entityAggregation: {
-              dataSourceEntityType: 'facility',
-              aggregationEntityType,
+              dataSourceEntityType: 'sub_district',
+              aggregationEntityType: newAggregationEntityType,
             },
           },
         },
@@ -56,7 +56,7 @@ const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelNam
             entityAggregation: {
               dataSourceEntityType: 'sub_district',
               aggregationType: denominatorAggregationType,
-              aggregationEntityType: denominatorAggregationEntityType,
+              aggregationEntityType: newAggregationEntityType,
             },
           },
         },

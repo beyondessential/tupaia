@@ -36,7 +36,7 @@ const DASHBOARD_OBJECT = {
     aggregationType: 'FINAL_EACH_DAY',
     dataElementCodes: ['COVIDVac8'],
     entityAggregation: {
-      dataSourceEntityType: 'facility',
+      dataSourceEntityType: 'sub_district',
     },
   },
   viewJson: {
