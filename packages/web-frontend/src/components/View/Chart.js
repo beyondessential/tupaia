@@ -1,17 +1,21 @@
 /*
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ *
  */
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Chart } from '@tupaia/ui-components/lib/chart';
-import { VIEW_STYLES, darkWhite } from '../../../styles';
-import { VIEW_CONTENT_SHAPE } from '../propTypes';
-import { CHART_TYPES } from './chartTypes';
-import { parseChartConfig } from './parseChartConfig';
-import { getIsTimeSeries, isDataKey } from './helpers';
+import {
+  Chart as ChartComponent,
+  CHART_TYPES,
+  parseChartConfig,
+  getIsTimeSeries,
+  isDataKey,
+} from '@tupaia/ui-components/lib/chart';
+import { VIEW_STYLES, darkWhite } from '../../styles';
+import { VIEW_CONTENT_SHAPE } from './propTypes';
 
 const ViewTitle = styled(Typography)`
   position: relative;
@@ -55,7 +59,7 @@ const getViewContent = ({ viewContent }) => {
 const sortData = data =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick }) => {
+export const Chart = ({ viewContent, isEnlarged, isExporting, onItemClick }) => {
   const viewContentConfig = getViewContent({ viewContent });
   const { chartType } = viewContent;
 
@@ -66,7 +70,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
   return (
     <div style={VIEW_STYLES.chartViewContainer}>
       <Container style={VIEW_STYLES.chartContainer}>
-        <Chart
+        <ChartComponent
           isEnlarged={isEnlarged}
           isExporting={isExporting}
           viewContent={viewContentConfig}
@@ -77,14 +81,14 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
   );
 };
 
-ChartWrapper.propTypes = {
+Chart.propTypes = {
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   onItemClick: PropTypes.func,
 };
 
-ChartWrapper.defaultProps = {
+Chart.defaultProps = {
   viewContent: null,
   isEnlarged: false,
   isExporting: false,

@@ -15,6 +15,8 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React from 'react';
+import { useTheme } from '@material-ui/core/styles';
+
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
 import Map from '../../../containers/Map';
@@ -29,6 +31,10 @@ import { TOP_BAR_HEIGHT } from '../../../styles';
 import './desktop-styles.css';
 
 export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
+  const theme = useTheme();
+
+  console.log('theme', theme);
+
   return (
     <div>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
@@ -43,7 +49,7 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       </OverlayContainer>
       <LoadingScreen isLoading={isLoading} />
-      <Map />
+      {/*<Map />*/}
     </div>
   );
 };

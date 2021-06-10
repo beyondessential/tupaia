@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { VIEW_STYLES } from '../../styles';
-import { ChartWrapper } from './ChartWrapper';
+import { Chart } from './Chart';
 import { ColorListWrapper } from './ColorListWrapper';
 import { DataDownloadWrapper } from './DataDownloadWrapper';
 import { ListWrapper } from './ListWrapper';
@@ -42,7 +42,7 @@ const VIEW_TYPES = {
 export const getViewWrapper = ({ type, viewType }) => {
   switch (type) {
     case 'chart':
-      return ChartWrapper;
+      return Chart;
     case 'matrix':
       return MatrixWrapper;
     default:
