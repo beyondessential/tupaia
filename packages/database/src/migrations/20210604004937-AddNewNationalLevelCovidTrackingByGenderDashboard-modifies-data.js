@@ -34,7 +34,7 @@ const DASHBOARD_OBJECT = {
           aggregationType: 'FINAL_EACH_DAY',
           dataElementCodes: ['COVIDVac5'],
           entityAggregation: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'sub_district',
             aggregationEntityType: 'district',
           },
         },
@@ -49,7 +49,7 @@ const DASHBOARD_OBJECT = {
                 aggregationType: 'FINAL_EACH_DAY',
                 dataElementCodes: ['COVIDVac5'],
                 entityAggregation: {
-                  dataSourceEntityType: 'facility',
+                  dataSourceEntityType: 'sub_district',
                   aggregationEntityType: 'country',
                 },
               },
@@ -60,7 +60,7 @@ const DASHBOARD_OBJECT = {
                 aggregationType: 'FINAL_EACH_DAY',
                 dataElementCodes: ['COVIDVac6'],
                 entityAggregation: {
-                  dataSourceEntityType: 'facility',
+                  dataSourceEntityType: 'sub_district',
                   aggregationEntityType: 'country',
                 },
               },
@@ -74,7 +74,7 @@ const DASHBOARD_OBJECT = {
           aggregationType: 'FINAL_EACH_DAY',
           dataElementCodes: ['COVIDVac6'],
           entityAggregation: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'sub_district',
             aggregationEntityType: 'district',
           },
         },

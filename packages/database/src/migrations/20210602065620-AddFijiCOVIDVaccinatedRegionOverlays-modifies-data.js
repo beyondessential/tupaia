@@ -30,7 +30,7 @@ const createMapOverlay = (doseNum, aggregationEntityType, level, overlayLevelNam
       },
     ],
     entityAggregation: {
-      dataSourceEntityType: 'facility',
+      dataSourceEntityType: 'sub_district',
       aggregationEntityType,
     },
   },
@@ -73,7 +73,7 @@ exports.up = async function (db) {
 
   await insertOverlay(
     db,
-    createMapOverlay(1, 'sub_district', 'SubDistrict', 'Sub-Division'),
+    createMapOverlay(1, undefined, 'SubDistrict', 'Sub-Division'),
     mapOverlayGroupId,
   );
   await insertOverlay(
@@ -83,7 +83,7 @@ exports.up = async function (db) {
   );
   await insertOverlay(
     db,
-    createMapOverlay(2, 'sub_district', 'SubDistrict', 'Sub-Division'),
+    createMapOverlay(2, undefined, 'SubDistrict', 'Sub-Division'),
     mapOverlayGroupId,
   );
   await insertOverlay(
