@@ -5,9 +5,9 @@ import { MatrixParams, Matrix } from './types';
 /** TODO: currently we are using 'dataElement' as a key in rows to specify row field (name),
  * eventually we want to change Tupaia front end logic to use 'rowField' instead of 'dataElement'
  */
-const ROW_FIELD = 'dataElement';
-const CATEGORY_FIELD = 'categoryId';
-const NON_COLUMNS_KEYS = [CATEGORY_FIELD, ROW_FIELD];
+const ROW_FIELD_KEY = 'dataElement';
+const CATEGORY_FIELD_KEY = 'categoryId';
+const NON_COLUMNS_KEYS = [CATEGORY_FIELD_KEY, ROW_FIELD_KEY];
 
 export class MatrixBuilder {
   private rows: Row[];
@@ -64,9 +64,9 @@ export class MatrixBuilder {
 
     this.rows.forEach(row => {
       const { [categoryField]: categoryId, [rowField]: rowFieldData, ...restOfRow } = row;
-      const newRows: Row = { [ROW_FIELD]: rowFieldData, ...restOfRow };
+      const newRows: Row = { [ROW_FIELD_KEY]: rowFieldData, ...restOfRow };
       if (categoryId) {
-        newRows[CATEGORY_FIELD] = categoryId;
+        newRows[CATEGORY_FIELD_KEY] = categoryId;
       }
       rows.push(newRows);
     });
