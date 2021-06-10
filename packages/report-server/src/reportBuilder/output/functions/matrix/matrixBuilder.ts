@@ -6,6 +6,8 @@ import { MatrixParams, Matrix } from './types';
  * eventually we want to change Tupaia front end logic to use 'rowField' instead of 'dataElement'
  */
 const ROW_FIELD = 'dataElement';
+const CATEGORY_FIELD = 'categoryId';
+const NON_COLUMNS_KEYS = [CATEGORY_FIELD, ROW_FIELD];
 
 export class MatrixBuilder {
   rows: Row[];
@@ -64,7 +66,7 @@ export class MatrixBuilder {
       const { [categoryField]: categoryId, [rowField]: rowFieldData, ...restOfRow } = row;
       const newRows: Row = { [ROW_FIELD]: rowFieldData, ...restOfRow };
       if (categoryId) {
-        newRows.categoryId = categoryId;
+        newRows[CATEGORY_FIELD] = categoryId;
       }
       rows.push(newRows);
     });
@@ -79,7 +81,7 @@ export class MatrixBuilder {
     this.matrixData.rows.forEach(row => {
       const columnsDataFields = pick(row, prefixColumns);
       if (Object.keys(columnsDataFields).length !== 0) {
-        const otherFields = pick(row, ['categoryId', ROW_FIELD]);
+        const otherFields = pick(row, NON_COLUMNS_KEYS);
         newRows.push({ ...otherFields, ...columnsDataFields });
       }
     });
