@@ -42,14 +42,14 @@ exports.up = async function (db) {
   for (const dashboardId of DISTRICT_DASHBOARD_IDS) {
     const dashboardReport = await getDashboardReportById(db, dashboardId);
     dashboardReport.dataBuilderConfig.entityAggregation.dataSourceEntityType = 'sub_district';
-    dashboardReport.dataBuilderConfig.entityAggregation.aggregationType = 'district';
+    dashboardReport.dataBuilderConfig.entityAggregation.aggregationEntityType = 'district';
     await updateBuilderConfigByReportId(db, dashboardReport.dataBuilderConfig, dashboardId);
   }
 
   for (const dashboardId of COUNTRY_DASHBOARD_IDS) {
     const dashboardReport = await getDashboardReportById(db, dashboardId);
     dashboardReport.dataBuilderConfig.entityAggregation.dataSourceEntityType = 'sub_district';
-    dashboardReport.dataBuilderConfig.entityAggregation.aggregationType = 'country';
+    dashboardReport.dataBuilderConfig.entityAggregation.aggregationEntityType = 'country';
     await updateBuilderConfigByReportId(db, dashboardReport.dataBuilderConfig, dashboardId);
   }
 };
