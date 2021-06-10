@@ -10,17 +10,19 @@ import MuiButton from '@material-ui/core/Button';
 const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding: 0 0 2rem 0;
+  padding-bottom: ${props => (props.isEnlarged ? '2rem' : '0.5rem')};
 `;
 
 const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />)`
+  font-size: ${({ isEnlarged }) => (isEnlarged ? '0.75rem' : '0.5rem')};
+  padding-bottom: ${({ isEnlarged }) => (isEnlarged ? '0.3rem' : '0')};
   margin-right: 1.2rem;
-  font-size: ${props => (props.isEnlarged ? '0.75rem' : '0.3rem')};
 
   .MuiButton-label {
     display: flex;
     align-items: center;
-    color: red;
+    color: ${({ theme }) =>
+      theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
   }
 
   &.Mui-disabled {
@@ -31,9 +33,9 @@ const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />
 
 const Box = styled.span`
   display: block;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-right: 0.625rem;
+  width: ${({ isEnlarged }) => (isEnlarged ? '1.25rem' : '0.8rem')};
+  height: ${({ isEnlarged }) => (isEnlarged ? '1.25rem' : '0.8rem')};
+  margin-right: ${({ isEnlarged }) => (isEnlarged ? '0.625rem' : '0.3rem')};
   border-radius: 3px;
 `;
 
