@@ -10,11 +10,11 @@ const CATEGORY_FIELD = 'categoryId';
 const NON_COLUMNS_KEYS = [CATEGORY_FIELD, ROW_FIELD];
 
 export class MatrixBuilder {
-  rows: Row[];
+  private rows: Row[];
 
-  matrixData: Matrix;
+  private matrixData: Matrix;
 
-  params: MatrixParams;
+  private params: MatrixParams;
 
   constructor(rows: Row[], params: MatrixParams) {
     this.rows = rows;
@@ -22,7 +22,7 @@ export class MatrixBuilder {
     this.matrixData = { columns: [], rows: [] };
   }
 
-  build() {
+  public build() {
     this.buildColumns();
     this.buildRows();
     this.modifyRowsByPrefixColumns();
@@ -30,7 +30,7 @@ export class MatrixBuilder {
     return this.matrixData;
   }
 
-  buildColumns() {
+  private buildColumns() {
     /** TODO: currently we are using columns data formatted as
      *                  '[ { key: ${columnName}, title: ${columnName} } ]',
      * eventually we want to refactor Tupaia frontend logic to render columns with an array formatted as
@@ -58,7 +58,7 @@ export class MatrixBuilder {
     assignColumnSetToMatrixData(columnsInArray);
   }
 
-  buildRows() {
+  private buildRows() {
     const rows: Row[] = [];
     const { rowField, categoryField } = this.params.rows;
 
@@ -74,7 +74,7 @@ export class MatrixBuilder {
     this.matrixData.rows = rows;
   }
 
-  modifyRowsByPrefixColumns() {
+  private modifyRowsByPrefixColumns() {
     const { prefixColumns } = this.params.columns;
     const newRows: Row[] = [];
     if (prefixColumns === '*') return;
@@ -89,7 +89,7 @@ export class MatrixBuilder {
     this.matrixData.rows = newRows;
   }
 
-  buildCategories() {
+  private buildCategories() {
     const categories = new Set<string>();
     const newRows: Row[] = [...this.matrixData.rows];
 
