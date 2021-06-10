@@ -5,14 +5,14 @@
 
 import { Row } from '../../../types';
 import { MatrixBuilder } from './matrixBuilder';
-import { Matrix, MatrixColumnParams, MatrixParams } from './types';
+import { Matrix, MatrixParams } from './types';
 
 const matrix = (rows: Row[], params: MatrixParams): Matrix => {
   return new MatrixBuilder(rows, params).build();
 };
 
 const buildParams = (params: unknown): MatrixParams => {
-  const getPrefixColumns = (columns: unknown): MatrixColumnParams => {
+  const getIncludeFields = (columns: unknown): string[] | '*' => {
     if (columns === '*' || columns === undefined) {
       return '*';
     }
@@ -32,7 +32,7 @@ const buildParams = (params: unknown): MatrixParams => {
     throw new Error(`Expected params object but got ${params}`);
   }
   const { columns, categoryField, rowField } = params;
-  const prefixColumns = getPrefixColumns(columns);
+  const includeFields = getIncludeFields(columns);
 
   if (typeof rowField !== 'string') {
     throw new Error(`Expected rowField as string but got ${rowField}`);
@@ -40,20 +40,20 @@ const buildParams = (params: unknown): MatrixParams => {
   if (categoryField !== undefined && typeof categoryField !== 'string') {
     throw new Error(`Expected categoryField as string but got ${categoryField}`);
   }
-  if (Array.isArray(prefixColumns) && prefixColumns.includes(rowField)) {
+  if (Array.isArray(includeFields) && includeFields.includes(rowField)) {
     throw new Error(`rowField: ${rowField} is already defined as a column`);
   }
-  if (categoryField && Array.isArray(prefixColumns) && prefixColumns.includes(categoryField)) {
+  if (categoryField && Array.isArray(includeFields) && includeFields.includes(categoryField)) {
     throw new Error(`categoryField: ${categoryField} is already defined as a column`);
   }
   if (categoryField && rowField && categoryField === rowField) {
     throw new Error(`categoryField: ${categoryField} is already defined as the rowField`);
   }
 
-  const nonColumnKeys = categoryField ? [categoryField, rowField] : [rowField];
+  const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
 
   return {
-    columns: { prefixColumns, nonColumnKeys },
+    columns: { include: includeFields, exclude: excludeFields },
     rows: { categoryField, rowField },
   };
 };

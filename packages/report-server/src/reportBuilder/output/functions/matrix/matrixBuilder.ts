@@ -25,7 +25,7 @@ export class MatrixBuilder {
   public build() {
     this.buildColumns();
     this.buildRows();
-    this.modifyRowsByPrefixColumns();
+    this.adjustRowsToUseIncludedColumns();
     this.buildCategories();
     return this.matrixData;
   }
@@ -40,16 +40,16 @@ export class MatrixBuilder {
       this.matrixData.columns = columns.map(c => ({ key: c, title: c }));
     };
 
-    const { prefixColumns, nonColumnKeys } = this.params.columns;
-    if (Array.isArray(prefixColumns)) {
-      assignColumnSetToMatrixData(prefixColumns);
+    const { include, exclude } = this.params.columns;
+    if (Array.isArray(include)) {
+      assignColumnSetToMatrixData(include);
       return;
     }
     // When prefixColumns === '*', get columns from rows data
     const columns = new Set<string>();
     this.rows.forEach(row => {
       Object.keys(row).forEach(key => {
-        if (!nonColumnKeys.includes(key)) {
+        if (!exclude.includes(key)) {
           columns.add(key);
         }
       });
@@ -74,12 +74,12 @@ export class MatrixBuilder {
     this.matrixData.rows = rows;
   }
 
-  private modifyRowsByPrefixColumns() {
-    const { prefixColumns } = this.params.columns;
+  private adjustRowsToUseIncludedColumns() {
+    const { include } = this.params.columns;
     const newRows: Row[] = [];
-    if (prefixColumns === '*') return;
+    if (include === '*') return;
     this.matrixData.rows.forEach(row => {
-      const columnsDataFields = pick(row, prefixColumns);
+      const columnsDataFields = pick(row, include);
       if (Object.keys(columnsDataFields).length !== 0) {
         const otherFields = pick(row, NON_COLUMNS_KEYS);
         newRows.push({ ...otherFields, ...columnsDataFields });

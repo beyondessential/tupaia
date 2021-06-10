@@ -14,13 +14,25 @@ type OutputParams = {
 const output = (rows: Row[], params: OutputParams) => {
   const { type, config } = params;
 
-  const outputBuilder = outputBuilders[type as keyof typeof outputBuilders](config);
+  const outputBuilder = outputBuilders[type](config);
   return outputBuilder(rows);
 };
 
 const buildParams = (params: unknown): OutputParams => {
+  const isOutPutBuildersType = (value: string): value is keyof typeof outputBuilders => {
+    switch (value) {
+      case 'default':
+      case 'matrix':
+        return true;
+      default:
+        return false;
+    }
+  };
   if (typeof params === 'object' && params !== null) {
     const { type = 'default', ...restParams } = params;
+    if (typeof type !== 'string' || !isOutPutBuildersType(type)) {
+      throw new Error(`Expected type to be one of ${Object.keys(outputBuilders)} but got ${type}`);
+    }
     return { type, config: restParams };
   }
   throw new Error(`Expected output config as object but got ${params}`);
