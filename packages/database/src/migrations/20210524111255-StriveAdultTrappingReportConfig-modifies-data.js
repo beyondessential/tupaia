@@ -38,17 +38,10 @@ const REPORT = {
     },
     transform: [
       {
-        transform: 'filter',
-        where: "exists($row['value'],$row['dataElement'])",
-      },
-      {
-        transform: 'select',
-        '...': ['value', 'dataElement'],
-      },
-      {
         transform: 'aggregate',
         value: 'group',
         dataElement: 'count',
+        '...': 'drop',
       },
       {
         transform: 'select',
