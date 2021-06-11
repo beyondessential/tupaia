@@ -5,6 +5,7 @@
 
 import xlsx from 'xlsx';
 import moment from 'moment';
+import { generateId } from '@tupaia/database';
 import {
   constructIsOneOf,
   constructRecordExistsWithId,
@@ -65,45 +66,47 @@ export async function importSurveyResponses(req, res) {
 
     for (const surveySheets of Object.entries(workbook.Sheets)) {
       const [tabName, sheet] = surveySheets;
-      const deletedColumnHeaders = new Set();
+      const deletedResponseIds = new Set();
       const questionIds = [];
 
-      // extract column headers and set up update batcher
+      // extract response ids and set up update batcher
       const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
-      const responseColumnHeaders = [];
-      for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
-        if (!isInfoColumn(columnIndex)) {
-          responseColumnHeaders.push(getColumnHeader(sheet, columnIndex));
-        }
-        updateBatcher.setupColumnsForSheet(tabName, responseColumnHeaders);
-      }
-
-      for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
+      const minSurveyResponseIndex = INFO_COLUMN_HEADERS.length;
+      const surveyResponseIds = [];
+      for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
-        if (!isInfoColumn(columnIndex)) {
-          // A column representing a survey response
-          try {
-            if (checkIsNewSurveyResponse(columnHeader)) {
-              const surveyResponseDetails = await constructNewSurveyResponseDetails(
-                models,
-                tabName,
-                sheet,
-                columnIndex,
-                config,
-              );
-              updateBatcher.createSurveyResponse(tabName, columnHeader, surveyResponseDetails);
-            } else {
-              // Validate that every header takes id form, i.e. is an existing or deleted response
-              await hasContent(columnHeader);
-              await takesIdForm(columnHeader);
-            }
-          } catch (error) {
-            throw new ImportValidationError(
-              `Invalid survey response id ${columnHeader} causing message: ${
-                error.message
-              } at column ${columnIndex + 1} on tab ${tabName}`,
+        if (checkIsNewSurveyResponse(columnHeader)) {
+          surveyResponseIds[columnIndex] = generateId();
+        } else {
+          surveyResponseIds[columnIndex] = columnHeader;
+        }
+      }
+      updateBatcher.setupColumnsForSheet(tabName, surveyResponseIds);
+
+      for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
+        const columnHeader = getColumnHeader(sheet, columnIndex);
+        try {
+          if (checkIsNewSurveyResponse(columnHeader)) {
+            const surveyResponseId = surveyResponseIds[columnIndex];
+            const surveyResponseDetails = await constructNewSurveyResponseDetails(
+              models,
+              tabName,
+              sheet,
+              columnIndex,
+              { id: surveyResponseId, ...config },
             );
+            updateBatcher.createSurveyResponse(surveyResponseId, surveyResponseDetails);
+          } else {
+            // Validate that every header takes id form, i.e. is an existing or deleted response
+            await hasContent(columnHeader);
+            await takesIdForm(columnHeader);
           }
+        } catch (error) {
+          throw new ImportValidationError(
+            `Invalid column header ${columnHeader} causing message: ${error.message} at column ${
+              columnIndex + 1
+            } on tab ${tabName} (should be an id or "NEW" for new responses)`,
+          );
         }
       }
 
@@ -136,47 +139,41 @@ export async function importSurveyResponses(req, res) {
           answerValidator = new ObjectValidator({}, constructAnswerValidator(models, question));
         }
 
-        for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
+        for (
+          let columnIndex = minSurveyResponseIndex;
+          columnIndex <= maxColumnIndex;
+          columnIndex++
+        ) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
+          const surveyResponseId = surveyResponseIds[columnIndex];
           const cellValue = getCellContents(sheet, columnIndex, rowIndex);
           // If we already deleted this survey response wholesale, no need to check specific rows
-          if (
-            columnHeader &&
-            columnIndex !== '' &&
-            !deletedColumnHeaders.has(columnHeader) &&
-            !INFO_COLUMN_HEADERS.includes(columnHeader)
-          ) {
+          if (surveyResponseId && !deletedResponseIds.has(surveyResponseId)) {
             if (answerValidator) {
               const constructImportValidationError = message =>
                 new ImportValidationError(message, excelRowNumber, columnHeader, tabName);
               await answerValidator.validate({ answer: cellValue }, constructImportValidationError);
             }
-            if (!columnHeader || columnHeader === '') {
-              throw new ImportValidationError(
-                'Missing column header, should be survey response id or start with "NEW_"',
-                excelRowNumber,
-              );
-            }
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
               if (checkIsCellEmpty(cellValue)) {
-                updateBatcher.deleteSurveyResponse(tabName, columnHeader);
-                deletedColumnHeaders.add(columnHeader);
+                updateBatcher.deleteSurveyResponse(tabName, surveyResponseId);
+                deletedResponseIds.add(surveyResponseId);
               } else {
                 // Not deleting, make sure the submission date is set as defined in the spreadsheet
                 const dataTimeInSheet = getDateStringForColumn(sheet, columnIndex);
                 const newDataTime = await getNewDataTimeIfRequired(
                   models,
-                  columnHeader,
+                  surveyResponseId,
                   dataTimeInSheet,
                 );
                 if (newDataTime) {
-                  updateBatcher.updateDataTime(tabName, columnHeader, newDataTime);
+                  updateBatcher.updateDataTime(tabName, surveyResponseId, newDataTime);
                 }
               }
             } else if (checkIsCellEmpty(cellValue)) {
               // Empty question row: delete any matching answer
-              updateBatcher.deleteAnswer(tabName, columnHeader, { questionId });
+              updateBatcher.deleteAnswer(tabName, surveyResponseId, { questionId });
             } else if (
               rowType === ANSWER_TYPES.DATE_OF_DATA ||
               rowType === ANSWER_TYPES.SUBMISSION_DATE
@@ -185,15 +182,16 @@ export async function importSurveyResponses(req, res) {
               // survey response. Note that this will override what is in the Date info row
               const newDataTime = await getNewDataTimeIfRequired(
                 models,
-                columnHeader,
+                surveyResponseId,
                 cellValue.toString(),
               );
               if (newDataTime) {
-                updateBatcher.updateDataTime(tabName, columnHeader, newDataTime);
+                updateBatcher.updateDataTime(tabName, surveyResponseId, newDataTime);
               }
             } else {
               // Normal question row with content: update or create an answer
-              updateBatcher.upsertAnswer(tabName, columnHeader, {
+              updateBatcher.upsertAnswer(tabName, surveyResponseId, {
+                surveyResponseId,
                 questionId,
                 text: cellValue.toString(),
                 type: rowType,
@@ -224,7 +222,7 @@ export async function importSurveyResponses(req, res) {
 }
 
 const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnIndex, config) => {
-  const { surveyNames, userId, timeZone } = config;
+  const { id, surveyNames, userId, timeZone } = config;
   if (!surveyNames) {
     throw new Error(
       'When importing new survey responses, you must specify the names of the surveys they are for',
@@ -239,6 +237,7 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
   const surveyDate = getDateStringForColumn(sheet, columnIndex);
   const importDate = moment();
   return {
+    id,
     survey_id: survey.id, // All survey responses within a sheet should be for the same survey
     assessor_name: `${user.first_name} ${user.last_name}`,
     user_id: user.id,
@@ -294,12 +293,9 @@ const getMaxRowColumnIndex = sheet => {
   return { maxColumnIndex, maxRowIndex };
 };
 
-async function getNewDataTimeIfRequired(models, columnHeader, newDataTime) {
-  if (checkIsNewSurveyResponse(columnHeader)) {
-    return null; // no need to update the data time of a survey response that is to be newly created
-  }
-  const surveyResponse = await models.surveyResponse.findById(columnHeader);
-  if (!surveyResponse) return null;
+async function getNewDataTimeIfRequired(models, surveyResponseId, newDataTime) {
+  const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
+  if (!surveyResponse) return null; // probably in the process of being created, no need to update
   const currentDataTime = surveyResponse.data_time;
 
   if (!moment(currentDataTime).isSame(newDataTime, 'minute')) {

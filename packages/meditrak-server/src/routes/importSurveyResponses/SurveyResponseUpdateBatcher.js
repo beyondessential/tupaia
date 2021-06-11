@@ -7,11 +7,9 @@ import { sleep } from '@tupaia/utils';
 
 const DEFAULT_BATCH_SIZE = 100;
 const DEFAULT_COOLDOWN_TIME = 400; // leave a little time between batches to give side effects time to finish processing
-const CREATE = 'create';
-const UPDATE = 'update';
-const DELETE = 'delete';
-
-const getColumnKey = (sheetName, columnHeader) => `${sheetName}/${columnHeader}`;
+export const CREATE = 'create';
+export const UPDATE = 'update';
+export const DELETE = 'delete';
 
 /**
  * This class will hold on to all of the creates, updates, and deletes that a survey response import
@@ -29,22 +27,24 @@ const getColumnKey = (sheetName, columnHeader) => `${sheetName}/${columnHeader}`
 export class SurveyResponseUpdateBatcher {
   constructor(models) {
     this.models = models;
-    // maintain a map of column keys to update details, where update details looks like
-    // { sheetName, columnHeader, type, newSurveyResponse, newDataTime, answersToUpsert, answersToDelete }
-    // n.b. all but columnHeader and type are optional
-    this.updatesByColumnKey = {};
+    // maintain a map of response ids to update details, where update details looks like
+    // { sheetName, surveyResponseId, type, newSurveyResponse, newDataTime, answersToUpsert, answersToDelete }
+    // n.b. all but sheetName, surveyResponseId, and type are optional
+    this.updatesByResponseId = {};
   }
 
   countBatches(batchSize = DEFAULT_BATCH_SIZE) {
-    return Math.ceil(Object.keys(this.updatesByColumnKey).length / batchSize);
+    return Math.ceil(Object.keys(this.updatesByResponseId).length / batchSize);
   }
 
-  setupColumnsForSheet(sheetName, columnHeaders) {
-    columnHeaders.forEach(columnHeader => {
-      this.updatesByColumnKey[getColumnKey(sheetName, columnHeader)] = {
+  setupColumnsForSheet(sheetName, surveyResponseIds) {
+    surveyResponseIds.forEach((surveyResponseId, columnIndex) => {
+      if (!surveyResponseId) return; // array contains some empty slots representing info columns
+      this.updatesByResponseId[surveyResponseId] = {
         type: UPDATE,
         sheetName,
-        columnHeader,
+        columnIndex,
+        surveyResponseId,
         newSurveyResponse: null, // only populated if a new survey response is to be created
         newDataTime: null, // only populated if submission time is to be updated
         answers: {
@@ -55,30 +55,25 @@ export class SurveyResponseUpdateBatcher {
     });
   }
 
-  createSurveyResponse(sheetName, columnHeader, newSurveyResponse) {
-    const columnKey = getColumnKey(sheetName, columnHeader);
-    this.updatesByColumnKey[columnKey].type = CREATE;
-    this.updatesByColumnKey[columnKey].newSurveyResponse = newSurveyResponse;
+  createSurveyResponse(surveyResponseId, newSurveyResponse) {
+    this.updatesByResponseId[surveyResponseId].type = CREATE;
+    this.updatesByResponseId[surveyResponseId].newSurveyResponse = newSurveyResponse;
   }
 
-  deleteSurveyResponse(sheetName, columnHeader) {
-    const columnKey = getColumnKey(sheetName, columnHeader);
-    this.updatesByColumnKey[columnKey].type = DELETE;
+  deleteSurveyResponse(surveyResponseId) {
+    this.updatesByResponseId[surveyResponseId].type = DELETE;
   }
 
-  updateDataTime(sheetName, columnHeader, newDataTime) {
-    const columnKey = getColumnKey(sheetName, columnHeader);
-    this.updatesByColumnKey[columnKey].newDataTime = newDataTime;
+  updateDataTime(surveyResponseId, newDataTime) {
+    this.updatesByResponseId[surveyResponseId].newDataTime = newDataTime;
   }
 
-  upsertAnswer(sheetName, columnHeader, details) {
-    const columnKey = getColumnKey(sheetName, columnHeader);
-    this.updatesByColumnKey[columnKey].answers.upserts.push(details);
+  upsertAnswer(surveyResponseId, details) {
+    this.updatesByResponseId[surveyResponseId].answers.upserts.push(details);
   }
 
-  deleteAnswer(sheetName, columnHeader, details) {
-    const columnKey = getColumnKey(sheetName, columnHeader);
-    this.updatesByColumnKey[columnKey].answers.deletes.push(details);
+  deleteAnswer(surveyResponseId, details) {
+    this.updatesByResponseId[surveyResponseId].answers.deletes.push(details);
   }
 
   async processCreateSurveyResponse(transactingModels, { newSurveyResponse, answers }) {
@@ -88,10 +83,7 @@ export class SurveyResponseUpdateBatcher {
     await this.processUpsertAnswers(transactingModels, surveyResponseId, answers.upserts);
   }
 
-  async processUpdateSurveyResponse(
-    transactingModels,
-    { columnHeader: surveyResponseId, newDataTime, answers },
-  ) {
+  async processUpdateSurveyResponse(transactingModels, { surveyResponseId, newDataTime, answers }) {
     if (newDataTime) {
       await transactingModels.surveyResponse.updateById(surveyResponseId, {
         data_time: newDataTime,
@@ -101,7 +93,7 @@ export class SurveyResponseUpdateBatcher {
     await this.processDeleteAnswers(transactingModels, surveyResponseId, answers.deletes);
   }
 
-  async processDeleteSurveyResponse(transactingModels, { columnHeader: surveyResponseId }) {
+  async processDeleteSurveyResponse(transactingModels, { surveyResponseId }) {
     await transactingModels.surveyResponse.deleteById(surveyResponseId);
   }
 
@@ -145,16 +137,16 @@ export class SurveyResponseUpdateBatcher {
 
   async processInBatches(batchSize = DEFAULT_BATCH_SIZE, cooldownTime = DEFAULT_COOLDOWN_TIME) {
     const batches = [];
-    const columnKeys = Object.keys(this.updatesByColumnKey);
-    for (let i = 0; i < columnKeys.length; i += batchSize) {
-      batches.push(columnKeys.slice(i, i + batchSize));
+    const surveyResponseIds = Object.keys(this.updatesByResponseId);
+    for (let i = 0; i < surveyResponseIds.length; i += batchSize) {
+      batches.push(surveyResponseIds.slice(i, i + batchSize));
     }
 
     const failures = [];
     for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
       const batchOfUpdates = batches[batchIndex];
-      for (const columnKey of batchOfUpdates) {
-        const update = this.updatesByColumnKey[columnKey];
+      for (const surveyResponseId of batchOfUpdates) {
+        const update = this.updatesByResponseId[surveyResponseId];
         try {
           // wrap each survey response in a transaction so that if any update to an individual
           // answer etc. fails, the whole survey response is rolled back and marked as a failure
@@ -162,8 +154,8 @@ export class SurveyResponseUpdateBatcher {
             this.processUpdate(transactingModels, update),
           );
         } catch (error) {
-          const { sheetName, columnHeader } = update;
-          failures.push({ sheetName, columnHeader, error: error.message });
+          const { sheetName, type } = update;
+          failures.push({ sheetName, surveyResponseId, type, error: error.message });
         }
       }
 
@@ -175,12 +167,14 @@ export class SurveyResponseUpdateBatcher {
 
   async processInSingleTransaction() {
     await this.models.wrapInTransaction(async transactingModels => {
-      for (const update of Object.values(this.updatesByColumnKey)) {
+      for (const update of Object.values(this.updatesByResponseId)) {
         try {
           await this.processUpdate(transactingModels, update);
         } catch (error) {
-          const { sheetName, columnHeader } = update;
-          throw new Error(`Couldn't process ${sheetName}, ${columnHeader} to the database`);
+          const { sheetName, surveyResponseId, type } = update;
+          throw new Error(
+            `Couldn't process ${sheetName}, ${surveyResponseId} to the database (${type})`,
+          );
         }
       }
     });
