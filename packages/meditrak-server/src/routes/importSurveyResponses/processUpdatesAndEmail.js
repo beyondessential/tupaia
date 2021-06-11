@@ -21,7 +21,7 @@ const getUpdateTypePart = (type, surveyResponseId) => {
 };
 
 const getFailureMessage = ({ sheetName, surveyResponseId, type, columnIndex, error }) =>
-  `${sheetName}, ${columnIndexToColumnCode(columnIndex)}: Failed to ${getUpdateTypePart(
+  `${sheetName}, Column ${columnIndexToColumnCode(columnIndex)}: Failed to ${getUpdateTypePart(
     type,
     surveyResponseId,
   )} with the error "${error}"`;
