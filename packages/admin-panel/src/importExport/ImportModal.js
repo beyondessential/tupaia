@@ -66,9 +66,10 @@ export const ImportModalComponent = React.memo(
       setFileName(noFileMessage);
     };
 
-    const handleCancel = () => {
+    const handleClose = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setSuccessMessage(null);
       setIsOpen(false);
       setValues({});
       setFile(null);
@@ -93,7 +94,7 @@ export const ImportModalComponent = React.memo(
           setSuccessMessage(response.message);
           setStatus(STATUS.SUCCESS);
         } else {
-          handleDismiss();
+          handleClose();
         }
         changeSuccess();
       } catch (error) {
@@ -122,7 +123,7 @@ export const ImportModalComponent = React.memo(
     const renderButtons = useCallback(() => {
       switch (status) {
         case STATUS.SUCCESS:
-          return <Button onClick={handleDismiss}>Done</Button>;
+          return <Button onClick={handleClose}>Done</Button>;
         case STATUS.ERROR:
           return (
             <>
@@ -133,7 +134,7 @@ export const ImportModalComponent = React.memo(
         default:
           return (
             <>
-              <OutlinedButton onClick={handleCancel}>Cancel</OutlinedButton>
+              <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
               <Button
                 type="submit"
                 disabled={!file}
@@ -145,14 +146,14 @@ export const ImportModalComponent = React.memo(
             </>
           );
       }
-    }, [status, file, handleDismiss, handleCancel, handleSubmit]);
+    }, [status, file, handleDismiss, handleClose, handleSubmit]);
 
     return (
       <>
-        <Dialog onClose={handleCancel} open={isOpen} disableBackdropClick>
+        <Dialog onClose={handleClose} open={isOpen} disableBackdropClick>
           <form>
             <DialogHeader
-              onClose={handleCancel}
+              onClose={handleClose}
               title={fileErrorMessage ? 'Error' : title}
               color={fileErrorMessage ? 'error' : 'textPrimary'}
             />
