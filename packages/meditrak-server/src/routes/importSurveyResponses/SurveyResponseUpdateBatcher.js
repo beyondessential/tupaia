@@ -6,7 +6,7 @@
 import { sleep } from '@tupaia/utils';
 
 const DEFAULT_BATCH_SIZE = 100;
-const DEFAULT_COOLDOWN_TIME = 1000; // wait a second between batches to give side effects time to finish processing
+const DEFAULT_COOLDOWN_TIME = 400; // leave a little time between batches to give side effects time to finish processing
 const CREATE = 'create';
 const UPDATE = 'update';
 const DELETE = 'delete';
@@ -33,6 +33,10 @@ export class SurveyResponseUpdateBatcher {
     // { sheetName, columnHeader, type, newSurveyResponse, newDataTime, answersToUpsert, answersToDelete }
     // n.b. all but columnHeader and type are optional
     this.updatesByColumnKey = {};
+  }
+
+  countBatches(batchSize = DEFAULT_BATCH_SIZE) {
+    return Math.ceil(Object.keys(this.updatesByColumnKey).length / batchSize);
   }
 
   setupColumnsForSheet(sheetName, columnHeaders) {
@@ -123,6 +127,22 @@ export class SurveyResponseUpdateBatcher {
     );
   }
 
+  async processUpdate(transactingModels, { type, ...details }) {
+    switch (type) {
+      case CREATE:
+        await this.processCreateSurveyResponse(transactingModels, details);
+        break;
+      case UPDATE:
+        await this.processUpdateSurveyResponse(transactingModels, details);
+        break;
+      case DELETE:
+        await this.processDeleteSurveyResponse(transactingModels, details);
+        break;
+      default:
+        throw new Error('Missing or misconfigured update type');
+    }
+  }
+
   async processInBatches(batchSize = DEFAULT_BATCH_SIZE, cooldownTime = DEFAULT_COOLDOWN_TIME) {
     const batches = [];
     const columnKeys = Object.keys(this.updatesByColumnKey);
@@ -134,27 +154,15 @@ export class SurveyResponseUpdateBatcher {
     for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
       const batchOfUpdates = batches[batchIndex];
       for (const columnKey of batchOfUpdates) {
-        const { type, ...details } = this.updatesByColumnKey[columnKey];
+        const update = this.updatesByColumnKey[columnKey];
         try {
           // wrap each survey response in a transaction so that if any update to an individual
           // answer etc. fails, the whole survey response is rolled back and marked as a failure
-          await this.models.wrapInTransaction(async transactingModels => {
-            switch (type) {
-              case CREATE:
-                await this.processCreateSurveyResponse(transactingModels, details);
-                break;
-              case UPDATE:
-                await this.processUpdateSurveyResponse(transactingModels, details);
-                break;
-              case DELETE:
-                await this.processDeleteSurveyResponse(transactingModels, details);
-                break;
-              default:
-                throw new Error('Missing or misconfigured update type');
-            }
-          });
+          await this.models.wrapInTransaction(async transactingModels =>
+            this.processUpdate(transactingModels, update),
+          );
         } catch (error) {
-          const { sheetName, columnHeader } = details;
+          const { sheetName, columnHeader } = update;
           failures.push({ sheetName, columnHeader, error: error.message });
         }
       }
@@ -163,5 +171,18 @@ export class SurveyResponseUpdateBatcher {
       await sleep(cooldownTime);
     }
     return { failures };
+  }
+
+  async processInSingleTransaction() {
+    await this.models.wrapInTransaction(async transactingModels => {
+      for (const update of Object.values(this.updatesByColumnKey)) {
+        try {
+          await this.processUpdate(transactingModels, update);
+        } catch (error) {
+          const { sheetName, columnHeader } = update;
+          throw new Error(`Couldn't process ${sheetName}, ${columnHeader} to the database`);
+        }
+      }
+    });
   }
 }

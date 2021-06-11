@@ -17,6 +17,7 @@ import {
   UploadError,
   stripTimezoneFromDate,
 } from '@tupaia/utils';
+import { sendEmail } from '../../utilities';
 import { getArrayQueryParameter, extractTabNameFromQuery } from '../utilities';
 import { ANSWER_TYPES } from '../../database/models/Answer';
 import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
@@ -38,9 +39,9 @@ export async function importSurveyResponses(req, res) {
     if (!req.file) {
       throw new UploadError();
     }
-    const { models, query } = req;
+    const { models, query, userId } = req;
     const surveyNames = getArrayQueryParameter(query.surveyNames);
-    const { timeZone, userId } = query;
+    const { timeZone } = query;
     if (!timeZone) {
       throw new Error(`Timezone is required`);
     }
@@ -202,8 +203,17 @@ export async function importSurveyResponses(req, res) {
         }
       }
     }
-    const { failures } = await updateBatcher.processInBatches();
-    respond(res, { message: 'Imported survey responses', failures });
+
+    // if there's only one batch to process, run the processing synchronously rather than emailing
+    if (updateBatcher.countBatches() <= 1) {
+      await updateBatcher.processInSingleTransaction();
+      respond(res, {});
+    } else {
+      processUpdatesAndEmailUser(models, updateBatcher, userId);
+      respond(res, {
+        message: 'Importing survey responses, you will be emailed when they have been processed',
+      });
+    }
   } catch (error) {
     if (error.respond) {
       throw error; // Already a custom error with a responder
@@ -212,6 +222,33 @@ export async function importSurveyResponses(req, res) {
     }
   }
 }
+
+const processUpdatesAndEmailUser = async (models, updateBatcher, userId) => {
+  const { failures } = await updateBatcher.processInBatches();
+  console.log('done', failures);
+  const user = await models.user.findById(userId);
+
+  // Compose message to send
+  const message = `
+  Hi ${user.first_name},
+
+  Your survey response spreadsheet has finished processing${
+    failures.length === 0 ? ', and all responses were successfully imported.' : '.'
+  }
+
+  ${
+    failures.length > 0
+      ? `
+  Unfortunately some survey responses were not able to be imported. Please try the following again:
+${failures.map(({ sheetName, columnHeader }) => `      - ${sheetName}, ${columnHeader}`).join('\n')}
+
+  Note that any responses not listed here will have been successfully imported, so can be removed for your next attempt.`
+      : ''
+  }`;
+
+  // Send the email
+  sendEmail(user.email, 'Tupaia Survey Response Import', message);
+};
 
 const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnIndex, config) => {
   const { surveyNames, userId, timeZone } = config;
