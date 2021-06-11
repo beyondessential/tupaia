@@ -84,29 +84,13 @@ export async function importSurveyResponses(req, res) {
           // A column representing a survey response
           try {
             if (checkIsNewSurveyResponse(columnHeader)) {
-              if (!surveyNames) {
-                throw new Error(
-                  'When importing new survey responses, you must specify the names of the surveys they are for',
-                );
-              }
-              const surveyName = extractTabNameFromQuery(tabName, surveyNames);
-              const survey = await models.survey.findOne({ name: surveyName });
-              const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
-              const entity = await models.entity.findOne({ code: entityCode });
-              const user = await models.user.findById(userId);
-              // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
-              const surveyDate = getDateForColumn(sheet, columnIndex);
-              const importDate = moment();
-              const surveyResponseDetails = {
-                survey_id: survey.id, // All survey responses within a sheet should be for the same survey
-                assessor_name: `${user.first_name} ${user.last_name}`,
-                user_id: user.id,
-                entity_id: entity.id,
-                start_time: importDate,
-                end_time: importDate,
-                data_time: stripTimezoneFromDate(surveyDate),
-                timezone: timeZone,
-              };
+              const surveyResponseDetails = await constructNewSurveyResponseDetails(
+                models,
+                tabName,
+                sheet,
+                columnIndex,
+                config,
+              );
               updateBatcher.createSurveyResponse(tabName, columnHeader, surveyResponseDetails);
             } else {
               // Validate that every header takes id form, i.e. is an existing or deleted response
@@ -263,6 +247,33 @@ ${failures.map(({ sheetName, columnHeader }) => `      - ${sheetName}, ${columnH
 
   // Send the email
   sendEmail(user.email, 'Tupaia Survey Response Import', message);
+};
+
+const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnIndex, config) => {
+  const { surveyNames, userId, timeZone } = config;
+  if (!surveyNames) {
+    throw new Error(
+      'When importing new survey responses, you must specify the names of the surveys they are for',
+    );
+  }
+  const surveyName = extractTabNameFromQuery(tabName, surveyNames);
+  const survey = await models.survey.findOne({ name: surveyName });
+  const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
+  const entity = await models.entity.findOne({ code: entityCode });
+  const user = await models.user.findById(userId);
+  // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
+  const surveyDate = getDateForColumn(sheet, columnIndex);
+  const importDate = moment();
+  return {
+    survey_id: survey.id, // All survey responses within a sheet should be for the same survey
+    assessor_name: `${user.first_name} ${user.last_name}`,
+    user_id: user.id,
+    entity_id: entity.id,
+    start_time: importDate,
+    end_time: importDate,
+    data_time: stripTimezoneFromDate(surveyDate),
+    timezone: timeZone,
+  };
 };
 
 /**
