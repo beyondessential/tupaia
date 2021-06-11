@@ -106,7 +106,7 @@ export const testE2e = async () => {
   // Store snapshots so that they can be used during tests
   existingSnapshots.export(SNAPSHOTS.path);
 
-  runPackageScript('cypress:generate-config');
+  runPackageScript('cypress:config');
 
   // Hold error throwing so that snapshots can be pushed
   const testError = runTestsAndCatchErrors(args.ciBuildId);

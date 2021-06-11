@@ -1,1 +1,6 @@
-[]
+{
+  "_description": "A list of urls that will be used for testing dashboard reports. It can either be manually populated, or generated using the contents of params/dashboardReports.json",
+  "urls": [
+    "/{projectCode}/{orgUnitCode}/{dashboardGroupName}?report={reportId}&reportPeriod={startDate}-{endDate}"
+  ]
+}

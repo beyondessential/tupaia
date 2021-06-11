@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import reportUrls from '../config/dashboardReports.json';
+import { urls as reportUrls } from '../config/dashboardReports.json';
 import { SNAPSHOTS } from '../constants';
 import { preserveUserSession } from '../support';
 
