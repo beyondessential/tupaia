@@ -25,7 +25,18 @@ const FilterTableCell = styled(TableCell)`
   background: ${props => props.theme.palette.grey['200']};
 `;
 
-const filterTypes = () => ({
+const sortTypes = {
+  alphanumeric: (row1, row2, columnName) => {
+    const rowOneColumn = row1.values[columnName];
+    const rowTwoColumn = row2.values[columnName];
+    if (isNaN(rowOneColumn)) {
+      return rowOneColumn.toUpperCase() > rowTwoColumn.toUpperCase() ? 1 : -1;
+    }
+    return Number(rowOneColumn) > Number(rowTwoColumn) ? 1 : -1;
+  },
+};
+
+const filterTypes = {
   text: (rows, id, filterValue) => {
     return rows.filter(row => {
       const cellValue = row.values[id];
@@ -34,7 +45,7 @@ const filterTypes = () => ({
         : true;
     });
   },
-});
+};
 
 export const DataGrid = ({ data, columns }) => {
   const defaultColumn = React.useMemo(
@@ -60,10 +71,12 @@ export const DataGrid = ({ data, columns }) => {
   } = useTable(
     {
       defaultColumn,
+      sortTypes,
       filterTypes,
       columns,
       data,
       initialState: { pageSize: 20 },
+      disableMultiSort: true,
       // This will stop the pagination resetting when data gets updated after mutations
       autoResetPage: false,
       autoResetSortBy: false,
