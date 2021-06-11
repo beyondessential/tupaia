@@ -18,9 +18,7 @@ export const AppStyleProviders = ({ children }) => {
   return (
     <StylesProvider injectFirst>
       <MuiThemeProvider theme={theme}>
-        <ThemeProvider theme={theme}>
-          <V0MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>{children}</V0MuiThemeProvider>
-        </ThemeProvider>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </MuiThemeProvider>
     </StylesProvider>
   );

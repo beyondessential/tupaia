@@ -11,6 +11,11 @@ const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 1rem;
+
+  // non enlarged styles
+  &.non-enlarged {
+    align-items: flex-start;
+  }
 `;
 
 const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />)`
@@ -45,7 +50,7 @@ const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />
 
     .MuiButton-label {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       color: ${({ theme }) =>
         theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
     }
@@ -67,6 +72,7 @@ const Box = styled.span`
   // non enlarged styles
   &.non-enlarged {
     width: 0.8rem;
+    min-width: 0.8rem;
     height: 0.8rem;
     margin-right: 0.4rem;
   }

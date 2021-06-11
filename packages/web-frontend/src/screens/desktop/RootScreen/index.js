@@ -11,11 +11,9 @@
  * Bare bones container that renders the map fixed in the background and controls vertical ratios
  * of Dashboard and MapDiv based on expanded state of Dashboard (through redux store)
  */
-
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import React from 'react';
-import { useTheme } from '@material-ui/core/styles';
 
 import { selectIsEnlargedDialogVisible } from '../../../selectors';
 import { LoadingScreen } from '../../LoadingScreen';
@@ -31,10 +29,6 @@ import { TOP_BAR_HEIGHT } from '../../../styles';
 import './desktop-styles.css';
 
 export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
-  const theme = useTheme();
-
-  console.log('theme', theme);
-
   return (
     <div>
       {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
