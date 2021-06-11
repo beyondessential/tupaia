@@ -338,7 +338,7 @@
   {
     "id": "PG_Strive_PNG_Facility_EpiCurve",
     "project": "strive",
-    "orgUnit": "PG_MADANG01",
+    "orgUnit": "PG_SANDUAN01",
     "dashboardGroup": "STRIVE PNG"
   },
   {
@@ -610,7 +610,7 @@
     "dashboardGroup": "Reproductive Health"
   },
   {
-    "id": "TO_RH_Validation_F",
+    "id": "TO_RH_Validation_FP",
     "project": "fanafana",
     "orgUnit": "TO",
     "dashboardGroup": "Reproductive Health Validation",
