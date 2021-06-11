@@ -31,4 +31,15 @@ export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
   getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
 }
 
-export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityType> {}
+export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityType> {
+  getDescendantsOfEntities: (
+    hierarchyId: string,
+    entityIds: string[],
+    criteria?: EntityFilter,
+  ) => Promise<EntityType[]>;
+  getRelativesOfEntities: (
+    hierarchyId: string,
+    entityIds: string[],
+    criteria?: EntityFilter,
+  ) => Promise<EntityType[]>;
+}
