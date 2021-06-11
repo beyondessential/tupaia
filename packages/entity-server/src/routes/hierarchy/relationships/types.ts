@@ -57,6 +57,11 @@ export interface RelationshipsRequest
   ctx: RelationshipsContext;
 }
 
+export type MultiEntityRelationshipsContext = Omit<MultiEntityContext, 'fields'> & {
+  ancestor: AncestorSubContext;
+  descendant: DescendantSubContext;
+};
+
 export interface MultiEntityRelationshipsRequest
   extends Request<
     MultiEntityRequestParams,
@@ -64,8 +69,5 @@ export interface MultiEntityRelationshipsRequest
     RequestBody,
     RelationshipsQuery & { entities?: string }
   > {
-  ctx: Omit<MultiEntityContext, 'fields'> & {
-    ancestor: AncestorSubContext;
-    descendant: DescendantSubContext;
-  };
+  ctx: MultiEntityRelationshipsContext;
 }
