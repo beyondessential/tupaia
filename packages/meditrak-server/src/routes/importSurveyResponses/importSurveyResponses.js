@@ -157,7 +157,7 @@ export async function importSurveyResponses(req, res) {
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
               if (checkIsCellEmpty(cellValue)) {
-                updateBatcher.deleteSurveyResponse(tabName, surveyResponseId);
+                updateBatcher.deleteSurveyResponse(surveyResponseId);
                 deletedResponseIds.add(surveyResponseId);
               } else {
                 // Not deleting, make sure the submission date is set as defined in the spreadsheet
@@ -168,12 +168,12 @@ export async function importSurveyResponses(req, res) {
                   dataTimeInSheet,
                 );
                 if (newDataTime) {
-                  updateBatcher.updateDataTime(tabName, surveyResponseId, newDataTime);
+                  updateBatcher.updateDataTime(surveyResponseId, newDataTime);
                 }
               }
             } else if (checkIsCellEmpty(cellValue)) {
               // Empty question row: delete any matching answer
-              updateBatcher.deleteAnswer(tabName, surveyResponseId, { questionId });
+              updateBatcher.deleteAnswer(surveyResponseId, { questionId });
             } else if (
               rowType === ANSWER_TYPES.DATE_OF_DATA ||
               rowType === ANSWER_TYPES.SUBMISSION_DATE
@@ -186,11 +186,11 @@ export async function importSurveyResponses(req, res) {
                 cellValue.toString(),
               );
               if (newDataTime) {
-                updateBatcher.updateDataTime(tabName, surveyResponseId, newDataTime);
+                updateBatcher.updateDataTime(surveyResponseId, newDataTime);
               }
             } else {
               // Normal question row with content: update or create an answer
-              updateBatcher.upsertAnswer(tabName, surveyResponseId, {
+              updateBatcher.upsertAnswer(surveyResponseId, {
                 surveyResponseId,
                 questionId,
                 text: cellValue.toString(),
