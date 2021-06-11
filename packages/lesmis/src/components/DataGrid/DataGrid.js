@@ -66,6 +66,8 @@ export const DataGrid = ({ data, columns }) => {
       initialState: { pageSize: 20 },
       // This will stop the pagination resetting when data gets updated after mutations
       autoResetPage: false,
+      autoResetSortBy: false,
+      autoResetFilters: false,
     },
     useFilters,
     useSortBy,
