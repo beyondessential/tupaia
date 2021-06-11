@@ -4,7 +4,6 @@
  */
 
 import { expect } from 'chai';
-import moment from 'moment';
 import {
   findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
