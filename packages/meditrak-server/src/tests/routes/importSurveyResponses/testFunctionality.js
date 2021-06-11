@@ -85,7 +85,7 @@ export const testFunctionality = async () => {
     const surveyResponsesAdded = [
       {
         entityId: newResponseEntityId1,
-        date: new Date(Date.UTC(2017, 5, 28, 1, 40)), // Month is zero based in js
+        data_time: '2017-06-28 01:40:00',
         answers: {
           faccc42a44705c02a7e_test: 'Fully Operational',
           faccc42a44705c02abc_test: '1.5',
@@ -94,7 +94,7 @@ export const testFunctionality = async () => {
       },
       {
         entityId: newResponseEntityId2,
-        date: new Date(Date.UTC(2017, 5, 28, 2, 37)), // Month is zero based in js
+        data_time: '2017-06-28 02:37:00',
         answers: {
           faccc42a44705c02a7e_test: 'Fully Operational',
           faccc42a44705c02abc_test: '0.4',
@@ -264,8 +264,7 @@ export const testFunctionality = async () => {
       for (const addedResponse of surveyResponsesAdded) {
         const surveyResponse = await models.surveyResponse.findOne({
           entity_id: addedResponse.entityId,
-          // Convert date to data_time format
-          data_time: moment.utc(addedResponse.date).format('YYYY-MM-DD HH:mm:ss'),
+          data_time: addedResponse.data_time,
         });
         expect(surveyResponse, 'added survey response').to.exist;
         for (const [questionId, answerValue] of Object.entries(addedResponse.answers)) {

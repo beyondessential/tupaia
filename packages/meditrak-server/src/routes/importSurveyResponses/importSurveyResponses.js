@@ -236,7 +236,7 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
   const entity = await models.entity.findOne({ code: entityCode });
   const user = await models.user.findById(userId);
   // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
-  const surveyDate = getDateForColumn(sheet, columnIndex);
+  const surveyDate = getDateStringForColumn(sheet, columnIndex);
   const importDate = moment();
   return {
     survey_id: survey.id, // All survey responses within a sheet should be for the same survey
@@ -294,17 +294,13 @@ const getMaxRowColumnIndex = sheet => {
   return { maxColumnIndex, maxRowIndex };
 };
 
-async function getNewDataTimeIfRequired(models, columnHeader, newSubmissionTimeString) {
+async function getNewDataTimeIfRequired(models, columnHeader, newDataTime) {
   if (checkIsNewSurveyResponse(columnHeader)) {
     return null; // no need to update the data time of a survey response that is to be newly created
   }
   const surveyResponse = await models.surveyResponse.findById(columnHeader);
   if (!surveyResponse) return null;
   const currentDataTime = surveyResponse.data_time;
-  const isInExportFormat = moment(newSubmissionTimeString, EXPORT_DATE_FORMAT, true).isValid();
-  const newDataTime = isInExportFormat
-    ? stripTimezoneFromDate(moment(newSubmissionTimeString, EXPORT_DATE_FORMAT).toDate())
-    : stripTimezoneFromDate(moment(newSubmissionTimeString).toDate());
 
   if (!moment(currentDataTime).isSame(newDataTime, 'minute')) {
     return stripTimezoneFromDate(newDataTime);
@@ -313,12 +309,11 @@ async function getNewDataTimeIfRequired(models, columnHeader, newSubmissionTimeS
 }
 
 function getDateStringForColumn(sheet, columnIndex) {
-  return getInfoForColumn(sheet, columnIndex, 'Date');
-}
-
-function getDateForColumn(sheet, columnIndex) {
-  const dateString = getDateStringForColumn(sheet, columnIndex);
-  return moment.utc(dateString, EXPORT_DATE_FORMAT).toDate();
+  const dateString = getInfoForColumn(sheet, columnIndex, 'Date');
+  const isInExportFormat = moment(dateString, EXPORT_DATE_FORMAT, true).isValid();
+  return isInExportFormat
+    ? stripTimezoneFromDate(moment(dateString, EXPORT_DATE_FORMAT).toDate())
+    : stripTimezoneFromDate(moment(dateString).toDate());
 }
 
 function checkIsCellEmpty(cellValue) {
