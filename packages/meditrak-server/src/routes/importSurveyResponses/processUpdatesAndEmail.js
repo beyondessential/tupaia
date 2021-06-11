@@ -7,18 +7,24 @@ import { sendEmail } from '../../utilities';
 import { columnIndexToColumnCode } from '../utilities';
 import { CREATE, UPDATE, DELETE } from './SurveyResponseUpdateBatcher';
 
-const getFailureMessageForType = type => {
+const getUpdateTypePart = (type, surveyResponseId) => {
   switch (type) {
     case CREATE:
-      return 'failed to create new response';
+      return 'create new response';
     case UPDATE:
-      return 'failed to update existing response';
+      return `update existing response ${surveyResponseId}`;
     case DELETE:
-      return 'failed to delete existing response';
+      return `delete existing response ${surveyResponseId}`;
     default:
       return '';
   }
 };
+
+const getFailureMessage = ({ sheetName, surveyResponseId, type, columnIndex, error }) =>
+  `${sheetName}, ${columnIndexToColumnCode(columnIndex)}: Failed to ${getUpdateTypePart(
+    type,
+    surveyResponseId,
+  )} with the error "${error}"`;
 
 export const processUpdatesAndEmail = async (models, updateBatcher, userId) => {
   const { failures } = await updateBatcher.processInBatches();
@@ -36,14 +42,7 @@ export const processUpdatesAndEmail = async (models, updateBatcher, userId) => {
     failures.length > 0
       ? `
   Unfortunately some survey responses were not able to be imported. Please try the following again:
-${failures
-  .map(
-    ({ sheetName, surveyResponseId, type, columnIndex }) =>
-      `      - ${sheetName}, ${columnIndexToColumnCode(
-        columnIndex,
-      )}, ${surveyResponseId} (${getFailureMessageForType(type)})`,
-  )
-  .join('\n')}
+${failures.map(failure => `      - ${getFailureMessage(failure)}`).join('\n')}
 
   Note that any responses not listed here will have been successfully imported, so can be removed for your next attempt.`
       : ''

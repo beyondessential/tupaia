@@ -154,8 +154,7 @@ export class SurveyResponseUpdateBatcher {
             this.processUpdate(transactingModels, update),
           );
         } catch (error) {
-          const { sheetName, type } = update;
-          failures.push({ sheetName, surveyResponseId, type, error: error.message });
+          failures.push({ ...update, error: error.message });
         }
       }
 
