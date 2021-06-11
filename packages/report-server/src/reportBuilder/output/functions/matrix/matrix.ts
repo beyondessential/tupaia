@@ -53,7 +53,7 @@ const buildParams = (params: unknown): MatrixParams => {
   const excludeFields = categoryField ? [categoryField, rowField] : [rowField];
 
   return {
-    columns: { include: includeFields, exclude: excludeFields },
+    columns: { includeFields, excludeFields },
     rows: { categoryField, rowField },
   };
 };

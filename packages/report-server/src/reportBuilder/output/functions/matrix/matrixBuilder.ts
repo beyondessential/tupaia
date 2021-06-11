@@ -40,16 +40,16 @@ export class MatrixBuilder {
       this.matrixData.columns = columns.map(c => ({ key: c, title: c }));
     };
 
-    const { include, exclude } = this.params.columns;
-    if (Array.isArray(include)) {
-      assignColumnSetToMatrixData(include);
+    const { includeFields, excludeFields } = this.params.columns;
+    if (Array.isArray(includeFields)) {
+      assignColumnSetToMatrixData(includeFields);
       return;
     }
     // When prefixColumns === '*', get columns from rows data
     const columns = new Set<string>();
     this.rows.forEach(row => {
       Object.keys(row).forEach(key => {
-        if (!exclude.includes(key)) {
+        if (!excludeFields.includes(key)) {
           columns.add(key);
         }
       });
@@ -75,11 +75,11 @@ export class MatrixBuilder {
   }
 
   private adjustRowsToUseIncludedColumns() {
-    const { include } = this.params.columns;
+    const { includeFields } = this.params.columns;
     const newRows: Row[] = [];
-    if (include === '*') return;
+    if (includeFields === '*') return;
     this.matrixData.rows.forEach(row => {
-      const columnsDataFields = pick(row, include);
+      const columnsDataFields = pick(row, includeFields);
       if (Object.keys(columnsDataFields).length !== 0) {
         const otherFields = pick(row, NON_COLUMNS_KEYS);
         newRows.push({ ...otherFields, ...columnsDataFields });

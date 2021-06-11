@@ -20,13 +20,7 @@ const output = (rows: Row[], params: OutputParams) => {
 
 const buildParams = (params: unknown): OutputParams => {
   const isOutPutBuildersType = (value: string): value is keyof typeof outputBuilders => {
-    switch (value) {
-      case 'default':
-      case 'matrix':
-        return true;
-      default:
-        return false;
-    }
+    return Object.keys(outputBuilders).includes(value);
   };
   if (typeof params === 'object' && params !== null) {
     const { type = 'default', ...restParams } = params;
