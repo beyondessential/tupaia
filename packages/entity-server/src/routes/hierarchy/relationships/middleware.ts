@@ -7,10 +7,10 @@ import { Writable } from '../../../types';
 import { extractFieldFromQuery } from '../middleware/fields';
 import { extractFilterFromQuery } from '../middleware/filter';
 import {
-  RelationsRequest,
-  MultiEntityRelationsRequest,
-  RelationsQuery,
-  RelationsSubQuery,
+  RelationshipsRequest,
+  MultiEntityRelationshipsRequest,
+  RelationshipsQuery,
+  RelationshipsSubQuery,
   Prefix,
 } from './types';
 
@@ -22,12 +22,15 @@ const strip = <T extends string, U extends string>(baseString: T, toStrip: U) =>
   return stripped as Strip<T, U>;
 };
 
-const getSubQuery = (query: RelationsQuery, from: 'ancestor' | 'descendant'): RelationsSubQuery => {
-  const strippedQuery: Writable<RelationsSubQuery> = {};
+const getSubQuery = (
+  query: RelationshipsQuery,
+  from: 'ancestor' | 'descendant',
+): RelationshipsSubQuery => {
+  const strippedQuery: Writable<RelationshipsSubQuery> = {};
   Object.entries(query).forEach(([key, value]) => {
     if (key.startsWith(`${from}_`)) {
       const strippedKey = strip(
-        key as keyof Prefix<RelationsSubQuery, 'ancestor' | 'descendant'>,
+        key as keyof Prefix<RelationshipsSubQuery, 'ancestor' | 'descendant'>,
         from,
       );
       strippedQuery[strippedKey] = value;
@@ -37,7 +40,7 @@ const getSubQuery = (query: RelationsQuery, from: 'ancestor' | 'descendant'): Re
 };
 
 const getSubContext = (
-  req: RelationsRequest | MultiEntityRelationsRequest,
+  req: RelationshipsRequest | MultiEntityRelationshipsRequest,
   from: 'ancestor' | 'descendant',
 ) => {
   const { field: baseField, allowedCountries } = req.ctx;
@@ -51,8 +54,8 @@ const getSubContext = (
   return { type, field, filter: restOfFilter };
 };
 
-export const attachRelationsContext = async (
-  req: RelationsRequest | MultiEntityRelationsRequest,
+export const attachRelationshipsContext = async (
+  req: RelationshipsRequest | MultiEntityRelationshipsRequest,
   res: Response,
   next: NextFunction,
 ) => {
