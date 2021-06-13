@@ -17,11 +17,12 @@ import {
 } from '@tupaia/ui-components/lib/map';
 import { useEntitiesData } from './useEntitiesData';
 import { yearToApiDates } from './utils';
+import { useUrlSearchParam } from '../../utils';
 import { get } from '../api';
 
 const processMeasureInfo = ({ serieses, measureData, ...rest }) => {
   const processedSerieses = serieses.map(series => {
-    const { values: mapOptionValues, type, scaleType } = series;
+    const { values: mapOptionValues, type } = series;
 
     // assign colors
     const values = autoAssignColors(mapOptionValues);
@@ -79,35 +80,39 @@ const processMeasureData = ({
 
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
-  return entitiesData
-    .filter(entity => camelCase(entity.type) === camelCase(measureLevel))
-    .map(entity => {
-      const measure = measureData.find(e => e.organisationUnitCode === entity.code);
-      const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
-        measure,
-        serieses,
-        hiddenValues,
-        radiusScaleFactor,
-      );
+  return (
+    entitiesData
+      .filter(entity => camelCase(entity.type) === camelCase(measureLevel))
+      .map(entity => {
+        const measure = measureData.find(e => e.organisationUnitCode === entity.code);
+        const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
+          measure,
+          serieses,
+          hiddenValues,
+          radiusScaleFactor,
+        );
 
-      return {
-        ...entity,
-        ...measure,
-        isHidden,
-        radius,
-        coordinates: entity.point,
-        region: entity.region,
-        color,
-        icon,
-        originalValue,
-      };
-    })
-    .filter(({ isHidden }) => !isHidden);
+        return {
+          ...entity,
+          ...measure,
+          isHidden,
+          radius,
+          coordinates: entity.point,
+          region: entity.region,
+          color,
+          icon,
+          originalValue,
+        };
+      })
+      // entities need to have either region data or valid coordinates to be displayed on the map
+      .filter(({ coordinates, region }) => region || (coordinates && coordinates.length === 2))
+      .filter(({ isHidden }) => !isHidden)
+  );
 };
 
 export const useMapOverlayReportData = ({ entityCode, year }) => {
   const [hiddenValues, setHiddenValues] = useState({});
-  const [selectedOverlay, setSelectedOverlay] = useState(null);
+  const [selectedOverlay, setSelectedOverlay] = useUrlSearchParam('overlay', null);
 
   const { data: entitiesData, entitiesByCode, isLoading: entitiesLoading } = useEntitiesData(
     entityCode,
@@ -141,11 +146,6 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   useEffect(() => {
     setHiddenValues({});
   }, [setHiddenValues, selectedOverlay, entityCode]);
-
-  // reset selected overlay when changing entity
-  useEffect(() => {
-    setSelectedOverlay(null);
-  }, [setSelectedOverlay, entityCode]);
 
   // set default hidden measures when measure data changes
   useEffect(() => {

@@ -4,11 +4,11 @@
  */
 
 import { CreateHandler } from './CreateHandler';
-import { assertTupaiaAdminPanelAccess } from '../../permissions';
+import { assertAdminPanelAccess } from '../../permissions';
 
 export class TupaiaAdminCreateHandler extends CreateHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertTupaiaAdminPanelAccess);
+    await this.assertPermissions(assertAdminPanelAccess);
   }
 
   async createRecord() {

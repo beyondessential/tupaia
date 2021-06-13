@@ -13,17 +13,21 @@ import {
   EntityDescendantsRoute,
   MultiEntityDescendantsRequest,
   MultiEntityDescendantsRoute,
-  RelationsRequest,
-  EntityRelationsRoute,
-  MultiEntityRelationsRequest,
-  MultiEntityRelationsRoute,
+  RelativesRequest,
+  EntityRelativesRoute,
+  MultiEntityRelativesRequest,
+  MultiEntityRelativesRoute,
+  RelationshipsRequest,
+  EntityRelationshipsRoute,
+  MultiEntityRelationshipsRequest,
+  MultiEntityRelationshipsRoute,
 } from '../routes';
 import {
   attachCommonContext,
   attachSingleEntityContext,
   attachMultiEntityContext,
 } from '../routes/hierarchy/middleware';
-import { attachRelationsContext } from '../routes/hierarchy/relations/middleware';
+import { attachRelationshipsContext } from '../routes/hierarchy/relationships/middleware';
 
 /**
  * Set up express server with middleware,
@@ -33,15 +37,23 @@ export function createApp() {
     .useBasicBearerAuth('entity-server')
     .use<SingleEntityRequest | MultiEntityRequest>('hierarchy/:hierarchyName', attachCommonContext)
     .use<MultiEntityRequest>('hierarchy/:hierarchyName/descendants', attachMultiEntityContext)
-    .use<MultiEntityRequest>('hierarchy/:hierarchyName/relations', attachMultiEntityContext)
+    .use<MultiEntityRequest>('hierarchy/:hierarchyName/relatives', attachMultiEntityContext)
+    .use<MultiEntityRequest>('hierarchy/:hierarchyName/relationships', attachMultiEntityContext)
     .get<MultiEntityDescendantsRequest>(
       'hierarchy/:hierarchyName/descendants',
       handleWith(MultiEntityDescendantsRoute),
     )
-    .use<MultiEntityRelationsRequest>('hierarchy/:hierarchyName/relations', attachRelationsContext)
-    .get<MultiEntityRelationsRequest>(
-      'hierarchy/:hierarchyName/relations',
-      handleWith(MultiEntityRelationsRoute),
+    .get<MultiEntityRelativesRequest>(
+      'hierarchy/:hierarchyName/relatives',
+      handleWith(MultiEntityRelativesRoute),
+    )
+    .use<MultiEntityRelationshipsRequest>(
+      'hierarchy/:hierarchyName/relationships',
+      attachRelationshipsContext,
+    )
+    .get<MultiEntityRelationshipsRequest>(
+      'hierarchy/:hierarchyName/relationships',
+      handleWith(MultiEntityRelationshipsRoute),
     )
     .use<SingleEntityRequest>('hierarchy/:hierarchyName/:entityCode', attachSingleEntityContext)
     .get<SingleEntityRequest>('hierarchy/:hierarchyName/:entityCode', handleWith(SingleEntityRoute))
@@ -49,10 +61,17 @@ export function createApp() {
       'hierarchy/:hierarchyName/:entityCode/descendants',
       handleWith(EntityDescendantsRoute),
     )
-    .use<RelationsRequest>('hierarchy/:hierarchyName/:entityCode/relations', attachRelationsContext)
-    .get<RelationsRequest>(
-      'hierarchy/:hierarchyName/:entityCode/relations',
-      handleWith(EntityRelationsRoute),
+    .get<RelativesRequest>(
+      'hierarchy/:hierarchyName/:entityCode/relatives',
+      handleWith(EntityRelativesRoute),
+    )
+    .use<RelationshipsRequest>(
+      'hierarchy/:hierarchyName/:entityCode/relationships',
+      attachRelationshipsContext,
+    )
+    .get<RelationshipsRequest>(
+      'hierarchy/:hierarchyName/:entityCode/relationships',
+      handleWith(EntityRelationshipsRoute),
     )
     .build();
 }
