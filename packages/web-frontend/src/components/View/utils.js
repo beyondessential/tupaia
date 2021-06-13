@@ -19,6 +19,7 @@ import { SingleDateWrapper } from './SingleDateWrapper';
 import { SingleDownloadLinkWrapper } from './SingleDownloadLinkWrapper';
 import { SingleTickWrapper } from './SingleTickWrapper';
 import { SingleValueWrapper } from './SingleValueWrapper';
+import { ViewTitle } from './Typography';
 
 const SINGLE_VALUE_COMPONENTS = {
   singleTick: SingleTickWrapper,
@@ -51,7 +52,7 @@ export const getViewWrapper = ({ type, viewType }) => {
       if (!ViewWrapper) {
         return (
           <div style={VIEW_STYLES.newChartComing}>
-            <h2 style={VIEW_STYLES.title}>New dashboard element coming soon</h2>
+            <ViewTitle>New dashboard element coming soon</ViewTitle>
           </div>
         );
       }

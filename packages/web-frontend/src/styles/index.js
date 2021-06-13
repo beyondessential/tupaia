@@ -364,14 +364,6 @@ export const VIEW_STYLES = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    position: 'relative',
-    color: darkWhite,
-    marginTop: 5,
-    marginBottom: 15,
-    lineHeight: '130%',
-    textAlign: 'center',
-  },
   periodRange: {
     position: 'relative',
     color: darkWhite,

@@ -23,6 +23,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { VIEW_STYLES } from '../../styles';
 import { formatDataValue } from '../../utils';
+import { ViewTitle } from './Typography';
 
 export class SingleValueWrapper extends PureComponent {
   render() {
@@ -32,7 +33,7 @@ export class SingleValueWrapper extends PureComponent {
 
     return (
       <div style={VIEW_STYLES.viewContainer}>
-        <div style={VIEW_STYLES.title}>{name}</div>
+        <ViewTitle>{name}</ViewTitle>
         <div style={{ ...VIEW_STYLES.data, ...(style || {}) }}>
           {formatDataValue(value, valueType, { ...metadata, total })}
         </div>

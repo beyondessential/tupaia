@@ -16,6 +16,7 @@ import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
 import { getViewWrapper, getIsSingleValue, getIsMatrix } from './utils';
 import { Alert, AlertAction, AlertLink } from '../Alert';
+import { ViewTitle } from './Typography';
 
 const viewHasData = viewContent => {
   const { chartType, data, value } = viewContent;
@@ -166,11 +167,11 @@ export class View extends Component {
       const periodDependent = startDate && endDate;
       return (
         <div data-testid="view" style={viewContainerStyle}>
-          <h2 style={VIEW_STYLES.title}>
+          <ViewTitle>
             {viewContent.name}
             <NoDataMessage viewContent={viewContent} />
             {periodDependent && expandButton}
-          </h2>
+          </ViewTitle>
         </div>
       );
     }
@@ -198,7 +199,7 @@ export class View extends Component {
         </div>
       ) : null;
 
-    const title = this.getHasTitle() && <div style={VIEW_STYLES.title}>{viewContent.name}</div>;
+    const title = this.getHasTitle() && <ViewTitle>{viewContent.name}</ViewTitle>;
 
     const showPeriodRange = this.getHasPeriod() && (
       <div style={VIEW_STYLES.periodRange}>{formatPeriodRange(viewContent.period)}</div>
