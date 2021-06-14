@@ -41,9 +41,7 @@ export async function importSurveyResponses(req, res) {
     const surveyNames = getArrayQueryParameter(req?.query?.surveyNames);
     const timeZone = req?.query?.timeZone;
     if (!timeZone) {
-      throw new Error(
-        `Timezone is required`,
-      );
+      throw new Error(`Timezone is required`);
     }
     const { models } = req;
     await models.wrapInTransaction(async transactingModels => {
@@ -76,43 +74,49 @@ export async function importSurveyResponses(req, res) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
           if (!isInfoColumn(columnIndex)) {
             // A column representing a survey response
-            try {
-              if (checkIsNewSurveyResponse(columnHeader)) {
-                if (!surveyNames) {
-                  throw new Error(
-                    'When importing new survey responses, you must specify the names of the surveys they are for',
-                  );
-                }
-                const surveyName = extractTabNameFromQuery(tabName, surveyNames);
-                const survey = await transactingModels.survey.findOne({ name: surveyName });
-                const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
-                const entity = await transactingModels.entity.findOne({ code: entityCode });
-                const user = await transactingModels.user.findById(req.userId);
-                // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
-                const surveyDate = getDateForColumn(sheet, columnIndex);
-                const importDate = moment();
-                const newSurveyResponse = await transactingModels.surveyResponse.create({
-                  survey_id: survey.id, // All survey responses within a sheet should be for the same survey
-                  assessor_name: `${user.first_name} ${user.last_name}`,
-                  user_id: user.id,
-                  entity_id: entity.id,
-                  start_time: importDate,
-                  end_time: importDate,
-                  data_time: stripTimezoneFromDate(surveyDate),
-                  timezone: timeZone,
-                });
-                newSurveyResponseIds[columnIndex] = newSurveyResponse.id;
-              } else {
+            if (checkIsNewSurveyResponse(columnHeader)) {
+              if (!surveyNames) {
+                throw new Error(
+                  'When importing new survey responses, you must specify the names of the surveys they are for',
+                );
+              }
+              const surveyName = extractTabNameFromQuery(tabName, surveyNames);
+              const survey = await transactingModels.survey.findOne({ name: surveyName });
+              if (!survey) {
+                throw new Error(`No survey named ${surveyName}`);
+              }
+              const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
+              const entity = await transactingModels.entity.findOne({ code: entityCode });
+              if (!entity) {
+                throw new Error(`No entity with code ${entityCode}`);
+              }
+              const user = await transactingModels.user.findById(req.userId);
+              // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
+              const surveyDate = getDateForColumn(sheet, columnIndex);
+              const importDate = moment();
+              const newSurveyResponse = await transactingModels.surveyResponse.create({
+                survey_id: survey.id, // All survey responses within a sheet should be for the same survey
+                assessor_name: `${user.first_name} ${user.last_name}`,
+                user_id: user.id,
+                entity_id: entity.id,
+                start_time: importDate,
+                end_time: importDate,
+                data_time: stripTimezoneFromDate(surveyDate),
+                timezone: timeZone,
+              });
+              newSurveyResponseIds[columnIndex] = newSurveyResponse.id;
+            } else {
+              try {
                 // Validate that every header takes id form, i.e. is an existing or deleted response
                 await hasContent(columnHeader);
                 await takesIdForm(columnHeader);
+              } catch (error) {
+                throw new ImportValidationError(
+                  `Invalid survey response id ${columnHeader} causing message: ${
+                    error.message
+                  } at column ${columnIndex + 1} on tab ${tabName}`,
+                );
               }
-            } catch (error) {
-              throw new ImportValidationError(
-                `Invalid survey response id ${columnHeader} causing message: ${
-                  error.message
-                } at column ${columnIndex + 1} on tab ${tabName}`,
-              );
             }
           }
         }
