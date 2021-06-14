@@ -85,28 +85,28 @@ export async function importSurveyResponses(req, res) {
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
-        try {
-          if (checkIsNewSurveyResponse(columnHeader)) {
-            const surveyResponseId = surveyResponseIds[columnIndex];
-            const surveyResponseDetails = await constructNewSurveyResponseDetails(
-              models,
-              tabName,
-              sheet,
-              columnIndex,
-              { id: surveyResponseId, ...config },
-            );
-            updateBatcher.createSurveyResponse(surveyResponseId, surveyResponseDetails);
-          } else {
+        if (checkIsNewSurveyResponse(columnHeader)) {
+          const surveyResponseId = surveyResponseIds[columnIndex];
+          const surveyResponseDetails = await constructNewSurveyResponseDetails(
+            models,
+            tabName,
+            sheet,
+            columnIndex,
+            { id: surveyResponseId, ...config },
+          );
+          updateBatcher.createSurveyResponse(surveyResponseId, surveyResponseDetails);
+        } else {
+          try {
             // Validate that every header takes id form, i.e. is an existing or deleted response
             await hasContent(columnHeader);
             await takesIdForm(columnHeader);
+          } catch (error) {
+            throw new ImportValidationError(
+              `Invalid column header ${columnHeader} causing message: ${error.message} at column ${
+                columnIndex + 1
+              } on tab ${tabName} (should be a survey response id or "NEW" for new responses)`,
+            );
           }
-        } catch (error) {
-          throw new ImportValidationError(
-            `Invalid column header ${columnHeader} causing message: ${error.message} at column ${
-              columnIndex + 1
-            } on tab ${tabName} (should be an id or "NEW" for new responses)`,
-          );
         }
       }
 
@@ -230,8 +230,14 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
   }
   const surveyName = extractTabNameFromQuery(tabName, surveyNames);
   const survey = await models.survey.findOne({ name: surveyName });
+  if (!entity) {
+    throw new Error(`No survey named ${surveyName}`);
+  }
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
   const entity = await models.entity.findOne({ code: entityCode });
+  if (!entity) {
+    throw new Error(`No entity with code ${entityCode}`);
+  }
   const user = await models.user.findById(userId);
   // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
   const surveyDate = getDateStringForColumn(sheet, columnIndex);
