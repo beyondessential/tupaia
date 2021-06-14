@@ -28,7 +28,7 @@ import {
 } from '../exportSurveyResponses';
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { SurveyResponseUpdateBatcher } from './SurveyResponseUpdateBatcher';
+import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
 import { emailResults } from './emailResults';
 
 /**
@@ -47,7 +47,7 @@ export async function importSurveyResponses(req, res) {
       throw new Error(`Timezone is required`);
     }
     const config = { timeZone, userId, surveyNames };
-    const updateBatcher = new SurveyResponseUpdateBatcher(models);
+    const updatePersistor = new SurveyResponseUpdatePersistor(models);
     const workbook = xlsx.readFile(req.file.path);
     // Go through each sheet in the workbook and process the updated survey responses
     const entitiesBySurveyName = await getEntitiesBySurveyName(
@@ -81,7 +81,7 @@ export async function importSurveyResponses(req, res) {
           surveyResponseIds[columnIndex] = columnHeader;
         }
       }
-      updateBatcher.setupColumnsForSheet(tabName, surveyResponseIds);
+      updatePersistor.setupColumnsForSheet(tabName, surveyResponseIds);
 
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
@@ -94,7 +94,7 @@ export async function importSurveyResponses(req, res) {
             columnIndex,
             { id: surveyResponseId, ...config },
           );
-          updateBatcher.createSurveyResponse(surveyResponseId, surveyResponseDetails);
+          updatePersistor.createSurveyResponse(surveyResponseId, surveyResponseDetails);
         } else {
           try {
             // Validate that every header takes id form, i.e. is an existing or deleted response
@@ -157,7 +157,7 @@ export async function importSurveyResponses(req, res) {
             if (questionId === 'N/A') {
               // Info row (e.g. entity name): if no content delete the survey response wholesale
               if (checkIsCellEmpty(cellValue)) {
-                updateBatcher.deleteSurveyResponse(surveyResponseId);
+                updatePersistor.deleteSurveyResponse(surveyResponseId);
                 deletedResponseIds.add(surveyResponseId);
               } else {
                 // Not deleting, make sure the submission date is set as defined in the spreadsheet
@@ -168,12 +168,12 @@ export async function importSurveyResponses(req, res) {
                   dataTimeInSheet,
                 );
                 if (newDataTime) {
-                  updateBatcher.updateDataTime(surveyResponseId, newDataTime);
+                  updatePersistor.updateDataTime(surveyResponseId, newDataTime);
                 }
               }
             } else if (checkIsCellEmpty(cellValue)) {
               // Empty question row: delete any matching answer
-              updateBatcher.deleteAnswer(surveyResponseId, { questionId });
+              updatePersistor.deleteAnswer(surveyResponseId, { questionId });
             } else if (
               rowType === ANSWER_TYPES.DATE_OF_DATA ||
               rowType === ANSWER_TYPES.SUBMISSION_DATE
@@ -186,11 +186,11 @@ export async function importSurveyResponses(req, res) {
                 cellValue.toString(),
               );
               if (newDataTime) {
-                updateBatcher.updateDataTime(surveyResponseId, newDataTime);
+                updatePersistor.updateDataTime(surveyResponseId, newDataTime);
               }
             } else {
               // Normal question row with content: update or create an answer
-              updateBatcher.upsertAnswer(surveyResponseId, {
+              updatePersistor.upsertAnswer(surveyResponseId, {
                 surveyResponseId,
                 questionId,
                 text: cellValue.toString(),
@@ -203,11 +203,11 @@ export async function importSurveyResponses(req, res) {
     }
 
     // if there aren't too many to process, run the processing synchronously rather than emailing
-    if (updateBatcher.count() <= 100) {
-      await updateBatcher.processInSingleTransaction();
+    if (updatePersistor.count() <= 100) {
+      await updatePersistor.processInSingleTransaction();
       respond(res, {});
     } else {
-      const { failures } = await updateBatcher.process();
+      const { failures } = await updatePersistor.process();
       const user = await models.user.findById(userId);
       emailResults(user, failures);
       respond(res, {
