@@ -3,12 +3,31 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import reportUrls from '../config/dashboardReports.json';
+import { urls as reportUrls } from '../config/dashboardReports.json';
 import { SNAPSHOTS } from '../constants';
 import { preserveUserSession } from '../support';
 
-const checkResponseHasData = response =>
-  response?.body?.value !== undefined || response?.body?.data?.length > 0;
+const checkHasMatrixData = body => {
+  const { rows = [], columns = [] } = body;
+
+  const hasColumnCategories = columns[0]?.columns;
+  const getColumnKeys = cols => cols.map(c => c.key);
+  const columnKeys = hasColumnCategories
+    ? columns.map(c => getColumnKeys(c.columns)).flat()
+    : getColumnKeys(columns);
+
+  return rows.some(row => Object.keys(row).some(key => columnKeys.includes(key)));
+};
+
+const assertUrlResponseHasData = (url, response) => {
+  const { body } = response;
+  const hasSingleValue = body?.value !== undefined;
+  const hasChartData = body?.data?.length > 0;
+
+  if (!hasSingleValue && !hasChartData && !checkHasMatrixData(body)) {
+    throw new Error(`Report with url "${url}" has no data`);
+  }
+};
 
 const urlToRouteRegex = url => {
   const queryParams = url.split('?').slice(1).join('');
@@ -41,8 +60,7 @@ describe('Dashboard reports', () => {
       cy.visit(url);
       cy.wait('@report').then(({ response }) => {
         if (requireData) {
-          const failureMessage = `Report '${url}' is empty`;
-          expect(checkResponseHasData(response), failureMessage).to.be.true;
+          assertUrlResponseHasData(url, response);
         }
       });
 
