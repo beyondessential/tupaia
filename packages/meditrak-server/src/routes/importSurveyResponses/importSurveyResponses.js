@@ -29,7 +29,7 @@ import {
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { SurveyResponseUpdateBatcher } from './SurveyResponseUpdateBatcher';
-import { processUpdatesAndEmail } from './processUpdatesAndEmail';
+import { emailResults } from './emailResults';
 
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
@@ -207,7 +207,9 @@ export async function importSurveyResponses(req, res) {
       await updateBatcher.processInSingleTransaction();
       respond(res, {});
     } else {
-      processUpdatesAndEmail(models, updateBatcher, userId);
+      const { failures } = await updateBatcher.processInBatches();
+      const user = await models.user.findById(userId);
+      emailResults(user, failures);
       respond(res, {
         message: 'Importing survey responses, you will be emailed when they have been processed',
       });

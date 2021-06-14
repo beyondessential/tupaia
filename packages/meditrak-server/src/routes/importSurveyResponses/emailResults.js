@@ -26,10 +26,7 @@ const getFailureMessage = ({ sheetName, surveyResponseId, type, columnIndex, err
     surveyResponseId,
   )} with the error "${error}"`;
 
-export const processUpdatesAndEmail = async (models, updateBatcher, userId) => {
-  const { failures } = await updateBatcher.processInBatches();
-  const user = await models.user.findById(userId);
-
+export const emailResults = async (user, failures) => {
   // Compose message to send
   const message = `
   Hi ${user.first_name},
