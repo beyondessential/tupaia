@@ -230,7 +230,7 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
   }
   const surveyName = extractTabNameFromQuery(tabName, surveyNames);
   const survey = await models.survey.findOne({ name: surveyName });
-  if (!entity) {
+  if (!survey) {
     throw new Error(`No survey named ${surveyName}`);
   }
   const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
