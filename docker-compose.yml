@@ -1,0 +1,20 @@
+services:
+  web:
+    build:
+      context: .
+      target: test
+    ports:
+      - "5000:80"
+    links:
+      - db
+    env_file:
+      - ci-env-vars
+    environment:
+      - BRANCH=2863-containerised-ci-e2e-testing
+      - ENVIRONMENT=e2e
+    volumes:
+    - ~/.aws:/tupaia/.aws
+  db:
+    image: postgres:11-alpine
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
