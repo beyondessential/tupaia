@@ -29,6 +29,10 @@ export class SurveyResponseUpdateBatcher {
     this.updatesByResponseId = {};
   }
 
+  count() {
+    return Object.keys(this.updatesByResponseId).length;
+  }
+
   setupColumnsForSheet(sheetName, surveyResponseIds) {
     surveyResponseIds.forEach((surveyResponseId, columnIndex) => {
       if (!surveyResponseId) return; // array contains some empty slots representing info columns

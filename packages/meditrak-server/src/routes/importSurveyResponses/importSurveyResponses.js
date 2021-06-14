@@ -202,8 +202,8 @@ export async function importSurveyResponses(req, res) {
       }
     }
 
-    // if there's only one batch to process, run the processing synchronously rather than emailing
-    if (updateBatcher.countBatches() <= 1) {
+    // if there aren't too many to process, run the processing synchronously rather than emailing
+    if (updateBatcher.count() <= 100) {
       await updateBatcher.processInSingleTransaction();
       respond(res, {});
     } else {
