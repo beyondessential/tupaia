@@ -5,7 +5,7 @@
 
 import { sendEmail } from '../../utilities';
 import { columnIndexToColumnCode } from '../utilities';
-import { CREATE, UPDATE, DELETE } from './SurveyResponseUpdateBatcher';
+import { CREATE, UPDATE, DELETE } from './SurveyResponseUpdatePersistor';
 
 const getUpdateTypePart = (type, surveyResponseId) => {
   switch (type) {

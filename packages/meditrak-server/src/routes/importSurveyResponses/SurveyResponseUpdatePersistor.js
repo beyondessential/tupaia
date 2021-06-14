@@ -20,7 +20,7 @@ export const DELETE = 'delete';
  * both the direct impact of the updates here, and the async side effects triggered by database
  * records changing).
  */
-export class SurveyResponseUpdateBatcher {
+export class SurveyResponseUpdatePersistor {
   constructor(models) {
     this.models = models;
     // maintain a map of response ids to update details, where update details looks like
