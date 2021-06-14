@@ -207,7 +207,7 @@ export async function importSurveyResponses(req, res) {
       await updateBatcher.processInSingleTransaction();
       respond(res, {});
     } else {
-      const { failures } = await updateBatcher.processInBatches();
+      const { failures } = await updateBatcher.process();
       const user = await models.user.findById(userId);
       emailResults(user, failures);
       respond(res, {

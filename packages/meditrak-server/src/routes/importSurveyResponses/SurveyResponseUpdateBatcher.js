@@ -3,10 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { sleep } from '@tupaia/utils';
-
-const DEFAULT_BATCH_SIZE = 100;
-const DEFAULT_COOLDOWN_TIME = 400; // leave a little time between batches to give side effects time to finish processing
 export const CREATE = 'create';
 export const UPDATE = 'update';
 export const DELETE = 'delete';
@@ -31,10 +27,6 @@ export class SurveyResponseUpdateBatcher {
     // { sheetName, surveyResponseId, type, newSurveyResponse, newDataTime, answersToUpsert, answersToDelete }
     // n.b. all but sheetName, surveyResponseId, and type are optional
     this.updatesByResponseId = {};
-  }
-
-  countBatches(batchSize = DEFAULT_BATCH_SIZE) {
-    return Math.ceil(Object.keys(this.updatesByResponseId).length / batchSize);
   }
 
   setupColumnsForSheet(sheetName, surveyResponseIds) {
@@ -135,32 +127,22 @@ export class SurveyResponseUpdateBatcher {
     }
   }
 
-  async processInBatches(batchSize = DEFAULT_BATCH_SIZE, cooldownTime = DEFAULT_COOLDOWN_TIME) {
-    const batches = [];
+  async process() {
     const surveyResponseIds = Object.keys(this.updatesByResponseId);
-    for (let i = 0; i < surveyResponseIds.length; i += batchSize) {
-      batches.push(surveyResponseIds.slice(i, i + batchSize));
-    }
-
     const failures = [];
-    for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
-      const batchOfUpdates = batches[batchIndex];
-      for (const surveyResponseId of batchOfUpdates) {
-        const update = this.updatesByResponseId[surveyResponseId];
-        try {
-          // wrap each survey response in a transaction so that if any update to an individual
-          // answer etc. fails, the whole survey response is rolled back and marked as a failure
-          await this.models.wrapInTransaction(async transactingModels =>
-            this.processUpdate(transactingModels, update),
-          );
-        } catch (error) {
-          failures.push({ ...update, error: error.message });
-        }
+    for (const surveyResponseId of surveyResponseIds) {
+      const update = this.updatesByResponseId[surveyResponseId];
+      try {
+        // wrap each survey response in a transaction so that if any update to an individual
+        // answer etc. fails, the whole survey response is rolled back and marked as a failure
+        await this.models.wrapInTransaction(async transactingModels =>
+          this.processUpdate(transactingModels, update),
+        );
+      } catch (error) {
+        failures.push({ ...update, error: error.message });
       }
-
-      // wait some time between batches to give side effects time to finish processing
-      await sleep(cooldownTime);
     }
+
     return { failures };
   }
 
