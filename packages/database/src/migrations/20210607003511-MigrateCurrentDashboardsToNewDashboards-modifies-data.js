@@ -54,11 +54,20 @@ const getDashboardItemByCode = async (db, code) => {
 };
 
 const getLegacyReportByCode = async (db, code) => {
-  const { rows: dashboardItems } = await db.runSql(`
+  const { rows: legacyReports } = await db.runSql(`
       SELECT * FROM legacy_report
       WHERE code = '${code}';
   `);
-  return dashboardItems[0] || null;
+  return legacyReports[0] || null;
+};
+
+const getDashboardRelationByDashboardAndChildId = async (db, dashboardId, childId) => {
+  const { rows: dashboardRelations } = await db.runSql(`
+      SELECT * FROM dashboard_relation
+      WHERE dashboard_id = '${dashboardId}'
+      AND child_id = '${childId}';
+  `);
+  return dashboardRelations[0] || null;
 };
 
 const createDrillDownDashboardItems = async (db, drillDownDashboardReports) => {
@@ -127,7 +136,8 @@ exports.up = async function (db) {
     });
 
     for (const dashboardGroup of dashboardGroups) {
-      for (const dashboardReportId of dashboardGroup.dashboardReports) {
+      for (let i = 0; i < dashboardGroup.dashboardReports.length; i++) {
+        const dashboardReportId = dashboardGroup.dashboardReports[i];
         const dashboardReports = await getDashboardReportById(db, dashboardReportId);
         if (!dashboardReports || dashboardReports.length === 0) {
           continue; // there's no dashboard reports with this id?
@@ -153,6 +163,10 @@ exports.up = async function (db) {
           viewJson.drillDown.itemCode = `${drillDownDashboardReports[0].id}_DrillDown_1`;
 
           await createDrillDownDashboardItems(db, drillDownDashboardReports);
+        }
+
+        if (!dataBuilder) {
+          viewJson.noDataFetch = true;
         }
 
         const entityTypes = [
@@ -190,6 +204,11 @@ exports.up = async function (db) {
         const dashboardItem = await getDashboardItemByCode(db, reportCode);
         const legacyReport = await getLegacyReportByCode(db, reportCode);
         const dashboardItemId = dashboardItem ? dashboardItem.id : generateId();
+        const dashboardRelation = await getDashboardRelationByDashboardAndChildId(
+          db,
+          dashboardId,
+          dashboardItemId,
+        );
 
         // Create main Dashboard Items
         if (!dashboardItem) {
@@ -202,7 +221,7 @@ exports.up = async function (db) {
           });
         }
 
-        if (!legacyReport) {
+        if (!legacyReport && dataBuilder) {
           await insertObject(db, 'legacy_report', {
             id: generateId(),
             code: reportCode,
@@ -212,14 +231,17 @@ exports.up = async function (db) {
           });
         }
 
-        await insertObject(db, 'dashboard_relation', {
-          id: generateId(),
-          dashboard_id: dashboardId,
-          child_id: dashboardItemId,
-          permission_groups: `{${userGroups.toString()}}`,
-          entity_types: `{${entityTypes.toString()}}`,
-          project_codes: `{${projectCodes.toString()}}`,
-        });
+        if (!dashboardRelation) {
+          await insertObject(db, 'dashboard_relation', {
+            id: generateId(),
+            dashboard_id: dashboardId,
+            child_id: dashboardItemId,
+            sort_order: i,
+            permission_groups: `{${userGroups.toString()}}`,
+            entity_types: `{${entityTypes.toString()}}`,
+            project_codes: `{${projectCodes.toString()}}`,
+          });
+        }
       }
     }
   }
