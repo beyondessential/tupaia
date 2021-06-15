@@ -7,10 +7,12 @@ import { Aggregator } from '../aggregator';
 import { FetchReportQuery, ReportConfig } from '../types';
 import { buildFetch } from './fetch';
 import { buildTransform } from './transform';
+import { buildOutput } from './output';
 import { Row } from './types';
+import { OutputType } from './output/functions/outputBuilders';
 
 interface BuildReport {
-  results: Row[];
+  results: OutputType;
 }
 
 export class ReportBuilder {
@@ -32,8 +34,11 @@ export class ReportBuilder {
     }
     const fetch = buildFetch(this.config.fetch);
     const transform = buildTransform(this.config.transform);
+    const output = buildOutput(this.config.output);
+
     const data = this.testData ? { results: this.testData } : await fetch(aggregator, query);
-    data.results = transform(data.results);
-    return data;
+    const transformedData = transform(data.results);
+    const outputData = output(transformedData);
+    return { results: outputData };
   };
 }
