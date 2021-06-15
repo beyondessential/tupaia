@@ -78,7 +78,16 @@ export class SurveyResponseUpdatePersistor {
     try {
       await this.models.wrapInTransaction(async transactingModels => {
         const newSurveyResponses = creates.map(({ newSurveyResponse }) => newSurveyResponse);
-        const newAnswers = creates.map(({ answers }) => answers).flat();
+        const newAnswers = creates
+          .map(({ answers }) =>
+            answers.upserts.map(({ surveyResponseId, questionId, type, text }) => ({
+              survey_response_id: surveyResponseId,
+              question_id: questionId,
+              type,
+              text,
+            })),
+          )
+          .flat();
         await transactingModels.surveyResponse.createMany(newSurveyResponses);
         await transactingModels.answer.createMany(newAnswers);
       });
