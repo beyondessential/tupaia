@@ -1,5 +1,6 @@
 'use strict';
 
+import groupBy from 'lodash.groupby';
 import { insertObject, generateId } from '../utilities';
 
 var dbm;
@@ -115,7 +116,7 @@ const createDrillDownDashboardItems = async (db, drillDownDashboardReports) => {
   }
 };
 
-exports.up = async function (db) {
+const migrateLinkedDashboardReports = async db => {
   const uniqueDashboardGroupNameAndOrgUnitCombo = await selectUniqueDashboardGroupNameAndOrgUnitCombo(
     db,
   );
@@ -135,9 +136,21 @@ exports.up = async function (db) {
       root_entity_code: organisationUnitCode,
     });
 
-    for (const dashboardGroup of dashboardGroups) {
-      for (let i = 0; i < dashboardGroup.dashboardReports.length; i++) {
-        const dashboardReportId = dashboardGroup.dashboardReports[i];
+    // There are a few dashboard groups that have the same name and same organisationUnitCode,
+    // just different permission groups. So we have to group them like this and combine the dashboard reports
+    // together to assign the sort_order correctly.
+    const dashboardGroupsByNameAndOrgUnit = groupBy(
+      dashboardGroups,
+      ({ name: dashboardGroupName, organisationUnitCode: orgUnitCode }) =>
+        `${dashboardGroupName}|${orgUnitCode}`,
+    );
+
+    for (const dashboardGroupsSubSet of Object.values(dashboardGroupsByNameAndOrgUnit)) {
+      const combinedDashboardReports = [
+        ...new Set(dashboardGroupsSubSet.map(d => d.dashboardReports).flat()),
+      ];
+      for (let i = 0; i < combinedDashboardReports.length; i++) {
+        const dashboardReportId = combinedDashboardReports[i];
         const dashboardReports = await getDashboardReportById(db, dashboardReportId);
         if (!dashboardReports || dashboardReports.length === 0) {
           continue; // there's no dashboard reports with this id?
@@ -216,7 +229,7 @@ exports.up = async function (db) {
             id: dashboardItemId,
             code: reportCode,
             config: viewJson,
-            report_code: reportCode,
+            report_code: dataBuilder ? reportCode : null,
             legacy: true,
           });
         }
@@ -245,6 +258,52 @@ exports.up = async function (db) {
       }
     }
   }
+};
+
+const migrateUnlinkedDashboardReports = async db => {
+  const { rows: dashboardReports } = await db.runSql(`
+    SELECT DISTINCT "dashboardReport".* FROM "dashboardReport"
+    LEFT OUTER JOIN "dashboardGroup"
+    ON "dashboardReport".id = ANY("dashboardGroup"."dashboardReports")
+    WHERE "dashboardGroup"."dashboardReports" is null;
+  `);
+
+  for (const dashboardReport of dashboardReports) {
+    const {
+      id: reportCode,
+      dataBuilder,
+      dataBuilderConfig,
+      viewJson,
+      dataServices,
+    } = dashboardReport;
+
+    if (!dataBuilder) {
+      viewJson.noDataFetch = true;
+    }
+
+    await insertObject(db, 'dashboard_item', {
+      id: generateId(),
+      code: reportCode,
+      config: viewJson,
+      report_code: dataBuilder ? reportCode : null,
+      legacy: true,
+    });
+
+    if (dataBuilder) {
+      await insertObject(db, 'legacy_report', {
+        id: generateId(),
+        code: reportCode,
+        data_builder: dataBuilder,
+        data_builder_config: dataBuilderConfig,
+        data_services: dataServices,
+      });
+    }
+  }
+};
+
+exports.up = async function (db) {
+  await migrateLinkedDashboardReports(db);
+  await migrateUnlinkedDashboardReports(db);
 };
 
 exports.down = function (db) {

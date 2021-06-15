@@ -20,7 +20,7 @@ exports.up = async function (db) {
       id TEXT PRIMARY KEY,
       code TEXT NOT NULL UNIQUE,
       config JSONB NOT NULL DEFAULT '{}',
-      report_code TEXT NOT NULL,
+      report_code TEXT,
       legacy BOOLEAN NOT NULL DEFAULT 'false'
     );
   `);
