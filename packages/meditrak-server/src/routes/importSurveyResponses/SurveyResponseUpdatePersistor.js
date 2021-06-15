@@ -72,14 +72,46 @@ export class SurveyResponseUpdatePersistor {
     this.updatesByResponseId[surveyResponseId].answers.deletes.push(details);
   }
 
-  async processCreateSurveyResponse(transactingModels, { newSurveyResponse, answers }) {
-    const { id: surveyResponseId } = await transactingModels.surveyResponse.create(
-      newSurveyResponse,
-    );
-    await this.processUpsertAnswers(transactingModels, surveyResponseId, answers.upserts);
+  // ---- process creates ----
+
+  async processCreates(creates) {
+    try {
+      await this.models.wrapInTransaction(async transactingModels => {
+        const newSurveyResponses = creates.map(({ newSurveyResponse }) => newSurveyResponse);
+        const newAnswers = creates.map(({ answers }) => answers).flat();
+        await transactingModels.surveyResponse.createMany(newSurveyResponses);
+        await transactingModels.answer.createMany(newAnswers);
+      });
+      return { failures: [] };
+    } catch (error) {
+      return {
+        failures: creates.map(create => ({
+          ...create,
+          error: `Error creating survey responses in bulk: ${error.message}`,
+        })),
+      };
+    }
   }
 
-  async processUpdateSurveyResponse(transactingModels, { surveyResponseId, newDataTime, answers }) {
+  // ---- process updates ----
+
+  async processUpdates(updates) {
+    const failures = [];
+    for (const update of updates) {
+      try {
+        // wrap each survey response in a transaction so that if any update to an individual
+        // answer etc. fails, the whole survey response is rolled back and marked as a failure
+        await this.models.wrapInTransaction(async transactingModels =>
+          this.processUpdate(transactingModels, update),
+        );
+      } catch (error) {
+        failures.push({ ...update, error: error.message });
+      }
+    }
+    return { failures };
+  }
+
+  async processUpdate(transactingModels, { surveyResponseId, newDataTime, answers }) {
     if (newDataTime) {
       await transactingModels.surveyResponse.updateById(surveyResponseId, {
         data_time: newDataTime,
@@ -87,10 +119,6 @@ export class SurveyResponseUpdatePersistor {
     }
     await this.processUpsertAnswers(transactingModels, surveyResponseId, answers.upserts);
     await this.processDeleteAnswers(transactingModels, surveyResponseId, answers.deletes);
-  }
-
-  async processDeleteSurveyResponse(transactingModels, { surveyResponseId }) {
-    await transactingModels.surveyResponse.deleteById(surveyResponseId);
   }
 
   async processUpsertAnswers(transactingModels, surveyResponseId, answers) {
@@ -115,39 +143,37 @@ export class SurveyResponseUpdatePersistor {
     );
   }
 
-  async processUpdate(transactingModels, { type, ...details }) {
-    switch (type) {
-      case CREATE:
-        await this.processCreateSurveyResponse(transactingModels, details);
-        break;
-      case UPDATE:
-        await this.processUpdateSurveyResponse(transactingModels, details);
-        break;
-      case DELETE:
-        await this.processDeleteSurveyResponse(transactingModels, details);
-        break;
-      default:
-        throw new Error('Missing or misconfigured update type');
+  // ---- process deletes ----
+
+  async processDeletes(deletes) {
+    try {
+      await this.models.wrapInTransaction(async transactingModels => {
+        const surveyResponseIds = deletes.map(({ surveyResponseId }) => surveyResponseId);
+        await transactingModels.surveyResponse.delete({ id: surveyResponseIds });
+      });
+      return { failures: [] };
+    } catch (error) {
+      return {
+        failures: deletes.map(d => ({
+          ...d,
+          error: `Error deleting survey responses in bulk: ${error.message}`,
+        })),
+      };
     }
   }
 
   async process() {
-    const surveyResponseIds = Object.keys(this.updatesByResponseId);
-    const failures = [];
-    for (const surveyResponseId of surveyResponseIds) {
-      const update = this.updatesByResponseId[surveyResponseId];
-      try {
-        // wrap each survey response in a transaction so that if any update to an individual
-        // answer etc. fails, the whole survey response is rolled back and marked as a failure
-        await this.models.wrapInTransaction(async transactingModels =>
-          this.processUpdate(transactingModels, update),
-        );
-      } catch (error) {
-        failures.push({ ...update, error: error.message });
-      }
-    }
+    const allUpdates = Object.values(this.updatesByResponseId);
+    const creates = allUpdates.filter(({ type }) => type === CREATE);
+    const { failures: createFailures } = await this.processCreates(creates);
 
-    return { failures };
+    const updates = allUpdates.filter(({ type }) => type === UPDATE);
+    const { failures: updateFailures } = await this.processUpdates(updates);
+
+    const deletes = allUpdates.filter(({ type }) => type === DELETE);
+    const { failures: deleteFailures } = await this.processDeletes(deletes);
+
+    return { failures: [...createFailures, ...updateFailures, ...deleteFailures] };
   }
 
   async processInSingleTransaction() {
