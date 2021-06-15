@@ -45,8 +45,8 @@ export const getViewWrapper = ({ type, viewType }) => {
       return ChartWrapper;
     case 'matrix':
       return MatrixWrapper;
-    default:
-    case 'view': {
+    case 'view':
+    default: {
       const ViewWrapper = VIEW_TYPES[viewType];
       if (!ViewWrapper) {
         return (

@@ -11,6 +11,7 @@ import { LESMIS_PROJECT_NAME, LESMIS_HIERARCHY_NAME } from '../constants';
 
 export class ReportRoute extends Route {
   private readonly reportConnection: ReportConnection;
+
   private readonly webConfigConnection: WebConfigConnection;
 
   constructor(req: Request, res: Response, next: NextFunction) {
@@ -26,20 +27,23 @@ export class ReportRoute extends Route {
     switch (type) {
       case 'dashboard': {
         if (legacy === 'true') {
-          const legacyReport = await this.webConfigConnection.fetchDashboardReport({
+          const legacyReport = await this.webConfigConnection.fetchDashboardReport(reportCode, {
             // NOTE: Legacy items pass the dashboard_item.code not the legacy_report.code
-            itemCode: reportCode,
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
             ...this.req.query,
           });
           return legacyReport.data;
         }
-        const report = await this.reportConnection.fetchReport(reportCode, {
-          organisationUnitCodes: entityCode,
-          projectCodes: LESMIS_PROJECT_NAME,
-          hierarchy: LESMIS_HIERARCHY_NAME,
-        }, this.req.query);
+        const report = await this.reportConnection.fetchReport(
+          reportCode,
+          {
+            organisationUnitCodes: entityCode,
+            projectCodes: LESMIS_PROJECT_NAME,
+            hierarchy: LESMIS_HIERARCHY_NAME,
+          },
+          this.req.query,
+        );
         return report.results;
       }
       case 'mapOverlay':

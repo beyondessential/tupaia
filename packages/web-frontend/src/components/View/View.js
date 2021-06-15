@@ -25,15 +25,11 @@ import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
 import { CHART_TYPES } from './ChartWrapper/chartTypes';
-import { getViewWrapper, getIsSingleValue, getIsMatrix } from './utils';
+import { getViewWrapper, getIsMatrix } from './utils';
 import { Alert, AlertAction, AlertLink } from '../Alert';
 
 const viewHasData = viewContent => {
-  const { chartType, data, value } = viewContent;
-  // For any single value view, return true if there is a value in viewContent
-  if (getIsSingleValue(viewContent)) {
-    return value !== undefined && value !== null;
-  }
+  const { chartType, data } = viewContent;
 
   // For any matrix, return true to display the placeholder
   if (getIsMatrix(viewContent)) {
@@ -231,7 +227,6 @@ export class View extends Component {
 }
 
 View.propTypes = {
-  viewConfig: PropTypes.shape({}).isRequired,
   isSidePanelExpanded: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onEnlarge: PropTypes.func,

@@ -93,6 +93,13 @@ const EnlargedDialogComponent = ({
   // Regardless of the drillDown level, we pass the base view content through
   const baseViewContent = contentByLevel?.[0]?.viewContent;
   const drillDownContent = contentByLevel?.[drillDownState.drillDownLevel]?.viewContent;
+  const baseViewConfig = contentByLevel?.[0]?.viewConfig;
+  const drillDownConfig = contentByLevel?.[drillDownState.drillDownLevel]?.viewConfig;
+
+  const newViewContent =
+    baseViewContent === undefined ? null : { ...baseViewConfig, ...baseViewContent };
+  const newDrillDownContent =
+    drillDownContent === undefined ? null : { ...drillDownConfig, ...drillDownContent };
 
   const { startDate, endDate } = getDatesForCurrentLevel(
     drillDownState.drillDownLevel,
@@ -152,12 +159,12 @@ const EnlargedDialogComponent = ({
     });
   };
 
-  const isMatrix = getIsMatrix(baseViewContent);
+  const isMatrix = getIsMatrix(newViewContent);
 
   const getDialogStyle = () => {
-    const hasBigData = isMatrix || baseViewContent?.data?.length > 20;
+    const hasBigData = isMatrix || newViewContent?.data?.length > 20;
     if (hasBigData) return styles.largeContainer;
-    if (getIsDataDownload(baseViewContent)) return styles.smallContainer;
+    if (getIsDataDownload(newViewContent)) return styles.smallContainer;
     return styles.container;
   };
 
@@ -167,13 +174,13 @@ const EnlargedDialogComponent = ({
     setExportStatus(STATUS.LOADING);
     setIsExporting(true);
 
-    const filename = stringToFilename(`export-${organisationUnitName}-${baseViewContent.name}`);
+    const filename = stringToFilename(`export-${organisationUnitName}-${newViewContent.name}`);
 
     try {
       if (format === 'xlsx') {
         await exportToExcel({
           projectCode,
-          viewContent: baseViewContent,
+          viewContent: newViewContent,
           organisationUnitName,
           startDate: moment.isMoment(startDate) ? startDate.utc().toISOString() : startDate,
           endDate: moment.isMoment(endDate) ? endDate.utc().toISOString() : endDate,
@@ -212,8 +219,8 @@ const EnlargedDialogComponent = ({
         <EnlargedDialogContent
           exportRef={exportRef}
           onCloseOverlay={onCloseOverlay}
-          viewContent={baseViewContent}
-          drillDownContent={drillDownState.drillDownLevel === 0 ? null : drillDownContent}
+          viewContent={newViewContent}
+          drillDownContent={drillDownState.drillDownLevel === 0 ? null : newDrillDownContent}
           organisationUnitName={organisationUnitName}
           onDrillDown={onDrillDown}
           onOpenExportDialog={handleOpenExportDialog}

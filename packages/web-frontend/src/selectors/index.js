@@ -43,14 +43,15 @@ export {
 
 export {
   selectCurrentInfoViewKey,
-  selectIsDashboardGroupCodeDefined,
-  selectCurrentDashboardGroupCode,
+  selectCurrentDashboardName,
+  selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
-  selectCurrentExpandedViewId,
+  selectCurrentExpandedViewCode,
   selectIsEnlargedDialogVisible,
   selectShouldUseDashboardData,
   selectCurrentExpandedDates,
-  selectCurrentDashboardGroupCodeFromLocation,
+  selectCurrentDashboardNameFromLocation,
+  selectViewConfig,
 } from './dashboardSelectors';
 
 export {

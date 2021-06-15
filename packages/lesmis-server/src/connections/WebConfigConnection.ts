@@ -5,6 +5,7 @@
 
 import { QueryParameters } from '@tupaia/server-boilerplate';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
+
 const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
 export class WebConfigConnection extends SessionHandlingApiConnection {
@@ -14,8 +15,8 @@ export class WebConfigConnection extends SessionHandlingApiConnection {
     return this.get('dashboards', query);
   }
 
-  async fetchDashboardReport(query: QueryParameters) {
-    return this.get('legacyReport', query);
+  async fetchDashboardReport(reportCode: string, query: QueryParameters) {
+    return this.get(`report/${reportCode}`, query);
   }
 
   async fetchMapOverlayData(query: QueryParameters) {

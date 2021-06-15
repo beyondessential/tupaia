@@ -37,6 +37,7 @@ export class DashboardItemModel extends DatabaseModel {
       {
         joinWith: TYPES.DASHBOARD_RELATION,
         joinCondition: ['child_id', 'dashboard_item.id'],
+        sort: ['sort_order', 'code'],
       },
     );
   }
