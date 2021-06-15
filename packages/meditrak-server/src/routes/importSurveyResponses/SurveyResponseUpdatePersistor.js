@@ -3,9 +3,19 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+const RESPONSES_PER_BULK_BATCH = 1000; // number of survey responses processed per bulk insert/delete
+
 export const CREATE = 'create';
 export const UPDATE = 'update';
 export const DELETE = 'delete';
+
+function batch(array, batchSize) {
+  const batches = [];
+  for (let i = 0; i < array.length; i += batchSize) {
+    batches.push(array.slice(i, i + batchSize));
+  }
+  return batches;
+}
 
 /**
  * This class will hold on to all of the creates, updates, and deletes that a survey response import
@@ -13,12 +23,7 @@ export const DELETE = 'delete';
  *
  * The idea is that we can separate out the actual database updates from the parsing, validation,
  * and formatting elements of the process. Those earlier parts can then run and synchronously return
- * to the user with any validation errors.
- *
- * The db updates can then run in batches in the background, with "cooldown" periods between each
- * batch, so that the database doesn't get overwhelmed with too much activity in one hit (including
- * both the direct impact of the updates here, and the async side effects triggered by database
- * records changing).
+ * to the user with any validation errors. The db updates can then run in batches in the background.
  */
 export class SurveyResponseUpdatePersistor {
   constructor(models) {
@@ -72,37 +77,39 @@ export class SurveyResponseUpdatePersistor {
     this.updatesByResponseId[surveyResponseId].answers.deletes.push(details);
   }
 
-  // ---- process creates ----
+  // ---- process creates in bulk, batching to avoid running out of memory ----
 
   async processCreates(creates) {
-    try {
-      await this.models.wrapInTransaction(async transactingModels => {
-        const newSurveyResponses = creates.map(({ newSurveyResponse }) => newSurveyResponse);
-        const newAnswers = creates
-          .map(({ answers }) =>
-            answers.upserts.map(({ surveyResponseId, questionId, type, text }) => ({
-              survey_response_id: surveyResponseId,
-              question_id: questionId,
-              type,
-              text,
-            })),
-          )
-          .flat();
-        await transactingModels.surveyResponse.createMany(newSurveyResponses);
-        await transactingModels.answer.createMany(newAnswers);
-      });
-      return { failures: [] };
-    } catch (error) {
-      return {
-        failures: creates.map(create => ({
-          ...create,
-          error: `Error creating survey responses in bulk: ${error.message}`,
-        })),
-      };
+    const failures = [];
+    for (const batchOfCreates of batch(creates, RESPONSES_PER_BULK_BATCH)) {
+      try {
+        await this.models.wrapInTransaction(async transactingModels => {
+          const newSurveyResponses = creates.map(({ newSurveyResponse }) => newSurveyResponse);
+          const newAnswers = batchOfCreates
+            .map(({ answers }) =>
+              answers.upserts.map(({ surveyResponseId, questionId, type, text }) => ({
+                survey_response_id: surveyResponseId,
+                question_id: questionId,
+                type,
+                text,
+              })),
+            )
+            .flat();
+          await transactingModels.surveyResponse.createMany(newSurveyResponses);
+          await transactingModels.answer.createMany(newAnswers);
+        });
+      } catch (error) {
+        failures.push(
+          ...batchOfCreates.map(c => ({
+            ...c,
+            error: `Error creating survey responses in bulk: ${error.message}`,
+          })),
+        );
+      }
     }
   }
 
-  // ---- process updates ----
+  // ---- process updates in serial, recording individual failures ----
 
   async processUpdates(updates) {
     const failures = [];
@@ -152,23 +159,27 @@ export class SurveyResponseUpdatePersistor {
     );
   }
 
-  // ---- process deletes ----
+  // ---- process deletes in bulk, batching to avoid running out of memory ----
 
   async processDeletes(deletes) {
-    try {
-      await this.models.wrapInTransaction(async transactingModels => {
-        const surveyResponseIds = deletes.map(({ surveyResponseId }) => surveyResponseId);
-        await transactingModels.surveyResponse.delete({ id: surveyResponseIds });
-      });
-      return { failures: [] };
-    } catch (error) {
-      return {
-        failures: deletes.map(d => ({
-          ...d,
-          error: `Error deleting survey responses in bulk: ${error.message}`,
-        })),
-      };
+    const failures = [];
+    for (const batchOfDeletes of batch(deletes, RESPONSES_PER_BULK_BATCH)) {
+      try {
+        await this.models.wrapInTransaction(async transactingModels => {
+          const surveyResponseIds = batchOfDeletes.map(({ surveyResponseId }) => surveyResponseId);
+          await transactingModels.surveyResponse.delete({ id: surveyResponseIds });
+        });
+        return { failures: [] };
+      } catch (error) {
+        failures.push(
+          ...batchOfDeletes.map(d => ({
+            ...d,
+            error: `Error deleting survey responses in bulk: ${error.message}`,
+          })),
+        );
+      }
     }
+    return { failures };
   }
 
   async process() {
