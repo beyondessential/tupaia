@@ -3,7 +3,9 @@
     "id": "COVID_New_Cases_By_State",
     "project": "covidau",
     "orgUnit": "AU",
-    "dashboardGroup": "COVID-19"
+    "dashboardGroup": "COVID-19",
+    "startDate": "2020-06-13",
+    "endDate": "2020-06-13"
   },
   {
     "id": "COVID_New_Cases_By_Day",
@@ -38,7 +40,7 @@
   {
     "id": "COVID_Total_Cases_By_Type",
     "project": "covidau",
-    "orgUnit": "VIC",
+    "orgUnit": "AU_Victoria",
     "dashboardGroup": "COVID-19"
   },
   {
@@ -50,14 +52,16 @@
   {
     "id": "COVID_Total_Tests_Conducted",
     "project": "covidau",
-    "orgUnit": "VIC",
+    "orgUnit": "AU_Victoria",
     "dashboardGroup": "COVID-19"
   },
   {
     "id": "COVID_Daily_Cases_By_Type",
     "project": "covidau",
-    "orgUnit": "VIC",
-    "dashboardGroup": "COVID-19"
+    "orgUnit": "AU_Victoria",
+    "dashboardGroup": "COVID-19",
+    "startDate": "2020-07-17",
+    "endDate": "2020-07-17"
   },
   {
     "id": "COVID_Compose_Daily_Deaths_Vs_Cases",
