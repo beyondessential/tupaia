@@ -1,4 +1,4 @@
-# e2e Tests
+# E2e Tests
 
 [Cypress](https://www.cypress.io/) is used as the end-to-end test framework. This is the root folder of the test code and its configuration.
 
@@ -47,6 +47,23 @@ Then, run one of the following commands in a **Windows terminal**:
 
 - UI mode: `yarn workspace @tupaia/web-frontend cypress:open`
 - Terminal mode: `yarn workspace @tupaia/web-frontend cypress:run`
+
+## Configuration
+
+Our e2e tests support Tupaia-specific configuration fields. Those can be specified in [cypress.json](../cypress.json) under the `tupaia` key. Example:
+
+```json
+{
+  "tupaia": {
+    "requireNonEmptyVisualisations": true
+  }
+}
+```
+
+| Config key                    | Description                                                                                                                                                                                    |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dashboardReportParamFiles     | A list of `.json` files that can be used to generate dashboard report urls that will be used during testing. See [config/params/dashboardReports](config/params/dashboardReports) for examples |
+| requireNonEmptyVisualisations | If set, an error will be thrown for tested visualisations that have no data (eg empty reports)                                                                                                 |
 
 ## Limitations
 
