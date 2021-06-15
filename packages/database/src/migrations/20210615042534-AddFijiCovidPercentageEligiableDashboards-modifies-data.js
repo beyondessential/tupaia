@@ -73,7 +73,7 @@ const reports = [
     doseNum: 1,
   },
   {
-    id: 'WS_Covid_Fiji_COVID-19_Percent_Of_Population_2nd_Vaccine_Dose_Taken',
+    id: 'FJ_Covid_Fiji_COVID-19_Percent_Of_Population_2nd_Vaccine_Dose_Taken',
     doseNum: 2,
   },
 ];
