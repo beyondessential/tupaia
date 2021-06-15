@@ -225,13 +225,18 @@ const migrateLinkedDashboardReports = async db => {
 
         // Create main Dashboard Items
         if (!dashboardItem) {
-          await insertObject(db, 'dashboard_item', {
+          const itemToInsert = {
             id: dashboardItemId,
             code: reportCode,
             config: viewJson,
-            report_code: dataBuilder ? reportCode : null,
             legacy: true,
-          });
+          };
+
+          if (dataBuilder) {
+            itemToInsert.report_code = reportCode;
+          }
+
+          await insertObject(db, 'dashboard_item', itemToInsert);
         }
 
         if (!legacyReport && dataBuilder) {
@@ -281,13 +286,18 @@ const migrateUnlinkedDashboardReports = async db => {
       viewJson.noDataFetch = true;
     }
 
-    await insertObject(db, 'dashboard_item', {
+    const itemToInsert = {
       id: generateId(),
       code: reportCode,
       config: viewJson,
-      report_code: dataBuilder ? reportCode : null,
       legacy: true,
-    });
+    };
+
+    if (dataBuilder) {
+      itemToInsert.report_code = reportCode;
+    }
+
+    await insertObject(db, 'dashboard_item', itemToInsert);
 
     if (dataBuilder) {
       await insertObject(db, 'legacy_report', {
