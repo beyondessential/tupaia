@@ -43,7 +43,7 @@ describe('Dashboard reports', () => {
   if (reportUrls.length === 0) {
     throw new Error('Dashboard report url list is empty');
   }
-  const requireData = Cypress.config('tupaia_requireNonEmptyVisualisations');
+  const { requireNonEmptyVisualisations } = Cypress.config('tupaia');
 
   before(() => {
     cy.login();
@@ -59,7 +59,7 @@ describe('Dashboard reports', () => {
       cy.route(urlToRouteRegex(url)).as('report');
       cy.visit(url);
       cy.wait('@report').then(({ response }) => {
-        if (requireData) {
+        if (requireNonEmptyVisualisations) {
           assertUrlResponseHasData(url, response);
         }
       });
