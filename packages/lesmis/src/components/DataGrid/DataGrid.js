@@ -30,7 +30,7 @@ const sortTypes = {
     const rowOneColumn = row1.values[columnName];
     const rowTwoColumn = row2.values[columnName];
     if (isNaN(rowOneColumn)) {
-      return rowOneColumn.toUpperCase() > rowTwoColumn.toUpperCase() ? 1 : -1;
+      return rowOneColumn?.toUpperCase() > rowTwoColumn?.toUpperCase() ? 1 : -1;
     }
     return Number(rowOneColumn) > Number(rowTwoColumn) ? 1 : -1;
   },
@@ -118,7 +118,7 @@ export const DataGrid = ({ data, columns }) => {
         </TableHead>
         <TableBody {...getTableBodyProps()}>
           {page.length === 0 ? (
-            <NoDataRow colspan={columns.length} />
+            <NoDataRow colSpan={columns.length} />
           ) : (
             page.map(row => {
               prepareRow(row);
