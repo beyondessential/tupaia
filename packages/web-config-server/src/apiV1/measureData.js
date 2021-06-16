@@ -34,14 +34,58 @@ const accessDeniedForMeasure = {
   },
 };
 
-const buildMeasureData = (overlays, measureDataResponsesByMeasureId) => {
+/* Data arrives as an array of responses (one for each measure) containing an array of org
+ * units. We need to rearrange it so that it's a 1D array of objects with the values
+ * assigned to the appropriate keys, and replace the keys with the ids of the overlay
+ * they came from (this is to avoid duplicate 'value' keys which causes a bug)
+ *
+ * measureDataResponsesByMeasureId: {
+ *   measure_id_1: {
+ *     data: [
+ *       { organisationUnitCode: 'OrgA', measureZ: 0 },
+ *       { organisationUnitCode: 'OrgB', measureZ: 1 },
+ *     ],
+ *     period: {
+ *       latestAvailable: '20200301',
+ *       earliestAvailable: '20190501',
+ *       requested: '201901;201902;201903...',
+ *     }
+ *   }
+ *   measure_id_2: {
+ *     data: [
+ *       { organisationUnitCode: 'OrgA', measureY: 100 },
+ *       { organisationUnitCode: 'OrgB', measureY: -100 },
+ *     ],
+ *     period: {
+ *       latestAvailable: '20200401',
+ *       earliestAvailable: '20190501',
+ *       requested: '201901;201902;201903...',
+ *     }
+ *   }
+ * }
+ *
+ * measureData: [
+ *  { organisationUnitCode: 'OrgA', measure_id_2: 100, measure_id_1: 0 },
+ *  { organisationUnitCode: 'OrgB', measure_id_2: -100, measure_id_1: 1 },
+ * ]
+ * period: {
+ *   latestAvailable: '20200401',
+ *   earliestAvailable: '20190501',
+ *   requested: '201901;201902;201903...',
+ * }
+ */
+const buildMeasureData = (overlays, resultData) => {
+  const measureDataResponsesByMeasureId = resultData.reduce((dataResponse, current) => ({
+    ...dataResponse,
+    ...current,
+  }));
   const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
-    const { data: measureDataResponse } = measureDataResponsesByMeasureId[id];
-    measureDataResponse.forEach(obj => {
-      obj[id] = obj[dataElementCode];
-      delete obj[dataElementCode];
+    const { data } = measureDataResponsesByMeasureId[id];
+
+    return data.map(obj => {
+      const { [dataElementCode]: value, ...restData } = obj;
+      return { [id]: value, ...restData };
     });
-    return measureDataResponse;
   });
 
   /**
@@ -73,7 +117,7 @@ const buildMeasureData = (overlays, measureDataResponsesByMeasureId) => {
   });
 
   return {
-    data: Object.values(measureDataByOrgUnit),
+    measureData: Object.values(measureDataByOrgUnit),
     period: getAggregatePeriod(
       Object.values(measureDataResponsesByMeasureId).map(({ period }) => period),
     ),
@@ -152,70 +196,34 @@ export default class extends DataAggregatingRouteHandler {
         }
       }),
     );
-
-    // start fetching options
-    const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, this.query));
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
-    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings));
-
-    // wait for fetches to complete
-    const measureOptions = await Promise.all(optionsTasks);
-    const measureDataResponsesByMeasureId = (
-      await Promise.all(dataTasks)
-    ).reduce((dataResponse, current) => ({ ...dataResponse, ...current }));
-
-    /* Data arrives as an array of responses (one for each measure) containing an array of org
-     * units. We need to rearrange it so that it's a 1D array of objects with the values
-     * assigned to the appropriate keys, and replace the keys with the ids of the overlay
-     * they came from (this is to avoid duplicate 'value' keys which causes a bug)
-     *
-     * measureDataResponsesByMeasureId: {
-     *   measure_id_1: {
-     *     data: [
-     *       { organisationUnitCode: 'OrgA', measureZ: 0 },
-     *       { organisationUnitCode: 'OrgB', measureZ: 1 },
-     *     ],
-     *     period: {
-     *       latestAvailable: '20200301',
-     *       earliestAvailable: '20190501',
-     *       requested: '201901;201902;201903...',
-     *     }
-     *   }
-     *   measure_id_2: {
-     *     data: [
-     *       { organisationUnitCode: 'OrgA', measureY: 100 },
-     *       { organisationUnitCode: 'OrgB', measureY: -100 },
-     *     ],
-     *     period: {
-     *       latestAvailable: '20200401',
-     *       earliestAvailable: '20190501',
-     *       requested: '201901;201902;201903...',
-     *     }
-     *   }
-     * }
-     *
-     * measureData: [
-     *  { organisationUnitCode: 'OrgA', measure_id_2: 100, measure_id_1: 0 },
-     *  { organisationUnitCode: 'OrgB', measure_id_2: -100, measure_id_1: 1 },
-     * ]
-     * period: {
-     *   latestAvailable: '20200401',
-     *   earliestAvailable: '20190501',
-     *   requested: '201901;201902;201903...',
-     * }
-     */
-
-    const { period, data: measureData } = buildMeasureData(
-      overlays,
-      measureDataResponsesByMeasureId,
+    const responseData = await Promise.all(
+      overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
+    const { period, measureData } = buildMeasureData(overlays, responseData);
 
+    // start fetching options
+    const measureOptions = await Promise.all(
+      overlays.map(o => this.fetchMeasureOptions(o, this.query)),
+    );
     measureOptions
       .filter(mo => mo.displayedValueKey)
       .filter(mo => !mo.disableRenameLegend)
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
+    const { otherLinkMeasures } = measureOptions[0];
+    if (otherLinkMeasures) {
+      const otherLinkMeasureKeys = new Set();
+      measureData.forEach(data => {
+        Object.keys(data).forEach(key => otherLinkMeasureKeys.add(key));
+      });
+      otherLinkMeasureKeys.delete('organisationUnitCode');
+      Array.from(otherLinkMeasureKeys).forEach(key => {
+        measureOptions.push({ ...otherLinkMeasures, key, name: key });
+      });
+      // measureOptions.push({...otherLinkMeasures,key:})
+    }
     return {
       measureId: overlays
         .map(o => o.id)
@@ -334,7 +342,7 @@ export default class extends DataAggregatingRouteHandler {
       this.models,
       this.aggregator,
       dhisApi,
-      { ...this.query, dataElementCode },
+      { ...this.query, dataElementCode, req: this.req },
       { ...measureBuilderConfig, dataServices },
       entity,
     );
