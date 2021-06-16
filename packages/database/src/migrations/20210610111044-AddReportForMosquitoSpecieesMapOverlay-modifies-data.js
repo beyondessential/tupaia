@@ -1,0 +1,87 @@
+'use strict';
+
+import { generateId, insertObject } from '../utilities';
+
+var dbm;
+var type;
+var seed;
+
+/**
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
+  dbm = options.dbmigrate;
+  type = dbm.dataType;
+  seed = seedLink;
+};
+
+const permissionGroupNameToId = async (db, name) => {
+  const record = await db.runSql(`SELECT id FROM permission_group WHERE name = '${name}'`);
+  return record.rows[0] && record.rows[0].id;
+};
+
+const REPORT = {
+  id: generateId(),
+  code: 'PG_Strive_Mosquito_Species_MapOverlay',
+  config: {
+    fetch: {
+      aggregations: [
+        {
+          type: 'RAW',
+          config: {
+            dataSourceEntityType: 'facility',
+          },
+        },
+      ],
+      dataElements: ['STRVEC_AE-AT13'],
+    },
+    transform: [
+      {
+        "'name'": '$row.value',
+        transform: 'select',
+        "'numerator'": '1',
+        "'organisationUnitCode'": '$row.organisationUnit',
+      },
+      {
+        '...': ['numerator', 'organisationUnitCode', 'name'],
+        transform: 'select',
+        "'denominator'": 'sum($all.numerator)',
+      },
+      {
+        name: 'group',
+        numerator: 'sum',
+        transform: 'aggregate',
+        denominator: 'last',
+        organisationUnitCode: 'group',
+      },
+      {
+        '...': ['organisationUnitCode'],
+        "'value'": "'test'",
+        '$row.name':
+          "concat(string($row.numerator), '/', string($row.denominator), ' = ', string(format($row.numerator / $row.denominator * 100, {precision: 3})), '%') ",
+        transform: 'select',
+      },
+      {
+        '...': 'last',
+        transform: 'aggregate',
+        organisationUnitCode: 'group',
+      },
+    ],
+  },
+};
+
+exports.up = async function (db) {
+  const permissionGroupId = await permissionGroupNameToId(db, 'STRIVE User');
+  await insertObject(db, 'report', { ...REPORT, permission_group_id: permissionGroupId });
+};
+
+exports.down = async function (db) {
+  return db.runSql(`
+   DELETE FROM "report" WHERE code = '${REPORT.code}';
+  `);
+};
+
+exports._meta = {
+  version: 1,
+};
