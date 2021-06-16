@@ -5,17 +5,35 @@
 
 import { sleep } from '@tupaia/utils';
 
-const RESPONSES_PER_BULK_BATCH = 100; // number of survey responses processed per bulk insert/delete
-const COOLDOWN_BETWEEN_BATCHES = 100; // brief pause between so db can cool off
+const RECORDS_PER_BULK_BATCH = 5000; // number of records (survey responses + answers) processed per bulk insert/delete
+const COOLDOWN_BETWEEN_BATCHES = 0; // brief pause between so db can cool off
 
 export const CREATE = 'create';
 export const UPDATE = 'update';
 export const DELETE = 'delete';
 
-function batch(array, batchSize) {
+function batchCreates(creates) {
+  const batches = [[]];
+  let currentBatchIndex = 0;
+  let currentBatchRecordCount = 0;
+  for (const create of creates) {
+    const answerCount = create.answers.upserts.length;
+    const recordCount = answerCount + 1; // +1 for the response itself
+    if (currentBatchRecordCount + recordCount > RECORDS_PER_BULK_BATCH) {
+      batches.push([]);
+      currentBatchIndex++;
+      currentBatchRecordCount = 0;
+    }
+    batches[currentBatchIndex].push(create);
+    currentBatchRecordCount += recordCount;
+  }
+  return batches;
+}
+
+function batchDeletes(deletes) {
   const batches = [];
-  for (let i = 0; i < array.length; i += batchSize) {
-    batches.push(array.slice(i, i + batchSize));
+  for (let i = 0; i < deletes.length; i += RECORDS_PER_BULK_BATCH) {
+    batches.push(deletes.slice(i, i + RECORDS_PER_BULK_BATCH));
   }
   return batches;
 }
@@ -84,7 +102,7 @@ export class SurveyResponseUpdatePersistor {
 
   async processCreates(creates) {
     const failures = [];
-    for (const batchOfCreates of batch(creates, RESPONSES_PER_BULK_BATCH)) {
+    for (const batchOfCreates of batchCreates(creates)) {
       try {
         await this.models.wrapInTransaction(async transactingModels => {
           const newSurveyResponses = batchOfCreates.map(
@@ -100,9 +118,13 @@ export class SurveyResponseUpdatePersistor {
               })),
             )
             .flat();
+          console.log(`creating ${newSurveyResponses.length} survey responses`);
           await transactingModels.surveyResponse.createMany(newSurveyResponses);
+          console.log(`creating ${newAnswers.length} answers`);
           await transactingModels.answer.createMany(newAnswers);
+          console.log('submitting transaction');
         });
+        console.log('transaction complete');
       } catch (error) {
         failures.push(
           ...batchOfCreates.map(c => ({
@@ -113,6 +135,7 @@ export class SurveyResponseUpdatePersistor {
       }
       await sleep(COOLDOWN_BETWEEN_BATCHES); // give time for db to cool off before next batch
     }
+    console.log('finished bulk create');
     return { failures };
   }
 
@@ -170,7 +193,7 @@ export class SurveyResponseUpdatePersistor {
 
   async processDeletes(deletes) {
     const failures = [];
-    for (const batchOfDeletes of batch(deletes, RESPONSES_PER_BULK_BATCH)) {
+    for (const batchOfDeletes of batchDeletes(deletes)) {
       try {
         await this.models.wrapInTransaction(async transactingModels => {
           const surveyResponseIds = batchOfDeletes.map(({ surveyResponseId }) => surveyResponseId);
