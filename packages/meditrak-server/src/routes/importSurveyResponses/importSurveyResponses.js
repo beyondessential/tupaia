@@ -29,13 +29,14 @@ import {
 import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
-import { emailResults } from './emailResults';
+import { setupEmailResponseTimeout } from './setupEmailResponseTimeout';
 
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
  * updating or creating each answer as appropriate
  */
 export async function importSurveyResponses(req, res) {
+  setupEmailResponseTimeout(req, res); // if the import takes too long, the results will be emailed
   try {
     if (!req.file) {
       throw new UploadError();
@@ -202,18 +203,13 @@ export async function importSurveyResponses(req, res) {
       }
     }
 
-    // if there aren't too many to process, run the processing synchronously rather than emailing
-    if (updatePersistor.count() <= 100) {
-      await updatePersistor.processInSingleTransaction();
-      respond(res, {});
-    } else {
-      const { failures } = await updatePersistor.process();
-      const user = await models.user.findById(userId);
-      emailResults(user, failures);
-      respond(res, {
-        message: 'Importing survey responses, you will be emailed when they have been processed',
-      });
-    }
+    const { failures } = await updatePersistor.process();
+    const message =
+      failures.length > 0
+        ? `Not all responses were successfully processed:
+${failures.map(getFailureMesssage).join('\n')}`
+        : null;
+    respond(res, { message, failures });
   } catch (error) {
     if (error.respond) {
       throw error; // Already a custom error with a responder
