@@ -3,7 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-const RESPONSES_PER_BULK_BATCH = 300; // number of survey responses processed per bulk insert/delete
+import { sleep } from '@tupaia/utils';
+
+const RESPONSES_PER_BULK_BATCH = 100; // number of survey responses processed per bulk insert/delete
+const COOLDOWN_BETWEEN_BATCHES = 100; // brief pause between so db can cool off
 
 export const CREATE = 'create';
 export const UPDATE = 'update';
@@ -108,6 +111,7 @@ export class SurveyResponseUpdatePersistor {
           })),
         );
       }
+      await sleep(COOLDOWN_BETWEEN_BATCHES); // give time for db to cool off before next batch
     }
     return { failures };
   }
@@ -181,6 +185,7 @@ export class SurveyResponseUpdatePersistor {
           })),
         );
       }
+      await sleep(COOLDOWN_BETWEEN_BATCHES); // give time for db to cool off before next batch
     }
     return { failures };
   }
