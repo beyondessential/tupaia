@@ -46,10 +46,10 @@ const setupEmailResponse = async (req, res) => {
   const { models, userId } = req;
   const user = await models.user.findById(userId);
 
-  // no need to do anything if the response has already gone out, within the timeout
-  // n.b. this check needs to stay below any async stuff above, so that we don't end up in a half
-  // way state
   if (res.headersSent) {
+    // no need to do anything if the import responded successfully within the timeout
+    // n.b. this check needs to stay below any async stuff above, so that we don't end up in a half
+    // way state where the successful response happens e.g. during looking up the user
     return;
   }
 
