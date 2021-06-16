@@ -20,7 +20,9 @@ const constructMessageBody = responseBody => {
 
   // global error, whole import has failed
   if (error) {
-    return error;
+    return `Unfortunately, your survey response import failed.
+
+${error}`;
   }
 
   // at least one response failed, but import finished processing
