@@ -107,6 +107,7 @@ export class SurveyResponseUpdatePersistor {
         );
       }
     }
+    return { failures };
   }
 
   // ---- process updates in serial, recording individual failures ----

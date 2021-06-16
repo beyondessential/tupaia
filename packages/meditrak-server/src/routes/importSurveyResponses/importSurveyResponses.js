@@ -30,6 +30,7 @@ import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { SurveyResponseUpdatePersistor } from './SurveyResponseUpdatePersistor';
 import { setupEmailResponseTimeout } from './setupEmailResponseTimeout';
+import { getFailureMessage } from './getFailureMessage';
 
 /**
  * Creates or updates survey responses by importing the new answers from an Excel file, and either
@@ -207,7 +208,7 @@ export async function importSurveyResponses(req, res) {
     const message =
       failures.length > 0
         ? `Not all responses were successfully processed:
-${failures.map(getFailureMesssage).join('\n')}`
+${failures.map(getFailureMessage).join('\n')}`
         : null;
     respond(res, { message, failures });
   } catch (error) {
