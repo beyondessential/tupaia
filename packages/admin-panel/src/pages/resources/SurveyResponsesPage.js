@@ -138,7 +138,7 @@ const IMPORT_CONFIG = {
     importEndpoint: 'surveyResponses',
     extraQueryParameters: {
       timeZone: getBrowserTimeZone(),
-      respondWithEmailTimeout: 20 * 1000, // if an import doesn't finish in 20 seconds, email results
+      respondWithEmailTimeout: 10 * 1000, // if an import doesn't finish in 10 seconds, email results
     },
   },
   queryParameters: [
