@@ -8,7 +8,7 @@ import {
   assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import {
   assertSurveyResponsePermissions,
@@ -31,7 +31,7 @@ export class EditSurveyResponses extends EditHandler {
     await this.assertPermissions(
       assertAnyPermissions([
         assertBESAdminAccess,
-        assertAllPermissions([assertTupaiaAdminPanelAccess, surveyResponsePermissionChecker]),
+        assertAllPermissions([assertAdminPanelAccess, surveyResponsePermissionChecker]),
       ]),
     );
   }

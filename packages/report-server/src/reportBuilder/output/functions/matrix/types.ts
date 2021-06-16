@@ -1,7 +1,7 @@
 import { Row } from '../../../types';
 
 export type MatrixParams = {
-  columns: { include: string[] | '*'; exclude: string[] };
+  columns: { includeFields: string[] | '*'; excludeFields: string[] };
   rows: { rowField: string; categoryField: string };
 };
 

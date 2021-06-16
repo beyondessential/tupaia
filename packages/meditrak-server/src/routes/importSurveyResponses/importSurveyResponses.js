@@ -39,7 +39,12 @@ export async function importSurveyResponses(req, res) {
       throw new UploadError();
     }
     const surveyNames = getArrayQueryParameter(req?.query?.surveyNames);
-    const timeZone = req?.query?.timeZone || DEFAULT_DATABASE_TIMEZONE;
+    const timeZone = req?.query?.timeZone;
+    if (!timeZone) {
+      throw new Error(
+        `Timezone is required`,
+      );
+    }
     const { models } = req;
     await models.wrapInTransaction(async transactingModels => {
       const workbook = xlsx.readFile(req.file.path);

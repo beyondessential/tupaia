@@ -25,10 +25,18 @@ export const eq = (value1, value2): boolean => {
   return value1 === value2;
 };
 
+export const notEq = (value1, value2): boolean => {
+  return value1 !== value2;
+};
+
 export const gt = (value1, value2): boolean => {
   return value1 > value2;
 };
 
 export const exists = (value: FieldValue): boolean => {
   return value !== undefined;
+};
+
+export const notExists = (value: FieldValue): boolean => {
+  return value === undefined;
 };

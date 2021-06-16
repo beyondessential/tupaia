@@ -8,9 +8,10 @@ import {
   assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
-  assertTupaiaAdminPanelAccess,
+  assertAdminPanelAccess,
 } from '../../permissions';
 import { assertSurveyResponsePermissions } from './assertSurveyResponsePermissions';
+import { AnalyticsRefresher } from '@tupaia/database';
 
 /**
  * Handles DELETE endpoints:
@@ -28,8 +29,17 @@ export class DeleteSurveyResponses extends DeleteHandler {
     await this.assertPermissions(
       assertAnyPermissions([
         assertBESAdminAccess,
-        assertAllPermissions([assertTupaiaAdminPanelAccess, surveyResponsePermissionChecker]),
+        assertAllPermissions([assertAdminPanelAccess, surveyResponsePermissionChecker]),
       ]),
     );
+  }
+
+  async deleteRecord() {
+    await super.deleteRecord();
+
+    if (this.req.query.waitForAnalyticsRebuild === 'true') {
+      const { database } = this.models;
+      await AnalyticsRefresher.executeRefresh(database);
+    }
   }
 }

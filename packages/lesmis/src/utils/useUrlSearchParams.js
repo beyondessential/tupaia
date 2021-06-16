@@ -8,18 +8,39 @@ import { useHistory, useLocation } from 'react-router-dom';
 export const useUrlSearchParams = () => {
   const history = useHistory();
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
+  const urlParams = new URLSearchParams(location.search);
 
   const setParams = newParams => {
     Object.entries(newParams).forEach(([key, param]) => {
       if (param === null || param === undefined) {
-        params.delete(key);
+        urlParams.delete(key);
       } else {
-        params.set(key, param.toString());
+        urlParams.set(key, param.toString());
       }
     });
-    history.push({ ...history.location, search: params.toString() });
+
+    if (location.search !== urlParams.toString()) {
+      history.push({ ...location, search: urlParams.toString() });
+    }
   };
 
+  const params = {};
+
+  urlParams.forEach((value, key) => {
+    params[key] = value;
+  });
+
   return [params, setParams];
+};
+
+export const useUrlSearchParam = (param, defaultValue = null) => {
+  const [params, setParams] = useUrlSearchParams();
+
+  const setSelectedParam = newValue => {
+    setParams({ [param]: newValue });
+  };
+
+  const selectedParam = params[param] || defaultValue;
+
+  return [selectedParam, setSelectedParam];
 };

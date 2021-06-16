@@ -4,11 +4,11 @@
  */
 
 import { EditHandler } from './EditHandler';
-import { assertTupaiaAdminPanelAccess } from '../../permissions';
+import { assertAdminPanelAccess } from '../../permissions';
 
 export class TupaiaAdminEditHandler extends EditHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertTupaiaAdminPanelAccess);
+    await this.assertPermissions(assertAdminPanelAccess);
   }
 
   async editRecord() {

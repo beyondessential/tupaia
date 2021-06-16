@@ -13,10 +13,8 @@ export const useLogout = () => {
 
   const query = useMutation(() => post('logout'), {
     onSuccess: () => {
+      queryClient.clear();
       history.push('/');
-      queryClient.resetQueries('user');
-      queryClient.resetQueries('entity');
-      queryClient.resetQueries('entities');
     },
   });
 
