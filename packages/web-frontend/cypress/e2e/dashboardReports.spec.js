@@ -4,7 +4,6 @@
  */
 
 import { urls as reportUrls } from '../config/dashboardReports.json';
-import { SNAPSHOTS } from '../constants';
 import { preserveUserSession } from '../support';
 
 const checkHasMatrixData = body => {
@@ -65,12 +64,7 @@ describe('Dashboard reports', () => {
       });
 
       cy.findByTestId('enlarged-dialog').as('enlargedDialog');
-      // Capture and store the snapshot using the "new" key, to avoid comparison with existing snapshots.
-      // We want to store the new snapshots no matter what: a failed comparison would prevent that
-      cy.get('@enlargedDialog').snapshotHtml({ name: SNAPSHOTS.newKey });
-      // Then, use the "standard" key to trigger a comparison with existing snapshots.
-      // This way we check for regression
-      cy.get('@enlargedDialog').snapshotHtml({ name: SNAPSHOTS.key });
+      cy.get('@enlargedDialog').snapshotHtml();
     });
   });
 });
