@@ -1,6 +1,5 @@
 'use strict';
 
-import groupBy from 'lodash.groupby';
 import { insertObject, generateId } from '../utilities';
 
 var dbm;
