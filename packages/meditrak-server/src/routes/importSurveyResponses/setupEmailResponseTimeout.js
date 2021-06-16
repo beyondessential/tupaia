@@ -8,10 +8,10 @@ import { sendEmail } from '../../utilities';
 import { getFailureMessage } from './getFailureMessage';
 
 const constructFailuresMessage = failures => {
-  const message = `Your survey response spreadsheet has finished processing, but some survey responses were not able to be imported. Please fix the following and try again:
+  const message = `Your survey responses have finished processing, but some were not able to be imported. Please fix the following and try again:
 ${failures.map(failure => `  - ${getFailureMessage(failure)}`).join('\n')}
 
-Note that any responses not listed here will have been successfully imported, so can be removed for your next attempt.`;
+Any responses not listed here have been successfully imported, and can be removed for your next attempt.`;
   return message;
 };
 
@@ -30,7 +30,7 @@ ${error}`;
     return constructFailuresMessage(failures);
   }
 
-  return 'Your survey response spreadsheet has successfully been imported.';
+  return 'Your survey responses have been successfully imported.';
 };
 
 const sendResponseAsEmail = (user, responseBody) => {
