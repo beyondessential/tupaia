@@ -55,8 +55,9 @@ const setupEmailResponse = async (req, res) => {
     message:
       'Import is taking a while, it will continue in the background and you will be emailed when complete',
   });
-  res.sendResponseAsEmail = (responseBody, statusCode) =>
-    sendResponseAsEmail(user, responseBody, statusCode);
+  // override the respond function so that when the import finishes (or a validation error is
+  // thrown), the response is sent via email
+  res.overrideRespond = responseBody => sendResponseAsEmail(user, responseBody);
 };
 
 // if the import takes too long, the results will be emailed
