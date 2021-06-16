@@ -83,9 +83,9 @@ export default class extends RouteHandler {
     ).filter(d => d !== null);
   };
 
-  getStaticDashboard = async (entity, staticDashboardItem) => {
-    const noDataAtLevelDashboardItem = await this.models.dashboardItem.findOne({
-      code: staticDashboardItem,
+  getStaticDashboard = async (entity, staticDashboardItemCode) => {
+    const staticDashboardItem = await this.models.dashboardItem.findOne({
+      code: staticDashboardItemCode,
     });
 
     return [
@@ -98,10 +98,10 @@ export default class extends RouteHandler {
         entityName: entity.name,
         items: [
           {
-            code: noDataAtLevelDashboardItem.code,
-            legacy: noDataAtLevelDashboardItem.legacy,
-            reportCode: noDataAtLevelDashboardItem.report_code,
-            ...noDataAtLevelDashboardItem.config,
+            code: staticDashboardItem.code,
+            legacy: staticDashboardItem.legacy,
+            reportCode: staticDashboardItem.report_code,
+            ...staticDashboardItem.config,
           },
         ],
       },
