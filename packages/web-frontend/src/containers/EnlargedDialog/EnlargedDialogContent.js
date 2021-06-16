@@ -21,6 +21,7 @@ import { DARK_BLUE, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import { LoadingIndicator } from '../Form/common';
 import { getLimits } from '../../utils/periodGranularities';
 import { DialogTitleWrapper } from '../../components/DialogTitleWrapper';
+import { transformDataForViewType } from '../../components/View/utils';
 
 const StyledAlert = styled(Alert)`
   display: inline-flex;
@@ -140,8 +141,9 @@ export class EnlargedDialogContent extends PureComponent {
   renderBodyContent() {
     const { viewContent, onCloseOverlay, organisationUnitName, isExporting } = this.props;
     const ViewWrapper = getViewWrapper(viewContent);
+    const newViewContent = transformDataForViewType(viewContent);
     const viewProps = {
-      viewContent,
+      viewContent: newViewContent,
       isEnlarged: true,
       onClose: onCloseOverlay,
       onItemClick: this.onItemClick,

@@ -79,3 +79,20 @@ export const checkIfApplyDotStyle = presentationOptions => {
 export const getIsUsingDots = presentationOptions => {
   return Object.keys(presentationOptions).length > 0;
 };
+
+export const transformDataForViewType = viewContent => {
+  if (
+    getIsSingleValue(viewContent) &&
+    typeof viewContent.data === 'object' &&
+    typeof viewContent.data[0] === 'object'
+  ) {
+    const newViewContent = {
+      ...viewContent.data[0],
+      ...viewContent,
+    };
+    delete newViewContent.data;
+    return newViewContent;
+  }
+
+  return viewContent;
+};

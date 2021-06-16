@@ -25,7 +25,7 @@ import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { DashboardItemExpanderButton } from '../DashboardItemExpanderButton';
 import { DashboardItemInfoButton } from '../DashboardItemInfoButton';
 import { CHART_TYPES } from './ChartWrapper/chartTypes';
-import { getViewWrapper, getIsMatrix } from './utils';
+import { getViewWrapper, transformDataForViewType, getIsMatrix } from './utils';
 import { Alert, AlertAction, AlertLink } from '../Alert';
 
 const viewHasData = viewContent => {
@@ -211,11 +211,13 @@ export class View extends Component {
       <div style={VIEW_STYLES.periodRange}>{formatPeriodRange(viewContent.period)}</div>
     );
 
+    const newViewContent = transformDataForViewType(viewContent);
+
     return (
       <div data-testid="view" style={getContainerStyle(viewContainerStyle, viewContent)}>
         <OverlayView>
           {title}
-          <ViewWrapper viewContent={viewContent} />
+          <ViewWrapper viewContent={newViewContent} />
           {showPeriodRange}
           {showDescription}
           {showInfoIcon}
