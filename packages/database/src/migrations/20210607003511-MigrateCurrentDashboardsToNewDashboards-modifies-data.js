@@ -136,130 +136,138 @@ const migrateLinkedDashboardReports = async db => {
       root_entity_code: organisationUnitCode,
     });
 
-    // There are a few dashboard groups that have the same name and same organisationUnitCode,
-    // just different permission groups. So we have to group them like this and combine the dashboard reports
-    // together to assign the sort_order correctly.
-    const dashboardGroupsByNameAndOrgUnit = groupBy(
-      dashboardGroups,
-      ({ name: dashboardGroupName, organisationUnitCode: orgUnitCode }) =>
-        `${dashboardGroupName}|${orgUnitCode}`,
+    // An attempt to maintain the existing order of dashboard reports in a dashboard group
+    const organisationUnitLevelOrder = [
+      'Project',
+      'Country',
+      'District',
+      'SubDistrict',
+      'City',
+      'Village',
+      'Facility',
+      'SubFacility',
+      'School',
+      'Individual',
+    ];
+    const sortedDashboardGroups = dashboardGroups.sort(
+      (d1, d2) =>
+        organisationUnitLevelOrder.indexOf(d1.organisationLevel) -
+        organisationUnitLevelOrder.indexOf(d2.organisationLevel),
     );
+    const combinedDashboardReports = [
+      ...new Set(sortedDashboardGroups.map(d => d.dashboardReports).flat()),
+    ];
 
-    for (const dashboardGroupsSubSet of Object.values(dashboardGroupsByNameAndOrgUnit)) {
-      const combinedDashboardReports = [
-        ...new Set(dashboardGroupsSubSet.map(d => d.dashboardReports).flat()),
+    for (let i = 0; i < combinedDashboardReports.length; i++) {
+      const dashboardReportId = combinedDashboardReports[i];
+      const dashboardReports = await getDashboardReportById(db, dashboardReportId);
+      if (!dashboardReports || dashboardReports.length === 0) {
+        continue; // there's no dashboard reports with this id?
+      }
+
+      const mainDashboardReport = dashboardReports.filter(d => d.drillDownLevel === null)[0];
+      const {
+        id: reportCode,
+        dataBuilder,
+        dataBuilderConfig,
+        viewJson,
+        dataServices,
+      } = mainDashboardReport;
+      const drillDownDashboardReports = dashboardReports
+        .filter(d => d.drillDownLevel !== null)
+        .sort((d1, d2) => d1.drillDownLevel - d2.drillDownLevel);
+
+      // Creating Drill Down Dashboard Items
+      if (drillDownDashboardReports.length > 0) {
+        if (!viewJson.drillDown) {
+          viewJson.drillDown = {};
+        }
+        viewJson.drillDown.itemCode = `${drillDownDashboardReports[0].id}_DrillDown_1`;
+
+        await createDrillDownDashboardItems(db, drillDownDashboardReports);
+      }
+
+      if (!dataBuilder) {
+        viewJson.noDataFetch = true;
+      }
+
+      const entityTypes = [
+        ...new Set(
+          sortedDashboardGroups
+            .filter(d => d.dashboardReports.includes(dashboardReportId))
+            .map(({ organisationLevel }) => {
+              if (organisationLevel === 'SubDistrict') {
+                return 'sub_district';
+              }
+
+              if (organisationLevel === 'SubFacility') {
+                return 'sub_facility';
+              }
+
+              return organisationLevel.toLowerCase();
+            }),
+        ),
       ];
-      for (let i = 0; i < combinedDashboardReports.length; i++) {
-        const dashboardReportId = combinedDashboardReports[i];
-        const dashboardReports = await getDashboardReportById(db, dashboardReportId);
-        if (!dashboardReports || dashboardReports.length === 0) {
-          continue; // there's no dashboard reports with this id?
+      const projectCodes = [
+        ...new Set(
+          sortedDashboardGroups
+            .filter(d => d.dashboardReports.includes(dashboardReportId))
+            .map(d => d.projectCodes)
+            .flat(),
+        ),
+      ];
+      const userGroups = [
+        ...new Set(
+          sortedDashboardGroups
+            .filter(d => d.dashboardReports.includes(dashboardReportId))
+            .map(d => d.userGroup),
+        ),
+      ];
+      const dashboardItem = await getDashboardItemByCode(db, reportCode);
+      const legacyReport = await getLegacyReportByCode(db, reportCode);
+      const dashboardItemId = dashboardItem ? dashboardItem.id : generateId();
+      const dashboardRelation = await getDashboardRelationByDashboardAndChildId(
+        db,
+        dashboardId,
+        dashboardItemId,
+      );
+
+      // Create main Dashboard Items
+      if (!dashboardItem) {
+        const itemToInsert = {
+          id: dashboardItemId,
+          code: reportCode,
+          config: viewJson,
+          legacy: true,
+        };
+
+        if (dataBuilder) {
+          itemToInsert.report_code = reportCode;
         }
 
-        const mainDashboardReport = dashboardReports.filter(d => d.drillDownLevel === null)[0];
-        const {
-          id: reportCode,
-          dataBuilder,
-          dataBuilderConfig,
-          viewJson,
-          dataServices,
-        } = mainDashboardReport;
-        const drillDownDashboardReports = dashboardReports
-          .filter(d => d.drillDownLevel !== null)
-          .sort((d1, d2) => d1.drillDownLevel - d2.drillDownLevel);
+        await insertObject(db, 'dashboard_item', itemToInsert);
+      }
 
-        // Creating Drill Down Dashboard Items
-        if (drillDownDashboardReports.length > 0) {
-          if (!viewJson.drillDown) {
-            viewJson.drillDown = {};
-          }
-          viewJson.drillDown.itemCode = `${drillDownDashboardReports[0].id}_DrillDown_1`;
+      if (!legacyReport && dataBuilder) {
+        await insertObject(db, 'legacy_report', {
+          id: generateId(),
+          code: reportCode,
+          data_builder: dataBuilder,
+          data_builder_config: dataBuilderConfig,
+          data_services: dataServices,
+        });
+      }
 
-          await createDrillDownDashboardItems(db, drillDownDashboardReports);
-        }
-
-        if (!dataBuilder) {
-          viewJson.noDataFetch = true;
-        }
-
-        const entityTypes = [
-          ...new Set(
-            dashboardGroups
-              .filter(d => d.dashboardReports.includes(dashboardReportId))
-              .map(({ organisationLevel }) => {
-                if (organisationLevel === 'SubDistrict') {
-                  return 'sub_district';
-                }
-
-                if (organisationLevel === 'SubFacility') {
-                  return 'sub_facility';
-                }
-
-                return organisationLevel.toLowerCase();
-              }),
-          ),
-        ];
-        const projectCodes = [
-          ...new Set(
-            dashboardGroups
-              .filter(d => d.dashboardReports.includes(dashboardReportId))
-              .map(d => d.projectCodes)
-              .flat(),
-          ),
-        ];
-        const userGroups = [
-          ...new Set(
-            dashboardGroups
-              .filter(d => d.dashboardReports.includes(dashboardReportId))
-              .map(d => d.userGroup),
-          ),
-        ];
-        const dashboardItem = await getDashboardItemByCode(db, reportCode);
-        const legacyReport = await getLegacyReportByCode(db, reportCode);
-        const dashboardItemId = dashboardItem ? dashboardItem.id : generateId();
-        const dashboardRelation = await getDashboardRelationByDashboardAndChildId(
-          db,
-          dashboardId,
-          dashboardItemId,
-        );
-
-        // Create main Dashboard Items
-        if (!dashboardItem) {
-          const itemToInsert = {
-            id: dashboardItemId,
-            code: reportCode,
-            config: viewJson,
-            legacy: true,
-          };
-
-          if (dataBuilder) {
-            itemToInsert.report_code = reportCode;
-          }
-
-          await insertObject(db, 'dashboard_item', itemToInsert);
-        }
-
-        if (!legacyReport && dataBuilder) {
-          await insertObject(db, 'legacy_report', {
-            id: generateId(),
-            code: reportCode,
-            data_builder: dataBuilder,
-            data_builder_config: dataBuilderConfig,
-            data_services: dataServices,
-          });
-        }
-
-        if (!dashboardRelation) {
-          await insertObject(db, 'dashboard_relation', {
-            id: generateId(),
-            dashboard_id: dashboardId,
-            child_id: dashboardItemId,
-            sort_order: i,
-            permission_groups: `{${userGroups.toString()}}`,
-            entity_types: `{${entityTypes.toString()}}`,
-            project_codes: `{${projectCodes.toString()}}`,
-          });
-        }
+      if (!dashboardRelation) {
+        await insertObject(db, 'dashboard_relation', {
+          id: generateId(),
+          dashboard_id: dashboardId,
+          child_id: dashboardItemId,
+          sort_order: i,
+          permission_groups: `{${userGroups.toString()}}`,
+          entity_types: `{${entityTypes.toString()}}`,
+          project_codes: `{${projectCodes.toString()}}`,
+        });
       }
     }
   }
