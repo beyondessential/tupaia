@@ -195,19 +195,4 @@ export class SurveyResponseUpdatePersistor {
 
     return { failures: [...createFailures, ...updateFailures, ...deleteFailures] };
   }
-
-  async processInSingleTransaction() {
-    await this.models.wrapInTransaction(async transactingModels => {
-      for (const update of Object.values(this.updatesByResponseId)) {
-        try {
-          await this.processUpdate(transactingModels, update);
-        } catch (error) {
-          const { sheetName, surveyResponseId, type } = update;
-          throw new Error(
-            `Couldn't process ${sheetName}, ${surveyResponseId} to the database (${type})`,
-          );
-        }
-      }
-    });
-  }
 }
