@@ -10,8 +10,8 @@ import { darkWhite } from '../../styles';
 export const ViewTitle = styled(Typography)`
   position: relative;
   color: ${darkWhite};
-  margin-top: 5;
-  margin-bottom: 15;
+  margin-top: 5px;
+  margin-bottom: 15px;
   line-height: 130%;
   text-align: center;
 `;

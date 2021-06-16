@@ -11,9 +11,13 @@ const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 2rem;
+`;
 
-  // non enlarged styles
-  &.non-enlarged {
+const PieLegendContainer = styled(LegendContainer)`
+  padding-bottom: 0;
+
+  // preview styles
+  &.preview {
     align-items: flex-start;
   }
 `;
@@ -49,8 +53,8 @@ const LegendItem = styled(({ isExporting, ...props }) => <MuiButton {...props} /
     color: ${({ theme, isExporting }) => getLegendTextColor(theme, isExporting)};
   }
 
-  // non enlarged styles
-  &.non-enlarged {
+  // preview styles
+  &.preview {
     font-size: 0.5rem;
     padding-bottom: 0.1rem;
     padding-top: 0.1rem;
@@ -72,7 +76,7 @@ const Box = styled.span`
   border-radius: 3px;
 
   // non enlarged styles
-  &.non-enlarged {
+  &.preview {
     width: 0.8rem;
     min-width: 0.8rem;
     height: 0.8rem;
@@ -87,14 +91,19 @@ const Text = styled.span`
 const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || value;
 
 export const getPieLegend = ({ chartConfig = {}, isEnlarged, isExporting }) => ({ payload }) => (
-  <LegendContainer className={isEnlarged ? 'enlarged' : 'non-enlarged'}>
+  <PieLegendContainer className={isEnlarged ? 'enlarged' : 'preview'}>
     {payload.map(({ color, value }) => (
-      <LegendItem key={value} className={isEnlarged ? 'enlarged' : 'non-enlarged'} disabled>
-        <Box className={isEnlarged ? 'enlarged' : 'non-enlarged'} style={{ background: color }} />
-        <Text isExporting={isExporting}>{getDisplayValue(chartConfig, value)}</Text>
+      <LegendItem
+        key={value}
+        isExporting={isExporting}
+        className={isEnlarged ? 'enlarged' : 'preview'}
+        disabled
+      >
+        <Box className={isEnlarged ? 'enlarged' : 'preview'} style={{ background: color }} />
+        <Text>{getDisplayValue(chartConfig, value)}</Text>
       </LegendItem>
     ))}
-  </LegendContainer>
+  </PieLegendContainer>
 );
 
 export const getCartesianLegend = ({ chartConfig, onClick, getIsActiveKey, isExporting }) => ({
@@ -106,10 +115,11 @@ export const getCartesianLegend = ({ chartConfig, onClick, getIsActiveKey, isExp
         <LegendItem
           key={value}
           onClick={() => onClick(dataKey)}
+          isExporting={isExporting}
           style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
         >
           <Box style={{ background: color }} />
-          <Text isExporting={isExporting}>{getDisplayValue(chartConfig, value)}</Text>
+          <Text>{getDisplayValue(chartConfig, value)}</Text>
         </LegendItem>
       );
     })}

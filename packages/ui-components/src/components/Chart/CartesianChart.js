@@ -160,6 +160,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
    * so they are called as functions below
    */
+
   return (
     <ResponsiveContainer width="100%" height={isExporting ? 320 : undefined} aspect={aspect}>
       <Chart.Container
@@ -167,7 +168,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         margin={
           isExporting
             ? { left: 20, right: 20, top: 20, bottom: 20 }
-            : { left: 0, right: 0, top: 0, bottom: 20 }
+            : { left: 0, right: 0, top: 0, bottom: 0 }
         }
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
@@ -206,9 +207,10 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
 
             return Chart.Component({
               ...chartConfig[dataKey],
-              dataKey,
-              yAxisId,
               chartConfig,
+              dataKey,
+              isExporting,
+              yAxisId,
               data,
             });
           })}

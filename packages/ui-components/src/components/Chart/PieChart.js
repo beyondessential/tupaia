@@ -163,7 +163,7 @@ export const PieChart = ({ viewContent, isExporting, isEnlarged, onItemClick }) 
         </Pie>
         <Tooltip content={makeCustomTooltip(viewContent)} />
         <Legend
-          content={getPieLegend({ chartConfig: viewContent.chartConfig, isEnlarged })}
+          content={getPieLegend({ chartConfig: viewContent.chartConfig, isEnlarged, isExporting })}
           onMouseOver={handleMouseEnter}
           onMouseOut={handleMouseOut}
           verticalAlign="top"
