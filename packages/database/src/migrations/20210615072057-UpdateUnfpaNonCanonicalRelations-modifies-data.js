@@ -26,6 +26,10 @@ const entityRelationshipsToAdd = [
   },
   {
     countryCode: 'WS',
+    entityType: 'facility',
+  },
+  {
+    countryCode: 'WS',
     entityType: 'village',
   },
   {
