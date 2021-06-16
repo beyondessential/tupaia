@@ -1,6 +1,6 @@
 import { CustomError, replaceValues, convertDateRangeToPeriodQueryString } from '@tupaia/utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
-import { ReportPermissionChecker } from './permissions';
+import { ReportPermissionsChecker } from './permissions';
 import { ReportConnection } from '/connections';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -27,7 +27,7 @@ const noDataBuilder = {
 const getIsValidDate = dateString => !Number.isNaN(Date.parse(dateString));
 
 export class ReportHandler extends DataAggregatingRouteHandler {
-  static PermissionsChecker = ReportPermissionChecker;
+  static PermissionsChecker = ReportPermissionsChecker;
 
   buildResponse = async () => {
     const { startDate, endDate } = this.query;

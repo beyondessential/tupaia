@@ -5,7 +5,18 @@
 import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
-export class ReportPermissionChecker extends PermissionsChecker {
+export class ReportPermissionsChecker extends PermissionsChecker {
+  async fetchAndCacheDashboardItem(itemCode) {
+    if (!this.dashboardItem) {
+      this.dashboardItem = this.models.dashboardItem.findOne({ code: itemCode });
+      if (!this.dashboardItem) {
+        throw new PermissionsError(`Cannot find dashboard item with code '${itemCode}'`);
+      }
+    }
+
+    return this.dashboardItem;
+  }
+
   async fetchAndCachePermissionObject() {
     if (!this.permissionObject) {
       const { reportCode } = this.params;
@@ -21,7 +32,7 @@ export class ReportPermissionChecker extends PermissionsChecker {
         );
       }
 
-      const dashboardItem = await this.models.dashboardItem.findOne({ code: itemCode });
+      const dashboardItem = await this.fetchAndCacheDashboardItem(itemCode);
       if (reportCode !== dashboardItem.report_code) {
         throw new PermissionsError(
           `Report code '${reportCode}' does not match with report_code '${dashboardItem.report_code}' of dashboard_item`,

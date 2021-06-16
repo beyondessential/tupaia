@@ -24,6 +24,7 @@ import {
   selectCurrentOrgUnit,
   selectCurrentProjectCode,
   selectCurrentExpandedDates,
+  selectCurrentDashboardCodeForExpandedReport,
 } from '../../selectors';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
 import { exportToExcel, exportToPng } from '../../utils/exports';
@@ -69,12 +70,14 @@ const EnlargedDialogComponent = ({
   onCloseOverlay,
   contentByLevel,
   errorMessage,
+  organisationUnitCode,
   organisationUnitName,
   onSetDateRange,
   startDate: startDateForTopLevel,
   endDate: endDateForTopLevel,
   isLoading,
   projectCode,
+  dashboardCode,
   infoViewKey,
   fetchViewData,
   drillDownDatesByLevel,
@@ -180,7 +183,9 @@ const EnlargedDialogComponent = ({
       if (format === 'xlsx') {
         await exportToExcel({
           projectCode,
+          dashboardCode,
           viewContent: newViewContent,
+          organisationUnitCode,
           organisationUnitName,
           startDate: moment.isMoment(startDate) ? startDate.utc().toISOString() : startDate,
           endDate: moment.isMoment(endDate) ? endDate.utc().toISOString() : endDate,
@@ -246,7 +251,8 @@ const EnlargedDialogComponent = ({
 
 EnlargedDialogComponent.propTypes = {
   onCloseOverlay: PropTypes.func.isRequired,
-  contentByLevel: PropTypes.any,
+  contentByLevel: PropTypes.object,
+  organisationUnitCode: PropTypes.string,
   organisationUnitName: PropTypes.string,
   onSetDateRange: PropTypes.func,
   fetchViewData: PropTypes.func,
@@ -257,12 +263,13 @@ EnlargedDialogComponent.propTypes = {
   drillDownDatesByLevel: PropTypes.object,
   projectCode: PropTypes.string,
   infoViewKey: PropTypes.string,
-  onCloseOverlay: PropTypes.func.isRequired,
+  dashboardCode: PropTypes.string,
 };
 
 EnlargedDialogComponent.defaultProps = {
   onSetDateRange: () => {},
   fetchViewData: () => {},
+  organisationUnitCode: '',
   organisationUnitName: '',
   contentByLevel: null,
   errorMessage: null,
@@ -272,6 +279,7 @@ EnlargedDialogComponent.defaultProps = {
   isLoading: false,
   projectCode: null,
   infoViewKey: null,
+  dashboardCode: null,
 };
 
 const styles = {
@@ -294,6 +302,8 @@ const styles = {
 
 const mapStateToProps = state => {
   const { startDate, endDate } = selectCurrentExpandedDates(state);
+  console.log('{ startDate, endDate }', { startDate, endDate });
+  const currentOrgUnit = selectCurrentOrgUnit(state);
   return {
     startDate,
     endDate,
@@ -302,8 +312,10 @@ const mapStateToProps = state => {
     errorMessage: state.enlargedDialog.errorMessage,
     drillDownDatesByLevel: state.enlargedDialog.drillDownDatesByLevel,
     infoViewKey: selectCurrentInfoViewKey(state),
-    organisationUnitName: selectCurrentOrgUnit(state).name,
+    organisationUnitName: currentOrgUnit.name,
+    organisationUnitCode: currentOrgUnit.organisationUnitCode,
     projectCode: selectCurrentProjectCode(state),
+    dashboardCode: selectCurrentDashboardCodeForExpandedReport(state),
   };
 };
 

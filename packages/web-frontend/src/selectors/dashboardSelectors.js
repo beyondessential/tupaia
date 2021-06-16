@@ -40,7 +40,7 @@ export const selectCurrentDashboardName = createSelector(
   },
 );
 
-const selectCurrentDashboardCodeForExpandedReport = createSelector(
+export const selectCurrentDashboardCodeForExpandedReport = createSelector(
   [state => state.global.dashboards, selectCurrentDashboardName, selectCurrentExpandedViewCode],
   (dashboards, currentDashboardName, currentDashboardItemCode) => {
     const dashboardIncludingReport = dashboards.find(

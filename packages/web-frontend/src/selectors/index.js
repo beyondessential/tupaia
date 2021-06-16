@@ -44,13 +44,14 @@ export {
 export {
   selectCurrentInfoViewKey,
   selectCurrentDashboardName,
+  selectCurrentDashboardNameFromLocation,
+  selectCurrentDashboardCodeForExpandedReport,
   selectCurrentExpandedViewConfig,
   selectCurrentExpandedViewContent,
   selectCurrentExpandedViewCode,
   selectIsEnlargedDialogVisible,
   selectShouldUseDashboardData,
   selectCurrentExpandedDates,
-  selectCurrentDashboardNameFromLocation,
   selectViewConfig,
 } from './dashboardSelectors';
 
