@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-const RESPONSES_PER_BULK_BATCH = 1000; // number of survey responses processed per bulk insert/delete
+const RESPONSES_PER_BULK_BATCH = 300; // number of survey responses processed per bulk insert/delete
 
 export const CREATE = 'create';
 export const UPDATE = 'update';
