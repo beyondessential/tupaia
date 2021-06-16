@@ -22,75 +22,34 @@ const INDICATOR = {
   builder: 'analyticArithmetic',
   config: {
     formula:
-      'firstExistingValue(FWV_LGA_ILI_Percentage_prior_March_2021, FWV_LGA_ILI_Percentage_Till_Current)',
-    parameters: [
-      {
-        builder: 'analyticArithmetic',
-        code: 'FWV_LGA_ILI_Percentage_prior_March_2021',
-        config: {
-          formula: 'FluTracking_NationalFNILI',
-          aggregation: ['FINAL_EACH_DAY'],
-        },
-      },
-      {
-        builder: 'analyticArithmetic',
-        code: 'FWV_LGA_ILI_Percentage_Till_Current',
-        config: {
-          formula:
-            '(FWV_LGA_004a_Total_By_Country >= 0 and FWV_LGA_003a_Total_By_Country > 0) ? (FWV_LGA_004a_Total_By_Country / FWV_LGA_003a_Total_By_Country * 100) : 0',
-          parameters: [
-            // Sum up 'FWV_LGA_004a' per period in national level as 'FWV_LGA_004a_Total_By_Country'
-            {
-              builder: 'analyticArithmetic',
-              code: 'FWV_LGA_004a_Total_By_Country',
-              config: {
-                formula: 'FWV_LGA_004a',
-                aggregation: [
-                  'FINAL_EACH_DAY',
-                  {
-                    type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-                    config: {
-                      dataSourceEntityType: 'sub_district',
-                      aggregationEntityType: 'country',
-                    },
-                  },
-                ],
-              },
-            },
-            // Sum up 'FWV_LGA_003a' per period in national level as 'FWV_LGA_003a_Total_By_Country'
-            {
-              builder: 'analyticArithmetic',
-              code: 'FWV_LGA_003a_Total_By_Country',
-              config: {
-                formula: 'FWV_LGA_003a',
-                aggregation: [
-                  'FINAL_EACH_DAY',
-                  {
-                    type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-                    config: {
-                      dataSourceEntityType: 'sub_district',
-                      aggregationEntityType: 'country',
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-          aggregation: [],
-          defaultValues: {
-            FWV_LGA_004a_Total_By_Country: 'undefined',
-            FWV_LGA_003a_Total_By_Country: 'undefined',
+      "firstExistingValue(FluTracking_NationalFNILI == -1 ? 'undefined': FluTracking_NationalFNILI / 100, ((FWV_LGA_003a == 0 or FWV_LGA_004a == -1 or FWV_LGA_003a == -1) ? 'undefined': FWV_LGA_004a / FWV_LGA_003a))",
+    aggregation: {
+      FluTracking_NationalFNILI: 'FINAL_EACH_DAY',
+      FWV_LGA_003a: [
+        'FINAL_EACH_DAY',
+        {
+          type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
+          config: {
+            dataSourceEntityType: 'sub_district',
+            aggregationEntityType: 'country',
           },
         },
-      },
-    ],
-    aggregation: {
-      FWV_LGA_ILI_Percentage_prior_March_2021: 'FINAL_EACH_DAY',
-      FWV_LGA_ILI_Percentage_Till_Current: 'FINAL_EACH_DAY',
+      ],
+      FWV_LGA_004a: [
+        'FINAL_EACH_DAY',
+        {
+          type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
+          config: {
+            dataSourceEntityType: 'sub_district',
+            aggregationEntityType: 'country',
+          },
+        },
+      ],
     },
     defaultValues: {
-      FWV_LGA_ILI_Percentage_prior_March_2021: 'undefined',
-      FWV_LGA_ILI_Percentage_Till_Current: 'undefined',
+      FluTracking_NationalFNILI: -1,
+      FWV_LGA_003a: -1,
+      FWV_LGA_004a: -1,
     },
   },
 };

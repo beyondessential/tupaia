@@ -22,49 +22,32 @@ const INDICATOR = {
   builder: 'analyticArithmetic',
   config: {
     formula:
-      '(FWV_LGA_004b_Total_By_Country >= 0 and FWV_LGA_003b_Total_By_Country > 0) ? (FWV_LGA_004b_Total_By_Country / FWV_LGA_003b_Total_By_Country * 100) : 0',
-    parameters: [
-      // Sum up 'FWV_LGA_004b' per period in national level as 'FWV_LGA_004b_Total_By_Country'
-      {
-        builder: 'analyticArithmetic',
-        code: 'FWV_LGA_004b_Total_By_Country',
-        config: {
-          formula: 'FWV_LGA_004b',
-          aggregation: [
-            'FINAL_EACH_DAY',
-            {
-              type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-              config: {
-                dataSourceEntityType: 'sub_district',
-                aggregationEntityType: 'country',
-              },
-            },
-          ],
+      'FWV_LGA_003b == -1 or FWV_LGA_003b == -1 or FWV_LGA_003b == 0 ? undefined : FWV_LGA_004b / FWV_LGA_003b',
+    aggregation: {
+      FWV_LGA_003b: [
+        'FINAL_EACH_DAY',
+        {
+          type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
+          config: {
+            dataSourceEntityType: 'sub_district',
+            aggregationEntityType: 'country',
+          },
         },
-      },
-      // Sum up 'FWV_LGA_003b' per period in national level as 'FWV_LGA_003b_Total_By_Country'
-      {
-        builder: 'analyticArithmetic',
-        code: 'FWV_LGA_003b_Total_By_Country',
-        config: {
-          formula: 'FWV_LGA_003b',
-          aggregation: [
-            'FINAL_EACH_DAY',
-            {
-              type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-              config: {
-                dataSourceEntityType: 'sub_district',
-                aggregationEntityType: 'country',
-              },
-            },
-          ],
+      ],
+      FWV_LGA_004b: [
+        'FINAL_EACH_DAY',
+        {
+          type: 'SUM_PER_PERIOD_PER_ORG_GROUP',
+          config: {
+            dataSourceEntityType: 'sub_district',
+            aggregationEntityType: 'country',
+          },
         },
-      },
-    ],
-    aggregation: [],
+      ],
+    },
     defaultValues: {
-      FWV_LGA_004b_Total_By_Country: 'undefined',
-      FWV_LGA_003b_Total_By_Country: 'undefined',
+      FWV_LGA_003b: -1,
+      FWV_LGA_004b: -1,
     },
   },
 };
