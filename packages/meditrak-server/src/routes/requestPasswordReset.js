@@ -29,14 +29,15 @@ export const requestPasswordReset = async (req, res) => {
   });
 
   const resetUrl = process.env.PASSWORD_RESET_URL.replace('{token}', token);
-  const emailText = `Dear ${user.fullName},\n
-    You are receiving this email because someone requested a password reset for
-    this user account on Tupaia.org. To reset your password follow the link below.
+  const emailText = `Dear ${user.fullName},
 
-    ${resetUrl}
+You are receiving this email because someone requested a password reset for
+this user account on Tupaia.org. To reset your password follow the link below.
 
-    If you believe this email was sent to you in error, please contact us immediately at
-    admin@tupaia.org.`;
+${resetUrl}
+
+If you believe this email was sent to you in error, please contact us immediately at
+admin@tupaia.org.`;
 
   sendEmail(user.email, 'Password reset on Tupaia.org', emailText);
 
