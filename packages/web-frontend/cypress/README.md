@@ -55,15 +55,18 @@ Our e2e tests support Tupaia-specific configuration fields. Those can be specifi
 ```json
 {
   "tupaia": {
-    "requireNonEmptyVisualisations": true
+    "dashboardReports": {
+      "allowEmptyResponse": false
+    }
   }
 }
 ```
 
-| Config key                    | Description                                                                                                                                                                                    |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dashboardReportParamFiles     | A list of `.json` files that can be used to generate dashboard report urls that will be used during testing. See [config/params/dashboardReports](config/params/dashboardReports) for examples |
-| requireNonEmptyVisualisations | If set, an error will be thrown for tested visualisations that have no data (eg empty reports)                                                                                                 |
+| Config key                          | Description                                                                                                                                                                                    |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dashboardReports.allowEmptyResponse | If set, an error will be thrown for tested visualisations that have no data (eg empty reports)                                                                                                 |
+| dashboardReports.paramFiles         | A list of `.json` files that can be used to generate dashboard report urls that will be used during testing. See [config/params/dashboardReports](config/params/dashboardReports) for examples |
+| dashboardReports.snapshotTypes      | A list of snapshot types that will be captured for each report. Supported types: `responseBody`, `html`                                                                                        |
 
 ## Limitations
 

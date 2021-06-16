@@ -6,6 +6,11 @@
 import { urls as reportUrls } from '../config/dashboardReports.json';
 import { preserveUserSession } from '../support';
 
+const SNAPSHOT_TYPES = {
+  RESPONSE_BODY: 'responseBody',
+  HTML: 'html',
+};
+
 const checkHasMatrixData = body => {
   const { rows = [], columns = [] } = body;
 
@@ -42,7 +47,11 @@ describe('Dashboard reports', () => {
   if (reportUrls.length === 0) {
     throw new Error('Dashboard report url list is empty');
   }
-  const { requireNonEmptyVisualisations } = Cypress.config('tupaia');
+  const { dashboardReports: config = {} } = Cypress.config('tupaia');
+  const { allowEmptyResponse, snapshotTypes } = config;
+  if (!Array.isArray(snapshotTypes) || snapshotTypes.length === 0) {
+    throw new Error(`No snapshot types specified`);
+  }
 
   before(() => {
     cy.login();
@@ -57,14 +66,21 @@ describe('Dashboard reports', () => {
       cy.server();
       cy.route(urlToRouteRegex(url)).as('report');
       cy.visit(url);
+
       cy.wait('@report').then(({ response }) => {
-        if (requireNonEmptyVisualisations) {
+        if (!allowEmptyResponse) {
           assertUrlResponseHasData(url, response);
+        }
+        if (snapshotTypes.includes(SNAPSHOT_TYPES.RESPONSE_BODY)) {
+          cy.wrap(response.body).as('responseBody');
+          cy.get('@responseBody').snapshot({ name: SNAPSHOT_TYPES.RESPONSE_BODY });
         }
       });
 
-      cy.findByTestId('enlarged-dialog').as('enlargedDialog');
-      cy.get('@enlargedDialog').snapshotHtml();
+      if (snapshotTypes.includes(SNAPSHOT_TYPES.HTML)) {
+        cy.findByTestId('enlarged-dialog').as('enlargedDialog');
+        cy.get('@enlargedDialog').snapshotHtml({ name: SNAPSHOT_TYPES.HTML });
+      }
     });
   });
 });
