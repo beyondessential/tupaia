@@ -31,3 +31,19 @@ const getSecondsStringFromTimestamp = timestamp =>
   Math.floor(timestamp / 1000)
     .toString(16)
     .padStart(8, '0');
+
+// will generate ids, ensuring that the same id is not returned twice during its lifetime
+export class DuplicateAvoidingIdGenerator {
+  constructor() {
+    this.idsGenerated = new Set();
+  }
+
+  generate() {
+    let newId;
+    do {
+      newId = generateId();
+    } while (this.idsGenerated.has(newId));
+    this.idsGenerated.add(newId);
+    return newId;
+  }
+}

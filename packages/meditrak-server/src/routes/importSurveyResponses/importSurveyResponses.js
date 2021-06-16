@@ -5,7 +5,7 @@
 
 import xlsx from 'xlsx';
 import moment from 'moment';
-import { generateId } from '@tupaia/database';
+import { DuplicateAvoidingIdGenerator } from '@tupaia/database';
 import {
   constructIsOneOf,
   constructRecordExistsWithId,
@@ -50,6 +50,7 @@ export async function importSurveyResponses(req, res) {
     }
     const config = { timeZone, userId, surveyNames };
     const updatePersistor = new SurveyResponseUpdatePersistor(models);
+    const idGenerator = new DuplicateAvoidingIdGenerator();
     const workbook = xlsx.readFile(req.file.path);
     // Go through each sheet in the workbook and process the updated survey responses
     const entitiesBySurveyName = await getEntitiesBySurveyName(
@@ -78,7 +79,7 @@ export async function importSurveyResponses(req, res) {
       for (let columnIndex = minSurveyResponseIndex; columnIndex <= maxColumnIndex; columnIndex++) {
         const columnHeader = getColumnHeader(sheet, columnIndex);
         if (checkIsNewSurveyResponse(columnHeader)) {
-          surveyResponseIds[columnIndex] = generateId();
+          surveyResponseIds[columnIndex] = idGenerator.generate();
         } else {
           surveyResponseIds[columnIndex] = columnHeader;
         }

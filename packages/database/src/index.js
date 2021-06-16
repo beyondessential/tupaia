@@ -7,6 +7,7 @@ export * from './modelClasses';
 export { AnalyticsRefresher, MaterializedViewLogDatabaseModel } from './analytics';
 export { EntityHierarchyCacher } from './cachers';
 export {
+  DuplicateAvoidingIdGenerator,
   generateId,
   getHighestPossibleIdForGivenTime,
   runDatabaseFunctionInBatches,
