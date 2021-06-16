@@ -7,7 +7,7 @@ import { respond } from '@tupaia/utils';
 import { sendEmail } from '../../utilities';
 import { getFailureMessage } from './getFailureMessage';
 
-const constructFailuresMessage = async failures => {
+const constructFailuresMessage = failures => {
   const message = `Your survey response spreadsheet has finished processing, but some survey responses were not able to be imported. Please fix the following and try again:
 ${failures.map(failure => `  - ${getFailureMessage(failure)}`).join('\n')}
 
