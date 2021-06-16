@@ -84,7 +84,9 @@ export class SurveyResponseUpdatePersistor {
     for (const batchOfCreates of batch(creates, RESPONSES_PER_BULK_BATCH)) {
       try {
         await this.models.wrapInTransaction(async transactingModels => {
-          const newSurveyResponses = creates.map(({ newSurveyResponse }) => newSurveyResponse);
+          const newSurveyResponses = batchOfCreates.map(
+            ({ newSurveyResponse }) => newSurveyResponse,
+          );
           const newAnswers = batchOfCreates
             .map(({ answers }) =>
               answers.upserts.map(({ surveyResponseId, questionId, type, text }) => ({
