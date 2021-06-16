@@ -342,9 +342,10 @@ export default class extends DataAggregatingRouteHandler {
       this.models,
       this.aggregator,
       dhisApi,
-      { ...this.query, dataElementCode, req: this.req },
+      { ...this.query, dataElementCode },
       { ...measureBuilderConfig, dataServices },
       entity,
+      this.req,
     );
   }
 }

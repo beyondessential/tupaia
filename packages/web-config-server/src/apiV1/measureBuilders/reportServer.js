@@ -7,8 +7,8 @@ export const reportServer = async (
   query,
   measureBuilderConfig = {},
   entity,
+  req,
 ) => {
-  const { req, ...restOfQuery } = query;
-  const builder = new ReportServerBuilder(req, models, measureBuilderConfig, restOfQuery, entity);
+  const builder = new ReportServerBuilder(req, models, measureBuilderConfig, query, entity);
   return builder.build();
 };
