@@ -302,7 +302,6 @@ const styles = {
 
 const mapStateToProps = state => {
   const { startDate, endDate } = selectCurrentExpandedDates(state);
-  console.log('{ startDate, endDate }', { startDate, endDate });
   const currentOrgUnit = selectCurrentOrgUnit(state);
   return {
     startDate,
