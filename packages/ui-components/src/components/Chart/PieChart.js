@@ -37,7 +37,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
-import { OFF_WHITE, CHART_BLUES, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from './constants';
+import { OFF_WHITE, CHART_COLOR_PALETTE, VIEW_CONTENT_SHAPE } from './constants';
 import { getPieLegend } from './Legend';
 import { isMobile } from './utils';
 import { TooltipContainer } from './TooltipContainer';
@@ -47,6 +47,7 @@ const Heading = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1rem;
   margin-bottom: 0.5rem;
+  color: #2c3236;
 `;
 
 const Text = styled(Typography)`

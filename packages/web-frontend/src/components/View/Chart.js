@@ -4,6 +4,7 @@
  *
  */
 import React from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {
   Chart as ChartComponent,
@@ -15,6 +16,13 @@ import {
 import { VIEW_CONTENT_SHAPE } from './propTypes';
 import { ViewTitle } from './Typography';
 import { ChartContainer, ChartViewContainer } from './Layout';
+
+const CustomChartContainer = styled(ChartContainer)`
+  // recharts components doesn't pass nested styles so they need to be added on a wrapping component
+  li.recharts-legend-item {
+    white-space: nowrap; // ensure there are no line breaks on the export legends
+  }
+`;
 
 const removeNonNumericData = data =>
   data.map(dataSeries => {
@@ -52,14 +60,14 @@ export const Chart = ({ viewContent, isEnlarged, isExporting, onItemClick }) => 
 
   return (
     <ChartViewContainer>
-      <ChartContainer>
+      <CustomChartContainer>
         <ChartComponent
           isEnlarged={isEnlarged}
           isExporting={isExporting}
           viewContent={viewContentConfig}
           onItemClick={onItemClick}
         />
-      </ChartContainer>
+      </CustomChartContainer>
     </ChartViewContainer>
   );
 };

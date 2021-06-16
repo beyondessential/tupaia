@@ -43,7 +43,7 @@ export const RootScreen = ({ enlargedDialogIsVisible, isLoading }) => {
         {enlargedDialogIsVisible ? <EnlargedDialog /> : null}
       </OverlayContainer>
       <LoadingScreen isLoading={isLoading} />
-      {/*<Map />*/}
+      <Map />
     </div>
   );
 };

@@ -10,7 +10,7 @@ import MuiButton from '@material-ui/core/Button';
 const LegendContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding-bottom: 1rem;
+  padding-bottom: 2rem;
 
   // non enlarged styles
   &.non-enlarged {
@@ -18,7 +18,18 @@ const LegendContainer = styled.div`
   }
 `;
 
-const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />)`
+const getLegendTextColor = (theme, isExporting) => {
+  if (isExporting) {
+    return '#2c3236';
+  }
+
+  if (theme.palette.type === 'light') {
+    return theme.palette.text.primary;
+  }
+  return 'white';
+};
+
+const LegendItem = styled(({ isExporting, ...props }) => <MuiButton {...props} />)`
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -31,13 +42,11 @@ const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />
   .MuiButton-label {
     display: flex;
     align-items: center;
-    color: ${({ theme }) =>
-      theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
+    color: ${({ theme, isExporting }) => getLegendTextColor(theme, isExporting)};
   }
 
   &.Mui-disabled {
-    color: ${({ theme }) =>
-      theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
+    color: ${({ theme, isExporting }) => getLegendTextColor(theme, isExporting)};
   }
 
   // non enlarged styles
@@ -51,13 +60,6 @@ const LegendItem = styled(({ isEnlarged, ...props }) => <MuiButton {...props} />
     .MuiButton-label {
       display: flex;
       align-items: flex-start;
-      color: ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
-    }
-
-    &.Mui-disabled {
-      color: ${({ theme }) =>
-        theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
     }
   }
 `;
@@ -84,12 +86,12 @@ const Text = styled.span`
 
 const getDisplayValue = (chartConfig, value) => chartConfig[value]?.label || value;
 
-export const getPieLegend = ({ chartConfig = {}, isEnlarged }) => ({ payload }) => (
+export const getPieLegend = ({ chartConfig = {}, isEnlarged, isExporting }) => ({ payload }) => (
   <LegendContainer className={isEnlarged ? 'enlarged' : 'non-enlarged'}>
     {payload.map(({ color, value }) => (
       <LegendItem key={value} className={isEnlarged ? 'enlarged' : 'non-enlarged'} disabled>
         <Box className={isEnlarged ? 'enlarged' : 'non-enlarged'} style={{ background: color }} />
-        <Text>{getDisplayValue(chartConfig, value)}</Text>
+        <Text isExporting={isExporting}>{getDisplayValue(chartConfig, value)}</Text>
       </LegendItem>
     ))}
   </LegendContainer>
@@ -107,7 +109,7 @@ export const getCartesianLegend = ({ chartConfig, onClick, getIsActiveKey, isExp
           style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
         >
           <Box style={{ background: color }} />
-          <Text>{getDisplayValue(chartConfig, value)}</Text>
+          <Text isExporting={isExporting}>{getDisplayValue(chartConfig, value)}</Text>
         </LegendItem>
       );
     })}

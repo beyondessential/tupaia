@@ -4,7 +4,7 @@
  *
  */
 import styled from 'styled-components';
-import { darkWhite } from '../../styles';
+import { isMobile } from '../../utils';
 
 export const FlexStart = styled.div`
   display: flex;
@@ -36,34 +36,31 @@ export const FlexRow = styled.div`
   align-items: center;
 `;
 
-export const ChartContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 100%;
-  align-content: stretch;
-  align-items: stretch;
+export const ChartContainer = styled.div(
+  isMobile()
+    ? {
+        height: 200,
+        textAlign: 'center',
+        position: 'relative',
+      }
+    : {
+        display: 'flex',
+        flexDirection: 'row',
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: '100%',
+        alignContent: 'stretch',
+        alignItems: 'stretch',
+      },
+);
 
-  // recharts components doesn't pass nested styles so they need to be added on a wrapping component
-  li.recharts-legend-item {
-    white-space: nowrap; // ensure there are no line breaks on the export legends
-  }
-
-  ${props => props.theme.breakpoints.down('sm')} {
-    height: 200;
-    text-align: center;
-    position: relative;
-  }
-`;
-
-export const ChartViewContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-
-  ${props => props.theme.breakpoints.down('sm')} {
-    display: block;
-  }
-`;
+export const ChartViewContainer = styled.div(
+  isMobile()
+    ? {}
+    : {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      },
+);
