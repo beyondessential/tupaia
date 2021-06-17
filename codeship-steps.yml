@@ -121,3 +121,4 @@
   service: e2e-runner
   steps:
     - name: e2e-runner
+      command: 'sh /home/e2e-runner.sh'
