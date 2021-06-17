@@ -128,6 +128,8 @@ export const createDashboardItemsDBFilter = (accessPolicy, criteria) => {
     sql: `
     (
       (
+        -- look up the country code of the entity, and see whether it's in the user's list of countries
+        -- for the appropriate permission group
         ARRAY(
           SELECT DISTINCT entity.country_code
           FROM entity
@@ -144,6 +146,9 @@ export const createDashboardItemsDBFilter = (accessPolicy, criteria) => {
                 FROM dashboard_relation 
                 WHERE child_id = "dashboard_item".id) dr1
         )
+      -- for projects, pull the country codes from the child entities and check that there is overlap
+      -- with the user's list of countries for the appropriate permission group (i.e., they have
+      -- access to at least one country within the project)
       OR (
         ARRAY(
           SELECT DISTINCT entity.country_code
