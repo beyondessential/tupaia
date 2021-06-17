@@ -41,3 +41,12 @@ deployment:
   cached: true
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
+
+e2e-runner:
+  build:
+    dockerfile: e2e-runner.Dockerfile
+  add_docker: true
+  volumes:
+    - /tmp/e2e/reference:/home/reference # runner clones reference branch here
+    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
+    - ./.ssh:/root/.ssh
