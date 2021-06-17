@@ -21,8 +21,7 @@ const INDICATOR = {
   code: 'FluTracker_LGA_Percent_Non_First_Nations_ILI',
   builder: 'analyticArithmetic',
   config: {
-    formula:
-      'FWV_LGA_003b == -1 or FWV_LGA_003b == -1 or FWV_LGA_003b == 0 ? undefined : FWV_LGA_004b / FWV_LGA_003b',
+    formula: "FWV_LGA_003b == 0 ? 'undefined' : FWV_LGA_004b / FWV_LGA_003b",
     aggregation: {
       FWV_LGA_003b: [
         'FINAL_EACH_DAY',
@@ -44,10 +43,6 @@ const INDICATOR = {
           },
         },
       ],
-    },
-    defaultValues: {
-      FWV_LGA_003b: -1,
-      FWV_LGA_004b: -1,
     },
   },
 };
