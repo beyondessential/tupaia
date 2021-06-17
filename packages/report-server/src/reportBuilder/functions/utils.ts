@@ -31,18 +31,15 @@ export const dateStringToPeriod = (period: string, targetType: string): string =
   return baseDateStringToPeriod(period, targetType);
 };
 
-export const formatDataValueByType = (
-  value: number,
-  numerator: number,
-  denominator: number,
-  valueType: string,
-) => {
-  if (!(valueType in VALUE_TYPES)) {
+export const fractionAndPercentage = (numerator: number, denominator: number) => {
+  const valueType = 'fractionAndPercentage';
+  if (typeof numerator !== 'number' || typeof denominator !== 'number') {
     throw new Error(
-      `Function 'formatDataValueByType' expect valueType as one of these ${Object.values(
-        VALUE_TYPES,
-      )}`,
+      `Function 'fractionAndPercentage' expect ${numerator} and ${denominator} as number`,
     );
   }
-  return baseFormatDataValueByType({ value, metadata: { numerator, denominator } }, valueType);
+  return baseFormatDataValueByType(
+    { value: numerator / denominator, metadata: { numerator, denominator } },
+    valueType,
+  );
 };

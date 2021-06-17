@@ -9,7 +9,7 @@ import {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
-  formatDataValueByType,
+  fractionAndPercentage,
 } from './utils';
 import { sum } from './math';
 
@@ -26,5 +26,5 @@ export const functions = {
   dateStringToPeriod,
   periodToTimestamp,
   periodToDisplayString,
-  formatDataValueByType,
+  fractionAndPercentage,
 };

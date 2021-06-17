@@ -58,8 +58,7 @@ const REPORT = {
       {
         '...': ['organisationUnitCode'],
         "'value'": "'test'",
-        '$row.name':
-          "formatDataValueByType($row.numerator / $row.denominator, $row.numerator, $row.denominator, 'fractionAndPercentage')",
+        '$row.name': 'fractionAndPercentage($row.numerator, $row.denominator)',
         transform: 'select',
       },
       {
