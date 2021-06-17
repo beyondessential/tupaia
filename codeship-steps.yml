@@ -121,4 +121,3 @@
   service: e2e-runner
   steps:
     - name: e2e-runner
-      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'
