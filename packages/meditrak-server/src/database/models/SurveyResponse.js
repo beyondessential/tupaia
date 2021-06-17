@@ -102,6 +102,7 @@ const onChangeMarkAnswersChanged = async (
   { new_record: newRecord, old_record: oldRecord, record_id: surveyResponseId },
   models,
 ) => {
+  // No need to mark any answers changed if freshly creating or fully deleting
   if (!newRecord || !oldRecord) return;
 
   // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
