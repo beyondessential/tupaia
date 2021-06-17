@@ -28,17 +28,17 @@ export class KoBoService extends Service {
   }
 
   async pullEvents(dataSources, options) {
-    const koboCodes = dataSources.map(({ config }) => config.koboSurveyCode);
+    const koboSurveyCodes = dataSources.map(({ config }) => config.koboSurveyCode);
 
     // TODO: Throw error on entity filter
 
     return {
-      results: await this.api.fetchKoBoSurveys(koboCodes, options),
+      results: await this.api.fetchKoBoSurveys(koboSurveyCodes, options),
       metadata: { dataElementCodeToName: {} },
     };
   }
 
-  async pullMetadata(dataSources, type, options) {
+  async pullMetadata() {
     throw new Error('pullMetadata is not supported in KoBoService');
   }
 }
