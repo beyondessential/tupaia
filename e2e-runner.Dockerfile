@@ -9,7 +9,6 @@ COPY ./e2e-docker-compose.yml ./
 COPY ./e2e-runner.sh ./
 RUN chmod +x ./e2e-runner.sh
 COPY ./scripts ./scripts
-COPY ./ci-env-vars ./
 
 RUN mkdir current
 RUN mkdir reference
