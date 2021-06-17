@@ -119,12 +119,11 @@ export class SurveyResponseUpdatePersistor {
           await transactingModels.answer.createMany(newAnswers);
         });
       } catch (error) {
-        failures.push(
-          ...batchOfCreates.map(c => ({
-            ...c,
-            error: `Error creating survey responses in bulk: ${error.message}`,
-          })),
-        );
+        const batchOfFailures = batchOfCreates.map(c => ({
+          ...c,
+          error: `Error creating survey responses in bulk: ${error.message}`,
+        }));
+        failures.push(...batchOfFailures);
       }
     }
     return { failures };
@@ -190,14 +189,12 @@ export class SurveyResponseUpdatePersistor {
           const surveyResponseIds = batchOfDeletes.map(({ surveyResponseId }) => surveyResponseId);
           await transactingModels.surveyResponse.delete({ id: surveyResponseIds });
         });
-        return { failures: [] };
       } catch (error) {
-        failures.push(
-          ...batchOfDeletes.map(d => ({
-            ...d,
-            error: `Error deleting survey responses in bulk: ${error.message}`,
-          })),
-        );
+        const batchOfFailures = batchOfDeletes.map(d => ({
+          ...d,
+          error: `Error deleting survey responses in bulk: ${error.message}`,
+        }));
+        failures.push(...batchOfFailures);
       }
     }
     return { failures };
