@@ -1,6 +1,10 @@
 #!/bin/bash
 set -x
 
+# Add SSH key
+ls -lha /root/.ssh
+cat /root/.ssh/id_rsa
+
 # Read E2E_REFERENCE_BRANCH
 #set -o allexport
 #source e2e-config.env
@@ -10,9 +14,9 @@ set -x
 # TODO: change hardcoded dev to be the actual branch
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-git clone --branch dev --depth=1 git@github.com:beyondessential/tupaia.git reference
+git clone --branch dev --depth=1 git@github.com:beyondessential/tupaia.git /tmp/e2e/reference
 
-ls -lha /home/reference
+ls -lha /tmp/e2e/reference
 
 # Fetch db dump
 #if [ -f db/dump.sql ]; then
