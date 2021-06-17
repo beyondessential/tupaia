@@ -8,8 +8,6 @@ services:
       - "5000:80"
     links:
       - e2e-db
-    env_file:
-      - ci-env-vars
   e2e-web-current:
     build:
       context: /tmp/e2e/reference/
@@ -19,8 +17,6 @@ services:
       - "5000:80"
     links:
       - e2e-db
-    env_file:
-      - ci-env-vars
   e2e-db:
     image: mdillon/postgis:9.6-alpine
     environment:
