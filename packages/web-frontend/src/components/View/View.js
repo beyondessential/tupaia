@@ -167,11 +167,11 @@ export class View extends Component {
       const periodDependent = startDate && endDate;
       return (
         <div data-testid="view" style={viewContainerStyle}>
-          <ViewTitle>
-            {viewContent.name}
+          <div>
+            <ViewTitle>{viewContent.name}</ViewTitle>
             <NoDataMessage viewContent={viewContent} />
             {periodDependent && expandButton}
-          </ViewTitle>
+          </div>
         </div>
       );
     }

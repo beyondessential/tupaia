@@ -17,20 +17,18 @@ const CustomChartContainer = styled(ChartContainer)`
   }
 `;
 
-export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick }) => {
-  return (
-    <ChartViewContainer>
-      <CustomChartContainer>
-        <Chart
-          isEnlarged={isEnlarged}
-          isExporting={isExporting}
-          viewContent={viewContent}
-          onItemClick={onItemClick}
-        />
-      </CustomChartContainer>
-    </ChartViewContainer>
-  );
-};
+export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick }) => (
+  <ChartViewContainer>
+    <CustomChartContainer>
+      <Chart
+        isEnlarged={isEnlarged}
+        isExporting={isExporting}
+        viewContent={viewContent}
+        onItemClick={onItemClick}
+      />
+    </CustomChartContainer>
+  </ChartViewContainer>
+);
 
 ChartWrapper.propTypes = {
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
