@@ -52,11 +52,11 @@ class SurveyResponseType extends DatabaseType {
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
+  notifiers = [onChangeMarkAnswersChanged];
+
   get DatabaseTypeClass() {
     return SurveyResponseType;
   }
-
-  notifiers = [onChangeMarkAnswersChanged];
 
   isDeletableViaApi = true;
 
