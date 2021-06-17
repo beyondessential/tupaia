@@ -235,12 +235,12 @@ export default class extends DataAggregatingRouteHandler {
     };
 
     // Config 'otherLinkMeasures' only works for report server builder
-    const { otherLinkMeasures, ...restMeasureOption } = measureOptions[0];
+    const { otherLinkMeasures, ...mainMeasureOption } = measureOptions[0];
     if (otherLinkMeasures) {
-      getOtherLinkMeasureKeys(restMeasureOption.key).forEach(key => {
+      getOtherLinkMeasureKeys(mainMeasureOption.key).forEach(key => {
         measureOptions.push({ ...otherLinkMeasures, key, name: key });
       });
-      measureOptions[0] = restMeasureOption;
+      measureOptions[0] = mainMeasureOption;
     }
     return measureOptions;
   }
