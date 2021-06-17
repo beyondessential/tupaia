@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { columnIndexToColumnCode } from '../utilities';
+import { columnIndexToCode } from '../utilities';
 import { CREATE, UPDATE, DELETE } from './SurveyResponseUpdatePersistor';
 
 const getUpdateTypePart = (type, surveyResponseId) => {
@@ -20,7 +20,7 @@ const getUpdateTypePart = (type, surveyResponseId) => {
 };
 
 export const getFailureMessage = ({ sheetName, surveyResponseId, type, columnIndex, error }) =>
-  `${sheetName}, Column ${columnIndexToColumnCode(columnIndex)}: Failed to ${getUpdateTypePart(
+  `${sheetName}, Column ${columnIndexToCode(columnIndex)}: Failed to ${getUpdateTypePart(
     type,
     surveyResponseId,
   )} with the error "${error}"`;
