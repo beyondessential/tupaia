@@ -58,7 +58,7 @@ export const ChartWrapper = ({ viewContent, isEnlarged, isExporting, onItemClick
     }
   };
 
-  if (!isEnlarged) {
+  if (!isEnlarged || isExporting) {
     return (
       <CustomChartContainer>
         <Chart
