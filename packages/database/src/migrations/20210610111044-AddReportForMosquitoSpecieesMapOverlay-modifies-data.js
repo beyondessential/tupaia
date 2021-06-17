@@ -57,7 +57,7 @@ const REPORT = {
       },
       {
         '...': ['organisationUnitCode'],
-        "'value'": "'test'",
+        "'value'": "'EXISTED'", // Just a tag to indicate we have data
         '$row.name': 'fractionAndPercentage($row.numerator, $row.denominator)',
         transform: 'select',
       },

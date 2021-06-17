@@ -31,13 +31,14 @@ const MAP_OVERLAY = {
     values: [
       {
         icon: 'circle',
-        name: 'Test data',
-        value: 'test',
+        name: 'Mosquito species',
+        value: 'EXISTED', // Just a tag to indicate we have data
         hideFromLegend: false,
       },
     ],
     displayType: 'icon',
     measureLevel: 'Facility',
+    hideFromPopup: true,
     otherLinkMeasures: {
       type: 'icon',
       values: [
@@ -52,6 +53,7 @@ const MAP_OVERLAY = {
           color: 'Grey',
           value: 'null',
           hideFromLegend: true,
+          hideFromPopup: true,
         },
       ],
       measureLevel: 'Facility',

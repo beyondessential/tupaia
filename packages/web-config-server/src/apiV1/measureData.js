@@ -202,28 +202,8 @@ export default class extends DataAggregatingRouteHandler {
       overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
     const { period, measureData } = buildMeasureData(overlays, responseData);
+    const measureOptions = await this.fetchMeasureOptions(overlays, measureData);
 
-    // start fetching options
-    const measureOptions = await Promise.all(
-      overlays.map(o => this.fetchMeasureOptions(o, this.query)),
-    );
-    measureOptions
-      .filter(mo => mo.displayedValueKey)
-      .filter(mo => !mo.disableRenameLegend)
-      .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
-
-    const { otherLinkMeasures } = measureOptions[0];
-    if (otherLinkMeasures) {
-      const otherLinkMeasureKeys = new Set();
-      measureData.forEach(data => {
-        Object.keys(data).forEach(key => otherLinkMeasureKeys.add(key));
-      });
-      otherLinkMeasureKeys.delete('organisationUnitCode');
-      Array.from(otherLinkMeasureKeys).forEach(key => {
-        measureOptions.push({ ...otherLinkMeasures, key, name: key });
-      });
-      // measureOptions.push({...otherLinkMeasures,key:})
-    }
     return {
       measureId: overlays
         .map(o => o.id)
@@ -237,7 +217,36 @@ export default class extends DataAggregatingRouteHandler {
     };
   };
 
-  async fetchMeasureOptions(mapOverlay) {
+  async fetchMeasureOptions(mapOverlays, measureData) {
+    const measureOptions = await Promise.all(mapOverlays.map(o => this.fetchMeasureOption(o)));
+    measureOptions
+      .filter(mo => mo.displayedValueKey)
+      .filter(mo => !mo.disableRenameLegend)
+      .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
+
+    const getOtherLinkMeasureKeys = mainMeasureOptionKey => {
+      const otherLinkMeasureKeySet = new Set();
+      measureData.forEach(data => {
+        Object.keys(data).forEach(key => otherLinkMeasureKeySet.add(key));
+      });
+      otherLinkMeasureKeySet.delete('organisationUnitCode');
+      otherLinkMeasureKeySet.delete(mainMeasureOptionKey);
+      return Array.from(otherLinkMeasureKeySet);
+    };
+
+    // Config 'otherLinkMeasures' only works for report server builder
+    const { otherLinkMeasures, ...restMeasureOption } = measureOptions[0];
+    if (otherLinkMeasures) {
+      const otherLinkMeasureKeys = getOtherLinkMeasureKeys(restMeasureOption.key);
+      otherLinkMeasureKeys.forEach(key => {
+        measureOptions.push({ ...otherLinkMeasures, key, name: key });
+      });
+      measureOptions[0] = restMeasureOption;
+    }
+    return measureOptions;
+  }
+
+  async fetchMeasureOption(mapOverlay) {
     const {
       id,
       groupName,

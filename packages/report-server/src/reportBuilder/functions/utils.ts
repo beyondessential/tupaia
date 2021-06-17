@@ -9,7 +9,6 @@ import {
   periodToTimestamp as basePeriodToTimestamp,
   periodToDisplayString as basePeriodToDisplayString,
   formatDataValueByType as baseFormatDataValueByType,
-  VALUE_TYPES,
 } from '@tupaia/utils';
 
 export const convertToPeriod = (period: string, targetType: string): string => {
