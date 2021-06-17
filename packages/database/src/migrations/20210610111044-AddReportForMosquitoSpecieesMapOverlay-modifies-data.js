@@ -59,7 +59,7 @@ const REPORT = {
         '...': ['organisationUnitCode'],
         "'value'": "'test'",
         '$row.name':
-          "concat(string($row.numerator), '/', string($row.denominator), ' = ', string(format($row.numerator / $row.denominator * 100, {precision: 3})), '%') ",
+          "formatDataValueByType($row.numerator / $row.denominator, $row.numerator, $row.denominator, 'fractionAndPercentage')",
         transform: 'select',
       },
       {

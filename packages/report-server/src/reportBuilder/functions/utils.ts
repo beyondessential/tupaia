@@ -8,6 +8,8 @@ import {
   dateStringToPeriod as baseDateStringToPeriod,
   periodToTimestamp as basePeriodToTimestamp,
   periodToDisplayString as basePeriodToDisplayString,
+  formatDataValueByType as baseFormatDataValueByType,
+  VALUE_TYPES,
 } from '@tupaia/utils';
 
 export const convertToPeriod = (period: string, targetType: string): string => {
@@ -27,4 +29,20 @@ export const dateStringToPeriod = (period: string, targetType: string): string =
     return period;
   }
   return baseDateStringToPeriod(period, targetType);
+};
+
+export const formatDataValueByType = (
+  value: number,
+  numerator: number,
+  denominator: number,
+  valueType: string,
+) => {
+  if (!(valueType in VALUE_TYPES)) {
+    throw new Error(
+      `Function 'formatDataValueByType' expect valueType as one of these ${Object.values(
+        VALUE_TYPES,
+      )}`,
+    );
+  }
+  return baseFormatDataValueByType({ value, metadata: { numerator, denominator } }, valueType);
 };
