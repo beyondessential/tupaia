@@ -5,8 +5,7 @@ RUN apk add --no-cache git openssh docker-compose
 WORKDIR /home
 
 COPY ./Dockerfile ./
-COPY ./docker-compose.yml ./
-COPY ./e2e-config.env ./
+COPY ./e2e-docker-compose.yml ./
 COPY ./e2e-runner.sh ./
 RUN chmod +x ./e2e-runner.sh
 COPY ./scripts ./scripts

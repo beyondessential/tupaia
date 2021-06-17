@@ -23,7 +23,7 @@ ls -lha /home/reference
 #fi
 
 # Start db
-docker-compose up -d e2e-db
+docker-compose -f e2e-docker-compose.yml up -d e2e-db
 
 # ------------------------------------------
 # ------------------------------------------
@@ -32,15 +32,15 @@ docker-compose up -d e2e-db
 # ------------------------------------------
 
 # start container
-docker-compose up -d e2e-web-reference
+docker-compose -f e2e-docker-compose.yml up -d e2e-web-reference
 
 # prep: set up and import db
-docker-compose exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
-docker-compose exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
-docker-compose exec -T e2e-db psql -U postgres < db/dump.sql
+docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
+docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
+docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres < db/dump.sql
 
 # run
-docker-compose exec -T e2e-db psql -U postgres -c 'select now();'
+docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c 'select now();'
 
 # ------------------------------------------
 # ------------------------------------------
