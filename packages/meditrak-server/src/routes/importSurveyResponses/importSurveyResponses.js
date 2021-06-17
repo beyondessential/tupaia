@@ -240,6 +240,9 @@ const constructNewSurveyResponseDetails = async (models, tabName, sheet, columnI
   const user = await models.user.findById(userId);
   // 'Date of Data' is pulled from spreadsheet, 'Date of Survey' is current time
   const surveyDate = getDateStringForColumn(sheet, columnIndex);
+  if (!surveyDate) {
+    throw new Error('No date of data provided');
+  }
   const importDate = moment();
   return {
     id,
