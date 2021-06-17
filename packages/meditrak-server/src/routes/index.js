@@ -33,6 +33,9 @@ import {
   GETDashboardReports,
 } from './dashboardReports';
 import { DeleteDashboardGroups, EditDashboardGroups, GETDashboardGroups } from './dashboardGroups';
+import { DeleteDashboardItem, EditDashboardItem, GETDashboardItems } from './dashboardItems';
+import { DeleteDashboard, EditDashboard, GETDashboards } from './dashboards';
+import { DeleteLegacyReport, EditLegacyReport, GETLegacyReports } from './legacyReports';
 import { DeleteMapOverlays, EditMapOverlays, GETMapOverlays } from './mapOverlays';
 import { DeleteSurveyResponses, EditSurveyResponses, GETSurveyResponses } from './surveyResponses';
 import {
@@ -112,6 +115,9 @@ export default {
   deleteAnswers: useRouteHandler(DeleteAnswers),
   deleteDashboardGroups: useRouteHandler(DeleteDashboardGroups),
   deleteDashboardReports: useRouteHandler(DeleteDashboardReports),
+  deleteDashboards: useRouteHandler(DeleteDashboard),
+  deleteDashboardItems: useRouteHandler(DeleteDashboardItem),
+  deleteLegacyReports: useRouteHandler(DeleteLegacyReport),
   deleteDataSources: useRouteHandler(BESAdminDeleteHandler),
   deleteDisasters: useRouteHandler(BESAdminDeleteHandler),
   deleteFeedItems: useRouteHandler(BESAdminDeleteHandler),
@@ -130,6 +136,9 @@ export default {
   editAnswers: useRouteHandler(EditAnswers),
   editDashboardGroups: useRouteHandler(EditDashboardGroups),
   editDashboardReports: useRouteHandler(EditDashboardReports),
+  editDashboards: useRouteHandler(EditDashboard),
+  editDashboardItems: useRouteHandler(EditDashboardItem),
+  editLegacyReports: useRouteHandler(EditLegacyReport),
   editDataSources: useRouteHandler(BESAdminEditHandler),
   editDisasters: useRouteHandler(BESAdminEditHandler),
   editFeedItems: useRouteHandler(BESAdminEditHandler),
@@ -153,6 +162,9 @@ export default {
   getDisasters: useRouteHandler(GETDisasters),
   getDashboardReports: useRouteHandler(GETDashboardReports),
   getDashboardGroups: useRouteHandler(GETDashboardGroups),
+  getDashboards: useRouteHandler(GETDashboards),
+  getDashboardItems: useRouteHandler(GETDashboardItems),
+  getLegacyReports: useRouteHandler(GETLegacyReports),
   getIndicators: useRouteHandler(BESAdminGETHandler),
   getDataSources: useRouteHandler(GETDataSources),
   getEntities: useRouteHandler(GETEntities),

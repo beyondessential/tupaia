@@ -23,6 +23,9 @@ import {
   MapOverlaysPage,
   IndicatorsPage,
   DashboardGroupsPage,
+  DashboardsPage,
+  DashboardItemsPage,
+  LegacyReportsPage,
   DataElementsPage,
   DataGroupsPage,
   ProjectsPage,
@@ -80,6 +83,21 @@ export const ROUTES = [
         label: 'Dashboard Groups',
         to: '/dashboard-groups',
         component: DashboardGroupsPage,
+      },
+      {
+        label: 'Dashboards',
+        to: '/dashboards',
+        component: DashboardsPage,
+      },
+      {
+        label: 'Dashboard Items',
+        to: '/dashboardItems',
+        component: DashboardItemsPage,
+      },
+      {
+        label: 'Legacy Reports',
+        to: '/legacyReports',
+        component: LegacyReportsPage,
       },
       {
         label: 'Map Overlays',

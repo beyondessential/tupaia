@@ -20,4 +20,7 @@ export { DashboardReportsPage } from './DashboardReportsPage';
 export { MapOverlaysPage } from './MapOverlaysPage';
 export { IndicatorsPage } from './IndicatorsPage';
 export { DashboardGroupsPage } from './DashboardGroupsPage';
+export { DashboardsPage } from './DashboardsPage';
+export { DashboardItemsPage } from './DashboardItemsPage';
+export { LegacyReportsPage } from './LegacyReportsPage';
 export { ProjectsPage } from './ProjectsPage';
