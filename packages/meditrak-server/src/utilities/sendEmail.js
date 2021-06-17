@@ -29,7 +29,7 @@ export const sendEmail = (to, subject, text) => {
     subject,
     text: `${text}
 
-    Cheers,
-    The Tupaia Team`,
+Cheers,
+The Tupaia Team`,
   });
 };
