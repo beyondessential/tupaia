@@ -10,16 +10,18 @@ export const UPDATE = 'update';
 export const DELETE = 'delete';
 
 function batchCreates(creates) {
-  const batches = [[]];
+  const batches = [];
   let currentBatchIndex = 0;
   let currentBatchRecordCount = 0;
   for (const create of creates) {
     const answerCount = create.answers.upserts.length;
     const recordCount = answerCount + 1; // +1 for the response itself
     if (currentBatchRecordCount + recordCount > RECORDS_PER_BULK_BATCH) {
-      batches.push([]);
       currentBatchIndex++;
       currentBatchRecordCount = 0;
+    }
+    if (!batches[currentBatchIndex]) {
+      batches[currentBatchIndex] = [];
     }
     batches[currentBatchIndex].push(create);
     currentBatchRecordCount += recordCount;
