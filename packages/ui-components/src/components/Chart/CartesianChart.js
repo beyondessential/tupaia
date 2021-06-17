@@ -174,7 +174,7 @@ export const CartesianChart = ({ viewContent, isEnlarged, isExporting }) => {
         margin={
           isExporting
             ? { left: 20, right: 20, top: 20, bottom: 20 }
-            : { left: 0, right: 0, top: 0, bottom: 0 }
+            : { left: 0, right: 0, top: 0, bottom: 5 }
         }
       >
         {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
