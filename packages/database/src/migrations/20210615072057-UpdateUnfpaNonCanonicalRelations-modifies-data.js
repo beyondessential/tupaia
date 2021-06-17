@@ -25,6 +25,18 @@ const entityRelationshipsToAdd = [
     entityType: 'sub_district',
   },
   {
+    countryCode: 'KI',
+    entityType: 'facility',
+  },
+  {
+    countryCode: 'FJ',
+    entityType: 'facility',
+  },
+  {
+    countryCode: 'FM',
+    entityType: 'facility',
+  },
+  {
     countryCode: 'WS',
     entityType: 'facility',
   },
@@ -33,8 +45,24 @@ const entityRelationshipsToAdd = [
     entityType: 'village',
   },
   {
+    countryCode: 'SB',
+    entityType: 'facility',
+  },
+  {
+    countryCode: 'TO',
+    entityType: 'facility',
+  },
+  {
+    countryCode: 'TO',
+    entityType: 'village',
+  },
+  {
     countryCode: 'VU',
     entityType: 'sub_district',
+  },
+  {
+    countryCode: 'VU',
+    entityType: 'facility',
   },
 ];
 
