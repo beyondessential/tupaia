@@ -81,7 +81,7 @@ const mapOverlayGroupRelation = groupId => ({
   sort_order: 0,
 });
 
-const MAP_OVERLAY_GROUP_CODE = 'STRIVE_Molecular_Data';
+const MAP_OVERLAY_GROUP_CODE = 'STRIVE_Vector_Data';
 
 exports.up = async function (db) {
   await insertObject(db, 'mapOverlay', MAP_OVERLAY);
