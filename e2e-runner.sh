@@ -3,7 +3,7 @@ set -x # echo all commands
 #set -e # exit if any line fails
 
 # Add SSH key
-ssh-add - <<< "${PRIVATE_SSH_KEY}"
+echo "$PRIVATE_SSH_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
 # Read E2E_REFERENCE_BRANCH
 #set -o allexport
