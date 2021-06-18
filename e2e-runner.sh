@@ -41,7 +41,7 @@ docker run -d --name e2e-db --env POSTGRES_HOST_AUTH_METHOD=trust mdillon/postgi
 
 # start container
 #docker-compose -f e2e-docker-compose.yml up -d e2e-web-reference
-docker build -t tupaia:e2e-web-reference --target test -f ./Dockerfile /tmp/e2e/reference
+docker build -t tupaia/e2e-web-reference:dev-2021-06-18 --target test -f ./Dockerfile /tmp/e2e/reference
 
 docker images
 
