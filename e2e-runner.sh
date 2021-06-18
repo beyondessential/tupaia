@@ -1,11 +1,12 @@
 #!/bin/bash
+set -x # echo all commands (after private key so it is not exposed) TODO
 #set -e # exit if any line fails
 
 # Add SSH key
 eval `ssh-agent -s`
-echo "$GITHUB_PRIVATE_SSH_KEY" | tr -d '\r' | ssh-add - > /dev/null
+echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
 
-set -x # echo all commands (after private key so it is not exposed)
+
 
 # Read E2E_REFERENCE_BRANCH
 #set -o allexport
