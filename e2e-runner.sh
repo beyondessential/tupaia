@@ -2,6 +2,7 @@
 #set -e # exit if any line fails
 
 # Add SSH key
+eval `ssh-agent -s`
 echo "$GITHUB_PRIVATE_SSH_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
 set -x # echo all commands (after private key so it is not exposed)
