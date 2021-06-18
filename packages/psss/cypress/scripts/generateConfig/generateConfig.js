@@ -5,14 +5,13 @@
 
 import { TupaiaDatabase } from '@tupaia/database';
 import { getLoggerInstance } from '@tupaia/utils';
-import { createTestUsers } from './createTestUsers';
+import { generateTestUsers } from './generateTestUsers';
 
 export const generateConfig = async () => {
   const logger = getLoggerInstance();
   const db = new TupaiaDatabase();
 
   logger.success('Start e2e test config generation');
-  logger.success('Creating test user...');
-  await createTestUsers(db);
-  logger.success(`✔ Test user`);
+  logger.success('* Generating test users...');
+  await generateTestUsers(db);
 };
