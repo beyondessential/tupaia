@@ -38,9 +38,11 @@ type AncestorSubContext = {
   type?: string;
 };
 
+export type GroupByDescendantRelationshipsResponseBody = Record<FlattenedEntity, EntityResponse>;
+export type GroupByAncestorRelationshipsResponseBody = Record<FlattenedEntity, EntityResponse[]>;
 export type RelationshipsResponseBody =
-  | Record<FlattenedEntity, EntityResponse> // groupBy: descendant
-  | Record<FlattenedEntity, EntityResponse[]>; // groupBy: ancestor
+  | GroupByDescendantRelationshipsResponseBody
+  | GroupByAncestorRelationshipsResponseBody;
 
 export type RelationshipsContext = Omit<SingleEntityContext, 'fields'> & {
   ancestor: AncestorSubContext;

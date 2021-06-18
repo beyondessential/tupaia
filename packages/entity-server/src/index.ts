@@ -3,6 +3,12 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+export {
+  EntityApiInterface,
+  EntityApiQueryOptions,
+  RelationshipsSubQueryOptions,
+} from './EntityApiInterface';
+
 import '@babel/polyfill';
 
 import * as dotenv from 'dotenv';
