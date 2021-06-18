@@ -116,9 +116,18 @@
 #    - name: e2e-test-web-frontend
 #      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'
 
+
+
+#- type: serial
+#  name: e2e-test
+#  service: e2e-tupaia-reference
+#  steps:
+#    - name: hi
+#      command: 'echo hi'
+
 - type: serial
   name: e2e-test
-  service: e2e-tupaia-reference
+  service: e2e-tupaia-current
   steps:
     - name: hi
       command: 'echo hi'
