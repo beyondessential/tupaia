@@ -48,12 +48,14 @@ deployment:
 # ----------------------------------
 
 e2e-db-reference:
-  image: mdillon/postgis:9.6-alpine
+  build:
+    dockerfile: postgres.Dockerfile
   environment:
     POSTGRES_HOST_AUTH_METHOD: trust
 
 e2e-db-current:
-  image: mdillon/postgis:9.6-alpine
+  build:
+    dockerfile: postgres.Dockerfile
   environment:
     POSTGRES_HOST_AUTH_METHOD: trust
 
