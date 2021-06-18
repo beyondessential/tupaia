@@ -42,12 +42,65 @@ deployment:
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
 
-e2e-runner:
+
+# ----------------------------------
+# e2e services
+# ----------------------------------
+
+e2e-db-reference:
+  image: mdillon/postgis:9.6-alpine
+  environment:
+    - POSTGRES_HOST_AUTH_METHOD: trust
+  cached: true
+
+e2e-db-current:
+  image: mdillon/postgis:9.6-alpine
+  environment:
+    - POSTGRES_HOST_AUTH_METHOD: trust
+  cached: true
+
+e2e-setup:
   build:
-    dockerfile: e2e-runner.Dockerfile
-  add_docker: true
+    dockerfile: e2e-setup.Dockerfile
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
-    - /tmp/e2e/reference:/tmp/e2e/reference # runner clones reference branch here
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
+    - /tmp/e2e/reference:/tmp/e2e/reference
+  depends_on:
+    - e2e-db-reference
+    - e2e-db-current
+
+e2e-tupaia-reference:
+  build:
+    dockerfile: Dockerfile
+    context: /tmp/e2e/reference
+  encrypted_env_file: ./ci-env-vars.encrypted
+  volumes:
+    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
+  depends_on:
+    - e2e-setup
+  cached: true
+  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
+  default_cache_branch: 'dev'
+
+e2e-tupaia-current:
+  build:
+    dockerfile: Dockerfile
+    context: .
+  encrypted_env_file: ./ci-env-vars.encrypted
+  volumes:
+    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
+  depends_on:
+    - e2e-setup
+  cached: true
+  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
+  default_cache_branch: 'dev'
+
+#e2e-runner:
+#  build:
+#    dockerfile: e2e-runner.Dockerfile
+#  add_docker: true
+#  encrypted_env_file: ./ci-env-vars.encrypted
+#  volumes:
+#    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
+#  depends_on:
+#    - e2e-tupaia-reference
