@@ -8,7 +8,10 @@
   "viewportHeight": 900,
   "viewportWidth": 1400,
   "tupaia": {
-    "dashboardReportParamFiles": ["cypress/config/params/dashboardReports/default.json"],
-    "requireNonEmptyVisualisations": true
+    "dashboardReports": {
+      "allowEmptyResponse": false,
+      "paramFiles": ["cypress/config/params/dashboardReports/default.json"],
+      "snapshotTypes": ["responseBody", "html"]
+    }
   }
 }

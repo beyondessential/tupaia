@@ -46,7 +46,6 @@
     "dotenv": "^8.2.0",
     "downloadjs": "1.4.7",
     "email-validator": "^1.1.1",
-    "github-api": "^3.4.0",
     "history": "^4.7.2",
     "is-mobile": "^0.2.2",
     "leaflet": "^1.1.0",
