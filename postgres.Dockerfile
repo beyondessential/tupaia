@@ -2,6 +2,6 @@ FROM mdillon/postgis:9.6-alpine
 
 RUN apk add --no-cache bash
 
-COPY docker-healthcheck /bin/
+COPY postgres_healthcheck /bin/
 
-HEALTHCHECK CMD ["docker-healthcheck"]
+HEALTHCHECK CMD ["postgres_healthcheck"]
