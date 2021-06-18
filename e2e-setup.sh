@@ -17,7 +17,7 @@ echo "${GITHUB_PRIVATE_SSH_KEY}" |  tr -d '"' | sed 's/\\n/\n/g' | ssh-add - > /
 # TODO: change hardcoded dev to be the actual branch
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-git clone --branch dev --depth=1 git@github.com:beyondessential/tupaia.git /tmp/e2e/reference
+git clone --quiet --branch dev --depth=1 git@github.com:beyondessential/tupaia.git /tmp/e2e/reference
 
 ls -lha /tmp/e2e/reference
 

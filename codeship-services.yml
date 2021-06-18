@@ -50,13 +50,13 @@ deployment:
 e2e-db-reference:
   image: mdillon/postgis:9.6-alpine
   environment:
-    - POSTGRES_HOST_AUTH_METHOD: trust
+    POSTGRES_HOST_AUTH_METHOD: trust
   cached: true
 
 e2e-db-current:
   image: mdillon/postgis:9.6-alpine
   environment:
-    - POSTGRES_HOST_AUTH_METHOD: trust
+    POSTGRES_HOST_AUTH_METHOD: trust
   cached: true
 
 e2e-setup:
