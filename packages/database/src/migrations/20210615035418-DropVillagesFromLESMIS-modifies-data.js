@@ -14,11 +14,46 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const getHierarchyId = async (db, name) => {
+  const { rows: data } = await db.runSql(`
+    SELECT id FROM entity_hierarchy
+    WHERE name = '${name}'
+  `);
+  return data[0]?.id;
+};
+
 exports.up = async function (db) {
+  const hierarchy = await getHierarchyId(db, 'laos_schools');
   await db.runSql(`
   UPDATE entity_hierarchy
   SET canonical_types = array_remove(canonical_types, 'village')
   WHERE name = 'laos_schools'
+  `);
+  await db.runSql(`
+  DELETE FROM entity_relation
+  WHERE id IN
+    (
+      SELECT er.id FROM entity_relation er
+      INNER JOIN entity parent
+      ON parent.id = er.parent_id
+      INNER JOIN entity child
+      ON child.id = er.child_id
+      WHERE entity_hierarchy_id = '${hierarchy}'
+      AND (parent.type = 'village' OR child.type = 'village')
+    )
+  `);
+  await db.runSql(`
+  DELETE FROM ancestor_descendant_relation
+  WHERE id IN
+    (
+      SELECT adr.id FROM ancestor_descendant_relation adr
+      INNER JOIN entity ancestor
+      ON ancestor.id = adr.ancestor_id
+      INNER JOIN entity descendant
+      ON descendant.id = adr.descendant_id
+      WHERE entity_hierarchy_id = '${hierarchy}'
+      AND (ancestor.type = 'village' OR descendant.type = 'village')
+    )
   `);
 };
 
