@@ -3,8 +3,7 @@ set -x # echo all commands
 #set -e # exit if any line fails
 
 # Add SSH key
-ls -lha /root/.ssh
-cat /root/.ssh/id_rsa
+ssh-add - <<< "${PRIVATE_SSH_KEY}"
 
 # Read E2E_REFERENCE_BRANCH
 #set -o allexport
@@ -38,8 +37,12 @@ docker run -d --name e2e-db --env POSTGRES_HOST_AUTH_METHOD=trust mdillon/postgi
 # ------------------------------------------
 
 # start container
-docker-compose -f e2e-docker-compose.yml up -d e2e-web-reference
-docker build -t tupaia:e2e-web-reference --target test .
+#docker-compose -f e2e-docker-compose.yml up -d e2e-web-reference
+docker build -t tupaia:e2e-web-reference --target test -f ./Dockerfile /tmp/e2e/reference
+
+docker images
+
+docker ps -a
 #
 ## prep: set up and import db
 #docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
