@@ -1,6 +1,6 @@
 FROM docker:latest
 
-RUN apk add --no-cache git openssh docker-compose
+RUN apk add --no-cache git openssh
 
 WORKDIR /home
 

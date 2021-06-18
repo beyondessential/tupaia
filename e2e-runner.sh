@@ -1,5 +1,6 @@
 #!/bin/bash
-set -x
+set -x # echo all commands
+set -e # exit if any line fails
 
 # Add SSH key
 ls -lha /root/.ssh
@@ -27,7 +28,8 @@ ls -lha /tmp/e2e/reference
 #fi
 
 # Start db
-docker-compose -f e2e-docker-compose.yml up -d e2e-db
+docker run -d --name e2e-db --env POSTGRES_HOST_AUTH_METHOD=trust mdillon/postgis:9.6-alpine
+#docker-compose -f e2e-docker-compose.yml up -d e2e-db
 
 # ------------------------------------------
 # ------------------------------------------
@@ -37,14 +39,15 @@ docker-compose -f e2e-docker-compose.yml up -d e2e-db
 
 # start container
 docker-compose -f e2e-docker-compose.yml up -d e2e-web-reference
-
-# prep: set up and import db
-docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
-docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
-docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres < db/dump.sql
-
-# run
-docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c 'select now();'
+docker build -t tupaia:e2e-web-reference --target test .
+#
+## prep: set up and import db
+#docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
+#docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
+#docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres < db/dump.sql
+#
+## run
+#docker-compose -f e2e-docker-compose.yml exec -T e2e-db psql -U postgres -c 'select now();'
 
 # ------------------------------------------
 # ------------------------------------------
