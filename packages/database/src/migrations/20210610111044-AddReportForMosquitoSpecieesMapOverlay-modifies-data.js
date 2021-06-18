@@ -38,33 +38,29 @@ const REPORT = {
     },
     transform: [
       {
-        "'name'": '$row.value',
         transform: 'select',
         "'numerator'": '1',
         "'organisationUnitCode'": '$row.organisationUnit',
+        "'name'": '$row.value',
       },
       {
+        transform: 'select',
+        "'denominator'":
+          'sum($where(f($otherRow) = equalText($otherRow.organisationUnitCode, $row.organisationUnitCode)).numerator)',
         '...': ['numerator', 'organisationUnitCode', 'name'],
-        transform: 'select',
-        "'denominator'": 'sum($all.numerator)',
       },
       {
-        name: 'group',
+        transform: 'aggregate',
         numerator: 'sum',
-        transform: 'aggregate',
-        denominator: 'last',
         organisationUnitCode: 'group',
+        name: 'group',
+        denominator: 'first',
       },
       {
-        '...': ['organisationUnitCode'],
-        "'value'": "'EXISTED'", // Just a tag to indicate we have data
-        '$row.name': 'fractionAndPercentage($row.numerator, $row.denominator)',
         transform: 'select',
-      },
-      {
-        '...': 'last',
-        transform: 'aggregate',
-        organisationUnitCode: 'group',
+        '$row.name': 'fractionAndPercentage($row.numerator, $row.denominator)',
+        "'value'": "'EXISTED'", // Just a tag to indicator we have data
+        '...': ['organisationUnitCode'],
       },
     ],
   },
