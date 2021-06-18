@@ -39,3 +39,9 @@ export type Flatten<
     [V in K]: { [field in keyof T[V] & string as `${V}${J}${field}`]: T[V][field] };
   }[K]
 >;
+
+export type PartialOrArray<T> = {
+  [field in keyof T]?: T[field] extends Record<string, unknown>
+    ? PartialOrArray<T[field]>
+    : T[field] | T[field][];
+};

@@ -4,11 +4,7 @@
  */
 
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
-import { ObjectLikeKeys, Flatten } from '../types';
-
-type PartialOrArray<T> = {
-  [field in keyof T]?: T[field] | T[field][];
-};
+import { ObjectLikeKeys, Flatten, PartialOrArray } from '../types';
 
 export type DbConditional<T> = PartialOrArray<Omit<T, ObjectLikeKeys<T>>> &
   PartialOrArray<Flatten<Pick<T, ObjectLikeKeys<T>>, '->>'>>;
