@@ -52,8 +52,6 @@ class SurveyResponseType extends DatabaseType {
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
-  notifiers = [onChangeUpdateUserReward];
-
   get DatabaseTypeClass() {
     return SurveyResponseType;
   }
@@ -108,24 +106,3 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return result[0].count === '1';
   }
 }
-
-const onChangeUpdateUserReward = async (
-  { type: changeType, record_id: recordId, new_record: newRecord },
-  models,
-) => {
-  const modelDetails = {
-    type: 'SurveyResponse',
-    record_id: recordId,
-  };
-
-  if (changeType === 'delete') {
-    models.userReward.delete(modelDetails);
-  } else {
-    models.userReward.updateOrCreate(modelDetails, {
-      ...modelDetails,
-      coconuts: 1,
-      user_id: newRecord.user_id,
-      creation_date: newRecord.end_time,
-    });
-  }
-};
