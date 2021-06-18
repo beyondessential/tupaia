@@ -30,14 +30,14 @@ else
 fi
 
 # Set up db
-psql -h e2e-tupaia-reference -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
-psql -h e2e-tupaia-reference -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
+psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
+psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 
-psql -h e2e-tupaia-current -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
-psql -h e2e-tupaia-current -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
+psql -h e2e-db-current -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
+psql -h e2e-db-current -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 
-psql -h e2e-tupaia-reference -U postgres -f db/dump.sql
-psql -h e2e-tupaia-current -U postgres -f db/dump.sql
+psql -h e2e-db-reference -U postgres -f db/dump.sql
+psql -h e2e-db-current -U postgres -f db/dump.sql
 
 touch DONE
 
