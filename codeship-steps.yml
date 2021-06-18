@@ -116,9 +116,16 @@
 #    - name: e2e-test-web-frontend
 #      command: './packages/devops/scripts/ci/testE2e.sh web-frontend'
 
-- type: parallel
+- type: serial
   name: e2e-test
-  service: e2e-runner
+  service: e2e-tupaia-reference
   steps:
-    - name: e2e-runner
-      command: 'sh /home/e2e-runner.sh'
+    - type: serial
+      name: snapshot-reference
+      service: e2e-tupaia-reference
+      command: 'echo hi'
+    - type: serial
+      name: snapshot-current
+      service: e2e-tupaia-current
+      command: 'echo hi2'
+      
