@@ -11,7 +11,7 @@ import {
   SingleEntityRequestQuery,
   SingleEntityContext,
   MultiEntityContext,
-  FlattableEntityFields,
+  FlattableEntityFieldName,
   FlattenedEntity,
   EntityResponse,
 } from '../types';
@@ -28,13 +28,13 @@ export type RelationshipsQuery = RelationshipsSubQuery & {
 
 type DescendantSubContext = {
   filter: EntityFilter;
-  field: keyof FlattableEntityFields;
+  field: FlattableEntityFieldName;
   type: string;
 };
 
 type AncestorSubContext = {
   filter: EntityFilter;
-  field: keyof FlattableEntityFields;
+  field: FlattableEntityFieldName;
   type?: string;
 };
 
