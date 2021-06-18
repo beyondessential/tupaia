@@ -1,6 +1,6 @@
 FROM alpine:3.14.0
 
-RUN apk add --no-cache git openssh psql
+RUN apk add --no-cache git openssh postgresql-client
 
 WORKDIR /home
 
