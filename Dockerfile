@@ -71,12 +71,12 @@ RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
 ## add packages and build monorepo
 COPY packages/. ./packages/
-RUN chmod +x ./scripts/bash/build.sh
-RUN yarn build
+#RUN chmod +x ./scripts/bash/build.sh
+#RUN yarn build
 
 # add container start scripts
-COPY ./init-services.sh ./
-RUN chmod +x ./init-services.sh
+#COPY ./init-services.sh ./
+#RUN chmod +x ./init-services.sh
 
 # -----------------------------
 # Target: production
@@ -97,8 +97,10 @@ CMD echo "TODO"
 # -----------------------------
 FROM base AS test
 
-CMD env && ./init-services.sh \
- && pm2 -f log
+#CMD env && ./init-services.sh \
+# && pm2 -f log
+
+CMD pm2 -f log
 
 # Make production the default
 FROM production
