@@ -141,15 +141,6 @@ const PartnersContainer = styled(FlexRow)`
   padding-left: 25px;
 `;
 
-const ParentDistrict = styled(FlexRow)`
-  width: 60%;
-`;
-
-const ParentVillage = styled(FlexRow)`
-  padding-left: 30px;
-  width: 30%;
-`;
-
 const TitleContainer = styled.div`
   width: 100%;
 `;
@@ -171,11 +162,6 @@ const GreyTitle = styled(Typography)`
 const HorizontalDivider = styled(MuiDivider)`
   width: 90%;
   margin-top: 1rem;
-`;
-
-const VerticalDivider = styled(MuiDivider)`
-  margin-top: 2.5rem;
-  height: 7rem;
 `;
 
 const PhotoOrMap = ({ vitals }) => {
@@ -340,51 +326,6 @@ const DistrictView = ({ vitals }) => {
   );
 };
 
-const VillageView = ({ vitals }) => {
-  return (
-    <>
-      <VitalsSection>
-        <TitleContainer>
-          <RedTitle variant="h4">Village Profile:</RedTitle>
-        </TitleContainer>
-        <EntityVitalsItem
-          name="Village Code"
-          value={vitals.code}
-          icon="LocationPin"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="Village Population"
-          value={vitals.Population}
-          icon="Group"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="No. Schools"
-          value={vitals.NumberOfSchools}
-          icon="School"
-          isLoading={vitals.isLoading}
-        />
-        <EntityVitalsItem
-          name="No. Students"
-          value={vitals.NumberOfStudents}
-          icon="Study"
-          isLoading={vitals.isLoading}
-        />
-      </VitalsSection>
-      <PhotoOrMap vitals={vitals} />
-      <PartnersContainer>
-        <TitleContainer>
-          <GreyTitle>Development Partner Support</GreyTitle>
-        </TitleContainer>
-        {Object.entries(vitals).map(([key, value]) =>
-          value === true ? <PartnerLogo code={key} key={key} /> : null,
-        )}
-      </PartnersContainer>
-    </>
-  );
-};
-
 const SchoolView = ({ vitals }) => {
   return (
     <>
@@ -425,37 +366,24 @@ const SchoolView = ({ vitals }) => {
         />
         <HorizontalDivider />
         <FlexRow>
-          <ParentDistrict>
-            <TitleContainer>
-              <RedTitle variant="h4">District</RedTitle>
-            </TitleContainer>
-            <EntityVitalsItem
-              name="Name of District"
-              value={vitals.parentDistrict?.name}
-              isLoading={vitals.isLoading}
-            />
-            <EntityVitalsItem
-              name="District Population"
-              value={vitals.parentDistrict?.Population}
-              isLoading={vitals.isLoading}
-            />
-            <EntityVitalsItem
-              name="Priority District"
-              value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
-              isLoading={vitals.isLoading}
-            />
-          </ParentDistrict>
-          <VerticalDivider orientation="vertical" />
-          <ParentVillage>
-            <TitleContainer>
-              <RedTitle variant="h4">Village</RedTitle>
-            </TitleContainer>
-            <EntityVitalsItem
-              name="Village Population"
-              value={vitals.parentVillage?.Population}
-              isLoading={vitals.isLoading}
-            />
-          </ParentVillage>
+          <TitleContainer>
+            <RedTitle variant="h4">District</RedTitle>
+          </TitleContainer>
+          <EntityVitalsItem
+            name="Name of District"
+            value={vitals.parentDistrict?.name}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="District Population"
+            value={vitals.parentDistrict?.Population}
+            isLoading={vitals.isLoading}
+          />
+          <EntityVitalsItem
+            name="Priority District"
+            value={vitals.parentDistrict?.priorityDistrict ? 'Yes' : 'No'}
+            isLoading={vitals.isLoading}
+          />
         </FlexRow>
       </VitalsSection>
       <PhotoOrMap vitals={vitals} />
@@ -471,8 +399,6 @@ const VitalsView = React.memo(({ vitals }) => {
       return <ProvinceView vitals={vitals} />;
     case 'sub_district':
       return <DistrictView vitals={vitals} />;
-    case 'village':
-      return <VillageView vitals={vitals} />;
     case 'school':
       return <SchoolView vitals={vitals} />;
     default:
@@ -547,9 +473,6 @@ ProvinceView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
 DistrictView.propTypes = {
-  vitals: PropTypes.object.isRequired,
-};
-VillageView.propTypes = {
   vitals: PropTypes.object.isRequired,
 };
 SchoolView.propTypes = {
