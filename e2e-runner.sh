@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x # echo all commands
 #set -e # exit if any line fails
 
 # Add SSH key
@@ -7,6 +6,8 @@ mkdir /root/.ssh
 chmod 700 /root/.ssh
 echo "$PRIVATE_SSH_KEY" > /root/.ssh/id_rsa_github
 chmod 600 /root/.ssh/id_rsa_github
+
+set -x # echo all commands (after private key so it is not exposed)
 
 # Read E2E_REFERENCE_BRANCH
 #set -o allexport
