@@ -39,6 +39,10 @@ export class ReportServerBuilder extends DataBuilder {
 
     const response = await this.reportConnection.fetchReport(this.config.reportCode, requestQuery);
 
+    // Matrix table data
+    if (response.results.columns && response.results.rows) {
+      return { ...response.results };
+    }
     return { data: response.results };
   }
 }
