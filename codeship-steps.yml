@@ -120,5 +120,5 @@
   name: e2e-test
   service: e2e-tupaia-reference
   steps:
-    - name hi
+    - name: hi
       command: 'echo hi'
