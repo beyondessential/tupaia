@@ -37,6 +37,9 @@ export const fractionAndPercentage = (numerator: number, denominator: number) =>
       `Function 'fractionAndPercentage' expect ${numerator} and ${denominator} as number`,
     );
   }
+  if (denominator === 0) {
+    throw new Error('One of the denominators is 0');
+  }
   return baseFormatDataValueByType(
     { value: numerator / denominator, metadata: { numerator, denominator } },
     valueType,
