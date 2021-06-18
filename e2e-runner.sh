@@ -1,6 +1,6 @@
 #!/bin/bash
 set -x # echo all commands
-set -e # exit if any line fails
+#set -e # exit if any line fails
 
 # Add SSH key
 ls -lha /root/.ssh

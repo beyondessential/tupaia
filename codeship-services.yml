@@ -46,6 +46,7 @@ e2e-runner:
   build:
     dockerfile: e2e-runner.Dockerfile
   add_docker: true
+  encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     - /tmp/e2e/reference:/tmp/e2e/reference # runner clones reference branch here
     # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
