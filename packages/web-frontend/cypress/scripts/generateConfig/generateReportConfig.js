@@ -56,12 +56,12 @@ const buildUrl = urlObject => {
 };
 
 const getUrlObjects = () => {
-  const { dashboardReportParamFiles } = cypressConfig?.tupaia;
-  if (!isNonEmptyArray(dashboardReportParamFiles)) {
-    throw new Error('Field `tupaia.dashboardReportParamFiles` must be a non empty array');
+  const { paramFiles } = cypressConfig?.tupaia?.dashboardReports;
+  if (!isNonEmptyArray(paramFiles)) {
+    throw new Error('Field `tupaia.dashboardReports.paramFiles` must be a non empty array');
   }
 
-  return dashboardReportParamFiles.map(readJsonFile).flat();
+  return paramFiles.map(readJsonFile).flat();
 };
 
 export const generateReportConfig = () => {

@@ -21,20 +21,13 @@
    yarn workspace @tupaia/web-frontend cypress:config
    ```
 
-   You can also use custom config by manually populating those files. See the [config docs](config/config.md) for more details
+   You can also use custom config by manually populating those files. See the [config docs](config/README.md) for more details
+
+4. Finally, we need to install some [Cypress dependencies](https://docs.cypress.io/guides/getting-started/installing-cypress#Linux) - see that link
 
 ## Running the tests locally
 
-We first need to start the servers locally, then run the e2e tests. We can run the tests in either UI or terminal (headless) mode.
-
-### 🍎 MacOS
-
-- UI mode: `yarn workspace @tupaia/web-frontend test:cypress:open`
-- Terminal mode: `yarn workspace @tupaia/web-frontend test:cypress:run`
-
-### ⊞ Windows
-
-Run the following in **WSL**:
+First, we need to start tupaia.org locally:
 
 ```bash
 # In one terminal
@@ -43,7 +36,7 @@ yarn workspace @tupaia/web-config-server start
 yarn workspace @tupaia/web-frontend start
 ```
 
-Then, run one of the following commands in a **Windows terminal**:
+Then, run one of the following commands in a new terminal:
 
 - UI mode: `yarn workspace @tupaia/web-frontend cypress:open`
 - Terminal mode: `yarn workspace @tupaia/web-frontend cypress:run`
@@ -55,15 +48,18 @@ Our e2e tests support Tupaia-specific configuration fields. Those can be specifi
 ```json
 {
   "tupaia": {
-    "requireNonEmptyVisualisations": true
+    "dashboardReports": {
+      "allowEmptyResponse": false
+    }
   }
 }
 ```
 
-| Config key                    | Description                                                                                                                                                                                    |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dashboardReportParamFiles     | A list of `.json` files that can be used to generate dashboard report urls that will be used during testing. See [config/params/dashboardReports](config/params/dashboardReports) for examples |
-| requireNonEmptyVisualisations | If set, an error will be thrown for tested visualisations that have no data (eg empty reports)                                                                                                 |
+| Config key                          | Description                                                                                                                                                                                    |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| dashboardReports.allowEmptyResponse | If set, an error will be thrown for tested visualisations that have no data (eg empty reports)                                                                                                 |
+| dashboardReports.paramFiles         | A list of `.json` files that can be used to generate dashboard report urls that will be used during testing. See [config/params/dashboardReports](config/params/dashboardReports) for examples |
+| dashboardReports.snapshotTypes      | A list of snapshot types that will be captured for each report. Supported types: `responseBody`, `html`                                                                                        |
 
 ## Limitations
 
