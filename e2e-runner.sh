@@ -2,10 +2,7 @@
 #set -e # exit if any line fails
 
 # Add SSH key
-mkdir /root/.ssh
-chmod 700 /root/.ssh
-echo "$PRIVATE_SSH_KEY" > /root/.ssh/id_rsa_github
-chmod 600 /root/.ssh/id_rsa_github
+echo "$GITHUB_PRIVATE_SSH_KEY" | tr -d '\r' | ssh-add - > /dev/null
 
 set -x # echo all commands (after private key so it is not exposed)
 
@@ -16,7 +13,7 @@ set -x # echo all commands (after private key so it is not exposed)
 
 # Clone reference branch
 # TODO: change hardcoded dev to be the actual branch
-export GIT_SSH_COMMAND="ssh -i /root/.ssh/id_rsa_github -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 git clone --branch dev --depth=1 git@github.com:beyondessential/tupaia.git /tmp/e2e/reference
 
