@@ -4,7 +4,9 @@ set -x # echo all commands
 
 # Add SSH key
 mkdir /root/.ssh
+chmod 700 /root/.ssh
 echo "$PRIVATE_SSH_KEY" > /root/.ssh/id_rsa_github
+chmod 600 /root/.ssh/id_rsa_github
 
 # Read E2E_REFERENCE_BRANCH
 #set -o allexport
