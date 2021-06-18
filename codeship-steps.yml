@@ -118,7 +118,6 @@
 
 - type: serial
   name: e2e-test
-  service: e2e-tupaia-reference
   steps:
     - type: serial
       name: snapshot-reference
@@ -128,4 +127,3 @@
       name: snapshot-current
       service: e2e-tupaia-current
       command: 'echo hi2'
-      
