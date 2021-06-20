@@ -92,7 +92,7 @@ export const TwoColumnPageView = ({ content }) => {
   const { title, body, url, linkSections } = content;
   return (
     <>
-      <PageHeader title={title} breadcrumbs={[{ name: title, url }]} center />
+      <PageHeader title={title} breadcrumbs={[{ name: title, url }]} />
       <MuiThemeProvider theme={contentPageTheme}>
         <TemplateBody>
           <TwoColumnContainer>

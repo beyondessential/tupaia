@@ -408,45 +408,6 @@ export class TupaiaDatabase {
   }
 
   /**
-   * Execute a sum query.
-   *
-   * eg:
-   * this.database.sum('user_reward', ['pigs', 'coconuts'], {
-   *   user_id: userId,
-   * });
-   * could return:
-   * { coconuts: 99, pigs: 55 }
-   *
-   * @param {string} table
-   * Database table to sum from.
-   * @param {array} fields
-   * An array of fields to sum.
-   * @param {object} where
-   * Conditions for the sum query.
-   */
-  async sum(table, fields = [], where = {}) {
-    if (!this.connection) {
-      await this.waitUntilConnected();
-    }
-
-    const query = this.connection(table);
-
-    fields.forEach(fieldToSum => {
-      query.sum(`${fieldToSum} as ${fieldToSum}`);
-    });
-
-    const result = await query.where(where);
-    const processedResult = {};
-
-    // Convert counts to integers.
-    Object.keys(result[0]).forEach(sumKey => {
-      processedResult[sumKey] = parseInt(result[0][sumKey], 10);
-    });
-
-    return processedResult;
-  }
-
-  /**
    * Runs an arbitrary SQL query against the database.
    *
    * Use only for situations in which Knex is not able to assemble a query.
