@@ -42,19 +42,6 @@ exports.up = async function (db) {
       AND (parent.type = 'village' OR child.type = 'village')
     )
   `);
-  await db.runSql(`
-  DELETE FROM ancestor_descendant_relation
-  WHERE id IN
-    (
-      SELECT adr.id FROM ancestor_descendant_relation adr
-      INNER JOIN entity ancestor
-      ON ancestor.id = adr.ancestor_id
-      INNER JOIN entity descendant
-      ON descendant.id = adr.descendant_id
-      WHERE entity_hierarchy_id = '${hierarchy}'
-      AND (ancestor.type = 'village' OR descendant.type = 'village')
-    )
-  `);
 };
 
 exports.down = async function (db) {
