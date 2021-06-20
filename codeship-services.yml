@@ -65,6 +65,7 @@ e2e-setup:
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     - /tmp/e2e/reference:/tmp/e2e/reference
+    - ./.ssh:/root/.ssh
   depends_on:
     - e2e-db-reference
     - e2e-db-current
