@@ -6,6 +6,8 @@ set -x # echo all commands (after private key so it is not exposed) TODO
 eval `ssh-agent -s`
 echo "${GITHUB_PRIVATE_SSH_KEY}" |  tr -d '"' | sed 's/\\n/\n/g' | ssh-add - > /dev/null
 
+# Add SSH key
+echo "${PRIVATE_SSH_KEY}" |  tr -d '"' | sed 's/\\n/\n/g' > /root/.ssh/id_rsa_tupaia.pem
 
 
 # Read E2E_REFERENCE_BRANCH
