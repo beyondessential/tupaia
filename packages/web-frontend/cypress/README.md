@@ -43,23 +43,66 @@ Then, run one of the following commands in a new terminal:
 
 ## Configuration
 
-Our e2e tests support Tupaia-specific configuration fields. Those can be specified in [cypress.json](../cypress.json) under the `tupaia` key. Example:
+Our e2e tests support Tupaia-specific configuration specified in [config.json](../config.json):
 
 ```json
 {
-  "tupaia": {
-    "dashboardReports": {
-      "allowEmptyResponse": false
-    }
+  "dashboardReports": {
+    "allowEmptyResponse": false, // Throw error for empty reports
+    "snapshotTypes": ["responseBody", "html"],
+    "urlFiles": ["cypress/config/dashboardReportUrls/default.json"],
+    "urls": []
+  },
+  "mapOverlays": {
+    "allowEmptyResponse": false,
+    "snapshotTypes": ["responseBody"],
+    "urls": []
   }
 }
 ```
 
-| Config key                          | Description                                                                                                                                                                                    |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| dashboardReports.allowEmptyResponse | If set, an error will be thrown for tested visualisations that have no data (eg empty reports)                                                                                                 |
-| dashboardReports.paramFiles         | A list of `.json` files that can be used to generate dashboard report urls that will be used during testing. See [config/params/dashboardReports](config/params/dashboardReports) for examples |
-| dashboardReports.snapshotTypes      | A list of snapshot types that will be captured for each report. Supported types: `responseBody`, `html`                                                                                        |
+**Snapshot types**
+
+| Type           | Description                                                                                         | Reports | Overlays |
+| -------------- | --------------------------------------------------------------------------------------------------- | ------- | -------- |
+| `responseBody` | The body of the request which provides the data for the item under test                             | ✔       | ✔        |
+| `html`         | A snapshot of the DOM, sanitised to remove non-deterministic content (eg dynamically generated ids) | ✔       | ❌       |
+
+**Urls**
+
+Some of our tests use urls to adjust the scope of the testable items.
+
+Two formats are supported:
+
+- String:
+
+  `/covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases`
+
+- Object:
+
+  ```json
+  {
+    "id": "COVID_Compose_Daily_Deaths_Vs_Cases",
+    "project": "covidau",
+    "orgUnit": "AU",
+    "dashboardGroup": "COVID-19"
+  }
+  ```
+
+Use any of the fields bellow to specify test urls. You can use multiple fields in the same test run - their results will be combined in the final url list:
+
+```json
+{
+  // Inline urls
+  "urls": ["/covidau/AU/COVID-19?report=COVID_Compose_Daily_Deaths_Vs_Cases"],
+
+  // Load urls from files
+  "urlFiles": [
+    "cypress/config/dashboardReportUrls/default.json",
+    "cypress/config/dashboardReportUrls/covidau.json"
+  ]
+}
+```
 
 ## Limitations
 
