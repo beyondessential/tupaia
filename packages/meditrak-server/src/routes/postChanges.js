@@ -74,12 +74,9 @@ export async function postChanges(req, res) {
         const { database } = models;
         await AnalyticsRefresher.executeRefresh(database);
       }
-
     }
   }
 
-  // Reset the cache for the current users rewards.
-  await models.userReward.resetUserRewardCacheForUser(req.userId);
   respond(res, { message: 'Successfully integrated changes into server database' });
 }
 

@@ -11,11 +11,9 @@ export class DatabaseModel {
   constructor(database) {
     this.database = database;
 
-    // this.schema contains information about the columns on the table in the database, e.g.:
-    // { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
-    // it will be populated on the first call to this.fetchSchema(), and should not be accessed
-    // directly
-    this.schema = null;
+    // schema promise will resolve with information about the columns on the table in the database,
+    // e.g.: { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
+    this.schemaPromise = this.database.fetchSchemaForTable(this.DatabaseTypeClass.databaseType);
 
     this.cache = {};
     this.cachedFunctionInvalidationCancellers = {};
@@ -58,10 +56,7 @@ export class DatabaseModel {
     this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, handler);
 
   async fetchSchema() {
-    if (!this.schema) {
-      this.schema = await this.database.fetchSchemaForTable(this.DatabaseTypeClass.databaseType);
-    }
-    return this.schema;
+    return this.schemaPromise;
   }
 
   async fetchFieldNames() {
