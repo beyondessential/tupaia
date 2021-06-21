@@ -29,7 +29,7 @@ if [ -f db/dump.sql ]; then
     # Shortcut if db/ is mounted
     echo "dump.sql exists, skipping fetch"
 else
-    sh ./scripts/bash/dumpDb.sh /root/.ssh/id_rsa_tupaia.pem -t db
+    sh ./scripts/bash/dumpDb.sh /root/.ssh/id_rsa_tupaia.pem
 fi
 
 # Set up db
@@ -39,8 +39,8 @@ psql -h e2e-db-reference -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCR
 psql -h e2e-db-current -U postgres -c "CREATE ROLE tupaia WITH LOGIN ENCRYPTED PASSWORD 'tupaia';"
 psql -h e2e-db-current -U postgres -c "CREATE ROLE tupaia_read WITH LOGIN ENCRYPTED PASSWORD 'tupaia_read';"
 
-psql -h e2e-db-reference -U postgres -f db/dump.sql
-psql -h e2e-db-current -U postgres -f db/dump.sql
+psql -h e2e-db-reference -U postgres -f dump.sql
+#psql -h e2e-db-current -U postgres -f dump.sql
 
 touch DONE
 
