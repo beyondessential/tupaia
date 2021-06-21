@@ -11,4 +11,4 @@ export { groupData } from './groupData';
 export { getStringsFromBinaryData } from './getStringsFromBinaryData';
 export { selectUniqueValueFromEventsPerOrgUnit } from './selectUniqueValueFromEventsPerOrgUnit';
 export { checkMultiConditionsByOrgUnit } from './checkMultiConditionsByOrgUnit';
-export { reportServer } from './reportServer';
+export { useReportServer } from './useReportServer';

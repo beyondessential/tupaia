@@ -22,7 +22,7 @@ const MAP_OVERLAY = {
   userGroup: 'STRIVE User',
   dataElementCode: 'value',
   isDataRegional: true,
-  measureBuilder: 'reportServer',
+  measureBuilder: 'useReportServer',
   measureBuilderConfig: {
     dataSourceType: 'custom',
     reportCode: 'PG_Strive_Mosquito_Species_MapOverlay',
@@ -32,31 +32,33 @@ const MAP_OVERLAY = {
       {
         icon: 'circle',
         name: 'Mosquito species',
-        value: 'EXISTED', // Just a tag to indicate we have data
+        value: 'exists', // Just a tag to indicate we have data
         hideFromLegend: false,
       },
     ],
     displayType: 'icon',
     measureLevel: 'Facility',
     hideFromPopup: true,
-    otherLinkMeasures: {
-      type: 'icon',
-      values: [
-        {
-          icon: 'circle',
-          value: 'other',
-          hideFromLegend: true,
-        },
-        {
-          icon: 'circle',
-          name: 'No data',
-          color: 'Grey',
-          value: 'null',
-          hideFromLegend: true,
-          hideFromPopup: true,
-        },
-      ],
-      measureLevel: 'Facility',
+    measureConfig: {
+      $all: {
+        type: 'icon',
+        values: [
+          {
+            icon: 'circle',
+            value: 'other',
+            hideFromLegend: true,
+          },
+          {
+            icon: 'circle',
+            name: 'No data',
+            color: 'Grey',
+            value: 'null',
+            hideFromLegend: true,
+            hideFromPopup: true,
+          },
+        ],
+        measureLevel: 'Facility',
+      },
     },
   },
   countryCodes: '{"PG"}',

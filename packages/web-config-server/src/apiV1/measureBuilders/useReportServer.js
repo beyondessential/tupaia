@@ -1,6 +1,6 @@
-import { ReportServerBuilder } from '/apiV1//dataBuilders/generic/reportServer/reportServerDataBuilder';
+import { ReportServerBuilder } from '/apiV1/dataBuilders/generic/reportServer/reportServerDataBuilder';
 
-export const reportServer = async (
+export const useReportServer = async (
   models,
   aggregator,
   dhisApi,

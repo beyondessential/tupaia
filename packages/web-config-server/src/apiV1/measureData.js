@@ -8,6 +8,8 @@ import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
+const ADD_TO_ALL_KEY = '$all';
+
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
 const binaryOptionSet = [
@@ -234,11 +236,12 @@ export default class extends DataAggregatingRouteHandler {
       return Array.from(otherLinkMeasureKeySet);
     };
 
-    // Config 'otherLinkMeasures' only works for report server builder
-    const { otherLinkMeasures, ...mainMeasureOption } = measureOptions[0];
-    if (otherLinkMeasures) {
+    // Config 'measureConfig' only works for report server builder
+    const { measureConfig, ...mainMeasureOption } = measureOptions[0];
+    if (measureConfig) {
+      const { [ADD_TO_ALL_KEY]: configForAllKeys, ...restOfConfig } = measureConfig;
       getOtherLinkMeasureKeys(mainMeasureOption.key).forEach(key => {
-        measureOptions.push({ ...otherLinkMeasures, key, name: key });
+        measureOptions.push({ ...configForAllKeys, key, name: key, ...restOfConfig[key] });
       });
       measureOptions[0] = mainMeasureOption;
     }

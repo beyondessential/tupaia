@@ -58,8 +58,8 @@ const REPORT = {
       },
       {
         transform: 'select',
-        '$row.name': 'fractionAndPercentage($row.numerator, $row.denominator)',
-        "'value'": "'EXISTED'", // Just a tag to indicator we have data
+        '$row.name': 'formatAsFractionAndPercentage($row.numerator, $row.denominator)',
+        "'value'": "'exists'", // Just a tag to indicator we have data
         '...': ['organisationUnitCode'],
       },
     ],

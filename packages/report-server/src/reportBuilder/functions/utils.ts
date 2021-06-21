@@ -30,11 +30,10 @@ export const dateStringToPeriod = (period: string, targetType: string): string =
   return baseDateStringToPeriod(period, targetType);
 };
 
-export const fractionAndPercentage = (numerator: number, denominator: number) => {
-  const valueType = 'fractionAndPercentage';
+export const formatAsFractionAndPercentage = (numerator: number, denominator: number) => {
   if (typeof numerator !== 'number' || typeof denominator !== 'number') {
     throw new Error(
-      `Function 'fractionAndPercentage' expect ${numerator} and ${denominator} as number`,
+      `Function 'formatAsFractionAndPercentage' expect ${numerator} and ${denominator} as number`,
     );
   }
   if (denominator === 0) {
@@ -42,6 +41,6 @@ export const fractionAndPercentage = (numerator: number, denominator: number) =>
   }
   return baseFormatDataValueByType(
     { value: numerator / denominator, metadata: { numerator, denominator } },
-    valueType,
+    'fractionAndPercentage',
   );
 };
