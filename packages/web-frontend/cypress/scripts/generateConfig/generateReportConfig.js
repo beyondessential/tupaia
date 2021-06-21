@@ -3,34 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import fs from 'fs';
 import { uniq } from 'lodash';
 import moment from 'moment';
 
-import { compareAsc, getLoggerInstance, ObjectValidator, stringifyQuery } from '@tupaia/utils';
-import cypressConfig from '../../../cypress.json';
+import { compareAsc, hasContent, isAString, ObjectValidator, stringifyQuery } from '@tupaia/utils';
 import { convertDateRangeToUrlPeriodString } from '../../../src/historyNavigation/utils';
+import config from '../../config.json';
+import { readJsonFile } from './helpers';
 
-const CONFIG_PATH = 'cypress/config/dashboardReports.json';
-
-const readJsonFile = path => JSON.parse(fs.readFileSync(path, { encoding: 'utf-8' }));
-
-const writeJsonFile = (path, json) => fs.writeFileSync(path, JSON.stringify(json, null, 2));
-
-const isNonEmptyArray = input => Array.isArray(input) && input.length > 0;
-
-const isNonEmptyString = value => {
-  if (typeof value !== 'string' || value.length === 0) {
-    throw new Error('Should be a non empty string');
-  }
+const objectUrlSchema = {
+  id: [hasContent, isAString],
+  project: [hasContent, isAString],
+  orgUnit: [hasContent, isAString],
+  dashboardGroup: [hasContent, isAString],
 };
 
-const reportParamsValidator = new ObjectValidator({
-  id: [isNonEmptyString],
-  project: [isNonEmptyString],
-  orgUnit: [isNonEmptyString],
-  dashboardGroup: [isNonEmptyString],
-});
+const objectUrlValidator = new ObjectValidator(objectUrlSchema);
 
 const buildReportPeriod = (startDate, endDate) => {
   if (!startDate || !endDate) {
@@ -42,36 +30,31 @@ const buildReportPeriod = (startDate, endDate) => {
   });
 };
 
-const buildUrl = urlObject => {
-  const { id, project, orgUnit, dashboardGroup, startDate, endDate } = urlObject;
+const buildUrl = urlInput => {
+  if (typeof urlInput === 'string') {
+    return urlInput;
+  }
 
-  const constructError = (message, key) =>
-    new Error(`Params error in field "${key}" for report "${id}": ${message}`);
-  reportParamsValidator.validateSync(urlObject, constructError);
+  const constructError = (errorMessage, key) =>
+    new Error(`Invalid content for field "${key}" of object url with id "${id}": ${errorMessage}`);
+  objectUrlValidator.validateSync(urlInput, constructError);
 
+  const { id, project, orgUnit, dashboardGroup, startDate, endDate } = urlInput;
   const path = [project, orgUnit, dashboardGroup].map(encodeURIComponent).join('/');
   const queryParams = { report: id, reportPeriod: buildReportPeriod(startDate, endDate) };
 
   return stringifyQuery('', path, queryParams);
 };
 
-const getUrlObjects = () => {
-  const { paramFiles } = cypressConfig?.tupaia?.dashboardReports;
-  if (!isNonEmptyArray(paramFiles)) {
-    throw new Error('Field `tupaia.dashboardReports.paramFiles` must be a non empty array');
-  }
-
-  return paramFiles.map(readJsonFile).flat();
-};
-
 export const generateReportConfig = () => {
-  const logger = getLoggerInstance();
+  const { dashboardReports: reportConfig } = config;
 
-  const urlObjects = getUrlObjects();
-  const urls = uniq(urlObjects.map(buildUrl)).sort(compareAsc);
-  const config = readJsonFile(CONFIG_PATH);
-  const newConfig = { ...config, urls };
-  writeJsonFile(CONFIG_PATH, newConfig);
+  const { urlFiles = [], urls = [], ...otherConfig } = reportConfig;
+  const urlsFromFiles = urlFiles.map(readJsonFile).flat();
+  const allUrls = [...urlsFromFiles, ...urls];
 
-  logger.info(`Generated ${urls.length} report urls in "${CONFIG_PATH}"`);
+  return {
+    ...otherConfig,
+    urls: uniq(allUrls.map(buildUrl)).sort(compareAsc),
+  };
 };

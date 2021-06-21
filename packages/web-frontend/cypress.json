@@ -6,12 +6,5 @@
   "requestTimeout": 10000,
   "useRelativeSnapshots": true,
   "viewportHeight": 900,
-  "viewportWidth": 1400,
-  "tupaia": {
-    "dashboardReports": {
-      "allowEmptyResponse": false,
-      "paramFiles": ["cypress/config/params/dashboardReports/default.json"],
-      "snapshotTypes": ["responseBody", "html"]
-    }
-  }
+  "viewportWidth": 1400
 }
