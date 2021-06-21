@@ -14,22 +14,29 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const dashboardId = 'UNFPA_Country_Facilities_offering_services_At_Least_1_Matrix_SB';
+const dashboardIds = [
+  'UNFPA_Country_Facilities_offering_services_At_Least_1_Matrix_SB',
+  'UNFPA_Country_Facilities_offering_services_At_Least_1_Matrix_VU',
+];
 
 exports.up = async function (db) {
-  await db.runSql(`
-  update "dashboardReport" dr
-  set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS1UNFPA03','RHS4UNFPA809','g')::jsonb
-  where id = '${dashboardId}'
-`);
+  for (const dashboardId of dashboardIds) {
+    await db.runSql(`
+      update "dashboardReport" dr
+      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS1UNFPA03','RHS4UNFPA809','g')::jsonb
+      where id = '${dashboardId}'
+  `);
+  }
 };
 
 exports.down = async function (db) {
-  await db.runSql(`
-  update "dashboardReport" dr
-  set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS4UNFPA809','RHS1UNFPA03','g')::jsonb
-  where id = '${dashboardId}'
-`);
+  for (const dashboardId of dashboardIds) {
+    await db.runSql(`
+      update "dashboardReport" dr
+      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS4UNFPA809','RHS1UNFPA03','g')::jsonb
+      where id = '${dashboardId}'
+    `);
+  }
 };
 
 exports._meta = {
