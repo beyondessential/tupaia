@@ -150,7 +150,7 @@
 
 - type: serial
   name: e2e-run-ref
-  service: e2e-tupaia-reference
+  service: tupaia-reference
   steps:
     - name: e2e-run-ref
       command: 'echo ref'

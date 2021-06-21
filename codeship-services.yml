@@ -90,7 +90,7 @@ tupaia:
 #    - e2e-db-reference
 #    - e2e-db-current
 
-e2e-tupaia-reference:
+tupaia-reference:
   image: beyondessential/tupaia:latest-release
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
