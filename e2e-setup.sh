@@ -8,6 +8,7 @@ echo "${GITHUB_PRIVATE_SSH_KEY}" |  tr -d '"' | sed 's/\\n/\n/g' | ssh-add - > /
 
 # Add SSH key
 echo "${PRIVATE_SSH_KEY}" |  tr -d '"' | sed 's/\\n/\n/g' > /root/.ssh/id_rsa_tupaia.pem
+chmod 600 /root/.ssh/id_rsa_tupaia.pem
 
 
 # Read E2E_REFERENCE_BRANCH
