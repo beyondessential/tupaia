@@ -65,7 +65,9 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseBody"],
     "urlGenerationOptions": {
-      "project": ["strive", "covidau"]
+      "id": "RH_Available_RHS3UNFPA536",
+      "country": ["TO", "VU"],
+      "project": ["unfpa"]
     },
     "urls": ["/covidau/AU?overlay=AU_FLUTRACKING_Fever_And_Cough"],
     "filter": {
@@ -80,14 +82,14 @@ Our e2e tests support Tupaia-specific configuration specified in [config.json](c
 
 ### Dashboard report & map overlay configuration
 
-**Snapshot types**
+#### Snapshot types
 
 | Type           | Description                                                                                         | Reports | Overlays |
 | -------------- | --------------------------------------------------------------------------------------------------- | ------- | -------- |
 | `responseBody` | The body of the request which provides the data for the item under test                             | ✔       | ✔        |
 | `html`         | A snapshot of the DOM, sanitised to remove non-deterministic content (eg dynamically generated ids) | ✔       | ❌       |
 
-**Urls**
+#### Urls
 
 Some of our tests use urls to adjust the scope of the testable items.
 
@@ -121,14 +123,17 @@ Use any of the fields below to specify test urls. You can use multiple fields in
     "cypress/config/dashboardReportUrls/covidau.json"
   ],
 
-  // Dynamically generate urls
+  // Dynamically generate urls. Note: this is only available for `mapOverlays`
+  //
+  // If the same overlay id is selected for the same country across projects, only the first
+  // project will be used, since the overlay will be the same in all these cases
   "urlGenerationOptions": {
     "project": ["strive", "covidau"]
   }
 }
 ```
 
-**Filter**
+#### Filter
 
 You can optionally specify a `filter` that will be applied to the tested visualisations. For example, to test all "Fanafana" project overlays that use the "valueForOrgGroup" data builder in Tonga:
 

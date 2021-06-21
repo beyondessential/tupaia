@@ -7,10 +7,13 @@ import { groupBy } from 'lodash';
 
 import {
   constructIsOneOfType,
+  getUniqueEntries,
   hasContent,
   isAString,
+  mapKeys,
   ObjectValidator,
   stringifyQuery,
+  toArray,
 } from '@tupaia/utils';
 import config from '../../config.json';
 import { buildUrlsUsingConfig, sortUrls, validateFilter } from './helpers';
@@ -24,7 +27,9 @@ const objectUrlSchema = {
 const objectUrlValidator = new ObjectValidator(objectUrlSchema);
 
 const URL_GENERATION_FIELDS = {
+  ID: 'id',
   PROJECT: 'project',
+  COUNTRY: 'country',
 };
 
 const FILTER_FIELDS = [...Object.keys(objectUrlSchema), 'measureBuilder'];
@@ -42,7 +47,7 @@ const stringifyUrl = url => {
 
   const { id, project, orgUnit } = url;
   const path = [project, orgUnit].map(encodeURIComponent).join('/');
-  const queryParams = { overlay: id };
+  const queryParams = { overlay: toArray(id).join(',') };
 
   return stringifyQuery('', path, queryParams);
 };
@@ -81,15 +86,17 @@ const generateUrls = async (db, options) => {
   if (Object.keys(options).length === 0) {
     return [];
   }
+  validateUrlGenerationOptions(options);
 
   const tableOverlayCountry = 'temp_overlay_country';
   const tableOverlayProject = 'temp_overlay_project';
 
-  validateUrlGenerationOptions(options);
-  const where = {};
-  if (URL_GENERATION_FIELDS.PROJECT in options) {
-    where[`${tableOverlayProject}.project`] = options.project;
-  }
+  const generationToQueryField = {
+    [URL_GENERATION_FIELDS.ID]: 'id',
+    [URL_GENERATION_FIELDS.COUNTRY]: `${tableOverlayCountry}.orgUnit`,
+    [URL_GENERATION_FIELDS.PROJECT]: `${tableOverlayProject}.project`,
+  };
+  const where = mapKeys(options, generationToQueryField);
 
   await db.executeSql(`
     DROP TABLE IF EXISTS ${tableOverlayCountry};
@@ -116,7 +123,21 @@ const generateUrls = async (db, options) => {
     ],
   };
 
-  return db.find('mapOverlay', where, queryOptions);
+  const overlays = await db.find('mapOverlay', where, queryOptions);
+  const linkedOverlays = await db.find('mapOverlay', {
+    id: getUniqueEntries(overlays.map(o => o.linkedMeasures).flat()),
+  });
+  const linkedOverlayIds = linkedOverlays.map(({ id }) => id);
+
+  return overlays
+    .filter(o => !linkedOverlayIds.includes(o.id))
+    .map(overlay => {
+      const { id, linkedMeasures } = overlay;
+      return {
+        ...overlay,
+        id: linkedMeasures ? [id, ...linkedMeasures] : id,
+      };
+    });
 };
 
 export const generateOverlayConfig = async db => {
