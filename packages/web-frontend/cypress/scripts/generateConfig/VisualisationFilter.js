@@ -36,11 +36,15 @@ class VisualisationFilter {
   getName = () => 'visualisation';
 
   apply = async objectUrls => {
+    if (Object.keys(this.filter).length === 0) {
+      return objectUrls;
+    }
+
     const records = await this.fetchRecords(objectUrls);
     const recordsById = keyBy(records, 'id');
 
     const filterUrl = url =>
-      Object.entries(this.filter).every(([key, targetValue]) => {
+      Object.entries(this.filter).some(([key, targetValue]) => {
         const record = recordsById[url.id];
         if (!record) {
           throw new Error(
