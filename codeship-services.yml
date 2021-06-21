@@ -13,12 +13,12 @@
 # testing
 # ----------------------------------
 
-validation:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-  cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
+#validation:
+#  build:
+#    dockerfile: full-testable-package.Dockerfile
+#  cached: true
+#  encrypted_dockercfg_path: dockercfg.encrypted
+#  default_cache_branch: 'dev'
 
 #testing:
 #  build:
