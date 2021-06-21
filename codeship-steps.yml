@@ -132,7 +132,7 @@
   service: tupaia
   steps:
     - name: build
-      command: 'echo hi'
+      command: 'echo "Build complete"' # TODO: why do we have to specify a command?
 
 - type: push
   service: tupaia
@@ -140,17 +140,9 @@
   image_tag: "latest-release"
   tag: ^master$
 
-
-#- type: serial
-#  name: tupaia-clone
-#  service: tupaia-clone
-#  steps:
-#    - name: clone-reference-repo
-#      command: 'sh /home/tupaia-clone.sh'
-
 - type: serial
   name: e2e-run-ref
-  service: tupaia-reference
+  service: e2e-tupaia-reference
   steps:
     - name: e2e-run-ref
       command: 'echo ref'

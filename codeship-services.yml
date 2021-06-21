@@ -67,57 +67,52 @@ tupaia:
 # e2e testing
 # ----------------------------------
 
-#e2e-db-reference:
-#  build:
-#    dockerfile: postgres.Dockerfile
-#  environment:
-#    POSTGRES_HOST_AUTH_METHOD: trust
-#
-#e2e-db-current:
-#  build:
-#    dockerfile: postgres.Dockerfile
-#  environment:
-#    POSTGRES_HOST_AUTH_METHOD: trust
+e2e-db-reference:
+  build:
+    dockerfile: postgres.Dockerfile
+  environment:
+    POSTGRES_HOST_AUTH_METHOD: trust
+  cached: true
+  default_cache_branch: 'dev'
 
-#e2e-setup:
-#  build:
-#    dockerfile: e2e-setup.Dockerfile
-#    encrypted_args_file: build_args.encrypted
-#  encrypted_env_file: ./ci-env-vars.encrypted
-#  volumes:
-#    - /tmp/e2e/reference:/tmp/e2e/reference
-#  depends_on:
-#    - e2e-db-reference
-#    - e2e-db-current
+e2e-db-current:
+  build:
+    dockerfile: postgres.Dockerfile
+  environment:
+    POSTGRES_HOST_AUTH_METHOD: trust
+  cached: true
+  default_cache_branch: 'dev'
 
-tupaia-reference:
-  image: beyondessential/tupaia:latest-release
+e2e-setup:
+  build:
+    dockerfile: e2e-setup.Dockerfile
+  encrypted_env_file: ./ci-env-vars.encrypted
+  depends_on:
+    - e2e-db-reference
+    - e2e-db-current
+
+e2e-tupaia-reference:
+  image: beyondessential/tupaia:latest-release # change tag if you want to compare against a different reference branch
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     - /tmp/e2e/snapshots:/tmp/e2e/snapshots
-#  depends_on:
-#    - e2e-setup
+  depends_on:
+    - e2e-setup
   encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
+  environment:
+    - DB_URL=e2e-db-reference
 
-#e2e-tupaia-current:
-#  build:
-#    dockerfile: ./Dockerfile
-#    context: .
-#  encrypted_env_file: ./ci-env-vars.encrypted
-#  volumes:
-#    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
-#  depends_on:
-#    - e2e-setup
-#  cached: true
-#  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
-#  default_cache_branch: 'dev'
-
-#e2e-runner:
-#  build:
-#    dockerfile: e2e-runner.Dockerfile
-#  add_docker: true
-#  encrypted_env_file: ./ci-env-vars.encrypted
-#  volumes:
-#    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
-#  depends_on:
-#    - e2e-tupaia-reference
+e2e-tupaia-current:
+  build:
+    dockerfile: ./Dockerfile
+    context: .
+  encrypted_env_file: ./ci-env-vars.encrypted
+  encrypted_dockercfg_path: dockercfg.encrypted # TODO: do we need this?
+  volumes:
+    - /tmp/e2e/snapshots:/tmp/e2e/snapshots
+  cached: true
+  default_cache_branch: 'dev'
+  depends_on:
+    - e2e-setup
+  environment:
+    - DB_URL=e2e-db-current

@@ -9,7 +9,7 @@ RUN chmod +x ./e2e-setup.sh
 
 COPY ./scripts ./scripts
 
-# This service announces it is healthy when the setup script finishes and creates a file called DONE
-HEALTHCHECK --retries=50 CMD ["test -f DONE"]
+COPY ./parallel_commands.sh ./
+RUN chmod +x ./parallel_commands.sh
 
-CMD sh /home/e2e-setup.sh && tail -f /dev/null
+CMD sh /home/e2e-setup.sh
