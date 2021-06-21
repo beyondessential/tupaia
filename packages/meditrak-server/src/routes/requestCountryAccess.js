@@ -28,16 +28,16 @@ const sendRequest = (userName, countryNames, message, project) => {
   const { COUNTRY_REQUEST_EMAIL_ADDRESS } = process.env;
 
   const emailText = `
-  ${userName} has requested access to countries:
+${userName} has requested access to countries:
 ${countryNames.map(n => `  -  ${n}`).join('\n')}
 ${
   project
     ? `
-  For the project ${project.code} (linked to permission groups: ${project.user_groups.join(', ')})
+For the project ${project.code} (linked to permission groups: ${project.user_groups.join(', ')})
     `
     : ''
 }
-  With the message: '${message}'
+With the message: '${message}'
 `;
   return sendEmail(COUNTRY_REQUEST_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
 };

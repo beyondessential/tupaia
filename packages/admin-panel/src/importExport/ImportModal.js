@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImportIcon from '@material-ui/icons/Publish';
@@ -25,7 +25,6 @@ const STATUS = {
   LOADING: 'loading',
   SUCCESS: 'success',
   ERROR: 'error',
-  DISABLED: 'disabled',
 };
 
 const noFileMessage = 'No file chosen';
@@ -42,6 +41,7 @@ export const ImportModalComponent = React.memo(
   }) => {
     const [status, setStatus] = useState(STATUS.IDLE);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [file, setFile] = useState(null);
@@ -59,15 +59,17 @@ export const ImportModalComponent = React.memo(
     const handleDismiss = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setSuccessMessage(null);
       // Deselect file when dismissing an error, this avoids an error when editing selected files
       // @see https://github.com/beyondessential/tupaia-backlog/issues/1211
       setFile(null);
       setFileName(noFileMessage);
     };
 
-    const handleCancel = () => {
+    const handleClose = () => {
       setStatus(STATUS.IDLE);
       setErrorMessage(null);
+      setSuccessMessage(null);
       setIsOpen(false);
       setValues({});
       setFile(null);
@@ -84,12 +86,16 @@ export const ImportModalComponent = React.memo(
       const endpoint = `import/${recordType}`;
 
       try {
-        await api.upload(endpoint, recordType, file, {
+        const { body: response } = await api.upload(endpoint, recordType, file, {
           ...values,
           ...actionConfig.extraQueryParameters,
         });
-        setIsOpen(false);
-        setStatus(STATUS.SUCCESS);
+        if (response.message) {
+          setSuccessMessage(response.message);
+          setStatus(STATUS.SUCCESS);
+        } else {
+          handleClose();
+        }
         changeSuccess();
       } catch (error) {
         setStatus(STATUS.ERROR);
@@ -114,12 +120,40 @@ export const ImportModalComponent = React.memo(
       );
     };
 
+    const renderButtons = useCallback(() => {
+      switch (status) {
+        case STATUS.SUCCESS:
+          return <Button onClick={handleClose}>Done</Button>;
+        case STATUS.ERROR:
+          return (
+            <>
+              <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
+              <Button disabled>Import</Button>
+            </>
+          );
+        default:
+          return (
+            <>
+              <OutlinedButton onClick={handleClose}>Cancel</OutlinedButton>
+              <Button
+                type="submit"
+                disabled={!file}
+                isLoading={status === STATUS.LOADING}
+                onClick={handleSubmit}
+              >
+                Import
+              </Button>
+            </>
+          );
+      }
+    }, [status, file, handleDismiss, handleClose, handleSubmit]);
+
     return (
       <>
-        <Dialog onClose={handleCancel} open={isOpen} disableBackdropClick>
+        <Dialog onClose={handleClose} open={isOpen} disableBackdropClick>
           <form>
             <DialogHeader
-              onClose={handleCancel}
+              onClose={handleClose}
               title={fileErrorMessage ? 'Error' : title}
               color={fileErrorMessage ? 'error' : 'textPrimary'}
             />
@@ -127,49 +161,41 @@ export const ImportModalComponent = React.memo(
               errorMessage={fileErrorMessage}
               isLoading={status === STATUS.LOADING}
             >
-              <p>{subtitle}</p>
-              {queryParameters
-                .filter(({ visibilityCriteria }) =>
-                  checkVisibilityCriteriaAreMet(visibilityCriteria),
-                )
-                .map(queryParameter => {
-                  const { parameterKey, label, secondaryLabel } = queryParameter;
-                  return (
-                    <InputField
-                      key={parameterKey}
-                      inputKey={parameterKey}
-                      value={values[parameterKey]}
-                      {...queryParameter}
-                      onChange={handleValueChange}
-                      label={label}
-                      secondaryLabel={secondaryLabel}
-                    />
-                  );
-                })}
-              <FileUploadField
-                onChange={({ target }, newName) => {
-                  setFileName(newName);
-                  setFile(target.files[0]);
-                }}
-                name="file-upload"
-                fileName={fileName}
-              />
-            </ModalContentProvider>
-            <DialogFooter>
-              {status === STATUS.ERROR ? (
-                <OutlinedButton onClick={handleDismiss}>Dismiss</OutlinedButton>
+              {status === STATUS.SUCCESS ? (
+                <p>{successMessage}</p>
               ) : (
-                <OutlinedButton onClick={handleCancel}>Cancel</OutlinedButton>
+                <>
+                  <p>{subtitle}</p>
+                  {queryParameters
+                    .filter(({ visibilityCriteria }) =>
+                      checkVisibilityCriteriaAreMet(visibilityCriteria),
+                    )
+                    .map(queryParameter => {
+                      const { parameterKey, label, secondaryLabel } = queryParameter;
+                      return (
+                        <InputField
+                          key={parameterKey}
+                          inputKey={parameterKey}
+                          value={values[parameterKey]}
+                          {...queryParameter}
+                          onChange={handleValueChange}
+                          label={label}
+                          secondaryLabel={secondaryLabel}
+                        />
+                      );
+                    })}
+                  <FileUploadField
+                    onChange={({ target }, newName) => {
+                      setFileName(newName);
+                      setFile(target.files[0]);
+                    }}
+                    name="file-upload"
+                    fileName={fileName}
+                  />
+                </>
               )}
-              <Button
-                type="submit"
-                disabled={status === STATUS.ERROR || !file}
-                isLoading={status === STATUS.LOADING}
-                onClick={handleSubmit}
-              >
-                Import
-              </Button>
-            </DialogFooter>
+            </ModalContentProvider>
+            <DialogFooter>{renderButtons()}</DialogFooter>
           </form>
         </Dialog>
         <LightOutlinedButton startIcon={<ImportIcon />} onClick={handleOpen}>
