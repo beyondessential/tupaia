@@ -62,6 +62,7 @@ e2e-db-current:
 e2e-setup:
   build:
     dockerfile: e2e-setup.Dockerfile
+    encrypted_args_file: build_args.encrypted
   encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     - /tmp/e2e/reference:/tmp/e2e/reference

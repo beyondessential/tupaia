@@ -22,3 +22,9 @@ dump.sql
 dockercfg
 packages/.vscode/settings.json
 **/testRequests/*.http
+
+
+
+
+build_args
+ci-env-vars
