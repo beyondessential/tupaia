@@ -1,4 +1,4 @@
-FROM node:12.18.3-alpine3.11 AS base
+FROM node:12.18.3-alpine3.11
 
 # install features not available in base alpine distro
 RUN apk --no-cache add \
@@ -71,36 +71,14 @@ RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 
 ## add packages and build monorepo
 COPY packages/. ./packages/
-#RUN chmod +x ./scripts/bash/build.sh
-#RUN yarn build
+RUN chmod +x ./scripts/bash/build.sh
+RUN yarn build
 
 # add container start scripts
 #COPY ./init-services.sh ./
 #RUN chmod +x ./init-services.sh
 
-# -----------------------------
-# Target: production
-# Entrypoint:
-# - fetch .envs
-# - start services
-# - start http server
-# -----------------------------
-FROM base AS production
-
-CMD echo "TODO"
-
-# -----------------------------
-# Target: test
-# - expect ENVs to be present
-# Entrypoint:
-# - start services
-# -----------------------------
-FROM base AS test
-
 #CMD env && ./init-services.sh \
 # && pm2 -f log
 
 CMD pm2 -f log
-
-# Make production the default
-FROM production

@@ -9,6 +9,10 @@
 # - the deployment service just uses the base alpine image + ssh to log into
 #   an ec2 instance and deploy the latest version of the code for each package
 
+# ----------------------------------
+# testing
+# ----------------------------------
+
 validation:
   build:
     dockerfile: full-testable-package.Dockerfile
@@ -16,35 +20,50 @@ validation:
   encrypted_dockercfg_path: dockercfg.encrypted
   default_cache_branch: 'dev'
 
-testing:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-  depends_on:
-    - db
-  encrypted_env_file: ./ci-env-vars.encrypted # all individual .env files combined and encrypted
-  cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
-
-db:
-  image: mdillon/postgis:9.6-alpine
-  cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
-
-deployment:
-  build:
-    dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./ci-env-vars.encrypted
-  volumes:
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
-  cached: true
-  encrypted_dockercfg_path: dockercfg.encrypted
-  default_cache_branch: 'dev'
-
+#testing:
+#  build:
+#    dockerfile: full-testable-package.Dockerfile
+#  depends_on:
+#    - db
+#  encrypted_env_file: ./ci-env-vars.encrypted # all individual .env files combined and encrypted
+#  cached: true
+#  encrypted_dockercfg_path: dockercfg.encrypted
+#  default_cache_branch: 'dev'
+#
+#db:
+#  image: mdillon/postgis:9.6-alpine
+#  cached: true
+#  encrypted_dockercfg_path: dockercfg.encrypted
+#
+## ----------------------------------
+## deployment
+## ----------------------------------
+#
+#deployment:
+#  build:
+#    dockerfile: deploy-only.Dockerfile
+#  encrypted_env_file: ./ci-env-vars.encrypted
+#  volumes:
+#    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
+#    - ./.ssh:/root/.ssh
+#  cached: true
+#  encrypted_dockercfg_path: dockercfg.encrypted
+#  default_cache_branch: 'dev'
 
 # ----------------------------------
-# e2e services
+# image
+# ----------------------------------
+
+tupaia:
+  build:
+    dockerfile: ./Dockerfile
+    context: .
+  encrypted_env_file: ./ci-env-vars.encrypted
+  cached: true
+  default_cache_branch: 'dev'
+
+# ----------------------------------
+# e2e testing
 # ----------------------------------
 
 #e2e-db-reference:
@@ -59,12 +78,18 @@ deployment:
 #  environment:
 #    POSTGRES_HOST_AUTH_METHOD: trust
 
-tupaia-clone:
-  build:
-    dockerfile: tupaia-clone.Dockerfile
-  encrypted_env_file: ./ci-env-vars.encrypted
-  volumes:
-    - /tmp/e2e/reference:/tmp/e2e/reference
+#tupaia-clone:
+#  build:
+#    dockerfile: tupaia-clone.Dockerfile
+#  encrypted_env_file: ./ci-env-vars.encrypted
+#  volumes:
+#    - /tmp/e2e/reference:/tmp/e2e/reference
+#
+#tupaia-build:
+#  build:
+#    dockerfile: tupaia-build.Dockerfile
+#  volumes:
+#    - /tmp/e2e/reference:/home/tupaia
 
 #e2e-setup:
 #  build:

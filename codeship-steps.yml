@@ -1,16 +1,16 @@
-#- type: parallel
-#  name: validate-and-test
-#  steps:
-#    - type: parallel
-#      name: validate
-#      steps:
-#        - name: validate branch name
-#          service: validation
-#          command: './packages/devops/scripts/ci/validateBranchName.sh'
-#        - name: validate tests
-#          service: validation
-#          command: './packages/devops/scripts/ci/validateTests.sh'
-#          exclude: -e2e$
+- type: parallel
+  name: validate-and-test
+  steps:
+    - type: parallel
+      name: validate
+      steps:
+        - name: validate branch name
+          service: validation
+          command: './packages/devops/scripts/ci/validateBranchName.sh'
+        - name: validate tests
+          service: validation
+          command: './packages/devops/scripts/ci/validateTests.sh'
+          exclude: -e2e$
 #    - type: serial
 #      name: test
 #      exclude: -e2e$
@@ -125,9 +125,24 @@
 #    - name: hi
 #      command: 'echo hi'
 
+
+
 - type: serial
-  name: tupaia-clone
-  service: tupaia-clone
+  name: build
+  service: tupaia
   steps:
-    - name: clone-reference-repo
-      command: 'sh /home/tupaia-clone.sh'
+    - name: build
+      command: 'echo hi'
+
+- type: push
+  service: tupaia
+  image_name: beyondessential/tupaia
+  image_tag: "{% raw %}{{ .Branch }}{% endraw %}"
+
+
+#- type: serial
+#  name: tupaia-clone
+#  service: tupaia-clone
+#  steps:
+#    - name: clone-reference-repo
+#      command: 'sh /home/tupaia-clone.sh'
