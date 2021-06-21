@@ -3,71 +3,56 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { fetchWithTimeout, verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 import { QueryParameters } from '../types';
-
-type RequestBody = Record<string, unknown> | Record<string, unknown>[];
-interface FetchHeaders {
-  Authorization: string;
-  'Content-Type'?: string;
-}
-
-interface FetchConfig {
-  method: string;
-  headers: FetchHeaders;
-  body?: string;
-}
-
-export interface AuthHandler {
-  email?: string;
-  getAuthHeader: () => Promise<string>;
-}
+import { AuthHandler, RequestBody } from './types';
+import { OutboundConnection } from './OutboundConnection';
 
 export class ApiConnection {
   authHandler: AuthHandler;
 
   baseUrl!: string;
 
+  private readonly outboundConnection: OutboundConnection;
+
   constructor(authHandler: AuthHandler) {
     this.authHandler = authHandler;
+    this.outboundConnection = new OutboundConnection();
   }
 
-  get(endpoint: string, queryParameters: QueryParameters = {}) {
-    return this.request('GET', endpoint, queryParameters);
+  async get(endpoint: string, queryParameters: QueryParameters = {}) {
+    return this.outboundConnection.get(
+      await this.authHandler.getAuthHeader(),
+      this.baseUrl,
+      endpoint,
+      queryParameters,
+    );
   }
 
-  post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
-    return this.request('POST', endpoint, queryParameters, body);
+  async post(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+    return this.outboundConnection.post(
+      await this.authHandler.getAuthHeader(),
+      this.baseUrl,
+      endpoint,
+      queryParameters,
+      body,
+    );
   }
 
-  put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
-    return this.request('PUT', endpoint, queryParameters, body);
+  async put(endpoint: string, queryParameters: QueryParameters, body: RequestBody) {
+    return this.outboundConnection.put(
+      await this.authHandler.getAuthHeader(),
+      this.baseUrl,
+      endpoint,
+      queryParameters,
+      body,
+    );
   }
 
-  delete(endpoint: string) {
-    return this.request('DELETE', endpoint);
-  }
-
-  async request(
-    requestMethod: string,
-    endpoint: string,
-    queryParameters: QueryParameters = {},
-    body?: RequestBody,
-  ) {
-    const queryUrl = stringifyQuery(this.baseUrl, endpoint, queryParameters);
-    const fetchConfig: FetchConfig = {
-      method: requestMethod || 'GET',
-      headers: {
-        Authorization: await this.authHandler.getAuthHeader(),
-        'Content-Type': 'application/json',
-      },
-    };
-    if (body) {
-      fetchConfig.body = JSON.stringify(body);
-    }
-
-    const response = await fetchWithTimeout(queryUrl, fetchConfig);
-    await verifyResponseStatus(response);
-    return response.json();
+  async delete(endpoint: string) {
+    return this.outboundConnection.delete(
+      await this.authHandler.getAuthHeader(),
+      this.baseUrl,
+      endpoint,
+    );
   }
 }

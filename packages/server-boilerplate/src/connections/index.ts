@@ -4,4 +4,6 @@
  *
  */
 
-export { ApiConnection, AuthHandler } from './ApiConnection';
+export { ApiConnection } from './ApiConnection';
+export { OutboundConnection } from './OutboundConnection';
+export { AuthHandler } from './types';

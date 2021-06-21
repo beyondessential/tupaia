@@ -48,13 +48,13 @@ const getAdjustedOrganisationUnitsAndAggregations = async (
   aggregationList,
 ) => {
   const { hierarchy, organisationUnitCodes } = fetchOptions;
-  const { session } = context;
-  // TODO: Remove this check for session when implementing https://github.com/beyondessential/tupaia-backlog/issues/2697
-  if (!aggregationList.some(shouldFetchDataSourceEntities) || !session) {
+  const entityApi = context?.microServices?.entityApi;
+  // TODO: Remove this check for entityApi when implementing https://github.com/beyondessential/tupaia-backlog/issues/2697
+  if (!aggregationList.some(shouldFetchDataSourceEntities) || !entityApi) {
     return [organisationUnitCodes, aggregationList];
   }
 
-  const entityConnection = new EntityConnection(session);
+  const entityConnection = new EntityConnection(entityApi);
   const adjustedAggregationsAndDataSourceEntites = await Promise.all(
     aggregationList.map(async aggregation => {
       if (!shouldFetchDataSourceEntities(aggregation)) {
