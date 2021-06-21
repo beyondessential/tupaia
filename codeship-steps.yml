@@ -142,6 +142,13 @@
   image_tag: "latest-release" # TODO: change this to "master", as we will have a newer release before the release is deployed
 
 - type: serial
+  name: e2e-setup
+  service: e2e-setup
+  steps:
+    - name: e2e-setup
+      command: 'sh /home/e2e-setup.sh'
+
+- type: serial
   name: e2e-run-ref
   service: e2e-tupaia-reference
   steps:
