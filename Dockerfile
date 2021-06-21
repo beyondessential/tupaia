@@ -72,7 +72,7 @@ RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 ## add packages and build monorepo
 COPY packages/. ./packages/
 RUN chmod +x ./scripts/bash/build.sh
-RUN yarn build
+RUN sh scripts/bash/build.sh
 
 # add container start scripts
 COPY ./init-services.sh ./
