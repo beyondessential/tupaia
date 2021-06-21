@@ -19,3 +19,4 @@ export {
   attachSession,
 } from './orchestrator';
 export { QueryParameters } from './types';
+export { Model, DbConditional } from './models';
