@@ -92,7 +92,7 @@ Two formats are supported:
   }
   ```
 
-Use any of the fields bellow to specify test urls. You can use multiple fields in the same test run - their results will be combined in the final url list:
+Use any of the fields below to specify test urls. You can use multiple fields in the same test run - their results will be combined in the final url list:
 
 ```json
 {
