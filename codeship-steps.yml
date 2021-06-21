@@ -137,7 +137,8 @@
 - type: push
   service: tupaia
   image_name: beyondessential/tupaia
-  image_tag: "{% raw %}{{ .Branch }}{% endraw %}"
+  image_tag: "latest-release" # TODO: {{ .Branch }}
+#  tag: ^master$
 
 
 #- type: serial
