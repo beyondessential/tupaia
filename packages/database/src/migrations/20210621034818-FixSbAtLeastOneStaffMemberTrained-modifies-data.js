@@ -23,7 +23,7 @@ exports.up = async function (db) {
   for (const dashboardId of dashboardIds) {
     await db.runSql(`
       update "dashboardReport" dr
-      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS1UNFPA03','RHS4UNFPA809','g')::jsonb
+      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS1UNFPA03','RHS4UNFPA807','g')::jsonb
       where id = '${dashboardId}'
   `);
   }
@@ -33,7 +33,7 @@ exports.down = async function (db) {
   for (const dashboardId of dashboardIds) {
     await db.runSql(`
       update "dashboardReport" dr
-      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS4UNFPA809','RHS1UNFPA03','g')::jsonb
+      set "dataBuilderConfig" = regexp_replace(dr."dataBuilderConfig"::text, 'RHS4UNFPA807','RHS1UNFPA03','g')::jsonb
       where id = '${dashboardId}'
     `);
   }
